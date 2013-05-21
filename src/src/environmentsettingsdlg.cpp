@@ -32,6 +32,7 @@
     #include <configmanager.h>
     #include <editormanager.h>
     #include <pluginmanager.h>
+    #include <logmanager.h>
     #include "appglobals.h"
     #include "globals.h"
     #include "associations.h"

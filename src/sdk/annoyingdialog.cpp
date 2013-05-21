@@ -9,15 +9,16 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-#include <wx/button.h>
-#include <wx/checkbox.h>
-#include <wx/intl.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include "cbexception.h"
-#include "configmanager.h"
-#include "manager.h"
-#include "globals.h"
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/intl.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
+    #include "cbexception.h"
+    #include "configmanager.h"
+    #include "manager.h"
+    #include "logmanager.h"
+    #include "globals.h"
 #endif
 #include <wx/statbmp.h>
 #include "annoyingdialog.h"
