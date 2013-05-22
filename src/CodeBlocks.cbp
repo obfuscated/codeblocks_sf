@@ -383,7 +383,7 @@
 					<Add after="zip -jq9 devel\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd plugins\compilergcc\resources &amp; zip -0 -q ..\..\..\devel\share\CodeBlocks\compiler.zip images\*.png images\16x16\*.png&quot;' />
 					<Add after="cmd /c if not exist devel\share\CodeBlocks\compilers mkdir devel\share\CodeBlocks\compilers" />
-					<Add after="cmd /c xcopy plugins\compilergcc\resources\compilers\*.* devel\share\CodeBlocks\compilers /y" />
+					<Add after="cmd /c xcopy /D /Y plugins\compilergcc\resources\compilers\*.* devel\share\CodeBlocks\compilers" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
