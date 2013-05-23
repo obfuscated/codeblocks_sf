@@ -226,7 +226,7 @@ void AnnoyingDialog::OnButton(wxCommandEvent& event)
             id = rtOK;
             break;
         case wxID_NO:
-            id = rtOK;
+            id = rtNO;
             break;
         case wxID_CANCEL:
             id = rtCANCEL;
