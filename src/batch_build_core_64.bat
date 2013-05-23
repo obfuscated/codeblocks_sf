@@ -30,7 +30,7 @@ set CB_CMD=%BUILD_TYPE% "%~dp0CodeBlocks_wx29_64.cbp"
 
 set CB_TARGET=--target=All
 %START_CMD% %CB_EXE% %CB_PARAMS% %CB_TARGET% %CB_CMD%
-echo Do not forget to run "update29.bat" after successful build!
+echo Do not forget to run "update64.bat" after successful build!
 goto TheEnd
 
 :ErrNoCB
