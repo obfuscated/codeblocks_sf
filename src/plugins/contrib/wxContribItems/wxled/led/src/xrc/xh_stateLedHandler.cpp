@@ -1,5 +1,6 @@
 #include "xrc/xh_stateLedHandler.h"
 #include "wx/stateLed.h"
+#include <wx/xml/xml.h> // wxXmlNode
 
 // Register with wxWidgets' dynamic class subsystem.
 IMPLEMENT_DYNAMIC_CLASS(wxStateLedXmlHandler , wxXmlResourceHandler)
