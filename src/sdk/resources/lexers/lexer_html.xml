@@ -57,92 +57,92 @@
 
                 <Style name="Unquoted values" index="19" fg="255,0,255" bg="255,232,255" />
                 <Style name="JSP Comment" index="20" fg="0,0,0" bg="255,255,200" />
-                <Style name="SGML tags" index=21 fg="0,0,127" bg="240,240,255"  />
-                <Style name="SGML command" index=22 fg="0,0,127" bg="240,240,255" bold="1" />
-                <Style name="SGML 1st param" index=23 fg="0,90,0" bg="240,240,255"  />
-                <Style name="SGML double string" index=24 fg="127,0,0" bg="240,240,255"  />
-                <Style name="SGML single string" index=25 fg="160,55,0" bg="240,240,255"  />
-                <Style name="SGML error" index=26 fg="128,0,0" bg="255,100,100"  />
-                <Style name="SGML special (#xxxx type)" index=27 fg="50,100,255" bg="240,240,255"  />
-                <Style name="SGML entity" index=28 fg="60,60,60" bg="240,240,255"  />
-                <Style name="SGML comment" index=29 fg="128,128,0" bg="240,240,255"  />
-                <Style name="SGML block" index=31 fg="0,0,100" bg="192,192,235"  />
-                <Style name="Matched Operators" index=34 fg="0,0,255" bold="0" />
-                <Style name="Matched Operators 2" index=35 fg="255,0,0" bold="0" />
+                <Style name="SGML tags" index="21" fg="0,0,127" bg="240,240,255"  />
+                <Style name="SGML command" index="22" fg="0,0,127" bg="240,240,255" bold="1" />
+                <Style name="SGML 1st param" index="23" fg="0,90,0" bg="240,240,255"  />
+                <Style name="SGML double string" index="24" fg="127,0,0" bg="240,240,255"  />
+                <Style name="SGML single string" index="25" fg="160,55,0" bg="240,240,255"  />
+                <Style name="SGML error" index="26" fg="128,0,0" bg="255,100,100"  />
+                <Style name="SGML special (#xxxx type)" index="27" fg="50,100,255" bg="240,240,255"  />
+                <Style name="SGML entity" index="28" fg="60,60,60" bg="240,240,255"  />
+                <Style name="SGML comment" index="29" fg="128,128,0" bg="240,240,255"  />
+                <Style name="SGML block" index="31" fg="0,0,100" bg="192,192,235"  />
+                <Style name="Matched Operators" index="34" fg="0,0,255" bold="0" />
+                <Style name="Matched Operators 2" index="35" fg="255,0,0" bold="0" />
 
-                <Style name="JS Start" index=40 fg="127,127,0" />
-                <Style name="JS Default" index=41 fg="0,0,0" bold="1"   />
-                <Style name="JS Comment" index=42   />
-                <Style name="JS Line Comment" index=43 fg="127,0,0"   />
-                <Style name="JS Doc comment" index=44 fg="0,127,0" bold="1"  />
-                <Style name="JS Number" index=45 fg="0,0,127"   />
-                <Style name="JS Word" index=46 fg="0,0,0" />
-                <Style name="JS Keyword" index=47 fg="0,0,127" bold="1"   />
-                <Style name="JS Double quoted string" index=48   />
-                <Style name="JS Single quoted string" index=49   />
-                <Style name="JS Symbols" index=50 fg="127,0,0" bold="1"   />
-                <Style name="JavaScript EOL" index=51 bg="180,180,0"  />
-                <Style name="JavaScript RegEx" index=52 bg="255,180,0"  />
+                <Style name="JS Start" index="40" fg="127,127,0" />
+                <Style name="JS Default" index="41" fg="0,0,0" bold="1"   />
+                <Style name="JS Comment" index="42"   />
+                <Style name="JS Line Comment" index="43" fg="127,0,0"   />
+                <Style name="JS Doc comment" index="44" fg="0,127,0" bold="1"  />
+                <Style name="JS Number" index="45" fg="0,0,127"   />
+                <Style name="JS Word" index="46" fg="0,0,0" />
+                <Style name="JS Keyword" index="47" fg="0,0,127" bold="1"   />
+                <Style name="JS Double quoted string" index="48"   />
+                <Style name="JS Single quoted string" index="49"   />
+                <Style name="JS Symbols" index="50" fg="127,0,0" bold="1"   />
+                <Style name="JavaScript EOL" index="51" bg="180,180,0"  />
+                <Style name="JavaScript RegEx" index="52" bg="255,180,0"  />
 
-                <Style name="ASP JS Start" index=55 fg="127,127,0" />
-                <Style name="ASP JS Default" index=56 fg="0,0,0" bold="1"  bg="220,220,127"  />
-                <Style name="ASP JS Comment" index=57 fg="0,127,0" bg="220,220,127"  />
-                <Style name="ASP JS Line Comment" index=58 fg="0,127,0"  bg="220,220,127"  />
-                <Style name="ASP JS Doc comment" index=59 fg="127,127,127" bold="1"  bg="220,220,127"  />
-                <Style name="ASP JS Number" index=60 fg="0,127,127"  bg="220,220,127"  />
-                <Style name="ASP JS Word" index=61 fg="0,0,0"  bg="220,220,127"  />
-                <Style name="ASP JS Keyword" index=62 fg="0,0,127" bold="1"  bg="220,220,127"  />
-                <Style name="ASP JS Double quoted string" index=63 fg="127,0,127"  bg="220,220,127"  />
-                <Style name="ASP JS Single quoted string" index=64 fg="127,0,127"  bg="220,220,127"  />
-                <Style name="ASP JS Symbols" index=65 fg="0,0,0" bold="1"  bg="220,220,127"  />
-                <Style name="ASP JavaScript EOL" index=66 bg="200,200,0"  />
-                <Style name="ASP JavaScript RegEx" index=67 bg="255,200,200"  />
+                <Style name="ASP JS Start" index="55" fg="127,127,0" />
+                <Style name="ASP JS Default" index="56" fg="0,0,0" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JS Comment" index="57" fg="0,127,0" bg="220,220,127"  />
+                <Style name="ASP JS Line Comment" index="58" fg="0,127,0"  bg="220,220,127"  />
+                <Style name="ASP JS Doc comment" index="59" fg="127,127,127" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JS Number" index="60" fg="0,127,127"  bg="220,220,127"  />
+                <Style name="ASP JS Word" index="61" fg="0,0,0"  bg="220,220,127"  />
+                <Style name="ASP JS Keyword" index="62" fg="0,0,127" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JS Double quoted string" index="63" fg="127,0,127"  bg="220,220,127"  />
+                <Style name="ASP JS Single quoted string" index="64" fg="127,0,127"  bg="220,220,127"  />
+                <Style name="ASP JS Symbols" index="65" fg="0,0,0" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JavaScript EOL" index="66" bg="200,200,0"  />
+                <Style name="ASP JavaScript RegEx" index="67" bg="255,200,200"  />
 
-                <Style name="VBS Start" index=70  />
-                <Style name="VBS Default" index=71  bg="240,240,255" fg="0,0,0"  />
-                <Style name="VBS Comment" index=72 bg="240,240,255" fg="0,128,0"  />
-                <Style name="VBS Number" index=73  bg="240,240,255" fg="0,128,128"  />
-                <Style name="VBS KeyWord" index=74  bg="240,240,255" fg="0,0,128" bold="1"  />
-                <Style name="VBS String" index=75  bg="240,240,255" fg="128,0,128"  />
-                <Style name="VBS Identifier" index=76  bg="240,240,255" fg="0,0,128"  />
-                <Style name="VBS Unterminated string" index=77  bg="127,127,255" fg="0,0,128"  />
+                <Style name="VBS Start" index="70"  />
+                <Style name="VBS Default" index="71"  bg="240,240,255" fg="0,0,0"  />
+                <Style name="VBS Comment" index="72" bg="240,240,255" fg="0,128,0"  />
+                <Style name="VBS Number" index="73"  bg="240,240,255" fg="0,128,128"  />
+                <Style name="VBS KeyWord" index="74"  bg="240,240,255" fg="0,0,128" bold="1"  />
+                <Style name="VBS String" index="75"  bg="240,240,255" fg="128,0,128"  />
+                <Style name="VBS Identifier" index="76"  bg="240,240,255" fg="0,0,128"  />
+                <Style name="VBS Unterminated string" index="77"  bg="127,127,255" fg="0,0,128"  />
 
-                <Style name="ASP VBS Start" index=80  />
-                <Style name="ASP VBS Default" index=81  bg="200,200,240" fg="0,0,0"  />
-                <Style name="ASP VBS Comment" index=82 bg="200,200,240" fg="0,128,0"  />
-                <Style name="ASP VBS Number" index=83  bg="200,200,240" fg="0,128,128"  />
-                <Style name="ASP VBS KeyWord" index=84  bg="200,200,240" fg="0,0,128" bold="1"  />
-                <Style name="ASP VBS String" index=85  bg="200,200,240" fg="128,0,128"  />
-                <Style name="ASP VBS Identifier" index=86  bg="200,200,240" fg="0,0,128"  />
-                <Style name="ASP VBS Unterminated string" index=87  bg="127,127,200" fg="0,0,128"  />
+                <Style name="ASP VBS Start" index="80"  />
+                <Style name="ASP VBS Default" index="81"  bg="200,200,240" fg="0,0,0"  />
+                <Style name="ASP VBS Comment" index="82" bg="200,200,240" fg="0,128,0"  />
+                <Style name="ASP VBS Number" index="83"  bg="200,200,240" fg="0,128,128"  />
+                <Style name="ASP VBS KeyWord" index="84"  bg="200,200,240" fg="0,0,128" bold="1"  />
+                <Style name="ASP VBS String" index="85"  bg="200,200,240" fg="128,0,128"  />
+                <Style name="ASP VBS Identifier" index="86"  bg="200,200,240" fg="0,0,128"  />
+                <Style name="ASP VBS Unterminated string" index="87"  bg="127,127,200" fg="0,0,128"  />
 
-                <Style name="Embedded Python" index=90 fg="0,127,0" />
-                <Style name="Embedded Python 2" index=91 fg="0,127,0" />
-                <Style name="Embedded Python Comment" index=92 fg="0,127,0" bg="240,255,240"  />
-                <Style name="Embedded Python Number" index=93 fg="0,127,127" bg="240,255,240"  />
-                <Style name="Embedded Python String" index=94 fg="127,0,127" bg="240,255,240"  />
-                <Style name="Embedded Python Single quoted string" index=95 fg="127,0,127" bg="240,255,240"  />
-                <Style name="Embedded Python Keyword" index=96 fg="0,0,127" bold="1" bg="240,255,240"  />
-                <Style name="Embedded Python Triple quotes" index=97 fg="127,0,0" bg="240,255,240"  />
-                <Style name="Embedded Python Triple double quotes" index=98 fg="127,0,0" bg="240,255,240"  />
-                <Style name="Embedded Python Class name definition" index=99 fg="0,0,255" bold="1" bg="240,255,240"  />
-                <Style name="Embedded Python Function or method name definition" index=100 fg="0,127,127" bold="1" bg="240,255,240"  />
-                <Style name="Embedded Python Operators" index=101 bold="1" bg="240,255,240"  />
-                <Style name="Embedded Python Identifiers" index=102 bg="240,255,240"  />
+                <Style name="Embedded Python" index="90" fg="0,127,0" />
+                <Style name="Embedded Python 2" index="91" fg="0,127,0" />
+                <Style name="Embedded Python Comment" index="92" fg="0,127,0" bg="240,255,240"  />
+                <Style name="Embedded Python Number" index="93" fg="0,127,127" bg="240,255,240"  />
+                <Style name="Embedded Python String" index="94" fg="127,0,127" bg="240,255,240"  />
+                <Style name="Embedded Python Single quoted string" index="95" fg="127,0,127" bg="240,255,240"  />
+                <Style name="Embedded Python Keyword" index="96" fg="0,0,127" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Triple quotes" index="97" fg="127,0,0" bg="240,255,240"  />
+                <Style name="Embedded Python Triple double quotes" index="98" fg="127,0,0" bg="240,255,240"  />
+                <Style name="Embedded Python Class name definition" index="99" fg="0,0,255" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Function or method name definition" index="100" fg="0,127,127" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Operators" index="101" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Identifiers" index="102" bg="240,255,240"  />
 
-                <Style name="ASP Python" index=105 fg="128,128,128" />
-                <Style name="ASP Python 2" index=106 fg="128,128,128" bg="200,200,200"  />
-                <Style name="ASP Python Comment" index=107 fg="0,127,0" bg="192,222,192"  />
-                <Style name="ASP Python Number" index=108 fg="0,127,127" bg="192,234,192"  />
-                <Style name="ASP Python String" index=109 fg="127,0,127" bg="192,234,192"  />
-                <Style name="ASP Python Single quoted string" index=110 fg="127,0,127" bg="192,240,192"  />
-                <Style name="ASP Python Keyword" index=111 fg="0,0,127" bold="1" bg="192,240,192"  />
-                <Style name="ASP Python Triple quotes" index=112 fg="127,0,0" bg="192,240,192"  />
-                <Style name="ASP Python Triple double quotes" index=113 fg="127,0,0" bg="192,240,192"  />
-                <Style name="ASP Python Class name definition" index=114 fg="0,0,255" bold="1" bg="192,240,192"  />
-                <Style name="ASP Python Function or method name definition" index=115 fg="0,127,127" bold="1" bg="192,240,192"  />
-                <Style name="ASP Python Operators" index=116 bold="1" bg="192,240,192"  />
-                <Style name="ASP Python Identifiers" index=117 bg="192,240,192"  />
+                <Style name="ASP Python" index="105" fg="128,128,128" />
+                <Style name="ASP Python 2" index="106" fg="128,128,128" bg="200,200,200"  />
+                <Style name="ASP Python Comment" index="107" fg="0,127,0" bg="192,222,192"  />
+                <Style name="ASP Python Number" index="108" fg="0,127,127" bg="192,234,192"  />
+                <Style name="ASP Python String" index="109" fg="127,0,127" bg="192,234,192"  />
+                <Style name="ASP Python Single quoted string" index="110" fg="127,0,127" bg="192,240,192"  />
+                <Style name="ASP Python Keyword" index="111" fg="0,0,127" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Triple quotes" index="112" fg="127,0,0" bg="192,240,192"  />
+                <Style name="ASP Python Triple double quotes" index="113" fg="127,0,0" bg="192,240,192"  />
+                <Style name="ASP Python Class name definition" index="114" fg="0,0,255" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Function or method name definition" index="115" fg="0,127,127" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Operators" index="116" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Identifiers" index="117" bg="192,240,192"  />
 
                 <Style name="PHP Complex Variable"
                         index="104"

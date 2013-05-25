@@ -178,7 +178,7 @@
                                    ref relates remarks return retval sa section see showinitializer
                                    since skip skipline struct subsection test throw todo typedef
                                    union until var verbatim verbinclude version warning weakgroup
-                                   $ @ \ & < > # { }"/>
+                                   $ @ \ &amp; &lt; &gt;  # { }"/>
                         <!-- wxSmith block identifiers -->
                         <Set index="5"
                             value="^AppHeaders ^AppInitialize ^Declarations ^Destroy ^EventTable ^Handlers

@@ -79,7 +79,7 @@
 								p page par param post pre ref relates remarks return retval
 								sa section see showinitializer since skip skipline struct subsection
 								test throw todo typedef union until
-								var verbatim verbinclude version warning weakgroup $ @ \ & < > # { }"/>
+								var verbatim verbinclude version warning weakgroup $ @ \ &amp; &lt; &gt;  # { }"/>
 				</Keywords>
 				<SampleCode value="lexer_angelscript.sample"/>
 				<LanguageAttributes

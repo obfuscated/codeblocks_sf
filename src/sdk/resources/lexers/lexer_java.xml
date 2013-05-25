@@ -109,7 +109,7 @@
                             value="author docRoot   deprecated  exception   inheritDoc
                                    link   linkplain literal     param       return
                                    see    serial    serialData  serialField since
-                                   throws value     version     $ @ \ & < > # { }"/>
+                                   throws value     version     $ @ \ &amp; &lt; &gt; # { }"/>
                 </Keywords>
                 <SampleCode value="lexer_java.sample"
                                    breakpoint_line="21"
