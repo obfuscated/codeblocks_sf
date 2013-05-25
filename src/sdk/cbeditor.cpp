@@ -1406,20 +1406,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
     control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
 
-    // if user wants "Home" key to set cursor to the very beginning of line
-    if (mgr->ReadBool(_T("/simplified_home"), false))
-    {
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM,                    wxSCI_CMD_HOME);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT,                   wxSCI_CMD_HOMEEXTEND);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_HOMERECTEXTEND);
-    }
-    else // else set default "Home" key behavior
-    {
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM,                    wxSCI_CMD_VCHOME);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT,                   wxSCI_CMD_VCHOMEEXTEND);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT | wxSCI_SCMOD_SHIFT, wxSCI_CMD_VCHOMERECTEXTEND);
-    }
-
     // setup for "CamelCase selection"
     if (mgr->ReadBool(_T("/camel_case"), false))
     {
@@ -1448,21 +1434,43 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         // otherwise to the start/end of the entire line.
         // alt+home/end go to start/end of the entire line.
         // in unwrapped mode, there is no difference between home/end and alt+home/end
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_NORM,                  wxSCI_CMD_VCHOMEWRAP);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_SCMOD_NORM,                  wxSCI_CMD_LINEENDWRAP);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT,                   wxSCI_CMD_VCHOME);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_SCMOD_ALT,                   wxSCI_CMD_LINEEND);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT,                 wxSCI_CMD_VCHOMEWRAPEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_SCMOD_SHIFT,                 wxSCI_CMD_LINEENDWRAPEXTEND);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT, wxSCI_CMD_VCHOMEEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT, wxSCI_CMD_LINEENDEXTEND);
+
+        // if user wants "Home" key to set cursor to the very beginning of line
+        if (mgr->ReadBool(_T("/simplified_home"), false))
+        {
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_NORM,wxSCI_CMD_HOMEWRAP);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_HOME);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT,wxSCI_CMD_HOMEWRAPEXTEND);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_HOMEEXTEND);
+        }
+        else // else set default "Home" key behavior
+        {
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_NORM,wxSCI_CMD_VCHOMEWRAP);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOME);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT,wxSCI_CMD_VCHOMEWRAPEXTEND);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEEXTEND);
+        }
     }
     else
     {   // in word wrap mode, home/end keys goto start/end of the entire line. alt+home/end goes to wrap points
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_ALT,                   wxSCI_CMD_VCHOMEWRAP);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_SCMOD_ALT,                   wxSCI_CMD_LINEENDWRAP);
-        control->CmdKeyAssign(wxSCI_KEY_HOME, wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT, wxSCI_CMD_VCHOMEWRAPEXTEND);
         control->CmdKeyAssign(wxSCI_KEY_END,  wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT, wxSCI_CMD_LINEENDWRAPEXTEND);
+
+        // if user wants "Home" key to set cursor to the very beginning of line
+        if (mgr->ReadBool(_T("/simplified_home"), false))
+        {
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_HOMEWRAP);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_HOMEWRAPEXTEND);
+        }
+        else // else set default "Home" key behavior
+        {
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEWRAP);
+            control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEWRAPEXTEND);
+        }
     }
     control->SetViewEOL(mgr->ReadBool(_T("/show_eol"), false));
     control->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
