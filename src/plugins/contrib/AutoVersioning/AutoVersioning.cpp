@@ -175,6 +175,10 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
                 {
                     Config.Settings.DateDeclarations = Help?true:false;
                 }
+                if(pElem->QueryIntAttribute("use_define", &Help) == TIXML_SUCCESS)
+                {
+                    Config.Settings.UseDefine = Help?true:false;
+                }
                 // GJH 03/03/10 Added manifest updating.
                 if(pElem->QueryIntAttribute("update_manifest", &Help) == TIXML_SUCCESS)
                 {
@@ -264,6 +268,7 @@ void AutoVersioning::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem
             TiXmlElement Settings("Settings");
             Settings.SetAttribute("autoincrement", NewConfig.Settings.Autoincrement);
             Settings.SetAttribute("date_declarations", NewConfig.Settings.DateDeclarations);
+            Settings.SetAttribute("use_define", NewConfig.Settings.UseDefine);
             // GJH 03/03/10 Added manifest updating.
             Settings.SetAttribute("update_manifest", NewConfig.Settings.UpdateManifest);
             Settings.SetAttribute("do_auto_increment", NewConfig.Settings.DoAutoIncrement);
@@ -489,6 +494,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
 
     VersionEditorDialog.SetAuto(GetConfig().Settings.Autoincrement);
     VersionEditorDialog.SetDates(GetConfig().Settings.DateDeclarations);
+    VersionEditorDialog.SetDefine(GetConfig().Settings.UseDefine);
 	// GJH 03/03/10 Added manifest updating.
     VersionEditorDialog.SetManifest(GetConfig().Settings.UpdateManifest);
 
@@ -526,6 +532,7 @@ void AutoVersioning::SetVersionAndSettings(cbProject& Project, bool update)
     GetConfig().Scheme.BuildTimesToIncrementMinor = VersionEditorDialog.GetBuildTimesToMinorIncrement();
     GetConfig().Settings.Autoincrement = VersionEditorDialog.GetAuto();
     GetConfig().Settings.DateDeclarations = VersionEditorDialog.GetDates();
+    GetConfig().Settings.UseDefine = VersionEditorDialog.GetDefine();
 	// GJH 03/03/10 Added manifest updating.
     GetConfig().Settings.UpdateManifest = VersionEditorDialog.GetManifest();
     GetConfig().Settings.AskToIncrement = VersionEditorDialog.GetCommitAsk();
@@ -592,6 +599,11 @@ void AutoVersioning::UpdateVersionHeader()
     }
 
     wxString prefix = cbC2U(GetConfig().Code.Prefix.c_str());
+    wxString def_define_char = _T("");
+    wxString def_define_long = _T("");
+    wxString def_equal = _T("");
+    wxString def_array = _T("");
+    wxString def_end = _T("");
 
     if(prefix != _T(""))
     {
@@ -608,42 +620,58 @@ void AutoVersioning::UpdateVersionHeader()
         headerOutput << _T("namespace ") << cbC2U(GetConfig().Code.NameSpace.c_str()) << _T("{") << _T("\n");
         headerOutput << _T("\t") << _T("\n");
     }
+    if(GetConfig().Settings.UseDefine)
+    {
+        def_define_char << _T("#define ");
+        def_define_long << def_define_char;
+        def_equal << _T(" ");
+        def_array << _T("");
+        def_end << _T("");
+    }
+    else
+    {
+        def_define_char << _T("static const char ");
+        def_define_long << _T("static const long ");
+        def_equal << _T(" = ");
+        def_array << _T("[]");
+        def_end << _T(";");
+    }
 
     if(GetConfig().Settings.DateDeclarations)
     {
         wxDateTime actualDate = wxDateTime::Now();
         headerOutput << _T("\t") << _T("//Date Version Types") << _T("\n");
-        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("DATE[] = ") << actualDate.Format(_T("\"%d\"")) << _T(";\n");
-        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("MONTH[] = ") << actualDate.Format(_T("\"%m\"")) << _T(";\n");
-        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("YEAR[] = ") << actualDate.Format(_T("\"%Y\"")) << _T(";\n");
+        headerOutput << _T("\t") << def_define_char << prefix << _T("DATE") << def_array << def_equal << actualDate.Format(_T("\"%d\"")) << def_end << _T("\n");
+        headerOutput << _T("\t") << def_define_char << prefix << _T("MONTH") << def_array << def_equal << actualDate.Format(_T("\"%m\"")) << def_end << _T("\n");
+        headerOutput << _T("\t") << def_define_char << prefix << _T("YEAR") << def_array << def_equal << actualDate.Format(_T("\"%Y\"")) << def_end << _T("\n");
         long ubuntuYearNumber = 0;
         actualDate.Format(_T("%y")).ToLong(&ubuntuYearNumber);
         wxString ubuntuYear;
         ubuntuYear.Printf(_T("%ld"),ubuntuYearNumber);
-        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("UBUNTU_VERSION_STYLE[] = \"") << ubuntuYear << actualDate.Format(_T(".%m")) << _T("\";\n");
+        headerOutput << _T("\t") << def_define_char << prefix << _T("UBUNTU_VERSION_STYLE") << def_array << def_equal << _T(" \"") << ubuntuYear << actualDate.Format(_T(".%m")) << _T("\"") << def_end << _T("\n");
         headerOutput << _T("\t") << _T("\n");
     }
 
     headerOutput << _T("\t") << _T("//Software Status") << _T("\n");
-    headerOutput << _T("\t") << _T("static const char ") << prefix << _T("STATUS[] = \"") << cbC2U(GetVersionState().Status.SoftwareStatus.c_str()) << _T("\";\n");
-    headerOutput << _T("\t") << _T("static const char ") << prefix << _T("STATUS_SHORT[] = \"") << cbC2U(GetVersionState().Status.Abbreviation.c_str()) << _T("\";\n");
+    headerOutput << _T("\t") << def_define_char << prefix << _T("STATUS") << def_array << def_equal << _T(" \"") << cbC2U(GetVersionState().Status.SoftwareStatus.c_str()) << _T("\"") << def_end << _T("\n");
+    headerOutput << _T("\t") << def_define_char << prefix << _T("STATUS_SHORT") << def_array << def_equal << _T(" \"") << cbC2U(GetVersionState().Status.Abbreviation.c_str()) << _T("\"") << def_end << _T("\n");
     headerOutput << _T("\t") << _T("\n");
 
     wxString myPrintf;
     headerOutput << _T("\t") << _T("//Standard Version Type") << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Major);
-    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("MAJOR = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_long << prefix << _T("MAJOR ") << def_equal << myPrintf << def_end << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Minor);
-    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("MINOR = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_long << prefix << _T("MINOR ") << def_equal << myPrintf << def_end << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Build);
-    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("BUILD = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_long << prefix << _T("BUILD ") << def_equal << myPrintf << def_end << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.Revision);
-    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("REVISION = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_long << prefix << _T("REVISION ") << def_equal << myPrintf << def_end << _T("\n");
     headerOutput << _T("\t") << _T("\n");
 
     headerOutput << _T("\t") << _T("//Miscellaneous Version Types") << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().Values.BuildCount);
-    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("BUILDS_COUNT = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_long << prefix << _T("BUILDS_COUNT ") << def_equal << myPrintf << def_end <<_T("\n");
 
     myPrintf.Printf(_T("%ld,%ld,%ld,%ld"), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
@@ -655,7 +683,7 @@ void AutoVersioning::UpdateVersionHeader()
 
     myPrintf.Printf(_T("\"%ld.%ld.%ld.%ld\""), GetVersionState().Values.Major, GetVersionState().Values.Minor,
             GetVersionState().Values.Build, GetVersionState().Values.Revision);
-    headerOutput << _T("\t") << _T("static const char ") << prefix << _T("FULLVERSION_STRING[] = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_char << prefix << _T("FULLVERSION_STRING ") << def_array << def_equal << myPrintf << def_end << _T("\n");
 
     if(GetConfig().Settings.Svn)
     {
@@ -664,14 +692,14 @@ void AutoVersioning::UpdateVersionHeader()
             wxMessageBox(_("Possible Causes:\n-You don't have SVN installed.\n-Incompatible version of SVN.\n-SVN configuration files not found.\n\nVerify the Autoversioning SVN directory."),_("SVN Error"),wxICON_ERROR);
         headerOutput << _T("\t") << _T("\n");
         headerOutput << _T("\t") << _T("//SVN Version") << _T("\n");
-        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("SVN_REVISION[] = ") << _T("\"") + revision + _T("\"")<< _T(";\n");
-        headerOutput << _T("\t") << _T("static const char ") << prefix << _T("SVN_DATE[] = ") << _T("\"") + date + _T("\"")<< _T(";\n");
+        headerOutput << _T("\t") << def_define_char << prefix << _T("SVN_REVISION") << def_array << def_equal << _T("\"") + revision + _T("\"")<< def_end << _T("\n");
+        headerOutput << _T("\t") << def_define_char << prefix << _T("SVN_DATE") << def_array << def_equal << _T("\"") + date + _T("\"")<< def_end << _T("\n");
     }
 
     headerOutput << _T("\t") << _T("\n");
     headerOutput << _T("\t") << _T("//These values are to keep track of your versioning state, don't modify them.") << _T("\n");
     myPrintf.Printf(_T("%ld"), GetVersionState().BuildHistory);
-    headerOutput << _T("\t") << _T("static const long ") << prefix << _T("BUILD_HISTORY = ") << myPrintf << _T(";\n");
+    headerOutput << _T("\t") << def_define_long << prefix << _T("BUILD_HISTORY ") << def_equal << myPrintf << def_end << _T("\n");
 
     headerOutput << _T("\t") << _T("\n\n");
 

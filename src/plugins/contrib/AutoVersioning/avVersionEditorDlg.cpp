@@ -55,6 +55,7 @@ const long avVersionEditorDlg::ID_PREFIX_TEXT = wxNewId();
 const long avVersionEditorDlg::ID_CODE_PANEL = wxNewId();
 const long avVersionEditorDlg::ID_AUTO_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_DATES_CHECK = wxNewId();
+const long avVersionEditorDlg::ID_DEFINE_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_UPDATE_MANIFEST = wxNewId();
 const long avVersionEditorDlg::ID_COMMIT_CHECK = wxNewId();
 const long avVersionEditorDlg::ID_ASKCOMMIT_CHECK = wxNewId();
@@ -102,7 +103,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     wxBoxSizer* BoxSizer11;
     wxBoxSizer* BoxSizer14;
     wxBoxSizer* codeSizer;
-    
+
     Create(parent, wxID_ANY, _("Auto Versioning Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxRESIZE_BORDER, _T("wxID_ANY"));
     SetClientSize(wxSize(469,364));
     wxFont thisFont(10,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
@@ -248,6 +249,10 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     chkDates->SetValue(true);
     chkDates->SetToolTip(_("Create variable declarations\nfor date, month and year. And \nalso an ubuntu version style."));
     BoxSizer13->Add(chkDates, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    chkDefine = new wxCheckBox(pnlSettings, ID_DEFINE_CHECK, _("Use #define"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_DEFINE_CHECK"));
+    chkDefine->SetValue(true);
+    chkDefine->SetToolTip(_("Use #define declaration instead of static variables"));
+    BoxSizer13->Add(chkDefine, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     chkUpdateManifest = new wxCheckBox(pnlSettings, ID_UPDATE_MANIFEST, _("Update manifest.xml"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_UPDATE_MANIFEST"));
     chkUpdateManifest->SetValue(false);
     chkUpdateManifest->SetToolTip(_("Update manifest.xml\'s version field with AutoVersion\'s\nvalues using the format MAJOR.MINOR.BUILD.\nThis setting is mainly useful for plugin developers."));
@@ -282,7 +287,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     BoxSizer7->Add(BoxSizer15, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer5->Add(BoxSizer7, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
-    wxString __wxRadioBoxChoices_1[2] = 
+    wxString __wxRadioBoxChoices_1[2] =
     {
     _("C"),
     _("C++")
@@ -363,7 +368,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     tmrValidateInput.Start(500, false);
     mainSizer->SetSizeHints(this);
     Center();
-    
+
     Connect(ID_STATUS_COMBOBOX,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&avVersionEditorDlg::OnCmbStatusSelect);
     Connect(ID_COMMIT_CHECK,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnChkCommitClick);
     Connect(ID_HEADERPATH_BUTTON,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&avVersionEditorDlg::OnHeaderPathClick);
@@ -440,6 +445,12 @@ void avVersionEditorDlg::SetDates(bool value)
 {
 	m_dates = value;
 	chkDates->SetValue(value);
+}
+
+void avVersionEditorDlg::SetDefine(bool value)
+{
+	m_useDefine = value;
+	chkDefine->SetValue(value);
 }
 
 // GJH 03/03/10 Added manifest updating.
@@ -634,6 +645,7 @@ void avVersionEditorDlg::OnAcceptClick(wxCommandEvent&)
 
     m_autoMajorMinor = chkAutoIncrement->IsChecked();
     m_dates = chkDates->IsChecked();
+    m_useDefine = chkDefine->IsChecked();
 	// GJH 03/03/10 Added manifest updating.
 	m_updateManifest = chkUpdateManifest->IsChecked();
     m_svn = chkSvn->IsChecked();

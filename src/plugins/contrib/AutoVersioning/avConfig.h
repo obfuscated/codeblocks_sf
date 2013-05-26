@@ -67,18 +67,19 @@ struct avSettings
 	// GJH 03/03/10 Added manifest updating.
 	bool UpdateManifest;
 	bool AskToIncrement;
+	bool UseDefine;
 	std::string Language;
 	bool Svn;
 	std::string SvnDirectory;
 	std::string HeaderPath;
 	avSettings() : Autoincrement(true), DateDeclarations(true), DoAutoIncrement(false), AskToIncrement(false),
-        Language("C++"), Svn(false), SvnDirectory(), HeaderPath("version.h") {}
+        UseDefine(false), Language("C++"), Svn(false), SvnDirectory(), HeaderPath("version.h") {}
 	bool operator!=(const avSettings& Other) const
 	{
 	    return (Autoincrement != Other.Autoincrement || UpdateManifest != Other.UpdateManifest ||
 		DateDeclarations != Other.DateDeclarations || DoAutoIncrement != Other.DoAutoIncrement ||
-		AskToIncrement != Other.AskToIncrement || Language != Other.Language || 
-		Svn != Other.Svn || SvnDirectory != Other.SvnDirectory || 
+		AskToIncrement != Other.AskToIncrement || Language != Other.Language || UseDefine != Other.UseDefine ||
+		Svn != Other.Svn || SvnDirectory != Other.SvnDirectory ||
 		HeaderPath != Other.HeaderPath);
 	}
 };

@@ -42,6 +42,7 @@ private:
     bool m_dates;
 	// GJH 03/03/10 Added manifest updating.
     bool m_updateManifest;
+    bool m_useDefine;
     bool m_svn;
     bool m_commit;
     bool m_askCommit;
@@ -110,6 +111,7 @@ public:
 		static const long ID_CODE_PANEL;
 		static const long ID_AUTO_CHECK;
 		static const long ID_DATES_CHECK;
+		static const long ID_DEFINE_CHECK;
 		static const long ID_UPDATE_MANIFEST;
 		static const long ID_COMMIT_CHECK;
 		static const long ID_ASKCOMMIT_CHECK;
@@ -170,6 +172,7 @@ public:
 		wxTextCtrl* txtBuildNumber;
 		wxCheckBox* chkAutoIncrement;
 		wxCheckBox* chkDates;
+		wxCheckBox* chkDefine;
 		wxStaticText* lblChangesPath;
 		wxRadioBox* rbHeaderLanguage;
 		wxBoxSizer* BoxSizer19;
@@ -274,6 +277,7 @@ public:
 	void SetSvnDirectory(const wxString& value);
 	void SetAuto(bool value);
 	void SetDates(bool value);
+	void SetDefine(bool value);
 	// GJH 03/03/10 Added manifest updating.
 	void SetManifest(bool value);
 	void SetCommit(bool value);
@@ -295,6 +299,7 @@ public:
 	wxString GetSvnDirectory() const {return m_svnDirectory;}
 	bool GetAuto() const {return m_autoMajorMinor;}
 	bool GetDates() const {return m_dates;}
+	bool GetDefine() const {return m_useDefine;}
 	// GJH 03/03/10 Added manifest updating.
 	bool GetManifest() const {return m_updateManifest;}
 	bool GetCommit() const {return m_commit;}
