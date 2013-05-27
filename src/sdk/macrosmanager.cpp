@@ -315,6 +315,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
             m_Macros[title + _T("_OUTPUT_FILE")]     = UnixFilename(it_target->GetOutputFilename());
             m_Macros[title + _T("_OUTPUT_DIR")]      = UnixFilename(it_target->GetBasePath());
             m_Macros[title + _T("_OUTPUT_BASENAME")] = wxFileName(it_target->GetOutputFilename()).GetName();
+            m_Macros[title + _T("_PARAMETERS")]      = it_target->GetExecutionParameters();
         }
         m_LastProject = project;
     }
