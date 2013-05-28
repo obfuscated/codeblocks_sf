@@ -78,19 +78,15 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
         else if (it->BeforeLast(wxT(':')) == caption)
         {
             dontAnnoy = true;
-            if (defRet == rtSAVE_CHOICE)
+            // read the saved choice and store it for ShowModal() to use
+            long ret = rtSAVE_CHOICE;
+            if (it->AfterLast(wxT(':')).ToLong(&ret) && ret != rtSAVE_CHOICE)
             {
-                // read the choice the user made when they dismissed this dialog
-                // and store it for ShowModal() to use
-                long ret = rtSAVE_CHOICE;
-                if (it->AfterLast(wxT(':')).ToLong(&ret) && ret != rtSAVE_CHOICE)
-                {
-                    Manager::Get()->GetLogManager()->Log(*it);
-                    defRet = (dReturnType)ret;
-                }
-                else
-                    defRet = rtYES; // default value
+                Manager::Get()->GetLogManager()->Log(*it);
+                defRet = (dReturnType)ret;
             }
+            else if (defRet == rtSAVE_CHOICE)
+                defRet = rtYES; // default value
             return;
         }
     }
