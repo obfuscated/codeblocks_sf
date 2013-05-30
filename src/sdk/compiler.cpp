@@ -1187,8 +1187,16 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         long ret = -1;
         if ( !cmd[0].IsEmpty() ) // should never be empty
         {
+            int flags = wxEXEC_SYNC;
+            #if wxCHECK_VERSION(2, 9, 0)
+                // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
+                // that occurs from time to time on wx2.9
+                flags |= wxEXEC_NOEVENTS;
+            #else
+                flags |= wxEXEC_NODISABLE;
+            #endif
             wxLogNull logNo; // do not warn if execution fails
-            ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false), cmd);
+            ret = wxExecute(GetStringFromArray(cmd, wxT(" "), false), cmd, flags);
         }
 
         if (ret != 0) // execution failed
