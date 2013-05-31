@@ -16,13 +16,6 @@
     {
         va_list arg_list;
         va_start(arg_list, msg);
-#if wxCHECK_VERSION(2,9,0) && wxUSE_UNICODE
-// in wx >=  2.9 unicode-build (default) we need the %ls here, or the strings get
-// cut after the first character
-        ::temp_string = msg;
-        ::temp_string.Replace(_T("%s"), _T("%ls"));
-        msg = ::temp_string.wx_str();
-#endif
         ::temp_string = wxString::FormatV(msg, arg_list);
         va_end(arg_list);
 
