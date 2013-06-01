@@ -291,9 +291,9 @@ void MainFrame::OnBtnExportClick(wxCommandEvent& /*event*/)
           wxArrayString path_arr = PathToArray(path);
 
           TiXmlElement* element  = root;
-          for (size_t i=0; i<path_arr.Count(); ++i)
+          for (size_t p=0; p<path_arr.Count(); ++p)
           {
-            wxString section_path = path_arr.Item(i);
+            wxString section_path = path_arr.Item(p);
             if (element->NoChildren())
             {
               // element has no children -> create new child named after section
@@ -540,11 +540,26 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   }
   else if (sectionLower.Matches(wxT("compiler")))    // compiler sets
   {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node); // COMPLETE compiler section
+
     TiXmlNode* child = NULL;
     for (child = (*node)->FirstChild(); child; child = child->NextSibling())
     {
       if (child->Type()==TiXmlNode::TINYXML_ELEMENT)
         OfferNode(&child, listbox, nodes, wxT("<compiler>")); // recursive call
+    }
+  }
+  else if (sectionLower.Matches(wxT("debugger_common"))) // debugger common options
+  {
+    listbox->Append(wxT("<") + section + wxT(">"));
+    nodes->push_back(*node); // COMPLETE debugger section
+
+    TiXmlNode* child = NULL;
+    for (child = (*node)->FirstChild(); child; child = child->NextSibling())
+    {
+      if (child->Type()==TiXmlNode::TINYXML_ELEMENT)
+        OfferNode(&child, listbox, nodes, wxT("<debugger_common>")); // recursive call
     }
   }
   else if (sectionLower.Matches(wxT("editor")))      // editor colour sets
@@ -648,6 +663,29 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
   // 2nd recursion level: compiler -> user sets -> individual sets
   // -------------------------------------------------------------
   else if (prefix.Matches(wxT("<compiler><user_sets>")))    // individual compiler user sets
+  {
+    listbox->Append(prefix + wxT("<") + section + wxT(">"));
+    nodes->push_back(*node);
+  }
+
+  // --------------------------------------------
+  // 1st recursion level: debugger_common -> sets
+  // --------------------------------------------
+  else if (   prefix.Matches(wxT("<debugger_common>"))
+           && sectionLower.Matches(wxT("sets")))     // debugger sets
+  {
+    TiXmlNode* child = NULL;
+    for (child = (*node)->FirstChild(); child; child = child->NextSibling())
+    {
+      if (child->Type()==TiXmlNode::TINYXML_ELEMENT)
+        OfferNode(&child, listbox, nodes, wxT("<debugger_common><sets>")); // recursive call
+    }
+  }
+
+  // ---------------------------------------------------------------
+  // 2nd recursion level: debugger_common -> sets -> individual sets
+  // ---------------------------------------------------------------
+  else if (prefix.Matches(wxT("<debugger_common><sets>"))) // individual debugger sets
   {
     listbox->Append(prefix + wxT("<") + section + wxT(">"));
     nodes->push_back(*node);
