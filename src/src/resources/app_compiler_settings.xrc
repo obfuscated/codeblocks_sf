@@ -25,7 +25,6 @@
                                     <style>normal</style>
                                     <weight>bold</weight>
                                     <underlined>0</underlined>
-                                    <family>default</family>
                                 </font>
                                 <style>wxALIGN_CENTRE|wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
                             </object>
