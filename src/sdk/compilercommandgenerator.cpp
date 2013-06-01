@@ -373,7 +373,9 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         wxArrayString aCflags = GetArrayFromString(cFlags, wxT(" "));
         for (size_t i = 0; i < remFlags.GetCount(); ++i)
         {
-            aCflags.Remove(remFlags[i]);
+            int index = aCflags.Index(remFlags[i]);
+            if (index != wxNOT_FOUND)
+                aCflags.RemoveAt(index);
         }
         cFlags = GetStringFromArray(aCflags, wxT(" "), false);
     }
