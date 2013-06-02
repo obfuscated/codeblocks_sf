@@ -726,7 +726,7 @@ void CellBuffer::SetSavePoint() {
 /* CHANGEBAR end */
 }
 
-bool CellBuffer::IsSavePoint() {
+bool CellBuffer::IsSavePoint() const {
 	return uh.IsSavePoint();
 }
 
@@ -1040,7 +1040,7 @@ void CellBuffer::DeleteChangeCollection() {
 }
 /* CHANGEBAR end */
 
-bool CellBuffer::CanUndo() {
+bool CellBuffer::CanUndo() const {
 	return uh.CanUndo();
 }
 
@@ -1070,7 +1070,7 @@ void CellBuffer::PerformUndoStep() {
 	uh.CompletedUndoStep();
 }
 
-bool CellBuffer::CanRedo() {
+bool CellBuffer::CanRedo() const {
 	return uh.CanRedo();
 }
 

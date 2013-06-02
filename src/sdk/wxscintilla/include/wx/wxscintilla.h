@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.32.0")
+#define wxSCINTILLA_VERSION _T("3.33.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -525,8 +525,9 @@
 #define wxSCI_LEX_OSCRIPT 106
 #define wxSCI_LEX_VISUALPROLOG 107
 #define wxSCI_LEX_LITERATEHASKELL 108
+#define wxSCI_LEX_STTXT 109
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_LITERATEHASKELL // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_STTXT // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -2243,6 +2244,26 @@
 #define wxSCI_VISUALPROLOG_STRING_VERBATIM_SPECIAL 21
 #define wxSCI_VISUALPROLOG_STRING_VERBATIM_EOL 22
 
+/// Lexical states for SCLEX_STTXT
+#define wxSCI_STTXT_DEFAULT 0
+#define wxSCI_STTXT_COMMENT 1
+#define wxSCI_STTXT_COMMENTLINE 2
+#define wxSCI_STTXT_KEYWORD 3
+#define wxSCI_STTXT_TYPE 4
+#define wxSCI_STTXT_FUNCTION 5
+#define wxSCI_STTXT_FB 6
+#define wxSCI_STTXT_NUMBER 7
+#define wxSCI_STTXT_HEXNUMBER 8
+#define wxSCI_STTXT_PRAGMA 9
+#define wxSCI_STTXT_OPERATOR 10
+#define wxSCI_STTXT_CHARACTER 11
+#define wxSCI_STTXT_STRING1 12
+#define wxSCI_STTXT_STRING2 13
+#define wxSCI_STTXT_STRINGEOL 14
+#define wxSCI_STTXT_IDENTIFIER 15
+#define wxSCI_STTXT_DATETIME 16
+#define wxSCI_STTXT_VARS 17
+#define wxSCI_STTXT_PRAGMAS 18
 /// Events
 /// GTK+ Specific to work around focus and accelerator problems:
 /// Line end types which may be used in addition to LF, CR, and CRLF

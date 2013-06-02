@@ -169,6 +169,10 @@ END_EVENT_TABLE()
 IMPLEMENT_CLASS(wxScintilla, wxControl)
 IMPLEMENT_DYNAMIC_CLASS(wxScintillaEvent, wxCommandEvent)
 
+#ifdef LINK_LEXERS
+// forces the linking of the lexer modules
+int Scintilla_LinkLexers();
+#endif
 //----------------------------------------------------------------------
 // Constructor and Destructor
 
@@ -5619,7 +5623,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 32, 0, "Scintilla 3.32");
+    return wxVersionInfo("Scintilla", 3, 33, 0, "Scintilla 3.33");
 }
 #endif
 /* C::B end */

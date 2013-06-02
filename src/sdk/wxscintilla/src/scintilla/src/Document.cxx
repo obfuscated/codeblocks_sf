@@ -400,7 +400,7 @@ int Document::GetLastChild(int lineParent, int level, int lastLine) {
 	return lineMaxSubord;
 }
 
-int Document::GetFoldParent(int line) {
+int Document::GetFoldParent(int line) const {
 	int level = GetLevel(line) & SC_FOLDLEVELNUMBERMASK;
 	int lineLook = line - 1;
 	while ((lineLook > 0) && (
@@ -487,11 +487,11 @@ void Document::GetHighlightDelimiters(HighlightDelimiter &highlightDelimiter, in
 	highlightDelimiter.firstChangeableLineAfter = firstChangeableLineAfter;
 }
 
-int Document::ClampPositionIntoDocument(int pos) {
+int Document::ClampPositionIntoDocument(int pos) const {
 	return Platform::Clamp(pos, 0, Length());
 }
 
-bool Document::IsCrLf(int pos) {
+bool Document::IsCrLf(int pos) const {
 	if (pos < 0)
 		return false;
 	if (pos >= (Length() - 1))
@@ -696,7 +696,7 @@ int Document::NextPosition(int pos, int moveDir) const {
 	return pos;
 }
 
-bool Document::NextCharacter(int &pos, int moveDir) {
+bool Document::NextCharacter(int &pos, int moveDir) const {
 	// Returns true if pos changed
 	int posNext = NextPosition(pos, moveDir);
 	if (posNext == pos) {
@@ -754,7 +754,7 @@ static inline bool IsSpaceOrTab(int ch) {
 //   2) Break before punctuation
 //   3) Break after whole character
 
-int Document::SafeSegment(const char *text, int length, int lengthSegment) {
+int Document::SafeSegment(const char *text, int length, int lengthSegment) const {
 	if (length <= lengthSegment)
 		return length;
 	int lastSpaceBreak = -1;
@@ -1317,7 +1317,7 @@ bool Document::IsWhiteLine(int line) const {
 	return true;
 }
 
-int Document::ParaUp(int pos) {
+int Document::ParaUp(int pos) const {
 	int line = LineFromPosition(pos);
 	line--;
 	while (line >= 0 && IsWhiteLine(line)) { // skip empty lines
@@ -1330,7 +1330,7 @@ int Document::ParaUp(int pos) {
 	return LineStart(line);
 }
 
-int Document::ParaDown(int pos) {
+int Document::ParaDown(int pos) const {
 	int line = LineFromPosition(pos);
 	while (line < LinesTotal() && !IsWhiteLine(line)) { // skip non-empty lines
 		line++;
@@ -1344,7 +1344,7 @@ int Document::ParaDown(int pos) {
 		return LineEnd(line-1);
 }
 
-CharClassify::cc Document::WordCharClass(unsigned char ch) {
+CharClassify::cc Document::WordCharClass(unsigned char ch) const {
 	if ((SC_CP_UTF8 == dbcsCodePage) && (!UTF8IsAscii(ch)))
 		return CharClassify::ccWord;
 	return charClass.GetClass(ch);
@@ -1435,7 +1435,7 @@ int Document::NextWordEnd(int pos, int delta) {
  * Check that the character at the given position is a word or punctuation character and that
  * the previous character is of a different character class.
  */
-bool Document::IsWordStartAt(int pos) {
+bool Document::IsWordStartAt(int pos) const {
 	if (pos > 0) {
 		CharClassify::cc ccPos = WordCharClass(CharAt(pos));
 		return (ccPos == CharClassify::ccWord || ccPos == CharClassify::ccPunctuation) &&
@@ -1448,7 +1448,7 @@ bool Document::IsWordStartAt(int pos) {
  * Check that the character at the given position is a word or punctuation character and that
  * the next character is of a different character class.
  */
-bool Document::IsWordEndAt(int pos) {
+bool Document::IsWordEndAt(int pos) const {
 	if (pos < Length()) {
 		CharClassify::cc ccPrev = WordCharClass(CharAt(pos-1));
 		return (ccPrev == CharClassify::ccWord || ccPrev == CharClassify::ccPunctuation) &&
@@ -1461,7 +1461,7 @@ bool Document::IsWordEndAt(int pos) {
  * Check that the given range is has transitions between character classes at both
  * ends and where the characters on the inside are word or punctuation characters.
  */
-bool Document::IsWordAt(int start, int end) {
+bool Document::IsWordAt(int start, int end) const {
 	return IsWordStartAt(start) && IsWordEndAt(end);
 }
 
@@ -1506,7 +1506,7 @@ void CaseFolderTable::StandardASCII() {
 	}
 }
 
-bool Document::MatchesWordOptions(bool word, bool wordStart, int pos, int length) {
+bool Document::MatchesWordOptions(bool word, bool wordStart, int pos, int length) const {
 	return (!word && !wordStart) ||
 			(word && IsWordAt(pos, pos + length)) ||
 			(wordStart && IsWordStartAt(pos));
@@ -1807,7 +1807,7 @@ void SCI_METHOD Document::ChangeLexerState(int start, int end) {
 	NotifyModified(mh);
 }
 
-StyledText Document::MarginStyledText(int line) {
+StyledText Document::MarginStyledText(int line) const {
 	LineAnnotation *pla = static_cast<LineAnnotation *>(perLineData[ldMargin]);
 	return StyledText(pla->Length(line), pla->Text(line),
 		pla->MultipleStyles(line), pla->Style(line), pla->Styles(line));
@@ -1837,7 +1837,7 @@ void Document::MarginClearAll() {
 	static_cast<LineAnnotation *>(perLineData[ldMargin])->ClearAll();
 }
 
-StyledText Document::AnnotationStyledText(int line) {
+StyledText Document::AnnotationStyledText(int line) const {
 	LineAnnotation *pla = static_cast<LineAnnotation *>(perLineData[ldAnnotation]);
 	return StyledText(pla->Length(line), pla->Text(line),
 		pla->MultipleStyles(line), pla->Style(line), pla->Styles(line));
@@ -1933,7 +1933,7 @@ void Document::NotifyModified(DocModification mh) {
 	}
 }
 
-bool Document::IsWordPartSeparator(char ch) {
+bool Document::IsWordPartSeparator(char ch) const {
 	return (WordCharClass(ch) == CharClassify::ccWord) && IsPunctuation(ch);
 }
 

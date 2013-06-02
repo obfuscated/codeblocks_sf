@@ -88,6 +88,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexSorcus.cxx \
 			src/scintilla/lexers/LexSpecman.cxx \
 			src/scintilla/lexers/LexSpice.cxx \
+			src/scintilla/lexers/LexSTTXT.cxx \
 			src/scintilla/lexers/LexTACL.cxx \
 			src/scintilla/lexers/LexTADS3.cxx \
 			src/scintilla/lexers/LexTAL.cxx \

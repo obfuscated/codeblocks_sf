@@ -110,8 +110,8 @@
 				<Compiler>
 					<Add option="-D__WX__" />
 					<Add option="-DGTK" />
-					<Add option="-DSCI_LEXER" />
 					<Add option="-DLINK_LEXERS" />
+					<Add option="-DSCI_LEXER" />
 					<Add option="-DWXMAKINGDLL_SCI" />
 					<Add directory="sdk/wxscintilla/src/scintilla/include" />
 					<Add directory="sdk/wxscintilla/src/scintilla/src" />
@@ -3199,6 +3199,9 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexSQL.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexSTTXT.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexScriptol.cxx">

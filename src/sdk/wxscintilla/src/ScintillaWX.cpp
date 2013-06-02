@@ -339,7 +339,7 @@ void ScintillaWX::Finalise() {
 
 void ScintillaWX::StartDrag() {
 #if wxUSE_DRAG_AND_DROP
-    wxString dragText = sci2wx (drag.s, drag.len);
+    wxString dragText = sci2wx (drag.Data(), drag.Length());
 
     // Send an event to allow the drag text to be changed
     wxScintillaEvent evt(wxEVT_SCI_START_DRAG, sci->GetId());
@@ -645,12 +645,12 @@ void ScintillaWX::Paste() {
 
 void ScintillaWX::CopyToClipboard(const SelectionText& st) {
 #if wxUSE_CLIPBOARD
-    if ( !st.len )
+    if ( !st.Length() )
         return;
 
     wxTheClipboard->UsePrimarySelection(false);
     if (wxTheClipboard->Open()) {
-        wxString text = wxTextBuffer::Translate(sci2wx(st.s, st.len-1));
+        wxString text = wxTextBuffer::Translate(sci2wx(st.Data(), st.Length()));
 
 /* C::B begin */
         // composite object will hold "plain text" for pasting in other programs and a custom
@@ -659,10 +659,10 @@ void ScintillaWX::CopyToClipboard(const SelectionText& st) {
         wxDataObjectComposite* obj = new wxDataObjectComposite();
         wxCustomDataObject* rectData = new wxCustomDataObject (wxDataFormat(wxString(wxT("application/x-cbrectdata"))));
 
-        char* buffer = new char[st.len+1];
+        char* buffer = new char[st.LengthWithTerminator()];
         buffer[0] = (st.rectangular)? (char)1 : (char)0;
-        memcpy (buffer+1, st.s, st.len);
-        rectData->SetData (st.len+1, buffer);
+        memcpy (buffer+1, st.Data(), st.Length());
+        rectData->SetData (st.LengthWithTerminator(), buffer);
         delete [] buffer;
 
         obj->Add (rectData, true);

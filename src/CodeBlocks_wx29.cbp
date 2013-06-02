@@ -3411,6 +3411,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexSQL.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexSTTXT.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexScriptol.cxx">
 			<Option target="scintilla" />
 		</Unit>
