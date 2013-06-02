@@ -22,18 +22,19 @@
     #include "cbplugin.h"
     #include "sdk_events.h"
 
-    #include <wx/xrc/xmlres.h>
-    #include <wx/treectrl.h>
-    #include <wx/spinctrl.h>
     #include <wx/button.h>
-    #include <wx/checklst.h>
-    #include <wx/stattext.h>
     #include <wx/checkbox.h>
+    #include <wx/checklst.h>
     #include <wx/combobox.h>
-    #include <wx/sizer.h>
-    #include <wx/textdlg.h>
     #include <wx/filedlg.h>
+    #include <wx/filefn.h> // wxMatchWild
     #include <wx/notebook.h>
+    #include <wx/sizer.h>
+    #include <wx/spinctrl.h>
+    #include <wx/stattext.h>
+    #include <wx/textdlg.h>
+    #include <wx/treectrl.h>
+    #include <wx/xrc/xmlres.h>
 #endif
 
 #include <wx/radiobox.h>
@@ -870,6 +871,10 @@ void ProjectOptionsDlg::OnFileToggleMarkClick(cb_unused wxCommandEvent& event)
 
 void ProjectOptionsDlg::OnFileMarkOnClick(cb_unused wxCommandEvent& event)
 {
+    wxString wildcard = wxGetTextFromUser(_("Select wildcard (file mask) to toggle on:"),
+                                          _("Select files"), _T("*.*"));
+    if (wildcard.IsEmpty()) return; // user pressed Cancel
+
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
@@ -877,10 +882,10 @@ void ProjectOptionsDlg::OnFileMarkOnClick(cb_unused wxCommandEvent& event)
         return;
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    for (unsigned int i = 0; i < list->GetCount(); ++i)
+    for (unsigned int i=0; i<list->GetCount(); ++i)
     {
         ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
-        if (pf)
+        if (pf && wxMatchWild(wildcard, list->GetString(i), false))
         {
             list->Check(i, true);
             pf->AddBuildTarget(target->GetTitle());
@@ -890,6 +895,10 @@ void ProjectOptionsDlg::OnFileMarkOnClick(cb_unused wxCommandEvent& event)
 
 void ProjectOptionsDlg::OnFileMarkOffClick(cb_unused wxCommandEvent& event)
 {
+    wxString wildcard = wxGetTextFromUser(_("Select wildcard (file mask) to toggle off:"),
+                                          _("Select files"), _T("*.*"));
+    if (wildcard.IsEmpty()) return; // user pressed Cancel
+
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     int targetIdx = lstTargets->GetSelection();
     ProjectBuildTarget* target = m_Project->GetBuildTarget(targetIdx);
@@ -897,10 +906,10 @@ void ProjectOptionsDlg::OnFileMarkOffClick(cb_unused wxCommandEvent& event)
         return;
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
-    for (unsigned int i = 0; i < list->GetCount(); ++i)
+    for (unsigned int i=0; i<list->GetCount(); ++i)
     {
         ProjectFile* pf = m_Project->GetFileByFilename(list->GetString(i));
-        if (pf)
+        if (pf && wxMatchWild(wildcard, list->GetString(i), false))
         {
             list->Check(i, false);
             pf->RemoveBuildTarget(target->GetTitle());

@@ -617,14 +617,14 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxButton" name="btnCheckmarksOn">
-																<label>All on</label>
+																<label>All/? on</label>
 															</object>
 															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxButton" name="btnCheckmarksOff">
-																<label>All off</label>
+																<label>All/? off</label>
 															</object>
 															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>5</border>
