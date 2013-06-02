@@ -16,7 +16,7 @@ pluginlib_LTLIBRARIES = libToolsPlus.la
 
 libToolsPlus_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libToolsPlus_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la
+libToolsPlus_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libToolsPlus_la_SOURCES = CmdConfigDialog.cpp \
 			PipedProcessCtrl.cpp \

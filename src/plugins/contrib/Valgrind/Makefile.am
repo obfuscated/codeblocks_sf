@@ -10,7 +10,7 @@ pluginlib_LTLIBRARIES = libValgrind.la
 
 libValgrind_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libValgrind_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la
+libValgrind_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libValgrind_la_SOURCES = Valgrind.cpp \
 			ValgrindListLog.cpp \

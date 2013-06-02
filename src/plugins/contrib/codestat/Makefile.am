@@ -10,7 +10,7 @@ pluginlib_LTLIBRARIES = libcodestat.la
 
 libcodestat_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcodestat_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la
+libcodestat_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libcodestat_la_SOURCES = codestatconfig.cpp \
 			codestat.cpp \

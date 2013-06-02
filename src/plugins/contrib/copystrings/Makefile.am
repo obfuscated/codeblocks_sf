@@ -8,7 +8,7 @@ pluginlib_LTLIBRARIES = libcopystrings.la
 
 libcopystrings_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcopystrings_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la
+libcopystrings_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libcopystrings_la_SOURCES = copystrings.cpp
 

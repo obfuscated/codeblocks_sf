@@ -20,8 +20,8 @@ bin_PROGRAMS = codesnippets
 
 ##codesnippets_LIBADD = $(WX_LIBS) ../../../../sdk/libcodeblocks.la
 ##codesnippets_LDADD = $(WX_LIBS) ../../../../sdk/libcodeblocks.la
-codesnippets_LDADD =  -L../../../../base/tinyxml -ltinyxml \
-            -L../../../../sdk ../../../../sdk/libcodeblocks.la \
+codesnippets_LDADD =  -L../../../../sdk ../../../../sdk/libcodeblocks.la \
+            ../../../../base/tinyxml/libtinyxml.la \
 			$(WX_LIBS) $(WX_GTK2_LIBS) $(WX_X11_LIBS)
 
 codesnippets_SOURCES =	$(srcdir)/../version.cpp \

@@ -17,7 +17,7 @@ pluginlib_LTLIBRARIES = libFileManager.la
 
 libFileManager_la_LDFLAGS = $(CB_GAMIN_LIBS) -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libFileManager_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la
+libFileManager_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libFileManager_la_SOURCES = FileManager.cpp \
 			FileExplorer.cpp \

@@ -19,10 +19,10 @@ lib_LTLIBRARIES = libwxsmithlib.la
 
 libwxsmithlib_la_LDFLAGS = -version-info 0:1:0 -shared
 
-libwxsmithlib_la_LIBADD = $(WX_LIBS) \
-				../../../sdk/libcodeblocks.la \
+libwxsmithlib_la_LIBADD = ../../../sdk/libcodeblocks.la \
 				properties/libwxsmith_properties.la \
-				wxwidgets/libwxsmith_wxwidgets.la
+				wxwidgets/libwxsmith_wxwidgets.la \
+				$(WX_LIBS)
 
 libwxsmithlib_la_SOURCES = \
 ./wxsadvqpp.cpp \

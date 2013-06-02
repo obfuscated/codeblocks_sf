@@ -25,7 +25,7 @@ pluginlib_LTLIBRARIES = libwxsmithcontribitems.la
 
 libwxsmithcontribitems_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libwxsmithcontribitems_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la \
+libwxsmithcontribitems_la_LIBADD = ../../../sdk/libcodeblocks.la \
 		       ../wxSmith/libwxsmithlib.la \
 			../wxContribItems/wxchart/libwxchartctrl.la \
 			../wxContribItems/wxFlatNotebook/libwxflatnotebook.la \
@@ -34,7 +34,8 @@ libwxsmithcontribitems_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la \
 			../wxContribItems/KWIC/libwxkwic.la \
 			../wxContribItems/wxTreeList/libwxtreelist.la \
 			../wxContribItems/wxthings/libwxcustombutton.la \
-			../wxContribItems/wxled/libwxled.la
+			../wxContribItems/wxled/libwxled.la \
+			$(WX_LIBS)
 
 EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxchart/*.png \

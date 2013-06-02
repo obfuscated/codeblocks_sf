@@ -15,8 +15,9 @@ libexporter_la_CPPFLAGS = -DwxPDF_USE_WXMODULE=0
 
 libexporter_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libexporter_la_LIBADD = $(WX_LIBS) $(CB_FONTCONFIG_LIBS) ../../../sdk/libcodeblocks.la \
-				wxPdfDocument/libwxPdfDocument.la
+libexporter_la_LIBADD = ../../../sdk/libcodeblocks.la \
+				wxPdfDocument/libwxPdfDocument.la \
+				$(WX_LIBS) $(CB_FONTCONFIG_LIBS)
 
 libexporter_la_SOURCES = BaseExporter.cpp \
 				exporter.cpp \

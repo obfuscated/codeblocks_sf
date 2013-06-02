@@ -17,7 +17,7 @@ pluginlib_LTLIBRARIES = libThreadSearch.la
 
 libThreadSearch_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libThreadSearch_la_LIBADD = $(WX_LIBS) ../../../sdk/libcodeblocks.la ../wxContribItems/wxthings/libwxcustombutton.la
+libThreadSearch_la_LIBADD = ../../../sdk/libcodeblocks.la ../wxContribItems/wxthings/libwxcustombutton.la $(WX_LIBS)
 
 libThreadSearch_la_SOURCES = DirectoryParamsPanel.cpp \
 			InsertIndexManager.cpp \

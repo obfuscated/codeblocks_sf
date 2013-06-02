@@ -32,7 +32,7 @@ install-exec-hook:
 # wxAUI uses GTK+ libraries on wxGTK
 # codeblocks_LDFLAGS = $(WX_GTK2_LIBS)
 
-codeblocks_LDADD =  -L../sdk -lcodeblocks \
+codeblocks_LDADD =  ../sdk/libcodeblocks.la \
 			$(WX_LIBS) \
 			$(WX_GTK2_LIBS)
 

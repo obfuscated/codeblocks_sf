@@ -19,13 +19,13 @@ lib_LTLIBRARIES = libcodeblocks.la
 
 libcodeblocks_la_LDFLAGS = -version-info @CODEBLOCKS_VERSION_INFO@
 
-libcodeblocks_la_LIBADD =  $(WX_LIBS) \
-			scripting/bindings/libsqbindings.la \
+libcodeblocks_la_LIBADD = scripting/bindings/libsqbindings.la \
 			scripting/sqplus/libsqplus.la \
 			scripting/sqstdlib/libsqstdlib.la \
 			scripting/squirrel/libsquirrel.la \
 			../base/tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la \
+			$(WX_LIBS) \
 			$(WXPROPGRID_LIB)
 
 libcodeblocks_la_SOURCES = annoyingdialog.cpp \

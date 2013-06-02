@@ -15,8 +15,9 @@ pluginlib_LTLIBRARIES = libcompiler.la
 
 libcompiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcompiler_la_LIBADD = $(WX_LIBS) ../../sdk/libcodeblocks.la \
-				depslib/src/libdepslib.la
+libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
+				depslib/src/libdepslib.la \
+				$(WX_LIBS)
 
 libcompiler_la_SOURCES = advancedcompileroptionsdlg.cpp \
 			compiler_defs.cpp \

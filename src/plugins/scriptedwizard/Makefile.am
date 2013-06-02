@@ -12,7 +12,7 @@ pluginlib_LTLIBRARIES = libscriptedwizard.la
 
 libscriptedwizard_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libscriptedwizard_la_LIBADD = $(WX_LIBS) ../../sdk/libcodeblocks.la
+libscriptedwizard_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libscriptedwizard_la_SOURCES = buildtargetpanel.cpp \
                                 compilerpanel.cpp \

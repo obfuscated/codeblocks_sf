@@ -12,10 +12,10 @@ pluginlib_LTLIBRARIES = libSpellChecker.la
 
 libSpellChecker_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libSpellChecker_la_LIBADD = $(WX_LIBS) \
-                            $(CB_HUNSPELL_LIBS) \
-                            wxspellchecker/libwxSpellChecker.la \
-							../../../sdk/libcodeblocks.la
+libSpellChecker_la_LIBADD = ../../../sdk/libcodeblocks.la \
+							wxspellchecker/libwxSpellChecker.la \
+							$(WX_LIBS) \
+							$(CB_HUNSPELL_LIBS)
 
 libSpellChecker_la_SOURCES = DictionariesNeededDialog.cpp \
                             MySpellingDialog.cpp \

@@ -21,9 +21,9 @@ pluginlib_LTLIBRARIES = liblib_finder.la
 
 liblib_finder_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-liblib_finder_la_LIBADD = $(WX_LIBS) \
-		../../../sdk/libcodeblocks.la \
-		../wxContribItems/wxFlatNotebook/libwxflatnotebook.la
+liblib_finder_la_LIBADD = ../../../sdk/libcodeblocks.la \
+		../wxContribItems/wxFlatNotebook/libwxflatnotebook.la \
+		$(WX_LIBS)
 
 liblib_finder_la_SOURCES = \
 		librariesdlg.cpp \

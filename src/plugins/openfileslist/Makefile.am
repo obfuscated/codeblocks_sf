@@ -8,7 +8,7 @@ pluginlib_LTLIBRARIES = libopenfileslist.la
 
 libopenfileslist_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libopenfileslist_la_LIBADD = $(WX_LIBS) ../../sdk/libcodeblocks.la
+libopenfileslist_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 
 libopenfileslist_la_SOURCES = openfileslistplugin.cpp
 noinst_HEADERS = openfileslistplugin.h
