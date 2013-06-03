@@ -62,13 +62,24 @@ public:
     void AddLock(bool is_file);
 
 private:
+    /* the thread call Traverse() on this instance*/
     wxThread*               m_Thread;
+    /* critical section to protect accessing m_SystemHeadersMap */
     wxCriticalSection*      m_SystemHeadersThreadCS;
+    /* dir to files map, for example, you are two dirs c:/a and c:/b
+     * so the map looks like:
+     * c:/a  ---> {c:/a/a1.h, c:/a/a2.h}
+     * c:/b  ---> {c:/b/b1.h, c:/b/b2.h}
+     */
     const SystemHeadersMap& m_SystemHeadersMap;
+    /* which dir we are traversing header files */
     const wxString&         m_SearchDir;
+    /* string set for header files */
     StringSet&              m_Headers;
     bool                    m_Locked;
+    /* numbers of dirs in the traversing */
     size_t                  m_Dirs;
+    /* numbers of files in the traversing */
     size_t                  m_Files;
 };
 
@@ -107,12 +118,13 @@ void* SystemHeadersThread::Entry()
             }
         }
     }
-
+    // collect header files in each dir, this is done by HeaderDirTraverser
     for (size_t i=0; i<dirs.GetCount(); ++i)
     {
         if ( TestDestroy() )
             break;
 
+        // check the dir is ready for traversing
         wxDir dir(dirs[i]);
         if ( !dir.IsOpened() )
         {
@@ -178,6 +190,8 @@ HeaderDirTraverser::~HeaderDirTraverser()
 
 wxDirTraverseResult HeaderDirTraverser::OnFile(const wxString& filename)
 {
+    // HeaderDirTraverser is used in a worker thread, so call TestDestroy() as often as it can to
+    // quickly terminate the thread
     if (m_Thread->TestDestroy())
         return wxDIR_STOP;
 
@@ -197,6 +211,8 @@ wxDirTraverseResult HeaderDirTraverser::OnFile(const wxString& filename)
 
 wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
 {
+    // HeaderDirTraverser is used in a worker thread, so call TestDestroy() as often as it can to
+    // quickly terminate the thread
     if (m_Thread->TestDestroy())
         return wxDIR_STOP;
 
