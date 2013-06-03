@@ -104,8 +104,6 @@ BreakpointsDlg::BreakpointsDlg() :
             (wxObjectEventFunction) (wxEventFunction) (wxListEventFunction)
             &BreakpointsDlg::OnRightClick);
 
-    typedef cbEventFunctor<BreakpointsDlg, CodeBlocksEvent> CBEvent;
-
     Reload();
 }
 
