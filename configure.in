@@ -6,7 +6,12 @@ AC_INIT([codeblocks], SVN_REVISION)
 
 AC_CANONICAL_TARGET
 
+AC_CONFIG_MACRO_DIR([m4])
+
 AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip])
+
+LT_INIT
+
 AC_CONFIG_HEADER([src/include/config.h])
 
 CODEBLOCKS_CHECK_DEBUG

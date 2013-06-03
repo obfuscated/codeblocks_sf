@@ -1,5 +1,6 @@
 SUBDIRS = src
 
+ACLOCAL_AMFLAGS = -I m4
 
 if KEEP_DLLS
 ADDITIONAL_MAKE_DIST_OPTIONS = --exclude=".svn"
