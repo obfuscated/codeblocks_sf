@@ -18,12 +18,9 @@ class wxEvtHandler;
 
 typedef std::map<wxString, StringSet> SystemHeadersMap;
 
-namespace SystemHeadersThreadHelper
-{
-    static long idSystemHeadersThreadCompleted = wxNewId();
-    static long idSystemHeadersThreadUpdate    = wxNewId();
-    static long idSystemHeadersThreadError     = wxNewId();
-}
+extern long idSystemHeadersThreadCompleted;
+extern long idSystemHeadersThreadUpdate;
+extern long idSystemHeadersThreadError;
 
 class SystemHeadersThread : public wxThread
 {

@@ -575,9 +575,9 @@ CodeCompletion::CodeCompletion() :
     Connect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
     Connect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
-    Connect(SystemHeadersThreadHelper::idSystemHeadersThreadUpdate,    wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
-    Connect(SystemHeadersThreadHelper::idSystemHeadersThreadCompleted, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
-    Connect(SystemHeadersThreadHelper::idSystemHeadersThreadError,     wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadError)     );
+    Connect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
+    Connect(idSystemHeadersThreadCompleted, wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
+    Connect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadError)     );
 }
 
 CodeCompletion::~CodeCompletion()
@@ -595,9 +595,9 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
     Disconnect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
-    Disconnect(SystemHeadersThreadHelper::idSystemHeadersThreadUpdate,    wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
-    Disconnect(SystemHeadersThreadHelper::idSystemHeadersThreadCompleted, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
-    Disconnect(SystemHeadersThreadHelper::idSystemHeadersThreadError,     wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadError)     );
+    Disconnect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
+    Disconnect(idSystemHeadersThreadCompleted, wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
+    Disconnect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadError)     );
 
     while (!m_SystemHeadersThreads.empty())
     {

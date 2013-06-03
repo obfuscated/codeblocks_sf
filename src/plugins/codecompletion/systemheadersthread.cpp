@@ -49,6 +49,13 @@
     #define TRACE2(format, args...)
 #endif
 
+
+
+long idSystemHeadersThreadCompleted = wxNewId();
+long idSystemHeadersThreadUpdate    = wxNewId();
+long idSystemHeadersThreadError     = wxNewId();
+
+
 // internal class declaration of HeaderDirTraverser (implementation below)
 
 class HeaderDirTraverser : public wxDirTraverser
@@ -128,7 +135,7 @@ void* SystemHeadersThread::Entry()
         wxDir dir(dirs[i]);
         if ( !dir.IsOpened() )
         {
-            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, SystemHeadersThreadHelper::idSystemHeadersThreadError);
+            wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadError);
             evt.SetClientData(this);
             evt.SetString(wxString::Format(_T("SystemHeadersThread: Unable to open: %s"), dirs[i].wx_str()));
             wxPostEvent(m_Parent, evt);
@@ -145,7 +152,7 @@ void* SystemHeadersThread::Entry()
         if ( TestDestroy() )
             break;
 
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, SystemHeadersThreadHelper::idSystemHeadersThreadUpdate);
+        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadUpdate);
         evt.SetClientData(this);
         evt.SetString(wxString::Format(_T("SystemHeadersThread: %s , %lu"), dirs[i].wx_str(), static_cast<unsigned long>(m_SystemHeadersMap[dirs[i]].size())));
         wxPostEvent(m_Parent, evt);
@@ -153,7 +160,7 @@ void* SystemHeadersThread::Entry()
 
     if ( !TestDestroy() )
     {
-        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, SystemHeadersThreadHelper::idSystemHeadersThreadCompleted);
+        wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadCompleted);
         evt.SetClientData(this);
         if (!dirs.IsEmpty())
             evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %lu"), static_cast<unsigned long>(dirs.GetCount())));
