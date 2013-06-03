@@ -29,7 +29,107 @@ X_PRJ_FILE_PROJ  ICON "src/resources/icons/proj.ico"
 
 // wxBITMAP_STD_COLOURS    BITMAP "wx/msw/colours.bmp"
 // is the only thing needed from:
-#include <wx/msw/wx.rc>
+//#include <wx/msw/wx.rc>
 // additional icons contributed due to this include are commented above
 
-//1 24 "setup/codeblocks.exe.manifest"
+#include <windows.h>
+#include <wx/msw/rcdefs.h>
+
+///////////////////////////////////////////////////////////////////////////////
+// Specify the processor archtecture (wxWidgets seems not to do this correctly)
+#if defined   _M_AMD64
+  #if !defined WX_CPU_AMD64
+    #define WX_CPU_AMD64
+  #endif
+#elif defined _M_IA64
+  #if !defined WX_CPU_IA64
+    #define WX_CPU_IA64
+  #endif
+#elif defined _M_IX86 || defined _X86_
+  #if !defined WX_CPU_X86
+    #define WX_CPU_X86
+  #endif
+#endif
+
+///////////////////////////////////////////////////////////////////////////////
+// Manifest file
+#if !defined(wxUSE_NO_MANIFEST) || (wxUSE_NO_MANIFEST == 0)
+  // see "about isolated applications" topic in MSDN
+  #ifndef wxMANIFEST_ID
+    #ifdef ISOLATION_AWARE_ENABLED
+      #define wxMANIFEST_ID ISOLATIONAWARE_MANIFEST_RESOURCE_ID
+    #else
+      #define wxMANIFEST_ID CREATEPROCESS_MANIFEST_RESOURCE_ID
+    #endif
+  #endif
+/*
+  #if defined(WX_CPU_AMD64)
+    wxMANIFEST_ID RT_MANIFEST "amd64.manifest"
+  #elif defined(WX_CPU_IA64)
+    wxMANIFEST_ID RT_MANIFEST "ia64.manifest"
+  #elif defined(WX_CPU_X86)
+    wxMANIFEST_ID RT_MANIFEST "x86.manifest"
+  #else
+    #warning No platform defined! Unable to embed manifest file.
+  #endif
+*/
+#endif // !defined(wxUSE_NO_MANIFEST) || (wxUSE_NO_MANIFEST == 0)
+
+///////////////////////////////////////////////////////////////////////////////
+// Version information
+VS_VERSION_INFO    VERSIONINFO
+  FILEVERSION      12,11,0,0
+  PRODUCTVERSION   12,11,0,1
+  FILEFLAGSMASK    0x3fL // VS_FFI_FILEFLAGSMASK
+#ifdef _DEBUG
+  // Can be a combination of the following OR'ed flags:
+  //   VS_FF_DEBUG,        VS_FF_PATCHED,      VS_FF_PRERELEASE,
+  //   VS_FF_PRIVATEBUILD, VS_FF_SPECIALBUILD, VS_FFI_FILEFLAGSMASK
+  FILEFLAGS        0x1L  // VS_FF_DEBUG|VS_FF_PRIVATEBUILD|VS_FF_PRERELEASE
+#else
+  FILEFLAGS        0x0L  // final version
+#endif
+  // Can be one of the following values:
+  //   VOS_UNKNOWN,       VOS_DOS,        VOS_NT,
+  //   VOS__WINDOWS16,    VOS__WINDOWS32, VOS_DOS_WINDOWS16,
+  //   VOS_DOS_WINDOWS32, VOS_NT_WINDOWS32
+  FILEOS           VOS_NT_WINDOWS32
+  // Can be one of the following values:
+  //   VFT_UNKNOWN, VFT_APP, VFT_DLL, VFT_DRV, VFT_FONT, VFT_VXD, VFT_STATIC_LIB
+  FILETYPE         VFT_APP
+  // In case of VFT_DRV in FILETYPE:
+  //   VFT2_UNKNOWN,         VFT2_DRV_COMM,     VFT2_DRV_PRINTER,
+  //   VFT2_DRV_KEYBOARD,    VFT2_DRV_LANGUAGE, VFT2_DRV_DISPLAY,
+  //   VFT2_DRV_MOUSE,       VFT2_DRV_NETWORK,  VFT2_DRV_SYSTEM,
+  //   VFT2_DRV_INSTALLABLE, VFT2_DRV_SOUND,    VFT2_DRV_VERSIONED_PRINTER
+  // In case of VFT_FONT in FILETYPE:
+  //   VFT2_UNKNOWN, VFT2_FONT_RASTER, VFT2_FONT_VECTOR, VFT2_FONT_TRUETYPE
+  FILESUBTYPE      VFT2_UNKNOWN // not used
+{
+  BLOCK "StringFileInfo"
+  {
+    BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
+    {
+      VALUE "Build",            "November 2011\0"
+      VALUE "Comments",         "Licensed under GPL3.\0"
+      VALUE "CompanyName",      "Code::Blocks Team\0"
+      VALUE "Developer",        "Code::Blocks Team\0"
+      VALUE "FileDescription",  "Cross-platform IDE built around wxWidgets, designed to be extensible and configurable.\0"
+      VALUE "FileVersion",      "12.11.0.0\0"
+      VALUE "InternalName",     "Code::Blocks\0"
+      VALUE "LegalCopyright",   "Copyright (C) 2004-2012 Code::Blocks Team\0"
+      VALUE "LegalTrademarks",  "All rights reserved.\0"
+      VALUE "OriginalFilename", "codeblocks.exe\0"
+      VALUE "PrivateBuild",     "\0"
+      VALUE "ProductName",      "Code::Blocks\0"
+      VALUE "ProductVersion",   "12.11.0.0\0"
+      VALUE "SpecialBuild",     "\0"
+      VALUE "Support",          "/mandrav at codeblocks.org\0"
+      VALUE "Users",            "Unlimited.\0"
+    } // BLOCK "040904E4"
+  } // BLOCK "StringFileInfo"
+  BLOCK "VarFileInfo"
+  {
+    VALUE "Translation", 0x409, 1252 // 1252 = 0x04E4
+  } // BLOCK "VarFileInfo"
+}
