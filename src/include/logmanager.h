@@ -21,7 +21,7 @@
 // cut after the first character
         ::temp_string = msg;
         ::temp_string.Replace(_T("%s"), _T("%ls"));
-        msg = ::temp_string.wx_str();
+        msg = ::temp_string.wc_str();
 #endif
         ::temp_string = wxString::FormatV(msg, arg_list);
         va_end(arg_list);
