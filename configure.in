@@ -150,7 +150,7 @@ case $WX_BASENAME in
 				])
 			])
 
-            dnl acoording to pkg-config's manpage this call is bsolutely needed:
+            dnl acoording to pkg-config's manpage this call is absolutely needed:
             dnl
             dnl "Note that if there is a possibility the first call to
             dnl PKG_CHECK_MODULES might not happen, you should be sure
@@ -277,7 +277,7 @@ case `uname` in
 esac
 AC_MSG_RESULT($PIC_FLAGS)
 
-CPPFLAGS="$CPPFLAGS -Ulinux -Uunix -DTIXML_USE_STL"
+CPPFLAGS="$CPPFLAGS -DTIXML_USE_STL"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 
