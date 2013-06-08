@@ -17,8 +17,6 @@
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-Ulinux" />
-					<Add option="-Uunix" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-fexceptions" />

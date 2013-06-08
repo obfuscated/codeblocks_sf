@@ -28,8 +28,6 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-Ulinux" />
-			<Add option="-Uunix" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="`pkg-config --cflags gamin`" />
 			<Add option="-Winvalid-pch" />

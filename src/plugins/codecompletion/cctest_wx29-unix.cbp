@@ -32,8 +32,6 @@
 			<Add option="-pipe" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-Ulinux" />
-			<Add option="-Uunix" />
 			<Add option="-fPIC" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-DcbDEBUG" />

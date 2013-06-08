@@ -30,8 +30,6 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="-Ulinux" />
-			<Add option="-Uunix" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />

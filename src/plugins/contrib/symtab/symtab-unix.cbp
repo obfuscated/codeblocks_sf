@@ -25,8 +25,6 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-Ulinux" />
-			<Add option="-Uunix" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />

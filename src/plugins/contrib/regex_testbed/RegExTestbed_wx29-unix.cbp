@@ -49,8 +49,6 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-Ulinux" />
-			<Add option="-Uunix" />
 		</Compiler>
 		<Unit filename="RegExTestbed.cpp" />
 		<Unit filename="RegExTestbed.h" />

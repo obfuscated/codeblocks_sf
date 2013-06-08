@@ -26,8 +26,6 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="-Ulinux" />
-			<Add option="-Uunix" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />

@@ -23,8 +23,6 @@
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
-					<Add option="-Ulinux" />
-					<Add option="-Uunix" />
 					<Add option="-fPIC" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
