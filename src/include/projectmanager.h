@@ -514,6 +514,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         void OnIdle(wxIdleEvent& event);
         void OnAppDoneStartup(CodeBlocksEvent& event);
         void OnKeyDown(wxTreeEvent& event);
+        void OnFileOptions(wxCommandEvent& event);
 
         void DoOpenSelectedFile();
         void DoOpenFile(ProjectFile* pf, const wxString& filename);

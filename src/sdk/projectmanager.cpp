@@ -98,6 +98,8 @@ int idMenuProjectProperties        = wxNewId();
 int idMenuFileProperties           = wxNewId();
 int idMenuTreeProjectProperties    = wxNewId();
 int idMenuTreeFileProperties       = wxNewId();
+int idMenuTreeOptionsCompile       = wxNewId();
+int idMenuTreeOptionsLink          = wxNewId();
 int idMenuGotoFile                 = wxNewId();
 int idMenuExecParams               = wxNewId();
 int idMenuViewCategorize           = wxNewId();
@@ -172,6 +174,8 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuFileProperties,           ProjectManager::OnProperties)
     EVT_MENU(idMenuTreeProjectProperties,    ProjectManager::OnProperties)
     EVT_MENU(idMenuTreeFileProperties,       ProjectManager::OnProperties)
+    EVT_MENU(idMenuTreeOptionsCompile,       ProjectManager::OnFileOptions)
+    EVT_MENU(idMenuTreeOptionsLink,          ProjectManager::OnFileOptions)
     EVT_MENU(idMenuGotoFile,                 ProjectManager::OnGotoFile)
     EVT_MENU(idMenuExecParams,               ProjectManager::OnExecParameters)
     EVT_MENU(idMenuViewCategorize,           ProjectManager::OnViewCategorize)
@@ -183,6 +187,7 @@ BEGIN_EVENT_TABLE(ProjectManager, wxEvtHandler)
     EVT_MENU(idMenuViewFileMasks,            ProjectManager::OnViewFileMasks)
     EVT_MENU(idMenuFindFile,                 ProjectManager::OnFindFile)
     EVT_IDLE(                                ProjectManager::OnIdle)
+
 END_EVENT_TABLE()
 
 // class constructor
@@ -677,6 +682,17 @@ void ProjectManager::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         else if (ftd->GetKind() == FileTreeData::ftdkFile)
         {
             menu.AppendSeparator();
+            wxMenu *options = new wxMenu;
+            menu.AppendSubMenu(options, _("Options"));
+            options->AppendCheckItem(idMenuTreeOptionsCompile, _("Compile file"));
+            options->AppendCheckItem(idMenuTreeOptionsLink, _("Link file"));
+            ProjectFile *file = ftd->GetProjectFile();
+            if (file)
+            {
+                menu.Check(idMenuTreeOptionsCompile, file->compile);
+                menu.Check(idMenuTreeOptionsLink, file->link);
+            }
+
             menu.Append(idMenuTreeFileProperties, _("Properties..."));
         }
     }
@@ -2570,6 +2586,59 @@ void ProjectManager::OnProperties(wxCommandEvent& event)
             }
         }
     }
+}
+
+void ProjectManager::OnFileOptions(wxCommandEvent &event)
+{
+    std::set<cbProject*> modified;
+    if (event.GetId() == idMenuTreeOptionsCompile)
+    {
+        wxArrayTreeItemIds selected;
+        size_t count = m_pTree->GetSelections(selected);
+        for (size_t ii = 0; ii < count; ++ii)
+        {
+            wxTreeItemId id = selected[ii];
+            if (!id.IsOk())
+                continue;
+            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+            if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
+                continue;
+            ProjectFile *pf = ftd->GetProjectFile();
+            if (pf && pf->compile != event.IsChecked())
+            {
+                pf->compile = event.IsChecked();
+                if (pf->GetParentProject())
+                    modified.insert(pf->GetParentProject());
+            }
+        }
+    }
+    else if (event.GetId() == idMenuTreeOptionsLink)
+    {
+        wxArrayTreeItemIds selected;
+        size_t count = m_pTree->GetSelections(selected);
+        for (size_t ii = 0; ii < count; ++ii)
+        {
+            wxTreeItemId id = selected[ii];
+            if (!id.IsOk())
+                continue;
+            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+            if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
+                continue;
+            ProjectFile *pf = ftd->GetProjectFile();
+            if (pf && pf->link != event.IsChecked())
+            {
+                pf->link = event.IsChecked();
+                if (pf->GetParentProject())
+                    modified.insert(pf->GetParentProject());
+            }
+        }
+    }
+
+    for (std::set<cbProject*>::iterator it = modified.begin(); it != modified.end(); ++it)
+        (*it)->SetModified(true);
+    if (!modified.empty())
+        RebuildTree();
+    event.Skip();
 }
 
 struct ProjectFileRelativePathCmp
