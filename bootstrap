@@ -15,6 +15,9 @@ elif [ ! -f ./revision.m4 ]; then
 	echo "m4_define([SVN_DATE], )" >> ./revision.m4;
 fi
 
+# create m4 directory or we break older systems like RedHat/CentOS 5
+mkdir -p m4
+
 # Deal with some gentoo-specific issues
 WANT_AUTOMAKE='1.9 1.8 1.7' #latest of these is chosen or default if none hits
 export WANT_AUTOMAKE
