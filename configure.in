@@ -10,7 +10,7 @@ AC_CONFIG_MACRO_DIR([m4])
 
 AM_INIT_AUTOMAKE([dist-bzip2 no-dist-gzip])
 
-LT_INIT
+LT_INIT([disable-static])
 
 AC_CONFIG_HEADER([src/include/config.h])
 
