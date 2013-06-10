@@ -595,9 +595,9 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
     Disconnect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
-    Disconnect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
-    Disconnect(idSystemHeadersThreadCompleted, wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
-    Disconnect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED,wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadError)     );
+    Disconnect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate)    );
+    Disconnect(idSystemHeadersThreadCompleted, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadCompletion));
+    Disconnect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnSystemHeadersThreadError)     );
 
     while (!m_SystemHeadersThreads.empty())
     {
