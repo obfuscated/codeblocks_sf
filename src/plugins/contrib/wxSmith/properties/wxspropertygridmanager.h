@@ -176,7 +176,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
         WX_DECLARE_HASH_SET(wxsPropertyContainer*,wxPointerHash,wxPointerEqual,wxSetCont);
 
         wxArrayPGId  PGIDs;                         ///< \brief Array of property identifiers
-        wxArrayProps PGEnteries;                    ///< \brief Array mapping entries in grid to properties
+        wxArrayProps PGEntries;                     ///< \brief Array mapping entries in grid to properties
         wxArrayLong  PGIndexes;                     ///< \brief Array of internal property indexes used inside wxsProperty
         wxArrayCont  PGContainers;                  ///< \brief Array of container objects associated with properties
         wxSetCont    PGContainersSet;               ///< \brief Set of used containers, will be used to quickly determine if given container is used in manager

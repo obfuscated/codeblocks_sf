@@ -49,7 +49,7 @@ wxsPropertyGridManager::wxsPropertyGridManager(
 wxsPropertyGridManager::~wxsPropertyGridManager()
 {
     PGIDs.Clear();
-    PGEnteries.Clear();
+    PGEntries.Clear();
     PGIndexes.Clear();
     PGContainers.Clear();
     PGContainersSet.clear();
@@ -74,13 +74,13 @@ void wxsPropertyGridManager::OnChange(wxPropertyGridEvent& event)
         if ( PGIDs[i] == ID )
         {
             wxsPropertyContainer* Container = PGContainers[i];
-            if ( !PGEnteries[i]->PGRead(Container,this,ID,PGIndexes[i]) )
+            if ( !PGEntries[i]->PGRead(Container,this,ID,PGIndexes[i]) )
             {
                 wxString ErrorMsg;
                 ErrorMsg << _T("wxSmith: Couldn't read value from wxsPropertyGridManager")
-                         << _T(", propgrid name=") << PGEnteries[i]->GetPGName()
-                         << _T(", date name=")     << PGEnteries[i]->GetDataName()
-                         << _T(", type name=")     << PGEnteries[i]->GetTypeName();
+                         << _T(", propgrid name=") << PGEntries[i]->GetPGName()
+                         << _T(", date name=")     << PGEntries[i]->GetDataName()
+                         << _T(", type name=")     << PGEntries[i]->GetTypeName();
                 Manager::Get()->GetLogManager()->DebugLogError(ErrorMsg);
             }
 
@@ -129,7 +129,7 @@ void wxsPropertyGridManager::Update(wxsPropertyContainer* PC)
 
     for ( size_t i = PGIDs.Count(); i-- > 0; )
     {
-        PGEnteries[i]->PGWrite(PGContainers[i],this,PGIDs[i],PGIndexes[i]);
+        PGEntries[i]->PGWrite(PGContainers[i],this,PGIDs[i],PGIndexes[i]);
     }
 }
 
@@ -137,7 +137,7 @@ void wxsPropertyGridManager::UnbindAll()
 {
     // TODO: Remove all extra pages, leave only first one
     PGIDs.Clear();
-    PGEnteries.Clear();
+    PGEntries.Clear();
     PGIndexes.Clear();
     PGContainers.Clear();
     PGContainersSet.clear();
@@ -177,7 +177,7 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC, b
             Delete(PGIDs[i]);
             #endif
             PGIDs.RemoveAt(i);
-            PGEnteries.RemoveAt(i);
+            PGEntries.RemoveAt(i);
             PGIndexes.RemoveAt(i);
             PGContainers.RemoveAt(i);
         }
@@ -212,7 +212,7 @@ long wxsPropertyGridManager::Register(wxsPropertyContainer* Container,wxsPropert
         Index = ++PreviousIndex;
     }
 
-    PGEnteries.Add(Property);
+    PGEntries.Add(Property);
     PGIDs.Add(Id);
     PGIndexes.Add(Index);
     PGContainers.Add(Container);
