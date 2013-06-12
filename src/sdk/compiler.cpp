@@ -1144,7 +1144,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         else if (test == wxT("macosx"))
             val = platform::macosx;
         else if (test == wxT("linux"))
-            val = platform::Linux;
+            val = platform::linux;
         else if (test == wxT("freebsd"))
             val = platform::freebsd;
         else if (test == wxT("netbsd"))
@@ -1156,7 +1156,7 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         else if (test == wxT("solaris"))
             val = platform::solaris;
         else if (test == wxT("unix"))
-            val = platform::Unix;
+            val = platform::unix;
     }
     else if (node->GetAttribute(wxT("exec"), &test))
     {

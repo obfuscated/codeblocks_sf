@@ -135,9 +135,9 @@ template<typename T>inline void DeleteArray(T*& p){delete[] p; p = 0;}
     platform::id
         Value of type platform::identifier describing the target platform
 
-    platform::windows, platform::macosx, platform::Linux
+    platform::windows, platform::macosx, platform::linux
     platform::freebsd, platform::netbsd, platform::openbsd
-    platform::darwin,  platform::solaris, platform::Unix
+    platform::darwin,  platform::solaris, platform::unix
         Boolean value that evaluates to true if the target platform is the same as the variable's name, false otherwise.
         Using the platform booleans is equivalent to using platform::id, but results in nicer code.
 
@@ -218,13 +218,13 @@ namespace platform
 
     const bool windows = (id == platform_windows);
     const bool macosx  = (id == platform_macosx);
-    const bool Linux   = (id == platform_linux);
+    const bool linux   = (id == platform_linux);
     const bool freebsd = (id == platform_freebsd);
     const bool netbsd  = (id == platform_netbsd);
     const bool openbsd = (id == platform_openbsd);
     const bool darwin  = (id == platform_darwin);
     const bool solaris = (id == platform_solaris);
-    const bool Unix    = (Linux | freebsd | netbsd | openbsd | darwin | solaris);
+    const bool unix    = (linux | freebsd | netbsd | openbsd | darwin | solaris);
 
     const int bits = 8*sizeof(void*);
 
