@@ -31,7 +31,7 @@ extern struct depsStats g_stats;
 
 struct hash *headerhash = 0;
 static regexp *hdrre = 0;
-//D support
+/*D support*/
 static regexp *dimpre = 0;
 
 LIST *headers1(const char *file, int depth)
@@ -42,7 +42,7 @@ LIST *headers1(const char *file, int depth)
 	char buf[1024];
 	int fnlen=strlen(file);
 	
-	//D support
+	/*D support */
 	int dMode=0;
 	int dState=0;
 	if(file[fnlen-2] == '.' && file[fnlen-1] == 'd')
@@ -52,7 +52,7 @@ LIST *headers1(const char *file, int depth)
 			printf("D file detected\n");
 	}
 
-	// C::B patch: Debug usage of root folder
+	/* C::B patch: Debug usage of root folder */
 	if( DEBUG_HEADER )
 	    printf("header open %s\n", file);
 
@@ -66,7 +66,7 @@ LIST *headers1(const char *file, int depth)
 		hdrre = my_regcomp("^[ 	]*#[ 	]*include[ 	]*([<\"])([^\">]*)([\">]).*$");
 	re = hdrre;
 	
-	//D support
+	/* D support */
 	if(dMode)
 	{
 		if(!dimpre)
@@ -77,7 +77,7 @@ LIST *headers1(const char *file, int depth)
 	
 	while (fgets(buf, sizeof(buf), f))
 	{
-		//D support
+		/* D support */
 		if(dMode)
 		{
 			if(dState == 0)
@@ -94,25 +94,25 @@ LIST *headers1(const char *file, int depth)
 			}
 		}
 		
-		//Simple reduction of regex overhead
+		/* Simple reduction of regex overhead */
 		if(strstr(buf, dMode ? "import" : "include"))
 			if (my_regexec(re, buf))
 			{
 				char buf2[MAXSYM];
 
-				//FIXME: don't add duplicate headers
+				/* FIXME: don't add duplicate headers*/
 				if(!dMode && re->startp[3])
 				{
 					int l = re->endp[3] - re->startp[1];
 					memcpy(buf2, re->startp[1], l);
 					buf2[l] = '\0';
 				}
-				//D support
+				/* D support */
 				else if(re->startp[2])
 				{
 					if(depth > 0)
 					{
-						//private import?
+						/* private import? */
 						if(dState == 0)
 							continue;
 					}
@@ -139,7 +139,7 @@ LIST *headers1(const char *file, int depth)
 					printf("header found: %s\n", buf2);
 			}
 		
-		//D support
+		/* D support */
 		if(dMode)
 		{
 			if(dState == 1)
@@ -189,7 +189,7 @@ HEADER *headersDepth(const char *t, time_t time, int depth)
 	LIST *l;
 	const char* cachekey=t;
 
-	//D support (doesn't affect C(++), because a source file is never included)
+	/* D support (doesn't affect C(++), because a source file is never included) */
 	if(depth == 0)
 	{
 		cachekey=malloc(strlen(t)+sizeof("source:"));
@@ -258,7 +258,7 @@ void donehdrs(void)
 {
 	my_redone(hdrre);
 	hdrre = 0;
-	//D support
+	/* D support */
 	my_redone(dimpre);
 	dimpre = 0;
 	hashdone(headerhash);

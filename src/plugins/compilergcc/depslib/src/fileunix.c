@@ -80,7 +80,7 @@
 # define STRUCT_DIRENT struct dirent
 # endif
 
-// needed under SuSE 9.2 at least
+/* needed under SuSE 9.2 at least */
 #include <sys/stat.h>
 #include <unistd.h>
 
