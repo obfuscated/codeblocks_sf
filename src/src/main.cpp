@@ -3075,7 +3075,24 @@ void MainFrame::OnEditSelectAll(cb_unused wxCommandEvent& event)
 
 namespace
 {
-void SelectNext(cbStyledTextCtrl *control, const wxString &selectedText, const std::pair<long, long> &selection)
+
+struct EditorSelection
+{
+    long caret, anchor;
+
+    bool Empty() const { return caret == anchor; }
+    bool IsReversed() const { return caret < anchor; }
+
+    long GetStart() const { return std::min(caret, anchor); }
+    long GetEnd() const { return std::max(caret, anchor); }
+
+    bool Contains(const EditorSelection &selection) const
+    {
+        return !(GetEnd() < selection.GetStart() || GetStart() > selection.GetEnd());
+    }
+};
+
+void SelectNext(cbStyledTextCtrl *control, const wxString &selectedText, long selectionEnd, bool reversed)
 {
     // always match case and try to match whole words if they have no special characters
     int flag = wxSCI_FIND_MATCHCASE;
@@ -3084,18 +3101,36 @@ void SelectNext(cbStyledTextCtrl *control, const wxString &selectedText, const s
 
     int lengthFound = 0; // we need this to work properly with multibyte characters
     int eof = control->GetLength();
-    int pos = control->FindText(selection.second, eof, selectedText, flag, &lengthFound);
+    int pos = control->FindText(selectionEnd, eof, selectedText, flag, &lengthFound);
     if (pos != wxSCI_INVALID_POSITION)
     {
-        control->AddSelection(pos, pos + lengthFound);
         control->SetAdditionalSelectionTyping(true);
-        control->MakeNearbyLinesVisible(control->LineFromPosition(pos));
         control->IndicatorClearRange(pos, lengthFound);
+        if (reversed)
+            control->AddSelection(pos, pos + lengthFound);
+        else
+            control->AddSelection(pos + lengthFound, pos);
+        control->MakeNearbyLinesVisible(control->LineFromPosition(pos));
     }
     else
         InfoWindow::Display(_("Select Next Occurrence"), _("No more available"));
 }
+
+bool GetSelectionInEditor(EditorSelection &selection, cbStyledTextCtrl *control)
+{
+    int main = control->GetMainSelection();
+    int count = control->GetSelections();
+    if (main >=0 && main < count)
+    {
+        selection.caret = control->GetSelectionNCaret(main);
+        selection.anchor = control->GetSelectionNAnchor(main);
+        return true;
+    }
+    else
+        return false;
 }
+
+} // anonymous namespace
 
 void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
 {
@@ -3104,12 +3139,12 @@ void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
         return;
     cbStyledTextCtrl *control = static_cast<cbEditor*>(eb)->GetControl();
 
-    std::pair<long, long> selection;
-    control->GetSelection(&selection.first, &selection.second);
-    if (selection.first == selection.second)
-        return;
-    const wxString &selectedText(control->GetTextRange(selection.first, selection.second));
-    SelectNext(control, selectedText, selection);
+    EditorSelection selection;
+    if (GetSelectionInEditor(selection, control) && !selection.Empty())
+    {
+        const wxString &selectedText(control->GetTextRange(selection.GetStart(), selection.GetEnd()));
+        SelectNext(control, selectedText, selection.GetEnd(), selection.IsReversed());
+    }
 }
 
 void MainFrame::OnEditSelectNextSkip(cb_unused wxCommandEvent& event)
@@ -3119,27 +3154,50 @@ void MainFrame::OnEditSelectNextSkip(cb_unused wxCommandEvent& event)
         return;
     cbStyledTextCtrl *control = static_cast<cbEditor*>(eb)->GetControl();
 
-    std::pair<long, long> selection;
-    control->GetSelection(&selection.first, &selection.second);
-    if (selection.first == selection.second)
+    EditorSelection selection;
+    if (!GetSelectionInEditor(selection, control))
         return;
-    const wxString &selectedText(control->GetTextRange(selection.first, selection.second));
+
+    ConfigManager *cfgEditor = Manager::Get()->GetConfigManager(wxT("editor"));
+    bool highlightOccurrences = cfgEditor->ReadBool(wxT("/highlight_occurrence/enabled"), true);
 
     // store the selections in a vector except for the current one
-    typedef std::vector<std::pair<int, int> > Selections;
+    typedef std::vector<EditorSelection> Selections;
     Selections selections;
     int count = control->GetSelections();
     for (int ii = 0; ii < count; ++ii)
     {
-        int start = control->GetSelectionNStart(ii);
-        int end = control->GetSelectionNEnd(ii);
-        if (!(start == selection.first && end == selection.second))
-            selections.push_back(Selections::value_type(start, end));
+        EditorSelection item;
+        item.caret = control->GetSelectionNCaret(ii);
+        item.anchor = control->GetSelectionNAnchor(ii);
+
+        if (!item.Contains(selection))
+            selections.push_back(item);
+        else if (highlightOccurrences)
+        {
+            // Restore the indicator for the highlight occurrences if they are enabled.
+            control->IndicatorFillRange(item.GetStart(), item.GetEnd());
+        }
     }
+
     control->ClearSelections();
-    for (Selections::const_iterator it = selections.begin(); it != selections.end(); ++it)
-        control->AddSelection(it->first, it->second);
-    SelectNext(control, selectedText, selection);
+    Selections::const_iterator it = selections.begin();
+    int index = 0;
+    if (it != selections.end() && control->GetSelections() > 0)
+    {
+        control->SetSelectionNAnchor(index, it->anchor);
+        control->SetSelectionNCaret(index, it->caret);
+        ++index;
+        ++it;
+    }
+    for (; it != selections.end(); ++it)
+    {
+        control->AddSelection(it->caret, it->anchor);
+        ++index;
+    }
+
+    const wxString &selectedText(control->GetTextRange(selection.GetStart(), selection.GetEnd()));
+    SelectNext(control, selectedText, selection.GetEnd(), selection.IsReversed());
 }
 
 /* This is a shameless rip-off of the original OnEditCommentSelected function,
