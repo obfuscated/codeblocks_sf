@@ -4,7 +4,7 @@
 	<Project>
 		<Option title="Code::Blocks wx2.9.x (64 bit)" />
 		<Option default_target="src" />
-		<Option compiler="gnu_gcc_64_compiler" />
+		<Option compiler="gcc" />
 		<Build>
 			<Target title="exchndl">
 				<Option platforms="Windows;" />
@@ -12,7 +12,7 @@
 				<Option working_dir="devel64" />
 				<Option object_output=".objs64" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add directory="base/exchndl/include" />
 				</Compiler>
@@ -28,7 +28,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs64" />
 				<Option type="2" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add directory="include/tinyxml" />
 				</Compiler>
@@ -37,7 +37,7 @@
 				<Option output="build_tools/autorevision/autorevision64" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".objs64" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -53,7 +53,7 @@
 				<Option working_dir="tools/ConsoleRunner" />
 				<Option object_output=".objs64" />
 				<Option type="1" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-Os" />
@@ -64,7 +64,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs64" />
 				<Option type="2" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="include/scripting/include" />
@@ -77,7 +77,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
 				<Option type="2" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="include/scripting/include" />
@@ -90,7 +90,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;" />
 				<Option type="2" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-fno-inline" />
 					<Add directory="include/scripting/include" />
@@ -102,7 +102,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs64" />
 				<Option type="2" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-D__WX__" />
 					<Add option="-DWINVER=0x0501" />
@@ -130,7 +130,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="base/tinyxml/libtxml64.a;sdk/scripting/lib/libsquirrel64.a;sdk/scripting/lib/libsqstdlib64.a;sdk/scripting/lib/libsqplus64.a;devel64/libwxscintilla_cb.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --profile=foo" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -182,7 +182,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="0" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -232,7 +232,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -266,7 +266,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -299,7 +299,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -329,7 +329,7 @@
 				<Option working_dir="" />
 				<Option object_output=".objs64" />
 				<Option type="2" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Compiler>
 					<Add option="-DDEPSLIB_WINDOWS" />
 				</Compiler>
@@ -344,7 +344,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib64.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -383,7 +383,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -416,7 +416,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -454,7 +454,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -485,7 +485,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -516,7 +516,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -547,7 +547,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -584,7 +584,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -617,7 +617,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
@@ -654,7 +654,7 @@
 				<Option object_output=".objs64" />
 				<Option external_deps="devel64/libcodeblocks.a;" />
 				<Option type="3" />
-				<Option compiler="gnu_gcc_64_compiler" />
+				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
