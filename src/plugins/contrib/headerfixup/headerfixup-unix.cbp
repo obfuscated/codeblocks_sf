@@ -62,6 +62,7 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 		</Compiler>
 		<Unit filename="bindings.cpp" />
 		<Unit filename="bindings.h" />

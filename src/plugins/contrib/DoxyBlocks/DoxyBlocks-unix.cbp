@@ -52,6 +52,7 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --libs`" />

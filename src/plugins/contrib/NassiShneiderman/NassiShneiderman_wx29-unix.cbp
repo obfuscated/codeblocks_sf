@@ -52,6 +52,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 		</Compiler>
 		<Unit filename="CParser.cpp" />
 		<Unit filename="DataObject.cpp" />

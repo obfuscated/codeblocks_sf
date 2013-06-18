@@ -76,6 +76,7 @@
 			<Add alias="All" targets="Unix;Windows;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-ansi" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />

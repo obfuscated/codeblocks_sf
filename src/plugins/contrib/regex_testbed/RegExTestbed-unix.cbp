@@ -52,6 +52,7 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 		</Compiler>
 		<Unit filename="RegExTestbed.cpp" />
 		<Unit filename="RegExTestbed.h" />

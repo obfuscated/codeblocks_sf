@@ -17,6 +17,7 @@
 				<Compiler>
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
+					<Add option="-ansi" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-Winvalid-pch" />
@@ -52,6 +53,7 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 		</Compiler>
 		<Unit filename="EditorConfig.cpp" />

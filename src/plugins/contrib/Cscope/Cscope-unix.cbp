@@ -16,6 +16,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="-Wall" />
+					<Add option="-ansi" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-Winvalid-pch" />
@@ -50,6 +51,7 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 		</Compiler>
 		<Unit filename="CscopeConfig.cpp" />
 		<Unit filename="CscopeConfig.h" />
