@@ -1,4 +1,4 @@
-SUBDIRS = properties wxwidgets plugin
+SUBDIRS = properties wxwidgets . plugin
 
 INCLUDES = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
