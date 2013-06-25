@@ -120,7 +120,10 @@ void SpellCheckerPlugin::OnAttach()
     // initialize Helper and online checker
     m_pSpellHelper = new SpellCheckHelper();
     m_pOnlineChecker = new OnlineSpellChecker(m_pSpellChecker, m_pSpellHelper);
-    m_FunctorId = EditorHooks::RegisterHook( m_pOnlineChecker );
+
+    EditorHooks::HookFunctorBase *editor_hook = new EditorHooks::HookFunctor<SpellCheckerPlugin>(this, &SpellCheckerPlugin::OnEditorHook);
+    m_FunctorId = EditorHooks::RegisterHook( editor_hook );
+
     m_pOnlineChecker->EnableOnlineChecks( m_sccfg->GetEnableOnlineChecker() );
 
     // initialize thesaurus
@@ -863,4 +866,9 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     stc->CallTipShow(pos, tip);
     event.SetExtraLong(1); // notify CC not to cancel this tooltip
     event.Skip();
+}
+
+void SpellCheckerPlugin::OnEditorHook(cbEditor* editor, wxScintillaEvent& event)
+{
+    m_pOnlineChecker->Call(editor, event);
 }

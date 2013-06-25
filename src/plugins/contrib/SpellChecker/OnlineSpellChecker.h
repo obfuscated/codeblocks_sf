@@ -22,18 +22,18 @@
 // For compilers that support precompilation, includes <wx/wx.h>
 #include <wx/wxprec.h>
 
+#include "cbeditor.h"
+
 #ifndef WX_PRECOMP
     #include <wx/wx.h>
 #endif
-
-#include <editor_hooks.h>
 
 class wxSpellCheckEngineInterface;
 class SpellCheckHelper;
 class cbStyledTextCtrl;
 
 
-class OnlineSpellChecker : public EditorHooks::HookFunctorBase
+class OnlineSpellChecker
 {
     public:
         OnlineSpellChecker(wxSpellCheckEngineInterface *pSpellChecker, SpellCheckHelper *pSpellHelp);

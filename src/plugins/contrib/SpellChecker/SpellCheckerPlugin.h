@@ -115,6 +115,8 @@ class SpellCheckerPlugin : public cbPlugin
         virtual void CreateStatusField(cbStatusBar *bar);
         #endif
 
+        void OnEditorHook(cbEditor* editor, wxScintillaEvent& event);
+
     protected:
         /** Any descendent plugin should override this virtual method and
           * perform any necessary initialization. This method is called by

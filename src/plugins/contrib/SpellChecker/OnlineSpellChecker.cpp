@@ -16,9 +16,6 @@
 
 
 OnlineSpellChecker::OnlineSpellChecker(wxSpellCheckEngineInterface *pSpellChecker, SpellCheckHelper *pSpellHelper):
-//OnlineSpellChecker::OnlineSpellChecker():
-    //EditorHooks::HookFunctorBase
-    HookFunctorBase(),
     alreadychecked(false),
     oldctrl(NULL),
     m_pSpellChecker(pSpellChecker),
