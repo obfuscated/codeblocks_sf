@@ -444,7 +444,10 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
                             break;
                         }
                         else if (firstCloseBrace == -1 && value[expanded_token.end] == wxT('}'))
+                        {
                             firstCloseBrace=expanded_token.end;
+                            break;
+                        }
                     }
 
                     if (pythonToStringValue.empty())

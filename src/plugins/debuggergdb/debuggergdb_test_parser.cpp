@@ -138,6 +138,27 @@ TEST(SimpleMembers)
     CHECK_EQUAL(wxT("cmp= {a=5,b=7,c=1,d=2}"), *w);
 }
 
+TEST(BoolMembers)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{memberA = {flag = false}, memberB = {flag = true}}")));
+    CHECK_EQUAL(wxT("t= {memberA= {flag=false},memberB= {flag=true}}"), *w);
+}
+
+TEST(GlobalEnumMembers1)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{a = {test = 5, glob = GlobA},b = {test = B::T3}}")));
+    CHECK_EQUAL(wxT("t= {a= {test=5,glob=GlobA},b= {test=B::T3}}"), *w);
+}
+
+TEST(GlobalEnumMembers2)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{a = {glob = GlobA, test = 5},b = {test = B::T3}}")));
+    CHECK_EQUAL(wxT("t= {a= {glob=GlobA,test=5},b= {test=B::T3}}"), *w);
+}
+
 TEST(SingleInheritance)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
