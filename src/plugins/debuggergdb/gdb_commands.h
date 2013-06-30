@@ -29,6 +29,7 @@
 #include <macrosmanager.h>
 #include <scriptingmanager.h>
 #include <sqplus.h>
+#include <scripting/bindings/sc_base_types.h>
 
 #include "debugger_defs.h"
 #include "debuggergdb.h"
@@ -221,8 +222,6 @@ static wxRegEx reNextI(_T("\x1a\x1a(([a-zA-Z]:)?.*?):([0-9]*):([0-9]*):(middle|b
 #else
                        wxRE_EXTENDED);
 #endif
-
-DECLARE_INSTANCE_TYPE(wxString);
 
 /**
   * Command to add a search directory for source files in debugger's paths.
