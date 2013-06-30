@@ -541,8 +541,8 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
     m_UseDefValsForThreadSearch  = pCfg->ReadBool(wxT("/UseDefaultValues"),      true);
     m_ShowSearchControls         = pCfg->ReadBool(wxT("/ShowSearchControls"),    true);
     m_ShowDirControls            = pCfg->ReadBool(wxT("/ShowDirControls"),       false);
-    m_ShowCodePreview            = pCfg->ReadBool(wxT("/ShowCodePreview"),       true);
-    m_DeletePreviousResults      = pCfg->ReadBool(wxT("/DeletePreviousResults"), true);
+    m_ShowCodePreview            = pCfg->ReadBool(wxT("/ShowCodePreview"),       false);
+    m_DeletePreviousResults      = pCfg->ReadBool(wxT("/DeletePreviousResults"), false);
     m_DisplayLogHeaders          = pCfg->ReadBool(wxT("/DisplayLogHeaders"),     true);
     m_DrawLogLines               = pCfg->ReadBool(wxT("/DrawLogLines"),          false);
 
