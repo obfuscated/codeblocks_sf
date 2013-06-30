@@ -400,6 +400,7 @@ void ThreadSearch::OnMnuViewFocusThreadSearch(wxCommandEvent& /*event*/)
     GetCursorWord(m_SearchedWord);
 
     m_pViewManager->ShowView(true);
+    m_pViewManager->Raise();
     m_pThreadSearchView->FocusSearchCombo(m_SearchedWord);
 }
 

@@ -98,3 +98,9 @@ bool ThreadSearchViewManagerMessagesNotebook::IsViewShown()
 {
     return m_IsShown && IsWindowReallyShown((wxWindow*)m_pThreadSearchView);
 }
+
+
+void ThreadSearchViewManagerMessagesNotebook::Raise()
+{
+    m_pThreadSearchView->GetParent()->GetParent()->Raise();
+}

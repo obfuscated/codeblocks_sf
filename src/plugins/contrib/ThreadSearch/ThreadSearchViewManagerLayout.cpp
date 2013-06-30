@@ -18,6 +18,7 @@
 #endif
 
 #include "ThreadSearchViewManagerLayout.h"
+#include "ThreadSearchView.h"
 
 ThreadSearchViewManagerLayout::~ThreadSearchViewManagerLayout()
 {
@@ -88,3 +89,8 @@ bool ThreadSearchViewManagerLayout::IsViewShown()
     return m_IsShown && IsWindowReallyShown((wxWindow*)m_pThreadSearchView);
 }
 
+
+void ThreadSearchViewManagerLayout::Raise()
+{
+    m_pThreadSearchView->GetParent()->Raise();
+}

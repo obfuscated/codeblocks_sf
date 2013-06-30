@@ -62,6 +62,9 @@ public:
       */
     virtual bool IsViewShown() = 0;
 
+    /** Try to rise the panel the view is in */
+    virtual void Raise() = 0;
+
 protected:
     /** Constructor. */
     ThreadSearchViewManagerBase(ThreadSearchView* pThreadSearchView)
