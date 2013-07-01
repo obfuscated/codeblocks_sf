@@ -1488,7 +1488,9 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
         AnnoyingDialog dlg(_("Layout changed"),
                             wxString::Format(_("The perspective '%s' has changed. Do you want to save it?"), m_LastLayoutName.wx_str()),
                             wxART_QUESTION,
-                            canCancel ? AnnoyingDialog::YES_NO_CANCEL : AnnoyingDialog::YES_NO);
+                            canCancel ? AnnoyingDialog::YES_NO_CANCEL : AnnoyingDialog::YES_NO,
+                            // partial fix for bug 18970 (fix is incomplete to prevent the user from saving 'rtCANCEL')
+                            canCancel ? AnnoyingDialog::rtYES : AnnoyingDialog::rtSAVE_CHOICE);
         switch (dlg.ShowModal())
         {
             case AnnoyingDialog::rtYES:
