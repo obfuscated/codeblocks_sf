@@ -414,7 +414,8 @@ void cbStyledTextCtrl::HighlightRightBrace()
     if (m_tabSmartJump && (curLine == LineFromPosition(m_bracePosition)))
     {
         SetIndicatorCurrent(s_indicHighlight);
-        IndicatorClearRange(GetLineIndentPosition(curLine), GetLineEndPosition(curLine));
+        const int indPos = GetLineIndentPosition(curLine);
+        IndicatorClearRange(indPos, GetLineEndPosition(curLine)-indPos);
         do
         {
             if (pos >= len)
