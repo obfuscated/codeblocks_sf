@@ -35,7 +35,7 @@ cbWorkspace::cbWorkspace(const wxString& filename) :
     if ( filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty() )
     {
         // if no filename given, use the default workspace
-        wxString tmp = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH;
+        wxString tmp = ConfigManager::GetConfigFolder();
 
         if (!wxDirExists(tmp))
             wxMkdir(tmp, 0755);
