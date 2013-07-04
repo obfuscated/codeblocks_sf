@@ -80,3 +80,8 @@ wxString ThreadSearchFindData::GetSearchPath(bool bExpanded) const
 
     return m_SearchPath;
 }
+
+bool ThreadSearchFindData::IsOptionEnabled() const
+{
+    return m_MatchCase | m_MatchWord | m_StartWord | m_RegEx;
+}

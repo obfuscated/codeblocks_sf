@@ -58,16 +58,7 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
 {
     m_pFindThread = NULL;
     m_pToolBar    = NULL;
-    wxString prefix;
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if (cfg->ReadBool(_T("/environment/toolbar_size"),true))
-    {
-        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/16x16/");
-    }
-    else
-    {
-        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/22x22/");
-    }
+    const wxString &prefix = GetImagePrefix();
 
     // begin wxGlade: ThreadSearchView::ThreadSearchView
     m_pSplitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxSize(1,1), wxSP_3D|wxSP_BORDER|wxSP_PERMIT_UNSPLIT);
@@ -271,26 +262,41 @@ void ThreadSearchView::OnShowOptionsDialog(wxCommandEvent &/*event*/)
 void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
 {
     ThreadSearchFindData findData = m_ThreadSearchPlugin.GetFindData();
+    bool hasChange = false;
     if (event.GetId() == controlIDs.Get(ControlIDs::idOptionWholeWord))
     {
         findData.SetMatchWord(event.IsChecked());
-        m_ThreadSearchPlugin.SetFindData(findData);
+        hasChange = true;
     }
     else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionStartWord))
     {
         findData.SetStartWord(event.IsChecked());
-        m_ThreadSearchPlugin.SetFindData(findData);
+        hasChange = true;
     }
     else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionMatchCase))
     {
         findData.SetMatchCase(event.IsChecked());
-        m_ThreadSearchPlugin.SetFindData(findData);
+        hasChange = true;
     }
     else if (event.GetId() == controlIDs.Get(ControlIDs::idOptionRegEx))
     {
         findData.SetRegEx(event.IsChecked());
-        m_ThreadSearchPlugin.SetFindData(findData);
+        hasChange = true;
     }
+    if (hasChange)
+    {
+        m_ThreadSearchPlugin.SetFindData(findData);
+        UpdateOptionsButtonImage(findData);
+    }
+}
+
+void ThreadSearchView::UpdateOptionsButtonImage(const ThreadSearchFindData &findData)
+{
+    wxString name = (findData.IsOptionEnabled() ? wxT("optionsactive.png") : wxT("options.png"));
+    wxBitmap bitmap(GetImagePrefix() + name, wxBITMAP_TYPE_PNG);
+    m_pBtnOptions->SetBitmapLabel(bitmap);
+    if (m_pToolBar)
+        m_pToolBar->SetToolNormalBitmap(controlIDs.Get(ControlIDs::idBtnOptions), bitmap);
 }
 
 void ThreadSearchView::OnQuickOptionsUpdateUI(wxUpdateUIEvent &event)
@@ -343,16 +349,8 @@ void ThreadSearchView::OnSplitterDoubleClick(wxSplitterEvent &/*event*/)
 
 void ThreadSearchView::set_properties()
 {
-    wxString prefix;
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    if (cfg->ReadBool(_T("/environment/toolbar_size"),true))
-    {
-        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/16x16/");
-    }
-    else
-    {
-        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/22x22/");
-    }
+    const wxString &prefix = GetImagePrefix();
+
     // begin wxGlade: ThreadSearchView::set_properties
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
     m_pCboSearchExpr->SetMinSize(wxSize(180, -1));
@@ -383,6 +381,8 @@ void ThreadSearchView::set_properties()
     m_pPnlSearchIn->SetSearchInProjectFiles(findData.MustSearchInProject());
     m_pPnlSearchIn->SetSearchInWorkspaceFiles(findData.MustSearchInWorkspace());
     m_pPnlSearchIn->SetSearchInDirectory(findData.MustSearchInDirectory());
+
+    UpdateOptionsButtonImage(findData);
 }
 
 
@@ -948,6 +948,14 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
     m_pToolBar->EnableTool(controlIDs.Get(ControlIDs::idBtnSearch), enable);
 }
 
+wxString ThreadSearchView::GetImagePrefix() const
+{
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("app"));
+    if (cfg->ReadBool(wxT("/environment/toolbar_size"), true))
+        return ConfigManager::GetDataFolder() + wxT("/images/ThreadSearch/16x16/");
+    else
+        return ConfigManager::GetDataFolder() + wxT("/images/ThreadSearch/22x22/");
+}
 
 void ThreadSearchView::ShowSearchControls(bool show)
 {

@@ -66,6 +66,8 @@ public:
 
     wxString GetSearchPath(bool bExpanded = false) const;
 
+    bool IsOptionEnabled() const;
+
 private:
     wxString m_FindText;
     bool     m_MatchWord;

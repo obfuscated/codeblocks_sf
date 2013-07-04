@@ -636,18 +636,13 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     m_pToolbar = toolBar;
     m_pThreadSearchView->SetToolBar(toolBar);
 
-    wxString prefix;
+    const wxString &prefix = m_pThreadSearchView->GetImagePrefix();
+
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     if (cfg->ReadBool(_T("/environment/toolbar_size"),true))
-    {
-        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/16x16/");
         m_pToolbar->SetToolBitmapSize(wxSize(16,16));
-    }
     else
-    {
-        prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/22x22/");
         m_pToolbar->SetToolBitmapSize(wxSize(22,22));
-    }
 
     m_pCboSearchExpr = new wxComboBox(toolBar, controlIDs.Get(ControlIDs::idCboSearchExpr),
                                       wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
@@ -662,6 +657,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
                      wxBitmap(prefix + wxT("options.png"), wxBITMAP_TYPE_PNG),
                      wxBitmap(prefix + wxT("optionsdisabled.png"), wxBITMAP_TYPE_PNG),
                      wxITEM_NORMAL, _("Show options window"));
+    m_pThreadSearchView->UpdateOptionsButtonImage(m_FindData);
 
     toolBar->Realize();
     #if wxCHECK_VERSION(2, 8, 0)
