@@ -21,24 +21,25 @@
     #include <wx/msw/registry.h>
 #endif
 
-CompilerIAR8051::CompilerIAR8051()
-    : Compiler(_("IAR 8051 Compiler"), _T("iar8051"))
+CompilerIAR::CompilerIAR(wxString arch)
+    : Compiler(_("IAR ") + arch + _(" Compiler"), _T("iar") + arch)
 {
     m_Weight = 75;
+    m_Arch = arch;
     Reset();
 }
 
-CompilerIAR8051::~CompilerIAR8051()
+CompilerIAR::~CompilerIAR()
 {
     //dtor
 }
 
-Compiler * CompilerIAR8051::CreateCopy()
+Compiler * CompilerIAR::CreateCopy()
 {
-    return (new CompilerIAR8051(*this));
+    return (new CompilerIAR(*this));
 }
 
-AutoDetectResult CompilerIAR8051::AutoDetectInstallationDir()
+AutoDetectResult CompilerIAR::AutoDetectInstallationDir()
 {
     if (platform::windows)
     {
@@ -69,9 +70,10 @@ AutoDetectResult CompilerIAR8051::AutoDetectInstallationDir()
             }
         }
 #endif // __WXMSW__
+        wxString env_path = wxGetenv(_T("ProgramFiles(x86)"));
         if (m_MasterPath.IsEmpty())
         {
-            wxDir dir(wxT("C:\\Program Files\\IAR Systems"));
+            wxDir dir(env_path + wxT("\\IAR Systems"));
             if (wxDirExists(dir.GetName()) && dir.IsOpened())
             {
                 wxString filename;
@@ -81,11 +83,11 @@ AutoDetectResult CompilerIAR8051::AutoDetectInstallationDir()
                     if ( filename.StartsWith(wxT("Embedded Workbench")) )
                     {
                         wxFileName fn(dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH +
-                                      wxT("8051") + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C);
+                                      m_Arch + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C);
                         if (   wxFileName::IsFileExecutable(fn.GetFullPath())
                             && (m_MasterPath.IsEmpty() || fn.GetPath() > m_MasterPath) )
                         {
-                            m_MasterPath = dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH + wxT("8051");
+                            m_MasterPath = dir.GetName() + wxFILE_SEP_PATH + filename + wxFILE_SEP_PATH + m_Arch;
                         }
                     }
                     cont = dir.GetNext(&filename);
@@ -95,7 +97,7 @@ AutoDetectResult CompilerIAR8051::AutoDetectInstallationDir()
         if (m_MasterPath.IsEmpty())
         {
             // just a guess; the default installation dir
-            m_MasterPath = wxT("C:\\Program Files\\IAR Systems\\Embedded Workbench\\8051");
+            m_MasterPath = env_path + wxT("\\IAR Systems\\Embedded Workbench\\" + m_Arch);
         }
 
         if ( wxDirExists(m_MasterPath) )
@@ -109,9 +111,15 @@ AutoDetectResult CompilerIAR8051::AutoDetectInstallationDir()
     {
         m_MasterPath=_T("/usr/local"); // default
     }
-    AddLinkerOption(wxT("-f \"") + m_MasterPath + wxFILE_SEP_PATH + wxT("config") + wxFILE_SEP_PATH +
-                    wxT("devices") + wxFILE_SEP_PATH + wxT("_generic") + wxFILE_SEP_PATH +
-                    wxT("lnk51ew_plain.xcl\""));
-
+    if (m_Arch == wxT("8051"))
+    {
+        AddLinkerOption(wxT("-f \"") + m_MasterPath + wxFILE_SEP_PATH + wxT("config") + wxFILE_SEP_PATH +
+                        wxT("devices") + wxFILE_SEP_PATH + wxT("_generic") + wxFILE_SEP_PATH +
+                        wxT("lnk51ew_plain.xcl\""));
+    }
+    else // IAR
+    {
+        AddCompilerOption(wxT("--no_wrap_diagnostics"));
+    }
     return wxFileExists(m_MasterPath + wxFILE_SEP_PATH + wxT("bin") + wxFILE_SEP_PATH + m_Programs.C) ? adrDetected : adrGuessed;
 }

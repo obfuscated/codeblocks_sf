@@ -1,0 +1,326 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="iccarm.exe"/>
+        <Program name="CPP"       value="iccarm.exe"/>
+        <Program name="LD"        value="ilinkarm.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="iarchive.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="iccarm"/>
+        <Program name="CPP"       value="iccarm"/>
+        <Program name="LD"        value="ilinkarm"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="iarchive"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-I"/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="true"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Option name="Produce debugging symbols"
+            option="--debug"
+            checkAgainst="-Om -Oh -Ohs -Ohz"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+    <Option name="aeabi compliant code"
+            option="--aeabi"/>
+    <Option name="Enable Remarks"
+            option="--remarks"/>
+    <Option name="Disable Warnings"
+            option="--no-warnings"/>
+    <Option name="Require proper function prototypes"
+            option="--require_prototypes"/>
+    <Option name="Enforce strict language rules compliance"
+            option="--strict"
+            checkAgainst="-e"
+            checkMessage="--strict and -e are mutually exclusive"/>
+    <Option name="Treat Warnings as Errors"
+            option="--warnings_are_errors"/>
+    <Option name="Treat Warnings as Errors"
+            option="--warnings_are_errors"/>
+    <Option name="Discard unused public functions and variables"
+            option="--discard_unused_publics"/>
+    <Option name="Insert debug info in object file"
+            option="-r"/>
+    <Option name="All enum is 4 bytes"
+            option="--enum_is_int"/>
+    <Option name="Generate interworking code"
+            option="--interwork"/>
+    <Option name="Legacy RVCT3.0"
+            option="--legacy RVCT3.0"/>
+    <Option name="Separate initialized and uninitialized variables,when using variable clustering"
+            option="--separate_cluster_for_initialized_variables"/>
+    <Option name="Place generated generic code in separate section"
+            option="--shared_helper_section"/>
+
+    <Category name="Diagnostic">
+        <Option name="Adds include file context to diagnostics"
+                option="--header_context"/>
+        <Option name="Use positions inside macros in diagnostics"
+                option="--macro_positions_in_diagnostics"/>
+    </Category>
+
+    <Category name="System Library"
+              exclusive="true">
+        <Option name="Use DLIB without configuration"
+                option="--dlib --dlib_config none"/>
+        <Option name="Use DLIB tiny configuration"
+                option="--dlib --dlib_config tiny"/>
+        <Option name="Use DLIB normal configuration"
+                option="--dlib --dlib_config normal"/>
+        <Option name="Use DLIB full configuration"
+                option="--dlib --dlib_config full"/>
+    </Category>
+
+    <Category name="Code"
+              exclusive="true">
+        <Option name="Generate read-only position independent code"
+                option="--ropi"/>
+        <Option name="Generate read-write position independent code"
+                option="--rwpi"/>
+    </Category>
+
+    <Category name="FPU type"
+              exclusive="true">
+        <Option name="Software floating point"
+                option="--fpu none"/>
+        <Option name="VFPv2"
+                option="--fpu VFPv2"/>
+        <Option name="VFPv3"
+                option="--fpu VFPv3"/>
+        <Option name="VFPv3_D16"
+                option="--fpu VFPv3_D16"/>
+        <Option name="VFPv3_D16_FP16"
+                option="--fpu VFPv3_D16_FP16"/>
+        <Option name="VFPv4"
+                option="--fpu VFPv4"/>
+        <Option name="VFPv4_sp"
+                option="--fpu VFPv4_sp"/>
+        <Option name="VFP9-S"
+                option="--fpu VFP9-S"/>
+    </Category>
+
+    <Category name="Byte order"
+              exclusive="true">
+        <Option name="Little endian"
+                option="--endian little"/>
+        <Option name="Big endian"
+                option="--endian big"/>
+    </Category>
+
+    <Category name="Optimization"
+              exclusive="true">
+        <Option name="Optimization Level None (best debug support)"
+                option="-On"/>
+        <Option name="Optimization Level Low"
+                option="-Ol"/>
+        <Option name="Optimization Level Medium"
+                option="-Om"/>
+        <Option name="Optimization Level High, Balanced"
+                option="-Oh"/>
+        <Option name="Optimization Level High, favoring Speed"
+                option="-Ohs"/>
+        <Option name="Optimization Level High, favoring Size"
+                option="-Ohz"/>
+    </Category>
+
+    <Category name="Optimization">
+        <Option name="Disable Code Motion"
+                option="--no_code_motion"/>
+        <Option name="Disable Common Subexpression Elimination"
+                option="--no_cse"/>
+        <Option name="Disable Function Inlining"
+                option="--no_inline"/>
+        <Option name="Do not include file path in __FILE__ and __BASE_FILE__ macros"
+                option="--no_path_in_file_macros"/>
+        <Option name="Do not emit destructors for C++ static variables"
+                option="--no_static_destruction"/>
+        <Option name="Disable automatic search for system include files"
+                option="--no_system_include"/>
+        <Option name="Disable Type-Based Alias Analysis"
+                option="--no_tbaa"/>
+        <Option name="Do not use typedefs in diagnostic messages"
+                option="--no_typedefs_in_diagnostics"/>
+        <Option name="Disable Loop Unrolling"
+                option="--no_unroll"/>
+        <Option name="Disable alignment reduction of simple thumb functions"
+                option="--no_alignment_reduction"/>
+        <Option name="Disable static clustering for static and global variables"
+                option="--no_clustering"/>
+        <Option name="Turn off the alignment optimization for constants"
+                option="--no_const_align"/>
+        <Option name="Suppress Dwarf 3 Call Frame Information instructions"
+                option="--no_dwarf3_cfi"/>
+        <Option name="Disable C++ exception support"
+                option="--no_exceptions"/>
+        <Option name="Do not generate section fragments"
+                option="--no_fragments"/>
+        <Option name="Generate code that does not issue read request to .text"
+                option="--no_literal_pool"/>
+        <Option name="Disable alignment of labels in loops (Thumb2)"
+                option="--no_loop_align"/>
+        <Option name="Disable idiom recognition for memcpy/memset/memclr"
+                option="--no_mem_idioms"/>
+        <Option name="Disable C++ runtime type information support"
+                option="--no_rtti"/>
+        <Option name="Don't allow C-object to be initialized at runtime"
+                option="--no_rw_dynamic_init"/>
+        <Option name="Disable instruction scheduling"
+                option="--no_scheduling"/>
+        <Option name="Remove limits for code expansion"
+                option="--no_size_constraints"/>
+        <Option name="Don't generate unaligned accesses"
+                option="--no_unaligned_access"/>
+        <Option name="Use stdout only (no console output on stderr)"
+                option="--only_stdout"/>
+    </Category>
+
+    <Category name="C Dialect"
+              exclusive="true">
+        <Option name="C89 Dialect (default is C99)"
+                option="--c89"
+                checkAgainst="--vla"
+                checkMessage="C89 and Variable Length Arrays are incompatible"/>
+        <Option name="C++"
+                option="--c++"/>
+        <Option name="Embedded C++"
+                option="--ec++"/>
+        <Option name="Extended Embedded C++"
+                option="--eec++"/>
+    </Category>
+
+    <Category name="C Dialect: Char signedness"
+              exclusive="true">
+        <Option name="Char is Signed"
+                option="--char_is_signed"/>
+        <Option name="Char is Unsigned"
+                option="--char_is_unsigned"/>
+    </Category>
+
+    <Category name="C Dialect">
+        <Option name="Enable Multibyte characters in C or C++ source code"
+                option="--enable_multibytes"/>
+        <Option name="Use Guards for function static variable initialization"
+                option="--guard_calls"/>
+        <Option name="Enable C++ inline semantics even in C mode"
+                option="--use_c++_inline"/>
+        <Option name="Enable C99 Variable Length Arrays"
+                option="--vla"
+                checkAgainst="--c89"
+                checkMessage="C89 and Variable Length Arrays are incompatible"/>
+        <Option name="Enable Language Extensions"
+                option="-e"
+                checkAgainst="--strict"
+                checkMessage="--strict and -e are mutually exclusive"/>
+    </Category>
+
+    <Category name="Calling convention"
+          exclusive="true">
+        <Option name="FPA (Standard)"
+                option="--aapcs std"/>
+        <Option name="VFP (scalar mode)"
+                option="--aapcs vfp"/>
+    </Category>
+
+    <Category name="CPU Core"
+              exclusive="true">
+        <Option name="Cortex-A15"
+                option="--cpu=Cortex-A15"/>
+        <Option name="Cortex-A9"
+                option="--cpu=Cortex-A9"/>
+        <Option name="Cortex-A8"
+                option="--cpu=Cortex-A8"/>
+        <Option name="Cortex-A7"
+                option="--cpu=Cortex-A7"/>
+        <Option name="Cortex-A5"
+                option="--cpu=Cortex-A5"/>
+        <Option name="Cortex-R7"
+                option="--cpu=Cortex-R7"/>
+        <Option name="Cortex-R5"
+                option="--cpu=Cortex-R5"/>
+        <Option name="Cortex-R4"
+                option="--cpu=Cortex-R4"/>
+        <Option name="Cortex-M4"
+                option="--cpu=Cortex-M4"/>
+        <Option name="Cortex-M3"
+                option="--cpu=Cortex-M3"/>
+        <Option name="Cortex-M1"
+                option="--cpu=Cortex-M1"/>
+        <Option name="Cortex-M0+"
+                option="--cpu=Cortex-M0+"/>
+        <Option name="Cortex-M0"
+                option="--cpu=Cortex-M0"/>
+        <Option name="ARM946E-S"
+                option="--cpu=ARM946E-S"/>
+        <Option name="ARM966E-S"
+                option="--cpu=ARM966E-S"/>
+        <Option name="ARM968E-S"
+                option="--cpu=ARM968E-S"/>
+        <Option name="ARM926EJ-S"
+                option="--cpu=ARM926EJ-S"/>
+        <Option name="ARM940T"
+                option="--cpu=ARM940T"/>
+        <Option name="ARM920T"
+                option="--cpu=ARM920T"/>
+        <Option name="ARM922T"
+                option="--cpu=ARM922T"/>
+        <Option name="ARM922T"
+                option="--cpu=ARM922T"/>
+        <Option name="ARM9TDMI"
+                option="--cpu=ARM9TDMI"/>
+        <Option name="ARM720T"
+                option="--cpu=ARM720T"/>
+        <Option name="ARM7TDMI"
+                option="--cpu=ARM7TDMI"/>
+        <Option name="ARM7TDMI-S"
+                option="--cpu=ARM7TDMI-S"/>
+        <Option name="ARM9E"
+                option="--cpu=ARM9E"/>
+        <Option name="ARM7EJ-S"
+                option="--cpu=ARM7EJ-S"/>
+        <Option name="XScale"
+                option="--cpu=XScale"/>
+    </Category>
+
+    <Category name="CPU Mode"
+              exclusive="true">
+        <Option name="Arm"
+                option="--cpu_mode=a"/>
+        <Option name="Thumb"
+                option="--cpu_mode=t"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler $options $includes $file -o $object --dependencies=m $dep_object"/>
+    <Command name="LinkExe"
+             value="$linker $libdirs $link_options $libs $link_objects -o $exe_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs $link_options $libs $link_objects -o $exe_output"/>
+    <Command name="LinkStatic"
+             value="$lib_linker $static_output $link_objects"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs $link_options $libs $link_objects -o $exe_output"/>
+
+    <Common name="cmds"/>
+
+    <Common name="re-iar"/>
+</CodeBlocks_compiler_options>

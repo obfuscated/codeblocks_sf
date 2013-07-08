@@ -859,7 +859,8 @@ void CompilerGCC::DoRegisterCompilers()
         CompilerFactory::RegisterCompiler(new CompilerLCC);
         CompilerFactory::RegisterCompiler(new CompilerKeilC51);
         CompilerFactory::RegisterCompiler(new CompilerKeilCX51);
-        CompilerFactory::RegisterCompiler(new CompilerIAR8051);
+        CompilerFactory::RegisterCompiler(new CompilerIAR(wxT("8051")));
+        CompilerFactory::RegisterCompiler(new CompilerIAR(wxT("ARM")));
     }
     CompilerFactory::RegisterCompiler(new CompilerICC);
     CompilerFactory::RegisterCompiler(new CompilerGDC);

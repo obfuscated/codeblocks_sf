@@ -1920,6 +1920,9 @@
 		<Unit filename="plugins/compilergcc/resources/compilers/options_common_re-gf.xml">
 			<Option target="Compiler" />
 		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_common_re-iar.xml">
+			<Option target="Compiler" />
+		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_common_re-msvc.xml">
 			<Option target="Compiler" />
 		</Unit>
@@ -1960,6 +1963,9 @@
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_iar8051.xml">
+			<Option target="Compiler" />
+		</Unit>
+		<Unit filename="plugins/compilergcc/resources/compilers/options_iararm.xml">
 			<Option target="Compiler" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/resources/compilers/options_icc.xml">

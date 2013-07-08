@@ -8,14 +8,15 @@
 
 #include <compiler.h>
 
-class CompilerIAR8051 : public Compiler
+class CompilerIAR : public Compiler
 {
     public:
-        CompilerIAR8051();
-        virtual ~CompilerIAR8051();
+        CompilerIAR(wxString arch);
+        virtual ~CompilerIAR();
         virtual AutoDetectResult AutoDetectInstallationDir();
     protected:
         virtual Compiler* CreateCopy();
+        wxString m_Arch;
     private:
 };
 
