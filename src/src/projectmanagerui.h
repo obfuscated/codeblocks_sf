@@ -122,6 +122,16 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
           * then it wraps and goes to the top of the list.
           */
         void MoveProjectDown(cbProject* project, bool warpAround = false);
+
+        /** (Re)build the project tree.
+          * @param tree The wxTreeCtrl to use.
+          * @param root The tree item to use as root. The project is built as a child of this item.
+          * @param ptvs The visual style of the project tree
+          * @param fgam If not NULL, use these file groups and masks for virtual folders.
+          */
+        void BuildProjectTree(cbProject *project, cbTreeCtrl* tree, const wxTreeItemId& root,
+                              int ptvs, FilesGroupsAndMasks* fgam);
+
     private:
         cbAuiNotebook*       m_pNotebook;
         cbTreeCtrl*          m_pTree;

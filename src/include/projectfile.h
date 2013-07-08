@@ -203,6 +203,9 @@ class ProjectFile
         /** Returns the wxTreeItemId for the file */
         const wxTreeItemId& GetTreeItemId() const { return m_TreeItemId; }
 
+        /** Sets the tree item id for the file. Should not be called by users! */
+        void SetTreeItemId(wxTreeItemId id) { m_TreeItemId = id; }
+
         /** Compare relative names of projectfiles.
           * Static helper function to sort array of projectfiles.
           * Needed because the order of files in a hashset is not guaranteed.

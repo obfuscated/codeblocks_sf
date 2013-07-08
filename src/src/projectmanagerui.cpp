@@ -104,6 +104,17 @@ const int idNB_TabTop    = wxNewId();
 const int idNB_TabBottom = wxNewId();
 } // anonymous namespace
 
+namespace
+{
+bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
+bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxTreeItemId to);
+bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree, wxTreeItemId parent_node,
+                               const wxString& virtual_folder);
+void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
+bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name);
+bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
+} // anonymous namespace
+
 
 BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_TREE_BEGIN_DRAG(ID_ProjectManager,       ProjectManagerUI::OnTreeBeginDrag)
@@ -306,7 +317,7 @@ void ProjectManagerUI::RebuildTree()
         cbProject* project = projects->Item(i);
         if (project)
         {
-            project->BuildTree(m_pTree, m_TreeRoot, m_TreeVisualState, prjManager->GetFilesGroupsAndMasks());
+            BuildProjectTree(project, m_pTree, m_TreeRoot, m_TreeVisualState, prjManager->GetFilesGroupsAndMasks());
             m_pTree->SetItemBold(project->GetProjectNode(), project == prjManager->GetActiveProject());
         }
     }
@@ -406,7 +417,7 @@ void ProjectManagerUI::FinishLoadingProject(cbProject *project, bool newAddition
     if (newAddition)
     {
         ProjectManager *prjManager = Manager::Get()->GetProjectManager();
-        project->BuildTree(m_pTree, m_TreeRoot, m_TreeVisualState, prjManager->GetFilesGroupsAndMasks());
+        BuildProjectTree(project, m_pTree, m_TreeRoot, m_TreeVisualState, prjManager->GetFilesGroupsAndMasks());
     }
     else
         RebuildTree();
@@ -910,7 +921,7 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
             return;
 
         // allow only if the project approves
-        if (!prj->CanDragNode(m_pTree, id))
+        if (!ProjectCanDragNode(prj, m_pTree, id))
             return;
 
     }
@@ -958,7 +969,7 @@ void ProjectManagerUI::OnTreeEndDrag(wxTreeEvent& event)
     }
 
     // allow only if the project approves
-    if (!prjTo->NodeDragged(m_pTree, m_DraggingSelection, to))
+    if (!ProjectNodeDragged(prjTo, m_pTree, m_DraggingSelection, to))
         return;
 
     event.Allow();
@@ -1430,7 +1441,7 @@ void ProjectManagerUI::OnRemoveFileFromProject(wxCommandEvent& event)
         if (prj->GetCommonTopLevelPath() == oldpath && !is_virtual)
             m_pTree->Delete(sel);
         else if (is_virtual)
-            prj->VirtualFolderDeleted(m_pTree, sel);
+            ProjectVirtualFolderDeleted(prj, m_pTree, sel);
         RebuildTree();
     }
 }
@@ -1981,7 +1992,7 @@ void ProjectManagerUI::OnAddVirtualFolder(cb_unused wxCommandEvent& event)
     if (!prj)
         return;
 
-    prj->VirtualFolderAdded(m_pTree, sel, fld);
+    ProjectVirtualFolderAdded(prj, m_pTree, sel, fld);
 //    RebuildTree();
 }
 
@@ -1999,7 +2010,7 @@ void ProjectManagerUI::OnDeleteVirtualFolder(cb_unused wxCommandEvent& event)
     if (!prj)
         return;
 
-    prj->VirtualFolderDeleted(m_pTree, sel);
+    ProjectVirtualFolderDeleted(prj, m_pTree, sel);
     RebuildTree();
 }
 
@@ -2041,7 +2052,7 @@ void ProjectManagerUI::OnEndEditNode(wxTreeEvent& event)
         return;
     }
 
-    if (!prj->VirtualFolderRenamed(m_pTree, event.GetItem(), event.GetLabel()))
+    if (!ProjectVirtualFolderRenamed(prj, m_pTree, event.GetItem(), event.GetLabel()))
         event.Veto();
 //    RebuildTree();
 }
@@ -2359,4 +2370,692 @@ void ProjectManagerUI::CheckForExternallyModifiedProjects()
         } // end for : idx : idxProject
     }
     m_isCheckingForExternallyModifiedProjects = false;
+}
+
+
+namespace
+{
+
+static void ProjectTreeSortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& parent)
+{
+    wxTreeItemIdValue cookie = 0;
+
+    tree->SortChildren(parent);
+
+    wxTreeItemId current = tree->GetFirstChild(parent, cookie);
+    while (current && tree->ItemHasChildren(current))
+    {
+        ProjectTreeSortChildrenRecursive(tree, current);
+        current = tree->GetNextChild(parent, cookie);
+    }
+}
+
+// helper function used by AddTreeNode
+static wxString GetRelativeFolderPath(wxTreeCtrl* tree, wxTreeItemId parent)
+{
+    wxString fld;
+    while (parent.IsOk())
+    {
+        FileTreeData* ftd = (FileTreeData*)tree->GetItemData(parent);
+        if (   !ftd
+            || (   (ftd->GetKind() != FileTreeData::ftdkFolder)
+                && (ftd->GetKind() != FileTreeData::ftdkVirtualFolder) ) )
+            break;
+        fld.Prepend(tree->GetItemText(parent) + wxFILE_SEP_PATH);
+        parent = tree->GetItemParent(parent);
+    }
+    return fld;
+}
+
+wxTreeItemId ProjectFindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text, const wxTreeItemId& parent, bool in_folders)
+{
+    wxTreeItemId result;
+
+    if (tree && parent.IsOk())
+    {
+        wxTreeItemIdValue cookie = 0;
+
+        int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
+        int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+        wxTreeItemId last;
+        wxTreeItemId child = tree->GetFirstChild(parent, cookie);
+        while (child)
+        {
+            bool is_folder = tree->GetItemImage(child) == fldIdx || tree->GetItemImage(child) == vfldIdx;
+
+            if (in_folders)
+            {
+                if (!is_folder || text.CmpNoCase(tree->GetItemText(child)) < 0)
+                {
+                    result = last;
+                    break;
+                }
+            }
+            else
+            {
+                if (!is_folder && text.CmpNoCase(tree->GetItemText(child)) < 0)
+                {
+                    result = last;
+                    break;
+                }
+            }
+
+            last = child;
+            child = tree->GetNextChild(parent, cookie);
+        }
+        if (!result.IsOk())
+            result = last;
+    }
+
+    return result;
+}
+
+wxTreeItemId ProjectAddTreeNode(cbProject *project, wxTreeCtrl* tree,  const wxString& text, const wxTreeItemId& parent,
+                                bool useFolders, FileTreeData::FileTreeDataKind folders_kind, bool compiles, int image,
+                                FileTreeData* data)
+{
+    // see if the text contains any path info, e.g. plugins/compilergcc/compilergcc.cpp
+    // in that case, take the first element (plugins in this example), create a sub-folder
+    // with the same name and recurse with the result...
+
+    wxTreeItemId ret;
+
+    if (text.IsEmpty())
+        return ret;
+
+    wxString path = text;
+
+    // special case for windows and files on a different drive
+    if ( platform::windows && (path.Length() > 1) && (path.GetChar(1) == _T(':')) )
+        path.Remove(1, 1);
+
+    // avoid empty node names in case of UNC paths, then, at least the first two chars are slashes
+    while ((path.Length() > 1) && (path.GetChar(0) == _T('\\') || path.GetChar(0) == _T('/')) )
+        path.Remove(0, 1);
+
+    if (path.IsEmpty())
+        return ret;
+
+    int pos = path.Find(_T('/'));
+    if (pos == -1)
+        pos = path.Find(_T('\\'));
+    if (useFolders && pos >= 0)
+    {
+        // ok, we got it. now split it up and re-curse
+        wxString folder = path.Left(pos);
+        // avoid consecutive path separators
+        while (path.GetChar(pos + 1) == _T('/') || path.GetChar(pos + 1) == _T('\\'))
+            ++pos;
+        path = path.Right(path.Length() - pos - 1);
+
+        wxTreeItemIdValue cookie = 0;
+
+        wxTreeItemId newparent = tree->GetFirstChild(parent, cookie);
+        while (newparent)
+        {
+            wxString itemText = tree->GetItemText(newparent);
+            if (itemText.Matches(folder))
+                break;
+            newparent = tree->GetNextChild(parent, cookie);
+        }
+
+        if (!newparent)
+        {
+            // in order not to override wxTreeCtrl to sort alphabetically but the
+            // folders be always on top, we just search here where to put the new folder...
+            int fldIdx  = Manager::Get()->GetProjectManager()->FolderIconIndex();
+            int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+
+            newparent = ProjectFindNodeToInsertAfter(tree, folder, parent, true);
+
+            FileTreeData* ftd = new FileTreeData(*data);
+            ftd->SetKind(folders_kind);
+            if (folders_kind != FileTreeData::ftdkVirtualFolder)
+                ftd->SetFolder(project->GetCommonTopLevelPath() + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+            else
+                ftd->SetFolder(GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
+            ftd->SetProjectFile(0);
+            int idx = folders_kind != FileTreeData::ftdkVirtualFolder ? fldIdx : vfldIdx;
+            newparent = tree->InsertItem(parent, newparent, folder, idx, idx, ftd);
+        }
+        ret = ProjectAddTreeNode(project, tree, path, newparent, true, folders_kind, compiles, image, data);
+    }
+    else
+    {
+        ret = tree->AppendItem(parent, text, image, image, data);
+        if (!compiles)
+        {
+            ColourManager *manager = Manager::Get()->GetColourManager();
+            tree->SetItemTextColour(ret, manager->GetColour(wxT("project_tree_non_source_files")));
+        }
+    }
+    return ret;
+}
+
+bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
+{
+    // what item do we start dragging?
+    if (!node.IsOk())
+        return false;
+
+    // if no data associated with it, disallow
+    FileTreeData* ftd = (FileTreeData*)tree->GetItemData(node);
+    if (!ftd)
+        return false;
+
+    // if not ours, disallow
+    if (ftd->GetProject() != project)
+        return false;
+
+    // allow only if it is a file or a virtual folder
+    return (   (ftd->GetKind() == FileTreeData::ftdkFile)
+            || (ftd->GetKind() == FileTreeData::ftdkVirtualFolder) );
+}
+
+void ProjectCopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent)
+{
+    // first, some sanity checks
+    if (!tree || !item.IsOk() || !new_parent.IsOk())
+        return;
+
+    FileTreeData* ftd       = (FileTreeData*)tree->GetItemData(item);
+    FileTreeData* ftd_moved = ftd ? new FileTreeData(*ftd) : 0;
+    int           idx       = tree->GetItemImage(item); // old image
+    wxColour      col       = tree->GetItemTextColour(item); // old colour
+
+    wxTreeItemId insert = ProjectFindNodeToInsertAfter(tree, tree->GetItemText(item), new_parent, ftd && ftd->GetKind() == FileTreeData::ftdkVirtualFolder);
+    wxTreeItemId target = tree->InsertItem(new_parent, insert, tree->GetItemText(item), idx, idx, ftd_moved);
+    tree->SetItemTextColour(target, col);
+
+    // recurse for folders
+    if (tree->ItemHasChildren(item))
+    {
+        // vfolder: recurse for files all contained files virtual path
+        wxTreeItemIdValue cookie;
+        wxTreeItemId child = tree->GetFirstChild(item, cookie);
+        while (child.IsOk())
+        {
+            ProjectCopyTreeNodeRecursively(tree, child, target);
+            child = tree->GetNextChild(item, cookie);
+        }
+    }
+
+    if (!tree->IsExpanded(new_parent))
+        tree->Expand(new_parent);
+
+    if (ftd_moved && ftd_moved->GetProjectFile())
+        ftd_moved->GetProjectFile()->virtual_path = GetRelativeFolderPath(tree, new_parent);
+}
+
+bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to)
+{
+    FileTreeData* ftdFrom = static_cast<FileTreeData*>(tree->GetItemData(from));
+    FileTreeData* ftdTo = static_cast<FileTreeData*>(tree->GetItemData(to));
+
+    wxString sep = wxString(wxFileName::GetPathSeparator());
+    wxChar sepChar = wxFileName::GetPathSeparator();
+    wxString fromFolderPath = ftdFrom->GetFolder();
+    wxString toFolderPath = ftdTo->GetFolder();
+
+    wxString fromFolder = fromFolderPath;
+    fromFolder = fromFolder.RemoveLast();
+    fromFolder = fromFolder.AfterLast(sepChar) + sep;
+    wxString toFolder = toFolderPath;
+    toFolder = toFolder.RemoveLast();
+    toFolder = toFolder.AfterLast(sepChar) + sep;
+
+    if (ftdFrom->GetKind() == FileTreeData::ftdkVirtualFolder && ftdTo->GetKind() == FileTreeData::ftdkVirtualFolder)
+    {
+        const wxArrayString &oldArray = project->GetVirtualFolders();
+        wxArrayString newFolders;
+        for (size_t i = 0; i < oldArray.GetCount(); ++i)
+        {
+            wxString item = oldArray[i];
+            wxString toFolderStr;
+            if (toFolderPath.StartsWith(fromFolderPath.BeforeFirst(sepChar)))
+            {
+                // The virtual folder is drageed under same root
+                int posFrom = item.Find(fromFolderPath);
+                if (posFrom != wxNOT_FOUND)
+                {
+                    wxString fromFolderStr = item.Mid(posFrom);
+                    item = item.Left(posFrom);
+                    if (!item.IsEmpty())
+                        newFolders.Add(item);
+                }
+                else if (item.IsSameAs(toFolderPath))
+                {
+                    // First add it to folder structure
+                    newFolders.Add(item);
+                    wxString fromFolderStr = fromFolderPath;
+                    fromFolderStr = fromFolderStr.RemoveLast();
+                    fromFolderStr = fromFolderStr.AfterLast(wxFileName::GetPathSeparator());
+                    newFolders.Add(item + fromFolderStr + sep);
+                }
+                else
+                    newFolders.Add(item);
+            }
+            else
+            {
+                // A virtual folder has been dropped from a different place
+                if (item.Find(toFolderPath + fromFolder) != wxNOT_FOUND)
+                {
+                    cbMessageBox(_T("Another Virtual folder with same name exists in the destination folder!"),
+                                 _T("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
+                    return false;
+                }
+                if (item.StartsWith(toFolderPath.BeforeFirst(sepChar)))
+                    newFolders.Add(item);
+                else if (item.StartsWith(fromFolderPath.BeforeFirst(sepChar)))
+                {
+                    int pos = item.Find(fromFolder);
+                    if (pos == 0)
+                    {
+                        if (!toFolderPath.IsEmpty())
+                            newFolders.Add(toFolderPath + item);
+                    }
+                    else
+                    {
+                        wxString temp = item.Left(pos);
+                        newFolders.Add(item.Left(pos));
+                        if (!toFolderPath.IsEmpty())
+                            newFolders.Add(toFolderPath + item.Mid(pos));
+                    }
+                }
+            }
+        }
+
+        project->SetVirtualFolders(newFolders);
+    }
+    else if (ftdFrom->GetKind() == FileTreeData::ftdkVirtualFolder && ftdTo->GetKind() == FileTreeData::ftdkProject)
+    {
+        const wxArrayString &oldArray = project->GetVirtualFolders();
+        wxArrayString newFolders;
+
+        newFolders.Add(fromFolder);
+
+        for (size_t i = 0; i < oldArray.GetCount(); ++i)
+        {
+            wxString item = oldArray[i];
+            if (item.StartsWith(fromFolder))
+            {
+                // We can't overwrite an existing folder
+                cbMessageBox(_T("Another Virtual folder with same name exists in the Project tree!"),
+                             _T("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
+                return false;
+            }
+            else if (item.StartsWith(fromFolderPath))
+            {
+                int pos = item.Find(fromFolderPath);
+                if (pos != wxNOT_FOUND)
+                {
+                    item = item.Mid(pos + fromFolderPath.Length());
+                    if (item.Length() > 1)
+                    {
+                        item = item.Prepend(fromFolder);
+                        if (newFolders.Index(item) == wxNOT_FOUND)
+                            newFolders.Add(item);
+                    }
+                    else
+                        continue;
+                }
+                else
+                    newFolders.Add(item);
+            }
+            else
+                newFolders.Add(item);
+        }
+
+        project->SetVirtualFolders(newFolders);
+    }
+    return true;
+}
+
+bool ProjectNodeDragged(cbProject* project, wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxTreeItemId to)
+{
+    // what items did we drag?
+    if (!to.IsOk())
+        return false;
+
+    // if no data associated with it, disallow
+    FileTreeData* ftdTo = (FileTreeData*)tree->GetItemData(to);
+    if (!ftdTo)
+        return false;
+
+    // if not ours, disallow
+    if (ftdTo->GetProject() != project)
+        return false;
+
+    // allow only if a file or vfolder was dragged on a file, another vfolder or the project itself
+    if (   (ftdTo->GetKind() != FileTreeData::ftdkFile)
+        && (ftdTo->GetKind() != FileTreeData::ftdkVirtualFolder)
+        && (ftdTo->GetKind() != FileTreeData::ftdkProject) )
+    {
+        return false;
+    }
+
+    wxTreeItemId parentTo = ftdTo->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(to) : to;
+
+    // do all the checking for all selected items first (no movement yet, just checking!)
+    size_t count = fromArray.Count();
+    for (size_t i = 0; i < count; i++)
+    {
+        wxTreeItemId from = fromArray[i];
+        if (!from.IsOk())
+            return false;
+
+        // if no data associated with it, disallow
+        FileTreeData* ftdFrom = (FileTreeData*)tree->GetItemData(from);
+        if (!ftdFrom)
+            return false;
+
+        // if not ours, disallow
+        if (ftdFrom->GetProject() != project)
+            return false;
+
+        // allow only if a file or vfolder was dragged on a file, another vfolder or the project itself
+        if (   (ftdFrom->GetKind() != FileTreeData::ftdkFile)
+            && (ftdFrom->GetKind() != FileTreeData::ftdkVirtualFolder) )
+            return false;
+
+        // don't drag under the same parent
+        wxTreeItemId parentFrom = ftdFrom->GetKind() == FileTreeData::ftdkFile ? tree->GetItemParent(from) : from;
+        if (parentFrom == parentTo)
+            return false;
+
+        // A special check for virtual folders.
+        if (   (ftdFrom->GetKind() == FileTreeData::ftdkVirtualFolder)
+            || (ftdTo->GetKind()   == FileTreeData::ftdkVirtualFolder) )
+        {
+            wxTreeItemId root = tree->GetRootItem();
+            wxTreeItemId toParent = tree->GetItemParent(to);
+            while (toParent != root)
+            {
+                if (toParent == from)
+                    return false;
+                toParent = tree->GetItemParent(toParent);
+            }
+            if (!ProjectVirtualFolderDragged(project, tree, from, to))
+                return false;
+        }
+    }
+
+    // now that we have successfully done the checking, do the moving
+    for (size_t i = 0; i < count; i++)
+    {
+        wxTreeItemId from = fromArray[i];
+        // finally; make the move
+        ProjectCopyTreeNodeRecursively(tree, from, parentTo);
+        // remove old node
+        tree->Delete(from);
+    }
+
+    project->SetModified(true);
+
+    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
+
+    return true;
+}
+
+bool ProjectHasVirtualFolder(const wxString &folderName, const wxArrayString &virtualFolders)
+{
+    for (size_t i = 0; i < virtualFolders.GetCount(); ++i)
+    {
+        if (virtualFolders[i].StartsWith(folderName))
+        {
+            cbMessageBox(_("A virtual folder with the same name already exists."),
+                        _("Error"), wxICON_WARNING);
+            return false;
+        }
+    }
+    return true;
+}
+
+bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
+                               wxTreeItemId parent_node, const wxString& virtual_folder)
+{
+    wxString foldername = GetRelativeFolderPath(tree, parent_node);
+    foldername << virtual_folder;
+    foldername.Replace(_T("/"),  wxString(wxFILE_SEP_PATH), true);
+    foldername.Replace(_T("\\"), wxString(wxFILE_SEP_PATH), true);
+    if (foldername.Last() != wxFILE_SEP_PATH)
+        foldername << wxFILE_SEP_PATH;
+
+    const wxArrayString &virtualFolders = project->GetVirtualFolders();
+    if (!ProjectHasVirtualFolder(foldername, virtualFolders))
+        return false;
+    project->AppendUniqueVirtualFolder(foldername);
+
+    FileTreeData* ftd = new FileTreeData(project, FileTreeData::ftdkVirtualFolder);
+    ftd->SetProjectFile(0);
+    ftd->SetFolder(foldername);
+
+    int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+
+    ProjectAddTreeNode(project, tree, foldername, project->GetProjectNode(), true,
+                       FileTreeData::ftdkVirtualFolder, true, vfldIdx, ftd);
+    if (!tree->IsExpanded(parent_node))
+        tree->Expand(parent_node);
+
+    project->SetModified(true);
+
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderAdded: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
+    return true;
+}
+
+void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
+{
+    // what item do we start dragging?
+    if (!node.IsOk())
+        return;
+
+    // if no data associated with it, disallow
+    FileTreeData* ftd = (FileTreeData*)tree->GetItemData(node);
+    if (!ftd)
+        return;
+
+    // if not ours, disallow
+    if (ftd->GetProject() != project)
+        return;
+
+    wxString foldername        = GetRelativeFolderPath(tree, node);
+    wxString parent_foldername = GetRelativeFolderPath(tree, tree->GetItemParent(node));
+
+    project->RemoveVirtualFolders(foldername);
+    if (!parent_foldername.IsEmpty())
+        project->AppendUniqueVirtualFolder(parent_foldername);
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderDeleted: %s: %s"), foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
+}
+
+bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name)
+{
+    if (new_name.IsEmpty())
+        return false;
+
+    if (new_name.First(_T(';')) != wxNOT_FOUND ||
+        new_name.First(_T('/')) != wxNOT_FOUND ||
+        new_name.First(_T('\\')) != wxNOT_FOUND)
+    {
+        cbMessageBox(_("A virtual folder name cannot contain these special characters: \";\", \"\\\" or \"/\"."),
+                    _("Error"), wxICON_WARNING);
+        return false;
+    }
+
+    // what item are we renaming?
+    if (!node.IsOk())
+        return false;
+
+    // is it a different name?
+    if (tree->GetItemText(node) == new_name)
+        return false;
+
+    // if no data associated with it, disallow
+    FileTreeData* ftd = (FileTreeData*)tree->GetItemData(node);
+    if (!ftd)
+        return false;
+
+    // if not ours, disallow
+    if (ftd->GetProject() != project)
+        return false;
+
+    wxString old_foldername = GetRelativeFolderPath(tree, node);
+    wxString new_foldername = GetRelativeFolderPath(tree, tree->GetItemParent(node)) + new_name + wxFILE_SEP_PATH;
+
+    const wxArrayString &virtualFolders = project->GetVirtualFolders();
+    if (!ProjectHasVirtualFolder(new_foldername, virtualFolders))
+        return false;
+
+    project->ReplaceVirtualFolder(old_foldername, new_foldername);
+
+//    Manager::Get()->GetLogManager()->DebugLog(F(_T("VirtualFolderRenamed: %s to %s: %s"), old_foldername.c_str(), new_foldername.c_str(), GetStringFromArray(m_VirtualFolders, _T(";")).c_str()));
+    return true;
+}
+
+} // anonymous namespace
+
+void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
+{
+    if (!tree)
+        return;
+
+#ifdef fileload_measuring
+    wxStopWatch sw;
+#endif
+    int  fldIdx    = Manager::Get()->GetProjectManager()->FolderIconIndex();
+    int  vfldIdx   = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+    bool read_only = (!wxFile::Access(project->GetFilename().c_str(), wxFile::write));
+    int  prjIdx    = Manager::Get()->GetProjectManager()->ProjectIconIndex(read_only);
+
+    tree->SetCompareFunction(ptvs);
+
+    // add our project's root item
+    FileTreeData* ftd = new FileTreeData(project, FileTreeData::ftdkProject);
+    project->SetProjectNode(tree->AppendItem(root, project->GetTitle(), prjIdx, prjIdx, ftd));
+    wxTreeItemId  others, generated;
+    others = generated = project->GetProjectNode();
+    wxTreeItemId* pGroupNodes = nullptr; // file group nodes (if enabled)
+
+    // create file-type categories nodes (if enabled)
+    bool do_categorise = ((ptvs&ptvsCategorize) && fgam);
+    if (do_categorise)
+    {
+        // obtain all group nodes available from "file groups and masks"
+        pGroupNodes = new wxTreeItemId[fgam->GetGroupsCount()];
+        for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
+        {
+            ftd = new FileTreeData(project, FileTreeData::ftdkVirtualGroup);
+            ftd->SetFolder(fgam->GetGroupName(i));
+            pGroupNodes[i] = tree->AppendItem(project->GetProjectNode(), fgam->GetGroupName(i), fldIdx, fldIdx, ftd);
+        }
+        // add a default category "Generated" for all auto-generated file types
+        ftd       = new FileTreeData(project, FileTreeData::ftdkVirtualGroup);
+        generated = tree->AppendItem(project->GetProjectNode(), _("Auto-generated"), fldIdx, fldIdx, ftd);
+
+        // add a default category "Others" for all non-matching file-types
+        ftd       = new FileTreeData(project, FileTreeData::ftdkVirtualGroup);
+        others    = tree->AppendItem(project->GetProjectNode(), _("Others"), fldIdx, fldIdx, ftd);
+    }
+
+    // Now add any virtual folders
+    const wxArrayString& virtualFolders = project->GetVirtualFolders();
+    for (size_t i = 0; i < virtualFolders.GetCount(); ++i)
+    {
+        ftd = new FileTreeData(project, FileTreeData::ftdkVirtualFolder);
+        ftd->SetFolder(virtualFolders[i]);
+        ProjectAddTreeNode(project, tree, virtualFolders[i], project->GetProjectNode(), true,
+                           FileTreeData::ftdkVirtualFolder, true, vfldIdx, ftd);
+    }
+
+    // iterate all project files and add them to the tree
+    int count = 0;
+    FilesList &fileList = project->GetFilesList();
+    for (FilesList::iterator it = fileList.begin(); it != fileList.end(); ++it)
+    {
+        ProjectFile* f = *it;
+        ftd = new FileTreeData(project, FileTreeData::ftdkFile);
+        ftd->SetFileIndex(count++);
+        ftd->SetProjectFile(f);
+        ftd->SetFolder(f->file.GetFullPath());
+
+        wxString nodetext = f->relativeToCommonTopLevelPath;
+        FileTreeData::FileTreeDataKind folders_kind = FileTreeData::ftdkFolder;
+
+        // by default, the parent node is the project node (in case of no grouping, no virtual folders)
+        wxTreeItemId parentNode = project->GetProjectNode();
+
+        // now change the parent node for virtual folders and/or if grouping is enabled
+        // first check, if the file is under a virtual folder
+        if (!f->virtual_path.IsEmpty())
+        {
+            nodetext       = f->virtual_path + wxFILE_SEP_PATH + f->file.GetFullName();
+            folders_kind   = FileTreeData::ftdkVirtualFolder;
+            wxString slash = f->virtual_path.Last() == wxFILE_SEP_PATH ? _T("") : wxString(wxFILE_SEP_PATH);
+            ftd->SetFolder(f->virtual_path);
+
+            project->AppendUniqueVirtualFolder(f->virtual_path + slash);
+        }
+        // second check, if files grouping is enabled and find the group parent
+        else if (do_categorise && pGroupNodes)
+        {
+            bool found = false;
+
+            // auto-generated files end up all together
+            if (f->AutoGeneratedBy())
+            {
+                parentNode = generated;
+                found = true;
+            }
+            else // else try to match a group
+            {
+                for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
+                {
+                    wxFileName fname(f->relativeToCommonTopLevelPath);
+                    if (fgam->MatchesMask(fname.GetFullName(), i))
+                    {
+                        parentNode = pGroupNodes[i];
+                        found = true;
+                        break;
+                    }
+                }
+            }
+
+            // if not matched a group, put it in "Others" group
+            if (!found)
+                parentNode = others;
+        }
+
+        // probably remove the path of the entry (depending on settings)
+        if (  !(ptvs&ptvsUseFolders)
+            && (ptvs&ptvsHideFolderName)
+            && (folders_kind != FileTreeData::ftdkVirtualFolder) )
+        {
+            nodetext = f->file.GetFullName();
+        }
+
+        // add file in the tree
+        bool useFolders = (ptvs&ptvsUseFolders) || (folders_kind == FileTreeData::ftdkVirtualFolder);
+        f->SetTreeItemId(ProjectAddTreeNode(project, tree, nodetext, parentNode, useFolders, folders_kind,
+                                            f->compile, (int)f->GetFileState(), ftd));
+    }// iteration of project files
+
+    // finally remove empty tree nodes (like empty groups)
+    if (do_categorise && pGroupNodes)
+    {
+        for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
+        {
+            if (tree->GetChildrenCount(pGroupNodes[i], false) == 0)
+                tree->Delete(pGroupNodes[i]);
+        }
+        if (tree->GetChildrenCount(others, false) == 0)
+            tree->Delete(others);
+        if (tree->GetChildrenCount(generated, false) == 0)
+            tree->Delete(generated);
+    }
+    delete[] pGroupNodes;
+
+    ProjectTreeSortChildrenRecursive(tree, project->GetProjectNode());
+    tree->Expand(project->GetProjectNode());
+#ifdef fileload_measuring
+    Manager::Get()->GetLogManager()->DebugLogError(F(_T("%s::%s:%d  took : %d ms"), cbC2U(__FILE__).c_str(),cbC2U(__PRETTY_FUNCTION__).c_str(), __LINE__, (int)sw.Time()));
+#endif
 }
