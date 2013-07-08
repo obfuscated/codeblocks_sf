@@ -133,34 +133,6 @@ void ProjectManager::SetUI(cbProjectManagerUI *ui)
     m_ui = ui;
 }
 
-int ProjectManager::WorkspaceIconIndex(bool read_only)
-{
-    if (read_only)
-        return (int)fvsWorkspaceReadOnly;
-
-    return (int)fvsWorkspace;
-}
-
-int ProjectManager::ProjectIconIndex(bool read_only)
-{
-    if (read_only)
-        return (int)fvsProjectReadOnly;
-
-    return (int)fvsProject;
-}
-
-int ProjectManager::FolderIconIndex()
-{
-    return (int)fvsFolder;
-}
-
-int ProjectManager::VirtualFolderIconIndex()
-{
-    return (int)fvsVirtualFolder;
-}
-
-
-
 wxString ProjectManager::GetDefaultPath()
 {
     wxString path = Manager::Get()->GetConfigManager(_T("project_manager"))->Read(_T("default_path"), wxEmptyString);

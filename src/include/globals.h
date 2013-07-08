@@ -107,6 +107,25 @@ enum FileVisualState
     fvsLast
 };
 
+class DLLIMPORT cbProjectTreeImages
+{
+    public:
+        static wxImageList* MakeImageList();
+
+        /** @return The workspace icon index in the image list.
+            @param  read_only Return the read-only icon for a workspace?
+         */
+        static int WorkspaceIconIndex(bool read_only = false);
+        /** @return The project icon index in the image list.
+            @param  read_only Return the read-only icon for a project?
+         */
+        static int ProjectIconIndex(bool read_only = false);
+        /** @return The folder icon index in the image list. */
+        static int FolderIconIndex();
+        /** @return The virtual folder icon index in the image list. */
+        static int VirtualFolderIconIndex();
+};
+
 /** These are valid values for the visual style of the project tree.
     They can be OR'ed to modify the representation of the project tree.
 */

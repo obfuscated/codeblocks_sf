@@ -313,7 +313,7 @@ void ProjectManagerUI::RebuildTree()
     }
     if (title.IsEmpty())
         title = _("Workspace");
-    m_TreeRoot = m_pTree->AddRoot(title, prjManager->WorkspaceIconIndex(read_only), prjManager->WorkspaceIconIndex(read_only));
+    m_TreeRoot = m_pTree->AddRoot(title, cbProjectTreeImages::WorkspaceIconIndex(read_only), cbProjectTreeImages::WorkspaceIconIndex(read_only));
     for (int i = 0; i < count; ++i)
     {
         cbProject* project = projects->Item(i);
@@ -2417,8 +2417,8 @@ wxTreeItemId ProjectFindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text
     {
         wxTreeItemIdValue cookie = 0;
 
-        int fldIdx = Manager::Get()->GetProjectManager()->FolderIconIndex();
-        int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+        int fldIdx = cbProjectTreeImages::FolderIconIndex();
+        int vfldIdx = cbProjectTreeImages::VirtualFolderIconIndex();
         wxTreeItemId last;
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child)
@@ -2505,8 +2505,8 @@ wxTreeItemId ProjectAddTreeNode(cbProject *project, wxTreeCtrl* tree,  const wxS
         {
             // in order not to override wxTreeCtrl to sort alphabetically but the
             // folders be always on top, we just search here where to put the new folder...
-            int fldIdx  = Manager::Get()->GetProjectManager()->FolderIconIndex();
-            int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+            int fldIdx  = cbProjectTreeImages::FolderIconIndex();
+            int vfldIdx = cbProjectTreeImages::VirtualFolderIconIndex();
 
             newparent = ProjectFindNodeToInsertAfter(tree, folder, parent, true);
 
@@ -2832,7 +2832,7 @@ bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
     ftd->SetProjectFile(0);
     ftd->SetFolder(foldername);
 
-    int vfldIdx = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+    int vfldIdx = cbProjectTreeImages::VirtualFolderIconIndex();
 
     ProjectAddTreeNode(project, tree, foldername, project->GetProjectNode(), true,
                        FileTreeData::ftdkVirtualFolder, true, vfldIdx, ftd);
@@ -2948,10 +2948,10 @@ void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree, co
 #ifdef fileload_measuring
     wxStopWatch sw;
 #endif
-    int  fldIdx    = Manager::Get()->GetProjectManager()->FolderIconIndex();
-    int  vfldIdx   = Manager::Get()->GetProjectManager()->VirtualFolderIconIndex();
+    int  fldIdx    = cbProjectTreeImages::FolderIconIndex();
+    int  vfldIdx   = cbProjectTreeImages::VirtualFolderIconIndex();
     bool read_only = (!wxFile::Access(project->GetFilename().c_str(), wxFile::write));
-    int  prjIdx    = Manager::Get()->GetProjectManager()->ProjectIconIndex(read_only);
+    int  prjIdx    = cbProjectTreeImages::ProjectIconIndex(read_only);
 
     tree->SetCompareFunction(ptvs);
 

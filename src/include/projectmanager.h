@@ -400,23 +400,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
 
-        // FIXME (obfuscated#): NO_UI: Move to the ui class
-        /** @return The workspace icon index in the image list.
-            @param  read_only Return the read-only icon for a workspace?
-         */
-        int WorkspaceIconIndex(bool read_only = false);
-        // FIXME (obfuscated#): NO_UI: Move to the ui class
-        /** @return The project icon index in the image list.
-            @param  read_only Return the read-only icon for a project?
-         */
-        int ProjectIconIndex(bool read_only = false);
-        // FIXME (obfuscated#): NO_UI: Move to the ui class
-        /** @return The folder icon index in the image list. */
-        int FolderIconIndex();
-        // FIXME (obfuscated#): NO_UI: Move to the ui class
-        /** @return The virtual folder icon index in the image list. */
-        int VirtualFolderIconIndex();
-
         /** Sends message to the plugins that the workspace has been changed */
         void WorkspaceChanged();
 

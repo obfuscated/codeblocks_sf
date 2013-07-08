@@ -14,6 +14,7 @@
     #include <wx/filename.h>
     #include <wx/filesys.h>
     #include <wx/image.h>
+    #include <wx/imaglist.h>
     #include <wx/listctrl.h>
     #include <wx/menu.h>
 
@@ -1373,4 +1374,78 @@ int cbMessageBox(const wxString& message, const wxString& caption, int style, wx
     PlaceWindow(&dlg);
     // wxMessage*Dialog* returns any of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO
     return dlg.ShowModal();
+}
+
+wxImageList* cbProjectTreeImages::MakeImageList()
+{
+    static const wxString imgs[] =
+    {
+        // NOTE: Keep in sync with FileVisualState in globals.h!
+
+        // The following are related to (editable, source-) file states
+        _T("file.png"),                  // fvsNormal
+        _T("file-missing.png"),          // fvsMissing,
+        _T("file-modified.png"),         // fvsModified,
+        _T("file-readonly.png"),         // fvsReadOnly,
+
+        // The following are related to version control systems (vc)
+        _T("rc-file-added.png"),         // fvsVcAdded,
+        _T("rc-file-conflict.png"),      // fvsVcConflict,
+        _T("rc-file-missing.png"),       // fvsVcMissing,
+        _T("rc-file-modified.png"),      // fvsVcModified,
+        _T("rc-file-outofdate.png"),     // fvsVcOutOfDate,
+        _T("rc-file-uptodate.png"),      // fvsVcUpToDate,
+        _T("rc-file-requireslock.png"),  // fvsVcRequiresLock,
+        _T("rc-file-external.png"),      // fvsVcExternal,
+        _T("rc-file-gotlock.png"),       // fvsVcGotLock,
+        _T("rc-file-lockstolen.png"),    // fvsVcLockStolen,
+        _T("rc-file-mismatch.png"),      // fvsVcMismatch,
+        _T("rc-file-noncontrolled.png"), // fvsVcNonControlled,
+
+        // The following are related to C::B workspace/project/folder/virtual
+        _T("workspace.png"),             // fvsWorkspace,         WorkspaceIconIndex()
+        _T("workspace-readonly.png"),    // fvsWorkspaceReadOnly, WorkspaceIconIndex(true)
+        _T("project.png"),               // fvsProject,           ProjectIconIndex()
+        _T("project-readonly.png"),      // fvsProjectReadOnly,   ProjectIconIndex(true)
+        _T("folder_open.png"),           // fvsFolder,            FolderIconIndex()
+        _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
+
+        wxEmptyString
+    };
+    wxBitmap bmp;
+    wxImageList *images = new wxImageList(16, 16);
+    wxString prefix = ConfigManager::ReadDataPath() + _T("/images/");
+
+    for (int i = 0; !imgs[i].IsEmpty(); ++i)
+    {
+        bmp = cbLoadBitmap(prefix + imgs[i], wxBITMAP_TYPE_PNG); // workspace
+        images->Add(bmp);
+    }
+    return images;
+}
+
+int cbProjectTreeImages::WorkspaceIconIndex(bool read_only)
+{
+    if (read_only)
+        return (int)fvsWorkspaceReadOnly;
+
+    return (int)fvsWorkspace;
+}
+
+int cbProjectTreeImages::ProjectIconIndex(bool read_only)
+{
+    if (read_only)
+        return (int)fvsProjectReadOnly;
+
+    return (int)fvsProject;
+}
+
+int cbProjectTreeImages::FolderIconIndex()
+{
+    return (int)fvsFolder;
+}
+
+int cbProjectTreeImages::VirtualFolderIconIndex()
+{
+    return (int)fvsVirtualFolder;
 }
