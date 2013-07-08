@@ -102,7 +102,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						projectloader.cpp \
 						projectloader_hooks.cpp \
 						projectmanager.cpp \
-						projectoptionsdlg.cpp \
 						projectsfilemasksdlg.cpp \
 						projecttemplateloader.cpp \
 						scriptingmanager.cpp \

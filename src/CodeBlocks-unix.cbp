@@ -880,9 +880,6 @@
 		<Unit filename="include/projectmanager.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/projectoptionsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/projectsfilemasksdlg.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2527,9 +2524,6 @@
 		<Unit filename="sdk/projectmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/projectoptionsdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/projectsfilemasksdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2771,9 +2765,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/project_manager_file_types.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/project_options.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/projectfile_options.xrc">
@@ -3653,6 +3644,12 @@
 		<Unit filename="src/projectmanagerui.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/projectoptionsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/projectoptionsdlg.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/recentitemslist.cpp">
 			<Option target="src" />
 		</Unit>
@@ -3705,6 +3702,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/print_dialog.xrc">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/project_options.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/resources.rc">

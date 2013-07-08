@@ -114,7 +114,6 @@ ALLHEADERS = annoyingdialog.h \
 				projectloader.h \
 				projectloader_hooks.h \
 				projectmanager.h \
-				projectoptionsdlg.h \
 				projectsfilemasksdlg.h \
 				projecttemplateloader.h \
 				safedelete.h \
