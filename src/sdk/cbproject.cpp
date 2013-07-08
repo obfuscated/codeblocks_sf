@@ -42,7 +42,6 @@
 #endif
 
 #include <map>
-#include "projectoptionsdlg.h"
 #include "projectloader.h"
 #include "projectlayoutloader.h"
 #include "selecttargetdlg.h"
@@ -1109,25 +1108,6 @@ bool cbProject::SaveAllFiles()
             --count;
     }
     return count == 0;
-}
-
-bool cbProject::ShowOptions()
-{
-    ProjectOptionsDlg dlg(Manager::Get()->GetAppWindow(), this);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        // update file details
-        FilesList::iterator it = m_Files.begin();
-        while (it != m_Files.end())
-        {
-            ProjectFile* f = *it++;
-            f->UpdateFileDetails();
-        }
-        NotifyPlugins(cbEVT_PROJECT_OPTIONS_CHANGED);
-        return true;
-    }
-    return false;
 }
 
 int cbProject::SelectTarget(int initial, bool evenIfOne)

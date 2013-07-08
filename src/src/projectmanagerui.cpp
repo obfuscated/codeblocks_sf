@@ -40,6 +40,7 @@
 #include "multiselectdlg.h"
 #include "projectdepsdlg.h"
 #include "projectfileoptionsdlg.h"
+#include "projectoptionsdlg.h"
 #include "projectsfilemasksdlg.h"
 
 namespace
@@ -113,6 +114,7 @@ bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree, wxTreeItemI
 void ProjectVirtualFolderDeleted(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node);
 bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node, const wxString& new_name);
 bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeItemId from, wxTreeItemId to);
+bool ProjectShowOptions(cbProject* project);
 } // anonymous namespace
 
 
@@ -1613,7 +1615,7 @@ void ProjectManagerUI::OnProperties(wxCommandEvent& event)
     if (event.GetId() == idMenuProjectProperties)
     {
         wxString backupTitle = activeProject ? activeProject->GetTitle() : _T("");
-        if (activeProject && activeProject->ShowOptions())
+        if (ProjectShowOptions(activeProject))
         {
             // make sure that cbEVT_PROJECT_ACTIVATE
             // is sent (maybe targets have changed)...
@@ -1631,7 +1633,7 @@ void ProjectManagerUI::OnProperties(wxCommandEvent& event)
 
         cbProject* project = ftd ? ftd->GetProject() : activeProject;
         wxString backupTitle = project ? project->GetTitle() : _T("");
-        if (project && project->ShowOptions() && project == activeProject)
+        if (ProjectShowOptions(project) && project == activeProject)
         {
             // rebuild tree and make sure that cbEVT_PROJECT_ACTIVATE
             // is sent (maybe targets have changed)...
@@ -2911,6 +2913,31 @@ bool ProjectVirtualFolderRenamed(cbProject* project, wxTreeCtrl* tree, wxTreeIte
     return true;
 }
 
+/** Display the project options dialog.
+  * @return True if the dialog was closed with "OK", false if closed with "Cancel".
+  */
+bool ProjectShowOptions(cbProject* project)
+{
+    if (!project)
+        return false;
+    ProjectOptionsDlg dlg(Manager::Get()->GetAppWindow(), project);
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        // update file details
+        FilesList &filesList = project->GetFilesList();
+        for (FilesList::iterator it = filesList.begin(); it != filesList.end(); ++it)
+        {
+            ProjectFile* f = *it;
+            f->UpdateFileDetails();
+        }
+        CodeBlocksEvent event(cbEVT_PROJECT_OPTIONS_CHANGED);
+        event.SetProject(project);
+        Manager::Get()->ProcessEvent(event);
+        return true;
+    }
+    return false;
+}
 } // anonymous namespace
 
 void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)

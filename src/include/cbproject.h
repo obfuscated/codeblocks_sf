@@ -439,11 +439,6 @@ class DLLIMPORT cbProject : public CompileTargetBase
         */
         std::vector<Glob> GetGlobs() const;
 
-        /** Display the project options dialog.
-          * @return True if the dialog was closed with "OK", false if closed with "Cancel".
-          */
-        bool ShowOptions();
-
         /** Convenience function for remembering the project's tree state when refreshing it.
           * @return An array of strings containing the tree-path names of expanded nodes.
           */

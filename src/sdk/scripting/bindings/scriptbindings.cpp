@@ -513,7 +513,7 @@ namespace ScriptBindings
 //                func(&cbProject::SaveAs, "SaveAs"). // *UNSAFE*
                 func(&cbProject::SaveLayout, "SaveLayout").
                 func(&cbProject::LoadLayout, "LoadLayout").
-                func(&cbProject::ShowOptions, "ShowOptions").
+//                func(&cbProject::ShowOptions, "ShowOptions").
                 func(&cbProject::GetCommonTopLevelPath, "GetCommonTopLevelPath").
                 func(&cbProject::GetFilesCount, "GetFilesCount").
                 func(&cbProject::GetFile, "GetFile").
