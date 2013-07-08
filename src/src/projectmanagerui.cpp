@@ -383,6 +383,15 @@ wxTreeItemId ProjectManagerUI::GetTreeSelection()
     return wxTreeItemId();
 }
 
+void ProjectManagerUI::BeginLoadingWorkspace()
+{
+    FreezeTree();
+    m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
+    m_pTree->Expand(m_pTree->GetRootItem());
+    UnfreezeTree();
+}
+
+
 void ProjectManagerUI::FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups)
 {
     if (newAddition)

@@ -36,6 +36,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
 
         void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh);
         void RemoveProject(cbProject *project);
+        void BeginLoadingWorkspace();
         void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups);
         void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle);
 

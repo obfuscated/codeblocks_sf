@@ -57,6 +57,7 @@ class NullProjectManagerUI : public cbProjectManagerUI
         wxTreeItemId GetTreeSelection() { return wxTreeItemId(); }
         void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) {}
         void RemoveProject(cbProject *project) {}
+        void BeginLoadingWorkspace() {}
         void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) {}
         void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) {}
         void ShowFileInTree(ProjectFile &projectFile) {}
@@ -1072,11 +1073,7 @@ bool ProjectManager::BeginLoadingWorkspace()
         return false; // didn't close
     }
 
-// FIXME (obfuscated#1#): Move to the ui class
-//    m_ui->FreezeTree();
-//    m_pTree->AppendItem(m_pTree->GetRootItem(), _("Loading workspace..."));
-//    m_pTree->Expand(m_pTree->GetRootItem());
-//    m_ui->UnfreezeTree();
+    m_ui->BeginLoadingWorkspace();
 
     return true;
 }
