@@ -78,11 +78,25 @@ namespace
             return nullptr;
         if (recreate)
         {
-            wxMenu *subMenu = item->GetSubMenu();
-            while (subMenu->GetMenuItemCount() > 0)
+            wxMenu *menu = item->GetMenu();
+            int pos = wxNOT_FOUND;
+            for (size_t ii = 0; ii < menu->GetMenuItemCount(); ++ii)
             {
-                wxMenuItemList& list=subMenu->GetMenuItems();
-                subMenu->Remove(list.GetFirst()->GetData());
+                if (item == menu->FindItemByPosition(ii))
+                {
+                    pos = ii;
+                    break;
+                }
+            }
+            if (pos != wxNOT_FOUND)
+            {
+                wxMenu *newSubMenu = new wxMenu;
+                wxMenuItem *newItem = new wxMenuItem(menu, item->GetId(), item->GetText(), item->GetHelp(),
+                                                     item->IsCheckable(), newSubMenu);
+                menu->Insert(pos, newItem);
+
+                menu->Destroy(item);
+                return newItem->GetSubMenu();
             }
         }
         return item ? item->GetSubMenu() : nullptr;
