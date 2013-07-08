@@ -476,12 +476,6 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         int SelectTarget(int initial = -1, bool evenIfOne = false);
 
-        /** Rename the project's title in the tree.
-          * @param newname The new title for the project.
-          * @note This does *not* actually alter the project's title. It just changes it on the tree.
-          */
-        void RenameInTree(const wxString &newname);
-
         /** Get a pointer to the currently compiling target.
           * @return While the project is being built, this function returns the currently building
           * target. For all other times, NULL is returned.

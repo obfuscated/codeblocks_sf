@@ -1269,13 +1269,25 @@ void ProjectOptionsDlg::OnCreateImportFileClick(cb_unused wxCommandEvent& event)
     browseD->Enable(chkCD->IsChecked() && cmb->GetSelection() == ttDynamicLib);
 }
 
+
+namespace
+{
+static void UpdateNameInTree(cbProject *project)
+{
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
+    if (!tree || !project->GetProjectNode())
+        return;
+    tree->SetItemText(project->GetProjectNode(), project->GetTitle());
+}
+} // anonymous namespace
+
 void ProjectOptionsDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
         m_Project->SetTitle(XRCCTRL(*this, "txtProjectName", wxTextCtrl)->GetValue());
         m_Project->SetPlatforms(GetPlatformsFromString(XRCCTRL(*this, "txtPlatformProj", wxTextCtrl)->GetValue()));
-        m_Project->RenameInTree(m_Project->GetTitle());
+        UpdateNameInTree(m_Project);
         m_Project->SetMakefile(XRCCTRL(*this, "txtProjectMakefile", wxTextCtrl)->GetValue());
         m_Project->SetMakefileCustom(XRCCTRL(*this, "chkCustomMakefile", wxCheckBox)->GetValue());
         m_Project->SetMakefileExecutionDir(XRCCTRL(*this, "txtExecutionDir", wxTextCtrl)->GetValue());

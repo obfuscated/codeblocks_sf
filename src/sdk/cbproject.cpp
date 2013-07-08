@@ -959,15 +959,6 @@ void cbProject::SetVirtualFolders(const wxArrayString& folders)
     }
 }
 
-void cbProject::RenameInTree(const wxString &newname)
-{
-// FIXME (obfuscated#1#): Reimplement project manager ui
-//    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-//    if (!tree || !m_ProjectNode)
-//        return;
-//    tree->SetItemText(m_ProjectNode, newname);
-}
-
 void cbProject::SaveTreeState(wxTreeCtrl* tree)
 {
     ::SaveTreeState(tree, m_ProjectNode, m_ExpandedNodes, m_SelectedNodes);
