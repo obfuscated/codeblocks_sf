@@ -630,66 +630,6 @@ bool ProjectManager::SaveAllProjects()
     return count == prjCount;
 }
 
-// FIXME (obfuscated#1#): Move to the ui class
-void ProjectManager::MoveProjectUp(cbProject* project, bool warpAround)
-{
-    if (!project)
-        return;
-
-    int idx = m_pProjects->Index(project);
-    if (idx == wxNOT_FOUND)
-        return; // project not opened in project manager???
-
-    if (idx == 0)
-    {
-         if (!warpAround)
-            return;
-        else
-            idx = m_pProjects->Count();
-    }
-    m_pProjects->RemoveAt(idx--);
-    m_pProjects->Insert(project, idx);
-    m_ui->RebuildTree();
-    if (m_pWorkspace)
-        m_pWorkspace->SetModified(true);
-
-// FIXME (obfuscated#1#): Reimplement project manager ui
-//    // re-select the project
-//    wxTreeItemId itemId = project->GetProjectNode();
-//    cbAssert(itemId.IsOk());
-//    m_pTree->SelectItem(itemId);
-}
-
-// FIXME (obfuscated#1#): Move to the ui class
-void ProjectManager::MoveProjectDown(cbProject* project, bool warpAround)
-{
-    if (!project)
-        return;
-
-    int idx = m_pProjects->Index(project);
-    if (idx == wxNOT_FOUND)
-        return; // project not opened in project manager???
-
-    if (idx == (int)m_pProjects->Count() - 1)
-    {
-         if (!warpAround)
-            return;
-        else
-            idx = 0;
-    }
-    m_pProjects->RemoveAt(idx++);
-    m_pProjects->Insert(project, idx);
-    m_ui->RebuildTree();
-    if (m_pWorkspace)
-        m_pWorkspace->SetModified(true);
-
-// FIXME (obfuscated#1#): Reimplement project manager ui
-//    // re-select the project
-//    wxTreeItemId itemId = project->GetProjectNode();
-//    cbAssert(itemId.IsOk());
-//    m_pTree->SelectItem(itemId);
-}
-
 cbWorkspace* ProjectManager::GetWorkspace()
 {
     if (!m_pWorkspace)

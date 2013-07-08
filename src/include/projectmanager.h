@@ -219,20 +219,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         bool QueryCloseProject(cbProject *proj,bool dontsavefiles=false);
 
-        /** Move a project up in the project manager tree. This effectively
-          * re-orders the projects build order.
-          * @param project The project to move up.
-          * @param warpAround If true and the project is at the top of the list order,
-          * then it wraps and goes to the bottom of the list.
-          */
-        void MoveProjectUp(cbProject* project, bool warpAround = false);
-        /** Move a project down in the project manager tree. This effectively
-          * re-orders the projects build order.
-          * @param project The project to move down.
-          * @param warpAround If true and the project is at the bottom of the list order,
-          * then it wraps and goes to the top of the list.
-          */
-        void MoveProjectDown(cbProject* project, bool warpAround = false);
         /** Create a new empty project.
           * @param filename the project's filename
           * @return A pointer to the new project if succesful, or NULL if not.

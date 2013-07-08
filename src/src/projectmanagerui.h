@@ -94,6 +94,22 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnIdle(wxIdleEvent& event);
         void OnKeyDown(wxTreeEvent& event);
+
+
+        /** Move a project up in the project manager tree. This effectively
+          * re-orders the projects build order.
+          * @param project The project to move up.
+          * @param warpAround If true and the project is at the top of the list order,
+          * then it wraps and goes to the bottom of the list.
+          */
+        void MoveProjectUp(cbProject* project, bool warpAround = false);
+        /** Move a project down in the project manager tree. This effectively
+          * re-orders the projects build order.
+          * @param project The project to move down.
+          * @param warpAround If true and the project is at the bottom of the list order,
+          * then it wraps and goes to the top of the list.
+          */
+        void MoveProjectDown(cbProject* project, bool warpAround = false);
     private:
         cbAuiNotebook*       m_pNotebook;
         cbTreeCtrl*          m_pTree;

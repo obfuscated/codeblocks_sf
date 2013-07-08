@@ -1105,7 +1105,7 @@ void ProjectManagerUI::OnSetActiveProject(wxCommandEvent& event)
             return;
         FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
         if (ftd)
-            prjManager->MoveProjectUp(ftd->GetProject());
+            MoveProjectUp(ftd->GetProject());
     }
     else if (event.GetId() == idMenuProjectDown)
     {
@@ -1115,7 +1115,7 @@ void ProjectManagerUI::OnSetActiveProject(wxCommandEvent& event)
 
         FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
         if (ftd)
-            prjManager->MoveProjectDown(ftd->GetProject());
+            MoveProjectDown(ftd->GetProject());
     }
 }
 
@@ -2078,4 +2078,64 @@ void ProjectManagerUI::OnKeyDown(wxTreeEvent& event)
     }
     else
         event.Skip();
+}
+
+void ProjectManagerUI::MoveProjectUp(cbProject* project, bool warpAround)
+{
+    if (!project)
+        return;
+    ProjectManager *prjManager = Manager::Get()->GetProjectManager();
+    ProjectsArray *projects = prjManager->GetProjects();
+
+    int idx = projects->Index(project);
+    if (idx == wxNOT_FOUND)
+        return; // project not opened in project manager???
+
+    if (idx == 0)
+    {
+         if (!warpAround)
+            return;
+        else
+            idx = projects->Count();
+    }
+    projects->RemoveAt(idx--);
+    projects->Insert(project, idx);
+    RebuildTree();
+    if (prjManager->GetWorkspace())
+        prjManager->GetWorkspace()->SetModified(true);
+
+    // re-select the project
+    wxTreeItemId itemId = project->GetProjectNode();
+    cbAssert(itemId.IsOk());
+    m_pTree->SelectItem(itemId);
+}
+
+void ProjectManagerUI::MoveProjectDown(cbProject* project, bool warpAround)
+{
+    if (!project)
+        return;
+    ProjectManager *prjManager = Manager::Get()->GetProjectManager();
+    ProjectsArray *projects = prjManager->GetProjects();
+
+    int idx = projects->Index(project);
+    if (idx == wxNOT_FOUND)
+        return; // project not opened in project manager???
+
+    if (idx == (int)projects->Count() - 1)
+    {
+         if (!warpAround)
+            return;
+        else
+            idx = 0;
+    }
+    projects->RemoveAt(idx++);
+    projects->Insert(project, idx);
+    RebuildTree();
+    if (prjManager->GetWorkspace())
+        prjManager->GetWorkspace()->SetModified(true);
+
+    // re-select the project
+    wxTreeItemId itemId = project->GetProjectNode();
+    cbAssert(itemId.IsOk());
+    m_pTree->SelectItem(itemId);
 }
