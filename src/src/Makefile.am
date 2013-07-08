@@ -59,6 +59,7 @@ codeblocks_SOURCES = app.cpp \
 			notebookstyles.cpp \
 			prefix.cpp \
 			printdlg.cpp \
+			projectmanagerui.cpp \
 			recentitemslist.cpp \
 			scriptconsole.cpp \
 			scriptingsettingsdlg.cpp \
@@ -92,6 +93,7 @@ noinst_HEADERS = app.h \
 			notebookstyles.h \
 			prefix.h \
 			printdlg.h \
+			projectmanagerui.h \
 			recentitemslist.h \
 			scriptconsole.h \
 			scriptingsettingsdlg.h \
