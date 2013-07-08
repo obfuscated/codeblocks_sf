@@ -3589,6 +3589,12 @@
 		<Unit filename="src/examinememorydlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/find_replace.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/find_replace.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/infopane.cpp">
 			<Option target="src" />
 		</Unit>

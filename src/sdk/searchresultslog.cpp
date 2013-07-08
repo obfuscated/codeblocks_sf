@@ -26,33 +26,33 @@ namespace
     const int ID_List = wxNewId();
 }
 
-BEGIN_EVENT_TABLE(SearchResultsLog, wxEvtHandler)
+BEGIN_EVENT_TABLE(cbSearchResultsLog, wxEvtHandler)
 //
 END_EVENT_TABLE()
 
-SearchResultsLog::SearchResultsLog(const wxArrayString& titles_in, wxArrayInt& widths_in)
+cbSearchResultsLog::cbSearchResultsLog(const wxArrayString& titles_in, wxArrayInt& widths_in)
     : ListCtrlLogger(titles_in, widths_in)
 {
     //ctor
 }
 
-SearchResultsLog::~SearchResultsLog()
+cbSearchResultsLog::~cbSearchResultsLog()
 {
     //dtor
 }
 
-wxWindow* SearchResultsLog::CreateControl(wxWindow* parent)
+wxWindow* cbSearchResultsLog::CreateControl(wxWindow* parent)
 {
     ListCtrlLogger::CreateControl(parent);
     control->SetId(ID_List);
     Connect(ID_List, -1, wxEVT_COMMAND_LIST_ITEM_ACTIVATED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &SearchResultsLog::OnDoubleClick);
+            &cbSearchResultsLog::OnDoubleClick);
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
     return control;
 }
 
-void SearchResultsLog::FocusEntry(size_t index)
+void cbSearchResultsLog::FocusEntry(size_t index)
 {
     if (index < (size_t)control->GetItemCount())
     {
@@ -62,7 +62,7 @@ void SearchResultsLog::FocusEntry(size_t index)
     }
 }
 
-void SearchResultsLog::SyncEditor(int selIndex)
+void cbSearchResultsLog::SyncEditor(int selIndex)
 {
     wxFileName filename(control->GetItemText(selIndex));
     wxString file;
@@ -90,7 +90,7 @@ void SearchResultsLog::SyncEditor(int selIndex)
     }
 }
 
-void SearchResultsLog::OnDoubleClick(cb_unused wxCommandEvent& event)
+void cbSearchResultsLog::OnDoubleClick(cb_unused wxCommandEvent& event)
 {
     // go to the relevant file/line
     if (control->GetSelectedItemCount() == 0)

@@ -778,6 +778,8 @@ void MainFrame::SetupGUILogging()
             if ((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
                 m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
         }
+
+        m_findReplace.CreateSearchLog();
     }
     else
     {
@@ -3820,13 +3822,13 @@ void MainFrame::OnSearchFind(wxCommandEvent& event)
     bool bDoMultipleFiles = (event.GetId() == idSearchFindInFiles);
     if (!bDoMultipleFiles)
         bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    Manager::Get()->GetEditorManager()->ShowFindDialog(false, bDoMultipleFiles);
+    m_findReplace.ShowFindDialog(false, bDoMultipleFiles);
 }
 
 void MainFrame::OnSearchFindNext(wxCommandEvent& event)
 {
     bool bNext = !(event.GetId() == idSearchFindPrevious);
-    Manager::Get()->GetEditorManager()->FindNext(bNext);
+    m_findReplace.FindNext(bNext);
 }
 
 void MainFrame::OnSearchReplace(wxCommandEvent& event)
@@ -3834,7 +3836,7 @@ void MainFrame::OnSearchReplace(wxCommandEvent& event)
     bool bDoMultipleFiles = (event.GetId() == idSearchReplaceInFiles);
     if (!bDoMultipleFiles)
         bDoMultipleFiles = !Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    Manager::Get()->GetEditorManager()->ShowFindDialog(true, bDoMultipleFiles);
+    m_findReplace.ShowFindDialog(true, bDoMultipleFiles);
 }
 
 void MainFrame::OnSearchGotoLine(cb_unused wxCommandEvent& event)

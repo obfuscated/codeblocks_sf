@@ -39,10 +39,6 @@ class LoaderBase;
 struct EditorManagerInternalData;
 class SearchResultsLog;
 
-
-// forward decl
-struct cbFindReplaceData;
-
 /*
  * Struct for store tabs stack info
  */
@@ -129,8 +125,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         bool SaveAs(int index);
         bool SaveActiveAs();
         bool SaveAll();
-        int ShowFindDialog(bool replace,  bool explicitly_find_in_files = false);
-        int FindNext(bool goingDown, cbStyledTextCtrl* control = 0, cbFindReplaceData* data = 0);
 
         void Print(PrintScope ps, PrintColourMode pcm, bool line_numbers);
 
@@ -140,8 +134,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void ShowNotebook();
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedFiles();
-
-        SearchResultsLog* GetSearchResultLogger() const { return m_pSearchLog; }
 
         void OnGenericContextMenuHandler(wxCommandEvent& event);
         void OnPageChanged(wxAuiNotebookEvent& event);
@@ -177,20 +169,12 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         cbEditor* InternalGetBuiltinEditor(int page);
         EditorBase* InternalGetEditorBase(int page);
 
-        void CreateSearchLog();
-        void LogSearch(const wxString& file, int line, const wxString& lineText);
-
     private:
         EditorManager(cb_unused const EditorManager& rhs); // prevent copy construction
 
         EditorManager();
         ~EditorManager();
-        void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace = false);
         void OnCheckForModifiedFiles(wxCommandEvent& event);
-        int Find(cbStyledTextCtrl* control, cbFindReplaceData* data);
-        int FindInFiles(cbFindReplaceData* data);
-        int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
-        int ReplaceInFiles(cbFindReplaceData* data);
         bool IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate);
         wxFileName FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate);
 
@@ -198,10 +182,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         cbNotebookStack*           m_pNotebookStackHead;
         cbNotebookStack*           m_pNotebookStackTail;
         size_t                     m_nNotebookStackSize;
-        cbFindReplaceData*         m_LastFindReplaceData;
         EditorColourSet*           m_Theme;
-        SearchResultsLog*          m_pSearchLog;
-        int                        m_SearchLogIndex;
         int                        m_Zoom;
         bool                       m_isCheckingForExternallyModifiedFiles;
         friend struct              EditorManagerInternalData;

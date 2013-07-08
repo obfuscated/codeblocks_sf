@@ -285,7 +285,7 @@ void SEditorManager::CreateSearchLog()
     wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
     wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("filefind.png"), wxBITMAP_TYPE_PNG));
 
-    m_pSearchLog = new SearchResultsLog(titles, widths);
+    m_pSearchLog = new cbSearchResultsLog(titles, widths);
     CodeBlocksLogEvent evt(cbEVT_ADD_LOG_WINDOW, m_pSearchLog, _("Search results"), bmp);
     Manager::Get()->ProcessEvent(evt);
 }
@@ -2676,7 +2676,7 @@ int SEditorManager::FindInFiles(cbFindReplaceData* data)
 
     if (count > 0)
     {
-        static_cast<SearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
+        static_cast<cbSearchResultsLog*>(m_pSearchLog)->SetBasePath(data->searchPath);
         if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_show_search"), true))
         {
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pSearchLog);
@@ -2685,7 +2685,7 @@ int SEditorManager::FindInFiles(cbFindReplaceData* data)
             Manager::Get()->ProcessEvent(evtSwitch);
             Manager::Get()->ProcessEvent(evtShow);
         }
-        static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
+        static_cast<cbSearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
     }
     else
     {
@@ -2703,7 +2703,7 @@ int SEditorManager::FindInFiles(cbFindReplaceData* data)
         {
             msg.Printf(_("not found in %d files"), filesList.GetCount());
             LogSearch(_T(""), -1, msg );
-            static_cast<SearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
+            static_cast<cbSearchResultsLog*>(m_pSearchLog)->FocusEntry(oldcount);
         }
     }
 

@@ -178,6 +178,10 @@
 					<Add directory="include/scripting/include" />
 					<Add directory="include/scripting/sqplus" />
 					<Add directory="include/mozilla_chardet" />
+					<Add directory="include/mozilla_chardet/mfbt" />
+					<Add directory="include/mozilla_chardet/nsprpub/pr/include" />
+					<Add directory="include/mozilla_chardet/xpcom/base" />
+					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
 					<Add option="`pkg-config gtk+-2.0 --libs`" />
@@ -3606,6 +3610,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/examinememorydlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/find_replace.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/find_replace.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/infopane.cpp">

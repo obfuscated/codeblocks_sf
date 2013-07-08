@@ -42,7 +42,7 @@
 
 static Manager* s_ManagerInstance = 0;
 
-Manager::Manager() : m_pAppWindow(0)
+Manager::Manager() : m_pAppWindow(nullptr), m_SearchResultLog(nullptr)
 {
 }
 
