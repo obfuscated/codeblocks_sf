@@ -21,18 +21,13 @@
 #include "manager.h"
 
 // forward decls
-class wxMenuBar;
-class wxPanel;
 class cbProject;
 class EditorBase;
-class wxImageList;
 class ProjectFile;
 class FilesGroupsAndMasks;
 class cbWorkspace;
 class cbAuiNotebook;
-class wxAuiNotebookEvent;
 
-//DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
 WX_DECLARE_HASH_MAP(cbProject*, ProjectsArray*, wxPointerHash, wxPointerEqual, DepsMap); // for project dependencies
 
@@ -105,6 +100,26 @@ class DLLIMPORT cbProjectManagerUI
           * without asking the user later.
           */
         virtual bool QueryCloseWorkspace() = 0;
+
+        /** Utility function. Displays a single selection list of a project's
+          * build targets to choose from.
+          * @param project The project to use. If NULL, the active project is used.
+          * @return The selected build target's index, or -1 if no build target was selected.
+          */
+        virtual int AskForBuildTargetIndex(cbProject* project = nullptr) = 0;
+        /** Utility function. Displays a multiple selection list of a project's
+          * build targets to choose from.
+          * @param project The project to use. If NULL, the active project is used.
+          * @return An integer array containing the selected build targets indices.
+          * This array will be empty if no build targets were selected.
+          */
+        virtual wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) = 0;
+
+        /** Displays a dialog to setup project dependencies.
+          * @param base The project to setup its dependencies. Can be NULL (default) because
+          * there's a project selection combo in the dialog.
+          */
+        virtual void ConfigureProjectDependencies(cbProject* base = nullptr) = 0;
 
 };
 
@@ -295,19 +310,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @param project The project to remove this file from. If NULL, the active project is used.
           */
         void RemoveFileFromProject(ProjectFile* pfile, cbProject* project);
-        /** Utility function. Displays a single selection list of a project's
-          * build targets to choose from.
-          * @param project The project to use. If NULL, the active project is used.
-          * @return The selected build target's index, or -1 if no build target was selected.
-          */
-        int AskForBuildTargetIndex(cbProject* project = 0L);
-        /** Utility function. Displays a multiple selection list of a project's
-          * build targets to choose from.
-          * @param project The project to use. If NULL, the active project is used.
-          * @return An integer array containing the selected build targets indices.
-          * This array will be empty if no build targets were selected.
-          */
-        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = 0L);
         /** Load a workspace.
           * @param filename The workspace to open.
           * @return True if the workspace loads succefully, false if not.
@@ -392,20 +394,11 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return An array of project dependencies, or NULL if no dependencies are set for @c base.
           */
         const ProjectsArray* GetDependenciesForProject(cbProject* base);
-        /** Displays a dialog to setup project dependencies.
-          * @param base The project to setup its dependencies. Can be NULL (default) because there's a project selection combo in the dialog.
-          */
-        void ConfigureProjectDependencies(cbProject* base = 0);
         /** Checks for circular dependencies between @c base and @c dependsOn.
           * @return True if circular dependency is detected, false if it isn't.
           */
         bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
 
-        /** Retrieve a pointer to the project manager's panel (GUI). This panel
-          * is the parent of the project manager's tree obtained through GetTree().
-          * @return A pointer to a wxPanel window.
-          */
-        wxMenu* GetProjectMenu();
         /** Sets the Top Editor (the active editor from the last session) */
         void SetTopEditor(EditorBase* ed);
         /** @return The Top Editor */

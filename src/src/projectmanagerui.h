@@ -12,6 +12,7 @@
 class cbProject;
 class cbAuiNotebook;
 class FilesGroupsAndMasks;
+class wxAuiNotebookEvent;
 
 class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
 {
@@ -45,6 +46,10 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         bool QueryCloseAllProjects();
         bool QueryCloseProject(cbProject *proj, bool dontsavefiles);
         bool QueryCloseWorkspace();
+
+        int AskForBuildTargetIndex(cbProject* project);
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project);
+        void ConfigureProjectDependencies(cbProject* base);
 
     private:
         void InitPane();

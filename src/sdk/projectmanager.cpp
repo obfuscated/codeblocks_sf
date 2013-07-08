@@ -10,14 +10,9 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/checkbox.h>
     #include <wx/datetime.h>
-    #include <wx/imaglist.h>
-    #include <wx/frame.h>
-    #include <wx/menu.h>
-    #include <wx/splitter.h>
+    #include <wx/dir.h>
     #include <wx/filename.h>
-    #include <wx/xrc/xmlres.h>
 
     #include "projectmanager.h" // class's header file
     #include "sdk_events.h"
@@ -31,7 +26,6 @@
     #include "workspaceloader.h"
     #include "cbworkspace.h"
     #include "cbeditor.h"
-    #include <wx/dir.h>
     #include "globals.h"
     #include "cbexception.h"  // for cbassert
 #endif
@@ -39,25 +33,18 @@
 #include <vector>
 #include <algorithm>
 
-#include "cbauibook.h"
-#include <wx/busyinfo.h>
-#include <wx/choicdlg.h>
-#include <wx/filedlg.h>
 #include <wx/progdlg.h>
-#include <wx/settings.h>
-#include <wx/textdlg.h>
-#include <wx/tokenzr.h>
-#include <wx/utils.h>
 
-#include "incrementalselectlistdlg.h"
-#include "filegroupsandmasks.h"
-#include "projectsfilemasksdlg.h"
-#include "projectdepsdlg.h"
-#include "multiselectdlg.h"
-#include "filefilters.h"
+#include "cbauibook.h"
 #include "cbcolourmanager.h"
 #include "confirmreplacedlg.h"
-#include "projectfileoptionsdlg.h"
+#include "filefilters.h"
+#include "filegroupsandmasks.h"
+#include "incrementalselectlistdlg.h"
+//#include "multiselectdlg.h"
+//#include "projectdepsdlg.h"
+//#include "projectfileoptionsdlg.h"
+//#include "projectsfilemasksdlg.h"
 
 template<> ProjectManager* Mgr<ProjectManager>::instance = 0;
 template<> bool  Mgr<ProjectManager>::isShutdown = false;
@@ -86,6 +73,9 @@ class NullProjectManagerUI : public cbProjectManagerUI
         bool QueryCloseAllProjects() { return true; }
         bool QueryCloseProject(cbProject *proj, bool dontsavefiles = false)  { return true; }
         bool QueryCloseWorkspace()  { return true; }
+        int AskForBuildTargetIndex(cbProject* project = nullptr) { return -1; }
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) { return wxArrayInt(); }
+        void ConfigureProjectDependencies(cbProject* base = nullptr) {}
 };
 
 // class constructor
@@ -253,23 +243,6 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
         }
     }
     return 0L;
-}
-
-wxMenu* ProjectManager::GetProjectMenu()
-{
-    wxMenu* result = 0L;
-    do
-    {
-        wxFrame* frame = Manager::Get()->GetAppFrame();
-        if (!frame)
-            break;
-        wxMenuBar* mb = frame->GetMenuBar();
-        if (!mb)
-            break;
-        result = mb->GetMenu(mb->FindMenu(_("&Project")));
-        break;
-    } while (false);
-    return result;
 }
 
 cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
@@ -728,7 +701,7 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
         // else display multiple target selection dialog
         else
         {
-            targets = AskForMultiBuildTargetIndex(project);
+            targets = m_ui->AskForMultiBuildTargetIndex(project);
             if (targets.GetCount() == 0)
                 return 0;
         }
@@ -829,47 +802,6 @@ int ProjectManager::AddMultipleFilesToProject(const wxArrayString& filelist, cbP
     }
 
     return targets.GetCount();
-}
-
-int ProjectManager::AskForBuildTargetIndex(cbProject* project)
-{
-    cbProject* prj = project;
-    if (!prj)
-        prj = GetActiveProject();
-    if (!prj)
-        return -1;
-
-    // ask for target
-    wxArrayString array;
-    int count = prj->GetBuildTargetsCount();
-    for (int i = 0; i < count; ++i)
-        array.Add(prj->GetBuildTarget(i)->GetTitle());
-    int target = wxGetSingleChoiceIndex(_("Select the target:"), _("Project targets"), array);
-
-    return target;
-}
-
-wxArrayInt ProjectManager::AskForMultiBuildTargetIndex(cbProject* project)
-{
-    wxArrayInt indices;
-    cbProject* prj = project;
-    if (!prj)
-        prj = GetActiveProject();
-    if (!prj)
-        return indices;
-
-    // ask for target
-    wxArrayString array;
-    int count = prj->GetBuildTargetsCount();
-    for (int i = 0; i < count; ++i)
-        array.Add(prj->GetBuildTarget(i)->GetTitle());
-
-    MultiSelectDlg dlg(0, array, true, _("Select the targets this file should belong to:"));
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-        indices = dlg.GetSelectedIndices();
-
-    return indices;
 }
 
 bool ProjectManager::CausesCircularDependency(cbProject* base, cbProject* dependsOn)
@@ -1013,13 +945,6 @@ const ProjectsArray* ProjectManager::GetDependenciesForProject(cbProject* base)
     if (it != m_ProjectDeps.end())
         return it->second;
     return 0;
-}
-
-void ProjectManager::ConfigureProjectDependencies(cbProject* base)
-{
-    ProjectDepsDlg dlg(Manager::Get()->GetAppWindow(), base);
-    PlaceWindow(&dlg);
-    dlg.ShowModal();
 }
 
 // events

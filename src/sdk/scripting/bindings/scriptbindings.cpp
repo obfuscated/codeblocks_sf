@@ -579,13 +579,13 @@ namespace ScriptBindings
                 func(&ProjectManager::CloseAllProjects, "CloseAllProjects").
                 func(&ProjectManager::NewProject, "NewProject").
                 staticFuncVarArgs(&ProjectManager_AddFileToProject, "AddFileToProject", "*").
-                func(&ProjectManager::AskForBuildTargetIndex, "AskForBuildTargetIndex").
+//                func(&ProjectManager::AskForBuildTargetIndex, "AskForBuildTargetIndex").
                 func(&ProjectManager::AddProjectDependency, "AddProjectDependency").
                 func(&ProjectManager::RemoveProjectDependency, "RemoveProjectDependency").
                 func(&ProjectManager::ClearProjectDependencies, "ClearProjectDependencies").
                 func(&ProjectManager::RemoveProjectFromAllDependencies, "RemoveProjectFromAllDependencies").
-                func(&ProjectManager::GetDependenciesForProject, "GetDependenciesForProject").
-                func(&ProjectManager::ConfigureProjectDependencies, "ConfigureProjectDependencies");
+                func(&ProjectManager::GetDependenciesForProject, "GetDependenciesForProject");
+//                func(&ProjectManager::ConfigureProjectDependencies, "ConfigureProjectDependencies");
 
         SqPlus::SQClassDef<EditorBase>("EditorBase").
                 func(&EditorBase::GetFilename, "GetFilename").

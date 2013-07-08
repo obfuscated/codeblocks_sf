@@ -10,12 +10,34 @@
 #include "sdk.h"
 #include "projectmanagerui.h"
 
+#ifndef CB_PRECOMP
+    #include <algorithm>
+
+    #include <wx/checkbox.h>
+    #include <wx/choicdlg.h>
+    #include <wx/dir.h>
+    #include <wx/filedlg.h>
+    #include <wx/imaglist.h>
+    #include <wx/menu.h>
+    #include <wx/settings.h>
+    #include <wx/textdlg.h>
+    #include <wx/xrc/xmlres.h>
+
+    #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "cbworkspace.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "logmanager.h"
+#endif
+
 #include "cbauibook.h"
 #include "cbcolourmanager.h"
 #include "filefilters.h"
 #include "filegroupsandmasks.h"
 #include "incrementalselectlistdlg.h"
 #include "multiselectdlg.h"
+#include "projectdepsdlg.h"
 #include "projectfileoptionsdlg.h"
 #include "projectsfilemasksdlg.h"
 
@@ -2217,4 +2239,52 @@ bool ProjectManagerUI::QueryCloseWorkspace()
     if (!QueryCloseAllProjects())
         return false;
     return true;
+}
+
+int ProjectManagerUI::AskForBuildTargetIndex(cbProject* project)
+{
+    cbProject* prj = project;
+    if (!prj)
+        prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (!prj)
+        return -1;
+
+    // ask for target
+    wxArrayString array;
+    int count = prj->GetBuildTargetsCount();
+    for (int i = 0; i < count; ++i)
+        array.Add(prj->GetBuildTarget(i)->GetTitle());
+    int target = wxGetSingleChoiceIndex(_("Select the target:"), _("Project targets"), array);
+
+    return target;
+}
+
+wxArrayInt ProjectManagerUI::AskForMultiBuildTargetIndex(cbProject* project)
+{
+    wxArrayInt indices;
+    cbProject* prj = project;
+    if (!prj)
+        prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (!prj)
+        return indices;
+
+    // ask for target
+    wxArrayString array;
+    int count = prj->GetBuildTargetsCount();
+    for (int i = 0; i < count; ++i)
+        array.Add(prj->GetBuildTarget(i)->GetTitle());
+
+    MultiSelectDlg dlg(0, array, true, _("Select the targets this file should belong to:"));
+    PlaceWindow(&dlg);
+    if (dlg.ShowModal() == wxID_OK)
+        indices = dlg.GetSelectedIndices();
+
+    return indices;
+}
+
+void ProjectManagerUI::ConfigureProjectDependencies(cbProject* base)
+{
+    ProjectDepsDlg dlg(Manager::Get()->GetAppWindow(), base);
+    PlaceWindow(&dlg);
+    dlg.ShowModal();
 }
