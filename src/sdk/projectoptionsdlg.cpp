@@ -41,17 +41,19 @@
 
 #include "scripting/sqplus/sqplus.h"
 
+#include "annoyingdialog.h"
 #include "configurationpanel.h"
-#include "projectoptionsdlg.h" // class's header file
 #include "editarrayorderdlg.h"
 #include "editarrayfiledlg.h"
 #include "editpathdlg.h"
 #include "externaldepsdlg.h"
-#include "multiselectdlg.h"
-#include "annoyingdialog.h"
 #include "filefilters.h"
-#include "virtualbuildtargetsdlg.h"
+#include "multiselectdlg.h"
+#include "projectdepsdlg.h"
 #include "projectloader.h"
+#include "projectoptionsdlg.h" // class's header file
+#include "virtualbuildtargetsdlg.h"
+
 
 BEGIN_EVENT_TABLE(ProjectOptionsDlg, wxScrollingDialog)
     EVT_UPDATE_UI( -1,                                          ProjectOptionsDlg::OnUpdateUI)
