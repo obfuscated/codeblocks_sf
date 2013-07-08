@@ -1062,8 +1062,8 @@ void CompilerGCC::ClearLog()
 FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 {
     ProjectManager* manager = Manager::Get()->GetProjectManager();
-    wxTreeCtrl* tree = manager->GetTree();
-    wxTreeItemId sel = manager->GetTreeSelection();
+    wxTreeCtrl* tree = manager->GetUI().GetTree();
+    wxTreeItemId sel = manager->GetUI().GetTreeSelection();
     FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : 0;
     if (!ftd)
         return 0L;
@@ -3082,8 +3082,8 @@ void CompilerGCC::OnClean(wxCommandEvent& event)
 void CompilerGCC::OnProjectCompilerOptions(cb_unused wxCommandEvent& event)
 {
     ProjectManager* manager = Manager::Get()->GetProjectManager();
-    wxTreeCtrl* tree = manager->GetTree();
-    wxTreeItemId sel = manager->GetTreeSelection();
+    wxTreeCtrl* tree = manager->GetUI().GetTree();
+    wxTreeItemId sel = manager->GetUI().GetTreeSelection();
     FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : 0;
     if (ftd)
     {

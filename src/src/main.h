@@ -34,6 +34,7 @@ class DebuggerMenuHandler;
 class DebuggerToolbarHandler;
 class InfoPane;
 class wxGauge;
+class ProjectManagerUI;
 
 struct ToolbarInfo
 {
@@ -354,6 +355,7 @@ class MainFrame : public wxFrame
 
         EditorManager*  m_pEdMan;
         ProjectManager* m_pPrjMan;
+        ProjectManagerUI* m_pPrjManUI;
         LogManager*     m_pLogMan;
         InfoPane*       m_pInfoPane;
 

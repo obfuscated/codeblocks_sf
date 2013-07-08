@@ -757,11 +757,11 @@ void NativeParser::ReparseCurrentProject()
 
 void NativeParser::ReparseSelectedProject()
 {
-    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
     if (!tree)
         return;
 
-    wxTreeItemId treeItem = Manager::Get()->GetProjectManager()->GetTreeSelection();
+    wxTreeItemId treeItem = Manager::Get()->GetProjectManager()->GetUI().GetTreeSelection();
     if (!treeItem.IsOk())
         return;
 
@@ -982,8 +982,8 @@ void NativeParser::CreateClassBrowser()
     else
     {
         // make this a tab in projectmanager notebook
-        m_ClassBrowser = new ClassBrowser(Manager::Get()->GetProjectManager()->GetNotebook(), this);
-        Manager::Get()->GetProjectManager()->GetNotebook()->AddPage(m_ClassBrowser, _("Symbols"));
+        m_ClassBrowser = new ClassBrowser(Manager::Get()->GetProjectManager()->GetUI().GetNotebook(), this);
+        Manager::Get()->GetProjectManager()->GetUI().GetNotebook()->AddPage(m_ClassBrowser, _("Symbols"));
         m_ClassBrowser->UpdateSash();
     }
 
@@ -1009,9 +1009,9 @@ void NativeParser::RemoveClassBrowser(cb_unused bool appShutDown)
     }
     else
     {
-        int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_ClassBrowser);
+        int idx = Manager::Get()->GetProjectManager()->GetUI().GetNotebook()->GetPageIndex(m_ClassBrowser);
         if (idx != -1)
-            Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
+            Manager::Get()->GetProjectManager()->GetUI().GetNotebook()->RemovePage(idx);
     }
     m_ClassBrowser->Destroy();
     m_ClassBrowser = NULL;

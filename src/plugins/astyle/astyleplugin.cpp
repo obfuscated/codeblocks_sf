@@ -113,12 +113,12 @@ void AStylePlugin::BuildModuleMenu( const ModuleType type, wxMenu* menu, const F
 void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
 {
     ProjectManager* manager = Manager::Get()->GetProjectManager();
-    wxTreeCtrl *tree = manager->GetTree();
+    wxTreeCtrl *tree = manager->GetUI().GetTree();
 
     if ( !tree )
         return;
 
-    wxTreeItemId treeItem =  manager->GetTreeSelection();
+    wxTreeItemId treeItem =  manager->GetUI().GetTreeSelection();
 
     if ( !treeItem.IsOk() )
         return;

@@ -1303,7 +1303,7 @@ bool EditorManager::SwapActiveHeaderSource()
                 {
                     ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
                     newEd->SetProjectFile(pf);
-                    Manager::Get()->GetProjectManager()->RebuildTree();
+                    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
                 }
             }
         }
@@ -3043,7 +3043,7 @@ void EditorManager::OnAddFileToProject(cb_unused wxCommandEvent& event)
     {
         ProjectFile* pf = project->GetFileByFilename(fname, false);
         GetBuiltinActiveEditor()->SetProjectFile(pf);
-        Manager::Get()->GetProjectManager()->RebuildTree();
+        Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     }
 }
 
@@ -3054,28 +3054,29 @@ void EditorManager::OnRemoveFileFromProject(cb_unused wxCommandEvent& event)
     {
         cbProject *project = pf->GetParentProject();
         Manager::Get()->GetProjectManager()->RemoveFileFromProject(pf, project);
-        Manager::Get()->GetProjectManager()->RebuildTree();
+        Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     }
 }
 
 void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent& event)
 {
-    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
-    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-    if (pf && tree) // should be in any case, otherwise something went wrong between popup menu creation and here
-    {
-        // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
-        wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
-        if (sel.IsOk())
-            tree->SelectItem(sel, false);
-
-        const wxTreeItemId &itemId = pf->GetTreeItemId();
-        if (itemId.IsOk())
-        {
-            tree->EnsureVisible(itemId);
-            tree->SelectItem(itemId, true);
-        }
-    }
+// FIXME (obfuscated#1#): Reimplement project manager ui
+//    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
+//    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+//    if (pf && tree) // should be in any case, otherwise something went wrong between popup menu creation and here
+//    {
+//        // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
+//        wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
+//        if (sel.IsOk())
+//            tree->SelectItem(sel, false);
+//
+//        const wxTreeItemId &itemId = pf->GetTreeItemId();
+//        if (itemId.IsOk())
+//        {
+//            tree->EnsureVisible(itemId);
+//            tree->SelectItem(itemId, true);
+//        }
+//    }
 }
 
 void EditorManager::OnAppDoneStartup(wxCommandEvent& event)

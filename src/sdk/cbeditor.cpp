@@ -3097,7 +3097,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         {
             ProjectFile* pf = prj->GetFileByFilename(m_Filename, false);
             SetProjectFile(pf);
-            Manager::Get()->GetProjectManager()->RebuildTree();
+            Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
         }
     }
     else if (id == idRemoveFileFromProject)
@@ -3106,26 +3106,27 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         {
             cbProject *prj = m_pProjectFile->GetParentProject();
             Manager::Get()->GetProjectManager()->RemoveFileFromProject(m_pProjectFile, prj);
-            Manager::Get()->GetProjectManager()->RebuildTree();
+            Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
         }
     }
     else if (id == idShowFileInProject)
     {
-        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-        if (m_pProjectFile && tree)
-        {
-            // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
-            wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
-            if (sel.IsOk())
-                tree->SelectItem(sel, false);
-
-            const wxTreeItemId &itemId = m_pProjectFile->GetTreeItemId();
-            if (itemId.IsOk())
-            {
-                tree->EnsureVisible(itemId);
-                tree->SelectItem(itemId, true);
-            }
-        }
+// FIXME (obfuscated#1#): Reimplement project manager ui
+//        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+//        if (m_pProjectFile && tree)
+//        {
+//            // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
+//            wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
+//            if (sel.IsOk())
+//                tree->SelectItem(sel, false);
+//
+//            const wxTreeItemId &itemId = m_pProjectFile->GetTreeItemId();
+//            if (itemId.IsOk())
+//            {
+//                tree->EnsureVisible(itemId);
+//                tree->SelectItem(itemId, true);
+//            }
+//        }
     }
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);

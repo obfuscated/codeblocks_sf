@@ -580,7 +580,6 @@ namespace ScriptBindings
                 func(&ProjectManager::NewProject, "NewProject").
                 staticFuncVarArgs(&ProjectManager_AddFileToProject, "AddFileToProject", "*").
                 func(&ProjectManager::AskForBuildTargetIndex, "AskForBuildTargetIndex").
-                func(&ProjectManager::RebuildTree, "RebuildTree").
                 func(&ProjectManager::AddProjectDependency, "AddProjectDependency").
                 func(&ProjectManager::RemoveProjectDependency, "RemoveProjectDependency").
                 func(&ProjectManager::ClearProjectDependencies, "ClearProjectDependencies").

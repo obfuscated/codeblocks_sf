@@ -231,7 +231,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
                     outFname.SetName(newname);
                     bt->SetOutputFilename(outFname.GetFullPath());
                 }
-                Manager::Get()->GetProjectManager()->RebuildTree(); // so the tree shows the new name
+                Manager::Get()->GetProjectManager()->GetUI().RebuildTree(); // so the tree shows the new name
                 CodeBlocksEvent evt(cbEVT_PROJECT_OPEN, 0, prj);
                 Manager::Get()->ProcessEvent(evt);
             }

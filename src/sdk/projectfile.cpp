@@ -295,7 +295,7 @@ void ProjectFile::SetFileState(FileVisualState state)
     if (state != m_VisualState)
     {
         m_VisualState = state;
-        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
         if (tree && m_TreeItemId.IsOk())
         {
             tree->SetItemImage(m_TreeItemId, (int)state, wxTreeItemIcon_Normal);

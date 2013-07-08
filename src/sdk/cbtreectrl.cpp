@@ -83,7 +83,7 @@ void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
     if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
     {
         // "proxy" the call
-        wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, ID_ProjectManager);
+        wxCommandEvent e(wxEVT_COMMAND_RIGHT_CLICK, GetID());
         wxPostEvent(GetParent(), e);
     }
     else

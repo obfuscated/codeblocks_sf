@@ -1345,7 +1345,7 @@ bool cbProject::NodeDragged(wxTreeCtrl* tree, wxArrayTreeItemIds& fromArray, wxT
 
     SetModified(true);
 
-    Manager::Get()->GetProjectManager()->RebuildTree();
+    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
 
     return true;
 }
@@ -1618,10 +1618,11 @@ bool cbProject::VirtualFolderDragged(wxTreeCtrl* tree, wxTreeItemId from, wxTree
 
 void cbProject::RenameInTree(const wxString &newname)
 {
-    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-    if (!tree || !m_ProjectNode)
-        return;
-    tree->SetItemText(m_ProjectNode, newname);
+// FIXME (obfuscated#1#): Reimplement project manager ui
+//    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+//    if (!tree || !m_ProjectNode)
+//        return;
+//    tree->SetItemText(m_ProjectNode, newname);
 }
 
 void cbProject::SaveTreeState(wxTreeCtrl* tree)

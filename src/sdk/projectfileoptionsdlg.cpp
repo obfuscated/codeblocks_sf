@@ -300,7 +300,7 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
 
         cbProject* prj = m_ProjectFile->GetParentProject();
         prj->SetModified(true);
-        Manager::Get()->GetProjectManager()->RebuildTree();
+        Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     }
 
     wxScrollingDialog::EndModal(retCode);

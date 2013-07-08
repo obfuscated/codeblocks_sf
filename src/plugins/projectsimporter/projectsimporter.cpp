@@ -172,7 +172,7 @@ int ProjectsImporter::LoadProject(const wxString& filename)
                 if (loader) delete loader;
                 Manager::Get()->GetProjectManager()->EndLoadingProject(0);
                 Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
-                Manager::Get()->GetProjectManager()->RebuildTree();
+                Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
                 cbMessageBox(_("Import canceled."), _("Information"), wxICON_INFORMATION);
                 return -1;
             }
@@ -199,7 +199,7 @@ int ProjectsImporter::LoadProject(const wxString& filename)
             if (loader) delete loader;
             Manager::Get()->GetProjectManager()->EndLoadingProject(0);
             Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
-            Manager::Get()->GetProjectManager()->RebuildTree();
+            Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
             cbMessageBox(_("Failed to import file: Wrong file format."), _("Error"), wxICON_ERROR);
             return -1;
         }
@@ -212,7 +212,7 @@ int ProjectsImporter::LoadProject(const wxString& filename)
     cbMessageBox(_("Failed to import file (internal error)."), _("Error"), wxICON_ERROR);
     Manager::Get()->GetProjectManager()->EndLoadingProject(0);
     Manager::Get()->GetProjectManager()->CloseProject(prj, true, false);
-    Manager::Get()->GetProjectManager()->RebuildTree();
+    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     return -1;
 }
 

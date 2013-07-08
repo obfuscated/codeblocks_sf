@@ -2494,11 +2494,11 @@ void CodeCompletion::OnSelectedProjectReparse(wxCommandEvent& event)
 
 void CodeCompletion::OnSelectedFileReparse(wxCommandEvent& event)
 {
-    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
+    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
     if (!tree)
         return;
 
-    wxTreeItemId treeItem = Manager::Get()->GetProjectManager()->GetTreeSelection();
+    wxTreeItemId treeItem = Manager::Get()->GetProjectManager()->GetUI().GetTreeSelection();
     if (!treeItem.IsOk())
         return;
 

@@ -68,6 +68,7 @@
 
 #include "cbcolourmanager.h"
 #include "editorconfigurationdlg.h"
+#include "projectmanagerui.h"
 
 class cbFileDropTarget : public wxFileDropTarget
 {
@@ -543,6 +544,7 @@ MainFrame::MainFrame(wxWindow* parent)
        m_pCloseFullScreenBtn(0L),
        m_pEdMan(0L),
        m_pPrjMan(0L),
+       m_pPrjManUI(nullptr),
        m_pLogMan(0L),
        m_pInfoPane(0L),
        m_pToolbar(0L),
@@ -714,7 +716,10 @@ void MainFrame::CreateIDE()
     m_pCloseFullScreenBtn->Show( false );
 
     // management panel
-    m_LayoutManager.AddPane( Manager::Get()->GetProjectManager()->GetNotebook(),
+    m_pPrjMan = Manager::Get()->GetProjectManager();
+    m_pPrjManUI = new ProjectManagerUI;
+    m_pPrjMan->SetUI(m_pPrjManUI);
+    m_LayoutManager.AddPane( m_pPrjManUI->GetNotebook(),
                              wxAuiPaneInfo().Name(wxT("ManagementPane")).Caption(_("Management")).
                                  BestSize(wxSize(leftW, clientsize.GetHeight())).
                                  MinSize(wxSize(100,100)).Left().Layer(1) );
@@ -726,7 +731,6 @@ void MainFrame::CreateIDE()
     CreateMenubar();
 
     m_pEdMan  = Manager::Get()->GetEditorManager();
-    m_pPrjMan = Manager::Get()->GetProjectManager();
     m_pLogMan = Manager::Get()->GetLogManager();
 
     // editor manager
@@ -743,7 +747,7 @@ void MainFrame::CreateIDE()
     DoUpdateEditorStyle();
 
     m_pEdMan->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
-    m_pPrjMan->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
+    m_pPrjManUI->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
 
     Manager::Get()->GetColourManager()->Load();
 }
@@ -983,7 +987,7 @@ void MainFrame::CreateMenubar()
     m_HelpPluginsMenu = pluginsM ? pluginsM : new wxMenu();
 
     // core modules: create menus
-    Manager::Get()->GetProjectManager()->CreateMenu(mbar);
+    m_pPrjManUI->CreateMenu(mbar);
     Manager::Get()->GetEditorManager()->CreateMenu(mbar);
     Manager::Get()->GetDebuggerManager()->SetMenuHandler(m_debuggerMenuHandler);
 
@@ -1235,7 +1239,7 @@ void MainFrame::LoadWindowState()
     LoadViewLayout(deflayout);
 
     // load manager and messages selected page
-    Manager::Get()->GetProjectManager()->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
+    m_pPrjManUI->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
     m_pInfoPane->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
     // Cryogen 23/3/10 wxAuiNotebook can't set it's own tab position once instantiated, for some reason. This code fails in InfoPane::InfoPane().
@@ -1324,7 +1328,8 @@ void MainFrame::SaveWindowState()
     }
 
     // save manager and messages selected page
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), Manager::Get()->GetProjectManager()->GetNotebook()->GetSelection());
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"),
+                                                       m_pPrjManUI->GetNotebook()->GetSelection());
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), m_pInfoPane->GetSelection());
 
     // save display, window size and position
@@ -1996,7 +2001,7 @@ void MainFrame::DoUpdateEditorStyle()
     an = m_pInfoPane;
     DoUpdateEditorStyle(an, _T("infopane"), style);
 
-    an = Manager::Get()->GetProjectManager()->GetNotebook();
+    an = m_pPrjManUI->GetNotebook();
     DoUpdateEditorStyle(an, _T("project"), wxAUI_NB_SCROLL_BUTTONS | wxAUI_NB_TAB_MOVE);
 }
 
@@ -2313,7 +2318,7 @@ void MainFrame::OnFileNewWhat(wxCommandEvent& event)
         {
             ProjectFile* pf = project->GetFileByFilename(ed->GetFilename(), false);
             ed->SetProjectFile(pf);
-            Manager::Get()->GetProjectManager()->RebuildTree();
+            m_pPrjManUI->RebuildTree();
         }
     }
     // verify that the open files are still in sync
@@ -2714,7 +2719,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     if (!Manager::IsBatchBuild())
         SaveWindowState();
 
-    m_LayoutManager.DetachPane(Manager::Get()->GetProjectManager()->GetNotebook());
+    m_LayoutManager.DetachPane(m_pPrjManUI->GetNotebook());
     m_LayoutManager.DetachPane(m_pInfoPane);
     m_LayoutManager.DetachPane(Manager::Get()->GetEditorManager()->GetNotebook());
 
@@ -4064,7 +4069,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
 
     wxMenuBar* mbar   = GetMenuBar();
     cbEditor*  ed     = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;
-    bool       manVis = m_LayoutManager.GetPane(Manager::Get()->GetProjectManager()->GetNotebook()).IsShown();
+    bool       manVis = m_LayoutManager.GetPane(m_pPrjManUI->GetNotebook()).IsShown();
 
     mbar->Check(idViewManager,             manVis);
     mbar->Check(idViewLogManager,          m_LayoutManager.GetPane(m_pInfoPane).IsShown());
@@ -4303,7 +4308,7 @@ void MainFrame::OnToggleBar(wxCommandEvent& event)
     wxWindow* win = nullptr;
     bool toolbar = false;
     if (event.GetId() == idViewManager)
-        win = Manager::Get()->GetProjectManager()->GetNotebook();
+        win = m_pPrjManUI->GetNotebook();
     else if (event.GetId() == idViewLogManager)
         win = m_pInfoPane;
     else if (event.GetId() == idViewToolMain)
@@ -4368,7 +4373,7 @@ void MainFrame::OnFocusEditor(cb_unused wxCommandEvent& event)
 
 void MainFrame::OnFocusManagement(cb_unused wxCommandEvent& event)
 {
-    cbAuiNotebook* nb = m_pPrjMan ? m_pPrjMan->GetNotebook():nullptr;
+    cbAuiNotebook* nb = m_pPrjManUI ? m_pPrjManUI->GetNotebook() : nullptr;
     if (nb)
         nb->FocusActiveTabCtrl();
 }
@@ -4550,7 +4555,7 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
         needRestart = m_SmallToolBar != tbarsmall;
         Manager::Get()->GetLogManager()->NotifyUpdate();
         Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
-        Manager::Get()->GetProjectManager()->RebuildTree();
+        m_pPrjManUI->RebuildTree();
         ShowHideStartPage();
     }
     if (needRestart)

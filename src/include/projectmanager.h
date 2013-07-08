@@ -32,9 +32,55 @@ class cbWorkspace;
 class cbAuiNotebook;
 class wxAuiNotebookEvent;
 
-DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
+//DLLIMPORT extern int ID_ProjectManager; /* Used by both Project and Editor Managers */
 WX_DEFINE_ARRAY(cbProject*, ProjectsArray);
 WX_DECLARE_HASH_MAP(cbProject*, ProjectsArray*, wxPointerHash, wxPointerEqual, DepsMap); // for project dependencies
+
+
+class DLLIMPORT cbProjectManagerUI
+{
+    public:
+        virtual ~cbProjectManagerUI() {}
+
+        virtual cbAuiNotebook* GetNotebook() = 0;
+        /** Retrieve a pointer to the project manager's tree (GUI).
+          * @return A pointer to a wxTreeCtrl window.
+          */
+        virtual cbTreeCtrl* GetTree() = 0;
+        /// Rebuild the project manager's tree.
+        virtual void RebuildTree() = 0;
+        /** Stop the tree control from updating.
+          * @note This operation is accumulative. This means you have to call
+          * UnfreezeTree() as many times as you 've called FreezeTree() for the
+          * tree control to un-freeze (except if you call UnfreezeTree(true)).
+          */
+        virtual void FreezeTree() = 0;
+        /** Le the tree control be updated again.
+          * @param force If true the tree control is forced to un-freeze. Else it
+          * depends on freeze-unfreeze balance (see note).
+          * @note This operation is accumulative. This means you have to call
+          * UnfreezeTree() as many times as you 've called FreezeTree() for the
+          * tree control to un-freeze (except if you call UnfreezeTree(true)).
+          */
+        virtual void UnfreezeTree(bool force = false) = 0;
+        /** Get the selection of the project manager's tree (GUI).
+          * This must be used instead of tree->GetSelection() because the tree
+          * has the wxTR_MULTIPLE style.
+          * This usually returns the first item in the selection list, but
+          * if there is a right-click popup menu then the user may have
+          * selected several items and right-clicked on one, so return the
+          * right-click item instead.
+          * of the first
+          * @return A wxTreeItemId of the selected tree item.
+          */
+        virtual wxTreeItemId GetTreeSelection() = 0;
+
+        virtual void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) = 0;
+        virtual void RemoveProject(cbProject *project) = 0;
+        virtual void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) = 0;
+        virtual void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) = 0;
+};
+
 
 /** @brief The entry point singleton for working with projects.
   *
@@ -54,16 +100,16 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         friend class Mgr<ProjectManager>;
         friend class Manager; // give Manager access to our private members
 
-        cbAuiNotebook* GetNotebook() { return m_pNotebook; }
+        // FIXME(obfuscated#): Extract these two in their own class
+        cbProjectManagerUI& GetUI() { return *m_ui; }
+        void SetUI(cbProjectManagerUI *ui);
 
         const FilesGroupsAndMasks* GetFilesGroupsAndMasks() const { return m_pFileGroups; }
+        FilesGroupsAndMasks* GetFilesGroupsAndMasks() { return m_pFileGroups; }
 
         /// Can the app shutdown? (actually: is ProjectManager busy at the moment?)
         static bool CanShutdown() { return s_CanShutdown; }
-        /// Application menu creation. Called by the application only.
-        void CreateMenu(wxMenuBar* menuBar);
-        /// Application menu removal. Called by the application only.
-        void ReleaseMenu(wxMenuBar* menuBar);
+
         /** Retrieve the default path for new projects.
           * @return The default path for new projects. Contains trailing path separator.
           * @note This might be empty if not configured before...
@@ -356,37 +402,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
 
-        /// Rebuild the project manager's tree.
-        void RebuildTree();
-        /** Stop the tree control from updating.
-          * @note This operation is accumulative. This means you have to call
-          * UnfreezeTree() as many times as you 've called FreezeTree() for the
-          * tree control to un-freeze (except if you call UnfreezeTree(true)).
-          */
-        void FreezeTree();
-        /** Le the tree control be updated again.
-          * @param force If true the tree control is forced to un-freeze. Else it
-          * depends on freeze-unfreeze balance (see note).
-          * @note This operation is accumulative. This means you have to call
-          * UnfreezeTree() as many times as you 've called FreezeTree() for the
-          * tree control to un-freeze (except if you call UnfreezeTree(true)).
-          */
-        void UnfreezeTree(bool force = false);
-        /** Retrieve a pointer to the project manager's tree (GUI).
-          * @return A pointer to a wxTreeCtrl window.
-          */
-        cbTreeCtrl* GetTree(){ return m_pTree; }
-        /** Get the selection of the project manager's tree (GUI).
-          * This must be used instead of tree->GetSelection() because the tree
-          * has the wxTR_MULTIPLE style.
-          * This usually returns the first item in the selection list, but
-          * if there is a right-click popup menu then the user may have
-          * selected several items and right-clicked on one, so return the
-          * right-click item instead.
-          * of the first
-          * @return A wxTreeItemId of the selected tree item.
-          */
-        wxTreeItemId GetTreeSelection();
         /** Retrieve a pointer to the project manager's panel (GUI). This panel
           * is the parent of the project manager's tree obtained through GetTree().
           * @return A pointer to a wxPanel window.
@@ -467,80 +482,21 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * without asking the user later.
           */
         bool QueryCloseWorkspace();
-
-        void InitPane();
-        void BuildTree();
-        void CreateMenuTreeProps(wxMenu* menu, bool popup);
-        void ShowMenu(wxTreeItemId id, const wxPoint& pt);
-
-        void OnTabContextMenu(wxAuiNotebookEvent& event);
-        void OnTabPosition(wxCommandEvent& event);
-        void OnProjectFileActivated(wxTreeEvent& event);
-        void OnExecParameters(wxCommandEvent& event);
-        void OnTreeItemRightClick(wxTreeEvent& event);
-        void OnTreeBeginDrag(wxTreeEvent& event);
-        void OnTreeEndDrag(wxTreeEvent& event);
-        void OnRightClick(wxCommandEvent& event);
-        void OnRenameWorkspace(wxCommandEvent& event);
-        void OnSaveWorkspace(wxCommandEvent& event);
-        void OnSaveAsWorkspace(wxCommandEvent& event);
-        void OnCloseWorkspace(wxCommandEvent& event);
-        void OnSetActiveProject(wxCommandEvent& event);
-        void OnAddFilesToProjectRecursively(wxCommandEvent& event);
-        void OnAddFileToProject(wxCommandEvent& event);
-        void OnRemoveFileFromProject(wxCommandEvent& event);
-        void OnRenameFile(wxCommandEvent& event);
-        void OnSaveProject(wxCommandEvent& event);
-        void OnCloseProject(wxCommandEvent& event);
-        void OnSaveFile(wxCommandEvent& event);
-        void OnCloseFile(wxCommandEvent& event);
-        void OnOpenFile(wxCommandEvent& event);
-        void OnOpenFolderFiles(wxCommandEvent& event);
-        void OnOpenWith(wxCommandEvent& event);
-        void OnProperties(wxCommandEvent& event);
-        void OnNotes(wxCommandEvent& event);
-        void OnGotoFile(wxCommandEvent& event);
-        void OnViewCategorize(wxCommandEvent& event);
-        void OnViewUseFolders(wxCommandEvent& event);
-        void OnViewHideFolderName(wxCommandEvent& event);
-        void OnViewFileMasks(wxCommandEvent& event);
-        void OnFindFile(wxCommandEvent& event);
-        wxArrayString ListNodes(wxTreeItemId node) const;
-        void OnBeginEditNode(wxTreeEvent& event);
-        void OnEndEditNode(wxTreeEvent& event);
-        void OnAddVirtualFolder(wxCommandEvent& event);
-        void OnDeleteVirtualFolder(wxCommandEvent& event);
-        void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnIdle(wxIdleEvent& event);
         void OnAppDoneStartup(CodeBlocksEvent& event);
-        void OnKeyDown(wxTreeEvent& event);
-        void OnFileOptions(wxCommandEvent& event);
-
-        void DoOpenSelectedFile();
-        void DoOpenFile(ProjectFile* pf, const wxString& filename);
         int  DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
-        void RemoveFilesRecursively(wxTreeItemId& sel_id);
-        void OpenFilesRecursively(wxTreeItemId& sel_id);
 
-        cbAuiNotebook*       m_pNotebook;
-        cbTreeCtrl*          m_pTree;
-        wxTreeItemId         m_TreeRoot;
+        cbProjectManagerUI *m_ui;
         cbProject*           m_pActiveProject;
         cbProject*           m_pProjectToActivate;
-        wxImageList*         m_pImages;
         ProjectsArray*       m_pProjects;
         DepsMap              m_ProjectDeps;
         cbWorkspace*         m_pWorkspace;
-        int                  m_TreeVisualState;
         FilesGroupsAndMasks* m_pFileGroups;
-        int                  m_TreeFreezeCounter;
         bool                 m_IsLoadingProject;
         bool                 m_IsLoadingWorkspace;
         bool                 m_IsClosingProject;
         bool                 m_IsClosingWorkspace;
         wxString             m_InitialDir;
-        wxArrayTreeItemIds   m_DraggingSelection;
-        wxTreeItemId         m_RightClickItem;
         bool                 m_isCheckingForExternallyModifiedProjects;
         bool                 m_CanSendWorkspaceChanged;
         cbPlugin*            m_RunningPlugin;
