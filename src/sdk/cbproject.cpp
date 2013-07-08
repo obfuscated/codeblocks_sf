@@ -888,7 +888,7 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     SetModified(true);
     return true;
 }
-
+// FIXME (obfuscated#1#): Move to the ui class
 void cbProject::SortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& parent)
 {
     wxTreeItemIdValue cookie = 0;
@@ -902,7 +902,7 @@ void cbProject::SortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& pare
         current = tree->GetNextChild(parent, cookie);
     }
 }
-
+// FIXME (obfuscated#1#): Move to the ui class
 void cbProject::BuildTree(cbTreeCtrl* tree, const wxTreeItemId& root, int ptvs, FilesGroupsAndMasks* fgam)
 {
     if (!tree)
