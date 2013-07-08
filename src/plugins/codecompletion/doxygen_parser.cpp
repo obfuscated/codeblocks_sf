@@ -995,7 +995,7 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
     {
         const wxString& arg0 = wxString::Format(_T("%i"), token->m_Index);
 
-        html += br + br + CommandToAnchor(cmdOpenDecl, _T("Open declatarion"), &arg0);
+        html += br + br + CommandToAnchor(cmdOpenDecl, _T("Open declaration"), &arg0);
         if ((token->m_TokenKind & tkAnyFunction) && token->m_ImplLine > 0)
             html += br + CommandToAnchor(cmdOpenImpl, _T("Open implementation"), &arg0);
     }
@@ -1283,6 +1283,7 @@ void DocumentationHelper::OnLink(wxHtmlLinkEvent& event)
             if (targetEditor)
                 targetEditor->GotoTokenPosition(token->m_Line - 1, token->m_Name);
         }
+        break;
     case cmdOpenImpl:
         if (args.ToLong(&tokenIdx))
         {
