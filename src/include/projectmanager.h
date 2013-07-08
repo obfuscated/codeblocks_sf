@@ -81,6 +81,31 @@ class DLLIMPORT cbProjectManagerUI
         virtual void RemoveProject(cbProject *project) = 0;
         virtual void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) = 0;
         virtual void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) = 0;
+
+        /** Checks whether all projects are saved. If not, asks
+          *  the user to save and saves accordingly.
+          *  @return False if the user pressed cancel.
+          *  Note: calls QueryCloseProject for all projects.
+          */
+        virtual bool QueryCloseAllProjects() = 0;
+
+        /** Checks whether project is saved. If not, asks
+          *  the user to save and saves accordingly.
+          *  @return False if the user pressed cancel.
+          *  Note: By default this asks the user if he should
+          *  save any unmodified files in the project.
+          */
+        virtual bool QueryCloseProject(cbProject *proj, bool dontsavefiles = false) = 0;
+
+        /** Asks user to save the workspace, projects and files
+          * (Yes/No/cancel). If user pressed Yes, it saves accordingly.
+          * @return False if the user pressed cancel; true otherwise.
+          * After this function is called and returns true, it
+          * is safe to close the workspace, all files and projects
+          * without asking the user later.
+          */
+        virtual bool QueryCloseWorkspace() = 0;
+
 };
 
 
@@ -204,20 +229,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * @return True if all projects were closed, false if even one close operation failed.
           */
         bool CloseAllProjects(bool dontsave = false);
-        /** Checks whether all projects are saved. If not, asks
-          *  the user to save and saves accordingly.
-          *  @return False if the user pressed cancel.
-          *  Note: calls QueryCloseProject for all projects.
-          */
-        bool QueryCloseAllProjects();
-
-        /** Checks whether project is saved. If not, asks
-          *  the user to save and saves accordingly.
-          *  @return False if the user pressed cancel.
-          *  Note: By default this asks the user if he should
-          *  save any unmodified files in the project.
-          */
-        bool QueryCloseProject(cbProject *proj,bool dontsavefiles=false);
 
         /** Create a new empty project.
           * @param filename the project's filename
@@ -461,15 +472,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
 
         ProjectManager();
         ~ProjectManager();
-
-        /** Asks user to save the workspace, projects and files
-          * (Yes/No/cancel). If user pressed Yes, it saves accordingly.
-          * @return False if the user pressed cancel; true otherwise.
-          * After this function is called and returns true, it
-          * is safe to close the workspace, all files and projects
-          * without asking the user later.
-          */
-        bool QueryCloseWorkspace();
         void OnAppDoneStartup(CodeBlocksEvent& event);
         int  DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
 

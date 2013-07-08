@@ -42,6 +42,10 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
 
         void CreateMenu(wxMenuBar* menuBar);
 
+        bool QueryCloseAllProjects();
+        bool QueryCloseProject(cbProject *proj, bool dontsavefiles);
+        bool QueryCloseWorkspace();
+
     private:
         void InitPane();
         void BuildTree();

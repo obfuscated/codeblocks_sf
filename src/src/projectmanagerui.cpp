@@ -2139,3 +2139,82 @@ void ProjectManagerUI::MoveProjectDown(cbProject* project, bool warpAround)
     cbAssert(itemId.IsOk());
     m_pTree->SelectItem(itemId);
 }
+
+
+bool ProjectManagerUI::QueryCloseAllProjects()
+{
+    if (!Manager::Get()->GetEditorManager()->QueryCloseAll())
+        return false;
+    ProjectsArray *projects = Manager::Get()->GetProjectManager()->GetProjects();
+    for (size_t i = 0; i < projects->GetCount(); ++i)
+    {
+        // Ask for saving modified projects. However,
+        // we already asked to save projects' files;
+        // do not ask again
+        if (!QueryCloseProject((*projects)[i], true))
+            return false;
+    }
+    return true;
+}
+
+bool ProjectManagerUI::QueryCloseProject(cbProject *proj, bool dontsavefiles)
+{
+    if (!proj)
+        return true;
+    if (proj->GetCurrentlyCompilingTarget())
+        return false;
+    if (!dontsavefiles)
+    {
+        if (!proj->QueryCloseAllFiles())
+            return false;
+    }
+    if (proj->GetModified() && !Manager::IsBatchBuild())
+    {
+        wxString msg;
+        msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), proj->GetTitle().c_str());
+        switch (cbMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
+        {
+            case wxID_YES:
+                if (!proj->Save())
+                    return false;
+            case wxID_NO:
+                break;
+            case wxID_CANCEL: // fall-through
+            default:
+                return false;
+        }
+    }
+    return true;
+}
+
+bool ProjectManagerUI::QueryCloseWorkspace()
+{
+    cbWorkspace *workspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+    if (!workspace)
+        return true;
+
+    // don't ask to save the default workspace, if blank workspace is used on app startup
+    if (workspace->IsDefault() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == true)
+        return true;
+
+    if (workspace->GetModified())
+    {
+        // workspace needs save
+        wxString msg;
+        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), workspace->GetTitle().c_str());
+        switch (cbMessageBox(msg, _("Save workspace"),
+                             wxYES_NO | wxCANCEL | wxICON_QUESTION))
+        {
+            case wxID_YES:
+                Manager::Get()->GetProjectManager()->SaveWorkspace();
+                break;
+            case wxID_CANCEL:
+                return false;
+            default:
+                break;
+        }
+    }
+    if (!QueryCloseAllProjects())
+        return false;
+    return true;
+}

@@ -83,6 +83,9 @@ class NullProjectManagerUI : public cbProjectManagerUI
         void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) {}
         void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) {}
         void ShowFileInTree(ProjectFile &projectFile) {}
+        bool QueryCloseAllProjects() { return true; }
+        bool QueryCloseProject(cbProject *proj, bool dontsavefiles = false)  { return true; }
+        bool QueryCloseWorkspace()  { return true; }
 };
 
 // class constructor
@@ -437,55 +440,11 @@ cbProject* ProjectManager::NewProject(const wxString& filename)
     return prj;
 }
 
-bool ProjectManager::QueryCloseAllProjects()
-{
-    unsigned int i;
-
-    if (!Manager::Get()->GetEditorManager()->QueryCloseAll())
-        return false;
-
-    for (i=0; i<m_pProjects->GetCount(); i++)
-    {
-        // Ask for saving modified projects. However,
-        // we already asked to save projects' files;
-        // do not ask again
-        if (!QueryCloseProject(m_pProjects->Item(i),true))
-            return false;
-    }
-    return true;
-}
-
-bool ProjectManager::QueryCloseProject(cbProject *proj,bool dontsavefiles)
-{
-    if (!proj)
-        return true;
-    if (proj->GetCurrentlyCompilingTarget())
-        return false;
-    if (!dontsavefiles)
-    {
-        if (!proj->QueryCloseAllFiles())
-            return false;
-    }
-    if (proj->GetModified() && !Manager::IsBatchBuild())
-    {
-        wxString msg;
-        msg.Printf(_("Project '%s' is modified...\nDo you want to save the changes?"), proj->GetTitle().c_str());
-        switch (cbMessageBox(msg, _("Save project"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
-        {
-            case wxID_YES:    if (!proj->Save()) return false;
-            case wxID_NO:     break;
-            case wxID_CANCEL: // fall-through
-            default:          return false;
-        }
-    }
-    return true;
-}
-
 bool ProjectManager::CloseAllProjects(bool dontsave)
 {
     if (!dontsave)
     {
-        if (!QueryCloseAllProjects())
+        if (!m_ui->QueryCloseAllProjects())
             return false;
     }
 
@@ -523,7 +482,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
         return false;
     if (!dontsave)
     {
-         if (!QueryCloseProject(project))
+         if (!m_ui->QueryCloseProject(project))
             return false;
     }
 
@@ -675,40 +634,13 @@ bool ProjectManager::SaveWorkspaceAs(const wxString& filename)
     return GetWorkspace()->SaveAs(filename);
 }
 
-bool ProjectManager::QueryCloseWorkspace()
-{
-    if (!m_pWorkspace)
-        return true;
-
-    // don't ask to save the default workspace, if blank workspace is used on app startup
-    if (m_pWorkspace->IsDefault() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == true)
-        return true;
-
-    if (m_pWorkspace->GetModified())
-    {
-        // workspace needs save
-        wxString msg;
-        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), m_pWorkspace->GetTitle().c_str());
-        switch (cbMessageBox(msg, _("Save workspace"),
-                             wxYES_NO | wxCANCEL | wxICON_QUESTION))
-        {
-            case wxID_YES: SaveWorkspace(); break;
-            case wxID_CANCEL: return false;
-            default: break;
-        }
-    }
-    if (!QueryCloseAllProjects())
-        return false;
-    return true;
-}
-
 bool ProjectManager::CloseWorkspace()
 {
     bool result = false;
     m_IsClosingWorkspace = true;
     if (m_pWorkspace)
     {
-        if (!QueryCloseWorkspace())
+        if (!m_ui->QueryCloseWorkspace())
         {
             m_IsClosingWorkspace = false;
             return false;
