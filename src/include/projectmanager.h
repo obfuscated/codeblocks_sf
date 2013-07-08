@@ -122,11 +122,6 @@ class DLLIMPORT cbProjectManagerUI
           * there's a project selection combo in the dialog.
           */
         virtual void ConfigureProjectDependencies(cbProject* base = nullptr) = 0;
-
-        // FIXME(obfuscated#): remove from this interface
-        /** Check if one of the open projects has been modified outside the IDE. If so, ask to reload it. */
-        virtual void CheckForExternallyModifiedProjects() = 0;
-
 };
 
 

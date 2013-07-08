@@ -41,6 +41,8 @@
 #include "cbstyledtextctrl.h"
 #include <wx/ipc.h>
 
+#include "projectmanagerui.h"
+
 #include <sqplus.h>
 
 #ifndef __WXMSW__
@@ -1241,7 +1243,9 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
         // so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idEditorManagerCheckFiles);
         wxPostEvent(Manager::Get()->GetEditorManager(), evt);
-        Manager::Get()->GetProjectManager()->GetUI().CheckForExternallyModifiedProjects();
+        ProjectManagerUI *prjManUI = m_Frame->GetProjectManagerUI();
+        if (prjManUI)
+            prjManUI->CheckForExternallyModifiedProjects();
     }
     cbEditor* ed = Manager::Get()->GetEditorManager()
                  ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;

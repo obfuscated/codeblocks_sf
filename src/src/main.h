@@ -89,6 +89,10 @@ class MainFrame : public wxFrame
         // open the filename (based on what it is)
         bool OpenGeneric(const wxString& filename, bool addToHistory = true);
 
+        void StartupDone();
+
+        ProjectManagerUI* GetProjectManagerUI() { return m_pPrjManUI; }
+    private:
         // event handlers
 
         void OnEraseBackground(wxEraseEvent& event);
@@ -285,7 +289,6 @@ class MainFrame : public wxFrame
         void OnPageChanged(wxNotebookEvent& event);
         void OnShiftTab(wxCommandEvent& event);
         void OnCtrlAltTab(wxCommandEvent& event);
-        void StartupDone();
         void OnNotebookDoubleClick(CodeBlocksEvent& event);
     protected:
         void CreateIDE();
