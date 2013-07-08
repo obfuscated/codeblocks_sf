@@ -348,14 +348,6 @@ void EditorManager::RebuildNotebookStack()
     }
 }
 
-void EditorManager::CreateMenu(cb_unused wxMenuBar* menuBar)
-{
-}
-
-void EditorManager::ReleaseMenu(cb_unused wxMenuBar* menuBar)
-{
-}
-
 void EditorManager::RecreateOpenEditorStyles()
 {
     // tell all open editors to re-create their styles

@@ -29,7 +29,6 @@ DLLIMPORT extern int ID_EditorManagerCloseButton;
 class EditorBase;
 class cbAuiNotebook;
 class wxAuiNotebookEvent;
-class wxMenuBar;
 class EditorColourSet;
 class cbProject;
 class ProjectFile;
@@ -80,8 +79,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void DeleteNotebookStack();
         void RebuildNotebookStack();
 
-        void CreateMenu(wxMenuBar* menuBar);
-        void ReleaseMenu(wxMenuBar* menuBar);
         void RecreateOpenEditorStyles();
         int GetEditorsCount();
 

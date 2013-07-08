@@ -988,7 +988,6 @@ void MainFrame::CreateMenubar()
 
     // core modules: create menus
     m_pPrjManUI->CreateMenu(mbar);
-    Manager::Get()->GetEditorManager()->CreateMenu(mbar);
     Manager::Get()->GetDebuggerManager()->SetMenuHandler(m_debuggerMenuHandler);
 
     // ask all plugins to rebuild their menus
