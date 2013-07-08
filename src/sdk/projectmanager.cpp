@@ -58,6 +58,7 @@ class NullProjectManagerUI : public cbProjectManagerUI
         void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) {}
         void RemoveProject(cbProject *project) {}
         void BeginLoadingWorkspace() {}
+        void CloseWorkspace() {}
         void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) {}
         void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) {}
         void ShowFileInTree(ProjectFile &projectFile) {}
@@ -618,13 +619,7 @@ bool ProjectManager::CloseWorkspace()
         delete m_pWorkspace;
         m_pWorkspace = 0;
 
-// FIXME (obfuscated#1#): Reimplement project manager ui
-//        if (m_pTree)
-//        {
-//            m_pTree->SetItemText(m_TreeRoot, _("Workspace"));
-//            if (!Manager::IsAppShuttingDown())
-//                RebuildTree(); // update the workspace icon if required
-//        }
+        m_ui->CloseWorkspace();
         result = true;
     }
     else

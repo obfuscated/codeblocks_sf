@@ -391,6 +391,15 @@ void ProjectManagerUI::BeginLoadingWorkspace()
     UnfreezeTree();
 }
 
+void ProjectManagerUI::CloseWorkspace()
+{
+    if (m_pTree)
+    {
+        m_pTree->SetItemText(m_TreeRoot, _("Workspace"));
+        if (!Manager::IsAppShuttingDown())
+            RebuildTree(); // update the workspace icon if required
+    }
+}
 
 void ProjectManagerUI::FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups)
 {

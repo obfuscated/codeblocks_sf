@@ -75,6 +75,7 @@ class DLLIMPORT cbProjectManagerUI
         virtual void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) = 0;
         virtual void RemoveProject(cbProject *project) = 0;
         virtual void BeginLoadingWorkspace() = 0;
+        virtual void CloseWorkspace() = 0;
         virtual void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) = 0;
         virtual void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) = 0;
 
