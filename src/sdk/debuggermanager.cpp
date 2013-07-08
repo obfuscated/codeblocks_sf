@@ -743,6 +743,7 @@ bool DebuggerManager::RegisterDebugger(cbDebuggerPlugin *plugin)
         m_menuHandler->SetActiveDebugger(m_activeDebugger);
     }
 
+    CreateWindows();
     m_menuHandler->RebuildMenus();
 
     return true;
@@ -771,26 +772,7 @@ bool DebuggerManager::UnregisterDebugger(cbDebuggerPlugin *plugin)
 
     if (m_registered.empty())
     {
-        m_interfaceFactory->DeleteBacktrace(m_backtraceDialog);
-        m_backtraceDialog = NULL;
-
-        m_interfaceFactory->DeleteBreakpoints(m_breakPointsDialog);
-        m_breakPointsDialog = NULL;
-
-        m_interfaceFactory->DeleteCPURegisters(m_cpuRegistersDialog);
-        m_cpuRegistersDialog = NULL;
-
-        m_interfaceFactory->DeleteDisassembly(m_disassemblyDialog);
-        m_disassemblyDialog = NULL;
-
-        m_interfaceFactory->DeleteMemory(m_examineMemoryDialog);
-        m_examineMemoryDialog = NULL;
-
-        m_interfaceFactory->DeleteThreads(m_threadsDialog);
-        m_threadsDialog = NULL;
-
-        m_interfaceFactory->DeleteWatches(m_watchesDialog);
-        m_watchesDialog = NULL;
+        DestoryWindows();
 
         if (Manager::Get()->GetLogManager())
             Manager::Get()->GetDebuggerManager()->HideLogger();
@@ -953,19 +935,55 @@ void DebuggerManager::SetInterfaceFactory(cbDebugInterfaceFactory *factory)
     cbAssert(!m_interfaceFactory);
     m_interfaceFactory = factory;
 
-    m_backtraceDialog = m_interfaceFactory->CreateBacktrace();
-    m_breakPointsDialog = m_interfaceFactory->CreateBreapoints();
-    m_cpuRegistersDialog = m_interfaceFactory->CreateCPURegisters();
-    m_disassemblyDialog = m_interfaceFactory->CreateDisassembly();
-    m_examineMemoryDialog = m_interfaceFactory->CreateMemory();
-    m_threadsDialog = m_interfaceFactory->CreateThreads();
-    m_watchesDialog = m_interfaceFactory->CreateWatches();
+    CreateWindows();
 
     m_backtraceDialog->EnableWindow(false);
     m_cpuRegistersDialog->EnableWindow(false);
     m_disassemblyDialog->EnableWindow(false);
     m_examineMemoryDialog->EnableWindow(false);
     m_threadsDialog->EnableWindow(false);
+}
+
+void DebuggerManager::CreateWindows()
+{
+    if (!m_backtraceDialog)
+        m_backtraceDialog = m_interfaceFactory->CreateBacktrace();
+    if (!m_breakPointsDialog)
+        m_breakPointsDialog = m_interfaceFactory->CreateBreapoints();
+    if (!m_cpuRegistersDialog)
+        m_cpuRegistersDialog = m_interfaceFactory->CreateCPURegisters();
+    if (!m_disassemblyDialog)
+        m_disassemblyDialog = m_interfaceFactory->CreateDisassembly();
+    if (!m_examineMemoryDialog)
+        m_examineMemoryDialog = m_interfaceFactory->CreateMemory();
+    if (!m_threadsDialog)
+        m_threadsDialog = m_interfaceFactory->CreateThreads();
+    if (!m_watchesDialog)
+        m_watchesDialog = m_interfaceFactory->CreateWatches();
+}
+
+void DebuggerManager::DestoryWindows()
+{
+    m_interfaceFactory->DeleteBacktrace(m_backtraceDialog);
+    m_backtraceDialog = nullptr;
+
+    m_interfaceFactory->DeleteBreakpoints(m_breakPointsDialog);
+    m_breakPointsDialog = nullptr;
+
+    m_interfaceFactory->DeleteCPURegisters(m_cpuRegistersDialog);
+    m_cpuRegistersDialog = nullptr;
+
+    m_interfaceFactory->DeleteDisassembly(m_disassemblyDialog);
+    m_disassemblyDialog = nullptr;
+
+    m_interfaceFactory->DeleteMemory(m_examineMemoryDialog);
+    m_examineMemoryDialog = nullptr;
+
+    m_interfaceFactory->DeleteThreads(m_threadsDialog);
+    m_threadsDialog = nullptr;
+
+    m_interfaceFactory->DeleteWatches(m_watchesDialog);
+    m_watchesDialog = nullptr;
 }
 
 cbDebugInterfaceFactory* DebuggerManager::GetInterfaceFactory()
