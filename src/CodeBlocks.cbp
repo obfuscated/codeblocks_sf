@@ -3891,6 +3891,12 @@
 		<Unit filename="src/printdlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/projectmanagerui.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/projectmanagerui.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/recentitemslist.cpp">
 			<Option target="src" />
 		</Unit>

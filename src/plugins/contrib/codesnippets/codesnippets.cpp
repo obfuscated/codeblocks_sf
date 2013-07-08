@@ -316,7 +316,7 @@ void CodeSnippets::OnRelease(bool appShutDown)
     Disconnect(wxEVT_IDLE,
             wxIdleEventHandler(CodeSnippets::OnIdle), NULL, this);
     #if defined(__WXMSW__)
-    wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetTree();
+    wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
     RemoveTreeCtrlHandler( pPrjTree, wxEVT_COMMAND_TREE_BEGIN_DRAG );
     RemoveTreeCtrlHandler( GetConfig()->GetOpenFilesList(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
     #endif
