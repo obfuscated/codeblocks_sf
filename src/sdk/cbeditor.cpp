@@ -3110,24 +3110,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         }
     }
     else if (id == idShowFileInProject)
-    {
-// FIXME (obfuscated#1#): Reimplement project manager ui
-//        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-//        if (m_pProjectFile && tree)
-//        {
-//            // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
-//            wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
-//            if (sel.IsOk())
-//                tree->SelectItem(sel, false);
-//
-//            const wxTreeItemId &itemId = m_pProjectFile->GetTreeItemId();
-//            if (itemId.IsOk())
-//            {
-//                tree->EnsureVisible(itemId);
-//                tree->SelectItem(itemId, true);
-//            }
-//        }
-    }
+        Manager::Get()->GetProjectManager()->GetUI().ShowFileInTree(*m_pProjectFile);
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);
     else if (id == idBreakpointEdit)

@@ -3060,23 +3060,9 @@ void EditorManager::OnRemoveFileFromProject(cb_unused wxCommandEvent& event)
 
 void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent& event)
 {
-// FIXME (obfuscated#1#): Reimplement project manager ui
-//    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
-//    wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetTree();
-//    if (pf && tree) // should be in any case, otherwise something went wrong between popup menu creation and here
-//    {
-//        // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
-//        wxTreeItemId sel = Manager::Get()->GetProjectManager()->GetTreeSelection();
-//        if (sel.IsOk())
-//            tree->SelectItem(sel, false);
-//
-//        const wxTreeItemId &itemId = pf->GetTreeItemId();
-//        if (itemId.IsOk())
-//        {
-//            tree->EnsureVisible(itemId);
-//            tree->SelectItem(itemId, true);
-//        }
-//    }
+    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
+    if (pf)
+        Manager::Get()->GetProjectManager()->GetUI().ShowFileInTree(*pf);
 }
 
 void EditorManager::OnAppDoneStartup(wxCommandEvent& event)

@@ -82,6 +82,7 @@ class NullProjectManagerUI : public cbProjectManagerUI
         void RemoveProject(cbProject *project) {}
         void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) {}
         void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) {}
+        void ShowFileInTree(ProjectFile &projectFile) {}
 };
 
 // class constructor

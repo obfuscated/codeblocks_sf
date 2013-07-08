@@ -38,6 +38,8 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups);
         void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle);
 
+        void ShowFileInTree(ProjectFile &projectFile);
+
         void CreateMenu(wxMenuBar* menuBar);
 
     private:

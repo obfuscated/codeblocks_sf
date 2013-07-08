@@ -75,6 +75,8 @@ class DLLIMPORT cbProjectManagerUI
           */
         virtual wxTreeItemId GetTreeSelection() = 0;
 
+        virtual void ShowFileInTree(ProjectFile &projectFile) = 0;
+
         virtual void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) = 0;
         virtual void RemoveProject(cbProject *project) = 0;
         virtual void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) = 0;

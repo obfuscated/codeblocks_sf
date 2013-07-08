@@ -383,6 +383,21 @@ void ProjectManagerUI::FinishLoadingWorkspace(cbProject *activeProject, const wx
     UnfreezeTree(true);
 }
 
+void ProjectManagerUI::ShowFileInTree(ProjectFile &projectFile)
+{
+    // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
+    wxTreeItemId sel = GetTreeSelection();
+    if (sel.IsOk())
+        m_pTree->SelectItem(sel, false);
+
+    const wxTreeItemId &itemId = projectFile.GetTreeItemId();
+    if (itemId.IsOk())
+    {
+        m_pTree->EnsureVisible(itemId);
+        m_pTree->SelectItem(itemId, true);
+    }
+}
+
 void ProjectManagerUI::CreateMenu(wxMenuBar* menuBar)
 {
 /* TODO (mandrav#1#): Move menu items from main.cpp, here */
