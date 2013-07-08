@@ -400,12 +400,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           */
         bool CausesCircularDependency(cbProject* base, cbProject* dependsOn);
 
-        /** Sets the Top Editor (the active editor from the last session) */
-        void SetTopEditor(EditorBase* ed);
-        /** @return The Top Editor */
-        EditorBase* GetTopEditor() const;
-
-
         // FIXME (obfuscated#): NO_UI: Move to the ui class
         /** @return The workspace icon index in the image list.
             @param  read_only Return the read-only icon for a workspace?
