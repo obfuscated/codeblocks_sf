@@ -175,7 +175,7 @@ void wxSmith::BuildBrowserParents()
 
         default:
         {
-            cbAuiNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+            cbAuiNotebook* Notebook = Manager::Get()->GetProjectManager()->GetUI().GetNotebook();
             wxASSERT(Notebook!=0);
 
             // Creating main splitting object
@@ -431,7 +431,7 @@ wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
 
 void wxSmith::ShowResourcesTab()
 {
-    cbAuiNotebook* Notebook = Manager::Get()->GetProjectManager()->GetNotebook();
+    cbAuiNotebook* Notebook = Manager::Get()->GetProjectManager()->GetUI().GetNotebook();
     Notebook->SetSelection( Notebook->GetPageIndex(m_Splitter) );
 }
 

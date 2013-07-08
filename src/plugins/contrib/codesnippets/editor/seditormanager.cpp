@@ -1470,7 +1470,7 @@ bool SEditorManager::SwapActiveHeaderSource()
                 {
                     ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
                     newEd->SetProjectFile(pf);
-                    Manager::Get()->GetProjectManager()->RebuildTree();
+                    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
                 }
             }
         }

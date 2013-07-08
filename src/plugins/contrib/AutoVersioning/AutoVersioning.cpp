@@ -410,7 +410,7 @@ void AutoVersioning::OnMenuAutoVersioning(wxCommandEvent&)
                         target_array.Add(i);
                     }
                     Manager::Get()->GetProjectManager()->AddFileToProject(m_versionHeaderPath, m_Project, target_array);
-                    Manager::Get()->GetProjectManager()->RebuildTree();
+                    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
                     wxMessageBox(_("Project configured!"));
                 }
             }

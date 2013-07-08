@@ -158,13 +158,13 @@ void HexEditor::OnOpenHexEditFileBrowser( wxCommandEvent& /*event*/ )
 
 void HexEditor::OnOpenHexEdit( wxCommandEvent& /*event*/ )
 {
-    ProjectManager* manager = Manager::Get()->GetProjectManager();
-    wxTreeCtrl *tree = manager->GetTree();
+    cbProjectManagerUI &managerUI = Manager::Get()->GetProjectManager()->GetUI();
+    wxTreeCtrl *tree = managerUI.GetTree();
 
     if ( !tree )
         return;
 
-    wxTreeItemId treeItem =  manager->GetTreeSelection();
+    wxTreeItemId treeItem =  managerUI.GetTreeSelection();
 
     if ( !treeItem.IsOk() )
         return;

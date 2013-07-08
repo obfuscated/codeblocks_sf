@@ -42,16 +42,17 @@ void FileManagerPlugin::OnAttach()
 {
     //Create a new instance of the FileExplorer and attach it to the Project Manager notebook
     m_fe=new FileExplorer(Manager::Get()->GetAppWindow());
-    Manager::Get()->GetProjectManager()->GetNotebook()->AddPage(m_fe,_T("Files"));
+    Manager::Get()->GetProjectManager()->GetUI().GetNotebook()->AddPage(m_fe,_T("Files"));
 }
 
 void FileManagerPlugin::OnRelease(bool /*appShutDown*/)
 {
     if (m_fe) //remove the File Explorer from the managment pane and destroy it.
     {
-        int idx = Manager::Get()->GetProjectManager()->GetNotebook()->GetPageIndex(m_fe);
+        cbAuiNotebook *notebook = Manager::Get()->GetProjectManager()->GetUI().GetNotebook();
+        int idx = notebook->GetPageIndex(m_fe);
         if (idx != -1)
-            Manager::Get()->GetProjectManager()->GetNotebook()->RemovePage(idx);
+            notebook->RemovePage(idx);
         delete m_fe;
     }
     m_fe = 0;
@@ -68,7 +69,7 @@ void FileManagerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, con
 
 void FileManagerPlugin::OnOpenProjectInFileBrowser(wxCommandEvent& /*event*/)
 {
-    cbAuiNotebook *m_nb=Manager::Get()->GetProjectManager()->GetNotebook();
+    cbAuiNotebook *m_nb=Manager::Get()->GetProjectManager()->GetUI().GetNotebook();
     m_nb->SetSelection(m_nb->GetPageIndex(m_fe));
     m_fe->SetRootFolder(m_project_selected);
 }

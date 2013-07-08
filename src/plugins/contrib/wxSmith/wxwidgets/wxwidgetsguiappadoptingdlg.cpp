@@ -244,7 +244,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(wxCommandEvent& event)
         // Adding new file to project
         wxArrayInt targets;
         Manager::Get()->GetProjectManager()->AddFileToProject(FileName,m_Project, targets);
-        Manager::Get()->GetProjectManager()->RebuildTree();
+        Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     }
 
     if ( m_GUI->CreateNewApp(FileName) )

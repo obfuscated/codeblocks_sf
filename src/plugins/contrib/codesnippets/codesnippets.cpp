@@ -212,11 +212,11 @@ void CodeSnippets::OnAttach()
     // memorize manager of Open files tree
     m_pProjectMgr = Manager::Get()->GetProjectManager();
     // set a drop target for the project managers wxAuiNotebook/cbAuiNotebook
-    m_pProjectMgr->GetNotebook()->SetDropTarget(new DropTargets(this));
+    m_pProjectMgr->GetUI().GetNotebook()->SetDropTarget(new DropTargets(this));
 
     //NB: On Linux, we don't enable dragging out of the file windows because of the drag/drop freeze bug
     #if defined(__WXMSW__)
-        wxTreeCtrl* pPrjTree = m_pProjectMgr->GetTree();
+        wxTreeCtrl* pPrjTree = m_pProjectMgr->GetUI().GetTree();
         m_oldCursor = pPrjTree->GetCursor();
         SetTreeCtrlHandler( pPrjTree, wxEVT_COMMAND_TREE_BEGIN_DRAG );
     #endif
@@ -929,7 +929,7 @@ bool CodeSnippets::GetTreeSelectionData(const wxTreeCtrl* pTree, const wxTreeIte
 
     if (not pTree) { return false; }
 
-    if ( (pTree == m_pProjectMgr->GetTree())
+    if ( (pTree == m_pProjectMgr->GetUI().GetTree())
         or (pTree == GetConfig()->GetOpenFilesList()) )
         {/*ok*/;}
     else{ return false; }
@@ -962,7 +962,7 @@ bool CodeSnippets::GetTreeSelectionData(const wxTreeCtrl* pTree, const wxTreeIte
     // -------------------------
     // Project Tree
     // -------------------------
-    if ( pTree == m_pProjectMgr->GetTree() ) {
+    if ( pTree == m_pProjectMgr->GetUI().GetTree() ) {
         // create a string from highlighted Project treeCtrl item
 
         // Workspace/root

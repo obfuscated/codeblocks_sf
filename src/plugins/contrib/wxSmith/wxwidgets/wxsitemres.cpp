@@ -572,7 +572,7 @@ bool wxsItemRes::OnDeleteCleanup(bool ShowDialog)
         }
     }
 
-    Manager::Get()->GetProjectManager()->RebuildTree();
+    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
 
     // TODO: Check if we've deleted main resource of this app
 

@@ -1618,7 +1618,7 @@ void FileExplorer::OnAddToProject(wxCommandEvent &/*event*/)
     }
     wxArrayInt prompt;
     Manager::Get()->GetProjectManager()->AddMultipleFilesToProject(files, NULL, prompt);
-    Manager::Get()->GetProjectManager()->RebuildTree();
+    Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
 }
 
 bool FileExplorer::IsFilesOnly(wxArrayTreeItemIds tis)
