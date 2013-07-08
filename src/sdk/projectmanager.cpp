@@ -30,21 +30,11 @@
     #include "cbexception.h"  // for cbassert
 #endif
 
-#include <vector>
-#include <algorithm>
-
 #include <wx/progdlg.h>
 
 #include "cbauibook.h"
-#include "cbcolourmanager.h"
-#include "confirmreplacedlg.h"
-#include "filefilters.h"
+//#include "filefilters.h"
 #include "filegroupsandmasks.h"
-#include "incrementalselectlistdlg.h"
-//#include "multiselectdlg.h"
-//#include "projectdepsdlg.h"
-//#include "projectfileoptionsdlg.h"
-//#include "projectsfilemasksdlg.h"
 
 template<> ProjectManager* Mgr<ProjectManager>::instance = 0;
 template<> bool  Mgr<ProjectManager>::isShutdown = false;
@@ -76,6 +66,7 @@ class NullProjectManagerUI : public cbProjectManagerUI
         int AskForBuildTargetIndex(cbProject* project = nullptr) { return -1; }
         wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) { return wxArrayInt(); }
         void ConfigureProjectDependencies(cbProject* base = nullptr) {}
+        void CheckForExternallyModifiedProjects() {}
 };
 
 // class constructor
@@ -87,7 +78,6 @@ ProjectManager::ProjectManager() :
     m_IsClosingProject(false),
     m_IsClosingWorkspace(false),
     m_InitialDir(_T("")),
-    m_isCheckingForExternallyModifiedProjects(false),
     m_CanSendWorkspaceChanged(false),
     m_RunningPlugin(NULL)
 {
@@ -970,58 +960,6 @@ void ProjectManager::WorkspaceChanged()
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
         Manager::Get()->GetEditorManager()->GetNotebook()->MinimizeFreeSpace();
     }
-}
-
-void ProjectManager::CheckForExternallyModifiedProjects()
-{
-    if (Manager::IsBatchBuild())
-        return;
-    if (m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
-        return;
-    m_isCheckingForExternallyModifiedProjects = true;
-
-    // check also the projects (TO DO : what if we gonna reload while compiling/debugging)
-    // TODO : make sure the same project is the active one again
-    ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();
-    if ( ProjectsArray* Projects = ProjectMgr->GetProjects())
-    {
-        bool reloadAll = false;
-        // make a copy of all the pointers before we start messing with closing and opening projects
-        // the hash (Projects) could change the order
-        std::vector<cbProject*> ProjectPointers;
-        for (unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
-            ProjectPointers.push_back(Projects->Item(idxProject));
-
-        for (unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
-        {
-            cbProject* pProject = ProjectPointers[idxProject];
-            wxFileName fname(pProject->GetFilename());
-            wxDateTime last = fname.GetModificationTime();
-            if (last.IsLaterThan(pProject->GetLastModificationTime()))
-            {    // was modified -> reload
-                int ret = -1;
-                if (!reloadAll)
-                {
-                    Manager::Get()->GetLogManager()->Log(pProject->GetFilename());
-                    wxString msg;
-                    msg.Printf(_("Project %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
-                               pProject->GetFilename().c_str());
-                    ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
-                    dlg.SetTitle(_("Reload Project?"));
-                    PlaceWindow(&dlg);
-                    ret = dlg.ShowModal();
-                    reloadAll = ret == crAll;
-                }
-                if (reloadAll || ret == crYes)
-                    ProjectMgr->ReloadProject(pProject);
-                else if (ret == crCancel)
-                    break;
-                else if (ret == crNo)
-                    pProject->Touch();
-            }
-        } // end for : idx : idxProject
-    }
-    m_isCheckingForExternallyModifiedProjects = false;
 }
 
 void ProjectManager::RemoveFileFromProject(ProjectFile *pfile, cbProject* project)

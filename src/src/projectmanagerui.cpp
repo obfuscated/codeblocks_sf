@@ -33,6 +33,7 @@
 
 #include "cbauibook.h"
 #include "cbcolourmanager.h"
+#include "confirmreplacedlg.h"
 #include "filefilters.h"
 #include "filegroupsandmasks.h"
 #include "incrementalselectlistdlg.h"
@@ -167,7 +168,8 @@ END_EVENT_TABLE()
 
 ProjectManagerUI::ProjectManagerUI() :
     m_pTree(nullptr),
-    m_TreeFreezeCounter(0)
+    m_TreeFreezeCounter(0),
+    m_isCheckingForExternallyModifiedProjects(false)
 {
     m_pNotebook = new cbAuiNotebook(Manager::Get()->GetAppWindow(), idNB,
                                     wxDefaultPosition, wxDefaultSize, wxAUI_NB_WINDOWLIST_BUTTON);
@@ -2287,4 +2289,56 @@ void ProjectManagerUI::ConfigureProjectDependencies(cbProject* base)
     ProjectDepsDlg dlg(Manager::Get()->GetAppWindow(), base);
     PlaceWindow(&dlg);
     dlg.ShowModal();
+}
+
+void ProjectManagerUI::CheckForExternallyModifiedProjects()
+{
+    if (Manager::IsBatchBuild())
+        return;
+    if (m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
+        return;
+    m_isCheckingForExternallyModifiedProjects = true;
+
+    // check also the projects (TO DO : what if we gonna reload while compiling/debugging)
+    // TODO : make sure the same project is the active one again
+    ProjectManager* ProjectMgr = Manager::Get()->GetProjectManager();
+    if ( ProjectsArray* Projects = ProjectMgr->GetProjects())
+    {
+        bool reloadAll = false;
+        // make a copy of all the pointers before we start messing with closing and opening projects
+        // the hash (Projects) could change the order
+        std::vector<cbProject*> ProjectPointers;
+        for (unsigned int idxProject = 0; idxProject < Projects->Count(); ++idxProject)
+            ProjectPointers.push_back(Projects->Item(idxProject));
+
+        for (unsigned int idxProject = 0; idxProject < ProjectPointers.size(); ++idxProject)
+        {
+            cbProject* pProject = ProjectPointers[idxProject];
+            wxFileName fname(pProject->GetFilename());
+            wxDateTime last = fname.GetModificationTime();
+            if (last.IsLaterThan(pProject->GetLastModificationTime()))
+            {    // was modified -> reload
+                int ret = -1;
+                if (!reloadAll)
+                {
+                    Manager::Get()->GetLogManager()->Log(pProject->GetFilename());
+                    wxString msg;
+                    msg.Printf(_("Project %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
+                               pProject->GetFilename().c_str());
+                    ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
+                    dlg.SetTitle(_("Reload Project?"));
+                    PlaceWindow(&dlg);
+                    ret = dlg.ShowModal();
+                    reloadAll = ret == crAll;
+                }
+                if (reloadAll || ret == crYes)
+                    ProjectMgr->ReloadProject(pProject);
+                else if (ret == crCancel)
+                    break;
+                else if (ret == crNo)
+                    pProject->Touch();
+            }
+        } // end for : idx : idxProject
+    }
+    m_isCheckingForExternallyModifiedProjects = false;
 }

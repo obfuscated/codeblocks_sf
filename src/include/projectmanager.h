@@ -121,6 +121,10 @@ class DLLIMPORT cbProjectManagerUI
           */
         virtual void ConfigureProjectDependencies(cbProject* base = nullptr) = 0;
 
+        // FIXME(obfuscated#): remove from this interface
+        /** Check if one of the open projects has been modified outside the IDE. If so, ask to reload it. */
+        virtual void CheckForExternallyModifiedProjects() = 0;
+
 };
 
 
@@ -417,9 +421,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         /** @return The virtual folder icon index in the image list. */
         int VirtualFolderIconIndex();
 
-        /** Check if one of the open projects has been modified outside the IDE. If so, ask to reload it. */
-        void CheckForExternallyModifiedProjects();
-
         /** Sends message to the plugins that the workspace has been changed */
         void WorkspaceChanged();
 
@@ -480,7 +481,6 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         bool                 m_IsClosingProject;
         bool                 m_IsClosingWorkspace;
         wxString             m_InitialDir;
-        bool                 m_isCheckingForExternallyModifiedProjects;
         bool                 m_CanSendWorkspaceChanged;
         cbPlugin*            m_RunningPlugin;
 

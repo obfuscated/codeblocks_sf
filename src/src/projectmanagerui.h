@@ -50,6 +50,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         int AskForBuildTargetIndex(cbProject* project);
         wxArrayInt AskForMultiBuildTargetIndex(cbProject* project);
         void ConfigureProjectDependencies(cbProject* base);
+        void CheckForExternallyModifiedProjects();
 
     private:
         void InitPane();
@@ -128,6 +129,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         int                  m_TreeFreezeCounter;
         wxArrayTreeItemIds   m_DraggingSelection;
         wxTreeItemId         m_RightClickItem;
+        bool                 m_isCheckingForExternallyModifiedProjects;
 
     private:
         DECLARE_EVENT_TABLE()

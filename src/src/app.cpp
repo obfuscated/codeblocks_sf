@@ -1241,7 +1241,7 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
         // so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idEditorManagerCheckFiles);
         wxPostEvent(Manager::Get()->GetEditorManager(), evt);
-        Manager::Get()->GetProjectManager()->CheckForExternallyModifiedProjects();
+        Manager::Get()->GetProjectManager()->GetUI().CheckForExternallyModifiedProjects();
     }
     cbEditor* ed = Manager::Get()->GetEditorManager()
                  ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;
