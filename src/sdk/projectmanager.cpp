@@ -90,8 +90,6 @@ ProjectManager::ProjectManager() :
 
     m_pFileGroups = new FilesGroupsAndMasks;
 
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("project_manager"));
-
     // register event sinks
     Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<ProjectManager, CodeBlocksEvent>(this, &ProjectManager::OnAppDoneStartup));
 
