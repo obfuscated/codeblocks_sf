@@ -58,6 +58,7 @@ const wxChar *bim[] =
     _T("include"),
     _T("lib"),
     _T("obj"),
+    _T("bin"),
     _T("cflags"),
     _T("lflags")
 };
