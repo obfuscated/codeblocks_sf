@@ -165,7 +165,7 @@ void cbThreadPool::TaskDone(cb_unused cbWorkerThread* thread)
 /* ******** cbWorkerThread IMPLEMENTATION ******** */
 /* *********************************************** */
 
-QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore)
+cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore)
 : m_abort(false),
   m_pPool(pool),
   m_semaphore(semaphore),
@@ -174,7 +174,7 @@ QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::cbWorkerThread(cbThreadPool 
   // empty
 }
 
-wxThread::ExitCode QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Entry()
+wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 {
   bool workingThread = false; // keeps the state of the thread so it knows better what to do
 
@@ -231,18 +231,18 @@ wxThread::ExitCode QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Entry()
   return 0;
 }
 
-void QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Abort()
+void cbThreadPool::cbWorkerThread::Abort()
 {
   m_abort = true;
   AbortTask();
 }
 
-bool QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::Aborted() const
+bool cbThreadPool::cbWorkerThread::Aborted() const
 {
   return m_abort;
 }
 
-void QUALIFY_IF_GCC_GE_34(cbThreadPool::)cbWorkerThread::AbortTask()
+void cbThreadPool::cbWorkerThread::AbortTask()
 {
   wxMutexLocker lock(m_taskMutex);
 
