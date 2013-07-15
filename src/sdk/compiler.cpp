@@ -357,6 +357,13 @@ void Compiler::MirrorCurrentSettings()
     m_Mirrored                = true;
 }
 
+void Compiler::CompileRegExArray()
+{
+    size_t count = m_RegExes.Count();
+    for (size_t ii = 0; ii < count; ++ii)
+        m_RegExes[ii].CompileRegEx();
+}
+
 void Compiler::SaveSettings(const wxString& baseKey)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
@@ -692,6 +699,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
         rs.msg[2]   = cfg->ReadInt(group + _T("/msg3"), 0);
         rs.filename = cfg->ReadInt(group + _T("/filename"), 0);
         rs.line     = cfg->ReadInt(group + _T("/line"), 0);
+        rs.CompileRegEx();
 
         if (index <= (long)m_RegExes.GetCount())
             m_RegExes[index - 1] = rs;
@@ -741,7 +749,7 @@ CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)
         RegExStruct& rs = m_RegExes[i];
         if (rs.regex.IsEmpty())
             continue;
-        wxRegEx regex(rs.regex);
+        const wxRegEx &regex = rs.GetRegEx();
         if (regex.Matches(line))
         {
             if (rs.filename > 0)
@@ -1131,6 +1139,8 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
         }
         node = node->GetNext();
     }
+
+    CompileRegExArray();
 }
 
 bool Compiler::EvalXMLCondition(const wxXmlNode* node)

@@ -12,6 +12,7 @@
 #include <wx/string.h>
 #include <wx/filename.h>
 #include <wx/dynarray.h>
+#include <wx/regex.h>
 #include "compileoptionsbase.h"
 #include "compileroptions.h"
 
@@ -68,11 +69,13 @@ struct RegExStruct
         : desc(_("Unknown")), lt(cltError), regex(_T("")), filename(0), line(0)
     {
         memset(msg, 0, sizeof(msg));
+        CompileRegEx();
     }
     RegExStruct(const RegExStruct& rhs)
         : desc(rhs.desc), lt(rhs.lt), regex(rhs.regex), filename(rhs.filename), line(rhs.line)
     {
         memcpy(msg, rhs.msg, sizeof(msg));
+        CompileRegEx();
     }
     RegExStruct(const wxString&  _desc,
                 CompilerLineType _lt,
@@ -87,7 +90,21 @@ struct RegExStruct
         msg[0] = _msg;
         msg[1] = _msg2;
         msg[2] = _msg3;
+        CompileRegEx();
     }
+    RegExStruct& operator=(RegExStruct &obj)
+    {
+        desc=obj.desc;
+        lt=obj.lt;
+        regex=obj.regex;
+        filename=obj.filename;
+        line=obj.line;
+        memcpy(msg, obj.msg, sizeof(msg));
+
+        CompileRegEx();
+        return *this;
+    }
+
     bool operator!=(const RegExStruct& other)
     {
         return !(*this == other);
@@ -103,6 +120,15 @@ struct RegExStruct
                 && filename == other.filename
                 && line     == other.line );
     }
+
+    void CompileRegEx()
+    {
+        if (!regex.empty())
+            regexObject.Compile(regex);
+    }
+
+    const wxRegEx& GetRegEx() const { return regexObject; }
+
     wxString         desc;     // title of this regex
     CompilerLineType lt;       // classify the line, if regex matches
     wxString         regex;    // the regex to match
@@ -112,6 +138,8 @@ struct RegExStruct
     // if more than one sub-expressions are entered for msg,
     // they are appended to each other, with one space in between.
     // Appending takes place in the same order...
+private:
+    wxRegEx regexObject;
 };
 WX_DECLARE_OBJARRAY(RegExStruct, RegExArray);
 
@@ -281,7 +309,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         /** @brief Set the compiler's options */
         virtual void SetOptions(const CompilerOptions& options){ m_Options = options; }
         /** @brief Set the array of regexes used in errors/warnings recognition */
-        virtual void SetRegExArray(const RegExArray& regexes){ m_RegExes = regexes; }
+        virtual void SetRegExArray(const RegExArray& regexes) { m_RegExes = regexes; CompileRegExArray(); }
+
 
         /** @brief Save settings */
         virtual void SaveSettings(const wxString& baseKey);
@@ -349,6 +378,8 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
         // keeps a copy of current settings (works only the first time it's called)
         void MirrorCurrentSettings();
+
+        void CompileRegExArray();
 
         // set the following members in your class
         wxString            m_Name;
