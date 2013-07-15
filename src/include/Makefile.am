@@ -46,7 +46,6 @@ ALLHEADERS = annoyingdialog.h \
 				cbstyledtextctrl.h \
 				cbthreadedtask.h \
 				cbthreadpool.h \
-				cbthreadpool_extras.h \
 				cbtool.h \
 				cbtreectrl.h \
 				cbworkspace.h \
