@@ -1915,6 +1915,7 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
     IncrementalSelectIteratorStringArray iter(files);
     IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iter, _("Find file..."),
                                  _("Please enter the name of the file you are searching:"));
+    wxSize         sz      = dlg.GetSize();
     wxListBox*     listBx  = XRCCTRL(dlg, "lstItems", wxListBox);
     wxCheckBox*    chkOpen = new wxCheckBox(&dlg, wxID_ANY, wxT("Open file"));
     ConfigManager* cfg     = Manager::Get()->GetConfigManager(wxT("project_manager"));
@@ -1923,6 +1924,7 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
     listBx->GetParent()->GetSizer()->Add(chkOpen, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT, 8);
     dlg.Fit();
     dlg.SetMinSize(dlg.GetSize());
+    dlg.SetSize(sz);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

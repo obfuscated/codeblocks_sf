@@ -103,6 +103,8 @@ IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const Incre
     m_Text = XRCCTRL(*this, "txtSearch", wxTextCtrl);
     m_List = XRCCTRL(*this, "lstItems", wxListBox);
 
+    SetSize(GetPosition().x - 90, GetPosition().y - 70, 500, 300);
+
     m_pMyEvtHandler = new myHandler(this, m_Text, m_List);
     m_Text->SetNextHandler(m_pMyEvtHandler);
     m_List->SetNextHandler(m_pMyEvtHandler);
