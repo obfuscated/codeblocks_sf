@@ -1489,7 +1489,9 @@ int FindReplace::FindInFiles(cbFindReplaceData* data)
         // now loop finding the next occurence
         while (FindNext(true, control, data) != -1)
         {
-            // log it
+            if(data->startFile) // we already found it, so break and avoid possible infinite loop
+                break;
+//            // log it
             line = control->LineFromPosition(control->GetSelectionStart());
             if (line == lastline)  // avoid multiple hits on the same line (try search for "manager")
                 continue;
