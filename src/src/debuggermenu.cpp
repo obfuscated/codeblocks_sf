@@ -91,8 +91,8 @@ namespace
             if (pos != wxNOT_FOUND)
             {
                 wxMenu *newSubMenu = new wxMenu;
-                wxMenuItem *newItem = new wxMenuItem(menu, item->GetId(), item->GetText(), item->GetHelp(),
-                                                     item->IsCheckable(), newSubMenu);
+                wxMenuItem *newItem = new wxMenuItem(menu, item->GetId(), item->GetItemLabelText(), item->GetHelp(),
+                                                     item->GetKind(), newSubMenu);
                 menu->Insert(pos, newItem);
 
                 menu->Destroy(item);
