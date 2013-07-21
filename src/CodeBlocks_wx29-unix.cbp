@@ -594,9 +594,6 @@
 		<Unit filename="include/cbthreadpool.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/cbthreadpool_extras.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/cbtool.h">
 			<Option target="sdk" />
 		</Unit>

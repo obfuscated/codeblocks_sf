@@ -373,7 +373,7 @@
 					<Add after="zip -jq9 devel29\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd plugins\compilergcc\resources &amp; zip -0 -q ..\..\..\devel29\share\CodeBlocks\compiler.zip images\*.png images\16x16\*.png&quot;' />
 					<Add after="cmd /c if not exist devel29\share\CodeBlocks\compilers mkdir devel29\share\CodeBlocks\compilers" />
-					<Add after="cmd /c xcopy plugins\compilergcc\resources\compilers\*.* devel29\share\CodeBlocks\compilers /y" />
+					<Add after="cmd /c xcopy /D /Y plugins\compilergcc\resources\compilers\*.* devel29\share\CodeBlocks\compilers" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -805,9 +805,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/cbthreadpool.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/cbthreadpool_extras.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/cbtool.h">
@@ -3834,6 +3831,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/printdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/projectmanagerui.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/projectmanagerui.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/projectoptionsdlg.cpp">
