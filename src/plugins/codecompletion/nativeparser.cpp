@@ -1431,7 +1431,7 @@ size_t NativeParser::AI(TokenIdxSet&    result,
     // find current function's namespace so we can include local scope's tokens
     // we ' ll get the function's token (all matches) and add its parent namespace
     TokenIdxSet proc_result;
-    size_t found_at = FindCurrentFunctionToken(searchData, proc_result);
+    size_t found_at = FindCurrentFunctionToken(searchData, proc_result, pos);
 
     TokenIdxSet scope_result;
     if (found_at)
