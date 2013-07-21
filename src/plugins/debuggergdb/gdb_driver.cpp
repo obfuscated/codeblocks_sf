@@ -265,12 +265,8 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
     Manager::Get()->GetMacrosManager()->ReplaceMacros(init);
     // commands are passed in one go, in case the user defines functions in there
     // or else it would lock up...
-    QueueCommand(new DebuggerCmd(this, init));
-//    wxArrayString initCmds = GetArrayFromString(init, _T('\n'));
-//    for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
-//    {
-//        QueueCommand(new DebuggerCmd(this, initCmds[i]));
-//    }
+    if (!init.empty())
+        QueueCommand(new DebuggerCmd(this, init));
 
     // add search dirs
     for (unsigned int i = 0; i < m_Dirs.GetCount(); ++i)
