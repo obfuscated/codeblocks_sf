@@ -272,16 +272,6 @@ void AutoComplete::Select(const char *word) {
 						break;
 				}
 			}
-/* C::B begin */
-			// Check for a logically earlier match
-			for (++pivot; pivot <= end; ++pivot) {
-				lb->GetValue(sortMatrix[pivot], item, maxItemLen);
-				if (CompareNCaseInsensitive(word, item, lenWord))
-					break;
-				if (sortMatrix[pivot] < sortMatrix[location] && !strncmp(word, item, lenWord))
-					location = pivot;
-			}
-/* C::B end */
 		} else if (cond < 0) {
 			end = pivot - 1;
 		} else if (cond > 0) {
@@ -308,4 +298,3 @@ void AutoComplete::Select(const char *word) {
 		lb->Select(sortMatrix[location]);
 	}
 }
-
