@@ -355,10 +355,17 @@ private:
      */
     bool ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos = -1);
 
-    /** collect the compiler default header file search directories */
+    /** collect the header file search directories, those dirs include:
+     *  1, project's base dir, e.g. if you cbp file was c:/bbb/aaa.cbp, then c:/bbb is added.
+     *  2, project's setting search dirs, for a wx project, then c:/wxWidgets2.8.12/include is added.
+     *  3, a project may has some targets, so add search dirs for those targets
+     *  4, compiler's own search path, like: c:/mingw/include
+     */
     bool AddCompilerDirs(cbProject* project, ParserBase* parser);
 
-    /** collect compiler specific predefined preprocessor definition */
+    /** collect compiler specific predefined preprocessor definition, this is usually run a special
+     * compiler command, like GCC -dM for gcc.
+     */
     bool AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser);
 
     /** collect GCC compiler predefined preprocessor definition */
@@ -367,7 +374,9 @@ private:
     /** collect VC compiler predefined preprocessor definition */
     bool AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxString& defs);
 
-    /** collect project (user) defined preprocessor definition */
+    /** collect project (user) defined preprocessor definition, such as for wxWidgets project, the
+     * macro may have "#define wxUSE_UNICODE" defined in its project file.
+     */
     bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
 
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/

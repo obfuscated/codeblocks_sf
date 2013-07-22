@@ -1055,9 +1055,12 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
                                project->GetBasePath(), parser);
     }
 
-    // basically, we have to parse three kind of files:
-    // the priority files, the header files, and source files.
-    // Priority files:
+    // basically, we have to parse three level of files
+    // 1, the priority headers (include system priority headers and local priority headers)
+    // 2, non priority headers
+    // 3, sources (Note, surely they are local because they belong to a cbp project file)
+    //
+    // priority headers:
     // Those files are normally header files and should be parsed before any other kinds of files.
     // The idea of the priority file is that our parser does not do a full preprocessor(like expand
     // the #include directive), but we did calculation on the conditional preprocessor directive.
@@ -1066,13 +1069,15 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     // the conditional code branch was abandoned by the parser)
     // If we put the file containing the definition of XXX as the priority file, then we can confirm
     // our assumption, because this file will be parsed before any other files.
-    // Header files:
+    // e.g. "sdk.h" can be a local priority header, and <w32api.h> can be a system priority header
+    //
+    // non priority headers:
     // These files are generally files with .h extension
-    // Source files:
-    // These files are normally with .cpp, .cxx, .c extension
-    StringList priority_files;
-    StringList headers;
-    StringList sources;
+    // sources:
+    // These files are normally with .cpp, .cxx, .c extension in the C::B project
+    StringList priorityHeaders;
+    StringList nonPriorityLocalHeaders;
+    StringList localSources;
 
     // read the user defined and our default priority files
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
@@ -1083,6 +1088,8 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
         _T("<boost/config.hpp>, <boost/filesystem/config.hpp>, ")
         _T("\"pch.h\", \"sdk.h\", \"stdafx.h\"");
     wxString priority_headers = cfg->Read(_T("/priority_headers"), default_priority_headers);
+
+    // if the configure file have more user added priority header files, append to the default ones.
     if (!priority_headers.StartsWith(default_priority_headers))
     {
         wxStringTokenizer default_ph(default_priority_headers, _T(","));
@@ -1106,9 +1113,10 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     }
 
     typedef std::map<int, wxString> PriorityMap;
-    PriorityMap priorityMap;
-    PriorityMap priorityTempMap;
-    int priorityCnt = 0;
+    PriorityMap systemPriorityMap;//record the include file surround with <>
+    PriorityMap localPriorityMap; //record the include file surround with ""
+    int priorityCnt = 0;          //file counters
+    // priority header files should be separated by comma and surround with either "" or <>
     wxStringTokenizer tkz(priority_headers, _T(","));
     while (tkz.HasMoreTokens())
     {
@@ -1120,81 +1128,99 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
             && token[0] == _T('"')
             && token[token.Len() - 1] == _T('"') )
         {
-            priorityTempMap[++priorityCnt] = token.SubString(1, token.Len() - 2).Trim(false).Trim(true);
+            // remove the surrounding double-quote, and add to localPriorityMap
+            localPriorityMap[++priorityCnt] = token.SubString(1, token.Len() - 2).Trim(false).Trim(true);
         }
+        // TODO (ollydbg#2), should we check the Options().followGlobalIncludes here?
         else if (   parser->Options().followLocalIncludes
                  && token[0] == _T('<')
                  && token[token.Len() - 1] == _T('>') )
         {
+            // remove the surrounding <>
             token = token.SubString(1, token.Len() - 2).Trim(false).Trim(true);
+            // try to see a priority header file is find in the include dirs
             wxArrayString inc_file = parser->FindFileInIncludeDirs(token);
+            // if find any, put them in the systemPriorityMap (note, postfix a ", 1" string
             for (size_t i = 0; i < inc_file.GetCount(); ++i)
-                priorityMap[++priorityCnt] = inc_file[i] + _T(", 1");
+                systemPriorityMap[++priorityCnt] = inc_file[i] + _T(", 1");
         }
     }
 
     if (project)
     {
-        for (FilesList::const_iterator fl_it = project->GetFilesList().begin(); fl_it != project->GetFilesList().end(); ++fl_it)
+        for (FilesList::const_iterator fl_it = project->GetFilesList().begin();
+             fl_it != project->GetFilesList().end(); ++fl_it)
         {
             ProjectFile* pf = *fl_it;
             if (!pf)
                 continue;
-
+            // check the file types in the project files
             ParserCommon::EFileType ft = ParserCommon::FileType(pf->relativeFilename);
             if (ft == ParserCommon::ftHeader) // parse header files
             {
                 bool isPriorityFile = false;
-                for (PriorityMap::iterator pm_it = priorityTempMap.begin(); pm_it != priorityTempMap.end(); ++pm_it)
+                // localPriorityMap contains all the local priority header files
+                // if the project files matches on in localPriorityMap, then add them
+                // to systemPriorityMap with postfix string ", 0".
+                for (PriorityMap::iterator pm_it = localPriorityMap.begin();
+                     pm_it != localPriorityMap.end(); ++pm_it)
                 {
                     if (pm_it->second.IsSameAs(pf->file.GetFullName(), false))
                     {
                         isPriorityFile = true;
-                        priorityMap[pm_it->first] = pf->file.GetFullPath() + _T(", 0");
-                        priorityTempMap.erase(pm_it);
+                        systemPriorityMap[pm_it->first] = pf->file.GetFullPath() + _T(", 0");
+                        localPriorityMap.erase(pm_it);
                         break;
                     }
                 }
 
+                // nonPriorityLocalHeaders are non priority but local files
                 if (!isPriorityFile)
-                    headers.push_back(pf->file.GetFullPath());
+                    nonPriorityLocalHeaders.push_back(pf->file.GetFullPath());
             }
             else if (ft == ParserCommon::ftSource) // parse source files
             {
-                sources.push_back(pf->file.GetFullPath());
+                localSources.push_back(pf->file.GetFullPath());
             }
         }
     }
-
-    for (PriorityMap::iterator pm_it = priorityMap.begin(); pm_it != priorityMap.end(); ++pm_it)
-        priority_files.push_back(pm_it->second);
+    // put all the priority files to a single container
+    for (PriorityMap::iterator pm_it = systemPriorityMap.begin(); pm_it != systemPriorityMap.end(); ++pm_it)
+        priorityHeaders.push_back(pm_it->second);
 
     CCLogger::Get()->DebugLog(_T("NativeParser::DoFullParsing(): Adding three kind of files to batch-parser"));
 
     // parse priority files
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
-    if (!priority_files.empty())
+    if (!priorityHeaders.empty())
     {
-        for (StringList::iterator sl_it = priority_files.begin(); sl_it != priority_files.end(); ++sl_it)
+        for (StringList::iterator sl_it = priorityHeaders.begin();
+             sl_it != priorityHeaders.end(); ++sl_it)
         {
+            // strip the post fix string of ", 1"
             wxString& file = *sl_it;
-            const bool systemHeaderFile = (file.Last() == _T('1'));
+            // if it is a system header file, then is should have a post fix string of ", 1"
+            // otherwise, it is a localHeaderFile with post fix string of ", 0"
+            const bool isSystemHeader = (file.Last() == _T('1'));
             const int pos = file.Find(_T(','), true);
             file = file.Left(pos);
             CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Add priority header file: '%s'"), file.wx_str()));
-            parser->AddPriorityHeaders(file, systemHeaderFile);
+            // put the file to priority header containers
+            parser->AddPriorityHeaders(file, isSystemHeader);
         }
 
         CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Add %lu priority file(s) for project '%s'..."),
-                                    static_cast<unsigned long>(priority_files.size()), prj.wx_str()));
+                                    static_cast<unsigned long>(priorityHeaders.size()), prj.wx_str()));
     }
 
-    if (!headers.empty() || !sources.empty())
+    if (!nonPriorityLocalHeaders.empty() || !localSources.empty())
     {
         CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Added %lu header&source file(s) for project '%s' to batch-parser..."),
-                                    static_cast<unsigned long>(headers.size() + sources.size()), prj.wx_str()));
-        parser->AddBatchParse(headers);
-        parser->AddBatchParse(sources);
+                                    static_cast<unsigned long>(nonPriorityLocalHeaders.size() + localSources.size()), prj.wx_str()));
+        // local header files (not priority header) added to Parser
+        parser->AddBatchParse(nonPriorityLocalHeaders);
+        // local source files added to Parser
+        parser->AddBatchParse(localSources);
     }
 
     TRACE(_T("NativeParser::DoFullParsing(): Leave"));
