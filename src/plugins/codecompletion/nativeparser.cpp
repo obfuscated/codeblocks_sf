@@ -2733,7 +2733,6 @@ void NativeParser::InitCCSearchVariables()
     m_LastFile.Clear();
     m_LastNamespace.Clear();
     m_LastPROC.Clear();
-    m_CCItems.Clear();
 
     Reset();
 }
@@ -2758,6 +2757,7 @@ void NativeParser::AddProjectToParser(cbProject* project)
         return;
     }
 
+    // TODO (ollydbg#1#) did exactly the same thing as the function NativeParser::DoFullParsing()?
     wxString log(F(_("NativeParser::AddProjectToParser(): Add project (%s) to parser"), prj.wx_str()));
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);

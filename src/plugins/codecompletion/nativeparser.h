@@ -33,6 +33,7 @@ WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, Parsers
 
 typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
 
+//TODO (ollydbg#1#), this class is dirty, I'm going to change its name like CursorLocation
 /** Search location combination, a pointer to cbStyledTextCtrl and a filename is enough */
 struct ccSearchData
 {
@@ -412,30 +413,47 @@ private:
     /** Add all project files to parser */
     void AddProjectToParser(cbProject* project);
 
-    /** Remove all project files from parser */
+    /** Remove cbp from the common parser, this only happens in one parser for whole workspace mode
+     * when a parser is removed from the workspace, we should remove the project from the parser
+     */
     bool RemoveProjectFromParser(cbProject* project);
 
 private:
     typedef std::pair<cbProject*, ParserBase*> ProjectParserPair;
     typedef std::list<ProjectParserPair>       ParserList;
 
+    /** a list holing all the cbp->parser pairs, if in one parser per project mode, there are many
+     * many pairs in this list. In one parser per workspace mode, there is only one pair, and the
+     * m_ParserList.begin()->second is the common parser for all the projects in workspace.
+     */
     ParserList                   m_ParserList;
+    /** a temp parser object pointer*/
     ParserBase*                  m_TempParser;
+    /** active parser object pointer*/
     ParserBase*                  m_Parser;
 
+    /** a delay timer to parser every project in sequence*/
     wxTimer                      m_TimerParsingOneByOne;
+    /** symbol browser window*/
     ClassBrowser*                m_ClassBrowser;
+    /** if true, which means m_ClassBrowser is floating (not docked)*/
     bool                         m_ClassBrowserIsFloating;
+
+    /** a map: project pointer -> C/C++ parser search paths for this project */
     ProjectSearchDirsMap         m_ProjectSearchDirsMap;
     int                          m_HookId;    //!< project loader hook ID
     wxImageList*                 m_ImageList; //!< Images for class browser
 
+    /// all the files which opened, but does not belong to any cbp
     wxArrayString                m_StandaloneFiles;
+    /**  if true, which means the parser hold tokens of the whole workspace's project, if false
+     * then one parser per a cbp
+     */
     bool                         m_ParserPerWorkspace;
+    /// only used when m_ParserPerWorkspace is true, and holds all the cbps for the common parser
     std::set<cbProject*>         m_ParsedProjects;
 
     /* CC Search Member Variables => START */
-    wxString          m_CCItems;
     int               m_EditorStartWord;
     int               m_EditorEndWord;
     wxString          m_LastAIGlobalSearch;    //!< same case like above, it holds the search string
