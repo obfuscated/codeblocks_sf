@@ -98,14 +98,15 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     wxSizer* bs = new wxBoxSizer(wxVERTICAL);
     bs->Add(control, 1, wxEXPAND);
     wxArrayString choices;
-    choices.Add(_("Current file"));
-    choices.Add(_("Open files"));
-    choices.Add(_("All project files"));
+    choices.Add(_("Current file"));        // index = 0;
+    choices.Add(_("Open files"));          // 1
+    choices.Add(_("Active target files")); // 2
+    choices.Add(_("All project files"));   // 3
     wxBoxSizer* hbs = new wxBoxSizer(wxHORIZONTAL);
 
     hbs->Add(new wxStaticText(m_pPanel, wxID_ANY, _("Scope:")), 0, wxTOP, 4);
 
-    m_pSource = new wxComboBox(m_pPanel, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 3, &choices[0], wxCB_READONLY);
+    m_pSource = new wxComboBox(m_pPanel, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 4, &choices[0], wxCB_READONLY);
     int source = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadInt(_T("source"), 0);
     m_pSource->SetSelection(source);
     hbs->Add(m_pSource, 0, wxLEFT | wxRIGHT, 8);
@@ -175,7 +176,43 @@ void ToDoListView::Parse()
             }
             break;
         }
-        case 2: // all project files
+        case 2: // active target files
+        {
+            // loop all project files
+            // but be aware: if a file is opened, use the open file because
+            // it might not be the same on the disk...
+            cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+            if (!prj)
+                return;
+            ProjectBuildTarget *target = prj->GetBuildTarget(prj->GetActiveBuildTarget());
+            if (!target)
+                return;
+            wxProgressDialog pd(_T("Todo Plugin: Processing all files in the active target.."),
+                                _T("Processing a target of a big project may take large amount of time.\n\n"
+                                   "Please be patient!\n"),
+                                target->GetFilesCount(),
+                                Manager::Get()->GetAppWindow(),
+                                wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
+            int i = 0;
+            for (FilesList::iterator it = target->GetFilesList().begin();
+                 it != target->GetFilesList().end();
+                 ++it)
+            {
+                ProjectFile* pf = *it;
+                wxString filename = pf->file.GetFullPath();
+                cbEditor* ed = Manager::Get()->GetEditorManager()->IsBuiltinOpen(filename);
+                if (ed)
+                    ParseEditor(ed);
+                else
+                    ParseFile(filename);
+                if (!pd.Update(i++))
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        case 3: // all project files
         {
             // loop all project files
             // but be aware: if a file is opened, use the open file because
