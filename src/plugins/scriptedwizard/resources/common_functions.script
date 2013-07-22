@@ -239,6 +239,7 @@ function CppExceptionsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin")) )
     {
         base.AddCompilerOption(_T("-fexceptions"));
