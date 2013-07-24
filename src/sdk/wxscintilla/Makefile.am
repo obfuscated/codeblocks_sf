@@ -102,6 +102,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexVisualProlog.cxx \
 			src/scintilla/lexers/LexYAML.cxx \
 			src/scintilla/lexlib/Accessor.cxx \
+			src/scintilla/lexlib/CharacterCategory.cxx \
 			src/scintilla/lexlib/CharacterSet.cxx \
 			src/scintilla/lexlib/LexerBase.cxx \
 			src/scintilla/lexlib/LexerModule.cxx \
@@ -112,6 +113,8 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexlib/WordList.cxx \
 			src/scintilla/src/AutoComplete.cxx \
 			src/scintilla/src/CallTip.cxx \
+			src/scintilla/src/CaseConvert.cxx \
+			src/scintilla/src/CaseFolder.cxx \
 			src/scintilla/src/Catalogue.cxx \
 			src/scintilla/src/CellBuffer.cxx \
 			src/scintilla/src/CharClassify.cxx \
@@ -142,6 +145,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/include/Scintilla.h \
 			src/scintilla/include/ScintillaWidget.h \
 			src/scintilla/lexlib/Accessor.h \
+			src/scintilla/lexlib/CharacterCategory.h \
 			src/scintilla/lexlib/CharacterSet.h \
 			src/scintilla/lexlib/LexAccessor.h \
 			src/scintilla/lexlib/LexerBase.h \
@@ -156,6 +160,8 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/lexlib/WordList.h \
 			src/scintilla/src/AutoComplete.h \
 			src/scintilla/src/CallTip.h \
+			src/scintilla/src/CaseConvert.h \
+			src/scintilla/src/CaseFolder.h \
 			src/scintilla/src/Catalogue.h \
 			src/scintilla/src/CellBuffer.h \
 			src/scintilla/src/CharClassify.h \
@@ -178,6 +184,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/src/SplitVector.h \
 			src/scintilla/src/Style.h \
 			src/scintilla/src/UniConversion.h \
+			src/scintilla/src/UnicodeFromUTF8.h \
 			src/scintilla/src/ViewStyle.h \
 			src/scintilla/src/XPM.h
 
