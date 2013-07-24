@@ -193,7 +193,6 @@ EXTRA_DIST = $(srcdir)/Readme \
 	$(srcdir)/src/scintilla/README \
 	$(srcdir)/src/scintilla/include/*.py \
 	$(srcdir)/src/scintilla/include/*.iface \
-	$(srcdir)/src/scintilla/src/*.py \
 	$(srcdir)/src/scintilla/src/*.properties \
 	$(srcdir)/src/scintilla/cppcheck.suppress
 
