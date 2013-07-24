@@ -571,7 +571,7 @@ wxStyledTextCtrl::DoLoadFile(const wxString& filename, int WXUNUSED(fileType))
     if ( file.IsOpened() )
     {
         wxString text;
-        if ( file.ReadAll(&text, *wxConvCurrent) )
+        if ( file.ReadAll(&text, wxConvAuto()) )
         {
             // Detect the EOL: we use just the first line because there is not
             // much we can do if the file uses inconsistent EOLs anyhow, we'd
@@ -833,9 +833,11 @@ void wxStyledTextCtrl::OnContextMenu(wxContextMenuEvent& evt) {
 
 void wxStyledTextCtrl::OnMouseWheel(wxMouseEvent& evt)
 {
-    m_swx->DoMouseWheel(evt.GetWheelRotation(),
+    m_swx->DoMouseWheel(evt.GetWheelAxis(),
+                        evt.GetWheelRotation(),
                         evt.GetWheelDelta(),
                         evt.GetLinesPerAction(),
+                        evt.GetColumnsPerAction(),
                         evt.ControlDown(),
                         evt.IsPageScroll());
 }

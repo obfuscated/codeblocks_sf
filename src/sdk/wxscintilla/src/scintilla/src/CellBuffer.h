@@ -155,7 +155,7 @@ public:
 	~UndoHistory();
 
 /* CHANGEBAR begin */
-	void AppendAction(actionType at, int position, const char *data, int length, bool &startSequence, char *persistantChanges, bool mayCoalesce=true);
+	const char *AppendAction(actionType at, int position, const char *data, int length, bool &startSequence, char *persistantChanges, bool mayCoalesce=true);
 /* CHANGEBAR end */
 
 	void BeginUndoAction();

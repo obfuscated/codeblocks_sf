@@ -5214,9 +5214,23 @@ void wxScintilla::OnContextMenu(wxContextMenuEvent& evt)
 
 void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
 {
-    m_swx->DoMouseWheel(evt.GetWheelRotation(),
+/* C::B begin */
+#if wxCHECK_VERSION(2,9,2)
+    m_swx->DoMouseWheel(evt.GetWheelAxis(),
+#else
+    m_swx->DoMouseWheel(ScintillaWX::wxMOUSE_WHEEL_VERTICAL,
+#endif
+/* C::B end */
+                        evt.GetWheelRotation(),
                         evt.GetWheelDelta(),
                         evt.GetLinesPerAction(),
+/* C::B begin */
+#if wxCHECK_VERSION(2,9,2)
+                        evt.GetColumnsPerAction(),
+#else
+                        1,
+#endif
+/* C::B end */
                         evt.ControlDown(),
                         evt.IsPageScroll());
 }
@@ -5623,7 +5637,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 33, 0, "Scintilla 3.33");
+    return wxVersionInfo("Scintilla", 3, 34, 0, "Scintilla 3.34");
 }
 #endif
 /* C::B end */

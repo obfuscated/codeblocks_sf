@@ -297,7 +297,8 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
     focusEvent = false;
     wMain = win;
     sci   = win;
-    wheelRotation = 0;
+    wheelVRotation = 0;
+    wheelHRotation = 0;
     Initialise();
 #ifdef __WXMSW__
     sysCaretBitmap = 0;
@@ -1008,13 +1009,28 @@ void ScintillaWX::DoVScroll(int type, int pos) {
     ScrollTo(topLineNew);
 }
 
-void ScintillaWX::DoMouseWheel(int rotation, int delta,
-                               int linesPerAction, int ctrlDown,
-                               bool isPageScroll ) {
+void ScintillaWX::DoMouseWheel(wxMouseWheelAxis axis, int rotation, int delta,
+                               int linesPerAction, int columnsPerAction,
+                               bool ctrlDown, bool isPageScroll) {
     int topLineNew = topLine;
     int lines;
+    int xPos = xOffset;
+    int pixels;
 
-    if (ctrlDown) {  // Zoom the fonts if Ctrl key down
+    if (axis == wxMOUSE_WHEEL_HORIZONTAL) {
+        wheelHRotation += rotation * (columnsPerAction * vs.spaceWidth);
+        pixels = wheelHRotation / delta;
+        wheelHRotation -= pixels * delta;
+        if (pixels != 0) {
+            xPos += pixels;
+            PRectangle rcText = GetTextRectangle();
+            if (xPos > scrollWidth - rcText.Width()) {
+                xPos = scrollWidth - rcText.Width();
+            }
+            HorizontalScrollTo(xPos);
+        }
+    }
+    else if (ctrlDown) {  // Zoom the fonts if Ctrl key down
 /* C::B begin */
         if (rotation < 0) {
 /* C::B end */
@@ -1027,9 +1043,9 @@ void ScintillaWX::DoMouseWheel(int rotation, int delta,
     else { // otherwise just scroll the window
         if ( !delta )
             delta = 120;
-        wheelRotation += rotation;
-        lines = wheelRotation / delta;
-        wheelRotation -= lines * delta;
+        wheelVRotation += rotation;
+        lines = wheelVRotation / delta;
+        wheelVRotation -= lines * delta;
         if (lines != 0) {
             if (isPageScroll)
                 lines = lines * LinesOnScreen();  // lines is either +1 or -1

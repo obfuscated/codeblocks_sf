@@ -203,15 +203,26 @@ void SurfaceImpl::Init(SurfaceID hDC_, WindowID /*wid*/)
 /* C::B end */
 }
 
-void SurfaceImpl::InitPixMap(int width, int height, Surface *WXUNUSED(surface_), WindowID /*wid*/)
+/* C::B begin */
+#if wxCHECK_VERSION(2,9,5)
+void SurfaceImpl::InitPixMap(int width, int height, Surface *WXUNUSED(surface_), WindowID winid)
+#else
+void SurfaceImpl::InitPixMap(int width, int height, Surface *WXUNUSED(surface_), WindowID /*winid*/)
+#endif
+/* C::B end */
 {
     Release();
     hDC = new wxMemoryDC();
     hDCOwned = true;
     if (width < 1) width = 1;
     if (height < 1) height = 1;
-    bitmap = new wxBitmap(width, height);
 /* C::B begin */
+#if wxCHECK_VERSION(2,9,5)
+    bitmap = new wxBitmap();
+    bitmap->CreateScaled(width, height,wxBITMAP_SCREEN_DEPTH,((wxWindow*)winid)->GetContentScaleFactor());
+#else
+    bitmap = new wxBitmap(width, height);
+#endif
     (static_cast<wxMemoryDC*>(hDC))->SelectObject(*bitmap);
 /* C::B end */
 }
@@ -1663,10 +1674,35 @@ ColourDesired Platform::ChromeHighlight()
     return ColourDesired(c.Red(), c.Green(), c.Blue());
 }
 
+/* C::B begin */
+#if !wxCHECK_VERSION(2,9,2)
+#define wxCRT_StrlenA    strlen
+#define wxCRT_StrncpyA   strncpy
+// this is a function new in 2.9 so we don't care about backwards compatibility and
+// so don't need to support wchar_t/char overloads
+inline size_t wxStrlcpy(char *dest, const char *src, size_t n)
+{
+    const size_t len = wxCRT_StrlenA(src);
+
+    if ( n )
+    {
+        if ( n-- > len )
+            n = len;
+        wxCRT_StrncpyA(dest, src, n);
+        dest[n] = '\0';
+    }
+
+    return len;
+}
+#undef wxCRT_StrlenA
+#undef wxCRT_StrncpyA
+#endif
+/* C::B end */
+
 const char *Platform::DefaultFont()
 {
     static char buf[128];
-    strcpy(buf, wxNORMAL_FONT->GetFaceName().mbc_str());
+    wxStrlcpy(buf, wxNORMAL_FONT->GetFaceName().mbc_str(), WXSIZEOF(buf));
     return buf;
 }
 
