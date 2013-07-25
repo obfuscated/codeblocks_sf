@@ -1,4 +1,4 @@
-INCLUDES = -I$(top_srcdir)/src/include/scripting/include \
+AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/include \
 				-I$(top_srcdir)/src/include/scripting/squirrel
 
 noinst_LTLIBRARIES = libsquirrel.la
@@ -15,7 +15,7 @@ libsquirrel_la_SOURCES = sqfuncstate.cpp \
                         sqobject.cpp \
                         sqapi.cpp \
                         sqdebug.cpp
-                            
+
 EXTRA_DIST = squirrel71.vcproj \
             squirrel.cbp \
             squirrellib.cbp \

@@ -1,4 +1,4 @@
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(CB_HUNSPELL_CFLAGS) \
 		-I$(srcdir)/include \
 		-I$(srcdir)/.. \

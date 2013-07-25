@@ -1,6 +1,6 @@
 SUBDIRS = defitems icons properties
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		$(WXPROPGRID_INCLUDE) \

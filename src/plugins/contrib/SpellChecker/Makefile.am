@@ -1,6 +1,6 @@
 SUBDIRS = wxspellchecker
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(CB_HUNSPELL_CFLAGS) \
 		-I$(srcdir)/wxspellchecker/include \
 		-I$(top_srcdir)/src/include \

@@ -1,9 +1,8 @@
-INCLUDES = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/plugins/contrib/source_exporter/wxPdfDocument/include
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		-I$(top_srcdir)/src/plugins/contrib/source_exporter/wxPdfDocument/include \
+		-DwxPDF_USE_WXMODULE=0
 
 noinst_LTLIBRARIES = libwxPdfDocument.la
-
-libwxPdfDocument_la_CPPFLAGS = -DwxPDF_USE_WXMODULE=0
 
 libwxPdfDocument_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 

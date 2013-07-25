@@ -7,7 +7,7 @@ if ! HAVE_ZLIB
 SUBDIRS += zlib
 endif
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/include/scripting/include \
@@ -26,13 +26,13 @@ libhelp_plugin_la_LIBADD = ../../../sdk/libcodeblocks.la \
 
 if ! HAVE_BZIP2
 libhelp_plugin_la_LIBADD += bzip2/libbzip2.la
-INCLUDES += -I$(srcdir)/bzip2
+AM_CPPFLAGS += -I$(srcdir)/bzip2
 else
 libhelp_plugin_la_LIBADD += -lbz2
 endif
 if ! HAVE_ZLIB
 libhelp_plugin_la_LIBADD += zlib/libz.la
-INCLUDES += -I$(srcdir)/zlib
+AM_CPPFLAGS += -I$(srcdir)/zlib
 else
 libhelp_plugin_la_LIBADD += -lz
 endif

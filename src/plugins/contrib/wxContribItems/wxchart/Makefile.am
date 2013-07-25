@@ -1,4 +1,4 @@
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(srcdir)/include
 
 

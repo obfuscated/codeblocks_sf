@@ -1,4 +1,4 @@
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(WX_GTK2_CFLAGS) \
 		$(WX_X11_CFLAGS) \
 		-I$(top_srcdir)/src/include \

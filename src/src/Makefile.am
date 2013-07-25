@@ -1,6 +1,6 @@
 SUBDIRS = resources
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			$(WXPROPGRID_INCLUDE) \
 			-I$(top_srcdir)/src/include \
@@ -18,7 +18,7 @@ GTK_NOTEBOOK_FLAGS = -DUSE_GTK_NOTEBOOK
 endif
 
 if CODEBLOCKS_LINUX
-AM_CPPFLAGS = -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\"" $(WX_GTK2_CFLAGS) $(GTK_NOTEBOOK_FLAGS)
+AM_CPPFLAGS += -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\"" $(WX_GTK2_CFLAGS) $(GTK_NOTEBOOK_FLAGS)
 endif
 
 bin_PROGRAMS = codeblocks

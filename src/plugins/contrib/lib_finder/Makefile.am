@@ -1,6 +1,6 @@
 SUBDIRS = lib_finder
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(srcdir)/../wxContribItems/wxFlatNotebook/include \

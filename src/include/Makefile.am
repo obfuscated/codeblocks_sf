@@ -4,10 +4,10 @@ if PRECOMPILE_HEADERS
 BUILT_SOURCES = $(top_builddir)/src/include/sdk.h.gch \
 		$(top_builddir)/src/include/sdk_precomp.h.gch
 else
-BUILT_SOURCES = 
+BUILT_SOURCES =
 endif
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/include/tinyxml \
@@ -23,7 +23,7 @@ INCLUDES = $(WX_CXXFLAGS) \
 # Because we are not generating any programs/libraries with this makefile,
 # $(CXXCOMPILE) is empty.
 # Create the basic one here:
-CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
+CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) \
         $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 
 sdkdir=$(includedir)/codeblocks

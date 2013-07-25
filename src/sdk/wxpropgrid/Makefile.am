@@ -1,7 +1,7 @@
-INCLUDES = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/sdk/wxpropgrid/include
-
-AM_CPPFLAGS = -DEXPORT_LIB -DwxPG_SUPPORT_TOOLTIPS
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		-I$(top_srcdir)/src/sdk/wxpropgrid/include \
+		-DEXPORT_LIB \
+		-DwxPG_SUPPORT_TOOLTIPS
 
 noinst_LTLIBRARIES = libwxpropgrid.la
 

@@ -1,17 +1,16 @@
 SUBDIRS = wxPdfDocument
 
-INCLUDES = $(WX_CXXFLAGS) \
+AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(CB_FONTCONFIG_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/plugins/contrib/source_exporter/wxPdfDocument/include \
-		-include "sdk.h"
+		-include "sdk.h" \
+		-DwxPDF_USE_WXMODULE=0
 
 pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libexporter.la
-
-libexporter_la_CPPFLAGS = -DwxPDF_USE_WXMODULE=0
 
 libexporter_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
