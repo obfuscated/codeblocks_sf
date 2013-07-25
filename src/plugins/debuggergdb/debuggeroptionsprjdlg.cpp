@@ -76,16 +76,8 @@ void DebuggerOptionsProjectDlg::OnBuildTargetRemoved(CodeBlocksEvent& event)
         return;
     }
     wxString theTarget = event.GetBuildTargetName();
-    for (RemoteDebuggingMap::iterator it = m_CurrentRemoteDebugging.begin(); it != m_CurrentRemoteDebugging.end(); ++it)
-    {
-        // find our target
-        if ( !it->first || it->first->GetTitle() != theTarget)
-            continue;
+    ProjectBuildTarget* bt = project->GetBuildTarget(theTarget);
 
-        m_CurrentRemoteDebugging.erase(it);
-        // if we erased it, just break, there can only be one map per target
-        break;
-    }
     wxListBox* lstBox = XRCCTRL(*this, "lstTargets", wxListBox);
     int idx = lstBox->FindString(theTarget);
     if (idx > 0)
@@ -97,6 +89,8 @@ void DebuggerOptionsProjectDlg::OnBuildTargetRemoved(CodeBlocksEvent& event)
         idx--;
     }
     lstBox->SetSelection(idx);
+    // remove the target from the map to ensure that there are no dangling pointers in it.
+    m_CurrentRemoteDebugging.erase(bt);
     LoadCurrentRemoteDebuggingRecord();
 }
 
