@@ -118,6 +118,24 @@ void ClassWizard::OnLaunch(cb_unused wxCommandEvent& event)
             prjMan->AddFileToProject(dlg.GetHeaderFilename(), prj, targets);
             if ( (targets.GetCount() != 0) && (dlg.IsValidImplementationFilename()) )
                 prjMan->AddFileToProject(dlg.GetImplementationFilename(), prj, targets);
+            if (dlg.AddPathToProject())
+            {
+                // Add the include Path to the Build targets....
+                for (size_t i = 0; i < targets.GetCount(); ++i)
+                {
+                    ProjectBuildTarget* buildTarget = prj->GetBuildTarget(targets[i]);  // Get the top level build Target
+                    if (buildTarget)
+                        buildTarget->AddIncludeDir(dlg.GetIncludeDir());
+                    else
+                    {
+                        wxString information;
+                        information.Printf(_("Could not find build target ID = %i.\nThe include directory won't be added to this target. Please do it manually"), targets[i]);
+                        cbMessageBox(information, _("Information"),
+                                     wxOK | wxICON_INFORMATION,
+                                     Manager::Get()->GetAppWindow());
+                    }
+                }
+            }
             prjMan->GetUI().RebuildTree();
         }
     }

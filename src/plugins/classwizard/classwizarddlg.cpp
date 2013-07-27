@@ -43,6 +43,7 @@ BEGIN_EVENT_TABLE(ClassWizardDlg, wxScrollingDialog)
     EVT_BUTTON   (XRCID("btnRemoveMemberVar"), ClassWizardDlg::OnRemoveMemberVar)
     EVT_BUTTON   (XRCID("btnCommonDir"),       ClassWizardDlg::OnCommonDirClick)
     EVT_CHECKBOX (XRCID("chkLowerCase"),       ClassWizardDlg::OnLowerCaseClick)
+    EVT_CHECKBOX (XRCID("chkAddPathToProject"),ClassWizardDlg::OnAddPathToProjectClick)
     EVT_BUTTON   (XRCID("btnIncludeDir"),      ClassWizardDlg::OnIncludeDirClick)
     EVT_BUTTON   (XRCID("btnImplDir"),         ClassWizardDlg::OnImplDirClick)
     EVT_TEXT     (XRCID("txtHeader"),          ClassWizardDlg::OnHeaderChange)
@@ -245,6 +246,11 @@ void ClassWizardDlg::OnCommonDirClick(wxCommandEvent& WXUNUSED(event))
     }
 }
 
+void ClassWizardDlg::OnAddPathToProjectClick(wxCommandEvent& event)
+{
+    XRCCTRL(*this, "chkRelativePath", wxCheckBox)->Enable(event.IsChecked());
+}
+
 void ClassWizardDlg::OnLowerCaseClick(wxCommandEvent& WXUNUSED(event))
 {
     DoFileNames();
@@ -327,6 +333,9 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     }
 
     m_Documentation = XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue();
+
+    m_AddPathToProject = XRCCTRL(*this, "chkAddPathToProject", wxCheckBox)->GetValue();
+    m_UseRelativePath = XRCCTRL(*this, "chkRelativePath", wxCheckBox)->GetValue();
 
     m_CommonDir = XRCCTRL(*this, "chkCommonDir", wxCheckBox)->GetValue();
     if (m_CommonDir)
@@ -719,4 +728,20 @@ void ClassWizardDlg::DoForceDirectory(const wxFileName & filename)
 wxString ClassWizardDlg::DoMemVarRepr(const wxString & typ, const wxString & var)
 {
     return (_T("[") + typ + _T("] : ") + var);
+}
+
+wxString ClassWizardDlg::GetIncludeDir()
+{
+    if (!m_UseRelativePath)
+        return m_IncludeDir;
+
+    wxString relative = m_IncludeDir;
+    wxFileName fname = m_IncludeDir;
+    if (fname.IsAbsolute())
+    {
+        wxString basePath = Manager::Get()->GetProjectManager()->GetActiveProject()->GetCommonTopLevelPath();
+        fname.MakeRelativeTo(basePath);
+        relative = fname.GetFullPath();
+    }
+    return relative;
 }
