@@ -82,6 +82,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--no-undefined" />
