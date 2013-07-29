@@ -1533,7 +1533,7 @@ void DebuggerGDB::DoBreak(bool temporary)
                 DebugLog(wxString::Format(_("GDB process (pid:%ld) doesn't exists"), pid));
 
             DebugLog(wxString::Format(_("Code::Blocks is trying to interrupt process with pid: %ld; child pid: %ld gdb pid: %ld"),
-                                      pid, childPid, m_Pid));
+                                      pid, childPid, static_cast<long>(m_Pid)));
             wxKillError error;
             if (wxKill(pid, wxSIGINT, &error) != 0)
                 DebugLog(wxString::Format(_("Can't kill process (%ld) %d"), pid, (int)(error)));
