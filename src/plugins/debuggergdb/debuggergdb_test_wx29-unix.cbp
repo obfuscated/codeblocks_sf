@@ -21,6 +21,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="-ansi" />
 			<Add option="-g" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-pipe" />
