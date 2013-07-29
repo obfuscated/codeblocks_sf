@@ -114,7 +114,8 @@ void BacktraceDlg::Reload()
         }
     }
 
-    m_list->EnsureVisible(active_frame_index);
+    if (active_frame_index < m_list->GetItemCount())
+        m_list->EnsureVisible(active_frame_index);
     m_list->Thaw();
     m_list->SetColumnWidth(0, 32);
 
