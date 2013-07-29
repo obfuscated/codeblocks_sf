@@ -128,7 +128,6 @@ void CodeSnippetsConfig::SettingsLoad()
 {
         // file will be saved in $HOME/codesnippets.ini
 
-    wxStandardPaths stdPaths;
 
     #ifdef LOGGING
      wxString fn(__FUNCTION__, wxConvUTF8);

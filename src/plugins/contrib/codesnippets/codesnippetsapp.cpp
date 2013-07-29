@@ -268,7 +268,6 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     m_KeepAliveFileName = wxEmptyString;
     m_pFilesHistory = 0;
 
-    wxStandardPaths stdPaths;
 
     // -------------------------------
     // initialize version and logging
@@ -325,7 +324,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
     // Find Config File
     // -----------------------------------------
     // Create filename like {%HOME%}\codesnippets.ini
-    m_ConfigFolder = Normalize(stdPaths.GetUserDataDir());
+    m_ConfigFolder = Normalize(wxStandardPaths::Get().GetUserDataDir());
     wxString m_ExecuteFolder = Normalize(FindAppPath(wxTheApp->argv[0], ::wxGetCwd(), wxEmptyString));
 
     #if defined(LOGGING)
@@ -1392,7 +1391,6 @@ int CodeSnippetsAppFrame::ParseCmdLine(wxFrame* handlerFrame)
 void CodeSnippetsAppFrame::ImportCBResources()
 // ----------------------------------------------------------------------------
 {
-    wxStandardPaths stdPaths;
 
     // Location of app config folder
     wxString appConfigFolder =  Normalize(m_ConfigFolder) ;
@@ -1404,7 +1402,7 @@ void CodeSnippetsAppFrame::ImportCBResources()
     wxString cbExeFolder = Normalize(GetCBExeFolder());
 
     // location of CodeBlocks config folder
-    wxString cbConfigFolder = Normalize(stdPaths.GetUserDataDir());
+    wxString cbConfigFolder = Normalize(wxStandardPaths::Get().GetUserDataDir());
     wxString appParent = GetConfig()->GetAppParent();
     if ( appParent.empty()) appParent =_T("codeblocks");
     wxString prefixPath;
