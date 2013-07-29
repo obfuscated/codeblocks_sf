@@ -440,7 +440,7 @@ This package contains the development libraries and headers needed to build wxSm
 - Fixed: missing build-dependencies
 - Fixed: RPM build error, because of new contrib-packages
 - Layout changes in codeblocks.spec.in, to enhance readability
-* Sun Feb 20 2010 Biplab <bkmodak@gmail.com>
+* Sat Feb 20 2010 Biplab <bkmodak@gmail.com>
 - Fixed typos: In wxSmithAui generated files.
 - Fixed: RPM build error due to inclusion of contrib plugins twice.
 - Fixed: Copystrings plugin was not included properly in rpm.
@@ -471,7 +471,7 @@ This package contains the development libraries and headers needed to build wxSm
 - added wxsmithcontribitems files to filelist
 * Fri Jan  5 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - changed prefix on suse to default (from /opt/gnome to /usr)
-* Sun Dec  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+* Sat Dec  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - Added RegExTestbed plugin to filelist
 * Sun Nov  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - applied patch #1605
@@ -497,7 +497,7 @@ This package contains the development libraries and headers needed to build wxSm
 - added byogames plugin to filelist
 * Sun Mar  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - rewrite of release tag setting
-* Mon Jan  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+* Thu Jan  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - had to add Mandriva specific requires
 * Mon Jan  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
 - simplified the changes made before
