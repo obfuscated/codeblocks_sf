@@ -16,6 +16,6 @@ EXTRA_DIST = 	cbiniparser.cpp \
 		devpakupdater.h \
 		mytar.h \
 		updatedlg.h \
-		DevPakPlugin.cbp \
+		$(srcdir)/*.cbp \
 		manifest.xml \
 		update.xrc

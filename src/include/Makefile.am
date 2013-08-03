@@ -153,6 +153,7 @@ ALLHEADERS = annoyingdialog.h \
 				mozilla_chardet/nsUTF8Prober.h \
 				mozilla_chardet/mfbt/mozilla/Assertions.h \
 				mozilla_chardet/mfbt/mozilla/Attributes.h \
+				mozilla_chardet/mfbt/mozilla/Compiler.h \
 				mozilla_chardet/mfbt/mozilla/Likely.h \
 				mozilla_chardet/mfbt/mozilla/NullPtr.h \
 				mozilla_chardet/mfbt/mozilla/StandardInteger.h \

@@ -62,8 +62,7 @@ noinst_HEADERS = \
 
 EXTRA_DIST = \
 	$(srcdir)/*.cbp \
-	update \
-	update.bat \
+	$(srcdir)/update* \
 	readme.txt \
 	manifest.xml \
 	$(srcdir)/wxsmith/*.wxs

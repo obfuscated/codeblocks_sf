@@ -21,4 +21,5 @@ noinst_HEADERS = Valgrind.h \
 			valgrind_config.h
 
 EXTRA_DIST = $(srcdir)/*.cbp \
+		$(srcdir)/update* \
 		wxsmith/valgrind_config_panel.wxs

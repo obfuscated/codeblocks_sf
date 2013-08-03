@@ -13,12 +13,14 @@ am__tar = @am__tar@ $(ADDITIONAL_MAKE_DIST_OPTIONS)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = codeblocks.pc
 
-EXTRA_DIST = $(top_srcdir)/bootstrap \
+EXTRA_DIST = bootstrap \
 		codeblocks.spec \
 		codeblocks.plist \
-		$(top_srcdir)/BUGS \
-		$(top_srcdir)/BUILD \
-		$(top_srcdir)/COMPILERS \
+		BUGS \
+		BUILD \
+		COMPILERS \
+		$(srcdir)/update* \
+		ChangeLog.xsl \
 		debian
 
 clean-zipfiles:

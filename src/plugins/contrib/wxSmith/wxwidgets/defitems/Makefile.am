@@ -200,3 +200,4 @@ noinst_HEADERS = \
 ./wxsrichtextstylelistctrl.h
 
 
+EXTRA_DIST = $(srcdir)/wxsmediactrl.*

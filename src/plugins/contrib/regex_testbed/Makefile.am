@@ -15,8 +15,7 @@ libRegExTestbed_la_SOURCES = regexdlg.cpp RegExTestbed.cpp
 
 noinst_HEADERS = regexdlg.h RegExTestbed.h
 
-EXTRA_DIST = $(srcdir)/RegExTestbed.cbp \
-	$(srcdir)/RegExTestbed-unix.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
 	$(srcdir)/regexdlg.xrc \
 	$(srcdir)/manifest.xml \
 	$(srcdir)/wxsmith/RegExDlg.wxs

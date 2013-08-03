@@ -20,5 +20,4 @@ noinst_HEADERS = cbprofilerconfig.h \
 			cbprofilerexec.h \
 			cbprofiler.h
 
-EXTRA_DIST = cbprofiler.cbp \
-		cbprofiler.unix.cbp
+EXTRA_DIST = $(srcdir)/*.cbp

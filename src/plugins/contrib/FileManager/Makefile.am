@@ -33,8 +33,7 @@ noinst_HEADERS =  	FileManager.h \
 			directorymonitor.h \
 			se_globals.h
 
-EXTRA_DIST = 	$(srcdir)/FileManager.cbp \
-		$(srcdir)/FileManager-unix.cbp \
+EXTRA_DIST = 	$(srcdir)/*.cbp \
 		$(srcdir)/Resources/fileexplorersettings.xrc \
 		$(srcdir)/manifest.xml
 

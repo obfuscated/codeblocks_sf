@@ -67,3 +67,8 @@ noinst_HEADERS = ccoptionsdlg.h \
 			parser/tokentree.h \
 			parser/searchtree.h \
 			parser/expression.h
+
+EXTRA_DIST = $(srcdir)/*.cbp \
+		cctest \
+		testing \
+		wxsmith

@@ -17,7 +17,6 @@ noinst_HEADERS = app.h \
 
 man_MANS = cb_share_config.1
 
-EXTRA_DIST = cb_share_config.cbp \
-		cb_share_config-unix.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
 		$(srcdir)/wxsmith/*.wxs \
 		$(man_MANS)

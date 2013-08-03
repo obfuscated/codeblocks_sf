@@ -34,10 +34,8 @@ noinst_HEADERS =  	CmdConfigDialog.h \
 			ToolsPlus.h
 
 
-EXTRA_DIST = 	$(srcdir)/ToolsPlus.cbp \
-		$(srcdir)/ToolsPlus-unix.cbp \
-		$(srcdir)/update.bat \
-		$(srcdir)/update \
+EXTRA_DIST = 	$(srcdir)/*.cbp \
+		$(srcdir)/update* \
 		$(srcdir)/manifest.xml
 
 pkgdata_DATA = ToolsPlus.zip

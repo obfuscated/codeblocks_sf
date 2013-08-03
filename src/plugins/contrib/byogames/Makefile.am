@@ -27,9 +27,8 @@ noinst_HEADERS = byogameselect.h \
             byoconf.h \
 		byosnake.h
 
-EXTRA_DIST = wxsmith/byoGameSelect.wxs \
-            byogames.cbp \
-            byogames-unix.cbp \
+EXTRA_DIST = $(srcdir)/wxsmith/*.wxs \
+            $(srcdir)/*.cbp \
             manifest.xml
 
 pkgdata_DATA = byogames.zip

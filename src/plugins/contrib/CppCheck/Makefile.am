@@ -20,4 +20,5 @@ noinst_HEADERS = CppCheck.h \
             CppCheckListLog.h \
             ConfigPanel.h
 
-EXTRA_DIST = $(srcdir)/*.cbp
+EXTRA_DIST = $(srcdir)/*.cbp \
+		wxsmith

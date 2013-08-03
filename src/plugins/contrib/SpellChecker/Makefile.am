@@ -50,7 +50,7 @@ EXTRA_DIST = 	$(srcdir)/*.cbp \
 		hunspell \
 		dictionaries \
 		manifest.xml \
-		update
+		$(srcdir)/update*
 
 pkgdata_DATA = SpellChecker.zip
 

@@ -35,8 +35,7 @@ noinst_HEADERS =  	BrowseTracker.h \
 			JumpTracker.h \
 			JumpData.h
 
-EXTRA_DIST = 	BrowseTracker.cbp \
-		BrowseTracker-unix.cbp \
+EXTRA_DIST = 	$(srcdir)/*.cbp \
 		manifest.xml
 
 pkgdata_DATA = BrowseTracker.zip

@@ -32,8 +32,7 @@ EXTRA_DIST = $(srcdir)/*.cbp \
 		manifest.xml \
 		ChangeLog.txt \
 		DoxyBlocks.rc \
-		update \
-		update.bat \
+		$(srcdir)/update* \
 		$(srcdir)/images/*.png \
 		$(srcdir)/images/16x16/*.png
 

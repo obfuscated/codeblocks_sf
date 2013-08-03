@@ -19,8 +19,7 @@ noinst_HEADERS = dragscroll.h \
 			dragscrollcfg.h \
 			dragscrollevent.h
 
-EXTRA_DIST = DragScroll.cbp \
-		DragScroll-unix.cbp \
+EXTRA_DIST = $(srcdir)/*.cbp \
 		manifest.xml
 
 pkgdata_DATA = dragscroll.zip

@@ -49,6 +49,5 @@ EXTRA_DIST = debuggergdb_test_defs.cpp \
 		debuggergdb_test_main.cpp \
 		debuggergdb_test_parser.cpp \
 		debuggergdb_test_parser_cdb.cpp \
-		debuggergdb_test-unix.cbp \
-		debuggergdb_test.cbp
+		$(srcdir)/*.cbp
 

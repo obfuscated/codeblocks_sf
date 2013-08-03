@@ -234,16 +234,17 @@ DIST_SUBDIRS = AutoVersioning \
 		wxSmithPlot \
 		wxSmithSTC
 
+EXTRA_DIST = rndgen
 if ENABLE_FORTRAN
-EXTRA_DIST = FortranProject/*.h \
-		FortranProject/*.cpp \
-		FortranProject/*.xml \
-		FortranProject/*.cbp \
-		FortranProject/update* \
-		FortranProject/images/*.png \
-		FortranProject/images/16x16/*.png \
-		FortranProject/images/fortranproject/*.png \
-		FortranProject/images/fortranproject/*.f90 \
-		FortranProject/resources/*.xrc
+EXTRA_DIST += $(srcdir)/FortranProject/*.h \
+		$(srcdir)/FortranProject/*.cpp \
+		$(srcdir)/FortranProject/*.xml \
+		$(srcdir)/FortranProject/*.cbp \
+		$(srcdir)/FortranProject/update* \
+		$(srcdir)/FortranProject/images/*.png \
+		$(srcdir)/FortranProject/images/16x16/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/*.png \
+		$(srcdir)/FortranProject/images/fortranproject/*.f90 \
+		$(srcdir)/FortranProject/resources/*.xrc
 endif
 

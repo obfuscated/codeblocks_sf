@@ -20,8 +20,7 @@ EXTRA_DIST = 	$(srcdir)/*.cbp \
 		IncrementalSearchToolbar.xrc \
 		IncrementalSearchConfDlg.xrc \
 		manifest.xml \
-		update \
-		update.bat \
+		$(srcdir)/update* \
 		$(srcdir)/images/*.png \
 		$(srcdir)/images/16x16/*.png
 

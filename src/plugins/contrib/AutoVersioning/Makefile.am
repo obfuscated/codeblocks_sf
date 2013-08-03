@@ -26,8 +26,7 @@ noinst_HEADERS = AutoVersioning.h \
 
 EXTRA_DIST = wxsmith/avChangesDlg.wxs \
             wxsmith/avVersionEditorDlg.wxs \
-            AutoVersioning.cbp \
-            AutoVersioning-unix.cbp \
+            $(srcdir)/*.cbp \
             manifest.xml
 
 pkgdata_DATA = AutoVersioning.zip

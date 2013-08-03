@@ -13,3 +13,6 @@ resources.zip: $(srcdir)/*.xrc $(srcdir)/images/*.png $(srcdir)/images/16x16/*.p
 
 start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png
 	PWD=`pwd` cd $(srcdir)/start_here && zip $(PWD)/start_here.zip *.htm* *.png > /dev/null
+
+EXTRA_DIST = $(srcdir)/*.manifest
+

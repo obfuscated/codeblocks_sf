@@ -80,3 +80,8 @@ DIST_SUBDIRS = abbreviations \
 		todo \
 		xpmanifest \
 		contrib
+
+EXTRA_DIST = headerguard \
+		loghacker \
+		modpoller \
+		tidycmt
