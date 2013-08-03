@@ -4,13 +4,368 @@
 // Author:      John Labenski
 // Modified by:
 // Created:     1/08/2004
-// RCS-ID:
 // Copyright:   (c) John Labenski
 // Licence:     wxWidgets licence
 ///////////////////////////////////////////////////////////////////////////////
 
 #ifndef __WX_PAIRARR_H__
 #define __WX_PAIRARR_H__
+
+// --------------------------------------------------------------------------
+/// class SortedPairArray - A sorted key, value pair array.
+/// Values are added in sorted order by key and can be manipulated using
+/// the keys or their numerical indexes.
+///
+/// NOTE: All functions are inlined and these header only classes dll "exported"
+///       to avoid warning C4251 and then error C2491 when you "fix" the warning.
+///       In other words, MSVC 2008 complains when you don't use dllexport,
+///       then errors when you do if not every function is inlined.
+///       More sane compilers will probably simply ignore inlining the larger functions.
+///
+/// To properly instantiate and forward declare these template classes use: \n
+/// typedef class WXDLLIMPEXP_STEDIT SortedPairArrayNumberKey<int, wxArrayInt, wxString, wxArrayString> wxSTEPairArrayIntString; \n
+// --------------------------------------------------------------------------
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+class SortedPairArray
+{
+public:
+    /// Default constructor, you must set the default value separately.
+    SortedPairArray()                                    {}
+    /// Typical use constructor, sets the default value.
+    SortedPairArray(const Tval& defaultVal) : m_defaultValue(defaultVal) {}
+    /// Copy constructor.
+    SortedPairArray(const SortedPairArray& other)        { Copy(other); }
+    virtual ~SortedPairArray()                           {}
+
+    // ----------------------------------------------------------------------
+
+    /// Returns the number of items in the array.
+    inline size_t GetCount() const                       { return m_keys.size(); }
+    /// Returns index of the key in the array or wxNOT_FOUND if the key is not found.
+    inline int Index(const Tkey& key) const;
+    /// Returns index to insert the key into the array.
+    /// For append it returns GetCount() (be sure to check for GetCount()=0 case).
+    /// the position to insert before, or the position of the existing key. 
+    /// (see code for Add())
+    inline size_t IndexForInsert(const Tkey& pos) const;
+    /// Returns true if the key is in array.
+    inline bool HasKey(const Tkey& key) const            { return Index(key) != wxNOT_FOUND; }
+    /// Returns the value for the key or the default value if the key is not in the array.
+    inline const Tval& GetValue(const Tkey& key) const;
+    /// Returns a writable value for the key or the default value if the key is not in the array.
+    inline Tval* GetValueMutable(const Tkey& key);
+    /// Returns the value for the key or adds the key using a copy of the input newVal or the default value if newVal is NULL.
+    inline Tval& GetOrCreateValue(const Tkey& key, const Tval* newVal = NULL);
+    /// Returns the key at the index into the array.
+    inline const Tkey& ItemKey(size_t index)   const     { return m_keys[index]; }
+    /// Returns a writable key at the index into the array.
+    inline Tkey& ItemKey(size_t index)                   { return m_keys[index]; }
+    /// Returns the value at the index into the array.
+    inline const Tval& ItemValue(size_t index) const     { return m_values[index]; }
+    /// Returns a writable value at the index into the array.
+    inline Tval& ItemValue(size_t index)                 { return m_values[index]; }
+    /// Add the key, value pair into the array, replacing the value if the key was already added.
+    inline bool Add(const Tkey& key, const Tval& value);
+    /// Remove the key, value pair from the array, returns true if the key was found.
+    inline bool Remove(const Tkey& key);
+    /// Remove nRemove number of key, value pairs from the array at the index.
+    inline void RemoveAt(size_t index, size_t nRemove = 1) { m_keys.RemoveAt(index, nRemove); m_values.RemoveAt(index, nRemove); }
+    /// Remove all key, value pairs.
+    inline void Clear()                                  { m_keys.Clear(); m_values.Clear(); }
+    /// Copy the other pair array into this one.
+    inline void Copy(const SortedPairArray& other);
+    /// Get the array of keys.
+    inline const TkeyArray& GetKeys()   const            { return m_keys; }
+    /// Get a writable array of the keys, be sure to call Sort() if you modify any of them.
+    inline TkeyArray& GetKeys()                          { return m_keys; }
+    /// Get the array of values.
+    inline const TvalArray& GetValues() const            { return m_values; }
+    /// Get a writable array of the values.
+    inline TvalArray& GetValues()                        { return m_values; }
+    /// Get the default value.
+    inline const Tval& GetDefaultValue() const           { return m_defaultValue; }
+    /// Set the default value.
+    inline void SetDefaultValue(const Tval& val)         { m_defaultValue = val; }
+    /// Returns true if there are no elements in this pair array.
+    inline bool IsEmpty() const                          { return GetCount() == 0; }
+    /// Returns true if this pair array is equal to the other.
+    inline bool IsEqualTo(const SortedPairArray& other) const;
+    /// Sort the arrays by the key value.
+    /// This is only needed to be called if you modify key values directly or
+    /// have directly added unordered pairs using GetKeys().Add(x); GetValues().Add(y);.
+    /// The pair array MUST always be sorted in order for it work properly.
+    inline void Sort()                                   { if (GetCount() > 1) q_sort(0, GetCount()-1); }
+    /// Copy the other pair array into this one.
+    inline SortedPairArray& operator=(const SortedPairArray& other) { Copy(other); return *this; }
+    /// Returns true if this pair array is equal to the other.
+    inline bool operator==(const SortedPairArray& other) const { return IsEqualTo(other); }
+    /// Returns true if this pair array not is equal to the other.
+    inline bool operator!=(const SortedPairArray& other) const { return !IsEqualTo(other); }
+    /// Returns the value at the given index.
+    inline const Tval& operator[](size_t index) const    { return ItemValue(index); }
+    /// Returns a writable value at the given index.
+    inline Tval& operator[](size_t index)                { return ItemValue(index); }
+
+    // ----------------------------------------------------------------------
+    /// std::vector compatibility functions.
+    /// @{
+
+    /// Remove all key, value pairs.
+    inline void   clear()       { Clear(); }
+    /// Returns true if the array is empty.
+    inline size_t empty() const { return GetCount() == 0; }
+    /// Returns the number of key, value pairs.
+    inline size_t size()  const { return GetCount(); }
+
+    /// @}
+
+protected :
+    void q_sort(int left, int right);
+    TkeyArray m_keys;
+    TvalArray m_values;
+    Tval      m_defaultValue;
+};
+
+// --------------------------------------------------------------------------
+// PairArrayNumberKey
+// --------------------------------------------------------------------------
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+class SortedPairArrayNumberKey : public SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>
+{
+public:
+    SortedPairArrayNumberKey() : SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>() {}
+    SortedPairArrayNumberKey(Tval defaultVal) : SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>(defaultVal) {}
+    SortedPairArrayNumberKey(const SortedPairArrayNumberKey& other) : SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>() { Copy(other); }
+    virtual ~SortedPairArrayNumberKey() {}
+
+    // ----------------------------------------------------------------------
+
+    /// Call this function to shift keys after pos by adding numPos to each subsequent key.
+    /// When inserting use numPos > 0 and when deleting use numPos < 0 so that 
+    /// the remaining keys above pos are shifted either upwards or downwards by numpos.
+    /// Note that this function will not work when Tkey is unsigned and you want to
+    /// shift keys downward (numPos < 0).
+    bool UpdatePos( Tkey pos, Tkey numPos );
+};
+
+// --------------------------------------------------------------------------
+// class SortedPairArray - Template function implementation.
+// --------------------------------------------------------------------------
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline const Tval& SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::GetValue(const Tkey& key) const
+{
+    const int n = Index(key);
+    if (n != wxNOT_FOUND) 
+        return m_values[n];
+
+    return m_defaultValue;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline Tval* SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::GetValueMutable(const Tkey& key)
+{
+    const int n = Index(key);
+    if (n != wxNOT_FOUND) 
+        return &m_values[n];
+
+    return NULL;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline Tval& SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::GetOrCreateValue(const Tkey& key, const Tval* newVal)
+{
+    const size_t n = IndexForInsert(key);
+    if (n == m_keys.GetCount())
+    {
+        m_keys.Add(key); 
+        if (newVal != NULL)
+            m_values.Add(Tval(*newVal)); 
+        else
+            m_values.Add(Tval(m_defaultValue)); 
+    }
+    else if (key != m_keys[n])
+    { 
+        m_keys.Insert(key, n); 
+        if (newVal != NULL)
+            m_values.Insert(Tval(*newVal), n); 
+        else
+            m_values.Insert(Tval(m_defaultValue), n); 
+    }
+    return m_values[n];
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline bool SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::Add(const Tkey& key, const Tval& value)
+{
+    const size_t n = IndexForInsert(key);
+    if (n == m_keys.GetCount())
+    { 
+        m_keys.Add(key);
+        m_values.Add(value);
+        return true; 
+    }
+    else if (key == m_keys[n])
+        m_values[n] = value;
+    else
+    { 
+        m_keys.Insert(key, n);
+        m_values.Insert(value, n);
+        return true; 
+    }
+    return false;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline bool SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::Remove(const Tkey& key)
+{
+    const int n = Index(key);
+    if (n != wxNOT_FOUND) 
+    { 
+        RemoveAt(n); 
+        return true; 
+    }
+
+    return false;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline int SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::Index(const Tkey& key) const
+{
+    size_t n, lo = 0, hi = m_keys.GetCount();
+    while ( lo < hi )
+    {
+        n = (lo + hi)/2;
+        const Tkey &tmp = m_keys[n];
+        if (tmp == key) return n;
+        if (tmp  > key) hi = n;
+        else            lo = n + 1;
+    }
+    return wxNOT_FOUND;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline size_t SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::IndexForInsert(const Tkey& key) const
+{
+    size_t n, lo = 0, hi = m_keys.GetCount();
+    while ( lo < hi )
+    {
+        n = (lo + hi)/2;
+        const Tkey &tmp = m_keys[n];
+        if (tmp == key) return n;
+        if (tmp  > key) hi = n;
+        else            lo = n + 1;
+    }
+    return lo;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline void SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::Copy(const SortedPairArray& other)
+{
+    m_keys         = other.GetKeys();
+    m_values       = other.GetValues();
+    m_defaultValue = other.GetDefaultValue();
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+inline bool SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::IsEqualTo(const SortedPairArray& other) const
+{
+    if (GetCount() != other.GetCount()) 
+        return false;
+
+    size_t n, count = GetCount();
+    for (n = 0; n < count; ++n)
+    {
+        if ((m_keys[n] != other.m_keys[n]) || (m_values[n] != other.m_values[n]))
+            return false;
+    }
+    return true;
+}
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+void SortedPairArray<Tkey, TkeyArray, Tval, TvalArray>::q_sort(int left, int right)
+{
+    int l_hold = left, r_hold = right;
+
+    Tkey pivot    = m_keys[left]; 
+    Tval pivotVal = m_values[left];
+
+    while (left < right)
+    {
+        while ((m_keys[right] >= pivot) && (left < right)) --right;
+
+        if (left != right) 
+        { 
+            m_keys[left]   = m_keys[right];
+            m_values[left] = m_values[right]; 
+            ++left; 
+        }
+
+        while ((m_keys[left] <= pivot) && (left < right)) ++left;
+
+        if (left != right) 
+        { 
+            m_keys[right]   = m_keys[left];
+            m_values[right] = m_values[left]; 
+            --right; 
+        }
+    }
+
+    m_keys[left]   = pivot; 
+    m_values[left] = pivotVal;
+
+    if (l_hold < left) q_sort(l_hold, left-1);
+    if (r_hold > left) q_sort(left+1, r_hold);
+}
+
+// --------------------------------------------------------------------------
+// class PairArrayNumberKey - Template function implementation.
+// --------------------------------------------------------------------------
+
+template <typename Tkey, typename TkeyArray, typename Tval, typename TvalArray>
+bool SortedPairArrayNumberKey<Tkey, TkeyArray, Tval, TvalArray>::UpdatePos( Tkey pos, Tkey numPos )
+{
+    int n, count = this->m_keys.GetCount(), start_idx = this->IndexForInsert(pos);
+    if ((numPos == 0) || (start_idx >= count)) return false;
+
+    if ( numPos > 0 )
+    {
+        for (n = start_idx; n < count; ++n)
+            this->m_keys[n] += numPos;
+    }
+    else if ( numPos < 0 )
+    {
+        Tkey pos_right = pos - numPos;
+
+        for (n = start_idx; n < count; ++n)
+        {
+            Tkey &k = this->m_keys[n];
+            if (k < pos_right)  
+            { 
+                this->RemoveAt(n); 
+                --n; 
+                --count; 
+            }
+            else if (k >= pos_right)
+            { 
+                k += numPos; 
+            }
+        }
+    }
+    return true;
+}
+
+
+// ============================================================================
+// ============================================================================
+// Old MACRO implementation
+// ============================================================================
+// ============================================================================
+
+//#define PAIR_ARRAY_USE_MACROS
+#ifdef PAIR_ARRAY_USE_MACROS
 
 // Note: there is no cpp file as all the code is contained in these macros.
 
@@ -287,7 +642,7 @@ bool name::IsEqualTo(const name& other) const \
 { \
     if (GetCount() != other.GetCount()) return false; \
     size_t n, count = GetCount(); \
-    for (n = 0; n < count; n++) \
+    for (n = 0; n < count; ++n) \
         if ((ItemKey(n) != other.ItemKey(n)) || \
             (ItemValue(n) != other.ItemValue(n))) return false; \
     return true; \
@@ -298,12 +653,12 @@ void name::q_sort(int left, int right) \
     Tkey pivot = m_keys[left]; Tval pivotVal = m_values[left]; \
     while (left < right) \
     { \
-        while ((m_keys[right] >= pivot) && (left < right)) right--;       \
+        while ((m_keys[right] >= pivot) && (left < right)) --right;       \
         if (left != right) { m_keys[left]   = m_keys[right];              \
-                             m_values[left] = m_values[right]; left++; }  \
-        while ((m_keys[left] <= pivot) && (left < right)) left++;         \
+                             m_values[left] = m_values[right]; ++left; }  \
+        while ((m_keys[left] <= pivot) && (left < right)) ++left;         \
         if (left != right) { m_keys[right]   = m_keys[left];              \
-                             m_values[right] = m_values[left]; right--; } \
+                             m_values[right] = m_values[left]; --right; } \
     } \
     m_keys[left] = pivot; m_values[left] = pivotVal; \
     if (l_hold < left) q_sort(l_hold, left-1); \
@@ -323,20 +678,22 @@ bool name::UpdatePos( Tkey pos, Tkey numPos )     \
     if ((numPos == 0) || (start_idx >= count)) return false; \
     if ( numPos > 0 ) \
     { \
-        for (n=start_idx; n<count; n++) \
+        for (n = start_idx; n < count; ++n) \
             m_keys[n] += numPos; \
     } \
     else if ( numPos < 0 ) \
     { \
         Tkey pos_right = pos-numPos;    \
-        for (n=start_idx; n<count; n++) \
+        for (n = start_idx; n < count; ++n) \
         { \
             Tkey &k = m_keys[n];                              \
-            if (k < pos_right) { RemoveAt(n); n--; count--; } \
+            if (k < pos_right) { RemoveAt(n); --n; --count; } \
             else if (k >= pos_right) { k += numPos; }         \
         } \
     } \
     return true; \
 }
+
+#endif // PAIR_ARRAY_USE_MACROS
 
 #endif  // __WX_PAIRARR_H__

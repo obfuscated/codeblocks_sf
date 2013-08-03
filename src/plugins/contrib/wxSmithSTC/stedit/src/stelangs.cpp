@@ -12,8 +12,6 @@
 #include "wx/stedit/stelangs.h"
 #include "wx/stedit/stedit.h"
 
-DEFINE_PAIRARRAY_INTKEY(wxString, wxSTEPairArrayIntString)
-
 extern wxSTEditorLangs  s_wxSTEditorLangs;
 
 //----------------------------------------------------------------------------
@@ -4910,7 +4908,7 @@ public:
             m_langs.Add(s_STE_Languages[n]);
     }
 
-    wxArrayPtrVoid m_langs;
+    wxArrayPtrVoid          m_langs;
     wxSTEPairArrayIntString m_userFilePatterns; // user defined file patterns
     wxSTEPairArrayIntString m_userStyles;       // user defined styles
                                                 //   mapped langID*1000+style_n

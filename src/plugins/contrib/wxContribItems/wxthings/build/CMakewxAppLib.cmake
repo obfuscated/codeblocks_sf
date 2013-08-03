@@ -37,6 +37,12 @@ endif()
 
 set_property(GLOBAL PROPERTY CMAKEWXAPPLIB_RUN_ONCE TRUE)
 
+# Backwards compat to CMake < 2.8.3
+if ("${CMAKE_CURRENT_LIST_DIR}" STREQUAL "")
+    get_filename_component(CMAKE_CURRENT_LIST_DIR
+                           ${CMAKE_CURRENT_LIST_FILE} PATH ABSOLUTE)
+endif()
+
 set(CMakewxAppLib_LIST_DIR ${CMAKE_CURRENT_LIST_DIR})
 
 # Load the helper file with additional functions
@@ -190,7 +196,9 @@ if (NOT MSVC)
     # This is used only for the Makefile generator.
     # In MSVC you can choose the build type in the IDE.
     SET(CMAKE_BUILD_TYPE "${CMAKE_BUILD_TYPE}" CACHE STRING "Set build type, options are one of ${CMAKE_BUILD_TYPES}" FORCE)
-    set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_BUILD_TYPES})
+    if (${CMAKE_VERSION} VERSION_GREATER 2.8.0)
+        set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_BUILD_TYPES})
+    endif ()
 endif ()
 
 # Useful, since I cannot find a case-insensitive string comparison function
@@ -225,11 +233,11 @@ endif()
 set(BUILD_SHARED_LIBS ${BUILD_SHARED_LIBS} CACHE BOOL "Build shared libraries (TRUE) or static libraries (FALSE)" FORCE)
 
 # Set if we are building DLLs, MSWindows and shared libraries
-set(BUILDING_DLLS FALSE)
+set(BUILD_SHARED_LIBS_WIN_DLLS FALSE CACHE INTERNAL "TRUE when building shared libs on MSW, else FALSE" FORCE)
 
 if (BUILD_SHARED_LIBS) # CMake has problems with "if ("ON" AND "TRUE")"
     if (WIN32)
-        set(BUILDING_DLLS TRUE)
+        set(BUILD_SHARED_LIBS_WIN_DLLS TRUE CACHE INTERNAL "TRUE when building shared libs on MSW, else FALSE" FORCE)
     endif()
 endif()
 
@@ -652,6 +660,16 @@ macro( FIND_WXWIDGETS wxWidgets_COMPONENTS_)
     endif( wxWidgets_FOUND )
 
     # -----------------------------------------------------------------------
+    # Fix WXUSINGDLL being defined for BUILD_SHARED_LIBS, even in Linux...
+    
+    if (NOT BUILD_SHARED_LIBS_WIN_DLLS)
+        # awkwardly remove leading or trailing ; (compat with old cmake versions)
+        string(REPLACE ";WXUSINGDLL" "" wxWidgets_DEFINITIONS "${wxWidgets_DEFINITIONS}")
+        string(REPLACE "WXUSINGDLL;" "" wxWidgets_DEFINITIONS "${wxWidgets_DEFINITIONS}")
+        string(REPLACE "WXUSINGDLL"  "" wxWidgets_DEFINITIONS "${wxWidgets_DEFINITIONS}")
+    endif()
+
+    # -----------------------------------------------------------------------
     # Print out what we've found so far
 
     # This is from FindwxWidgets.cmake and is "typically an empty string" in MSW.
@@ -906,7 +924,7 @@ function( VERIFY_WXWIDGETS_COMPONENTS )
             endif()
         endforeach()
 
-        if (${wx_comp_found})
+        if (wx_comp_found)
             set(WX_HASLIB_${wx_comp} TRUE CACHE INTERNAL "")
             #message("found ${wx_comp}")
         endif()

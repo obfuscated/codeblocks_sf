@@ -16,7 +16,12 @@
 #include <wx/dirctrl.h>
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
-#include <wx/generic/filedlgg.h>
+
+#if wxCHECK_VERSION(2, 9, 0)
+    #include <wx/generic/filectrlg.h>
+#else // 2.8
+    #include <wx/generic/filedlgg.h>
+#endif
 
 class WXDLLIMPEXP_FWD_BASE wxConfigBase;
 class WXDLLIMPEXP_FWD_CORE wxCheckBox;
@@ -158,10 +163,26 @@ public :
     // Get the current dir (not file), optionally add a trailing platform dependent '/' or '\'
     wxString GetPath(bool add_wxFILE_SEP_PATH = false) const;
     // Go to a directory, returns success
-    bool SetPath(const wxString &dirName);
+    bool SetPath(const wxString &dirName, bool refresh = false);
 
     // go to a dir or send an EVT_FILEBROWSER_FILE_ACTIVATED if a filename
-    bool OpenFilePath(const wxString &filePath);
+    bool OpenFilePath(const wxString &filePath, bool send_event = true);
+
+    // Get the currently selected file, else empty string if none selected.
+    wxString GetCurrentFile() const;
+
+    // Get the first file shown in list to the user.
+    // Returns an empty string if no file selected or no first file.
+    wxString GetFirstFile() const;
+    // Get the previous file shown in the list to the user.
+    // Returns an empty string if no file selected or no previous file.
+    wxString GetPreviousFile() const;
+    // Get the next file shown in the list to the user.
+    // Returns an empty string if no file selected or no next file.
+    wxString GetNextFile() const;
+    // Get the last file shown in the list to the user.
+    // Returns an empty string if no file selected or no last file.
+    wxString GetLastFile() const;
 
     // Returns true if there is a higher level directory.
     bool CanGoUpDir() const;
@@ -231,9 +252,6 @@ public :
     // Create a wxFileData from a wxFileName
     wxFileData CreateFileData(const wxFileName& fileName) const;
 
-    // Get the last or currently focused path + filename
-    wxString GetLastFocusedFilePath();
-
     // Show a simple dialog that contains the properties of the file/dir
     void ShowPropertiesDialog(const wxFileData &fileData) const;
 
@@ -292,6 +310,7 @@ protected :
     void OnListItemActivated(wxListEvent &event);
     void OnListItemSelected(wxListEvent &event);
     void OnListRightClick(wxListEvent &event);
+    void OnListEndLabelEdit(wxListEvent& event);
 
     void OnTreeMenu(wxCommandEvent &event);
     void OnListMenu(wxCommandEvent &event);

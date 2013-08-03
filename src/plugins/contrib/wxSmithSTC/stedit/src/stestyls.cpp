@@ -42,7 +42,6 @@ OR PERFORMANCE OF THIS SOFTWARE.
 
 #include <wx/arrimpl.cpp>
 WX_DEFINE_OBJARRAY(wxArraySTEditorStyle);
-DEFINE_PAIRARRAY_INTKEY(wxSTEditorStyle, wxSTEPairArrayIntSTEStyle)
 
 extern wxSTEditorStyles s_wxSTEditorStyles;
 

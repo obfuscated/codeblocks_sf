@@ -98,7 +98,7 @@ endif()
 # For MSW DLLs we need to replace WXDLLEXPORT with WXDLLIMPEXP_THINGS in
 # wx/include/wx/generic/filedlgg.h
 
-if (BUILDING_DLLS)
+if (BUILD_SHARED_LIBS_WIN_DLLS)
 
     # Use configure since it'll create the dirs for us too.
     configure_file(${wxWidgets_ROOT_DIR}/include/wx/generic/filedlgg.h
@@ -151,7 +151,7 @@ endif()
 # and paste it into our code to get it.
 # If this breaks we can resort to some other means, but this works for wx 2.8 and 2.9
 
-if (BUILDING_DLLS)
+if (BUILD_SHARED_LIBS_WIN_DLLS)
 
     file(READ ${wxWidgets_ROOT_DIR}/src/generic/dirctrlg.cpp WXDIRCTRLG_CPP_STRING)
 
@@ -206,6 +206,11 @@ configure_file(${wxThings_ROOT_DIR}/src/precomp.h
 
 # ---------------------------------------------------------------------------
 
+set( WXTHINGS_PROPERTIES_DEFINE_SYMBOL )
+if ( BUILD_SHARED_LIBS_WIN_DLLS )
+    set( WXTHINGS_PROPERTIES_DEFINE_SYMBOL PROPERTIES DEFINE_SYMBOL WXMAKINGDLL_THINGS)
+endif()
+
 ADD_LIBRARY_FULL(wxThingsLib
     HEADERS
         ${wxThings_ROOT_DIR}/include/wx/things/block.h
@@ -248,7 +253,7 @@ ADD_LIBRARY_FULL(wxThingsLib
     PRECOMPILED_SOURCE  ${wxThings_ROOT_DIR}/src/precomp.cpp
     LINK_LIBRARIES
         ${wxWidgets_LIBRARIES}
-    PROPERTIES DEFINE_SYMBOL "WXMAKINGDLL_THINGS"
+    ${WXTHINGS_PROPERTIES_DEFINE_SYMBOL}
     PROPERTIES FOLDER "wxThings")
 
 ADD_TARGET_INCLUDE_PATHS(wxThingsLib ${CMAKE_CURRENT_BINARY_DIR}/include/)
