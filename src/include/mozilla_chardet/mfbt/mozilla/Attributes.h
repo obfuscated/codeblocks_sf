@@ -8,10 +8,7 @@
 #ifndef mozilla_Attributes_h_
 #define mozilla_Attributes_h_
 
-/*
- * This header does not include any other headers so that it can be included by
- * code that is (only currently) mfbt-incompatible.
- */
+#include "mozilla/Compiler.h"
 
 /*
  * MOZ_INLINE is a macro which expands to tell the compiler that the method
@@ -35,15 +32,22 @@
  * otherwise.  This is only a (much) stronger version of the MOZ_INLINE hint:
  * compilers are not guaranteed to respect it (although they're much more likely
  * to do so).
+ *
+ * The MOZ_ALWAYS_INLINE_EVEN_DEBUG macro is yet stronger. It tells the
+ * compiler to inline even in DEBUG builds. It should be used very rarely.
  */
+#if defined(_MSC_VER)
+#  define MOZ_ALWAYS_INLINE_EVEN_DEBUG     __forceinline
+#elif defined(__GNUC__)
+#  define MOZ_ALWAYS_INLINE_EVEN_DEBUG     __attribute__((always_inline)) MOZ_INLINE
+#else
+#  define MOZ_ALWAYS_INLINE_EVEN_DEBUG     MOZ_INLINE
+#endif
+
 #if defined(DEBUG)
 #  define MOZ_ALWAYS_INLINE     MOZ_INLINE
-#elif defined(_MSC_VER)
-#  define MOZ_ALWAYS_INLINE     __forceinline
-#elif defined(__GNUC__)
-#  define MOZ_ALWAYS_INLINE     __attribute__((always_inline)) MOZ_INLINE
 #else
-#  define MOZ_ALWAYS_INLINE     MOZ_INLINE
+#  define MOZ_ALWAYS_INLINE     MOZ_ALWAYS_INLINE_EVEN_DEBUG
 #endif
 
 /*
@@ -63,16 +67,15 @@
 #  ifndef __has_extension
 #    define __has_extension __has_feature /* compatibility, for older versions of clang */
 #  endif
+#  if __has_extension(cxx_constexpr)
+#    define MOZ_HAVE_CXX11_CONSTEXPR
+#  endif
 #  if __has_extension(cxx_deleted_functions)
 #    define MOZ_HAVE_CXX11_DELETE
 #  endif
 #  if __has_extension(cxx_override_control)
 #    define MOZ_HAVE_CXX11_OVERRIDE
 #    define MOZ_HAVE_CXX11_FINAL         final
-#  endif
-#  if __has_extension(cxx_strong_enums)
-#    define MOZ_HAVE_CXX11_ENUM_TYPE
-#    define MOZ_HAVE_CXX11_STRONG_ENUMS
 #  endif
 #  if __has_attribute(noinline)
 #    define MOZ_HAVE_NEVER_INLINE        __attribute__((noinline))
@@ -82,29 +85,18 @@
 #  endif
 #elif defined(__GNUC__)
 #  if defined(__GXX_EXPERIMENTAL_CXX0X__) || __cplusplus >= 201103L
-#    if __GNUC__ > 4
-#      define MOZ_HAVE_CXX11_DELETE
+#    if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
 #      define MOZ_HAVE_CXX11_OVERRIDE
 #      define MOZ_HAVE_CXX11_FINAL       final
-#    elif __GNUC__ == 4
-#      if __GNUC_MINOR__ >= 7
-#        define MOZ_HAVE_CXX11_OVERRIDE
-#        define MOZ_HAVE_CXX11_FINAL     final
-#      endif
-#      define MOZ_HAVE_CXX11_DELETE
-#      if __GNUC_MINOR__ >= 5
-#        define MOZ_HAVE_CXX11_ENUM_TYPE
-#        define MOZ_HAVE_CXX11_STRONG_ENUMS
-#      endif
 #    endif
+#    if MOZ_GCC_VERSION_AT_LEAST(4, 6, 0)
+#      define MOZ_HAVE_CXX11_CONSTEXPR
+#    endif
+#    define MOZ_HAVE_CXX11_DELETE
 #  else
      /* __final is a non-C++11 GCC synonym for 'final', per GCC r176655. */
-#    if __GNUC__ > 4
+#    if MOZ_GCC_VERSION_AT_LEAST(4, 7, 0)
 #      define MOZ_HAVE_CXX11_FINAL       __final
-#    elif __GNUC__ == 4
-#      if __GNUC_MINOR__ >= 7
-#        define MOZ_HAVE_CXX11_FINAL     __final
-#      endif
 #    endif
 #  endif
 #  define MOZ_HAVE_NEVER_INLINE          __attribute__((noinline))
@@ -112,15 +104,31 @@
 #elif defined(_MSC_VER)
 #  if _MSC_VER >= 1700
 #    define MOZ_HAVE_CXX11_FINAL         final
-#    define MOZ_HAVE_CXX11_STRONG_ENUMS
 #  else
      /* MSVC <= 10 used to spell "final" as "sealed". */
 #    define MOZ_HAVE_CXX11_FINAL         sealed
 #  endif
 #  define MOZ_HAVE_CXX11_OVERRIDE
-#  define MOZ_HAVE_CXX11_ENUM_TYPE
 #  define MOZ_HAVE_NEVER_INLINE          __declspec(noinline)
 #  define MOZ_HAVE_NORETURN              __declspec(noreturn)
+#endif
+
+/*
+ * The MOZ_CONSTEXPR specifier declares that a C++11 compiler can evaluate a
+ * function at compile time. A constexpr function cannot examine any values
+ * except its arguments and can have no side effects except its return value.
+ * The MOZ_CONSTEXPR_VAR specifier tells a C++11 compiler that a variable's
+ * value may be computed at compile time.  It should be prefered to just
+ * marking variables as MOZ_CONSTEXPR because if the compiler does not support
+ * constexpr it will fall back to making the variable const, and some compilers
+ * do not accept variables being marked both const and constexpr.
+ */
+#ifdef MOZ_HAVE_CXX11_CONSTEXPR
+#  define MOZ_CONSTEXPR         constexpr
+#  define MOZ_CONSTEXPR_VAR     constexpr
+#else
+#  define MOZ_CONSTEXPR         /* no support */
+#  define MOZ_CONSTEXPR_VAR     const
 #endif
 
 /*
@@ -309,170 +317,6 @@
 #endif
 
 /**
- * MOZ_ENUM_TYPE specifies the underlying numeric type for an enum.  It's
- * specified by placing MOZ_ENUM_TYPE(type) immediately after the enum name in
- * its declaration, and before the opening curly brace, like
- *
- *   enum MyEnum MOZ_ENUM_TYPE(uint16_t)
- *   {
- *     A,
- *     B = 7,
- *     C
- *   };
- *
- * In supporting compilers, the macro will expand to ": uint16_t".  The
- * compiler will allocate exactly two bytes for MyEnum, and will require all
- * enumerators to have values between 0 and 65535.  (Thus specifying "B =
- * 100000" instead of "B = 7" would fail to compile.)  In old compilers, the
- * macro expands to the empty string, and the underlying type is generally
- * undefined.
- */
-#ifdef MOZ_HAVE_CXX11_ENUM_TYPE
-#  define MOZ_ENUM_TYPE(type)   : type
-#else
-#  define MOZ_ENUM_TYPE(type)   /* no support */
-#endif
-
-/**
- * MOZ_BEGIN_ENUM_CLASS and MOZ_END_ENUM_CLASS provide access to the
- * strongly-typed enumeration feature of C++11 ("enum class").  If supported
- * by the compiler, an enum defined using these macros will not be implicitly
- * converted to any other type, and its enumerators will be scoped using the
- * enumeration name.  Place MOZ_BEGIN_ENUM_CLASS(EnumName, type) in place of
- * "enum EnumName {", and MOZ_END_ENUM_CLASS(EnumName) in place of the closing
- * "};".  For example,
- *
- *   MOZ_BEGIN_ENUM_CLASS(Enum, int32_t)
- *     A, B = 6
- *   MOZ_END_ENUM_CLASS(Enum)
- *
- * This will make "Enum::A" and "Enum::B" appear in the global scope, but "A"
- * and "B" will not.  In compilers that support C++11 strongly-typed
- * enumerations, implicit conversions of Enum values to numeric types will
- * fail.  In other compilers, Enum itself will actually be defined as a class,
- * and some implicit conversions will fail while others will succeed.
- *
- * The type argument specifies the underlying type for the enum where
- * supported, as with MOZ_ENUM_TYPE().  For simplicity, it is currently
- * mandatory.  As with MOZ_ENUM_TYPE(), it will do nothing on compilers that do
- * not support it.
- *
- * Note that the workaround implemented here is not compatible with enums
- * nested inside a class.
- */
-#if defined(MOZ_HAVE_CXX11_STRONG_ENUMS)
-  /* All compilers that support strong enums also support an explicit
-   * underlying type, so no extra check is needed */
-#  define MOZ_BEGIN_ENUM_CLASS(Name, type) enum class Name : type {
-#  define MOZ_END_ENUM_CLASS(Name)         };
-#else
-   /**
-    * We need Name to both name a type, and scope the provided enumerator
-    * names.  Namespaces and classes both provide scoping, but namespaces
-    * aren't types, so we need to use a class that wraps the enum values.  We
-    * have an implicit conversion from the inner enum type to the class, so
-    * statements like
-    *
-    *   Enum x = Enum::A;
-    *
-    * will still work.  We need to define an implicit conversion from the class
-    * to the inner enum as well, so that (for instance) switch statements will
-    * work.  This means that the class can be implicitly converted to a numeric
-    * value as well via the enum type, since C++ allows an implicit
-    * user-defined conversion followed by a standard conversion to still be
-    * implicit.
-    *
-    * We have an explicit constructor from int defined, so that casts like
-    * (Enum)7 will still work.  We also have a zero-argument constructor with
-    * no arguments, so declaration without initialization (like "Enum foo;")
-    * will work.
-    *
-    * Additionally, we'll delete as many operators as possible for the inner
-    * enum type, so statements like this will still fail:
-    *
-    *   f(5 + Enum::B); // deleted operator+
-    *
-    * But we can't prevent things like this, because C++ doesn't allow
-    * overriding conversions or assignment operators for enums:
-    *
-    *   int x = Enum::A;
-    *   int f()
-    *   {
-    *     return Enum::A;
-    *   }
-    */
-#  define MOZ_BEGIN_ENUM_CLASS(Name, type) \
-     class Name \
-     { \
-       public: \
-         enum Enum MOZ_ENUM_TYPE(type) \
-         {
-#  define MOZ_END_ENUM_CLASS(Name) \
-         }; \
-         Name() {} \
-         Name(Enum aEnum) : mEnum(aEnum) {} \
-         explicit Name(int num) : mEnum((Enum)num) {} \
-         operator Enum() const { return mEnum; } \
-       private: \
-         Enum mEnum; \
-     }; \
-     inline int operator+(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator+(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator-(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator-(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator*(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator*(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator/(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator/(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator%(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator%(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator+(const Name::Enum&) MOZ_DELETE; \
-     inline int operator-(const Name::Enum&) MOZ_DELETE; \
-     inline int& operator++(Name::Enum&) MOZ_DELETE; \
-     inline int operator++(Name::Enum&, int) MOZ_DELETE; \
-     inline int& operator--(Name::Enum&) MOZ_DELETE; \
-     inline int operator--(Name::Enum&, int) MOZ_DELETE; \
-     inline bool operator==(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator==(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline bool operator!=(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator!=(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline bool operator>(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator>(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline bool operator<(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator<(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline bool operator>=(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator>=(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline bool operator<=(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator<=(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline bool operator!(const Name::Enum&) MOZ_DELETE; \
-     inline bool operator&&(const bool&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator&&(const Name::Enum&, const bool&) MOZ_DELETE; \
-     inline bool operator||(const bool&, const Name::Enum&) MOZ_DELETE; \
-     inline bool operator||(const Name::Enum&, const bool&) MOZ_DELETE; \
-     inline int operator~(const Name::Enum&) MOZ_DELETE; \
-     inline int operator&(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator&(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator|(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator|(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator^(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator^(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator<<(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator<<(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int operator>>(const int&, const Name::Enum&) MOZ_DELETE; \
-     inline int operator>>(const Name::Enum&, const int&) MOZ_DELETE; \
-     inline int& operator+=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator-=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator*=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator/=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator%=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator&=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator|=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator^=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator<<=(int&, const Name::Enum&) MOZ_DELETE; \
-     inline int& operator>>=(int&, const Name::Enum&) MOZ_DELETE;
-#endif
-
-/**
  * MOZ_WARN_UNUSED_RESULT tells the compiler to emit a warning if a function's
  * return value is not used by the caller.
  *
@@ -489,6 +333,96 @@
 #  define MOZ_WARN_UNUSED_RESULT __attribute__ ((warn_unused_result))
 #else
 #  define MOZ_WARN_UNUSED_RESULT
+#endif
+
+/*
+ * The following macros are attributes that support the static analysis plugin
+ * included with Mozilla, and will be implemented (when such support is enabled)
+ * as C++11 attributes. Since such attributes are legal pretty much everywhere
+ * and have subtly different semantics depending on their placement, the
+ * following is a guide on where to place the attributes.
+ *
+ * Attributes that apply to a struct or class precede the name of the class:
+ * (Note that this is different from the placement of MOZ_FINAL for classes!)
+ *
+ *   class MOZ_CLASS_ATTRIBUTE SomeClass {};
+ *
+ * Attributes that apply to functions follow the parentheses and const
+ * qualifiers but precede MOZ_FINAL, MOZ_OVERRIDE and the function body:
+ *
+ *   void DeclaredFunction() MOZ_FUNCTION_ATTRIBUTE;
+ *   void SomeFunction() MOZ_FUNCTION_ATTRIBUTE {}
+ *   void PureFunction() const MOZ_FUNCTION_ATTRIBUTE = 0;
+ *   void OverriddenFunction() MOZ_FUNCTION_ATTIRBUTE MOZ_OVERRIDE;
+ *
+ * Attributes that apply to variables or parameters follow the variable's name:
+ *
+ *   int variable MOZ_VARIABLE_ATTRIBUTE;
+ *
+ * Attributes that apply to types follow the type name:
+ *
+ *   typedef int MOZ_TYPE_ATTRIBUTE MagicInt;
+ *   int MOZ_TYPE_ATTRIBUTE someVariable;
+ *   int * MOZ_TYPE_ATTRIBUTE magicPtrInt;
+ *   int MOZ_TYPE_ATTRIBUTE * ptrToMagicInt;
+ *
+ * Attributes that apply to statements precede the statement:
+ *
+ *   MOZ_IF_ATTRIBUTE if (x == 0)
+ *   MOZ_DO_ATTRIBUTE do { } while(0);
+ *
+ * Attributes that apply to labels precede the label:
+ *
+ *   MOZ_LABEL_ATTRIBUTE target:
+ *     goto target;
+ *   MOZ_CASE_ATTRIBUTE case 5:
+ *   MOZ_DEFAULT_ATTRIBUTE default:
+ *
+ * The static analyses that are performed by the plugin are as follows:
+ *
+ * MOZ_MUST_OVERRIDE: Applies to all C++ member functions. All immediate
+ *   subclasses must provide an exact override of this method; if a subclass
+ *   does not override this method, the compiler will emit an error. This
+ *   attribute is not limited to virtual methods, so if it is applied to a
+ *   nonvirtual method and the subclass does not provide an equivalent
+ *   definition, the compiler will emit an error.
+ * MOZ_STACK_CLASS: Applies to all classes. Any class with this annotation is
+ *   expected to live on the stack, so it is a compile-time error to use it, or
+ *   an array of such objects, as a global or static variable, or as the type of
+ *   a new expression (unless placement new is being used). If a member of
+ *   another class uses this class, or if another class inherits from this
+ *   class, then it is considered to be a stack class as well, although this
+ *   attribute need not be provided in such cases.
+ * MOZ_NONHEAP_CLASS: Applies to all classes. Any class with this annotation is
+ *   expected to live on the stack or in static storage, so it is a compile-time
+ *   error to use it, or an array of such objects, as the type of a new
+ *   expression (unless placement new is being used). If a member of another
+ *   class uses this class, or if another class inherits from this class, then
+ *   it is considered to be a non-heap class as well, although this attribute
+ *   need not be provided in such cases.
+ */
+#ifdef MOZ_CLANG_PLUGIN
+# define MOZ_MUST_OVERRIDE __attribute__((annotate("moz_must_override")))
+# define MOZ_STACK_CLASS __attribute__((annotate("moz_stack_class")))
+# define MOZ_NONHEAP_CLASS __attribute__((annotate("moz_nonheap_class")))
+#else
+# define MOZ_MUST_OVERRIDE /* nothing */
+# define MOZ_STACK_CLASS /* nothing */
+# define MOZ_NONHEAP_CLASS /* nothing */
+#endif /* MOZ_CLANG_PLUGIN */
+
+/*
+ * MOZ_THIS_IN_INITIALIZER_LIST is used to avoid a warning when we know that
+ * it's safe to use 'this' in an initializer list.
+ */
+#ifdef _MSC_VER
+#  define MOZ_THIS_IN_INITIALIZER_LIST() \
+     __pragma(warning(push)) \
+     __pragma(warning(disable:4355)) \
+     this \
+     __pragma(warning(pop))
+#else
+#  define MOZ_THIS_IN_INITIALIZER_LIST() this
 #endif
 
 #endif /* __cplusplus */
