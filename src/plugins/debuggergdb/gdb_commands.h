@@ -164,7 +164,7 @@ static wxRegEx reDisassemblySource(_T("([0-9]+)[ \t](.*)"));
 //  ebx at 0x22ff6c, ebp at 0x22ff78, esi at 0x22ff70, edi at 0x22ff74, eip at 0x22ff7c
 static wxRegEx reDisassemblyInit(_T("^[ \t]*Stack level [0-9]+, frame at (0x[A-Fa-f0-9]+):"));
 //  rip = 0x400931 in Bugtest<int> (/src/_cb_dbg/disassembly/main.cpp:6);
-static wxRegEx reDisassemblyInitSymbol(_T("[ \t]*[er]ip[ \t]+=[ \t]+0x[0-9a-f]+[ \t]+in[ \t]+(.+)\\((.+):[0-9]+\\);"));
+static wxRegEx reDisassemblyInitSymbol(_T("[ \t]*[er]ip[ \t]+=[ \t]+0x[0-9a-f]+[ \t]+in[ \t]+(.+)\\((.+):([0-9]+)\\);"));
 static wxRegEx reDisassemblyInitFunc(_T("eip = (0x[A-Fa-f0-9]+) in ([^;]*)"));
 // or32 variant
 #ifdef __WXMSW__
@@ -1894,6 +1894,53 @@ class GdbCmd_StepIntoInstruction : public GdbCmd_StepOrNextInstruction
         GdbCmd_StepIntoInstruction(GDB_driver* driver)
             : GdbCmd_StepOrNextInstruction(driver, _T("stepi"))
         {
+        }
+};
+
+/** Command which tries to find the current cursor position.
+  * It is executed if the gdb prompt is detected, but no cursor information is parsed prior it.
+  */
+class GdbCmd_FindCursor : public DebuggerCmd
+{
+    public:
+        GdbCmd_FindCursor(GDB_driver *driver) :
+            DebuggerCmd(driver, wxT("info frame"))
+        {
+        }
+
+        void ParseOutput(const wxString& output)
+        {
+            const wxArrayString &lines = GetArrayFromString(output, _T('\n'));
+            if (lines.Count() <= 2)
+                return;
+            size_t firstLine = 0;
+            for (; firstLine < lines.Count() && !reDisassemblyInit.Matches(lines[firstLine]); ++firstLine)
+                ;
+            firstLine++;
+            if (firstLine < lines.Count())
+            {
+                wxString symbol, file, line;
+                if (reDisassemblyInitSymbol.Matches(lines[firstLine]))
+                {
+                    symbol = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 1);
+                    file = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 2);
+                    line = reDisassemblyInitSymbol.GetMatch(lines[firstLine], 3);
+                }
+
+                const wxString &addr = reDisassemblyInit.GetMatch(output, 1);
+                long longAddress;
+                addr.ToULong((unsigned long int*)&longAddress, 16);
+
+                Cursor cursor = m_pDriver->GetCursor();
+                cursor.address =  addr;
+                cursor.changed = true;
+                cursor.file = file;
+                cursor.function = symbol;
+                if (!line.ToLong(&cursor.line))
+                    cursor.line = -1;
+                m_pDriver->SetCursor(cursor);
+                m_pDriver->NotifyCursorChanged();
+            }
         }
 };
 

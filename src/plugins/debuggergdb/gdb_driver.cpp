@@ -34,7 +34,7 @@ WX_DEFINE_OBJARRAY(TypesArray);
 // we allow for a few characters to be "eaten" this way and still get our
 // expected prompt back.
 #define GDB_PROMPT _T("cb_gdb:")
-#define FULL_GDB_PROMPT _T(">>>>>>") + GDB_PROMPT
+#define FULL_GDB_PROMPT _T(">>>>>>") GDB_PROMPT
 
 //[Switching to thread 2 (Thread 1082132832 (LWP 12298))]#0  0x00002aaaac5a2aca in pthread_cond_wait@@GLIBC_2.3.2 () from /lib/libpthread.so.0
 static wxRegEx reThreadSwitch(_T("^\\[Switching to thread .*\\]#0[ \t]+(0x[A-Fa-f0-9]+) in (.*) from (.*)"));
@@ -764,7 +764,8 @@ void GDB_driver::ParseOutput(const wxString& output)
     m_pDBG->DebugLog(output);
 
     int idx = buffer.First(GDB_PROMPT);
-    if (idx == wxNOT_FOUND)
+    const bool foundPrompt = (idx != wxNOT_FOUND);
+    if (!foundPrompt)
     {
         // don't uncomment the following line
         // m_ProgramIsStopped is set to false in DebuggerDriver::RunQueue()
@@ -1085,6 +1086,12 @@ void GDB_driver::ParseOutput(const wxString& output)
         }
     }
     buffer.Clear();
+
+    if (foundPrompt && m_DCmds.empty() && !m_ProgramIsStopped && !m_Cursor.changed)
+    {
+        QueueCommand(new GdbCmd_FindCursor(this));
+        m_ProgramIsStopped = true;
+    }
 
     // if program is stopped, update various states
     if (m_needsUpdate)
