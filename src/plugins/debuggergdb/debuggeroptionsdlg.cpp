@@ -96,6 +96,7 @@ wxPanel* DebuggerConfiguration::MakePanel(wxWindow *parent)
 
     XRCCTRL(*panel, "rbType",            wxRadioBox)->SetSelection(IsGDB() ? 0 : 1);
     XRCCTRL(*panel, "txtInit",           wxTextCtrl)->ChangeValue(GetInitCommands());
+    XRCCTRL(*panel, "txtInit",           wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
     XRCCTRL(*panel, "chkWatchArgs",      wxCheckBox)->SetValue(GetFlag(WatchFuncArgs));
     XRCCTRL(*panel, "chkWatchLocals",    wxCheckBox)->SetValue(GetFlag(WatchLocals));
     XRCCTRL(*panel, "chkWatchScriptPrinters", wxCheckBox)->SetValue(GetFlag(WatchScriptPrinters));
