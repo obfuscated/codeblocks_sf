@@ -3,8 +3,8 @@
 
 #ifndef CB_PRECOMP
 	//(*InternalHeadersPCH(DebuggerSettingsDlg)
-	#include <wx/intl.h>
 	#include <wx/string.h>
+	#include <wx/intl.h>
 	//*)
 
     #include <wx/choicdlg.h>
@@ -13,8 +13,8 @@
     #include "cbplugin.h"
 #endif
 //(*InternalHeaders(DebuggerSettingsDlg)
-#include <wx/font.h>
 #include <wx/button.h>
+#include <wx/font.h>
 //*)
 
 #include "debuggermanager.h"
@@ -36,9 +36,9 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
 {
 	//(*Initialize(DebuggerSettingsDlg)
 	wxStaticLine* staticLine;
-	wxStdDialogButtonSizer* stdDialogButtons;
 	wxBoxSizer* headerSizer;
 	wxBoxSizer* mainSizer;
+	wxStdDialogButtonSizer* stdDialogButtons;
 	wxPanel* header;
 
 	Create(parent, wxID_ANY, _("Debugger settings"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxMINIMIZE_BOX, _T("wxID_ANY"));
@@ -57,7 +57,6 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
 	headerSizer->SetSizeHints(header);
 	mainSizer->Add(header, 0, wxEXPAND|wxALIGN_RIGHT|wxALIGN_BOTTOM, 5);
 	m_treebook = new wxTreebook(this, ID_TREEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT, _T("ID_TREEBOOK"));
-	m_treebook->SetMinSize(wxSize(600,440));
 	mainSizer->Add(m_treebook, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("wxID_ANY"));
 	mainSizer->Add(staticLine, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -101,6 +100,7 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
     for (size_t ii = 0; ii < m_treebook->GetPageCount(); ++ii)
         m_treebook->ExpandNode(ii);
 
+    mainSizer->SetSizeHints(this);
     CentreOnParent();
 }
 

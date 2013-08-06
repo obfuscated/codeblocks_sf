@@ -4,9 +4,9 @@
 #ifndef CB_PRECOMP
 	//(*HeadersPCH(DebuggerSettingsDlg)
 	#include <wx/sizer.h>
-	#include <wx/stattext.h>
 	#include <wx/panel.h>
 	#include "scrollingdialog.h"
+	#include <wx/stattext.h>
 	//*)
 
 	#include <map>

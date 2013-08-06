@@ -34,7 +34,6 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxTreebook" name="ID_TREEBOOK" variable="m_treebook" member="yes">
-					<minsize>600,440</minsize>
 					<handler function="OnPageChanged" entry="EVT_TREEBOOK_PAGE_CHANGED" />
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
