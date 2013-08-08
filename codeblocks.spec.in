@@ -35,6 +35,7 @@
 
 %define nassi_shneiderman   1
 %define automake17          0
+%define needs_gcc44         0
 
 %if 0%{?_redhat}
 %if 0%{?_redhat_vernum} < 4
@@ -42,6 +43,7 @@
 %endif
 %if 0%{?_redhat_vernum} < 6
 %define nassi_shneiderman   0
+%define needs_gcc44         1
 %endif
 %endif
 
@@ -51,6 +53,11 @@
 %define no_nassi_flag ,-NassiShneiderman
 %endif
 
+%if 0%{?needs_gcc44}
+%define gcc44_flag CC=/usr/bin/gcc44\ CXX=/usr/bin/g++44
+%else
+%define gcc44_flag " "
+%endif
 Name:                       codeblocks
 Version:                    %{_version}
 Release:                    %{_release}
@@ -83,6 +90,9 @@ BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, libtool >= 1.4, m4
 BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
 BuildRequires:              zip, pkgconfig
+%if 0%{?needs_gcc44}
+BuildRequires:              gcc44, gcc44-c++
+%endif
 
 %if ! 0%{?automake17}
 BuildRequires:              automake >= 1.7
@@ -212,6 +222,7 @@ This package contains the development libraries and headers needed to build wxSm
   %endif
   %else
   %configure \
+      %gcc44_flag \
       --disable-pch \
       --with-wx-config="%{_bindir}/wx-config" \
       --with-contrib-plugins=all%no_nassi_flag \
