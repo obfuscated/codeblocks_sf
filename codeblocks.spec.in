@@ -48,7 +48,7 @@
 %endif
 
 %if 0%{?nassi_shneiderman}
-%define no_nassi_flag " "
+%define no_nassi_flag ""
 %else
 %define no_nassi_flag ,-NassiShneiderman
 %endif
@@ -56,7 +56,7 @@
 %if 0%{?needs_gcc44}
 %define gcc44_flag CC=/usr/bin/gcc44\ CXX=/usr/bin/g++44
 %else
-%define gcc44_flag " "
+%define gcc44_flag ""
 %endif
 Name:                       codeblocks
 Version:                    %{_version}
