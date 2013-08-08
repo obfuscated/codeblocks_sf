@@ -969,6 +969,9 @@
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Attributes.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Compiler.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Likely.h">
 			<Option target="sdk" />
 		</Unit>
