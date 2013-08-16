@@ -12,11 +12,11 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = liboccurrenceshighlighting.la
 
-liboccurrencehighlighting_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+liboccurrenceshighlighting_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-liboccurrencehighlighting_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
+liboccurrenceshighlighting_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 
-liboccurrencehighlighting_la_SOURCES = occurrenceshighlighting.cpp \
+liboccurrenceshighlighting_la_SOURCES = occurrenceshighlighting.cpp \
 			occurrencespanel.cpp \
 			occurrenceshighlightingconfigurationpanel.cpp \
 			highlighter.cpp
