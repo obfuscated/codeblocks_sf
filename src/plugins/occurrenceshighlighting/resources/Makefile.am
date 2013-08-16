@@ -1,8 +1,7 @@
-pkgdata_DATA = OccurrencesHighlighting.zip
+pkgdata_DATA = occurrenceshighlighting.zip
 CLEANFILES = $(pkgdata_DATA)
 
 EXTRA_DIST = manifest.xml $(srcdir)/*.xrc
 
-OccurrencesHighlighting.zip: $(EXTRA_DIST)
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/OccurrencesHighlighting.zip manifest.xml *.xrc > /dev/null
-
+occurrenceshighlighting.zip: $(EXTRA_DIST)
+	PWD=`pwd` cd $(srcdir) && zip $(PWD)/occurrenceshighlighting.zip manifest.xml *.xrc > /dev/null

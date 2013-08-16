@@ -299,7 +299,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/debugger.zip
 %{pkgdatadir}/defaultmimehandler.zip
 %{pkgdatadir}/manager_resources.zip
-%{pkgdatadir}/OccurrencesHighlighting.zip
+%{pkgdatadir}/occurrenceshighlighting.zip
 %{pkgdatadir}/openfileslist.zip
 %{pkgdatadir}/projectsimporter.zip
 %{pkgdatadir}/resources.zip
