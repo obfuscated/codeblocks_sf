@@ -10,6 +10,7 @@ usr/lib/codeblocks/plugins/libcodecompletion.so
 usr/lib/codeblocks/plugins/libcompiler.so
 usr/lib/codeblocks/plugins/libdebugger.so
 usr/lib/codeblocks/plugins/libdefaultmimehandler.so
+usr/lib/codeblocks/plugins/liboccurrenceshighlighting.so
 usr/lib/codeblocks/plugins/libopenfileslist.so
 usr/lib/codeblocks/plugins/libprojectsimporter.so
 usr/lib/codeblocks/plugins/libscriptedwizard.so

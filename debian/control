@@ -50,6 +50,8 @@ Description: Code::Blocks integrated development environment (IDE)
     * To-do list
     * Extensible wizard based on scripts
     * Autosave (saves your work in the unfortunate case of a crash)
+    * Occurrences highlighter
+    * Open files list
 
 Package: codeblocks-common
 Architecture: all
