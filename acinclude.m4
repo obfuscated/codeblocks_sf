@@ -170,6 +170,17 @@ else
 	AC_MSG_RESULT(no)
 fi
 
+AC_MSG_CHECKING(whether to build the occurrences highlighting plugin)
+occurrenceshighlighting_default="yes"
+AC_ARG_ENABLE(occurrences-highlighting, [AC_HELP_STRING([--enable-occurrences-highlighting], [build the occurrences highlighting plugin (default YES)])],,
+                       enable_occurrenceshighlighting=$occurrenceshighlighting_default)
+AM_CONDITIONAL([BUILD_OCCURRENCESHIGHLIGHTING], [test "x$enable_occurrenceshighlighting" = "xyes"])
+if test "x$enable_occurrenceshighlighting" = "xyes"; then
+	AC_MSG_RESULT(yes)
+else
+	AC_MSG_RESULT(no)
+fi
+
 AC_MSG_CHECKING(whether to build the foreign projects importer plugin)
 pimport_default="yes"
 AC_ARG_ENABLE(projects-importer, [AC_HELP_STRING([--enable-projects-importer], [build the foreign projects importer plugin (default YES)])],,

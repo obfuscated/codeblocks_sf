@@ -87,9 +87,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_CHOICE(XRCID("cmbDefCodeFileType"),            EditorConfigurationDlg::OnChangeDefCodeFileType)
     EVT_CHOICE(XRCID("cmbThemes"),                     EditorConfigurationDlg::OnColourTheme)
     EVT_CHECKBOX(XRCID("chkDynamicWidth"),             EditorConfigurationDlg::OnDynamicCheck)
-    EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),     EditorConfigurationDlg::OnHighlightOccurrences)
     EVT_CHECKBOX(XRCID("chkEnableMultipleSelections"), EditorConfigurationDlg::OnMultipleSelections)
-    EVT_BUTTON(XRCID("btnHighlightColour"),            EditorConfigurationDlg::OnChooseColour)
     EVT_CHOICE(XRCID("lstCaretStyle"),                 EditorConfigurationDlg::OnCaretStyle)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
@@ -158,23 +156,6 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     const wxString openFolderCmds = _T("xdg-open");
 #endif
     XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->SetValue(cfg->Read(_T("/open_containing_folder"), openFolderCmds));
-
-    // Highlight Occurrence
-    bool highlightEnabled = cfg->ReadBool(_T("/highlight_occurrence/enabled"), true);
-    XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->SetValue(highlightEnabled);
-    XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true));
-    XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable(highlightEnabled);
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true));
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->Enable(highlightEnabled);
-    wxColour highlightColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_highlight_occurrence"));
-    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->SetBackgroundColour(highlightColour);
-    XRCCTRL(*this, "stHighlightColour",                    wxStaticText)->Enable(highlightEnabled);
-    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->Enable(highlightEnabled);
-
-    wxSpinCtrl *minLength = XRCCTRL(*this, "spnHighlightLength", wxSpinCtrl);
-    minLength->SetValue(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3));
-    minLength->Enable(highlightEnabled);
-    XRCCTRL(*this, "stHighlightLength", wxStaticText)->Enable(highlightEnabled);
 
     XRCCTRL(*this, "chkShowEOL",             wxCheckBox)->SetValue(cfg->ReadBool(_T("/show_eol"),                        false));
     XRCCTRL(*this, "chkStripTrailings",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/eol/strip_trailing_spaces"),       true));
@@ -1005,13 +986,6 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS",                            wxChoice)->GetSelection());
         cfg->Write(_T("/open_containing_folder"),              XRCCTRL(*this, "txtOpenFolder",                        wxTextCtrl)->GetValue());
         cfg->Write(_T("/tab_text_relative"),                   XRCCTRL(*this, "rbTabText",                            wxRadioBox)->GetSelection() ? true : false);
-        cfg->Write(_T("/highlight_occurrence/enabled"),        XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->GetValue());
-        cfg->Write(_T("/highlight_occurrence/case_sensitive"), XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->GetValue());
-        cfg->Write(_T("/highlight_occurrence/whole_word"),     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->GetValue());
-        wxColour highlightColour = XRCCTRL(*this, "btnHighlightColour", wxButton)->GetBackgroundColour();
-        Manager::Get()->GetColourManager()->SetColour(wxT("editor_highlight_occurrence"), highlightColour);
-        cfg->Write(_T("/highlight_occurrence/min_length"),     XRCCTRL(*this, "spnHighlightLength",                   wxSpinCtrl)->GetValue());
-
         // find & replace, regex searches
 
         //caret
@@ -1143,14 +1117,6 @@ void EditorConfigurationDlg::EndModal(int retCode)
         }
     }
     wxScrollingDialog::EndModal(retCode);
-}
-
-void EditorConfigurationDlg::OnHighlightOccurrences(wxCommandEvent& event)
-{
-    XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable( event.IsChecked() );
 }
 
 void EditorConfigurationDlg::OnMultipleSelections(wxCommandEvent& event)

@@ -343,6 +343,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/defaultmimehandler/Makefile
 	src/plugins/defaultmimehandler/resources/Makefile
 	src/plugins/openfileslist/Makefile
+	src/plugins/occurrenceshighlighting/Makefile
+	src/plugins/occurrenceshighlighting/resources/Makefile
 	src/plugins/projectsimporter/Makefile
 	src/plugins/projectsimporter/resources/Makefile
 	src/plugins/scriptedwizard/Makefile

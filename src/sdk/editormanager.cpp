@@ -164,7 +164,6 @@ EditorManager::EditorManager()
     Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_LOADING_COMPLETE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
 
     ColourManager *colours = Manager::Get()->GetColourManager();
-    colours->RegisterColour(_("Editor"), _("Highlihgt occurrence"), wxT("editor_highlight_occurrence"), *wxRED);
     colours->RegisterColour(_("Editor"), _("Caret"), wxT("editor_caret"), *wxBLACK);
     colours->RegisterColour(_("Editor"), _("Right margin"), wxT("editor_gutter"), *wxLIGHT_GREY);
 }

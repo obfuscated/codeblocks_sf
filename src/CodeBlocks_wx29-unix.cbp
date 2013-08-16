@@ -360,6 +360,23 @@
 					<Add directory="devel29" />
 				</Linker>
 			</Target>
+			<Target title="Occurrences Highlighting">
+				<Option output="devel29/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel29/share/codeblocks/plugins" />
+				<Option object_output=".objs29" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
+					<Add library="codeblocks" />
+					<Add directory="devel29" />
+				</Linker>
+			</Target>
 			<Target title="Open files list">
 				<Option output="devel29/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel29/share/codeblocks/plugins" />
@@ -483,8 +500,8 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;" />
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
@@ -1921,6 +1938,33 @@
 		</Unit>
 		<Unit filename="plugins/defaultmimehandler/resources/manifest.xml">
 			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/highlighter.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/highlighter.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlighting.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlighting.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlightingconfigurationpanel.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlightingconfigurationpanel.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrencespanel.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrencespanel.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/resources/occurrenceshighlightingconfigurationpanel.xrc">
+			<Option target="Occurrences Highlighting" />
 		</Unit>
 		<Unit filename="plugins/openfileslist/manifest.xml">
 			<Option target="Open files list" />

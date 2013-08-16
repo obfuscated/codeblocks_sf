@@ -52,6 +52,7 @@ ${ZIPCMD} -jqu9 ${RESDIR}/codecompletion.zip plugins/codecompletion/resources/ma
 ${ZIPCMD} -jqu9 ${RESDIR}/compiler.zip plugins/compilergcc/resources/manifest.xml plugins/compilergcc/resources/*.xrc > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/debugger.zip plugins/debuggergdb/resources/manifest.xml plugins/debuggergdb/resources/*.xrc > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/occurrenceshighlighting.zip plugins/occurrenceshighlighting/resources/*.xrc plugins/occurrenceshighlighting/resources/manifest.xml > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/openfileslist.zip plugins/openfileslist/manifest.xml > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/projectsimporter.zip plugins/projectsimporter/resources/*.xrc plugins/projectsimporter/resources/manifest.xml > /dev/null
 ${ZIPCMD} -jqu9 ${RESDIR}/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml > /dev/null

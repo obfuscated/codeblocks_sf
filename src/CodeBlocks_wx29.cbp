@@ -510,6 +510,36 @@
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
+			<Target ttle="Occurrences Highlighting">
+				<Option output="devel29/share/CodeBlocks/plugins/OccurrencesHighlighting" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel29" />
+				<Option external_deps="devel29/libcodeblocks.a;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=debug" />
+				<Option host_application="./codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectLinkerOptionsRelation="1" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add directory="include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-image-base" />
+					<Add option="-Wl,--add-stdcall-alias" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-Wl,--no-undefined" />
+					<Add option="-mthreads" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="devel29" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="cmd /c if not exist devel29\share\CodeBlocks mkdir devel29\share\CodeBlocks" />
+					<Add after="zip -j9 devel29\share\CodeBlocks\occurrenceshighlighting.zip plugins\occurrenceshighlighting\resources\manifest.xml plugins\occurrenceshighlighting\resources\*.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
 			<Target title="Open files list">
 				<Option output="devel29/share/CodeBlocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel29" />
@@ -686,8 +716,8 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
-			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
+			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
+			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
 			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
@@ -2134,6 +2164,33 @@
 		</Unit>
 		<Unit filename="plugins/defaultmimehandler/resources/manifest.xml">
 			<Option target="Default MIME handler" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/highlighter.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/highlighter.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlighting.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlighting.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlightingconfigurationpanel.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrenceshighlightingconfigurationpanel.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrencespanel.cpp">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/occurrencespanel.h">
+			<Option target="Occurrences Highlighting" />
+		</Unit>
+		<Unit filename="plugins/occurrenceshighlighting/resources/occurrenceshighlightingconfigurationpanel.xrc">
+			<Option target="Occurrences Highlighting" />
 		</Unit>
 		<Unit filename="plugins/openfileslist/manifest.xml">
 			<Option target="Open files list" />

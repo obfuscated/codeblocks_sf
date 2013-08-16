@@ -105,8 +105,7 @@ struct cbEditorInternalData
         m_useByteOrderMark(false),
         m_byteOrderMarkLength(0),
         m_lineNumbersWidth(0),
-        m_pFileLoader(fileLoader),
-        m_highlightOccurencesLastPos(-1, -1)
+        m_pFileLoader(fileLoader)
     {
         m_encoding = wxLocale::GetSystemEncoding();
 
@@ -237,117 +236,6 @@ struct cbEditorInternalData
             m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
             if (m_pOwner->m_pControl2)
                 m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
-        }
-    }
-
-    void HighlightOccurrences()
-    {
-        // chosed a high value for indicator, in the hope not to interfere with the indicators used by some lexers (,
-        // if they get updated from deprecated oldstyle indicators somedays.
-        cbStyledTextCtrl *control = m_pOwner->m_pControl;
-        const int theIndicator = 10;
-
-        std::pair<long, long> curr;
-        control->GetSelection(&curr.first, &curr.second);
-
-        control->SetIndicatorCurrent(theIndicator);
-
-        if (m_highlightOccurencesLastPos == curr) // whatever the current state is, we've already done it once
-            return;
-        m_highlightOccurencesLastPos = curr;
-
-        int eof = control->GetLength();
-
-        // Set Styling:
-        // clear all style indications set in a previous run (is also done once after text gets unselected)
-        control->IndicatorClearRange(0, eof);
-
-        // if there is no text selected, it stops here and does not hog the cpu further
-        if (curr.first == curr.second)
-            return;
-        // check if the selected text has space, tab or new line in it
-        wxString selectedText(control->GetTextRange(curr.first, curr.second));
-        if (selectedText.find_first_of(wxT(" \t\n")) != wxString::npos)
-            return;
-
-        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-        // check if the feature is enabled
-        if (!cfg->ReadBool(_T("/highlight_occurrence/enabled"), true))
-            return;
-        // selected text has a minimal length of controlled by the user (by default it is 3)
-        wxString::size_type minLength = std::max(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3), 1);
-        if (selectedText.length() >= minLength)
-        {
-            wxColour highlightColour(Manager::Get()->GetColourManager()->GetColour(wxT("editor_highlight_occurrence")));
-            if ( m_pOwner->m_pControl )
-            {
-                m_pOwner->m_pControl->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
-                m_pOwner->m_pControl->IndicatorSetForeground(theIndicator, highlightColour );
-#ifndef wxHAVE_RAW_BITMAP
-                // If wxWidgets is build without rawbitmap-support, the indicators become opaque
-                // and hide the text, so we show them under the text.
-                // Not enabled as default, because the readability is a little bit worse.
-                m_pOwner->m_pControl->IndicatorSetUnder(theIndicator,true);
-#endif
-            }
-            if ( m_pOwner->m_pControl2 )
-            {
-                m_pOwner->m_pControl2->IndicatorSetStyle(theIndicator, wxSCI_INDIC_HIGHLIGHT);
-                m_pOwner->m_pControl2->IndicatorSetForeground(theIndicator, highlightColour );
-#ifndef wxHAVE_RAW_BITMAP
-                m_pOwner->m_pControl2->IndicatorSetUnder(theIndicator,true);
-#endif
-            }
-
-            int flag = 0;
-            if (cfg->ReadBool(_T("/highlight_occurrence/case_sensitive"), true))
-            {
-                flag |= wxSCI_FIND_MATCHCASE;
-            }
-            if (cfg->ReadBool(_T("/highlight_occurrence/whole_word"), true))
-            {
-                flag |= wxSCI_FIND_WHOLEWORD;
-            }
-
-            // list all selections and sort them
-            typedef std::vector<std::pair<long, long> > Selections;
-            Selections selections;
-            int count = control->GetSelections();
-            for (int ii = 0; ii < count; ++ii)
-            {
-                selections.push_back(Selections::value_type(control->GetSelectionNStart(ii),
-                                                            control->GetSelectionNEnd(ii)));
-            }
-            std::sort(selections.begin(), selections.end());
-            Selections::const_iterator currSelection = selections.begin();
-
-            // search for every occurence
-            int lengthFound = 0; // we need this to work properly with multibyte characters
-            for ( int pos = control->FindText(0, eof, selectedText, flag, &lengthFound);
-                pos != wxSCI_INVALID_POSITION ;
-                pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
-            {
-                // check if the found text is selected
-                // if it is don't add indicator for it, because it looks ugly
-                bool skip = false;
-                for (; currSelection != selections.end(); ++currSelection)
-                {
-                    // the found text is after the current selection, go to the next one
-                    if (currSelection->second < pos)
-                        continue;
-                    // if the end of the found text is not before the current selection start
-                    // then it must match and it should be skipped
-                    if (pos + lengthFound >= currSelection->first)
-                        skip = true;
-                    break;
-                }
-                if (skip)
-                    continue;
-
-                // does not make sense anymore: check that the found occurrence is not the same as the selected,
-                // since it is not selected in the second view -> so highlight it
-                control->IndicatorFillRange(pos, lengthFound);
-            }
         }
     }
 
@@ -534,7 +422,6 @@ struct cbEditorInternalData
     int m_lineNumbersWidth;
 
     LoaderBase* m_pFileLoader;
-    std::pair<long, long> m_highlightOccurencesLastPos;
 };
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -3167,7 +3054,6 @@ void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
     {
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
         HighlightBraces(); // brace highlighting
-        m_pData->HighlightOccurrences();
     }
     OnScintillaEvent(event);
 }
