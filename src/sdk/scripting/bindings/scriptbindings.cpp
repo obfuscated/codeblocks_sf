@@ -380,6 +380,7 @@ namespace ScriptBindings
                 func(&ProjectFile::AddBuildTarget, "AddBuildTarget").
                 func(&ProjectFile::RenameBuildTarget, "RenameBuildTarget").
                 func(&ProjectFile::RemoveBuildTarget, "RemoveBuildTarget").
+                func(&ProjectFile::GetbuildTargets, "GetbuildTargets").
                 func(&ProjectFile::GetBaseName, "GetBaseName").
                 func(&ProjectFile::GetObjName, "GetObjName").
                 func(&ProjectFile::SetObjName, "SetObjName").

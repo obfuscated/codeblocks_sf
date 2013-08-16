@@ -66,6 +66,11 @@ class ProjectFile
           * @param targetName The build target's name to remove this file from. */
         void RemoveBuildTarget(const wxString& targetName);
 
+        /**
+         * @return An array of strings, containing the names of all the build
+         * targets this file belongs to. */
+        const wxArrayString& GetbuildTargets() const;
+
         /** Show the file properties dialog.
           * @param parent The parent window for the dialog (can be NULL).
           * @return True if the user closed the dialog with "OK", false if closed it with "Cancel".

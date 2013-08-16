@@ -136,6 +136,11 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
         generatedFiles[i]->RemoveBuildTarget(targetName);
 }
 
+const wxArrayString& ProjectFile::GetbuildTargets() const
+{
+    return buildTargets;
+}
+
 bool ProjectFile::ShowOptions(wxWindow* parent)
 {
     ProjectFileOptionsDlg dlg(parent, this);
