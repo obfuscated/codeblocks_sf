@@ -1,7 +1,16 @@
 #include <sdk.h> // Code::Blocks SDK
+
+#ifndef CB_PRECOMP
+    #include <wx/listctrl.h>
+    #include <configmanager.h>
+    #include <cbeditor.h>
+    #include <editormanager.h>
+#endif
+
+
+
 #include <configurationpanel.h>
 
-#include <wx/listctrl.h>
 
 #include "cbcolourmanager.h"
 #include "cbstyledtextctrl.h"

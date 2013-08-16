@@ -11,15 +11,20 @@
 #include "occurrenceshighlightingconfigurationpanel.h"
 
 #ifndef CB_PRECOMP
+    #include <algorithm>
     #include <wx/xrc/xmlres.h>
-    #include <wx/fontutil.h>
-    #include <wx/choicdlg.h>
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/colordlg.h>
+    #include <wx/stattext.h>
+    #include <wx/spinctrl.h>.h>
 
     #include <configmanager.h>
-    #include <editorcolourset.h>
     #include <editormanager.h>
     #include <logmanager.h>
 #endif
+
+//#include <wx/choicdlg.h>
 
 #include "cbcolourmanager.h"
 

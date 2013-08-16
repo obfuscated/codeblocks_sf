@@ -1,7 +1,14 @@
 #include "highlighter.h"
 
 #include <sdk.h> // Code::Blocks SDK
-//#include <editorcolourset.h>
+
+#ifndef CB_PRECOMP
+    #include <algorithm>
+    #include <configmanager.h>
+    #include <cbeditor.h>
+    #include <editormanager.h>
+#endif
+
 #include <cbstyledtextctrl.h>
 #include <cbcolourmanager.h>
 
