@@ -269,6 +269,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{plugindir}/libcompiler.so
 %{plugindir}/libdebugger.so
 %{plugindir}/libdefaultmimehandler.so
+%{plugindir}/liboccurrenceshighlighting.so
 %{plugindir}/libopenfileslist.so
 %{plugindir}/libprojectsimporter.so
 %{plugindir}/libscriptedwizard.so
@@ -298,6 +299,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/debugger.zip
 %{pkgdatadir}/defaultmimehandler.zip
 %{pkgdatadir}/manager_resources.zip
+%{pkgdatadir}/OccurrencesHighlighting.zip
 %{pkgdatadir}/openfileslist.zip
 %{pkgdatadir}/projectsimporter.zip
 %{pkgdatadir}/resources.zip
