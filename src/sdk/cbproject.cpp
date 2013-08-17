@@ -1721,7 +1721,6 @@ std::vector<cbProject::Glob> cbProject::GetGlobs() const
     return m_Globs;
 }
 
-
 wxString cbGetDynamicLinkerPathForTarget(cbProject *project, ProjectBuildTarget* target)
 {
     if (!target)

@@ -1487,9 +1487,9 @@ int FindReplace::FindInFiles(cbFindReplaceData* data)
         ++count;
 
         // now loop finding the next occurence
-        while (FindNext(true, control, data) != -1)
+        while ( FindNext(true, control, data) != -1 )
         {
-            if(data->startFile) // we already found it, so break and avoid possible infinite loop
+            if (data->startFile) // we already found it, so break and avoid possible infinite loop
                 break;
 //            // log it
             line = control->LineFromPosition(control->GetSelectionStart());

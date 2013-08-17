@@ -328,16 +328,13 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     m_AncestorFilename = XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->GetValue();
     m_AncestorScope    = XRCCTRL(*this, "cmbInheritanceScope", wxComboBox)->GetValue();
     if (m_Ancestor.IsEmpty())
-    {
         m_Inherits = false; // Fix error
-    }
 
     m_Documentation = XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue();
 
     m_AddPathToProject = XRCCTRL(*this, "chkAddPathToProject", wxCheckBox)->GetValue();
-    m_UseRelativePath = XRCCTRL(*this, "chkRelativePath", wxCheckBox)->GetValue();
-
-    m_CommonDir = XRCCTRL(*this, "chkCommonDir", wxCheckBox)->GetValue();
+    m_UseRelativePath  = XRCCTRL(*this, "chkRelativePath", wxCheckBox)->GetValue();
+    m_CommonDir        = XRCCTRL(*this, "chkCommonDir", wxCheckBox)->GetValue();
     if (m_CommonDir)
     {
         m_IncludeDir = XRCCTRL(*this, "txtCommonDir", wxTextCtrl)->GetValue();
