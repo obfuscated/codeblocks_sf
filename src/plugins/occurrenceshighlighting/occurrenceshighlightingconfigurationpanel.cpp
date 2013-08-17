@@ -2,9 +2,9 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  *
- * $Revision: 8868 $
- * $Id: OccurrencesHighlightingConfigurationPanel.cpp 8868 2013-02-26 23:49:49Z tpetrov $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/plugins/abbreviations/OccurrencesHighlightingConfigurationPanel.cpp $
+ * $Revision$
+ * $Id$
+ * $HeadURL$
  */
 
 #include <sdk.h>
