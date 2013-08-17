@@ -6,6 +6,7 @@
  * $Id$
  * $HeadURL$
  */
+
 #include "wiz.h"
 #include <wx/dir.h>
 #include <wx/intl.h>

@@ -1,11 +1,7 @@
-/***************************************************************
- * Name:      OccurrenceHighlighter
- * Purpose:   Code::Blocks plugin
- * Author:    danselmi ()
- * Created:   2010-04-06
- * Copyright: danselmi
- * License:   GPL
- **************************************************************/
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ */
 
 #ifndef OCCURRENCESHIGHLIGHTING_H_INCLUDED
 #define OCCURRENCESHIGHLIGHTING_H_INCLUDED

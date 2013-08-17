@@ -1,10 +1,20 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/string.h>
-#include "cbeditor.h"
-#include "manager.h"
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    #include "cbeditor.h"
+    #include "manager.h"
 #endif
+
 #include "headerguard.h"
 #include "cbstyledtextctrl.h"
 
