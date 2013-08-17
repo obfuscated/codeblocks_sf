@@ -48,8 +48,8 @@ AC_DEFUN([CODEBLOCKS_SETUP_FOR_TARGET],
     darwin=true
 ;;
  *) dnl default to standard linux
-	AC_SUBST(SHARED_FLAGS, "-shared")
-	AC_SUBST(PLUGIN_FLAGS, "-shared -avoid-version")
+    AC_SUBST(SHARED_FLAGS, "-shared")
+    AC_SUBST(PLUGIN_FLAGS, "-shared -avoid-version")
     linux=true
 ;;
 esac
@@ -66,17 +66,18 @@ AC_MSG_CHECKING(whether to enable debugging)
 debug_default="no"
 AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (default is OFF)])],,
                        enable_debug=$debug_default)
-if test "x$enable_debug" = "xyes"; then
+    if test "x$enable_debug" = "xyes"; then
         CFLAGS="-g -DDEBUG -DCB_AUTOCONF $CFLAGS"
         CXXFLAGS="-g -DDEBUG -DCB_AUTOCONF $CXXFLAGS"
-	LDFLAGS="-Wl,--no-undefined"
-	AC_MSG_RESULT(yes)
-else
-	CFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CFLAGS"
-	CXXFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CXXFLAGS"
-	LDFLAGS="-Wl,--no-undefined"
-	AC_MSG_RESULT(no)
-fi
+        LDFLAGS="-Wl,--no-undefined"
+        AC_MSG_RESULT(yes)
+    else
+        CFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CFLAGS"
+        CXXFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CXXFLAGS"
+        LDFLAGS="-Wl,--no-undefined"
+        AC_MSG_RESULT(no)
+    fi
+])
 ])
 
 dnl check what settings to enable
