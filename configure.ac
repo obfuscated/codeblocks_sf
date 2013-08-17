@@ -243,7 +243,18 @@ else
     WXPROPGRID_DIR=wxpropgrid
     WXPROPGRID_LIB=wxpropgrid/libwxpropgrid.la
     WXPROPGRID_INCLUDE=-I\$\(top_srcdir\)/src/sdk/wxpropgrid/include
+
+    CB_GCC_VERSION
+
+    AM_CONDITIONAL([HAVE_GCC48], [test $GCC_MAJOR_VERSION -gt 4 || test $GCC_MAJOR_VERSION -eq 4 && test $GCC_MINOR_VERSION -ge 8])
+
+    if test "x$HAVE_GCC48_TRUE" = "x" ; then
+	gcc48_flags="-Wno-unused-local-typedefs"
+        AC_MSG_NOTICE([setting additional flags for gcc $GCC_FULL_VERSION]: $gcc48_flags)
+        CXXFLAGS="$gcc48_flags $CXXFLAGS"
+    fi
 fi
+
 
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)

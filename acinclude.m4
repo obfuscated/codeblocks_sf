@@ -78,6 +78,28 @@ AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (defau
         AC_MSG_RESULT(no)
     fi
 ])
+
+AC_DEFUN([CB_GCC_VERSION], [
+    GCC_FULL_VERSION=""
+    GCC_MAJOR_VERSION=""
+    GCC_MINOR_VERSION=""
+    GCC_PATCH_VERSION=""
+    if test "x$GCC" = "xyes" ; then
+        AC_CACHE_CHECK([gcc version],[cb_cv_gcc_version],[
+            cb_cv_gcc_version="`$CC -dumpversion`"
+            if test "x$cb_cv_gcc_version" = "x"; then
+                cb_cv_gcc_version=""
+            fi
+        ])
+        GCC_FULL_VERSION=$cb_cv_gcc_version
+        GCC_MAJOR_VERSION=$(echo $GCC_FULL_VERSION | cut -d'.' -f1)
+        GCC_MINOR_VERSION=$(echo $GCC_FULL_VERSION | cut -d'.' -f2)
+        GCC_PATCH_VERSION=$(echo $GCC_FULL_VERSION | cut -d'.' -f3)
+    fi
+    AC_SUBST([GCC_VERSION])
+    AC_SUBST([GCC_MAJOR_VERSION])
+    AC_SUBST([GCC_MINOR_VERSION])
+    AC_SUBST([GCC_PATCH_VERSION])
 ])
 
 dnl check what settings to enable
