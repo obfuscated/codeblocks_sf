@@ -40,7 +40,7 @@ OccurrencesHighlightingConfigurationPanel::OccurrencesHighlightingConfigurationP
 
     if (!wxXmlResource::Get()->LoadObject(this, parent, _T("OccurrencesHighlightingConfigurationPanel"), _T("wxPanel")))
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("Could load occurrences highlighting config panel!"));
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not load occurrences highlighting config panel!"));
         return;
     }
 
