@@ -9,29 +9,29 @@
 
 class OccurrencesPanel: public wxPanel
 {
-	public:
+    public:
 
-		OccurrencesPanel(wxWindow* parent,wxWindowID id=wxID_ANY);
-		virtual ~OccurrencesPanel();
+        OccurrencesPanel(wxWindow* parent,wxWindowID id=wxID_ANY);
+        virtual ~OccurrencesPanel();
 
-		//(*Declarations(OccurrencesPanel)
-		wxListCtrl* ListCtrl1;
-		//*)
-		wxListCtrl* GetListCtrl(){return ListCtrl1;}
+        //(*Declarations(OccurrencesPanel)
+        wxListCtrl* ListCtrl1;
+        //*)
+        wxListCtrl* GetListCtrl(){return ListCtrl1;}
 
 
-	protected:
+    protected:
 
-		//(*Identifiers(OccurrencesPanel)
-		static const long ID_LISTCTRL1;
-		//*)
+        //(*Identifiers(OccurrencesPanel)
+        static const long ID_LISTCTRL1;
+        //*)
 
-	private:
+    private:
 
-		//(*Handlers(OccurrencesPanel)
-		//*)
+        //(*Handlers(OccurrencesPanel)
+        //*)
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

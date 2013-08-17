@@ -16,15 +16,15 @@ HighlightedEditorPositions::HighlightedEditorPositions():
     linea(-1),
     lineb(-1),
     ed(NULL)
-{}
-
+{
+}
 
 Highlighter::Highlighter(std::set<wxString> &texts):
-    m_texts(texts),
-    alreadychecked(false),
-    oldctrl(NULL),
-    m_highlightSelectedOccurencesLastPos(-1,-1),
-    oldHighlightSelectionControl(NULL)
+    m_Texts(texts),
+    m_AlreadyChecked(false),
+    m_OldCtrl(NULL),
+    m_HighlightSelectedOccurencesLastPos(-1,-1),
+    m_OldHighlightSelectionCtrl(NULL)
 {
 }
 
@@ -32,7 +32,6 @@ Highlighter::~Highlighter()
 {
     ClearAllIndications();
 }
-
 
 void Highlighter::Call(cbEditor* ctrl, wxScintillaEvent &event) const
 {
@@ -48,20 +47,26 @@ void Highlighter::Call(cbEditor* ctrl, wxScintillaEvent &event) const
     }
     else if ( event.GetEventType() == wxEVT_SCI_MODIFIED)
     {
-    	if(event.GetModificationType() & wxSCI_MOD_INSERTTEXT) {
-			OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
-    	} else if (event.GetModificationType() & wxSCI_MOD_DELETETEXT) {
-    		OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition());
-    	} else if (event.GetModificationType() & wxSCI_MOD_CHANGESTYLE) {
-    		OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
-    	}
+        if(event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
+        {
+            OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
+        }
+        else if (event.GetModificationType() & wxSCI_MOD_DELETETEXT)
+        {
+            OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition());
+        }
+        else if (event.GetModificationType() & wxSCI_MOD_CHANGESTYLE)
+        {
+            OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
+        }
     }
 
 }
+
 void Highlighter::OnEditorChange(cbEditor* ctrl) const
 {
     // clear internal states to force a refresh at next UpdateUI;
-    alreadychecked = false;
+    m_AlreadyChecked = false;
 }
 
 const int Highlighter::GetIndicator()const
@@ -69,46 +74,54 @@ const int Highlighter::GetIndicator()const
     const int theIndicator = 12;
     return theIndicator;
 }
+
 const wxColor Highlighter::GetIndicatorColor()const
 {
-    //wxColour indicatorColour(cfg->ReadColour(_T("/???/colour"), wxColour(255, 0, 0)));
     return Manager::Get()->GetColourManager()->GetColour(wxT("editor_highlight_occurrence_permanently"));
 }
+
 void Highlighter::OnEditorUpdateUI(cbEditor* ctrl) const
 {
     DoSetIndications(ctrl);
 }
 
-
 void Highlighter::OnEditorChangeTextRange(cbEditor* ctrl, int start, int end)const
 {
     //if ( !m_doChecks ) return;
-	if ( alreadychecked && oldctrl == ctrl ) {
-		//only recheck the last word to speed things up
+    if ( m_AlreadyChecked && m_OldCtrl == ctrl )
+    {
+        //only recheck the last word to speed things up
 
-		cbStyledTextCtrl *stc = ctrl->GetLeftSplitViewControl();
+        cbStyledTextCtrl *stc = ctrl->GetLeftSplitViewControl();
 
-		//swap and bound check
-		if (end < start) {
-			int t = start;
-			start = end;
-			end = t;
-		}
+        //swap and bound check
+        if (end < start)
+        {
+            int t = start;
+            start = end;
+            end = t;
+        }
 
-		//find recheck range start:
-		start = stc->PositionFromLine(stc->LineFromPosition(start));
+        //find recheck range start:
+        start = stc->PositionFromLine(stc->LineFromPosition(start));
 
-		//find recheck range end:
-		end = stc->GetLineEndPosition(stc->LineFromPosition(end));
+        //find recheck range end:
+        end = stc->GetLineEndPosition(stc->LineFromPosition(end));
 
-		if (m_invalidatedRangesStart.GetCount() == 0 || m_invalidatedRangesStart.Last() != start || m_invalidatedRangesEnd.Last() != end) {
-			m_invalidatedRangesStart.Add(start);
-			m_invalidatedRangesEnd.Add(end);
-		}
-	} else {
-		alreadychecked = false;
-	}
+        if (   m_InvalidatedRangesStart.GetCount() == 0
+            || m_InvalidatedRangesStart.Last() != start
+            || m_InvalidatedRangesEnd.Last() != end )
+        {
+            m_InvalidatedRangesStart.Add(start);
+            m_InvalidatedRangesEnd.Add(end);
+        }
+    }
+    else
+    {
+        m_AlreadyChecked = false;
+    }
 }
+
 void Highlighter::TextsChanged()const
 {
     EditorManager *edmgr = Manager::Get()->GetEditorManager();
@@ -120,39 +133,42 @@ void Highlighter::TextsChanged()const
         cbEditor *ed = edmgr->GetBuiltinEditor(index);
         if ( ed )
         {
-            alreadychecked = false;
-            oldctrl = NULL;
+            m_AlreadyChecked = false;
+            m_OldCtrl = NULL;
             DoSetIndications(ed);
         }
     }
 }
+
 void Highlighter::DoSetIndications(cbEditor* ctrl)const
 {
     cbStyledTextCtrl *stc = ctrl->GetLeftSplitViewControl();
     //Returns a pointer to the left (or top) split-view cbStyledTextCtrl. This function always returns a valid pointer.
     cbStyledTextCtrl *stcr =ctrl->GetRightSplitViewControl();
 
-    if (alreadychecked && oldctrl == ctrl)
+    if (m_AlreadyChecked && m_OldCtrl == ctrl)
     {
-        if ( m_invalidatedRangesStart.GetCount() == 0)
+        if ( m_InvalidatedRangesStart.GetCount() == 0)
             return;
     }
     else
     {
         //clear:
-    	m_invalidatedRangesStart.Clear();
-    	m_invalidatedRangesEnd.Clear();
-    	//add whole document
-		m_invalidatedRangesStart.Add(0);
-		m_invalidatedRangesEnd.Add(stc->GetLength());
+        m_InvalidatedRangesStart.Clear();
+        m_InvalidatedRangesEnd.Clear();
+        //add whole document
+        m_InvalidatedRangesStart.Add(0);
+        m_InvalidatedRangesEnd.Add(stc->GetLength());
     }
 
-    alreadychecked = true;
+    m_AlreadyChecked = true;
 
     // Set Styling:
     stc->SetIndicatorCurrent(GetIndicator());
+
     //if(stc->SelectionIsRectangle() || (stcr && stcr->SelectionIsRectangle())) return;
-    if (oldctrl != ctrl)
+
+    if (m_OldCtrl != ctrl)
     {
         stc->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_HIGHLIGHT);
         stc->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
@@ -164,9 +180,9 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
 #endif
     }
 
-    if ( stcr )
+    if (stcr)
     {
-        if (oldctrl != ctrl)
+        if (m_OldCtrl != ctrl)
         {
             stcr->SetIndicatorCurrent(GetIndicator());
             stcr->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_HIGHLIGHT);
@@ -177,7 +193,7 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
         }
     }
 
-    oldctrl = ctrl;
+    m_OldCtrl = ctrl;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     int flag = 0;
@@ -187,26 +203,24 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
     if (cfg->ReadBool(_T("/highlight_occurrence/whole_word_permanently"), true))
         flag |= wxSCI_FIND_WHOLEWORD;
 
-
-    for (int i = 0; i < (int)m_invalidatedRangesStart.GetCount(); i++)
+    for (int i = 0; i < (int)m_InvalidatedRangesStart.GetCount(); i++)
     {
-		int start = m_invalidatedRangesStart[i];
-		int end = m_invalidatedRangesEnd[i];
-		//bound:
-		if (start < 0) start = 0;
-		if (end < 0) end = 0;
-		if (start >= stc->GetLength()) start = stc->GetLength() - 1;
-		if (end > stc->GetLength()) end = stc->GetLength();
+        int start = m_InvalidatedRangesStart[i];
+        int end = m_InvalidatedRangesEnd[i];
+        //bound:
+        if (start < 0) start = 0;
+        if (end   < 0) end   = 0;
+
+        if (start >= stc->GetLength()) start = stc->GetLength() - 1;
+        if (end   >  stc->GetLength()) end   = stc->GetLength();
 
         if (start != end)
         {
-			//remove styling:
-			stc->IndicatorClearRange(start, end - start);
+            //remove styling:
+            stc->IndicatorClearRange(start, end - start);
 
-            for (std::set<wxString>::iterator it = m_texts.begin();
-                it != m_texts.end();
-                it++
-            )
+            for (std::set<wxString>::iterator it = m_Texts.begin();
+                 it != m_Texts.end(); it++ )
             {
                 wxString text = *it;
 
@@ -224,8 +238,8 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
             }
         }
     }
-    m_invalidatedRangesStart.Clear();
-	m_invalidatedRangesEnd.Clear();
+    m_InvalidatedRangesStart.Clear();
+    m_InvalidatedRangesEnd.Clear();
 }
 
 void Highlighter::ClearAllIndications(cbStyledTextCtrl* stc)const
@@ -250,7 +264,7 @@ void Highlighter::ClearAllIndications()const
 
 void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
 {
-    // chosed a high value for indicator, in the hope not to interfere with the indicators used by some lexers (,
+    // chosen a high value for indicator, hoping not to interfere with the indicators used by some lexers
     // if they get updated from deprecated oldstyle indicators somedays.
     cbStyledTextCtrl *control = ctrl->GetControl();
     const int theIndicator = 10;
@@ -260,10 +274,11 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
 
     control->SetIndicatorCurrent(theIndicator);
 
-    if (oldHighlightSelectionControl == control && m_highlightSelectedOccurencesLastPos == curr) // whatever the current state is, we've already done it once
+    if (m_OldHighlightSelectionCtrl == control && m_HighlightSelectedOccurencesLastPos == curr) // whatever the current state is, we've already done it once
         return;
-    m_highlightSelectedOccurencesLastPos = curr;
-    oldHighlightSelectionControl = control;
+
+    m_HighlightSelectedOccurencesLastPos = curr;
+    m_OldHighlightSelectionCtrl = control;
 
     int eof = control->GetLength();
 
@@ -280,9 +295,11 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
         return;
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
+
     // check if the feature is enabled
     if (!cfg->ReadBool(_T("/highlight_occurrence/enabled"), true))
         return;
+
     // selected text has a minimal length of controlled by the user (by default it is 3)
     wxString::size_type minLength = std::max(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3), 1);
     if (selectedText.length() >= minLength)
@@ -360,10 +377,3 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
         }
     }
 }
-
-
-
-
-
-
-

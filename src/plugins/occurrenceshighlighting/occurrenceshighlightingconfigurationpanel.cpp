@@ -24,25 +24,26 @@
     #include <logmanager.h>
 #endif
 
-//#include <wx/choicdlg.h>
-
 #include "cbcolourmanager.h"
 
 BEGIN_EVENT_TABLE(OccurrencesHighlightingConfigurationPanel, cbConfigurationPanel)
     EVT_BUTTON(XRCID("btnHighlightColour"),            OccurrencesHighlightingConfigurationPanel::OnChooseColour)
     EVT_BUTTON(XRCID("btnHighlightPermanentlyColour"), OccurrencesHighlightingConfigurationPanel::OnChooseColour)
     EVT_CHECKBOX(XRCID("chkHighlightOccurrences"),     OccurrencesHighlightingConfigurationPanel::OnCheckHighlightOccurrences)
-
 END_EVENT_TABLE()
 
 OccurrencesHighlightingConfigurationPanel::OccurrencesHighlightingConfigurationPanel(wxWindow* parent)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-    if(!cfg)
+    if (!cfg)
         return;
 
-    if(!wxXmlResource::Get()->LoadObject(this, parent, _T("OccurrencesHighlightingConfigurationPanel"), _T("wxPanel")))
+    if (!wxXmlResource::Get()->LoadObject(this, parent, _T("OccurrencesHighlightingConfigurationPanel"), _T("wxPanel")))
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could load occurrences highlighting config panel!"));
         return;
+    }
+
     // Highlight Occurrence
     bool highlightEnabled = cfg->ReadBool(_T("/highlight_occurrence/enabled"), true);
     XRCCTRL(*this, "chkHighlightOccurrences",              wxCheckBox)->SetValue(highlightEnabled);
@@ -52,15 +53,14 @@ OccurrencesHighlightingConfigurationPanel::OccurrencesHighlightingConfigurationP
     XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->Enable(highlightEnabled);
 
     wxColour highlightColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_highlight_occurrence"));
-    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->SetBackgroundColour(highlightColour);
-    XRCCTRL(*this, "stHighlightColour",                    wxStaticText)->Enable(highlightEnabled);
-    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->Enable(highlightEnabled);
+    XRCCTRL(*this, "btnHighlightColour", wxButton)->SetBackgroundColour(highlightColour);
+    XRCCTRL(*this, "stHighlightColour",  wxStaticText)->Enable(highlightEnabled);
+    XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable(highlightEnabled);
 
     wxSpinCtrl *minLength = XRCCTRL(*this, "spnHighlightLength", wxSpinCtrl);
     minLength->SetValue(cfg->ReadInt(_T("/highlight_occurrence/min_length"), 3));
     minLength->Enable(highlightEnabled);
     XRCCTRL(*this, "stHighlightLength", wxStaticText)->Enable(highlightEnabled);
-
 
     XRCCTRL(*this, "chkHighlightOccurrencesPermanentlyCaseSensitive", wxCheckBox)->SetValue(cfg->ReadBool(_T("/highlight_occurrence/case_sensitive_permanently"), true));
     //XRCCTRL(*this, "chkHighlightOccurrencesPermanentlyCaseSensitive", wxCheckBox)->Enable(true);
@@ -70,7 +70,6 @@ OccurrencesHighlightingConfigurationPanel::OccurrencesHighlightingConfigurationP
     XRCCTRL(*this, "btnHighlightPermanentlyColour",                   wxButton)->SetBackgroundColour(highlightColour);
     //XRCCTRL(*this, "stHighlightPermanentlyColour",                    wxStaticText)->Enable(permanentlyHighlightEnabled);
     //XRCCTRL(*this, "btnHighlightPermanentlyColour",                   wxButton)->Enable(permanentlyHighlightEnabled);
-
 }
 
 OccurrencesHighlightingConfigurationPanel::~OccurrencesHighlightingConfigurationPanel()
@@ -97,13 +96,18 @@ void OccurrencesHighlightingConfigurationPanel::OnApply()
 }
 
 void OccurrencesHighlightingConfigurationPanel::OnCancel()
-{}
+{
+}
 
 wxString OccurrencesHighlightingConfigurationPanel::GetTitle() const
-{ return _("Occurrences Highlighting"); }
+{
+    return _("Occurrences Highlighting");
+}
 
 wxString OccurrencesHighlightingConfigurationPanel::GetBitmapBaseName() const
-{ return _T("occurrenceshighlighting"); }
+{
+    return _T("occurrenceshighlighting");
+}
 
 void OccurrencesHighlightingConfigurationPanel::OnChooseColour(wxCommandEvent& event)
 {
@@ -124,9 +128,9 @@ void OccurrencesHighlightingConfigurationPanel::OnChooseColour(wxCommandEvent& e
 void OccurrencesHighlightingConfigurationPanel::OnCheckHighlightOccurrences(wxCommandEvent& event)
 {
     XRCCTRL(*this, "chkHighlightOccurrencesCaseSensitive", wxCheckBox)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord", wxCheckBox)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "stHighlightColour", wxStaticText)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "btnHighlightColour", wxButton)->Enable( event.IsChecked() );
-    XRCCTRL(*this, "spnHighlightLength", wxSpinCtrl)->Enable( event.IsChecked() );
+    XRCCTRL(*this, "chkHighlightOccurrencesWholeWord",     wxCheckBox)->Enable( event.IsChecked() );
+    XRCCTRL(*this, "stHighlightColour",                    wxStaticText)->Enable( event.IsChecked() );
+    XRCCTRL(*this, "btnHighlightColour",                   wxButton)->Enable( event.IsChecked() );
+    XRCCTRL(*this, "spnHighlightLength",                   wxSpinCtrl)->Enable( event.IsChecked() );
 }
 

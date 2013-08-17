@@ -2,12 +2,13 @@
 #define OCCURRENCESHIGHLIGHTINGCONFIGURATIONPANEL_H
 
 #include <cbstyledtextctrl.h>
-
 #include <configurationpanel.h>
 
+#include <wx/string.h>
 
+class wxCommandEvent;
 
-class OccurrencesHighlightingConfigurationPanel: public cbConfigurationPanel
+class OccurrencesHighlightingConfigurationPanel : public cbConfigurationPanel
 {
 public:
     OccurrencesHighlightingConfigurationPanel(wxWindow* parent);
