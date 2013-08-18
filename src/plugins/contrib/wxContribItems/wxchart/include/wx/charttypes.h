@@ -48,7 +48,7 @@ typedef struct
 	int h;
 } CHART_RECT, *CHART_HRECT;
 
-// Device Context 
+// Device Context
 typedef wxDC* CHART_HPAINT;
 
 // Chart value and Color
@@ -59,7 +59,7 @@ typedef unsigned long ChartColor;
 // Keep track of the size of the charts
 struct ChartSizes
 {
-	ChartSizes();// : nbar(0), nbar3d(0), 
+	ChartSizes();// : nbar(0), nbar3d(0),
 				 //  wbar(DEFAULT_BAR_WIDTH), wbar3d(DEFAULT_BAR3D_WIDTH),
 				 //  gap(DEFAULT_GAP_WIDTH), scroll(DEFAULT_SCROLL_STEP),
 				 //  s_height(DEFAULT_SIZE_HEIGHT) {};

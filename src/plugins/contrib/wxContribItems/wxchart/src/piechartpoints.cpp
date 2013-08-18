@@ -39,16 +39,16 @@
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
 //	DESC:		has to be created on the heap!
-//	PARAMETERS:	wxString name, 
+//	PARAMETERS:	wxString name,
 //				ChartColor c
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxPieChartPoints::wxPieChartPoints(
 	wxString name,
 	ChartColor c,
-    bool showlabel   
+    bool showlabel
 ) : wxChartPoints(wxChartPointsTypes::Pie()),
-	m_Name(name), 
+	m_Name(name),
 	m_Color(c),
 	m_Zoom(1),
 	m_PieTag(NONE),
@@ -58,7 +58,7 @@ wxPieChartPoints::wxPieChartPoints(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetXVal()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	int n
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -71,7 +71,7 @@ ChartValue wxPieChartPoints::GetXVal(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetYVal()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	int n
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -84,7 +84,7 @@ ChartValue wxPieChartPoints::GetYVal(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetName()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	int n
 //	RETURN:		wxString
 //----------------------------------------------------------------------E-+++
@@ -97,7 +97,7 @@ wxString wxPieChartPoints::GetName(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetColor()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		unsigned long
 //----------------------------------------------------------------------E-+++
@@ -108,7 +108,7 @@ ChartColor wxPieChartPoints::GetColor(int n) const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetCount()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -119,7 +119,7 @@ int wxPieChartPoints::GetCount() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMaxX()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -131,7 +131,7 @@ ChartValue wxPieChartPoints::GetMaxX() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMaxY()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -143,7 +143,7 @@ ChartValue wxPieChartPoints::GetMaxY() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMinX()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -155,7 +155,7 @@ ChartValue wxPieChartPoints::GetMinX() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMinY()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -215,7 +215,7 @@ wxChartSizes* wxPieChartPoints::GetSizes() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetColor()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		unsigned long
 //----------------------------------------------------------------------E-+++
@@ -226,7 +226,7 @@ ChartColor wxPieChartPoints::GetColor() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetColor()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	ChartColor c
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -239,7 +239,7 @@ void wxPieChartPoints::SetColor(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetName()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartColor
 //----------------------------------------------------------------------E-+++
@@ -250,7 +250,7 @@ wxString wxPieChartPoints::GetName() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		SetName()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -264,14 +264,14 @@ void wxPieChartPoints::SetName(
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
 //	DESC:		Add point
-//	PARAMETERS:	wxString name, 
+//	PARAMETERS:	wxString name,
 //				ChartValue x,
 //				ChartValue y
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::Add(
-	wxString name, 
-	ChartValue x, 
+	wxString name,
+	ChartValue x,
 	ChartValue y
 )
 {
@@ -281,15 +281,15 @@ void wxPieChartPoints::Add(
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
 //	DESC:		Add point
-//	PARAMETERS:	wxString name, 
+//	PARAMETERS:	wxString name,
 //				ChartValue x,
 //				ChartValue y,
 //				ChartColor c
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::Add(
-	wxString name, 
-	ChartValue x, 
+	wxString name,
+	ChartValue x,
 	ChartValue y,
 	ChartColor c
 )
@@ -326,22 +326,22 @@ wxDISPLAY_LABEL wxPieChartPoints::GetDisplayTag() const
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Draw()
 //  DESC:       Draw Bar chart
-//  PARAMETERS: CHART_HPAINT hp, 
+//  PARAMETERS: CHART_HPAINT hp,
 //              CHART_HRECT hr
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxPieChartPoints::Draw(
-    CHART_HPAINT hp, 
+    CHART_HPAINT hp,
     CHART_HRECT hr
 )
 {
-    
+
     //-----------------------------------------------------------------------
     // Get sizes
     //-----------------------------------------------------------------------
     wxChartSizes *sizes = GetSizes();
 
-    int r = (int)wxMin( (int)hr->w/2, 
+    int r = (int)wxMin( (int)hr->w/2,
         (int)(hr->h - 2*sizes->GetSizeHeight())/2 );
 
     if ( r > 0 )
@@ -351,7 +351,7 @@ void wxPieChartPoints::Draw(
         if ( iNodes > 0 )
         {
             int iData;
-            int ValTot;         
+            int ValTot;
             int iDatas = GetCount();
             for ( iData = 0, ValTot = 0; iData < iDatas; ++ iData )
                 ValTot += static_cast<int>(GetYVal( iData ));
@@ -366,7 +366,7 @@ void wxPieChartPoints::Draw(
             y1 = yc;
 
             hp->SetPen( *wxBLACK_PEN );
-            
+
             for ( iData = 0, rad = 0; iData < iDatas; ++ iData )
             {
                 hp->SetBrush( wxBrush(GetColor(iData), wxSOLID) );
@@ -375,22 +375,22 @@ void wxPieChartPoints::Draw(
                 percent = (double)(GetYVal(iData) * 100) / (double)ValTot;
                 grad    = (double)(percent * 360) / (double)100;
                 rad     += (double)(grad * 3.1415) / (double)180;
-                
+
                 x2 = (int)(xc + r * cos( rad ));
                 y2 = (int)(yc - r * sin( rad ));
                 hp->DrawArc( x1, y1, x2, y2, xc, yc );
                 x1 = x2;
                 y1 = y2;
-                
+
                 //-----------------------------------------------------------
                 // Only draw Label if user wants it
                 //-----------------------------------------------------------
                 if (!m_ShowLabel)
                     continue;
 
-                wxString lbl; 
+                wxString lbl;
                 wxLabel wxLbl;
-                
+
                 LABEL_POSITION p;
                 if ( x2 > xc )
                     p = RIGHT;
@@ -424,7 +424,7 @@ void wxPieChartPoints::Draw(
                     wxLbl.Draw( hp, x2, y2, GetColor(iData), lbl, p );
                     break;
                 default:
-                    break;            
+                    break;
                 }
             }
         }
@@ -434,7 +434,7 @@ void wxPieChartPoints::Draw(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreateWxPieChartPoints()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: wxString name,
 //              ChartColor c
 //              bool showlabel

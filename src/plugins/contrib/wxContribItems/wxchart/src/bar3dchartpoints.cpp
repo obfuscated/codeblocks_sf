@@ -40,16 +40,16 @@
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       ctor
 //  DESC:       has to be created on the heap!
-//  PARAMETERS: std::string name, 
+//  PARAMETERS: std::string name,
 //              ChartColor c
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 wxBar3DChartPoints::wxBar3DChartPoints(
     wxString name,
     ChartColor c,
-    bool showlabel   
+    bool showlabel
 ) : wxChartPoints(wxChartPointsTypes::Bar3D()),
-    m_Name(name), 
+    m_Name(name),
     m_Color(c),
     m_Zoom(1),
     m_BarTag(NONE),
@@ -59,7 +59,7 @@ wxBar3DChartPoints::wxBar3DChartPoints(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetXVal()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: int n
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -72,7 +72,7 @@ ChartValue wxBar3DChartPoints::GetXVal(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetYVal()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: int n
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -85,7 +85,7 @@ ChartValue wxBar3DChartPoints::GetYVal(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetName()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: int n
 //  RETURN:     std::string
 //----------------------------------------------------------------------E-+++
@@ -98,7 +98,7 @@ wxString wxBar3DChartPoints::GetName(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetCount()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -109,7 +109,7 @@ int wxBar3DChartPoints::GetCount() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetColor()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: int n
 //  RETURN:     ChartColor
 //----------------------------------------------------------------------E-+++
@@ -122,7 +122,7 @@ ChartColor wxBar3DChartPoints::GetColor(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetMaxX()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -133,7 +133,7 @@ ChartValue wxBar3DChartPoints::GetMaxX() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetMaxY()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -144,7 +144,7 @@ ChartValue wxBar3DChartPoints::GetMaxY() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetMinX()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -155,7 +155,7 @@ ChartValue wxBar3DChartPoints::GetMinX() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetMinY()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     int
 //----------------------------------------------------------------------E-+++
@@ -214,7 +214,7 @@ wxChartSizes* wxBar3DChartPoints::GetSizes() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetColor()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     unsigned long
 //----------------------------------------------------------------------E-+++
@@ -225,7 +225,7 @@ ChartColor wxBar3DChartPoints::GetColor() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       SetColor()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: ChartColor c
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
@@ -238,7 +238,7 @@ void wxBar3DChartPoints::SetColor(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       GetName()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     ChartColor
 //----------------------------------------------------------------------E-+++
@@ -249,7 +249,7 @@ wxString wxBar3DChartPoints::GetName() const
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       SetName()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: None
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
@@ -263,14 +263,14 @@ void wxBar3DChartPoints::SetName(
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Add()
 //  DESC:       Add point
-//  PARAMETERS: std::string name, 
-//              ChartValue x, 
+//  PARAMETERS: std::string name,
+//              ChartValue x,
 //              ChartValue y
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxBar3DChartPoints::Add(
-    wxString name, 
-    ChartValue x, 
+    wxString name,
+    ChartValue x,
     ChartValue y
 )
 {
@@ -280,15 +280,15 @@ void wxBar3DChartPoints::Add(
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Add()
 //  DESC:       Add point
-//  PARAMETERS: std::string name, 
-//              ChartValue x, 
+//  PARAMETERS: std::string name,
+//              ChartValue x,
 //              ChartValue y,
 //              ChartColor c
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxBar3DChartPoints::Add(
-    wxString name, 
-    ChartValue x, 
+    wxString name,
+    ChartValue x,
     ChartValue y,
     ChartColor WXUNUSED(c)
 )
@@ -326,12 +326,12 @@ wxDISPLAY_LABEL wxBar3DChartPoints::GetDisplayTag() const
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       Draw()
 //  DESC:       Draw Bar chart
-//  PARAMETERS: CHART_HPAINT hp, 
+//  PARAMETERS: CHART_HPAINT hp,
 //              CHART_HRECT hr
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void wxBar3DChartPoints::Draw(
-    CHART_HPAINT hp, 
+    CHART_HPAINT hp,
     CHART_HRECT hr
 )
 {
@@ -349,22 +349,22 @@ void wxBar3DChartPoints::Draw(
     // get max height
     //-----------------------------------------------------------------------
     double ValMax = ceil( sizes->GetMaxY() );
-    if ( ValMax == 0 ) 
+    if ( ValMax == 0 )
         ValMax = 1;
-    
+
     hp->SetBrush( wxBrush(GetColor(), wxSOLID) );
     //hp->SetPen( *wxTRANSPARENT_PEN );
     //hp->SetPen( *wxLIGHT_GREY_PEN );
     hp->SetPen( wxPen(wxChartColors::GetDarkColor(GetColor(), 15)) );
 
     double x, y, w, h;
-        
+
     //-----------------------------------------------------------------------
     // Get the real width of the bar
     // Assume 80% of sizes->GetWidthBar3d()
     //-----------------------------------------------------------------------
     w = sizes->GetWidthBar3d() * 0.80;
-    
+
     //-----------------------------------------------------------------------
     // Get how mutch high deep the bar should start.
     // Suppose we to use 30 degree
@@ -372,16 +372,16 @@ void wxBar3DChartPoints::Draw(
     //-----------------------------------------------------------------------
     h = ( sizes->GetWidthBar3d() - w ) / cos( 0.5236 ) * sin( 0.5236 );
     h *= GetZoom();
-    
+
     for ( int iNode = 0; iNode < iNodes; ++ iNode )
     {
         //-------------------------------------------------------------------
         // Get x-position for iNode bar
         //-------------------------------------------------------------------
         double xVal  = ceil( GetXVal(iNode) );
-        x = hr->x + GetZoom() * xVal * ( 
-                sizes->GetWidthBar() * sizes->GetNumBar() + 
-                sizes->GetWidthBar3d() * sizes->GetNumBar3d() + 
+        x = hr->x + GetZoom() * xVal * (
+                sizes->GetWidthBar() * sizes->GetNumBar() +
+                sizes->GetWidthBar3d() * sizes->GetNumBar3d() +
                 sizes->GetGap() );
 
         //-------------------------------------------------------------------
@@ -391,16 +391,16 @@ void wxBar3DChartPoints::Draw(
 
         hp->DrawRectangle( static_cast<int>(ceil(x)),
                            static_cast<int>(ceil(hr->h - y)),
-                           static_cast<int>(ceil(w * GetZoom())), 
+                           static_cast<int>(ceil(w * GetZoom())),
                            static_cast<int>(ceil(y)));
-       
+
         //-------------------------------------------------------------------
-        // Draw Poligon next to main Rectangle 
+        // Draw Poligon next to main Rectangle
         //-------------------------------------------------------------------
-    	        
-        hp->SetBrush( wxBrush(wxChartColors::GetDarkColor(GetColor(), 
+
+        hp->SetBrush( wxBrush(wxChartColors::GetDarkColor(GetColor(),
             10), wxSOLID) );
-        
+
         //-------------------------------------------------------------------
         // Make sure that the difference y and y - h is at lease 1
         //-------------------------------------------------------------------
@@ -411,46 +411,46 @@ void wxBar3DChartPoints::Draw(
         int d = y1 - y2 > y4 - y3 ? y1 - y2 : y4 - y3;
         if ( d == 0 )
             d += 1;
-        
-        wxPoint next[] = { 
-            wxPoint( 
-                static_cast<int>(ceil(x + w * GetZoom())), 
+
+        wxPoint next[] = {
+            wxPoint(
+                static_cast<int>(ceil(x + w * GetZoom())),
                 y1 ),
-            wxPoint( 
-                static_cast<int>(ceil(x + sizes->GetWidthBar3d() * GetZoom())), 
+            wxPoint(
+                static_cast<int>(ceil(x + sizes->GetWidthBar3d() * GetZoom())),
                 y1 - d ),
-            wxPoint( 
-                static_cast<int>(ceil(x + sizes->GetWidthBar3d() * GetZoom())), 
+            wxPoint(
+                static_cast<int>(ceil(x + sizes->GetWidthBar3d() * GetZoom())),
                 y4 - d ),
-            wxPoint( 
-                static_cast<int>(ceil(x + w * GetZoom())), 
+            wxPoint(
+                static_cast<int>(ceil(x + w * GetZoom())),
                 y4 ),
 	   };
-	
+
     	hp->DrawPolygon( 4, next );
 
         //-------------------------------------------------------------------
-        // Draw Poligon on top of main Rectangle 
+        // Draw Poligon on top of main Rectangle
         //-------------------------------------------------------------------
-        wxPoint top[] = { 
-            wxPoint( 
-                static_cast<int>(ceil(x)), 
+        wxPoint top[] = {
+            wxPoint(
+                static_cast<int>(ceil(x)),
                 y4 ),
-            wxPoint( 
-                static_cast<int>(ceil(x + w * GetZoom())), 
+            wxPoint(
+                static_cast<int>(ceil(x + w * GetZoom())),
                 y4 ),
-            wxPoint( 
-                static_cast<int>(ceil(x + sizes->GetWidthBar3d() * GetZoom())), 
+            wxPoint(
+                static_cast<int>(ceil(x + sizes->GetWidthBar3d() * GetZoom())),
                 y4 - d ),
-            wxPoint( 
-                static_cast<int>(ceil(x + (sizes->GetWidthBar3d() - w) * GetZoom())), 
+            wxPoint(
+                static_cast<int>(ceil(x + (sizes->GetWidthBar3d() - w) * GetZoom())),
                 y4 - d ),
        };
-    
+
         hp->DrawPolygon( 4, top );
 
         hp->SetBrush( wxBrush(GetColor(), wxSOLID) );
-	
+
         //-------------------------------------------------------------------
         // Only draw Label if user wants it
         //-------------------------------------------------------------------
@@ -463,48 +463,48 @@ void wxBar3DChartPoints::Draw(
         {
         case XVALUE:
             lbl.Printf( wxT("%d"), static_cast<int>(xVal));
-            wxLbl.Draw( hp, static_cast<int>(ceil(x)), 
-                        static_cast<int>(ceil(hr->h - y)), 
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
                         GetColor(),
                         lbl,
                         UP);
             break;
         case YVALUE:
             lbl.Printf( wxT("%d"), static_cast<int>(GetYVal(iNode)));
-			
-            wxLbl.Draw( hp, static_cast<int>(ceil(x)), 
-                        static_cast<int>(ceil(hr->h - y)), 
+
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
                         GetColor(),
                         lbl,
                         UP );
             break;
         case XVALUE_FLOAT:
             lbl.Printf( wxT("%4.1f"), xVal);
-            wxLbl.Draw( hp, static_cast<int>(ceil(x)), 
-                        static_cast<int>(ceil(hr->h - y)), 
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
                         GetColor(),
                         lbl,
                         UP);
             break;
         case YVALUE_FLOAT:
             lbl.Printf( wxT("%4.1f"), GetYVal(iNode));
-        
-            wxLbl.Draw( hp, static_cast<int>(ceil(x)), 
-                        static_cast<int>(ceil(hr->h - y)), 
+
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
                         GetColor(),
                         lbl,
                         UP );
             break;
             case NAME:
             lbl = GetName(iNode).c_str();
-            wxLbl.Draw( hp, static_cast<int>(ceil(x)), 
-                        static_cast<int>(ceil(hr->h - y)), 
+            wxLbl.Draw( hp, static_cast<int>(ceil(x)),
+                        static_cast<int>(ceil(hr->h - y)),
                         GetColor(),
                         lbl,
                         UP );
             break;
         default:
-            break;      
+            break;
         }
     }
 
@@ -513,7 +513,7 @@ void wxBar3DChartPoints::Draw(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreateWxBarChartPoints()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: wxString name
 //              ChartColor c
 //              bool showlabel

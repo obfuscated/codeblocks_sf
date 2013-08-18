@@ -34,20 +34,20 @@ WX_DEFINE_OBJARRAY(ListPoints);
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
-//	PARAMETERS:	wxString name, 
-//				ChartValue x, 
+//	DESC:
+//	PARAMETERS:	wxString name,
+//				ChartValue x,
 //				ChartValue y,
 //				ChartColor c
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 Point::Point(
-    wxString name, 
-	ChartValue x, 
+    wxString name,
+	ChartValue x,
 	ChartValue y,
 	ChartColor c
-):	m_name(name), 
-	m_xval(x), 
+):	m_name(name),
+	m_xval(x),
 	m_yval(y),
 	m_col(c)
 {
@@ -56,7 +56,7 @@ Point::Point(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -66,7 +66,7 @@ wxPoints::wxPoints()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		dtor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -91,20 +91,20 @@ void wxPoints::Add(
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
 //	DESC:		Add Point to vector (sort by xval)
-//	PARAMETERS:	const wxString s, 
-//				const ChartValue x, 
+//	PARAMETERS:	const wxString s,
+//				const ChartValue x,
 //				const ChartValue y
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxPoints::Add(
-	const wxString s, 
-	const ChartValue x, 
+	const wxString s,
+	const ChartValue x,
 	const ChartValue y,
 	const ChartColor c
 )
 {
 	Point p(s, x, y, c);
-	
+
 	Add( p );
 }
 
@@ -131,7 +131,7 @@ Point wxPoints::GetPoint(
 {
 
     size_t num = m_vPoints.GetCount();
-    
+
     if ( num > n )
         return m_vPoints.Item( n );
 
@@ -149,10 +149,10 @@ wxString wxPoints::GetName(
 ) const
 {
     size_t num = m_vPoints.GetCount();
-    
+
     if ( num > n )
         return m_vPoints.Item( n ).m_name;
-	
+
     return ( wxEmptyString );
 }
 
@@ -167,7 +167,7 @@ ChartValue wxPoints::GetXVal(
 ) const
 {
     size_t num = m_vPoints.GetCount();
-    
+
     if ( num > n )
         return m_vPoints.Item( n ).m_xval;
 
@@ -186,7 +186,7 @@ ChartValue wxPoints::GetYVal(
 ) const
 {
     size_t num = m_vPoints.GetCount();
-    
+
     if ( num > n )
         return m_vPoints.Item( n ).m_yval;
 
@@ -204,7 +204,7 @@ ChartColor wxPoints::GetColor(
 ) const
 {
     size_t num = m_vPoints.GetCount();
-    
+
     if ( num > n )
         return m_vPoints.Item( n ).m_col;
 
@@ -213,7 +213,7 @@ ChartColor wxPoints::GetColor(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetCount()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		int
 //----------------------------------------------------------------------E-+++
@@ -224,7 +224,7 @@ size_t wxPoints::GetCount() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMaxX()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -240,7 +240,7 @@ ChartValue wxPoints::GetMaxX() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMinX()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -256,7 +256,7 @@ ChartValue wxPoints::GetMinX() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMaxY()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -277,7 +277,7 @@ ChartValue wxPoints::GetMaxY() const
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		GetMinY()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	None
 //	RETURN:		ChartValue
 //----------------------------------------------------------------------E-+++
@@ -314,10 +314,10 @@ size_t wxPoints::GetInsertPosition(
 
     size_t num = m_vPoints.GetCount();
     size_t loop;
-    
-    for ( loop = 0; 
-          loop < num; 
-          loop++ ) 
+
+    for ( loop = 0;
+          loop < num;
+          loop++ )
 	{
 		if ( m_vPoints.Item( loop ).m_xval > p.m_xval )
 			break;
@@ -339,12 +339,12 @@ size_t wxPoints::GetInsertPosition(
 // )
 // {
 // 	itListPoints itlp;
-// 
+//
 // 	for ( itlp = m_vPoints.begin();
 // 		  itlp != m_vPoints.end() && n > 0;
 // 		  ++itlp, --n )
 // 		;
-// 
+//
 // 	return ( itlp );
 // }
 
@@ -356,15 +356,15 @@ size_t wxPoints::GetInsertPosition(
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 // #include <fstream>
-// 
+//
 // void wxPoints::Dump()
 // {
 // 	itListPoints itlp;
-// 
+//
 // 	std::ofstream outf;
-// 
+//
 // 	outf.open( "dump.txt" );
-// 
+//
 // 	for ( itlp = m_vPoints.begin();
 // 		  itlp != m_vPoints.end();
 // 		  ++itlp )
@@ -378,7 +378,7 @@ size_t wxPoints::GetInsertPosition(
 // 		outf << " )";
 // 		outf << std::endl;
 // 	}
-// 
+//
 // 	outf.close();
 // }
 

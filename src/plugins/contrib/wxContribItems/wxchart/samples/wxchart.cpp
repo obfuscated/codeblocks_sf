@@ -47,10 +47,10 @@ class MyPanel : public wxPanel
 {
 public:
     MyPanel(wxFrame *frame);
-    
+
 	//void ResizeChart();
 	void WriteChart(wxChartCtrl *c);
-    
+
     wxChartCtrl *GetChartL1() {return m_ChartCtrlL1;}
     wxChartCtrl *GetChartL2() {return m_ChartCtrlL2;}
     wxChartCtrl *GetChartR1() {return m_ChartCtrlR1;}
@@ -63,7 +63,7 @@ private:
     wxChartCtrl *m_ChartCtrlL2;
     wxChartCtrl *m_ChartCtrlR1;
     wxChartCtrl *m_ChartCtrlR2;
-    
+
     // Helper routines for creating Panels
     //------------------------------------
     void CreatePanelLeft1(wxBoxSizer *sizer);
@@ -164,7 +164,7 @@ IMPLEMENT_APP(MyApp)
 // `Main program' equivalent: the program execution "starts" here
 bool MyApp::OnInit()
 {
-    
+
 #if wxUSE_LIBPNG
   wxImage::AddHandler( new wxPNGHandler );
 #endif
@@ -203,15 +203,15 @@ MyFrame::MyFrame(const wxString& title, const wxPoint& pos, const wxSize& size)
     menuFile->Append(File_Quit, _T("E&xit\tAlt-X"), _T("Quit this program"));
 
     wxMenu *menuOptions = new wxMenu;
-    //menuOptions->Append( Options_Resize, _T("&Resize"), 
+    //menuOptions->Append( Options_Resize, _T("&Resize"),
 	//					 _T("Fit chart to actual window size"));
-    menuOptions->Append( Options_WriteL1, _T("&Write Chart (L1) to File"), 
+    menuOptions->Append( Options_WriteL1, _T("&Write Chart (L1) to File"),
 						 _T("write chart to file"));
-    menuOptions->Append( Options_WriteR1, _T("&Write Chart (R1) to File"), 
+    menuOptions->Append( Options_WriteR1, _T("&Write Chart (R1) to File"),
                          _T("write chart to file"));
-    menuOptions->Append( Options_WriteL2, _T("&Write Chart (L2) to File"), 
+    menuOptions->Append( Options_WriteL2, _T("&Write Chart (L2) to File"),
                          _T("write chart to file"));
-    menuOptions->Append( Options_WriteR2, _T("&Write Chart (R2) to File"), 
+    menuOptions->Append( Options_WriteR2, _T("&Write Chart (R2) to File"),
                          _T("write chart to file"));
 
 
@@ -239,9 +239,9 @@ void MyFrame::OnAbout(wxCommandEvent& WXUNUSED(event))
     //m_panel->FitChart();
 
 	wxString msg = wxString::Format(
-        wxT("Chart for wxWidgets. \n 2006 Paolo Gava. Ver: %d.%d.%d"), 
+        wxT("Chart for wxWidgets. \n 2006 Paolo Gava. Ver: %d.%d.%d"),
         wxCHART_MAJOR, wxCHART_MINOR, wxCHART_RELEASE );
-	
+
 	wxMessageBox( msg, _T("Chart"), wxOK | wxICON_INFORMATION, this );
 }
 
@@ -275,37 +275,37 @@ void MyFrame::OnWriteR2(wxCommandEvent& WXUNUSED(event))
 // ----------------------------------------------------------------------------
 MyPanel::MyPanel(wxFrame *frame)
        : wxPanel(frame, -1)
-	     
+
 {
     wxBoxSizer *VerSizer = new wxBoxSizer( wxVERTICAL );
     wxBoxSizer *Hor1Sizer = new wxBoxSizer( wxHORIZONTAL );
     wxBoxSizer *Hor2Sizer = new wxBoxSizer( wxHORIZONTAL );
-    
+
     VerSizer->Add( Hor1Sizer, 1, wxEXPAND );
     VerSizer->Add( Hor2Sizer, 1, wxEXPAND );
-    
+
     wxBoxSizer *Ver1Sizer = new wxBoxSizer( wxVERTICAL );
     wxBoxSizer *Ver2Sizer = new wxBoxSizer( wxVERTICAL );
     wxBoxSizer *Ver3Sizer = new wxBoxSizer( wxVERTICAL );
     wxBoxSizer *Ver4Sizer = new wxBoxSizer( wxVERTICAL );
-    
+
     Hor1Sizer->Add( Ver1Sizer, 1, wxEXPAND );
     Hor1Sizer->Add( Ver2Sizer, 1, wxEXPAND );
     Hor2Sizer->Add( Ver3Sizer, 1, wxEXPAND );
     Hor2Sizer->Add( Ver4Sizer, 1, wxEXPAND );
-    
+
     // Create Panel Left Row 1
     CreatePanelLeft1( Ver1Sizer );
-        
+
     // Create Panel Right Row 1
     CreatePanelRight1(Ver2Sizer);
-        
+
     // Create Panel Left Row2
     CreatePanelLeft2( Ver3Sizer );
-    
+
     // Create Panel right Row2
     CreatePanelRight2(Ver4Sizer);
-    
+
     SetAutoLayout( TRUE );
     SetSizer( VerSizer );
     VerSizer->Fit( this );
@@ -316,105 +316,105 @@ MyPanel::MyPanel(wxFrame *frame)
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreatePanelLeft1()
 //  DESC:       Create left Panel first row
-//  PARAMETERS: 
+//  PARAMETERS:
 //      wxBoxSizer *sizer
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void MyPanel::CreatePanelLeft1(wxBoxSizer *sizer)
-{   
+{
     // Create Panel Left Row 1
     wxChartPoints *bcpLeft1, *bcpLeft2, *bcpLeft3, *bcpLeft4;
-    
-    bcpLeft1 = wxBar3DChartPoints::CreateWxBar3DChartPoints( 
+
+    bcpLeft1 = wxBar3DChartPoints::CreateWxBar3DChartPoints(
         wxT("Ita") );
-    
-    bcpLeft2 = wxBar3DChartPoints::CreateWxBar3DChartPoints( 
+
+    bcpLeft2 = wxBar3DChartPoints::CreateWxBar3DChartPoints(
         wxT("Fra") );
-    
-    bcpLeft3 = wxBar3DChartPoints::CreateWxBar3DChartPoints( 
+
+    bcpLeft3 = wxBar3DChartPoints::CreateWxBar3DChartPoints(
         wxT("Ger") );
-    
-    bcpLeft4 = wxBar3DChartPoints::CreateWxBar3DChartPoints( 
+
+    bcpLeft4 = wxBar3DChartPoints::CreateWxBar3DChartPoints(
         wxT("UK") );
-    
+
     bcpLeft1->Add( wxT("val3"), 2, 3 );
     bcpLeft1->Add( wxT("val1"), 5, 1 );
     bcpLeft1->Add( wxT("val4"), 8, 4);
     bcpLeft1->Add( wxT("val2"), 15, 2 );
     bcpLeft1->Add( wxT("val5"), 20, 5 );
     bcpLeft1->SetDisplayTag( XVALUE );
-        
+
     bcpLeft2->Add( wxT("val: 4"), 2, 4 );
     bcpLeft2->Add( wxT("val: 2"), 5, 2 );
     bcpLeft2->Add( wxT("val: 2"), 8, 2);
     bcpLeft2->Add( wxT("val: 6"), 15, 6 );
     bcpLeft2->Add( wxT("val: 2"), 20, 2 );
     bcpLeft2->SetDisplayTag( NAME );
-    
+
     bcpLeft3->Add( wxT("val3"), 2, 1 );
     bcpLeft3->Add( wxT("val1"), 5, 3 );
     bcpLeft3->Add( wxT("val4"), 8, 4);
     bcpLeft3->Add( wxT("val2"), 15, 5 );
     bcpLeft3->Add( wxT("val5"), 20, 5 );
     bcpLeft3->SetDisplayTag( XVALUE );
-    
+
     bcpLeft4->Add( wxT("val3"), 2, 3 );
     bcpLeft4->Add( wxT("val6"), 5, 6 );
     bcpLeft4->Add( wxT("val2"), 8, 2);
     bcpLeft4->Add( wxT("val2"), 15, 2 );
     bcpLeft4->Add( wxT("val4"), 20, 4 );
     bcpLeft4->SetDisplayTag( YVALUE );
-    
-    wxStaticText *lblTitle1 = new wxStaticText(this, 
+
+    wxStaticText *lblTitle1 = new wxStaticText(this,
                                                wxID_ANY, wxT("Bar Chart (L1)"));
-    m_ChartCtrlL1 = new wxChartCtrl( this, -1, DEFAULT_STYLE, 
-                                   wxDefaultPosition, wxSize(200,200), 
+    m_ChartCtrlL1 = new wxChartCtrl( this, -1, DEFAULT_STYLE,
+                                   wxDefaultPosition, wxSize(200,200),
                                    wxSUNKEN_BORDER  );
-    
+
     m_ChartCtrlL1->Add( bcpLeft1 );
     m_ChartCtrlL1->Add( bcpLeft2 );
     m_ChartCtrlL1->Add( bcpLeft3 );
     m_ChartCtrlL1->Add( bcpLeft4 );
-    
+
     sizer->Add( lblTitle1, 0, wxEXPAND );
     sizer->Add( m_ChartCtrlL1, 1, wxEXPAND );
-    
+
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreatePanelLeft1()
 //  DESC:       Create left Panel first row
-//  PARAMETERS: 
+//  PARAMETERS:
 //      wxBoxSizer *sizer
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void MyPanel::AddPanelLeft1()
-{   
+{
     // Create Panel Left Row 1
     wxChartPoints *bcpLeft1;
-    
-    bcpLeft1 = wxBar3DChartPoints::CreateWxBar3DChartPoints( 
+
+    bcpLeft1 = wxBar3DChartPoints::CreateWxBar3DChartPoints(
         wxT("Esp") );
-        
+
     bcpLeft1->Add( wxT("val3"), 2, 3 );
     bcpLeft1->Add( wxT("val1"), 5, 1 );
     bcpLeft1->Add( wxT("val4"), 8, 4);
     bcpLeft1->Add( wxT("val2"), 15, 2 );
     bcpLeft1->Add( wxT("val5"), 20, 5 );
     bcpLeft1->SetDisplayTag( XVALUE );
- 
-    m_ChartCtrlL1->Add( bcpLeft1 );    
-	
+
+    m_ChartCtrlL1->Add( bcpLeft1 );
+
 	m_ChartCtrlL1->Refresh();
 	//m_ChartCtrlL1->Resize();
-	
+
 }
 
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreatePanelLeft1()
 //  DESC:       Create left Panel first row
-//  PARAMETERS: 
+//  PARAMETERS:
 //      wxBoxSizer *sizer
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
@@ -422,38 +422,38 @@ void MyPanel::FitChart()
 {
     m_ChartCtrlL2->Fit();
 }
-        
+
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreatePanelLeft2()
 //  DESC:       Create left Panel second row
-//  PARAMETERS: 
+//  PARAMETERS:
 //      wxBoxSizer *sizer
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void MyPanel::CreatePanelLeft2(wxBoxSizer *sizer)
-{    
+{
     // Create Panel Left Row 2
     wxChartPoints *bcpLeft1;
-    
-    bcpLeft1 = wxBar3DChartPoints::CreateWxBar3DChartPoints( 
+
+    bcpLeft1 = wxBar3DChartPoints::CreateWxBar3DChartPoints(
 		wxT("Ita"), wxCHART_NOCOLOR, true );
-    
+
     bcpLeft1->Add( wxT("val3"), 2, 3.5 );
     bcpLeft1->Add( wxT("val1"), 5, 1.2 );
     bcpLeft1->Add( wxT("val4"), 8, 4.7);
     bcpLeft1->Add( wxT("val2"), 15, 2.3 );
     bcpLeft1->Add( wxT("val5"), 20, 5.0 );
     bcpLeft1->SetDisplayTag( YVALUE_FLOAT );
-        
-    wxStaticText *lblTitle3 = new wxStaticText(this, 
+
+    wxStaticText *lblTitle3 = new wxStaticText(this,
                                                wxID_ANY, wxT("Bar Chart (L2)"));
-    m_ChartCtrlL2 = new wxChartCtrl( this, -1, 
-                                   (wxChartStyle)(USE_AXIS_X | USE_ZOOM_BUT), 
-                                   wxDefaultPosition, wxSize(200,200), 
+    m_ChartCtrlL2 = new wxChartCtrl( this, -1,
+                                   (wxChartStyle)(USE_AXIS_X | USE_ZOOM_BUT),
+                                   wxDefaultPosition, wxSize(200,200),
                                    wxSUNKEN_BORDER  );
-    
+
     m_ChartCtrlL2->Add( bcpLeft1 );
-    
+
     sizer->Add( lblTitle3, 0, wxEXPAND );
     sizer->Add( m_ChartCtrlL2, 1, wxEXPAND );
 }
@@ -461,18 +461,18 @@ void MyPanel::CreatePanelLeft2(wxBoxSizer *sizer)
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreatePanelRight1()
 //  DESC:       Create right Panel first row
-//  PARAMETERS: 
+//  PARAMETERS:
 //      wxBoxSizer *sizer
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void MyPanel::CreatePanelRight1(wxBoxSizer *sizer)
-{   
+{
     // Create Panel Right Row 1
     wxChartPoints *pcpRight1;
-    
-    pcpRight1 = wxPie3DChartPoints::CreateWxPie3DChartPoints( 
+
+    pcpRight1 = wxPie3DChartPoints::CreateWxPie3DChartPoints(
         wxT("Italy"), wxCHART_NOCOLOR, true );
-    
+
     // Pie chart ignore x value
 	pcpRight1->Add( wxT("10 %"), 0, 10, wxCHART_GOLD );
 	pcpRight1->Add( wxT("20 %"), 0, 20, wxCHART_CYAN );
@@ -482,74 +482,74 @@ void MyPanel::CreatePanelRight1(wxBoxSizer *sizer)
 	pcpRight1->Add( wxT("15 %"), 0, 15, wxCHART_LYELOW );
 	pcpRight1->Add( wxT("10 %"), 0, 10, wxCHART_SEAGREEN );
     pcpRight1->SetDisplayTag( NAME );
-    
-    wxStaticText *lblTitle2 = new wxStaticText(this, 
+
+    wxStaticText *lblTitle2 = new wxStaticText(this,
                                                wxID_ANY, wxT("Pie Chart (R1)"));
-    m_ChartCtrlR1 = new wxChartCtrl( this, -1, USE_NONE, 
-                                    wxDefaultPosition, wxSize(200,200), 
+    m_ChartCtrlR1 = new wxChartCtrl( this, -1, USE_NONE,
+                                    wxDefaultPosition, wxSize(200,200),
                                     wxSUNKEN_BORDER  );
-    
+
     m_ChartCtrlR1->Add( pcpRight1 );
-    
+
     sizer->Add( lblTitle2, 0, wxEXPAND );
     sizer->Add( m_ChartCtrlR1, 1, wxEXPAND );
-    
+
 }
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       CreatePanelRight2()
 //  DESC:       Create right Panel second row
-//  PARAMETERS: 
+//  PARAMETERS:
 //      wxBoxSizer *sizer
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
 void MyPanel::CreatePanelRight2(wxBoxSizer *sizer)
-{    
+{
     wxChartPoints *bcpLeft1, *bcpLeft2, *bcpLeft3, *bcpLeft4, *pcpRight1;
-    
-    bcpLeft1 = wxBarChartPoints::CreateWxBarChartPoints( 
+
+    bcpLeft1 = wxBarChartPoints::CreateWxBarChartPoints(
         wxT("Ita") );
-    
-    bcpLeft2 = wxBarChartPoints::CreateWxBarChartPoints( 
+
+    bcpLeft2 = wxBarChartPoints::CreateWxBarChartPoints(
         wxT("Fra") );
-    
-    bcpLeft3 = wxBarChartPoints::CreateWxBarChartPoints( 
+
+    bcpLeft3 = wxBarChartPoints::CreateWxBarChartPoints(
         wxT("Ger") );
-    
-    bcpLeft4 = wxBarChartPoints::CreateWxBarChartPoints( 
+
+    bcpLeft4 = wxBarChartPoints::CreateWxBarChartPoints(
         wxT("UK") );
-    
-    pcpRight1 = wxPieChartPoints::CreateWxPieChartPoints( 
+
+    pcpRight1 = wxPieChartPoints::CreateWxPieChartPoints(
         wxT("-Pie-") );
-    
+
     bcpLeft1->Add( wxT("val3"), 2, 3 );
     bcpLeft1->Add( wxT("val1"), 5, 1 );
     bcpLeft1->Add( wxT("val4"), 8, 4);
     bcpLeft1->Add( wxT("val2"), 15, 2 );
     bcpLeft1->Add( wxT("val5"), 20, 5 );
     bcpLeft1->SetDisplayTag( XVALUE );
-    
+
     bcpLeft2->Add( wxT("val: 4"), 2, 4 );
     bcpLeft2->Add( wxT("val: 2"), 5, 2 );
     bcpLeft2->Add( wxT("val: 2"), 8, 2);
     bcpLeft2->Add( wxT("val: 6"), 15, 6 );
     bcpLeft2->Add( wxT("val: 2"), 20, 2 );
     bcpLeft2->SetDisplayTag( NAME );
-    
+
     bcpLeft3->Add( wxT("val3"), 2, 1 );
     bcpLeft3->Add( wxT("val1"), 5, 3 );
     bcpLeft3->Add( wxT("val4"), 8, 4);
     bcpLeft3->Add( wxT("val2"), 15, 5 );
     bcpLeft3->Add( wxT("val5"), 20, 5 );
     bcpLeft3->SetDisplayTag( XVALUE );
-    
+
     bcpLeft4->Add( wxT("val3"), 2, 3 );
     bcpLeft4->Add( wxT("val6"), 5, 6 );
     bcpLeft4->Add( wxT("val2"), 8, 2);
     bcpLeft4->Add( wxT("val2"), 15, 2 );
     bcpLeft4->Add( wxT("val4"), 20, 4 );
     bcpLeft4->SetDisplayTag( YVALUE );
-    
+
     pcpRight1->Add( wxT("val1"), 5, 10 );
     pcpRight1->Add( wxT("val2"), 15, 20 );
     pcpRight1->Add( wxT("val3"), 2, 5 );
@@ -558,21 +558,21 @@ void MyPanel::CreatePanelRight2(wxBoxSizer *sizer)
     pcpRight1->Add( wxT("val6"), 20, 15 );
     pcpRight1->Add( wxT("val7"), 20, 10 );
     pcpRight1->SetDisplayTag( NAME );
-        
-    wxStaticText *lblTitle4 = new wxStaticText(this, 
+
+    wxStaticText *lblTitle4 = new wxStaticText(this,
                                                wxID_ANY, wxT("Bar/Pie Charts (R2)"));
-    m_ChartCtrlR2 = new wxChartCtrl( this, -1, DEFAULT_STYLE, 
-                                    wxDefaultPosition, wxSize(200,200), 
+    m_ChartCtrlR2 = new wxChartCtrl( this, -1, DEFAULT_STYLE,
+                                    wxDefaultPosition, wxSize(200,200),
                                     wxSUNKEN_BORDER  );
-    
+
     m_ChartCtrlR2->Add( bcpLeft1 );
     m_ChartCtrlR2->Add( bcpLeft2 );
     m_ChartCtrlR2->Add( bcpLeft3 );
     m_ChartCtrlR2->Add( bcpLeft4 );
     m_ChartCtrlR2->Add( pcpRight1 );
-    
+
     sizer->Add( lblTitle4, 0, wxEXPAND );
-    sizer->Add( m_ChartCtrlR2, 1, wxEXPAND );    
+    sizer->Add( m_ChartCtrlR2, 1, wxEXPAND );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -599,11 +599,11 @@ void MyPanel::WriteChart(
     wxFileDialog dialog(this, _T("Save File As"), wxEmptyString, wxEmptyString,
                         wxT("*.bmp;*.gif;*.png;*.jpeg"),
                         wxSAVE | wxOVERWRITE_PROMPT);
-    
+
     if (dialog.ShowModal() == wxID_OK)
     {
         wxString file = dialog.GetPath();
-        
+
         //-------------------------------------------------------------------
         // choose here the image type you want.
         // It can be GIF, JPEG, PNG, BMP
@@ -624,7 +624,7 @@ void MyPanel::WriteChart(
         {
             c->WriteToFile( dialog.GetPath(), wxCHART_GIF );
         }
-        
+
     }
 
 }

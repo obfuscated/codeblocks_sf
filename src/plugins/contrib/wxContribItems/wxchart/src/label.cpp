@@ -43,21 +43,21 @@ const int LBL_GAP = 25; // pixels
 //	NAME:		Draw()
 //	DESC:		Draw Label Area
 //	PARAMETERS:	wxDC* dc,
-//				int x, 
-//				int y, 
-//				ChartString lbl, 
+//				int x,
+//				int y,
+//				ChartString lbl,
 //				POSITION pos = UP
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLabel::Draw(
     CHART_HPAINT hp,
-	int x, 
-	int y, 
+	int x,
+	int y,
     ChartColor c,
-	wxString& lbl, 
+	wxString& lbl,
 	LABEL_POSITION pos
 )
-{    
+{
 	//-----------------------------------------------------------------------
 	// Get actual configuration
 	//-----------------------------------------------------------------------
@@ -82,9 +82,9 @@ void wxLabel::Draw(
 	//-----------------------------------------------------------------------
 	// Add boarder
 	//-----------------------------------------------------------------------
-	w += 5;	
+	w += 5;
 	h += 5;
-	
+
 	//-----------------------------------------------------------------------
 	// Get the left-top rectangle point
 	//-----------------------------------------------------------------------

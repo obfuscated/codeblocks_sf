@@ -43,13 +43,13 @@ END_EVENT_TABLE()
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		ctor
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxWindow* parent
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 wxLegendWindow::wxLegendWindow(
 	 wxWindow *parent
-):  wxWindow(parent, -1, wxDefaultPosition, 
+):  wxWindow(parent, -1, wxDefaultPosition,
 			 wxSize(LEGEND_WIDTH, LEGEND_HEIGHT)/*, wxSIMPLE_BORDER*/),
 	m_WinParent(parent)
 {
@@ -59,16 +59,16 @@ wxLegendWindow::wxLegendWindow(
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		Add()
 //	DESC:		List descriptos utilities
-//	PARAMETERS:	const wxString &lbl, 
+//	PARAMETERS:	const wxString &lbl,
 //				const ChartColor &col
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::Add(
-	const wxString &lbl, 
+	const wxString &lbl,
 	const ChartColor &col
-) 
-{ 
-	m_Legend.Add( lbl, col ); 
+)
+{
+	m_Legend.Add( lbl, col );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -77,9 +77,9 @@ void wxLegendWindow::Add(
 //	PARAMETERS:	None
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
-void wxLegendWindow::Clear() 
-{ 
-	m_Legend.Clear(); 
+void wxLegendWindow::Clear()
+{
+	m_Legend.Clear();
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -90,7 +90,7 @@ void wxLegendWindow::Clear()
 //----------------------------------------------------------------------E-+++
 int wxLegendWindow::GetCount() const
 {
-	return ( m_Legend.GetCount() ); 
+	return ( m_Legend.GetCount() );
 }
 
 //+++-S-cf-------------------------------------------------------------------
@@ -149,14 +149,14 @@ void wxLegendWindow::Draw(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnPaint()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxPaintEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
 void wxLegendWindow::OnPaint(
 	wxPaintEvent &WXUNUSED(event)
 )
-{	
+{
 	wxPaintDC dc( this );
 
 	//-----------------------------------------------------------------------
@@ -167,7 +167,7 @@ void wxLegendWindow::OnPaint(
 
 //+++-S-cf-------------------------------------------------------------------
 //	NAME:		OnMouse()
-//	DESC:		
+//	DESC:
 //	PARAMETERS:	wxMouseEvent &event
 //	RETURN:		None
 //----------------------------------------------------------------------E-+++
@@ -176,7 +176,7 @@ void wxLegendWindow::OnMouse(
 )
 {
 	wxPoint p = event.GetPosition();
-	
+
 	if ( m_Legend.IsInArrowDown(p.x, p.y) )
 	{
 		m_Legend.DecPage();
@@ -191,7 +191,7 @@ void wxLegendWindow::OnMouse(
 
 //+++-S-cf-------------------------------------------------------------------
 //  NAME:       OnMouseMove()
-//  DESC:       
+//  DESC:
 //  PARAMETERS: wxMouseEvent &event
 //  RETURN:     None
 //----------------------------------------------------------------------E-+++
@@ -200,9 +200,9 @@ void wxLegendWindow::OnMouseMove(
 )
 {
     wxPoint p = event.GetPosition();
-    
+
     wxClientDC dc(this);
-    
+
     if ( m_Legend.IsInArrowDown(p.x, p.y) )
     {
         m_Legend.DrawArrow(&dc, ARROW_DOWN, true);
