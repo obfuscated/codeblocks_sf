@@ -424,7 +424,7 @@ SQInteger SQLexer::ReadNumber()
 		// C::B patch: Eliminate compiler warnings
 		APPEND_CHAR((char)firstchar);
 		while (CUR_CHAR == _SC('.') || scisdigit(CUR_CHAR) || isexponent(CUR_CHAR)) {
-            if(CUR_CHAR == _SC('.')) type = TFLOAT;
+            if(CUR_CHAR == _SC('.') || isexponent(CUR_CHAR)) type = TFLOAT;
 			if(isexponent(CUR_CHAR)) {
 				if(type != TFLOAT) Error(_SC("invalid numeric format"));
 				type = TSCIENTIFIC;

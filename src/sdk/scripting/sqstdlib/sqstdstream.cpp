@@ -277,7 +277,6 @@ void init_streamclass(HSQUIRRELVM v)
 	sq_pop(v,1);
 }
 
-// C::B patch: Make the compiler happy by using const
 SQRESULT declare_stream(HSQUIRRELVM v,const SQChar* name,SQUserPointer typetag,const SQChar* reg_name,SQRegFunction *methods,SQRegFunction *globals)
 {
 	if(sq_gettype(v,-1) != OT_TABLE)

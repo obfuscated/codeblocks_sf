@@ -572,6 +572,8 @@ SQInteger sq_getsize(HSQUIRRELVM v, SQInteger idx)
 	case OT_TABLE:		return _table(o)->CountUsed();
 	case OT_ARRAY:		return _array(o)->Size();
 	case OT_USERDATA:	return _userdata(o)->_size;
+	case OT_INSTANCE:	return _instance(o)->_class->_udsize;
+	case OT_CLASS:		return _class(o)->_udsize;
 	default:
 		return sq_aux_invalidtype(v, type);
 	}
@@ -809,8 +811,7 @@ SQRESULT sq_rawdeleteslot(HSQUIRRELVM v,SQInteger idx,SQBool pushval)
 		_table(*self)->Remove(key);
 	}
 	// C::B patch: Put brackets around inner if(...)
-	if(pushval != 0)
-	{
+	if(pushval != 0) {
 	    if(pushval)	v->GetUp(-1) = t;
 	}
 	else

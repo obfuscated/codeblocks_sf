@@ -76,7 +76,7 @@ struct SQObjectPtr;
 #define __AddRef(type,unval) if(ISREFCOUNTED(type))	\
 		{ \
 			unval.pRefCounted->_uiRef++; \
-		}  
+		}
 
 #define __Release(type,unval) if(ISREFCOUNTED(type) && ((--unval.pRefCounted->_uiRef)<=0))	\
 		{	\
@@ -123,7 +123,8 @@ struct SQObjectPtr;
 #define _userdataval(obj) (obj)._unVal.pUserData->_val
 
 #define tofloat(num) ((type(num)==OT_INTEGER)?(SQFloat)_integer(num):_float(num))
-#define tointeger(num) ((type(num)==OT_FLOAT)?(SQInteger)_float(num):_integer(num))
+#define tointeger(num) (	(type(num)==OT_FLOAT)?(SQInteger)_float(num):_integer(num))
+
 /////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////
 struct SQObjectPtr : public SQObject
@@ -283,21 +284,23 @@ struct SQObjectPtr : public SQObject
 		__Release(tOldType,unOldVal);
 	}
 	inline SQObjectPtr& operator=(SQInteger i)
-	{ 
+	{
 		__Release(_type,_unVal);
+		SQ_OBJECT_RAWINIT()
 		_unVal.nInteger = i;
 		_type = OT_INTEGER;
 		return *this;
 	}
 	inline SQObjectPtr& operator=(SQFloat f)
-	{ 
+	{
 		__Release(_type,_unVal);
+		SQ_OBJECT_RAWINIT()
 		_unVal.fFloat = f;
 		_type = OT_FLOAT;
 		return *this;
 	}
 	inline SQObjectPtr& operator=(const SQObjectPtr& obj)
-	{ 
+	{
 		SQObjectType tOldType;
 		SQObjectValue unOldVal;
 		tOldType=_type;
@@ -309,7 +312,7 @@ struct SQObjectPtr : public SQObject
 		return *this;
 	}
 	inline SQObjectPtr& operator=(const SQObject& obj)
-	{ 
+	{
 		SQObjectType tOldType;
 		SQObjectValue unOldVal;
 		tOldType=_type;
@@ -323,6 +326,16 @@ struct SQObjectPtr : public SQObject
 	private:
 		SQObjectPtr(const SQChar *){} //safety
 };
+
+inline void _Swap(SQObject &a,SQObject &b)
+{
+	SQObjectType tOldType = a._type;
+	SQObjectValue unOldVal = a._unVal;
+	a._type = b._type;
+	a._unVal = b._unVal;
+	b._type = tOldType;
+	b._unVal = unOldVal;
+}
 /////////////////////////////////////////////////////////////////////////////////////
 #ifndef NO_GARBAGE_COLLECTOR
 #define MARK_FLAG 0x80000000

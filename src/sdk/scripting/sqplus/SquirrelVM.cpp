@@ -40,6 +40,7 @@ void SquirrelVM::Init(SquirrelInitFlags flags)
 {
 	_VM = sq_open(1024);
 	sq_setprintfunc(_VM,SquirrelVM::PrintFunc);
+//	sq_setprintfunc(_VM,SquirrelVM::PrintFunc,SquirrelVM::PrintFunc);
 	sq_pushroottable(_VM);
     // C::B patch: Add additional initialisation flags
 	if (flags & sqifIO) sqstd_register_iolib(_VM);

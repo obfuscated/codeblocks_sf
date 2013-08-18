@@ -2,6 +2,7 @@
 #ifndef _SQUTILS_H_
 #define _SQUTILS_H_
 
+// C::B patch: Refer to outsourced declarations
 #include "sqmem.h"
 
 #define sq_new(__ptr,__type) {__ptr=(__type *)sq_vm_malloc(sizeof(__type));new (__ptr) __type;}

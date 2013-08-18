@@ -182,7 +182,7 @@ static SQInteger sqstd_rex_class(SQRex *exp)
 			SQInteger r;
 			if(*exp->_p++ == ']') sqstd_rex_error(exp,_SC("unfinished range"));
 			r = sqstd_rex_newnode(exp,OP_RANGE);
-			if(first>*exp->_p) sqstd_rex_error(exp,_SC("invalid range"));
+			if(exp->_nodes[first].type>*exp->_p) sqstd_rex_error(exp,_SC("invalid range"));
 			if(exp->_nodes[first].type == OP_CCLASS) sqstd_rex_error(exp,_SC("cannot use character classes in ranges"));
 			exp->_nodes[r].left = exp->_nodes[first].type;
 			SQInteger t = sqstd_rex_escapechar(exp);
@@ -264,7 +264,7 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 	}
 
 
-  // C::B patch: Avoid compiler warnings (and below)
+  // C::B patch: Avoid compiler warnings (1) (and below)
 //	SQInteger op;
 	SQBool isgreedy = SQFalse;
 	unsigned short p0 = 0, p1 = 0;
@@ -299,6 +299,7 @@ static SQInteger sqstd_rex_element(SQRex *exp)
 	}
 	if(isgreedy) {
 		SQInteger nnode = sqstd_rex_newnode(exp,OP_GREEDY);
+        // C::B patch: Avoid compiler warnings (2) (and above)
 //		op = OP_GREEDY;
 		exp->_nodes[nnode].left = ret;
 		exp->_nodes[nnode].right = ((p0)<<16)|p1;
@@ -500,25 +501,28 @@ static const SQChar *sqstd_rex_matchnode(SQRex* exp,SQRexNode *node,const SQChar
 		if(str == exp->_eol) return str;
 		return NULL;
 	case OP_DOT:{
-    // C::B patch: Avoid compiler warnings (and below)
+        // C::B patch: Avoid compiler warnings (1) (and below)
 		++str;
 				}
 		return str;
 	case OP_NCLASS:
 	case OP_CLASS:
 		if(sqstd_rex_matchclass(exp,&exp->_nodes[node->left],*str)?(type == OP_CLASS?SQTrue:SQFalse):(type == OP_NCLASS?SQTrue:SQFalse)) {
+            // C::B patch: Avoid compiler warnings (2) (and above/below)
 			++str;
 			return str;
 		}
 		return NULL;
 	case OP_CCLASS:
 		if(sqstd_rex_matchcclass(node->left,*str)) {
+            // C::B patch: Avoid compiler warnings (3) (and above/below)
 			++str;
 			return str;
 		}
 		return NULL;
 	default: /* char */
 		if(*str != node->type) return NULL;
+        // C::B patch: Avoid compiler warnings (4) (and above)
 		++str;
 		return str;
 	}
@@ -609,7 +613,7 @@ SQBool sqstd_rex_searchrange(SQRex* exp,const SQChar* text_begin,const SQChar* t
 				break;
 			node = exp->_nodes[node].next;
 		}
-    // C::B patch: Avoid compiler warnings
+        // C::B patch: Avoid compiler warnings
 		++text_begin;
 	} while(cur == NULL && text_begin != text_end);
 
