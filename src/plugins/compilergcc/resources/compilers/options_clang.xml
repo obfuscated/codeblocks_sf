@@ -100,6 +100,8 @@
                 option="-Wambiguous-member-template"/>
         <Option name="Warn about unusable copy constructors when binding references to temporaries"
                 option="-Wbind-to-temporary-copy"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
     </Category>
 
     <Category name="Optimization">

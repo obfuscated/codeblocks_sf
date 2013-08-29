@@ -85,6 +85,8 @@
                 option="-Winit-self"/>
         <Option name="Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"
                 option="-Wshadow"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
     </Category>
 
     <Common name="optimization"/>
