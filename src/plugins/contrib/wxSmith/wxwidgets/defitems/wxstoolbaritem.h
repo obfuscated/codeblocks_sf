@@ -53,6 +53,7 @@ class wxsToolBarItem : public wxsTool
         };
 
         Type          m_Type;
+        wxString      m_Variable;
         wxString      m_Label;
         wxsBitmapData m_Bitmap;
         wxsBitmapData m_Bitmap2;

@@ -179,6 +179,7 @@ wxsToolBarEditor::wxsToolBarEditor(wxWindow* parent,wxsToolBar* ToolBar):
             ToolBarItem* New = new ToolBarItem;
             New->m_OriginalPos = -1;
             New->m_Id = Item->GetIdName();
+            New->m_Variable = Item->GetVarName();
             New->m_Label = Item->m_Label;
             New->m_Bitmap = Item->m_Bitmap;
             New->m_Bitmap2 = Item->m_Bitmap2;
@@ -300,6 +301,7 @@ void wxsToolBarEditor::ApplyChanges()
             if ( Item->m_Type != Separator )
             {
                 New->SetIdName(Item->m_Id);
+                New->SetVarName(Item->m_Variable);
                 New->m_Label = Item->m_Label;
                 New->m_Bitmap = Item->m_Bitmap;
                 New->m_Bitmap2 = Item->m_Bitmap2;
