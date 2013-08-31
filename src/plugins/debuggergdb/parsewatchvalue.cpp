@@ -125,7 +125,7 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
         return false;
 
     token.start = -1;
-    bool in_quote = false;
+    bool in_quote = false, in_char = false;
     int open_braces = 0;
     struct BraceType { enum Enum { None, Angle, Square }; };
     BraceType::Enum brace_type = BraceType::None;
@@ -147,6 +147,11 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
 
     case _T('"'):
         in_quote = true;
+        token.type = Token::String;
+        token.start = pos;
+        break;
+    case _T('\''):
+        in_char = true;
         token.type = Token::String;
         token.start = pos;
         break;
@@ -178,7 +183,7 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
                 token.end = pos;
                 return true;
             }
-            else if ((str[pos] == _T('=') || str[pos] == _T('{') || str[pos] == _T('}')) && !in_quote)
+            else if ((str[pos] == _T('=') || str[pos] == _T('{') || str[pos] == _T('}')) && !in_quote && !in_char)
             {
                 token.end = pos;
                 return true;
@@ -211,6 +216,12 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
                         return false;
                     in_quote = true;
                 }
+            }
+            else if (str[pos] == _T('\''))
+            {
+                if (!escape_next)
+                    in_char = !in_char;
+                escape_next = false;
             }
             else if (str[pos] == _T('\\'))
                 escape_next = true;

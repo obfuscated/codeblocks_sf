@@ -159,6 +159,13 @@ TEST(GlobalEnumMembers2)
     CHECK_EQUAL(wxT("t= {a= {glob=GlobA,test=5},b= {test=B::T3}}"), *w);
 }
 
+TEST(CurlyBracketChar)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{\n  a = 1, \n  ch = 123 '{'\n}")));
+    CHECK_EQUAL(wxT("t= {a=1,ch=123 '{'}"), *w);
+}
+
 TEST(SingleInheritance)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
