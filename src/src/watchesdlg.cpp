@@ -514,7 +514,7 @@ void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly)
     WatchItems::iterator it = std::find_if(m_watches.begin(), m_watches.end(), WatchItemPredicate(watch));
     if (it != m_watches.end())
         return;
-    wxPGProperty *first_prop = m_grid->GetFirst();
+    wxPGProperty *first_prop = m_grid->wxPropertyGridInterface::GetFirst(wxPG_ITERATE_ALL);
 
     WatchItem item;
     wxString symbol, value;
