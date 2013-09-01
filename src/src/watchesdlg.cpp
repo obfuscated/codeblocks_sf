@@ -521,6 +521,7 @@ void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly)
     item.property->SetExpanded(watch->IsExpanded());
     item.watch = watch;
     item.readonly = readonly;
+    item.special = true;
     m_watches.push_back(item);
     m_grid->Refresh();
 }
@@ -672,9 +673,14 @@ void WatchesDlg::OnKeyDown(wxKeyEvent &event)
         case WXK_INSERT:
             {
                 cb::shared_ptr<cbWatch> watch = watches_prop->GetWatch();
-                cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(watch);
-                if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
-                    m_grid->BeginLabelEdit(0);
+                WatchItems::const_iterator it = std::find_if(m_watches.begin(), m_watches.end(),
+                                                             WatchItemPredicate(watch));
+                if (!(it != m_watches.end() && it->special))
+                {
+                    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(watch);
+                    if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
+                        m_grid->BeginLabelEdit(0);
+                }
             }
             break;
         default:
@@ -703,18 +709,32 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
 
             DebuggerManager *dbgManager = Manager::Get()->GetDebuggerManager();
 
-            cbDebuggerPlugin *plugin = dbgManager->GetDebuggerHavingWatch(watch);
-            if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
-                plugin->OnWatchesContextMenu(m, *watch, event.GetProperty(), disabled);
-            else
+            cb::shared_ptr<cbWatch> rootWatch = cbGetRootWatch(watch);
+
+            WatchItems::const_iterator itItem = std::find_if(m_watches.begin(), m_watches.end(),
+                                                             WatchItemPredicate(rootWatch));
+            if (itItem != m_watches.end() && itItem->special)
             {
                 disabled = cbDebuggerPlugin::WatchesDisabledMenuItems::Rename |
                            cbDebuggerPlugin::WatchesDisabledMenuItems::Properties |
-                           cbDebuggerPlugin::WatchesDisabledMenuItems::Delete;
+                           cbDebuggerPlugin::WatchesDisabledMenuItems::Delete |
+                           cbDebuggerPlugin::WatchesDisabledMenuItems::AddDataBreak;
             }
+            else
+            {
+                cbDebuggerPlugin *plugin = dbgManager->GetDebuggerHavingWatch(watch);
+                if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
+                    plugin->OnWatchesContextMenu(m, *watch, event.GetProperty(), disabled);
+                else
+                {
+                    disabled = cbDebuggerPlugin::WatchesDisabledMenuItems::Rename |
+                               cbDebuggerPlugin::WatchesDisabledMenuItems::Properties |
+                               cbDebuggerPlugin::WatchesDisabledMenuItems::Delete;
+                }
 
-            if (plugin != dbgManager->GetActiveDebugger())
-                disabled = cbDebuggerPlugin::WatchesDisabledMenuItems::Properties;
+                if (plugin != dbgManager->GetActiveDebugger())
+                    disabled = cbDebuggerPlugin::WatchesDisabledMenuItems::Properties;
+            }
 
             if (disabled & cbDebuggerPlugin::WatchesDisabledMenuItems::Rename)
                 m.Enable(idMenuRename, false);

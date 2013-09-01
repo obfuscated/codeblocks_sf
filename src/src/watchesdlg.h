@@ -56,11 +56,12 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         struct WatchItem
         {
-            WatchItem() : readonly(false) {}
+            WatchItem() : readonly(false), special(false) {}
 
             cb::shared_ptr<cbWatch> watch;
             WatchesProperty *property;
             bool readonly;
+            bool special;
         };
         struct WatchItemPredicate;
 
