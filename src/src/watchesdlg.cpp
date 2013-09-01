@@ -24,6 +24,7 @@
 
 #include <numeric>
 #include <map>
+#include <algorithm>
 
 #include <wx/propgrid/propgrid.h>
 
