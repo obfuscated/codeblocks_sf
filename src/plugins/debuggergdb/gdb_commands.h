@@ -894,6 +894,13 @@ class GdbCmd_FindWatchType : public DebuggerCmd
                 m_pDriver->QueueCommand(new GdbCmd_FindWatchType(m_pDriver, m_watch, false), DebuggerDriver::High);
                 return;
             }
+            if (output.StartsWith(wxT("No symbol \"")) && output.EndsWith(wxT("\" in current context.")))
+            {
+                m_watch->RemoveChildren();
+                m_watch->SetType(wxEmptyString);
+                m_watch->SetValue(_("Not available in current context!"));
+                return;
+            }
 
             // examples:
             // type = wxString
