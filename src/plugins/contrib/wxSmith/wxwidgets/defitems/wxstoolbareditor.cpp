@@ -279,7 +279,7 @@ void wxsToolBarEditor::ApplyChanges()
 
     for ( int i=0; i<NewCount; i++ )
     {
-        ToolBarItem* Item = (ToolBarItem*)m_Content->GetClientData(i);
+        ToolBarItem* Item = (ToolBarItem*)m_Content->GetClientObject(i);
         if ( Item->m_Type == Control )
         {
             int Index = Item->m_OriginalPos;
