@@ -460,9 +460,36 @@ void DebuggerGDB::DoWatches()
         return;
 
     DebuggerConfiguration &config = GetActiveConfigEx();
-    m_State.GetDriver()->UpdateWatches(config.GetFlag(DebuggerConfiguration::WatchLocals),
-                                       config.GetFlag(DebuggerConfiguration::WatchFuncArgs),
-                                       m_watches);
+
+    bool locals = config.GetFlag(DebuggerConfiguration::WatchLocals);
+    bool funcArgs = config.GetFlag(DebuggerConfiguration::WatchFuncArgs);
+
+
+    if (locals)
+    {
+        if (m_localsWatch == nullptr)
+        {
+            m_localsWatch = cb::shared_ptr<GDBWatch>(new GDBWatch(wxT("Locals")));
+            m_localsWatch->Expand(true);
+            m_localsWatch->MarkAsChanged(false);
+        }
+        cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+        watchesDialog->AddSpecialWatch(m_localsWatch);
+    }
+
+    if (funcArgs)
+    {
+        if (m_funcArgsWatch == nullptr)
+        {
+            m_funcArgsWatch = cb::shared_ptr<GDBWatch>(new GDBWatch(wxT("Function arguments")));
+            m_funcArgsWatch->Expand(true);
+            m_funcArgsWatch->MarkAsChanged(false);
+        }
+        cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+        watchesDialog->AddSpecialWatch(m_funcArgsWatch);
+    }
+
+    m_State.GetDriver()->UpdateWatches(m_localsWatch, m_funcArgsWatch, m_watches);
 }
 
 int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
@@ -2070,6 +2097,11 @@ void DebuggerGDB::CollapseWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 
 void DebuggerGDB::MarkAllWatchesAsUnchanged()
 {
+    if (m_localsWatch)
+        m_localsWatch->MarkAsChangedRecursive(false);
+    if (m_funcArgsWatch)
+        m_funcArgsWatch->MarkAsChangedRecursive(false);
+
     for (WatchesContainer::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
         (*it)->MarkAsChangedRecursive(false);
 }

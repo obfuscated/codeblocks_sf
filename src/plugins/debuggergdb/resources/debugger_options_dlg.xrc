@@ -92,7 +92,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkWatchArgs">
 							<label>Watch function arguments</label>
-							<enabled>0</enabled>
+							<enabled>1</enabled>
 							<tooltip>Automatic watches are added for the current function&apos;s arguments</tooltip>
 						</object>
 						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
@@ -100,7 +100,7 @@
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkWatchLocals">
 							<label>Watch local variables</label>
-							<enabled>0</enabled>
+							<enabled>1</enabled>
 							<tooltip>Automatic watches are added for all the local variables of the current function</tooltip>
 						</object>
 						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

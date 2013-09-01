@@ -53,7 +53,8 @@ class CDB_driver : public DebuggerDriver
         virtual void AddBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
         virtual void RemoveBreakpoint(cb::shared_ptr<DebuggerBreakpoint> bp);
         virtual void EvaluateSymbol(const wxString& symbol, const wxRect& tipRect);
-        virtual void UpdateWatches(bool doLocals, bool doArgs, WatchesContainer &watches);
+        virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
+                                   WatchesContainer &watches);
         virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch);
         virtual void ParseOutput(const wxString& output);
         virtual bool IsDebuggingStarted() const;

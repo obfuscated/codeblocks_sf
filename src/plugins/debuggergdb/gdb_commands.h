@@ -1114,6 +1114,44 @@ class GdbCmd_FindTooltipType : public DebuggerCmd
 };
 bool GdbCmd_FindTooltipType::singleUsage = false;
 
+class GdbCmd_LocalsFuncArgs : public DebuggerCmd
+{
+        cb::shared_ptr<GDBWatch> m_watch;
+        bool m_doLocals;
+    public:
+        GdbCmd_LocalsFuncArgs(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch, bool doLocals) :
+            DebuggerCmd(driver),
+            m_watch(watch),
+            m_doLocals(doLocals)
+        {
+            if (m_doLocals)
+                m_Cmd = wxT("info locals");
+            else
+                m_Cmd = wxT("info args");
+        }
+        void ParseOutput(const wxString& output)
+        {
+            if ((m_doLocals && output == wxT("No locals.")) || (!m_doLocals && output == wxT("No arguments.")))
+            {
+                m_watch->RemoveChildren();
+                return;
+            }
+
+            std::vector<GDBLocalVariable> watchStrings;
+            TokenizeGDBLocals(watchStrings, output);
+
+            m_watch->MarkChildsAsRemoved();
+            for (std::vector<GDBLocalVariable>::const_iterator it = watchStrings.begin(); it != watchStrings.end(); ++it)
+            {
+                if (it->error)
+                    continue;
+                cb::shared_ptr<GDBWatch> watch = AddChild(m_watch, it->name);
+                ParseGDBWatchValue(watch, it->value);
+            }
+            m_watch->RemoveMarkedChildren();
+        }
+};
+
 /**
   * Command to change the current frame.
   * Exists so GDB_driver::ParseOutput() can detect changeframe vs

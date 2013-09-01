@@ -264,7 +264,9 @@ void CDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
     QueueCommand(new CdbCmd_TooltipEvaluation(this, symbol, tipRect));
 }
 
-void CDB_driver::UpdateWatches(cb_unused bool doLocals, cb_unused bool doArgs, WatchesContainer &watches) // TODO: check whether params intentionally unused
+void CDB_driver::UpdateWatches(cb_unused cb::shared_ptr<GDBWatch> localsWatch,
+                               cb_unused cb::shared_ptr<GDBWatch> funcArgsWatch,
+                               WatchesContainer &watches)
 {
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
         QueueCommand(new CdbCmd_Watch(this, *it));

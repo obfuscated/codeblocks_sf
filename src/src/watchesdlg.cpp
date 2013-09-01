@@ -67,6 +67,18 @@ END_EVENT_TABLE()
 typedef wxString wxPG_CONST_WXCHAR_PTR;
 #endif
 
+struct WatchesDlg::WatchItemPredicate
+{
+    WatchItemPredicate(cb::shared_ptr<cbWatch> watch) : m_watch(watch) {}
+
+    bool operator()(const WatchItem& item) const
+    {
+        return item.watch == m_watch;
+    }
+private:
+    cb::shared_ptr<cbWatch> m_watch;
+};
+
 class cbTextCtrlAndButtonTooltipEditor : public wxPGTextCtrlAndButtonEditor
 {
     DECLARE_DYNAMIC_CLASS(cbTextCtrlAndButtonTooltipEditor)
@@ -486,6 +498,25 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
     {
         item.property = m_grid->Append(new WatchesProperty(symbol, value, watch, false));
     }
+
+    item.property->SetExpanded(watch->IsExpanded());
+    item.watch = watch;
+    m_watches.push_back(item);
+    m_grid->Refresh();
+}
+
+void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch)
+{
+    WatchItems::iterator it = std::find_if(m_watches.begin(), m_watches.end(), WatchItemPredicate(watch));
+    if (it != m_watches.end())
+        return;
+    wxPGProperty *first_prop = m_grid->GetFirst();
+
+    WatchItem item;
+    wxString symbol, value;
+    watch->GetSymbol(symbol);
+
+    item.property = m_grid->Insert(first_prop, new WatchesProperty(symbol, value, watch, true));
 
     item.property->SetExpanded(watch->IsExpanded());
     item.watch = watch;

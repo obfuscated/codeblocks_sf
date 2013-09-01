@@ -690,10 +690,15 @@ void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
     QueueCommand(new GdbCmd_FindTooltipType(this, symbol, tipRect));
 }
 
-void GDB_driver::UpdateWatches(cb_unused bool doLocals, cb_unused bool doArgs, WatchesContainer &watches)
+void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
+                               WatchesContainer &watches)
 {
     // FIXME (obfuscated#): add local and argument watches
     // FIXME : remove cb_unused from params when that's done
+    if (localsWatch)
+        QueueCommand(new GdbCmd_LocalsFuncArgs(this, localsWatch, true));
+    if (funcArgsWatch)
+        QueueCommand(new GdbCmd_LocalsFuncArgs(this, funcArgsWatch, false));
 
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
         QueueCommand(new GdbCmd_FindWatchType(this, *it));
