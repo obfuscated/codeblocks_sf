@@ -423,9 +423,9 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
             m_Label->Disable();
             m_Label->SetValue(_T(""));
             m_Bitmap->Disable();
-            m_Bitmap->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_("wxART_FILE_OPEN")),_("wxART_TOOLBAR")));
+            m_Bitmap->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_("wxART_FILE_OPEN")),wxART_TOOLBAR));
             m_Bitmap2->Disable();
-            m_Bitmap2->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_("wxART_FILE_OPEN")),_("wxART_TOOLBAR")));
+            m_Bitmap2->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_("wxART_FILE_OPEN")),wxART_TOOLBAR));
             m_ToolTip->Disable();
             m_ToolTip->SetValue(_T(""));
             m_HelpText->Disable();
@@ -450,7 +450,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
             // A bitmap created from code can't be rendered easily here, so show the default for that case, too
             if ( m_Selected->m_Bitmap.IsEmpty() || !m_Selected->m_Bitmap.CodeText.IsEmpty())
             {
-                m_Bitmap->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),_T("wxART_TOOLBAR")));
+                m_Bitmap->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),wxART_TOOLBAR));
             }
             else
             {
@@ -459,7 +459,7 @@ void wxsToolBarEditor::SelectItem(ToolBarItem* Item)
             m_Bitmap2->Enable(!IsSeparator);
             if ( m_Selected->m_Bitmap2.IsEmpty() )
             {
-                m_Bitmap2->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),_T("wxART_TOOLBAR")));
+                m_Bitmap2->SetBitmapLabel(wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),wxART_TOOLBAR));
             }
             else
             {
