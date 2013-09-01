@@ -489,7 +489,7 @@ void DebuggerGDB::DoWatches()
             m_localsWatch->Expand(true);
             m_localsWatch->MarkAsChanged(false);
             cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-            watchesDialog->AddSpecialWatch(m_localsWatch);
+            watchesDialog->AddSpecialWatch(m_localsWatch, true);
         }
     }
 
@@ -501,7 +501,7 @@ void DebuggerGDB::DoWatches()
             m_funcArgsWatch->Expand(true);
             m_funcArgsWatch->MarkAsChanged(false);
             cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-            watchesDialog->AddSpecialWatch(m_funcArgsWatch);
+            watchesDialog->AddSpecialWatch(m_funcArgsWatch, true);
         }
     }
 

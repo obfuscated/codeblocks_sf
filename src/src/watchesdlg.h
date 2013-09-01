@@ -28,7 +28,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         void UpdateWatches();
         void AddWatch(cb::shared_ptr<cbWatch> watch);
-        void AddSpecialWatch(cb::shared_ptr<cbWatch> watch);
+        void AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly);
         void RemoveWatch(cb::shared_ptr<cbWatch> watch);
         void RenameWatch(wxObject *prop, const wxString &newSymbol);
         void RefreshUI();
@@ -56,8 +56,11 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         struct WatchItem
         {
+            WatchItem() : readonly(false) {}
+
             cb::shared_ptr<cbWatch> watch;
             WatchesProperty *property;
+            bool readonly;
         };
         struct WatchItemPredicate;
 

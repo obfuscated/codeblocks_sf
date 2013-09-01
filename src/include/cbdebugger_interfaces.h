@@ -110,7 +110,7 @@ class DLLIMPORT cbWatchesDlg
 
         virtual void UpdateWatches() = 0;
         virtual void AddWatch(cb::shared_ptr<cbWatch> watch) = 0;
-        virtual void AddSpecialWatch(cb::shared_ptr<cbWatch> watch) = 0;
+        virtual void AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly) = 0;
         virtual void RemoveWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void RenameWatch(wxObject *prop, const wxString &newSymbol) = 0;
         virtual void RefreshUI() = 0;

@@ -467,7 +467,7 @@ inline void SetValue(WatchesProperty *prop)
 void WatchesDlg::UpdateWatches()
 {
     for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
-        UpdateWatch(m_grid, it->property, it->watch, false);
+        UpdateWatch(m_grid, it->property, it->watch, it->readonly);
     m_grid->Refresh();
 }
 
@@ -505,7 +505,7 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
     m_grid->Refresh();
 }
 
-void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch)
+void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly)
 {
     WatchItems::iterator it = std::find_if(m_watches.begin(), m_watches.end(), WatchItemPredicate(watch));
     if (it != m_watches.end())
@@ -520,6 +520,7 @@ void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch)
 
     item.property->SetExpanded(watch->IsExpanded());
     item.watch = watch;
+    item.readonly = readonly;
     m_watches.push_back(item);
     m_grid->Refresh();
 }
