@@ -795,13 +795,21 @@ void WatchesDlg::OnMenuDelete(cb_unused wxCommandEvent &event)
 
 void WatchesDlg::OnMenuDeleteAll(cb_unused wxCommandEvent &event)
 {
+    WatchItems specialWatches;
+
     for (WatchItems::iterator it = m_watches.begin(); it != m_watches.end(); ++it)
     {
-        cbDebuggerPlugin *debugger = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(it->watch);
-        debugger->DeleteWatch(it->watch);
-        m_grid->DeleteProperty(it->property);
+        if (it->special)
+            specialWatches.push_back(*it);
+        else
+        {
+            cbDebuggerPlugin *debugger = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(it->watch);
+            debugger->DeleteWatch(it->watch);
+            m_grid->DeleteProperty(it->property);
+        }
     }
-    m_watches.clear();
+
+    m_watches.swap(specialWatches);
 }
 
 void WatchesDlg::OnMenuAddDataBreak(cb_unused wxCommandEvent &event)
