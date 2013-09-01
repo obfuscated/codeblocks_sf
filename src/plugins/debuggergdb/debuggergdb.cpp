@@ -2057,7 +2057,11 @@ void DebuggerGDB::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 
 bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
 {
-    return std::find(m_watches.begin(), m_watches.end(), watch) != m_watches.end();
+    WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
+    if (it != m_watches.end())
+        return true;
+    else
+        return watch == m_localsWatch || watch == m_funcArgsWatch;
 }
 
 void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
