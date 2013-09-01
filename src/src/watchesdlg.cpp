@@ -473,7 +473,7 @@ void WatchesDlg::UpdateWatches()
 
 void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
 {
-    wxPGProperty *last_prop = m_grid->GetLastItem(wxPG_ITERATE_DEFAULT);
+    WatchesProperty *last_prop = static_cast<WatchesProperty*>(m_grid->GetLastItem(wxPG_ITERATE_DEFAULT));
 
     WatchItem item;
     wxString symbol, value;
@@ -496,7 +496,7 @@ void WatchesDlg::AddWatch(cb::shared_ptr<cbWatch> watch)
     }
     else
     {
-        item.property = m_grid->Append(new WatchesProperty(symbol, value, watch, false));
+        item.property = static_cast<WatchesProperty*>(m_grid->Append(new WatchesProperty(symbol, value, watch, false)));
     }
 
     item.property->SetExpanded(watch->IsExpanded());
@@ -516,12 +516,21 @@ void WatchesDlg::AddSpecialWatch(cb::shared_ptr<cbWatch> watch)
     wxString symbol, value;
     watch->GetSymbol(symbol);
 
-    item.property = m_grid->Insert(first_prop, new WatchesProperty(symbol, value, watch, true));
+    item.property = static_cast<WatchesProperty*>(m_grid->Insert(first_prop, new WatchesProperty(symbol, value, watch, true)));
 
     item.property->SetExpanded(watch->IsExpanded());
     item.watch = watch;
     m_watches.push_back(item);
     m_grid->Refresh();
+}
+
+void WatchesDlg::RemoveWatch(cb::shared_ptr<cbWatch> watch)
+{
+    WatchItems::iterator it = std::find_if(m_watches.begin(), m_watches.end(), WatchItemPredicate(watch));
+    if (it != m_watches.end())
+    {
+        DeleteProperty(*it->property);
+    }
 }
 
 void WatchesDlg::OnExpand(wxPropertyGridEvent &event)

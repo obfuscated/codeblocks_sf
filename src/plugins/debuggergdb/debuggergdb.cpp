@@ -290,6 +290,22 @@ cbConfigurationPanel* DebuggerGDB::GetProjectConfigurationPanel(wxWindow* parent
 
 void DebuggerGDB::OnConfigurationChange(cb_unused bool isActive)
 {
+    DebuggerConfiguration &config = GetActiveConfigEx();
+    bool locals = config.GetFlag(DebuggerConfiguration::WatchLocals);
+    bool funcArgs = config.GetFlag(DebuggerConfiguration::WatchFuncArgs);
+
+    cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+
+    if (!locals && m_localsWatch)
+    {
+        watchesDialog->RemoveWatch(m_localsWatch);
+        m_localsWatch = cb::shared_ptr<GDBWatch>();
+    }
+    if (!funcArgs && m_funcArgsWatch)
+    {
+        watchesDialog->RemoveWatch(m_funcArgsWatch);
+        m_funcArgsWatch = cb::shared_ptr<GDBWatch>();
+    }
 }
 
 wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
@@ -472,9 +488,9 @@ void DebuggerGDB::DoWatches()
             m_localsWatch = cb::shared_ptr<GDBWatch>(new GDBWatch(wxT("Locals")));
             m_localsWatch->Expand(true);
             m_localsWatch->MarkAsChanged(false);
+            cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+            watchesDialog->AddSpecialWatch(m_localsWatch);
         }
-        cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-        watchesDialog->AddSpecialWatch(m_localsWatch);
     }
 
     if (funcArgs)
@@ -484,9 +500,9 @@ void DebuggerGDB::DoWatches()
             m_funcArgsWatch = cb::shared_ptr<GDBWatch>(new GDBWatch(wxT("Function arguments")));
             m_funcArgsWatch->Expand(true);
             m_funcArgsWatch->MarkAsChanged(false);
+            cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+            watchesDialog->AddSpecialWatch(m_funcArgsWatch);
         }
-        cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
-        watchesDialog->AddSpecialWatch(m_funcArgsWatch);
     }
 
     m_State.GetDriver()->UpdateWatches(m_localsWatch, m_funcArgsWatch, m_watches);
