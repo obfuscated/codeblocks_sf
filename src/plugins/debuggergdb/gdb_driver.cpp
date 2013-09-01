@@ -693,23 +693,44 @@ void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
 void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
                                WatchesContainer &watches)
 {
-    // FIXME (obfuscated#): add local and argument watches
-    // FIXME : remove cb_unused from params when that's done
-    if (localsWatch)
+    bool updateWatches = false;
+    if (localsWatch && localsWatch->IsAutoUpdateEnabled())
+    {
         QueueCommand(new GdbCmd_LocalsFuncArgs(this, localsWatch, true));
-    if (funcArgsWatch)
+        updateWatches = true;
+    }
+    if (funcArgsWatch && funcArgsWatch->IsAutoUpdateEnabled())
+    {
         QueueCommand(new GdbCmd_LocalsFuncArgs(this, funcArgsWatch, false));
+        updateWatches = true;
+    }
 
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
-        QueueCommand(new GdbCmd_FindWatchType(this, *it));
+    {
+        WatchesContainer::reference watch = *it;
+        if (watch->IsAutoUpdateEnabled())
+        {
+            QueueCommand(new GdbCmd_FindWatchType(this, watch));
+            updateWatches = true;
+        }
+    }
 
-    // run this action-only command to update the tree
-    QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+    if (updateWatches)
+    {
+        // run this action-only command to update the tree
+        QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+    }
 }
 
 void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new GdbCmd_FindWatchType(this, watch));
+    QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+}
+
+void GDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)
+{
+    QueueCommand(new GdbCmd_LocalsFuncArgs(this, watch, locals));
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
 }
 

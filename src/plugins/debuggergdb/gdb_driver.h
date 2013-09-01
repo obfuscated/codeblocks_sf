@@ -81,6 +81,7 @@ class GDB_driver : public DebuggerDriver
         virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
                                    WatchesContainer &watches);
         virtual void UpdateWatch(const cb::shared_ptr<GDBWatch> &watch);
+        virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals);
         virtual void ParseOutput(const wxString& output);
         virtual bool IsDebuggingStarted() const { return m_IsStarted; }
 #ifdef __WXMSW__

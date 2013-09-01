@@ -268,10 +268,19 @@ void CDB_driver::UpdateWatches(cb_unused cb::shared_ptr<GDBWatch> localsWatch,
                                cb_unused cb::shared_ptr<GDBWatch> funcArgsWatch,
                                WatchesContainer &watches)
 {
+    bool updateWatches = false;
     for (WatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
-        QueueCommand(new CdbCmd_Watch(this, *it));
+    {
+        WatchesContainer::reference watch = *it;
+        if (watch->IsAutoUpdateEnabled())
+        {
+            QueueCommand(new CdbCmd_Watch(this, *it));
+            updateWatches = true;
+        }
+    }
 
-    QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+    if (updateWatches)
+        QueueCommand(new DbgCmd_UpdateWatchesTree(this));
 
     // FIXME (obfuscated#): reimplement this code
 //    // start updating watches tree
@@ -296,6 +305,11 @@ void CDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new CdbCmd_Watch(this, watch));
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+}
+
+void CDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)
+{
+    // FIXME (obfuscated#): implement this
 }
 
 void CDB_driver::Attach(cb_unused int pid)

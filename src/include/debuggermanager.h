@@ -93,12 +93,15 @@ class DLLIMPORT cbWatch
         bool IsExpanded() const;
         void Expand(bool expand);
 
+        bool IsAutoUpdateEnabled() const;
+        void AutoUpdate(bool enabled);
     private:
         cb::weak_ptr<cbWatch> m_parent;
         std::vector<cb::shared_ptr<cbWatch> >    m_children;
         bool            m_changed;
         bool            m_removed;
         bool            m_expanded;
+        bool            m_autoUpdate;
 };
 
 cb::shared_ptr<cbWatch> DLLIMPORT cbGetRootWatch(cb::shared_ptr<cbWatch> watch);

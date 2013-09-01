@@ -2115,6 +2115,22 @@ void DebuggerGDB::CollapseWatch(cb_unused cb::shared_ptr<cbWatch> watch)
 {
 }
 
+void DebuggerGDB::UpdateWatch(cb::shared_ptr<cbWatch> watch)
+{
+    if (!HasWatch(watch))
+        return;
+
+    if (!m_State.HasDriver())
+        return;
+    cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);
+    if (real_watch == m_localsWatch)
+        m_State.GetDriver()->UpdateWatchLocalsArgs(real_watch, true);
+    else if (real_watch == m_funcArgsWatch)
+        m_State.GetDriver()->UpdateWatchLocalsArgs(real_watch, false);
+    else
+        m_State.GetDriver()->UpdateWatch(real_watch);
+}
+
 void DebuggerGDB::MarkAllWatchesAsUnchanged()
 {
     if (m_localsWatch)

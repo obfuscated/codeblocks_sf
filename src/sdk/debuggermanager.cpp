@@ -44,7 +44,8 @@
 cbWatch::cbWatch() :
     m_changed(true),
     m_removed(false),
-    m_expanded(false)
+    m_expanded(false),
+    m_autoUpdate(true)
 {
 }
 
@@ -188,6 +189,16 @@ bool cbWatch::IsExpanded() const
 void cbWatch::Expand(bool expand)
 {
     m_expanded = expand;
+}
+
+bool cbWatch::IsAutoUpdateEnabled() const
+{
+    return m_autoUpdate;
+}
+
+void cbWatch::AutoUpdate(bool enabled)
+{
+    m_autoUpdate = enabled;
 }
 
 cb::shared_ptr<cbWatch> DLLIMPORT cbGetRootWatch(cb::shared_ptr<cbWatch> watch)
