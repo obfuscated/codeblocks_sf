@@ -1226,7 +1226,8 @@ void DebuggerManager::FindTargetsDebugger()
         compiler = CompilerFactory::GetCompiler(target->GetCompilerID());
         if (!compiler)
         {
-            log->LogError(_("Current target doesn't have valid compiler!"));
+            log->LogError(wxString::Format(_("Current target '%s' doesn't have valid compiler!"),
+                                           target->GetTitle().c_str()));
             m_menuHandler->MarkActiveTargetAsValid(false);
             return;
         }
@@ -1243,7 +1244,8 @@ void DebuggerManager::FindTargetsDebugger()
 
     if (name.empty() || config.empty())
     {
-        log->LogError(_("Current compiler doesn't have correctly defined debugger!"));
+        log->LogError(wxString::Format(_("Current compiler '%s' doesn't have correctly defined debugger!"),
+                                       compiler->GetName().c_str()));
         m_menuHandler->MarkActiveTargetAsValid(false);
         return;
     }
@@ -1272,8 +1274,9 @@ void DebuggerManager::FindTargetsDebugger()
         }
     }
 
-    log->LogError(wxString::Format(_("Can't find the debugger config: '%s:%s' for the current target!"),
-                                   name.c_str(), config.c_str()));
+    log->LogError(wxString::Format(_("Can't find the debugger config: '%s:%s' for the current target '%s'!"),
+                                   name.c_str(), config.c_str(),
+                                   (target ? target->GetTitle().c_str() : wxT("<nullptr>"))));
     m_menuHandler->MarkActiveTargetAsValid(false);
 }
 
