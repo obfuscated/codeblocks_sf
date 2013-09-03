@@ -463,7 +463,7 @@ void DebuggerMenuHandler::OnUpdateUI(wxUpdateUIEvent& event)
         otherPlugin = true;
     }
 
-    if (mbar)
+    if (mbar && Manager::Get()->GetDebuggerManager()->HasMenu())
     {
         bool hasBreaks = Support(m_activeDebugger, cbDebuggerFeature::Breakpoints);
 

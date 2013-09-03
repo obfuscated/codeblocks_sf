@@ -898,6 +898,14 @@ wxMenu* DebuggerManager::GetMenu()
     return menu;
 }
 
+bool DebuggerManager::HasMenu() const
+{
+    wxMenuBar *menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
+    cbAssert(menuBar);
+    int menu_pos = menuBar->FindMenu(_("&Debug"));
+    return menu_pos != wxNOT_FOUND;
+}
+
 void DebuggerManager::BuildContextMenu(wxMenu &menu, const wxString& word_at_caret, bool is_running)
 {
     m_menuHandler->BuildContextMenu(menu, word_at_caret, is_running);

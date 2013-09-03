@@ -264,6 +264,7 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         void RebuildAllConfigs();
 
         wxMenu* GetMenu();
+        bool HasMenu() const;
         void BuildContextMenu(wxMenu &menu, const wxString& word_at_caret, bool is_running);
 
         TextCtrlLogger* GetLogger(int &index);
