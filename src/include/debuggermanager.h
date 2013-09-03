@@ -277,11 +277,41 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         cbDebuggerMenuHandler* GetMenuHandler();
 
         cbBacktraceDlg* GetBacktraceDialog();
+
+        /** Returns a pointer to the breakpoints dialog.
+          * It will return nullptr if there are no debugger plugins loaded.
+          * Debugger plugin writers can treat it as always returning non-null value.
+          */
         cbBreakpointsDlg* GetBreakpointDialog();
+
+        /** Returns a pointer to the CPU registers dialog.
+          * It will return nullptr if there are no debugger plugins loaded.
+          * Debugger plugin writers can treat it as always returning non-null value.
+          */
         cbCPURegistersDlg* GetCPURegistersDialog();
+
+        /** Returns a pointer to the disassembly dialog.
+          * It will return nullptr if there are no debugger plugins loaded.
+          * Debugger plugin writers can treat it as always returning non-null value.
+          */
         cbDisassemblyDlg* GetDisassemblyDialog();
+
+        /** Returns a pointer to the memory dialog.
+          * It will return nullptr if there are no debugger plugins loaded.
+          * Debugger plugin writers can treat it as always returning non-null value.
+          */
         cbExamineMemoryDlg* GetExamineMemoryDialog();
+
+        /** Returns a pointer to the threads dialog.
+          * It will return nullptr if there are no debugger plugins loaded.
+          * Debugger plugin writers can treat it as always returning non-null value.
+          */
         cbThreadsDlg* GetThreadsDialog();
+
+        /** Returns a pointer to the watches dialog.
+          * It will return nullptr if there are no debugger plugins loaded.
+          * Debugger plugin writers can treat it as always returning non-null value.
+          */
         cbWatchesDlg* GetWatchesDialog();
 
         bool ShowBacktraceDialog();

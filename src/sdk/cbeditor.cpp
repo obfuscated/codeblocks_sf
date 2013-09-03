@@ -3204,7 +3204,8 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
             active->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
 
         cbBreakpointsDlg *dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-        dlg->Reload();
+        if (dlg)
+            dlg->Reload();
         RefreshBreakpointMarkers();
     }
     // If we remove the folding-point (the brace or whatever) from a folded block,
