@@ -317,6 +317,22 @@ namespace ScriptBindings
             }
         }
     }
+    SQInteger ProjectManager_RebuildTree(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        int paramCount = sa.GetParamCount();
+        if (paramCount == 1)
+        {
+            ProjectManager *manager = SqPlus::GetInstance<ProjectManager, false>(v, 1);
+            if (manager)
+            {
+                manager->GetUI().RebuildTree();
+                return sa.Return();
+            }
+            return sa.ThrowError("'this' is NULL!?! (type of ProjectManager*)");
+        }
+        return sa.ThrowError("Invalid arguments to \"ProjectManager::RebuildTree\"");
+    }
 
     SQInteger cbEditor_SetText(HSQUIRRELVM v)
     {
@@ -585,8 +601,9 @@ namespace ScriptBindings
                 func(&ProjectManager::RemoveProjectDependency, "RemoveProjectDependency").
                 func(&ProjectManager::ClearProjectDependencies, "ClearProjectDependencies").
                 func(&ProjectManager::RemoveProjectFromAllDependencies, "RemoveProjectFromAllDependencies").
-                func(&ProjectManager::GetDependenciesForProject, "GetDependenciesForProject");
+                func(&ProjectManager::GetDependenciesForProject, "GetDependenciesForProject").
 //                func(&ProjectManager::ConfigureProjectDependencies, "ConfigureProjectDependencies");
+                staticFuncVarArgs(&ProjectManager_RebuildTree, "RebuildTree", "*");
 
         SqPlus::SQClassDef<EditorBase>("EditorBase").
                 func(&EditorBase::GetFilename, "GetFilename").
