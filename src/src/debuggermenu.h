@@ -51,14 +51,6 @@ class DebuggerMenuHandler : public wxEvtHandler, public cbDebuggerMenuHandler
         void OnDetachFromProcess(wxCommandEvent& event);
         void OnAddWatch(wxCommandEvent& event);
 
-        void OnBacktrace(wxCommandEvent& event);
-        void OnBreakpoints(wxCommandEvent& event);
-        void OnCPURegisters(wxCommandEvent& event);
-        void OnDisassembly(wxCommandEvent& event);
-        void OnExamineMemory(wxCommandEvent& event);
-        void OnThreads(wxCommandEvent& event);
-        void OnWatches(wxCommandEvent& event);
-
         void OnActiveDebuggerClick(wxCommandEvent& event);
         void OnActiveDebuggerTargetsDefaultClick(wxCommandEvent& event);
 
