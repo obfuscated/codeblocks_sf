@@ -169,7 +169,7 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine1">
-																<label>Multi-lin&amp;e search</label>
+																<label>Multi-&amp;line search</label>
 															</object>
 															<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
@@ -395,7 +395,7 @@
 														</object>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="chkMultiLine2">
-																<label>Multi-lin&amp;e search</label>
+																<label>Multi-&amp;line search</label>
 															</object>
 															<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 															<border>4</border>
