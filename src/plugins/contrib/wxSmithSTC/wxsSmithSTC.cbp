@@ -13,7 +13,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithSTC\wxSTC" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log -na -ns -nd -p debug" />
 				<Option host_application="codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option createStaticLib="1" />
@@ -39,7 +39,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithSTC\wxSTEdit" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log -na -ns -nd -p debug" />
 				<Option host_application="codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option createStaticLib="1" />
@@ -65,7 +65,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithSTC" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log -na -ns -nd -p debug" />
 				<Option host_application="codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />

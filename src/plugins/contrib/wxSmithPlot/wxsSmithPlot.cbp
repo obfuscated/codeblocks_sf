@@ -21,7 +21,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithPlot" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log -na -ns -nd -p debug" />
 				<Option host_application="codeblocks.exe" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>

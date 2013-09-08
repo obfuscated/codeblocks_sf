@@ -13,7 +13,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/wxSmith" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns" />
+				<Option parameters="--debug-log --multiple-instance -ns -p debug" />
 				<Option createStaticLib="1" />
 				<Compiler>
 					<Add option="`wx-config --cflags`" />

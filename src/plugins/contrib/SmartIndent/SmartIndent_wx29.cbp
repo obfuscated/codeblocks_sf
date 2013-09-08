@@ -12,7 +12,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log" />
+				<Option parameters="--debug-log -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -33,7 +33,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns -nd" />
+				<Option parameters="--debug-log --no-check-associations -ns -nd -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -54,7 +54,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log" />
+				<Option parameters="--debug-log -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -75,7 +75,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log" />
+				<Option parameters="--debug-log -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -96,7 +96,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns -nd" />
+				<Option parameters="--debug-log --no-check-associations -ns -nd -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -117,7 +117,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns -nd" />
+				<Option parameters="--debug-log --no-check-associations -ns -nd -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
@@ -138,7 +138,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log" />
+				<Option parameters="--debug-log -p debug" />
 				<Option host_application="../../../devel29/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />

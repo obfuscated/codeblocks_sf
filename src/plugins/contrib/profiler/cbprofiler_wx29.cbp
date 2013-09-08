@@ -11,7 +11,7 @@
 				<Option object_output="..\..\..\.objs29\plugins\contrib\profiler" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
 				<Option host_application="..\..\..\devel29\codeblocks.exe" />
 			</Target>
 			<Environment>

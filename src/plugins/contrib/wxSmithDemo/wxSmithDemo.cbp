@@ -12,7 +12,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\wxSmithDemo" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log -na -ns -nd" />
+				<Option parameters="--debug-log -na -ns -nd -p debug" />
 				<Option host_application=".\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />

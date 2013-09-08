@@ -10,7 +10,7 @@
 				<Option object_output="..\..\..\.objs\plugins\contrib\Cscope" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd -p debug" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 			</Target>
 			<Environment>

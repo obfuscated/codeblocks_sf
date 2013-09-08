@@ -12,7 +12,7 @@
 				<Option external_deps="..\..\..\devel\libcodeblocks.a;..\..\..\devel\libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>

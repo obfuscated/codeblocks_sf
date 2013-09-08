@@ -61,7 +61,7 @@
 				<Option external_deps="wxPdfDocument\lib\libwxPdfDocument.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
 				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>

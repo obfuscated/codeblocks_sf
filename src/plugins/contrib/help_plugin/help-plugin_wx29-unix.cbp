@@ -36,7 +36,7 @@
 				<Option object_output="../../../.objs29/plugins/contrib/help_plugin" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ns -ni" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
 				<Option host_application="../../../devel29/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Option createDefFile="1" />

@@ -128,7 +128,7 @@
 				<Option external_deps="base/tinyxml/libtxml29.a;sdk/scripting/lib/libsquirrel29.a;sdk/scripting/lib/libsqstdlib29.a;sdk/scripting/lib/libsqplus29.a;devel29/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ni" />
+				<Option parameters="--debug-log --multiple-instance -ni -p debug" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
