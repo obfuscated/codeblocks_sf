@@ -435,7 +435,6 @@ wxsImageListEditorDlg::~wxsImageListEditorDlg()
 bool wxsImageListEditorDlg::Execute(wxString &inName, wxArrayString &aImageData)
 {
     int         n;
-    int         w, h;
     wxString    ss;
 
     // need default sizes?
@@ -455,18 +454,6 @@ bool wxsImageListEditorDlg::Execute(wxString &inName, wxArrayString &aImageData)
 
     // the name
     StaticText15->SetLabel(inName);
-
-    // each image size
-    m_ImageList.GetSize(0, w, h);
-    ss.Printf(_T("%d"), w);
-    StaticText26->SetLabel(ss);
-    ss.Printf(_T("%d"), h);
-    StaticText27->SetLabel(ss);
-
-    // and the current count
-    n = m_ImageList.GetImageCount();
-    ss.Printf(_T("%d"), n);
-    StaticText17->SetLabel(ss);
 
     // update buttons
     UpdateEnabled();
@@ -705,6 +692,7 @@ void wxsImageListEditorDlg::OnPanel1LeftUp(wxMouseEvent &event)
 void wxsImageListEditorDlg::UpdateEnabled(void)
 {
     int         n;
+    int         w = 0, h = 0;
     bool        b;
     wxString    ss;
 
@@ -717,6 +705,19 @@ void wxsImageListEditorDlg::UpdateEnabled(void)
     n = m_ImageList.GetImageCount();
     ss.Printf(_T("%d"), n);
     StaticText17->SetLabel(ss);
+
+    // and each image size
+    if (n > 0)
+        m_ImageList.GetSize(0, w, h);
+    ss.Printf(_T("%d"), w);
+    StaticText26->SetLabel(ss);
+    ss.Printf(_T("%d"), h);
+    StaticText27->SetLabel(ss);
+
+    // disable del-, clear- and add-button if image list is empty
+    bDel->Enable(n > 0);
+    bClear->Enable(n > 0);
+    bSave->Enable(n > 0);
 }
 
 /*! \brief The "transparent" checkbox was clicked.
