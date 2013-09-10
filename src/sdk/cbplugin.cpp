@@ -205,13 +205,11 @@ wxString cbDebuggerPlugin::GetEditorWordAtCaret(const wxPoint* mousePosition)
         if (mousePosition)
         {
             int startPos = stc->GetSelectionStart();
-            int endPos   = stc->GetSelectionEnd();
-            wxPoint startPoint = stc->PointFromPosition(startPos);
-            wxPoint endPoint   = stc->PointFromPosition(endPos);
-            int endLine = stc->LineFromPosition(endPos);
-            int textHeight = stc->TextHeight(endLine);
-            endPoint.y += textHeight;
-            if (wxRect(startPoint, endPoint).Contains(*mousePosition))
+            int endPos = stc->GetSelectionEnd();
+            int mousePos = stc->PositionFromPointClose(mousePosition->x, mousePosition->y);
+            if (mousePos == wxSCI_INVALID_POSITION)
+                return wxEmptyString;
+            else if (startPos <= mousePos && mousePos <= endPos)
                 return selected_text;
             else
                 return wxEmptyString;
