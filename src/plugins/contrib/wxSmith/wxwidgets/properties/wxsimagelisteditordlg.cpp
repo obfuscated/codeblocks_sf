@@ -1211,7 +1211,11 @@ void wxsImageListEditorDlg::ArrayToImage(wxArrayString &inArray, wxImage &outIma
 
     // make an input stream
     n = CalcArraySize(inArray);
-    tt = _("");
+
+    // always start with XPM-header (added here to avoid incompatibilities with older projects)
+    if(inArray.Item(0).Find(_T("XPM")) < 0)
+        tt += _T("/* XPM */n");
+
     tt.Alloc(n + 64);
 
     for(i = 0; i < (int)inArray.GetCount(); i++){
