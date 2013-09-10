@@ -42,7 +42,7 @@ class wxsEditEnumProperty: public wxsProperty
          *  \param Offset           offset of long integer holding enumerated value (taken from wxsOFFSET macro)
          *  \param Values           array of long integer values which can be enumerated
          *  \param Names            array of names used for items in Values array, ending with 0
-         *  \param UpdateEnteries   posting true here notifies, that arrays may change while property is shown in property grid
+         *  \param UpdateEntries   posting true here notifies, that arrays may change while property is shown in property grid
          *  \param Default          defaut value applied on read errors
          *  \param UseNamesInXml    if true, names will be stored inside xml node instead of values
          *  \param Priority         priority of this property
@@ -52,7 +52,7 @@ class wxsEditEnumProperty: public wxsProperty
             const wxString& DataName,
             long Offset,
             const wxChar** Names,
-            bool UpdateEnteries=false,
+            bool UpdateEntries=false,
             const wxString &Default=wxEmptyString,
             bool XmlStoreEmpty=false,
             bool UseNamesInXml=false,
@@ -73,7 +73,7 @@ class wxsEditEnumProperty: public wxsProperty
         long            		Offset;							//!< The offset of the long integer holding the enumerated value (taken from wxsOFFSET macro).
         wxString        	Default;							//!< The defaut value applied on read errors.
         bool            		XmlStoreEmpty;			//!< Store empty values in XML.
-        bool            		UpdateEnteries;			//!< If true, arrays may change while the property is shown in the property grid.
+        bool            		UpdateEntries;			//!< If true, arrays may change while the property is shown in the property grid.
         long            		Values[512];					//!< An array of long integer values which can be enumerated.
         const wxChar  **Names;						//!< An array of names used for items in Values array, ending with 0.
         bool            		UseNamesInXml;		//!< If true, names will be stored in XML nodes instead of values.

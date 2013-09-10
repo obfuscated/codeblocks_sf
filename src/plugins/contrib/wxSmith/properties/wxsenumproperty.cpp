@@ -28,11 +28,11 @@
 // Helper macro for fetching variable
 #define VALUE   wxsVARIABLE(Object,Offset,long)
 
-wxsEnumProperty::wxsEnumProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEnteries,long _Default,bool _UseNamesInXml,int Priority):
+wxsEnumProperty::wxsEnumProperty(const wxString& PGName, const wxString& DataName,long _Offset,const long* _Values,const wxChar** _Names,bool _UpdateEntries,long _Default,bool _UseNamesInXml,int Priority):
     wxsProperty(PGName,DataName,Priority),
     Offset(_Offset),
     Default(_Default),
-    UpdateEnteries(_UpdateEnteries),
+    UpdateEntries(_UpdateEntries),
     Values(_Values),
     Names(_Names),
     UseNamesInXml(_UseNamesInXml)
@@ -56,7 +56,7 @@ bool wxsEnumProperty::PGRead(cb_unused wxsPropertyContainer* Object,
 bool wxsEnumProperty::PGWrite(wxsPropertyContainer* Object, wxPropertyGridManager* Grid,
                               wxPGId Id, cb_unused long Index)
 {
-    if ( UpdateEnteries )
+    if ( UpdateEntries )
     {
         #if wxCHECK_VERSION(2, 9, 0)
         wxPGChoices choices = Grid->GetGrid()->GetSelection()->GetChoices();
