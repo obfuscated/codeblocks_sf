@@ -490,7 +490,7 @@ bool wxsImageListEditorDlg::Execute(wxString &inName, wxArrayString &aImageData)
 void wxsImageListEditorDlg::OnbAddClick(wxCommandEvent &event)
 {
     int         n;
-    int         iw, ih;
+    int         iw = 0, ih = 0;
     int         bw, bh;
     wxBitmap    *bmp;
     wxString    ss;
@@ -500,12 +500,14 @@ void wxsImageListEditorDlg::OnbAddClick(wxCommandEvent &event)
         return;
     }
 
+    n = m_ImageList.GetImageCount();
     // compare sizes
-    m_ImageList.GetSize(0, iw, ih);
+    if(n > 0)
+        m_ImageList.GetSize(0, iw, ih);
     bw = m_ImportImage.GetWidth();
     bh = m_ImportImage.GetHeight();
 
-    if((bw > iw) || (bh > ih)){
+    if(n > 0 && ((bw > iw) || (bh > ih))){
         n = ::wxMessageBox(_("The image is larger than the size allowed for the list;\nDivide the image into multiple entries?"), _("Add Image"), wxYES_NO);
         if(n != wxYES){
             return;
@@ -792,12 +794,14 @@ void wxsImageListEditorDlg::PaintPreviewPanel(wxPaintEvent &event)
     // which bitmap from the list?
     ix = m_FirstImage + ip;
 
-    // the bitmap
-    bmp = m_ImageList.GetBitmap(ix);
-
     // the label
     ss.Printf(_T("%d"), ix);
     m_PreviewLabel[ip]->SetLabel(ss);
+
+    if(ix >= m_ImageList.GetImageCount())
+        return;
+    // the bitmap
+    bmp = m_ImageList.GetBitmap(ix);
 
     // draw it
     PaintPanel(dc, pnl, bmp, (ix == m_PreviewSelect));
@@ -954,7 +958,11 @@ void wxsImageListEditorDlg::OnPanel11LeftUp(wxMouseEvent &event)
  */
 void wxsImageListEditorDlg::SelectPreviewPanel(int aIndex)
 {
+    int n = m_ImageList.GetImageCount() - 1;
     m_PreviewSelect = aIndex + m_FirstImage;
+
+    if (m_PreviewSelect > n)
+        m_PreviewSelect = n;
     PreviewList();
     PreviewSelected();
 }
@@ -972,7 +980,9 @@ void wxsImageListEditorDlg::OnPanel12Paint(wxPaintEvent &event)
     wxString    ss, tt;
 
     // a copy of the selected bitmap
-    bmp = m_ImageList.GetBitmap(m_PreviewSelect);
+    if ((m_PreviewSelect >= 0) &&
+        (m_ImageList.GetImageCount() > 0))
+            bmp = m_ImageList.GetBitmap(m_PreviewSelect);
 
     // the label
     ss.Printf(_("%d"), m_PreviewSelect);
@@ -1097,14 +1107,15 @@ void wxsImageListEditorDlg::OnbSaveListClick(wxCommandEvent& event)
     wxBitmap    *bmp;
     wxString    ss;
 
-    // size of each image
-    m_ImageList.GetSize(0, w, h);
     n = m_ImageList.GetImageCount();
 
     // anything to save
     if(n == 0){
         return;
     }
+
+    // size of each image
+    m_ImageList.GetSize(0, w, h);
 
     // make a bitmap and a drawing context
     bmp = new wxBitmap(n * w, h);
@@ -1163,6 +1174,8 @@ void wxsImageListEditorDlg::PaintPanel(wxPaintDC &aDC, wxPanel *aPanel, wxBitmap
 
     aDC.Clear();
 
+    if(!aBitmap.Ok())
+        return;
     // image and panel sizes
     iw = aBitmap.GetWidth();
     ih = aBitmap.GetHeight();
@@ -1331,15 +1344,18 @@ void wxsImageListEditorDlg::ImageListToArray(wxImageList &inList, wxArrayString 
     // clear old junk
     outArray.Clear();
 
+    n = inList.GetImageCount();
+    if(n == 0)
+        return;
+
     // the first 2 items are the width and height
-    inList.GetSize(0, i, n);
+    inList.GetSize(0, i, j);
     ss.Printf(_T("%d"), i);
     outArray.Add(ss);
-    ss.Printf(_T("%d"), n);
+    ss.Printf(_T("%d"), j);
     outArray.Add(ss);
 
     // get each bitmap from the list and add to outArray
-    n = inList.GetImageCount();
     for(i = 0; i < n; i++){
         bmp = inList.GetBitmap(i);
         BitmapToArray(bmp, aa);
