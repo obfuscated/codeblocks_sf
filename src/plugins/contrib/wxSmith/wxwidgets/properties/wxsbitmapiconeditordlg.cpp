@@ -234,7 +234,6 @@ void wxsBitmapIconEditorDlg::OnTimer(wxTimerEvent& event)
     wxSize PrevSize = Preview->GetSize();
     wxBitmap Tmp(PrevSize.GetWidth(),PrevSize.GetHeight());
     wxBitmap PreviewBmp = PreviewData.GetPreview(wxDefaultSize,DefaultClient);
-    wxSize BmpSize(PreviewBmp.GetWidth(),PreviewBmp.GetHeight());
     wxMemoryDC DC;
     DC.SelectObject(Tmp);
     DC.SetBrush(wxColour(0xC0,0xC0,0xC0));
@@ -243,6 +242,7 @@ void wxsBitmapIconEditorDlg::OnTimer(wxTimerEvent& event)
 
     if ( PreviewBmp.Ok() )
     {
+        wxSize BmpSize(PreviewBmp.GetWidth(),PreviewBmp.GetHeight());
         int X = (PrevSize.GetWidth()  - BmpSize.GetWidth() ) / 2;
         int Y = (PrevSize.GetHeight() - BmpSize.GetHeight()) / 2;
         if ( X < 0 ) X = 0;
