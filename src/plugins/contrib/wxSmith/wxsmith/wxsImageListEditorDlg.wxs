@@ -137,7 +137,7 @@
 											<pos>40,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -162,7 +162,7 @@
 											<pos>72,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -187,7 +187,7 @@
 											<pos>104,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -212,7 +212,7 @@
 											<pos>136,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -237,7 +237,7 @@
 											<pos>168,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -262,7 +262,7 @@
 											<pos>200,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -287,7 +287,7 @@
 											<pos>232,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -312,7 +312,7 @@
 											<pos>264,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -337,7 +337,7 @@
 											<pos>296,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -362,7 +362,7 @@
 											<pos>328,80</pos>
 											<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 									</object>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -644,7 +644,30 @@
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT25" variable="StaticText25" member="yes">
-													<label>Export BMP</label>
+													<label>Export selected BMP</label>
+													<pos>336,208</pos>
+												</object>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+										</object>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxBoxSizer" variable="BoxSizer20" member="no">
+											<object class="sizeritem">
+												<object class="wxBitmapButton" name="ID_BITMAPBUTTON8" variable="bSaveList" member="yes">
+													<bitmap stock_id="wxART_FILE_SAVE_AS" />
+													<default>1</default>
+													<pos>304,204</pos>
+													<handler function="OnbSaveListClick" entry="EVT_BUTTON" />
+												</object>
+												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											</object>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT29" variable="StaticText29" member="yes">
+													<label>Export list as BMP</label>
 													<pos>336,208</pos>
 												</object>
 												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>

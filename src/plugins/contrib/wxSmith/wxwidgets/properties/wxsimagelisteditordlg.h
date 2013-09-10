@@ -26,15 +26,15 @@
 
 
 //(*Headers(wxsImageListEditorDlg)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/checkbox.h>
-#include <wx/colordlg.h>
-#include <wx/panel.h>
-#include <wx/filedlg.h>
 #include <wx/bmpbuttn.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include <wx/colordlg.h>
 #include <wx/button.h>
+#include <wx/filedlg.h>
+#include <wx/panel.h>
 #include "scrollingdialog.h"
+#include <wx/stattext.h>
 //*)
 
 #include "wxsimagelistproperty.h"
@@ -65,59 +65,61 @@ class wxsImageListEditorDlg: public wxScrollingDialog
         static  bool            SaveXPM(wxImage * image, wxOutputStream& stream);
 
         //(*Declarations(wxsImageListEditorDlg)
-        wxStaticText* StaticText10;
+        wxStaticText* StaticText24;
         wxStaticText* StaticText22;
-        wxStaticText* StaticText9;
-        wxStaticText* StaticText20;
-        wxButton* bOK;
-        wxPanel* Panel5;
-        wxBitmapButton* bRight;
-        wxButton* bCancel;
-        wxStaticText* StaticText13;
-        wxStaticText* StaticText2;
-        wxPanel* Panel4;
-        wxStaticText* StaticText14;
-        wxStaticText* StaticText6;
-        wxStaticText* StaticText26;
-        wxPanel* Panel11;
-        wxBitmapButton* bSave;
-        wxPanel* Panel9;
-        wxStaticText* StaticText19;
-        wxStaticText* StaticText8;
-        wxStaticText* StaticText11;
-        wxBitmapButton* bClear;
-        wxStaticText* StaticText18;
-        wxBitmapButton* bAdd;
-        wxPanel* Panel8;
+        wxBitmapButton* bSaveList;
+        wxBitmapButton* bDel;
         wxPanel* Panel1;
-        wxColourDialog* ColourDialog1;
-        wxStaticText* StaticText1;
-        wxStaticText* StaticText27;
-        wxFileDialog* FileDialog1;
-        wxStaticText* StaticText3;
+        wxPanel* Panel11;
         wxPanel* Panel6;
         wxStaticText* StaticText21;
-        wxPanel* Panel3;
-        wxButton* bColor;
-        wxStaticText* StaticText23;
-        wxStaticText* StaticText24;
-        wxStaticText* StaticText5;
-        wxStaticText* StaticText7;
+        wxStaticText* StaticText13;
+        wxStaticText* StaticText14;
         wxPanel* Panel7;
-        wxBitmapButton* bLeft;
-        wxCheckBox* cxTransparent;
-        wxStaticText* StaticText28;
         wxStaticText* StaticText15;
-        wxStaticText* StaticText12;
-        wxPanel* Panel2;
-        wxPanel* Panel10;
-        wxStaticText* StaticText25;
-        wxBitmapButton* bDel;
-        wxStaticText* StaticText4;
         wxStaticText* StaticText17;
+        wxStaticText* StaticText28;
+        wxButton* bCancel;
         wxPanel* Panel12;
-        wxBitmapButton* bRead;
+        wxPanel* Panel9;
+        wxPanel* Panel8;
+        wxColourDialog* ColourDialog1;
+        wxStaticText* StaticText20;
+        wxStaticText* StaticText18;
+        wxStaticText* StaticText1;
+        wxStaticText* StaticText10;
+        wxPanel* Panel10;
         wxStaticText* StaticText16;
+        wxBitmapButton* bLeft;
+        wxPanel* Panel2;
+        wxStaticText* StaticText3;
+        wxPanel* Panel4;
+        wxStaticText* StaticText23;
+        wxPanel* Panel5;
+        wxBitmapButton* bAdd;
+        wxStaticText* StaticText8;
+        wxStaticText* StaticText12;
+        wxFileDialog* FileDialog1;
+        wxBitmapButton* bRight;
+        wxButton* bColor;
+        wxPanel* Panel3;
+        wxBitmapButton* bSave;
+        wxStaticText* StaticText7;
+        wxBitmapButton* bClear;
+        wxBitmapButton* bRead;
+        wxCheckBox* cxTransparent;
+        wxStaticText* StaticText4;
+        wxStaticText* StaticText5;
+        wxStaticText* StaticText2;
+        wxStaticText* StaticText27;
+        wxStaticText* StaticText26;
+        wxStaticText* StaticText6;
+        wxButton* bOK;
+        wxStaticText* StaticText19;
+        wxStaticText* StaticText29;
+        wxStaticText* StaticText9;
+        wxStaticText* StaticText11;
+        wxStaticText* StaticText25;
         //*)
 
     protected:
@@ -172,6 +174,8 @@ class wxsImageListEditorDlg: public wxScrollingDialog
         static const long ID_STATICTEXT24;
         static const long ID_BITMAPBUTTON7;
         static const long ID_STATICTEXT25;
+        static const long ID_BITMAPBUTTON8;
+        static const long ID_STATICTEXT29;
         static const long ID_BUTTON1;
         static const long ID_BUTTON4;
         //*)
@@ -203,6 +207,7 @@ class wxsImageListEditorDlg: public wxScrollingDialog
         void OnbDelClick(wxCommandEvent& event);
         void OnbClearClick(wxCommandEvent& event);
         void OnbSaveClick(wxCommandEvent& event);
+        void OnbSaveListClick(wxCommandEvent& event);
         void PaintPreviewPanel(wxPaintEvent& event);
         //*)
 

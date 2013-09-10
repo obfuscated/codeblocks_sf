@@ -22,13 +22,13 @@
 */
 
 //(*InternalHeaders(wxsImageListEditorDlg)
-#include <wx/artprov.h>
-#include <wx/bitmap.h>
 #include <wx/settings.h>
-#include <wx/font.h>
-#include <wx/intl.h>
-#include <wx/image.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/font.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/artprov.h>
 //*)
 
 #include <wx/app.h>
@@ -104,6 +104,8 @@ const long wxsImageListEditorDlg::ID_BITMAPBUTTON6 = wxNewId();
 const long wxsImageListEditorDlg::ID_STATICTEXT24 = wxNewId();
 const long wxsImageListEditorDlg::ID_BITMAPBUTTON7 = wxNewId();
 const long wxsImageListEditorDlg::ID_STATICTEXT25 = wxNewId();
+const long wxsImageListEditorDlg::ID_BITMAPBUTTON8 = wxNewId();
+const long wxsImageListEditorDlg::ID_STATICTEXT29 = wxNewId();
 const long wxsImageListEditorDlg::ID_BUTTON1 = wxNewId();
 const long wxsImageListEditorDlg::ID_BUTTON4 = wxNewId();
 //*)
@@ -116,37 +118,38 @@ END_EVENT_TABLE()
 wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size)
 {
     //(*Initialize(wxsImageListEditorDlg)
-    wxBoxSizer* BoxSizer4;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxBoxSizer* BoxSizer6;
-    wxBoxSizer* BoxSizer19;
     wxBoxSizer* BoxSizer15;
-    wxBoxSizer* BoxSizer5;
-    wxBoxSizer* BoxSizer10;
-    wxBoxSizer* BoxSizer7;
-    wxBoxSizer* BoxSizer8;
-    wxBoxSizer* BoxSizer13;
-    wxBoxSizer* BoxSizer23;
-    wxBoxSizer* BoxSizer2;
-    wxBoxSizer* BoxSizer11;
-    wxBoxSizer* BoxSizer16;
-    wxBoxSizer* BoxSizer18;
-    wxBoxSizer* BoxSizer12;
-    wxBoxSizer* BoxSizer28;
-    wxBoxSizer* BoxSizer14;
-    wxStaticBoxSizer* StaticBoxSizer3;
-    wxBoxSizer* BoxSizer27;
-    wxBoxSizer* BoxSizer17;
-    wxBoxSizer* BoxSizer24;
-    wxBoxSizer* BoxSizer26;
-    wxBoxSizer* BoxSizer32;
-    wxBoxSizer* BoxSizer1;
-    wxBoxSizer* BoxSizer9;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxBoxSizer* BoxSizer34;
+    wxStaticBoxSizer* StaticBoxSizer2;
     wxBoxSizer* BoxSizer33;
+    wxBoxSizer* BoxSizer32;
     wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer16;
+    wxBoxSizer* BoxSizer27;
+    wxBoxSizer* BoxSizer10;
     wxBoxSizer* BoxSizer25;
+    wxBoxSizer* BoxSizer24;
+    wxBoxSizer* BoxSizer7;
+    wxBoxSizer* BoxSizer11;
+    wxBoxSizer* BoxSizer13;
+    wxBoxSizer* BoxSizer2;
+    wxBoxSizer* BoxSizer28;
+    wxStaticBoxSizer* StaticBoxSizer3;
+    wxBoxSizer* BoxSizer17;
+    wxBoxSizer* BoxSizer9;
+    wxBoxSizer* BoxSizer18;
+    wxBoxSizer* BoxSizer34;
+    wxBoxSizer* BoxSizer19;
+    wxBoxSizer* BoxSizer4;
+    wxBoxSizer* BoxSizer8;
+    wxBoxSizer* BoxSizer23;
+    wxBoxSizer* BoxSizer20;
+    wxBoxSizer* BoxSizer1;
+    wxBoxSizer* BoxSizer12;
+    wxBoxSizer* BoxSizer14;
+    wxBoxSizer* BoxSizer26;
+    wxBoxSizer* BoxSizer6;
+    wxBoxSizer* BoxSizer5;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
     Create(parent, wxID_ANY, _("wxImageList Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -183,70 +186,70 @@ wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, co
     Panel2->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer7->Add(Panel2, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("1"), wxPoint(40,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
-    BoxSizer7->Add(StaticText2, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer7->Add(StaticText2, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer7, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer8 = new wxBoxSizer(wxVERTICAL);
     Panel3 = new wxPanel(this, ID_PANEL3, wxPoint(72,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL3"));
     Panel3->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer8->Add(Panel3, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("2"), wxPoint(72,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT3"));
-    BoxSizer8->Add(StaticText3, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer8->Add(StaticText3, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer8, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer9 = new wxBoxSizer(wxVERTICAL);
     Panel4 = new wxPanel(this, ID_PANEL4, wxPoint(104,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL4"));
     Panel4->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer9->Add(Panel4, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("3"), wxPoint(104,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT4"));
-    BoxSizer9->Add(StaticText4, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer9->Add(StaticText4, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer9, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer10 = new wxBoxSizer(wxVERTICAL);
     Panel5 = new wxPanel(this, ID_PANEL5, wxPoint(136,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL5"));
     Panel5->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer10->Add(Panel5, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("4"), wxPoint(136,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT5"));
-    BoxSizer10->Add(StaticText5, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer10->Add(StaticText5, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer10, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer11 = new wxBoxSizer(wxVERTICAL);
     Panel8 = new wxPanel(this, ID_PANEL8, wxPoint(168,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL8"));
     Panel8->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer11->Add(Panel8, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("5"), wxPoint(168,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT6"));
-    BoxSizer11->Add(StaticText6, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer11->Add(StaticText6, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer11, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer12 = new wxBoxSizer(wxVERTICAL);
     Panel6 = new wxPanel(this, ID_PANEL6, wxPoint(200,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL6"));
     Panel6->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer12->Add(Panel6, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText7 = new wxStaticText(this, ID_STATICTEXT7, _("6"), wxPoint(200,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT7"));
-    BoxSizer12->Add(StaticText7, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer12->Add(StaticText7, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer12, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer13 = new wxBoxSizer(wxVERTICAL);
     Panel7 = new wxPanel(this, ID_PANEL7, wxPoint(232,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL7"));
     Panel7->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer13->Add(Panel7, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText8 = new wxStaticText(this, ID_STATICTEXT8, _("7"), wxPoint(232,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT8"));
-    BoxSizer13->Add(StaticText8, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer13->Add(StaticText8, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer13, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer14 = new wxBoxSizer(wxVERTICAL);
     Panel9 = new wxPanel(this, ID_PANEL9, wxPoint(264,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL9"));
     Panel9->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer14->Add(Panel9, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("8"), wxPoint(264,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT9"));
-    BoxSizer14->Add(StaticText9, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer14->Add(StaticText9, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer14, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer15 = new wxBoxSizer(wxVERTICAL);
     Panel10 = new wxPanel(this, ID_PANEL10, wxPoint(296,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL10"));
     Panel10->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer15->Add(Panel10, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("9"), wxPoint(296,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT10"));
-    BoxSizer15->Add(StaticText10, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer15->Add(StaticText10, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer15, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer16 = new wxBoxSizer(wxVERTICAL);
     Panel11 = new wxPanel(this, ID_PANEL11, wxPoint(328,48), wxSize(32,32), wxDOUBLE_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL11"));
     Panel11->SetBackgroundColour(wxColour(255,255,255));
     BoxSizer16->Add(Panel11, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText12 = new wxStaticText(this, ID_STATICTEXT12, _("10"), wxPoint(328,80), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT12"));
-    BoxSizer16->Add(StaticText12, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer16->Add(StaticText12, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer5->Add(BoxSizer16, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer17 = new wxBoxSizer(wxHORIZONTAL);
     bRight = new wxBitmapButton(this, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_FORWARD")),wxART_BUTTON), wxPoint(368,52), wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
@@ -325,9 +328,16 @@ wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, co
     bSave = new wxBitmapButton(this, ID_BITMAPBUTTON7, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_SAVE")),wxART_BUTTON), wxPoint(304,204), wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON7"));
     bSave->SetDefault();
     BoxSizer34->Add(bSave, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
-    StaticText25 = new wxStaticText(this, ID_STATICTEXT25, _("Export BMP"), wxPoint(336,208), wxDefaultSize, 0, _T("ID_STATICTEXT25"));
+    StaticText25 = new wxStaticText(this, ID_STATICTEXT25, _("Export selected BMP"), wxPoint(336,208), wxDefaultSize, 0, _T("ID_STATICTEXT25"));
     BoxSizer34->Add(StaticText25, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer28->Add(BoxSizer34, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer20 = new wxBoxSizer(wxHORIZONTAL);
+    bSaveList = new wxBitmapButton(this, ID_BITMAPBUTTON8, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_SAVE_AS")),wxART_BUTTON), wxPoint(304,204), wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON8"));
+    bSaveList->SetDefault();
+    BoxSizer20->Add(bSaveList, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    StaticText29 = new wxStaticText(this, ID_STATICTEXT29, _("Export list as BMP"), wxPoint(336,208), wxDefaultSize, 0, _T("ID_STATICTEXT29"));
+    BoxSizer20->Add(StaticText29, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer28->Add(BoxSizer20, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer3->Add(BoxSizer28, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer3->Add(StaticBoxSizer3, 1, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer1->Add(BoxSizer3, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, wxDLG_UNIT(this,wxSize(5,0)).GetWidth());
@@ -377,6 +387,7 @@ wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, co
     Connect(ID_BITMAPBUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbDelClick);
     Connect(ID_BITMAPBUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbClearClick);
     Connect(ID_BITMAPBUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbSaveClick);
+    Connect(ID_BITMAPBUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbSaveListClick);
     Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbOKClick);
     Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbCancelClick);
     //*)
@@ -1041,13 +1052,44 @@ void wxsImageListEditorDlg::OnbClearClick(wxCommandEvent &event)
     UpdateEnabled();
 }
 
-/*! \brief The "Export BMP" button was clicked.
+/*! \brief The "Export selected BMP" button was clicked.
  *
  * \param event wxCommandEvent&
  * \return void
  *
  */
 void wxsImageListEditorDlg::OnbSaveClick(wxCommandEvent &event)
+{
+    int         n;
+    wxBitmap    bmp;
+    wxString    ss;
+
+    n = m_ImageList.GetImageCount();
+
+    // anything to save
+    if(n == 0){
+        return;
+    }
+
+    if(m_PreviewSelect < 0 || m_PreviewSelect >= n)
+        return;
+
+    bmp = m_ImageList.GetBitmap(m_PreviewSelect);
+    // save it
+    n = FileDialog1->ShowModal();
+    if(n == wxID_OK){
+        ss = FileDialog1->GetPath();
+        bmp.SaveFile(ss, wxBITMAP_TYPE_BMP);
+    }
+}
+
+/*! \brief The "Export list as BMP" button was clicked.
+ *
+ * \param event wxCommandEvent&
+ * \return void
+ *
+ */
+void wxsImageListEditorDlg::OnbSaveListClick(wxCommandEvent& event)
 {
     int         i, n;
     int         w, h;
