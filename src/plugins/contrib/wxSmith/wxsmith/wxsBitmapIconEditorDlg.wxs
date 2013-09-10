@@ -14,7 +14,7 @@
 							<object class="sizeritem">
 								<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
 									<cols>1</cols>
-									<growablecols>1</growablecols>
+									<growablecols>0</growablecols>
 									<object class="sizeritem">
 										<object class="wxRadioButton" name="ID_RADIOBUTTON1" variable="NoImage" member="yes">
 											<label>No image</label>

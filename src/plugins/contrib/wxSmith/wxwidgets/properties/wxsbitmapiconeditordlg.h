@@ -24,14 +24,14 @@
 #define WXSBITMAPICONEDITORDLG_H
 
 //(*Headers(wxsBitmapIconEditorDlg)
+#include <wx/combobox.h>
 #include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/radiobut.h>
+#include "scrollingdialog.h"
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/radiobut.h>
 #include <wx/statbmp.h>
-#include <wx/button.h>
-#include "scrollingdialog.h"
-#include <wx/combobox.h>
 //*)
 #include <wx/timer.h>
 
@@ -75,23 +75,23 @@ class wxsBitmapIconEditorDlg: public wxScrollingDialog
 
         //(*Declarations(wxsBitmapIconEditorDlg)
         wxStaticBoxSizer* StaticBoxSizer2;
-        wxStaticBitmap* Preview;
-        wxRadioButton* ImageArt;
+        wxRadioButton* NoImage;
+        wxFlexGridSizer* FlexGridSizer1;
+        wxFlexGridSizer* FlexGridSizer2;
+        wxComboBox* ArtId;
+        wxButton* Button1;
+        wxButton* Button2;
+        wxButton* Button3;
+        wxTextCtrl* FileName;
+        wxStaticText* StaticText1;
+        wxComboBox* ArtClient;
         wxRadioButton* ImageCode;
         wxStaticText* StaticText2;
         wxTextCtrl* CodeText;
-        wxButton* Button1;
-        wxTextCtrl* FileName;
-        wxFlexGridSizer* FlexGridSizer2;
-        wxStaticText* StaticText1;
-        wxButton* Button2;
+        wxRadioButton* ImageArt;
         wxRadioButton* ImageFile;
-        wxButton* Button3;
-        wxComboBox* ArtClient;
-        wxRadioButton* NoImage;
-        wxComboBox* ArtId;
+        wxStaticBitmap* Preview;
         wxStaticBoxSizer* StaticBoxSizer1;
-        wxFlexGridSizer* FlexGridSizer1;
         //*)
         wxTimer* Timer1;
 
