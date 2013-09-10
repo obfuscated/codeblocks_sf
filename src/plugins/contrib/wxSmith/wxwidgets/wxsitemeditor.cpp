@@ -120,7 +120,7 @@ void wxsItemEditor::InitializeVisualStuff()
     m_Content = new wxsItemEditorContent(this,m_Data,this);
     m_HorizSizer->Add(m_Content,1,wxEXPAND);
 
-    m_QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxVSCROLL|wxSUNKEN_BORDER|wxALWAYS_SHOW_SB);
+    m_QPArea = new wxScrolledWindow(this,-1,wxDefaultPosition,wxDefaultSize,wxVSCROLL|wxHSCROLL|wxSUNKEN_BORDER/*|wxALWAYS_SHOW_SB*/);
     m_QPArea->SetScrollbars(0,5,0,0);
     m_HorizSizer->Add(m_QPArea,0,wxEXPAND);
     m_QPSizer = new wxBoxSizer(wxVERTICAL);
