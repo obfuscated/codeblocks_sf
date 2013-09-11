@@ -18,7 +18,7 @@ class wxEvtHandler;
 
 typedef std::map<wxString, StringSet> SystemHeadersMap;
 
-extern long idSystemHeadersThreadCompleted;
+extern long idSystemHeadersThreadFinish;
 extern long idSystemHeadersThreadUpdate;
 extern long idSystemHeadersThreadError;
 

@@ -51,9 +51,9 @@
 
 
 
-long idSystemHeadersThreadCompleted = wxNewId();
-long idSystemHeadersThreadUpdate    = wxNewId();
-long idSystemHeadersThreadError     = wxNewId();
+long idSystemHeadersThreadFinish = wxNewId();
+long idSystemHeadersThreadUpdate = wxNewId();
+long idSystemHeadersThreadError  = wxNewId();
 
 
 // internal class declaration of HeaderDirTraverser (implementation below)
