@@ -16,9 +16,56 @@
 
 #include "editor_hooks.h"
 
+#ifdef EDITOR_HOOK_PERFORMANCE_MEASURE
+    //put these include directive after #include "editor_hooks.h", as the macro may
+    //defined in the header file
+    #include <cxxabi.h>  // demangle C++ names
+    #include <cstdlib>   // free the memory created by abi::__cxa_demangle
+#endif // EDITOR_HOOK_PERFORMANCE_MEASURE
+
 #include "wx/wxscintilla.h"
 
 #include <map>
+
+
+#ifdef EDITOR_HOOK_PERFORMANCE_MEASURE
+// this function is only used in performance hook
+static wxString GetScintillaEventName(wxEventType type)
+{
+    wxString name;
+    if (type == wxEVT_SCI_CHANGE) name = _T("wxEVT_SCI_CHANGE");
+    else if (type == wxEVT_SCI_STYLENEEDED) name = _T("wxEVT_SCI_STYLENEEDED");
+    else if (type == wxEVT_SCI_CHARADDED) name = _T("wxEVT_SCI_CHARADDED");
+    else if (type == wxEVT_SCI_SAVEPOINTREACHED) name = _T("wxEVT_SCI_SAVEPOINTREACHED");
+    else if (type == wxEVT_SCI_SAVEPOINTLEFT) name = _T("wxEVT_SCI_SAVEPOINTLEFT");
+    else if (type == wxEVT_SCI_ROMODIFYATTEMPT) name = _T("wxEVT_SCI_ROMODIFYATTEMPT");
+    else if (type == wxEVT_SCI_KEY) name = _T("wxEVT_SCI_KEY");
+    else if (type == wxEVT_SCI_DOUBLECLICK) name = _T("wxEVT_SCI_DOUBLECLICK");
+    else if (type == wxEVT_SCI_UPDATEUI) name = _T("wxEVT_SCI_UPDATEUI");
+    else if (type == wxEVT_SCI_MODIFIED) name = _T("wxEVT_SCI_MODIFIED");
+    else if (type == wxEVT_SCI_MACRORECORD) name = _T("wxEVT_SCI_MACRORECORD");
+    else if (type == wxEVT_SCI_MARGINCLICK) name = _T("wxEVT_SCI_MARGINCLICK");
+    else if (type == wxEVT_SCI_NEEDSHOWN) name = _T("wxEVT_SCI_NEEDSHOWN");
+    else if (type == wxEVT_SCI_PAINTED) name = _T("wxEVT_SCI_PAINTED");
+    else if (type == wxEVT_SCI_USERLISTSELECTION) name = _T("wxEVT_SCI_USERLISTSELECTION");
+    else if (type == wxEVT_SCI_URIDROPPED) name = _T("wxEVT_SCI_URIDROPPED");
+    else if (type == wxEVT_SCI_DWELLSTART) name = _T("wxEVT_SCI_DWELLSTART");
+    else if (type == wxEVT_SCI_DWELLEND) name = _T("wxEVT_SCI_DWELLEND");
+    else if (type == wxEVT_SCI_START_DRAG) name = _T("wxEVT_SCI_START_DRAG");
+    else if (type == wxEVT_SCI_DRAG_OVER) name = _T("wxEVT_SCI_DRAG_OVER");
+    else if (type == wxEVT_SCI_DO_DROP) name = _T("wxEVT_SCI_DO_DROP");
+    else if (type == wxEVT_SCI_ZOOM) name = _T("wxEVT_SCI_ZOOM");
+    else if (type == wxEVT_SCI_HOTSPOT_CLICK) name = _T("wxEVT_SCI_HOTSPOT_CLICK");
+    else if (type == wxEVT_SCI_HOTSPOT_DCLICK) name = _T("wxEVT_SCI_HOTSPOT_DCLICK");
+    else if (type == wxEVT_SCI_CALLTIP_CLICK) name = _T("wxEVT_SCI_CALLTIP_CLICK");
+    else if (type == wxEVT_SCI_AUTOCOMP_SELECTION) name = _T("wxEVT_SCI_AUTOCOMP_SELECTION");
+    else if (type == wxEVT_SCI_INDICATOR_CLICK) name = _T("wxEVT_SCI_INDICATOR_CLICK");
+    else if (type == wxEVT_SCI_INDICATOR_RELEASE) name = _T("wxEVT_SCI_INDICATOR_RELEASE");
+    else name = _T("unknown wxEVT_SCI_EVENT");
+
+    return name;
+}
+#endif // EDITOR_HOOK_PERFORMANCE_MEASURE
 
 namespace EditorHooks
 {
@@ -66,7 +113,37 @@ void EditorHooks::CallHooks(cbEditor* editor, wxScintillaEvent& event)
     {
         EditorHooks::HookFunctorBase* functor = it->second;
         if (functor)
+        {
+#ifdef EDITOR_HOOK_PERFORMANCE_MEASURE
+            wxStopWatch sw;
+#endif // EDITOR_HOOK_PERFORMANCE_MEASURE
+
             functor->Call(editor, event);
+
+#ifdef EDITOR_HOOK_PERFORMANCE_MEASURE
+            if(sw.Time() < 10) // only print a handler run longer than 10 ms
+                continue;
+
+            const char *p = functor->GetTypeName();
+            int   status;
+            char *realname;
+            realname = abi::__cxa_demangle(p, 0, 0, &status);
+            wxString txt;
+            // if the demangled C++ function name success, then realname is not NULL
+            if (realname != 0)
+            {
+                txt = wxString::FromUTF8(realname);
+                free(realname);
+            }
+            else
+                txt = wxString::FromUTF8(p); // show the mangled(original) name
+
+            wxEventType type = event.GetEventType();
+            txt << GetScintillaEventName(type);
+            Manager::Get()->GetLogManager()->DebugLog(F(wxT("%s take %ld ms"), txt.wx_str(), sw.Time()));
+#endif // EDITOR_HOOK_PERFORMANCE_MEASURE
+        }
+
     }
 }
 

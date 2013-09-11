@@ -37,10 +37,84 @@
 #include <wx/toolbar.h>
 #include <wx/fs_mem.h>
 
+
+#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
+    // this preprocessor directive can be defined in cbfunctor.h to enable performance measure
+    #include <cxxabi.h>  // demangle C++ names
+    #include <cstdlib>   // free the memory created by abi::__cxa_demangle
+#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
+
 #include "cbcolourmanager.h"
 #include "debuggermanager.h"
 
 static Manager* s_ManagerInstance = 0;
+
+
+#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
+static wxString GetCodeblocksEventName(wxEventType type)
+{
+    wxString name;
+    if(type==cbEVT_APP_STARTUP_DONE) name = _("cbEVT_APP_STARTUP_DONE");
+    else if(type==cbEVT_APP_START_SHUTDOWN) name = _("cbEVT_APP_START_SHUTDOWN");
+    else if(type==cbEVT_APP_ACTIVATED) name = _("cbEVT_APP_ACTIVATED");
+    else if(type==cbEVT_APP_DEACTIVATED) name = _("cbEVT_APP_DEACTIVATED");
+    else if(type==cbEVT_PLUGIN_ATTACHED) name = _("cbEVT_PLUGIN_ATTACHED");
+    else if(type==cbEVT_PLUGIN_RELEASED) name = _("cbEVT_PLUGIN_RELEASED");
+    else if(type==cbEVT_PLUGIN_INSTALLED) name = _("cbEVT_PLUGIN_INSTALLED");
+    else if(type==cbEVT_PLUGIN_UNINSTALLED) name = _("cbEVT_PLUGIN_UNINSTALLED");
+    else if(type==cbEVT_PLUGIN_LOADING_COMPLETE) name = _("cbEVT_PLUGIN_LOADING_COMPLETE");
+    else if(type==cbEVT_EDITOR_CLOSE) name = _("cbEVT_EDITOR_CLOSE");
+    else if(type==cbEVT_EDITOR_OPEN) name = _("cbEVT_EDITOR_OPEN");
+    else if(type==cbEVT_EDITOR_SWITCHED) name = _("cbEVT_EDITOR_SWITCHED");
+    else if(type==cbEVT_EDITOR_ACTIVATED) name = _("cbEVT_EDITOR_ACTIVATED");
+    else if(type==cbEVT_EDITOR_DEACTIVATED) name = _("cbEVT_EDITOR_DEACTIVATED");
+    else if(type==cbEVT_EDITOR_BEFORE_SAVE) name = _("cbEVT_EDITOR_BEFORE_SAVE");
+    else if(type==cbEVT_EDITOR_SAVE) name = _("cbEVT_EDITOR_SAVE");
+    else if(type==cbEVT_EDITOR_MODIFIED) name = _("cbEVT_EDITOR_MODIFIED");
+    else if(type==cbEVT_EDITOR_TOOLTIP) name = _("cbEVT_EDITOR_TOOLTIP");
+    else if(type==cbEVT_EDITOR_TOOLTIP_CANCEL) name = _("cbEVT_EDITOR_TOOLTIP_CANCEL");
+    else if(type==cbEVT_EDITOR_UPDATE_UI) name = _("cbEVT_EDITOR_UPDATE_UI");
+    else if(type==cbEVT_PROJECT_NEW) name = _("cbEVT_PROJECT_NEW");
+    else if(type==cbEVT_PROJECT_CLOSE) name = _("cbEVT_PROJECT_CLOSE");
+    else if(type==cbEVT_PROJECT_OPEN) name = _("cbEVT_PROJECT_OPEN");
+    else if(type==cbEVT_PROJECT_SAVE) name = _("cbEVT_PROJECT_SAVE");
+    else if(type==cbEVT_PROJECT_ACTIVATE) name = _("cbEVT_PROJECT_ACTIVATE");
+    else if(type==cbEVT_PROJECT_BEGIN_ADD_FILES) name = _("cbEVT_PROJECT_BEGIN_ADD_FILES");
+    else if(type==cbEVT_PROJECT_END_ADD_FILES) name = _("cbEVT_PROJECT_END_ADD_FILES");
+    else if(type==cbEVT_PROJECT_BEGIN_REMOVE_FILES) name = _("cbEVT_PROJECT_BEGIN_REMOVE_FILES");
+    else if(type==cbEVT_PROJECT_END_REMOVE_FILES) name = _("cbEVT_PROJECT_END_REMOVE_FILES");
+    else if(type==cbEVT_PROJECT_FILE_ADDED) name = _("cbEVT_PROJECT_FILE_ADDED");
+    else if(type==cbEVT_PROJECT_FILE_REMOVED) name = _("cbEVT_PROJECT_FILE_REMOVED");
+    else if(type==cbEVT_PROJECT_POPUP_MENU) name = _("cbEVT_PROJECT_POPUP_MENU");
+    else if(type==cbEVT_PROJECT_TARGETS_MODIFIED) name = _("cbEVT_PROJECT_TARGETS_MODIFIED");
+    else if(type==cbEVT_PROJECT_RENAMED) name = _("cbEVT_PROJECT_RENAMED");
+    else if(type==cbEVT_WORKSPACE_CHANGED) name = _("cbEVT_WORKSPACE_CHANGED");
+    else if(type==cbEVT_BUILDTARGET_ADDED) name = _("cbEVT_BUILDTARGET_ADDED");
+    else if(type==cbEVT_BUILDTARGET_REMOVED) name = _("cbEVT_BUILDTARGET_REMOVED");
+    else if(type==cbEVT_BUILDTARGET_RENAMED) name = _("cbEVT_BUILDTARGET_RENAMED");
+    else if(type==cbEVT_BUILDTARGET_SELECTED) name = _("cbEVT_BUILDTARGET_SELECTED");
+    else if(type==cbEVT_PIPEDPROCESS_STDOUT) name = _("cbEVT_PIPEDPROCESS_STDOUT");
+    else if(type==cbEVT_PIPEDPROCESS_STDERR) name = _("cbEVT_PIPEDPROCESS_STDERR");
+    else if(type==cbEVT_PIPEDPROCESS_TERMINATED) name = _("cbEVT_PIPEDPROCESS_TERMINATED");
+    else if(type==cbEVT_THREADTASK_STARTED) name = _("cbEVT_THREADTASK_STARTED");
+    else if(type==cbEVT_THREADTASK_ENDED) name = _("cbEVT_THREADTASK_ENDED");
+    else if(type==cbEVT_THREADTASK_ALLDONE) name = _("cbEVT_THREADTASK_ALLDONE");
+    else if(type==cbEVT_MENUBAR_CREATE_BEGIN) name = _("cbEVT_MENUBAR_CREATE_BEGIN");
+    else if(type==cbEVT_MENUBAR_CREATE_END) name = _("cbEVT_MENUBAR_CREATE_END");
+    else if(type==cbEVT_COMPILER_STARTED) name = _("cbEVT_COMPILER_STARTED");
+    else if(type==cbEVT_COMPILER_FINISHED) name = _("cbEVT_COMPILER_FINISHED");
+    else if(type==cbEVT_COMPILER_SET_BUILD_OPTIONS) name = _("cbEVT_COMPILER_SET_BUILD_OPTIONS");
+    else if(type==cbEVT_CLEAN_PROJECT_STARTED) name = _("cbEVT_CLEAN_PROJECT_STARTED");
+    else if(type==cbEVT_CLEAN_WORKSPACE_STARTED) name = _("cbEVT_CLEAN_WORKSPACE_STARTED");
+    else if(type==cbEVT_DEBUGGER_STARTED) name = _("cbEVT_DEBUGGER_STARTED");
+    else if(type==cbEVT_DEBUGGER_STARTED) name = _("cbEVT_DEBUGGER_STARTED");
+    else if(type==cbEVT_DEBUGGER_PAUSED) name = _("cbEVT_DEBUGGER_PAUSED");
+    else if(type==cbEVT_DEBUGGER_FINISHED) name = _("cbEVT_DEBUGGER_FINISHED");
+    else name = _("unknown CodeBlocksEvent");
+
+    return name;
+}
+#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
 
 Manager::Manager() : m_pAppWindow(nullptr), m_SearchResultLog(nullptr)
 {
@@ -177,7 +251,38 @@ bool Manager::ProcessEvent(CodeBlocksEvent& event)
     if (mit != m_EventSinks.end())
     {
         for (EventSinksArray::iterator it = mit->second.begin(); it != mit->second.end(); ++it)
+        {
+#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
+            wxStopWatch sw;
+#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
+
             (*it)->Call(event);
+
+#ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
+            if(sw.Time() > 10) // only print a handler run longer than 10 ms
+            {
+                // get a mangled C++ name of the function
+                const char *p = (*it)->GetTypeName();
+                int   status;
+                char *realname;
+                realname = abi::__cxa_demangle(p, 0, 0, &status);
+                wxString msg;
+
+                // if the demangled C++ function name success, then realname is not NULL
+                if (realname != 0)
+                {
+                    msg = wxString::FromUTF8(realname);
+                    free(realname);
+                }
+                else
+                    msg = wxString::FromUTF8(p);
+
+                wxEventType type=event.GetEventType();
+                msg << GetCodeblocksEventName(type);
+                Manager::Get()->GetLogManager()->DebugLog(F(wxT("%s take %ld ms"), msg.wx_str(), sw.Time()));
+            }
+#endif // PPRCESS_EVENT_PERFORMANCE_MEASURE
+        }
     }
     return true;
 }
