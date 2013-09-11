@@ -22,6 +22,7 @@ IMPLEMENT_DYNAMIC_CLASS(CodeBlocksEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksDockEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLayoutEvent, wxEvent)
 IMPLEMENT_DYNAMIC_CLASS(CodeBlocksLogEvent, wxEvent)
+IMPLEMENT_DYNAMIC_CLASS(CodeBlocksThreadEvent, wxCommandEvent)
 
 
 CodeBlocksLogEvent::CodeBlocksLogEvent(wxEventType commandType, Logger* logger_in, const wxString& title_in, wxBitmap *icon_in)

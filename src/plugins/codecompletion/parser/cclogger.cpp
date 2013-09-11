@@ -51,8 +51,7 @@ CCLogger::CCLogger() :
     m_Parent(nullptr),
     m_LogId(-1),
     m_DebugLogId(-1),
-    m_AddTokenId(-1),
-    m_CCLoggerMutex()
+    m_AddTokenId(-1)
 {
 }
 
@@ -75,11 +74,9 @@ void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int addToke
 
 void CCLogger::AddToken(const wxString& msg)
 {
-    wxMutexLocker l(m_CCLoggerMutex);
-
     if (!m_Parent || m_AddTokenId<1) return;
 
-    wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_AddTokenId);
+    CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_AddTokenId);
     evt.SetString(msg);
 #if CC_PROCESS_LOG_EVENT_TO_PARENT
     m_Parent->ProcessEvent(evt);
@@ -90,11 +87,9 @@ void CCLogger::AddToken(const wxString& msg)
 
 void CCLogger::Log(const wxString& msg)
 {
-    wxMutexLocker l(m_CCLoggerMutex);
-
     if (!m_Parent || m_LogId<1) return;
 
-    wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
+    CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_LogId);
     evt.SetString(msg);
 #if CC_PROCESS_LOG_EVENT_TO_PARENT
     m_Parent->ProcessEvent(evt);
@@ -105,11 +100,9 @@ void CCLogger::Log(const wxString& msg)
 
 void CCLogger::DebugLog(const wxString& msg)
 {
-    wxMutexLocker l(m_CCLoggerMutex);
-
     if (!m_Parent || m_DebugLogId<1) return;
 
-    wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_DebugLogId);
+    CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, m_DebugLogId);
     evt.SetString(msg);
 #if CC_PROCESS_LOG_EVENT_TO_PARENT
     m_Parent->ProcessEvent(evt);

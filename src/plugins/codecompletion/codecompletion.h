@@ -203,9 +203,9 @@ private:
     void OnEditorClosed(CodeBlocksEvent& event);
 
     /** CC's own logger, to handle event sent from other thread or itself*/
-    void OnCCLogger(wxCommandEvent& event);
+    void OnCCLogger(CodeBlocksThreadEvent& event);
     /** CC's own debug logger, to handle event sent from other thread or itself*/
-    void OnCCDebugLogger(wxCommandEvent& event);
+    void OnCCDebugLogger(CodeBlocksThreadEvent& event);
 
     /** batch parsing start event*/
     void OnParserStart(wxCommandEvent& event);
@@ -216,9 +216,9 @@ private:
     void OnEditorTooltip(CodeBlocksEvent& event);
 
     /** receive event from SystemHeadersThread */
-    void OnSystemHeadersThreadUpdate(wxCommandEvent& event);
-    void OnSystemHeadersThreadCompletion(wxCommandEvent& event);
-    void OnSystemHeadersThreadError(wxCommandEvent& event);
+    void OnSystemHeadersThreadUpdate(CodeBlocksThreadEvent& event);
+    void OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event);
+    void OnSystemHeadersThreadError(CodeBlocksThreadEvent& event);
 
     /** show code suggestion list*/
     void DoCodeComplete();

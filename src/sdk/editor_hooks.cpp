@@ -14,6 +14,7 @@
     #include "cbplugin.h"
 #endif
 
+
 #include "editor_hooks.h"
 
 #ifdef EDITOR_HOOK_PERFORMANCE_MEASURE

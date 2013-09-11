@@ -198,6 +198,50 @@ class EVTIMPORT CodeBlocksLogEvent : public wxEvent
 };
 typedef void (wxEvtHandler::*CodeBlocksLogEventFunction)(CodeBlocksLogEvent&);
 
+
+// Thread event, this is basically a derived wxCommandEvent but enforce a deep copy of its
+// m_cmdString member. wxEVT_COMMAND_MENU_SELECTED is reused and event handlers are matched by
+// ids. This is just to conserve the old code, an alternative is use some
+// new event type like: cbEVT_THREAD_LOG_MESSAGE, cbEVT_THREAD_LOGDEBUG_MESSAGE
+// cbEVT_THREAD_SYSTEM_HEADER_UPDATE.
+
+class CodeBlocksThreadEvent : public wxCommandEvent
+{
+public:
+    CodeBlocksThreadEvent(wxEventType eventType = wxEVT_NULL, int id = wxID_ANY)
+        : wxCommandEvent(eventType,id)
+        { }
+
+    CodeBlocksThreadEvent(const CodeBlocksThreadEvent& event)
+        : wxCommandEvent(event)
+    {
+        // make sure our string member (which uses COW, aka refcounting) is not
+        // shared by other wxString instances:
+        SetString(GetString().c_str());
+    }
+
+    virtual wxEvent *Clone() const
+    {
+        return new CodeBlocksThreadEvent(*this);
+    }
+
+
+private:
+    DECLARE_DYNAMIC_CLASS_NO_ASSIGN(CodeBlocksThreadEvent)
+};
+
+typedef void ( wxEvtHandler::*CodeblocksThreadEventFunction) ( CodeBlocksThreadEvent&);
+
+#define CodeBlocksThreadEventHandler(func)  \
+	(wxObjectEventFunction)(wxEventFunction) \
+	wxStaticCastEvent(CodeblocksThreadEventFunction, &func)
+
+
+#define EVT_CODEBLOCKS_THREAD(id, fn) \
+    DECLARE_EVENT_TABLE_ENTRY(wxEVT_COMMAND_MENU_SELECTED, id, wxID_ANY, \
+    (wxObjectEventFunction) (wxEventFunction) (CodeblocksThreadEventFunction) \
+    wxStaticCastEvent( ThreadEventFunction, & fn ), (wxObject *) NULL ),
+
 //
 // if you add more event types, remember to add event sinks in Manager...
 //
