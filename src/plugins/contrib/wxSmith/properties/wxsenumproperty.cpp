@@ -59,11 +59,7 @@ bool wxsEnumProperty::PGWrite(wxsPropertyContainer* Object, wxPropertyGridManage
     if ( UpdateEntries )
     {
         #if wxCHECK_VERSION(2, 9, 0)
-        if (Grid->GetGrid()->GetSelection())
-        {
-            wxPGChoices choices = Grid->GetGrid()->GetSelection()->GetChoices();
-            choices.Set(Names,Values);
-        }
+        wxPGChoices(Id->GetChoices()).Set(Names,Values);
         #else
         Grid->GetPropertyChoices(Id).Set(Names,Values);
         #endif
