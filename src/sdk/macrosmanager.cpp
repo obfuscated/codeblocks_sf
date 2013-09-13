@@ -33,7 +33,7 @@
 
 #include "scripting/sqplus/sqplus.h"
 #include "scripting/bindings/scriptbindings.h"
-#include "prep.h"
+
 #include "cbstyledtextctrl.h"
 
 using namespace std;

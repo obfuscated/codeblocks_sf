@@ -26,7 +26,6 @@
 #endif
 
 #include "annoyingdialog.h"
-#include "prep.h"
 #include <wx/dirdlg.h>
 #include <wx/filedlg.h>
 #include <wx/html/htmlwin.h>

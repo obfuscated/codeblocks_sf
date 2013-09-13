@@ -20,7 +20,6 @@
     #include <wx/timer.h>
 
     #include "editorbase.h" // DisplayContextMenu
-    #include "prep.h" // platform::gtk
     #include "pluginmanager.h"
 #endif
 
