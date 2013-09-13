@@ -55,36 +55,36 @@ class wxsImageTreeEditorDlg: public wxScrollingDialog
 
 
         //(*Declarations(wxsImageTreeEditorDlg)
-        wxStaticText* StaticText10;
         wxStaticBoxSizer* StaticBoxSizer2;
-        wxStaticText* StaticText9;
-        wxButton* bOK;
         wxBitmapComboBox* cbSelected;
-        wxBitmapComboBox* cbExpanded;
-        wxBitmapButton        *bAddSubItem;
-        wxButton* bCancel;
         wxStaticText* StaticText13;
-        wxStaticText* StaticText2;
-        wxStaticText* StaticText6;
-        wxTreeCtrl* Tree1;
-        wxStaticText* StaticText8;
-        wxStaticText* StaticText11;
-        wxImageList* ImageList1;
-        wxBitmapButton        *bEditItem;
-        wxStaticText* StaticText1;
-        wxStaticText* StaticText3;
-        wxBitmapButton        *bDelAllItems;
-        wxBitmapButton        *bDelItem;
         wxCheckBox* cxItemBold;
-        wxStaticText* StaticText5;
-        wxStaticText* StaticText7;
-        wxStaticText* StaticText12;
-        wxStaticBoxSizer* StaticBoxSizer1;
-        wxBitmapComboBox* cbSelExpanded;
-        wxStaticText* StaticText4;
-        wxButton* bItemColor;
+        wxButton* bCancel;
+        wxBitmapButton        *bDelAllItems;
         wxBitmapButton        *bAddItem;
         wxBitmapComboBox* cbNormal;
+        wxBitmapButton        *bEditItem;
+        wxStaticText* StaticText1;
+        wxStaticText* StaticText10;
+        wxStaticText* StaticText3;
+        wxBitmapButton        *bDelItem;
+        wxBitmapComboBox* cbSelExpanded;
+        wxStaticText* StaticText8;
+        wxStaticText* StaticText12;
+        wxStaticText* StaticText7;
+        wxBitmapButton        *bAddSubItem;
+        wxImageList* ImageList1;
+        wxStaticText* StaticText4;
+        wxStaticText* StaticText5;
+        wxStaticText* StaticText2;
+        wxButton* bItemColor;
+        wxStaticText* StaticText6;
+        wxTreeCtrl* Tree1;
+        wxButton* bOK;
+        wxStaticText* StaticText9;
+        wxStaticText* StaticText11;
+        wxStaticBoxSizer* StaticBoxSizer1;
+        wxBitmapComboBox* cbExpanded;
         //*)
 
 

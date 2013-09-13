@@ -70,23 +70,22 @@ END_EVENT_TABLE()
 wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size)
 {
     //(*Initialize(wxsImageTreeEditorDlg)
-    wxBoxSizer* BoxSizer4;
-    wxBoxSizer* BoxSizer6;
-    wxBoxSizer* BoxSizer5;
+    wxGridSizer* GridSizer1;
+    wxBoxSizer* BoxSizer3;
     wxBoxSizer* BoxSizer10;
     wxBoxSizer* BoxSizer7;
-    wxBoxSizer* BoxSizer8;
+    wxBoxSizer* BoxSizer11;
     wxBoxSizer* BoxSizer13;
     wxBoxSizer* BoxSizer2;
-    wxBoxSizer* BoxSizer11;
-    wxBoxSizer* BoxSizer12;
-    wxGridSizer* GridSizer1;
-    wxBoxSizer* BoxSizer1;
     wxBoxSizer* BoxSizer9;
-    wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer4;
+    wxBoxSizer* BoxSizer8;
+    wxBoxSizer* BoxSizer1;
+    wxBoxSizer* BoxSizer12;
+    wxBoxSizer* BoxSizer6;
+    wxBoxSizer* BoxSizer5;
 
     Create(parent, wxID_ANY, _("Tree Item Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
-    SetClientSize(wxSize(480,468));
     wxFont thisFont(8,wxSWISS,wxFONTSTYLE_NORMAL,wxNORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     SetFont(thisFont);
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -102,7 +101,7 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     Tree1 = new wxTreeCtrl(this, ID_TREECTRL1, wxPoint(2,36), wxSize(246,359), wxTR_EDIT_LABELS|wxTR_DEFAULT_STYLE, wxDefaultValidator, _T("ID_TREECTRL1"));
     StaticBoxSizer1->Add(Tree1, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer5->Add(StaticBoxSizer1, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-    BoxSizer3->Add(BoxSizer5, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer3->Add(BoxSizer5, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Attributes"));
     BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
@@ -143,11 +142,11 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     BoxSizer11->Add(StaticText6, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2->Add(BoxSizer11, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer12 = new wxBoxSizer(wxHORIZONTAL);
-    cxItemBold = new wxCheckBox(this, ID_CHECKBOX1, _("    Set Item Text Bold"), wxPoint(262,192), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+    cxItemBold = new wxCheckBox(this, ID_CHECKBOX1, _(" Set Item Text Bold"), wxPoint(262,192), wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     cxItemBold->SetValue(false);
     cxItemBold->SetToolTip(_("Set Item Text Bold"));
-    BoxSizer12->Add(cxItemBold, 1, wxTOP|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-    StaticBoxSizer2->Add(BoxSizer12, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer12->Add(cxItemBold, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(BoxSizer12, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
     bEditItem = new wxBitmapButton(this, ID_IMAGEBUTTON5, wxNullBitmap, wxPoint(256,216), wxSize(24,23), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_IMAGEBUTTON5"));
     bEditItem->SetToolTip(_("Start Editor On Current Item"));
@@ -180,7 +179,7 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     StaticBoxSizer2->Add(GridSizer1, 0, wxTOP|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer6->Add(StaticBoxSizer2, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer3->Add(BoxSizer6, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
-    BoxSizer1->Add(BoxSizer3, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+    BoxSizer1->Add(BoxSizer3, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
     bOK = new wxButton(this, ID_BUTTON1, _("OK"), wxPoint(48,440), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
     bOK->SetDefault();
@@ -190,27 +189,28 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     BoxSizer4->Add(bCancel, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer1->Add(BoxSizer4, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     SetSizer(BoxSizer1);
-    static const char * ImageList1_0_XPM[] = {
+    static const char *ImageList1_0_XPM[] = {
     "16 16 3 1",
-    " 	c None",
-    ".	c #000000",
-    "+	c #00C000",
-    "        ....... ",
-    "        .+++++. ",
-    "   ..   .+++++. ",
-    "   ..   .+++++. ",
-    " ...... .+++++. ",
-    " ...... .+++++. ",
-    "   ..   .+++++. ",
-    "   ..   .+++++. ",
-    "        .+++++. ",
-    "        .+++++. ",
-    "        .+++++. ",
-    "        .+++++. ",
-    "        .++.++. ",
-    "        .+. .+. ",
-    "        ..   .. ",
-    "................"};
+    ". c Black",
+    "X c #00C000",
+    "_ c None",
+    "________......._",
+    "________.XXXXX._",
+    "___..___.XXXXX._",
+    "___..___.XXXXX._",
+    "_......_.XXXXX._",
+    "_......_.XXXXX._",
+    "___..___.XXXXX._",
+    "___..___.XXXXX._",
+    "________.XXXXX._",
+    "________.XXXXX._",
+    "________.XXXXX._",
+    "________.XXXXX._",
+    "________.XX.XX._",
+    "________.X._.X._",
+    "________..___.._",
+    "................"
+    };
     static const char *ImageList1_1_XPM[] = {
     "16 16 4 1",
     "o c Black",
@@ -324,8 +324,8 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     ImageList1->Add(wxBitmap(ImageList1_2_XPM));
     ImageList1->Add(wxBitmap(ImageList1_3_XPM));
     ImageList1->Add(wxBitmap(ImageList1_4_XPM));
-    SetSizer(BoxSizer1);
-    Layout();
+    BoxSizer1->Fit(this);
+    BoxSizer1->SetSizeHints(this);
 
     Connect(ID_TREECTRL1,wxEVT_COMMAND_TREE_SEL_CHANGED,(wxObjectEventFunction)&wxsImageTreeEditorDlg::OnTreeCtrl1SelectionChanged);
     // Set the bitmaps for bAddItem.

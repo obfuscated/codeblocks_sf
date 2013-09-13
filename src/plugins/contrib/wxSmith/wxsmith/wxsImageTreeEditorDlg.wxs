@@ -2,7 +2,6 @@
 <wxsmith>
 	<object class="wxScrollingDialog" name="wxsImageTreeEditorDlg">
 		<title>Tree Item Editor</title>
-		<size>480,468</size>
 		<font>
 			<size>8</size>
 			<style>normal</style>
@@ -68,7 +67,7 @@
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer" variable="BoxSizer6" member="no">
@@ -228,17 +227,17 @@
 										<object class="wxBoxSizer" variable="BoxSizer12" member="no">
 											<object class="sizeritem">
 												<object class="wxCheckBox" name="ID_CHECKBOX1" variable="cxItemBold" member="yes">
-													<label>    Set Item Text Bold</label>
+													<label> Set Item Text Bold</label>
 													<pos>262,192</pos>
 													<tooltip>Set Item Text Bold</tooltip>
 													<handler function="OncxItemBoldClick" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxTOP|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
-												<option>1</option>
 											</object>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxBoxSizer" variable="BoxSizer13" member="no">
@@ -412,7 +411,7 @@
 						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxBoxSizer" variable="BoxSizer4" member="no">
@@ -448,27 +447,28 @@
 			<image_list>
 				<item>16</item>
 				<item>16</item>
-				<item>static char * xpm_data[] = {</item>
+				<item>static const char *xpm_data[] = {</item>
 				<item>&quot;16 16 3 1&quot;,</item>
-				<item>&quot; &#x09;c None&quot;,</item>
-				<item>&quot;.&#x09;c #000000&quot;,</item>
-				<item>&quot;+&#x09;c #00C000&quot;,</item>
-				<item>&quot;        ....... &quot;,</item>
-				<item>&quot;        .+++++. &quot;,</item>
-				<item>&quot;   ..   .+++++. &quot;,</item>
-				<item>&quot;   ..   .+++++. &quot;,</item>
-				<item>&quot; ...... .+++++. &quot;,</item>
-				<item>&quot; ...... .+++++. &quot;,</item>
-				<item>&quot;   ..   .+++++. &quot;,</item>
-				<item>&quot;   ..   .+++++. &quot;,</item>
-				<item>&quot;        .+++++. &quot;,</item>
-				<item>&quot;        .+++++. &quot;,</item>
-				<item>&quot;        .+++++. &quot;,</item>
-				<item>&quot;        .+++++. &quot;,</item>
-				<item>&quot;        .++.++. &quot;,</item>
-				<item>&quot;        .+. .+. &quot;,</item>
-				<item>&quot;        ..   .. &quot;,</item>
-				<item>&quot;................&quot;};</item>
+				<item>&quot;. c Black&quot;,</item>
+				<item>&quot;X c #00C000&quot;,</item>
+				<item>&quot;_ c None&quot;,</item>
+				<item>&quot;________......._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;___..___.XXXXX._&quot;,</item>
+				<item>&quot;___..___.XXXXX._&quot;,</item>
+				<item>&quot;_......_.XXXXX._&quot;,</item>
+				<item>&quot;_......_.XXXXX._&quot;,</item>
+				<item>&quot;___..___.XXXXX._&quot;,</item>
+				<item>&quot;___..___.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XXXXX._&quot;,</item>
+				<item>&quot;________.XX.XX._&quot;,</item>
+				<item>&quot;________.X._.X._&quot;,</item>
+				<item>&quot;________..___.._&quot;,</item>
+				<item>&quot;................&quot;</item>
+				<item>};</item>
 				<item>static const char *xpm_data[] = {</item>
 				<item>&quot;16 16 4 1&quot;,</item>
 				<item>&quot;o c Black&quot;,</item>
@@ -580,27 +580,28 @@
 			<image_text>
 				<item2>16</item2>
 				<item2>16</item2>
-				<item2>static char * xpm_data[] = {</item2>
+				<item2>static const char *xpm_data[] = {</item2>
 				<item2>&quot;16 16 3 1&quot;,</item2>
-				<item2>&quot; &#x09;c None&quot;,</item2>
-				<item2>&quot;.&#x09;c #000000&quot;,</item2>
-				<item2>&quot;+&#x09;c #00C000&quot;,</item2>
-				<item2>&quot;        ....... &quot;,</item2>
-				<item2>&quot;        .+++++. &quot;,</item2>
-				<item2>&quot;   ..   .+++++. &quot;,</item2>
-				<item2>&quot;   ..   .+++++. &quot;,</item2>
-				<item2>&quot; ...... .+++++. &quot;,</item2>
-				<item2>&quot; ...... .+++++. &quot;,</item2>
-				<item2>&quot;   ..   .+++++. &quot;,</item2>
-				<item2>&quot;   ..   .+++++. &quot;,</item2>
-				<item2>&quot;        .+++++. &quot;,</item2>
-				<item2>&quot;        .+++++. &quot;,</item2>
-				<item2>&quot;        .+++++. &quot;,</item2>
-				<item2>&quot;        .+++++. &quot;,</item2>
-				<item2>&quot;        .++.++. &quot;,</item2>
-				<item2>&quot;        .+. .+. &quot;,</item2>
-				<item2>&quot;        ..   .. &quot;,</item2>
-				<item2>&quot;................&quot;};</item2>
+				<item2>&quot;. c Black&quot;,</item2>
+				<item2>&quot;X c #00C000&quot;,</item2>
+				<item2>&quot;_ c None&quot;,</item2>
+				<item2>&quot;________......._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;___..___.XXXXX._&quot;,</item2>
+				<item2>&quot;___..___.XXXXX._&quot;,</item2>
+				<item2>&quot;_......_.XXXXX._&quot;,</item2>
+				<item2>&quot;_......_.XXXXX._&quot;,</item2>
+				<item2>&quot;___..___.XXXXX._&quot;,</item2>
+				<item2>&quot;___..___.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XXXXX._&quot;,</item2>
+				<item2>&quot;________.XX.XX._&quot;,</item2>
+				<item2>&quot;________.X._.X._&quot;,</item2>
+				<item2>&quot;________..___.._&quot;,</item2>
+				<item2>&quot;................&quot;</item2>
+				<item2>};</item2>
 				<item2>static const char *xpm_data[] = {</item2>
 				<item2>&quot;16 16 4 1&quot;,</item2>
 				<item2>&quot;o c Black&quot;,</item2>
