@@ -127,17 +127,17 @@ void wxsImageButton::OnBuildCreatingCode() {
         };
 
         if (mDisabledIndex.ToLong(&ll)) {
-            tt.Printf(_T("%s->SetBitmapDisabled(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
+            tt.Printf(_T("%s->SetBitmapDisabled(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
 
         if (mSelectedIndex.ToLong(&ll)) {
-            tt.Printf(_T("%s->SetBitmapSelected(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
+            tt.Printf(_T("%s->SetBitmapSelected(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
 
         if (mFocusIndex.ToLong(&ll)) {
-            tt.Printf(_T("%s->SetBitmapFocus(%s->GetBitmap(%d));\n"), vv.wx_str(), ss.wx_str(), ll);
+            tt.Printf(_T("%s->SetBitmapFocus(%s->GetBitmap(%ld));\n"), vv.wx_str(), ss.wx_str(), ll);
             AddEventCode(tt);
         };
     };
