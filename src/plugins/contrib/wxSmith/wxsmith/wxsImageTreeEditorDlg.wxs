@@ -712,5 +712,6 @@
 			</image_text>
 			<image_count>5</image_count>
 		</object>
+		<object class="wxColourDialog" variable="ColourDialog1" member="yes" />
 	</object>
 </wxsmith>

@@ -324,6 +324,7 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     ImageList1->Add(wxBitmap(ImageList1_2_XPM));
     ImageList1->Add(wxBitmap(ImageList1_3_XPM));
     ImageList1->Add(wxBitmap(ImageList1_4_XPM));
+    ColourDialog1 = new wxColourDialog(this);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
@@ -715,13 +716,13 @@ void wxsImageTreeEditorDlg::OnbItemColorClick(wxCommandEvent &event)
     wxTreeItemId    current;
 
     // ask user for a new color
-    n = m_colourDialog.ShowModal();
+    n = ColourDialog1->ShowModal();
     if(n != wxID_OK){
         return;
     }
 
     // get the color
-    cd = m_colourDialog.GetColourData();
+    cd = ColourDialog1->GetColourData();
     cc = cd.GetColour();
 
     // set the button text

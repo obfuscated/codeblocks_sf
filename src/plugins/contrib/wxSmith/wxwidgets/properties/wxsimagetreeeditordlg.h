@@ -62,6 +62,7 @@ class wxsImageTreeEditorDlg: public wxScrollingDialog
         wxButton* bCancel;
         wxBitmapButton        *bDelAllItems;
         wxBitmapButton        *bAddItem;
+        wxColourDialog* ColourDialog1;
         wxBitmapComboBox* cbNormal;
         wxBitmapButton        *bEditItem;
         wxStaticText* StaticText1;
@@ -149,7 +150,6 @@ class wxsImageTreeEditorDlg: public wxScrollingDialog
         wxString                m_sImageName;        //!< The image list's name.
         wxImageList            m_imageList;                //!< The image list used to provide state images.
 
-        wxColourDialog    m_colourDialog;
 
         DECLARE_EVENT_TABLE()
 };
