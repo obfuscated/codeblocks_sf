@@ -1705,7 +1705,9 @@ wxString wxFlagsProperty::GetValueAsString( int ) const
     for ( i = 0; i < GetItemCount(); i++ )
     {
         int doAdd;
-        doAdd = ( flags & choices.GetValue(i) );
+/* C::B begin */
+        doAdd = ( (flags & choices.GetValue(i)) == choices.GetValue(i) );
+/* C::B end */
 
         if ( doAdd )
         {
@@ -1792,7 +1794,9 @@ void wxFlagsProperty::RefreshChildren()
         if ( subVal != (m_oldValue & flag) )
             p->SetFlag( wxPG_PROP_MODIFIED );
 
-        p->SetValue( subVal?true:false );
+/* C::B begin */
+        p->SetValue( subVal==flag?true:false );
+/* C::B end */
     }
 
     m_oldValue = flags;
