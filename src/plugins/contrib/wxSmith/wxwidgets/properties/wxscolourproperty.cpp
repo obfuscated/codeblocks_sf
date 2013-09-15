@@ -942,8 +942,6 @@ wxString wxsColourData::BuildCode(wxsCoderContext* Context)
     return wxEmptyString;
 }
 
-
-
 // Helper macros for fetching variables
 #define VALUE   wxsVARIABLE(Object,ValueOffset,wxsColourData)
 
@@ -965,6 +963,23 @@ void wxsColourProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMana
 
 bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
 {
+#if wxCHECK_VERSION(2, 9, 0)
+    VALUE.m_type = wxsColourValues[Id->GetChoiceSelection()];
+
+    if ( VALUE.m_type == wxsCOLOUR_DEFAULT )
+    {
+        VALUE.m_colour = wxColour(0,0,0);
+    }
+    else if ( VALUE.m_type == wxPG_COLOUR_CUSTOM )
+    {
+        VALUE.m_colour = wxColour(_T("rgb")+Id->GetValueAsString());
+    }
+    else
+    {
+        VALUE.m_colour = wxSystemSettings::GetColour((wxSystemColour)VALUE.m_type);
+    }
+
+#else
     wxVariant value = Grid->GetPropertyValue(Id);
     wxColourPropertyValue* Val = wxGetVariantCast(value,wxColourPropertyValue);
 
@@ -972,6 +987,7 @@ bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManage
 
     VALUE = *Val;
 
+#endif // wxCHECK_VERSION
     return true;
 }
 
