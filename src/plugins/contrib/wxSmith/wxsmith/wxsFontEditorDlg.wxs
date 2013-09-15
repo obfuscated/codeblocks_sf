@@ -37,7 +37,7 @@
 									<object class="sizeritem">
 										<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="yes">
 											<cols>2</cols>
-											<growablecols>2</growablecols>
+											<growablecols>1</growablecols>
 											<object class="sizeritem">
 												<object class="wxBoxSizer" variable="BaseFontSizer" member="yes">
 													<object class="sizeritem">

@@ -38,8 +38,8 @@
 #define FFAM_TELETYPE     0x05
 
 //(*InternalHeaders(wxsFontEditorDlg)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 //(*IdInit(wxsFontEditorDlg)
@@ -86,12 +86,12 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
 {
     Initialized = false;
     //(*Initialize(wxsFontEditorDlg)
-    wxBoxSizer* BoxSizer4;
-    wxBoxSizer* BoxSizer6;
-    wxBoxSizer* BoxSizer5;
     wxStaticBoxSizer* StaticBoxSizer7;
+    wxBoxSizer* BoxSizer4;
     wxBoxSizer* BoxSizer1;
+    wxBoxSizer* BoxSizer6;
     wxStdDialogButtonSizer* StdDialogButtonSizer1;
+    wxBoxSizer* BoxSizer5;
 
     Create(parent, id, _("Advanced font settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -106,7 +106,7 @@ wxsFontEditorDlg::wxsFontEditorDlg(wxWindow* parent,wxsFontData& _Data,wxWindowI
     BoxSizer5->Add(StaticBoxSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Settings"));
     FlexGridSizer2 = new wxFlexGridSizer(0, 2, 0, 0);
-    FlexGridSizer2->AddGrowableCol(2);
+    FlexGridSizer2->AddGrowableCol(1);
     BaseFontSizer = new wxBoxSizer(wxHORIZONTAL);
     BaseFontUse = new wxCheckBox(this, ID_CHECKBOX8, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX8"));
     BaseFontUse->SetValue(true);
@@ -666,3 +666,4 @@ void wxsFontEditorDlg::OnBaseFontUseChange(wxCommandEvent& event)
 {
     BaseFontUse->SetValue(true);
 }
+        
