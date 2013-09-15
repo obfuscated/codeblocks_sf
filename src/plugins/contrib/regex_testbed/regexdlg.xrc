@@ -5,7 +5,6 @@
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
 		<object class="wxFlexGridSizer">
 			<cols>1</cols>
-			<rows>1</rows>
 			<growablecols>0</growablecols>
 			<growablerows>4</growablerows>
 			<object class="sizeritem">

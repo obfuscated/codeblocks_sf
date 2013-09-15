@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
-    <resource_extra>
-        <object root="1">
-                <handler function="OnClose" entry="EVT_CLOSE" />
-        </object>
-        <object name="ID_3" class="wxStaticText" variable="StaticText1" member="no" />
-        <object name="ID_REGEX" class="wxTextCtrl" variable="m_regex" member="yes" />
-        <object name="ID_QUOTED" class="wxTextCtrl" variable="m_quoted" member="yes" />
-        <object name="ID_1" class="wxStaticText" variable="StaticText2" member="no" />
-        <object name="ID_LIBRARY" class="wxChoice" variable="m_library" member="yes" />
-        <object name="ID_NOCASE" class="wxCheckBox" variable="m_nocase" member="yes" />
-        <object name="ID_NEWLINES" class="wxCheckBox" variable="m_newlines" member="yes" />
-        <object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText3" member="no" />
-        <object name="ID_TEXT" class="wxTextCtrl" variable="m_text" member="yes" />
-        <object name="ID_OUT" class="wxHtmlWindow" variable="m_output" member="yes" />
-    </resource_extra>
+	<resource_extra>
+		<object root="1">
+			<handler function="OnClose" entry="EVT_CLOSE" />
+		</object>
+		<object name="ID_3" class="wxStaticText" variable="StaticText1" member="no" />
+		<object name="ID_REGEX" class="wxTextCtrl" variable="m_regex" member="yes" />
+		<object name="ID_QUOTED" class="wxTextCtrl" variable="m_quoted" member="yes" />
+		<object name="ID_1" class="wxStaticText" variable="StaticText2" member="no" />
+		<object name="ID_LIBRARY" class="wxChoice" variable="m_library" member="yes" />
+		<object name="ID_NOCASE" class="wxCheckBox" variable="m_nocase" member="yes" />
+		<object name="ID_NEWLINES" class="wxCheckBox" variable="m_newlines" member="yes" />
+		<object name="ID_STATICTEXT1" class="wxStaticText" variable="StaticText3" member="no" />
+		<object name="ID_TEXT" class="wxTextCtrl" variable="m_text" member="yes" />
+		<object name="ID_OUT" class="wxHtmlWindow" variable="m_output" member="yes" />
+	</resource_extra>
 </wxsmith>

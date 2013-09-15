@@ -12,11 +12,9 @@
 //(*Headers(RegExDlg)
 #include <wx/checkbox.h>
 #include "scrollingdialog.h"
+#include <wx/textctrl.h>
 #include <wx/choice.h>
 #include <wx/html/htmlwin.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 //*)
 
 #include <wx/html/htmlwin.h>
