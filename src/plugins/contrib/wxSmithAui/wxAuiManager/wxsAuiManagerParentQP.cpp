@@ -96,7 +96,7 @@ wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent, wxsAuiPaneInfoEx
 
     Create(parent, wxID_ANY, wxPoint(-1,-1), wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
-    FlexGridSizer1->AddGrowableCol(1);
+    FlexGridSizer1->AddGrowableCol(0);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxVERTICAL, this, _("General"));
     FlexGridSizer4 = new wxFlexGridSizer(0, 2, 0, 0);
     FlexGridSizer4->AddGrowableCol(1);
@@ -166,11 +166,6 @@ wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent, wxsAuiPaneInfoEx
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Dock"));
     FlexGridSizer3 = new wxFlexGridSizer(3, 1, 0, 0);
     FlexGridSizer3->AddGrowableCol(0);
-    FlexGridSizer3->AddGrowableCol(1);
-    FlexGridSizer3->AddGrowableCol(2);
-    FlexGridSizer3->AddGrowableCol(3);
-    FlexGridSizer3->AddGrowableCol(4);
-    FlexGridSizer3->AddGrowableCol(5);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     Docked = new wxCheckBox(this, ID_CHECKBOX6, _("Docked"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX6"));
     Docked->SetValue(false);
@@ -180,7 +175,9 @@ wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent, wxsAuiPaneInfoEx
     BoxSizer2->Add(DockFixed, 1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer3->Add(BoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     FlexGridSizer2 = new wxFlexGridSizer(0, 5, 0, 0);
+    FlexGridSizer2->AddGrowableCol(0);
     FlexGridSizer2->AddGrowableCol(2);
+    FlexGridSizer2->AddGrowableCol(4);
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Layer:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
     BoxSizer1->Add(StaticText1, 0, wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -258,9 +255,9 @@ wxsAuiManagerParentQP::wxsAuiManagerParentQP(wxsAdvQPP* parent, wxsAuiPaneInfoEx
     FlexGridSizer1->Add(StaticBoxSizer1, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     wxString __wxRadioBoxChoices_1[3] =
     {
-        _("None"),
-        _("Default"),
-        _("Top")
+    	_("None"),
+    	_("Default"),
+    	_("Top")
     };
     Gripper = new wxRadioBox(this, ID_RADIOBOX1, _("Gripper"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RADIOBOX1"));
     FlexGridSizer1->Add(Gripper, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);

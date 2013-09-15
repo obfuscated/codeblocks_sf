@@ -5,7 +5,7 @@
 		<id_arg>0</id_arg>
 		<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="yes">
 			<cols>1</cols>
-			<growablecols>1</growablecols>
+			<growablecols>0</growablecols>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="StaticBoxSizer4" member="no">
 					<label>General</label>
@@ -225,7 +225,7 @@
 						<object class="wxFlexGridSizer" variable="FlexGridSizer3" member="no">
 							<cols>1</cols>
 							<rows>3</rows>
-							<growablecols>0,1,2,3,4,5</growablecols>
+							<growablecols>0</growablecols>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer2" member="no">
 									<object class="sizeritem">
@@ -254,7 +254,7 @@
 							<object class="sizeritem">
 								<object class="wxFlexGridSizer" variable="FlexGridSizer2" member="no">
 									<cols>5</cols>
-									<growablecols>2</growablecols>
+									<growablecols>0,2,4</growablecols>
 									<object class="sizeritem">
 										<object class="wxBoxSizer" variable="BoxSizer1" member="no">
 											<orient>wxVERTICAL</orient>
