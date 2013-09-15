@@ -18,7 +18,7 @@
     #include <configmanager.h>
 #endif
 
-//(*InternalHeaders(regex_dialog)
+//(*InternalHeaders(RegExDlg)
 #include <wx/bitmap.h>
 #include <wx/font.h>
 #include <wx/fontenum.h>
@@ -29,7 +29,7 @@
 #include <wx/xrc/xmlres.h>
 //*)
 
-//(*IdInit(regex_dialog)
+//(*IdInit(RegExDlg)
 //*)
 
 BEGIN_EVENT_TABLE(RegExDlg,wxScrollingDialog)
@@ -41,8 +41,8 @@ RegExDlg::VisibleDialogs RegExDlg::m_visible_dialogs;
 
 RegExDlg::RegExDlg(wxWindow* parent,wxWindowID /*id*/)
 {
-    //(*Initialize(regex_dialog)
-    wxXmlResource::Get()->LoadObject(this,parent,_T("regex_dialog"),_T("wxScrollingDialog"));
+    //(*Initialize(RegExDlg)
+    wxXmlResource::Get()->LoadObject(this,parent,_T("RegExDlg"),_T("wxScrollingDialog"));
     m_regex = (wxTextCtrl*)FindWindow(XRCID("ID_REGEX"));
     m_quoted = (wxTextCtrl*)FindWindow(XRCID("ID_QUOTED"));
     m_library = (wxChoice*)FindWindow(XRCID("ID_LIBRARY"));

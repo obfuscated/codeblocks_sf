@@ -1,5 +1,5 @@
 <resource xmlns="http://www.wxwidgets.org/wxxrc">
-	<object class="wxScrollingDialog" name="regex_dialog">
+	<object class="wxScrollingDialog" name="RegExDlg">
 		<title>Regular Expression Utility</title>
 		<centered>1</centered>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
