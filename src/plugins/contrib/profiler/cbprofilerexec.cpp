@@ -58,7 +58,7 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     int pid = -1;
 
     { // begin lifetime of wxBusyInfo
-      wxBusyInfo wait(_("Please wait, while running gprof..."), this);
+      wxBusyInfo wait(_("Please wait, while running gprof..."), parent);
       Manager::Get()->GetLogManager()->DebugLog(F(_T("Profiler: Running command %s"), cmd.wx_str()));
       pid = wxExecute(cmd, gprof_output, gprof_errors);
     } // end lifetime of wxBusyInfo
