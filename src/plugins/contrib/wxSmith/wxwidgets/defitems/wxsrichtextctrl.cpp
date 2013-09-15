@@ -211,7 +211,8 @@ wxsRichTextCtrl::wxsRichTextCtrl(wxsItemResData* Data):
         Data,
         &Reg.Info,
         wxsRichTextCtrlEvents,
-        wxsRichTextCtrlStyles),
+        wxsRichTextCtrlStyles,
+        flWidget&~(flFont)),
     m_sText(_("Text")),
     m_iAlignment(wxTEXT_ALIGNMENT_LEFT),
     m_iAttribute(0),
@@ -306,11 +307,11 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
             if(sFnt.Len() > 0){
                 Codef(_T("%s"), sFnt.wx_str());
-                Codef( _T("%s.SetFontFaceName(%s.GetFaceName());\n"), sAttrName.wx_str(), sFnt.wx_str());
-                Codef( _T("%s.SetFontSize(%s.GetPointSize());\n"), sAttrName.wx_str(), sFnt.wx_str());
-                Codef( _T("%s.SetFontStyle(%s.GetStyle());\n"), sAttrName.wx_str(), sFnt.wx_str());
-                Codef( _T("%s.SetFontUnderlined(%s.GetUnderlined());\n"), sAttrName.wx_str(), sFnt.wx_str());
-                Codef( _T("%s.SetFontWeight(%s.GetWeight());\n"), sAttrName.wx_str(), sFnt.wx_str());
+                Codef( _T("%s.SetFontFaceName(%s.GetFaceName());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef( _T("%s.SetFontSize(%s.GetPointSize());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef( _T("%s.SetFontStyle(%s.GetStyle());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef( _T("%s.SetFontUnderlined(%s.GetUnderlined());\n"), sAttrName.wx_str(), sFntName.wx_str());
+                Codef( _T("%s.SetFontWeight(%s.GetWeight());\n"), sAttrName.wx_str(), sFntName.wx_str());
             }
 
             if(m_iAlignment != wxTEXT_ALIGNMENT_LEFT || m_iAttribute != 0 || m_iBullets != wxTEXT_ATTR_BULLET_STYLE_NONE ||
