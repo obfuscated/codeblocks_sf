@@ -94,7 +94,7 @@ void wxsRichTextStyleOrganiserDialog::OnBuildCreatingCode()
             AddHeader(_T(" <wx/richtext/richtextstyledlg.h>"), GetInfo().ClassName, 0);
 
             for(int i = 0;arrStyleValueNames[i];i++){
-                if(m_iFlags & arrStyleValues[i]){
+                if((m_iFlags & arrStyleValues[i]) == arrStyleValues[i]){
                     sFlags << arrStyleValueNames[i] << _T("|");
                 }
             }

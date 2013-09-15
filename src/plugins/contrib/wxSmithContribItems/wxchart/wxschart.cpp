@@ -98,7 +98,7 @@ void wxsChart::OnBuildCreatingCode()
             wxString StyleCode;
             for ( int i=0; Names[i]; i++ )
             {
-                if ( m_Flags & Values[i] ) StyleCode << Names[i] << _T("|");
+                if ( (m_Flags & Values[i]) == Values[i] ) StyleCode << Names[i] << _T("|");
             }
 
             if ( StyleCode.IsEmpty() ) StyleCode = _T("0");

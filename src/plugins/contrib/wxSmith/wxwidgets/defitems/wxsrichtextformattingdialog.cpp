@@ -84,7 +84,7 @@ void wxsRichTextFormattingDialog::OnBuildCreatingCode()
             AddHeader(_T("<wx/richtext/richtextformatdlg.h>"), GetInfo().ClassName, 0);
 
             for(int i = 0;arrPageValueNames[i];i++){
-                if(m_iFlags & arrPageValues[i]){
+                if((m_iFlags & arrPageValues[i]) == arrPageValues[i]){
                     sFlags << arrPageValueNames[i] << _T("|");
                 }
             }

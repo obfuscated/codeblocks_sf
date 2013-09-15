@@ -240,7 +240,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             Codef(_T("%C(%W, %I, %t, %P, %S, %T, %V, %N);\n"), m_sText.wx_str());
 
             wxString sAttrName = GetCoderContext()->GetUniqueName(_T("rchtxtAttr"));
-            Codef(_T("\twxRichTextAttr %s;\n"), sAttrName.wx_str());
+            Codef(_T("wxRichTextAttr %s;\n"), sAttrName.wx_str());
             // Alignment.
             // wxTEXT_ALIGNMENT_LEFT is the default.
             if(m_iAlignment == wxTEXT_ALIGNMENT_CENTRE){
@@ -251,7 +251,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             }
             // Attribute flags.
             for(int i = 0;arrAttributeNames[i];i++){
-                if(m_iAttribute & arrAttributeStates[i]){
+                if((m_iAttribute & arrAttributeStates[i]) == arrAttributeStates[i]){
                     sFlags << arrAttributeNames[i] << _T("|");
                 }
             }
@@ -262,7 +262,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             // Bullet flags.
             sFlags.Clear();
             for(int i = 0;arrBulletNames[i];i++){
-                if(m_iBullets & arrBulletStates[i]){
+                if((m_iBullets & arrBulletStates[i]) == arrBulletStates[i]){
                     sFlags << arrBulletNames[i] << _T("|");
                 }
             }
@@ -281,7 +281,7 @@ void wxsRichTextCtrl::OnBuildCreatingCode()
             // Text effect flags.
             sFlags.Clear();
             for(int i = 0;arrEffectNames[i];i++){
-                if(m_iEffects & arrEffectStates[i]){
+                if((m_iEffects & arrEffectStates[i]) == arrEffectStates[i]){
                     sFlags << arrEffectNames[i] << _T("|");
                 }
             }
