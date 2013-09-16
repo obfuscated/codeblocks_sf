@@ -295,17 +295,32 @@ void DebuggerGDB::OnConfigurationChange(cb_unused bool isActive)
     bool funcArgs = config.GetFlag(DebuggerConfiguration::WatchFuncArgs);
 
     cbWatchesDlg *watchesDialog = Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
+    bool update = false;
 
-    if (!locals && m_localsWatch)
+    if (!locals)
     {
-        watchesDialog->RemoveWatch(m_localsWatch);
-        m_localsWatch = cb::shared_ptr<GDBWatch>();
+        if (m_localsWatch)
+        {
+            watchesDialog->RemoveWatch(m_localsWatch);
+            m_localsWatch = cb::shared_ptr<GDBWatch>();
+        }
     }
-    if (!funcArgs && m_funcArgsWatch)
+    else if (!m_localsWatch)
+        update = true;
+
+    if (!funcArgs)
     {
-        watchesDialog->RemoveWatch(m_funcArgsWatch);
-        m_funcArgsWatch = cb::shared_ptr<GDBWatch>();
+        if (m_funcArgsWatch)
+        {
+            watchesDialog->RemoveWatch(m_funcArgsWatch);
+            m_funcArgsWatch = cb::shared_ptr<GDBWatch>();
+        }
     }
+    else if (!m_funcArgsWatch)
+        update = true;
+
+    if (update)
+        RequestUpdate(cbDebuggerPlugin::Watches);
 }
 
 wxArrayString& DebuggerGDB::GetSearchDirs(cbProject* prj)
