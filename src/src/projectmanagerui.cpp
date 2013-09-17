@@ -1733,7 +1733,7 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
 
     if (!activeProject)
     {
-        Manager::Get()->GetLogManager()->DebugLog(_T("No active project!"));
+        Manager::Get()->GetLogManager()->DebugLog(_("No active project!"));
         return;
     }
 
@@ -1917,7 +1917,7 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
                                  _("Please enter the name of the file you are searching:"));
     wxSize         sz      = dlg.GetSize();
     wxListBox*     listBx  = XRCCTRL(dlg, "lstItems", wxListBox);
-    wxCheckBox*    chkOpen = new wxCheckBox(&dlg, wxID_ANY, wxT("Open file"));
+    wxCheckBox*    chkOpen = new wxCheckBox(&dlg, wxID_ANY, _("Open file"));
     ConfigManager* cfg     = Manager::Get()->GetConfigManager(wxT("project_manager"));
     chkOpen->SetValue(cfg->ReadBool(wxT("/find_file_open"), false));
     // insert the check box into the dialogue
@@ -2094,7 +2094,7 @@ void ProjectManagerUI::OnRenameFile(cb_unused wxCommandEvent& event)
     wxString path = ftd->GetProjectFile()->file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     wxString name = ftd->GetProjectFile()->file.GetFullName();
 
-    wxTextEntryDialog dlg(Manager::Get()->GetAppWindow(), _T("Please enter the new name:"), _T("Rename file"), name, wxOK | wxCANCEL | wxCENTRE);
+    wxTextEntryDialog dlg(Manager::Get()->GetAppWindow(), _("Please enter the new name:"), _("Rename file"), name, wxOK | wxCANCEL | wxCENTRE);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
@@ -2644,8 +2644,8 @@ bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeIte
                 // A virtual folder has been dropped from a different place
                 if (item.Find(toFolderPath + fromFolder) != wxNOT_FOUND)
                 {
-                    cbMessageBox(_T("Another Virtual folder with same name exists in the destination folder!"),
-                                 _T("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
+                    cbMessageBox(_("Another Virtual folder with same name exists in the destination folder!"),
+                                 _("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
                     return false;
                 }
                 if (item.StartsWith(toFolderPath.BeforeFirst(sepChar)))
@@ -2684,8 +2684,8 @@ bool ProjectVirtualFolderDragged(cbProject* project, wxTreeCtrl* tree, wxTreeIte
             if (item.StartsWith(fromFolder))
             {
                 // We can't overwrite an existing folder
-                cbMessageBox(_T("Another Virtual folder with same name exists in the Project tree!"),
-                             _T("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
+                cbMessageBox(_("Another Virtual folder with same name exists in the Project tree!"),
+                             _("Error"), wxOK | wxICON_ERROR, Manager::Get()->GetAppWindow());
                 return false;
             }
             else if (item.StartsWith(fromFolderPath))
