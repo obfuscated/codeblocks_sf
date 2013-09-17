@@ -22,7 +22,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	bSizer2 = new wxBoxSizer( wxVERTICAL );
 
 	bSizer2->SetMinSize(wxSize( -1,50 ));
-	StaticText1 = new wxStaticText( this, wxID_ANY, wxT("Mouse Drag Scrolling Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
+	StaticText1 = new wxStaticText( this, wxID_ANY, _("Mouse Drag Scrolling Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer2->Add( StaticText1, 0, wxALIGN_CENTER|wxALL, 5 );
 
 	bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
@@ -32,7 +32,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 
-	ScrollEnabled = new wxCheckBox( this, wxID_ANY, wxT("Scrolling Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
+	ScrollEnabled = new wxCheckBox( this, wxID_ANY, _("Scrolling Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	bSizer5->Add( ScrollEnabled, 0, wxALL, 5 );
 
@@ -41,11 +41,11 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
 
-	EditorFocusEnabled = new wxCheckBox( this, wxID_ANY, wxT("Auto Focus Editors"), wxDefaultPosition, wxDefaultSize, 0 );
+	EditorFocusEnabled = new wxCheckBox( this, wxID_ANY, _("Auto Focus Editors"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	bSizer6->Add( EditorFocusEnabled, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
-	MouseFocusEnabled = new wxCheckBox( this, wxID_ANY, wxT("Focus follows Mouse"), wxDefaultPosition, wxDefaultSize, 0 );
+	MouseFocusEnabled = new wxCheckBox( this, wxID_ANY, _("Focus follows Mouse"), wxDefaultPosition, wxDefaultSize, 0 );
 
 	bSizer6->Add( MouseFocusEnabled, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
@@ -53,18 +53,18 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	wxBoxSizer* MouseWheelSizer1;
 	MouseWheelSizer1 = new wxBoxSizer( wxHORIZONTAL );
-	MouseWheelZoom = new wxCheckBox( this, wxID_ANY, wxT("Log MouseWheelZoom"), wxDefaultPosition, wxDefaultSize, 0 );
+	MouseWheelZoom = new wxCheckBox( this, wxID_ANY, _("Log MouseWheelZoom"), wxDefaultPosition, wxDefaultSize, 0 );
 	MouseWheelSizer1->Add( MouseWheelZoom, 0, wxALL, 5 );
-	PropagateLogZoomSize = new wxCheckBox( this, wxID_ANY, wxT("Propagate Log Zooms"), wxDefaultPosition, wxDefaultSize, 0 );
+	PropagateLogZoomSize = new wxCheckBox( this, wxID_ANY, _("Propagate Log Zooms"), wxDefaultPosition, wxDefaultSize, 0 );
 	MouseWheelSizer1->Add( PropagateLogZoomSize, 0, wxALL, 5 );
 	bSizer1->Add( MouseWheelSizer1, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );
 
-	wxString ScrollDirectionChoices[] = { wxT("With Mouse"), wxT("Opposite Mouse") };
+	wxString ScrollDirectionChoices[] = { _("With Mouse"), _("Opposite Mouse") };
 	int ScrollDirectionNChoices = sizeof( ScrollDirectionChoices ) / sizeof( wxString );
-	ScrollDirection = new wxRadioBox( this, wxID_ANY, wxT("Scroll Direction"), wxDefaultPosition, wxDefaultSize, ScrollDirectionNChoices, ScrollDirectionChoices, 2, wxRA_SPECIFY_COLS );
+	ScrollDirection = new wxRadioBox( this, wxID_ANY, _("Scroll Direction"), wxDefaultPosition, wxDefaultSize, ScrollDirectionNChoices, ScrollDirectionChoices, 2, wxRA_SPECIFY_COLS );
 	bSizer3->Add( ScrollDirection, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	bSizer1->Add( bSizer3, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
@@ -72,10 +72,10 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	wxBoxSizer* bSizer4;
 	bSizer4 = new wxBoxSizer( wxHORIZONTAL );
 
-	StaticText2 = new wxStaticText( this, wxID_ANY, wxT("Mouse Key To Use:"), wxDefaultPosition, wxDefaultSize, 0 );
+	StaticText2 = new wxStaticText( this, wxID_ANY, _("Mouse Key To Use:"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer4->Add( StaticText2, 0, wxALL, 5 );
 
-	wxString MouseKeyChoiceChoices[] = { wxT("Right"), wxT("Middle") };
+	wxString MouseKeyChoiceChoices[] = { _("Right"), _("Middle") };
 	int MouseKeyChoiceNChoices = sizeof( MouseKeyChoiceChoices ) / sizeof( wxString );
 	MouseKeyChoice = new wxChoice( this, wxID_ANY, wxDefaultPosition, wxDefaultSize, MouseKeyChoiceNChoices, MouseKeyChoiceChoices, 0 );
 	bSizer4->Add( MouseKeyChoice, 0, wxALL, 5 );
@@ -88,7 +88,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	bSizer7->SetMinSize(wxSize( 300,-1 ));
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
-	StaticText3 = new wxStaticText( this, wxID_ANY, wxT("-- Adaptive Mouse Speed Sensitivity --"), wxDefaultPosition, wxDefaultSize, 0 );
+	StaticText3 = new wxStaticText( this, wxID_ANY, _("-- Adaptive Mouse Speed Sensitivity --"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( StaticText3, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	Sensitivity = new wxSlider( this, wxID_ANY, 8, 1, 10, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
@@ -106,7 +106,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
-	StaticText4 = new wxStaticText( this, wxID_ANY, wxT("-- Mouse Movement to Text Scroll Ratio --"), wxDefaultPosition, wxDefaultSize, 0 );
+	StaticText4 = new wxStaticText( this, wxID_ANY, _("-- Mouse Movement to Text Scroll Ratio --"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( StaticText4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	MouseToLineRatio = new wxSlider( this, wxID_ANY, 30, 10, 100, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
@@ -124,7 +124,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
-	StaticText5 = new wxStaticText( this, wxID_ANY, wxT("-- Unix Context Menu Watch for Drag (millisecs) --"), wxDefaultPosition, wxDefaultSize, 0 );
+	StaticText5 = new wxStaticText( this, wxID_ANY, _("-- Unix Context Menu Watch for Drag (millisecs) --"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( StaticText5, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	MouseContextDelay = new wxSlider( this, wxID_ANY, 50, 10, 500, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
