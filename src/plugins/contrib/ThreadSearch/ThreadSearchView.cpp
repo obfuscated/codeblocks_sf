@@ -666,7 +666,7 @@ void ThreadSearchView::AddExpressionToSearchCombos(const wxString& expression, c
     {
         // Removes last one
         m_pCboSearchExpr->Delete(m_pCboSearchExpr->GetCount()-1);
-        pToolBarCombo->Delete(m_pCboSearchExpr->GetCount()-1);
+        pToolBarCombo->Delete(pToolBarCombo->GetCount()-1);
     }
 
     // Adds it to combos
