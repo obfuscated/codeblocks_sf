@@ -1737,6 +1737,12 @@ void Tokenizer::SplitArguments(wxArrayString& results)
         return;
 
     MoveToNextChar(); // Skip the '('
+    while (SkipWhiteSpace() || SkipComment())
+        ;
+
+    const TokenizerState oldState = m_State;
+    m_State = tsReadRawExpression;
+
     int level = 1; // include '('
 
     wxString piece;
@@ -1773,6 +1779,9 @@ void Tokenizer::SplitArguments(wxArrayString& results)
         while (SkipWhiteSpace() || SkipComment())
             ;
     }
+
+    // reset tokenizer's functionality
+    m_State = oldState;
 }
 
 bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekToken)
