@@ -738,6 +738,7 @@ void Tokenizer::ReadParentheses(wxString& str)
                             *++p = _T(' ');
                             ++p;
                         }
+                        break;
 
                     default:
                         {
@@ -746,6 +747,7 @@ void Tokenizer::ReadParentheses(wxString& str)
                             *++p = _T(' ');
                             ++p;
                         }
+                        break;
                     }
                 }
             }
