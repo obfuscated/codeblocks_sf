@@ -946,10 +946,10 @@ bool Tokenizer::SkipComment()
         {
             if (cstyle) // C style comment
             {
-                SkipToChar('/');
-                if (PreviousChar() == '*') // end of a C style comment
+                SkipToChar('*');
+                if (NextChar() == '/') // end of a C style comment
                 {
-                    MoveToNextChar();
+                    MoveToNextChar(2);
                     break;
                 }
                 if (!MoveToNextChar())
