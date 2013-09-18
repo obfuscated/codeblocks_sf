@@ -1294,7 +1294,7 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
 
     Token* newToken = 0;
     wxString newname(name);
-    m_Str.Trim();
+    m_Str.Trim(true).Trim(false);
     if (kind == tkDestructor)
     {
         // special class destructors case

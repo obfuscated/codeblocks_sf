@@ -188,6 +188,9 @@ public:
 
     /** return the string from the current position to the end of current line, in most case, this
      * function is used in handling #define, use with care outside this class!
+     * @param nestBraces true if you still need to count the '{' and '}' levels
+     * @param stripUnneeded true if you are going to remove comments and compression spaces(two or
+     * more spaces should become one space)
      */
     wxString ReadToEOL(bool nestBraces = true, bool stripUnneeded = true);
 

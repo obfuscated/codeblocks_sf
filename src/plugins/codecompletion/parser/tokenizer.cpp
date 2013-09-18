@@ -438,8 +438,10 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
         wxChar* p = buffer;
         wxString str;
 
+        // loop all the physical lines in reading macro definition
         for (;;)
         {
+            // this while statement end up in a physical EOL '\n'
             while (NotEOF() && CurrentChar() != _T('\n'))
             {
                 while (SkipComment())
@@ -449,7 +451,12 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
                 if (ch == _T('\n'))
                     break;
 
-                if (ch <= _T(' ') && (p == buffer || *(p - 1) == ch))
+                // if we see two spaces in the buffer, we should drop the second one. Note, if the
+                // first char is space, we should always save it to buffer, this is to distinguish
+                // a function/variable like macro definition, e.g.
+                // #define MYMACRO(A)  ...   -> function like macro definition
+                // #define MYMACRO (A)  ...  -> variable like macro definition, note a space before '('
+                if (ch <= _T(' ') && p > buffer && *(p - 1) == ch)
                 {
                     MoveToNextChar();
                     continue;
@@ -475,16 +482,18 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
                 MoveToNextChar();
             }
 
+            // check to see it is a logical EOL, some long macro definition contains a backslash-newline
             if (!IsBackslashBeforeEOL() || IsEOF())
-                break;
+                break; //break the outer for loop
             else
             {
+                //remove the backslash-newline and goto next physical line
                 while (p > buffer && *(--p) <= _T(' '))
                     ;
                 MoveToNextChar();
             }
         }
-
+        // remove the extra spaces in the end of buffer
         while (p > buffer && *(p - 1) <= _T(' '))
             --p;
 
