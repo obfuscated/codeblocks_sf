@@ -331,7 +331,7 @@ void ThreadSearchLoggerTree::OnSearchBegin(const ThreadSearchFindData& findData)
 }
 
 
-void ThreadSearchLoggerTree::OnDeleteTreeItem(wxCommandEvent& event)
+void ThreadSearchLoggerTree::OnDeleteTreeItem(cb_unused wxCommandEvent& event)
 {
     if ( m_ToDeleteItemId.IsOk() )
     {
@@ -344,7 +344,6 @@ void ThreadSearchLoggerTree::OnDeleteTreeItem(wxCommandEvent& event)
         }
         DeleteTreeItem(m_ToDeleteItemId);
     }
-    event.Skip();
 }
 
 
