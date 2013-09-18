@@ -1085,7 +1085,7 @@ bool Tokenizer::SkipUnwanted()
     // skip the following = or ?
     if (m_State & tsSkipEqual)
     {
-        if (c == _T('='))
+        if (c == _T('=') && NextChar() != _T('=')) //only skip after single equal sign, not double equals sign
         {
             if (!SkipToOneOfChars(_T(",;}"), true, true, false))
                 return false;
