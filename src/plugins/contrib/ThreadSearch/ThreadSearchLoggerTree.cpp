@@ -116,6 +116,8 @@ void ThreadSearchLoggerTree::DisconnectEvents(wxEvtHandler* pEvtHandler)
 
 void ThreadSearchLoggerTree::OnLoggerTreeClick(wxTreeEvent& event)
 {
+    if (m_pTreeLog->GetCount() == 0)
+        return;
     // Manages list log left single click
     wxTreeItemId itemId = event.GetItem();
     if ( itemId.IsOk() && hasResultLineForTreeItem(itemId) )
