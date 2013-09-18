@@ -659,6 +659,12 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
                      wxITEM_NORMAL, _("Show options window"));
     m_pThreadSearchView->UpdateOptionsButtonImage(m_FindData);
 
+    m_pCboSearchExpr->Append(m_pThreadSearchView->GetSearchHistory());
+    if ( m_pCboSearchExpr->GetCount() > 0 )
+    {
+        m_pCboSearchExpr->SetSelection(0);
+    }
+
     toolBar->Realize();
     #if wxCHECK_VERSION(2, 8, 0)
     toolBar->SetInitialSize();
