@@ -75,7 +75,11 @@ void ThreadSearchLoggerTree::ConnectEvents(wxEvtHandler* pEvtHandler)
             &ThreadSearchLoggerTree::OnLoggerTreeDoubleClick, NULL, this);
 
 #if wxUSE_MENUS
+    #if   defined ( __WXGTK__ )
     pEvtHandler->Connect(id, wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK,
+    #else
+    pEvtHandler->Connect(id, wxEVT_COMMAND_TREE_ITEM_MENU,
+    #endif
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &ThreadSearchLoggerTree::OnLoggerTreeContextualMenu, NULL, this);
 
@@ -101,7 +105,11 @@ void ThreadSearchLoggerTree::DisconnectEvents(wxEvtHandler* pEvtHandler)
             &ThreadSearchLoggerTree::OnLoggerTreeDoubleClick, NULL, this);
 
 #if wxUSE_MENUS
+    #if   defined ( __WXGTK__ )
     pEvtHandler->Disconnect(id, wxEVT_COMMAND_TREE_ITEM_RIGHT_CLICK,
+    #else
+    pEvtHandler->Disconnect(id, wxEVT_COMMAND_TREE_ITEM_MENU,
+    #endif
             (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
             &ThreadSearchLoggerTree::OnLoggerTreeContextualMenu, NULL, this);
 
