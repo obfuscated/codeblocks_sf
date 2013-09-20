@@ -19,8 +19,8 @@ cmake_minimum_required( VERSION 2.8 )
 # ---------------------------------------------------------------------------
 # Setup the CMake environment
 
+include( build/CMakeProject.cmake )
 include( build/CMakewxAppLib.cmake )
-include( build/CMakeFunctions.txt )
 
 # Specify what wxWidgets libs we need to link to. Note: 'core' must be before 'base'.
 # If you call this CMakeLists.txt from another one you may have already called FIND_WXWIDGETS()
