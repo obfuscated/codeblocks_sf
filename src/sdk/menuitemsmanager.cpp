@@ -100,9 +100,9 @@ void MenuItemsManager::Clear()
   *                 starts with a dash (-) (e.g. "-MyItem") then a menu
   *                 separator is prepended before the actual menu item.
   * @param id The menu item ID (use wxID_SEPARATOR for adding a separator)
-  * @return The newly created menu item or NULL for failure.
+  * @return The id of the newly created menu or the id of the old, same menu entry or NULL for failure.
   */
-wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
+int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
 {
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     wxMenu* menu = 0;
@@ -165,8 +165,9 @@ wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
             {
                 // existing menu
                 // if it is the final item we want to create, display error and stop
+
                 if (isLast || existing >= (int)menu->GetMenuItemCount())
-                    return 0;
+                    return existing;
 
                 // else just keep the menu pointer updated
                 existingMenu = menu->GetMenuItems()[existing]->GetSubMenu();
@@ -187,7 +188,10 @@ wxMenuItem* MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
                     break;
 
                 if (isLast)
-                    return Insert(menu, insert ? insertIndex : menu->GetMenuItemCount(), id, current, wxEmptyString);
+                {
+                    Insert(menu, insert ? insertIndex : menu->GetMenuItemCount(), id, current, wxEmptyString);
+                    return id;
+                }
                 else
                 {
                     wxMenu* sub = new wxMenu;

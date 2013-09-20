@@ -31,7 +31,7 @@ class DLLIMPORT MenuItemsManager
         MenuItemsManager(bool autoClearOnDestroy = true);
         virtual ~MenuItemsManager();
 
-        virtual wxMenuItem* CreateFromString(const wxString& menuPath, int id);
+        virtual int CreateFromString(const wxString& menuPath, int id);
 
         virtual wxMenuItem* Add(wxMenu* parent, int id, const wxString& caption, const wxString& helptext);
         virtual wxMenuItem* Insert(wxMenu* parent, int index, int id, const wxString& caption, const wxString& helptext);

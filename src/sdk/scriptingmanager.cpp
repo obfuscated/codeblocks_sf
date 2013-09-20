@@ -11,15 +11,15 @@
 
 #ifndef CB_PRECOMP
     #include "scriptingmanager.h"
-    #include "cbexception.h"
-    #include "manager.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "configmanager.h"
     #include "cbeditor.h"
-    #include <settings.h>
+    #include "cbexception.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
     #include "globals.h"
+    #include "logmanager.h"
+    #include "manager.h"
 
+    #include <settings.h>
     #include <wx/msgdlg.h>
     #include <wx/file.h>
     #include <wx/filename.h>
@@ -280,7 +280,8 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxStri
     }
 
     int id = wxNewId();
-    wxMenuItem* item = m_MenuItemsManager.CreateFromString(menuPath, id);
+    id = m_MenuItemsManager.CreateFromString(menuPath, id);
+    wxMenuItem* item = Manager::Get()->GetAppFrame()->GetMenuBar()->FindItem(id);
     if (item)
     {
         if (!isFunction)
