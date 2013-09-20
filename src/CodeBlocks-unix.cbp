@@ -3174,6 +3174,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKix.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKVIrc.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexLaTeX.cxx">
 			<Option target="scintilla" />
 		</Unit>
