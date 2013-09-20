@@ -36,9 +36,43 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         With a new Artistic Style release some unchanged source files will be formatted because of changes to Artistic
         Style. You may want to format your source before making program changes in order to bring it up to date.</p>
     <p>
-        Three new bracket modifier options, "attach-namespaces", "attach-classes", and "attach-inlines", can be
-        used to modify your selected bracket style.&nbsp;See the documentation for details. They are described in a new "Bracket
-        Modifier Options" section.</p>
+        Three new bracket modifier options, "attach-namespaces", &nbsp;"attach-classes", and "attach-inlines", can be
+        used to modify your selected bracket style.&nbsp;See the documentation for details. They are described in a new
+        "Bracket Modifier Options" section.</p>
+    <p>
+        A new option, "remove-brackets", will will remove brackets from conditional statements. The statement must be
+        a single statement on a single line. It is described in the "Formatting Options" section of the documentation.&nbsp;</p>
+    <p>
+        A new programming language, Objective&#8209;C, has been added to Artistic Style. Four new options, "align&#8209;method&#8209;colon",
+        "pad&#8209;method&#8209;colon=", "pad&#8209;method&#8209;prefix", and "unpad&#8209;method&#8209;prefix" have been
+        added to format the methods. The options are described in a new "Objective&#8209;C" section in the documentation.
+        These new options affect only Objective&#8209;C source code. They have no effect on the other programming languages.</p>
+    <p>
+        Because of the longer indents sometimes needed for Objective&#8209;C, the option "max-instatement-indent" may
+        need to be increased. If you are not getting the paren and square bracket alignment you want, try increasing this
+        value. The default minimum is 40 and the maximum is 120.
+    </p>
+    <p>
+        A new shared object (DLL) entry point, AStyleMainUtf16, has been added for processing C# UTF-16 strings. C# does
+        not have built in functions for converting the UTF-16 strings to UTF-8 for processing by Artistic Style. This
+        entry point will accept UTF-16 strings, format the source code, and return UTF-16 strings. The error handling
+        function and version number still use UTF-8 strings. The C# example program in the "Deleloper Information" shows
+        the new calling procedure. Changes from the previous release are marked in the example.</p>
+    <p>
+        C# strings are UTF-16 on both Windows and Linux. C# does not use the UTF-32 wchar_t strings on Linux. Qt also
+        uses UTF-16 on both Windows and Linux, but has built in UTF-8 conversion functions. Qt strings can be converted
+        to UTF-8 by Qt, or the new entry point can be used. There may be other "managed code" applications
+        on Linux that use UTF-16.
+    </p>
+    <p>
+        The "Developer Information" section has a new example and download for calling Artistic Style from an Objective&#8209;C
+        program. Since it is another "C" language the only thing needed is to link the program with a library build of
+        Artistic Style. The example was developed on Windows and Linux using the GNUstep project. Since the example is
+        a console program the problems with the GNUstep GUI have been avoided. It has not been tested on a Mac, but should
+        be close to working. The "Developer Information" section also has new page for "Objective&#8209;C on Windows and
+        Linux" which has information on compiling and running the example on those systems.</p>
+    <p>
+        Thanks to Evmenov Georgiy (align-pointer in range-based for) for their contributions.</p>
 
     <h3>
         Artistic Style 2.03&nbsp; (April 2013)</h3>

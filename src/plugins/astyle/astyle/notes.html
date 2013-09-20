@@ -22,10 +22,25 @@
 
     <ul>
         <li>Add new bracket modifier options "attach-namespaces", "attach-classes", and "attach-inlines".</li>
-        <li>Fix linux bracket styles to break the opening bracket in inline function definitions (3571898). </li>
+        <li>Add new option "remove-brackets" (-xj) to remove brackets from single line conditional statements.</li>
+        <li>Add new programming language Objective&#8209;C.</li>
+        <li>Add new option "align-method-colon" (-xM) to align Objective&#8209;C method colons. </li>
+        <li>Add new option "pad-method-colon=#" (-xP#) to space pad Objective&#8209;C method colons. </li>
+        <li>Add new options "pad-method-prefix" (-xQ), and "unpad-method-prefix" (-xR) to pad the Objective&#8209;C "-" and
+            "+" method prefix. </li>
+        <li>Add new dll entry point AStyleMainUtf16 for processing C# UTF-16 strings. </li>
+        <li>Improve recognition and formatting of pointers and references. </li>
+        <li>Change "max-code-length" to include Objective&#8209;C methods.</li>
+        <li>Fix linux bracket styles to break the opening bracket in inline function definitions (185). </li>
+        <li>Fix indentation of switch block comments (164). </li>
+        <li>Fix enums to indent with tabs when requested (92, 121). </li>
+        <li>Fix formatting of rvalue reference without a name in a declaration (219).</li>
+        <li>Fix end-of-statement reset when comments follow closing bracket.</li>
         <li>Fix the ASBeautifier active and waiting stacks to delete the ASBeautifier objects before deleting the pointers.</li>
+        <li>Fix Linux piping problem by changing "cin" input to build a stringstream before formatting. </li>
         <li>Refactor to improve design and decomposition:
             <ul>
+                <li>Extract method parseCurrentLine() in ASEnhancer.&nbsp; </li>
                 <li>Remove astyle_main.cpp unused functions getFilesUnchanged, getOptionsFileRequired, and setOptionsFileRequired.</li>
             </ul>
         </li>

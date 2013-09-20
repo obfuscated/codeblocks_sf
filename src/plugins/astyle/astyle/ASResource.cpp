@@ -44,6 +44,7 @@ const string ASResource::AS_VOLATILE = string("volatile");
 const string ASResource::AS_STRUCT = string("struct");
 const string ASResource::AS_UNION = string("union");
 const string ASResource::AS_INTERFACE = string("interface");
+const string ASResource::AS_SELECTOR = string("selector");
 const string ASResource::AS_NAMESPACE = string("namespace");
 const string ASResource::AS_EXTERN = string("extern");
 const string ASResource::AS_ENUM = string("enum");
@@ -156,6 +157,8 @@ const string ASResource::AS_DYNAMIC_CAST = string("dynamic_cast");
 const string ASResource::AS_REINTERPRET_CAST = string("reinterpret_cast");
 const string ASResource::AS_STATIC_CAST = string("static_cast");
 
+const string ASResource::AS_NS_DURING = string("NS_DURING");
+const string ASResource::AS_NS_HANDLER = string("NS_HANDLER");
 
 /**
  * Sort comparison function.

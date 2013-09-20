@@ -164,7 +164,7 @@ void ASLocalizer::setLanguageFromLCID(size_t lcid)
 	size_t lang = PRIMARYLANGID(LANGIDFROMLCID(m_lcid));
 	size_t sublang = SUBLANGID(LANGIDFROMLCID(m_lcid));
 	// find language in the wlc table
-	size_t count = sizeof(wlc)/sizeof(wlc[0]);
+	size_t count = sizeof(wlc) / sizeof(wlc[0]);
 	for (size_t i = 0; i < count; i++ )
 	{
 		if (wlc[i].winLang == lang)
@@ -323,7 +323,7 @@ string Translation::convertToMultiByte(const wstring &wideStr) const
 		return "";
 	}
 	// convert the characters
-	char* mbStr = new(nothrow) char[mbLen+1];
+	char* mbStr = new(nothrow) char[mbLen + 1];
 	if (mbStr == NULL)
 	{
 		if (!msgDisplayed)
@@ -333,7 +333,7 @@ string Translation::convertToMultiByte(const wstring &wideStr) const
 		}
 		return "";
 	}
-	wcstombs(mbStr, wideStr.c_str(), mbLen+1);
+	wcstombs(mbStr, wideStr.c_str(), mbLen + 1);
 	// return the string
 	string mbTranslation = mbStr;
 	delete [] mbStr;
@@ -405,7 +405,6 @@ ChineseSimplified::ChineseSimplified()	// 中文（简体）
 	addPair("For help on options type 'astyle -h'", L"输入'astyle -h'以获得有关命令行的帮助");
 	addPair("Cannot open options file", L"无法打开配置文件");
 	addPair("Cannot open directory", L"无法打开目录");
-	addPair("Cannot process the input stream", L"无法处理输入流");
 	addPair("Missing filename in %s\n", L"在%s缺少文件名\n");
 	addPair("Recursive option with no wildcard", L"递归选项没有通配符");
 	addPair("Did you intend quote the filename", L"你打算引用文件名");
@@ -432,7 +431,6 @@ ChineseTraditional::ChineseTraditional()	// 中文（繁體）
 	addPair("For help on options type 'astyle -h'", L"輸入'astyle -h'以獲得有關命令行的幫助:");
 	addPair("Cannot open options file", L"無法打開配置文件");
 	addPair("Cannot open directory", L"無法打開目錄");
-	addPair("Cannot process the input stream", L"無法處理輸入流");
 	addPair("Missing filename in %s\n", L"在%s缺少文件名\n");
 	addPair("Recursive option with no wildcard", L"遞歸選項沒有通配符");
 	addPair("Did you intend quote the filename", L"你打算引用文件名");
@@ -460,7 +458,6 @@ Dutch::Dutch()	// Nederlandse
 	addPair("For help on options type 'astyle -h'", L"Voor hulp bij 'astyle-h' opties het type");
 	addPair("Cannot open options file", L"Kan niet worden geopend options bestand");
 	addPair("Cannot open directory", L"Kan niet open directory");
-	addPair("Cannot process the input stream", L"Niet kan verwerken de input stream");
 	addPair("Missing filename in %s\n", L"Ontbrekende bestandsnaam in %s\n");
 	addPair("Recursive option with no wildcard", L"Recursieve optie met geen wildcard");
 	addPair("Did you intend quote the filename", L"Heeft u van plan citaat van de bestandsnaam");
@@ -492,7 +489,6 @@ Finnish::Finnish()	// Suomeksi
 	addPair("For help on options type 'astyle -h'", L"Apua vaihtoehdoista tyyppi 'astyle -h'");
 	addPair("Cannot open options file", L"Ei voi avata vaihtoehtoja tiedostoa");
 	addPair("Cannot open directory", L"Ei Open Directory");
-	addPair("Cannot process the input stream", L"Ei voi käsitellä input stream");
 	addPair("Missing filename in %s\n", L"Puuttuvat tiedostonimi %s\n");
 	addPair("Recursive option with no wildcard", L"Rekursiivinen vaihtoehto ilman wildcard");
 	addPair("Did you intend quote the filename", L"Oletko aio lainata tiedostonimi");
@@ -520,7 +516,6 @@ French::French()	// Française
 	addPair("For help on options type 'astyle -h'", L"Pour de l'aide sur les options tapez 'astyle -h'");
 	addPair("Cannot open options file", L"Impossible d'ouvrir le fichier d'options");
 	addPair("Cannot open directory", L"Impossible d'ouvrir le répertoire");
-	addPair("Cannot process the input stream", L"Impossible de traiter le flux d'entrée");
 	addPair("Missing filename in %s\n", L"Nom de fichier manquant dans %s\n");
 	addPair("Recursive option with no wildcard", L"Option récursive sans joker");
 	addPair("Did you intend quote the filename", L"Avez-vous l'intention de citer le nom de fichier");
@@ -548,7 +543,6 @@ German::German()	// Deutsch
 	addPair("For help on options type 'astyle -h'", L"Für Hilfe zu den Optionen geben Sie 'astyle -h'");
 	addPair("Cannot open options file", L"Kann nicht geöffnet werden Optionsdatei");
 	addPair("Cannot open directory", L"Kann nicht geöffnet werden Verzeichnis");
-	addPair("Cannot process the input stream", L"Kann nicht verarbeiten Input-Stream");
 	addPair("Missing filename in %s\n", L"Missing in %s Dateiname\n");
 	addPair("Recursive option with no wildcard", L"Rekursive Option ohne Wildcard");
 	addPair("Did you intend quote the filename", L"Haben Sie die Absicht Inhalte der Dateiname");
@@ -578,7 +572,6 @@ Hindi::Hindi()	// हिन्दी
 	addPair("For help on options type 'astyle -h'", L"विकल्पों पर मदद के लिए प्रकार 'astyle -h'");
 	addPair("Cannot open options file", L"विकल्प फ़ाइल नहीं खोल सकता है");
 	addPair("Cannot open directory", L"निर्देशिका नहीं खोल सकता");
-	addPair("Cannot process the input stream", L"इनपुट स्ट्रीम प्रक्रिया नहीं कर सकते");
 	addPair("Missing filename in %s\n", L"लापता में फ़ाइलनाम %s\n");
 	addPair("Recursive option with no wildcard", L"कोई वाइल्डकार्ड साथ पुनरावर्ती विकल्प");
 	addPair("Did you intend quote the filename", L"क्या आप बोली फ़ाइलनाम का इरादा");
@@ -606,7 +599,6 @@ Italian::Italian()	// Italiano
 	addPair("For help on options type 'astyle -h'", L"Per informazioni sulle opzioni di tipo 'astyle-h'");
 	addPair("Cannot open options file", L"Impossibile aprire il file opzioni");
 	addPair("Cannot open directory", L"Impossibile aprire la directory");
-	addPair("Cannot process the input stream", L"Impossibile elaborare il flusso di input");
 	addPair("Missing filename in %s\n", L"Nome del file mancante in %s\n");
 	addPair("Recursive option with no wildcard", L"Opzione ricorsiva senza jolly");
 	addPair("Did you intend quote the filename", L"Avete intenzione citare il nome del file");
@@ -633,7 +625,6 @@ Japanese::Japanese()	// 日本
 	addPair("For help on options type 'astyle -h'", L"コマンドラインについてのヘルプは'astyle- h'を入力してください");
 	addPair("Cannot open options file", L"コンフィギュレーションファイルを開くことができません");
 	addPair("Cannot open directory", L"ディレクトリのオープンに失敗しました");
-	addPair("Cannot process the input stream", L"入力ストリームを処理できません");
 	addPair("Missing filename in %s\n", L"%s はファイル名で欠落しています\n");
 	addPair("Recursive option with no wildcard", L"再帰的なオプションではワイルドカードではない");
 	addPair("Did you intend quote the filename", L"あなたは、ファイル名を参照するつもり");
@@ -660,7 +651,6 @@ Korean::Korean()	// 한국의
 	addPair("For help on options type 'astyle -h'", L"옵션 유형 'astyle - H에 대한 도움말을 보려면");
 	addPair("Cannot open options file", L"구성 파일을 열 수 없습니다");
 	addPair("Cannot open directory", L"디렉토리를 열지 못했습니다");
-	addPair("Cannot process the input stream", L"입력 스트림을 처리할 수 없습니다");
 	addPair("Missing filename in %s\n", L"%s 의에서 누락된 파일 이름\n");
 	addPair("Recursive option with no wildcard", L"없이 와일드 카드로 재귀 옵션");
 	addPair("Did you intend quote the filename", L"당신은 파일 이름을 인용하고자나요");
@@ -688,7 +678,6 @@ Polish::Polish()	// Polski
 	addPair("For help on options type 'astyle -h'", L"Aby uzyskać pomoc od rodzaju opcji 'astyle -h'");
 	addPair("Cannot open options file", L"Nie można otworzyć pliku opcji");
 	addPair("Cannot open directory", L"Nie można otworzyć katalogu");
-	addPair("Cannot process the input stream", L"Nie można przetworzyć strumień wejściowy");
 	addPair("Missing filename in %s\n", L"Brakuje pliku w %s\n");
 	addPair("Recursive option with no wildcard", L"Rekurencyjne opcja bez symboli");
 	addPair("Did you intend quote the filename", L"Czy zamierza Pan podać nazwę pliku");
@@ -716,7 +705,6 @@ Portuguese::Portuguese()	// Português
 	addPair("For help on options type 'astyle -h'", L"Para obter ajuda sobre as opções de tipo 'astyle -h'");
 	addPair("Cannot open options file", L"Não é possível abrir arquivo de opções");
 	addPair("Cannot open directory", L"Não é possível abrir diretório");
-	addPair("Cannot process the input stream", L"Não pode processar o fluxo de entrada");
 	addPair("Missing filename in %s\n", L"Filename faltando em %s\n");
 	addPair("Recursive option with no wildcard", L"Opção recursiva sem curinga");
 	addPair("Did you intend quote the filename", L"Será que você pretende citar o nome do arquivo");
@@ -744,7 +732,6 @@ Russian::Russian()	// русский
 	addPair("For help on options type 'astyle -h'", L"Для получения справки по 'astyle -h' опций типа");
 	addPair("Cannot open options file", L"Не удается открыть файл параметров");
 	addPair("Cannot open directory", L"Не могу открыть каталог");
-	addPair("Cannot process the input stream", L"Не удается обработать входной поток");
 	addPair("Missing filename in %s\n", L"Отсутствует имя файла в %s\n");
 	addPair("Recursive option with no wildcard", L"Рекурсивный вариант без каких-либо шаблона");
 	addPair("Did you intend quote the filename", L"Вы намерены цитатой файла");
@@ -772,7 +759,6 @@ Spanish::Spanish()	// Español
 	addPair("For help on options type 'astyle -h'", L"Para obtener ayuda sobre las opciones tipo 'astyle -h'");
 	addPair("Cannot open options file", L"No se puede abrir el archivo de opciones");
 	addPair("Cannot open directory", L"No se puede abrir el directorio");
-	addPair("Cannot process the input stream", L"No se puede procesar el flujo de entrada");
 	addPair("Missing filename in %s\n", L"Falta nombre del archivo en %s\n");
 	addPair("Recursive option with no wildcard", L"Recursiva opción sin comodín");
 	addPair("Did you intend quote the filename", L"Se tiene la intención de citar el nombre de archivo");
@@ -800,7 +786,6 @@ Swedish::Swedish()	// Svenska
 	addPair("For help on options type 'astyle -h'", L"För hjälp om alternativ typ 'astyle -h'");
 	addPair("Cannot open options file", L"Kan inte öppna inställningsfilen");
 	addPair("Cannot open directory", L"Kan inte öppna katalog");
-	addPair("Cannot process the input stream", L"Kan inte bearbeta indata ström");
 	addPair("Missing filename in %s\n", L"Saknade filnamn i %s\n");
 	addPair("Recursive option with no wildcard", L"Rekursiva alternativ utan jokertecken");
 	addPair("Did you intend quote the filename", L"Visste du tänker citera filnamnet");
@@ -828,7 +813,6 @@ Ukrainian::Ukrainian()	// Український
 	addPair("For help on options type 'astyle -h'", L"Для отримання довідки по 'astyle -h' опцій типу");
 	addPair("Cannot open options file", L"Не вдається відкрити файл параметрів");
 	addPair("Cannot open directory", L"Не можу відкрити каталог");
-	addPair("Cannot process the input stream", L"Не вдається обробити вхідний потік");
 	addPair("Missing filename in %s\n", L"Відсутня назва файлу в %s\n");
 	addPair("Recursive option with no wildcard", L"Рекурсивний варіант без будь-яких шаблону");
 	addPair("Did you intend quote the filename", L"Ви маєте намір цитатою файлу");

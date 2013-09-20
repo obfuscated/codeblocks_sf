@@ -32,6 +32,11 @@
 // headers
 //----------------------------------------------------------------------------
 
+// use this to test the Linux compile with MinGW
+#ifdef MINGW_LINUX
+#undef _WIN32
+#endif
+
 #include "astyle.h"
 
 #include <sstream>
@@ -52,11 +57,18 @@
 #endif
 #endif  //  ASTYLE_JNI
 
+#ifdef ASTYLE_LIB
+// define utf-16 bit text for the platform
+#ifdef _WIN32
+typedef wchar_t utf16_t;
+#else
+typedef unsigned short utf16_t;
+#endif	// _WIN32
+#else
 // for console build only
-#ifndef ASTYLE_LIB
 #include "ASLocalizer.h"
 #define _(a) localizer.settext(a)
-#endif
+#endif	// ASTYLE_LIB
 
 // for G++ implementation of string.compare:
 #if defined(__GNUC__) && __GNUC__ < 3
@@ -220,7 +232,7 @@ class ASConsole
 			linesOut = 0;
 		}
 
-		// functions
+		// public functions
 		void convertLineEnds(ostringstream &out, int lineEnd);
 		FileEncoding detectEncoding(const char* data, size_t dataSize) const;
 		void error() const;
@@ -238,7 +250,7 @@ class ASConsole
 		bool getLineEndsMixed();
 		bool getNoBackup();
 		string getLanguageID() const;
-		string getNumberFormat(int num, size_t=0) const ;
+		string getNumberFormat(int num, size_t = 0) const ;
 		string getNumberFormat(int num, const char* groupingArg, const char* separator) const;
 		string getOptionsFileName();
 		string getOrigSuffix();
@@ -255,15 +267,13 @@ class ASConsole
 		void setOptionsFileName(string name);
 		void setOrigSuffix(string suffix);
 		void setPreserveDate(bool state);
-		void setProgramLocale();
-		void standardizePath(string &path, bool removeBeginningSeparator=false) const;
+		void standardizePath(string &path, bool removeBeginningSeparator = false) const;
 		bool stringEndsWith(const string &str, const string &suffix) const;
 		void updateExcludeVector(string suffixParam);
-		size_t Utf8Length(const char* data, size_t len, FileEncoding encoding) const;
+		size_t Utf8LengthFromUtf16(const char* data, size_t len, FileEncoding encoding) const;
 		size_t Utf8ToUtf16(char* utf8In, size_t inLen, FileEncoding encoding, char* utf16Out) const;
-		size_t Utf16Length(const char* data, size_t len) const;
+		size_t Utf16LengthFromUtf8(const char* data, size_t len) const;
 		size_t Utf16ToUtf8(char* utf16In, size_t inLen, FileEncoding encoding, bool firstBlock, char* utf8Out) const;
-		void verifyCinPeek() const;
 
 		// for unit testing
 		vector<string> getExcludeVector();
@@ -273,7 +283,7 @@ class ASConsole
 		vector<string> getFileOptionsVector();
 		vector<string> getFileName();
 
-	private:
+	private:	// functions
 		ASConsole &operator=(ASConsole &);         // not to be implemented
 		void correctMixedLineEnds(ostringstream &out);
 		void formatFile(const string &fileName_);
@@ -305,7 +315,32 @@ class ASConsole
 		void displayLastError();
 #endif
 };
+#else	// ASTYLE_LIB
+
+//----------------------------------------------------------------------------
+// ASLibrary class for library build
+//----------------------------------------------------------------------------
+
+class ASLibrary
+{
+	public:
+		// virtual functions are mocked in testing
+		utf16_t* formatUtf16(const utf16_t*, const utf16_t*, fpError, fpAlloc) const;
+		virtual utf16_t* convertUtf8ToUtf16(const char* utf8In, fpAlloc fpMemoryAlloc) const;
+		virtual char* convertUtf16ToUtf8(const utf16_t* pSourceIn) const;
+
+	private:
+		bool getBigEndian() const;
+		int swap16bit(int value) const;
+		static char* STDCALL tempMemoryAllocation(unsigned long memoryNeeded);
+		size_t utf16len(const utf16_t* utf16In) const;
+		size_t Utf8LengthFromUtf16(const char* data, size_t tlen, bool isBigEndian) const;
+		size_t Utf16LengthFromUtf8(const char* data, size_t len) const;
+};
+
 #endif	// ASTYLE_LIB
+
+//----------------------------------------------------------------------------
 
 }   // end of namespace astyle
 
@@ -313,7 +348,6 @@ class ASConsole
 // declarations for java native interface (JNI) build
 // global because they are called externally and are NOT part of the namespace
 //----------------------------------------------------------------------------
-
 #ifdef ASTYLE_JNI
 void  STDCALL javaErrorHandler(int errorNumber, const char* errorMessage);
 char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded);
@@ -325,5 +359,14 @@ jstring STDCALL Java_AStyleInterface_AStyleMain
 (JNIEnv* env, jobject obj, jstring textInJava, jstring optionsJava);
 #endif //  ASTYLE_JNI
 
+//----------------------------------------------------------------------------
+// declarations for UTF-16 interface
+// global because they are called externally
+//----------------------------------------------------------------------------
+#ifdef ASTYLE_LIB
+extern "C"
+EXPORT utf16_t* STDCALL AStyleMainUtf16
+(const utf16_t* pSourceIn, const utf16_t* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
+#endif	// ASTYLE_LIB
 
 #endif // closes ASTYLE_MAIN_H

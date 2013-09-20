@@ -77,7 +77,7 @@
         <a class="contents" href="#_indent=spaces">indent=spaces</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_indent=tab">indent=tab</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_indent=force-tab">indent=force&#8209;tab</a>&nbsp;&nbsp;&nbsp;
-        <a class="contents" href="#_indent=force-tab-x">--indent=force&#8209;tab&#8209;x&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_indent=force-tab-x">--indent=force&#8209;tab&#8209;x</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
         <a class="contents" href="#_Indentation_Options">Indentation&nbsp;Options</a></p>
@@ -116,19 +116,27 @@
         <a class="contents" href="#_break-elseifs">break&#8209;elseifs</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_add-brackets">add&#8209;brackets</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_add-one-line-brackets">add&#8209;one&#8209;line&#8209;brackets</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_remove-brackets">remove&#8209;brackets</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_keep-one-line-blocks">keep&#8209;one&#8209;line&#8209;blocks</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_keep-one-line-statements">keep&#8209;one&#8209;line&#8209;statements</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_convert-tabs">convert&#8209;tabs</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_close-templates">close&#8209;templates</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_max-code-length">max&#8209;code&#8209;length</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_max-code-length">break&#8209;after&#8209;logical</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_max-code-length">break&#8209;after&#8209;logical</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_mode">mode</a>&nbsp;&nbsp;&nbsp;
     </p>
     <p class="contents1">
+        <a class="contents" href="#_Objective_C_Options">Objective&#8209;C&nbsp;Options</a></p>
+    <p class="contents2">
+        <a class="contents" href="#_align-method-colon">align&#8209;method&#8209;colon</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_pad-method-prefix">pad&#8209;method&#8209;prefix</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_unpad-method-prefix">unpad&#8209;method&#8209;prefix</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_pad-method-colon">pad&#8209;method&#8209;colon</a>&nbsp;&nbsp;&nbsp;
+        </p>
+    <p class="contents1">
         <a class="contents" href="#_Other_Options">Other&nbsp;Options</a></p>
     <p class="contents2">
-        <a class="contents" href="#_suffix">suffix</a>&nbsp;&nbsp;&nbsp; 
-        <a class="contents" href="#_suffix=none">suffix=none</a>&nbsp;&nbsp;&nbsp;
+        <a class="contents" href="#_suffix">suffix</a>&nbsp;&nbsp;&nbsp; <a class="contents" href="#_suffix=none">suffix=none</a>&nbsp;&nbsp;&nbsp;
         <a class="contents" href="#_recursive">recursive</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_exclude">exclude</a>&nbsp;&nbsp;&nbsp; 
         <a class="contents" href="#_ignore-exclude-errors">ignore&#8209;exclude&#8209;errors</a>&nbsp;&nbsp;&nbsp;
@@ -247,7 +255,9 @@
 
     <p>
         If you have never used Artistic Style there are a couple of ways to start. One is to run it with no options at
-        all. This will format the file with 4 spaces per indent and will leave the brackets unchanged. Another is to use
+        all. This will format the file with 4 spaces per indent and will format the brackets using the default bracket
+        style. The opening brackets will not be changed and the closing brackets will be broken from the preceding line.
+        Another way is to use
         one of the bracket styles described in the "Bracket Style Options" section. Select one with a bracket formatting
         style you like. Once you are familiar with the options you can customize the format to your personal preference.</p>
     <p>
@@ -306,7 +316,7 @@
 
     <p>
         These options start with '<strong>--</strong>', and must be written one at a time.<br />
-        (Example: '<code>--brackets=attach --indent=spaces=4</code>')</p>
+        (Example: '<code>--style=allman --indent=spaces=4</code>')</p>
 
     <h4>
         Short Options</h4>
@@ -347,7 +357,7 @@
         Example of a default options file:</p>
     <div class="code">
         <pre><span class="comment"># this line is a comment</span>
---brackets=attach   <span class="comment"># this is a line-end comment</span>
+--style=allman      <span class="comment"># this is a line-end comment</span>
 
 <span class="comment"># long options can be written without the preceding '--'</span>
 indent-switches     <span class="comment"># cannot do this on the command line</span>
@@ -356,7 +366,7 @@ indent-switches     <span class="comment"># cannot do this on the command line</
 -t -p
 
 <span class="comment"># short options can be concatenated together</span>
--M65Ucv</pre>
+-M60Ucv</pre>
     </div>
     <p>
         &nbsp;</p>
@@ -640,7 +650,7 @@ indent-switches     <span class="comment"># cannot do this on the command line</
     <p>
         &nbsp;</p>
     <p id="_attach_inlines">
-        <code class="title">--attach-inlines / -xi</code><br />
+        <code class="title">--attach-inlines / -xl</code><br />
         Attach brackets to class and struct inline function definitions. This is not done for run-in type brackets (Horstmann
         and Pico styles). This option is effective for C++ files only.</p>
     <div class="code">
@@ -1341,9 +1351,9 @@ String ^s1;</pre>
 
     <p id="_break-closing-brackets">
         <code class="title">--break-closing-brackets / -y </code><br />
-        When used with --brackets=attach, --brackets=linux, or --brackets=stroustrup, this breaks closing headers (e.g.
-        'else', 'catch', ...) from their immediately preceding closing brackets. Closing header brackets are always broken
-        with broken brackets, horstmann brackets, indented blocks, and indented brackets.</p>
+        When used with --style=java, --style=kr, --style=stroustrup, --style=linux, or --style=1tbs, this breaks closing
+        headers (e.g. 'else', 'catch', ...) from their immediately preceding closing brackets. Closing header brackets
+        are always broken with the other styles.</p>
     <div class="code">
         <pre>void Foo(bool isFoo) <span class="brace">{</span>
     if (isFoo) <span class="brace">{</span>
@@ -1433,6 +1443,24 @@ else
             becomes:</p>
         <pre>if (isFoo)
     <span class="brace">{</span> isFoo = false; <span class="brace">}</span>
+</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_remove-brackets">
+        <code class="title">--remove-brackets / -xj</code><br />
+        Remove brackets from conditional statements (e.g. '<code>if</code>', '<code>for</code>', '<code>while</code>'...).
+        The statement must be a single statement on a single line. If --add-brackets or --add-one-line-brackets is also
+        used the result will be to add brackets. Brackets will not be removed from "One True Brace Style", --style=1tbs.</p>
+    <div class="code">
+        <pre>if (isFoo)
+<span class="brace">{</span>
+    isFoo = false;
+<span class="brace">}</span></pre>
+        <p class="code">
+            becomes:</p>
+        <pre>if (isFoo)
+    isFoo = false;
 </pre>
     </div>
     <p>
@@ -1528,11 +1556,92 @@ else
         &nbsp;
     </p>
     <p id="_mode">
-        <code class="title">--mode=c</code><br /><code class="title">--mode=cs</code><br />
+        <code class="title">--mode=c</code><br />
+        <code class="title">--mode=cs</code><br />
         <code class="title">--mode=java</code><br />
         Indent a C/C++, C#, or Java file. The option is usually set from the file extension for each file. You can override
         the setting with this entry. It will be used for all files regardless of the file extension. It allows the formatter
         to identify language specific syntax such as C++ classes, templates, and keywords.</p>
+    <p>
+        &nbsp;</p>
+    <hr />
+
+    <!--  * * * * * * * * * * * * *   Objective-C Options  * * * * * * * * * * * * *  -->
+
+    <h3 id="_Objective_C_Options">
+        Objective&#8209;C Options</h3>
+
+    <p>
+        Because of the longer indents sometimes needed for Objective&#8209;C, the option "max-instatement-indent" may
+        need to be increased. If you are not getting the paren and square bracket alignment you want, try increasing this
+        value. The option is described in the "Indentation Options" section.
+    </p>
+    <p id="_align-method-colon">
+        <code class="title">--align-method-colon / -xM</code><br />
+        Align the colons in Objective&#8209;C method declarations. This option is effective for Objective&#8209;C
+        files only.</p>
+    <div class="code">
+        <pre>-(void)deleteKey:(id)key
+    atIndex:(int)index
+    ofNode:(Node*)node;</pre>
+        <p class="code">
+            becomes:</p>
+        <pre>-(void)deleteKey:(id)key
+         atIndex:(int)index
+          ofNode:(Node*)node;</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_pad-method-prefix">
+        <code class="title">--pad-method-prefix / -xQ</code><br />
+        Insert space padding after the '-' or '+' Objective&#8209;C method prefix. This will add exactly one space. Any
+        additional spaces will be deleted. This option is effective for Objective&#8209;C files only.</p>
+    <div class="code">
+        <pre>-(void)foo1;
++(void)foo2;</pre>
+        <p class="code">
+            becomes:</p>
+        <pre>- (void)foo1;
++ (void)foo2;</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_unpad-method-prefix">
+        <code class="title">--unpad-method-prefix / -xR</code><br />
+        Remove all space padding after the '-' or '+' Objective&#8209;C method prefix. If used with pad-method-prefix,
+        this option will be ignored. This option is effective for Objective&#8209;C files only.</p>
+    <div class="code">
+        <pre>- (void)foo1;
++ (void)foo2;</pre>
+        <p class="code">
+            becomes:</p>
+        <pre>-(void)foo1;
++(void)foo2;</pre>
+    </div>
+    <p>
+        &nbsp;</p>
+    <p id="_pad-method-colon">
+        <code class="title">--pad-method-colon=none&nbsp;&nbsp; / -xP0<br />
+            --pad-method-colon=all&nbsp;&nbsp;&nbsp; / -xP1<br />
+            --pad-method-colon=after&nbsp; / -xP2<br />
+            --pad-method-colon=before / -xP3</code><br />
+        Add or remove space padding before or after the colons in an Objective&#8209;C method call. These options will
+        pad exactly one space. Any additional spaces will be deleted. Colons immediarely preceeding a paren will not be
+        padded. This option is effective for Objective&#8209;C files only.</p>
+    <div class="code">
+        <p class="code">
+            with pad-method-colon=none:</p>
+        <pre>[node insertKey:key];</pre>
+        <p class="code">
+            with pad-method-colon=all:</p>
+        <pre>[node insertKey : key];</pre>
+        <p class="code">
+            with pad-method-colon=after:</p>
+        <pre>[node insertKey: key];</pre>
+        <p class="code">
+            with pad-method-colon=before:</p>
+        <pre>[node insertKey :key];</pre>
+    </div>
     <p>
         &nbsp;</p>
     <hr />
@@ -1571,13 +1680,13 @@ else
         Wildcards are NOT allowed. There may be more than one exclude statement. The filepath and name may be placed in
         double quotes (e.g. &#8209;&#8209;exclude="foo&nbsp;bar.cpp").</p>
     <p id="_ignore-exclude-errors">
-        <code class="title">ignore-exclude-errors / -i</code><br />
+        <code class="title">--ignore-exclude-errors / -i</code><br />
         Allow processing to continue if there are errors in the "exclude=###" options.<br />
         This option lets the excludes for several projects be entered in a single option file. This option may be placed
         in the same option file as the excludes. It will display the unmatched excludes. The following option will not
         display the unmatched excludes.</p>
     <p id="_ignore-exclude-errors-x">
-        <code class="title">ignore-exclude-errors-x / -xi</code><br />
+        <code class="title">--ignore-exclude-errors-x / -xi</code><br />
         <code class="title"></code>Allow processing to continue if there are errors in the "exclude=###" options.<br />
         This option lets the excludes for several projects be entered in a single option file. This option may be placed
         in the same option file as the excludes. It will NOT display the unmatched excludes. The preceding option will
