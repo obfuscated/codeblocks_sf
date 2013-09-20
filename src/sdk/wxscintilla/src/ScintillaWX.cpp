@@ -489,7 +489,7 @@ bool ScintillaWX::ModifyScrollBars(int nMax, int nPage) {
     int horizEnd = scrollWidth;
     if (horizEnd < 0)
         horizEnd = 0;
-    if (!horizontalScrollBarVisible || (wrapState != eWrapNone))
+    if (!horizontalScrollBarVisible || Wrapping())
         horizEnd = 0;
     int pageWidth = rcText.Width();
 
@@ -1201,8 +1201,8 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
     case WXK_ESCAPE:            key = SCK_ESCAPE;   break;
     case WXK_BACK:              key = SCK_BACK;     break;
     case WXK_TAB:               key = SCK_TAB;      break;
-    case WXK_RETURN:            // fall through
-    case WXK_NUMPAD_ENTER:      key = SCK_RETURN;   break;
+    case WXK_NUMPAD_ENTER:      // fall through
+    case WXK_RETURN:            key = SCK_RETURN;   break;
     case WXK_ADD:               // fall through
     case WXK_NUMPAD_ADD:        key = SCK_ADD;      break;
     case WXK_SUBTRACT:          // fall through

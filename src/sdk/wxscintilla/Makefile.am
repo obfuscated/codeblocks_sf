@@ -51,6 +51,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexHaskell.cxx \
 			src/scintilla/lexers/LexInno.cxx \
 			src/scintilla/lexers/LexKix.cxx \
+			src/scintilla/lexers/LexKVIrc.cxx \
 			src/scintilla/lexers/LexLaTeX.cxx \
 			src/scintilla/lexers/LexLisp.cxx \
 			src/scintilla/lexers/LexLout.cxx \

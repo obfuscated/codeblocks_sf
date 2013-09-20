@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.34.0")
+#define wxSCINTILLA_VERSION _T("3.35.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -43,6 +43,7 @@
     #define WXDLLIMPEXP_SCI
 #endif
 
+class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 
 // SWIG can't handle "#if" type of conditionals, only "#ifdef"
 #ifdef SWIG
@@ -526,8 +527,9 @@
 #define wxSCI_LEX_VISUALPROLOG 107
 #define wxSCI_LEX_LITERATEHASKELL 108
 #define wxSCI_LEX_STTXT 109
+#define wxSCI_LEX_KVIRC 110
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_STTXT // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_KVIRC // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -2264,6 +2266,22 @@
 #define wxSCI_STTXT_DATETIME 16
 #define wxSCI_STTXT_VARS 17
 #define wxSCI_STTXT_PRAGMAS 18
+
+/// Lexical states for SCLEX_KVIRC
+#define wxSCI_KVIRC_DEFAULT 0
+#define wxSCI_KVIRC_COMMENT 1
+#define wxSCI_KVIRC_COMMENTBLOCK 2
+#define wxSCI_KVIRC_STRING 3
+#define wxSCI_KVIRC_WORD 4
+#define wxSCI_KVIRC_KEYWORD 5
+#define wxSCI_KVIRC_FUNCTION_KEYWORD 6
+#define wxSCI_KVIRC_FUNCTION 7
+#define wxSCI_KVIRC_VARIABLE 8
+#define wxSCI_KVIRC_NUMBER 9
+#define wxSCI_KVIRC_OPERATOR 10
+#define wxSCI_KVIRC_STRING_FUNCTION 11
+#define wxSCI_KVIRC_STRING_VARIABLE 12
+
 /// Events
 /// GTK+ Specific to work around focus and accelerator problems:
 /// Line end types which may be used in addition to LF, CR, and CRLF
@@ -3384,12 +3402,12 @@ public:
     // Returns the length of the replacement text.
     int ReplaceTarget(const wxString& text);
 
-    // Replace the target text with the argument text after \d processing.
+    // Replace the target text with the argument text after \\d processing.
     // Text is counted so it can contain NULs.
-    // Looks for \d where d is between 1 and 9 and replaces these with the strings
+    // Looks for \\d where d is between 1 and 9 and replaces these with the strings
     // matched in the last search operation which were surrounded by \( and \).
     // Returns the length of the replacement text including any change
-    // caused by processing the \d patterns.
+    // caused by processing the \\d patterns.
     int ReplaceTargetRE(const wxString& text);
 
     // Search for a counted string in the target and set the target to the found
@@ -3628,7 +3646,7 @@ public:
     // Change the effect of pasting when there are multiple selections.
     void SetMultiPaste(int multiPaste);
 
-    // Retrieve the effect of pasting when there are multiple selections..
+    // Retrieve the effect of pasting when there are multiple selections.
     int GetMultiPaste() const;
 
     // Retrieve the value of a tag from a regular expression search.
@@ -4034,6 +4052,10 @@ public:
     // page into account. Maximum value returned is the last position in the document.
     int PositionAfter(int pos);
 
+    // Given a valid document position, return a position that differs in a number
+    // of characters. Returned value is always between 0 and last position in document.
+    int PositionRelative(int pos, int relative);
+
     // Copy a range of text to the clipboard. Positions are clipped into the document.
     void CopyRange(int start, int end);
 
@@ -4353,6 +4375,12 @@ public:
     // Return INVALID_POSITION if not close to text.
     int CharPositionFromPointClose(int x, int y);
 
+    // Set whether switching to rectangular mode while selecting with the mouse is allowed.
+    void SetMouseSelectionRectangularSwitch(bool mouseSelectionRectangularSwitch);
+
+    // Whether switching to rectangular mode while selecting with the mouse is allowed.
+    bool GetMouseSelectionRectangularSwitch() const;
+
     // Set whether multiple selections can be made
     void SetMultipleSelection(bool multipleSelection);
 
@@ -4536,6 +4564,15 @@ public:
     // Sets the caret line to always visible.
     void SetCaretLineVisibleAlways(bool alwaysVisible);
 
+    // Set the way a character is drawn.
+    void SetRepresentation(const wxString& encodedCharacter, const wxString& representation);
+
+    // Set the way a character is drawn.
+    wxString GetRepresentation(const wxString& encodedCharacter) const;
+
+    // Remove a character representation.
+    void ClearRepresentation(const wxString& encodedCharacter);
+
 /* C::B begin */
     // On OS X, show a find indicator.
     void FindIndicatorShow(int start, int end);
@@ -4621,6 +4658,12 @@ public:
 
     // The number of sub styles associated with a base style
     int GetSubStylesLength(int styleBase) const;
+
+    // For a sub style, return the base style, else return the argument.
+    int GetStyleFromSubStyle(int subStyle) const;
+
+    // For a secondary style, return the primary style, else return the argument.
+    int GetPrimaryStyleFromStyle(int style) const;
 
     // Free allocated sub styles
     void FreeSubStyles();

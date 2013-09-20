@@ -262,7 +262,7 @@ void ScintillaBase::AutoCompleteStart(int lenEntered, const char *list) {
 	ac.lb->SetAverageCharWidth(aveCharWidth);
 	ac.lb->SetDoubleClickAction(AutoCompleteDoubleClick, this);
 
-	ac.SetList(list);
+	ac.SetList(list ? list : "");
 
 	// Fiddle the position of the list so it is right next to the target and wide enough for all its strings
 	PRectangle rcList = ac.lb->GetDesiredRect();
@@ -503,6 +503,8 @@ public:
 	int AllocateSubStyles(int styleBase, int numberStyles);
 	int SubStylesStart(int styleBase);
 	int SubStylesLength(int styleBase);
+	int StyleFromSubStyle(int subStyle);
+	int PrimaryStyleFromStyle(int style);
 	void FreeSubStyles();
 	void SetIdentifiers(int style, const char *identifiers);
 	int DistanceToSecondaryStyles();
@@ -674,6 +676,20 @@ int LexState::SubStylesStart(int styleBase) {
 int LexState::SubStylesLength(int styleBase) {
 	if (instance && (interfaceVersion >= lvSubStyles)) {
 		return static_cast<ILexerWithSubStyles *>(instance)->SubStylesLength(styleBase);
+	}
+	return 0;
+}
+
+int LexState::StyleFromSubStyle(int subStyle) {
+	if (instance && (interfaceVersion >= lvSubStyles)) {
+		return static_cast<ILexerWithSubStyles *>(instance)->StyleFromSubStyle(subStyle);
+	}
+	return 0;
+}
+
+int LexState::PrimaryStyleFromStyle(int style) {
+	if (instance && (interfaceVersion >= lvSubStyles)) {
+		return static_cast<ILexerWithSubStyles *>(instance)->PrimaryStyleFromStyle(style);
 	}
 	return 0;
 }
@@ -982,6 +998,12 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 
 	case SCI_GETSUBSTYLESLENGTH:
 		return DocumentLexState()->SubStylesLength(wParam);
+
+	case SCI_GETSTYLEFROMSUBSTYLE:
+		return DocumentLexState()->StyleFromSubStyle(wParam);
+
+	case SCI_GETPRIMARYSTYLEFROMSTYLE:
+		return DocumentLexState()->PrimaryStyleFromStyle(wParam);
 
 	case SCI_FREESUBSTYLES:
 		DocumentLexState()->FreeSubStyles();
