@@ -2155,7 +2155,7 @@ void MainFrame::OnStartHereLink(wxCommandEvent& event)
         const wxString &filename = recent->GetHistoryFile(item);
         if (!filename.empty())
         {
-            if (!OpenGeneric(filename, true))
+            if ( !OpenGeneric(filename, true) )
                 recent->AskToRemoveFileFromHistory(item);
         }
     }
@@ -2451,7 +2451,6 @@ void MainFrame::OnFileReopenProject(wxCommandEvent& event)
 void MainFrame::OnFileOpenRecentProjectClearHistory(cb_unused wxCommandEvent& event)
 {
     m_projectsHistory.ClearHistory();
-
 }
 
 void MainFrame::OnFileReopen(wxCommandEvent& event)
