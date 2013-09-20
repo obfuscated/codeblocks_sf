@@ -1339,6 +1339,7 @@ wxPdfFontParserType1::ReadPFX(wxInputStream* pfxFile, bool onlyNames)
   bool ok = CheckType1Format(pfxFile, start, length);
   if (ok)
   {
+    m_skipArray = true;
     ok = ParseDict(pfxFile, start, length, onlyNames);
     if (ok && !onlyNames)
     {
@@ -1347,6 +1348,7 @@ wxPdfFontParserType1::ReadPFX(wxInputStream* pfxFile, bool onlyNames)
       if (ok)
       {
         m_glyphWidthMap = new wxPdfFontType1GlyphWidthMap();
+        m_skipArray = true;
         ok = ParseDict(m_privateDict, 0, (int) m_privateDict->GetLength(), false);
       }
     }
@@ -1815,6 +1817,11 @@ wxPdfFontParserType1::GetArray(wxInputStream* stream)
     {
       embed--;
       if (embed == 0) break;
+#if wxCHECK_VERSION(2,9,0)
+      arrayString.Append(wxUniChar((unsigned int) ch));
+#else
+      arrayString.Append(wxChar(ch));
+#endif
       ch = ReadByte(stream);
     }
     else
@@ -1902,6 +1909,54 @@ wxPdfFontParserType1::SkipProcedure(wxInputStream* stream)
 }
 
 void
+wxPdfFontParserType1::SkipArray(wxInputStream* stream)
+{
+  /* first character must be the opening brace that */
+  /* starts the procedure                           */
+
+  /* NB: [ and ] need not match:                    */
+  /* `/foo {[} def' is a valid PostScript fragment, */
+  /* even within a Type1 font                       */
+  bool endFound = false;
+  int embed = 1;
+  char ch = (char) ReadByte(stream);
+  while (!endFound && !stream->Eof())
+  {
+    switch (ch)
+    {
+      case '[':
+        ++embed;
+        break;
+      case ']':
+        --embed;
+        if (embed == 0)
+        {
+          endFound = true;
+        }
+        break;
+      case '(':
+        SkipLiteralString(stream);
+        break;
+      case '<':
+        SkipString(stream);
+        break;
+      case '%':
+        SkipComment(stream);
+        break;
+    }
+    if (!endFound)
+    {
+      ch = (char) ReadByte(stream);
+    }
+  }
+  if (!endFound)
+  {
+    wxLogError(wxString(wxT("wxPdfFontParserType1::SkipArray: ")) +
+               wxString(_("Invalid file format")));
+  }
+}
+
+void
 wxPdfFontParserType1::SkipToNextToken(wxInputStream* stream)
 {
   SkipSpaces(stream);
@@ -1909,7 +1964,11 @@ wxPdfFontParserType1::SkipToNextToken(wxInputStream* stream)
   {
     unsigned char ch = ReadByte(stream);
 
-    if (ch == '[' || ch == ']')
+    if (ch == '[')
+    {
+      if (m_skipArray) SkipArray(stream);
+    }
+    else if (ch == ']')
     {
       //ch = (char) ReadByte(stream);
     }
@@ -2008,6 +2067,7 @@ wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bo
 #endif
   bool ready = false;
   bool hasFontName = false;
+  bool hasFontBBox = false;
   bool hasFullName = false;
   bool hasFamilyName = false;
   bool hasWeight = false;
@@ -2145,8 +2205,20 @@ wxPdfFontParserType1::ParseDict(wxInputStream* stream, int start, int length, bo
         }
         else if (token.IsSameAs(wxT("/FontBBox")))
         {
-          param = GetArray(stream);
-          m_fontDesc.SetFontBBox(wxString(wxT("["))+param+wxString(wxT("]")));
+          if (!hasFontBBox)
+          {
+            param = GetArray(stream);
+            if (param.Find(wxT('{')) == wxNOT_FOUND &&
+                param.Find(wxT('[')) == wxNOT_FOUND)
+            {
+              hasFontBBox = true;
+              m_fontDesc.SetFontBBox(wxString(wxT("["))+param+wxString(wxT("]")));
+            }
+          }
+          else
+          {
+            SkipToNextToken(stream);
+          }
         }
         else
         {
@@ -2333,7 +2405,7 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
     }
     return;
   }
-  long numSubrs, n, subr;
+  long numSubrs, n, subrno;
   token.ToLong(&numSubrs);
   token = GetToken(stream); // 'array'
 
@@ -2350,7 +2422,7 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
     }
 
     token = GetToken(stream); // subr index
-    if (token.ToLong(&subr))
+    if (token.ToLong(&subrno))
     token = GetToken(stream); // size
     long binarySize;
     token.ToLong(&binarySize);
@@ -2370,7 +2442,7 @@ wxPdfFontParserType1::ParseSubrs(wxInputStream* stream)
       }
       wxMemoryOutputStream subrDecoded;
       DecodeEExec(&subr, &subrDecoded, 4330, m_lenIV);
-      binarySize -= m_lenIV;
+      //binarySize -= m_lenIV;
       // skip lenIV bytes
       m_subrsIndex->Add(wxPdfCffIndexElement(subrDecoded));
     }
