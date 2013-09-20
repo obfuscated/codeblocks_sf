@@ -722,7 +722,9 @@ void Tokenizer::ReadParentheses(wxString& str)
                 if (*(p - 1) <= _T(' '))
                 {
                     *p = _T('=');
-                    *++p = _T(' ');
+                    // Don't add a space after '=' sign, in case another '=' follows it
+                    // (see how the 'else' block below works).
+                    //*++p = _T(' ');
                     ++p;
                 }
                 else
