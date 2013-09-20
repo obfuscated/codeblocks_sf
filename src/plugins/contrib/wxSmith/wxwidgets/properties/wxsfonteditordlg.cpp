@@ -666,4 +666,3 @@ void wxsFontEditorDlg::OnBaseFontUseChange(wxCommandEvent& event)
 {
     BaseFontUse->SetValue(true);
 }
-        
