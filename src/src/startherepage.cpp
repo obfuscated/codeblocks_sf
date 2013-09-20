@@ -218,9 +218,6 @@ StartHerePage::StartHerePage(wxEvtHandler* owner, const RecentItemsList &project
     buf.Replace(_T("CB_VAR_VERSION"), appglobals::AppActualVersion);
     buf.Replace(_T("CB_SAFE_MODE"), PluginManager::GetSafeMode() ? _("SAFE MODE") : _T(""));
 
-    wxColour bgColour = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOW);
-    buf.Replace(wxT("CB_BODY_BGCOLOUR"), bgColour.GetAsString(wxC2S_HTML_SYNTAX));
-
     m_OriginalPageContent = buf; // keep a copy of original for Reload()
     Reload();
 
@@ -241,22 +238,28 @@ void StartHerePage::RegisterColours()
     if (inited)
         return;
     inited = true;
-    ColourManager *colours = Manager::Get()->GetColourManager();
-    colours->RegisterColour(_("Start here page"), _("Link colour"), wxT("start_here_link"), *wxBLUE);
-    colours->RegisterColour(_("Start here page"), _("Text colour"), wxT("start_here_text"), *wxBLACK);
+
+    ColourManager* cm = Manager::Get()->GetColourManager();
+    cm->RegisterColour(_("Start here page"), _("Background colour"), wxT("start_here_background"), wxSystemSettings::GetColour(wxSYS_COLOUR_BACKGROUND));
+    cm->RegisterColour(_("Start here page"), _("Link colour"),       wxT("start_here_link"),       *wxBLUE);
+    cm->RegisterColour(_("Start here page"), _("Text colour"),       wxT("start_here_text"),       *wxBLACK);
 }
 
 void StartHerePage::Reload()
 {
     // Called every time something in the history changes.
     wxString buf = m_OriginalPageContent;
-    ColourManager *colours = Manager::Get()->GetColourManager();
-    const wxString &linkColour = colours->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
-    const wxString &textColour = colours->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
+
+    ColourManager* cm = Manager::Get()->GetColourManager();
+    const wxString &backgroundColour = cm->GetColour(wxT("start_here_background")).GetAsString(wxC2S_HTML_SYNTAX);
+    const wxString &linkColour       = cm->GetColour(wxT("start_here_link")).GetAsString(wxC2S_HTML_SYNTAX);
+    const wxString &textColour       = cm->GetColour(wxT("start_here_text")).GetAsString(wxC2S_HTML_SYNTAX);
+
     ReplaceRecentProjectFiles(buf, *m_projects.GetFileHistory(), *m_files.GetFileHistory(), linkColour, textColour);
 
-    buf.Replace(wxT("CB_LINK_COLOUR"), linkColour);
-    buf.Replace(wxT("CB_TEXT_COLOUR"), textColour);
+    buf.Replace(wxT("CB_BODY_BGCOLOUR"), backgroundColour);
+    buf.Replace(wxT("CB_LINK_COLOUR"),   linkColour);
+    buf.Replace(wxT("CB_TEXT_COLOUR"),   textColour);
 
     int x, y;
     m_pWin->GetViewStart(&x, &y);
