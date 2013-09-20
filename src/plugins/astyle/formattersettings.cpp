@@ -126,4 +126,9 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
   formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
   formatter.setAddBracketsMode(cfg->ReadBool(_T("/add_brackets")));
+
+  if (cfg->ReadBool(_T("/break_lines")))
+    formatter.setMaxCodeLength( wxAtoi(cfg->Read(_T("/max_line_length"))));
+  else
+    formatter.setMaxCodeLength(string::npos);
 }

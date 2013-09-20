@@ -19,6 +19,7 @@ class AstyleConfigDlg : public cbConfigurationPanel
 	protected:
         void OnStyleChange(wxCommandEvent& event);
         void OnPreview(wxCommandEvent& event);
+        void OnBreakLineChange(wxCommandEvent& event);
 
         virtual wxString GetTitle() const { return _("Source formatter"); }
         virtual wxString GetBitmapBaseName() const { return _T("astyle-plugin"); }

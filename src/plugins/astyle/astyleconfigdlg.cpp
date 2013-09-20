@@ -41,6 +41,7 @@ BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
   EVT_RADIOBUTTON(XRCID("rbLisp"),       AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbCustom"),     AstyleConfigDlg::OnStyleChange)
   EVT_BUTTON(XRCID("Preview"),           AstyleConfigDlg::OnPreview    )
+  EVT_CHECKBOX(XRCID("chkBreakeLines"),  AstyleConfigDlg::OnBreakLineChange)
 END_EVENT_TABLE()
 
 AstyleConfigDlg::AstyleConfigDlg(wxWindow* parent)
@@ -274,6 +275,14 @@ void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
     SetStyle(aspsCustom);
 }
 
+void AstyleConfigDlg::OnBreakLineChange(wxCommandEvent& event)
+{
+    if(event.IsChecked())
+        XRCCTRL(*this, "txtMaxLineLegth", wxTextCtrl)->Enable();
+    else
+        XRCCTRL(*this, "txtMaxLineLegth", wxTextCtrl)->Disable();
+}
+
 void AstyleConfigDlg::OnPreview(wxCommandEvent& WXUNUSED(event))
 {
   wxString text(XRCCTRL(*this, "txtSample", wxTextCtrl)->GetValue());
@@ -333,6 +342,13 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this, "chkConvertTabs",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/convert_tabs"),         false));
   XRCCTRL(*this, "chkFillEmptyLines",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/fill_empty_lines"),     false));
   XRCCTRL(*this, "chkAddBrackets",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_brackets"),         false));
+  XRCCTRL(*this, "chkBreakeLines",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_lines"),          false));
+  XRCCTRL(*this, "txtMaxLineLegth",       wxTextCtrl)->SetValue(cfg->Read(_T("/max_line_length"),          _T("200")));
+
+  if (XRCCTRL(*this, "chkBreakeLines",wxCheckBox)->GetValue())
+    XRCCTRL(*this, "txtMaxLineLegth", wxTextCtrl)->Enable();
+  else
+    XRCCTRL(*this, "txtMaxLineLegth", wxTextCtrl)->Disable();
 
   SetStyle((AStylePredefinedStyle)style);
 }
@@ -397,4 +413,6 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/convert_tabs"),         XRCCTRL(*this, "chkConvertTabs",        wxCheckBox)->GetValue());
   cfg->Write(_T("/fill_empty_lines"),     XRCCTRL(*this, "chkFillEmptyLines",     wxCheckBox)->GetValue());
   cfg->Write(_T("/add_brackets"),         XRCCTRL(*this, "chkAddBrackets",        wxCheckBox)->GetValue());
+  cfg->Write(_T("/break_lines"),          XRCCTRL(*this, "chkBreakeLines",        wxCheckBox)->GetValue());
+  cfg->Write(_T("/max_line_length"),      XRCCTRL(*this, "txtMaxLineLegth",       wxTextCtrl)->GetValue());
 }

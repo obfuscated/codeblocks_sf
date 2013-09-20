@@ -381,6 +381,35 @@
 											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
 										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBreakeLines">
+												<label>Enable Line breaking</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT1">
+														<label>Break lines after (50-200)</label>
+													</object>
+													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxTextCtrl" name="txtMaxLineLegth">
+														<value>200</value>
+													</object>
+													<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+													<border>8</border>
+													<option>1</option>
+												</object>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>8</border>
+											<option>1</option>
+										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>8</border>
