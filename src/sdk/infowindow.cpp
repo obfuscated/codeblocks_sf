@@ -21,6 +21,7 @@
     #include "manager.h"
 #endif
 
+#include <limits>
 #include <wx/display.h>
 
 BEGIN_EVENT_TABLE(InfoWindow, wxInfoWindowBase)
