@@ -36,26 +36,27 @@
 
 class InfoWindow : public wxInfoWindowBase
 {
-    wxTimer *m_timer;
-    int left;
-    int top;
-    int hMin;
-    int pos;
-    unsigned int status;
-    unsigned int m_delay;
-    unsigned int ks;
-    std::list<wxString>::iterator my_message_iterator;
-
-    InfoWindow(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis);
-    virtual ~InfoWindow();
-    void OnTimer(wxTimerEvent& e);
-    void OnMove(wxMouseEvent& e);
-    void OnClick(wxMouseEvent& e);
-    DECLARE_EVENT_TABLE()
+        InfoWindow(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis);
+        virtual ~InfoWindow();
+        void OnTimer(wxTimerEvent& e);
+        void OnMove(wxMouseEvent& e);
+        void OnClick(wxMouseEvent& e);
 
     public:
-
-    static void Display(const wxString& title, const wxString& message, unsigned int delay = 5000, unsigned int hysteresis = 1);
+        static void Display(const wxString& title, const wxString& message,
+                            unsigned int delay = 5000, unsigned int hysteresis = 1);
+    private:
+        wxTimer *m_timer;
+        int left;
+        int top;
+        int hMin;
+        int pos;
+        unsigned int status;
+        unsigned int m_delay;
+        unsigned int ks;
+        std::list<wxString>::iterator my_message_iterator;
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
 #endif
