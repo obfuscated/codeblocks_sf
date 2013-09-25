@@ -21,6 +21,8 @@
     #include "manager.h"
 #endif
 
+#include <wx/display.h>
+
 BEGIN_EVENT_TABLE(InfoWindow, wxInfoWindowBase)
 EVT_TIMER(-1, InfoWindow::OnTimer)
 EVT_MOTION(InfoWindow::OnMove)
@@ -95,14 +97,40 @@ const char *iBitmap[] = {
 "ttttyyyyiuuuuyyyyttt"
 };
 
+namespace {
 
-Stacker InfoWindow::stacker;
+class Stacker
+{
+    std::list<int> widths;
 
-// in wxGTK this initialization raises an assertion (makes sense too)
-// so initialize them to -1 and we 'll set them up correctly in InfoWindow's ctor the first time
-int InfoWindow::screenWidth = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
-int InfoWindow::screenHeight = -1;//wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
-std::list<wxString> InfoWindow::active_messages;
+    public:
+
+    int StackMe(int mySize)
+    {
+        mySize += 3;
+        int pos = 0;
+
+        if(!widths.empty())
+            pos = *(std::max_element(widths.begin(), widths.end()));
+
+        widths.push_back(pos + mySize);
+        return pos + mySize;
+    };
+
+    void ReleaseMe(int myPos)
+    {
+        std::list<int>::iterator it = std::find(widths.begin(), widths.end(), myPos);
+        if(it != widths.end())
+            widths.erase(it);
+    };
+};
+
+static Stacker stacker;
+
+static std::list<wxString> active_messages;
+static unsigned lastDisplay = std::numeric_limits<long>::max();
+static wxRect displayGeometry;
+}
 
 namespace
 {
@@ -184,14 +212,19 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
         pos = stacker.StackMe(w);
 
         // setup variables first time we enter here
-        if (screenWidth == -1)
-            screenWidth = wxSystemSettings::GetMetric(wxSYS_SCREEN_X);
-        if (screenHeight == -1)
-            screenHeight = wxSystemSettings::GetMetric(wxSYS_SCREEN_Y);
+        unsigned displayNo = wxDisplay::GetFromWindow(Manager::Get()->GetAppWindow());
+        if (displayNo != lastDisplay)
+        {
+            wxDisplay display(displayNo);
+            wxRect area = display.GetClientArea();
+            displayGeometry = display.GetGeometry();
+            displayGeometry = displayGeometry.Intersect(area);
+            lastDisplay = displayNo;
+        }
 
-        left = screenWidth - pos;
-        hMin = screenHeight - h;
-        top = screenHeight;
+        left = displayGeometry.x + displayGeometry.width - pos;
+        hMin = displayGeometry.GetBottom() - h;
+        top = displayGeometry.GetBottom();
 
         Move(left, top);
 
@@ -232,7 +265,7 @@ void InfoWindow::OnTimer(cb_unused wxTimerEvent& e)
     case 3:
         top += ks;
         Move(left, top);
-        if(top > screenHeight)
+        if(top > displayGeometry.GetBottom())
         {
             Hide();
             Destroy();
