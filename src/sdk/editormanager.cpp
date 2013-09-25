@@ -166,6 +166,16 @@ EditorManager::EditorManager()
     ColourManager *colours = Manager::Get()->GetColourManager();
     colours->RegisterColour(_("Editor"), _("Caret"), wxT("editor_caret"), *wxBLACK);
     colours->RegisterColour(_("Editor"), _("Right margin"), wxT("editor_gutter"), *wxLIGHT_GREY);
+    colours->RegisterColour(_("Editor"), _("Line numbers foreground colour"), wxT("editor_linenumbers_fg"),
+                            wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+    colours->RegisterColour(_("Editor"), _("Line numbers background colour"), wxT("editor_linenumbers_bg"),
+                            wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
+
+    // These two are taken from Platform::Chrome() and Platform::ChromeHightlight()
+    colours->RegisterColour(_("Editor"), _("Margin chrome colour"), wxT("editor_margin_chrome"),
+                            wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
+    colours->RegisterColour(_("Editor"), _("Margin chrome highlight colour"), wxT("editor_margin_chrome_highlight"),
+                            wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
 }
 
 EditorManager::~EditorManager()

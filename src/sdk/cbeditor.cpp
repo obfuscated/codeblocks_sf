@@ -1288,10 +1288,16 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
         control->SetCaretWidth(mgr->ReadInt(_T("/caret/width"), 1));
     else
         control->SetCaretWidth(1);
-    control->SetCaretForeground(Manager::Get()->GetColourManager()->GetColour(wxT("editor_caret")));
+
+    ColourManager *colours = Manager::Get()->GetColourManager();
+
+    control->SetCaretForeground(colours->GetColour(wxT("editor_caret")));
     control->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));
     control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
     control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
+
+    control->SetFoldMarginColour(true, colours->GetColour(wxT("editor_margin_chrome")));
+    control->SetFoldMarginHiColour(true, colours->GetColour(wxT("editor_margin_chrome_highlight")));
 
     // setup for "CamelCase selection"
     if (mgr->ReadBool(_T("/camel_case"), false))

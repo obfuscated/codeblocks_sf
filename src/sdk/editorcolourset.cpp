@@ -25,6 +25,7 @@
 #include <wx/txtstrm.h>  // wxTextInputStream
 #include <wx/wfstream.h> // wxFileInputStream
 
+#include "cbcolourmanager.h"
 #include "cbstyledtextctrl.h"
 
 #include "editorcolourset.h"
@@ -534,10 +535,11 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, b
                 DoApplyStyle(control, i, defaults);
         }
     }
-    // for some strange reason, when switching styles, the line numbering changes colour
-    // too, though we didn't ask it to...
-    // this makes sure it stays the correct colour
-    control->StyleSetForeground(wxSCI_STYLE_LINENUMBER, wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
+
+    // Calling StyleClearAll above clears the style for the line numbers, so we have to re-apply it.
+    ColourManager *colours = Manager::Get()->GetColourManager();
+    control->StyleSetForeground(wxSCI_STYLE_LINENUMBER, colours->GetColour(wxT("editor_linenumbers_fg")));
+    control->StyleSetBackground(wxSCI_STYLE_LINENUMBER, colours->GetColour(wxT("editor_linenumbers_bg")));
 
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
     {
