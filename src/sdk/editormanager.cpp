@@ -13,6 +13,7 @@
     #include <wx/dir.h>
     #include <wx/menu.h>
     #include <wx/notebook.h>
+    #include <wx/settings.h>
     #include <wx/splitter.h>
     #include <wx/xrc/xmlres.h>
 
