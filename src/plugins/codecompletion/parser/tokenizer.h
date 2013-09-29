@@ -447,6 +447,12 @@ private:
      * such as the token name, the line number of the token, the current brace nest level.
      */
     wxString             m_Token;                //!< token name
+    /** when parsing a buffer
+     * ....... namespace std { int a; .......
+     *                      ^ --- m_TokenIndex, m_Token = "std"
+     * m_TokenIndex is always point to the next character of a valid token, in the above example,
+     * it is the space after "std".
+     */
     unsigned int         m_TokenIndex;           //!< index offset in buffer
     unsigned int         m_LineNumber;           //!< line offset in buffer
     unsigned int         m_NestLevel;            //!< keep track of block nesting { }
