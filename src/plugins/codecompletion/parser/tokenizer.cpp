@@ -274,7 +274,7 @@ bool Tokenizer::SkipWhiteSpace()
 }
 
 // only be called when we are in a C-string,
-// To check whether the current charactor is the real end of C-string
+// To check whether the current character is the real end of C-string
 // See SkipToStringEnd() for more details
 bool Tokenizer::IsEscapedChar()
 {
@@ -1148,6 +1148,8 @@ wxString Tokenizer::PeekToken()
         unsigned int savedLineNumber = m_LineNumber;
         unsigned int savedNestLevel  = m_NestLevel;
 
+        int savedReplaceCount = m_IsReplaceParsing ? m_RepeatReplaceCount : -1;
+
         if (SkipUnwanted())
             m_PeekToken = DoGetToken();
         else
@@ -1156,17 +1158,33 @@ wxString Tokenizer::PeekToken()
         m_PeekTokenIndex             = m_TokenIndex;
         m_PeekLineNumber             = m_LineNumber;
         m_PeekNestLevel              = m_NestLevel;
-
-        m_TokenIndex                 = savedTokenIndex;
-        m_LineNumber                 = savedLineNumber;
-        m_NestLevel                  = savedNestLevel;
+        // Check whether a ReplaceBufferForReparse() was done in DoGetToken().
+        // We assume m_Undo... have already been reset in ReplaceBufferForReparse().
+        if (m_IsReplaceParsing && savedReplaceCount != (int)m_RepeatReplaceCount)
+        {
+            m_TokenIndex             = m_UndoTokenIndex;
+            m_LineNumber             = m_UndoLineNumber;
+            m_NestLevel              = m_UndoNestLevel;
+        }
+        else
+        {
+            m_TokenIndex             = savedTokenIndex;
+            m_LineNumber             = savedLineNumber;
+            m_NestLevel              = savedNestLevel;
+        }
     }
 
     return m_PeekToken;
 }
-
+/* peek is always available when we run UngetToken() once, actually the m_TokenIndex is moved
+ * backward one step. Note that the m_UndoTokenIndex value is not updated in this function, which
+ * means you are not allowed to run this function twice.
+ */
 void Tokenizer::UngetToken()
 {
+    if(m_TokenIndex == m_UndoTokenIndex) //this means we have already run a UngetToken() before.
+        return;
+
     m_PeekTokenIndex = m_TokenIndex;
     m_PeekLineNumber = m_LineNumber;
     m_PeekNestLevel  = m_NestLevel;
@@ -1177,6 +1195,19 @@ void Tokenizer::UngetToken()
     m_PeekAvailable  = true;
 }
 
+/* this function always start from the index of m_TokenIndex
+ *               int X;MYMACRO;X = 1;
+ *  Token:            _^
+ *  Undo:            ^
+ *  After that, we get a lexeme of name "MYMACRO", then Token index is move forward
+ *               int X;MYMACRO;X = 1;
+ *  Token:             _______^
+ *  Undo:              ^
+ *
+ * Please note that if MYMACRO need to be replaced (macro expansion), we should replace the text
+ * then run one step again, see the details in:
+ * http://forums.codeblocks.org/index.php/topic,18315.msg125579.html#msg125579
+ */
 wxString Tokenizer::DoGetToken()
 {
     int start = m_TokenIndex;
@@ -1839,6 +1870,11 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
 
     // Fix token index
     m_TokenIndex -= bufferLen;
+
+    // Fix undo position
+    m_UndoTokenIndex = m_TokenIndex;
+    m_UndoLineNumber = m_LineNumber;
+    m_UndoNestLevel = m_NestLevel;
 
     // Update the peek token
     if (m_PeekAvailable && updatePeekToken)

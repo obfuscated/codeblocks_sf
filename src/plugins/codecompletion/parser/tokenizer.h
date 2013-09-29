@@ -282,7 +282,10 @@ protected:
     /** Initialize some member variables */
     void BaseInit();
 
-    /** Do the actual lexical analysis, both GetToken() and PeekToken will internally call this function */
+    /** Do the actual lexical analysis, both GetToken() and PeekToken() will internally call this
+     * function. It just move the m_TokenIndex one step forward, and return a lexeme before the
+     * m_TokenIndex.
+     */
     wxString DoGetToken();
 
     /** Read a file, and fill the m_Buffer */
