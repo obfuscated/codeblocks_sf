@@ -374,7 +374,13 @@ private:
         return false;
     };
 
-    /** Check the previous char before EOL is a backslash */
+    /** Check the previous char before EOL is a backslash, call this function in the condition that
+     * the CurrentChar is '\n', here we have two cases:
+     * ......\\\r\n......
+     *            ^--current char, this is DOS style EOL
+     * ......\\\n......
+     *          ^--current char, this is Linux style EOL
+     */
     inline bool IsBackslashBeforeEOL()
     {
         wxChar last = PreviousChar();
