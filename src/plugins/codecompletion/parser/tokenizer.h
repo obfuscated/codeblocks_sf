@@ -374,15 +374,6 @@ private:
         return false;
     };
 
-    /** This function is not used in the current code, it is replaced by MacroReplace() */
-    inline const wxString& ThisOrReplacement(const wxString& str) const
-    {
-        wxStringHashMap::const_iterator it = s_Replacements.find(str);
-        if (it != s_Replacements.end())
-            return it->second;
-        return str;
-    };
-
     /** Check the previous char before EOL is a backslash */
     inline bool IsBackslashBeforeEOL()
     {
