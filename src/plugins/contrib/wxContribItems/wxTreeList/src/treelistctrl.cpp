@@ -49,7 +49,11 @@
 #include <wx/hashmap.h>
 
 #ifdef __WXMAC__
+#if wxCHECK_VERSION(2,9,0)
+#include "wx/osx/private.h"
+#else
 #include "wx/mac/private.h"
+#endif
 #endif
 
 #include "wx/treelistctrl.h"

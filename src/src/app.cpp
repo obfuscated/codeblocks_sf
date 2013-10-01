@@ -273,7 +273,11 @@ BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
+#if wxCHECK_VERSION(2,9,0)
+#include "wx/osx/core/cfstring.h"
+#else
 #include "wx/mac/corefoundation/cfstring.h"
+#endif
 #include "wx/intl.h"
 
 #include <CoreFoundation/CFBundle.h>
@@ -288,7 +292,11 @@ static wxString GetResourcesDir()
     CFRelease(resourcesURL);
     CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
     CFRelease(absoluteURL);
-    return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+    #if wxCHECK_VERSION(2,9,0)
+      return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+    #else
+      return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+    #endif
 }
 #endif
 

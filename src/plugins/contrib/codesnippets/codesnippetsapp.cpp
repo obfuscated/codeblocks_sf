@@ -95,7 +95,11 @@ BEGIN_EVENT_TABLE(CodeSnippetsApp, wxApp)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
-    #include "wx/mac/corefoundation/cfstring.h"
+    #if wxCHECK_VERSION(2,9,0)
+        #include "wx/osx/core/cfstring.h"
+    #else
+        #include "wx/mac/corefoundation/cfstring.h"
+    #endif
     #include "wx/intl.h"
 
     #include <CoreFoundation/CFBundle.h>
@@ -112,7 +116,11 @@ END_EVENT_TABLE()
         CFRelease(resourcesURL);
         CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
         CFRelease(absoluteURL);
-        return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+        #if wxCHECK_VERSION(2,9,0)
+          return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+        #else
+          return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+        #endif
     }
 #endif
 
