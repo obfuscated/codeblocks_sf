@@ -52,7 +52,7 @@ size_t LoaderBase::GetLength()
 // ***** class: FileLoader *****
 void FileLoader::operator()()
 {
-    if (!wxFile::Access(fileName, wxFile::read))
+    if (!wxFile::Access(fileName, wxFile::read) || wxFileName::DirExists(fileName))
     {
         Ready();
         return;
