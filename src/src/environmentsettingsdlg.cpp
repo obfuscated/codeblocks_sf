@@ -759,17 +759,22 @@ void EnvironmentSettingsDlg::OnClickAppColour(wxCommandEvent &event)
     data = static_cast<AppColoursClientData*>(list->GetClientObject(list->GetSelection()));
     if (!data)
         return;
+
     const ColourManager::ColourDefMap &colours = Manager::Get()->GetColourManager()->GetColourDefinitions();
     const ColourManager::ColourDefMap::const_iterator it = colours.find(data->id);
     if (it == colours.end())
         return;
+    wxColour oldColour = it->second.value;
+    std::map<wxString, wxColour>::iterator changedIt = m_ChangedAppColours.find(data->id);
+    if (changedIt != m_ChangedAppColours.end())
+        oldColour = changedIt->second;
 
     wxButton *btnColour = XRCCTRL(*this, "btnColour", wxButton);
 
     if (event.GetId() == XRCID("btnColour"))
     {
         wxColourData colour;
-        colour.SetColour(it->second.value);
+        colour.SetColour(oldColour);
         wxColourDialog dlg(this, &colour);
         if (dlg.ShowModal() == wxID_OK)
         {
