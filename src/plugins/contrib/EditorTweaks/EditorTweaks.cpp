@@ -342,6 +342,9 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 
 void EditorTweaks::UpdateUI()
 {
+    if ( !IsAttached() )
+        return;
+
     if (!m_tweakmenu)
     	return;
 
@@ -1244,6 +1247,9 @@ void EditorTweaks::OnScrollTimer(wxTimerEvent& WXUNUSED(event))
 
 cbStyledTextCtrl* EditorTweaks::GetSafeControl()
 {
+    if ( !IsAttached() )
+        return nullptr;
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     return ed ? ed->GetControl() : nullptr;
 }
