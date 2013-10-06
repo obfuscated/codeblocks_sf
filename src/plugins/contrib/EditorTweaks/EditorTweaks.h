@@ -98,14 +98,13 @@ class EditorTweaks : public cbPlugin
         virtual void OnRelease(bool appShutDown);
 
         void OnEditorOpen(CodeBlocksEvent& event);
-        void OnEditorClose(CodeBlocksEvent& event);
-        void OnEditorUpdateUI(CodeBlocksEvent& event);
-        void OnEditorActivate(CodeBlocksEvent& event);
-        void OnEditorDeactivate(CodeBlocksEvent& event);
 
         void OnKeyPress(wxKeyEvent& event);
         void OnChar(wxKeyEvent& event);
+        /** wrapping on word boundaries*/
         void OnWordWrap(wxCommandEvent &event);
+        /** wrapping between any characters, it is good for wrapping Asian language */
+        void OnCharWrap(wxCommandEvent &event);
         void OnShowLineNumbers(wxCommandEvent &event);
         void OnTabChar(wxCommandEvent &event);
         void OnTabIndent(wxCommandEvent &event);
@@ -125,10 +124,11 @@ class EditorTweaks : public cbPlugin
         void OnUnfold(wxCommandEvent &event);
         void DoFoldAboveLevel(int level, int fold);
 
+        // Event handler for menu items' update event, update the menu items' status here
         void OnUpdateUI(wxUpdateUIEvent &event);
+        // update all the UI menu's status, this usually happens when a new editor is activated
         void UpdateUI();
 
-//        void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
     private:
 		void OnAlign(wxCommandEvent& event);
 		void OnAlignOthers(wxCommandEvent& event);
@@ -141,14 +141,16 @@ class EditorTweaks : public cbPlugin
         void DoBufferEditorPos(int delta = 0, bool isScrollTimer = false);
         void OnScrollTimer(wxTimerEvent& event);
 
+        // return a valid control if it is ready to operate
+        cbStyledTextCtrl* GetSafeControl();
+
 		std::vector<AlignerMenuEntry> AlignerMenuEntries;
 
     private:
-        int  m_EditorHookId;
+
         bool m_suppress_insert;
         bool m_convert_braces;
         int  m_buffer_caret;
-        bool m_isUpdatingUI;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
         wxTimer m_scrollTimer;
