@@ -634,6 +634,27 @@ void EditorConfigurationDlg::OnColourTheme(cb_unused wxCommandEvent& event)
     }
 }
 
+namespace
+{
+bool CheckColourThemeName(const wxString &name, wxWindow *parent)
+{
+    wxRegEx regex(wxT("^[A-Za-z][A-Za-z_0-9]*$"));
+    if (regex.Matches(name))
+        return true;
+    else
+    {
+        cbMessageBox(_("You've entered invalid characters for the name of the theme. "
+                       "Only alphanumeric characters and '_' are allowed! The first character should be a letter. "
+                       "Please try again."),
+                     _("Error"),
+                     wxOK,
+                     parent);
+        return false;
+    }
+}
+
+} // anonymous namespace
+
 void EditorConfigurationDlg::OnAddColourTheme(cb_unused wxCommandEvent& event)
 {
     wxTextEntryDialog dlg(this, _("Please enter the name of the new colour theme:"), _("New theme name"));
@@ -642,6 +663,9 @@ void EditorConfigurationDlg::OnAddColourTheme(cb_unused wxCommandEvent& event)
         return;
 
     wxString name = dlg.GetValue();
+    if (!CheckColourThemeName(name, this))
+        return;
+
     wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     cmbThemes->Append(name);
     cmbThemes->SetSelection(cmbThemes->GetCount() - 1);
@@ -670,6 +694,9 @@ void EditorConfigurationDlg::OnRenameColourTheme(cb_unused wxCommandEvent& event
         return;
 
     wxString name = dlg.GetValue();
+    if (!CheckColourThemeName(name, this))
+        return;
+
     wxString oldName = m_Theme->GetName();
     wxChoice* cmbThemes = XRCCTRL(*this, "cmbThemes", wxChoice);
     int idx = cmbThemes->GetSelection();
