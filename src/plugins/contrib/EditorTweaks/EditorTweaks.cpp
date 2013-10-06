@@ -1245,6 +1245,5 @@ void EditorTweaks::OnScrollTimer(wxTimerEvent& WXUNUSED(event))
 cbStyledTextCtrl* EditorTweaks::GetSafeControl()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed)
-        return ed->GetControl();
+    return ed ? ed->GetControl() : nullptr;
 }
