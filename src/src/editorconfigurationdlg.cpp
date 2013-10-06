@@ -19,6 +19,7 @@
     #include <wx/listctrl.h>
     #include <wx/menu.h>
     #include <wx/radiobox.h>
+    #include <wx/regex.h>
     #include <wx/settings.h>
     #include <wx/slider.h>
     #include <wx/spinctrl.h>
