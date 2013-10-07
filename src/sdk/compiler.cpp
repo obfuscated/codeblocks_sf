@@ -516,7 +516,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
         if (i < m_Mirror.RegExes.GetCount() && m_Mirror.RegExes[i] == m_RegExes[i])
             continue;
 
-        group.Printf(_T("%s/regex/re%3.3d"), tmp.c_str(), i + 1);
+        group.Printf(_T("%s/regex/re%3.3lu"), tmp.c_str(), static_cast<unsigned long>(i + 1));
         RegExStruct& rs = m_RegExes[i];
         cfg->Write(group + _T("/description"),  rs.desc,  true);
         if (rs.lt != 0)
