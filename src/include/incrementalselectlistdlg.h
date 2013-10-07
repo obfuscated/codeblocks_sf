@@ -11,7 +11,6 @@
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
 
-class myHandler; // forward decl
 class IncrementalSelectIterator; // forward decl
 
 
@@ -30,37 +29,12 @@ class DLLIMPORT IncrementalSelectListDlg : public wxScrollingDialog
         void OnSearch(wxCommandEvent& event);
         void OnSelect(wxCommandEvent& event);
         void OnKeyDown(wxKeyEvent& event);
-        myHandler* m_pMyEvtHandler;
         wxListBox* m_List;
         wxTextCtrl* m_Text;
         const IncrementalSelectIterator &m_Iterator;
     private:
         DECLARE_EVENT_TABLE();
 };
-
-class myHandler : public wxEvtHandler
-{
-    public:
-        myHandler(wxScrollingDialog* parent, wxTextCtrl* text, wxListBox* list)
-            : m_pParent(parent),
-            m_pList(list),
-            m_pText(text)
-        {
-            Connect( text->GetId(),  -1, wxEVT_KEY_DOWN,
-                          (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                          &myHandler::OnKeyDown );
-            Connect( list->GetId(),  -1, wxEVT_KEY_DOWN,
-                          (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                          &myHandler::OnKeyDown );
-        }
-        void OnKeyDown(wxKeyEvent& event);
-    private:
-        wxScrollingDialog* m_pParent;
-        wxListBox* m_pList;
-        wxTextCtrl* m_pText;
-        DECLARE_EVENT_TABLE();
-};
-
 
 class DLLIMPORT IncrementalSelectIterator
 {
