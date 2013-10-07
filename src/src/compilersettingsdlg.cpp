@@ -46,11 +46,8 @@ END_EVENT_TABLE()
 CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgCompilerSettings"),_T("wxScrollingDialog"));
-    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    wxImageList* images = new wxImageList(80, 80);
-    lb->AssignImageList(images);
-    int sel = Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0);
-    SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
+
+    m_pImageList = new wxImageList(80, 80);
 
     Connect(XRCID("nbMain"),wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING,wxListbookEventHandler(CompilerSettingsDlg::OnPageChanging));
     Connect(XRCID("nbMain"),wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED, wxListbookEventHandler(CompilerSettingsDlg::OnPageChanged ));
@@ -108,6 +105,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 CompilerSettingsDlg::~CompilerSettingsDlg()
 {
     //dtor
+    delete m_pImageList;
 }
 
 void CompilerSettingsDlg::AddPluginPanels()
@@ -143,9 +141,9 @@ void CompilerSettingsDlg::AddPluginPanels()
         if (offFile.IsEmpty())
 			offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
 
-        lb->GetImageList()->Add(cbLoadBitmap(onFile));
-        lb->GetImageList()->Add(cbLoadBitmap(offFile));
-        lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
+        m_pImageList->Add(cbLoadBitmap(onFile));
+        m_pImageList->Add(cbLoadBitmap(offFile));
+        lb->SetPageImage(lb->GetPageCount() - 1, m_pImageList->GetImageCount() - 2);
 
         // add it in our central container too
         m_PluginPanels.Add(panel);
@@ -160,9 +158,9 @@ void CompilerSettingsDlg::AddPluginPanels()
 	if (offFile.IsEmpty())
 		offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
 
-	lb->GetImageList()->Add(cbLoadBitmap(onFile));
-	lb->GetImageList()->Add(cbLoadBitmap(offFile));
-    lb->SetPageImage(lb->GetPageCount() -1, lb->GetImageList()->GetImageCount() - 2);
+    m_pImageList->Add(cbLoadBitmap(onFile));
+    m_pImageList->Add(cbLoadBitmap(offFile));
+    lb->SetPageImage(lb->GetPageCount() -1, m_pImageList->GetImageCount() - 2);
 
     UpdateListbookImages();
 }
@@ -171,10 +169,19 @@ void CompilerSettingsDlg::UpdateListbookImages()
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     int sel = lb->GetSelection();
-    // set page images according to their on/off status
-    for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
+
+    if (SettingsIconsStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0)))
     {
-        lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
+        SetSettingsIconsStyle(lb->GetListView(), sisNoIcons);
+        lb->SetImageList(nullptr);
+    }
+    else
+    {
+        lb->SetImageList(m_pImageList);
+        // set page images according to their on/off status
+        for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
+            lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
+        SetSettingsIconsStyle(lb->GetListView(), sisLargeIcons);
     }
 
     // update the page title
@@ -194,9 +201,7 @@ void CompilerSettingsDlg::OnPageChanged(wxListbookEvent& event)
 {
     // update only on real change, not on dialog creation
     if (event.GetOldSelection() != -1 && event.GetSelection() != -1)
-    {
         UpdateListbookImages();
-    }
 }
 
 void CompilerSettingsDlg::EndModal(int retCode)

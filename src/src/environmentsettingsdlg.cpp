@@ -97,7 +97,8 @@ BEGIN_EVENT_TABLE(EnvironmentSettingsDlg, wxScrollingDialog)
 END_EVENT_TABLE()
 
 EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* art)
-    : m_pArt(art)
+    : m_pArt(art),
+    m_pImageList(nullptr)
 {
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     ConfigManager *pcfg = Manager::Get()->GetConfigManager(_T("project_manager"));
@@ -105,18 +106,11 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     ConfigManager *acfg = Manager::Get()->GetConfigManager(_T("an_dlg"));
 
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEnvironmentSettings"),_T("wxScrollingDialog"));
-    int sel = cfg->ReadInt(_T("/environment/settings_size"), 0);
-    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)sel);
+
     LoadListbookImages();
 
     Connect(XRCID("nbMain"),wxEVT_COMMAND_LISTBOOK_PAGE_CHANGING,wxListbookEventHandler(EnvironmentSettingsDlg::OnPageChanging));
     Connect(XRCID("nbMain"),wxEVT_COMMAND_LISTBOOK_PAGE_CHANGED, wxListbookEventHandler(EnvironmentSettingsDlg::OnPageChanged ));
-
-    // this setting is not available under wxGTK
-    #ifndef __WXMSW__
-    XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->Enable(false);
-    #endif
 
     // tab "General"
     XRCCTRL(*this, "chkShowSplash", wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/show_splash"), true));
@@ -211,7 +205,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
         }
     }
 
-    sel = XRCCTRL(*this, "choLayoutToToggle", wxChoice)->FindString( cfg->Read(_T("/environment/view/layout_to_toggle"),cfg->Read(_T("/main_frame/layout/default"))));
+    int sel = XRCCTRL(*this, "choLayoutToToggle", wxChoice)->FindString( cfg->Read(_T("/environment/view/layout_to_toggle"),cfg->Read(_T("/main_frame/layout/default"))));
     XRCCTRL(*this, "choLayoutToToggle", wxChoice)->SetSelection(sel != wxNOT_FOUND ? sel : 0);
     XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Enable(en);
 
@@ -321,6 +315,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
 {
     //dtor
+    delete m_pImageList;
 }
 
 void EnvironmentSettingsDlg::AddPluginPanels()
@@ -346,11 +341,10 @@ void EnvironmentSettingsDlg::AddPluginPanels()
         if (offFile.IsEmpty())
             offFile = ConfigManager::LocateDataFile(noimg + _T("-off.png"), sdDataGlobal | sdDataUser);
 
-        lb->GetImageList()->Add(cbLoadBitmap(onFile));
-        lb->GetImageList()->Add(cbLoadBitmap(offFile));
-        lb->SetPageImage(lb->GetPageCount() - 1, lb->GetImageList()->GetImageCount() - 2);
+        m_pImageList->Add(cbLoadBitmap(onFile));
+        m_pImageList->Add(cbLoadBitmap(offFile));
+        lb->SetPageImage(lb->GetPageCount() - 1, m_pImageList->GetImageCount() - 2);
     }
-
     UpdateListbookImages();
 }
 
@@ -358,18 +352,15 @@ void EnvironmentSettingsDlg::LoadListbookImages()
 {
     const wxString base = ConfigManager::GetDataFolder() + _T("/images/settings/");
 
-    wxImageList* images = new wxImageList(80, 80);
+    m_pImageList = new wxImageList(80, 80);
     wxBitmap bmp;
     for (int i = 0; i < IMAGES_COUNT; ++i)
     {
         bmp = cbLoadBitmap(base + base_imgs[i] + _T(".png"));
-        images->Add(bmp);
+        m_pImageList->Add(bmp);
         bmp = cbLoadBitmap(base + base_imgs[i] + _T("-off.png"));
-        images->Add(bmp);
+        m_pImageList->Add(bmp);
     }
-    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    lb->AssignImageList(images);
-
     UpdateListbookImages();
 }
 
@@ -377,9 +368,21 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
 {
     wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
     int sel = lb->GetSelection();
-    // set page images according to their on/off status
-    for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
-        lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
+
+    if (SettingsIconsStyle(XRCCTRL(*this, "rbSettingsIconsSize", wxRadioBox)->GetSelection()) == sisNoIcons)
+    {
+        SetSettingsIconsStyle(lb->GetListView(), sisNoIcons);
+        lb->SetImageList(nullptr);
+    }
+    else
+    {
+        lb->SetImageList(m_pImageList);
+        // set page images according to their on/off status
+        for (size_t i = 0; i < IMAGES_COUNT + m_PluginPanels.GetCount(); ++i)
+            lb->SetPageImage(i, (i * 2) + (sel == (int)i ? 0 : 1));
+        SetSettingsIconsStyle(lb->GetListView(), sisLargeIcons);
+    }
+
 
     // update the page title
     wxString label = lb->GetPageText(sel);
@@ -517,8 +520,7 @@ void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
 
 void EnvironmentSettingsDlg::OnSettingsIconsSize(wxCommandEvent& event)
 {
-    wxListbook* lb = XRCCTRL(*this, "nbMain", wxListbook);
-    SetSettingsIconsStyle(lb->GetListView(), (SettingsIconsStyle)event.GetSelection());
+    UpdateListbookImages();
 }
 
 void EnvironmentSettingsDlg::EndModal(int retCode)

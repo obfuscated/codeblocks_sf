@@ -51,6 +51,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
     private:
         void OnPageChanged(wxListbookEvent& event);
         void AddPluginPanels();
+        void LoadListbookImages();
         void UpdateListbookImages();
         void CreateColoursSample();
         void ApplyColours();
@@ -80,6 +81,7 @@ class EditorConfigurationDlg : public wxScrollingDialog
         bool m_EnableChangebar; // remember whether changebar was enabled or not
         bool m_EnableScrollWidthTracking; // remember whether scrollbarwidthtracking was enabled or not
         MenuIDToLanguageOption m_MenuIDToLanguageOption;
+        wxImageList* m_pImageList;
 
         DECLARE_EVENT_TABLE()
 };

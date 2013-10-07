@@ -24,6 +24,7 @@ class CompilerSettingsDlg : public wxScrollingDialog
         void AddPluginPanels();
         void UpdateListbookImages();
         ConfigurationPanelsArray m_PluginPanels;
+        wxImageList* m_pImageList;
         DECLARE_EVENT_TABLE()
 };
 

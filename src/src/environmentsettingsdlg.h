@@ -53,6 +53,7 @@ class EnvironmentSettingsDlg : public wxScrollingDialog
         ConfigurationPanelsArray m_PluginPanels;
         std::map<wxString, wxColour> m_ChangedAppColours;
         std::map<wxString, wxString> m_AnnoyingDlgReturnMap;
+        wxImageList* m_pImageList;
 
         DECLARE_EVENT_TABLE()
 };

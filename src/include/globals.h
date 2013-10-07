@@ -284,10 +284,15 @@ class wxListCtrl;
   * @param style The style to use.
   */
 extern DLLIMPORT void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style);
-/** Get the icons style for the supplied list control.
+/** Get the icons style set in environment-dialog.
+  * This version is left for backwardscompatibility.
   * @return The icons style.
   */
 extern DLLIMPORT SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc);
+/** Get the icons style set in environment-dialog.
+  * @return The icons style.
+  */
+extern DLLIMPORT SettingsIconsStyle GetSettingsIconsStyle();
 
 class wxWindow;
 

@@ -1015,27 +1015,26 @@ wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
 
 void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
 {
-// this doesn't work under wxGTK...
+// this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
     long flags = lc->GetWindowStyleFlag();
     switch (style)
     {
-        case sisNoIcons: flags = (flags & ~wxLC_ICON) | wxLC_SMALL_ICON; break;
-        default: flags = (flags & ~wxLC_SMALL_ICON) | wxLC_ICON; break;
+        case sisNoIcons: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_LIST; break;
+        default: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_ICON; break;
     }
     lc->SetWindowStyleFlag(flags);
 #endif
 }
 
-SettingsIconsStyle GetSettingsIconsStyle(wxListCtrl* lc)
+SettingsIconsStyle GetSettingsIconsStyle(cb_unused wxListCtrl* lc)
 {
-// this doesn't work under wxGTK...
-#ifdef __WXMSW__
-    long flags = lc->GetWindowStyleFlag();
-    if (flags & wxLC_SMALL_ICON)
-        return sisNoIcons;
-#endif
-    return sisLargeIcons;
+    return GetSettingsIconsStyle();
+}
+
+SettingsIconsStyle GetSettingsIconsStyle()
+{
+    return SettingsIconsStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0));
 }
 
 #ifdef __WXMSW__
