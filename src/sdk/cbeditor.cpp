@@ -1802,8 +1802,8 @@ bool cbEditor::SaveAs()
     SetProjectFile(0);
     //Manager::Get()->GetLogManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
-    SetModified(true);
     SetLanguage( HL_AUTO );
+    SetModified(true);
     OverrideUseTabsPerLanguage(m_pControl);
     OverrideUseTabsPerLanguage(m_pControl2);
     // store the last used filter and directory
