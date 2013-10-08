@@ -40,8 +40,8 @@
 #include <wx/textfile.h>
 
 BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxScrollingDialog)
-    EVT_CHECKBOX (-1, ProjectFileOptionsDlg::OnReadOnlyCheck)
-    EVT_CHOICE   (-1, ProjectFileOptionsDlg::OnCompilerCombo)
+    EVT_CHECKBOX (XRCID("chkReadOnly"), ProjectFileOptionsDlg::OnReadOnlyCheck)
+    EVT_CHOICE   (XRCID("cmbBuildStageCompiler"), ProjectFileOptionsDlg::OnCompilerCombo)
     EVT_UPDATE_UI(-1, ProjectFileOptionsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
