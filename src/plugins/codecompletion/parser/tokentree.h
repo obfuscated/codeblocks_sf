@@ -129,9 +129,31 @@ protected:
       */
     bool CheckChildRemove(const Token* token, int fileIdx);
 
-    TokenSearchTree   m_Tree;              /** Tree containing the indexes to the tokens (the indexes will be used on m_Tokens) */
-    TokenList         m_Tokens;            /** Contains the pointers to all the tokens */
-    TokenIdxList      m_FreeTokens;        /** List of all the deleted (and available) tokens */
+    /** This is a string->TokenIndexSet map. E.g. we have a class Token named "AAA", also, we can
+     *  have a function Token named "AAA", they are  different Tokens, but they share the same name.
+     *  So we may have an tree point "AAA" -> <30, 40> map in the TokenSearchTree. Note here 30 and
+     *  40 are the indexes (slots) in the m_Tokens vector, which holds the Tokens pointers. In-fact,
+     * "AAA" -> <30, 40> is not mapped directly, it has a indirect map like "AAA" -> 16 -> <30, 40>,
+     *  the middle number 16 here is the tree point item index in the BasicSearchTree, as we have
+     *  a std::vector< TokenIndexSet > in the SearchTree, the 16 is the index to fetch the value
+     *  <30,40> in the vector
+     */
+	TokenSearchTree   m_Tree;
+
+    /** Contains the pointers to all the Token instances, it is just a std::vector<Token*>, the
+     *  suggest way to access a Token instance is by first get its index in the m_Tokens, then get
+     *  its address by m_Tokens[index], the reason we have such indirect access is that there are
+     *  many Tokens which can reference each other, it is much safe using index instead of raw
+     *  pointers.
+     */
+	TokenList         m_Tokens;
+
+	/** List of all the deleted (and available) tokens. When more and more Tokens were allocated,
+	 *  their address was recorded in the m_Tokens, m_Tokens grows larger, but if we delete some
+	 *  Tokens, the will have some empty slots in the std::vector<Token*>, we need to reuse those
+	 *  slots, here m_FreeTokens is to hold those empty slots for reuse, so we don't waste empty
+	 *  slots in the m_Tokens */
+	TokenIdxList      m_FreeTokens;
 
     /** List of tokens belonging to the global namespace */
     TokenIdxSet       m_TopNameSpaces;

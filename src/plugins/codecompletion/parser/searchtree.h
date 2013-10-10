@@ -21,12 +21,15 @@ class BasicSearchTree;
 class SearchTreePoint;
 
 /** SearchTreeLinkMap is the list of the edges towards other nodes. The character is the
-key, and the node is the value */
+ *  key, and the node index is the value
+ */
 typedef std::map<wxChar, nSearchTreeNode, std::less<wxChar> > SearchTreeLinkMap;
 
-typedef std::vector<SearchTreeLinkMap::iterator> SearchTreeStack;
+//typedef std::vector<SearchTreeLinkMap::iterator> SearchTreeStack;
 
 /** SearchTreeNodesArray contains all the nodes for a search tree */
+// FIXME (ollydbg#1#): what about if an old node is deleted, then new node added, in this case, we
+// should still keep the node index continuous in the tree.
 typedef std::vector<SearchTreeNode*> SearchTreeNodesArray;
 
 /** SearchTreePointsArray contains a list of tree points defining strings */
@@ -63,7 +66,22 @@ protected:
     size_t           m_LastTreeSize; // For checking validity
     SearchTreeNode*  m_LastAddedNode; // For checking validity
 };
-
+/** This class is used to access items of the tree, each node may contains a lot of items, E.g.
+ *   - "" (0)
+ *         \- "p" (4)
+ *                 +- "hysi" (2)
+ *                 |          +- "cs" (1)
+ *                 |          \- "ology" (3)
+ *                 \- "sychic" (5)
+ *  In the above tree, we have totally 6 nodes, each node can have an items map
+ *  such as the node number 2, we have have mostly item map like
+ *  depth -> string
+ *  5     -> "ph"
+ *  6     -> "phy"
+ *  7     -> "phys"
+ *  8     -> "physi"
+ *  Now, if you have a SearchTreePoint(n=2, depth=5), you can get the string "ph"
+ */
 class SearchTreePoint
 {
 public:
@@ -73,20 +91,54 @@ public:
     SearchTreePoint(nSearchTreeNode nn, size_t dd) { n = nn; depth = dd; }
 };
 
+/** This class represents a node of the tree, we still take an example E.g.
+ *
+ *   - "" (0)
+ *         \- "p" (4)
+ *                 +- "hysi" (2)
+ *                 |          +- "cs" (1)
+ *                 |          \- "ology" (3)
+ *                 \- "sychic" (5)
+ *
+ *  Here, a tree of 6 nodes. Let's look at node (2), its label is "hysi", it have two children nodes
+ *  "cs" (1) and "ology" (3). To access children nodes from parent node, we need a link map, here is
+ *  an example of link map for node (2), note linkmap's key is always single character.
+ *  char -> node index
+ *   'c' -> 1
+ *   'o' -> 3
+ *  The parent node of the node (2) is the node (4), note that the left most node in the above tree
+ *  is the root node, the root node has always index number 0, because it was the first node created
+ *  when the tree constructed.
+ *
+ */
 class SearchTreeNode
 {
     friend class BasicSearchTree;
     friend class BasicSearchTreeIterator;
 public:
     SearchTreeNode();
-    SearchTreeNode(unsigned int depth, nSearchTreeNode parent, nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
+    SearchTreeNode(unsigned int depth,
+                   nSearchTreeNode parent,
+                   nSearchTreeLabel label,
+                   unsigned int labelstart,
+                   unsigned int labellen);
     virtual ~SearchTreeNode();
     nSearchTreeNode GetParent() const { return m_Parent; }
     void SetParent(nSearchTreeNode newparent) { m_Parent = newparent; }
+
+    /** This will loop of the link map of the node, and find the child node with its edge beginning
+     *  with the single character, return the valid node index then, if no such child node exists,
+     *  it simply return 0
+     */
     nSearchTreeNode GetChild(wxChar ch);
+
     size_t GetItemNo(size_t depth);
     size_t AddItemNo(size_t depth, size_t itemno);
     SearchTreeNode* GetParent(const BasicSearchTree* tree) const;
+
+    /** return a Node pointer, this is simply a wrapper function of GetChild(wxChar ch), besides that
+     *  it use the valid node index to reference a valid node instance address.
+     */
     SearchTreeNode* GetChild(BasicSearchTree* tree,wxChar ch);
     wxString GetLabel(const BasicSearchTree* tree) const;
     wxChar GetChar(const BasicSearchTree* tree) const;
@@ -106,9 +158,9 @@ public:
     bool IsLeaf() const { return m_Children.empty() && (m_Depth != 0); }
 
     /** Gets the deepest position where the string matches the node's edge's label.
-        0 for 0 characters in the tree matched, 1 for 1 character matched, etc.
-        */
-    unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const wxString& s,unsigned int StringStartDepth);
+     *  0 for 0 characters in the tree matched, 1 for 1 character matched, etc.
+     */
+    unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const wxString& s, unsigned int StringStartDepth);
     wxString Serialize(BasicSearchTree* tree,nSearchTreeNode node_id,bool withchildren = false);
     void Dump(BasicSearchTree* tree,nSearchTreeNode node_id,const wxString& prefix,wxString& result);
 
@@ -120,13 +172,18 @@ public:
     static bool S2I(const wxString& s,int& i);
 
 protected:
-    unsigned int       m_Depth;
-    nSearchTreeNode    m_Parent;
-    nSearchTreeLabel   m_Label;
-    unsigned int       m_LabelStart;
-    unsigned int       m_LabelLen;
-    SearchTreeLinkMap  m_Children;
-    SearchTreeItemsMap m_Items;
+
+    unsigned int       m_Depth;     // the string length from the root node to the current node
+
+    nSearchTreeNode    m_Parent;    // parent node index
+
+    nSearchTreeLabel   m_Label;     // the string index
+    unsigned int       m_LabelStart;// label start index in the string
+    unsigned int       m_LabelLen;  // label length in the string
+
+    SearchTreeLinkMap  m_Children;  // link to descent nodes
+
+    SearchTreeItemsMap m_Items;     // depth->size_t map, for a label "abcd", we can store "a", "ab" different depths
 };
 
 class BasicSearchTree
@@ -136,7 +193,7 @@ class BasicSearchTree
 public:
     BasicSearchTree();
     virtual ~BasicSearchTree();
-    virtual size_t size() const { return m_Points.size(); }
+    virtual size_t size() const { return m_Points.size(); }     /// How many string keys are stored
     virtual size_t GetCount() const { return m_Points.size(); } /// Gets the number of items stored
     virtual void clear(); /// Clears items and tree
 
@@ -170,18 +227,32 @@ public:
 
 protected:
     /** Creates a new node. Function is virtual so the nodes can be extended
-        and customized, or to improve the memory management. */
-    virtual SearchTreeNode* CreateNode(unsigned int depth, nSearchTreeNode parent, nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
+     *  and customized, or to improve the memory management.
+     */
+    virtual SearchTreeNode* CreateNode(unsigned int depth,
+                                       nSearchTreeNode parent,
+                                       nSearchTreeLabel label,
+                                       unsigned int labelstart,
+                                       unsigned int labellen);
 
     /** Gets the string corresponding to the tree point 'nn'.
-        If 'top' is specified, it gets the string that goes from node 'top' to point 'nn'. */
+     *  If 'top' is specified, it gets the string that goes from node 'top' to point 'nn'.
+     *  the default top value is 0, this means we want to get a string from the root to the point
+     */
     wxString GetString(const SearchTreePoint& nn, nSearchTreeNode top = 0) const;
 
     /** Obtains the node with number n,NULL if n is invalid.
-        If NullOnZero == true, returns NULL if n is 0. */
+     *  If NullOnZero == true, returns NULL if n is 0, this forbid returning the root node.
+     */
     SearchTreeNode* GetNode(nSearchTreeNode n, bool NullOnZero = false);
-    /// Finds the node that starts from node 'parent', and has the suffix s.
+
+    /** Finds the node that starts from node 'parent', and has the suffix s.
+     *  Note that even FindNode return false, the result still be filled with a valid value
+     *  For example, we have a Node with Label "abc", then we are search the string "abcd" in this
+     *  Node, Find Node will get false, but the result has pointing to the Node of "abc"
+     */
     bool FindNode(const wxString& s, nSearchTreeNode nparent, SearchTreePoint* result);
+
     /// Adds Suffix s starting from node nparent.
     SearchTreePoint AddNode(const wxString& s, nSearchTreeNode nparent = 0);
 

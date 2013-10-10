@@ -263,13 +263,14 @@ inline size_t SearchTreeNode::GetItemNo(size_t depth)
 
 size_t SearchTreeNode::AddItemNo(size_t depth, size_t itemno)
 {
+    // do a search in the item map, the key is the depth, the value is the associated number
     SearchTreeItemsMap::const_iterator found = m_Items.find(depth);
-    if (found == m_Items.end())
+    if (found == m_Items.end()) // the specified depth not found, so we add one
         m_Items[depth]=itemno;
-    else if (found->second==0)
+    else if (found->second==0)  // find an item of specified depth, but its value is not correct, so fix it.
         m_Items[depth]=itemno;
     else
-        itemno = found->second;
+        itemno = found->second; // item already exists in the node, just return its associated value
     return itemno;
 }
 
@@ -588,6 +589,7 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
     do
     {
         parentnode = m_Nodes[nparent];
+        // FIXME (ollydbg#1#): Do not check s.IsEmpty() here, because it was checked before
         if (s.IsEmpty() || curpos >= s.length() ) // If string is empty, return the node and its vertex's length
         {
             if (result)
@@ -629,7 +631,11 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
     return found;
 }
 
-SearchTreeNode* BasicSearchTree::CreateNode(unsigned int depth,nSearchTreeNode parent,nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen)
+SearchTreeNode* BasicSearchTree::CreateNode(unsigned int depth,
+                                            nSearchTreeNode parent,
+                                            nSearchTreeLabel label,
+                                            unsigned int labelstart,
+                                            unsigned int labellen)
 {
     return new SearchTreeNode(depth,parent,label,labelstart,labellen);
 }
@@ -645,7 +651,7 @@ SearchTreePoint BasicSearchTree::AddNode(const wxString& s, nSearchTreeNode npar
 
         // If necessary, split the edge with a new node 'middle'
         // If result is exactly a node, middle will be just result.n.
-        nSearchTreeNode middle = SplitBranch(result.n,result.depth);
+        nSearchTreeNode middle = SplitBranch(result.n, result.depth);
 
         // Now add the node to the middle node
         SearchTreeNode* newnode;
@@ -792,17 +798,20 @@ size_t BasicSearchTree::FindMatches(const wxString& s, std::set<size_t>& result,
 
 size_t BasicSearchTree::insert(const wxString& s)
 {
+    // there are already m_Points[0]---m_Points[size()-1], so we add a new item number which is size()
     size_t itemno = m_Points.size();
     size_t result = 0;
     SearchTreePoint resultpos;
-    resultpos = AddNode(s, 0);
+    resultpos = AddNode(s, 0); //the second argument 0 means the root node
+    // add a pair (resultpos.depth -> itemno) to the result node
     result = m_Nodes[resultpos.n]->AddItemNo(resultpos.depth, itemno);
-    if (m_Points.size() < result)
+    // m_Points.size() may be extended by one after AddNode() did add a true item point
+    if (m_Points.size() < result)   // FIXME (ollydbg#1#): How does this happen?
     {
         m_Points.resize(result,SearchTreePoint(0,0));
         m_Points[result] = resultpos;
     }
-    else if (m_Points.size() == result)
+    else if (m_Points.size() == result) //record the new added item point in this case
         m_Points.push_back(resultpos);
 
     return result;

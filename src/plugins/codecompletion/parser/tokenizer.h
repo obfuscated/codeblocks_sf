@@ -258,7 +258,30 @@ public:
         return m_TokenIndex < m_BufferLen;
     }
 
-    /** Backward buffer replacement for re-parsing */
+    /** Backward buffer replacement for re-parsing
+     * http://forums.codeblocks.org/index.php/topic,13384.msg90391.html#msg90391
+     *
+     * Macro expansion is just replace some characters in the m_Buffer.
+     *
+     * xxxxxxxxxAAAA(u,v)yyyyyyyyy
+     *          ^---m_TokenIndex
+     * For example, the above is a wxChar Array m_Buffer, then "AAAA(u,v)" need to do a Macro
+     * expansion to some other text. So, we just do a "backward" text replace, so that, after
+     * replacement, The last replacement char was ")" in "AAAA(u,v)" (We say it as an entry point),
+     * so the text becomes:
+     *
+     * xxxNNNNNNNNNNNNNNNyyyyyyyyy
+     *    ^---m_TokenIndex
+     * Note that "NNNNNNNNNNNN" is some macro expansion text. then the m_TokenIndex was moved
+     * backward to the beginning of the text.
+     * if the macro expansion result text is small enough, then m_Buffer's length do not need to
+     * change.
+     * The situation when our m_Buffer's length need to be change is that the macro expansion text
+     * is too long, so the buffer before "entry point" can not hold the new text, this way,
+     * m_Buffer's length will adjusted. like below:
+     * NNNNNNNNNNNNNNNNNNNNNNyyyyyyyyy
+     * ^---m_TokenIndex
+     */
     bool ReplaceBufferForReparse(const wxString& target, bool updatePeekToken = true);
 
     /** Get actual context for macro, then replace buffer for re-parsing */
