@@ -2130,6 +2130,7 @@ void ProjectManagerUI::OnKeyDown(wxTreeEvent& event)
         && (   key_event.GetKeyCode() == WXK_DELETE
             || key_event.GetKeyCode() == WXK_NUMPAD_DELETE ) )
     {
+        m_DraggingSelection.Clear(); // fix delete while drag crash
         wxCommandEvent command(0, idMenuRemoveFilePopup);
         OnRemoveFileFromProject(command);
     }
