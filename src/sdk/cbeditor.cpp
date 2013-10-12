@@ -105,6 +105,7 @@ struct cbEditorInternalData
         m_useByteOrderMark(false),
         m_byteOrderMarkLength(0),
         m_lineNumbersWidth(0),
+        m_lineNumbersWidth2(0),
         m_pFileLoader(fileLoader)
     {
         m_encoding = wxLocale::GetSystemEncoding();
@@ -206,36 +207,107 @@ struct cbEditorInternalData
     }
 
     /** Set line number column width */
-    void SetLineNumberColWidth()
+    void SetLineNumberColWidth(bool both=true)
     {
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 
-        int pixelWidth = m_pOwner->m_pControl->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
-
-        if (cfg->ReadBool(_T("/margin/dynamic_width"), false))
+        if (m_pOwner->m_pControl2 && both)
         {
-            int lineNumWidth = 1;
-            int lineCount = m_pOwner->m_pControl->GetLineCount();
+            int pixelWidth = m_pOwner->m_pControl->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
+            int pixelWidth2 = m_pOwner->m_pControl2->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
 
-            while (lineCount >= 10)
+            if (cfg->ReadBool(_T("/margin/dynamic_width"), false))
             {
-                lineCount /= 10;
-                ++lineNumWidth;
+                int lineNumChars = 1;
+                int lineCount = m_pOwner->m_pControl->GetLineCount();
+
+                while (lineCount >= 10)
+                {
+                    lineCount /= 10;
+                    ++lineNumChars;
+                }
+
+                int lineNumWidth =  lineNumChars * pixelWidth + pixelWidth * 0.75;
+
+                if (lineNumWidth != m_lineNumbersWidth)
+                {
+                    m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, lineNumWidth);
+                    m_lineNumbersWidth = lineNumWidth;
+                }
+
+                lineNumWidth =  lineNumChars * pixelWidth2 + pixelWidth2 * 0.75;
+                if (lineNumWidth != m_lineNumbersWidth2)
+                {
+                    m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, lineNumWidth);
+                    m_lineNumbersWidth2 = lineNumWidth;
+                }
             }
-
-            if (lineNumWidth != m_lineNumbersWidth)
+            else
             {
-                m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, 6 + lineNumWidth * pixelWidth);
-                if (m_pOwner->m_pControl2)
-                    m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, 6 + lineNumWidth * pixelWidth);
-                m_lineNumbersWidth = lineNumWidth;
+                m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, pixelWidth * 0.75 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+                m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, pixelWidth * 0.75 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
             }
         }
         else
         {
-            m_pOwner->m_pControl->SetMarginWidth(C_LINE_MARGIN, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
-            if (m_pOwner->m_pControl2)
-                m_pOwner->m_pControl2->SetMarginWidth(C_LINE_MARGIN, 6 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+            cbStyledTextCtrl* control = m_pOwner->GetControl();
+            int* pLineNumbersWidth = 0;
+            if (control == m_pOwner->m_pControl)
+                pLineNumbersWidth = &m_lineNumbersWidth;
+            else
+                pLineNumbersWidth = &m_lineNumbersWidth2;
+
+            int pixelWidth = control->TextWidth(wxSCI_STYLE_LINENUMBER, _T("9"));
+
+            if (cfg->ReadBool(_T("/margin/dynamic_width"), false))
+            {
+                int lineNumChars = 1;
+                int lineCount = control->GetLineCount();
+
+                while (lineCount >= 10)
+                {
+                    lineCount /= 10;
+                    ++lineNumChars;
+                }
+
+                int lineNumWidth =  lineNumChars * pixelWidth + pixelWidth * 0.75;
+
+                if (lineNumWidth != *pLineNumbersWidth)
+                {
+                    control->SetMarginWidth(C_LINE_MARGIN, lineNumWidth);
+                    *pLineNumbersWidth = lineNumWidth;
+                }
+            }
+            else
+            {
+                control->SetMarginWidth(C_LINE_MARGIN, pixelWidth * 0.75 + cfg->ReadInt(_T("/margin/width_chars"), 6) * pixelWidth);
+            }
+        }
+    }
+
+    void SetFoldingColWidth(bool both=true)
+    {
+        float pointSize = m_pOwner->m_pControl->StyleGetFont(wxSCI_STYLE_DEFAULT).GetPointSize();
+        if (both)
+        {
+            int width = 16 * (pointSize+m_pOwner->m_pControl->GetZoom()) / pointSize;
+            if (width < 1)
+                width = 1;
+            m_pOwner->m_pControl->SetMarginWidth(C_FOLDING_MARGIN, width);
+            if(m_pOwner->m_pControl2)
+            {
+            width = 16 * (pointSize+m_pOwner->m_pControl2->GetZoom()) / pointSize;
+            if (width < 1)
+                width = 1;
+            m_pOwner->m_pControl2->SetMarginWidth(C_FOLDING_MARGIN, width);
+            }
+        }
+        else
+        {
+            int width = 16 * (pointSize+m_pOwner->GetControl()->GetZoom()) / pointSize;
+            if (width < 1)
+                width = 1;
+            m_pOwner->GetControl()->SetMarginWidth(C_FOLDING_MARGIN, width);
         }
     }
 
@@ -420,6 +492,7 @@ struct cbEditorInternalData
     int m_byteOrderMarkLength;
 
     int m_lineNumbersWidth;
+    int m_lineNumbersWidth2;
 
     LoaderBase* m_pFileLoader;
 };
@@ -836,6 +909,8 @@ void cbEditor::SetProjectFile(ProjectFile* project_file, bool preserve_modified)
                 m_pControl2->SetZoom(m_pProjectFile->editorZoom_2);
             }
         }
+
+        m_pData->SetLineNumberColWidth();
 
         if ( Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), true) )
         {
@@ -3257,10 +3332,21 @@ void cbEditor::DoUnIndent()
 
 void cbEditor::OnZoom(wxScintillaEvent& event)
 {
-    Manager::Get()->GetEditorManager()->SetZoom(GetControl()->GetZoom());
+    ConfigManager* mgr =  Manager::Get()->GetConfigManager(_T("editor"));
+
+    int zoom = GetControl()->GetZoom();
+    Manager::Get()->GetEditorManager()->SetZoom(zoom);
     // if all editors should be zoomed, we call cbAuiNotebooks SetZoom()
-    if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/zoom_all")))
-        Manager::Get()->GetEditorManager()->GetNotebook()->SetZoom(GetControl()->GetZoom());
+    bool both = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/zoom_all"));
+    if (both)
+        Manager::Get()->GetEditorManager()->GetNotebook()->SetZoom(zoom);
+
+    if (mgr->ReadBool(_T("/show_line_numbers"), true))
+        m_pData->SetLineNumberColWidth(both);
+
+    if (mgr->ReadBool(_T("/folding/show_folds"), true))
+        m_pData->SetFoldingColWidth(both);
+
     OnScintillaEvent(event);
 }
 
