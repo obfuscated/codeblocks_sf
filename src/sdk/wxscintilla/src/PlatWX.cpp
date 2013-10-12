@@ -1325,7 +1325,10 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
         wid = new wxSCIListBoxWin(GETWIN(parent.GetID()), ctrlID, location_);
     else if (GETLBW(wid)->GetParent() != GETWIN(parent.GetID()))
         GETLBW(wid)->Reparent(GETWIN(parent.GetID()));
-    GETLBW(wid)->SetPosition(wxPoint(location_.x,location_.y));
+    // ScintillaBase::AutoCompleteStart() calls SetPositionRelative() after filling
+    // the autocomp box, so no need to move yet
+    if (!GETLBW(wid)->IsShown()) // prevent jiggling on rebuild when already visible
+        GETLBW(wid)->SetPosition(wxPoint(location_.x,location_.y));
     GETLBW(wid)->SetId(ctrlID);
     GETLB(wid)->SetId(ctrlID);
 /* C::B end */
