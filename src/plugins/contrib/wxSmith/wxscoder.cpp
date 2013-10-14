@@ -517,7 +517,10 @@ wxString wxsCoder::RebuildCode(wxString& BaseIndentation,const wxChar* Code,int 
 
     if ( EOL.IsEmpty() )
     {
-        int EolMode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), 0);
+        static const int defEol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF;
+        int EolMode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), defEol);
+        if (EolMode == 3) // auto-detect EOL
+            EolMode = defEol;
         switch ( EolMode )
         {
             case 1:  EOL = _T("\r"); break;

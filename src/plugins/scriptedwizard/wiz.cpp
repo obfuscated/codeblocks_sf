@@ -726,6 +726,8 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     // read EOL mode
     static const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
     int eolmode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), default_eol);
+    if (eolmode == 3) // auto-detect EOL
+        eolmode = default_eol;
     wxString eol_str;
     switch (eolmode)
     {
