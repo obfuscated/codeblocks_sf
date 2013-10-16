@@ -1562,7 +1562,6 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         {
             --startPos;
         }
-        const int endPos = control->WordEndPosition(curPos, true);
         bool needReparse = false;
 
         if (control->IsPreprocessor(control->GetStyleAt(curPos)))
@@ -1606,7 +1605,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             }
             needReparse = true;
 
-            int   pos = startPos;
+            int   pos = startPos - 1;
             wxChar ch = control->GetCharAt(pos);
             while (ch != _T('<') && ch != _T('"') && ch != _T('#') && (pos>0))
                 ch = control->GetCharAt(--pos);
@@ -1618,10 +1617,13 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             else if (ch == _T('<'))
                 itemText << _T('>');
         }
-
-        const wxString alreadyText = control->GetTextRange(curPos, endPos);
-        if (!alreadyText.IsEmpty() && itemText.EndsWith(alreadyText))
-            curPos = endPos;
+        else
+        {
+            const int endPos = control->WordEndPosition(curPos, true);
+            const wxString& alreadyText = control->GetTextRange(curPos, endPos);
+            if (!alreadyText.IsEmpty() && itemText.EndsWith(alreadyText))
+                curPos = endPos;
+        }
 
         control->AutoCompCancel();
 
