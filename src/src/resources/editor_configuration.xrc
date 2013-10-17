@@ -359,6 +359,12 @@
 																		</object>
 																		<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																	</object>
+																	<object class="sizeritem">
+																		<object class="wxCheckBox" name="chkSyncEditorWithProjectManager">
+																			<label>S&amp;ynchronise Editor with Project Manager</label>
+																		</object>
+																		<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	</object>
 																</object>
 																<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																<border>4</border>

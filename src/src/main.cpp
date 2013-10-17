@@ -4640,6 +4640,19 @@ void MainFrame::OnEditorActivated(CodeBlocksEvent& event)
 {
     DoUpdateAppTitle();
     DoUpdateStatusBar();
+
+    EditorBase *editor = event.GetEditor();
+    if (editor && editor->IsBuiltinEditor())
+    {
+        ConfigManager* cfgEditor = Manager::Get()->GetConfigManager(_T("editor"));
+        if (cfgEditor->ReadBool(_T("/sync_editor_with_project_manager"), false))
+        {
+            ProjectFile* pf = static_cast<cbEditor*>(editor)->GetProjectFile();
+            if (pf)
+                m_pPrjManUI->ShowFileInTree(*pf);
+        }
+    }
+
     event.Skip();
 }
 

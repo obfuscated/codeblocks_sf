@@ -140,6 +140,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "chkCamelCase",                wxCheckBox)->SetValue(cfg->ReadBool(_T("/camel_case"),                 false));
     XRCCTRL(*this, "chkResetZoom",                wxCheckBox)->SetValue(cfg->ReadBool(_T("/reset_zoom"),                 false));
     XRCCTRL(*this, "chkZoomAll",                  wxCheckBox)->SetValue(cfg->ReadBool(_T("/zoom_all"),                   false));
+    XRCCTRL(*this, "chkSyncEditorWithProjectManager", wxCheckBox)->SetValue(cfg->ReadBool(_T("/sync_editor_with_project_manager"), false));
     XRCCTRL(*this, "spnTabSize",                  wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/tab_size"),                    4));
     XRCCTRL(*this, "cmbViewWS",                   wxChoice)->SetSelection(cfg->ReadInt(_T("/view_whitespace"),           0));
     XRCCTRL(*this, "rbTabText",                   wxRadioBox)->SetSelection(cfg->ReadBool(_T("/tab_text_relative"),      true)? 1 : 0);
@@ -1021,6 +1022,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         }
         cfg->Write(_T("/reset_zoom"),                          resetZoom);
         cfg->Write(_T("/zoom_all"),                            zoomAll);
+        cfg->Write(_T("/sync_editor_with_project_manager"),    XRCCTRL(*this, "chkSyncEditorWithProjectManager", wxCheckBox)->GetValue());
 
         cfg->Write(_T("/tab_size"),                            XRCCTRL(*this, "spnTabSize",                           wxSpinCtrl)->GetValue());
         cfg->Write(_T("/view_whitespace"),                     XRCCTRL(*this, "cmbViewWS",                            wxChoice)->GetSelection());
