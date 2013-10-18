@@ -45,7 +45,7 @@ void FileExplorerUpdater::Update(const wxTreeItemId &ti)
 
 void *FileExplorerUpdater::Entry()
 {
-    wxCommandEvent ne(wxEVT_NOTIFY_UPDATE_TREE,0);
+    CodeBlocksThreadEvent ne(wxEVT_NOTIFY_UPDATE_TREE,0);
     if(!GetCurrentState(m_path))
     {
         m_fe->m_updater_cancel=true; //TODO: SEND A CANCEL EVENT INSTEAD
@@ -203,7 +203,7 @@ int FileExplorerUpdater::Exec(const wxString &command, wxArrayString &output)
     m_exec_cond=new wxCondition(*m_exec_mutex);
     m_exec_cmd=command;
     m_exec_mutex->Lock();
-    wxCommandEvent ne(wxEVT_NOTIFY_EXEC_REQUEST,0);
+    CodeBlocksThreadEvent ne(wxEVT_NOTIFY_EXEC_REQUEST,0);
     m_fe->AddPendingEvent(ne);
     m_exec_cond->Wait();
     m_exec_mutex->Unlock();
