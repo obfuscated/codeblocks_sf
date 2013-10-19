@@ -737,19 +737,19 @@
 			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN64" />
-			<Add directory="$(#WX29_29_64.include)" />
-			<Add directory="$(#WX29_29_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX29_64.include)" />
+			<Add directory="$(#WX29_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX29_29_64.include)" />
-			<Add directory="$(#WX29_29_64)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX29_64.include)" />
+			<Add directory="$(#WX29_64)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="base/tinyxml" />
-			<Add directory="$(#WX29_29_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX29_64.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="base/exchndl/exchndl.c">
 			<Option compilerVar="CC" />
