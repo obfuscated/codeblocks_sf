@@ -169,7 +169,7 @@
 					<Add directory="sdk/propgrid" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision64 +wx +int +t C:\Users\martin\Code\CodeBlocks_Projects\CodeBlocks\CodeBlocks include/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision64 +wx +int +t . include/autorevision.h" />
 					<Add after="cmd /c if not exist devel64\share\CodeBlocks mkdir devel64\share\CodeBlocks" />
 					<Add after="zip -jq9 devel64\share\CodeBlocks\manager_resources.zip sdk\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd sdk\resources &amp; zip -0 -q ..\..\devel64\share\CodeBlocks\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png&quot;' />
