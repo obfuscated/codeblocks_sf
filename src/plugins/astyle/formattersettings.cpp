@@ -130,5 +130,5 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   if (cfg->ReadBool(_T("/break_lines")))
     formatter.setMaxCodeLength( wxAtoi(cfg->Read(_T("/max_line_length"))));
   else
-    formatter.setMaxCodeLength(string::npos);
+    formatter.setMaxCodeLength(INT_MAX);
 }

@@ -28,7 +28,7 @@
     #include <wx/sizer.h>
 #endif
 
-#if (__WXMSW__)
+#ifdef __WXMSW__
 // TODO: equivalent??? -> #include <errno.h>
 #else
 #include <errno.h>
@@ -416,7 +416,7 @@ void ProjectFileOptionsDlg::SaveBuildCommandSelection()
 
 bool ProjectFileOptionsDlg::ToggleFileReadOnly(bool setReadOnly)
 {
-#if (__WXMSW__)
+#ifdef __WXMSW__
     // Check for failure
     const int MS_MODE_MASK = 0x0000ffff; // low word
     int mask = setReadOnly ? _S_IREAD : ( _S_IREAD | _S_IWRITE );

@@ -57,7 +57,7 @@
 #define implement_debugger_toolbar
 
 // function pointer to DebugBreakProcess under windows (XP+)
-#if (_WIN32_WINNT >= 0x0501)
+#if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
 #include "Tlhelp32.h"
 typedef BOOL WINAPI   (*DebugBreakProcessApiCall)       (HANDLE);
 typedef HANDLE WINAPI (*CreateToolhelp32SnapshotApiCall)(DWORD  dwFlags,   DWORD             th32ProcessID);
@@ -178,7 +178,7 @@ DebuggerGDB::DebuggerGDB() :
     }
 
     // get a function pointer to DebugBreakProcess under windows (XP+)
-    #if (_WIN32_WINNT >= 0x0501)
+    #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
     kernelLib = LoadLibrary(TEXT("kernel32.dll"));
     if (kernelLib)
     {
@@ -193,7 +193,7 @@ DebuggerGDB::DebuggerGDB() :
 
 DebuggerGDB::~DebuggerGDB()
 {
-    #if (_WIN32_WINNT >= 0x0501)
+    #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
     if (kernelLib)
         FreeLibrary(kernelLib);
     #endif

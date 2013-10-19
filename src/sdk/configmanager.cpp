@@ -88,13 +88,13 @@ namespace
 {
     wxString DetermineExecutablePath()
     {
-        #if (__WXMSW__)
+        #ifdef __WXMSW__
             wxChar name[MAX_PATH];
             GetModuleFileName(0L, name, MAX_PATH);
             wxFileName fname(name);
             return fname.GetPath(wxPATH_GET_VOLUME);
         #else
-        #if (__linux__)
+        #ifdef __linux__
             char c[PATH_MAX+1];
             char *p = realpath("/proc/self/exe", &c[0]);
             if (p == 0)

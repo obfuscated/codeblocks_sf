@@ -7,7 +7,7 @@
  * $HeadURL$
  */
 
-#if (__WXMSW__)
+#ifdef __WXMSW__
 #include "sdk.h"
 #ifndef CB_PRECOMP
     #include <wx/filefn.h>

@@ -26,7 +26,7 @@
 #      define MOZ_HAVE_CXX11_NULLPTR
 #    endif
 #  endif
-#elif _MSC_VER >= 1600
+#elif defined(_MSC_VER) && _MSC_VER >= 1600
 # define MOZ_HAVE_CXX11_NULLPTR
 #endif
 
