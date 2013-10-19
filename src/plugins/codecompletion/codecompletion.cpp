@@ -3286,9 +3286,7 @@ int CodeCompletion::DoAllMethodsImpl()
 
 void CodeCompletion::MatchCodeStyle(wxString& str, int eolStyle, const wxString& indent, bool useTabs, int tabSize)
 {
-    str.Replace(wxT("\n"), (eolStyle == wxSCI_EOL_LF   ? wxT("\n")   :
-                            eolStyle == wxSCI_EOL_CRLF ? wxT("\r\n") :
-                          /*eolStyle == wxSCI_EOL_CR ?*/ wxT("\r")   ) + indent );
+    str.Replace(wxT("\n"), GetEOLStr(eolStyle) + indent);
     if (!useTabs)
         str.Replace(wxT("\t"), wxString(wxT(' '), tabSize));
     if (!indent.IsEmpty())

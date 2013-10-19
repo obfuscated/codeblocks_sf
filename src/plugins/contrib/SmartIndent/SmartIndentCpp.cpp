@@ -567,20 +567,7 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
                 }
                 else
                     endIf.Prepend(wxT("#"));
-                switch (control->GetEOLMode())
-                {
-                    case wxSCI_EOL_LF:
-                        endIf.Prepend(wxT("\n"));
-                        break;
-                    case wxSCI_EOL_CRLF:
-                        endIf.Prepend(wxT("\r\n"));
-                        break;
-                    case wxSCI_EOL_CR:
-                        endIf.Prepend(wxT("\r"));
-                        break;
-                    default: return;
-                }
-                control->InsertText(pos, endIf);
+                control->InsertText(pos, GetEOLStr(control->GetEOLMode()) + endIf);
                 return;
             }
         }

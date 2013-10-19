@@ -782,6 +782,26 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
     return encoding;
 }
 
+wxString GetEOLStr(int eolMode)
+{
+    if (eolMode == -1)
+    {
+        static const int defEOL = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF;
+        eolMode = Manager::Get()->GetConfigManager(wxT("editor"))->ReadInt(wxT("/eol/eolmode"), defEOL);
+        if (eolMode == 3) // auto-detect EOL
+            eolMode = defEOL;
+    }
+    switch (eolMode)
+    {
+      case wxSCI_EOL_CR:
+          return wxT("\r");
+      case wxSCI_EOL_LF:
+          return wxT("\n");
+      default: // wxSCI_EOL_CRLF
+          return wxT("\r\n");
+    }
+}
+
 wxString URLEncode(const wxString &str) // not sure this is 100% standards compliant, but I hope so
 {
     wxString ret;

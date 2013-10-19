@@ -230,6 +230,9 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
 extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 extern DLLIMPORT bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path);
 
+/// Reads settings if eolMode is -1
+extern DLLIMPORT wxString GetEOLStr(int eolMode = -1);
+
 extern DLLIMPORT wxString URLEncode(const wxString &str);
 
 extern DLLIMPORT wxString ExpandBackticks(wxString &str);

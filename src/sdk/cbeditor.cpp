@@ -139,25 +139,6 @@ struct cbEditorInternalData
 
     // funcs
 
-    /** Get the EOL pattern according to the editor's scintilla settings */
-    wxString GetEOLString() const
-    {
-        wxString eolstring;
-        cbStyledTextCtrl* control = m_pOwner->GetControl();
-        switch (control->GetEOLMode())
-        {
-            case wxSCI_EOL_LF:
-                eolstring = _T("\n");
-                break;
-            case wxSCI_EOL_CR:
-                eolstring = _T("\r");
-                break;
-            default:
-                eolstring = _T("\r\n");
-        }
-        return eolstring;
-    }
-
     /** Strip trailing blanks before saving */
     void StripTrailingSpaces()
     {
@@ -195,7 +176,7 @@ struct cbEditorInternalData
         int maxLines = control->GetLineCount();
         int enddoc = control->PositionFromLine(maxLines);
         if (maxLines <= 1 || enddoc > control->PositionFromLine(maxLines-1))
-            control->InsertText(enddoc,GetEOLString());
+            control->InsertText(enddoc, GetEOLStr(m_pOwner->GetControl()->GetEOLMode()));
     }
 
     /** Make sure all the lines end with the same EOL mode */

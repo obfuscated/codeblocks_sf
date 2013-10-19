@@ -329,23 +329,7 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
     FormatterSettings settings;
     settings.ApplyTo(formatter);
 
-    wxString eolChars;
-
-    switch (control->GetEOLMode())
-    {
-        case wxSCI_EOL_CRLF:
-            eolChars = _T("\r\n");
-            break;
-
-        case wxSCI_EOL_CR:
-            eolChars = _T("\r");
-            break;
-
-        case wxSCI_EOL_LF:
-        default:
-            eolChars = _T("\n");
-            break;
-    }
+    const wxString& eolChars = GetEOLStr(control->GetEOLMode());
 
     if (edText.size() && edText.Last() != _T('\r') && edText.Last() != _T('\n') && !onlySelected)
         edText += eolChars;

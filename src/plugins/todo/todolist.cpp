@@ -484,16 +484,7 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
 
     // add newline char(s), only if dlg.GetPosition() != tdpCurrent
     if (dlg.GetPosition() != tdpCurrent)
-    {
-        switch (control->GetEOLMode())
-        {
-            // NOTE: maybe this switch, should make it in the SDK (maybe as cbStyledTextCtrl::GetEOLString())???
-            case wxSCI_EOL_CR:   buffer << _T("\r");   break;
-            case wxSCI_EOL_CRLF: buffer << _T("\r\n"); break;
-            case wxSCI_EOL_LF: // fall-through
-            default:             buffer << _T("\n");   break;
-        }
-    }
+        buffer << GetEOLStr(control->GetEOLMode());
 
     // ok, insert the todo line text
     control->InsertText(idx, buffer);

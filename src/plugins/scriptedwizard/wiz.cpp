@@ -723,20 +723,8 @@ wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, c
     // create the file with the passed contents
     wxFileName::Mkdir(fname.GetPath(),0777,wxPATH_MKDIR_FULL);
     wxFile f(fname.GetFullPath(), wxFile::write);
-    // read EOL mode
-    static const int default_eol = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF; // Windows takes CR+LF, other platforms LF only
-    int eolmode = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/eol/eolmode"), default_eol);
-    if (eolmode == 3) // auto-detect EOL
-        eolmode = default_eol;
-    wxString eol_str;
-    switch (eolmode)
-    {
-      case wxSCI_EOL_CR:  eol_str = _T("\r"); break;
-      case wxSCI_EOL_LF:  eol_str = _T("\n"); break;
-      default:            eol_str = _T("\r\n"); // means wxSCI_EOL_CRLF
-    }
 
-    if ( cbWrite(f, contents + eol_str, wxFONTENCODING_UTF8) )
+    if ( cbWrite(f, contents + GetEOLStr(), wxFONTENCODING_UTF8) )
         return fname.GetFullPath(); // success
 
     return wxEmptyString; // failed
