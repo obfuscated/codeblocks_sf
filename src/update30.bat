@@ -85,20 +85,20 @@ xcopy /D /y plugins\codecompletion\resources\images\*.png %CB_DEVEL_RESDIR%\imag
 xcopy /D /y plugins\codecompletion\resources\images\*.png %CB_OUTPUT_RESDIR%\images\codecompletion > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_DEVEL_RESDIR%\compilers > nul
 xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_OUTPUT_RESDIR%\compilers > nul
-echo Makefile.am >  excludes.txt
-echo Makefile.in >> excludes.txt
-echo \.svn\      >> excludes.txt
-echo *.gdb       >> excludes.txt
-xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_DEVEL_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
-xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_OUTPUT_RESDIR%\templates\wizard /EXCLUDE:excludes.txt >nul
-xcopy /D /y templates\common\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /D /y templates\win32\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /D /y templates\common\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes.txt > nul
-xcopy /D /y templates\win32\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes.txt > nul
+echo Makefile.am >  excludes30.txt
+echo Makefile.in >> excludes30.txt
+echo \.svn\      >> excludes30.txt
+echo *.gdb       >> excludes30.txt
+xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_DEVEL_RESDIR%\templates\wizard /EXCLUDE:excludes30.txt >nul
+xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_OUTPUT_RESDIR%\templates\wizard /EXCLUDE:excludes30.txt >nul
+xcopy /D /y templates\common\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes30.txt > nul
+xcopy /D /y templates\win32\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes30.txt > nul
+xcopy /D /y templates\common\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes30.txt > nul
+xcopy /D /y templates\win32\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes30.txt > nul
 xcopy /D /y scripts\*.gdb %CB_OUTPUT_RESDIR% > nul
-xcopy /D /y scripts\* %CB_DEVEL_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
-xcopy /D /y scripts\* %CB_OUTPUT_RESDIR%\scripts /EXCLUDE:excludes.txt > nul
-del excludes.txt
+xcopy /D /y scripts\* %CB_DEVEL_RESDIR%\scripts /EXCLUDE:excludes30.txt > nul
+xcopy /D /y scripts\* %CB_OUTPUT_RESDIR%\scripts /EXCLUDE:excludes30.txt > nul
+del excludes30.txt
 xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
 xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner30.exe output30 > nul

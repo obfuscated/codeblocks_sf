@@ -24,7 +24,7 @@
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/txml64" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/txml30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29_64" />
 				<Option type="2" />
@@ -34,7 +34,7 @@
 				</Compiler>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools/autorevision/autorevision64" prefix_auto="1" extension_auto="1" />
+				<Option output="build_tools/autorevision/autorevision30_64" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".objs29_64" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -44,12 +44,12 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="txml64" />
+					<Add library="txml30_64" />
 					<Add directory="base/tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools/ConsoleRunner/cb_console_runner64" prefix_auto="1" extension_auto="1" />
+				<Option output="tools/ConsoleRunner/cb_console_runner30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
 				<Option object_output=".objs29_64" />
 				<Option type="1" />
@@ -60,7 +60,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/squirrel64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/squirrel30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29_64" />
 				<Option type="2" />
@@ -72,7 +72,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/sqstdlib64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqstdlib30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29_64" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
@@ -85,10 +85,10 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/sqplus64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqplus30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel64.a;sdk/scripting/lib/libsqstdlib64.a;" />
+				<Option external_deps="sdk/scripting/lib/libsquirrel30_64.a;sdk/scripting/lib/libsqstdlib30_64.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -128,10 +128,10 @@
 				<Option output="devel30_64/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
 				<Option object_output=".objs29_64" />
-				<Option external_deps="base/tinyxml/libtxml64.a;sdk/scripting/lib/libsquirrel64.a;sdk/scripting/lib/libsqstdlib64.a;sdk/scripting/lib/libsqplus64.a;devel30_64/libwxscintilla_cb.a;" />
+				<Option external_deps="base/tinyxml/libtxml30_64.a;sdk/scripting/lib/libsquirrel30_64.a;sdk/scripting/lib/libsqstdlib30_64.a;sdk/scripting/lib/libsqplus30_64.a;devel30_64/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose -p debug" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -158,18 +158,18 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="shfolder" />
-					<Add library="txml64" />
+					<Add library="txml30_64" />
 					<Add library="wxscintilla_cb" />
-					<Add library="sqplus64" />
-					<Add library="sqstdlib64" />
-					<Add library="squirrel64" />
+					<Add library="sqplus30_64" />
+					<Add library="sqstdlib30_64" />
+					<Add library="squirrel30_64" />
 					<Add library="gdi32" />
 					<Add directory="devel30_64" />
 					<Add directory="sdk/scripting/lib" />
 					<Add directory="sdk/propgrid" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision64 +wx +int +t . include/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision30_64 +wx +int +t . include/autorevision.h" />
 					<Add after="cmd /c if not exist devel30_64\share\CodeBlocks mkdir devel30_64\share\CodeBlocks" />
 					<Add after="zip -jq9 devel30_64\share\CodeBlocks\manager_resources.zip sdk\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd sdk\resources &amp; zip -0 -q ..\..\devel30_64\share\CodeBlocks\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png&quot;' />
@@ -183,7 +183,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -233,7 +233,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -267,7 +267,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -300,7 +300,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -325,7 +325,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/depslib64" prefix_auto="1" extension_auto="1" />
+				<Option output="plugins/compilergcc/depslib/depslib30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs29_64" />
 				<Option type="2" />
@@ -342,10 +342,10 @@
 				<Option output="devel30_64/share/CodeBlocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
 				<Option object_output=".objs29_64" />
-				<Option external_deps="devel30_64/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib64.a;" />
+				<Option external_deps="devel30_64/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib30_64.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -364,7 +364,7 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add library="depslib64" />
+					<Add library="depslib30_64" />
 					<Add directory="devel30_64" />
 					<Add directory="plugins/compilergcc/depslib" />
 				</Linker>
@@ -384,7 +384,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -417,7 +417,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -455,7 +455,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -486,7 +486,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -517,7 +517,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -548,7 +548,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -579,7 +579,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -616,7 +616,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -649,7 +649,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -686,7 +686,7 @@
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
