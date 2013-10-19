@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="HexEditor wx3.0.x" />
+		<Option platforms="Windows;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel30\share\CodeBlocks\plugins\HexEditor" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs30\plugins\contrib\HexEditor" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(#WX30.include)" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="codeblocks" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="..\..\..\devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\HexEditor.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Unit filename="CharacterView.cpp" />
+		<Unit filename="CharacterView.h" />
+		<Unit filename="DigitView.cpp" />
+		<Unit filename="DigitView.h" />
+		<Unit filename="ExpressionExecutor.cpp" />
+		<Unit filename="ExpressionExecutor.h" />
+		<Unit filename="ExpressionParser.cpp" />
+		<Unit filename="ExpressionParser.h" />
+		<Unit filename="ExpressionPreprocessed.cpp" />
+		<Unit filename="ExpressionPreprocessed.h" />
+		<Unit filename="ExpressionTestCases.cpp" />
+		<Unit filename="ExpressionTestCases.h" />
+		<Unit filename="ExpressionTester.cpp" />
+		<Unit filename="ExpressionTester.h" />
+		<Unit filename="FileContentBase.cpp" />
+		<Unit filename="FileContentBase.h" />
+		<Unit filename="FileContentBuffered.cpp" />
+		<Unit filename="FileContentBuffered.h" />
+		<Unit filename="FileContentDisk.cpp" />
+		<Unit filename="FileContentDisk.h" />
+		<Unit filename="HexEditLineBuffer.cpp" />
+		<Unit filename="HexEditLineBuffer.h" />
+		<Unit filename="HexEditPanel.cpp" />
+		<Unit filename="HexEditPanel.h" />
+		<Unit filename="HexEditViewBase.cpp" />
+		<Unit filename="HexEditViewBase.h" />
+		<Unit filename="HexEditor.cpp" />
+		<Unit filename="HexEditor.h" />
+		<Unit filename="Makefile.am" />
+		<Unit filename="SearchDialog.cpp" />
+		<Unit filename="SearchDialog.h" />
+		<Unit filename="SelectStoredExpressionDlg.cpp" />
+		<Unit filename="SelectStoredExpressionDlg.h" />
+		<Unit filename="TestCasesBase.h" />
+		<Unit filename="TestCasesDlg.cpp" />
+		<Unit filename="TestCasesDlg.h" />
+		<Unit filename="TestCasesHelper.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith\ExpressionTester.wxs" />
+		<Unit filename="wxsmith\HexEditPanel.wxs" />
+		<Unit filename="wxsmith\SearchDialog.wxs" />
+		<Unit filename="wxsmith\SelectStoredExpressionDlg.wxs" />
+		<Unit filename="wxsmith\TestCasesDlg.wxs" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/HexEditPanel.wxs" src="HexEditPanel.cpp" hdr="HexEditPanel.h" name="HexEditPanel" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ExpressionTester.wxs" src="ExpressionTester.cpp" hdr="ExpressionTester.h" name="ExpressionTester" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SelectStoredExpressionDlg.wxs" src="SelectStoredExpressionDlg.cpp" hdr="SelectStoredExpressionDlg.h" name="SelectStoredExpressionDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/TestCasesDlg.wxs" src="TestCasesDlg.cpp" hdr="TestCasesDlg.h" name="TestCasesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/SearchDialog.wxs" src="SearchDialog.cpp" hdr="SearchDialog.h" name="SearchDialog" language="CPP" />
+				</resources>
+			</wxsmith>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

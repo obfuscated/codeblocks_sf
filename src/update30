@@ -1,0 +1,140 @@
+
+# MSYSTEM is defined when cross-compilig with MinGW/MSYS
+if [ "x$MSYSTEM" != "x" ] ; then
+  echo Updating MinGW32/cross version.
+  EXEEXT=".exe"
+  LIBEXT="dll"
+else
+  uname_str=$(uname)
+  if [ "$uname_str" = "Darwin" ] ; then
+    echo Updating Mac / Darwin version.
+    EXEEXT=""
+    LIBEXT="dylib"
+  else
+    echo Updating Linux version.
+    EXEEXT=""
+    LIBEXT="so"
+  fi
+fi
+
+echo Creating output directory tree
+
+mkdir -p output30/share/codeblocks/compilers
+mkdir -p output30/share/codeblocks/lexers
+mkdir -p output30/share/codeblocks/images/settings
+mkdir -p output30/share/codeblocks/images/codecompletion
+mkdir -p output30/share/codeblocks/images/16x16
+mkdir -p output30/share/codeblocks/plugins
+mkdir -p output30/share/codeblocks/templates
+mkdir -p output30/share/codeblocks/templates/wizard
+mkdir -p output30/share/codeblocks/scripts
+mkdir -p devel30/share/codeblocks/compilers
+mkdir -p devel30/share/codeblocks/lexers
+mkdir -p devel30/share/codeblocks/images/settings
+mkdir -p devel30/share/codeblocks/images/codecompletion
+mkdir -p devel30/share/codeblocks/images/16x16
+mkdir -p devel30/share/codeblocks/plugins
+mkdir -p devel30/share/codeblocks/templates
+mkdir -p devel30/share/codeblocks/templates/wizard
+mkdir -p devel30/share/codeblocks/scripts
+
+ZIPCMD="zip"
+RESDIR="devel30/share/codeblocks"
+echo Compressing core UI resources
+${ZIPCMD} -jqu9 ${RESDIR}/resources.zip src/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/manager_resources.zip sdk/resources/*.xrc sdk/resources/images/*.png > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/start_here.zip src/resources/start_here/* > /dev/null
+echo Compressing plugins UI resources
+${ZIPCMD} -jqu9 ${RESDIR}/astyle.zip plugins/astyle/resources/manifest.xml plugins/astyle/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/autosave.zip plugins/autosave/manifest.xml plugins/autosave/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/classwizard.zip plugins/classwizard/resources/manifest.xml plugins/classwizard/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/codecompletion.zip plugins/codecompletion/resources/manifest.xml plugins/codecompletion/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/compiler.zip plugins/compilergcc/resources/manifest.xml plugins/compilergcc/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/debugger.zip plugins/debuggergdb/resources/manifest.xml plugins/debuggergdb/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/occurrenceshighlighting.zip plugins/occurrenceshighlighting/resources/*.xrc plugins/occurrenceshighlighting/resources/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/openfileslist.zip plugins/openfileslist/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/projectsimporter.zip plugins/projectsimporter/resources/*.xrc plugins/projectsimporter/resources/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc > /dev/null
+${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
+echo Packing core UI bitmaps
+cd src/resources
+${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
+cd ../../sdk/resources
+${ZIPCMD} -0 -qu ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
+echo Packing plugins UI bitmaps
+cd ../../plugins/compilergcc/resources
+${ZIPCMD} -0 -qu ../../../${RESDIR}/compiler.zip images/*.png images/16x16/*.png > /dev/null
+cd ../../../plugins/debuggergdb/resources
+${ZIPCMD} -0 -qu ../../../${RESDIR}/debugger.zip images/*.png images/16x16/*.png > /dev/null
+cd ../../..
+
+echo Copying files
+# Create an exclude pattern file
+echo .svn > excludes.txt
+echo Makefile >> excludes.txt
+echo Makefile.am >> excludes.txt
+echo Makefile.in >> excludes.txt
+cp -f sdk/resources/lexers/lexer_* ${RESDIR}/lexers > /dev/null
+cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
+cp -f src/resources/images/settings/*.png ${RESDIR}/images/settings > /dev/null
+cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml ${RESDIR}/compilers > /dev/null
+
+cp -f ${RESDIR}/*.zip output30/share/codeblocks > /dev/null
+cp -f sdk/resources/lexers/lexer_* output30/share/codeblocks/lexers > /dev/null
+cp -f src/resources/images/*.png output30/share/codeblocks/images > /dev/null
+cp -f src/resources/images/settings/*.png output30/share/codeblocks/images/settings > /dev/null
+cp -f src/resources/images/16x16/*.png output30/share/codeblocks/images/16x16 > /dev/null
+cp -f plugins/codecompletion/resources/images/*.png output30/share/codeblocks/images/codecompletion > /dev/null
+cp -f plugins/compilergcc/resources/compilers/*.xml output30/share/codeblocks/compilers > /dev/null
+
+rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
+rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output30/share/codeblocks/templates/wizard > /dev/null
+rsync -au --exclude-from=excludes.txt templates/common/ output30/share/codeblocks/templates > /dev/null
+rsync -au --exclude-from=excludes.txt templates/unix/ output30/share/codeblocks/templates > /dev/null
+rsync -au --exclude-from=excludes.txt templates/common/ ${RESDIR}/templates > /dev/null
+rsync -au --exclude-from=excludes.txt templates/unix/ ${RESDIR}/templates > /dev/null
+cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
+cp -f scripts/*.script output30/share/codeblocks/scripts > /dev/null
+cp -f scripts/*.gdb ${RESDIR}/scripts > /dev/null
+cp -f scripts/*.gdb output30/share/codeblocks/scripts > /dev/null
+cp -f tips.txt devel30/share/codeblocks > /dev/null
+cp -f tips.txt output30/share/codeblocks > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner30${EXEEXT} output30/cb_console_runner${EXEEXT} > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner30${EXEEXT} devel30/cb_console_runner${EXEEXT} > /dev/null
+cp -f devel30/codeblocks${EXEEXT} output30 > /dev/null
+# cp -f devel30/cb_share_config${EXEEXT} output30 > /dev/null
+cp -f devel30/*.${LIBEXT} output30 > /dev/null
+cp -f ${RESDIR}/plugins/*.${LIBEXT} output30/share/codeblocks/plugins > /dev/null
+# Now remove the exclude pattern file
+rm excludes.txt
+
+echo Stripping debug info from output tree
+strip output30/codeblocks${EXEEXT}
+# strip output30/cb_share_config${EXEEXT}
+strip output30/cb_console_runner${EXEEXT}
+# strip output30/codesnippets${EXEEXT}
+strip output30/*.${LIBEXT}
+strip output30/share/codeblocks/plugins/*.${LIBEXT}
+
+if [ "x$MSYSTEM" = "x" ] ; then
+  echo Creating launch-scripts
+  echo "#!/bin/sh" > output30/run.sh
+  echo 'APP_DIR=`dirname "$0"`' >> output30/run.sh
+  echo 'APP_DIR=`( cd "$APP_DIR" && pwd )`' >> output30/run.sh
+  echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> output30/run.sh
+  echo "\$APP_DIR/codeblocks \$@" >> output30/run.sh
+  chmod +x output30/run.sh
+  echo "#!/bin/sh" > devel30/run.sh
+  echo 'APP_DIR=`dirname "$0"`' >> devel30/run.sh
+  echo 'APP_DIR=`( cd "$APP_DIR" && pwd )`' >> devel30/run.sh
+  echo "export LD_LIBRARY_PATH=\$APP_DIR:\$LD_LIBRARY_PATH" >> devel30/run.sh
+  echo "\$APP_DIR/codeblocks \$@" >> devel30/run.sh
+  chmod +x devel30/run.sh
+fi
+
+ZIPCMD=
+RESDIR=

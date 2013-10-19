@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="AutoVersioning wx3.0.x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel30\share\codeblocks\plugins\AutoVersioning.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs30\plugins\contrib\AutoVersioning" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="$(#WX30.include)" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="codeblocks" />
+					<Add directory="..\..\..\devel30" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel30\share\codeblocks\AutoVersioning.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+		</Compiler>
+		<Unit filename="AutoVersioning.cpp" />
+		<Unit filename="AutoVersioning.h" />
+		<Unit filename="avChangesDlg.cpp" />
+		<Unit filename="avChangesDlg.h" />
+		<Unit filename="avConfig.h" />
+		<Unit filename="avHeader.cpp" />
+		<Unit filename="avHeader.h" />
+		<Unit filename="avSvnRevision.cpp" />
+		<Unit filename="avSvnRevision.h" />
+		<Unit filename="avVersionEditorDlg.cpp" />
+		<Unit filename="avVersionEditorDlg.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="avVersionEditorDlg.cpp" main="avVersionEditorDlg" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxScrollingDialog wxs="wxsmith/avVersionEditorDlg.wxs" src="avVersionEditorDlg.cpp" hdr="avVersionEditorDlg.h" name="avVersionEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/avChangesDlg.wxs" src="avChangesDlg.cpp" hdr="avChangesDlg.h" name="avChangesDlg" language="CPP" />
+				</resources>
+			</wxsmith>
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

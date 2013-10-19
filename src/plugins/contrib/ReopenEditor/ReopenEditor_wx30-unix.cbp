@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ReopenEditor wx3.0.x (Unix)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel30/share/codeblocks/plugins/ReopenEditor" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs30/plugins/contrib/ReopenEditor" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
+				<Option host_application="../../../devel30/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-ansi" />
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="`$(WX_CONFIG) --cflags`" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fexceptions" />
+					<Add option="-fPIC" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DcbDEBUG" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -jq9 ../../../devel30/share/codeblocks/ReopenEditor.zip manifest.xml *.xrc" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Unit filename="ReopenEditor.cpp" />
+		<Unit filename="ReopenEditor.h" />
+		<Unit filename="ReopenEditorConfDLg.cpp" />
+		<Unit filename="ReopenEditorConfDLg.h" />
+		<Unit filename="ReopenEditorListView.cpp" />
+		<Unit filename="ReopenEditorListView.h" />
+		<Unit filename="manifest.xml">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="wxsmith/ReopenEditorConfDLg.wxs" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+			<DoxyBlocks>
+				<comment_style block="0" line="0" />
+				<doxyfile_project />
+				<doxyfile_build />
+				<doxyfile_warnings />
+				<doxyfile_output />
+				<doxyfile_dot />
+				<general />
+			</DoxyBlocks>
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/ReopenEditorConfDLg.wxs" src="./ReopenEditorConfDLg.cpp" hdr="./ReopenEditorConfDLg.h" xrc="./ReopenEditorConfDLg.xrc" fwddecl="1" i18n="1" name="ReopenEditorConfDLg" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

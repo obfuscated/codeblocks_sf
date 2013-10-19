@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="DoxyBlocks wx3.0.x (Unix)" />
+		<Option platforms="Unix;Mac;" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option platforms="Unix;Mac;" />
+				<Option output="../../../devel30/share/codeblocks/plugins/DoxyBlocks" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs30/plugins/contrib/DoxyBlocks" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
+				<Option host_application="../../../devel30/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="`$(WX_CONFIG) --cflags`" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fexceptions" />
+					<Add option="-fPIC" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DcbDEBUG" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel30/share/codeblocks/DoxyBlocks.zip manifest.xml" />
+					<Add after="zip -9 ../../../devel30/share/codeblocks/DoxyBlocks.zip images/*.png images/16x16/*.png" />
+					<Add after="./update30" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-ansi" />
+		</Compiler>
+		<Unit filename="AutoDoc.cpp" />
+		<Unit filename="ChangeLog.txt" />
+		<Unit filename="Config.cpp" />
+		<Unit filename="Config.h" />
+		<Unit filename="ConfigPanel.cpp" />
+		<Unit filename="ConfigPanel.h" />
+		<Unit filename="DoxyBlocks.cpp" />
+		<Unit filename="DoxyBlocks.h" />
+		<Unit filename="DoxyBlocksLogger.cpp" />
+		<Unit filename="DoxyBlocksLogger.h" />
+		<Unit filename="Expressions.h" />
+		<Unit filename="ExtractDocs.cpp" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="update30" />
+		<Unit filename="update30.bat" />
+		<Unit filename="version.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<AutoVersioning>
+				<Scheme minor_max="10" build_max="0" rev_max="0" rev_rand_max="10" build_times_to_increment_minor="100" />
+				<Settings autoincrement="1" date_declarations="1" update_manifest="1" do_auto_increment="1" ask_to_increment="0" language="C++" svn="0" svn_directory="" header_path="version.h" />
+				<Changes_Log show_changes_editor="0" app_title="released version %M.%m.%b of %p" changeslog_path="ChangeLog.txt" />
+				<Code header_guard="VERSION_H" namespace="AutoVersion" prefix="" />
+			</AutoVersioning>
+			<DoxyBlocks>
+				<comment_style block="3" line="1" />
+				<doxyfile_project project_number="1.7.655" use_auto_version="1" />
+				<doxyfile_build extract_private="1" extract_static="1" />
+				<doxyfile_warnings warn_if_undocumented="1" />
+				<doxyfile_output html_help="1" />
+				<doxyfile_dot class_diagrams="1" have_dot="1" />
+				<general />
+			</DoxyBlocks>
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/ConfigPanel.wxs" src="ConfigPanel.cpp" hdr="ConfigPanel.h" fwddecl="0" i18n="1" name="ConfigPanel" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

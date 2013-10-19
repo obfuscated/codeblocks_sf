@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wxSmith - Contrib Items wx3.0.x" />
+		<Option platforms="Windows;" />
+		<Option pch_mode="2" />
+		<Option default_target="wxSmithContribItems" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxSmithContribItems">
+				<Option platforms="Windows;" />
+				<Option output="../../../devel30/share/CodeBlocks/plugins/wxSmithContribItems" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs30/plugins/contrib/wxSmithContribItems" />
+				<Option external_deps="../../../devel30/wxsmithlib.dll;" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+					<Add directory="../wxSmith" />
+					<Add directory="../wxSmith/wxwidgets" />
+					<Add directory="../wxSmith/wxwidgets/properties" />
+					<Add directory="../wxSmith/properties" />
+					<Add directory="../wxContribItems/wxchart/include" />
+					<Add directory="../wxContribItems/wxFlatNotebook/include" />
+					<Add directory="../wxContribItems/wxImagePanel/include" />
+					<Add directory="../wxContribItems/wxthings/include" />
+					<Add directory="../wxContribItems/KWIC/include" />
+					<Add directory="../wxContribItems/wxSpeedButton" />
+					<Add directory="../wxContribItems/wxTreeList/include" />
+					<Add directory="../wxContribItems/wxled/gizmosled/include" />
+					<Add directory="../wxContribItems/wxled/lcdWindow/include" />
+					<Add directory="../wxContribItems/wxled/led/include" />
+					<Add directory="../wxContribItems/wxled/ledpanel/include" />
+				</Compiler>
+				<Linker>
+					<Add library="wxsmithlib" />
+					<Add library="codeblocks" />
+					<Add library="wxkwic" />
+					<Add library="wxflatnotebook" />
+					<Add library="wxchartctrl" />
+					<Add library="wxcustombutton" />
+					<Add library="wximagepanel" />
+					<Add library="wxspeedbutton" />
+					<Add library="wxtreelist" />
+					<Add library="wxled" />
+					<Add directory="../../../devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\wxSmithContribItems.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxSmithContribItems;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="../../../devel30" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
+		</Linker>
+		<Unit filename="manifest.xml" />
+		<Unit filename="wxSmithContribItems.cpp" />
+		<Unit filename="wxSmithContribItems.h" />
+		<Unit filename="wxSmithKWIC/images/angmet16.xpm" />
+		<Unit filename="wxSmithKWIC/images/angmet32.xpm" />
+		<Unit filename="wxSmithKWIC/images/angreg16.xpm" />
+		<Unit filename="wxSmithKWIC/images/angreg32.xpm" />
+		<Unit filename="wxSmithKWIC/images/bmpchk16.xpm" />
+		<Unit filename="wxSmithKWIC/images/bmpchk32.xpm" />
+		<Unit filename="wxSmithKWIC/images/bmpswi16.xpm" />
+		<Unit filename="wxSmithKWIC/images/bmpswi32.xpm" />
+		<Unit filename="wxSmithKWIC/images/lcd16.xpm" />
+		<Unit filename="wxSmithKWIC/images/lcd32.xpm" />
+		<Unit filename="wxSmithKWIC/images/linmet16.xpm" />
+		<Unit filename="wxSmithKWIC/images/linmet32.xpm" />
+		<Unit filename="wxSmithKWIC/images/linreg16.xpm" />
+		<Unit filename="wxSmithKWIC/images/linreg32.xpm" />
+		<Unit filename="wxSmithKWIC/wxsangularmeter.cpp" />
+		<Unit filename="wxSmithKWIC/wxsangularmeter.h" />
+		<Unit filename="wxSmithKWIC/wxsangularregulator.cpp" />
+		<Unit filename="wxSmithKWIC/wxsangularregulator.h" />
+		<Unit filename="wxSmithKWIC/wxsbmpcheckbox.cpp" />
+		<Unit filename="wxSmithKWIC/wxsbmpcheckbox.h" />
+		<Unit filename="wxSmithKWIC/wxsbmpswitcher.cpp" />
+		<Unit filename="wxSmithKWIC/wxsbmpswitcher.h" />
+		<Unit filename="wxSmithKWIC/wxslcdclock.cpp" />
+		<Unit filename="wxSmithKWIC/wxslcdclock.h" />
+		<Unit filename="wxSmithKWIC/wxslcddisplay.cpp" />
+		<Unit filename="wxSmithKWIC/wxslcddisplay.h" />
+		<Unit filename="wxSmithKWIC/wxslinearmeter.cpp" />
+		<Unit filename="wxSmithKWIC/wxslinearmeter.h" />
+		<Unit filename="wxSmithKWIC/wxslinearregulator.cpp" />
+		<Unit filename="wxSmithKWIC/wxslinearregulator.h" />
+		<Unit filename="wxchart/wxchart16.png" />
+		<Unit filename="wxchart/wxchart16.xpm" />
+		<Unit filename="wxchart/wxchart32.png" />
+		<Unit filename="wxchart/wxchart32.xpm" />
+		<Unit filename="wxchart/wxschart.cpp" />
+		<Unit filename="wxchart/wxschart.h" />
+		<Unit filename="wxflatnotebook/images/flatnote16.png" />
+		<Unit filename="wxflatnotebook/images/flatnote16.xpm" />
+		<Unit filename="wxflatnotebook/images/flatnote32.png" />
+		<Unit filename="wxflatnotebook/images/flatnote32.xpm" />
+		<Unit filename="wxflatnotebook/wxsFlatNotebook.cpp" />
+		<Unit filename="wxflatnotebook/wxsFlatNotebook.h" />
+		<Unit filename="wxgbsizer/images/wxGridBagSizer16.xpm" />
+		<Unit filename="wxgbsizer/images/wxGridBagSizer32.xpm" />
+		<Unit filename="wxgbsizer/wxsGridBagSizer.cpp" />
+		<Unit filename="wxgbsizer/wxsGridBagSizer.h" />
+		<Unit filename="wximagebutton/wxImageButton16.xpm" />
+		<Unit filename="wximagebutton/wxImageButton32.xpm" />
+		<Unit filename="wximagebutton/wxsimagebutton.cpp" />
+		<Unit filename="wximagebutton/wxsimagebutton.h" />
+		<Unit filename="wximagepanel/wxImagePanel16.xpm" />
+		<Unit filename="wximagepanel/wxImagePanel32.xpm" />
+		<Unit filename="wximagepanel/wxsimagepanel.cpp" />
+		<Unit filename="wximagepanel/wxsimagepanel.h" />
+		<Unit filename="wxled/images/LedNumber16.xpm" />
+		<Unit filename="wxled/images/LedNumber32.xpm" />
+		<Unit filename="wxled/images/wxLcdWindow16.xpm" />
+		<Unit filename="wxled/images/wxLcdWindow32.xpm" />
+		<Unit filename="wxled/images/wxLedPanel16.xpm" />
+		<Unit filename="wxled/images/wxLedPanel32.xpm" />
+		<Unit filename="wxled/images/wxled16.xpm" />
+		<Unit filename="wxled/images/wxled32.xpm" />
+		<Unit filename="wxled/images/wxstateled16.xpm" />
+		<Unit filename="wxled/images/wxstateled32.xpm" />
+		<Unit filename="wxled/wxsLcdWindow.cpp" />
+		<Unit filename="wxled/wxsLcdWindow.h" />
+		<Unit filename="wxled/wxsLed.cpp" />
+		<Unit filename="wxled/wxsLed.h" />
+		<Unit filename="wxled/wxsLedNumber.cpp" />
+		<Unit filename="wxled/wxsLedNumber.h" />
+		<Unit filename="wxled/wxsLedPanel.cpp" />
+		<Unit filename="wxled/wxsLedPanel.h" />
+		<Unit filename="wxled/wxsStateLed.cpp" />
+		<Unit filename="wxled/wxsStateLed.h" />
+		<Unit filename="wxspeedbutton/SpeedButton16.xpm" />
+		<Unit filename="wxspeedbutton/SpeedButton32.xpm" />
+		<Unit filename="wxspeedbutton/wxsSpeedButton.cpp" />
+		<Unit filename="wxspeedbutton/wxsSpeedButton.h" />
+		<Unit filename="wxthings/wxcustombutton16.png" />
+		<Unit filename="wxthings/wxcustombutton16.xpm" />
+		<Unit filename="wxthings/wxcustombutton32.png" />
+		<Unit filename="wxthings/wxcustombutton32.xpm" />
+		<Unit filename="wxthings/wxscustombutton.cpp" />
+		<Unit filename="wxthings/wxscustombutton.h" />
+		<Unit filename="wxtreelist/images/TreeList16.xpm" />
+		<Unit filename="wxtreelist/images/TreeList32.xpm" />
+		<Unit filename="wxtreelist/wxsTreeListCtrl.cpp" />
+		<Unit filename="wxtreelist/wxsTreeListCtrl.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

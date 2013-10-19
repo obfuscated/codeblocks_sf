@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="HeaderFixup wx3.0.x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel30\share\CodeBlocks\plugins\headerfixup" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs30\plugins\contrib\headerfixup" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="$(#WX30.include)" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\sdk\wxscintilla\include" />
+				</Compiler>
+				<Linker>
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="..\..\..\devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\headerfixup.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+		</Linker>
+		<Unit filename="bindings.cpp" />
+		<Unit filename="bindings.h" />
+		<Unit filename="configuration.cpp" />
+		<Unit filename="configuration.h" />
+		<Unit filename="defaults.cpp" />
+		<Unit filename="execution.cpp" />
+		<Unit filename="execution.h" />
+		<Unit filename="fileanalysis.cpp" />
+		<Unit filename="fileanalysis.h" />
+		<Unit filename="headerfixup.cpp" />
+		<Unit filename="headerfixup.h" />
+		<Unit filename="helper.cpp" />
+		<Unit filename="helper.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="protocol.cpp" />
+		<Unit filename="protocol.h" />
+		<Unit filename="todo.txt" />
+		<Unit filename="wxsmith\configuration.wxs" />
+		<Unit filename="wxsmith\execution.wxs" />
+		<Unit filename="wxsmith\protocol.wxs" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxPanel wxs="wxsmith/configuration.wxs" src="configuration.cpp" hdr="configuration.h" fwddecl="1" name="Configuration" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/execution.wxs" src="execution.cpp" hdr="execution.h" fwddecl="1" name="Execution" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/protocol.wxs" src="protocol.cpp" hdr="protocol.h" fwddecl="1" name="Protocol" language="CPP" />
+				</resources>
+			</wxsmith>
+			<SVNInside Login="" Password="" ConnectStatus="1" NeedsPassword="0" />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

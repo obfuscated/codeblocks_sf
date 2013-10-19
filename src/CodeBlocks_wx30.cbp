@@ -2,15 +2,15 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code::Blocks wx2.9.x (64 bit)" />
+		<Option title="Code::Blocks wx3.0.x" />
 		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="exchndl">
 				<Option platforms="Windows;" />
-				<Option output="devel29_64/exchndl" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
+				<Option output="devel30/exchndl" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -19,14 +19,14 @@
 				<Linker>
 					<Add library="bfd" />
 					<Add library="iberty" />
-					<Add library="intl" />
+					<Add library="z" />
 					<Add directory="base/exchndl/lib" />
 				</Linker>
 			</Target>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/txml29_64" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/txml30" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -34,8 +34,8 @@
 				</Compiler>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools/autorevision/autorevision29_64" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".objs29_64" />
+				<Option output="build_tools/autorevision/autorevision30" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -44,14 +44,14 @@
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="txml29_64" />
+					<Add library="txml30" />
 					<Add directory="base/tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools/ConsoleRunner/cb_console_runner29_64" prefix_auto="1" extension_auto="1" />
+				<Option output="tools/ConsoleRunner/cb_console_runner30" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -60,9 +60,9 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/squirrel29_64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/squirrel30" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -72,10 +72,10 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel std lib">
-				<Option output="sdk/scripting/lib/sqstdlib29_64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqstdlib30" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
+				<Option object_output=".objs30" />
+				<Option external_deps="sdk/scripting/lib/libsquirrel30.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -85,10 +85,10 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/sqplus29_64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqplus30" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel29_64.a;sdk/scripting/lib/libsqstdlib29_64.a;" />
+				<Option object_output=".objs30" />
+				<Option external_deps="sdk/scripting/lib/libsquirrel30.a;sdk/scripting/lib/libsqstdlib30.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -98,9 +98,9 @@
 				</Compiler>
 			</Target>
 			<Target title="scintilla">
-				<Option output="devel29_64/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -125,13 +125,13 @@
 				</Linker>
 			</Target>
 			<Target title="sdk">
-				<Option output="devel29_64/codeblocks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="base/tinyxml/libtxml29_64.a;sdk/scripting/lib/libsquirrel29_64.a;sdk/scripting/lib/libsqstdlib29_64.a;sdk/scripting/lib/libsqplus29_64.a;devel29_64/libwxscintilla_cb.a;" />
+				<Option output="devel30/codeblocks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="base/tinyxml/libtxml30.a;sdk/scripting/lib/libsquirrel30.a;sdk/scripting/lib/libsqstdlib30.a;sdk/scripting/lib/libsqplus30.a;devel30/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose -p debug" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -158,32 +158,32 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="shfolder" />
-					<Add library="txml29_64" />
+					<Add library="txml30" />
 					<Add library="wxscintilla_cb" />
-					<Add library="sqplus29_64" />
-					<Add library="sqstdlib29_64" />
-					<Add library="squirrel29_64" />
+					<Add library="sqplus30" />
+					<Add library="sqstdlib30" />
+					<Add library="squirrel30" />
 					<Add library="gdi32" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 					<Add directory="sdk/scripting/lib" />
 					<Add directory="sdk/propgrid" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision29_64 +wx +int +t . include/autorevision.h" />
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\manager_resources.zip sdk\resources\*.xrc" />
-					<Add after='cmd /c &quot;cd sdk\resources &amp; zip -0 -q ..\..\devel29_64\share\CodeBlocks\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png&quot;' />
+					<Add before="build_tools/autorevision/autorevision30 +wx +int +t . include/autorevision.h" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\manager_resources.zip sdk\resources\*.xrc" />
+					<Add after='cmd /c &quot;cd sdk\resources &amp; zip -0 -q ..\..\devel30\share\CodeBlocks\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png&quot;' />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="src">
-				<Option output="devel29_64/codeblocks" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/codeblocks" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add option="-DBUILDING_PLUGIN" />
@@ -216,24 +216,24 @@
 					<Add library="rpcrt4" />
 					<Add library="advapi32" />
 					<Add library="wsock32" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\resources.zip src\resources\*.xrc" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\start_here.zip src\resources\start_here\*.html src\resources\start_here\*.png" />
-					<Add after='cmd /c &quot;cd src\resources &amp; zip -0 -q ..\..\devel29_64\share\CodeBlocks\resources.zip images\*.png images\16x16\*.png&quot;' />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\resources.zip src\resources\*.xrc" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\start_here.zip src\resources\start_here\*.html src\resources\start_here\*.png" />
+					<Add after='cmd /c &quot;cd src\resources &amp; zip -0 -q ..\..\devel30\share\CodeBlocks\resources.zip images\*.png images\16x16\*.png&quot;' />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Abbreviations">
-				<Option output="devel29_64/share/CodeBlocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -252,22 +252,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\abbreviations.zip plugins\abbreviations\resources\manifest.xml plugins\abbreviations\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\abbreviations.zip plugins\abbreviations\resources\manifest.xml plugins\abbreviations\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel29_64/share/CodeBlocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -285,22 +285,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Autosave">
-				<Option output="devel29_64/share/CodeBlocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -316,18 +316,18 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\autosave.zip plugins\autosave\manifest.xml plugins\autosave\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Compiler depslib">
-				<Option output="plugins/compilergcc/depslib/depslib29_64" prefix_auto="1" extension_auto="1" />
+				<Option output="plugins/compilergcc/depslib/depslib30" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -339,13 +339,13 @@
 				</Linker>
 			</Target>
 			<Target title="Compiler">
-				<Option output="devel29_64/share/CodeBlocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib29_64.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib30.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -364,27 +364,27 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add library="depslib29_64" />
-					<Add directory="devel29_64" />
+					<Add library="depslib30" />
+					<Add directory="devel30" />
 					<Add directory="plugins/compilergcc/depslib" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
-					<Add after='cmd /c &quot;cd plugins\compilergcc\resources &amp; zip -0 -q ..\..\..\devel29_64\share\CodeBlocks\compiler.zip images\*.png images\16x16\*.png&quot;' />
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks\compilers mkdir devel29_64\share\CodeBlocks\compilers" />
-					<Add after="cmd /c xcopy /D /Y plugins\compilergcc\resources\compilers\*.* devel29_64\share\CodeBlocks\compilers" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\compiler.zip plugins\compilergcc\resources\manifest.xml plugins\compilergcc\resources\*.xrc" />
+					<Add after='cmd /c &quot;cd plugins\compilergcc\resources &amp; zip -0 -q ..\..\..\devel30\share\CodeBlocks\compiler.zip images\*.png images\16x16\*.png&quot;' />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks\compilers mkdir devel30\share\CodeBlocks\compilers" />
+					<Add after="cmd /c xcopy /D /Y plugins\compilergcc\resources\compilers\*.* devel30\share\CodeBlocks\compilers" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Debugger">
-				<Option output="devel29_64/share/CodeBlocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -402,22 +402,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\debugger.zip plugins\debuggergdb\resources\manifest.xml plugins\debuggergdb\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Code-completion">
-				<Option output="devel29_64/share/CodeBlocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -440,22 +440,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\codecompletion.zip plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\codecompletion.zip plugins\codecompletion\resources\manifest.xml plugins\codecompletion\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Class wizard">
-				<Option output="devel29_64/share/CodeBlocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -471,22 +471,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\classwizard.zip plugins\classwizard\resources\manifest.xml plugins\classwizard\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Default MIME handler">
-				<Option output="devel29_64/share/CodeBlocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -502,22 +502,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\defaultmimehandler.zip plugins\defaultmimehandler\resources\manifest.xml plugins\defaultmimehandler\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Occurrences Highlighting">
-				<Option output="devel29_64/share/CodeBlocks/plugins/OccurrencesHighlighting" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/OccurrencesHighlighting" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -533,22 +533,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -j9 devel29_64\share\CodeBlocks\OccurrencesHighlighting.zip plugins\occurrenceshighlighting\resources\manifest.xml plugins\occurrenceshighlighting\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -j9 devel30\share\CodeBlocks\occurrenceshighlighting.zip plugins\occurrenceshighlighting\resources\manifest.xml plugins\occurrenceshighlighting\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Open files list">
-				<Option output="devel29_64/share/CodeBlocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -564,22 +564,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\openfileslist.zip plugins\openfileslist\manifest.xml" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\openfileslist.zip plugins\openfileslist\manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Projects-workspaces importer">
-				<Option output="devel29_64/share/CodeBlocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -601,22 +601,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml plugins\projectsimporter\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\projectsimporter.zip plugins\projectsimporter\resources\manifest.xml plugins\projectsimporter\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="Scripted wizard">
-				<Option output="devel29_64/share/CodeBlocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -634,22 +634,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\scriptedwizard.zip plugins\scriptedwizard\resources\manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="To-do">
-				<Option output="devel29_64/share/CodeBlocks/plugins/todo" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/todo" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -671,22 +671,22 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\todo.zip plugins\todo\resources\manifest.xml plugins\todo\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Target title="XP look &amp; feel">
-				<Option output="devel29_64/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel29_64" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="devel29_64/libcodeblocks.a;" />
+				<Option output="devel30/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="devel30" />
+				<Option object_output=".objs30" />
+				<Option external_deps="devel30/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose --profile=foo -p debug" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
 				<Option host_application="./codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -702,54 +702,53 @@
 					<Add option="-mthreads" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="devel29_64" />
+					<Add directory="devel30" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="cmd /c if not exist devel29_64\share\CodeBlocks mkdir devel29_64\share\CodeBlocks" />
-					<Add after="zip -jq9 devel29_64\share\CodeBlocks\xpmanifest.zip plugins\xpmanifest\manifest.xml" />
+					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\xpmanifest.zip plugins\xpmanifest\manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VERSION" value="29" />
+				<Variable name="WX_VERSION" value="30" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
-			<Add alias="Third-party libs" targets="exchndl;tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
-			<Add option="-m64" />
-			<Add option="-fno-keep-inline-dllexport" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DNOPCH" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add option="-D_WIN64" />
-			<Add directory="$(#WX29_29_64.include)" />
-			<Add directory="$(#WX29_29_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX29_29_64.include)" />
-			<Add directory="$(#WX29_29_64)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30)/lib/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="base/tinyxml" />
-			<Add directory="$(#WX29_29_64.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="base/exchndl/exchndl.c">
 			<Option compilerVar="CC" />
@@ -999,6 +998,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Attributes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Compiler.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Likely.h">
@@ -1287,6 +1289,7 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk.h">
+			<Option compile="1" />
 			<Option weight="1" />
 			<Option target="src" />
 		</Unit>
@@ -1297,6 +1300,7 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk_precomp.h">
+			<Option compile="1" />
 			<Option weight="0" />
 			<Option target="sdk" />
 		</Unit>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CC Test wx3.0.x (unix)" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="cctest">
+				<Option output="../../devel30/cctest" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../.objs30/plugins/codecompletion/cctest" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-DCC_PARSER_TEST" />
+					<Add directory="cctest" />
+					<Add directory="parser" />
+					<Add directory="." />
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+				<Variable name="WX_SUFFIX" value="u" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="cctest;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-ansi" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-pipe" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="`$(WX_CONFIG) --cflags`" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../include" />
+			<Add directory="../../sdk/wxscintilla/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
+			<Add option="-Wl,--no-undefined" />
+			<Add library="codeblocks" />
+			<Add directory="../../devel30" />
+		</Linker>
+		<Unit filename="cctest/cctest.cpp" />
+		<Unit filename="cctest/cctest.h" />
+		<Unit filename="cctest/cctest_app.cpp" />
+		<Unit filename="cctest/cctest_frame.cpp" />
+		<Unit filename="cctest/cctest_frame.h" />
+		<Unit filename="cctest/nativeparser_test.cpp" />
+		<Unit filename="cctest/nativeparser_test.h" />
+		<Unit filename="cctest/parserdummy.cpp" />
+		<Unit filename="cctest/test.h">
+			<Option target="&lt;{~None~}&gt;" />
+		</Unit>
+		<Unit filename="nativeparser_base.cpp" />
+		<Unit filename="nativeparser_base.h" />
+		<Unit filename="parser/ccdebuginfo.cpp" />
+		<Unit filename="parser/ccdebuginfo.h" />
+		<Unit filename="parser/cclogger.cpp" />
+		<Unit filename="parser/cclogger.h" />
+		<Unit filename="parser/expression.cpp" />
+		<Unit filename="parser/expression.h" />
+		<Unit filename="parser/parser.h" />
+		<Unit filename="parser/parserthread.cpp" />
+		<Unit filename="parser/parserthread.h" />
+		<Unit filename="parser/searchtree.cpp" />
+		<Unit filename="parser/searchtree.h" />
+		<Unit filename="parser/token.cpp" />
+		<Unit filename="parser/token.h" />
+		<Unit filename="parser/tokenizer.cpp" />
+		<Unit filename="parser/tokenizer.h" />
+		<Unit filename="parser/tokentree.cpp" />
+		<Unit filename="parser/tokentree.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="cctest/cctest_app.cpp" main="-- None --" init_handlers="never" language="CPP" />
+				<resources>
+					<wxFrame wxs="wxsmith/CCTestFrame.wxs" src="cctest\cctest_frame.cpp" hdr="cctest\cctest_frame.h" fwddecl="0" i18n="1" name="CCTestFrame" language="CPP" />
+				</resources>
+			</wxsmith>
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
