@@ -10,7 +10,7 @@
 				<Option platforms="Windows;" />
 				<Option output="devel30_64/exchndl" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -26,7 +26,7 @@
 			<Target title="tinyXML">
 				<Option output="base/tinyxml/txml30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -35,7 +35,7 @@
 			</Target>
 			<Target title="AutoRevision">
 				<Option output="build_tools/autorevision/autorevision30_64" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -51,7 +51,7 @@
 			<Target title="ConsoleRunner">
 				<Option output="tools/ConsoleRunner/cb_console_runner30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -62,7 +62,7 @@
 			<Target title="Squirrel">
 				<Option output="sdk/scripting/lib/squirrel30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -74,8 +74,8 @@
 			<Target title="Squirrel std lib">
 				<Option output="sdk/scripting/lib/sqstdlib30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel.a;" />
+				<Option object_output=".objs30_64" />
+				<Option external_deps="sdk/scripting/lib/libsquirrel30_64.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -87,7 +87,7 @@
 			<Target title="SqPlus">
 				<Option output="sdk/scripting/lib/sqplus30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="sdk/scripting/lib/libsquirrel30_64.a;sdk/scripting/lib/libsqstdlib30_64.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
@@ -100,7 +100,7 @@
 			<Target title="scintilla">
 				<Option output="devel30_64/wxscintilla_cb" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -127,7 +127,7 @@
 			<Target title="sdk">
 				<Option output="devel30_64/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="base/tinyxml/libtxml30_64.a;sdk/scripting/lib/libsquirrel30_64.a;sdk/scripting/lib/libsqstdlib30_64.a;sdk/scripting/lib/libsqplus30_64.a;devel30_64/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -179,7 +179,7 @@
 			<Target title="src">
 				<Option output="devel30_64/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
@@ -229,7 +229,7 @@
 			<Target title="Abbreviations">
 				<Option output="devel30_64/share/CodeBlocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -263,7 +263,7 @@
 			<Target title="AStyle">
 				<Option output="devel30_64/share/CodeBlocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -296,7 +296,7 @@
 			<Target title="Autosave">
 				<Option output="devel30_64/share/CodeBlocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -327,7 +327,7 @@
 			<Target title="Compiler depslib">
 				<Option output="plugins/compilergcc/depslib/depslib30_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -341,7 +341,7 @@
 			<Target title="Compiler">
 				<Option output="devel30_64/share/CodeBlocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;plugins/compilergcc/depslib/libdepslib30_64.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -380,7 +380,7 @@
 			<Target title="Debugger">
 				<Option output="devel30_64/share/CodeBlocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -413,7 +413,7 @@
 			<Target title="Code-completion">
 				<Option output="devel30_64/share/CodeBlocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -451,7 +451,7 @@
 			<Target title="Class wizard">
 				<Option output="devel30_64/share/CodeBlocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -482,7 +482,7 @@
 			<Target title="Default MIME handler">
 				<Option output="devel30_64/share/CodeBlocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -513,7 +513,7 @@
 			<Target title="Occurrences Highlighting">
 				<Option output="devel30_64/share/CodeBlocks/plugins/OccurrencesHighlighting" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -544,7 +544,7 @@
 			<Target title="Open files list">
 				<Option output="devel30_64/share/CodeBlocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -575,7 +575,7 @@
 			<Target title="Projects-workspaces importer">
 				<Option output="devel30_64/share/CodeBlocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -612,7 +612,7 @@
 			<Target title="Scripted wizard">
 				<Option output="devel30_64/share/CodeBlocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -645,7 +645,7 @@
 			<Target title="To-do">
 				<Option output="devel30_64/share/CodeBlocks/plugins/todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -682,7 +682,7 @@
 			<Target title="XP look &amp; feel">
 				<Option output="devel30_64/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30_64" />
-				<Option object_output=".objs29_64" />
+				<Option object_output=".objs30_64" />
 				<Option external_deps="devel30_64/libcodeblocks.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -719,7 +719,7 @@
 		<VirtualTargets>
 			<Add alias="All" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;sdk;src;Abbreviations;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
 			<Add alias="Core app &amp; plugins" targets="sdk;src;AStyle;Autosave;Compiler depslib;Compiler;Debugger;Code-completion;Class wizard;Default MIME handler;Occurrences Highlighting;Open files list;Projects-workspaces importer;Scripted wizard;To-do;XP look &amp; feel;" />
-			<Add alias="Third-party libs" targets="exchndl;tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
+			<Add alias="Third-party libs" targets="tinyXML;AutoRevision;ConsoleRunner;Squirrel;Squirrel std lib;SqPlus;scintilla;Compiler depslib;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -999,6 +999,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Attributes.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Compiler.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Likely.h">
