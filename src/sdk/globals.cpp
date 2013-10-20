@@ -18,6 +18,8 @@
     #include <wx/listctrl.h>
     #include <wx/menu.h>
 
+    #include "wx/wxscintilla.h"
+
     #include "cbexception.h"
     #include "configmanager.h" // ReadBool
     #include "filemanager.h"
