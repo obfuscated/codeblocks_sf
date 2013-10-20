@@ -169,7 +169,7 @@ public:
     void DoMiddleButtonUp(SCI_NAMESPACE_PREFIX(Point) pt);
 /* C::B end */
 /* C::B begin */
-#if !wxCHECK_VERSION(2,9,2)
+#if !wxCHECK_VERSION(2,9,4)
     enum wxMouseWheelAxis
     {
         wxMOUSE_WHEEL_VERTICAL,

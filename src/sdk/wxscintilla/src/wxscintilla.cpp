@@ -5293,7 +5293,7 @@ void wxScintilla::OnMouseWheel(wxMouseEvent& evt)
                         evt.GetWheelDelta(),
                         evt.GetLinesPerAction(),
 /* C::B begin */
-#if wxCHECK_VERSION(2,9,2)
+#if wxCHECK_VERSION(2,9,5)
                         evt.GetColumnsPerAction(),
 #else
                         1,
