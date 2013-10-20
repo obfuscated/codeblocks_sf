@@ -310,6 +310,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
     CentreOnParent();
+    Layout();
 }
 
 EnvironmentSettingsDlg::~EnvironmentSettingsDlg()
@@ -361,7 +362,6 @@ void EnvironmentSettingsDlg::LoadListbookImages()
         bmp = cbLoadBitmap(base + base_imgs[i] + _T("-off.png"));
         m_pImageList->Add(bmp);
     }
-    UpdateListbookImages();
 }
 
 void EnvironmentSettingsDlg::UpdateListbookImages()
@@ -383,7 +383,6 @@ void EnvironmentSettingsDlg::UpdateListbookImages()
         SetSettingsIconsStyle(lb->GetListView(), sisLargeIcons);
     }
 
-
     // update the page title
     wxString label = lb->GetPageText(sel);
     // replace any stray & with && because label makes it an underscore
@@ -402,6 +401,7 @@ void EnvironmentSettingsDlg::OnPageChanged(wxListbookEvent& event)
     // update only on real change, not on dialog creation
     if (event.GetOldSelection() != -1 && event.GetSelection() != -1)
         UpdateListbookImages();
+    Layout();
 }
 
 void EnvironmentSettingsDlg::OnSetAssocs(cb_unused wxCommandEvent& event)
@@ -521,6 +521,7 @@ void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
 void EnvironmentSettingsDlg::OnSettingsIconsSize(wxCommandEvent& event)
 {
     UpdateListbookImages();
+    Layout();
 }
 
 void EnvironmentSettingsDlg::EndModal(int retCode)

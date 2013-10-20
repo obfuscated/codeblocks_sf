@@ -265,6 +265,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     // make sure everything is laid out properly
     GetSizer()->SetSizeHints(this);
     CentreOnParent();
+    Layout();
 }
 
 EditorConfigurationDlg::~EditorConfigurationDlg()
@@ -322,7 +323,6 @@ void EditorConfigurationDlg::LoadListbookImages()
         bmp = cbLoadBitmap(base + base_imgs[i] + _T("-off.png"));
         m_pImageList->Add(bmp);
     }
-    UpdateListbookImages();
 }
 
 void EditorConfigurationDlg::UpdateListbookImages()
