@@ -230,7 +230,10 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
 extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 extern DLLIMPORT bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path);
 
-/// Reads settings if eolMode is -1
+/** Reads settings if eolMode is -1
+  * Expected input (defined in sdk/wxscintilla/include/wx/wxscintilla.h) is:
+  * wxSCI_EOL_CRLF=0, wxSCI_EOL_CR=1, or wxSCI_EOL_LF=2
+  */
 extern DLLIMPORT wxString GetEOLStr(int eolMode = -1);
 
 extern DLLIMPORT wxString URLEncode(const wxString &str);
