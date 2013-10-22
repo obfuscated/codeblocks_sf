@@ -2856,7 +2856,7 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
         switch (*ptr)
         {
         case ParserConsts::eol_chr:
-            while (*ptr <= ParserConsts::space_chr)
+            while (*ptr != ParserConsts::null && *ptr <= ParserConsts::space_chr)
                 ++ptr;
             break;
         case ParserConsts::space_chr:
@@ -2876,7 +2876,7 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
         case ParserConsts::ptr_chr: // handle pointer args
             // handle multiple pointer like in: main (int argc, void** argv)
             // or ((int *, char ***))
-            while (*(ptr+1) == ParserConsts::ptr_chr)
+            while (*(ptr+1) != ParserConsts::null && *(ptr+1) == ParserConsts::ptr_chr)
             {
                 baseArgs << *ptr; // append one more '*' to baseArgs
                 ptr++; // next char
