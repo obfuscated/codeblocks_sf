@@ -373,9 +373,9 @@ void ScintillaWX::StartDrag() {
         inDragDrop = ddNone;
         SetDragPosition(SelectionPosition(invalidPosition));
 /* C::B begin */
-        wxScintillaEvent evt(wxEVT_SCI_FINISHED_DRAG, sci->GetId());
-        evt.SetEventObject (sci);
-        sci->GetEventHandler()->ProcessEvent (evt);
+        wxScintillaEvent evtFin(wxEVT_SCI_FINISHED_DRAG, sci->GetId());
+        evtFin.SetEventObject(sci);
+        sci->GetEventHandler()->ProcessEvent(evtFin);
 /* C::B end */
     }
 #endif // wxUSE_DRAG_AND_DROP
