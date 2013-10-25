@@ -1096,7 +1096,10 @@ void ScintillaWX::DoLeftButtonMove(Point pt) {
     ButtonMove(pt);
 }
 
-#ifdef __WXGTK__
+/* C::B begin */
+//#ifdef __WXGTK__
+#if 0 // emulated in cbStyledTextCtrl::OnMouseMiddleClick() due to buggy wxClipboard
+/* C::B end */
 void ScintillaWX::DoMiddleButtonUp(Point pt) {
     // Set the current position to the mouse click point and
     // then paste in the PRIMARY selection, if any.  wxGTK only.

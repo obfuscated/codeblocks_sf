@@ -38,8 +38,9 @@
 #include "cbcolourmanager.h"
 
 #include <wx/bmpbuttn.h>
-#include <wx/progdlg.h>
+#include <wx/clipbrd.h>  // for wxTheClipboard
 #include <wx/fontutil.h>
+#include <wx/progdlg.h>
 
 #include "cbauibook.h"
 #include "editorcolourset.h"
@@ -106,6 +107,7 @@ struct EditorManagerInternalData
 
     EditorManager* m_pOwner;
     bool m_SetFocusFlag;
+    wxString m_SelectionClipboard;
 };
 
 // *********** End of EditorManagerInternalData **********
@@ -160,9 +162,10 @@ EditorManager::EditorManager()
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
     m_Zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/zoom"));
-    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
-    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED,       new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,           new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
     Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_LOADING_COMPLETE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(cbEVT_APP_ACTIVATED,              new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::OnAppActivated));
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     colours->RegisterColour(_("Editor"), _("Caret"), wxT("editor_caret"), *wxBLACK);
@@ -1744,4 +1747,32 @@ void EditorManager::SetZoom(int zoom)
 int EditorManager::GetZoom() const
 {
     return m_Zoom;
+}
+
+void EditorManager::OnAppActivated(CodeBlocksEvent& event)
+{
+    event.Skip();
+    if (!platform::gtk)
+        return;
+    wxTextDataObject data;
+    bool gotData = false;
+    wxTheClipboard->UsePrimarySelection(true);
+    if (wxTheClipboard->Open())
+    {
+        gotData = wxTheClipboard->GetData(data);
+        wxTheClipboard->Close();
+    }
+    wxTheClipboard->UsePrimarySelection(false);
+    if (gotData && !data.GetText().IsEmpty())
+        m_pData->m_SelectionClipboard = data.GetText();
+}
+
+wxString EditorManager::GetSelectionClipboard()
+{
+    return m_pData->m_SelectionClipboard;
+}
+
+void EditorManager::SetSelectionClipboard(const wxString& data)
+{
+    m_pData->m_SelectionClipboard = data;
 }
