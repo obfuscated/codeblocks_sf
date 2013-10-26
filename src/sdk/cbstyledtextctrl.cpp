@@ -128,7 +128,9 @@ void cbStyledTextCtrl::OnMouseMiddleClick(wxMouseEvent& event)
     const int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
     if (pos == wxSCI_INVALID_POSITION || pos != m_middleClickPos)
         return;
-    SetCurrentPos(pos);
+    GotoPos(pos);
+    if (GetReadOnly())
+        return;
     wxTextFileType type;
     switch (GetEOLMode())
     {

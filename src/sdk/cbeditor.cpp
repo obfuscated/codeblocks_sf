@@ -3119,6 +3119,7 @@ void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
         HighlightBraces(); // brace highlighting
         if (event.GetUpdated() & wxSCI_UPDATE_SELECTION)
         {
+            // emulate ScintillaWX::ClaimSelection()
             cbStyledTextCtrl* stc = GetControl();
             if (stc->GetSelectionStart() != stc->GetSelectionEnd())
                 edMgr->SetSelectionClipboard(stc->GetSelectedText());
