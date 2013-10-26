@@ -20,6 +20,7 @@
     #include <wx/timer.h>
 
     #include "editorbase.h" // DisplayContextMenu
+    #include "editormanager.h"
     #include "pluginmanager.h"
 #endif
 #include <wx/textfile.h> // for wxTextBuffer::Translate()
