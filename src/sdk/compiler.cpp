@@ -963,12 +963,12 @@ void Compiler::LoadDefaultOptions(const wxString& name, int recursion)
             wxString exclusive;
             if (!node->GetAttribute(wxT("exclusive"), &exclusive))
                 exclusive = (exclu ? wxT("true") : wxT("false"));
-            m_Options.AddOption(node->GetAttribute(wxT("name"), wxEmptyString),
+            m_Options.AddOption(wxGetTranslation(node->GetAttribute(wxT("name"), wxEmptyString)),
                                 node->GetAttribute(wxT("option"), wxEmptyString),
-                                category,
+                                wxGetTranslation(category),
                                 node->GetAttribute(wxT("additionalLibs"), wxEmptyString),
                                 node->GetAttribute(wxT("checkAgainst"), wxEmptyString),
-                                node->GetAttribute(wxT("checkMessage"), wxEmptyString),
+                                wxGetTranslation(node->GetAttribute(wxT("checkMessage"), wxEmptyString)),
                                 node->GetAttribute(wxT("supersedes"), wxEmptyString),
                                 exclusive == wxT("true"));
         }
@@ -1121,7 +1121,7 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
             else if (tp == wxT("info"))
                 clt = cltInfo;
             wxArrayString msg = GetArrayFromString(node->GetAttribute(wxT("msg"), wxEmptyString) + wxT(";0;0"));
-            m_RegExes.Add(RegExStruct(node->GetAttribute(wxT("name"), wxEmptyString), clt,
+            m_RegExes.Add(RegExStruct(wxGetTranslation(node->GetAttribute(wxT("name"), wxEmptyString)), clt,
                                       node->GetNodeContent().Trim().Trim(false), wxAtoi(msg[0]),
                                       wxAtoi(node->GetAttribute(wxT("file"), wxT("0"))),
                                       wxAtoi(node->GetAttribute(wxT("line"), wxT("0"))),

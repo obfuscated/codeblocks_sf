@@ -15,7 +15,7 @@
 #include "compilerXML.h"
 
 CompilerXML::CompilerXML(const wxString& name, const wxString& ID, const wxString& file)
-    : Compiler(name, ID), m_fileName(file)
+    : Compiler(wxGetTranslation(name), ID), m_fileName(file)
 {
     wxXmlDocument compiler;
     compiler.Load(m_fileName);
