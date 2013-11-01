@@ -224,6 +224,7 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
 void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstart, int wordend)const
 {
     wxString word = stc->GetTextRange(wordstart, wordend);
+    const bool isMultibyte = ((int)word.Length() != wordend - wordstart);
     //Manager::Get()->GetLogManager()->Log(wxT("dissecting: \"") + word + wxT("\""));
     //and now decide whether the word is an abbreviation and split words when case changes to uppercase
     bool upper = wxIsupper(word[0]) != 0;
@@ -253,7 +254,17 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
                 //check the word:
                 //Manager::Get()->GetLogManager()->Log(wxT("checking: \"") + word.Mid(a, b - a) + wxT("\""));
                 if ( !m_pSpellChecker->IsWordInDictionary(word.Mid(a, b - a)) )
-                    stc->IndicatorFillRange(wordstart + a, b - a);
+                {
+                    if (isMultibyte) // not perfect, so only try if necessary
+                    {
+                        int len = 0;
+                        const int startPos = stc->FindText(wordstart + a, wordend, word.Mid(a, b - a), wxSCI_FIND_MATCHCASE, &len);
+                        if (startPos != wxNOT_FOUND)
+                            stc->IndicatorFillRange(startPos, len);
+                    }
+                    else
+                        stc->IndicatorFillRange(wordstart + a, b - a);
+                }
                 //next:
                 a = c;
                 c++;
@@ -267,7 +278,17 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
         //check the word:
         //Manager::Get()->GetLogManager()->Log(wxT("checking: \"") + word.Mid(a, b - a) + wxT("\""));
         if ( !m_pSpellChecker->IsWordInDictionary(word.Mid(a, b - a)) )
-            stc->IndicatorFillRange(wordstart + a, b - a);
+        {
+            if (isMultibyte) // not perfect, so only try if necessary
+            {
+                int len = 0;
+                const int startPos = stc->FindText(wordstart + a, wordend, word.Mid(a, b - a), wxSCI_FIND_MATCHCASE, &len);
+                if (startPos != wxNOT_FOUND)
+                    stc->IndicatorFillRange(startPos, len);
+            }
+            else
+                stc->IndicatorFillRange(wordstart + a, b - a);
+        }
     }
 }
 
