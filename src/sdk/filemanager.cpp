@@ -21,7 +21,7 @@
 #include <wx/url.h>
 #include <wx/encconv.h>
 
-template<> FileManager* Mgr<FileManager>::instance = 0;
+template<> FileManager* Mgr<FileManager>::instance = nullptr;
 template<> bool  Mgr<FileManager>::isShutdown = false;
 
 // ***** class: LoaderBase *****
@@ -71,7 +71,7 @@ void FileLoader::operator()()
     if (file.Read(data, len) == wxInvalidOffset)
     {
         delete[] data;
-        data = 0;
+        data = nullptr;
         len = 0;
     }
     Ready();
@@ -91,7 +91,7 @@ void URLLoader::operator()()
 
     std::auto_ptr<wxInputStream> stream(url.GetInputStream());
 
-    if (stream.get() == 0 || stream->IsOk() == false)
+    if (stream.get() == nullptr || stream->IsOk() == false)
     {
         Ready();
         return;
@@ -272,7 +272,7 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
 
 bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
 {
-    const char* mark = 0;
+    const char* mark = nullptr;
     size_t mark_length = 0;
     if (bom)
     {

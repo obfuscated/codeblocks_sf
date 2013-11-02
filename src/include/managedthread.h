@@ -16,13 +16,13 @@ WX_DEFINE_ARRAY(ManagedThread*, ManagedThreadsArray);
 class ManagedThread : public wxThread
 {
 public:
-    ManagedThread(bool* abortflag  = 0L);
+    ManagedThread(bool* abortflag  = nullptr);
     virtual ~ManagedThread();
     static unsigned long count_running();
     static unsigned long count_threads();
     static void abort_all(); // Warning! Once set, can't be reset!
     static void abort(bool* flag,bool delete_thread = true);
-    bool* get_abort_location() { if(!this) return 0L;return m_pAbort; }
+    bool* get_abort_location() { if(!this) return nullptr;return m_pAbort; }
     void set_abort_location(bool* abortflag)
     {
         if(!this) return;

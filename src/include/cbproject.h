@@ -51,7 +51,7 @@ class DLLIMPORT FileTreeData : public MiscTreeItemData
         FileTreeData(cbProject* project, FileTreeDataKind kind = ftdkUndefined)
             : m_Index(-1),
             m_Project(project),
-            m_file(0),
+            m_file(nullptr),
             m_kind(kind)
         {}
 

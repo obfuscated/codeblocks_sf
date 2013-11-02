@@ -17,7 +17,7 @@
 
 // NOTE (Tiwag#1#): 061012 global wxPrinter, used in cbeditorprintout
 //                  to get correct settings if changed in printer dialog
-wxPrinter* g_printer = 0;
+wxPrinter* g_printer = nullptr;
 
 // TODO (Tiwag#1#): 061012 Page Setup not implemented
 // wxPageSetupData* g_pageSetupData = 0;
@@ -52,7 +52,7 @@ void InitPrinting()
 void DeInitPrinting()
 {
     delete g_printer;
-    g_printer = 0;
+    g_printer = nullptr;
 //    delete g_pageSetupData;
 //    g_pageSetupData = 0;
 }

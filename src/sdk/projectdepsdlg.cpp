@@ -75,7 +75,7 @@ bool ProjectDepsDlg::SaveList()
         if (!lst->IsChecked(i))
             continue;
 
-        cbProject* prj = 0;
+        cbProject* prj = nullptr;
 
         ProjectsArray* mainarr = Manager::Get()->GetProjectManager()->GetProjects();
         for (size_t x = 0; x < mainarr->GetCount(); ++x)

@@ -48,13 +48,13 @@ wxColour BlendTextColour(wxColour col)
 }
 
 TextCtrlLogger::TextCtrlLogger(bool fixedPitchFont) :
-    control(0), fixed(fixedPitchFont)
+    control(nullptr), fixed(fixedPitchFont)
 {
 }
 
 TextCtrlLogger::~TextCtrlLogger()
 {
-    control = 0; // invalidate, do NOT destroy
+    control = nullptr; // invalidate, do NOT destroy
 }
 
 void TextCtrlLogger::CopyContentsToClipboard(bool selectionOnly)
@@ -240,7 +240,7 @@ void TimestampTextCtrlLogger::Append(const wxString& msg, Logger::level lv)
 }
 
 ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles_in, const wxArrayInt& widths_in, bool fixedPitchFont) :
-    control(0),
+    control(nullptr),
     fixed(fixedPitchFont),
     titles(titles_in),
     widths(widths_in)
@@ -250,7 +250,7 @@ ListCtrlLogger::ListCtrlLogger(const wxArrayString& titles_in, const wxArrayInt&
 
 ListCtrlLogger::~ListCtrlLogger()
 {
-    control = 0; // invalidate, do NOT destroy
+    control = nullptr; // invalidate, do NOT destroy
 }
 
 void ListCtrlLogger::CopyContentsToClipboard(bool selectionOnly)

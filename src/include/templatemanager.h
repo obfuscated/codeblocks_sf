@@ -28,14 +28,14 @@ class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandl
 		void ReleaseMenu(wxMenuBar* menuBar);
 		void BuildToolsMenu(wxMenu* menu);
 
-		cbProject* New(TemplateOutputType initial = totProject, wxString* pFilename = 0);
+		cbProject* New(TemplateOutputType initial = totProject, wxString* pFilename = nullptr);
 		wxString GetLastCreatedFilename() const;
 		void SaveUserTemplate(cbProject* prj);
 	protected:
 		void LoadTemplates();
 		void LoadUserTemplates();
-		cbProject* NewFromTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = 0);
-		cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = 0);
+		cbProject* NewFromTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = nullptr);
+		cbProject* NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, wxString* pFilename = nullptr);
 		wxArrayString m_UserTemplates;
 	private:
 		TemplateManager();

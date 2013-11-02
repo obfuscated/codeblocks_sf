@@ -224,7 +224,7 @@ wxWindow* InfoPane::GetWindow(int index)
 
 void InfoPane::Show(size_t i)
 {
-    if (m_Pages.Item(i)->window == 0)
+    if (m_Pages.Item(i)->window == nullptr)
         return;
 
     if (m_Pages.Item(i)->indexInNB < 0)

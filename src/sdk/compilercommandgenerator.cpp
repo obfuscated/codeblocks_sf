@@ -73,14 +73,14 @@ void CompilerCommandGenerator::Init(cbProject* project)
 
     if (!project)
     {
-        m_DefOutput[0] = SetupOutputFilenames(compiler, 0);
-        m_Inc[0]       = SetupIncludeDirs(compiler, 0);
-        m_Lib[0]       = SetupLibrariesDirs(compiler, 0);
-        m_RC[0]        = SetupResourceIncludeDirs(compiler, 0);
-        m_CFlags[0]    = SetupCompilerOptions(compiler, 0);
-        m_LDFlags[0]   = SetupLinkerOptions(compiler, 0);
-        m_LDAdd[0]     = SetupLinkLibraries(compiler, 0);
-        m_RCFlags[0]   = SetupResourceCompilerOptions(compiler, 0);
+        m_DefOutput[nullptr] = SetupOutputFilenames(compiler, nullptr);
+        m_Inc[nullptr]       = SetupIncludeDirs(compiler, nullptr);
+        m_Lib[nullptr]       = SetupLibrariesDirs(compiler, nullptr);
+        m_RC[nullptr]        = SetupResourceIncludeDirs(compiler, nullptr);
+        m_CFlags[nullptr]    = SetupCompilerOptions(compiler, nullptr);
+        m_LDFlags[nullptr]   = SetupLinkerOptions(compiler, nullptr);
+        m_LDAdd[nullptr]     = SetupLinkLibraries(compiler, nullptr);
+        m_RCFlags[nullptr]   = SetupResourceCompilerOptions(compiler, nullptr);
         return;
     }
     else

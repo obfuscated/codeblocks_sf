@@ -451,7 +451,7 @@ void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxStri
         folder = tmpPath.Left(pos);
         tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
         wxTreeItemId item = parent;
-        wxTreeItemIdValue cookie = 0;
+        wxTreeItemIdValue cookie = nullptr;
 
         while (item.IsOk())
         {
@@ -484,7 +484,7 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
     wxString originalPath = path;
     bool found = false;
 
-    wxTreeItemIdValue cookie = 0;
+    wxTreeItemIdValue cookie = nullptr;
 
     wxTreeItemId child = tree->GetFirstChild(parent, cookie);
     while (child.IsOk())
@@ -530,7 +530,7 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
 
         //Manager::Get()->GetLogManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
 
-        wxTreeItemIdValue cookie = 0;
+        wxTreeItemIdValue cookie = nullptr;
 
         wxTreeItemId child = tree->GetFirstChild(parent, cookie);
         while (child.IsOk())
@@ -892,7 +892,7 @@ wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators)
     for (size_t i = 0; i < mnu->GetMenuItemCount();++i)
     {
         wxMenuItem* tmpItem = mnu->FindItemByPosition(i);
-        wxMenuItem* theItem = new wxMenuItem(NULL,
+        wxMenuItem* theItem = new wxMenuItem(nullptr,
                                              tmpItem->GetId(),
                                              with_accelerators?tmpItem->GetItemLabel():tmpItem->GetItemLabelText(),
                                              tmpItem->GetHelp(),

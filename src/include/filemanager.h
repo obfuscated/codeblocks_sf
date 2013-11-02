@@ -53,7 +53,7 @@ protected:
     };
 
 public:
-    LoaderBase() : wait(true), data(0), len(0) {};
+    LoaderBase() : wait(true), data(nullptr), len(0) {};
     ~LoaderBase();
     void operator()() {};
     wxString FileName() const { return fileName; };

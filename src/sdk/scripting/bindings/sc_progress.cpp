@@ -25,7 +25,7 @@ class ProgressDialog : public wxProgressDialog
         ProgressDialog()
             : wxProgressDialog(_("Progress"),
                                 _("Please wait while operation is in progress..."),
-                                100, 0,
+                                100, nullptr,
                                 wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT)
         {
         }
@@ -41,7 +41,7 @@ class ProgressDialog : public wxProgressDialog
 
         bool DoUpdate(int value, const wxString& newmsg)
         {
-            return wxProgressDialog::Update(value, newmsg, 0);
+            return wxProgressDialog::Update(value, newmsg, nullptr);
         }
 };
 

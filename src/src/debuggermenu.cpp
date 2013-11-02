@@ -144,7 +144,7 @@ END_EVENT_TABLE()
 
 
 DebuggerMenuHandler::DebuggerMenuHandler() :
-    m_activeDebugger(NULL),
+    m_activeDebugger(nullptr),
     m_disableContinue(false)
 {
 }
@@ -523,7 +523,7 @@ void DebuggerMenuHandler::OnStart(cb_unused wxCommandEvent& event)
         m_disableContinue = true;
 
         ProjectManager *manager = Manager::Get()->GetProjectManager();
-        if (manager->GetIsRunning() == NULL)
+        if (manager->GetIsRunning() == nullptr)
         {
             manager->SetIsRunning(m_activeDebugger);
 
@@ -531,7 +531,7 @@ void DebuggerMenuHandler::OnStart(cb_unused wxCommandEvent& event)
             LogActiveConfig();
 
             if (!m_activeDebugger->Debug(false))
-                manager->SetIsRunning(NULL);
+                manager->SetIsRunning(nullptr);
         }
         m_disableContinue = false;
     }
@@ -602,14 +602,14 @@ void DebuggerMenuHandler::OnStep(cb_unused wxCommandEvent& event)
     {
         m_disableContinue = true;
         ProjectManager *manager = Manager::Get()->GetProjectManager();
-        if (manager->GetIsRunning() == NULL)
+        if (manager->GetIsRunning() == nullptr)
         {
             manager->SetIsRunning(m_activeDebugger);
             m_activeDebugger->ClearLog();
             LogActiveConfig();
 
             if (!m_activeDebugger->Debug(true))
-                manager->SetIsRunning(NULL);
+                manager->SetIsRunning(nullptr);
         }
         m_disableContinue = false;
     }
@@ -631,7 +631,7 @@ void DebuggerMenuHandler::OnRunToCursor(cb_unused wxCommandEvent& event)
     const wxString &line_text = ed->GetControl()->GetLine(ed->GetControl()->GetCurrentLine());
 
     ProjectManager *manager = Manager::Get()->GetProjectManager();
-    if (manager->GetIsRunning() == NULL || manager->GetIsRunning() == m_activeDebugger)
+    if (manager->GetIsRunning() == nullptr || manager->GetIsRunning() == m_activeDebugger)
     {
         manager->SetIsRunning(m_activeDebugger);
         if (!m_activeDebugger->IsRunning())
@@ -641,7 +641,7 @@ void DebuggerMenuHandler::OnRunToCursor(cb_unused wxCommandEvent& event)
         }
         HideValueTooltip();
         if (!m_activeDebugger->RunToCursor(ed->GetFilename(), ed->GetControl()->GetCurrentLine() + 1, line_text))
-            manager->SetIsRunning(NULL);
+            manager->SetIsRunning(nullptr);
     }
 }
 
@@ -774,7 +774,7 @@ BEGIN_EVENT_TABLE(DebuggerToolbarHandler, wxEvtHandler)
 END_EVENT_TABLE()
 
 DebuggerToolbarHandler::DebuggerToolbarHandler(DebuggerMenuHandler *menuHandler) :
-    m_Toolbar(NULL),
+    m_Toolbar(nullptr),
     m_menuHandler(menuHandler)
 {
 }
@@ -784,7 +784,7 @@ wxToolBar* DebuggerToolbarHandler::GetToolbar(bool create)
     if (!m_Toolbar)
     {
         if (!create)
-            return NULL;
+            return nullptr;
 
         m_Toolbar = Manager::Get()->CreateEmptyToolbar();
         wxString my_16x16 = Manager::isToolBar16x16(m_Toolbar) ? _T("_16x16") : _T("");

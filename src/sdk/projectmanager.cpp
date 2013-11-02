@@ -36,7 +36,7 @@
 //#include "filefilters.h"
 #include "filegroupsandmasks.h"
 
-template<> ProjectManager* Mgr<ProjectManager>::instance = 0;
+template<> ProjectManager* Mgr<ProjectManager>::instance = nullptr;
 template<> bool  Mgr<ProjectManager>::isShutdown = false;
 
 // static
@@ -73,18 +73,18 @@ class NullProjectManagerUI : public cbProjectManagerUI
 // class constructor
 ProjectManager::ProjectManager() :
     m_ui(new NullProjectManagerUI),
-    m_pWorkspace(0),
+    m_pWorkspace(nullptr),
     m_IsLoadingProject(false),
     m_IsLoadingWorkspace(false),
     m_IsClosingProject(false),
     m_IsClosingWorkspace(false),
     m_InitialDir(_T("")),
     m_CanSendWorkspaceChanged(false),
-    m_RunningPlugin(NULL)
+    m_RunningPlugin(nullptr)
 {
     m_InitialDir = wxFileName::GetCwd();
-    m_pActiveProject = 0L;
-    m_pProjectToActivate = 0L;
+    m_pActiveProject = nullptr;
+    m_pProjectToActivate = nullptr;
     m_pProjects = new ProjectsArray;
     m_pProjects->Clear();
 
@@ -107,7 +107,7 @@ ProjectManager::~ProjectManager()
 //    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 
     delete m_pWorkspace;
-    m_pWorkspace = 0;
+    m_pWorkspace = nullptr;
 
     int count = m_pProjects->GetCount();
     for (int i = 0; i < count; ++i)
@@ -118,8 +118,8 @@ ProjectManager::~ProjectManager()
     }
     m_pProjects->Clear();
 
-    delete m_pProjects;m_pProjects = 0;
-    delete m_pFileGroups;m_pFileGroups = 0;
+    delete m_pProjects;m_pProjects = nullptr;
+    delete m_pFileGroups;m_pFileGroups = nullptr;
 
     delete m_ui;
     m_ui = nullptr;
@@ -183,7 +183,7 @@ void ProjectManager::SetProject(cbProject* project, bool refresh)
 cbProject* ProjectManager::IsOpen(const wxString& filename)
 {
     if (filename.IsEmpty())
-        return 0L;
+        return nullptr;
     wxString realFile = realpath(filename);
     int count = m_pProjects->GetCount();
     for (int i = 0; i < count; ++i)
@@ -203,15 +203,15 @@ cbProject* ProjectManager::IsOpen(const wxString& filename)
 #endif
         }
     }
-    return 0L;
+    return nullptr;
 }
 
 cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt)
 {
-    cbProject* result = 0;
+    cbProject* result = nullptr;
     if (!wxFileExists(filename) || !BeginLoadingProject())
     {
-        return 0;
+        return nullptr;
     }
 
     // "Try" block (loop which only gets executed once)
@@ -248,7 +248,7 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
         else // !ftCodeBlocksProject
         {
             // the plugin handler should call begin/end on its own...
-            EndLoadingProject(0);
+            EndLoadingProject(nullptr);
 
             cbMimePlugin* plugin = Manager::Get()->GetPluginManager()->GetMIMEHandlerForFile(filename);
             if (plugin)
@@ -357,11 +357,11 @@ cbProject* ProjectManager::NewProject(const wxString& filename)
             {
                 cbMessageBox(_("Couldn't remove the old project file to create the new one.\nThe file might be read-only?!"),
                              _("Error"), wxICON_WARNING);
-                return 0;
+                return nullptr;
             }
         }
         else
-            return 0;
+            return nullptr;
     }
 
     cbProject* prj = IsOpen(filename);
@@ -422,7 +422,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
 
     bool wasActive = project == m_pActiveProject;
     if (wasActive)
-        m_pActiveProject = 0L;
+        m_pActiveProject = nullptr;
 
     int index = m_pProjects->Index(project);
     if (index == wxNOT_FOUND)
@@ -586,7 +586,7 @@ bool ProjectManager::CloseWorkspace()
         }
 
         delete m_pWorkspace;
-        m_pWorkspace = 0;
+        m_pWorkspace = nullptr;
 
         m_ui->CloseWorkspace();
         result = true;
@@ -792,7 +792,7 @@ bool ProjectManager::AddProjectDependency(cbProject* base, cbProject* dependsOn)
     if ( CausesCircularDependency(base, dependsOn) )
         return false;
 
-    ProjectsArray* arr = 0;
+    ProjectsArray* arr = nullptr;
     DepsMap::iterator it = m_ProjectDeps.find(base);
     if (it == m_ProjectDeps.end())
     {
@@ -899,7 +899,7 @@ const ProjectsArray* ProjectManager::GetDependenciesForProject(cbProject* base)
     DepsMap::iterator it = m_ProjectDeps.find(base);
     if (it != m_ProjectDeps.end())
         return it->second;
-    return 0;
+    return nullptr;
 }
 
 // events

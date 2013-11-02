@@ -27,7 +27,7 @@
 
 ProjectLayoutLoader::ProjectLayoutLoader(cbProject* project)
     : m_pProject(project),
-    m_TopProjectFile(0L)
+    m_TopProjectFile(nullptr)
 {
     //ctor
 }
@@ -89,7 +89,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         if (fname.IsEmpty())
         {
             //pMsg->DebugLog(_T("'File' node exists, but no filename?!?"));
-            pf = 0L;
+            pf = nullptr;
         }
         else
             pf = m_pProject->GetFileByFilename(fname);
@@ -184,7 +184,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
     tgtidx->SetAttribute("name", cbU2C(m_pProject->GetActiveBuildTarget()));
 
-    ProjectFile* active = 0L;
+    ProjectFile* active = nullptr;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         active = ed->GetProjectFile();

@@ -95,7 +95,7 @@ struct cbEditorInternalData
 {
     cbEditor* m_pOwner;
 
-    cbEditorInternalData(cbEditor* owner, LoaderBase* fileLoader = 0)
+    cbEditorInternalData(cbEditor* owner, LoaderBase* fileLoader = nullptr)
         : m_pOwner(owner),
         m_strip_trailing_spaces(true),
         m_ensure_final_line_end(false),
@@ -133,7 +133,7 @@ struct cbEditorInternalData
         if (m_pFileLoader)
         {
             delete m_pFileLoader;
-            m_pFileLoader = 0;
+            m_pFileLoader = nullptr;
         }
     }
 
@@ -232,7 +232,7 @@ struct cbEditorInternalData
         else
         {
             cbStyledTextCtrl* control = m_pOwner->GetControl();
-            int* pLineNumbersWidth = 0;
+            int* pLineNumbersWidth = nullptr;
             if (control == m_pOwner->m_pControl)
                 pLineNumbersWidth = &m_lineNumbersWidth;
             else
@@ -664,15 +664,15 @@ static int DetectLineEnds(cbStyledTextCtrl* control)
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme)
     : EditorBase(parent, filename),
-    m_pSplitter(0),
-    m_pSizer(0),
-    m_pControl(0),
-    m_pControl2(0),
-    m_foldBackup(0),
+    m_pSplitter(nullptr),
+    m_pSizer(nullptr),
+    m_pControl(nullptr),
+    m_pControl2(nullptr),
+    m_foldBackup(nullptr),
     m_SplitType(stNoSplit),
     m_Modified(false),
     m_Index(-1),
-    m_pProjectFile(0L),
+    m_pProjectFile(nullptr),
     m_pTheme(theme),
     m_lang(HL_AUTO)
 {
@@ -682,15 +682,15 @@ cbEditor::cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* 
 // class constructor
 cbEditor::cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme)
     : EditorBase(parent, filename),
-    m_pSplitter(0),
-    m_pSizer(0),
-    m_pControl(0),
-    m_pControl2(0),
-    m_foldBackup(0),
+    m_pSplitter(nullptr),
+    m_pSizer(nullptr),
+    m_pControl(nullptr),
+    m_pControl2(nullptr),
+    m_foldBackup(nullptr),
     m_SplitType(stNoSplit),
     m_Modified(false),
     m_Index(-1),
-    m_pProjectFile(0L),
+    m_pProjectFile(nullptr),
     m_pTheme(theme),
     m_lang(HL_AUTO)
 {
@@ -700,7 +700,7 @@ cbEditor::cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filena
 // class destructor
 cbEditor::~cbEditor()
 {
-    SetSizer(0);
+    SetSizer(nullptr);
 
     // moved in ~EditorBase
 //    NotifyPlugins(cbEVT_EDITOR_CLOSE, 0, m_Filename);
@@ -711,7 +711,7 @@ cbEditor::~cbEditor()
         if (m_pProjectFile)
             m_pProjectFile->editorOpen = false;
         m_pControl->Destroy();
-        m_pControl = 0;
+        m_pControl = nullptr;
     }
     DestroySplitView();
 
@@ -807,12 +807,12 @@ void cbEditor::DestroySplitView()
     if (m_pControl2)
     {
         m_pControl2->Destroy();
-        m_pControl2 = 0;
+        m_pControl2 = nullptr;
     }
     if (m_pSplitter)
     {
         m_pSplitter->Destroy();
-        m_pSplitter = 0;
+        m_pSplitter = nullptr;
     }
 }
 
@@ -1738,7 +1738,7 @@ bool cbEditor::Open(bool detectEncoding)
     if (m_pData->m_pFileLoader)
     {
         delete m_pData->m_pFileLoader;
-        m_pData->m_pFileLoader = 0;
+        m_pData->m_pFileLoader = nullptr;
     }
 #ifdef fileload_measuring
     Manager::Get()->GetLogManager()->DebugLog(F(_T("loading into editor needs : %d ms"),(int)sw.Time()));
@@ -1855,7 +1855,7 @@ bool cbEditor::SaveAs()
     SetEditorTitle(m_Shortname);
     // invalidate m_pProjectFile, because if kept, it would point to the ProjectFile with old name and
     // cause ProjectManager::RemoveFileFromProject called via context menu to crash
-    SetProjectFile(0);
+    SetProjectFile(nullptr);
     //Manager::Get()->GetLogManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
     SetLanguage( HL_AUTO );
@@ -1933,7 +1933,7 @@ bool cbEditor::FixFoldState()
             bRet = true;
         }
         m_foldBackup->Destroy();
-        m_foldBackup = 0;
+        m_foldBackup = nullptr;
     }
     return bRet;
 } // end of FixFoldState
@@ -2652,7 +2652,7 @@ wxString cbEditor::GetLineIndentString(int line) const
 wxMenu* cbEditor::CreateContextSubMenu(long id)
 {
     cbStyledTextCtrl* control = GetControl();
-    wxMenu* menu = 0;
+    wxMenu* menu = nullptr;
     if (id == idInsert)
     {
         menu = new wxMenu;
@@ -2723,7 +2723,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
     bool noeditor = (type != mtEditorManager);
     if (!pluginsdone)
     {
-        wxMenu *bookmarks = 0, *folding = 0, *editsubmenu = 0, *insert = 0;
+        wxMenu *bookmarks = nullptr, *folding = nullptr, *editsubmenu = nullptr, *insert = nullptr;
         if (!noeditor)
         {
             insert = CreateContextSubMenu(idInsert);
@@ -2775,7 +2775,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
         {
             bool isAddRemoveEnabled = true;
-            isAddRemoveEnabled = Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == 0;
+            isAddRemoveEnabled = Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == nullptr;
             popup->AppendSeparator();
 
             if (m_pProjectFile)
@@ -2791,7 +2791,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             }
         }
         // remove "Insert/Empty" if more than one entry
-        wxMenu* insert = 0;
+        wxMenu* insert = nullptr;
         wxMenuItem* insertitem = popup->FindItem(idInsert);
         if (insertitem)
             insert = insertitem->GetSubMenu();

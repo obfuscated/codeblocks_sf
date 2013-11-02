@@ -338,7 +338,7 @@ void EditorColourSet::AddOption(HighlightLanguage lang,
 OptionColour* EditorColourSet::GetOptionByName(HighlightLanguage lang, const wxString& name)
 {
     if (lang == HL_NONE)
-        return 0L;
+        return nullptr;
 
     OptionSet& mset = m_Sets[lang];
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
@@ -347,13 +347,13 @@ OptionColour* EditorColourSet::GetOptionByName(HighlightLanguage lang, const wxS
         if (opt->name == name)
             return opt;
     }
-    return 0L;
+    return nullptr;
 }
 
 OptionColour* EditorColourSet::GetOptionByValue(HighlightLanguage lang, int value)
 {
     if (lang == HL_NONE)
-        return 0L;
+        return nullptr;
 
     OptionSet& mset = m_Sets[lang];
     for (unsigned int i = 0; i < mset.m_Colours.GetCount(); ++i)
@@ -362,13 +362,13 @@ OptionColour* EditorColourSet::GetOptionByValue(HighlightLanguage lang, int valu
         if (opt->value == value)
             return opt;
     }
-    return 0L;
+    return nullptr;
 }
 
 OptionColour* EditorColourSet::GetOptionByIndex(HighlightLanguage lang, int index)
 {
     if (lang == HL_NONE)
-        return 0L;
+        return nullptr;
     return m_Sets[lang].m_Colours.Item(index);
 }
 

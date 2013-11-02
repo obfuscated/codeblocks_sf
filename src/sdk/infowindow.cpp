@@ -167,9 +167,9 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
 
         wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
 
-        wxWindow* o = 0;
+        wxWindow* o = nullptr;
 
-        ForwardingTextControl *titleC = 0;
+        ForwardingTextControl *titleC = nullptr;
 
         if(platform::gtk)
         {

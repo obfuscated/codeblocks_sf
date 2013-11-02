@@ -460,7 +460,7 @@ void PluginsConfigurationDlg::OnUpdateUI(wxUpdateUIEvent& event)
     lastSelectionMultiple = list->GetSelectedItemCount() > 1;
 
     bool en = sel != -1;
-    const PluginElement* elem = en ? (const PluginElement*)list->GetItemData(sel) : 0;
+    const PluginElement* elem = en ? (const PluginElement*)list->GetItemData(sel) : nullptr;
     bool hasPlugin = elem && elem->plugin;
     bool isAttached = hasPlugin && elem->plugin->IsAttached();
 

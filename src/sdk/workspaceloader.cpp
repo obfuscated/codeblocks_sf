@@ -121,12 +121,12 @@ bool WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     proj = wksp->FirstChildElement("Project");
     while (proj)
     {
-        cbProject* thisprj = 0;
+        cbProject* thisprj = nullptr;
         wxString projectFilename = UnixFilename(cbC2U(proj->Attribute("filename")));
         if (projectFilename.IsEmpty())
         {
             GetpMsg()->DebugLog(_T("'Project' node exists, but no filename?!?"));
-            thisprj = 0;
+            thisprj = nullptr;
         }
         else
         {

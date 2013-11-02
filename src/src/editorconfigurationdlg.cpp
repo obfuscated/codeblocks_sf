@@ -95,8 +95,8 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
-    : m_TextColourControl(0L),
-    m_Theme(0L),
+    : m_TextColourControl(nullptr),
+    m_Theme(nullptr),
     m_Lang(HL_NONE),
     m_DefCodeFileType(0),
     m_ThemeModified(false),
@@ -731,7 +731,7 @@ void EditorConfigurationDlg::OnEditKeywords(cb_unused wxCommandEvent& event)
         wxArrayString descriptions;
         if (m_TextColourControl)
             descriptions = GetArrayFromString(m_TextColourControl->DescribeKeyWordSets(), wxT("\n"));
-        EditKeywordsDlg dlg(0, m_Theme, m_Lang, descriptions);
+        EditKeywordsDlg dlg(nullptr, m_Theme, m_Lang, descriptions);
         PlaceWindow(&dlg);
         dlg.ShowModal();
 

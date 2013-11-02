@@ -50,7 +50,7 @@ ManagedThread* ManagedThread::GetThread(size_t n)
 {
     wxCriticalSectionLocker lock(ManagedThread::s_list_mutex);
     if (n>=s_threadslist.GetCount())
-        return 0L;
+        return nullptr;
     return s_threadslist.Item(n);
 }
 
@@ -144,7 +144,7 @@ void* ManagedThread::Entry()
 
 void* ManagedThread::DoRun()
 {
-    return 0;
+    return nullptr;
 }
 
 void ManagedThread::DeleteThreadFromList(ManagedThread* thread)

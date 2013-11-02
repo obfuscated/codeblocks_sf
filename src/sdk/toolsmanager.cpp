@@ -30,7 +30,7 @@
 #include <wx/listimpl.cpp>
 #include "configuretoolsdlg.h"
 
-template<> ToolsManager* Mgr<ToolsManager>::instance = 0;
+template<> ToolsManager* Mgr<ToolsManager>::instance = nullptr;
 template<> bool  Mgr<ToolsManager>::isShutdown = false;
 
 WX_DEFINE_LIST(ToolsList);
@@ -49,8 +49,8 @@ BEGIN_EVENT_TABLE(ToolsManager, wxEvtHandler)
 END_EVENT_TABLE()
 
 ToolsManager::ToolsManager()
-    : m_Menu(0L),
-    m_pProcess(0L),
+    : m_Menu(nullptr),
+    m_pProcess(nullptr),
     m_Pid(0)
 {
     LoadTools();
@@ -97,7 +97,7 @@ bool ToolsManager::Execute(const cbTool* tool)
     wxString dir = tool->GetWorkingDir();
 
     // hack to force-update macros
-    Manager::Get()->GetMacrosManager()->RecalcVars(0, 0, 0);
+    Manager::Get()->GetMacrosManager()->RecalcVars(nullptr, nullptr, nullptr);
 
     Manager::Get()->GetMacrosManager()->ReplaceMacros(cmd);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(params);
@@ -180,7 +180,7 @@ bool ToolsManager::Execute(const cbTool* tool)
         {
             cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"), wxICON_ERROR);
             delete m_pProcess;
-            m_pProcess = 0;
+            m_pProcess = nullptr;
             m_Pid = 0;
             return false;
         }
@@ -242,7 +242,7 @@ cbTool* ToolsManager::GetToolByMenuId(int id)
         if (tool->GetMenuId() == id)
             return tool;
     }
-    return 0L;
+    return nullptr;
 }
 
 cbTool* ToolsManager::GetToolByIndex(int index)
@@ -255,7 +255,7 @@ cbTool* ToolsManager::GetToolByIndex(int index)
             return tool;
         ++idx;
     }
-    return 0L;
+    return nullptr;
 }
 
 void ToolsManager::LoadTools()
@@ -402,7 +402,7 @@ void ToolsManager::OnToolErrOutput(CodeBlocksEvent& event)
 void ToolsManager::OnToolTerminated(CodeBlocksEvent& event)
 {
     m_Pid = 0;
-    m_pProcess = 0;
+    m_pProcess = nullptr;
 
     Manager::Get()->GetLogManager()->Log(F(_T("Tool execution terminated with status %d"), event.GetInt()));
 }

@@ -186,8 +186,8 @@ template <class MgrT> class Mgr
 
 protected:
 
-    Mgr()          { assert(Mgr<MgrT>::instance == 0); }
-    virtual ~Mgr() { Mgr<MgrT>::instance = 0; }
+    Mgr()          { assert(Mgr<MgrT>::instance == nullptr); }
+    virtual ~Mgr() { Mgr<MgrT>::instance = nullptr; }
 
 public:
 
@@ -195,7 +195,7 @@ public:
 
     static inline MgrT* Get()
     {
-        if (instance == 0 && isShutdown == false)
+        if (instance == nullptr && isShutdown == false)
             instance = new MgrT();
 
         return instance;
@@ -205,7 +205,7 @@ public:
     {
         isShutdown = true;
         delete instance;
-        instance = 0;
+        instance = nullptr;
     }
 };
 

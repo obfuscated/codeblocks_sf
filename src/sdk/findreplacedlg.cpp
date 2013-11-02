@@ -229,7 +229,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
         XRCCTRL(*this, "chkDelOldSearchRes2",    wxCheckBox)->Show();
     }
 
-    m_findPage = 0;
+    m_findPage = nullptr;
     if (findReplaceInFilesOnly)
     {
         // Remove, but don't destroy the Find/Replace page until this dialog is destroyed.
@@ -317,7 +317,7 @@ FindReplaceDlg::~FindReplaceDlg()
     cfg->Write(CONF_GROUP _T("/search_hidden"),    XRCCTRL(*this, "chkSearchHidden",      wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/target_scope_all"),(XRCCTRL(*this, "chTarget",             wxChoice)->GetSelection() == 0));
 
-    if (m_findPage!=0)
+    if (m_findPage!=nullptr)
         m_findPage->Destroy();
 
     Disconnect(XRCID("nbReplace"), wxEVT_COMMAND_NOTEBOOK_PAGE_CHANGED, wxNotebookEventHandler(FindReplaceDlg::OnReplaceChange));
@@ -522,7 +522,7 @@ void FindReplaceDlg::OnScopeChange(cb_unused wxCommandEvent& event)
             XRCCTRL(*this, "pnSearchProject", wxPanel)->Hide();
             break;
     }
-    if (m_findPage==0)
+    if (m_findPage==nullptr)
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
     else
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
@@ -531,7 +531,7 @@ void FindReplaceDlg::OnScopeChange(cb_unused wxCommandEvent& event)
 void FindReplaceDlg::OnBrowsePath(cb_unused wxCommandEvent& event)
 {
     wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
-    wxString dir = ChooseDirectory(0, _("Select search path"), txtSearchPath);
+    wxString dir = ChooseDirectory(nullptr, _("Select search path"), txtSearchPath);
     if (!dir.IsEmpty())
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(dir);
 }
@@ -642,7 +642,7 @@ void FindReplaceDlg::OnMultiChange(wxCommandEvent& event)
     wxCheckBox* chkFixEOLs2   = XRCCTRL(*this, "chkFixEOLs2",   wxCheckBox);
 
     bool      enabledMultiLine = false;
-    wxWindow* ctrlToFocus      = 0;
+    wxWindow* ctrlToFocus      = nullptr;
     if (event.GetId() == XRCID("chkMultiLine1"))
     {
         enabledMultiLine = chkMultiLine1->GetValue();
@@ -677,7 +677,7 @@ void FindReplaceDlg::OnMultiChange(wxCommandEvent& event)
 
     //After hiding/showing panels, redo the layout in the notebook pages
     (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(0))->Layout();
-    if (m_findPage==0)
+    if (m_findPage==nullptr)
         (XRCCTRL(*this, "nbReplace", wxNotebook)->GetPage(1))->Layout();
 
     Refresh();

@@ -1,4 +1,3 @@
-#include "BrowseTrackerLayout.h"
 /*
     This file is part of Browse Tracker, a plugin for Code::Blocks
     Copyright (C) 2007 Pecan Heber
@@ -32,6 +31,7 @@
 */
 
 #include "sdk_precomp.h"
+#include "BrowseTrackerLayout.h"
 
 #ifndef CB_PRECOMP
     #include <wx/confbase.h>

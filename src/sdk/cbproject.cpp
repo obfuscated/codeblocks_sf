@@ -60,10 +60,10 @@ cbProject::cbProject(const wxString& filename) :
     m_Loaded(false),
     m_CurrentlyLoading(false),
     m_PCHMode(pchSourceFile),
-    m_CurrentlyCompilingTarget(0),
+    m_CurrentlyCompilingTarget(nullptr),
     m_ExtendedObjectNamesGeneration(false),
     m_AutoShowNotesOnLoad(false),
-    m_pExtensionsElement(0)
+    m_pExtensionsElement(nullptr)
 {
     SetCompilerID(CompilerFactory::GetDefaultCompilerID());
     SetModified(false);
@@ -667,7 +667,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         if (!m_Targets.GetCount())
         {
             delete pf;
-            return 0L; // if that failed, fail addition of file...
+            return nullptr; // if that failed, fail addition of file...
         }
     }
 
@@ -1115,7 +1115,7 @@ int cbProject::SelectTarget(int initial, bool evenIfOne)
     if (!evenIfOne && GetBuildTargetsCount() == 1)
         return 0;
 
-    SelectTargetDlg dlg(0L, this, initial);
+    SelectTargetDlg dlg(nullptr, this, initial);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         return dlg.GetSelection();
@@ -1133,7 +1133,7 @@ ProjectBuildTarget* cbProject::AddDefaultBuildTarget()
 ProjectBuildTarget* cbProject::AddBuildTarget(const wxString& targetName)
 {
     if (GetBuildTarget(targetName)) // Don't add the target if it exists
-        return 0L;
+        return nullptr;
     ProjectBuildTarget* target = new ProjectBuildTarget(this);
     target->m_Filename = m_Filename; // really important
     target->SetTitle(targetName);
@@ -1198,7 +1198,7 @@ bool cbProject::RenameBuildTarget(const wxString& oldTargetName, const wxString&
 
 ProjectBuildTarget* cbProject::DuplicateBuildTarget(int index, const wxString& newName)
 {
-    ProjectBuildTarget* newTarget = 0;
+    ProjectBuildTarget* newTarget = nullptr;
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
@@ -1376,7 +1376,7 @@ ProjectBuildTarget* cbProject::GetBuildTarget(int index)
 {
     if (index >= 0 && index < (int)m_Targets.GetCount())
         return m_Targets[index];
-    return 0L;
+    return nullptr;
 }
 
 ProjectBuildTarget* cbProject::GetBuildTarget(const wxString& targetName)
@@ -1660,7 +1660,7 @@ void cbProject::AddToExtensions(const wxString& stringDesc)
         bool forceAdd = current[0] == _T('+');
         if (forceAdd)
             current.Remove(0, 1); // remove '+'
-        TiXmlElement* sub = !forceAdd ? elem->FirstChildElement(cbU2C(current)) : 0;
+        TiXmlElement* sub = !forceAdd ? elem->FirstChildElement(cbU2C(current)) : nullptr;
         if (!sub)
         {
             sub = elem->InsertEndChild(TiXmlElement(cbU2C(current)))->ToElement();

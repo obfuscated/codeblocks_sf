@@ -20,12 +20,12 @@
 * $HeadURL$
 */
 
+#include <prep.h>
 #include "wxwidgetsguiappadoptingdlg.h"
 #include "wxwidgetsgui.h"
 
 #include <wx/filedlg.h>
 #include <projectmanager.h>
-#include <prep.h>
 
 //(*InternalHeaders(wxWidgetsGUIAppAdoptingDlg)
 #include <wx/intl.h>

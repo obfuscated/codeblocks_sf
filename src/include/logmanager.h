@@ -55,7 +55,7 @@ class DLLIMPORT LogManager : public Mgr<LogManager>
 public:
         struct InstantiatorBase
         {
-            virtual Logger* New()                 { return 0; };
+            virtual Logger* New()                 { return nullptr; };
             virtual bool RequiresFilename() const { return false; };
             virtual ~InstantiatorBase()           { ; };
         };

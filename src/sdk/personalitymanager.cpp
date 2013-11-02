@@ -20,7 +20,7 @@
 
 #include <wx/arrstr.h>
 
-template<> PersonalityManager* Mgr<PersonalityManager>::instance = 0;
+template<> PersonalityManager* Mgr<PersonalityManager>::instance = nullptr;
 template<> bool  Mgr<PersonalityManager>::isShutdown = false;
 
 PersonalityManager::PersonalityManager()

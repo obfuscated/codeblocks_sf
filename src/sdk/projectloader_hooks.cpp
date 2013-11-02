@@ -46,11 +46,11 @@ ProjectLoaderHooks::HookFunctorBase* ProjectLoaderHooks::UnregisterHook(int id, 
         if (deleteHook)
         {
             delete functor;
-            return 0;
+            return nullptr;
         }
         return functor;
     }
-    return 0;
+    return nullptr;
 }
 
 bool ProjectLoaderHooks::HasRegisteredHooks()

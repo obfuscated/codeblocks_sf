@@ -96,11 +96,11 @@ EditorHooks::HookFunctorBase* EditorHooks::UnregisterHook(int id, bool deleteHoo
         if (deleteHook)
         {
             delete functor;
-            return 0;
+            return nullptr;
         }
         return functor;
     }
-    return 0;
+    return nullptr;
 }
 
 bool EditorHooks::HasRegisteredHooks()

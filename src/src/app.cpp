@@ -105,7 +105,7 @@ class DDEConnection : public wxConnection
 
 wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
 {
-    return topic == DDE_TOPIC ? new DDEConnection(m_Frame) : 0L;
+    return topic == DDE_TOPIC ? new DDEConnection(m_Frame) : nullptr;
 }
 
 #if wxCHECK_VERSION(2, 9, 5)
@@ -168,12 +168,12 @@ bool DDEConnection::OnDisconnect()
     return true;
 }
 
-DDEServer* g_DDEServer = 0L;
+DDEServer* g_DDEServer = nullptr;
 
 class DDEClient: public wxClient {
     public:
         DDEClient(void) {}
-        wxConnectionBase *OnMakeConnection(void) { return new DDEConnection(0l); }
+        wxConnectionBase *OnMakeConnection(void) { return new DDEConnection(nullptr); }
 };
 
 #if wxUSE_CMDLINE_PARSER
@@ -247,12 +247,12 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
 class Splash
 {
     public:
-        Splash(const bool show) : m_pSplash(0)
+        Splash(const bool show) : m_pSplash(nullptr)
         {
             if (show)
             {
                 wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_1211.png"));
-                m_pSplash = new cbSplashScreen(bmp, -1, 0, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED);
+                m_pSplash = new cbSplashScreen(bmp, -1, nullptr, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED);
                 Manager::Yield();
             }
         }
@@ -265,7 +265,7 @@ class Splash
             if (m_pSplash)
             {
                 m_pSplash->Destroy();
-                m_pSplash = 0;
+                m_pSplash = nullptr;
             }
         }
     private:
@@ -310,7 +310,7 @@ static wxString GetResourcesDir()
 
 bool CodeBlocksApp::LoadConfig()
 {
-    if (ParseCmdLine(0L) == -1) // only abort if '--help' was passed in the command line
+    if (ParseCmdLine(nullptr) == -1) // only abort if '--help' was passed in the command line
         return false;
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
@@ -436,7 +436,7 @@ MainFrame* CodeBlocksApp::InitFrame()
 
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
-    SetTopWindow(0);
+    SetTopWindow(nullptr);
 
     if (g_DDEServer && m_DDE)
         g_DDEServer->SetFrame(frame); // Set m_Frame in DDE-Server
@@ -478,7 +478,7 @@ void CodeBlocksApp::InitLocale()
     else
         info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
 
-    if (info == 0) // should never happen, but who knows...
+    if (info == nullptr) // should never happen, but who knows...
         return;
 
     m_locale.Init(info->Language);
@@ -516,7 +516,7 @@ bool CodeBlocksApp::OnInit()
     SetAppName(_T("codeblocks"));
 
     s_Loading              = true;
-    m_pBatchBuildDialog    = 0;
+    m_pBatchBuildDialog    = nullptr;
     m_BatchExitCode        = 0;
     m_Batch                = false;
     m_BatchNotify          = false;
@@ -570,7 +570,7 @@ bool CodeBlocksApp::OnInit()
         {
             // Create a new client
             DDEClient *client = new DDEClient;
-            DDEConnection* connection = 0l;
+            DDEConnection* connection = nullptr;
             wxLogNull ln; // own error checking implemented -> avoid debug warnings
             connection = (DDEConnection *)client->MakeConnection(_T("localhost"), F(DDE_SERVICE, wxGetUserId().wx_str()), DDE_TOPIC);
 
@@ -630,10 +630,10 @@ bool CodeBlocksApp::OnInit()
         // Now we can start the DDE-/IPC-Server, if we did it earlier we would connect to ourselves
         if (m_DDE && !m_Batch)
         {
-            g_DDEServer = new DDEServer(0L);
+            g_DDEServer = new DDEServer(nullptr);
             g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().wx_str()));
         }
-        m_pSingleInstance = 0;
+        m_pSingleInstance = nullptr;
         if (   Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true)
             && !parser.Found(_T("multiple-instance")) )
         {
@@ -657,7 +657,7 @@ bool CodeBlocksApp::OnInit()
 
         Manager::SetBatchBuild(m_Batch || !m_Script.IsEmpty());
         Manager::Get()->GetScriptingManager();
-        MainFrame* frame = 0;
+        MainFrame* frame = nullptr;
         frame = InitFrame();
         m_Frame = frame;
 
@@ -946,7 +946,7 @@ int CodeBlocksApp::BatchJob()
     else
     {
         m_pBatchBuildDialog->Destroy();
-        m_pBatchBuildDialog = 0;
+        m_pBatchBuildDialog = nullptr;
     }
 
     return 0;
@@ -984,7 +984,7 @@ void CodeBlocksApp::OnBatchBuildDone(CodeBlocksEvent& event)
         else
         {
             m_pBatchBuildDialog->Destroy();
-            m_pBatchBuildDialog = 0;
+            m_pBatchBuildDialog = nullptr;
         }
     }
 }
@@ -1157,9 +1157,9 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 
         const wxArrayString items(Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
 
-        wxSingleChoiceDialog dlg(0, _("Please choose which personality (profile) to load:"),
-                                    _("Personalities (profiles)"),
-                                    items);
+        wxSingleChoiceDialog dlg(nullptr, _("Please choose which personality (profile) to load:"),
+                                          _("Personalities (profiles)"),
+                                          items);
 
         if (dlg.ShowModal() == wxID_OK)
             Manager::Get()->GetPersonalityManager()->SetPersonality(dlg.GetStringSelection());
@@ -1264,7 +1264,7 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
             prjManUI->CheckForExternallyModifiedProjects();
     }
     cbEditor* ed = Manager::Get()->GetEditorManager()
-                 ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;
+                 ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : nullptr;
     if (ed)
     {
         // hack for linux: without it, the editor loses the caret every second activate o.O

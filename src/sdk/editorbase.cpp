@@ -209,7 +209,7 @@ bool EditorBase::ThereAreOthers() const
 
 wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
 {
-    wxMenu* menu = 0;
+    wxMenu* menu = nullptr;
 
     if (id == idSwitchTo)
     {
@@ -227,7 +227,7 @@ wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
         if (!menu->GetMenuItemCount())
         {
             delete menu;
-            menu = 0;
+            menu = nullptr;
         }
     }
     return menu;
@@ -310,7 +310,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         AddToContextMenu(popup, type, false);
 
         // ask other editors / plugins if they need to add any entries in this menu...
-        FileTreeData* ftd = new FileTreeData(0, FileTreeData::ftdkUndefined);
+        FileTreeData* ftd = new FileTreeData(nullptr, FileTreeData::ftdkUndefined);
         ftd->SetFolder(m_Filename);
         Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(type, popup, ftd);
         delete ftd;

@@ -51,10 +51,10 @@ void cbSplashScreen::DoPaint(wxDC &dc)
 
         wxCoord lf_width, lf_heigth, sf_width, sf_heigth, sm_width, sm_height;
 
-        dc.GetTextExtent(release,  &lf_width, &lf_heigth, 0, 0, &largeFont);
-        dc.GetTextExtent(revision, &sf_width, &sf_heigth, 0, 0, &smallFont);
+        dc.GetTextExtent(release,  &lf_width, &lf_heigth, nullptr, nullptr, &largeFont);
+        dc.GetTextExtent(revision, &sf_width, &sf_heigth, nullptr, nullptr, &smallFont);
 
-        dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, 0, 0, &largeFont);
+        dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, nullptr, nullptr, &largeFont);
 
         int x_offset = 280;
         int y_offset = 150;

@@ -126,8 +126,8 @@ template <typename T> unsigned int array_size(const T& array) { enum {result = s
     to set a pointer to zero in the destructor, as it can never be used again).
     In _all_ other cases, use Delete(), which prevents accidential double-deletes.
 */
-template<typename T>inline void Delete(T*& p){delete p; p = 0;}
-template<typename T>inline void DeleteArray(T*& p){delete[] p; p = 0;}
+template<typename T>inline void Delete(T*& p){delete p; p = nullptr;}
+template<typename T>inline void DeleteArray(T*& p){delete[] p; p = nullptr;}
 
 
 

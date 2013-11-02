@@ -1,6 +1,6 @@
-#include "find_replace.h"
-
 #include "sdk_precomp.h"
+
+#include "find_replace.h"
 
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
@@ -165,7 +165,7 @@ int FindReplace::ShowFindDialog(bool replace, bool explicitly_find_in_files)
 {
     wxString phraseAtCursor;
     bool hasSelection = false;
-    cbStyledTextCtrl* control = 0;
+    cbStyledTextCtrl* control = nullptr;
 
     EditorManager *editorMgr = Manager::Get()->GetEditorManager();
 
@@ -817,7 +817,7 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
     wxPoint LastDlgPosition;
     bool HaveLastDlgPosition = false;
 
-    wxProgressDialog* progress = 0;
+    wxProgressDialog* progress = nullptr;
     wxString fileContents;
     wxString enc_name = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxLocale::GetSystemEncodingName());
     wxFontEncoding def_encoding = wxFontMapper::GetEncodingFromName(enc_name);

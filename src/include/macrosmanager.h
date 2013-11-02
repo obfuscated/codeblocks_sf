@@ -27,8 +27,8 @@ public:
     friend class Mgr<MacrosManager>;
     void CreateMenu(wxMenuBar* menuBar);
     void ReleaseMenu(wxMenuBar* menuBar);
-    void ReplaceMacros(wxString& buffer, ProjectBuildTarget* target = 0, bool subrequest = false);
-    wxString ReplaceMacros(const wxString& buffer, ProjectBuildTarget* target = 0);
+    void ReplaceMacros(wxString& buffer, ProjectBuildTarget* target = nullptr, bool subrequest = false);
+    wxString ReplaceMacros(const wxString& buffer, ProjectBuildTarget* target = nullptr);
     void ReplaceEnvVars(wxString& buffer) { ReplaceMacros(buffer); }  /* misnomer, should be ReplaceVariables */;
     void RecalcVars(cbProject* project, EditorBase* editor, ProjectBuildTarget* target);
     void ClearProjectKeys();

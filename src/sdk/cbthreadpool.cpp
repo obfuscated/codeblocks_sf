@@ -169,7 +169,7 @@ cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSe
 : m_abort(false),
   m_pPool(pool),
   m_semaphore(semaphore),
-  m_pTask(0)
+  m_pTask(nullptr)
 {
   // empty
 }
@@ -217,7 +217,7 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 
       {
         wxMutexLocker lock(m_taskMutex);
-        m_pTask = 0;
+        m_pTask = nullptr;
         element.Delete();
       }
 
@@ -228,7 +228,7 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
   if (workingThread)
     m_pPool->WaitingThread();
 
-  return 0;
+  return nullptr;
 }
 
 void cbThreadPool::cbWorkerThread::Abort()

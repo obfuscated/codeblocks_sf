@@ -9,6 +9,7 @@
 #include <wx/event.h>
 #include <wx/intl.h>
 #include "settings.h"
+#include "prep.h"
 
 class cbProject;
 class EditorBase;
@@ -19,7 +20,7 @@ class Logger;
 class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 {
 	public:
-		CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = 0L, EditorBase* editor = 0L, cbPlugin* plugin = 0L, EditorBase* old_editor = 0L)
+		CodeBlocksEvent(wxEventType commandType = wxEVT_NULL, int id = 0, cbProject* project = nullptr, EditorBase* editor = nullptr, cbPlugin* plugin = nullptr, EditorBase* old_editor = nullptr)
 			: wxCommandEvent(commandType, id),
 			m_pProject(project),
 			m_pEditor(editor),
@@ -95,7 +96,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
         CodeBlocksDockEvent(wxEventType commandType = wxEVT_NULL, int id = 0)
             : wxEvent(id, commandType),
             title(_("Untitled")),
-            pWindow(0),
+            pWindow(nullptr),
             desiredSize(100, 100),
             floatingSize(150, 150),
             minimumSize(40, 40),
@@ -181,9 +182,9 @@ typedef void (wxEvtHandler::*CodeBlocksLayoutEventFunction)(CodeBlocksLayoutEven
 class EVTIMPORT CodeBlocksLogEvent : public wxEvent
 {
     public:
-        CodeBlocksLogEvent(wxEventType commandType = wxEVT_NULL, Logger* logger = 0, const wxString& title = wxEmptyString, wxBitmap *icon = 0);
-        CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title = wxEmptyString, wxBitmap *icon = 0);
-        CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title = wxEmptyString, wxBitmap *icon = 0);
+        CodeBlocksLogEvent(wxEventType commandType = wxEVT_NULL, Logger* logger = nullptr, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
+        CodeBlocksLogEvent(wxEventType commandType, wxWindow* window, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
+        CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
         CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs);
 
 		virtual wxEvent *Clone() const { return new CodeBlocksLogEvent(*this); }

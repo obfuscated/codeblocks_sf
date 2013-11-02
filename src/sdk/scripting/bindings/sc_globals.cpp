@@ -44,9 +44,9 @@ namespace ScriptBindings
     SQInteger IsNull(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        SQUserPointer up = 0;
-        sq_getinstanceup(v, 2, &up, 0);
-        return sa.Return(up == 0L);
+        SQUserPointer up = nullptr;
+        sq_getinstanceup(v, 2, &up, nullptr);
+        return sa.Return(up == nullptr);
     }
 
     ProjectManager* getPM()
@@ -97,7 +97,7 @@ namespace ScriptBindings
     {
         // this code is partially based on MenuItemsManager::CreateFromString()
         wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-        wxMenu* menu = 0;
+        wxMenu* menu = nullptr;
         size_t pos = 0;
         while (true)
         {

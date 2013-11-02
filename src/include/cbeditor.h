@@ -54,8 +54,8 @@ class DLLIMPORT cbEditor : public EditorBase
           * <em>Note: you cannot create a cbEditor object directly. Instead
           * use EditorManager's methods to do it...</em>
           */
-        cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = 0L);
-        cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme = 0L);
+        cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = nullptr);
+        cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme = nullptr);
         /** cbEditor destructor. */
         ~cbEditor();
     public:
@@ -347,7 +347,7 @@ class DLLIMPORT cbEditor : public EditorBase
 
         void DestroySplitView();
 
-        void DoInitializations(const wxString& filename, LoaderBase* fileLdr = 0);
+        void DoInitializations(const wxString& filename, LoaderBase* fileLdr = nullptr);
 
         void BreakpointMarkerToggle(int line);
 

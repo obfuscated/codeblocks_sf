@@ -40,24 +40,24 @@ namespace ScriptBindings
         //    bool useRelativePaths = false,
         //    const wxString& basePath = _T(""))
         StackHandler sa(v);
-        EditArrayFileDlg* dlg = 0;
+        EditArrayFileDlg* dlg = nullptr;
 
         if (sa.GetParamCount() > 3)
         {
-            dlg = new EditArrayFileDlg(0,
+            dlg = new EditArrayFileDlg(nullptr,
                                         *SqPlus::GetInstance<wxArrayString,false>(v, 2),
                                         sa.GetBool(3),
                                         *SqPlus::GetInstance<wxString,false>(v, 4));
         }
         else if (sa.GetParamCount() > 2)
         {
-            dlg = new EditArrayFileDlg(0,
+            dlg = new EditArrayFileDlg(nullptr,
                                         *SqPlus::GetInstance<wxArrayString,false>(v, 2),
                                         sa.GetBool(3));
         }
         else if (sa.GetParamCount() > 1)
         {
-            dlg = new EditArrayFileDlg(0,
+            dlg = new EditArrayFileDlg(nullptr,
                                         *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         }
         else
@@ -75,12 +75,12 @@ namespace ScriptBindings
     {
         //    (wxWindow* parent, const wxArrayString& array = 0L)
         StackHandler sa(v);
-        EditArrayOrderDlg* dlg = 0;
+        EditArrayOrderDlg* dlg = nullptr;
 
         if (sa.GetParamCount() == 1)
-            dlg = new EditArrayOrderDlg(0, wxArrayString());
+            dlg = new EditArrayOrderDlg(nullptr, wxArrayString());
         else if (sa.GetParamCount() == 2)
-            dlg = new EditArrayOrderDlg(0, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
+            dlg = new EditArrayOrderDlg(nullptr, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         else
             return sa.ThrowError("EditArrayOrderDlg needs at most one argument");
 
@@ -96,10 +96,10 @@ namespace ScriptBindings
     {
         //    (wxWindow* parent, const wxArrayString& array)
         StackHandler sa(v);
-        EditArrayStringDlg* dlg = 0;
+        EditArrayStringDlg* dlg = nullptr;
 
         if (sa.GetParamCount() == 2)
-            dlg = new EditArrayStringDlg(0, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
+            dlg = new EditArrayStringDlg(nullptr, *SqPlus::GetInstance<wxArrayString,false>(v, 2));
         else
             return sa.ThrowError("EditArrayStringDlg needs one argument");
 
@@ -119,11 +119,11 @@ namespace ScriptBindings
         //    const wxString& title = _("Edit pair"),
         //    BrowseMode allowBrowse = bmDisable);
         StackHandler sa(v);
-        EditPairDlg* dlg = 0;
+        EditPairDlg* dlg = nullptr;
 
         if (sa.GetParamCount() > 4)
         {
-            dlg = new EditPairDlg(0,
+            dlg = new EditPairDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4),
@@ -131,14 +131,14 @@ namespace ScriptBindings
         }
         else if (sa.GetParamCount() > 3)
         {
-            dlg = new EditPairDlg(0,
+            dlg = new EditPairDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4));
         }
         else if (sa.GetParamCount() > 2)
         {
-            dlg = new EditPairDlg(0,
+            dlg = new EditPairDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3));
         }
@@ -164,11 +164,11 @@ namespace ScriptBindings
         //    const bool allowMultiSel = false,  // whether to allow for multiple files selection
         //    const wxString& filter = _("All files(*)|*"));  // wildcard for files
         StackHandler sa(v);
-        EditPathDlg* dlg = 0;
+        EditPathDlg* dlg = nullptr;
 
         if (sa.GetParamCount() > 7)
         {
-            dlg = new EditPathDlg(0,
+            dlg = new EditPathDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4),
@@ -179,7 +179,7 @@ namespace ScriptBindings
         }
         else if (sa.GetParamCount() > 6)
         {
-            dlg = new EditPathDlg(0,
+            dlg = new EditPathDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4),
@@ -189,7 +189,7 @@ namespace ScriptBindings
         }
         else if (sa.GetParamCount() > 5)
         {
-            dlg = new EditPathDlg(0,
+            dlg = new EditPathDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4),
@@ -198,7 +198,7 @@ namespace ScriptBindings
         }
         else if (sa.GetParamCount() > 4)
         {
-            dlg = new EditPathDlg(0,
+            dlg = new EditPathDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4),
@@ -206,14 +206,14 @@ namespace ScriptBindings
         }
         else if (sa.GetParamCount() > 3)
         {
-            dlg = new EditPathDlg(0,
+            dlg = new EditPathDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3),
                                     *SqPlus::GetInstance<wxString,false>(v, 4));
         }
         else if (sa.GetParamCount() > 2)
         {
-            dlg = new EditPathDlg(0,
+            dlg = new EditPathDlg(nullptr,
                                     *SqPlus::GetInstance<wxString,false>(v, 2),
                                     *SqPlus::GetInstance<wxString,false>(v, 3));
         }
@@ -235,28 +235,28 @@ namespace ScriptBindings
         //    const wxString& notes = wxEmptyString,
         //    bool readOnly = true);
         StackHandler sa(v);
-        GenericMultiLineNotesDlg* dlg = 0;
+        GenericMultiLineNotesDlg* dlg = nullptr;
 
         if (sa.GetParamCount() > 3)
         {
-            dlg = new GenericMultiLineNotesDlg(0,
+            dlg = new GenericMultiLineNotesDlg(nullptr,
                                             *SqPlus::GetInstance<wxString,false>(v, 2),
                                             *SqPlus::GetInstance<wxString,false>(v, 3),
                                             sa.GetBool(4));
         }
         else if (sa.GetParamCount() > 2)
         {
-            dlg = new GenericMultiLineNotesDlg(0,
+            dlg = new GenericMultiLineNotesDlg(nullptr,
                                             *SqPlus::GetInstance<wxString,false>(v, 2),
                                             *SqPlus::GetInstance<wxString,false>(v, 3));
         }
         else if (sa.GetParamCount() > 1)
         {
-            dlg = new GenericMultiLineNotesDlg(0,
+            dlg = new GenericMultiLineNotesDlg(nullptr,
                                             *SqPlus::GetInstance<wxString,false>(v, 2));
         }
         else
-            dlg = new GenericMultiLineNotesDlg(0);
+            dlg = new GenericMultiLineNotesDlg(nullptr);
 
         return SqPlus::PostConstruct<GenericMultiLineNotesDlg>(v, dlg, GenericMultiLineNotesDlg_Dtor);
     }
@@ -264,8 +264,8 @@ namespace ScriptBindings
     SQInteger ShowModalForDialogs(HSQUIRRELVM v)
     {
         StackHandler sa(v);
-        SQUserPointer up = 0;
-        sq_getinstanceup(v, 1, &up, 0);
+        SQUserPointer up = nullptr;
+        sq_getinstanceup(v, 1, &up, nullptr);
         wxScrollingDialog* dlg = (wxScrollingDialog*)up;
         return sa.Return(static_cast<SQInteger>(dlg->ShowModal()));
     }

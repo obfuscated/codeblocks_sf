@@ -1250,7 +1250,7 @@ void ProjectManagerUI::OnAddFilesToProjectRecursively(wxCommandEvent& event)
     for (unsigned fm_idx = 0; fm_idx < fileGroups->GetGroupsCount(); fm_idx++)
         wild += fileGroups->GetFileMasks(fm_idx);
 
-    MultiSelectDlg dlg(0, array, wild, _("Select the files to add to the project:"));
+    MultiSelectDlg dlg(nullptr, array, wild, _("Select the files to add to the project:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -1264,7 +1264,7 @@ void ProjectManagerUI::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 void ProjectManagerUI::OnAddFileToProject(wxCommandEvent& event)
 {
     ProjectManager *prjManager = Manager::Get()->GetProjectManager();
-    cbProject* prj = 0;
+    cbProject* prj = nullptr;
     wxString basePath;
 
     if (event.GetId() == idMenuAddFile)
@@ -1380,7 +1380,7 @@ void ProjectManagerUI::OnRemoveFileFromProject(wxCommandEvent& event)
         }
         wxString msg;
         msg.Printf(_("Select files to remove from %s:"), prj->GetTitle().c_str());
-        MultiSelectDlg dlg(0, files, true, msg);
+        MultiSelectDlg dlg(nullptr, files, true, msg);
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
@@ -2126,7 +2126,7 @@ void ProjectManagerUI::OnKeyDown(wxTreeEvent& event)
 
     cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (    project
-        && (project->GetCurrentlyCompilingTarget() == 0)
+        && (project->GetCurrentlyCompilingTarget() == nullptr)
         && (   key_event.GetKeyCode() == WXK_DELETE
             || key_event.GetKeyCode() == WXK_NUMPAD_DELETE ) )
     {
@@ -2310,7 +2310,7 @@ wxArrayInt ProjectManagerUI::AskForMultiBuildTargetIndex(cbProject* project)
     for (int i = 0; i < count; ++i)
         array.Add(prj->GetBuildTarget(i)->GetTitle());
 
-    MultiSelectDlg dlg(0, array, true, _("Select the targets this file should belong to:"));
+    MultiSelectDlg dlg(nullptr, array, true, _("Select the targets this file should belong to:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         indices = dlg.GetSelectedIndices();
@@ -2383,7 +2383,7 @@ namespace
 
 static void ProjectTreeSortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& parent)
 {
-    wxTreeItemIdValue cookie = 0;
+    wxTreeItemIdValue cookie = nullptr;
 
     tree->SortChildren(parent);
 
@@ -2418,7 +2418,7 @@ wxTreeItemId ProjectFindNodeToInsertAfter(wxTreeCtrl* tree, const wxString& text
 
     if (tree && parent.IsOk())
     {
-        wxTreeItemIdValue cookie = 0;
+        wxTreeItemIdValue cookie = nullptr;
 
         int fldIdx = cbProjectTreeImages::FolderIconIndex();
         int vfldIdx = cbProjectTreeImages::VirtualFolderIconIndex();
@@ -2493,7 +2493,7 @@ wxTreeItemId ProjectAddTreeNode(cbProject *project, wxTreeCtrl* tree,  const wxS
             ++pos;
         path = path.Right(path.Length() - pos - 1);
 
-        wxTreeItemIdValue cookie = 0;
+        wxTreeItemIdValue cookie = nullptr;
 
         wxTreeItemId newparent = tree->GetFirstChild(parent, cookie);
         while (newparent)
@@ -2519,7 +2519,7 @@ wxTreeItemId ProjectAddTreeNode(cbProject *project, wxTreeCtrl* tree,  const wxS
                 ftd->SetFolder(project->GetCommonTopLevelPath() + GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
             else
                 ftd->SetFolder(GetRelativeFolderPath(tree, parent) + folder + wxFILE_SEP_PATH);
-            ftd->SetProjectFile(0);
+            ftd->SetProjectFile(nullptr);
             int idx = folders_kind != FileTreeData::ftdkVirtualFolder ? fldIdx : vfldIdx;
             newparent = tree->InsertItem(parent, newparent, folder, idx, idx, ftd);
         }
@@ -2564,7 +2564,7 @@ void ProjectCopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, 
         return;
 
     FileTreeData* ftd       = (FileTreeData*)tree->GetItemData(item);
-    FileTreeData* ftd_moved = ftd ? new FileTreeData(*ftd) : 0;
+    FileTreeData* ftd_moved = ftd ? new FileTreeData(*ftd) : nullptr;
     int           idx       = tree->GetItemImage(item); // old image
     wxColour      col       = tree->GetItemTextColour(item); // old colour
 
@@ -2832,7 +2832,7 @@ bool ProjectVirtualFolderAdded(cbProject* project, wxTreeCtrl* tree,
     project->AppendUniqueVirtualFolder(foldername);
 
     FileTreeData* ftd = new FileTreeData(project, FileTreeData::ftdkVirtualFolder);
-    ftd->SetProjectFile(0);
+    ftd->SetProjectFile(nullptr);
     ftd->SetFolder(foldername);
 
     int vfldIdx = cbProjectTreeImages::VirtualFolderIconIndex();

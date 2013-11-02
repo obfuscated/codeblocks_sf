@@ -114,7 +114,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         PluginsArray GetDebuggerOffers();
         PluginsArray GetCodeCompletionOffers();
         PluginsArray GetOffersFor(PluginType type);
-        void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+        void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
         void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
@@ -137,7 +137,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         /// @return True if the plugin should be loaded, false if not.
         bool ReadManifestFile(const wxString& pluginFilename,
                                 const wxString& pluginName = wxEmptyString,
-                                PluginInfo* infoOut = 0);
+                                PluginInfo* infoOut = nullptr);
         void ReadExtraFilesFromManifestFile(const wxString& pluginFilename,
                                             wxArrayString& extraFiles);
         bool ExtractFile(const wxString& bundlename,
@@ -160,7 +160,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         // inside the plugins (yes, it happened to me ;)).
         struct PluginRegistration
         {
-            PluginRegistration() : createProc(0), freeProc(0), versionProc(0) {}
+            PluginRegistration() : createProc(nullptr), freeProc(nullptr), versionProc(nullptr) {}
             PluginRegistration(const PluginRegistration& rhs)
                 : name(rhs.name),
                 createProc(rhs.createProc),

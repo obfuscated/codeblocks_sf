@@ -21,14 +21,14 @@
 #include "logmanager.h"
 #include "loggers.h"
 
-template<> LogManager* Mgr<LogManager>::instance = 0;
+template<> LogManager* Mgr<LogManager>::instance = nullptr;
 template<> bool  Mgr<LogManager>::isShutdown = false;
 
 static NullLogger g_null_log;
 
 LogSlot::LogSlot() :
-    log(0),
-    icon(0)
+    log(nullptr),
+    icon(nullptr)
 {
 }
 

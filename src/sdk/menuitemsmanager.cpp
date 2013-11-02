@@ -48,7 +48,7 @@ MenuItemsManager::~MenuItemsManager()
 wxMenuItem* MenuItemsManager::Add(wxMenu* parent, int id, const wxString& caption, const wxString& helptext)
 {
     if (!parent)
-        return 0;
+        return nullptr;
     wxMenuItem* ni = new wxMenuItem(parent, id, caption, helptext);
     m_MenuItems.Add(ni);
     parent->Append(ni);
@@ -67,7 +67,7 @@ wxMenuItem* MenuItemsManager::Add(wxMenu* parent, int id, const wxString& captio
 wxMenuItem* MenuItemsManager::Insert(wxMenu* parent, int index, int id, const wxString& caption, const wxString& helptext)
 {
     if (!parent)
-        return 0;
+        return nullptr;
     wxMenuItem* ni = new wxMenuItem(parent, id, caption, helptext);
     m_MenuItems.Add(ni);
     parent->Insert(index, ni);
@@ -105,7 +105,7 @@ void MenuItemsManager::Clear()
 int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
 {
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    wxMenu* menu = 0;
+    wxMenu* menu = nullptr;
     size_t pos = 0;
     while (true)
     {
@@ -159,7 +159,7 @@ int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
             if (needsSep)
                 current.Remove(0, 1); // remove dash (-)
 
-            wxMenu* existingMenu = 0;
+            wxMenu* existingMenu = nullptr;
             int existing = menu->FindItem(current);
             if (existing != wxNOT_FOUND)
             {

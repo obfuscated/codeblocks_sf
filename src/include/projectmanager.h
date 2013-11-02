@@ -265,7 +265,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
           * If the project has more than one build targets, a dialog appears so
           * that the user can select which build target this file should belong to.
           */
-        int AddFileToProject(const wxString& filename, cbProject* project = 0L, int target = -1);
+        int AddFileToProject(const wxString& filename, cbProject* project = nullptr, int target = -1);
         /** Add a file to a project. This function comes in two versions. This version,
           * expects an array of build target indices for the added file to belong to.
           * @param filename The file to add to the project.

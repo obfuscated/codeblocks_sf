@@ -84,7 +84,7 @@ namespace ScriptBindings
 
         wxString ChooseDir(const wxString& message, const wxString& initialPath, bool showCreateDirButton)
         {
-            return ChooseDirectory(0, message, Manager::Get()->GetMacrosManager()->ReplaceMacros(initialPath), wxEmptyString, false, showCreateDirButton);
+            return ChooseDirectory(nullptr, message, Manager::Get()->GetMacrosManager()->ReplaceMacros(initialPath), wxEmptyString, false, showCreateDirButton);
         }
 
         bool RemoveDir(const wxString& src)
@@ -150,7 +150,7 @@ namespace ScriptBindings
 
         wxString ChooseFile(const wxString& title, const wxString& defaultFile, const wxString& filter)
         {
-            wxFileDialog dlg(0,
+            wxFileDialog dlg(nullptr,
                             title,
                             wxEmptyString,
                             Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultFile),

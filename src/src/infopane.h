@@ -28,7 +28,7 @@ class InfoPane : public cbAuiNotebook
 
     struct Page
     {
-        Page() : icon(0), window(0), logger(0), indexInNB(std::numeric_limits<int>::min()), eventID(0), islogger(0) {};
+        Page() : icon(nullptr), window(nullptr), logger(nullptr), indexInNB(std::numeric_limits<int>::min()), eventID(0), islogger(0) {};
         wxString  title;
         wxBitmap* icon;
         wxWindow* window;
@@ -59,8 +59,8 @@ class InfoPane : public cbAuiNotebook
     void OnCloseClicked(wxAuiNotebookEvent& event);
     void OnTabPosition(wxCommandEvent& event);
     void DoShowContextMenu();
-    int  AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
-    bool InsertPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = 0 , int index = -1);
+    int  AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = nullptr);
+    bool InsertPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon = nullptr, int index = -1);
     using wxWindow::Show;
 public:
 
@@ -100,7 +100,7 @@ public:
     *  will be redirected to the null log thereafter.
     *  To prove that you are serious, you must know the logger belonging to the tab to delete.
     */
-    bool AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+    bool AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon = nullptr);
     bool DeleteLogger(Logger* l);
 
     /*
@@ -108,7 +108,7 @@ public:
     *  use AddNonLogger()/DeleteNonLogger() for that purpose.
     *  An example of something that is not a logger but might still show up in the info pane is the list of search results.
     */
-    bool AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon = 0);
+    bool AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon = nullptr);
     bool RemoveNonLogger(wxWindow* p);
     bool DeleteNonLogger(wxWindow* p);
 };

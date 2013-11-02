@@ -50,7 +50,7 @@
 #include "tinyxml/tinywxuni.h"
 #include <stdlib.h>
 
-template<> CfgMgrBldr* Mgr<CfgMgrBldr>::instance = 0;
+template<> CfgMgrBldr* Mgr<CfgMgrBldr>::instance = nullptr;
 template<> bool  Mgr<CfgMgrBldr>::isShutdown = false;
 
 wxString ConfigManager::config_folder;
@@ -97,7 +97,7 @@ namespace
         #ifdef __linux__
             char c[PATH_MAX+1];
             char *p = realpath("/proc/self/exe", &c[0]);
-            if (p == 0)
+            if (p == nullptr)
                 return _T(".");
             wxFileName fname(cbC2U(p));
             return fname.GetPath(wxPATH_GET_VOLUME);
@@ -176,7 +176,7 @@ ISerializable::~ISerializable()
 *  Do not use this class  -  Manager::Get()->GetConfigManager() is a lot friendlier
 */
 
-CfgMgrBldr::CfgMgrBldr() : doc(0), volatile_doc(0), r(false)
+CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
 {
     TiXmlBase::SetCondenseWhiteSpace(false);
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
@@ -379,7 +379,7 @@ void CfgMgrBldr::Close()
     if (doc)
         delete doc;
 
-    doc = 0;
+    doc = nullptr;
 }
 
 
@@ -1063,7 +1063,7 @@ void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
     TiXmlHandle parentHandle(e);
     TiXmlNode *asNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("astr").Node();
 
-    TiXmlNode *curr = 0;
+    TiXmlNode *curr = nullptr;
     if (asNode)
     {
         while ((curr = asNode->IterateChildren("s", curr)))
@@ -1129,7 +1129,7 @@ wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
     TiXmlNode* e = AssertPath(key);
     wxArrayString ret;
 
-    TiXmlElement *curr = 0;
+    TiXmlElement *curr = nullptr;
     if (e)
     {
         while (e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
@@ -1215,7 +1215,7 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     TiXmlNode* e = AssertPath(key);
     wxArrayString ret;
 
-    TiXmlElement *curr = 0;
+    TiXmlElement *curr = nullptr;
     if (e)
     {
         while (e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
@@ -1292,7 +1292,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringToS
     TiXmlHandle parentHandle(e);
     TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("ssmap").Node();
 
-    TiXmlNode *curr = 0;
+    TiXmlNode *curr = nullptr;
     if (mNode)
     {
         while ((curr = mNode->IterateChildren(curr)))
@@ -1341,7 +1341,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     TiXmlHandle parentHandle(e);
     TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("ismap").Node();
 
-    TiXmlNode *curr = 0;
+    TiXmlNode *curr = nullptr;
     long tmp;
     if (mNode)
     {
@@ -1398,7 +1398,7 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet
     TiXmlHandle parentHandle(e);
     TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("sset").Node();
 
-    TiXmlNode *curr = 0;
+    TiXmlNode *curr = nullptr;
     if (mNode)
     {
         while ((curr = mNode->IterateChildren(curr)))

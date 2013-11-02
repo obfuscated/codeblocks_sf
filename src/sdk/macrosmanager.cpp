@@ -38,7 +38,7 @@
 
 using namespace std;
 
-template<> MacrosManager* Mgr<MacrosManager>::instance = 0;
+template<> MacrosManager* Mgr<MacrosManager>::instance = nullptr;
 template<> bool  Mgr<MacrosManager>::isShutdown = false;
 
 static const wxString const_COIN(_T("COIN"));
@@ -73,8 +73,8 @@ wxString MacrosManager::ReplaceMacros(const wxString& buffer, ProjectBuildTarget
 
 void MacrosManager::Reset()
 {
-    m_LastProject          = 0;
-    m_LastTarget           = 0;
+    m_LastProject          = nullptr;
+    m_LastTarget           = nullptr;
     m_ActiveEditorFilename = wxEmptyString;
     m_ActiveEditorLine     = -1;
     m_ActiveEditorColumn   = -1;
@@ -107,7 +107,7 @@ void MacrosManager::Reset()
                                 wxRE_EXTENDED);
 #endif
     m_UserVarMan = Manager::Get()->GetUserVariableManager();
-    srand(time(0));
+    srand(time(nullptr));
     assert(m_RE_Unix.IsValid());
     assert(m_RE_DOS.IsValid());
 }
@@ -247,7 +247,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_ProjectDir      = wxEmptyString;
         m_ProjectFiles    = wxEmptyString;
         m_Makefile        = wxEmptyString;
-        m_LastProject     = 0;
+        m_LastProject     = nullptr;
         ClearProjectKeys();
         m_Macros[_T("PROJECTFILE")]          = wxEmptyString;
         m_Macros[_T("PROJECT_FILE")]         = wxEmptyString;
@@ -269,7 +269,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     }
     else if (project != m_LastProject)
     {
-        m_LastTarget      = 0; // reset last target when project changes
+        m_LastTarget      = nullptr; // reset last target when project changes
         m_ProjectWxFileName.Assign(project->GetFilename());
         m_ProjectFilename = UnixFilename(m_ProjectWxFileName.GetFullName());
         m_ProjectName     = project->GetTitle();
@@ -336,7 +336,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_TargetOutputBaseName = wxEmptyString;
         m_TargetOutputFilename = wxEmptyString;
         m_TargetFilename       = wxEmptyString;
-        m_LastTarget           = 0;
+        m_LastTarget           = nullptr;
     }
     else if (target != m_LastTarget)
     {

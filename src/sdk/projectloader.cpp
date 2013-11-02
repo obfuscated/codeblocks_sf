@@ -55,7 +55,7 @@ ProjectLoader::~ProjectLoader()
 
 bool ProjectLoader::Open(const wxString& filename)
 {
-    return Open(filename, 0);
+    return Open(filename, nullptr);
 }
 
 bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
@@ -230,7 +230,7 @@ bool ProjectLoader::Open(const wxString& filename, TiXmlElement** ppExtensions)
     }
 
     if (ppExtensions)
-        *ppExtensions = 0;
+        *ppExtensions = nullptr;
 
     // as a last step, run all hooked callbacks
     TiXmlElement* node = proj->FirstChildElement("Extensions");
@@ -499,7 +499,7 @@ void ProjectLoader::DoBuildTarget(TiXmlElement* parentNode)
 
     while (node)
     {
-        ProjectBuildTarget* target = 0L;
+        ProjectBuildTarget* target = nullptr;
         wxString title = cbC2U(node->Attribute("title"));
         if (!title.IsEmpty())
             target = m_pProject->AddBuildTarget(title);
@@ -1191,7 +1191,7 @@ void ProjectLoader::SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* ba
 
 bool ProjectLoader::Save(const wxString& filename)
 {
-    return Save(filename, 0);
+    return Save(filename, nullptr);
 }
 
 bool ProjectLoader::Save(const wxString& filename, TiXmlElement* pExtensions)
@@ -1597,7 +1597,7 @@ wxString ProjectLoader::GetValidCompilerID(const wxString& proposal, const wxStr
     if (it != m_CompilerSubstitutes.end())
         return it->second;
 
-    Compiler* compiler = 0;
+    Compiler* compiler = nullptr;
 
     // if compiler is a number, then this is an older version of the project file
     // propose the same compiler by index

@@ -367,7 +367,7 @@ WatchesDlg::WatchesDlg() :
                                                             cb::shared_ptr<cbWatch>(), false));
     m_grid->SetPropertyAttribute(prop, wxT("Units"), wxEmptyString);
 
-    m_grid->Connect(idGrid, wxEVT_KEY_DOWN, wxKeyEventHandler(WatchesDlg::OnKeyDown), NULL, this);
+    m_grid->Connect(idGrid, wxEVT_KEY_DOWN, wxKeyEventHandler(WatchesDlg::OnKeyDown), nullptr, this);
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     colours->RegisterColour(_("Debugger"), _("Watches changed value"), wxT("dbg_watches_changed"), *wxRED);

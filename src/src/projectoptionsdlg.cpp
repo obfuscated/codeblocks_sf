@@ -100,7 +100,7 @@ END_EVENT_TABLE()
 ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     : m_Project(project),
     m_Current_Sel(-1),
-    m_pCompiler(0L)
+    m_pCompiler(nullptr)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectOptions"),_T("wxScrollingDialog"));
 
@@ -750,7 +750,7 @@ void ProjectOptionsDlg::OnExportTargetClick(cb_unused wxCommandEvent& event)
 
 void ProjectOptionsDlg::OnBrowseDirClick(wxCommandEvent& event)
 {
-    wxTextCtrl* targettext = 0;
+    wxTextCtrl* targettext = nullptr;
     if (event.GetId() == XRCID("btnBrowseWorkingDir"))
         targettext = XRCCTRL(*this, "txtWorkingDir", wxTextCtrl);
     else if (event.GetId() == XRCID("btnBrowseObjectDir"))

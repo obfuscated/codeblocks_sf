@@ -102,7 +102,7 @@ CompOption* CompilerOptions::GetOptionByName(const wxString& name)
         if (coption->name == name)
             return coption;
     }
-    return 0L;
+    return nullptr;
 }
 
 CompOption* CompilerOptions::GetOptionByOption(const wxString& option)
@@ -113,7 +113,7 @@ CompOption* CompilerOptions::GetOptionByOption(const wxString& option)
         if (coption->option == option)
             return coption;
     }
-    return 0L;
+    return nullptr;
 }
 
 CompOption* CompilerOptions::GetOptionByAdditionalLibs(const wxString& libs)
@@ -124,5 +124,5 @@ CompOption* CompilerOptions::GetOptionByAdditionalLibs(const wxString& libs)
         if (coption->additionalLibs == libs)
             return coption;
     }
-    return 0L;
+    return nullptr;
 }

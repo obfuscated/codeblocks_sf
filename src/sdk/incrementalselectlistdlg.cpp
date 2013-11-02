@@ -29,8 +29,8 @@ END_EVENT_TABLE()
 
 IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const IncrementalSelectIterator& iterator,
                                                    const wxString& caption, const wxString& message)
-    : m_List(0L),
-    m_Text(0L),
+    : m_List(nullptr),
+    m_Text(nullptr),
     m_Iterator(iterator)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgIncrementalSelectList"),_T("wxScrollingDialog"));
@@ -47,11 +47,11 @@ IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const Incre
     m_Text->Connect( wxEVT_KEY_DOWN,
                     (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
                     &IncrementalSelectListDlg::OnKeyDown,
-                    NULL, this );
+                    nullptr, this );
     m_List->Connect( wxEVT_KEY_DOWN,
                     (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
                     &IncrementalSelectListDlg::OnKeyDown,
-                    NULL, this );
+                    nullptr, this );
 
     FillList();
 }
@@ -61,11 +61,11 @@ IncrementalSelectListDlg::~IncrementalSelectListDlg()
     m_Text->Disconnect( wxEVT_KEY_DOWN,
                        (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
                        &IncrementalSelectListDlg::OnKeyDown,
-                       NULL, this );
+                       nullptr, this );
     m_List->Disconnect( wxEVT_KEY_DOWN,
                        (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
                        &IncrementalSelectListDlg::OnKeyDown,
-                       NULL, this );
+                       nullptr, this );
 }
 
 wxString IncrementalSelectListDlg::GetStringSelection()

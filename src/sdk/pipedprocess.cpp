@@ -213,7 +213,7 @@ void PipedProcess::OnTerminate(int /*pid*/, int status)
     wxPostEvent(m_Parent, event);
 
     if (m_pvThis)
-        *m_pvThis = 0L;
+        *m_pvThis = nullptr;
     delete this;
 }
 

@@ -94,7 +94,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           *        accumulated error messages are cleared.
           * @return The error string. If empty, it means "no errors".
           */
-        wxString GetErrorString(SquirrelError* exception = 0, bool clearErrors = true);
+        wxString GetErrorString(SquirrelError* exception = nullptr, bool clearErrors = true);
 
         /** @brief Display error dialog.
           *
@@ -106,7 +106,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
           * @param clearErrors If true (default), when this function returns all
           *        accumulated error messages are cleared.
           */
-        void DisplayErrors(SquirrelError* exception = 0, bool clearErrors = true);
+        void DisplayErrors(SquirrelError* exception = nullptr, bool clearErrors = true);
 
         /** @brief Injects script output.
           *

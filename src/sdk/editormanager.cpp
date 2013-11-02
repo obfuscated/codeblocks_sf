@@ -49,7 +49,7 @@
 #include "projectfileoptionsdlg.h"
 #include "filegroupsandmasks.h"
 
-template<> EditorManager* Mgr<EditorManager>::instance = 0;
+template<> EditorManager* Mgr<EditorManager>::instance = nullptr;
 template<> bool  Mgr<EditorManager>::isShutdown = false;
 
 int ID_NBEditorManager        = wxNewId();
@@ -141,7 +141,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
 END_EVENT_TABLE()
 
 EditorManager::EditorManager()
-        : m_pNotebook(0L),
+        : m_pNotebook(nullptr),
         m_pNotebookStackHead(new cbNotebookStack),
         m_pNotebookStackTail(m_pNotebookStackHead),
         m_nNotebookStackSize(0),
@@ -293,7 +293,7 @@ EditorBase* EditorManager::InternalGetEditorBase(int page)
     {
         return static_cast<EditorBase*>(m_pNotebook->GetPage(page));
     }
-    return 0;
+    return nullptr;
 }
 
 cbEditor* EditorManager::InternalGetBuiltinEditor(int page)
@@ -301,12 +301,12 @@ cbEditor* EditorManager::InternalGetBuiltinEditor(int page)
     EditorBase* eb = InternalGetEditorBase(page);
     if (eb && eb->IsBuiltinEditor())
         return (cbEditor*)eb;
-    return 0;
+    return nullptr;
 }
 
 cbEditor* EditorManager::GetBuiltinEditor(EditorBase* eb)
 {
-    return eb && eb->IsBuiltinEditor() ? (cbEditor*)eb : 0;
+    return eb && eb->IsBuiltinEditor() ? (cbEditor*)eb : nullptr;
 }
 
 EditorBase* EditorManager::IsOpen(const wxString& filename)
@@ -350,7 +350,7 @@ void EditorManager::SetColourSet(EditorColourSet* theme)
 
 cbEditor* EditorManager::Open(const wxString& filename, int pos, ProjectFile* data)
 {
-    return Open(0, filename, pos, data);
+    return Open(nullptr, filename, pos, data);
 }
 
 cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int /*pos*/, ProjectFile* data)
@@ -361,7 +361,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     wxString fname = UnixFilename(fn.GetFullPath());
     //  Manager::Get()->GetLogManager()->DebugLog("Trying to open '%s'", fname.c_str());
     if (!wxFileExists(fname))
-        return 0;
+        return nullptr;
     //  Manager::Get()->GetLogManager()->DebugLog("File exists '%s'", fname.c_str());
 
     // disallow application shutdown while opening files
@@ -369,7 +369,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     s_CanShutdown = false;
 
     EditorBase* eb = IsOpen(fname);
-    cbEditor* ed = 0;
+    cbEditor* ed = nullptr;
     if (eb)
     {
         if (eb->IsBuiltinEditor())
@@ -379,7 +379,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
         else
         {
             s_CanShutdown = true;
-            return 0; // is open but not a builtin editor
+            return nullptr; // is open but not a builtin editor
         }
     }
 
@@ -395,7 +395,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
             else
             {
                 ed->Destroy();
-                ed = NULL;
+                ed = nullptr;
             }
         }
     }
@@ -433,7 +433,7 @@ EditorBase* EditorManager::GetActiveEditor()
     {
         return InternalGetEditorBase(m_pNotebook->GetSelection());
     }
-    return 0;
+    return nullptr;
 }
 
 void EditorManager::ActivateNext()
@@ -456,14 +456,14 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
         // Previously the Activated event was only sent for built-in editors, which makes no sense
         int sel = m_pNotebook->GetSelection();
         m_pNotebook->SetSelection(page);
-        EditorBase* eb_old = 0;
+        EditorBase* eb_old = nullptr;
         if (sel>=0)
             eb_old = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
 
-        CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, ed, 0, eb_old);
+        CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, nullptr, ed, nullptr, eb_old);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
 
-        CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, 0, ed);
+        CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, nullptr, ed);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
     }
 
@@ -479,7 +479,7 @@ cbEditor* EditorManager::New(const wxString& newFileName)
     {
         wxFile f(newFileName, wxFile::write);
         if (!f.IsOpened())
-            return 0;
+            return nullptr;
     }
     cbEditor* ed = new cbEditor(m_pNotebook, newFileName);
 //    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
@@ -505,7 +505,7 @@ cbEditor* EditorManager::New(const wxString& newFileName)
     ed->Show(true);
     SetActiveEditor(ed);
 
-    CodeBlocksEvent evt(cbEVT_EDITOR_OPEN, -1, 0, ed);
+    CodeBlocksEvent evt(cbEVT_EDITOR_OPEN, -1, nullptr, ed);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
 
     return ed;
@@ -957,7 +957,7 @@ bool EditorManager::OpenContainingFolder()
 #else
     // Cant select the file on Linux, so just extract the folder name
     wxString splitPath;
-    wxFileName::SplitPath(fullPath, &splitPath, NULL, NULL);
+    wxFileName::SplitPath(fullPath, &splitPath, nullptr, nullptr);
     cmds << splitPath;
 #endif
 
@@ -979,7 +979,7 @@ bool EditorManager::SwapActiveHeaderSource()
     if (ft != ftHeader && ft != ftSource)
         return false;
 
-    cbProject* project = 0;
+    cbProject* project = nullptr;
 
     // if the file in question belongs to a different open project,
     // then use that project instead.
@@ -1012,7 +1012,7 @@ bool EditorManager::SwapActiveHeaderSource()
     else if (currentCandidateFile.IsOk())
     {
         cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-        if (newEd!=0L) // we found and were able to open it
+        if (newEd!=nullptr) // we found and were able to open it
             return true; // --> RETURN;
     }
 
@@ -1039,7 +1039,7 @@ bool EditorManager::SwapActiveHeaderSource()
     if (!isCandidate && currentCandidateFile.IsOk())
     {
         cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-        if (newEd!=0L) // we found and were able to open it
+        if (newEd!=nullptr) // we found and were able to open it
             return true; // --> RETURN;
     }
 
@@ -1068,7 +1068,7 @@ bool EditorManager::SwapActiveHeaderSource()
         else if (currentCandidateFile.IsOk())
         {
             cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-            if (newEd!=0L) // we found and were able to open it
+            if (newEd!=nullptr) // we found and were able to open it
                 return true; // --> RETURN;
         }
 
@@ -1119,7 +1119,7 @@ bool EditorManager::SwapActiveHeaderSource()
             else if (currentCandidateFile.IsOk())
             {
                 cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-                if (newEd!=0L) // we found and were able to open it
+                if (newEd!=nullptr) // we found and were able to open it
                     return true; // --> RETURN;
             }
         }
@@ -1130,7 +1130,7 @@ bool EditorManager::SwapActiveHeaderSource()
     if (candidateFile.IsOk())
     {
         cbEditor* newEd = Open(candidateFile.GetFullPath());
-        if (newEd!=0L) // we found and were able to open it
+        if (newEd!=nullptr) // we found and were able to open it
             return true; // --> RETURN;
     }
 
@@ -1199,14 +1199,14 @@ void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
 void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
 {
     EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
-    EditorBase* eb_old = 0;
+    EditorBase* eb_old = nullptr;
     if (event.GetOldSelection()!=-1)
         eb_old = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetOldSelection()));
 
-    CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, eb, 0, eb_old);
+    CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, nullptr, eb, nullptr, eb_old);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
 
-    CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
+    CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, nullptr, eb);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
 
     if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))
@@ -1215,7 +1215,7 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
         cbNotebookStack* body;
         cbNotebookStack* tmp;
         wnd = m_pNotebook->GetPage(event.GetSelection());
-        for (body = m_pNotebookStackHead; body->next != 0; body = body->next)
+        for (body = m_pNotebookStackHead; body->next != nullptr; body = body->next)
         {
             if (wnd == body->next->window)
             {
@@ -1228,7 +1228,7 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
                 break;
             }
         }
-        if (   (m_pNotebookStackHead->next == 0)
+        if (   (m_pNotebookStackHead->next == nullptr)
             || (wnd != m_pNotebookStackHead->next->window) )
         {
             body = new cbNotebookStack(wnd);
@@ -1250,7 +1250,7 @@ void EditorManager::OnPageChanging(wxAuiNotebookEvent& event)
     if (old_sel != -1 && static_cast<size_t>(old_sel) < m_pNotebook->GetPageCount())
     {
         EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(old_sel));
-        CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, 0, eb);
+        CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, nullptr, eb);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     }
     event.Skip(); // allow others to process it too
@@ -1271,7 +1271,7 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
             doClose = true;
             if (m_pNotebook->GetPageCount()<=1)
             {
-                CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, 0, 0, 0, eb);
+                CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, nullptr, nullptr, nullptr, eb);
                 Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
             }
         }
@@ -1283,7 +1283,7 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         cbNotebookStack* body;
         cbNotebookStack* tmp;
         wnd = m_pNotebook->GetPage(event.GetSelection());
-        for (body = m_pNotebookStackHead; body->next != 0; body = body->next)
+        for (body = m_pNotebookStackHead; body->next != nullptr; body = body->next)
         {
             if (wnd == body->next->window)
             {
@@ -1462,7 +1462,7 @@ void EditorManager::OnTabPosition(wxCommandEvent& event)
 void EditorManager::OnProperties(cb_unused wxCommandEvent& event)
 {
     cbEditor* ed = GetBuiltinActiveEditor();
-    ProjectFile* pf = 0;
+    ProjectFile* pf = nullptr;
     if (ed)
         pf = ed->GetProjectFile();
     if (pf)

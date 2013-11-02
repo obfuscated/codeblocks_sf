@@ -13,6 +13,7 @@
 
 #include "cbthreadedtask.h"
 #include "settings.h"
+#include "prep.h"
 
 /// A Thread Pool implementation
 class DLLIMPORT cbThreadPool
@@ -146,7 +147,7 @@ class DLLIMPORT cbThreadPool
     /// All tasks are added to one of these. It'll also save the autodelete value
     struct cbThreadedTaskElement
     {
-      cbThreadedTaskElement(cbThreadedTask *_task = 0, bool _autodelete = false)
+      cbThreadedTaskElement(cbThreadedTask *_task = nullptr, bool _autodelete = false)
       : task(_task),
         autodelete(_autodelete)
       {
@@ -159,7 +160,7 @@ class DLLIMPORT cbThreadPool
         if (autodelete)
         {
           delete task;
-          task = 0; // better safe than sorry
+          task = nullptr; // better safe than sorry
         }
       }
 

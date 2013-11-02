@@ -105,7 +105,7 @@ void cbAuiNotebook::UpdateTabControlsArray()
     const size_t tab_Count = GetPageCount();
     for (size_t i = 0; i < tab_Count; ++i)
     {
-        wxAuiTabCtrl* tabCtrl = 0;
+        wxAuiTabCtrl* tabCtrl = nullptr;
         int idx = -1;
         if (FindTab(GetPage(i), &tabCtrl, &idx))
         {
@@ -548,7 +548,7 @@ int cbAuiNotebook::GetTabPositionFromIndex(int index)
 
     UpdateTabControlsArray();
 
-    wxAuiTabCtrl* tabCtrl = 0;
+    wxAuiTabCtrl* tabCtrl = nullptr;
     int idx = -1;
 
     if (!FindTab(GetPage(index), &tabCtrl, &idx))
@@ -588,7 +588,7 @@ void cbAuiNotebook::AdvanceSelection(bool forward)
 
     int currentSelection = GetSelection();
 
-    wxAuiTabCtrl* tabCtrl = 0;
+    wxAuiTabCtrl* tabCtrl = nullptr;
     int idx = -1;
 
     if (!FindTab(GetPage(currentSelection), &tabCtrl, &idx))
@@ -597,7 +597,7 @@ void cbAuiNotebook::AdvanceSelection(bool forward)
     if (!tabCtrl || idx < 0)
         return;
 
-    wxWindow* page = 0;
+    wxWindow* page = nullptr;
     size_t maxPages = tabCtrl->GetPageCount();
 
     forward?idx++:idx--;
@@ -655,7 +655,7 @@ wxString cbAuiNotebook::SavePerspective()
         if (pane.name == wxT("dummy"))
             continue;
 
-        wxAuiTabCtrl* tabCtrl = 0;
+        wxAuiTabCtrl* tabCtrl = nullptr;
         for (size_t j = 0; j < m_TabCtrls.GetCount(); ++j)
         {
             if (pane.window == GetTabFrameFromTabCtrl(m_TabCtrls.Item(j)))

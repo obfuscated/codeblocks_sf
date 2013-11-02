@@ -22,7 +22,7 @@
 
 // statics
 CompilersArray CompilerFactory::Compilers;
-Compiler* CompilerFactory::s_DefaultCompiler = 0;
+Compiler* CompilerFactory::s_DefaultCompiler = nullptr;
 
 size_t CompilerFactory::GetCompilersCount()
 {
@@ -35,7 +35,7 @@ Compiler* CompilerFactory::GetCompiler(size_t index)
     /* NOTE: Any negative value of index will be converted to a large unsigned integer.
     Therefore it's safe to check if the index equals or exceeds the compiler count. */
     if ((Compilers.GetCount() < 1) || (index >= Compilers.GetCount()))
-        return 0;
+        return nullptr;
     return Compilers[index];
 }
 
@@ -55,7 +55,7 @@ Compiler* CompilerFactory::GetCompiler(const wxString& id)
         if (oldId.IsSameAs(lid))
             return Compilers[i];
     }
-    return 0;
+    return nullptr;
 }
 
 Compiler* CompilerFactory::GetCompilerByName(const wxString& title)
@@ -65,7 +65,7 @@ Compiler* CompilerFactory::GetCompilerByName(const wxString& title)
         if (Compilers[i]->GetName().IsSameAs(title))
             return Compilers[i];
     }
-    return 0;
+    return nullptr;
 }
 
 int CompilerFactory::GetCompilerIndex(const wxString& id)
@@ -163,7 +163,7 @@ void CompilerFactory::RegisterUserCompilers()
 Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString& newName)
 {
     if (!compiler)
-        return 0;
+        return nullptr;
 
     // abort if an existing compiler with the same name exists
     // this also avoids the possibility of throwing an exception
@@ -171,7 +171,7 @@ Compiler* CompilerFactory::CreateCompilerCopy(Compiler* compiler, const wxString
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         if (Compilers[i]->GetName() == newName)
-            return 0;
+            return nullptr;
     }
 
     Compiler* newC = compiler->CreateCopy();
@@ -210,7 +210,7 @@ void CompilerFactory::UnregisterCompilers()
     CompilerFactory::Compilers.Empty();
     Compiler::m_CompilerIDs.Empty();
 
-    s_DefaultCompiler = 0;
+    s_DefaultCompiler = nullptr;
 }
 
 const wxString& CompilerFactory::GetDefaultCompilerID()
@@ -320,7 +320,7 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
         }
     }
     // now display a choice dialog
-    wxSingleChoiceDialog dlg(0,
+    wxSingleChoiceDialog dlg(nullptr,
                              message,
                              _("Compiler selection"),
                              CompilerFactory::Compilers.GetCount(),
@@ -329,7 +329,7 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
         return Compilers[dlg.GetSelection()];
-    return 0;
+    return nullptr;
 }
 
 wxString CompilerFactory::GetCompilerVersionString(const wxString& Id)

@@ -199,7 +199,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf) 
 }
 
 ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& fileName) :
-    m_ProjectFile(0),
+    m_ProjectFile(nullptr),
     m_FileNameStr(fileName),
     m_FileName(),
     m_LastBuildStageCompilerSel(-1)

@@ -112,7 +112,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param parent The parent window.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetConfigurationPanel(cb_optional wxWindow* parent){ return 0; }
+        virtual cbConfigurationPanel* GetConfigurationPanel(cb_optional wxWindow* parent){ return nullptr; }
 
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's
@@ -121,7 +121,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param project The project that is being edited.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_optional wxWindow* parent, cb_optional cbProject* project){ return 0; }
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(cb_optional wxWindow* parent, cb_optional cbProject* project){ return nullptr; }
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -151,7 +151,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @param menu pointer to the popup menu
           * @param data pointer to FileTreeData object (to access/modify the file tree)
           */
-        virtual void BuildModuleMenu(cb_optional const ModuleType type, cb_optional wxMenu* menu, cb_optional const FileTreeData* data = 0) { }
+        virtual void BuildModuleMenu(cb_optional const ModuleType type, cb_optional wxMenu* menu, cb_optional const FileTreeData* data = nullptr) { }
 
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -273,7 +273,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * should ask the user which target to "run" (except maybe if there is
           * only one build target in the project).
           */
-        virtual int Run(ProjectBuildTarget* target = 0L) = 0;
+        virtual int Run(ProjectBuildTarget* target = nullptr) = 0;
 
         /** Same as Run(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Run(const wxString& target) = 0;
@@ -286,7 +286,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * @param target The specific build target to "clean". If NULL, it
           * cleans all the build targets of the current project.
           */
-        virtual int Clean(ProjectBuildTarget* target = 0L) = 0;
+        virtual int Clean(ProjectBuildTarget* target = nullptr) = 0;
 
         /** Same as Clean(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Clean(const wxString& target) = 0;
@@ -300,7 +300,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * @param target The specific build target to "distclean". If NULL, it
           * cleans all the build targets of the current project.
           */
-        virtual int DistClean(ProjectBuildTarget* target = 0L) = 0;
+        virtual int DistClean(ProjectBuildTarget* target = nullptr) = 0;
 
         /** Same as DistClean(ProjectBuildTarget*) but with a wxString argument. */
         virtual int DistClean(const wxString& target) = 0;
@@ -310,7 +310,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * @param target The specific build target to build. If NULL, it
           * builds all the targets of the current project.
           */
-        virtual int Build(ProjectBuildTarget* target = 0L) = 0;
+        virtual int Build(ProjectBuildTarget* target = nullptr) = 0;
 
         /** Same as Build(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Build(const wxString& target) = 0;
@@ -324,7 +324,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * @param target The specific build target to rebuild. If NULL, it
           * rebuilds all the build targets of the current project.
           */
-        virtual int Rebuild(ProjectBuildTarget* target = 0L) = 0;
+        virtual int Rebuild(ProjectBuildTarget* target = nullptr) = 0;
 
         /** Same as Rebuild(ProjectBuildTarget*) but with a wxString argument. */
         virtual int Rebuild(const wxString& target) = 0;
@@ -364,7 +364,7 @@ class PLUGIN_EXPORT cbCompilerPlugin: public cbPlugin
           * @param project The selected project (can be NULL).
           * @param target The selected target (can be NULL).
           */
-        virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L) = 0;
+        virtual int Configure(cbProject* project, ProjectBuildTarget* target = nullptr) = 0;
     private:
 };
 
@@ -403,7 +403,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         virtual void OnRelease(bool appShutDown);
 
         virtual void BuildMenu(wxMenuBar* menuBar);
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0);
+        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr);
         virtual bool BuildToolBar(wxToolBar* toolBar);
 
         /** @brief Notify the debugger that lines were added or removed in an editor.
@@ -677,7 +677,7 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbToolPlugin
         void BuildMenu(cb_unused wxMenuBar* menuBar){}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
         bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
@@ -722,7 +722,7 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbMimePlugin
         void BuildMenu(cb_unused wxMenuBar* menuBar){}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
         bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
@@ -809,12 +809,12 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
           *                         If the wizard created a file, that would be the file's name.
           * @return a pointer to the generated cbProject or ProjectBuildTarget. NULL for everything else (failure too).
           * You should dynamic-cast this to the correct type based on GetOutputType() 's value. */
-        virtual CompileTargetBase* Launch(int index, wxString* createdFilename = 0) = 0; // do your work ;)
+        virtual CompileTargetBase* Launch(int index, wxString* createdFilename = nullptr) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
         void BuildMenu(cb_unused wxMenuBar* menuBar){}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
         bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
@@ -834,7 +834,7 @@ class cbSmartIndentPlugin : public cbPlugin
         // "Hide" some virtual members, that are not needed in cbSmartIndentPlugin
         void BuildMenu(cb_unused wxMenuBar* menuBar){}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
         bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
     protected:
@@ -857,7 +857,7 @@ class cbSmartIndentPlugin : public cbPlugin
 
         /** forward search to the next character which is not a whitespace **/
         wxChar GetLastNonWhitespaceChar(cbEditor* ed, int position = -1) const;
-        wxChar GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl* stc, int position = -1, int *pos = 0) const;
+        wxChar GetNextNonWhitespaceCharOnLine(cbStyledTextCtrl* stc, int position = -1, int *pos = nullptr) const;
 
         int FindBlockStart(cbStyledTextCtrl* stc, int position, wxChar blockStart, wxChar blockEnd, bool skipNested = true) const;
         int FindBlockStart(cbStyledTextCtrl* stc, int position, wxString blockStart, wxString blockEnd, bool CaseSensitive = true) const;
@@ -869,7 +869,7 @@ class cbSmartIndentPlugin : public cbPlugin
         int GetFirstBraceInLine(cbStyledTextCtrl* stc, int string_style)const;
 
         /** Get the last non-whitespace character from position in line */
-        wxChar GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl* stc, int position = -1, int *pos = 0)const;
+        wxChar GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl* stc, int position = -1, int *pos = nullptr)const;
         bool AutoIndentEnabled()const;
         bool SmartIndentEnabled()const;
         bool BraceSmartIndentEnabled()const;

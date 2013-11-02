@@ -47,7 +47,7 @@
 #include "cbcolourmanager.h"
 #include "debuggermanager.h"
 
-static Manager* s_ManagerInstance = 0;
+static Manager* s_ManagerInstance = nullptr;
 
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
@@ -191,7 +191,7 @@ Manager* Manager::Get()
 void Manager::Free()
 {
     delete s_ManagerInstance;
-    s_ManagerInstance = 0;
+    s_ManagerInstance = nullptr;
 }
 
 void Manager::SetAppStartedUp(bool app_started_up)
@@ -374,7 +374,7 @@ wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
 wxToolBar *Manager::LoadToolBar(wxFrame *parent,wxString resid,bool defaultsmall)
 {
     if (!parent)
-        return 0L;
+        return nullptr;
     wxToolBar *tb = wxXmlResource::Get()->LoadToolBar(parent,resid);
     if (!tb)
     {
@@ -405,7 +405,7 @@ void Manager::AddonToolBar(wxToolBar* toolBar,wxString resid)
 {
     if (!toolBar)
         return;
-    wxXmlResource::Get()->LoadObject(toolBar,NULL,resid,_T("wxToolBarAddOn"));
+    wxXmlResource::Get()->LoadObject(toolBar,nullptr,resid,_T("wxToolBarAddOn"));
 }
 
 bool Manager::isToolBar16x16(wxToolBar* toolBar)
@@ -510,7 +510,7 @@ bool Manager::LoadResource(const wxString& file)
 //#endif
 
     wxFile f(resourceFile, wxFile::read);
-    char *buf = 0;
+    char *buf = nullptr;
 
     try
     {

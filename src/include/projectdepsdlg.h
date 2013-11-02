@@ -13,7 +13,7 @@ class cbProject;
 class ProjectDepsDlg : public wxScrollingDialog
 {
     public:
-        ProjectDepsDlg(wxWindow* parent, cbProject* sel = 0);
+        ProjectDepsDlg(wxWindow* parent, cbProject* sel = nullptr);
         virtual ~ProjectDepsDlg();
         virtual void EndModal(int retCode);
     protected:

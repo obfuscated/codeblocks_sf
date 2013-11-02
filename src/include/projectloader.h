@@ -70,12 +70,12 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         bool FileModified(){ return m_OpenDirty; }
     protected:
         void DoProjectOptions(TiXmlElement* parentNode);
-        void DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
-        void DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
-        void DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
-        void DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
-        void DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
-        void DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target = 0L);
+        void DoCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+        void DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+        void DoLinkerOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+        void DoIncludesOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+        void DoLibsOptions(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
+        void DoExtraCommands(TiXmlElement* parentNode, ProjectBuildTarget* target = nullptr);
         void DoMakeCommands(TiXmlElement* parentNode, CompileTargetBase* target);
         void DoVirtualTargets(TiXmlElement* parentNode);
 
@@ -92,7 +92,7 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
         void ConvertLibraries(CompileTargetBase* object);
 
         // convenience functions, used in Save()
-        TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr = 0, const wxString& attribute = wxEmptyString);
+        TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr = nullptr, const wxString& attribute = wxEmptyString);
         TiXmlElement* AddElement(TiXmlElement* parent, const char* name, const char* attr, int attribute);
         void AddArrayOfElements(TiXmlElement* parent, const char* name, const char* attr, const wxArrayString& array, bool isPath = false);
         void SaveEnvironment(TiXmlElement* parent, CompileOptionsBase* base);

@@ -30,7 +30,7 @@ END_EVENT_TABLE()
 AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message, const wxArtID icon,
                                dStyle style, dReturnType defaultReturn,
                                const wxString& b1, const wxString& b2, const wxString& b3)
-        : wxScrollingDialog(NULL, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
+        : wxScrollingDialog(nullptr, -1, caption, wxDefaultPosition, wxDefaultSize, wxCAPTION),
         cb(nullptr),
         dontAnnoy(false),
         defRet(defaultReturn)
@@ -142,7 +142,7 @@ AnnoyingDialog::AnnoyingDialog(const wxString& caption, const wxString& message,
     else
         cbThrow(wxString(_T("Fatal error:\nUndefined style in dialog ")) << caption);
 
-    wxSizer* buttonSizer = 0;
+    wxSizer* buttonSizer = nullptr;
     if (style < ONE_BUTTON) // standard buttons? use wxStdDialogButtonSizer
     {
         wxStdDialogButtonSizer *buttonArea = new wxStdDialogButtonSizer();

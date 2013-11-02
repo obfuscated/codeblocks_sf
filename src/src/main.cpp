@@ -538,26 +538,26 @@ END_EVENT_TABLE()
 MainFrame::MainFrame(wxWindow* parent)
        : wxFrame(parent, -1, _T("MainWin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE | wxNO_FULL_REPAINT_ON_RESIZE),
        m_LayoutManager(this),
-       m_pAccel(0L),
+       m_pAccel(nullptr),
        m_filesHistory(_("&File"), wxT("/recent_files"), idFileOpenRecentFileClearHistory, wxID_CBFILE01),
        m_projectsHistory(_("&File"), wxT("/recent_projects"), idFileOpenRecentProjectClearHistory, wxID_CBFILE17),
-       m_pCloseFullScreenBtn(0L),
-       m_pEdMan(0L),
-       m_pPrjMan(0L),
+       m_pCloseFullScreenBtn(nullptr),
+       m_pEdMan(nullptr),
+       m_pPrjMan(nullptr),
        m_pPrjManUI(nullptr),
-       m_pLogMan(0L),
-       m_pInfoPane(0L),
-       m_pToolbar(0L),
-       m_ToolsMenu(0L),
-       m_HelpPluginsMenu(0L),
+       m_pLogMan(nullptr),
+       m_pInfoPane(nullptr),
+       m_pToolbar(nullptr),
+       m_ToolsMenu(nullptr),
+       m_HelpPluginsMenu(nullptr),
        m_ScanningForPlugins(false),
        m_StartupDone(false), // one-time flag
        m_InitiatedShutdown(false),
        m_AutoHideLockCounter(0),
        m_LastCtrlAltTabWindow(0),
        m_LastLayoutIsTemp(false),
-       m_pScriptConsole(0),
-       m_pBatchBuildDialog(0)
+       m_pScriptConsole(nullptr),
+       m_pBatchBuildDialog(nullptr)
 {
     Manager::Get(this); // provide manager with handle to MainFrame (this)
 
@@ -886,7 +886,7 @@ void MainFrame::PluginsUpdated(cb_unused cbPlugin* plugin, cb_unused int status)
         if (m_PluginsTools[plug]) // if plugin has a toolbar
         {
             // toolbar exists; add the menu item
-            wxMenu* viewToolbars = 0;
+            wxMenu* viewToolbars = nullptr;
             GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
             if (viewToolbars)
             {
@@ -911,7 +911,7 @@ void MainFrame::RecreateMenuBar()
     Freeze();
 
     wxMenuBar* m = GetMenuBar();
-    SetMenuBar(0); // unhook old menubar
+    SetMenuBar(nullptr); // unhook old menubar
     CreateMenubar(); // create new menubar
     delete m; // delete old menubar
 
@@ -932,9 +932,9 @@ void MainFrame::CreateMenubar()
     Manager::Get()->ProcessEvent(event);
 
     int tmpidx;
-    wxMenuBar* mbar=0L;
-    wxMenu *hl=0L, *tools=0L, *plugs=0L, *pluginsM=0L;
-    wxMenuItem *tmpitem=0L;
+    wxMenuBar* mbar=nullptr;
+    wxMenu *hl=nullptr, *tools=nullptr, *plugs=nullptr, *pluginsM=nullptr;
+    wxMenuItem *tmpitem=nullptr;
 
     wxXmlResource* xml_res = wxXmlResource::Get();
     wxString resPath = ConfigManager::GetDataFolder();
@@ -981,7 +981,7 @@ void MainFrame::CreateMenubar()
     if (tmpidx!=wxNOT_FOUND)
         plugs = mbar->GetMenu(tmpidx);
 
-    if ((tmpitem = mbar->FindItem(idHelpPlugins,NULL)))
+    if ((tmpitem = mbar->FindItem(idHelpPlugins,nullptr)))
         pluginsM = tmpitem->GetSubMenu();
 
     m_ToolsMenu       = tools    ? tools    : new wxMenu();
@@ -1051,8 +1051,8 @@ void MainFrame::CreateToolbars()
 {
     if (m_pToolbar)
     {
-        SetToolBar(0L);
-        m_pToolbar = 0L;
+        SetToolBar(nullptr);
+        m_pToolbar = nullptr;
     }
 
     wxString xrcToolbarName(_T("main_toolbar"));
@@ -1123,7 +1123,7 @@ void MainFrame::CreateToolbars()
     DoUpdateLayout();
 
     Manager::ProcessPendingEvents();
-    SetToolBar(0);
+    SetToolBar(nullptr);
 }
 
 void MainFrame::AddToolbarItem(int id, const wxString& title, const wxString& shortHelp, const wxString& longHelp, const wxString& image)
@@ -1164,13 +1164,13 @@ void MainFrame::ScanForPlugins()
 
 wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObjectEventFunction callback, int pos, bool checkable)
 {
-    wxMenuItem* item = 0;
+    wxMenuItem* item = nullptr;
     if (!plugin || !menu)
         return item;
 
     const PluginInfo* info = Manager::Get()->GetPluginManager()->GetPluginInfo(plugin);
     if (!info)
-        return 0;
+        return nullptr;
 
     PluginIDsMap::iterator it;
     for (it = m_PluginIDsMap.begin(); it != m_PluginIDsMap.end(); ++it)
@@ -1387,7 +1387,7 @@ void MainFrame::SaveViewLayout(const wxString& name, const wxString& layout, con
         return;
     m_LayoutViews[name] = layout;
     m_LayoutMessagePane[name] = layoutMP;
-    wxMenu* viewLayouts = 0;
+    wxMenu* viewLayouts = nullptr;
     GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
     if (viewLayouts && viewLayouts->FindItem(name) == wxNOT_FOUND)
     {
@@ -1529,7 +1529,7 @@ void MainFrame::DoFixToolbarsLayout()
 
 void MainFrame::DoSelectLayout(const wxString& name)
 {
-    wxMenu* viewLayouts = 0;
+    wxMenu* viewLayouts = nullptr;
     GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
     if (viewLayouts)
     {
@@ -1604,11 +1604,11 @@ ToolbarInfo MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
     if (plugin->BuildToolBar(info.toolbar))
     {
         info.priority = plugin->GetToolBarPriority();
-        SetToolBar(0);
+        SetToolBar(nullptr);
         InitToolbar(info.toolbar);
 
         // add View->Toolbars menu item for toolbar
-        wxMenu* viewToolbars = 0;
+        wxMenu* viewToolbars = nullptr;
         GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
         if (viewToolbars)
         {
@@ -2042,8 +2042,8 @@ void MainFrame::DoUpdateLayout()
 
 void MainFrame::DoUpdateAppTitle()
 {
-    EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0L;
-    cbProject* prj = 0;
+    EditorBase* ed = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : nullptr;
+    cbProject* prj = nullptr;
     if (ed && ed->IsBuiltinEditor())
     {
         ProjectFile* prjf = ((cbEditor*)ed)->GetProjectFile();
@@ -2051,7 +2051,7 @@ void MainFrame::DoUpdateAppTitle()
             prj = prjf->GetParentProject();
     }
     else
-        prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
+        prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : nullptr;
     wxString projname;
     wxString edname;
     wxString fulltitle;
@@ -2195,7 +2195,7 @@ wxString MainFrame::GetEditorDescription(EditorBase* eb)
             prj = prjf->GetParentProject();
     }
     else
-        prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
+        prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : nullptr;
     if(prj)
     {
         descr = wxString(_("Project: ")) + _T("<b>") + prj->GetTitle() + _T("</b>");
@@ -2737,7 +2737,7 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     if (!Manager::IsBatchBuild())
     {
         m_pInfoPane->Destroy();
-        m_pInfoPane = 0L;
+        m_pInfoPane = nullptr;
     }
 
     // Disconnect the mouse right click event handler for toolbars, this should be done before the plugin is
@@ -3565,7 +3565,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
             HighlightLanguage lang = theme->GetHighlightLanguage(_T(""));
             if (event.GetId() != idEditHighlightModeText)
             {
-                wxMenu* hl = 0;
+                wxMenu* hl = nullptr;
                 GetMenuBar()->FindItem(idEditHighlightModeText, &hl);
                 if (hl)
                 {
@@ -3750,7 +3750,7 @@ void MainFrame::OnViewLayoutDelete(cb_unused wxCommandEvent& event)
             m_LayoutMessagePane.erase(it);
 
         // now delete the menu item too
-        wxMenu* viewLayouts = 0;
+        wxMenu* viewLayouts = nullptr;
         GetMenuBar()->FindItem(idViewLayoutSave, &viewLayouts);
         if (viewLayouts)
         {
@@ -3889,8 +3889,8 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
 
-    EditorBase*  ed   = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : 0;
-    cbProject*   prj  = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
+    EditorBase*  ed   = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : nullptr;
+    cbProject*   prj  = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : nullptr;
     EditorBase*  sh   = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     cbWorkspace* wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
     wxMenuBar*   mbar = GetMenuBar();
@@ -4030,7 +4030,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         mbar->Check(idEditEncodingUnicode32BE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32BE);
         mbar->Check(idEditEncodingUnicode32LE, ed && ed->GetEncoding() == wxFONTENCODING_UTF32LE);
 
-        wxMenu* hl = 0;
+        wxMenu* hl = nullptr;
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
             mbar->Check(hl->FindItem(ed->GetColourSet()->GetLanguageName(ed->GetLanguage())), true);
@@ -4057,7 +4057,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     }
 
     wxMenuBar* mbar   = GetMenuBar();
-    cbEditor*  ed     = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : 0;
+    cbEditor*  ed     = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() : nullptr;
     bool       manVis = m_LayoutManager.GetPane(m_pPrjManUI->GetNotebook()).IsShown();
 
     mbar->Check(idViewManager,             manVis);
@@ -4074,7 +4074,7 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     // toolbars
     mbar->Check(idViewToolMain,     m_LayoutManager.GetPane(m_pToolbar).IsShown());
     mbar->Check(idViewToolDebugger, m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
-    wxMenu* viewToolbars = 0;
+    wxMenu* viewToolbars = nullptr;
     GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
     if (viewToolbars)
     {
@@ -4104,7 +4104,7 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
 
     cbEditor* ed = Manager::Get()->GetEditorManager()
                  ? Manager::Get()->GetEditorManager()->GetBuiltinEditor(
-                     Manager::Get()->GetEditorManager()->GetActiveEditor() ) : 0;
+                     Manager::Get()->GetEditorManager()->GetActiveEditor() ) : nullptr;
 
     bool enableGoto = false;
     if (ed)
@@ -4135,7 +4135,7 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
 
-    cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : 0L;
+    cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : nullptr;
     wxMenuBar* mbar = GetMenuBar();
 
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
@@ -4845,8 +4845,8 @@ void MainFrame::OnGetActiveLogWindow(CodeBlocksLogEvent& event)
     bool is_logger;
     int page_index = m_pInfoPane->GetCurrentPage(is_logger);
 
-    event.logger = NULL;
-    event.window = NULL;
+    event.logger = nullptr;
+    event.window = nullptr;
 
     if (is_logger)
         event.logger = m_pInfoPane->GetLogger(page_index);

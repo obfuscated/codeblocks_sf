@@ -465,7 +465,7 @@ class DebugTextCtrlLogger : public TextCtrlLogger
 public:
     DebugTextCtrlLogger(bool fixedPitchFont, bool debugLog) :
         TextCtrlLogger(fixedPitchFont),
-        m_panel(NULL),
+        m_panel(nullptr),
         m_debugLog(debugLog)
     {
     }
@@ -506,7 +506,7 @@ public:
                                                wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
 
         m_command_entry = new wxComboBox(this, idDebug_LogEntryControl, wxEmptyString,
-                                         wxDefaultPosition, wxDefaultSize, 0, 0,
+                                         wxDefaultPosition, wxDefaultSize, 0, nullptr,
                                          wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
         wxBitmap execute_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),
@@ -637,7 +637,7 @@ wxWindow* DebugTextCtrlLogger::CreateControl(wxWindow* parent)
     return m_panel;
 }
 
-template<> DebuggerManager* Mgr<DebuggerManager>::instance = 0;
+template<> DebuggerManager* Mgr<DebuggerManager>::instance = nullptr;
 template<> bool  Mgr<DebuggerManager>::isShutdown = false;
 
 inline void ReadActiveDebuggerConfig(wxString &name, int &configIndex)
@@ -669,16 +669,16 @@ cbDebuggerConfiguration* DebuggerManager::PluginData::GetConfiguration(int index
 
 DebuggerManager::DebuggerManager() :
     m_interfaceFactory(nullptr),
-    m_activeDebugger(NULL),
+    m_activeDebugger(nullptr),
     m_menuHandler(nullptr),
-    m_backtraceDialog(NULL),
-    m_breakPointsDialog(NULL),
-    m_cpuRegistersDialog(NULL),
-    m_disassemblyDialog(NULL),
-    m_examineMemoryDialog(NULL),
-    m_threadsDialog(NULL),
-    m_watchesDialog(NULL),
-    m_logger(NULL),
+    m_backtraceDialog(nullptr),
+    m_breakPointsDialog(nullptr),
+    m_cpuRegistersDialog(nullptr),
+    m_disassemblyDialog(nullptr),
+    m_examineMemoryDialog(nullptr),
+    m_threadsDialog(nullptr),
+    m_watchesDialog(nullptr),
+    m_logger(nullptr),
     m_loggerIndex(-1),
     m_isDisassemblyMixedMode(false),
     m_useTargetsDefault(false)
@@ -770,7 +770,7 @@ bool DebuggerManager::UnregisterDebugger(cbDebuggerPlugin *plugin)
     if (plugin == m_activeDebugger)
     {
         if (m_registered.empty())
-            m_activeDebugger = NULL;
+            m_activeDebugger = nullptr;
         else
             m_activeDebugger = m_registered.begin()->first;
         m_menuHandler->SetActiveDebugger(m_activeDebugger);
@@ -945,7 +945,7 @@ void DebuggerManager::HideLogger()
 
     CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_logger);
     Manager::Get()->ProcessEvent(evt);
-    m_logger = NULL;
+    m_logger = nullptr;
     m_loggerIndex = -1;
 }
 

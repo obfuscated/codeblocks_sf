@@ -63,7 +63,7 @@ public:
     virtual void      CopyContentsToClipboard(cb_optional bool selectionOnly = false) {}
 
     virtual void      UpdateSettings() {}
-    virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return 0; }
+    virtual wxWindow* CreateControl(cb_optional wxWindow* parent) { return nullptr; }
 
     virtual bool      GetWrapMode() const { return false; }
     virtual bool      HasFeature(cb_optional Feature::Enum feature) const { return false; }

@@ -106,7 +106,7 @@ namespace ScriptBindings
         int paramCount = sa.GetParamCount();
         if (paramCount == 2)
         {
-            cbEditor* ed = 0;
+            cbEditor* ed = nullptr;
             if (sa.GetType(2) == OT_INTEGER)
                 ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(sa.GetInt(2));
             else
@@ -179,7 +179,7 @@ namespace ScriptBindings
             bool b1 = paramCount >= 4 ? sa.GetBool(4) : true;
             bool b2 = paramCount >= 5 ? sa.GetBool(5) : true;
             int i = paramCount == 6 ? sa.GetInt(6) : 50;
-            ProjectFile* pf = 0;
+            ProjectFile* pf = nullptr;
             if (sa.GetType(2) == OT_INTEGER)
                 pf = prj->AddFile(sa.GetInt(2), str, b1, b2, i);
             else
@@ -196,7 +196,7 @@ namespace ScriptBindings
         if (paramCount == 2)
         {
             cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
-            ProjectBuildTarget* bt = 0;
+            ProjectBuildTarget* bt = nullptr;
             if (sa.GetType(2) == OT_INTEGER)
                 bt = prj->GetBuildTarget(sa.GetInt(2));
             else
@@ -227,7 +227,7 @@ namespace ScriptBindings
         if (paramCount == 3)
         {
             cbProject* prj = SqPlus::GetInstance<cbProject,false>(v, 1);
-            ProjectBuildTarget* bt = 0;
+            ProjectBuildTarget* bt = nullptr;
             if (sa.GetType(2) == OT_INTEGER)
                 bt = prj->DuplicateBuildTarget(sa.GetInt(2), *SqPlus::GetInstance<wxString,false>(v, 3));
             else

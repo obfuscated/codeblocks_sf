@@ -44,9 +44,9 @@ class SearchResultsLog;
  */
 struct cbNotebookStack
 {
-    cbNotebookStack(wxWindow* a_pWindow = 0)
+    cbNotebookStack(wxWindow* a_pWindow = nullptr)
         : window (a_pWindow),
-          next (0)
+          next (nullptr)
    {}
 
     wxWindow*           window;
@@ -79,8 +79,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         int GetEditorsCount();
 
         EditorBase* IsOpen(const wxString& filename);
-        cbEditor* Open(const wxString& filename, int pos = 0,ProjectFile* data = 0);
-        cbEditor* Open(LoaderBase* fileLdr, const wxString& filename, int pos = 0,ProjectFile* data = 0);
+        cbEditor* Open(const wxString& filename, int pos = 0, ProjectFile* data = nullptr);
+        cbEditor* Open(LoaderBase* fileLdr, const wxString& filename, int pos = 0, ProjectFile* data = nullptr);
         EditorBase* GetEditor(int index);
         EditorBase* GetEditor(const wxString& filename){ return IsOpen(filename); } // synonym of IsOpen()
         EditorBase* GetActiveEditor();

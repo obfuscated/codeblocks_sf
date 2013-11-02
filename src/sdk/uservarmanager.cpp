@@ -37,7 +37,7 @@
 
 #include <ctype.h>
 
-template<> UserVariableManager* Mgr<UserVariableManager>::instance   = 0;
+template<> UserVariableManager* Mgr<UserVariableManager>::instance   = nullptr;
 template<> bool                 Mgr<UserVariableManager>::isShutdown = false;
 
 const wxString cBase     (_T("base"));
@@ -623,7 +623,7 @@ void UsrGlblMgrEditDialog::UpdateChoices()
 
 void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
 {
-    wxTextCtrl* c = 0;
+    wxTextCtrl* c = nullptr;
     int id = event.GetId();
 
     if      (id == XRCID("fs1"))
