@@ -867,6 +867,8 @@ void TokenizeGDBLocals(std::vector<GDBLocalVariable> &results, wxString const &v
             if (!inString)
                 inChar=!inChar;
             break;
+        default:
+            break;
         }
     }
     results.push_back(GDBLocalVariable(value, start, value.length() - start));

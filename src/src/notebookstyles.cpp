@@ -687,6 +687,8 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
             gap_start = tab_rect.x - m_TabVBorder / 2;
             gap_width = tab_rect.width;
             break;
+        default:
+            break;
     }
     tab_rect.y += m_TabHBorder / 2;
     gap_rect_y += m_TabHBorder / 2;
@@ -910,6 +912,9 @@ void NbStyleGTK::DrawButton(wxDC& dc, wxWindow* wnd,
                 else
                     wxRendererNative::Get().DrawDropArrow(wnd, dc, rect);
             }
+            break;
+
+        default:
             break;
     }
 

@@ -53,21 +53,21 @@ class NullProjectManagerUI : public cbProjectManagerUI
         cbTreeCtrl* GetTree() { return nullptr; }
         void RebuildTree() {}
         void FreezeTree() {}
-        void UnfreezeTree(bool force = false) {}
+        void UnfreezeTree(bool force = false) { (void)force; }
         wxTreeItemId GetTreeSelection() { return wxTreeItemId(); }
-        void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) {}
-        void RemoveProject(cbProject *project) {}
+        void UpdateActiveProject(cbProject* WXUNUSED(oldProject), cbProject* WXUNUSED(newProject), bool WXUNUSED(refresh)) {}
+        void RemoveProject(cbProject* WXUNUSED(project)) {}
         void BeginLoadingWorkspace() {}
         void CloseWorkspace() {}
-        void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) {}
-        void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) {}
-        void ShowFileInTree(ProjectFile &projectFile) {}
+        void FinishLoadingProject(cbProject* WXUNUSED(project), bool WXUNUSED(newAddition), FilesGroupsAndMasks* WXUNUSED(fileGroups)) {}
+        void FinishLoadingWorkspace(cbProject* WXUNUSED(activeProject), const wxString& WXUNUSED(workspaceTitle)) {}
+        void ShowFileInTree(ProjectFile& WXUNUSED(projectFile)) {}
         bool QueryCloseAllProjects() { return true; }
-        bool QueryCloseProject(cbProject *proj, bool dontsavefiles = false)  { return true; }
+        bool QueryCloseProject(cbProject* WXUNUSED(proj), bool dontsavefiles = false)  { (void)dontsavefiles; return true; }
         bool QueryCloseWorkspace()  { return true; }
-        int AskForBuildTargetIndex(cbProject* project = nullptr) { return -1; }
-        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) { return wxArrayInt(); }
-        void ConfigureProjectDependencies(cbProject* base = nullptr) {}
+        int AskForBuildTargetIndex(cbProject* project = nullptr) { (void)project; return -1; }
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) { (void)project; return wxArrayInt(); }
+        void ConfigureProjectDependencies(cbProject* base = nullptr) { (void)base; }
 };
 
 // class constructor

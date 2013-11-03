@@ -263,7 +263,7 @@ wxString OccurrencesHighlighting::GetWordAtCaret()const
     return wxEmptyString;
 }
 
-void OccurrencesHighlighting::OnHighlightPermanently(wxCommandEvent &event)
+void OccurrencesHighlighting::OnHighlightPermanently(wxCommandEvent& WXUNUSED(event))
 {
     wxString word = GetWordAtCaret();
 
@@ -272,7 +272,7 @@ void OccurrencesHighlighting::OnHighlightPermanently(wxCommandEvent &event)
     UpdatePanel();
 }
 
-void OccurrencesHighlighting::OnHighlightRemove(wxCommandEvent &event)
+void OccurrencesHighlighting::OnHighlightRemove(wxCommandEvent& WXUNUSED(event))
 {
     wxString word = GetWordAtCaret();
 
@@ -295,7 +295,7 @@ void OccurrencesHighlighting::UpdatePanel()
     m_pPanel->GetListCtrl()->Thaw();
 }
 
-void OccurrencesHighlighting::OnPanelPopupMenu(wxContextMenuEvent &event)
+void OccurrencesHighlighting::OnPanelPopupMenu(wxContextMenuEvent& WXUNUSED(event))
 {
     if (m_pPanel->GetListCtrl()->GetSelectedItemCount() > 0)
     {
@@ -306,7 +306,7 @@ void OccurrencesHighlighting::OnPanelPopupMenu(wxContextMenuEvent &event)
     }
 }
 
-void OccurrencesHighlighting::OnRemove(wxCommandEvent &event)
+void OccurrencesHighlighting::OnRemove(wxCommandEvent& WXUNUSED(event))
 {
     RemoveSelected();
 }

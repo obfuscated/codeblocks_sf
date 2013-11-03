@@ -1334,14 +1334,19 @@ std::pair<cbProject*, ParserBase*> NativeParser::GetParserInfoByCurrentEditor()
     return info;
 }
 
+#ifdef __WXMSW__
 void NativeParser::SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxBitmap& mask)
 {
     if (kind < PARSER_IMG_MIN || kind > PARSER_IMG_MAX)
         return;
-#ifdef __WXMSW__
     m_ImageList->Replace(kind, bitmap, mask);
-#endif
 }
+#else
+void NativeParser::SetTokenKindImage(int WXUNUSED(kind), const wxBitmap& WXUNUSED(bitmap), const wxBitmap& WXUNUSED(mask))
+{
+    return;
+}
+#endif
 
 void NativeParser::SetTokenKindImage(int kind, const wxBitmap& bitmap, cb_unused const wxColour& maskColour)
 {
