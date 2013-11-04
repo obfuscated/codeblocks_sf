@@ -13,7 +13,6 @@
 #include <wx/datectrl.h>
 #include <wx/dynlib.h>
 
-#include  <commctrl.h>
 
 #define _WX_DEFINE_TIME_EVENTS_
 #include <wx/dateevt.h>

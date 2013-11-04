@@ -22,7 +22,7 @@
 
 #ifdef __WXMSW__
 // for Registry detection of Cygwin
-#include <windows.h>
+#include "wx/msw/wrapwin.h"     // Wraps windows.h
 #endif
 
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
