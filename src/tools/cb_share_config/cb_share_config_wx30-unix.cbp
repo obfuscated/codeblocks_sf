@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="C::B Share Config wx2.9x (Unix)" />
+		<Option title="C::B Share Config wx3.0.x (Unix)" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>

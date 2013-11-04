@@ -37,7 +37,7 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_CONFIG" value="wx-config --version=2.9" />
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
