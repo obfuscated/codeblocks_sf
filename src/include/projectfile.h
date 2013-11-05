@@ -10,6 +10,7 @@
 
 #include "settings.h"
 #include "globals.h"
+#include "prep.h"
 #include <wx/dynarray.h>
 #include <wx/filename.h>
 #include <wx/treectrl.h>
