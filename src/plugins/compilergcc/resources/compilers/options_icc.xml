@@ -207,173 +207,173 @@
 
         <Category name="Output, Debug and Profile">
             <Option name="Trap uninitialized variables"
-                    value="-ftrapuv"/>
+                    option="-ftrapuv"/>
             <Option name="Enable automatic precompiled header file creation/usage"
-                    value="-pch"/>
+                    option="-pch"/>
             <Option name="Perform syntax and semantic checking only (no object file produced)"
-                    value="-fsyntax-only"/>
+                    option="-fsyntax-only"/>
             <Option name="Produce symbolic debug information in object files"
-                    value="-g"
+                    option="-g"
                     checkAgainst="-O1 -O2 -O3 -Os"
                     checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
             <Option name="Compile and link for function profiling with UNIX gprof tool"
-                    value="-p"/>
+                    option="-p"/>
         </Category>
 
         <Category name="Compiler Diagnostics (some options override each other)">
             <Option name="Only display errors"
-                    value="-w0"/>
+                    option="-w0"/>
             <Option name="Display remarks, warnings, and errors"
-                    value="-w2"/>
+                    option="-w2"/>
             <Option name="Enable more strict diagnostics"
-                    value="-Wcheck"/>
+                    option="-Wcheck"/>
             <Option name="Force warnings to be reported as errors"
-                    value="-Werror"/>
+                    option="-Werror"/>
             <Option name="Print brief one-line diagnostics"
-                    value="-Wbrief"/>
+                    option="-Wbrief"/>
             <Option name="Enable all compiler diagnostics"
-                    value="-Wall"/>
+                    option="-Wall"/>
             <Option name="Warn for missing prototypes"
-                    value="-Wmissing-prototypes"/>
+                    option="-Wmissing-prototypes"/>
             <Option name="Warn for questionable pointer arithmetic"
-                    value="-Wpointer-arith"/>
+                    option="-Wpointer-arith"/>
             <Option name="Warn if a variable is used before being initialized"
-                    value="-Wuninitialized"/>
+                    option="-Wuninitialized"/>
             <Option name="Enable inline diagnostics"
-                    value="-Winline"/>
+                    option="-Winline"/>
             <Option name="Print warnings related to deprecated features"
-                    value="-Wdeprecated"/>
+                    option="-Wdeprecated"/>
             <Option name="Warn if declared function is not used"
-                    value="-Wunused-function"/>
+                    option="-Wunused-function"/>
             <Option name="Don't warn if an unknown #pragma directive is used"
-                    value="-Wno-unknown-pragmas"/>
+                    option="-Wno-unknown-pragmas"/>
             <Option name="Warn if return type of main is not expected"
-                    value="-Wmain"/>
+                    option="-Wmain"/>
             <Option name="Warn when /* appears in the middle of a /* */ comment"
-                    value="-Wcomment"/>
+                    option="-Wcomment"/>
             <Option name="Warn when a function uses the default int return type and warn when a return statement is used in a void function"
-                    value="-Wreturn-type"/>
+                    option="-Wreturn-type"/>
             <Option name="Print diagnostics for 64-bit porting"
-                    value="-Wp64"/>
+                    option="-Wp64"/>
         </Category>
 
         <Category name="Performance">
             <Option name="Disable optimizations"
-                    value="-O0"
+                    option="-O0"
                     supersedes="-O1 -O2 -O3 -Os"/>
             <Option name="Optimize for maximum speed, but disable some optimizations which increase code size for a small speed benefit."
-                    value="-O1"
+                    option="-O1"
                     supersedes="-O0 -O2 -O3 -Os"/>
             <Option name="Enable optimizations"
-                    value="-O2"
+                    option="-O2"
                     supersedes="-O0 -O1 -O3 -Os"/>
             <Option name="Enable -O2 plus more aggressive optimizations that may not improve performance for all programs"
-                    value="-O3"
+                    option="-O3"
                     supersedes="-O0 -O1 -O2 -Os"/>
             <Option name="Enable speed optimizations, but disable some optimizations which increase code size for small speed benefit"
-                    value="-Os"
+                    option="-Os"
                     supersedes="-O0 -O1 -O2 -O3"/>
             <Option name="Enable -xP -O3 -ipo -no-prec-div -static"
-                    value="-fast"/>
+                    option="-fast"/>
             <Option name="Disable inlining"
-                    value="-Ob0"/>
+                    option="-Ob0"/>
             <Option name="Inline functions declared with __inline, and perform C++ inlining"
-                    value="-Ob1"/>
+                    option="-Ob1"/>
             <Option name="Inline any function, at the compiler's discretion"
-                    value="-Ob2"/>
+                    option="-Ob2"/>
             <Option name="Assume no aliasing in program"
-                    value="-fno-alias"/>
+                    option="-fno-alias"/>
             <Option name="Assume no aliasing within functions, but assume aliasing across calls"
-                    value="-fno-fnalias"/>
+                    option="-fno-fnalias"/>
             <Option name="Maintain floating point precision (disables some optimizations)"
-                    value="-mp"
+                    option="-mp"
                     supersedes="-mp1"/>
             <Option name="Improve floating-point precision (speed impact is less than -mp)"
-                    value="-mp1"
+                    option="-mp1"
                     supersedes="-mp"/>
             <Option name="Disable using EBP as general purpose register"
-                    value="-fp"/>
+                    option="-fp"/>
             <Option name="Improve precision of floating-point divides (some speed impact)"
-                    value="-prec-div"/>
+                    option="-prec-div"/>
             <Option name="Determine if certain square root optimizations are enabled"
-                    value="-prec-sqrt"/>
+                    option="-prec-sqrt"/>
             <Option name="Round fp results at assignments and casts (some speed impact)"
-                    value="-fp-port"/>
+                    option="-fp-port"/>
             <Option name="Enable fp stack checking after every function/procedure call"
-                    value="-fpstkchk"/>
+                    option="-fpstkchk"/>
             <Option name="Rounding mode to enable fast float-to-int conversions"
-                    value="-rcd"/>
+                    option="-rcd"/>
             <Option name="Optimize specifically for Pentium processor"
-                    value="-mtune=pentium"
+                    option="-mtune=pentium"
                     supersedes="-mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
             <Option name="Optimize specifically for Pentium Pro, Pentium II and Pentium III processors"
-                    value="-mtune=pentiumpro"
+                    option="-mtune=pentiumpro"
                     supersedes="-mtune=pentium -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
             <Option name="Generate code exclusively for Pentium Pro and Pentium II processor instructions"
-                    value="-march=pentiumpro"
+                    option="-march=pentiumpro"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
             <Option name="Generate code exclusively for MMX instructions"
-                    value="-march=pentiumii"
+                    option="-march=pentiumii"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumiii -march=pentium4 -msse -msse2 -msse3"/>
             <Option name="Generate code exclusively for streaming SIMD extensions"
-                    value="-march=pentiumiii"
+                    option="-march=pentiumiii"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentium4 -msse -msse2 -msse3"/>
             <Option name="Generate code exclusively for Pentium 4 New Instructions"
-                    value="-march=pentium4"
+                    option="-march=pentium4"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -msse -msse2 -msse3"/>
             <Option name="Generate code for Intel Pentium III and compatible Intel processors"
-                    value="-msse"
+                    option="-msse"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse2 -msse3"/>
             <Option name="Generate code for Intel Pentium 4 and compatible Intel processors"
-                    value="-msse2"
+                    option="-msse2"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse3"/>
             <Option name="Generate code for Intel Pentium 4 processors with SSE3 extensions"
-                    value="-msse3"
+                    option="-msse3"
                     supersedes="-mtune=pentium -mtune=pentiumpro -march=pentiumpro -march=pentiumii -march=pentiumiii -march=pentium4 -msse -msse2"/>
         </Category>
 
         <Category name="Language">
             <Option name="Enable the 'restrict' keyword for disambiguating pointers"
-                    value="-restrict"/>
+                    option="-restrict"/>
             <Option name="Equivalent to GNU -ansi"
-                    value="-ansi"/>
+                    option="-ansi"/>
             <Option name="Strict ANSI conformance dialects"
-                    value="-strict-ansi"/>
+                    option="-strict-ansi"/>
             <Option name="Compile all source or unrecognized file types as C++ source files"
-                    value="-Kc++"/>
+                    option="-Kc++"/>
             <Option name="Disable RTTI support"
-                    value="-fno-rtti"/>
+                    option="-fno-rtti"/>
             <Option name="Process OpenMP directives"
-                    value="-openmp"/>
+                    option="-openmp"/>
             <Option name="Analyze and reorder memory layout for variables and arrays"
-                    value="-align"/>
+                    option="-align"/>
             <Option name="Specify alignment constraint for structures to 1"
-                    value="-Zp1"
+                    option="-Zp1"
                     supersedes="-Zp2 -Zp4 -Zp8 -Zp16"/>
             <Option name="Specify alignment constraint for structures to 2"
-                    value="-Zp2"
+                    option="-Zp2"
                     supersedes="-Zp1 -Zp4 -Zp8 -Zp16"/>
             <Option name="Specify alignment constraint for structures to 4"
-                    value="-Zp4"
+                    option="-Zp4"
                     supersedes="-Zp1 -Zp2 -Zp8 -Zp16"/>
             <Option name="Specify alignment constraint for structures to 8"
-                    value="-Zp8"
+                    option="-Zp8"
                     supersedes="-Zp1 -Zp2 -Zp4 -Zp16"/>
             <Option name="Specify alignment constraint for structures to 16"
-                    value="-Zp16"
+                    option="-Zp16"
                     supersedes="-Zp1 -Zp2 -Zp4 -Zp8"/>
             <Option name="Allocate as many bytes as needed for enumerated types"
-                    value="-fshort-enums"/>
+                    option="-fshort-enums"/>
             <Option name="Change default char type to unsigned"
-                    value="-funsigned-char"/>
+                    option="-funsigned-char"/>
             <Option name="Change default bitfield type to unsigned"
-                    value="-funsigned-bitfields"/>
+                    option="-funsigned-bitfields"/>
             <Option name="Disable support for operator name keywords"
-                    value="-fno-operator-names"/>
+                    option="-fno-operator-names"/>
             <Option name="Do not recognize 'typeof' as a keyword"
-                    value="-fno-gnu-keywords"/>
+                    option="-fno-gnu-keywords"/>
             <Option name="Allow for non-conformant code"
-                    value="-fpermissive"/>
+                    option="-fpermissive"/>
         </Category>
 
         <Command name="CompileObject"
