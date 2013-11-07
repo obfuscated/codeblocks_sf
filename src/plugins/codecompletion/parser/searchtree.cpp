@@ -321,7 +321,29 @@ inline unsigned int SearchTreeNode::GetLabelStartDepth() const
     return (m_Depth - m_LabelLen);
 }
 
-inline unsigned int SearchTreeNode::GetDeepestMatchingPosition(BasicSearchTree* tree, const wxString& s,unsigned int StringStartDepth)
+/** Let's give an example about the algorithm of GetDeepestMatchingPosition, see the tree below
+ *   - "" (0)
+ *         \- "p" (4)
+ *                 +- "hysi" (2)
+ *                 |          +- "cs" (1)
+ *                 |          \- "ology" (3)
+ *                 \- "sychic" (5)
+ *
+ * Now, suppose that
+ * the label is a long string "0123456789psychic"
+ *                                       |@
+ * '|' donates the StringStartDepth position, '@' donates the current Node's start depth.
+ * Now, we have a string s = "psychABC", we should actually starting comparing the two string from "s".
+ * compare the two strings:
+ *
+ *       0123456789psychic
+ *                 psychABC
+ *                  ^   ~
+ * Here, '^' donates the m_LabelStart of current node, '~' donates the deepest match point.
+ */
+inline unsigned int SearchTreeNode::GetDeepestMatchingPosition(BasicSearchTree* tree,
+                                                               const wxString& s,
+                                                               unsigned int StringStartDepth)
 {
     if (StringStartDepth >= GetDepth())
         return GetDepth();
@@ -329,7 +351,7 @@ inline unsigned int SearchTreeNode::GetDeepestMatchingPosition(BasicSearchTree* 
     if (StringStartDepth + s.length() <= GetLabelStartDepth())
         return StringStartDepth + s.length();
     // StringStartDepth + s.length() = string's depth. It must be greater
-    //   than the label's start depth, otherwise there's an error.
+    // than the label's start depth, otherwise there's an error.
     // Example: If StringStartDepth = 0, s.length() = 1, then string's depth = 1.
     // If the parent node's depth = 1, it means the comparison should belong
     // to the parent node's edge (the first character in the  tree), not this one.
@@ -376,6 +398,8 @@ void SearchTreeNode::UpdateItems(BasicSearchTree* tree)
     size_t mindepth = parentnode->GetDepth();
     SearchTreeItemsMap::const_iterator i;
     newmap.clear();
+    // some of the items should be moved to parent's item map, because the parent node's depth
+    // is changed
     for (i = m_Items.begin();i!=m_Items.end();i++)
     {
         if (i->first <= mindepth)
