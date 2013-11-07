@@ -18,6 +18,14 @@
 #include "mozilla/Assertions.h"
 #include "mozilla/Likely.h"
 
+/* C::B begin */
+// We do not want (and can not)to use mozilla's debug stuff
+// in case we run ./configure with --enable-debug, we have to undefine it here or building breaks
+#ifdef DEBUG
+#undef DEBUG
+#endif
+/* C::B end */
+
 #ifdef DEBUG
 #include "prprf.h"
 #endif
