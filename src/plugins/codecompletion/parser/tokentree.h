@@ -105,8 +105,6 @@ public:
     void AppendDocumentation(int tokenIdx, const wxString& doc);
     wxString GetDocumentation(int tokenIdx);
 
-    size_t        m_StructUnionUnnamedCount;
-    size_t        m_EnumUnnamedCount;
     size_t        m_TokenTicketCount;
 
 protected:

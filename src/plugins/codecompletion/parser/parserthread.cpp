@@ -197,7 +197,9 @@ ParserThread::ParserThread(ParserBase*          parent,
     m_Options(parserThreadOptions),
     m_ParsingTypedef(false),
     m_IsBuffer(parserThreadOptions.useBuffer),
-    m_Buffer(bufferOrFilename)
+    m_Buffer(bufferOrFilename),
+    m_StructUnionUnnamedCount(0),
+    m_EnumUnnamedCount(0)
 {
     m_Tokenizer.SetTokenizerOption(parserThreadOptions.wantPreprocessor,
                                    parserThreadOptions.storeDocumentation);
@@ -1819,11 +1821,11 @@ void ParserThread::HandleClass(EClassType ct)
         // -------------------------------------------------------------------
         {
             wxString unnamedTmp;
-            unnamedTmp.Printf(_T("%s%s%lu"),
+            unnamedTmp.Printf(_T("%s%s%lu%lu"),
                               g_UnnamedSymbol.wx_str(),
                               ct == ctClass ? _T("Class") :
                               ct == ctUnion ? _T("Union") :
-                              _T("Struct"), static_cast<unsigned long>(++m_TokenTree->m_StructUnionUnnamedCount));
+                              _T("Struct"), m_FileIdx, static_cast<unsigned long>(m_StructUnionUnnamedCount++));
             Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
             // Maybe it is a bug here. I just fixed it.
             if (!newToken)
@@ -2329,7 +2331,7 @@ void ParserThread::HandleEnum()
         // we have an un-named enum
         if (m_ParsingTypedef)
         {
-            token.Printf(_T("%sEnum%lu"), g_UnnamedSymbol.wx_str(), static_cast<unsigned long>(++m_TokenTree->m_EnumUnnamedCount));
+            token.Printf(_T("%sEnum%lu%lu"), g_UnnamedSymbol.wx_str(), m_FileIdx, static_cast<unsigned long>(m_EnumUnnamedCount++));
             m_LastUnnamedTokenName = token;
         }
         else

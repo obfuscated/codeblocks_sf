@@ -49,8 +49,6 @@
 wxMutex s_TokenTreeMutex;
 
 TokenTree::TokenTree() :
-    m_StructUnionUnnamedCount(0),
-    m_EnumUnnamedCount(0),
     m_TokenTicketCount(255) // Reserve some space for the class browser
 {
     m_Tokens.clear();
