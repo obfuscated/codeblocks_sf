@@ -389,9 +389,10 @@ AC_MSG_CHECKING(which (if any) contrib plugins to build)
 AC_ARG_WITH(contrib-plugins,
   [  --with-contrib-plugins=<list>     compile contrib plugins in <list>. ]
   [                        plugins may be separated with commas. ]
-  [                        "all" compiles all contrib plugins ]
-  [                        "all,-help" compiles all contrib plugins except the help plugin ]
-  [                        By default, no contrib plugins are compiled ]
+  [                        "all", "yes" or just "--with-contrib-plugins" compiles all contrib plugins ]
+  [                        "all,-help" or "yes,-help" compiles all contrib plugins except the help plugin ]
+  [                        "none", "no", "--without-contrib-plugins" or skipping the parameter at all, ]
+  [                        compiles none of the contrib-plugins ]
   [                        Plugin names are: AutoVersioning, BrowseTracker,byogames,Cccc,CppCheck,cbkoders,codesnippets, ]
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
@@ -403,7 +404,7 @@ plugins=`echo $plugins | sed 's/,/ /g'`
 for plugin in $plugins
 do
     case "$plugin" in
-	all)
+	all|yes)
 		BUILD_CONTRIB_ALL
 		;;
 	AutoVersioning)
@@ -634,7 +635,7 @@ do
 	-CppCheck)
 		AM_CONDITIONAL([BUILD_CPPCHECK], [false])
 		;;
-	none)
+	none|no)
 		;;
 	*)
 		echo
