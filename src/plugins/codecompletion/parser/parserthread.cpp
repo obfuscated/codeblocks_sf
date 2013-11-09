@@ -1821,7 +1821,7 @@ void ParserThread::HandleClass(EClassType ct)
         // -------------------------------------------------------------------
         {
             wxString unnamedTmp;
-            unnamedTmp.Printf(_T("%s%s%lu%lu"),
+            unnamedTmp.Printf(_T("%s%s%lu_%lu"),
                               g_UnnamedSymbol.wx_str(),
                               ct == ctClass ? _T("Class") :
                               ct == ctUnion ? _T("Union") :
@@ -2331,7 +2331,7 @@ void ParserThread::HandleEnum()
         // we have an un-named enum
         if (m_ParsingTypedef)
         {
-            token.Printf(_T("%sEnum%lu%lu"), g_UnnamedSymbol.wx_str(), m_FileIdx, static_cast<unsigned long>(m_EnumUnnamedCount++));
+            token.Printf(_T("%sEnum%lu_%lu"), g_UnnamedSymbol.wx_str(), m_FileIdx, static_cast<unsigned long>(m_EnumUnnamedCount++));
             m_LastUnnamedTokenName = token;
         }
         else
