@@ -1,4 +1,4 @@
-#include "sdk_precomp.h"
+#include "sdk.h"
 
 #include "find_replace.h"
 
