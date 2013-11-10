@@ -8,7 +8,6 @@
  */
 
 #include <sdk.h>
-#include <prep.h>
 #include "compilerMINGW.h"
 #include <wx/intl.h>
 #include <wx/regex.h>
@@ -25,6 +24,7 @@
 #include <configmanager.h>
 
 #ifdef __WXMSW__
+    #include <wx/dir.h>
     #include <wx/msw/registry.h>
 #endif
 
@@ -105,21 +105,43 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                 {
                     // installed by inno-setup
                     // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Minimalist GNU for Windows 4.1_is1
+                    // HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\TDM-GCC
                     wxString name;
                     long index;
                     key.SetName(_T("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
-                    //key.SetName("HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion");
-                    bool ok = key.GetFirstKey(name, index);
-                    while (ok && !name.StartsWith(_T("Minimalist GNU for Windows")))
+                    for (int i = 0; i < 2; ++i)
                     {
-                        ok = key.GetNextKey(name, index);
-                    }
-                    if (ok)
-                    {
-                        name = key.GetName() + _T("\\") + name;
-                        key.SetName(name);
-                        if (key.Exists() && key.Open(wxRegKey::Read))
-                            key.QueryValue(_T("InstallLocation"), m_MasterPath);
+                        bool ok = key.GetFirstKey(name, index);
+                        while (ok && !name.StartsWith(wxT("Minimalist GNU for Windows")) && name != wxT("TDM-GCC"))
+                        {
+                            ok = key.GetNextKey(name, index);
+                        }
+                        if (ok)
+                        {
+                            name = key.GetName() + wxT("\\") + name;
+                            key.SetName(name);
+                            if (key.Exists() && key.Open(wxRegKey::Read))
+                            {
+                                key.QueryValue(wxT("InstallLocation"), m_MasterPath);
+                                // determine configuration, eg: "x86_64-w64-mingw32-gcc.exe"
+                                wxDir binFolder(m_MasterPath + sep + wxT("bin"));
+                                if (binFolder.IsOpened() && binFolder.GetFirst(&name, wxT("*mingw32-gcc*.exe"), wxDIR_FILES))
+                                {
+                                    m_Programs.C = name;
+                                    while (binFolder.GetNext(&name))
+                                    {
+                                        if (name.Length() < m_Programs.C.Length())
+                                            m_Programs.C = name; // avoid "x86_64-w64-mingw32-gcc-4.8.1.exe"
+                                    }
+                                    m_Programs.CPP = m_Programs.C;
+                                    m_Programs.CPP.Replace(wxT("mingw32-gcc"), wxT("mingw32-g++"));
+                                    m_Programs.LD = m_Programs.CPP;
+                                    break;
+                                }
+                            }
+                        }
+                        // on 64 bit Windows
+                        key.SetName(wxT("HKEY_LOCAL_MACHINE\\SOFTWARE\\Wow6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall"));
                     }
                 }
 #endif
