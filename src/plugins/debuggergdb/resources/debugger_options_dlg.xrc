@@ -63,7 +63,7 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
-					<label>Debugger intialization commands</label>
+					<label>Debugger initialization commands</label>
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="txtInit">
