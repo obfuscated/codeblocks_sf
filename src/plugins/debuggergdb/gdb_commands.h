@@ -1025,7 +1025,16 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
 
             ParseGDBWatchValue(watch, contents);
             if (!m_Address.empty() && m_autoDereferenced)
-                watch->SetValue(m_Address);
+            {
+                // Add the address of the expression only if the value is empty, this
+                // way we won't override the value of the dereferenced expression.
+                wxString value;
+                watch->GetValue(value);
+                if (value.empty())
+                    watch->SetValue(m_Address);
+                else if (!value.Contains(m_Address))
+                    watch->SetValue(m_Address + wxT(": ") + value);
+            }
             watch->SetForTooltip(true);
             if (watch->GetChildCount() > 0)
                 watch->Expand(true);
