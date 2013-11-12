@@ -37,7 +37,7 @@ class BacktraceDlg : public wxPanel, public cbBacktraceDlg
         void OnSettingSwitchDefault(wxCommandEvent& event);
 
         void OnUpdateUI(wxUpdateUIEvent &event);
-
+        bool IsSwitchFrameEnabled() const;
     private:
         DECLARE_EVENT_TABLE();
     private:

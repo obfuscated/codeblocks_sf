@@ -179,10 +179,7 @@ void BacktraceDlg::OnJump(cb_unused wxCommandEvent& event)
 
 void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent& event)
 {
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-    if (!plugin)
-        return;
-    else if (!plugin->IsRunning() || !plugin->IsStopped())
+    if (!IsSwitchFrameEnabled())
         return;
 
     if (m_list->GetSelectedItemCount() == 0)
@@ -195,7 +192,7 @@ void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent& event)
     if (m_list->GetItemText(index).ToLong(&realFrameNr))
     {
         // switch to this frame
-        plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+        cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
         if (plugin)
             plugin->SwitchToFrame(realFrameNr);
     }
@@ -207,7 +204,7 @@ void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent& event)
 {
     bool jump = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
     wxCommandEvent evt;
-    if (jump)
+    if (jump || !IsSwitchFrameEnabled())
         OnJump(evt);
     else
         OnSwitchFrame(evt);
@@ -292,7 +289,11 @@ void BacktraceDlg::OnSettingSwitchDefault(wxCommandEvent& event)
 
 void BacktraceDlg::OnUpdateUI(wxUpdateUIEvent &event)
 {
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    event.Enable(IsSwitchFrameEnabled());
+}
 
-    event.Enable(plugin && plugin->IsRunning() && plugin->IsStopped());
+bool BacktraceDlg::IsSwitchFrameEnabled() const
+{
+    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    return plugin && plugin->IsRunning() && plugin->IsStopped();
 }
