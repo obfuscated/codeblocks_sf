@@ -25,6 +25,7 @@ usr/lib/codeblocks/plugins/libIncrementalSearch.so
 usr/lib/codeblocks/plugins/libkeybinder.so
 usr/lib/codeblocks/plugins/liblib_finder.so
 usr/lib/codeblocks/plugins/libNassiShneiderman.so
+usr/lib/codeblocks/plugins/liboccurrenceshighlighting.so
 usr/lib/codeblocks/plugins/libProfiler.so
 usr/lib/codeblocks/plugins/libRegExTestbed.so
 usr/lib/codeblocks/plugins/libSpellChecker.so
