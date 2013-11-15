@@ -933,7 +933,7 @@ bool Tokenizer::SkipComment()
             isDoc = (CurrentChar() == '*' && NextChar() != '/'); //	"/**" but not "/**/" and not //*
 
         if (!isDoc && !cstyle) // "//" + ?
-            isDoc = (CurrentChar() == '/'); // "///"
+            isDoc = (CurrentChar() == '/' && NextChar() != '/'); // "///" but not "////"
     }
 
     if (isDoc)
