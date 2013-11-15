@@ -62,7 +62,7 @@ const wxChar *bim[] =
     _T("cflags"),
     _T("lflags")
 };
-const wxArrayString builtinMembers((size_t) 6, bim);
+const wxArrayString builtinMembers((size_t) 7, bim);
 
 class UsrGlblMgrEditDialog : public wxScrollingDialog
 {
