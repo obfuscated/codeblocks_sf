@@ -36,7 +36,7 @@ LibWxNet <- false; // Net Lib
 LibWxOpengl <- false; // OpenGL Lib
 LibWxQa <- false; // QA Lib
 LibWxRichText <- false; // Richtext Lib
-WxVersion <- 1; // 0 - wx 2.6, 1 - wx 2.8, 2 - wx 2.9
+WxVersion <- 1; // 0 - wx 2.6, 1 - wx 2.8, 2 - wx 3.0
 DebugTarget <- 1; // Target Type; 0 - Console, 1 - GUI
 ReleaseTarget <- 1; // Target Type; 0 - Console, 1 - GUI
 FileName <- _T(""); // Filename for wizard
@@ -58,7 +58,7 @@ function BeginWizard()
 
     if (WizType == wizProject)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x /2.9.x(SVN)\nproject wizard!\n\n" +
+        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x\nproject wizard!\n\n" +
                             "This wizard will guide you to create a new project using\n" +
                             "the wxWidgets cross-platform GUI library.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
@@ -69,7 +69,7 @@ function BeginWizard()
                                 "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (SVN Version)"), WxVersion); // select wxwidgets version
+        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x"), WxVersion); // select wxwidgets version
         Wizard.AddProjectPathPage();
         Wizard.AddPage(_T("WxProjDetails"));
         Wizard.AddPage(_T("WxGuiSelect"));
@@ -90,7 +90,7 @@ function BeginWizard()
     }
     else if (WizType == wizTarget)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x /2.9.x(SVN)\nTarget wizard!\n\n" +
+        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x\nTarget wizard!\n\n" +
                             "This wizard will guide you to create a new target\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
@@ -100,7 +100,7 @@ function BeginWizard()
                                 "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x; wxWidgets 2.9.x (SVN Version)"), WxVersion); // select wxwidgets version
+        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x"), WxVersion); // select wxwidgets version
         if (PLATFORM == PLATFORM_MSW)
             Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
         // we need the compiler selection before wx settings, because we 'll have
@@ -347,7 +347,7 @@ function OnLeave_WxConf(fwd)
         else if (WxVersion == 1)
             lib_wxver = _T("28");
         else if (WxVersion == 2)
-            lib_wxver = _T("29");
+            lib_wxver = _T("30");
 
         // Now set the global variables
         LibPrefix = lib_prefix; // Prefix of lib name
@@ -498,7 +498,7 @@ function OnLeave_WxConfUnix(fwd)
         else if (WxVersion == 1)
             LibWxVer = _T("2.8");
         else if (WxVersion == 2)
-            LibWxVer = _T("2.9");
+            LibWxVer = _T("3.0");
 
         // Ask the user whether wizard shall add PCH support when empty Project is selected
         if (IsEmpty && WantPCH)
@@ -745,6 +745,9 @@ function SetupProject(project)
         }
     }
 
+    if (WxVersion < 2 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
+        project.AddCompilerOption(_T("[[if (GetCompilerFactory().GetCompilerVersionString(_T(\"gcc\")) >= _T(\"4.8.0\")) print(_T(\"-Wno-unused-local-typedefs\"));]]"));
+
     // enable PCH
     if (WantPCH && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
     {
@@ -986,7 +989,7 @@ function SetupTarget(target, is_debug)
                 {
                     target.AddCompilerOption(_T("/MTd"));
                 }
-                
+
                 target.AddCompilerOption(_T("/D_DEBUG"));
             }
             else
@@ -1001,7 +1004,7 @@ function SetupTarget(target, is_debug)
                 {
                     target.AddCompilerOption(_T("/MT"));
                 }
-                
+
                 target.AddCompilerOption(_T("/O2"));
             }
         }
