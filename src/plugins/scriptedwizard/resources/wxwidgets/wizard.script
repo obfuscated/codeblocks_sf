@@ -662,7 +662,6 @@ function SetupProject(project)
                 project.AddCompilerOption(_T("-DWXUSINGDLL"));
             if (IsUnicode)
                 project.AddCompilerOption(_T("-DwxUSE_UNICODE"));
-            project.AddCompilerOption(_T("[[if (PLATFORM == PLATFORM_MSW && (GetCompilerFactory().GetCompilerVersionString(_T(\"gcc\")) >= _T(\"4.0.0\"))) print(_T(\"-Wno-attributes\"));]]"));
         }
         else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc*")))
         {
@@ -745,6 +744,7 @@ function SetupProject(project)
         }
     }
 
+    // (WxVersion < 2) == (wxWidgets <= 2.8.x)
     if (WxVersion < 2 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
         project.AddCompilerOption(_T("[[if (GetCompilerFactory().GetCompilerVersionString(_T(\"gcc\")) >= _T(\"4.8.0\")) print(_T(\"-Wno-unused-local-typedefs\"));]]"));
 
