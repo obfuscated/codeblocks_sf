@@ -252,7 +252,7 @@ class CompilerGCC : public cbCompilerPlugin
         void ExpandTargets(cbProject* project, const wxString& targetName, wxArrayString& result);
         void PreprocessJob(cbProject* project, const wxString& targetName);
         BuildJobTarget GetNextJob();
-        BuildJobTarget& PeekNextJob();
+        const BuildJobTarget& PeekNextJob();
 
         struct CompilerProcess
         {

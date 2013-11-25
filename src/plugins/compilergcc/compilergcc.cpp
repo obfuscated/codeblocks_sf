@@ -2175,12 +2175,12 @@ BuildState CompilerGCC::GetNextStateBasedOnJob()
             // get next build job
             if (m_BuildJob != bjTarget)
             {
-                BuildJobTarget& bj = PeekNextJob();
+                const BuildJobTarget& bj = PeekNextJob();
                 if (bj.project && bj.project == m_pBuildingProject)
                 {
                     // same project, switch target
-                    bj = GetNextJob(); // remove job from queue
                     m_BuildingTargetName = bj.targetName;
+                    GetNextJob(); // remove job from queue, bj points to a destructed object
                     // switching targets
                     if (clean && !build)
                         return bsTargetClean;
@@ -2540,10 +2540,9 @@ CompilerGCC::BuildJobTarget CompilerGCC::GetNextJob()
     return ret;
 }
 
-CompilerGCC::BuildJobTarget& CompilerGCC::PeekNextJob()
+const CompilerGCC::BuildJobTarget& CompilerGCC::PeekNextJob()
 {
     static BuildJobTarget ret;
-    ret = BuildJobTarget();
 
     if (m_BuildJobTargetsList.empty())
         return ret;
