@@ -58,6 +58,7 @@ Token::Token(const wxString& name, unsigned int file, unsigned int line, size_t 
     m_IsOperator(false),
     m_IsLocal(false),
     m_IsTemp(false),
+    m_IsAnonymous(false),
     m_Index(-1),
     m_ParentIndex(-1),
     m_UserData(0),

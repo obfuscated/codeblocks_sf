@@ -139,6 +139,7 @@ namespace ParserConsts
     const wxString kw__C_          (_T("\"C\""));
     const wxString kw_for          (_T("for"));
     // length: 4
+    const wxString kw___at         (_T("__at"));
     const wxString kw_else         (_T("else"));
     const wxString kw_enum         (_T("enum"));
     const wxString kw_elif         (_T("elif"));
@@ -726,6 +727,10 @@ void ParserThread::DoParse()
             {
                 m_Str.Clear();
                 SkipToOneOfChars(ParserConsts::colon, true, true);
+            }
+            else if (token == ParserConsts::kw___at)
+            {
+                m_Tokenizer.GetToken(); // skip arguments
             }
             else
                 switchHandled = false;
@@ -1859,6 +1864,8 @@ void ParserThread::HandleClass(EClassType ct)
             newToken->m_ImplLine = lineNr;
             newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
 
+            newToken->m_IsAnonymous = true;
+
             DoParse(); // recursion
 
             m_LastParent     = lastParent;
@@ -2380,7 +2387,11 @@ void ParserThread::HandleEnum()
         }
 
         if (!newEnum) // either named or first unnamed enum
+        {
             newEnum = DoAddToken(tkEnum, token, lineNr);
+            newEnum->m_IsAnonymous = true;
+        }
+
         level = m_Tokenizer.GetNestingLevel();
         m_Tokenizer.GetToken(); // skip {
     }
@@ -2762,6 +2773,10 @@ bool ParserThread::ReadVarNames()
                   token.wx_str(), m_Str.wx_str(),
                   (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
 
+            // Detects anonymous ancestor and gives him a name based on the first found alias.
+            if (m_Str.StartsWith(g_UnnamedSymbol))
+                RefineAnonymousTypeToken(tkUndefined, token);
+
             Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
             if (!newToken)
             {
@@ -2812,8 +2827,14 @@ bool ParserThread::ReadClsNames(wxString& ancestor)
                   (m_LastParent ? m_LastParent->m_Name.wx_str() : _T("<no-parent>")));
 
             m_Str.clear();
-            wxString tempAncestor = ancestor;
-            m_Str = tempAncestor;
+            m_Str = ancestor;
+
+            // Detects anonymous ancestor and gives him a name based on the first found alias.
+            if (m_Str.StartsWith(g_UnnamedSymbol))
+            {
+                RefineAnonymousTypeToken(tkTypedef | tkClass, token);
+                ancestor = m_Str;
+            }
 
             Token* newToken = DoAddToken(tkTypedef, token, m_Tokenizer.GetLineNumber());
             if (!newToken)
@@ -2822,7 +2843,7 @@ bool ParserThread::ReadClsNames(wxString& ancestor)
                 break;
             }
             else
-                newToken->m_AncestorsString = tempAncestor;
+                newToken->m_AncestorsString = ancestor;
         }
         else // unexpected
         {
@@ -3297,4 +3318,23 @@ bool ParserThread::IsStillAlive(cb_unused const wxString& funcInfo)
         free(0);
     }
     return alive;
+}
+
+void  ParserThread::RefineAnonymousTypeToken(short int typeMask, wxString alias)
+{
+    // we expect the m_Str are storing the unnamed type token, like UnnamedClassAA_BBB
+    // AA is the file index, BBB is the unnamed token index
+    // now, we are going to rename its name to classAA_CCC, CCC is the alise name
+    Token* unnamedAncestor = TokenExists(m_Str, m_LastParent, typeMask);
+    if (unnamedAncestor && unnamedAncestor->m_IsAnonymous) // Unnamed ancestor found - rename it to something useful.
+    {
+        if (m_Str.Contains(_T("Union")))
+            m_Str = _T("union");
+        else if (m_Str.Contains(_T("Struct")))
+            m_Str = _T("struct");
+        else
+            m_Str = _T("tag");
+        m_Str << m_FileIdx << _T("_") << alias;
+        m_TokenTree->RenameToken(unnamedAncestor, m_Str);
+    }
 }

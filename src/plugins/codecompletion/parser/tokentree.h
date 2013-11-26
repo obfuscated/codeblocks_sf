@@ -55,6 +55,7 @@ public:
 
     // Token specific functions
     void   RecalcFreeList();
+    void   RenameToken(Token* token, const wxString& newName);
 
     // This will convert the Token's ancestor string to it's IDs
     void   RecalcInheritanceChain(Token* token);
@@ -110,12 +111,21 @@ public:
 protected:
     Token*        GetTokenAt(int idx);
     Token const * GetTokenAt(int idx) const;
-    int           AddToken(Token* newToken, int fileIdx);
+    int           AddToken(Token* newToken, int forceidx = -1);
 
     void          RemoveToken(int idx);
     void          RemoveToken(Token* oldToken);
 
-    int           AddTokenToList(Token* newToken, int forceidx);
+    /** add the Token pointer to the vector<Token*>, mostly the default value forceidx = -1 is used
+     *  which add a new slot in the vector or reused an empty slot. if forceidx >= 0, this means
+     *  we need to replace the value in the specified slot index, the later case only happens we are
+     *  re-construct the Tokentree from the cache.
+     *  @ret always return the used slot index in the vector.
+     */
+    int           AddTokenToList(Token* newToken, int forceidx = -1);
+    /** Remove the Token specified by the idx in the vector<Token*>, note the Token instance is
+     *  destroyed, and the slot becomes empty. The empty slot was recored and will be re-used later.
+     */
     void          RemoveTokenFromList(int idx);
 
     void RecalcFullInheritance(int parentIdx, TokenIdxSet& result); // called by RecalcData

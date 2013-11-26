@@ -97,6 +97,7 @@ public:
     bool                         m_IsLocal;       // found in a local source file, otherwise in wxString
     bool                         m_IsTemp;        // local (automatic) variable
     bool                         m_IsConst;       // the member method is const (yes/no)
+    bool                         m_IsAnonymous;   // Is anonymous token? (e.g. unnamed struct or union)
 
     int                          m_Index;         // current Token index in the tree
     int                          m_ParentIndex;   // Parent Token index

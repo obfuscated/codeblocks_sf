@@ -115,7 +115,7 @@ int TokenTree::insert(Token* newToken)
     if (!newToken)
         return -1;
 
-    return AddToken(newToken, -1);
+    return AddToken(newToken, -1); // -1 means we add a new slot to the Token list (vector)
 }
 
 int TokenTree::insert(int loc, Token* newToken)
@@ -332,7 +332,33 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
     return result.size();
 }
 
-int TokenTree::AddToken(Token* newToken, int fileIdx)
+void TokenTree::RenameToken(Token* token, const wxString& newName)
+{
+    if (!token)
+        return;
+    // remove the old token index from the TokenIdxSet mapped by old name.
+    int slotNo = m_Tree.GetItemNo(token->m_Name);
+    if (slotNo)
+    {
+        TokenIdxSet& curList = m_Tree.GetItemAtPos(slotNo);
+    // Note: As we have no way to actually delete keys in the TokenSearchTree,
+    // the previous name index path of the token will still exist, as well as its TokenIdxSet slot,
+    // but this slot will be empty and as result will lead to nothing.
+    // This is the same thing the RemoveToken procedure does.
+        curList.erase(token->m_Index);
+    };
+    token->m_Name = newName;
+
+    static TokenIdxSet tmpTokens = TokenIdxSet();
+
+    size_t tokenIdx = m_Tree.AddItem(newName, tmpTokens);
+    TokenIdxSet& curList = m_Tree.GetItemAtPos(tokenIdx);
+
+    // add the old token index to the TokenIdxSet mapped by new name, note Token index is not changed
+    curList.insert(token->m_Index);
+}
+
+int TokenTree::AddToken(Token* newToken, int forceIdx)
 {
     if (!newToken)
         return -1;
@@ -345,10 +371,10 @@ int TokenTree::AddToken(Token* newToken, int fileIdx)
     size_t tokenIdx = m_Tree.AddItem(name, tmpTokens);
     TokenIdxSet& curList = m_Tree.GetItemAtPos(tokenIdx);
 
-    int newItem = AddTokenToList(newToken, fileIdx);
+    int newItem = AddTokenToList(newToken, forceIdx);
     curList.insert(newItem);
 
-    size_t fIdx = (fileIdx<0) ? newToken->m_FileIdx : (size_t)fileIdx;
+    size_t fIdx = newToken->m_FileIdx;
     m_FileMap[fIdx].insert(newItem);
 
     // Add Token (if applicable) to the namespaces indexes
@@ -464,7 +490,11 @@ int TokenTree::AddTokenToList(Token* newToken, int forceidx)
 
     int result = -1;
 
-    if (forceidx >= 0) // Reading from cache?
+    // if the token index is specified, then just replace the specified slot to the newToken, this
+    // usually happens we construct the whole TokenTree from cache.
+    // other wise, we just append one to the vector or reused free slots stored in m_FreeTokens
+    // so, it is normal cases in any parsing stages.
+    if (forceidx >= 0)
     {
         if ((size_t)forceidx >= m_Tokens.size())
         {
@@ -474,7 +504,7 @@ int TokenTree::AddTokenToList(Token* newToken, int forceidx)
         m_Tokens[forceidx] = newToken;
         result = forceidx;
     }
-    else // For real-time parsing
+    else
     {
         if (m_FreeTokens.size())
         {
