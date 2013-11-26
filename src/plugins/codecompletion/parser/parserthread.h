@@ -23,7 +23,6 @@
 #include "token.h"
 #include "tokentree.h"
 
-extern const wxString g_UnnamedSymbol;
 
 struct NameSpace
 {
