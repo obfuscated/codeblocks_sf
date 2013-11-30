@@ -11,13 +11,8 @@
 #include "kodersdialog.h"
 
 //(*InternalHeaders(KodersDialog)
-#include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
 #include <wx/intl.h>
-#include <wx/settings.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(KodersDialog)
@@ -26,7 +21,6 @@ const long KodersDialog::ID_TXT_SEARCH = wxNewId();
 const long KodersDialog::ID_BTN_SEARCH = wxNewId();
 const long KodersDialog::ID_LBL_FILTER = wxNewId();
 const long KodersDialog::ID_CHO_LANGUAGES = wxNewId();
-const long KodersDialog::ID_CHO_LICENSES = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(KodersDialog,wxScrollingDialog)
@@ -37,26 +31,26 @@ END_EVENT_TABLE()
 KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(KodersDialog)
-	Create(parent,id,_("Koders query"),wxDefaultPosition,wxDefaultSize,wxDEFAULT_DIALOG_STYLE,_T("wxScrollingDialog"));
+	Create(parent, id, _("OLOHO query"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	bszMain = new wxBoxSizer(wxVERTICAL);
 	bszIntro = new wxBoxSizer(wxHORIZONTAL);
-	lblIntro = new wxStaticText(this,ID_LBL_INTRO,_("Specify search to query the Koders webpage:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_INTRO"));
-	bszIntro->Add(lblIntro,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
-	bszMain->Add(bszIntro,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	lblIntro = new wxStaticText(this, ID_LBL_INTRO, _("Specify search to query the OLOHO webpage:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_INTRO"));
+	bszIntro->Add(lblIntro, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	bszMain->Add(bszIntro, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
 	bszSearch = new wxBoxSizer(wxHORIZONTAL);
-	txtSearch = new wxTextCtrl(this,ID_TXT_SEARCH,wxEmptyString,wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_TXT_SEARCH"));
+	txtSearch = new wxTextCtrl(this, ID_TXT_SEARCH, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_SEARCH"));
 	txtSearch->SetToolTip(_("Enter keyword to search for (at koders)"));
-	bszSearch->Add(txtSearch,1,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
-	btnSearch = new wxButton(this,ID_BTN_SEARCH,_("Search"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_BTN_SEARCH"));
+	bszSearch->Add(txtSearch, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	btnSearch = new wxButton(this, ID_BTN_SEARCH, _("Search"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_SEARCH"));
 	btnSearch->SetDefault();
 	btnSearch->SetToolTip(_("Click to search at the koders webpage..."));
-	bszSearch->Add(btnSearch,0,wxALL|wxALIGN_RIGHT|wxALIGN_TOP,5);
-	bszMain->Add(bszSearch,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	bszSearch->Add(btnSearch, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszMain->Add(bszSearch, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszFilter = new wxBoxSizer(wxHORIZONTAL);
-	lblFilter = new wxStaticText(this,ID_LBL_FILTER,_("Filter:"),wxDefaultPosition,wxDefaultSize,0,_T("ID_LBL_FILTER"));
-	bszFilter->Add(lblFilter,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
-	choLanguages = new wxChoice(this,ID_CHO_LANGUAGES,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CHO_LANGUAGES"));
-	choLanguages->SetSelection( choLanguages->Append(_("All Languages")) );
+	lblFilter = new wxStaticText(this, ID_LBL_FILTER, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_FILTER"));
+	bszFilter->Add(lblFilter, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	choLanguages = new wxChoice(this, ID_CHO_LANGUAGES, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_LANGUAGES"));
+	choLanguages->Append(_("All Languages"));
 	choLanguages->Append(_("Ada"));
 	choLanguages->Append(_("ASP"));
 	choLanguages->Append(_("Assembler"));
@@ -88,36 +82,13 @@ KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 	choLanguages->Append(_("VB"));
 	choLanguages->Append(_("VB.NET"));
 	choLanguages->SetToolTip(_("Limit search to a specific programming language"));
-	bszFilter->Add(choLanguages,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,5);
-	choLicenses = new wxChoice(this,ID_CHO_LICENSES,wxDefaultPosition,wxDefaultSize,0,NULL,0,wxDefaultValidator,_T("ID_CHO_LICENSES"));
-	choLicenses->SetSelection( choLicenses->Append(_("All Licenses")) );
-	choLicenses->Append(_("AFL"));
-	choLicenses->Append(_("AL20"));
-	choLicenses->Append(_("ASL"));
-	choLicenses->Append(_("APSL"));
-	choLicenses->Append(_("BSD"));
-	choLicenses->Append(_("CPL"));
-	choLicenses->Append(_("GPL"));
-	choLicenses->Append(_("LGPL"));
-	choLicenses->Append(_("IBMPL"));
-	choLicenses->Append(_("IOSL"));
-	choLicenses->Append(_("MPL10"));
-	choLicenses->Append(_("MPL11"));
-	choLicenses->Append(_("NPL10"));
-	choLicenses->Append(_("NPL11"));
-	choLicenses->Append(_("OSL"));
-	choLicenses->Append(_("PSFL"));
-	choLicenses->Append(_("SPL"));
-	choLicenses->Append(_("W3C"));
-	choLicenses->Append(_("ZLL"));
-	choLicenses->Append(_("ZPL"));
-	choLicenses->SetToolTip(_("Limit search to a specific license type"));
-	bszFilter->Add(choLicenses,0,wxALL|wxEXPAND|wxALIGN_RIGHT|wxALIGN_TOP,5);
-	bszMain->Add(bszFilter,0,wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP,0);
+	bszFilter->Add(choLanguages, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszMain->Add(bszFilter, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	SetSizer(bszMain);
 	bszMain->Fit(this);
 	bszMain->SetSizeHints(this);
 	Center();
+
 	Connect(ID_BTN_SEARCH,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&KodersDialog::OnBtnSearchClick);
 	//*)
 }
@@ -150,16 +121,6 @@ wxString KodersDialog::GetLanguage() const
     language = choLanguages->GetStringSelection();
 
   return language;
-}
-
-wxString KodersDialog::GetLicense() const
-{
-  wxString license(_("*"));
-
-  if (choLicenses && (choLicenses->GetStringSelection() != _("All Licenses")))
-    license = choLicenses->GetStringSelection();
-
-  return license;
 }
 
 void KodersDialog::OnBtnSearchClick(wxCommandEvent& /*event*/)
