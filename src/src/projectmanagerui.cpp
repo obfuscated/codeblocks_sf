@@ -445,9 +445,7 @@ void ProjectManagerUI::FinishLoadingWorkspace(cbProject *activeProject, const wx
 void ProjectManagerUI::ShowFileInTree(ProjectFile &projectFile)
 {
     // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
-    wxTreeItemId sel = GetTreeSelection();
-    if (sel.IsOk())
-        m_pTree->SelectItem(sel, false);
+    m_pTree->UnselectAll();
 
     const wxTreeItemId &itemId = projectFile.GetTreeItemId();
     if (itemId.IsOk())
