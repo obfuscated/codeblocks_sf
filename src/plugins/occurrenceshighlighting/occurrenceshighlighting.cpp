@@ -61,7 +61,7 @@ OccurrencesHighlighting::OccurrencesHighlighting():
         NotifyMissingFile(_T("occurrenceshighlighting.zip"));
 
     ColourManager* cm = Manager::Get()->GetColourManager();
-    cm->RegisterColour(_("Editor"), _("Highlihgt occurrence"),                wxT("editor_highlight_occurrence"),             *wxRED  );
+    cm->RegisterColour(_("Editor"), _("Highlight occurrence"),                wxT("editor_highlight_occurrence"),             *wxRED  );
     cm->RegisterColour(_("Editor"), _("Permanently highlighted occurrences"), wxT("editor_highlight_occurrence_permanently"), *wxGREEN);
 }
 
