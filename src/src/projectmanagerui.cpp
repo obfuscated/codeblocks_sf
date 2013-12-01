@@ -79,6 +79,8 @@ const int idMenuProjectProperties        = wxNewId();
 const int idMenuFileProperties           = wxNewId();
 const int idMenuTreeProjectProperties    = wxNewId();
 const int idMenuTreeFileProperties       = wxNewId();
+const int idMenuTreeOptionsCompile       = wxNewId();
+const int idMenuTreeOptionsLink          = wxNewId();
 const int idMenuGotoFile                 = wxNewId();
 const int idMenuExecParams               = wxNewId();
 const int idMenuViewCategorize           = wxNewId();
@@ -164,6 +166,8 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_MENU(idMenuProjectNotes,             ProjectManagerUI::OnNotes)
     EVT_MENU(idMenuProjectProperties,        ProjectManagerUI::OnProperties)
     EVT_MENU(idMenuFileProperties,           ProjectManagerUI::OnProperties)
+    EVT_MENU(idMenuTreeOptionsCompile,       ProjectManagerUI::OnFileOptions)
+    EVT_MENU(idMenuTreeOptionsLink,          ProjectManagerUI::OnFileOptions)
     EVT_MENU(idMenuTreeProjectProperties,    ProjectManagerUI::OnProperties)
     EVT_MENU(idMenuTreeFileProperties,       ProjectManagerUI::OnProperties)
     EVT_MENU(idMenuGotoFile,                 ProjectManagerUI::OnGotoFile)
@@ -711,6 +715,16 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         else if (ftd->GetKind() == FileTreeData::ftdkFile)
         {
             menu.AppendSeparator();
+            wxMenu *options = new wxMenu;
+            menu.AppendSubMenu(options, _("Options"));
+            options->AppendCheckItem(idMenuTreeOptionsCompile, _("Compile file"));
+            options->AppendCheckItem(idMenuTreeOptionsLink, _("Link file"));
+            ProjectFile *file = ftd->GetProjectFile();
+            if (file)
+            {
+                menu.Check(idMenuTreeOptionsCompile, file->compile);
+                menu.Check(idMenuTreeOptionsLink, file->link);
+            }
             menu.Append(idMenuTreeFileProperties, _("Properties..."));
         }
     }
@@ -1696,6 +1710,59 @@ void ProjectManagerUI::OnProperties(wxCommandEvent& event)
             }
         }
     }
+}
+
+void ProjectManagerUI::OnFileOptions(wxCommandEvent &event)
+{
+    std::set<cbProject*> modified;
+    if (event.GetId() == idMenuTreeOptionsCompile)
+    {
+        wxArrayTreeItemIds selected;
+        size_t count = m_pTree->GetSelections(selected);
+        for (size_t ii = 0; ii < count; ++ii)
+        {
+            wxTreeItemId id = selected[ii];
+            if (!id.IsOk())
+                continue;
+            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+            if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
+                continue;
+            ProjectFile *pf = ftd->GetProjectFile();
+            if (pf && pf->compile != event.IsChecked())
+            {
+                pf->compile = event.IsChecked();
+                if (pf->GetParentProject())
+                    modified.insert(pf->GetParentProject());
+            }
+        }
+    }
+    else if (event.GetId() == idMenuTreeOptionsLink)
+    {
+        wxArrayTreeItemIds selected;
+        size_t count = m_pTree->GetSelections(selected);
+        for (size_t ii = 0; ii < count; ++ii)
+        {
+            wxTreeItemId id = selected[ii];
+            if (!id.IsOk())
+                continue;
+            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
+            if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
+                continue;
+            ProjectFile *pf = ftd->GetProjectFile();
+            if (pf && pf->link != event.IsChecked())
+            {
+                pf->link = event.IsChecked();
+                if (pf->GetParentProject())
+                    modified.insert(pf->GetParentProject());
+            }
+        }
+    }
+
+    for (std::set<cbProject*>::iterator it = modified.begin(); it != modified.end(); ++it)
+        (*it)->SetModified(true);
+    if (!modified.empty())
+        RebuildTree();
+    event.Skip();
 }
 
 struct ProjectFileRelativePathCmp
