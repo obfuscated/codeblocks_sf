@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="SymTab wx3.0.x (64 bit)" />
+		<Option pch_mode="0" />
+		<Option default_target="default" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\..\devel30_64\share\CodeBlocks\plugins\SymTab.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="..\..\..\.objs30_64\plugins\contrib\symtab" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="..\..\..\devel30_64\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-Wall" />
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-mthreads" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-D_WIN64" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX30.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="..\..\..\devel30_64" />
+			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel30_64\share\codeblocks\SymTab.zip resources\manifest.xml resources\*.xrc" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="resources\config_dialog.xrc" />
+		<Unit filename="resources\exec_dialog.xrc" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="symtab.cpp" />
+		<Unit filename="symtab.h" />
+		<Unit filename="symtabconfig.cpp" />
+		<Unit filename="symtabconfig.h" />
+		<Unit filename="symtabexec.cpp" />
+		<Unit filename="symtabexec.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
