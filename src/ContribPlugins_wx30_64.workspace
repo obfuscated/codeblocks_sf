@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_workspace_file>
+	<Workspace title="All contrib plugins wx3.0.x (64 bit)">
+		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx30_64.cbp" />
+		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_wx30_64.cbp" />
+		<Project filename="plugins/contrib/byogames/byogames_wx30_64.cbp" />
+		<Project filename="plugins/contrib/Cccc/Cccc_wx30_64.cbp" />
+		<Project filename="plugins/contrib/codesnippets/codesnippets_wx30_64.cbp" />
+		<Project filename="plugins/contrib/codestat/codestat_wx30_64.cbp" />
+		<Project filename="plugins/contrib/copystrings/copystrings_wx30_64.cbp" />
+		<Project filename="plugins/contrib/CppCheck/CppCheck_wx30_64.cbp" />
+		<Project filename="plugins/contrib/Cscope/Cscope_wx30_64.cbp" />
+		<Project filename="plugins/contrib/devpak_plugin/DevPakPlugin_wx30_64.cbp" />
+		<Project filename="plugins/contrib/DoxyBlocks/DoxyBlocks_wx30_64.cbp" />
+		<Project filename="plugins/contrib/dragscroll/DragScroll_wx30_64.cbp" />
+		<Project filename="plugins/contrib/EditorConfig/EditorConfig_wx30_64.cbp" />
+		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_wx30_64.cbp" />
+		<Project filename="plugins/contrib/envvars/envvars_wx30_64.cbp" />
+		<Project filename="plugins/contrib/FileManager/FileManager_wx30_64.cbp" />
+		<Project filename="plugins/contrib/headerfixup/headerfixup_wx30_64.cbp" />
+		<Project filename="plugins/contrib/help_plugin/help-plugin_wx30_64.cbp" />
+		<Project filename="plugins/contrib/HexEditor/HexEditor_wx30_64.cbp" />
+		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_wx30_64.cbp" />
+		<Project filename="plugins/contrib/keybinder/keybinder_wx30_64.cbp" />
+		<Project filename="plugins/contrib/MouseSap/MouseSap_wx30_64.cbp" />
+		<Project filename="plugins/contrib/profiler/cbprofiler_wx30_64.cbp" />
+		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_wx30_64.cbp" />
+		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_wx30_64.cbp" />
+		<Project filename="plugins/contrib/rndgen/rndgen_wx30_64.cbp" />
+		<Project filename="plugins/contrib/SmartIndent/SmartIndent_wx30_64.cbp" />
+		<Project filename="plugins/contrib/source_exporter/Exporter_wx30_64.cbp" />
+		<Project filename="plugins/contrib/symtab/symtab_wx30_64.cbp" />
+		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx30_64.cbp" />
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxSmith/wxSmith_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_wx30_64.cbp" />
+	</Workspace>
+</CodeBlocks_workspace_file>
