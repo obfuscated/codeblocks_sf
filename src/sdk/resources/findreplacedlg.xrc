@@ -530,7 +530,7 @@
 																<border>4</border>
 															</object>
 															<object class="sizeritem">
-																<object class="wxTextCtrl" name="txtSearchMask" />
+																<object class="wxComboBox" name="cmbSearchMask" />
 																<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																<option>1</option>
 															</object>

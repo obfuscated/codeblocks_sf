@@ -143,7 +143,19 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     // load search path options
     XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path"),
                                                                     (active_project ? active_project->GetBasePath() : wxT(""))));
-    XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_mask")));
+	if(cfg->Exists(CONF_GROUP _T("/search_mask")))
+	{
+		// Migrate from previous config setting of "search_mask" string (since it used to be a textbox)
+		// to new config setting of "search_masks" array for the combobox
+		XRCCTRL(*this, "cmbSearchMask", wxComboBox)->Append(cfg->Read(CONF_GROUP _T("/search_mask")));
+		cfg->UnSet(CONF_GROUP _T("/search_mask"));
+	}
+	else
+	{
+		FillComboWithLastValues(XRCCTRL(*this, "cmbSearchMask", wxComboBox), CONF_GROUP _T("/search_masks"));
+	}
+    XRCCTRL(*this, "cmbSearchMask", wxComboBox)->SetSelection(0);
+
     XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_recursive"), false));
     XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
 
@@ -312,7 +324,7 @@ FindReplaceDlg::~FindReplaceDlg()
     cfg->Write(CONF_GROUP _T("/delete_old_searches2"), XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue());
 
     cfg->Write(CONF_GROUP _T("/search_path"),      XRCCTRL(*this, "txtSearchPath",        wxTextCtrl)->GetValue());
-    cfg->Write(CONF_GROUP _T("/search_mask"),      XRCCTRL(*this, "txtSearchMask",        wxTextCtrl)->GetValue());
+    SaveComboValues(XRCCTRL(*this, "cmbSearchMask", wxComboBox), CONF_GROUP _T("/search_masks"));
     cfg->Write(CONF_GROUP _T("/search_recursive"), XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/search_hidden"),    XRCCTRL(*this, "chkSearchHidden",      wxCheckBox)->GetValue());
     cfg->Write(CONF_GROUP _T("/target_scope_all"),(XRCCTRL(*this, "chTarget",             wxChoice)->GetSelection() == 0));
@@ -479,7 +491,7 @@ wxString FindReplaceDlg::GetSearchPath() const
 
 wxString FindReplaceDlg::GetSearchMask() const
 {
-    return XRCCTRL(*this, "txtSearchMask", wxTextCtrl)->GetValue();
+    return XRCCTRL(*this, "cmbSearchMask", wxComboBox)->GetValue();
 }
 
 int FindReplaceDlg::GetProject() const
