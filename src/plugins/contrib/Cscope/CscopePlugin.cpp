@@ -201,8 +201,8 @@ void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
 
         //menu->Append(idOnFindSymbol,                       _T("Find C symbol '") + word + _T("'"));
         //menu->Append(idOnFindGlobalDefinition,             _T("Find '") + word + _T("' global definition"));
-        menu->Append(idOnFindFunctionsCalledByThisFuncion, _T("Find functions called by '") + word + _T("'"));
-        menu->Append(idOnFindFunctionsCallingThisFunction, _T("Find functions calling '") + word + _T("'"));
+        menu->Append(idOnFindFunctionsCalledByThisFuncion, _("Find functions called by '") + word + _T("'"));
+        menu->Append(idOnFindFunctionsCallingThisFunction, _("Find functions calling '") + word + _T("'"));
     }
     else
     {
@@ -210,8 +210,8 @@ void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
             idximp = idxocc;
         //menu->Insert(++idximp,idOnFindSymbol,                       _T("Find C symbol '") + word + _T("'"));
         //menu->Insert(++idximp,idOnFindGlobalDefinition,             _T("Find '") + word + _T("' global definition"));
-        menu->Insert(++idximp,idOnFindFunctionsCalledByThisFuncion, _T("Find functions called by '") + word + _T("'"));
-        menu->Insert(++idximp,idOnFindFunctionsCallingThisFunction, _T("Find functions calling '") + word + _T("'"));
+        menu->Insert(++idximp,idOnFindFunctionsCalledByThisFuncion, _("Find functions called by '") + word + _T("'"));
+        menu->Insert(++idximp,idOnFindFunctionsCallingThisFunction, _("Find functions calling '") + word + _T("'"));
     }
 }
 
@@ -232,7 +232,7 @@ bool CscopePlugin::CreateListFile(wxString &list_file)
     if (! prj) return false;
 
     std::vector< wxFileName > files;
-	m_view->GetWindow()->SetMessage(_T("Creating file list..."), 5);
+	m_view->GetWindow()->SetMessage(_("Creating file list..."), 5);
 
     for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
     {
@@ -248,7 +248,7 @@ bool CscopePlugin::CreateListFile(wxString &list_file)
 	wxFFile file(list_file, _T("w+b"));
 	if (!file.IsOpened())
 	{
-		wxLogMessage(_T("Failed to open temporary file ") + list_file);
+		wxLogMessage(_("Failed to open temporary file ") + list_file);
 		list_file.Empty();
 		return false;
 	}

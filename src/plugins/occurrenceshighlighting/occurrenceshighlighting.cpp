@@ -163,9 +163,9 @@ void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* men
     menu->AppendSeparator();
 
     if ( m_texts.find(word) == m_texts.end() )
-        menu->Append(idMenuEntryPermanent, _T("Permanently Highlight '") + word + _T("'"));
+        menu->Append(idMenuEntryPermanent, _("Permanently Highlight '") + word + _T("'"));
     else
-        menu->Append(idMenuEntryRemove,    _T("Don't Highlight '")       + word + _T("'"));
+        menu->Append(idMenuEntryRemove,    _("Don't Highlight '")       + word + _T("'"));
 
 }
 void OccurrencesHighlighting::BuildMenu(wxMenuBar* menuBar)
