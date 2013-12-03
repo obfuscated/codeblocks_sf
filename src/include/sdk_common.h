@@ -45,20 +45,25 @@
 #ifdef CB_PRECOMP
 
     // some common wxWidgets headers
+    #include <wx/app.h>
     #include <wx/arrstr.h>
+    #include <wx/bmpbuttn.h>
     #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/checklst.h>
     #include <wx/choice.h>
+    #include <wx/choicdlg.h>
     #include <wx/colordlg.h>
     #include <wx/combobox.h>
     #include <wx/confbase.h>
     #include <wx/datetime.h>
+    #include <wx/dcclient.h>
     #include <wx/dialog.h>
     #include <wx/dir.h>
     #include <wx/dynarray.h>
     #include <wx/event.h>
     #include <wx/file.h>
+    #include <wx/filedlg.h>
     #include <wx/filename.h>
     #include <wx/font.h>
     #include <wx/frame.h>
@@ -82,11 +87,14 @@
     #include <wx/radiobut.h>
     #include <wx/regex.h>
     #include <wx/sizer.h>
+    #include <wx/slider.h>
     #include <wx/socket.h>
     #include <wx/spinctrl.h>
     #include <wx/splitter.h>
+    #include <wx/statbmp.h>
     #include <wx/stattext.h>
     #include <wx/string.h>
+    #include <wx/textdlg.h>
     #include <wx/textctrl.h>
     #include <wx/thread.h>
     #include <wx/timer.h>

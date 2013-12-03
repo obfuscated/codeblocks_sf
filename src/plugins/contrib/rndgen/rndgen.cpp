@@ -1,9 +1,11 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/intl.h>
-#include <wx/string.h>
-#include "cbeditor.h"
-#include "manager.h"
+    #include <wx/intl.h>
+    #include <wx/string.h>
+    #include <wx/regex.h>
+
+    #include "cbeditor.h"
+    #include "manager.h"
 #endif
 #include "RndGen.h"
 #include "cbstyledtextctrl.h"

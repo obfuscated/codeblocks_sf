@@ -6,6 +6,7 @@
 #ifndef NATIVEPARSERBASE_H
 #define NATIVEPARSERBASE_H
 
+#include <wx/wxcrt.h> // wxIsalnum
 #include <wx/string.h>
 
 #include <map>

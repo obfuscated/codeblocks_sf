@@ -28,13 +28,13 @@ class ModPoller : public cbPlugin
     protected:
 
         virtual void OnAttach()
-		{
-        	Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ModPoller, CodeBlocksEvent>(this, &ModPoller::OnEditorActivated));
-		}
+        {
+            Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<ModPoller, CodeBlocksEvent>(this, &ModPoller::OnEditorActivated));
+        }
         void OnEditorActivated(CodeBlocksEvent& event)
         {
-        	EditorManager::Get()->CheckForExternallyModifiedFiles();
-		}
+            EditorManager::Get()->CheckForExternallyModifiedFiles();
+        }
 
         virtual void OnRelease(bool appShutDown){};
 };
