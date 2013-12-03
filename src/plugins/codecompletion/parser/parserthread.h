@@ -439,9 +439,9 @@ private:
     /** holds current template argument(s) when a template occurs */
     wxString             m_TemplateArgument;
 
-    size_t        m_StructUnionUnnamedCount;
+    size_t               m_StructUnionUnnamedCount;
 
-    size_t        m_EnumUnnamedCount;
+    size_t               m_EnumUnnamedCount;
 };
 
 #endif // PARSERTHREAD_H
