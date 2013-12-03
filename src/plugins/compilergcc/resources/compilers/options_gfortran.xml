@@ -2,20 +2,22 @@
 <!DOCTYPE CodeBlocks_compiler_options>
 <CodeBlocks_compiler_options>
     <if platform="windows">
-        <Program name="C"       value="mingw32-gfortran.exe"/>
-        <Program name="CPP"     value="mingw32-gfortran.exe"/>
-        <Program name="LD"      value="mingw32-gfortran.exe"/>
-        <Program name="LIB"     value="ar.exe"/>
-        <Program name="WINDRES" value="windres.exe"/>
-        <Program name="MAKE"    value="mingw32-make.exe"/>
+        <Program name="C"         value="mingw32-gfortran.exe"/>
+        <Program name="CPP"       value="mingw32-gfortran.exe"/>
+        <Program name="LD"        value="mingw32-gfortran.exe"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="ar.exe"/>
+        <Program name="WINDRES"   value="windres.exe"/>
+        <Program name="MAKE"      value="mingw32-make.exe"/>
     </if>
     <else>
-        <Program name="C"       value="gfortran"/>
-        <Program name="CPP"     value="gfortran"/>
-        <Program name="LD"      value="gfortran"/>
-        <Program name="LIB"     value="ar"/>
-        <Program name="WINDRES" value=""/>
-        <Program name="MAKE"    value="make"/>
+        <Program name="C"         value="gfortran"/>
+        <Program name="CPP"       value="gfortran"/>
+        <Program name="LD"        value="gfortran"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
     </else>
 
     <Switch name="includeDirs"             value="-I"/>
@@ -86,6 +88,10 @@
                 option="-Wconversion"/>
         <Option name="Warn if a procedure is called without an explicit interface"
                 option="-Wimplicit-interface"/>
+        <Option name="Warn when code is inserted for (re)allocation of an allocatable array in assignments."
+                option="-Wrealloc-lhs"/>
+        <Option name="Warn when code is inserted for (re)allocation of scalars and derived types in assignments."
+                option="-Wrealloc-lhs-all"/>
     </Category>
 
     <Category name="Fortran dialect">
@@ -122,6 +128,8 @@
         <Option name="Strict conformance to the Fortran 2008 standard"
                 option="-std=f2008"
                 supersedes="-std=f95 -std=f2003"/>
+        <Option name="Disable automatic (re)allocation of left-hand side allocatable variables in assignments"
+                option="-fno-realloc-lhs"/>
         <Option name="Enable preprocessing"
                 option="-cpp"
                 supersedes="-nocpp"/>
@@ -173,6 +181,13 @@
     </RegEx>
     <RegEx name="Fatal error"
            type="error"
+           msg="4;5"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):([0-9]+):.*([Ff]+atal [Ee]+rror:.*: )(.*)]]>
+    </RegEx>
+    <RegEx name="Fatal error"
+           type="error"
            msg="1">
         <![CDATA[[ \t]*(Fatal Error:.*)]]>
     </RegEx>
@@ -206,6 +221,13 @@
         <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+): (undefined reference.*)]]>
     </RegEx>
     <RegEx name="Compiler warning (2)"
+           type="warning"
+           msg="4;3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ ]*([0-9]+)[ ]*(:[ ]*[0-9]+)[ ]*:[ \t]*(warning:.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning (3)"
            type="warning"
            msg="3"
            file="1"
