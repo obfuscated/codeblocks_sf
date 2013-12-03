@@ -90,7 +90,7 @@ subroutine target then to type unformatted unit use value
 volatile wait where while write procedure elemental pure sequence
 
 import is
-null new_line  block abstract delegate static reference round 
+null new_line  block abstract delegate static reference round deferred
 decorate extends generic non_overridable enum endenum enumerator typealias
 submodule endsubmodule concurrent contiguous re im endblock non_intrinsic
 codimension contiguous impure critical endcritical lock unlock error sync
@@ -130,7 +130,7 @@ is_iostat_end is_iostat_eor move_alloc extends_type_of same_type_as selected_cha
 acosh c_sizeof bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf hypot log_gamma trailz
 gamma bge bgt ble blt dshiftl dshiftr maskl maskr shifta shiftl shiftr merge_bits iall iany iparity
 storage_size parity norm2 erfc erfc_scaled execute_command_line findloc ucobound lcobound 
-num_images this_image image_index atomic_define atomic_ref
+num_images this_image image_index atomic_define atomic_ref rank
 
 "/>
                         <!-- Non Standard, Extended and User-Defined -->
@@ -150,6 +150,8 @@ c_int c_short c_long c_long_long c_signed_char c_size_t c_int8_t c_int16_t c_int
 c_int_least8_t c_int_least16_t c_int_least32_t c_int_least64_t c_int_least128_t c_int_fast8_t c_int_fast16_t
 c_int_fast32_t c_int_fast64_t c_int_fast128_t c_intmax_t c_intptr_t c_float c_double c_long_double c_float_complex
 c_double_complex c_long_double_complex c_bool c_char c_ptr
+c_funptr c_null_funptr c_null_ptr c_new_line c_null_char c_alert c_backspace c_form_feed c_carriage_return 
+c_horizontal_tab c_vertical_tab
 atomic_int_kind atomic_logical_kind compiler_options compiler_version iostat_inquire_internal_unit lock_type
 stat_locked stat_locked_other_image stat_stopped_image stat_unlocked
 character_storage_size error_unit file_storage_size input_unit iostat_end iostat_eor
