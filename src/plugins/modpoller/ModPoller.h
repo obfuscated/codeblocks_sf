@@ -13,6 +13,7 @@
 #endif
 
 #include <cbplugin.h>
+#include <editormanager.h>
 
 class ModPoller : public cbPlugin
 {
