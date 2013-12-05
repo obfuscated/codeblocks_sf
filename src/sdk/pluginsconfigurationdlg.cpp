@@ -56,6 +56,7 @@ BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxScrollingDialog)
     EVT_LIST_ITEM_SELECTED(XRCID("lstPlugins"), PluginsConfigurationDlg::OnSelect)
 
     EVT_UPDATE_UI(-1, PluginsConfigurationDlg::OnUpdateUI)
+    EVT_HTML_LINK_CLICKED(XRCID("htmlInfo"), PluginsConfigurationDlg::OnLinkClicked)
 END_EVENT_TABLE()
 
 // class constructor
@@ -102,6 +103,10 @@ PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
     initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
     initialInfo << _("If a plugin is not well-written, it could cause Code::Blocks to crash ");
     initialInfo << _("when performing any operation on it...");
+    initialInfo << _T("<br></font></b><br /><i><font color=\"green\">\n");
+    initialInfo << _("Some additional plugins can be found here:");
+    initialInfo << _T("</font></b><br /><i><font color=\"black\">\n");
+    initialInfo << _("<A href=\"http://wiki.codeblocks.org/index.php?title=Announcement_for_plugins/patches\">http://wiki.codeblocks.org/index.php?title=Announcement_for_plugins/patches\n </A>");
 
     if (PluginManager::GetSafeMode())
     {
@@ -478,4 +483,9 @@ void PluginsConfigurationDlg::EndModal(int retCode)
     cfg->Write(_T("/install_confirmation"), XRCCTRL(*this, "chkInstallConfirmation", wxCheckBox)->GetValue());
 
     wxScrollingDialog::EndModal(retCode);
+}
+
+void PluginsConfigurationDlg::OnLinkClicked(wxHtmlLinkEvent& event)
+{
+    wxLaunchDefaultBrowser(event.GetLinkInfo().GetHref());
 }

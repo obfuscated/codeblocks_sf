@@ -7,6 +7,7 @@
 #define PLUGINSCONFIGURATIONDLG_H
 
 #include "scrollingdialog.h"
+#include <wx/html/htmlwin.h>
 
 class wxCommandEvent;
 class wxListEvent;
@@ -33,6 +34,7 @@ class PluginsConfigurationDlg : public wxScrollingDialog
         void OnSelect(wxListEvent& event);
         void OnMouseMotion(wxMouseEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnLinkClicked(wxHtmlLinkEvent& event);
 
         DECLARE_EVENT_TABLE();
 };
