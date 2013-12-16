@@ -158,8 +158,6 @@ AutoDetectResult CompilerMINGW::AutoDetectInstallationDir()
                     m_MasterPath = drive + wxT("MinGW");
             }
         }
-        else
-            m_Programs.MAKE = _T("make.exe"); // we distribute "make" not "mingw32-make"
     }
     else
         m_MasterPath = _T("/usr");
