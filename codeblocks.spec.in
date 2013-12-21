@@ -429,6 +429,10 @@ This package contains the development libraries and headers needed to build wxSm
 %{_includedir}/wxsmith/*
 
 %changelog
+* Sun Dec 08 2013 Jens Lody <jens@codeblocks.org>
+- Second release candidate of release 13.12.
+* Sun Nov 17 2013 Jens Lody <jens@codeblocks.org>
+- First release candidate of release 13.12.
 * Fri Jun 08 2012 jens <jens@codeblocks.org>
 - partly reverted last change, to keep the package layout more clear
 - do not try to build NassiShneiderman-plugin on CentOS/RedHat < 6, because the

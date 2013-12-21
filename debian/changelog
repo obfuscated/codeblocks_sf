@@ -1,3 +1,15 @@
+codeblocks (13.12-rc2) unstable; urgency=low
+
+  * Second release candidate of release 13.12.
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 08 Dec 2013 14:07:37 +0100
+
+codeblocks (13.12-rc1) unstable; urgency=low
+
+  * First release candidate of release 13.12.
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 17 Nov 2013 19:33:23 +0100
+
 codeblocks (10.05svn8324) unstable; urgency=low
 
   * Linux build-fixes; moved wxSmithKWIC into wxContribItems and
