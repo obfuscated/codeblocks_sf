@@ -1857,6 +1857,7 @@ bool cbEditor::SaveAs()
     m_IsOK = true;
     SetLanguage( HL_AUTO );
     SetModified(true);
+    SetEditorStyleAfterFileOpen();
     OverrideUseTabsPerLanguage(m_pControl);
     OverrideUseTabsPerLanguage(m_pControl2);
     // store the last used filter and directory
