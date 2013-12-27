@@ -57,7 +57,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add option="-Wl,--no-undefined" />
-			<Add library="codeblocks" />
+			<Add library="libcodeblocks.a" />
 			<Add library="wxflatnotebook" />
 			<Add directory="../../../devel" />
 			<Add directory="../../../base/tinyxml" />

@@ -12,6 +12,10 @@
 namespace Scintilla {
 #endif
 
+/* C::B begin */
+#include <string>
+/* C::B end */
+
 /**
  */
 class CallTip {

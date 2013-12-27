@@ -33,7 +33,7 @@
 					<Add option="`wx-config --libs`" />
 					<Add option="`pkg-config --libs gtk+-2.0`" />
 					<Add option="-Wl,--no-undefined" />
-					<Add library="codeblocks" />
+					<Add library="libcodeblocks.a" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>

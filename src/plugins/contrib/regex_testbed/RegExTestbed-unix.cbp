@@ -31,7 +31,7 @@
 				<Linker>
 					<Add option="`wx-config --libs`" />
 					<Add option="-Wl,--no-undefined" />
-					<Add library="codeblocks" />
+					<Add library="libcodeblocks.a" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>

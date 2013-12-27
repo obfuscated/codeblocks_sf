@@ -31,6 +31,7 @@
 #include "appglobals.h"
 #include "dlgabout.h" // class's header file
 #include "configmanager.h"
+#include "splashscreen.h"
 
 // class constructor
 
@@ -53,45 +54,12 @@ dlgAbout::dlgAbout(wxWindow* parent)
                                    "any kind of functionality to the core program, through the use of "
                                    "plugins...\n");
 
-    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1211.png");
+    wxString file = ConfigManager::ReadDataPath() + _T("/images/splash_1312.png");
     wxImage im; im.LoadFile(file, wxBITMAP_TYPE_PNG); im.ConvertAlphaToMask();
     wxBitmap bmp(im);
     wxMemoryDC dc;
     dc.SelectObject(bmp);
-
-    {  // keep this (kind of) in sync with splashscreen.cpp!
-        static const wxString release(wxT(RELEASE));
-        static const wxString revision = ConfigManager::GetRevisionString();
-
-        wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-        wxFont smallFont(9,  wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-
-        wxCoord lf_width, lf_heigth, sf_width, sf_heigth, sm_width, sm_height;
-
-        dc.GetTextExtent(release,  &lf_width, &lf_heigth, nullptr, nullptr, &largeFont);
-        dc.GetTextExtent(revision, &sf_width, &sf_heigth, nullptr, nullptr, &smallFont);
-
-        dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, nullptr, nullptr, &largeFont);
-
-        int x_offset = 280;
-        int y_offset = 150;
-
-        lf_width >>= 1;
-        sf_width >>= 1;
-        int y      = y_offset - ((lf_heigth + sf_heigth + 8) >> 1);
-
-        dc.SetTextForeground(*wxBLACK);
-
-        dc.SetFont(largeFont);
-#if SVN_BUILD
-        dc.DrawText(release,  x_offset - lf_width, y);
-        // only render SVN revision when not building official release
-        dc.SetFont(smallFont);
-        dc.DrawText(revision, x_offset - sf_width, y +  lf_heigth);
-#else
-        dc.DrawText(release,  x_offset - lf_width, y + (lf_heigth >> 1));
-#endif
-    }
+    cbSplashScreen::DrawReleaseInfo(dc);
 
     wxStaticBitmap *bmpControl = XRCCTRL(*this, "lblTitle", wxStaticBitmap);
     bmpControl->SetSize(im.GetWidth(),im.GetHeight());

@@ -35,11 +35,10 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Linker>
-					<Add option="-lcodeblocks" />
-					<Add option="-lwxPdfDocument" />
 					<Add option="`wx-config --libs`" />
 					<Add option="`pkg-config --libs fontconfig`" />
-					<Add option="-Wl,--no-undefined" />
+					<Add library="libcodeblocks.a" />
+					<Add library="wxPdfDocument" />
 					<Add directory="wxPdfDocument/lib" />
 				</Linker>
 				<ExtraCommands>

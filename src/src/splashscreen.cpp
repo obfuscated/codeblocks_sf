@@ -30,8 +30,52 @@ BEGIN_EVENT_TABLE(cbSplashScreen, wxFrame)
     EVT_MOUSE_EVENTS(cbSplashScreen::OnMouseEvent)
 END_EVENT_TABLE()
 
-void cbSplashScreen::DoPaint(wxDC &dc)
+void cbSplashScreen::DrawReleaseInfo(wxDC  &dc)
 {
+    static const wxString release(wxT(RELEASE));
+    static const wxString revision = wxT(" ")+ ConfigManager::GetRevisionString();
+
+    wxFont largeFont(15, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    wxFont smallFont(10, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+
+    wxCoord lf_width, lf_height, lf_descend;
+    dc.GetTextExtent(release,  &lf_width, &lf_height, &lf_descend, nullptr, &largeFont);
+
+    wxCoord sf_width, sf_height, sf_descend;
+    dc.GetTextExtent(release + revision, &sf_width, &sf_height, &sf_descend, nullptr, &smallFont);
+
+    int text_center = 450;
+    int x_offset = text_center;
+    int y = 220;
+
+    dc.SetTextForeground(*wxBLACK);
+
+#if SVN_BUILD
+    // only render SVN revision when not building official release
+    x_offset = text_center - (sf_width)/2;
+    dc.SetFont(smallFont);
+    dc.DrawText(release + revision, x_offset, (y - sf_height + sf_descend));
+#else
+    x_offset = text_center - (lf_width)/2;
+    dc.SetFont(largeFont);
+    dc.DrawText(release,  x_offset, (y  - lf_height + lf_descend));
+#endif
+
+    if (PluginManager::GetSafeMode())
+    {
+        wxCoord sm_width, sm_height, sm_descend;
+        dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, &sm_descend, nullptr, &smallFont);
+        dc.SetFont(smallFont);
+        dc.SetTextForeground(*wxRED);
+        x_offset = text_center - (sm_width)/2;
+        dc.DrawText(_("SAFE MODE"), x_offset, (y  - sm_height + sm_descend + lf_height+10));
+        dc.SetTextForeground(*wxBLACK);
+    }
+}
+
+void cbSplashScreen::DoPaint(wxDC & /*dc*/)
+{
+    wxPaintDC dc(this);
 #ifdef __WIN32__
   #if wxCHECK_VERSION(2, 9, 0)
 //    dc.SetDeviceClippingRegion(m_region); // was used for 08/02 splash screen (transparent regions)
@@ -39,50 +83,9 @@ void cbSplashScreen::DoPaint(wxDC &dc)
 //    dc.SetClippingRegion(m_region); // was used for 08/02 splash screen (transparent regions)
   #endif
 #endif
-
     dc.DrawBitmap(m_label, 0, 0, false);
 
-    {  // keep this (kind of) in sync with dlgabout.cpp!
-        static const wxString release(wxT(RELEASE));
-        static const wxString revision = ConfigManager::GetRevisionString();
-
-        wxFont largeFont(16, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-        wxFont smallFont(9,  wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-
-        wxCoord lf_width, lf_heigth, sf_width, sf_heigth, sm_width, sm_height;
-
-        dc.GetTextExtent(release,  &lf_width, &lf_heigth, nullptr, nullptr, &largeFont);
-        dc.GetTextExtent(revision, &sf_width, &sf_heigth, nullptr, nullptr, &smallFont);
-
-        dc.GetTextExtent(_("SAFE MODE"), &sm_width, &sm_height, nullptr, nullptr, &largeFont);
-
-        int x_offset = 280;
-        int y_offset = 150;
-
-        lf_width >>= 1;
-        sf_width >>= 1;
-        int y      = y_offset - ((lf_heigth + sf_heigth + 8) >> 1);
-
-        dc.SetTextForeground(*wxBLACK);
-
-        dc.SetFont(largeFont);
-#if SVN_BUILD
-        dc.DrawText(release,  x_offset - lf_width, y);
-        // only render SVN revision when not building official release
-        dc.SetFont(smallFont);
-        dc.DrawText(revision, x_offset - sf_width, y +  lf_heigth);
-#else
-        dc.DrawText(release,  x_offset - lf_width, y + (lf_heigth >> 1));
-#endif
-
-        if (PluginManager::GetSafeMode())
-        {
-            dc.SetFont(largeFont);
-            dc.SetTextForeground(*wxRED);
-            dc.DrawText(_("SAFE MODE"), (dc.GetSize().GetX() - sm_width) / 2, y + lf_heigth);
-            dc.SetTextForeground(*wxBLACK);
-        }
-    }
+    DrawReleaseInfo(dc);
 }
 
 void cbSplashScreen::OnPaint(wxPaintEvent &)
@@ -126,12 +129,12 @@ void cbSplashScreen::OnMouseEvent(wxMouseEvent &event)
 }
 
 cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style)
-: wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(440, 217), style),
-  m_timer(this, cbSplashScreen_timer_id), m_region(0, 0, 181, 181)
+: wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(0, 0), style),
+  m_timer(this, cbSplashScreen_timer_id)//, m_region(0, 0, 440, 190) // was used for 08/02 splash screen (transparent regions)
 {
-    m_region.Union(50,  35, 181, 181);
-    m_region.Union(166, 13, 181, 181);
-    m_region.Union(259, 29, 181, 181);
+//    m_region.Union(50,  35, 181, 181);
+//    m_region.Union(166, 13, 181, 181);
+//    m_region.Union(259, 29, 181, 181); // was used for 08/02 splash screen (transparent regions)
 
     int w = label.GetWidth();
     int h = label.GetHeight();

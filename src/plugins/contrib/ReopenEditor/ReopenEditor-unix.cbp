@@ -17,7 +17,7 @@
 				<Compiler>
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
-			<Add option="-ansi" />
+					<Add option="-ansi" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`wx-config --cflags`" />
 					<Add option="-Winvalid-pch" />
@@ -31,7 +31,7 @@
 				<Linker>
 					<Add option="`wx-config --libs`" />
 					<Add option="-Wl,--no-undefined" />
-					<Add library="codeblocks" />
+					<Add library="libcodeblocks.a" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>

@@ -45,7 +45,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add option="-Wl,--no-undefined" />
-			<Add library="codeblocks" />
+			<Add library="libcodeblocks.a" />
 			<Add library="wxcustombutton" />
 			<Add directory="../../../devel" />
 		</Linker>
