@@ -7,7 +7,7 @@
 # subversion archive.
 
 # Some variables to make maintaining this script easier
-CODEBLOCKS_BASE_VERSION="12.11svn"
+CODEBLOCKS_BASE_VERSION="13.12svn"
 CODEBLOCKS_SVN_URL="http://svn.code.sf.net/p/codeblocks/code/trunk"
 CODEBLOCKS_LOCAL_DIR="../codeblocks-$CODEBLOCKS_BASE_VERSION-download/codeblocks-$CODEBLOCKS_BASE_VERSION"
 OLD_DIR=`pwd`

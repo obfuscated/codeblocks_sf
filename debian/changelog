@@ -1,3 +1,9 @@
+codeblocks (13.12-1) unstable; urgency=low
+
+  * Changes for release 13.12.
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 24 Dec 2013 13:12:58 +0100
+
 codeblocks (13.12-rc2) unstable; urgency=low
 
   * Second release candidate of release 13.12.
@@ -89,47 +95,47 @@ codeblocks (8.02svn5607) unstable; urgency=low
   * moved codesnippets executable from codeblocks to contrib-plugins
     package
 
- -- Jens Lody <jens@codeblocks.org>  Sun, 17 May 2009 23:15:02 +0200 
- 
+ -- Jens Lody <jens@codeblocks.org>  Sun, 17 May 2009 23:15:02 +0200
+
 codeblocks (8.02svn5600) unstable; urgency=low
 
   * some changes to make debian-files more standard-compliant
 
- -- Jens Lody <jens@codeblocks.org>  Tue, 05 May 2009 22:45:16 +0200 
- 
+ -- Jens Lody <jens@codeblocks.org>  Tue, 05 May 2009 22:45:16 +0200
+
 codeblocks (8.02svn5586) unstable; urgency=low
 
   * add subversion and xsltproc to build dependcies
   * run bootstrap if needed
   * automatically update ChangeLog to HEAD
 
- -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 21:43:39 +0200 
- 
+ -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 21:43:39 +0200
+
 codeblocks (8.02svn5584) unstable; urgency=low
 
   * add libtool and automake to build depend
 
- -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 18:47:34 +0200 
- 
+ -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 18:47:34 +0200
+
 codeblocks (8.02svn5409) unstable; urgency=low
 
   * Nightly linux build
   * some more changes to package and filesystem-layout
   * included wxSmith-headers
   * merged to codeblocks trunk
-  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz 
+  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz
 
- -- Jens Lody <jens@codeblocks.org>  Fri, 12 Dec 2008 21:40:51 +0100 
- 
+ -- Jens Lody <jens@codeblocks.org>  Fri, 12 Dec 2008 21:40:51 +0100
+
 codeblocks (8.02svn5331) unstable; urgency=low
 
   * Nightly linux build
   * tagged version to last [stable revision]+[svn revision] to make
     updates on actual ubuntu systems possible
-  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz 
+  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz
 
- -- Jens Lody <debian@jenslody.de>  Sun, 09 Nov 2008 18:24:45 +0100 
- 
+ -- Jens Lody <debian@jenslody.de>  Sun, 09 Nov 2008 18:24:45 +0100
+
 codeblocks (1.0svn5297) unstable; urgency=low
 
   * Nightly linux build
@@ -138,11 +144,11 @@ codeblocks (1.0svn5297) unstable; urgency=low
     split off a codeblocks-common-package, that includes
     architecture independent files
   * changes to make lintian run without errors on sources and *.deb-files
-  * no further patches of mine, they are all in svn now 
-  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz 
+  * no further patches of mine, they are all in svn now
+  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz
 
- -- Jens Lody <jens@lody.name>  Sun, 03 Aug 2008 08:50:21 +0200 
- 
+ -- Jens Lody <jens@lody.name>  Sun, 03 Aug 2008 08:50:21 +0200
+
 codeblocks (1.0svn4511) dapper; urgency=low
 
   * Nightly linux build

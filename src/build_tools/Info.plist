@@ -15,15 +15,15 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleVersion</key>
-	<string>CodeBlocks version 12.11</string>
+	<string>CodeBlocks version 13.12</string>
 	<key>CFBundleShortVersionString</key>
-	<string>CodeBlocks version 12.11</string>
+	<string>CodeBlocks version 13.12</string>
 	<key>LSRequiresCarbon</key>
 	<true/>
 	<key>CFBundleGetInfoString</key>
-	<string>CodeBlocks version 12.11, (c) 2004-2013 Code::Blocks</string>
+	<string>CodeBlocks version 13.12, (c) 2004-2013 Code::Blocks</string>
 	<key>CFBundleLongVersionString</key>
-	<string>CodeBlocks version 12.11 SVN revision 8629, (c) 2004-2013 Code::Blocks</string>
+	<string>CodeBlocks version 13.12 SVN revision 8629, (c) 2004-2013 Code::Blocks</string>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright 2004-2013, The Code::Blocks Team</string>
 	<key>CFBundleIdentifier</key>

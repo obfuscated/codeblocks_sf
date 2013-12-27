@@ -3,7 +3,7 @@
 %define _fedora             %(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
 %define _redhat             %(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
 %define _mandrake           %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
-%define _version            12.11.svn.%{_svnrev}
+%define _version            13.12
 %define _rel                1
 %define _release            %{_rel}
 %define jobs                %(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
@@ -181,7 +181,7 @@ Requires:                   %{name}-contrib%{?_isa} = %{version}
 
 %description contrib-devel
 This package contains the development libraries and headers needed to build wxSmith-plugins and to use the wxContribItems in own programs.
- 
+
 %{?debugrpm:%debug_package}
 
 %prep
@@ -224,7 +224,7 @@ This package contains the development libraries and headers needed to build wxSm
 
 %install
   %__make DESTDIR=$RPM_BUILD_ROOT install
-  
+
   rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
   rm -f $RPM_BUILD_ROOT%{pkglibdir}/wxContribItems/*.la
   rm -f $RPM_BUILD_ROOT%{plugindir}/*.la
@@ -429,6 +429,8 @@ This package contains the development libraries and headers needed to build wxSm
 %{_includedir}/wxsmith/*
 
 %changelog
+* Tue Dec 24 2013 Jens Lody <jens@codeblocks.org>
+- Changes for release 13.12.
 * Sun Dec 08 2013 Jens Lody <jens@codeblocks.org>
 - Second release candidate of release 13.12.
 * Sun Nov 17 2013 Jens Lody <jens@codeblocks.org>
