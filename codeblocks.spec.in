@@ -3,7 +3,7 @@
 %define _fedora             %(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
 %define _redhat             %(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
 %define _mandrake           %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
-%define _version            13.12
+%define _version            13.12.svn.%{_svnrev}
 %define _rel                1
 %define _release            %{_rel}
 %define jobs                %(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
