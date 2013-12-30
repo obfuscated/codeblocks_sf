@@ -24,7 +24,6 @@ namespace
 BEGIN_EVENT_TABLE(cbSplashScreen, wxFrame)
     EVT_PAINT(cbSplashScreen::OnPaint)
     EVT_TIMER(cbSplashScreen_timer_id, cbSplashScreen::OnTimer)
-    EVT_ERASE_BACKGROUND(cbSplashScreen::OnEraseBackground)
     EVT_CLOSE(cbSplashScreen::OnCloseWindow)
     EVT_CHAR(cbSplashScreen::OnChar)
     EVT_MOUSE_EVENTS(cbSplashScreen::OnMouseEvent)
@@ -95,14 +94,6 @@ void cbSplashScreen::OnPaint(wxPaintEvent &)
     // a paint loop.    //pecan 2006/04/3
     wxPaintDC paint_dc(this);
     DoPaint(paint_dc);
-}
-
-void cbSplashScreen::OnEraseBackground(wxEraseEvent &event)
-{
-    wxDC *dc = event.GetDC();
-
-    if (dc)
-        DoPaint(*dc); // why not? :)
 }
 
 void cbSplashScreen::OnTimer(wxTimerEvent &)

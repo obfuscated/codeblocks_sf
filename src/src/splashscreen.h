@@ -26,7 +26,6 @@ class cbSplashScreen : public wxFrame
   private:
     void DoPaint(wxDC &dc);
     void OnPaint(wxPaintEvent &);
-    void OnEraseBackground(wxEraseEvent &);
     void OnTimer(wxTimerEvent &);
     void OnCloseWindow(wxCloseEvent &);
     void OnChar(wxKeyEvent &);
