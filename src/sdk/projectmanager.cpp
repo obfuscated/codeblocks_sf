@@ -579,7 +579,8 @@ bool ProjectManager::CloseWorkspace()
             m_IsClosingWorkspace = false;
             return false;
         }
-        if (!CloseAllProjects(false))
+        // m_ui->QueryCloseWorkspace asked for saving workspace AND projects, no need to do again
+        if (!CloseAllProjects(true))
         {
             m_IsClosingWorkspace = false;
             return false;
