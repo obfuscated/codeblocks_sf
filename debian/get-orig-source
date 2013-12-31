@@ -5,10 +5,10 @@
 # It is copied from ubuntus codeblocks-package.
 
 # Some variables to make maintaining this script easier
-CODEBLOCKS_VERSION="13.12svn8629-1"
+CODEBLOCKS_VERSION="13.12-1"
 CODEBLOCKS_URL_DIR="http://download.berlios.de/codeblocks"
-CODEBLOCKS_TARBALL="codeblocks-$CODEBLOCKS_VERSION-src.tar.bz2"
-CODEBLOCKS_TARBALL_CHECKSUM="ab077d562e98b0586f2f86c14cb773ba"
+CODEBLOCKS_TARBALL="codeblocks_${CODEBLOCKS_VERSION}.tar.gz"
+CODEBLOCKS_TARBALL_CHECKSUM="4b450f620d9f1875ecf6882ab3c11402"
 
 USAGE='This script is used to generate the orig tarball used in building \
 Debian packages for codeblocks-$CODEBLOCKS_VERSION. \
