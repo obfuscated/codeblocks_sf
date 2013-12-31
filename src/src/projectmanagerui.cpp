@@ -442,8 +442,16 @@ void ProjectManagerUI::FinishLoadingWorkspace(cbProject *activeProject, const wx
     UnfreezeTree(true);
 }
 
+void ProjectManagerUI::SwitchToProjectsPage()
+{
+    int page = m_pNotebook->GetPageIndex(m_pTree);
+    if (page != wxNOT_FOUND)
+        m_pNotebook->SetSelection(page);
+}
+
 void ProjectManagerUI::ShowFileInTree(ProjectFile &projectFile)
 {
+    SwitchToProjectsPage();
     // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
     m_pTree->UnselectAll();
 

@@ -57,6 +57,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
     private:
         void InitPane();
         void BuildTree();
+        void SwitchToProjectsPage();
         void ShowMenu(wxTreeItemId id, const wxPoint& pt);
         void CreateMenuTreeProps(wxMenu* menu, bool popup);
 
