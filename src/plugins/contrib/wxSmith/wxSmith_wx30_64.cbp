@@ -87,7 +87,7 @@
 			<Add directory="..\..\..\base\tinyxml" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="update30.bat" />
+			<Add after="update30_64.bat" />
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="plugin\wxsmithpluginregistrants.cpp">
