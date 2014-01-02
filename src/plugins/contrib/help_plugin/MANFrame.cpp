@@ -413,13 +413,21 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
         wxFileName::SplitPath(path, 0, &name, &ext, wxPATH_UNIX); // man pages "always" use /
         newfilename = name + _T(".") + ext;
         wxFileName::SplitPath(orgFilename, &path, 0, &ext);
+        newfilename = path + wxFileName::GetPathSeparator() + newfilename;
 
         if (ext == _T("bz2") || ext == _T("gz"))
         {
             newfilename += _T(".") + ext;
         }
+        else if (!wxFileName::FileExists(newfilename))
+        {
+            if (wxFileName::FileExists(newfilename + wxT(".bz2")))
+                newfilename += wxT(".bz2");
+            else if (wxFileName::FileExists(newfilename + wxT(".gz")))
+                newfilename += wxT(".gz");
+        }
 
-        return GetManPage(path + wxFileName::GetPathSeparator() + newfilename, depth + 1);
+        return GetManPage(newfilename, depth + 1);
     }
 
     return ret;
