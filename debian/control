@@ -138,7 +138,6 @@ Description: contrib plugins for Code::Blocks IDE
     * Autoversioning
     * BrowseTracker
     * Cccc
-    * Code profiler (based on gprof)
     * Code statistics (SLOCs etc)
     * Codesnippets
     * Copy strings
@@ -161,6 +160,8 @@ Description: contrib plugins for Code::Blocks IDE
     * Library finder
     * MouseSap
     * NassiShneiderman
+    * Profiler (based on gprof)
+    * ProjectOptionsManipulator
     * Regular expression testbed
     * Reopen last closed editor(s) via menu or hotkey
     * Smartindent plugin (cpp, HDL, Fortran, Lua, Pascal, Python, XML)
@@ -212,7 +213,6 @@ Depends: ${misc:Depends}
 Description: Debugging libraries for the Code::Blocks contrib plugins
  This package extends Code::Blocks functionality a great deal with the included
  plugins. These are:
-    * Code profiler (based on gprof)
     * Code statistics (SLOCs etc)
     * Copy strings
     * Cscope
@@ -237,6 +237,8 @@ Description: Debugging libraries for the Code::Blocks contrib plugins
     * IncrementalSearch
     * Codesnippets
     * Library finder
+    * Profiler (based on gprof)
+    * ProjectOptionsManipulator
     * Regular expression testbed
     * Reopen last closed editor(s) via menu or hotkey
     * Spellchecker plugin

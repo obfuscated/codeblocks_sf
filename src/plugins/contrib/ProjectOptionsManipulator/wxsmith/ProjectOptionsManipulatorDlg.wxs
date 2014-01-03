@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="ProjectOptionsManipulatorDlg">
+		<title>Project Options Plugin</title>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer" variable="bszMainH" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bszScan" member="no">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblScanWithin" member="no">
+							<label>Scan within:</label>
+						</object>
+						<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="ID_CHO_SCAN" variable="m_ChoScan" member="yes">
+							<content>
+								<item>Workspace</item>
+								<item>Project</item>
+							</content>
+							<selection>0</selection>
+							<handler function="OnScanSelect" entry="EVT_CHOICE" />
+						</object>
+						<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblScanColon" member="no">
+							<label>:</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="ID_CHO_SCAN_PROJECTS" variable="m_ChoScanProjects" member="yes">
+							<enabled>0</enabled>
+						</object>
+						<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer" variable="flsOptions" member="no">
+					<cols>2</cols>
+					<growablecols>1</growablecols>
+					<object class="sizeritem">
+						<object class="wxRadioBox" name="ID_RBO_OPERATION" variable="m_RboOperation" member="yes">
+							<label>Operation:</label>
+							<content>
+								<item>Search for option</item>
+								<item>Search for NOT w/ option</item>
+								<item>Remove option</item>
+								<item>Add option</item>
+							</content>
+							<default>-1</default>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="bszOptions" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblOptions" member="no">
+									<label>Option (i.e. -Wl,--no-undefined):</label>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TXT_OPTIONS" variable="m_TxtOptions" member="yes" />
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OPTIONS_COMPILER" variable="m_ChkOptionsCompiler" member="yes">
+									<label>Compiler options</label>
+									<checked>1</checked>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OPTIONS_LINKER" variable="m_ChkOptionsLinker" member="yes">
+									<label>Linker options</label>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxChoice" name="ID_CHO_OPTIONS_LEVEL" variable="m_ChoOptionsLevel" member="yes">
+									<content>
+										<item>At project level</item>
+										<item>At target level</item>
+										<item>Both (project and target level)</item>
+									</content>
+									<selection>2</selection>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer" variable="sbzOKCancel" member="no">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</wxsmith>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="ProjectOptionsManipulator wx3.0.x (64 bit)" />
+		<Option pch_mode="2" />
+		<Option default_target="default" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel30_64/share/CodeBlocks/plugins/ProjectOptionsManipulator" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel30_64" />
+				<Option object_output="../../../.objs30_64/plugins/contrib/ProjectOptionsManipulator" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --no-splash-screen --verbose -p debug" />
+				<Option host_application="./codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-D_WIN64" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DNOPCH" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="$(#WX30_64.include)" />
+			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX30_64.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="../../../devel30_64" />
+			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel30_64\share\CodeBlocks\ProjectOptionsManipulator.zip manifest.xml" />
+		</ExtraCommands>
+		<Unit filename="ProjectOptionsManipulator.cpp" />
+		<Unit filename="ProjectOptionsManipulator.h" />
+		<Unit filename="ProjectOptionsManipulatorDlg.cpp" />
+		<Unit filename="ProjectOptionsManipulatorDlg.h" />
+		<Unit filename="ProjectOptionsManipulatorResultDlg.cpp" />
+		<Unit filename="ProjectOptionsManipulatorResultDlg.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="wxsmith/ProjectOptionsManipulatorDlg.wxs" />
+		<Unit filename="wxsmith/ProjectOptionsManipulatorResultDlg.wxs" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxDialog wxs="wxsmith/ProjectOptionsManipulatorDlg.wxs" src="ProjectOptionsManipulatorDlg.cpp" hdr="ProjectOptionsManipulatorDlg.h" fwddecl="1" i18n="1" name="ProjectOptionsManipulatorDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/ProjectOptionsManipulatorResultDlg.wxs" src="ProjectOptionsManipulatorResultDlg.cpp" hdr="ProjectOptionsManipulatorResultDlg.h" fwddecl="1" i18n="1" name="ProjectOptionsManipulatorResultDlg" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

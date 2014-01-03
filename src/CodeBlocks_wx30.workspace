@@ -44,6 +44,7 @@
 		<Project filename="plugins/contrib/MouseSap/MouseSap_wx30.cbp" />
 		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman_wx30.cbp" />
 		<Project filename="plugins/contrib/profiler/cbprofiler_wx30.cbp" />
+		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_wx30.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_wx30.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_wx30.cbp" />
 		<Project filename="plugins/contrib/rndgen/rndgen_wx30.cbp" />

@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="ProjectOptionsManipulatorResultDlg">
+		<title>Project Options Plugin - Results</title>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer" variable="bszMainH" member="no">
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bszMainV" member="no">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblResult" member="no">
+							<label>Result of search:</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TXT_RESULT" variable="m_TxtResult" member="yes">
+							<minsize>250,150</minsize>
+							<style>wxTE_MULTILINE|wxTE_READONLY</style>
+						</object>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStdDialogButtonSizer" variable="sbzOK" member="no">
+							<object class="button">
+								<object class="wxButton" name="wxID_OK">
+									<label></label>
+								</object>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

@@ -74,6 +74,10 @@ if BUILD_PROFILER
 MAYBE_PROFILER=profiler
 endif
 
+if BUILD_PROJECTOPTIONSMANIPULATOR
+MAYBE_PROJECTOPTIONSMANIPULATOR=ProjectOptionsManipulator
+endif
+
 if BUILD_REGEX
 MAYBE_REGEX=regex_testbed
 endif
@@ -175,6 +179,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_MOUSESAP) \
 		$(MAYBE_NASSISHNEIDERMAN) \
 		$(MAYBE_PROFILER) \
+		$(MAYBE_PROJECTOPTIONSMANIPULATOR) \
 		$(MAYBE_EXPORTER) \
 		$(MAYBE_SYMTAB) \
 		$(MAYBE_SMARTINDENT) \
@@ -215,6 +220,7 @@ DIST_SUBDIRS = AutoVersioning \
 		MouseSap \
 		NassiShneiderman \
 		profiler \
+		ProjectOptionsManipulator \
 		source_exporter \
 		SmartIndent \
 		SpellChecker \
