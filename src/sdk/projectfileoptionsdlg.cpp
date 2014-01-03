@@ -13,6 +13,7 @@
     #include "cbproject.h"
     #include "compilerfactory.h"
     #include "editormanager.h"
+    #include "editorcolourset.h"
     #include "logmanager.h"
     #include "projectmanager.h"
     #include <wx/xrc/xmlres.h>
