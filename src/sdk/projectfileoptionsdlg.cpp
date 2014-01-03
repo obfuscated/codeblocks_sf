@@ -45,15 +45,9 @@ BEGIN_EVENT_TABLE(ProjectFileOptionsDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, ProjectFileOptionsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-// some help functions and type (copied and adapted from the codestat plug-in)
-struct SLanguageDef
-{
-    wxArrayString ext;
-    wxString      single_line_comment;
-    wxString      multiple_line_comment[2];
-};
+// some help functions (copied and adapted from the codestat plug-in)
 
-inline void AnalyseLine(const SLanguageDef &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
+inline void AnalyseLine(const CommentToken &language, wxString line, bool &comment, bool &code, bool &multi_line_comment)
 {
     int first_single_line_comment, first_multi_line_comment_begin, first_multi_line_comment_end;
 
@@ -65,14 +59,14 @@ inline void AnalyseLine(const SLanguageDef &language, wxString line, bool &comme
         return;
 
     // Searching for single and multi-lines comment signs
-    if (language.single_line_comment.Length() > 0)
-        first_single_line_comment = line.Find(language.single_line_comment);
+    if (language.lineComment.Length() > 0)
+        first_single_line_comment = line.Find(language.lineComment);
     else first_single_line_comment = -1;
-    if (language.multiple_line_comment[0].Length() > 0)
-        first_multi_line_comment_begin = line.Find(language.multiple_line_comment[0]);
+    if (language.streamCommentStart.Length() > 0)
+        first_multi_line_comment_begin = line.Find(language.streamCommentStart);
     else first_multi_line_comment_begin = -1;
-    if (language.multiple_line_comment[1].Length() > 0)
-        first_multi_line_comment_end = line.Find(language.multiple_line_comment[1]);
+    if (language.streamCommentEnd.Length() > 0)
+        first_multi_line_comment_end = line.Find(language.streamCommentEnd);
     else first_multi_line_comment_end = -1;
 
     // We are in a multiple line comment => finding the "end of multiple line comment" sign
@@ -82,8 +76,8 @@ inline void AnalyseLine(const SLanguageDef &language, wxString line, bool &comme
         if (first_multi_line_comment_end > -1)
         {
             multi_line_comment = false;
-            if (first_multi_line_comment_end+language.multiple_line_comment[1].Length() < line.Length())
-                AnalyseLine(language, line.Mid(first_multi_line_comment_end+language.multiple_line_comment[1].Length()), comment, code, multi_line_comment);
+            if (first_multi_line_comment_end+language.streamCommentEnd.Length() < line.Length())
+                AnalyseLine(language, line.Mid(first_multi_line_comment_end+language.streamCommentEnd.Length()), comment, code, multi_line_comment);
         }
     }
     // We are not in a multiple line comment
@@ -104,8 +98,8 @@ inline void AnalyseLine(const SLanguageDef &language, wxString line, bool &comme
             comment = true;
             if (first_multi_line_comment_begin > 0)
                 code = true;
-            if (first_multi_line_comment_begin+language.multiple_line_comment[0].Length() < line.Length())
-                AnalyseLine(language, line.Mid(first_multi_line_comment_begin+language.multiple_line_comment[0].Length()), comment, code, multi_line_comment);
+            if (first_multi_line_comment_begin+language.streamCommentStart.Length() < line.Length())
+                AnalyseLine(language, line.Mid(first_multi_line_comment_begin+language.streamCommentStart.Length()), comment, code, multi_line_comment);
         }
         else
         {
@@ -114,7 +108,7 @@ inline void AnalyseLine(const SLanguageDef &language, wxString line, bool &comme
     }
 }
 
-inline void CountLines(wxFileName filename, const SLanguageDef &language,
+inline void CountLines(wxFileName filename, const CommentToken &language,
                        long int &code_lines, long int &codecomments_lines,
                        long int &comment_lines, long int &empty_lines,
                        long int &total_lines)
@@ -308,42 +302,20 @@ void ProjectFileOptionsDlg::EndModal(int retCode)
 
 void ProjectFileOptionsDlg::FillGeneralProperties()
 {
-    // count some statistics of the file (only c/c++ files for the moment)
-    SLanguageDef langCPP;
-    langCPP.ext.Add(_T("c"));
-    langCPP.ext.Add(_T("cc"));
-    langCPP.ext.Add(_T("cxx"));
-    langCPP.ext.Add(_T("cpp"));
-    langCPP.ext.Add(_T("c++"));
-    langCPP.ext.Add(_T("h"));
-    langCPP.ext.Add(_T("hh"));
-    langCPP.ext.Add(_T("hxx"));
-    langCPP.ext.Add(_T("hpp"));
-    langCPP.ext.Add(_T("h++"));
-    langCPP.single_line_comment = _T("//");
-    langCPP.multiple_line_comment[0] = _T("/*");
-    langCPP.multiple_line_comment[1] = _T("*/");
-
+    // count some statistics of the file
     m_FileName.Assign(m_FileNameStr);
     if (m_FileName.FileExists())
     {
-        bool bExtOk = false;
-        for (int j = 0; j < (int) langCPP.ext.Count(); ++j)
-        {
-            if (m_FileName.GetExt() == langCPP.ext[j])
-            {
-                bExtOk = true;
-                break;
-            }
-        }
-        if (bExtOk)
+        EditorColourSet* colourSet = Manager::Get()->GetEditorManager()->GetColourSet();
+        const HighlightLanguage& lang = colourSet->GetLanguageForFilename(m_FileNameStr);
+        if (lang != HL_NONE)
         {
             long int total_lines = 0;
             long int code_lines = 0;
             long int empty_lines = 0;
             long int comment_lines = 0;
             long int codecomments_lines = 0;
-            CountLines(m_FileName, langCPP, code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
+            CountLines(m_FileName, colourSet->GetCommentToken(lang), code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
             XRCCTRL(*this, "staticTotalLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), total_lines));
             XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), empty_lines));
             XRCCTRL(*this, "staticActualLines",  wxStaticText)->SetLabel(wxString::Format(_T("%ld"), code_lines + codecomments_lines));
