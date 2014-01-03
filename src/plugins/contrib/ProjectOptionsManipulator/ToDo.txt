@@ -1,0 +1,39 @@
+oBFusCATed:
+-----------
+1. [TOO LATE?!] please use lower case plus underscores to prevent any OS porting issues.
+2. [DONE!] external dependencies are not needed here (I think), because C::B should
+   detect them auto-magically.
+3. [DONE!] the post build action should use devel/codeblocks instead of devel/CodeBlocks
+   (I know we have to have two sets of projects).
+4. [HUH?!] The code style needs fixing
+5. [DONE!] You've named you dialog ProjectOptionsDlg which is the same as the
+   ProjectOptionsDlg in src/src. This causes symbols collision on linux and thus a crash.
+   You'll have to rename your dialog for now.
+   Later we should begin using -fvisibility=hidden!
+6. The results dialog should probably use a listctrl instead of textctrl
+   (this will make the output a bit clearer)
+6.1. When you switch to listctrl and it will be if you make double click on an item to
+   open the build options dialog.
+7. The results dialog should probably be an editor, allowing multiple instances
+
+ouch:
+-----
+But it would be nice if it didn't disappear after a search is done. I would like to
+hammer in multiple searches to make sure I got everything set correctly.
+
+killerbot:
+----------
+result window can be bigger
+
+MortenMacFly:
+-------------
+Include directories, libraries and so on...
+This plugin should allow to easily manipulate all important settings so that one can
+easily switch between SDK's (being wxWidgets or anything else...).
+This also includes compiler/linker folder manipulation, maybe even object folder,
+output folder, lib folder...
+
+Jens:
+-----
+manipulate the "Custom variables" especially to make the wx30 projectfiles useful
+for wx-svn which is 3.1 and normally not build in standard path
