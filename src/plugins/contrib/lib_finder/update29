@@ -1,7 +1,0 @@
-#!/bin/bash
-mkdir -p ../../../devel29/share/codeblocks/lib_finder > /dev/null 2> /dev/null
-mkdir -p ../../../output29/share/codeblocks/lib_finder > /dev/null 2> /dev/null
-cp ./lib_finder/*.xml ../../../devel29/share/codeblocks/lib_finder > /dev/null 2> /dev/null
-cp ./lib_finder/*.xml ../../../output29/share/codeblocks/lib_finder > /dev/null 2> /dev/null
-zip -j9 ../../../devel29/share/codeblocks/lib_finder.zip manifest.xml
-exit 0
