@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="libbz2">
-				<Option output="bzip2\libbz2.a" prefix_auto="0" extension_auto="0" />
+				<Option output="bzip2\libbz2_64.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="..\..\..\.objs30_64\plugins\contrib\devpak_plugin" />
 				<Option type="2" />
@@ -31,12 +31,10 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
-					<Add option="-Winvalid-pch" />
 					<Add option="-mthreads" />
 					<Add option="-fexceptions" />
 					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DWX_PRECOMP" />
+					<Add option="-DNOPCH" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-D_WIN64" />
@@ -47,7 +45,7 @@
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />
-					<Add library="bz2" />
+					<Add library="bz2_64" />
 					<Add directory="..\..\..\devel30_64" />
 				</Linker>
 				<ExtraCommands>
@@ -66,18 +64,18 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add directory="bzip2" />
-			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30_64.include)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30_64.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="bzip2" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="bzip2\blocksort.c">
 			<Option compilerVar="CC" />

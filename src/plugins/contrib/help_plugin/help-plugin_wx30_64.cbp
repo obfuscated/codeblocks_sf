@@ -8,7 +8,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="bzip2">
-				<Option output="bzip2\libbzip2.a" prefix_auto="0" extension_auto="0" />
+				<Option output="bzip2\libbzip2_64.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="..\..\..\.objs30_64\plugins\contrib\help_plugin\bzip2" />
 				<Option type="2" />
@@ -22,7 +22,7 @@
 				</Linker>
 			</Target>
 			<Target title="zlib">
-				<Option output="zlib\libz.a" prefix_auto="0" extension_auto="0" />
+				<Option output="zlib\libz_64.a" prefix_auto="0" extension_auto="0" />
 				<Option working_dir="" />
 				<Option object_output="..\..\..\.objs30_64\plugins\contrib\help_plugin\zlib" />
 				<Option type="2" />
@@ -45,14 +45,12 @@
 				<Compiler>
 					<Add option="-Wall" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
-					<Add option="-Winvalid-pch" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-DBUILDING_PLUGIN" />
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DWX_PRECOMP" />
+					<Add option="-DNOPCH" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
 					<Add option="-D_WIN64" />
@@ -64,8 +62,8 @@
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />
-					<Add library="bzip2\libbzip2.a" />
-					<Add library="zlib\libz.a" />
+					<Add library="bzip2\libbzip2_64.a" />
+					<Add library="zlib\libz_64.a" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel30_64\share\CodeBlocks\help_plugin.zip manifest.xml *.xrc *.png" />
@@ -82,8 +80,8 @@
 			<Add alias="All" targets="bzip2;zlib;help_plugin;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30_64.include)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\scripting\bindings" />
@@ -91,7 +89,7 @@
 			<Add directory="..\..\..\include\scripting\sqplus" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30_64.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -100,7 +98,7 @@
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add directory="..\..\..\devel30_64" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="HelpConfigDialog.cpp">
 			<Option target="help_plugin" />

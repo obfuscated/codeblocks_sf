@@ -19,7 +19,7 @@
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="..\..\..\devel30_64" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Environment>
@@ -37,14 +37,12 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-Winvalid-pch" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-D_WIN64" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DCB_PRECOMP" />
-			<Add option="-DWX_PRECOMP" />
+			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add directory="..\..\..\include" />
@@ -55,8 +53,8 @@
 			<Add directory="..\..\..\include\mozilla_chardet\xpcom" />
 			<Add directory="..\..\..\include\mozilla_chardet\xpcom\base" />
 			<Add directory="..\..\..\include\mozilla_chardet\xpcom\glue" />
-			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30_64.include)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel30_64\share\codeblocks\FileManager.zip manifest.xml Resources\fileexplorersettings.xrc" />

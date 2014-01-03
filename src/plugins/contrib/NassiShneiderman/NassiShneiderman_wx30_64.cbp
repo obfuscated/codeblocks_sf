@@ -2,23 +2,25 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="NassiShneiderman wx3.0.x" />
+		<Option title="NassiShneiderman wx3.0.x (64 bit)" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
 				<Option platforms="Windows;" />
-				<Option output="..\..\..\devel30\share\CodeBlocks\plugins\NassiShneiderman" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs30\plugins\contrib\NassiShneiderman" />
+				<Option output="..\..\..\devel30_64\share\CodeBlocks\plugins\NassiShneiderman" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs30_64\plugins\contrib\NassiShneiderman" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Option host_application="..\..\..\devel30_64\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />
+					<Add option="-m64" />
+					<Add option="-fno-keep-inline-dllexport" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-DBUILDING_PLUGIN" />
@@ -28,21 +30,22 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DNOPCH" />
 					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-D_WIN64" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
-					<Add directory="$(#WX30.include)" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#WX30_64.include)" />
+					<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="$(#boost.include)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,-enable-auto-import" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="..\..\..\devel30" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="..\..\..\devel30_64" />
+					<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\NassiShneiderman.zip manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel30_64\share\CodeBlocks\NassiShneiderman.zip manifest.xml" />
 				</ExtraCommands>
 				<Environment>
 					<Variable name="WX_CFG" value="" />

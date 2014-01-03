@@ -16,8 +16,7 @@
 				<Option host_application="..\..\..\devel30\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-DCB_PRECOMP" />
-					<Add option="-DWX_PRECOMP" />
+					<Add option="-DNOPCH" />
 				</Compiler>
 			</Target>
 			<Target title="no_pch">
@@ -44,7 +43,6 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="-Winvalid-pch" />
 			<Add option="-mthreads" />
 			<Add option="-fexceptions" />
 			<Add option="-DBUILDING_PLUGIN" />

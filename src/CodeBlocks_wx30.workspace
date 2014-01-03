@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
-	<Workspace title="CodeBlocks Workspace wx2.9.x">
+	<Workspace title="CodeBlocks Workspace wx3.0.x">
 		<Project filename="CodeBlocks_wx30.cbp" active="1" />
 		<Project filename="tools/cb_share_config/cb_share_config_wx30.cbp" />
 		<Project filename="tools/CBLauncher/CbLauncher_wx30.cbp" />

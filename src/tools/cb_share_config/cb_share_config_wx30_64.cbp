@@ -2,14 +2,14 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code::Blocks Share Config wx3.0.x" />
+		<Option title="Code::Blocks Share Config wx3.0.x (64 bit)" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\devel30\cb_share_config" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="..\..\..\devel30" />
-				<Option object_output="..\..\.objs30\tools\cb_share_config" />
+				<Option output="..\..\devel30_64\cb_share_config" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="..\..\..\devel30_64" />
+				<Option object_output="..\..\.objs30_64\tools\cb_share_config" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 			</Target>
@@ -25,6 +25,8 @@
 		<Compiler>
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
+			<Add option="-m64" />
+			<Add option="-fno-keep-inline-dllexport" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-DUSE_PCH" />
@@ -33,19 +35,20 @@
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
-			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add option="-D_WIN64" />
+			<Add directory="$(#WX30_64.include)" />
+			<Add directory="$(#WX30_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="..\..\include" />
 			<Add directory="..\..\include\tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
-			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30_64.include)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="txml30" />
+			<Add library="txml30_64" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\base\tinyxml" />
 		</Linker>
 		<Unit filename="app.cpp" />
