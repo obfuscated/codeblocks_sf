@@ -728,13 +728,11 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-Winvalid-pch" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DCB_PRECOMP" />
-			<Add option="-DWX_PRECOMP" />
+			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX30.include)" />
 			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
@@ -1289,7 +1287,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk.h">
-			<Option compile="1" />
 			<Option weight="1" />
 			<Option target="src" />
 		</Unit>
@@ -1300,7 +1297,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/sdk_precomp.h">
-			<Option compile="1" />
 			<Option weight="0" />
 			<Option target="sdk" />
 		</Unit>
@@ -3361,10 +3357,10 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexInno.cxx">
 			<Option target="scintilla" />
 		</Unit>
-		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKix.cxx">
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKVIrc.cxx">
 			<Option target="scintilla" />
 		</Unit>
-		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKVIrc.cxx">
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexKix.cxx">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexLaTeX.cxx">
