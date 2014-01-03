@@ -466,7 +466,7 @@ do
 	NassiShneiderman)
 		AM_CONDITIONAL([BUILD_NASSISHNEIDERMAN], [true])
 		;;
-	ProjectOptions)
+	ProjectOptionsManipulator)
 		AM_CONDITIONAL([BUILD_PROJECTOPTIONSMANIPULATOR], [true])
 		;;
 	profiler)

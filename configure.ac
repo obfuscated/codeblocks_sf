@@ -445,6 +445,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/NassiShneiderman/Makefile
 	src/plugins/contrib/profiler/Makefile
 	src/plugins/contrib/profiler/resources/Makefile
+	src/plugins/contrib/ProjectOptionsManipulator/Makefile
 	src/plugins/contrib/source_exporter/Makefile
 	src/plugins/contrib/source_exporter/wxPdfDocument/Makefile
 	src/plugins/contrib/SmartIndent/Makefile
