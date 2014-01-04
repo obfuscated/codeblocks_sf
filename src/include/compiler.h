@@ -188,7 +188,7 @@ struct CompilerPrograms
 };
 
 /// Struct to keep switches
-struct CompilerSwitches
+struct DLLIMPORT CompilerSwitches
 {
     static const CompilerLoggingType defaultLogging = clogFull;
     wxString includeDirs;         // -I

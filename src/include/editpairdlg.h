@@ -8,8 +8,9 @@
 
 #include <wx/intl.h>
 #include "scrollingdialog.h"
+#include "settings.h"
 
-class EditPairDlg : public wxScrollingDialog
+class DLLIMPORT EditPairDlg : public wxScrollingDialog
 {
     public:
         enum BrowseMode

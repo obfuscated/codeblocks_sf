@@ -181,8 +181,8 @@ private:
 
 template <class MgrT> class Mgr
 {
-    static MgrT *instance;
-    static bool isShutdown;
+    DLLIMPORT static MgrT *instance;
+    DLLIMPORT static bool isShutdown;
     explicit Mgr(const Mgr<MgrT>&)         { ; };
     Mgr<MgrT>& operator=(Mgr<MgrT> const&) { ; };
 
