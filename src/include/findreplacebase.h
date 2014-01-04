@@ -8,10 +8,11 @@
 
 #include "scrollingdialog.h"
 #include <wx/string.h>
+#include "settings.h"
 
 class wxWindow;
 
-class FindReplaceBase : public wxScrollingDialog
+class DLLIMPORT FindReplaceBase : public wxScrollingDialog
 {
     public:
         FindReplaceBase(cb_optional wxWindow* parent, cb_optional const wxString& initial, cb_optional bool hasSelection){}

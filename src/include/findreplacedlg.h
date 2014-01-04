@@ -9,11 +9,12 @@
 #include <wx/notebook.h>
 
 #include "findreplacebase.h"
+#include "settings.h"
 
 class wxComboBox;
 class wxCommandEvent;
 
-class FindReplaceDlg : public FindReplaceBase
+class DLLIMPORT FindReplaceDlg : public FindReplaceBase
 {
     public:
         FindReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false,

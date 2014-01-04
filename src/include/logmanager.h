@@ -31,7 +31,7 @@
 //} // namespace cb
 
 
-struct LogSlot
+struct DLLIMPORT LogSlot
 {
     friend class LogManager;
 

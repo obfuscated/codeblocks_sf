@@ -12,6 +12,7 @@
 
 #include <wx/aui/auibook.h>
 #include <wx/dynarray.h>
+#include "settings.h"
 
 class wxTipWindow;
 class cbAuiNotebook;
@@ -26,7 +27,7 @@ WX_DEFINE_ARRAY_PTR(cbAuiNotebook*,cbAuiNotebookArray);
   * Another added feature is the possibility to add tooltips to the tabs belonging
   * to added panes.
   */
-class cbAuiNotebook : public wxAuiNotebook
+class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
 {
     public:
         /** \brief cbAuiNotebook constructor

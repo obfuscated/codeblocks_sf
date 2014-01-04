@@ -73,7 +73,7 @@ struct OptionSet
 };
 WX_DECLARE_STRING_HASH_MAP(OptionSet, OptionSetsMap);
 
-class EditorColourSet
+class DLLIMPORT EditorColourSet
 {
     public:
         EditorColourSet(const wxString& setName = COLORSET_DEFAULT);

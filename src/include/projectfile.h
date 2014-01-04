@@ -36,7 +36,7 @@ typedef std::vector<ProjectFile*> ProjectFilesVector;
 WX_DEFINE_ARRAY_INT(int, editorFoldLinesArray);
 
 /** Represents a file in a Code::Blocks project. */
-class ProjectFile
+class DLLIMPORT ProjectFile
 {
     public:
         /// Constructor

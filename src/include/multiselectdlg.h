@@ -10,8 +10,9 @@
 #include <wx/string.h>
 #include <wx/dynarray.h>
 #include "scrollingdialog.h"
+#include "settings.h"
 
-class MultiSelectDlg : public wxScrollingDialog
+class DLLIMPORT MultiSelectDlg : public wxScrollingDialog
 {
     public:
         MultiSelectDlg(wxWindow* parent,
