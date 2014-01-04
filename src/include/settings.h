@@ -26,8 +26,24 @@ from DLLs. Instead, we build "sdk" as a static library
 		#endif // EXPORT_EVENTS
 	#endif // EVTIMPORT
 #else
-	#define DLLIMPORT
-	#define EVTIMPORT
+    #ifndef DLLIMPORT
+        #if defined(EXPORT_LIB) && __GNUC__ >= 4
+            #define DLLIMPORT __attribute__ ((visibility ("default")))
+        #else
+            #define DLLIMPORT
+        #endif
+    #else
+        #define DLLIMPORT
+    #endif
+    #ifndef EVTIMPORT
+        #if defined(EXPORT_EVENTS) && __GNUC__ >= 4
+            #define EVTIMPORT __attribute__ ((visibility ("default")))
+        #else
+            #define EVTIMPORT
+        #endif
+    #else
+        #define EVTIMPORT
+    #endif
 #endif
 
 #endif // SETTINGS_H

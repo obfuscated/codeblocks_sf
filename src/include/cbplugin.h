@@ -31,6 +31,14 @@
         #endif // EXPORT_LIB
     #endif // PLUGIN_EXPORT
 #else
+    #if !defined(PLUGIN_EXPORT) && __GNUC__ >= 4
+        #if defined(EXPORT_LIB) || defined(BUILDING_PLUGIN)
+            #define PLUGIN_EXPORT __attribute__ ((visibility ("default")))
+        #endif
+    #endif
+#endif
+
+#ifndef PLUGIN_EXPORT
     #define PLUGIN_EXPORT
 #endif
 

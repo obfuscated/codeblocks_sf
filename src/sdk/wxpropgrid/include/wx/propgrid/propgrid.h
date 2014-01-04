@@ -450,7 +450,15 @@ public:
         #endif // EXPORT_LIB
     #endif // DLLIMPORT
 #else
-    #define DLLIMPORT
+    #if EXPORT_LIB
+        #if __GNUC__ >= 4
+            #define DLLIMPORT __attribute__ ((visibility ("default")))
+        #else
+            #define DLLIMPORT
+        #endif
+    #else
+        #define DLLIMPORT
+    #endif
 #endif
 
 #define WXDLLIMPEXP_PG DLLIMPORT
