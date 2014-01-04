@@ -142,7 +142,16 @@ struct RegExStruct
 private:
     wxRegEx regexObject;
 };
+
+#if !wxCHECK_VERSION(3, 0, 0) && !defined(__WXMSW__) && __GNUC__ >= 4
+    #pragma GCC visibility push(default)
+#endif
+
 WX_DECLARE_OBJARRAY(RegExStruct, RegExArray);
+
+#if !wxCHECK_VERSION(3, 0, 0) && !defined(__WXMSW__) && __GNUC__ >= 4
+    #pragma GCC visibility pop
+#endif
 
 /// Helper enum to retrieve compiler commands
 enum CommandType
