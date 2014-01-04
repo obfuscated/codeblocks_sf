@@ -201,7 +201,12 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
 					<Add directory="devel" />
+					<Add directory="sdk/scripting/lib" />
 				</Linker>
 			</Target>
 			<Target title="AStyle">
@@ -218,6 +223,7 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -234,6 +240,7 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -269,8 +276,12 @@
 					<Add library="codeblocks" />
 					<Add library="depslib" />
 					<Add library="wxpropgrid" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
 					<Add directory="devel" />
 					<Add directory="plugins/compilergcc/depslib" />
+					<Add directory="sdk/scripting/lib" />
 				</Linker>
 			</Target>
 			<Target title="Debugger">
@@ -291,7 +302,12 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="txml" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
 					<Add directory="devel" />
+					<Add directory="sdk/scripting/lib" />
 				</Linker>
 			</Target>
 			<Target title="Code-completion">
@@ -313,6 +329,8 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
+					<Add library="txml" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -329,6 +347,7 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -361,6 +380,7 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -399,6 +419,7 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="txml" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
@@ -417,7 +438,11 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="sqplus" />
+					<Add library="sqstdlib" />
+					<Add library="squirrel" />
 					<Add directory="devel" />
+					<Add directory="sdk/scripting/lib" />
 				</Linker>
 			</Target>
 			<Target title="To-do">
@@ -439,6 +464,7 @@
 					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="wxscintilla_cb" />
 					<Add directory="devel" />
 				</Linker>
 			</Target>
