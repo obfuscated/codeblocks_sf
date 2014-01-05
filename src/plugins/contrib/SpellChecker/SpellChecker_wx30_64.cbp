@@ -103,14 +103,14 @@
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel30_64\share\CodeBlocks\SpellChecker.zip manifest.xml SpellCheckSettingsPanel.xrc" />
 					<Add after='xcopy /Y *.png &quot;..\..\..\devel30_64\share\Codeblocks\images\settings\*&quot;' />
-					<Add after='xcopy /Y *.png &quot;..\..\..\output30\share\Codeblocks\images\settings\*&quot;' />
+					<Add after='xcopy /Y *.png &quot;..\..\..\output30_64\share\Codeblocks\images\settings\*&quot;' />
 					<Add after='xcopy /Y OnlineSpellChecking.xml  &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
 					<Add after='xcopy /Y dictionaries\*.aff &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
 					<Add after='xcopy /Y dictionaries\*.dic &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
 					<Add after='xcopy /Y dictionaries\th_*.dat &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
 					<Add after='xcopy /Y dictionaries\th_*.idx &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
 					<Add after='xcopy /Y rc\*.png &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\&quot;' />
-					<Add after='xcopy /y &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\*&quot; &quot;..\..\..\output30\share\CodeBlocks\SpellChecker\*&quot;' />
+					<Add after='xcopy /y &quot;..\..\..\devel30_64\share\CodeBlocks\SpellChecker\*&quot; &quot;..\..\..\output30_64\share\CodeBlocks\SpellChecker\*&quot;' />
 					<Mode after="always" />
 				</ExtraCommands>
 				<Environment>
