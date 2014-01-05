@@ -50,7 +50,6 @@
 			<Add option="`$(WX_CONFIG) --libs std,aui`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
-			<Add library="wxscintilla_cb" />
 			<Add directory="../../../devel30" />
 		</Linker>
 		<ExtraCommands>
