@@ -329,6 +329,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{plugindir}/libNassiShneiderman.so
 %endif
 %{plugindir}/libProfiler.so
+%{plugindir}/libProjectOptionsManipulator.so
 %{plugindir}/libRegExTestbed.so
 %{plugindir}/libSpellChecker.so
 %{plugindir}/libSymTab.so
@@ -370,6 +371,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/NassiShneiderman.zip
 %endif
 %{pkgdatadir}/Profiler.zip
+%{pkgdatadir}/ProjectOptionsManipulator.zip
 %{pkgdatadir}/RegExTestbed.zip
 %{pkgdatadir}/ReopenEditor.zip
 %{pkgdatadir}/SpellChecker.zip
