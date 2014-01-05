@@ -37,7 +37,6 @@
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="../../../devel30" />
-					<Add directory="../../../sdk/tinyxml" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel30/share/codeblocks/headerfixup.zip manifest.xml" />

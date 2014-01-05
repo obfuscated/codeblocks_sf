@@ -81,7 +81,6 @@
 			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\devel30_64" />
-			<Add directory="..\..\..\base\tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update30_64.bat" />
