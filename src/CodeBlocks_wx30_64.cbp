@@ -893,9 +893,6 @@
 		<Unit filename="include/editarraystringdlg.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/editkeywordsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/editor_hooks.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1136,9 +1133,6 @@
 		<Unit filename="include/projectbuildtarget.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/projectdepsdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/projectfile.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1328,9 +1322,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/uservarmanager.h">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="include/virtualbuildtargetsdlg.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/workspaceloader.h">
@@ -2610,9 +2601,6 @@
 		<Unit filename="sdk/editarraystringdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/editkeywordsdlg.cpp">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/editor_hooks.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2803,9 +2791,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectbuildtarget.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/projectdepsdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/projectfile.cpp">
@@ -3063,9 +3048,6 @@
 		<Unit filename="sdk/resources/plugins_configuration.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/resources/project_deps.xrc">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/resources/project_manager_file_types.xrc">
 			<Option target="sdk" />
 		</Unit>
@@ -3076,9 +3058,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/select_target.xrc">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/resources/virtualbuildtargetsdlg.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/scripting/bindings/sc_consts.cpp">
@@ -3208,9 +3187,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/uservarmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/virtualbuildtargetsdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/workspaceloader.cpp">
@@ -3861,6 +3837,12 @@
 		<Unit filename="src/dlgaboutplugin.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/editkeywordsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/editkeywordsdlg.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/editorconfigurationdlg.cpp">
 			<Option target="src" />
 		</Unit>
@@ -3917,6 +3899,12 @@
 		<Unit filename="src/printdlg.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/projectdepsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/projectdepsdlg.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/projectmanagerui.cpp">
 			<Option target="src" />
 		</Unit>
@@ -3959,6 +3947,9 @@
 		<Unit filename="src/resources/dlg_about_plugin.xrc">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/edit_keywords.xrc">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/editor_configuration.xrc">
 			<Option target="src" />
 		</Unit>
@@ -3983,6 +3974,9 @@
 		<Unit filename="src/resources/print_dialog.xrc">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/resources/project_deps.xrc">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/resources/project_options.xrc">
 			<Option target="src" />
 		</Unit>
@@ -3994,6 +3988,9 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/resources/start_here/start_here.html">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/resources/virtualbuildtargetsdlg.xrc">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/scriptconsole.cpp">
@@ -4030,6 +4027,12 @@
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/threadsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/virtualbuildtargetsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/virtualbuildtargetsdlg.h">
 			<Option target="src" />
 		</Unit>
 		<Unit filename="src/watchesdlg.cpp">

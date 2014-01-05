@@ -64,7 +64,6 @@ ALLHEADERS = annoyingdialog.h \
 				editarrayfiledlg.h \
 				editarrayorderdlg.h \
 				editarraystringdlg.h \
-				editkeywordsdlg.h \
 				editorbase.h \
 				editorcolourset.h \
 				editorlexerloader.h \
@@ -106,7 +105,6 @@ ALLHEADERS = annoyingdialog.h \
 				prep.h \
 				printing_types.h \
 				projectbuildtarget.h \
-				projectdepsdlg.h \
 				projectfile.h \
 				projectfileoptionsdlg.h \
 				projectlayoutloader.h \
@@ -129,7 +127,6 @@ ALLHEADERS = annoyingdialog.h \
 				templatemanager.h \
 				toolsmanager.h \
 				uservarmanager.h \
-				virtualbuildtargetsdlg.h \
 				workspaceloader.h \
 				xtra_res.h \
 				mozilla_chardet/CharDistribution.h \

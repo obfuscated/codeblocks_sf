@@ -51,6 +51,7 @@ codeblocks_SOURCES = app.cpp \
 			disassemblydlg.cpp \
 			dlgabout.cpp \
 			dlgaboutplugin.cpp \
+			editkeywordsdlg.cpp \
 			editorconfigurationdlg.cpp \
 			environmentsettingsdlg.cpp \
 			examinememorydlg.cpp \
@@ -61,6 +62,7 @@ codeblocks_SOURCES = app.cpp \
 			prefix.cpp \
 			printdlg.cpp \
 			projectmanagerui.cpp \
+			projectdepsdlg.cpp \
 			projectoptionsdlg.cpp \
 			recentitemslist.cpp \
 			scriptconsole.cpp \
@@ -69,6 +71,7 @@ codeblocks_SOURCES = app.cpp \
 			startherepage.cpp \
 			switcherdlg.cpp \
 			threadsdlg.cpp \
+			virtualbuildtargetsdlg.cpp \
 			watchesdlg.cpp
 
 noinst_HEADERS = app.h \
@@ -87,6 +90,7 @@ noinst_HEADERS = app.h \
 			disassemblydlg.h \
 			dlgabout.h \
 			dlgaboutplugin.h \
+			editkeywordsdlg.h \
 			editorconfigurationdlg.h \
 			environmentsettingsdlg.h \
 			examinememorydlg.h \
@@ -97,6 +101,7 @@ noinst_HEADERS = app.h \
 			prefix.h \
 			printdlg.h \
 			projectmanagerui.h \
+			projectdepsdlg.h \
 			projectoptionsdlg.h \
 			recentitemslist.h \
 			scriptconsole.h \
@@ -105,6 +110,7 @@ noinst_HEADERS = app.h \
 			startherepage.h \
 			switcherdlg.h \
 			threadsdlg.h \
+			virtualbuildtargetsdlg.h \
 			watchesdlg.h
 
 man_MANS = codeblocks.1
