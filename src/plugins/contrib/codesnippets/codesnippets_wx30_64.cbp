@@ -16,7 +16,7 @@
 				<Option host_application="..\..\..\devel30_64\codeblocks.exe" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
-					<Add option="-DCB_PRECOMP" />
+					<Add option="-DNOPCH" />
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
@@ -47,21 +47,19 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-Winvalid-pch" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-D_WIN64" />
 			<Add option="-DcbDEBUG" />
-			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNO_LOGGING" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\src" />
-			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30_64.include)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="Search" />
 			<Add directory="editor" />
 			<Add directory="." />
@@ -79,7 +77,7 @@
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add directory="..\..\..\devel30_64" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update30_64.bat" />
