@@ -1899,7 +1899,26 @@ void ParserThread::HandleClass(EClassType ct)
         // -------------------------------------------------------------------
         {
             GetRealTypeIfTokenIsMacro(current);
-            Token* newToken = DoAddToken(tkClass, current, lineNr);
+
+            wxStringTokenizer tkz(ancestors, ParserConsts::comma);
+            wxString args;
+            while (tkz.HasMoreTokens())
+            {
+                const wxString& ancestor = tkz.GetNextToken();
+                if (ancestor.IsEmpty())
+                    continue;
+                if (args.IsEmpty())
+                    args += ParserConsts::space + ParserConsts::colon;
+                else
+                    args += ParserConsts::comma;
+                args += ParserConsts::space + ancestor;
+            }
+            wxArrayString formals;
+            ResolveTemplateFormalArgs(m_TemplateArgument, formals);
+            if (!formals.IsEmpty())
+                args.Prepend(ParserConsts::lt + GetStringFromArray(formals, ParserConsts::comma, false) + ParserConsts::gt);
+
+            Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
             if (!newToken)
             {
                 TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
@@ -1925,8 +1944,7 @@ void ParserThread::HandleClass(EClassType ct)
             newToken->m_ImplLineStart = m_Tokenizer.GetLineNumber();
 
             newToken->m_TemplateArgument = m_TemplateArgument;
-            wxArrayString formals;
-            ResolveTemplateFormalArgs(m_TemplateArgument, formals);
+
 #ifdef CC_PARSER_TEST
             for (size_t i = 0; i < formals.GetCount(); ++i)
                 TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
