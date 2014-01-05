@@ -20,7 +20,7 @@
 				</Compiler>
 			</Target>
 			<Environment>
-				<Variable name="WX_CONFIG" value="" />
+				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
 			</Environment>
@@ -40,13 +40,13 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CONFIG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="../../include" />
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CONFIG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
@@ -54,7 +54,7 @@
 			<Add option="-mthreads" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CONFIG)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 			<Add directory="../../devel30" />
 		</Linker>
 		<Unit filename="cctest\cctest_app.cpp" />

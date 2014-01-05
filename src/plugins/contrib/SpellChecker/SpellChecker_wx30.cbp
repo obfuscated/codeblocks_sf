@@ -23,13 +23,13 @@
 					<Add option="-DHUNSPELL_STATIC" />
 					<Add directory="wxspellchecker\include" />
 					<Add directory="$(#WX30.include)" />
-					<Add directory="$(#WX30.lib)\gcc_dll\mswu" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 					<Add directory="hunspell\src\hunspell" />
 					<Add directory="hunspell\" />
 				</Compiler>
 				<Linker>
-					<Add library="wxmsw$(WX_VERSION)u" />
-					<Add directory="$(#WX30.lib)\gcc_dll" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Target title="wxSpellChecker">
@@ -49,11 +49,11 @@
 					<Add directory="hunspell\src" />
 					<Add directory="wxspellchecker\include" />
 					<Add directory="$(#WX30.include)" />
-					<Add directory="$(#WX30.lib)\gcc_dll\mswu" />
+					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
-					<Add library="wxmsw$(WX_VERSION)u" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="..\..\..\devel30" />
 					<Add directory="$(#WX30.lib)\gcc_dll" />
 				</Linker>

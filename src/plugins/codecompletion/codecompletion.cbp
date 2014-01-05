@@ -41,7 +41,7 @@
 				</Compiler>
 			</Target>
 			<Environment>
-				<Variable name="WX_CONFIG" value="" />
+				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="28" />
 			</Environment>
@@ -68,13 +68,13 @@
 			<Add option="-DEXPORT_EVENTS=0" />
 			<Add option="-DwxUSE_WX_RESOURCES=0" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)/gcc_dll$(WX_CONFIG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="../../include" />
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)/gcc_dll$(WX_CONFIG)/msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-image-base" />
@@ -84,7 +84,7 @@
 			<Add option="-mthreads" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="$(#WX.lib)/gcc_dll$(WX_CONFIG)" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
 			<Add directory="../../devel" />
 		</Linker>
 		<Unit filename="ccoptionsdlg.cpp">

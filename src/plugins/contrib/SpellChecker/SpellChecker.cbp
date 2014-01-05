@@ -24,13 +24,13 @@
 					<Add option="-DHUNSPELL_STATIC" />
 					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)/gcc_dll/mswu" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 					<Add directory="hunspell/src/hunspell" />
 					<Add directory="hunspell/" />
 				</Compiler>
 				<Linker>
-					<Add library="wxmsw28u" />
-					<Add directory="$(#wx.lib)/gcc_dll" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Target title="wxSpellChecker">
@@ -51,13 +51,13 @@
 					<Add directory="hunspell/src" />
 					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#wx.include)" />
-					<Add directory="$(#wx.lib)/gcc_dll/mswu" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
-					<Add library="wxmsw28u" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add directory="../../../devel" />
-					<Add directory="$(#wx.lib)/gcc_dll" />
+					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Target title="plugin">
