@@ -22,7 +22,7 @@
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="wxcustombutton" />
 					<Add directory="..\..\..\devel30_64" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Environment>
