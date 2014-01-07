@@ -3469,7 +3469,7 @@ void wxScintilla::Allocate(int bytes)
 // multi-byte characters. If beyond end of line, return line end position.
 int wxScintilla::FindColumn(int line, int column)
 {
-    return SendMsg(SCI_ENCODEDFROMUTF8, line, column);
+    return SendMsg(SCI_FINDCOLUMN, line, column);
 }
 
 // Can the caret preferred x position only be changed by explicit movement commands?
@@ -4004,6 +4004,12 @@ int wxScintilla::SetSelectionInt(int caret, int anchor)
 int wxScintilla::AddSelection(int caret, int anchor)
 {
     return SendMsg(SCI_ADDSELECTION, caret, anchor);
+}
+
+// Drop one selection
+void wxScintilla::DropSelectionN(int selection)
+{
+    SendMsg(SCI_DROPSELECTIONN, selection, 0);
 }
 
 // Set the main selection
@@ -4985,9 +4991,9 @@ bool wxScintilla::DoLoadFile(const wxString& filename, int WXUNUSED(fileType))
                 // Set EOL mode to ensure that the new lines inserted into the
                 // text use the same EOLs as the existing ones.
                 if ( posLF > 0 && text[posLF - 1] == '\r' )
-                    SetEOLMode(wxSTC_EOL_CRLF);
+                    SetEOLMode(wxSCI_EOL_CRLF);
                 else
-                    SetEOLMode(wxSTC_EOL_LF);
+                    SetEOLMode(wxSCI_EOL_LF);
             }
             //else: Use the default EOL for the current platform.
         }
@@ -5705,7 +5711,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 35, 0, "Scintilla 3.35");
+    return wxVersionInfo("Scintilla", 3, 37, 0, "Scintilla 3.37");
 }
 #endif
 /* C::B end */

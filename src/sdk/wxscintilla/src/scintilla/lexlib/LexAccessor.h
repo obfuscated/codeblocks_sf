@@ -58,7 +58,7 @@ private:
 	}
 
 public:
-	LexAccessor(IDocument *pAccess_) :
+	explicit LexAccessor(IDocument *pAccess_) :
 		pAccess(pAccess_), startPos(extremePosition), endPos(0),
 		codePage(pAccess->CodePage()),
 		encodingType(enc8bit),
@@ -144,7 +144,6 @@ public:
 		return lenDoc;
 	}
 	void Flush() {
-		startPos = extremePosition;
 		if (validLen > 0) {
 			pAccess->SetStyles(validLen, styleBuf);
 			startPosStyling += validLen;

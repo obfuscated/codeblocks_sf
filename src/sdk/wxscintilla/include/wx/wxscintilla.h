@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.35.0")
+#define wxSCINTILLA_VERSION _T("3.37.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -230,8 +230,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 
 // PrintColourMode - only the default-background is forced to be white for printing.
 #define wxSCI_PRINT_COLOURONWHITEDEFAULTBG 4
-#define wxSCI_FIND_WHOLEWORD 2
-#define wxSCI_FIND_MATCHCASE 4
+#define wxSCI_FIND_WHOLEWORD 0x2
+#define wxSCI_FIND_MATCHCASE 0x4
 #define wxSCI_FIND_WORDSTART 0x00100000
 #define wxSCI_FIND_REGEXP 0x00200000
 #define wxSCI_FIND_POSIX 0x00400000
@@ -528,8 +528,10 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LEX_LITERATEHASKELL 108
 #define wxSCI_LEX_STTXT 109
 #define wxSCI_LEX_KVIRC 110
+#define wxSCI_LEX_RUST 111
+#define wxSCI_LEX_DMAP 112
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_KVIRC // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_DMAP // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -580,15 +582,16 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_C_HASHQUOTEDSTRING 22
 #define wxSCI_C_PREPROCESSORCOMMENT 23
 #define wxSCI_C_PREPROCESSORCOMMENTDOC 24
+#define wxSCI_C_USERLITERAL 25
 
-/* C::B begin */
-// Keep in sync with SciLexer.h      -> SCE_C_WXSMITH
-// Keep in sync with Scintilla.iface -> SCE_C_WXSMITH
-// Keep in sync with lexer_cpp.xml   -> Style name="wxSmith-generated code"
-// Notice that due to the "activeFlag" in LexCPP.cxx, the index must be < 64 (0x40).
+/// WXSMITH begin #
+/// Keep in sync with wxscinilla.h  -> wxSCI_C_WXSMITH
+/// Keep in sync with SciLexer.h    -> SCE_C_WXSMITH
+/// Keep in sync with lexer_cpp.xml -> Style name="wxSmith-generated code"
+/// Notice that due to the "activeFlag" in LexCPP.cxx, the index must be < 64 (0x40).
 #define wxSCI_C_WXSMITH 50
-/* C::B end */
 
+/// WXSMITH end #
 // Lexical states for SCLEX_D
 #define wxSCI_D_DEFAULT 0
 #define wxSCI_D_COMMENT 1
@@ -878,6 +881,10 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_B_ERROR 16
 #define wxSCI_B_HEXNUMBER 17
 #define wxSCI_B_BINNUMBER 18
+#define wxSCI_B_COMMENTBLOCK 19
+#define wxSCI_B_DOCLINE 20
+#define wxSCI_B_DOCBLOCK 21
+#define wxSCI_B_DOCKEYWORD 22
 
 // Lexical states for SCLEX_PROPERTIES
 #define wxSCI_PROPS_DEFAULT 0
@@ -2148,7 +2155,6 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_COFFEESCRIPT_GLOBALCLASS 19
 #define wxSCI_COFFEESCRIPT_STRINGRAW 20
 #define wxSCI_COFFEESCRIPT_TRIPLEVERBATIM 21
-#define wxSCI_COFFEESCRIPT_HASHQUOTEDSTRING 22
 #define wxSCI_COFFEESCRIPT_COMMENTBLOCK 22
 #define wxSCI_COFFEESCRIPT_VERBOSE_REGEX 23
 #define wxSCI_COFFEESCRIPT_VERBOSE_REGEX_COMMENT 24
@@ -2281,6 +2287,42 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_KVIRC_OPERATOR 10
 #define wxSCI_KVIRC_STRING_FUNCTION 11
 #define wxSCI_KVIRC_STRING_VARIABLE 12
+
+/// Lexical states for SCLEX_RUST
+#define wxSCI_RUST_DEFAULT 0
+#define wxSCI_RUST_COMMENTBLOCK 1
+#define wxSCI_RUST_COMMENTLINE 2
+#define wxSCI_RUST_COMMENTBLOCKDOC 3
+#define wxSCI_RUST_COMMENTLINEDOC 4
+#define wxSCI_RUST_NUMBER 5
+#define wxSCI_RUST_WORD 6
+#define wxSCI_RUST_WORD2 7
+#define wxSCI_RUST_WORD3 8
+#define wxSCI_RUST_WORD4 9
+#define wxSCI_RUST_WORD5 10
+#define wxSCI_RUST_WORD6 11
+#define wxSCI_RUST_WORD7 12
+#define wxSCI_RUST_STRING 13
+#define wxSCI_RUST_STRINGR 14
+#define wxSCI_RUST_CHARACTER 15
+#define wxSCI_RUST_OPERATOR 16
+#define wxSCI_RUST_IDENTIFIER 17
+#define wxSCI_RUST_LIFETIME 18
+#define wxSCI_RUST_MACRO 19
+#define wxSCI_RUST_LEXERROR 20
+
+/// Lexical states for SCLEX_DMAP
+#define wxSCI_DMAP_DEFAULT 0
+#define wxSCI_DMAP_COMMENT 1
+#define wxSCI_DMAP_NUMBER 2
+#define wxSCI_DMAP_STRING1 3
+#define wxSCI_DMAP_STRING2 4
+#define wxSCI_DMAP_STRINGEOL 5
+#define wxSCI_DMAP_OPERATOR 6
+#define wxSCI_DMAP_IDENTIFIER 7
+#define wxSCI_DMAP_WORD 8
+#define wxSCI_DMAP_WORD2 9
+#define wxSCI_DMAP_WORD3 10
 
 /// Events
 /// GTK+ Specific to work around focus and accelerator problems:
@@ -4425,6 +4467,9 @@ public:
     // Add a selection
     int AddSelection(int caret, int anchor);
 
+    // Drop one selection
+    void DropSelectionN(int selection);
+
     // Set the main selection
     void SetMainSelection(int selection);
 
@@ -4852,7 +4897,7 @@ public:
     void AppendTextRaw(const char* text, int length=-1);
 
 #ifdef SWIG
-    %pythoncode "_stc_utf8_methods.py"
+    %pythoncode "_sci_utf8_methods.py"
 #endif
 
 
@@ -5229,7 +5274,7 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 #define EVT_SCI_INDICATOR_RELEASE(id, fn)       DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_INDICATOR_RELEASE      id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_AUTOCOMP_CANCELLED(id, fn)      DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_CANCELLED     id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_AUTOCOMP_CHAR_DELETED(id, fn)   DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_AUTOCOMP_CHAR_DELETED  id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
-#define EVT_SCI_HOTSPOT_RELEASE_CLICK(id, fn)   DECLARE_EVENT_TABLE_ENTRY (wxEVT_STC_HOTSPOT_RELEASE_CLICK, id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_HOTSPOT_RELEASE_CLICK(id, fn)   DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_HOTSPOT_RELEASE_CLICK, id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 /* C::B begin */
 #define EVT_SCI_SETFOCUS(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SETFOCUS               id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
 #define EVT_SCI_KILLFOCUS(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KILLFOCUS              id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),

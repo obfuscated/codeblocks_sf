@@ -38,6 +38,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexCrontab.cxx \
 			src/scintilla/lexers/LexCsound.cxx \
 			src/scintilla/lexers/LexD.cxx \
+			src/scintilla/lexers/LexDMAP.cxx \
 			src/scintilla/lexers/LexECL.cxx \
 			src/scintilla/lexers/LexEScript.cxx \
 			src/scintilla/lexers/LexEiffel.cxx \
@@ -84,6 +85,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexR.cxx \
 			src/scintilla/lexers/LexRebol.cxx \
 			src/scintilla/lexers/LexRuby.cxx \
+			src/scintilla/lexers/LexRust.cxx \
 			src/scintilla/lexers/LexSML.cxx \
 			src/scintilla/lexers/LexSQL.cxx \
 			src/scintilla/lexers/LexScriptol.cxx \
@@ -158,6 +160,7 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/lexlib/OptionSet.h \
 			src/scintilla/lexlib/PropSetSimple.h \
 			src/scintilla/lexlib/SparseState.h \
+			src/scintilla/lexlib/StringCopy.h \
 			src/scintilla/lexlib/StyleContext.h \
 			src/scintilla/lexlib/SubStyles.h \
 			src/scintilla/lexlib/WordList.h \

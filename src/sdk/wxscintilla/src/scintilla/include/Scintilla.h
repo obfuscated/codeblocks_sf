@@ -141,7 +141,6 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MARKNUM_FOLDER 30
 #define SC_MARKNUM_FOLDEROPEN 31
 /* CHANGEBAR begin */
-//#define SC_MASK_FOLDERS 0xFE000000
 #define SC_MASK_FOLDERS 0xFF800000
 /* CHANGEBAR end */
 #define SCI_MARKERDEFINE 2040
@@ -374,8 +373,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_PRINT_COLOURONWHITEDEFAULTBG 4
 #define SCI_SETPRINTCOLOURMODE 2148
 #define SCI_GETPRINTCOLOURMODE 2149
-#define SCFIND_WHOLEWORD 2
-#define SCFIND_MATCHCASE 4
+#define SCFIND_WHOLEWORD 0x2
+#define SCFIND_MATCHCASE 0x4
 #define SCFIND_WORDSTART 0x00100000
 #define SCFIND_REGEXP 0x00200000
 #define SCFIND_POSIX 0x00400000
@@ -837,6 +836,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_CLEARSELECTIONS 2571
 #define SCI_SETSELECTION 2572
 #define SCI_ADDSELECTION 2573
+#define SCI_DROPSELECTIONN 2671
 #define SCI_SETMAINSELECTION 2574
 #define SCI_GETMAINSELECTION 2575
 #define SCI_SETSELECTIONNCARET 2576
@@ -1007,6 +1007,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCN_AUTOCCANCELLED 2025
 #define SCN_AUTOCCHARDELETED 2026
 #define SCN_HOTSPOTRELEASECLICK 2027
+#define SCN_FOCUSIN 2028
+#define SCN_FOCUSOUT 2029
 #ifndef SCI_DISABLE_PROVISIONAL
 #define SC_LINE_END_TYPE_DEFAULT 0
 #define SC_LINE_END_TYPE_UNICODE 1
@@ -1046,7 +1048,7 @@ struct Sci_TextRange {
 
 struct Sci_TextToFind {
 	struct Sci_CharacterRange chrg;
-	char *lpstrText;
+	const char *lpstrText;
 	struct Sci_CharacterRange chrgText;
 };
 

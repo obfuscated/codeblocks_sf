@@ -104,6 +104,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmCss);
 	LINK_LEXER(lmD);
 	LINK_LEXER(lmDiff);
+	LINK_LEXER(lmDMAP);
 	LINK_LEXER(lmECL);
 	LINK_LEXER(lmEiffel);
 	LINK_LEXER(lmEiffelkw);
@@ -161,6 +162,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmR);
 	LINK_LEXER(lmREBOL);
 	LINK_LEXER(lmRuby);
+	LINK_LEXER(lmRust);
 	LINK_LEXER(lmScriptol);
 	LINK_LEXER(lmSmalltalk);
 	LINK_LEXER(lmSML);

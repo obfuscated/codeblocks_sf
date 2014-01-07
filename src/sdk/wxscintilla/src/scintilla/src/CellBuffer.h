@@ -21,8 +21,8 @@ class PerLine {
 public:
 	virtual ~PerLine() {}
 	virtual void Init()=0;
-	virtual void InsertLine(int)=0;
-	virtual void RemoveLine(int)=0;
+	virtual void InsertLine(int line)=0;
+	virtual void RemoveLine(int line)=0;
 };
 
 /* CHANGEBAR begin */
@@ -213,9 +213,9 @@ private:
 	LineVector lv;
 
 	bool UTF8LineEndOverlaps(int position) const;
-	/// Actions without undo
 /* CHANGEBAR begin */
 	void ResetLineEnds(bool undoing);
+	/// Actions without undo
 	void BasicInsertString(int position, const char *s, int insertLength, bool undoing);
 	void BasicDeleteChars(int position, int deleteLength, bool undoing);
 /* CHANGEBAR end */

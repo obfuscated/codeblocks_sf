@@ -363,8 +363,8 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void SetTopLine(int topLineNew);
 
 	bool AbandonPaint();
-	void RedrawRect(PRectangle rc);
-	void Redraw();
+	virtual void RedrawRect(PRectangle rc);
+	virtual void Redraw();
 	void RedrawSelMargin(int line=-1, bool allAfter=false);
 	PRectangle RectangleFromRange(int start, int end);
 	void InvalidateRange(int start, int end);
@@ -495,6 +495,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void DelCharBack(bool allowLineStartDeletion);
 	virtual void ClaimSelection() = 0;
 
+	static int ModifierFlags(bool shift, bool ctrl, bool alt, bool meta=false);
 	virtual void NotifyChange() = 0;
 	virtual void NotifyFocus(bool focus);
 	virtual void SetCtrlID(int identifier);
@@ -504,13 +505,19 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void NotifyChar(int ch);
 	void NotifySavePoint(bool isSavePoint);
 	void NotifyModifyAttempt();
+	virtual void NotifyDoubleClick(Point pt, int modifiers);
 	virtual void NotifyDoubleClick(Point pt, bool shift, bool ctrl, bool alt);
+	void NotifyHotSpotClicked(int position, int modifiers);
 	void NotifyHotSpotClicked(int position, bool shift, bool ctrl, bool alt);
+	void NotifyHotSpotDoubleClicked(int position, int modifiers);
 	void NotifyHotSpotDoubleClicked(int position, bool shift, bool ctrl, bool alt);
+	void NotifyHotSpotReleaseClick(int position, int modifiers);
 	void NotifyHotSpotReleaseClick(int position, bool shift, bool ctrl, bool alt);
 	bool NotifyUpdateUI();
 	void NotifyPainted();
+	void NotifyIndicatorClick(bool click, int position, int modifiers);
 	void NotifyIndicatorClick(bool click, int position, bool shift, bool ctrl, bool alt);
+	bool NotifyMarginClick(Point pt, int modifiers);
 	bool NotifyMarginClick(Point pt, bool shift, bool ctrl, bool alt);
 	void NotifyNeedShown(int pos, int len);
 	void NotifyDwelling(Point pt, bool state);
@@ -573,6 +580,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	void WordSelection(int pos);
 	void DwellEnd(bool mouseMoved);
 	void MouseLeave();
+	virtual void ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifiers);
 	virtual void ButtonDown(Point pt, unsigned int curTime, bool shift, bool ctrl, bool alt);
 	void ButtonMoveWithModifiers(Point pt, int modifiers);
 	void ButtonMove(Point pt);
@@ -631,6 +639,7 @@ protected:	// ScintillaBase subclass needs access to much of Editor
 	static const char *StringFromEOLMode(int eolMode);
 
 	static sptr_t StringResult(sptr_t lParam, const char *val);
+	static sptr_t BytesResult(sptr_t lParam, const unsigned char *val, size_t len);
 
 public:
 	// Public so the COM thunks can access it.
