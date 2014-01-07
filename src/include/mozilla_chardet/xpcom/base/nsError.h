@@ -6,11 +6,10 @@
 #ifndef nsError_h__
 #define nsError_h__
 
-#ifndef nscore_h___
-#include "nscore.h"  /* needed for nsresult */
-#endif
-#include "mozilla/Attributes.h"
 #include "mozilla/Likely.h"
+#include "mozilla/TypedEnum.h"
+
+#include <stdint.h>
 
 /*
  * To add error code to your module, you need to do the following:
@@ -119,43 +118,67 @@
  * either can be converted to the other, so it's ambiguous.  So we have to fall
  * back to a regular enum.
  */
-//#if defined(__cplusplus)
-//#if defined(MOZ_HAVE_CXX11_STRONG_ENUMS)
-//  typedef enum class tag_nsresult : uint32_t
-//#elif defined(MOZ_HAVE_CXX11_ENUM_TYPE)
-//  /* Need underlying type for workaround of Microsoft compiler (Bug 794734) */
-//  typedef enum tag_nsresult : uint32_t
-//#else
-//  /* no strong enums */
-//  typedef enum tag_nsresult
-//#endif
-//  {
-//    #undef ERROR
-//    #define ERROR(key, val) key = val
-//    #include "ErrorList.h"
-//    #undef ERROR
-//  } nsresult;
-//
-//#if defined(MOZ_HAVE_CXX11_STRONG_ENUMS)
-//  /* We're using enum classes, so we need #define's to put the constants in
-//   * global scope for compatibility with old code. */
-//  #include "ErrorListCxxDefines.h"
-//#endif
-//#else /* defined(__cplusplus) */
-//  /* C enum can't have a value outside the range of 'int'.
-//   * C const can't initialize with an expression involving other variables
-//   * even if it is const. So we have to fall back to bad old #defines. */
-//  typedef uint32_t nsresult;
-//  #include "ErrorListCDefines.h"
-//#endif /* defined(__cplusplus) */
+/*
+#if defined(MOZ_HAVE_CXX11_STRONG_ENUMS)
+  typedef enum class tag_nsresult : uint32_t
+  {
+    #undef ERROR
+    #define ERROR(key, val) key = val
+    #include "ErrorList.h"
+    #undef ERROR
+  } nsresult;
+*/
 
-typedef uint32_t nsresult;
+  /*
+   * enum classes don't place their initializers in the global scope, so we need
+   * #define's for compatibility with old code.
+   */
+/*
+  #include "ErrorListCxxDefines.h"
+#elif defined(MOZ_HAVE_CXX11_ENUM_TYPE)
+  typedef enum tag_nsresult : uint32_t
+  {
+    #undef ERROR
+    #define ERROR(key, val) key = val
+    #include "ErrorList.h"
+    #undef ERROR
+  } nsresult;
+#elif defined(__cplusplus)
+*/
+  /*
+   * We're C++ in an old compiler lacking enum classes *and* typed enums (likely
+   * gcc < 4.5.1 as clang/MSVC have long supported one or both), or compiler
+   * support is unknown.  Yet nsresult must have unsigned 32-bit representation.
+   * So just make it a typedef, and implement the constants with global consts.
+   */
+/*
+  typedef uint32_t nsresult;
+
+  const nsresult
+  #undef ERROR
+  #define ERROR(key, val) key = val
+  #include "ErrorList.h"
+  #undef ERROR
+    ;
+#else
+*/
+  /*
+   * C doesn't have any way to fix the type underlying an enum, and enum
+   * initializers can't have values outside the range of 'int'.  So typedef
+   * nsresult to the correct unsigned type, and fall back to using #defines for
+   * all error constants.
+   */
+  typedef uint32_t nsresult;
 // Error codes, see ErrorList.h:
-#define NS_OK                    0
-#define nsMBCSGroupProberFailed  1
-#define nsSBCSGroupProberFailed  2
-#define nsLatin1ProberFailed     3
-#define nsEscCharSetProberFailed 4
+  #define NS_OK                    0
+  #define nsMBCSGroupProberFailed  1
+  #define nsSBCSGroupProberFailed  2
+  #define nsLatin1ProberFailed     3
+  #define nsEscCharSetProberFailed 4
+/*
+  #include "ErrorListCDefines.h"
+#endif
+*/
 
 #undef SUCCESS_OR_FAILURE
 #undef SUCCESS
@@ -172,6 +195,14 @@ inline uint32_t NS_FAILED_impl(nsresult _nsresult) {
 }
 #define NS_FAILED(_nsresult)    ((bool)MOZ_UNLIKELY(NS_FAILED_impl(_nsresult)))
 #define NS_SUCCEEDED(_nsresult) ((bool)MOZ_LIKELY(!NS_FAILED_impl(_nsresult)))
+
+/* Check that our enum type is actually uint32_t as expected */
+/*
+static_assert(((nsresult)0) < ((nsresult)-1),
+              "nsresult must be an unsigned type");
+static_assert(sizeof(nsresult) == sizeof(uint32_t),
+              "nsresult must be 32 bits");
+*/
 #else
 #define NS_FAILED_impl(_nsresult) ((_nsresult) & 0x80000000)
 #define NS_FAILED(_nsresult)    (MOZ_UNLIKELY(NS_FAILED_impl(_nsresult)))
@@ -201,8 +232,10 @@ inline uint32_t NS_FAILED_impl(nsresult _nsresult) {
   *      Do not depend on this function. It will be going away!
   ***********************************************************************
   */
-//extern nsresult
-//NS_ErrorAccordingToNSPR();
+/*
+extern nsresult
+NS_ErrorAccordingToNSPR();
+*/
 
 
 /**
@@ -229,11 +262,6 @@ inline bool NS_ERROR_GET_SEVERITY(nsresult err) {
 #ifdef _MSC_VER
 #pragma warning(disable: 4251) /* 'nsCOMPtr<class nsIInputStream>' needs to have dll-interface to be used by clients of class 'nsInputStream' */
 #pragma warning(disable: 4275) /* non dll-interface class 'nsISupports' used as base for dll-interface class 'nsIRDFNode' */
-#endif
-
-#if defined(XP_WIN) && defined(__cplusplus)
-//extern bool sXPCOMHasLoadedNewDLLs;
-//NS_EXPORT void NS_SetHasLoadedNewDLLs();
 #endif
 
 #endif

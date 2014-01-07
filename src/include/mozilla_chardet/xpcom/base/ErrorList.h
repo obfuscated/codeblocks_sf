@@ -1,3 +1,4 @@
+// IWYU pragma: private, include "nsError.h"
 /* Helper file for nsError.h, via preprocessor magic */
   /* Standard "it worked" return value */
   ERROR(NS_OK,  0),
@@ -93,72 +94,23 @@
   /* 3: NS_ERROR_MODULE_GFX */
   /* ======================================================================= */
 #define MODULE NS_ERROR_MODULE_GFX
-  /* error codes for printer device contexts */
-  /* Unix: print command (lp/lpr) not found */
-  ERROR(NS_ERROR_GFX_PRINTER_CMD_NOT_FOUND,               FAILURE(2)),
-  /* Unix: print command returned an error */
-  ERROR(NS_ERROR_GFX_PRINTER_CMD_FAILURE,                 FAILURE(3)),
   /* no printer available (e.g. cannot find _any_ printer) */
-  ERROR(NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE,        FAILURE(4)),
+  ERROR(NS_ERROR_GFX_PRINTER_NO_PRINTER_AVAILABLE,        FAILURE(1)),
   /* _specified_ (by name) printer not found */
-  ERROR(NS_ERROR_GFX_PRINTER_NAME_NOT_FOUND,              FAILURE(5)),
-  /* access to printer denied */
-  ERROR(NS_ERROR_GFX_PRINTER_ACCESS_DENIED,               FAILURE(6)),
-  /* invalid printer attribute (for example: unsupported paper size etc.) */
-  ERROR(NS_ERROR_GFX_PRINTER_INVALID_ATTRIBUTE,           FAILURE(7)),
-  /* printer not "ready" (offline ?) */
-  ERROR(NS_ERROR_GFX_PRINTER_PRINTER_NOT_READY,           FAILURE(9)),
-  /* printer out of paper */
-  ERROR(NS_ERROR_GFX_PRINTER_OUT_OF_PAPER,                FAILURE(10)),
-  /* generic printer I/O error */
-  ERROR(NS_ERROR_GFX_PRINTER_PRINTER_IO_ERROR,            FAILURE(11)),
+  ERROR(NS_ERROR_GFX_PRINTER_NAME_NOT_FOUND,              FAILURE(2)),
   /* print-to-file: could not open output file */
-  ERROR(NS_ERROR_GFX_PRINTER_COULD_NOT_OPEN_FILE,         FAILURE(12)),
-  /* print-to-file: I/O error while printing to file */
-  ERROR(NS_ERROR_GFX_PRINTER_FILE_IO_ERROR,               FAILURE(13)),
-  /* print preview: needs at least one printer */
-  ERROR(NS_ERROR_GFX_PRINTER_PRINTPREVIEW,                FAILURE(14)),
+  ERROR(NS_ERROR_GFX_PRINTER_COULD_NOT_OPEN_FILE,         FAILURE(3)),
   /* print: starting document */
-  ERROR(NS_ERROR_GFX_PRINTER_STARTDOC,                    FAILURE(15)),
+  ERROR(NS_ERROR_GFX_PRINTER_STARTDOC,                    FAILURE(4)),
   /* print: ending document */
-  ERROR(NS_ERROR_GFX_PRINTER_ENDDOC,                      FAILURE(16)),
+  ERROR(NS_ERROR_GFX_PRINTER_ENDDOC,                      FAILURE(5)),
   /* print: starting page */
-  ERROR(NS_ERROR_GFX_PRINTER_STARTPAGE,                   FAILURE(17)),
-  /* print: ending page */
-  ERROR(NS_ERROR_GFX_PRINTER_ENDPAGE,                     FAILURE(18)),
-  /* print: print while in print preview */
-  ERROR(NS_ERROR_GFX_PRINTER_PRINT_WHILE_PREVIEW,         FAILURE(19)),
-  /* requested page size not supported by printer */
-  ERROR(NS_ERROR_GFX_PRINTER_PAPER_SIZE_NOT_SUPPORTED,    FAILURE(20)),
-  /* requested page orientation not supported */
-  ERROR(NS_ERROR_GFX_PRINTER_ORIENTATION_NOT_SUPPORTED,   FAILURE(21)),
-  /* requested colorspace not supported (like printing "color" on a
-     "grayscale"-only printer) */
-  ERROR(NS_ERROR_GFX_PRINTER_COLORSPACE_NOT_SUPPORTED,    FAILURE(22)),
-  /* too many copies requested */
-  ERROR(NS_ERROR_GFX_PRINTER_TOO_MANY_COPIES,             FAILURE(23)),
-  /* driver configuration error */
-  ERROR(NS_ERROR_GFX_PRINTER_DRIVER_CONFIGURATION_ERROR,  FAILURE(24)),
-  /* The document is still being loaded, can't Print Preview */
-  ERROR(NS_ERROR_GFX_PRINTER_DOC_IS_BUSY_PP,              FAILURE(25)),
-  /* The document was asked to be destroyed while we were preparing printing */
-  ERROR(NS_ERROR_GFX_PRINTER_DOC_WAS_DESTORYED,           FAILURE(26)),
-  /* Cannot Print or Print Preview XUL Documents */
-  ERROR(NS_ERROR_GFX_PRINTER_NO_XUL,                      FAILURE(27)),
-  /* The toolkit no longer supports the Print Dialog (for embedders) */
-  ERROR(NS_ERROR_GFX_NO_PRINTDIALOG_IN_TOOLKIT,           FAILURE(28)),
-  /* The was wasn't any Print Prompt service registered (this shouldn't happen) */
-  ERROR(NS_ERROR_GFX_NO_PRINTROMPTSERVICE,                FAILURE(29)),
-  /* requested plex mode not supported by printer */
-  ERROR(NS_ERROR_GFX_PRINTER_PLEX_NOT_SUPPORTED,          FAILURE(30)),
+  ERROR(NS_ERROR_GFX_PRINTER_STARTPAGE,                   FAILURE(6)),
   /* The document is still being loaded */
-  ERROR(NS_ERROR_GFX_PRINTER_DOC_IS_BUSY,                 FAILURE(31)),
-  /* Printing is not implemented */
-  ERROR(NS_ERROR_GFX_PRINTING_NOT_IMPLEMENTED,            FAILURE(32)),
-  /* Cannot load the matching print module */
-  ERROR(NS_ERROR_GFX_COULD_NOT_LOAD_PRINT_MODULE,         FAILURE(33)),
-  /* requested resolution/quality mode not supported by printer */
-  ERROR(NS_ERROR_GFX_PRINTER_RESOLUTION_NOT_SUPPORTED,    FAILURE(34)),
+  ERROR(NS_ERROR_GFX_PRINTER_DOC_IS_BUSY,                 FAILURE(7)),
+  /* Cannot Print or Print Preview XUL Documents (bug 136185 / bug 240490) */
+  ERROR(NS_ERROR_GFX_PRINTER_NO_XUL,                      FAILURE(8)),
+
   /* Font cmap is strangely structured - avoid this font! */
   ERROR(NS_ERROR_GFX_CMAP_MALFORMED,                      FAILURE(51)),
 #undef MODULE
@@ -299,7 +251,10 @@
   ERROR(NS_ERROR_UNKNOWN_SOCKET_TYPE,   FAILURE(51)),
   /* The specified socket type could not be created. */
   ERROR(NS_ERROR_SOCKET_CREATE_FAILED,  FAILURE(52)),
-
+  /* The operating system doesn't support the given type of address. */
+  ERROR(NS_ERROR_SOCKET_ADDRESS_NOT_SUPPORTED, FAILURE(53)),
+  /* The address to which we tried to bind the socket was busy. */
+  ERROR(NS_ERROR_SOCKET_ADDRESS_IN_USE, FAILURE(54)),
 
   /* Cache specific error codes: */
   ERROR(NS_ERROR_CACHE_KEY_NOT_FOUND,        FAILURE(61)),
@@ -501,7 +456,7 @@
   /* ======================================================================= */
 #define MODULE NS_ERROR_MODULE_DOM
   /* XXX If you add a new DOM error code, also add an error string to
-   * dom/src/base/domerr.msg */
+   * dom/base/domerr.msg */
 
   /* Standard DOM error codes: http://dvcs.w3.org/hg/domcore/raw-file/tip/Overview.html */
   ERROR(NS_ERROR_DOM_INDEX_SIZE_ERR,               FAILURE(1)),
@@ -548,6 +503,13 @@
   ERROR(NS_ERROR_DOM_BAD_URI,                      FAILURE(1012)),
   ERROR(NS_ERROR_DOM_RETVAL_UNDEFINED,             FAILURE(1013)),
   ERROR(NS_ERROR_DOM_QUOTA_REACHED,                FAILURE(1014)),
+  ERROR(NS_ERROR_DOM_JS_EXCEPTION,                 FAILURE(1015)),
+
+  /* May be used to indicate when e.g. setting a property value didn't
+   * actually change the value, like for obj.foo = "bar"; obj.foo = "bar";
+   * the second assignment throws NS_SUCCESS_DOM_NO_OPERATION.
+   */
+  ERROR(NS_SUCCESS_DOM_NO_OPERATION,               SUCCESS(1)),
 #undef MODULE
 
 
@@ -634,6 +596,7 @@
   ERROR(NS_ERROR_XPC_HAS_BEEN_SHUTDOWN,                FAILURE(51)),
   ERROR(NS_ERROR_XPC_CANT_MODIFY_PROP_ON_WN,           FAILURE(52)),
   ERROR(NS_ERROR_XPC_BAD_CONVERT_JS_ZERO_ISNOT_NULL,   FAILURE(53)),
+  ERROR(NS_ERROR_XPC_CANT_PASS_CPOW_TO_NATIVE,         FAILURE(54)),
   /* any new errors here should have an associated entry added in xpc.msg */
 
   ERROR(NS_SUCCESS_I_DID_SOMETHING,      SUCCESS(1)),
@@ -641,13 +604,6 @@
    * filename begins with chrome://global/) shoudl return this from their
    * scriptable helper's PreCreate hook. */
   ERROR(NS_SUCCESS_CHROME_ACCESS_ONLY,   SUCCESS(2)),
-  /* Classes that want slim wrappers should return
-   * NS_SUCCESS_ALLOW_SLIM_WRAPPERS from their scriptable helper's PreCreate
-   * hook. They must also force a parent for their wrapper (from the PreCreate
-   * hook), they must implement nsWrapperCache and their scriptable helper must
-   * implement nsXPCClassInfo and must return DONT_ASK_INSTANCE_FOR_SCRIPTABLE
-   * in the flags. */
-  ERROR(NS_SUCCESS_ALLOW_SLIM_WRAPPERS,  SUCCESS(3)),
 #undef MODULE
 
 
@@ -734,13 +690,15 @@
   ERROR(NS_PROPTABLE_PROP_NOT_THERE,            FAILURE(10)),
   /* Error code for XBL */
   ERROR(NS_ERROR_XBL_BLOCKED,                   FAILURE(15)),
+  /* Error code for when the content process crashed */
+  ERROR(NS_ERROR_CONTENT_CRASHED,               FAILURE(16)),
 
   /* XXX this is not really used */
   ERROR(NS_HTML_STYLE_PROPERTY_NOT_THERE,   SUCCESS(2)),
   ERROR(NS_CONTENT_BLOCKED,                 SUCCESS(8)),
   ERROR(NS_CONTENT_BLOCKED_SHOW_ALT,        SUCCESS(9)),
   ERROR(NS_PROPTABLE_PROP_OVERWRITTEN,      SUCCESS(11)),
-  /* Error codes for FindBroadcaster in nsXULDocument.cpp */
+  /* Error codes for FindBroadcaster in XULDocument.cpp */
   ERROR(NS_FINDBROADCASTER_NOT_FOUND,       SUCCESS(12)),
   ERROR(NS_FINDBROADCASTER_FOUND,           SUCCESS(13)),
   ERROR(NS_FINDBROADCASTER_AWAIT_OVERLAYS,  SUCCESS(14)),

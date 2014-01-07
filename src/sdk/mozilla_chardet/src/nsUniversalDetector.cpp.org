@@ -31,7 +31,7 @@ nsUniversalDetector::nsUniversalDetector(uint32_t aLanguageFilter)
     mCharSetProbers[i] = nullptr;
 }
 
-nsUniversalDetector::~nsUniversalDetector() 
+nsUniversalDetector::~nsUniversalDetector()
 {
   for (int32_t i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
     delete mCharSetProbers[i];
@@ -39,7 +39,7 @@ nsUniversalDetector::~nsUniversalDetector()
   delete mEscCharSetProber;
 }
 
-void 
+void
 nsUniversalDetector::Reset()
 {
   mDone = false;
@@ -67,7 +67,7 @@ nsUniversalDetector::Reset()
 
 nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
 {
-  if(mDone) 
+  if(mDone)
     return NS_OK;
 
   if (aLen > 0)
@@ -77,38 +77,41 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
   if (mStart)
   {
     mStart = false;
-    if (aLen > 2)
-      switch (aBuf[0])
-        {
-        case '\xEF':
-          if (('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2]))
-            // EF BB BF  UTF-8 encoded BOM
-            mDetectedCharset = "UTF-8";
+    if (aLen >= 2) {
+      switch (aBuf[0]) {
+      case '\xEF':
+        if ((aLen > 2) && ('\xBB' == aBuf[1]) && ('\xBF' == aBuf[2])) {
+          // EF BB BF  UTF-8 encoded BOM
+          mDetectedCharset = "UTF-8";
+        }
         break;
-        case '\xFE':
-          if ('\xFF' == aBuf[1])
-            // FE FF  UTF-16, big endian BOM
-            mDetectedCharset = "UTF-16";
+      case '\xFE':
+        if ('\xFF' == aBuf[1]) {
+          // FE FF  UTF-16, big endian BOM
+          mDetectedCharset = "UTF-16BE";
+        }
         break;
-        case '\xFF':
-          if ('\xFE' == aBuf[1])
-            // FF FE  UTF-16, little endian BOM
-            mDetectedCharset = "UTF-16";
+      case '\xFF':
+        if ('\xFE' == aBuf[1]) {
+          // FF FE  UTF-16, little endian BOM
+          mDetectedCharset = "UTF-16LE";
+        }
         break;
       }  // switch
+    }
 
-      if (mDetectedCharset)
-      {
-        mDone = true;
-        return NS_OK;
-      }
+    if (mDetectedCharset)
+    {
+      mDone = true;
+      return NS_OK;
+    }
   }
-  
+
   uint32_t i;
   for (i = 0; i < aLen; i++)
   {
     //other than 0xa0, if every othe character is ascii, the page is ascii
-    if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')  //Since many Ascii only page contains NBSP 
+    if (aBuf[i] & '\x80' && aBuf[i] != '\xA0')  //Since many Ascii only page contains NBSP
     {
       //we got a non-ascii byte (high-byte)
       if (mInputState != eHighbyte)
@@ -138,7 +141,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
         }
         if (nullptr == mCharSetProbers[2])
         {
-          mCharSetProbers[2] = new nsLatin1Prober; 
+          mCharSetProbers[2] = new nsLatin1Prober;
           if (nullptr == mCharSetProbers[2])
             return NS_ERROR_OUT_OF_MEMORY;
         }
@@ -179,13 +182,13 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
       if (mCharSetProbers[i])
       {
         st = mCharSetProbers[i]->HandleData(aBuf, aLen);
-        if (st == eFoundIt) 
+        if (st == eFoundIt)
         {
           mDone = true;
           mDetectedCharset = mCharSetProbers[i]->GetCharSetName();
           return NS_OK;
         }
-      } 
+      }
     }
     break;
 
@@ -201,7 +204,7 @@ void nsUniversalDetector::DataEnd()
 {
   if (!mGotData)
   {
-    // we haven't got any data yet, return immediately 
+    // we haven't got any data yet, return immediately
     // caller program sometimes call DataEnd before anything has been sent to detector
     return;
   }
@@ -212,7 +215,7 @@ void nsUniversalDetector::DataEnd()
     Report(mDetectedCharset);
     return;
   }
-  
+
   switch (mInputState)
   {
   case eHighbyte:

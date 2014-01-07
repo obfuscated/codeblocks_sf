@@ -14,12 +14,14 @@
 #include "nsError.h"
 #endif
 
-//#include "nsXPCOM.h"
+/*
+#include "nsXPCOM.h"
+*/
 #include "mozilla/Assertions.h"
 #include "mozilla/Likely.h"
 
 /* C::B begin */
-// We do not want (and can not)to use mozilla's debug stuff
+// We do not want to (and can not) use mozilla's debug stuff
 // in case we run ./configure with --enable-debug, we have to undefine it here or building breaks
 #ifdef DEBUG
 #undef DEBUG
@@ -357,7 +359,9 @@
   #define NS_CheckThreadSafe(owningThread, msg)
 #else
   #define NS_CheckThreadSafe(owningThread, msg)                 \
-    MOZ_ASSERT(owningThread == PR_GetCurrentThread(), msg)
+    if (MOZ_UNLIKELY(owningThread != PR_GetCurrentThread())) {  \
+      MOZ_CRASH(msg);                                           \
+    }
 #endif
 
 /* When compiling the XPCOM Glue on Windows, we pretend that it's going to

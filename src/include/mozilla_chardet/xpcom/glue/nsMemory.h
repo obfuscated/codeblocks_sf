@@ -6,11 +6,13 @@
 #ifndef nsMemory_h__
 #define nsMemory_h__
 
-//#include "nsXPCOM.h"
-//#include "nsIMemory.h"
+/*
+#include "nsXPCOM.h"
+*/
+
+class nsIMemory;
 
 #define NS_MEMORY_CONTRACTID "@mozilla.org/xpcom/memory-service;1"
-#define NS_MEMORY_CLASSNAME  "Global Memory Service"
 #define NS_MEMORY_CID                                \
 { /* 30a04e40-38e7-11d4-8cf5-0060b0fc14a3 */         \
     0x30a04e40,                                      \
@@ -29,22 +31,24 @@
  * This class is not threadsafe and is intented for use only on the main
  * thread.
  */
-//class nsMemory
-//{
-//public:
-//    static NS_HIDDEN_(void*) Alloc(size_t size)
-//        { return NS_Alloc(size); }
-//
-//    static NS_HIDDEN_(void*) Realloc(void* ptr, size_t size)
-//        { return NS_Realloc(ptr, size); }
-//
-//    static NS_HIDDEN_(void) Free(void* ptr)
-//        { NS_Free(ptr); }
-//
-//    static NS_COM_GLUE nsresult   HeapMinimize(bool aImmediate);
-//    static NS_COM_GLUE void*      Clone(const void* ptr, size_t size);
-//    static NS_COM_GLUE nsIMemory* GetGlobalMemoryService();       // AddRefs
-//};
+/*
+class nsMemory
+{
+public:
+    static NS_HIDDEN_(void*) Alloc(size_t size)
+        { return NS_Alloc(size); }
+
+    static NS_HIDDEN_(void*) Realloc(void* ptr, size_t size)
+        { return NS_Realloc(ptr, size); }
+
+    static NS_HIDDEN_(void) Free(void* ptr)
+        { NS_Free(ptr); }
+
+    static NS_COM_GLUE nsresult   HeapMinimize(bool aImmediate);
+    static NS_COM_GLUE void*      Clone(const void* ptr, size_t size);
+    static NS_COM_GLUE nsIMemory* GetGlobalMemoryService();       // AddRefs
+};
+*/
 
 /**
  * Macro to free all elements of an XPCOM array of a given size using
