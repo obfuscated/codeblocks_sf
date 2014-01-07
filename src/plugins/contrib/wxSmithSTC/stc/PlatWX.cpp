@@ -373,7 +373,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
 
     // TODO:  do something with cornerSize
     wxUnusedVar(cornerSize);
-    
+
     int x, y;
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp(r.width, r.height, 32);
@@ -394,7 +394,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
             p.Green() = wxPy_premultiply(green, alphaFill);
             p.Blue()  = wxPy_premultiply(blue,  alphaFill);
             p.Alpha() = alphaFill;
-            ++p; 
+            ++p;
         }
     }
 
@@ -408,12 +408,12 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
         p.Red()   = wxPy_premultiply(red,   alphaOutline);
         p.Green() = wxPy_premultiply(green, alphaOutline);
         p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;        
+        p.Alpha() = alphaOutline;
         p.MoveTo(pixData, x, r.height-1);
         p.Red()   = wxPy_premultiply(red,   alphaOutline);
         p.Green() = wxPy_premultiply(green, alphaOutline);
         p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;        
+        p.Alpha() = alphaOutline;
     }
 
     for (y=0; y<r.height; y++) {
@@ -421,14 +421,14 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
         p.Red()   = wxPy_premultiply(red,   alphaOutline);
         p.Green() = wxPy_premultiply(green, alphaOutline);
         p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;        
+        p.Alpha() = alphaOutline;
         p.MoveTo(pixData, r.width-1, y);
         p.Red()   = wxPy_premultiply(red,   alphaOutline);
         p.Green() = wxPy_premultiply(green, alphaOutline);
         p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
-        p.Alpha() = alphaOutline;        
+        p.Alpha() = alphaOutline;
     }
-    
+
     // Draw the bitmap
     hdc->DrawBitmap(bmp, r.x, r.y, true);
 
@@ -813,7 +813,7 @@ public:
     wxSTCListBoxWin(wxWindow* parent, wxWindowID id, Point WXUNUSED(location)) :
         wxPopupWindow(parent, wxBORDER_NONE)
     {
-        
+
         SetBackgroundColour(*wxBLACK);  // for our simple border
 
         lv = new wxSTCListBox(parent, id, wxPoint(-50,-50), wxDefaultSize,
@@ -935,7 +935,7 @@ public:
                 wxFRAME_NO_TASKBAR
                 | wxFRAME_FLOAT_ON_PARENT
 #ifdef __WXMAC__
-                | wxPOPUP_WINDOW 
+                | wxPOPUP_WINDOW
                 | wxNO_BORDER
 #else
                 | wxSIMPLE_BORDER
@@ -954,7 +954,7 @@ public:
         lv->SetFocus();
 
         Hide();
-    } 
+    }
 
 
     // On OSX and (possibly others) there can still be pending
@@ -1024,7 +1024,7 @@ public:
         if (frame)
             frame->Raise();
     }
-        
+
 
     virtual void DoSetSize(int x, int y,
                            int width, int height,
