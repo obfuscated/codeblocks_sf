@@ -69,7 +69,7 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
     formatter.setBlockIndent(XRCCTRL(*m_dlg, "chkIndentBlocks",                  wxCheckBox)->GetValue());
     formatter.setNamespaceIndent(XRCCTRL(*m_dlg, "chkIndentNamespaces",          wxCheckBox)->GetValue());
     formatter.setLabelIndent(XRCCTRL(*m_dlg, "chkIndentLabels",                  wxCheckBox)->GetValue());
-    formatter.setPreprocessorIndent(XRCCTRL(*m_dlg, "chkIndentPreprocessor",     wxCheckBox)->GetValue());
+    formatter.setPreprocDefineIndent(XRCCTRL(*m_dlg, "chkIndentPreprocessor",    wxCheckBox)->GetValue());
     formatter.setIndentCol1CommentsMode(XRCCTRL(*m_dlg, "chkIndentCol1Comments", wxCheckBox)->GetValue());
 
     wxString pointerAlign = XRCCTRL(*m_dlg, "cmbPointerAlign", wxComboBox)->GetValue();

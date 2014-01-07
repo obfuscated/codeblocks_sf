@@ -30,40 +30,111 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         &nbsp;</p>
 
     <h3>
-        Artistic Style 2.04&nbsp; (pending)</h3>
+        Artistic Style 2.05&nbsp; (pending)</h3>
 
     <p>
         With a new Artistic Style release some unchanged source files will be formatted because of changes to Artistic
         Style. You may want to format your source before making program changes in order to bring it up to date.</p>
     <p>
-        Three new bracket modifier options, "attach-namespaces", &nbsp;"attach-classes", and "attach-inlines", can be
-        used to modify your selected bracket style.&nbsp;See the documentation for details. They are described in a new
-        "Bracket Modifier Options" section.</p>
+        The main documentation for Artistic Style is in HTML format. Until now there has not been a way to display it
+        from the astyle console program. A new option, "html" or "-!" will display the help documentation in the
+        default browser. This documentation is more complete than the astyle "help" option, it includes examples, and has
+        an index for easier navigation. Since astyle is typically run from a script this should allow an easy way to access
+        the documentation. The option is available only from the command line.</p>
     <p>
-        A new option, "remove-brackets", will will remove brackets from conditional statements. The statement must be
-        a single statement on a single line. It is described in the "Formatting Options" section of the documentation.&nbsp;</p>
+        The new "html" option assumes the documentation is installed in the standard install path. This is /usr/share/doc/astyle/html
+        for Linux and the path %programfiles%\AStyle\doc for Windows. If it is installed to a different directory, use the variation
+        "html=###",&nbsp; where #### is the install path. This option can also be used to open other HTML
+        files. More information is in the "Command Line Only" section of the documentation.</p>
+    <p>
+        The "html" option on Linux uses the script "xdg-open" from the install package "xdg-utils" to find the default
+        browser. This should be available on most systems. &nbsp;If it is not available on your system you can file a bug report
+        requesting a change. It would be helpful if you could determine how it is done before filing the report. You can
+        also file a bug report if the documentation is not installed to the above "default" directories. The HTML documentation
+        takes quite a bit of time to maintain and I would like to make it easily available.</p>
+    <p>
+        The "help" option has been changed to send the output to stdout instead of stderr. This will allow piping and
+        redirection of the output. A common way to use the option on Linux is "astyle --help&nbsp;|&nbsp;less", which
+        will page the display. The "version" option has also been changed to stdout.</p>
+    <p>
+        The "Indent Style" topic on Wikipedia states that the "ANSI" style correctly refers to K&amp;R style brackets and not
+        Allman style as used by Artistic Style. The option "style=ansi" is therefore being depreciated and will be removed
+        in a future release. Use one of the other long options instead (style=allman, style=bsd, or style=break).</p>
+    <p>
+        The Windows compiler definition ASTYLE_NO_VCX (no Visual Studio exports) has been changed to ASTYLE_NO_EXPORTS.
+        It is needed by the Clang compiler to prevent errors. It is not needed on Linux since it does not use the __declspec(dllexport)
+        definition.</p>
+
+    <h3>
+        Artistic Style 2.04&nbsp; (November 2013)</h3>
+
+    <p>
+        With a new Artistic Style release some unchanged source files will be formatted because of changes to Artistic
+        Style. You may want to format your source before making program changes in order to bring it up to date.</p>
     <p>
         A new programming language, Objective&#8209;C, has been added to Artistic Style. Four new options, "align&#8209;method&#8209;colon",
         "pad&#8209;method&#8209;colon=", "pad&#8209;method&#8209;prefix", and "unpad&#8209;method&#8209;prefix" have been
         added to format the methods. The options are described in a new "Objective&#8209;C" section in the documentation.
         These new options affect only Objective&#8209;C source code. They have no effect on the other programming languages.</p>
     <p>
-        Because of the longer indents sometimes needed for Objective&#8209;C, the option "max-instatement-indent" may
-        need to be increased. If you are not getting the paren and square bracket alignment you want, try increasing this
-        value. The default minimum is 40 and the maximum is 120.
-    </p>
+        Because of the longer continuation indents sometimes needed for Objective&#8209;C, the option "max-instatement-indent"
+        may need to be increased. If you are not getting the paren and square bracket alignment you want, try increasing
+        this value. The default minimum is 40 and the maximum is 120.</p>
+    <p>
+        A new bracket style option, "style=google", has been added. It uses attached brackets and indents the class access
+        modifiers one-half indent.&nbsp; A complete description of the Google style is available at the <a href="https://code.google.com/p/google-styleguide/"
+            target="_blank" title="open new window">google&#8209;styleguide</a> website (https://code.google.com/p/google-styleguide/).
+        The website has standards for several programming languages along with a python program to verify the style and
+        an emacs script for using the style.</p>
+    <p>
+        A new indent option "indent-modifiers" will indent class access modifiers (public, protected, or 'private) one-half
+        indent. The rest of the class is not indented. It is described in the "Indentation Options" section of the documentation.</p>
+    <p>
+        Four new bracket modify options, "attach-namespaces", "attach-classes", "attach-inlines", and "attach-extern-c",
+        can be used to modify your selected bracket style. They are described in a new "Bracket Modify Options" section
+        of the documentation.</p>
+    <p>
+        A new option, "remove-brackets", will remove brackets from conditional statements. The statement must be a single
+        statement on a single line. It is described in the "Formatting Options" section of the documentation.</p>
+    <p>
+        A new option, "indent-preproc-cond", will indent preprocessor conditional statements (#if #elif, #else, #endif).
+        It is described in the "Indentation Options" section of the documentation. The option "indent-preprocessor" has
+        been deprecated and will be removed in a future release. Use "indent-preproc-define" instead. The processing of
+        preprocessor #define statements has not changed.</p>
+    <p>
+        A new option, "remove-comment-prefix", will remove a leading '*' from multi-line comments. It is described in
+        the "Formatting Options" section of the documentation. With the syntax coloring of modern editors a leading '*'
+        for comment lines is not as useful as it once was. The current trend is toward code that is easier to maintain.
+        The idea is that a style that is hard to maintain will discourage modification and updating. The converted style
+        should retain most of the formatting within the comment and result in a comment that is easier to maintain. For
+        consistency the option also indents multi-line comments that are not preceded by the '*'. This may slightly modify
+        the indentation of any commented-out code.</p>
+    <p>
+        The option "pad-first-paren-out" was fixed to not pad if the following paren is empty. This makes the option consistent
+        with "pad-paren-out". To fix empty parens that have been padded run with the option "unpad-paren" in addition
+        to "pad-first-paren-out". This needs to be done only once.</p>
+    <p>
+        Processing of C++11 raw string literals has been added.</p>
+    <p>
+        The compiler definition ASTYLE_NO_VCX (no Visual Studio exports) has been changed to ASTYLE_NO_EXPORTS and can
+        be used with any Windows compiler. The Clang compiler needs this option to avoid errors on dynamic libraries.
+        It removes the "__declspec(dllexport)"
+        definition from exported functions. Linux compilers do not use this.</p>
     <p>
         A new shared object (DLL) entry point, AStyleMainUtf16, has been added for processing C# UTF-16 strings. C# does
-        not have built in functions for converting the UTF-16 strings to UTF-8 for processing by Artistic Style. This
-        entry point will accept UTF-16 strings, format the source code, and return UTF-16 strings. The error handling
-        function and version number still use UTF-8 strings. The C# example program in the "Deleloper Information" shows
-        the new calling procedure. Changes from the previous release are marked in the example.</p>
+        not have built in functions for converting the UTF-16 strings to UTF-8. This entry point will accept UTF-16 strings,
+        format the source code, and return UTF-16 strings. The error handling function and version number still use UTF-8
+        strings. The C# example program in the "Developer Information" shows the new calling procedure. Changes from the
+        previous release are marked in the example.</p>
     <p>
         C# strings are UTF-16 on both Windows and Linux. C# does not use the UTF-32 wchar_t strings on Linux. Qt also
         uses UTF-16 on both Windows and Linux, but has built in UTF-8 conversion functions. Qt strings can be converted
-        to UTF-8 by Qt, or the new entry point can be used. There may be other "managed code" applications
-        on Linux that use UTF-16.
+        to UTF-8 by Qt, or the new entry point can be used. There may be other "managed code" applications on Linux that
+        use UTF-16.
     </p>
+    <p>
+        The "Links" page has two new sections for links mentioned in previous versions of Artistic Style. It links to
+        free software and other information.</p>
     <p>
         The "Developer Information" section has a new example and download for calling Artistic Style from an Objective&#8209;C
         program. Since it is another "C" language the only thing needed is to link the program with a library build of
@@ -72,7 +143,20 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         be close to working. The "Developer Information" section also has new page for "Objective&#8209;C on Windows and
         Linux" which has information on compiling and running the example on those systems.</p>
     <p>
-        Thanks to Evmenov Georgiy (align-pointer in range-based for) for their contributions.</p>
+        The executable included in the Windows distribution was compiled with Visual Studio 2010 (platform toolset v100).
+        Higher releases contain dependencies on Windows API functions that exist only on Windows Vista, Windows 7, and
+        Windows 8. This means that applications built with a Visual Studio 2012 C++ compiler would fail to load and execute
+        on Windows XP.
+    </p>
+    <p>
+        If you are using Windows Vista or higher, and have a Visual Studio 2012 or higher compiler available, recompiling
+        will probably result in faster execution. If you use a compiler other than Visual Studio, you can probably get
+        better execution by compiling using the C++11 standards. Artistic Style uses a lot of string vectors and the new
+        move semantics will probably result in faster execution.</p>
+    <p>
+    </p>
+    <p>
+        Thanks to Evmenov Georgiy, Matthew Woehlke, Jiang, Ruzzz, and beta100100 for their contributions.</p>
 
     <h3>
         Artistic Style 2.03&nbsp; (April 2013)</h3>
@@ -168,14 +252,13 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         memory in Python.
     </p>
     <p>
-        If you use Visual Studio on Windows, it can now be used for Python development. <a href="https://pytools.codeplex.com/"
-            target="_blank" title="open new window">Python Tools for Visual Studio</a> (PTVS) is a free and open source
-        plug-in for Visual Studio 2010 that supports Python and Iron Python. Other interpreters such Jython can be added.
-        It can be easily switched between Python versions or different interpreters. But the best thing is the Visual
-        Studio debugging support using the .NET debugger and the normal Visual Studio debugger. It enables you to set
-        break points, step through functions, change the current statement, inspect local variables, and perform other
-        operations while debugging. It is best to use it with a project file, a minor irritation for single page scripts.
-        And there are some minor bugs. But overall it works quite well.
+        If you use Visual Studio on Windows, it can now be used for Python development. Python Tools for Visual Studio
+        (PTVS) is a free and open source plug-in for Visual Studio 2010 that supports Python and Iron Python. Other interpreters
+        such Jython can be added. It can be easily switched between Python versions or different interpreters. But the
+        best thing is the Visual Studio debugging support using the .NET debugger and the normal Visual Studio debugger.
+        It enables you to set break points, step through functions, change the current statement, inspect local variables,
+        and perform other operations while debugging. It is best to use it with a project file, a minor irritation for
+        single page scripts. And there are some minor bugs. But overall it works quite well.
     </p>
     <p>
         Thanks to Christopher Sean Morrison, Keith OHara, louis6g, and J for their contributions.
@@ -301,9 +384,8 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         Win32 and x64 systems.</p>
     <p>
         If you use Visual Studio C++ Express the 2010 release has the ability to compile x64 code. But you must use Vista
-        or Windows&nbsp;7 and need to install the .NET Framework SDK. I have created a brief instruction page <a href="vsinstall.html"
-            target="_blank" title="open new window">here</a>. Note that a fix is required if you apply Service Pack&nbsp;1
-        after installing the .NET Framework SDK.</p>
+        or Windows&nbsp;7 and need to install the .NET Framework SDK. I have created a brief instruction page here. Note
+        that a fix is required if you apply Service Pack&nbsp;1 after installing the .NET Framework SDK.</p>
     <p>
         The documentation contains a new section "Command-line Only" which lists commands that are not available from
         an options file. The options were transferred from the "Other Options" section.</p>
@@ -315,10 +397,8 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         Survey Results</h4>
 
     <p>
-        The results of the survey posted last release are available at <a href="http://astyle.sourceforge.net/SurveyGeneralInfo.html"
-            target="survey" title="open new window">General Information</a> and <a href="http://astyle.sourceforge.net/SurveyOptions.html"
-                target="survey" title="open new window">Artistic Style Options</a>. Thanks to everyone who took the time
-        to complete it.</p>
+        The results of the survey posted last release are available at General Information and Artistic Style Options.
+        Thanks to everyone who took the time to complete it.</p>
     <p>
         Surveys give an indication of how many people are using an option or want certain features. This is information
         that is not available in the bug reports.</p>
@@ -348,11 +428,11 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         Developers</h4>
 
     <p>
-        The <a href="http://jimp03.zxq.net/" target="astyle" title="open new window">Artistic Style for Windows</a> program
-        contains a sample GUI using the new bracket style options. The old predefined styles are now the bracket styles.
-        The bracket options have been removed along with the indent&#8209;brackets and indent&#8209;blocks options. The
-        new bracket styles all use the same default indent of 4 spaces, therefore it is not necessary to set an indentation
-        from the bracket style. The new format is available for use with this release.</p>
+        The Artistic Style for Windows program contains a sample GUI using the new bracket style options. The old predefined
+        styles are now the bracket styles. The bracket options have been removed along with the indent&#8209;brackets
+        and indent&#8209;blocks options. The new bracket styles all use the same default indent of 4 spaces, therefore
+        it is not necessary to set an indentation from the bracket style. The new format is available for use with this
+        release.</p>
     <p>
         &nbsp;</p>
 
@@ -378,7 +458,7 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         degree of support by different compilers for console applications.</p>
     <p>
         The locale setting also affects the way numbers are displayed. Language translations may be provided in a future
-        release.&nbsp;
+        release.
     </p>
     <p>
         This is a major release (2.01) because of the internationalization and changes that will occur in the next couple
@@ -402,15 +482,12 @@ a.survey:hover { color:#0000A0; text-decoration:underline; }
         Checksum verification has been added to source file output that will help assure that no code has been duplicated
         or omitted. This is effective only in the debug configuration used for testing.</p>
     <p>
-        The test framework has been changed from UnitTest++ to <a href="http://code.google.com/p/googletest/" target="_blank"
-            title="open new window">Google Test</a>, which is actively maintained, has a mock object framework (<a href="http://code.google.com/p/googlemock/"
-                target="_blank" title="open new window">Google Mock</a>), and good documentation. Regression and system
-        testing have been automated with Python scripts. Python has also been used for class verification checks and other
-        repetitive procedures.</p>
+        The test framework has been changed from UnitTest++ to Google Test, which is actively maintained, has a mock object
+        framework (Google Mock), and good documentation. Regression and system testing have been automated with Python
+        scripts. Python has also been used for class verification checks and other repetitive procedures.</p>
     <p>
         If you use Visual Studio C++ Express the 2010 release has the ability to create x64 code. But you must use Vista
-        or Windows 7 and need to install the .NET Framework SDK. I have created a brief instruction page <a href="vsinstall.html"
-            target="_blank" title="open new window">here</a>.</p>
+        or Windows 7 and need to install the .NET Framework SDK. I have created a brief instruction page here.</p>
     <p>
         Thanks to Matthew Woehlke, Chris Schwarz, Chang Jiang, and Arseny Solokha for their contributions.</p>
 

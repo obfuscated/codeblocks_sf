@@ -192,7 +192,7 @@ void ASEnhancer::convertSpaceIndentToForceTab(string &line) const
  * find the colon following a 'case' statement
  *
  * @param line          a reference to the line.
- * @param i             the line index of the case statement.
+ * @param caseIndex     the line index of the case statement.
  * @return              the line index of the colon.
  */
 size_t ASEnhancer::findCaseColon(string  &line, size_t caseIndex) const

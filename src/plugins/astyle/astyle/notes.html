@@ -17,36 +17,93 @@
     <p>
         &nbsp;</p>
 
-    <h3 id="_2.04">
-        Artistic Style 2.04&nbsp; (pending)</h3>
+    <h3>
+        Artistic Style 2.05&nbsp; (pending)</h3>
 
     <ul>
-        <li>Add new bracket modifier options "attach-namespaces", "attach-classes", and "attach-inlines".</li>
-        <li>Add new option "remove-brackets" (-xj) to remove brackets from single line conditional statements.</li>
+        <li>Add new options, "html" (-!") and "html=###", and &nbsp;to display the HTML help documentation in the default
+            browser.</li>
+        <li>Remove option "style=ansi" and make it depreciated (?????????????). </li>
+        <li>Change "help" display to stdout to allow piping and redirection (#63).</li>
+        <li>Change "version" display to stdout. </li>
+        <li>Change compiler definition ASTYLE_NO_VCX (no Visual Studio exports) to ASTYLE_NO_EXPORTS.</li>
+        <li>Fix piping and redirection adding an extra character to the output (#245, #252). </li>
+        <li>Fix "indent-modifiers" to attach class access modifiers to Horstmann style brackets. </li>
+        <li>Fix file read to read 64K blocks of data.</li>
+        <li>Refactor:
+            <ul>
+                <li>Extract class Utf8_16 from ASConsole. </li>
+                <li>Move global "using" statements to the astyle namespace in astyle.h and ASLocalizer.h. </li>
+                <li>Minor changes to ASFormatter and ASBeautifier based on results of the Clang analyzer. </li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>
+        Artistic Style 2.04&nbsp; (November 2013)</h3>
+
+    <ul>
         <li>Add new programming language Objective&#8209;C.</li>
+        <li>Add new bracket style option "style=google" (-A14). </li>
+        <li>Add new option "indent-preproc-cond" (xw) to indent preprocessor conditional statements (#118). </li>
+        <li>Add new bracket modify options "attach-namespaces", "attach-classes", "attach-inlines", and "attach-extern-c".
+        </li>
+        <li>Add new option "indent-modifiers" (-xG) to indent class access modifiers one-half indent (#130). </li>
+        <li>Add new option "remove-brackets" (-xj) to remove brackets from single line conditional statements.</li>
+        <li>Add new option "remove-comment-prefix" (-xp) to remove the leading '*' from multi-line comments. </li>
         <li>Add new option "align-method-colon" (-xM) to align Objective&#8209;C method colons. </li>
         <li>Add new option "pad-method-colon=#" (-xP#) to space pad Objective&#8209;C method colons. </li>
         <li>Add new options "pad-method-prefix" (-xQ), and "unpad-method-prefix" (-xR) to pad the Objective&#8209;C "-" and
             "+" method prefix. </li>
         <li>Add new dll entry point AStyleMainUtf16 for processing C# UTF-16 strings. </li>
-        <li>Improve recognition and formatting of pointers and references. </li>
+        <li>Add formatting of C++11 raw string literals (#222). </li>
+        <li>Add "style=knf" as an alternative to "style=linux".</li>
+        <li>Remove depreciated "bracket=" options.</li>
+        <li>Improve recognition and formatting of pointers and references (#174 and other changes). </li>
+        <li>Improve the recognition of block-opening brackets.</li>
+        <li>Improve code using a static code analyzer (#195).</li>
         <li>Change "max-code-length" to include Objective&#8209;C methods.</li>
-        <li>Fix linux bracket styles to break the opening bracket in inline function definitions (185). </li>
-        <li>Fix indentation of switch block comments (164). </li>
-        <li>Fix enums to indent with tabs when requested (92, 121). </li>
-        <li>Fix formatting of rvalue reference without a name in a declaration (219).</li>
+        <li>Change "indent-elseifs" and "break-blocks" to look ahead only if in command-type brackets (speed improvement).</li>
+        <li>Fix linux bracket styles to break the opening bracket in inline function definitions (#185). </li>
+        <li>Fix indentation of switch block comments (#164). </li>
+        <li>Fix enums to indent with tabs when requested (#92, #121). </li>
+        <li>Fix formatting of rvalue reference without a name in a declaration (#219). </li>
+        <li>Fix "pad-first-paren-out" to not pad if the following parens are empty (#232). </li>
         <li>Fix end-of-statement reset when comments follow closing bracket.</li>
         <li>Fix the ASBeautifier active and waiting stacks to delete the ASBeautifier objects before deleting the pointers.</li>
+        <li>Fix ASBeautifier "init" to delete the tempStack vectors before deleting the tempStack.</li>
         <li>Fix Linux piping problem by changing "cin" input to build a stringstream before formatting. </li>
-        <li>Refactor to improve design and decomposition:
+        <li>Fix to identify the correct bracket type when 'extern "C"' is part of the enum definition. </li>
+        <li>Fix to clear 'extern "C"' variables when the block is closed. </li>
+        <li>Fix unindented 'extern "C"' to not indent when in a #else preprocessor directive.</li>
+        <li>Fix not always correctly formatting linux type brackets for enum blocks.</li>
+        <li>Fix align-pointer in a range-based for statement (#217).</li>
+        <li>Fix pointer-reference argument alignment to correctly position a following comment (#235).</li>
+        <li>Fix to not attach a bracket to a line ending in a backslash '\' (#186, #214, #220). </li>
+        <li>Fix to recognize templates using multiple lines (#85, #87, #136).</li>
+        <li>Fix formatting of template continuation lines (#85, #87, #136).</li>
+        <li>Fix to allow '^' as an array operator (#233). </li>
+        <li>Fix an "enum" argument being mistaken for an enumeration (#211).</li>
+        <li>Fix to recognize a non-instatement array after a "},{" sequence.</li>
+        <li>Fix "pad-oper" to not pad before a following comma. </li>
+        <li>Fix recognition of an operator when the calculation contains a bitwise "not" '~' (#166).</li>
+        <li>Fix to allow a preprocessor statement within a preprocessor define (#238).</li>
+        <li>Fix preprocessor comparison to check for whole words (#246).</li>
+        <li>Fix "add-brackets" when a line contains more than one paren pairs (#181).</li>
+        <li>Fix to allow Mac old CR line endings in the options file (#129).</li>
+        <li>Refactor to aid debugging and improve design and decomposition:
             <ul>
+                <li>Move ALL preliminary indentation calculations to computePreliminaryIndentation() in ASBeautifier.</li>
+                <li>Move calculation of 'force tab' indents to preLineWS() in ASBeautifier. </li>
+                <li>Combine methods init() and init(ASSourceIterator*) in ASBeautifier.</li>
+                <li>Extract method adjustParsedLineIndentation() in ASBeautifier.</li>
                 <li>Extract method parseCurrentLine() in ASEnhancer.&nbsp; </li>
                 <li>Remove astyle_main.cpp unused functions getFilesUnchanged, getOptionsFileRequired, and setOptionsFileRequired.</li>
             </ul>
         </li>
     </ul>
 
-    <h3 id="_2.03">
+    <h3>
         Artistic Style 2.03&nbsp; (April 2013)</h3>
 
     <ul>
@@ -112,7 +169,7 @@
         </li>
     </ul>
 
-    <h3 id="_2.02">
+    <h3>
         Artistic Style 2.02.1&nbsp; (November 2011)</h3>
 
     <ul>
@@ -185,7 +242,7 @@
         </li>
     </ul>
 
-    <h3 id="_2.01">
+    <h3>
         Artistic Style 2.01&nbsp; (November 2010)</h3>
 
     <ul>
@@ -260,10 +317,9 @@
     </ul>
     <p>
         &nbsp;</p>
-
     <p>
-        <strong>Previous releases are available in the <a href="http://astyle.sourceforge.net/notesArchives.html">Release Notes Archives</a>.</strong></p>
-
+        <strong>Previous releases are available in the <a href="http://astyle.sourceforge.net/notesArchives.html">Release
+            Notes Archives</a>.</strong></p>
     <p>
         &nbsp;</p>
 

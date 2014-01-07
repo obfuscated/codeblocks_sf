@@ -91,7 +91,7 @@ ASLocalizer::ASLocalizer()
 	// Not all compilers support the C++ function locale::global(locale(""));
 	// For testing on Windows change the "Region and Language" settings or use AppLocale.
 	// For testing on Linux change the LANG environment variable: LANG=fr_FR.UTF-8.
-	// setlocale() will use the LANG environment valiable on Linux.
+	// setlocale() will use the LANG environment variable on Linux.
 
 	char* localeName = setlocale(LC_ALL, "");
 	if (localeName == NULL)		// use the english (ascii) defaults
@@ -159,7 +159,7 @@ void ASLocalizer::setLanguageFromLCID(size_t lcid)
 //       Same with LCIDToLocaleName().
 {
 	m_lcid = lcid;
-	m_langID == "en";	// default to english
+	m_langID = "en";	// default to english
 
 	size_t lang = PRIMARYLANGID(LANGIDFROMLCID(m_lcid));
 	size_t sublang = SUBLANGID(LANGIDFROMLCID(m_lcid));
@@ -262,9 +262,9 @@ void ASLocalizer::setTranslationClass()
 	else if (m_langID == "zh" && m_subLangID == "CHT")
 		m_translation = new ChineseTraditional;
 	else if (m_langID == "nl")
-		m_translation =  new Dutch;
+		m_translation = new Dutch;
 	else if (m_langID == "en")
-		m_translation =  new English;
+		m_translation = new English;
 	else if (m_langID == "fi")
 		m_translation = new Finnish;
 	else if (m_langID == "fr")
@@ -286,11 +286,11 @@ void ASLocalizer::setTranslationClass()
 	else if (m_langID == "ru")
 		m_translation = new Russian;
 	else if (m_langID == "es")
-		m_translation =  new Spanish;
+		m_translation = new Spanish;
 	else if (m_langID == "sv")
-		m_translation =  new Swedish;
+		m_translation = new Swedish;
 	else if (m_langID == "uk")
-		m_translation =  new Ukrainian;
+		m_translation = new Ukrainian;
 	else	// default
 		m_translation = new English;
 }
@@ -400,11 +400,15 @@ ChineseSimplified::ChineseSimplified()	// 中文（简体）
 	addPair("%d min %d sec   ", L"%d 分 %d 秒   ");
 	addPair("%s lines\n", L"%s 行\n");
 	addPair("Using default options file %s\n", L"使用默认配置文件 %s\n");
+	addPair("Opening HTML documentation %s\n", L"打开HTML文档 %s\n");
 	addPair("Invalid option file options:", L"无效的配置文件选项:");
 	addPair("Invalid command line options:", L"无效的命令行选项:");
-	addPair("For help on options type 'astyle -h'", L"输入'astyle -h'以获得有关命令行的帮助");
+	addPair("For help on options type 'astyle -h'", L"输入 'astyle -h' 以获得有关命令行的帮助");
 	addPair("Cannot open options file", L"无法打开配置文件");
 	addPair("Cannot open directory", L"无法打开目录");
+	addPair("Cannot open HTML file", L"无法打开HTML文件");
+	addPair("Command execute failure", L"执行命令失败");
+	addPair("xdg-utils is not installed", L"XDG-utils的安装");
 	addPair("Missing filename in %s\n", L"在%s缺少文件名\n");
 	addPair("Recursive option with no wildcard", L"递归选项没有通配符");
 	addPair("Did you intend quote the filename", L"你打算引用文件名");
@@ -426,11 +430,15 @@ ChineseTraditional::ChineseTraditional()	// 中文（繁體）
 	addPair("%d min %d sec   ", L"%d 分 %d 秒   ");
 	addPair("%s lines\n", L"%s 行\n");
 	addPair("Using default options file %s\n", L"使用默認配置文件 %s\n");
+	addPair("Opening HTML documentation %s\n", L"打開HTML文檔 %s\n");
 	addPair("Invalid option file options:", L"無效的配置文件選項:");
 	addPair("Invalid command line options:", L"無效的命令行選項:");
 	addPair("For help on options type 'astyle -h'", L"輸入'astyle -h'以獲得有關命令行的幫助:");
 	addPair("Cannot open options file", L"無法打開配置文件");
 	addPair("Cannot open directory", L"無法打開目錄");
+	addPair("Cannot open HTML file", L"無法打開HTML文件");
+	addPair("Command execute failure", L"執行命令失敗");
+	addPair("xdg-utils is not installed", L"XDG-utils的安裝");
 	addPair("Missing filename in %s\n", L"在%s缺少文件名\n");
 	addPair("Recursive option with no wildcard", L"遞歸選項沒有通配符");
 	addPair("Did you intend quote the filename", L"你打算引用文件名");
@@ -453,11 +461,15 @@ Dutch::Dutch()	// Nederlandse
 	addPair("%d min %d sec   ", L"%d min %d sec   ");
 	addPair("%s lines\n", L"%s lijnen\n");
 	addPair("Using default options file %s\n", L"Met behulp van standaard opties bestand %s\n");
+	addPair("Opening HTML documentation %s\n", L"Het openen van HTML-documentatie %s\n");
 	addPair("Invalid option file options:", L"Ongeldige optie file opties:");
 	addPair("Invalid command line options:", L"Ongeldige command line opties:");
 	addPair("For help on options type 'astyle -h'", L"Voor hulp bij 'astyle-h' opties het type");
 	addPair("Cannot open options file", L"Kan niet worden geopend options bestand");
 	addPair("Cannot open directory", L"Kan niet open directory");
+	addPair("Cannot open HTML file", L"Kan HTML-bestand niet openen");
+	addPair("Command execute failure", L"Voeren commando falen");
+	addPair("xdg-utils is not installed", L"xdg-utils is niet geïnstalleerd");
 	addPair("Missing filename in %s\n", L"Ontbrekende bestandsnaam in %s\n");
 	addPair("Recursive option with no wildcard", L"Recursieve optie met geen wildcard");
 	addPair("Did you intend quote the filename", L"Heeft u van plan citaat van de bestandsnaam");
@@ -484,11 +496,15 @@ Finnish::Finnish()	// Suomeksi
 	addPair("%d min %d sec   ", L"%d min %d sek   ");
 	addPair("%s lines\n", L"%s linjat\n");
 	addPair("Using default options file %s\n", L"Käyttämällä oletusasetuksia tiedosto %s\n");
+	addPair("Opening HTML documentation %s\n", L"Avaaminen HTML asiakirjat %s\n");
 	addPair("Invalid option file options:", L"Virheellinen vaihtoehto tiedosto vaihtoehtoja:");
 	addPair("Invalid command line options:", L"Virheellinen komentorivin:");
 	addPair("For help on options type 'astyle -h'", L"Apua vaihtoehdoista tyyppi 'astyle -h'");
 	addPair("Cannot open options file", L"Ei voi avata vaihtoehtoja tiedostoa");
 	addPair("Cannot open directory", L"Ei Open Directory");
+	addPair("Cannot open HTML file", L"Ei voi avata HTML-tiedoston");
+	addPair("Command execute failure", L"Suorita komento vika");
+	addPair("xdg-utils is not installed", L"xdg-utils ei ole asennettu");
 	addPair("Missing filename in %s\n", L"Puuttuvat tiedostonimi %s\n");
 	addPair("Recursive option with no wildcard", L"Rekursiivinen vaihtoehto ilman wildcard");
 	addPair("Did you intend quote the filename", L"Oletko aio lainata tiedostonimi");
@@ -511,11 +527,15 @@ French::French()	// Française
 	addPair("%d min %d sec   ", L"%d min %d sec   ");
 	addPair("%s lines\n", L"%s lignes\n");
 	addPair("Using default options file %s\n", L"Options par défaut utilisation du fichier %s\n");
+	addPair("Opening HTML documentation %s\n", L"Ouverture documentation HTML %s\n");
 	addPair("Invalid option file options:", L"Options Blancs option du fichier:");
 	addPair("Invalid command line options:", L"Blancs options ligne de commande:");
 	addPair("For help on options type 'astyle -h'", L"Pour de l'aide sur les options tapez 'astyle -h'");
 	addPair("Cannot open options file", L"Impossible d'ouvrir le fichier d'options");
 	addPair("Cannot open directory", L"Impossible d'ouvrir le répertoire");
+	addPair("Cannot open HTML file", L"Impossible d'ouvrir le fichier HTML");
+	addPair("Command execute failure", L"Exécuter échec de la commande");
+	addPair("xdg-utils is not installed", L"xdg-utils n'est pas installé");
 	addPair("Missing filename in %s\n", L"Nom de fichier manquant dans %s\n");
 	addPair("Recursive option with no wildcard", L"Option récursive sans joker");
 	addPair("Did you intend quote the filename", L"Avez-vous l'intention de citer le nom de fichier");
@@ -538,11 +558,15 @@ German::German()	// Deutsch
 	addPair("%d min %d sec   ", L"%d min %d sek   ");
 	addPair("%s lines\n", L"%s linien\n");
 	addPair("Using default options file %s\n", L"Mit Standard-Optionen Dat %s\n");
+	addPair("Opening HTML documentation %s\n", L"Öffnen HTML-Dokumentation %s\n");
 	addPair("Invalid option file options:", L"Ungültige Option Datei-Optionen:");
 	addPair("Invalid command line options:", L"Ungültige Kommandozeilen-Optionen:");
 	addPair("For help on options type 'astyle -h'", L"Für Hilfe zu den Optionen geben Sie 'astyle -h'");
 	addPair("Cannot open options file", L"Kann nicht geöffnet werden Optionsdatei");
 	addPair("Cannot open directory", L"Kann nicht geöffnet werden Verzeichnis");
+	addPair("Cannot open HTML file", L"Kann nicht öffnen HTML-Datei");
+	addPair("Command execute failure", L"Execute Befehl Scheitern");
+	addPair("xdg-utils is not installed", L"xdg-utils ist nicht installiert");
 	addPair("Missing filename in %s\n", L"Missing in %s Dateiname\n");
 	addPair("Recursive option with no wildcard", L"Rekursive Option ohne Wildcard");
 	addPair("Did you intend quote the filename", L"Haben Sie die Absicht Inhalte der Dateiname");
@@ -567,11 +591,15 @@ Hindi::Hindi()	// हिन्दी
 	addPair("%d min %d sec   ", L"%d मिनट %d सेकंड   ");
 	addPair("%s lines\n", L"%s लाइनों\n");
 	addPair("Using default options file %s\n", L"डिफ़ॉल्ट विकल्प का उपयोग कर फ़ाइल %s\n");
+	addPair("Opening HTML documentation %s\n", L"एचटीएमएल प्रलेखन खोलना %s\n");
 	addPair("Invalid option file options:", L"अवैध विकल्प फ़ाइल विकल्प हैं:");
 	addPair("Invalid command line options:", L"कमांड लाइन विकल्प अवैध:");
 	addPair("For help on options type 'astyle -h'", L"विकल्पों पर मदद के लिए प्रकार 'astyle -h'");
 	addPair("Cannot open options file", L"विकल्प फ़ाइल नहीं खोल सकता है");
 	addPair("Cannot open directory", L"निर्देशिका नहीं खोल सकता");
+	addPair("Cannot open HTML file", L"HTML फ़ाइल नहीं खोल सकता");
+	addPair("Command execute failure", L"आदेश विफलता निष्पादित");
+	addPair("xdg-utils is not installed", L"XDG-utils स्थापित नहीं है");
 	addPair("Missing filename in %s\n", L"लापता में फ़ाइलनाम %s\n");
 	addPair("Recursive option with no wildcard", L"कोई वाइल्डकार्ड साथ पुनरावर्ती विकल्प");
 	addPair("Did you intend quote the filename", L"क्या आप बोली फ़ाइलनाम का इरादा");
@@ -594,11 +622,15 @@ Italian::Italian()	// Italiano
 	addPair("%d min %d sec   ", L"%d min %d seg   ");
 	addPair("%s lines\n", L"%s linee\n");
 	addPair("Using default options file %s\n", L"Utilizzando file delle opzioni di default %s\n");
+	addPair("Opening HTML documentation %s\n", L"Apertura di documenti HTML %s\n");
 	addPair("Invalid option file options:", L"Opzione non valida file delle opzioni:");
 	addPair("Invalid command line options:", L"Opzioni della riga di comando non valido:");
 	addPair("For help on options type 'astyle -h'", L"Per informazioni sulle opzioni di tipo 'astyle-h'");
 	addPair("Cannot open options file", L"Impossibile aprire il file opzioni");
 	addPair("Cannot open directory", L"Impossibile aprire la directory");
+	addPair("Cannot open HTML file", L"Impossibile aprire il file HTML");
+	addPair("Command execute failure", L"Esegui fallimento comando");
+	addPair("xdg-utils is not installed", L"xdg-utils non è installato");
 	addPair("Missing filename in %s\n", L"Nome del file mancante in %s\n");
 	addPair("Recursive option with no wildcard", L"Opzione ricorsiva senza jolly");
 	addPair("Did you intend quote the filename", L"Avete intenzione citare il nome del file");
@@ -620,11 +652,15 @@ Japanese::Japanese()	// 日本
 	addPair("%d min %d sec   ", L"%d 分 %d 秒   ");
 	addPair("%s lines\n", L"%s の行\n");
 	addPair("Using default options file %s\n", L"デフォルトの設定ファイルを使用してください %s\n");
+	addPair("Opening HTML documentation %s\n", L"HTML文書を開く %s\n");
 	addPair("Invalid option file options:", L"無効なコンフィギュレーションファイルオプション：");
 	addPair("Invalid command line options:", L"無効なコマンドラインオプション：");
 	addPair("For help on options type 'astyle -h'", L"コマンドラインについてのヘルプは'astyle- h'を入力してください");
 	addPair("Cannot open options file", L"コンフィギュレーションファイルを開くことができません");
 	addPair("Cannot open directory", L"ディレクトリのオープンに失敗しました");
+	addPair("Cannot open HTML file", L"HTMLファイルを開くことができません");
+	addPair("Command execute failure", L"コマンドの失敗を実行");
+	addPair("xdg-utils is not installed", L"その他のxdg-utilsパッケージがインストールされていません");
 	addPair("Missing filename in %s\n", L"%s はファイル名で欠落しています\n");
 	addPair("Recursive option with no wildcard", L"再帰的なオプションではワイルドカードではない");
 	addPair("Did you intend quote the filename", L"あなたは、ファイル名を参照するつもり");
@@ -646,11 +682,15 @@ Korean::Korean()	// 한국의
 	addPair("%d min %d sec   ", L"%d 분 %d 초   ");
 	addPair("%s lines\n", L"%s 라인\n");
 	addPair("Using default options file %s\n", L"기본 구성 파일을 사용 %s\n");
+	addPair("Opening HTML documentation %s\n", L"HTML 문서를 열기 %s\n");
 	addPair("Invalid option file options:", L"잘못된 구성 파일 옵션 :");
 	addPair("Invalid command line options:", L"잘못된 명령줄 옵션 :");
 	addPair("For help on options type 'astyle -h'", L"옵션 유형 'astyle - H에 대한 도움말을 보려면");
 	addPair("Cannot open options file", L"구성 파일을 열 수 없습니다");
 	addPair("Cannot open directory", L"디렉토리를 열지 못했습니다");
+	addPair("Cannot open HTML file", L"HTML 파일을 열 수 없습니다");
+	addPair("Command execute failure", L"명령 실패를 실행");
+	addPair("xdg-utils is not installed", L"XDG - 유틸이 설치되어 있지 않습니다");
 	addPair("Missing filename in %s\n", L"%s 의에서 누락된 파일 이름\n");
 	addPair("Recursive option with no wildcard", L"없이 와일드 카드로 재귀 옵션");
 	addPair("Did you intend quote the filename", L"당신은 파일 이름을 인용하고자나요");
@@ -673,11 +713,15 @@ Polish::Polish()	// Polski
 	addPair("%d min %d sec   ", L"%d min %d sek   ");
 	addPair("%s lines\n", L"%s linii\n");
 	addPair("Using default options file %s\n", L"Korzystanie z domyślnej opcji %s plik\n");
+	addPair("Opening HTML documentation %s\n", L"Otwarcie dokumentacji HTML %s\n");
 	addPair("Invalid option file options:", L"Nieprawidłowy opcji pliku opcji:");
 	addPair("Invalid command line options:", L"Nieprawidłowe opcje wiersza polecenia:");
 	addPair("For help on options type 'astyle -h'", L"Aby uzyskać pomoc od rodzaju opcji 'astyle -h'");
 	addPair("Cannot open options file", L"Nie można otworzyć pliku opcji");
 	addPair("Cannot open directory", L"Nie można otworzyć katalogu");
+	addPair("Cannot open HTML file", L"Nie można otworzyć pliku HTML");
+	addPair("Command execute failure", L"Wykonaj polecenia niepowodzenia");
+	addPair("xdg-utils is not installed", L"xdg-utils nie jest zainstalowany");
 	addPair("Missing filename in %s\n", L"Brakuje pliku w %s\n");
 	addPair("Recursive option with no wildcard", L"Rekurencyjne opcja bez symboli");
 	addPair("Did you intend quote the filename", L"Czy zamierza Pan podać nazwę pliku");
@@ -700,11 +744,15 @@ Portuguese::Portuguese()	// Português
 	addPair("%d min %d sec   ", L"%d min %d seg   ");
 	addPair("%s lines\n", L"%s linhas\n");
 	addPair("Using default options file %s\n", L"Usando o arquivo de opções padrão %s\n");
+	addPair("Opening HTML documentation %s\n", L"Abrindo a documentação HTML %s\n");
 	addPair("Invalid option file options:", L"Opções de arquivo inválido opção:");
 	addPair("Invalid command line options:", L"Opções de linha de comando inválida:");
 	addPair("For help on options type 'astyle -h'", L"Para obter ajuda sobre as opções de tipo 'astyle -h'");
 	addPair("Cannot open options file", L"Não é possível abrir arquivo de opções");
 	addPair("Cannot open directory", L"Não é possível abrir diretório");
+	addPair("Cannot open HTML file", L"Não é possível abrir arquivo HTML");
+	addPair("Command execute failure", L"Executar falha de comando");
+	addPair("xdg-utils is not installed", L"xdg-utils não está instalado");
 	addPair("Missing filename in %s\n", L"Filename faltando em %s\n");
 	addPair("Recursive option with no wildcard", L"Opção recursiva sem curinga");
 	addPair("Did you intend quote the filename", L"Será que você pretende citar o nome do arquivo");
@@ -727,11 +775,15 @@ Russian::Russian()	// русский
 	addPair("%d min %d sec   ", L"%d мин %d сек   ");
 	addPair("%s lines\n", L"%s линий\n");
 	addPair("Using default options file %s\n", L"Использование опции по умолчанию файл %s\n");
+	addPair("Opening HTML documentation %s\n", L"Открытие HTML документации %s\n");
 	addPair("Invalid option file options:", L"Недопустимый файл опций опцию:");
 	addPair("Invalid command line options:", L"Недопустимые параметры командной строки:");
 	addPair("For help on options type 'astyle -h'", L"Для получения справки по 'astyle -h' опций типа");
 	addPair("Cannot open options file", L"Не удается открыть файл параметров");
 	addPair("Cannot open directory", L"Не могу открыть каталог");
+	addPair("Cannot open HTML file", L"Не удается открыть файл HTML");
+	addPair("Command execute failure", L"Выполнить команду недостаточности");
+	addPair("xdg-utils is not installed", L"XDG-Utils не установлен");
 	addPair("Missing filename in %s\n", L"Отсутствует имя файла в %s\n");
 	addPair("Recursive option with no wildcard", L"Рекурсивный вариант без каких-либо шаблона");
 	addPair("Did you intend quote the filename", L"Вы намерены цитатой файла");
@@ -754,11 +806,15 @@ Spanish::Spanish()	// Español
 	addPair("%d min %d sec   ", L"%d min %d seg   ");
 	addPair("%s lines\n", L"%s líneas\n");
 	addPair("Using default options file %s\n", L"Uso de las opciones por defecto del archivo %s\n");
+	addPair("Opening HTML documentation %s\n", L"Apertura de documentación HTML %s\n");
 	addPair("Invalid option file options:", L"Opción no válida opciones de archivo:");
 	addPair("Invalid command line options:", L"No válido opciones de línea de comando:");
 	addPair("For help on options type 'astyle -h'", L"Para obtener ayuda sobre las opciones tipo 'astyle -h'");
 	addPair("Cannot open options file", L"No se puede abrir el archivo de opciones");
 	addPair("Cannot open directory", L"No se puede abrir el directorio");
+	addPair("Cannot open HTML file", L"No se puede abrir el archivo HTML");
+	addPair("Command execute failure", L"Ejecutar el fracaso de comandos");
+	addPair("xdg-utils is not installed", L"xdg-utils no está instalado");
 	addPair("Missing filename in %s\n", L"Falta nombre del archivo en %s\n");
 	addPair("Recursive option with no wildcard", L"Recursiva opción sin comodín");
 	addPair("Did you intend quote the filename", L"Se tiene la intención de citar el nombre de archivo");
@@ -781,11 +837,15 @@ Swedish::Swedish()	// Svenska
 	addPair("%d min %d sec   ", L"%d min %d sek   ");
 	addPair("%s lines\n", L"%s linjer\n");
 	addPair("Using default options file %s\n", L"Använda standardalternativ fil %s\n");
+	addPair("Opening HTML documentation %s\n", L"Öppna HTML-dokumentation %s\n");
 	addPair("Invalid option file options:", L"Ogiltigt alternativ fil alternativ:");
 	addPair("Invalid command line options:", L"Ogiltig kommandoraden alternativ:");
 	addPair("For help on options type 'astyle -h'", L"För hjälp om alternativ typ 'astyle -h'");
 	addPair("Cannot open options file", L"Kan inte öppna inställningsfilen");
 	addPair("Cannot open directory", L"Kan inte öppna katalog");
+	addPair("Cannot open HTML file", L"Kan inte öppna HTML-filen");
+	addPair("Command execute failure", L"Utför kommando misslyckande");
+	addPair("xdg-utils is not installed", L"xdg-utils är inte installerat");
 	addPair("Missing filename in %s\n", L"Saknade filnamn i %s\n");
 	addPair("Recursive option with no wildcard", L"Rekursiva alternativ utan jokertecken");
 	addPair("Did you intend quote the filename", L"Visste du tänker citera filnamnet");
@@ -808,11 +868,15 @@ Ukrainian::Ukrainian()	// Український
 	addPair("%d min %d sec   ", L"%d хви %d cek   ");
 	addPair("%s lines\n", L"%s ліній\n");
 	addPair("Using default options file %s\n", L"Використання файлів опцій за замовчуванням %s\n");
+	addPair("Opening HTML documentation %s\n", L"Відкриття HTML документації %s\n");
 	addPair("Invalid option file options:", L"Неприпустимий файл опцій опцію:");
 	addPair("Invalid command line options:", L"Неприпустима параметри командного рядка:");
 	addPair("For help on options type 'astyle -h'", L"Для отримання довідки по 'astyle -h' опцій типу");
 	addPair("Cannot open options file", L"Не вдається відкрити файл параметрів");
 	addPair("Cannot open directory", L"Не можу відкрити каталог");
+	addPair("Cannot open HTML file", L"Не вдається відкрити файл HTML");
+	addPair("Command execute failure", L"Виконати команду недостатності");
+	addPair("xdg-utils is not installed", L"XDG-Utils не встановлений");
 	addPair("Missing filename in %s\n", L"Відсутня назва файлу в %s\n");
 	addPair("Recursive option with no wildcard", L"Рекурсивний варіант без будь-яких шаблону");
 	addPair("Did you intend quote the filename", L"Ви маєте намір цитатою файлу");

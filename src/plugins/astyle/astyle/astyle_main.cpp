@@ -24,6 +24,30 @@
  *
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
+/*
+    AStyle_main source file map.
+    This source file contains several classes.
+    They are arranged as follows.
+    ---------------------------------------
+    namespace astyle {
+    ASStreamIterator methods
+    ASConsole methods
+        // Windows specific
+        // Linux specific
+    ASLibrary methods
+        // Windows specific
+        // Linux specific
+    ASOptions methods
+    Utf8_16 methods
+    }   // end of astyle namespace
+    Global Area ---------------------------
+        Java Native Interface functions
+        AStyleMainUtf16 entry point
+        AStyleMain entry point
+        AStyleGetVersion entry point
+        main entry point
+    ---------------------------------------
+*/
 
 #include "astyle_main.h"
 
@@ -41,6 +65,7 @@
 #include <dirent.h>
 #include <iconv.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #ifdef __VMS
 #include <unixlib.h>
 #include <rms.h>
@@ -61,21 +86,24 @@
 int _CRT_glob = 0;
 #endif
 
-namespace astyle {
+//----------------------------------------------------------------------------
+// astyle namespace
+//----------------------------------------------------------------------------
 
-#ifdef _WIN32
-char g_fileSeparator = '\\';
-bool g_isCaseSensitive = false;
-#else
-char g_fileSeparator = '/';
-bool g_isCaseSensitive = true;
-#endif
+namespace astyle {
 
 // console build variables
 #ifndef ASTYLE_LIB
-ostream* _err = &cerr;           // direct error messages to cerr
 ASConsole* g_console = NULL;     // class to encapsulate console variables
-#endif
+ostream* _err = &cerr;           // direct error messages to cerr
+#ifdef _WIN32
+char g_fileSeparator = '\\';     // Windows file separator
+bool g_isCaseSensitive = false;  // Windows IS case sensitive
+#else
+char g_fileSeparator = '/';      // Linux file separator
+bool g_isCaseSensitive = true;   // Linux IS NOT case sensitive
+#endif	// _WIN32
+#endif	// ASTYLE_LIB
 
 #ifdef ASTYLE_JNI
 // java library build variables
@@ -84,7 +112,7 @@ jobject   g_obj;
 jmethodID g_mid;
 #endif
 
-const char*    g_version  =  "2.04 beta";
+const char* g_version = "2.05 beta";
 
 //-----------------------------------------------------------------------------
 // ASStreamIterator class
@@ -435,10 +463,11 @@ void ASConsole::formatCinToCout()
 	istream* inStream = &cin;
 	stringstream outStream;
 	char ch;
+	inStream->get(ch);
 	while (!inStream->eof())
 	{
-		inStream->get(ch);
 		outStream.put(ch);
+		inStream->get(ch);
 	}
 	ASStreamIterator<stringstream> streamIterator(&outStream);
 	// Windows pipe or redirection always outputs Windows line-ends.
@@ -658,6 +687,10 @@ string ASConsole::getOrigSuffix()
 bool ASConsole::getPreserveDate()
 { return preserveDate; }
 
+// for unit testing
+void ASConsole::setBypassBrowserOpen(bool state)
+{ bypassBrowserOpen = state; }
+
 string ASConsole::getParam(const string &arg, const char* op)
 {
 	return arg.substr(strlen(op));
@@ -685,7 +718,6 @@ void ASConsole::initializeOutputEOL(LineEndFormat lineEndFormat)
 		outputEOL[0] = '\0';
 }
 
-
 FileEncoding ASConsole::readFile(const string &fileName_, stringstream &in) const
 {
 	const int blockSize = 65536;	// 64 KB
@@ -695,7 +727,7 @@ FileEncoding ASConsole::readFile(const string &fileName_, stringstream &in) cons
 	char* data = new(nothrow) char[blockSize];
 	if (!data)
 		error("Cannot allocate memory for input file", fileName_.c_str());
-	fin.read(data, sizeof(data));
+	fin.read(data, blockSize);
 	if (fin.bad())
 		error("Cannot read input file", fileName_.c_str());
 	size_t dataSize = static_cast<size_t>(fin.gcount());
@@ -703,23 +735,24 @@ FileEncoding ASConsole::readFile(const string &fileName_, stringstream &in) cons
 	if (encoding ==  UTF_32BE || encoding ==  UTF_32LE)
 		error(_("Cannot process UTF-32 encoding"), fileName_.c_str());
 	bool firstBlock = true;
+	bool isBigEndian = (encoding == UTF_16BE);
 	while (dataSize)
 	{
 		if (encoding == UTF_16LE || encoding == UTF_16BE)
 		{
 			// convert utf-16 to utf-8
-			size_t utf8Size = Utf8LengthFromUtf16(data, dataSize, encoding);
+			size_t utf8Size = utf8_16.Utf8LengthFromUtf16(data, dataSize, isBigEndian);
 			char* utf8Out = new(nothrow) char[utf8Size];
 			if (!utf8Out)
 				error("Cannot allocate memory for utf-8 conversion", fileName_.c_str());
-			size_t utf8Len = Utf16ToUtf8(data, dataSize, encoding, firstBlock, utf8Out);
+			size_t utf8Len = utf8_16.Utf16ToUtf8(data, dataSize, isBigEndian, firstBlock, utf8Out);
 			assert(utf8Len == utf8Size);
 			in << string(utf8Out, utf8Len);
 			delete []utf8Out;
 		}
 		else
 			in << string(data, dataSize);
-		fin.read(data, sizeof(data));
+		fin.read(data, blockSize);
 		if (fin.bad())
 			error("Cannot read input file", fileName_.c_str());
 		dataSize = static_cast<size_t>(fin.gcount());
@@ -950,7 +983,62 @@ string ASConsole::getNumberFormat(int num, size_t lcid) const
 	return formattedNum;
 }
 
-#else  // not _WIN32
+/**
+ * WINDOWS function to open a HTML file in the default browser.
+ */
+void ASConsole::launchDefaultBrowser(const char* filePathIn /*NULL*/) const
+{
+	struct stat statbuf;
+	const char* envPaths[] = {  "PROGRAMFILES(X86)", "PROGRAMFILES" };
+	size_t pathsLen = sizeof(envPaths) / sizeof(envPaths[0]);
+	string htmlDefaultPath;
+	for (size_t i = 0; i < pathsLen; i++)
+	{
+		const char* envPath = getenv(envPaths[i]);
+		if (envPath == NULL)
+			continue;
+		htmlDefaultPath = envPath;
+		if (htmlDefaultPath.length() > 0
+		        && htmlDefaultPath[htmlDefaultPath.length() - 1] == g_fileSeparator)
+			htmlDefaultPath.erase(htmlDefaultPath.length() - 1);
+		htmlDefaultPath.append("\\AStyle\\doc");
+		if (stat(htmlDefaultPath.c_str(), &statbuf) == 0 && statbuf.st_mode & S_IFDIR)
+			break;
+	}
+	htmlDefaultPath.append("\\");
+
+	// build file path
+	string htmlFilePath;
+	if (filePathIn == NULL)
+		htmlFilePath = htmlDefaultPath + "astyle.html";
+	else
+	{
+		if (strpbrk(filePathIn, "\\/") == NULL)
+			htmlFilePath = htmlDefaultPath + filePathIn;
+		else
+			htmlFilePath = filePathIn;
+	}
+	standardizePath(htmlFilePath);
+	if (stat(htmlFilePath.c_str(), &statbuf) != 0 || !(statbuf.st_mode & S_IFREG))
+		error(_("Cannot open HTML file"), htmlFilePath.c_str());
+
+	SHELLEXECUTEINFO sei = { sizeof(sei), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	sei.fMask = SEE_MASK_FLAG_NO_UI;
+	sei.lpVerb = "open";
+	sei.lpFile = htmlFilePath.c_str();
+	sei.nShow = SW_SHOWNORMAL;
+
+	// browser open will be bypassed in test programs
+	printf(_("Opening HTML documentation %s\n"), htmlFilePath.c_str());
+	if (!bypassBrowserOpen)
+	{
+		int ret = ShellExecuteEx(&sei);
+		if (!ret)
+			error(_("Command execute failure"), htmlFilePath.c_str());
+	}
+}
+
+#else  // Linux specific
 
 /**
  * LINUX function to get the current directory.
@@ -1062,7 +1150,7 @@ void ASConsole::getFileNames(const string &directory, const string &wildcard)
  * This formats positive integers only, no float.
  *
  * @param num		The number to be formatted.
- * @param			For compatability with the Windows function.
+ * @param			For compatibility with the Windows function.
  * @return			The formatted number.
  */
 string ASConsole::getNumberFormat(int num, size_t) const
@@ -1128,6 +1216,69 @@ string ASConsole::getNumberFormat(int num, const char* groupingArg, const char* 
 			grouping = groupingArg[++ig];
 	}
 	return formattedNum;
+}
+
+/**
+ * LINUX function to open a HTML file in the default browser.
+ * Use xdg-open from freedesktop.org cross-desktop compatibility suite xdg-utils.
+ * see http://portland.freedesktop.org/wiki/
+ * This is installed on most modern distributions.
+ */
+void ASConsole::launchDefaultBrowser(const char* filePathIn /*NULL*/) const
+{
+	struct stat statbuf;
+	string htmlDefaultPath = "/usr/share/doc/astyle/html/";
+	string htmlDefaultFile = "astyle.html";
+
+	// build file path
+	string htmlFilePath;
+	if (filePathIn == NULL)
+		htmlFilePath = htmlDefaultPath + htmlDefaultFile;
+	else
+	{
+		if (strpbrk(filePathIn, "\\/") == NULL)
+			htmlFilePath = htmlDefaultPath + filePathIn;
+		else
+			htmlFilePath = filePathIn;
+	}
+	standardizePath(htmlFilePath);
+	if (stat(htmlFilePath.c_str(), &statbuf) != 0 || !(statbuf.st_mode & S_IFREG))
+		error(_("Cannot open HTML file"), htmlFilePath.c_str());
+
+	// get search paths
+	const char* envPaths = getenv("PATH");
+	if (envPaths == NULL)
+		envPaths = "?";
+	size_t envlen = strlen(envPaths);
+	char* paths = new char[envlen + 1];
+	strcpy(paths, envPaths);
+	// find xdg-open (usually in /usr/bin)
+	const char* XDG_OPEN = "xdg-open";
+	string searchPath;
+	char* searchDir = strtok(paths, ":");
+	while (searchDir != NULL)
+	{
+		searchPath = searchDir;
+		if (searchPath.length() > 0
+		        && searchPath[searchPath.length() - 1] != g_fileSeparator)
+			searchPath.append(string(1, g_fileSeparator));
+		searchPath.append(XDG_OPEN);
+		if (stat(searchPath.c_str(), &statbuf) == 0 && (statbuf.st_mode & S_IFREG))
+			break;
+		searchDir = strtok(NULL, ":");
+	}
+	delete[] paths;
+	if (searchDir == NULL)
+		error(_("xdg-utils is not installed"), "");
+
+	// browser open will be bypassed in test programs
+	printf(_("Opening HTML documentation %s\n"), htmlFilePath.c_str());
+	if (!bypassBrowserOpen)
+	{
+		execlp(XDG_OPEN, XDG_OPEN, htmlFilePath.c_str(), NULL);
+		// execlp will NOT return if successful
+		error(_("Command execute failure"), XDG_OPEN);
+	}
 }
 
 #endif  // _WIN32
@@ -1314,357 +1465,407 @@ bool ASConsole::isPathExclued(const string &subPath)
 
 void ASConsole::printHelp() const
 {
-	(*_err) << endl;
-	(*_err) << "                            Artistic Style " << g_version << endl;
-	(*_err) << "                         Maintained by: Jim Pattee\n";
-	(*_err) << "                       Original Author: Tal Davidson\n";
-	(*_err) << endl;
-	(*_err) << "Usage  :  astyle [options] Source1.cpp Source2.cpp  [...]\n";
-	(*_err) << "          astyle [options] < Original > Beautified\n";
-	(*_err) << endl;
-	(*_err) << "When indenting a specific file, the resulting indented file RETAINS the\n";
-	(*_err) << "original file-name. The original pre-indented file is renamed, with a\n";
-	(*_err) << "suffix of \".orig\" added to the original filename.\n";
-	(*_err) << endl;
-	(*_err) << "Wildcards (* and ?) may be used in the filename.\n";
-	(*_err) << "A \'recursive\' option can process directories recursively.\n";
-	(*_err) << endl;
-	(*_err) << "By default, astyle is set up to indent C/C++/C#/Java files, with four\n";
-	(*_err) << "spaces per indent, a maximal indentation of 40 spaces inside continuous\n";
-	(*_err) << "statements, a minimum indentation of eight spaces inside conditional\n";
-	(*_err) << "statements, and NO formatting options.\n";
-	(*_err) << endl;
-	(*_err) << "Option's Format:\n";
-	(*_err) << "----------------\n";
-	(*_err) << "    Long options (starting with '--') must be written one at a time.\n";
-	(*_err) << "    Short options (starting with '-') may be appended together.\n";
-	(*_err) << "    Thus, -bps4 is the same as -b -p -s4.\n";
-	(*_err) << endl;
-	(*_err) << "Default options file:\n";
-	(*_err) << "---------------------\n";
-	(*_err) << "    Artistic Style looks for a default options file in the\n";
-	(*_err) << "    following order:\n";
-	(*_err) << "    1. The contents of the ARTISTIC_STYLE_OPTIONS environment\n";
-	(*_err) << "       variable if it exists.\n";
-	(*_err) << "    2. The file called .astylerc in the directory pointed to by the\n";
-	(*_err) << "       HOME environment variable ( i.e. $HOME/.astylerc ).\n";
-	(*_err) << "    3. The file called astylerc in the directory pointed to by the\n";
-	(*_err) << "       USERPROFILE environment variable ( i.e. %USERPROFILE%\\astylerc ).\n";
-	(*_err) << "    If a default options file is found, the options in this file\n";
-	(*_err) << "    will be parsed BEFORE the command-line options.\n";
-	(*_err) << "    Long options within the default option file may be written without\n";
-	(*_err) << "    the preliminary '--'.\n";
-	(*_err) << endl;
-	(*_err) << "Bracket Style Options:\n";
-	(*_err) << "----------------------\n";
-	(*_err) << "    --style=allman  OR  --style=ansi  OR  --style=bsd\n";
-	(*_err) << "	    OR  --style=break  OR  -A1\n";
-	(*_err) << "    Allman style formatting/indenting.\n";
-	(*_err) << "    Broken brackets.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=java  OR  --style=attach  OR  -A2\n";
-	(*_err) << "    Java style formatting/indenting.\n";
-	(*_err) << "    Attached brackets.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=kr  OR  --style=k&r  OR  --style=k/r  OR  -A3\n";
-	(*_err) << "    Kernighan & Ritchie style formatting/indenting.\n";
-	(*_err) << "    Linux brackets.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=stroustrup  OR  -A4\n";
-	(*_err) << "    Stroustrup style formatting/indenting.\n";
-	(*_err) << "    Stroustrup brackets.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=whitesmith  OR  -A5\n";
-	(*_err) << "    Whitesmith style formatting/indenting.\n";
-	(*_err) << "    Broken, indented brackets.\n";
-	(*_err) << "    Indented class blocks and switch blocks.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=banner  OR  -A6\n";
-	(*_err) << "    Banner style formatting/indenting.\n";
-	(*_err) << "    Attached, indented brackets.\n";
-	(*_err) << "    Indented class blocks and switch blocks.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=gnu  OR  -A7\n";
-	(*_err) << "    GNU style formatting/indenting.\n";
-	(*_err) << "    Broken brackets, indented blocks.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=linux  OR  -A8\n";
-	(*_err) << "    Linux style formatting/indenting.\n";
-	(*_err) << "    Linux brackets, minimum conditional indent is one-half indent.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=horstmann  OR  -A9\n";
-	(*_err) << "    Horstmann style formatting/indenting.\n";
-	(*_err) << "    Run-in brackets, indented switches.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=1tbs  OR  --style=otbs  OR  -A10\n";
-	(*_err) << "    One True Brace Style formatting/indenting.\n";
-	(*_err) << "    Linux brackets, add brackets to all conditionals.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=pico  OR  -A11\n";
-	(*_err) << "    Pico style formatting/indenting.\n";
-	(*_err) << "    Run-in opening brackets and attached closing brackets.\n";
-	(*_err) << "    Uses keep one line blocks and keep one line statements.\n";
-	(*_err) << endl;
-	(*_err) << "    --style=lisp  OR  -A12\n";
-	(*_err) << "    Lisp style formatting/indenting.\n";
-	(*_err) << "    Attached opening brackets and attached closing brackets.\n";
-	(*_err) << "    Uses keep one line statements.\n";
-	(*_err) << endl;
-	(*_err) << "Bracket Modifier Options:\n";
-	(*_err) << "-------------------------\n";
-	(*_err) << "    --attach-namespaces  OR  -xn\n";
-	(*_err) << "    Attach brackets to a namespace statement.\n";
-	(*_err) << endl;
-	(*_err) << "    --attach-classes  OR  -xc\n";
-	(*_err) << "    Attach brackets to a class statement.\n";
-	(*_err) << endl;
-	(*_err) << "    --attach-inlines  OR  -xl\n";
-	(*_err) << "    Attach brackets to class inline function definitions.\n";
-	(*_err) << endl;
-	(*_err) << "Tab Options:\n";
-	(*_err) << "------------\n";
-	(*_err) << "    default indent option\n";
-	(*_err) << "    If no indentation option is set, the default\n";
-	(*_err) << "    option of 4 spaces per indent will be used.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent=spaces=#  OR  -s#\n";
-	(*_err) << "    Indent using # spaces per indent. Not specifying #\n";
-	(*_err) << "    will result in a default of 4 spaces per indent.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent=tab  OR  --indent=tab=#  OR  -t  OR  -t#\n";
-	(*_err) << "    Indent using tab characters, assuming that each\n";
-	(*_err) << "    indent is # spaces long. Not specifying # will result\n";
-	(*_err) << "    in a default assumption of 4 spaces per indent.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent=force-tab=#  OR  -T#\n";
-	(*_err) << "    Indent using tab characters, assuming that each\n";
-	(*_err) << "    indent is # spaces long. Force tabs to be used in areas\n";
-	(*_err) << "    AStyle would prefer to use spaces.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent=force-tab-x=#  OR  -xT#\n";
-	(*_err) << "    Allows the tab length to be set to a length that is different\n";
-	(*_err) << "    from the indent length. This may cause the indentation to be\n";
-	(*_err) << "    a mix of both spaces and tabs. This option sets the tab length.\n";
-	(*_err) << endl;
-	(*_err) << "Indentation options:\n";
-	(*_err) << "--------------------\n";
-	(*_err) << "    --indent-classes  OR  -C\n";
-	(*_err) << "    Indent 'class' blocks, so that the inner 'public:',\n";
-	(*_err) << "    'protected:' and 'private: headers are indented in\n";
-	(*_err) << "    relation to the class block.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-switches  OR  -S\n";
-	(*_err) << "    Indent 'switch' blocks, so that the inner 'case XXX:'\n";
-	(*_err) << "    headers are indented in relation to the switch block.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-cases  OR  -K\n";
-	(*_err) << "    Indent case blocks from the 'case XXX:' headers.\n";
-	(*_err) << "    Case statements not enclosed in blocks are NOT indented.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-namespaces  OR  -N\n";
-	(*_err) << "    Indent the contents of namespace blocks.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-labels  OR  -L\n";
-	(*_err) << "    Indent labels so that they appear one indent less than\n";
-	(*_err) << "    the current indentation level, rather than being\n";
-	(*_err) << "    flushed completely to the left (which is the default).\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-preprocessor  OR  -w\n";
-	(*_err) << "    Indent multi-line #define statements.\n";
-	(*_err) << endl;
-	(*_err) << "    --indent-col1-comments  OR  -Y\n";
-	(*_err) << "    Indent line comments that start in column one.\n";
-	(*_err) << endl;
-	(*_err) << "    --min-conditional-indent=#  OR  -m#\n";
-	(*_err) << "    Indent a minimal # spaces in a continuous conditional\n";
-	(*_err) << "    belonging to a conditional header.\n";
-	(*_err) << "    The valid values are:\n";
-	(*_err) << "    0 - no minimal indent.\n";
-	(*_err) << "    1 - indent at least one additional indent.\n";
-	(*_err) << "    2 - indent at least two additional indents.\n";
-	(*_err) << "    3 - indent at least one-half an additional indent.\n";
-	(*_err) << "    The default value is 2, two additional indents.\n";
-	(*_err) << endl;
-	(*_err) << "    --max-instatement-indent=#  OR  -M#\n";
-	(*_err) << "    Indent a maximal # spaces in a continuous statement,\n";
-	(*_err) << "    relative to the previous line.\n";
-	(*_err) << "    The valid values are 40 thru 120.\n";
-	(*_err) << "    The default value is 40.\n";
-	(*_err) << endl;
-	(*_err) << "Padding options:\n";
-	(*_err) << "--------------------\n";
-	(*_err) << "    --break-blocks  OR  -f\n";
-	(*_err) << "    Insert empty lines around unrelated blocks, labels, classes, ...\n";
-	(*_err) << endl;
-	(*_err) << "    --break-blocks=all  OR  -F\n";
-	(*_err) << "    Like --break-blocks, except also insert empty lines \n";
-	(*_err) << "    around closing headers (e.g. 'else', 'catch', ...).\n";
-	(*_err) << endl;
-	(*_err) << "    --pad-oper  OR  -p\n";
-	(*_err) << "    Insert space padding around operators.\n";
-	(*_err) << endl;
-	(*_err) << "    --pad-paren  OR  -P\n";
-	(*_err) << "    Insert space padding around parenthesis on both the outside\n";
-	(*_err) << "    and the inside.\n";
-	(*_err) << endl;
-	(*_err) << "    --pad-paren-out  OR  -d\n";
-	(*_err) << "    Insert space padding around parenthesis on the outside only.\n";
-	(*_err) << endl;
-	(*_err) << "    --pad-first-paren-out  OR  -xd\n";
-	(*_err) << "    Insert space padding around first parenthesis in a series on\n";
-	(*_err) << "    the outside only.\n";
-	(*_err) << endl;
-	(*_err) << "    --pad-paren-in  OR  -D\n";
-	(*_err) << "    Insert space padding around parenthesis on the inside only.\n";
-	(*_err) << endl;
-	(*_err) << "    --pad-header  OR  -H\n";
-	(*_err) << "    Insert space padding after paren headers (e.g. 'if', 'for'...).\n";
-	(*_err) << endl;
-	(*_err) << "    --unpad-paren  OR  -U\n";
-	(*_err) << "    Remove unnecessary space padding around parenthesis. This\n";
-	(*_err) << "    can be used in combination with the 'pad' options above.\n";
-	(*_err) << endl;
-	(*_err) << "    --delete-empty-lines  OR  -xd\n";
-	(*_err) << "    Delete empty lines within a function or method.\n";
-	(*_err) << "    It will NOT delete lines added by the break-blocks options.\n";
-	(*_err) << endl;
-	(*_err) << "    --fill-empty-lines  OR  -E\n";
-	(*_err) << "    Fill empty lines with the white space of their\n";
-	(*_err) << "    previous lines.\n";
-	(*_err) << endl;
-	(*_err) << "    --align-pointer=type    OR  -k1\n";
-	(*_err) << "    --align-pointer=middle  OR  -k2\n";
-	(*_err) << "    --align-pointer=name    OR  -k3\n";
-	(*_err) << "    Attach a pointer or reference operator (*, &, or ^) to either\n";
-	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
-	(*_err) << "    To align the reference separately use --align-reference.\n";
-	(*_err) << endl;
-	(*_err) << "    --align-reference=none    OR  -W0\n";
-	(*_err) << "    --align-reference=type    OR  -W1\n";
-	(*_err) << "    --align-reference=middle  OR  -W2\n";
-	(*_err) << "    --align-reference=name    OR  -W3\n";
-	(*_err) << "    Attach a reference operator (&) to either\n";
-	(*_err) << "    the operator type (left), middle, or operator name (right).\n";
-	(*_err) << "    If not set, follow pointer alignment.\n";
-	(*_err) << endl;
-	(*_err) << "Formatting options:\n";
-	(*_err) << "-------------------\n";
-	(*_err) << "    --break-closing-brackets  OR  -y\n";
-	(*_err) << "    Break brackets before closing headers (e.g. 'else', 'catch', ...).\n";
-	(*_err) << "    Use with --brackets=attach, --brackets=linux, \n";
-	(*_err) << "    or --brackets=stroustrup.\n";
-	(*_err) << endl;
-	(*_err) << "    --break-elseifs  OR  -e\n";
-	(*_err) << "    Break 'else if()' statements into two different lines.\n";
-	(*_err) << endl;
-	(*_err) << "    --add-brackets  OR  -j\n";
-	(*_err) << "    Add brackets to unbracketed one line conditional statements.\n";
-	(*_err) << endl;
-	(*_err) << "    --add-one-line-brackets  OR  -J\n";
-	(*_err) << "    Add one line brackets to unbracketed one line conditional\n";
-	(*_err) << "    statements.\n";
-	(*_err) << endl;
-	(*_err) << "    --remove-brackets  OR  -xj\n";
-	(*_err) << "    Remove brackets from a bracketed one line conditional statements.\n";
-	(*_err) << endl;
-	(*_err) << "    --keep-one-line-blocks  OR  -O\n";
-	(*_err) << "    Don't break blocks residing completely on one line.\n";
-	(*_err) << endl;
-	(*_err) << "    --keep-one-line-statements  OR  -o\n";
-	(*_err) << "    Don't break lines containing multiple statements into\n";
-	(*_err) << "    multiple single-statement lines.\n";
-	(*_err) << endl;
-	(*_err) << "    --convert-tabs  OR  -c\n";
-	(*_err) << "    Convert tabs to the appropriate number of spaces.\n";
-	(*_err) << endl;
-	(*_err) << "    --close-templates  OR  -xy\n";
-	(*_err) << "    Close ending angle brackets on template definitions.\n";
-	(*_err) << endl;
-	(*_err) << "    --max-code-length=#    OR  -xC#\n";
-	(*_err) << "    --break-after-logical  OR  -xL\n";
-	(*_err) << "    max-code-length=# will break the line if it exceeds more than\n";
-	(*_err) << "    # characters. The valid values are 50 thru 200.\n";
-	(*_err) << "    If the line contains logical conditionals they will be placed\n";
-	(*_err) << "    first on the new line. The option break-after-logical will\n";
-	(*_err) << "    cause the logical conditional to be placed last on the\n";
-	(*_err) << "    previous line.\n";
-	(*_err) << endl;
-	(*_err) << "    --align-method-colon  OR  -xM\n";
-	(*_err) << "    Align the colons in an Objective-C method definition.\n";
-	(*_err) << endl;
-	(*_err) << "    --mode=c\n";
-	(*_err) << "    Indent a C or C++ source file (this is the default).\n";
-	(*_err) << endl;
-	(*_err) << "    --mode=java\n";
-	(*_err) << "    Indent a Java source file.\n";
-	(*_err) << endl;
-	(*_err) << "    --mode=cs\n";
-	(*_err) << "    Indent a C# source file.\n";
-	(*_err) << endl;
-	(*_err) << "Other options:\n";
-	(*_err) << "--------------\n";
-	(*_err) << "    --suffix=####\n";
-	(*_err) << "    Append the suffix #### instead of '.orig' to original filename.\n";
-	(*_err) << endl;
-	(*_err) << "    --suffix=none  OR  -n\n";
-	(*_err) << "    Do not retain a backup of the original file.\n";
-	(*_err) << endl;
-	(*_err) << "    --recursive  OR  -r  OR  -R\n";
-	(*_err) << "    Process subdirectories recursively.\n";
-	(*_err) << endl;
-	(*_err) << "    --exclude=####\n";
-	(*_err) << "    Specify a file or directory #### to be excluded from processing.\n";
-	(*_err) << endl;
-	(*_err) << "    --ignore-exclude-errors  OR  -i\n";
-	(*_err) << "    Allow processing to continue if there are errors in the exclude=###\n";
-	(*_err) << "    options. It will display the unmatched excludes.\n";
-	(*_err) << endl;
-	(*_err) << "    --ignore-exclude-errors-x  OR  -xi\n";
-	(*_err) << "    Allow processing to continue if there are errors in the exclude=###\n";
-	(*_err) << "    options. It will NOT display the unmatched excludes.\n";
-	(*_err) << endl;
-	(*_err) << "    --errors-to-stdout  OR  -X\n";
-	(*_err) << "    Print errors and help information to standard-output rather than\n";
-	(*_err) << "    to standard-error.\n";
-	(*_err) << endl;
-	(*_err) << "    --preserve-date  OR  -Z\n";
-	(*_err) << "    The date and time modified will not be changed in the formatted file.\n";
-	(*_err) << endl;
-	(*_err) << "    --verbose  OR  -v\n";
-	(*_err) << "    Verbose mode. Extra informational messages will be displayed.\n";
-	(*_err) << endl;
-	(*_err) << "    --formatted  OR  -Q\n";
-	(*_err) << "    Formatted display mode. Display only the files that have been formatted.\n";
-	(*_err) << endl;
-	(*_err) << "    --quiet  OR  -q\n";
-	(*_err) << "    Quiet mode. Suppress all output except error messages.\n";
-	(*_err) << endl;
-	(*_err) << "    --lineend=windows  OR  -z1\n";
-	(*_err) << "    --lineend=linux    OR  -z2\n";
-	(*_err) << "    --lineend=macold   OR  -z3\n";
-	(*_err) << "    Force use of the specified line end style. Valid options\n";
-	(*_err) << "    are windows (CRLF), linux (LF), and macold (CR).\n";
-	(*_err) << endl;
-	(*_err) << "Command Line Only:\n";
-	(*_err) << "------------------\n";
-	(*_err) << "    --options=####\n";
-	(*_err) << "    Specify an options file #### to read and use.\n";
-	(*_err) << endl;
-	(*_err) << "    --options=none\n";
-	(*_err) << "    Disable the default options file.\n";
-	(*_err) << "    Only the command-line parameters will be used.\n";
-	(*_err) << endl;
-	(*_err) << "    --ascii  OR  -I\n";
-	(*_err) << "    The displayed output will be ascii characters only.\n";
-	(*_err) << endl;
-	(*_err) << "    --version  OR  -V\n";
-	(*_err) << "    Print version number.\n";
-	(*_err) << endl;
-	(*_err) << "    --help  OR  -h  OR  -?\n";
-	(*_err) << "    Print this help message.\n";
-	(*_err) << endl;
+	cout << endl;
+	cout << "                     Artistic Style " << g_version << endl;
+	cout << "                     Maintained by: Jim Pattee\n";
+	cout << "                     Original Author: Tal Davidson\n";
+	cout << endl;
+	cout << "Usage:\n";
+	cout << "------\n";
+	cout << "            astyle [OPTIONS] File1 File2 File3 [...]\n";
+	cout << endl;
+	cout << "            astyle [OPTIONS] < Original > Beautified\n";
+	cout << endl;
+	cout << "    When indenting a specific file, the resulting indented file RETAINS\n";
+	cout << "    the original file-name. The original pre-indented file is renamed,\n";
+	cout << "    with a suffix of \'.orig\' added to the original filename.\n";
+	cout << endl;
+	cout << "    Wildcards (* and ?) may be used in the filename.\n";
+	cout << "    A \'recursive\' option can process directories recursively.\n";
+	cout << endl;
+	cout << "    By default, astyle is set up to indent with four spaces per indent,\n";
+	cout << "    a maximal indentation of 40 spaces inside continuous statements,\n";
+	cout << "    a minimum indentation of eight spaces inside conditional statements,\n";
+	cout << "    and NO formatting options.\n";
+	cout << endl;
+	cout << "Options:\n";
+	cout << "--------\n";
+	cout << "    This  program  follows  the  usual  GNU  command line syntax.\n";
+	cout << "    Long options (starting with '--') must be written one at a time.\n";
+	cout << "    Short options (starting with '-') may be appended together.\n";
+	cout << "    Thus, -bps4 is the same as -b -p -s4.\n";
+	cout << endl;
+	cout << "Options File:\n";
+	cout << "-------------\n";
+	cout << "    Artistic Style looks for a default options file in the\n";
+	cout << "    following order:\n";
+	cout << "    1. The contents of the ARTISTIC_STYLE_OPTIONS environment\n";
+	cout << "       variable if it exists.\n";
+	cout << "    2. The file called .astylerc in the directory pointed to by the\n";
+	cout << "       HOME environment variable ( i.e. $HOME/.astylerc ).\n";
+	cout << "    3. The file called astylerc in the directory pointed to by the\n";
+	cout << "       USERPROFILE environment variable (i.e. %USERPROFILE%\\astylerc).\n";
+	cout << "    If a default options file is found, the options in this file will\n";
+	cout << "    be parsed BEFORE the command-line options.\n";
+	cout << "    Long options within the default option file may be written without\n";
+	cout << "    the preliminary '--'.\n";
+	cout << endl;
+	cout << "Bracket Style Options:\n";
+	cout << "----------------------\n";
+	cout << "    --style=allman  OR  --style=bsd  OR  --style=break  OR  -A1\n";
+	cout << "    Allman style formatting/indenting.\n";
+	cout << "    Broken brackets.\n";
+	cout << endl;
+	cout << "    --style=java  OR  --style=attach  OR  -A2\n";
+	cout << "    Java style formatting/indenting.\n";
+	cout << "    Attached brackets.\n";
+	cout << endl;
+	cout << "    --style=kr  OR  --style=k&r  OR  --style=k/r  OR  -A3\n";
+	cout << "    Kernighan & Ritchie style formatting/indenting.\n";
+	cout << "    Linux brackets.\n";
+	cout << endl;
+	cout << "    --style=stroustrup  OR  -A4\n";
+	cout << "    Stroustrup style formatting/indenting.\n";
+	cout << "    Stroustrup brackets.\n";
+	cout << endl;
+	cout << "    --style=whitesmith  OR  -A5\n";
+	cout << "    Whitesmith style formatting/indenting.\n";
+	cout << "    Broken, indented brackets.\n";
+	cout << "    Indented class blocks and switch blocks.\n";
+	cout << endl;
+	cout << "    --style=banner  OR  -A6\n";
+	cout << "    Banner style formatting/indenting.\n";
+	cout << "    Attached, indented brackets.\n";
+	cout << "    Indented class blocks and switch blocks.\n";
+	cout << endl;
+	cout << "    --style=gnu  OR  -A7\n";
+	cout << "    GNU style formatting/indenting.\n";
+	cout << "    Broken brackets, indented blocks.\n";
+	cout << endl;
+	cout << "    --style=linux  OR  --style=knf  OR  -A8\n";
+	cout << "    Linux style formatting/indenting.\n";
+	cout << "    Linux brackets, minimum conditional indent is one-half indent.\n";
+	cout << endl;
+	cout << "    --style=horstmann  OR  -A9\n";
+	cout << "    Horstmann style formatting/indenting.\n";
+	cout << "    Run-in brackets, indented switches.\n";
+	cout << endl;
+	cout << "    --style=1tbs  OR  --style=otbs  OR  -A10\n";
+	cout << "    One True Brace Style formatting/indenting.\n";
+	cout << "    Linux brackets, add brackets to all conditionals.\n";
+	cout << endl;
+	cout << "    --style=google  OR  -A14\n";
+	cout << "    Google style formatting/indenting.\n";
+	cout << "    Attached brackets, indented class modifiers.\n";
+	cout << endl;
+	cout << "    --style=pico  OR  -A11\n";
+	cout << "    Pico style formatting/indenting.\n";
+	cout << "    Run-in opening brackets and attached closing brackets.\n";
+	cout << "    Uses keep one line blocks and keep one line statements.\n";
+	cout << endl;
+	cout << "    --style=lisp  OR  -A12\n";
+	cout << "    Lisp style formatting/indenting.\n";
+	cout << "    Attached opening brackets and attached closing brackets.\n";
+	cout << "    Uses keep one line statements.\n";
+	cout << endl;
+	cout << "Tab Options:\n";
+	cout << "------------\n";
+	cout << "    default indent option\n";
+	cout << "    If no indentation option is set, the default\n";
+	cout << "    option of 4 spaces per indent will be used.\n";
+	cout << endl;
+	cout << "    --indent=spaces=#  OR  -s#\n";
+	cout << "    Indent using # spaces per indent. Not specifying #\n";
+	cout << "    will result in a default of 4 spaces per indent.\n";
+	cout << endl;
+	cout << "    --indent=tab  OR  --indent=tab=#  OR  -t  OR  -t#\n";
+	cout << "    Indent using tab characters, assuming that each\n";
+	cout << "    indent is # spaces long. Not specifying # will result\n";
+	cout << "    in a default assumption of 4 spaces per indent.\n";
+	cout << endl;
+	cout << "    --indent=force-tab=#  OR  -T#\n";
+	cout << "    Indent using tab characters, assuming that each\n";
+	cout << "    indent is # spaces long. Force tabs to be used in areas\n";
+	cout << "    AStyle would prefer to use spaces.\n";
+	cout << endl;
+	cout << "    --indent=force-tab-x=#  OR  -xT#\n";
+	cout << "    Allows the tab length to be set to a length that is different\n";
+	cout << "    from the indent length. This may cause the indentation to be\n";
+	cout << "    a mix of both spaces and tabs. This option sets the tab length.\n";
+	cout << endl;
+	cout << "Bracket Modify Options:\n";
+	cout << "-----------------------\n";
+	cout << "    --attach-namespaces  OR  -xn\n";
+	cout << "    Attach brackets to a namespace statement.\n";
+	cout << endl;
+	cout << "    --attach-classes  OR  -xc\n";
+	cout << "    Attach brackets to a class statement.\n";
+	cout << endl;
+	cout << "    --attach-inlines  OR  -xl\n";
+	cout << "    Attach brackets to class inline function definitions.\n";
+	cout << endl;
+	cout << "    --attach-extern-c  OR  -xk\n";
+	cout << "    Attach brackets to an extern \"C\" statement.\n";
+	cout << endl;
+	cout << "Indentation Options:\n";
+	cout << "--------------------\n";
+	cout << "    --indent-classes  OR  -C\n";
+	cout << "    Indent 'class' blocks so that the entire block is indented.\n";
+	cout << endl;
+	cout << "    --indent-modifiers  OR  -xG\n";
+	cout << "    Indent 'class' access modifiers, 'public:', 'protected:' or\n";
+	cout << "    'private:', one half indent. The rest of the class is not\n";
+	cout << "    indented. \n";
+	cout << endl;
+	cout << "    --indent-switches  OR  -S\n";
+	cout << "    Indent 'switch' blocks, so that the inner 'case XXX:'\n";
+	cout << "    headers are indented in relation to the switch block.\n";
+	cout << endl;
+	cout << "    --indent-cases  OR  -K\n";
+	cout << "    Indent case blocks from the 'case XXX:' headers.\n";
+	cout << "    Case statements not enclosed in blocks are NOT indented.\n";
+	cout << endl;
+	cout << "    --indent-namespaces  OR  -N\n";
+	cout << "    Indent the contents of namespace blocks.\n";
+	cout << endl;
+	cout << "    --indent-labels  OR  -L\n";
+	cout << "    Indent labels so that they appear one indent less than\n";
+	cout << "    the current indentation level, rather than being\n";
+	cout << "    flushed completely to the left (which is the default).\n";
+	cout << endl;
+	cout << "    --indent-preproc-define  OR  -w\n";
+	cout << "    --indent-preprocessor has been depreciated.\n";
+	cout << "    Indent multi-line preprocessor #define statements.\n";
+	cout << endl;
+	cout << "    --indent-preproc-cond  OR  -xw\n";
+	cout << "    Indent preprocessor conditional statements #if/#else/#endif\n";
+	cout << "    to the same level as the source code.\n";
+	cout << endl;
+	cout << "    --indent-col1-comments  OR  -Y\n";
+	cout << "    Indent line comments that start in column one.\n";
+	cout << endl;
+	cout << "    --min-conditional-indent=#  OR  -m#\n";
+	cout << "    Indent a minimal # spaces in a continuous conditional\n";
+	cout << "    belonging to a conditional header.\n";
+	cout << "    The valid values are:\n";
+	cout << "    0 - no minimal indent.\n";
+	cout << "    1 - indent at least one additional indent.\n";
+	cout << "    2 - indent at least two additional indents.\n";
+	cout << "    3 - indent at least one-half an additional indent.\n";
+	cout << "    The default value is 2, two additional indents.\n";
+	cout << endl;
+	cout << "    --max-instatement-indent=#  OR  -M#\n";
+	cout << "    Indent a maximal # spaces in a continuous statement,\n";
+	cout << "    relative to the previous line.\n";
+	cout << "    The valid values are 40 thru 120.\n";
+	cout << "    The default value is 40.\n";
+	cout << endl;
+	cout << "Padding Options:\n";
+	cout << "----------------\n";
+	cout << "    --break-blocks  OR  -f\n";
+	cout << "    Insert empty lines around unrelated blocks, labels, classes, ...\n";
+	cout << endl;
+	cout << "    --break-blocks=all  OR  -F\n";
+	cout << "    Like --break-blocks, except also insert empty lines \n";
+	cout << "    around closing headers (e.g. 'else', 'catch', ...).\n";
+	cout << endl;
+	cout << "    --pad-oper  OR  -p\n";
+	cout << "    Insert space padding around operators.\n";
+	cout << endl;
+	cout << "    --pad-paren  OR  -P\n";
+	cout << "    Insert space padding around parenthesis on both the outside\n";
+	cout << "    and the inside.\n";
+	cout << endl;
+	cout << "    --pad-paren-out  OR  -d\n";
+	cout << "    Insert space padding around parenthesis on the outside only.\n";
+	cout << endl;
+	cout << "    --pad-first-paren-out  OR  -xd\n";
+	cout << "    Insert space padding around first parenthesis in a series on\n";
+	cout << "    the outside only.\n";
+	cout << endl;
+	cout << "    --pad-paren-in  OR  -D\n";
+	cout << "    Insert space padding around parenthesis on the inside only.\n";
+	cout << endl;
+	cout << "    --pad-header  OR  -H\n";
+	cout << "    Insert space padding after paren headers (e.g. 'if', 'for'...).\n";
+	cout << endl;
+	cout << "    --unpad-paren  OR  -U\n";
+	cout << "    Remove unnecessary space padding around parenthesis. This\n";
+	cout << "    can be used in combination with the 'pad' options above.\n";
+	cout << endl;
+	cout << "    --delete-empty-lines  OR  -xd\n";
+	cout << "    Delete empty lines within a function or method.\n";
+	cout << "    It will NOT delete lines added by the break-blocks options.\n";
+	cout << endl;
+	cout << "    --fill-empty-lines  OR  -E\n";
+	cout << "    Fill empty lines with the white space of their\n";
+	cout << "    previous lines.\n";
+	cout << endl;
+	cout << "    --align-pointer=type    OR  -k1\n";
+	cout << "    --align-pointer=middle  OR  -k2\n";
+	cout << "    --align-pointer=name    OR  -k3\n";
+	cout << "    Attach a pointer or reference operator (*, &, or ^) to either\n";
+	cout << "    the operator type (left), middle, or operator name (right).\n";
+	cout << "    To align the reference separately use --align-reference.\n";
+	cout << endl;
+	cout << "    --align-reference=none    OR  -W0\n";
+	cout << "    --align-reference=type    OR  -W1\n";
+	cout << "    --align-reference=middle  OR  -W2\n";
+	cout << "    --align-reference=name    OR  -W3\n";
+	cout << "    Attach a reference operator (&) to either\n";
+	cout << "    the operator type (left), middle, or operator name (right).\n";
+	cout << "    If not set, follow pointer alignment.\n";
+	cout << endl;
+	cout << "Formatting Options:\n";
+	cout << "-------------------\n";
+	cout << "    --break-closing-brackets  OR  -y\n";
+	cout << "    Break brackets before closing headers (e.g. 'else', 'catch', ...).\n";
+	cout << "    Use with --style=java, --style=kr, --style=stroustrup,\n";
+	cout << "    --style=linux, or --style=1tbs.\n";
+	cout << endl;
+	cout << "    --break-elseifs  OR  -e\n";
+	cout << "    Break 'else if()' statements into two different lines.\n";
+	cout << endl;
+	cout << "    --add-brackets  OR  -j\n";
+	cout << "    Add brackets to unbracketed one line conditional statements.\n";
+	cout << endl;
+	cout << "    --add-one-line-brackets  OR  -J\n";
+	cout << "    Add one line brackets to unbracketed one line conditional\n";
+	cout << "    statements.\n";
+	cout << endl;
+	cout << "    --remove-brackets  OR  -xj\n";
+	cout << "    Remove brackets from a bracketed one line conditional statements.\n";
+	cout << endl;
+	cout << "    --keep-one-line-blocks  OR  -O\n";
+	cout << "    Don't break blocks residing completely on one line.\n";
+	cout << endl;
+	cout << "    --keep-one-line-statements  OR  -o\n";
+	cout << "    Don't break lines containing multiple statements into\n";
+	cout << "    multiple single-statement lines.\n";
+	cout << endl;
+	cout << "    --convert-tabs  OR  -c\n";
+	cout << "    Convert tabs to the appropriate number of spaces.\n";
+	cout << endl;
+	cout << "    --close-templates  OR  -xy\n";
+	cout << "    Close ending angle brackets on template definitions.\n";
+	cout << endl;
+	cout << "    --remove-comment-prefix  OR  -xp\n";
+	cout << "    Remove the leading '*' prefix on multi-line comments and\n";
+	cout << "    indent the comment text one indent.\n";
+	cout << endl;
+	cout << "    --max-code-length=#    OR  -xC#\n";
+	cout << "    --break-after-logical  OR  -xL\n";
+	cout << "    max-code-length=# will break the line if it exceeds more than\n";
+	cout << "    # characters. The valid values are 50 thru 200.\n";
+	cout << "    If the line contains logical conditionals they will be placed\n";
+	cout << "    first on the new line. The option break-after-logical will\n";
+	cout << "    cause the logical conditional to be placed last on the\n";
+	cout << "    previous line.\n";
+	cout << endl;
+	cout << "    --mode=c\n";
+	cout << "    Indent a C or C++ source file (this is the default).\n";
+	cout << endl;
+	cout << "    --mode=java\n";
+	cout << "    Indent a Java source file.\n";
+	cout << endl;
+	cout << "    --mode=cs\n";
+	cout << "    Indent a C# source file.\n";
+	cout << endl;
+	cout << "Objective-C Options:\n";
+	cout << "--------------------\n";
+	cout << "    --align-method-colon  OR  -xM\n";
+	cout << "    Align the colons in an Objective-C method definition.\n";
+	cout << endl;
+	cout << "    --pad-method-prefix  OR  -xQ\n";
+	cout << "    Insert space padding after the '-' or '+' Objective-C\n";
+	cout << "    method prefix.\n";
+	cout << endl;
+	cout << "    --unpad-method-prefix  OR  -xR\n";
+	cout << "    Remove all space padding after the '-' or '+' Objective-C\n";
+	cout << "    method prefix.\n";
+	cout << endl;
+	cout << "    --pad-method-colon=none    OR  -xP\n";
+	cout << "    --pad-method-colon=all     OR  -xP1\n";
+	cout << "    --pad-method-colon=after   OR  -xP2\n";
+	cout << "    --pad-method-colon=before  OR  -xP3\n";
+	cout << "    Add or remove space padding before or after the colons in an\n";
+	cout << "    Objective-C method call.\n";
+	cout << endl;
+	cout << "Other Options:\n";
+	cout << "--------------\n";
+	cout << "    --suffix=####\n";
+	cout << "    Append the suffix #### instead of '.orig' to original filename.\n";
+	cout << endl;
+	cout << "    --suffix=none  OR  -n\n";
+	cout << "    Do not retain a backup of the original file.\n";
+	cout << endl;
+	cout << "    --recursive  OR  -r  OR  -R\n";
+	cout << "    Process subdirectories recursively.\n";
+	cout << endl;
+	cout << "    --exclude=####\n";
+	cout << "    Specify a file or directory #### to be excluded from processing.\n";
+	cout << endl;
+	cout << "    --ignore-exclude-errors  OR  -i\n";
+	cout << "    Allow processing to continue if there are errors in the exclude=####\n";
+	cout << "    options. It will display the unmatched excludes.\n";
+	cout << endl;
+	cout << "    --ignore-exclude-errors-x  OR  -xi\n";
+	cout << "    Allow processing to continue if there are errors in the exclude=####\n";
+	cout << "    options. It will NOT display the unmatched excludes.\n";
+	cout << endl;
+	cout << "    --errors-to-stdout  OR  -X\n";
+	cout << "    Print errors and help information to standard-output rather than\n";
+	cout << "    to standard-error.\n";
+	cout << endl;
+	cout << "    --preserve-date  OR  -Z\n";
+	cout << "    Preserve the original file's date and time modified. The time\n";
+	cout << "     modified will be changed a few micro seconds to force a compile.\n";
+	cout << endl;
+	cout << "    --verbose  OR  -v\n";
+	cout << "    Verbose mode. Extra informational messages will be displayed.\n";
+	cout << endl;
+	cout << "    --formatted  OR  -Q\n";
+	cout << "    Formatted display mode. Display only the files that have been\n";
+	cout << "    formatted.\n";
+	cout << endl;
+	cout << "    --quiet  OR  -q\n";
+	cout << "    Quiet mode. Suppress all output except error messages.\n";
+	cout << endl;
+	cout << "    --lineend=windows  OR  -z1\n";
+	cout << "    --lineend=linux    OR  -z2\n";
+	cout << "    --lineend=macold   OR  -z3\n";
+	cout << "    Force use of the specified line end style. Valid options\n";
+	cout << "    are windows (CRLF), linux (LF), and macold (CR).\n";
+	cout << endl;
+	cout << "Command Line Only:\n";
+	cout << "------------------\n";
+	cout << "    --options=####\n";
+	cout << "    Specify an options file #### to read and use.\n";
+	cout << endl;
+	cout << "    --options=none\n";
+	cout << "    Disable the default options file.\n";
+	cout << "    Only the command-line parameters will be used.\n";
+	cout << endl;
+	cout << "    --ascii  OR  -I\n";
+	cout << "    The displayed output will be ascii characters only.\n";
+	cout << endl;
+	cout << "    --version  OR  -V\n";
+	cout << "    Print version number.\n";
+	cout << endl;
+	cout << "    --help  OR  -h  OR  -?\n";
+	cout << "    Print this help message.\n";
+	cout << endl;
+	cout << "    --html  OR  -!\n";
+	cout << "    Open the HTML help file \"astyle.html\" in the default browser.\n";
+	cout << "    The documentation must be installed in the standard install path.\n";
+	cout << endl;
+	cout << "    --html=####\n";
+	cout << "    Open a HTML help file in the default browser using the file path\n";
+	cout << "    ####. The path may include a directory path and a file name, or a\n";
+	cout << "    file name only. Paths containing spaces must be enclosed in quotes.\n";
+	cout << endl;
+	cout << endl;
 }
-
 
 /**
  * Process files in the fileNameVector.
@@ -1729,10 +1930,22 @@ void ASConsole::processOptions(vector<string> &argvOptions)
 			printHelp();
 			exit(EXIT_SUCCESS);
 		}
+		else if ( isOption(arg, "-!")
+		          || isOption(arg, "--html") )
+		{
+			launchDefaultBrowser();
+			exit(EXIT_SUCCESS);
+		}
+		else if ( isParamOption(arg, "--html=") )
+		{
+			string htmlFilePath = getParam(arg, "--html=");
+			launchDefaultBrowser(htmlFilePath.c_str());
+			exit(EXIT_SUCCESS);
+		}
 		else if ( isOption(arg, "-V" )
 		          || isOption(arg, "--version") )
 		{
-			(*_err) << "Artistic Style Version " << g_version << endl;
+			printf("Artistic Style Version %s\n", g_version);
 			exit(EXIT_SUCCESS);
 		}
 		else if (arg[0] == '-')
@@ -2009,292 +2222,11 @@ bool ASConsole::stringEndsWith(const string &str, const string &suffix) const
 	return true;
 }
 
-// Swap the two low order bytes of an integer value
-// and convert 8 bit encoding to 16 bit.
-int ASConsole::swap8to16bit(int value) const
-{
-	return ( ((value & 0xFF) << 8) + (value >> 8) );
-}
-
-// Swap the two low order bytes of a 16 bit integer value.
-int ASConsole::swap16bit(int value) const
-{
-	return ( ((value & 0xff) << 8) | ((value & 0xff00) >> 8) );
-}
-
 void ASConsole::updateExcludeVector(string suffixParam)
 {
 	excludeVector.push_back(suffixParam);
 	standardizePath(excludeVector.back(), true);
 	excludeHitsVector.push_back(false);
-}
-
-// Adapted from SciTE UniConversion.cxx.
-// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
-// Modified for Artistic Style by Jim Pattee.
-//
-// Compute the length of an output utf-8 file given a utf-16 file.
-// Input tlen is the size in BYTES (not wchar_t).
-size_t ASConsole::Utf8LengthFromUtf16(const char* data, size_t tlen, FileEncoding encoding) const
-{
-	enum { SURROGATE_LEAD_FIRST = 0xD800 };
-	enum { SURROGATE_TRAIL_LAST = 0xDFFF };
-
-	size_t len = 0;
-	size_t wcharLen = tlen / 2;
-	const short* uptr = reinterpret_cast<const short*>(data);
-	for (size_t i = 0; i < wcharLen && uptr[i];)
-	{
-		size_t uch = encoding == UTF_16BE ? swap16bit(uptr[i]) : uptr[i];
-		if (uch < 0x80)
-		{
-			len++;
-		}
-		else if (uch < 0x800)
-		{
-			len += 2;
-		}
-		else if ((uch >= SURROGATE_LEAD_FIRST) && (uch <= SURROGATE_TRAIL_LAST))
-		{
-			len += 4;
-			i++;
-		}
-		else
-		{
-			len += 3;
-		}
-		i++;
-	}
-	return len;
-}
-
-// Adapted from SciTE Utf8_16.cxx.
-// Copyright (C) 2002 Scott Kirkwood.
-// Modified for Artistic Style by Jim Pattee.
-//
-// Convert a utf-8 file to utf-16.
-size_t ASConsole::Utf8ToUtf16(char* utf8In, size_t inLen, FileEncoding encoding, char* utf16Out) const
-{
-	typedef unsigned short utf16;	// 16 bits
-	typedef unsigned char  ubyte;	// 8 bits
-	enum { SURROGATE_LEAD_FIRST = 0xD800 };
-	enum { SURROGATE_LEAD_LAST = 0xDBFF };
-	enum { SURROGATE_TRAIL_FIRST = 0xDC00 };
-	enum { SURROGATE_TRAIL_LAST = 0xDFFF };
-	enum { SURROGATE_FIRST_VALUE = 0x10000 };
-	enum eState { eStart, eSecondOf4Bytes, ePenultimate, eFinal };
-
-	int nCur = 0;
-	ubyte* pRead = reinterpret_cast<ubyte*>(utf8In);
-	utf16* pCur = reinterpret_cast<utf16*>(utf16Out);
-	const ubyte* pEnd = pRead + inLen;
-	const utf16* pCurStart = pCur;
-	eState eState = eStart;
-
-	// the BOM will automatically be converted to utf-16
-	while (pRead < pEnd)
-	{
-		switch (eState)
-		{
-		case eStart:
-			if ((0xF0 & *pRead) == 0xF0)
-			{
-				nCur = (0x7 & *pRead) << 18;
-				eState = eSecondOf4Bytes;
-			}
-			else if ((0xE0 & *pRead) == 0xE0)
-			{
-				nCur = (~0xE0 & *pRead) << 12;
-				eState = ePenultimate;
-			}
-			else if ((0xC0 & *pRead) == 0xC0)
-			{
-				nCur = (~0xC0 & *pRead) << 6;
-				eState = eFinal;
-			}
-			else
-			{
-				nCur = *pRead;
-				eState = eStart;
-			}
-			break;
-		case eSecondOf4Bytes:
-			nCur |= (0x3F & *pRead) << 12;
-			eState = ePenultimate;
-			break;
-		case ePenultimate:
-			nCur |= (0x3F & *pRead) << 6;
-			eState = eFinal;
-			break;
-		case eFinal:
-			nCur |= (0x3F & *pRead);
-			eState = eStart;
-			break;
-		default:
-			error("Bad eState value", "Utf8ToUtf16()");
-		}
-		++pRead;
-
-		if (eState == eStart)
-		{
-			int codePoint = nCur;
-			if (codePoint >= SURROGATE_FIRST_VALUE)
-			{
-				codePoint -= SURROGATE_FIRST_VALUE;
-				int lead = (codePoint >> 10) + SURROGATE_LEAD_FIRST;
-				*pCur++ = static_cast<utf16>((encoding == UTF_16BE) ?
-				                             swap8to16bit(lead) : lead);
-				int trail = (codePoint & 0x3ff) + SURROGATE_TRAIL_FIRST;
-				*pCur++ = static_cast<utf16>((encoding == UTF_16BE) ?
-				                             swap8to16bit(trail) : trail);
-			}
-			else
-			{
-				*pCur++ = static_cast<utf16>((encoding == UTF_16BE) ?
-				                             swap8to16bit(codePoint) : codePoint);
-			}
-		}
-	}
-	// return value is the output length in BYTES (not wchar_t)
-	return (pCur - pCurStart) * 2;
-}
-
-// Adapted from SciTE UniConversion.cxx.
-// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
-// Modified for Artistic Style by Jim Pattee.
-//
-// Compute the length of an output utf-16 file given a utf-8 file.
-// Return value is the size in BYTES (not wchar_t).
-size_t ASConsole::Utf16LengthFromUtf8(const char* data, size_t len) const
-{
-	size_t ulen = 0;
-	size_t charLen;
-	for (size_t i = 0; i < len;)
-	{
-		unsigned char ch = static_cast<unsigned char>(data[i]);
-		if (ch < 0x80)
-			charLen = 1;
-		else if (ch < 0x80 + 0x40 + 0x20)
-			charLen = 2;
-		else if (ch < 0x80 + 0x40 + 0x20 + 0x10)
-			charLen = 3;
-		else
-		{
-			charLen = 4;
-			ulen++;
-		}
-		i += charLen;
-		ulen++;
-	}
-	// return value is the length in bytes (not wchar_t)
-	return ulen * 2;
-}
-
-// Adapted from SciTE Utf8_16.cxx.
-// Copyright (C) 2002 Scott Kirkwood.
-// Modified for Artistic Style by Jim Pattee.
-//
-// Convert a utf-16 file to utf-8.
-size_t ASConsole::Utf16ToUtf8(char* utf16In, size_t inLen, FileEncoding encoding,
-                              bool firstBlock, char* utf8Out) const
-{
-	typedef unsigned short utf16;	// 16 bits
-	typedef unsigned char  ubyte;	// 8 bits
-	enum { SURROGATE_LEAD_FIRST = 0xD800 };
-	enum { SURROGATE_LEAD_LAST = 0xDBFF };
-	enum { SURROGATE_TRAIL_FIRST = 0xDC00 };
-	enum { SURROGATE_TRAIL_LAST = 0xDFFF };
-	enum { SURROGATE_FIRST_VALUE = 0x10000 };
-	enum eState { eStart, eSecondOf4Bytes, ePenultimate, eFinal };
-
-	int nCur16 = 0;
-	int nCur = 0;
-	ubyte* pRead = reinterpret_cast<ubyte*>(utf16In);
-	ubyte* pCur = reinterpret_cast<ubyte*>(utf8Out);
-	const ubyte* pEnd = pRead + inLen;
-	const ubyte* pCurStart = pCur;
-	static eState eState = eStart;	// eState is retained for subsequent blocks
-	if (firstBlock)
-		eState = eStart;
-
-	// the BOM will automatically be converted to utf-8
-	while (pRead < pEnd)
-	{
-		switch (eState)
-		{
-		case eStart:
-			if (pRead >= pEnd)
-			{
-				++pRead;
-				break;
-			}
-			if (encoding == UTF_16LE)
-			{
-				nCur16 = *pRead++;
-				nCur16 |= static_cast<utf16>(*pRead << 8);
-			}
-			else
-			{
-				nCur16 = static_cast<utf16>(*pRead++ << 8);
-				nCur16 |= static_cast<utf16>(*pRead);
-			}
-			if (nCur16 >= SURROGATE_LEAD_FIRST && nCur16 <= SURROGATE_LEAD_LAST)
-			{
-				++pRead;
-				int trail;
-				if (encoding == UTF_16LE)
-				{
-					trail = *pRead++;
-					trail |= static_cast<utf16>(*pRead << 8);
-				}
-				else
-				{
-					trail = static_cast<utf16>(*pRead++ << 8);
-					trail |= static_cast<utf16>(*pRead);
-				}
-				nCur16 = (((nCur16 & 0x3ff) << 10) | (trail & 0x3ff)) + SURROGATE_FIRST_VALUE;
-			}
-			++pRead;
-
-			if (nCur16 < 0x80)
-			{
-				nCur = static_cast<ubyte>(nCur16 & 0xFF);
-				eState = eStart;
-			}
-			else if (nCur16 < 0x800)
-			{
-				nCur = static_cast<ubyte>(0xC0 | (nCur16 >> 6));
-				eState = eFinal;
-			}
-			else if (nCur16 < SURROGATE_FIRST_VALUE)
-			{
-				nCur = static_cast<ubyte>(0xE0 | (nCur16 >> 12));
-				eState = ePenultimate;
-			}
-			else
-			{
-				nCur = static_cast<ubyte>(0xF0 | (nCur16 >> 18));
-				eState = eSecondOf4Bytes;
-			}
-			break;
-		case eSecondOf4Bytes:
-			nCur = static_cast<ubyte>(0x80 | ((nCur16 >> 12) & 0x3F));
-			eState = ePenultimate;
-			break;
-		case ePenultimate:
-			nCur = static_cast<ubyte>(0x80 | ((nCur16 >> 6) & 0x3F));
-			eState = eFinal;
-			break;
-		case eFinal:
-			nCur = static_cast<ubyte>(0x80 | (nCur16 & 0x3F));
-			eState = eStart;
-			break;
-		default:
-			error("Bad eState value", "Utf16ToUtf8()");
-		}
-		*pCur++ = static_cast<ubyte>(nCur);
-	}
-	return pCur - pCurStart;
 }
 
 int ASConsole::waitForRemove(const char* newFileName) const
@@ -2396,9 +2328,11 @@ void ASConsole::writeFile(const string &fileName_, FileEncoding encoding, ostrin
 	if (encoding == UTF_16LE || encoding == UTF_16BE)
 	{
 		// convert utf-8 to utf-16
-		size_t utf16Size = Utf16LengthFromUtf8(out.str().c_str(), out.str().length());
+		bool isBigEndian = (encoding == UTF_16BE);
+		size_t utf16Size = utf8_16.Utf16LengthFromUtf8(out.str().c_str(), out.str().length());
 		char* utf16Out = new char[utf16Size];
-		size_t utf16Len = Utf8ToUtf16(const_cast<char*>(out.str().c_str()), out.str().length(), encoding, utf16Out);
+		size_t utf16Len = utf8_16.Utf8ToUtf16(const_cast<char*>(out.str().c_str()),
+		                                      out.str().length(), isBigEndian, utf16Out);
 		assert(utf16Len == utf16Size);
 		fout << string(utf16Out, utf16Len);
 		delete []utf16Out;
@@ -2507,14 +2441,14 @@ char* STDCALL ASLibrary::tempMemoryAllocation(unsigned long memoryNeeded)
 // Modified for Artistic Style by Jim Pattee.
 //
 // Compute the length of an output utf-8 file given a utf-16 file.
-// Input tlen is the size in BYTES (not wchar_t).
-size_t ASLibrary::Utf8LengthFromUtf16(const char* data, size_t tlen, bool isBigEndian) const
+// Input inLen is the size in BYTES (not wchar_t).
+size_t ASLibrary::Utf8LengthFromUtf16(const char* data, size_t inLen, bool isBigEndian) const
 {
 	enum { SURROGATE_LEAD_FIRST = 0xD800 };
 	enum { SURROGATE_TRAIL_LAST = 0xDFFF };
 
 	size_t len = 0;
-	size_t wcharLen = tlen / 2;
+	size_t wcharLen = inLen / 2;
 	const short* uptr = reinterpret_cast<const short*>(data);
 	for (size_t i = 0; i < wcharLen && uptr[i];)
 	{
@@ -2572,7 +2506,7 @@ size_t ASLibrary::Utf16LengthFromUtf8(const char* data, size_t len) const
 	return ulen * 2;
 }
 
-#ifdef _WIN32
+#ifdef _WIN32  // Windows specific
 
 /**
  * WINDOWS function to convert utf-8 strings to wchar_t (utf16) strings.
@@ -2603,14 +2537,14 @@ char* ASLibrary::convertUtf16ToUtf8(const wchar_t* wcharIn) const
 	int utf8Len = WideCharToMultiByte(CP_UTF8, 0, wcharIn, -1, 0, 0, 0, 0);
 	if (utf8Len == 0)
 		return NULL;
-	char* utf8 = new(nothrow) char[utf8Len];
-	if (utf8 == NULL)
+	char* utf8Out = new(nothrow) char[utf8Len];
+	if (utf8Out == NULL)
 		return NULL;
-	WideCharToMultiByte(CP_UTF8, 0, wcharIn, -1, utf8, utf8Len, 0, 0);
-	return utf8;
+	WideCharToMultiByte(CP_UTF8, 0, wcharIn, -1, utf8Out, utf8Len, 0, 0);
+	return utf8Out;
 }
 
-#else	// not _WIN32
+#else	// Linux specific
 
 /**
  * LINUX function to convert utf-8 strings to utf16.
@@ -2766,8 +2700,7 @@ bool ASOptions::parseOptions(vector<string> &optionsVector, const string &errorI
 
 void ASOptions::parseOption(const string &arg, const string &errorInfo)
 {
-	if ( isOption(arg, "style=allman") || isOption(arg, "style=ansi")
-	        || isOption(arg, "style=bsd") || isOption(arg, "style=break") )
+	if ( isOption(arg, "style=allman") || isOption(arg, "style=bsd") || isOption(arg, "style=break") )
 	{
 		formatter.setFormattingStyle(STYLE_ALLMAN);
 	}
@@ -2795,7 +2728,7 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setFormattingStyle(STYLE_GNU);
 	}
-	else if ( isOption(arg, "style=linux") )
+	else if ( isOption(arg, "style=linux") || isOption(arg, "style=knf") )
 	{
 		formatter.setFormattingStyle(STYLE_LINUX);
 	}
@@ -2806,6 +2739,10 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	else if ( isOption(arg, "style=1tbs") || isOption(arg, "style=otbs") )
 	{
 		formatter.setFormattingStyle(STYLE_1TBS);
+	}
+	else if ( isOption(arg, "style=google") )
+	{
+		formatter.setFormattingStyle(STYLE_GOOGLE);
 	}
 	else if ( isOption(arg, "style=pico") )
 	{
@@ -2845,7 +2782,10 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 			formatter.setFormattingStyle(STYLE_PICO);
 		else if (style == 12)
 			formatter.setFormattingStyle(STYLE_LISP);
-		else isOptionError(arg, errorInfo);
+		else if (style == 14)
+			formatter.setFormattingStyle(STYLE_GOOGLE);
+		else
+			isOptionError(arg, errorInfo);
 	}
 	// must check for mode=cs before mode=c !!!
 	else if ( isOption(arg, "mode=cs") )
@@ -2963,6 +2903,10 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setClassIndent(true);
 	}
+	else if ( isOption(arg, "xG", "indent-modifiers") )
+	{
+		formatter.setModifierIndent(true);
+	}
 	else if ( isOption(arg, "S", "indent-switches") )
 	{
 		formatter.setSwitchIndent(true);
@@ -2975,29 +2919,17 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setLabelIndent(true);
 	}
+	else if ( isOption(arg, "w", "indent-preproc-define") )
+	{
+		formatter.setPreprocDefineIndent(true);
+	}
+	else if ( isOption(arg, "xw", "indent-preproc-cond") )
+	{
+		formatter.setPreprocConditionalIndent(true);
+	}
 	else if ( isOption(arg, "y", "break-closing-brackets") )
 	{
 		formatter.setBreakClosingHeaderBracketsMode(true);
-	}
-	else if ( isOption(arg, "b", "brackets=break") )
-	{
-		formatter.setBracketFormatMode(BREAK_MODE);
-	}
-	else if ( isOption(arg, "a", "brackets=attach") )
-	{
-		formatter.setBracketFormatMode(ATTACH_MODE);
-	}
-	else if ( isOption(arg, "l", "brackets=linux") )
-	{
-		formatter.setBracketFormatMode(LINUX_MODE);
-	}
-	else if ( isOption(arg, "u", "brackets=stroustrup") )
-	{
-		formatter.setBracketFormatMode(STROUSTRUP_MODE);
-	}
-	else if ( isOption(arg, "g", "brackets=run-in") )
-	{
-		formatter.setBracketFormatMode(RUN_IN_MODE);
 	}
 	else if ( isOption(arg, "O", "keep-one-line-blocks") )
 	{
@@ -3043,10 +2975,6 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	else if ( isOption(arg, "E", "fill-empty-lines") )
 	{
 		formatter.setEmptyLineFill(true);
-	}
-	else if ( isOption(arg, "w", "indent-preprocessor") )
-	{
-		formatter.setPreprocessorIndent(true);
 	}
 	else if ( isOption(arg, "c", "convert-tabs") )
 	{
@@ -3177,6 +3105,10 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setAttachClass(true);
 	}
+	else if ( isOption(arg, "xk", "attach-extern-c") )
+	{
+		formatter.setAttachExternC(true);
+	}
 	else if ( isOption(arg, "xn", "attach-namespaces") )
 	{
 		formatter.setAttachNamespace(true);
@@ -3185,6 +3117,11 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setAttachInline(true);
 	}
+	else if ( isOption(arg, "xp", "remove-comment-prefix") )
+	{
+		formatter.setStripCommentPrefix(true);
+	}
+	// Objective-C options
 	else if ( isOption(arg, "xM", "align-method-colon") )
 	{
 		formatter.setAlignMethodColon(true);
@@ -3213,8 +3150,36 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 	{
 		formatter.setObjCColonPaddingMode(COLON_PAD_BEFORE);
 	}
-	// depreciated options release 2.02 ///////////////////////////////////////////////////////////////////////////////
-	//
+	// depreciated options ////////////////////////////////////////////////////////////////////////////////////////////
+	else if ( isOption(arg, "indent-preprocessor") )	// depreciated release 2.04
+	{
+		formatter.setPreprocDefineIndent(true);
+	}
+	else if ( isOption(arg, "style=ansi") )				// depreciated release 2.05
+	{
+		formatter.setFormattingStyle(STYLE_ALLMAN);
+	}
+//  NOTE: Removed in release 2.04.
+//	else if ( isOption(arg, "b", "brackets=break") )
+//	{
+//		formatter.setBracketFormatMode(BREAK_MODE);
+//	}
+//	else if ( isOption(arg, "a", "brackets=attach") )
+//	{
+//		formatter.setBracketFormatMode(ATTACH_MODE);
+//	}
+//	else if ( isOption(arg, "l", "brackets=linux") )
+//	{
+//		formatter.setBracketFormatMode(LINUX_MODE);
+//	}
+//	else if ( isOption(arg, "u", "brackets=stroustrup") )
+//	{
+//		formatter.setBracketFormatMode(STROUSTRUP_MODE);
+//	}
+//	else if ( isOption(arg, "g", "brackets=run-in") )
+//	{
+//		formatter.setBracketFormatMode(RUN_IN_MODE);
+//	}
 	// end depreciated options ////////////////////////////////////////////////////////////////////////////////////////
 #ifdef ASTYLE_LIB
 	// End of options used by GUI /////////////////////////////////////////////////////////////////////////////////////
@@ -3322,12 +3287,12 @@ void ASOptions::importOptions(istream &in, vector<string> &optionsVector)
 				while (in)
 				{
 					in.get(ch);
-					if (ch == '\n')
+					if (ch == '\n' || ch == '\r')
 						break;
 				}
 
 			// break options on spaces, tabs, commas, or new-lines
-			if (in.eof() || ch == ' ' || ch == '\t' || ch == ',' || ch == '\n')
+			if (in.eof() || ch == ' ' || ch == '\t' || ch == ',' || ch == '\n' || ch == '\r')
 				break;
 			else
 				currentToken.append(1, ch);
@@ -3388,6 +3353,252 @@ bool ASOptions::isParamOption(const string &arg, const char* option1, const char
 }
 
 //----------------------------------------------------------------------------
+// Utf8_16 class
+//----------------------------------------------------------------------------
+
+// Return true if an int is big endian.
+bool Utf8_16::getBigEndian() const
+{
+	short int word = 0x0001;
+	char* byte = (char*) &word;
+	return (byte[0] ? false : true);
+}
+
+// Swap the two low order bytes of a 16 bit integer value.
+int Utf8_16::swap16bit(int value) const
+{
+	return ( ((value & 0xff) << 8) | ((value & 0xff00) >> 8) );
+}
+
+// Adapted from SciTE UniConversion.cxx.
+// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
+// Modified for Artistic Style by Jim Pattee.
+// Compute the length of an output utf-8 file given a utf-16 file.
+// Input inLen is the size in BYTES (not wchar_t).
+size_t Utf8_16::Utf8LengthFromUtf16(const char* utf16In, size_t inLen, bool isBigEndian) const
+{
+	size_t len = 0;
+	size_t wcharLen = inLen / 2;
+	const short* uptr = reinterpret_cast<const short*>(utf16In);
+	for (size_t i = 0; i < wcharLen && uptr[i];)
+	{
+		size_t uch = isBigEndian ? swap16bit(uptr[i]) : uptr[i];
+		if (uch < 0x80)
+			len++;
+		else if (uch < 0x800)
+			len += 2;
+		else if ((uch >= SURROGATE_LEAD_FIRST) && (uch <= SURROGATE_TRAIL_LAST))
+		{
+			len += 4;
+			i++;
+		}
+		else
+			len += 3;
+		i++;
+	}
+	return len;
+}
+
+// Adapted from SciTE Utf8_16.cxx.
+// Copyright (C) 2002 Scott Kirkwood.
+// Modified for Artistic Style by Jim Pattee.
+// Convert a utf-8 file to utf-16.
+size_t Utf8_16::Utf8ToUtf16(char* utf8In, size_t inLen, bool isBigEndian, char* utf16Out) const
+{
+	int nCur = 0;
+	ubyte* pRead = reinterpret_cast<ubyte*>(utf8In);
+	utf16* pCur = reinterpret_cast<utf16*>(utf16Out);
+	const ubyte* pEnd = pRead + inLen;
+	const utf16* pCurStart = pCur;
+	eState eState = eStart;
+
+	// the BOM will automatically be converted to utf-16
+	while (pRead < pEnd)
+	{
+		switch (eState)
+		{
+		case eStart:
+			if ((0xF0 & *pRead) == 0xF0)
+			{
+				nCur = (0x7 & *pRead) << 18;
+				eState = eSecondOf4Bytes;
+			}
+			else if ((0xE0 & *pRead) == 0xE0)
+			{
+				nCur = (~0xE0 & *pRead) << 12;
+				eState = ePenultimate;
+			}
+			else if ((0xC0 & *pRead) == 0xC0)
+			{
+				nCur = (~0xC0 & *pRead) << 6;
+				eState = eFinal;
+			}
+			else
+			{
+				nCur = *pRead;
+				eState = eStart;
+			}
+			break;
+		case eSecondOf4Bytes:
+			nCur |= (0x3F & *pRead) << 12;
+			eState = ePenultimate;
+			break;
+		case ePenultimate:
+			nCur |= (0x3F & *pRead) << 6;
+			eState = eFinal;
+			break;
+		case eFinal:
+			nCur |= (0x3F & *pRead);
+			eState = eStart;
+			break;
+		}
+		++pRead;
+
+		if (eState == eStart)
+		{
+			int codePoint = nCur;
+			if (codePoint >= SURROGATE_FIRST_VALUE)
+			{
+				codePoint -= SURROGATE_FIRST_VALUE;
+				int lead = (codePoint >> 10) + SURROGATE_LEAD_FIRST;
+				*pCur++ = static_cast<utf16>(isBigEndian ? swap16bit(lead) : lead);
+				int trail = (codePoint & 0x3ff) + SURROGATE_TRAIL_FIRST;
+				*pCur++ = static_cast<utf16>(isBigEndian ? swap16bit(trail) : trail);
+			}
+			else
+				*pCur++ = static_cast<utf16>(isBigEndian ? swap16bit(codePoint) : codePoint);
+		}
+	}
+	// return value is the output length in BYTES (not wchar_t)
+	return (pCur - pCurStart) * 2;
+}
+
+// Adapted from SciTE UniConversion.cxx.
+// Copyright 1998-2001 by Neil Hodgson <neilh@scintilla.org>
+// Modified for Artistic Style by Jim Pattee.
+// Compute the length of an output utf-16 file given a utf-8 file.
+// Return value is the size in BYTES (not wchar_t).
+size_t Utf8_16::Utf16LengthFromUtf8(const char* utf8In, size_t len) const
+{
+	size_t ulen = 0;
+	size_t charLen;
+	for (size_t i = 0; i < len;)
+	{
+		unsigned char ch = static_cast<unsigned char>(utf8In[i]);
+		if (ch < 0x80)
+			charLen = 1;
+		else if (ch < 0x80 + 0x40 + 0x20)
+			charLen = 2;
+		else if (ch < 0x80 + 0x40 + 0x20 + 0x10)
+			charLen = 3;
+		else
+		{
+			charLen = 4;
+			ulen++;
+		}
+		i += charLen;
+		ulen++;
+	}
+	// return value is the length in bytes (not wchar_t)
+	return ulen * 2;
+}
+
+// Adapted from SciTE Utf8_16.cxx.
+// Copyright (C) 2002 Scott Kirkwood.
+// Modified for Artistic Style by Jim Pattee.
+// Convert a utf-16 file to utf-8.
+size_t Utf8_16::Utf16ToUtf8(char* utf16In, size_t inLen, bool isBigEndian,
+                            bool firstBlock, char* utf8Out) const
+{
+	int nCur16 = 0;
+	int nCur = 0;
+	ubyte* pRead = reinterpret_cast<ubyte*>(utf16In);
+	ubyte* pCur = reinterpret_cast<ubyte*>(utf8Out);
+	const ubyte* pEnd = pRead + inLen;
+	const ubyte* pCurStart = pCur;
+	static eState eState = eStart;	// eState is retained for subsequent blocks
+	if (firstBlock)
+		eState = eStart;
+
+	// the BOM will automatically be converted to utf-8
+	while (pRead < pEnd)
+	{
+		switch (eState)
+		{
+		case eStart:
+			if (pRead >= pEnd)
+			{
+				++pRead;
+				break;
+			}
+			if (isBigEndian)
+			{
+				nCur16 = static_cast<utf16>(*pRead++ << 8);
+				nCur16 |= static_cast<utf16>(*pRead);
+			}
+			else
+			{
+				nCur16 = *pRead++;
+				nCur16 |= static_cast<utf16>(*pRead << 8);
+			}
+			if (nCur16 >= SURROGATE_LEAD_FIRST && nCur16 <= SURROGATE_LEAD_LAST)
+			{
+				++pRead;
+				int trail;
+				if (isBigEndian)
+				{
+					trail = static_cast<utf16>(*pRead++ << 8);
+					trail |= static_cast<utf16>(*pRead);
+				}
+				else
+				{
+					trail = *pRead++;
+					trail |= static_cast<utf16>(*pRead << 8);
+				}
+				nCur16 = (((nCur16 & 0x3ff) << 10) | (trail & 0x3ff)) + SURROGATE_FIRST_VALUE;
+			}
+			++pRead;
+
+			if (nCur16 < 0x80)
+			{
+				nCur = static_cast<ubyte>(nCur16 & 0xFF);
+				eState = eStart;
+			}
+			else if (nCur16 < 0x800)
+			{
+				nCur = static_cast<ubyte>(0xC0 | (nCur16 >> 6));
+				eState = eFinal;
+			}
+			else if (nCur16 < SURROGATE_FIRST_VALUE)
+			{
+				nCur = static_cast<ubyte>(0xE0 | (nCur16 >> 12));
+				eState = ePenultimate;
+			}
+			else
+			{
+				nCur = static_cast<ubyte>(0xF0 | (nCur16 >> 18));
+				eState = eSecondOf4Bytes;
+			}
+			break;
+		case eSecondOf4Bytes:
+			nCur = static_cast<ubyte>(0x80 | ((nCur16 >> 12) & 0x3F));
+			eState = ePenultimate;
+			break;
+		case ePenultimate:
+			nCur = static_cast<ubyte>(0x80 | ((nCur16 >> 6) & 0x3F));
+			eState = eFinal;
+			break;
+		case eFinal:
+			nCur = static_cast<ubyte>(0x80 | (nCur16 & 0x3F));
+			eState = eStart;
+			break;
+		}
+		*pCur++ = static_cast<ubyte>(nCur);
+	}
+	return pCur - pCurStart;
+}
+
+//----------------------------------------------------------------------------
 
 }   // end of astyle namespace
 
@@ -3396,7 +3607,7 @@ bool ASOptions::isParamOption(const string &arg, const char* option1, const char
 using namespace astyle;
 
 //----------------------------------------------------------------------------
-// ASTYLE_JNI functions for calling AStyleMain
+// ASTYLE_JNI functions for Java library builds
 //----------------------------------------------------------------------------
 
 #ifdef ASTYLE_JNI
@@ -3467,7 +3678,7 @@ char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded)
 #endif	// ASTYLE_JNI
 
 //----------------------------------------------------------------------------
-// Entry point for AStyleMainUtf16
+// Entry point for AStyleMainUtf16 library builds
 //----------------------------------------------------------------------------
 
 #ifdef ASTYLE_LIB
@@ -3511,10 +3722,9 @@ extern "C" EXPORT utf16_t* STDCALL AStyleMainUtf16(const utf16_t* pSourceIn,	// 
 }
 
 //----------------------------------------------------------------------------
-// ASTYLE_LIB functions for calling AStyleMain
+// ASTYLE_LIB entry point for library builds
 //----------------------------------------------------------------------------
 /*
- * This is apparently no longer required.
  * IMPORTANT VC DLL linker for WIN32 must have the parameter  /EXPORT:AStyleMain=_AStyleMain@16
  *                                                            /EXPORT:AStyleGetVersion=_AStyleGetVersion@0
  * No /EXPORT is required for x64
@@ -3606,7 +3816,7 @@ extern "C" EXPORT const char* STDCALL AStyleGetVersion (void)
 #elif !defined(ASTYLECON_LIB)
 
 //----------------------------------------------------------------------------
-// main function functions for ASConsole build
+// main function for ASConsole build
 //----------------------------------------------------------------------------
 
 int main(int argc, char** argv)

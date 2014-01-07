@@ -42,6 +42,13 @@
 #include <sstream>
 #include <ctime>
 
+#ifdef __BORLANDC__
+// Embarcadero needs this for the following utime.h
+// otherwise "struct utimbuf" gets an error on time_t
+// can maybe be removed in the future
+using std::time_t;
+#endif
+
 #if defined(_MSC_VER) || defined(__DMC__)
 #include <sys/utime.h>
 #include <sys/stat.h>
@@ -132,6 +139,33 @@ class ASStreamIterator : public ASSourceIterator
 };
 
 //----------------------------------------------------------------------------
+// Utf8_16 class for utf8/16 conversions
+//----------------------------------------------------------------------------
+
+class Utf8_16
+{
+	public:
+		bool   getBigEndian() const;
+		int    swap16bit(int value) const;
+		size_t Utf8LengthFromUtf16(const char* utf16In, size_t inLen, bool isBigEndian) const;
+		size_t Utf8ToUtf16(char* utf8In, size_t inLen, bool isBigEndian, char* utf16Out) const;
+		size_t Utf16LengthFromUtf8(const char* utf8In, size_t inLen) const;
+		size_t Utf16ToUtf8(char* utf16In, size_t inLen, bool isBigEndian,
+		                   bool firstBlock, char* utf8Out) const;
+
+	private:
+		typedef unsigned short utf16; // 16 bits
+		typedef unsigned char utf8;   // 8 bits
+		typedef unsigned char ubyte;  // 8 bits
+		enum { SURROGATE_LEAD_FIRST = 0xD800 };
+		enum { SURROGATE_LEAD_LAST = 0xDBFF };
+		enum { SURROGATE_TRAIL_FIRST = 0xDC00 };
+		enum { SURROGATE_TRAIL_LAST = 0xDFFF };
+		enum { SURROGATE_FIRST_VALUE = 0x10000 };
+		enum eState { eStart, eSecondOf4Bytes, ePenultimate, eFinal };
+};
+
+//----------------------------------------------------------------------------
 // ASOptions class for options processing
 // used by both console and library builds
 //----------------------------------------------------------------------------
@@ -169,9 +203,9 @@ class ASOptions
 
 class ASConsole
 {
-	private:	// variables
-		ASFormatter &formatter;				// reference to the ASFormatter object
-		ASLocalizer localizer;				// ASLocalizer object
+	private:    // variables
+		ASFormatter &formatter;             // reference to the ASFormatter object
+		ASLocalizer localizer;              // ASLocalizer object
 		// command line options
 		bool isRecursive;                   // recursive option
 		string origSuffix;                  // suffix= option
@@ -185,28 +219,31 @@ class ASConsole
 		bool optionsFileRequired;           // options= option
 		bool useAscii;                      // ascii option
 		// other variables
+		bool bypassBrowserOpen;             // don't open the browser on html options
 		bool hasWildcard;                   // file name includes a wildcard
 		size_t mainDirectoryLength;         // directory length to be excluded in displays
-		bool filesAreIdentical;				// input and output files are identical
-		bool lineEndsMixed;					// output has mixed line ends
-		int  linesOut;                      // number of output lines
+		bool filesAreIdentical;             // input and output files are identical
 		int  filesFormatted;                // number of files formatted
 		int  filesUnchanged;                // number of files unchanged
-		char outputEOL[4];					// current line end
-		char prevEOL[4];					// previous line end
+		bool lineEndsMixed;                 // output has mixed line ends
+		int  linesOut;                      // number of output lines
+		char outputEOL[4];                  // current line end
+		char prevEOL[4];                    // previous line end
+
+		Utf8_16 utf8_16;                    // utf8/16 conversion methods
 
 		string optionsFileName;             // file path and name of the options file to use
 		string targetDirectory;             // path to the directory being processed
 		string targetFilename;              // file name being processed
 
 		vector<string> excludeVector;       // exclude from wildcard hits
-		vector<bool>   excludeHitsVector;   // exclude flags for eror reporting
+		vector<bool>   excludeHitsVector;   // exclude flags for error reporting
 		vector<string> fileNameVector;      // file paths and names from the command line
 		vector<string> optionsVector;       // options from the command line
 		vector<string> fileOptionsVector;   // options from the options file
 		vector<string> fileName;            // files to be processed including path
 
-	public:
+	public:     // variables
 		ASConsole(ASFormatter &formatterArg) : formatter(formatterArg) {
 			// command line options
 			isRecursive = false;
@@ -221,6 +258,7 @@ class ASConsole
 			optionsFileRequired = false;
 			useAscii = false;
 			// other variables
+			bypassBrowserOpen = false;
 			hasWildcard = false;
 			filesAreIdentical = true;
 			lineEndsMixed = false;
@@ -232,7 +270,7 @@ class ASConsole
 			linesOut = 0;
 		}
 
-		// public functions
+	public:     // functions
 		void convertLineEnds(ostringstream &out, int lineEnd);
 		FileEncoding detectEncoding(const char* data, size_t dataSize) const;
 		void error() const;
@@ -250,13 +288,14 @@ class ASConsole
 		bool getLineEndsMixed();
 		bool getNoBackup();
 		string getLanguageID() const;
-		string getNumberFormat(int num, size_t = 0) const ;
+		string getNumberFormat(int num, size_t = 0) const;
 		string getNumberFormat(int num, const char* groupingArg, const char* separator) const;
 		string getOptionsFileName();
 		string getOrigSuffix();
 		bool getPreserveDate();
 		void processFiles();
 		void processOptions(vector<string> &argvOptions);
+		void setBypassBrowserOpen(bool state);
 		void setIgnoreExcludeErrors(bool state);
 		void setIgnoreExcludeErrorsAndDisplay(bool state);
 		void setIsFormattedOnly(bool state);
@@ -270,10 +309,6 @@ class ASConsole
 		void standardizePath(string &path, bool removeBeginningSeparator = false) const;
 		bool stringEndsWith(const string &str, const string &suffix) const;
 		void updateExcludeVector(string suffixParam);
-		size_t Utf8LengthFromUtf16(const char* data, size_t len, FileEncoding encoding) const;
-		size_t Utf8ToUtf16(char* utf8In, size_t inLen, FileEncoding encoding, char* utf16Out) const;
-		size_t Utf16LengthFromUtf8(const char* data, size_t len) const;
-		size_t Utf16ToUtf8(char* utf16In, size_t inLen, FileEncoding encoding, bool firstBlock, char* utf8Out) const;
 
 		// for unit testing
 		vector<string> getExcludeVector();
@@ -296,6 +331,7 @@ class ASConsole
 		bool isOption(const string &arg, const char* op1, const char* op2);
 		bool isParamOption(const string &arg, const char* option);
 		bool isPathExclued(const string &subPath);
+		void launchDefaultBrowser(const char* filePathIn = NULL) const;
 		void printHelp() const;
 		void printMsg(const char* msg, const string &data) const;
 		void printSeparatingLine() const;
@@ -306,8 +342,6 @@ class ASConsole
 		void renameFile(const char* oldFileName, const char* newFileName, const char* errMsg) const;
 		void setOutputEOL(LineEndFormat lineEndFormat, const char* currentEOL);
 		void sleep(int seconds) const;
-		int  swap8to16bit(int value) const;
-		int  swap16bit(int value) const;
 		int  waitForRemove(const char* oldFileName) const;
 		int  wildcmp(const char* wild, const char* data) const;
 		void writeFile(const string &fileName_, FileEncoding encoding, ostringstream &out) const;
@@ -324,6 +358,8 @@ class ASConsole
 class ASLibrary
 {
 	public:
+		ASLibrary() {}
+		virtual ~ASLibrary() {}
 		// virtual functions are mocked in testing
 		utf16_t* formatUtf16(const utf16_t*, const utf16_t*, fpError, fpAlloc) const;
 		virtual utf16_t* convertUtf8ToUtf16(const char* utf8In, fpAlloc fpMemoryAlloc) const;

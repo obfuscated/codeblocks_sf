@@ -98,7 +98,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setBlockIndent(cfg->ReadBool(_T("/indent_blocks")));
   formatter.setNamespaceIndent(cfg->ReadBool(_T("/indent_namespaces")));
   formatter.setLabelIndent(cfg->ReadBool(_T("/indent_labels")));
-  formatter.setPreprocessorIndent(cfg->ReadBool(_T("/indent_preprocessor")));
+  formatter.setPreprocDefineIndent(cfg->ReadBool(_T("/indent_preprocessor")));
   formatter.setIndentCol1CommentsMode(cfg->ReadBool(_T("/indent_col1_comments")));
 
   wxString pointerAlign = cfg->Read(_T("/pointer_align"));
