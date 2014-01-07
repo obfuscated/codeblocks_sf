@@ -122,12 +122,23 @@ function OnLeave_VersionSelection(fwd)
 
         // check whether lib file exist
         local lib_nomacro = ReplaceMacros(OpenCVPathLib, true);
-        //libopencv_core244.dll.a
-        local test_lib_file = lib_nomacro + _T("\\libopencv_core") + VersionString + _T(".dll.a");
-        if (!IO.FileExists(test_lib_file))
+        // first we check whether a release OpenCV library exists, which could have the name libopencv_core244.dll.a
+        // if we can't find a release version of OpenCV library, check a debug version exists, which
+        // may have the name libopencv_core244d.dll.a
+        local test_release_lib_file = lib_nomacro + _T("\\libopencv_core") + VersionString + _T(".dll.a");
+        local test_debug_lib_file = lib_nomacro + _T("\\libopencv_core") + VersionString + _T("d.dll.a");
+        if (IO.FileExists(test_release_lib_file))
+        {
+            ; // find release version of OpenCV library
+        }
+        else if (IO.FileExists(test_debug_lib_file))
+        {
+            VersionString = VersionString + _T("d"); //find debug version of OpenCV library
+        }
+        else
         {
             ShowError(_T("The lib path you entered seems invalid: File ")
-                       + test_lib_file + _T(" not found"));
+                       + test_release_lib_file + _T(" or ") + test_debug_lib_file + _T(" not found"));
             return false;
         }
 
