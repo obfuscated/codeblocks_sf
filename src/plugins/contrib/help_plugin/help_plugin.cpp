@@ -538,7 +538,7 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
   // Operate on man pages
   if (helpfile.Mid(0, man_prefix.size()).CmpNoCase(man_prefix) == 0)
   {
-    if (reinterpret_cast<MANFrame *>(m_manFrame)->SearchManPage(c_helpfile, keyword))
+    if (reinterpret_cast<MANFrame *>(m_manFrame)->SearchManPage(keyword))
       Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find man page"));
     else
       Manager::Get()->GetLogManager()->DebugLog(_T("Launching man page"));

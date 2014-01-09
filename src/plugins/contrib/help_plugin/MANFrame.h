@@ -27,7 +27,7 @@ class MANFrame : public wxPanel
     public:
         MANFrame(wxWindow *parent = 0, wxWindowID id = wxID_ANY, const wxBitmap &zoomInBmp = wxNullBitmap, const wxBitmap &zoomOutBmp = wxNullBitmap);
         ~MANFrame();
-        bool SearchManPage(const wxString &dirs, const wxString &keyword);
+        bool SearchManPage(const wxString &keyword);
         void SetBaseFontSize(int newsize);
         int GetBaseFontSize() const { return m_baseFontSize; }
         void SetDirs(const wxString &dirs);

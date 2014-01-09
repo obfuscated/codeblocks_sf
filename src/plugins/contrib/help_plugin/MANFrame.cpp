@@ -197,7 +197,7 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
                 name += _T(".") + section;
             }
 
-            SearchManPage(wxEmptyString, name);
+            SearchManPage(name);
         }
     }
     else if (link.StartsWith(_T("fman:"), &link))
@@ -220,7 +220,7 @@ void MANFrame::OnLinkClicked(wxHtmlLinkEvent &event)
 
 void MANFrame::OnSearch(wxCommandEvent &/*event*/)
 {
-    SearchManPage(wxEmptyString, m_entry->GetValue());
+    SearchManPage(m_entry->GetValue());
 }
 
 bool MANFrame::Decompress(const wxString& filename, const wxString& tmpfile)
@@ -526,10 +526,8 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
     return ret;
 }
 
-bool MANFrame::SearchManPage(const wxString &dirs, const wxString &keyword)
+bool MANFrame::SearchManPage(const wxString &keyword)
 {
-    SetDirs(dirs);
-
     if (keyword.IsEmpty())
     {
         if (m_dirsVect.empty())
