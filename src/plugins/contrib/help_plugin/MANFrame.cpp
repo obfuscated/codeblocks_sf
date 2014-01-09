@@ -334,38 +334,16 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
         return wxString();
     }
 
-    if (filename.EndsWith(_T(".bz2")))
-    {
-        if (!m_tmpfile.IsEmpty())
-        {
-            if (wxFileName::FileExists(m_tmpfile))
-            {
-                wxRemoveFile(m_tmpfile);
-            }
-        }
-
-        m_tmpfile = wxFileName::CreateTempFileName(_T("manbz2"));
-
-        if (!Decompress(filename, m_tmpfile))
-        {
-            wxRemoveFile(m_tmpfile);
-            m_tmpfile.Clear();
-            return wxString();
-        }
-
-        filename = m_tmpfile;
-    }
-    else if (filename.EndsWith(_T(".gz")))
+    wxString ret;
+    if (filename.EndsWith(_T(".gz")))
     {
         gzFile f = gzopen(filename.mb_str(), "rb");
-
         if (!f)
         {
             return wxString();
         }
 
         char buffer[4096];
-        wxString ret;
         int read_bytes = -1;
 
         while (true)
@@ -386,21 +364,42 @@ wxString MANFrame::GetManPage(wxString filename, int depth)
         {
             return wxString();
         }
-
-        return ret;
     }
-
-    wxStringOutputStream sos;
-    wxFileInputStream f(filename);
-
-    if (!f.IsOk())
+    else
     {
-        return wxString();
+        if (filename.EndsWith(_T(".bz2")))
+        {
+            if (!m_tmpfile.IsEmpty())
+            {
+                if (wxFileName::FileExists(m_tmpfile))
+                {
+                    wxRemoveFile(m_tmpfile);
+                }
+            }
+
+            m_tmpfile = wxFileName::CreateTempFileName(_T("manbz2"));
+
+            if (!Decompress(filename, m_tmpfile))
+            {
+                wxRemoveFile(m_tmpfile);
+                m_tmpfile.Clear();
+                return wxString();
+            }
+
+            filename = m_tmpfile;
+        }
+
+        wxStringOutputStream sos;
+        wxFileInputStream f(filename);
+
+        if (!f.IsOk())
+        {
+            return wxString();
+        }
+
+        f.Read(sos);
+        ret = sos.GetString();
     }
-
-    f.Read(sos);
-
-    wxString ret = sos.GetString();
 
     // Check if we should follow the link
     if (ret.StartsWith(_T(".so "), &ret))
