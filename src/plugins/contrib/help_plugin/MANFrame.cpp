@@ -9,6 +9,7 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
+  #include <map>
   #include <wx/arrstr.h>
   #include <wx/button.h>
   #include <wx/dir.h>
@@ -476,6 +477,9 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
         "<h2>Multiple entries found</h2>\n"
         "<br>\n");
 
+    typedef std::multimap<wxString, wxString> ResultsMap;
+    ResultsMap sortedResults;
+
     wxRegEx reMatchLocale(wxT("^(.+)/(man.+)$"));
     for (std::vector<wxString>::const_iterator i = files.begin(); i != files.end(); ++i)
     {
@@ -509,8 +513,12 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
                 linkname += wxT(" (") + locale + wxT(")");
         }
 
-        ret += _T("<a href=\"fman:") + filename + _T("\">") + linkname + _T("</a><br>");
+        const wxString &aTag = _T("<a href=\"fman:") + filename + _T("\">") + linkname + _T("</a><br>");
+        sortedResults.insert(ResultsMap::value_type(linkname, aTag));
     }
+
+    for (ResultsMap::const_iterator it = sortedResults.begin(); it != sortedResults.end(); ++it)
+        ret += it->second;
 
     ret += _T("</body>\n"
         "</html>");
