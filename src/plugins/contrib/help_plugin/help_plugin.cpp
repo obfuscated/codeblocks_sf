@@ -186,11 +186,8 @@ HelpPlugin::~HelpPlugin()
 #endif
 }
 
-void HelpPlugin::OnAttach()
+void HelpPlugin::SetManPageDirs(MANFrame *manFrame)
 {
-    // load configuration (only saved in our config dialog)
-    HelpCommon::LoadHelpFilesVector(m_Vector);
-
     const wxString man_prefix = _T("man:");
     wxString all_man_dirs(man_prefix);
 
@@ -205,12 +202,19 @@ void HelpPlugin::OnAttach()
             all_man_dirs += i->second.name.Mid(man_prefix.Length());
         }
     }
+    manFrame->SetDirs(all_man_dirs);
+}
+
+void HelpPlugin::OnAttach()
+{
+    // load configuration (only saved in our config dialog)
+    HelpCommon::LoadHelpFilesVector(m_Vector);
 
     wxBitmap zoominbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomInBitmap"));
     wxBitmap zoomoutbmp = wxXmlResource::Get()->LoadBitmap(_T("ZoomOutBitmap"));
 
     m_manFrame = new MANFrame(Manager::Get()->GetAppWindow(), wxID_ANY, zoominbmp, zoomoutbmp);
-    m_manFrame->SetDirs(all_man_dirs);
+    SetManPageDirs(m_manFrame);
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
     evt.name = _T("MANViewer");
     evt.title = _("Man/Html pages viewer");
@@ -247,6 +251,8 @@ void HelpPlugin::Reload()
     // reload configuration (saved in the config dialog)
     HelpCommon::LoadHelpFilesVector(m_Vector);
     BuildHelpMenu();
+    if (m_manFrame)
+        SetManPageDirs(m_manFrame);
 }
 
 void HelpPlugin::OnRelease(bool /*appShutDown*/)

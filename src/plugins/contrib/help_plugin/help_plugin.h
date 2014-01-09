@@ -38,6 +38,7 @@ class HelpPlugin : public cbPlugin
     HelpCommon::HelpFileAttrib HelpFileFromId(int id);
     // Patch from Yorgos Pagles: Take into consideration the new attributes when launching a help file
     void LaunchHelp(const wxString &helpfile, bool isExecutable, bool openEmbeddedViewer, HelpCommon::StringCase keyCase = HelpCommon::Preserve, const wxString &defkeyword = wxEmptyString, const wxString &keyword = wxEmptyString);
+    void SetManPageDirs(MANFrame *manFrame);
 
   private:
     wxMenuBar *m_pMenuBar;
