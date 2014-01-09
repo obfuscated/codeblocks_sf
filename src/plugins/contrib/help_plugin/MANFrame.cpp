@@ -13,6 +13,7 @@
   #include <wx/button.h>
   #include <wx/dir.h>
   #include <wx/filename.h>
+  #include <wx/regex.h>
   #include <wx/sizer.h>
   #include <globals.h> // cbC2U
 #endif
@@ -475,17 +476,37 @@ wxString MANFrame::CreateLinksPage(const std::vector<wxString> &files)
         "<h2>Multiple entries found</h2>\n"
         "<br>\n");
 
+    wxRegEx reMatchLocale(wxT("^(.+)/(man.+)$"));
     for (std::vector<wxString>::const_iterator i = files.begin(); i != files.end(); ++i)
     {
         wxString filename = *i;
-        wxString linkname;
-        wxString ext;
+        wxString linkname, ext, path;
 
-        wxFileName::SplitPath(filename, 0, &linkname, &ext);
+        wxFileName::SplitPath(filename, &path, &linkname, &ext);
 
         if (ext != _T("bz2") && ext != _T("gz"))
         {
             linkname += _T(".") + ext;
+        }
+
+        // Strip the common directory from the path, so we can detect the language of the man page.
+        for (std::vector<wxString>::const_iterator dir = m_dirsVect.begin(); dir != m_dirsVect.end(); ++dir)
+        {
+            if (path.StartsWith(*dir))
+            {
+                path.Remove(0, dir->length());
+                if (!path.empty() && path[0] == wxFileName::GetPathSeparator())
+                    path.Remove(0, 1);
+                break;
+            }
+        }
+
+        // Detect the language of the man page.
+        if (reMatchLocale.Matches(path))
+        {
+            const wxString &locale = reMatchLocale.GetMatch(path, 1);
+            if (!locale.empty())
+                linkname += wxT(" (") + locale + wxT(")");
         }
 
         ret += _T("<a href=\"fman:") + filename + _T("\">") + linkname + _T("</a><br>");
