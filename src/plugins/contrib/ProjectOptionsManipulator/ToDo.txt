@@ -42,7 +42,7 @@ hammer in multiple searches to make sure I got everything set correctly.
 
 killerbot:
 ----------
-result window can be bigger
+[DONE!] result window can be bigger
 
 MortenMacFly:
 -------------
@@ -52,10 +52,10 @@ easily switch between SDK's (being wxWidgets or anything else...).
 This also includes:
 [DONE!] compiler/linker folder manipulation
 maybe even object folder,
-Libraries
+[DONE!] Libraries
 output folder
 
 Jens:
 -----
-manipulate the "Custom variables" especially to make the wx30 projectfiles useful
-for wx-svn which is 3.1 and normally not build in standard path
+[DONE!] manipulate the "Custom variables" especially to make the wx30 projectfiles useful
+        for wx-svn which is 3.1 and normally not build in standard path
