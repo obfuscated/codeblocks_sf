@@ -34,19 +34,19 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         void UnfreezeTree(bool force = false);
 
 
-        void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh);
-        void RemoveProject(cbProject *project);
+        void UpdateActiveProject(cbProject* oldProject, cbProject* newProject, bool refresh);
+        void RemoveProject(cbProject* project);
         void BeginLoadingWorkspace();
         void CloseWorkspace();
-        void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups);
-        void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle);
+        void FinishLoadingProject(cbProject* project, bool newAddition, cb_unused FilesGroupsAndMasks* fgam);
+        void FinishLoadingWorkspace(cbProject* activeProject, const wxString &workspaceTitle);
 
         void ShowFileInTree(ProjectFile &projectFile);
 
         void CreateMenu(wxMenuBar* menuBar);
 
         bool QueryCloseAllProjects();
-        bool QueryCloseProject(cbProject *proj, bool dontsavefiles);
+        bool QueryCloseProject(cbProject* project, bool dontsavefiles);
         bool QueryCloseWorkspace();
 
         int AskForBuildTargetIndex(cbProject* project);
@@ -131,7 +131,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
           * @param ptvs The visual style of the project tree
           * @param fgam If not NULL, use these file groups and masks for virtual folders.
           */
-        void BuildProjectTree(cbProject *project, cbTreeCtrl* tree, const wxTreeItemId& root,
+        void BuildProjectTree(cbProject* project, cbTreeCtrl* tree, const wxTreeItemId& root,
                               int ptvs, FilesGroupsAndMasks* fgam);
 
     private:
