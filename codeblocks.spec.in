@@ -61,6 +61,7 @@ URL:                        http://www.codeblocks.org/
 Packager:                   Jens Lody <jens@codeblocks.org>
 Source:                     %{name}-@VERSION@.tar.bz2
 BuildRoot:                  %{_tmppath}/%{name}-%{version}-buildroot
+Requires:                   %{name}-libs%{?_isa} = %{version}
 
 %if 0%{?mandriva_version}
 Requires:                   wxgtk2.8 >= %{req_wxgtk}
@@ -117,10 +118,18 @@ It is based on a self-developed plugin framework allowing unlimited extensibilit
   * Extensible wizard based on scripts
   * Autosave (saves your work in the unfortunate case of a crash)
 
+%package libs
+Summary:                    Libraries needed to run Code::Blocks
+Group:                      Development/Tools/IDE
+
+%description libs
+Libraries needed to run Code::Blocks.
+
 %package contrib
 Summary:                    Code::Blocks contrib plugins
 Group:                      Development/Tools/IDE
 Requires:                   %{name}%{?_isa} = %{version}
+Requires:                   %{name}-contrib-libs%{?_isa} = %{version}
 BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, hunspell-devel, fontconfig-devel
 %if 0%{?nassi_shneiderman}
 BuildRequires:              boost-devel
@@ -165,6 +174,13 @@ This package extends Code::Blocks functionality a great deal with the included p
  * RAD gui-builder for wxWidgets (wxSmith)
  * wxSmith contrib items
  * wxSmith AUI
+
+%package contrib-libs
+Summary:                    Libraries needed to run Code::Blocks contrib-plugins
+Group:                      Development/Tools/IDE
+
+%description contrib-libs
+Libraries needed to run Code::Blocks contrib-plugins.
 
 %package devel
 Summary:                    Code::Blocks development libraries and headers (SDK)
@@ -296,6 +312,9 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/start_here.zip
 %{pkgdatadir}/todo.zip
 %{pkgdatadir}/tips.txt
+
+%files libs
+%defattr(-,root,root)
 %{_libdir}/libcodeblocks.so.*
 
 %files contrib
@@ -389,6 +408,9 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/lib_finder/*
 %{pkgdatadir}/SpellChecker/*
 %{_mandir}/man1/*snippets*
+
+%files contrib-libs
+%defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so.*
 %{pkglibdir}/wxContribItems/libwxchartctrl.so.*
 %{pkglibdir}/wxContribItems/libwxcustombutton.so.*
