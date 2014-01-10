@@ -30,6 +30,7 @@ const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_PATH = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_LIBS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHO_OPTIONS_LEVEL = wxNewId();
 //*)
 
@@ -99,6 +100,9 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChkOptionsLinkerPath = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER_PATH, _("Linker path\'s"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER_PATH"));
 	m_ChkOptionsLinkerPath->SetValue(false);
 	bszOptions->Add(m_ChkOptionsLinkerPath, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	m_ChkOptionsLinkerLibs = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER_LIBS, _("Linker libs"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER_LIBS"));
+	m_ChkOptionsLinkerLibs->SetValue(false);
+	bszOptions->Add(m_ChkOptionsLinkerLibs, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChoOptionsLevel = new wxChoice(this, ID_CHO_OPTIONS_LEVEL, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_OPTIONS_LEVEL"));
 	m_ChoOptionsLevel->Append(_("At project level"));
 	m_ChoOptionsLevel->Append(_("At target level"));
@@ -164,6 +168,7 @@ bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectOption opt)
   if ( m_ChkOptionsLinker->GetValue()       && (opt==eLinker)   )     return true;
   if ( m_ChkOptionsCompilerPath->GetValue() && (opt==eCompilerPath) ) return true;
   if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eLinkerPath)   ) return true;
+  if ( m_ChkOptionsLinkerLibs->GetValue()   && (opt==eLinkerLibs)   ) return true;
   return false;
 }
 
@@ -210,7 +215,8 @@ void ProjectOptionsManipulatorDlg::OnOk(wxCommandEvent& WXUNUSED(event))
   if (   !m_ChkOptionsCompiler->GetValue()
       && !m_ChkOptionsLinker->GetValue()
       && !m_ChkOptionsCompilerPath->GetValue()
-      && !m_ChkOptionsLinkerPath->GetValue() )
+      && !m_ChkOptionsLinkerPath->GetValue()
+      && !m_ChkOptionsLinkerLibs->GetValue() )
   {
     cbMessageBox(_("You need to select at least one option to search in!"), _("Error"), wxICON_ERROR, this);
     return;

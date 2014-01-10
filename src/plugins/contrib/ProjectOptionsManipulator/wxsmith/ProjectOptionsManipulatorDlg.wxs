@@ -109,6 +109,13 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OPTIONS_LINKER_LIBS" variable="m_ChkOptionsLinkerLibs" member="yes">
+									<label>Linker libs</label>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
 								<object class="wxChoice" name="ID_CHO_OPTIONS_LEVEL" variable="m_ChoOptionsLevel" member="yes">
 									<content>
 										<item>At project level</item>

@@ -159,6 +159,9 @@ bool ProjectOptionsManipulator::OperateProject(cbProject* prj, wxArrayString& re
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerPath) )
     ProcessLinkerPaths(prj, opt, result);
 
+  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerLibs) )
+    ProcessLinkerLibs(prj, opt, result);
+
   return true;
 }
 
@@ -494,6 +497,94 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
         {
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt) tgt->AddLibDir(path);
+        }
+      }
+    }
+    break;
+
+    default:
+    break;
+  }
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+
+void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString& lib, wxArrayString& result)
+{
+  ProjectOptionsManipulatorDlg::EProjectScanOption scan_opt = m_Dlg->GetScanOption();
+  switch (scan_opt)
+  {
+    case ProjectOptionsManipulatorDlg::eSearch:
+    case ProjectOptionsManipulatorDlg::eSearchNot:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+      {
+        const wxArrayString ll = prj->GetLinkLibs();
+        int idx = ll.Index(lib);
+        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain linker lib '%s'."),
+                                   prj->GetTitle().wx_str(), lib.wx_str()));
+        }
+        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        {
+          result.Add(wxString::Format(_("Project '%s': Contains linker lib '%s'."),
+                                   prj->GetTitle().wx_str(), lib.wx_str()));
+        }
+      }
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt)
+          {
+            const wxArrayString ll = tgt->GetLinkLibs();
+            int idx = ll.Index(lib);
+            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker lib '%s'."),
+                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
+            }
+            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker lib '%s'."),
+                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
+            }
+          }
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eRemove:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->RemoveLinkLib(lib);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->RemoveLinkLib(lib);
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eAdd:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->AddLinkLib(lib);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->AddLinkLib(lib);
         }
       }
     }
