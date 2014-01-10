@@ -33,6 +33,7 @@ private:
 
   void ProcessCompilerPaths(cbProject* prj, const wxString& path, wxArrayString& result);
   void ProcessLinkerPaths  (cbProject* prj, const wxString& path, wxArrayString& result);
+  void ProcessResCompPaths (cbProject* prj, const wxString& path, wxArrayString& result);
 
   void ProcessLinkerLibs(cbProject* prj, const wxString& lib, wxArrayString& result);
 

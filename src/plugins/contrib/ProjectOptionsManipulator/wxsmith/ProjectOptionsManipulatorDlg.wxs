@@ -111,6 +111,13 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OPTIONS_RES_COMP_PATH" variable="m_ChkOptionsResCompPath" member="yes">
+									<label>Resource compiler path&apos;s</label>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHK_OPTIONS_LINKER_LIBS" variable="m_ChkOptionsLinkerLibs" member="yes">
 									<label>Linker libs</label>
 								</object>

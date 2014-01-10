@@ -30,6 +30,7 @@ const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_PATH = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_RES_COMP_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_LIBS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_CUSTOM_VAR = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_TXT_CUSTOM_VAR = wxNewId();
@@ -104,6 +105,9 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChkOptionsLinkerPath = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER_PATH, _("Linker path\'s"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER_PATH"));
 	m_ChkOptionsLinkerPath->SetValue(false);
 	bszOptions->Add(m_ChkOptionsLinkerPath, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	m_ChkOptionsResCompPath = new wxCheckBox(this, ID_CHK_OPTIONS_RES_COMP_PATH, _("Resource compiler path\'s"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_RES_COMP_PATH"));
+	m_ChkOptionsResCompPath->SetValue(false);
+	bszOptions->Add(m_ChkOptionsResCompPath, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChkOptionsLinkerLibs = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER_LIBS, _("Linker libs"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER_LIBS"));
 	m_ChkOptionsLinkerLibs->SetValue(false);
 	bszOptions->Add(m_ChkOptionsLinkerLibs, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -185,8 +189,9 @@ bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectOption opt)
   if ( m_ChkOptionsLinker->GetValue()       && (opt==eLinker)        ) return true;
   if ( m_ChkOptionsCompilerPath->GetValue() && (opt==eCompilerPaths) ) return true;
   if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eLinkerPaths)   ) return true;
+  if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eResCompPaths)  ) return true;
   if ( m_ChkOptionsLinkerLibs->GetValue()   && (opt==eLinkerLibs)    ) return true;
-  if ( m_ChkOptionsCustomVar->GetValue()    && (opt==eCustomVar)     ) return true;
+  if ( m_ChkOptionsCustomVar->GetValue()    && (opt==eCustomVars)    ) return true;
   return false;
 }
 

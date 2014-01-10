@@ -160,10 +160,13 @@ bool ProjectOptionsManipulator::OperateProject(cbProject* prj, wxArrayString& re
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerPaths) )
     ProcessLinkerPaths(prj, opt, result);
 
+  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eResCompPaths) )
+    ProcessResCompPaths(prj, opt, result);
+
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerLibs) )
     ProcessLinkerLibs(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCustomVar) )
+  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCustomVars) )
     ProcessCustomVars(prj, opt, val, result);
 
   return true;
@@ -501,6 +504,95 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
         {
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt) tgt->AddLibDir(path);
+        }
+      }
+    }
+    break;
+
+    default:
+    break;
+  }
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+
+void ProjectOptionsManipulator::ProcessResCompPaths(cbProject* prj, const wxString& path, wxArrayString& result)
+{
+  ProjectOptionsManipulatorDlg::EProjectScanOption scan_opt = m_Dlg->GetScanOption();
+  switch (scan_opt)
+  {
+    case ProjectOptionsManipulatorDlg::eSearch:
+    case ProjectOptionsManipulatorDlg::eSearchNot:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+      {
+        const wxArrayString rcd = prj->GetResourceIncludeDirs();
+        int idx = rcd.Index(path);
+        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain resource compiler path '%s'."),
+                                      prj->GetTitle().wx_str(), path.wx_str()));
+        }
+        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        {
+          result.Add(wxString::Format(_("Project '%s': Contains resource compiler path '%s'."),
+                                      prj->GetTitle().wx_str(), path.wx_str()));
+        }
+      }
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt)
+          {
+            const wxArrayString rcd = tgt->GetResourceIncludeDirs();
+            int idx = rcd.Index(path);
+            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain resource compiler path '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+            }
+            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Contains resource compiler path '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+            }
+          }
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eRemove:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->RemoveResourceIncludeDir(path);
+        prj->
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->RemoveResourceIncludeDir(path);
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eAdd:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->AddResourceIncludeDir(path);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->AddResourceIncludeDir(path);
         }
       }
     }
