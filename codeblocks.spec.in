@@ -62,6 +62,7 @@ Packager:                   Jens Lody <jens@codeblocks.org>
 Source:                     %{name}-@VERSION@.tar.bz2
 BuildRoot:                  %{_tmppath}/%{name}-%{version}-buildroot
 Requires:                   %{name}-libs%{?_isa} = %{version}
+Requires:                   xterm
 
 %if 0%{?mandriva_version}
 Requires:                   wxgtk2.8 >= %{req_wxgtk}

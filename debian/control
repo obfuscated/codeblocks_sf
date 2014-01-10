@@ -26,10 +26,10 @@ Depends: ${shlibs:Depends}
  , ${misc:Depends}
  , codeblocks-common (= ${source:Version})
  , libcodeblocks0 (= ${binary:Version})
+ , xterm
 Recommends:
  gcc | g++
  , gdb
- , xterm
 Suggests:
  libwxgtk2.8-dev
  , wx-common
