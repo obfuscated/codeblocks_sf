@@ -1559,11 +1559,35 @@ void NativeParserBase::ComputeCallTip(TokenTree*        tree,
             continue;
 
         // support constructor call tips
+        if (token->m_TokenKind == tkVariable)
+        {
+            TokenIdxSet classes;
+            tree->FindMatches(token->m_BaseType, classes, true, false, tkClass);
+            for (TokenIdxSet::const_iterator clIt = classes.begin(); clIt != classes.end(); ++clIt)
+            {
+                const Token* tk = tree->at(*clIt);
+                if (tk)
+                {
+                    token = tk;
+                    break;
+                }
+            }
+        }
         if (token->m_TokenKind == tkClass)
         {
-            const Token* tk = tree->at(tree->TokenExists(token->m_Name, token->m_Index, tkConstructor));
-            if (tk)
-                token = tk;
+            for (TokenIdxSet::iterator chIt = token->m_Children.begin(); chIt != token->m_Children.end(); ++chIt)
+            {
+                const Token* tk = tree->at(*chIt);
+                if (   tk && (   tk->m_TokenKind == tkConstructor
+                              || (tk->m_IsOperator && tk->m_Name.EndsWith(wxT("()"))) )
+                    && (tk->m_Scope == tsPublic || tk->m_Scope == tsUndefined) )
+                {
+                    wxString tkTip;
+                    if (PrettyPrintToken(tree, tk, tkTip))
+                        items.Add(tkTip);
+                }
+            }
+            continue;
         }
 
         // support macro call tips
