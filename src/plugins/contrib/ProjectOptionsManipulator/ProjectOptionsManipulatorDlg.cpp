@@ -25,6 +25,7 @@
 const long ProjectOptionsManipulatorDlg::ID_CHO_SCAN = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHO_SCAN_PROJECTS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_RBO_OPERATION = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_RBO_SEARCH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_TXT_OPTIONS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER = wxNewId();
@@ -51,13 +52,14 @@ END_EVENT_TABLE()
 ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(ProjectOptionsManipulatorDlg)
+	wxBoxSizer* bszCustomVar;
 	wxStaticText* lblOptions;
+	wxBoxSizer* bszOperation;
 	wxBoxSizer* bszScan;
 	wxFlexGridSizer* flsOptions;
 	wxStdDialogButtonSizer* sbzOKCancel;
 	wxBoxSizer* bszMainH;
 	wxStaticText* lblScanColon;
-	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* bszOptions;
 	wxStaticText* lblScanWithin;
 
@@ -78,6 +80,7 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	bszMainH->Add(bszScan, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	flsOptions = new wxFlexGridSizer(0, 2, 0, 0);
 	flsOptions->AddGrowableCol(1);
+	bszOperation = new wxBoxSizer(wxVERTICAL);
 	wxString __wxRadioBoxChoices_1[4] =
 	{
 		_("Search for option present"),
@@ -86,7 +89,17 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 		_("Add option")
 	};
 	m_RboOperation = new wxRadioBox(this, ID_RBO_OPERATION, _("Operation:"), wxDefaultPosition, wxDefaultSize, 4, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RBO_OPERATION"));
-	flsOptions->Add(m_RboOperation, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_RboOperation->SetSelection(0);
+	bszOperation->Add(m_RboOperation, 0, wxALIGN_LEFT|wxALIGN_TOP, 5);
+	wxString __wxRadioBoxChoices_2[2] =
+	{
+		_("Search for \"equals option\""),
+		_("Search for \"contains option\"")
+	};
+	m_RboSearch = new wxRadioBox(this, ID_RBO_SEARCH, _("When searching..."), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, 0, wxDefaultValidator, _T("ID_RBO_SEARCH"));
+	m_RboSearch->SetSelection(0);
+	bszOperation->Add(m_RboSearch, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	flsOptions->Add(bszOperation, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszOptions = new wxBoxSizer(wxVERTICAL);
 	lblOptions = new wxStaticText(this, wxID_ANY, _("Option/Var (i.e. -Wl,--no-undefined):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
 	bszOptions->Add(lblOptions, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -111,14 +124,14 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChkOptionsLinkerLibs = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER_LIBS, _("Linker libs"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER_LIBS"));
 	m_ChkOptionsLinkerLibs->SetValue(false);
 	bszOptions->Add(m_ChkOptionsLinkerLibs, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+	bszCustomVar = new wxBoxSizer(wxHORIZONTAL);
 	m_ChkOptionsCustomVar = new wxCheckBox(this, ID_CHK_OPTIONS_CUSTOM_VAR, _("Custom var ="), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_CUSTOM_VAR"));
 	m_ChkOptionsCustomVar->SetValue(false);
-	BoxSizer1->Add(m_ChkOptionsCustomVar, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszCustomVar->Add(m_ChkOptionsCustomVar, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_TxtCustomVar = new wxTextCtrl(this, ID_TXT_CUSTOM_VAR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_CUSTOM_VAR"));
 	m_TxtCustomVar->SetToolTip(_("This is the value to set set for the custom var, if \"add option\" is chosen"));
-	BoxSizer1->Add(m_TxtCustomVar, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	bszOptions->Add(BoxSizer1, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszCustomVar->Add(m_TxtCustomVar, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszOptions->Add(bszCustomVar, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChoOptionsLevel = new wxChoice(this, ID_CHO_OPTIONS_LEVEL, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_OPTIONS_LEVEL"));
 	m_ChoOptionsLevel->Append(_("At project level"));
 	m_ChoOptionsLevel->Append(_("At target level"));
@@ -171,6 +184,17 @@ ProjectOptionsManipulatorDlg::EProjectScanOption ProjectOptionsManipulatorDlg::G
     default:                       break;
   }
   return eSearch; // should never happen, but is safe to do
+}
+
+ProjectOptionsManipulatorDlg::EProjectSearchOption ProjectOptionsManipulatorDlg::GetSearchOption()
+{
+  switch ( m_RboSearch->GetSelection() )
+  {
+    case 0: { return eEquals;   } break;
+    case 1: { return eContains; } break;
+    default:                      break;
+  }
+  return eEquals; // should never happen, but is safe to do
 }
 
 wxString ProjectOptionsManipulatorDlg::GetOption()

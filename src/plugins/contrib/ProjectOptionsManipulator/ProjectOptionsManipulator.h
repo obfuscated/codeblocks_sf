@@ -39,6 +39,8 @@ private:
 
   void ProcessCustomVars(cbProject* prj, const wxString& var, const wxString& value, wxArrayString& result);
 
+  bool SearchOption(const wxArrayString& opt_array, const wxString& opt);
+
   ProjectOptionsManipulatorDlg* m_Dlg;
 
   DECLARE_EVENT_TABLE()

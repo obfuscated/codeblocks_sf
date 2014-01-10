@@ -50,15 +50,32 @@
 					<cols>2</cols>
 					<growablecols>1</growablecols>
 					<object class="sizeritem">
-						<object class="wxRadioBox" name="ID_RBO_OPERATION" variable="m_RboOperation" member="yes">
-							<label>Operation:</label>
-							<content>
-								<item>Search for option present</item>
-								<item>Search for option NOT present</item>
-								<item>Remove option</item>
-								<item>Add option</item>
-							</content>
-							<default>-1</default>
+						<object class="wxBoxSizer" variable="bszOperation" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxRadioBox" name="ID_RBO_OPERATION" variable="m_RboOperation" member="yes">
+									<label>Operation:</label>
+									<content>
+										<item>Search for option present</item>
+										<item>Search for option NOT present</item>
+										<item>Remove option</item>
+										<item>Add option</item>
+									</content>
+								</object>
+								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxRadioBox" name="ID_RBO_SEARCH" variable="m_RboSearch" member="yes">
+									<label>When searching...</label>
+									<content>
+										<item>Search for &quot;equals option&quot;</item>
+										<item>Search for &quot;contains option&quot;</item>
+									</content>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -125,7 +142,7 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
-								<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+								<object class="wxBoxSizer" variable="bszCustomVar" member="no">
 									<object class="sizeritem">
 										<object class="wxCheckBox" name="ID_CHK_OPTIONS_CUSTOM_VAR" variable="m_ChkOptionsCustomVar" member="yes">
 											<label>Custom var =</label>

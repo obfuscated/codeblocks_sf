@@ -184,16 +184,15 @@ void ProjectOptionsManipulator::ProcessCompilerOptions(cbProject* prj, const wxS
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
       {
-        const wxArrayString co = prj->GetCompilerOptions();
-        int idx = co.Index(opt);
-        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-        {
-          result.Add(wxString::Format(_("Project '%s': Does not contain compiler option '%s'."),
-                                      prj->GetTitle().wx_str(), opt.wx_str()));
-        }
-        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        bool has_opt = SearchOption(prj->GetCompilerOptions(), opt);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains compiler option '%s'."),
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
+        }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain compiler option '%s'."),
                                       prj->GetTitle().wx_str(), opt.wx_str()));
         }
       }
@@ -205,16 +204,15 @@ void ProjectOptionsManipulator::ProcessCompilerOptions(cbProject* prj, const wxS
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt)
           {
-            const wxArrayString co = tgt->GetCompilerOptions();
-            int idx = co.Index(opt);
-            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-            {
-              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain compiler option '%s'."),
-                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
-            }
-            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            bool has_opt = SearchOption(tgt->GetCompilerOptions(), opt);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains compiler option '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain compiler option '%s'."),
                                           prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
             }
           }
@@ -272,13 +270,18 @@ void ProjectOptionsManipulator::ProcessLinkerOptions(cbProject* prj, const wxStr
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
       {
-        const wxArrayString lo = prj->GetLinkerOptions();
-        int idx = lo.Index(opt);
-        if (idx!=wxNOT_FOUND)
+        bool has_opt = SearchOption(prj->GetLinkerOptions(), opt);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains linker option '%s'."),
                                       prj->GetTitle().wx_str(), opt.wx_str()));
         }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain linker option '%s'."),
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
+        }
+
       }
 
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
@@ -288,11 +291,15 @@ void ProjectOptionsManipulator::ProcessLinkerOptions(cbProject* prj, const wxStr
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt)
           {
-            const wxArrayString lo = tgt->GetLinkerOptions();
-            int idx = lo.Index(opt);
-            if (idx!=wxNOT_FOUND)
+            bool has_opt = SearchOption(tgt->GetLinkerOptions(), opt);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker option '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker option '%s'."),
                                           prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
             }
           }
@@ -350,16 +357,15 @@ void ProjectOptionsManipulator::ProcessCompilerPaths(cbProject* prj, const wxStr
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
       {
-        const wxArrayString id = prj->GetIncludeDirs();
-        int idx = id.Index(path);
-        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-        {
-          result.Add(wxString::Format(_("Project '%s': Does not contain compiler path '%s'."),
-                                      prj->GetTitle().wx_str(), path.wx_str()));
-        }
-        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        bool has_opt = SearchOption(prj->GetIncludeDirs(), path);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains compiler path '%s'."),
+                                      prj->GetTitle().wx_str(), path.wx_str()));
+        }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain compiler path '%s'."),
                                       prj->GetTitle().wx_str(), path.wx_str()));
         }
       }
@@ -371,16 +377,15 @@ void ProjectOptionsManipulator::ProcessCompilerPaths(cbProject* prj, const wxStr
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt)
           {
-            const wxArrayString id = tgt->GetIncludeDirs();
-            int idx = id.Index(path);
-            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-            {
-              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain compiler path '%s'."),
-                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
-            }
-            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            bool has_opt = SearchOption(tgt->GetIncludeDirs(), path);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains compiler path '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain compiler path '%s'."),
                                           prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
           }
@@ -438,16 +443,15 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
       {
-        const wxArrayString ld = prj->GetLibDirs();
-        int idx = ld.Index(path);
-        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-        {
-          result.Add(wxString::Format(_("Project '%s': Does not contain linker path '%s'."),
-                                      prj->GetTitle().wx_str(), path.wx_str()));
-        }
-        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        bool has_opt = SearchOption(prj->GetLibDirs(), path);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains linker path '%s'."),
+                                      prj->GetTitle().wx_str(), path.wx_str()));
+        }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain linker path '%s'."),
                                       prj->GetTitle().wx_str(), path.wx_str()));
         }
       }
@@ -459,16 +463,15 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt)
           {
-            const wxArrayString ld = tgt->GetLibDirs();
-            int idx = ld.Index(path);
-            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-            {
-              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker path '%s'."),
-                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
-            }
-            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            bool has_opt = SearchOption(tgt->GetLibDirs(), path);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker path '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker path '%s'."),
                                           prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
           }
@@ -526,16 +529,15 @@ void ProjectOptionsManipulator::ProcessResCompPaths(cbProject* prj, const wxStri
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
       {
-        const wxArrayString rcd = prj->GetResourceIncludeDirs();
-        int idx = rcd.Index(path);
-        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-        {
-          result.Add(wxString::Format(_("Project '%s': Does not contain resource compiler path '%s'."),
-                                      prj->GetTitle().wx_str(), path.wx_str()));
-        }
-        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        bool has_opt = SearchOption(prj->GetResourceIncludeDirs(), path);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains resource compiler path '%s'."),
+                                      prj->GetTitle().wx_str(), path.wx_str()));
+        }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain resource compiler path '%s'."),
                                       prj->GetTitle().wx_str(), path.wx_str()));
         }
       }
@@ -547,16 +549,15 @@ void ProjectOptionsManipulator::ProcessResCompPaths(cbProject* prj, const wxStri
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt)
           {
-            const wxArrayString rcd = tgt->GetResourceIncludeDirs();
-            int idx = rcd.Index(path);
-            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-            {
-              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain resource compiler path '%s'."),
-                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
-            }
-            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            bool has_opt = SearchOption(tgt->GetResourceIncludeDirs(), path);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains resource compiler path '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain resource compiler path '%s'."),
                                           prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
           }
@@ -569,7 +570,6 @@ void ProjectOptionsManipulator::ProcessResCompPaths(cbProject* prj, const wxStri
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
         prj->RemoveResourceIncludeDir(path);
-        prj->
 
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
       {
@@ -615,16 +615,15 @@ void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString
     {
       if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
       {
-        const wxArrayString ll = prj->GetLinkLibs();
-        int idx = ll.Index(lib);
-        if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-        {
-          result.Add(wxString::Format(_("Project '%s': Does not contain linker lib '%s'."),
-                                      prj->GetTitle().wx_str(), lib.wx_str()));
-        }
-        else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        bool has_opt = SearchOption(prj->GetLinkLibs(), lib);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains linker lib '%s'."),
+                                      prj->GetTitle().wx_str(), lib.wx_str()));
+        }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain linker lib '%s'."),
                                       prj->GetTitle().wx_str(), lib.wx_str()));
         }
       }
@@ -636,16 +635,15 @@ void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt)
           {
-            const wxArrayString ll = tgt->GetLinkLibs();
-            int idx = ll.Index(lib);
-            if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
-            {
-              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker lib '%s'."),
-                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
-            }
-            else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            bool has_opt = SearchOption(tgt->GetLinkLibs(), lib);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker lib '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker lib '%s'."),
                                           prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
             }
           }
@@ -775,4 +773,32 @@ void ProjectOptionsManipulator::ProcessCustomVars(cbProject* prj, const wxString
     default:
     break;
   }
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+
+bool ProjectOptionsManipulator::SearchOption(const wxArrayString& opt_array, const wxString& opt)
+{
+  switch ( m_Dlg->GetSearchOption() )
+  {
+    case (ProjectOptionsManipulatorDlg::eContains):
+    {
+      for (size_t i=0; i<opt_array.Count(); ++i)
+      {
+        if ( opt_array.Item(i).Contains(opt) )
+          return true;
+      }
+    }
+    break;
+
+    case (ProjectOptionsManipulatorDlg::eEquals): // fall through
+    default:
+    {
+      if ( opt_array.Index(opt)!=wxNOT_FOUND)
+        return true;
+    }
+    break;
+  }
+
+  return false;
 }
