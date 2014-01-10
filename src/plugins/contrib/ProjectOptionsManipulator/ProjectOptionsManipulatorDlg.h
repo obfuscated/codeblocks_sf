@@ -16,9 +16,9 @@ class wxChoice;
 class ProjectOptionsManipulatorDlg: public wxDialog
 {
 	public:
-	  enum EProjectScanOption  { eSearch,  eSearchNot, eRemove, eAdd };
-	  enum EProjectOption      { eLinker,  eCompiler                 };
-	  enum EProjectLevelOption { eProject, eTarget                   };
+	  enum EProjectScanOption  { eSearch,   eSearchNot, eRemove,       eAdd        };
+	  enum EProjectOption      { eCompiler, eLinker,    eCompilerPath, eLinkerPath };
+	  enum EProjectLevelOption { eProject,  eTarget                                };
 
 		ProjectOptionsManipulatorDlg(wxWindow* parent,wxWindowID id=wxID_ANY);
 		virtual ~ProjectOptionsManipulatorDlg();
@@ -33,12 +33,14 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 
 		//(*Declarations(ProjectOptionsManipulatorDlg)
 		wxRadioBox* m_RboOperation;
+		wxCheckBox* m_ChkOptionsLinkerPath;
 		wxChoice* m_ChoOptionsLevel;
 		wxCheckBox* m_ChkOptionsLinker;
 		wxCheckBox* m_ChkOptionsCompiler;
 		wxChoice* m_ChoScanProjects;
 		wxTextCtrl* m_TxtOptions;
 		wxChoice* m_ChoScan;
+		wxCheckBox* m_ChkOptionsCompilerPath;
 		//*)
 
 	protected:
@@ -50,6 +52,8 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		static const long ID_TXT_OPTIONS;
 		static const long ID_CHK_OPTIONS_COMPILER;
 		static const long ID_CHK_OPTIONS_LINKER;
+		static const long ID_CHK_OPTIONS_COMPILER_PATH;
+		static const long ID_CHK_OPTIONS_LINKER_PATH;
 		static const long ID_CHO_OPTIONS_LEVEL;
 		//*)
 

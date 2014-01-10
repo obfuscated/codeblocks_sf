@@ -1,3 +1,22 @@
+gd_on:
+------
+1) : [DONE!] you should use the macro _ instead of wxT in ProjectOptions.cpp
+     at lines 164, 180, 242, 247, 263, 268 to allow the translation
+     of the strings in the result window.
+2) : when there are no results, nothing is displayed. It could be nice
+     to have a windows containing the string "No results" or something
+     more elaborated.
+3) : when a result window has been displayed, could it be possible to
+     restart directly the plugin (for example with a specific button),
+     because if I want to try an other set of options I have to go trough
+     the menus Extensions/Project Options.
+4) : when you delete an option, it could be nice to have a summary in the
+     result window to know exactly where the option has been deleted.
+5) : the string menu "Search for NOT w/ option" is not very clear for me.
+     I think that it's to display the results with and without this option
+     and only for compiler options (because I don't see any difference
+     with link options).
+
 oBFusCATed:
 -----------
 1. [TOO LATE?!] please use lower case plus underscores to prevent any OS porting issues.
@@ -27,11 +46,14 @@ result window can be bigger
 
 MortenMacFly:
 -------------
-Include directories, libraries and so on...
+
 This plugin should allow to easily manipulate all important settings so that one can
 easily switch between SDK's (being wxWidgets or anything else...).
-This also includes compiler/linker folder manipulation, maybe even object folder,
-output folder, lib folder...
+This also includes:
+[DONE!] compiler/linker folder manipulation
+maybe even object folder,
+Libraries
+output folder
 
 Jens:
 -----
