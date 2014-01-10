@@ -460,6 +460,15 @@ void CompileOptionsBase::UnsetAllVars()
     m_Vars.clear();
 }
 
+bool CompileOptionsBase::HasVar(const wxString& key) const
+{
+    StringHash::const_iterator it = m_Vars.find(key);
+    if (it != m_Vars.end())
+        return true;
+
+    return false;
+}
+
 const wxString& CompileOptionsBase::GetVar(const wxString& key) const
 {
     StringHash::const_iterator it = m_Vars.find(key);

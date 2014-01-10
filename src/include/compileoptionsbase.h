@@ -91,6 +91,7 @@ class DLLIMPORT CompileOptionsBase
         virtual bool SetVar(const wxString& key, const wxString& value, bool onlyIfExists = false);
         virtual bool UnsetVar(const wxString& key);
         virtual void UnsetAllVars();
+        virtual bool HasVar(const wxString& key) const;
         virtual const wxString& GetVar(const wxString& key) const;
         virtual const StringHash& GetAllVars() const;
     protected:

@@ -8,7 +8,6 @@
 
 #include <vector>
 
-#include "settings.h"
 #include <wx/string.h>
 #include <wx/treectrl.h>
 #include <wx/file.h>
@@ -16,6 +15,8 @@
 #include <wx/intl.h>
 #include <wx/msgdlg.h>
 #include <wx/bitmap.h>
+
+#include "settings.h"
 
 class TiXmlDocument;
 
