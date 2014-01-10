@@ -16,7 +16,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TXT_RESULT" variable="m_TxtResult" member="yes">
-							<minsize>250,150</minsize>
+							<minsize>400,200</minsize>
 							<style>wxTE_MULTILINE|wxTE_READONLY</style>
 						</object>
 						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

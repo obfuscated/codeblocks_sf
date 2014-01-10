@@ -31,6 +31,8 @@ const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_LIBS = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_CUSTOM_VAR = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_TXT_CUSTOM_VAR = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHO_OPTIONS_LEVEL = wxNewId();
 //*)
 
@@ -54,6 +56,7 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	wxStdDialogButtonSizer* sbzOKCancel;
 	wxBoxSizer* bszMainH;
 	wxStaticText* lblScanColon;
+	wxBoxSizer* BoxSizer1;
 	wxBoxSizer* bszOptions;
 	wxStaticText* lblScanWithin;
 
@@ -76,17 +79,18 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	flsOptions->AddGrowableCol(1);
 	wxString __wxRadioBoxChoices_1[4] =
 	{
-		_("Search for option"),
-		_("Search for NOT w/ option"),
+		_("Search for option present"),
+		_("Search for option NOT present"),
 		_("Remove option"),
 		_("Add option")
 	};
 	m_RboOperation = new wxRadioBox(this, ID_RBO_OPERATION, _("Operation:"), wxDefaultPosition, wxDefaultSize, 4, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RBO_OPERATION"));
 	flsOptions->Add(m_RboOperation, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszOptions = new wxBoxSizer(wxVERTICAL);
-	lblOptions = new wxStaticText(this, wxID_ANY, _("Option (i.e. -Wl,--no-undefined):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+	lblOptions = new wxStaticText(this, wxID_ANY, _("Option/Var (i.e. -Wl,--no-undefined):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
 	bszOptions->Add(lblOptions, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_TxtOptions = new wxTextCtrl(this, ID_TXT_OPTIONS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_OPTIONS"));
+	m_TxtOptions->SetToolTip(_("This is the compiler/linker option or path, linker lib or custom var to search for..."));
 	bszOptions->Add(m_TxtOptions, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChkOptionsCompiler = new wxCheckBox(this, ID_CHK_OPTIONS_COMPILER, _("Compiler options"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_COMPILER"));
 	m_ChkOptionsCompiler->SetValue(true);
@@ -103,11 +107,19 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChkOptionsLinkerLibs = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER_LIBS, _("Linker libs"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER_LIBS"));
 	m_ChkOptionsLinkerLibs->SetValue(false);
 	bszOptions->Add(m_ChkOptionsLinkerLibs, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
+	m_ChkOptionsCustomVar = new wxCheckBox(this, ID_CHK_OPTIONS_CUSTOM_VAR, _("Custom var ="), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_CUSTOM_VAR"));
+	m_ChkOptionsCustomVar->SetValue(false);
+	BoxSizer1->Add(m_ChkOptionsCustomVar, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	m_TxtCustomVar = new wxTextCtrl(this, ID_TXT_CUSTOM_VAR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_CUSTOM_VAR"));
+	m_TxtCustomVar->SetToolTip(_("This is the value to set set for the custom var, if \"add option\" is chosen"));
+	BoxSizer1->Add(m_TxtCustomVar, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszOptions->Add(BoxSizer1, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChoOptionsLevel = new wxChoice(this, ID_CHO_OPTIONS_LEVEL, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_OPTIONS_LEVEL"));
 	m_ChoOptionsLevel->Append(_("At project level"));
 	m_ChoOptionsLevel->Append(_("At target level"));
 	m_ChoOptionsLevel->SetSelection( m_ChoOptionsLevel->Append(_("Both (project and target level)")) );
-	bszOptions->Add(m_ChoOptionsLevel, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	bszOptions->Add(m_ChoOptionsLevel, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	flsOptions->Add(bszOptions, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszMainH->Add(flsOptions, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	sbzOKCancel = new wxStdDialogButtonSizer();
@@ -162,13 +174,19 @@ wxString ProjectOptionsManipulatorDlg::GetOption()
   return ( m_TxtOptions->GetValue().Trim(true).Trim(false) );
 }
 
+wxString ProjectOptionsManipulatorDlg::GetValue()
+{
+  return ( m_TxtCustomVar->GetValue().Trim(true).Trim(false) );
+}
+
 bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectOption opt)
 {
-  if ( m_ChkOptionsCompiler->GetValue()     && (opt==eCompiler) )     return true;
-  if ( m_ChkOptionsLinker->GetValue()       && (opt==eLinker)   )     return true;
-  if ( m_ChkOptionsCompilerPath->GetValue() && (opt==eCompilerPath) ) return true;
-  if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eLinkerPath)   ) return true;
-  if ( m_ChkOptionsLinkerLibs->GetValue()   && (opt==eLinkerLibs)   ) return true;
+  if ( m_ChkOptionsCompiler->GetValue()     && (opt==eCompiler)      ) return true;
+  if ( m_ChkOptionsLinker->GetValue()       && (opt==eLinker)        ) return true;
+  if ( m_ChkOptionsCompilerPath->GetValue() && (opt==eCompilerPaths) ) return true;
+  if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eLinkerPaths)   ) return true;
+  if ( m_ChkOptionsLinkerLibs->GetValue()   && (opt==eLinkerLibs)    ) return true;
+  if ( m_ChkOptionsCustomVar->GetValue()    && (opt==eCustomVar)     ) return true;
   return false;
 }
 
@@ -216,7 +234,8 @@ void ProjectOptionsManipulatorDlg::OnOk(wxCommandEvent& WXUNUSED(event))
       && !m_ChkOptionsLinker->GetValue()
       && !m_ChkOptionsCompilerPath->GetValue()
       && !m_ChkOptionsLinkerPath->GetValue()
-      && !m_ChkOptionsLinkerLibs->GetValue() )
+      && !m_ChkOptionsLinkerLibs->GetValue()
+      && !m_ChkOptionsCustomVar->GetValue() )
   {
     cbMessageBox(_("You need to select at least one option to search in!"), _("Error"), wxICON_ERROR, this);
     return;

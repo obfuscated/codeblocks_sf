@@ -36,6 +36,8 @@ private:
 
   void ProcessLinkerLibs(cbProject* prj, const wxString& lib, wxArrayString& result);
 
+  void ProcessCustomVars(cbProject* prj, const wxString& var, const wxString& value, wxArrayString& result);
+
   ProjectOptionsManipulatorDlg* m_Dlg;
 
   DECLARE_EVENT_TABLE()

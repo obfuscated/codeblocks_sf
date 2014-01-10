@@ -146,6 +146,7 @@ bool ProjectOptionsManipulator::OperateProject(cbProject* prj, wxArrayString& re
   if (!prj) return false;
 
   const wxString opt = m_Dlg->GetOption();
+  const wxString val = m_Dlg->GetValue();
 
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompiler) )
     ProcessCompilerOptions(prj, opt, result);
@@ -153,14 +154,17 @@ bool ProjectOptionsManipulator::OperateProject(cbProject* prj, wxArrayString& re
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinker) )
     ProcessLinkerOptions(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompilerPath) )
+  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompilerPaths) )
     ProcessCompilerPaths(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerPath) )
+  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerPaths) )
     ProcessLinkerPaths(prj, opt, result);
 
   if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerLibs) )
     ProcessLinkerLibs(prj, opt, result);
+
+  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCustomVar) )
+    ProcessCustomVars(prj, opt, val, result);
 
   return true;
 }
@@ -182,12 +186,12 @@ void ProjectOptionsManipulator::ProcessCompilerOptions(cbProject* prj, const wxS
         if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
         {
           result.Add(wxString::Format(_("Project '%s': Does not contain compiler option '%s'."),
-                                   prj->GetTitle().wx_str(), opt.wx_str()));
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
         }
         else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains compiler option '%s'."),
-                                   prj->GetTitle().wx_str(), opt.wx_str()));
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
         }
       }
 
@@ -203,12 +207,12 @@ void ProjectOptionsManipulator::ProcessCompilerOptions(cbProject* prj, const wxS
             if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain compiler option '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
             }
             else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains compiler option '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
             }
           }
         }
@@ -270,7 +274,7 @@ void ProjectOptionsManipulator::ProcessLinkerOptions(cbProject* prj, const wxStr
         if (idx!=wxNOT_FOUND)
         {
           result.Add(wxString::Format(_("Project '%s': Contains linker option '%s'."),
-                                   prj->GetTitle().wx_str(), opt.wx_str()));
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
         }
       }
 
@@ -286,7 +290,7 @@ void ProjectOptionsManipulator::ProcessLinkerOptions(cbProject* prj, const wxStr
             if (idx!=wxNOT_FOUND)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker option '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
             }
           }
         }
@@ -348,12 +352,12 @@ void ProjectOptionsManipulator::ProcessCompilerPaths(cbProject* prj, const wxStr
         if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
         {
           result.Add(wxString::Format(_("Project '%s': Does not contain compiler path '%s'."),
-                                   prj->GetTitle().wx_str(), path.wx_str()));
+                                      prj->GetTitle().wx_str(), path.wx_str()));
         }
         else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains compiler path '%s'."),
-                                   prj->GetTitle().wx_str(), path.wx_str()));
+                                      prj->GetTitle().wx_str(), path.wx_str()));
         }
       }
 
@@ -369,12 +373,12 @@ void ProjectOptionsManipulator::ProcessCompilerPaths(cbProject* prj, const wxStr
             if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain compiler path '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
             else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains compiler path '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
           }
         }
@@ -436,12 +440,12 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
         if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
         {
           result.Add(wxString::Format(_("Project '%s': Does not contain linker path '%s'."),
-                                   prj->GetTitle().wx_str(), path.wx_str()));
+                                      prj->GetTitle().wx_str(), path.wx_str()));
         }
         else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains linker path '%s'."),
-                                   prj->GetTitle().wx_str(), path.wx_str()));
+                                      prj->GetTitle().wx_str(), path.wx_str()));
         }
       }
 
@@ -457,12 +461,12 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
             if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker path '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
             else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker path '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), path.wx_str()));
             }
           }
         }
@@ -524,12 +528,12 @@ void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString
         if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
         {
           result.Add(wxString::Format(_("Project '%s': Does not contain linker lib '%s'."),
-                                   prj->GetTitle().wx_str(), lib.wx_str()));
+                                      prj->GetTitle().wx_str(), lib.wx_str()));
         }
         else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
         {
           result.Add(wxString::Format(_("Project '%s': Contains linker lib '%s'."),
-                                   prj->GetTitle().wx_str(), lib.wx_str()));
+                                      prj->GetTitle().wx_str(), lib.wx_str()));
         }
       }
 
@@ -545,12 +549,12 @@ void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString
             if (idx==wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain linker lib '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
             }
             else if (idx!=wxNOT_FOUND && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
             {
               result.Add(wxString::Format(_("Project '%s', target '%s': Contains linker lib '%s'."),
-                                      prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), lib.wx_str()));
             }
           }
         }
@@ -585,6 +589,92 @@ void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString
         {
           ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
           if (tgt) tgt->AddLinkLib(lib);
+        }
+      }
+    }
+    break;
+
+    default:
+    break;
+  }
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+
+void ProjectOptionsManipulator::ProcessCustomVars(cbProject* prj, const wxString& var, const wxString& value, wxArrayString& result)
+{
+  ProjectOptionsManipulatorDlg::EProjectScanOption scan_opt = m_Dlg->GetScanOption();
+  switch (scan_opt)
+  {
+    case ProjectOptionsManipulatorDlg::eSearch:
+    case ProjectOptionsManipulatorDlg::eSearchNot:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+      {
+        bool has_var = prj->HasVar(var);
+        if (has_var && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not define custom var '%s'."),
+                                      prj->GetTitle().wx_str(), var.wx_str()));
+        }
+        else if (has_var && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        {
+          result.Add(wxString::Format(_("Project '%s': Defines custom var '%s'."),
+                                      prj->GetTitle().wx_str(), var.wx_str()));
+        }
+      }
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt)
+          {
+            bool has_var = prj->HasVar(var);
+            if (has_var && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not define custom var '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), var.wx_str()));
+            }
+            else if (has_var && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Defines custom var '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), var.wx_str()));
+            }
+          }
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eRemove:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->UnsetVar(var);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->UnsetVar(var);
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eAdd:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->SetVar(var, value);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->SetVar(var, value);
         }
       }
     }

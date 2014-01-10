@@ -53,8 +53,8 @@
 						<object class="wxRadioBox" name="ID_RBO_OPERATION" variable="m_RboOperation" member="yes">
 							<label>Operation:</label>
 							<content>
-								<item>Search for option</item>
-								<item>Search for NOT w/ option</item>
+								<item>Search for option present</item>
+								<item>Search for option NOT present</item>
 								<item>Remove option</item>
 								<item>Add option</item>
 							</content>
@@ -68,14 +68,16 @@
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="wxID_ANY" variable="lblOptions" member="no">
-									<label>Option (i.e. -Wl,--no-undefined):</label>
+									<label>Option/Var (i.e. -Wl,--no-undefined):</label>
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TXT_OPTIONS" variable="m_TxtOptions" member="yes" />
+								<object class="wxTextCtrl" name="ID_TXT_OPTIONS" variable="m_TxtOptions" member="yes">
+									<tooltip>This is the compiler/linker option or path, linker lib or custom var to search for...</tooltip>
+								</object>
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
@@ -116,6 +118,27 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHK_OPTIONS_CUSTOM_VAR" variable="m_ChkOptionsCustomVar" member="yes">
+											<label>Custom var =</label>
+										</object>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="ID_TXT_CUSTOM_VAR" variable="m_TxtCustomVar" member="yes">
+											<tooltip>This is the value to set set for the custom var, if &quot;add option&quot; is chosen</tooltip>
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
 								<object class="wxChoice" name="ID_CHO_OPTIONS_LEVEL" variable="m_ChoOptionsLevel" member="yes">
 									<content>
 										<item>At project level</item>
@@ -124,7 +147,7 @@
 									</content>
 									<selection>2</selection>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 						</object>
