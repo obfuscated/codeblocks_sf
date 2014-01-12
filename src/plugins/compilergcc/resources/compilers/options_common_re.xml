@@ -193,6 +193,11 @@
            file="1">
         <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t](undefined reference.*)]]>
     </RegEx>
+    <RegEx name="General error"
+           type="error"
+           msg="1">
+        <![CDATA[([Ee]rror:[ \t].*)]]>
+    </RegEx>
     <RegEx name="General warning"
            type="warning"
            msg="1">
