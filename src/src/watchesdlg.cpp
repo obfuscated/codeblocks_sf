@@ -601,6 +601,7 @@ void WatchesDlg::OnIdle(cb_unused wxIdleEvent &event)
         m_grid->SelectProperty(new_prop, false);
         m_grid->Refresh();
         m_append_empty_watch = false;
+        m_grid->BeginLabelEdit(0);
     }
 }
 
