@@ -372,6 +372,12 @@ private:
     /** collect GCC compiler predefined preprocessor definition */
     bool AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs);
 
+    /** lookup GCC compiler -std=XXX option */
+    wxString GetCompilerStandardGCC(Compiler* compiler, cbProject* project);
+
+    /** lookup GCC compiler -std=XXX option for specific GCC options*/
+    wxString GetCompilerUsingStandardGCC(const wxArrayString& compilerOptions);
+
     /** collect VC compiler predefined preprocessor definition */
     bool AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxString& defs);
 
