@@ -166,7 +166,6 @@
 					<Add library="gdi32" />
 					<Add directory="devel30_64" />
 					<Add directory="sdk/scripting/lib" />
-					<Add directory="sdk/propgrid" />
 				</Linker>
 				<ExtraCommands>
 					<Add before="build_tools/autorevision/autorevision30_64 +wx +int +t . include/autorevision.h" />
