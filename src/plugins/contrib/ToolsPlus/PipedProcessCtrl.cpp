@@ -20,9 +20,22 @@ END_EVENT_TABLE()
 PipedTextCtrl::PipedTextCtrl(wxWindow *parent, PipedProcessCtrl *pp) : wxScintilla(parent, wxID_ANY)
 {
     m_pp = pp;
-    this->StyleSetForeground(PP_ERROR_STYLE,wxColor(200,0,0));
-    this->StyleSetForeground(PP_LINK_STYLE,wxColor(0,0,200));
-    this->StyleSetUnderline(PP_LINK_STYLE,true);
+
+    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
+    wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
+    if (!fontstring.IsEmpty())
+    {
+        wxNativeFontInfo nfi;
+        nfi.FromString(fontstring);
+        font.SetNativeFontInfo(nfi);
+    }
+
+    StyleSetFont(wxSCI_STYLE_DEFAULT, font);
+    StyleSetForeground(PP_ERROR_STYLE,wxColor(200,0,0));
+    StyleSetForeground(PP_LINK_STYLE,wxColor(0,0,200));
+    StyleSetUnderline(PP_LINK_STYLE,true);
 }
 
 
@@ -254,19 +267,19 @@ void PipedProcessCtrl::OnUserInput(wxKeyEvent& ke)
     kc1[0]=ke.GetKeyCode()%256;
     kc1[1]=0;
     if(kc1[0]=='\r')
-    {
-        //cbMessageBox(_T("converting keystroke"));
         kc1[0]='\n';
-    }
-//    cbMessageBox(_T("key press: ")+wxString::FromAscii(kc1)+wxString::Format(_T(" keycode: %i"),ke.GetKeyCode()));
     wxChar kc2=ke.GetUnicodeKey();
     wxString buf(kc2);
-    //kc1[0]=buf[0];
-    m_ostream->Write(kc1,1);
-//    m_proc->GetOutputStream()->Write(kc1,1);
-//    cbMessageBox(_T("bytes written: ")+wxString::Format(_T("code: %u"),m_ostream->LastWrite()));
-    m_textctrl->AppendText(kc2);
-//    m_textctrl->SetInsertionPointEnd();
+    if (!ke.ControlDown() && !ke.AltDown())
+        if (ke.GetKeyCode()<WXK_START ||
+           ke.GetKeyCode()>WXK_COMMAND)
+        {
+            m_ostream->Write(kc1,1);
+            m_textctrl->AppendText(kc2);
+            return;
+        }
+
+    ke.Skip();
 }
 
 
