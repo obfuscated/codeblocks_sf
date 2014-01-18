@@ -389,10 +389,10 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
     if ( changed )
     {
         control->BeginUndoAction();
-        if (!onlySelected)
-            control->SetText(formattedText);
+        if (onlySelected)
+            ApplyTextDelta(control, formattedText, control->GetSelectionStart(), control->GetSelectionEnd());
         else
-            control->ReplaceSelection(formattedText);
+            ApplyTextDelta(control, formattedText, 0, control->GetLength());
 
         for (std::vector<int>::const_iterator i = new_bookmark.begin(); i != new_bookmark.end(); ++i)
             ed->ToggleBookmark(*i);
@@ -408,4 +408,72 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
     wxSetCursor(wxNullCursor);
 
     return changed;
+}
+
+void AStylePlugin::ApplyTextDelta(cbStyledTextCtrl* stc, wxString text, int rangeStart, int rangeEnd)
+{
+    rangeStart = stc->LineFromPosition(rangeStart);
+    rangeEnd = stc->LineFromPosition(rangeEnd) + 1;
+    const wxString& eolChars = GetEOLStr(stc->GetEOLMode());
+    std::vector<wxString> textLines;
+    int seplen = eolChars.Length();
+    for (;;)
+    {
+        int idx = text.Find(eolChars);
+        if (idx == wxNOT_FOUND)
+        {
+            textLines.push_back(text);
+            break;
+        }
+        wxString part = text.Left(idx);
+        text.Remove(0, idx + seplen);
+        textLines.push_back(part);
+    }
+    typedef std::vector<wxString>::const_iterator StrVecItr;
+    StrVecItr lnItr = textLines.begin();
+    while (rangeStart < rangeEnd && lnItr != textLines.end())
+    {
+        if (stc->GetLine(rangeStart).BeforeLast(eolChars[0]) == *lnItr)
+        {
+            ++rangeStart;
+            ++lnItr;
+        }
+        else
+        {
+            int i = rangeStart + 1;
+            for (; i < rangeEnd; ++i)
+            {
+                StrVecItr searchItr = std::find(lnItr + 1, (StrVecItr)textLines.end(), stc->GetLine(i).BeforeLast(eolChars[0]));
+                if (searchItr != textLines.end())
+                {
+                    stc->SetTargetStart(stc->PositionFromLine(rangeStart));
+                    stc->SetTargetEnd(stc->GetLineEndPosition(i - 1));
+                    wxString buffer = *lnItr;
+                    for (StrVecItr itr = lnItr + 1; itr != searchItr; ++itr)
+                        buffer += eolChars + *itr;
+                    stc->ReplaceTarget(buffer);
+                    const int offset = (searchItr - lnItr) - (i - rangeStart);
+                    rangeEnd += offset;
+                    rangeStart = i + offset;
+                    lnItr = searchItr;
+                    break;
+                }
+            }
+            if (i == rangeEnd)
+                break;
+        }
+    }
+    wxString buffer;
+    for (; lnItr != textLines.end(); ++lnItr)
+        buffer += eolChars + *lnItr;
+    if (rangeStart == rangeEnd)
+        stc->SetTargetStart(stc->GetLineEndPosition(rangeEnd - 1));
+    else
+    {
+        stc->SetTargetStart(stc->PositionFromLine(rangeStart));
+        if (!buffer.IsEmpty())
+            buffer = buffer.Mid(eolChars.Length());
+    }
+    stc->SetTargetEnd(stc->GetLineEndPosition(rangeEnd - 1));
+    stc->ReplaceTarget(buffer);
 }
