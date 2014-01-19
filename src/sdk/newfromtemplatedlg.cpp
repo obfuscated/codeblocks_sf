@@ -124,9 +124,13 @@ NewFromTemplateDlg::~NewFromTemplateDlg()
 {
     //dtor
     delete XRCCTRL(*this, "listProjects", wxListCtrl)->GetImageList(wxIMAGE_LIST_NORMAL);
+    delete XRCCTRL(*this, "listProjects", wxListCtrl)->GetImageList(wxIMAGE_LIST_SMALL);
     delete XRCCTRL(*this, "listTargets", wxListCtrl)->GetImageList(wxIMAGE_LIST_NORMAL);
+    delete XRCCTRL(*this, "listTargets", wxListCtrl)->GetImageList(wxIMAGE_LIST_SMALL);
     delete XRCCTRL(*this, "listFiles", wxListCtrl)->GetImageList(wxIMAGE_LIST_NORMAL);
+    delete XRCCTRL(*this, "listFiles", wxListCtrl)->GetImageList(wxIMAGE_LIST_SMALL);
     delete XRCCTRL(*this, "listCustoms", wxListCtrl)->GetImageList(wxIMAGE_LIST_NORMAL);
+    delete XRCCTRL(*this, "listCustoms", wxListCtrl)->GetImageList(wxIMAGE_LIST_SMALL);
 
     XRCCTRL(*this, "listProjects", wxListCtrl)->SetImageList(nullptr, wxIMAGE_LIST_NORMAL);
     XRCCTRL(*this, "listProjects", wxListCtrl)->SetImageList(nullptr, wxIMAGE_LIST_SMALL);
