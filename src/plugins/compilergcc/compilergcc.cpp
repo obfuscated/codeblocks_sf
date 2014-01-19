@@ -2861,26 +2861,20 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
 
 int CompilerGCC::CompileFile(const wxString& file)
 {
-    ProjectBuildTarget* target = NULL;
-    if ( CheckProject() )
-        target = m_pProject->GetBuildTarget(m_pProject->GetActiveBuildTarget());
-
+    CheckProject();
     DoPrepareQueue(true);
-    if ( !CompilerValid(target) )
-        return -1;
 
     ProjectFile* pf = m_pProject ? m_pProject->GetFileByFilename(file, true, false) : 0;
     ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
 
+    if ( !CompilerValid(bt) )
+        return -1;
     if (!pf) // compile single file not belonging to a project
         return CompileFileWithoutProject(file);
-
-    if (m_pProject)
-        wxSetWorkingDirectory(m_pProject->GetBasePath());
-
     if (!bt)
         return -2;
-
+    if (m_pProject)
+        wxSetWorkingDirectory(m_pProject->GetBasePath());
     return CompileFileDefault(m_pProject, pf, bt); // compile file using default build system
 }
 
