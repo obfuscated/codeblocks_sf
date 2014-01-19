@@ -174,10 +174,11 @@
                                    endverbatim enum example exception f$ f[ f] file fn
                                    hideinitializer htmlinclude htmlonly if image include ingroup
                                    internal invariant interface latexonly li line link mainpage name
-                                   namespace nosubgrouping note overload p page par param post pre
-                                   ref relates remarks return retval sa section see showinitializer
-                                   since skip skipline struct subsection test throw todo typedef
-                                   union until var verbatim verbinclude version warning weakgroup
+                                   namespace nosubgrouping note overload p page par param param[in]
+                                   param[out] param[in,out] post pre ref relates remarks return
+                                   retval sa section see showinitializer since skip skipline struct
+                                   subsection test throw todo typedef union until var verbatim
+                                   verbinclude version warning weakgroup
                                    $ @ \ &amp; &lt; &gt;  # { }"/>
                         <!-- wxSmith block identifiers -->
                         <Set index="5"
