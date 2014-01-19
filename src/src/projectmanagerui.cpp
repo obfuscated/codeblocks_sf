@@ -2320,11 +2320,9 @@ bool ProjectManagerUI::QueryCloseWorkspace()
     if (!workspace)
         return true;
 
-    // don't ask to save the default workspace, if blank workspace is used on app startup
-    if (workspace->IsDefault() && Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == true)
-        return true;
-
-    if (workspace->GetModified())
+    // Don't ask to save the default workspace, if blank workspace is used on app startup.
+    bool blankWorkspace = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true);
+    if (!(workspace->IsDefault() && blankWorkspace) && workspace->GetModified())
     {
         // workspace needs save
         wxString msg;
@@ -2341,6 +2339,8 @@ bool ProjectManagerUI::QueryCloseWorkspace()
                 break;
         }
     }
+
+    // We always want to ask to save all loaded projects.
     if (!QueryCloseAllProjects())
         return false;
     return true;
