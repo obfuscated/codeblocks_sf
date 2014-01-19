@@ -208,7 +208,6 @@ class CompilerGCC : public cbCompilerPlugin
         bool UseMake(cbProject* project = 0);
         bool CompilerValid(ProjectBuildTarget* target = 0);
         ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
-        ProjectBuildTarget* GetBuildTargetForFile(const wxString& file);
         wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
         int DoBuild(bool clean, bool build);
         int DoBuild(const wxString& target, bool clean, bool build, bool clearLog=true);

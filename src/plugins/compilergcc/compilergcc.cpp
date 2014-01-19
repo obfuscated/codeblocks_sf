@@ -2859,12 +2859,6 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
     return m_pProject->GetBuildTarget(targetName);
 }
 
-ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(const wxString& file)
-{
-    ProjectFile* pf = m_pProject ? m_pProject->GetFileByFilename(file, true, false) : 0;
-    return GetBuildTargetForFile(pf);
-}
-
 int CompilerGCC::CompileFile(const wxString& file)
 {
     ProjectBuildTarget* target = NULL;
