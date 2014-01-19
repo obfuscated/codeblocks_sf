@@ -2834,35 +2834,29 @@ bool CompilerGCC::IsRunning() const
 ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
 {
     if (!pf)
-        return 0;
+        return nullptr;
 
     if (!pf->buildTargets.GetCount())
     {
         cbMessageBox(_("That file isn't assigned to any target."),
                     _("Information"), wxICON_INFORMATION);
-        return 0;
+        return nullptr;
     }
-    else if (pf->buildTargets.GetCount() == 1)
-        return m_pProject->GetBuildTarget(pf->buildTargets[0]);
-    // belongs to two or more build targets
-    ProjectBuildTarget* bt = 0;
-    // if a virtual target is selected, ask for build target
+    // If a virtual target is selected, ask for build target.
     if (m_RealTargetIndex == -1)
     {
         int idx = DoGUIAskForTarget();
         if (idx == -1)
-            return 0;
-        bt = m_pProject->GetBuildTarget(idx);
-    }
-    else // use the currently selected build target
-    {
-        const wxString &targetName = m_Targets[m_TargetIndex];
-        if (std::find(pf->buildTargets.begin(), pf->buildTargets.end(), targetName) == pf->buildTargets.end())
             return nullptr;
-        bt = m_pProject->GetBuildTarget(targetName);
+        return m_pProject->GetBuildTarget(idx);
     }
 
-    return bt;
+    // Use currently selected non-virtual target.
+    // If the file is not added to this target return nullptr.
+    const wxString &targetName = m_Targets[m_TargetIndex];
+    if (std::find(pf->buildTargets.begin(), pf->buildTargets.end(), targetName) == pf->buildTargets.end())
+        return nullptr;
+    return m_pProject->GetBuildTarget(targetName);
 }
 
 ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(const wxString& file)
