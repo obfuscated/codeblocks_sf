@@ -9,26 +9,33 @@
 
 #include <sdk.h>
 
-#include "astyleplugin.h"
-#include <cbexception.h>
-#include "astyleconfigdlg.h"
-#include <sstream>
-#include <string>
-#include <vector>
-#include "formattersettings.h"
-#include <manager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-#include <cbeditor.h>
-#include <wx/msgdlg.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/fs_zip.h>
-#include <wx/strconv.h>
+#ifndef CB_PRECOMP
+    #include <algorithm>
+    #include <sstream>
+    #include <string>
+    #include <vector>
+
+    #include <wx/msgdlg.h>
+    #include <wx/xrc/xmlres.h>
+    #include <wx/fs_zip.h>
+    #include <wx/strconv.h>
+
+    #include <cbeditor.h>
+    #include <cbexception.h>
+    #include <cbproject.h>
+    #include <configmanager.h>
+    #include <editormanager.h>
+    #include <manager.h>
+    #include <projectmanager.h>
+#endif
+
 #include <wx/progdlg.h>
+#include <cbstyledtextctrl.h>
+
+#include "astyleplugin.h"
+#include "astyleconfigdlg.h"
+#include "formattersettings.h"
 #include "asstreamiterator.h"
-#include "cbstyledtextctrl.h"
-#include "cbproject.h"
-#include "projectmanager.h"
 
 using std::istringstream;
 using std::string;
