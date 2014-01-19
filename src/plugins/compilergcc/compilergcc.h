@@ -75,7 +75,8 @@ enum BuildAction
 {
     baClean = 0,
     baBuild,
-    baRun
+    baRun,
+    baBuildFile
 };
 
 class wxComboBox;

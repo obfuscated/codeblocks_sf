@@ -1655,6 +1655,9 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
     case baRun:
         Action = _("Run");
         break;
+    case baBuildFile:
+        Action = _("Build file");
+        break;
     default:
     case baBuild:
         Action = _("Build");
@@ -2862,17 +2865,24 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
 int CompilerGCC::CompileFile(const wxString& file)
 {
     CheckProject();
-    DoPrepareQueue(true);
+    DoPrepareQueue(false);
 
     ProjectFile* pf = m_pProject ? m_pProject->GetFileByFilename(file, true, false) : 0;
     ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
+
+    PrintBanner(baBuildFile, m_pProject, bt);
 
     if ( !CompilerValid(bt) )
         return -1;
     if (!pf) // compile single file not belonging to a project
         return CompileFileWithoutProject(file);
     if (!bt)
+    {
+        const wxString err(_("error: Cannot find target for file"));
+        LogMessage(pf->relativeToCommonTopLevelPath + _(": ") + err, cltError);
+        LogWarningOrError(cltError, m_pProject, pf->relativeToCommonTopLevelPath, wxEmptyString, err);
         return -2;
+    }
     if (m_pProject)
         wxSetWorkingDirectory(m_pProject->GetBasePath());
     return CompileFileDefault(m_pProject, pf, bt); // compile file using default build system
