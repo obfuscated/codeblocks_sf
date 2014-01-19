@@ -2855,7 +2855,12 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
         bt = m_pProject->GetBuildTarget(idx);
     }
     else // use the currently selected build target
-        bt = m_pProject->GetBuildTarget(m_RealTargetIndex); // pick the selected target
+    {
+        const wxString &targetName = m_Targets[m_TargetIndex];
+        if (std::find(pf->buildTargets.begin(), pf->buildTargets.end(), targetName) == pf->buildTargets.end())
+            return nullptr;
+        bt = m_pProject->GetBuildTarget(targetName);
+    }
 
     return bt;
 }
