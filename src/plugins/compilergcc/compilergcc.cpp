@@ -2913,6 +2913,14 @@ int CompilerGCC::CompileFileWithoutProject(const wxString& file)
 int CompilerGCC::CompileFileDefault(cbProject* project, ProjectFile* pf, ProjectBuildTarget* bt)
 {
     Compiler* compiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+    if (!compiler)
+    {
+        const wxString &err = wxString::Format(_("error: Cannot build file for target '%s'. Compiler '%s' cannot be found!"),
+                                               bt->GetTitle().wx_str(), bt->GetCompilerID().wx_str());
+        LogMessage(pf->relativeToCommonTopLevelPath + _(": ") + err, cltError);
+        LogWarningOrError(cltError, project, pf->relativeToCommonTopLevelPath, wxEmptyString, err);
+        return -3;
+    }
 
     DirectCommands dc(this, compiler, project, m_PageIndex);
     wxArrayString compile = dc.CompileFile(bt, pf);
