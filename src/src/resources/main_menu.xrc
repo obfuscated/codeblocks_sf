@@ -174,19 +174,16 @@
       <object class="wxMenuItem" name="idEditCut">
         <label>Cu&amp;t</label>
         <bitmap>images\16x16\editcut.png</bitmap>
-        <accel>Ctrl-X</accel>
         <help>Copy selected text to clipboard and erase it</help>
       </object>
       <object class="wxMenuItem" name="idEditCopy">
         <label>&amp;Copy</label>
         <bitmap>images\16x16\editcopy.png</bitmap>
-        <accel>Ctrl-C</accel>
         <help>Copy selected text to clipboard</help>
       </object>
       <object class="wxMenuItem" name="idEditPaste">
         <label>&amp;Paste</label>
         <bitmap>images\16x16\editpaste.png</bitmap>
-        <accel>Ctrl-V</accel>
         <help>Paste text from clipboard</help>
       </object>
       <object class="separator"/>
@@ -457,7 +454,6 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idEditSelectAll">
         <label>Select &amp;all</label>
-        <accel>Ctrl-A</accel>
         <help>Selects the entire text range</help>
       </object>
       <object class="wxMenuItem" name="idEditSelectNext">
