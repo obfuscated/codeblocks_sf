@@ -823,7 +823,7 @@ bool Parser::AddFile(const wxString& filename, cbProject* project, cb_unused boo
     return true;
 }
 
-bool Parser::Reparse(const wxString& filename, bool isLocal)
+bool Parser::Reparse(const wxString& filename, cb_unused bool isLocal)
 {
     if (!Done())
     {

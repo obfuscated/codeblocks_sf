@@ -215,16 +215,16 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
 
     // TODO: Make this base folders configurable
     wxString wx_base (_T("C:\\Devel\\wxWidgets\\"));
-    wxString gcc_base(_T("C:\\Devel\\GCC47TDM\\" ));
+    wxString gcc_base(_T("C:\\Devel\\CodeBlocks\\MinGW\\" ));
 
     m_IncludeCtrl->SetValue(wx_base  + _T("include")                                          + _T("\n") +
                             wx_base  + _T("lib\\gcc_dll\\mswu")                               + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include\\c++")           + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include\\c++\\mingw32")  + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include\\c++\\backward") + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include")                + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include\\c++")           + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include\\c++\\mingw32")  + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include\\c++\\backward") + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include")                + _T("\n") +
                             gcc_base + _T("include")                                          + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.7.1\\include-fixed")          + _T("\n"));
+                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include-fixed")          + _T("\n"));
 
     m_HeadersCtrl->SetValue(_T("<_mingw.h>,<cstddef>,<w32api.h>,<winbase.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
 

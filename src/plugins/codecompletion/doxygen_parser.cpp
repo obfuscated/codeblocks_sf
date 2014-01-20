@@ -947,6 +947,8 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
         html += ConvertArgsToAnchors(token->GetFormattedArgs());
         if (token->m_IsConst)
             html += _T(" const");
+        if (token->m_IsNoExcept)
+            html += _T(" noexcept");
         html += br;
         break;
     case tkPreprocessor:

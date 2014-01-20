@@ -171,6 +171,7 @@ namespace ParserConsts
     const wxString kw_typedef      (_T("typedef"));
     const wxString kw_virtual      (_T("virtual"));
     // length: 8
+    const wxString kw_noexcept     (_T("noexcept"));
     const wxString kw_operator     (_T("operator"));
     const wxString kw_template     (_T("template"));
     const wxString kw_typename     (_T("typename"));
@@ -924,6 +925,10 @@ void ParserThread::DoParse()
                 m_Tokenizer.SetState(tsSkipUnWanted);
                 if (m_Tokenizer.PeekToken() != ParserConsts::kw_class)
                     m_TemplateArgument.clear();
+            }
+            else if (token == ParserConsts::kw_noexcept)
+            {
+                m_Str << token << _T(" ");
             }
             else if (token == ParserConsts::kw_operator)
             {
@@ -2107,6 +2112,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
 
         bool isImpl = false;
         bool isConst = false;
+        bool isNoExcept = false;
         while (!peek.IsEmpty()) // !eof
         {
             if (peek == ParserConsts::colon) // probably a ctor with member initializers
@@ -2129,6 +2135,8 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
                 break; // function decl
             else if (peek == ParserConsts::kw_const)
                 isConst = true;
+            else if (peek == ParserConsts::kw_noexcept)
+                isNoExcept = true;
             else if (peek == ParserConsts::kw_throw)
             {
                 // Handle something like: std::string MyClass::MyMethod() throw(std::exception)
@@ -2152,6 +2160,7 @@ void ParserThread::HandleFunction(const wxString& name, bool isOperator)
         if (newToken)
         {
             newToken->m_IsConst = isConst;
+            newToken->m_IsNoExcept = isNoExcept;
             newToken->m_TemplateArgument = m_TemplateArgument;
             if (!m_TemplateArgument.IsEmpty() && newToken->m_TemplateMap.empty())
                 ResolveTemplateArgs(newToken);

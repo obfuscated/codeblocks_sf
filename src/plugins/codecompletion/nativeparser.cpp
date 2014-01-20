@@ -2198,6 +2198,9 @@ bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cb
         wxString& gccDefs = gccDefsMap[cpp_compiler];
         for (size_t i = 0; i < output.Count(); ++i)
             gccDefs += output[i] + _T("\n");
+
+        CCLogger::Get()->DebugLog(_T("NativeParser::AddCompilerPredefinedMacrosGCC(): Caching predefined macros for compiler '")
+                                  + cpp_compiler + _T("':\n") + gccDefs);
     }
 
     defs = gccDefsMap[cpp_compiler];
@@ -2461,8 +2464,9 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
         if (!fname.DirExists())
             break;
 
-        CCLogger::Get()->DebugLog(_T("NativeParser::GetGCCCompilerDirs(): Caching GCC default include dir: ") + fname.GetPath());
         dirs[cpp_compiler].Add(fname.GetPath());
+
+        CCLogger::Get()->DebugLog(_T("NativeParser::GetGCCCompilerDirs(): Caching GCC default include dir: ") + fname.GetPath());
     }
 
     TRACE(_T("NativeParser::GetGCCCompilerDirs(): Leave"));

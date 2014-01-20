@@ -3260,6 +3260,8 @@ int CodeCompletion::DoAllMethodsImpl()
             str << token->m_Name << token->GetStrippedArgs();
             if (token->m_IsConst)
                 str << _T(" const");
+            if (token->m_IsNoExcept)
+                str << _T(" noexcept");
             str << _T("\n{\n\t\n}\n");
 
             MatchCodeStyle(str, control->GetEOLMode(), ed->GetLineIndentString(line - 1), control->GetUseTabs(), control->GetTabWidth());
