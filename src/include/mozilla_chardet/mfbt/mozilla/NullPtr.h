@@ -12,6 +12,9 @@
 #ifndef mozilla_NullPtr_h
 #define mozilla_NullPtr_h
 
+// C::B patch: to fix multiple defines of nullptr
+#include "prep.h"  // C::B Header that defines nullptr
+
 #include "mozilla/Compiler.h"
 
 #if defined(__clang__)
