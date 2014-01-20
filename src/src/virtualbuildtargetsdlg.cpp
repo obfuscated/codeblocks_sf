@@ -7,7 +7,7 @@
  * $HeadURL$
  */
 
-#include "sdk_precomp.h"
+#include "sdk.h"
 #include "virtualbuildtargetsdlg.h"
 
 #ifndef CB_PRECOMP
