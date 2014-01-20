@@ -925,28 +925,30 @@ int CodeBlocksApp::BatchJob()
             compiler->CleanWorkspace(m_BatchTarget);
     }
 
-    // the batch build log might have been deleted in
+    // The batch build log might have been deleted in
     // CodeBlocksApp::OnBatchBuildDone().
-    // if it hasn't, it's still compiling
-    //
-    // also note that if operation is "--clean", there is no need
-    // to display the dialog as the operation is synchronous and it
-    // already has finished by the time the call to Clean() returned...
-    if (!m_Clean && m_pBatchBuildDialog)
-        m_pBatchBuildDialog->ShowModal();
+    // If it has not, it's still compiling.
+    if (m_pBatchBuildDialog)
+    {
+        // If operation is "--clean", there is no need to display the dialog
+        // as the operation is synchronous and it already has finished by the
+        // time the call to Clean() returned.
+        if (!m_Clean)
+            m_pBatchBuildDialog->ShowModal();
+
+        if ( m_pBatchBuildDialog->IsModal() )
+            m_pBatchBuildDialog->EndModal(wxID_OK);
+        else
+        {
+            m_pBatchBuildDialog->Destroy();
+            m_pBatchBuildDialog = nullptr;
+        }
+    }
 
     if (tbIcon)
     {
         tbIcon->RemoveIcon();
         delete tbIcon;
-    }
-
-    if (m_pBatchBuildDialog->IsModal())
-        m_pBatchBuildDialog->EndModal(wxID_OK);
-    else
-    {
-        m_pBatchBuildDialog->Destroy();
-        m_pBatchBuildDialog = nullptr;
     }
 
     return 0;
