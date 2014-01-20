@@ -44,10 +44,8 @@ public:
     void FillDescendants();
 
     //(*Identifiers(CCDebugInfo)
-    static const long ID_STATICTEXT29;
     static const long ID_TEXTCTRL1;
     static const long ID_BUTTON1;
-    static const long ID_STATICLINE1;
     static const long ID_STATICTEXT18;
     static const long ID_STATICTEXT2;
     static const long ID_STATICTEXT10;
@@ -61,6 +59,7 @@ public:
     static const long ID_STATICTEXT16;
     static const long ID_STATICTEXT33;
     static const long ID_STATICTEXT39;
+    static const long ID_STATICTEXT1;
     static const long ID_STATICTEXT20;
     static const long ID_STATICTEXT24;
     static const long ID_BUTTON4;
@@ -79,9 +78,7 @@ public:
     static const long ID_LISTBOX2;
     static const long ID_PANEL3;
     static const long ID_NOTEBOOK1;
-    static const long ID_STATICTEXT31;
     static const long ID_BUTTON6;
-    static const long ID_STATICLINE2;
     //*)
 
 protected:
@@ -96,52 +93,34 @@ protected:
     //*)
 
     //(*Declarations(CCDebugInfo)
-    wxBoxSizer* BoxSizer4;
-    wxButton* btnGoChildren;
-    wxBoxSizer* BoxSizer6;
+    wxStaticText* txtInfo;
     wxStaticText* txtTemplateArg;
     wxStaticText* txtArgsStripped;
     wxStaticText* txtFullType;
     wxStaticText* txtIsConst;
     wxBoxSizer* BoxSizer5;
-    wxStaticText* StaticText29;
-    wxNotebook* Notebook1;
-    wxBoxSizer* BoxSizer7;
     wxStaticText* txtIsTemp;
-    wxBoxSizer* BoxSizer8;
     wxButton* btnSave;
-    wxButton* btnGoAsc;
     wxComboBox* cmbAncestors;
-    wxButton* btnGoParent;
-    wxPanel* Panel1;
+    wxStaticText* txtIsNoExcept;
     wxStaticText* txtImplFile;
     wxStaticText* txtScope;
     wxStaticText* txtID;
-    wxStaticLine* StaticLine2;
     wxListBox* lstDirs;
     wxStaticText* txtIsOp;
-    wxStaticText* lblInfo;
-    wxButton* btnGoDesc;
     wxStaticText* txtDeclFile;
     wxStaticText* txtNamespace;
     wxStaticText* txtName;
-    wxStaticLine* StaticLine1;
     wxStaticText* txtArgs;
-    wxBoxSizer* BoxSizer9;
     wxStaticText* txtParent;
-    wxPanel* Panel2;
     wxComboBox* cmbChildren;
-    wxFlexGridSizer* FlexGridSizer1;
     wxComboBox* cmbDescendants;
-    wxBoxSizer* BoxSizer3;
     wxStaticText* txtUserData;
     wxStaticText* txtBaseType;
     wxStaticText* txtKind;
     wxTextCtrl* txtFilter;
     wxListBox* lstFiles;
-    wxButton* btnFind;
     wxStaticText* txtIsLocal;
-    wxStdDialogButtonSizer* StdDialogButtonSizer1;
     //*)
 
 private:
