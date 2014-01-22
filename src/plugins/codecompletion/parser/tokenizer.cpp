@@ -84,6 +84,8 @@ namespace TokenizerConsts
 
 // static
 wxStringHashMap     Tokenizer::s_Replacements;
+
+// macro replacement may recursive call to an infinite loop, so we should set a limit to avoid this case
 static const size_t s_MaxRepeatReplaceCount = 50;
 
 Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
@@ -1158,8 +1160,8 @@ wxString Tokenizer::PeekToken()
         m_PeekTokenIndex             = m_TokenIndex;
         m_PeekLineNumber             = m_LineNumber;
         m_PeekNestLevel              = m_NestLevel;
-        // Check whether a ReplaceBufferForReparse() was done in DoGetToken().
-        // We assume m_Undo... have already been reset in ReplaceBufferForReparse().
+        // Check whether a ReplaceBufferText() was done in DoGetToken().
+        // We assume m_Undo... have already been reset in ReplaceBufferText().
         if (m_IsReplaceParsing && savedReplaceCount != (int)m_RepeatReplaceCount)
         {
             m_TokenIndex             = m_UndoTokenIndex;
@@ -1317,12 +1319,12 @@ wxString Tokenizer::DoGetToken()
     }
 
     if (needReplace && m_State ^ tsReadRawExpression)
-        MacroReplace(str);
+        ReplaceMacro(str);
 
     return str;
 }
 
-void Tokenizer::MacroReplace(wxString& str)
+void Tokenizer::ReplaceMacro(wxString& str)
 {
     if (m_IsReplaceParsing)
     {
@@ -1334,9 +1336,9 @@ void Tokenizer::MacroReplace(wxString& str)
             {
                 bool replaced = false;
                 if (!token->m_Args.IsEmpty())
-                    replaced = ReplaceMacroActualContext(token, false);
+                    replaced = ReplaceFunctionLikeMacro(token, false);
                 else if (token->m_FullType != token->m_Name)
-                    replaced = ReplaceBufferForReparse(token->m_FullType, false);
+                    replaced = ReplaceBufferText(token->m_FullType, false);
                 if (replaced || token->m_FullType.IsEmpty())
                 {
                     SkipUnwanted();
@@ -1350,7 +1352,7 @@ void Tokenizer::MacroReplace(wxString& str)
     if (it == s_Replacements.end())
         return;
 
-    TRACE(_T("MacroReplace() : Replacing '%s' with '%s' (file='%s', line='%u')."), it->first.wx_str(),
+    TRACE(_T("ReplaceMacro() : Replacing '%s' with '%s' (file='%s', line='%u')."), it->first.wx_str(),
           it->second.wx_str(), m_Filename.wx_str(), m_LineNumber);
 
     if (it->second.IsEmpty())
@@ -1370,7 +1372,7 @@ void Tokenizer::MacroReplace(wxString& str)
                 ;
             str = DoGetToken();
         }
-        else if (target != str && ReplaceBufferForReparse(target, false))
+        else if (target != str && ReplaceBufferText(target, false))
             str = DoGetToken();
     }
     else if (it->second[0] == _T('-'))
@@ -1403,7 +1405,7 @@ void Tokenizer::MacroReplace(wxString& str)
     }
     else
     {
-        if (it->second != str && ReplaceBufferForReparse(it->second, false))
+        if (it->second != str && ReplaceBufferText(it->second, false))
             str = DoGetToken();
     }
 }
@@ -1440,27 +1442,27 @@ bool Tokenizer::CalcConditionExpression()
                 {
                     if (tk->m_FullType.IsEmpty() || tk->m_FullType == token)
                     {
-                        if (tk->m_Args.IsEmpty())
+                        if (tk->m_Args.IsEmpty()) //variable like macro definition, but no definition, set 1
                         {
                             exp.AddToInfixExpression(_T("1"));
                             continue;
                         }
-                        else
+                        else //variable like macro definition, need to replace texts
                         {
-                            if (ReplaceBufferForReparse(tk->m_Args, false))
+                            if (ReplaceBufferText(tk->m_Args, false))
                                 continue;
                         }
                     }
-                    else if (!tk->m_Args.IsEmpty())
+                    else if (!tk->m_Args.IsEmpty()) //function like macro definition, expand them
                     {
-                        if (ReplaceMacroActualContext(tk, false))
-                            continue;
+                        if (ReplaceFunctionLikeMacro(tk, false))
+                            continue; //after the expansion, m_TokenIndex is adjusted, so continue again
                     }
                     else if (wxIsdigit(tk->m_FullType[0]))
                         token = tk->m_FullType;
                     else if (tk->m_FullType != tk->m_Name)
                     {
-                        if (ReplaceBufferForReparse(tk->m_FullType, false))
+                        if (ReplaceBufferText(tk->m_FullType, false))
                             continue;
                     }
                 }
@@ -1817,7 +1819,7 @@ void Tokenizer::SplitArguments(wxArrayString& results)
     m_State = oldState;
 }
 
-bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekToken)
+bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
 {
     if (target.IsEmpty())
         return false;
@@ -1846,7 +1848,8 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
         }
     }
 
-    // Increase memory
+    // Increase memory if there is not enough space before the m_TokenIndex (between beginning of the
+    // the m_Buffer to the m_TokenIndex)
     const size_t bufferLen = buffer.Len();
     if (m_TokenIndex < bufferLen)
     {
@@ -1863,9 +1866,12 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
         m_IsReplaceParsing = true;
     }
 
-    // Replacement back
+    // Replacement backward
     wxChar* p = const_cast<wxChar*>((const wxChar*)m_Buffer) + m_TokenIndex - bufferLen;
-    TRACE(_T("ReplaceBufferForReparse() : <FROM>%s<TO>%s"), wxString(p, bufferLen).wx_str(), buffer.wx_str());
+    TRACE(_T("ReplaceBufferText() : <FROM>%s<TO>%s"), wxString(p, bufferLen).wx_str(), buffer.wx_str());
+    // NOTE (ollydbg#1#): This function should be changed to a native wx function if wxString (wxWidgets
+    // library) is built with UTF8 encoding for wxString. Luckily, both wx2.8.12 and wx 3.0 use the fixed length
+    // (wchar_t) for the wxString encoding unit, so memcpy is safe here.
     memcpy(p, (const wxChar*)target, bufferLen * sizeof(wxChar));
 
     // Fix token index
@@ -1880,17 +1886,17 @@ bool Tokenizer::ReplaceBufferForReparse(const wxString& target, bool updatePeekT
     if (m_PeekAvailable && updatePeekToken)
     {
         m_PeekAvailable = false;
-        PeekToken();
+        PeekToken(); // NOTE (ollydbg#1#): chance of recursive call of this function
     }
 
     return true;
 }
 
-bool Tokenizer::ReplaceMacroActualContext(const Token* tk, bool updatePeekToken)
+bool Tokenizer::ReplaceFunctionLikeMacro(const Token* tk, bool updatePeekToken)
 {
-    wxString actualContext;
-    if ( GetActualContextForMacro(tk, actualContext) )
-        return ReplaceBufferForReparse(actualContext, updatePeekToken);
+    wxString macroExpandedText;
+    if ( GetMacroExpendedText(tk, macroExpandedText) )
+        return ReplaceBufferText(macroExpandedText, updatePeekToken);
     return false;
 }
 
@@ -1971,15 +1977,28 @@ void Tokenizer::SetLastTokenIdx(int tokenIdx)
     m_NextTokenDoc.clear();
 }
 
-bool Tokenizer::GetActualContextForMacro(const Token* tk, wxString& actualContext)
+bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
 {
     // e.g. "#define AAA AAA" and usage "AAA(x)"
     if (!tk || tk->m_Name == tk->m_FullType)
         return false;
 
-    // 1. break the args into substring with ","
+    // Now, tk is a function like macro definition we are going to expand, it's m_Args contains the
+    // macro formal arguments, the macro actual arguments is already in m_Buffer now.
+    // Now, suppose the buffer has such contents:
+    // ......ABC(abc, (def)).....
+    // and we have a macro definition such as: #define ABC(x,y) x+y
+    // The first thing we need to do is to breakup the formal arguments string "(x,y)", so we get a
+    // argument list, we copy the tk->m_Args, so that the buffer becomes
+    // ....(x,y)(abc, (def)).....
+    // then we get a list of actual arguments, so we can construct a map which is:
+    // x -> abc
+    // y -> (def)
+    // finally, the "x+y" will be replaced to "abc+(def)" 
+
+    // 1. break the formal args into substring with ","
     wxArrayString formalArgs;
-    if (ReplaceBufferForReparse(tk->m_Args, false))
+    if (ReplaceBufferText(tk->m_Args, false))
         SplitArguments(formalArgs);
 
     // 2. split the actual macro arguments
@@ -1987,29 +2006,31 @@ bool Tokenizer::GetActualContextForMacro(const Token* tk, wxString& actualContex
     if (!formalArgs.IsEmpty()) // e.g. #define AAA(x) x \n #define BBB AAA \n BBB(int) variable;
         SplitArguments(actualArgs);
 
-    // 3. get actual context
-    actualContext = tk->m_FullType;
+    // 3. get actual context, the expanded text string
+    expandedText = tk->m_FullType;
     const size_t totalCount = std::min(formalArgs.GetCount(), actualArgs.GetCount());
+
+    // loop on all the arguments
     for (size_t i = 0; i < totalCount; ++i)
     {
-        TRACE(_T("GetActualContextForMacro(): The formal args are '%s' and the actual args are '%s'."),
+        TRACE(_T("GetMacroExpendedText(): The formal args are '%s' and the actual args are '%s'."),
               formalArgs[i].wx_str(), actualArgs[i].wx_str());
 
-        wxChar* data = const_cast<wxChar*>((const wxChar*)actualContext.GetData());
-        const wxChar* dataEnd = data + actualContext.Len();
-        const wxChar* target = formalArgs[i].GetData();
-        const int targetLen = formalArgs[i].Len();
+        wxChar* data = const_cast<wxChar*>((const wxChar*)expandedText.GetData());
+        const wxChar* dataEnd = data + expandedText.Len();
+        const wxChar* key = formalArgs[i].GetData();
+        const int keyLen = formalArgs[i].Len();
 
         wxString alreadyReplaced;
-        alreadyReplaced.Alloc(actualContext.Len() * 2);
+        alreadyReplaced.Alloc(expandedText.Len() * 2);
 
         while (true)
         {
-            const int pos = GetFirstTokenPosition(data, dataEnd - data, target, targetLen);
+            const int pos = GetFirstTokenPosition(data, dataEnd - data, key, keyLen);
             if (pos != -1)
             {
                 alreadyReplaced << wxString(data, pos) << actualArgs[i];
-                data += pos + targetLen;
+                data += pos + keyLen;
                 if (data == dataEnd)
                     break;
             }
@@ -2020,25 +2041,25 @@ bool Tokenizer::GetActualContextForMacro(const Token* tk, wxString& actualContex
             }
         }
 
-        actualContext = alreadyReplaced;
+        expandedText = alreadyReplaced;
     }
 
-    // 4. erease string "##"
-    actualContext.Replace(_T("##"), wxEmptyString);
+    // 4. erase string "##"
+    expandedText.Replace(_T("##"), wxEmptyString);
 
-    TRACE(_T("The replaced actual context are '%s'."), actualContext.wx_str());
+    TRACE(_T("The actual macro expanded text is '%s'."), expandedText.wx_str());
     return true;
 }
 
 int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLen,
-                                     const wxChar* target, const size_t targetLen)
+                                     const wxChar* key, const size_t keyLen)
 {
     int pos = -1;
     wxChar* p = const_cast<wxChar*>(buffer);
     const wxChar* endBuffer = buffer + bufferLen;
     for (;;)
     {
-        const int ret = KMP_Find(p, target, targetLen);
+        const int ret = KMP_Find(p, key, keyLen);
         if (ret == -1)
             break;
 
@@ -2049,13 +2070,13 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
             const wxChar ch = *(p - 1);
             if (ch == _T('_') || wxIsalnum(ch))
             {
-                p += targetLen;
+                p += keyLen;
                 continue;
             }
         }
 
         // check next char
-        p += targetLen;
+        p += keyLen;
         if (p < endBuffer)
         {
             const wxChar ch = *p;
@@ -2064,7 +2085,7 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
         }
 
         // got it
-        pos = p - buffer - targetLen;
+        pos = p - buffer - keyLen;
         break;
     }
 

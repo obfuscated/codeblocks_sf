@@ -1619,7 +1619,7 @@ void ParserThread::HandleNamespace()
     Token* tk = TokenExists(ns, nullptr, tkPreprocessor);
     if (tk && tk->m_Name != tk->m_FullType)
     {
-        if (m_Tokenizer.ReplaceBufferForReparse(tk->m_FullType))
+        if (m_Tokenizer.ReplaceBufferText(tk->m_FullType))
             ns = m_Tokenizer.GetToken();
     }
 
@@ -2769,7 +2769,7 @@ void ParserThread::HandleMacroExpansion(int id, const wxString &peek)
         DoAddToken(tkMacro, tk->m_Name, m_Tokenizer.GetLineNumber(), 0, 0, peek);
 
         if (m_Options.parseComplexMacros)
-            m_Tokenizer.ReplaceMacroActualContext(tk);
+            m_Tokenizer.ReplaceFunctionLikeMacro(tk);
     }
 }
 
