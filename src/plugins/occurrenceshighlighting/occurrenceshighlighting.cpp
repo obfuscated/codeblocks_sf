@@ -10,6 +10,7 @@
 #include <sdk.h> // Code::Blocks SDK
 
 #ifndef CB_PRECOMP
+    #include <algorithm>
     #include <wx/listctrl.h>
     #include <configmanager.h>
     #include <cbeditor.h>
@@ -291,6 +292,7 @@ void OccurrencesHighlighting::UpdatePanel()
     for (std::set<wxString>::iterator it = m_texts.begin(); it != m_texts.end(); it++)
     {
         item.SetText(*it);
+        item.SetId(std::max(list->GetItemCount(), 0));
         list->InsertItem(item);
     }
     list->Thaw();
