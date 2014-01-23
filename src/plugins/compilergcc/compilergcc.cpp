@@ -2865,6 +2865,7 @@ ProjectBuildTarget* CompilerGCC::GetBuildTargetForFile(ProjectFile* pf)
 int CompilerGCC::CompileFile(const wxString& file)
 {
     CheckProject();
+    DoClearErrors();
     DoPrepareQueue(false);
 
     ProjectFile* pf = m_pProject ? m_pProject->GetFileByFilename(file, true, false) : 0;
