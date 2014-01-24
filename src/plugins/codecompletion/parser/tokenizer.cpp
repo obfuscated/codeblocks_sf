@@ -1983,6 +1983,11 @@ bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
     if (!tk || tk->m_Name == tk->m_FullType)
         return false;
 
+    // sanity check if we have such macro definition that #define AAA(x,y) x+y+AAA
+    // which means a macro name is exists in its definition, which will cause a infinite expansion loop
+    if (tk->m_FullType.Find(tk->m_Name) ==wxNOT_FOUND)
+        return false;
+
     // Now, tk is a function like macro definition we are going to expand, it's m_Args contains the
     // macro formal arguments, the macro actual arguments is already in m_Buffer now.
     // Now, suppose the buffer has such contents:
@@ -1994,21 +1999,29 @@ bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
     // then we get a list of actual arguments, so we can construct a map which is:
     // x -> abc
     // y -> (def)
-    // finally, the "x+y" will be replaced to "abc+(def)" 
+    // finally, the "x+y" will be replaced to "abc+(def)"
 
     // 1. break the formal args into substring with ","
     wxArrayString formalArgs;
     if (ReplaceBufferText(tk->m_Args, false))
         SplitArguments(formalArgs);
+    if (formalArgs.GetCount()==0)
+        return false;
 
     // 2. split the actual macro arguments
     wxArrayString actualArgs;
     if (!formalArgs.IsEmpty()) // e.g. #define AAA(x) x \n #define BBB AAA \n BBB(int) variable;
         SplitArguments(actualArgs);
+    if (actualArgs.GetCount()==0)
+        return false;
+
+    //sanity check, both formalArgs.GetCount() actualArgs.GetCount() should match
+    if (formalArgs.GetCount() != actualArgs.GetCount())
+        return false;
 
     // 3. get actual context, the expanded text string
     expandedText = tk->m_FullType;
-    const size_t totalCount = std::min(formalArgs.GetCount(), actualArgs.GetCount());
+    const size_t totalCount = formalArgs.GetCount();
 
     // loop on all the arguments
     for (size_t i = 0; i < totalCount; ++i)
