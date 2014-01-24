@@ -1849,7 +1849,7 @@ void ParserThread::HandleClass(EClassType ct)
 
             newToken->m_TemplateArgument = m_TemplateArgument;
             wxArrayString formals;
-            ResolveTemplateFormalArgs(m_TemplateArgument, formals);
+            SplitTemplateFormalParameters(m_TemplateArgument, formals);
 #ifdef CC_PARSER_TEST
             for (size_t i = 0; i < formals.GetCount(); ++i)
                 TRACE(_T("The template formal arguments are '%s'."), formals[i].wx_str());
@@ -1904,7 +1904,11 @@ void ParserThread::HandleClass(EClassType ct)
         // -------------------------------------------------------------------
         {
             GetRealTypeIfTokenIsMacro(current);
-
+            // for a template class definition like
+            // template <typename x, typename y>class AAA : public BBB, CCC {;}
+            // we would like to show its ancestors and template formal parameters on the tooltip,
+            // so we re-used the m_Args member to store those informations, the tooltip shows like:
+            // class AAA<x,y> : BBB, CCC {...} instead of class AAA {...}
             wxStringTokenizer tkz(ancestors, ParserConsts::comma);
             wxString args;
             while (tkz.HasMoreTokens())
@@ -1919,7 +1923,7 @@ void ParserThread::HandleClass(EClassType ct)
                 args += ParserConsts::space + ancestor;
             }
             wxArrayString formals;
-            ResolveTemplateFormalArgs(m_TemplateArgument, formals);
+            SplitTemplateFormalParameters(m_TemplateArgument, formals);
             if (!formals.IsEmpty())
                 args.Prepend(ParserConsts::lt + GetStringFromArray(formals, ParserConsts::comma, false) + ParserConsts::gt);
 
@@ -3150,7 +3154,7 @@ void ParserThread::ResolveTemplateArgs(Token* newToken)
     TRACE(_T("The variable template arguments are '%s'."), m_TemplateArgument.wx_str());
     newToken->m_TemplateArgument = m_TemplateArgument;
     wxArrayString actuals;
-    ResolveTemplateActualArgs(m_TemplateArgument, actuals);
+    SplitTemplateActualParameters(m_TemplateArgument, actuals);
     for (size_t i=0; i<actuals.GetCount(); ++i)
         TRACE(_T("The template actual arguments are '%s'."), actuals[i].wx_str());
 
@@ -3165,8 +3169,13 @@ void ParserThread::ResolveTemplateArgs(Token* newToken)
 wxArrayString ParserThread::GetTemplateArgArray(const wxString& templateArgs, bool remove_gt_lt, bool add_last)
 {
     wxString word;
-    wxString args = templateArgs; args.Trim(true).Trim(false);
-    if (remove_gt_lt) { args.Remove(0, 1); args.RemoveLast(); }
+    wxString args = templateArgs;
+    args.Trim(true).Trim(false);
+    if (remove_gt_lt)
+    {
+        args.Remove(0, 1);
+        args.RemoveLast();
+    }
 
     wxArrayString container;
     for (size_t i = 0; i < args.Len(); ++i)
@@ -3196,7 +3205,7 @@ wxArrayString ParserThread::GetTemplateArgArray(const wxString& templateArgs, bo
     return container;
 }
 
-void ParserThread::ResolveTemplateFormalArgs(const wxString& templateArgs, wxArrayString& formals)
+void ParserThread::SplitTemplateFormalParameters(const wxString& templateArgs, wxArrayString& formals)
 {
     wxArrayString container = GetTemplateArgArray(templateArgs, false, false);
     size_t n = container.GetCount();
@@ -3215,7 +3224,7 @@ void ParserThread::ResolveTemplateFormalArgs(const wxString& templateArgs, wxArr
 
 }
 
-void ParserThread::ResolveTemplateActualArgs(const wxString& templateArgs, wxArrayString& actuals)
+void ParserThread::SplitTemplateActualParameters(const wxString& templateArgs, wxArrayString& actuals)
 {
     wxArrayString container = GetTemplateArgArray(templateArgs, true, true);
     size_t n = container.GetCount();

@@ -321,10 +321,10 @@ private:
     wxArrayString GetTemplateArgArray(const wxString& templateArgs, bool remove_gt_lt, bool add_last);
 
     /** Split formal template argument list*/
-    void ResolveTemplateFormalArgs(const wxString& templateArgs, wxArrayString& formals);
+    void SplitTemplateFormalParameters(const wxString& templateArgs, wxArrayString& formals);
 
     /** Split actual template argument list*/
-    void ResolveTemplateActualArgs(const wxString& templateArgs, wxArrayString& actuals);
+    void SplitTemplateActualParameters(const wxString& templateArgs, wxArrayString& actuals);
 
     /** associate formal argument with actual template argument*/
     bool ResolveTemplateMap(const wxString& typeStr, const wxArrayString& actuals,
