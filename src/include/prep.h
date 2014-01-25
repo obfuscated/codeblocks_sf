@@ -39,7 +39,7 @@
         const nullptr_t& operator=(const nullptr_t&);
     } nullptr_;
     #define nullptr nullptr_
-    #define MOZ_HAVE_CXX11_NULLPTR  // prevents mozilla/NullPtr.h from defining nullptr.
+    #define MOZ_HAVE_CXX11_NULLPTR // prevents mozilla/NullPtr.h from defining nullptr.
 
     template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return  lhs.equals(rhs); }
     template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return  rhs.equals(lhs); }
