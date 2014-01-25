@@ -136,6 +136,7 @@ class CompilerGCC : public cbCompilerPlugin
 
         void OnCompile(wxCommandEvent& event);
         void OnCompileFile(wxCommandEvent& event);
+        void OnCleanFile(wxCommandEvent& event);
         void OnRebuild(wxCommandEvent& event);
         void OnCompileAll(wxCommandEvent& event);
         void OnRebuildAll(wxCommandEvent& event);

@@ -180,6 +180,7 @@ int idMenuTargetCompilerOptions                    = wxNewId();
 int idMenuTargetCompilerOptionsSub                 = wxNewId();
 int idMenuCompileFile                              = XRCID("idCompilerMenuCompileFile");
 int idMenuCompileFileFromProjectManager            = wxNewId();
+int idMenuCleanFileFromProjectManager              = wxNewId();
 int idMenuRebuild                                  = XRCID("idCompilerMenuRebuild");
 int idMenuRebuildTarget                            = wxNewId();
 int idMenuRebuildFromProjectManager                = wxNewId();
@@ -227,6 +228,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI(idMenuTargetCompilerOptionsSub,      CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuCompileFile,                   CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuCompileFileFromProjectManager, CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuCleanFileFromProjectManager,   CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuRebuild,                       CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuRebuildTarget,                 CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuRebuildFromProjectManager,     CompilerGCC::OnUpdateUI)
@@ -255,6 +257,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_MENU(idMenuCompileFromProjectManager,       CompilerGCC::Dispatcher)
     EVT_MENU(idMenuCompileFile,                     CompilerGCC::Dispatcher)
     EVT_MENU(idMenuCompileFileFromProjectManager,   CompilerGCC::Dispatcher)
+    EVT_MENU(idMenuCleanFileFromProjectManager,     CompilerGCC::Dispatcher)
     EVT_MENU(idMenuRebuild,                         CompilerGCC::Dispatcher)
     EVT_MENU(idMenuRebuildFromProjectManager,       CompilerGCC::Dispatcher)
     EVT_MENU(idMenuBuildWorkspace,                  CompilerGCC::Dispatcher)
@@ -597,8 +600,12 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
             // popup menu on a compilable file
             menu->AppendSeparator();
             menu->Append(idMenuCompileFileFromProjectManager, _("Build file"));
+            menu->Append(idMenuCleanFileFromProjectManager,   _("Clean file"));
             if (IsRunning())
+            {
                 menu->Enable(idMenuCompileFileFromProjectManager, false);
+                menu->Enable(idMenuCleanFileFromProjectManager,   false);
+            }
         }
     }
 }
@@ -636,6 +643,8 @@ void CompilerGCC::Dispatcher(wxCommandEvent& event)
         OnCompileFile(event);
     else if (eventId == idMenuCompileFileFromProjectManager)
         OnCompileFile(event);
+    else if (eventId == idMenuCleanFileFromProjectManager)
+        OnCleanFile(event);
     else if (eventId == idMenuRebuild)
         OnRebuild(event);
     else if (eventId == idMenuRebuildFromProjectManager)
@@ -2991,6 +3000,46 @@ void CompilerGCC::OnCompileFile(wxCommandEvent& event)
     StartCompileFile(file);
 }
 
+void CompilerGCC::OnCleanFile(wxCommandEvent& event)
+{
+    if (event.GetId() == idMenuCleanFileFromProjectManager)
+    {
+        FileTreeData* ftd = DoSwitchProjectTemporarily();
+        ProjectFile* pf = ftd->GetProjectFile();
+        if (!pf)
+            return;
+
+        ProjectBuildTarget* bt = GetBuildTargetForFile(pf);
+        if (!bt)
+            return;
+
+        Compiler* compiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+        if (!compiler)
+            return;
+
+        if ( !CheckProject() ) // ensures m_pProject is not NULL
+          return;
+
+        wxSetWorkingDirectory(m_pProject->GetBasePath());
+
+        wxFileName fn(pf->GetObjName());
+        wxString obj_name = (compiler->GetSwitches().UseFlatObjects) ? fn.GetFullName() : fn.GetFullPath();
+        wxString obj_file = wxFileName(bt->GetObjectOutput() + wxFILE_SEP_PATH + obj_name).GetFullPath();
+        Manager::Get()->GetMacrosManager()->ReplaceEnvVars(obj_file);
+
+        wxFileName obj_fn(obj_file);
+        if ( obj_fn.FileExists() )
+        {
+            if ( wxRemoveFile(obj_file) )
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("File has been removed: %s"), obj_file.wx_str()));
+            else
+                Manager::Get()->GetLogManager()->DebugLog(F(_T("Removing file failed for: %s"), obj_file.wx_str()));
+        }
+        else
+            Manager::Get()->GetLogManager()->DebugLog(F(_T("File to remove does not exist: %s"), obj_file.wx_str()));
+    }
+}
+
 void CompilerGCC::OnRebuild(wxCommandEvent& event)
 {
     CheckProject();
@@ -3116,7 +3165,7 @@ void CompilerGCC::OnProjectCompilerOptions(cb_unused wxCommandEvent& event)
         if (cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject())
             Configure(prj);
     }
-} // end of OnProjectCompilerOptions
+}
 
 void CompilerGCC::OnTargetCompilerOptions(cb_unused wxCommandEvent& event)
 {
@@ -3156,7 +3205,7 @@ void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
         DoUpdateTargetMenu(i);
         m_pToolTarget->SetSelection(i);
     }
-} // end of OnSelectTarget
+}
 
 void CompilerGCC::OnNextError(cb_unused wxCommandEvent& event)
 {
@@ -3189,6 +3238,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 //        mbar->Enable(idMenuCompileFromProjectManager, !running && prj);
         mbar->Enable(idMenuCompileFile,      !running && ed &&          !otherRunning);
 //        mbar->Enable(idMenuCompileFileFromProjectManager, !running && prj);
+//        mbar->Enable(idMenuCleanFileFromProjectManager,   !running && prj);
         mbar->Enable(idMenuRebuild,          !running && prj &&         !otherRunning);
         mbar->Enable(idMenuRebuildWorkspace, !running && prj &&         !otherRunning);
 //        mbar->Enable(idMenuRebuildFromProjectManager, !running && prj);
