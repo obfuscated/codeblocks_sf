@@ -331,7 +331,7 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
         RegisteredPlugins const & GetAllDebuggers() const;
         RegisteredPlugins & GetAllDebuggers();
         cbDebuggerPlugin* GetActiveDebugger();
-        void SetActiveDebugger(cbDebuggerPlugin* activeDebugger, ConfigurationVector::iterator config);
+        void SetActiveDebugger(cbDebuggerPlugin* activeDebugger, ConfigurationVector::const_iterator config);
         void SetTargetsDefaultAsActiveDebugger();
         bool IsActiveDebuggerTargetsDefault() const;
 

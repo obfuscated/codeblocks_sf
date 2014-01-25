@@ -76,13 +76,13 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
     m_commonPanel = new DebuggerSettingsCommonPanel(m_treebook);
     m_treebook->AddPage(m_commonPanel, _("Common"));
 
-    DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
-    for (DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
+    const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
     {
-        DebuggerManager::PluginData &data = it->second;
+        const DebuggerManager::PluginData &data = it->second;
         m_treebook->AddPage(new DebuggerSettingsPanel(m_treebook, this, it->first), it->first->GetGUIName());
 
-        for (DebuggerManager::ConfigurationVector::iterator itConfig = data.GetConfigurations().begin();
+        for (DebuggerManager::ConfigurationVector::const_iterator itConfig = data.GetConfigurations().begin();
              itConfig != data.GetConfigurations().end();
              ++itConfig)
         {
@@ -122,10 +122,10 @@ void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
 
     DebuggerManager *dbgManager = Manager::Get()->GetDebuggerManager();
 
-    DebuggerManager::RegisteredPlugins &plugins = dbgManager->GetAllDebuggers();
+    const DebuggerManager::RegisteredPlugins &plugins = dbgManager->GetAllDebuggers();
     ConfigManager *mainConfig = Manager::Get()->GetConfigManager(wxT("debugger_common"));
 
-    for (DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
     {
         wxString path(wxT("/sets/"));
         path << it->first->GetSettingsName();
@@ -160,7 +160,7 @@ void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
     dbgManager->GetLogger(normalIndex);
 
     cbDebuggerPlugin *activePlugin = dbgManager->GetActiveDebugger();
-    for (DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
     {
         it->first->SetupLog(normalIndex);
         it->first->OnConfigurationChange(activePlugin == it->first);

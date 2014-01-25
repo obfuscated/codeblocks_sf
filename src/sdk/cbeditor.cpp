@@ -2292,10 +2292,10 @@ void cbEditor::RefreshBreakpointMarkers()
     while ((line = c->MarkerNext(line, (1 << BREAKPOINT_OTHER_MARKER))) != -1)
         MarkerToggle(BREAKPOINT_OTHER_MARKER, line);
 
-    DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
-    for (DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
+    const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
     {
-        cbDebuggerPlugin *debugger = it->first;
+        const cbDebuggerPlugin *e = it->first;
         if (debugger == Manager::Get()->GetDebuggerManager()->GetActiveDebugger())
         {
             for (int ii = 0; ii < debugger->GetBreakpointsCount(); ++ii)
@@ -3262,9 +3262,9 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         // although we only reach this part of the code only if a line has been added/removed
         // so, yes, it might not be that bad after all
         int startline = m_pControl->LineFromPosition(event.GetPosition());
-        DebuggerManager::RegisteredPlugins plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+        const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
         cbDebuggerPlugin *active = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-        for (DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
+        for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
         {
             if (it->first != active)
                 it->first->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);

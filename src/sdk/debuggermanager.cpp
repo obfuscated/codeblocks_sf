@@ -1139,14 +1139,14 @@ inline void RefreshBreakpoints(cb_unused const cbDebuggerPlugin* plugin)
     }
 }
 
-void DebuggerManager::SetActiveDebugger(cbDebuggerPlugin* activeDebugger, ConfigurationVector::iterator config)
+void DebuggerManager::SetActiveDebugger(cbDebuggerPlugin* activeDebugger, ConfigurationVector::const_iterator config)
 {
     RegisteredPlugins::const_iterator it = m_registered.find(activeDebugger);
     cbAssert(it != m_registered.end());
 
     m_useTargetsDefault = false;
     m_activeDebugger = activeDebugger;
-    int index = std::distance<ConfigurationVector::const_iterator>(it->second.GetConfigurations().begin(), config);
+    int index = std::distance(it->second.GetConfigurations().begin(), config);
     m_activeDebugger->SetActiveConfig(index);
 
     WriteActiveDebuggerConfig(it->first->GetSettingsName(), index);

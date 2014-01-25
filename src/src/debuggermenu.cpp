@@ -364,11 +364,11 @@ void DebuggerMenuHandler::RebuildMenus()
     menu->AppendRadioItem(idMenuDebugActiveTargetsDefault, _("Target's default"),
                           _("Use the debugger associated with the compiler for the active target"));
 
-    DebuggerManager::RegisteredPlugins &allDebugger = dbgManager->GetAllDebuggers();
-    for (DebuggerManager::RegisteredPlugins::iterator it = allDebugger.begin(); it != allDebugger.end(); ++it)
+    const DebuggerManager::RegisteredPlugins &allDebugger = dbgManager->GetAllDebuggers();
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = allDebugger.begin(); it != allDebugger.end(); ++it)
     {
-        DebuggerManager::ConfigurationVector &configs = it->second.GetConfigurations();
-        for (DebuggerManager::ConfigurationVector::iterator itConf = configs.begin(); itConf != configs.end(); ++itConf)
+        const DebuggerManager::ConfigurationVector &configs = it->second.GetConfigurations();
+        for (DebuggerManager::ConfigurationVector::const_iterator itConf = configs.begin(); itConf != configs.end(); ++itConf)
         {
             long id = (*itConf)->GetMenuId();
             if (id == wxID_ANY)
@@ -734,12 +734,12 @@ void DebuggerMenuHandler::OnAddWatch(cb_unused wxCommandEvent& event)
 void DebuggerMenuHandler::OnActiveDebuggerClick(wxCommandEvent& event)
 {
     DebuggerManager *manager = Manager::Get()->GetDebuggerManager();
-    DebuggerManager::RegisteredPlugins &plugins = manager->GetAllDebuggers();
+    const DebuggerManager::RegisteredPlugins &plugins = manager->GetAllDebuggers();
 
-    for(DebuggerManager::RegisteredPlugins::iterator it = plugins.begin(); it != plugins.end(); ++it)
+    for(DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
     {
-        DebuggerManager::ConfigurationVector &configs = it->second.GetConfigurations();
-        for (DebuggerManager::ConfigurationVector::iterator itConf = configs.begin(); itConf != configs.end(); ++itConf)
+        const DebuggerManager::ConfigurationVector &configs = it->second.GetConfigurations();
+        for (DebuggerManager::ConfigurationVector::const_iterator itConf = configs.begin(); itConf != configs.end(); ++itConf)
         {
             if((*itConf)->GetMenuId() == event.GetId())
             {
