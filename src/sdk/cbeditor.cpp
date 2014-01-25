@@ -2295,7 +2295,7 @@ void cbEditor::RefreshBreakpointMarkers()
     const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
     for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
     {
-        const cbDebuggerPlugin *e = it->first;
+        const cbDebuggerPlugin *debugger = it->first;
         if (debugger == Manager::Get()->GetDebuggerManager()->GetActiveDebugger())
         {
             for (int ii = 0; ii < debugger->GetBreakpointsCount(); ++ii)
