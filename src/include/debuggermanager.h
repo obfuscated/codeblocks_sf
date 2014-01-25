@@ -234,7 +234,6 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
             friend class DebuggerManager;
 
             PluginData() :  m_lastConfigID(-1) {}
-            ~PluginData() { ClearConfigurations(); }
 
             ConfigurationVector& GetConfigurations() { return m_configurations; }
             const ConfigurationVector& GetConfigurations() const { return m_configurations; }

@@ -766,6 +766,7 @@ bool DebuggerManager::UnregisterDebugger(cbDebuggerPlugin *plugin)
     if(it == m_registered.end())
         return false;
 
+    it->second.ClearConfigurations();
     m_registered.erase(it);
     if (plugin == m_activeDebugger)
     {
