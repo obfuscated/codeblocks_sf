@@ -136,7 +136,7 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
         generatedFiles[i]->RemoveBuildTarget(targetName);
 }
 
-const wxArrayString& ProjectFile::GetbuildTargets() const
+const wxArrayString& ProjectFile::GetBuildTargets() const
 {
     return buildTargets;
 }
@@ -346,7 +346,6 @@ pfDetails::pfDetails(ProjectBuildTarget* target, ProjectFile* pf)
 void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
 {
     wxString sep = wxFILE_SEP_PATH;
-    wxFileName tmp;
 
     wxFileName prjbase(target->GetParentProject()->GetBasePath());
 
@@ -361,7 +360,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     source_file_native = pf->relativeFilename;
     source_file_absolute_native = pf->file.GetFullPath();
 
-    tmp = pf->GetObjName();
+    wxFileName tmp( pf->GetObjName() );
     FileType ft = FileTypeOf(pf->relativeFilename);
 
     Compiler* compiler = target

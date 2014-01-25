@@ -70,7 +70,7 @@ class ProjectFile
         /**
          * @return An array of strings, containing the names of all the build
          * targets this file belongs to. */
-        const wxArrayString& GetbuildTargets() const;
+        const wxArrayString& GetBuildTargets() const;
 
         /** Show the file properties dialog.
           * @param parent The parent window for the dialog (can be NULL).
