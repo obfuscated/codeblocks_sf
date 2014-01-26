@@ -1073,9 +1073,9 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
     ProjectManager* manager = Manager::Get()->GetProjectManager();
     wxTreeCtrl* tree = manager->GetUI().GetTree();
     wxTreeItemId sel = manager->GetUI().GetTreeSelection();
-    FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : 0;
+    FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : nullptr;
     if (!ftd)
-        return 0L;
+        return nullptr;
     // copy ftd to a new instance, because after the SetProject() call
     // that follows, ftd will no longer be valid...
     FileTreeData* newFtd = new FileTreeData(*ftd);
