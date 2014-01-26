@@ -2535,7 +2535,10 @@ wxTreeItemId ProjectAddTreeNode(cbProject* project, wxTreeCtrl* tree,  const wxS
     wxTreeItemId ret;
 
     if (text.IsEmpty())
+    {
+        delete data;
         return ret;
+    }
 
     wxString path = text;
 
@@ -2548,7 +2551,10 @@ wxTreeItemId ProjectAddTreeNode(cbProject* project, wxTreeCtrl* tree,  const wxS
         path.Remove(0, 1);
 
     if (path.IsEmpty())
+    {
+        delete data;
         return ret;
+    }
 
     int pos = path.Find(_T('/'));
     if (pos == -1)
