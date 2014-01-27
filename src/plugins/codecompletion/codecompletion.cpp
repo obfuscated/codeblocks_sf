@@ -3600,7 +3600,12 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
             for (unsigned int idxFn = 0; idxFn < m_FunctionsScope.size(); ++idxFn)
             {
                 const FunctionScope& fs = m_FunctionsScope[idxFn];
-                m_Function->Append(fs.Scope + fs.Name);
+                if (fs.Name != wxEmptyString)
+                    m_Function->Append(fs.Scope + fs.Name);
+                else if (fs.Scope.EndsWith(wxT("::")))
+                    m_Function->Append(fs.Scope.substr(0, fs.Scope.length()-2));
+                else
+                    m_Function->Append(fs.Scope);
             }
 
             m_Function->Thaw();
