@@ -145,6 +145,10 @@ namespace ParserCommon
     EFileType FileType(const wxString& filename, bool force_refresh = false);
 }// namespace ParserCommon
 
+
+// both the CodeCompletion plugin and the cc_test project share this class definition
+// but they use different cpp files, the former use parser.cpp and the later use parserdummy.cpp
+// parserdummy.cpp just implement a simplified ParserBase and Parser class used for testing only.
 class ParserBase : public wxEvtHandler
 {
     friend class ParserThread;
@@ -153,7 +157,7 @@ public:
     ParserBase();
     virtual ~ParserBase();
 
-    virtual void AddPriorityHeaders(cb_unused const wxString& filename, cb_unused bool systemHeaderFile) { ; }
+    virtual void AddPriorityHeader(cb_unused const wxString& filename, cb_unused bool systemHeaderFile) { ; }
     virtual void AddBatchParse(cb_unused const StringList& filenames)                                    { ; }
     virtual void AddParse(cb_unused const wxString& filename)                                            { ; }
     virtual void AddPredefinedMacros(cb_unused const wxString& defs)                                     { ; }
@@ -187,9 +191,11 @@ public:
      * will be searched.
      */
     wxArrayString        FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
-
+    /** read Parser options from configure file */
     void            ReadOptions();
+    /** write Parse options to configure file */
     void            WriteOptions();
+
     ParserOptions&  Options()             { return m_Options;        }
     BrowserOptions& ClassBrowserOptions() { return m_BrowserOptions; }
 
@@ -211,10 +217,14 @@ protected:
       */
     TokenTree*           m_TempTokenTree;
 
+    /** options for how the parser try to parse files */
     ParserOptions        m_Options;
+
+    /** options for how the symbol browser was shown */
     BrowserOptions       m_BrowserOptions;
 
 private:
+    /** wxString -> wxString map*/
     SearchTree<wxString> m_GlobalIncludes;
 
     /** the include directories can be either three kinds below:
@@ -229,7 +239,8 @@ private:
   *
   * Parser class contains the TokenTree which is a trie structure to record the token information.
   * For details about trie, see http://en.wikipedia.org/wiki/Trie
-  * The parser class controls ParserThreads in a pool, which holds ParserThread objects for each source file.
+  * The parser class manages ParserThreads in a ThreadPool. A ParserThread object is associated with a single
+  * source file.
   * Batch parse mode means we have a lot of files to be parsed, so a lot of ParserThreads were generated and
   * added to the ThreadPool, and finally, the ParserThread was executed by ThreadPool.
   */
@@ -246,11 +257,13 @@ public:
     /** destructor */
     virtual ~Parser();
 
-    /** Add the priority header files, these files will be parsed with the sequence as they added.
+    /** Add the priority header files, these files will be parsed in FIFO mode (firstly added file will
+     *  be parsed firstly.
      * @param filename input priority header file name
-     * @param systemHeaderFile true if it is a system header file
+     * @param systemHeaderFile true if it is a system header file, those files are specially handled
+     * at the last stage of parsing, they will be parsed again.
      */
-    virtual void AddPriorityHeaders(const wxString& filename, bool systemHeaderFile);
+    virtual void AddPriorityHeader(const wxString& filename, bool systemHeaderFile);
 
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
      * Note that when some "#include" files were added to the batch parse,
@@ -269,16 +282,30 @@ public:
     /** set the associated C::B project pointer. (only used by one parser for whole workspace) */
     virtual bool UpdateParsingProject(cbProject* project);
 
-    /** Must add a locker before call all named ParseBufferXXX functions
+    /** Must add a locker before call all named ParseBufferXXX functions, ParseBuffer function will
+     * directly run the parsing in the same thread as the caller. So, take care if the time is limited.
+     * this function usually used to parse the function body to fetch the local variable information.
      */
     virtual bool ParseBuffer(const wxString& buffer, bool isLocal, bool bufferSkipBlocks = false,
                              bool isTemp = false, const wxString& filename = wxEmptyString,
                              int parentIdx = -1, int initLine = 0);
+
+    /** parser the current editor control, this function is used to list all the functions in the
+     * current code editor
+     */
     virtual bool ParseBufferForFunctions(const wxString& buffer);
+
+    /** parse the buffer for collecting exposed namespace scopes*/
     virtual bool ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec& result);
+
+    /** parse the buffer for collecting using namespace directive*/
     virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result, bool bufferSkipBlocks = true);
 
+    /** TODO, Reparse just add a file to the parsing queue, it looks like the isLocal parameter is
+     * not used in Parser::Reparse function
+     */
     virtual bool Reparse(const wxString& filename, bool isLocal = true);
+
     virtual bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true);
     virtual bool RemoveFile(const wxString& filename);
     virtual bool IsFileParsed(const wxString& filename);
@@ -300,7 +327,12 @@ protected:
     /** Not used, because the ThreadPool only support running ONE ParserThread concurrently */
     void SetMaxThreads(unsigned int max) { m_Pool.SetConcurrentThreads(max); }
 
+    /** parse the file, either immediately or delayed.
+     * @param locked give the status of the Tokentree, false means the tree is not locked
+     * @param loader is the object to load the file to internally buffer (lower down to Tokenizer)
+     */
     bool Parse(const wxString& filename, bool isLocal = true, bool locked = false, LoaderBase* loader = NULL);
+
     void ReparseModifiedFiles();
     void TerminateAllThreads();
 

@@ -1206,7 +1206,7 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
             file = file.Left(pos);
             CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Add priority header file: '%s'"), file.wx_str()));
             // put the file to priority header containers
-            parser->AddPriorityHeaders(file, isSystemHeader);
+            parser->AddPriorityHeader(file, isSystemHeader);
         }
 
         CCLogger::Get()->DebugLog(F(_T("NativeParser::DoFullParsing(): Add %lu priority file(s) for project '%s'..."),

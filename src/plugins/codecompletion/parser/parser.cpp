@@ -206,7 +206,7 @@ void ParserBase::ReadOptions()
     // Page "Documentation:
     m_Options.storeDocumentation     = cfg->ReadBool(_T("/use_documentation_helper"),         false);
 
-    // force e-read of file types
+    // force re-read of file types
     ParserCommon::EFileType ft_dummy = ParserCommon::FileType(wxEmptyString, true);
     wxUnusedVar(ft_dummy);
 }
@@ -478,7 +478,7 @@ void Parser::AddPredefinedMacros(const wxString& defs)
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
 
-void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
+void Parser::AddPriorityHeader(const wxString& filename, bool systemHeaderFile)
 {
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
@@ -497,7 +497,7 @@ void Parser::AddPriorityHeaders(const wxString& filename, bool systemHeaderFile)
 
     if (!m_IsParsing)
     {
-        TRACE(_T("Parser::AddPriorityHeaders(): Starting m_BatchTimer."));
+        TRACE(_T("Parser::AddPriorityHeader(): Starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
     }
 
@@ -807,6 +807,9 @@ bool Parser::RemoveFile(const wxString& filename)
 
 bool Parser::AddFile(const wxString& filename, cbProject* project, cb_unused bool isLocal)
 {
+    // this function will lock the token tree twice
+    // the first place is the function IsFileParsed() function
+    // then the AddParse() call
     if (project != m_Project)
         return false;
 
@@ -1119,10 +1122,8 @@ void Parser::ReparseModifiedFiles()
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    // Collect files to be re-parsed and therefore be removed before:
-    // Loop two times so that we reparse modified *header* files first
-    // because they usually hold definitions which need to exist
-    // when we parse the normal source files...
+    // Collect files to be re-parsed
+    // Loop two times so that we reparse modified *header* files first, next *implementation* files
     for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokenTree->GetFilename(*it);
@@ -1140,7 +1141,8 @@ void Parser::ReparseModifiedFiles()
         files_idx.push(*it);
     }
 
-    // Now actually remove the files from the tree
+    // Now actually remove the files from the tree, once a file is removed from the tree, the file
+    // and its tokens are totally removed
     while (!files_idx.empty())
     {
         m_TokenTree->RemoveFile(files_idx.front());
@@ -1156,6 +1158,7 @@ void Parser::ReparseModifiedFiles()
 
     while (!files_list.empty())
     {
+        // add those files again, so they will be parsed later
         AddParse(files_list.front());
         files_list.pop();
     }

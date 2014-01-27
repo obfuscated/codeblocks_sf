@@ -264,6 +264,16 @@ protected:
                                 size_t             curLine,
                                 const wxString&    file);
 
+    /** call tips are tips when you are entering some functions, such as you have a class definition
+     *  class A {
+     *  public:
+     *      void A() {};
+     *      void test() { };
+     *  };
+     *  when you are entering some text like
+     *  A(|    or  objA.test(|
+     * then there will be a tip window show the function prototype of the function
+     */
     void ComputeCallTip(TokenTree*         tree,
                         const TokenIdxSet& tokens,
                         int                chars_per_line,
