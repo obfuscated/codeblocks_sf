@@ -90,13 +90,31 @@ public:
     void         EraseFilesToBeReparsedByIndex(size_t fileIdx)         { m_FilesToBeReparsed.erase(fileIdx);   }
 
     // Parsing related functions
+    /** put the filename in the m_FilenameMap, and return the file index, if this file is already in
+     * the m_FilenameMap, it just return the file index.
+     */
     size_t         InsertFileOrGetIndex(const wxString& filename);
+
     size_t         GetFileMatches(const wxString& filename, std::set<size_t>& result, bool caseSensitive, bool is_prefix);
+
     size_t         GetFileIndex(const wxString& filename);
+
     const wxString GetFilename(size_t fileIdx) const;
+
+    /** mark a file to be parsed. Or, assigned, return non-zero if success. */
     size_t         ReserveFileForParsing(const wxString& filename, bool preliminary = false);
+
+    /** mark the file as "need to be reparsed" status, usually happens that this file is saved(updated)
+     * so a reparse need to be done.
+     */
     void           FlagFileForReparsing(const wxString& filename);
+
+    /** mark the file status as fpsDone */
     void           FlagFileAsParsed(const wxString& filename);
+
+    /** is the file name is in the tokentree, and it's status is either assigned or beingparsed or done
+     * also, should make sure that his file is not marked as "need to be reparsed".
+     */
     bool           IsFileParsed(const wxString& filename);
 
     void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);

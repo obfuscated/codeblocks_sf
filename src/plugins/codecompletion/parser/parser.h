@@ -258,7 +258,8 @@ public:
     virtual ~Parser();
 
     /** Add the priority header files, these files will be parsed in FIFO mode (firstly added file will
-     *  be parsed firstly.
+     *  be parsed firstly. This function does not running the syntax analysis, but just kick the timer
+     *  so the actual work will be delayed.
      * @param filename input priority header file name
      * @param systemHeaderFile true if it is a system header file, those files are specially handled
      * at the last stage of parsing, they will be parsed again.
@@ -277,9 +278,14 @@ public:
      */
     virtual void AddParse(const wxString& filename);
 
+    /** the predefined macro definition string was collected from the GCC command line, this function
+     *  add the string to an internal m_PredefinedMacros, and switch the ParserState
+     */
     virtual void AddPredefinedMacros(const wxString& defs);
 
-    /** set the associated C::B project pointer. (only used by one parser for whole workspace) */
+    /** set the associated C::B project pointer. (only used by one parser for whole workspace)
+     *  @return true if it can do the switch, other wise, return false, and print some debug logs.
+     */
     virtual bool UpdateParsingProject(cbProject* project);
 
     /** Must add a locker before call all named ParseBufferXXX functions, ParseBuffer function will
@@ -301,16 +307,32 @@ public:
     /** parse the buffer for collecting using namespace directive*/
     virtual bool ParseBufferForUsingNamespace(const wxString& buffer, wxArrayString& result, bool bufferSkipBlocks = true);
 
-    /** TODO, Reparse just add a file to the parsing queue, it looks like the isLocal parameter is
-     * not used in Parser::Reparse function
+    /** mark this file to be re-parsed in the TokenTree, tick the reparse timer, note it looks like
+     * the isLocal parameter is not used in Parser::Reparse function.
+     * A better function name could be: MarkFileNeedToBeReParsed()
      */
     virtual bool Reparse(const wxString& filename, bool isLocal = true);
 
+    /** this usually happens when user adds some files to an existing project, it just use AddParse()
+     * function internally to add the file. and switch the ParserState to ParserCommon::ptAddFileToParser.
+     */
     virtual bool AddFile(const wxString& filename, cbProject* project, bool isLocal = true);
+
+    /** this usually happens when the user removes a file from the existing project, it will remove
+     * all the tokens belong to the file.
+     */
     virtual bool RemoveFile(const wxString& filename);
+
+    /** check to see a file is parsed already, it first check the TokenTree to see whether it has
+     * the specified file, but if a file is already queued (put in m_BatchParseFiles), we regard it
+     * as already parsed.
+     */
     virtual bool IsFileParsed(const wxString& filename);
 
+    /** check to see whether Parser is in Idle mode, there is no work need to be done in the Parser*/
     virtual bool     Done();
+
+    /** if the Parser is not in Idle mode, show which need to be done */
     virtual wxString NotDoneReason();
 
 protected:
@@ -333,7 +355,10 @@ protected:
      */
     bool Parse(const wxString& filename, bool isLocal = true, bool locked = false, LoaderBase* loader = NULL);
 
+    /** delete those files from the TokenTree, and add them again thought AddParse() function */
     void ReparseModifiedFiles();
+
+    /** remove all the queued tasks in m_PoolTask and cancel all the tasks in m_Pool*/
     void TerminateAllThreads();
 
     /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
@@ -344,6 +369,11 @@ protected:
      */
     void OnAllThreadsDone(CodeBlocksEvent& event);
 
+    /** some files in the Tokentree is marked as need to be reparsed, this can be done by a call
+     * of Reparse() before. So, in this timer event handler, we need to remove all the tokens of
+     * files in the Tree, and then re-parse them again. This is done by AddParse() again. the Parser
+     * status now switch to ParserCommon::ptReparseFile.
+     */
     void OnReparseTimer(wxTimerEvent& event);
 
     /** A timer is used to optimized the event handling for parsing, e.g. several files/projects were added
@@ -358,12 +388,17 @@ protected:
     void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info = wxEmptyString);
 
 private:
+    /** the only usage of this function is in the Parserthread class, when handling include directives
+     * the parserthread use some call like m_Parent->ParseFile() to call this function, but this function
+     * just call Parser::Parse() function, which either run the syntax analysis immediately or create
+     * a parsing task in the Pool.
+     */
     virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
     void ConnectEvents();
     void DisconnectEvents();
     /** when initialized, this variable will be an instance of a NativeParser */
     wxEvtHandler*             m_Parent;
-    /** referring to the cbp project currently parsing */
+    /** referring to the active C::B cbp project currently parsing */
     cbProject*                m_Project;
 
 protected:

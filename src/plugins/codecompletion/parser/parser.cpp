@@ -80,6 +80,12 @@ namespace ParserCommon
     static const int PARSER_REPARSE_TIMER_DELAY              = 100;
 
     static volatile Parser* s_CurrentParser = nullptr;
+
+    // NOTE (ollydbg#1#): This static variable is used to project changing the member variable of
+    // the Parser class from different thread. Basically, I should not be a static wxMutex for all
+    // the instance of the Parser instance, it should  be a member variable of the Parser class.
+    // Maybe, the author of this locker (Loaden?) think that access to different Parser instance
+    // from different thread should also be avoid.
     static          wxMutex s_ParserMutex;
 
     int idParserStart = wxNewId();
@@ -489,9 +495,12 @@ void Parser::AddPriorityHeader(const wxString& filename, bool systemHeaderFile)
     m_PriorityHeaders.push_back(filename);
 
     // Save system priority headers, when all task is over, we need reparse it!
+    // This could give a better result of parsing those files
     if (systemHeaderFile)
         m_SystemPriorityHeaders.push_back(filename);
 
+    // when we are adding prioirity headers, which is the first stage of the parsing, so we change
+    // the parser status
     if (m_ParserState == ParserCommon::ptUndefined)
         m_ParserState = ParserCommon::ptCreateParser;
 
@@ -502,10 +511,15 @@ void Parser::AddPriorityHeader(const wxString& filename, bool systemHeaderFile)
     }
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
+
+    // FIXME (ollydbg#1#): The logic here is: stop the m_BatchTimer, what about if m_IsParsing is
+    // true? It looks like there is no way to start the timer again in this function?
 }
 
 void Parser::AddBatchParse(const StringList& filenames)
 {
+    // this function has the same logic as the previous function Parser::AddPriorityHeader
+    // it just add some files to a m_BatchParseFiles, and tick the m_BatchTimer timer.
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
@@ -530,6 +544,8 @@ void Parser::AddBatchParse(const StringList& filenames)
 
 void Parser::AddParse(const wxString& filename)
 {
+    // similar logic as the Parser::AddBatchParse, but this function only add one file to
+    // m_BatchParseFiles member, also it does not change the m_ParserState state.
     if (m_BatchTimer.IsRunning())
         m_BatchTimer.Stop();
 
@@ -571,6 +587,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
+            //check to see whether it is assigned already
             canparse = !m_TokenTree->IsFileParsed(filename);
             if (canparse)
                 canparse = m_TokenTree->ReserveFileForParsing(filename, true) != 0;
@@ -854,6 +871,7 @@ bool Parser::Reparse(const wxString& filename, cb_unused bool isLocal)
 
 void Parser::TerminateAllThreads()
 {
+    // FIXME (ollydbg#1#): Do we need to use a mutex to protect the m_PoolTask accessing?
     while (!m_PoolTask.empty())
     {
         PTVector& v = m_PoolTask.front();
