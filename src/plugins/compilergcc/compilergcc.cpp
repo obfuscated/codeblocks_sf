@@ -1076,13 +1076,11 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
     FileTreeData* ftd = sel.IsOk() ? (FileTreeData*)tree->GetItemData(sel) : nullptr;
     if (!ftd)
         return nullptr;
-    // copy ftd to a new instance, because after the SetProject() call
-    // that follows, ftd will no longer be valid...
-    FileTreeData* newFtd = new FileTreeData(*ftd);
+    // We're not rebuilding the tree, so the ftd pointer is still valid after the call.
     Manager::Get()->GetProjectManager()->SetProject(ftd->GetProject(), false);
     AskForActiveProject();
 
-    return newFtd;
+    return ftd;
 }
 
 void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
