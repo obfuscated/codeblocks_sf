@@ -366,6 +366,7 @@ private:
 
     /** collect compiler specific predefined preprocessor definition, this is usually run a special
      * compiler command, like GCC -dM for gcc.
+     * @return true if there are some macro definition added, else it is false
      */
     bool AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser);
 
@@ -383,6 +384,7 @@ private:
 
     /** collect project (user) defined preprocessor definition, such as for wxWidgets project, the
      * macro may have "#define wxUSE_UNICODE" defined in its project file.
+     * @return true if there are some macro definition added, else it is false
      */
     bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
 
@@ -416,8 +418,10 @@ private:
     /** Init cc search member variables */
     void InitCCSearchVariables();
 
-    /** Add all project files to parser */
-    void AddProjectToParser(cbProject* project);
+    /** Add one project to the common parser in one parser for the whole workspace mode
+     * @return true means there are some thing (macro and files) need to parse, otherwise it is false
+     */
+    bool AddProjectToParser(cbProject* project);
 
     /** Remove cbp from the common parser, this only happens in one parser for whole workspace mode
      * when a parser is removed from the workspace, we should remove the project from the parser

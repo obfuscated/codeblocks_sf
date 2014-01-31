@@ -398,7 +398,7 @@ private:
     void DisconnectEvents();
     /** when initialized, this variable will be an instance of a NativeParser */
     wxEvtHandler*             m_Parent;
-    /** referring to the active C::B cbp project currently parsing */
+    /** referring to the C::B cbp project currently parsing in one parser per workspace mode*/
     cbProject*                m_Project;
 
 protected:

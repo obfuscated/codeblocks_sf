@@ -2150,7 +2150,10 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
     parser->AddPredefinedMacros(defs);
 
     TRACE(_T("NativeParser::AddCompilerPredefinedMacros(): Leave"));
-    return true;
+    if (defs.IsEmpty())
+        return false;
+    else
+        return true;
 }
 
 bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs)
@@ -2356,7 +2359,7 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
         param = _T("/D");
 
     if (param.IsEmpty())
-        return true;
+        return false; // no compiler options, return false
 
     wxString defs;
     wxArrayString opts = project->GetCompilerOptions();
@@ -2386,7 +2389,10 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
     TRACE(_T("Add project and current build target defined preprocessor macros:\n%s"), defs.wx_str());
     parser->AddPredefinedMacros(defs);
     TRACE(_T("NativeParser::AddProjectDefinedMacros(): Leave"));
-    return true;
+    if (defs.IsEmpty())
+        return false;
+    else
+        return true;
 }
 
 // These dirs are the built-in search dirs of the compiler itself (GCC).
@@ -2643,12 +2649,21 @@ void NativeParser::OnParsingOneByOneTimer(cb_unused wxTimerEvent& event)
             else
             {
                 ProjectsArray* projs = Manager::Get()->GetProjectManager()->GetProjects();
+                // loop on the whole workspace, and only add a new project to the parser
+                // here the "new" means a project haven't been parsed. Once it was parsed, it is
+                // added to the m_ParsedProjects
                 for (size_t i = 0; i < projs->GetCount(); ++i)
                 {
                     // Only add, if the project is not already parsed
                     if (m_ParsedProjects.find(projs->Item(i)) == m_ParsedProjects.end())
                     {
-                        AddProjectToParser(projs->Item(i));
+                        // AddProjectToParser return true means there are something need to parse, otherwise, it is false
+                        if (!AddProjectToParser(projs->Item(i)))
+                        {
+                            CCLogger::Get()->Log(_T("NativeParser::OnParsingOneByOneTimer(): nothing need to parse in this project, try next project."));
+                            continue;
+                        }
+
                         CCLogger::Get()->DebugLog(_T("NativeParser::OnParsingOneByOneTimer(): Add additional (next) project to parser."));
                         break;
                     }
@@ -2763,24 +2778,24 @@ void NativeParser::InitCCSearchVariables()
     Reset();
 }
 
-void NativeParser::AddProjectToParser(cbProject* project)
+bool NativeParser::AddProjectToParser(cbProject* project)
 {
     wxString prj = (project ? project->GetTitle() : _T("*NONE*"));
     ParserBase* parser = GetParserByProject(project);
     if (parser)
-        return;
+        return false;
 
     if (m_ParsedProjects.empty())
-        return;
+        return false;
 
     m_ParsedProjects.insert(project);
     parser = GetParserByProject(project);
     if (!parser)
-        return;
+        return false;
     else if (!parser->UpdateParsingProject(project))
     {
         m_ParsedProjects.erase(project);
-        return;
+        return false;
     }
 
     // TODO (ollydbg#1#) did exactly the same thing as the function NativeParser::DoFullParsing()?
@@ -2788,14 +2803,24 @@ void NativeParser::AddProjectToParser(cbProject* project)
     CCLogger::Get()->Log(log);
     CCLogger::Get()->DebugLog(log);
 
+    bool needParseMacros = false;
+
     if (!AddCompilerDirs(project, parser))
         CCLogger::Get()->DebugLog(_T("NativeParser::AddProjectToParser(): AddCompilerDirs failed!"));
 
     if (!AddCompilerPredefinedMacros(project, parser))
         CCLogger::Get()->DebugLog(_T("NativeParser::AddProjectToParser(): AddCompilerPredefinedMacros failed!"));
+    else
+        needParseMacros = true;
+
 
     if (!AddProjectDefinedMacros(project, parser))
         CCLogger::Get()->DebugLog(_T("NativeParser::AddProjectToParser(): AddProjectDefinedMacros failed!"));
+    else
+    {
+        if(!needParseMacros)
+            needParseMacros = true;
+    }
 
     if (project)
     {
@@ -2820,6 +2845,9 @@ void NativeParser::AddProjectToParser(cbProject* project)
         }
 
         CCLogger::Get()->DebugLog(F(_("NativeParser::AddProjectToParser(): Done adding %lu files of project (%s) to parser."), static_cast<unsigned long>(fileCount), prj.wx_str()));
+
+        // in some cases, all the files were already be parsed, so fileCount is still 0
+        return ((fileCount>0)||needParseMacros);
     }
     else
     {
@@ -2831,8 +2859,10 @@ void NativeParser::AddProjectToParser(cbProject* project)
             m_StandaloneFiles.Add(editor->GetFilename());
 
             CCLogger::Get()->DebugLog(F(_("NativeParser::AddProjectToParser(): Done adding stand-alone file (%s) of editor to parser."), editor->GetFilename().wx_str()));
+            return true;
         }
     }
+    return false;
 }
 
 bool NativeParser::RemoveProjectFromParser(cbProject* project)
