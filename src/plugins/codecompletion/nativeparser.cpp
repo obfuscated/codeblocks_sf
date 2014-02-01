@@ -2125,7 +2125,7 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
         return false;
 
     if (!parser->Options().wantPreprocessor)
-        return true;
+        return false;
 
     TRACE(_T("NativeParser::AddCompilerPredefinedMacros(): Enter"));
 
