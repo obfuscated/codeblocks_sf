@@ -871,17 +871,23 @@ wxString EditorColourSet::GetSampleCode(HighlightLanguage lang, int* breakLine, 
     if (errorLine)
         *errorLine = mset.m_ErrorLine;
 
-    const wxString shortname = _T("lexer_") + lang + _T(".sample");
+    wxString shortname;
+    if (mset.m_SampleCode.IsEmpty())
+        shortname = _T("lexer_") + lang + _T(".sample");
+    else
+        shortname = mset.m_SampleCode;
+
     // user path first
     wxString path = ConfigManager::GetFolder(sdDataUser) + _T("/lexers/");
-    wxFileName fullname( path + shortname );
-    if ( !fullname.FileExists(path + shortname) )
+    if (wxFileExists(path + shortname))
+        return path + shortname;
+    else
     {
         // global path next
         path = ConfigManager::GetFolder(sdDataGlobal) + _T("/lexers/");
+        if (wxFileExists(path + shortname))
+            return path + shortname;
     }
-    if ( !mset.m_SampleCode.IsEmpty() )
-        return path + mset.m_SampleCode;
     return wxEmptyString;
 }
 
