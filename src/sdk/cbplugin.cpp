@@ -762,7 +762,17 @@ wxString MakeSleepCommand()
     return wxString::Format(wxT("sleep %lu"), 80000000 + ::wxGetProcessId());
 }
 
-wxString GetConsoleTty(int &consolePID)
+struct ConsoleInfo
+{
+    ConsoleInfo(const wxString &path = wxEmptyString, int pid = -1) : ttyPath(path), sleepPID(pid) {}
+
+    bool IsValid() const { return !ttyPath.empty() && sleepPID > 0; }
+
+    wxString ttyPath;
+    int sleepPID;
+};
+
+ConsoleInfo GetConsoleTty(int consolePID)
 {
     // execute the ps x -o command  and read PS output to get the /dev/tty field
     wxArrayString psOutput;
@@ -770,7 +780,7 @@ wxString GetConsoleTty(int &consolePID)
 
     int result = wxExecute(wxT("ps x -o tty,pid,command"), psOutput, psErrors, wxEXEC_SYNC);
     if (result != 0)
-        return wxEmptyString;
+        return ConsoleInfo();
 
     // find task with our unique sleep time
     const wxString &uniqueSleepTimeStr = MakeSleepCommand();
@@ -802,14 +812,11 @@ wxString GetConsoleTty(int &consolePID)
                 // "sleep" string. One for the sleep process and one for the terminal process. We want to skip the
                 // line for the terminal process.
                 if (pidForLine != consolePID)
-                {
-                    consolePID = (int)pidForLine;
-                    return wxT("/dev/") + psCmd.BeforeFirst(' ');;
-                }
+                    return ConsoleInfo(wxT("/dev/") + psCmd.BeforeFirst(' '), pidForLine);
             }
         }
     }
-    return wxEmptyString;
+    return ConsoleInfo();
 }
 }
 #endif
@@ -846,37 +853,34 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
         Manager::Yield();
         ::wxMilliSleep(200);
 
-        // Try to fetch consoleTty first, because this updates the pid if necessary:
-        // newer gnome-terminals do not launch an own process, but our sleep process still
-        // has a valid pid and GetConsoleTty changes the pid to reflect this
-        int localConsolePid = consolePid;
-        consoleTty = GetConsoleTty(localConsolePid);
+        // Try to find tty path and pid for the sleep command we've just executed.
+        const ConsoleInfo &info = GetConsoleTty(consolePid);
 
-        if (localConsolePid != consolePid)
-        {
-            Log(F(_("The process '%s' does not exist, we use the pid of the sleep process '%s' instead."),
-                  cmd.wx_str(), sleepCommand.wx_str()),
-                Logger::warning);
-            consolePid = localConsolePid;
-        }
+        // If there is no sleep command yet, do another iteration after a small delay.
+        if (!info.IsValid())
+            continue;
 
-        // For some reason wxExecute returns PID>0, when the command cannot be launched.
-        // Here we check if the process is alive and the PID is really a valid one.
+        // Try to find if the console window is still alive. Newer terminals like gnome-terminal
+        // try to be easier on resources and use a shared server process. For these terminals the
+        // spawned terminal process exits immediately, but the sleep command is still executed.
+        // If we detect such case we will return the PID for the sleep command instead of the PID
+        // for the terminal.
         if (kill(consolePid, 0) == -1 && errno == ESRCH) {
-            Log(wxString::Format(_("Can't launch console (%s)"), cmd.c_str()), Logger::error);
-            break;
+            DebugLog(F(wxT("Using sleep command's PID as console PID %d, TTY %s"),
+                       info.sleepPID, info.ttyPath.wx_str()));
+            consoleTty = info.ttyPath;
+            return info.sleepPID;
         }
-
-        if (!consoleTty.IsEmpty() )
+        else
         {
-            // show what we found as tty
-            return localConsolePid;
+            DebugLog(F(wxT("Using terminal's PID as console PID %d, TTY %s"), info.sleepPID, info.ttyPath.wx_str()));
+            consoleTty = info.ttyPath;
+            return consolePid;
         }
     }
     // failed to find the console tty
     if (consolePid != 0)
         ::wxKill(consolePid);
-    consolePid = 0;
 #endif // !__WWXMSW__
     return -1;
 }
