@@ -839,7 +839,6 @@ wxString cbDebuggerPlugin::GetConsoleTty(int &ConsolePid)
 {
 #ifndef __WXMSW__
     // execute the ps x -o command  and read PS output to get the /dev/tty field
-    unsigned long ConsPid = ConsolePid;
     wxString psCmd;
     wxArrayString psOutput;
     wxArrayString psErrors;
@@ -855,7 +854,7 @@ wxString cbDebuggerPlugin::GetConsoleTty(int &ConsolePid)
 
     wxString ConsTtyStr;
     wxString ConsPidStr;
-    ConsPidStr << ConsPid;
+    ConsPidStr << ConsolePid;
     // find task with our unique sleep time
     const wxString &uniqueSleepTimeStr = MakeSleepCommand();
     // search the output of "ps pid" command
