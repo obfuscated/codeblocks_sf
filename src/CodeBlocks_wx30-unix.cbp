@@ -162,7 +162,6 @@
 				<Option output="devel30/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
@@ -191,7 +190,6 @@
 				<Option output="devel30/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -212,7 +210,6 @@
 				<Option output="devel30/share/codeblocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -231,7 +228,6 @@
 				<Option output="devel30/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -260,7 +256,7 @@
 				<Option output="devel30/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;plugins/compilergcc/depslib/libdepslib30.a;" />
+				<Option external_deps="plugins/compilergcc/depslib/libdepslib30.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -283,7 +279,6 @@
 				<Option output="devel30/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -303,7 +298,6 @@
 				<Option output="devel30/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -328,7 +322,6 @@
 				<Option output="devel30/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -346,7 +339,6 @@
 				<Option output="devel30/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -364,7 +356,6 @@
 				<Option output="devel30/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -382,7 +373,6 @@
 				<Option output="devel30/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -400,7 +390,6 @@
 				<Option output="devel30/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -424,7 +413,6 @@
 				<Option output="devel30/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -444,7 +432,6 @@
 				<Option output="devel30/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/codeblocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
@@ -469,7 +456,6 @@
 				<Option output="devel30/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30/share/CodeBlocks/plugins" />
 				<Option object_output=".objs30" />
-				<Option external_deps="devel30/libcodeblocks.so;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="1" />
