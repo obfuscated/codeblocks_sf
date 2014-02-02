@@ -144,7 +144,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     {
         if (platform::id != platform::macosx && platform::id != platform::darwin)
         {
-            combo->Append(wxT("gnome-terminal --disable-factory -t $TITLE -x "));
+            combo->Append(wxT("gnome-terminal -t $TITLE -x "));
             combo->Append(wxT("konsole -e "));
             combo->Append(wxT("xfce4-terminal -T $TITLE -x "));
             combo->Append(wxT("terminology -M -T $TITLE -e "));
