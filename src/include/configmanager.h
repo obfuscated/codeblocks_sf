@@ -87,6 +87,7 @@ enum SearchDirs
 };
 
 
+class CodeBlocksApp;
 
 /* ------------------------------------------------------------------------------------------------------------------
 *  ConfigManager class
@@ -94,6 +95,7 @@ enum SearchDirs
 class DLLIMPORT ConfigManager
 {
     friend class CfgMgrBldr;
+    friend class CodeBlocksApp;
 
     TiXmlDocument *doc;
     TiXmlElement* root;
@@ -106,17 +108,29 @@ class DLLIMPORT ConfigManager
     inline void Collapse(wxString& str) const;
     wxString InvalidNameMessage(const wxString& what, const wxString& sub, TiXmlElement *localPath) const;
     static void InitPaths();
+    static inline wxString GetUserConfigDir();
 
     static wxString config_folder;
     static wxString home_folder;
     static wxString data_path_user;
     static wxString data_path_global;
+
 #ifdef CB_AUTOCONF
     static wxString plugin_path_global;
 #endif
     static wxString app_path;
     static wxString temp_folder;
     static bool relo;
+    static wxString alternate_user_data_path;
+    static bool has_alternate_user_data_path;
+
+protected:
+    //For use by the CodeBlocksApp when the --user-data-dir switch is set
+    //all of the user config and user plugin data will be set relative to this path
+    static bool SetUserDataFolder(const wxString &user_data_path);
+
+    //Used by CfgMgrBldr internally by ConfigManager
+    static wxString GetUserDataFolder();
 
 public:
 

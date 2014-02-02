@@ -69,7 +69,8 @@ class CodeBlocksApp : public wxApp
         void SetupPersonality(const wxString& personality);
 
 
-        wxString m_Prefix; // --prefix switch
+        wxString m_Prefix; // directory specified in --prefix switch
+        wxString m_UserDataDir; // directory specified in --user-data-dir switch
         wxString m_BatchTarget;
         wxString m_Script;
         wxString m_AutoFile; // --file foo.cpp[:line]
