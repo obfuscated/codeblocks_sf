@@ -629,9 +629,6 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         void MarkAsStopped();
 
     private:
-        wxString GetConsoleTty(int &ConsolePid);
-
-    private:
         void OnEditorOpened(CodeBlocksEvent& event);
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
