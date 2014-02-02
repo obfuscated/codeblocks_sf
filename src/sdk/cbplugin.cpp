@@ -12,6 +12,7 @@
 #ifndef CB_PRECOMP
     #include <wx/frame.h> // wxFrame
     #include <wx/menu.h>
+    #include <wx/process.h>
 
     #include "cbeditor.h"
     #include "cbplugin.h"
@@ -818,7 +819,29 @@ ConsoleInfo GetConsoleTty(int consolePID)
     }
     return ConsoleInfo();
 }
-}
+
+struct ConsoleProcessTerminationInfo
+{
+    ConsoleProcessTerminationInfo() : status(-1), terminated(false) {}
+
+    bool FailedToStart() const { return terminated && status != 0; }
+
+    int status;
+    bool terminated;
+};
+
+struct ConsoleProcess : wxProcess
+{
+    ConsoleProcess(cb::shared_ptr<ConsoleProcessTerminationInfo> info) : info(info) {}
+    virtual void OnTerminate(int pid, int status)
+    {
+        info->terminated = true;
+        info->status = status;
+    }
+    cb::shared_ptr<ConsoleProcessTerminationInfo> info;
+};
+
+} // namespace
 #endif
 
 int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
@@ -841,7 +864,12 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
     cmd << sleepCommand;
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
-    consolePid = wxExecute(cmd, wxEXEC_ASYNC);
+
+    // The lifetime of wxProcess objects is very uncertain, so we are using a shared pointer to
+    // prevent us accessing deleted objects.
+    cb::shared_ptr<ConsoleProcessTerminationInfo> processInfo(new ConsoleProcessTerminationInfo);
+    ConsoleProcess *process = new ConsoleProcess(processInfo);
+    consolePid = wxExecute(cmd, wxEXEC_ASYNC, process);
     if (consolePid <= 0)
         return -1;
 
@@ -852,6 +880,14 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
         // First, wait for the terminal to settle down, else PS won't see the sleep task
         Manager::Yield();
         ::wxMilliSleep(200);
+
+        // Try to detect if the terminal command is present or its parameters are valid.
+        if (processInfo->FailedToStart() /*&& ii > 0*/)
+        {
+            Log(F(wxT("Failed to execute terminal command: '%s' (exit code: %d)"),
+                  cmd.wx_str(), processInfo->status), Logger::error);
+            break;
+        }
 
         // Try to find tty path and pid for the sleep command we've just executed.
         const ConsoleInfo &info = GetConsoleTty(consolePid);
