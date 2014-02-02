@@ -818,14 +818,14 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
 {
     consoleTty = wxEmptyString;
 #ifndef __WXMSW__
-    // start the xterm and put the shell to sleep with -e sleep 80000
-    // fetch the xterm tty so we can issue to gdb a "tty /dev/pts/#"
-    // redirecting program stdin/stdout/stderr to the xterm console.
+    // Start a terminal and put the shell to sleep with -e sleep 80000.
+    // Fetch the terminal's tty, so we can tell the debugger what TTY to use,
+    // thus redirecting program's stdin/stdout/stderr to the terminal.
 
     wxString cmd;
     wxString title = wxT("Program Console");
     int consolePid = 0;
-    // for non-win platforms, use m_ConsoleTerm to run the console app
+    // Use the terminal specified by the user in the Settings -> Environment.
     wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
     term.Replace(_T("$TITLE"), _T("'") + title + _T("'"));
     cmd << term << _T(" ");
@@ -834,14 +834,15 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
     cmd << sleepCommand;
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
-    //start xterm -e sleep {some unique # of seconds}
     consolePid = wxExecute(cmd, wxEXEC_ASYNC);
-    if (consolePid <= 0) return -1;
+    if (consolePid <= 0)
+        return -1;
 
-    // Issue the PS command to get the /dev/tty device name
-    // First, wait for the xterm to settle down, else PS won't see the sleep task
+    // Try to find the TTY. We're using a loop, because some slow machines might make the check fail due
+    // to a slow starting terminal.
     for (int ii = 0; ii < 100; ++ii)
     {
+        // First, wait for the terminal to settle down, else PS won't see the sleep task
         Manager::Yield();
         ::wxMilliSleep(200);
 
