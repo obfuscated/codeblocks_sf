@@ -768,7 +768,6 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
 {
     consoleTty = wxEmptyString;
 #ifndef __WXMSW__
-
     // start the xterm and put the shell to sleep with -e sleep 80000
     // fetch the xterm tty so we can issue to gdb a "tty /dev/pts/#"
     // redirecting program stdin/stdout/stderr to the xterm console.
@@ -781,7 +780,7 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
     term.Replace(_T("$TITLE"), _T("'") + title + _T("'"));
     cmd << term << _T(" ");
 
-    wxString sleepCommand = MakeSleepCommand();
+    const wxString &sleepCommand = MakeSleepCommand();
     cmd << sleepCommand;
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
@@ -805,7 +804,9 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
 
         if (localConsolePid != consolePid)
         {
-            Log(wxString::Format(_("The process (%s) does not exist, we use the pid of the sleep process (%s) instead."), cmd.wx_str(), sleepCommand.wx_str()), Logger::error);
+            Log(F(_("The process '%s' does not exist, we use the pid of the sleep process '%s' instead."),
+                  cmd.wx_str(), sleepCommand.wx_str()),
+                Logger::warning);
             consolePid = localConsolePid;
         }
 
