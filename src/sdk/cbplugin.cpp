@@ -839,31 +839,22 @@ wxString cbDebuggerPlugin::GetConsoleTty(int &ConsolePid)
 {
 #ifndef __WXMSW__
     // execute the ps x -o command  and read PS output to get the /dev/tty field
-    wxString psCmd;
     wxArrayString psOutput;
     wxArrayString psErrors;
 
-    psCmd << wxT("ps x -o tty,pid,command");
-    int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
-    psCmd.Clear();
+    int result = wxExecute(wxT("ps x -o tty,pid,command"), psOutput, psErrors, wxEXEC_SYNC);
     if (result != 0)
-    {
-        psCmd << wxT("Result of ps x:") << result;
         return wxEmptyString;
-    }
 
-    wxString ConsTtyStr;
-    wxString ConsPidStr;
-    ConsPidStr << ConsolePid;
     // find task with our unique sleep time
     const wxString &uniqueSleepTimeStr = MakeSleepCommand();
+
     // search the output of "ps pid" command
-    int knt = psOutput.GetCount();
-    for (int i=knt-1; i>-1; --i)
+    int count = psOutput.GetCount();
+    for (int i = count - 1; i > -1; --i)
     {
-        psCmd = psOutput.Item(i);
         // find the pts/# or tty/# or whatever it's called
-        // by seaching the output of "ps x -o tty,pid,command" command.
+        // by searching the output of "ps x -o tty,pid,command" command.
         // The output of ps looks like:
         // TT       PID   COMMAND
         // pts/0    13342 /bin/sh ./run.sh
@@ -874,22 +865,24 @@ wxString cbDebuggerPlugin::GetConsoleTty(int &ConsolePid)
         // ?        13365 /home/pecan/proj/conio/conio
         // pts/1    13370 ps x -o tty,pid,command
 
+        const wxString &psCmd = psOutput.Item(i);
         if (psCmd.Contains(uniqueSleepTimeStr))
-        do
         {
-            // check for correct "sleep" line
-            if (psCmd.Find(ConsPidStr) != wxNOT_FOUND)
-                break; //error;wrong sleep line.
-            // found "sleep 93343" string, extract tty field
-            ConsTtyStr = wxT("/dev/") + psCmd.BeforeFirst(' ');
-            long pidTmp;
-            if (psCmd.AfterFirst(' ').Trim(false).Trim(true).BeforeFirst(' ').ToLong(&pidTmp))
-                ConsolePid = (int)pidTmp;
-            return ConsTtyStr;
-        } while(0);
+            // Extract the pid for the line
+            long pidForLine;
+            if (psCmd.AfterFirst(' ').Trim(false).BeforeFirst(' ').Trim(true).ToLong(&pidForLine))
+            {
+                // Check if we are at the correct line. It is possible that there are two lines which contain the
+                // "sleep" string. One for the sleep process and one for the terminal process. We want to skip the
+                // line for the terminal process.
+                if (pidForLine != ConsolePid)
+                {
+                    ConsolePid = (int)pidForLine;
+                    return wxT("/dev/") + psCmd.BeforeFirst(' ');;
+                }
+            }
+        }
     }
-
-    knt = psErrors.GetCount();
 #endif // !__WXMSW__
     return wxEmptyString;
 }
