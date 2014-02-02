@@ -629,7 +629,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         void MarkAsStopped();
 
     private:
-        wxString GetConsoleTty(int ConsolePid);
+        wxString GetConsoleTty(int &ConsolePid);
 
     private:
         void OnEditorOpened(CodeBlocksEvent& event);

@@ -780,7 +780,9 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
     wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
     term.Replace(_T("$TITLE"), _T("'") + title + _T("'"));
     cmd << term << _T(" ");
-    cmd << MakeSleepCommand();
+
+    wxString sleepCommand = MakeSleepCommand();
+    cmd << sleepCommand;
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
 //    DebugLog(wxString::Format( _("Executing: %s"), cmd.c_str()) );
@@ -795,6 +797,18 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
         Manager::Yield();
         ::wxMilliSleep(200);
 
+        // Try to fetch consoleTty first, because this updates the pid if necessary:
+        // newer gnome-terminals do not launch an own process, but our sleep process still
+        // has a valid pid and GetConsoleTty changes the pid to reflect this
+        int localConsolePid = consolePid;
+        consoleTty = GetConsoleTty(localConsolePid);
+
+        if (localConsolePid != consolePid)
+        {
+            Log(wxString::Format(_("The process (%s) does not exist, we use the pid of the sleep process (%s) instead."), cmd.wx_str(), sleepCommand.wx_str()), Logger::error);
+            consolePid = localConsolePid;
+        }
+
         // For some reason wxExecute returns PID>0, when the command cannot be launched.
         // Here we check if the process is alive and the PID is really a valid one.
         if (kill(consolePid, 0) == -1 && errno == ESRCH) {
@@ -802,8 +816,6 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
             break;
         }
 
-        int localConsolePid = consolePid;
-        consoleTty = GetConsoleTty(localConsolePid);
         if (!consoleTty.IsEmpty() )
         {
             // show what we found as tty
@@ -823,7 +835,7 @@ void cbDebuggerPlugin::MarkAsStopped()
     Manager::Get()->GetProjectManager()->SetIsRunning(nullptr);
 }
 
-wxString cbDebuggerPlugin::GetConsoleTty(cb_unused int ConsolePid)
+wxString cbDebuggerPlugin::GetConsoleTty(cb_unused int &ConsolePid)
 {
 #ifndef __WXMSW__
 
@@ -876,6 +888,9 @@ wxString cbDebuggerPlugin::GetConsoleTty(cb_unused int ConsolePid)
                 break; //error;wrong sleep line.
             // found "sleep 93343" string, extract tty field
             ConsTtyStr = wxT("/dev/") + psCmd.BeforeFirst(' ');
+            long pidTmp;
+            if (psCmd.AfterFirst(' ').Trim(false).Trim(true).BeforeFirst(' ').ToLong(&pidTmp))
+                ConsolePid = (int)pidTmp;
 //            DebugLog(wxString::Format( _("TTY is[%s]"), ConsTtyStr.c_str()) );
             return ConsTtyStr;
         } while(0);//if do
