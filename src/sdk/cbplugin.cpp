@@ -784,7 +784,6 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
     cmd << sleepCommand;
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(cmd);
-//    DebugLog(wxString::Format( _("Executing: %s"), cmd.c_str()) );
     //start xterm -e sleep {some unique # of seconds}
     consolePid = wxExecute(cmd, wxEXEC_ASYNC);
     if (consolePid <= 0) return -1;
@@ -836,39 +835,34 @@ void cbDebuggerPlugin::MarkAsStopped()
     Manager::Get()->GetProjectManager()->SetIsRunning(nullptr);
 }
 
-wxString cbDebuggerPlugin::GetConsoleTty(cb_unused int &ConsolePid)
+wxString cbDebuggerPlugin::GetConsoleTty(int &ConsolePid)
 {
 #ifndef __WXMSW__
-
     // execute the ps x -o command  and read PS output to get the /dev/tty field
-
     unsigned long ConsPid = ConsolePid;
     wxString psCmd;
     wxArrayString psOutput;
     wxArrayString psErrors;
 
     psCmd << wxT("ps x -o tty,pid,command");
-//    DebugLog(wxString::Format( _("Executing: %s"), psCmd.c_str()) );
     int result = wxExecute(psCmd, psOutput, psErrors, wxEXEC_SYNC);
     psCmd.Clear();
     if (result != 0)
     {
         psCmd << wxT("Result of ps x:") << result;
-//        DebugLog(wxString::Format( _("Execution Error:"), psCmd.c_str()) );
         return wxEmptyString;
     }
 
     wxString ConsTtyStr;
     wxString ConsPidStr;
     ConsPidStr << ConsPid;
-    //find task with our unique sleep time
+    // find task with our unique sleep time
     const wxString &uniqueSleepTimeStr = MakeSleepCommand();
     // search the output of "ps pid" command
     int knt = psOutput.GetCount();
     for (int i=knt-1; i>-1; --i)
     {
         psCmd = psOutput.Item(i);
-//        DebugLog(wxString::Format( _("PS result: %s"), psCmd.c_str()) );
         // find the pts/# or tty/# or whatever it's called
         // by seaching the output of "ps x -o tty,pid,command" command.
         // The output of ps looks like:
@@ -892,14 +886,11 @@ wxString cbDebuggerPlugin::GetConsoleTty(cb_unused int &ConsolePid)
             long pidTmp;
             if (psCmd.AfterFirst(' ').Trim(false).Trim(true).BeforeFirst(' ').ToLong(&pidTmp))
                 ConsolePid = (int)pidTmp;
-//            DebugLog(wxString::Format( _("TTY is[%s]"), ConsTtyStr.c_str()) );
             return ConsTtyStr;
-        } while(0);//if do
-    }//for
+        } while(0);
+    }
 
     knt = psErrors.GetCount();
-//    for (int i=0; i<knt; ++i)
-//        DebugLog(wxString::Format( _("PS Error:%s"), psErrors.Item(i).c_str()) );
 #endif // !__WXMSW__
     return wxEmptyString;
 }
