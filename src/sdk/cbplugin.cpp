@@ -823,11 +823,11 @@ int cbDebuggerPlugin::RunNixConsole(wxString &consoleTty)
     // thus redirecting program's stdin/stdout/stderr to the terminal.
 
     wxString cmd;
-    wxString title = wxT("Program Console");
     int consolePid = 0;
     // Use the terminal specified by the user in the Settings -> Environment.
     wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
-    term.Replace(_T("$TITLE"), _T("'") + title + _T("'"));
+
+    term.Replace(_T("$TITLE"), wxString(wxT("'"))+_("Program Console")+wxT("'"));
     cmd << term << _T(" ");
 
     const wxString &sleepCommand = MakeSleepCommand();
