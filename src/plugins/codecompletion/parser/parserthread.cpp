@@ -1832,7 +1832,7 @@ void ParserThread::HandleClass(EClassType ct)
         // -------------------------------------------------------------------
         {
             wxString unnamedTmp;
-            unnamedTmp.Printf(_T("%s%s%lu_%lu"),
+            unnamedTmp.Printf(_T("%s%s%u_%lu"),
                               g_UnnamedSymbol.wx_str(),
                               ct == ctClass ? _T("Class") :
                               ct == ctUnion ? _T("Union") :
