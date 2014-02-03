@@ -1834,9 +1834,8 @@ void ParserThread::HandleClass(EClassType ct)
             wxString unnamedTmp;
             unnamedTmp.Printf(_T("%s%s%u_%lu"),
                               g_UnnamedSymbol.wx_str(),
-                              ct == ctClass ? _T("Class") :
-                              ct == ctUnion ? _T("Union") :
-                              _T("Struct"), m_FileIdx, static_cast<unsigned long>(m_StructUnionUnnamedCount++));
+                              (ct == ctClass ? _T("Class") : (ct == ctUnion ? _T("Union") : _T("Struct"))),
+                              m_FileIdx, static_cast<unsigned long>(m_StructUnionUnnamedCount++));
             Token* newToken = DoAddToken(tkClass, unnamedTmp, lineNr);
             // Maybe it is a bug here. I just fixed it.
             if (!newToken)
