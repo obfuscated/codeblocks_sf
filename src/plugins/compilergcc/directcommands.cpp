@@ -149,8 +149,15 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
     wxArrayString ret;
 
     // is it compilable?
-    if (!pf->compile || pf->compilerVar.IsEmpty())
+    if (!pf || !pf->compile || pf->compilerVar.IsEmpty())
         return ret;
+
+    // might happen for single file compilation if user chose a target the file does NOT belong to:
+    if (target && pf->GetBuildTargets().Index(target->GetTitle()) == wxNOT_FOUND)
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_("Invalid target selected to compile project file for: File does not belong to this target."));
+        return ret;
+    }
 
     if (!force)
     {
@@ -158,9 +165,9 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
 
         const pfDetails& pfd = pf->GetFileDetails(target);
         wxString err;
-        if (!IsObjectOutdated(target, pfd, &err))
+        if ( !IsObjectOutdated(target, pfd, &err) )
         {
-            if (!err.IsEmpty())
+            if ( !err.IsEmpty() )
                 ret.Add(wxString(COMPILER_WARNING_LOG) + err);
             return ret;
         }
