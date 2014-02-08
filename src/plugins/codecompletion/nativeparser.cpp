@@ -926,7 +926,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& ty
     const int start = searchData.control->WordStartPosition(pos, true);
     const int end = searchData.control->WordEndPosition(pos, true);
     const wxString target = searchData.control->GetTextRange(start, end);
-    TRACE(_T("Sending \"%s\" for call-tip"), target.c_str());
+    TRACE(_T("Sending \"%s\" for call-tip"), target.wx_str());
     if (target.IsEmpty())
         return;
 
