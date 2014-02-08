@@ -1985,7 +1985,7 @@ bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
 
     // sanity check if we have such macro definition that #define AAA(x,y) x+y+AAA
     // which means a macro name is exists in its definition, which will cause a infinite expansion loop
-    if (tk->m_FullType.Find(tk->m_Name) ==wxNOT_FOUND)
+    if (tk->m_FullType.Find(tk->m_Name) != wxNOT_FOUND)
         return false;
 
     // Now, tk is a function like macro definition we are going to expand, it's m_Args contains the
