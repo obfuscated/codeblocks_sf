@@ -186,9 +186,11 @@ int TokenTree::TokenExists(const wxString& name, const wxString& baseArgs, int p
         if (!curToken)
             continue;
 
+        // for a container token, their args member variable is used to store inheritance information
+        // so, don't compare args for tkAnyContainer
         if (   (curToken->m_ParentIndex == parent)
             && (curToken->m_TokenKind   == kind)
-            && (curToken->m_BaseArgs    == baseArgs) )
+            && (curToken->m_BaseArgs == baseArgs || kind & tkAnyContainer) )
         {
             return result;
         }
@@ -249,7 +251,11 @@ int TokenTree::TokenExists(const wxString& name, const wxString& baseArgs, const
         if (!curToken)
             continue;
 
-        if (curToken->m_TokenKind == kind && curToken->m_BaseArgs == baseArgs)
+        // for a container token, their args member variable is used to store inheritance information
+        // so, don't compare args for tkAnyContainer
+        if (  curToken->m_TokenKind == kind
+            && (   curToken->m_BaseArgs == baseArgs
+                || kind & tkAnyContainer ))
         {
             for ( TokenIdxSet::const_iterator pIt = parents.begin();
                   pIt != parents.end(); ++pIt )
@@ -626,7 +632,7 @@ bool TokenTree::CheckChildRemove(const Token* token, int fileIdx)
         else
             return false;  // one child is belong to another file
     }
-    return true;           // no children should be reserved, so we can safely remov the token
+    return true;           // no children should be reserved, so we can safely remove the token
 }
 
 void TokenTree::RecalcFreeList()

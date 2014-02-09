@@ -1367,13 +1367,19 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     }
 
     // need to check if the current token already exists in the tokenTree
-    // token's template argument is checked to support template specialization
+    // if newToken is valid (non zero), it points to a Token with same kind and same name, so there
+    // is a chance we can update the existing Token and not create a new one. This usually happens
+    // we are reparsing a header file, but some class definition Token is shared with an implementation
+    // file, so the Token can be updated.
+    // In some special cases, the a new Token instance is need. E.g. token's template argument is
+    // checked to support template specialization
     // eg:  template<typename T> class A {...} and template<> class A<int> {...}
     // we record them as different tokens
     if (   newToken
         && (newToken->m_TemplateArgument == m_TemplateArgument)
         && (   kind & tkAnyFunction
-            || newToken->m_Args == args ) )
+            || newToken->m_Args == args
+            || kind & tkAnyContainer ) )
     {
         ; // nothing to do
     }
