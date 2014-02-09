@@ -216,6 +216,9 @@ protected:
     /** handle enum declaration */
     void HandleEnum();
 
+    /** calculate the value assigned to enumerator */
+    bool CalcEnumExpression(Token* tokenParent, long& result, wxString& peek);
+
     /** handle typedef directive */
     void HandleTypedef();
 

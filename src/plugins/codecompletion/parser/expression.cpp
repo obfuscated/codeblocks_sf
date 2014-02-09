@@ -424,7 +424,7 @@ bool Expression::CalcPostfix()
     if (!stack.empty())
         m_Status = false;
     if (m_Status)
-        m_Result = pair.first ? true : false;
+        m_Result = pair.first; // get the actual value
 
     return true;
 }
