@@ -23,8 +23,32 @@ class wxTreeCtrl;
 class wxTextCtrl;
 class cbProject;
 
-/*
- * No description
+/** symbol browser panel is shown in the Management panel besides projects browser panel.
+ *
+ *
+ *  It mainly have four parts, see the simple diagram below.
+ *
+ *     +----------------+
+ *     | view option    |
+ *     +----------------+
+ *     | search box     |
+ *     +----------------+
+ *     |  top tree      |
+ *     |                |
+ *     +----------------+
+ *     |  bottom tree   |
+ *     |                |
+ *     +----------------+
+ *
+ *  1, the view option is a list box to let user choose which tokens should be shown in the trees
+ *     it can either show the tokens for the whole workspace, or only the active C::B project, or
+ *     the active editor (source files)
+ *  2, search box, a combo-box lets user enter texts for searching a specific symbol
+ *  3, top tree, a wxTreeCtrl show the mostly top level symbols, such as the global namespaces,
+ *     macro definitions, class definition in global namesapces.
+ *  4, bottom tree, show members of the select item in the top tree, e.g. if a user select a class,
+ *     then, this tree will show all the member variables of the class. Note, this tree can be hidden
+ *     by the user, so only the top tree is shown on the panel.
  */
 class ClassBrowser : public wxPanel
 {
@@ -38,7 +62,20 @@ public:
     void  SetParser(ParserBase* parser);
     const ParserBase& GetParser()     { return *m_Parser; }
     const ParserBase* GetParserPtr()  { return  m_Parser; }
+
+    /** update or refresh the symbol browser trees, there are many cases the tree need to be updated.
+     *  E.g. if the View option of the tree is the "Current file's symbols", the user switch the editor
+     *  to a new source file, then the tree should be updated(rebuild).
+     *  @param checkHeaderSwap if true, we should check if the new editor opened has the save base file
+     *  as the old file. E.g. If you are currently viewing a file named A.cpp, and you switch to A.h
+     *  in this case, the tree should not be updated, because tokens(symbols) in both files were already
+     *  shown. False if you need to update the tree without such optimization.
+     */
     void  UpdateClassBrowserView(bool checkHeaderSwap = false);
+
+    /** update the position sash bar between top tree and the bottom tree, the position (percentage)
+     *  of the two trees are saved in the configuration files.
+     */
     void  UpdateSash();
 
 private:
@@ -69,21 +106,37 @@ private:
 #endif // CC_NO_COLLAPSE_ITEM
     void OnTreeSelChanged(wxTreeEvent& event);
 
+    /** class browser builder thread will send notification event to the parent, this is the event
+     *  handler function
+     */
     void OnThreadEvent(wxCommandEvent& event);
 
 private:
     NativeParser*              m_NativeParser;
+
+    /** the top(main) level tree control, see above diagram for details*/
     CCTreeCtrl*                m_CCTreeCtrl;
+
+    /** the bottom tree control, mainly used to show the member variable and member functions*/
     CCTreeCtrl*                m_CCTreeCtrlBottom;
+
     wxTreeCtrl*                m_TreeForPopupMenu;
 
     wxComboBox*                m_Search;
     ParserBase*                m_Parser;
 
-    // filtering
+    /** source file name of active editor, used for filtering(if view option is Current file's symbols)*/
     wxString                   m_ActiveFilename;
 
+    /** semaphore to synchronize the GUI(class browser) and the tree builder thread, when the GUI
+     *  post the semaphore, the waiting thread start doing the job
+     */
     wxSemaphore                m_ClassBrowserSemaphore;
+
+    /** a wxThread used to build the wxTreeCtrl for the top and bottom in the class(symbol) browser
+     *  because it always take many seconds to build the trees, so those work were delegated to a
+     *  worker thread.
+     */
     ClassBrowserBuilderThread* m_ClassBrowserBuilderThread;
 
     DECLARE_EVENT_TABLE()

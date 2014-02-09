@@ -28,6 +28,8 @@
 
 #include "classbrowserbuilderthread.h"
 
+// sanity check for the build tree functions, this function should only be called in a worker thread
+// also, there should be no termination requested, otherwise, it will return false
 #define CBBT_SANITY_CHECK ((!::wxIsMainThread() && m_TerminationRequested) || Manager::IsAppShuttingDown())
 
 #define CC_BUILDERTHREAD_DEBUG_OUTPUT 0

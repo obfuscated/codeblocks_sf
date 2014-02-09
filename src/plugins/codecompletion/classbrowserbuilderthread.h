@@ -14,12 +14,28 @@
 #include "parser/token.h"
 #include "parser/parser.h"
 
+/** worker thread to build the symbol browser tree controls(both the top tree and the bottom tree)
+ *  When the thread is started, it is waiting for the semaphore, and once the GUI post the semaphore
+ *  the builder will do the dirty job, once finished, it will wait again.
+ */
 class ClassBrowserBuilderThread : public wxThread
 {
 public:
-    enum EThreadEvent { selectItemRequired, buildTreeStart, buildTreeEnd };
+    /** the builder threads' event sent to the GUI(class browser window)*/
+    enum EThreadEvent
+    {
+        selectItemRequired,  /// an item is selected
+        buildTreeStart,      /// the thread is starting to (re)build the tree
+        buildTreeEnd         /// finishing (re)build the tree
+    };
 
+    /** constructor
+     * @param evtHandler parent window notification events will sent to
+     * @param sem a semaphore reference which is used synchronize the GUI and the builder thread
+     */
     ClassBrowserBuilderThread(wxEvtHandler* evtHandler, wxSemaphore& sem);
+
+    /** destructor */
     virtual ~ClassBrowserBuilderThread();
 
     // Called from external:
