@@ -448,22 +448,6 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
                                       ParserTokenType& tokenType,
                                       OperatorType&    tokenOperatorType)
 {
-    // line contains a string on the following form:
-    // "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
-    // first we locate the first non-space char starting from the *end*:
-    //
-    // "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
-    //                     ^
-    // then we remove everything before it.
-    // after it, what we do here, is (by this example) return "SomeNamespace"
-    // *and* modify line to become:
-    // m_SomeVar.SomeMeth
-    // so that if we 're called again with the (modified) line,
-    // we 'll return "m_SomeVar" and modify line (again) to become:
-    // SomeMeth
-    // and so on and so forth until we return an empty string...
-    // NOTE: if we find () args or [] arrays in our way, we skip them (done in GetNextCCToken)...
-
     tokenType         = pttSearchText;
     tokenOperatorType = otOperatorUndefined;
     if (line.IsEmpty())
@@ -514,6 +498,10 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
     return res;
 }
 
+// skip nest braces in the expression, e.g.
+//  SomeObject->SomeMethod(arg1, arg2)->Method2()
+//              ^end                 ^begin
+// note we skip the nest brace (arg1, arg2).
 unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
 {
     // Careful: startAt can become negative, so it's defined as integer here!
@@ -1483,8 +1471,10 @@ int NativeParserBase::GetTokenFromCurrentLine(TokenTree*         tree,
 {
     TRACE(_T("NativeParserBase::GetTokenFromCurrentLine()"));
 
-    int result = -1; bool found = false;
-    if (!tree) return result;
+    int result = -1;
+    bool found = false;
+    if (!tree)
+        return result;
 
     const size_t fileIdx = tree->InsertFileOrGetIndex(file);
     const Token* classToken = nullptr;

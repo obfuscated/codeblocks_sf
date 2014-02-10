@@ -82,15 +82,16 @@ protected:
 
     /**@brief Artificial Intelligence Matching
     *
-    * All functions that call this recursive function, should already entered a critical section.
+    * All functions that call this recursive function, should already entered a critical section or
+    * a mutex to protect the TokenTree.
     *
     * match (consume) the ParserComponent queue from left to right,
     * the output result becomes the search scope of the next match.
-    * finally, give the result matching the last ParserComponent.
+    * finally, give the results which match the last ParserComponent.
     * @param components input ParserComponent queue
     * @param parentTokenIdx, initial search scope of the left most component
     * @param fullMatch the result should be a full text match or prefix match
-    * @return matching token number
+    * @return matching token number, it is the size of result
     */
     size_t FindAIMatches(TokenTree*                  tree,
                          std::queue<ParserComponent> components,
@@ -125,15 +126,45 @@ protected:
                                        int          parentIdx,
                                        bool         use_inheritance = true);
 
-    /** helper function to split the statement*/
+    /** helper function to split the statement
+     * line contains a string on the following form:
+     * "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
+     * first we locate the first non-space char starting from the *end*:
+     *
+     * "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
+     *                     ^
+     * then we remove everything before it.
+     * after it, what we do here, is (by this example) return "SomeNamespace"
+     * *and* modify line to become:
+     * m_SomeVar.SomeMeth
+     * so that if we 're called again with the (modified) line,
+     * we 'll return "m_SomeVar" and modify line (again) to become:
+     * SomeMeth
+     * and so on and so forth until we return an empty string...
+     * NOTE: if we find () args or [] arrays in our way, we skip them (done in GetNextCCToken)...
+     */
     wxString GetCCToken(wxString&        line,
                         ParserTokenType& tokenType,
                         OperatorType&    tokenOperatorType);
 
-    /** helper function to split the statement*/
+    /** helper function to split the statement
+     *   "    SomeNameSpace::SomeClass.SomeMethod|"
+     *        ^  should stop here  <------------ ^ start from here, go backward(right to left)
+     *   "    f(SomeNameSpace::SomeClass.SomeMethod|"
+     *          ^ should stop here
+     * so, brace level should be considered
+     */
     unsigned int FindCCTokenStart(const wxString& line);
 
-    /** helper function to read the next CCToken */
+    /** helper function to read the next CCToken, begin from the startAt, this point to a non-space
+     * character, and fetch the beginning identifier
+     * @param startAt this will be updated to the char after the identifier
+     * @param tokenOperatorType the type of the operator
+     * E.g.
+     *            SomeMethod()->
+     *            ^begin
+     * the returned wxString is "SomeMethod", the tokenOperatorType is pointer member access
+     */
     wxString GetNextCCToken(const wxString& line,
                             unsigned int&   startAt,
                             OperatorType&   tokenOperatorType);
@@ -255,9 +286,17 @@ protected:
                              TokenIdxSet&       actualTypeScope,
                              TokenTree*         tree);
 
-    /** used to get the correct token index in current line, e.g. class A { void test() { | } };
-     * @param tokens all current file's function and class
-     * @param curLine the line of the current position
+    /** used to get the correct token index in current line, e.g.
+     * class A
+     * {
+     *    void test()
+     *    {               // start of the function body
+     *       |
+     *    };              // end of the function body
+     * };
+     * @param tokens all current file's function and class, which cover the current line
+     * @param curLine the line of the current caret position
+     * @param file editor file name
      */
     int GetTokenFromCurrentLine(TokenTree*         tree,
                                 const TokenIdxSet& tokens,
@@ -273,6 +312,7 @@ protected:
      *  when you are entering some text like
      *  A(|    or  objA.test(|
      * then there will be a tip window show the function prototype of the function
+     * @param chars_per_line the function tip window width
      */
     void ComputeCallTip(TokenTree*         tree,
                         const TokenIdxSet& tokens,
@@ -314,6 +354,10 @@ protected:
         return commas;
     }
 
+    /** check whether the line[startAt] point to the identifier
+     *  SomeMethod(arg1, arg2)->Method2()
+     *  ^^^^^^^^^^ those index will return true
+     */
     static bool InsideToken(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
@@ -321,6 +365,12 @@ protected:
                 && (   (wxIsalnum(line.GetChar(startAt)))
                     || (line.GetChar(startAt) == '_') ) );
     }
+
+    /** go to the first character of the identifier, e.g
+     * "    f(SomeNameSpace::SomeClass.SomeMethod"
+     *                    return value^         ^begin
+     *   this is the index before the first character of the identifier
+     */
     static int BeginOfToken(int startAt, const wxString& line)
     {
         while (   (startAt >= 0)
@@ -339,6 +389,13 @@ protected:
             --startAt;
         return startAt;
     }
+
+    /** check startAt is at some character like:
+     *  SomeNameSpace::SomeClass
+     *                ^ here is a double colon
+     *  SomeObject->SomeMethod
+     *             ^ here is a pointer member access operator
+     */
     static bool IsOperatorEnd(int startAt, const wxString& line)
     {
         return (   (startAt > 0)
@@ -355,6 +412,9 @@ protected:
             && (   (   (line.GetChar(startAt) == '>')
                     && (line.GetChar(startAt - 1) == '-') )));
     }
+
+    /** check if startAt point to "->" or "::" operator */
+     // FIXME (ollydbg#1#): should be startAt+1 < line.Len()?
     static bool IsOperatorBegin(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
@@ -364,12 +424,23 @@ protected:
                     || (   (line.GetChar(startAt) == ':')
                         && (line.GetChar(startAt + 1) == ':') ) ) );
     }
+
+    /** check whether line[startAt] is a dot character */
     static bool IsOperatorDot(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
                 && ((size_t)startAt < line.Len())
                 && (line.GetChar(startAt) == '.') );
     }
+
+    /** move to the char before whitespace and tabs, e.g.
+     *  SomeNameSpace       ::  SomeClass
+     *              ^end   ^begin
+     * note if there some spaces in the begging like
+     *      "       f::"
+     *     ^end    ^begin
+     * the returned index is -1.
+     */
     static int BeforeWhitespace(int startAt, const wxString& line)
     {
         while (   (startAt >= 0)
@@ -379,6 +450,11 @@ protected:
             --startAt;
         return startAt;
     }
+
+    /** search from left to right, move to the first character of the space
+     *  "       ::   f"
+     *  ^begin  ^end
+     */
     static int AfterWhitespace(int startAt, const wxString& line)
     {
         if (startAt < 0)
@@ -395,6 +471,8 @@ protected:
                 && (   (line.GetChar(startAt) == '(')
                     || (line.GetChar(startAt) == '[') ) );
     }
+
+    /** check the current char (line[startAt]) is either ')' or ']'  */
     static bool IsClosingBracket(int startAt, const wxString& line)
     {
         return (   (startAt >= 0)
