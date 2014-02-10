@@ -33,6 +33,7 @@ class TokenTree
     friend class CCDebugInfo;
     friend class CCTest;
     friend class CCTestFrame;
+    friend class NativeParserTest;
 public:
 
     TokenTree();

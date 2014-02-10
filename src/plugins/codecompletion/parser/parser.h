@@ -171,7 +171,7 @@ public:
     virtual bool ParseBufferForUsingNamespace(cb_unused const wxString& buffer, cb_unused wxArrayString& result,
                                               cb_unused bool bufferSkipBlocks = true)                           { return false; }
 
-    virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true)                              { return false; }
+    virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true);     // allow other implementations of derived (dummy) classes
     virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true){ return false; }
     virtual bool RemoveFile(cb_unused const wxString& filename)                                                          { return false; }
     virtual bool IsFileParsed(cb_unused const wxString& filename)                                                        { return false; }

@@ -6,7 +6,8 @@
 #ifndef FRAME_H
 #define FRAME_H
 
-#include "cctest.h"
+#include "nativeparser_test.h"
+
 
 //(*Headers(CCTestFrame)
 #include "wx/wxscintilla.h"
@@ -44,7 +45,9 @@ protected:
     //*)
 
 private:
+    // initialize the wxScintilla control
     void InitControl();
+    // load the source file content to wxScintilla control
     void LoadToControl();
     void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
 
@@ -58,6 +61,7 @@ private:
     void OnMenuAboutSelected(wxCommandEvent& event);
     void OnDoHeadersClick(wxCommandEvent& event);
     void OnParse(wxCommandEvent& event);
+    void OnPrintTree(wxCommandEvent& event);
     //*)
 
     void OnMarginClick(wxScintillaEvent& event);
@@ -79,10 +83,11 @@ private:
     wxTextCtrl* m_HeadersCtrl;
     wxTextCtrl* m_IncludeCtrl;
     wxFileDialog* m_OpenFile;
+    wxButton* btnPrintTree;
     //*)
 
     wxProgressDialog*    m_ProgDlg;
-
+    // the source file going to parse
     wxString             m_MainFile;
     wxString             m_CurrentFile;
     size_t               m_LogCount;
@@ -90,6 +95,8 @@ private:
     wxFindReplaceData    m_FRData;
     wxFindReplaceDialog* m_FRDlg;
     int                  m_LastIndex;
+
+    NativeParserTest m_NativeParser;
 
     DECLARE_EVENT_TABLE()
 };

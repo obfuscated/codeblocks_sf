@@ -96,9 +96,7 @@ bool CCTestApp::OnInit()
     wxInitAllImageHandlers();
     //*)
 
-    wxLog::SetActiveTarget(new wxLogStderr());
-
-    CCTestFrame* frame = new CCTestFrame(_T("cctest/test.h"));
+    CCTestFrame* frame = new CCTestFrame(_T("testing/cc_function_decls.cpp"));
     frame->Center();
     frame->Show();
     frame->Start();

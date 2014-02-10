@@ -89,6 +89,15 @@
 						<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_ANY" variable="btnPrintTree" member="yes">
+							<label>Print Tree</label>
+							<handler function="OnPrintTree" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>

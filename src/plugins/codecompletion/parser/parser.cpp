@@ -173,6 +173,11 @@ bool ParserBase::ParseFile(cb_unused const wxString& filename, cb_unused bool is
     return false;
 }
 
+bool ParserBase::Reparse(cb_unused const wxString& filename, cb_unused bool isLocal)
+{
+    return false;
+}
+
 void ParserBase::ReadOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));

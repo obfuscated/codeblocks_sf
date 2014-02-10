@@ -131,6 +131,8 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_search_tree->Add(-1,-1,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     btnParse = new wxButton(this, wxID_ANY, _("Parse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
     bsz_search_tree->Add(btnParse, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    btnPrintTree = new wxButton(this, wxID_ANY, _("Print Tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    bsz_search_tree->Add(btnPrintTree, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_search_tree, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_parser = new wxBoxSizer(wxVERTICAL);
     m_ParserCtrl = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
@@ -201,6 +203,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
 
     Connect(ID_CHK_DO_HEADERS,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnDoHeadersClick);
     Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
+    Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnPrintTree);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
     Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReparseSelected);
     Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuSaveSelected);
@@ -210,21 +213,29 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     Connect(wxID_ABOUT,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuAboutSelected);
     //*)
 
+    // redirect the wxLogMessage to the text ctrl of the frame
+    wxLogTextCtrl *textLog = new wxLogTextCtrl(m_LogCtrl);
+    wxLog::SetActiveTarget(textLog);
+    wxLog::SetTimestamp(NULL); // do not show the time stamp
+
     //Setting the macro replacements
-    CCTest::Get()->Init();
+    m_NativeParser.Init();
 
     // TODO: Make this base folders configurable
-    wxString wx_base (_T("C:\\Devel\\wxWidgets\\"));
-    wxString gcc_base(_T("C:\\Devel\\CodeBlocks\\MinGW\\" ));
+    wxString wx_base (_T("E:\\code\\cb\\wx\\wxWidgets-2.8.12\\"));
+    wxString gcc_base(_T("E:\\code\\gcc\\pcxmingw463\\" ));
+    wxString mingwver(_T("i686-w64-mingw32"));
+    wxString gccver(_T("4.6.3"));
 
     m_IncludeCtrl->SetValue(wx_base  + _T("include")                                          + _T("\n") +
                             wx_base  + _T("lib\\gcc_dll\\mswu")                               + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include\\c++")           + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include\\c++\\mingw32")  + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include\\c++\\backward") + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include")                + _T("\n") +
-                            gcc_base + _T("include")                                          + _T("\n") +
-                            gcc_base + _T("lib\\gcc\\mingw32\\4.8.1\\include-fixed")          + _T("\n"));
+                            gcc_base + _T("lib\\gcc\\")+mingwver+_T("\\")+gccver+_T("\\include\\c++")               + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\")+mingwver+_T("\\")+gccver+_T("\\include\\c++\\") + mingwver  + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\")+mingwver+_T("\\")+gccver+_T("\\include\\c++\\backward")     + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\")+mingwver+_T("\\")+gccver+_T("\\include")                    + _T("\n") +
+                            gcc_base + _T("include")                                                                + _T("\n") +
+                            gcc_base + _T("lib\\gcc\\")+mingwver+_T("\\")+gccver+_T("\\include-fixed")              + _T("\n") +
+                            gcc_base + mingwver + _T("\\include")                                                   + _T("\n"));
 
     m_HeadersCtrl->SetValue(_T("<_mingw.h>,<cstddef>,<w32api.h>,<winbase.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
 
@@ -242,6 +253,13 @@ CCTestFrame::~CCTestFrame()
     delete m_FRDlg;
 }
 
+
+/*
+There are currently two stages in this function:
+1, run parse function on all the CCTestAppGlobal::s_fileQueue files, and print token tree
+2, run BatchTest function, this will parse a single file, then does a code-completion test
+Both the two stages will log the messages to the main text ctrl of the frame
+*/
 void CCTestFrame::Start()
 {
     if (m_ParserCtrl) m_ParserCtrl->SetSelection(1); // make sure "Output" tab is selected
@@ -259,6 +277,8 @@ void CCTestFrame::Start()
             CCTestAppGlobal::s_includeDirs.Add(include);
     }
 
+    // if this option is selected, we should parse the priority header files first
+    // the priority header files can be contained from m_HeadersCtrl
     if (m_DoHeadersCtrl->IsChecked())
     {
         // Obtain all priority header files
@@ -311,11 +331,13 @@ void CCTestFrame::Start()
 
     m_LogCount = 0;
     m_LogCtrl->Clear();
-    CCTest::Get()->Clear(); // initial clearance
+
+
+    m_NativeParser.Clear(); // initial clearance
 
     // make sure not to over-write an existing file (in case content had changed)
     wxString tf(wxFileName::CreateTempFileName(wxT("cc")));
-    // make the parser recognise it as header file:
+    // make the parser recognize it as header file:
     wxFileName fn(tf); fn.SetExt(wxT("h")); wxRemoveFile(tf); // no longer needed
     if (m_Control->SaveFile(fn.GetFullPath()))
         CCTestAppGlobal::s_fileQueue.Add(fn.GetFullPath());
@@ -338,75 +360,21 @@ void CCTestFrame::Start()
         m_StatuBar->SetStatusText(m_CurrentFile);
 
         // This is the core parse stage for files
-        CCTest::Get()->Start(m_CurrentFile);
+        // m_NativeParser.Parse(m_CurrentFile);
+
+        // Here we are going to test the expression solving algorithm
+        m_NativeParser.BatchTest(m_CurrentFile);
+
         CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
+
     // don't forget to remove the temporary file (w/ ".h" extension)
     wxRemoveFile(fn.GetFullPath());
-
-    m_ProgDlg->Update(-1, wxT("Creating tree log..."));
-    AppendToLog(_T("--------------T-r-e-e--L-o-g--------------\r\n"));
-    CCTest::Get()->PrintTree();
-
-    m_ProgDlg->Update(-1, wxT("Creating list log..."));
-    AppendToLog(_T("--------------L-i-s-t--L-o-g--------------\r\n"));
-    CCTest::Get()->PrintList();
-
-    if (m_DoTreeCtrl->IsChecked())
-    {
-        m_ProgDlg->Update(-1, wxT("Serializing tree..."));
-
-        Freeze();
-        m_TreeCtrl->SetValue( CCTest::Get()->SerializeTree() );
-        Thaw();
-    }
-
-    // Here we are going to test the expression solving algorithm
-
-    NativeParserTest nativeParserTest;
-
-    wxString exp = _T("obj.m_Member1");
-
-    TokenIdxSet searchScope;
-    searchScope.insert(-1);
-
-    TokenIdxSet result;
-
-    TokenTree *tree = CCTest::Get()->GetTokenTree();
-
-    nativeParserTest.TestExpression(exp,
-                                    tree,
-                                    searchScope,
-                                    result );
-
-    wxLogMessage(_T("Result have %lu matches"), static_cast<unsigned long>(result.size()));
-
-
-    for (TokenIdxSet::iterator it=result.begin(); it!=result.end(); ++it)
-    {
-        Token* token = tree->at(*it);
-        if (token)
-        {
-            wxString log;
-            log << token->GetTokenKindString() << _T(" ")
-                << token->DisplayName()        << _T("\t[")
-                << token->m_Line               << _T(",")
-                << token->m_ImplLine           << _T("]");
-            CCLogger::Get()->Log(log);
-        }
-    }
-
 
     if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
 
     if ( !IsShown() ) Show();
 
-    TokenTree* tt = CCTest::Get()->GetTokenTree();
-    if (tt)
-    {
-        AppendToLog((wxString::Format(_("The parser contains %lu tokens, found in %lu files."),
-                                      static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FileMap.size()))));
-    }
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)
@@ -560,6 +528,7 @@ void CCTestFrame::OnMenuSaveSelected(wxCommandEvent& /*event*/)
     }
 }
 
+// load the select source file to wxScintilla control
 void CCTestFrame::OnMenuOpenSelected(wxCommandEvent& /*event*/)
 {
     if (m_OpenFile->ShowModal() == wxID_OK)
@@ -586,10 +555,9 @@ void CCTestFrame::OnMenuFindSelected(wxCommandEvent& /*event*/)
 
 void CCTestFrame::OnMenuTokenSelected(wxCommandEvent& /*event*/)
 {
-    ParserBase* pb = CCTest::Get()->GetParser();
-    TokenTree*  tt = CCTest::Get()->GetTokenTree();
+    ParserBase* pb = &(m_NativeParser.m_Parser);
+    TokenTree*  tt = m_NativeParser.m_Parser.GetTokenTree();
     if (!pb || !tt) return;
-
     wxTextEntryDialog dlg(this, _T("Enter name of token to debug:"), _T("CCTest"));
     if (dlg.ShowModal()==wxID_OK)
     {
@@ -755,4 +723,41 @@ void CCTestFrame::OnCCAddToken(wxCommandEvent& event)
     wxString log(event.GetString());
 
     m_ProgDlg->Update(-1, m_CurrentFile + wxT("\n") + log);
+}
+
+void CCTestFrame::OnPrintTree(wxCommandEvent& event)
+{
+    m_ProgDlg = new wxProgressDialog(_T("Please wait, operating..."), _("Preparing...\nPlease wait..."), 0, this, wxPD_APP_MODAL);
+    m_ProgDlg->SetSize(640,100);
+    m_ProgDlg->Layout();
+    m_ProgDlg->CenterOnParent();
+    // print tree information below
+
+    m_ProgDlg->Update(-1, wxT("Creating tree log..."));
+    AppendToLog(_T("--------------T-r-e-e--L-o-g--------------\r\n"));
+    m_NativeParser.PrintTree();
+
+    m_ProgDlg->Update(-1, wxT("Creating list log..."));
+    AppendToLog(_T("--------------L-i-s-t--L-o-g--------------\r\n"));
+    m_NativeParser.PrintList();
+
+    if (m_DoTreeCtrl->IsChecked())
+    {
+        m_ProgDlg->Update(-1, wxT("Serializing tree..."));
+
+        Freeze();
+        m_TreeCtrl->SetValue( m_NativeParser.SerializeTree() );
+        Thaw();
+    }
+
+    if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
+
+    if ( !IsShown() ) Show();
+
+    TokenTree* tt = m_NativeParser.m_Parser.GetTokenTree();
+    if (tt)
+    {
+        AppendToLog((wxString::Format(_("The parser contains %lu tokens, found in %lu files."),
+                                      static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FileMap.size()))));
+    }
 }

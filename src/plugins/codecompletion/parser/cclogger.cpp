@@ -63,7 +63,7 @@ CCLogger::CCLogger() :
     return s_Inst.get();
 }
 
-// Initialised from CodeCompletion constructor
+// Initialized from CodeCompletion constructor
 void CCLogger::Init(wxEvtHandler* parent, int logId, int debugLogId, int addTokenId)
 {
     m_Parent     = parent;
