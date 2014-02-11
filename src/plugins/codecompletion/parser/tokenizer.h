@@ -108,7 +108,10 @@ public:
     /** Initialize the buffer by opening a file through a loader. */
     bool Init(const wxString& filename = wxEmptyString, LoaderBase* loader = 0);
 
-    /** Initialize the buffer by directly using a wxString reference. */
+    /** Initialize the buffer by directly using a wxString reference.
+     * @param initLineNumber the start line of the buffer, usually the parser try to parse a function
+     * body, so the line information of each Token can be correct.
+     */
     bool InitFromBuffer(const wxString& buffer, const wxString& fileOfBuffer = wxEmptyString,
                         size_t initLineNumber = 0);
 
@@ -194,11 +197,13 @@ public:
      */
     wxString ReadToEOL(bool nestBraces = true, bool stripUnneeded = true);
 
-    /** Read all tokens from the current position to the end of current line */
-    void ReadToEOL(wxArrayString& tokens);
-
-    /** Read and format between (), stored in 'str' */
+    /** Read and format between (), stored in 'str'
+     * @param trimFirst, some macro definition are mixed with comments, like below
+     */
+     // #define AAA  /*args*/ (x) x
+     // so, we just eat the embedded C style comments, and get "(x) x"
     void ReadParentheses(wxString& str, bool trimFirst);
+
     void ReadParentheses(wxString& str);
 
     /** Skip from the current position to the end of line.

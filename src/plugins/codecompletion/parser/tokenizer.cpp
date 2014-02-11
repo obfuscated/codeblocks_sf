@@ -311,7 +311,7 @@ bool Tokenizer::SkipToChar(const wxChar& ch)
 }
 
 //  For example: X"ABCDEFG\"HIJKLMN"Y
-//  We are now at A, and would skip to Y
+//  We are now at A, and would skip to trailing char (the '"' before Y)
 //  The double quote before H is a "C-escaped-character", We shouldn't quite from that
 bool Tokenizer::SkipToStringEnd(const wxChar& ch)
 {
@@ -516,78 +516,6 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
     }
 }
 
-void Tokenizer::ReadToEOL(wxArrayString& tokens)
-{
-    // need to force the tokenizer skip raw expression
-    const TokenizerState oldState = m_State;
-    m_State = tsReadRawExpression;
-
-    const unsigned int undoIndex = m_TokenIndex;
-    const unsigned int undoLine = m_LineNumber;
-    SkipToEOL(false);
-    const unsigned int lastBufferLen = m_BufferLen - m_TokenIndex;
-    m_TokenIndex = undoIndex;
-    m_LineNumber = undoLine;
-
-    int level = 0;
-    wxArrayString tmp;
-
-    while (m_BufferLen - m_TokenIndex > lastBufferLen)
-    {
-        while (SkipComment())
-            ;
-        wxString token = DoGetToken();
-        if (token[0] <= _T(' ') || token == _T("\\"))
-            continue;
-
-        if (token[0] == _T('('))
-            ++level;
-
-        if (level == 0)
-        {
-            if (tmp.IsEmpty())
-            {
-                if (!token.Trim().IsEmpty())
-                    tokens.Add(token);
-            }
-            else
-            {
-                wxString blockStr;
-                for (size_t i = 0; i < tmp.GetCount(); ++i)
-                    blockStr << tmp[i];
-                tokens.Add(blockStr.Trim());
-                tmp.Clear();
-            }
-        }
-        else
-            tmp.Add(token);
-
-        if (token[0] == _T(')'))
-            --level;
-    }
-
-    if (!tmp.IsEmpty())
-    {
-        if (level == 0)
-        {
-            wxString blockStr;
-            for (size_t i = 0; i < tmp.GetCount(); ++i)
-                blockStr << tmp[i];
-            tokens.Add(blockStr.Trim());
-        }
-        else
-        {
-            for (size_t i = 0; i < tmp.GetCount(); ++i)
-            {
-                if (!tmp[i].Trim().IsEmpty())
-                    tokens.Add(tmp[i]);
-            }
-        }
-    }
-
-    m_State = oldState;
-}
-
 void Tokenizer::ReadParentheses(wxString& str, bool trimFirst)
 {
     str.Clear();
@@ -607,13 +535,15 @@ void Tokenizer::ReadParentheses(wxString& str, bool trimFirst)
 
 void Tokenizer::ReadParentheses(wxString& str)
 {
+    // we create a local buffer here, so the data is copied from m_Buffer to buffer
+    // once the local buffer is full, we append the content in local buffer to the result str
     static const size_t maxBufferLen = 4093;
     wxChar buffer[maxBufferLen + 3];
-    buffer[0] = _T('$'); // avoid segfault error
+    buffer[0] = _T('$'); // avoid segfault error, because we have some *(p - 1) = x in the code
     wxChar* realBuffer = buffer + 1;
     wxChar* p = realBuffer;
 
-    int level = 0;
+    int level = 0; // brace level of '(' and ')'
 
     while (NotEOF())
     {
@@ -645,7 +575,7 @@ void Tokenizer::ReadParentheses(wxString& str)
         case _T(')'):
             {
                 if (*(p - 1) <= _T(' '))
-                    --p;
+                    --p; // if previous char is a space, we can put ')' there, so we save one char
                 --level;
                 *p = ch;
                 ++p;
@@ -655,29 +585,29 @@ void Tokenizer::ReadParentheses(wxString& str)
         case _T('\''):
         case _T('"'):
             {
-                MoveToNextChar();
-                SkipToStringEnd(ch);
-                MoveToNextChar();
-                const size_t writeLen = m_TokenIndex - startIndex;
+                MoveToNextChar();     // skip the leading '"' or '\'
+                SkipToStringEnd(ch);  // m_TokenIndex point to the trailing '"' or '\' now
+                MoveToNextChar();     // move to the char after trailing char
+                const size_t writeLen = m_TokenIndex - startIndex; // the string length
                 const size_t usedLen = p - realBuffer;
-                if (usedLen + writeLen > maxBufferLen)
+                if (usedLen + writeLen > maxBufferLen) // there is not enough space left to write the string
                 {
-                    if (writeLen > maxBufferLen)
+                    if (writeLen > maxBufferLen) // to big string?
                     {
-                        TRACE(_T("ReadParentheses(): Catched exception 1: %lu"), static_cast<unsigned long>(writeLen));
+                        TRACE(_T("ReadParentheses(): Catch exception 1: %lu"), static_cast<unsigned long>(writeLen));
                         return;
                     }
 
-                    if (p != realBuffer)
+                    if (p != realBuffer) // add the used string to the result str
                     {
                         str.Append(realBuffer, usedLen);
-                        p = realBuffer;
+                        p = realBuffer;  // adjust the p, as it was an empty buffer
                     }
-
+                    // append the string to str (not write the string to the buffer)
                     str.Append((const wxChar*)m_Buffer + startIndex, writeLen);
                 }
                 else
-                {
+                {   // the buffer can hold the string, so copy it to the buffer
                     memcpy(p, (const wxChar*)m_Buffer + startIndex, writeLen * sizeof(wxChar));
                     p += writeLen;
                 }
@@ -686,34 +616,14 @@ void Tokenizer::ReadParentheses(wxString& str)
             }
             break;
 
-        case _T(','):
-            {
-                if (*(p - 1) <= _T(' '))
-                    --p;
-
-                *p = _T(',');
-                *++p = _T(' ');
-                ++p;
-            }
-            break;
-
+        case _T(','): // if there is a space before the comma, we just remove it, but we should add a space after the comma
         case _T('*'):
-            {
-                if (*(p - 1) <= _T(' '))
-                    --p;
-
-                *p = _T('*');
-                *++p = _T(' ');
-                ++p;
-            }
-            break;
-
         case _T('&'):
             {
                 if (*(p - 1) <= _T(' '))
                     --p;
 
-                *p = _T('&');
+                *p = ch;
                 *++p = _T(' ');
                 ++p;
             }
@@ -729,7 +639,7 @@ void Tokenizer::ReadParentheses(wxString& str)
                     //*++p = _T(' ');
                     ++p;
                 }
-                else
+                else // special handling of "==" "=!" "=>" and "=<"
                 {
                     switch (*(p - 1))
                     {
@@ -757,7 +667,9 @@ void Tokenizer::ReadParentheses(wxString& str)
             }
             break;
 
-        case _T(' '):
+        case _T(' '): // we only add a space if the former char is not a space, also not a '('
+        case _T('\r'): // the tab char are regard as space
+        case _T('\t'):
             {
                 if (*(p - 1) != _T(' ') && *(p - 1) != _T('('))
                 {
@@ -765,10 +677,6 @@ void Tokenizer::ReadParentheses(wxString& str)
                     ++p;
                 }
             }
-            break;
-
-        case _T('\r'):
-        case _T('\t'):
             break;
 
         case _T('\n'): // we need keep the \n for records paras correct position
@@ -781,7 +689,7 @@ void Tokenizer::ReadParentheses(wxString& str)
             }
             break;
 
-        default:
+        default: // any other case, we can directly copy the char
             {
                 *p = ch;
                 ++p;
@@ -799,13 +707,13 @@ void Tokenizer::ReadParentheses(wxString& str)
 
         if (level == 0)
             break;
-    }
+    }//while (NotEOF())
 
     if (p > realBuffer)
         str.Append(realBuffer, p - realBuffer);
     TRACE(_T("ReadParentheses(): %s, line=%u"), str.wx_str(), m_LineNumber);
     if (str.Len() > 512)
-    {   TRACE(_T("ReadParentheses(): Catched exception 2: %lu"), static_cast<unsigned long>(str.Len())); }
+    {   TRACE(_T("ReadParentheses(): Catch exception 2: %lu"), static_cast<unsigned long>(str.Len())); }
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces)
@@ -1038,7 +946,7 @@ bool Tokenizer::SkipComment()
                 while (SkipWhiteSpace())
                     ;
 
-                // Maybe there is another coment?
+                // Maybe there is another comment?
                 // Recursive call
                 bool skipped = SkipComment();
 
