@@ -115,6 +115,7 @@ ParserBase::~ParserBase()
     delete m_TokenTree;
     m_TokenTree = 0;
 }
+
 TokenTree* ParserBase::GetTokenTree()
 {
     return m_TokenTree;
@@ -122,7 +123,6 @@ TokenTree* ParserBase::GetTokenTree()
 
 wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
 {
-
     wxString log;
     log.Printf(wxT("ParserDummy::ParserBase::GetFullFileName() : Querying full file name for source '%s', target '%s' (isGlobal=%s)."),
                src.wx_str(), tgt.wx_str(), (isGlobal ? wxT("true") : wxT("false")));
@@ -154,7 +154,6 @@ wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, b
 
 bool ParserBase::Reparse(const wxString& file, bool isLocal)
 {
-
     FileLoader* loader = new FileLoader(file);
     (*loader)();
 

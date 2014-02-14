@@ -1090,7 +1090,7 @@ wxString Tokenizer::PeekToken()
  */
 void Tokenizer::UngetToken()
 {
-    if(m_TokenIndex == m_UndoTokenIndex) //this means we have already run a UngetToken() before.
+    if (m_TokenIndex == m_UndoTokenIndex) // this means we have already run a UngetToken() before.
         return;
 
     m_PeekTokenIndex = m_TokenIndex;

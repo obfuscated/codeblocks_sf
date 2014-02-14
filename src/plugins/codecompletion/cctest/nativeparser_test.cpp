@@ -55,9 +55,9 @@
     #endif
 #endif
 
-bool  s_DebugSmartSense = false; //if true, then cclogger will log many debug messages
+bool s_DebugSmartSense = false; // if true, then cclogger will log many debug messages
 
-NativeParserTest::NativeParserTest( )
+NativeParserTest::NativeParserTest()
 {
 }
 

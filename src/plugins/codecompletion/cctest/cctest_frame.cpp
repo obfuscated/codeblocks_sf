@@ -216,7 +216,11 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     // redirect the wxLogMessage to the text ctrl of the frame
     wxLogTextCtrl *textLog = new wxLogTextCtrl(m_LogCtrl);
     wxLog::SetActiveTarget(textLog);
+#if wxCHECK_VERSION(2,9,0)
+    wxLog::DisableTimestamp(); // do not show the time stamp
+#else
     wxLog::SetTimestamp(NULL); // do not show the time stamp
+#endif
 
     //Setting the macro replacements
     m_NativeParser.Init();

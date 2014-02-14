@@ -504,7 +504,7 @@ bool ParserThread::Parse()
 
         if (!m_Options.useBuffer) // Parse a file
         {
-            //the second parameter of ReserveFileForParsing() is false, so set it to fpsBeingParsed
+            // the second parameter of ReserveFileForParsing() is false, so set it to fpsBeingParsed
             m_FileIdx = m_TokenTree->ReserveFileForParsing(m_Filename);
             if (!m_FileIdx)
                 break;

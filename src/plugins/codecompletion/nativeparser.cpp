@@ -2150,10 +2150,10 @@ bool NativeParser::AddCompilerPredefinedMacros(cbProject* project, ParserBase* p
     parser->AddPredefinedMacros(defs);
 
     TRACE(_T("NativeParser::AddCompilerPredefinedMacros(): Leave"));
-    if (defs.IsEmpty())
+    if ( defs.IsEmpty() )
         return false;
-    else
-        return true;
+
+    return true;
 }
 
 bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs)
@@ -2389,10 +2389,10 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
     TRACE(_T("Add project and current build target defined preprocessor macros:\n%s"), defs.wx_str());
     parser->AddPredefinedMacros(defs);
     TRACE(_T("NativeParser::AddProjectDefinedMacros(): Leave"));
-    if (defs.IsEmpty())
+    if ( defs.IsEmpty() )
         return false;
-    else
-        return true;
+
+    return true;
 }
 
 // These dirs are the built-in search dirs of the compiler itself (GCC).
@@ -2813,7 +2813,6 @@ bool NativeParser::AddProjectToParser(cbProject* project)
     else
         needParseMacros = true;
 
-
     if (!AddProjectDefinedMacros(project, parser))
         CCLogger::Get()->DebugLog(_T("NativeParser::AddProjectToParser(): AddProjectDefinedMacros failed!"));
     else
@@ -2830,7 +2829,7 @@ bool NativeParser::AddProjectToParser(cbProject* project)
             ProjectFile* pf = *fl_it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
             {
-                if (AddFileToParser(project, pf->file.GetFullPath(), parser))
+                if ( AddFileToParser(project, pf->file.GetFullPath(), parser) )
                     ++fileCount;
             }
         }
@@ -2839,7 +2838,7 @@ bool NativeParser::AddProjectToParser(cbProject* project)
             ProjectFile* pf = *fl_it;
             if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
             {
-                if (AddFileToParser(project, pf->file.GetFullPath(), parser))
+                if ( AddFileToParser(project, pf->file.GetFullPath(), parser) )
                     fileCount++;
             }
         }
@@ -2847,7 +2846,7 @@ bool NativeParser::AddProjectToParser(cbProject* project)
         CCLogger::Get()->DebugLog(F(_("NativeParser::AddProjectToParser(): Done adding %lu files of project (%s) to parser."), static_cast<unsigned long>(fileCount), prj.wx_str()));
 
         // in some cases, all the files were already be parsed, so fileCount is still 0
-        return ((fileCount>0)||needParseMacros);
+        return ((fileCount>0) || needParseMacros);
     }
     else
     {

@@ -158,26 +158,26 @@ public:
     virtual ~ParserBase();
 
     virtual void AddPriorityHeader(cb_unused const wxString& filename, cb_unused bool systemHeaderFile) { ; }
-    virtual void AddBatchParse(cb_unused const StringList& filenames)                                    { ; }
-    virtual void AddParse(cb_unused const wxString& filename)                                            { ; }
-    virtual void AddPredefinedMacros(cb_unused const wxString& defs)                                     { ; }
-    virtual bool UpdateParsingProject(cb_unused cbProject* project)                                      { return false; }
+    virtual void AddBatchParse(cb_unused const StringList& filenames)                                   { ; }
+    virtual void AddParse(cb_unused const wxString& filename)                                           { ; }
+    virtual void AddPredefinedMacros(cb_unused const wxString& defs)                                    { ; }
+    virtual bool UpdateParsingProject(cb_unused cbProject* project)                                     { return false; }
 
     virtual bool ParseBuffer(cb_unused const wxString& buffer, cb_unused bool isLocal, cb_unused bool bufferSkipBlocks = false,
                              cb_unused bool isTemp = false, cb_unused const wxString& filename = wxEmptyString,
-                             cb_unused int parentIdx = -1, cb_unused int initLine = 0)                          { return false; }
-    virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)                                      { return false; }
-    virtual bool ParseBufferForNamespaces(cb_unused const wxString& buffer, cb_unused NameSpaceVec& result)     { return false; }
+                             cb_unused int parentIdx = -1, cb_unused int initLine = 0)                      { return false; }
+    virtual bool ParseBufferForFunctions(cb_unused const wxString& buffer)                                  { return false; }
+    virtual bool ParseBufferForNamespaces(cb_unused const wxString& buffer, cb_unused NameSpaceVec& result) { return false; }
     virtual bool ParseBufferForUsingNamespace(cb_unused const wxString& buffer, cb_unused wxArrayString& result,
-                                              cb_unused bool bufferSkipBlocks = true)                           { return false; }
+                                              cb_unused bool bufferSkipBlocks = true)                       { return false; }
 
     virtual bool Reparse(cb_unused const wxString& filename, cb_unused bool isLocal = true);     // allow other implementations of derived (dummy) classes
-    virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true){ return false; }
-    virtual bool RemoveFile(cb_unused const wxString& filename)                                                          { return false; }
-    virtual bool IsFileParsed(cb_unused const wxString& filename)                                                        { return false; }
+    virtual bool AddFile(cb_unused const wxString& filename, cb_unused cbProject* project, cb_unused bool isLocal = true) { return false; }
+    virtual bool RemoveFile(cb_unused const wxString& filename)                                                           { return false; }
+    virtual bool IsFileParsed(cb_unused const wxString& filename)                                                         { return false; }
 
-    virtual bool     Done()          { return true;            }
-    virtual wxString NotDoneReason() { return wxEmptyString;   }
+    virtual bool     Done()          { return true; }
+    virtual wxString NotDoneReason() { return wxEmptyString; }
 
     virtual TokenTree* GetTokenTree(); // allow other implementations of derived (dummy) classes
     TokenTree* GetTempTokenTree()    { return m_TempTokenTree; }
@@ -190,7 +190,7 @@ public:
      * true, it will return the first found header file, otherwise, all the Parser's include path database
      * will be searched.
      */
-    wxArrayString        FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
+    wxArrayString   FindFileInIncludeDirs(const wxString& file, bool firstonly = false);
     /** read Parser options from configure file */
     void            ReadOptions();
     /** write Parse options to configure file */
