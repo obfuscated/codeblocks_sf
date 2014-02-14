@@ -197,13 +197,6 @@ public:
      */
     wxString ReadToEOL(bool nestBraces = true, bool stripUnneeded = true);
 
-    /** Read and format between (), stored in 'str'
-     * @param trimFirst, some macro definition are mixed with comments, like below
-     */
-     // #define AAA  /*args*/ (x) x
-     // so, we just eat the embedded C style comments, and get "(x) x"
-    void ReadParentheses(wxString& str, bool trimFirst);
-
     void ReadParentheses(wxString& str);
 
     /** Skip from the current position to the end of line.

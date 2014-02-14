@@ -514,23 +514,6 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
     }
 }
 
-void Tokenizer::ReadParentheses(wxString& str, bool trimFirst)
-{
-    str.Clear();
-
-    // e.g. #define AAA  /*args*/ (x) x
-    // we want read "(x)", so, we need trim the unwanted before the "(x)"
-    if (trimFirst)
-    {
-        while (SkipWhiteSpace() && SkipComment())
-            ;
-        if (CurrentChar() != _T('('))
-            return;
-    }
-
-    ReadParentheses(str);
-}
-
 void Tokenizer::ReadParentheses(wxString& str)
 {
     // we create a local buffer here, so the data is copied from m_Buffer to buffer
@@ -1284,13 +1267,16 @@ void Tokenizer::ReplaceMacro(wxString& str)
     }
     else if (it->second[0] == _T('-'))
     {
-        wxString end((const wxChar*)it->second + 1);
+        // sample rule:  "BEGIN_EVENT_TABLE" -> "-END_EVENT_TABLE"
+        // we should skip to END_EVENT_TABLE, so the contents between BEGIN_EVENT_TABLE and
+        // END_EVENT_TABLE is skipped, also the "()" after END_EVENT_TABLE is skipped.
+        wxString end((const wxChar*)it->second + 1); // strip the '-'
         if (end.IsEmpty())
             return;
 
         while (NotEOF())
         {
-            while (SkipComment() && SkipWhiteSpace())
+            while (SkipComment() || SkipWhiteSpace())
                 ;
             if (CurrentChar() == end[0])
             {
@@ -1310,7 +1296,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
             str = DoGetToken();
         }
     }
-    else
+    else // for other user defined rules, just do a buffer content replacement
     {
         if (it->second != str && ReplaceBufferText(it->second, false))
             str = DoGetToken();
