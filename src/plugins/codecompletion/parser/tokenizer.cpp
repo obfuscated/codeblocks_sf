@@ -106,7 +106,6 @@ Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_IsOK(false),
     m_State(tsSkipUnWanted),
     m_Loader(0),
-    m_IsReplaceParsing(false),
     m_FirstRemainingLength(0),
     m_RepeatReplaceCount(0),
     m_NextTokenDoc(),
@@ -202,7 +201,6 @@ void Tokenizer::BaseInit()
     m_PeekLineNumber       = 0;
     m_PeekNestLevel        = 0;
     m_IsOK                 = false;
-    m_IsReplaceParsing     = false;
     m_FirstRemainingLength = 0;
     m_RepeatReplaceCount   = 0;
     m_Buffer.Clear();
@@ -1058,7 +1056,7 @@ wxString Tokenizer::PeekToken()
         unsigned int savedLineNumber = m_LineNumber;
         unsigned int savedNestLevel  = m_NestLevel;
 
-        int savedReplaceCount = m_IsReplaceParsing ? m_RepeatReplaceCount : -1;
+        size_t savedReplaceCount = m_RepeatReplaceCount;
 
         if (SkipUnwanted())
             m_PeekToken = DoGetToken();
@@ -1070,7 +1068,7 @@ wxString Tokenizer::PeekToken()
         m_PeekNestLevel              = m_NestLevel;
         // Check whether a ReplaceBufferText() was done in DoGetToken().
         // We assume m_Undo... have already been reset in ReplaceBufferText().
-        if (m_IsReplaceParsing && savedReplaceCount != (int)m_RepeatReplaceCount)
+        if (savedReplaceCount < m_RepeatReplaceCount)
         {
             m_TokenIndex             = m_UndoTokenIndex;
             m_LineNumber             = m_UndoLineNumber;
@@ -1218,11 +1216,12 @@ wxString Tokenizer::DoGetToken()
         str = c;
         MoveToNextChar();
     }
-
+    // m_FirstRemainingLength != 0 means were are in macro replace mode, but when m_TokenIndex is
+    // go forward beyond the point where we start the macro replacement, we should stop and reset
+    // to non-macro replace mode
     if (m_FirstRemainingLength != 0 && m_BufferLen - m_FirstRemainingLength < m_TokenIndex)
     {
         m_FirstRemainingLength = 0;
-        m_IsReplaceParsing = false;
         m_RepeatReplaceCount = 0;
     }
 
@@ -1234,7 +1233,7 @@ wxString Tokenizer::DoGetToken()
 
 void Tokenizer::ReplaceMacro(wxString& str)
 {
-    if (m_IsReplaceParsing)
+    if (m_RepeatReplaceCount > 0)
     {
         const int id = m_TokenTree->TokenExists(str, -1, tkPreprocessor);
         if (id != -1)
@@ -1732,7 +1731,7 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
     if (target.IsEmpty())
         return false;
 
-    if (m_IsReplaceParsing)
+    if (m_RepeatReplaceCount > 0)
     {
         if (m_RepeatReplaceCount >= s_MaxRepeatReplaceCount)
         {
@@ -1743,6 +1742,11 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
         }
         else
             ++m_RepeatReplaceCount;
+    }
+    else  // Set replace parsing state, and save first replace token index
+    {
+        m_FirstRemainingLength = m_BufferLen - m_TokenIndex;
+        ++m_RepeatReplaceCount;
     }
 
     // Keep all in one line
@@ -1770,13 +1774,6 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
         m_Buffer.insert(0, wxString(_T(' '), diffLen));
         m_BufferLen += diffLen;
         m_TokenIndex += diffLen;
-    }
-
-    // Set replace parsing state, and save first replace token index
-    if (!m_IsReplaceParsing)
-    {
-        m_FirstRemainingLength = m_BufferLen - m_TokenIndex;
-        m_IsReplaceParsing = true;
     }
 
     // Replacement backward

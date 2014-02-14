@@ -521,15 +521,22 @@ private:
     /** Calculate Expression's result, stack for Shunting-yard algorithm */
     std::stack<bool>     m_ExpressionResult;
 
-    /** Whether we are in replace buffer parsing, avoid recursive calling */
-    bool                 m_IsReplaceParsing;
 
-    /** Save the remaining length, after the first replace buffer, this is the length which replacement
-     * does not touch. (from the beginning of the m_Buffer)
+    /** Save the remaining length from m_TokenIndex to the end of m_Buffer before replace m_Buffer.
+     *  ..........AAA..................
+     *               ^                 [EOF]
+     * It is the length between '^'(m_TokenIndex) and [EOF], sometimes there is not enough space
+     * to put the substitute before TokenIndex, so the m_Buffer will grows after the replacement:
+     *  BBBBBBBBBBBBBBBBBBBBBBBBB..................
+     *  ^                        !                 [EOF]
+     * Here, m_TokenIndex is moved backward to the beginning of the new substitute
+     * string, but the length between '!' and [EOF] should be unchanged
      */
     size_t               m_FirstRemainingLength;
 
-    /** Save the repeat replace buffer count if currently in replace parsing */
+    /** Save the repeat replace buffer count if currently in replace parsing, if it is 0, this means
+     * replace buffer does not happen.
+     */
     size_t               m_RepeatReplaceCount;
 
     /** Static member, this is a hash map storing all macro replacement rules */
