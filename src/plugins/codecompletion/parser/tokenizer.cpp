@@ -1058,6 +1058,8 @@ wxString Tokenizer::PeekToken()
         unsigned int savedLineNumber = m_LineNumber;
         unsigned int savedNestLevel  = m_NestLevel;
 
+        int savedReplaceCount = m_IsReplaceParsing ? m_RepeatReplaceCount : -1;
+
         if (SkipUnwanted())
             m_PeekToken = DoGetToken();
         else
@@ -1066,10 +1068,20 @@ wxString Tokenizer::PeekToken()
         m_PeekTokenIndex             = m_TokenIndex;
         m_PeekLineNumber             = m_LineNumber;
         m_PeekNestLevel              = m_NestLevel;
-
-        m_TokenIndex                 = savedTokenIndex;
-        m_LineNumber                 = savedLineNumber;
-        m_NestLevel                  = savedNestLevel;
+        // Check whether a ReplaceBufferText() was done in DoGetToken().
+        // We assume m_Undo... have already been reset in ReplaceBufferText().
+        if (m_IsReplaceParsing && savedReplaceCount != (int)m_RepeatReplaceCount)
+        {
+            m_TokenIndex             = m_UndoTokenIndex;
+            m_LineNumber             = m_UndoLineNumber;
+            m_NestLevel              = m_UndoNestLevel;
+        }
+        else
+        {
+            m_TokenIndex             = savedTokenIndex;
+            m_LineNumber             = savedLineNumber;
+            m_NestLevel              = savedNestLevel;
+        }
     }
 
     return m_PeekToken;
@@ -1720,12 +1732,17 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
     if (target.IsEmpty())
         return false;
 
-    if (m_IsReplaceParsing && ++m_RepeatReplaceCount > s_MaxRepeatReplaceCount)
+    if (m_IsReplaceParsing)
     {
-        m_TokenIndex = m_BufferLen - m_FirstRemainingLength;
-        m_PeekAvailable = false;
-        SkipToEOL(false);
-        return false;
+        if (m_RepeatReplaceCount >= s_MaxRepeatReplaceCount)
+        {
+            m_TokenIndex = m_BufferLen - m_FirstRemainingLength;
+            m_PeekAvailable = false;
+            SkipToEOL(false);
+            return false;
+        }
+        else
+            ++m_RepeatReplaceCount;
     }
 
     // Keep all in one line
