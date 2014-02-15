@@ -19,7 +19,7 @@ fi
 mkdir -p m4
 
 # Deal with some gentoo-specific issues
-WANT_AUTOMAKE='1.9 1.8 1.7' #latest of these is chosen or default if none hits
+WANT_AUTOMAKE='1.11 1.9 1.8 1.7' #latest of these is chosen or default if none hits
 export WANT_AUTOMAKE
 WANT_AUTOCONF='2.5'
 export WANT_AUTOCONF

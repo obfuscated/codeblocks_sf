@@ -16,6 +16,8 @@ LT_INIT
 
 AC_CONFIG_HEADER([src/include/config.h])
 
+m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
+
 CODEBLOCKS_CHECK_DEBUG
 
 dnl Checks for programs.
