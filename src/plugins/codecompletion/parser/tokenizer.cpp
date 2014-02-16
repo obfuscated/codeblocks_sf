@@ -1390,8 +1390,9 @@ bool Tokenizer::CalcConditionExpression()
               exp.GetStatus()?1:0, exp.GetResult()?1:0);
         return exp.GetStatus() && exp.GetResult();
     }
-
-    return true;
+    // if exp.CalcPostfix() fails, which means it may have some undefined identifier (non-digit) in
+    // the expression, we should return false
+    return false;
 }
 
 bool Tokenizer::IsMacroDefined()
