@@ -997,6 +997,12 @@ void ParserThread::DoParse()
             // OR:   __asm mov al, 2   __asm mov dx, 0xD007
             SkipToOneOfChars(ParserConsts::semicolon, true, true);
         }
+        else if (token == ParserConsts::kw_attribute)
+        {
+            // Handle stuff like:  int __attribute__((whatever)) fun();
+            //  __attribute__ already be eat
+            m_Tokenizer.GetToken();  // eat (( whatever ))
+        }
         else if (!switchHandled)
         {
             wxString peek = m_Tokenizer.PeekToken();
