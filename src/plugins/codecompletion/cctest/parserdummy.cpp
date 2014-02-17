@@ -152,7 +152,7 @@ wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, b
     return wxEmptyString;
 }
 
-bool ParserBase::Reparse(const wxString& file, bool isLocal)
+bool ParserBase::Reparse(const wxString& file, cb_unused bool isLocal)
 {
     FileLoader* loader = new FileLoader(file);
     (*loader)();

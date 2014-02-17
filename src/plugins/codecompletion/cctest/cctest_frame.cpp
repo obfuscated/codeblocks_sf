@@ -729,7 +729,7 @@ void CCTestFrame::OnCCAddToken(wxCommandEvent& event)
     m_ProgDlg->Update(-1, m_CurrentFile + wxT("\n") + log);
 }
 
-void CCTestFrame::OnPrintTree(wxCommandEvent& event)
+void CCTestFrame::OnPrintTree(cb_unused wxCommandEvent& event)
 {
     m_ProgDlg = new wxProgressDialog(_T("Please wait, operating..."), _("Preparing...\nPlease wait..."), 0, this, wxPD_APP_MODAL);
     m_ProgDlg->SetSize(640,100);

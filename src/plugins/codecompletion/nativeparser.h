@@ -24,6 +24,7 @@ extern const int g_EditorActivatedDelay;
 class cbEditor;
 class EditorBase;
 class cbProject;
+class cbStyledTextCtrl;
 class ClassBrowser;
 class Compiler;
 class Token;
@@ -33,7 +34,7 @@ WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, Parsers
 
 typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
 
-//TODO (ollydbg#1#), this class is dirty, I'm going to change its name like CursorLocation
+// TODO (ollydbg#1#), this class is dirty, I'm going to change its name like CursorLocation
 /** Search location combination, a pointer to cbStyledTextCtrl and a filename is enough */
 struct ccSearchData
 {

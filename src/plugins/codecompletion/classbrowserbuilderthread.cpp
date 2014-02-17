@@ -445,7 +445,7 @@ void ClassBrowserBuilderThread::BuildTree()
 #endif
 
     // 6.) Hide&Freeze trees shown
-    if (m_BrowserOptions.treeMembers)
+    if (m_BrowserOptions.treeMembers && m_CCTreeCtrlBottom)
     {
         m_CCTreeCtrlBottom->Hide();
         m_CCTreeCtrlBottom->Freeze();
