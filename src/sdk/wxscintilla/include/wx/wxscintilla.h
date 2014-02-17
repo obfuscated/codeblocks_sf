@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.37.0")
+#define wxSCINTILLA_VERSION _T("3.39.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -119,6 +119,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARK_AVAILABLE 28
 #define wxSCI_MARK_UNDERLINE 29
 #define wxSCI_MARK_RGBAIMAGE 30
+#define wxSCI_MARK_BOOKMARK 31
 #define wxSCI_MARK_CHARACTER 10000
 
 // Markers used for outlining and changed column.
@@ -254,6 +255,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_WRAP_NONE 0
 #define wxSCI_WRAP_WORD 1
 #define wxSCI_WRAP_CHAR 2
+#define wxSCI_WRAP_WHITESPACE 3
 #define wxSCI_WRAPVISUALFLAG_NONE 0x0000
 #define wxSCI_WRAPVISUALFLAG_END 0x0001
 #define wxSCI_WRAPVISUALFLAG_START 0x0002
@@ -346,6 +348,12 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SCVS_USERACCESSIBLE 2
 #define wxSCI_TECHNOLOGY_DEFAULT 0
 #define wxSCI_TECHNOLOGY_DIRECTWRITE 1
+
+/// Line end types which may be used in addition to LF, CR, and CRLF
+/// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
+/// U+2029 Paragraph Separator, and U+0085 Next Line
+#define wxSCI_LINE_END_TYPE_DEFAULT 0
+#define wxSCI_LINE_END_TYPE_UNICODE 1
 
 // Maximum value of keywordSet parameter of SetKeyWords.
 #define wxSCI_KEYWORDSET_MAX 8
@@ -2324,14 +2332,6 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_DMAP_WORD2 9
 #define wxSCI_DMAP_WORD3 10
 
-/// Events
-/// GTK+ Specific to work around focus and accelerator problems:
-/// Line end types which may be used in addition to LF, CR, and CRLF
-/// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
-/// U+2029 Paragraph Separator, and U+0085 Next Line
-#define wxSCI_LINE_END_TYPE_DEFAULT 0
-#define wxSCI_LINE_END_TYPE_UNICODE 1
-
 //}}}
 //----------------------------------------------------------------------
 
@@ -3475,6 +3475,9 @@ public:
     // Retrieve the position where the caret was before displaying the call tip.
     int CallTipPosAtStart();
 
+    // Set the start position in order to change when backspacing removes the calltip.
+    void CallTipSetPosStart(int posStart);
+
     // Highlight a segment of the definition.
     void CallTipSetHighlight(int start, int end);
 
@@ -4609,6 +4612,15 @@ public:
     // Sets the caret line to always visible.
     void SetCaretLineVisibleAlways(bool alwaysVisible);
 
+    // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+    void SetLineEndTypesAllowed(int lineEndBitSet);
+
+    // Get the line end types currently allowed.
+    int GetLineEndTypesAllowed() const;
+
+    // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+    int GetLineEndTypesActive() const;
+
     // Set the way a character is drawn.
     void SetRepresentation(const wxString& encodedCharacter, const wxString& representation);
 
@@ -4681,15 +4693,6 @@ public:
 
     // Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
     wxString DescribeKeyWordSets() const;
-
-    // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
-    void SetLineEndTypesAllowed(int lineEndBitSet);
-
-    // Get the line end types currently allowed.
-    int GetLineEndTypesAllowed() const;
-
-    // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
-    int GetLineEndTypesActive() const;
 
     // Bit set of LineEndType enumertion for which line ends beyond the standard
     // LF, CR, and CRLF are supported by the lexer.

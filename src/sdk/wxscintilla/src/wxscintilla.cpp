@@ -1987,6 +1987,12 @@ int wxScintilla::CallTipPosAtStart()
     return SendMsg(SCI_CALLTIPPOSSTART, 0, 0);
 }
 
+// Set the start position in order to change when backspacing removes the calltip.
+void wxScintilla::CallTipSetPosStart(int posStart)
+{
+    SendMsg(SCI_CALLTIPSETPOSSTART, posStart, 0);
+}
+
 // Highlight a segment of the definition.
 void wxScintilla::CallTipSetHighlight(int start, int end)
 {
@@ -4317,6 +4323,24 @@ void wxScintilla::SetCaretLineVisibleAlways(bool alwaysVisible)
     SendMsg(SCI_SETCARETLINEVISIBLEALWAYS, alwaysVisible, 0);
 }
 
+// Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+void wxScintilla::SetLineEndTypesAllowed(int lineEndBitSet)
+{
+    SendMsg(SCI_SETLINEENDTYPESALLOWED, lineEndBitSet, 0);
+}
+
+// Get the line end types currently allowed.
+int wxScintilla::GetLineEndTypesAllowed() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESALLOWED, 0, 0);
+}
+
+// Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+int wxScintilla::GetLineEndTypesActive() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESACTIVE, 0, 0);
+}
+
 // Set the way a character is drawn.
 void wxScintilla::SetRepresentation(const wxString& encodedCharacter, const wxString& representation)
 {
@@ -4508,24 +4532,6 @@ wxString wxScintilla::DescribeKeyWordSets() const
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
-}
-
-// Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
-void wxScintilla::SetLineEndTypesAllowed(int lineEndBitSet)
-{
-    SendMsg(SCI_SETLINEENDTYPESALLOWED, lineEndBitSet, 0);
-}
-
-// Get the line end types currently allowed.
-int wxScintilla::GetLineEndTypesAllowed() const
-{
-    return SendMsg(SCI_GETLINEENDTYPESALLOWED, 0, 0);
-}
-
-// Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
-int wxScintilla::GetLineEndTypesActive() const
-{
-    return SendMsg(SCI_GETLINEENDTYPESACTIVE, 0, 0);
 }
 
 // Bit set of LineEndType enumertion for which line ends beyond the standard
@@ -5711,7 +5717,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 37, 0, "Scintilla 3.37");
+    return wxVersionInfo("Scintilla", 3, 39, 0, "Scintilla 3.39");
 }
 #endif
 /* C::B end */
