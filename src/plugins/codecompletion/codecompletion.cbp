@@ -99,12 +99,6 @@
 		<Unit filename="ccoptionsprjdlg.h">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="cctest/cctest.cpp">
-			<Option target="cctest" />
-		</Unit>
-		<Unit filename="cctest/cctest.h">
-			<Option target="cctest" />
-		</Unit>
 		<Unit filename="cctest/cctest_app.cpp">
 			<Option target="cctest" />
 		</Unit>
