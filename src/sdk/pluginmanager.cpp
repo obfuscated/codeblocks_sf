@@ -282,7 +282,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         settingsOnName.Remove(0, 3);
     if (!platform::windows && settingsOffName.StartsWith(_T("lib")))
         settingsOffName.Remove(0, 3);
-    wxString pluginFilename = pluginDir + _T('/') + localName;
+    wxString pluginFilename = UnixFilename(pluginDir + _T('/') + localName);
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin filename: ") + pluginFilename));
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin resources: ") + ConfigManager::GetDataFolder() + _T('/') + resourceName));
 
