@@ -250,7 +250,8 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(item));
-    m_TokenTree->RecalcInheritanceChain(data->m_Token);
+    if (data)
+        m_TokenTree->RecalcInheritanceChain(data->m_Token);
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
