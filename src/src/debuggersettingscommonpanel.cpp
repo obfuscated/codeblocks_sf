@@ -92,7 +92,7 @@ DebuggerSettingsCommonPanel::DebuggerSettingsCommonPanel(wxWindow* parent)
     m_autoSwitch->SetToolTip(_("When stopping, auto-switch to first frame with valid source info."));
 
     m_debuggersLog->SetValue(cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::ShowDebuggersLog));
-    m_debuggersLog->SetToolTip(_("If enabled, the debugger&apos;s raw input/output will be logged in a separate log page."));
+    m_debuggersLog->SetToolTip(_("If enabled, the debugger's raw input/output will be logged in a separate log page."));
 
     m_jumpOnDoubleClick->SetValue(cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick));
 
