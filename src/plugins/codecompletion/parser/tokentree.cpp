@@ -892,8 +892,8 @@ void TokenTree::MarkFileTokensAsLocal(size_t fileIdx, bool local, void* userData
         Token* token = m_Tokens.at(*it);
         if (token)
         {
-            token->m_IsLocal  = local;
-            token->m_UserData = userData;
+            token->m_IsLocal  = local; // only the tokens belong to project files are marked as local
+            token->m_UserData = userData; // a pointer to the c::b project
         }
     }
 }

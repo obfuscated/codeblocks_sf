@@ -69,7 +69,7 @@ int ParserThreadedTask::Execute()
     CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     wxString   preDefs(m_Parser->m_PredefinedMacros);
-    StringList priorityHeaders(m_Parser->m_PriorityHeaders);
+
     StringList batchFiles(m_Parser->m_BatchParseFiles);
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
@@ -81,28 +81,14 @@ int ParserThreadedTask::Execute()
     CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     m_Parser->m_PredefinedMacros.Clear();
-    m_Parser->m_IsPriority = true;
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
-
-    TRACE(_T("ParserThreadedTask::Execute(): Parse priority header files"));
-    while (!priorityHeaders.empty())
-    {
-        m_Parser->Parse(priorityHeaders.front());
-        priorityHeaders.pop_front();
-    }
-
-    CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
-
-    m_Parser->m_PriorityHeaders.clear();
-    m_Parser->m_IsPriority = false;
 
     if (m_Parser->m_IgnoreThreadEvents)
         m_Parser->m_IsFirstBatch = true;
 
-    CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
-    TRACE(_T("ParserThreadedTask::Execute(): Parse normal header and source files"));
+    TRACE(_T("ParserThreadedTask::Execute(): Parse source files"));
     while (!batchFiles.empty())
     {
         TRACE(_T("-ParserThreadedTask::Execute(): Parse %s"), batchFiles.front().wx_str());
@@ -116,7 +102,7 @@ int ParserThreadedTask::Execute()
 
     if (m_Parser->m_IgnoreThreadEvents)
     {
-        m_Parser->m_IgnoreThreadEvents = false;
+        m_Parser->m_IgnoreThreadEvents = false; // we need to hear the pool finish event
         m_Parser->m_IsParsing = true;
     }
 

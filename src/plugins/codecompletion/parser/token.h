@@ -94,7 +94,7 @@ public:
     TokenScope                   m_Scope;         // public? private? protected?
     TokenKind                    m_TokenKind;     // See TokenKind class
     bool                         m_IsOperator;    // is operator overload function?
-    bool                         m_IsLocal;       // found in a local source file, otherwise in wxString
+    bool                         m_IsLocal;       // the token belong to a C::B project's source/header file, not the system headers
     bool                         m_IsTemp;        // local (automatic) variable
     bool                         m_IsConst;       // the member method is const (yes/no)
     bool                         m_IsNoExcept;    // the member method is noexcept (yes/no)

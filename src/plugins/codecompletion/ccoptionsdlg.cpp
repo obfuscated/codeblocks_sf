@@ -130,11 +130,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
 
     // Page "C / C++ parser"
     // NOTE (Morten#1#): Keep this in sync with files in the XRC file (settings.xrc) and nativeparser.cpp
-    XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->SetValue(cfg->Read(_T("/priority_headers"),
-        _T("<cstddef>, <w32api.h>, ")
-        _T("<wx/defs.h>, <wx/dlimpexp.h>, <wx/toplevel.h>, ")
-        _T("<boost/config.hpp>, <boost/filesystem/config.hpp>, ")
-        _T("\"pch.h\", \"sdk.h\", \"stdafx.h\"")));
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_threads"), 1));
     XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->Enable(false);
     XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_parsers"), 5));
@@ -238,7 +233,6 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/parser_follow_global_includes"), (bool) XRCCTRL(*this, "chkGlobals",               wxCheckBox)->GetValue());
     cfg->Write(_T("/want_preprocessor"),             (bool) XRCCTRL(*this, "chkPreprocessor",          wxCheckBox)->GetValue());
     cfg->Write(_T("/parse_complex_macros"),          (bool) XRCCTRL(*this, "chkComplexMacros",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/priority_headers"),                     XRCCTRL(*this, "txtPriorityHeaders",       wxTextCtrl)->GetValue());
     cfg->Write(_T("/max_threads"),                   (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
     cfg->Write(_T("/parser_per_workspace"),          (bool) XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue());
     cfg->Write(_T("/max_parsers"),                   (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
@@ -418,7 +412,6 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkPreprocessor",               wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkComplexMacros",              wxCheckBox)->Enable(en);
 
-    XRCCTRL(*this, "txtPriorityHeaders",            wxTextCtrl)->Enable(en);
     en = XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue();
     XRCCTRL(*this, "lblParsersNum",                 wxStaticText)->Enable(!en);
     XRCCTRL(*this, "spnParsersNum",                 wxSpinCtrl)->Enable(!en);

@@ -67,7 +67,11 @@ public:
     int    TokenExists(const wxString& name, const wxString& baseArgs, const TokenIdxSet& parents, TokenKind kind);
     size_t FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask = tkUndefined);
     size_t FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask);
+
+    /** remove tokens belong to the file */
     void   RemoveFile(const wxString& filename);
+
+    /** remove tokens belong to the file */
     void   RemoveFile(int fileIndex);
 
     // Protected access to internal lists / maps
@@ -102,7 +106,13 @@ public:
 
     const wxString GetFilename(size_t fileIdx) const;
 
-    /** mark a file to be parsed. Or, assigned, return non-zero if success. */
+    /** mark a file to be parsed. Or, assigned, return non-zero if success.
+     * @param filename the file need to be parsed
+     * @param preliminary if true, this means we will put the file status as assigned (not parse it
+     * soon, just assigned a Parserthread task, and the actually parsing will be done later; if
+     * false, then set the file status to being parsed, so parsing must be happened immediately after
+     * this function call.
+     */
     size_t         ReserveFileForParsing(const wxString& filename, bool preliminary = false);
 
     /** mark the file as "need to be reparsed" status, usually happens that this file is saved(updated)
@@ -110,7 +120,7 @@ public:
      */
     void           FlagFileForReparsing(const wxString& filename);
 
-    /** mark the file status as fpsDone */
+    /** mark the file status as fpsDone, since parsing this file is done */
     void           FlagFileAsParsed(const wxString& filename);
 
     /** is the file name is in the tokentree, and it's status is either assigned or beingparsed or done

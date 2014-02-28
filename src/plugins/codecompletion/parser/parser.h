@@ -157,7 +157,6 @@ public:
     ParserBase();
     virtual ~ParserBase();
 
-    virtual void AddPriorityHeader(cb_unused const wxString& filename, cb_unused bool systemHeaderFile) { ; }
     virtual void AddBatchParse(cb_unused const StringList& filenames)                                   { ; }
     virtual void AddParse(cb_unused const wxString& filename)                                           { ; }
     virtual void AddPredefinedMacros(cb_unused const wxString& defs)                                    { ; }
@@ -257,14 +256,6 @@ public:
     /** destructor */
     virtual ~Parser();
 
-    /** Add the priority header files, these files will be parsed in FIFO mode (firstly added file will
-     *  be parsed firstly. This function does not running the syntax analysis, but just kick the timer
-     *  so the actual work will be delayed.
-     * @param filename input priority header file name
-     * @param systemHeaderFile true if it is a system header file, those files are specially handled
-     * at the last stage of parsing, they will be parsed again.
-     */
-    virtual void AddPriorityHeader(const wxString& filename, bool systemHeaderFile);
 
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
      * Note that when some "#include" files were added to the batch parse,
@@ -419,22 +410,21 @@ protected:
      */
     cbThreadPool              m_Pool;
 
-    /** true, if the parser is still busy with parsing, false if the parsing stage has finished */
+    /** true, if the parser is still busy with parsing, false if the parsing stage has finished
+     * this value is set in parserthreadedtask after putting all the batchFiles to pool(task)
+     * it was reset after the last stage (mark tokens as local)
+     */
     bool                      m_IsParsing;
 
-    /** Determine whether the parser is doing Priority header parsing. If yes, the added files (usually
-     * the priority files) will be parsed accordingly.
-     * Otherwise, added file will be parsed by thread pool (batch parse mode), thus the sequence
-     * of the parsed files is not reserved. The thread pool may run those threads randomly.
-     */
-    bool                      m_IsPriority;
 
     /** Indicates some files in the current project need to be re-parsed, this is commonly caused
       * that the "real-time parsing option" is enabled, and user is editing source file.
       */
     bool                      m_NeedsReparse;
 
-    /** batch Parse mode flag. Normal files (not in the parse "Priority" files stage) will set this flag. */
+    /** batch Parse mode flag. It was set after consuming m_PredefinedMacros, it was reset after the
+     * final stage (mark token as local).
+     */
     bool                      m_IsFirstBatch;
 
 private:
@@ -445,16 +435,15 @@ private:
     wxStopWatch               m_StopWatch;
     bool                      m_StopWatchRunning;
     long                      m_LastStopWatchTime;
+    /** Parser::OnAllThreadsDone will be called when m_Pool finished its job, but when we run a
+     * batch parsing, we may receive several such event from the m_Pool, because
+     * 1, when ParserThreadedTask finished
+     * 2, when batchFiles get finished
+     * 3, parse system header file again
+     * 4, mark C::B project files's token as local
+     */
     bool                      m_IgnoreThreadEvents;
 
-    /** the files(mostly the header files) need to be parsed before any other files, we use this kind
-     * of files to get more correct macro definition.
-     */
-    StringList                m_PriorityHeaders;       //!< All priority headers
-
-    // These priority header files are saved when first parsed, and the last stage of batch parsing,
-    // they will be reparsed again.
-    StringList                m_SystemPriorityHeaders; //!< Only system priority headers, for re-parse
     StringList                m_BatchParseFiles;       //!< All other batch parse files, like the normal headers/sources
     wxString                  m_PredefinedMacros;      //!< Pre-defined macros, its a buffer queried from the compiler command line
     /** used to measure batch parse time*/

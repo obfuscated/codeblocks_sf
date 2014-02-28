@@ -379,7 +379,6 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_UsingCache(false),
     m_Pool(this, wxNewId(), 1, 2 * 1024 * 1024), // in the meanwhile it'll have to be forced to 1
     m_IsParsing(false),
-    m_IsPriority(false),
     m_NeedsReparse(false),
     m_IsFirstBatch(false),
     m_ReparseTimer(this, wxNewId()),
@@ -427,9 +426,7 @@ bool Parser::Done()
 {
     CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
-    bool done =    m_PriorityHeaders.empty()
-                && m_SystemPriorityHeaders.empty()
-                && m_BatchParseFiles.empty()
+    bool done = m_BatchParseFiles.empty()
                 && m_PredefinedMacros.IsEmpty()
                 && !m_NeedMarkFileAsLocal
                 && m_PoolTask.empty()
@@ -445,10 +442,6 @@ wxString Parser::NotDoneReason()
     CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
     wxString reason = _T(" > Reasons:");
-    if (!m_PriorityHeaders.empty())
-        reason += _T("\n- still priority headers to parse");
-    if (!m_SystemPriorityHeaders.empty())
-        reason += _T("\n- still system priority headers to parse");
     if (!m_BatchParseFiles.empty())
         reason += _T("\n- still batch parse files to parse");
     if (!m_PredefinedMacros.IsEmpty())
@@ -489,37 +482,6 @@ void Parser::AddPredefinedMacros(const wxString& defs)
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
 
-void Parser::AddPriorityHeader(const wxString& filename, bool systemHeaderFile)
-{
-    if (m_BatchTimer.IsRunning())
-        m_BatchTimer.Stop();
-
-    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
-
-    // Do priority parse in sub thread
-    m_PriorityHeaders.push_back(filename);
-
-    // Save system priority headers, when all task is over, we need reparse it!
-    // This could give a better result of parsing those files
-    if (systemHeaderFile)
-        m_SystemPriorityHeaders.push_back(filename);
-
-    // when we are adding prioirity headers, which is the first stage of the parsing, so we change
-    // the parser status
-    if (m_ParserState == ParserCommon::ptUndefined)
-        m_ParserState = ParserCommon::ptCreateParser;
-
-    if (!m_IsParsing)
-    {
-        TRACE(_T("Parser::AddPriorityHeader(): Starting m_BatchTimer."));
-        m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_DELAY, wxTIMER_ONE_SHOT);
-    }
-
-    CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
-
-    // FIXME (ollydbg#1#): The logic here is: stop the m_BatchTimer, what about if m_IsParsing is
-    // true? It looks like there is no way to start the timer again in this function?
-}
 
 void Parser::AddBatchParse(const StringList& filenames)
 {
@@ -620,49 +582,40 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
         // when parsing the priority header files themselves, let the ParserThread did the dirty
         // job in the same thread (mostly called from ParserThreadedTask::Execute(), otherwise,
         // ParserThread should work later(either put the ParserThread in the PoolTask or the Pool)
-        if (m_IsPriority)
+        // We now properly parse each source file from top to bottom (i.e., expanding each
+        // #include directive: if 'locked' is true it is an #include file and we need to recurse.
+        // If locked is true, which means this function is called when handling #include directive,
+        // the tree is already locked, so recursive here.
+        if (locked)
         {
-            if (isLocal) // Parsing priority files
+
+            TRACE(_T("Parser::Parse(): Parsing priority header, %s"), filename.wx_str());
+
+            if (locked)
             {
-                TRACE(_T("Parser::Parse(): Parsing priority header, %s"), filename.wx_str());
-
-                if (!locked)
-                    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-                result = thread->Parse();
-                delete thread;
-
-                if (!locked)
-                    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
-                return true;
+                // release the lock, so the GUI will not hang
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+                wxMilliSleep(1);
+                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
             }
-            else // Adding parsing tasks when parsing priority files
-            {
-                // those files were files included in the priority files, for example
-                // if you have a priority file named "cstddef" with the fullname
-                // D:\mingw463\lib\gcc\i686-w64-mingw32\4.6.3\include\c++\cstddef
-                // then, this "cstddef" internally will include "bits/c++config.h", so the file
-                // D:\mingw463\lib\gcc\i686-w64-mingw32\4.6.3\include\c++\i686-w64-mingw32\bits\c++config.h
-                // will assign a parsing task here.
-                // manipulate the PoolTask need a locker
-                CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
-                TRACE(_T("Parser::Parse(): Add task for files included in priority header, %s"), filename.wx_str());
+            if (!locked)
+                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-                if (!m_PoolTask.empty()) // append the thread to the last element of the PoolTask
-                    m_PoolTask.back().push_back(thread);
-                else // if the PoolTask is empty, then just add an empty PTVector object, and push the thread.
-                {
-                    m_PoolTask.push(PTVector());
-                    m_PoolTask.back().push_back(thread);
-                }
+            result = thread->Parse();
+            delete thread;
 
-                CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
-            }
+            if (!locked)
+                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+
+            return true;
+
         }
         else
         {
+            // files should not be parsed immediately, so we need to put it to the pool.
+            // either to pool task, or the pool depends on the m_IsParsing status
+            // if m_IsParsing is true, put it to the later one.
             TRACE(_T("Parser::Parse(): Parallel Parsing %s"), filename.wx_str());
 
             CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
@@ -676,7 +629,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
 
             bool pool_task_empty = false;
             if (m_IsParsing)
-                m_Pool.AddTask(thread, true);
+                m_Pool.AddTask(thread, true); // Note: after Huki's patch to recursive to include file, this should not be run here
             else
             {
                 if (!m_PoolTask.empty())
@@ -911,6 +864,10 @@ bool Parser::UpdateParsingProject(cbProject* project)
 
 void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 {
+    // m_IgnoreThreadEvents is initialized to true, so we returned quickly.
+    // but when the parser try to parse the batchFiles, it will set the m_IgnoreThreadEvents to false
+    // so, the control will go forward. Finally, when the last stage: mark C::B project tokens as
+    // local thread finished, it will set m_IgnoreThreadEvents again
     if (m_IgnoreThreadEvents || Manager::IsAppShuttingDown())
         return;
 
@@ -931,9 +888,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     // Do next task
     if (   !m_PoolTask.empty()
-        || !m_BatchParseFiles.empty()
-        || !m_PriorityHeaders.empty()
-        || !m_PredefinedMacros.IsEmpty() )
+        || !m_BatchParseFiles.empty() )
     {
         TRACE(_T("Parser::OnAllThreadsDone(): Still some tasks left, starting m_BatchTimer."));
         m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
@@ -941,23 +896,6 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 #if defined(CC_PARSER_PROFILE_TEST)
     // Do nothing
 #else
-    // Reparse system priority headers
-    else if (!m_SystemPriorityHeaders.empty())
-    {
-        // 1. Remove all priority headers in token tree
-        for (StringList::iterator it = m_SystemPriorityHeaders.begin(); it != m_SystemPriorityHeaders.end(); ++it)
-            RemoveFile(*it);
-
-        // 2. Reparse system priority headers
-        AddBatchParse(m_SystemPriorityHeaders);
-
-        // 3. Clear
-        m_SystemPriorityHeaders.clear();
-
-        // 4. Begin batch parsing
-        TRACE(_T("Parser::OnAllThreadsDone(): Handling saved system priority headers again in the last, starting m_BatchTimer."));
-        m_BatchTimer.Start(ParserCommon::PARSER_BATCHPARSE_TIMER_RUN_IMMEDIATELY, wxTIMER_ONE_SHOT);
-    }
     else if (   (   m_ParserState == ParserCommon::ptCreateParser
                  || m_ParserState == ParserCommon::ptAddFileToParser )
              && m_NeedMarkFileAsLocal
@@ -975,6 +913,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
         if (!m_Project)
             m_NeedMarkFileAsLocal = false;
 
+        // since the last stage: mark project files as local is done, we finish all the stages now.
         m_IgnoreThreadEvents = true;
         m_NeedsReparse       = false;
         m_IsParsing          = false;
@@ -1063,7 +1002,6 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
     StartStopWatch(); // start counting the time we take for parsing the files
 
     if (   m_PoolTask.empty()
-        && m_PriorityHeaders.empty()
         && m_BatchParseFiles.empty()
         && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
     {
@@ -1092,8 +1030,7 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
 
     bool send_event          = true;
     bool sendStartParseEvent = false;
-    if (   !m_PriorityHeaders.empty()
-        || !m_BatchParseFiles.empty()
+    if (   !m_BatchParseFiles.empty()
         || !m_PredefinedMacros.IsEmpty() )
     {
         CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
