@@ -256,7 +256,6 @@ public:
     /** destructor */
     virtual ~Parser();
 
-
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
      * Note that when some "#include" files were added to the batch parse,
      * their parsing sequence may be random.

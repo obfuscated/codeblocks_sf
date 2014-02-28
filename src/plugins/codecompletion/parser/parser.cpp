@@ -482,7 +482,6 @@ void Parser::AddPredefinedMacros(const wxString& defs)
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
 
-
 void Parser::AddBatchParse(const StringList& filenames)
 {
     // this function has the same logic as the previous function Parser::AddPriorityHeader
@@ -952,7 +951,7 @@ bool Parser::ParseFile(const wxString& filename, bool isGlobal, bool locked)
     if (filename.IsEmpty())
         return false;
 
-    // TODO (Loaden#9#) locker ?
+    // TODO (Morten#9#) locker ?
     const bool ret = Parse(filename, !isGlobal, locked);
 
     return ret;

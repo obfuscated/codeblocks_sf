@@ -988,7 +988,7 @@ void NativeParser::CreateClassBrowser()
     }
 
     // Dreaded DDE-open bug related: do not touch unless for a good reason
-    // TODO (Loaden) ? what's bug? I test it, it's works well now.
+    // TODO (Morten): ? what's bug? I test it, it's works well now.
     m_ClassBrowser->SetParser(m_Parser); // Also updates class browser
 
     TRACE(_T("NativeParser::CreateClassBrowser(): Leave"));
@@ -1056,7 +1056,6 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     }
 
     StringList localSources;
-
 
     if (project)
     {

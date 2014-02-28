@@ -2623,7 +2623,7 @@ void CodeCompletion::OnProjectFileChanged(CodeBlocksEvent& event)
 {
     if (IsAttached() && m_InitDone)
     {
-        // TODO (Loaden#5#) make sure the event.GetProject() is valid.
+        // TODO (Morten#5#) make sure the event.GetProject() is valid.
         cbProject* project = event.GetProject();
         wxString filename = event.GetString();
         if (!project)

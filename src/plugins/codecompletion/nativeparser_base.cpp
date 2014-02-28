@@ -1080,7 +1080,7 @@ size_t NativeParserBase::ResolveActualType(TokenTree*         tree,
             {
                 initialScope.clear();
                 for (TokenIdxSet::const_iterator it = initialResult.begin(); it != initialResult.end(); ++it)
-                    // TODO (blueshake#1#): eclimate the variable/function
+                    // TODO (Morten#1#): eliminate the variable/function
                     initialScope.insert(*it);
             }
             else

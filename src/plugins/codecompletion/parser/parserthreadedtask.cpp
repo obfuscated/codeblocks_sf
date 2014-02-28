@@ -87,7 +87,6 @@ int ParserThreadedTask::Execute()
     if (m_Parser->m_IgnoreThreadEvents)
         m_Parser->m_IsFirstBatch = true;
 
-
     TRACE(_T("ParserThreadedTask::Execute(): Parse source files"));
     while (!batchFiles.empty())
     {

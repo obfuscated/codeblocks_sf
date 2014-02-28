@@ -1235,9 +1235,9 @@ void ClassBrowserBuilderThread::SelectSavedItem()
 
     wxTreeItemId parent = m_CCTreeCtrlTop->GetRootItem();
 
-	// TODO: (Martin) wxTreeCtrl documentation states that cookie is for re-entrancy an must be unique for all calls that belong together.
-	//        So, this needs to be initialized to some value?
-	//        (Which value, though... I'm inclined to just use 1 and 2 for here and below... but no clue if you've used those elsewhere)
+    // TODO (Morten#1#): wxTreeCtrl documentation states that cookie is for re-entrancy an must be unique for all calls that belong together.
+    //        So, this needs to be initialized to some value?
+    //        (Which value, though... I'm inclined to just use 1 and 2 for here and below... but no clue if you've used those elsewhere)
     wxTreeItemIdValue cookie;
     wxTreeItemId item = m_CCTreeCtrlTop->GetFirstChild(parent, cookie);
 
@@ -1250,7 +1250,7 @@ void ClassBrowserBuilderThread::SelectSavedItem()
             && wxStrcmp(data->m_TokenName, saved->m_TokenName) == 0
             && data->m_TokenKind == saved->m_TokenKind )
         {
-			// TODO: (Martin) see above. Different value here, I'd assume?
+            // TODO (Morten#1#): see above. Different value here, I'd assume?
             wxTreeItemIdValue cookie2;
             parent = item;
             item   = m_CCTreeCtrlTop->GetFirstChild(item, cookie2);
