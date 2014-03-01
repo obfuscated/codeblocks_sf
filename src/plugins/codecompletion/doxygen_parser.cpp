@@ -780,13 +780,6 @@ DocumentationHelper::Command DocumentationHelper::HrefToCommand(const wxString& 
 const wxChar   DocumentationHelper::separatorTag = _T('+');
 const wxString DocumentationHelper::commandTag = _T("cmd=");
 
-/* DocumentationPopup implementation: */
-DocumentationHelper::Options::Options() :
-    m_Enabled(false),
-    m_ShowAlways(false)
-{
-}
-
 DocumentationHelper::DocumentationHelper(CodeCompletion* cc) :
     BaseClass(),
     m_Popup(0),
@@ -796,7 +789,7 @@ DocumentationHelper::DocumentationHelper(CodeCompletion* cc) :
     m_LastTokenIdx(-1),
     m_Pos(),
     m_Size(),
-    m_Opts()
+    m_Enabled(false)
 {
     ColourManager *colours = Manager::Get()->GetColourManager();
     colours->RegisterColour(_("Code completion"), _("Documentation popup background"), wxT("cc_docs_back"), *wxWHITE);
@@ -817,7 +810,7 @@ void DocumentationHelper::Hide()
 void DocumentationHelper::OnAttach()
 {
     // Dont attach if user dont want to use documentation helper and its already attached
-    if (!m_Opts.m_Enabled || IsAttached())
+    if (!m_Enabled || IsAttached())
         return;
 
     // register event sinks
@@ -871,7 +864,7 @@ void DocumentationHelper::OnRelease()
 
 bool DocumentationHelper::ShowDocumentation(const wxString& html)
 {
-    if (!m_Opts.m_Enabled || !IsAttached() || html.size() == 0)
+    if (!m_Enabled || !IsAttached() || html.size() == 0)
     {
         Hide();
         return false;
@@ -917,20 +910,12 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
 
         return wxEmptyString;
     }
-    wxString doxyDoc = tree->GetDocumentation(tokenIdx);
-    if (!m_Opts.m_ShowAlways)
-    {
-        if (doxyDoc.size() == 0)
-        {
-            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-            return wxEmptyString;
-        }
-    }
+    wxString doxyDoc = tree->GetDocumentation(tokenIdx);
 
     m_CurrentTokenIdx = token->m_Index;
 
-    //add parent:
+    // add parent:
     wxString tokenNs = token->GetNamespace();
     if (tokenNs.size() > 0)
         html += b1 + CommandToAnchorInt(cmdDisplayToken, tokenNs.RemoveLast(2), token->m_ParentIndex) + b0 + br;
@@ -1118,7 +1103,7 @@ wxString DocumentationHelper::GenerateHTML(const TokenIdxSet& tokensIdx, TokenTr
 void DocumentationHelper::OnSelectionChange(wxListEvent& event)
 {
     event.Skip();
-    if (!m_Opts.m_Enabled)
+    if (!m_Enabled)
         return;
 
     wxObject* evtObj = event.GetEventObject();
@@ -1174,11 +1159,10 @@ void DocumentationHelper::RereadOptions(ConfigManager* cfg)
     if (!cfg)
         cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-    m_Opts.m_Enabled = cfg->ReadBool(_T("/use_documentation_helper"), false);
-    m_Opts.m_ShowAlways = cfg->ReadBool(_T("/always_show_doc"), false);
+    m_Enabled = cfg->ReadBool(_T("/use_documentation_helper"), false);
 
     // Apply changes
-    if (m_Opts.m_Enabled)
+    if (m_Enabled)
         OnAttach();
     else
         OnRelease();
@@ -1189,8 +1173,7 @@ void DocumentationHelper::WriteOptions(ConfigManager* cfg)
     if (!cfg)
         cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-    cfg->Write(_T("/use_documentation_helper"), m_Opts.m_Enabled);
-    cfg->Write(_T("/always_show_doc"),          m_Opts.m_ShowAlways);
+    cfg->Write(_T("/use_documentation_helper"), m_Enabled);
 }
 
 void DocumentationHelper::FitToContent()

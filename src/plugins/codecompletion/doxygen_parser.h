@@ -139,14 +139,6 @@ public:
     static const wxChar   separatorTag;
     static const wxString commandTag;
 
-    struct Options
-    {
-        Options();
-
-        bool m_Enabled;
-        bool m_ShowAlways;
-    };
-
     DocumentationHelper(CodeCompletion* cc);
     ~DocumentationHelper();
 
@@ -163,7 +155,8 @@ public:
     void RereadOptions(ConfigManager* cfg);
     void WriteOptions(ConfigManager* cfg);
 
-    Options& GetOptions() { return m_Opts; }
+    bool IsEnabled()              { return m_Enabled;    }
+    void SetEnabled(bool enabled) { m_Enabled = enabled; }
 
 protected:
     void SaveTokenIdx();
@@ -185,7 +178,7 @@ protected:
     wxPoint     m_Pos;
     wxSize      m_Size;
     // User options
-    Options m_Opts;
+    bool        m_Enabled;
 
     DECLARE_EVENT_TABLE()
 };

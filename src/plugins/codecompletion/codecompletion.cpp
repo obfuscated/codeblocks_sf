@@ -1004,7 +1004,7 @@ int CodeCompletion::CodeComplete()
 
                 if (token->m_TokenKind & tkAnyFunction)
                 {
-                    if (m_DocHelper.GetOptions().m_Enabled)
+                    if (m_DocHelper.IsEnabled())
                         tmp << _T("(): ") << token->m_FullType;
                     else
                         tmp << token->GetFormattedArgs() << _T(": ") << token->m_FullType;
@@ -1990,6 +1990,7 @@ void CodeCompletion::LoadTokenReplacements()
     // for wxWidgets
     repl[_T("BEGIN_EVENT_TABLE")]               = _T("-END_EVENT_TABLE");
     repl[_T("WXDLLEXPORT")]                     = _T("");
+    repl[_T("WXDLLIMPORT")]                     = _T("");
     repl[_T("WXEXPORT")]                        = _T("");
     repl[_T("WXIMPORT")]                        = _T("");
 

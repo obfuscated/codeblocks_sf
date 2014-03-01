@@ -180,6 +180,7 @@ void NativeParserTest::Init()
     // for wxWidgets
     Tokenizer::SetReplacementString(_T("BEGIN_EVENT_TABLE"),                _T("-END_EVENT_TABLE"));
     Tokenizer::SetReplacementString(_T("WXDLLEXPORT"),                      _T(""));
+    Tokenizer::SetReplacementString(_T("WXDLLIMPORT"),                      _T(""));
     Tokenizer::SetReplacementString(_T("WXEXPORT"),                         _T(""));
     Tokenizer::SetReplacementString(_T("WXIMPORT"),                         _T(""));
 }

@@ -242,6 +242,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
                             gcc_base + mingwver + _T("\\include")                                                   + _T("\n"));
 
     m_HeadersCtrl->SetValue(_T("<_mingw.h>,<cstddef>,<w32api.h>,<winbase.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
+//  m_HeadersCtrl->SetValue(_T("           <cstddef>,<w32api.h>,            <wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
 
     CCLogger::Get()->Init(this, idCCLogger, idCCLogger, idCCAddToken);
     m_StatuBar->SetStatusText(_("Ready!"));
@@ -364,7 +365,7 @@ void CCTestFrame::Start()
         m_StatuBar->SetStatusText(m_CurrentFile);
 
         // This is the core parse stage for files
-        // m_NativeParser.Parse(m_CurrentFile);
+        m_NativeParser.Parse(m_CurrentFile);
 
         // Here we are going to test the expression solving algorithm
         m_NativeParser.BatchTest(m_CurrentFile);
