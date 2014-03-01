@@ -1004,8 +1004,10 @@ int CodeCompletion::CodeComplete()
 
                 if (token->m_TokenKind & tkAnyFunction)
                 {
-                    //tmp << token->GetFormattedArgs();
-                    tmp << _T("(): ") << token->m_FullType;
+                    if (m_DocHelper.GetOptions().m_Enabled)
+                        tmp << _T("(): ") << token->m_FullType;
+                    else
+                        tmp << token->GetFormattedArgs() << _T(": ") << token->m_FullType;
                 }
                 else if (token->m_TokenKind == tkVariable)
                     tmp << _T(": ") << token->m_FullType;
