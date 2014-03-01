@@ -880,9 +880,19 @@ void ConfigManager::Write(const wxString& name,  const wxColour& c)
     TiXmlElement *leaf = GetUniqElement(e, key);
 
     TiXmlElement *s = GetUniqElement(leaf, _T("colour"));
-    s->SetAttribute("r", c.Red());
-    s->SetAttribute("g", c.Green());
-    s->SetAttribute("b", c.Blue());
+    if (c == wxNullColour)
+    {
+        s->SetAttribute("null", "true");
+        s->SetAttribute("r", 0);
+        s->SetAttribute("g", 0);
+        s->SetAttribute("b", 0);
+    }
+    else
+    {
+        s->SetAttribute("r", c.Red());
+        s->SetAttribute("g", c.Green());
+        s->SetAttribute("b", c.Blue());
+    }
 }
 
 wxColour ConfigManager::ReadColour(const wxString& name, const wxColour& defaultVal)
@@ -905,13 +915,25 @@ bool ConfigManager::Read(const wxString& name, wxColour* ret)
 
     if (c)
     {
-        int r, g, b;
-        if (c->QueryIntAttribute("r", &r) == TIXML_SUCCESS
-                && c->QueryIntAttribute("g", &g) == TIXML_SUCCESS
-                && c->QueryIntAttribute("b", &b) == TIXML_SUCCESS)
-            ret->Set(r, g, b);
-        return true;
+        const char *isNull = c->Attribute("null");
+        if (isNull && strcmp(isNull, "true") == 0)
+        {
+            *ret = wxNullColour;
+            return true;
+        }
+        else
+        {
+            int r, g, b;
+            if (c->QueryIntAttribute("r", &r) == TIXML_SUCCESS
+                    && c->QueryIntAttribute("g", &g) == TIXML_SUCCESS
+                    && c->QueryIntAttribute("b", &b) == TIXML_SUCCESS)
+            {
+                ret->Set(r, g, b);
+                return true;
+            }
+        }
     }
+    *ret = wxNullColour;
     return false;
 }
 

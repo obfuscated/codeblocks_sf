@@ -625,12 +625,12 @@ void EditorColourSet::Save()
 
             bool saved = false;
 
-            if (opt->fore != opt->originalfore && opt->fore != wxNullColour)
+            if (opt->fore != opt->originalfore)
             {
                 cfg->Write(tmpKey + _T("/fore"), opt->fore);
                 saved = true;
             }
-            if (opt->back != opt->originalback && opt->back != wxNullColour)
+            if (opt->back != opt->originalback)
             {
                 cfg->Write(tmpKey + _T("/back"), opt->back);
                 saved = true;
