@@ -887,6 +887,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
     // Do next task
     if (   !m_PoolTask.empty()
+        || !m_PredefinedMacros.IsEmpty()
         || !m_BatchParseFiles.empty() )
     {
         TRACE(_T("Parser::OnAllThreadsDone(): Still some tasks left, starting m_BatchTimer."));
