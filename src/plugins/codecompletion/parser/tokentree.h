@@ -124,7 +124,7 @@ public:
     void           FlagFileAsParsed(const wxString& filename);
 
     /** is the file name is in the tokentree, and it's status is either assigned or beingparsed or done
-     * also, should make sure that his file is not marked as "need to be reparsed".
+     * also, should make sure that this file is not marked as "need to be reparsed".
      */
     bool           IsFileParsed(const wxString& filename);
 
