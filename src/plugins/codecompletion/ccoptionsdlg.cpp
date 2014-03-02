@@ -250,8 +250,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/scope_filter"),             (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
 
     // Page "Documentation"
-    cfg->Write(_T("/use_documentation_helper"), (bool) XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue());
-    cfg->Write(_T("/always_show_doc"),          (bool) XRCCTRL(*this, "chkDocPopupAlways", wxCheckBox)->GetValue());
+    cfg->Write(_T("/use_documentation_helper"), (bool) XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue());
     cfg->Write(_T("/documentation_helper_background_color"), (wxColour) XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour());
     cfg->Write(_T("/documentation_helper_text_color"),       (wxColour) XRCCTRL(*this, "btnDocTextColor", wxButton)->GetBackgroundColour());
     cfg->Write(_T("/documentation_helper_link_color"),       (wxColour) XRCCTRL(*this, "btnDocLinkColor", wxButton)->GetBackgroundColour());
@@ -283,7 +282,7 @@ void CCOptionsDlg::OnApply()
     m_Documentation->RereadOptions(cfg);
 
     m_Parser.Options().storeDocumentation    = XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue();
-    m_Documentation->SetEnabled(XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue());
+    m_Documentation->SetEnabled(               XRCCTRL(*this, "chkDocumentation",  wxCheckBox)->GetValue() );
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     wxColor colour = XRCCTRL(*this, "btnDocBgColor",   wxButton)->GetBackgroundColour();
@@ -444,13 +443,9 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 
     // Page "Documentation"
     en = XRCCTRL(*this, "chkDocumentation",   wxCheckBox)->GetValue();
-    XRCCTRL(*this, "chkDocPopupAlways",       wxCheckBox)->Enable(en);
-    wxWindow* next = XRCCTRL(*this, "chkDocPopupAlways", wxWindow)->GetNextSibling();
-    while (next)
-    {
-        next->Enable(en);
-        next = next->GetNextSibling();
-    }
+    XRCCTRL(*this, "btnDocBgColor",           wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDocTextColor",         wxButton)->Enable(en);
+    XRCCTRL(*this, "btnDocLinkColor",         wxButton)->Enable(en);
 }
 
 void CCOptionsDlg::UpdateCCDelayLabel()
