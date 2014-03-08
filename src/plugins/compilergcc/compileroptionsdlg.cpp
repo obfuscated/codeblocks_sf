@@ -2828,24 +2828,35 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
                  list->GetSelection() : list->HitTest(pos));
     list->SetSelection(index);
     int scroll = list->GetScrollPos(wxVERTICAL);
+
+    enum FlagsMenuOptions
+    {
+        FMO_None = -1,
+        FMO_New = 0,
+        FMO_Modify,
+        FMO_Delete,
+        FMO_COnly,
+        FMO_CPPOnly
+    };
+
     wxMenu* pop = new wxMenu;
-    pop->Append(0, _("New flag..."));
+    pop->Append(FMO_New, _("New flag..."));
     if (index != wxNOT_FOUND)
     {
-        pop->Append(1, _("Modify flag..."));
-        pop->Append(2, _("Delete flag"));
+        pop->Append(FMO_Modify, _("Modify flag..."));
+        pop->Append(FMO_Delete, _("Delete flag"));
     }
     pop->AppendSeparator();
-    pop->Append(3, _("C - only flags..."));
-    pop->Append(4, _("C++ - only flags..."));
+    pop->Append(FMO_COnly, _("C - only flags..."));
+    pop->Append(FMO_CPPOnly, _("C++ - only flags..."));
     pop->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CompilerOptionsDlg::OnFlagsPopupClick);
-    m_MenuOption = wxNOT_FOUND;
+    m_MenuOption = FMO_None;
     list->PopupMenu(pop, pos);
     delete pop;
-    if (m_MenuOption == wxNOT_FOUND)
+    if (m_MenuOption == FMO_None)
         return;
     wxString category;
-    if (m_MenuOption == 3)
+    if (m_MenuOption == FMO_COnly)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
         wxTextEntryDialog dlg(this, wxT("List flags that will only be used during C compilation"),
@@ -2869,7 +2880,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
         }
         return;
     }
-    else if (m_MenuOption == 4)
+    else if (m_MenuOption == FMO_CPPOnly)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
         wxTextEntryDialog dlg(this, wxT("List flags that will only be used during C++ compilation"),
@@ -2893,7 +2904,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
         }
         return;
     }
-    else if (m_MenuOption == 2)
+    else if (m_MenuOption == FMO_Delete)
     {
         size_t i = 0;
         for (; i < m_Options.GetCount(); ++i)
@@ -2925,14 +2936,14 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
         if (categ.IsEmpty())
             categ.Add(wxT("General"));
         CompOption copt;
-        if (m_MenuOption == 1)
+        if (m_MenuOption == FMO_Modify)
             copt = *m_Options.GetOptionByName(list->GetString(index));
         CompilerFlagDlg dlg(0L, &copt, categ);
         PlaceWindow(&dlg);
         if (dlg.ShowModal() != wxID_OK)
             return;
         category = copt.category;
-        if (m_MenuOption == 0)
+        if (m_MenuOption == FMO_New)
         {
             size_t i;
             size_t idx = (index == wxNOT_FOUND ? list->GetCount() - 1 : index);
@@ -2974,7 +2985,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
     DoFillOptions();
     list->ScrollLines(scroll);
     list->SetSelection(index == wxNOT_FOUND ? list->GetCount() - 1 :
-                       index + (m_MenuOption == 0 ? 1 : m_MenuOption == 1 ? 0 : -1));
+                       index + (m_MenuOption == FMO_New ? 1 : (m_MenuOption == FMO_Modify ? 0 : -1)));
     list->Thaw();
     m_bFlagsDirty = true;
 }
