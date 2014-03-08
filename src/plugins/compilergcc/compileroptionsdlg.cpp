@@ -37,6 +37,7 @@
 #endif
 #include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
+#include <wx/propgrid/propgrid.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
 #include <wx/xml/xml.h>
 
@@ -207,8 +208,9 @@ struct DebuggerClientData : wxClientData
         - the options exist on the level of the target
 */
 
-CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project, ProjectBuildTarget* target)
-    : m_Compiler(compiler),
+CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project, ProjectBuildTarget* target) :
+    m_FlagsPG(nullptr),
+    m_Compiler(compiler),
     m_CurrentCompilerIdx(0),
     m_pProject(project),
     m_pTarget(target),
@@ -216,6 +218,14 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     m_BuildingTree(false)
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCompilerOptions"));
+
+    m_FlagsPG = new wxPropertyGrid(this, XRCID("pgCompilerFlags"), wxDefaultPosition, wxDefaultSize,
+                                   wxTAB_TRAVERSAL|wxPG_SPLITTER_AUTO_CENTER);
+    m_FlagsPG->SetExtraStyle(wxPG_EX_HELP_AS_TOOLTIPS);
+    m_FlagsPG->SetColumnProportion(0, 70);
+    m_FlagsPG->SetColumnProportion(1, 30);
+
+    wxXmlResource::Get()->AttachUnknownControl(wxT("pgCompilerFlags"), m_FlagsPG);
 
     if (m_pProject)
     {
@@ -655,6 +665,30 @@ void CompilerOptionsDlg::DoFillOptions()
             wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
             (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
             &CompilerOptionsDlg::OnOptionToggled);
+
+    m_FlagsPG->Freeze();
+    m_FlagsPG->Clear();
+    typedef std::map<wxString, wxPropertyCategory*> MapCategories;
+    MapCategories categories;
+    for (size_t i = 0; i < m_Options.GetCount(); ++i)
+    {
+        const CompOption* option = m_Options.GetOption(i);
+        wxPropertyCategory *categoryProp = nullptr;
+        MapCategories::iterator itCat = categories.find(option->category);
+        if (itCat != categories.end())
+            categoryProp = itCat->second;
+        else
+        {
+            categoryProp = new wxPropertyCategory(option->category);
+            m_FlagsPG->Append(categoryProp);
+            categories[option->category] = categoryProp;
+        }
+
+        wxPGProperty *prop = new wxBoolProperty(option->name, wxPG_LABEL, option->enabled);
+        m_FlagsPG->AppendIn(categoryProp, prop);
+        m_FlagsPG->SetPropertyAttribute(prop, wxPG_BOOL_USE_CHECKBOX, true, wxPG_RECURSE);
+    }
+    m_FlagsPG->Thaw();
 } // DoFillOptions
 
 void CompilerOptionsDlg::TextToOptions()

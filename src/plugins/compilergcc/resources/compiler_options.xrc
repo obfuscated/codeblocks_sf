@@ -158,6 +158,13 @@
 																		<option>1</option>
 																	</object>
 																	<object class="sizeritem">
+																		<object class="unknown" name="pgCompilerFlags">
+																		</object>
+																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+																		<border>5</border>
+																		<option>1</option>
+																	</object>
+																	<object class="sizeritem">
 																		<object class="wxStaticText" name="ID_STATICTEXT31">
 																			<label>NOTE: Right-click to setup or edit compiler flags.</label>
 																			<fg>#800000</fg>
