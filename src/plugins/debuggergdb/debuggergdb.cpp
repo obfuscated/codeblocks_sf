@@ -1577,7 +1577,7 @@ void DebuggerGDB::DoBreak(bool temporary)
     #ifndef __WXMSW__
         if (pid > 0 && !wxProcess::Exists(pid))
         {
-            DebugLog(wxString::Format(_("Child process (pid:%ld) doesn't exists"), pid));
+            DebugLog(wxString::Format(_("Child process (pid:%ld) doesn't exists"), pid), Logger::warning);
             pid = 0;
         }
         if (pid <= 0)
@@ -1588,10 +1588,10 @@ void DebuggerGDB::DoBreak(bool temporary)
         else
         {
             if (!wxProcess::Exists(pid))
-                DebugLog(wxString::Format(_("GDB process (pid:%ld) doesn't exists"), pid));
+                DebugLog(wxString::Format(_("GDB process (pid:%ld) doesn't exists"), pid), Logger::error);
 
-            DebugLog(wxString::Format(_("Code::Blocks is trying to interrupt process with pid: %ld; child pid: %ld gdb pid: %ld"),
-                                      pid, childPid, static_cast<long>(m_Pid)));
+            Log(F(_("Trying to interrupt process with pid: %ld; child pid: %ld gdb pid: %ld"),
+                  pid, childPid, static_cast<long>(m_Pid)));
             wxKillError error;
             if (wxKill(pid, wxSIGINT, &error) != 0)
                 DebugLog(wxString::Format(_("Can't kill process (%ld) %d"), pid, (int)(error)));
@@ -1614,6 +1614,7 @@ void DebuggerGDB::DoBreak(bool temporary)
                     if (static_cast<int>(lppe.th32ParentProcessID) == m_Pid) // Have my Child...
                     {
                         pid = lppe.th32ProcessID;
+                        DebugLog(F(_("Found child: %ld"),  pid));
                     }
                     lppe.dwSize = sizeof(PROCESSENTRY32);
                     ok = Process32NextFunc(snap, &lppe);
@@ -1621,16 +1622,17 @@ void DebuggerGDB::DoBreak(bool temporary)
                 CloseHandle(snap);
             }
             else
-                Log(_("No handle created. Trying to pause directly with cbd.exe..."));
+                Log(_("No handle created. Trying to pause directly with cbd.exe..."), Logger::warning);
         }
 
         if (m_State.GetDriver()->UseDebugBreakProcess())
         {
             if (!DebugBreakProcessFunc)
-                Log(_("DebugBreakProcess is not supported, you need Windows XP or newer..."));
+                Log(_("DebugBreakProcess is not supported, you need Windows XP or newer..."), Logger::error);
             else if (pid > 0)
             {
-                Log(_("Trying to pause the running process..."));
+                Log(F(_("Trying to interrupt process with pid: %ld; child pid: %ld gdb pid: %ld"),
+                      pid, childPid, static_cast<long>(m_Pid)));
                 HANDLE proc = OpenProcess(PROCESS_ALL_ACCESS, FALSE, (DWORD)pid);
                 if (proc)
                 {
@@ -1638,17 +1640,17 @@ void DebuggerGDB::DoBreak(bool temporary)
                     CloseHandle(proc);
                 }
                 else
-                    Log(_("Failed."));
+                    Log(wxT("Interrupting debugger failed :("), Logger::error);
             }
         }
         else
         {
             if (m_Pid > 0)
             {
+                Log(_("Trying to interrupt the process by sending CTRL-C event to the console!"));
                 if (GenerateConsoleCtrlEvent(CTRL_C_EVENT, 0) == 0)
                 {
-                    Log(wxT("Interupting debugger failed :("));
-                    DebugLog(wxT("GenerateConsoleCtrlEvent failed :("));
+                    Log(wxT("Interrupting debugger failed :("), Logger::error);
                     return;
                 }
             }
