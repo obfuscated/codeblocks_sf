@@ -22,6 +22,7 @@
     #include "cbproject.h"
     #include "manager.h"
     #include "configmanager.h"
+    #include "logmanager.h" // for F
     #include "projectmanager.h"
     #include "pluginmanager.h"
     #include "editormanager.h"
