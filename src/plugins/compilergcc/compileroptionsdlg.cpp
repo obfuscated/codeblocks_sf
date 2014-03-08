@@ -410,7 +410,6 @@ void CompilerOptionsDlg::DoFillCompilerSets(int compilerIdx)
 void CompilerOptionsDlg::DoFillCompilerDependentSettings()
 {
     DoFillCompilerPrograms();    // the programs executable's ...
-    DoFillCategories();            // the categories of compiler settings
     DoLoadOptions();
     DoFillVars();
     // by the way we listen to changes in the textctrl, we also end up in the callbacks as
@@ -623,21 +622,6 @@ void CompilerOptionsDlg::DoFillTree()
     tc->SelectItem(selectedItem);
     m_BuildingTree = false;
 } // DoFillTree
-
-void CompilerOptionsDlg::DoFillCategories()
-{
-    wxChoice* cmb = XRCCTRL(*this, "cmbCategory", wxChoice);
-    cmb->Clear();
-    cmb->Append(_("<All categories>"));
-
-    for (size_t i = 0; i < m_Options.GetCount(); ++i)
-    {
-        CompOption* copt = m_Options.GetOption(i);
-        if (cmb->FindString(copt->category) == -1)
-            cmb->Append(copt->category);
-    }
-    cmb->SetSelection(0);
-} // DoFillCategories
 
 void CompilerOptionsDlg::DoFillOptions()
 {

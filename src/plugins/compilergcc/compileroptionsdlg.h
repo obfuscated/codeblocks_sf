@@ -55,7 +55,6 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void DoFillCompilerPrograms();
         void DoFillVars();
         void DoFillOthers();
-        void DoFillCategories();
         void DoFillOptions();
         void DoFillCompilerDependentSettings();
         void DoSaveCompilerDependentSettings();
