@@ -647,6 +647,14 @@ void CompilerOptionsDlg::DoFillOptions()
         m_FlagsPG->AppendIn(categoryProp, prop);
         m_FlagsPG->SetPropertyAttribute(prop, wxPG_BOOL_USE_CHECKBOX, true, wxPG_RECURSE);
     }
+
+    wxPGProperty *root = m_FlagsPG->GetRoot();
+    if (root)
+    {
+        unsigned count = root->GetChildCount();
+        for (unsigned ii = 0; ii < count; ++ii)
+            m_FlagsPG->Sort(root->Item(ii));
+    }
     m_FlagsPG->Thaw();
 } // DoFillOptions
 
