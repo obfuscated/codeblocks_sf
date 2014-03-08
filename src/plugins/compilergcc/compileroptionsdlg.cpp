@@ -629,6 +629,21 @@ void CompilerOptionsDlg::DoFillOptions()
     m_FlagsPG->Clear();
     typedef std::map<wxString, wxPropertyCategory*> MapCategories;
     MapCategories categories;
+
+    // If there is a "General" category make sure it is added first.
+    for (size_t i = 0; i < m_Options.GetCount(); ++i)
+    {
+        const CompOption* option = m_Options.GetOption(i);
+        if (option->category == wxT("General"))
+        {
+            wxPropertyCategory *categoryProp = new wxPropertyCategory(option->category);
+            m_FlagsPG->Append(categoryProp);
+            categories[option->category] = categoryProp;
+            break;
+        }
+    }
+
+    // Add all flags and categories to the property grid
     for (size_t i = 0; i < m_Options.GetCount(); ++i)
     {
         const CompOption* option = m_Options.GetOption(i);
