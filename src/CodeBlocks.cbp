@@ -375,6 +375,7 @@
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="depslib" />
+					<Add library="wxpropgrid" />
 					<Add directory="devel" />
 					<Add directory="plugins/compilergcc/depslib" />
 				</Linker>
