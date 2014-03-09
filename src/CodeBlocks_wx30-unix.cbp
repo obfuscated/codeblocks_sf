@@ -128,7 +128,9 @@
 				<Option external_deps="base/tinyxml/libtxml30.a;sdk/scripting/lib/libsquirrel30.a;sdk/scripting/lib/libsqstdlib30.a;sdk/scripting/lib/libsqplus30.a;devel30/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ni -p debug" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -188,10 +190,13 @@
 			</Target>
 			<Target title="Abbreviations">
 				<Option output="devel30/share/codeblocks/plugins/abbreviations" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -208,10 +213,13 @@
 			</Target>
 			<Target title="AStyle">
 				<Option output="devel30/share/codeblocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -226,10 +234,13 @@
 			</Target>
 			<Target title="Autosave">
 				<Option output="devel30/share/codeblocks/plugins/autosave" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -254,11 +265,14 @@
 			</Target>
 			<Target title="Compiler">
 				<Option output="devel30/share/codeblocks/plugins/compiler" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option external_deps="plugins/compilergcc/depslib/libdepslib30.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -277,10 +291,13 @@
 			</Target>
 			<Target title="Debugger">
 				<Option output="devel30/share/codeblocks/plugins/debugger" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -296,10 +313,13 @@
 			</Target>
 			<Target title="Code-completion">
 				<Option output="devel30/share/codeblocks/plugins/codecompletion" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add option="-DCC_NO_COLLAPSE_ITEM" />
@@ -320,10 +340,13 @@
 			</Target>
 			<Target title="Class wizard">
 				<Option output="devel30/share/codeblocks/plugins/classwizard" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -337,10 +360,13 @@
 			</Target>
 			<Target title="Default MIME handler">
 				<Option output="devel30/share/codeblocks/plugins/defaultmimehandler" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -354,10 +380,13 @@
 			</Target>
 			<Target title="Occurrences Highlighting">
 				<Option output="devel30/share/codeblocks/plugins/occurrenceshighlighting" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -371,10 +400,13 @@
 			</Target>
 			<Target title="Open files list">
 				<Option output="devel30/share/codeblocks/plugins/openfileslist" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -388,10 +420,13 @@
 			</Target>
 			<Target title="Projects-workspaces importer">
 				<Option output="devel30/share/codeblocks/plugins/projectsimporter" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -411,10 +446,13 @@
 			</Target>
 			<Target title="Scripted wizard">
 				<Option output="devel30/share/codeblocks/plugins/scriptedwizard" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -430,10 +468,13 @@
 			</Target>
 			<Target title="To-do">
 				<Option output="devel30/share/codeblocks/plugins/todo" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/codeblocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -454,7 +495,7 @@
 			<Target title="XP look &amp; feel">
 				<Option platforms="Windows;" />
 				<Option output="devel30/share/CodeBlocks/plugins/xpmanifest" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel30/share/CodeBlocks/plugins" />
+				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
 				<Option compiler="gcc" />
