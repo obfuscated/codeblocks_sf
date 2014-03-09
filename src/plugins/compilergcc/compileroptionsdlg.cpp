@@ -228,6 +228,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     m_FlagsPG->SetColumnProportion(0, 70);
     m_FlagsPG->SetColumnProportion(1, 30);
 
+    m_FlagsPG->SetMinSize(wxSize(400, 400));
     wxXmlResource::Get()->AttachUnknownControl(wxT("pgCompilerFlags"), m_FlagsPG);
 
     if (m_pProject)
