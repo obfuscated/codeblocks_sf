@@ -661,18 +661,23 @@ void WatchesDlg::OnKeyDown(wxKeyEvent &event)
         case WXK_DELETE:
             {
                 cb::shared_ptr<cbWatch> watch = watches_prop->GetWatch();
-                cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(watch);
-                if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
+                WatchItems::const_iterator it = std::find_if(m_watches.begin(), m_watches.end(),
+                                                             WatchItemPredicate(watch));
+                if (it != m_watches.end() && !it->special)
                 {
-                    unsigned int index = watches_prop->GetIndexInParent();
+                    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(watch);
+                    if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
+                    {
+                        unsigned int index = watches_prop->GetIndexInParent();
 
-                    DeleteProperty(*watches_prop);
+                        DeleteProperty(*watches_prop);
 
-                    wxPGProperty *root = m_grid->GetRoot();
-                    if (index < root->GetChildCount())
-                        m_grid->SelectProperty(root->Item(index), false);
-                    else if (root->GetChildCount() > 0)
-                        m_grid->SelectProperty(root->Item(root->GetChildCount() - 1), false);
+                        wxPGProperty *root = m_grid->GetRoot();
+                        if (index < root->GetChildCount())
+                            m_grid->SelectProperty(root->Item(index), false);
+                        else if (root->GetChildCount() > 0)
+                            m_grid->SelectProperty(root->Item(root->GetChildCount() - 1), false);
+                    }
                 }
             }
             break;
@@ -681,7 +686,7 @@ void WatchesDlg::OnKeyDown(wxKeyEvent &event)
                 cb::shared_ptr<cbWatch> watch = watches_prop->GetWatch();
                 WatchItems::const_iterator it = std::find_if(m_watches.begin(), m_watches.end(),
                                                              WatchItemPredicate(watch));
-                if (!(it != m_watches.end() && it->special))
+                if (it != m_watches.end() && !it->special)
                 {
                     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetDebuggerHavingWatch(watch);
                     if (plugin && plugin->SupportsFeature(cbDebuggerFeature::Watches))
