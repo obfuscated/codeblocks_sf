@@ -1593,10 +1593,10 @@ void NativeParserBase::ComputeCallTip(TokenTree*        tree,
             items.Add(token->m_BaseType); // typedef'd function pointer
         else
         {
-            wxString full;
-            if ( !PrettyPrintToken(tree, token, full) )
-                full = wxT("Error while pretty printing token!");
-            items.Add(full);
+            wxString tkTip;
+            if ( !PrettyPrintToken(tree, token, tkTip) )
+                tkTip = wxT("Error while pretty printing token!");
+            items.Add(tkTip);
         }
     }// for
 
