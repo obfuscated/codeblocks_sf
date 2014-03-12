@@ -149,9 +149,21 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
-    wxStringVec tips = ccPlugin->GetToolTips(pos, event.GetInt(), ed);
-    if (tips.empty())
-        tips = ccPlugin->GetCallTips(pos, event.GetInt(), hlStart, hlEnd, argsPos, ed);
+    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetTokenAt(pos, ed);
+    std::set<wxString> uniqueTips;
+    for (size_t i = 0; i < tokens.size(); ++i)
+        uniqueTips.insert(tokens[i].displayName);
+    wxStringVec tips(uniqueTips.begin(), uniqueTips.end());
+
+    const int style = event.GetInt();
+    if (  tips.empty()
+        && !(   stc->IsString(style)
+             || stc->IsComment(style)
+             || stc->IsCharacter(style)
+             || stc->IsPreprocessor(style) ) )
+    {
+        tips = ccPlugin->GetCallTips(pos, style, hlStart, hlEnd, argsPos, ed);
+    }
     if (!tips.empty())
     {
         DoShowTips(tips, stc, pos, argsPos, hlStart, hlEnd);

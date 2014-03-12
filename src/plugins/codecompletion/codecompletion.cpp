@@ -974,26 +974,22 @@ wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& h
     return tips;
 }
 
-wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
+std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEditor* ed)
 {
-    wxStringVec tips;
+    std::vector<CCToken> tokens;
     if (!IsAttached() || !m_InitDone)
-        return tips;
-
-    if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
-        return tips;
+        return tokens;
 
     // ignore comments, strings, preprocesor, etc
     cbStyledTextCtrl* stc = ed->GetControl();
+    const int style = stc->GetStyleAt(pos);
     if (   stc->IsString(style)
         || stc->IsComment(style)
         || stc->IsCharacter(style)
         || stc->IsPreprocessor(style) )
     {
-        return tips;
+        return tokens;
     }
-
-    TRACE(_T("GetToolTips"));
 
     TokenIdxSet result;
     int endOfWord = stc->WordEndPosition(pos, true);
@@ -1003,18 +999,13 @@ wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
 
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-        int count = 0;
         for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
         {
             const Token* token = tree->at(*it);
             if (token)
             {
-                wxString tip = token->DisplayName();
-                if (std::find(tips.begin(), tips.end(), tip) != tips.end()) // avoid showing tips twice
-                    continue;
-                tips.push_back(tip);
-                ++count;
-                if (count > 32) // allow max 32 matches (else something is definitely wrong)
+                tokens.push_back(cbCodeCompletionPlugin::CCToken(*it, token->DisplayName()));
+                if (tokens.size() > 32)
                     break;
             }
         }
@@ -1022,7 +1013,7 @@ wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
     }
 
-    return tips;
+    return tokens;
 }
 
 int CodeCompletion::CodeComplete()

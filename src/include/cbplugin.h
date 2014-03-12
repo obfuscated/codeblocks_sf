@@ -754,9 +754,16 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * false otherwise*/
         virtual bool IsProviderFor(cbEditor* cb) { (void) cb; return false; }  // purposely not marked 'cb_optional', override should use param
 
-        ///////////////////////////////////////////////////////////////////////
+        //---------------------------------------------------------------------//
+        struct CCToken
+        {
+            CCToken(int _id, const wxString& dispNm) : id(_id), displayName(dispNm) {}
+            int id;
+            wxString displayName;
+        };
+
         virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed) = 0;
-        virtual wxStringVec GetToolTips(int pos, int style, cbEditor* ed) = 0;
+        virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
 };
 
 /** @brief Base class for wizard plugins

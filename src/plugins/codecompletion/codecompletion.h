@@ -100,7 +100,7 @@ public:
     virtual bool IsProviderFor(cbEditor* ed);
 
     virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed);
-    virtual wxStringVec GetToolTips(int pos, int style, cbEditor* ed);
+    virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
 
     /** show auto-completion list for preprocessor directives*/
     void CodeCompletePreprocessor();
