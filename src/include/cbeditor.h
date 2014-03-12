@@ -316,7 +316,8 @@ class DLLIMPORT cbEditor : public EditorBase
         bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
         void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
         void UnderlineFoldedLines(bool underline);
-        cbStyledTextCtrl* CreateEditor(bool connectEvents = true);
+        cbStyledTextCtrl* CreateEditor();
+        void ConnectEvents(cbStyledTextCtrl* stc);
         void SetEditorStyle();
         void SetEditorStyleBeforeFileOpen();
         void SetEditorStyleAfterFileOpen();
@@ -359,7 +360,6 @@ class DLLIMPORT cbEditor : public EditorBase
         cbStyledTextCtrl* m_pControl2;
         cbStyledTextCtrl* m_foldBackup;
         SplitType m_SplitType;
-        int m_ID;
         bool m_Modified;
         int m_Index;
         wxTimer m_timerWait;
