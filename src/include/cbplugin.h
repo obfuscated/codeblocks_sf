@@ -728,37 +728,15 @@ class wxHtmlLinkEvent;
 
 /** @brief Base class for code-completion plugins
   *
-  * This interface is subject to change, so not much info here...
+  * The main operations of a code-completion plugin are executed by CCManager
+  * at the appropriate times. Smaller CC plugins *should* not have need to
+  * register very many (if any) events/editor hooks.
   */
 class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 {
     public:
         cbCodeCompletionPlugin();
-#if 0
-        virtual wxArrayString GetCallTips() = 0;
-        virtual int CodeComplete() = 0;
-        virtual void ShowCallTip() = 0;
-        /** @brief Does this plugin handle code completion for the editor cb?
-          *
-          * A plugin should override this function to indicate whether it will
-          * provide completion and call tips for the editor. The plugin should
-          * then prepare to handle codecomplete and calltip menu messages if
-          * it returns true. To implement this function, plugins will usually
-          * check the mimetype of the file or the current lexer (highlight
-          * language).
-          *
-          * Note: Currently the core CC plugin provides a default CodeCompletion
-          * implementation for any file type that is not provided for by any
-          * other CC plugins. The calltip and main menu options that can be handled
-          * by any CC plugin is also supplied by the core CC plugin.
-          *
-          * @param cb The editor for which code completion
-          * @return return true if the plugin handles completion for this editor,
-          * false otherwise*/
-        virtual bool IsProviderFor(cbEditor* cb) { (void) cb; return false; }  // purposely not marked 'cb_optional', override should use param
-#endif // 0
 
-        //---------------------------------------------------------------------//
         /** Level of functionality a CC plugin is able to provide. */
         enum CCProviderStatus
         {
