@@ -943,9 +943,9 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
     return true;
 }
 
-wxArrayString CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
+wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
 {
-    wxArrayString tips;
+    wxStringVec tips;
     if (!IsAttached() || !m_InitDone)
         return tips;
 
@@ -981,9 +981,9 @@ wxArrayString CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
             if (token)
             {
                 wxString tip = token->DisplayName();
-                if (tips.Index(tip) != wxNOT_FOUND) // avoid showing tips twice
+                if (std::find(tips.begin(), tips.end(), tip) != tips.end()) // avoid showing tips twice
                     continue;
-                tips.Add(tip);
+                tips.push_back(tip);
                 ++count;
                 if (count > 32) // allow max 32 matches (else something is definitely wrong)
                     break;
@@ -992,7 +992,7 @@ wxArrayString CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-        if (tips.IsEmpty() && m_NativeParser.GetParser().Done())
+        if (tips.empty() && m_NativeParser.GetParser().Done())
             DoShowCallTip(pos);
     }
     else if (m_NativeParser.GetParser().Done())

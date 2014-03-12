@@ -152,9 +152,9 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
     return out;
 }
 
-std::vector<wxString> GetVectorFromString(const wxString& text, const wxString& separator, bool trimSpaces)
+wxStringVec GetVectorFromString(const wxString& text, const wxString& separator, bool trimSpaces)
 {
-    std::vector<wxString> out;
+    wxStringVec out;
     wxString search = text;
     int seplen = separator.Length();
     while (true)

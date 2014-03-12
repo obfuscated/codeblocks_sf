@@ -8,7 +8,7 @@
 
 #include "manager.h"
 
-class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
+class DLLIMPORT CCManager : public Mgr<CCManager>
 {
     public:
         friend class Mgr<CCManager>;
@@ -20,8 +20,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         CCManager();
         ~CCManager();
 
-        void OnActivateApp(wxActivateEvent& event);
-        /** mouse hover event*/
+        void OnDeactivateApp(CodeBlocksEvent& event);
+        void OnDeactivateEd(CodeBlocksEvent& event);
+        /** mouse hover event */
         void OnEditorTooltip(CodeBlocksEvent& event);
 
         cbEditor* lastEditor;

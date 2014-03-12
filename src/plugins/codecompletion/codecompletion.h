@@ -99,7 +99,7 @@ public:
     virtual void ShowCallTip();
     virtual bool IsProviderFor(cbEditor* ed);
 
-    virtual wxArrayString GetToolTips(int pos, int style, cbEditor* ed);
+    virtual wxStringVec GetToolTips(int pos, int style, cbEditor* ed);
 
     /** show auto-completion list for preprocessor directives*/
     void CodeCompletePreprocessor();

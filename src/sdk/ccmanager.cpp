@@ -20,30 +20,15 @@ CCManager::CCManager() :
     lastEditor(nullptr), lastCCPlugin(nullptr)
 {
     typedef cbEventFunctor<CCManager, CodeBlocksEvent> CCEvent;
-    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP, new CCEvent(this, &CCManager::OnEditorTooltip));
-    Manager::Get()->GetAppWindow()->Connect(wxEVT_ACTIVATE, wxActivateEventHandler(CCManager::OnActivateApp));
+    Manager::Get()->RegisterEventSink(cbEVT_APP_DEACTIVATED,    new CCEvent(this, &CCManager::OnDeactivateApp));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new CCEvent(this, &CCManager::OnDeactivateEd));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,     new CCEvent(this, &CCManager::OnEditorTooltip));
 }
 
 // class destructor
 CCManager::~CCManager()
 {
     Manager::Get()->RemoveAllEventSinksFor(this);
-    Manager::Get()->GetAppWindow()->Disconnect(wxEVT_ACTIVATE, wxActivateEventHandler(CCManager::OnActivateApp));
-}
-
-void CCManager::OnActivateApp(wxActivateEvent& event)
-{
-    if (!event.GetActive())
-    {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (ed)
-        {
-            cbStyledTextCtrl* stc = ed->GetControl();
-            if (stc->CallTipActive())
-                stc->CallTipCancel();
-        }
-    }
-    event.Skip();
 }
 
 cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
@@ -64,6 +49,30 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
         }
     }
     return lastCCPlugin;
+}
+
+void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        cbStyledTextCtrl* stc = ed->GetControl();
+        if (stc->CallTipActive())
+            stc->CallTipCancel();
+    }
+    event.Skip();
+}
+
+void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+    if (ed)
+    {
+        cbStyledTextCtrl* stc = ed->GetControl();
+        if (stc->CallTipActive())
+            stc->CallTipCancel();
+    }
+    event.Skip();
 }
 
 void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
@@ -90,21 +99,22 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     if (pos < 0 || pos >= stc->GetLength())
         return;
 
-    const wxArrayString& tips = ccPlugin->GetToolTips(pos, event.GetInt(), ed);
-    if (tips.IsEmpty())
+    const wxStringVec& tips = ccPlugin->GetToolTips(pos, event.GetInt(), ed);
+    if (tips.empty())
         return;
 
     int maxLines = stc->LinesOnScreen() * 2 / 3;
     if (maxLines < 5)
         maxLines = 5;
-    size_t maxWidth = stc->GetSize().x / stc->TextWidth(wxSCI_STYLE_LINENUMBER, wxT("W")) - 6;
-    if (maxWidth < 80)
-        maxWidth = 80;
+    int marginWidth = stc->GetMarginWidth(wxSCI_MARGIN_SYMBOL) + stc->GetMarginWidth(wxSCI_MARGIN_NUMBER);
+    int maxWidth = (stc->GetSize().x - marginWidth) / stc->TextWidth(wxSCI_STYLE_LINENUMBER, wxT("W")) - 1;
+    if (maxWidth < 60)
+        maxWidth = 60;
     wxString tip;
     int lineCount = 0;
-    for (size_t i = 0; i < tips.GetCount() && lineCount < maxLines; ++i)
+    for (size_t i = 0; i < tips.size() && lineCount < maxLines; ++i)
     {
-        if (tips[i].Length() > maxWidth + 6)
+        if (tips[i].Length() > (size_t)maxWidth + 6)
         {
             wxString tipLn = tips[i];
             while (!tipLn.IsEmpty())
@@ -136,10 +146,11 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
             ++lineCount;
         }
     }
-    tip.RemoveLast();
-    stc->CallTipShow(stc->WordStartPosition(pos, true), tip);
+    tip.RemoveLast(); // trailing linefeed
+    // try to show the tip at the start of the token, or at the margin if we are scrolled right
+    // an offset of 2 helps deal with the width of the folding bar (TODO: does an actual calculation exist?)
+    int offset = stc->PointFromPosition(stc->PositionFromLine(stc->LineFromPosition(pos))).x > marginWidth ? 0 : 2;
+    stc->CallTipShow(std::max(stc->WordStartPosition(pos, true),
+                              stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset), tip);
     event.SetExtraLong(1);
 }
-
-
-
