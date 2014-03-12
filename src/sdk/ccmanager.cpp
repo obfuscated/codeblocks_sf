@@ -288,25 +288,28 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
 // priority, then alphabetical
 struct TokenSorter
 {
-    static bool isPureAlphabetical; // TODO: why does this fail if it is not static?
+    bool& m_PureAlphabetical;
 
-    TokenSorter()
+    TokenSorter(bool& alphabetical) : m_PureAlphabetical(alphabetical)
     {
-        // ctor
-        isPureAlphabetical = true;
+        m_PureAlphabetical = true;
     }
 
     bool operator()(const cbCodeCompletionPlugin::CCToken& a, const cbCodeCompletionPlugin::CCToken& b)
     {
         int diff = a.weight - b.weight;
         if (diff == 0)
+        {
+            // cannot use CmpNoCase() because it compares lower case but Scintilla compares upper
             diff = a.displayName.Upper().Cmp(b.displayName.Upper());
-        else if (isPureAlphabetical)
-            isPureAlphabetical = false;
+            if (diff == 0)
+                diff = a.displayName.Cmp(b.displayName);
+        }
+        else
+            m_PureAlphabetical = false;
         return diff < 0;
     }
 };
-bool TokenSorter::isPureAlphabetical = true;
 
 // cbEVT_COMPLETE_CODE
 void CCManager::OnCompleteCode(CodeBlocksEvent& event)
@@ -334,9 +337,10 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     if (m_AutocompTokens.empty())
         return;
 
-    TokenSorter sortFunctor;
+    bool isPureAlphabetical = true;
+    TokenSorter sortFunctor(isPureAlphabetical);
     std::sort(m_AutocompTokens.begin(), m_AutocompTokens.end(), sortFunctor);
-    if (sortFunctor.isPureAlphabetical)
+    if (isPureAlphabetical)
         stc->AutoCSetOrder(wxSCI_ORDER_PRESORTED);
     else
         stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
@@ -361,6 +365,16 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompSetSeparator(wxT('\r'));
     stc->AutoCompShow(tknEnd - tknStart, items);
+    if (isPureAlphabetical)
+    {
+        const wxString& contextStr = stc->GetTextRange(tknStart, stc->WordEndPosition(tknEnd, true));
+        std::vector<cbCodeCompletionPlugin::CCToken>::const_iterator tknIt
+                = std::lower_bound(m_AutocompTokens.begin(), m_AutocompTokens.end(),
+                                   cbCodeCompletionPlugin::CCToken(-1, contextStr),
+                                   sortFunctor);
+        if (tknIt != m_AutocompTokens.end() && tknIt->displayName.StartsWith(contextStr))
+            stc->AutoCompSelect(tknIt->displayName);
+    }
     m_LastACLaunchState[lsTknStart] = tknStart;
     m_LastACLaunchState[lsCaretStart] = tknEnd;
 }
@@ -741,6 +755,16 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
     if (!stc->CallTipActive())
         m_CallTipActive = wxSCI_INVALID_POSITION;
     stc->AutoCompShow(m_LastACLaunchState[lsCaretStart] - m_LastACLaunchState[lsTknStart], items);
+    if (   m_LastAutocompIndex != wxNOT_FOUND
+        && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
+    {
+        const cbCodeCompletionPlugin::CCToken& token = m_AutocompTokens[m_LastAutocompIndex];
+        const int sepIdx = token.displayName.Find('\n', true);
+        if (sepIdx == wxNOT_FOUND)
+            stc->AutoCompSelect(token.displayName);
+        else
+            stc->AutoCompSelect(token.displayName.Mid(0, sepIdx));
+    }
 }
 
 void CCManager::DoShowDocumentation(cbEditor* ed)
