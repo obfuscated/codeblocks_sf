@@ -35,6 +35,8 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 
         /** let CCManager know that new results are available from cbCodeCompletionPlugin::GetDocumentation() */
         void NotifyDocumentation();
+        /** let CCManager know that a change (e.g. active lexer is switched) may invalidate cached active ccPlugin */
+        void NotifyPluginStatus();
 
     private:
         CCManager();

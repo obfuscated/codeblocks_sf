@@ -3612,6 +3612,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
                 }
             }
             ed->SetLanguage(lang);
+            Manager::Get()->GetCCManager()->NotifyPluginStatus();
         }
     }
 }

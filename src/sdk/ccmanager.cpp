@@ -351,6 +351,12 @@ void CCManager::NotifyDocumentation()
         DoShowDocumentation(ed);
 }
 
+void CCManager::NotifyPluginStatus()
+{
+    m_pLastEditor   = nullptr;
+    m_pLastCCPlugin = nullptr;
+}
+
 // priority, then alphabetical
 struct TokenSorter
 {
