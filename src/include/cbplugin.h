@@ -813,7 +813,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
               * @param tp The content of the calltip.
               */
             CCCallTip(const wxString& tp) :
-                hlStart(wxSCI_INVALID_POSITION), hlEnd(wxSCI_INVALID_POSITION), tip(tp) {}
+                hlStart(-1), hlEnd(-1), tip(tp) {}
 
             /** @brief Construct a calltip, specifying a highlighted range
               *
