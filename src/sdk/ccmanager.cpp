@@ -765,6 +765,25 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
         while (wxIsspace(stc->GetCharAt(lnStart)))
             ++lnStart; // do not show too far left on multi-line call tips
+        if (   m_CallTips.size() > 1
+            && !Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadBool(wxT("multi_page_tips"), true) )
+        {
+            wxString tip;
+            int hlStart, hlEnd;
+            hlStart = hlEnd = wxSCI_INVALID_POSITION;
+            for (CallTipVec::const_iterator itr = m_CallTips.begin();
+                 itr != m_CallTips.end(); ++itr)
+            {
+                if (hlStart == hlEnd && itr->hlStart != itr->hlEnd)
+                {
+                    hlStart = tip.Length() + itr->hlStart;
+                    hlEnd   = tip.Length() + itr->hlEnd;
+                }
+                tip += itr->tip + wxT('\n');
+            }
+            m_CallTips.clear();
+            m_CallTips.push_back(cbCodeCompletionPlugin::CCCallTip(tip.RemoveLast(), hlStart, hlEnd));
+        }
         m_CurCallTip = m_CallTips.begin();
         if (m_CallTips.size() > 1)
         {
