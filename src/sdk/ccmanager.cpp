@@ -996,6 +996,9 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
     int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
     while (wxIsspace(stc->GetCharAt(lnStart)))
         ++lnStart;
+#ifdef __WXMSW__
+    m_LastTipPos = wxSCI_INVALID_POSITION; // Windows hack to fix display update
+#endif // __WXMSW__
     DoShowTips(tips, stc, std::max(pos, lnStart), m_CallTipActive, hlStart + offset, hlEnd + offset);
 }
 
