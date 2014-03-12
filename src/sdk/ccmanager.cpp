@@ -700,7 +700,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     int pos = stc->GetCurrentPos();
     int argsPos = wxSCI_INVALID_POSITION;
     wxString curTip;
-    if (m_CallTipActive != wxSCI_INVALID_POSITION)
+    if (!m_CallTips.empty())
         curTip = m_CurCallTip->tip;
     m_CallTips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), ed, argsPos);
     if (!m_CallTips.empty() && (event.GetInt() != FROM_TIMER || argsPos == m_CallTipActive))
@@ -945,7 +945,19 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
 void CCManager::DoUpdateCallTip(cbEditor* ed)
 {
     wxStringVec tips;
-    tips.push_back(m_CurCallTip->tip);
+    int hlStart = m_CurCallTip->hlStart;
+    int hlEnd   = m_CurCallTip->hlEnd;
+    size_t sRange = 0;
+    size_t eRange = m_CurCallTip->tip.find(wxT('\n'));
+    while (eRange != wxString::npos)
+    {
+        tips.push_back(m_CurCallTip->tip.Mid(sRange, eRange - sRange));
+        CCManagerHelper::RipplePts(hlStart, hlEnd, eRange, -1);
+        sRange = eRange + 1;
+        eRange = m_CurCallTip->tip.find(wxT('\n'), sRange);
+    }
+    if (sRange < m_CurCallTip->tip.Length())
+        tips.push_back(m_CurCallTip->tip.Mid(sRange));
     int offset = 0;
     if (m_CallTips.size() > 1)
     {
@@ -966,7 +978,7 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
     int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
     while (wxIsspace(stc->GetCharAt(lnStart)))
         ++lnStart;
-    DoShowTips(tips, stc, std::max(pos, lnStart), m_CallTipActive, m_CurCallTip->hlStart + offset, m_CurCallTip->hlEnd + offset);
+    DoShowTips(tips, stc, std::max(pos, lnStart), m_CallTipActive, hlStart + offset, hlEnd + offset);
 }
 
 void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd)
@@ -1010,7 +1022,7 @@ void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int p
                 if (index < 20 || segment == tipLn) // end of string, or cannot split
                 {
                     tip += tipLn + lineBreak;
-                    CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), 1);
+                    CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), lineBreak.Length());
                     tipLn.Clear();
                 }
                 else // continue splitting
@@ -1026,7 +1038,7 @@ void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int p
         else // just add the line
         {
             tip += tips[i] + lineBreak;
-            CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), 1);
+            CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), lineBreak.Length());
             ++lineCount;
         }
     }

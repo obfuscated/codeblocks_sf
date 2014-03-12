@@ -885,6 +885,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * int endOfWord = stc->WordEndPosition(pos, true);
           *                                     ^
           * @endcode
+          * Each returned CCCallTip is allowed to have embedded '\\n' line breaks.
           *
           * @param pos The location in the editor that the calltip is requested for.
           * @param style The scintilla style of the cbStyledTextCtrl at the given location. (TODO: This
