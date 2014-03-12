@@ -768,11 +768,12 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 
         struct CCToken
         {
-            CCToken(int _id, const wxString& dispNm) :
-                id(_id), weight(5), displayName(dispNm), name(dispNm) {}
-            CCToken(int _id, const wxString& dispNm, const wxString& nm, int _weight) :
-                id(_id), weight(_weight), displayName(dispNm), name(nm) {}
+            CCToken(int _id, const wxString& dispNm, int categ = -1) :
+                id(_id), category(categ), weight(5), displayName(dispNm), name(dispNm) {}
+            CCToken(int _id, const wxString& dispNm, const wxString& nm, int _weight, int categ = -1) :
+                id(_id), category(categ), weight(_weight), displayName(dispNm), name(nm) {}
             int id;
+            int category;
             int weight; // lower numbers are placed earlier, 5 is default; try to keep 0-10
             wxString displayName;
             wxString name;

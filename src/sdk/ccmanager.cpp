@@ -329,12 +329,17 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
         stc->AutoCSetOrder(wxSCI_ORDER_PRESORTED);
     else
         stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
-    stc->AutoCompSetSeparator(wxT('\r'));
     wxString items;
     // experimentally, the average length per token seems to be 23 for the main CC plugin
     items.Alloc(m_AutocompTokens.size() * 20); // TODO: measure performance
     for (size_t i = 0; i < m_AutocompTokens.size(); ++i)
-        items += m_AutocompTokens[i].displayName + wxT("\r");
+    {
+        items += m_AutocompTokens[i].displayName;
+        if (m_AutocompTokens[i].category == -1)
+            items += wxT("\r");
+        else
+            items += F(wxT("\n%d\r"), m_AutocompTokens[i].category);
+    }
     items.RemoveLast();
 
     if (!stc->CallTipActive())
@@ -343,6 +348,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     stc->AutoCompSetIgnoreCase(true);
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompSetTypeSeparator(wxT('\n'));
+    stc->AutoCompSetSeparator(wxT('\r'));
     stc->AutoCompShow(tknEnd - tknStart, items);
 }
 
@@ -509,7 +515,8 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             {
                 stc->AutoCompCancel();
                 m_AutocompPosition = stc->GetCurrentPos();
-                m_AutoLaunchTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+                if (CCManagerHelper::IsPosVisible(m_AutocompPosition, stc))
+                    m_AutoLaunchTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
             }
         }
     }

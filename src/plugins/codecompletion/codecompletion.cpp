@@ -977,7 +977,6 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                     alreadyRegistered.insert(iidx);
                 }
 
-                const wxString idxStr = F(wxT("\n%d"), iidx);
                 wxString dispStr;
                 if (token->m_TokenKind & tkAnyFunction)
                 {
@@ -988,7 +987,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                 }
                 else if (token->m_TokenKind == tkVariable)
                     dispStr = wxT(": ") + token->m_FullType;
-                tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr + idxStr, token->m_Name + idxStr, token->m_IsTemp ? 0 : 5));
+                tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr, token->m_Name, token->m_IsTemp ? 0 : 5, iidx));
                 uniqueStrings.insert(token->m_Name);
 
                 if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
@@ -996,7 +995,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                     for (size_t i = 0; i < token->m_Aliases.size(); ++i)
                     {
                         // dispStr will currently be empty, but contain something in the future...
-                        tokens.push_back(CCToken(token->m_Index, token->m_Aliases[i] + dispStr + idxStr, token->m_Aliases[i] + idxStr, 5));
+                        tokens.push_back(CCToken(token->m_Index, token->m_Aliases[i] + dispStr, token->m_Aliases[i], 5, iidx));
                         uniqueStrings.insert(token->m_Aliases[i]);
                     }
                 }
@@ -1028,7 +1027,6 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                         stc->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
                     else
                         stc->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
-                    const wxString idxStr = F(wxT("\n%d"), iidx);
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
                     // but this is now configurable in global settings
                     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
@@ -1044,7 +1042,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                             if (   kw.Lower().StartsWith(lastSearch)
                                 && uniqueStrings.find(kw) == uniqueStrings.end() )
                             {
-                                tokens.push_back(CCToken(wxNOT_FOUND, kw + idxStr));
+                                tokens.push_back(CCToken(wxNOT_FOUND, kw, iidx));
                             }
                         }
                     }
@@ -1108,7 +1106,7 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
     for (size_t i = 0; i < macros.size(); ++i)
     {
         if (text.IsEmpty() || macros[i][0] == text[0]) // ignore tokens that start with a different letter
-            tokens.push_back(CCToken(wxNOT_FOUND, macros[i] + idxStr));
+            tokens.push_back(CCToken(wxNOT_FOUND, macros[i], PARSER_IMG_PREPROCESSOR));
     }
     stc->ClearRegisteredImages();
     stc->RegisterImage(PARSER_IMG_PREPROCESSOR,
@@ -1232,10 +1230,9 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     if (!files.empty())
     {
         tknStart = lineStartPos + keyPos;
-        const wxString idxStr = wxT("\n0");
         tokens.reserve(files.size());
         for (StringSet::const_iterator ssIt = files.begin(); ssIt != files.end(); ++ssIt)
-            tokens.push_back(CCToken(wxNOT_FOUND, *ssIt + idxStr));
+            tokens.push_back(CCToken(wxNOT_FOUND, *ssIt, 0));
         stc->ClearRegisteredImages();
         stc->RegisterImage(0, wxBitmap(header_file_xpm));
     }
