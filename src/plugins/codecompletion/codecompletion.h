@@ -93,20 +93,11 @@ public:
     /** toolbar priority value */
     virtual int GetToolBarPriority() { return 10; }
 
-    // TODO unused, should be removed probably
-    virtual wxArrayString GetCallTips() { return wxArrayString(); }
-    virtual int CodeComplete();
-    virtual void ShowCallTip();
+    // override
     virtual bool IsProviderFor(cbEditor* ed);
-
     virtual std::vector<CCToken> GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto);
     virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed);
     virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
-
-    /** show auto-completion list for preprocessor directives*/
-    void CodeCompletePreprocessor();
-    /** show auto-completion after #include */
-    void CodeCompleteIncludes();
 
     /** get the include paths setting (usually set by user for each C::B project)
      * @param project project info
@@ -302,8 +293,6 @@ private:
     int                     m_EditorHookId;
     int                     m_LastPosForCodeCompletion;
 
-    /** delay for showing the suggesting list*/
-    wxTimer                 m_TimerCodeCompletion;
     /** timer triggered by editor hook function to delay the real-time parse*/
     wxTimer                 m_TimerRealtimeParsing;
     /** timer for toolbar*/
@@ -322,8 +311,6 @@ private:
     int                     m_ActiveCalltipsNest;
 
     bool                    m_IsAutoPopup;
-    /** this indicates only show pre-processor directives in the auto-completion list */
-    bool                    m_CompletePPOnly;
 
     // The variables below were related to CC's toolbar
     /** the CC's toolbar */

@@ -125,14 +125,15 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
                                                                                            event.GetInt() == FROM_TIMER);
     if (tokens.empty())
         return;
-    stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
-    //stc->AutoCSetOrder(wxSCI_ORDER_PERFORMSORT);
+    //stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
+    stc->AutoCSetOrder(wxSCI_ORDER_PERFORMSORT);
     stc->AutoCompSetSeparator(wxT('|'));
     wxString items;
     items.Alloc(tokens.size() * 10); // TODO: measure performance
     for (size_t i = 0; i < tokens.size(); ++i)
         items += tokens[i].displayName + wxT("|");
     items.RemoveLast();
+    stc->AutoCompSetIgnoreCase(true);
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompShow(tknEnd - tknStart, items);
 }

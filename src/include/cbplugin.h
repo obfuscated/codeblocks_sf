@@ -732,9 +732,11 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 {
     public:
         cbCodeCompletionPlugin();
+#if 0
         virtual wxArrayString GetCallTips() = 0;
         virtual int CodeComplete() = 0;
         virtual void ShowCallTip() = 0;
+#endif // 0
         /** @brief Does this plugin handle code completion for the editor cb?
           *
           * A plugin should override this function to indicate whether it will
