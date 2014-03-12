@@ -8,8 +8,16 @@
 
 #include "manager.h"
 
+#ifndef CB_PRECOMP
+    #include <wx/timer.h>
+    #include "cbplugin.h"
+#endif
+
 class UnfocusablePopupWindow;
+class wxHtmlLinkEvent;
 class wxHtmlWindow;
+class wxListEvent;
+class wxScintillaEvent;
 
 class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 {

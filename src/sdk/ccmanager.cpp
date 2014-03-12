@@ -11,6 +11,21 @@
 
 #include "ccmanager.h"
 
+#ifndef CB_PRECOMP
+    #include <algorithm>
+
+    #include <wx/listctrl.h>
+    #include <wx/menu.h>
+#if wxUSE_POPUPWIN
+    #include <wx/popupwin.h>
+#endif
+    #include <wx/timer.h>
+
+    #include "cbeditor.h"
+    #include "editormanager.h"
+    #include "logmanager.h" // for F
+#endif
+
 #include <wx/html/htmlwin.h>
 #include <wx/display.h>
 
