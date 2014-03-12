@@ -673,15 +673,15 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
         return;
     m_DocPos = m_pPopup->GetParent()->ScreenToClient(evtWin->GetScreenPosition());
     m_DocPos.x += evtWin->GetSize().x;
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    wxRect edRect = ed->GetRect();
     if (!m_pPopup->IsShown())
     {
-        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
         cbStyledTextCtrl* stc = ed->GetControl();
         int acMaxHeight = stc->AutoCompGetMaxHeight() + 1;
         int textHeight = stc->TextHeight(stc->GetCurrentLine());
-        wxRect edRect = ed->GetRect();
         m_DocSize.x = edRect.width * 5 / 12;
-        m_DocSize.y = acMaxHeight*textHeight;
+        m_DocSize.y = acMaxHeight * textHeight;
         evtWin->Connect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
 
         const int idx = wxDisplay::GetFromWindow(evtWin);
@@ -689,13 +689,15 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
         if (idx != wxNOT_FOUND)
         {
             const wxPoint& corner = m_pPopup->GetParent()->ScreenToClient(wxDisplay(idx).GetGeometry().GetBottomRight());
-            m_DocSize.y = std::max(8 * textHeight,      std::min(m_DocSize.y, corner.y - m_DocPos.y - 2));
+            m_DocSize.y = std::max(9 * textHeight,      std::min(m_DocSize.y, corner.y - m_DocPos.y - 2));
             m_DocSize.x = std::max(m_DocSize.y * 2 / 3, std::min(m_DocSize.x, corner.x - m_DocPos.x - 2));
-            m_WindowBound = corner.x;
+            m_WindowBound = std::min(corner.x - 2, m_WindowBound);
         }
     }
     if ((m_DocPos.x + m_DocSize.x) > m_WindowBound)
         m_DocPos.x -= evtWin->GetSize().x + m_DocSize.x; // show to the left instead
+    else
+        m_DocSize.x = std::min(m_WindowBound - m_DocPos.x, edRect.width * 5 / 12);
 }
 
 // Note: according to documentation, this event is only available under wxMSW, wxGTK, and wxOS2
