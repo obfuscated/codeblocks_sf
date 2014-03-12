@@ -377,150 +377,7 @@ namespace Doxygen
 }// end of Doxygen namespace
 
 
-/* Unfocusable popup */
-
-
-//imported with small changes from PlatWX.cpp
-class UnfocusablePopupWindow :
-#if wxUSE_POPUPWIN
-    public wxPopupWindow
-{
-public:
-    typedef wxPopupWindow BaseClass;
-
-    UnfocusablePopupWindow(wxWindow* parent, int style = wxBORDER_NONE) :
-        wxPopupWindow(parent, style)
-#else
-     public wxFrame
-{
-public:
-    typedef wxFrame BaseClass;
-
-    UnfocusablePopupWindow(wxWindow* parent, int style = 0) :
-        wxFrame(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize,
-                style | wxFRAME_NO_TASKBAR | wxFRAME_FLOAT_ON_PARENT | wxNO_BORDER | wxFRAME_SHAPED
-#ifdef __WXMAC__
-                | wxPOPUP_WINDOW
-#endif
-            )
-#endif // wxUSE_POPUPWIN
-    {
-        Hide();
-    }
-
-    bool Destroy();
-    void OnFocus(wxFocusEvent& event);
-    void ActivateParent();
-
-    virtual void DoSetSize(int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO);
-    virtual bool Show(bool show = true);
-
-private:
-    DECLARE_EVENT_TABLE()
-};
-
-// On OSX and (possibly others) there can still be pending
-// messages/events for the list control when Scintilla wants to
-// close it, so do a pending delete of it instead of destroying
-// immediately.
-bool UnfocusablePopupWindow::Destroy()
-{
-#ifdef __WXMAC__
-    // The bottom edge of this window is not getting properly
-    // refreshed upon deletion, so help it out...
-    wxWindow* p = GetParent();
-    wxRect r(GetPosition(), GetSize());
-    r.SetHeight(r.GetHeight()+1);
-    p->Refresh(false, &r);
-#endif
-    if ( !wxPendingDelete.Member(this) )
-        wxPendingDelete.Append(this);
-    return true;
-}
-
-void UnfocusablePopupWindow::OnFocus(wxFocusEvent& event)
-{
-    ActivateParent();
-    GetParent()->SetFocus();
-    event.Skip();
-}
-
-void UnfocusablePopupWindow::ActivateParent()
-{
-    // Although we're a frame, we always want the parent to be active, so
-    // raise it whenever we get shown, focused, etc.
-    wxTopLevelWindow *frame = wxDynamicCast(
-        wxGetTopLevelParent(GetParent()), wxTopLevelWindow);
-    if (frame)
-        frame->Raise();
-}
-
-void UnfocusablePopupWindow::DoSetSize(int x, int y,
-                       int width, int height,
-                       int sizeFlags)
-{
-    // convert coords to screen coords since we're a top-level window
-    if (x != wxDefaultCoord)
-        GetParent()->ClientToScreen(&x, NULL);
-
-    if (y != wxDefaultCoord)
-        GetParent()->ClientToScreen(NULL, &y);
-
-    BaseClass::DoSetSize(x, y, width, height, sizeFlags);
-}
-
-bool UnfocusablePopupWindow::Show(bool show)
-{
-    bool rv = BaseClass::Show(show);
-    if (rv && show)
-        ActivateParent();
-#ifdef __WXMAC__
-    GetParent()->Refresh(false);
-#endif
-    return rv;
-}
-
-BEGIN_EVENT_TABLE(UnfocusablePopupWindow, UnfocusablePopupWindow::BaseClass)
-    EVT_SET_FOCUS(UnfocusablePopupWindow::OnFocus)
-END_EVENT_TABLE()
-
-/* end of Unfocusable popup */
-
-
-// (shamelessly stolen from mime handler plugin ;) )
-// build all HTML font sizes (1..7) from the given base size
-static void wxBuildFontSizes(int *sizes, int size)
-{
-    // using a fixed factor (1.2, from CSS2) is a bad idea as explained at
-    // http://www.w3.org/TR/CSS21/fonts.html#font-size-props but this is by far
-    // simplest thing to do so still do it like this for now
-    sizes[0] = int(size * 0.75); // exception to 1.2 rule, otherwise too small
-    sizes[1] = int(size * 0.83);
-    sizes[2] = size;
-    sizes[3] = int(size * 1.2);
-    sizes[4] = int(size * 1.44);
-    sizes[5] = int(size * 1.73);
-    sizes[6] = int(size * 2);
-}
-
-// (shamelessly stolen from mime handler plugin ;) )
-static int wxGetDefaultHTMLFontSize()
-{
-    // base the default font size on the size of the default system font but
-    // also ensure that we have a font of reasonable size, otherwise small HTML
-    // fonts are unreadable
-    int size = wxNORMAL_FONT->GetPointSize();
-    if ( size < 9 )
-        size = 9;
-
-    return size;
-}
-
 /*Documentation Popup*/
-
-BEGIN_EVENT_TABLE(DocumentationHelper,DocumentationHelper::BaseClass)
-    EVT_HTML_LINK_CLICKED(wxID_ANY, DocumentationHelper::OnLink)
-END_EVENT_TABLE()
 
 namespace HTMLTags
 {
@@ -781,15 +638,10 @@ const wxChar   DocumentationHelper::separatorTag = _T('+');
 const wxString DocumentationHelper::commandTag = _T("cmd=");
 
 DocumentationHelper::DocumentationHelper(CodeCompletion* cc) :
-    BaseClass(),
-    m_Popup(0),
-    m_Html(0),
     m_CC(cc),
     m_CurrentTokenIdx(-1),
     m_LastTokenIdx(-1),
-    m_Pos(),
-    m_Size(),
-    m_Enabled(false)
+    m_Enabled(true)
 {
     ColourManager *colours = Manager::Get()->GetColourManager();
     colours->RegisterColour(_("Code completion"), _("Documentation popup background"), wxT("cc_docs_back"), *wxWHITE);
@@ -801,87 +653,17 @@ DocumentationHelper::~DocumentationHelper()
 {
 }
 
-void DocumentationHelper::Hide()
-{
-    if (m_Popup && m_Popup->IsShown())
-        m_Popup->Hide();
-}
-
 void DocumentationHelper::OnAttach()
 {
     // Dont attach if user dont want to use documentation helper and its already attached
-    if (!m_Enabled || IsAttached())
+    if (!m_Enabled /*|| IsAttached()*/)
         return;
-
-    // register event sinks
-    Manager* pm = Manager::Get();
-
-    typedef cbEventFunctor<DocumentationHelper, CodeBlocksEvent> MyFunctor;
-    void (DocumentationHelper::* onEvent)(CodeBlocksEvent&) =
-        &DocumentationHelper::OnCbEventHide;
-
-    pm->RegisterEventSink(cbEVT_WORKSPACE_CHANGED,    new MyFunctor(this, onEvent));
-
-    pm->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,     new MyFunctor(this, onEvent));
-    pm->RegisterEventSink(cbEVT_PROJECT_CLOSE,        new MyFunctor(this, onEvent));
-
-
-    pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new MyFunctor(this, onEvent));
-    pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,       new MyFunctor(this, onEvent));
-
-    m_Popup = new UnfocusablePopupWindow(pm->GetAppFrame());
-    m_Html = new wxHtmlWindow(m_Popup, wxID_ANY, wxDefaultPosition,
-                            wxSize(210,320),
-                            wxHW_SCROLLBAR_AUTO | wxBORDER_SIMPLE);
-    int sizes[7] = {};
-    wxBuildFontSizes(sizes, wxGetDefaultHTMLFontSize());
-    m_Html->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
-
-    m_Html->Connect(wxEVT_COMMAND_HTML_LINK_CLICKED,
-                        (wxObjectEventFunction)&DocumentationHelper::OnLink,
-                         NULL, this);
-    Hide();
-
-    m_Popup->Layout();
-    m_Popup->Fit();
+    // TODO: Is this function still needed?
 }
 
 void DocumentationHelper::OnRelease()
 {
-    if ( !IsAttached() )
-        return;
-
-    Manager::Get()->RemoveAllEventSinksFor(this);
-
-    if (m_Html)
-        m_Html->Destroy();
-    m_Html = 0;
-
-    if (m_Popup)
-        m_Popup->Destroy();
-    m_Popup = 0;
-}
-
-bool DocumentationHelper::ShowDocumentation(const wxString& html)
-{
-    if (!m_Enabled || !IsAttached() || html.size() == 0)
-    {
-        Hide();
-        return false;
-    }
-
-    m_Popup->Freeze();
-    ResetSize(m_Size);
-
-    m_Html->SetPage(html);
-
-    FitToContent();
-
-    m_Popup->SetPosition(m_Pos);
-    m_Popup->Thaw();
-    m_Popup->Show();
-
-    return true;
+    // TODO: Is this function still needed?
 }
 
 wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
@@ -1057,10 +839,7 @@ wxString DocumentationHelper::GenerateHTML(const TokenIdxSet& tokensIdx, TokenTr
     using namespace HTMLTags;
 
     if (tokensIdx.size() == 0)
-    {
-        Hide();
         return wxEmptyString;
-    }
 
     if (tokensIdx.size() == 1)
         return GenerateHTML(*tokensIdx.begin(),tree);
@@ -1106,67 +885,12 @@ wxString DocumentationHelper::GenerateHTML(const TokenIdxSet& tokensIdx, TokenTr
     return html;
 }
 
-void DocumentationHelper::OnSelectionChange(wxListEvent& event)
-{
-    event.Skip();
-    if (!m_Enabled)
-        return;
-
-    wxObject* evtObj = event.GetEventObject();
-
-    if (evtObj && ((wxWindow*)evtObj)->GetParent())
-    {
-        wxWindow* evtWin = ((wxWindow*)evtObj)->GetParent();
-        if (!m_Popup->IsShown())
-        {
-            evtWin->Connect(wxID_ANY, wxEVT_SHOW,
-                            (wxObjectEventFunction)&DocumentationHelper::OnWxEventHide,
-                            NULL, this);
-
-            m_Pos = m_Popup->GetParent()->ScreenToClient(evtWin->GetScreenPosition());
-            m_Pos.x += evtWin->GetSize().x;
-
-            cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-            cbStyledTextCtrl* control = editor->GetControl();
-            int acMaxHeight = control->AutoCompGetMaxHeight()+1;
-            int textHeight = control->TextHeight(control->GetCurrentLine());
-            wxRect edRect = editor->GetRect();
-
-            m_Size.x = edRect.width * 5/12;
-            m_Size.y = acMaxHeight*textHeight;
-        }
-
-        // compile hack, will remove soon
-        int tokenIdx = -1; //m_CC->GetAutocompTokenIdx();
-        TokenTree* tree = m_CC->m_NativeParser.GetParser().GetTokenTree();
-
-        ShowDocumentation(GenerateHTML(tokenIdx, tree));
-    }
-}
-
-void DocumentationHelper::ResetSize(const wxSize& size)
-{
-    const wxSize& cliSize = size;
-    m_Html->SetMaxSize(cliSize);
-    m_Html->SetClientSize(cliSize);
-}
-
-bool DocumentationHelper::IsAttached() const
-{
-    return m_Popup && m_Html;
-}
-
-bool DocumentationHelper::IsVisible() const
-{
-    return IsAttached() && m_Popup->IsShown();
-}
-
 void DocumentationHelper::RereadOptions(ConfigManager* cfg)
 {
     if (!cfg)
         cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
 
-    m_Enabled = cfg->ReadBool(_T("/use_documentation_helper"), false);
+    m_Enabled = cfg->ReadBool(_T("/use_documentation_helper"), true);
 
     // Apply changes
     if (m_Enabled)
@@ -1183,46 +907,19 @@ void DocumentationHelper::WriteOptions(ConfigManager* cfg)
     cfg->Write(_T("/use_documentation_helper"), m_Enabled);
 }
 
-void DocumentationHelper::FitToContent()
-{
-    m_Popup->Layout();
-    m_Popup->Fit();
-}
-
 void DocumentationHelper::SaveTokenIdx()
 {
     m_LastTokenIdx = m_CurrentTokenIdx;
 }
 
 //events:
-void DocumentationHelper::OnCbEventHide(CodeBlocksEvent& event)
-{
-    event.Skip();
-    m_Popup->Hide();
-}
-
-void DocumentationHelper::OnWxEventHide(wxEvent& event)
-{
-    event.Skip();
-    Hide();
-
-    wxObject* evtObj = event.GetEventObject();
-    if (evtObj)
-    {
-        wxWindow* evtWin = (wxWindow*)(evtObj);
-        evtWin->Disconnect(wxID_ANY, wxEVT_SHOW,
-                        (wxObjectEventFunction)&DocumentationHelper::OnWxEventHide,
-                        NULL, this);
-    }
-}
-
-void DocumentationHelper::OnLink(wxHtmlLinkEvent& event)
+wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup)
 {
     TokenTree* tree = m_CC->m_NativeParser.GetParser().GetTokenTree();
 
     const wxString& href = event.GetLinkInfo().GetHref();
     wxString args;
-    long int  tokenIdx;
+    long int tokenIdx;
 
     Command command = HrefToCommand(href,args);
     switch (command)
@@ -1231,9 +928,10 @@ void DocumentationHelper::OnLink(wxHtmlLinkEvent& event)
         if(args.ToLong(&tokenIdx))
         {
             SaveTokenIdx();
-            ShowDocumentation(GenerateHTML(tokenIdx, tree));
+            return GenerateHTML(tokenIdx, tree);
         }
         break;
+
     case cmdSearch:
     case cmdSearchAll:
         {
@@ -1262,10 +960,11 @@ void DocumentationHelper::OnLink(wxHtmlLinkEvent& event)
             if (result.size() > 0)
             {
                 SaveTokenIdx();
-                ShowDocumentation(GenerateHTML(result, tree));
+                return GenerateHTML(result, tree);
             }
         }
         break;
+
     case cmdOpenDecl:
         if (args.ToLong(&tokenIdx))
         {
@@ -1273,9 +972,13 @@ void DocumentationHelper::OnLink(wxHtmlLinkEvent& event)
             const Token* token = tree->at(tokenIdx);
             cbEditor* targetEditor = edMan->Open(token->GetFilename());
             if (targetEditor)
+            {
                 targetEditor->GotoTokenPosition(token->m_Line - 1, token->m_Name);
+                dismissPopup = true;
+            }
         }
         break;
+
     case cmdOpenImpl:
         if (args.ToLong(&tokenIdx))
         {
@@ -1283,22 +986,26 @@ void DocumentationHelper::OnLink(wxHtmlLinkEvent& event)
             const Token* token = tree->at(tokenIdx);
             cbEditor* targetEditor = edMan->Open(token->GetImplFilename());
             if (targetEditor)
+            {
                 targetEditor->GotoTokenPosition(token->m_ImplLine - 1, token->m_Name);
+                dismissPopup = true;
+            }
         }
         break;
+
     case cmdClose:
-        m_Popup->Hide();
+        dismissPopup = true;
         break;
 
     case cmdNone:
     default:
         if (href.size()>1 && href[0] == _T('#'))
-            event.Skip(); //go to anchor
+            event.Skip(); // go to anchor
         else if (href.StartsWith(_T("www.")) || href.StartsWith(_T("http://")))
             wxLaunchDefaultBrowser(href);
     }
-
-    // Dont skip this event
+    // don't skip this event
+    return wxEmptyString;
 }
 
 //end of Documentation popup functions

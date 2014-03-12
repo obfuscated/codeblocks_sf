@@ -21,12 +21,8 @@ class TokenTree;
 
 class cbEditor;
 class ConfigManager;
-class CodeBlocksEvent;
 
 class wxHtmlLinkEvent;
-class wxHtmlWindow;
-class wxListEvent;
-class wxPopupWindow;
 
 namespace Doxygen
 {
@@ -108,11 +104,8 @@ namespace Doxygen
 }//namespace Doxygen
 
 
-class UnfocusablePopupWindow;
-
-class DocumentationHelper : public wxEvtHandler
+class DocumentationHelper
 {
-    typedef wxEvtHandler BaseClass;
 
 public:
     enum Command
@@ -142,16 +135,10 @@ public:
     DocumentationHelper(CodeCompletion* cc);
     ~DocumentationHelper();
 
-    void Hide();
     void OnAttach();
     void OnRelease();
-    bool ShowDocumentation(const wxString& html);
     wxString GenerateHTML(int tokenIdx, TokenTree* tree);
     wxString GenerateHTML(const TokenIdxSet& tokensIdx, TokenTree* tree);
-    void OnSelectionChange(wxListEvent& event);
-    void ResetSize(const wxSize& size);
-    bool IsAttached() const;
-    bool IsVisible() const;
     void RereadOptions(ConfigManager* cfg);
     void WriteOptions(ConfigManager* cfg);
 
@@ -160,27 +147,17 @@ public:
 
 protected:
     void SaveTokenIdx();
-    void FitToContent();
-    //events:
-    void OnCbEventHide(CodeBlocksEvent& event);
-    void OnWxEventHide(wxEvent& event);
 public:
-    void OnLink(wxHtmlLinkEvent& event);
+    wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup);
 
     /*Members:*/
 protected:
-    UnfocusablePopupWindow* m_Popup;
-    wxHtmlWindow* m_Html;
     /** Pointer to CodeComplete object */
     CodeCompletion* m_CC;
     /** Documentation of which token was previously displayed */
     int m_CurrentTokenIdx, m_LastTokenIdx;
-    wxPoint     m_Pos;
-    wxSize      m_Size;
     // User options
-    bool        m_Enabled;
-
-    DECLARE_EVENT_TABLE()
+    bool m_Enabled;
 };
 
 #endif //DOXYGENPARSER_H

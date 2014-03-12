@@ -724,6 +724,8 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
+class wxHtmlLinkEvent;
+
 /** @brief Base class for code-completion plugins
   *
   * This interface is subject to change, so not much info here...
@@ -770,8 +772,11 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         };
 
         virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd) = 0;
+        virtual wxString GetDocumentation(const CCToken& token) = 0;
         virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos) = 0;
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
+        /// dismissPopup is false by default
+        virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup) = 0;
         virtual void DoAutocomplete(const CCToken& token, cbEditor* ed) = 0;
         virtual void DoAutocomplete(const wxString& token, cbEditor* ed) = 0;
 };

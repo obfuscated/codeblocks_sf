@@ -8,6 +8,9 @@
 
 #include "manager.h"
 
+class UnfocusablePopupWindow;
+class wxHtmlWindow;
+
 class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 {
     public:
@@ -33,8 +36,10 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** event handler to show the call tip, when user press Ctrl-Shift-Space */
         void OnShowCallTip(CodeBlocksEvent& event);
         void OnAutocompleteSelect(wxListEvent& event);
+        void OnHtmlLink(wxHtmlLinkEvent& event);
         void OnTimer(wxTimerEvent& event);
 
+        void DoShowDocumentation(cbEditor* ed);
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
         std::set<wxChar> m_CallTipChars;
@@ -46,8 +51,12 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
         wxTimer m_AutocompSelectTimer;
+        wxSize m_DocSize;
+        wxPoint m_DocPos;
         cbEditor* m_pLastEditor;
         cbCodeCompletionPlugin* m_pLastCCPlugin;
+        UnfocusablePopupWindow* m_pPopup;
+        wxHtmlWindow* m_pHtml;
         std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens;
 };
 

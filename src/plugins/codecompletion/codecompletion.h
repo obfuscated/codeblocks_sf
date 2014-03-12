@@ -97,7 +97,9 @@ public:
     virtual bool IsProviderFor(cbEditor* ed);
     virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
     virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos);
+    virtual wxString GetDocumentation(const CCToken& token);
     virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
+    virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup);
     virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
     virtual void DoAutocomplete(const wxString& token, cbEditor* ed);
 
@@ -372,8 +374,7 @@ private:
     /** Popup window to display documentation */
     DocumentationHelper     m_DocHelper;
 
-    friend void DocumentationHelper::OnLink(wxHtmlLinkEvent&);
-    friend void DocumentationHelper::OnSelectionChange(wxListEvent&);
+    friend wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent&, bool&);
 
     DECLARE_EVENT_TABLE()
 };
