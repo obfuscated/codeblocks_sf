@@ -337,6 +337,9 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
         items += m_AutocompTokens[i].displayName + wxT("\r");
     items.RemoveLast();
 
+    if (!stc->CallTipActive())
+        m_CallTipActive = wxSCI_INVALID_POSITION;
+
     stc->AutoCompSetIgnoreCase(true);
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompSetTypeSeparator(wxT('\n'));
@@ -530,6 +533,14 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
                 break;
         }
     }
+    else if (evtType == wxEVT_SCI_MODIFIED)
+    {
+        if (event.GetModificationType() & wxSCI_PERFORMED_UNDO)
+        {
+            if (m_CallTipActive != wxSCI_INVALID_POSITION)
+                m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+        }
+    }
     else if (evtType == wxEVT_SCI_AUTOCOMP_SELECTION)
     {
         m_pPopup->Hide();
@@ -617,6 +628,8 @@ void CCManager::OnAutocompleteHide(wxShowEvent& event)
     wxObject* evtObj = event.GetEventObject();
     if (evtObj)
         static_cast<wxWindow*>(evtObj)->Disconnect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
+    if (m_CallTipActive != wxSCI_INVALID_POSITION)
+        m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
 }
 
 void CCManager::OnHtmlLink(wxHtmlLinkEvent& event)
