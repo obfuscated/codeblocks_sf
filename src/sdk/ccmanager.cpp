@@ -212,6 +212,7 @@ CCManager::CCManager() :
     m_AutocompPosition(wxSCI_INVALID_POSITION),
     m_CallTipActive(wxSCI_INVALID_POSITION),
     m_LastAutocompIndex(wxNOT_FOUND),
+    m_LastTipPos(wxSCI_INVALID_POSITION),
     m_CallTipTimer(this, idCallTipTimer),
     m_AutoLaunchTimer(this, idAutoLaunchTimer),
     m_AutocompSelectTimer(this, idAutocompSelectTimer),
@@ -868,7 +869,10 @@ void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int p
     int offset = stc->PointFromPosition(stc->PositionFromLine(line)).x > marginWidth ? 0 : 2;
     pos = std::max(argsPos, stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset);
     pos = std::min(pos, stc->GetLineEndPosition(line)); // do not go to next line
+    if (stc->CallTipActive() && m_LastTipPos != pos)
+        stc->CallTipCancel(); // force tip popup to invalidate (sometimes fails to otherwise do so on Windows)
     stc->CallTipShow(pos, tip);
     if (hlStart >= 0 && hlEnd > hlStart)
         stc->CallTipSetHighlight(hlStart, hlEnd);
+    m_LastTipPos = pos;
 }
