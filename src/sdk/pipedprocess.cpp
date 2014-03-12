@@ -38,7 +38,7 @@ class cbTextInputStream : public wxTextInputStream
 #endif
         ~cbTextInputStream(){}
 
-/*
+
         // The following function was copied verbatim from wxTextStream::NextChar()
         // The only change, is the removal of the MB2WC function
         // With PipedProcess we work with compilers/debuggers which (usually) don't
@@ -75,7 +75,7 @@ class cbTextInputStream : public wxTextInputStream
             return m_lastBytes[0];
         #endif
         }
-*/
+
         // The following function was copied verbatim from wxTextStream::ReadLine()
         // The only change, is the addition of m_input.CanRead() in the while()
         wxString ReadLine()
