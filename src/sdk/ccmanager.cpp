@@ -89,6 +89,12 @@ const int idAutocompSelectTimer = wxNewId();
 
 #define FROM_TIMER 1
 
+enum ACLaunchState
+{
+    lsTknStart,
+    lsCaretStart
+};
+
 
 //{ Unfocusable popup
 
@@ -217,6 +223,7 @@ CCManager::CCManager() :
     const wxString alChars = wxT(".:<>\"#/");
     m_AutoLaunchChars.insert(alChars.begin(), alChars.end());
 /* end temporary */
+    m_LastACLaunchState[lsCaretStart] = wxSCI_INVALID_POSITION;
     m_pPopup = new UnfocusablePopupWindow(Manager::Get()->GetAppFrame());
     m_pHtml = new wxHtmlWindow(m_pPopup, wxID_ANY, wxDefaultPosition,
                                wxDefaultSize, wxHW_SCROLLBAR_AUTO | wxBORDER_SIMPLE);
@@ -262,6 +269,7 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
         return m_pLastCCPlugin;
     m_pLastEditor = ed;
     m_pLastCCPlugin = nullptr;
+    m_LastACLaunchState[lsCaretStart] = wxSCI_INVALID_POSITION;
     const PluginsArray& pa = Manager::Get()->GetPluginManager()->GetCodeCompletionOffers();
     for (size_t i = 0; i < pa.GetCount(); ++i)
     {
@@ -314,8 +322,11 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
 
     cbStyledTextCtrl* stc = ed->GetControl();
     int tknEnd = stc->GetCurrentPos();
-//    if (tknEnd == m_AutocompPosition && stc->AutoCompActive())
-//        return;
+    if (tknEnd == m_LastACLaunchState[lsCaretStart] && !m_AutocompTokens.empty())
+    {
+        DoBufferedCC(stc);
+        return;
+    }
     int tknStart = stc->WordStartPosition(tknEnd, true);
 
     m_AutocompTokens = ccPlugin->GetAutocompList(event.GetInt() == FROM_TIMER,
@@ -350,6 +361,8 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompSetSeparator(wxT('\r'));
     stc->AutoCompShow(tknEnd - tknStart, items);
+    m_LastACLaunchState[lsTknStart] = tknStart;
+    m_LastACLaunchState[lsCaretStart] = tknEnd;
 }
 
 // cbEVT_APP_DEACTIVATED
@@ -493,10 +506,14 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         {
             cbStyledTextCtrl* stc = ed->GetControl();
             if (stc->CallTipActive())
-                static_cast<wxScintilla*>(stc)->CallTipCancel();
-            if (m_CallTipActive != wxSCI_INVALID_POSITION)
             {
-                if (CCManagerHelper::IsPosVisible(m_CallTipActive, stc))
+                static_cast<wxScintilla*>(stc)->CallTipCancel();
+                if (m_CallTipActive != wxSCI_INVALID_POSITION && CCManagerHelper::IsPosVisible(m_CallTipActive, stc))
+                    m_CallTipTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+            }
+            else if (m_CallTipTimer.IsRunning())
+            {
+                if (CCManagerHelper::IsPosVisible(stc->GetCurrentPos(), stc))
                     m_CallTipTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
                 else
                 {
@@ -504,7 +521,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
                     m_CallTipActive = wxSCI_INVALID_POSITION;
                 }
             }
-            else if (m_AutoLaunchTimer.IsRunning())
+            if (m_AutoLaunchTimer.IsRunning())
             {
                 if (CCManagerHelper::IsPosVisible(stc->GetCurrentPos(), stc))
                     m_AutoLaunchTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
@@ -527,7 +544,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         {
             case wxSCI_KEY_LEFT:
             case wxSCI_KEY_RIGHT:
-                if (!stc->CallTipActive())
+                if (!stc->CallTipActive() && !stc->AutoCompActive())
                     m_CallTipActive = wxSCI_INVALID_POSITION;
                 // fall through
             case wxSCI_KEY_UP:
@@ -544,8 +561,11 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     {
         if (event.GetModificationType() & wxSCI_PERFORMED_UNDO)
         {
-            if (m_CallTipActive != wxSCI_INVALID_POSITION)
+            cbStyledTextCtrl* stc = ed->GetControl();
+            if (m_CallTipActive != wxSCI_INVALID_POSITION && stc->GetCurrentPos() >= m_CallTipActive)
                 m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+            else
+                static_cast<wxScintilla*>(stc)->CallTipCancel();
         }
     }
     else if (evtType == wxEVT_SCI_AUTOCOMP_SELECTION)
@@ -635,7 +655,7 @@ void CCManager::OnAutocompleteHide(wxShowEvent& event)
     wxObject* evtObj = event.GetEventObject();
     if (evtObj)
         static_cast<wxWindow*>(evtObj)->Disconnect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
-    if (m_CallTipActive != wxSCI_INVALID_POSITION)
+    if (m_CallTipActive != wxSCI_INVALID_POSITION && !m_AutoLaunchTimer.IsRunning())
         m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
 }
 
@@ -688,6 +708,27 @@ void CCManager::OnTimer(wxTimerEvent& event)
     }
     else // ?!
         event.Skip();
+}
+
+void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
+{
+    //stc->AutoCompPosStart()
+    if (stc->AutoCompActive())
+        return;
+    wxString items;
+    items.Alloc(m_AutocompTokens.size() * 20);
+    for (size_t i = 0; i < m_AutocompTokens.size(); ++i)
+    {
+        items += m_AutocompTokens[i].displayName;
+        if (m_AutocompTokens[i].category == -1)
+            items += wxT("\r");
+        else
+            items += F(wxT("\n%d\r"), m_AutocompTokens[i].category);
+    }
+    items.RemoveLast();
+    if (!stc->CallTipActive())
+        m_CallTipActive = wxSCI_INVALID_POSITION;
+    stc->AutoCompShow(m_LastACLaunchState[lsCaretStart] - m_LastACLaunchState[lsTknStart], items);
 }
 
 void CCManager::DoShowDocumentation(cbEditor* ed)

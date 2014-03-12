@@ -41,6 +41,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void OnHtmlLink(wxHtmlLinkEvent& event);
         void OnTimer(wxTimerEvent& event);
 
+        void DoBufferedCC(cbStyledTextCtrl* stc);
         void DoShowDocumentation(cbEditor* ed);
         /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
@@ -60,6 +61,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         cbCodeCompletionPlugin* m_pLastCCPlugin;
         UnfocusablePopupWindow* m_pPopup;
         wxHtmlWindow* m_pHtml;
+        int m_LastACLaunchState[2];
         std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens;
 };
 

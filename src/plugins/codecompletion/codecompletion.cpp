@@ -279,7 +279,7 @@ namespace CodeCompletionHelper
 
     static wxString AutocompGetName(const wxString& selected)
     {
-        size_t nameEnd = selected.find_first_of(_T("(: \n"));
+        size_t nameEnd = selected.find_first_of(_T("(: "));
         return selected.substr(0,nameEnd);
     }
 
