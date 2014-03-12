@@ -9,9 +9,9 @@
 
 #include "sdk_precomp.h"
 
-#include <wx/html/htmlwin.h>
-
 #include "ccmanager.h"
+
+#include <wx/html/htmlwin.h>
 
 #include "cbstyledtextctrl.h"
 #include "editor_hooks.h"
@@ -433,18 +433,14 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
         return;
 
     cbStyledTextCtrl* stc = ed->GetControl();
-    if (stc->CallTipActive() && event.GetExtraLong() == 0 && m_CallTipActive == wxSCI_INVALID_POSITION)
-        static_cast<wxScintilla*>(stc)->CallTipCancel();
-
     cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
-    if (!ccPlugin)
-        return;
-
     int pos = stc->PositionFromPointClose(event.GetX(), event.GetY());
-    if (pos < 0 || pos >= stc->GetLength())
+    if (!ccPlugin || pos < 0 || pos >= stc->GetLength())
+    {
+        if (stc->CallTipActive() && event.GetExtraLong() == 0 && m_CallTipActive == wxSCI_INVALID_POSITION)
+            static_cast<wxScintilla*>(stc)->CallTipCancel();
         return;
-
-    m_CallTipActive = wxSCI_INVALID_POSITION;
+    }
 
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
@@ -455,19 +451,35 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     wxStringVec tips(uniqueTips.begin(), uniqueTips.end());
 
     const int style = event.GetInt();
-    if (  tips.empty()
-        && !(   stc->IsString(style)
-             || stc->IsComment(style)
-             || stc->IsCharacter(style)
-             || stc->IsPreprocessor(style) ) )
+    if (!tips.empty())
+    {
+        const int tknStart = stc->WordStartPosition(pos, true);
+        const int tknEnd   = stc->WordEndPosition(pos,   true);
+        if (tknEnd - tknStart > 4)
+        {
+            hlStart = tips[0].Find(stc->GetTextRange(tknStart, tknEnd));
+            if (hlStart != wxNOT_FOUND)
+                hlEnd = hlStart + tknEnd - tknStart;
+        }
+    }
+    else if (!(   stc->IsString(style)
+               || stc->IsComment(style)
+               || stc->IsCharacter(style)
+               || stc->IsPreprocessor(style) ))
     {
         tips = ccPlugin->GetCallTips(pos, style, ed, hlStart, hlEnd, argsPos);
     }
-    if (!tips.empty())
+    if (tips.empty())
+    {
+        if (stc->CallTipActive() && event.GetExtraLong() == 0 && m_CallTipActive == wxSCI_INVALID_POSITION)
+            static_cast<wxScintilla*>(stc)->CallTipCancel();
+    }
+    else
     {
         DoShowTips(tips, stc, pos, argsPos, hlStart, hlEnd);
         event.SetExtraLong(1);
     }
+    m_CallTipActive = wxSCI_INVALID_POSITION;
 }
 
 void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
@@ -821,7 +833,9 @@ void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int p
     else
         argsPos = std::min(CCManagerHelper::FindColumn(line, stc->GetColumn(argsPos), stc), stc->WordStartPosition(pos, true));
     int offset = stc->PointFromPosition(stc->PositionFromLine(line)).x > marginWidth ? 0 : 2;
-    stc->CallTipShow(std::max(argsPos, stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset), tip);
+    pos = std::max(argsPos, stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset);
+    pos = std::min(pos, stc->GetLineEndPosition(line)); // do not go to next line
+    stc->CallTipShow(pos, tip);
     if (hlStart >= 0 && hlEnd > hlStart)
         stc->CallTipSetHighlight(hlStart, hlEnd);
 }
