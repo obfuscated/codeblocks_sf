@@ -45,6 +45,7 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						cbthreadpool.cpp \
 						cbtreectrl.cpp \
 						cbworkspace.cpp \
+						ccmanager.cpp \
 						compileoptionsbase.cpp \
 						compiler.cpp \
 						compilercommandgenerator.cpp \
