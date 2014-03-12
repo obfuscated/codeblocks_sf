@@ -12,6 +12,7 @@
 #include "ccmanager.h"
 
 #include <wx/html/htmlwin.h>
+#include <wx/display.h>
 
 #include "cbstyledtextctrl.h"
 #include "editor_hooks.h"
@@ -670,6 +671,14 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
         m_DocSize.x = edRect.width * 5 / 12;
         m_DocSize.y = acMaxHeight*textHeight;
         evtWin->Connect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
+
+        const int idx = wxDisplay::GetFromWindow(evtWin);
+        if (idx != wxNOT_FOUND)
+        {
+            const wxPoint& corner = m_pPopup->GetParent()->ScreenToClient(wxDisplay(idx).GetGeometry().GetBottomRight());
+            m_DocSize.y = std::max(5 * textHeight,      std::min(m_DocSize.y, corner.y - m_DocPos.y - 2));
+            m_DocSize.x = std::max(m_DocSize.y * 2 / 3, std::min(m_DocSize.x, corner.x - m_DocPos.x - 2));
+        }
     }
 }
 
