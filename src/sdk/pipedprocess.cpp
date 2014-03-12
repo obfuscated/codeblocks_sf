@@ -16,7 +16,7 @@
     #include "globals.h"
 #endif
 
-// The folowing class is created to override wxTextStream::ReadLine()
+// The following class is created to override wxTextStream::ReadLine()
 class cbTextInputStream : public wxTextInputStream
 {
     protected:
@@ -39,7 +39,7 @@ class cbTextInputStream : public wxTextInputStream
         ~cbTextInputStream(){}
 
 
-        // The folowing function was copied verbatim from wxTextStream::NextChar()
+        // The following function was copied verbatim from wxTextStream::NextChar()
         // The only change, is the removal of the MB2WC function
         // With PipedProcess we work with compilers/debuggers which (usually) don't
         // send us unicode (at least GDB).
@@ -76,7 +76,7 @@ class cbTextInputStream : public wxTextInputStream
         #endif
         }
 
-        // The folowing function was copied verbatim from wxTextStream::ReadLine()
+        // The following function was copied verbatim from wxTextStream::ReadLine()
         // The only change, is the addition of m_input.CanRead() in the while()
         wxString ReadLine()
         {
