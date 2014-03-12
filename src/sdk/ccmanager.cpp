@@ -42,9 +42,19 @@ namespace CCManagerHelper
 template<> CCManager* Mgr<CCManager>::instance = 0;
 template<> bool Mgr<CCManager>::isShutdown = false;
 
+const int idCallTipTimer = wxNewId();
+
+// milliseconds
+#define CALLTIP_REFRESH_DELAY 90
+
+#define FROM_TIMER 1
+
 // class constructor
 CCManager::CCManager() :
-    m_pLastEditor(nullptr), m_pLastCCPlugin(nullptr)
+    m_CallTipActive(wxSCI_INVALID_POSITION),
+    m_CallTipTimer(this, idCallTipTimer),
+    m_pLastEditor(nullptr),
+    m_pLastCCPlugin(nullptr)
 {
     const wxString ctChars = wxT(",;\n()");
     for (size_t i = 0; i < ctChars.Length(); ++i)
@@ -55,6 +65,7 @@ CCManager::CCManager() :
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,     new CCEvent(this, &CCManager::OnEditorTooltip));
     Manager::Get()->RegisterEventSink(cbEVT_SHOW_CALL_TIP,      new CCEvent(this, &CCManager::OnShowCallTip));
     m_EditorHookID = EditorHooks::RegisterHook(new EditorHooks::HookFunctor<CCManager>(this, &CCManager::OnEditorHook));
+    Connect(idCallTipTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
 }
 
 // class destructor
@@ -62,6 +73,7 @@ CCManager::~CCManager()
 {
     Manager::Get()->RemoveAllEventSinksFor(this);
     EditorHooks::UnregisterHook(m_EditorHookID, true);
+    Disconnect(idCallTipTimer);
 }
 
 cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
@@ -92,6 +104,7 @@ void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
         cbStyledTextCtrl* stc = ed->GetControl();
         if (stc->CallTipActive())
             stc->CallTipCancel();
+        m_CallTipActive = wxSCI_INVALID_POSITION;
     }
     event.Skip();
 }
@@ -104,6 +117,7 @@ void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
         cbStyledTextCtrl* stc = ed->GetControl();
         if (stc->CallTipActive())
             stc->CallTipCancel();
+        m_CallTipActive = wxSCI_INVALID_POSITION;
     }
     event.Skip();
 }
@@ -111,6 +125,7 @@ void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
 void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 {
     event.Skip();
+    m_CallTipActive = wxSCI_INVALID_POSITION;
 
     if (wxGetKeyState(WXK_CONTROL))
         return;
@@ -146,13 +161,34 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 
 void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
 {
-    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
+    wxEventType evtType = event.GetEventType();
+    if (evtType == wxEVT_SCI_CHARADDED)
     {
         const wxChar ch = event.GetKey();
         if (m_CallTipChars.find(ch) != m_CallTipChars.end())
         {
             CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
             Manager::Get()->ProcessEvent(evt);
+        }
+    }
+    else if (evtType == wxEVT_SCI_KEY)
+    {
+        cbStyledTextCtrl* stc = ed->GetControl();
+        switch (event.GetKey())
+        {
+            case wxSCI_KEY_LEFT:
+            case wxSCI_KEY_RIGHT:
+                if (!stc->CallTipActive())
+                    m_CallTipActive = wxSCI_INVALID_POSITION;
+                // fall through
+            case wxSCI_KEY_UP:
+            case wxSCI_KEY_DOWN:
+                if (m_CallTipActive != wxSCI_INVALID_POSITION)
+                    m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+                break;
+
+            default:
+                break;
         }
     }
     event.Skip();
@@ -174,8 +210,31 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
     const wxStringVec& tips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), hlStart, hlEnd, argsPos, ed);
-    if (!tips.empty())
-        DoShowTips(tips, stc, pos, argsPos, hlStart, hlEnd);
+    if (!tips.empty() && (event.GetInt() != FROM_TIMER || argsPos == m_CallTipActive))
+    {
+        int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
+        while (wxIsspace(stc->GetCharAt(lnStart)))
+            ++lnStart; // do not show too far left on multi-line call tips
+        DoShowTips(tips, stc, std::max(pos, lnStart), argsPos, hlStart, hlEnd);
+        m_CallTipActive = argsPos;
+    }
+    else if (m_CallTipActive != wxSCI_INVALID_POSITION)
+    {
+        stc->CallTipCancel();
+        m_CallTipActive = wxSCI_INVALID_POSITION;
+    }
+}
+
+void CCManager::OnTimer(wxTimerEvent& event)
+{
+    if (event.GetId() == idCallTipTimer)
+    {
+        CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+        evt.SetInt(FROM_TIMER);
+        Manager::Get()->ProcessEvent(evt);
+    }
+    else // ?!
+        event.Skip();
 }
 
 void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd)

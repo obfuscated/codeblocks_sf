@@ -8,7 +8,7 @@
 
 #include "manager.h"
 
-class DLLIMPORT CCManager : public Mgr<CCManager>
+class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 {
     public:
         friend class Mgr<CCManager>;
@@ -22,16 +22,19 @@ class DLLIMPORT CCManager : public Mgr<CCManager>
 
         void OnDeactivateApp(CodeBlocksEvent& event);
         void OnDeactivateEd(CodeBlocksEvent& event);
+        void OnEditorHook(cbEditor* ed, wxScintillaEvent& event);
         /** mouse hover event */
         void OnEditorTooltip(CodeBlocksEvent& event);
-        void OnEditorHook(cbEditor* ed, wxScintillaEvent& event);
         /** event handler to show the call tip, when user press Ctrl-Shift-Space */
         void OnShowCallTip(CodeBlocksEvent& event);
+        void OnTimer(wxTimerEvent& event);
 
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
         std::set<wxChar> m_CallTipChars;
         int m_EditorHookID;
+        int m_CallTipActive;
+        wxTimer m_CallTipTimer;
         cbEditor* m_pLastEditor;
         cbCodeCompletionPlugin* m_pLastCCPlugin;
 };

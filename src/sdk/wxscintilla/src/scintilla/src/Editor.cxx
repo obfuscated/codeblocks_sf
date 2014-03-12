@@ -5794,7 +5794,15 @@ int Editor::KeyDownWithModifiers(int key, int modifiers, bool *consumed) {
 }
 
 int Editor::KeyDown(int key, bool shift, bool ctrl, bool alt, bool *consumed) {
-	return KeyDownWithModifiers(key, ModifierFlags(shift, ctrl, alt), consumed);
+	int modifiers = ModifierFlags(shift, ctrl, alt);
+/* C::B begin */
+	SCNotification scn; memset(&scn, 0x00, sizeof(scn));
+	scn.nmhdr.code = SCN_KEY;
+	scn.ch = key;
+	scn.modifiers = modifiers;
+	NotifyParent(scn);
+/* C::B end */
+	return KeyDownWithModifiers(key, modifiers, consumed);
 }
 
 void Editor::Indent(bool forwards) {
