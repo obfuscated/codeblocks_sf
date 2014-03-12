@@ -818,10 +818,10 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           *
           * CCManager takes care of calling this during most relevant situations. If the
           * autocompletion mechanism is required at a time that CCManager does not initiate, call
-            @code
-            CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
-            Manager::Get()->ProcessEvent(evt);
-            @endcode
+          * @code
+          * CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
+          * Manager::Get()->ProcessEvent(evt);
+          * @endcode
           *
           * @param isAuto Passed as @c true if autocompletion was launched by typing an 'interesting'
           *               character such as '<tt>&gt;</tt>' (for '<tt>-&gt;</tt>'). It is the plugin's job
@@ -852,10 +852,10 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * The output parameter @c argsPos is required to be set to the same (but unique) position
           * for each unique calltip. This position is the location corresponding to the beginning of
           * the argument list:
-            @code
-            int endOfWord = stc->WordEndPosition(pos, true);
-                                                ^
-            @endcode
+          * @code
+          * int endOfWord = stc->WordEndPosition(pos, true);
+          *                                     ^
+          * @endcode
           * @c hlStart and @c hlEnd are are the indices of the range of text to be highlighted.
           *
           * @param pos The location in the editor that the calltip is requested for.
@@ -864,7 +864,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * @param ed The context of this calltip request.
           * @param[out] hlStart The character offset to begin highlighting at. Optional.
           * @param[out] hlEnd The character offset to end highlighting at. Optional.
-          * @param[out] argsPos The location in the editor of the beginning of the argument list. Required.
+          * @param[out] argsPos The location in the editor of the beginning of the argument list. @em Required.
           * @return Each entry in this vector is guaranteed a new line in the calltip. CCManager will
           *         decide if lines should be further split (for formatting to fit the monitor).
           */
@@ -874,44 +874,52 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           *
           * The token(s) returned by this function are used to display tooltips.
           *
-          * @param pos int
-          * @param ed cbEditor*
-          * @return A list of the token(s) that match the specified location.
+          * @param pos The location being queried.
+          * @param ed The context of the request.
+          * @return A list of the token(s) that match the specified location, an empty vector if none.
           */
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
 
-        /** @brief
+        /** @brief Callback to handle a click on a link in the documentation popup.
          *
-         * @param event wxHtmlLinkEvent&
-         * @param dismissPopup bool& is false by default
-         * @return wxString
+         * Handle a link command by, for example, showing the definition of a member function, or opening
+         * an editor to the location of the declaration.
+         *
+         * @param event The generated event (it is the plugin's responsibility to Skip(), if desired).
+         * @param[out] dismissPopup If set to true, the popup will be hidden.
+         * @return If non-empty, the popup's content will be set to this html formatted string.
          */
         virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup) = 0;
-        // callbacks for actually autocompleting/writing the token to the editor
-        /** @brief
+
+        /** @brief Callback for inserting the selected autocomplete entry into the editor.
           *
-          * Override for different @c wxEVT_SCI_AUTOCOMP_SELECTION behaviour.
+          * The default implementation executes (wx)Scintilla's insert. Override and call
+          * @c ed->GetControl()->AutoCompCancel() for different @c wxEVT_SCI_AUTOCOMP_SELECTION behaviour.
           *
-          * @param token const CCToken&
-          * @param ed cbEditor*
+          * @param token The CCToken corresponding to the selected entry.
+          * @param ed The editor to operate in.
           */
         virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
 
-        /** @brief
+        /** @brief Callback for inserting the selected autocomplete entry into the editor.
           *
-          * Creates a CCToken and passes it to <tt>DoAutocomplete(const CCToken&, cbEditor*)</tt><br>
+          * This function is only called if CCManager fails to retrieve the CCToken associated with the
+          * selection (which should never happen). The default implementation creates a CCToken and passes
+          * it to <tt>DoAutocomplete(const CCToken&, cbEditor*)</tt><br>
           * Override for different behaviour.
           *
-          * @param token const wxString&
-          * @param ed cbEditor*
+          * @param token A string corresponding to the selected entry.
+          * @param ed The editor to operate in.
           */
         virtual void DoAutocomplete(const wxString& token, cbEditor* ed);
 
     protected:
-        /** @brief
+        /** @brief Has this plugin been selected to provide content for the editor.
           *
-          * @param ed cbEditor*
-          * @return bool
+          * Convenience function; asks CCManager if this plugin is granted jurisdiction over the editor.
+          *
+          * @param ed The editor to check.
+          * @return Is provider for the editor.
           */
         bool IsProviderFor(cbEditor* ed);
 };
