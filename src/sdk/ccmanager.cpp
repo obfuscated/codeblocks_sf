@@ -62,6 +62,17 @@ namespace CCManagerHelper
         return !(dist < 0 || dist > stc->LinesOnScreen()); // caret is off screen
     }
 
+    static int CallTipToInt(const wxString& firstTip, int numPages)
+    {
+        int val = 33 * firstTip.Length() ^ numPages;
+        for (wxString::const_iterator itr = firstTip.begin();
+             itr != firstTip.end(); ++itr)
+        {
+            val = 33 * val ^ (*itr);
+        }
+        return val;
+    }
+
     // (shamelessly stolen from mime handler plugin ;) )
     // build all HTML font sizes (1..7) from the given base size
     static void BuildFontSizes(int *sizes, int size)
@@ -742,13 +753,22 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         while (wxIsspace(stc->GetCharAt(lnStart)))
             ++lnStart; // do not show too far left on multi-line call tips
         m_CurCallTip = m_CallTips.begin();
-        for (CallTipVec::const_iterator itr = m_CallTips.begin();
-             itr != m_CallTips.end(); ++itr)
+        if (m_CallTips.size() > 1)
         {
-            if (itr->tip == curTip)
+            // search long term recall
+            std::map<int, size_t>::const_iterator choiceItr =
+                m_CallTipChoiceDict.find(CCManagerHelper::CallTipToInt(m_CurCallTip->tip, m_CallTips.size()));
+            if (choiceItr != m_CallTipChoiceDict.end() && choiceItr->second < m_CallTips.size())
+                m_CurCallTip += choiceItr->second;
+            // search short term recall
+            for (CallTipVec::const_iterator itr = m_CallTips.begin();
+                 itr != m_CallTips.end(); ++itr)
             {
-                m_CurCallTip = itr;
-                break;
+                if (itr->tip == curTip)
+                {
+                    m_CurCallTip = itr;
+                    break;
+                }
             }
         }
         m_CallTipActive = argsPos;
@@ -1005,6 +1025,8 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
             ++offset;
         }
         tips.push_back(wxString::Format(wxT("(%d/%u)"), m_CurCallTip - m_CallTips.begin() + 1, m_CallTips.size()));
+        // store for better first choice later
+        m_CallTipChoiceDict[CCManagerHelper::CallTipToInt(m_CallTips.front().tip, m_CallTips.size())] = m_CurCallTip - m_CallTips.begin();
     }
     cbStyledTextCtrl* stc = ed->GetControl();
     int pos = stc->GetCurrentPos();
