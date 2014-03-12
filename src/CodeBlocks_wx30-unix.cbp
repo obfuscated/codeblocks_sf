@@ -648,6 +648,9 @@
 		<Unit filename="include/cbworkspace.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/ccmanager.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/compileoptionsbase.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2352,6 +2355,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/cbworkspace.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/ccmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/compileoptionsbase.cpp">
