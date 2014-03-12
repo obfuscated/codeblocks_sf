@@ -759,39 +759,147 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 #endif // 0
 
         //---------------------------------------------------------------------//
+        /** Level of functionality a CC plugin is able to provide. */
         enum CCProviderStatus
         {
-            ccpsInactive,
-            ccpsActive,
-            ccpsUniversal
+            ccpsInactive, //!< CC plugin provides no functionality.
+            ccpsActive,   //!< CC plugin provides specialized functionality.
+            ccpsUniversal //!< CC plugin provides generic functionality.
         };
 
+        /** Structure representing a generic token, passed between CC plugins and CCManager. */
         struct CCToken
         {
+            /** @brief Convenience constructor.
+              *
+              * Represents a generic token, passed between CC plugins and CCManager.
+              *
+              * @param _id Internal identifier for a CC plugin to reference the token in its data structure.
+              * @param dispNm The string CCManager will use to display this token.
+              * @param categ The category corresponding to the index of the registered image (during autocomplete).
+              *              Negative values are reserved for CCManager.
+              */
             CCToken(int _id, const wxString& dispNm, int categ = -1) :
                 id(_id), category(categ), weight(5), displayName(dispNm), name(dispNm) {}
+
+            /** @brief Construct a fully specified CCToken.
+              *
+              * Represents a generic token, passed between CC plugins and CCManager.
+              *
+              * @param _id Internal identifier for a CC plugin to reference the token in its data structure.
+              * @param dispNm The verbose string CCManager will use to display this token.
+              * @param nm Minimal name of the token that CCManager may choose to display in restricted circumstances.
+              * @param _weight Lower numbers are placed earlier in listing, 5 is default; try to keep 0-10.
+              * @param categ The category corresponding to the index of the registered image (during autocomplete).
+              *              Negative values are reserved for CCManager.
+              */
             CCToken(int _id, const wxString& dispNm, const wxString& nm, int _weight, int categ = -1) :
                 id(_id), category(categ), weight(_weight), displayName(dispNm), name(nm) {}
-            int id;
-            int category;
-            int weight; // lower numbers are placed earlier, 5 is default; try to keep 0-10
-            wxString displayName;
-            wxString name;
+
+            int id;               //!< CCManager will pass this back unmodified. Use it as an internal identifier for the token.
+            int category;         //!< The category corresponding to the index of the registered image (during autocomplete).
+            int weight;           //!< Lower numbers are placed earlier in listing, 5 is default; try to keep 0-10.
+            wxString displayName; //!< Verbose string representing the token.
+            wxString name;        //!< Minimal name of the token.
         };
 
+        /** @brief Does this plugin handle code completion for the editor <tt>ed</tt>?
+          *
+          * The plugin should check the lexer, the <tt>HighlightLanguage</tt>, the file extension,
+          * or some combination of these. Do @em not call @c CCManager::GetProviderFor()
+          * from this function.
+          *
+          * @param ed The editor being checked.
+          * @return The level of functionality this plugin is able to supply.
+          */
         virtual CCProviderStatus GetProviderStatusFor(cbEditor* ed) = 0;
+
+        /** @brief Supply content for the autocompletion list.
+          *
+          * CCManager takes care of calling this during most relevant situations. If the
+          * autocompletion mechanism is required at a time that CCManager does not initiate, call
+            @code
+            CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
+            Manager::Get()->ProcessEvent(evt);
+            @endcode
+          *
+          * @param isAuto Passed as @c true if autocompletion was launched by typing an 'interesting'
+          *               character such as '<tt>&gt;</tt>' (for '<tt>-&gt;</tt>'). It is the plugin's job
+          *               to filter out incorrect calls of this.
+          * @param ed The context of this codecompletion call.
+          * @param[in,out] tknStart The assumed beginning of the token to be autocompleted. Change this variable
+          *                         if the plugin calculates a different starting location.
+          * @param[in,out] tknEnd The current position/end of the known part of the token to be completed. The
+          *                       plugin is allowed to change this (but it is not recommended).
+          * @return Completable tokens, or empty vector to cancel autocompletion.
+          */
         virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd) = 0;
-        /// returns html
+
+        /** @brief Supply html formatted documentation for the passed token.
+          *
+          * @param token The token to document.
+          * @return Either an html document or an empty string (if no documentation available).
+          */
         virtual wxString GetDocumentation(const CCToken& token) = 0;
+
+        /** @brief
+          *
+            @code
+            int endOfWord = stc->WordEndPosition(pos, true);
+                                                ^
+            @endcode
+          *
+          * @param pos int
+          * @param style int
+          * @param ed cbEditor*
+          * @param[out] hlStart
+          * @param[out] hlEnd
+          * @param[out] argsPos Required
+          * @return wxStringVec
+          */
         virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos) = 0;
+
+        /** @brief
+          *
+          * @param pos int
+          * @param ed cbEditor*
+          * @return std::vector\<CCToken\>
+          */
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
-        /// dismissPopup is false by default
+
+        /** @brief
+         *
+         * @param event wxHtmlLinkEvent&
+         * @param dismissPopup bool& is false by default
+         * @return wxString
+         */
         virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup) = 0;
-        /// callbacks for actually autocompleting/writing the token to the editor
-        virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);  // override for different wxEVT_SCI_AUTOCOMP_SELECTION behaviour
-        virtual void DoAutocomplete(const wxString& token, cbEditor* ed); // default creates a CCToken and passes it to the overload
+        // callbacks for actually autocompleting/writing the token to the editor
+        /** @brief
+          *
+          * Override for different @c wxEVT_SCI_AUTOCOMP_SELECTION behaviour.
+          *
+          * @param token const CCToken&
+          * @param ed cbEditor*
+          */
+        virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
+
+        /** @brief
+          *
+          * Creates a CCToken and passes it to <tt>DoAutocomplete(const CCToken&, cbEditor*)</tt><br>
+          * Override for different behaviour.
+          *
+          * @param token const wxString&
+          * @param ed cbEditor*
+          */
+        virtual void DoAutocomplete(const wxString& token, cbEditor* ed);
 
     protected:
+        /** @brief
+          *
+          * @param ed cbEditor*
+          * @return bool
+          */
         bool IsProviderFor(cbEditor* ed);
 };
 
