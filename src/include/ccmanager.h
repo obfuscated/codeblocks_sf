@@ -25,11 +25,14 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void OnCompleteCode(CodeBlocksEvent& event);
         void OnDeactivateApp(CodeBlocksEvent& event);
         void OnDeactivateEd(CodeBlocksEvent& event);
+        void OnEditorOpen(CodeBlocksEvent& event);
+        void OnEditorClose(CodeBlocksEvent& event);
         void OnEditorHook(cbEditor* ed, wxScintillaEvent& event);
         /** mouse hover event */
         void OnEditorTooltip(CodeBlocksEvent& event);
         /** event handler to show the call tip, when user press Ctrl-Shift-Space */
         void OnShowCallTip(CodeBlocksEvent& event);
+        void OnAutocompleteSelect(wxListEvent& event);
         void OnTimer(wxTimerEvent& event);
 
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
@@ -39,10 +42,13 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         int m_EditorHookID;
         int m_AutocompPosition;
         int m_CallTipActive;
+        int m_LastAutocompIndex;
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
+        wxTimer m_AutocompSelectTimer;
         cbEditor* m_pLastEditor;
         cbCodeCompletionPlugin* m_pLastCCPlugin;
+        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens;
 };
 
 #endif // CCMANAGER_H

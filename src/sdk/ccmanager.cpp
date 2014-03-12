@@ -44,9 +44,11 @@ template<> bool Mgr<CCManager>::isShutdown = false;
 
 const int idCallTipTimer = wxNewId();
 const int idAutoLaunchTimer = wxNewId();
+const int idAutocompSelectTimer = wxNewId();
 
 // milliseconds
 #define CALLTIP_REFRESH_DELAY 90
+#define AUTOCOMP_SELECT_DELAY 35
 
 #define FROM_TIMER 1
 
@@ -54,8 +56,10 @@ const int idAutoLaunchTimer = wxNewId();
 CCManager::CCManager() :
     m_AutocompPosition(wxSCI_INVALID_POSITION),
     m_CallTipActive(wxSCI_INVALID_POSITION),
+    m_LastAutocompIndex(wxNOT_FOUND),
     m_CallTipTimer(this, idCallTipTimer),
     m_AutoLaunchTimer(this, idAutoLaunchTimer),
+    m_AutocompSelectTimer(this, idAutocompSelectTimer),
     m_pLastEditor(nullptr),
     m_pLastCCPlugin(nullptr)
 {
@@ -70,12 +74,15 @@ CCManager::CCManager() :
     typedef cbEventFunctor<CCManager, CodeBlocksEvent> CCEvent;
     Manager::Get()->RegisterEventSink(cbEVT_APP_DEACTIVATED,    new CCEvent(this, &CCManager::OnDeactivateApp));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new CCEvent(this, &CCManager::OnDeactivateEd));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN,        new CCEvent(this, &CCManager::OnEditorOpen));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE,       new CCEvent(this, &CCManager::OnEditorClose));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,     new CCEvent(this, &CCManager::OnEditorTooltip));
     Manager::Get()->RegisterEventSink(cbEVT_SHOW_CALL_TIP,      new CCEvent(this, &CCManager::OnShowCallTip));
     Manager::Get()->RegisterEventSink(cbEVT_COMPLETE_CODE,      new CCEvent(this, &CCManager::OnCompleteCode));
     m_EditorHookID = EditorHooks::RegisterHook(new EditorHooks::HookFunctor<CCManager>(this, &CCManager::OnEditorHook));
-    Connect(idCallTipTimer,    wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
-    Connect(idAutoLaunchTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(idCallTipTimer,        wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(idAutoLaunchTimer,     wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(idAutocompSelectTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
 }
 
 // class destructor
@@ -84,6 +91,8 @@ CCManager::~CCManager()
     Manager::Get()->RemoveAllEventSinksFor(this);
     EditorHooks::UnregisterHook(m_EditorHookID, true);
     Disconnect(idCallTipTimer);
+    Disconnect(idAutoLaunchTimer);
+    Disconnect(idAutocompSelectTimer);
 }
 
 cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
@@ -145,13 +154,13 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     int tknEnd = stc->GetCurrentPos();
     int tknStart = stc->WordStartPosition(tknEnd, true);
 
-    std::vector<cbCodeCompletionPlugin::CCToken> tokens = ccPlugin->GetAutocompList(event.GetInt() == FROM_TIMER,
-                                                                                    ed, tknStart, tknEnd);
-    if (tokens.empty())
+    m_AutocompTokens = ccPlugin->GetAutocompList(event.GetInt() == FROM_TIMER,
+                                                 ed, tknStart, tknEnd);
+    if (m_AutocompTokens.empty())
         return;
 
     TokenSorter sortFunctor;
-    std::sort(tokens.begin(), tokens.end(), sortFunctor);
+    std::sort(m_AutocompTokens.begin(), m_AutocompTokens.end(), sortFunctor);
     if (sortFunctor.isPureAlphabetical)
         stc->AutoCSetOrder(wxSCI_ORDER_PRESORTED);
     else
@@ -159,9 +168,9 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     stc->AutoCompSetSeparator(wxT('|'));
     wxString items;
     // experimentally, the average length per token seems to be 23 for the main CC plugin
-    items.Alloc(tokens.size() * 20); // TODO: measure performance
-    for (size_t i = 0; i < tokens.size(); ++i)
-        items += tokens[i].displayName + wxT("|");
+    items.Alloc(m_AutocompTokens.size() * 20); // TODO: measure performance
+    for (size_t i = 0; i < m_AutocompTokens.size(); ++i)
+        items += m_AutocompTokens[i].displayName + wxT("|");
     items.RemoveLast();
 
     stc->AutoCompSetIgnoreCase(true);
@@ -195,6 +204,29 @@ void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
         m_CallTipActive = wxSCI_INVALID_POSITION;
     }
     event.Skip();
+}
+
+// cbEVT_EDITOR_OPEN
+void CCManager::OnEditorOpen(CodeBlocksEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+    if (ed)
+    {
+        ed->GetControl()->Connect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
+                                  wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
+    }
+}
+
+// cbEVT_EDITOR_CLOSE
+void CCManager::OnEditorClose(CodeBlocksEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+    if (ed && ed->GetControl())
+    {
+        // TODO: is this ever called?
+        ed->GetControl()->Disconnect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
+                                     wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
+    }
 }
 
 // cbEVT_EDITOR_TOOLTIP
@@ -297,6 +329,22 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
                 break;
         }
     }
+    else if (evtType == wxEVT_SCI_AUTOCOMP_SELECTION)
+    {
+        cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
+        if (ccPlugin)
+        {
+            if (   m_LastAutocompIndex != wxNOT_FOUND
+                && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
+            {
+                ccPlugin->DoAutocomplete(m_AutocompTokens[m_LastAutocompIndex], ed);
+            }
+            else
+            {
+                ccPlugin->DoAutocomplete(event.GetText(), ed);
+            }
+        }
+    }
     event.Skip();
 }
 
@@ -332,6 +380,12 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     }
 }
 
+void CCManager::OnAutocompleteSelect(wxListEvent& event)
+{
+    event.Skip();
+    m_AutocompSelectTimer.Start(AUTOCOMP_SELECT_DELAY, wxTIMER_ONE_SHOT);
+}
+
 void CCManager::OnTimer(wxTimerEvent& event)
 {
     if (event.GetId() == idCallTipTimer)
@@ -350,6 +404,17 @@ void CCManager::OnTimer(wxTimerEvent& event)
             Manager::Get()->ProcessEvent(evt);
         }
         m_AutocompPosition = wxSCI_INVALID_POSITION;
+    }
+    else if (event.GetId() == idAutocompSelectTimer)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (ed)
+        {
+            cbStyledTextCtrl* stc = ed->GetControl();
+            if (stc->AutoCompActive())
+                m_LastAutocompIndex = stc->AutoCompGetCurrent();
+            // TODO: show documentation window
+        }
     }
     else // ?!
         event.Skip();

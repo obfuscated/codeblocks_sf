@@ -98,6 +98,8 @@ public:
     virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
     virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos);
     virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
+    virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
+    virtual void DoAutocomplete(const wxString& token, cbEditor* ed);
 
     /** get the include paths setting (usually set by user for each C::B project)
      * @param project project info
@@ -209,9 +211,6 @@ private:
     void OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event);
     void OnSystemHeadersThreadError(CodeBlocksThreadEvent& event);
 
-    /** show code suggestion list*/
-    void DoCodeComplete();
-
     void DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly = false);
     void DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor* ed, std::vector<CCToken>& tokens);
     void DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens);
@@ -242,11 +241,6 @@ private:
     void EnableToolbarTools(bool enable = true);
     void DoParseOpenedProjectAndActiveEditor();
 
-    /** Returns token index of autocomplete item; might be -1
-     *  @param itemIndex index to m_AutocompNameIdx; when itemIndex is < 0 then AutoCompGetCurrent will be used
-     */
-    int GetAutocompTokenIdx(int itemIndex = -1);
-
     /** highlight member variables */
     void UpdateEditorSyntax(cbEditor* ed = NULL);
 
@@ -267,12 +261,6 @@ private:
 
     /** delayed running of editor activated event, only the last activated editor should be considered*/
     void OnEditorActivatedTimer(wxTimerEvent& event);
-
-    /** */
-    void OnAutocompleteSelect(wxListEvent& event);
-
-    /** delayed show of documentation to prevent scroll stuttering */
-    void OnAutocompSelectTimer(wxTimerEvent& event);
 
     /** Not used*/
     int                     m_PageIndex;
@@ -303,9 +291,6 @@ private:
     wxTimer                 m_TimerReparsing;
     /** delay after receive editor activated event*/
     wxTimer                 m_TimerEditorActivated;
-
-    wxTimer                 m_TimerAutocompSelect;
-    wxListEvent*            m_LastSelectEvent;
 
     cbEditor*               m_LastEditor;
     int                     m_ActiveCalltipsNest;
@@ -383,12 +368,6 @@ private:
     /** map to record all re-parsing files */
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
     ReparsingMap m_ReparsingMap;
-
-    /** names and token's ids of autocomplete items; filled up in CodeComplete */
-    AutocompNameIdxVec      m_AutocompNameIdx;
-
-    /** which position in autocomplete list was selected? */
-    int                     m_LastAutocompIndex;
 
     /** Popup window to display documentation */
     DocumentationHelper     m_DocHelper;

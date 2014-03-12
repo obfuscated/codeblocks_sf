@@ -1136,7 +1136,8 @@ void DocumentationHelper::OnSelectionChange(wxListEvent& event)
             m_Size.y = acMaxHeight*textHeight;
         }
 
-        int tokenIdx = m_CC->GetAutocompTokenIdx();
+        // compile hack, will remove soon
+        int tokenIdx = -1; //m_CC->GetAutocompTokenIdx();
         TokenTree* tree = m_CC->m_NativeParser.GetParser().GetTokenTree();
 
         ShowDocumentation(GenerateHTML(tokenIdx, tree));

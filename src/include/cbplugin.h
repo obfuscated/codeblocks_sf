@@ -772,6 +772,8 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd) = 0;
         virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos) = 0;
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
+        virtual void DoAutocomplete(const CCToken& token, cbEditor* ed) = 0;
+        virtual void DoAutocomplete(const wxString& token, cbEditor* ed) = 0;
 };
 
 /** @brief Base class for wizard plugins

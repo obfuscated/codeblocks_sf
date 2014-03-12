@@ -279,7 +279,7 @@ namespace CodeCompletionHelper
 
     static wxString AutocompGetName(const wxString& selected)
     {
-        size_t nameEnd = selected.find_first_of(_T("(: "));
+        size_t nameEnd = selected.find_first_of(_T("(: ?"));
         return selected.substr(0,nameEnd);
     }
 
@@ -426,7 +426,6 @@ int idToolbarTimer              = wxNewId();
 int idProjectSavedTimer         = wxNewId();
 int idReparsingTimer            = wxNewId();
 int idEditorActivatedTimer      = wxNewId();
-int idAutocompSelectTimer       = wxNewId();
 
 // milliseconds
 #define REALTIME_PARSING_DELAY    500
@@ -468,8 +467,6 @@ CodeCompletion::CodeCompletion() :
     m_TimerProjectSaved(this, idProjectSavedTimer),
     m_TimerReparsing(this, idReparsingTimer),
     m_TimerEditorActivated(this, idEditorActivatedTimer),
-    m_TimerAutocompSelect(this, idAutocompSelectTimer),
-    m_LastSelectEvent(0),
     m_LastEditor(0),
     m_ActiveCalltipsNest(0),
     m_IsAutoPopup(false),
@@ -492,8 +489,6 @@ CodeCompletion::CodeCompletion() :
     m_CCAutoSelectOne(false),
     m_CCEnableHeaders(false),
     m_SystemHeadersThreadCS(),
-    m_AutocompNameIdx(),
-    m_LastAutocompIndex(-1),
     m_DocHelper(this)
 {
     CCLogger::Get()->Init(this, g_idCCLogger, g_idCCDebugLogger);
@@ -513,7 +508,6 @@ CodeCompletion::CodeCompletion() :
     Connect(idProjectSavedTimer,    wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnProjectSavedTimer)   );
     Connect(idReparsingTimer,       wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnReparsingTimer)      );
     Connect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
-    Connect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
     Connect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED,CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate));
     Connect(idSystemHeadersThreadFinish,    wxEVT_COMMAND_MENU_SELECTED,CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
@@ -532,7 +526,6 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idProjectSavedTimer,    wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnProjectSavedTimer)   );
     Disconnect(idReparsingTimer,       wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnReparsingTimer)      );
     Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
-    Disconnect(idAutocompSelectTimer,  wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnAutocompSelectTimer) );
 
     Disconnect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate));
     Disconnect(idSystemHeadersThreadFinish,    wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
@@ -599,8 +592,6 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
     pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
 
-    m_LastAutocompIndex = -1;
-
     m_DocHelper.OnAttach();
 }
 
@@ -642,9 +633,6 @@ void CodeCompletion::OnRelease(bool appShutDown)
         m_SearchMenu->Delete(idMenuFindReferences);
         m_SearchMenu->Delete(idMenuOpenIncludeFile);
     }
-
-    m_AutocompNameIdx.clear();
-    m_LastAutocompIndex = -1;
 
     m_DocHelper.OnRelease();
 }
@@ -1322,6 +1310,182 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEdito
     return tokens;
 }
 
+void CodeCompletion::DoAutocomplete(const CCToken& token, cbEditor* ed)
+{
+    wxString itemText = CodeCompletionHelper::AutocompGetName(token.displayName);
+    cbStyledTextCtrl* stc = ed->GetControl();
+
+    int curPos = stc->GetCurrentPos();
+    int startPos = stc->WordStartPosition(curPos, true);
+    if (   itemText.GetChar(0) == _T('~') // special handle for dtor
+        && startPos > 0
+        && stc->GetCharAt(startPos - 1) == _T('~'))
+    {
+        --startPos;
+    }
+    const int endPos = stc->WordEndPosition(curPos, true);
+    bool needReparse = false;
+
+    if (stc->IsPreprocessor(stc->GetStyleAt(curPos)))
+    {
+        curPos = stc->GetLineEndPosition(stc->GetCurrentLine()); // delete rest of line
+        bool addComment = (itemText == wxT("endif"));
+        for (int i = stc->GetCurrentPos(); i < curPos; ++i)
+        {
+            if (stc->IsComment(stc->GetStyleAt(i)))
+            {
+                curPos = i; // preserve line comment
+                if (wxIsspace(stc->GetCharAt(i - 1)))
+                    --curPos; // preserve a space before the comment
+                addComment = false;
+                break;
+            }
+        }
+        if (addComment) // search backwards for the #if*
+        {
+            wxRegEx ppIf(wxT("^[ \t]*#[ \t]*if"));
+            wxRegEx ppEnd(wxT("^[ \t]*#[ \t]*endif"));
+            int depth = -1;
+            for (int ppLine = stc->GetCurrentLine() - 1; ppLine >= 0; --ppLine)
+            {
+                if (stc->GetLine(ppLine).Find(wxT('#')) != wxNOT_FOUND) // limit testing due to performance cost
+                {
+                    if (ppIf.Matches(stc->GetLine(ppLine))) // ignore else's, elif's, ...
+                        ++depth;
+                    else if (ppEnd.Matches(stc->GetLine(ppLine)))
+                        --depth;
+                }
+                if (depth == 0)
+                {
+                    wxRegEx pp(wxT("^[ \t]*#[ \t]*[a-z]*([ \t]+([a-zA-Z0-9_]+)|())"));
+                    pp.Matches(stc->GetLine(ppLine));
+                    if (!pp.GetMatch(stc->GetLine(ppLine), 2).IsEmpty())
+                        itemText.Append(wxT(" // ") + pp.GetMatch(stc->GetLine(ppLine), 2));
+                    break;
+                }
+            }
+        }
+        needReparse = true;
+
+        int   pos = startPos;
+        wxChar ch = stc->GetCharAt(pos);
+        while (ch != _T('<') && ch != _T('"') && ch != _T('#') && (pos>0))
+            ch = stc->GetCharAt(--pos);
+        if (ch == _T('<') || ch == _T('"'))
+            startPos = pos + 1;
+
+        if (ch == _T('"'))
+            itemText << _T('"');
+        else if (ch == _T('<'))
+            itemText << _T('>');
+    }
+
+    const wxString alreadyText = stc->GetTextRange(curPos, endPos);
+    if (!alreadyText.IsEmpty() && itemText.EndsWith(alreadyText))
+        curPos = endPos;
+
+    int positionModificator = 0;
+    bool insideParentheses = false;
+    if (token.id != -1 && m_CCAutoAddParentheses)
+    {
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+
+        TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
+        const Token* tkn = tree->at(token.id);
+
+        if (!tkn)
+        {   CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex) }
+        else
+        {
+            bool addParentheses = tkn->m_TokenKind & tkAnyFunction;
+            if (!addParentheses && (tkn->m_TokenKind & tkPreprocessor))
+            {
+                if (tkn->m_Args.size() > 0)
+                    addParentheses = true;
+            }
+            // cache args to avoid locking
+            wxString tokenArgs = tkn->GetStrippedArgs();
+
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+
+            if (addParentheses)
+            {
+                bool insideFunction = true;
+                if (m_CCDetectImplementation)
+                {
+                    ccSearchData searchData = { stc, ed->GetFilename() };
+                    int funcToken;
+                    if (m_NativeParser.FindCurrentFunctionStart(&searchData, 0, 0, &funcToken) == -1)
+                    {
+                        // global scope
+                        itemText += tokenArgs;
+                        insideFunction = false;
+                    }
+                    else // Found something, but result may be false positive.
+                    {
+                        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+
+                        const Token* parent = tree->at(funcToken);
+                        // Make sure that parent is not container (class, etc)
+                        if (parent && (parent->m_TokenKind & tkAnyFunction) == 0)
+                        {
+                            // class scope
+                            itemText += tokenArgs;
+                            insideFunction = false;
+                        }
+
+                        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+                    }
+                }
+
+                if (insideFunction)
+                {
+                    // Inside block
+                    // Check if there are brace behind the target
+                    if (stc->GetCharAt(curPos) != _T('('))
+                    {
+                        itemText += _T("()");
+                        if (tokenArgs.size() > 2) // more than '()'
+                        {
+                            positionModificator = -1;
+                            insideParentheses = true;
+                        }
+                    }
+                    else
+                        positionModificator = 1; // Set caret after '('
+                }
+            }
+        } // if tkn
+    } // if token.id
+
+    stc->SetTargetStart(startPos);
+    stc->SetTargetEnd(curPos);
+
+    stc->AutoCompCancel();
+    if (stc->GetTextRange(startPos, curPos) != itemText)
+        stc->ReplaceTarget(itemText);
+    stc->GotoPos(startPos + itemText.Length() + positionModificator);
+
+    if (insideParentheses)
+    {
+        stc->EnableTabSmartJump();
+        CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+        Manager::Get()->ProcessEvent(evt);
+    }
+
+    if (needReparse)
+    {
+        TRACE(_T("CodeCompletion::EditorEventHook: Starting m_TimerRealtimeParsing."));
+        m_TimerRealtimeParsing.Start(1, wxTIMER_ONE_SHOT);
+    }
+    stc->ChooseCaretX();
+}
+
+void CodeCompletion::DoAutocomplete(const wxString& token, cbEditor* ed)
+{
+    DoAutocomplete(CCToken(-1, token), ed);
+}
+
 wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets)
 {
     wxArrayString dirs;
@@ -1441,199 +1605,6 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     {   TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION")); }
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
     {   TRACE(_T("wxEVT_SCI_AUTOCOMP_CANCELLED")); }
-
-    if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)
-    {
-        wxString itemText = event.GetText();
-        itemText = CodeCompletionHelper::AutocompGetName(itemText);
-
-        int curPos = control->GetCurrentPos();
-        int startPos = control->WordStartPosition(curPos, true);
-        if (   itemText.GetChar(0) == _T('~') // special handle for dtor
-            && startPos > 0
-            && control->GetCharAt(startPos - 1) == _T('~'))
-        {
-            --startPos;
-        }
-        bool needReparse = false;
-
-        if (control->IsPreprocessor(control->GetStyleAt(curPos)))
-        {
-            curPos = control->GetLineEndPosition(control->GetCurrentLine()); // delete rest of line
-            bool addComment = (itemText == wxT("endif"));
-            for (int i = control->GetCurrentPos(); i < curPos; ++i)
-            {
-                if (control->IsComment(control->GetStyleAt(i)))
-                {
-                    curPos = i; // preserve line comment
-                    if (wxIsspace(control->GetCharAt(i - 1)))
-                        --curPos; // preserve a space before the comment
-                    addComment = false;
-                    break;
-                }
-            }
-            if (addComment) // search backwards for the #if*
-            {
-                wxRegEx ppIf(wxT("^[ \t]*#[ \t]*if"));
-                wxRegEx ppEnd(wxT("^[ \t]*#[ \t]*endif"));
-                int depth = -1;
-                for (int ppLine = control->GetCurrentLine() - 1; ppLine >= 0; --ppLine)
-                {
-                    if (control->GetLine(ppLine).Find(wxT('#')) != wxNOT_FOUND) // limit testing due to performance cost
-                    {
-                        if (ppIf.Matches(control->GetLine(ppLine))) // ignore else's, elif's, ...
-                            ++depth;
-                        else if (ppEnd.Matches(control->GetLine(ppLine)))
-                            --depth;
-                    }
-                    if (depth == 0)
-                    {
-                        wxRegEx pp(wxT("^[ \t]*#[ \t]*[a-z]*([ \t]+([a-zA-Z0-9_]+)|())"));
-                        pp.Matches(control->GetLine(ppLine));
-                        if (!pp.GetMatch(control->GetLine(ppLine), 2).IsEmpty())
-                            itemText.Append(wxT(" // ") + pp.GetMatch(control->GetLine(ppLine), 2));
-                        break;
-                    }
-                }
-            }
-            needReparse = true;
-
-            int   pos = startPos - 1;
-            wxChar ch = control->GetCharAt(pos);
-            while (ch != _T('<') && ch != _T('"') && ch != _T('#') && (pos>0))
-                ch = control->GetCharAt(--pos);
-            if (ch == _T('<') || ch == _T('"'))
-                startPos = pos + 1;
-
-            if (ch == _T('"'))
-                itemText << _T('"');
-            else if (ch == _T('<'))
-                itemText << _T('>');
-        }
-        else
-        {
-            const int endPos = control->WordEndPosition(curPos, true);
-            const wxString& alreadyText = control->GetTextRange(curPos, endPos);
-            if (!alreadyText.IsEmpty() && itemText.EndsWith(alreadyText))
-                curPos = endPos;
-        }
-
-        control->AutoCompCancel();
-
-        int positionModificator = 0;
-        bool insideParentheses = false;
-        int tokenIdx = GetAutocompTokenIdx();
-        if (tokenIdx != -1 && m_CCAutoAddParentheses)
-        {
-            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-            TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
-            const Token* token = tree->at(tokenIdx);
-
-            if (!token)
-            {   CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex) }
-            else
-            {
-                bool addParentheses = token->m_TokenKind & tkAnyFunction;
-                if (!addParentheses && (token->m_TokenKind & tkPreprocessor))
-                {
-                    if (token->m_Args.size() > 0)
-                        addParentheses = true;
-                }
-                // cache args to avoid lockig
-                wxString tokenArgs = token->GetStrippedArgs();
-
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
-                if (addParentheses)
-                {
-                    bool insideFunction = true;
-                    if (m_CCDetectImplementation)
-                    {
-                        ccSearchData searchData = { control, editor->GetFilename() };
-                        int funcToken;
-                        if (m_NativeParser.FindCurrentFunctionStart(&searchData, 0, 0, &funcToken) == -1)
-                        {
-                            // global scope
-                            itemText += tokenArgs;
-                            insideFunction = false;
-                        }
-                        else // Found something, but result may be false positive.
-                        {
-                            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-                            const Token* parent = tree->at(funcToken);
-                            // Make sure that parent is not container (class, etc)
-                            if (parent && (parent->m_TokenKind & tkAnyFunction) == 0)
-                            {
-                                // class scope
-                                itemText += tokenArgs;
-                                insideFunction = false;
-                            }
-
-                            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-                        }
-                    }
-
-                    if (insideFunction)
-                    {
-                        // Inside block
-                        // Check if there are brace behind the target
-                        if (control->GetCharAt(curPos) != _T('('))
-                        {
-                            itemText += _T("()");
-                            if (tokenArgs.size() > 2) // more than '()'
-                            {
-                                positionModificator = -1;
-                                insideParentheses = true;
-                            }
-                        }
-                        else
-                            positionModificator = 1; // Set caret after '('
-                    }
-//                    else
-//                    {
-//                        // Outside block, probably function declaration
-//                        // Information about implementation position might be
-//                        // updated here.
-//                        //needReparse = true;
-//                    }
-                }
-            }// if token
-        }// if token idx
-
-        control->SetTargetStart(startPos);
-        control->SetTargetEnd(curPos);
-
-        if (control->GetTextRange(startPos, curPos) != itemText)
-            control->ReplaceTarget(itemText);
-        control->GotoPos(startPos + itemText.Length() + positionModificator);
-
-        if (insideParentheses)
-        {
-            control->EnableTabSmartJump();
-            CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
-            Manager::Get()->ProcessEvent(evt);
-        }
-
-        if (needReparse)
-        {
-            TRACE(_T("CodeCompletion::EditorEventHook: Starting m_TimerRealtimeParsing."));
-            m_TimerRealtimeParsing.Start(1, wxTIMER_ONE_SHOT);
-        }
-        control->ChooseCaretX();
-
-        m_AutocompNameIdx.clear();
-        m_LastAutocompIndex = -1;
-    }
-
-    if (   event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED
-        || event.GetEventType() == wxEVT_SCI_ESC
-        || event.GetEventType() == wxEVT_SCI_KILLFOCUS )
-    {
-        m_LastAutocompIndex = -1;
-        m_AutocompNameIdx.clear();
-    }
 
     if (   m_NativeParser.GetParser().Options().whileTyping
         && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
@@ -2223,9 +2194,6 @@ void CodeCompletion::OnCurrentProjectReparse(wxCommandEvent& event)
 {
     m_NativeParser.ReparseCurrentProject();
     event.Skip();
-
-    m_AutocompNameIdx.clear();
-    m_LastAutocompIndex = -1;
 }
 
 void CodeCompletion::OnSelectedProjectReparse(wxCommandEvent& event)
@@ -2403,11 +2371,6 @@ void CodeCompletion::OnEditorOpen(CodeBlocksEvent& event)
         {
             FunctionsScopePerFile* funcdata = &(m_AllFunctionsScopes[ed->GetFilename()]);
             funcdata->parsed = false;
-
-            if (ed->GetControl())
-                ed->GetControl()->Connect(wxID_ANY, wxEVT_COMMAND_LIST_ITEM_SELECTED,
-                                        (wxObjectEventFunction)&CodeCompletion::OnAutocompleteSelect,
-                                        NULL, this);
         }
     }
 
@@ -2487,17 +2450,6 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
             m_NativeParser.UpdateClassBrowser();
     }
 
-    if (event.GetEditor())
-    {
-        cbEditor* ed = edm->GetBuiltinEditor(event.GetEditor());
-        if (ed && ed->GetControl())
-        {
-            ed->GetControl()->Disconnect(wxID_ANY, wxEVT_COMMAND_LIST_ITEM_SELECTED,
-                                         (wxObjectEventFunction)&CodeCompletion::OnAutocompleteSelect,
-                                         NULL, this);
-        }
-    }
-
     event.Skip();
 }
 
@@ -2530,9 +2482,6 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
         if (m_NativeParser.GetProjectByEditor(editor) == project)
             EnableToolbarTools(false);
     }
-
-    m_AutocompNameIdx.clear();
-    m_LastAutocompIndex = -1;
 }
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
@@ -3326,38 +3275,6 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
     ed->GetControl()->Colourise(0, -1);
 }
 
-int CodeCompletion::GetAutocompTokenIdx(int selectedItem)
-{
-    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!editor)
-        return 0;
-    if ( !IsProviderFor(editor) )
-        return 0;
-
-    cbStyledTextCtrl* control = editor->GetControl();
-    if (!control)
-        return 0;
-
-    if (selectedItem < 0)
-    {
-        if (control->AutoCompActive())
-        {
-            selectedItem = control->AutoCompGetCurrent();
-            //m_LastAutocompIndex = selectedItem;
-        }
-        else
-            selectedItem = m_LastAutocompIndex;
-    }
-
-    if (   selectedItem >= 0
-        && selectedItem < (int)m_AutocompNameIdx.size()
-        && m_AutocompNameIdx[selectedItem].second != -1 )
-    {
-        return m_AutocompNameIdx[selectedItem].second;
-    }
-    return -1;
-}
-
 void CodeCompletion::OnToolbarTimer(cb_unused wxTimerEvent& event)
 {
     TRACE(_T("CodeCompletion::OnToolbarTimer(): Enter"));
@@ -3513,33 +3430,4 @@ void CodeCompletion::OnEditorActivatedTimer(cb_unused wxTimerEvent& event)
     m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
     TRACE(_T("CodeCompletion::OnEditorActivatedTimer(): Current activated file is %s"), curFile.wx_str());
     UpdateEditorSyntax();
-}
-
-void CodeCompletion::OnAutocompleteSelect(wxListEvent& event)
-{
-    event.Skip();
-
-    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!editor)
-        return;
-    if ( !IsProviderFor(editor) )
-        return;
-
-    TRACE(_T("OnAutocompleteSelect"));
-
-    m_TimerAutocompSelect.Start(35, wxTIMER_ONE_SHOT);
-    m_LastSelectEvent = (wxListEvent*)event.Clone();
-}
-
-void CodeCompletion::OnAutocompSelectTimer(wxTimerEvent& WXUNUSED(event))
-{
-    cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!editor || !m_LastSelectEvent)
-        return;
-    cbStyledTextCtrl* control = editor->GetControl();
-    if (control->AutoCompActive())
-    {
-        m_LastAutocompIndex = control->AutoCompGetCurrent();
-        m_DocHelper.OnSelectionChange(*m_LastSelectEvent);
-    }
 }
