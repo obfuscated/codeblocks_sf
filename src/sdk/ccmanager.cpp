@@ -225,12 +225,10 @@ CCManager::CCManager() :
     m_pLastEditor(nullptr),
     m_pLastCCPlugin(nullptr)
 {
-/* temporary filler */
-    const wxString ctChars = wxT(",;\n()"); // TODO: allow registration
-    m_CallTipChars.insert(ctChars.begin(), ctChars.end());
-    const wxString alChars = wxT(".:<>\"#/"); // TODO: allow registration
-    m_AutoLaunchChars.insert(alChars.begin(), alChars.end());
-/* end temporary */
+    const wxString ctChars = wxT(",;\n()"); // default set
+    m_CallTipChars[nullptr] = std::set<wxChar>(ctChars.begin(), ctChars.end());
+    const wxString alChars = wxT(".:<>\"#/"); // default set
+    m_AutoLaunchChars[nullptr] = std::set<wxChar>(alChars.begin(), alChars.end());
     m_LastACLaunchState[lsCaretStart] = wxSCI_INVALID_POSITION;
     m_pPopup = new UnfocusablePopupWindow(Manager::Get()->GetAppFrame());
     m_pHtml = new wxHtmlWindow(m_pPopup, wxID_ANY, wxDefaultPosition,
@@ -306,6 +304,18 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
             m_pLastCCPlugin = static_cast<cbCodeCompletionPlugin*>(pa[i]);
     }
     return m_pLastCCPlugin;
+}
+
+void CCManager::RegisterCallTipChars(const wxString& chars, cbCodeCompletionPlugin* registrant)
+{
+    if (registrant)
+        m_CallTipChars[registrant] = std::set<wxChar>(chars.begin(), chars.end());
+}
+
+void CCManager::RegisterAutoLaunchChars(const wxString& chars, cbCodeCompletionPlugin* registrant)
+{
+    if (registrant)
+        m_AutoLaunchChars[registrant] = std::set<wxChar>(chars.begin(), chars.end());
 }
 
 // priority, then alphabetical
@@ -553,7 +563,10 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     if (evtType == wxEVT_SCI_CHARADDED)
     {
         const wxChar ch = event.GetKey();
-        if (m_CallTipChars.find(ch) != m_CallTipChars.end())
+        CCPluginCharMap::const_iterator ctChars = m_CallTipChars.find(GetProviderFor(ed));
+        if (ctChars == m_CallTipChars.end())
+            ctChars = m_CallTipChars.find(nullptr); // default
+        if (ctChars->second.find(ch) != ctChars->second.end())
         {
             CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
             Manager::Get()->ProcessEvent(evt);
@@ -563,6 +576,9 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             cbStyledTextCtrl* stc = ed->GetControl();
             const int pos = stc->GetCurrentPos();
             const int wordStartPos = stc->WordStartPosition(pos, true);
+            CCPluginCharMap::const_iterator alChars = m_AutoLaunchChars.find(GetProviderFor(ed));
+            if (alChars == m_AutoLaunchChars.end())
+                alChars = m_AutoLaunchChars.find(nullptr); // default
             // TODO: read settings
             if (   (pos - wordStartPos >= 3 && !stc->AutoCompActive())
                 || pos - wordStartPos == 3 + 4 )
@@ -570,7 +586,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
                 CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
                 Manager::Get()->ProcessEvent(evt);
             }
-            else if (m_AutoLaunchChars.find(ch) != m_AutoLaunchChars.end())
+            else if (alChars->second.find(ch) != alChars->second.end())
             {
                 m_AutoLaunchTimer.Start(10, wxTIMER_ONE_SHOT);
                 m_AutocompPosition = pos;

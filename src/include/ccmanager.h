@@ -20,6 +20,11 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** uses active editor if one is not passed; has (minimal) cache optimization */
         cbCodeCompletionPlugin* GetProviderFor(cbEditor* ed = nullptr);
 
+        /** if the default set of characters that invoke calltip requests are not appropriate, register a new set */
+        void RegisterCallTipChars(const wxString& chars, cbCodeCompletionPlugin* registrant);
+        /** if the default set of characters that auto-launch codecomplete requests are not appropriate, register a new set */
+        void RegisterAutoLaunchChars(const wxString& chars, cbCodeCompletionPlugin* registrant);
+
     private:
         CCManager();
         ~CCManager();
@@ -53,8 +58,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
-        std::set<wxChar> m_CallTipChars;
-        std::set<wxChar> m_AutoLaunchChars;
+        typedef std::map< cbCodeCompletionPlugin*, std::set<wxChar> > CCPluginCharMap;
+        CCPluginCharMap m_CallTipChars;
+        CCPluginCharMap m_AutoLaunchChars;
         int m_EditorHookID;
         int m_AutocompPosition;
         int m_CallTipActive;
