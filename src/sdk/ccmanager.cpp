@@ -576,7 +576,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
                 // fall through
             case wxSCI_KEY_UP:
             case wxSCI_KEY_DOWN:
-                if (m_CallTipActive != wxSCI_INVALID_POSITION)
+                if (m_CallTipActive != wxSCI_INVALID_POSITION && !stc->AutoCompActive())
                     m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
                 break;
 
@@ -794,7 +794,7 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
     }
 
     m_pPopup->Freeze();
-    m_pHtml->SetClientSize(m_DocSize);
+    m_pHtml->SetSize(m_DocSize);
     m_pHtml->SetPage(html);
     m_pPopup->SetClientSize(m_DocSize);
     m_pPopup->SetPosition(m_DocPos);
