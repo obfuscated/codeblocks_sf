@@ -869,8 +869,6 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
 
 std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto)
 {
-    //const bool preprocessorOnly = m_CompletePPOnly;
-    //m_CompletePPOnly = false;
     std::vector<CCToken> tokens;
 
     if (!IsAttached() || !m_InitDone)
@@ -902,11 +900,6 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
 
         if (str == wxT("include") && tknEnd > endPos)
         {
-            /*if (   stc->AutoCompActive() && curChar != _T('/')
-                && stc->GetCharAt(tknEnd - m_CCAutoLaunchChars - 5) == _T('/') )
-            {
-                return; // prevent listing refinement from causing the box to flash (rebuild) too much
-            }*/
             DoCodeCompleteIncludes(tokens, ed, tknStart, tknEnd);
         }
         else if (endPos >= tknEnd && tknEnd > lineIndentPos)
@@ -921,9 +914,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                    || str == wxT("undef") )
                  && tknEnd > endPos )
         {
-            //m_CompletePPOnly = true;
             DoCodeComplete(tokens, ed, tknEnd, true);
-            //m_DocHelper.Hide();
         }
         return tokens;
     }
@@ -946,7 +937,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
 
 void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, int caretPos, bool preprocessorOnly)
 {
-    FileType ft = FileTypeOf(ed->GetShortName());
+    FileType fTp = FileTypeOf(ed->GetShortName());
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
     cbStyledTextCtrl* stc = ed->GetControl();
 
@@ -1028,7 +1019,7 @@ void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, 
                 {
                     wxString lastSearch = m_NativeParser.LastAIGlobalSearch().Lower();
                     int iidx = ilist->GetImageCount();
-                    bool isC = ft == ftHeader || ft == ftSource;
+                    bool isC = (fTp == ftHeader || fTp == ftSource);
                     // theme keywords
                     HighlightLanguage lang = ed->GetLanguage();
                     if (lang == HL_NONE)
