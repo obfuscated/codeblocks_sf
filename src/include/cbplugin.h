@@ -764,7 +764,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
             wxString name;
         };
 
-        virtual std::vector<CCToken> GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed) = 0;
+        virtual std::vector<CCToken> GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto) = 0;
         virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed) = 0;
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
 };

@@ -43,6 +43,7 @@ template<> CCManager* Mgr<CCManager>::instance = 0;
 template<> bool Mgr<CCManager>::isShutdown = false;
 
 const int idCallTipTimer = wxNewId();
+const int idAutoLaunchTimer = wxNewId();
 
 // milliseconds
 #define CALLTIP_REFRESH_DELAY 90
@@ -51,14 +52,21 @@ const int idCallTipTimer = wxNewId();
 
 // class constructor
 CCManager::CCManager() :
+    m_AutocompPosition(wxSCI_INVALID_POSITION),
     m_CallTipActive(wxSCI_INVALID_POSITION),
     m_CallTipTimer(this, idCallTipTimer),
+    m_AutoLaunchTimer(this, idAutoLaunchTimer),
     m_pLastEditor(nullptr),
     m_pLastCCPlugin(nullptr)
 {
+/* temporary filler */
     const wxString ctChars = wxT(",;\n()");
     for (size_t i = 0; i < ctChars.Length(); ++i)
         m_CallTipChars.insert(ctChars[i]);
+    const wxString alChars = wxT(".:<>\"#");
+    for (size_t i = 0; i < alChars.Length(); ++i)
+        m_AutoLaunchChars.insert(alChars[i]);
+/* end temporary */
     typedef cbEventFunctor<CCManager, CodeBlocksEvent> CCEvent;
     Manager::Get()->RegisterEventSink(cbEVT_APP_DEACTIVATED,    new CCEvent(this, &CCManager::OnDeactivateApp));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new CCEvent(this, &CCManager::OnDeactivateEd));
@@ -66,7 +74,8 @@ CCManager::CCManager() :
     Manager::Get()->RegisterEventSink(cbEVT_SHOW_CALL_TIP,      new CCEvent(this, &CCManager::OnShowCallTip));
     Manager::Get()->RegisterEventSink(cbEVT_COMPLETE_CODE,      new CCEvent(this, &CCManager::OnCompleteCode));
     m_EditorHookID = EditorHooks::RegisterHook(new EditorHooks::HookFunctor<CCManager>(this, &CCManager::OnEditorHook));
-    Connect(idCallTipTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(idCallTipTimer,    wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(idAutoLaunchTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
 }
 
 // class destructor
@@ -97,6 +106,7 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
     return m_pLastCCPlugin;
 }
 
+// cbEVT_COMPLETE_CODE
 void CCManager::OnCompleteCode(CodeBlocksEvent& event)
 {
     event.Skip();
@@ -111,7 +121,8 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     cbStyledTextCtrl* stc = ed->GetControl();
     int tknEnd = stc->GetCurrentPos();
     int tknStart = stc->WordStartPosition(tknEnd, true);
-    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetAutocompList(tknStart, tknEnd, ed);
+    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetAutocompList(tknStart, tknEnd, ed,
+                                                                                           event.GetInt() == FROM_TIMER);
     if (tokens.empty())
         return;
     stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
@@ -121,9 +132,11 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     for (size_t i = 0; i < tokens.size(); ++i)
         items += tokens[i].displayName + wxT("|");
     items.RemoveLast();
+    stc->AutoCompSetMaxHeight(14);
     stc->AutoCompShow(tknEnd - tknStart, items);
 }
 
+// cbEVT_APP_DEACTIVATED
 void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -137,6 +150,7 @@ void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
     event.Skip();
 }
 
+// cbEVT_EDITOR_DEACTIVATED
 void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
@@ -150,6 +164,7 @@ void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
     event.Skip();
 }
 
+// cbEVT_EDITOR_TOOLTIP
 void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 {
     event.Skip();
@@ -210,6 +225,23 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
             Manager::Get()->ProcessEvent(evt);
         }
+        else
+        {
+            cbStyledTextCtrl* stc = ed->GetControl();
+            const int pos = stc->GetCurrentPos();
+            const int wordStartPos = stc->WordStartPosition(pos, true);
+            // TODO: read settings
+            if (pos - wordStartPos >= 3)
+            {
+                CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
+                Manager::Get()->ProcessEvent(evt);
+            }
+            else if (m_AutoLaunchChars.find(ch) != m_AutoLaunchChars.end())
+            {
+                m_AutoLaunchTimer.Start(300, wxTIMER_ONE_SHOT);
+                m_AutocompPosition = pos;
+            }
+        }
     }
     else if (evtType == wxEVT_SCI_KEY)
     {
@@ -234,6 +266,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     event.Skip();
 }
 
+// cbEVT_SHOW_CALL_TIP
 void CCManager::OnShowCallTip(CodeBlocksEvent& event)
 {
     event.Skip();
@@ -272,6 +305,17 @@ void CCManager::OnTimer(wxTimerEvent& event)
         CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
         evt.SetInt(FROM_TIMER);
         Manager::Get()->ProcessEvent(evt);
+    }
+    else if (event.GetId() == idAutoLaunchTimer)
+    {
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+        if (ed && ed->GetControl()->GetCurrentPos() == m_AutocompPosition)
+        {
+            CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
+            evt.SetInt(FROM_TIMER);
+            Manager::Get()->ProcessEvent(evt);
+        }
+        m_AutocompPosition = wxSCI_INVALID_POSITION;
     }
     else // ?!
         event.Skip();

@@ -34,9 +34,12 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
         std::set<wxChar> m_CallTipChars;
+        std::set<wxChar> m_AutoLaunchChars;
         int m_EditorHookID;
+        int m_AutocompPosition;
         int m_CallTipActive;
         wxTimer m_CallTipTimer;
+        wxTimer m_AutoLaunchTimer;
         cbEditor* m_pLastEditor;
         cbCodeCompletionPlugin* m_pLastCCPlugin;
 };

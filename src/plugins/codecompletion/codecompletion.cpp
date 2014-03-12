@@ -926,7 +926,7 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
     return true;
 }
 
-std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed)
+std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto)
 {
     const bool preprocessorOnly = m_CompletePPOnly;
     m_CompletePPOnly = false;
@@ -934,6 +934,13 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
 
     if (!IsAttached() || !m_InitDone)
         return tokens;
+
+    if (   isAuto
+        && ed->GetControl()->GetCharAt(tknEnd - 1) == wxT(':')
+        && ed->GetControl()->GetCharAt(tknEnd - 2) != wxT(':') )
+    {
+        return tokens;
+    }
 
     FileType ft = FileTypeOf(ed->GetShortName());
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
@@ -1143,7 +1150,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEdito
             const Token* token = tree->at(*it);
             if (token)
             {
-                tokens.push_back(cbCodeCompletionPlugin::CCToken(*it, token->DisplayName()));
+                tokens.push_back(CCToken(*it, token->DisplayName()));
                 if (tokens.size() > 32)
                     break;
             }
@@ -1901,6 +1908,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     if (event.GetEventType() == wxEVT_SCI_CHARADDED)
     {
+#if 0
         // a character was just added in the editor
         m_TimerCodeCompletion.Stop();
         const wxChar ch = event.GetKey();
@@ -2017,6 +2025,7 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
                 m_TimerCodeCompletion.Start(m_CCLaunchDelay, wxTIMER_ONE_SHOT);
             }
         }
+#endif // 0
     }
 
     if (   m_NativeParser.GetParser().Options().whileTyping
