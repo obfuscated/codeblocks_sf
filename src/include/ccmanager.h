@@ -24,13 +24,16 @@ class DLLIMPORT CCManager : public Mgr<CCManager>
         void OnDeactivateEd(CodeBlocksEvent& event);
         /** mouse hover event */
         void OnEditorTooltip(CodeBlocksEvent& event);
+        void OnEditorHook(cbEditor* ed, wxScintillaEvent& event);
         /** event handler to show the call tip, when user press Ctrl-Shift-Space */
         void OnShowCallTip(CodeBlocksEvent& event);
 
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
-        cbEditor* lastEditor;
-        cbCodeCompletionPlugin* lastCCPlugin;
+        std::set<wxChar> m_CallTipChars;
+        int m_EditorHookID;
+        cbEditor* m_pLastEditor;
+        cbCodeCompletionPlugin* m_pLastCCPlugin;
 };
 
 #endif // CCMANAGER_H

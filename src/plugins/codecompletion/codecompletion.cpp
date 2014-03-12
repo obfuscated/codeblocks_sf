@@ -1225,13 +1225,13 @@ int CodeCompletion::CodeComplete()
 
 void CodeCompletion::ShowCallTip()
 {
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    /*cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
         if (!stc->CallTipActive())
             stc->CallTipShow(stc->GetCurrentPos(), wxT("*TODO*"));
-    }
+    }*/
 }
 
 void CodeCompletion::CodeCompletePreprocessor()
@@ -1734,6 +1734,10 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
         {
             control->EnableTabSmartJump();
             TRACE(_T("wxEVT_SCI_AUTOCOMP_SELECTION -> ShowCallTip"));
+            /////////
+            CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+            Manager::Get()->ProcessEvent(evt);
+            /////////
             ShowCallTip();
         }
 

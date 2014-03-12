@@ -9,8 +9,10 @@
 
 #include "sdk_precomp.h"
 
-#include "cbstyledtextctrl.h"
 #include "ccmanager.h"
+
+#include "cbstyledtextctrl.h"
+#include "editor_hooks.h"
 
 namespace CCManagerHelper
 {
@@ -42,39 +44,44 @@ template<> bool Mgr<CCManager>::isShutdown = false;
 
 // class constructor
 CCManager::CCManager() :
-    lastEditor(nullptr), lastCCPlugin(nullptr)
+    m_pLastEditor(nullptr), m_pLastCCPlugin(nullptr)
 {
+    const wxString ctChars = wxT(",;\n()");
+    for (size_t i = 0; i < ctChars.Length(); ++i)
+        m_CallTipChars.insert(ctChars[i]);
     typedef cbEventFunctor<CCManager, CodeBlocksEvent> CCEvent;
     Manager::Get()->RegisterEventSink(cbEVT_APP_DEACTIVATED,    new CCEvent(this, &CCManager::OnDeactivateApp));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new CCEvent(this, &CCManager::OnDeactivateEd));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,     new CCEvent(this, &CCManager::OnEditorTooltip));
     Manager::Get()->RegisterEventSink(cbEVT_SHOW_CALL_TIP,      new CCEvent(this, &CCManager::OnShowCallTip));
+    m_EditorHookID = EditorHooks::RegisterHook(new EditorHooks::HookFunctor<CCManager>(this, &CCManager::OnEditorHook));
 }
 
 // class destructor
 CCManager::~CCManager()
 {
     Manager::Get()->RemoveAllEventSinksFor(this);
+    EditorHooks::UnregisterHook(m_EditorHookID, true);
 }
 
 cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
 {
     if (!ed)
         ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed == lastEditor)
-        return lastCCPlugin;
-    lastEditor = ed;
-    lastCCPlugin = nullptr;
+    if (ed == m_pLastEditor)
+        return m_pLastCCPlugin;
+    m_pLastEditor = ed;
+    m_pLastCCPlugin = nullptr;
     const PluginsArray& pa = Manager::Get()->GetPluginManager()->GetCodeCompletionOffers();
     for (size_t i = 0; i < pa.GetCount(); ++i)
     {
         if (static_cast<cbCodeCompletionPlugin*>(pa[i])->IsProviderFor(ed))
         {
-            lastCCPlugin = static_cast<cbCodeCompletionPlugin*>(pa[i]);
+            m_pLastCCPlugin = static_cast<cbCodeCompletionPlugin*>(pa[i]);
             break;
         }
     }
-    return lastCCPlugin;
+    return m_pLastCCPlugin;
 }
 
 void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
@@ -135,6 +142,20 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
         DoShowTips(tips, stc, pos, argsPos, hlStart, hlEnd);
         event.SetExtraLong(1);
     }
+}
+
+void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
+{
+    if (event.GetEventType() == wxEVT_SCI_CHARADDED)
+    {
+        const wxChar ch = event.GetKey();
+        if (m_CallTipChars.find(ch) != m_CallTipChars.end())
+        {
+            CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+            Manager::Get()->ProcessEvent(evt);
+        }
+    }
+    event.Skip();
 }
 
 void CCManager::OnShowCallTip(CodeBlocksEvent& event)

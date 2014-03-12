@@ -47,7 +47,7 @@ namespace EditorHooks
       * EditorHooks::UnregisterHook(id, true);
       *
       * Member functions used as hook callbacks must have the following signature:
-      * void YourFunctionName(cbEditor*, wxScintillaEvent*)
+      * void YourFunctionName(cbEditor*, wxScintillaEvent&)
       */
     template<class T> class HookFunctor : public HookFunctorBase
     {
