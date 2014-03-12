@@ -837,33 +837,46 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
 
         /** @brief Supply html formatted documentation for the passed token.
           *
+          * Refer to http://docs.wxwidgets.org/stable/overview_html.html#overview_html_supptags for
+          * the available formatting. When selecting colours, prefer use of the ones CCManager has
+          * registered with ColourManager, which are (TODO: register colours). Returning an empty
+          * string will cancel the documentation popup.
+          *
           * @param token The token to document.
           * @return Either an html document or an empty string (if no documentation available).
           */
         virtual wxString GetDocumentation(const CCToken& token) = 0;
 
-        /** @brief
+        /** @brief Supply content for the calltip at the specified location.
           *
+          * The output parameter @c argsPos is required to be set to the same (but unique) position
+          * for each unique calltip. This position is the location corresponding to the beginning of
+          * the argument list:
             @code
             int endOfWord = stc->WordEndPosition(pos, true);
                                                 ^
             @endcode
+          * @c hlStart and @c hlEnd are are the indices of the range of text to be highlighted.
           *
-          * @param pos int
-          * @param style int
-          * @param ed cbEditor*
-          * @param[out] hlStart
-          * @param[out] hlEnd
-          * @param[out] argsPos Required
-          * @return wxStringVec
+          * @param pos The location in the editor that the calltip is requested for.
+          * @param style The scintilla style of the cbStyledTextCtrl at the given location. (TODO: This
+          *              is unusual, remove it?)
+          * @param ed The context of this calltip request.
+          * @param[out] hlStart The character offset to begin highlighting at. Optional.
+          * @param[out] hlEnd The character offset to end highlighting at. Optional.
+          * @param[out] argsPos The location in the editor of the beginning of the argument list. Required.
+          * @return Each entry in this vector is guaranteed a new line in the calltip. CCManager will
+          *         decide if lines should be further split (for formatting to fit the monitor).
           */
         virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos) = 0;
 
-        /** @brief
+        /** @brief Supply the definition of the token at the specified location.
+          *
+          * The token(s) returned by this function are used to display tooltips.
           *
           * @param pos int
           * @param ed cbEditor*
-          * @return std::vector\<CCToken\>
+          * @return A list of the token(s) that match the specified location.
           */
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
 
