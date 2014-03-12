@@ -22,6 +22,7 @@
     #include <wx/timer.h>
 
     #include "cbeditor.h"
+    #include "configmanager.h"
     #include "editormanager.h"
     #include "logmanager.h" // for F
 #endif
