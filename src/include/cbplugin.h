@@ -803,6 +803,35 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
             wxString name;        //!< Minimal name of the token.
         };
 
+        /** Structure representing an individual calltip with an optional highlighted range */
+        struct CCCallTip
+        {
+            /** @brief Convenience constructor.
+              *
+              * Represents an individual calltip to be processed and displayed by CCManager.
+              *
+              * @param tp The content of the calltip.
+              */
+            CCCallTip(const wxString& tp) :
+                hlStart(wxSCI_INVALID_POSITION), hlEnd(wxSCI_INVALID_POSITION), tip(tp) {}
+
+            /** @brief Construct a calltip, specifying a highlighted range
+              *
+              * Represents an individual calltip, containing a highlighted range (generally the
+              * active parameter), to be processed and displayed by CCManager.
+              *
+              * @param tp The content of the calltip.
+              * @param highlightStart The start index of the desired highlighted range.
+              * @param highlightEndThe end index of the desired highlighted range.
+              */
+            CCCallTip(const wxString& tp, int highlightStart, int highlightEnd) :
+                hlStart(highlightStart), hlEnd(highlightEnd), tip(tp) {}
+
+            int hlStart;  //!< The start index of the desired highlighted range.
+            int hlEnd;    //!< The end index of the desired highlighted range.
+            wxString tip; //!< The content of the calltip.
+        };
+
         /** @brief Does this plugin handle code completion for the editor <tt>ed</tt>?
           *
           * The plugin should check the lexer, the <tt>HighlightLanguage</tt>, the file extension,
@@ -856,19 +885,16 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * int endOfWord = stc->WordEndPosition(pos, true);
           *                                     ^
           * @endcode
-          * @c hlStart and @c hlEnd are are the indices of the range of text to be highlighted.
           *
           * @param pos The location in the editor that the calltip is requested for.
           * @param style The scintilla style of the cbStyledTextCtrl at the given location. (TODO: This
           *              is unusual, remove it?)
           * @param ed The context of this calltip request.
-          * @param[out] hlStart The character offset to begin highlighting at. Optional.
-          * @param[out] hlEnd The character offset to end highlighting at. Optional.
           * @param[out] argsPos The location in the editor of the beginning of the argument list. @em Required.
-          * @return Each entry in this vector is guaranteed a new line in the calltip. CCManager will
-          *         decide if lines should be further split (for formatting to fit the monitor).
+          * @return Each entry in this vector is guaranteed either a new line or a separate page in the calltip.
+          *         CCManager will decide if lines should be further split (for formatting to fit the monitor).
           */
-        virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos) = 0;
+        virtual std::vector<CCCallTip> GetCallTips(int pos, int style, cbEditor* ed, int& argsPos) = 0;
 
         /** @brief Supply the definition of the token at the specified location.
           *

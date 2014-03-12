@@ -1238,9 +1238,9 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     }
 }
 
-wxStringVec CodeCompletion::GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos)
+std::vector<CodeCompletion::CCCallTip> CodeCompletion::GetCallTips(int pos, int style, cbEditor* ed, int& argsPos)
 {
-    wxStringVec tips;
+    std::vector<CCCallTip> tips;
     if (!IsAttached() || !m_InitDone || style == wxSCI_C_WXSMITH || !m_NativeParser.GetParser().Done())
         return tips;
 
@@ -1256,18 +1256,10 @@ wxStringVec CodeCompletion::GetCallTips(int pos, int style, cbEditor* ed, int& h
             && typedCommas <= m_NativeParser.CountCommas(items[i], 0) ) // commas satisfied
         {
             uniqueTips.insert(items[i]);
-            if (tips.empty())
-                m_NativeParser.GetCallTipHighlight(items[i], &hlStart, &hlEnd, typedCommas);
-            else if (hlStart == hlEnd)
-            {
-                m_NativeParser.GetCallTipHighlight(items[i], &hlStart, &hlEnd, typedCommas);
-                for (size_t j = 0; j < tips.size(); ++j)
-                {
-                    hlStart += tips[j].Length();
-                    hlEnd   += tips[j].Length();
-                }
-            }
-            tips.push_back(items[i]);
+            int hlStart = wxSCI_INVALID_POSITION;
+            int hlEnd   = wxSCI_INVALID_POSITION;
+            m_NativeParser.GetCallTipHighlight(items[i], &hlStart, &hlEnd, typedCommas);
+            tips.push_back(CCCallTip(items[i], hlStart, hlEnd));
         }
     }
     return tips;

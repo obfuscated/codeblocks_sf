@@ -61,8 +61,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         int m_LastAutocompIndex;
         int m_LastTipPos;
         int m_WindowBound;
-        wxStringVec m_CallTips;
-        wxStringVec::const_iterator m_CurCallTip;
+        typedef std::vector<cbCodeCompletionPlugin::CCCallTip> CallTipVec;
+        CallTipVec m_CallTips;
+        CallTipVec::const_iterator m_CurCallTip;
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
         wxTimer m_AutocompSelectTimer;
