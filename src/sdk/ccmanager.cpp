@@ -477,11 +477,24 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     {
         const int tknStart = stc->WordStartPosition(pos, true);
         const int tknEnd   = stc->WordEndPosition(pos,   true);
-        if (tknEnd - tknStart > 4)
+        if (tknEnd - tknStart > 2)
         {
-            hlStart = tips[0].Find(stc->GetTextRange(tknStart, tknEnd));
-            if (hlStart != wxNOT_FOUND)
+            for (size_t i = 0; i < tips[0].Length(); ++i)
+            {
+                size_t hlLoc = tips[0].find(stc->GetTextRange(tknStart, tknEnd), i);
+                if (hlLoc == wxString::npos)
+                    break;
+                hlStart = hlLoc;
                 hlEnd = hlStart + tknEnd - tknStart;
+                if (   (hlStart > 0 && (tips[0][hlStart - 1] == wxT('_') || wxIsalpha(tips[0][hlStart - 1])))
+                    || (hlEnd < static_cast<int>(tips[0].Length()) - 1 && (tips[0][hlEnd] == wxT('_') || wxIsalpha(tips[0][hlEnd]))) )
+                {
+                    i = hlEnd;
+                    hlStart = hlEnd = wxSCI_INVALID_POSITION;
+                }
+                else
+                    break;
+            }
         }
     }
     else if (!(   stc->IsString(style)
