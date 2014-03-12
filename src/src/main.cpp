@@ -47,6 +47,7 @@
 #include <cbplugin.h>
 #include <cbproject.h>
 #include <cbworkspace.h>
+#include <ccmanager.h>
 #include <configmanager.h>
 #include <debuggermanager.h>
 #include <editorcolourset.h>
@@ -607,6 +608,8 @@ MainFrame::MainFrame(wxWindow* parent)
     LoadWindowSize();
     ScanForPlugins();
     CreateToolbars();
+
+    Manager::Get()->GetCCManager();
 
     // save default view
     wxString deflayout = cfg->Read(_T("/main_frame/layout/default"));

@@ -753,6 +753,9 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * @return return true if the plugin handles completion for this editor,
           * false otherwise*/
         virtual bool IsProviderFor(cbEditor* cb) { (void) cb; return false; }  // purposely not marked 'cb_optional', override should use param
+
+        ///////////////////////////////////////////////////////////////////////
+        virtual wxArrayString GetToolTips(int pos, int style, cbEditor* ed) = 0;
 };
 
 /** @brief Base class for wizard plugins

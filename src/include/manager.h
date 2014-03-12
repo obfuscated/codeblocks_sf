@@ -40,6 +40,7 @@ class ScriptingManager;
 class ConfigManager;
 class FileManager;
 class ColourManager;
+class CCManager;
 class cbSearchResultsLog;
 
 
@@ -122,6 +123,7 @@ public:
     FileManager*         GetFileManager()                             const;
     DebuggerManager*     GetDebuggerManager()                         const;
     ColourManager*       GetColourManager()                           const;
+    CCManager*           GetCCManager()                               const;
 
 
     /////// XML Resource functions ///////

@@ -99,6 +99,8 @@ public:
     virtual void ShowCallTip();
     virtual bool IsProviderFor(cbEditor* ed);
 
+    virtual wxArrayString GetToolTips(int pos, int style, cbEditor* ed);
+
     /** show auto-completion list for preprocessor directives*/
     void CodeCompletePreprocessor();
     /** show auto-completion after #include */
@@ -211,9 +213,6 @@ private:
     void OnParserStart(wxCommandEvent& event);
     /** batch parsing end event*/
     void OnParserEnd(wxCommandEvent& event);
-
-    /** mouse hover event*/
-    void OnEditorTooltip(CodeBlocksEvent& event);
 
     /** receive event from SystemHeadersThread */
     void OnSystemHeadersThreadUpdate(CodeBlocksThreadEvent& event);

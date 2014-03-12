@@ -658,7 +658,6 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSaveOrModified));
     pm->RegisterEventSink(cbEVT_EDITOR_OPEN,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
-    pm->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,       new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorTooltip));
     pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
 
     m_LastAutocompIndex = -1;
@@ -942,6 +941,64 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
             return false;
     }
     return true;
+}
+
+wxArrayString CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
+{
+    wxArrayString tips;
+    if (!IsAttached() || !m_InitDone)
+        return tips;
+
+    if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
+        return tips;
+
+    // ignore comments, strings, preprocesor, etc
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (   stc->IsString(style)
+        || stc->IsComment(style)
+        || stc->IsCharacter(style)
+        || stc->IsPreprocessor(style) )
+    {
+        if (style != wxSCI_C_WXSMITH && m_NativeParser.GetParser().Done())
+            DoShowCallTip(pos);
+        return tips;
+    }
+
+    TRACE(_T("OnEditorTooltip"));
+
+    TokenIdxSet result;
+    int endOfWord = stc->WordEndPosition(pos, true);
+    if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
+    {
+        TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
+
+        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+
+        int count = 0;
+        for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
+        {
+            const Token* token = tree->at(*it);
+            if (token)
+            {
+                wxString tip = token->DisplayName();
+                if (tips.Index(tip) != wxNOT_FOUND) // avoid showing tips twice
+                    continue;
+                tips.Add(tip);
+                ++count;
+                if (count > 32) // allow max 32 matches (else something is definitely wrong)
+                    break;
+            }
+        }
+
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+
+        if (tips.IsEmpty() && m_NativeParser.GetParser().Done())
+            DoShowCallTip(pos);
+    }
+    else if (m_NativeParser.GetParser().Done())
+        DoShowCallTip(pos);
+
+    return tips;
 }
 
 int CodeCompletion::CodeComplete()
@@ -2831,136 +2888,6 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
         }
         m_NeedsBatchColour = false;
     }
-
-    event.Skip();
-}
-
-void CodeCompletion::OnEditorTooltip(CodeBlocksEvent& event)
-{
-    if (!IsAttached() || !m_InitDone || wxGetKeyState(WXK_CONTROL))
-    {
-        event.Skip();
-        return;
-    }
-
-    if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("eval_tooltip"), true))
-    {
-        event.Skip();
-        return;
-    }
-
-    EditorBase* base = event.GetEditor();
-    cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
-    if (!ed || ed->IsContextMenuOpened())
-    {
-        event.Skip();
-        return;
-    }
-
-    if ( !IsProviderFor(ed) )
-    {
-        event.Skip();
-        return;
-    }
-
-    cbStyledTextCtrl* stc = ed->GetControl();
-    if (stc->CallTipActive() && event.GetExtraLong() == 0)
-        stc->CallTipCancel();
-//        CCLogger::Get()->DebugLog(F(_T("CodeCompletion::OnEditorTooltip: %p"), ed));
-    /* NOTE: The following 2 lines of codes can fix [Bug #11785].
-    *       The solution may not the best one and it requires the editor
-    *       to have the focus (even if C::B has the focus) in order to pop-up the tooltip. */
-    if (wxWindow::FindFocus() != static_cast<wxWindow*>(stc))
-    {
-        event.Skip();
-        return;
-    }
-
-    int pos = stc->PositionFromPointClose(event.GetX(), event.GetY());
-    if (pos < 0 || pos >= stc->GetLength())
-    {
-        event.Skip();
-        return;
-    }
-
-    // ignore comments, strings, preprocesor, etc
-    int style = event.GetInt();
-    if (   stc->IsString(style)
-        || stc->IsComment(style)
-        || stc->IsCharacter(style)
-        || stc->IsPreprocessor(style) )
-    {
-        if (style != wxSCI_C_WXSMITH && m_NativeParser.GetParser().Done())
-            DoShowCallTip(pos);
-        event.Skip();
-        return;
-    }
-
-    TRACE(_T("OnEditorTooltip"));
-
-    TokenIdxSet result;
-    int endOfWord = stc->WordEndPosition(pos, true);
-    if (m_NativeParser.MarkItemsByAI(result, true, false, true, endOfWord))
-    {
-        wxString      calltip;
-        wxArrayString tips;
-
-        TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
-
-        CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-        int count = 0;
-        size_t tipWidth = 0;
-        for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
-        {
-            const Token* token = tree->at(*it);
-            if (token)
-            {
-                wxString tip = token->DisplayName();
-                if (tips.Index(tip) != wxNOT_FOUND) // avoid showing tips twice
-                    continue;
-
-                tips.Add(tip);
-                calltip << tip << _T("\n");
-                if (tip.Length() > tipWidth)
-                    tipWidth = tip.Length();
-                ++count;
-                if (count > 32) // allow max 32 matches (else something is definitely wrong)
-                {
-                    calltip.Clear();
-                    break;
-                }
-            }
-        }
-
-        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
-        if (!calltip.IsEmpty())
-        {
-            calltip.RemoveLast(); // last \n
-
-            int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
-                         // pos - lnStart   == distance from start of line
-                         //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
-                         //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
-                         //       horizontal scrolling is accounted for by PointFromPosition().x
-            int offset = tipWidth + pos + 1 - lnStart -
-                         (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
-                          stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
-            if (offset > 0)
-                pos -= offset;
-            if (pos < lnStart) // do not go to previous line if tip is wider than editor
-                pos = lnStart;
-
-            stc->CallTipShow(pos, calltip);
-            event.SetExtraLong(1);
-            TRACE(calltip);
-        }
-        else if (m_NativeParser.GetParser().Done())
-            DoShowCallTip(pos);
-    }
-    else if (m_NativeParser.GetParser().Done())
-        DoShowCallTip(pos);
 
     event.Skip();
 }
