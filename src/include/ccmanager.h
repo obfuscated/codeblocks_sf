@@ -20,6 +20,8 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         CCManager();
         ~CCManager();
 
+        /** event handler to list the suggestion, when a user press Ctrl-space (by default) */
+        void OnCompleteCode(CodeBlocksEvent& event);
         void OnDeactivateApp(CodeBlocksEvent& event);
         void OnDeactivateEd(CodeBlocksEvent& event);
         void OnEditorHook(cbEditor* ed, wxScintillaEvent& event);

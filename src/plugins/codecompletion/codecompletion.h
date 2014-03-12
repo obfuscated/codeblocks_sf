@@ -99,6 +99,7 @@ public:
     virtual void ShowCallTip();
     virtual bool IsProviderFor(cbEditor* ed);
 
+    virtual std::vector<CCToken> GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed);
     virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed);
     virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
 

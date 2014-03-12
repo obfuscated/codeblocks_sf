@@ -203,7 +203,7 @@ public:
      * @param typedCommas how much comma characters the user has typed in the current line before the cursor.
      * @return position index of the start of the arguments
      */
-    int GetCallTips(wxArrayString& items, int& typedCommas, int pos = wxNOT_FOUND);
+    int GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* ed, int pos = wxNOT_FOUND);
 
     /** Word start position in the editor
      * @return position index

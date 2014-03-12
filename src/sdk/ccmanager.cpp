@@ -64,6 +64,7 @@ CCManager::CCManager() :
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new CCEvent(this, &CCManager::OnDeactivateEd));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,     new CCEvent(this, &CCManager::OnEditorTooltip));
     Manager::Get()->RegisterEventSink(cbEVT_SHOW_CALL_TIP,      new CCEvent(this, &CCManager::OnShowCallTip));
+    Manager::Get()->RegisterEventSink(cbEVT_COMPLETE_CODE,      new CCEvent(this, &CCManager::OnCompleteCode));
     m_EditorHookID = EditorHooks::RegisterHook(new EditorHooks::HookFunctor<CCManager>(this, &CCManager::OnEditorHook));
     Connect(idCallTipTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
 }
@@ -94,6 +95,33 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
         }
     }
     return m_pLastCCPlugin;
+}
+
+void CCManager::OnCompleteCode(CodeBlocksEvent& event)
+{
+    event.Skip();
+
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
+    if (!ccPlugin)
+        return;
+
+    cbStyledTextCtrl* stc = ed->GetControl();
+    int tknEnd = stc->GetCurrentPos();
+    int tknStart = stc->WordStartPosition(tknEnd, true);
+    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetAutocompList(tknStart, tknEnd, ed);
+    if (tokens.empty())
+        return;
+    stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
+    //stc->AutoCSetOrder(wxSCI_ORDER_PERFORMSORT);
+    stc->AutoCompSetSeparator(wxT('|'));
+    wxString items;
+    for (size_t i = 0; i < tokens.size(); ++i)
+        items += tokens[i].displayName + wxT("|");
+    items.RemoveLast();
+    stc->AutoCompShow(tknEnd - tknStart, items);
 }
 
 void CCManager::OnDeactivateApp(CodeBlocksEvent& event)

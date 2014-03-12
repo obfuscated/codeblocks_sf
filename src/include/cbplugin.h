@@ -757,11 +757,14 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         //---------------------------------------------------------------------//
         struct CCToken
         {
-            CCToken(int _id, const wxString& dispNm) : id(_id), displayName(dispNm) {}
+            CCToken(int _id, const wxString& dispNm) : id(_id), displayName(dispNm), name(dispNm) {}
+            CCToken(int _id, const wxString& dispNm, const wxString& nm) : id(_id), displayName(dispNm), name(nm) {}
             int id;
             wxString displayName;
+            wxString name;
         };
 
+        virtual std::vector<CCToken> GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed) = 0;
         virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed) = 0;
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
 };

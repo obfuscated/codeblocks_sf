@@ -729,19 +729,6 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
     {
         m_EditMenu = menuBar->GetMenu(pos);
         m_EditMenu->AppendSeparator();
-
-        const wxLanguageInfo* info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
-        if ( info && ( (   info->Language >= wxLANGUAGE_CHINESE
-                && info->Language <= wxLANGUAGE_CHINESE_TAIWAN )
-            || info->Language == wxLANGUAGE_JAPANESE
-            || info->Language == wxLANGUAGE_KOREAN ) )
-        {
-            m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tShift-Space"));
-        }
-        else
-            m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tCtrl-Space"));
-
-        m_EditMenu->AppendSeparator();
         m_EditMenu->Append(idMenuRenameSymbols, _("Rename symbols\tAlt-N"));
     }
     else
@@ -939,6 +926,158 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
     return true;
 }
 
+std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed)
+{
+    const bool preprocessorOnly = m_CompletePPOnly;
+    m_CompletePPOnly = false;
+    std::vector<CCToken> tokens;
+
+    if (!IsAttached() || !m_InitDone)
+        return tokens;
+
+    FileType ft = FileTypeOf(ed->GetShortName());
+    const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
+
+    //TRACE(_T("CodeComplete"));
+
+    TokenIdxSet result;
+    if (   m_NativeParser.MarkItemsByAI(result, m_NativeParser.GetParser().Options().useSmartSense, true, caseSens, tknEnd)
+        || m_NativeParser.LastAISearchWasGlobal() ) // enter even if no match (code-complete C++ keywords)
+    {
+        if (s_DebugSmartSense)
+            CCLogger::Get()->DebugLog(F(wxT("%lu results"), static_cast<unsigned long>(result.size())));
+        TRACE(F(wxT("%lu results"), static_cast<unsigned long>(result.size())));
+
+        if (result.size() <= m_CCMaxMatches)
+        {
+            if (s_DebugSmartSense)
+                CCLogger::Get()->DebugLog(wxT("Generating tokens list..."));
+
+            wxImageList* ilist = m_NativeParser.GetImageList();
+            ed->GetControl()->ClearRegisteredImages();
+
+            tokens.reserve(result.size());
+            wxArrayInt alreadyRegistered;
+            std::set<wxString> uniqueStrings; // ignore keywords with same name as parsed tokens
+
+            TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
+
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
+
+            for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
+            {
+                const Token* token = tree->at(*it);
+                if (!token || token->m_Name.IsEmpty())
+                    continue;
+
+                if (preprocessorOnly && token->m_TokenKind != tkPreprocessor)
+                    continue;
+
+                int iidx = m_NativeParser.GetTokenKindImage(token);
+                if (alreadyRegistered.Index(iidx) == wxNOT_FOUND)
+                {
+                    ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
+                    alreadyRegistered.Add(iidx);
+                }
+
+                const wxString idxStr = F(wxT("?%d"), iidx);
+                wxString dispStr;
+                if (token->m_TokenKind & tkAnyFunction)
+                {
+                    if (m_DocHelper.IsEnabled())
+                        dispStr = wxT("(): ") + token->m_FullType;
+                    else
+                        dispStr = token->GetFormattedArgs() << _T(": ") << token->m_FullType;
+                }
+                else if (token->m_TokenKind == tkVariable)
+                    dispStr = wxT(": ") + token->m_FullType;
+                tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr + idxStr, token->m_Name + idxStr));
+                uniqueStrings.insert(token->m_Name);
+
+                if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
+                {
+                    for (size_t i = 0; i < token->m_Aliases.size(); ++i)
+                    {
+                        // dispStr will currently be empty, but contain something in the future...
+                        tokens.push_back(CCToken(token->m_Index, token->m_Aliases[i] + dispStr + idxStr, token->m_Aliases[i] + idxStr));
+                        uniqueStrings.insert(token->m_Aliases[i]);
+                    }
+                }
+            }
+
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+
+            if (m_NativeParser.LastAISearchWasGlobal() && !preprocessorOnly)
+            {
+                // empty or partial search phrase: add theme keywords in search list
+                if (s_DebugSmartSense)
+                    CCLogger::Get()->DebugLog(_T("Last AI search was global: adding theme keywords in list"));
+
+                EditorColourSet* theme = ed->GetColourSet();
+                if (theme)
+                {
+                    wxString lastSearch = m_NativeParser.LastAIGlobalSearch().Lower();
+                    int iidx = ilist->GetImageCount();
+                    bool isC = ft == ftHeader || ft == ftSource;
+                    // theme keywords
+                    HighlightLanguage lang = ed->GetLanguage();
+                    if (lang == HL_NONE)
+                        lang = theme->GetLanguageForFilename(ed->GetFilename());
+                    wxString strLang = theme->GetLanguageName(lang);
+                    // if its sourcecode/header file and a known fileformat, show the corresponding icon
+                    if (isC && strLang == wxT("C/C++"))
+                        ed->GetControl()->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
+                    else if (isC && strLang == wxT("D"))
+                        ed->GetControl()->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
+                    else
+                        ed->GetControl()->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
+                    const wxString idxStr = F(wxT("?%d"), iidx);
+                    // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
+                    // but this is now configurable in global settings
+                    for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
+                    {
+                        if (!m_LexerKeywordsToInclude[i])
+                            continue;
+
+                        wxString keywords = theme->GetKeywords(lang, i);
+                        wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
+                        while (tkz.HasMoreTokens())
+                        {
+                            wxString kw = tkz.GetNextToken();
+                            if (   kw.Lower().StartsWith(lastSearch)
+                                && uniqueStrings.find(kw) == uniqueStrings.end() )
+                            {
+                                tokens.push_back(CCToken(wxNOT_FOUND, kw + idxStr));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        else if (!ed->GetControl()->CallTipActive())
+        {
+            wxString msg = _("Too many results.\n"
+                             "Please edit results' limit in code-completion options,\n"
+                             "or type at least one more character to narrow the scope down.");
+            ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+        }
+    }
+    else if (!ed->GetControl()->CallTipActive())
+    {
+        if (s_DebugSmartSense)
+            CCLogger::Get()->DebugLog(_T("0 results"));
+
+        if (!m_NativeParser.GetParser().Done())
+        {
+            wxString msg = _("The Parser is still parsing files.");
+            ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+            msg += m_NativeParser.GetParser().NotDoneReason();
+            CCLogger::Get()->DebugLog(msg);
+        }
+    }
+    return tokens;
+}
+
 wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed)
 {
     wxStringVec tips;
@@ -947,7 +1086,7 @@ wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& h
 
     int typedCommas = 0;
     wxArrayString items;
-    argsPos = m_NativeParser.GetCallTips(items, typedCommas, pos);
+    argsPos = m_NativeParser.GetCallTips(items, typedCommas, ed, pos);
     std::set<wxString> unique_tips; // check against this before inserting a new tip in the list
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
@@ -2088,9 +2227,9 @@ void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
     TRACE(_T("OnCodeComplete"));
 
     // Fire-up event
-    CodeBlocksEvent evt(cbEVT_COMPLETE_CODE, 0, 0, 0, this);
+    /*CodeBlocksEvent evt(cbEVT_COMPLETE_CODE, 0, 0, 0, this);
     Manager::Get()->ProcessEvent(evt);
-    Manager::Yield();
+    Manager::Yield();*/
 
     if (!Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/use_code_completion"), true))
         return;

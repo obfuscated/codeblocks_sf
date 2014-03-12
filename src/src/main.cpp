@@ -247,6 +247,7 @@ int idEditToggleCommentSelected   = XRCID("idEditToggleCommentSelected");
 int idEditStreamCommentSelected   = XRCID("idEditStreamCommentSelected");
 int idEditBoxCommentSelected      = XRCID("idEditBoxCommentSelected");
 int idEditShowCallTip             = XRCID("idEditShowCallTip");
+int idEditCompleteCode            = wxNewId();
 
 int idViewLayoutDelete       = XRCID("idViewLayoutDelete");
 int idViewLayoutSave         = XRCID("idViewLayoutSave");
@@ -355,6 +356,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditStreamCommentSelected, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBoxCommentSelected,    MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditShowCallTip,           MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditCompleteCode,          MainFrame::OnEditMenuUpdateUI)
 
     EVT_UPDATE_UI(idSearchFind,                MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindInFiles,         MainFrame::OnSearchMenuUpdateUI)
@@ -482,6 +484,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditStreamCommentSelected, MainFrame::OnEditStreamCommentSelected)
     EVT_MENU(idEditBoxCommentSelected,    MainFrame::OnEditBoxCommentSelected)
     EVT_MENU(idEditShowCallTip,           MainFrame::OnEditShowCallTip)
+    EVT_MENU(idEditCompleteCode,          MainFrame::OnEditCompleteCode)
 
     EVT_MENU(idSearchFind,                MainFrame::OnSearchFind)
     EVT_MENU(idSearchFindInFiles,         MainFrame::OnSearchFind)
@@ -977,6 +980,18 @@ void MainFrame::CreateMenubar()
                 }
             }
         }
+        const wxLanguageInfo* info = wxLocale::GetLanguageInfo(wxLANGUAGE_DEFAULT);
+        wxMenu* editMenu = mbar->GetMenu(tmpidx);
+        if (   info
+            && ( ( info->Language >= wxLANGUAGE_CHINESE
+                  && info->Language <= wxLANGUAGE_CHINESE_TAIWAN )
+                || info->Language == wxLANGUAGE_JAPANESE
+                || info->Language == wxLANGUAGE_KOREAN ) )
+        {
+            editMenu->Append(idEditCompleteCode, _("Complete code\tShift-Space"));
+        }
+        else
+            editMenu->Append(idEditCompleteCode, _("Complete code\tCtrl-Space"));
     }
 
     tmpidx = mbar->FindMenu(_("&Tools"));
@@ -3566,6 +3581,12 @@ void MainFrame::OnEditShowCallTip(cb_unused wxCommandEvent& event)
     Manager::Get()->ProcessEvent(evt);
 }
 
+void MainFrame::OnEditCompleteCode(cb_unused wxCommandEvent& event)
+{
+    CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
+    Manager::Get()->ProcessEvent(evt);
+}
+
 void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -4004,6 +4025,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditStreamCommentSelected, ed);
     mbar->Enable(idEditBoxCommentSelected,    ed);
     mbar->Enable(idEditShowCallTip,           ed);
+    mbar->Enable(idEditCompleteCode,          ed);
 
     if (ed)
     {

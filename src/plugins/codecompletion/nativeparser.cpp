@@ -865,13 +865,12 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result,
     return MarkItemsByAI(&searchData, result, reallyUseAI, isPrefix, caseSensitive, caretPos);
 }
 
-int NativeParser::GetCallTips(wxArrayString& items, int& typedCommas, int pos)
+int NativeParser::GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* ed, int pos)
 {
     items.Clear();
     typedCommas = 0;
     int commas = 0;
 
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed || !m_Parser->Done())
     {
         items.Add(wxT("Parsing at the moment..."));
