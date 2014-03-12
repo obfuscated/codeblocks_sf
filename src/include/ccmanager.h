@@ -38,10 +38,15 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** event handler to show documentation, when user changes autocomplete selection */
         void OnAutocompleteSelect(wxListEvent& event);
         void OnAutocompleteHide(wxShowEvent& event);
+#ifdef __WXMSW__
+        /** intercept cbStyledTextCtrl scroll events and forward to autocomplete/documentation popups */
+        void OnPopupScroll(wxMouseEvent& event);
+#endif // __WXMSW__
         void OnHtmlLink(wxHtmlLinkEvent& event);
         void OnTimer(wxTimerEvent& event);
 
         void DoBufferedCC(cbStyledTextCtrl* stc);
+        void DoHidePopup();
         void DoShowDocumentation(cbEditor* ed);
         /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
@@ -58,6 +63,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         wxTimer m_AutocompSelectTimer;
         wxSize m_DocSize;
         wxPoint m_DocPos;
+#ifdef __WXMSW__
+        wxListView* m_pAutocompPopup;
+#endif // __WXMSW__
         cbEditor* m_pLastEditor;
         cbCodeCompletionPlugin* m_pLastCCPlugin;
         UnfocusablePopupWindow* m_pPopup;

@@ -122,7 +122,7 @@ public:
 #ifdef __WXMAC__
                 | wxPOPUP_WINDOW
 #endif // __WXMAC__
-            )
+                )
 #endif // wxUSE_POPUPWIN
     {
         Hide();
@@ -216,6 +216,9 @@ CCManager::CCManager() :
     m_CallTipTimer(this, idCallTipTimer),
     m_AutoLaunchTimer(this, idAutoLaunchTimer),
     m_AutocompSelectTimer(this, idAutocompSelectTimer),
+#ifdef __WXMSW__
+    m_pAutocompPopup(nullptr),
+#endif // __WXMSW__
     m_pLastEditor(nullptr),
     m_pLastCCPlugin(nullptr)
 {
@@ -384,7 +387,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
 // cbEVT_APP_DEACTIVATED
 void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
 {
-    m_pPopup->Hide();
+    DoHidePopup();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
     {
@@ -399,7 +402,7 @@ void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
 // cbEVT_EDITOR_DEACTIVATED
 void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
 {
-    m_pPopup->Hide();
+    DoHidePopup();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
     if (ed)
     {
@@ -425,8 +428,10 @@ void CCManager::OnEditorOpen(CodeBlocksEvent& event)
 // cbEVT_EDITOR_CLOSE
 void CCManager::OnEditorClose(CodeBlocksEvent& event)
 {
-    m_pPopup->Hide();
+    DoHidePopup();
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
+    if (ed == m_pLastEditor)
+        m_pLastEditor = nullptr;
     if (ed && ed->GetControl())
     {
         // TODO: is this ever called?
@@ -598,7 +603,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     }
     else if (evtType == wxEVT_SCI_AUTOCOMP_SELECTION)
     {
-        m_pPopup->Hide();
+        DoHidePopup();
         cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
         if (ccPlugin)
         {
@@ -614,7 +619,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         }
     }
     else if (evtType == wxEVT_SCI_AUTOCOMP_CANCELLED)
-        m_pPopup->Hide();
+        DoHidePopup();
     event.Skip();
 }
 
@@ -645,7 +650,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     }
     else if (m_CallTipActive != wxSCI_INVALID_POSITION)
     {
-        stc->CallTipCancel();
+        static_cast<wxScintilla*>(stc)->CallTipCancel();
         m_CallTipActive = wxSCI_INVALID_POSITION;
     }
 }
@@ -655,6 +660,9 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
     event.Skip();
     m_AutocompSelectTimer.Start(AUTOCOMP_SELECT_DELAY, wxTIMER_ONE_SHOT);
     wxObject* evtObj = event.GetEventObject();
+#ifdef __WXMSW__
+    m_pAutocompPopup = static_cast<wxListView*>(evtObj);
+#endif // __WXMSW__
     if (!evtObj)
         return;
     wxWindow* evtWin = static_cast<wxWindow*>(evtObj)->GetParent();
@@ -687,13 +695,26 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
 void CCManager::OnAutocompleteHide(wxShowEvent& event)
 {
     event.Skip();
-    m_pPopup->Hide();
+    DoHidePopup();
     wxObject* evtObj = event.GetEventObject();
     if (evtObj)
         static_cast<wxWindow*>(evtObj)->Disconnect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
     if (m_CallTipActive != wxSCI_INVALID_POSITION && !m_AutoLaunchTimer.IsRunning())
         m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
 }
+
+#ifdef __WXMSW__
+void CCManager::OnPopupScroll(wxMouseEvent& event)
+{
+    const wxPoint& pos = m_pLastEditor->GetControl()->ClientToScreen(event.GetPosition());
+    if (m_pPopup->GetScreenRect().Contains(pos))
+        m_pHtml->GetEventHandler()->ProcessEvent(event);
+    else if (m_pAutocompPopup && m_pAutocompPopup->GetScreenRect().Contains(pos))
+        m_pAutocompPopup->ScrollList(0, event.GetWheelRotation() / -4); // TODO: magic number... can we hook to the actual event?
+    else
+        event.Skip();
+}
+#endif // __WXMSW__
 
 void CCManager::OnHtmlLink(wxHtmlLinkEvent& event)
 {
@@ -704,7 +725,7 @@ void CCManager::OnHtmlLink(wxHtmlLinkEvent& event)
     bool dismissPopup = false;
     const wxString& html = ccPlugin->OnDocumentationLink(event, dismissPopup);
     if (dismissPopup)
-        m_pPopup->Hide();
+        DoHidePopup();
     else if (!html.IsEmpty())
         m_pHtml->SetPage(html);
     // plugins are responsible to skip this event (if they choose to)
@@ -777,6 +798,17 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
     }
 }
 
+void CCManager::DoHidePopup()
+{
+    if (!m_pPopup->IsShown())
+        return;
+    m_pPopup->Hide();
+#ifdef __WXMSW__
+    if (m_pLastEditor && m_pLastEditor->GetControl())
+        m_pLastEditor->GetControl()->Disconnect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
+#endif // __WXMSW__
+}
+
 void CCManager::DoShowDocumentation(cbEditor* ed)
 {
     cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
@@ -790,7 +822,7 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
     const wxString& html = ccPlugin->GetDocumentation(m_AutocompTokens[m_LastAutocompIndex]);
     if (html.IsEmpty())
     {
-        m_pPopup->Hide();
+        DoHidePopup();
         return;
     }
 
@@ -800,7 +832,13 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
     m_pPopup->SetClientSize(m_DocSize);
     m_pPopup->SetPosition(m_DocPos);
     m_pPopup->Thaw();
-    m_pPopup->Show();
+    if (!m_pPopup->IsShown())
+    {
+        m_pPopup->Show();
+#ifdef __WXMSW__
+        ed->GetControl()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
+#endif // __WXMSW__
+    }
 }
 
 void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd)
