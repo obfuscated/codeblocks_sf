@@ -33,6 +33,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** if the default set of characters that auto-launch codecomplete requests are not appropriate, register a new set */
         void RegisterAutoLaunchChars(const wxString& chars, cbCodeCompletionPlugin* registrant);
 
+        /** let CCManager know that new results are available from cbCodeCompletionPlugin::GetDocumentation() */
+        void NotifyDocumentation();
+
     private:
         CCManager();
         ~CCManager();

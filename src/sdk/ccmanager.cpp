@@ -344,6 +344,13 @@ void CCManager::RegisterAutoLaunchChars(const wxString& chars, cbCodeCompletionP
         m_AutoLaunchChars[registrant] = std::set<wxChar>(chars.begin(), chars.end());
 }
 
+void CCManager::NotifyDocumentation()
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        DoShowDocumentation(ed);
+}
+
 // priority, then alphabetical
 struct TokenSorter
 {
