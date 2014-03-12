@@ -488,7 +488,9 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
                || stc->IsCharacter(style)
                || stc->IsPreprocessor(style) ))
     {
-        tips = ccPlugin->GetCallTips(pos, style, ed, hlStart, hlEnd, argsPos);
+        const int line = stc->LineFromPosition(pos);
+        if (pos + 4 > stc->PositionFromLine(line) + (int)ed->GetLineIndentString(line).Length())
+            tips = ccPlugin->GetCallTips(pos, style, ed, hlStart, hlEnd, argsPos);
     }
     if (tips.empty())
     {
