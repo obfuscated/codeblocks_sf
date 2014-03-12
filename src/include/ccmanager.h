@@ -79,6 +79,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         CallTipVec m_CallTips;
         CallTipVec::const_iterator m_CurCallTip;
         std::map<int, size_t> m_CallTipChoiceDict; // remember past choices
+        std::map<int, size_t> m_CallTipFuzzyChoiceDict; // remember past choices based on prefix
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
         wxTimer m_AutocompSelectTimer;

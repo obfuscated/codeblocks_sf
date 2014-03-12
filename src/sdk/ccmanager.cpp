@@ -759,7 +759,17 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
             std::map<int, size_t>::const_iterator choiceItr =
                 m_CallTipChoiceDict.find(CCManagerHelper::CallTipToInt(m_CurCallTip->tip, m_CallTips.size()));
             if (choiceItr != m_CallTipChoiceDict.end() && choiceItr->second < m_CallTips.size())
-                m_CurCallTip += choiceItr->second;
+                m_CurCallTip = m_CallTips.begin() + choiceItr->second;
+            if (choiceItr == m_CallTipChoiceDict.end() || argsPos == m_CallTipActive)
+            {
+                int prefixEndPos = argsPos;
+                while (prefixEndPos > 0 && wxIsspace(stc->GetCharAt(prefixEndPos - 1)))
+                    --prefixEndPos;
+                const wxString& prefix = stc->GetTextRange(stc->WordStartPosition(prefixEndPos, true), prefixEndPos);
+                choiceItr = m_CallTipFuzzyChoiceDict.find(CCManagerHelper::CallTipToInt(prefix, m_CallTips.size()));
+                if (choiceItr != m_CallTipFuzzyChoiceDict.end() && choiceItr->second < m_CallTips.size())
+                    m_CurCallTip = m_CallTips.begin() + choiceItr->second;
+            }
             // search short term recall
             for (CallTipVec::const_iterator itr = m_CallTips.begin();
                  itr != m_CallTips.end(); ++itr)
@@ -1012,6 +1022,7 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
     if (sRange < m_CurCallTip->tip.Length())
         tips.push_back(m_CurCallTip->tip.Mid(sRange));
     int offset = 0;
+    cbStyledTextCtrl* stc = ed->GetControl();
     if (m_CallTips.size() > 1)
     {
         ++offset;
@@ -1027,8 +1038,13 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
         tips.push_back(wxString::Format(wxT("(%d/%u)"), m_CurCallTip - m_CallTips.begin() + 1, m_CallTips.size()));
         // store for better first choice later
         m_CallTipChoiceDict[CCManagerHelper::CallTipToInt(m_CallTips.front().tip, m_CallTips.size())] = m_CurCallTip - m_CallTips.begin();
+        // fuzzy store
+        int prefixEndPos = m_CallTipActive;
+        while (prefixEndPos > 0 && wxIsspace(stc->GetCharAt(prefixEndPos - 1)))
+            --prefixEndPos;
+        const wxString& prefix = stc->GetTextRange(stc->WordStartPosition(prefixEndPos, true), prefixEndPos);
+        m_CallTipFuzzyChoiceDict[CCManagerHelper::CallTipToInt(prefix, m_CallTips.size())] = m_CurCallTip - m_CallTips.begin();
     }
-    cbStyledTextCtrl* stc = ed->GetControl();
     int pos = stc->GetCurrentPos();
     int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
     while (wxIsspace(stc->GetCharAt(lnStart)))
