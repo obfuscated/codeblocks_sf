@@ -221,6 +221,10 @@ private:
     /** show code suggestion list*/
     void DoCodeComplete();
 
+    void DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, int caretPos, bool preprocessorOnly = false);
+    void DoCodeCompletePreprocessor(std::vector<CCToken>& tokens, cbEditor* ed, int tknStart, int tknEnd);
+    void DoCodeCompleteIncludes(std::vector<CCToken>& tokens, cbEditor* ed, int& tknStart, int tknEnd);
+
     /** ContextMenu->Insert-> declaration/implementation*/
     int DoClassMethodDeclImpl();
     /** ContextMenu->Insert-> All class methods*/

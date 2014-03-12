@@ -928,27 +928,89 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
 
 std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto)
 {
-    const bool preprocessorOnly = m_CompletePPOnly;
-    m_CompletePPOnly = false;
+    //const bool preprocessorOnly = m_CompletePPOnly;
+    //m_CompletePPOnly = false;
     std::vector<CCToken> tokens;
 
     if (!IsAttached() || !m_InitDone)
         return tokens;
 
-    if (   isAuto
-        && ed->GetControl()->GetCharAt(tknEnd - 1) == wxT(':')
-        && ed->GetControl()->GetCharAt(tknEnd - 2) != wxT(':') )
+    cbStyledTextCtrl* stc = ed->GetControl();
+    const int style = stc->GetStyleAt(tknEnd);
+    const wxChar curChar = stc->GetCharAt(tknEnd - 1);
+
+    if (isAuto) // filter illogical cases of auto-launch
+    {
+        if (   (   curChar == wxT(':') // scope operator
+                && stc->GetCharAt(tknEnd - 2) != wxT(':') )
+            || (   wxString(wxT("<\"/")).Find(curChar) != wxNOT_FOUND // #include directive
+                && !stc->IsPreprocessor(style) ) )
+        {
+            return tokens;
+        }
+    }
+
+    const int lineIndentPos = stc->GetLineIndentPosition(stc->GetCurrentLine());
+    const wxChar lineFirstChar = stc->GetCharAt(lineIndentPos);
+
+    if (lineFirstChar == wxT('#'))
+    {
+        const int startPos = stc->WordStartPosition(lineIndentPos + 1, true);
+        const int endPos = stc->WordEndPosition(lineIndentPos + 1, true);
+        const wxString str = stc->GetTextRange(startPos, endPos);
+
+        if (str == wxT("include") && tknEnd > endPos)
+        {
+            /*if (   stc->AutoCompActive() && curChar != _T('/')
+                && stc->GetCharAt(tknEnd - m_CCAutoLaunchChars - 5) == _T('/') )
+            {
+                return; // prevent listing refinement from causing the box to flash (rebuild) too much
+            }*/
+            DoCodeCompleteIncludes(tokens, ed, tknStart, tknEnd);
+        }
+        else if (endPos >= tknEnd && tknEnd > lineIndentPos)
+            DoCodeCompletePreprocessor(tokens, ed, tknStart, tknEnd);
+        else if ( (   str == wxT("define")
+                   || str == wxT("if")
+                   || str == wxT("ifdef")
+                   || str == wxT("ifndef")
+                   || str == wxT("elif")
+                   || str == wxT("elifdef")
+                   || str == wxT("elifndef")
+                   || str == wxT("undef") )
+                 && tknEnd > endPos )
+        {
+            //m_CompletePPOnly = true;
+            DoCodeComplete(tokens, ed, tknEnd, true);
+            //m_DocHelper.Hide();
+        }
+        return tokens;
+    }
+    else if (curChar == wxT('#'))
+        return tokens;
+    else if (lineFirstChar == wxT(':') && curChar == _T(':'))
+        return tokens;
+
+    if (   stc->IsString(style)
+        || stc->IsComment(style)
+        || stc->IsCharacter(style)
+        || stc->IsPreprocessor(style) )
     {
         return tokens;
     }
 
+    DoCodeComplete(tokens, ed, tknEnd);
+    return tokens;
+}
+
+void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, int caretPos, bool preprocessorOnly)
+{
     FileType ft = FileTypeOf(ed->GetShortName());
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
-
-    //TRACE(_T("CodeComplete"));
+    cbStyledTextCtrl* stc = ed->GetControl();
 
     TokenIdxSet result;
-    if (   m_NativeParser.MarkItemsByAI(result, m_NativeParser.GetParser().Options().useSmartSense, true, caseSens, tknEnd)
+    if (   m_NativeParser.MarkItemsByAI(result, m_NativeParser.GetParser().Options().useSmartSense, true, caseSens, caretPos)
         || m_NativeParser.LastAISearchWasGlobal() ) // enter even if no match (code-complete C++ keywords)
     {
         if (s_DebugSmartSense)
@@ -961,11 +1023,11 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                 CCLogger::Get()->DebugLog(wxT("Generating tokens list..."));
 
             wxImageList* ilist = m_NativeParser.GetImageList();
-            ed->GetControl()->ClearRegisteredImages();
+            stc->ClearRegisteredImages();
 
             tokens.reserve(result.size());
-            wxArrayInt alreadyRegistered;
-            std::set<wxString> uniqueStrings; // ignore keywords with same name as parsed tokens
+            std::set<int> alreadyRegistered;
+            StringSet uniqueStrings; // ignore keywords with same name as parsed tokens
 
             TokenTree* tree = m_NativeParser.GetParser().GetTokenTree();
 
@@ -981,10 +1043,10 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                     continue;
 
                 int iidx = m_NativeParser.GetTokenKindImage(token);
-                if (alreadyRegistered.Index(iidx) == wxNOT_FOUND)
+                if (alreadyRegistered.find(iidx) == alreadyRegistered.end())
                 {
-                    ed->GetControl()->RegisterImage(iidx, ilist->GetBitmap(iidx));
-                    alreadyRegistered.Add(iidx);
+                    stc->RegisterImage(iidx, ilist->GetBitmap(iidx));
+                    alreadyRegistered.insert(iidx);
                 }
 
                 const wxString idxStr = F(wxT("?%d"), iidx);
@@ -1033,11 +1095,11 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                     wxString strLang = theme->GetLanguageName(lang);
                     // if its sourcecode/header file and a known fileformat, show the corresponding icon
                     if (isC && strLang == wxT("C/C++"))
-                        ed->GetControl()->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
+                        stc->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
                     else if (isC && strLang == wxT("D"))
-                        ed->GetControl()->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
+                        stc->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
                     else
-                        ed->GetControl()->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
+                        stc->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
                     const wxString idxStr = F(wxT("?%d"), iidx);
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
                     // but this is now configurable in global settings
@@ -1047,7 +1109,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                             continue;
 
                         wxString keywords = theme->GetKeywords(lang, i);
-                        wxStringTokenizer tkz(keywords, _T(" \t\r\n"), wxTOKEN_STRTOK);
+                        wxStringTokenizer tkz(keywords, wxT(" \t\r\n"), wxTOKEN_STRTOK);
                         while (tkz.HasMoreTokens())
                         {
                             wxString kw = tkz.GetNextToken();
@@ -1061,28 +1123,194 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                 }
             }
         }
-        else if (!ed->GetControl()->CallTipActive())
+        else if (!stc->CallTipActive())
         {
             wxString msg = _("Too many results.\n"
                              "Please edit results' limit in code-completion options,\n"
                              "or type at least one more character to narrow the scope down.");
-            ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+            stc->CallTipShow(stc->GetCurrentPos(), msg);
         }
     }
-    else if (!ed->GetControl()->CallTipActive())
+    else if (!stc->CallTipActive())
     {
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(_T("0 results"));
+            CCLogger::Get()->DebugLog(wxT("0 results"));
 
         if (!m_NativeParser.GetParser().Done())
         {
             wxString msg = _("The Parser is still parsing files.");
-            ed->GetControl()->CallTipShow(ed->GetControl()->GetCurrentPos(), msg);
+            stc->CallTipShow(stc->GetCurrentPos(), msg);
             msg += m_NativeParser.GetParser().NotDoneReason();
             CCLogger::Get()->DebugLog(msg);
         }
     }
-    return tokens;
+}
+
+void CodeCompletion::DoCodeCompletePreprocessor(std::vector<CCToken>& tokens, cbEditor* ed, int tknStart, int tknEnd)
+{
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (stc->GetLexer() != wxSCI_LEX_CPP)
+    {
+        const FileType fTp = FileTypeOf(ed->GetShortName());
+        if (   fTp != ftSource
+            && fTp != ftHeader
+            && fTp != ftResource )
+        {
+            return; // not C/C++
+        }
+    }
+    const wxString text = stc->GetTextRange(tknStart, tknEnd);
+
+    wxStringVec macros;
+    macros.push_back(wxT("define"));
+    macros.push_back(wxT("elif"));
+    macros.push_back(wxT("elifdef"));
+    macros.push_back(wxT("elifndef"));
+    macros.push_back(wxT("else"));
+    macros.push_back(wxT("endif"));
+    macros.push_back(wxT("error"));
+    macros.push_back(wxT("if"));
+    macros.push_back(wxT("ifdef"));
+    macros.push_back(wxT("ifndef"));
+    macros.push_back(wxT("include"));
+    macros.push_back(wxT("line"));
+    macros.push_back(wxT("pragma"));
+    macros.push_back(wxT("undef"));
+    const wxString idxStr = F(wxT("?%d"), PARSER_IMG_PREPROCESSOR);
+    for (size_t i = 0; i < macros.size(); ++i)
+    {
+        if (text.IsEmpty() || macros[i][0] == text[0]) // ignore tokens that start with a different letter
+            tokens.push_back(CCToken(wxNOT_FOUND, macros[i] + idxStr));
+    }
+    stc->ClearRegisteredImages();
+    stc->RegisterImage(PARSER_IMG_PREPROCESSOR,
+                       m_NativeParser.GetImageList()->GetBitmap(PARSER_IMG_PREPROCESSOR));
+}
+
+void CodeCompletion::DoCodeCompleteIncludes(std::vector<CCToken>& tokens, cbEditor* ed, int& tknStart, int tknEnd)
+{
+    if (!m_CCEnableHeaders)
+        return;
+
+    const wxString curFile(ed->GetFilename());
+    const wxString curPath(wxFileName(curFile).GetPath());
+    wxArrayString buildTargets;
+
+    cbProject* project = m_NativeParser.GetProjectByEditor(ed);
+    ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
+    if (pf)
+        buildTargets = pf->buildTargets;
+
+    FileType ft = FileTypeOf(ed->GetShortName());
+    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+        return;
+
+    cbStyledTextCtrl* stc = ed->GetControl();
+    const int lineStartPos = stc->PositionFromLine(stc->GetCurrentLine());
+    wxString line = stc->GetCurLine();
+    line.Trim();
+    if (line.IsEmpty() || !CodeCompletionHelper::TestIncludeLine(line))
+        return;
+
+    int keyPos = line.Find(wxT('"'));
+    if (keyPos == wxNOT_FOUND || keyPos >= tknEnd - lineStartPos)
+        keyPos = line.Find(wxT('<'));
+    if (keyPos == wxNOT_FOUND || keyPos >= tknEnd - lineStartPos)
+        return;
+    ++keyPos;
+
+    // now, we are after the quote prompt
+    wxString filename = line.SubString(keyPos, tknEnd - lineStartPos - 1);
+    filename.Replace(wxT("\\"), wxT("/"), true);
+    if (filename.Last() == wxT('"') || filename.Last() == wxT('>'))
+        filename.RemoveLast();
+
+    size_t maxFiles = m_CCMaxMatches;
+    if (filename.IsEmpty() && maxFiles > 3000)
+        maxFiles = 3000; // do not try to collect too many files if there is no context (prevent hang)
+
+    // fill a list of matching files
+    StringSet files;
+
+    // #include < or #include "
+    {
+        wxCriticalSectionLocker locker(m_SystemHeadersThreadCS);
+        wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
+        for (size_t i = 0; i < incDirs.GetCount(); ++i)
+        {
+            SystemHeadersMap::const_iterator shm_it = m_SystemHeadersMap.find(incDirs[i]);
+            if (shm_it != m_SystemHeadersMap.end())
+            {
+                const StringSet& headers = shm_it->second;
+                for (StringSet::const_iterator ss_it = headers.begin(); ss_it != headers.end(); ++ss_it)
+                {
+                    const wxString& file = *ss_it;
+                    if (file.StartsWith(filename))
+                    {
+                        files.insert(file);
+                        if (files.size() > maxFiles)
+                            break; // exit inner loop
+                    }
+                }
+                if (files.size() > maxFiles)
+                    break; // exit outer loop
+            }
+        }
+    }
+
+    // #include "
+    if (project)
+    {
+        const wxArrayString localIncludeDirs = GetLocalIncludeDirs(project, buildTargets);
+        for (FilesList::const_iterator it = project->GetFilesList().begin();
+                                       it != project->GetFilesList().end(); ++it)
+        {
+            pf = *it;
+            if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
+            {
+                wxString file = pf->file.GetFullPath();
+                wxString header;
+                for (size_t j = 0; j < localIncludeDirs.GetCount(); ++j)
+                {
+                    const wxString& dir = localIncludeDirs[j];
+                    if (file.StartsWith(dir))
+                    {
+                        header = file.Mid(dir.Len());
+                        header.Replace(wxT("\\"), wxT("/"));
+                        break;
+                    }
+                }
+
+                if (header.IsEmpty())
+                {
+                    if (pf->buildTargets != buildTargets)
+                        continue;
+
+                    wxFileName fn(file);
+                    fn.MakeRelativeTo(curPath);
+                    header = fn.GetFullPath(wxPATH_UNIX);
+                }
+
+                if (header.StartsWith(filename))
+                {
+                    files.insert(header);
+                    if (files.size() > maxFiles)
+                        break;
+                }
+            }
+        }
+    }
+
+    if (!files.empty())
+    {
+        tknStart = lineStartPos + keyPos;
+        const wxString idxStr = wxT("?0");
+        tokens.reserve(files.size());
+        for (StringSet::const_iterator ssIt = files.begin(); ssIt != files.end(); ++ssIt)
+            tokens.push_back(CCToken(wxNOT_FOUND, *ssIt + idxStr));
+        stc->ClearRegisteredImages();
+        stc->RegisterImage(0, wxBitmap(header_file_xpm));
+    }
 }
 
 wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed)
@@ -1094,15 +1322,15 @@ wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& h
     int typedCommas = 0;
     wxArrayString items;
     argsPos = m_NativeParser.GetCallTips(items, typedCommas, ed, pos);
-    std::set<wxString> unique_tips; // check against this before inserting a new tip in the list
+    StringSet uniqueTips; // check against this before inserting a new tip in the list
     for (size_t i = 0; i < items.GetCount(); ++i)
     {
         // allow only unique, non-empty items with equal or more commas than what the user has already typed
-        if (   unique_tips.find(items[i]) == unique_tips.end() // unique
+        if (   uniqueTips.find(items[i]) == uniqueTips.end() // unique
             && !items[i].IsEmpty() // non-empty
             && typedCommas <= m_NativeParser.CountCommas(items[i], 0) ) // commas satisfied
         {
-            unique_tips.insert(items[i]);
+            uniqueTips.insert(items[i]);
             if (tips.empty())
                 m_NativeParser.GetCallTipHighlight(items[i], &hlStart, &hlEnd, typedCommas);
             else if (hlStart == hlEnd)

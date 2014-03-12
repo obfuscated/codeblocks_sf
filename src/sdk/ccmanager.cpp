@@ -63,7 +63,7 @@ CCManager::CCManager() :
     const wxString ctChars = wxT(",;\n()");
     for (size_t i = 0; i < ctChars.Length(); ++i)
         m_CallTipChars.insert(ctChars[i]);
-    const wxString alChars = wxT(".:<>\"#");
+    const wxString alChars = wxT(".:<>\"#/");
     for (size_t i = 0; i < alChars.Length(); ++i)
         m_AutoLaunchChars.insert(alChars[i]);
 /* end temporary */
@@ -129,6 +129,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     //stc->AutoCSetOrder(wxSCI_ORDER_PERFORMSORT);
     stc->AutoCompSetSeparator(wxT('|'));
     wxString items;
+    items.Alloc(tokens.size() * 10); // TODO: measure performance
     for (size_t i = 0; i < tokens.size(); ++i)
         items += tokens[i].displayName + wxT("|");
     items.RemoveLast();
@@ -231,7 +232,8 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             const int pos = stc->GetCurrentPos();
             const int wordStartPos = stc->WordStartPosition(pos, true);
             // TODO: read settings
-            if (pos - wordStartPos >= 3)
+            if (   (pos - wordStartPos >= 3 && !stc->AutoCompActive())
+                || pos - wordStartPos == 3 + 4 )
             {
                 CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
                 Manager::Get()->ProcessEvent(evt);
