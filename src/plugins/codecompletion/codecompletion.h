@@ -371,9 +371,10 @@ private:
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
     ReparsingMap m_ReparsingMap;
 
-    /** Popup window to display documentation */
+    /** Provider of documentation for the popup window */
     DocumentationHelper     m_DocHelper;
 
+    // requires access to: m_NativeParser.GetParser().GetTokenTree()
     friend wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent&, bool&);
 
     DECLARE_EVENT_TABLE()

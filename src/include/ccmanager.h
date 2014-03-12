@@ -35,11 +35,13 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void OnEditorTooltip(CodeBlocksEvent& event);
         /** event handler to show the call tip, when user press Ctrl-Shift-Space */
         void OnShowCallTip(CodeBlocksEvent& event);
+        /** event handler to show documentation, when user changes autocomplete selection */
         void OnAutocompleteSelect(wxListEvent& event);
         void OnHtmlLink(wxHtmlLinkEvent& event);
         void OnTimer(wxTimerEvent& event);
 
         void DoShowDocumentation(cbEditor* ed);
+        /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
         std::set<wxChar> m_CallTipChars;

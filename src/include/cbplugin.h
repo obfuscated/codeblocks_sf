@@ -772,11 +772,13 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         };
 
         virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd) = 0;
+        /// returns html
         virtual wxString GetDocumentation(const CCToken& token) = 0;
         virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos) = 0;
         virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
         /// dismissPopup is false by default
         virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup) = 0;
+        /// callbacks for actually autocompleting/writing the token to the editor
         virtual void DoAutocomplete(const CCToken& token, cbEditor* ed) = 0;
         virtual void DoAutocomplete(const wxString& token, cbEditor* ed) = 0;
 };
