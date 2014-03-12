@@ -213,11 +213,9 @@ CCManager::CCManager() :
 {
 /* temporary filler */
     const wxString ctChars = wxT(",;\n()");
-    for (size_t i = 0; i < ctChars.Length(); ++i)
-        m_CallTipChars.insert(ctChars[i]);
+    m_CallTipChars.insert(ctChars.begin(), ctChars.end());
     const wxString alChars = wxT(".:<>\"#/");
-    for (size_t i = 0; i < alChars.Length(); ++i)
-        m_AutoLaunchChars.insert(alChars[i]);
+    m_AutoLaunchChars.insert(alChars.begin(), alChars.end());
 /* end temporary */
     m_pPopup = new UnfocusablePopupWindow(Manager::Get()->GetAppFrame());
     m_pHtml = new wxHtmlWindow(m_pPopup, wxID_ANY, wxDefaultPosition,
@@ -267,11 +265,14 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
     const PluginsArray& pa = Manager::Get()->GetPluginManager()->GetCodeCompletionOffers();
     for (size_t i = 0; i < pa.GetCount(); ++i)
     {
-        if (static_cast<cbCodeCompletionPlugin*>(pa[i])->IsProviderFor(ed))
+        cbCodeCompletionPlugin::CCProviderStatus status = static_cast<cbCodeCompletionPlugin*>(pa[i])->GetProviderStatusFor(ed);
+        if (status == cbCodeCompletionPlugin::ccpsActive)
         {
             m_pLastCCPlugin = static_cast<cbCodeCompletionPlugin*>(pa[i]);
             break;
         }
+        else if (status == cbCodeCompletionPlugin::ccpsUniversal)
+            m_pLastCCPlugin = static_cast<cbCodeCompletionPlugin*>(pa[i]);
     }
     return m_pLastCCPlugin;
 }

@@ -738,7 +738,6 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         virtual wxArrayString GetCallTips() = 0;
         virtual int CodeComplete() = 0;
         virtual void ShowCallTip() = 0;
-#endif // 0
         /** @brief Does this plugin handle code completion for the editor cb?
           *
           * A plugin should override this function to indicate whether it will
@@ -757,8 +756,16 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * @return return true if the plugin handles completion for this editor,
           * false otherwise*/
         virtual bool IsProviderFor(cbEditor* cb) { (void) cb; return false; }  // purposely not marked 'cb_optional', override should use param
+#endif // 0
 
         //---------------------------------------------------------------------//
+        enum CCProviderStatus
+        {
+            ccpsInactive,
+            ccpsActive,
+            ccpsUniversal
+        };
+
         struct CCToken
         {
             CCToken(int _id, const wxString& dispNm) :
@@ -771,6 +778,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
             wxString name;
         };
 
+        virtual CCProviderStatus GetProviderStatusFor(cbEditor* ed) = 0;
         virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd) = 0;
         /// returns html
         virtual wxString GetDocumentation(const CCToken& token) = 0;
@@ -781,6 +789,9 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         /// callbacks for actually autocompleting/writing the token to the editor
         virtual void DoAutocomplete(const CCToken& token, cbEditor* ed) = 0;
         virtual void DoAutocomplete(const wxString& token, cbEditor* ed) = 0;
+
+    protected:
+        bool IsProviderFor(cbEditor* ed);
 };
 
 /** @brief Base class for wizard plugins

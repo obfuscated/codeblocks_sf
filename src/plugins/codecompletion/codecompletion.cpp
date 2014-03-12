@@ -844,15 +844,21 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
     return true;
 }
 
-bool CodeCompletion::IsProviderFor(cbEditor* ed)
+CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor* ed)
 {
-    PluginsArray pa = Manager::Get()->GetPluginManager()->GetCodeCompletionOffers();
-    for (unsigned int i=0; i<pa.Count(); ++i)
+    if (ed->GetLanguage() == ed->GetColourSet()->GetHighlightLanguage(wxT("C/C++")))
+        return ccpsActive;
+    switch (ParserCommon::FileType(ed->GetFilename()))
     {
-        if ( (pa[i] != this) && static_cast<cbCodeCompletionPlugin*>(pa[i])->IsProviderFor(ed))
-            return false;
+        case ParserCommon::ftHeader:
+        case ParserCommon::ftSource:
+            return ccpsActive;
+
+        case ParserCommon::ftOther:
+        default:
+            break;
     }
-    return true;
+    return ccpsUniversal;
 }
 
 std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd)

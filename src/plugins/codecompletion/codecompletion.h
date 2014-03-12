@@ -94,7 +94,7 @@ public:
     virtual int GetToolBarPriority() { return 10; }
 
     // override
-    virtual bool IsProviderFor(cbEditor* ed);
+    virtual CCProviderStatus GetProviderStatusFor(cbEditor* ed);
     virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
     virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos);
     virtual wxString GetDocumentation(const CCToken& token);
