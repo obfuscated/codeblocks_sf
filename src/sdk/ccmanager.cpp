@@ -82,6 +82,8 @@ template<> bool Mgr<CCManager>::isShutdown = false;
 const int idCallTipTimer = wxNewId();
 const int idAutoLaunchTimer = wxNewId();
 const int idAutocompSelectTimer = wxNewId();
+const int idCallTipNext = wxNewId();
+const int idCallTipPrevious = wxNewId();
 
 // milliseconds
 #define CALLTIP_REFRESH_DELAY 90
@@ -238,6 +240,18 @@ CCManager::CCManager() :
     m_pHtml->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
     m_pHtml->Connect(wxEVT_COMMAND_HTML_LINK_CLICKED,
                      wxHtmlLinkEventHandler(CCManager::OnHtmlLink), nullptr, this);
+
+    wxFrame* mainFrame = Manager::Get()->GetAppFrame();
+    wxMenuBar* menuBar = mainFrame->GetMenuBar();
+    if (menuBar)
+    {
+        int idx = menuBar->FindMenu(wxT("&Edit"));
+        wxMenu* edMenu = menuBar->GetMenu(idx < 0 ? 0 : idx);
+        edMenu->Append(idCallTipNext, _("Next call tip\tCtrl-N"));
+        edMenu->Append(idCallTipPrevious,  _("Previous call tip\tCtrl-P"));
+        mainFrame->Connect(idCallTipNext, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
+        mainFrame->Connect(idCallTipPrevious, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
+    }
 
     typedef cbEventFunctor<CCManager, CodeBlocksEvent> CCEvent;
     Manager::Get()->RegisterEventSink(cbEVT_APP_DEACTIVATED,    new CCEvent(this, &CCManager::OnDeactivateApp));
@@ -636,6 +650,25 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     }
     else if (evtType == wxEVT_SCI_AUTOCOMP_CANCELLED)
         DoHidePopup();
+    else if (evtType == wxEVT_SCI_CALLTIP_CLICK)
+    {
+        switch (event.GetPosition())
+        {
+            case 1: // up
+                --m_CurCallTip;
+                DoUpdateCallTip(ed);
+                break;
+
+            case 2: // down
+                ++m_CurCallTip;
+                DoUpdateCallTip(ed);
+                break;
+
+            case 0: // elsewhere
+            default:
+                break;
+        }
+    }
     event.Skip();
 }
 
@@ -655,12 +688,21 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     int pos = stc->GetCurrentPos();
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
-    const wxStringVec& tips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), ed, hlStart, hlEnd, argsPos);
-    if (!tips.empty() && (event.GetInt() != FROM_TIMER || argsPos == m_CallTipActive))
+    m_CallTips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), ed, hlStart, hlEnd, argsPos);
+    if (!m_CallTips.empty() && (event.GetInt() != FROM_TIMER || argsPos == m_CallTipActive))
     {
         int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
         while (wxIsspace(stc->GetCharAt(lnStart)))
             ++lnStart; // do not show too far left on multi-line call tips
+        m_CurCallTip = m_CallTips.begin();
+        wxStringVec tips(m_CurCallTip, m_CurCallTip + 1);
+        if (m_CurCallTip + 1 != m_CallTips.end())
+        {
+            tips.begin()->Prepend(wxT('\002')); // down arrow
+            ++hlStart;
+            ++hlEnd;
+            tips.push_back(wxString::Format(wxT("(1/%u)"), m_CallTips.size()));
+        }
         DoShowTips(tips, stc, std::max(pos, lnStart), argsPos, hlStart, hlEnd);
         m_CallTipActive = argsPos;
     }
@@ -789,6 +831,29 @@ void CCManager::OnTimer(wxTimerEvent& event)
         event.Skip();
 }
 
+void CCManager::OnMenuSelect(wxCommandEvent& event)
+{
+    if (m_CallTips.empty())
+        return;
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    if (event.GetId() == idCallTipNext)
+    {
+        if ((m_CurCallTip + 1) == m_CallTips.end())
+            return;
+        ++m_CurCallTip;
+        DoUpdateCallTip(ed);
+    }
+    else if (event.GetId() == idCallTipPrevious)
+    {
+        if (m_CurCallTip == m_CallTips.begin())
+            return;
+        --m_CurCallTip;
+        DoUpdateCallTip(ed);
+    }
+}
+
 void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
 {
     //stc->AutoCompPosStart()
@@ -861,6 +926,34 @@ void CCManager::DoShowDocumentation(cbEditor* ed)
         ed->GetControl()->Connect(wxEVT_MOUSEWHEEL, wxMouseEventHandler(CCManager::OnPopupScroll), nullptr, this);
 #endif // __WXMSW__
     }
+}
+
+void CCManager::DoUpdateCallTip(cbEditor* ed)
+{
+    wxStringVec tips(m_CurCallTip, m_CurCallTip + 1);
+    if (m_CallTips.size() > 1)
+    {
+        wxString formatStr = wxT("(%d/%u)");
+        if (m_CurCallTip == m_CallTips.begin())
+            tips.begin()->Prepend(wxT('\002')); // down arrow
+        else
+        {
+            if (m_CurCallTip + 1 == m_CallTips.end())
+                tips.begin()->Prepend(wxT('\001')); // up arrow
+            else
+            {
+                tips.begin()->Prepend(wxT("\001\002")); // up/down arrows
+                formatStr.Prepend(wxT("  "));
+            }
+        }
+        tips.push_back(wxString::Format(formatStr, m_CurCallTip - m_CallTips.begin() + 1, m_CallTips.size()));
+    }
+    cbStyledTextCtrl* stc = ed->GetControl();
+    int pos = stc->GetCurrentPos();
+    int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
+    while (wxIsspace(stc->GetCharAt(lnStart)))
+        ++lnStart;
+    DoShowTips(tips, stc, std::max(pos, lnStart), m_CallTipActive, -1, -1); // TODO: use highlighting bounds
 }
 
 void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd)

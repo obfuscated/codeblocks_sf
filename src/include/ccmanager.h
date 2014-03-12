@@ -44,10 +44,12 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 #endif // __WXMSW__
         void OnHtmlLink(wxHtmlLinkEvent& event);
         void OnTimer(wxTimerEvent& event);
+        void OnMenuSelect(wxCommandEvent& event);
 
         void DoBufferedCC(cbStyledTextCtrl* stc);
         void DoHidePopup();
         void DoShowDocumentation(cbEditor* ed);
+        void DoUpdateCallTip(cbEditor* ed);
         /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
@@ -59,6 +61,8 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         int m_LastAutocompIndex;
         int m_LastTipPos;
         int m_WindowBound;
+        wxStringVec m_CallTips;
+        wxStringVec::const_iterator m_CurCallTip;
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
         wxTimer m_AutocompSelectTimer;
