@@ -867,7 +867,7 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
     return true;
 }
 
-std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto)
+std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd)
 {
     std::vector<CCToken> tokens;
 
@@ -900,10 +900,10 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
 
         if (str == wxT("include") && tknEnd > endPos)
         {
-            DoCodeCompleteIncludes(tokens, ed, tknStart, tknEnd);
+            DoCodeCompleteIncludes(ed, tknStart, tknEnd, tokens);
         }
         else if (endPos >= tknEnd && tknEnd > lineIndentPos)
-            DoCodeCompletePreprocessor(tokens, ed, tknStart, tknEnd);
+            DoCodeCompletePreprocessor(tknStart, tknEnd, ed, tokens);
         else if ( (   str == wxT("define")
                    || str == wxT("if")
                    || str == wxT("ifdef")
@@ -914,7 +914,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
                    || str == wxT("undef") )
                  && tknEnd > endPos )
         {
-            DoCodeComplete(tokens, ed, tknEnd, true);
+            DoCodeComplete(tknEnd, ed, tokens, true);
         }
         return tokens;
     }
@@ -931,11 +931,11 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(int& tknSta
         return tokens;
     }
 
-    DoCodeComplete(tokens, ed, tknEnd);
+    DoCodeComplete(tknEnd, ed, tokens);
     return tokens;
 }
 
-void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, int caretPos, bool preprocessorOnly)
+void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly)
 {
     FileType fTp = FileTypeOf(ed->GetShortName());
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
@@ -992,7 +992,7 @@ void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, 
                 }
                 else if (token->m_TokenKind == tkVariable)
                     dispStr = wxT(": ") + token->m_FullType;
-                tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr + idxStr, token->m_Name + idxStr));
+                tokens.push_back(CCToken(token->m_Index, token->m_Name + dispStr + idxStr, token->m_Name + idxStr, token->m_IsTemp ? 0 : 5));
                 uniqueStrings.insert(token->m_Name);
 
                 if (token->m_TokenKind == tkNamespace && token->m_Aliases.size())
@@ -1000,7 +1000,7 @@ void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, 
                     for (size_t i = 0; i < token->m_Aliases.size(); ++i)
                     {
                         // dispStr will currently be empty, but contain something in the future...
-                        tokens.push_back(CCToken(token->m_Index, token->m_Aliases[i] + dispStr + idxStr, token->m_Aliases[i] + idxStr));
+                        tokens.push_back(CCToken(token->m_Index, token->m_Aliases[i] + dispStr + idxStr, token->m_Aliases[i] + idxStr, 5));
                         uniqueStrings.insert(token->m_Aliases[i]);
                     }
                 }
@@ -1078,7 +1078,7 @@ void CodeCompletion::DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, 
     }
 }
 
-void CodeCompletion::DoCodeCompletePreprocessor(std::vector<CCToken>& tokens, cbEditor* ed, int tknStart, int tknEnd)
+void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor* ed, std::vector<CCToken>& tokens)
 {
     cbStyledTextCtrl* stc = ed->GetControl();
     if (stc->GetLexer() != wxSCI_LEX_CPP)
@@ -1119,7 +1119,7 @@ void CodeCompletion::DoCodeCompletePreprocessor(std::vector<CCToken>& tokens, cb
                        m_NativeParser.GetImageList()->GetBitmap(PARSER_IMG_PREPROCESSOR));
 }
 
-void CodeCompletion::DoCodeCompleteIncludes(std::vector<CCToken>& tokens, cbEditor* ed, int& tknStart, int tknEnd)
+void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens)
 {
     if (!m_CCEnableHeaders)
         return;
@@ -1245,7 +1245,7 @@ void CodeCompletion::DoCodeCompleteIncludes(std::vector<CCToken>& tokens, cbEdit
     }
 }
 
-wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed)
+wxStringVec CodeCompletion::GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos)
 {
     wxStringVec tips;
     if (!IsAttached() || !m_InitDone || style == wxSCI_C_WXSMITH || !m_NativeParser.GetParser().Done())

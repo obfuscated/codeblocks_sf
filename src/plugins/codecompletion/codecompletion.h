@@ -95,8 +95,8 @@ public:
 
     // override
     virtual bool IsProviderFor(cbEditor* ed);
-    virtual std::vector<CCToken> GetAutocompList(int& tknStart, int& tknEnd, cbEditor* ed, bool isAuto);
-    virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed);
+    virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
+    virtual wxStringVec GetCallTips(int pos, int style, cbEditor* ed, int& hlStart, int& hlEnd, int& argsPos);
     virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
 
     /** get the include paths setting (usually set by user for each C::B project)
@@ -212,9 +212,9 @@ private:
     /** show code suggestion list*/
     void DoCodeComplete();
 
-    void DoCodeComplete(std::vector<CCToken>& tokens, cbEditor* ed, int caretPos, bool preprocessorOnly = false);
-    void DoCodeCompletePreprocessor(std::vector<CCToken>& tokens, cbEditor* ed, int tknStart, int tknEnd);
-    void DoCodeCompleteIncludes(std::vector<CCToken>& tokens, cbEditor* ed, int& tknStart, int tknEnd);
+    void DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly = false);
+    void DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor* ed, std::vector<CCToken>& tokens);
+    void DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens);
 
     /** ContextMenu->Insert-> declaration/implementation*/
     int DoClassMethodDeclImpl();

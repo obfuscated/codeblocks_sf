@@ -14,6 +14,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         friend class Mgr<CCManager>;
         friend class Manager; // give Manager access to our private members
 
+        /** uses active editor if one is not passed; has (minimal) cache optimization */
         cbCodeCompletionPlugin* GetProviderFor(cbEditor* ed = nullptr);
 
     private:

@@ -106,6 +106,29 @@ cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
     return m_pLastCCPlugin;
 }
 
+// priority, then alphabetical
+struct TokenSorter
+{
+    static bool isPureAlphabetical; // TODO: why does this fail if it is not static?
+
+    TokenSorter()
+    {
+        // ctor
+        isPureAlphabetical = true;
+    }
+
+    bool operator()(const cbCodeCompletionPlugin::CCToken& a, const cbCodeCompletionPlugin::CCToken& b)
+    {
+        int diff = a.weight - b.weight;
+        if (diff == 0)
+            diff = a.displayName.CmpNoCase(b.displayName);
+        else if (isPureAlphabetical)
+            isPureAlphabetical = false;
+        return diff < 0;
+    }
+};
+bool TokenSorter::isPureAlphabetical = true;
+
 // cbEVT_COMPLETE_CODE
 void CCManager::OnCompleteCode(CodeBlocksEvent& event)
 {
@@ -121,18 +144,26 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     cbStyledTextCtrl* stc = ed->GetControl();
     int tknEnd = stc->GetCurrentPos();
     int tknStart = stc->WordStartPosition(tknEnd, true);
-    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetAutocompList(tknStart, tknEnd, ed,
-                                                                                           event.GetInt() == FROM_TIMER);
+
+    std::vector<cbCodeCompletionPlugin::CCToken> tokens = ccPlugin->GetAutocompList(event.GetInt() == FROM_TIMER,
+                                                                                    ed, tknStart, tknEnd);
     if (tokens.empty())
         return;
-    //stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
-    stc->AutoCSetOrder(wxSCI_ORDER_PERFORMSORT);
+
+    TokenSorter sortFunctor;
+    std::sort(tokens.begin(), tokens.end(), sortFunctor);
+    if (sortFunctor.isPureAlphabetical)
+        stc->AutoCSetOrder(wxSCI_ORDER_PRESORTED);
+    else
+        stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
     stc->AutoCompSetSeparator(wxT('|'));
     wxString items;
-    items.Alloc(tokens.size() * 10); // TODO: measure performance
+    // experimentally, the average length per token seems to be 23 for the main CC plugin
+    items.Alloc(tokens.size() * 20); // TODO: measure performance
     for (size_t i = 0; i < tokens.size(); ++i)
         items += tokens[i].displayName + wxT("|");
     items.RemoveLast();
+
     stc->AutoCompSetIgnoreCase(true);
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompShow(tknEnd - tknStart, items);
@@ -207,7 +238,7 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
              || stc->IsCharacter(style)
              || stc->IsPreprocessor(style) ) )
     {
-        tips = ccPlugin->GetCallTips(pos, style, hlStart, hlEnd, argsPos, ed);
+        tips = ccPlugin->GetCallTips(pos, style, ed, hlStart, hlEnd, argsPos);
     }
     if (!tips.empty())
     {
@@ -241,7 +272,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             }
             else if (m_AutoLaunchChars.find(ch) != m_AutoLaunchChars.end())
             {
-                m_AutoLaunchTimer.Start(300, wxTIMER_ONE_SHOT);
+                m_AutoLaunchTimer.Start(10, wxTIMER_ONE_SHOT);
                 m_AutocompPosition = pos;
             }
         }
@@ -285,7 +316,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     int pos = stc->GetCurrentPos();
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
-    const wxStringVec& tips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), hlStart, hlEnd, argsPos, ed);
+    const wxStringVec& tips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), ed, hlStart, hlEnd, argsPos);
     if (!tips.empty() && (event.GetInt() != FROM_TIMER || argsPos == m_CallTipActive))
     {
         int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
