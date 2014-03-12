@@ -483,7 +483,8 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
-    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetTokenAt(pos, ed);
+    bool allowCallTip = true;
+    const std::vector<cbCodeCompletionPlugin::CCToken>& tokens = ccPlugin->GetTokenAt(pos, ed, allowCallTip);
     std::set<wxString> uniqueTips;
     for (size_t i = 0; i < tokens.size(); ++i)
         uniqueTips.insert(tokens[i].displayName);
@@ -514,10 +515,11 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
             }
         }
     }
-    else if (!(   stc->IsString(style)
-               || stc->IsComment(style)
-               || stc->IsCharacter(style)
-               || stc->IsPreprocessor(style) ))
+    else if (  allowCallTip
+             && !(   stc->IsString(style)
+                  || stc->IsComment(style)
+                  || stc->IsCharacter(style)
+                  || stc->IsPreprocessor(style) ) )
     {
         const int line = stc->LineFromPosition(pos);
         if (pos + 4 > stc->PositionFromLine(line) + (int)ed->GetLineIndentString(line).Length())

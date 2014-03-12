@@ -903,9 +903,11 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           *
           * @param pos The location being queried.
           * @param ed The context of the request.
+          * @param[out] allowCallTip Allow CCManager to consider displaying a calltip if the results from this
+          *                          function are unsuitable/empty. True by default.
           * @return A list of the token(s) that match the specified location, an empty vector if none.
           */
-        virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed) = 0;
+        virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed, bool& allowCallTip) = 0;
 
         /** @brief Callback to handle a click on a link in the documentation popup.
          *

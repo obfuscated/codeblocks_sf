@@ -1270,7 +1270,7 @@ wxString CodeCompletion::GetDocumentation(const CCToken& token)
     return m_DocHelper.GenerateHTML(token.id, m_NativeParser.GetParser().GetTokenTree());
 }
 
-std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEditor* ed)
+std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEditor* ed, bool& WXUNUSED(allowCallTip))
 {
     std::vector<CCToken> tokens;
     if (!IsAttached() || !m_InitDone)

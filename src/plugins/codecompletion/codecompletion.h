@@ -98,7 +98,7 @@ public:
     virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
     virtual std::vector<CCCallTip> GetCallTips(int pos, int style, cbEditor* ed, int& argsPos);
     virtual wxString GetDocumentation(const CCToken& token);
-    virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
+    virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed, bool& allowCallTip);
     virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup);
     virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
 
