@@ -213,6 +213,7 @@ CCManager::CCManager() :
     m_CallTipActive(wxSCI_INVALID_POSITION),
     m_LastAutocompIndex(wxNOT_FOUND),
     m_LastTipPos(wxSCI_INVALID_POSITION),
+    m_WindowBound(0),
     m_CallTipTimer(this, idCallTipTimer),
     m_AutoLaunchTimer(this, idAutoLaunchTimer),
     m_AutocompSelectTimer(this, idAutocompSelectTimer),
@@ -684,13 +685,17 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
         evtWin->Connect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
 
         const int idx = wxDisplay::GetFromWindow(evtWin);
+        m_WindowBound = m_DocPos.x + m_DocSize.x;
         if (idx != wxNOT_FOUND)
         {
             const wxPoint& corner = m_pPopup->GetParent()->ScreenToClient(wxDisplay(idx).GetGeometry().GetBottomRight());
-            m_DocSize.y = std::max(5 * textHeight,      std::min(m_DocSize.y, corner.y - m_DocPos.y - 2));
+            m_DocSize.y = std::max(8 * textHeight,      std::min(m_DocSize.y, corner.y - m_DocPos.y - 2));
             m_DocSize.x = std::max(m_DocSize.y * 2 / 3, std::min(m_DocSize.x, corner.x - m_DocPos.x - 2));
+            m_WindowBound = corner.x;
         }
     }
+    if ((m_DocPos.x + m_DocSize.x) > m_WindowBound)
+        m_DocPos.x -= evtWin->GetSize().x + m_DocSize.x; // show to the left instead
 }
 
 // Note: according to documentation, this event is only available under wxMSW, wxGTK, and wxOS2

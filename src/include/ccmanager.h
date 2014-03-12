@@ -58,6 +58,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         int m_CallTipActive;
         int m_LastAutocompIndex;
         int m_LastTipPos;
+        int m_WindowBound;
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
         wxTimer m_AutocompSelectTimer;
