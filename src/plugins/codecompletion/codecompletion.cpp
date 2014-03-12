@@ -871,7 +871,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
         if (   (   curChar == wxT(':') // scope operator
                 && stc->GetCharAt(tknEnd - 2) != wxT(':') )
             || (   curChar == wxT('>') // '->'
-                && !stc->GetCharAt(tknEnd - 2) != wxT('-') )
+                && stc->GetCharAt(tknEnd - 2) != wxT('-') )
             || (   wxString(wxT("<\"/")).Find(curChar) != wxNOT_FOUND // #include directive
                 && !stc->IsPreprocessor(style) ) )
         {
