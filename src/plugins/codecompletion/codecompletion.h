@@ -101,7 +101,6 @@ public:
     virtual std::vector<CCToken> GetTokenAt(int pos, cbEditor* ed);
     virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup);
     virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
-    virtual void DoAutocomplete(const wxString& token, cbEditor* ed);
 
     /** get the include paths setting (usually set by user for each C::B project)
      * @param project project info

@@ -1023,6 +1023,16 @@ cbCodeCompletionPlugin::cbCodeCompletionPlugin()
     m_Type = ptCodeCompletion;
 }
 
+void cbCodeCompletionPlugin::DoAutocomplete(cb_unused const CCToken& token, cb_unused cbEditor* ed)
+{
+    // do nothing: allow (wx)Scintilla to handle the insert
+}
+
+void cbCodeCompletionPlugin::DoAutocomplete(const wxString& token, cbEditor* ed)
+{
+    DoAutocomplete(CCToken(-1, token), ed);
+}
+
 bool cbCodeCompletionPlugin::IsProviderFor(cbEditor* ed)
 {
     return (Manager::Get()->GetCCManager()->GetProviderFor(ed) == this);

@@ -788,8 +788,8 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
         /// dismissPopup is false by default
         virtual wxString OnDocumentationLink(wxHtmlLinkEvent& event, bool& dismissPopup) = 0;
         /// callbacks for actually autocompleting/writing the token to the editor
-        virtual void DoAutocomplete(const CCToken& token, cbEditor* ed) = 0;
-        virtual void DoAutocomplete(const wxString& token, cbEditor* ed) = 0;
+        virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);  // override for different wxEVT_SCI_AUTOCOMP_SELECTION behaviour
+        virtual void DoAutocomplete(const wxString& token, cbEditor* ed); // default creates a CCToken and passes it to the overload
 
     protected:
         bool IsProviderFor(cbEditor* ed);

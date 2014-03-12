@@ -342,7 +342,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     }
     items.RemoveLast();
 
-    if (!stc->CallTipActive())
+    if (!stc->CallTipActive() && !stc->AutoCompActive())
         m_CallTipActive = wxSCI_INVALID_POSITION;
 
     stc->AutoCompSetIgnoreCase(true);

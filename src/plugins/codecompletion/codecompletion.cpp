@@ -1498,11 +1498,6 @@ void CodeCompletion::DoAutocomplete(const CCToken& token, cbEditor* ed)
     stc->ChooseCaretX();
 }
 
-void CodeCompletion::DoAutocomplete(const wxString& token, cbEditor* ed)
-{
-    DoAutocomplete(CCToken(-1, token), ed);
-}
-
 wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets)
 {
     wxArrayString dirs;
