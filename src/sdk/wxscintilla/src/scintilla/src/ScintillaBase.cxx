@@ -305,13 +305,6 @@ void ScintillaBase::AutoCompleteMove(int delta) {
 void ScintillaBase::AutoCompleteMoveToCurrentWord() {
 	std::string wordCurrent = RangeText(ac.posStart - ac.startLen, sel.MainCaret());
 	ac.Select(wordCurrent.c_str());
-/* C::B begin */
-	if (!ac.Active()) {
-		SCNotification scn; memset(&scn, 0x00, sizeof(scn));
-		scn.nmhdr.code = SCN_AUTOCCANCELLED;
-		NotifyParent(scn);
-	}
-/* C::B end */
 }
 
 void ScintillaBase::AutoCompleteCharacterAdded(char ch) {

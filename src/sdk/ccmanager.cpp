@@ -40,6 +40,12 @@ namespace CCManagerHelper
         return lnEnd;
     }
 
+    bool IsPosVisible(int pos, wxScintilla* stc)
+    {
+        const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(pos)) - stc->GetFirstVisibleLine();
+        return !(dist < 0 || dist > stc->LinesOnScreen()); // caret is off screen
+    }
+
     // (shamelessly stolen from mime handler plugin ;) )
     // build all HTML font sizes (1..7) from the given base size
     static void BuildFontSizes(int *sizes, int size)
@@ -322,16 +328,17 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
         stc->AutoCSetOrder(wxSCI_ORDER_PRESORTED);
     else
         stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
-    stc->AutoCompSetSeparator(wxT('|'));
+    stc->AutoCompSetSeparator(wxT('\r'));
     wxString items;
     // experimentally, the average length per token seems to be 23 for the main CC plugin
     items.Alloc(m_AutocompTokens.size() * 20); // TODO: measure performance
     for (size_t i = 0; i < m_AutocompTokens.size(); ++i)
-        items += m_AutocompTokens[i].displayName + wxT("|");
+        items += m_AutocompTokens[i].displayName + wxT("\r");
     items.RemoveLast();
 
     stc->AutoCompSetIgnoreCase(true);
     stc->AutoCompSetMaxHeight(14);
+    stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompShow(tknEnd - tknStart, items);
 }
 
@@ -479,14 +486,26 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
                 static_cast<wxScintilla*>(stc)->CallTipCancel();
             if (m_CallTipActive != wxSCI_INVALID_POSITION)
             {
-                const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(m_CallTipActive)) - stc->GetFirstVisibleLine();
-                if (dist < 0 || dist > stc->LinesOnScreen()) // caret is off screen
+                if (CCManagerHelper::IsPosVisible(m_CallTipActive, stc))
+                    m_CallTipTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+                else
                 {
                     m_CallTipTimer.Stop();
                     m_CallTipActive = wxSCI_INVALID_POSITION;
                 }
+            }
+            else if (m_AutoLaunchTimer.IsRunning())
+            {
+                if (CCManagerHelper::IsPosVisible(stc->GetCurrentPos(), stc))
+                    m_AutoLaunchTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
                 else
-                    m_CallTipTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+                    m_AutoLaunchTimer.Stop();
+            }
+            else if (stc->AutoCompActive())
+            {
+                stc->AutoCompCancel();
+                m_AutocompPosition = stc->GetCurrentPos();
+                m_AutoLaunchTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
             }
         }
     }
@@ -585,7 +604,18 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
         wxRect edRect = ed->GetRect();
         m_DocSize.x = edRect.width * 5 / 12;
         m_DocSize.y = acMaxHeight*textHeight;
+        evtWin->Connect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
     }
+}
+
+// Note: according to documentation, this event is only available under wxMSW, wxGTK, and wxOS2
+void CCManager::OnAutocompleteHide(wxShowEvent& event)
+{
+    event.Skip();
+    m_pPopup->Hide();
+    wxObject* evtObj = event.GetEventObject();
+    if (evtObj)
+        static_cast<wxWindow*>(evtObj)->Disconnect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
 }
 
 void CCManager::OnHtmlLink(wxHtmlLinkEvent& event)

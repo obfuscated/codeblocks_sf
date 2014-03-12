@@ -37,6 +37,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void OnShowCallTip(CodeBlocksEvent& event);
         /** event handler to show documentation, when user changes autocomplete selection */
         void OnAutocompleteSelect(wxListEvent& event);
+        void OnAutocompleteHide(wxShowEvent& event);
         void OnHtmlLink(wxHtmlLinkEvent& event);
         void OnTimer(wxTimerEvent& event);
 

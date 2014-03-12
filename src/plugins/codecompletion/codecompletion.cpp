@@ -279,7 +279,7 @@ namespace CodeCompletionHelper
 
     static wxString AutocompGetName(const wxString& selected)
     {
-        size_t nameEnd = selected.find_first_of(_T("(: ?"));
+        size_t nameEnd = selected.find_first_of(_T("(: \n"));
         return selected.substr(0,nameEnd);
     }
 
@@ -971,7 +971,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                     alreadyRegistered.insert(iidx);
                 }
 
-                const wxString idxStr = F(wxT("?%d"), iidx);
+                const wxString idxStr = F(wxT("\n%d"), iidx);
                 wxString dispStr;
                 if (token->m_TokenKind & tkAnyFunction)
                 {
@@ -1022,7 +1022,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                         stc->RegisterImage(iidx, wxBitmap(d_keyword_xpm));
                     else
                         stc->RegisterImage(iidx, wxBitmap(unknown_keyword_xpm));
-                    const wxString idxStr = F(wxT("?%d"), iidx);
+                    const wxString idxStr = F(wxT("\n%d"), iidx);
                     // the first two keyword sets are the primary and secondary keywords (for most lexers at least)
                     // but this is now configurable in global settings
                     for (int i = 0; i <= wxSCI_KEYWORDSET_MAX; ++i)
@@ -1098,7 +1098,7 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
     macros.push_back(wxT("line"));
     macros.push_back(wxT("pragma"));
     macros.push_back(wxT("undef"));
-    const wxString idxStr = F(wxT("?%d"), PARSER_IMG_PREPROCESSOR);
+    const wxString idxStr = F(wxT("\n%d"), PARSER_IMG_PREPROCESSOR);
     for (size_t i = 0; i < macros.size(); ++i)
     {
         if (text.IsEmpty() || macros[i][0] == text[0]) // ignore tokens that start with a different letter
@@ -1226,7 +1226,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     if (!files.empty())
     {
         tknStart = lineStartPos + keyPos;
-        const wxString idxStr = wxT("?0");
+        const wxString idxStr = wxT("\n0");
         tokens.reserve(files.size());
         for (StringSet::const_iterator ssIt = files.begin(); ssIt != files.end(); ++ssIt)
             tokens.push_back(CCToken(wxNOT_FOUND, *ssIt + idxStr));
