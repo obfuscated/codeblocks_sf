@@ -12,8 +12,33 @@
 #include "cbstyledtextctrl.h"
 #include "ccmanager.h"
 
+namespace CCManagerHelper
+{
+    inline void RipplePts(int& ptA, int& ptB, int len, int delta)
+    {
+        if (ptA > len - delta)
+            ptA += delta;
+        if (ptB > len - delta)
+            ptB += delta;
+    }
+
+    // wxScintilla::FindColumn seems to be broken; re-implement:
+    // Find the position of a column on a line taking into account tabs and
+    // multi-byte characters. If beyond end of line, return line end position.
+    int FindColumn(int line, int column, wxScintilla* stc)
+    {
+        int lnEnd = stc->GetLineEndPosition(line);
+        for (int pos = stc->PositionFromLine(line); pos < lnEnd; ++pos)
+        {
+            if (stc->GetColumn(pos) == column)
+                return pos;
+        }
+        return lnEnd;
+    }
+}
+
 template<> CCManager* Mgr<CCManager>::instance = 0;
-template<> bool  Mgr<CCManager>::isShutdown = false;
+template<> bool Mgr<CCManager>::isShutdown = false;
 
 // class constructor
 CCManager::CCManager() :
@@ -23,6 +48,7 @@ CCManager::CCManager() :
     Manager::Get()->RegisterEventSink(cbEVT_APP_DEACTIVATED,    new CCEvent(this, &CCManager::OnDeactivateApp));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new CCEvent(this, &CCManager::OnDeactivateEd));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_TOOLTIP,     new CCEvent(this, &CCManager::OnEditorTooltip));
+    Manager::Get()->RegisterEventSink(cbEVT_SHOW_CALL_TIP,      new CCEvent(this, &CCManager::OnShowCallTip));
 }
 
 // class destructor
@@ -99,58 +125,103 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     if (pos < 0 || pos >= stc->GetLength())
         return;
 
-    const wxStringVec& tips = ccPlugin->GetToolTips(pos, event.GetInt(), ed);
+    int hlStart, hlEnd, argsPos;
+    hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
+    wxStringVec tips = ccPlugin->GetToolTips(pos, event.GetInt(), ed);
     if (tips.empty())
+        tips = ccPlugin->GetCallTips(pos, event.GetInt(), hlStart, hlEnd, argsPos, ed);
+    if (!tips.empty())
+    {
+        DoShowTips(tips, stc, pos, argsPos, hlStart, hlEnd);
+        event.SetExtraLong(1);
+    }
+}
+
+void CCManager::OnShowCallTip(CodeBlocksEvent& event)
+{
+    event.Skip();
+
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
+    if (!ccPlugin)
         return;
 
-    int maxLines = stc->LinesOnScreen() * 2 / 3;
-    if (maxLines < 5)
-        maxLines = 5;
+    cbStyledTextCtrl* stc = ed->GetControl();
+    int pos = stc->GetCurrentPos();
+    int hlStart, hlEnd, argsPos;
+    hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
+    const wxStringVec& tips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), hlStart, hlEnd, argsPos, ed);
+    if (!tips.empty())
+        DoShowTips(tips, stc, pos, argsPos, hlStart, hlEnd);
+}
+
+void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd)
+{
+    int maxLines = std::max(stc->LinesOnScreen() / 4, 5);
     int marginWidth = stc->GetMarginWidth(wxSCI_MARGIN_SYMBOL) + stc->GetMarginWidth(wxSCI_MARGIN_NUMBER);
     int maxWidth = (stc->GetSize().x - marginWidth) / stc->TextWidth(wxSCI_STYLE_LINENUMBER, wxT("W")) - 1;
-    if (maxWidth < 60)
-        maxWidth = 60;
+    maxWidth = std::min(std::max(60, maxWidth), 135);
     wxString tip;
     int lineCount = 0;
+
     for (size_t i = 0; i < tips.size() && lineCount < maxLines; ++i)
     {
-        if (tips[i].Length() > (size_t)maxWidth + 6)
+        if (tips[i].Length() > (size_t)maxWidth + 6) // line is too long, try breaking it
         {
             wxString tipLn = tips[i];
             while (!tipLn.IsEmpty())
             {
                 wxString segment = tipLn.Mid(0, maxWidth);
-                int index = segment.Find(wxT(' '), true);
-                if (index < 20)
+                int index = segment.Find(wxT(' '), true); // break on a space
+                if (index < 20) // no reasonable break?
                 {
-                    segment = tipLn.Mid(0, maxWidth * 6 / 5);
+                    segment = tipLn.Mid(0, maxWidth * 6 / 5); // increase search width a bit
                     index = segment.Find(wxT(' '), true);
                 }
-                if (index < 20 || segment == tipLn)
+                for (int commaIdx = index - 1; commaIdx > maxWidth / 2; --commaIdx) // check back for a comma
                 {
-                    tip += tipLn + wxT("\n  ");
+                    if (segment[commaIdx] == wxT(',') && segment[commaIdx + 1] == wxT(' '))
+                    {
+                        index = commaIdx + 1; // prefer splitting on a comma, if that does not set us back too far
+                        break;
+                    }
+                }
+                if (index < 20 || segment == tipLn) // end of string, or cannot split
+                {
+                    tip += tipLn + wxT("\n");
+                    CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), 1);
                     tipLn.Clear();
                 }
-                else
+                else // continue splitting
                 {
-                    tip += segment.Mid(0, index).Trim() + wxT("\n  ");
-                    tipLn = tipLn.Mid(index).Trim(false);
+                    tip += segment.Mid(0, index) + wxT("\n ");
+                    CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), 2);
+                    // already starts with a space, so all subsequent lines are prefixed by two spaces
+                    tipLn = tipLn.Mid(index);
                 }
                 ++lineCount;
             }
-            tip.RemoveLast(2);
         }
-        else
+        else // just add the line
         {
             tip += tips[i] + wxT("\n");
+            CCManagerHelper::RipplePts(hlStart, hlEnd, tip.Length(), 1);
             ++lineCount;
         }
     }
     tip.RemoveLast(); // trailing linefeed
-    // try to show the tip at the start of the token, or at the margin if we are scrolled right
+
+    // try to show the tip at the start of the token/arguments, or at the margin if we are scrolled right
     // an offset of 2 helps deal with the width of the folding bar (TODO: does an actual calculation exist?)
-    int offset = stc->PointFromPosition(stc->PositionFromLine(stc->LineFromPosition(pos))).x > marginWidth ? 0 : 2;
-    stc->CallTipShow(std::max(stc->WordStartPosition(pos, true),
-                              stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset), tip);
-    event.SetExtraLong(1);
+    int line = stc->LineFromPosition(pos);
+    if (argsPos == wxSCI_INVALID_POSITION)
+        argsPos = stc->WordStartPosition(pos, true);
+    else
+        argsPos = std::min(CCManagerHelper::FindColumn(line, stc->GetColumn(argsPos), stc), stc->WordStartPosition(pos, true));
+    int offset = stc->PointFromPosition(stc->PositionFromLine(line)).x > marginWidth ? 0 : 2;
+    stc->CallTipShow(std::max(argsPos, stc->PositionFromPoint(wxPoint(marginWidth, stc->PointFromPosition(pos).y)) + offset), tip);
+    if (hlStart >= 0 && hlEnd > hlStart)
+        stc->CallTipSetHighlight(hlStart, hlEnd);
 }

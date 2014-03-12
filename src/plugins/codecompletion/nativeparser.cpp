@@ -865,7 +865,7 @@ size_t NativeParser::MarkItemsByAI(TokenIdxSet& result,
     return MarkItemsByAI(&searchData, result, reallyUseAI, isPrefix, caseSensitive, caretPos);
 }
 
-void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& typedCommas, int pos)
+int NativeParser::GetCallTips(wxArrayString& items, int& typedCommas, int pos)
 {
     items.Clear();
     typedCommas = 0;
@@ -875,7 +875,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& ty
     if (!ed || !m_Parser->Done())
     {
         items.Add(wxT("Parsing at the moment..."));
-        return;
+        return wxSCI_INVALID_POSITION;
     }
 
     TRACE(_T("NativeParser::GetCallTips()"));
@@ -896,7 +896,7 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& ty
 
         const wxChar ch = searchData.control->GetCharAt(pos);
         if (ch == _T(';'))
-            return;
+            return wxSCI_INVALID_POSITION;
         else if (ch == _T(','))
         {
             if (nest == 0)
@@ -928,16 +928,17 @@ void NativeParser::GetCallTips(int chars_per_line, wxArrayString &items, int& ty
     const wxString target = searchData.control->GetTextRange(start, end);
     TRACE(_T("Sending \"%s\" for call-tip"), target.wx_str());
     if (target.IsEmpty())
-        return;
+        return wxSCI_INVALID_POSITION;
 
     TokenIdxSet result;
     MarkItemsByAI(result, true, false, true, end);
 
-    ComputeCallTip(m_Parser->GetTokenTree(), result, chars_per_line, items);
+    ComputeCallTip(m_Parser->GetTokenTree(), result, items);
 
     typedCommas = commas;
     TRACE(_T("NativeParser::GetCallTips(): typedCommas=%d"), typedCommas);
     items.Sort();
+    return end;
 }
 
 wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)

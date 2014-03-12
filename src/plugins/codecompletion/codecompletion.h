@@ -99,6 +99,7 @@ public:
     virtual void ShowCallTip();
     virtual bool IsProviderFor(cbEditor* ed);
 
+    virtual wxStringVec GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed);
     virtual wxStringVec GetToolTips(int pos, int style, cbEditor* ed);
 
     /** show auto-completion list for preprocessor directives*/
@@ -150,9 +151,6 @@ private:
 
     /** event handler to list the suggestion, when a user press CTRL+space(by default)*/
     void OnCodeComplete(wxCommandEvent& event);
-
-    /** event handler to show the call tip, when user press Ctrl-Shift-Space */
-    void OnShowCallTip(wxCommandEvent& event);
 
     /** event handler when user click Menu->Search->Goto function*/
     void OnGotoFunction(wxCommandEvent& event);
@@ -221,7 +219,6 @@ private:
 
     /** show code suggestion list*/
     void DoCodeComplete();
-    void DoShowCallTip(int caretPos = wxNOT_FOUND);
 
     /** ContextMenu->Insert-> declaration/implementation*/
     int DoClassMethodDeclImpl();

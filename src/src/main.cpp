@@ -246,6 +246,7 @@ int idEditUncommentSelected       = XRCID("idEditUncommentSelected");
 int idEditToggleCommentSelected   = XRCID("idEditToggleCommentSelected");
 int idEditStreamCommentSelected   = XRCID("idEditStreamCommentSelected");
 int idEditBoxCommentSelected      = XRCID("idEditBoxCommentSelected");
+int idEditShowCallTip             = XRCID("idEditShowCallTip");
 
 int idViewLayoutDelete       = XRCID("idViewLayoutDelete");
 int idViewLayoutSave         = XRCID("idViewLayoutSave");
@@ -353,6 +354,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditToggleCommentSelected, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditStreamCommentSelected, MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBoxCommentSelected,    MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditShowCallTip,           MainFrame::OnEditMenuUpdateUI)
 
     EVT_UPDATE_UI(idSearchFind,                MainFrame::OnSearchMenuUpdateUI)
     EVT_UPDATE_UI(idSearchFindInFiles,         MainFrame::OnSearchMenuUpdateUI)
@@ -479,6 +481,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditToggleCommentSelected, MainFrame::OnEditToggleCommentSelected)
     EVT_MENU(idEditStreamCommentSelected, MainFrame::OnEditStreamCommentSelected)
     EVT_MENU(idEditBoxCommentSelected,    MainFrame::OnEditBoxCommentSelected)
+    EVT_MENU(idEditShowCallTip,           MainFrame::OnEditShowCallTip)
 
     EVT_MENU(idSearchFind,                MainFrame::OnSearchFind)
     EVT_MENU(idSearchFindInFiles,         MainFrame::OnSearchFind)
@@ -3557,6 +3560,12 @@ void MainFrame::OnEditBoxCommentSelected(cb_unused wxCommandEvent& event)
     }
 }
 
+void MainFrame::OnEditShowCallTip(cb_unused wxCommandEvent& event)
+{
+    CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+    Manager::Get()->ProcessEvent(evt);
+}
+
 void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -3994,6 +4003,7 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditToggleCommentSelected, ed);
     mbar->Enable(idEditStreamCommentSelected, ed);
     mbar->Enable(idEditBoxCommentSelected,    ed);
+    mbar->Enable(idEditShowCallTip,           ed);
 
     if (ed)
     {

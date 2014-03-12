@@ -24,6 +24,10 @@ class DLLIMPORT CCManager : public Mgr<CCManager>
         void OnDeactivateEd(CodeBlocksEvent& event);
         /** mouse hover event */
         void OnEditorTooltip(CodeBlocksEvent& event);
+        /** event handler to show the call tip, when user press Ctrl-Shift-Space */
+        void OnShowCallTip(CodeBlocksEvent& event);
+
+        void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
         cbEditor* lastEditor;
         cbCodeCompletionPlugin* lastCCPlugin;

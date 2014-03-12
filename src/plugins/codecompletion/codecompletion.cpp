@@ -455,7 +455,6 @@ static const char* header_file_xpm[] = {
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
 int idMenuCodeComplete          = wxNewId();
-int idMenuShowCallTip           = wxNewId();
 int idMenuGotoFunction          = wxNewId();
 int idMenuGotoPrevFunction      = wxNewId();
 int idMenuGotoNextFunction      = wxNewId();
@@ -492,7 +491,6 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idCurrentProjectReparse, CodeCompletion::OnUpdateUI)
 
     EVT_MENU(idMenuCodeComplete,                   CodeCompletion::OnCodeComplete             )
-    EVT_MENU(idMenuShowCallTip,                    CodeCompletion::OnShowCallTip              )
     EVT_MENU(idMenuGotoFunction,                   CodeCompletion::OnGotoFunction             )
     EVT_MENU(idMenuGotoPrevFunction,               CodeCompletion::OnGotoPrevFunction         )
     EVT_MENU(idMenuGotoNextFunction,               CodeCompletion::OnGotoNextFunction         )
@@ -691,7 +689,6 @@ void CodeCompletion::OnRelease(bool appShutDown)
     if (m_EditMenu)
     {
         m_EditMenu->Delete(idMenuCodeComplete);
-        m_EditMenu->Delete(idMenuShowCallTip);
         m_EditMenu->Delete(idMenuRenameSymbols);
     }
     if (m_SearchMenu)
@@ -744,7 +741,6 @@ void CodeCompletion::BuildMenu(wxMenuBar* menuBar)
         else
             m_EditMenu->Append(idMenuCodeComplete, _("Complete code\tCtrl-Space"));
 
-        m_EditMenu->Append(idMenuShowCallTip, _("Show call tip\tCtrl-Shift-Space"));
         m_EditMenu->AppendSeparator();
         m_EditMenu->Append(idMenuRenameSymbols, _("Rename symbols\tAlt-N"));
     }
@@ -943,6 +939,32 @@ bool CodeCompletion::IsProviderFor(cbEditor* ed)
     return true;
 }
 
+wxStringVec CodeCompletion::GetCallTips(int pos, int style, int& hlStart, int& hlEnd, int& argsPos, cbEditor* ed)
+{
+    wxStringVec tips;
+    if (!IsAttached() || !m_InitDone || style == wxSCI_C_WXSMITH || !m_NativeParser.GetParser().Done())
+        return tips;
+
+    int typedCommas = 0;
+    wxArrayString items;
+    argsPos = m_NativeParser.GetCallTips(items, typedCommas, pos);
+    std::set<wxString> unique_tips; // check against this before inserting a new tip in the list
+    for (size_t i = 0; i < items.GetCount(); ++i)
+    {
+        // allow only unique, non-empty items with equal or more commas than what the user has already typed
+        if (   unique_tips.find(items[i]) == unique_tips.end() // unique
+            && !items[i].IsEmpty() // non-empty
+            && typedCommas <= m_NativeParser.CountCommas(items[i], 0) ) // commas satisfied
+        {
+            unique_tips.insert(items[i]);
+            if (tips.empty())
+                m_NativeParser.GetCallTipHighlight(items[i], &hlStart, &hlEnd, typedCommas);
+            tips.push_back(items[i]);
+        }
+    }
+    return tips;
+}
+
 wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
 {
     wxStringVec tips;
@@ -959,12 +981,10 @@ wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
         || stc->IsCharacter(style)
         || stc->IsPreprocessor(style) )
     {
-        if (style != wxSCI_C_WXSMITH && m_NativeParser.GetParser().Done())
-            DoShowCallTip(pos);
         return tips;
     }
 
-    TRACE(_T("OnEditorTooltip"));
+    TRACE(_T("GetToolTips"));
 
     TokenIdxSet result;
     int endOfWord = stc->WordEndPosition(pos, true);
@@ -991,12 +1011,7 @@ wxStringVec CodeCompletion::GetToolTips(int pos, int style, cbEditor* ed)
         }
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
-        if (tips.empty() && m_NativeParser.GetParser().Done())
-            DoShowCallTip(pos);
     }
-    else if (m_NativeParser.GetParser().Done())
-        DoShowCallTip(pos);
 
     return tips;
 }
@@ -1210,73 +1225,13 @@ int CodeCompletion::CodeComplete()
 
 void CodeCompletion::ShowCallTip()
 {
-    DoShowCallTip();
-}
-
-void CodeCompletion::DoShowCallTip(int caretPos)
-{
-    if (!IsAttached() || !m_InitDone)
-        return;
-
-    if (!Manager::Get()->GetEditorManager())
-        return;
-
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed)
-        return;
-
-    if ( !IsProviderFor(ed) )
-        return;
-
-    // calculate the size of the calltips window
-    int pos = caretPos;
-    if (pos == wxNOT_FOUND)
-        pos = ed->GetControl()->GetCurrentPos();
-    wxPoint p = ed->GetControl()->PointFromPosition(pos); // relative point
-    int pixelWidthPerChar = ed->GetControl()->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));
-    int maxCalltipLineSizeInChars = (ed->GetSize().x - p.x) / pixelWidthPerChar;
-    if (maxCalltipLineSizeInChars < 64)
+    if (ed)
     {
-        // if less than a threshold in chars, recalculate the starting position (instead of shrinking it even more)
-        p.x -= (64 - maxCalltipLineSizeInChars) * pixelWidthPerChar;
-        // but if it goes out of range, continue shrinking
-        if (p.x >= 0)
-        {
-            maxCalltipLineSizeInChars = 64;
-            pos = ed->GetControl()->PositionFromPoint(p);
-        }
-        // else, out of range
+        cbStyledTextCtrl* stc = ed->GetControl();
+        if (!stc->CallTipActive())
+            stc->CallTipShow(stc->GetCurrentPos(), wxT("*TODO*"));
     }
-
-    int start = 0, end = 0, count = 0, typedCommas = 0;
-
-    wxArrayString items;
-    m_NativeParser.GetCallTips(maxCalltipLineSizeInChars, items, typedCommas, caretPos);
-    std::set< wxString, std::less<wxString> > unique_tips; // check against this before inserting a new tip in the list
-    wxString definition;
-    for (unsigned int i = 0; i < items.GetCount(); ++i)
-    {
-        // allow only unique, non-empty items with equal or more commas than what the user has already typed
-        if (unique_tips.find(items[i]) == unique_tips.end() && // unique
-            !items[i].IsEmpty() && // non-empty
-            typedCommas <= m_NativeParser.CountCommas(items[i], 0)) // commas satisfied
-        {
-            unique_tips.insert(items[i]);
-            if (count != 0)
-                definition << _T('\n'); // add new-line, except for the first line
-            definition << items[i];
-            if (start == 0)
-                m_NativeParser.GetCallTipHighlight(items[i], &start, &end, typedCommas);
-            ++count;
-        }
-    }
-
-    if (definition.empty())
-        return;
-
-    ed->GetControl()->CallTipShow(pos, definition);
-    if (start != 0 && end > start)
-        ed->GetControl()->CallTipSetHighlight(start, end);
 }
 
 void CodeCompletion::CodeCompletePreprocessor()
@@ -2076,7 +2031,6 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
     if (m_EditMenu)
     {
         m_EditMenu->Enable(idMenuCodeComplete, HasEd);
-        m_EditMenu->Enable(idMenuShowCallTip, HasEd);
         const bool RenameEnable = HasNameUnderCursor && !IsInclude && m_NativeParser.GetParser().Done();
         m_EditMenu->Enable(idMenuRenameSymbols, RenameEnable);
     }
@@ -2139,21 +2093,6 @@ void CodeCompletion::OnCodeComplete(wxCommandEvent& event)
 
     if (IsAttached() && m_InitDone)
         DoCodeComplete();
-
-    event.Skip();
-}
-
-void CodeCompletion::OnShowCallTip(wxCommandEvent& event)
-{
-    TRACE(_T("OnShowCallTip"));
-
-    // Fire-up event
-    CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP, 0, 0, 0, this);
-    Manager::Get()->ProcessEvent(evt);
-    Manager::Yield();
-
-    if (IsAttached() && m_InitDone)
-        ShowCallTip();
 
     event.Skip();
 }

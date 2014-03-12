@@ -1537,7 +1537,6 @@ int NativeParserBase::GetTokenFromCurrentLine(TokenTree*         tree,
 
 void NativeParserBase::ComputeCallTip(TokenTree*        tree,
                                       const TokenIdxSet& tokens,
-                                      int                chars_per_line,
                                       wxArrayString&     items)
 {
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
@@ -1594,14 +1593,10 @@ void NativeParserBase::ComputeCallTip(TokenTree*        tree,
             items.Add(token->m_BaseType); // typedef'd function pointer
         else
         {
-            wxString s;
             wxString full;
             if ( !PrettyPrintToken(tree, token, full) )
                 full = wxT("Error while pretty printing token!");
-
-            BreakUpInLines(s, full, chars_per_line);
-
-            items.Add(s);
+            items.Add(full);
         }
     }// for
 
@@ -1626,11 +1621,11 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
     switch (token->m_TokenKind)
     {
         case tkConstructor:
-            result = result + token->m_Name + token->m_Args;
+            result = result + token->m_Name + token->GetFormattedArgs();
             return true;
 
         case tkFunction:
-            result = token->m_FullType + wxT(" ") + result + token->m_Name + token->m_Args;
+            result = token->m_FullType + wxT(" ") + result + token->m_Name + token->GetFormattedArgs();
             if (token->m_IsConst)
                 result += wxT(" const");
             if (token->m_IsNoExcept)
@@ -1644,12 +1639,19 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
             else
                 result += token->m_Name + wxT("::");
             return true;
+
+        case tkPreprocessor:
+            if (!token->GetFormattedArgs().IsEmpty())
+            {
+                result = wxT("#define ") + token->m_Name + token->GetFormattedArgs();
+                return true;
+            }
+            // fall through
         case tkEnum:
         case tkTypedef:
         case tkDestructor:
         case tkVariable:
         case tkEnumerator:
-        case tkPreprocessor:
         case tkMacro:
         case tkAnyContainer:
         case tkAnyFunction:
@@ -1658,37 +1660,4 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
             break;
     }
     return true;
-}
-
-void NativeParserBase::BreakUpInLines(wxString&       str,
-                                      const wxString& original_str,
-                                      int             chars_per_line)
-{
-    if (chars_per_line == -1 || original_str.Length() <= (size_t)chars_per_line)
-    {
-        str = original_str;
-        return;
-    }
-
-    // break it up in lines
-    size_t pos = 0;
-    size_t copy_start = 0;
-    int last_comma = -1;
-    while (pos < original_str.Length())
-    {
-        wxChar c = original_str.GetChar(pos);
-
-        if (c == _T(','))
-            last_comma = pos;
-
-        if (pos % chars_per_line == 0 && last_comma != -1)
-        {
-            str << original_str.Mid(copy_start, last_comma - copy_start + 1);
-            str << _T('\n');
-            copy_start = last_comma + 1;
-        }
-        else if (pos == original_str.Length() - 1)
-            str << original_str.Mid(copy_start); // rest of the string
-        ++pos;
-    }
 }

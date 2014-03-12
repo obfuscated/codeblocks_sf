@@ -316,7 +316,6 @@ protected:
      */
     void ComputeCallTip(TokenTree*         tree,
                         const TokenIdxSet& tokens,
-                        int                chars_per_line,
                         wxArrayString&     items);
 
     /** For ComputeCallTip()
@@ -326,11 +325,6 @@ protected:
                           const Token*       token,
                           wxString&          result,
                           bool               isRoot = true);
-
-    /** helper function to split the statement*/
-    void BreakUpInLines(wxString&       str,
-                        const wxString& original_str,
-                        int             chars_per_line = -1);
 
     // convenient static funcs for fast access and improved readability
 
