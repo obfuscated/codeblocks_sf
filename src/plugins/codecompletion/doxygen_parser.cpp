@@ -936,6 +936,7 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
             html += _T(" noexcept");
         html += br;
         break;
+
     case tkPreprocessor:
         html += b1 + token->m_Name + b0 + br + token->m_FullType + br;
         break;
@@ -955,12 +956,17 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
         html += br;
         break;
 
+    case tkConstructor:  // fall-through
+    case tkDestructor:
+        if (token->m_Scope != tsUndefined)
+            html += i1 + token->GetTokenScopeString() + i0 + sep;
+        html += token->m_FullType + sep + b1 + token->m_Name + b0 + ConvertArgsToAnchors(token->GetFormattedArgs()) + br;
+        break;
+
     case tkNamespace:    // fall-through
     case tkClass:        // fall-through
     case tkEnum:         // fall-through
     case tkTypedef:      // fall-through
-    case tkConstructor:  // fall-through
-    case tkDestructor:   // fall-through
     case tkMacro:        // fall-through
     case tkAnyContainer: // fall-through
     case tkAnyFunction:  // fall-through
