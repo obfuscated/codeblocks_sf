@@ -69,7 +69,7 @@ namespace CCManagerHelper
     }
 }
 
-template<> CCManager* Mgr<CCManager>::instance = 0;
+template<> CCManager* Mgr<CCManager>::instance = nullptr;
 template<> bool Mgr<CCManager>::isShutdown = false;
 
 const int idCallTipTimer = wxNewId();
@@ -79,6 +79,7 @@ const int idAutocompSelectTimer = wxNewId();
 // milliseconds
 #define CALLTIP_REFRESH_DELAY 90
 #define AUTOCOMP_SELECT_DELAY 35
+#define SCROLL_REFRESH_DELAY 500
 
 #define FROM_TIMER 1
 
@@ -284,7 +285,7 @@ struct TokenSorter
     {
         int diff = a.weight - b.weight;
         if (diff == 0)
-            diff = a.displayName.CmpNoCase(b.displayName);
+            diff = a.displayName.Upper().Cmp(b.displayName.Upper());
         else if (isPureAlphabetical)
             isPureAlphabetical = false;
         return diff < 0;
@@ -392,7 +393,6 @@ void CCManager::OnEditorClose(CodeBlocksEvent& event)
 void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 {
     event.Skip();
-    m_CallTipActive = wxSCI_INVALID_POSITION;
 
     if (wxGetKeyState(WXK_CONTROL))
         return;
@@ -403,8 +403,8 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
         return;
 
     cbStyledTextCtrl* stc = ed->GetControl();
-    if (stc->CallTipActive() && event.GetExtraLong() == 0)
-        stc->CallTipCancel();
+    if (stc->CallTipActive() && event.GetExtraLong() == 0 && m_CallTipActive == wxSCI_INVALID_POSITION)
+        static_cast<wxScintilla*>(stc)->CallTipCancel();
 
     cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
     if (!ccPlugin)
@@ -413,6 +413,8 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     int pos = stc->PositionFromPointClose(event.GetX(), event.GetY());
     if (pos < 0 || pos >= stc->GetLength())
         return;
+
+    m_CallTipActive = wxSCI_INVALID_POSITION;
 
     int hlStart, hlEnd, argsPos;
     hlStart = hlEnd = argsPos = wxSCI_INVALID_POSITION;
@@ -465,6 +467,26 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             {
                 m_AutoLaunchTimer.Start(10, wxTIMER_ONE_SHOT);
                 m_AutocompPosition = pos;
+            }
+        }
+    }
+    else if (evtType == wxEVT_SCI_UPDATEUI)
+    {
+        if (event.GetUpdated() & (wxSCI_UPDATE_V_SCROLL|wxSCI_UPDATE_H_SCROLL))
+        {
+            cbStyledTextCtrl* stc = ed->GetControl();
+            if (stc->CallTipActive())
+                static_cast<wxScintilla*>(stc)->CallTipCancel();
+            if (m_CallTipActive != wxSCI_INVALID_POSITION)
+            {
+                const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(m_CallTipActive)) - stc->GetFirstVisibleLine();
+                if (dist < 0 || dist > stc->LinesOnScreen()) // caret is off screen
+                {
+                    m_CallTipTimer.Stop();
+                    m_CallTipActive = wxSCI_INVALID_POSITION;
+                }
+                else
+                    m_CallTipTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
             }
         }
     }

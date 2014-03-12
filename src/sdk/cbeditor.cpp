@@ -3113,18 +3113,12 @@ void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
     {
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
         HighlightBraces(); // brace highlighting
-        int updated = event.GetUpdated();
-        if (updated & wxSCI_UPDATE_SELECTION)
+        if (event.GetUpdated() & wxSCI_UPDATE_SELECTION)
         {
             // emulate ScintillaWX::ClaimSelection()
             cbStyledTextCtrl* stc = GetControl();
             if (stc->GetSelectionStart() != stc->GetSelectionEnd())
                 edMgr->SetSelectionClipboard(stc->GetSelectedText());
-        }
-        if ((updated & wxSCI_UPDATE_V_SCROLL) || (updated & wxSCI_UPDATE_H_SCROLL))
-        {
-            // Hide any calltips or code completion list
-            GetControl()->Cancel();
         }
     }
     OnScintillaEvent(event);
