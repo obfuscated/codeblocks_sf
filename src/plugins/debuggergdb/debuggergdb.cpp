@@ -531,6 +531,7 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
 
     // start the gdb process
     m_pProcess = new PipedProcess(&m_pProcess, this, idGDBProcess, true, cwd);
+    m_pProcess->SetMultiline();
     Log(_("Starting debugger: ") + cmd);
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
 
@@ -1691,7 +1692,9 @@ void DebuggerGDB::ParseOutput(const wxString& output)
 {
     if (!output.IsEmpty() && m_State.HasDriver())
     {
-        m_State.GetDriver()->ParseOutput(output);
+        const std::vector<wxString> &lines = GetVectorFromString(output, wxT("\n"), false);
+        for (std::vector<wxString>::const_iterator it = lines.begin(); it != lines.end(); ++it)
+            m_State.GetDriver()->ParseOutput(*it);
     }
 }
 

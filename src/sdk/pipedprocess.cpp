@@ -78,21 +78,32 @@ class cbTextInputStream : public wxTextInputStream
 */
         // The following function was copied verbatim from wxTextStream::ReadLine()
         // The only change, is the addition of m_input.CanRead() in the while()
-        wxString ReadLine()
+        wxString ReadLine(bool &hasEOL, bool &hasMore)
         {
             wxString line;
+            hasEOL = false;
+            hasMore = false;
 
             while ( m_input.CanRead() && !m_input.Eof() )
             {
                 wxChar c = NextChar();
                 if (m_input.LastRead() <= 0)
+                {
+                    hasMore = true;
                     break;
+                }
 
                 if ( !m_input )
+                {
+                    hasMore = true;
                     break;
+                }
 
                 if (EatEOL(c))
+                {
+                    hasEOL = true;
                     break;
+                }
 
                 line += c;
             }
@@ -113,6 +124,7 @@ PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, 
     m_Parent(parent),
     m_Id(id),
     m_Pid(0),
+    m_Multiline(false),
     m_pvThis(pvThis)
 {
     wxSetWorkingDirectory(UnixFilename(dir));
@@ -166,35 +178,58 @@ void PipedProcess::ForfeitStreams()
     }
 }
 
+namespace
+{
+
+void PostEvent(const wxString &msg, wxEvtHandler *parent, int id, bool isInput)
+{
+    Manager::Get()->GetLogManager()->Log(F(wxT("PPsend:%s: '%s'"),
+                                           (isInput ? wxT("IN") : wxT("ERR")), msg.wx_str())
+                                        );
+    CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, id);
+    event.SetString(msg);
+    wxPostEvent(parent, event);
+}
+
+void ProcessStream(wxString &lines, wxInputStream &inputStream, wxEvtHandler *parent,
+                   int id, bool multiline, bool isInput)
+{
+    cbTextInputStream stream(inputStream);
+    wxString msg;
+    bool hasMore, hasEOL;
+    msg << stream.ReadLine(hasEOL, hasMore);
+    Manager::Get()->GetLogManager()->Log(F(wxT("PP:%s: '%s' %d:%d"),
+                                           (isInput ? wxT("IN") : wxT("ERR")),
+                                           msg.wx_str(), (int)hasEOL, (int)hasMore)
+                                        );
+
+    if (multiline)
+    {
+        if (hasEOL)
+            lines += msg + wxT('\n');
+        else
+        {
+            PostEvent(lines + msg, parent, id, isInput);
+            lines = wxEmptyString;
+        }
+    }
+    else
+        PostEvent(msg, parent, id, isInput);
+}
+
+}
+
 bool PipedProcess::HasInput()
 {
     if (IsErrorAvailable())
     {
-        cbTextInputStream serr(*GetErrorStream());
-
-        wxString msg;
-        msg << serr.ReadLine();
-
-        CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
-        event.SetString(msg);
-        wxPostEvent(m_Parent, event);
-//         m_Parent->ProcessEvent(event);
-
+        ProcessStream(m_LinesError, *GetErrorStream(), m_Parent, m_Id, m_Multiline, false);
         return true;
     }
 
     if (IsInputAvailable())
     {
-        cbTextInputStream sout(*GetInputStream());
-
-        wxString msg;
-        msg << sout.ReadLine();
-
-        CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
-        event.SetString(msg);
-        wxPostEvent(m_Parent, event);
-//         m_Parent->ProcessEvent(event);
-
+        ProcessStream(m_LinesInput, *GetInputStream(), m_Parent, m_Id, m_Multiline, true);
         return true;
     }
 
