@@ -401,7 +401,6 @@ static const char* header_file_xpm[] = {
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
-int idMenuCodeComplete          = wxNewId();
 int idMenuGotoFunction          = wxNewId();
 int idMenuGotoPrevFunction      = wxNewId();
 int idMenuGotoNextFunction      = wxNewId();
@@ -433,7 +432,7 @@ int idEditorActivatedTimer      = wxNewId();
 #define EDITOR_ACTIVATED_DELAY    300
 
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
-    EVT_UPDATE_UI_RANGE(idMenuCodeComplete, idCurrentProjectReparse, CodeCompletion::OnUpdateUI)
+    EVT_UPDATE_UI_RANGE(idMenuGotoFunction, idCurrentProjectReparse, CodeCompletion::OnUpdateUI)
 
     EVT_MENU(idMenuGotoFunction,                   CodeCompletion::OnGotoFunction             )
     EVT_MENU(idMenuGotoPrevFunction,               CodeCompletion::OnGotoPrevFunction         )
@@ -620,7 +619,6 @@ void CodeCompletion::OnRelease(bool appShutDown)
 /* TODO (mandrav#1#): Delete separator line too... */
     if (m_EditMenu)
     {
-        m_EditMenu->Delete(idMenuCodeComplete);
         m_EditMenu->Delete(idMenuRenameSymbols);
     }
     if (m_SearchMenu)
@@ -1764,7 +1762,6 @@ void CodeCompletion::OnUpdateUI(wxUpdateUIEvent& event)
     const bool HasEd = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor() != 0;
     if (m_EditMenu)
     {
-        m_EditMenu->Enable(idMenuCodeComplete, HasEd);
         const bool RenameEnable = HasNameUnderCursor && !IsInclude && m_NativeParser.GetParser().Done();
         m_EditMenu->Enable(idMenuRenameSymbols, RenameEnable);
     }
