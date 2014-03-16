@@ -184,9 +184,9 @@ namespace
 
 void PostEvent(const wxString &msg, wxEvtHandler *parent, int id, bool isOutput)
 {
-    Manager::Get()->GetLogManager()->Log(F(wxT("PPsend:%s: '%s'"),
-                                           (isOutput ? wxT("OUT") : wxT("ERR")), msg.wx_str())
-                                        );
+//    Manager::Get()->GetLogManager()->Log(F(wxT("PPsend:%s: '%s'"),
+//                                           (isOutput ? wxT("OUT") : wxT("ERR")), msg.wx_str())
+//                                        );
     CodeBlocksEvent event(isOutput ? cbEVT_PIPEDPROCESS_STDOUT : cbEVT_PIPEDPROCESS_STDERR, id);
     event.SetString(msg);
     wxPostEvent(parent, event);
@@ -199,10 +199,10 @@ void ProcessStream(wxString &lines, wxInputStream &inputStream, wxEvtHandler *pa
     wxString msg;
     bool hasMore, hasEOL;
     msg << stream.ReadLine(hasEOL, hasMore);
-    Manager::Get()->GetLogManager()->Log(F(wxT("PP(%p):%s: '%s' %d:%d"), &inputStream,
-                                           (isOutput ? wxT("OUT") : wxT("ERR")),
-                                           msg.wx_str(), (int)hasEOL, (int)hasMore)
-                                        );
+//    Manager::Get()->GetLogManager()->Log(F(wxT("PP(%p):%s: '%s' %d:%d"), &inputStream,
+//                                           (isOutput ? wxT("OUT") : wxT("ERR")),
+//                                           msg.wx_str(), (int)hasEOL, (int)hasMore)
+//                                        );
 
     if (multiline)
     {
