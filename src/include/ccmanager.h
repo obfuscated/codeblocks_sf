@@ -17,6 +17,7 @@ class UnfocusablePopupWindow;
 class wxHtmlLinkEvent;
 class wxHtmlWindow;
 class wxListEvent;
+class wxListView;
 class wxScintillaEvent;
 
 class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
