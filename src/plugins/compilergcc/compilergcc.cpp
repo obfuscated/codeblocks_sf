@@ -2030,15 +2030,20 @@ int CompilerGCC::Clean(const wxString& target)
 
 bool CompilerGCC::DoCleanWithMake(const wxString& cmd, bool showOutput)
 {
+    LogManager *logManager = showOutput ? Manager::Get()->GetLogManager() : nullptr;
     wxArrayString output, errors;
     wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
+
+    if (logManager)
+        logManager->Log(F(_("Executing clean command: %s"), cmd.wx_str()), m_PageIndex);
+
     long result = wxExecute(cmd, output, errors, wxEXEC_SYNC);
-    if (showOutput)
+    if (logManager)
     {
         for(size_t i = 0; i < output.GetCount(); i++)
-            Manager::Get()->GetLogManager()->Log(F(_("%s"), output[i].wx_str()), m_PageIndex);
+            logManager->Log(F(_("%s"), output[i].wx_str()), m_PageIndex);
         for(size_t i = 0; i < errors.GetCount(); i++)
-            Manager::Get()->GetLogManager()->Log(F(_("%s"), errors[i].wx_str()), m_PageIndex);
+            logManager->Log(F(_("%s"), errors[i].wx_str()), m_PageIndex);
     }
     return (result == 0);
 }
@@ -2356,9 +2361,15 @@ void CompilerGCC::BuildStateManagement()
             {
                 wxArrayString output, error;
                 wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
-                if (wxExecute(GetMakeCommandFor(mcAskRebuildNeeded, m_pBuildingProject, bt), output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
+
+                const wxString &askCmd = GetMakeCommandFor(mcAskRebuildNeeded, m_pBuildingProject, bt);
+
+                Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+                if (tgtCompiler && tgtCompiler->GetSwitches().logging == clogFull)
+                    cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Checking if target is up-to-date: ") + askCmd);
+
+                if (wxExecute(askCmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
                 {
-                    Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
                     if (tgtCompiler)
                     {
                         switch (tgtCompiler->GetSwitches().logging)
