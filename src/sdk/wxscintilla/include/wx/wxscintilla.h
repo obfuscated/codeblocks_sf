@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.39.0")
+#define wxSCINTILLA_VERSION _T("3.41.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -538,8 +538,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LEX_KVIRC 110
 #define wxSCI_LEX_RUST 111
 #define wxSCI_LEX_DMAP 112
+#define wxSCI_LEX_AS 113
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_DMAP // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_AS // update if the above gets extended!
 /* C::B end */
 
 // When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -2332,6 +2333,14 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_DMAP_WORD2 9
 #define wxSCI_DMAP_WORD3 10
 
+/// Events
+/// GTK+ Specific to work around focus and accelerator problems:
+/// Line end types which may be used in addition to LF, CR, and CRLF
+/// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
+/// U+2029 Paragraph Separator, and U+0085 Next Line
+#define wxSCI_LINE_END_TYPE_DEFAULT 0
+#define wxSCI_LINE_END_TYPE_UNICODE 1
+
 //}}}
 //----------------------------------------------------------------------
 
@@ -2626,6 +2635,13 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 
 // Scroll to end of document.
 #define wxSCI_CMD_SCROLLTOEND 2629
+
+/// Move caret to before first visible character on display line.
+/// If already there move to first character on display line.
+#define wxSCI_CMD_VCHOMEDISPLAY 2652
+
+/// Like VCHomeDisplay but extending selection to new caret position.
+#define wxSCI_CMD_VCHOMEDISPLAYEXTEND 2653
 
 //}}}
 //----------------------------------------------------------------------
@@ -3476,7 +3492,7 @@ public:
     int CallTipPosAtStart();
 
     // Set the start position in order to change when backspacing removes the calltip.
-    void CallTipSetPosStart(int posStart);
+    void CallTipSetPosAtStart(int posStart);
 
     // Highlight a segment of the definition.
     void CallTipSetHighlight(int start, int end);
@@ -4200,10 +4216,10 @@ public:
     int AutoCompGetCaseInsensitiveBehaviour() const;
 
     // Set the way autocompletion lists are ordered.
-    void AutoCSetOrder(int order);
+    void AutoCompSetOrder(int order);
 
     // Get the way autocompletion lists are ordered.
-    int AutoCGetOrder() const;
+    int AutoCompGetOrder() const;
 
 /* C::B begin */
     // Get currently selected item text in the auto-completion list
@@ -4612,19 +4628,10 @@ public:
     // Sets the caret line to always visible.
     void SetCaretLineVisibleAlways(bool alwaysVisible);
 
-    // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
-    void SetLineEndTypesAllowed(int lineEndBitSet);
-
-    // Get the line end types currently allowed.
-    int GetLineEndTypesAllowed() const;
-
-    // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
-    int GetLineEndTypesActive() const;
-
     // Set the way a character is drawn.
     void SetRepresentation(const wxString& encodedCharacter, const wxString& representation);
 
-    // Set the way a character is drawn.
+    // Get the way a character is drawn.
     wxString GetRepresentation(const wxString& encodedCharacter) const;
 
     // Remove a character representation.
@@ -4693,6 +4700,15 @@ public:
 
     // Retrieve a '\n' separated list of descriptions of the keyword sets understood by the current lexer.
     wxString DescribeKeyWordSets() const;
+
+    // Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+    void SetLineEndTypesAllowed(int lineEndBitSet);
+
+    // Get the line end types currently allowed.
+    int GetLineEndTypesAllowed() const;
+
+    // Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+    int GetLineEndTypesActive() const;
 
     // Bit set of LineEndType enumertion for which line ends beyond the standard
     // LF, CR, and CRLF are supported by the lexer.
@@ -4832,20 +4848,17 @@ public:
 /* C::B end */
 
 #ifdef SCI_USE_DND
+    // Allow for simulating a DnD DragEnter
+    wxDragResult DoDragEnter(wxCoord x, wxCoord y, wxDragResult def);
+
     // Allow for simulating a DnD DragOver
     wxDragResult DoDragOver(wxCoord x, wxCoord y, wxDragResult def);
 
+    // Allow for simulating a DnD DragLeave
+    void DoDragLeave();
+
     // Allow for simulating a DnD DropText
     bool DoDropText(long x, long y, const wxString& data);
-
-/* C::B begin */
-    // Allow for simulating a DnD DragEnter
-    wxDragResult DoDragEnter (wxCoord x, wxCoord y, wxDragResult def);
-
-    // Allow for simulating a DnD DragEnter
-    void DoDragLeave ();
-/* C::B end */
-
 #endif
 
     // Specify whether anti-aliased fonts should be used.  Will have no effect

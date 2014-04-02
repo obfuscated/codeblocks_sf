@@ -1988,7 +1988,7 @@ int wxScintilla::CallTipPosAtStart()
 }
 
 // Set the start position in order to change when backspacing removes the calltip.
-void wxScintilla::CallTipSetPosStart(int posStart)
+void wxScintilla::CallTipSetPosAtStart(int posStart)
 {
     SendMsg(SCI_CALLTIPSETPOSSTART, posStart, 0);
 }
@@ -3437,13 +3437,13 @@ int wxScintilla::AutoCompGetCaseInsensitiveBehaviour() const
 }
 
 // Set the way autocompletion lists are ordered.
-void wxScintilla::AutoCSetOrder(int order)
+void wxScintilla::AutoCompSetOrder(int order)
 {
     SendMsg(SCI_AUTOCSETORDER, order, 0);
 }
 
 // Get the way autocompletion lists are ordered.
-int wxScintilla::AutoCGetOrder() const
+int wxScintilla::AutoCompGetOrder() const
 {
     return SendMsg(SCI_AUTOCGETORDER, 0, 0);
 }
@@ -4323,24 +4323,6 @@ void wxScintilla::SetCaretLineVisibleAlways(bool alwaysVisible)
     SendMsg(SCI_SETCARETLINEVISIBLEALWAYS, alwaysVisible, 0);
 }
 
-// Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
-void wxScintilla::SetLineEndTypesAllowed(int lineEndBitSet)
-{
-    SendMsg(SCI_SETLINEENDTYPESALLOWED, lineEndBitSet, 0);
-}
-
-// Get the line end types currently allowed.
-int wxScintilla::GetLineEndTypesAllowed() const
-{
-    return SendMsg(SCI_GETLINEENDTYPESALLOWED, 0, 0);
-}
-
-// Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
-int wxScintilla::GetLineEndTypesActive() const
-{
-    return SendMsg(SCI_GETLINEENDTYPESACTIVE, 0, 0);
-}
-
 // Set the way a character is drawn.
 void wxScintilla::SetRepresentation(const wxString& encodedCharacter, const wxString& representation)
 {
@@ -4532,6 +4514,24 @@ wxString wxScintilla::DescribeKeyWordSets() const
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
+}
+
+// Set the line end types that the application wants to use. May not be used if incompatible with lexer or encoding.
+void wxScintilla::SetLineEndTypesAllowed(int lineEndBitSet)
+{
+    SendMsg(SCI_SETLINEENDTYPESALLOWED, lineEndBitSet, 0);
+}
+
+// Get the line end types currently allowed.
+int wxScintilla::GetLineEndTypesAllowed() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESALLOWED, 0, 0);
+}
+
+// Get the line end types currently recognised. May be a subset of the allowed types due to lexer limitation.
+int wxScintilla::GetLineEndTypesActive() const
+{
+    return SendMsg(SCI_GETLINEENDTYPESACTIVE, 0, 0);
 }
 
 // Bit set of LineEndType enumertion for which line ends beyond the standard
@@ -5054,19 +5054,12 @@ bool wxScintilla::LoadFile(const wxString& filename)
 /* C::B end */
 
 #if wxUSE_DRAG_AND_DROP
-wxDragResult wxScintilla::DoDragOver(wxCoord x, wxCoord y, wxDragResult def)
-{
-    return m_swx->DoDragOver(x, y, def);
-}
-
-
-bool wxScintilla::DoDropText(long x, long y, const wxString& data)
-{
-    return m_swx->DoDropText(x, y, data);
-}
-
-/* C::B begin */
 wxDragResult wxScintilla::DoDragEnter(wxCoord x, wxCoord y, wxDragResult def)
+{
+    return m_swx->DoDragEnter(x, y, def);
+}
+
+wxDragResult wxScintilla::DoDragOver(wxCoord x, wxCoord y, wxDragResult def)
 {
     return m_swx->DoDragOver(x, y, def);
 }
@@ -5075,7 +5068,11 @@ void wxScintilla::DoDragLeave()
 {
     m_swx->DoDragLeave();
 }
-/* C::B end */
+
+bool wxScintilla::DoDropText(long x, long y, const wxString& data)
+{
+    return m_swx->DoDropText(x, y, data);
+}
 #endif
 
 
@@ -5717,7 +5714,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 39, 0, "Scintilla 3.39");
+    return wxVersionInfo("Scintilla", 3, 41, 0, "Scintilla 3.41");
 }
 #endif
 /* C::B end */

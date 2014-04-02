@@ -416,9 +416,9 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     TokenSorter sortFunctor(isPureAlphabetical);
     std::sort(m_AutocompTokens.begin(), m_AutocompTokens.end(), sortFunctor);
     if (isPureAlphabetical)
-        stc->AutoCSetOrder(wxSCI_ORDER_PRESORTED);
+        stc->AutoCompSetOrder(wxSCI_ORDER_PRESORTED);
     else
-        stc->AutoCSetOrder(wxSCI_ORDER_CUSTOM);
+        stc->AutoCompSetOrder(wxSCI_ORDER_CUSTOM);
     wxString items;
     // experimentally, the average length per token seems to be 23 for the main CC plugin
     items.Alloc(m_AutocompTokens.size() * 20); // TODO: measure performance
