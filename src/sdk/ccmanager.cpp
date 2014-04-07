@@ -114,6 +114,8 @@ const int idAutocompSelectTimer = wxNewId();
 const int idCallTipNext = wxNewId();
 const int idCallTipPrevious = wxNewId();
 
+DEFINE_EVENT_TYPE(cbEVT_DEFERRED_CALLTIP_CANCEL)
+
 // milliseconds
 #define CALLTIP_REFRESH_DELAY 90
 #define AUTOCOMP_SELECT_DELAY 35
@@ -292,6 +294,7 @@ CCManager::CCManager() :
     Connect(idCallTipTimer,        wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
     Connect(idAutoLaunchTimer,     wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
     Connect(idAutocompSelectTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(cbEVT_DEFERRED_CALLTIP_CANCEL, wxCommandEventHandler(CCManager::OnDeferredCallTipCancel));
 }
 
 // class destructor
@@ -309,6 +312,7 @@ CCManager::~CCManager()
     Disconnect(idCallTipTimer);
     Disconnect(idAutoLaunchTimer);
     Disconnect(idAutocompSelectTimer);
+    Disconnect(cbEVT_DEFERRED_CALLTIP_CANCEL);
 }
 
 cbCodeCompletionPlugin* CCManager::GetProviderFor(cbEditor* ed)
@@ -463,7 +467,12 @@ void CCManager::OnDeactivateApp(CodeBlocksEvent& event)
     {
         cbStyledTextCtrl* stc = ed->GetControl();
         if (stc->CallTipActive())
-            stc->CallTipCancel();
+        {
+            // calling 'stc->CallTipCancel()' directly can cause crashes for some users due to:
+            // http://forums.codeblocks.org/index.php/topic,19117.msg130969.html#msg130969
+            wxCommandEvent pendingCancel(cbEVT_DEFERRED_CALLTIP_CANCEL);
+            AddPendingEvent(pendingCancel);
+        }
         m_CallTipActive = wxSCI_INVALID_POSITION;
     }
     event.Skip();
@@ -878,6 +887,14 @@ void CCManager::OnAutocompleteHide(wxShowEvent& event)
         static_cast<wxWindow*>(evtObj)->Disconnect(wxEVT_SHOW, wxShowEventHandler(CCManager::OnAutocompleteHide), nullptr, this);
     if (m_CallTipActive != wxSCI_INVALID_POSITION && !m_AutoLaunchTimer.IsRunning())
         m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+}
+
+// cbEVT_DEFERRED_CALLTIP_CANCEL
+void CCManager::OnDeferredCallTipCancel(wxCommandEvent& WXUNUSED(event))
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+        static_cast<wxScintilla*>(ed->GetControl())->CallTipCancel();
 }
 
 #ifdef __WXMSW__

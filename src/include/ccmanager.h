@@ -57,6 +57,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** event handler to show documentation, when user changes autocomplete selection */
         void OnAutocompleteSelect(wxListEvent& event);
         void OnAutocompleteHide(wxShowEvent& event);
+        void OnDeferredCallTipCancel(wxCommandEvent& event);
 #ifdef __WXMSW__
         /** intercept cbStyledTextCtrl scroll events and forward to autocomplete/documentation popups */
         void OnPopupScroll(wxMouseEvent& event);
