@@ -86,7 +86,22 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
         int currLine = stc->LineFromPosition(pos);
         if (autoIndent && currLine > 0)
         {
-            wxString indent = ed->GetLineIndentString(currLine - 1);
+            wxString indent;
+            if (stc->GetCurLine().Trim().IsEmpty())
+            {
+                // copy the indentation of the last non-empty line
+                for (int i = currLine - 1; i >= 0; --i)
+                {
+                    const wxString& prevLineStr = stc->GetLine(i);
+                    if (!(prevLineStr.IsEmpty() || prevLineStr[0] == _T('\n') || prevLineStr[0] == _T('\r')))
+                    {
+                        indent = ed->GetLineIndentString(i);
+                        break;
+                    }
+                }
+            }
+            else
+                indent = ed->GetLineIndentString(currLine - 1);
             if (smartIndent)
             {
                 wxChar b = GetLastNonWhitespaceChar(ed);

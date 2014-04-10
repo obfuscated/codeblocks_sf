@@ -3133,14 +3133,32 @@ void cbEditor::OnEditorCharAdded(wxScintillaEvent& event)
             const bool autoIndent = Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/auto_indent"), true);
             if (autoIndent && currLine > 0)
             {
-                control->BeginUndoAction();
+                wxString indent;
+                if (control->GetCurLine().Trim().IsEmpty())
+                {
+                    // copy the indentation of the last non-empty line
+                    for (int i = currLine - 1; i >= 0; --i)
+                    {
+                        const wxString& prevLineStr = control->GetLine(i);
+                        if (!(prevLineStr.IsEmpty() || prevLineStr[0] == _T('\n') || prevLineStr[0] == _T('\r')))
+                        {
+                            indent = GetLineIndentString(i);
+                            break;
+                        }
+                    }
+                }
+                else
+                    indent = GetLineIndentString(currLine - 1);
+                if (!indent.IsEmpty())
+                {
+                    control->BeginUndoAction();
 
-                wxString indent = GetLineIndentString(currLine - 1);
-                control->InsertText(pos, indent);
-                control->GotoPos(pos + indent.Length());
-                control->ChooseCaretX();
+                    control->InsertText(pos, indent);
+                    control->GotoPos(pos + indent.Length());
+                    control->ChooseCaretX();
 
-                control->EndUndoAction();
+                    control->EndUndoAction();
+                }
             }
         }
 
