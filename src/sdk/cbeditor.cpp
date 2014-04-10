@@ -394,7 +394,9 @@ struct cbEditorInternalData
         // lineCount[0] == number of lines with tabs
         // lineCount[1] == number of lines with only spaces
         // lineCount[2 ... 8] == number of lines divisible by that number
-        for (int line = 0; line < stc->GetLineCount() && line < 1000; ++line)
+        // Scan 1000 lines from the middle of the file to generate statistics
+        const int maxLine = std::min(stc->GetLineCount(), stc->GetLineCount() / 2 + 500);
+        for (int line = std::max(0, stc->GetLineCount() / 2 - 500); line < maxLine; ++line)
         {
             const wxString& indent = cbEditorInternalData::GetLineIndentString(line, stc);
             if (indent.IsEmpty())
