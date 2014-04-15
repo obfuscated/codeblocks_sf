@@ -1213,41 +1213,53 @@ wxString ParserThread::GetTokenBaseType()
     // int __cdecl __MINGW_NOTHROW vscanf (const char * __restrict__, __VALIST);
 
     // m_Str contains the full text before the token's declaration
-    // an example m_Str value would be: const wxString&
+    // an example, for a variable Token: "const wxString& s;"
+    // m_Str would be: const wxString&
     // what we do here is locate the actual return value (wxString in this example)
     // it will be needed by code completion code ;)
-    pos = m_Str.Length() - 1;
+    // Note that generally the returned type string is the identifer like token near the variable
+    // name, there may be some exceptions. E.g. "wxString const &s;", here, "const" should not be
+    // returned as a type name.
 
-    // we walk m_Str backwards until we find a non-space character which also is
-    // not * or &
-    //                        const wxString&
-    // in this example, we would stop here ^
-    while (   (pos >= 0)
-           && (   wxIsspace(m_Str.GetChar(pos))
-               || (m_Str.GetChar(pos) == ParserConsts::ptr_chr)
-               || (m_Str.GetChar(pos) == ParserConsts::ref_chr)) )
+    pos = m_Str.Length() - 1; // search start at the end of m_Str
+
+    while (pos >= 0)
     {
-        --pos;
-    }
-
-    if (pos >= 0)
-    {
-        // we have the end of the word we're interested in
-        int end = pos;
-
-        // continue walking backwards until we find the start of the word
-        //                               const wxString&
+        // we walk m_Str backwards until we find a non-space character which also is
+        // not * or &
+        //                        const wxString&
         // in this example, we would stop here ^
         while (   (pos >= 0)
-               && (   wxIsalnum(m_Str.GetChar(pos))
-                   || (m_Str.GetChar(pos) == ParserConsts::underscore_chr)
-                   || (m_Str.GetChar(pos) == ParserConsts::colon_chr)) )
+               && (   wxIsspace(m_Str.GetChar(pos))
+                   || (m_Str.GetChar(pos) == ParserConsts::ptr_chr)
+                   || (m_Str.GetChar(pos) == ParserConsts::ref_chr)) )
         {
             --pos;
         }
 
-        TRACE(_T("GetTokenBaseType() : Found '%s'"), m_Str.Mid(pos + 1, end - pos).wx_str());
-        return m_Str.Mid(pos + 1, end - pos);
+        if (pos >= 0)
+        {
+            // we have the end of the word we're interested in
+            int end = pos;
+
+            // continue walking backwards until we find the start of the word
+            //                               const  wxString&
+            // in this example, we would stop here ^
+            while (   (pos >= 0)
+                   && (   wxIsalnum(m_Str.GetChar(pos))
+                       || (m_Str.GetChar(pos) == ParserConsts::underscore_chr)
+                       || (m_Str.GetChar(pos) == ParserConsts::colon_chr)) )
+            {
+                --pos;
+            }
+            wxString typeCandidate = m_Str.Mid(pos + 1, end - pos);
+            // "const" should not be returned as a type name, so we try next candidate.
+            if (typeCandidate.IsSameAs(ParserConsts::kw_const))
+                continue;
+
+            TRACE(_T("GetTokenBaseType() : Found '%s'"), typeCandidate.wx_str());
+            return typeCandidate;
+        }
     }
 
     TRACE(_T("GetTokenBaseType() : Returning '%s'"), m_Str.wx_str());
