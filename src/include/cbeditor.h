@@ -338,6 +338,11 @@ class DLLIMPORT cbEditor : public EditorBase
         void OnEditorModified(wxScintillaEvent& event);
         void OnUserListSelection(wxScintillaEvent& event);
         void OnZoom(wxScintillaEvent& event);
+        /** notify all the registered EditorHook functions
+         * @param event indicates which event is received by the cbEditor
+         * You should bind OnScintillaEvent to every wxScintillaEvent events, either directly or
+         * indirectly, see cbEditor::ConnectEvents() for more details.
+         */
         void OnScintillaEvent(wxScintillaEvent& event);
         void OnClose(wxCloseEvent& event);
 
