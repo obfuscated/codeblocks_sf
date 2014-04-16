@@ -227,6 +227,8 @@ void SmartIndentHDL::DoUnIndent(cbEditor* ed, const wxString& langname) const
         else if ( str.IsSameAs( wxT("end generate") ) )
             // assuming that "if/for ..." and "generate" are on the same line:
             pos = FindBlockStartVHDL(ed, pos-7, wxT("generate") );
+        else if ( str.IsSameAs(_T("end block")) )
+            pos = FindBlockStartVHDL(ed, pos-4, _T("block") );
         else if ( str.IsSameAs( wxT("begin") ) )
         {
             pos = -1;
