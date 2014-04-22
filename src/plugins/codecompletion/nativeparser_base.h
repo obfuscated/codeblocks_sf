@@ -521,6 +521,9 @@ private:
         return false;
     }
 
+    /**  loop on the input Token index set (source), add all its public constructors to output Token index set (dest) */
+    void AddConstructors(TokenTree *tree, const TokenIdxSet& source, TokenIdxSet& dest);
+
     // for GenerateResultSet()
     bool MatchText(const wxString& text, const wxString& target, bool caseSens, bool isPrefix)
     {

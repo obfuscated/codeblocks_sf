@@ -1914,7 +1914,7 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    // special handle destructor function
+    // handle destructor function
     if (target[0] == _T('~'))
     {
         TokenIdxSet tmp = result;
@@ -1931,37 +1931,34 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             }
         }
     }
-    // special handle constructor function
-    else
+    else // handle constructor and functions
     {
-        bool isClassOrConstructor = false;
-        for (TokenIdxSet::const_iterator it = result.begin(); it != result.end(); ++it)
+        // AAA * p = new AAA();
+        // ^^^--------------------------case1:go to class definition kind tokens
+        //               ^^^------------case2:go to function kind tokens such as constructors
+        // if a token is followed by a '(', it is regarded as a function
+        const bool isFunction = CodeCompletionHelper::GetNextNonWhitespaceChar(editor->GetControl(), endPos)   == _T('(');
+        // copy the token index set for a fall back case later
+        TokenIdxSet savedResult = result;
+        // loop the result, and strip unrelated tokens
+        for (TokenIdxSet::const_iterator it = result.begin(); it != result.end();)
         {
             const Token* token = tree->at(*it);
-            if (token && (token->m_TokenKind == tkClass || token->m_TokenKind == tkConstructor))
-            {
-                isClassOrConstructor = true;
-                break;
-            }
+            if (isFunction && token && token->m_TokenKind == tkClass)
+                result.erase(it++); // a class kind token is removed since we need a function
+            else if (!isFunction && token && token->m_TokenKind == tkConstructor)
+                result.erase(it++); // a constructor token is removed since we don't need a function
+            else
+                ++it;
         }
-        if (isClassOrConstructor)
-        {
-            const bool isConstructor = CodeCompletionHelper::GetNextNonWhitespaceChar(editor->GetControl(), endPos)   == _T('(')
-                                    && CodeCompletionHelper::GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T(':');
-            for (TokenIdxSet::const_iterator it = result.begin(); it != result.end();)
-            {
-                const Token* token = tree->at(*it);
-                if (isConstructor && token && token->m_TokenKind == tkClass)
-                    result.erase(it++);
-                else if (!isConstructor && token && token->m_TokenKind == tkConstructor)
-                    result.erase(it++);
-                else
-                    ++it;
-            }
-        }
+        // fall back: restore the saved result in a special case that a class doesn't have a constructor
+        // defined (implicitly defined by compiler)
+        // E.g. hover on case2 go to class AAA token since no AAA::AAA(); is defined or declared.
+        if (!result.size())
+            result = savedResult;
     }
 
-    // special handle for function overloading
+    // handle function overloading
     if (result.size() > 1)
     {
         const size_t curLine = editor->GetControl()->GetCurrentLine() + 1;

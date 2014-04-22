@@ -950,11 +950,48 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
         if (subComponent.tokenType != pttSearchText)
             m_LastComponent = subComponent;
     }// while
-
+    
+    // initialScope contains all the matching tokens after the cascade matching algorithm
     if (!initialScope.empty())
-        result = initialScope;
+    {
+        // normally, tokens have hireachies. E.g. a constructor token is a child of a class token.
+        // but here we promote (expose) the constructor tokens to the user. if a Token in initialScope
+        // is a class, we add all its public constructors to the results, this give us a chance to let
+        // CC jump to the declaration of a constructor, see
+        // http://forums.codeblocks.org/index.php/topic,13753.msg92654.html#msg92654
+        AddConstructors(tree, initialScope, result);
+    }
 
     return result.size();
+}
+
+void NativeParserBase::AddConstructors(TokenTree *tree, const TokenIdxSet& source, TokenIdxSet& dest)
+{
+    for (TokenIdxSet::iterator It = source.begin(); It != source.end(); ++It)
+    {
+        const Token* token = tree->at(*It);
+        if (!token)
+            continue;
+        dest.insert(*It);
+
+        // add constructors of the class type token
+        if (token->m_TokenKind == tkClass)
+        {
+            // loop on its children, add its public constructors
+            for (TokenIdxSet::iterator chIt = token->m_Children.begin();
+                 chIt != token->m_Children.end();
+                 ++chIt)
+            {
+                const Token* tk = tree->at(*chIt);
+                if (   tk && (   tk->m_TokenKind == tkConstructor
+                              || (tk->m_IsOperator && tk->m_Name.EndsWith(wxT("()"))) )
+                    && (tk->m_Scope == tsPublic || tk->m_Scope == tsUndefined) )
+                {
+                    dest.insert(*chIt);
+                }
+            }
+        }
+    }
 }
 
 void NativeParserBase::ResolveOperator(TokenTree*         tree,
