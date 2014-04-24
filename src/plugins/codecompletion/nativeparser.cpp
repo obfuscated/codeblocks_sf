@@ -181,7 +181,7 @@ NativeParser::NativeParser() :
     m_ImageList->Add(bmp); // PARSER_IMG_VAR_PROTECTED
     bmp = cbLoadBitmap(prefix + _T("var_public.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_VAR_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("preproc.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_def.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_DEF
     bmp = cbLoadBitmap(prefix + _T("enum.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_ENUM
@@ -211,21 +211,21 @@ NativeParser::NativeParser() :
     m_ImageList->Add(bmp); // PARSER_IMG_FUNCS_FOLDER
     bmp = cbLoadBitmap(prefix + _T("enums_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_ENUMS_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("preproc_folder.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_def_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_DEF_FOLDER
     bmp = cbLoadBitmap(prefix + _T("others_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_OTHERS_FOLDER
     bmp = cbLoadBitmap(prefix + _T("typedefs_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF_FOLDER
-    bmp = cbLoadBitmap(prefix + _T("macro.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_use.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE
-    bmp = cbLoadBitmap(prefix + _T("macro_private.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_use_private.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PRIVATE
-    bmp = cbLoadBitmap(prefix + _T("macro_protected.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_use_protected.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PROTECTED
-    bmp = cbLoadBitmap(prefix + _T("macro_public.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_use_public.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PUBLIC
-    bmp = cbLoadBitmap(prefix + _T("macro_folder.png"), wxBITMAP_TYPE_PNG);
+    bmp = cbLoadBitmap(prefix + _T("macro_use_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_FOLDER
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
