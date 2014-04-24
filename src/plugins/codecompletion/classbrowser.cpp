@@ -300,8 +300,8 @@ void ClassBrowser::ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, cb_unused const w
             case tkTypedef:
             case tkVariable:
             case tkEnumerator:
-            case tkPreprocessor:
-            case tkMacro:
+            case tkMacroDef:
+            case tkMacroUse:
             case tkAnyContainer:
             case tkAnyFunction:
             case tkUndefined:
@@ -573,8 +573,8 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
             case tkTypedef:
             case tkVariable:
             case tkEnumerator:
-            case tkPreprocessor:
-            case tkMacro:
+            case tkMacroDef:
+            case tkMacroUse:
             case tkAnyContainer:
             case tkAnyFunction:
             case tkUndefined:

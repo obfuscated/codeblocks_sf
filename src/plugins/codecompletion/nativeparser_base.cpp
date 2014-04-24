@@ -1617,9 +1617,9 @@ void NativeParserBase::ComputeCallTip(TokenTree*        tree,
         }
 
         // support macro call tips
-        while (token->m_TokenKind == tkPreprocessor)
+        while (token->m_TokenKind == tkMacroDef)
         {
-            const Token* tk = tree->at(tree->TokenExists(token->m_BaseType, -1, tkPreprocessor | tkFunction));
+            const Token* tk = tree->at(tree->TokenExists(token->m_BaseType, -1, tkMacroDef | tkFunction));
             if (tk && tk->m_BaseType != token->m_Name)
                 token = tk;
             else
@@ -1677,7 +1677,7 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
                 result += token->m_Name + wxT("::");
             return true;
 
-        case tkPreprocessor:
+        case tkMacroDef:
             if (!token->GetFormattedArgs().IsEmpty())
             {
                 result = wxT("#define ") + token->m_Name + token->GetFormattedArgs();
@@ -1689,7 +1689,7 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
         case tkDestructor:
         case tkVariable:
         case tkEnumerator:
-        case tkMacro:
+        case tkMacroUse:
         case tkAnyContainer:
         case tkAnyFunction:
         case tkUndefined:

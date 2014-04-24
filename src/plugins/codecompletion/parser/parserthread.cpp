@@ -1015,7 +1015,7 @@ void ParserThread::DoParse()
                     && m_EncounteredTypeNamespaces.empty()
                     && (!m_LastParent || m_LastParent->m_Name != token) ) // if func has same name as current scope (class)
                 {
-                    int id = m_TokenTree->TokenExists(token, -1, tkPreprocessor);
+                    int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
 
                     if (id != -1)
                     {
@@ -1619,7 +1619,7 @@ void ParserThread::HandleDefines()
 
     Token* oldParent = m_LastParent;
     m_LastParent = 0L;
-    DoAddToken(tkPreprocessor, token, lineNr, lineNr, m_Tokenizer.GetLineNumber(), para, false, true);
+    DoAddToken(tkMacroDef, token, lineNr, lineNr, m_Tokenizer.GetLineNumber(), para, false, true);
     m_LastParent = oldParent;
 }
 
@@ -1631,7 +1631,7 @@ void ParserThread::HandleUndefs()
     m_Tokenizer.SetState(oldState);
     if (!token.IsEmpty())
     {
-        Token* tk = TokenExists(token, nullptr, tkPreprocessor);
+        Token* tk = TokenExists(token, nullptr, tkMacroDef);
         if (tk != nullptr)
             m_TokenTree->erase(tk);
     }
@@ -1642,7 +1642,7 @@ void ParserThread::HandleUndefs()
 void ParserThread::HandleNamespace()
 {
     wxString ns = m_Tokenizer.GetToken();
-    Token* tk = TokenExists(ns, nullptr, tkPreprocessor);
+    Token* tk = TokenExists(ns, nullptr, tkMacroDef);
     if (tk && tk->m_Name != tk->m_FullType)
     {
         if (m_Tokenizer.ReplaceBufferText(tk->m_FullType))
@@ -2556,7 +2556,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
         {
             const Token* tk = m_TokenTree->at(m_TokenTree->TokenExists(token, tokenParent->m_Index, tkEnumerator));
             if (!tk)
-                tk = m_TokenTree->at(m_TokenTree->TokenExists(token, -1, tkPreprocessor));
+                tk = m_TokenTree->at(m_TokenTree->TokenExists(token, -1, tkMacroDef));
 
             if (tk)
             {
@@ -2851,7 +2851,7 @@ void ParserThread::HandleMacroExpansion(int id, const wxString &peek)
     if (tk)
     {
         TRACE(_T("HandleMacroExpansion() : Adding token '%s' (peek='%s')"), tk->m_Name.wx_str(), peek.wx_str());
-        DoAddToken(tkMacro, tk->m_Name, m_Tokenizer.GetLineNumber(), 0, 0, peek);
+        DoAddToken(tkMacroUse, tk->m_Name, m_Tokenizer.GetLineNumber(), 0, 0, peek);
 
         if (m_Options.parseComplexMacros)
             m_Tokenizer.ReplaceFunctionLikeMacro(tk);
@@ -3168,7 +3168,7 @@ bool ParserThread::GetRealTypeIfTokenIsMacro(wxString& tokenName)
     int count = 10;
     while (IS_ALIVE && --count > 0)
     {
-        tk = TokenExists(tokenName, nullptr, tkPreprocessor);
+        tk = TokenExists(tokenName, nullptr, tkMacroDef);
         if (   !tk
             || tk->m_FullType.IsEmpty()
             || tk->m_FullType == tokenName

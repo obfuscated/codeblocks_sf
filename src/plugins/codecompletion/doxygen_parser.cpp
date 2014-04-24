@@ -719,7 +719,7 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
         html += br;
         break;
 
-    case tkPreprocessor:
+    case tkMacroDef:
         html += b1 + token->m_Name + b0 + br + token->m_FullType + br;
         break;
 
@@ -749,7 +749,7 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
     case tkClass:        // fall-through
     case tkEnum:         // fall-through
     case tkTypedef:      // fall-through
-    case tkMacro:        // fall-through
+    case tkMacroUse:     // fall-through
     case tkAnyContainer: // fall-through
     case tkAnyFunction:  // fall-through
     case tkUndefined:    // fall-through
@@ -801,18 +801,18 @@ wxString DocumentationHelper::GenerateHTML(int tokenIdx, TokenTree* tree)
             }
             break;
 
-        case tkNamespace:    // fall-through
-        case tkTypedef:      // fall-through
-        case tkConstructor:  // fall-through
-        case tkDestructor:   // fall-through
-        case tkFunction:     // fall-through
-        case tkVariable:     // fall-through
-        case tkEnumerator:   // fall-through
-        case tkPreprocessor: // fall-through
-        case tkMacro:        // fall-through
-        case tkAnyContainer: // fall-through
-        case tkAnyFunction:  // fall-through
-        case tkUndefined:    // fall-through
+        case tkNamespace:       // fall-through
+        case tkTypedef:         // fall-through
+        case tkConstructor:     // fall-through
+        case tkDestructor:      // fall-through
+        case tkFunction:        // fall-through
+        case tkVariable:        // fall-through
+        case tkEnumerator:      // fall-through
+        case tkMacroDef:        // fall-through
+        case tkMacroUse:        // fall-through
+        case tkAnyContainer:    // fall-through
+        case tkAnyFunction:     // fall-through
+        case tkUndefined:       // fall-through
         default:
             break;
     }
@@ -941,7 +941,7 @@ wxString DocumentationHelper::OnDocumentationLink(wxHtmlLinkEvent& event, bool& 
             if (opb != wxString::npos && clb != wxString::npos)
             {
                 args = args.Truncate(opb);
-                kindToSearch = tkAnyFunction|tkPreprocessor;
+                kindToSearch = tkAnyFunction|tkMacroDef;
             }
 
             TokenIdxSet result;

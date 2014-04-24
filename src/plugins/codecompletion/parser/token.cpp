@@ -104,7 +104,7 @@ wxString Token::DisplayName() const
 
         return result << _T(" ") << m_Name;
     }
-    else if (m_TokenKind == tkPreprocessor)
+    else if (m_TokenKind == tkMacroDef)
     {
         result << _T("#define ") << m_Name << GetFormattedArgs();
         if (!m_FullType.IsEmpty())
@@ -305,21 +305,21 @@ wxString Token::GetTokenKindString() const
 {
     switch (m_TokenKind)
     {
-        case tkClass:        return _T("class");
-        case tkNamespace:    return _T("namespace");
-        case tkTypedef:      return _T("typedef");
-        case tkEnum:         return _T("enum");
-        case tkEnumerator:   return _T("enumerator");
-        case tkFunction:     return _T("function");
-        case tkConstructor:  return _T("constructor");
-        case tkDestructor:   return _T("destructor");
-        case tkPreprocessor: return _T("preprocessor");
-        case tkMacro:        return _T("macro");
-        case tkVariable:     return _T("variable");
-        case tkAnyContainer: return _T("any container");
-        case tkAnyFunction:  return _T("any function");
-        case tkUndefined:    return _T("undefined");
-        default:             return wxEmptyString; // tkUndefined
+        case tkClass:           return _T("class");
+        case tkNamespace:       return _T("namespace");
+        case tkTypedef:         return _T("typedef");
+        case tkEnum:            return _T("enum");
+        case tkEnumerator:      return _T("enumerator");
+        case tkFunction:        return _T("function");
+        case tkConstructor:     return _T("constructor");
+        case tkDestructor:      return _T("destructor");
+        case tkMacroDef:        return _T("macro definition");
+        case tkMacroUse:        return _T("macro usage");
+        case tkVariable:        return _T("variable");
+        case tkAnyContainer:    return _T("any container");
+        case tkAnyFunction:     return _T("any function");
+        case tkUndefined:       return _T("undefined");
+        default:                return wxEmptyString; // tkUndefined
     }
 }
 

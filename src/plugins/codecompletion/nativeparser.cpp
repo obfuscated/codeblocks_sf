@@ -182,7 +182,7 @@ NativeParser::NativeParser() :
     bmp = cbLoadBitmap(prefix + _T("var_public.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_VAR_PUBLIC
     bmp = cbLoadBitmap(prefix + _T("preproc.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_PREPROCESSOR
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_DEF
     bmp = cbLoadBitmap(prefix + _T("enum.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_ENUM
     bmp = cbLoadBitmap(prefix + _T("enum_private.png"), wxBITMAP_TYPE_PNG);
@@ -212,21 +212,21 @@ NativeParser::NativeParser() :
     bmp = cbLoadBitmap(prefix + _T("enums_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_ENUMS_FOLDER
     bmp = cbLoadBitmap(prefix + _T("preproc_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_PREPROC_FOLDER
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_DEF_FOLDER
     bmp = cbLoadBitmap(prefix + _T("others_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_OTHERS_FOLDER
     bmp = cbLoadBitmap(prefix + _T("typedefs_folder.png"), wxBITMAP_TYPE_PNG);
     m_ImageList->Add(bmp); // PARSER_IMG_TYPEDEF_FOLDER
     bmp = cbLoadBitmap(prefix + _T("macro.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE
     bmp = cbLoadBitmap(prefix + _T("macro_private.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_PRIVATE
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PRIVATE
     bmp = cbLoadBitmap(prefix + _T("macro_protected.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_PROTECTED
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PROTECTED
     bmp = cbLoadBitmap(prefix + _T("macro_public.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_PUBLIC
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_PUBLIC
     bmp = cbLoadBitmap(prefix + _T("macro_folder.png"), wxBITMAP_TYPE_PNG);
-    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_FOLDER
+    m_ImageList->Add(bmp); // PARSER_IMG_MACRO_USE_FOLDER
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     m_ParserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
@@ -368,7 +368,7 @@ int NativeParser::GetTokenKindImage(const Token* token)
 
     switch (token->m_TokenKind)
     {
-        case tkPreprocessor:      return PARSER_IMG_PREPROCESSOR;
+        case tkMacroDef:          return PARSER_IMG_MACRO_DEF;
 
         case tkEnum:
             switch (token->m_Scope)
@@ -404,14 +404,14 @@ int NativeParser::GetTokenKindImage(const Token* token)
                 default:          return PARSER_IMG_TYPEDEF;
             }
 
-        case tkMacro:
+        case tkMacroUse:
             switch (token->m_Scope)
             {
-                case tsPublic:    return PARSER_IMG_MACRO_PUBLIC;
-                case tsProtected: return PARSER_IMG_MACRO_PROTECTED;
-                case tsPrivate:   return PARSER_IMG_MACRO_PRIVATE;
+                case tsPublic:    return PARSER_IMG_MACRO_USE_PUBLIC;
+                case tsProtected: return PARSER_IMG_MACRO_USE_PROTECTED;
+                case tsPrivate:   return PARSER_IMG_MACRO_USE_PRIVATE;
                 case tsUndefined:
-                default:          return PARSER_IMG_MACRO;
+                default:          return PARSER_IMG_MACRO_USE;
             }
 
         case tkConstructor:

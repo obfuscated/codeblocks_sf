@@ -264,7 +264,7 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                 CreateSpecialFolders(m_CCTreeCtrlTop, item);
                 if( !(   m_BrowserOptions.displayFilter == bdfFile
                       && m_ActiveFilename.IsEmpty() ) )
-                    AddChildrenOf(m_CCTreeCtrlTop, item, -1, ~(tkFunction | tkVariable | tkPreprocessor | tkTypedef | tkMacro));
+                    AddChildrenOf(m_CCTreeCtrlTop, item, -1, ~(tkFunction | tkVariable | tkMacroDef | tkTypedef | tkMacroUse));
                 break;
             }
             case sfBase:    AddAncestorsOf(m_CCTreeCtrlTop, item, data->m_Token->m_Index); break;
@@ -303,8 +303,8 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
                     case tkFunction:
                     case tkVariable:
                     case tkEnumerator:
-                    case tkPreprocessor:
-                    case tkMacro:
+                    case tkMacroDef:
+                    case tkMacroUse:
                     case tkAnyContainer:
                     case tkAnyFunction:
                     case tkUndefined:
@@ -696,11 +696,11 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
         {
             if      (!hasGF && token->m_TokenKind == tkFunction)
                 hasGF = true;
-            else if (!hasGM && token->m_TokenKind == tkMacro)
+            else if (!hasGM && token->m_TokenKind == tkMacroUse)
                 hasGM = true;
             else if (!hasGV && token->m_TokenKind == tkVariable)
                 hasGV = true;
-            else if (!hasGP && token->m_TokenKind == tkPreprocessor)
+            else if (!hasGP && token->m_TokenKind == tkMacroDef)
                 hasGP = true;
             else if (!hasTD && token->m_TokenKind == tkTypedef)
                 hasTD = true;
@@ -718,10 +718,10 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
                            PARSER_IMG_TYPEDEF_FOLDER, new CCTreeCtrlData(sfTypedef, 0, tkTypedef,      -1));
     wxTreeItemId gvars   = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global variables"),
                            PARSER_IMG_VARS_FOLDER,    new CCTreeCtrlData(sfGVars,   0, tkVariable,     -1));
-    wxTreeItemId preproc = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Preprocessor symbols"),
-                           PARSER_IMG_PREPROC_FOLDER, new CCTreeCtrlData(sfPreproc, 0, tkPreprocessor, -1));
-    wxTreeItemId gmacro  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Global macros"),
-                           PARSER_IMG_MACRO_FOLDER,   new CCTreeCtrlData(sfMacro,   0, tkMacro,        -1));
+    wxTreeItemId preproc = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Macro definitions"),
+                           PARSER_IMG_MACRO_DEF_FOLDER, new CCTreeCtrlData(sfPreproc, 0, tkMacroDef, -1));
+    wxTreeItemId gmacro  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Macro usages"),
+                           PARSER_IMG_MACRO_USE_FOLDER,   new CCTreeCtrlData(sfMacro,   0, tkMacroUse,        -1));
 
     bool bottom = m_BrowserOptions.treeMembers;
     m_CCTreeCtrlTop->SetItemHasChildren(gfuncs,  !bottom && hasGF);
@@ -897,9 +897,9 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
         {
             case sfGFuncs  : AddChildrenOf(tree, node, -1, tkFunction,     false); break;
             case sfGVars   : AddChildrenOf(tree, node, -1, tkVariable,     false); break;
-            case sfPreproc : AddChildrenOf(tree, node, -1, tkPreprocessor, false); break;
+            case sfPreproc : AddChildrenOf(tree, node, -1, tkMacroDef,     false); break;
             case sfTypedef : AddChildrenOf(tree, node, -1, tkTypedef,      false); break;
-            case sfMacro   : AddChildrenOf(tree, node, -1, tkMacro,        false); break;
+            case sfMacro   : AddChildrenOf(tree, node, -1, tkMacroUse,     false); break;
             case sfToken:
             {
                 if (bottom)
@@ -910,14 +910,14 @@ void ClassBrowserBuilderThread::AddMembersOf(CCTreeCtrl* tree, wxTreeItemId node
                         wxTreeItemId rootCtorDtor = tree->AppendItem(node, _("Ctors & Dtors"), PARSER_IMG_CLASS_FOLDER);
                         wxTreeItemId rootFuncs    = tree->AppendItem(node, _("Functions"), PARSER_IMG_FUNCS_FOLDER);
                         wxTreeItemId rootVars     = tree->AppendItem(node, _("Variables"), PARSER_IMG_VARS_FOLDER);
-                        wxTreeItemId rootMacro    = tree->AppendItem(node, _("Macros"), PARSER_IMG_MACRO_FOLDER);
+                        wxTreeItemId rootMacro    = tree->AppendItem(node, _("Macros"), PARSER_IMG_MACRO_USE_FOLDER);
                         wxTreeItemId rootOthers   = tree->AppendItem(node, _("Others"), PARSER_IMG_OTHERS_FOLDER);
 
                         AddChildrenOf(tree, rootCtorDtor, data->m_Token->m_Index, tkConstructor | tkDestructor);
                         AddChildrenOf(tree, rootFuncs,    data->m_Token->m_Index, tkFunction);
                         AddChildrenOf(tree, rootVars,     data->m_Token->m_Index, tkVariable);
-                        AddChildrenOf(tree, rootMacro,    data->m_Token->m_Index, tkMacro);
-                        AddChildrenOf(tree, rootOthers,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacro));
+                        AddChildrenOf(tree, rootMacro,    data->m_Token->m_Index, tkMacroUse);
+                        AddChildrenOf(tree, rootOthers,   data->m_Token->m_Index, ~(tkNamespace | tkClass | tkEnum | tkAnyFunction | tkVariable | tkMacroUse));
 
                         firstItem = rootCtorDtor;
                     }
@@ -1038,7 +1038,7 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
             if (   (token->m_TokenKind == tkFunction)
                 || (token->m_TokenKind == tkConstructor)
                 || (token->m_TokenKind == tkDestructor)
-                || (token->m_TokenKind == tkMacro)
+                || (token->m_TokenKind == tkMacroUse)
                 || (token->m_TokenKind == tkClass) )
             {
                 str << token->GetFormattedArgs();
@@ -1053,14 +1053,14 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
             if (token->m_TokenKind == tkClass)
             {
                 if (!m_BrowserOptions.treeMembers)
-                    kind |= tkTypedef | tkFunction | tkVariable | tkEnum | tkMacro;
+                    kind |= tkTypedef | tkFunction | tkVariable | tkEnum | tkMacroUse;
                 tree->SetItemHasChildren(child,    m_BrowserOptions.showInheritance
                                                 || TokenContainsChildrenOfKind(token, kind));
             }
             else if (token->m_TokenKind & (tkNamespace | tkEnum))
             {
                 if (!m_BrowserOptions.treeMembers)
-                    kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator | tkMacro;
+                    kind |= tkTypedef | tkFunction | tkVariable | tkEnumerator | tkMacroUse;
                 tree->SetItemHasChildren(child, TokenContainsChildrenOfKind(token, kind));
             }
         }

@@ -965,7 +965,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                 if (!token || token->m_Name.IsEmpty())
                     continue;
 
-                if (preprocessorOnly && token->m_TokenKind != tkPreprocessor)
+                if (preprocessorOnly && token->m_TokenKind != tkMacroDef)
                     continue;
 
                 int iidx = m_NativeParser.GetTokenKindImage(token);
@@ -1100,15 +1100,15 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
     macros.push_back(wxT("line"));
     macros.push_back(wxT("pragma"));
     macros.push_back(wxT("undef"));
-    const wxString idxStr = F(wxT("\n%d"), PARSER_IMG_PREPROCESSOR);
+    const wxString idxStr = F(wxT("\n%d"), PARSER_IMG_MACRO_DEF);
     for (size_t i = 0; i < macros.size(); ++i)
     {
         if (text.IsEmpty() || macros[i][0] == text[0]) // ignore tokens that start with a different letter
-            tokens.push_back(CCToken(wxNOT_FOUND, macros[i], PARSER_IMG_PREPROCESSOR));
+            tokens.push_back(CCToken(wxNOT_FOUND, macros[i], PARSER_IMG_MACRO_DEF));
     }
     stc->ClearRegisteredImages();
-    stc->RegisterImage(PARSER_IMG_PREPROCESSOR,
-                       m_NativeParser.GetImageList()->GetBitmap(PARSER_IMG_PREPROCESSOR));
+    stc->RegisterImage(PARSER_IMG_MACRO_DEF,
+                       m_NativeParser.GetImageList()->GetBitmap(PARSER_IMG_MACRO_DEF));
 }
 
 void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens)
@@ -1405,7 +1405,7 @@ void CodeCompletion::DoAutocomplete(const CCToken& token, cbEditor* ed)
         else
         {
             bool addParentheses = tkn->m_TokenKind & tkAnyFunction;
-            if (!addParentheses && (tkn->m_TokenKind & tkPreprocessor))
+            if (!addParentheses && (tkn->m_TokenKind & tkMacroDef))
             {
                 if (tkn->m_Args.size() > 0)
                     addParentheses = true;

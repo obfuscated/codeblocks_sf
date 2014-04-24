@@ -1218,7 +1218,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
 {
     if (m_RepeatReplaceCount > 0)
     {
-        const int id = m_TokenTree->TokenExists(str, -1, tkPreprocessor);
+        const int id = m_TokenTree->TokenExists(str, -1, tkMacroDef);
         if (id != -1)
         {
             const Token* token = m_TokenTree->at(id);
@@ -1327,7 +1327,7 @@ bool Tokenizer::CalcConditionExpression()
 
         if (token.Len() > 1 && !wxIsdigit(token[0])) // handle macro
         {
-            const int id = m_TokenTree->TokenExists(token, -1, tkPreprocessor);
+            const int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
             if (id != -1)
             {
                 const Token* tk = m_TokenTree->at(id);
@@ -1399,7 +1399,7 @@ bool Tokenizer::IsMacroDefined()
 {
     while (SkipWhiteSpace() || SkipComment())
         ;
-    int id = m_TokenTree->TokenExists(DoGetToken(), -1, tkPreprocessor);
+    int id = m_TokenTree->TokenExists(DoGetToken(), -1, tkMacroDef);
     SkipToEOL(false);
     return (id != -1);
 }

@@ -29,24 +29,24 @@ enum TokenScope
 enum TokenKind
 {
     // changed in order to reflect the priority
-    tkNamespace     = 0x0001,
-    tkClass         = 0x0002,
-    tkEnum          = 0x0004,
-    tkTypedef       = 0x0008, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
-    tkConstructor   = 0x0010,
-    tkDestructor    = 0x0020,
-    tkFunction      = 0x0040,
-    tkVariable      = 0x0080,
-    tkEnumerator    = 0x0100,
-    tkPreprocessor  = 0x0200,
-    tkMacro         = 0x0400,
+    tkNamespace        = 0x0001,
+    tkClass            = 0x0002,
+    tkEnum             = 0x0004,
+    tkTypedef          = 0x0008, // typedefs are stored as classes inheriting from the typedef'd type (taking advantage of existing inheritance code)
+    tkConstructor      = 0x0010,
+    tkDestructor       = 0x0020,
+    tkFunction         = 0x0040,
+    tkVariable         = 0x0080,
+    tkEnumerator       = 0x0100,
+    tkMacroDef         = 0x0200,
+    tkMacroUse         = 0x0400,
 
     // convenient masks
-    tkAnyContainer  = tkClass    | tkNamespace   | tkTypedef,
-    tkAnyFunction   = tkFunction | tkConstructor | tkDestructor,
+    tkAnyContainer     = tkClass    | tkNamespace   | tkTypedef,
+    tkAnyFunction      = tkFunction | tkConstructor | tkDestructor,
 
     // undefined or just "all"
-    tkUndefined     = 0xFFFF
+    tkUndefined        = 0xFFFF
 };
 
 class Token
