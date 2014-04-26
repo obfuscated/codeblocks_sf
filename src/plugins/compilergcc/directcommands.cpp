@@ -226,15 +226,19 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     wxString compiler_cmd;
     if (!is_header || compiler->GetSwitches().supportsPCH)
     {
-        const CompilerTool& tool = compiler->GetCompilerTool(is_resource ? ctCompileResourceCmd : ctCompileObjectCmd, pf->file.GetExt());
+        const CompilerTool* tool = compiler->GetCompilerTool(is_resource ? ctCompileResourceCmd : ctCompileObjectCmd, pf->file.GetExt());
 
         // does it generate other files to compile?
         for (size_t i = 0; i < pf->generatedFiles.size(); ++i)
             AppendArray(GetCompileFileCommand(target, pf->generatedFiles[i]), ret_generated); // recurse
 
         pfCustomBuild& pcfb = pf->customBuild[compiler->GetID()];
-        compiler_cmd = pcfb.useCustomBuildCommand
-                     ? pcfb.buildCommand : tool.command;
+        if (pcfb.useCustomBuildCommand)
+            compiler_cmd = pcfb.buildCommand;
+        else if (tool)
+            compiler_cmd = tool->command;
+        else
+            compiler_cmd = wxEmptyString;
 
         wxString source_file;
         if (compiler->GetSwitches().UseFullSourcePaths)

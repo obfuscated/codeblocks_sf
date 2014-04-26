@@ -288,7 +288,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
           */
         virtual const wxString& GetCommand(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
         /** @brief Get a compiler tool based on CommandType */
-        virtual const CompilerTool& GetCompilerTool(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
+        virtual const CompilerTool* GetCompilerTool(CommandType ct, const wxString& fileExtension = wxEmptyString) const;
         /** @brief Get a command tool vector based on CommandType (used by advanced compiler dialog) */
         virtual CompilerToolsVector& GetCommandToolsVector(CommandType ct) { return m_Commands[ct]; }
         /** @brief Get the array of regexes used in errors/warnings recognition */

@@ -298,11 +298,13 @@ const wxString& Compiler::GetCommand(CommandType ct, const wxString& fileExtensi
     return vec[catchAll].command;
 }
 
-const CompilerTool& Compiler::GetCompilerTool(CommandType ct, const wxString& fileExtension) const
+const CompilerTool* Compiler::GetCompilerTool(CommandType ct, const wxString& fileExtension) const
 {
-    size_t catchAll = 0;
     const CompilerToolsVector& vec = m_Commands[ct];
+    if (vec.empty())
+        return nullptr;
 
+    size_t catchAll = 0;
     if (!fileExtension.IsEmpty())
     {
         for (size_t i = 0; i < vec.size(); ++i)
@@ -315,11 +317,11 @@ const CompilerTool& Compiler::GetCompilerTool(CommandType ct, const wxString& fi
             for (size_t n = 0; n < vec[i].extensions.GetCount(); ++n)
             {
                 if (vec[i].extensions[n] == fileExtension)
-                    return vec[i];
+                    return &vec[i];
             }
         }
     }
-    return vec[catchAll];
+    return &vec[catchAll];
 }
 
 void Compiler::MirrorCurrentSettings()

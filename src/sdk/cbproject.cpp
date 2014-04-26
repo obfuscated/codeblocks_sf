@@ -686,7 +686,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         Compiler* c = CompilerFactory::GetCompiler( GetCompilerID() );
         if (c)
         {
-            const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
+            const CompilerTool* t = c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
             if (t && t->generatedFiles.GetCount())
                 GenFilesHackMap[c] = t;
         }
@@ -699,7 +699,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
 
             if (c)
             {
-                const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
+                const CompilerTool* t = c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
                 if (t && t->generatedFiles.GetCount())
                     GenFilesHackMap[c] = t;
             }
@@ -711,7 +711,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         Compiler* c = CompilerFactory::GetCompiler(m_Targets[targetIndex]->GetCompilerID());
         if (c)
         {
-            const CompilerTool* t = &c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
+            const CompilerTool* t = c->GetCompilerTool(isResource ? ctCompileResourceCmd : ctCompileObjectCmd, fname.GetExt());
             if (t && t->generatedFiles.GetCount())
                 GenFilesHackMap[c] = t;
         }
