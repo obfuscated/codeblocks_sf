@@ -32,18 +32,18 @@ EXTRA_DIST = classbrowser.xrc \
              images/folder_open.png \
              images/folder.png \
              images/funcs_folder.png \
-             images/macro.png \
-             images/macro_folder.png \
-             images/macro_private.png \
-             images/macro_protected.png \
-             images/macro_public.png \
+             images/macro_def.png \
+             images/macro_def_folder.png \
+             images/macro_use.png \
+             images/macro_use_folder.png \
+             images/macro_use_private.png \
+             images/macro_use_protected.png \
+             images/macro_use_public.png \
              images/method_private.png \
              images/method_protected.png \
              images/method_public.png \
              images/namespace.png \
              images/others_folder.png \
-             images/preproc_folder.png \
-             images/preproc.png \
              images/symbols_folder.png \
              images/typedef.png \
              images/typedef_private.png \
