@@ -43,7 +43,7 @@ class ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 	private:
 		ToolsManager();
 		~ToolsManager();
-		void DoRemoveTool(ToolsList::Node* node);
+
 		int Configure();
 		bool Execute(const cbTool* tool);
 		void LoadTools();

@@ -1367,10 +1367,10 @@ void CompilerGCC::DoClearTargetMenu()
     if (m_TargetMenu)
     {
         wxMenuItemList& items = m_TargetMenu->GetMenuItems();
-        while (wxMenuItemList::Node* node = items.GetFirst())
+        for (wxMenuItemList::iterator it = items.begin(); it != items.end(); ++it)
         {
-            if (node->GetData())
-                m_TargetMenu->Delete(node->GetData());
+            if (*it)
+                m_TargetMenu->Delete(*it);
         }
 // mandrav: The following lines DO NOT clear the menu!
 //        wxMenuItemList& items = m_TargetMenu->GetMenuItems();

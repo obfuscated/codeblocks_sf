@@ -214,31 +214,23 @@ void ToolsManager::InsertTool(int position, const cbTool* tool, bool save)
 void ToolsManager::RemoveToolByIndex(int index)
 {
     int idx = 0;
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::iterator it = m_Tools.begin(); it != m_Tools.end(); ++it)
     {
         if (idx == index)
         {
-            DoRemoveTool(node);
+            m_Tools.erase(it);
+            SaveTools();
             return;
         }
         ++idx;
     }
 }
 
-void ToolsManager::DoRemoveTool(ToolsList::Node* node)
-{
-    if (node)
-    {
-        m_Tools.DeleteNode(node);
-        SaveTools();
-    }
-}
-
 cbTool* ToolsManager::GetToolByMenuId(int id)
 {
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::iterator it = m_Tools.begin(); it != m_Tools.end(); ++it)
     {
-        cbTool* tool = node->GetData();
+        cbTool* tool = *it;
         if (tool->GetMenuId() == id)
             return tool;
     }
@@ -248,9 +240,9 @@ cbTool* ToolsManager::GetToolByMenuId(int id)
 cbTool* ToolsManager::GetToolByIndex(int index)
 {
     int idx = 0;
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::iterator it = m_Tools.begin(); it != m_Tools.end(); ++it)
     {
-        cbTool* tool = node->GetData();
+        cbTool* tool = *it;
         if (idx == index)
             return tool;
         ++idx;
@@ -290,9 +282,9 @@ void ToolsManager::SaveTools()
     }
 
     int count = 0;
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::iterator it = m_Tools.begin(); it != m_Tools.end(); ++it)
     {
-        cbTool* tool = node->GetData();
+        cbTool* tool = *it;
         wxString elem;
 
         // prepend a 0-padded 2-digit number to keep ordering
@@ -320,9 +312,9 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
         m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
     }
 
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::iterator it = m_Tools.begin(); it != m_Tools.end(); ++it)
     {
-        cbTool* tool = node->GetData();
+        cbTool* tool = *it;
         if (tool->GetName() == CB_TOOLS_SEPARATOR)
         {
             m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
