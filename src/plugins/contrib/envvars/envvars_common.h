@@ -31,6 +31,7 @@ namespace nsEnvVars
     * \param msg Message to print at C::B's debug log
     */
   void          EnvVarsDebugLog(const wxChar* msg, ...);
+  void          EnvVarsDebugLog(const wxString& msg, ...);
 
   /** Tokenises an envvar string into sub-strings
     * \param str String to tokenise (envvars set format to array string)

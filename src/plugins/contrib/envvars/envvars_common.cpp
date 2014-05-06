@@ -71,6 +71,37 @@ void nsEnvVars::EnvVarsDebugLog(const wxChar* msg, ...)
   Manager::Get()->GetLogManager()->DebugLog(log_msg);
 }// EnvVarsDebugLog
 
+void nsEnvVars::EnvVarsDebugLog(const wxString &msg, ...)
+{
+  // load and apply configuration (to application only)
+  ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("envvars"));
+  if (!cfg)
+    return;
+
+  // get whether to print debug message to debug log or not
+  bool debug_log = cfg->ReadBool(_T("/debug_log"));
+  if (!debug_log)
+    return;
+
+  wxString log_msg;
+  va_list  arg_list;
+
+  va_start(arg_list, msg);
+#if wxCHECK_VERSION(2,9,0) && wxUSE_UNICODE
+// in wx >=  2.9 unicode-build (default) we need the %ls here, or the strings get
+// cut after the first character
+    log_msg = msg;
+    log_msg.Replace(_T("%s"), _T("%ls"));
+    log_msg = wxString::FormatV(msg, arg_list);
+#else
+    log_msg = wxString::FormatV(msg, arg_list);
+#endif
+
+  va_end(arg_list);
+
+  Manager::Get()->GetLogManager()->DebugLog(log_msg);
+}// EnvVarsDebugLog
+
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 wxArrayString nsEnvVars::EnvvarStringTokeniser(const wxString& str)
@@ -101,7 +132,7 @@ wxArrayString nsEnvVars::EnvvarStringTokeniser(const wxString& str)
     if (current_char.CompareTo(_T("\""))==0) // equality
       inside_quot = !inside_quot;
 
-    if ((current_char.CompareTo(nsEnvVars::EnvVarsSep)==0) && (!inside_quot))
+    if ((current_char.CompareTo(nsEnvVars::EnvVarsSep.wx_str())==0) && (!inside_quot))
     {
       if (!token.IsEmpty())
       {
