@@ -677,7 +677,7 @@ private:
         if (isPrefix && target.IsEmpty())
             return true;
         if (!isPrefix)
-            return text.CompareTo(target, caseSens ? wxString::exact : wxString::ignoreCase) == 0;
+            return text.CompareTo(target.wx_str(), caseSens ? wxString::exact : wxString::ignoreCase) == 0;
         // isPrefix == true
         if (caseSens)
             return text.StartsWith(target);
