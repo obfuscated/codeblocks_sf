@@ -45,7 +45,7 @@ inline int wxCALLBACK sortByTitle(long item1, long item2, cb_unused long sortDat
     const PluginElement* elem1 = (const PluginElement*)item1;
     const PluginElement* elem2 = (const PluginElement*)item2;
 
-    return elem1->info.title.CompareTo(elem2->info.title);
+    return elem1->info.title.CompareTo(elem2->info.title.wx_str());
 }
 
 BEGIN_EVENT_TABLE(PluginsConfigurationDlg, wxScrollingDialog)

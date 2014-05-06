@@ -15,7 +15,7 @@
 class BatchLogWindow : public wxScrollingDialog
 {
     public:
-        BatchLogWindow(wxWindow *parent, const wxChar *title)
+        BatchLogWindow(wxWindow *parent, const wxString &title)
             : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
             wxSize size;

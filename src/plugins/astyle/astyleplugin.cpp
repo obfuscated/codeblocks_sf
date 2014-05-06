@@ -341,7 +341,7 @@ bool AStylePlugin::FormatEditor( cbEditor *ed )
     if (edText.size() && edText.Last() != _T('\r') && edText.Last() != _T('\n') && !onlySelected)
         edText += eolChars;
 
-    ASStreamIterator *asi = new ASStreamIterator(ed, edText);
+    ASStreamIterator *asi = new ASStreamIterator(ed, edText.wx_str());
 
     formatter.init(asi);
 
