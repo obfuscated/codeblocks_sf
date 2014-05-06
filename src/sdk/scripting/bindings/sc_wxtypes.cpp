@@ -22,6 +22,21 @@ namespace ScriptBindings
     ///////////////////
     // wxArrayString //
     ///////////////////
+    void wxArrayString_Clear(HSQUIRRELVM v)
+    {
+        CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+        StackHandler sa(v);
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
+        self.Clear();
+    }
+    SQInteger wxArrayString_GetCount(HSQUIRRELVM v)
+    {
+        CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+        StackHandler sa(v);
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
+        return sa.Return((SQInteger)self.GetCount());
+    }
+
     SQInteger wxArrayString_Index(HSQUIRRELVM v)
     {
         CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
@@ -269,8 +284,7 @@ namespace ScriptBindings
         SqPlus::SQClassDef<wxArrayString>("wxArrayString").
                 emptyCtor().
                 func(&wxArrayString::Add, "Add").
-                func(&wxArrayString::Clear, "Clear").
-//                func(&wxArrayString::Index, "Index").
+                staticFunc(&wxArrayString_Clear, "Clear").
                 staticFuncVarArgs(&wxArrayString_Index, "Index", "*").
                 func(&wxArrayString::GetCount, "GetCount").
                 func<WXARRAY_STRING_ITEM>(&wxArrayString::Item, "Item").
