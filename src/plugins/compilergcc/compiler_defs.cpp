@@ -54,30 +54,27 @@ void CompilerQueue::Add(CompilerCommand* cmd)
 
 void CompilerQueue::Add(CompilerQueue* queue)
 {
-    wxCompilerCommandsNode* node = queue->m_Commands.GetFirst();
-    while (node)
+    for (CompilerCommands::iterator it = queue->m_Commands.begin(); it != queue->m_Commands.end(); ++it)
     {
-        if (node->GetData())
-            Add(new CompilerCommand(*(node->GetData())));
-        node = node->GetNext();
+        if (*it)
+            Add(new CompilerCommand(**it));
     }
 }
 
 CompilerCommand* CompilerQueue::Peek()
 {
-    wxCompilerCommandsNode* node = m_Commands.GetFirst();
-    if (!node)
-        return 0;
-    return node->GetData();
+    if (m_Commands.empty())
+        return nullptr;
+    else
+        return m_Commands.front();
 }
 
 CompilerCommand* CompilerQueue::Next()
 {
-    wxCompilerCommandsNode* node = m_Commands.GetFirst();
-    if (!node)
-        return 0;
-    CompilerCommand* cmd = node->GetData();
-    m_Commands.Erase(node);
+    if (m_Commands.empty())
+        return nullptr;
+    CompilerCommand* cmd = m_Commands.front();
+    m_Commands.pop_front();
     m_LastWasRun = cmd ? cmd->isRun : false;
     return cmd;
 }
