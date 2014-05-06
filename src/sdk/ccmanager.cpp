@@ -247,6 +247,7 @@ CCManager::CCManager() :
     m_LastAutocompIndex(wxNOT_FOUND),
     m_LastTipPos(wxSCI_INVALID_POSITION),
     m_WindowBound(0),
+    m_OwnsAutocomp(true),
     m_CallTipTimer(this, idCallTipTimer),
     m_AutoLaunchTimer(this, idAutoLaunchTimer),
     m_AutocompSelectTimer(this, idAutocompSelectTimer),
@@ -364,6 +365,16 @@ void CCManager::NotifyPluginStatus()
     m_pLastCCPlugin = nullptr;
 }
 
+void CCManager::InjectAutoCompShow(int lenEntered, const wxString& itemList)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        ed->GetControl()->AutoCompShow(lenEntered, itemList);
+        m_OwnsAutocomp = false;
+    }
+}
+
 // priority, then alphabetical
 struct TokenSorter
 {
@@ -444,6 +455,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompSetSeparator(wxT('\r'));
     stc->AutoCompShow(tknEnd - tknStart, items);
+    m_OwnsAutocomp = true;
     if (isPureAlphabetical)
     {
         const wxString& contextStr = stc->GetTextRange(tknStart, stc->WordEndPosition(tknEnd, true));
@@ -716,7 +728,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
     {
         DoHidePopup();
         cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
-        if (ccPlugin)
+        if (ccPlugin && m_OwnsAutocomp)
         {
             if (   m_LastAutocompIndex != wxNOT_FOUND
                 && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
@@ -1002,6 +1014,7 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
     if (!stc->CallTipActive())
         m_CallTipActive = wxSCI_INVALID_POSITION;
     stc->AutoCompShow(m_LastACLaunchState[lsCaretStart] - m_LastACLaunchState[lsTknStart], items);
+    m_OwnsAutocomp = true;
     if (   m_LastAutocompIndex != wxNOT_FOUND
         && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
     {

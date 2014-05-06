@@ -39,6 +39,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** let CCManager know that a change (e.g. active lexer is switched) may invalidate cached active ccPlugin */
         void NotifyPluginStatus();
 
+        /** if for some reason you *need* to use wxScintilla::AutoCompShow(), call this instead so CCManager does not step on you */
+        void InjectAutoCompShow(int lenEntered, const wxString& itemList);
+
     private:
         CCManager();
         ~CCManager();
@@ -82,6 +85,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         int m_LastAutocompIndex;
         int m_LastTipPos;
         int m_WindowBound;
+        bool m_OwnsAutocomp;
         typedef std::vector<cbCodeCompletionPlugin::CCCallTip> CallTipVec;
         CallTipVec m_CallTips;
         CallTipVec::const_iterator m_CurCallTip;
