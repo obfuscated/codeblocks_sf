@@ -1909,7 +1909,7 @@ static void QuoteString(wxString &value, const wxString &caption)
     {
         AnnoyingDialog dlgQuestion(caption,
                                    _("The value contains spaces or strange characters. Do you want to quote it?"),
-                                   wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtYES,
+                                   wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtSAVE_CHOICE,
                                    _("&Quote"), _("&Leave unquoted"));
         if (dlgQuestion.ShowModal() == AnnoyingDialog::rtYES)
             ::QuoteStringIfNeeded(value);
