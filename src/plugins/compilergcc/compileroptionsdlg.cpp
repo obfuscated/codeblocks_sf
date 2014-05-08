@@ -1907,7 +1907,7 @@ static void QuoteString(wxString &value, const wxString &caption)
 {
     if (NeedQuotes(value))
     {
-        AnnoyingDialog dlgQuestion(caption,
+        AnnoyingDialog dlgQuestion(caption, wxT("Variable quote string"),
                                    _("The value contains spaces or strange characters. Do you want to quote it?"),
                                    wxART_QUESTION, AnnoyingDialog::YES_NO, AnnoyingDialog::rtSAVE_CHOICE,
                                    _("&Quote"), _("&Leave unquoted"));
