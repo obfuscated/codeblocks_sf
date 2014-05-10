@@ -372,6 +372,7 @@ void CCManager::InjectAutoCompShow(int lenEntered, const wxString& itemList)
     {
         ed->GetControl()->AutoCompShow(lenEntered, itemList);
         m_OwnsAutocomp = false;
+        m_AutocompTokens.clear();
     }
 }
 
