@@ -18,12 +18,11 @@
 class DLLIMPORT PipedProcess : public wxProcess
 {
     public:
-        // class constructor
         PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id = wxID_ANY, bool pipe = true, const wxString& dir = wxEmptyString);
-
-        void SetMultiline() { m_Multiline = true; }
-        // class destructor
         ~PipedProcess();
+
+        void SetMultiline(bool output, bool error) { m_MultilineOutput = output; m_MultilineError = error; }
+
         virtual int Launch(const wxString& cmd, unsigned int pollingInterval = 100);
         virtual void SendString(const wxString& text);
         virtual bool HasInput();
@@ -37,7 +36,7 @@ class DLLIMPORT PipedProcess : public wxProcess
         int m_Id;
         int m_Pid;
         wxTimer m_timerPollProcess;
-        bool m_Multiline;
+        bool m_MultilineOutput, m_MultilineError;
         wxString m_LinesInput, m_LinesError;
     private:
         PipedProcess** m_pvThis;

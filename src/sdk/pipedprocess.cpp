@@ -124,7 +124,8 @@ PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, 
     m_Parent(parent),
     m_Id(id),
     m_Pid(0),
-    m_Multiline(false),
+    m_MultilineOutput(false),
+    m_MultilineError(false),
     m_pvThis(pvThis)
 {
     wxSetWorkingDirectory(UnixFilename(dir));
@@ -223,13 +224,13 @@ bool PipedProcess::HasInput()
 {
     if (IsErrorAvailable())
     {
-        ProcessStream(m_LinesError, *GetErrorStream(), m_Parent, m_Id, m_Multiline, false);
+        ProcessStream(m_LinesError, *GetErrorStream(), m_Parent, m_Id, m_MultilineError, false);
         return true;
     }
 
     if (IsInputAvailable())
     {
-        ProcessStream(m_LinesInput, *GetInputStream(), m_Parent, m_Id, m_Multiline, true);
+        ProcessStream(m_LinesInput, *GetInputStream(), m_Parent, m_Id, m_MultilineOutput, true);
         return true;
     }
 
