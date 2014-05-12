@@ -1518,7 +1518,11 @@ void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent& event)
 {
     ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
     if (pf)
-        Manager::Get()->GetProjectManager()->GetUI().ShowFileInTree(*pf);
+    {
+        cbProjectManagerUI &ui = Manager::Get()->GetProjectManager()->GetUI();
+        ui.SwitchToProjectsPage();
+        ui.ShowFileInTree(*pf);
+    }
 }
 
 void EditorManager::OnAppDoneStartup(wxCommandEvent& event)

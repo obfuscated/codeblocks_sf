@@ -449,7 +449,6 @@ void ProjectManagerUI::SwitchToProjectsPage()
 
 void ProjectManagerUI::ShowFileInTree(ProjectFile &projectFile)
 {
-    SwitchToProjectsPage();
     // first unselect previous selected item if any, needed because of wxTR_MULTIPLE flag
     m_pTree->UnselectAll();
 

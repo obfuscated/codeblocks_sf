@@ -68,6 +68,7 @@ class NullProjectManagerUI : public cbProjectManagerUI
         int AskForBuildTargetIndex(cbProject* project = nullptr) { (void)project; return -1; }
         wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) { (void)project; return wxArrayInt(); }
         void ConfigureProjectDependencies(cbProject* base = nullptr) { (void)base; }
+        void SwitchToProjectsPage() {}
 };
 
 // class constructor

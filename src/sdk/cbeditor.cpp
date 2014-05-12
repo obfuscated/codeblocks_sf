@@ -3041,7 +3041,11 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         }
     }
     else if (id == idShowFileInProject)
-        Manager::Get()->GetProjectManager()->GetUI().ShowFileInTree(*m_pProjectFile);
+    {
+        cbProjectManagerUI &ui=Manager::Get()->GetProjectManager()->GetUI();
+        ui.SwitchToProjectsPage();
+        ui.ShowFileInTree(*m_pProjectFile);
+    }
     else if (id == idBreakpointAdd)
         AddBreakpoint(m_pData->m_LastMarginMenuLine);
     else if (id == idBreakpointEdit)
