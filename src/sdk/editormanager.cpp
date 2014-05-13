@@ -948,6 +948,21 @@ bool EditorManager::OpenContainingFolder()
     const wxString defCmds = _T("open -R");
 #else
     const wxString defCmds = _T("xdg-open");
+
+    if (!cfg->ReadBool(_T("scanned_open_folder_mime"), false))
+    {
+        cfg->Write(_T("scanned_open_folder_mime"), true);
+        wxString cmd =   Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL)
+                       + _T(" 'cat /usr/share/applications/`xdg-mime query default inode/directory` | grep Exec'");
+        wxArrayString output, errors;
+        wxExecute(cmd, output, errors, wxEXEC_SYNC);
+        if (!output.IsEmpty())
+        {
+            cmd = output[0].AfterFirst('=').BeforeFirst('%').Trim(true).Trim(false);
+            if (!cmd.IsEmpty() && cmd != defCmds)
+                cfg->Write(_T("open_containing_folder"), cmd);
+        }
+    }
 #endif
 
     wxString cmds = cfg->Read(_T("open_containing_folder"), defCmds) + _T(" ");
@@ -955,10 +970,15 @@ bool EditorManager::OpenContainingFolder()
 #if defined __WXMSW__ || defined __WXMAC__
     cmds << fullPath;   // Open folder with the file selected
 #else
-    // Cant select the file on Linux, so just extract the folder name
-    wxString splitPath;
-    wxFileName::SplitPath(fullPath, &splitPath, nullptr, nullptr);
-    cmds << splitPath;
+    if (cmds.StartsWith(defCmds))
+    {
+        // Cannot select the file with "xdg-open", so just extract the folder name
+        wxString splitPath;
+        wxFileName::SplitPath(fullPath, &splitPath, nullptr, nullptr);
+        cmds << splitPath;
+    }
+    else
+        cmds << fullPath; // Open folder with the file selected
 #endif
 
     wxExecute(cmds);
