@@ -1035,10 +1035,10 @@ wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
     return wxBitmap(im);
 }
 
-void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
-{
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
+void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
+{
     long flags = lc->GetWindowStyleFlag();
     switch (style)
     {
@@ -1050,8 +1050,10 @@ void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
         default: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_ICON; break;
     }
     lc->SetWindowStyleFlag(flags);
-#endif
 }
+#else
+void SetSettingsIconsStyle(cb_unused wxListCtrl* lc, cb_unused SettingsIconsStyle style) {}
+#endif
 
 SettingsIconsStyle GetSettingsIconsStyle(cb_unused wxListCtrl* lc)
 {
