@@ -129,10 +129,16 @@ class EditorTweaks : public cbPlugin
         // update all the UI menu's status, this usually happens when a new editor is activated
         void UpdateUI();
 
+        void StripTrailingBlanks(cbStyledTextCtrl* control);
+        void MakeIndentsConsistent(cbEditor* ed);
+
     private:
 		void OnAlign(wxCommandEvent& event);
+		void OnAlign(unsigned int idx);
 		void OnAlignOthers(wxCommandEvent& event);
         void OnAlignAuto(wxCommandEvent& event);
+        void OnAlignAuto();
+        void OnAlignLast(wxCommandEvent& event);
 		void OnSuppressInsert(wxCommandEvent& event);
 		void OnConvertBraces(wxCommandEvent& event);
 		void AlignToString(const wxString AlignmentString);
@@ -145,6 +151,9 @@ class EditorTweaks : public cbPlugin
         cbStyledTextCtrl* GetSafeControl();
 
 		std::vector<AlignerMenuEntry> AlignerMenuEntries;
+		unsigned int AlignerLastUsedIdx;
+        bool AlignerLastUsedAuto;
+        bool AlignerLastUsed;
 
     private:
 
