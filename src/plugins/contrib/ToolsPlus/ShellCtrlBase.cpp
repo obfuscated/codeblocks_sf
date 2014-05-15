@@ -12,8 +12,9 @@ ShellRegistry& GlobalShellRegistry()
 }
 
 // Unique IDs for Timer and Shell Manager messages
-int ID_SHELLPOLLTIMER=wxNewId();
-int ID_SHELLMGR=wxNewId();
+long ID_SHELLPOLLTIMER = wxNewId();
+long ID_SHELLMGR = wxNewId();
+long ID_REMOVE_TERMINATED = wxNewId();
 
 
 bool ShellRegistry::Register(const wxString &name, fnCreate create, fnFree free) //register/deregister are called by the plugin registrant instance
@@ -78,6 +79,8 @@ BEGIN_EVENT_TABLE(ShellManager, wxPanel)
     EVT_CHAR(ShellManager::OnUserInput)
     EVT_TIMER(ID_SHELLPOLLTIMER, ShellManager::OnPollandSyncOutput)
     EVT_AUINOTEBOOK_PAGE_CLOSE(ID_SHELLMGR, ShellManager::OnPageClosing)
+    EVT_AUINOTEBOOK_TAB_RIGHT_UP(ID_SHELLMGR, ShellManager::OnPageContextMenu)
+    EVT_MENU(ID_REMOVE_TERMINATED,ShellManager::OnRemoveTerminated)
 END_EVENT_TABLE()
 
 
@@ -89,7 +92,24 @@ void ShellManager::OnPageClosing(wxAuiNotebookEvent& event)
         event.Veto();
 //    event.Skip(); // allow others to process it too
 }
+void ShellManager::OnPageContextMenu(wxAuiNotebookEvent& event)
+{
+    if (event.GetSelection() == -1)
+        return;
 
+    // select the notebook that sends the event
+    m_nb->SetSelection(event.GetSelection());
+    wxMenu* pop = new wxMenu;
+    pop->Append(ID_REMOVE_TERMINATED, _("Close Inactive Tool Pages"));
+
+    m_nb->PopupMenu(pop);
+    delete pop;
+}
+
+void ShellManager::OnRemoveTerminated(wxCommandEvent &event)
+{
+    RemoveDeadPages();
+}
 
 bool ShellManager::QueryClose(ShellCtrlBase* sh)
 {
