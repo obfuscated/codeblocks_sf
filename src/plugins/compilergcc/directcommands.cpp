@@ -790,6 +790,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             break;
 
         case ttNative:
+        case ttEmbedded:
             ct = ctLinkNativeCmd;
             kind_of_output = _("native");
             break;
