@@ -626,6 +626,34 @@ void cbDebuggerPlugin::SwitchToPreviousLayout()
     Manager::Get()->ProcessEvent(switchEvent);
 }
 
+bool cbDebuggerPlugin::GetHostForDebug(wxString &pathToHostApp, ProjectBuildTarget* target)
+{
+    if(!target)
+        return false;
+
+    if (target->GetTargetType() != ttEmbedded)
+        return false;
+
+    if (target->GetHostApplication().IsEmpty())
+        return false;
+
+    wxString out;
+    out = UnixFilename(target->GetHostApplication());
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
+    Log(_("Adding file: ") + out);
+    ConvertDirectory(out);
+
+    if (out.empty())
+    {
+        Log(_("Couldn't find the path to the host application!"), Logger::error);
+        return false;
+    }
+
+    pathToHostApp = out;
+
+    return true;
+}
+
 bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDirectory, ProjectBuildTarget* target)
 {
     if (!target)
@@ -642,6 +670,24 @@ bool cbDebuggerPlugin::GetDebuggee(wxString &pathToDebuggee, wxString &workingDi
                 Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
                 wxFileName f(out);
                 f.MakeAbsolute(target->GetParentProject()->GetBasePath());
+                out = f.GetFullPath();
+                Log(_("Adding file: ") + out);
+                ConvertDirectory(out);
+            }
+            break;
+
+        case ttEmbedded:
+            {
+                if (target->GetHostApplication().IsEmpty())
+                {
+                    cbMessageBox(_("You must select a host application to \"run\" an Embedded Application..."));
+                    return false;
+                }
+                out = UnixFilename(target->GetOutputFilename());
+                Manager::Get()->GetMacrosManager()->ReplaceEnvVars(out); // apply env vars
+                wxFileName f(out);
+                f.MakeAbsolute(target->GetParentProject()->GetBasePath());
+                f.SetExt(_T("elf"));
                 out = f.GetFullPath();
                 Log(_("Adding file: ") + out);
                 ConvertDirectory(out);

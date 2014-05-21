@@ -177,7 +177,8 @@ wxString CompileTargetBase::SuggestOutputFilename()
         case ttExecutable:   suggestion = GetExecutableFilename(); break;
         case ttDynamicLib:   suggestion = GetDynamicLibFilename(); break;
         case ttStaticLib:    suggestion = GetStaticLibFilename();  break;
-        case ttNative:       suggestion = GetNativeFilename();     break;
+        case ttNative:      // fall through
+        case ttEmbedded:     suggestion = GetNativeFilename();     break;
         case ttCommandsOnly: // fall through
         default:
             suggestion.Clear();
@@ -279,6 +280,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             break;
         }
         case ttNative:
+        case ttEmbedded:
         {
             if (m_ExtensionGenerationPolicy == tgfpPlatformDefault)
                 filename << fname.GetName() << FileFilters::NATIVE_DOT_EXT;
@@ -355,7 +357,7 @@ wxString CompileTargetBase::GetNativeFilename()
 
     wxFileName fname(m_Filename);
     fname.SetName(fname.GetName());
-    fname.SetExt(FileFilters::NATIVE_EXT);
+    if (m_TargetType == ttNative) fname.SetExt(FileFilters::NATIVE_EXT);
     return fname.GetFullPath();
 }
 
@@ -497,6 +499,20 @@ void CompileTargetBase::SetExecutionParameters(const wxString& params)
         return;
 
     m_ExecutionParameters = params;
+    SetModified(true);
+}
+
+const wxString& CompileTargetBase::GetHostDebugParameters() const
+{
+    return m_HostDebugParameters;
+}
+
+void CompileTargetBase::SetHostDebugParameters(const wxString& params)
+{
+    if (m_HostDebugParameters == params)
+        return;
+
+    m_HostDebugParameters = params;
     SetModified(true);
 }
 

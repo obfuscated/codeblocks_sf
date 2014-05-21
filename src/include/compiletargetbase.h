@@ -37,7 +37,8 @@ enum TargetType
     ttStaticLib     = 2, /**< Target produces a static library */
     ttDynamicLib    = 3, /**< Target produces a dynamic library */
     ttCommandsOnly  = 4, /**< Target only runs commands in pre-build and/or post-build steps */
-    ttNative        = 5  /**< Target produces a native binary */
+    ttNative        = 5, /**< Target produces a native binary */
+    ttEmbedded      = 6, /**< Target produces an Embedded binary */
 };
 
 enum MakeCommand
@@ -139,6 +140,8 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         virtual void SetExecutionParameters(const wxString& params); ///< Set the target's execution parameters to \c params
         virtual const wxString& GetHostApplication() const; ///< Read the target's host application
         virtual void SetHostApplication(const wxString& app); ///< Set the target's host application to \c app
+        virtual const wxString& GetHostDebugParameters() const; ///< Read the target's host application parameters for debug
+        virtual void SetHostDebugParameters(const wxString& params); ///< Set the target's host application parameters for debug to \c params
         virtual bool GetRunHostApplicationInTerminal() const; ///< Get the flag if the host app should be run in terminal
         virtual void SetRunHostApplicationInTerminal(bool in_terminal); ///! Set the flag if the host app should be run in terminal
         virtual void SetCompilerID(const wxString& id); ///< Set the target's compiler
@@ -159,6 +162,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
         wxString m_DepsOutput;
         wxString m_ExecutionParameters;
         wxString m_HostApplication;
+        wxString m_HostDebugParameters;
         OptionsRelation m_OptionsRelation[ortLast];
         TargetType m_TargetType;
         wxString m_CompilerId;

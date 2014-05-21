@@ -72,6 +72,7 @@ void SelectTargetDlg::UpdateSelected()
         XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox)->SetValue(name == m_pProject->GetDefaultExecuteTarget());
         XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(target->GetExecutionParameters());
         XRCCTRL(*this, "txtHostApp", wxTextCtrl)->SetValue(target->GetHostApplication());
+        XRCCTRL(*this, "txtHostDebugParameters", wxTextCtrl)->SetValue(target->GetHostDebugParameters());
         XRCCTRL(*this, "chkHostInTerminal", wxCheckBox)->SetValue(target->GetRunHostApplicationInTerminal());
     }
     XRCCTRL(*this, "wxID_OK", wxButton)->Enable(target);
@@ -153,6 +154,16 @@ void SelectTargetDlg::EndModal(int retCode)
                 execution_parameters[pos] = ' ';
             }
             target->SetExecutionParameters(execution_parameters);
+
+            wxString debug_parameters = XRCCTRL(*this, "txtHostDebugParameters", wxTextCtrl)->GetValue();
+            pos = 0;
+
+            while ((pos = debug_parameters.find('\n', pos)) != wxString::npos)
+            {
+                debug_parameters[pos] = ' ';
+            }
+            target->SetHostDebugParameters(debug_parameters);
+
             target->SetHostApplication(XRCCTRL(*this, "txtHostApp", wxTextCtrl)->GetValue());
             target->SetRunHostApplicationInTerminal(XRCCTRL(*this, "chkHostInTerminal", wxCheckBox)->IsChecked());
         }

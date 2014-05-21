@@ -809,10 +809,29 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
             }
         }
 
+        if(target->GetTargetType() == ttEmbedded)
+        {
+            wxString hostapp;
+            if (!GetHostForDebug(hostapp,target))
+            {
+                m_Canceled = true;
+                return -3;
+            }
+
+            wxString command;
+
+            command << hostapp << _T(" ") << target->GetExecutionParameters() << _T(" ") << target->GetHostDebugParameters();
+            Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
+
+            Log(_T("Host Application: ") + command);
+            wxExecute(command, wxEXEC_ASYNC, NULL);
+        }
+
         if (target && !target->GetExecutionParameters().IsEmpty())
             m_State.GetDriver()->SetArguments(target->GetExecutionParameters());
 
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, debuggee, GetActiveConfigEx().GetUserArguments());
+        // start the host application
     }
     else // m_PidToAttach != 0
         cmdline = m_State.GetDriver()->GetCommandLine(cmdexe, m_PidToAttach, GetActiveConfigEx().GetUserArguments());
@@ -860,6 +879,7 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
             ShowWindow(windowHandle, SW_HIDE);
     }
     #endif
+
     // start the gdb process
     wxString wdir = m_State.GetDriver()->GetDebuggersWorkingDirectory();
     if (wdir.empty())
