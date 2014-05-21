@@ -541,6 +541,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
     wxString compilerId = m_pProject->GetCompilerID();
     wxString parameters;
     wxString hostApplication;
+    wxString hostDebugParameters;
     bool runHostApplicationInTerminal = false;
     bool includeInTargetAll = m_IsPre_1_2 ? true : false;
     bool createStaticLib = false;
@@ -602,6 +603,9 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
 
         if (node->Attribute("host_application"))
             hostApplication = UnixFilename(cbC2U(node->Attribute("host_application")));
+
+        if (node->Attribute("host_application_debug_parameters"))
+            hostDebugParameters = cbC2U(node->Attribute("host_application_debug_parameters"));
 
         if (node->Attribute("run_host_application_in_terminal"))
         {
@@ -672,6 +676,7 @@ void ProjectLoader::DoBuildTargetOptions(TiXmlElement* parentNode, ProjectBuildT
         target->SetAdditionalOutputFiles(added);
         target->SetExecutionParameters(parameters);
         target->SetHostApplication(hostApplication);
+        target->SetHostDebugParameters(hostDebugParameters);
         target->SetRunHostApplicationInTerminal(runHostApplicationInTerminal);
         target->SetIncludeInTargetAll(includeInTargetAll); // used in versions prior to 1.5
         target->SetCreateDefFile(createDefFile);
@@ -1368,6 +1373,10 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
                 AddElement(tgtnode, "Option", "run_host_application_in_terminal", 1);
             else
                 AddElement(tgtnode, "Option", "run_host_application_in_terminal", 0);
+            if (!target->GetHostDebugParameters().IsEmpty())
+            {
+                AddElement(tgtnode, "Option", "host_application_debug_parameters", target->GetHostDebugParameters());
+            }
         }
 
         // used in versions prior to 1.5
