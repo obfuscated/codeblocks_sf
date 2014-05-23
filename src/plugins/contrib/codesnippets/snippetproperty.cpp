@@ -41,8 +41,8 @@
 #include "GenericMessageBox.h"
 #include "snippetsconfig.h"
 #include "snippetproperty.h"
-#include "defsext.h"
-#include "dragscrollevent.h"
+////-#include "defsext.h"
+////-#include "dragscrollevent.h"
 #include "version.h"
 //#include "wxscintilla/include/wx/wxscintilla.h"   //svn5785
 #include <wx/wxscintilla.h>                         //svn5785
@@ -127,10 +127,10 @@ void SnippetProperty::InitSnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId
     m_SnippetEditCtrl->StyleClearAll();
 
 	// Get the item
-	if (( m_pSnippetDataItem = (SnippetItemData*)(pTree->GetItemData(itemId))))
+	if (( m_pSnippetDataItem = (SnippetTreeItemData*)(pTree->GetItemData(itemId))))
 	{
 		// Check that we're using the correct item type
-		if (m_pSnippetDataItem->GetType() != SnippetItemData::TYPE_SNIPPET)
+		if (m_pSnippetDataItem->GetType() != SnippetTreeItemData::TYPE_SNIPPET)
 		{
 		    // This shouldn't happen since the context menu only shows
 		    // properties on TYPE_SNIPPET
@@ -138,7 +138,7 @@ void SnippetProperty::InitSnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId
 			return;
 		}
 
-        wxString snippetText = m_pSnippetDataItem->GetSnippet() ;
+        wxString snippetText = m_pSnippetDataItem->GetSnippetString() ;
         if ( not snippetText.IsEmpty() )
         {
             GetSnippetEditCtrl()-> SetText( snippetText );
@@ -180,7 +180,7 @@ void SnippetProperty::OnOk(wxCommandEvent& event)
 {
      LOGIT( _T("SnippetProperty::OnOK") );
     // set data to edited snippet
-    m_pSnippetDataItem->SetSnippet( m_SnippetEditCtrl->GetText() );
+    m_pSnippetDataItem->SetSnippetString( m_SnippetEditCtrl->GetText() );
     // label may have been edited
     m_pTreeCtrl->SetItemText( m_TreeItemId, m_ItemLabelTextCtrl->GetValue() );
     if (m_pWaitingSemaphore) m_pWaitingSemaphore->Post();
@@ -262,7 +262,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
             GenericMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
             return ;
         }
-        wxString snippetData( GetSnippet() );
+        wxString snippetData( GetSnippetString() );
         tmpFile.Write( csU2C(snippetData), snippetData.Length());
         tmpFile.Close();
             // Invoke the external editor on the temporary file
@@ -347,74 +347,3 @@ void SnippetProperty::InvokeEditOnSnippetFile()
     ::wxExecute( execString);
     return;
 }//InvokeEditOnSnippetFile
-////// ----------------------------------------------------------------------------
-////void SnippetProperty::OnLeaveWindow(wxMouseEvent& event)
-////// ----------------------------------------------------------------------------
-////{
-////    // If mouse is dragging out of window with a text selection,
-////    // create a drag source of the selected text.
-////    // -----------------------
-////    // LEAVE_WINDOW
-////    // -----------------------
-////
-////    #ifdef LOGGING
-////     //LOGIT( _T("SnippetProperty:MOUSE EVT_LEAVE_WINDOW") );
-////    #endif //LOGGING
-////
-////    // Left mouse key must be down (dragging)
-////    if (not event.LeftIsDown() ) {event.Skip();return;}
-////
-////    // check if data is available
-////    wxString selectedData = m_SnippetEditCtrl->GetSelectedText();
-////    if ( selectedData.IsEmpty()) {event.Skip();return;}
-////
-////    // we now have data, create both a simple text and filename drop source
-////    wxTextDataObject* textData = new wxTextDataObject();
-////    wxFileDataObject* fileData = new wxFileDataObject();
-////        // fill text and file sources with snippet
-////    wxDropSource textSource( *textData, (wxWindow*)event.GetEventObject() );
-////    textData->SetText( selectedData );
-////    wxDropSource fileSource( *fileData, (wxWindow*)event.GetEventObject() );
-////    fileData->AddFile( (selectedData.Len() > 128) ? wxString(wxEmptyString) : selectedData );
-////        // set composite data object to contain both text and file data
-////    wxDataObjectComposite *data = new wxDataObjectComposite();
-////    data->Add( (wxDataObjectSimple*)textData );
-////    data->Add( (wxDataObjectSimple*)fileData, true ); // set file data as preferred
-////        // create the drop source containing both data types
-////    wxDropSource source( *data, (wxWindow*)event.GetEventObject()  );
-////
-////    #ifdef LOGGING
-////     LOGIT( _T("DropSource Text[%s],File[%s]"),
-////                textData->GetText().GetData(),
-////                fileData->GetFilenames().Item(0).GetData() );
-////    #endif //LOGGING
-////        // allow both copy and move
-////    int flags = 0;
-////    flags |= wxDrag_AllowMove;
-////    // do the dragNdrop
-////    wxDragResult result = source.DoDragDrop(flags);
-////    // report the results
-////    #if LOGGING
-////        wxString pc;
-////        switch ( result )
-////        {
-////            case wxDragError:   pc = _T("Error!");    break;
-////            case wxDragNone:    pc = _T("Nothing");   break;
-////            case wxDragCopy:    pc = _T("Copied");    break;
-////            case wxDragMove:    pc = _T("Moved");     break;
-////            case wxDragCancel:  pc = _T("Cancelled"); break;
-////            default:            pc = _T("Huh?");      break;
-////        }
-////        LOGIT( wxT("SnippetProperty::OnLeftDown DoDragDrop returned[%s]"),pc.GetData() );
-////    #else
-////        wxUnusedVar(result);
-////    #endif // wxUSE_STATUSBAR
-////
-////
-////    delete textData; //wxTextDataObject
-////    delete fileData; //wxFileDataObject
-////
-////    event.Skip();
-////    return;
-////
-////}

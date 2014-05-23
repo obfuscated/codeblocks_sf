@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code Snippets" />
+		<Option title="Code Snippets mod" />
 		<Option default_target="Plugin - Win32" />
 		<Option compiler="gcc" />
 		<Build>
@@ -13,8 +13,10 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="$(CODEBLOCKS)\..\devel\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
+					<Add option="-g" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DCB_PRECOMP" />
 				</Compiler>
@@ -22,23 +24,13 @@
 					<Add library="codeblocks" />
 				</Linker>
 			</Target>
-			<Target title="App - Win32">
-				<Option output="..\..\..\devel\codesnippets.exe" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\codesnippets\app\" />
-				<Option type="0" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add option="$(#CB_RELEASE_TYPE)" />
-				</Compiler>
-			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Plugin - Win32;App - Win32;" />
+			<Add alias="All" targets="Plugin - Win32;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -87,93 +79,12 @@
 		<Unit filename="GenericMessageBox.cpp" />
 		<Unit filename="GenericMessageBox.h" />
 		<Unit filename="Makefile.am" />
-		<Unit filename="Search\DirectoryParamsPanel.cpp" />
-		<Unit filename="Search\DirectoryParamsPanel.h" />
-		<Unit filename="Search\InsertIndexManager.cpp" />
-		<Unit filename="Search\InsertIndexManager.h" />
-		<Unit filename="Search\MainPanel.cpp" />
-		<Unit filename="Search\MainPanel.h" />
-		<Unit filename="Search\SearchInPanel.cpp" />
-		<Unit filename="Search\SearchInPanel.h" />
-		<Unit filename="Search\TextFileSearcher.cpp" />
-		<Unit filename="Search\TextFileSearcher.h" />
-		<Unit filename="Search\TextFileSearcherRegEx.cpp" />
-		<Unit filename="Search\TextFileSearcherRegEx.h" />
-		<Unit filename="Search\TextFileSearcherText.cpp" />
-		<Unit filename="Search\TextFileSearcherText.h" />
-		<Unit filename="Search\ThreadSearch.cpp" />
-		<Unit filename="Search\ThreadSearch.h" />
-		<Unit filename="Search\ThreadSearchConfPanel.cpp" />
-		<Unit filename="Search\ThreadSearchConfPanel.h" />
-		<Unit filename="Search\ThreadSearchControlIds.h" />
-		<Unit filename="Search\ThreadSearchEvent.cpp" />
-		<Unit filename="Search\ThreadSearchEvent.h" />
-		<Unit filename="Search\ThreadSearchFindData.cpp" />
-		<Unit filename="Search\ThreadSearchFindData.h" />
-		<Unit filename="Search\ThreadSearchFrame.cpp" />
-		<Unit filename="Search\ThreadSearchFrame.h" />
-		<Unit filename="Search\ThreadSearchLoggerBase.cpp" />
-		<Unit filename="Search\ThreadSearchLoggerBase.h" />
-		<Unit filename="Search\ThreadSearchLoggerList.cpp" />
-		<Unit filename="Search\ThreadSearchLoggerList.h" />
-		<Unit filename="Search\ThreadSearchLoggerTree.cpp" />
-		<Unit filename="Search\ThreadSearchLoggerTree.h" />
-		<Unit filename="Search\ThreadSearchThread.cpp" />
-		<Unit filename="Search\ThreadSearchThread.h" />
-		<Unit filename="Search\ThreadSearchTrace.cpp" />
-		<Unit filename="Search\ThreadSearchTrace.h" />
-		<Unit filename="Search\ThreadSearchView.cpp" />
-		<Unit filename="Search\ThreadSearchView.h" />
-		<Unit filename="Search\ThreadSearchViewManagerBase.cpp" />
-		<Unit filename="Search\ThreadSearchViewManagerBase.h" />
-		<Unit filename="Search\ThreadSearchViewManagerLayout.cpp" />
-		<Unit filename="Search\ThreadSearchViewManagerLayout.h" />
-		<Unit filename="Search\ThreadSearchViewManagerMessagesNotebook.cpp" />
-		<Unit filename="Search\ThreadSearchViewManagerMessagesNotebook.h" />
-		<Unit filename="Search\logging.h" />
-		<Unit filename="codesnippets.cpp">
-			<Option target="Plugin - Win32" />
-		</Unit>
-		<Unit filename="codesnippets.h">
-			<Option target="Plugin - Win32" />
-		</Unit>
-		<Unit filename="codesnippetsapp.cpp">
-			<Option target="App - Win32" />
-		</Unit>
-		<Unit filename="codesnippetsapp.h">
-			<Option target="App - Win32" />
-		</Unit>
-		<Unit filename="codesnippetsevent.cpp" />
-		<Unit filename="codesnippetsevent.h" />
+		<Unit filename="codesnippets.cpp" />
+		<Unit filename="codesnippets.h" />
 		<Unit filename="codesnippetstreectrl.cpp" />
 		<Unit filename="codesnippetstreectrl.h" />
 		<Unit filename="codesnippetswindow.cpp" />
 		<Unit filename="codesnippetswindow.h" />
-		<Unit filename="csutils.cpp" />
-		<Unit filename="csutils.h" />
-		<Unit filename="editor\defsext.h" />
-		<Unit filename="editor\dragscroll.cpp" />
-		<Unit filename="editor\dragscroll.h" />
-		<Unit filename="editor\dragscrollcfg.cpp" />
-		<Unit filename="editor\dragscrollcfg.h" />
-		<Unit filename="editor\dragscrollevent.cpp" />
-		<Unit filename="editor\dragscrollevent.h" />
-		<Unit filename="editor\editproperties.cpp" />
-		<Unit filename="editor\editproperties.h" />
-		<Unit filename="editor\prefs.cpp" />
-		<Unit filename="editor\prefs.h" />
-		<Unit filename="editor\scbeditor.cpp" />
-		<Unit filename="editor\scbeditor.h" />
-		<Unit filename="editor\seditorbase.cpp" />
-		<Unit filename="editor\seditorbase.h" />
-		<Unit filename="editor\seditorcolourset.cpp" />
-		<Unit filename="editor\seditorcolourset.h" />
-		<Unit filename="editor\seditormanager.cpp" />
-		<Unit filename="editor\seditormanager.h" />
-		<Unit filename="editor\sprintdlg.cpp" />
-		<Unit filename="editor\sprintdlg.h" />
-		<Unit filename="editsnippetframe.cpp" />
-		<Unit filename="editsnippetframe.h" />
 		<Unit filename="generic.Manifest" />
 		<Unit filename="generic.rc">
 			<Option compilerVar="WINDRES" />

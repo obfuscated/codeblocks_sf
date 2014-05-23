@@ -66,24 +66,14 @@ SettingsDlg::SettingsDlg(wxWindow* parent)
     if ( not GetConfig()->SettingsSnippetsFolder.IsEmpty() )
         m_SnippetFileTextCtrl-> SetValue( GetConfig()->SettingsSnippetsFolder );
 
-    // Put the old EditorsStayOnTop options
-    m_EditorsStayOnTopChkBox->SetValue( GetConfig()->GetEditorsStayOnTop() );
     // Put the old ToolTip options
     m_ToolTipsChkBox->SetValue( GetConfig()->GetToolTipsOption() );
 
     // Read Mouse DragScrolling settings
     wxString windowState = GetConfig()->GetSettingsWindowState();
-    if ( windowState.Contains(wxT("Floating")) ) {m_RadioFloatBtn->SetValue(true);}
-    if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
-    if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
-
-    if ( GetConfig()->IsApplication() ) //and
-    if (GetConfig()->GetSettingsWindowState() == _T("External")) //and
-    if ( GetConfig()->GetKeepAlivePid() == 0 ) // a 0 means not launched from CB
-    {   // Dont show mode choices when running as independent External Application
-        m_RadioFloatBtn->Show(false);
-        m_RadioDockBtn->Show(false);
-    }
+////    if ( windowState.Contains(wxT("Floating")) ) {m_RadioFloatBtn->SetValue(true);}
+////    if ( windowState.Contains(wxT("Docked")) ) {  m_RadioDockBtn->SetValue(true);}
+////    //-if ( windowState.Contains(wxT("External")) ) {m_RadioExternalBtn->SetValue(true);}
 
     // Show info for CB CfgFolder and CodeSnippets .ini folder
     // CB Manager::GetConfigFolder() LIES. Esp. when the default.conf is in
@@ -114,15 +104,12 @@ void SettingsDlg::OnOk(wxCommandEvent& event)
     else
         GetConfig()->SettingsSnippetsFolder = wxEmptyString;
 
-    // Get the EditorsStayOnTop options
-    GetConfig()->SetEditorsStayOnTop( m_EditorsStayOnTopChkBox->GetValue() );
     // Get the ToolTips options
     GetConfig()->SetToolTipsOption( m_ToolTipsChkBox->GetValue() );
 
     wxString windowState = wxT("Floating");
-    if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");
-    if (m_RadioDockBtn->GetValue() )    windowState = wxT("Docked");
-    if (m_RadioExternalBtn->GetValue()) windowState = wxT("External");
+////    if (m_RadioFloatBtn->GetValue() )   windowState = wxT("Floating");
+////    if (m_RadioDockBtn->GetValue() )    windowState = wxT("Docked");
     GetConfig()->SetSettingsWindowState( windowState) ;
 
     this->EndModal(wxID_OK);

@@ -43,7 +43,7 @@ class SettingsDlg : public SettingsDlgForm
 
     private:
         wxTreeItemId        m_TreeItemId;
-        SnippetItemData*    m_pSnippetDataItem;
+        SnippetTreeItemData*    m_pSnippetDataItem;
         wxTreeCtrl*         m_pTreeCtrl;
 
     DECLARE_EVENT_TABLE()

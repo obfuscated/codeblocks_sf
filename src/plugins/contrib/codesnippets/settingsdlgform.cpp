@@ -74,19 +74,15 @@ SettingsDlgForm::SettingsDlgForm( wxWindow* parent, wxWindowID id, const wxStrin
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Window Type"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText7->Wrap( -1 );
-	bSizer10->Add( m_staticText7, 0, wxALL, 5 );
+////	m_staticText7 = new wxStaticText( this, wxID_ANY, wxT("Window Type"), wxDefaultPosition, wxDefaultSize, 0 );
+////	m_staticText7->Wrap( -1 );
+////	bSizer10->Add( m_staticText7, 0, wxALL, 5 );
 
-	m_RadioFloatBtn = new wxRadioButton( this, wxID_ANY, wxT("Floating"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
-	bSizer10->Add( m_RadioFloatBtn, 4, wxALL, 5 );
-
-	m_RadioDockBtn = new wxRadioButton( this, wxID_ANY, wxT("Docked"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer10->Add( m_RadioDockBtn, 4, wxALL, 5 );
-
-	m_RadioExternalBtn = new wxRadioButton( this, wxID_ANY, wxT("External"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer10->Add( m_RadioExternalBtn, 4, wxALL, 5 );
-
+////	m_RadioFloatBtn = new wxRadioButton( this, wxID_ANY, wxT("Floating"), wxDefaultPosition, wxDefaultSize, wxRB_GROUP );
+////	bSizer10->Add( m_RadioFloatBtn, 4, wxALL, 5 );
+////
+////	m_RadioDockBtn = new wxRadioButton( this, wxID_ANY, wxT("Docked"), wxDefaultPosition, wxDefaultSize, 0 );
+////	bSizer10->Add( m_RadioDockBtn, 4, wxALL, 5 );
 
 	bSizer10->Add( 0, 0, 1, wxEXPAND, 0 );
 
@@ -95,16 +91,16 @@ SettingsDlgForm::SettingsDlgForm( wxWindow* parent, wxWindowID id, const wxStrin
 	wxBoxSizer* bSizer51;
 	bSizer51 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_EditorsStayOnTopChkBox = new wxCheckBox( this, wxID_ANY, wxT("Editors Stay On Top"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_EditorsStayOnTopChkBox->SetValue(true);
+////	m_EditorsStayOnTopChkBox = new wxCheckBox( this, wxID_ANY, wxT("Editors Stay On Top"), wxDefaultPosition, wxDefaultSize, 0 );
+////	m_EditorsStayOnTopChkBox->SetValue(true);
 
-	bSizer51->Add( m_EditorsStayOnTopChkBox, 0, wxALL, 5 );
+////	bSizer51->Add( m_EditorsStayOnTopChkBox, 0, wxALL, 5 );
 
 	m_ToolTipsChkBox = new wxCheckBox( this, wxID_ANY, wxT("ToolTips"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_ToolTipsChkBox->SetValue(true);
-	
+
 	bSizer51->Add( m_ToolTipsChkBox, 0, wxALL, 5 );
-	
+
 	bSizer->Add( bSizer51, 1, wxEXPAND, 5 );
 
 	wxBoxSizer* bSizer6;

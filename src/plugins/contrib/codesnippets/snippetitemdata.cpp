@@ -31,31 +31,31 @@
 // ----------------------------------------------------------------------------
 // statics
 // ----------------------------------------------------------------------------
-long     SnippetItemData::m_HighestSnippetID = 0;
-unsigned SnippetItemData::m_itemsChangedCount = 0;
+long     SnippetTreeItemData::m_HighestSnippetID = 0;
+unsigned SnippetTreeItemData::m_itemsChangedCount = 0;
 
 // ----------------------------------------------------------------------------
-SnippetItemData::SnippetItemData(SnippetItemType type, SnippetItemID oldID)
+SnippetTreeItemData::SnippetTreeItemData(SnippetItemType type, SnippetItemID oldID)
 // ----------------------------------------------------------------------------
     : m_Type(type), m_Snippet(wxEmptyString), m_ID(oldID)
 {
     InitializeItem(oldID);
 }
 // ----------------------------------------------------------------------------
-SnippetItemData::SnippetItemData(SnippetItemType type, wxString snippet, SnippetItemID oldID)
+SnippetTreeItemData::SnippetTreeItemData(SnippetItemType type, wxString snippet, SnippetItemID oldID)
 // ---------------------------------------------------------------------------
     : m_Type(type), m_Snippet(snippet), m_ID(oldID)
 {
     InitializeItem(oldID);
 }
 // ----------------------------------------------------------------------------
-SnippetItemData::~SnippetItemData()
+SnippetTreeItemData::~SnippetTreeItemData()
 // ----------------------------------------------------------------------------
 {
 	//dtor
 }
 // ----------------------------------------------------------------------------
-void SnippetItemData::InitializeItem(SnippetItemID oldID)
+void SnippetTreeItemData::InitializeItem(SnippetItemID oldID)
 // ----------------------------------------------------------------------------
 {
     //m_ID already set by ctor init m_ID(oldID)

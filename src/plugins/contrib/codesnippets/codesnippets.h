@@ -28,7 +28,6 @@
 
 
 class CodeSnippetsWindow;
-class CodeSnippetsEvent;
 
 // ----------------------------------------------------------------------------
 class CodeSnippets : public cbPlugin
@@ -138,7 +137,7 @@ class CodeSnippets : public cbPlugin
 		void SetSnippetsWindow(CodeSnippetsWindow* p);
 		CodeSnippetsWindow*  GetSnippetsWindow(){return GetConfig()->GetSnippetsWindow();}
         //-void OnTreeDragEvent(wxTreeEvent& event); 2011/01/9
-        void OnPrjTreeDragEvent(wxMouseEvent& event);
+        //-void OnPrjTreeDragEvent(wxMouseEvent& event);
 
 	private:
 
@@ -149,10 +148,6 @@ class CodeSnippets : public cbPlugin
         wxArrayString* TextToFilenames(const wxString& string);
         bool OnDropFiles(wxCoord x, wxCoord y, const wxArrayString& files);
         wxString FindAppPath(const wxString& argv0, const wxString& cwd, const wxString& appVariableName);
-        int LaunchProcess(const wxString& cmd, const wxString& cwd);
-        long LaunchExternalSnippets();
-        bool RemoveKeepAliveFile();
-        bool TellExternalSnippetsToTerminate();
         void CloseDockWindow();
         wxWindow* FindOpenFilesListWindow();
 
@@ -167,9 +162,6 @@ class CodeSnippets : public cbPlugin
         void OnAppStartupDone(CodeBlocksEvent& event);
         void OnAppStartShutdown(CodeBlocksEvent& event);
 
-        void OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event);
-        void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
-
         void OnPrjTreeMouseMotionEvent(wxMouseEvent& event);
         void OnPrjTreeMouseLeftDownEvent(wxMouseEvent& event);
         void OnPrjTreeMouseLeftUpEvent(wxMouseEvent& event);
@@ -178,7 +170,6 @@ class CodeSnippets : public cbPlugin
         void SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY);
         void MSW_MouseMove(int x, int y );
 
-        cbDragScroll* FindDragScroll();
         wxString      GetCBConfigFile();
         wxString      GetCBConfigDir();
 
@@ -189,10 +180,7 @@ class CodeSnippets : public cbPlugin
         wxTreeItemId    m_TreeItemId;
         wxString        m_TreeText;
         int             m_nOnActivateBusy;
-        long            m_ExternalPid;
-        wxString        m_KeepAliveFileName;
         wxFile          m_PidTmpFile;
-        long            m_nDragScrollEventId;
 
         bool            m_bMouseCtrlKeyDown;
         bool            m_bMouseLeftKeyDown;
@@ -293,31 +281,3 @@ class DropTargetsComposite: public wxDataObjectComposite
 };
 
 #endif // CODESNIPPETS_H_INCLUDED
-// 2007/08/1
-// The following was an unsuccessful attempt to work-around the drag-n-drop crash
-// on Linux which occurs when the user drags the cursor too fast, giving the message
-// Gtk-CRITICAL ** : gtk_drag_set_icon_widget assert DRAG_CONTEXT (context) failed
-// and then the system freezes up.
-////// ----------------------------------------------------------------------------
-////class DropSource: public wxDropSource
-////// ----------------------------------------------------------------------------
-////{
-////  public:
-////
-////    // constructor
-////    DropSource (wxDataObject& data, wxWindow* win = NULL)
-////        :wxDropSource(data, win)
-////        {  //LOGIT( _T("DropSource ctor") );
-////        }
-////
-////    virtual bool GiveFeedback(wxDragResult WXUNUSED(effect))
-////        {
-////            LOGIT( _T("DropSource GiveFeedBack"));
-////
-////            return true;
-////            //return false;
-////        }
-////  private:
-////
-////};
-// ----------------------------------------------------------------------------

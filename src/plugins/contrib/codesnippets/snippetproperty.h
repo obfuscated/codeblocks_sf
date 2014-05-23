@@ -55,14 +55,14 @@ class SnippetProperty : public SnippetPropertyForm
 
         wxScintilla* GetSnippetEditCtrl(){return m_SnippetEditCtrl;}
         wxTreeCtrl*  GetSnippetsTreeCtrl(){return m_pTreeCtrl;}
-        wxString     GetSnippet(){return m_pSnippetDataItem->GetSnippet();}
+        wxString     GetSnippetString(){return m_pSnippetDataItem->GetSnippetString();}
         bool         IsSnippetFile(){return m_pSnippetDataItem->IsSnippetFile();}
 
     private:
         void InitSnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemaphore* pWaitSem);
 
         wxTreeItemId        m_TreeItemId;
-        SnippetItemData*    m_pSnippetDataItem;
+        SnippetTreeItemData*    m_pSnippetDataItem;
         wxTreeCtrl*         m_pTreeCtrl;
         int                 m_nScrollWidthMax;
         wxSemaphore*        m_pWaitingSemaphore;

@@ -44,11 +44,11 @@ class SettingsDlgForm : public wxScrollingDialog
 		wxTextCtrl* m_SnippetFileTextCtrl;
 		wxButton* m_SnippetFileButton;
 		wxStaticText* m_staticText7;
-		wxRadioButton* m_RadioFloatBtn;
-		wxRadioButton* m_RadioDockBtn;
-		wxRadioButton* m_RadioExternalBtn;
+////		wxRadioButton* m_RadioFloatBtn;
+////		wxRadioButton* m_RadioDockBtn;
+////		wxRadioButton* m_RadioExternalBtn;
 
-		wxCheckBox* m_EditorsStayOnTopChkBox;
+////		wxCheckBox* m_EditorsStayOnTopChkBox;
 		wxCheckBox* m_ToolTipsChkBox;
 		wxStaticText* m_CfgFolderStaticText;
 		wxStaticText* m_IniFolderStaticText;

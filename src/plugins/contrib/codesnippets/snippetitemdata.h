@@ -30,7 +30,7 @@
 //-#endif
 
 // ----------------------------------------------------------------------------
-class SnippetItemData : public wxTreeItemData
+class SnippetTreeItemData : public wxTreeItemData
 // ----------------------------------------------------------------------------
 {
 	public:
@@ -42,20 +42,20 @@ class SnippetItemData : public wxTreeItemData
 		};
         #define SnippetItemID long
 
-		SnippetItemData(SnippetItemType type, long ID = 0);
-		SnippetItemData(SnippetItemType type, wxString snippet, long ID = 0);
-		~SnippetItemData();
+		SnippetTreeItemData(SnippetItemType type, long ID = 0);
+		SnippetTreeItemData(SnippetItemType type, wxString snippet, long ID = 0);
+		~SnippetTreeItemData();
 
 		SnippetItemType GetType() const { return m_Type; }
 		void            SetType(SnippetItemType type){ m_Type = type;}
 		SnippetItemID   GetID()   const { return m_ID; }
 		wxString        GetSnippetIDStr() const { return wxString::Format(_T("%ld"),m_ID); }
 		void            SetID(SnippetItemID ID){ m_ID = ID;}
-		wxString        GetSnippet() const { return m_Snippet; }
-		void            SetSnippet(wxString snippet){ m_Snippet = snippet;}
+		wxString        GetSnippetString() const { return m_Snippet; }
+		void            SetSnippetString(wxString snippet){ m_Snippet = snippet;}
 
-        bool IsCategory(){ return (GetType() == SnippetItemData::TYPE_CATEGORY); }
-        bool IsSnippet(){ return (GetType() == SnippetItemData::TYPE_SNIPPET); }
+        bool IsCategory(){ return (GetType() == SnippetTreeItemData::TYPE_CATEGORY); }
+        bool IsSnippet(){ return (GetType() == SnippetTreeItemData::TYPE_SNIPPET); }
         bool IsSnippetFile()
             {	// verify snippet is file type snippet
                 if (not IsSnippet() ) return false ;
@@ -66,7 +66,7 @@ class SnippetItemData : public wxTreeItemData
         wxString GetSnippetFileLink()
             {	// if FileLink, return the filename
                 if (not IsSnippet() ) return wxEmptyString ;
-                wxString FileName = GetSnippet().BeforeFirst('\r');
+                wxString FileName = GetSnippetString().BeforeFirst('\r');
                          FileName = FileName.BeforeFirst('\n');
                 //-#if defined(BUILDING_PLUGIN)
                 static const wxString delim(_T("$%["));
@@ -84,9 +84,9 @@ class SnippetItemData : public wxTreeItemData
         long        GetNewID(){return ++m_HighestSnippetID;}
         static void SetHighestSnippetID( long value){ m_HighestSnippetID = value;}
         long        UpdateHighestSnippetID(long ID)
-            { m_HighestSnippetID = (m_HighestSnippetID<ID) ? ID : m_HighestSnippetID;
-              return m_HighestSnippetID;
-            }
+                    { m_HighestSnippetID = (m_HighestSnippetID<ID) ? ID : m_HighestSnippetID;
+                      return m_HighestSnippetID;
+                    }
         static unsigned GetSnippetsItemsChangedCount(){return m_itemsChangedCount;}
         static void     SetSnippetsItemsChangedCount(unsigned count){m_itemsChangedCount = count;}
 

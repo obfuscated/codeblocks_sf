@@ -30,7 +30,7 @@
     class CodeSnippetsConfig;
     class CodeSnippetsTreeCtrl;
     class CodeSnippetsWindow;
-    class SEditorManager;
+    class EditorManager;
     class ThreadSearch;
     class cbDragScroll;
 
@@ -48,7 +48,7 @@
 // hashmap for fast searches: SnippetItemId, Filename
 WX_DECLARE_STRING_HASH_MAP( long, FileLinksMapArray );
 // hash for frame pointer containing an editor manager
-WX_DECLARE_HASH_MAP( wxFrame*, SEditorManager*, wxPointerHash, wxPointerEqual, EdManagerMapArray );
+WX_DECLARE_HASH_MAP( wxFrame*, EditorManager*, wxPointerHash, wxPointerEqual, EdManagerMapArray );
 // ----------------------------------------------------------------------------
 class CodeSnippetsConfig
 // ----------------------------------------------------------------------------
@@ -79,8 +79,8 @@ class CodeSnippetsConfig
     FileLinksMapArray&      GetFileLinksMapArray(){ return m_fileLinksMapArray;}
     void                    ClearFileLinksMapArray(){ m_fileLinksMapArray.clear();}
 
-    wxWindow*               GetThreadSearchFrame(){ return m_pThreadSearchFrame;}
-    void                    SetThreadSearchFrame(wxWindow* p){m_pThreadSearchFrame = p;}
+//-    wxWindow*               GetThreadSearchFrame(){ return m_pThreadSearchFrame;}
+//-    void                    SetThreadSearchFrame(wxWindow* p){m_pThreadSearchFrame = p;}
 
     ThreadSearch*           GetThreadSearchPlugin(){ return m_pThreadSearchPlugin;}
     void                    SetThreadSearchPlugin(ThreadSearch* p){m_pThreadSearchPlugin = p;}
@@ -89,13 +89,13 @@ class CodeSnippetsConfig
     wxEvtHandler*           GetDragScrollEvtHandler();
     void                    SetDragScrollPlugin(cbDragScroll* p){m_pDragScrollPlugin = p;}
 
-    SEditorManager*         GetEditorManager(wxFrame* pFrame);
-    SEditorManager*         GetEditorManager(wxWindow* frame);
+    EditorManager*         GetEditorManager(wxFrame* pFrame);
+    EditorManager*         GetEditorManager(wxWindow* frame);
     int                     GetEditorManagerCount();
     wxFrame*                GetEditorManagerFrame(const int index);
-    SEditorManager*         GetEditorManager(const int index);
+    EditorManager*         GetEditorManager(const int index);
 
-    void                    RegisterEditorManager(wxFrame* pFrame, SEditorManager* pEdMgr);
+    void                    RegisterEditorManager(wxFrame* pFrame, EditorManager* pEdMgr);
     void                    RemoveEditorManager(wxFrame* pFrame);
 
     wxWindow*               GetOpenFilesList(){return m_pOpenFilesList;}
@@ -181,7 +181,7 @@ class CodeSnippetsConfig
     int          windowWidth;
     int          windowHeight;
     wxString     m_VersionStr;
-    wxString     m_sWindowHandle;
+    //-wxString     m_sWindowHandle;
     SearchConfiguration
                   m_SearchConfig;
     wxString      m_SettingsWindowState;
@@ -192,7 +192,7 @@ class CodeSnippetsConfig
     long          g_lKeepAlivePid;
     bool          m_IsExternalPersistentOpen;
 
-    wxWindow*           m_pThreadSearchFrame;
+//-    wxWindow*           m_pThreadSearchFrame;
     ThreadSearch*       m_pThreadSearchPlugin;
 
     // If DragScroll is loaded, contains address of DragScroll plugin

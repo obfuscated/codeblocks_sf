@@ -32,14 +32,14 @@ class TiXmlElement;
 #include "snippetitemdata.h"
 #include <tinyxml/tinyxml.h>
 #include "snippetproperty.h"
-#include "codesnippetsevent.h"
 #include "snippetsconfig.h"
+#include "cbeditor.h"
 
-class EditSnippetFrame;
 
-WX_DEFINE_ARRAY(wxScrollingDialog*, DlgPtrArray);
-//-WX_DEFINE_ARRAY(int, DlgRetcodeArray); //(stahta01 2007/4/21 for wxGTK2.8)
-WX_DEFINE_ARRAY_INT(int, DlgRetcodeArray);
+WX_DEFINE_ARRAY(cbEditor*, EditorPtrArray);
+//-WX_DEFINE_ARRAY(wxTreeItemId, EditorSnippetIdArray);
+WX_DECLARE_OBJARRAY(wxTreeItemId, EditorSnippetIdArray);
+
 // ----------------------------------------------------------------------------
 class CodeSnippetsTreeCtrl : public wxTreeCtrl
 // ----------------------------------------------------------------------------
@@ -72,8 +72,9 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void        EditSnippetAsText();
         void        EditSnippetWithMIME();
 
-        void SaveDataAndCloseEditorFrame(EditSnippetFrame*);
-        void SaveEditorsXmlData(EditSnippetFrame* pEdFrame);
+        void OnEditorSave(CodeBlocksEvent& event);
+        void OnEditorClose(CodeBlocksEvent& event);
+        void SaveEditorsXmlData(cbEditor* pcbEditor);
 
         // This OnIdle() is driven from the plugin|app OnIdle routines
         void OnIdle();
@@ -86,26 +87,26 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void            CopySnippetsToXmlDoc(TiXmlNode* Node, const wxTreeItemId& itemID);
         void            CopyXmlDocToTreeNode(TiXmlDocument* pTiXmlDoc, wxTreeItemId targetItem  );
 
-        wxString GetSnippet()
+        wxString GetSnippetString()
             {   wxString itemData = wxEmptyString;
                 wxTreeItemId itemID = GetSelection();
                 if (not itemID.IsOk()) return itemData;
-                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemID));
-                itemData = pItem->GetSnippet();
+                SnippetTreeItemData* pItem = (SnippetTreeItemData*)(GetItemData(itemID));
+                itemData = pItem->GetSnippetString();
                 return itemData;
             }
-        wxString GetSnippet( wxTreeItemId itemId )
+        wxString GetSnippetString( wxTreeItemId itemId )
             {   wxString itemData = wxEmptyString;
                 if (not itemId.IsOk()) return itemData;
-                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
-                itemData = pItem->GetSnippet();
+                SnippetTreeItemData* pItem = (SnippetTreeItemData*)(GetItemData(itemId));
+                itemData = pItem->GetSnippetString();
                 return itemData;
             }
 
         long GetSnippetID( wxTreeItemId itemId )
             {   wxString itemData = wxEmptyString;
                 if (not itemId.IsOk()) return 0;
-                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
+                SnippetTreeItemData* pItem = (SnippetTreeItemData*)(GetItemData(itemId));
                 return pItem->GetID();
             }
 
@@ -116,11 +117,11 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 return GetItemText(itemId);
             }
 
-        void SetSnippet( wxString text )
+        void SetSnippetString( wxString text )
             {   wxTreeItemId itemID = GetSelection();
                 if (not itemID.IsOk()) return;
-                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemID));
-                pItem->SetSnippet( text);
+                SnippetTreeItemData* pItem = (SnippetTreeItemData*)(GetItemData(itemID));
+                pItem->SetSnippetString( text);
                 SetFileChanged(true);
                 return;
             }
@@ -129,7 +130,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 if ( itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return wxEmptyString;
                 if (not IsSnippet(itemId) ) return wxEmptyString;
-                wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+                wxString fileName = GetSnippetString(itemId).BeforeFirst('\r');
                 fileName = fileName.BeforeFirst('\n');
                 //-#if defined(BUILDING_PLUGIN)
                 static const wxString delim(_T("$%["));
@@ -144,14 +145,14 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
             {   wxTreeItemId itemId = treeItemId;
                 if (itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return false;
-                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
+                SnippetTreeItemData* pItem = (SnippetTreeItemData*)(GetItemData(itemId));
                 return pItem->IsCategory();
             }
         bool IsSnippet(wxTreeItemId treeItemId = (void*)0)
             {   wxTreeItemId itemId = treeItemId;
                 if (itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return false;
-                SnippetItemData* pItem = (SnippetItemData*)(GetItemData(itemId));
+                SnippetTreeItemData* pItem = (SnippetTreeItemData*)(GetItemData(itemId));
                 return pItem->IsSnippet();
             }
         bool IsFileSnippet (wxTreeItemId treeItemId = (void*)0 );
@@ -160,7 +161,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
                 if ( itemId == (void*)0) itemId = GetSelection();
                 if (not itemId.IsOk()) return false;
                 if (not IsSnippet(itemId) ) return false;
-                wxString fileName = GetSnippet(itemId).BeforeFirst('\r');
+                wxString fileName = GetSnippetString(itemId).BeforeFirst('\r');
                 fileName = fileName.BeforeFirst('\n');
                 if ( not fileName.StartsWith(wxT("http://")) ) return false;
                 return true;
@@ -182,11 +183,6 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         wxTreeItemId FindTreeItemBySnippetId(const SnippetItemID& IDToFind, const wxTreeItemId& startNode);
         wxTreeItemId ResetSnippetsIDs(const wxTreeItemId& startNode);
         wxTreeItemId FillFileLinksMapArray(const wxTreeItemId& startNode, FileLinksMapArray& fileLinksMapArray);
-
-        // CodeSnippet/ThreadSearch events
-        void OnCodeSnippetsEvent_Select(CodeSnippetsEvent& event);
-        void OnCodeSnippetsEvent_Edit(CodeSnippetsEvent& event);
-        void OnCodeSnippetsEvent_GetFileLinks(CodeSnippetsEvent& event);
 
 	private:
 
@@ -215,11 +211,12 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
    		// Snippet Window Parent could be floating wxAUI window or CodeBlocks.
    		wxWindow*               m_pSnippetWindowParent;
    		bool                    m_bShutDown;
-   		DlgPtrArray             m_aEdFramePtrs;
-   		DlgRetcodeArray         aEdFrameRetcodes;
+   		EditorPtrArray          m_EditorPtrArray;
+   		EditorSnippetIdArray    m_EditorSnippetIdArray;
+
    		wxMimeTypesManager*     m_mimeDatabase;
 
-        void EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName=wxEmptyString);
+        void EditSnippet(SnippetTreeItemData* pSnippetTreeItemData, wxString fileName=wxEmptyString);
 
         void BeginInternalTreeItemDrag();
         void EndInternalTreeItemDrag();

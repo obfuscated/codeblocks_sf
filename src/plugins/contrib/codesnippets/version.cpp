@@ -523,10 +523,13 @@ AppVersion::~AppVersion()
 //          119) Fix crash when double clicking previously opened snippet
 //          120) Copy fixes 5995 & 6000 from CB EditorManager to SEditormanager
 // ----------------------------------------------------------------------------
+//  Commit 1.4.0 2014/02/8
+//          Back to sanity
+// ----------------------------------------------------------------------------
 //  Bugs
 //      2008/04/8
 //          If floating wxAUI window is docked with Edit's open, they disappear. But
-//            "void CodeSnippetsTreeCtrl::EditSnippet(SnippetItemData* pSnippetItemData, wxString fileName)"
+//            "void CodeSnippetsTreeCtrl::EditSnippet(SnippetTreeItemData* pSnippetTreeItemData, wxString fileName)"
 //            still thinks they're open, but cannot show them.
 //            Eg. Drag docked CodeSnippets to floating. Open a file. Re-dockit.
 //            Editors disappear. Show(true) didnt work;
@@ -560,4 +563,26 @@ AppVersion::~AppVersion()
 //          This seems to be fixed with wx2.8.10
 //
 // ----------------------------------------------------------------------------
+// 2014/03/4
+//  FIXME: ?working now? double clicking a tree item opens the previous item, not the current
+//  FIXME: put back GetUI-> calls
+//  FIXME: Don't allow multiple opens of the same snippet
+//  FIXME: Settings Docked/Floating choice doesn't work
+//  FIXME: Loading another snippet file should start from Settings/Snippet/Folder
+//  Bug:   Drag an item into another category the right click and item and wait
+//          both the properties box and the context menu and the drag icon appear
+//          and stay that way until the escape key is hit.
+//  Bug:   when new snippets file, no categories, dragging a project into the window
+//          does nothing.
+//  Bug:   Still have to drag project items out SLOWLY, else drag does not work
+//  Fix:   Is it possible to add a context menu to OpenFilesList and/or Project tres
+//          to capture the name for pasting into Codesnippets?
+//  Fix:   In codeSnippetsTreeCtrl there are two arrays; are they necessary?
+//                EditorPtrArray m_EditorPtrArray;
+//                EditorSnippetIdArray    m_EditorSnippetIdArray;
+//  FIXME:  Remove any code associated with the old window switcher options
+//		        wxRadioButton* m_RadioFloatBtn;
+//		        wxRadioButton* m_RadioDockBtn;
+//		        wxRadioButton* m_RadioExternalBtn;
+//		        wxCheckBox* m_EditorsStayOnTopChkBox;
 // ----------------------------------------------------------------------------
