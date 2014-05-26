@@ -320,7 +320,6 @@ This package contains the development libraries and headers needed to build wxSm
 
 %files contrib
 %defattr(-,root,root)
-%{_bindir}/codesnippets
 %{plugindir}/libAutoVersioning.so
 %{plugindir}/libBrowseTracker.so
 %{plugindir}/libbyogames.so
