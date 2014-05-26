@@ -36,8 +36,10 @@
     #include "sdk.h"
     #ifndef CB_PRECOMP
         #include "manager.h"
+        #include "editormanager.h"
         #include "logmanager.h"
         #include "globals.h"
+        #include "infowindow.h"
     #endif
 //-#else
 //-#endif
