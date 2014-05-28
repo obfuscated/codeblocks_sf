@@ -844,7 +844,8 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 
 CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor* ed)
 {
-    if (ed->GetLanguage() == ed->GetColourSet()->GetHighlightLanguage(wxT("C/C++")))
+    EditorColourSet *colorSet = ed->GetColourSet();
+    if (colorSet && ed->GetLanguage() == colorSet->GetHighlightLanguage(wxT("C/C++")))
         return ccpsActive;
     switch (ParserCommon::FileType(ed->GetFilename()))
     {
