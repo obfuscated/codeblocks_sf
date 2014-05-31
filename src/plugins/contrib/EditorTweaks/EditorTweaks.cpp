@@ -972,12 +972,12 @@ void EditorTweaks::OnAlign(wxCommandEvent& event)
     {
         if ( AlignerMenuEntries[i].id == id )
         {
-            OnAlign(i);
+            DoAlign(i);
             break;
         }
     }
 }
-void EditorTweaks::OnAlign(unsigned int idx)
+void EditorTweaks::DoAlign(unsigned int idx)
 {
     if (idx >= AlignerMenuEntries.size())
         return;
@@ -1033,22 +1033,22 @@ void EditorTweaks::OnAlignOthers(wxCommandEvent& /*event*/)
     }
 }
 
-void EditorTweaks::OnAlignLast(wxCommandEvent& event)
+void EditorTweaks::OnAlignLast(cb_unused wxCommandEvent& event)
 {
     if(!AlignerLastUsed)
         return;
 
     if (AlignerLastUsedAuto)
-        OnAlignAuto();
+        DoAlignAuto();
     else
-        OnAlign(AlignerLastUsedIdx);
+        DoAlign(AlignerLastUsedIdx);
 }
 
-void EditorTweaks::OnAlignAuto(wxCommandEvent& WXUNUSED(event))
+void EditorTweaks::OnAlignAuto(cb_unused wxCommandEvent& event)
 {
-    OnAlignAuto();
+    DoAlignAuto();
 }
-void EditorTweaks::OnAlignAuto()
+void EditorTweaks::DoAlignAuto()
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)

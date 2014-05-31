@@ -134,10 +134,10 @@ class EditorTweaks : public cbPlugin
 
     private:
 		void OnAlign(wxCommandEvent& event);
-		void OnAlign(unsigned int idx);
+		void DoAlign(unsigned int idx);
 		void OnAlignOthers(wxCommandEvent& event);
         void OnAlignAuto(wxCommandEvent& event);
-        void OnAlignAuto();
+        void DoAlignAuto();
         void OnAlignLast(wxCommandEvent& event);
 		void OnSuppressInsert(wxCommandEvent& event);
 		void OnConvertBraces(wxCommandEvent& event);
