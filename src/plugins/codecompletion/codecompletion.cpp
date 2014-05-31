@@ -2427,7 +2427,7 @@ void CodeCompletion::OnEditorClosed(CodeBlocksEvent& event)
     // we need to clear CC toolbar only when we are closing last editor
     // in other situations OnEditorActivated does this job
     // If no editors were opened, or a non-buildin-editor was active, disable the CC toolbar
-    if (edm->GetEditorsCount() == 0 || !edm->GetActiveEditor()->IsBuiltinEditor())
+    if (edm->GetEditorsCount() == 0 || !edm->GetActiveEditor() || !edm->GetActiveEditor()->IsBuiltinEditor())
     {
         EnableToolbarTools(false);
 
