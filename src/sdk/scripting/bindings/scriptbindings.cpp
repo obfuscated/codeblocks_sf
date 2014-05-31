@@ -493,6 +493,8 @@ namespace ScriptBindings
                 func(&CompileTargetBase::SetExecutionParameters, "SetExecutionParameters").
                 func(&CompileTargetBase::GetHostApplication, "GetHostApplication").
                 func(&CompileTargetBase::SetHostApplication, "SetHostApplication").
+                func(&CompileTargetBase::SetHostDebugParameters, "SetHostDebugParameters").
+                func(&CompileTargetBase::GetHostDebugParameters, "GetHostDebugParameters").
                 func(&CompileTargetBase::SetCompilerID, "SetCompilerID").
                 func(&CompileTargetBase::GetCompilerID, "GetCompilerID").
                 func(&CompileTargetBase::GetMakeCommandFor, "GetMakeCommandFor").
