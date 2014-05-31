@@ -49,7 +49,6 @@
 #include <filegroupsandmasks.h>
 #include <incrementalselectlistdlg.h>
 #include <multiselectdlg.h>
-#include <prep.h>
 
 #include "codecompletion.h"
 
