@@ -103,19 +103,24 @@ public:
     virtual void DoAutocomplete(const CCToken& token, cbEditor* ed);
 
     /** get the include paths setting (usually set by user for each C::B project)
+     * note that this function is only be called in CodeCompletion::DoCodeCompleteIncludes()
+     * if it finds some system level include search dirs which does not been scanned, it will start a
+     * a new thread(SystemHeadersThread).
      * @param project project info
      * @param buildTargets target info
      * @return the local include paths
      */
     wxArrayString GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets);
 
-    /** the default compiler's search paths
-     * @param force if the value is false, just return a static wxArrayString to optimize the performance
+    /** get the whole search dirs except the ones locally belong to the c::b project, note this
+     * function is used for auto suggestion for #include directives.
+     * @param force if the value is false, just return a static (cached) wxArrayString to optimize
+     * the performance, it it is true, we try to update the cache.
      */
     wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
 
     /** search target file names (mostly relative names) under basePath, then return the absolute dirs
-     * It just did the caculation below:
+     * It just did the calculation below:
      * "c:/ccc/ddd.cpp"(basePath) + "aaa/bbb.h"(target) => "c:/ccc/aaa/bbb.h"(dirs)
      * @param basePath already located file path, this is usually the currently parsing file's location
      * @param targets the relative filename, e.g. When you have #include "aaa/bbb.h", "aaa/bbb.h" is the target location
@@ -336,9 +341,6 @@ private:
     /** batch run UpdateEditorSyntax() after first parsing */
     bool                    m_NeedsBatchColour;
 
-    /** header file names used for auto-completion after #include*/
-    SystemHeadersMap        m_SystemHeadersMap;
-
     //options on code completion (auto suggestion list) feature
     /** disable the code-completion while editing*/
     bool                    m_UseCodeCompletion;
@@ -359,11 +361,21 @@ private:
     wxString                m_CCFillupChars;
     /** Should a single item auto-completion list automatically choose the item */
     bool                    m_CCAutoSelectOne;
+
     /** give code completion list for header files, it happens after the #include directive */
     bool                    m_CCEnableHeaders;
 
-    /** thread to collect header file names */
+    /* dir to files map, for example, you are two dirs c:/a and c:/b
+     * so the map looks like: (usually the relative file path is stored
+     * c:/a  ---> {c:/a/a1.h, c:/a/a2.h} ---> {a1.h, a2.h}
+     * c:/b  ---> {c:/b/b1.h, c:/b/b2.h} ---> {b1.h, b2.h}
+     */
+    SystemHeadersMap        m_SystemHeadersMap;
+    /** thread to collect header file names, these header file names can be prompt for auto
+     * suggestion after #include <  or #include " directives.
+     */
     std::list<SystemHeadersThread*> m_SystemHeadersThreads;
+    /**  critical section to protect accessing m_SystemHeadersMap */
     wxCriticalSection               m_SystemHeadersThreadCS;
 
     /** map to record all re-parsing files */

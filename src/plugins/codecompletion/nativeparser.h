@@ -273,7 +273,12 @@ protected:
 private:
     friend class CodeCompletion;
 
-    /** Read project CC options when a C::B project is loading */
+    /** Read or Write project' CC options when a C::B project is loading or saving
+     * user can set those settings in Menu->Project->Properties->C/C++ parser options panel
+     * @param project which project we are handling
+     * @param elem parent node of the project xml file (cbp) containing addtinal information
+     * @param loading true if the project is loading
+     */
     void OnProjectLoadingHook(cbProject* project, TiXmlElement* elem, bool loading);
 
     /** Start an Artificial Intelligence search algorithm to gather all the matching tokens.
@@ -450,7 +455,9 @@ private:
     /** if true, which means m_ClassBrowser is floating (not docked)*/
     bool                         m_ClassBrowserIsFloating;
 
-    /** a map: project pointer -> C/C++ parser search paths for this project */
+    /** a map: project pointer -> C/C++ parser search paths for this project, this is the
+     * per-project code completion search-dirs.
+     */
     ProjectSearchDirsMap         m_ProjectSearchDirsMap;
     int                          m_HookId;    //!< project loader hook ID
     wxImageList*                 m_ImageList; //!< Images for class browser

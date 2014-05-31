@@ -530,6 +530,7 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idSystemHeadersThreadFinish,    wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
     Disconnect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadError) );
 
+    // clean up all the running thread
     while (!m_SystemHeadersThreads.empty())
     {
         SystemHeadersThread* thread = m_SystemHeadersThreads.front();
@@ -1144,7 +1145,9 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
         return;
     ++keyPos;
 
-    // now, we are after the quote prompt
+    // now, we are after the quote prompt, "filename" is the text we already typed after the
+    // #include directive, such as #include <abc|  , so that we need to prompt all the header files
+    // which has the prefix "abc"
     wxString filename = line.SubString(keyPos, tknEnd - lineStartPos - 1);
     filename.Replace(wxT("\\"), wxT("/"), true);
     if (filename.Last() == wxT('"') || filename.Last() == wxT('>'))
@@ -1159,6 +1162,8 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
 
     // #include < or #include "
     {
+        // since we are going to access the m_SystemHeadersMap, we add a locker here
+        // here we collect all the header files names which is under "system include search dirs"
         wxCriticalSectionLocker locker(m_SystemHeadersThreadCS);
         wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
@@ -1498,6 +1503,8 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
     for (size_t i = 0; i < buildTargets.GetCount(); ++i)
         GetAbsolutePath(prjPath, project->GetBuildTarget(buildTargets[i])->GetIncludeDirs(), dirs);
 
+    // if a path has prefix with the project's path, it is a local include search dir
+    // other wise, it is a system level include search dir, we try to collect all the system dirs
     wxArrayString sysDirs;
     for (size_t i = 0; i < dirs.GetCount();)
     {
@@ -1529,7 +1536,7 @@ wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool for
     static cbProject*    lastProject = nullptr;
     static wxArrayString incDirs;
 
-    if (!force && project == lastProject)
+    if (!force && project == lastProject) // force == false means we can use the cached dirs
         return incDirs;
     else
     {
@@ -1546,10 +1553,13 @@ wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool for
         return incDirs;
 
     incDirs = parser->GetIncludeDirs();
+    // we try to remove the dirs which belong to the project
     for (size_t i = 0; i < incDirs.GetCount();)
     {
         if (incDirs[i].Last() != wxFILE_SEP_PATH)
             incDirs[i].Append(wxFILE_SEP_PATH);
+        // since this function only get "system include dirs", so the dirs which has prjPath prefix
+        // should be removed
         if (project && incDirs[i].StartsWith(prjPath))
             incDirs.RemoveAt(i);
         else
@@ -2472,7 +2482,7 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
     {
         if (m_CCEnableHeaders)
         {
-            wxArrayString&       dirs   = GetSystemIncludeDirs(project, true);
+            wxArrayString&       dirs   = GetSystemIncludeDirs(project, true); // true means update the cache
             SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS, m_SystemHeadersMap, dirs);
             m_SystemHeadersThreads.push_back(thread);
         }
@@ -2534,7 +2544,8 @@ void CodeCompletion::OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event)
 {
     if (m_SystemHeadersThreads.empty())
         return;
-
+    // wait for the current thread died, and remove it from the thread list, then try to run another
+    // thread
     SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
     if (thread == m_SystemHeadersThreads.front())
     {
