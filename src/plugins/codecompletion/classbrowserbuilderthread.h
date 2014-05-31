@@ -100,6 +100,11 @@ private:
 protected:
     wxEvtHandler*    m_Parent;
     wxSemaphore&     m_ClassBrowserSemaphore;
+
+    /** Some member functions of ClassBrowserBuilderThread such as ExpandItem() can either be called
+     * from the main GUI thread(in ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)), or be
+     * called in the worker thread(in BuildTree() which is called in ClassBrowserBuilderThread::Entry()),
+     * so we need this Mutex to serialize the function calls. **/
     wxMutex          m_ClassBrowserBuilderThreadMutex;
     NativeParser*    m_NativeParser;
     CCTreeCtrl*      m_CCTreeCtrlTop;

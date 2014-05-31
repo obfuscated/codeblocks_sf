@@ -190,6 +190,11 @@ void* ClassBrowserBuilderThread::Entry()
     while (!m_TerminationRequested && !Manager::IsAppShuttingDown() )
     {
         // waits here, until the ClassBrowser unlocks
+        // we put a semaphore wait function in the while loop, so the first time if
+        // the semaphore is 1, we can call BuildTree() in the loop, in the meanwhile
+        // the semaphore becomes 0. We will be blocked by semaphore's wait function
+        // in the next while loop. The semaphore post function will be called in the
+        // GUI thread once a new BuildTree() call is needed.
         m_ClassBrowserSemaphore.Wait();
 
         if (m_TerminationRequested || Manager::IsAppShuttingDown() )

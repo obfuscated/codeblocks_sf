@@ -66,7 +66,7 @@ public:
     /** update or refresh the symbol browser trees, there are many cases the tree need to be updated.
      *  E.g. if the View option of the tree is the "Current file's symbols", the user switch the editor
      *  to a new source file, then the tree should be updated(rebuild).
-     *  @param checkHeaderSwap if true, we should check if the new editor opened has the save base file
+     *  @param checkHeaderSwap if true, we should check if the new editor opened has the same base file
      *  as the old file. E.g. If you are currently viewing a file named A.cpp, and you switch to A.h
      *  in this case, the tree should not be updated, because tokens(symbols) in both files were already
      *  shown. False if you need to update the tree without such optimization.

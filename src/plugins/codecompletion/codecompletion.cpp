@@ -397,7 +397,7 @@ static const char* header_file_xpm[] = {
 "  ############  ",
 "                "};
 
-// menu IDS
+// menu IDs
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
@@ -1280,7 +1280,7 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetTokenAt(int pos, cbEdito
     if (!IsAttached() || !m_InitDone)
         return tokens;
 
-    // ignore comments, strings, preprocesor, etc
+    // ignore comments, strings, preprocessors, etc
     cbStyledTextCtrl* stc = ed->GetControl();
     const int style = stc->GetStyleAt(pos);
     if (   stc->IsString(style)
@@ -2956,7 +2956,7 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         funcdata->m_FunctionsScope.clear();
         funcdata->m_NameSpaces.clear();
 
-        // collect the function implementation inforamtion, just find the specified tokens in the TokenTree
+        // collect the function implementation information, just find the specified tokens in the TokenTree
         TokenIdxSet result;
         m_NativeParser.GetParser().FindTokensInFile(filename, result,
                                                     tkAnyFunction | tkEnum | tkClass | tkNamespace);
