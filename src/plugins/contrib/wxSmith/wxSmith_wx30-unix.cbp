@@ -106,6 +106,12 @@
 		<Unit filename="properties/wxscustomeditorproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="properties/wxseditenumproperty.cpp">
+			<Option target="wxSmithLib" />
+		</Unit>
+		<Unit filename="properties/wxseditenumproperty.h">
+			<Option target="wxSmithLib" />
+		</Unit>
 		<Unit filename="properties/wxsemptyproperty.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
@@ -887,12 +893,6 @@
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxsdimensionproperty.h">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets/properties/wxseditenumproperty.cpp">
-			<Option target="wxSmithLib" />
-		</Unit>
-		<Unit filename="wxwidgets/properties/wxseditenumproperty.h">
 			<Option target="wxSmithLib" />
 		</Unit>
 		<Unit filename="wxwidgets/properties/wxsfonteditordlg.cpp">
