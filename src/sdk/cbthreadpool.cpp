@@ -31,11 +31,12 @@ cbThreadPool::~cbThreadPool()
 
 void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
 {
+  // m_concurrentThreads is set here, it should always be a positive integer
   if (concurrentThreads <= 0)
   {
-    concurrentThreads = wxThread::GetCPUCount();
+    concurrentThreads = wxThread::GetCPUCount(); // GetCPUCount will return -1 if it failed
     if (concurrentThreads == -1)
-      m_concurrentThreads = 1;
+      m_concurrentThreads = 1;                   // as a fallback, we set the value to 1
   }
 
   if (concurrentThreads == m_concurrentThreads)
@@ -47,16 +48,16 @@ void cbThreadPool::SetConcurrentThreads(int concurrentThreads)
   wxMutexLocker lock(m_Mutex);
   _SetConcurrentThreads(concurrentThreads);
 }
-
+// this function is already wrappered by a mutex
 void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
 {
-  if (!m_workingThreads)
+  if (!m_workingThreads)// if pool is not running (no thread is running)
   {
     std::for_each(m_threads.begin(), m_threads.end(), std::mem_fun(&cbWorkerThread::Abort));
     Broadcast();
     m_threads.clear();
 
-    // set a new Semaphore for the new threads
+    // set a new Semaphore for the new threads, note the max value is the concurrentThreads
     m_semaphore = CountedPtr<wxSemaphore>(new wxSemaphore(0, concurrentThreads));
 
     m_concurrentThreads = concurrentThreads;
@@ -66,7 +67,7 @@ void cbThreadPool::_SetConcurrentThreads(int concurrentThreads)
     {
       m_threads.push_back(new cbWorkerThread(this, m_semaphore));
       m_threads.back()->Create(m_stackSize);
-      m_threads.back()->Run();
+      m_threads.back()->Run(); // this will run cbWorkerThread::Entry()
     }
 
 //    Manager::Get()->GetLogManager()->DebugLog(_T("Concurrent threads for pool set to %d"), m_concurrentThreads);
@@ -85,6 +86,8 @@ void cbThreadPool::AddTask(cbThreadedTask *task, bool autodelete)
   m_tasksQueue.push_back(cbThreadedTaskElement(task, autodelete));
   m_taskAdded = true;
 
+  // we are in batch mode, so no need to awake the idle thread
+  // m_workingThreads < m_concurrentThreads means there are some threads in idle mode (no task assigned)
   if (!m_batching && m_workingThreads < m_concurrentThreads)
     AwakeNeeded();
 }
@@ -118,13 +121,15 @@ cbThreadPool::cbThreadedTaskElement cbThreadPool::GetNextTask()
 
   return element;
 }
-
+// a thread is leaving from idle mode, and run a task
 void cbThreadPool::WorkingThread()
 {
   wxMutexLocker lock(m_Mutex);
   ++m_workingThreads;
 }
-
+// this thread is finishing the task, and is going to be idle.
+// if there is no task left, and the total threads is running is 0, then we have all task done
+// otherwise, just put me to the idle mode by m_semaphore->Post()
 bool cbThreadPool::WaitingThread()
 {
   wxMutexLocker lock(m_Mutex);
@@ -187,8 +192,10 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
       // If a call to WaitingThread returns false, we must abort
       if (!m_pPool->WaitingThread())
         break;
+      // if there are still some tasks in the queue, WaitingThread() function will Post the
+      // semaphore, and we don't delay much here for the Wait() function.
 
-      m_semaphore->Wait(); // nothing to do... so just wait
+      m_semaphore->Wait(); // nothing to do... so just wait until it get the resource
     }
 
     if (Aborted())
@@ -196,10 +203,11 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 
     if (!workingThread)
     {
-      m_pPool->WorkingThread(); // time to work!
+      m_pPool->WorkingThread(); // time to work! thread status from idle to running
       workingThread = true;
     }
 
+    // fetch a task from the task queue
     cbThreadPool::cbThreadedTaskElement element = m_pPool->GetNextTask();
 
     {
@@ -213,7 +221,7 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 
     if (!Aborted())
     {
-      m_pTask->Execute();
+      m_pTask->Execute(); // run task's job here
 
       {
         wxMutexLocker lock(m_taskMutex);
@@ -221,7 +229,7 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
         element.Delete();
       }
 
-      m_pPool->TaskDone(this);
+      m_pPool->TaskDone(this); // send an notification event that one task is done.
     }
   }
 
