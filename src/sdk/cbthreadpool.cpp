@@ -132,12 +132,12 @@ bool cbThreadPool::WaitingThread()
 
   if (m_workingThreads <= 0 && m_tasksQueue.empty())
   {
-    // Sends cbEVT_THREADTASK_ALLDONE message only the real task is all done
     if (m_taskAdded)
     {
       // notify the owner that all tasks are done
       CodeBlocksEvent evt = CodeBlocksEvent(cbEVT_THREADTASK_ALLDONE, m_ID);
       wxPostEvent(m_pOwner, evt);
+      m_taskAdded = false;
     }
 
     // The last active thread is now waiting and there's a pending new number of threads to assign...
