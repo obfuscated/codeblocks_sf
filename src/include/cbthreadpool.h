@@ -311,9 +311,8 @@ inline void cbThreadPool::AwakeNeeded()
     return;
 
   // the thread number to awake should be less than the idle thread number and the tasks queue's size
-  std::size_t awakeThreadNumber = 0;
-  awakeThreadNumber = std::min(m_tasksQueue.size(),
-                               static_cast<std::size_t>(m_concurrentThreads - m_workingThreads));
+  std::size_t awakeThreadNumber = std::min<std::size_t>(m_tasksQueue.size(),
+                                                        (m_concurrentThreads - m_workingThreads));
   for (std::size_t i = 0; i < awakeThreadNumber; ++i)
     m_semaphore->Post();
 }
