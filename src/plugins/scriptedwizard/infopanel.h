@@ -6,11 +6,6 @@
 #ifndef INFOPANEL_H
 #define INFOPANEL_H
 
-#include <wx/wxprec.h>
-
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 //(*Headers(InfoPanel)
 #include <wx/sizer.h>

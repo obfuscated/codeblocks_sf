@@ -6,9 +6,6 @@
 #ifndef PROJECTPATHPANEL_H
 #define PROJECTPATHPANEL_H
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 //(*Headers(ProjectPathPanel)
 #include <wx/sizer.h>

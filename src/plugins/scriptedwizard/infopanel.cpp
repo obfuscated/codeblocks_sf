@@ -7,10 +7,14 @@
  * $HeadURL$
  */
 
+#include <sdk.h>
+#ifndef CB_PRECOMP
+    #include <wx/intl.h>
+    #include <wx/string.h>
+#endif // CB_PRECOMP
+
 #include "infopanel.h"
 
-#include <wx/intl.h>
-#include <wx/string.h>
 
 //(*IdInit(InfoPanel)
 const long InfoPanel::ID_STATICTEXT1 = wxNewId();

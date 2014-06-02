@@ -7,35 +7,40 @@
  * $HeadURL$
  */
 
-#include "wiz.h"
-#include <wx/dir.h>
-#include <wx/intl.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/wizard.h>
-#include <wx/stattext.h>
-#include <wx/button.h>
-#include <wx/panel.h>
-#include <wx/checkbox.h>
-#include <wx/combobox.h>
-#include <wx/spinctrl.h>
-#include <wx/wxscintilla.h>
-
-#include <globals.h>
-#include <cbexception.h>
-#include <manager.h>
-#include <configmanager.h>
-#include <projectmanager.h>
-#include <scriptingmanager.h>
-#include <compilerfactory.h>
-#include <compiler.h>
-#include <cbproject.h>
-#include <projectbuildtarget.h>
-#include <prep.h>
-#include <filefilters.h>
-#include <infowindow.h>
-
+#include <sdk.h>
+#ifndef CB_PRECOMP
+    #include <wx/button.h>
+    #include <wx/checkbox.h>
+    #include <wx/checklst.h>
+    #include <wx/combobox.h>
+    #include <wx/dir.h>
+    #include <wx/intl.h>
+    #include <wx/listbox.h>
+    #include <wx/panel.h>
+    #include <wx/radiobox.h>
+    #include <wx/sizer.h>
+    #include <wx/spinctrl.h>
+    #include <wx/stattext.h>
+    #include <wx/wizard.h>
+    #include <wx/xrc/xmlres.h>
+    
+    #include <wx/wxscintilla.h> // CB Header
+    #include <cbexception.h>
+    #include <cbproject.h>
+    #include <compiler.h>
+    #include <compilerfactory.h>
+    #include <configmanager.h>
+    #include <filefilters.h>
+    #include <globals.h>
+    #include <infowindow.h>
+    #include <manager.h>
+    #include <projectbuildtarget.h>
+    #include <projectmanager.h>
+    #include <scriptingmanager.h>
+#endif // CB_PRECOMP
 #include <scripting/bindings/sc_base_types.h>
 
+#include "wiz.h"
 #include "wizpage.h"
 
 #include <wx/arrimpl.cpp>

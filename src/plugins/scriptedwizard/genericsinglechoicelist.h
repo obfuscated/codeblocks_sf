@@ -6,9 +6,6 @@
 #ifndef GENERICSINGLECHOICELIST_H
 #define GENERICSINGLECHOICELIST_H
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 //(*Headers(GenericSingleChoiceList)
 #include <wx/sizer.h>

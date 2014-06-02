@@ -6,9 +6,6 @@
 #ifndef GENERICSELECTPATH_H
 #define GENERICSELECTPATH_H
 
-#ifdef __BORLANDC__
-    #pragma hdrstop
-#endif
 
 //(*Headers(GenericSelectPath)
 #include <wx/sizer.h>
