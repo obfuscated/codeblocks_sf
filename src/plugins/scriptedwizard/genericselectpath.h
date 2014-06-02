@@ -7,7 +7,7 @@
 #define GENERICSELECTPATH_H
 
 
-//(*Headers(GenericSelectPath)
+//(*HeadersPCH(GenericSelectPath)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>

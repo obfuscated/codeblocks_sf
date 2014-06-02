@@ -7,7 +7,7 @@
 #define PROJECTPATHPANEL_H
 
 
-//(*Headers(ProjectPathPanel)
+//(*HeadersPCH(ProjectPathPanel)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>

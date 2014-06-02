@@ -7,7 +7,7 @@
 #define INFOPANEL_H
 
 
-//(*Headers(InfoPanel)
+//(*HeadersPCH(InfoPanel)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/checkbox.h>

@@ -10,7 +10,10 @@
 #include <sdk.h>
 #ifndef CB_PRECOMP
     #include <wx/filename.h>
+    //(*InternalHeadersPCH(ProjectPathPanel)
     #include <wx/intl.h>
+    #include <wx/string.h>
+    //*)
 #endif // CB_PRECOMP
 #include <filefilters.h>
 

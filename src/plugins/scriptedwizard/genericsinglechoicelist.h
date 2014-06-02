@@ -7,7 +7,7 @@
 #define GENERICSINGLECHOICELIST_H
 
 
-//(*Headers(GenericSingleChoiceList)
+//(*HeadersPCH(GenericSingleChoiceList)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/listbox.h>

@@ -7,7 +7,7 @@
 #define BUILDTARGETPANEL_H
 
 
-//(*Headers(BuildTargetPanel)
+//(*HeadersPCH(BuildTargetPanel)
 #include <wx/sizer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>

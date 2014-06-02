@@ -10,7 +10,10 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
 #include <wx/event.h>
+//(*InternalHeadersPCH(CompilerPanel)
 #include <wx/intl.h>
+#include <wx/string.h>
+//*)
 #include "globals.h"
 #endif
 #include "compilerpanel.h"
