@@ -197,7 +197,7 @@ private:
     void OnProjectFileRemoved(CodeBlocksEvent& event);
     void OnProjectFileChanged(CodeBlocksEvent& event);
     /** SDK editor related events */
-    void OnEditorSaveOrModified(CodeBlocksEvent& event);
+    void OnEditorSave(CodeBlocksEvent& event);
     void OnEditorOpen(CodeBlocksEvent& event);
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);

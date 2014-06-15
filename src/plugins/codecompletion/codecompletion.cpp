@@ -583,8 +583,7 @@ void CodeCompletion::OnAttach()
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_REMOVED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileRemoved));
     pm->RegisterEventSink(cbEVT_PROJECT_FILE_CHANGED, new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnProjectFileChanged));
 
-    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSaveOrModified));
-    pm->RegisterEventSink(cbEVT_EDITOR_MODIFIED,      new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSaveOrModified));
+    pm->RegisterEventSink(cbEVT_EDITOR_SAVE,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorSave));
     pm->RegisterEventSink(cbEVT_EDITOR_OPEN,          new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorOpen));
     pm->RegisterEventSink(cbEVT_EDITOR_ACTIVATED,     new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorActivated));
     pm->RegisterEventSink(cbEVT_EDITOR_CLOSE,         new cbEventFunctor<CodeCompletion, CodeBlocksEvent>(this, &CodeCompletion::OnEditorClosed));
@@ -2356,7 +2355,7 @@ void CodeCompletion::OnProjectFileChanged(CodeBlocksEvent& event)
     event.Skip();
 }
 
-void CodeCompletion::OnEditorSaveOrModified(CodeBlocksEvent& event)
+void CodeCompletion::OnEditorSave(CodeBlocksEvent& event)
 {
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
     {
@@ -2369,7 +2368,7 @@ void CodeCompletion::OnEditorSaveOrModified(CodeBlocksEvent& event)
         if (it->second.Index(filename) == wxNOT_FOUND)
             it->second.Add(filename);
 
-        TRACE(_T("CodeCompletion::OnEditorSaveOrModified: Starting m_TimerReparsing."));
+        TRACE(_T("CodeCompletion::OnEditorSave: Starting m_TimerReparsing."));
         m_TimerReparsing.Start(EDITOR_ACTIVATED_DELAY + it->second.GetCount() * 10, wxTIMER_ONE_SHOT);
     }
 
