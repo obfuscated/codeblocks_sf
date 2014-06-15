@@ -86,7 +86,6 @@ class ToDoList : public cbPlugin
         wxArrayString m_Users;
         // many kinds of todos, like: fixme, todo, note.....
         wxArrayString m_Types;
-        wxTimer m_timer;
 
         DECLARE_EVENT_TABLE()
 };
