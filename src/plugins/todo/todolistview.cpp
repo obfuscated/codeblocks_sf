@@ -106,7 +106,7 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
 
     hbs->Add(new wxStaticText(m_pPanel, wxID_ANY, _("Scope:")), 0, wxTOP, 4);
 
-    m_pSource = new wxComboBox(m_pPanel, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, 4, &choices[0], wxCB_READONLY);
+    m_pSource = new wxComboBox(m_pPanel, idSource, wxEmptyString, wxDefaultPosition, wxDefaultSize, choices, wxCB_READONLY);
     int source = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadInt(_T("source"), 0);
     m_pSource->SetSelection(source);
     hbs->Add(m_pSource, 0, wxLEFT | wxRIGHT, 8);
