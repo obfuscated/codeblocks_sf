@@ -694,17 +694,26 @@ void ToDoListView::OnDoubleClick(cb_unused wxCommandEvent& event)
     if (file.IsEmpty() || line < 0)
         return;
 
-    // jump to file/line selected
-    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(file);
+    // when double clicked, jump to file/line selected. Note that the opened file should already be
+    // parsed, so no need to refresh the list in any reason.
+    bool savedIgnore = m_Ignore;
+    m_Ignore = true; // no need to parse the files
+
+    // If the file is already opened in the editor, no need to open it again, just do a switch. Note
+    // that Open(file) will also send an Activated event.
+    cbEditor* ed = (cbEditor*)Manager::Get()->GetEditorManager()->IsBuiltinOpen(file);
+    if (!ed)
+        ed = Manager::Get()->GetEditorManager()->Open(file); //this will send a editor activated event
+
     if (ed)
     {
-        bool old_ignore = m_Ignore;
-        m_Ignore = true;
-        ed->Activate();
+        ed->Activate(); //this does not run FillList, because m_Ignore is true here
         ed->GotoLine(line);
+        // FIXME (ollydbg#1#06/03/14): if the List is rebuild (m_Items rebuild), does the idx remain
+        // the same value?
         FocusEntry(idx);
-        m_Ignore = old_ignore;
     }
+    m_Ignore = savedIgnore;
 }
 
 void ToDoListView::OnColClick(wxListEvent& event)
