@@ -236,8 +236,6 @@ namespace CodeCompletionHelper
                 if (!word.IsEmpty())
                 {
                     NameUnderCursor.Clear();
-                    if (GetLastNonWhitespaceChar(control, start) == _T('~'))
-                        NameUnderCursor << _T('~');
                     NameUnderCursor << word;
                     ReturnValue = true;
                     IsInclude = false;
@@ -1906,8 +1904,11 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
     const int startPos = editor->GetControl()->WordStartPosition(pos, true);
     const int endPos   = editor->GetControl()->WordEndPosition(pos, true);
     wxString target;
+    // if there is a tilde "~", the token can either be a destructor or an Bitwise NOT (One's
+    // Complement) operator
+    bool isDestructor = false;
     if (CodeCompletionHelper::GetLastNonWhitespaceChar(editor->GetControl(), startPos) == _T('~'))
-        target << _T('~');
+        isDestructor = true;
     target << editor->GetControl()->GetTextRange(startPos, endPos);
     if (target.IsEmpty())
         return;
@@ -1924,8 +1925,9 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-    // handle destructor function
-    if (target[0] == _T('~'))
+    // handle destructor function, first we try to see if it is a destructor, we simply do a semantic
+    // check of the token under cursor, otherwise, it is a variable.
+    if (isDestructor)
     {
         TokenIdxSet tmp = result;
         result.clear();
@@ -1935,11 +1937,15 @@ void CodeCompletion::OnGotoDeclaration(wxCommandEvent& event)
             const Token* token = tree->at(*it);
             if (token && token->m_TokenKind == tkClass)
             {
-                token = tree->at(tree->TokenExists(target, token->m_Index, tkDestructor));
+                token = tree->at(tree->TokenExists(_T("~") + target, token->m_Index, tkDestructor));
                 if (token)
                     result.insert(token->m_Index);
             }
         }
+
+        // no destructor found, this could be a variable.
+        if (result.empty())
+            result = tmp;
     }
     else // handle constructor and functions
     {
