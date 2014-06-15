@@ -510,6 +510,17 @@ void ToDoList::OnReparse(CodeBlocksEvent& event)
 
 void ToDoList::OnReparseCurrent(CodeBlocksEvent& event)
 {
+#if 0
+    if(event.GetEventType()==cbEVT_EDITOR_OPEN)
+        Manager::Get()->GetLogManager()->DebugLog(wxT("ToDoList::OnReparseCurrent(): cbEVT_EDITOR_OPEN"));
+    else if(event.GetEventType()==cbEVT_EDITOR_SAVE)
+        Manager::Get()->GetLogManager()->DebugLog(wxT("ToDoList::OnReparseCurrent(): cbEVT_EDITOR_SAVE"));
+    else if(event.GetEventType()==cbEVT_EDITOR_ACTIVATED)
+        Manager::Get()->GetLogManager()->DebugLog(wxT("ToDoList::OnReparseCurrent(): cbEVT_EDITOR_ACTIVATED"));
+    else if(event.GetEventType()==cbEVT_EDITOR_CLOSE)
+        Manager::Get()->GetLogManager()->DebugLog(wxT("ToDoList::OnReparseCurrent(): cbEVT_EDITOR_CLOSE"));
+#endif // debug only
+
     bool forced = (event.GetEventType() == cbEVT_EDITOR_OPEN || event.GetEventType() == cbEVT_EDITOR_SAVE);
     if (m_InitDone && m_AutoRefresh && !(ProjectManager::IsBusy()))
     {
