@@ -58,7 +58,6 @@ class ToDoList : public cbPlugin
         void OnUpdateUI(wxUpdateUIEvent& event);
         // update the menu items (this manu item is valid when an buildin editor is active)
         void OnUpdateAdd(wxUpdateUIEvent& event);
-        void OnStartParsingProjects(wxTimerEvent& event);
         //write and load from configuration file
         void LoadUsers(); // different user can add todos
         void SaveUsers();
