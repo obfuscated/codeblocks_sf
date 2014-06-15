@@ -32,7 +32,7 @@ enum ToDoCommentType
     tdctWarning,       // compiler warning
     tdctError          // compiler error
 };
-
+// when user want to add a new todo item, this dialog will shown to let user setting properties
 class AddTodoDlg : public wxScrollingDialog
 {
     public:

@@ -153,8 +153,8 @@ void ToDoListView::Parse()
     if (m_Ignore || (m_pPanel && !m_pPanel->IsShownOnScreen()) )
         return; // Reentrancy
 
-    Clear();
-    m_ItemsMap.clear();
+    Clear(); // clear the gui
+    m_ItemsMap.clear(); // clear the data
     m_Items.Clear();
 
     switch (m_pSource->GetSelection())
@@ -307,22 +307,25 @@ void ToDoListView::FillList()
         cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(Manager::Get()->GetEditorManager()->GetActiveEditor());
         if (ed)
             filename = ed->GetFilename();
+        // m_Items only contains items belong to m_ItemsMap[filename]
         for (unsigned int i = 0; i < m_ItemsMap[filename].size(); i++)
             m_Items.Add(m_ItemsMap[filename][i]);
     }
     else
-    {
+    {   // m_Items contains all the items belong to m_ItemsMap
         for (it = m_ItemsMap.begin();it != m_ItemsMap.end();++it)
         {
             for (unsigned int i = 0; i < it->second.size(); i++)
                 m_Items.Add(it->second[i]);
         }
     }
-
+    // m_Items are all the elements going to show in the GUI, so sort it
     SortList();
+    // since m_Items is sorted already, we now show them up
     FillListControl();
 
     control->Thaw();
+    // reset the user selection list
     LoadUsers();
 }
 
