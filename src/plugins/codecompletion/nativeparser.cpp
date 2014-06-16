@@ -1748,7 +1748,9 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-        if (!parent)
+        // only need to parse the function body, other type of Tokens' body such as class declaration
+        // should not be parsed.
+        if (!parent || !(parent->m_TokenKind & tkAnyFunction))
             return false;
     }
 
