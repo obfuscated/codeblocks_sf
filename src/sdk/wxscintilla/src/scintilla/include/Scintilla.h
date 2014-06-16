@@ -20,10 +20,7 @@ extern "C" {
 int Scintilla_RegisterClasses(void *hInstance);
 int Scintilla_ReleaseResources();
 #endif
-#ifdef LINK_LEXERS
-// forces the linking of the lexer modules
 int Scintilla_LinkLexers();
-#endif
 
 #ifdef __cplusplus
 }
@@ -53,6 +50,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SCI_ADDTEXT 2001
 #define SCI_ADDSTYLEDTEXT 2002
 #define SCI_INSERTTEXT 2003
+#define SCI_CHANGEINSERTION 2672
 #define SCI_CLEARALL 2004
 #define SCI_DELETERANGE 2645
 #define SCI_CLEARDOCUMENTSTYLE 2005
@@ -480,6 +478,7 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_FOLDFLAG_LINEAFTER_EXPANDED 0x0008
 #define SC_FOLDFLAG_LINEAFTER_CONTRACTED 0x0010
 #define SC_FOLDFLAG_LEVELNUMBERS 0x0040
+#define SC_FOLDFLAG_LINESTATE 0x0080
 #define SCI_SETFOLDFLAGS 2233
 #define SCI_ENSUREVISIBLEENFORCEPOLICY 2234
 #define SCI_SETTABINDENTS 2260
@@ -734,6 +733,10 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_CASEINSENSITIVEBEHAVIOUR_IGNORECASE 1
 #define SCI_AUTOCSETCASEINSENSITIVEBEHAVIOUR 2634
 #define SCI_AUTOCGETCASEINSENSITIVEBEHAVIOUR 2635
+#define SC_MULTIAUTOC_ONCE 0
+#define SC_MULTIAUTOC_EACH 1
+#define SCI_AUTOCSETMULTI 2636
+#define SCI_AUTOCGETMULTI 2637
 #define SC_ORDER_PRESORTED 0
 #define SC_ORDER_PERFORMSORT 1
 #define SC_ORDER_CUSTOM 2
@@ -964,7 +967,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define SC_MOD_CHANGEANNOTATION 0x20000
 #define SC_MOD_CONTAINER 0x40000
 #define SC_MOD_LEXERSTATE 0x80000
-#define SC_MODEVENTMASKALL 0xFFFFF
+#define SC_MOD_INSERTCHECK 0x100000
+#define SC_MODEVENTMASKALL 0x1FFFFF
 #define SC_UPDATE_CONTENT 0x1
 #define SC_UPDATE_SELECTION 0x2
 #define SC_UPDATE_V_SCROLL 0x4

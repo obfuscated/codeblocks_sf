@@ -181,7 +181,7 @@
                                    verbinclude version warning weakgroup
                                    $ @ \ &amp; &lt; &gt;  # { }"/>
                         <!-- wxSmith block identifiers -->
-                        <Set index="5"
+                        <Set index="6"
                             value="^AppHeaders ^AppInitialize ^Declarations ^Destroy ^EventTable ^Handlers
                                    ^Headers ^IdInit ^Identifiers ^Initialize ^InternalHeaders"/>
                 </Keywords>

@@ -8,9 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#include <ctype.h>
 #include <stdarg.h>
 #include <assert.h>
+#include <ctype.h>
 
 #include <vector>
 
@@ -106,6 +106,7 @@ int Scintilla_LinkLexers() {
 	LINK_LEXER(lmD);
 	LINK_LEXER(lmDiff);
 	LINK_LEXER(lmDMAP);
+	LINK_LEXER(lmDMIS);
 	LINK_LEXER(lmECL);
 	LINK_LEXER(lmEiffel);
 	LINK_LEXER(lmEiffelkw);

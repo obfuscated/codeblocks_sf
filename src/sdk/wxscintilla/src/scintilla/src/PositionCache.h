@@ -43,8 +43,6 @@ public:
 	int edgeColumn;
 	char *chars;
 	unsigned char *styles;
-	int styleBitsSet;
-	char *indicators;
 	XYPOSITION *positions;
 	char bracePreviousStyles[2];
 
@@ -115,7 +113,7 @@ public:
 	void Set(unsigned int styleNumber_, const char *s_, unsigned int len_, XYPOSITION *positions_, unsigned int clock);
 	void Clear();
 	bool Retrieve(unsigned int styleNumber_, const char *s_, unsigned int len_, XYPOSITION *positions_) const;
-	static int Hash(unsigned int styleNumber_, const char *s, unsigned int len);
+	static unsigned int Hash(unsigned int styleNumber_, const char *s, unsigned int len);
 	bool NewerThan(const PositionCacheEntry &other) const;
 	void ResetClock();
 };

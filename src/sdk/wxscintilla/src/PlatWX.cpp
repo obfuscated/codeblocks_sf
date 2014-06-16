@@ -612,14 +612,13 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *
     hDC->GetPartialTextExtents(str, tpos);
 
 #if wxUSE_UNICODE
+/* C::B begin */
     // Map the widths for UCS-2 characters back to the UTF-8 input string
     // NOTE:  I don't think this is right for when sizeof(wxChar) > 2, ie wxGTK2
     // so figure it out and fix it!
-/* C::B begin */
     int i = 0;
     size_t ui = 0;
     while (i < len) {
-/* C::B end */
         unsigned char uch = (unsigned char)s[i];
         positions[i++] = tpos[ui];
         if (uch >= 0x80) {
@@ -635,14 +634,13 @@ void SurfaceImpl::MeasureWidths(Font &font, const char *s, int len, XYPOSITION *
 #else
 
     // If not unicode then just use the widths we have
-/* C::B begin */
 #if defined(wxUSE_STL) || defined(wxUSE_STD_CONTAINERS)
-/* C::B end */
     std::copy(tpos.begin(), tpos.end(), positions);
 #else
     memcpy(positions, tpos.begin(), len * sizeof(int));
 #endif
 #endif
+/* C::B end */
 }
 
 

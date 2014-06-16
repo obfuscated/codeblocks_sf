@@ -39,6 +39,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexCsound.cxx \
 			src/scintilla/lexers/LexD.cxx \
 			src/scintilla/lexers/LexDMAP.cxx \
+			src/scintilla/lexers/LexDMIS.cxx \
 			src/scintilla/lexers/LexECL.cxx \
 			src/scintilla/lexers/LexEScript.cxx \
 			src/scintilla/lexers/LexEiffel.cxx \

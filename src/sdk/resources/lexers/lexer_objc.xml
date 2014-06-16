@@ -119,14 +119,6 @@
                 <Style name="Indentation guide"
                         index="37"
                         fg="55,55,55"/>
-                <Style name="wxSmith-generated code"
-                        index="50"
-                        fg="64,64,128"
-                        italics="1"/>
-                <Style name="wxSmith-generated code (inactive)"
-                        index="114"
-                        fg="133,133,172"
-                        italics="1"/>
                 <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"
