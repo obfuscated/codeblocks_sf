@@ -1084,6 +1084,29 @@ LONG WINAPI TopLevelExceptionFilter(PEXCEPTION_POINTERS pExceptionInfo)
 			FILE_FLAG_WRITE_THROUGH,
 			0
 		);
+		if (hReportFile == INVALID_HANDLE_VALUE)
+		{
+			// Retrieve the system error message for the last-error code
+
+			LPVOID lpMsgBuf;
+			DWORD dw = GetLastError();
+			TCHAR szBuffer[4196];
+
+			FormatMessage(
+				FORMAT_MESSAGE_ALLOCATE_BUFFER |
+				FORMAT_MESSAGE_FROM_SYSTEM |
+				FORMAT_MESSAGE_IGNORE_INSERTS,
+				NULL,
+				dw,
+				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+				(LPTSTR) &lpMsgBuf,
+				0, NULL );
+
+			wsprintf(szBuffer, _T("Exception handler failed with error %d: %s\n"), dw, lpMsgBuf);
+			MessageBox((HWND)MB_ICONEXCLAMATION, szBuffer, _T("Error"), MB_OK);
+
+			LocalFree(lpMsgBuf);
+		}
 
 #ifdef HAVE_BFD
 		bfd_set_error_handler((bfd_error_handler_type) rprintf);
