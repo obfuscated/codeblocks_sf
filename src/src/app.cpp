@@ -316,11 +316,13 @@ bool CodeBlocksApp::LoadConfig()
         return false;
 
     if (m_UserDataDir!=wxEmptyString)
+    {
         // if --user-data-dir=path was specified we tell
         //ConfigManager (and CfgMgrBldr) about it, which will propagate
         //it through the app and plugins
-        if(!ConfigManager::SetUserDataFolder(m_UserDataDir))
+        if ( !ConfigManager::SetUserDataFolder(m_UserDataDir) )
             return false;
+    }
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
 
