@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code Snippets mod" />
+		<Option title="Code Snippets wx2.8.x" />
 		<Option default_target="Plugin - Win32" />
 		<Option compiler="gcc" />
 		<Build>
@@ -13,10 +13,9 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="$(CODEBLOCKS)\..\devel\codeblocks.exe" />
+				<Option host_application="..\..\..\devel\codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-g" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DCB_PRECOMP" />
 				</Compiler>
@@ -25,8 +24,9 @@
 				</Linker>
 			</Target>
 			<Environment>
-				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="28" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -66,10 +66,9 @@
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
-			<Add library="wxmsw28$(WX_SUFFIX)" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
 			<Add directory="..\..\..\devel" />
-			<Add directory="..\..\..\base\tinyxml" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
