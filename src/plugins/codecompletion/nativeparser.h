@@ -245,6 +245,7 @@ protected:
      * Set the active parser pointer (m_Parser member variable)
      * update the ClassBrowser's Parser pointer
      * re-fresh the symbol browser tree.
+     * if we did switch the parser, we also need to remove the temporary tokens of the old parser.
      */
     void SetParser(ParserBase* parser);
 
