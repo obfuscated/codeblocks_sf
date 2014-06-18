@@ -395,10 +395,13 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
 
 Parser::~Parser()
 {
-    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
+    // Don't wrap the s_ParserMutex lock around TerminateAllThreads(), since, it will cause a deadlock
+    // in TerminateAllThreads() when calling DeleteParser() before parsing has finished.
 
     DisconnectEvents();
     TerminateAllThreads();
+
+    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
     if (ParserCommon::s_CurrentParser == this)
         ParserCommon::s_CurrentParser = nullptr;
@@ -828,7 +831,9 @@ bool Parser::Reparse(const wxString& filename, cb_unused bool isLocal)
 
 void Parser::TerminateAllThreads()
 {
-    // FIXME (ollydbg#1#): Do we need to use a mutex to protect the m_PoolTask accessing?
+    // use a mutex to protect the m_PoolTask from multiply threads accessing
+    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
+
     while (!m_PoolTask.empty())
     {
         PTVector& v = m_PoolTask.front();
@@ -837,6 +842,11 @@ void Parser::TerminateAllThreads()
         m_PoolTask.pop();
     }
 
+    CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
+
+    // NOTE: This should not be locked with s_ParserMutex, otherwise we'll be stuck in an
+    // infinite loop below since the worker thread also enters s_ParserMutex.
+    // In fact cbThreadPool maintains it's own mutex, so m_Pool is probably threadsafe.
     m_Pool.AbortAllTasks();
     while (!m_Pool.Done())
         wxMilliSleep(1);
