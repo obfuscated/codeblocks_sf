@@ -349,23 +349,23 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
 
     wxFileName prjbase(target->GetParentProject()->GetBasePath());
 
-    wxString objOut = target ? target->GetObjectOutput() : _T(".");
-    wxString depsOut = target ? target->GetDepsOutput() : _T(".");
+    wxString objOut  = target ? target->GetObjectOutput() : _T(".");
+    wxString depsOut = target ? target->GetDepsOutput()   : _T(".");
 
     // we must replace any macros here early because if the macros expand
     // to absolute paths (like global vars usually do), we 're gonna create
     // invalid filenames below
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(objOut, target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(objOut,  target);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(depsOut, target);
-    source_file_native = pf->relativeFilename;
+
+    source_file_native          = pf->relativeFilename;
     source_file_absolute_native = pf->file.GetFullPath();
 
-    wxFileName tmp( pf->GetObjName() );
+    wxFileName obj_name( pf->GetObjName() );
     FileType ft = FileTypeOf(pf->relativeFilename);
 
-    Compiler* compiler = target
-                            ? CompilerFactory::GetCompiler(target->GetCompilerID())
-                            : CompilerFactory::GetDefaultCompiler();
+    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID())
+                                : CompilerFactory::GetDefaultCompiler();
 
     // support for precompiled headers
     if (target && ft == ftHeader && compiler && compiler->GetSwitches().supportsPCH)
@@ -398,14 +398,14 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
 
             case pchObjectDir:
             {
-                object_file_native = objOut + sep + tmp.GetFullPath();
-                object_file_flat_native = objOut + sep + tmp.GetFullName();
+                object_file_native      = objOut + sep + obj_name.GetFullPath();
+                object_file_flat_native = objOut + sep + obj_name.GetFullName();
                 break;
             }
 
             case pchSourceFile:
             {
-                object_file_native = pf->GetObjName();
+                object_file_native      = pf->GetObjName();
                 object_file_flat_native = object_file_native;
                 break;
             }
@@ -426,19 +426,19 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 fname.Assign(pf->generatedFiles[0]->relativeToCommonTopLevelPath);
             }
             /* NOTE: In case the source file resides in a different volume
-            * than the volume where project file is,
-            * then the object file will be created as follows.
-            *
-            * Project object output dir: C:\Foo\obj\Debug
-            * Source: D:\Source\foo.cpp
-            * Obj file: C:\Foo\obj\Debug\D\Source\foo.o
-            */
-            wxString fileVol = fname.GetVolume();
+             * than the volume where project file is,
+             * then the object file will be created as follows.
+             *
+             * Project object output dir: C:\Foo\obj\Debug
+             * Source: D:\Source\foo.cpp
+             * Obj file: C:\Foo\obj\Debug\D\Source\foo.o
+             */
+            wxString fileVol            = fname.GetVolume();
             wxString obj_file_full_path = fname.GetFullPath();
-            bool diffVolume = false;
+            bool     diffVolume         = false;
 
-            if (platform::windows
-                && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume())))
+            if (   platform::windows
+                && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume())) )
             {
                 objOut += fileVol;
                 obj_file_full_path = obj_file_full_path.AfterFirst(_T('\\'));
@@ -449,10 +449,10 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
-                    object_file_native = objOut + sep + obj_file_full_path;
+                    object_file_native      = objOut + sep + obj_file_full_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
 
-                    object_file_native += FileFilters::RESOURCEBIN_DOT_EXT;
+                    object_file_native      += FileFilters::RESOURCEBIN_DOT_EXT;
                     object_file_flat_native += FileFilters::RESOURCEBIN_DOT_EXT;
                 }
                 else
@@ -461,20 +461,36 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                     wxString obj_file_path = fname.GetFullPath();
                     if (diffVolume)
                         obj_file_path = obj_file_path.AfterFirst(_T('\\'));
-                    object_file_native = objOut + sep + obj_file_path;
+
+                    object_file_native      = objOut + sep + obj_file_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
+            }
+            else if (ft == ftObject)
+            {
+                // TODO (Morten#1#): Does this work in all cases (flat objects, extended object generation, generated files...)?
+                object_file_native      = obj_file_full_path;
+                object_file_flat_native = fname.GetFullName();
+            }
+            else if (ft == ftStaticLib || ft == ftDynamicLib)
+            {
+                cbMessageBox(_("You have added a static/dynamic library to the project files and enabled to link against it. "
+                               "This is likely to fail as Code::Blocks cannot control the link order which is relevant.\n"
+                               "Instead, add the library to the project linker options."), _("Error"), wxICON_ERROR | wxOK);
+                // This will be wrong and most likely not working but spoil the build process
+                object_file_native      = obj_file_full_path;
+                object_file_flat_native = fname.GetFullName();
             }
             else
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
-                    object_file_native = objOut + sep + obj_file_full_path;
+                    object_file_native      = objOut + sep + obj_file_full_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
 
                     if (compiler)
                     {
-                        object_file_native += _T('.') + compiler->GetSwitches().objectExtension;
+                        object_file_native      += _T('.') + compiler->GetSwitches().objectExtension;
                         object_file_flat_native += _T('.') + compiler->GetSwitches().objectExtension;
                     }
                 }
@@ -485,25 +501,30 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                     wxString obj_file_path = fname.GetFullPath();
                     if (diffVolume)
                         obj_file_path = obj_file_path.AfterFirst(_T('\\'));
-                    object_file_native = objOut + sep + obj_file_path;
+
+                    object_file_native      = objOut + sep + obj_file_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
             }
         }
     }
+
     wxFileName o_file(object_file_native);
     wxFileName o_file_flat(object_file_flat_native);
     o_file.MakeAbsolute(prjbase.GetFullPath());
     o_file_flat.MakeAbsolute(prjbase.GetFullPath());
-    object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    object_dir_flat_native = o_file_flat.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    object_file_absolute_native = o_file.GetFullPath();
+
+    object_dir_native                = o_file.GetPath(wxPATH_GET_VOLUME      | wxPATH_GET_SEPARATOR);
+    object_dir_flat_native           = o_file_flat.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    object_file_absolute_native      = o_file.GetFullPath();
     object_file_flat_absolute_native = o_file_flat.GetFullPath();
-    tmp.SetExt(_T("depend"));
-    dep_file_native = depsOut + sep + tmp.GetFullPath();
+
+    obj_name.SetExt(_T("depend"));
+    dep_file_native = depsOut + sep + obj_name.GetFullPath();
+
     wxFileName d_file(dep_file_native);
     d_file.MakeAbsolute(prjbase.GetFullPath());
-    dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    dep_dir_native           = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     dep_file_absolute_native = o_file.GetFullPath();
 
     source_file = UnixFilename(source_file_native);

@@ -56,8 +56,8 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
     // folder like "R:". But this ONLY works, if its just "R:", NOT e.g. "R:/"
     wxString depsCWD = cwd.GetPath(wxPATH_GET_VOLUME);
     Manager::Get()->GetLogManager()->DebugLog(F(_("CWD for depslib was: %s."), depsCWD.wx_str()));
-    if (   (depsCWD.Len()==3) && (depsCWD.GetChar(1)==':')
-        && ( (depsCWD.GetChar(2)=='\\') || (depsCWD.GetChar(2)=='/')) )
+    if (     (depsCWD.Len()==3)         && (depsCWD.GetChar(1)==':')
+        && ( (depsCWD.GetChar(2)=='\\') || (depsCWD.GetChar(2)=='/') ) )
     {
         depsCWD.RemoveLast();
     }
@@ -71,7 +71,6 @@ DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
 
 DirectCommands::~DirectCommands()
 {
-    // dtor
     if (!m_pProject)
         return; // probably a compile file cmd without a project
 
@@ -694,7 +693,8 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
             continue;
 
         const pfDetails& pfd = pf->GetFileDetails(target);
-        wxString Object = (compiler->GetSwitches().UseFlatObjects)?pfd.object_file_flat:pfd.object_file;
+        wxString Object = (compiler->GetSwitches().UseFlatObjects) ? pfd.object_file_flat
+                                                                   : pfd.object_file;
 
         if (FileTypeOf(pf->relativeFilename) == ftResource)
         {
