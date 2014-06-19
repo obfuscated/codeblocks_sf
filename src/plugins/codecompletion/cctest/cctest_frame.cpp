@@ -196,7 +196,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     m_StatuBar->SetStatusStyles(1,__wxStatusBarStyles_1);
     SetStatusBar(m_StatuBar);
     m_OpenFile = new wxFileDialog(this, _("Select Test Source File"), _("."), wxEmptyString, _("*.cpp;*.h"), wxFD_DEFAULT_STYLE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
-    m_SaveFile = new wxFileDialog(this, _("Select file"), _("."), _("log.txt"), _("*.txt"), wxFD_DEFAULT_STYLE|wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
+    m_SaveFile = new wxFileDialog(this, _("Select file"), _("."), _("log.txt"), _("*.txt"), wxFD_SAVE, wxDefaultPosition, wxDefaultSize, _T("wxFileDialog"));
     bsz_main->Fit(this);
     bsz_main->SetSizeHints(this);
     Center();

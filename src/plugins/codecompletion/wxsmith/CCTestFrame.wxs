@@ -239,7 +239,7 @@
 			<default_dir>.</default_dir>
 			<default_file>log.txt</default_file>
 			<wildcard>*.txt</wildcard>
-			<style>wxFD_DEFAULT_STYLE|wxFD_SAVE</style>
+			<style>wxFD_SAVE</style>
 		</object>
 	</object>
 </wxsmith>
