@@ -2255,22 +2255,26 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
 {
     // EVT_WORKSPACE_CHANGED is a powerful event, it's sent after any project
     // has finished loading or closing. It's the *LAST* event to be sent when
-    // the workspace has been changed, and it's not sent if the application is
-    // shutting down. So it's the ideal time to parse files and update your
-    // widgets.
+    // the workspace has been changed. So it's the ideal time to parse files
+    // and update your widgets.
     if (IsAttached() && m_InitDone)
     {
         cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-        if (project && !m_NativeParser.GetParserByProject(project))
-            m_NativeParser.CreateParser(project);
+        // if we receive a workspace changed event, but the project is NULL, this means the user
+        // try to close the application, so we don't need to update the UI here.
+        if (project)
+        {
+            if (!m_NativeParser.GetParserByProject(project))
+                m_NativeParser.CreateParser(project);
 
-        // Update the Function toolbar
-        TRACE(_T("CodeCompletion::OnWorkspaceChanged: Starting m_TimerToolbar."));
-        m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+            // Update the Function toolbar
+            TRACE(_T("CodeCompletion::OnWorkspaceChanged: Starting m_TimerToolbar."));
+            m_TimerToolbar.Start(TOOLBAR_REFRESH_DELAY, wxTIMER_ONE_SHOT);
 
-        // Update the class browser
-        if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfProject)
-            m_NativeParser.UpdateClassBrowser();
+            // Update the class browser
+            if (m_NativeParser.GetParser().ClassBrowserOptions().displayFilter == bdfProject)
+                m_NativeParser.UpdateClassBrowser();
+        }
     }
     event.Skip();
 }
