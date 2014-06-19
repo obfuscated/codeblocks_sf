@@ -140,12 +140,6 @@
 		<Unit filename="classbrowserbuilderthread.h">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="classbrowserbuildtreeevent.cpp">
-			<Option target="Code-completion" />
-		</Unit>
-		<Unit filename="classbrowserbuildtreeevent.h">
-			<Option target="Code-completion" />
-		</Unit>
 		<Unit filename="codecompletion.cpp">
 			<Option target="Code-completion" />
 		</Unit>
