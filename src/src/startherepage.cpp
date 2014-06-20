@@ -131,8 +131,7 @@ void ReplaceRecentProjectFiles(wxString &buf, const wxFileHistory &projects, con
     buf.Replace(_T("CB_TXT_NEW_PROJECT"), _("Create a new project"));
     buf.Replace(_T("CB_TXT_OPEN_PROJECT"), _("Open an existing project"));
     buf.Replace(_T("CB_TXT_VISIT_FORUMS"), _("Visit the Code::Blocks forums"));
-    buf.Replace(_T("CB_TXT_REPORT_BUG"), _("Report a bug"));
-    buf.Replace(_T("CB_TXT_REQ_NEW_FEATURE"), _("Request a new feature"));
+    buf.Replace(_T("CB_TXT_BUG_FEATURE"), _("Report a bug or request a new feature"));
     buf.Replace(_T("CB_TXT_TIP_OF_THE_DAY"), _("Tip of the Day"));
 }
 
@@ -287,9 +286,9 @@ bool StartHerePage::LinkClicked(const wxHtmlLinkInfo& link)
     }
 
     if (   href.IsSameAs(_T("http://www.codeblocks.org/"))
-        || href.StartsWith(_T("http://developer.berlios.de/bugs/")) )
+        || href.StartsWith(_T("https://sourceforge.net/p/codeblocks/tickets")) )
     {
-        wxTextDataObject *data = new wxTextDataObject(revInfo);
+        wxTextDataObject* data = new wxTextDataObject(revInfo);
         if (wxTheClipboard->Open())
         {
             wxTheClipboard->SetData(data);
