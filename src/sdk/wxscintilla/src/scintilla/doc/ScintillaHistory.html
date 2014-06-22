@@ -474,6 +474,10 @@
 	SCI_AUTOCSETMULTI method.
 	</li>
 	<li>
+	C++ lexer fixes crash for "#define x(".
+	<a href="http://sourceforge.net/p/scintilla/bugs/1614/">Bug #1614</a>.
+	</li>
+	<li>
 	C++ lexer fixes raw string recognition so that R"xxx(blah)xxx" is styled as SCE_C_STRINGRAW.
 	</li>
 	<li>
@@ -488,8 +492,19 @@
 	Fix bug on Cocoa where emoji were treated as being zero width.
 	</li>
 	<li>
+	Fix crash on GTK+ with Ubuntu 12.04 and overlay scroll bars.
+	</li>
+	<li>
+	Fix crash in SciTE when stream comment performed at line end.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1610/">Bug #1610</a>.
+	</li>
+	<li>
 	For SciTE on Windows, display error message when common dialogs fail.
 	<a href="http://sourceforge.net/p/scintilla/bugs/156/">Bug #156</a>.
+	</li>
+	<li>
+	For SciTE on GTK+ fix bug wih initialisation of toggle buttons in find and replace strips.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1612/">Bug #1612</a>.
 	</li>
     </ul>
     <h3>
