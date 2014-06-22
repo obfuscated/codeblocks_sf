@@ -10,6 +10,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <ctype.h>
+#include <assert.h>
 
 /* C::B begin */
 //#include <string>
