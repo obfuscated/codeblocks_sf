@@ -107,6 +107,8 @@ CompOption* CompilerOptions::GetOptionByName(const wxString& name)
 
 CompOption* CompilerOptions::GetOptionByOption(const wxString& option)
 {
+    if (option.IsEmpty()) return nullptr;
+
     for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
     {
         CompOption* coption = m_Options.Item(i);
@@ -118,6 +120,8 @@ CompOption* CompilerOptions::GetOptionByOption(const wxString& option)
 
 CompOption* CompilerOptions::GetOptionByAdditionalLibs(const wxString& libs)
 {
+    if (libs.IsEmpty()) return nullptr;
+
     for (unsigned int i = 0; i < m_Options.GetCount(); ++i)
     {
         CompOption* coption = m_Options.Item(i);

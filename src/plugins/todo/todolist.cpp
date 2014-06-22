@@ -316,10 +316,14 @@ void ToDoList::OnAddItem(cb_unused wxCommandEvent& event)
     if (!ed)
         return;
 
-    HighlightLanguage hlang = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    HighlightLanguage hlang = colour_set->GetLanguageName(ed->GetLanguage());
     bool edIsCCpp = (hlang == _T("C/C++"));
 
-    CommentToken token = Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken(ed->GetLanguage());
+    CommentToken token = colour_set->GetCommentToken(ed->GetLanguage());
     bool hasStreamComments = not token.streamCommentStart.IsEmpty();
     bool hasLineComments = not token.lineComment.IsEmpty();
 

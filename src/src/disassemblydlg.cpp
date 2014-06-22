@@ -74,11 +74,11 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent) :
     }
     m_pCode->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
 
-    EditorColourSet* set = Manager::Get()->GetEditorManager()->GetColourSet();
-    if (set)
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (colour_set)
     {
-        HighlightLanguage lang = set->GetHighlightLanguage(wxSCI_LEX_ASM);
-        set->Apply(lang, (cbStyledTextCtrl*)m_pCode);
+        HighlightLanguage lang = colour_set->GetHighlightLanguage(wxSCI_LEX_ASM);
+        colour_set->Apply(lang, (cbStyledTextCtrl*)m_pCode);
     }
 
     m_MixedModeCB = (wxCheckBox*)FindWindow(XRCID("chkMode"));

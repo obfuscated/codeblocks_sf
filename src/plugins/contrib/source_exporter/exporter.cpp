@@ -183,28 +183,24 @@ void Exporter::ExportFile(BaseExporter *exp, const wxString &default_extension, 
     return;
   }
 
-  EditorManager *em = Manager::Get()->GetEditorManager();
-  cbEditor *cb = em->GetBuiltinActiveEditor();
-  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+  EditorManager* em = Manager::Get()->GetEditorManager();
+  cbEditor*      cb = em->GetBuiltinActiveEditor();
 
+  wxString filename = wxFileSelector(_("Choose the filename"), _T(""), wxFileName(cb->GetFilename()).GetName() + _T(".") + default_extension, default_extension, wildcard, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
   if (filename.IsEmpty())
   {
     return;
   }
 
-  cbStyledTextCtrl* ed = cb->GetControl();
-  wxMemoryBuffer mb = ed->GetStyledText(0, ed->GetLength() - 1);
+  cbStyledTextCtrl* stc = cb->GetControl();
+  if (!stc)
+      return;
 
   int lineCount = -1;
-
   if (wxMessageBox(_("Would you like to have the line numbers printed in the exported file?"), _("Export line numbers"), wxYES_NO | wxYES_DEFAULT | wxICON_QUESTION) == wxYES)
   {
-    lineCount = cb->GetControl()->GetLineCount();
+    lineCount = stc->GetLineCount();
   }
 
-  int tabWidth = cb->GetControl()->GetTabWidth();
-
-  EditorColourSet *ecs = cb->GetColourSet();
-
-  exp->Export(filename, cb->GetFilename(), mb, ecs, lineCount, tabWidth);
+  exp->Export(filename, cb->GetFilename(), stc->GetStyledText(0, stc->GetLength() - 1), cb->GetColourSet(), lineCount, stc->GetTabWidth());
 }

@@ -620,7 +620,6 @@ bool NativeParser::DeleteParser(cbProject* project)
         CCLogger::Get()->Log(log);
         CCLogger::Get()->DebugLog(log);
 
-
         // the logic here is : firstly delete the parser instance, then see whether we need an
         // active parser switch (call SetParser())
         delete it->second;

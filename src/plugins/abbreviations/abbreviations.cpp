@@ -537,10 +537,10 @@ void Abbreviations::ClearAutoCompLanguageMap()
 AutoCompleteMap* Abbreviations::GetCurrentACMap(cbEditor* ed)
 {
     AutoCompleteMap* pAutoCompleteMap;
-    EditorColourSet* theme = ed->GetColourSet();
-    if (theme)
+    EditorColourSet* colour_set = ed->GetColourSet();
+    if (colour_set)
     {
-        wxString strLang = theme->GetLanguageName(ed->GetLanguage());
+        wxString strLang = colour_set->GetLanguageName(ed->GetLanguage());
 
         if (strLang == _T("Fortran77")) // the same abbreviations for Fortran and Fortran77
             strLang = _T("Fortran");

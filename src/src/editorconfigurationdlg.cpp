@@ -601,9 +601,9 @@ void EditorConfigurationDlg::ChangeTheme()
     // If the theme is the same one used by EditorManager,
     // skip the creation of new EditorColourSet class to avoid lengthy loading times.
     // Instead, use the copy constructor...
-    EditorColourSet* manSet = Manager::Get()->GetEditorManager()->GetColourSet();
-    if (manSet && key == manSet->GetName())
-        m_Theme = new EditorColourSet(*manSet);
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (colour_set && key == colour_set->GetName())
+        m_Theme = new EditorColourSet(*colour_set);
     else
         m_Theme = new EditorColourSet(key);
 

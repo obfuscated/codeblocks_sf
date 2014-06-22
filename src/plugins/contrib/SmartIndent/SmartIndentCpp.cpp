@@ -41,8 +41,13 @@ void SmartIndentCpp::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     if (!stc)
         return;
 
-    wxString langname = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
-    if ( langname != wxT("D") && (stc->GetLexer() != wxSCI_LEX_CPP || langname == wxT("Hitachi asm"))) return;
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    wxString langname = colour_set->GetLanguageName(ed->GetLanguage());
+    if ( langname != wxT("D") && (stc->GetLexer() != wxSCI_LEX_CPP || langname == wxT("Hitachi asm")))
+        return;
 
     ed->AutoIndentDone(); // we are responsible.
 
@@ -64,6 +69,9 @@ void SmartIndentCpp::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 }
 void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
 {
+    if (!ed)
+        return;
+
     static bool autoIndentStart = false;
     static bool autoIndentDone = true;
     static int autoIndentLine = -1;
@@ -74,6 +82,8 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
     static int autoUnIndentLine = -1;
 
     cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
 
     const int pos = stc->GetCurrentPos();
     // indent
@@ -108,7 +118,7 @@ void SmartIndentCpp::DoSmartIndent(cbEditor* ed, const wxChar &ch)const
                 // if the last entered char before newline was an opening curly brace,
                 // increase indentation level (the closing brace is handled in another block)
 
-                if (!BraceIndent(stc, indent))
+                if ( !BraceIndent(stc, indent) )
                 {
                     if (b == _T('{'))
                     {
@@ -459,6 +469,9 @@ bool SmartIndentCpp::BraceIndent(cbStyledTextCtrl *stc, wxString &indent)const
 
 void SmartIndentCpp::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const wxChar &ch)const
 {
+    if (!control)
+        return;
+
     if (!control->GetLastSelectedText().IsEmpty())
     {
 
@@ -545,6 +558,9 @@ void SmartIndentCpp::DoSelectionBraceCompletion(cbStyledTextCtrl* control, const
 
 void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch)const
 {
+    if (!control)
+        return;
+
     int pos = control->GetCurrentPos();
     int style = control->GetStyleAt(pos);
 

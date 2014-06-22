@@ -592,22 +592,24 @@ void ConfigPanel::InitSTC(cbStyledTextCtrl *stc)
     stc->SetReadOnly(true);
     stc->SetUseHorizontalScrollBar(false);
 
-    // Colourise.
-    EditorColourSet* theme = Manager::Get()->GetEditorManager()->GetColourSet();
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
-    if(theme){
-        wxString sFont = cfg->Read(wxT("/font"), wxEmptyString);
+    wxString sFont = cfg->Read(wxT("/font"), wxEmptyString);
+    wxFont fnt(10, wxMODERN, wxNORMAL, wxNORMAL);
+    if (!sFont.IsEmpty())
+    {
+        wxNativeFontInfo nfi;
+        nfi.FromString(sFont);
+        fnt.SetNativeFontInfo(nfi);
+    }
 
-        wxFont fnt(10, wxMODERN, wxNORMAL, wxNORMAL);
-        if (!sFont.IsEmpty()){
-            wxNativeFontInfo nfi;
-            nfi.FromString(sFont);
-            fnt.SetNativeFontInfo(nfi);
-        }
-        if(stc){
-            stc->StyleSetFont(wxSCI_STYLE_DEFAULT, fnt);
-            theme->Apply(theme->GetHighlightLanguage(wxT("C/C++")), stc);
-        }
+    if (stc)
+    {
+        // Colourise.
+        EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+        if (!colour_set)
+            return;
+        stc->StyleSetFont(wxSCI_STYLE_DEFAULT, fnt);
+        colour_set->Apply(colour_set->GetHighlightLanguage(wxT("C/C++")), stc);
     }
 }
 

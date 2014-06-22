@@ -806,6 +806,7 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     }
     else if (   m_sccfg->GetEnableThesaurusTooltips()
              && m_pThesaurus->IsOk()
+             && ed->GetColourSet()
              && m_pSpellHelper->HasStyleToBeChecked(ed->GetColourSet()->GetLanguageName(ed->GetLanguage()), event.GetInt()))
     {
         wxString word = stc->GetTextRange(wordstart, wordend);

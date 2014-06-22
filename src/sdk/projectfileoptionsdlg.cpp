@@ -305,39 +305,42 @@ void ProjectFileOptionsDlg::FillGeneralProperties()
 {
     // count some statistics of the file
     m_FileName.Assign(m_FileNameStr);
-    if (m_FileName.FileExists())
+    if (!m_FileName.FileExists())
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    const HighlightLanguage& lang = colour_set->GetLanguageForFilename(m_FileNameStr);
+    if (lang != HL_NONE)
     {
-        EditorColourSet* colourSet = Manager::Get()->GetEditorManager()->GetColourSet();
-        const HighlightLanguage& lang = colourSet->GetLanguageForFilename(m_FileNameStr);
-        if (lang != HL_NONE)
-        {
-            long int total_lines = 0;
-            long int code_lines = 0;
-            long int empty_lines = 0;
-            long int comment_lines = 0;
-            long int codecomments_lines = 0;
-            CountLines(m_FileName, colourSet->GetCommentToken(lang), code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
-            XRCCTRL(*this, "staticTotalLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), total_lines));
-            XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), empty_lines));
-            XRCCTRL(*this, "staticActualLines",  wxStaticText)->SetLabel(wxString::Format(_T("%ld"), code_lines + codecomments_lines));
-            XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_T("%ld"), comment_lines));
-            XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->GetContainingSizer()->Layout();
-        }
-        wxFile file(m_FileName.GetFullPath());
-        if (file.IsOpened())
-        {
-            long length = static_cast<long>(file.Length());
-            XRCCTRL(*this, "staticFileSize", wxStaticText)->SetLabel(wxString::Format(_("%ld Bytes"), length));
-            XRCCTRL(*this, "staticFileSize", wxStaticText)->GetContainingSizer()->Layout();
-            file.Close();
-        }
-        XRCCTRL(*this, "chkReadOnly", wxCheckBox)->SetValue(!m_FileName.IsFileWritable());
-        wxDateTime modTime = m_FileName.GetModificationTime();
-        XRCCTRL(*this, "staticDateTimeStamp", wxStaticText)->SetLabel(
-            wxString::Format(_("%02hd/%02hd/%d %02hd:%02hd:%02hd"), modTime.GetDay(),
-            modTime.GetMonth() + 1, modTime.GetYear(), modTime.GetHour(), // seems I have to add 1 for the month ?
-            modTime.GetMinute(), modTime.GetSecond()));                   // because the return value of GetMonth() is an enum
+        long int total_lines = 0;
+        long int code_lines = 0;
+        long int empty_lines = 0;
+        long int comment_lines = 0;
+        long int codecomments_lines = 0;
+        CountLines(m_FileName, colour_set->GetCommentToken(lang), code_lines, codecomments_lines, comment_lines, empty_lines, total_lines);
+        XRCCTRL(*this, "staticTotalLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), total_lines));
+        XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->SetLabel(wxString::Format(_T("%ld"), empty_lines));
+        XRCCTRL(*this, "staticActualLines",  wxStaticText)->SetLabel(wxString::Format(_T("%ld"), code_lines + codecomments_lines));
+        XRCCTRL(*this, "staticCommentLines", wxStaticText)->SetLabel(wxString::Format(_T("%ld"), comment_lines));
+        XRCCTRL(*this, "staticEmptyLines",   wxStaticText)->GetContainingSizer()->Layout();
     }
+    wxFile file(m_FileName.GetFullPath());
+    if (file.IsOpened())
+    {
+        long length = static_cast<long>(file.Length());
+        XRCCTRL(*this, "staticFileSize", wxStaticText)->SetLabel(wxString::Format(_("%ld Bytes"), length));
+        XRCCTRL(*this, "staticFileSize", wxStaticText)->GetContainingSizer()->Layout();
+        file.Close();
+    }
+    XRCCTRL(*this, "chkReadOnly", wxCheckBox)->SetValue(!m_FileName.IsFileWritable());
+    wxDateTime modTime = m_FileName.GetModificationTime();
+    XRCCTRL(*this, "staticDateTimeStamp", wxStaticText)->SetLabel(
+        wxString::Format(_("%02hd/%02hd/%d %02hd:%02hd:%02hd"), modTime.GetDay(),
+        modTime.GetMonth() + 1, modTime.GetYear(), modTime.GetHour(), // seems I have to add 1 for the month ?
+        modTime.GetMinute(), modTime.GetSecond()));                   // because the return value of GetMonth() is an enum
 }
 
 void ProjectFileOptionsDlg::FillCompilers()

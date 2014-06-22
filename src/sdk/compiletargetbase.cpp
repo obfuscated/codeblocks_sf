@@ -266,7 +266,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
                 // On linux, "lib" is the common prefix for this platform
                 if (platform::linux)
                     prefix = wxT("lib");
-                // FIXME (mortenmacfly#5#): What about Mac (Windows is OK)?!
+                // FIXME (Morten#5#): What about Mac (Windows is OK)?!
 
                 // avoid adding the prefix, if there is no prefix, or already its there
                 if (!prefix.IsEmpty() && !fname.GetName().StartsWith(prefix))

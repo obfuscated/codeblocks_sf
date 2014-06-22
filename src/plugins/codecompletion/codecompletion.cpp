@@ -615,9 +615,8 @@ void CodeCompletion::OnRelease(bool appShutDown)
 
 /* TODO (mandrav#1#): Delete separator line too... */
     if (m_EditMenu)
-    {
         m_EditMenu->Delete(idMenuRenameSymbols);
-    }
+
     if (m_SearchMenu)
     {
         m_SearchMenu->Delete(idMenuGotoFunction);
@@ -841,9 +840,10 @@ bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 
 CodeCompletion::CCProviderStatus CodeCompletion::GetProviderStatusFor(cbEditor* ed)
 {
-    EditorColourSet *colorSet = ed->GetColourSet();
-    if (colorSet && ed->GetLanguage() == colorSet->GetHighlightLanguage(wxT("C/C++")))
+    EditorColourSet *colour_set = ed->GetColourSet();
+    if (colour_set && ed->GetLanguage() == colour_set->GetHighlightLanguage(wxT("C/C++")))
         return ccpsActive;
+
     switch (ParserCommon::FileType(ed->GetFilename()))
     {
         case ParserCommon::ftHeader:
@@ -1005,8 +1005,8 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                 if (s_DebugSmartSense)
                     CCLogger::Get()->DebugLog(_T("Last AI search was global: adding theme keywords in list"));
 
-                EditorColourSet* theme = ed->GetColourSet();
-                if (theme)
+                EditorColourSet* colour_set = ed->GetColourSet();
+                if (colour_set)
                 {
                     wxString lastSearch = m_NativeParser.LastAIGlobalSearch().Lower();
                     int iidx = ilist->GetImageCount();
@@ -1014,8 +1014,8 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                     // theme keywords
                     HighlightLanguage lang = ed->GetLanguage();
                     if (lang == HL_NONE)
-                        lang = theme->GetLanguageForFilename(ed->GetFilename());
-                    wxString strLang = theme->GetLanguageName(lang);
+                        lang = colour_set->GetLanguageForFilename(ed->GetFilename());
+                    wxString strLang = colour_set->GetLanguageName(lang);
                     // if its sourcecode/header file and a known fileformat, show the corresponding icon
                     if (isC && strLang == wxT("C/C++"))
                         stc->RegisterImage(iidx, wxBitmap(cpp_keyword_xpm));
@@ -1030,7 +1030,7 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                         if (!m_LexerKeywordsToInclude[i])
                             continue;
 
-                        wxString keywords = theme->GetKeywords(lang, i);
+                        wxString keywords = colour_set->GetKeywords(lang, i);
                         wxStringTokenizer tkz(keywords, wxT(" \t\r\n"), wxTOKEN_STRTOK);
                         while (tkz.HasMoreTokens())
                         {
@@ -3283,7 +3283,11 @@ void CodeCompletion::UpdateEditorSyntax(cbEditor* ed)
     }
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-    wxString keywords = Manager::Get()->GetEditorManager()->GetColourSet()->GetKeywords(ed->GetLanguage(), 3);
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    wxString keywords = colour_set->GetKeywords(ed->GetLanguage(), 3);
     for (std::set<wxString>::const_iterator keyIt = varList.begin();
          keyIt != varList.end(); ++keyIt)
     {

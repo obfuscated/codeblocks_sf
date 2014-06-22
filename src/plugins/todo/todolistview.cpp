@@ -470,9 +470,13 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
 {
     // this is the actual workhorse...
 
-    HighlightLanguage hlang = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageForFilename(filename);
-    CommentToken cmttoken = Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken(hlang);
-    wxString langName = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(hlang);
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    HighlightLanguage hlang = colour_set->GetLanguageForFilename(filename);
+    CommentToken cmttoken = colour_set->GetCommentToken(hlang);
+    wxString langName = colour_set->GetLanguageName(hlang);
 
     m_ItemsMap[filename].clear();
 

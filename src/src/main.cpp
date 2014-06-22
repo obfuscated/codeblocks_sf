@@ -963,10 +963,10 @@ void MainFrame::CreateMenubar()
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
         {
-            EditorColourSet* theme = Manager::Get()->GetEditorManager()->GetColourSet();
-            if (theme)
+            EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+            if (colour_set)
             {
-                wxArrayString langs = theme->GetAllHighlightLanguages();
+                wxArrayString langs = colour_set->GetAllHighlightLanguages();
                 for (size_t i = 0; i < langs.GetCount(); ++i)
                 {
                     if (i > 0 && !(i % 20))
@@ -3235,344 +3235,372 @@ void MainFrame::OnEditSelectNextSkip(cb_unused wxCommandEvent& event)
 void MainFrame::OnEditCommentSelected(cb_unused wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
+    if (!ed)
+        return;
+
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    CommentToken comment = colour_set->GetCommentToken( ed->GetLanguage() );
+    if (comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
+        return;
+
+    stc->BeginUndoAction();
+    if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
     {
-        cbStyledTextCtrl* stc = ed->GetControl();
-        CommentToken comment =
-            Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-        if (comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
-            return;
-
-        stc->BeginUndoAction();
-        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+        int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+        int curLine=startLine;
+        /**
+            Fix a glitch: when selecting multiple lines and the caret
+            is at the start of the line after the last line selected,
+            the code would, wrongly, (un)comment that line too.
+            This fixes it.
+        */
+        if (startLine != endLine && // selection is more than one line
+            stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
         {
-            int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
-            int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-            int curLine=startLine;
-            /**
-                Fix a glitch: when selecting multiple lines and the caret
-                is at the start of the line after the last line selected,
-                the code would, wrongly, (un)comment that line too.
-                This fixes it.
-            */
-            if (startLine != endLine && // selection is more than one line
-                stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
-            {
-                // don't take into account the line the caret is on,
-                // because it contains no selection (caret_column == 0)...
-                --endLine;
-            }
-
-            while( curLine <= endLine )
-            {
-                // For each line: comment.
-                if (comment.lineComment!=wxEmptyString)
-                    stc->InsertText( stc->PositionFromLine( curLine ), comment.lineComment );
-                else // if the language doesn't support line comments use stream comments
-                {
-                    stc->InsertText( stc->PositionFromLine( curLine ), comment.streamCommentStart );
-                    stc->InsertText( stc->GetLineEndPosition( curLine ), comment.streamCommentEnd );
-                }
-                ++curLine;
-            } // end while
-            stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
+            // don't take into account the line the caret is on,
+            // because it contains no selection (caret_column == 0)...
+            --endLine;
         }
-        stc->EndUndoAction();
+
+        while( curLine <= endLine )
+        {
+            // For each line: comment.
+            if (comment.lineComment!=wxEmptyString)
+                stc->InsertText( stc->PositionFromLine( curLine ), comment.lineComment );
+            else // if the language doesn't support line comments use stream comments
+            {
+                stc->InsertText( stc->PositionFromLine( curLine ), comment.streamCommentStart );
+                stc->InsertText( stc->GetLineEndPosition( curLine ), comment.streamCommentEnd );
+            }
+            ++curLine;
+        } // end while
+        stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
     }
+    stc->EndUndoAction();
 }
 
 /* See above (OnEditCommentSelected) for details. */
 void MainFrame::OnEditUncommentSelected(cb_unused wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
+    if (!ed)
+        return;
+
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    CommentToken comment = colour_set->GetCommentToken( ed->GetLanguage() );
+    if (comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
+        return;
+
+    stc->BeginUndoAction();
+    if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
     {
-        cbStyledTextCtrl* stc = ed->GetControl();
-        CommentToken comment =
-            Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-
-        if (comment.lineComment==wxEmptyString && comment.streamCommentStart==wxEmptyString)
-            return;
-
-        stc->BeginUndoAction();
-        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+        int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+        int curLine   = startLine;
+        /**
+            Fix a glitch: when selecting multiple lines and the caret
+            is at the start of the line after the last line selected,
+            the code would, wrongly, (un)comment that line too.
+            This fixes it.
+        */
+        if (startLine != endLine && // selection is more than one line
+        stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
         {
-            int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
-            int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-            int curLine   = startLine;
-            /**
-                Fix a glitch: when selecting multiple lines and the caret
-                is at the start of the line after the last line selected,
-                the code would, wrongly, (un)comment that line too.
-                This fixes it.
-            */
-            if (startLine != endLine && // selection is more than one line
-            stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
-            {
-                // don't take into account the line the caret is on,
-                // because it contains no selection (caret_column == 0)...
-                --endLine;
+            // don't take into account the line the caret is on,
+            // because it contains no selection (caret_column == 0)...
+            --endLine;
+        }
+
+        while( curLine <= endLine )
+        {
+            // For each line: if it is commented, uncomment.
+            wxString strLine = stc->GetLine( curLine );
+
+            bool startsWithComment;
+            bool endsWithComment;
+
+            // check for line comment
+            startsWithComment = strLine.Strip( wxString::leading ).StartsWith( comment.lineComment );
+            if ( startsWithComment )
+            {      // we know the comment is there (maybe preceded by white space)
+                int Pos = strLine.Find(comment.lineComment);
+                int start = stc->PositionFromLine( curLine ) + Pos;
+                int end = start + comment.lineComment.Length();
+                stc->SetTargetStart( start );
+                stc->SetTargetEnd( end );
+                stc->ReplaceTarget( wxEmptyString );
             }
 
-            while( curLine <= endLine )
+            // check for stream comment
+            startsWithComment = strLine.Strip( wxString::leading  ).StartsWith( comment.streamCommentStart ); // check for stream comment start
+            endsWithComment = strLine.Strip( wxString::trailing ).EndsWith( comment.streamCommentEnd); // check for stream comment end
+            if ( startsWithComment && endsWithComment )
             {
-                // For each line: if it is commented, uncomment.
-                wxString strLine = stc->GetLine( curLine );
+                int Pos;
+                int start;
+                int end;
 
-                bool startsWithComment;
-                bool endsWithComment;
+                // we know the start comment is there (maybe preceded by white space)
+                Pos = strLine.Find(comment.streamCommentStart);
+                start = stc->PositionFromLine( curLine ) + Pos;
+                end = start + comment.streamCommentStart.Length();
+                stc->SetTargetStart( start );
+                stc->SetTargetEnd( end );
+                stc->ReplaceTarget( wxEmptyString );
 
-                // check for line comment
-                startsWithComment = strLine.Strip( wxString::leading ).StartsWith( comment.lineComment );
-                if ( startsWithComment )
-                {      // we know the comment is there (maybe preceded by white space)
-                    int Pos = strLine.Find(comment.lineComment);
-                    int start = stc->PositionFromLine( curLine ) + Pos;
-                    int end = start + comment.lineComment.Length();
-                    stc->SetTargetStart( start );
-                    stc->SetTargetEnd( end );
-                    stc->ReplaceTarget( wxEmptyString );
-                }
-
-                // check for stream comment
-                startsWithComment = strLine.Strip( wxString::leading  ).StartsWith( comment.streamCommentStart ); // check for stream comment start
-                endsWithComment = strLine.Strip( wxString::trailing ).EndsWith( comment.streamCommentEnd); // check for stream comment end
-                if ( startsWithComment && endsWithComment )
-                {
-                    int Pos;
-                    int start;
-                    int end;
-
-                    // we know the start comment is there (maybe preceded by white space)
-                    Pos = strLine.Find(comment.streamCommentStart);
-                    start = stc->PositionFromLine( curLine ) + Pos;
-                    end = start + comment.streamCommentStart.Length();
-                    stc->SetTargetStart( start );
-                    stc->SetTargetEnd( end );
-                    stc->ReplaceTarget( wxEmptyString );
-
-                    // we know the end comment is there too (maybe followed by white space)
-                    // attention!! we have to subtract the length of the comment we already removed
-                    Pos = strLine.rfind(comment.streamCommentEnd,strLine.npos) - comment.streamCommentStart.Length();
-                    start = stc->PositionFromLine( curLine ) + Pos;
-                    end = start + comment.streamCommentEnd.Length();
-                    stc->SetTargetStart( start );
-                    stc->SetTargetEnd( end );
-                    stc->ReplaceTarget( wxEmptyString );
-                }
-                ++curLine;
-            } // end while
-            stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
-        }
-        stc->EndUndoAction();
+                // we know the end comment is there too (maybe followed by white space)
+                // attention!! we have to subtract the length of the comment we already removed
+                Pos = strLine.rfind(comment.streamCommentEnd,strLine.npos) - comment.streamCommentStart.Length();
+                start = stc->PositionFromLine( curLine ) + Pos;
+                end = start + comment.streamCommentEnd.Length();
+                stc->SetTargetStart( start );
+                stc->SetTargetEnd( end );
+                stc->ReplaceTarget( wxEmptyString );
+            }
+            ++curLine;
+        } // end while
+        stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
     }
+    stc->EndUndoAction();
 }
 
 void MainFrame::OnEditToggleCommentSelected(cb_unused wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
+    if (!ed)
+        return;
+
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    wxString comment = colour_set->GetCommentToken( ed->GetLanguage() ).lineComment;
+    if (comment==wxEmptyString)
+        return;
+
+    stc->BeginUndoAction();
+    if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
     {
-        cbStyledTextCtrl* stc = ed->GetControl();
-        wxString comment =
-            Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() ).lineComment;
-        if (comment==wxEmptyString)
-            return;
-
-        stc->BeginUndoAction();
-        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+        int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+        int curLine   = startLine;
+        /**
+            Fix a glitch: when selecting multiple lines and the caret
+            is at the start of the line after the last line selected,
+            the code would, wrongly, (un)comment that line too.
+            This fixes it.
+        */
+        if (startLine != endLine && // selection is more than one line
+        stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
         {
-            int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
-            int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-            int curLine   = startLine;
-            /**
-                Fix a glitch: when selecting multiple lines and the caret
-                is at the start of the line after the last line selected,
-                the code would, wrongly, (un)comment that line too.
-                This fixes it.
-            */
-            if (startLine != endLine && // selection is more than one line
-            stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
-            {
-                // don't take into account the line the caret is on,
-                // because it contains no selection (caret_column == 0)...
-                --endLine;
-            }
-
-            bool doComment = false;
-            while( curLine <= endLine )
-            {
-                // Check is any of the selected lines is commented
-                wxString strLine = stc->GetLine( curLine );
-                int commentPos = strLine.Strip( wxString::leading ).Find( comment );
-
-                if (commentPos != 0)
-                {
-                    // At least one line is not commented, so comment the whole selection
-                    // (else if all lines are commented, uncomment the selection)
-                    doComment = true;
-                    break;
-                }
-                ++curLine;
-            }
-
-            curLine = startLine;
-            while( curLine <= endLine )
-            {
-                if (doComment)
-                    stc->InsertText( stc->PositionFromLine( curLine ), comment );
-                else
-                {
-                    // we know the comment is there (maybe preceded by white space)
-                    wxString strLine = stc->GetLine( curLine );
-                    int Pos = strLine.Find(comment);
-                    int start = stc->PositionFromLine( curLine ) + Pos;
-                    int end = start + comment.Length();
-                    stc->SetTargetStart( start );
-                    stc->SetTargetEnd( end );
-                    stc->ReplaceTarget( wxEmptyString );
-                }
-                ++curLine;
-            }
-            stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
+            // don't take into account the line the caret is on,
+            // because it contains no selection (caret_column == 0)...
+            --endLine;
         }
-        stc->EndUndoAction();
+
+        bool doComment = false;
+        while( curLine <= endLine )
+        {
+            // Check is any of the selected lines is commented
+            wxString strLine = stc->GetLine( curLine );
+            int commentPos = strLine.Strip( wxString::leading ).Find( comment );
+
+            if (commentPos != 0)
+            {
+                // At least one line is not commented, so comment the whole selection
+                // (else if all lines are commented, uncomment the selection)
+                doComment = true;
+                break;
+            }
+            ++curLine;
+        }
+
+        curLine = startLine;
+        while( curLine <= endLine )
+        {
+            if (doComment)
+                stc->InsertText( stc->PositionFromLine( curLine ), comment );
+            else
+            {
+                // we know the comment is there (maybe preceded by white space)
+                wxString strLine = stc->GetLine( curLine );
+                int Pos = strLine.Find(comment);
+                int start = stc->PositionFromLine( curLine ) + Pos;
+                int end = start + comment.Length();
+                stc->SetTargetStart( start );
+                stc->SetTargetEnd( end );
+                stc->ReplaceTarget( wxEmptyString );
+            }
+            ++curLine;
+        }
+        stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
     }
+    stc->EndUndoAction();
 }
 
 void MainFrame::OnEditStreamCommentSelected(cb_unused wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
-    {
-        cbStyledTextCtrl* stc = ed->GetControl();
-        CommentToken comment =
-            Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-        if (comment.streamCommentStart==wxEmptyString)
-            return;
+    if (!ed)
+        return;
 
-        stc->BeginUndoAction();
-        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
-        {
-            int startPos = stc->GetSelectionStart();
-            int endPos   = stc->GetSelectionEnd();
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    CommentToken comment = colour_set->GetCommentToken( ed->GetLanguage() );
+    if (comment.streamCommentStart==wxEmptyString)
+        return;
+
+    stc->BeginUndoAction();
+    if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+    {
+        int startPos = stc->GetSelectionStart();
+        int endPos   = stc->GetSelectionEnd();
+        if ( startPos == endPos )
+        {   // if nothing selected stream comment current *word* first
+            startPos = stc->WordStartPosition(stc->GetCurrentPos(), true);
+            endPos   = stc->WordEndPosition  (stc->GetCurrentPos(), true);
             if ( startPos == endPos )
-            {   // if nothing selected stream comment current *word* first
-                startPos = stc->WordStartPosition(stc->GetCurrentPos(), true);
-                endPos   = stc->WordEndPosition  (stc->GetCurrentPos(), true);
-                if ( startPos == endPos )
-                {   // if nothing selected stream comment current *line*
-                    startPos = stc->PositionFromLine  (stc->LineFromPosition(startPos));
-                    endPos   = stc->GetLineEndPosition(stc->LineFromPosition(startPos));
-                }
+            {   // if nothing selected stream comment current *line*
+                startPos = stc->PositionFromLine  (stc->LineFromPosition(startPos));
+                endPos   = stc->GetLineEndPosition(stc->LineFromPosition(startPos));
             }
-            else
-            {
-                /**
-                    Fix a glitch: when selecting multiple lines and the caret
-                    is at the start of the line after the last line selected,
-                    the code would, wrongly, (un)comment that line too.
-                    This fixes it.
-                */
-                if (stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
-                {
-                    // don't take into account the line the caret is on,
-                    // because it contains no selection (caret_column == 0)...
-                    --endPos;
-                }
-            }
-            // stream comment block
-            int p1 = startPos - 1;
-            while (stc->GetCharAt(p1) == _T(' ') && p1 > 0)
-                --p1;
-            p1 -= 1;
-            int p2 = endPos;
-            while (stc->GetCharAt(p2) == _T(' ') && p2 < stc->GetLength())
-                ++p2;
-            const wxString start = stc->GetTextRange(p1, p1 + comment.streamCommentStart.Length());
-            const wxString end = stc->GetTextRange(p2, p2 + comment.streamCommentEnd.Length());
-            if (start == comment.streamCommentStart && end == comment.streamCommentEnd)
-            {
-                stc->SetTargetStart(p1);
-                stc->SetTargetEnd(p2 + 2);
-                wxString target = stc->GetTextRange(p1 + 2, p2);
-                stc->ReplaceTarget(target);
-                stc->GotoPos(p1 + target.Length());
-            }
-            else
-            {
-                stc->InsertText( startPos, comment.streamCommentStart );
-                // we already inserted some characters so out endPos changed
-                startPos += comment.streamCommentStart.Length();
-                endPos += comment.streamCommentStart.Length();
-                stc->InsertText( endPos, comment.streamCommentEnd );
-                stc->SetSelectionVoid(startPos,endPos);
-            }
-
         }
-        stc->EndUndoAction();
-    }
-}
-
-void MainFrame::OnEditBoxCommentSelected(cb_unused wxCommandEvent& event)
-{
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
-    {
-
-        cbStyledTextCtrl* stc = ed->GetControl();
-        CommentToken comment =
-            Manager::Get()->GetEditorManager()->GetColourSet()->GetCommentToken( ed->GetLanguage() );
-        if (comment.boxCommentStart==wxEmptyString)
-            return;
-
-        stc->BeginUndoAction();
-        if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+        else
         {
-            int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
-            int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
-            int curLine   = startLine;
             /**
                 Fix a glitch: when selecting multiple lines and the caret
                 is at the start of the line after the last line selected,
                 the code would, wrongly, (un)comment that line too.
                 This fixes it.
             */
-            if (startLine != endLine && // selection is more than one line
-            stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+            if (stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
             {
                 // don't take into account the line the caret is on,
                 // because it contains no selection (caret_column == 0)...
-                --endLine;
+                --endPos;
             }
-
-
-
-            if (startLine == endLine) // if selection is only one line ...
-            {
-                // ... then insert streamcomment tokens at the beginning and the end of the line
-                stc->InsertText( stc->PositionFromLine  ( curLine ), comment.streamCommentStart );
-                stc->InsertText( stc->GetLineEndPosition( curLine ), comment.streamCommentEnd   );
-            }
-            else // selection is more than one line
-            {
-                // insert boxcomment start token
-                stc->InsertText( stc->PositionFromLine( curLine ), comment.boxCommentStart );
-                ++curLine; // we already commented the first line about 9 lines above
-                while( curLine <= endLine )
-                {
-                    // For each line: comment.
-                    stc->InsertText( stc->PositionFromLine( curLine ), comment.boxCommentMid );
-                    ++curLine;
-                } // end while
-
-                // insert boxcomment end token and add a new line character
-                stc->InsertText( stc->PositionFromLine( curLine ), comment.boxCommentEnd + GetEOLStr(stc->GetEOLMode()) );
-            } // end if
-            stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
         }
-        stc->EndUndoAction();
+        // stream comment block
+        int p1 = startPos - 1;
+        while (stc->GetCharAt(p1) == _T(' ') && p1 > 0)
+            --p1;
+        p1 -= 1;
+        int p2 = endPos;
+        while (stc->GetCharAt(p2) == _T(' ') && p2 < stc->GetLength())
+            ++p2;
+        const wxString start = stc->GetTextRange(p1, p1 + comment.streamCommentStart.Length());
+        const wxString end = stc->GetTextRange(p2, p2 + comment.streamCommentEnd.Length());
+        if (start == comment.streamCommentStart && end == comment.streamCommentEnd)
+        {
+            stc->SetTargetStart(p1);
+            stc->SetTargetEnd(p2 + 2);
+            wxString target = stc->GetTextRange(p1 + 2, p2);
+            stc->ReplaceTarget(target);
+            stc->GotoPos(p1 + target.Length());
+        }
+        else
+        {
+            stc->InsertText( startPos, comment.streamCommentStart );
+            // we already inserted some characters so out endPos changed
+            startPos += comment.streamCommentStart.Length();
+            endPos += comment.streamCommentStart.Length();
+            stc->InsertText( endPos, comment.streamCommentEnd );
+            stc->SetSelectionVoid(startPos,endPos);
+        }
+
     }
+    stc->EndUndoAction();
+}
+
+void MainFrame::OnEditBoxCommentSelected(cb_unused wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    CommentToken comment = colour_set->GetCommentToken( ed->GetLanguage() );
+    if (comment.boxCommentStart==wxEmptyString)
+        return;
+
+    stc->BeginUndoAction();
+    if ( wxSCI_INVALID_POSITION != stc->GetSelectionStart() )
+    {
+        int startLine = stc->LineFromPosition( stc->GetSelectionStart() );
+        int endLine   = stc->LineFromPosition( stc->GetSelectionEnd() );
+        int curLine   = startLine;
+        /**
+            Fix a glitch: when selecting multiple lines and the caret
+            is at the start of the line after the last line selected,
+            the code would, wrongly, (un)comment that line too.
+            This fixes it.
+        */
+        if (startLine != endLine && // selection is more than one line
+        stc->GetColumn( stc->GetSelectionEnd() ) == 0) // and the caret is at the start of the line
+        {
+            // don't take into account the line the caret is on,
+            // because it contains no selection (caret_column == 0)...
+            --endLine;
+        }
+
+
+
+        if (startLine == endLine) // if selection is only one line ...
+        {
+            // ... then insert streamcomment tokens at the beginning and the end of the line
+            stc->InsertText( stc->PositionFromLine  ( curLine ), comment.streamCommentStart );
+            stc->InsertText( stc->GetLineEndPosition( curLine ), comment.streamCommentEnd   );
+        }
+        else // selection is more than one line
+        {
+            // insert boxcomment start token
+            stc->InsertText( stc->PositionFromLine( curLine ), comment.boxCommentStart );
+            ++curLine; // we already commented the first line about 9 lines above
+            while( curLine <= endLine )
+            {
+                // For each line: comment.
+                stc->InsertText( stc->PositionFromLine( curLine ), comment.boxCommentMid );
+                ++curLine;
+            } // end while
+
+            // insert boxcomment end token and add a new line character
+            stc->InsertText( stc->PositionFromLine( curLine ), comment.boxCommentEnd + GetEOLStr(stc->GetEOLMode()) );
+        } // end if
+        stc->SetSelectionVoid(stc->PositionFromLine(startLine),stc->PositionFromLine(endLine)+stc->LineLength(endLine));
+    }
+    stc->EndUndoAction();
 }
 
 void MainFrame::OnEditShowCallTip(cb_unused wxCommandEvent& event)
@@ -3590,31 +3618,31 @@ void MainFrame::OnEditCompleteCode(cb_unused wxCommandEvent& event)
 void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
 {
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (ed)
+    if (!ed)
+        return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set)
+        return;
+
+    HighlightLanguage lang = colour_set->GetHighlightLanguage(_T(""));
+    if (event.GetId() != idEditHighlightModeText)
     {
-        EditorColourSet* theme = Manager::Get()->GetEditorManager()->GetColourSet();
-        if (theme)
+        wxMenu* hl = nullptr;
+        GetMenuBar()->FindItem(idEditHighlightModeText, &hl);
+        if (hl)
         {
-            HighlightLanguage lang = theme->GetHighlightLanguage(_T(""));
-            if (event.GetId() != idEditHighlightModeText)
-            {
-                wxMenu* hl = nullptr;
-                GetMenuBar()->FindItem(idEditHighlightModeText, &hl);
-                if (hl)
-                {
-                    wxMenuItem* item = hl->FindItem(event.GetId());
-                    if (item)
-                    #if wxCHECK_VERSION(2, 9, 0)
-                        lang = theme->GetHighlightLanguage(item->GetItemLabelText());
-                    #else
-                        lang = theme->GetHighlightLanguage(item->GetLabel());
-                    #endif
-                }
-            }
-            ed->SetLanguage(lang);
-            Manager::Get()->GetCCManager()->NotifyPluginStatus();
+            wxMenuItem* item = hl->FindItem(event.GetId());
+            if (item)
+            #if wxCHECK_VERSION(2, 9, 0)
+                lang = colour_set->GetHighlightLanguage(item->GetItemLabelText());
+            #else
+                lang = colour_set->GetHighlightLanguage(item->GetLabel());
+            #endif
         }
     }
+    ed->SetLanguage(lang);
+    Manager::Get()->GetCCManager()->NotifyPluginStatus();
 }
 
 void MainFrame::OnEditFoldAll(cb_unused wxCommandEvent& event)
@@ -4071,7 +4099,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         wxMenu* hl = nullptr;
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
-            mbar->Check(hl->FindItem(ed->GetColourSet()->GetLanguageName(ed->GetLanguage())), true);
+        {
+            EditorColourSet* colour_set = ed->GetColourSet();
+            if (colour_set)
+                mbar->Check(hl->FindItem(colour_set->GetLanguageName(ed->GetLanguage())), true);
+        }
     }
 
     if (m_pToolbar)

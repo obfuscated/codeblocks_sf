@@ -559,10 +559,10 @@ bool DoxyBlocks::IsLanguageFortran(cbEditor *cbEd)
     if (!cbEd)
         return false;
 
-    EditorColourSet* theme = cbEd->GetColourSet();
-    if (theme)
+    EditorColourSet* colour_set = cbEd->GetColourSet();
+    if (colour_set)
     {
-        wxString strLang = theme->GetLanguageName(cbEd->GetLanguage());
+        wxString strLang = colour_set->GetLanguageName(cbEd->GetLanguage());
         if (strLang==_T("Fortran") || strLang==_T("Fortran77"))
             return true;
     }
