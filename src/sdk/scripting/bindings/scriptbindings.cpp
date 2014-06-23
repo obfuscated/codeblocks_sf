@@ -375,6 +375,12 @@ namespace ScriptBindings
         return sa.ThrowError("Invalid arguments to \"CompilerFactory::GetCompilerIndex\"");
     }
 
+    wxString CompilerFactory_GetCompilerIDByName(const wxString &name)
+    {
+        Compiler *compiler = CompilerFactory::GetCompilerByName(name);
+        return (compiler ? compiler->GetID() : wxString(wxEmptyString));
+    }
+
     void RegisterBindings()
     {
         if (!SquirrelVM::GetVMPtr())
@@ -694,7 +700,8 @@ namespace ScriptBindings
                 staticFuncVarArgs(&CompilerFactory_GetCompilerIndex, "GetCompilerIndex", "*").
                 staticFunc(&CompilerFactory::GetDefaultCompilerID, "GetDefaultCompilerID").
                 staticFunc(&CompilerFactory::GetCompilerVersionString, "GetCompilerVersionString").
-                staticFunc<CF_INHERITSFROM>(&CompilerFactory::CompilerInheritsFrom, "CompilerInheritsFrom");
+                staticFunc<CF_INHERITSFROM>(&CompilerFactory::CompilerInheritsFrom, "CompilerInheritsFrom").
+                staticFunc(CompilerFactory_GetCompilerIDByName, "GetCompilerIDByName");
 
         SqPlus::SQClassDef<PluginInfo>("PluginInfo").
             emptyCtor().
