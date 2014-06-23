@@ -2253,6 +2253,18 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
         for (size_t i = 0; i < targetOpts.GetCount(); ++i)
             opts.Add(targetOpts[i]);
     }
+    // In case of virtual targets, collect the defines from all child targets.
+    wxArrayString targets = project->GetExpandedVirtualBuildTargetGroup(project->GetActiveBuildTarget());
+    for (size_t i = 0; i < targets.GetCount(); ++i)
+    {
+        target = project->GetBuildTarget(targets[i]);
+        if (target != NULL)
+        {
+            wxArrayString targetOpts = target->GetCompilerOptions();
+            for (size_t j = 0; j < targetOpts.GetCount(); ++j)
+                opts.Add(targetOpts[j]);
+        }
+    }
 
     for (size_t i = 0; i < opts.GetCount(); ++i)
     {
