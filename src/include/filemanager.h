@@ -93,6 +93,10 @@ public:
 class EditorReuser : public LoaderBase
 {
 public:
+    /** Gets a UTF8 representation of the editor's content
+     *  @param name the file name opened by the editor
+     *  @param s the editor's content
+     */
     EditorReuser(const wxString& name, const wxString& s)
     {
         fileName = name;

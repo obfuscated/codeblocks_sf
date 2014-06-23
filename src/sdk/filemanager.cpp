@@ -135,6 +135,8 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
 {
     if (reuseEditors)
     {
+        // if a file is opened in the editor, and the file get modified, we use the content of the
+        // editor, otherwise, we still use the original file
         EditorManager* em = Manager::Get()->GetEditorManager();
         if (em)
         {
