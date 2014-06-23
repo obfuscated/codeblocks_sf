@@ -519,9 +519,11 @@ void Tokenizer::ReadParentheses(wxString& str)
     // we create a local buffer here, so the data is copied from m_Buffer to buffer
     // once the local buffer is full, we append the content in local buffer to the result str
     static const size_t maxBufferLen = 4093;
+    // local buffer
     wxChar buffer[maxBufferLen + 3];
     buffer[0] = _T('$'); // avoid segfault error, because we have some *(p - 1) = x in the code
     wxChar* realBuffer = buffer + 1;
+    // p points to the local buffer
     wxChar* p = realBuffer;
 
     int level = 0; // brace level of '(' and ')'
@@ -556,7 +558,7 @@ void Tokenizer::ReadParentheses(wxString& str)
         case _T(')'):
             {
                 if (*(p - 1) <= _T(' '))
-                    --p; // if previous char is a space, we can put ')' there, so we save one char
+                    --p; // if previous char is a space, we overwrite the space with a ')', so we save one char
                 --level;
                 *p = ch;
                 ++p;
@@ -566,8 +568,8 @@ void Tokenizer::ReadParentheses(wxString& str)
         case _T('\''):
         case _T('"'):
             {
-                MoveToNextChar();     // skip the leading '"' or '\'
-                SkipToStringEnd(ch);  // m_TokenIndex point to the trailing '"' or '\' now
+                MoveToNextChar();     // skip the leading '"' or '\''
+                SkipToStringEnd(ch);  // m_TokenIndex point to the trailing '"' or '\'' now
                 MoveToNextChar();     // move to the char after trailing char
                 const size_t writeLen = m_TokenIndex - startIndex; // the string length
                 const size_t usedLen = p - realBuffer;
@@ -1199,9 +1201,9 @@ wxString Tokenizer::DoGetToken()
         str = c;
         MoveToNextChar();
     }
-    // m_FirstRemainingLength != 0 means were are in macro replace mode, but when m_TokenIndex is
-    // go forward beyond the point where we start the macro replacement, we should stop and reset
-    // to non-macro replace mode
+    // m_FirstRemainingLength != 0 means we are in macro replace mode, but when m_TokenIndex goes
+    // forward and exceed the anchor point where we start the macro replacement, we should stop and
+    // reset to non-macro replace mode
     if (m_FirstRemainingLength != 0 && m_BufferLen - m_FirstRemainingLength < m_TokenIndex)
     {
         m_FirstRemainingLength = 0;
