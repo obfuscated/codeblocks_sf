@@ -66,8 +66,9 @@ void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
 
     if (BraceCompletionEnabled())
     {
-        // finish tag
-        if ( ch == wxT('>') && !stc->IsString(stc->GetStyleAt(pos)) )
+        int curSty = stc->GetStyleAt(pos);
+        // finish XML/HTML tag
+        if ( ch == wxT('>') && !stc->IsString(curSty) )
         {
             wxString tag;
             for (int i = pos - 2; i > 0; --i)
@@ -122,6 +123,11 @@ void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
             if (tag != wxT("]]>"))
                 stc->InsertText(pos, wxT("]]>"));
         }
+        // embedded languages
+        else if (complQuote && curSty >= wxSCI_HJ_START && curSty <= wxSCI_HPHP_OPERATOR && !stc->IsString(curSty))
+        {
+            stc->DoBraceCompletion(ch);
+        }
     }
     // indent
     if (   AutoIndentEnabled()
@@ -163,6 +169,19 @@ void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
                         Indent(stc, indent);
                     }
                 }
+            }
+            else if (stc->GetStyleAt(pos) >= wxSCI_HJ_START && stc->GetStyleAt(pos) <= wxSCI_HPHP_OPERATOR)
+            {
+                // embedded language, indent braces
+                wxString lineSuffix = stc->GetLine(currLine).Strip(wxString::both);
+                if (lineSuffix == wxT('}') || lineSuffix == wxT(']'))
+                {
+                    stc->InsertText(pos, indent);
+                    stc->NewLine();
+                    Indent(stc, indent);
+                }
+                else if (GetLastNonWhitespaceChar(ed) == wxT('{'))
+                    Indent(stc, indent);
             }
             else
             {
