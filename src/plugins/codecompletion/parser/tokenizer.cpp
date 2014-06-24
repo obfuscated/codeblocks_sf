@@ -1688,7 +1688,8 @@ void Tokenizer::SplitArguments(wxArrayString& results)
         else if (token == _T(")"))
             --level;
 
-        if (token == _T(","))
+        // comma is a delimit only it is not wrapper by ()
+        if (token == _T(",") && level == 1)
         {
             results.Add(piece);
             piece.Clear();
