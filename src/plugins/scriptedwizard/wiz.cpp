@@ -23,7 +23,7 @@
     #include <wx/stattext.h>
     #include <wx/wizard.h>
     #include <wx/xrc/xmlres.h>
-    
+
     #include <wx/wxscintilla.h> // CB Header
     #include <cbexception.h>
     #include <cbproject.h>
@@ -838,6 +838,19 @@ void Wiz::FillComboboxWithCompilers(const wxString& name)
     }
 }
 
+void Wiz::FillContainerWithCompilers(const wxString& name, const wxString& compilerID, const wxString& validCompilerIDs)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>(page->FindWindowByName(name, page));
+        if (win && win->GetCount() == 0)
+        {
+            Wizard::FillCompilerControl(win, compilerID, validCompilerIDs);
+        }
+    }
+}
+
 void Wiz::EnableWindow(const wxString& name, bool enable)
 {
     wxWizardPage* page = m_pWizard->GetCurrentPage();
@@ -1499,6 +1512,7 @@ void Wiz::RegisterWizard()
             func(&Wiz::IsCheckboxChecked, "IsCheckboxChecked").
             func(&Wiz::FillComboboxWithCompilers, "FillComboboxWithCompilers").
             func(&Wiz::GetCompilerFromCombobox, "GetCompilerFromCombobox").
+            func(&Wiz::FillContainerWithCompilers, "FillContainerWithCompilers").
             func(&Wiz::GetComboboxStringSelection, "GetComboboxStringSelection").
             func(&Wiz::GetComboboxSelection, "GetComboboxSelection").
             func(&Wiz::SetComboboxSelection, "SetComboboxSelection").

@@ -79,6 +79,8 @@ class Wiz : public cbWizardPlugin
 
         void FillComboboxWithCompilers(const wxString& name);
         wxString GetCompilerFromCombobox(const wxString& name);
+        void FillContainerWithCompilers(const wxString& name, const wxString& compilerID,
+                                        const wxString& validCompilerIDs);
 
         wxString GetComboboxStringSelection(const wxString& name);
         int GetComboboxSelection(const wxString& name);

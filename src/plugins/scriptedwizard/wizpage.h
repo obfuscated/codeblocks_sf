@@ -24,6 +24,11 @@ class InfoPanel;
 
 typedef std::map<wxString, WizPageBase*> PagesByName;
 
+namespace Wizard {
+
+void FillCompilerControl(wxItemContainer *control, const wxString& compilerID, const wxString& validCompilerIDs);
+} // namespace Wizard
+
 class WizPageBase : public wxWizardPageSimple
 {
     public:
