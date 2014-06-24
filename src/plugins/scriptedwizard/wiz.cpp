@@ -867,7 +867,7 @@ void Wiz::SetComboboxSelection(const wxString& name, int sel)
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxComboBox* win = dynamic_cast<wxComboBox*>(page->FindWindowByName(name, page));
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>(page->FindWindowByName(name, page));
         if (win)
             win->SetSelection(sel);
     }
@@ -887,7 +887,7 @@ wxString Wiz::GetComboboxStringSelection(const wxString& name)
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxComboBox* win = dynamic_cast<wxComboBox*>(page->FindWindowByName(name, page));
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>(page->FindWindowByName(name, page));
         if (win)
             return win->GetStringSelection();
     }
@@ -899,7 +899,7 @@ int Wiz::GetComboboxSelection(const wxString& name)
     wxWizardPage* page = m_pWizard->GetCurrentPage();
     if (page)
     {
-        wxComboBox* win = dynamic_cast<wxComboBox*>(page->FindWindowByName(name, page));
+        wxItemContainer* win = dynamic_cast<wxItemContainer*>(page->FindWindowByName(name, page));
         if (win)
             return win->GetSelection();
     }
@@ -1513,9 +1513,13 @@ void Wiz::RegisterWizard()
             func(&Wiz::FillComboboxWithCompilers, "FillComboboxWithCompilers").
             func(&Wiz::GetCompilerFromCombobox, "GetCompilerFromCombobox").
             func(&Wiz::FillContainerWithCompilers, "FillContainerWithCompilers").
+            // these three are deprecated, the ItemContainer versions should be used instead as they are more generic.
             func(&Wiz::GetComboboxStringSelection, "GetComboboxStringSelection").
             func(&Wiz::GetComboboxSelection, "GetComboboxSelection").
             func(&Wiz::SetComboboxSelection, "SetComboboxSelection").
+            func(&Wiz::GetComboboxStringSelection, "GetItemContainerStringSelection").
+            func(&Wiz::GetComboboxSelection, "GetItemContainerSelection").
+            func(&Wiz::SetComboboxSelection, "SetItemContainerSelection").
             func(&Wiz::GetRadioboxSelection, "GetRadioboxSelection").
             func(&Wiz::SetRadioboxSelection, "SetRadioboxSelection").
             func(&Wiz::GetListboxSelection, "GetListboxSelection").
