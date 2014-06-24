@@ -1218,6 +1218,7 @@ wxString Tokenizer::DoGetToken()
 
 void Tokenizer::ReplaceMacro(wxString& str)
 {
+    // this indicates we are already in macro replacement mode
     if (m_RepeatReplaceCount > 0)
     {
         const int id = m_TokenTree->TokenExists(str, -1, tkMacroDef);
@@ -1238,6 +1239,9 @@ void Tokenizer::ReplaceMacro(wxString& str)
                 }
             }
         }
+        // if in macro expansion mode, we don't want to let the user replacement rule executed
+        // again, so just returned
+        return;
     }
 
     wxStringHashMap::const_iterator it = s_Replacements.find(str);
@@ -1297,6 +1301,15 @@ void Tokenizer::ReplaceMacro(wxString& str)
             SkipUnwanted();
             str = DoGetToken();
         }
+    }
+    else if (it->second[0] == _T('@'))
+    {
+        // trigger the macro replacement mode, so that we can look up the keyword in TokenTree for a
+        // macro usage, note that ReplaceBufferText() below just move the token index backword, but
+        // don't change the buffer
+        if(ReplaceBufferText(it->first, false))
+            str = DoGetToken();
+
     }
     else // for other user defined rules, just do a buffer content replacement
     {

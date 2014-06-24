@@ -432,7 +432,17 @@ private:
         return last == _T('\\');
     }
 
-    /** Do the Macro replacement according to the macro replacement rules */
+    /** Do the Macro replacement according to the macro replacement rules, generally we have two
+     *  kinds of macro replacements. One is the user defined macro replacement rules, which is
+     *  hold by static member variable s_Replacements, you can let the tokenizer directly return
+     *  a "BBB" string if the origin token is"AAA" , but you have a "AAA" -> "BBB" rule. Another
+     *  kind of macro replacement is that the tokenizer try to look up the token tree to see
+     *  whether a token is a macro definition, if yes, it can expand the macro. The first kind of
+     *  macro replacement happens every time when a tokenizer try to return a token, it is very fast
+     *  as s_Replacements is a hash table, and have very limited entries, on the other side, looking
+     *  up a token in the token tree takes more time, the later case only happens in some special
+     *  cases, such has we are handling #if directives.
+     */
     void ReplaceMacro(wxString& str);
 
     /** Judge what is the first block
