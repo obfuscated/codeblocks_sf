@@ -13,6 +13,7 @@
 #include <wx/panel.h>
 #include <wx/xrc/xmlres.h>
 
+class wxItemContainer;
 class ProjectPathPanel;
 class CompilerPanel;
 class BuildTargetPanel;

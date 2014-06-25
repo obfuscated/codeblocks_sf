@@ -9,6 +9,7 @@
 
 #include <sdk.h>
 #ifndef CB_PRECOMP
+    #include <wx/ctrlsub.h>
     #include <manager.h>
     #include <logmanager.h>
     #include <configmanager.h>
