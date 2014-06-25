@@ -173,11 +173,10 @@ void SmartIndentXML::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
             else if (stc->GetStyleAt(pos) >= wxSCI_HJ_START && stc->GetStyleAt(pos) <= wxSCI_HPHP_OPERATOR)
             {
                 // embedded language, indent braces
-                wxString lineSuffix = stc->GetLine(currLine).Strip(wxString::both);
+                const wxString lineSuffix = stc->GetLine(currLine).Strip(wxString::both);
                 if (lineSuffix == wxT('}') || lineSuffix == wxT(']'))
                 {
-                    stc->InsertText(pos, indent);
-                    stc->NewLine();
+                    stc->InsertText(pos, GetEOLStr(stc->GetEOLMode()) + indent);
                     Indent(stc, indent);
                 }
                 else if (GetLastNonWhitespaceChar(ed) == wxT('{'))
