@@ -508,7 +508,6 @@ private:
     unsigned int         m_TokenIndex;           //!< index offset in buffer
     unsigned int         m_LineNumber;           //!< line offset in buffer
     unsigned int         m_NestLevel;            //!< keep track of block nesting { }
-    unsigned int         m_SavedNestingLevel;
 
     /** Backup the previous Token information */
     unsigned int         m_UndoTokenIndex;
@@ -521,6 +520,14 @@ private:
     unsigned int         m_PeekTokenIndex;
     unsigned int         m_PeekLineNumber;
     unsigned int         m_PeekNestLevel;
+
+    /** Saved token info (for PeekToken()), m_TokenIndex will be moved forward or backward when
+     *  either DoGetToken() or SkipUnwanted() is called, so we should save m_TokenIndex before it
+     *  get modified.
+     */
+    unsigned int         m_SavedTokenIndex;
+    unsigned int         m_SavedLineNumber;
+    unsigned int         m_SavedNestingLevel;
 
     /** bool variable specifies whether the buffer is ready for parsing */
     bool                 m_IsOK;
