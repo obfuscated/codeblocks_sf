@@ -291,6 +291,10 @@ extern EVTIMPORT const wxEventType cbEVT_EDITOR_TOOLTIP;
 #define EVT_EDITOR_TOOLTIP(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_TOOLTIP, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_TOOLTIP_CANCEL;
 #define EVT_EDITOR_TOOLTIP_CANCEL(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_TOOLTIP_CANCEL, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_EDITOR_SPLIT;
+#define EVT_EDITOR_SPLIT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_SPLIT, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_EDITOR_UNSPLIT;
+#define EVT_EDITOR_UNSPLIT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_UNSPLIT, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_UPDATE_UI;
 #define EVT_EDITOR_UPDATE_UI(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_UPDATE_UI, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),

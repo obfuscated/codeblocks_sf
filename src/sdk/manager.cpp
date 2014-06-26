@@ -74,6 +74,8 @@ static wxString GetCodeblocksEventName(wxEventType type)
     else if(type==cbEVT_EDITOR_MODIFIED) name = _T("cbEVT_EDITOR_MODIFIED");
     else if(type==cbEVT_EDITOR_TOOLTIP) name = _T("cbEVT_EDITOR_TOOLTIP");
     else if(type==cbEVT_EDITOR_TOOLTIP_CANCEL) name = _T("cbEVT_EDITOR_TOOLTIP_CANCEL");
+    else if(type==cbEVT_EDITOR_SPLIT) name = _T("cbEVT_EDITOR_SPLIT");
+    else if(type==cbEVT_EDITOR_UNSPLIT) name = _T("cbEVT_EDITOR_UNSPLIT");
     else if(type==cbEVT_EDITOR_UPDATE_UI) name = _T("cbEVT_EDITOR_UPDATE_UI");
     else if(type==cbEVT_PROJECT_NEW) name = _T("cbEVT_PROJECT_NEW");
     else if(type==cbEVT_PROJECT_CLOSE) name = _T("cbEVT_PROJECT_CLOSE");

@@ -86,6 +86,8 @@ const wxEventType cbEVT_EDITOR_SAVE = wxNewEventType();
 const wxEventType cbEVT_EDITOR_MODIFIED = wxNewEventType();
 const wxEventType cbEVT_EDITOR_TOOLTIP = wxNewEventType();
 const wxEventType cbEVT_EDITOR_TOOLTIP_CANCEL = wxNewEventType();
+const wxEventType cbEVT_EDITOR_SPLIT = wxNewEventType();
+const wxEventType cbEVT_EDITOR_UNSPLIT = wxNewEventType();
 const wxEventType cbEVT_EDITOR_UPDATE_UI = wxNewEventType();
 // project events
 const wxEventType cbEVT_PROJECT_NEW = wxNewEventType();
