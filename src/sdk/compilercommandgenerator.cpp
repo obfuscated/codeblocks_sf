@@ -747,6 +747,8 @@ wxArrayString CompilerCommandGenerator::GetOrderedIncludeDirs(Compiler* compiler
                 tmp = fn.GetShortPath();
         }
         FixPathSeparators(compiler, tmp);
+        if ( tmp.Trim().IsEmpty() )
+            Manager::Get()->GetLogManager()->DebugLogError(_T("Warning: Compiler include folder evaluates to empty value."));
     }
 
     return result;
@@ -798,6 +800,8 @@ wxArrayString CompilerCommandGenerator::GetOrderedLibrariesDirs(Compiler* compil
                 tmp = fn.GetShortPath();
         }
         FixPathSeparators(compiler, tmp);
+        if ( tmp.Trim().IsEmpty() )
+            Manager::Get()->GetLogManager()->DebugLogError(_T("Warning: Linker include folder evaluates to empty value."));
     }
 
     return result;
@@ -826,6 +830,8 @@ wxArrayString CompilerCommandGenerator::GetOrderedResourceIncludeDirs(Compiler* 
                 tmp = fn.GetShortPath();
         }
         FixPathSeparators(compiler, tmp);
+        if ( tmp.Trim().IsEmpty() )
+            Manager::Get()->GetLogManager()->DebugLogError(_T("Warning: Resource compiler include folder evaluates to empty value."));
     }
 
     return result;

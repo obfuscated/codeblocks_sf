@@ -146,7 +146,9 @@ wxString UserVariableManager::Replace(const wxString& variable)
         else
         {
             wxString msg;
-            msg.Printf(_("In the currently active Set, Code::Blocks does not know\nthe global compiler variable \"%s\".\n\nPlease define it."), package.c_str());
+            msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
+                         "the global compiler variable \"%s\".\n\n"
+                         "Please define it."), package.wx_str());
             InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
             UsrGlblMgrEditDialog d;
             d.AddVar(package);
@@ -166,7 +168,17 @@ wxString UserVariableManager::Replace(const wxString& variable)
         return ret;
     }
 
-    wxString ret = m_CfgMan->Read(path + member);
+    const wxString wtf(wxT("#$%&???WTF???&%$#"));
+    wxString ret = m_CfgMan->Read(path + member, wtf);
+    if ( ret.IsSameAs(wtf) )
+    {
+        wxString msg;
+        msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
+                     "the member \"%s\" of the global compiler variable \"%s\".\n\n"
+                     "Please define it."), member.wx_str(), package.wx_str());
+        InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
+    }
+
     return ret;
 }
 
@@ -212,9 +224,14 @@ void UserVariableManager::Arrogate()
 
     wxString msg;
     if (m_Preempted.GetCount() == 1)
-        msg.Printf(_("In the currently active Set, Code::Blocks does not know\nthe global compiler variable \"%s\".\n\nPlease define it."), peList.c_str());
+        msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
+                     "the global compiler variable \"%s\".\n\n"
+                     "Please define it."), peList.wx_str());
     else
-        msg.Printf(_("In the currently active Set, Code::Blocks does not know\nthe following global compiler variables:\n%s\n\nPlease define them."), peList.c_str());
+        msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
+                     "the following global compiler variables:\n"
+                     "%s\n\n"
+                     "Please define them."), peList.wx_str());
 
     PlaceWindow(&d);
     m_Preempted.Clear();
@@ -348,7 +365,7 @@ void UsrGlblMgrEditDialog::CloneVar(cb_unused wxCommandEvent& event)
         if (existing.Index(clone) != wxNOT_FOUND)
         {
             wxString msg;
-            msg.Printf(_("Cowardly refusing to overwrite existing variable \"%s\"."), clone.c_str());
+            msg.Printf(_("Cowardly refusing to overwrite existing variable \"%s\"."), clone.wx_str());
             InfoWindow::Display(_("Clone Set"), msg);
             return;
         }
@@ -380,7 +397,7 @@ void UsrGlblMgrEditDialog::CloneSet(cb_unused wxCommandEvent& event)
         if (existing.Index(clone) != wxNOT_FOUND)
         {
             wxString msg;
-            msg.Printf(_("Cowardly refusing overwrite existing set \"%s\"."), clone.c_str());
+            msg.Printf(_("Cowardly refusing overwrite existing set \"%s\"."), clone.wx_str());
             InfoWindow::Display(_("Clone Set"), msg);
             return;
         }
@@ -410,7 +427,7 @@ void UsrGlblMgrEditDialog::CloneSet(cb_unused wxCommandEvent& event)
 void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent& event)
 {
     wxString msg;
-    msg.Printf(_("Delete the global compiler variable \"%s\" from this set?"), m_CurrentVar.c_str());
+    msg.Printf(_("Delete the global compiler variable \"%s\" from this set?"), m_CurrentVar.wx_str());
     AnnoyingDialog d(_("Delete Global Variable"), msg, wxART_QUESTION);
     PlaceWindow(&d);
     if (d.ShowModal() == AnnoyingDialog::rtYES)
@@ -425,7 +442,9 @@ void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent& event)
 void UsrGlblMgrEditDialog::DeleteSet(cb_unused wxCommandEvent& event)
 {
     wxString msg;
-    msg.Printf(_("Do you really want to delete\nthe entire global compiler variable set \"%s\"?\n\nThis cannot be undone."), m_CurrentSet.c_str());
+    msg.Printf(_("Do you really want to delete the entire\n"
+                 "global compiler variable set \"%s\"?\n\n"
+                 "This cannot be undone."), m_CurrentSet.wx_str());
     AnnoyingDialog d(_("Delete Global Variable Set"), msg, wxART_QUESTION);
     PlaceWindow(&d);
     if (d.ShowModal() == AnnoyingDialog::rtYES)
