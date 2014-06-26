@@ -164,6 +164,7 @@ void cbKeyBinder::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectClosed));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorOpen));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnEditorClose));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SPLIT, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnSplit));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnProjectOpened));
     Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartupDone));
     Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<cbKeyBinder, CodeBlocksEvent>(this, &cbKeyBinder::OnAppStartShutdown));
@@ -956,12 +957,12 @@ bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcu
     wxCmd* pcmd = pkp->GetCmdBindTo(strKeyCode);
     if (pcmd)
     {
-        //int id = pcmd->GetId();
         int shortcutsCount = pcmd->GetShortcutCount();
         wxString desc = pcmd->GetDescription();
         wxString name = pcmd->GetName();
-        //int type = pcmd->GetType();
         #if defined(LOGGING)
+        int id = pcmd->GetId();
+        int type = pcmd->GetType();
         LOGIT( _T("shortcut count for[%s]is[%d]type[%d]"),
               strKeyCode.wx_str(), shortcutsCount, type);
         #endif
@@ -1227,11 +1228,8 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
         {   ed = static_cast<cbEditor*>(eb);
             thisEditor = ed->GetControl();
         }
-        //------------------------------------------------------------------
-        // This code never executed because ed->GetControl no longer exists
-        // See OnWindowDestroyEvent() which gets the window as an event.object
-        //------------------------------------------------------------------
-                if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
+
+        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
         {
             m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
             m_EditorPtrs.Remove(thisEditor);
@@ -1268,84 +1266,69 @@ void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
         #endif
      }
 
-    // Check creation of windows that have no notification (ie., wxSplitWindows)
-    Connect( wxEVT_CREATE,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &cbKeyBinder::OnWindowCreateEvent);
-
-    // Check Destroyed windows that have no notification (ie., wxSplitWindows)
-    Connect( wxEVT_DESTROY,
-        (wxObjectEventFunction) (wxEventFunction)
-        (wxCommandEventFunction) &cbKeyBinder::OnWindowDestroyEvent);
-
     event.Skip(); //+v0.4.1
     return;
 }//OnAppStartupDone
 // ----------------------------------------------------------------------------
-void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
+void cbKeyBinder::OnSplit(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // wxEVT_CREATE entry
-    // Have to do this for split windows since CodeBlocks does not have
-    // events when opening/closing split windows
-
-    // Attach a split window (or any other window)
-    if ( m_bBound )
+    if( IsAttached() && m_bBound )
     {
-        wxWindow* pWindow = (wxWindow*)(event.GetEventObject());
+        //already bound, just add the editor window
+        wxWindow* thisEditor = nullptr;
+
+        // find editor window the Code::Blocks way
+        // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
         cbEditor* ed = 0;
-        //cbStyledTextCtrl* p_cbStyledTextCtrl = 0;
-        //cbStyledTextCtrl* pLeftSplitWin = 0;
-        cbStyledTextCtrl* pRightSplitWin = 0;
-        ed  = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-        if (ed)
-        {   //p_cbStyledTextCtrl = ed->GetControl();
-            //pLeftSplitWin = ed->GetLeftSplitViewControl();
-            pRightSplitWin = ed->GetRightSplitViewControl();
-            //Has this window been split?
-            //**This is a temporary hack until some cbEvents are defined**
-            if ( pWindow && (pRightSplitWin == 0) )
-            {
-                //-if (pRightSplitWin eq pWindow)
-                //-{    Attach(pRightSplitWin);
-                if (pWindow->GetParent() == ed)
-                {   LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
-                    AttachEditor(pWindow);
-                }
-            }
+        EditorBase* eb = event.GetEditor();
+        if (eb && eb->IsBuiltinEditor())
+        {  ed = static_cast<cbEditor*>(eb);
+            // the left one is already attached
+            thisEditor = ed->GetRightSplitViewControl();
         }
-    }//if m_bBound...
 
-    event.Skip();
-}//OnWindowCreateEvent
-// ----------------------------------------------------------------------------
-void cbKeyBinder::OnWindowDestroyEvent(wxEvent& event)
-// ----------------------------------------------------------------------------
-{
-    //NB: event.GetGetEventObject() is a SCIwindow*, not and EditorBase*
-
-    // wxEVT_DESTROY entry
-    // This routine simply clears the memorized Editor pointers
-    // that dont get cleared by OnEditorClose, which doesnt get
-    // entered for split windows. CodeBlocks doesnt yet have events
-    // when opening/closing split windows.
-    if (not m_bBound){ event.Skip(); return;}
-
-    wxWindow* thisWindow = (wxWindow*)(event.GetEventObject());
-    //-Detach(pWindow); causes crash
-    if ( (thisWindow) && (m_EditorPtrs.Index(thisWindow) != wxNOT_FOUND))
-    {
-        // deleteing the EvtHandler here will crash CB
-        // detach before removing the ed ptr
-        DetachEditor(thisWindow, /*DeleteEvtHander*/false);
-        //-m_EditorPtrs.Remove(thisWindow); //patch 2885, already removed by DetachEditor()
-
-        #ifdef LOGGING
-         LOGIT( _T("OnWindowDestroyEvent Removed %p"), thisWindow);
-        #endif //LOGGING
+        //skip editors that we already have
+        if ( thisEditor && (wxNOT_FOUND == m_EditorPtrs.Index(thisEditor)) )
+        {
+            //add editor to our array and push a keyBinder event handler
+            m_EditorPtrs.Add(thisEditor);
+            //Rebind keys to newly opened windows
+            m_pKeyProfArr->GetSelProfile()->Attach(thisEditor);
+            #if LOGGING
+             LOGIT(_T("cbKB:OnSplit/Attach %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
+            #endif
+        }
     }
     event.Skip();
-}//OnWindowClose
+}//OnSplit
+// ----------------------------------------------------------------------------
+void cbKeyBinder::OnUnsplit(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    if (IsAttached() && m_bBound)
+    {
+        wxWindow* thisEditor = nullptr;
+        // find editor window the Code::Blocks way
+        // find the cbStyledTextCtrl wxScintilla "SCIwindow" to this EditorBase
+        cbEditor* ed = 0;
+        EditorBase* eb = event.GetEditor();
+        if ( eb && eb->IsBuiltinEditor() )
+        {   ed = static_cast<cbEditor*>(eb);
+            thisEditor = ed->GetRightSplitViewControl();
+        }
+
+        if ( thisEditor && (m_EditorPtrs.Index(thisEditor) != wxNOT_FOUND) )
+        {
+            m_pKeyProfArr->GetSelProfile()->Detach(thisEditor);
+            m_EditorPtrs.Remove(thisEditor);
+            #if LOGGING
+                LOGIT(_T("cbKB:OnUnsplit/Detach %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
+            #endif
+        }//if
+    }
+    event.Skip();
+}//OnUnsplit
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnTimerAlarm(wxTimerEvent& /*event*/)
 // ----------------------------------------------------------------------------
