@@ -62,5 +62,9 @@ void GenericSingleChoiceList::SetChoices(const wxArrayString& choices, int defCh
     {
         GenericChoiceList->Append(choices[i]);
     }
-    GenericChoiceList->SetSelection(defChoice);
+
+    if (static_cast<size_t>(defChoice) < choices.GetCount())
+        GenericChoiceList->SetSelection(defChoice);
+    else if (choices.GetCount() > 0)
+        GenericChoiceList->SetSelection(0);
 }
