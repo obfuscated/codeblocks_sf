@@ -16,6 +16,9 @@
 				<Option host_application="../../../devel30/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="Plugin-unix;App-unix;" />
