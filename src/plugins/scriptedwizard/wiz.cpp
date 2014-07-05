@@ -873,6 +873,30 @@ void Wiz::SetComboboxSelection(const wxString& name, int sel)
     }
 }
 
+void Wiz::SetComboboxValue(const wxString& name, const wxString& value)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxComboBox* win = dynamic_cast<wxComboBox*>(page->FindWindowByName(name, page));
+        if (win)
+            win->SetValue(value);
+    }
+}
+
+wxString Wiz::GetComboboxValue(const wxString& name)
+{
+    wxWizardPage* page = m_pWizard->GetCurrentPage();
+    if (page)
+    {
+        wxComboBox* win = dynamic_cast<wxComboBox*>(page->FindWindowByName(name, page));
+        if (win)
+            return win->GetValue();
+    }
+    return wxEmptyString;
+}
+
+
 wxString Wiz::GetCompilerFromCombobox(const wxString& name)
 {
     int id = GetComboboxSelection(name);
@@ -1517,6 +1541,8 @@ void Wiz::RegisterWizard()
             func(&Wiz::GetComboboxStringSelection, "GetComboboxStringSelection").
             func(&Wiz::GetComboboxSelection, "GetComboboxSelection").
             func(&Wiz::SetComboboxSelection, "SetComboboxSelection").
+            func(&Wiz::SetComboboxValue, "SetComboboxValue").
+            func(&Wiz::GetComboboxValue, "GetComboboxValue").
             func(&Wiz::GetComboboxStringSelection, "GetItemContainerStringSelection").
             func(&Wiz::GetComboboxSelection, "GetItemContainerSelection").
             func(&Wiz::SetComboboxSelection, "SetItemContainerSelection").

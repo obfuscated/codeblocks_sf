@@ -86,6 +86,9 @@ class Wiz : public cbWizardPlugin
         int GetComboboxSelection(const wxString& name);
         void SetComboboxSelection(const wxString& name, int sel);
 
+        void SetComboboxValue(const wxString& name, const wxString& value);
+        wxString GetComboboxValue(const wxString& name);
+
         int GetRadioboxSelection(const wxString& name);
         void SetRadioboxSelection(const wxString& name, int sel);
 
