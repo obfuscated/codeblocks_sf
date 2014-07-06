@@ -221,7 +221,8 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
                                                     "function SetupCustom(){return false;};\n"
                                                     "function CreateFiles(){return _T(\"\");};\n"
                                                     "function GetFilesDir(){return _T(\"\");};\n"
-                                                    "function GetGeneratedFile(index){return _T(\"\");};\n");
+                                                    "function GetGeneratedFile(index){return _T(\"\");};\n"
+                                                    "function GetTargetName() { return _T(\"\"); }\n");
     Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_wizscripts, _T("ClearWizState"));
 
     // early check: build target wizards need an active project
@@ -536,7 +537,40 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 {
     cbProject* theproject = Manager::Get()->GetProjectManager()->GetActiveProject(); // can't fail; if no project, the wizard didn't even run
-    ProjectBuildTarget* target = theproject->AddBuildTarget(GetTargetName());
+
+    bool isDebug = false;
+    wxString targetName;
+
+    if (m_pWizBuildTargetPanel)
+    {
+        targetName = GetTargetName();
+        isDebug = GetTargetEnableDebug();
+    }
+    else
+    {
+        // Call GetTargetName() to ask the script to tell us
+        // the name of the new target that should be added.
+        try
+        {
+            SqPlus::SquirrelFunction<wxString&> f("GetTargetName");
+            targetName = f();
+            if (targetName == wxEmptyString)
+            {
+                cbMessageBox(_("GetTargetName returned empty string. Failing!"), _("Error"), wxICON_ERROR);
+                Clear();
+                return nullptr;
+            }
+        }
+        catch (SquirrelError& e)
+        {
+            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            Clear();
+            return nullptr;
+        }
+        isDebug = false;
+    }
+
+    ProjectBuildTarget* target = theproject->AddBuildTarget(targetName);
     if (!target)
     {
         cbMessageBox(_("Failed to create build target!"), _("Error"), wxICON_ERROR);
@@ -544,40 +578,45 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
         return 0;
     }
 
-    // check the compiler Id
-    wxString CompilerId = GetTargetCompilerID();
-    if(CompilerId == wxEmptyString)
-    {    // no compiler had been specified
-        // fall back 1 : the poject one
-        CompilerId = theproject->GetCompilerID();
+    // Setup the compiler and other target parameters only if there is a BuildTarget panel.
+    // If not leave all this task to the script.
+    if (m_pWizBuildTargetPanel)
+    {
+        // check the compiler Id
+        wxString CompilerId = GetTargetCompilerID();
         if(CompilerId == wxEmptyString)
-        {    // even the project does not have one
-            // fall back 2 : CB default
-            CompilerId = CompilerFactory::GetDefaultCompilerID();
-            cbMessageBox(    _("No compiler had been specified. The new target will use the default compiler."),
-                _("Fallback compiler selected"),
-                wxOK | wxICON_INFORMATION,
-                Manager::Get()->GetAppWindow());
+        {    // no compiler had been specified
+            // fall back 1 : the poject one
+            CompilerId = theproject->GetCompilerID();
+            if(CompilerId == wxEmptyString)
+            {    // even the project does not have one
+                // fall back 2 : CB default
+                CompilerId = CompilerFactory::GetDefaultCompilerID();
+                cbMessageBox(    _("No compiler had been specified. The new target will use the default compiler."),
+                    _("Fallback compiler selected"),
+                    wxOK | wxICON_INFORMATION,
+                    Manager::Get()->GetAppWindow());
+            }
+            else
+            {
+                cbMessageBox(    _("No compiler had been specified. The new target will use the same compiler as the project."),
+                    _("Fallback compiler selected"),
+                    wxOK | wxICON_INFORMATION,
+                    Manager::Get()->GetAppWindow());
+            }
         }
-        else
-        {
-            cbMessageBox(    _("No compiler had been specified. The new target will use the same compiler as the project."),
-                _("Fallback compiler selected"),
-                wxOK | wxICON_INFORMATION,
-                Manager::Get()->GetAppWindow());
-        }
+        // setup the target
+        target->SetCompilerID(CompilerId);
+        target->SetIncludeInTargetAll(false);
+        target->SetObjectOutput(GetTargetObjectOutputDir());
+        target->SetWorkingDir(GetTargetOutputDir());
     }
-    // setup the target
-    target->SetCompilerID(CompilerId);
-    target->SetIncludeInTargetAll(false);
-    target->SetObjectOutput(GetTargetObjectOutputDir());
-    target->SetWorkingDir(GetTargetOutputDir());
     // Assign this target to all project files
     for (FilesList::iterator it = theproject->GetFilesList().begin(); it != theproject->GetFilesList().end(); ++it)
     {
         ProjectFile* pf = *it;
         if (pf)
-            pf->AddBuildTarget(GetTargetName());
+            pf->AddBuildTarget(targetName);
     }
 
     // add all the template files (if any)
@@ -608,7 +647,7 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
     try
     {
         SqPlus::SquirrelFunction<bool> f("SetupTarget");
-        if (!f(target, GetTargetEnableDebug()))
+        if (!f(target, isDebug))
         {
             cbMessageBox(_("Couldn't setup target options:"), _("Error"), wxICON_ERROR);
             Clear();
