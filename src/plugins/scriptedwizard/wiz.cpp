@@ -55,11 +55,11 @@ namespace
 DECLARE_INSTANCE_TYPE(Wiz);
 
 Wiz::Wiz()
-    : m_pWizard(0),
-    m_pWizProjectPathPanel(0),
-    m_pWizFilePathPanel(0),
-    m_pWizCompilerPanel(0),
-    m_pWizBuildTargetPanel(0),
+    : m_pWizard(nullptr),
+    m_pWizProjectPathPanel(nullptr),
+    m_pWizFilePathPanel(nullptr),
+    m_pWizCompilerPanel(nullptr),
+    m_pWizBuildTargetPanel(nullptr),
     m_LaunchIndex(0)
 {
     //ctor
@@ -195,7 +195,7 @@ void Wiz::Clear()
 {
     if (m_pWizard)
         m_pWizard->Destroy();
-    m_pWizard = 0;
+    m_pWizard = nullptr;
     m_Pages.Clear();
 
 // if the ABI is not sufficient, we 're in trouble the next time the wizard runs...
@@ -204,10 +204,10 @@ void Wiz::Clear()
         wxXmlResource::Get()->Unload(m_LastXRC);
 #endif
 
-    m_pWizProjectPathPanel = 0;
-    m_pWizCompilerPanel = 0;
-    m_pWizBuildTargetPanel = 0;
-    m_pWizFilePathPanel = 0;
+    m_pWizProjectPathPanel = nullptr;
+    m_pWizCompilerPanel = nullptr;
+    m_pWizBuildTargetPanel = nullptr;
+    m_pWizFilePathPanel = nullptr;
 }
 
 CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
@@ -230,7 +230,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         !Manager::Get()->GetProjectManager()->GetActiveProject())
     {
         cbMessageBox(_("You need to open (or create) a project first!"), _("Error"), wxICON_ERROR);
-        return 0;
+        return nullptr;
     }
 
     m_LaunchIndex = index;
@@ -258,7 +258,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         // any errors have been displayed by ScriptingManager
         Clear();
         InfoWindow::Display(_("Error"), _("Failed to load the common functions script.\nPlease check the debug log for details..."));
-        return 0;
+        return nullptr;
     }
 
     // locate the script
@@ -271,7 +271,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
         // any errors have been displayed by ScriptingManager
         Clear();
         InfoWindow::Display(_("Error"), _("Failed to load the wizard's script.\nPlease check the debug log for details..."));
-        return 0;
+        return nullptr;
     }
 
     // call BeginWizard()
@@ -284,13 +284,13 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         Clear();
-        return 0;
+        return nullptr;
     }
     catch (cbException& e)
     {
         e.ShowErrorMessage(false);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // check if *any* pages were added
@@ -298,7 +298,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     {
         cbMessageBox(m_Wizards[index].title + _(" has failed to run..."), _("Error"), wxICON_ERROR);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // check if *mandatory* pages (i.e. used by the following code) were added
@@ -309,14 +309,14 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
                         "Project path selection\n"
                         "Execution aborted..."), _("Error"), wxICON_ERROR);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // build the wizard pages
     Finalize();
 
     // run wizard
-    CompileTargetBase* base = 0; // ret value
+    CompileTargetBase* base = nullptr; // ret value
     if (m_pWizard->RunWizard(m_Pages[0]))
     {
         // ok, wizard done
@@ -335,7 +335,7 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
 
 CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
 {
-    cbProject* theproject = 0;
+    cbProject* theproject = nullptr;
 
     // first get the project filename
     wxString prjname = GetProjectFullFilename();
@@ -347,7 +347,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     {
         cbMessageBox(_("Couldn't create the project directory:\n") + prjdir, _("Error"), wxICON_ERROR);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // now create the project
@@ -362,7 +362,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     {
         cbMessageBox(_("Couldn't create the new project:\n") + prjdir, _("Error"), wxICON_ERROR);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // set the project title and project-wide compiler
@@ -427,7 +427,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // add generated files
@@ -495,7 +495,7 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         Clear();
-        return 0;
+        return nullptr;
     }
 
 //    if (srcdir.IsEmpty())
@@ -512,14 +512,14 @@ CompileTargetBase* Wiz::RunProjectWizard(wxString* pFilename)
                                         prjdir.c_str()),
                         _("Error"), wxICON_ERROR);
             Clear();
-            return 0;
+            return nullptr;
         }
     }
     catch (SquirrelError& e)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // save the project and...
@@ -575,7 +575,7 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
     {
         cbMessageBox(_("Failed to create build target!"), _("Error"), wxICON_ERROR);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     // Setup the compiler and other target parameters only if there is a BuildTarget panel.
@@ -639,7 +639,7 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
 //    {
 //        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
 //        Clear();
-//        return 0;
+//        return nullptr;
 //    }
 
     // ask the script to setup the new target (setup options, etc)
@@ -651,14 +651,14 @@ CompileTargetBase* Wiz::RunTargetWizard(cb_unused wxString* pFilename)
         {
             cbMessageBox(_("Couldn't setup target options:"), _("Error"), wxICON_ERROR);
             Clear();
-            return 0;
+            return nullptr;
         }
     }
     catch (SquirrelError& e)
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
         Clear();
-        return 0;
+        return nullptr;
     }
 
     return target;
@@ -683,7 +683,7 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
     Clear();
-    return 0;
+    return nullptr;
 }
 
 CompileTargetBase* Wiz::RunCustomWizard(cb_unused wxString* pFilename)
@@ -699,7 +699,7 @@ CompileTargetBase* Wiz::RunCustomWizard(cb_unused wxString* pFilename)
         Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
     }
     Clear();
-    return 0;
+    return nullptr;
 }
 
 wxString Wiz::GenerateFile(const wxString& basePath, const wxString& filename, const wxString& contents)
@@ -1212,7 +1212,7 @@ void Wiz::AddFilePathPage(bool showHeaderGuard)
     else
     {
         delete m_pWizFilePathPanel;
-        m_pWizFilePathPanel = 0;
+        m_pWizFilePathPanel = nullptr;
     }
 }
 
@@ -1226,7 +1226,7 @@ void Wiz::AddProjectPathPage()
     else
     {
         delete m_pWizProjectPathPanel;
-        m_pWizProjectPathPanel = 0;
+        m_pWizProjectPathPanel = nullptr;
     }
 }
 
@@ -1240,7 +1240,7 @@ void Wiz::AddCompilerPage(const wxString& compilerID, const wxString& validCompi
     else
     {
         delete m_pWizCompilerPanel;
-        m_pWizCompilerPanel = 0;
+        m_pWizCompilerPanel = nullptr;
     }
 }
 
@@ -1254,7 +1254,7 @@ void Wiz::AddBuildTargetPage(const wxString& targetName, bool isDebug, bool show
     else
     {
         delete m_pWizBuildTargetPanel;
-        m_pWizBuildTargetPanel = 0;
+        m_pWizBuildTargetPanel = nullptr;
     }
 }
 
