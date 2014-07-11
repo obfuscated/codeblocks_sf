@@ -1371,6 +1371,9 @@ void CompilerOptionsDlg::DoSaveCompilerDefinition()
     if (!wxDirExists(ConfigManager::GetFolder(sdDataUser) + wxT("/compilers")))
         wxMkdir(ConfigManager::GetFolder(sdDataUser) + wxT("/compilers"));
     doc.Save(ConfigManager::GetFolder(sdDataUser) + wxT("/compilers/options_") + compiler->GetID() + wxT(".xml"));
+
+    // update the in-memory cache
+    compiler->SetOptions(m_Options);
 } // DoSaveCompilerDefinition
 
 // events
