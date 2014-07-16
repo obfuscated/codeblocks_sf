@@ -341,9 +341,8 @@ protected:
 
     /** parse the file, either immediately or delayed.
      * @param locked give the status of the Tokentree, false means the tree is not locked
-     * @param loader is the object to load the file to internally buffer (lower down to Tokenizer)
      */
-    bool Parse(const wxString& filename, bool isLocal = true, bool locked = false, LoaderBase* loader = NULL);
+    bool Parse(const wxString& filename, bool isLocal = true, bool locked = false);
 
     /** delete those files from the TokenTree, and add them again thought AddParse() function */
     void ReparseModifiedFiles();

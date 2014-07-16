@@ -531,7 +531,7 @@ void Parser::AddParse(const wxString& filename)
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
 
-bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBase* loader)
+bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
 {
     ParserThreadOptions opts;
 
@@ -546,7 +546,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
 
     opts.storeDocumentation    = m_Options.storeDocumentation;
 
-    opts.loader                = loader; // maybe 0 at this point
+    opts.loader                = nullptr; // must be 0 at this point
 
     bool result = false;
     do
@@ -567,16 +567,15 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked, LoaderBa
 
         if (!canparse)
         {
-           if (opts.loader) // if a loader is already open at this point, the caller must clean it up
-               CCLogger::Get()->DebugLog(_T("Parser::Parse(): CodeCompletion Plugin: FileLoader memory leak ")
-                                         _T("while loading file ") + filename);
-           break;
+
+            CCLogger::Get()->DebugLog(_T("Parser::Parse(): file already parsed or reserved for parsing") + filename);
+            break;
         }
 
-        // this should always be true
-        // memory will leak if a loader has already been initialized before this point
-        if (!opts.loader)
-            opts.loader = Manager::Get()->GetFileManager()->Load(filename, m_NeedsReparse);
+        // once the Load function is called, it will return a loader pointer, and start loading
+        // the file content in a background thread(see: BackgroundThread class)
+        // the loader will be deleted in the ParserThread::InitTokenizer() function.
+        opts.loader = Manager::Get()->GetFileManager()->Load(filename, m_NeedsReparse);
 
         ParserThread* thread = new ParserThread(this, filename, isLocal, opts, m_TokenTree);
         TRACE(_T("Parser::Parse(): Parsing %s"), filename.wx_str());
