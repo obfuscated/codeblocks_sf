@@ -715,8 +715,6 @@ void ParserThread::DoParse()
             {
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true, true);
-                else
-                    m_Tokenizer.GetToken(); // skip arguments
                 m_Str.Clear();
             }
             else if (token == ParserConsts::kw_enum)
