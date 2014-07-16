@@ -561,6 +561,8 @@ unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
 
                     if (IsClosingBracket(startAt, line))
                         ++nest;
+                    if (IsOpeningBracket(startAt, line))
+                        --nest;
                 }
 
                 startAt = BeforeToken(startAt, line);
@@ -650,6 +652,15 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
 
             if (IsOpeningBracket(startAt, line))
                 ++nest;
+            //NOTE: do not skip successive closing brackets. Eg,
+            // "GetConfigManager(_T("code_completion"))->ReadBool"
+            //                                        ^
+            if (IsClosingBracket(startAt, line))
+            {
+                --nest;
+                if (nest == 0)
+                    ++startAt;
+            }
         }
     }
     if (IsOperatorBegin(startAt, line))
@@ -950,7 +961,7 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
         if (subComponent.tokenType != pttSearchText)
             m_LastComponent = subComponent;
     }// while
-    
+
     // initialScope contains all the matching tokens after the cascade matching algorithm
     if (!initialScope.empty())
     {
