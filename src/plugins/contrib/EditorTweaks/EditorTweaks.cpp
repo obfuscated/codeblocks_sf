@@ -303,8 +303,8 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"),     _("Disable toggle between insert and overwrite mode using the insert key") );
     submenu->AppendCheckItem( id_et_ConvertBraces,     _("Convert Matching Braces"), _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
     submenu->AppendSeparator();
-    submenu->AppendCheckItem( id_et_align_last,        _("Last Align"), _("repeat last Align command") );
-    submenu->AppendCheckItem( id_et_align_auto,        _("Auto Align"), _("Align lines automatically") );
+    submenu->Append( id_et_align_last,        _("Last Align"), _("repeat last Align command") );
+    submenu->Append( id_et_align_auto,        _("Auto Align"), _("Align lines automatically") );
 
 
     wxMenu *foldmenu = 0;
@@ -592,6 +592,7 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
         alignerMenu->Append(AlignerMenuEntries[i].id, AlignerMenuEntries[i].MenuName + _T("\t")  + _T("[") + AlignerMenuEntries[i].ArgumentString + _T("]"));
     alignerMenu->AppendSeparator();
     alignerMenu->Append(id_et_align_auto,   _("Auto"));
+    alignerMenu->Append(id_et_align_last,   _("Last Align"), _("repeat last Align command") );
     alignerMenu->Append(id_et_align_others, _("More ..."));
 
     // attach aligner menu
