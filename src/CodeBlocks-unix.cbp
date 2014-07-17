@@ -275,6 +275,7 @@
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib" />
+					<Add library="wxpropgrid" />
 					<Add directory="devel" />
 					<Add directory="plugins/compilergcc/depslib" />
 				</Linker>
