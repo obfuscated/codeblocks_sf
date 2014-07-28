@@ -3467,7 +3467,16 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     Logger::level lv = (lt == cltError)   ? Logger::error
                      : (lt == cltWarning) ? Logger::warning : Logger::info;
 
-    m_pListLog->Append(errors, lv, 2);
+    // when there are many lines (thousands) of output, auto fitting column width
+    // is very expensive, so rate limit it to a maximum of 1 fit per 3 seconds
+    static wxDateTime lastAutofitTime = wxDefaultDateTime;
+    if ( lastAutofitTime < (wxDateTime::Now() - wxTimeSpan::Seconds(3)) )
+    {
+        lastAutofitTime = wxDateTime::Now();
+        m_pListLog->Append(errors, lv, 2); // auto fit the 'Message' column
+    }
+    else
+        m_pListLog->Append(errors, lv);
 
     // add to error keeping struct
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(wxSafeConvertWX2MB(line)), msg);
