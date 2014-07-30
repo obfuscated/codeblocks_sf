@@ -1053,7 +1053,7 @@ cbWizardPlugin::cbWizardPlugin()
 
 cbSmartIndentPlugin::cbSmartIndentPlugin()
 {
-    m_Type = ptOther;
+    m_Type = ptSmartIndent;
 }
 
 void cbSmartIndentPlugin::OnAttach()

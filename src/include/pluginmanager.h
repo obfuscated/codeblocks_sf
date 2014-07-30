@@ -113,6 +113,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         PluginsArray GetCompilerOffers();
         PluginsArray GetDebuggerOffers();
         PluginsArray GetCodeCompletionOffers();
+        PluginsArray GetSmartIndentOffers();
         PluginsArray GetOffersFor(PluginType type);
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr);
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);

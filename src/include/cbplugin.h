@@ -1022,6 +1022,13 @@ class cbSmartIndentPlugin : public cbPlugin
           */
         virtual void OnEditorHook(cbEditor* editor, wxScintillaEvent& event) const = 0;
 
+        /** This is called after a code completion operation finishes.
+          *
+          * Use it as an opportunity to tidy up CC's formating.
+          * Don't indent for languages you don't know.
+          */
+        virtual void OnCCDone(cbEditor *ed){}
+
     protected:
         /** (reverse) search for the last word which is not comment **/
         wxString GetLastNonCommentWord(cbEditor* ed, int position = -1, unsigned int NumberOfWords = 1 ) const;

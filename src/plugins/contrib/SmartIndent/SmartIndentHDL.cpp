@@ -57,6 +57,25 @@ void SmartIndentHDL::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const
     if (!braceCompleted && BraceCompletionEnabled())
         stc->DoBraceCompletion(ch);
 }
+void SmartIndentHDL::OnCCDone(cbEditor *ed)
+{
+
+    if (!ed)
+        return;
+
+    if ( !SmartIndentEnabled() )
+        return;
+
+    cbStyledTextCtrl *stc = ed->GetControl();
+    if (!stc)
+        return;
+
+    wxString langname = Manager::Get()->GetEditorManager()->GetColourSet()->GetLanguageName(ed->GetLanguage());
+    if ( langname != wxT("VHDL") )
+        return;
+
+    DoUnIndent(ed, langname);
+}
 
 int SmartIndentHDL::FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const
 {
@@ -181,7 +200,6 @@ void SmartIndentHDL::DoUnIndent(cbEditor* ed, const wxString& langname) const
 {
     cbStyledTextCtrl* stc = ed->GetControl();
 
-    // not a whitespace char added
     if ( langname == wxT("VHDL") )
     {
         wxString strWithSpaces = stc->GetLine(stc->GetCurrentLine());
@@ -193,8 +211,7 @@ void SmartIndentHDL::DoUnIndent(cbEditor* ed, const wxString& langname) const
         do
             r = str.Replace(wxT("  "), wxT(" "), true);
         while (r);
-
-        int pos = stc->GetCurrentPos() - 2;
+        int pos = stc->GetLineEndPosition(stc->GetCurrentLine())-2;
         if (
             str.IsSameAs(wxT("then"))   ||
             str.IsSameAs(wxT("elsif"))  ||
@@ -230,9 +247,9 @@ void SmartIndentHDL::DoUnIndent(cbEditor* ed, const wxString& langname) const
         else if ( str.IsSameAs(_T("end block")) )
             pos = FindBlockStartVHDL(ed, pos-4, _T("block") );
         else if ( str.IsSameAs(_T("end procedure")) )
-            pos = FindBlockStartVHDL(ed, pos-4, _T("procedure") );
+            pos = FindBlockStartVHDL(ed, pos-9, _T("procedure") );
         else if ( str.IsSameAs(_T("end function")) )
-            pos = FindBlockStartVHDL(ed, pos-4, _T("function") );
+            pos = FindBlockStartVHDL(ed, pos-8, _T("function") );
         else if ( str.IsSameAs( wxT("begin") ) )
         {
             pos = -1;

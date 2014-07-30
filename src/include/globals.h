@@ -30,6 +30,7 @@ enum PluginType
     ptDebugger,
     ptCodeCompletion,
     ptWizard,
+    ptSmartIndent,
     ptOther
 };
 

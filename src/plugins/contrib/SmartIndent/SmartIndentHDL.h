@@ -17,7 +17,7 @@ class SmartIndentHDL : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
-
+        virtual void OnCCDone(cbEditor *ed);
     private:
         int FindBlockStartVHDL(cbEditor* ed, int position, wxString block) const;
 

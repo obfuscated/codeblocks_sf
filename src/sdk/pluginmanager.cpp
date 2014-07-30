@@ -1332,6 +1332,11 @@ PluginsArray PluginManager::GetCodeCompletionOffers()
     return GetOffersFor(ptCodeCompletion);
 }
 
+PluginsArray PluginManager::GetSmartIndentOffers()
+{
+    return GetOffersFor(ptSmartIndent);
+}
+
 PluginsArray PluginManager::GetOffersFor(PluginType type)
 {
     PluginsArray arr;

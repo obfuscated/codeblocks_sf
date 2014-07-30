@@ -76,6 +76,8 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 
+        void CallSmartIndentCCDone(cbEditor* ed);
+
         typedef std::map< cbCodeCompletionPlugin*, std::set<wxChar> > CCPluginCharMap;
         CCPluginCharMap m_CallTipChars;
         CCPluginCharMap m_AutoLaunchChars;
