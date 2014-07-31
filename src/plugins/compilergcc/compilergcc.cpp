@@ -3469,7 +3469,7 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
 
     // when there are many lines (thousands) of output, auto fitting column width
     // is very expensive, so rate limit it to a maximum of 1 fit per 3 seconds
-    static wxDateTime lastAutofitTime = wxDefaultDateTime;
+    static wxDateTime lastAutofitTime = wxDateTime((time_t)0);
     if ( lastAutofitTime < (wxDateTime::Now() - wxTimeSpan::Seconds(3)) )
     {
         lastAutofitTime = wxDateTime::Now();
