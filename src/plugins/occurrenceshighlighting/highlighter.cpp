@@ -185,7 +185,7 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
         // If wxWidgets is build without rawbitmap-support, the indicators become opaque
         // and hide the text, so we show them under the text.
         // Not enabled as default, because the readability is a little bit worse.
-        stc->IndicatorSetUnder(theIndicator,true);
+        stc->IndicatorSetUnder(GetIndicator(),true);
 #endif
     }
 
@@ -197,7 +197,7 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
             stcr->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_HIGHLIGHT);
             stcr->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
 #ifndef wxHAVE_RAW_BITMAP
-            stcr->IndicatorSetUnder(theIndicator,true);
+            stcr->IndicatorSetUnder(GetIndicator(),true);
 #endif
         }
     }
