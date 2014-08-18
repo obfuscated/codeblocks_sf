@@ -262,7 +262,8 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
 
     // pass user init-commands
     wxString init = m_pDBG->GetActiveConfigEx().GetInitCommands();
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(init);
+    MacrosManager *macrosManager = Manager::Get()->GetMacrosManager();
+    macrosManager->ReplaceMacros(init);
     // commands are passed in one go, in case the user defines functions in there
     // or else it would lock up...
     if (!init.empty())
@@ -285,7 +286,10 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
         {
             wxArrayString initCmds = GetArrayFromString(rd->additionalCmdsBefore, _T('\n'));
             for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+            {
+                macrosManager->ReplaceMacros(initCmds[i]);
                 QueueCommand(new DebuggerCmd(this, initCmds[i]));
+            }
         }
     }
 
@@ -305,7 +309,10 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
         {
             wxArrayString initCmds = GetArrayFromString(rd->additionalCmds, _T('\n'));
             for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+            {
+                macrosManager->ReplaceMacros(initCmds[i]);
                 QueueCommand(new DebuggerCmd(this, initCmds[i]));
+            }
         }
     }
 }
