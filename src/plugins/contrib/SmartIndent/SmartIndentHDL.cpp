@@ -226,6 +226,12 @@ void SmartIndentHDL::DoUnIndent(cbEditor* ed, const wxString& langname) const
             pos = FindBlockStartVHDL(ed, pos-3, wxT("case") );
         else if ( str.IsSameAs(wxT("end process")) )
             pos = FindBlockStartVHDL(ed, pos-6, wxT("process") );
+        else if ( str.IsSameAs(wxT("end entity") ) )
+            pos = FindBlockStartVHDL(ed, pos-5, wxT("entity") );
+        else if ( str.IsSameAs(wxT("end architecture") ) )
+            pos = FindBlockStartVHDL(ed, pos-5, wxT("architecture") );
+        else if ( str.IsSameAs(wxT("end configuration") ) )
+            pos = FindBlockStartVHDL(ed, pos-5, wxT("configuration") );
         else if ( str.IsSameAs(wxT("end record") ) )
             pos = FindBlockStartVHDL(ed, pos-5, wxT("record") );
         else if ( str.IsSameAs( wxT("end for") ) )
