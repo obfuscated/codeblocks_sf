@@ -295,9 +295,11 @@ extern EVTIMPORT const wxEventType cbEVT_EDITOR_SPLIT;
 #define EVT_EDITOR_SPLIT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_SPLIT, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_UNSPLIT;
 #define EVT_EDITOR_UNSPLIT(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_UNSPLIT, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
-
 extern EVTIMPORT const wxEventType cbEVT_EDITOR_UPDATE_UI;
 #define EVT_EDITOR_UPDATE_UI(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_UPDATE_UI, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+
+extern EVTIMPORT const wxEventType cbEVT_EDITOR_CC_DONE;
+#define EVT_EDITOR_CC_DONE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_EDITOR_CC_DONE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // project events
 extern EVTIMPORT const wxEventType cbEVT_PROJECT_NEW;

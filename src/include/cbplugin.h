@@ -1055,6 +1055,7 @@ class cbSmartIndentPlugin : public cbPlugin
         bool BraceSmartIndentEnabled()const;
         bool BraceCompletionEnabled()const;
         bool SelectionBraceCompletionEnabled()const;
+        void OnCCDoneEvent(CodeBlocksEvent& event);
     private:
         int m_FunctorId;
 };

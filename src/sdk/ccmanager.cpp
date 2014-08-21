@@ -1205,10 +1205,8 @@ void CCManager::DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int p
 
 void CCManager::CallSmartIndentCCDone(cbEditor* ed)
 {
-    const PluginsArray &pa = Manager::Get()->GetPluginManager()->GetSmartIndentOffers();
-    for (size_t i = 0; i < pa.GetCount(); ++i)
-    {
-        cbSmartIndentPlugin *plug = static_cast<cbSmartIndentPlugin*>(pa[i]);
-        plug->OnCCDone(ed);
-    }
+    CodeBlocksEvent event(cbEVT_EDITOR_CC_DONE);
+    event.SetEditor(ed);
+    // post event in the host's event queue
+    Manager::Get()->ProcessEvent(event);
 }
