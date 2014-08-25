@@ -1404,7 +1404,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
 
         node = AddElement(tgtnode, "Linker");
         AddArrayOfElements(node, "Add", "option",    target->GetLinkerOptions());
-        AddArrayOfElements(node, "Add", "library",   target->GetLinkLibs());
+        AddArrayOfElements(node, "Add", "library",   target->GetLinkLibs(), true);
         AddArrayOfElements(node, "Add", "directory", target->GetLibDirs(), true);
         if (node->NoChildren())
             tgtnode->RemoveChild(node);
@@ -1468,7 +1468,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
 
     node = AddElement(prjnode, "Linker");
     AddArrayOfElements(node, "Add", "option",    m_pProject->GetLinkerOptions());
-    AddArrayOfElements(node, "Add", "library",   m_pProject->GetLinkLibs());
+    AddArrayOfElements(node, "Add", "library",   m_pProject->GetLinkLibs(), true);
     AddArrayOfElements(node, "Add", "directory", m_pProject->GetLibDirs(), true);
     if (node->NoChildren())
         prjnode->RemoveChild(node);
