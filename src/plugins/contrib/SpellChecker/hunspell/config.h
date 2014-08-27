@@ -51,7 +51,7 @@
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */
-#define HAVE_DCGETTEXT 1
+/* #undef HAVE_DCGETTEXT */
 
 /* Define to 1 if you have the declaration of `feof_unlocked', and to 0 if you
    don't. */
@@ -101,13 +101,13 @@
 #define HAVE_GETPAGESIZE 1
 
 /* Define if the GNU gettext() function is already present or preinstalled. */
-#define HAVE_GETTEXT 1
+/* #undef HAVE_GETTEXT */
 
 /* Define to 1 if you have the `getuid' function. */
 /* #undef HAVE_GETUID */
 
 /* Define if you have the iconv() function and it works. */
-#define HAVE_ICONV 1
+/* #undef HAVE_ICONV */
 
 /* Define if you have the 'intmax_t' type in <stdint.h> or <inttypes.h>. */
 #define HAVE_INTMAX_T 1
@@ -126,7 +126,7 @@
 /* #undef HAVE_LC_MESSAGES */
 
 /* Define to 1 if you have the <libintl.h> header file. */
-#define HAVE_LIBINTL_H 1
+/* #undef HAVE_LIBINTL_H */
 
 /* Define to 1 if you have the <limits.h> header file. */
 #define HAVE_LIMITS_H 1
@@ -264,7 +264,7 @@
 /* #undef HUNSPELL_WARNING_ON */
 
 /* Define as const if the declaration of iconv() needs const. */
-#define ICONV_CONST const
+/* #undef ICONV_CONST */
 
 /* Define if integer division by zero raises signal SIGFPE. */
 #define INTDIV0_RAISES_SIGFPE 1
@@ -277,13 +277,13 @@
 #define PACKAGE "hunspell"
 
 /* Define to the address where bug reports for this package should be sent. */
-#define PACKAGE_BUGREPORT "nemeth@openoffice.org"
+#define PACKAGE_BUGREPORT "nemeth@numbertext.org"
 
 /* Define to the full name of this package. */
 #define PACKAGE_NAME "hunspell"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "hunspell 1.2.12"
+#define PACKAGE_STRING "hunspell 1.3.3"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "hunspell"

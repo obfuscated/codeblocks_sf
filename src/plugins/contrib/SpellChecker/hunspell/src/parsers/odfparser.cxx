@@ -4,7 +4,7 @@
 #include <ctype.h>
 
 #include "../hunspell/csutil.hxx"
-#include "htmlparser.hxx"
+#include "odfparser.hxx"
 
 
 #ifndef W32
@@ -12,15 +12,9 @@ using namespace std;
 #endif
 
 static const char * PATTERN[][2] = {
-	{ "<script", "</script>" },
-	{ "<style", "</style>" },
-	{ "<code", "</code>" },
-	{ "<samp", "</samp>" },
-	{ "<kbd", "</kbd>" },
-	{ "<var", "</var>" },
-	{ "<listing", "</listing>" },
-	{ "<address", "</address>" },
-	{ "<pre", "</pre>" },
+	{ "<office:meta>", "</office:meta>" },
+	{ "<office:settings>", "</office:settings>" },
+	{ "<office:binary-data>", "</office:binary-data>" },
 	{ "<!--", "-->" },
 	{ "<[cdata[", "]]>" }, // XML comment
 	{ "<", ">" }
@@ -29,28 +23,25 @@ static const char * PATTERN[][2] = {
 #define PATTERN_LEN (sizeof(PATTERN) / (sizeof(char *) * 2))
 
 static const char * PATTERN2[][2] = {
-	{ "<img", "alt=" }, // ALT and TITLE attrib handled spec.
-	{ "<img", "title=" },
-	{ "<a ", "title=" }
 };
 
 #define PATTERN_LEN2 (sizeof(PATTERN2) / (sizeof(char *) * 2))
 
-HTMLParser::HTMLParser(const char * wordchars)
+ODFParser::ODFParser(const char * wordchars)
 {
 	init(wordchars);
 }
 
-HTMLParser::HTMLParser(unsigned short * wordchars, int len)
+ODFParser::ODFParser(unsigned short * wordchars, int len)
 {
 	init(wordchars, len);
 }
 
-char * HTMLParser::next_token()
+char * ODFParser::next_token()
 {
 	return XMLParser::next_token(PATTERN, PATTERN_LEN, PATTERN2, PATTERN_LEN2);
 }
 
-HTMLParser::~HTMLParser() 
+ODFParser::~ODFParser() 
 {
 }

@@ -26,8 +26,6 @@ class TextParser
 {
 
 protected:
-  void                init(const char *);
-  void                init(unsigned short * wordchars, int len);
   int                 wordcharacters[256]; // for detection of the word boundaries
   char                line[MAXPREVLINE][MAXLNLEN]; // parsed and previous lines
   char                urlline[MAXLNLEN]; // mask for url detection
@@ -46,17 +44,20 @@ public:
   TextParser();
   TextParser(unsigned short * wordchars, int len);
   TextParser(const char * wc);
+  void                init(const char *);
+  void                init(unsigned short * wordchars, int len);
   virtual ~TextParser();
 
   void                put_line(char * line);
   char *              get_line();
   char *              get_prevline(int n);
   virtual char *      next_token();
-  int                 change_token(const char * word);
+  virtual int         change_token(const char * word);
   void                set_url_checking(int check);
 
   int                 get_tokenpos();
   int                 is_wordchar(char * w);
+  inline int          is_utf8() { return utf8; }
   const char *        get_latin1(char * s);
   char *              next_char();
   int                 tokenize_urls();

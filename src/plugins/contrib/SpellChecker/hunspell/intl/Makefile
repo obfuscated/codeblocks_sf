@@ -17,7 +17,7 @@
 # USA.
 
 PACKAGE = hunspell
-VERSION = 1.2.12
+VERSION = 1.3.3
 
 SHELL = /bin/sh
 
@@ -55,12 +55,12 @@ INSTALL_DATA = ${INSTALL} -m 644
 # We use $(mkdir_p).
 # In automake <= 1.9.x, $(mkdir_p) is defined either as "mkdir -p --" or as
 # "$(mkinstalldirs)" or as "$(install_sh) -d". For these automake versions,
-# ${SHELL} /c/cppprj/cb/codeblocks/src/plugins/contrib/SpellChecker/Hunspell/install-sh does not start with $(SHELL), so we add it.
+# ${SHELL} /c/cppprj/cb/CodeBlocks/src/plugins/contrib/SpellChecker/hunspell/install-sh does not start with $(SHELL), so we add it.
 # In automake >= 1.10, /bin/mkdir -p is derived from ${MKDIR_P}, which is defined
 # either as "/path/to/mkdir -p" or ".../install-sh -c -d". For these automake
 # versions, $(mkinstalldirs) and $(install_sh) are unused.
-mkinstalldirs = $(SHELL) ${SHELL} /c/cppprj/cb/codeblocks/src/plugins/contrib/SpellChecker/Hunspell/install-sh -d
-install_sh = $(SHELL) ${SHELL} /c/cppprj/cb/codeblocks/src/plugins/contrib/SpellChecker/Hunspell/install-sh
+mkinstalldirs = $(SHELL) ${SHELL} /c/cppprj/cb/CodeBlocks/src/plugins/contrib/SpellChecker/hunspell/install-sh -d
+install_sh = $(SHELL) ${SHELL} /c/cppprj/cb/CodeBlocks/src/plugins/contrib/SpellChecker/hunspell/install-sh
 MKDIR_P = /bin/mkdir -p
 mkdir_p = /bin/mkdir -p
 
@@ -70,7 +70,7 @@ AR = ar
 CC = gcc
 LIBTOOL = $(SHELL) $(top_builddir)/libtool
 RANLIB = ranlib
-YACC = bison -y -d
+YACC = : -y -d
 YFLAGS = --name-prefix=__gettext
 WINDRES = windres
 
@@ -179,9 +179,9 @@ COPYING.LIB-2 gettext.h libgettext.h plural-eval.c libgnuintl.h \
 libgnuintl.h_vms Makefile.vms libgnuintl.h.msvc-static \
 libgnuintl.h.msvc-shared Makefile.msvc
 
-all: all-no
+all: all-yes
 all-yes: libintl.$la libintl.h charset.alias ref-add.sed ref-del.sed
-all-no: all-no-no
+all-no: all-no-yes
 all-no-yes: libgnuintl.$la
 all-no-no:
 
@@ -193,7 +193,7 @@ libintl.a libgnuintl.a: $(OBJECTS)
 libintl.la libgnuintl.la: $(OBJECTS) $(OBJECTS_RES_yes)
 	$(LIBTOOL) --mode=link \
 	  $(CC) $(CPPFLAGS) $(CFLAGS) $(XCFLAGS) $(LDFLAGS) -o $@ \
-	  $(OBJECTS) -liconv  $(LIBS)  -lc \
+	  $(OBJECTS)   $(LIBS)  -lc \
 	  $(OBJECTS_RES_yes) \
 	  -version-info $(LTV_CURRENT):$(LTV_REVISION):$(LTV_AGE) \
 	  -rpath $(libdir) \
@@ -339,7 +339,7 @@ check: all
 install: install-exec install-data
 install-exec: all
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; } \
-	   && test 'no' = yes; then \
+	   && test 'yes' = yes; then \
 	  $(mkdir_p) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir); \
 	  $(INSTALL_DATA) libintl.h $(DESTDIR)$(includedir)/libintl.h; \
 	  $(LIBTOOL) --mode=install \
@@ -354,7 +354,7 @@ install-exec: all
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools" \
-	   && test 'no' = no \
+	   && test 'yes' = no \
 	   && test no != no; then \
 	  $(mkdir_p) $(DESTDIR)$(libdir); \
 	  $(LIBTOOL) --mode=install \
@@ -366,7 +366,7 @@ install-exec: all
 	else \
 	  : ; \
 	fi
-	if test 'no' = yes; then \
+	if test 'yes' = yes; then \
 	  test no != no || $(mkdir_p) $(DESTDIR)$(libdir); \
 	  temp=$(DESTDIR)$(libdir)/t-charset.alias; \
 	  dest=$(DESTDIR)$(libdir)/charset.alias; \
@@ -426,19 +426,19 @@ install-dvi install-html install-info install-ps install-pdf:
 
 installdirs:
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; } \
-	   && test 'no' = yes; then \
+	   && test 'yes' = yes; then \
 	  $(mkdir_p) $(DESTDIR)$(libdir) $(DESTDIR)$(includedir); \
 	else \
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools" \
-	   && test 'no' = no \
+	   && test 'yes' = no \
 	   && test no != no; then \
 	  $(mkdir_p) $(DESTDIR)$(libdir); \
 	else \
 	  : ; \
 	fi
-	if test 'no' = yes; then \
+	if test 'yes' = yes; then \
 	  test no != no || $(mkdir_p) $(DESTDIR)$(libdir); \
 	  $(mkdir_p) $(DESTDIR)$(localedir); \
 	else \
@@ -455,7 +455,7 @@ installcheck:
 
 uninstall:
 	if { test "$(PACKAGE)" = "gettext-runtime" || test "$(PACKAGE)" = "gettext-tools"; } \
-	   && test 'no' = yes; then \
+	   && test 'yes' = yes; then \
 	  rm -f $(DESTDIR)$(includedir)/libintl.h; \
 	  $(LIBTOOL) --mode=uninstall \
 	    rm -f $(DESTDIR)$(libdir)/libintl.$la; \
@@ -463,13 +463,13 @@ uninstall:
 	  : ; \
 	fi
 	if test "$(PACKAGE)" = "gettext-tools" \
-	   && test 'no' = no \
+	   && test 'yes' = no \
 	   && test no != no; then \
 	  rm -f $(DESTDIR)$(libdir)/preloadable_libintl.so; \
 	else \
 	  : ; \
 	fi
-	if test 'no' = yes; then \
+	if test 'yes' = yes; then \
 	  if test -f $(DESTDIR)$(libdir)/charset.alias; then \
 	    temp=$(DESTDIR)$(libdir)/t-charset.alias; \
 	    dest=$(DESTDIR)$(libdir)/charset.alias; \
@@ -519,7 +519,7 @@ printf.$lo: $(srcdir)/printf-args.h $(srcdir)/printf-args.c $(srcdir)/printf-par
 # A bison-2.1 generated plural.c includes <libintl.h> if ENABLE_NLS.
 PLURAL_DEPS_yes = libintl.h
 PLURAL_DEPS_no =
-plural.$lo: $(PLURAL_DEPS_no)
+plural.$lo: $(PLURAL_DEPS_yes)
 
 tags: TAGS
 
