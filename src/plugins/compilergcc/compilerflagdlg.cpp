@@ -10,7 +10,8 @@
 #include "compilerflagdlg.h"
 #include "compileroptions.h"
 
-CompilerFlagDlg::CompilerFlagDlg(wxWindow* parent, CompOption* opt, wxArrayString& categ)
+CompilerFlagDlg::CompilerFlagDlg(wxWindow* parent, CompOption* opt, wxArrayString& categ,
+                                 const wxString &selectedCategory)
 {
     wxXmlResource::Get()->LoadObject(this, parent, wxT("CompilerFlagDlg"), wxT("wxDialog"));
     NameText = (wxTextCtrl*)FindWindow(XRCID("ID_Name"));
@@ -49,6 +50,8 @@ CompilerFlagDlg::CompilerFlagDlg(wxWindow* parent, CompOption* opt, wxArrayStrin
         }
     }
     CategoryCombo->Append(categ);
+    if (!selectedCategory.empty())
+        CategoryCombo->SetStringSelection(selectedCategory);
     MessageText->Enable(!AgainstText->GetValue().Trim().Trim(false).IsEmpty());
 
     SetSize(GetPosition().x - 57, wxDefaultCoord, GetMinWidth() + 114, GetMinHeight());

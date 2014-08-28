@@ -2937,7 +2937,21 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
         CompOption copt;
         if (m_MenuOption == FMO_Modify)
             copt = *m_Options.GetOptionByName(property->GetLabel());
-        CompilerFlagDlg dlg(0L, &copt, categ);
+
+        wxString categoryName;
+        if (property)
+        {
+            // If we have a selected property try to find the name of the category.
+            if (property->IsCategory())
+                categoryName = property->GetLabel();
+            else
+            {
+                wxPGProperty *category = property->GetParent();
+                if (category)
+                    categoryName = category->GetLabel();
+            }
+        }
+        CompilerFlagDlg dlg(nullptr, &copt, categ, categoryName);
         PlaceWindow(&dlg);
         if (dlg.ShowModal() != wxID_OK)
             return;
