@@ -138,29 +138,9 @@
 																<object class="wxBoxSizer">
 																	<orient>wxVERTICAL</orient>
 																	<object class="sizeritem">
-																		<object class="wxStaticText" name="ID_STATICTEXT2">
-																			<label>Categories:</label>
-																		</object>
-																		<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>8</border>
-																	</object>
-																	<object class="sizeritem">
-																		<object class="wxChoice" name="cmbCategory" />
-																		<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>8</border>
-																	</object>
-																	<object class="sizeritem">
-																		<object class="wxCheckListBox" name="lstCompilerOptions">
-																			<style>wxLB_HSCROLL</style>
-																		</object>
-																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>8</border>
-																		<option>1</option>
-																	</object>
-																	<object class="sizeritem">
 																		<object class="unknown" name="pgCompilerFlags">
 																		</object>
-																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 																		<border>5</border>
 																		<option>1</option>
 																	</object>
