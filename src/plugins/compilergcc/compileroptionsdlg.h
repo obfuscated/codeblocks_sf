@@ -114,7 +114,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDirty(wxCommandEvent& event); // some controls who change their value -> dirty
         void OnMyCharHook(wxKeyEvent& event);
-        void OnFlagsPopup(wxMouseEvent& event);
+        void OnFlagsPopup(wxPropertyGridEvent& event);
         void OnFlagsPopupClick(wxCommandEvent& event);
 
     private:
