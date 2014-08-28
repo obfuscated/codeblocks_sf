@@ -1039,9 +1039,18 @@ wxString Tokenizer::PeekToken()
 {
     if (!m_PeekAvailable)
     {
-        m_PeekAvailable = true;
-        //NOTE: The m_Saved... vars will be reset to the correct position
-        // as necessary when a ReplaceBufferText() is done.
+        // suppose we have such string buffer
+        //   ... x1 x2 x3 x4 x5 x6 ....
+        //            ^-----------------------m_TokenIndex point to the end of current token "x2"
+        // now, ideally, when we run the PeekToken, we hopefully want to get the below status
+        //   ... x1 x2 x3 x4 x5 x6 ....
+        //            ^-----------------------m_TokenIndex point to the end of current token "x2"
+        //               *--------------------m_PeekTokenIndex point to the end of next token "x3"
+        // Note that DoGetToken() mostly manipulate on the m_TokenIndex, so after the m_TokenIndex
+        // goes one step, we need to restore its position, so that m_Saved... vars are used to save
+        // old m_TokenIndex values before we call the DoGetToken();
+        // NOTE: The m_Saved... vars will be reset to the correct position as necessary when a
+        // ReplaceBufferText() is done.
         m_SavedTokenIndex   = m_TokenIndex;
         m_SavedLineNumber   = m_LineNumber;
         m_SavedNestingLevel = m_NestLevel;
@@ -1051,6 +1060,7 @@ wxString Tokenizer::PeekToken()
         else
             m_PeekToken.Clear();
 
+        m_PeekAvailable     = true; //Set after DoGetToken() to avoid recursive PeekToken() calls.
         m_PeekTokenIndex    = m_TokenIndex;
         m_PeekLineNumber    = m_LineNumber;
         m_PeekNestLevel     = m_NestLevel;
@@ -1393,11 +1403,6 @@ bool Tokenizer::CalcConditionExpression()
     // reset tokenizer's functionality
     m_State = oldState;
 
-    // reset undo token
-    m_SavedTokenIndex   = m_UndoTokenIndex = m_TokenIndex;
-    m_SavedLineNumber   = m_UndoLineNumber = m_LineNumber;
-    m_SavedNestingLevel = m_UndoNestLevel  = m_NestLevel;
-
     exp.ConvertInfixToPostfix();
     if (exp.CalcPostfix())
     {
@@ -1673,6 +1678,11 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         default:
             break;
     }
+
+    // reset undo token
+    m_SavedTokenIndex   = m_UndoTokenIndex = m_TokenIndex;
+    m_SavedLineNumber   = m_UndoLineNumber = m_LineNumber;
+    m_SavedNestingLevel = m_UndoNestLevel  = m_NestLevel;
 }
 
 void Tokenizer::SplitArguments(wxArrayString& results)
@@ -1801,7 +1811,9 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
     if (m_PeekAvailable && updatePeekToken)
     {
         m_PeekAvailable = false;
-        PeekToken(); // NOTE (ollydbg#1#): chance of recursive call of this function
+        // we set the m_PeekAvailable after calling DoGetToken() function inside the PeekToken()
+        // to prevent unnecessary recursive call of PeekToken() function.
+        PeekToken();
     }
 
     return true;
