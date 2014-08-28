@@ -21,6 +21,7 @@ class wxSpinEvent;
 class wxTreeEvent;
 class wxCommandEvent;
 class wxKeyEvent;
+class wxPropertyGrid;
 class wxUpdateUIEvent;
 
 class CompilerOptionsDlg : public cbConfigurationPanel
@@ -115,6 +116,8 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnFlagsPopup(wxMouseEvent& event);
         void OnFlagsPopupClick(wxCommandEvent& event);
 
+    private:
+        wxPropertyGrid *m_FlagsPG;
         CompilerGCC* m_Compiler;
         CompilerOptions m_Options;
         wxArrayString m_LinkerOptions;
