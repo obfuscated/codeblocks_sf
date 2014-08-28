@@ -2842,7 +2842,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
 
     wxMenu* pop = new wxMenu;
     pop->Append(FMO_New, _("New flag..."));
-    if (property)
+    if (property && !property->IsCategory())
     {
         pop->Append(FMO_Modify, _("Modify flag..."));
         pop->Append(FMO_Delete, _("Delete flag"));
@@ -2946,7 +2946,15 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
             size_t i;
             if (property)
             {
-                const wxString &name = property->GetLabel();
+                wxString name;
+                if (property->IsCategory())
+                {
+                    wxPGProperty *child = m_FlagsPG->GetFirstChild(property);
+                    if (child)
+                        name = child->GetLabel();
+                }
+                else
+                    name = property->GetLabel();
                 for (i = 0; i < m_Options.GetCount(); ++i)
                 {
                     if (m_Options.GetOption(i)->name == name)
