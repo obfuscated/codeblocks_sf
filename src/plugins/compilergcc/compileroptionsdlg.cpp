@@ -182,6 +182,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
 
     EVT_PG_CHANGED(            XRCID("pgCompilerFlags"),                CompilerOptionsDlg::OnOptionChanged)
     EVT_PG_RIGHT_CLICK(        XRCID("pgCompilerFlags"),                CompilerOptionsDlg::OnFlagsPopup)
+    EVT_PG_DOUBLE_CLICK(       XRCID("pgCompilerFlags"),                CompilerOptionsDlg::OnOptionDoubleClick)
 END_EVENT_TABLE()
 
 class ScopeTreeData : public wxTreeItemData
@@ -3053,4 +3054,16 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
 void CompilerOptionsDlg::OnFlagsPopupClick(wxCommandEvent& event)
 {
     m_MenuOption = event.GetId();
+}
+
+void CompilerOptionsDlg::OnOptionDoubleClick(wxPropertyGridEvent& event)
+{
+    wxPGProperty *property = event.GetProperty();
+    // For bool properties automatically toggle the checkbox on double click.
+    if (property && property->IsKindOf(CLASSINFO(wxBoolProperty)))
+    {
+        bool realValue = m_FlagsPG->GetPropertyValue(property);
+        m_FlagsPG->ChangePropertyValue(property, !realValue);
+    }
+    event.Skip();
 }

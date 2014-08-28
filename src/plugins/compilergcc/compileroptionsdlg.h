@@ -115,6 +115,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnMyCharHook(wxKeyEvent& event);
         void OnFlagsPopup(wxPropertyGridEvent& event);
         void OnFlagsPopupClick(wxCommandEvent& event);
+        void OnOptionDoubleClick(wxPropertyGridEvent& event);
 
     private:
         wxPropertyGrid *m_FlagsPG;
