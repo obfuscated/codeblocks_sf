@@ -668,7 +668,11 @@ void CompilerOptionsDlg::DoFillOptions()
     {
         unsigned count = root->GetChildCount();
         for (unsigned ii = 0; ii < count; ++ii)
+#if wxCHECK_VERSION(2, 9, 0)
+            m_FlagsPG->SortChildren(root->Item(ii), wxPG_RECURSE);
+#else
             m_FlagsPG->Sort(root->Item(ii));
+#endif
     }
     m_FlagsPG->Thaw();
 } // DoFillOptions
