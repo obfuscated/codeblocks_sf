@@ -22,6 +22,7 @@ class wxTreeEvent;
 class wxCommandEvent;
 class wxKeyEvent;
 class wxPropertyGrid;
+class wxPropertyGridEvent;
 class wxUpdateUIEvent;
 
 class CompilerOptionsDlg : public cbConfigurationPanel
@@ -76,7 +77,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnTreeSelectionChanging(wxTreeEvent& event);
         void OnCompilerChanged(wxCommandEvent& event);
         void OnCategoryChanged(wxCommandEvent& event);
-        void OnOptionToggled(wxCommandEvent& event);
+        void OnOptionChanged(wxPropertyGridEvent& event);
         void OnAddDirClick(wxCommandEvent& event);
         void OnEditDirClick(wxCommandEvent& event);
         void OnRemoveDirClick(wxCommandEvent& event);
