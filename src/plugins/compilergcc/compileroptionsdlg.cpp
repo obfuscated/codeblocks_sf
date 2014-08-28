@@ -2860,7 +2860,9 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
         FMO_Modify,
         FMO_Delete,
         FMO_COnly,
-        FMO_CPPOnly
+        FMO_CPPOnly,
+        FMO_ExpandAll,
+        FMO_CollapseAll
     };
 
     wxMenu* pop = new wxMenu;
@@ -2873,6 +2875,9 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
     pop->AppendSeparator();
     pop->Append(FMO_COnly, _("C - only flags..."));
     pop->Append(FMO_CPPOnly, _("C++ - only flags..."));
+    pop->AppendSeparator();
+    pop->Append(FMO_ExpandAll, _("Expand all categories"));
+    pop->Append(FMO_CollapseAll, _("Collapse all categories"));
     pop->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CompilerOptionsDlg::OnFlagsPopupClick);
     m_MenuOption = FMO_None;
     m_FlagsPG->PopupMenu(pop);
@@ -2936,6 +2941,16 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
                 break;
         }
         m_Options.RemoveOption(i);
+    }
+    else if (m_MenuOption == FMO_ExpandAll)
+    {
+        m_FlagsPG->ExpandAll();
+        return;
+    }
+    else if (m_MenuOption == FMO_CollapseAll)
+    {
+        m_FlagsPG->CollapseAll();
+        return;
     }
     else
     {
