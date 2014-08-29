@@ -2,6 +2,7 @@ SUBDIRS = depslib resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
+		-I$(top_srcdir)/src/sdk/wxpropgrid/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \

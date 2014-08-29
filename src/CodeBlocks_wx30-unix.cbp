@@ -281,7 +281,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib30" />

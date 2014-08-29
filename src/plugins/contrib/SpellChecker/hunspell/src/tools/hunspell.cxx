@@ -19,6 +19,9 @@
 
 #define HUNSPELL_PIPE_HEADING "@(#) International Ispell Version 3.2.06 (but really Hunspell "VERSION")\n"
 #define HUNSPELL_HEADING "Hunspell "
+#define ODF_EXT "odt|ott|odp|otp|odg|otg|ods|ots"
+#define ENTITY_APOS "&apos;"
+#define UTF8_APOS "\xe2\x80\x99"
 
 //for debugging only
 //#define LOG
@@ -47,6 +50,8 @@
 #include "latexparser.hxx"
 #include "manparser.hxx"
 #include "firstparser.hxx"
+#include "xmlparser.hxx"
+#include "odfparser.hxx"
 
 #else
 
@@ -59,6 +64,8 @@
 #include "latexparser.hxx"
 #include "manparser.hxx"
 #include "firstparser.hxx"
+#include "xmlparser.hxx"
+#include "odfparser.hxx"
 
 #define LIBDIR \
     "/usr/share/hunspell:" \
@@ -129,10 +136,11 @@ char text_conv[MAXLNLEN];
 #endif
 
 extern char * mystrdup(const char * s);
+extern char * mystrrep(const char * s);
 
 // file formats:
 
-enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST };
+enum { FMT_TEXT, FMT_LATEX, FMT_HTML, FMT_MAN, FMT_FIRST, FMT_XML, FMT_ODF };
 
 struct wordlist {
     char * word;
@@ -167,6 +175,7 @@ int filter_mode = NORMAL;
 int printgood = 0; // print only good words and lines
 int showpath = 0;  // show detected path of the dictionary
 int checkurl = 0;  // check URLs and mail addresses
+int checkapos = 0; // force typographic apostrophe
 int warn = 0;      // warn potential mistakes (dictionary words with WARN flags)
 const char * ui_enc = NULL;  // locale character encoding (default for I/O)
 const char * io_enc = NULL;  // I/O character encoding
@@ -338,6 +347,8 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
         case FMT_LATEX: p = new LaTeXParser(wordchars_utf16, wordchars_utf16_len); break;
         case FMT_HTML: p = new HTMLParser(wordchars_utf16, wordchars_utf16_len); break;
         case FMT_MAN: p = new ManParser(wordchars_utf16, wordchars_utf16_len); break;
+        case FMT_XML: p = new XMLParser(wordchars_utf16, wordchars_utf16_len); break;
+        case FMT_ODF: p = new ODFParser(wordchars_utf16, wordchars_utf16_len); break;
         case FMT_FIRST: p = new FirstParser(wordchars);
         }
     } else {
@@ -345,6 +356,8 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
         case FMT_LATEX: p = new LaTeXParser(wordchars); break;
         case FMT_HTML: p = new HTMLParser(wordchars); break;
         case FMT_MAN: p = new ManParser(wordchars); break;
+        case FMT_XML: p = new XMLParser(wordchars); break;
+        case FMT_ODF: p = new ODFParser(wordchars); break;
         case FMT_FIRST: p = new FirstParser(wordchars);
         }
     }
@@ -352,11 +365,24 @@ TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
     if ((!p) && (extension)) {
 	if ((strcmp(extension, "html") == 0) ||
     	    (strcmp(extension, "htm") == 0) ||
-	    (strcmp(extension, "xml") == 0)) {
+	    (strcmp(extension, "xhtml") == 0)) {
                 if (io_utf8) {
                     p = new HTMLParser(wordchars_utf16, wordchars_utf16_len);
                 } else {
 		    p = new HTMLParser(wordchars);
+                }
+	} else if ((strcmp(extension, "xml") == 0)) {
+                if (io_utf8) {
+                    p = new XMLParser(wordchars_utf16, wordchars_utf16_len);
+                } else {
+		    p = new XMLParser(wordchars);
+                }
+	} else if (((strlen(extension) == 3) && (strstr(ODF_EXT, extension) != NULL)) ||
+	            ((strlen(extension) == 4) && (extension[0] == 'f') && (strstr(ODF_EXT, extension + 1) != NULL))) {
+                if (io_utf8) {
+                    p = new ODFParser(wordchars_utf16, wordchars_utf16_len);
+                } else {
+		    p = new ODFParser(wordchars);
                 }
 	} else if (((extension[0] > '0') && (extension[0] <= '9'))) {
                 if (io_utf8) {
@@ -495,8 +521,18 @@ char * scanline(char * message) {
 
 // check words in the dictionaries (and set first checked dictionary)
 int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root) {
+  char buf[MAXLNLEN];
   for (int i = 0; i < dmax; i++) {
-    if (pMS[*d]->spell(chenc(token, io_enc, dic_enc[*d]), info, root) && !(warn && (*info & SPELL_WARN))) {
+    strcpy(buf, token);
+    char * enc = mystrrep(chenc(buf, io_enc, dic_enc[*d]), ENTITY_APOS, "'");
+    if (checkapos && strchr(enc, '\'')) return 0;
+    // 8-bit encoded dictionaries need ASCII apostrophes (eg. English dictionaries)
+    if (strcmp(dic_enc[*d], "UTF-8") != 0) enc = mystrrep(enc, UTF8_APOS, "'");
+    if ((pMS[*d]->spell(enc, info, root) && !(warn && (*info & SPELL_WARN))) ||
+        // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV support,
+        // need also ASCII apostrophes (eg. French dictionaries)
+        ((strcmp(dic_enc[*d], "UTF-8") == 0) && strstr(enc, UTF8_APOS) &&
+            pMS[*d]->spell(mystrrep(enc, UTF8_APOS, "'"), info, root) && !(warn && (*info & SPELL_WARN)))) {
         return 1;
     }
     if (++(*d) == dmax) *d = 0;
@@ -504,7 +540,12 @@ int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root) {
   return 0;
 }
 
-void pipe_interface(Hunspell ** pMS, int format, FILE * fileid) {
+int is_zipped_odf(TextParser * parser, const char * extension) {
+  // ODFParser and not flat ODF
+  return dynamic_cast<ODFParser*>(parser) && (extension && extension[0] != 'f');
+}
+
+void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename) {
   char buf[MAXLNLEN];
   char * buf2;
   wordlist * dicwords = NULL;
@@ -515,8 +556,23 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid) {
   int terse_mode = 0;
   int verbose_mode = 0;
   int d = 0;
+  char * tmpcontent;
 
-  TextParser * parser = get_parser(format, NULL, pMS[0]);
+  char * extension = (filename) ? basename(filename, '.') : NULL;
+  TextParser * parser = get_parser(format, extension, pMS[0]);
+
+  // access content.xml of ODF
+  if (is_zipped_odf(parser, extension)) {
+        tmpcontent = tmpnam(NULL);
+        // break 1-line XML of zipped ODT documents at </style:style> and </text:p> to avoid tokenization problems (fgets could stop within an XML tag)
+        sprintf(buf, "unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s", filename, tmpcontent);
+        if (system(buf) != 0)
+        {
+            perror(gettext("Can't open inputfile"));
+            exit(1);
+        }
+        fileid = fopen(tmpcontent, "r");
+    }
 
   if ((filter_mode == NORMAL)) {
     fprintf(stdout,gettext(HUNSPELL_HEADING));
@@ -597,6 +653,7 @@ nextline: while(fgets(buf, MAXLNLEN, fileid)) {
 if (pos >= 0) {
 	parser->put_line(buf + pos);
 	while ((token = parser->next_token())) {
+	    token = mystrrep(token, ENTITY_APOS, "'");
 	    switch (filter_mode) {
 		
 		case BADWORD: {
@@ -792,6 +849,13 @@ if (pos >= 0) {
 } // if
 } // while
 
+if (is_zipped_odf(parser, extension)) {
+    fclose(fileid);
+    sprintf(buf, "rm %s", tmpcontent);
+    if (system(buf) != 0)
+        perror("write failed");
+}
+
 if (parser) delete(parser);
 
 } // pipe_interface
@@ -893,6 +957,7 @@ void dialogscreen(TextParser * parser, char * token,
 
 	if (forbidden & SPELL_FORBIDDEN) printw(gettext("FORBIDDEN!")); else
 	  if (forbidden & SPELL_WARN) printw(gettext("Spelling mistake?"));
+	
 	printw(gettext("\t%s\t\tFile: %s\n\n"), chenc(token, io_enc, ui_enc), filename);
 
 	// handle long lines and tabulators
@@ -1005,7 +1070,12 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	    }
 	    c -= '0';
 	    if (c>=ns) break;
-	    parser->change_token(wlst[c]);
+	    if (checkapos) {
+		strcpy(buf, wlst[c]);
+		parser->change_token(mystrrep(buf, "'", UTF8_APOS));
+	    } else {
+		parser->change_token(wlst[c]);
+	    }
 	    return 0;
 	case ' ':
 	    return 0;
@@ -1068,8 +1138,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		strncpy(i, temp, MAXLNLEN-1);
 		i[MAXLNLEN-1] = '\0';
 		free(temp);
-
-		parser->change_token(i);
+		parser->change_token(checkapos ? mystrrep(i, "'", UTF8_APOS) : i);
 		
 		return 2; // replace
 	    }
@@ -1277,15 +1346,17 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 	int dialogexit = 0;
         int info;
         int d = 0;
+        char buf[MAXLNLEN];
 	while ((token=parser->next_token())) {
 		if (!check(pMS, &d, token, &info, NULL)) {
 			dialogscreen(parser, token, filename, info, NULL, 0); // preview
 			refresh();
 			char ** wlst = NULL;
-			int ns = pMS[d]->suggest(&wlst, chenc(token, io_enc, dic_enc[d]));
+			strcpy(buf, token);
+			int ns = pMS[d]->suggest(&wlst, mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'"));
 			if (ns==0) {
 				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
-			} else {	    
+			} else {
 				for (int j = 0; j < ns; j++) {
 					char d2io[MAXLNLEN];
 					strcpy(d2io, chenc(wlst[j], dic_enc[d], io_enc));
@@ -1303,7 +1374,7 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 		if ((dialogexit==-1) || (dialogexit==1)) goto ki2;
 	}
 
-   ki2: fprintf(tempfile,"%s\n",token=parser->get_line());
+   ki2: fprintf(tempfile,"%s",token=parser->get_line());
 	free(token);
 	return dialogexit;
 }
@@ -1311,6 +1382,8 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 void interactive_interface(Hunspell ** pMS, char * filename, int format)
 {
     char buf[MAXLNLEN];
+    char *odffilename = NULL;
+    char *odftempdir; // external zip works only with temporary directories (option -j)
 
     FILE *text = fopen(filename, "r");
     if (!text)
@@ -1326,7 +1399,30 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
     char * extension = basename(filename, '.');
     TextParser * parser = get_parser(format, extension, pMS[0]);
 
-   
+    // access content.xml of ODF
+    if (is_zipped_odf(parser, extension)) {
+        odftempdir = tmpnam(NULL);
+        fclose(text);
+        // break 1-line XML of zipped ODT documents at </style:style> and </text:p> to avoid tokenization problems (fgets could stop within an XML tag)
+        sprintf(buf, "mkdir %s; unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s/content.xml", odftempdir, filename, odftempdir);
+        if (system(buf) != 0)
+        {
+            perror(gettext("Can't open inputfile"));
+            endwin();
+            exit(1);
+        }
+        odffilename = filename;
+        sprintf(buf, "%s/content.xml", odftempdir);
+        filename = mystrdup(buf);
+        text = fopen(filename, "r");
+        if (!text)
+        {
+            perror(gettext("Can't open inputfile"));
+            endwin();
+            exit(1);
+        }
+    }
+
     FILE *tempfile = tmpfile();
 
     if (!tempfile)
@@ -1340,14 +1436,19 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 
 	while(fgets(buf,MAXLNLEN,text)) {
 	    if (check) {
-                if (*(buf + strlen(buf) - 1) == '\n') *(buf + strlen(buf) - 1) = '\0';
 		parser->put_line(buf);
-		dialogexit = interactive_line(parser,pMS,filename,tempfile);
+		dialogexit = interactive_line(parser, pMS, odffilename ? odffilename : filename, tempfile);
 		switch (dialogexit) {
 		    case -1: {
 			clear();
 			refresh();
 			fclose(tempfile); //automatically deleted when closed
+			if (is_zipped_odf(parser, extension)) {
+				sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
+				if (system(buf) != 0)
+					perror("write failed");
+				free(filename);
+			}
 			endwin();
 			exit(0);
 		    }
@@ -1360,12 +1461,10 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 	    }
 	}
 	fclose(text);
-	delete parser;
 
 	if (modified) {
 		rewind(tempfile);
 		text = fopen(filename, "wb");
-
 		if (text == NULL)
             perror(gettext("Can't open outputfile"));
         else
@@ -1376,10 +1475,23 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 		        if (fwrite(buf, 1, n, text) != n)
 				    perror("write failed");
 		    }
-
 		    fclose(text);
+		    if (is_zipped_odf(parser, extension)) {
+		        sprintf(buf, "zip -j '%s' %s", odffilename, filename);
+		        if (system(buf) != 0)
+		                perror("write failed");
+		    }
         }
 	}
+
+	if (is_zipped_odf(parser, extension)) {
+		sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
+		if (system(buf) != 0)
+			perror("write failed");
+		free(filename);
+	}
+
+	delete parser;
 	fclose(tempfile); //automatically deleted when closed
 }
 
@@ -1510,7 +1622,8 @@ int main(int argc, char** argv)
 			fprintf(stderr,gettext("Check spelling of each FILE. Without FILE, check standard input.\n\n"));
 			fprintf(stderr,gettext("  -1\t\tcheck only first field in lines (delimiter = tabulator)\n"));
 			fprintf(stderr,gettext("  -a\t\tIspell's pipe interface\n"));
-			fprintf(stderr,gettext("  --check-url\tCheck URLs, e-mail addresses and directory paths\n"));
+			fprintf(stderr,gettext("  --check-url\tcheck URLs, e-mail addresses and directory paths\n"));
+			fprintf(stderr,gettext("  --check-apostrophe\tcheck Unicode typographic apostrophe\n"));
 			fprintf(stderr,gettext("  -d d[,d2,...]\tuse d (d2 etc.) dictionaries\n"));
 			fprintf(stderr,gettext("  -D\t\tshow available dictionaries\n"));
 			fprintf(stderr,gettext("  -G\t\tprint only correct words or lines\n"));
@@ -1521,6 +1634,7 @@ int main(int argc, char** argv)
 			fprintf(stderr,gettext("  -L\t\tprint lines with misspelled words\n"));
 			fprintf(stderr,gettext("  -m \t\tanalyze the words of the input text\n"));
 			fprintf(stderr,gettext("  -n\t\tnroff/troff input file format\n"));
+			fprintf(stderr,gettext("  -O\t\tOpenDocument (ODF or Flat ODF) input file format\n"));
 			fprintf(stderr,gettext("  -p dict\tset dict custom dictionary\n"));
 			fprintf(stderr,gettext("  -r\t\twarn of the potential mistakes (rare words)\n"));
 			fprintf(stderr,gettext("  -P password\tset password for encrypted dictionaries\n"));
@@ -1533,17 +1647,24 @@ int main(int argc, char** argv)
 //			fprintf(stderr,gettext("  -U\t\tautomatic correction of typical misspellings to stdout\n"));
 			fprintf(stderr,gettext("  -v, --version\tprint version number\n"));
 			fprintf(stderr,gettext("  -vv\t\tprint Ispell compatible version number\n"));
-			fprintf(stderr,gettext("  -w\t\tprint misspelled words (= lines) from one word/line input.\n\n"));
+			fprintf(stderr,gettext("  -w\t\tprint misspelled words (= lines) from one word/line input.\n"));
+			fprintf(stderr,gettext("  -X\t\tXML input file format\n\n"));
 			fprintf(stderr,gettext("Example: hunspell -d en_US file.txt    # interactive spelling\n"
-                                               "         hunspell -l file.txt          # print misspelled words\n"
-                                               "         hunspell -i utf-8 file.txt    # check UTF-8 encoded file\n\n"));
+                                               "         hunspell -i utf-8 file.txt    # check UTF-8 encoded file\n"
+                                               "         hunspell -l *.odt             # print misspelled words of ODF files\n\n"
+                                               "         # Quick fix of ODF documents by personal dictionary creation\n\n"
+                                               "         # 1 Make a reduced list from misspelled and unknown words:\n\n"
+                                               "         hunspell -l *.odt | sort | uniq >words\n\n"
+                                               "         # 2 Delete misspelled words of the file by a text editor.\n"
+                                               "         # 3 Use this personal dictionary to fix the deleted words:\n\n"
+                                               "         hunspell -p words *.odt\n\n"));
 			fprintf(stderr,gettext("Bug reports: http://hunspell.sourceforge.net\n"));
 			exit(0);
 	        } else if ((strcmp(argv[i],"-vv")==0) || (strcmp(argv[i],"-v")==0) || (strcmp(argv[i],"--version")==0)) {
 			fprintf(stdout,gettext(HUNSPELL_PIPE_HEADING));
 			fprintf(stdout,"\n");
                         if (strcmp(argv[i],"-vv")!=0) {
-                            fprintf(stdout,gettext("\nCopyright (C) 2002-2008 L\303\241szl\303\263 N\303\251meth. License: MPL/GPL/LGPL.\n\n"
+                            fprintf(stdout,gettext("\nCopyright (C) 2002-2014 L\303\241szl\303\263 N\303\251meth. License: MPL/GPL/LGPL.\n\n"
 			    "Based on OpenOffice.org's Myspell library.\n"
 			    "Myspell's copyright (C) Kevin Hendricks, 2001-2002, License: BSD.\n\n"));
 			    fprintf(stdout,gettext("This is free software; see the source for copying conditions.  There is NO\n"
@@ -1577,6 +1698,10 @@ int main(int argc, char** argv)
 			format = FMT_MAN;
 		} else if ((strcmp(argv[i],"-H")==0)) {
 			format = FMT_HTML;
+		} else if ((strcmp(argv[i],"-X")==0)) {
+			format = FMT_XML;
+		} else if ((strcmp(argv[i],"-O")==0)) {
+			format = FMT_ODF;
 		} else if ((strcmp(argv[i],"-l")==0)) {
 			filter_mode = BADWORD;
 		} else if ((strcmp(argv[i],"-w")==0)) {
@@ -1635,9 +1760,10 @@ int main(int argc, char** argv)
 			showpath = 1;
 		} else if ((strcmp(argv[i],"-r")==0)) {
 			warn = 1;
-fprintf(stderr, "BEKAPCS");
 		} else if ((strcmp(argv[i],"--check-url")==0)) {
 			checkurl = 1;
+		} else if ((strcmp(argv[i],"--check-apostrophe")==0)) {
+			checkapos = 1;
 		} else if ((arg_files==-1) && ((argv[i][0] != '-') && (argv[i][0] != '\0'))) {
 			arg_files = i;
 			if (! exist(argv[i])) { // first check (before time-consuming dic. load)
@@ -1735,10 +1861,14 @@ fprintf(stderr, "BEKAPCS");
 #ifndef WIN32
             strcat(buf,"/");
 #endif
+	    strcat(buf,DICBASENAME);
+	    strcat(buf,basename(dicname,DIRSEPCH));
+	    load_privdic(buf, pMS[0]);
+	    strcpy(buf,HOME);
+#ifndef WIN32
+            strcat(buf,"/");
+#endif
 	    if (!privdicname) {
-		strcat(buf,DICBASENAME);
-		strcat(buf,basename(dicname,DIRSEPCH));
-		load_privdic(buf, pMS[0]);
 		strcpy(buf,DICBASENAME);
 		strcat(buf,basename(dicname,DIRSEPCH));
 		load_privdic(buf, pMS[0]);
@@ -1746,19 +1876,19 @@ fprintf(stderr, "BEKAPCS");
 		strcat(buf,privdicname);
 		load_privdic(buf, pMS[0]);
 		strcpy(buf,privdicname);
-		load_privdic(buf, pMS[0]);	
+		load_privdic(buf, pMS[0]);
 	    }
         }
 
 	if (arg_files==-1) {
-		pipe_interface(pMS, format, stdin);
+		pipe_interface(pMS, format, stdin, NULL);
 	} else if (filter_mode != NORMAL) {
 		for (int i = arg_files; i < argc; i++) {
 			if (exist(argv[i])) {
 				modified = 0;
 				currentfilename = argv[i];
 				FILE * f = fopen(argv[i], "r");
-				pipe_interface(pMS, format, f);
+				pipe_interface(pMS, format, f, argv[i]);
 				fclose(f);
 			} else {
 				fprintf(stderr, gettext("Can't open %s.\n"), argv[i]);

@@ -21,6 +21,8 @@ class wxSpinEvent;
 class wxTreeEvent;
 class wxCommandEvent;
 class wxKeyEvent;
+class wxPropertyGrid;
+class wxPropertyGridEvent;
 class wxUpdateUIEvent;
 
 class CompilerOptionsDlg : public cbConfigurationPanel
@@ -53,7 +55,6 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void DoFillCompilerPrograms();
         void DoFillVars();
         void DoFillOthers();
-        void DoFillCategories();
         void DoFillOptions();
         void DoFillCompilerDependentSettings();
         void DoSaveCompilerDependentSettings();
@@ -75,7 +76,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnTreeSelectionChanging(wxTreeEvent& event);
         void OnCompilerChanged(wxCommandEvent& event);
         void OnCategoryChanged(wxCommandEvent& event);
-        void OnOptionToggled(wxCommandEvent& event);
+        void OnOptionChanged(wxPropertyGridEvent& event);
         void OnAddDirClick(wxCommandEvent& event);
         void OnEditDirClick(wxCommandEvent& event);
         void OnRemoveDirClick(wxCommandEvent& event);
@@ -112,9 +113,12 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnDirty(wxCommandEvent& event); // some controls who change their value -> dirty
         void OnMyCharHook(wxKeyEvent& event);
-        void OnFlagsPopup(wxMouseEvent& event);
+        void OnFlagsPopup(wxPropertyGridEvent& event);
         void OnFlagsPopupClick(wxCommandEvent& event);
+        void OnOptionDoubleClick(wxPropertyGridEvent& event);
 
+    private:
+        wxPropertyGrid *m_FlagsPG;
         CompilerGCC* m_Compiler;
         CompilerOptions m_Options;
         wxArrayString m_LinkerOptions;

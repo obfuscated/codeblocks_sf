@@ -18,5 +18,13 @@ cp OnlineSpellChecking.xml  "../../../devel/share/codeblocks/SpellChecker/"
 cp OnlineSpellChecking.xml  "../../../output/share/codeblocks/SpellChecker/"
 cp rc/*.png "../../../devel/share/codeblocks/SpellChecker/"
 cp rc/*.png "../../../output/share/codeblocks/SpellChecker/"
+cp dictionaries/*.aff "../../../devel/share/codeblocks/SpellChecker/"
+cp dictionaries/*.dic "../../../devel/share/codeblocks/SpellChecker/"
+cp dictionaries/th_*.dat "../../../devel/share/codeblocks/SpellChecker/"
+cp dictionaries/th_*.idx "../../../devel/share/codeblocks/SpellChecker/"
+cp dictionaries/*.aff "../../../output/share/codeblocks/SpellChecker/"
+cp dictionaries/*.dic "../../../output/share/codeblocks/SpellChecker/"
+cp dictionaries/th_*.dat "../../../output/share/codeblocks/SpellChecker/"
+cp dictionaries/th_*.idx "../../../output/share/codeblocks/SpellChecker/"
 exit 0
 

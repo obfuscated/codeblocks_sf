@@ -5,6 +5,7 @@
 #include "textparser.hxx"
 #include "htmlparser.hxx"
 #include "latexparser.hxx"
+#include "xmlparser.hxx"
 
 #ifndef W32
 using namespace std;
@@ -30,15 +31,13 @@ main(int argc, char** argv)
     exit(1);
   }
 
-    TextParser * p = new LaTeXParser("qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
+    TextParser * p = new TextParser("qwertzuiopasdfghjklyxcvbnméáúõûóüöíQWERTZUIOPASDFGHJKLYXCVBNMÍÉÁÕÚÖÜÓÛ");
     
     char buf[MAXLNLEN];
     char * next;
 
     while(fgets(buf,MAXLNLEN,f)) {
-      fprintf(stdout,"---------------------------------------\n");
       p->put_line(buf);
-      fprintf(stderr, "x:%s\n", buf);
       p->set_url_checking(1);
       while ((next=p->next_token())) {
           fprintf(stdout,"token: %s\n",next);

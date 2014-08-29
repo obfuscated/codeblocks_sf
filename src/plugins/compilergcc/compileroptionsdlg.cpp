@@ -37,6 +37,7 @@
 #endif
 #include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
+#include <wx/propgrid/propgrid.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
 #include <wx/xml/xml.h>
 
@@ -178,6 +179,10 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_TEXT(                  XRCID("txtMakeCmd_AskRebuildNeeded"),    CompilerOptionsDlg::OnDirty)
 //    EVT_TEXT(                  XRCID("txtMakeCmd_SilentBuild"),         CompilerOptionsDlg::OnDirty)
     EVT_CHAR_HOOK(CompilerOptionsDlg::OnMyCharHook)
+
+    EVT_PG_CHANGED(            XRCID("pgCompilerFlags"),                CompilerOptionsDlg::OnOptionChanged)
+    EVT_PG_RIGHT_CLICK(        XRCID("pgCompilerFlags"),                CompilerOptionsDlg::OnFlagsPopup)
+    EVT_PG_DOUBLE_CLICK(       XRCID("pgCompilerFlags"),                CompilerOptionsDlg::OnOptionDoubleClick)
 END_EVENT_TABLE()
 
 class ScopeTreeData : public wxTreeItemData
@@ -207,8 +212,9 @@ struct DebuggerClientData : wxClientData
         - the options exist on the level of the target
 */
 
-CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project, ProjectBuildTarget* target)
-    : m_Compiler(compiler),
+CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, cbProject* project, ProjectBuildTarget* target) :
+    m_FlagsPG(nullptr),
+    m_Compiler(compiler),
     m_CurrentCompilerIdx(0),
     m_pProject(project),
     m_pTarget(target),
@@ -216,6 +222,15 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
     m_BuildingTree(false)
 {
     wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgCompilerOptions"));
+
+    m_FlagsPG = new wxPropertyGrid(this, XRCID("pgCompilerFlags"), wxDefaultPosition, wxDefaultSize,
+                                   wxTAB_TRAVERSAL|wxPG_SPLITTER_AUTO_CENTER);
+    m_FlagsPG->SetExtraStyle(wxPG_EX_HELP_AS_TOOLTIPS);
+    m_FlagsPG->SetColumnProportion(0, 70);
+    m_FlagsPG->SetColumnProportion(1, 30);
+
+    m_FlagsPG->SetMinSize(wxSize(400, 400));
+    wxXmlResource::Get()->AttachUnknownControl(wxT("pgCompilerFlags"), m_FlagsPG);
 
     if (m_pProject)
     {
@@ -361,8 +376,6 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
         XRCCTRL(*this, "tabLinker", wxPanel)->Show(false);
         XRCCTRL(*this, "tabDirs", wxPanel)->Show(false);
     }
-    wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
-    list->Connect(wxEVT_RIGHT_UP,wxMouseEventHandler(CompilerOptionsDlg::OnFlagsPopup),NULL,this);
 
     Fit();
 } // constructor
@@ -399,7 +412,6 @@ void CompilerOptionsDlg::DoFillCompilerSets(int compilerIdx)
 void CompilerOptionsDlg::DoFillCompilerDependentSettings()
 {
     DoFillCompilerPrograms();    // the programs executable's ...
-    DoFillCategories();            // the categories of compiler settings
     DoLoadOptions();
     DoFillVars();
     // by the way we listen to changes in the textctrl, we also end up in the callbacks as
@@ -613,48 +625,58 @@ void CompilerOptionsDlg::DoFillTree()
     m_BuildingTree = false;
 } // DoFillTree
 
-void CompilerOptionsDlg::DoFillCategories()
-{
-    wxChoice* cmb = XRCCTRL(*this, "cmbCategory", wxChoice);
-    cmb->Clear();
-    cmb->Append(_("<All categories>"));
-
-    for (size_t i = 0; i < m_Options.GetCount(); ++i)
-    {
-        CompOption* copt = m_Options.GetOption(i);
-        if (cmb->FindString(copt->category) == -1)
-            cmb->Append(copt->category);
-    }
-    cmb->SetSelection(0);
-} // DoFillCategories
-
 void CompilerOptionsDlg::DoFillOptions()
 {
-    Disconnect(XRCID("lstCompilerOptions"), -1,
-            wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CompilerOptionsDlg::OnOptionToggled);
+    m_FlagsPG->Freeze();
+    m_FlagsPG->Clear();
+    typedef std::map<wxString, wxPropertyCategory*> MapCategories;
+    MapCategories categories;
 
-    wxChoice* cmb = XRCCTRL(*this, "cmbCategory", wxChoice);
-    wxString cat = cmb->GetStringSelection();
-    bool isAll = cmb->GetSelection() == 0;
-    wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
-    list->Clear();
-
+    // If there is a "General" category make sure it is added first.
     for (size_t i = 0; i < m_Options.GetCount(); ++i)
     {
-        const CompOption* copt = m_Options.GetOption(i);
-        if (isAll || copt->category.Matches(cat))
+        const CompOption* option = m_Options.GetOption(i);
+        if (option->category == wxT("General"))
         {
-            list->Append(copt->name);
-            list->Check(list->GetCount() - 1, copt->enabled);
-//            Manager::Get()->GetLogManager()->DebugLog("(FILL) option %s (0x%8.8x) %s", copt->option.c_str(), copt, copt->enabled ? "enabled" : "disabled");
+            wxPropertyCategory *categoryProp = new wxPropertyCategory(option->category);
+            m_FlagsPG->Append(categoryProp);
+            categories[option->category] = categoryProp;
+            break;
         }
     }
-    Connect(XRCID("lstCompilerOptions"), -1,
-            wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &CompilerOptionsDlg::OnOptionToggled);
+
+    // Add all flags and categories to the property grid
+    for (size_t i = 0; i < m_Options.GetCount(); ++i)
+    {
+        const CompOption* option = m_Options.GetOption(i);
+        wxPropertyCategory *categoryProp = nullptr;
+        MapCategories::iterator itCat = categories.find(option->category);
+        if (itCat != categories.end())
+            categoryProp = itCat->second;
+        else
+        {
+            categoryProp = new wxPropertyCategory(option->category);
+            m_FlagsPG->Append(categoryProp);
+            categories[option->category] = categoryProp;
+        }
+
+        wxPGProperty *prop = new wxBoolProperty(option->name, wxPG_LABEL, option->enabled);
+        m_FlagsPG->AppendIn(categoryProp, prop);
+        m_FlagsPG->SetPropertyAttribute(prop, wxPG_BOOL_USE_CHECKBOX, true, wxPG_RECURSE);
+    }
+
+    wxPGProperty *root = m_FlagsPG->GetRoot();
+    if (root)
+    {
+        unsigned count = root->GetChildCount();
+        for (unsigned ii = 0; ii < count; ++ii)
+#if wxCHECK_VERSION(2, 9, 0)
+            m_FlagsPG->SortChildren(root->Item(ii), wxPG_RECURSE);
+#else
+            m_FlagsPG->Sort(root->Item(ii));
+#endif
+    }
+    m_FlagsPG->Thaw();
 } // DoFillOptions
 
 void CompilerOptionsDlg::TextToOptions()
@@ -1694,82 +1716,91 @@ void CompilerOptionsDlg::OnCategoryChanged(cb_unused wxCommandEvent& event)
     DoFillOptions();
 } // OnCategoryChanged
 
-void CompilerOptionsDlg::OnOptionToggled(wxCommandEvent& event)
+void CompilerOptionsDlg::OnOptionChanged(wxPropertyGridEvent& event)
 {
-    wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
-    int sel = event.GetInt();
-    CompOption* copt = m_Options.GetOptionByName(list->GetString(sel));
-    if (copt)
+    wxPGProperty* property = event.GetProperty();
+    if (!property)
+        return;
+    // Make sure the property is bool. Other properties are ignored for now.
+    if (!property->IsKindOf(CLASSINFO(wxBoolProperty)))
+        return;
+    CompOption* option = m_Options.GetOptionByName(property->GetLabel());
+    wxVariant value = property->GetValue();
+    if (value.IsNull() || !option)
+        return;
+    option->enabled = value.GetBool();
+    if (option->enabled)
     {
-        copt->enabled = list->IsChecked(sel);
-        if (copt->enabled)
+        if (!option->checkAgainst.IsEmpty())
         {
-            if (!copt->checkAgainst.IsEmpty())
+            wxArrayString check = GetArrayFromString(option->checkAgainst, wxT(" "));
+            for (size_t i = 0; i < check.Count(); ++i)
             {
-                wxArrayString check = GetArrayFromString(copt->checkAgainst, wxT(" "));
-                for (size_t i = 0; i < check.Count(); ++i)
+                CompOption* against = m_Options.GetOptionByOption(check[i]);
+                if (!against)
+                    against = m_Options.GetOptionByAdditionalLibs(check[i]);
+                if (against && against->enabled)
                 {
-                    CompOption* against = m_Options.GetOptionByOption(check[i]);
-                    if (!against)
-                        against = m_Options.GetOptionByAdditionalLibs(check[i]);
-                    if (against && against->enabled)
-                    {
-                        wxString message = (copt->checkMessage.IsEmpty() ?
-                                  wxT("\"") + copt->name + _("\" conflicts with \"") + against->name + wxT("\".") :
-                                  copt->checkMessage );
-                        AnnoyingDialog dlg(_("Compiler options conflict"),
-                                           message,
-                                           wxART_INFORMATION,
-                                           AnnoyingDialog::OK);
-                        dlg.ShowModal();
-                        break;
-                    }
+                    wxString message = (option->checkMessage.IsEmpty() ?
+                              wxT("\"") + option->name + _("\" conflicts with \"") + against->name + wxT("\".") :
+                              option->checkMessage );
+                    AnnoyingDialog dlg(_("Compiler options conflict"),
+                                       message,
+                                       wxART_INFORMATION,
+                                       AnnoyingDialog::OK);
+                    dlg.ShowModal();
+                    break;
                 }
             }
-            if (copt->supersedes != wxEmptyString)
+        }
+        if (option->supersedes != wxEmptyString)
+        {
+            wxArrayString supersede = GetArrayFromString(option->supersedes, wxT(" "));
+            for (size_t i = 0; i < supersede.Count(); ++i)
             {
-                wxArrayString supersede = GetArrayFromString(copt->supersedes, wxT(" "));
-                for (size_t i = 0; i < supersede.Count(); ++i)
+                for (size_t j = 0; j < m_Options.GetCount(); ++j)
                 {
-                    for (size_t j = 0; j < m_Options.GetCount(); ++j)
+                    if (option != m_Options.GetOption(j) &&
+                        (supersede[i] == m_Options.GetOption(j)->option ||
+                         supersede[i] == m_Options.GetOption(j)->additionalLibs))
                     {
-                        if (copt != m_Options.GetOption(j) &&
-                            (supersede[i] == m_Options.GetOption(j)->option ||
-                             supersede[i] == m_Options.GetOption(j)->additionalLibs))
-                        {
-                            m_Options.GetOption(j)->enabled = false;
-                        }
+                        m_Options.GetOption(j)->enabled = false;
                     }
-                    for (size_t j = 0; j < list->GetCount(); ++j)
-                    {
-                        if (list->GetString(j).EndsWith(wxT("[") + supersede[i] + wxT("]")))
-                            list->Check(j, false);
-                    }
+                }
+
+                for (wxPropertyGridIterator it = m_FlagsPG->GetIterator(); !it.AtEnd(); ++it)
+                {
+                    wxPGProperty* p = *it;
+                    if (p->IsCategory() || p == property)
+                        continue;
+                    if (p->GetLabel().EndsWith(wxT("[") + supersede[i] + wxT("]")))
+                        m_FlagsPG->SetPropertyValue(p, false);
                 }
             }
-            if (copt->exclusive)
+        }
+        if (option->exclusive)
+        {
+            for (size_t i = 0; i < m_Options.GetCount(); ++i)
             {
-                for (size_t i = 0; i < m_Options.GetCount(); ++i)
+                if (option != m_Options.GetOption(i) &&
+                    option->category == m_Options.GetOption(i)->category)
                 {
-                    if (copt != m_Options.GetOption(i) &&
-                        copt->category == m_Options.GetOption(i)->category)
-                    {
-                        m_Options.GetOption(i)->enabled = false;
-                    }
+                    m_Options.GetOption(i)->enabled = false;
                 }
-                for (size_t i = 0; i < list->GetCount(); ++i)
-                {
-                    CompOption* opt = m_Options.GetOptionByName(list->GetString(i));
-                    if (copt != opt && copt->category == opt->category)
-                    {
-                        list->Check(i, false);
-                    }
-                }
+            }
+            for (wxPropertyGridIterator it = m_FlagsPG->GetIterator(); !it.AtEnd(); ++it)
+            {
+                wxPGProperty* p = *it;
+                if (p->IsCategory() || p == property)
+                    continue;
+                CompOption* opt = m_Options.GetOptionByName(p->GetLabel());
+                if (option != opt && option->category == opt->category)
+                    m_FlagsPG->SetPropertyValue(p, false);
             }
         }
     }
     m_bDirty = true;
-} // OnOptionToggled
+}
 
 // some handlers for adding/editing/removing/clearing of include/libraries/resources directories
 void CompilerOptionsDlg::OnAddDirClick(cb_unused wxCommandEvent& event)
@@ -2823,14 +2854,10 @@ void CompilerOptionsDlg::OnMyCharHook(wxKeyEvent& event)
 
 int CompilerOptionsDlg::m_MenuOption = -1;
 
-void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
+void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
 {
-    wxCheckListBox* list = XRCCTRL(*this, "lstCompilerOptions", wxCheckListBox);
-    wxPoint pos = event.GetPosition();
-    int index = (pos == wxDefaultPosition ?
-                 list->GetSelection() : list->HitTest(pos));
-    list->SetSelection(index);
-    int scroll = list->GetScrollPos(wxVERTICAL);
+    int scroll = m_FlagsPG->GetScrollPos(wxVERTICAL);
+    wxPGProperty *property = event.GetProperty();
 
     enum FlagsMenuOptions
     {
@@ -2839,12 +2866,14 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
         FMO_Modify,
         FMO_Delete,
         FMO_COnly,
-        FMO_CPPOnly
+        FMO_CPPOnly,
+        FMO_ExpandAll,
+        FMO_CollapseAll
     };
 
     wxMenu* pop = new wxMenu;
     pop->Append(FMO_New, _("New flag..."));
-    if (index != wxNOT_FOUND)
+    if (property && !property->IsCategory())
     {
         pop->Append(FMO_Modify, _("Modify flag..."));
         pop->Append(FMO_Delete, _("Delete flag"));
@@ -2852,13 +2881,15 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
     pop->AppendSeparator();
     pop->Append(FMO_COnly, _("C - only flags..."));
     pop->Append(FMO_CPPOnly, _("C++ - only flags..."));
+    pop->AppendSeparator();
+    pop->Append(FMO_ExpandAll, _("Expand all categories"));
+    pop->Append(FMO_CollapseAll, _("Collapse all categories"));
     pop->Connect(wxEVT_COMMAND_MENU_SELECTED, (wxObjectEventFunction)&CompilerOptionsDlg::OnFlagsPopupClick);
     m_MenuOption = FMO_None;
-    list->PopupMenu(pop, pos);
+    m_FlagsPG->PopupMenu(pop);
     delete pop;
     if (m_MenuOption == FMO_None)
         return;
-    wxString category;
     if (m_MenuOption == FMO_COnly)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
@@ -2912,11 +2943,20 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
         size_t i = 0;
         for (; i < m_Options.GetCount(); ++i)
         {
-            if (m_Options.GetOption(i)->name == list->GetString(index))
+            if (m_Options.GetOption(i)->name == property->GetLabel())
                 break;
         }
-        category = m_Options.GetOption(i)->category;
         m_Options.RemoveOption(i);
+    }
+    else if (m_MenuOption == FMO_ExpandAll)
+    {
+        m_FlagsPG->ExpandAll();
+        return;
+    }
+    else if (m_MenuOption == FMO_CollapseAll)
+    {
+        m_FlagsPG->CollapseAll();
+        return;
     }
     else
     {
@@ -2940,21 +2980,48 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
             categ.Add(wxT("General"));
         CompOption copt;
         if (m_MenuOption == FMO_Modify)
-            copt = *m_Options.GetOptionByName(list->GetString(index));
-        CompilerFlagDlg dlg(0L, &copt, categ);
+            copt = *m_Options.GetOptionByName(property->GetLabel());
+
+        wxString categoryName;
+        if (property)
+        {
+            // If we have a selected property try to find the name of the category.
+            if (property->IsCategory())
+                categoryName = property->GetLabel();
+            else
+            {
+                wxPGProperty *category = property->GetParent();
+                if (category)
+                    categoryName = category->GetLabel();
+            }
+        }
+        CompilerFlagDlg dlg(nullptr, &copt, categ, categoryName);
         PlaceWindow(&dlg);
         if (dlg.ShowModal() != wxID_OK)
             return;
-        category = copt.category;
         if (m_MenuOption == FMO_New)
         {
             size_t i;
-            size_t idx = (index == wxNOT_FOUND ? list->GetCount() - 1 : index);
-            for (i = 0; i < m_Options.GetCount(); ++i)
+            if (property)
             {
-                if (m_Options.GetOption(i)->name == list->GetString(idx))
-                    break;
+                wxString name;
+                if (property->IsCategory())
+                {
+                    wxPGProperty *child = m_FlagsPG->GetFirstChild(property);
+                    if (child)
+                        name = child->GetLabel();
+                }
+                else
+                    name = property->GetLabel();
+                for (i = 0; i < m_Options.GetCount(); ++i)
+                {
+                    if (m_Options.GetOption(i)->name == name)
+                        break;
+                }
             }
+            else
+                i = m_Options.GetCount() - 1;
+
             m_Options.AddOption(copt.name, copt.option,
                                 copt.category, copt.additionalLibs,
                                 copt.checkAgainst, copt.checkMessage,
@@ -2962,7 +3029,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
         }
         else
         {
-            CompOption* opt = m_Options.GetOptionByName(list->GetString(index));
+            CompOption* opt = m_Options.GetOptionByName(property->GetLabel());
             wxString name = copt.name + wxT("  [");
             if (copt.option.IsEmpty())
                 name += copt.additionalLibs;
@@ -2979,21 +3046,24 @@ void CompilerOptionsDlg::OnFlagsPopup(wxMouseEvent& event)
             opt->exclusive      = copt.exclusive;
         }
     }
-    wxChoice* cmb = XRCCTRL(*this, "cmbCategory", wxChoice);
-    category = (cmb->GetSelection() == 0 ? cmb->GetStringSelection() : category);
-    DoFillCategories();
-    int sel = cmb->FindString(category);
-    cmb->SetSelection(sel == wxNOT_FOUND ? 0 : sel);
-    list->Freeze();
     DoFillOptions();
-    list->ScrollLines(scroll);
-    list->SetSelection(index == wxNOT_FOUND ? list->GetCount() - 1 :
-                       index + (m_MenuOption == FMO_New ? 1 : (m_MenuOption == FMO_Modify ? 0 : -1)));
-    list->Thaw();
+    m_FlagsPG->ScrollLines(scroll);
     m_bFlagsDirty = true;
 }
 
 void CompilerOptionsDlg::OnFlagsPopupClick(wxCommandEvent& event)
 {
     m_MenuOption = event.GetId();
+}
+
+void CompilerOptionsDlg::OnOptionDoubleClick(wxPropertyGridEvent& event)
+{
+    wxPGProperty *property = event.GetProperty();
+    // For bool properties automatically toggle the checkbox on double click.
+    if (property && property->IsKindOf(CLASSINFO(wxBoolProperty)))
+    {
+        bool realValue = m_FlagsPG->GetPropertyValue(property);
+        m_FlagsPG->ChangePropertyValue(property, !realValue);
+    }
+    event.Skip();
 }
