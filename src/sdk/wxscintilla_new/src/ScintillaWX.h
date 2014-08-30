@@ -51,8 +51,10 @@
 #include <wx/dnd.h>
 #include <wx/timer.h>
 
-#include <windows.h>
-#include <wx/msw/wrapwin.h>
+#ifdef __WXMSW__
+    #include <windows.h>
+    #include <wx/msw/wrapwin.h>
+#endif // __WXMSW__
 
 //----------------------------------------------------------------------
 

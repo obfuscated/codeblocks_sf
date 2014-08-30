@@ -28,6 +28,7 @@
 #include <wx/control.h>
 #include <wx/dnd.h>
 #include <wx/stopwatch.h>
+#include <wx/timer.h>
 /* C::B begin */
 #include <wx/scrolbar.h>
 #if wxCHECK_VERSION(2,9,2)
