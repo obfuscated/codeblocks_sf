@@ -450,7 +450,7 @@ private:
       */
     bool CalcConditionExpression();
 
-    /** If the macro is defined, return true
+    /** If the next token string is macro usage, return true
       * It will call 'SkipToEOL(false, true)' before returned.
       */
     bool IsMacroDefined();
@@ -499,15 +499,17 @@ private:
      * such as the token name, the line number of the token, the current brace nest level.
      */
     wxString             m_Token;                //!< token name
-    /** when parsing a buffer
+    /** index offset in buffer, when parsing a buffer
      * ....... namespace std { int a; .......
      *                      ^ --- m_TokenIndex, m_Token = "std"
      * m_TokenIndex always points to the next character of a valid token, in the above example,
      * it points to the space after "std".
      */
-    unsigned int         m_TokenIndex;           //!< index offset in buffer
-    unsigned int         m_LineNumber;           //!< line offset in buffer
-    unsigned int         m_NestLevel;            //!< keep track of block nesting { }
+    unsigned int         m_TokenIndex;
+    /** line offset in buffer, please note that it is 1 based, not 0 based */
+    unsigned int         m_LineNumber;
+    /** keep track of block nesting { } */
+    unsigned int         m_NestLevel;
 
     /** Backup the previous Token information */
     unsigned int         m_UndoTokenIndex;

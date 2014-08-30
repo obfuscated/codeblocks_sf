@@ -257,8 +257,6 @@ public:
     virtual ~Parser();
 
     /** Add files to batch parse mode, internally. The files will be parsed sequentially.
-     * Note that when some "#include" files were added to the batch parse,
-     * their parsing sequence may be random.
      * @param filenames input files name array
      */
     virtual void AddBatchParse(const StringList& filenames);
@@ -340,14 +338,15 @@ protected:
     void SetMaxThreads(unsigned int max) { m_Pool.SetConcurrentThreads(max); }
 
     /** parse the file, either immediately or delayed.
+     * @param isLocal true if the file belong to a C::B project
      * @param locked give the status of the Tokentree, false means the tree is not locked
      */
     bool Parse(const wxString& filename, bool isLocal = true, bool locked = false);
 
-    /** delete those files from the TokenTree, and add them again thought AddParse() function */
+    /** delete those files from the TokenTree, and add them again through AddParse() function */
     void ReparseModifiedFiles();
 
-    /** remove all the queued tasks in m_PoolTask and cancel all the tasks in m_Pool*/
+    /** cancel all the tasks in m_Pool*/
     void TerminateAllThreads();
 
     /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
@@ -381,6 +380,11 @@ private:
      * the parserthread use some call like m_Parent->ParseFile() to call this function, but this function
      * just call Parser::Parse() function, which either run the syntax analysis immediately or create
      * a parsing task in the Pool.
+     * @param filename the file we want to parse
+     * @param isGlobal true if the file is not belong to a C::B project
+     * @param locked true if the TokenTree is locked. when initially parse a translation unit file
+     * the locked should be set as false, but if you want to recursive parse to an include file
+     * the locked value should be set as true.
      */
     virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
     void ConnectEvents();
@@ -395,16 +399,9 @@ protected:
     // in-memory data and cache
     bool                      m_UsingCache; //!< true if loaded from cache
 
-    /** Thread queue, these thread tasks will be executed in FIFO mode as they are added, normally
-     * those ParserThread put in the the m_PoolTask will NOT run immediately, they are just tasks
-     * ready to be put in the m_Pool(see below), if will finally executed in the m_Pool.
-     */
-    typedef std::vector<ParserThread*> PTVector;
-    std::queue<PTVector>      m_PoolTask;
-
     /** Thread Pool, executing all the ParserThread, used in batch parse mode. The thread pool can
      * add/remove/execute the ParserThread tasks, it will also notify the Parser that all the thread
-     * was done.
+     * are done.
      */
     cbThreadPool              m_Pool;
 
@@ -437,8 +434,7 @@ private:
      * batch parsing, we may receive several such event from the m_Pool, because
      * 1, when ParserThreadedTask finished
      * 2, when batchFiles get finished
-     * 3, parse system header file again
-     * 4, mark C::B project files's token as local
+     * 3, mark C::B project files's token as local
      */
     bool                      m_IgnoreThreadEvents;
 

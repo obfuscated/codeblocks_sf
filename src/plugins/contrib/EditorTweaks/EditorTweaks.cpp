@@ -51,6 +51,7 @@ int id_et_TabSize4            = wxNewId();
 int id_et_TabSize6            = wxNewId();
 int id_et_TabSize8            = wxNewId();
 int id_et_ConsistentIndent    = wxNewId();
+int id_et_ShowWhitespaceChars = wxNewId();
 int id_et_ShowEOL             = wxNewId();
 int id_et_StripTrailingBlanks = wxNewId();
 int id_et_EnsureConsistentEOL = wxNewId();
@@ -103,6 +104,7 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_TabSize6, EditorTweaks::OnTabSize6)
     EVT_MENU(id_et_TabSize8, EditorTweaks::OnTabSize8)
     EVT_MENU(id_et_ConsistentIndent, EditorTweaks::OnMakeIndentsConsistent)
+    EVT_MENU(id_et_ShowWhitespaceChars, EditorTweaks::OnShowWhitespaceChars)
     EVT_MENU(id_et_ShowEOL, EditorTweaks::OnShowEOL)
     EVT_MENU(id_et_StripTrailingBlanks, EditorTweaks::OnStripTrailingBlanks)
     EVT_MENU(id_et_EnsureConsistentEOL, EditorTweaks::OnEnsureConsistentEOL)
@@ -290,6 +292,8 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     tabsizemenu->AppendRadioItem( id_et_TabSize8, _( "8" ), _( "Tab Width of 8" ) );
     submenu->Append(wxID_ANY,_("Tab Size"),tabsizemenu);
     submenu->Append( id_et_ConsistentIndent, _( "Make Indents Consistent" ),  _( "Convert leading tabs/spaces to the active setting" ) );
+    submenu->AppendCheckItem(id_et_ShowWhitespaceChars, _("Show whitespace characters"),
+                             _("Shows the space and tab characters in the editor"));
     submenu->AppendSeparator();
     wxMenu *eolmenu=new wxMenu();
     eolmenu->AppendRadioItem( id_et_EOLCRLF, _( "CR LF" ), _( "Carriage Return - Line Feed (Windows Default)" ) );
@@ -382,7 +386,7 @@ void EditorTweaks::UpdateUI()
     submenu->Check(id_et_ShowEOL,control->GetViewEOL());
     submenu->Check(id_et_SuppressInsertKey, m_suppress_insert);
     submenu->Check(id_et_ConvertBraces,     m_convert_braces);
-
+    submenu->Check(id_et_ShowWhitespaceChars, control->GetViewWhiteSpace()!=wxSCI_WS_INVISIBLE);
 }
 
 void EditorTweaks::OnUpdateUI(wxUpdateUIEvent &/*event*/)
@@ -797,6 +801,7 @@ void EditorTweaks::OnMakeIndentsConsistent(wxCommandEvent& /*event*/)
 
     MakeIndentsConsistent(ed);
 }
+
 void EditorTweaks::MakeIndentsConsistent(cbEditor* ed)
 {
     cbStyledTextCtrl* stc = ed->GetControl();
@@ -827,6 +832,13 @@ void EditorTweaks::MakeIndentsConsistent(cbEditor* ed)
     }
     if (changed)
         stc->EndUndoAction();
+}
+
+void EditorTweaks::OnShowWhitespaceChars(wxCommandEvent &event)
+{
+    cbStyledTextCtrl* control = GetSafeControl();
+    if (control)
+        control->SetViewWhiteSpace(event.IsChecked() ? wxSCI_WS_VISIBLEALWAYS : wxSCI_WS_INVISIBLE);
 }
 
 void EditorTweaks::OnShowEOL(wxCommandEvent &/*event*/)

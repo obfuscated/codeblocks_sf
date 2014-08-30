@@ -432,7 +432,6 @@ bool Parser::Done()
     bool done = m_BatchParseFiles.empty()
                 && m_PredefinedMacros.IsEmpty()
                 && !m_NeedMarkFileAsLocal
-                && m_PoolTask.empty()
                 && m_Pool.Done();
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
@@ -451,8 +450,6 @@ wxString Parser::NotDoneReason()
         reason += _T("\n- still pre-defined macros to operate");
     if (m_NeedMarkFileAsLocal)
         reason += _T("\n- still need to mark files as local");
-    if (!m_PoolTask.empty())
-        reason += _T("\n- still parser threads (tasks) in the pool");
     if (!m_Pool.Done())
         reason += _T("\n- thread pool is not done yet");
 
@@ -533,6 +530,7 @@ void Parser::AddParse(const wxString& filename)
 
 bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
 {
+    // most ParserThreadOptions was copied from m_Options
     ParserThreadOptions opts;
 
     opts.useBuffer             = false;
@@ -544,15 +542,19 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
     opts.wantPreprocessor      = m_Options.wantPreprocessor;
     opts.parseComplexMacros    = m_Options.parseComplexMacros;
 
+    // whether to collect doxygen style documents.
     opts.storeDocumentation    = m_Options.storeDocumentation;
 
     opts.loader                = nullptr; // must be 0 at this point
 
     bool result = false;
+    // a (false) do while, so we can quickly exit the loop by break statement
     do
     {
         bool canparse = false;
         {
+            // check to see whether the filename is already parsed, if not, then we first add
+            // it to ReserveFileForParsing
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
@@ -567,8 +569,7 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
 
         if (!canparse)
         {
-
-            CCLogger::Get()->DebugLog(_T("Parser::Parse(): file already parsed or reserved for parsing") + filename);
+            TRACE(_T("Parser::Parse(): file already parsed or reserved for parsing") + filename);
             break;
         }
 
@@ -577,75 +578,32 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
         // the loader will be deleted in the ParserThread::InitTokenizer() function.
         opts.loader = Manager::Get()->GetFileManager()->Load(filename, m_NeedsReparse);
 
+        // we are going to parse this file, so create a ParserThread
         ParserThread* thread = new ParserThread(this, filename, isLocal, opts, m_TokenTree);
         TRACE(_T("Parser::Parse(): Parsing %s"), filename.wx_str());
 
-        // when parsing the priority header files themselves, let the ParserThread did the dirty
-        // job in the same thread (mostly called from ParserThreadedTask::Execute(), otherwise,
-        // ParserThread should work later(either put the ParserThread in the PoolTask or the Pool)
         // We now properly parse each source file from top to bottom (i.e., expanding each
-        // #include directive: if 'locked' is true it is an #include file and we need to recurse.
-        // If locked is true, which means this function is called when handling #include directive,
-        // the tree is already locked, so recursive here.
+        // #include directive: If locked is true, which means this function is called when handling
+        // #include directive, the tree is already locked, so recursive here.
         if (locked)
         {
 
-            TRACE(_T("Parser::Parse(): Parsing priority header, %s"), filename.wx_str());
+            // release the tree locker, don't block the GUI to access the TokenTree for a long time
+            CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+            wxMilliSleep(1);
+            CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-            if (locked)
-            {
-                // release the lock, so the GUI will not hang
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-                wxMilliSleep(1);
-                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-            }
-
-            if (!locked)
-                CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
+            TRACE(_T("Parser::Parse(): Parsing included header, %s"), filename.wx_str());
+            // run the parse recursively
             result = thread->Parse();
             delete thread;
-
-            if (!locked)
-                CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
             return true;
-
         }
         else
         {
             // files should not be parsed immediately, so we need to put it to the pool.
-            // either to pool task, or the pool depends on the m_IsParsing status
-            // if m_IsParsing is true, put it to the later one.
-            TRACE(_T("Parser::Parse(): Parallel Parsing %s"), filename.wx_str());
-
-            CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
-
-            // Add a task for all project files
-            if (m_IsFirstBatch)
-            {
-                m_IsFirstBatch = false;
-                m_PoolTask.push(PTVector());
-            }
-
-            bool pool_task_empty = false;
-            if (m_IsParsing)
-                m_Pool.AddTask(thread, true); // Note: after Huki's patch to recursive to include file, this should not be run here
-            else
-            {
-                if (!m_PoolTask.empty())
-                    m_PoolTask.back().push_back(thread);
-                else
-                    pool_task_empty = true;
-            }
-
-            CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
-
-            if (pool_task_empty)
-            {
-                CCLogger::Get()->DebugLog(_T("Parser::Parse(): m_PoolTask is empty, why?!"));
-                return false;
-            }
+            TRACE(_T("Parser::Parse(): Adding a Parsing job for %s"), filename.wx_str());
+            m_Pool.AddTask(thread, true); // autodelete = true
         }
 
         result = true;
@@ -830,19 +788,6 @@ bool Parser::Reparse(const wxString& filename, cb_unused bool isLocal)
 
 void Parser::TerminateAllThreads()
 {
-    // use a mutex to protect the m_PoolTask from multiply threads accessing
-    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
-
-    while (!m_PoolTask.empty())
-    {
-        PTVector& v = m_PoolTask.front();
-        for (PTVector::iterator it = v.begin(); it != v.end(); ++it)
-            delete *it;
-        m_PoolTask.pop();
-    }
-
-    CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
-
     // NOTE: This should not be locked with s_ParserMutex, otherwise we'll be stuck in an
     // infinite loop below since the worker thread also enters s_ParserMutex.
     // In fact cbThreadPool maintains it's own mutex, so m_Pool is probably threadsafe.
@@ -895,8 +840,7 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
     }
 
     // Do next task
-    if (   !m_PoolTask.empty()
-        || !m_PredefinedMacros.IsEmpty()
+    if (!m_PredefinedMacros.IsEmpty()
         || !m_BatchParseFiles.empty() )
     {
         TRACE(_T("Parser::OnAllThreadsDone(): Still some tasks left, starting m_BatchTimer."));
@@ -1010,30 +954,9 @@ void Parser::OnBatchTimer(cb_unused wxTimerEvent& event)
 
     StartStopWatch(); // start counting the time we take for parsing the files
 
-    if (   m_PoolTask.empty()
-        && m_BatchParseFiles.empty()
+    if (m_BatchParseFiles.empty()
         && m_PredefinedMacros.IsEmpty() ) // easy case: is there any thing to do at all?
     {
-        return;
-    }
-
-    if (!m_PoolTask.empty()) // there are already batch jobs - so just add the new ones
-    {
-        // prepare adding threads to the pool
-        m_Pool.BatchBegin();
-        PTVector& v = m_PoolTask.front();
-        TRACE(_T("Parser::OnBatchTimer(): m_PoolTask's front threads(contained in vector<Parserthread*>) were added to m_Pool."));
-        for (PTVector::const_iterator it = v.begin(); it != v.end(); ++it)
-        {
-            m_Pool.AddTask(*it, true);
-            TRACE(_T("-Parser::OnBatchTimer(): Adding Parserthread for %s to m_Pool."), (*it)->GetFilename().wx_str());
-        }
-
-        m_PoolTask.pop();
-
-        // end of adding the task, execute the threads in the pool
-        m_Pool.BatchEnd();
-
         return;
     }
 

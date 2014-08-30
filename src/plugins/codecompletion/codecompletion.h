@@ -61,8 +61,6 @@ public:
     /** helper class to support FunctionsScopeVec*/
     typedef std::vector<int> ScopeMarksVec;
 
-    /** class to store token name and it's ID */
-    typedef std::vector<std::pair<wxString,int> > AutocompNameIdxVec;
 
     struct FunctionsScopePerFile
     {
@@ -70,7 +68,7 @@ public:
         NameSpaceVec m_NameSpaces;          // all namespaces in the file
         bool parsed;                        // indicates whether this file is parsed or not
     };
-    /** filename -> FunctionsScopePerFile map, contains all the opened files scope info*/
+    /** filename -> FunctionsScopePerFile map, contains all the opened files scope info */
     typedef std::map<wxString, FunctionsScopePerFile> FunctionsScopeMap;
 
     /** Constructor */
