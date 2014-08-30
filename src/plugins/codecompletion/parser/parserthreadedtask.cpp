@@ -91,7 +91,7 @@ int ParserThreadedTask::Execute()
     while (!batchFiles.empty())
     {
         TRACE(_T("-ParserThreadedTask::Execute(): Parse %s"), batchFiles.front().wx_str());
-        m_Parser->Parse(batchFiles.front());
+        m_Parser->Parse(batchFiles.front()); //bool isLocal = true, bool locked = false
         batchFiles.pop_front();
     }
 

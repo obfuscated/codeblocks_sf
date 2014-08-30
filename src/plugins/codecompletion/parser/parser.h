@@ -395,13 +395,6 @@ protected:
     // in-memory data and cache
     bool                      m_UsingCache; //!< true if loaded from cache
 
-    /** Thread queue, these thread tasks will be executed in FIFO mode as they are added, normally
-     * those ParserThread put in the the m_PoolTask will NOT run immediately, they are just tasks
-     * ready to be put in the m_Pool(see below), if will finally executed in the m_Pool.
-     */
-    typedef std::vector<ParserThread*> PTVector;
-    std::queue<PTVector>      m_PoolTask;
-
     /** Thread Pool, executing all the ParserThread, used in batch parse mode. The thread pool can
      * add/remove/execute the ParserThread tasks, it will also notify the Parser that all the thread
      * was done.
@@ -437,8 +430,7 @@ private:
      * batch parsing, we may receive several such event from the m_Pool, because
      * 1, when ParserThreadedTask finished
      * 2, when batchFiles get finished
-     * 3, parse system header file again
-     * 4, mark C::B project files's token as local
+     * 3, mark C::B project files's token as local
      */
     bool                      m_IgnoreThreadEvents;
 
