@@ -389,7 +389,9 @@ private:
     /** source file index on the "file map tree" */
     unsigned int         m_FileIdx;
 
-    /** determine whether we are parsing the local files or buffer already in memory */
+    /** if true, means we are parsing a file which belongs to a C::B project, otherwise, we are
+     *  parsing a file not belong to a C::B project(such as a system header file)
+     */
     bool                 m_IsLocal;
 
     /** This is a very important member variables! It serves as a type stack,

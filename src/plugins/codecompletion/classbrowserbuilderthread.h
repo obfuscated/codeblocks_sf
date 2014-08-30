@@ -87,6 +87,7 @@ private:
                   short int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false);
 
     // Called from RemoveInvalidNodes(), AddNodes(), CreateSpecialFolder():
+    // if the token should be shown, it will return true
     bool TokenMatchesFilter(const Token* token, bool locked = false);
     // Called from AddNodes():
     bool TokenContainsChildrenOfKind(const Token* token, int kind);
