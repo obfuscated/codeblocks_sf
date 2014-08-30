@@ -75,7 +75,7 @@ public:
         wxString findImgFile = ConfigManager::GetDataFolder() + _T("/images/filefind.png");
         wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, wxBitmap(wxImage(findImgFile)));
         infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
-        wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choice the find scope for search tokens?"));
+        wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
         infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL,
                        wxDLG_UNIT(this, wxSize(5, 0)).GetWidth());
         sizer->Add(infoSizer, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
