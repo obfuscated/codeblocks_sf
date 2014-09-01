@@ -2840,9 +2840,6 @@
 		<Unit filename="sdk/resources/edit_array_string.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/resources/edit_keywords.xrc">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="sdk/resources/edit_pair.xrc">
 			<Option target="sdk" />
 		</Unit>
@@ -3551,6 +3548,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexRebol.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexRegistry.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexRuby.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3752,6 +3752,18 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/Document.h">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/EditModel.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/EditModel.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/EditView.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/EditView.h">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/Editor.cxx">
 			<Option target="scintilla" />
 		</Unit>
@@ -3783,6 +3795,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/LineMarker.h">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/MarginView.cxx">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/src/MarginView.h">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/src/Partitioning.h">

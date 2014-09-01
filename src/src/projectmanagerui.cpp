@@ -299,18 +299,17 @@ void ProjectManagerUI::RebuildTree()
     int count = pa->GetCount();
     for (int i = 0; i < count; ++i)
     {
-        cbProject* prj = pa->Item(i);
-        if (prj)
+        if ( cbProject* prj = pa->Item(i) )
             prj->SaveTreeState(m_pTree);
     }
     m_pTree->DeleteAllItems();
     wxString title;
     bool read_only = false;
-    cbWorkspace *workspace = pm->GetWorkspace();
-    if (workspace)
+    cbWorkspace* wkspc = pm->GetWorkspace();
+    if (wkspc)
     {
-        title = workspace->GetTitle();
-        wxString ws_file = workspace->GetFilename();
+        title = wkspc->GetTitle();
+        wxString ws_file = wkspc->GetFilename();
         read_only = (   !ws_file.IsEmpty()
                      &&  wxFile::Exists(ws_file.c_str())
                      && !wxFile::Access(ws_file.c_str(), wxFile::write) );
@@ -829,8 +828,7 @@ void ProjectManagerUI::RemoveFilesRecursively(wxTreeItemId& sel_id)
             child = m_pTree->GetNextChild(sel_id, cookie);
         if (child.IsOk())
         {
-            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(child);
-            if (ftd)
+            if ( FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(child) )
             {
                 cbProject* prj = ftd->GetProject();
                 if (prj && ftd->GetKind() == FileTreeData::ftdkFile)
@@ -1094,16 +1092,16 @@ void ProjectManagerUI::OnTreeItemRightClick(wxTreeEvent& event)
 
 void ProjectManagerUI::OnRenameWorkspace(cb_unused wxCommandEvent& event)
 {
-    cbWorkspace *workspace = Manager::Get()->GetProjectManager()->GetWorkspace();
-    if (workspace)
+    cbWorkspace* wkspc = Manager::Get()->GetProjectManager()->GetWorkspace();
+    if (wkspc)
     {
         wxString text = wxGetTextFromUser(_("Please enter the new name for the workspace:"),
                                           _("Rename workspace"),
-                                          workspace->GetTitle());
+                                          wkspc->GetTitle());
         if (!text.IsEmpty())
         {
-            workspace->SetTitle(text);
-            m_pTree->SetItemText(m_TreeRoot, workspace->GetTitle());
+            wkspc->SetTitle(text);
+            m_pTree->SetItemText(m_TreeRoot, wkspc->GetTitle());
         }
     }
 }
@@ -2315,17 +2313,17 @@ bool ProjectManagerUI::QueryCloseProject(cbProject* proj, bool dontsavefiles)
 
 bool ProjectManagerUI::QueryCloseWorkspace()
 {
-    cbWorkspace *workspace = Manager::Get()->GetProjectManager()->GetWorkspace();
-    if (!workspace)
+    cbWorkspace* wkspc = Manager::Get()->GetProjectManager()->GetWorkspace();
+    if (!wkspc)
         return true;
 
     // Don't ask to save the default workspace, if blank workspace is used on app startup.
     bool blankWorkspace = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true);
-    if (!(workspace->IsDefault() && blankWorkspace) && workspace->GetModified())
+    if (!(wkspc->IsDefault() && blankWorkspace) && wkspc->GetModified())
     {
         // workspace needs save
         wxString msg;
-        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), workspace->GetTitle().c_str());
+        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), wkspc->GetTitle().c_str());
         switch (cbMessageBox(msg, _("Save workspace"),
                              wxYES_NO | wxCANCEL | wxICON_QUESTION))
         {
@@ -3074,12 +3072,15 @@ void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree, co
 
     // iterate all project files and add them to the tree
     int count = 0;
-    FilesList &fileList = project->GetFilesList();
+    FilesList& fileList = project->GetFilesList();
     for (FilesList::iterator it = fileList.begin(); it != fileList.end(); ++it)
     {
         ProjectFile* pf = *it;
         if (!pf)
-              continue;
+        {
+            Manager::Get()->GetLogManager()->DebugLogError(_T("Looks like the project's file list is broken?!"));
+            continue;
+        }
 
         ftd = new FileTreeData(project, FileTreeData::ftdkFile);
         ftd->SetFileIndex(count++);

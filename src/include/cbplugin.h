@@ -1027,7 +1027,7 @@ class cbSmartIndentPlugin : public cbPlugin
           * Use it as an opportunity to tidy up CC's formating.
           * Don't indent for languages you don't know.
           */
-        virtual void OnCCDone(cbEditor *ed){}
+        virtual void OnCCDone(cb_unused cbEditor* ed){}
 
     protected:
         /** (reverse) search for the last word which is not comment **/

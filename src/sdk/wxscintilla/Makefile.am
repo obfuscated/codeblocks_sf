@@ -85,6 +85,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexPython.cxx \
 			src/scintilla/lexers/LexR.cxx \
 			src/scintilla/lexers/LexRebol.cxx \
+			src/scintilla/lexers/LexRegistry.cxx \
 			src/scintilla/lexers/LexRuby.cxx \
 			src/scintilla/lexers/LexRust.cxx \
 			src/scintilla/lexers/LexSML.cxx \
@@ -127,11 +128,14 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/src/ContractionState.cxx \
 			src/scintilla/src/Decoration.cxx \
 			src/scintilla/src/Document.cxx \
+			src/scintilla/src/EditModel.cxx \
 			src/scintilla/src/Editor.cxx \
+			src/scintilla/src/EditView.cxx \
 			src/scintilla/src/ExternalLexer.cxx \
 			src/scintilla/src/Indicator.cxx \
 			src/scintilla/src/KeyMap.cxx \
 			src/scintilla/src/LineMarker.cxx \
+			src/scintilla/src/MarginView.cxx \
 			src/scintilla/src/PerLine.cxx \
 			src/scintilla/src/PositionCache.cxx \
 			src/scintilla/src/RESearch.cxx \
@@ -175,12 +179,15 @@ noinst_HEADERS = src/PlatWX.h \
 			src/scintilla/src/ContractionState.h \
 			src/scintilla/src/Decoration.h \
 			src/scintilla/src/Document.h \
+			src/scintilla/src/EditModel.h \
 			src/scintilla/src/Editor.h \
+			src/scintilla/src/EditView.h \
 			src/scintilla/src/ExternalLexer.h \
 			src/scintilla/src/FontQuality.h \
 			src/scintilla/src/Indicator.h \
 			src/scintilla/src/KeyMap.h \
 			src/scintilla/src/LineMarker.h \
+			src/scintilla/src/MarginView.h \
 			src/scintilla/src/Partitioning.h \
 			src/scintilla/src/PerLine.h \
 			src/scintilla/src/PositionCache.h \

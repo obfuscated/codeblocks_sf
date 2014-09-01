@@ -3058,7 +3058,7 @@ void CompilerOptionsDlg::OnFlagsPopupClick(wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnOptionDoubleClick(wxPropertyGridEvent& event)
 {
-    wxPGProperty *property = event.GetProperty();
+    wxPGProperty* property = event.GetProperty();
     // For bool properties automatically toggle the checkbox on double click.
     if (property && property->IsKindOf(CLASSINFO(wxBoolProperty)))
     {

@@ -90,11 +90,19 @@ static struct {
 #define PATTERN_LEN (sizeof(PATTERN) / sizeof(PATTERN[0]))
 
 LaTeXParser::LaTeXParser(const char * wordchars)
+    : pattern_num(0)
+    , depth(0)
+    , arg(0)
+    , opt(0)
 {
 	init(wordchars);
 }
 
 LaTeXParser::LaTeXParser(unsigned short * wordchars, int len)
+    : pattern_num(0)
+    , depth(0)
+    , arg(0)
+    , opt(0)
 {
 	init(wordchars, len);
 }
@@ -152,7 +160,7 @@ char * LaTeXParser::next_token()
 					opt = 1;
 				}
 				head += strlen(PATTERN[pattern_num].pat[0]) - 1;
-			} else if ((line[actual][head] == '%')) {
+			} else if (line[actual][head] == '%') {
 					state = 5;
 			} else if (is_wordchar(line[actual] + head)) {
 				state = 1;

@@ -33,10 +33,13 @@
 #include <wx/mstream.h>
 #include <wx/image.h>
 #if wxUSE_FFILE
-#include <wx/ffile.h>
-#else
-#include <wx/file.h>
-#endif // wxUSE_FFILE
+    #include <wx/ffile.h>
+#elif wxUSE_FILE
+    #include <wx/file.h>
+#endif
+#include <wx/log.h>      // C::B wxSafeShowMessage
+#include <wx/textctrl.h> // C::B wxTEXT_TYPE_ANY
+#include <wx/dcclient.h> // C::B wxPaintDC
 #ifdef __WXGTK__
     #include <wx/dcbuffer.h>
 #endif
@@ -299,7 +302,7 @@ void wxScintilla::SetHScrollBar(wxScrollBar* bar)
 // Add text to the document at current position.
 void wxScintilla::AddText(const wxString& text)
 {
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
 #if wxCHECK_VERSION(2, 9, 0)
     SendMsg(SCI_ADDTEXT, buf.length()-1, (uptr_t)(const char*)buf);
 #else
@@ -311,7 +314,7 @@ void wxScintilla::AddText(const wxString& text)
 // Add text to the document w/length parameter, this allows for binary data to be added.
 void wxScintilla::AddText(const int length, const wxString& text)
 {
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
     SendMsg(SCI_ADDTEXT, length, (uptr_t)(const char*)buf);
 }
 /* C::B end */
@@ -326,6 +329,12 @@ void wxScintilla::AddStyledText(const wxMemoryBuffer& data)
 void wxScintilla::InsertText(int pos, const wxString& text)
 {
     SendMsg(SCI_INSERTTEXT, pos, (uptr_t)(const char*)wx2sci(text));
+}
+
+// Change the text that is being inserted in response to SC_MOD_INSERTCHECK
+void wxScintilla::ChangeInsertion(int length, const wxString& text)
+{
+    SendMsg(SCI_CHANGEINSERTION, length, (uptr_t)(const char*)wx2sci(text));
 }
 
 // Delete all text in the document.
@@ -587,6 +596,24 @@ void wxScintilla::SetTabWidth(int tabWidth)
 int wxScintilla::GetTabWidth() const
 {
     return SendMsg(SCI_GETTABWIDTH, 0, 0);
+}
+
+// Clear explicit tabstops on a line.
+void wxScintilla::ClearTabStops(int line)
+{
+    SendMsg(SCI_CLEARTABSTOPS, line, 0);
+}
+
+// Add an explicit tab stop for a line.
+void wxScintilla::AddTabStop(int line, int x)
+{
+    SendMsg(SCI_ADDTABSTOP, line, x);
+}
+
+// Find the next explicit tab stop position on a line after a position.
+int wxScintilla::GetNextTabStop(int line, int x)
+{
+    return SendMsg(SCI_GETNEXTTABSTOP, line, x);
 }
 
 // Set the code page used to interpret the bytes of the document as characters.
@@ -1574,13 +1601,13 @@ int wxScintilla::FindText(int minPos, int maxPos,
                           const wxString& text,
                           int flags,
 /* C::B begin */
-                           int* lengthFound)
+                          int* lengthFound)
 /* C::B end */
 {
     TextToFind  ft;
     ft.chrg.cpMin = minPos;
     ft.chrg.cpMax = maxPos;
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
     ft.lpstrText = (char*)(const char*)buf;
 
 /* C::B begin */
@@ -1904,7 +1931,7 @@ int wxScintilla::GetTargetEnd() const
 
 int wxScintilla::ReplaceTarget(const wxString& text)
 {
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
 /* C::B begin */
 #if wxCHECK_VERSION(2, 9, 0)
     return SendMsg(SCI_REPLACETARGET, buf.length()-1, (uptr_t)(const char*)buf);
@@ -1923,7 +1950,7 @@ int wxScintilla::ReplaceTarget(const wxString& text)
 
 int wxScintilla::ReplaceTargetRE(const wxString& text)
 {
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
 /* C::B begin */
 #if wxCHECK_VERSION(2, 9, 0)
     return SendMsg(SCI_REPLACETARGETRE, buf.length()-1, (uptr_t)(const char*)buf);
@@ -1939,7 +1966,7 @@ int wxScintilla::ReplaceTargetRE(const wxString& text)
 
 int wxScintilla::SearchInTarget(const wxString& text)
 {
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
 /* C::B begin */
 #if wxCHECK_VERSION(2, 9, 0)
     return SendMsg(SCI_SEARCHINTARGET, buf.length()-1, (uptr_t)(const char*)buf);
@@ -2356,7 +2383,7 @@ bool wxScintilla::GetUseVerticalScrollBar() const
 // Append a string to the end of the document without changing the selection.
 void wxScintilla::AppendText(const wxString& text)
 {
-    const wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(text);
+    const wxWX2MBbuf buf = wx2sci(text);
 #if wxCHECK_VERSION(2, 9, 0)
     SendMsg(SCI_APPENDTEXT, buf.length()-1, (uptr_t)(const char*)buf);
 #else
@@ -2375,6 +2402,21 @@ bool wxScintilla::GetTwoPhaseDraw() const
 void wxScintilla::SetTwoPhaseDraw(bool twoPhase)
 {
     SendMsg(SCI_SETTWOPHASEDRAW, twoPhase, 0);
+}
+
+// How many phases is drawing done in?
+int wxScintilla::GetPhasesDraw() const
+{
+    return SendMsg(SCI_GETPHASESDRAW, 0, 0);
+}
+
+// In one phase draw, text is drawn in a series of rectangular blocks with no overlap.
+// In two phase draw, text is drawn in a series of lines allowing runs to overlap horizontally.
+// In multiple phase draw, each element is drawn over the whole drawing area, allowing text
+// to overlap from one line to the next.
+void wxScintilla::SetPhasesDraw(int phases)
+{
+    SendMsg(SCI_SETPHASESDRAW, phases, 0);
 }
 
 // Scroll so that a display line is at the top of the display.
@@ -2967,7 +3009,7 @@ int wxScintilla::GetZoom() const
 // Starts with reference count of 1 and not selected into editor.
 void* wxScintilla::CreateDocument()
 {
-    return (void*)SendMsg(SCI_CREATEDOCUMENT, 0, 0);
+    return (void*)SendMsg(SCI_CREATEDOCUMENT);
 }
 
 // Extend life of document.
@@ -5440,6 +5482,14 @@ void wxScintilla::OnIdle(wxIdleEvent& evt)
 }
 
 
+/* C::B begin */
+void wxScintilla::OnTimer(wxTimerEvent& evt)
+{
+    m_swx->DoOnTimer(evt);
+}
+/* C::B end */
+
+
 wxSize wxScintilla::DoGetBestSize() const
 {
     // What would be the best size for a wxSintilla?
@@ -5644,7 +5694,6 @@ void wxScintilla::NotifyParent(SCNotification* _scn)
     GetEventHandler()->ProcessEvent(evt);
 }
 
-
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
@@ -5724,7 +5773,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 43, 0, "Scintilla 3.43");
+    return wxVersionInfo("Scintilla", 3, 50, 0, "Scintilla 3.50");
 }
 #endif
 /* C::B end */

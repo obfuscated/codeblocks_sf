@@ -2,9 +2,12 @@
 #include "license.myspell"
 
 #include <stdlib.h>
+#include <string>
 #include <string.h>
 #include <stdio.h>
 #include <ctype.h>
+
+#include <limits>
 
 #include <vector>
 
@@ -326,7 +329,10 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
              utf8 = 1;
 #ifndef OPENOFFICEORG
 #ifndef MOZILLA_CLIENT
-             if (initialize_utf_tbl()) return 1;
+             if (initialize_utf_tbl()) {
+                 finishFileMgr(afflst);
+                 return 1;
+             }
 #endif
 #endif
           }
@@ -751,21 +757,20 @@ int  AffixMgr::parse_file(const char * affpath, const char * key)
     free(enc);
     enc = NULL;
 
-    char expw[MAXLNLEN];
+    std::string expw;
     if (wordchars) {
-        strcpy(expw, wordchars);
+        expw.assign(wordchars);
         free(wordchars);
-    } else *expw = '\0';
+    }
 
     for (int i = 0; i <= 255; i++) {
         if ( (csconv[i].cupper != csconv[i].clower) &&
-            (! strchr(expw, (char) i))) {
-                *(expw + strlen(expw) + 1) = '\0';
-                *(expw + strlen(expw)) = (char) i;
+            (expw.find((char)i) == std::string::npos)) {
+            	expw.push_back((char) i);
         }
     }
 
-    wordchars = mystrdup(expw);
+    wordchars = mystrdup(expw.c_str());
     }
 
     // default BREAK definition
@@ -1303,7 +1308,6 @@ char * AffixMgr::prefix_check_twosfx_morph(const char * word, int len,
 // Is word a non compound with a REP substitution (see checkcompoundrep)?
 int AffixMgr::cpdrep_check(const char * word, int wl)
 {
-  char candidate[MAXLNLEN];
   const char * r;
   int lenr, lenp;
 
@@ -1315,11 +1319,9 @@ int AffixMgr::cpdrep_check(const char * word, int wl)
       lenp = strlen(reptable[i].pattern);
       // search every occurence of the pattern in the word
       while ((r=strstr(r, reptable[i].pattern)) != NULL) {
-          strcpy(candidate, word);
-          if (r-word + lenr + strlen(r+lenp) >= MAXLNLEN) break;
-          strcpy(candidate+(r-word),reptable[i].pattern2);
-          strcpy(candidate+(r-word)+lenr, r+lenp);
-          if (candidate_check(candidate,strlen(candidate))) return 1;
+          std::string candidate(word);
+          candidate.replace(r-word, lenp, reptable[i].pattern2);
+          if (candidate_check(candidate.c_str(), candidate.size())) return 1;
           r++; // search for the next letter
       }
    }
@@ -2067,10 +2069,6 @@ int AffixMgr::compound_check_morph(const char * word, int len,
     strcpy(st, word);
 
     for (i = cmin; i < cmax; i++) {
-        oldnumsyllable = numsyllable;
-        oldwordnum = wordnum;
-        checked_prefix = 0;
-
         // go to end of the UTF-8 character
         if (utf8) {
             for (; (st[i] & 0xc0) == 0x80; i++);
@@ -2305,7 +2303,6 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                     mystrcat(*result, HENTRY_DATA2(rv), MAXLNLEN);
                   }
                   mystrcat(*result, "\n", MAXLNLEN);
-                  ok = 1;
                   return 0;
             }
 
@@ -3080,11 +3077,11 @@ int AffixMgr::expand_rootword(struct guessword * wlst, int maxn, const char * ts
                     nh++;
                     // add special phonetic version
     		    if (phon && (nh < maxn)) {
-    			char st[MAXWORDUTF8LEN];
-    			strcpy(st, phon);
-    			strcat(st, sptr->getKey());
-    			reverseword(st + strlen(phon));
-    			wlst[nh].word = mystrdup(st);
+    			std::string prefix(phon);
+    			std::string key(sptr->getKey());
+    			reverseword(key);
+    			prefix.append(key);
+    			wlst[nh].word = mystrdup(prefix.c_str());
     			if (!wlst[nh].word) return nh - 1;
     			wlst[nh].allow = (1 == 0);
     			wlst[nh].orig = mystrdup(newword);
@@ -3929,6 +3926,7 @@ int  AffixMgr::parse_defcpdtable(char * line, FileMgr * af)
         tp = nl;
         i = 0;
         defcpdtable[j].def = NULL;
+        defcpdtable[j].len = 0;
         piece = mystrsep(&tp, 0);
         while (piece) {
            if (*piece != '\0') {
@@ -4238,7 +4236,10 @@ int  AffixMgr::parse_affix(char * line, const char at, FileMgr * af, char * dupf
              case 3: { 
                        np++;
                        numents = atoi(piece); 
-                       if (numents == 0) {
+                       if ((numents <= 0) ||
+                           ((::std::numeric_limits<size_t>::max()
+                                / sizeof(struct affentry)) < numents))
+                       {
                            char * err = pHMgr->encode_flag(aflag);
                            if (err) {
                                 HUNSPELL_WARNING(stderr, "error: line %d: bad entry number\n",

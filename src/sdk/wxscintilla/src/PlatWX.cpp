@@ -205,14 +205,17 @@ void SurfaceImpl::Init(SurfaceID hDC_, WindowID /*wid*/)
 
 /* C::B begin */
 #if wxCHECK_VERSION(2,9,5)
-void SurfaceImpl::InitPixMap(int width, int height, Surface *WXUNUSED(surface_), WindowID winid)
+void SurfaceImpl::InitPixMap(int width, int height, Surface* surface_, WindowID winid)
 #else
-void SurfaceImpl::InitPixMap(int width, int height, Surface *WXUNUSED(surface_), WindowID /*winid*/)
+void SurfaceImpl::InitPixMap(int width, int height, Surface* surface_, WindowID /*winid*/)
 #endif
 /* C::B end */
 {
     Release();
-    hDC = new wxMemoryDC();
+    if (surface_)
+        hDC = new wxMemoryDC(static_cast<SurfaceImpl*>(surface_)->hDC);
+    else
+        hDC = new wxMemoryDC();
     hDCOwned = true;
     if (width < 1) width = 1;
     if (height < 1) height = 1;
@@ -372,9 +375,15 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     wxGCDC dc(*(wxMemoryDC*)hDC);
     wxColour penColour(wxColourFromCDandAlpha(outline, alphaOutline));
     wxColour brushColour(wxColourFromCDandAlpha(fill, alphaFill));
-    dc.SetPen(wxPen(penColour));
-    dc.SetBrush(wxBrush(brushColour));
-    dc.DrawRoundedRectangle(wxRectFromPRectangle(rc), cornerSize);
+/* C::B begin */
+    wxRect rect = wxRectFromPRectangle(rc);
+    wxPoint lt = rect.GetLeftTop()+ wxPoint(1,1);
+    wxSize size = rect.GetSize()-wxSize(2,2);
+
+    dc.SetPen(*wxTRANSPARENT_PEN);
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    dc.DrawRoundedRectangle(rect, cornerSize);
+/* C::B end */
     return;
 #else
 
@@ -555,7 +564,7 @@ void SurfaceImpl::DrawTextNoClip(PRectangle rc, Font &font, XYPOSITION ybase,
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
-    hDC->DrawText(sci2wx(s, len), rc.left, ybase - font.ascent);
+    hDC->DrawText(sci2wx(s, len), rc.left, ybase - Ascent(font));
 }
 
 void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font, XYPOSITION ybase,
@@ -569,7 +578,7 @@ void SurfaceImpl::DrawTextClipped(PRectangle rc, Font &font, XYPOSITION ybase,
     hDC->SetClippingRegion(wxRectFromPRectangle(rc));
 
     // see comments above
-    hDC->DrawText(sci2wx(s, len), rc.left, ybase - font.ascent);
+    hDC->DrawText(sci2wx(s, len), rc.left, ybase - Ascent(font));
     hDC->DestroyClippingRegion();
 }
 
@@ -590,7 +599,7 @@ void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, XYPOSITION ybas
 
     // ybase is where the baseline should be, but wxWin uses the upper left
     // corner, so I need to calculate the real position for the text...
-    hDC->DrawText(sci2wx(s, len), rc.left, ybase - font.ascent);
+    hDC->DrawText(sci2wx(s, len), rc.left, ybase - Ascent(font));
 
 /* C::B begin */
     #if wxCHECK_VERSION(2, 9, 0)

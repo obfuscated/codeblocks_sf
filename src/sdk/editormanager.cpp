@@ -769,7 +769,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         // no builtin editor or new file not yet saved
         if (!ed || !ed->IsOK())
             continue;
-        //File was deleted?
+        // File was deleted?
         if (!wxFileExists(ed->GetFilename()))
         {
             if (ed->GetModified()) // Already set the flag

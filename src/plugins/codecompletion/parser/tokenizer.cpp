@@ -1060,7 +1060,7 @@ wxString Tokenizer::PeekToken()
         else
             m_PeekToken.Clear();
 
-        m_PeekAvailable     = true; //Set after DoGetToken() to avoid recursive PeekToken() calls.
+        m_PeekAvailable     = true; // Set after DoGetToken() to avoid recursive PeekToken() calls.
         m_PeekTokenIndex    = m_TokenIndex;
         m_PeekLineNumber    = m_LineNumber;
         m_PeekNestLevel     = m_NestLevel;

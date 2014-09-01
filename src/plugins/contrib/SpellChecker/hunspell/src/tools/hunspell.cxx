@@ -1,3 +1,5 @@
+/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 4 -*- */
+
 // glibc < 3.0 (for mkstemp)
 #ifndef __USE_MISC
 #define __USE_MISC
@@ -5,6 +7,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string>
 #include <string.h>
 #include "config.h"
 #include "hunspell.hxx"
@@ -17,7 +20,7 @@
 #define HUNSPELL_VERSION VERSION
 #define INPUTLEN 50
 
-#define HUNSPELL_PIPE_HEADING "@(#) International Ispell Version 3.2.06 (but really Hunspell "VERSION")\n"
+#define HUNSPELL_PIPE_HEADING "@(#) International Ispell Version 3.2.06 (but really Hunspell " VERSION ")\n"
 #define HUNSPELL_HEADING "Hunspell "
 #define ODF_EXT "odt|ott|odp|otp|odg|otg|ods|ots"
 #define ENTITY_APOS "&apos;"
@@ -100,6 +103,7 @@
 
 #ifdef HAVE_ICONV
 #include <iconv.h>
+#include <errno.h>
 char text_conv[MAXLNLEN];
 #endif
 
@@ -198,6 +202,55 @@ static const char* fix_encoding_name(const char *enc)
 #endif
 
 /* change character encoding */
+std::string& chenc(std::string& st, const char * enc1, const char * enc2)
+{
+#ifndef HAVE_ICONV
+    return st;
+#else
+    if (st.empty())
+        return st;
+
+    if (!enc1 || !enc2 || strcmp(enc1, enc2) == 0)
+        return st;
+
+    std::string out(st.size(), std::string::value_type());
+    size_t c1(st.size());
+    size_t c2(out.size());
+    char *source(const_cast<char *>(&st[0]));
+    char *dest(const_cast<char *>(&out[0]));
+    iconv_t conv = iconv_open(fix_encoding_name(enc2), fix_encoding_name(enc1));
+    if (conv == (iconv_t) -1)
+    {
+        fprintf(stderr, gettext("error - iconv_open: %s -> %s\n"), enc2, enc1);
+    }
+    else
+    {
+        size_t res;
+        while ((res = iconv(conv, &source, &c1, &dest, &c2)) == size_t(-1))
+        {
+            if (errno == E2BIG)
+            {
+                out.resize(out.size() + (c2 += c1));
+
+                dest = const_cast<char *>(&out[0]) + out.size() - c2;
+            }
+            else
+                break;
+        }
+        if (res == (size_t) -1)
+        {
+            fprintf(stderr, gettext("error - iconv: %s -> %s\n"), enc2, enc1);
+        }
+        iconv_close(conv);
+        out.resize(dest - &out[0]);
+        st = out;
+    }
+
+    return st;
+#endif
+}
+
+/* change character encoding */
 char * chenc(char * st, const char * enc1, const char * enc2) {
     char * out = st;
 #ifdef HAVE_ICONV
@@ -220,7 +273,7 @@ char * chenc(char * st, const char * enc1, const char * enc2) {
     return out;
 }
 
-TextParser * get_parser(int format, char * extension, Hunspell * pMS) {
+TextParser * get_parser(int format, const char * extension, Hunspell * pMS) {
     TextParser * p = NULL;
     int io_utf8 = 0;
     char * denc = pMS->get_dic_encoding();
@@ -434,12 +487,11 @@ int putdic(char * word, Hunspell * pMS)
     
     int ret;
     
-    if (((w = strstr(word + 1, "/")) == NULL)) {
+    if ((w = strstr(word + 1, "/")) == NULL) {
         if (*word == '*') ret =  pMS->remove(word + 1);
 	else ret = pMS->add(word);
     } else {
 	char c;
-	int ret;
 	c = *w;
 	*w = '\0';
 	if (*(w+1) == '/') {
@@ -452,7 +504,7 @@ int putdic(char * word, Hunspell * pMS)
     return ret;
 }
 
-void load_privdic(char * filename, Hunspell * pMS) 
+void load_privdic(const char * filename, Hunspell * pMS) 
 {
     char buf[MAXLNLEN];
     FILE *dic = fopen(filename,"r");
@@ -465,7 +517,7 @@ void load_privdic(char * filename, Hunspell * pMS)
     }
 }
 
-int exist(char * filename)
+int exist(const char * filename)
 {
 	FILE *f = fopen(filename,"r");
 	if (f) {
@@ -520,29 +572,46 @@ char * scanline(char * message) {
 #endif
 
 // check words in the dictionaries (and set first checked dictionary)
-int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root) {
-  char buf[MAXLNLEN];
-  for (int i = 0; i < dmax; i++) {
-    strcpy(buf, token);
-    char * enc = mystrrep(chenc(buf, io_enc, dic_enc[*d]), ENTITY_APOS, "'");
-    if (checkapos && strchr(enc, '\'')) return 0;
-    // 8-bit encoded dictionaries need ASCII apostrophes (eg. English dictionaries)
-    if (strcmp(dic_enc[*d], "UTF-8") != 0) enc = mystrrep(enc, UTF8_APOS, "'");
-    if ((pMS[*d]->spell(enc, info, root) && !(warn && (*info & SPELL_WARN))) ||
-        // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV support,
-        // need also ASCII apostrophes (eg. French dictionaries)
-        ((strcmp(dic_enc[*d], "UTF-8") == 0) && strstr(enc, UTF8_APOS) &&
-            pMS[*d]->spell(mystrrep(enc, UTF8_APOS, "'"), info, root) && !(warn && (*info & SPELL_WARN)))) {
-        return 1;
+int check(Hunspell ** pMS, int * d, char * token, int * info, char ** root)
+{
+    for (int i = 0; i < dmax; ++i)
+    {
+        std::string buf(token);
+        chenc(buf, io_enc, dic_enc[*d]);
+        mystrrep(buf, ENTITY_APOS, "'");
+        if (checkapos && buf.find('\'') != std::string::npos)
+            return 0;
+        // 8-bit encoded dictionaries need ASCII apostrophes (eg. English dictionaries)
+        if (strcmp(dic_enc[*d], "UTF-8") != 0)
+            mystrrep(buf, UTF8_APOS, "'");
+        if ((pMS[*d]->spell(buf.c_str(), info, root) && !(warn && (*info & SPELL_WARN))) ||
+            // UTF-8 encoded dictionaries with ASCII apostrophes, but without ICONV support,
+            // need also ASCII apostrophes (eg. French dictionaries)
+            ((strcmp(dic_enc[*d], "UTF-8") == 0) && buf.find(UTF8_APOS) != std::string::npos &&
+                pMS[*d]->spell(mystrrep(buf, UTF8_APOS, "'").c_str(), info, root) &&
+                !(warn && (*info & SPELL_WARN))))
+        {
+            return 1;
+        }
+        if (++(*d) == dmax)
+            *d = 0;
     }
-    if (++(*d) == dmax) *d = 0;
-  }
-  return 0;
+    return 0;
 }
 
-int is_zipped_odf(TextParser * parser, const char * extension) {
+static int is_zipped_odf(TextParser * parser, const char * extension) {
   // ODFParser and not flat ODF
   return dynamic_cast<ODFParser*>(parser) && (extension && extension[0] != 'f');
+}
+
+static void freewordlist(wordlist *w)
+{
+    while (w != NULL) {
+	wordlist * r = w;
+	free(w->word);
+	w = w->next;
+	free(r);
+    }
 }
 
 void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename) {
@@ -561,8 +630,10 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename)
   char * extension = (filename) ? basename(filename, '.') : NULL;
   TextParser * parser = get_parser(format, extension, pMS[0]);
 
+  bool bZippedOdf = is_zipped_odf(parser, extension);
+
   // access content.xml of ODF
-  if (is_zipped_odf(parser, extension)) {
+  if (bZippedOdf) {
         tmpcontent = tmpnam(NULL);
         // break 1-line XML of zipped ODT documents at </style:style> and </text:p> to avoid tokenization problems (fgets could stop within an XML tag)
         sprintf(buf, "unzip -p '%s' content.xml | sed 's/\\(<\\/text:p>\\|<\\/style:style>\\)\\(.\\)/\\1\\\n\\2/g' >%s", filename, tmpcontent);
@@ -572,9 +643,14 @@ void pipe_interface(Hunspell ** pMS, int format, FILE * fileid, char * filename)
             exit(1);
         }
         fileid = fopen(tmpcontent, "r");
+        if (fileid == NULL)
+        {
+            perror(gettext("Can't open inputfile"));
+            exit(1);
+        }
     }
 
-  if ((filter_mode == NORMAL)) {
+  if (filter_mode == NORMAL) {
     fprintf(stdout,gettext(HUNSPELL_HEADING));
     fprintf(stdout,HUNSPELL_VERSION);
     if (pMS[0]->get_version()) fprintf(stdout," - %s", pMS[0]->get_version());
@@ -620,7 +696,10 @@ nextline: while(fgets(buf, MAXLNLEN, fileid)) {
         break;
     }
     case '#': {
-	if (HOME) strcpy(buf,HOME); else {
+	if (HOME) {
+	    strncpy(buf, HOME, MAXLNLEN-1);
+            buf[MAXLNLEN-1] = '\0';
+	} else {
 	    fprintf(stderr, gettext("error - missing HOME variable\n"));
 	    continue;
 	}
@@ -640,11 +719,13 @@ nextline: while(fgets(buf, MAXLNLEN, fileid)) {
 	break;
     }
     case '^': {
-		pos = 1;
+	pos = 1;
+	break;
     }
 
     default: {
 	pos = 0;
+	break;
     }
 
     } // end switch
@@ -669,7 +750,6 @@ if (pos >= 0) {
 		
 		case WORDFILTER: {
 			if (!check(pMS, &d, token, NULL, NULL)) {
-				bad = 1;
 				if (! printgood) fprintf(stdout,"%s\n", buf);
 			} else {
 				if (printgood) fprintf(stdout,"%s\n", buf);
@@ -828,7 +908,9 @@ if (pos >= 0) {
 
 	switch (filter_mode) {
 	    case AUTO: {
-		fprintf(stdout,"%s\n", parser->get_line());
+		char *pLine = parser->get_line();
+		fprintf(stdout,"%s\n", pLine);
+		free(pLine);
 		break;
 	    }
 
@@ -849,14 +931,15 @@ if (pos >= 0) {
 } // if
 } // while
 
-if (is_zipped_odf(parser, extension)) {
+if (bZippedOdf) {
     fclose(fileid);
     sprintf(buf, "rm %s", tmpcontent);
     if (system(buf) != 0)
         perror("write failed");
 }
 
-if (parser) delete(parser);
+delete(parser);
+freewordlist(dicwords);
 
 } // pipe_interface
 
@@ -963,16 +1046,22 @@ void dialogscreen(TextParser * parser, char * token,
 	// handle long lines and tabulators
 
 	char lines[MAXPREVLINE][MAXLNLEN];
-	
+	char *pPrevLine;	
 	for (int i = 0; i < MAXPREVLINE; i++) {
-		expand_tab(lines[i], chenc(parser->get_prevline(i), io_enc, ui_enc), MAXLNLEN);
+		pPrevLine = parser->get_prevline(i);
+		expand_tab(lines[i], chenc(pPrevLine, io_enc, ui_enc), MAXLNLEN);
+		free(pPrevLine);
 	}
 
-	strncpy(line, parser->get_prevline(0), parser->get_tokenpos());
+	pPrevLine = parser->get_prevline(0);
+	strncpy(line, pPrevLine, parser->get_tokenpos());
+	free(pPrevLine);
         line[parser->get_tokenpos()] = '\0';
 	int tokenbeg = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
 
-	strncpy(line, parser->get_prevline(0), parser->get_tokenpos() + strlen(token));
+	pPrevLine = parser->get_prevline(0);
+	strncpy(line, pPrevLine, parser->get_tokenpos() + strlen(token));
+	free(pPrevLine);
         line[parser->get_tokenpos() + strlen(token)] = '\0';	
 	int tokenend = expand_tab(line2, chenc(line, io_enc, ui_enc), MAXLNLEN);
 
@@ -993,7 +1082,6 @@ void dialogscreen(TextParser * parser, char * token,
 		}
 	}
 
-	int linestartpos = tokenbeg - (tokenbeg % x);
 	strncpyu8(line, lines[0], x * (ri - beginrow),  tokenbeg % x) ;
 	mvprintw(MAXPREVLINE + 1 - beginrow, 0, "%s", line);
 	attron(A_REVERSE);    
@@ -1076,8 +1164,10 @@ int dialog(TextParser * parser, Hunspell * pMS, char * token, char * filename,
 	    } else {
 		parser->change_token(wlst[c]);
 	    }
+            freewordlist(dicwords);
 	    return 0;
 	case ' ':
+            freewordlist(dicwords);
 	    return 0;
 	case '?': {
 	    clear();
@@ -1140,6 +1230,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		free(temp);
 		parser->change_token(checkapos ? mystrrep(i, "'", UTF8_APOS) : i);
 		
+                freewordlist(dicwords);
 		return 2; // replace
 	    }
 /* TRANSLATORS: translate these letters according to the shortcut letter used
@@ -1153,7 +1244,10 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		i->next = dicwords;
 		dicwords = i;
 		// save
-		if (HOME) strcpy(buf,HOME); else {
+		if (HOME) {
+                    strncpy(buf, HOME, MAXLNLEN-1);
+                    buf[MAXLNLEN-1] = '\0';
+                } else {
 		    fprintf(stderr, gettext("error - missing HOME variable\n"));
 		    break;
 		}
@@ -1179,6 +1273,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 	    if ((c==(gettext("u"))[0]) || (c==(gettext("i"))[0]) || (c==(gettext("a"))[0])) {
 		modified=1;
 		putdic(token, pMS);
+                freewordlist(dicwords);
 		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
@@ -1195,12 +1290,9 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		if (w < temp) {
 			*(temp-1) = '\0';
 		} else {
-			char ** poslst = NULL;
 #ifdef HUNSPELL_EXPERIMENTAL
+			char ** poslst = NULL;
 			int ps = pMS->suggest_pos_stems(&poslst, token);
-#else
-			int ps = 0;
-#endif
 			if (ps > 0) {
 			    strcpy(buf, poslst[0]);
 			    for (int i = 0; i < ps; i++) {
@@ -1210,6 +1302,7 @@ printw(gettext("\n-- Type space to continue -- \n"));
 			    strcpy(w, buf);
 			}
 			if (poslst) free(poslst);
+#endif
 		}
 
 #ifdef HAVE_READLINE		
@@ -1286,7 +1379,10 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    }
 		    // save
 		    		    
-		    if (HOME) strcpy(buf,HOME); else {
+		    if (HOME) {
+                        strncpy(buf, HOME, MAXLNLEN-1);
+                        buf[MAXLNLEN-1] = '\0';
+                    } else {
 			fprintf(stderr, gettext("error - missing HOME variable\n"));
 			continue;
 		    }
@@ -1314,11 +1410,13 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 		    break;
 		}
+                freewordlist(dicwords);
 		return 0;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
    previously in the  translation of "e(X)it" before */
 	    if (c==(gettext("x"))[0]) {
+                freewordlist(dicwords);
 		return 1;
 	    }
 /* TRANSLATORS: translate this letter according to the shortcut letter used
@@ -1327,16 +1425,21 @@ printw(gettext("\n-- Type space to continue -- \n"));
 		if (modified) {
 		    printw(gettext("Are you sure you want to throw away your changes? "));
 /* TRANSLATORS: translate this letter according to the shortcut letter y)es */
-		    if (getch()==(gettext("y"))[0]) return -1;
+		    if (getch()==(gettext("y"))[0]) {
+                        freewordlist(dicwords);
+                        return -1;
+                    }
     		    dialogscreen(parser, token, filename, forbidden, wlst, ns);
 		    break;		    
 		} else {
+                    freewordlist(dicwords);
 		    return -1;
 		}
 	    }
 	}
     }
     }
+    freewordlist(dicwords);
     return 0;
 }
 
@@ -1344,16 +1447,15 @@ int interactive_line(TextParser * parser, Hunspell ** pMS, char * filename, FILE
 {
 	char * token;
 	int dialogexit = 0;
-        int info;
+        int info = 0;
         int d = 0;
-        char buf[MAXLNLEN];
 	while ((token=parser->next_token())) {
 		if (!check(pMS, &d, token, &info, NULL)) {
 			dialogscreen(parser, token, filename, info, NULL, 0); // preview
 			refresh();
 			char ** wlst = NULL;
-			strcpy(buf, token);
-			int ns = pMS[d]->suggest(&wlst, mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'"));
+			std::string buf(token);
+			int ns = pMS[d]->suggest(&wlst, mystrrep(chenc(buf, io_enc, dic_enc[d]), ENTITY_APOS, "'").c_str());
 			if (ns==0) {
 				dialogexit = dialog(parser, pMS[d], token, filename, wlst, ns, info);
 			} else {
@@ -1399,8 +1501,9 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
     char * extension = basename(filename, '.');
     TextParser * parser = get_parser(format, extension, pMS[0]);
 
+    bool bZippedOdf = is_zipped_odf(parser, extension);
     // access content.xml of ODF
-    if (is_zipped_odf(parser, extension)) {
+    if (bZippedOdf) {
         odftempdir = tmpnam(NULL);
         fclose(text);
         // break 1-line XML of zipped ODT documents at </style:style> and </text:p> to avoid tokenization problems (fgets could stop within an XML tag)
@@ -1443,7 +1546,7 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 			clear();
 			refresh();
 			fclose(tempfile); //automatically deleted when closed
-			if (is_zipped_odf(parser, extension)) {
+			if (bZippedOdf) {
 				sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
 				if (system(buf) != 0)
 					perror("write failed");
@@ -1476,7 +1579,7 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
 				    perror("write failed");
 		    }
 		    fclose(text);
-		    if (is_zipped_odf(parser, extension)) {
+		    if (bZippedOdf) {
 		        sprintf(buf, "zip -j '%s' %s", odffilename, filename);
 		        if (system(buf) != 0)
 		                perror("write failed");
@@ -1484,7 +1587,7 @@ void interactive_interface(Hunspell ** pMS, char * filename, int format)
         }
 	}
 
-	if (is_zipped_odf(parser, extension)) {
+	if (bZippedOdf) {
 		sprintf(buf, "rm %s; rmdir %s", filename, odftempdir);
 		if (system(buf) != 0)
 			perror("write failed");
@@ -1508,28 +1611,28 @@ char * add(char * dest, const char * st) {
 }
 
 char * exist2(char * dir, int len, const char * name, const char * ext) {
-	char buf[MAXLNLEN];
+	std::string buf;
 	const char * sep = (len == 0) ? "": DIRSEP;
-	strncpy(buf, dir, len);
-	strcpy(buf + len, sep);
-	strcat(buf, name);
-	strcat(buf, ext);
-	if (exist(buf)) return mystrdup(buf);
-	strcat(buf, HZIP_EXTENSION);
-	if (exist(buf)) {
-	    buf[strlen(buf) - strlen(HZIP_EXTENSION)] = '\0';
-	    return mystrdup(buf);
+	buf.assign(dir, len);
+	buf.append(sep);
+	buf.append(name);
+	buf.append(ext);
+	if (exist(buf.c_str())) return mystrdup(buf.c_str());
+	buf.append(HZIP_EXTENSION);
+	if (exist(buf.c_str())) {
+		buf.erase(buf.size() - strlen(HZIP_EXTENSION));
+	    return mystrdup(buf.c_str());
 	}
 	return NULL;
 }
 
 #ifndef WIN32
 int listdicpath(char * dir, int len) {
-	char buf[MAXLNLEN];
+	std::string buf;
 	const char * sep = (len == 0) ? "": DIRSEP;
-	strncpy(buf, dir, len);
-	strcpy(buf + len, sep);
-	DIR *d = opendir(buf);
+	buf.assign(dir, len);
+	buf.append(sep);
+	DIR *d = opendir(buf.c_str());
 	if (!d) return 0;
 	struct dirent * de;
 	while ((de = readdir(d))) {
@@ -1538,7 +1641,7 @@ int listdicpath(char * dir, int len) {
 		   (len > 7 && strcmp(de->d_name + len - 7, ".dic.hz") == 0)) {
 		    char * s = mystrdup(de->d_name);
 		    s[len - ((s[len - 1] == 'z') ? 7 : 4)] = '\0';
-		    fprintf(stderr, "%s%s\n", buf, s);
+		    fprintf(stderr, "%s%s\n", buf.c_str(), s);
 		    free(s);
 		}
 	}
@@ -1568,7 +1671,7 @@ char * search(char * begin, char * name, const char * ext) {
 
 int main(int argc, char** argv)
 {
-	char buf[MAXLNLEN];
+	std::string buf;
 	Hunspell * pMS[DMAX];
         char * key = NULL;
 	int arg_files = -1; // first filename argumentum position in argv
@@ -1857,26 +1960,26 @@ int main(int argc, char** argv)
 
 	/* open the private dictionaries */
 	if (HOME) {
-	    strcpy(buf,HOME);
+	    buf.assign(HOME);
 #ifndef WIN32
-            strcat(buf,"/");
+            buf.append("/");
 #endif
-	    strcat(buf,DICBASENAME);
-	    strcat(buf,basename(dicname,DIRSEPCH));
-	    load_privdic(buf, pMS[0]);
-	    strcpy(buf,HOME);
+	    buf.append(DICBASENAME);
+	    buf.append(basename(dicname,DIRSEPCH));
+	    load_privdic(buf.c_str(), pMS[0]);
+	    buf.assign(HOME);
 #ifndef WIN32
-            strcat(buf,"/");
+            buf.append("/");
 #endif
 	    if (!privdicname) {
-		strcpy(buf,DICBASENAME);
-		strcat(buf,basename(dicname,DIRSEPCH));
-		load_privdic(buf, pMS[0]);
+		buf.assign(DICBASENAME);
+		buf.append(basename(dicname,DIRSEPCH));
+		load_privdic(buf.c_str(), pMS[0]);
 	    } else {
-		strcat(buf,privdicname);
-		load_privdic(buf, pMS[0]);
-		strcpy(buf,privdicname);
-		load_privdic(buf, pMS[0]);
+		buf.append(privdicname);
+		load_privdic(buf.c_str(), pMS[0]);
+		buf.assign(privdicname);
+		load_privdic(buf.c_str(), pMS[0]);
 	    }
         }
 
@@ -1935,3 +2038,5 @@ int main(int argc, char** argv)
 	for (int i = 0; i < dmax; i++) delete pMS[i];
 	return 0;
 }
+
+/* vim:set shiftwidth=4 softtabstop=4 expandtab: */

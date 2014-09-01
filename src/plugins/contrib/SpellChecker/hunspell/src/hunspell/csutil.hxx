@@ -5,8 +5,8 @@
 
 // First some base level utility routines
 
+#include <string>
 #include <string.h>
-#include <stdio.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
 
@@ -85,8 +85,9 @@ LIBHUNSPELL_DLL_EXPORTED char * mystrsep(char ** sptr, const char delim);
 // parse into tokens with char delimiter
 LIBHUNSPELL_DLL_EXPORTED char * mystrsep2(char ** sptr, const char delim);
 
-// parse into tokens with char delimiter
-LIBHUNSPELL_DLL_EXPORTED char * mystrrep(char *, const char *, const char *);
+// replace pat by rep in word and return word
+LIBHUNSPELL_DLL_EXPORTED char * mystrrep(char * word, const char *pat, const char *rep);
+LIBHUNSPELL_DLL_EXPORTED std::string& mystrrep(std::string& str, const std::string& search, const std::string& replace);
 
 // append s to ends of every lines in text
 LIBHUNSPELL_DLL_EXPORTED void strlinecat(char * lines, const char * s);
@@ -103,6 +104,8 @@ LIBHUNSPELL_DLL_EXPORTED char * tr(char * text, char oldc, char newc);
 
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED int reverseword(char *);
+// reverse word
+LIBHUNSPELL_DLL_EXPORTED std::string& reverseword(std::string& word);
 
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED int reverseword_utf(char *);
@@ -154,6 +157,8 @@ LIBHUNSPELL_DLL_EXPORTED void enmkinitcap(char * d, const char * p, const char *
 
 // convert null terminated string to all caps
 LIBHUNSPELL_DLL_EXPORTED void mkallcap(char * p, const struct cs_info * csconv);
+// convert std::string to all caps
+LIBHUNSPELL_DLL_EXPORTED std::string& mkallcap(std::string &s, const struct cs_info * csconv);
 
 // convert null terminated string to all little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall(char * p, const struct cs_info * csconv);

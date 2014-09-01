@@ -1001,6 +1001,9 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
     m_pData->m_encoding = wxFontMapper::GetEncodingFromName(
         Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString) );
 
+    for (int marker = 0 ; marker <= wxSCI_MARKNUM_LASTUNUSED ; ++marker)
+        control->MarkerDefine(marker, wxSCI_MARK_EMPTY);
+
     return control;
 }
 
@@ -1197,7 +1200,7 @@ void cbEditor::Unsplit()
     #endif
     // add it in the sizer
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
-    // notify the plugin when the right splitter window is not destroied and the left window is reparented to cbEditor
+    // notify the plugin when the right splitter window is not destroyed and the left window is reparented to cbEditor
     NotifyPlugins(cbEVT_EDITOR_UNSPLIT);
     // destroy the splitter and right control
     DestroySplitView();
@@ -3046,7 +3049,7 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
     }
     else if (id == idShowFileInProject)
     {
-        cbProjectManagerUI &ui=Manager::Get()->GetProjectManager()->GetUI();
+        cbProjectManagerUI& ui = Manager::Get()->GetProjectManager()->GetUI();
         ui.SwitchToProjectsPage();
         ui.ShowFileInTree(*m_pProjectFile);
     }

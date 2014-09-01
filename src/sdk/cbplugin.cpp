@@ -1358,12 +1358,13 @@ wxChar cbSmartIndentPlugin::GetNextNonWhitespaceCharOfLine(cbStyledTextCtrl* stc
 
     return 0;
 }
+
 void cbSmartIndentPlugin::OnCCDoneEvent(CodeBlocksEvent& event)
 {
-    EditorBase *eb = event.GetEditor();
+    EditorBase* eb = event.GetEditor();
     if (eb && eb->IsBuiltinEditor())
     {
-        cbEditor *ed = static_cast<cbEditor *>(eb);
+        cbEditor* ed = static_cast<cbEditor *>(eb);
         OnCCDone(ed);
     }
 }

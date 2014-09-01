@@ -49,8 +49,8 @@ Hunspell::Hunspell(const char * affpath, const char * dpath, const char * key)
 
 Hunspell::~Hunspell()
 {
-    if (pSMgr) delete pSMgr;
-    if (pAMgr) delete pAMgr;
+    delete pSMgr;
+    delete pAMgr;
     for (int i = 0; i < maxdic; i++) delete pHMgr[i];
     maxdic = 0;
     pSMgr = NULL;
@@ -311,6 +311,7 @@ int Hunspell::is_keepcase(const hentry * rv) {
 
 /* insert a word to the beginning of the suggestion array and return ns */
 int Hunspell::insert_sug(char ***slst, char * word, int ns) {
+    if (!*slst) return ns;
     char * dup = mystrdup(word);
     if (!dup) return ns;
     if (ns == MAXSUGGESTION) {
@@ -351,6 +352,12 @@ int Hunspell::spell(const char * word, int * info, char ** root)
   RepList * rl = (pAMgr) ? pAMgr->get_iconvtable() : NULL;
   if (rl && rl->conv(word, wspace)) wl = cleanword2(cw, wspace, unicw, &nc, &captype, &abbv);
   else wl = cleanword2(cw, word, unicw, &nc, &captype, &abbv);
+
+#ifdef MOZILLA_CLIENT
+  // accept the abbreviated words without dots
+  // workaround for the incomplete tokenization of Mozilla
+  abbv = 1;
+#endif
 
   if (wl == 0 || maxdic == 0) return 1;
   if (root) *root = NULL;
@@ -399,7 +406,7 @@ int Hunspell::spell(const char * word, int * info, char ** root)
             // Spec. prefix handling for Catalan, French, Italian:
 	    // prefixes separated by apostrophe (SANT'ELIA -> Sant'+Elia).
             if (pAMgr && strchr(cw, '\'')) {
-                wl = mkallsmall2(cw, unicw, nc);
+                mkallsmall2(cw, unicw, nc);
         	//There are no really sane circumstances where this could fail,
         	//but anyway...
         	if (char * apostrophe = strchr(cw, '\'')) {
@@ -573,7 +580,7 @@ struct hentry * Hunspell::checkword(const char * w, int * info, char ** root)
   char w2[MAXWORDUTF8LEN];
   const char * word;
 
-  char * ignoredchars = pAMgr->get_ignore();
+  char * ignoredchars = pAMgr ? pAMgr->get_ignore() : NULL;
   if (ignoredchars != NULL) {
      strcpy(w2, w);
      if (utf8) {
@@ -1166,14 +1173,12 @@ int Hunspell::stem(char*** slst, char ** desc, int n)
     }
 
     char **pl;
-    char tok[MAXLNLEN];
-    strcpy(tok, s);
-    char * alt = strstr(tok, " | ");
-    while (alt) {
-        alt[1] = MSEP_ALT;
-        alt = strstr(alt, " | ");
+    std::string tok(s);
+    size_t alt = 0;
+    while ((alt = tok.find(" | ", alt)) != std::string::npos) {
+        tok[alt + 1] = MSEP_ALT;
     }
-    int pln = line_tok(tok, &pl, MSEP_ALT);
+    int pln = line_tok(tok.c_str(), &pl, MSEP_ALT);
     for (int k = 0; k < pln; k++) {
         // add derivational suffixes
         if (strstr(pl[k], MORPH_DERI_SFX)) {
@@ -1731,19 +1736,6 @@ int Hunspell::get_xml_list(char ***slst, char * list, const char * tag) {
     return n;
 }
 
-namespace
-{
-    void myrep(std::string& str, const std::string& search, const std::string& replace)
-    {
-        size_t pos = 0;
-        while ((pos = str.find(search, pos)) != std::string::npos)
-        {
-           str.replace(pos, search.length(), replace);
-           pos += replace.length();
-        }
-    }
-}
-
 int Hunspell::spellml(char*** slst, const char * word)
 {
   char *q, *q2;
@@ -1766,9 +1758,9 @@ int Hunspell::spellml(char*** slst, const char * word)
 
         std::string entry((*slst)[i]);
         free((*slst)[i]);
-        myrep(entry, "\t", " ");
-        myrep(entry, "&", "&amp;");
-        myrep(entry, "<", "&lt;");
+        mystrrep(entry, "\t", " ");
+        mystrrep(entry, "&", "&amp;");
+        mystrrep(entry, "<", "&lt;");
         r.append(entry);
 
         r.append("</a>");

@@ -305,10 +305,21 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
     sysCaretWidth = 0;
     sysCaretHeight = 0;
 #endif
+/* C::B begin */
+    for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
+        timers[tr] = 0;
+    }
+/* C::B end */
 }
 
 
 ScintillaWX::~ScintillaWX() {
+/* C::B begin */
+    for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
+        FineTickerCancel(tr);
+    }
+/* C::B end */
+
     Finalise();
 }
 
@@ -347,9 +358,8 @@ void ScintillaWX::StartDrag() {
     evt.SetEventObject (sci);
     evt.SetDragText(dragText);
     evt.SetDragFlags(wxDrag_DefaultMove);
-    evt.SetPosition (wxMin(sci->GetSelectionStart(),
-	                       sci->GetSelectionEnd()));
-    sci->GetEventHandler()->ProcessEvent (evt);
+    evt.SetPosition(wxMin(sci->GetSelectionStart(), sci->GetSelectionEnd()));
+    sci->GetEventHandler()->ProcessEvent(evt);
 
 /* C::B begin */
     UndoGroup ug(pdoc);
@@ -536,6 +546,36 @@ void ScintillaWX::NotifyParent(SCNotification scn) {
     sci->NotifyParent(&scn);
 }
 
+/* C::B begin */
+bool ScintillaWX::FineTickerAvailable()
+{
+    return true;
+}
+
+bool ScintillaWX::FineTickerRunning(TickReason reason)
+{
+    return (timers[reason] != 0);
+}
+
+void ScintillaWX::FineTickerStart(TickReason reason, int millis, int /* tolerance */)
+{
+    FineTickerCancel(reason);
+
+    timers[reason] = new wxTimer(sci, wxNewId());
+    timers[reason]->Start(millis);
+    sci->Connect(timers[reason]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
+}
+
+void ScintillaWX::FineTickerCancel(TickReason reason)
+{
+    if (timers[reason]) {
+        sci->Disconnect(timers[reason]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
+        timers[reason]->Stop();
+        delete timers[reason];
+        timers[reason] = 0;
+    }
+}
+/* C::B end */
 
 // This method is overloaded from ScintillaBase in order to prevent the
 // AutoComplete window from being destroyed when it gets the focus.  There is
@@ -588,7 +628,8 @@ void ScintillaWX::Paste() {
 /* C::B begin */
     wxString textString;
 
-    bool  rectangular = false;
+    bool rectangular = false;
+    bool haveTextString = false;
 
     wxTheClipboard->UsePrimarySelection(false);
     if (wxTheClipboard->Open()) {
@@ -605,6 +646,7 @@ void ScintillaWX::Paste() {
             char* buffer = new char[len];
             memcpy (buffer, rectBuf+1, len);
             textString = sci2wx(buffer, len);
+            haveTextString = true;
             delete [] buffer;
         } else {
             bool gotData = wxTheClipboard->GetData(data);
@@ -612,9 +654,17 @@ void ScintillaWX::Paste() {
             if (gotData) {
                 textString = wxTextBuffer::Translate(data.GetText(),
                                                      wxConvertEOLMode(pdoc->eolMode));
+                haveTextString = true;
             }
         }
     }
+
+    // Send an event to allow the pasted text to be changed
+    wxScintillaEvent evt(wxEVT_SCI_CLIPBOARD_PASTE, sci->GetId());
+    evt.SetEventObject(sci);
+    evt.SetPosition(sel.MainCaret());
+    evt.SetString(textString);
+    sci->GetEventHandler()->ProcessEvent(evt);
 
     wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(textString);
 #if wxUSE_UNICODE
@@ -646,8 +696,14 @@ void ScintillaWX::Paste() {
 
 void ScintillaWX::CopyToClipboard(const SelectionText& st) {
 #if wxUSE_CLIPBOARD
-    if ( !st.Length() )
+    if ( !st.LengthWithTerminator() )
         return;
+
+    // Send an event to allow the copied text to be changed
+    wxScintillaEvent evt(wxEVT_SCI_CLIPBOARD_COPY, sci->GetId());
+    evt.SetEventObject(sci);
+    evt.SetString(wxTextBuffer::Translate(sci2wx(st.Data(), st.Length())));
+    sci->GetEventHandler()->ProcessEvent(evt);
 
     wxTheClipboard->UsePrimarySelection(false);
     if (wxTheClipboard->Open()) {
@@ -658,17 +714,17 @@ void ScintillaWX::CopyToClipboard(const SelectionText& st) {
         // object for local use that remembers what kind of selection was made (stream or
         // rectangular).
         wxDataObjectComposite* obj = new wxDataObjectComposite();
-        wxCustomDataObject* rectData = new wxCustomDataObject (wxDataFormat(wxString(wxT("application/x-cbrectdata"))));
+        wxCustomDataObject* rectData = new wxCustomDataObject(wxDataFormat(wxString(wxT("application/x-cbrectdata"))));
 
         char* buffer = new char[st.LengthWithTerminator()];
         buffer[0] = (st.rectangular)? (char)1 : (char)0;
-        memcpy (buffer+1, st.Data(), st.Length());
-        rectData->SetData (st.LengthWithTerminator(), buffer);
+        memcpy(buffer+1, st.Data(), st.Length());
+        rectData->SetData(st.LengthWithTerminator(), buffer);
         delete [] buffer;
 
-        obj->Add (rectData, true);
-        obj->Add (new wxTextDataObject (text));
-        wxTheClipboard->SetData (obj);
+        obj->Add(rectData, true);
+        obj->Add(new wxTextDataObject(text));
+        wxTheClipboard->SetData(obj);
 /* C::B end */
         wxTheClipboard->Close();
     }
@@ -1267,6 +1323,16 @@ void ScintillaWX::DoOnIdle(wxIdleEvent& evt) {
     else
         SetIdle(false);
 }
+
+/* C::B begin */
+void ScintillaWX::DoOnTimer(wxTimerEvent& evt) {
+    for (TickReason tr=tickCaret; tr<=tickDwell; tr = static_cast<TickReason>(tr+1)) {
+        if (timers[tr] && timers[tr]->GetId() == evt.GetId()) {
+            TickFor(tr);
+        }
+    }
+}
+/* C::B end */
 
 //----------------------------------------------------------------------
 

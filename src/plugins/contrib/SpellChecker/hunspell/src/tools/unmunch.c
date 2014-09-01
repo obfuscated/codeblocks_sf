@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdlib.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -17,7 +18,6 @@
 #endif
 
 #include "unmunch.h"
-
 
 int main(int argc, char** argv)
 {
@@ -160,10 +160,19 @@ int parse_aff_file(FILE * afflst)
                     case 1: { achar = *piece; break; }
                     case 2: { if (*piece == 'Y') ff = XPRODUCT; break; }
                     case 3: { numents = atoi(piece); 
-                              ptr = malloc(numents * sizeof(struct affent));
-                              ptr->achar = achar;
-                              ptr->xpflg = ff;
-	                      fprintf(stderr,"parsing %c entries %d\n",achar,numents);
+                              if ((numents < 0) ||
+                                  ((SIZE_MAX/sizeof(struct affent)) < numents))
+                              {
+                                 fprintf(stderr,
+                                     "Error: too many entries: %d\n", numents);
+                                 numents = 0;
+                              } else {
+                                 ptr = malloc(numents * sizeof(struct affent));
+                                 ptr->achar = achar;
+                                 ptr->xpflg = ff;
+                                 fprintf(stderr,"parsing %c entries %d\n",
+                                         achar,numents);
+                              }
                               break;
                             }
 		    default: break;
@@ -195,7 +204,7 @@ int parse_aff_file(FILE * afflst)
                                    free(nptr->strip);
                                    nptr->strip=mystrdup("");
 				   nptr->stripl = 0;
-                                 }   
+                                 }
                                  break; 
                                }
                        case 3: { nptr->appnd = mystrdup(piece);
@@ -205,6 +214,15 @@ int parse_aff_file(FILE * afflst)
                                    nptr->appnd=mystrdup("");
 				   nptr->appndl = 0;
                                  }   
+                                 if (strchr(nptr->appnd, '/')) {
+                                    char * addseparator = (char *) realloc(nptr->appnd, nptr->appndl + 2);
+                                    if (addseparator) {
+                                      nptr->appndl++;
+                                      addseparator[nptr->appndl-1] = '|';
+                                      addseparator[nptr->appndl] = '\0';
+                                      nptr->appnd = addseparator;
+                                    }
+                                 }
                                  break; 
                                }
                        case 4: { encodeit(nptr,piece);}
@@ -218,18 +236,20 @@ int parse_aff_file(FILE * afflst)
              }
              nptr++;
           }
-          if (ft == 'P') {
-             ptable[numpfx].aep = ptr;
-             ptable[numpfx].num = numents;
-             fprintf(stderr,"ptable %d num is %d flag %c\n",numpfx,ptable[numpfx].num,ptr->achar);
-             numpfx++;
-          } else {
-             stable[numsfx].aep = ptr;
-             stable[numsfx].num = numents;
-             fprintf(stderr,"stable %d num is %d flag %c\n",numsfx,stable[numsfx].num,ptr->achar);
-             numsfx++;
+          if (ptr) {
+             if (ft == 'P') {
+                ptable[numpfx].aep = ptr;
+                ptable[numpfx].num = numents;
+                fprintf(stderr,"ptable %d num is %d flag %c\n",numpfx,ptable[numpfx].num,ptr->achar);
+                numpfx++;
+             } else if (ft == 'S') {
+                stable[numsfx].aep = ptr;
+                stable[numsfx].num = numents;
+                fprintf(stderr,"stable %d num is %d flag %c\n",numsfx,stable[numsfx].num,ptr->achar);
+                numsfx++;
+             }
+             ptr = NULL;
           }
-          ptr = NULL;
           nptr = NULL;
           numents = 0;
           achar='\0';
@@ -332,7 +352,6 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 {
     struct affent *     aent;
     int			cond;
-    int	tlen;
     unsigned char *	cp;		
     int			i;
     char *              pp;
@@ -352,16 +371,14 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 	          break;
             }
             if (cond >= aent->numconds) {
-
 	      /* we have a match so add prefix */
-              tlen = 0;
+              int tlen = 0;
               if (aent->appndl) {
 	          strcpy(tword,aent->appnd);
                   tlen += aent->appndl;
                } 
                pp = tword + tlen;
                strcpy(pp, (word + aent->stripl));
-               tlen = tlen + len - aent->stripl;
 
                if (numwords < MAX_WORDS) {
                   wlist[numwords].word = mystrdup(tword);
@@ -378,7 +395,6 @@ void pfx_add (const char * word, int len, struct affent* ep, int num)
 void suf_add (const char * word, int len, struct affent * ep, int num)
 {
     struct affent *     aent;	
-    int	                tlen;	
     int			cond;	
     unsigned char *	cp;
     int			i;
@@ -400,15 +416,14 @@ void suf_add (const char * word, int len, struct affent * ep, int num)
 	}
 	if (cond < 0) {
 	  /* we have a matching condition */
+          int tlen = len;
           strcpy(tword,word);
-          tlen = len;
 	  if (aent->stripl) {
              tlen -= aent->stripl;
           }
           pp = (tword + tlen);
           if (aent->appndl) {
 	       strcpy (pp, aent->appnd);
-	       tlen += aent->stripl;
 	  } else *pp = '\0';
 
           if (numwords < MAX_WORDS) {

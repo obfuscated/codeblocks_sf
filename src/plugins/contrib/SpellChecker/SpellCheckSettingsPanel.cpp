@@ -202,7 +202,7 @@ void SpellCheckSettingsPanel::OnChooseDirectory(wxCommandEvent& event)
     }
 }
 
-void SpellCheckSettingsPanel::OnChangeDictPathText( wxCommandEvent &event)
+void SpellCheckSettingsPanel::OnChangeDictPathText(cb_unused wxCommandEvent& event)
 {
     wxString path = m_TextDictPath->GetValue();
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(path);

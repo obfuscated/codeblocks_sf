@@ -16,6 +16,8 @@
 * along with SpellChecker. If not, see <http://www.gnu.org/licenses/>.
 *
 */
+#include "prep.h"
+
 #include "MySpellingDialog.h"
 
 //#include "resource.h"
@@ -67,7 +69,6 @@ BEGIN_EVENT_TABLE(MySpellingDialog, wxSpellCheckDialogInterface)
     EVT_BUTTON(wxID_CLOSE, MySpellingDialog::OnClose)
 END_EVENT_TABLE()
 
-
 MySpellingDialog::MySpellingDialog(wxWindow *parent, wxSpellCheckEngineInterface* pSpellChecker)
   : wxSpellCheckDialogInterface(parent, pSpellChecker)
 {
@@ -81,7 +82,7 @@ MySpellingDialog::~MySpellingDialog()
 {
 }
 
-void MySpellingDialog::OnClose(wxCommandEvent& event)
+void MySpellingDialog::OnClose(cb_unused wxCommandEvent& event)
 {
   m_nLastAction = ACTION_CLOSE;
   EndModal(true);
@@ -148,12 +149,12 @@ void MySpellingDialog::CreateDialog()
 	pTopSizer->SetSizeHints(this);
 }
 
-void MySpellingDialog::OnRecheckPage(wxCommandEvent& event)
+void MySpellingDialog::OnRecheckPage(cb_unused wxCommandEvent& event)
 {
 	// Spell check the whole document
 }
 
-void MySpellingDialog::OnCheckWord(wxCommandEvent& event)
+void MySpellingDialog::OnCheckWord(cb_unused wxCommandEvent& event)
 {
 	// Check if this word "replace with" word passes the spell check
 	// Populate the "Suggestions:" list box if it fails
@@ -184,7 +185,7 @@ void MySpellingDialog::OnCheckWord(wxCommandEvent& event)
   TransferDataToWindow();
 }
 
-void MySpellingDialog::OnReplaceWord(wxCommandEvent& event)
+void MySpellingDialog::OnReplaceWord(cb_unused wxCommandEvent& event)
 {
 	// Replace this word with the value of the "Replace With:" field value.
 	//	For Aspell, send this replacement information to aspell_speller_store_repl (optionally)
@@ -193,14 +194,14 @@ void MySpellingDialog::OnReplaceWord(wxCommandEvent& event)
   Show(FALSE);
 }
 
-void MySpellingDialog::OnIgnoreWord(wxCommandEvent& event)
+void MySpellingDialog::OnIgnoreWord(cb_unused wxCommandEvent& event)
 {
 	// Assume that the word is spelled correctly
   m_nLastAction = ACTION_IGNORE;
   Show(FALSE);
 }
 
-void MySpellingDialog::OnReplaceAll(wxCommandEvent& event)
+void MySpellingDialog::OnReplaceAll(cb_unused wxCommandEvent& event)
 {
 	// Set a flag indicating that the user doesn't want to look at any more misspelling words
 	//	I guess that in this case, we always accept the first suggestion.
@@ -210,7 +211,7 @@ void MySpellingDialog::OnReplaceAll(wxCommandEvent& event)
   Show(FALSE);
 }
 
-void MySpellingDialog::OnIgnoreAll(wxCommandEvent& event)
+void MySpellingDialog::OnIgnoreAll(cb_unused wxCommandEvent& event)
 {
 	// Set a flag indicating that the user doesn't want to look at any more misspelling words
 	//	assume that all words are spelled correctly
@@ -219,7 +220,7 @@ void MySpellingDialog::OnIgnoreAll(wxCommandEvent& event)
   Show(FALSE);
 }
 
-void MySpellingDialog::OnAddWordToCustomDictionary(wxCommandEvent& event)
+void MySpellingDialog::OnAddWordToCustomDictionary(cb_unused wxCommandEvent& event)
 {
 	// Nothing really needed for this other than adding the word to the custom dictionary and closing the dialog
   if (m_pSpellCheckEngine != NULL)
@@ -230,7 +231,7 @@ void MySpellingDialog::OnAddWordToCustomDictionary(wxCommandEvent& event)
   Show(FALSE);
 }
 
-void MySpellingDialog::OnEditCustomDictionary(wxCommandEvent& event)
+void MySpellingDialog::OnEditCustomDictionary(cb_unused wxCommandEvent& event)
 {
 	// Bring up the "Edit Custom Dictionary" dialog
   MyPersonalDictionaryDialog* pCustomDictionaryDlg = new MyPersonalDictionaryDialog(this, m_pSpellCheckEngine);
@@ -238,7 +239,7 @@ void MySpellingDialog::OnEditCustomDictionary(wxCommandEvent& event)
   delete pCustomDictionaryDlg;
 }
 
-void MySpellingDialog::OnInit(wxInitDialogEvent& event)
+void MySpellingDialog::OnInit(cb_unused wxInitDialogEvent& event)
 {
   if (m_pSpellCheckEngine)
   {
@@ -291,7 +292,7 @@ void MySpellingDialog::PopulateLanguageCombo()
   }
 }
 
-void MySpellingDialog::OnChangeLanguage(wxCommandEvent& event)
+void MySpellingDialog::OnChangeLanguage(cb_unused wxCommandEvent& event)
 {
 	// Set the option on the spell checker library to use this newly-selected language and get a new list of suggestions
   // Since this is a spell check engine specific option, only deal with Aspell (for now)
@@ -311,7 +312,7 @@ void MySpellingDialog::OnChangeLanguage(wxCommandEvent& event)
   }
 }
 
-void MySpellingDialog::OnChangeSuggestionSelection(wxCommandEvent& event)
+void MySpellingDialog::OnChangeSuggestionSelection(cb_unused wxCommandEvent& event)
 {
 	// When the selection in the "suggestions:" list box changes, than we want to update the "Replace with:" edit field to match this selection
   wxListBox* pListBox = (wxListBox*)FindWindow(IDC_LIST_SUGGESTIONS);
@@ -322,7 +323,7 @@ void MySpellingDialog::OnChangeSuggestionSelection(wxCommandEvent& event)
   }
 }
 
-void MySpellingDialog::OnDblClkSuggestionSelection(wxCommandEvent& event)
+void MySpellingDialog::OnDblClkSuggestionSelection(cb_unused wxCommandEvent& event)
 {
 	// When the selection in the "suggestions:" list box changes, than we want to update the "Replace with:" edit field to match this selection
   wxListBox* pListBox = (wxListBox*)FindWindow(IDC_LIST_SUGGESTIONS);
@@ -481,7 +482,7 @@ void MyPersonalDictionaryDialog::PopulatePersonalWordListBox()
   }
 }
 
-void MyPersonalDictionaryDialog::AddWordToPersonalDictionary(wxCommandEvent& event)
+void MyPersonalDictionaryDialog::AddWordToPersonalDictionary(cb_unused wxCommandEvent& event)
 {
   if (m_pSpellCheckEngine != NULL)
   {
@@ -500,7 +501,7 @@ void MyPersonalDictionaryDialog::AddWordToPersonalDictionary(wxCommandEvent& eve
   }
 }
 
-void MyPersonalDictionaryDialog::ReplaceInPersonalDictionary(wxCommandEvent& event)
+void MyPersonalDictionaryDialog::ReplaceInPersonalDictionary(cb_unused wxCommandEvent& event)
 {
   if (m_pSpellCheckEngine != NULL)
   {
@@ -529,7 +530,7 @@ void MyPersonalDictionaryDialog::ReplaceInPersonalDictionary(wxCommandEvent& eve
 
 }
 
-void MyPersonalDictionaryDialog::RemoveFromPersonalDictionary(wxCommandEvent& event)
+void MyPersonalDictionaryDialog::RemoveFromPersonalDictionary(cb_unused wxCommandEvent& event)
 {
   if (m_pSpellCheckEngine != NULL)
   {
@@ -548,7 +549,7 @@ void MyPersonalDictionaryDialog::RemoveFromPersonalDictionary(wxCommandEvent& ev
   }
 }
 
-void MyPersonalDictionaryDialog::OnClose(wxCommandEvent& event)
+void MyPersonalDictionaryDialog::OnClose(cb_unused wxCommandEvent& event)
 {
   EndModal(true);
 }

@@ -275,6 +275,7 @@ UndoHistory::UndoHistory() {
 	currentAction = 0;
 	undoSequenceDepth = 0;
 	savePoint = 0;
+	tentativePoint = -1;
 /* CHANGEBAR begin */
     savePointEffective = 0;
 
@@ -352,7 +353,7 @@ const char * UndoHistory::AppendAction(actionType at, int position, const char *
 			// Visual Studio 2013 Code Analysis wrongly believes actions can be NULL at its next reference
 			__analysis_assume(actions);
 #endif
-			if (currentAction == savePoint) {
+			if ((currentAction == savePoint) || (currentAction == tentativePoint)) {
 				currentAction++;
 			} else if (!actions[currentAction].mayCoalesce) {
 				// Not allowed to coalesce if this set
@@ -448,6 +449,7 @@ void UndoHistory::DeleteUndoHistory() {
 	currentAction = 0;
 	actions[currentAction].Create(startAction);
 	savePoint = 0;
+	tentativePoint = -1;
 /* CHANGEBAR begin */
     savePointEffective = 0;
 /* CHANGEBAR end */
@@ -494,6 +496,26 @@ bool UndoHistory::BeforeSavePointEffective(int action) const {
     return action <= savePointEffective;
 }
 /* CHANGEBAR end */
+
+void UndoHistory::TentativeStart() {
+	tentativePoint = currentAction;
+}
+
+void UndoHistory::TentativeCommit() {
+	tentativePoint = -1;
+	// Truncate undo history
+	maxAction = currentAction;
+}
+
+int UndoHistory::TentativeSteps() {
+	// Drop any trailing startAction
+	if (actions[currentAction].at == startAction && currentAction > 0)
+		currentAction--;
+	if (tentativePoint >= 0)
+		return currentAction - tentativePoint;
+	else
+		return -1;
+}
 
 bool UndoHistory::CanUndo() const {
 	return (currentAction > 0) && (maxAction > 0);
@@ -733,6 +755,22 @@ void CellBuffer::SetSavePoint() {
 
 bool CellBuffer::IsSavePoint() const {
 	return uh.IsSavePoint();
+}
+
+void CellBuffer::TentativeStart() {
+	uh.TentativeStart();
+}
+
+void CellBuffer::TentativeCommit() {
+	uh.TentativeCommit();
+}
+
+int CellBuffer::TentativeSteps() {
+	return uh.TentativeSteps();
+}
+
+bool CellBuffer::TentativeActive() const {
+	return uh.TentativeActive();
 }
 
 // Without undo

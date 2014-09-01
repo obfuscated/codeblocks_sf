@@ -31,15 +31,30 @@ static const char * __PATTERN2__[][2] = {
 #define APOSTROPHE "'"
 
 XMLParser::XMLParser()
+    : pattern_num(0)
+    , pattern2_num(0)
+    , prevstate(0)
+    , checkattr(0)
+    , quotmark(0)
 {
 }
 
 XMLParser::XMLParser(const char * wordchars)
+    : pattern_num(0)
+    , pattern2_num(0)
+    , prevstate(0)
+    , checkattr(0)
+    , quotmark(0)
 {
 	init(wordchars);
 }
 
 XMLParser::XMLParser(unsigned short * wordchars, int len)
+    : pattern_num(0)
+    , pattern2_num(0)
+    , prevstate(0)
+    , checkattr(0)
+    , quotmark(0)
 {
 	init(wordchars, len);
 }
@@ -162,15 +177,14 @@ int XMLParser::change_token(const char * word)
 	    strchr(word, '&') != NULL ||
 	    strchr(word, '<') != NULL ||
 	    strchr(word, '>') != NULL) {
-		char r[MAXLNLEN];
-		strcpy(r, word);
-		return TextParser::change_token(mystrrep(mystrrep(mystrrep(mystrrep(mystrrep(mystrrep(r,
-			"&", "__namp;__"),
-			"__namp;__", "&amp;"),
-			APOSTROPHE, ENTITY_APOS),
-			"\"", "&quot;"),
-			">", "&gt;"),
-			"<", "&lt;"));
+		std::string r(word);
+		mystrrep(r, "&", "__namp;__");
+		mystrrep(r, "__namp;__", "&amp;");
+		mystrrep(r, APOSTROPHE, ENTITY_APOS);
+		mystrrep(r, "\"", "&quot;");
+		mystrrep(r, ">", "&gt;");
+		mystrrep(r, "<", "&lt;");
+		return TextParser::change_token(r.c_str());
 	}
 	return TextParser::change_token(word);
 }

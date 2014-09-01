@@ -47,9 +47,14 @@
 #include "Editor.h"
 #include "ScintillaBase.h"
 
-#include <wx/wx.h>
 #include <wx/dataobj.h>
 #include <wx/dnd.h>
+#include <wx/timer.h>
+
+#ifdef __WXMSW__
+    #include <windows.h>
+    #include <wx/msw/wrapwin.h>
+#endif // __WXMSW__
 
 //----------------------------------------------------------------------
 
@@ -150,6 +155,14 @@ public:
     virtual void NotifyFocus(bool focus);
 /* C::B end */
 
+/* C::B begin */
+    wxTimer* timers[tickDwell+1];
+    virtual bool FineTickerAvailable();
+    virtual bool FineTickerRunning(TickReason reason);
+    virtual void FineTickerStart(TickReason reason, int millis, int tolerance);
+    virtual void FineTickerCancel(TickReason reason);
+/* C::B end */
+
     virtual void CancelModes();
 
     virtual void UpdateSystemCaret();
@@ -167,8 +180,6 @@ public:
     void DoLeftButtonUp(SCI_NAMESPACE_PREFIX(Point) pt, unsigned int curTime, bool ctrl);
     void DoLeftButtonMove(SCI_NAMESPACE_PREFIX(Point) pt);
     void DoMiddleButtonUp(SCI_NAMESPACE_PREFIX(Point) pt);
-/* C::B end */
-/* C::B begin */
 #if !wxCHECK_VERSION(2,9,4)
     enum wxMouseWheelAxis
     {
@@ -184,6 +195,7 @@ public:
     int  DoKeyDown(const wxKeyEvent& event, bool* consumed);
     void DoTick() { Tick(); }
     void DoOnIdle(wxIdleEvent& evt);
+    void DoOnTimer(wxTimerEvent& evt);
 
 #if wxUSE_DRAG_AND_DROP
     bool DoDropText(long x, long y, const wxString& data);
@@ -203,7 +215,7 @@ public:
     void FullPaint();
     void FullPaintDC(wxDC* dc);
     bool CanPaste();
-    bool GetHideSelection() { return hideSelection; }
+    bool GetHideSelection() { return view.hideSelection; }
     void DoScrollToLine(int line);
     void DoScrollToColumn(int column);
 /* C::B begin */

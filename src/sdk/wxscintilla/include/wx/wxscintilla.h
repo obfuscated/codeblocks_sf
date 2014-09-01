@@ -23,11 +23,12 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.43.0")
+#define wxSCINTILLA_VERSION _T("3.50.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
 #include <wx/stopwatch.h>
+#include <wx/timer.h>
 /* C::B begin */
 #include <wx/scrolbar.h>
 #if wxCHECK_VERSION(2,9,2)
@@ -68,8 +69,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 
 #define wxSCI_INVALID_POSITION -1
 
-// Define start of Scintilla messages to be greater than all Windows edit (EM_*) messages
-// as many EM_ messages can be used although that use is deprecated.
+/// Define start of Scintilla messages to be greater than all Windows edit (EM_*) messages
+/// as many EM_ messages can be used although that use is deprecated.
 #define wxSCI_START 2000
 #define wxSCI_OPTIONAL_START 3000
 #define wxSCI_LEXER_START 4000
@@ -80,8 +81,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_EOL_CR 1
 #define wxSCI_EOL_LF 2
 
-// The SC_CP_UTF8 value can be used to enter Unicode mode.
-// This is the same value as CP_UTF8 in Windows
+/// The SC_CP_UTF8 value can be used to enter Unicode mode.
+/// This is the same value as CP_UTF8 in Windows
 #define wxSCI_CP_UTF8 65001
 #define wxSCI_MARKER_MAX 31
 #define wxSCI_MARK_CIRCLE 0
@@ -94,7 +95,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARK_MINUS 7
 #define wxSCI_MARK_PLUS 8
 
-// Shapes used for outlining column.
+/// Shapes used for outlining column.
 #define wxSCI_MARK_VLINE 9
 #define wxSCI_MARK_LCORNER 10
 #define wxSCI_MARK_TCORNER 11
@@ -109,7 +110,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARK_CIRCLEMINUS 20
 #define wxSCI_MARK_CIRCLEMINUSCONNECTED 21
 
-// Invisible mark that only sets the line background colour.
+/// Invisible mark that only sets the line background colour.
 #define wxSCI_MARK_BACKGROUND 22
 #define wxSCI_MARK_DOTDOTDOT 23
 #define wxSCI_MARK_ARROWS 24
@@ -123,6 +124,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARK_CHARACTER 10000
 
 // Markers used for outlining and changed column.
+/* C::B begin */
+#define wxSCI_MARKNUM_LASTUNUSED 22
+/* C::B end */
 #define wxSCI_MARKNUM_CHANGEUNSAVED 23
 #define wxSCI_MARKNUM_CHANGESAVED 24
 #define wxSCI_MARKNUM_FOLDEREND 25
@@ -144,8 +148,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARGIN_RTEXT 5
 #define wxSCI_MARGIN_CHANGED 6
 
-// Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
-// Style 39 is for future use.
+/// Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
+/// Style 39 is for future use.
 #define wxSCI_STYLE_DEFAULT 32
 #define wxSCI_STYLE_LINENUMBER 33
 #define wxSCI_STYLE_BRACELIGHT 34
@@ -156,8 +160,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_STYLE_LASTPREDEFINED 39
 #define wxSCI_STYLE_MAX 255
 
-// Character set identifiers are used in StyleSetCharacterSet.
-// The values are the same as the Windows *_CHARSET values.
+/// Character set identifiers are used in StyleSetCharacterSet.
+/// The values are the same as the Windows *_CHARSET values.
 #define wxSCI_CHARSET_ANSI 0
 #define wxSCI_CHARSET_DEFAULT 1
 #define wxSCI_CHARSET_BALTIC 186
@@ -187,7 +191,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_WEIGHT_SEMIBOLD 600
 #define wxSCI_WEIGHT_BOLD 700
 
-// Indicator style enumeration and some constants
+/// Indicator style enumeration and some constants
 #define wxSCI_INDIC_PLAIN 0
 #define wxSCI_INDIC_SQUIGGLE 1
 #define wxSCI_INDIC_TT 2
@@ -217,19 +221,19 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_IV_LOOKFORWARD 2
 #define wxSCI_IV_LOOKBOTH 3
 
-// PrintColourMode - use same colours as screen.
+/// PrintColourMode - use same colours as screen.
 #define wxSCI_PRINT_NORMAL 0
 
-// PrintColourMode - invert the light value of each style for printing.
+/// PrintColourMode - invert the light value of each style for printing.
 #define wxSCI_PRINT_INVERTLIGHT 1
 
-// PrintColourMode - force black text on white background for printing.
+/// PrintColourMode - force black text on white background for printing.
 #define wxSCI_PRINT_BLACKONWHITE 2
 
-// PrintColourMode - text stays coloured, but all background is forced to be white for printing.
+/// PrintColourMode - text stays coloured, but all background is forced to be white for printing.
 #define wxSCI_PRINT_COLOURONWHITE 3
 
-// PrintColourMode - only the default-background is forced to be white for printing.
+/// PrintColourMode - only the default-background is forced to be white for printing.
 #define wxSCI_PRINT_COLOURONWHITEDEFAULTBG 4
 #define wxSCI_FIND_WHOLEWORD 0x2
 #define wxSCI_FIND_MATCHCASE 0x4
@@ -271,8 +275,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CACHE_CARET 1
 #define wxSCI_CACHE_PAGE 2
 #define wxSCI_CACHE_DOCUMENT 3
+#define wxSCI_PHASES_ONE 0
+#define wxSCI_PHASES_TWO 1
+#define wxSCI_PHASES_MULTIPLE 2
 
-// Control font anti-aliasing.
+/// Control font anti-aliasing.
 #define wxSCI_EFF_QUALITY_MASK 0xF
 #define wxSCI_EFF_QUALITY_DEFAULT 0
 #define wxSCI_EFF_QUALITY_NON_ANTIALIASED 1
@@ -291,34 +298,34 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CURSORWAIT 4
 #define wxSCI_CURSORREVERSEARROW 7
 
-// Constants for use with SetVisiblePolicy, similar to SetCaretPolicy.
+/// Constants for use with SetVisiblePolicy, similar to SetCaretPolicy.
 #define wxSCI_VISIBLE_SLOP 0x01
 #define wxSCI_VISIBLE_STRICT 0x04
 
-// Caret policy, used by SetXCaretPolicy and SetYCaretPolicy.
-// If CARET_SLOP is set, we can define a slop value: caretSlop.
-// This value defines an unwanted zone (UZ) where the caret is... unwanted.
-// This zone is defined as a number of pixels near the vertical margins,
-// and as a number of lines near the horizontal margins.
-// By keeping the caret away from the edges, it is seen within its context,
-// so it is likely that the identifier that the caret is on can be completely seen,
-// and that the current line is seen with some of the lines following it which are
-// often dependent on that line.
+/// Caret policy, used by SetXCaretPolicy and SetYCaretPolicy.
+/// If CARET_SLOP is set, we can define a slop value: caretSlop.
+/// This value defines an unwanted zone (UZ) where the caret is... unwanted.
+/// This zone is defined as a number of pixels near the vertical margins,
+/// and as a number of lines near the horizontal margins.
+/// By keeping the caret away from the edges, it is seen within its context,
+/// so it is likely that the identifier that the caret is on can be completely seen,
+/// and that the current line is seen with some of the lines following it which are
+/// often dependent on that line.
 #define wxSCI_CARET_SLOP 0x01
 
-// If CARET_STRICT is set, the policy is enforced... strictly.
-// The caret is centred on the display if slop is not set,
-// and cannot go in the UZ if slop is set.
+/// If CARET_STRICT is set, the policy is enforced... strictly.
+/// The caret is centred on the display if slop is not set,
+/// and cannot go in the UZ if slop is set.
 #define wxSCI_CARET_STRICT 0x04
 
-// If CARET_JUMPS is set, the display is moved more energetically
-// so the caret can move in the same direction longer before the policy is applied again.
+/// If CARET_JUMPS is set, the display is moved more energetically
+/// so the caret can move in the same direction longer before the policy is applied again.
 #define wxSCI_CARET_JUMPS 0x10
 
-// If CARET_EVEN is not set, instead of having symmetrical UZs,
-// the left and bottom UZs are extended up to right and top UZs respectively.
-// This way, we favour the displaying of useful information: the begining of lines,
-// where most code reside, and the lines after the caret, eg. the body of a function.
+/// If CARET_EVEN is not set, instead of having symmetrical UZs,
+/// the left and bottom UZs are extended up to right and top UZs respectively.
+/// This way, we favour the displaying of useful information: the begining of lines,
+/// where most code reside, and the lines after the caret, eg. the body of a function.
 #define wxSCI_CARET_EVEN 0x08
 #define wxSCI_SEL_STREAM 0
 #define wxSCI_SEL_RECTANGLE 1
@@ -358,16 +365,16 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LINE_END_TYPE_DEFAULT 0
 #define wxSCI_LINE_END_TYPE_UNICODE 1
 
-// Maximum value of keywordSet parameter of SetKeyWords.
+/// Maximum value of keywordSet parameter of SetKeyWords.
 #define wxSCI_KEYWORDSET_MAX 8
 #define wxSCI_TYPE_BOOLEAN 0
 #define wxSCI_TYPE_INTEGER 1
 #define wxSCI_TYPE_STRING 2
 
-// Notifications
-// Type of modification and the action which caused the modification.
-// These are defined as a bit mask to make it easy to specify which notifications are wanted.
-// One bit is set from each of SC_MOD_* and SC_PERFORMED_*.
+/// Notifications
+/// Type of modification and the action which caused the modification.
+/// These are defined as a bit mask to make it easy to specify which notifications are wanted.
+/// One bit is set from each of SC_MOD_* and SC_PERFORMED_*.
 #define wxSCI_MOD_INSERTTEXT 0x1
 #define wxSCI_MOD_DELETETEXT 0x2
 #define wxSCI_MOD_CHANGESTYLE 0x4
@@ -389,7 +396,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MOD_CONTAINER 0x40000
 #define wxSCI_MOD_LEXERSTATE 0x80000
 #define wxSCI_MOD_INSERTCHECK 0x100000
-#define wxSCI_MODEVENTMASKALL 0x1FFFFF
+#define wxSCI_MOD_CHANGETABSTOPS 0x200000
+#define wxSCI_MODEVENTMASKALL 0x3FFFFF
 
 #define wxSCI_UPDATE_CONTENT 0x1
 #define wxSCI_UPDATE_SELECTION 0x2
@@ -400,9 +408,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LASTLINEUNDOREDO wxSCI_MULTILINEUNDOREDO
 /* C::B end */
 
-// Symbolic key codes and modifier flags.
-// ASCII and other printable characters below 256.
-// Extended keys above 300.
+/// Symbolic key codes and modifier flags.
+/// ASCII and other printable characters below 256.
+/// Extended keys above 300.
 #define wxSCI_KEY_DOWN 300
 #define wxSCI_KEY_UP 301
 #define wxSCI_KEY_LEFT 302
@@ -430,7 +438,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SCMOD_SUPER 8
 #define wxSCI_SCMOD_META 16
 
-// For SciLexer.h
+/// For SciLexer.h
 #define wxSCI_LEX_CONTAINER 0
 #define wxSCI_LEX_NULL 1
 #define wxSCI_LEX_PYTHON 2
@@ -544,15 +552,16 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LEX_DMAP 112
 #define wxSCI_LEX_AS 113
 #define wxSCI_LEX_DMIS 114
+#define wxSCI_LEX_REGISTRY 115
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_DMIS // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_REGISTRY // update if the above gets extended!
 /* C::B end */
 
-// When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
-// value assigned in sequence from SCLEX_AUTOMATIC+1.
+/// When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
+/// value assigned in sequence from SCLEX_AUTOMATIC+1.
 #define wxSCI_LEX_AUTOMATIC 1000
 
-// Lexical states for SCLEX_PYTHON
+/// Lexical states for SCLEX_PYTHON
 #define wxSCI_P_DEFAULT 0
 #define wxSCI_P_COMMENTLINE 1
 #define wxSCI_P_NUMBER 2
@@ -570,7 +579,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_P_WORD2 14
 #define wxSCI_P_DECORATOR 15
 
-// Lexical states for SCLEX_CPP
+/// Lexical states for SCLEX_CPP
 #define wxSCI_C_DEFAULT 0
 #define wxSCI_C_COMMENT 1
 #define wxSCI_C_COMMENTLINE 2
@@ -608,7 +617,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_C_WXSMITH 50
 
 /// WXSMITH end #
-// Lexical states for SCLEX_D
+/// Lexical states for SCLEX_D
 #define wxSCI_D_DEFAULT 0
 #define wxSCI_D_COMMENT 1
 #define wxSCI_D_COMMENTLINE 2
@@ -633,7 +642,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_D_WORD6 21
 #define wxSCI_D_WORD7 22
 
-// Lexical states for SCLEX_TCL
+/// Lexical states for SCLEX_TCL
 #define wxSCI_TCL_DEFAULT 0
 #define wxSCI_TCL_COMMENT 1
 #define wxSCI_TCL_COMMENTLINE 2
@@ -657,7 +666,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_TCL_COMMENT_BOX 20
 #define wxSCI_TCL_BLOCK_COMMENT 21
 
-// Lexical states for SCLEX_HTML, SCLEX_XML
+/// Lexical states for SCLEX_HTML, SCLEX_XML
 #define wxSCI_H_DEFAULT 0
 #define wxSCI_H_TAG 1
 #define wxSCI_H_TAGUNKNOWN 2
@@ -670,7 +679,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_H_COMMENT 9
 #define wxSCI_H_ENTITY 10
 
-// XML and ASP
+/// XML and ASP
 #define wxSCI_H_TAGEND 11
 #define wxSCI_H_XMLSTART 12
 #define wxSCI_H_XMLEND 13
@@ -680,13 +689,13 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_H_CDATA 17
 #define wxSCI_H_QUESTION 18
 
-// More HTML
+/// More HTML
 #define wxSCI_H_VALUE 19
 
-// X-Code
+/// X-Code
 #define wxSCI_H_XCCOMMENT 20
 
-// SGML
+/// SGML
 #define wxSCI_H_SGML_DEFAULT 21
 #define wxSCI_H_SGML_COMMAND 22
 #define wxSCI_H_SGML_1ST_PARAM 23
@@ -699,7 +708,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_H_SGML_1ST_PARAM_COMMENT 30
 #define wxSCI_H_SGML_BLOCK_DEFAULT 31
 
-// Embedded Javascript
+/// Embedded Javascript
 #define wxSCI_HJ_START 40
 #define wxSCI_HJ_DEFAULT 41
 #define wxSCI_HJ_COMMENT 42
@@ -714,7 +723,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HJ_STRINGEOL 51
 #define wxSCI_HJ_REGEX 52
 
-// ASP Javascript
+/// ASP Javascript
 #define wxSCI_HJA_START 55
 #define wxSCI_HJA_DEFAULT 56
 #define wxSCI_HJA_COMMENT 57
@@ -729,7 +738,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HJA_STRINGEOL 66
 #define wxSCI_HJA_REGEX 67
 
-// Embedded VBScript
+/// Embedded VBScript
 #define wxSCI_HB_START 70
 #define wxSCI_HB_DEFAULT 71
 #define wxSCI_HB_COMMENTLINE 72
@@ -739,7 +748,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HB_IDENTIFIER 76
 #define wxSCI_HB_STRINGEOL 77
 
-// ASP VBScript
+/// ASP VBScript
 #define wxSCI_HBA_START 80
 #define wxSCI_HBA_DEFAULT 81
 #define wxSCI_HBA_COMMENTLINE 82
@@ -749,7 +758,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HBA_IDENTIFIER 86
 #define wxSCI_HBA_STRINGEOL 87
 
-// Embedded Python
+/// Embedded Python
 #define wxSCI_HP_START 90
 #define wxSCI_HP_DEFAULT 91
 #define wxSCI_HP_COMMENTLINE 92
@@ -764,10 +773,10 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HP_OPERATOR 101
 #define wxSCI_HP_IDENTIFIER 102
 
-// PHP
+/// PHP
 #define wxSCI_HPHP_COMPLEX_VARIABLE 104
 
-// ASP Python
+/// ASP Python
 #define wxSCI_HPA_START 105
 #define wxSCI_HPA_DEFAULT 106
 #define wxSCI_HPA_COMMENTLINE 107
@@ -782,7 +791,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HPA_OPERATOR 116
 #define wxSCI_HPA_IDENTIFIER 117
 
-// PHP
+/// PHP
 #define wxSCI_HPHP_DEFAULT 118
 #define wxSCI_HPHP_HSTRING 119
 #define wxSCI_HPHP_SIMPLESTRING 120
@@ -794,7 +803,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HPHP_HSTRING_VARIABLE 126
 #define wxSCI_HPHP_OPERATOR 127
 
-// Lexical states for SCLEX_PERL
+/// Lexical states for SCLEX_PERL
 #define wxSCI_PL_DEFAULT 0
 #define wxSCI_PL_ERROR 1
 #define wxSCI_PL_COMMENTLINE 2
@@ -841,7 +850,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_PL_STRING_QX_VAR 65
 #define wxSCI_PL_STRING_QR_VAR 66
 
-// Lexical states for SCLEX_RUBY
+/// Lexical states for SCLEX_RUBY
 #define wxSCI_RB_DEFAULT 0
 #define wxSCI_RB_ERROR 1
 #define wxSCI_RB_COMMENTLINE 2
@@ -877,7 +886,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_RB_STDERR 40
 #define wxSCI_RB_UPPER_BOUND 41
 
-// Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC
+/// Lexical states for SCLEX_VB, SCLEX_VBSCRIPT, SCLEX_POWERBASIC
 #define wxSCI_B_DEFAULT 0
 #define wxSCI_B_COMMENT 1
 #define wxSCI_B_NUMBER 2
@@ -902,7 +911,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_B_DOCBLOCK 21
 #define wxSCI_B_DOCKEYWORD 22
 
-// Lexical states for SCLEX_PROPERTIES
+/// Lexical states for SCLEX_PROPERTIES
 #define wxSCI_PROPS_DEFAULT 0
 #define wxSCI_PROPS_COMMENT 1
 #define wxSCI_PROPS_SECTION 2
@@ -910,7 +919,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_PROPS_DEFVAL 4
 #define wxSCI_PROPS_KEY 5
 
-// Lexical states for SCLEX_LATEX
+/// Lexical states for SCLEX_LATEX
 #define wxSCI_L_DEFAULT 0
 #define wxSCI_L_COMMAND 1
 #define wxSCI_L_TAG 2
@@ -925,7 +934,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_L_CMDOPT 11
 #define wxSCI_L_ERROR 12
 
-// Lexical states for SCLEX_LUA
+/// Lexical states for SCLEX_LUA
 #define wxSCI_LUA_DEFAULT 0
 #define wxSCI_LUA_COMMENT 1
 #define wxSCI_LUA_COMMENTLINE 2
@@ -948,7 +957,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LUA_WORD8 19
 #define wxSCI_LUA_LABEL 20
 
-// Lexical states for SCLEX_ERRORLIST
+/// Lexical states for SCLEX_ERRORLIST
 #define wxSCI_ERR_DEFAULT 0
 #define wxSCI_ERR_PYTHON 1
 #define wxSCI_ERR_GCC 2
@@ -973,7 +982,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ERR_VALUE 21
 #define wxSCI_ERR_GCC_INCLUDED_FROM 22
 
-// Lexical states for SCLEX_BATCH
+/// Lexical states for SCLEX_BATCH
 #define wxSCI_BAT_DEFAULT 0
 #define wxSCI_BAT_COMMENT 1
 #define wxSCI_BAT_WORD 2
@@ -983,7 +992,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_BAT_IDENTIFIER 6
 #define wxSCI_BAT_OPERATOR 7
 
-// Lexical states for SCLEX_TCMD
+/// Lexical states for SCLEX_TCMD
 #define wxSCI_TCMD_DEFAULT 0
 #define wxSCI_TCMD_COMMENT 1
 #define wxSCI_TCMD_WORD 2
@@ -996,7 +1005,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_TCMD_EXPANSION 9
 #define wxSCI_TCMD_CLABEL 10
 
-// Lexical states for SCLEX_MAKEFILE
+/// Lexical states for SCLEX_MAKEFILE
 #define wxSCI_MAKE_DEFAULT 0
 #define wxSCI_MAKE_COMMENT 1
 #define wxSCI_MAKE_PREPROCESSOR 2
@@ -1005,7 +1014,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MAKE_TARGET 5
 #define wxSCI_MAKE_IDEOL 9
 
-// Lexical states for SCLEX_DIFF
+/// Lexical states for SCLEX_DIFF
 #define wxSCI_DIFF_DEFAULT 0
 #define wxSCI_DIFF_COMMENT 1
 #define wxSCI_DIFF_COMMAND 2
@@ -1015,7 +1024,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_DIFF_ADDED 6
 #define wxSCI_DIFF_CHANGED 7
 
-// Lexical states for SCLEX_CONF (Apache Configuration Files Lexer)
+/// Lexical states for SCLEX_CONF (Apache Configuration Files Lexer)
 #define wxSCI_CONF_DEFAULT 0
 #define wxSCI_CONF_COMMENT 1
 #define wxSCI_CONF_NUMBER 2
@@ -1027,7 +1036,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CONF_IP 8
 #define wxSCI_CONF_DIRECTIVE 9
 
-// Lexical states for SCLEX_AVE, Avenue
+/// Lexical states for SCLEX_AVE, Avenue
 #define wxSCI_AVE_DEFAULT 0
 #define wxSCI_AVE_COMMENT 1
 #define wxSCI_AVE_NUMBER 2
@@ -1044,7 +1053,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_AVE_WORD5 15
 #define wxSCI_AVE_WORD6 16
 
-// Lexical states for SCLEX_ADA
+/// Lexical states for SCLEX_ADA
 #define wxSCI_ADA_DEFAULT 0
 #define wxSCI_ADA_WORD 1
 #define wxSCI_ADA_IDENTIFIER 2
@@ -1058,7 +1067,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ADA_COMMENTLINE 10
 #define wxSCI_ADA_ILLEGAL 11
 
-// Lexical states for SCLEX_BAAN
+/// Lexical states for SCLEX_BAAN
 #define wxSCI_BAAN_DEFAULT 0
 #define wxSCI_BAAN_COMMENT 1
 #define wxSCI_BAAN_COMMENTDOC 2
@@ -1071,7 +1080,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_BAAN_STRINGEOL 9
 #define wxSCI_BAAN_WORD2 10
 
-// Lexical states for SCLEX_LISP
+/// Lexical states for SCLEX_LISP
 #define wxSCI_LISP_DEFAULT 0
 #define wxSCI_LISP_COMMENT 1
 #define wxSCI_LISP_NUMBER 2
@@ -1085,7 +1094,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LISP_SPECIAL 11
 #define wxSCI_LISP_MULTI_COMMENT 12
 
-// Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW
+/// Lexical states for SCLEX_EIFFEL and SCLEX_EIFFELKW
 #define wxSCI_EIFFEL_DEFAULT 0
 #define wxSCI_EIFFEL_COMMENTLINE 1
 #define wxSCI_EIFFEL_NUMBER 2
@@ -1096,7 +1105,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_EIFFEL_IDENTIFIER 7
 #define wxSCI_EIFFEL_STRINGEOL 8
 
-// Lexical states for SCLEX_NNCRONTAB (nnCron crontab Lexer)
+/// Lexical states for SCLEX_NNCRONTAB (nnCron crontab Lexer)
 #define wxSCI_NNCRONTAB_DEFAULT 0
 #define wxSCI_NNCRONTAB_COMMENT 1
 #define wxSCI_NNCRONTAB_TASK 2
@@ -1109,7 +1118,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_NNCRONTAB_ENVIRONMENT 9
 #define wxSCI_NNCRONTAB_IDENTIFIER 10
 
-// Lexical states for SCLEX_FORTH (Forth Lexer)
+/// Lexical states for SCLEX_FORTH (Forth Lexer)
 #define wxSCI_FORTH_DEFAULT 0
 #define wxSCI_FORTH_COMMENT 1
 #define wxSCI_FORTH_COMMENT_ML 2
@@ -1123,20 +1132,20 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_FORTH_STRING 10
 #define wxSCI_FORTH_LOCALE 11
 
-// Lexical states for SCLEX_MATLAB
+/// Lexical states for SCLEX_MATLAB
 #define wxSCI_MATLAB_DEFAULT 0
 #define wxSCI_MATLAB_COMMENT 1
 #define wxSCI_MATLAB_COMMAND 2
 #define wxSCI_MATLAB_NUMBER 3
 #define wxSCI_MATLAB_KEYWORD 4
 
-// single quoted string
+/// single quoted string
 #define wxSCI_MATLAB_STRING 5
 #define wxSCI_MATLAB_OPERATOR 6
 #define wxSCI_MATLAB_IDENTIFIER 7
 #define wxSCI_MATLAB_DOUBLEQUOTESTRING 8
 
-// Lexical states for SCLEX_SCRIPTOL
+/// Lexical states for SCLEX_SCRIPTOL
 #define wxSCI_SCRIPTOL_DEFAULT 0
 #define wxSCI_SCRIPTOL_WHITE 1
 #define wxSCI_SCRIPTOL_COMMENTLINE 2
@@ -1154,7 +1163,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SCRIPTOL_CLASSNAME 14
 #define wxSCI_SCRIPTOL_PREPROCESSOR 15
 
-// Lexical states for SCLEX_ASM
+/// Lexical states for SCLEX_ASM, SCLEX_AS
 #define wxSCI_ASM_DEFAULT 0
 #define wxSCI_ASM_COMMENT 1
 #define wxSCI_ASM_NUMBER 2
@@ -1172,7 +1181,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ASM_EXTINSTRUCTION 14
 #define wxSCI_ASM_COMMENTDIRECTIVE 15
 
-// Lexical states for SCLEX_FORTRAN
+/// Lexical states for SCLEX_FORTRAN
 #define wxSCI_F_DEFAULT 0
 #define wxSCI_F_COMMENT 1
 #define wxSCI_F_NUMBER 2
@@ -1189,7 +1198,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_F_LABEL 13
 #define wxSCI_F_CONTINUATION 14
 
-// Lexical states for SCLEX_CSS
+/// Lexical states for SCLEX_CSS
 #define wxSCI_CSS_DEFAULT 0
 #define wxSCI_CSS_TAG 1
 #define wxSCI_CSS_CLASS 2
@@ -1215,7 +1224,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CSS_MEDIA 22
 #define wxSCI_CSS_VARIABLE 23
 
-// Lexical states for SCLEX_POV
+/// Lexical states for SCLEX_POV
 #define wxSCI_POV_DEFAULT 0
 #define wxSCI_POV_COMMENT 1
 #define wxSCI_POV_COMMENTLINE 2
@@ -1234,7 +1243,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_POV_WORD7 15
 #define wxSCI_POV_WORD8 16
 
-// Lexical states for SCLEX_LOUT
+/// Lexical states for SCLEX_LOUT
 #define wxSCI_LOUT_DEFAULT 0
 #define wxSCI_LOUT_COMMENT 1
 #define wxSCI_LOUT_NUMBER 2
@@ -1247,7 +1256,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LOUT_IDENTIFIER 9
 #define wxSCI_LOUT_STRINGEOL 10
 
-// Lexical states for SCLEX_ESCRIPT
+/// Lexical states for SCLEX_ESCRIPT
 #define wxSCI_ESCRIPT_DEFAULT 0
 #define wxSCI_ESCRIPT_COMMENT 1
 #define wxSCI_ESCRIPT_COMMENTLINE 2
@@ -1261,7 +1270,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ESCRIPT_WORD2 10
 #define wxSCI_ESCRIPT_WORD3 11
 
-// Lexical states for SCLEX_PS
+/// Lexical states for SCLEX_PS
 #define wxSCI_PS_DEFAULT 0
 #define wxSCI_PS_COMMENT 1
 #define wxSCI_PS_DSC_COMMENT 2
@@ -1279,7 +1288,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_PS_BASE85STRING 14
 #define wxSCI_PS_BADSTRINGCHAR 15
 
-// Lexical states for SCLEX_NSIS
+/// Lexical states for SCLEX_NSIS
 #define wxSCI_NSIS_DEFAULT 0
 #define wxSCI_NSIS_COMMENT 1
 #define wxSCI_NSIS_STRINGDQ 2
@@ -1300,7 +1309,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_NSIS_FUNCTIONDEF 17
 #define wxSCI_NSIS_COMMENTBOX 18
 
-// Lexical states for SCLEX_MMIXAL
+/// Lexical states for SCLEX_MMIXAL
 #define wxSCI_MMIXAL_LEADWS 0
 #define wxSCI_MMIXAL_COMMENT 1
 #define wxSCI_MMIXAL_LABEL 2
@@ -1320,7 +1329,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MMIXAL_SYMBOL 16
 #define wxSCI_MMIXAL_INCLUDE 17
 
-// Lexical states for SCLEX_CLW
+/// Lexical states for SCLEX_CLW
 #define wxSCI_CLW_DEFAULT 0
 #define wxSCI_CLW_LABEL 1
 #define wxSCI_CLW_COMMENT 2
@@ -1339,7 +1348,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CLW_ERROR 15
 #define wxSCI_CLW_DEPRECATED 16
 
-// Lexical states for SCLEX_LOT
+/// Lexical states for SCLEX_LOT
 #define wxSCI_LOT_DEFAULT 0
 #define wxSCI_LOT_HEADER 1
 #define wxSCI_LOT_BREAK 2
@@ -1348,7 +1357,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LOT_FAIL 5
 #define wxSCI_LOT_ABORT 6
 
-// Lexical states for SCLEX_YAML
+/// Lexical states for SCLEX_YAML
 #define wxSCI_YAML_DEFAULT 0
 #define wxSCI_YAML_COMMENT 1
 #define wxSCI_YAML_IDENTIFIER 2
@@ -1360,7 +1369,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_YAML_ERROR 8
 #define wxSCI_YAML_OPERATOR 9
 
-// Lexical states for SCLEX_TEX
+/// Lexical states for SCLEX_TEX
 #define wxSCI_TEX_DEFAULT 0
 #define wxSCI_TEX_SPECIAL 1
 #define wxSCI_TEX_GROUP 2
@@ -1375,7 +1384,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_METAPOST_TEXT 5
 #define wxSCI_METAPOST_EXTRA 6
 
-// Lexical states for SCLEX_ERLANG
+/// Lexical states for SCLEX_ERLANG
 #define wxSCI_ERLANG_DEFAULT 0
 #define wxSCI_ERLANG_COMMENT 1
 #define wxSCI_ERLANG_VARIABLE 2
@@ -1403,8 +1412,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ERLANG_MODULES_ATT 24
 #define wxSCI_ERLANG_UNKNOWN 31
 
-// Lexical states for SCLEX_OCTAVE are identical to MatLab
-// Lexical states for SCLEX_MSSQL
+/// Lexical states for SCLEX_OCTAVE are identical to MatLab
+/// Lexical states for SCLEX_MSSQL
 #define wxSCI_MSSQL_DEFAULT 0
 #define wxSCI_MSSQL_COMMENT 1
 #define wxSCI_MSSQL_LINE_COMMENT 2
@@ -1423,7 +1432,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MSSQL_DEFAULT_PREF_DATATYPE 15
 #define wxSCI_MSSQL_COLUMN_NAME_2 16
 
-// Lexical states for SCLEX_VERILOG
+/// Lexical states for SCLEX_VERILOG
 #define wxSCI_V_DEFAULT 0
 #define wxSCI_V_COMMENT 1
 #define wxSCI_V_COMMENTLINE 2
@@ -1439,7 +1448,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_V_STRINGEOL 12
 #define wxSCI_V_USER 19
 
-// Lexical states for SCLEX_KIX
+/// Lexical states for SCLEX_KIX
 #define wxSCI_KIX_DEFAULT 0
 #define wxSCI_KIX_COMMENT 1
 #define wxSCI_KIX_STRING1 2
@@ -1450,9 +1459,10 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_KIX_KEYWORD 7
 #define wxSCI_KIX_FUNCTIONS 8
 #define wxSCI_KIX_OPERATOR 9
+#define wxSCI_KIX_COMMENTSTREAM 10
 #define wxSCI_KIX_IDENTIFIER 31
 
-// Lexical states for SCLEX_GUI4CLI
+/// Lexical states for SCLEX_GUI4CLI
 #define wxSCI_GC_DEFAULT 0
 #define wxSCI_GC_COMMENTLINE 1
 #define wxSCI_GC_COMMENTBLOCK 2
@@ -1464,7 +1474,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_GC_STRING 8
 #define wxSCI_GC_OPERATOR 9
 
-// Lexical states for SCLEX_SPECMAN
+/// Lexical states for SCLEX_SPECMAN
 #define wxSCI_SN_DEFAULT 0
 #define wxSCI_SN_CODE 1
 #define wxSCI_SN_COMMENTLINE 2
@@ -1482,7 +1492,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SN_SIGNAL 14
 #define wxSCI_SN_USER 19
 
-// Lexical states for SCLEX_AU3
+/// Lexical states for SCLEX_AU3
 #define wxSCI_AU3_DEFAULT 0
 #define wxSCI_AU3_COMMENT 1
 #define wxSCI_AU3_COMMENTBLOCK 2
@@ -1500,7 +1510,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_AU3_COMOBJ 14
 #define wxSCI_AU3_UDF 15
 
-// Lexical states for SCLEX_APDL
+/// Lexical states for SCLEX_APDL
 #define wxSCI_APDL_DEFAULT 0
 #define wxSCI_APDL_COMMENT 1
 #define wxSCI_APDL_COMMENTBLOCK 2
@@ -1515,7 +1525,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_APDL_ARGUMENT 11
 #define wxSCI_APDL_FUNCTION 12
 
-// Lexical states for SCLEX_BASH
+/// Lexical states for SCLEX_BASH
 #define wxSCI_SH_DEFAULT 0
 #define wxSCI_SH_ERROR 1
 #define wxSCI_SH_COMMENTLINE 2
@@ -1531,7 +1541,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SH_HERE_DELIM 12
 #define wxSCI_SH_HERE_Q 13
 
-// Lexical states for SCLEX_ASN1
+/// Lexical states for SCLEX_ASN1
 #define wxSCI_ASN1_DEFAULT 0
 #define wxSCI_ASN1_COMMENT 1
 #define wxSCI_ASN1_IDENTIFIER 2
@@ -1544,7 +1554,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ASN1_TYPE 9
 #define wxSCI_ASN1_OPERATOR 10
 
-// Lexical states for SCLEX_VHDL
+/// Lexical states for SCLEX_VHDL
 #define wxSCI_VHDL_DEFAULT 0
 #define wxSCI_VHDL_COMMENT 1
 #define wxSCI_VHDL_COMMENTLINEBANG 2
@@ -1561,7 +1571,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_VHDL_STDTYPE 13
 #define wxSCI_VHDL_USERWORD 14
 
-// Lexical states for SCLEX_CAML
+/// Lexical states for SCLEX_CAML
 #define wxSCI_CAML_DEFAULT 0
 #define wxSCI_CAML_IDENTIFIER 1
 #define wxSCI_CAML_TAGNAME 2
@@ -1579,7 +1589,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CAML_COMMENT2 14
 #define wxSCI_CAML_COMMENT3 15
 
-// Lexical states for SCLEX_HASKELL
+/// Lexical states for SCLEX_HASKELL
 #define wxSCI_HA_DEFAULT 0
 #define wxSCI_HA_IDENTIFIER 1
 #define wxSCI_HA_KEYWORD 2
@@ -1604,7 +1614,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_HA_LITERATE_COMMENT 21
 #define wxSCI_HA_LITERATE_CODEDELIM 22
 
-// Lexical states of SCLEX_TADS3
+/// Lexical states of SCLEX_TADS3
 #define wxSCI_T3_DEFAULT 0
 #define wxSCI_T3_X_DEFAULT 1
 #define wxSCI_T3_PREPROCESSOR 2
@@ -1627,7 +1637,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_T3_USER3 19
 #define wxSCI_T3_BRACE 20
 
-// Lexical states for SCLEX_REBOL
+/// Lexical states for SCLEX_REBOL
 #define wxSCI_REBOL_DEFAULT 0
 #define wxSCI_REBOL_COMMENTLINE 1
 #define wxSCI_REBOL_COMMENTBLOCK 2
@@ -1658,7 +1668,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_REBOL_WORD7 27
 #define wxSCI_REBOL_WORD8 28
 
-// Lexical states for SCLEX_SQL
+/// Lexical states for SCLEX_SQL
 #define wxSCI_SQL_DEFAULT 0
 #define wxSCI_SQL_COMMENT 1
 #define wxSCI_SQL_COMMENTLINE 2
@@ -1682,7 +1692,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SQL_USER4 22
 #define wxSCI_SQL_QUOTEDIDENTIFIER 23
 
-// Lexical states for SCLEX_SMALLTALK
+/// Lexical states for SCLEX_SMALLTALK
 #define wxSCI_ST_DEFAULT 0
 #define wxSCI_ST_STRING 1
 #define wxSCI_ST_NUMBER 2
@@ -1701,7 +1711,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ST_CHARACTER 15
 #define wxSCI_ST_SPEC_SEL 16
 
-// Lexical states for SCLEX_FLAGSHIP (clipper)
+/// Lexical states for SCLEX_FLAGSHIP (clipper)
 #define wxSCI_FS_DEFAULT 0
 #define wxSCI_FS_COMMENT 1
 #define wxSCI_FS_COMMENTLINE 2
@@ -1735,7 +1745,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_FS_IDENTIFIER_C 30
 #define wxSCI_FS_STRINGEOL_C 31
 
-// Lexical states for SCLEX_CSOUND
+/// Lexical states for SCLEX_CSOUND
 #define wxSCI_CSOUND_DEFAULT 0
 #define wxSCI_CSOUND_COMMENT 1
 #define wxSCI_CSOUND_NUMBER 2
@@ -1753,7 +1763,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CSOUND_GLOBAL_VAR 14
 #define wxSCI_CSOUND_STRINGEOL 15
 
-// Lexical states for SCLEX_INNOSETUP
+/// Lexical states for SCLEX_INNOSETUP
 #define wxSCI_INNO_DEFAULT 0
 #define wxSCI_INNO_COMMENT 1
 #define wxSCI_INNO_KEYWORD 2
@@ -1768,7 +1778,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_INNO_STRING_SINGLE 11
 #define wxSCI_INNO_IDENTIFIER 12
 
-// Lexical states for SCLEX_OPAL
+/// Lexical states for SCLEX_OPAL
 #define wxSCI_OPAL_SPACE 0
 #define wxSCI_OPAL_COMMENT_BLOCK 1
 #define wxSCI_OPAL_COMMENT_LINE 2
@@ -1780,7 +1790,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_OPAL_BOOL_CONST 8
 #define wxSCI_OPAL_DEFAULT 32
 
-// Lexical states for SCLEX_SPICE
+/// Lexical states for SCLEX_SPICE
 #define wxSCI_SPICE_DEFAULT 0
 #define wxSCI_SPICE_IDENTIFIER 1
 #define wxSCI_SPICE_KEYWORD 2
@@ -1791,7 +1801,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SPICE_VALUE 7
 #define wxSCI_SPICE_COMMENTLINE 8
 
-// Lexical states for SCLEX_CMAKE
+/// Lexical states for SCLEX_CMAKE
 #define wxSCI_CMAKE_DEFAULT 0
 #define wxSCI_CMAKE_COMMENT 1
 #define wxSCI_CMAKE_STRINGDQ 2
@@ -1808,7 +1818,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CMAKE_STRINGVAR 13
 #define wxSCI_CMAKE_NUMBER 14
 
-// Lexical states for SCLEX_GAP
+/// Lexical states for SCLEX_GAP
 #define wxSCI_GAP_DEFAULT 0
 #define wxSCI_GAP_IDENTIFIER 1
 #define wxSCI_GAP_KEYWORD 2
@@ -1822,7 +1832,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_GAP_NUMBER 10
 #define wxSCI_GAP_STRINGEOL 11
 
-// Lexical state for SCLEX_PLM
+/// Lexical state for SCLEX_PLM
 #define wxSCI_PLM_DEFAULT 0
 #define wxSCI_PLM_COMMENT 1
 #define wxSCI_PLM_STRING 2
@@ -1832,7 +1842,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_PLM_CONTROL 6
 #define wxSCI_PLM_KEYWORD 7
 
-// Lexical state for SCLEX_PROGRESS
+/// Lexical state for SCLEX_PROGRESS
 #define wxSCI_4GL_DEFAULT 0
 #define wxSCI_4GL_NUMBER 1
 #define wxSCI_4GL_WORD 2
@@ -1866,7 +1876,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_4GL_COMMENT5_ 30
 #define wxSCI_4GL_COMMENT6_ 31
 
-// Lexical states for SCLEX_ABAQUS
+/// Lexical states for SCLEX_ABAQUS
 #define wxSCI_ABAQUS_DEFAULT 0
 #define wxSCI_ABAQUS_COMMENT 1
 #define wxSCI_ABAQUS_COMMENTBLOCK 2
@@ -1881,7 +1891,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ABAQUS_ARGUMENT 11
 #define wxSCI_ABAQUS_FUNCTION 12
 
-// Lexical states for SCLEX_ASYMPTOTE
+/// Lexical states for SCLEX_ASYMPTOTE
 #define wxSCI_ASY_DEFAULT 0
 #define wxSCI_ASY_COMMENT 1
 #define wxSCI_ASY_COMMENTLINE 2
@@ -1895,7 +1905,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ASY_COMMENTLINEDOC 10
 #define wxSCI_ASY_WORD2 11
 
-// Lexical states for SCLEX_R
+/// Lexical states for SCLEX_R
 #define wxSCI_R_DEFAULT 0
 #define wxSCI_R_COMMENT 1
 #define wxSCI_R_KWORD 2
@@ -1909,7 +1919,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_R_INFIX 10
 #define wxSCI_R_INFIXEOL 11
 
-// Lexical state for SCLEX_MAGIKSF
+/// Lexical state for SCLEX_MAGIK
 #define wxSCI_MAGIK_DEFAULT 0
 #define wxSCI_MAGIK_COMMENT 1
 #define wxSCI_MAGIK_HYPER_COMMENT 16
@@ -1928,7 +1938,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MAGIK_PRAGMA 14
 #define wxSCI_MAGIK_SYMBOL 15
 
-// Lexical state for SCLEX_POWERSHELL
+/// Lexical state for SCLEX_POWERSHELL
 #define wxSCI_POWERSHELL_DEFAULT 0
 #define wxSCI_POWERSHELL_COMMENT 1
 #define wxSCI_POWERSHELL_STRING 2
@@ -1947,7 +1957,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_POWERSHELL_HERE_CHARACTER 15
 #define wxSCI_POWERSHELL_COMMENTDOCKEYWORD 16
 
-// Lexical state for SCLEX_MYSQL
+/// Lexical state for SCLEX_MYSQL
 #define wxSCI_MYSQL_DEFAULT 0
 #define wxSCI_MYSQL_COMMENT 1
 #define wxSCI_MYSQL_COMMENTLINE 2
@@ -1972,7 +1982,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MYSQL_HIDDENCOMMAND 21
 #define wxSCI_MYSQL_PLACEHOLDER 22
 
-// Lexical state for SCLEX_PO
+/// Lexical state for SCLEX_PO
 #define wxSCI_PO_DEFAULT 0
 #define wxSCI_PO_COMMENT 1
 #define wxSCI_PO_MSGID 2
@@ -1990,7 +2000,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_PO_MSGCTXT_TEXT_EOL 14
 #define wxSCI_PO_ERROR 15
 
-// Lexical states for SCLEX_PASCAL
+/// Lexical states for SCLEX_PASCAL
 #define wxSCI_PAS_DEFAULT 0
 #define wxSCI_PAS_IDENTIFIER 1
 #define wxSCI_PAS_COMMENT 2
@@ -2007,7 +2017,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_PAS_OPERATOR 13
 #define wxSCI_PAS_ASM 14
 
-// Lexical state for SCLEX_SORCUS
+/// Lexical state for SCLEX_SORCUS
 #define wxSCI_SORCUS_DEFAULT 0
 #define wxSCI_SORCUS_COMMAND 1
 #define wxSCI_SORCUS_PARAMETER 2
@@ -2019,7 +2029,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SORCUS_NUMBER 8
 #define wxSCI_SORCUS_CONSTANT 9
 
-// Lexical state for SCLEX_POWERPRO
+/// Lexical state for SCLEX_POWERPRO
 #define wxSCI_POWERPRO_DEFAULT 0
 #define wxSCI_POWERPRO_COMMENTBLOCK 1
 #define wxSCI_POWERPRO_COMMENTLINE 2
@@ -2038,7 +2048,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_POWERPRO_ALTQUOTE 15
 #define wxSCI_POWERPRO_FUNCTION 16
 
-// Lexical states for SCLEX_SML
+/// Lexical states for SCLEX_SML
 #define wxSCI_SML_DEFAULT 0
 #define wxSCI_SML_IDENTIFIER 1
 #define wxSCI_SML_TAGNAME 2
@@ -2055,7 +2065,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SML_COMMENT2 14
 #define wxSCI_SML_COMMENT3 15
 
-// Lexical state for SCLEX_MARKDOWN
+/// Lexical state for SCLEX_MARKDOWN
 #define wxSCI_MARKDOWN_DEFAULT 0
 #define wxSCI_MARKDOWN_LINE_BEGIN 1
 #define wxSCI_MARKDOWN_STRONG1 2
@@ -2079,7 +2089,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARKDOWN_CODE2 20
 #define wxSCI_MARKDOWN_CODEBK 21
 
-// Lexical state for SCLEX_TXT2TAGS
+/// Lexical state for SCLEX_TXT2TAGS
 #define wxSCI_TXT2TAGS_DEFAULT 0
 #define wxSCI_TXT2TAGS_LINE_BEGIN 1
 #define wxSCI_TXT2TAGS_STRONG1 2
@@ -2107,7 +2117,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_TXT2TAGS_PREPROC 24
 #define wxSCI_TXT2TAGS_POSTPROC 25
 
-// Lexical states for SCLEX_A68K
+/// Lexical states for SCLEX_A68K
 #define wxSCI_A68K_DEFAULT 0
 #define wxSCI_A68K_COMMENT 1
 #define wxSCI_A68K_NUMBER_DEC 2
@@ -2128,7 +2138,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_A68K_COMMENT_SPECIAL 17
 #define wxSCI_A68K_COMMENT_DOXYGEN 18
 
-// Lexical states for SCLEX_MODULA
+/// Lexical states for SCLEX_MODULA
 #define wxSCI_MODULA_DEFAULT 0
 #define wxSCI_MODULA_COMMENT 1
 #define wxSCI_MODULA_DOXYCOMM 2
@@ -2148,7 +2158,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MODULA_OPERATOR 16
 #define wxSCI_MODULA_BADSTR 17
 
-// Lexical states for SCLEX_COFFEESCRIPT
+/// Lexical states for SCLEX_COFFEESCRIPT
 #define wxSCI_COFFEESCRIPT_DEFAULT 0
 #define wxSCI_COFFEESCRIPT_COMMENT 1
 #define wxSCI_COFFEESCRIPT_COMMENTLINE 2
@@ -2175,7 +2185,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_COFFEESCRIPT_VERBOSE_REGEX 23
 #define wxSCI_COFFEESCRIPT_VERBOSE_REGEX_COMMENT 24
 
-// Lexical states for SCLEX_AVS
+/// Lexical states for SCLEX_AVS
 #define wxSCI_AVS_DEFAULT 0
 #define wxSCI_AVS_COMMENTBLOCK 1
 #define wxSCI_AVS_COMMENTBLOCKN 2
@@ -2192,7 +2202,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_AVS_CLIPPROP 13
 #define wxSCI_AVS_USERDFN 14
 
-// Lexical states for SCLEX_ECL
+/// Lexical states for SCLEX_ECL
 #define wxSCI_ECL_DEFAULT 0
 #define wxSCI_ECL_COMMENT 1
 #define wxSCI_ECL_COMMENTLINE 2
@@ -2222,7 +2232,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_ECL_CHANGED 26
 #define wxSCI_ECL_MOVED 27
 
-// Lexical states for SCLEX_OSCRIPT
+/// Lexical states for SCLEX_OSCRIPT
 #define wxSCI_OSCRIPT_DEFAULT 0
 #define wxSCI_OSCRIPT_LINE_COMMENT 1
 #define wxSCI_OSCRIPT_BLOCK_COMMENT 2
@@ -2243,7 +2253,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_OSCRIPT_PROPERTY 17
 #define wxSCI_OSCRIPT_METHOD 18
 
-// Lexical states for SCLEX_VISUALPROLOG
+/// Lexical states for SCLEX_VISUALPROLOG
 #define wxSCI_VISUALPROLOG_DEFAULT 0
 #define wxSCI_VISUALPROLOG_KEY_MAJOR 1
 #define wxSCI_VISUALPROLOG_KEY_MINOR 2
@@ -2326,6 +2336,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_RUST_LIFETIME 18
 #define wxSCI_RUST_MACRO 19
 #define wxSCI_RUST_LEXERROR 20
+#define wxSCI_RUST_BYTESTRING 21
+#define wxSCI_RUST_BYTESTRINGR 22
+#define wxSCI_RUST_BYTECHARACTER 23
 
 /// Lexical states for SCLEX_DMAP
 #define wxSCI_DMAP_DEFAULT 0
@@ -2352,6 +2365,21 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_DMIS_UNSUPPORTED_MINOR 8
 #define wxSCI_DMIS_LABEL 9
 
+/// Lexical states for SCLEX_REGISTRY
+#define wxSCI_REG_DEFAULT 0
+#define wxSCI_REG_COMMENT 1
+#define wxSCI_REG_VALUENAME 2
+#define wxSCI_REG_STRING 3
+#define wxSCI_REG_HEXDIGIT 4
+#define wxSCI_REG_VALUETYPE 5
+#define wxSCI_REG_ADDEDKEY 6
+#define wxSCI_REG_DELETEDKEY 7
+#define wxSCI_REG_ESCAPED 8
+#define wxSCI_REG_KEYPATH_GUID 9
+#define wxSCI_REG_STRING_GUID 10
+#define wxSCI_REG_PARAMETER 11
+#define wxSCI_REG_OPERATOR 12
+
 /// Events
 /// GTK+ Specific to work around focus and accelerator problems:
 /// Line end types which may be used in addition to LF, CR, and CRLF
@@ -2367,190 +2395,190 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 // Commands that can be bound to keystrokes section {{{
 
 
-// Redoes the next action on the undo history.
+/// Redoes the next action on the undo history.
 #define wxSCI_CMD_REDO 2011
 
-// Select all the text in the document.
+/// Select all the text in the document.
 #define wxSCI_CMD_SELECTALL 2013
 
-// Undo one action in the undo history.
+/// Undo one action in the undo history.
 #define wxSCI_CMD_UNDO 2176
 
-// Cut the selection to the clipboard.
+/// Cut the selection to the clipboard.
 #define wxSCI_CMD_CUT 2177
 
-// Copy the selection to the clipboard.
+/// Copy the selection to the clipboard.
 #define wxSCI_CMD_COPY 2178
 
-// Paste the contents of the clipboard into the document replacing the selection.
+/// Paste the contents of the clipboard into the document replacing the selection.
 #define wxSCI_CMD_PASTE 2179
 
-// Clear the selection.
+/// Clear the selection.
 #define wxSCI_CMD_CLEAR 2180
 
-// Move caret down one line.
+/// Move caret down one line.
 #define wxSCI_CMD_LINEDOWN 2300
 
-// Move caret down one line extending selection to new caret position.
+/// Move caret down one line extending selection to new caret position.
 #define wxSCI_CMD_LINEDOWNEXTEND 2301
 
-// Move caret up one line.
+/// Move caret up one line.
 #define wxSCI_CMD_LINEUP 2302
 
-// Move caret up one line extending selection to new caret position.
+/// Move caret up one line extending selection to new caret position.
 #define wxSCI_CMD_LINEUPEXTEND 2303
 
-// Move caret left one character.
+/// Move caret left one character.
 #define wxSCI_CMD_CHARLEFT 2304
 
-// Move caret left one character extending selection to new caret position.
+/// Move caret left one character extending selection to new caret position.
 #define wxSCI_CMD_CHARLEFTEXTEND 2305
 
-// Move caret right one character.
+/// Move caret right one character.
 #define wxSCI_CMD_CHARRIGHT 2306
 
-// Move caret right one character extending selection to new caret position.
+/// Move caret right one character extending selection to new caret position.
 #define wxSCI_CMD_CHARRIGHTEXTEND 2307
 
-// Move caret left one word.
+/// Move caret left one word.
 #define wxSCI_CMD_WORDLEFT 2308
 
-// Move caret left one word extending selection to new caret position.
+/// Move caret left one word extending selection to new caret position.
 #define wxSCI_CMD_WORDLEFTEXTEND 2309
 
-// Move caret right one word.
+/// Move caret right one word.
 #define wxSCI_CMD_WORDRIGHT 2310
 
-// Move caret right one word extending selection to new caret position.
+/// Move caret right one word extending selection to new caret position.
 #define wxSCI_CMD_WORDRIGHTEXTEND 2311
 
-// Move caret to first position on line.
+/// Move caret to first position on line.
 #define wxSCI_CMD_HOME 2312
 
-// Move caret to first position on line extending selection to new caret position.
+/// Move caret to first position on line extending selection to new caret position.
 #define wxSCI_CMD_HOMEEXTEND 2313
 
-// Move caret to last position on line.
+/// Move caret to last position on line.
 #define wxSCI_CMD_LINEEND 2314
 
-// Move caret to last position on line extending selection to new caret position.
+/// Move caret to last position on line extending selection to new caret position.
 #define wxSCI_CMD_LINEENDEXTEND 2315
 
-// Move caret to first position in document.
+/// Move caret to first position in document.
 #define wxSCI_CMD_DOCUMENTSTART 2316
 
-// Move caret to first position in document extending selection to new caret position.
+/// Move caret to first position in document extending selection to new caret position.
 #define wxSCI_CMD_DOCUMENTSTARTEXTEND 2317
 
-// Move caret to last position in document.
+/// Move caret to last position in document.
 #define wxSCI_CMD_DOCUMENTEND 2318
 
-// Move caret to last position in document extending selection to new caret position.
+/// Move caret to last position in document extending selection to new caret position.
 #define wxSCI_CMD_DOCUMENTENDEXTEND 2319
 
-// Move caret one page up.
+/// Move caret one page up.
 #define wxSCI_CMD_PAGEUP 2320
 
-// Move caret one page up extending selection to new caret position.
+/// Move caret one page up extending selection to new caret position.
 #define wxSCI_CMD_PAGEUPEXTEND 2321
 
-// Move caret one page down.
+/// Move caret one page down.
 #define wxSCI_CMD_PAGEDOWN 2322
 
-// Move caret one page down extending selection to new caret position.
+/// Move caret one page down extending selection to new caret position.
 #define wxSCI_CMD_PAGEDOWNEXTEND 2323
 
-// Switch from insert to overtype mode or the reverse.
+/// Switch from insert to overtype mode or the reverse.
 #define wxSCI_CMD_EDITTOGGLEOVERTYPE 2324
 
-// Cancel any modes such as call tip or auto-completion list display.
+/// Cancel any modes such as call tip or auto-completion list display.
 #define wxSCI_CMD_CANCEL 2325
 
-// Delete the selection or if no selection, the character before the caret.
+/// Delete the selection or if no selection, the character before the caret.
 #define wxSCI_CMD_DELETEBACK 2326
 
-// If selection is empty or all on one line replace the selection with a tab character.
-// If more than one line selected, indent the lines.
+/// If selection is empty or all on one line replace the selection with a tab character.
+/// If more than one line selected, indent the lines.
 #define wxSCI_CMD_TAB 2327
 
-// Dedent the selected lines.
+/// Dedent the selected lines.
 #define wxSCI_CMD_BACKTAB 2328
 
-// Insert a new line, may use a CRLF, CR or LF depending on EOL mode.
+/// Insert a new line, may use a CRLF, CR or LF depending on EOL mode.
 #define wxSCI_CMD_NEWLINE 2329
 
-// Insert a Form Feed character.
+/// Insert a Form Feed character.
 #define wxSCI_CMD_FORMFEED 2330
 
-// Move caret to before first visible character on line.
-// If already there move to first character on line.
+/// Move caret to before first visible character on line.
+/// If already there move to first character on line.
 #define wxSCI_CMD_VCHOME 2331
 
-// Like VCHome but extending selection to new caret position.
+/// Like VCHome but extending selection to new caret position.
 #define wxSCI_CMD_VCHOMEEXTEND 2332
 
-// Magnify the displayed text by increasing the sizes by 1 point.
+/// Magnify the displayed text by increasing the sizes by 1 point.
 #define wxSCI_CMD_ZOOMIN 2333
 
-// Make the displayed text smaller by decreasing the sizes by 1 point.
+/// Make the displayed text smaller by decreasing the sizes by 1 point.
 #define wxSCI_CMD_ZOOMOUT 2334
 
-// Delete the word to the left of the caret.
+/// Delete the word to the left of the caret.
 #define wxSCI_CMD_DELWORDLEFT 2335
 
-// Delete the word to the right of the caret.
+/// Delete the word to the right of the caret.
 #define wxSCI_CMD_DELWORDRIGHT 2336
 
-// Delete the word to the right of the caret, but not the trailing non-word characters.
+/// Delete the word to the right of the caret, but not the trailing non-word characters.
 #define wxSCI_CMD_DELWORDRIGHTEND 2518
 
-// Cut the line containing the caret.
+/// Cut the line containing the caret.
 #define wxSCI_CMD_LINECUT 2337
 
-// Delete the line containing the caret.
+/// Delete the line containing the caret.
 #define wxSCI_CMD_LINEDELETE 2338
 
-// Switch the current line with the previous.
+/// Switch the current line with the previous.
 #define wxSCI_CMD_LINETRANSPOSE 2339
 
-// Duplicate the current line.
+/// Duplicate the current line.
 #define wxSCI_CMD_LINEDUPLICATE 2404
 
-// Transform the selection to lower case.
+/// Transform the selection to lower case.
 #define wxSCI_CMD_LOWERCASE 2340
 
-// Transform the selection to upper case.
+/// Transform the selection to upper case.
 #define wxSCI_CMD_UPPERCASE 2341
 
-// Scroll the document down, keeping the caret visible.
+/// Scroll the document down, keeping the caret visible.
 #define wxSCI_CMD_LINESCROLLDOWN 2342
 
-// Scroll the document up, keeping the caret visible.
+/// Scroll the document up, keeping the caret visible.
 #define wxSCI_CMD_LINESCROLLUP 2343
 
-// Delete the selection or if no selection, the character before the caret.
-// Will not delete the character before at the start of a line.
+/// Delete the selection or if no selection, the character before the caret.
+/// Will not delete the character before at the start of a line.
 #define wxSCI_CMD_DELETEBACKNOTLINE 2344
 
-// Move caret to first position on display line.
+/// Move caret to first position on display line.
 #define wxSCI_CMD_HOMEDISPLAY 2345
 
-// Move caret to first position on display line extending selection to
-// new caret position.
+/// Move caret to first position on display line extending selection to
+/// new caret position.
 #define wxSCI_CMD_HOMEDISPLAYEXTEND 2346
 
-// Move caret to last position on display line.
+/// Move caret to last position on display line.
 #define wxSCI_CMD_LINEENDDISPLAY 2347
 
-// Move caret to last position on display line extending selection to new
-// caret position.
+/// Move caret to last position on display line extending selection to new
+/// caret position.
 #define wxSCI_CMD_LINEENDDISPLAYEXTEND 2348
 
-// These are like their namesakes Home(Extend)?, LineEnd(Extend)?, VCHome(Extend)?
-// except they behave differently when word-wrap is enabled:
-// They go first to the start / end of the display line, like (Home|LineEnd)Display
-// The difference is that, the cursor is already at the point, it goes on to the start
-// or end of the document line, as appropriate for (Home|LineEnd|VCHome)(Extend)?.
+/// These are like their namesakes Home(Extend)?, LineEnd(Extend)?, VCHome(Extend)?
+/// except they behave differently when word-wrap is enabled:
+/// They go first to the start / end of the display line, like (Home|LineEnd)Display
+/// The difference is that, the cursor is already at the point, it goes on to the start
+/// or end of the document line, as appropriate for (Home|LineEnd|VCHome)(Extend)?.
 #define wxSCI_CMD_HOMEWRAP 2349
 #define wxSCI_CMD_HOMEWRAPEXTEND 2450
 #define wxSCI_CMD_LINEENDWRAP 2451
@@ -2558,101 +2586,101 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_CMD_VCHOMEWRAP 2453
 #define wxSCI_CMD_VCHOMEWRAPEXTEND 2454
 
-// Copy the line containing the caret.
+/// Copy the line containing the caret.
 #define wxSCI_CMD_LINECOPY 2455
 
-// Move to the previous change in capitalisation.
+/// Move to the previous change in capitalisation.
 #define wxSCI_CMD_WORDPARTLEFT 2390
 
-// Move to the previous change in capitalisation extending selection
-// to new caret position.
+/// Move to the previous change in capitalisation extending selection
+/// to new caret position.
 #define wxSCI_CMD_WORDPARTLEFTEXTEND 2391
 
-// Move to the change next in capitalisation.
+/// Move to the change next in capitalisation.
 #define wxSCI_CMD_WORDPARTRIGHT 2392
 
-// Move to the next change in capitalisation extending selection
-// to new caret position.
+/// Move to the next change in capitalisation extending selection
+/// to new caret position.
 #define wxSCI_CMD_WORDPARTRIGHTEXTEND 2393
 
-// Delete back from the current position to the start of the line.
+/// Delete back from the current position to the start of the line.
 #define wxSCI_CMD_DELLINELEFT 2395
 
-// Delete forwards from the current position to the end of the line.
+/// Delete forwards from the current position to the end of the line.
 #define wxSCI_CMD_DELLINERIGHT 2396
 
-// Move caret between paragraphs (delimited by empty lines).
+/// Move caret between paragraphs (delimited by empty lines).
 #define wxSCI_CMD_PARADOWN 2413
 #define wxSCI_CMD_PARADOWNEXTEND 2414
 #define wxSCI_CMD_PARAUP 2415
 #define wxSCI_CMD_PARAUPEXTEND 2416
 
-// Move caret down one line, extending rectangular selection to new caret position.
+/// Move caret down one line, extending rectangular selection to new caret position.
 #define wxSCI_CMD_LINEDOWNRECTEXTEND 2426
 
-// Move caret up one line, extending rectangular selection to new caret position.
+/// Move caret up one line, extending rectangular selection to new caret position.
 #define wxSCI_CMD_LINEUPRECTEXTEND 2427
 
-// Move caret left one character, extending rectangular selection to new caret position.
+/// Move caret left one character, extending rectangular selection to new caret position.
 #define wxSCI_CMD_CHARLEFTRECTEXTEND 2428
 
-// Move caret right one character, extending rectangular selection to new caret position.
+/// Move caret right one character, extending rectangular selection to new caret position.
 #define wxSCI_CMD_CHARRIGHTRECTEXTEND 2429
 
-// Move caret to first position on line, extending rectangular selection to new caret position.
+/// Move caret to first position on line, extending rectangular selection to new caret position.
 #define wxSCI_CMD_HOMERECTEXTEND 2430
 
-// Move caret to before first visible character on line.
-// If already there move to first character on line.
-// In either case, extend rectangular selection to new caret position.
+/// Move caret to before first visible character on line.
+/// If already there move to first character on line.
+/// In either case, extend rectangular selection to new caret position.
 #define wxSCI_CMD_VCHOMERECTEXTEND 2431
 
-// Move caret to last position on line, extending rectangular selection to new caret position.
+/// Move caret to last position on line, extending rectangular selection to new caret position.
 #define wxSCI_CMD_LINEENDRECTEXTEND 2432
 
-// Move caret one page up, extending rectangular selection to new caret position.
+/// Move caret one page up, extending rectangular selection to new caret position.
 #define wxSCI_CMD_PAGEUPRECTEXTEND 2433
 
-// Move caret one page down, extending rectangular selection to new caret position.
+/// Move caret one page down, extending rectangular selection to new caret position.
 #define wxSCI_CMD_PAGEDOWNRECTEXTEND 2434
 
-// Move caret to top of page, or one page up if already at top of page.
+/// Move caret to top of page, or one page up if already at top of page.
 #define wxSCI_CMD_STUTTEREDPAGEUP 2435
 
-// Move caret to top of page, or one page up if already at top of page, extending selection to new caret position.
+/// Move caret to top of page, or one page up if already at top of page, extending selection to new caret position.
 #define wxSCI_CMD_STUTTEREDPAGEUPEXTEND 2436
 
-// Move caret to bottom of page, or one page down if already at bottom of page.
+/// Move caret to bottom of page, or one page down if already at bottom of page.
 #define wxSCI_CMD_STUTTEREDPAGEDOWN 2437
 
-// Move caret to bottom of page, or one page down if already at bottom of page, extending selection to new caret position.
+/// Move caret to bottom of page, or one page down if already at bottom of page, extending selection to new caret position.
 #define wxSCI_CMD_STUTTEREDPAGEDOWNEXTEND 2438
 
-// Move caret left one word, position cursor at end of word.
+/// Move caret left one word, position cursor at end of word.
 #define wxSCI_CMD_WORDLEFTEND 2439
 
-// Move caret left one word, position cursor at end of word, extending selection to new caret position.
+/// Move caret left one word, position cursor at end of word, extending selection to new caret position.
 #define wxSCI_CMD_WORDLEFTENDEXTEND 2440
 
-// Move caret right one word, position cursor at end of word.
+/// Move caret right one word, position cursor at end of word.
 #define wxSCI_CMD_WORDRIGHTEND 2441
 
-// Move caret right one word, position cursor at end of word, extending selection to new caret position.
+/// Move caret right one word, position cursor at end of word, extending selection to new caret position.
 #define wxSCI_CMD_WORDRIGHTENDEXTEND 2442
 
-// Centre current line in window.
+/// Centre current line in window.
 #define wxSCI_CMD_VERTICALCENTRECARET 2619
 
-// Move the selected lines up one line, shifting the line above after the selection
+/// Move the selected lines up one line, shifting the line above after the selection
 #define wxSCI_CMD_MOVESELECTEDLINESUP 2620
 
-// Move the selected lines down one line, shifting the line below before the selection
+/// Move the selected lines down one line, shifting the line below before the selection
 #define wxSCI_CMD_MOVESELECTEDLINESDOWN 2621
 
-// Scroll to start of document.
+/// Scroll to start of document.
 #define wxSCI_CMD_SCROLLTOSTART 2628
 
-// Scroll to end of document.
+/// Scroll to end of document.
 #define wxSCI_CMD_SCROLLTOEND 2629
 
 /// Move caret to before first visible character on display line.
@@ -2665,8 +2693,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 //}}}
 //----------------------------------------------------------------------
 
-class ScintillaWX; // forward declare
-class WordList;
+class  ScintillaWX;                      // forward declare
+class  WordList;
 
 #ifdef SCI_NAMESPACE
 	#ifndef SCI_NAMESPACE_PREFIX
@@ -2873,6 +2901,15 @@ public:
 
     // Retrieve the visible size of a tab.
     int GetTabWidth() const;
+
+    // Clear explicit tabstops on a line.
+    void ClearTabStops(int line);
+
+    // Add an explicit tab stop for a line.
+    void AddTabStop(int line, int x);
+
+    // Find the next explicit tab stop position on a line after a position.
+    int GetNextTabStop(int line, int x);
 
     // Set the code page used to interpret the bytes of the document as characters.
     void SetCodePage(int codePage);
@@ -3715,6 +3752,15 @@ public:
     // and then the foreground. This avoids chopping off characters that overlap the next run.
     void SetTwoPhaseDraw(bool twoPhase);
 
+    // How many phases is drawing done in?
+    int GetPhasesDraw() const;
+
+    // In one phase draw, text is drawn in a series of rectangular blocks with no overlap.
+    // In two phase draw, text is drawn in a series of lines allowing runs to overlap horizontally.
+    // In multiple phase draw, each element is drawn over the whole drawing area, allowing text
+    // to overlap from one line to the next.
+    void SetPhasesDraw(int phases);
+
 /* C::B begin */
     // Choose the quality level for text from the FontQuality enumeration.
     void SetFontQuality(int fontQuality);
@@ -3733,9 +3779,7 @@ public:
     int GetMultiPaste() const;
 
     // Retrieve the value of a tag from a regular expression search.
-/* C::B begin */
     wxString GetTag(int tagNumber) const;
-/* C::B end */
 
     // Make the target range start and end be the same as the selection range start and end.
     void TargetFromSelection();
@@ -5074,6 +5118,7 @@ protected:
     void OnMenu(wxCommandEvent& evt);
     void OnListBox(wxCommandEvent& evt);
     void OnIdle(wxIdleEvent& evt);
+    void OnTimer(wxTimerEvent& evt);
 
     virtual wxSize DoGetBestSize() const;
 

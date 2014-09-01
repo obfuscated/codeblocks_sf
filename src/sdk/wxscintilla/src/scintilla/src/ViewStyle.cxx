@@ -204,6 +204,7 @@ void ViewStyle::Init(size_t stylesSize_) {
 
 	technology = SC_TECHNOLOGY_DEFAULT;
 	lineHeight = 1;
+	lineOverlap = 0;
 	maxAscent = 1;
 	maxDescent = 1;
 	aveCharWidth = 8;
@@ -329,6 +330,11 @@ void ViewStyle::Refresh(Surface &surface, int tabInChars) {
 	maxAscent += extraAscent;
 	maxDescent += extraDescent;
 	lineHeight = maxAscent + maxDescent;
+	lineOverlap = lineHeight / 10;
+	if (lineOverlap < 2)
+		lineOverlap = 2;
+	if (lineOverlap > lineHeight)
+		lineOverlap = lineHeight;
 
 	someStylesProtected = false;
 	someStylesForceCase = false;
@@ -432,6 +438,51 @@ void ViewStyle::CalcLargestMarkerHeight() {
 			break;
 		}
 	}
+}
+
+// See if something overrides the line background color:  Either if caret is on the line
+// and background color is set for that, or if a marker is defined that forces its background
+// color onto the line, or if a marker is defined but has no selection margin in which to
+// display itself (as long as it's not an SC_MARK_EMPTY marker).  These are checked in order
+// with the earlier taking precedence.  When multiple markers cause background override,
+// the color for the highest numbered one is used.
+ColourOptional ViewStyle::Background(int marksOfLine, bool caretActive, bool lineContainsCaret) const {
+	ColourOptional background;
+	if ((caretActive || alwaysShowCaretLineBackground) && showCaretLineBackground && (caretLineAlpha == SC_ALPHA_NOALPHA) && lineContainsCaret) {
+		background = ColourOptional(caretLineBackground, true);
+	}
+	if (!background.isSet && marksOfLine) {
+		int marks = marksOfLine;
+		for (int markBit = 0; (markBit < 32) && marks; markBit++) {
+			if ((marks & 1) && (markers[markBit].markType == SC_MARK_BACKGROUND) &&
+				(markers[markBit].alpha == SC_ALPHA_NOALPHA)) {
+				background = ColourOptional(markers[markBit].back, true);
+			}
+			marks >>= 1;
+		}
+	}
+	if (!background.isSet && maskInLine) {
+		int marksMasked = marksOfLine & maskInLine;
+		if (marksMasked) {
+			for (int markBit = 0; (markBit < 32) && marksMasked; markBit++) {
+				if ((marksMasked & 1) && (markers[markBit].markType != SC_MARK_EMPTY) &&
+					(markers[markBit].alpha == SC_ALPHA_NOALPHA)) {
+					background = ColourOptional(markers[markBit].back, true);
+				}
+				marksMasked >>= 1;
+			}
+		}
+	}
+	return background;
+}
+
+bool ViewStyle::SelectionBackgroundDrawn() const {
+	return selColours.back.isSet &&
+		((selAlpha == SC_ALPHA_NOALPHA) || (selAdditionalAlpha == SC_ALPHA_NOALPHA));
+}
+
+bool ViewStyle::WhitespaceBackgroundDrawn() const {
+	return (viewWhitespace != wsInvisible) && (whitespaceColours.back.isSet);
 }
 
 ColourDesired ViewStyle::WrapColour() const {

@@ -19,7 +19,7 @@ class DLLIMPORT ProjectLayoutLoader
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
 
-        ProjectFile* GetTopProjectFile(){ return m_TopProjectFile; }
+        ProjectFile* GetTopProjectFile() { return m_TopProjectFile; }
     protected:
     private:
         cbProject* m_pProject;

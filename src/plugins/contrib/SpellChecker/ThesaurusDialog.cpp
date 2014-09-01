@@ -18,6 +18,8 @@
 */
 #include "ThesaurusDialog.h"
 
+#include "prep.h"
+
 #include <wx/xrc/xmlres.h>
 
 
@@ -145,12 +147,12 @@ wxString ThesaurusDialog::GetSelection()
     return m_TextCtrlReplaceSynonym->GetValue();
 }
 
-void ThesaurusDialog::OnMeaningsSelected(wxCommandEvent& event)
+void ThesaurusDialog::OnMeaningsSelected(cb_unused wxCommandEvent& event)
 {
     UpdateSynonyme();
 }
 
-void ThesaurusDialog::OnSynonymeSelected(wxCommandEvent& event)
+void ThesaurusDialog::OnSynonymeSelected(cb_unused wxCommandEvent& event)
 {
     UpdateSelectedSynonym();
 }
