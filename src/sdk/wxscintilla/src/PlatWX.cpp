@@ -379,8 +379,14 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     wxRect rect = wxRectFromPRectangle(rc);
     wxPoint lt = rect.GetLeftTop()+ wxPoint(1,1);
     wxSize size = rect.GetSize()-wxSize(2,2);
-
+    // twos steps needed because wx draws the outline over the fille
+    // draw fill
     dc.SetPen(*wxTRANSPARENT_PEN);
+    dc.SetBrush(wxBrush(brushColour));
+    dc.DrawRoundedRectangle(lt, size, cornerSize?cornerSize-1:0);
+
+    // draw outline
+    dc.SetPen(wxPen(penColour));
     dc.SetBrush(*wxTRANSPARENT_BRUSH);
     dc.DrawRoundedRectangle(rect, cornerSize);
 /* C::B end */
