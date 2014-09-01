@@ -15,7 +15,13 @@
     <!--#define wxSCI_VHDL_COMMENT 1
                 #define wxSCI_VHDL_COMMENTLINEBANG 2-->
     <Style name="Comment"
-           index="1,2"
+           index="1"
+           fg="34,138,34" />
+    <Style name="DocComment"
+           index="2"
+           fg="128,128,255" />
+    <Style name="blockComment"
+           index="15"
            fg="34,138,34" />
     <!--fg="160,160,160"-->
     <!--#define wxSCI_VHDL_NUMBER 3-->
