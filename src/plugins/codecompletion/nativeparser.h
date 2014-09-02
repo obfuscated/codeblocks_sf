@@ -13,7 +13,6 @@
 #include <map>
 
 #include <wx/event.h>
-#include <wx/hashmap.h> // TODO: replace with std::map
 
 /** debug only variable, used to print the AI match related log message*/
 extern bool s_DebugSmartSense;
@@ -29,8 +28,6 @@ class ClassBrowser;
 class Compiler;
 class Token;
 
-WX_DECLARE_HASH_MAP(cbProject*, ParserBase*, wxPointerHash, wxPointerEqual, ParsersMap);
-WX_DECLARE_HASH_MAP(cbProject*, wxString, wxPointerHash, wxPointerEqual, ParsersFilenameMap);
 
 typedef std::map<cbProject*, wxArrayString> ProjectSearchDirsMap;
 
