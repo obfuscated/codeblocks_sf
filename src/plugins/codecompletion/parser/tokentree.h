@@ -28,6 +28,12 @@ typedef std::map< int, wxString >                                TokenIdxStringM
 
 extern wxMutex s_TokenTreeMutex;
 
+/** a container class to hold all the Tokens getting from parsing stage
+ *
+ *  To query a Token, a unique index is needed, the index is actually position in the
+ *  std::vector<Token*> (namely TokenList).
+ *
+ */
 class TokenTree
 {
     friend class CCDebugInfo;
@@ -44,28 +50,115 @@ public:
     inline Token* operator[](int idx)       { return GetTokenAt(idx); }
     inline Token*         at(int idx)       { return GetTokenAt(idx); }
     inline const Token *  at(int idx) const { return GetTokenAt(idx); }
+
+    /** total size of std::vector<Token*> */
     size_t                size();
+
+    /** some position of the std::vector<Token*> are not used, so the real size maybe a bit smaller
+     *  than the total size
+     */
     size_t                realsize();
+
+    /** check to see whether the TokenTree is empty*/
     inline bool           empty()           { return size()==0;       }
+
+    /** add a new Token instance to the TokenTree
+     * @param newToken the pointer to a Token instance
+     * @return the index of the Token in the TokenTree
+     */
     int                   insert(Token* newToken);
+
+    /** add a new Token instance to the TokenTree
+     * @param loc -1 means we add a new slot to the Token list (vector), otherwise, the new added
+     * Token will replace the old one in that location(index).
+     */
     int                   insert(int loc, Token* newToken);
+
+    /** remove the Token specified by the index */
     int                   erase(int loc);
+
+    /** remove the Token from the TokenTree
+     *  @param oldToken the token need to be removed, if success, the pointer is invalid after the
+     *  function call
+     */
     void                  erase(Token* oldToken);
 
     inline void Clear()                     { clear();                }
 
     // Token specific functions
+    /** collect the unused slots in the std::vector<Token*> */
     void   RecalcFreeList();
+
+    /** only the token's name need to be changed, thus update the index map of the TokenTree */
     void   RenameToken(Token* token, const wxString& newName);
 
-    // This will convert the Token's ancestor string to it's IDs
+    /** convert the Token's ancestor string to it's IDs */
     void   RecalcInheritanceChain(Token* token);
 
+    /** @brief query tokens by names
+     *
+     * @param name the search key, token's name
+     * @param parent search only the tokens under the token specified by parent
+     * @param kindMask token kind mask
+     * @return int the first matched token index will be returned, return -1 if no matched token is
+     * found.
+     */
     int    TokenExists(const wxString& name, int parent, short int kindMask);
+
+    /** @brief query tokens by names
+     *
+     * @param name the search key, token's name
+     * @param baseArgs specify the function parameter
+     * @param parent search only the tokens under the token specified by parent
+     * @param kindMask token kind mask
+     * @return int the first matched token index will be returned, return -1 if no matched token is
+     * found.
+     */
     int    TokenExists(const wxString& name, const wxString& baseArgs, int parent, TokenKind kind);
+
+    /** @brief query tokens by names
+     *
+     * @param name the search key, token's name
+     * @param parents search only the tokens under the token specified by parent collection tokens
+     * @param kindMask token kind mask
+     * @return int the first matched token index will be returned, return -1 if no matched token is
+     * found.
+     */
     int    TokenExists(const wxString& name, const TokenIdxSet& parents, short int kindMask);
-    int    TokenExists(const wxString& name, const wxString& baseArgs, const TokenIdxSet& parents, TokenKind kind);
-    size_t FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask = tkUndefined);
+
+    /** @brief query tokens by names
+     *
+     * @param name the search key, token's name
+     * @param baseArgs specify the function parameter
+     * @param parents search only the tokens under the token specified by parent collection tokens
+     * @param kindMask token kind mask
+     * @return int the first matched token index will be returned, return -1 if no matched token is
+     * found.
+     */
+    int    TokenExists(const wxString& name, const wxString& baseArgs, const TokenIdxSet& parents,
+                       TokenKind kind);
+
+    /** @brief find a collection of matched tokens
+     *
+     * @param query search name
+     * @param result the return collection token index
+     * @param caseSensitive true if we need the case sensitive search for the query name
+     * @param is_prefix true if the query is only a prefix of any matched token
+     * @param kindMask token kind match mask
+     * @return the number of matched tokens
+     */
+    size_t FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive,
+                       bool is_prefix, TokenKind kindMask = tkUndefined);
+
+
+    /** @brief find tokens belong to a specified file
+     *
+     * @param filename search key
+     * @param result returned tokens
+     * @param kindMask token filter mask
+     * @return the number of matched tokens
+     *
+     */
     size_t FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask);
 
     /** remove tokens belong to the file */
@@ -75,24 +168,61 @@ public:
     void   RemoveFile(int fileIndex);
 
     // Protected access to internal lists / maps
-    const TokenList*     GetTokens() const                        { return &m_Tokens;              }
-    const TokenIdxSet*   GetGlobalNameSpaces() const              { return &m_GlobalNameSpaces;    }
-    const TokenFileMap*  GetFilesMap() const                      { return &m_FileMap;            }
+    const TokenList*     GetTokens() const
+    {
+        return &m_Tokens;
+    }
+
+    const TokenIdxSet*   GetGlobalNameSpaces() const
+    {
+        return &m_GlobalNameSpaces;
+    }
+
+    const TokenFileMap*  GetFilesMap() const
+    {
+        return &m_FileMap;
+    }
+
     const TokenIdxSet*   GetTokensBelongToFile(size_t fileIdx) const
     {
       TokenFileMap::const_iterator it = m_FileMap.find(fileIdx);
       return (it == m_FileMap.end() ? 0 : &(it->second));
     }
-    const TokenFileSet* GetFilesToBeReparsed() const                   { return &m_FilesToBeReparsed;   }
 
-    size_t       GetFileMapSize() const                                { return m_FileMap.size();             }
-    void         InsertTokenBelongToFile(size_t fileIdx, int tokenIdx) { m_FileMap[fileIdx].insert(tokenIdx); }
-    void         EraseFileMapInFileMap(size_t fileIdx)                 { m_FileMap.erase(fileIdx);            }
+    const TokenFileSet* GetFilesToBeReparsed() const
+    {
+        return &m_FilesToBeReparsed;
+    }
 
-    size_t       GetFileStatusCountForIndex(size_t fileIdx) const      { return m_FileStatusMap.count(fileIdx);  }
-    void         EraseFileStatusByIndex(size_t fileIdx)                { m_FileStatusMap.erase(fileIdx);         }
+    size_t       GetFileMapSize() const
+    {
+        return m_FileMap.size();
+    }
 
-    void         EraseFilesToBeReparsedByIndex(size_t fileIdx)         { m_FilesToBeReparsed.erase(fileIdx);   }
+    void         InsertTokenBelongToFile(size_t fileIdx, int tokenIdx)
+    {
+        m_FileMap[fileIdx].insert(tokenIdx);
+    }
+
+    void         EraseFileMapInFileMap(size_t fileIdx)
+    {
+        m_FileMap.erase(fileIdx);
+    }
+
+    size_t       GetFileStatusCountForIndex(size_t fileIdx) const
+    {
+        return m_FileStatusMap.count(fileIdx);
+    }
+
+    void         EraseFileStatusByIndex(size_t fileIdx)
+    {
+        m_FileStatusMap.erase(fileIdx);
+    }
+
+    void         EraseFilesToBeReparsedByIndex(size_t fileIdx)
+    {
+        m_FilesToBeReparsed.erase(fileIdx);
+    }
 
     // Parsing related functions
     /** put the filename in the m_FilenameMap, and return the file index, if this file is already in
@@ -100,7 +230,8 @@ public:
      */
     size_t         InsertFileOrGetIndex(const wxString& filename);
 
-    size_t         GetFileMatches(const wxString& filename, std::set<size_t>& result, bool caseSensitive, bool is_prefix);
+    size_t         GetFileMatches(const wxString& filename, std::set<size_t>& result,
+                                  bool caseSensitive, bool is_prefix);
 
     size_t         GetFileIndex(const wxString& filename);
 
@@ -128,11 +259,36 @@ public:
      */
     bool           IsFileParsed(const wxString& filename);
 
+    /** @brief mark the tokens so that they are associated with a C::B project
+     *
+     * @param filename specify the tokens which belong to the file
+     * @param local true if the tokens belong to project files
+     * @param userData a pointer to the c::b project
+     */
     void MarkFileTokensAsLocal(const wxString& filename, bool local = true, void* userData = 0);
+
+    /** @brief mark the tokens so that they are associated with a C::B project
+     *
+     * @param fileIdx specify the tokens which belong to the file
+     * @param local true if the tokens belong to project files
+     * @param userData a pointer to the c::b project
+     */
     void MarkFileTokensAsLocal(size_t fileIdx, bool local = true, void* userData = 0);
 
     // Documentation related functions
+
+    /** @brief associate a document string with the token
+     *
+     * @param tokenIdx token index
+     * @param doc document string
+     */
     void AppendDocumentation(int tokenIdx, const wxString& doc);
+
+    /** @brief get the document string associated with the token
+     *
+     * @param tokenIdx token index
+     * @return wxString the document
+     */
     wxString GetDocumentation(int tokenIdx);
 
     size_t        m_TokenTicketCount;
@@ -196,12 +352,20 @@ protected:
     TokenIdxSet       m_TopNameSpaces;
     TokenIdxSet       m_GlobalNameSpaces;
 
-    TokenFilenameMap    m_FilenameMap;         /** Map: file names -> file indices */
-    TokenFileMap        m_FileMap;             /** Map: file indices -> sets of TokenIndexes */
-    TokenFileStatusMap  m_FileStatusMap;       /** Map: file indices -> status */
-    TokenFileSet        m_FilesToBeReparsed;   /** Set: file indices */
+    /** Map: file names -> file indices */
+    TokenFilenameMap    m_FilenameMap;
 
-    TokenIdxStringMap   m_TokenDocumentationMap; /** Map: token index -> documentation */
+    /** Map: file indices -> sets of TokenIndexes */
+    TokenFileMap        m_FileMap;
+
+    /** Map: file indices -> status */
+    TokenFileStatusMap  m_FileStatusMap;
+
+    /** Set: file indices */
+    TokenFileSet        m_FilesToBeReparsed;
+
+    /** Map: token index -> documentation */
+    TokenIdxStringMap   m_TokenDocumentationMap;
 };
 
 #endif // TOKENTREE_H

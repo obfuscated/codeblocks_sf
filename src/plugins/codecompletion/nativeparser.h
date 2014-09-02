@@ -71,8 +71,7 @@ public:
     ParserBase* GetParserByProject(cbProject* project);
 
     /** return the Parser pointer associated with the input file
-     * Internally this function first find the project containing the input file,
-     * then return the Parser pointer by the project.
+     * If a file belongs to several Parser objects, the first found Parser will returned.
      * @param filename filename with full path.
      * @return Parser pointer
      */
@@ -86,7 +85,8 @@ public:
 
     /** return the C::B project containing the filename
      * The function first try to match the filename in the active project, next to match other
-     * projects opened, If the file exists in several projects, the first matched project will be returned.
+     * projects opened, If the file exists in several projects, the first matched project will be
+     * returned.
      * @param filename input filename
      * @return project pointer containing the file
      */
@@ -126,12 +126,17 @@ public:
 
     /** Add the paths to path array, and this will be used in GetAllPathsByFilename() function.
      *  internally, all the folder paths were recorded in UNIX format.
+     * @param dirs the target dir collection
+     * @param path the new added path
+     * @param hasExt the file path has extensions, such as C:/aaa/bbb.cpp
      */
     void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
 
     // the functions below are handling and managing Parser object
 
-    /** Dynamically allocate a Parser object for the input C::B project
+    /** Dynamically allocate a Parser object for the input C::B project, note that while create a
+     * new Parser object, the DoFullParsing() function will be called, which collect the macro
+     * definitions, and start the batch parsing from the thread pool.
      * @param project C::B project
      * @return Parser pointer of the project.
      */
@@ -145,8 +150,18 @@ public:
 
     /** Single file re-parse.
      * This was happening when you add a single file to project, or a file was modified.
+     * the main logic after this function call is:
+     * 1, once this function is called, the file will be marked as "need to be reparsed" in the
+     *    token tree, and a timer(reparse timer) is started.
+     * 2, on reparse timer hit, we collect all the files marked as "need to be reparsed" from the
+     *    token tree, remove them from the token tree, and call AddParse() to add parsing job, this
+     *    will ticket the On batch timer
+     * 3, when on batch timer hit, it see there are some parsing jobs to do (m_BatchParseFiles is
+     *    not empty), then it will run a thread job ParserThreadedTask
+     * 4, Once the ParserThreadedTask is running, it will create all the Parserthreads and run them
+     *    in the thread pool
      * @param project C::B project
-     * @param filename filename with full patch in the C::B project
+     * @param filename filename with full path in the C::B project
      */
     bool ReparseFile(cbProject* project, const wxString& filename);
 

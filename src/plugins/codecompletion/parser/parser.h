@@ -261,7 +261,9 @@ public:
      */
     virtual void AddBatchParse(const StringList& filenames);
 
-    /** Add one file to Batch mode Parsing
+    /** Add one file to Batch mode Parsing, this is the bridge between the main thread and the
+     * thread pool, after this function call, the file(Parserthread) will be run from the thread
+     * pool.
      * @param filenames input file name
      */
     virtual void AddParse(const wxString& filename);

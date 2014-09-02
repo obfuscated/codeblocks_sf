@@ -186,7 +186,7 @@ int TokenTree::TokenExists(const wxString& name, const wxString& baseArgs, int p
         if (!curToken)
             continue;
 
-        // for a container token, their args member variable is used to store inheritance information
+        // for a container token, its args member variable is used to store inheritance information
         // so, don't compare args for tkAnyContainer
         if (   (curToken->m_ParentIndex == parent)
             && (curToken->m_TokenKind   == kind)
@@ -269,7 +269,8 @@ int TokenTree::TokenExists(const wxString& name, const wxString& baseArgs, const
     return -1;
 }
 
-size_t TokenTree::FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive, bool is_prefix, TokenKind kindMask)
+size_t TokenTree::FindMatches(const wxString& query, TokenIdxSet& result, bool caseSensitive,
+                              bool is_prefix, TokenKind kindMask)
 {
     result.clear();
 
@@ -305,10 +306,13 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
     result.clear();
 
     // get file idx
-    wxString f(filename); while (f.Replace(_T("\\"),_T("/"))) { ; }
+    wxString f(filename);
+    // convert the UNIX path style
+    while (f.Replace(_T("\\"),_T("/")))
+        { ; }
+
     if ( !m_FilenameMap.HasItem(f) )
     {
-//        CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str()));
         TRACE(_T("TokenTree::FindTokensInFile() : File '%s' not found in file names map."), f.wx_str());
         return 0;
     }
@@ -319,7 +323,6 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
     TokenFileMap::iterator itf = m_FileMap.find(idx);
     if (itf == m_FileMap.end())
     {
-//        CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx));
         TRACE(_T("TokenTree::FindTokensInFile() : No tokens found for file '%s' (index %d)."), f.wx_str(), idx);
         return 0;
     }
@@ -333,8 +336,8 @@ size_t TokenTree::FindTokensInFile(const wxString& filename, TokenIdxSet& result
             result.insert(*it);
     }
 
-//    CCLogger::Get()->DebugLog(F(_T("TokenTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str()));
-    TRACE(_T("TokenTree::FindTokensInFile() : Found %lu results for file '%s'."), static_cast<unsigned long>(result.size()), f.wx_str());
+    TRACE(_T("TokenTree::FindTokensInFile() : Found %lu results for file '%s'."),
+          static_cast<unsigned long>(result.size()), f.wx_str());
     return result.size();
 }
 
@@ -499,7 +502,7 @@ int TokenTree::AddTokenToList(Token* newToken, int forceidx)
     // if the token index is specified, then just replace the specified slot to the newToken, this
     // usually happens we construct the whole TokenTree from cache.
     // other wise, we just append one to the vector or reused free slots stored in m_FreeTokens
-    // so, it is normal cases in any parsing stages.
+    // so, it is normal case in any parsing stages.
     if (forceidx >= 0)
     {
         if ((size_t)forceidx >= m_Tokens.size())
