@@ -481,7 +481,14 @@ private:
     // No critical section needed! All functions that call these functions,
     // should already entered a critical section.
 
-    // for GenerateResultSet()
+    /** @brief collect child tokens of the specified token, the specified token must be unnamed.
+     *
+     * used for GenerateResultSet() function
+     * @param tree TokenTree pointer
+     * @param parent we need to collect the children of this token
+     * @param result collected tokens
+     * @return bool true if parent is an unnamed class or enum
+     */
     bool AddChildrenOfUnnamed(TokenTree* tree, const Token* parent, TokenIdxSet& result)
     {
         if (  ( (parent->m_TokenKind & (tkClass | tkEnum)) != 0 )
@@ -495,7 +502,12 @@ private:
                 if (    tokenChild
                     && (parent->m_TokenKind == tkClass || tokenChild->m_Scope != tsPrivate) )
                 {
-                    result.insert(*it);
+                    // NOTE: recurse (eg: class A contains struct contains union or enum)
+                    if ( !AddChildrenOfUnnamed(tree, tokenChild, result) )
+                    {
+                        result.insert(*it);
+                        AddChildrenOfEnum(tree, tokenChild, result);
+                    }
                 }
             }
             return true;
@@ -520,6 +532,45 @@ private:
         }
         return false;
     }
+
+    /** @brief check to see if the token is an unnamed class or enum under the parent token
+     *
+     * This function will internally recursive call itself.
+     * @param tree pointer to the TokenTree
+     * @param targetIdx the checked token index
+     * @param parentIdx the search scope
+     * @return bool true if success
+     */
+    bool IsChildOfUnnamedOrEnum(TokenTree* tree, const int targetIdx, const int parentIdx)
+    {
+        if (targetIdx == parentIdx)
+            return true;
+        if (parentIdx == -1)
+            return false;
+
+        Token* parent = tree->at(parentIdx);
+        if (parent && (parent->m_TokenKind & tkClass))
+        {
+            // loop all children of the parent token
+            for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
+                                             it != parent->m_Children.end(); ++it)
+            {
+                Token* token = tree->at(*it);
+                // an unnamed class is much similar like the enum
+                if (token && (((token->m_TokenKind & tkClass)
+                                && (token->m_IsAnonymous == true))
+                             || (token->m_TokenKind & tkEnum)))
+                {
+                    // if target token matches on child, we can return success
+                    // other wise, we try to see the target token matches child's child.
+                    if ((targetIdx == (*it)) || IsChildOfUnnamedOrEnum(tree, targetIdx, (*it)))
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
 
     /**  loop on the input Token index set (source), add all its public constructors to output Token index set (dest) */
     void AddConstructors(TokenTree *tree, const TokenIdxSet& source, TokenIdxSet& dest);

@@ -1343,7 +1343,9 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
             if (!parent)
                 continue;
 
-            for (TokenIdxSet::const_iterator it = parent->m_Children.begin(); it != parent->m_Children.end(); ++it)
+            for (TokenIdxSet::const_iterator it = parent->m_Children.begin();
+                 it != parent->m_Children.end();
+                 ++it)
             {
                 const Token* token = tree->at(*it);
                 if (!token)
@@ -1357,12 +1359,16 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
 
             tree->RecalcInheritanceChain(parent);
 
-            for (TokenIdxSet::const_iterator it = parent->m_Ancestors.begin(); it != parent->m_Ancestors.end(); ++it)
+            for (TokenIdxSet::const_iterator it = parent->m_Ancestors.begin();
+                 it != parent->m_Ancestors.end();
+                 ++it)
             {
                 const Token* ancestor = tree->at(*it);
                 if (!ancestor)
                     continue;
-                for (TokenIdxSet::const_iterator it2 = ancestor->m_Children.begin(); it2 != ancestor->m_Children.end(); ++it2)
+                for (TokenIdxSet::const_iterator it2 = ancestor->m_Children.begin();
+                     it2 != ancestor->m_Children.end();
+                     ++it2)
                 {
                     const Token* token = tree->at(*it2);
                     if (!token)
@@ -1394,7 +1400,8 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
         // eliminate the tokens.
         if (!textMatchSet.empty())
         {
-            TRACE(_T("Find %lu valid text matched tokens from the tree."), static_cast<unsigned long>(textMatchSet.size()));
+            TRACE(_T("Find %lu valid text matched tokens from the tree."),
+                  static_cast<unsigned long>(textMatchSet.size()));
 
             // get the tokens under the search scope. Note: tokens can have the same names, but we are
             // only interests those under the search scope, here the search scope is the parentSet,
@@ -1406,12 +1413,24 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
                 // to make it clear, parentIdx stands for search scope. (Token Idx)
                 // (*it) stand for matched item id.
                 int parentIdx = (*parentIterator);
+
                 // The inner loop is the textMatchSet
-                for (TokenIdxSet::const_iterator it = textMatchSet.begin(); it != textMatchSet.end(); ++it)
+                for (TokenIdxSet::const_iterator it = textMatchSet.begin();
+                     it != textMatchSet.end();
+                     ++it)
                 {
                     const Token* token = tree->at(*it);
                     // check whether its under the parentIdx
-                    if (token && (token->m_ParentIndex == parentIdx))
+                    // NOTE: check for unnamed or enum inside class.
+                    // eg, 'ParserCommon::ParserState::ptCreateParser' should be accessed as
+                    // 'ParserCommon::ptCreateParser'.
+                    // Here, token is ptCreateParser and parentIdx is ParserCommon, so
+                    // 'token->m_ParentIndex == parentIdx' is false. Now, we iterate over the
+                    // children of parentIdx and check if any of them is unnamed or enum
+                    // and match with token->m_ParentIndex. Thus if we confirm that 'token' is a
+                    // child of unnamed or enum(i.e., m_ParentIndex), we add the token to result.
+                    if (token && ((token->m_ParentIndex == parentIdx)
+                              || IsChildOfUnnamedOrEnum(tree, token->m_ParentIndex, parentIdx)))
                         result.insert(*it);
 
                     // "result" will become the search scope for the next loop, so
@@ -1432,12 +1451,14 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
                             // class wxNavigationEnabled : public W
                             // Shall we add the "W" as tk's ancestors? W is a formalTemplateArgument
 
-                            //Add tk's ancestors
+                            // Add tk's ancestors
                             for ( TokenIdxSet::const_iterator ancestorIterator = tokenParent->m_Ancestors.begin();
                                   ancestorIterator != tokenParent->m_Ancestors.end();
                                   ++ancestorIterator )
                             {
-                                if (token->m_ParentIndex == (*ancestorIterator)) //matched
+                                // NOTE: check for unnamed or enum inside class (see note above).
+                                if (token && ((token->m_ParentIndex == (*ancestorIterator)) //matched
+                                          || IsChildOfUnnamedOrEnum(tree, token->m_ParentIndex, (*ancestorIterator))))
                                     result.insert(*it);
                             }
                         }
