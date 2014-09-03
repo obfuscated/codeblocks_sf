@@ -25,8 +25,7 @@ BEGIN_EVENT_TABLE(ConfigPanel,wxPanel)
     //*)
 END_EVENT_TABLE()
 
-ConfigPanel::ConfigPanel(wxWindow* parent,wxWindowID id,const wxPoint& /*pos*/,const wxSize& /*size*/) :
-  m_CppCheckApp()
+ConfigPanel::ConfigPanel(wxWindow* parent,wxWindowID id,const wxPoint& /*pos*/,const wxSize& /*size*/)
 {
     //(*Initialize(ConfigPanel)
     wxBoxSizer* bszMain;
@@ -87,8 +86,9 @@ ConfigPanel::~ConfigPanel()
 
 void ConfigPanel::OnCppCheckApp(wxCommandEvent& /*event*/)
 {
+    wxFileName initialFile(txtCppCheckApp->GetValue());
     wxFileDialog dialog (this, _("Select CppCheck application"),
-                         wxEmptyString,
+                         initialFile.GetPath(),
 #ifdef __WXMSW__
                          _T("cppcheck.exe"),
                          _("Executable files (*.exe)|*.exe"),
@@ -99,10 +99,7 @@ void ConfigPanel::OnCppCheckApp(wxCommandEvent& /*event*/)
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
 
     if (dialog.ShowModal() == wxID_OK)
-    {
-        m_CppCheckApp = dialog.GetPath();
-        txtCppCheckApp->SetValue(m_CppCheckApp);
-    }
+        txtCppCheckApp->SetValue(dialog.GetPath());
 }
 
 void ConfigPanel::OnApply()
@@ -110,8 +107,9 @@ void ConfigPanel::OnApply()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
     if (cfg)
     {
-        if (!m_CppCheckApp.IsEmpty())
-            cfg->Write(_T("cppcheck_app"),  m_CppCheckApp);
+        wxString app = txtCppCheckApp->GetValue();
+        if (!app.IsEmpty())
+            cfg->Write(_T("cppcheck_app"), app);
         if (!txtCppCheckArgs->GetValue().IsEmpty())
             cfg->Write(_T("cppcheck_args"), txtCppCheckArgs->GetValue());
     }

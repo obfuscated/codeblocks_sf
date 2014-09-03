@@ -51,7 +51,6 @@ private:
     void OnCppCheckApp(wxCommandEvent& event);
     //*)
 
-    wxString m_CppCheckApp;
 
     DECLARE_EVENT_TABLE()
 };
