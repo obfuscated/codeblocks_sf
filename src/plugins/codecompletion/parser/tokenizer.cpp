@@ -282,9 +282,9 @@ bool Tokenizer::SkipWhiteSpace()
 // See SkipToStringEnd() for more details
 bool Tokenizer::IsEscapedChar()
 {
-    // Easy: If previous char is not a backslash, too than it's surely escape'd
+    // Easy: If previous char is not a backslash, than it's surely not a escaped char
     if (PreviousChar() != '\\')
-        return true;
+        return false;
     else
     {
         // check for multiple backslashes, e.g. "\\"
@@ -295,11 +295,10 @@ bool Tokenizer::IsEscapedChar()
             ++numBackslash; // another one...
 
         if ( (numBackslash%2) == 1) // number of backslashes (including current char) is odd
-            return true;            // eg: "\""
+            return false;           // eg: "\""
         else                        // number of backslashes (including current char) is even
-            return false;           // eg: "\\""
+            return true;            // eg: "\\""
     }
-    return false;
 }
 
 // expect we are not in a C-string
@@ -319,15 +318,18 @@ bool Tokenizer::SkipToStringEnd(const wxChar& ch)
 {
     while (true)
     {
+        // go to candidate of a close quote char
         while (CurrentChar() != ch && MoveToNextChar()) // don't check EOF when MoveToNextChar already does
             ;
 
         if (IsEOF())
             return false;
 
-        if (IsEscapedChar()) break;
-
-        MoveToNextChar();
+        // check to see if the close quote char is an escape char
+        if (IsEscapedChar())
+            MoveToNextChar(); // if true, skip the close quote char, and continue
+        else
+            break;            // if false, it is the closing quote
     }
     return true;
 }

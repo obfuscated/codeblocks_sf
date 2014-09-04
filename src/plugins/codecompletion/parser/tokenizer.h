@@ -368,7 +368,11 @@ protected:
     /** Skip the string literal(enclosed in double quotes) or character literal(enclosed in single quotes).*/
     bool SkipString();
 
-    /** Move to the end of string literal or character literal */
+    /** Move to the end of string literal or character literal, the m_TokenIndex will at the
+     * closing quote character.
+     * @param ch is a character either double quote or single quote
+     * @return true if we reach the closing quote character
+     */
     bool SkipToStringEnd(const wxChar& ch);
 
     /** Move to the next character in the buffer, amount defines the steps (by default, it is one) */
