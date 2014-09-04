@@ -149,17 +149,20 @@ void CppCheck::AppendToLog(const wxString& Text)
     }
 }
 
+inline wxString GetExecutable(ConfigManager* cfg)
+{
+    wxString executable = ConfigPanel::GetDefaultExecutableName();
+    if (cfg)
+        executable = cfg->Read(_T("cppcheck_app"), executable);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(executable);
+    return executable;
+}
+
+
 bool CppCheck::DoCppCheckVersion()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
-    wxString CommandLine = (cfg ? (cfg->Read(_T("cppcheck_app"),
-#ifdef __WXMSW__
-                                             _T("cppcheck.exe")) )
-#else
-                                             _T("cppcheck")) )
-#endif
-                                : _T("cppcheck"))
-                         + _T(" --version");
+    wxString CommandLine = GetExecutable(cfg) + _T(" --version");
 
     WriteToLog(CommandLine);
     wxArrayString Output, Errors;
@@ -275,14 +278,7 @@ int CppCheck::Execute()
     }
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
-    wxString CommandLine = (cfg ? (cfg->Read(_T("cppcheck_app"),
-#ifdef __WXMSW__
-                                             _T("cppcheck.exe")) )
-#else
-                                             _T("cppcheck")) )
-#endif
-                                : _T("cppcheck"))
-                         + _T(" ")
+    wxString CommandLine = GetExecutable(cfg) + _T(" ")
                          + cfg->Read(_T("cppcheck_args"), _T("--verbose --enable=all --enable=style --xml"))
                          + _T(" --file-list=") + InputFileName;
     if (!IncludeList.IsEmpty())

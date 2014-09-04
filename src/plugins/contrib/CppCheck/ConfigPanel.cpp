@@ -89,11 +89,10 @@ void ConfigPanel::OnCppCheckApp(wxCommandEvent& /*event*/)
     wxFileName initialFile(txtCppCheckApp->GetValue());
     wxFileDialog dialog (this, _("Select CppCheck application"),
                          initialFile.GetPath(),
+                         GetDefaultExecutableName(),
 #ifdef __WXMSW__
-                         _T("cppcheck.exe"),
                          _("Executable files (*.exe)|*.exe"),
 #else
-                         _T("cppcheck"),
                          _("Executable files (*)|*"),
 #endif
                         wxFD_OPEN | wxFD_FILE_MUST_EXIST);
@@ -113,4 +112,13 @@ void ConfigPanel::OnApply()
         if (!txtCppCheckArgs->GetValue().IsEmpty())
             cfg->Write(_T("cppcheck_args"), txtCppCheckArgs->GetValue());
     }
+}
+
+wxString ConfigPanel::GetDefaultExecutableName()
+{
+#ifdef __WXMSW__
+    return _T("cppcheck.exe");
+#else
+    return _T("cppcheck");
+#endif
 }

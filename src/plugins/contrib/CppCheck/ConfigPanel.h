@@ -37,6 +37,7 @@ public:
     /// Called when the user chooses to cancel the configuration.
     virtual void OnCancel() { ; }
 
+    static wxString GetDefaultExecutableName();
 protected:
 
     //(*Identifiers(ConfigPanel)
