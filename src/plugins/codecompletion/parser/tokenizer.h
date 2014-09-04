@@ -318,6 +318,7 @@ public:
     /** KMP find, get the first position, if find nothing, return -1 */
     int KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen);
 
+    /** a Token is added, this function also add doxygen style document attached to the Token */
     void SetLastTokenIdx(int tokenIdx);
 
 protected:
@@ -357,7 +358,11 @@ protected:
     /** Skip any "tab" "white-space" */
     bool SkipWhiteSpace();
 
-    /** Skip the C/C++ comment */
+    /** Skip the C/C++ comment
+     * @return true if we do move m_TokenIndex
+     * When C comment is handled, m_TokenIndex point to the char AFTER the '/'
+     * When C++ comment is handled, m_TokenIndex point to '\n'
+     */
     bool SkipComment();
 
     /** Skip the string literal(enclosed in double quotes) or character literal(enclosed in single quotes).*/

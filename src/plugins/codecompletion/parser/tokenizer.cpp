@@ -433,6 +433,19 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
 {
     if (stripUnneeded)
     {
+        // there are many cases when reading the #define xxx *****
+        // it can have such comments like
+        //
+        // a macro definition has multiply physical lines
+        // #define xxx yyy BACKSLASH
+        // zzz
+        //
+        // a macro defintion has mixed C comments
+        // #define xxx /*aaa*/ yyy /*bbb*/ zzz
+        //
+        // a macro definition has ending C++ comments
+        // #define xxx yyy zzz // aaa bbb
+
         TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
               wxString(__PRETTY_FUNCTION__, wxConvUTF8).wc_str(), m_LineNumber, CurrentChar(),
               PreviousChar(), NextChar(), nestBraces ? 1 : 0);
@@ -442,15 +455,17 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
         wxChar* p = buffer;
         wxString str;
 
-        // loop all the physical lines in reading macro definition
+        // loop all the physical lines when reading macro definition
         for (;;)
         {
-            // this while statement end up in a physical EOL '\n'
+            // this while statement end up in one physical EOL '\n'
             while (NotEOF() && CurrentChar() != _T('\n'))
             {
+                // Note that SkipComment() function won't skip the '\n' after comments
                 while (SkipComment())
                     ;
 
+                // if we see a '\', it could be the EOL of a physical line
                 const wxChar ch = CurrentChar();
                 if (ch == _T('\n'))
                     break;
@@ -901,10 +916,15 @@ bool Tokenizer::SkipComment()
             while (true)
             {
                 c = CurrentChar();
-                if (c == '\n' && !IsBackslashBeforeEOL())
+                if (c == '\n')
                 {
-                    MoveToNextChar();
-                    break;
+                    if (IsBackslashBeforeEOL())
+                    {
+                        MoveToNextChar();
+                        continue;
+                    }
+                    else
+                        break;
                 }
                 else
                 {
@@ -919,7 +939,7 @@ bool Tokenizer::SkipComment()
         {
             doc += _T('\n');
 
-            if (lineToAppend >= 0)
+            if (lineToAppend >= 0) // we have document after the token place
             {
                 if (m_LastTokenIdx != -1)
                     m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_NextTokenDoc + doc);
