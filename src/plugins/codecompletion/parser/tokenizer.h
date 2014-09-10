@@ -272,18 +272,20 @@ public:
      * Macro expansion is just replace some characters in the m_Buffer.
      *
      * xxxxxxxxxAAAA(u,v)yyyyyyyyy
-     *          ^---m_TokenIndex
+     *                   ^------ m_TokenIndex (anchor point)
      *
      * For example, the above is a wxChar Array(m_Buffer), a macro expansion is needed to replace
-     * "AAAA(u,v)" to some new text. We just do a "backward" text replace here. After the
-     * replacement, The last replacement char was ")" in "AAAA(u,v)" (We say it as an anchor point),
+     * "AAAA(u,v)" to some new text. We just do a "backward" text replace here. Before the
+     * replacement, m_TokenIndex point to the next char of ")" in "AAAA(u,v)" (We say it as an
+     * anchor point),
      * so the new buffer becomes:
      *
      * xxxNNNNNNNNNNNNNNNyyyyyyyyy
-     *    ^---m_TokenIndex
+     *    ^ <----------- ^
+     *    m_TokenIndex was moved backward
      *
-     * Note that "NNNNNNNNNNNN" is the new text. The m_TokenIndex was moved backward to the
-     * beginning of the text.
+     * Note that "NNNNNNNNNNNNNNN" is the new text. The m_TokenIndex was moved backward to the
+     * beginning of the new added text.
      * if the new text is small enough, then m_Buffer's length do not need to increase.
      * The situation when our m_Buffer's length need to be increased is that the new text
      * is too long, so the buffer before "anchor point" can not hold the new text, this way,
