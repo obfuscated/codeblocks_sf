@@ -1262,6 +1262,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
                 if (replaced || token->m_FullType.IsEmpty())
                 {
                     SkipUnwanted();
+                    // recursive call the DoGetToken function here
                     str = DoGetToken();
                 }
             }
