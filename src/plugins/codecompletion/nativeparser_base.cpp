@@ -13,6 +13,7 @@
 #endif
 
 #include "nativeparser_base.h"
+#include "parser/tokenizer.h"
 
 #include "parser/cclogger.h"
 
@@ -1649,18 +1650,62 @@ void NativeParserBase::ComputeCallTip(TokenTree*        tree,
         }
 
         // support macro call tips
-        while (token->m_TokenKind == tkMacroDef)
+        // NOTE: improved to support more advanced cases: preprocessor token mapped to
+        // function / macro name or variable name (for typedef'd function ptr). Eg,
+        // #define __MINGW_NAME_AW(func) func##A
+        // #define MessageBox __MINGW_NAME_AW(MessageBox)
+        // MessageBox(  // --> Use calltip for MessageBoxA().
+        // see details in
+        // http://forums.codeblocks.org/index.php/topic,19278.msg133989.html#msg133989
+
+        // only handle variable like macro definitions
+        if (token->m_TokenKind == tkMacroDef && token->m_Args.empty())
         {
-            const Token* tk = tree->at(tree->TokenExists(token->m_BaseType, -1, tkMacroDef | tkFunction));
-            if (tk && tk->m_BaseType != token->m_Name)
-                token = tk;
+            // NOTE: we use m_FullType for our search so that we accept function / macro NAMES only,
+            // any actual calls will be rejected (i.e., allow "#define MessageBox MessageBoxA", but
+            // not "#define MessageBox MessageBoxA(...)"
+            const Token* tk = tree->at(tree->TokenExists(token->m_FullType, -1,
+                                       tkFunction|tkMacroDef|tkVariable));
+
+            // either a function or a variable, but it is OK if a macro with not empty m_Args.
+            if (tk && ((tk->m_TokenKind ^ tkMacroDef) || !tk->m_Args.empty()))
+                token = tk; // tkVariable could be a typedef'd function ptr (checked later down below)
             else
-                break;
+            {
+                // a variable like macro, this token don't have m_Args(call tip information), but
+                // if we try to expand the token, and finally find some one who do have m_Args, then
+                // the expanded token's m_Args can used as call tips.
+                Tokenizer smallTokenizer(tree);
+                smallTokenizer.InitFromBuffer(token->m_FullType + _T('\n'));
+                tk = tree->at(tree->TokenExists(smallTokenizer.GetToken(), -1, tkMacroDef));
+                if (tk)
+                {
+                    // NOTE: macro replacement mode was triggered on when ReplaceFunctionLikeMacro
+                    // is called, the later GetToken() will recursively expand all defines and macro
+                    // calls. but if we have an incomplete actual parameter, e.g. reading actual
+                    // parameter failed in function GetMacroExpendedText(), the expansion will
+                    // stopped.
+                    smallTokenizer.ReplaceFunctionLikeMacro(tk);
+                    tk = tree->at(tree->TokenExists(smallTokenizer.GetToken(), -1,
+                                                    tkFunction|tkMacroDef|tkVariable));
+                    // only if the expanded result is a single token
+                    if (tk && smallTokenizer.PeekToken().empty())
+                        token = tk;
+                }
+            }
         }
 
-        if (token->m_TokenKind == tkTypedef && token->m_BaseType.Contains(_T("(")))
-            items.Add(token->m_BaseType); // typedef'd function pointer
-        else
+        // a variable basically don't have call tips, but if it's type is a typedef'd function
+        // pointer, we can still have call tips (which is the typedef function's arguments)
+        if (token->m_TokenKind == tkVariable)
+        {
+            const Token* tk = tree->at(tree->TokenExists(token->m_BaseType, token->m_ParentIndex, tkTypedef));
+            if (!tk && token->m_ParentIndex != -1)
+                tk = tree->at(tree->TokenExists(token->m_BaseType, -1, tkTypedef));
+            if (tk && !tk->m_Args.empty())
+                token = tk; // typedef'd function pointer
+        }
+
         {
             wxString tkTip;
             if ( !PrettyPrintToken(tree, token, tkTip) )
@@ -1711,13 +1756,14 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
 
         case tkMacroDef:
             if (!token->GetFormattedArgs().IsEmpty())
-            {
                 result = wxT("#define ") + token->m_Name + token->GetFormattedArgs();
-                return true;
-            }
-            // fall through
-        case tkEnum:
+            return true;
+
         case tkTypedef:
+            result = token->m_BaseType + wxT(" ") + result + token->m_Name + token->GetFormattedArgs();
+            return true;
+
+        case tkEnum:
         case tkDestructor:
         case tkVariable:
         case tkEnumerator:

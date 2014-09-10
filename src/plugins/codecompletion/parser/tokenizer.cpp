@@ -1707,12 +1707,12 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
     m_SavedNestingLevel = m_UndoNestLevel  = m_NestLevel;
 }
 
-void Tokenizer::SplitArguments(wxArrayString& results)
+bool Tokenizer::SplitArguments(wxArrayString& results)
 {
     while (SkipWhiteSpace() || SkipComment())
         ;
     if (CurrentChar() != _T('('))
-        return;
+        return false;
 
     MoveToNextChar(); // Skip the '('
     while (SkipWhiteSpace() || SkipComment())
@@ -1761,6 +1761,7 @@ void Tokenizer::SplitArguments(wxArrayString& results)
 
     // reset tokenizer's functionality
     m_State = oldState;
+    return true;
 }
 
 bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
@@ -1933,18 +1934,36 @@ bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
         return false;
 
     // sanity check if we have such macro definition that #define AAA(x,y) x+y+AAA
-    // which means a macro name is exists in its definition, which will cause a infinite expansion loop
+    // if a macro name exists in its definition, it will cause a infinite expansion loop
     if (tk->m_FullType.Find(tk->m_Name) != wxNOT_FOUND)
         return false;
+
+    // if it's a variable like macro definition simply return the replacement text
+    if (tk->m_Args.IsEmpty())
+    {
+        expandedText = tk->m_FullType;
+        return true;    // return true for ReplaceBufferText()
+    }
 
     // Now, tk is a function like macro definition we are going to expand, it's m_Args contains the
     // macro formal arguments, the macro actual arguments is already in m_Buffer now.
     // Now, suppose the buffer has such contents:
     // ......ABC(abc, (def)).....
+    //          ^--------m_TokenIndex
     // and we have a macro definition such as: #define ABC(x,y) x+y
     // The first thing we need to do is to breakup the formal arguments string "(x,y)", so we get a
-    // argument list, we copy the tk->m_Args, so that the buffer becomes
+    // argument list, we copy the formal arguments(tk->m_Args) to the buffer, so that the buffer
+    // becomes, formal arguments string followed by actual arguments string
     // ....(x,y)(abc, (def)).....
+    //     ^---------m_TokenIndex is moved backward after a ReplaceBufferText() call, when the
+    // formal arguments is copied to the buffer.
+    // now, it is ready to split macro arguments by calling the SplitArguments()
+    // After the first SplitArguments() call, m_TokenIndex go forward a bit
+    // ....(x,y)(abc, (def)).....
+    //          ^---------m_TokenIndex after first SplitArguments() call
+    // then
+    // ....(x,y)(abc, (def)).....
+    //                      ^---------m_TokenIndex after second SplitArguments() call
     // then we get a list of actual arguments, so we can construct a map which is:
     // x -> abc
     // y -> (def)
@@ -1954,15 +1973,27 @@ bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
     wxArrayString formalArgs;
     if (ReplaceBufferText(tk->m_Args, false))
         SplitArguments(formalArgs);
-    if (formalArgs.GetCount()==0)
-        return false;
+
+    // NOTE: some function like macros have empty args list, like #define MACRO() { ... }
+    // we should handle those cases, so don't return
+    //if (formalArgs.GetCount()==0)
+    //    return false;
 
     // 2. split the actual macro arguments
     wxArrayString actualArgs;
-    if (!formalArgs.IsEmpty()) // e.g. #define AAA(x) x \n #define BBB AAA \n BBB(int) variable;
-        SplitArguments(actualArgs);
-    if (actualArgs.GetCount()==0)
+    // NOTE: this case is handled above in "if (tk->m_Args.IsEmpty())" test
+    //if (!formalArgs.IsEmpty()) // e.g. #define AAA(x) x \n #define BBB AAA \n BBB(int) variable;
+    //    SplitArguments(actualArgs);
+
+    // don't replace anything if the actual arguments are missing, such as in the case:
+    // ..... AAA ;
+    //          ^----m_TokenIndex, we can't find a opening '('
+    if (!SplitArguments(actualArgs))
         return false;
+
+    // NOTE: some macros have no args (see above)
+    //if (actualArgs.GetCount()==0)
+    //    return false;
 
     //sanity check, both formalArgs.GetCount() actualArgs.GetCount() should match
     if (formalArgs.GetCount() != actualArgs.GetCount())

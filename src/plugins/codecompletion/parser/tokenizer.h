@@ -474,17 +474,26 @@ private:
     PreprocessorType GetPreprocessorType();
 
     /** handle the preprocessor directive:
-      * #ifdef XXX or #endif or #if or #elif or...
-      * If conditional preprocessor handles correctly, return true, otherwise return false.
-      */
+     * #ifdef XXX or #endif or #if or #elif or...
+     * If conditional preprocessor handles correctly, return true, otherwise return false.
+     */
     void HandleConditionPreprocessor(const PreprocessorType type);
 
-    /** Split the actual macro arguments, and store them in results*/
-    void SplitArguments(wxArrayString& results);
+    /** Split the macro arguments, and store them in results, when calling this function, we expect
+     * that m_TokenIndex point to the opening parthense, or some spaces befor the opening parthense.
+     * such as below
+     *
+     *    ..... ABC  ( xxx, yyy ) zzz .....
+     *             ^--------m_TokenIndex
+     *
+     * @param results in the above example, the result contains two items (xxx and yyy)
+     * @return false if arguments (the parenthesis) are not found.
+     */
+    bool SplitArguments(wxArrayString& results);
 
     /** Get the text after macro expansion
      * @param tk the macro definition token, usually a function like macro definition
-     * @param expandedText is an output variable string
+     * @param expandedText is an output string
      */
     bool GetMacroExpendedText(const Token* tk, wxString& expandedText);
 
