@@ -1699,7 +1699,7 @@ void NativeParserBase::ComputeCallTip(TokenTree*         tree,
                     // NOTE: macro replacement mode was triggered on when ReplaceFunctionLikeMacro
                     // is called, the later GetToken() will recursively expand all defines and macro
                     // calls. but if we have an incomplete actual parameter, e.g. reading actual
-                    // parameter failed in function GetMacroExpendedText(), the expansion will
+                    // parameter failed in function GetMacroExpandedText(), the expansion will
                     // stopped.
                     smallTokenizer.ReplaceFunctionLikeMacro(tk);
                     tk = tree->at(tree->TokenExists(smallTokenizer.GetToken(), -1,

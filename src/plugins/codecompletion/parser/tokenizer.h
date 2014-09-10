@@ -497,7 +497,7 @@ private:
      * @param tk the macro definition token, usually a function like macro definition
      * @param expandedText is an output string
      */
-    bool GetMacroExpendedText(const Token* tk, wxString& expandedText);
+    bool GetMacroExpandedText(const Token* tk, wxString& expandedText);
 
     /** Just for KMP find */
     void KMP_GetNextVal(const wxChar* pattern, int next[]);

@@ -1846,7 +1846,7 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
 bool Tokenizer::ReplaceFunctionLikeMacro(const Token* tk, bool updatePeekToken)
 {
     wxString macroExpandedText;
-    if ( GetMacroExpendedText(tk, macroExpandedText) )
+    if ( GetMacroExpandedText(tk, macroExpandedText) )
         return ReplaceBufferText(macroExpandedText, updatePeekToken);
     return false;
 }
@@ -1928,7 +1928,7 @@ void Tokenizer::SetLastTokenIdx(int tokenIdx)
     m_NextTokenDoc.clear();
 }
 
-bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
+bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
 {
     // e.g. "#define AAA AAA" and usage "AAA(x)"
     if (!tk || tk->m_Name == tk->m_FullType)
@@ -2007,7 +2007,7 @@ bool Tokenizer::GetMacroExpendedText(const Token* tk, wxString& expandedText)
     // loop on all the arguments
     for (size_t i = 0; i < totalCount; ++i)
     {
-        TRACE(_T("GetMacroExpendedText(): The formal args are '%s' and the actual args are '%s'."),
+        TRACE(_T("GetMacroExpandedText(): The formal args are '%s' and the actual args are '%s'."),
               formalArgs[i].wx_str(), actualArgs[i].wx_str());
 
         wxChar* data = const_cast<wxChar*>((const wxChar*)expandedText.GetData());
