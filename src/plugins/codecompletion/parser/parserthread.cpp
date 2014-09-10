@@ -1597,7 +1597,9 @@ void ParserThread::HandleDefines()
     wxString para; // function-like macro's args
     if (!readToEOL.IsEmpty())
     {
-        if (readToEOL[0] == ParserConsts::opbracket_chr) // function-like macro
+        // a '(' char follow the macro name (without space between them) is regard as a 
+        // function like macro definition
+        if (readToEOL[0] == ParserConsts::opbracket_chr) // function-like macro definition
         {
             int level = 1;
             size_t pos = 0;
@@ -1612,10 +1614,12 @@ void ParserThread::HandleDefines()
             para = readToEOL.Left(++pos);
             m_Str << readToEOL.Right(readToEOL.Len() - (++pos));
         }
-        else
+        else // variable like macro definition
             m_Str << readToEOL;
     }
 
+    // macro definitions's scope are always in the global namespace, so we need to temperary switch
+    // the m_LastParent token to Null
     Token* oldParent = m_LastParent;
     m_LastParent = 0L;
     DoAddToken(tkMacroDef, token, lineNr, lineNr, m_Tokenizer.GetLineNumber(), para, false, true);
