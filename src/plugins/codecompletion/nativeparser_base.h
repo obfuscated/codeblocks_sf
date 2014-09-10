@@ -312,7 +312,7 @@ protected:
      *  when you are entering some text like
      *  A(|    or  objA.test(|
      * then there will be a tip window show the function prototype of the function
-     * @param chars_per_line the function tip window width
+     *
      */
     void ComputeCallTip(TokenTree*         tree,
                         const TokenIdxSet& tokens,
