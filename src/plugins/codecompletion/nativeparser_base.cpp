@@ -134,7 +134,8 @@ size_t NativeParserBase::FindAIMatches(TokenTree*                  tree,
                       (isLastComponent && !isPrefix), kindMask);
 
     if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looping %lu results"), static_cast<unsigned long>(local_result.size())));
+        CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looping %lu results"),
+                                    static_cast<unsigned long>(local_result.size())));
 
     // loop all matches, and recurse
     for (TokenIdxSet::const_iterator it = local_result.begin(); it != local_result.end(); it++)
@@ -161,14 +162,17 @@ size_t NativeParserBase::FindAIMatches(TokenTree*                  tree,
             result.insert(id);
 
             // insert enumerators
-            for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin(); tis_it != token->m_Children.end(); tis_it++)
+            for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin();
+                 tis_it != token->m_Children.end();
+                 tis_it++)
                 result.insert(*tis_it);
 
             continue; // done with this token
         }
 
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"), token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
+            CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Match: '%s' (ID='%d') : type='%s'"),
+                                        token->m_Name.wx_str(), id, token->m_BaseType.wx_str()));
 
 
         // is the token a function or variable (i.e. is not a type)
@@ -189,7 +193,9 @@ size_t NativeParserBase::FindAIMatches(TokenTree*                  tree,
             // until we find a result, or reach -1...
 
             if (s_DebugSmartSense)
-                CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looking for type: '%s' (%lu components)"), actual.wx_str(), static_cast<unsigned long>(type_components.size())));
+                CCLogger::Get()->DebugLog(F(_T("FindAIMatches() Looking for type: '%s' (%lu components)"),
+                                            actual.wx_str(),
+                                            static_cast<unsigned long>(type_components.size())));
 
             // search under all search-scope namespaces too
             TokenIdxSet temp_search_scope;
@@ -739,7 +745,8 @@ size_t NativeParserBase::BreakUpComponents(const wxString&              actual,
                 default:
                 {   tokenTypeString = _T("Undefined");         }
             }
-            CCLogger::Get()->DebugLog(F(_T("BreakUpComponents() Found component: '%s' (%s)"), tok.wx_str(), tokenTypeString.wx_str()));
+            CCLogger::Get()->DebugLog(F(_T("BreakUpComponents() Found component: '%s' (%s)"),
+                                        tok.wx_str(), tokenTypeString.wx_str()));
         }
 
         // Support global namespace like ::MessageBoxA
@@ -790,7 +797,8 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
 
             CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
-            for (TokenIdxSet::const_iterator it = tempInitialScope.begin(); it != tempInitialScope.end(); ++it)
+            for (TokenIdxSet::const_iterator it = tempInitialScope.begin();
+                 it != tempInitialScope.end(); ++it)
             {
                 const Token* token = tree->at(*it);
                 if (token && (token->m_TokenKind !=tkClass))
@@ -807,7 +815,8 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
 
         if (s_DebugSmartSense)
         {
-            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope with %lu result:"), static_cast<unsigned long>(initialScope.size())));
+            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope with %lu result:"),
+                                        static_cast<unsigned long>(initialScope.size())));
             for (TokenIdxSet::const_iterator tt = initialScope.begin(); tt != initialScope.end(); ++tt)
                 CCLogger::Get()->DebugLog(F(_T("- Search scope: %d"), (*tt)));
         }
@@ -830,7 +839,8 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
         //-------------------------------------
 
         if (s_DebugSmartSense)
-            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() Looping %lu result."), static_cast<unsigned long>(initialResult.size())));
+            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() Looping %lu result."),
+                                        static_cast<unsigned long>(initialResult.size())));
 
         //------------------------------------
         if (!initialResult.empty())
@@ -865,7 +875,9 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
 
                 if (s_DebugSmartSense)
                     CCLogger::Get()->DebugLog(F(_T("ResolvExpression() Match:'%s(ID=%lu) : type='%s'"),
-                                                token->m_Name.wx_str(), static_cast<unsigned long>(id), token->m_BaseType.wx_str()));
+                                                token->m_Name.wx_str(),
+                                                static_cast<unsigned long>(id),
+                                                token->m_BaseType.wx_str()));
 
                 // recond the template map message here. hope it will work.
                 // wxString tkname = token->m_Name;
@@ -918,7 +930,9 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
                     ResolveActualType(tree, actualTypeStr, actualTypeScope, actualTypeResult);
                     if (!actualTypeResult.empty())
                     {
-                        for (TokenIdxSet::const_iterator it2 = actualTypeResult.begin(); it2 != actualTypeResult.end(); ++it2)
+                        for (TokenIdxSet::const_iterator it2 = actualTypeResult.begin();
+                             it2 != actualTypeResult.end();
+                             ++it2)
                         {
                             initialScope.insert(*it2);
 
@@ -1006,7 +1020,7 @@ void NativeParserBase::AddConstructors(TokenTree *tree, const TokenIdxSet& sourc
     }
 }
 
-void NativeParserBase::ResolveOperator(TokenTree*         tree,
+void NativeParserBase::ResolveOperator(TokenTree*          tree,
                                        const OperatorType& tokenOperatorType,
                                        const TokenIdxSet&  tokens,
                                        const TokenIdxSet&  searchScope,
@@ -1605,7 +1619,7 @@ int NativeParserBase::GetTokenFromCurrentLine(TokenTree*         tree,
     return result;
 }
 
-void NativeParserBase::ComputeCallTip(TokenTree*        tree,
+void NativeParserBase::ComputeCallTip(TokenTree*         tree,
                                       const TokenIdxSet& tokens,
                                       wxArrayString&     items)
 {
@@ -1634,7 +1648,9 @@ void NativeParserBase::ComputeCallTip(TokenTree*        tree,
         }
         if (token->m_TokenKind == tkClass)
         {
-            for (TokenIdxSet::iterator chIt = token->m_Children.begin(); chIt != token->m_Children.end(); ++chIt)
+            for (TokenIdxSet::iterator chIt = token->m_Children.begin();
+                 chIt != token->m_Children.end();
+                 ++chIt)
             {
                 const Token* tk = tree->at(*chIt);
                 if (   tk && (   tk->m_TokenKind == tkConstructor
