@@ -200,8 +200,9 @@ protected:
     /** handle function declaration or definition
       * @param name function name
       * @param isOperator if true, means it is an operator overload function
+      * @param isPointer if true, means it is a function pointer
       */
-    void HandleFunction(const wxString& name, bool isOperator = false);
+    void HandleFunction(const wxString& name, bool isOperator = false, bool isPointer = false);
 
     /** parse for loop arguments:
       * for(int X; ... ; ...)
