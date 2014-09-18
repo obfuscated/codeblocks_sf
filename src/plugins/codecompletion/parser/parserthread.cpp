@@ -2654,7 +2654,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
                     }
                     else
                     {
-                        if (m_Tokenizer.ReplaceBufferText(tk->m_Args, true))
+                        if (m_Tokenizer.ReplaceBufferText(tk->m_Args))
                             continue;
                     }
                 }
@@ -2667,7 +2667,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
                     token = tk->m_FullType;
                 else if (tk->m_FullType != tk->m_Name)
                 {
-                    if (m_Tokenizer.ReplaceBufferText(tk->m_FullType, true))
+                    if (m_Tokenizer.ReplaceBufferText(tk->m_FullType))
                         continue;
                 }
             }

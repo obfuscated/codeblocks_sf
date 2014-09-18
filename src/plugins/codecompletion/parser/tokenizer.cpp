@@ -1258,7 +1258,8 @@ void Tokenizer::ReplaceMacro(wxString& str)
                 if (!token->m_Args.IsEmpty())
                     replaced = ReplaceFunctionLikeMacro(token, false);
                 else if (token->m_FullType != token->m_Name)
-                    replaced = ReplaceBufferText(token->m_FullType, false);
+                    replaced = ReplaceBufferText(token->m_FullType);
+
                 if (replaced || token->m_FullType.IsEmpty())
                 {
                     SkipUnwanted();
@@ -1296,7 +1297,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
                 ;
             str = DoGetToken();
         }
-        else if (target != str && ReplaceBufferText(target, false))
+        else if (target != str && ReplaceBufferText(target))
             str = DoGetToken();
     }
     else if (it->second[0] == _T('-'))
@@ -1335,13 +1336,13 @@ void Tokenizer::ReplaceMacro(wxString& str)
         // trigger the macro replacement mode, so that we can look up the keyword in TokenTree for a
         // macro usage, note that ReplaceBufferText() below just move the token index backword, but
         // don't change the buffer
-        if(ReplaceBufferText(it->first, false))
+        if(ReplaceBufferText(it->first))
             str = DoGetToken();
 
     }
     else // for other user defined rules, just do a buffer content replacement
     {
-        if (it->second != str && ReplaceBufferText(it->second, false))
+        if (it->second != str && ReplaceBufferText(it->second))
             str = DoGetToken();
     }
 }
@@ -1385,7 +1386,7 @@ bool Tokenizer::CalcConditionExpression()
                         }
                         else //variable like macro definition, need to replace texts
                         {
-                            if (ReplaceBufferText(tk->m_Args, false))
+                            if (ReplaceBufferText(tk->m_Args))
                                 continue;
                         }
                     }
@@ -1398,7 +1399,7 @@ bool Tokenizer::CalcConditionExpression()
                         token = tk->m_FullType;
                     else if (tk->m_FullType != tk->m_Name)
                     {
-                        if (ReplaceBufferText(tk->m_FullType, false))
+                        if (ReplaceBufferText(tk->m_FullType))
                             continue;
                     }
                 }
@@ -1765,7 +1766,7 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
     return true;
 }
 
-bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
+bool Tokenizer::ReplaceBufferText(const wxString& target)
 {
     if (target.IsEmpty())
         return false;
@@ -1831,14 +1832,8 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, bool updatePeekToken)
     m_SavedLineNumber   = m_UndoLineNumber = m_LineNumber;
     m_SavedNestingLevel = m_UndoNestLevel  = m_NestLevel;
 
-    // Update the peek token
-    if (m_PeekAvailable && updatePeekToken)
-    {
-        m_PeekAvailable = false;
-        // we set the m_PeekAvailable after calling DoGetToken() function inside the PeekToken()
-        // to prevent unnecessary recursive call of PeekToken() function.
-        PeekToken();
-    }
+    // since m_TokenIndex is changed, peek values becomes invalid
+    m_PeekAvailable = false;
 
     return true;
 }
@@ -1847,7 +1842,7 @@ bool Tokenizer::ReplaceFunctionLikeMacro(const Token* tk, bool updatePeekToken)
 {
     wxString macroExpandedText;
     if ( GetMacroExpandedText(tk, macroExpandedText) )
-        return ReplaceBufferText(macroExpandedText, updatePeekToken);
+        return ReplaceBufferText(macroExpandedText);
     return false;
 }
 
@@ -1972,7 +1967,7 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
 
     // 1. break the formal args into substring with ","
     wxArrayString formalArgs;
-    if (ReplaceBufferText(tk->m_Args, false))
+    if (ReplaceBufferText(tk->m_Args))
         SplitArguments(formalArgs);
 
     // NOTE: some function like macros have empty args list, like #define MACRO() { ... }

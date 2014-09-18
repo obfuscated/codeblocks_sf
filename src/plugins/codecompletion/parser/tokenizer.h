@@ -265,7 +265,6 @@ public:
     /** Backward buffer replacement for re-parsing
      *
      * @param target the new text going to replace some other text on the m_Buffer
-     * @param updatePeekToken do we need to update the m_PeekToken after the replacement?
      *
      * http://forums.codeblocks.org/index.php/topic,13384.msg90391.html#msg90391
      *
@@ -294,7 +293,7 @@ public:
      * NNNNNNNNNNNNNNNNNNNNNNyyyyyyyyy
      * ^---m_TokenIndex
      */
-    bool ReplaceBufferText(const wxString& target, bool updatePeekToken = true);
+    bool ReplaceBufferText(const wxString& target);
 
     /** Get actual context for macro, then replace buffer for re-parsing
      *  @param tk the macro definition, this is usually happens we want to expand a function like
