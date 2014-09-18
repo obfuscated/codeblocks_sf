@@ -2660,7 +2660,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
                 }
                 else if (!tk->m_Args.IsEmpty())
                 {
-                    if (m_Tokenizer.ReplaceFunctionLikeMacro(tk, true))
+                    if (m_Tokenizer.ReplaceFunctionLikeMacro(tk))
                         continue;
                 }
                 else if (wxIsdigit(tk->m_FullType[0]))

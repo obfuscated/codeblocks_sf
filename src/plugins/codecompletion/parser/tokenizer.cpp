@@ -1256,7 +1256,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
             {
                 bool replaced = false;
                 if (!token->m_Args.IsEmpty())
-                    replaced = ReplaceFunctionLikeMacro(token, false);
+                    replaced = ReplaceFunctionLikeMacro(token);
                 else if (token->m_FullType != token->m_Name)
                     replaced = ReplaceBufferText(token->m_FullType);
 
@@ -1392,7 +1392,7 @@ bool Tokenizer::CalcConditionExpression()
                     }
                     else if (!tk->m_Args.IsEmpty()) //function like macro definition, expand them
                     {
-                        if (ReplaceFunctionLikeMacro(tk, false))
+                        if (ReplaceFunctionLikeMacro(tk))
                             continue; //after the expansion, m_TokenIndex is adjusted, so continue again
                     }
                     else if (wxIsdigit(tk->m_FullType[0]))
@@ -1838,7 +1838,7 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
     return true;
 }
 
-bool Tokenizer::ReplaceFunctionLikeMacro(const Token* tk, bool updatePeekToken)
+bool Tokenizer::ReplaceFunctionLikeMacro(const Token* tk)
 {
     wxString macroExpandedText;
     if ( GetMacroExpandedText(tk, macroExpandedText) )

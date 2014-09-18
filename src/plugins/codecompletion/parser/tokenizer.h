@@ -295,11 +295,14 @@ public:
      */
     bool ReplaceBufferText(const wxString& target);
 
-    /** Get actual context for macro, then replace buffer for re-parsing
-     *  @param tk the macro definition, this is usually happens we want to expand a function like
-     *  macro, since a variable like macro just did a simple text replacement.
+    /** Get expanded text for the current macro usage, then replace buffer for re-parsing
+     * @param tk the macro definition token
+     * @return true if macro expansion successes, thus buffer is really changed and m_TokenIndex
+     * moved backword a bit, and peek status get cleared
+     * this is usually happens we want to expand a function like macro, since a variable like macro
+     * just did a simple text replacement by using the ReplaceBufferText() function call
      */
-    bool ReplaceFunctionLikeMacro(const Token* tk, bool updatePeekToken = true);
+    bool ReplaceFunctionLikeMacro(const Token* tk);
 
     /** Get first token position in buffer */
     int GetFirstTokenPosition(const wxString& buffer, const wxString& target)
