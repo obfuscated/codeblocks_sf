@@ -103,6 +103,62 @@ void IncrementalSelectListDlg::FillList()
             indexes.Add(i);
         }
     }
+
+    // if only alphabetical, pull word boundaries to the top
+    if (search.Length() > 2)
+    {
+        wxString prefix;
+        for (size_t i = 0; i < search.Length(); ++i)
+        {
+            if (wxIsalpha(search[i]))
+                prefix += search[i];
+        }
+        if (prefix.Length() == search.Length() - 2)
+        {
+            std::vector<size_t> promoteIdxs;
+            wxArrayString newRes;
+            wxArrayLong newIndx;
+            for (size_t i = 0; i < result.Count(); ++i)
+            {
+                wxString cur = result[i].Lower();
+                bool promote = false;
+                if (cur.StartsWith(prefix))
+                    promote = true;
+                else
+                {
+                    int maxLn = cur.Length() - prefix.Length();
+                    for (int j = 0; j < maxLn; ++j)
+                    {
+                        if (!wxIsalpha(cur[j]) && cur.Mid(j + 1).StartsWith(prefix))
+                        {
+                            promote = true;
+                            break;
+                        }
+                    }
+                }
+                if (promote)
+                {
+                    promoteIdxs.push_back(i);
+                    newRes.Add(result[i]);
+                    newIndx.Add(indexes[i]);
+                }
+            }
+            if (!promoteIdxs.empty())
+            {
+                for (size_t i = 0; i < result.Count(); ++i)
+                {
+                    if (!std::binary_search(promoteIdxs.begin(), promoteIdxs.end(), i))
+                    {
+                        newRes.Add(result[i]);
+                        newIndx.Add(indexes[i]);
+                    }
+                }
+                result = newRes;
+                indexes = newIndx;
+            }
+        }
+    }
+
     m_List->Set(result, reinterpret_cast<void**>(&indexes[0]));
     if (m_List->GetCount())
         m_List->SetSelection(0);
