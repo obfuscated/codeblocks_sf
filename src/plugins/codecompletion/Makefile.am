@@ -34,6 +34,7 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			parser/ccdebuginfo.cpp \
 			parser/cclogger.cpp \
 			parser/parser.cpp \
+			parser/parser_base.cpp \
 			parser/parserthread.cpp \
 			parser/parserthreadedtask.cpp \
 			parser/profiletimer.cpp \
@@ -59,6 +60,7 @@ noinst_HEADERS = ccoptionsdlg.h \
 			parser/ccdebuginfo.h \
 			parser/cclogger.h \
 			parser/parser.h \
+			parser/parser_base.h \
 			parser/parserthread.h \
 			parser/parserthreadedtask.h \
 			parser/profiletimer.h \

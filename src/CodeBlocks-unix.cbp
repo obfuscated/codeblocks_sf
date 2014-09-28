@@ -767,9 +767,6 @@
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/NullPtr.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/StandardInteger.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Types.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1287,6 +1284,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/parser/parser.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/parser_base.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/parser_base.h">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/parser/parserthread.cpp">

@@ -62,7 +62,6 @@
 		<Unit filename="cctest/cctest_frame.h" />
 		<Unit filename="cctest/nativeparser_test.cpp" />
 		<Unit filename="cctest/nativeparser_test.h" />
-		<Unit filename="cctest/parserdummy.cpp" />
 		<Unit filename="cctest/resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>

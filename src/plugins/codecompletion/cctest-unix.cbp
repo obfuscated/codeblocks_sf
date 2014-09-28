@@ -49,7 +49,6 @@
 		<Unit filename="cctest/cctest_frame.h" />
 		<Unit filename="cctest/nativeparser_test.cpp" />
 		<Unit filename="cctest/nativeparser_test.h" />
-		<Unit filename="cctest/parserdummy.cpp" />
 		<Unit filename="cctest/test.h">
 			<Option target="&lt;{~None~}&gt;" />
 		</Unit>
@@ -62,6 +61,8 @@
 		<Unit filename="parser/expression.cpp" />
 		<Unit filename="parser/expression.h" />
 		<Unit filename="parser/parser.h" />
+		<Unit filename="parser/parser_base.cpp" />
+		<Unit filename="parser/parser_base.h" />
 		<Unit filename="parser/parserthread.cpp" />
 		<Unit filename="parser/parserthread.h" />
 		<Unit filename="parser/searchtree.cpp" />
