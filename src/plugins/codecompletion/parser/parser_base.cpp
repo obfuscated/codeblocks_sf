@@ -2,6 +2,7 @@
 
 #ifndef CB_PRECOMP
     #include "editorbase.h"
+    #include <wx/dir.h>
 #endif
 
 #include <wx/tokenzr.h>
