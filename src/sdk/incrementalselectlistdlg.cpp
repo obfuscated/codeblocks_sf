@@ -16,6 +16,8 @@
     #include <wx/stattext.h>
     #include "manager.h"
     #include <wx/listbox.h>
+
+    #include <algorithm>
 #endif
 
 #include "incrementalselectlistdlg.h"
