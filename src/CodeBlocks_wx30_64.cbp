@@ -1529,6 +1529,12 @@
 		<Unit filename="plugins/codecompletion/parser/parser.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/parser/parser_base.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/parser/parser_base.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/parser/parserthread.cpp">
 			<Option target="Code-completion" />
 		</Unit>
