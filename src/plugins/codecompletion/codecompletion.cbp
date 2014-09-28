@@ -113,9 +113,6 @@
 		<Unit filename="cctest/nativeparser_test.h">
 			<Option target="cctest" />
 		</Unit>
-		<Unit filename="cctest/parserdummy.cpp">
-			<Option target="cctest" />
-		</Unit>
 		<Unit filename="cctest/resource.rc">
 			<Option compilerVar="WINDRES" />
 			<Option target="cctest" />
@@ -183,6 +180,8 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="parser/parser.h" />
+		<Unit filename="parser/parser_base.cpp" />
+		<Unit filename="parser/parser_base.h" />
 		<Unit filename="parser/parserthread.cpp" />
 		<Unit filename="parser/parserthread.h" />
 		<Unit filename="parser/parserthreadedtask.cpp">

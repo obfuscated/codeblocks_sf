@@ -96,6 +96,7 @@ private:
     wxFindReplaceDialog* m_FRDlg;
     int                  m_LastIndex;
 
+    /** main testing class, derived from NativeParserBase class */
     NativeParserTest m_NativeParser;
 
     DECLARE_EVENT_TABLE()

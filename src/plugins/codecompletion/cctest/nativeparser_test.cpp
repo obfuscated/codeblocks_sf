@@ -57,6 +57,13 @@
 
 bool s_DebugSmartSense = false; // if true, then cclogger will log many debug messages
 
+namespace CCTestAppGlobal
+{
+    extern wxArrayString s_includeDirs;
+    extern wxArrayString s_fileQueue;
+    extern wxArrayString s_filesParsed;
+}// CCTestAppGlobal
+
 NativeParserTest::NativeParserTest()
 {
 }
@@ -183,6 +190,15 @@ void NativeParserTest::Init()
     Tokenizer::SetReplacementString(_T("WXDLLIMPORT"),                      _T(""));
     Tokenizer::SetReplacementString(_T("WXEXPORT"),                         _T(""));
     Tokenizer::SetReplacementString(_T("WXIMPORT"),                         _T(""));
+
+
+    // initialize the include files
+    // second, try taking include directories into account
+    for (size_t i=0; i<CCTestAppGlobal::s_includeDirs.GetCount(); i++)
+    {
+        wxString include_dir = CCTestAppGlobal::s_includeDirs.Item(i);
+        m_Parser.AddIncludeDir(include_dir);
+    }
 }
 
 bool NativeParserTest::TestParseAndCodeCompletion(wxString filename)

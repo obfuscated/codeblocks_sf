@@ -78,6 +78,8 @@
 		<Unit filename="parser/expression.cpp" />
 		<Unit filename="parser/expression.h" />
 		<Unit filename="parser/parser.h" />
+		<Unit filename="parser/parser_base.cpp" />
+		<Unit filename="parser/parser_base.h" />
 		<Unit filename="parser/parserthread.cpp" />
 		<Unit filename="parser/parserthread.h" />
 		<Unit filename="parser/searchtree.cpp" />

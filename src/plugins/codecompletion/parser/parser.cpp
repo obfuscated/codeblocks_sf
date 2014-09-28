@@ -91,287 +91,7 @@ namespace ParserCommon
     int idParserStart = wxNewId();
     int idParserEnd   = wxNewId();
 
-    EFileType FileType(const wxString& filename, bool force_refresh)
-    {
-        static bool          cfg_read  = false;
-        static bool          empty_ext = true;
-        static wxArrayString header_ext;
-        static wxArrayString source_ext;
-
-        if (!cfg_read || force_refresh)
-        {
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-            empty_ext               = cfg->ReadBool(_T("/empty_ext"), true);
-            wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,tcc,xpm"));
-            wxString source_ext_str = cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++"));
-
-            header_ext.Clear();
-            wxStringTokenizer header_ext_tknzr(header_ext_str, _T(","));
-            while (header_ext_tknzr.HasMoreTokens())
-                header_ext.Add(header_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
-
-            source_ext.Clear();
-            wxStringTokenizer source_ext_tknzr(source_ext_str, _T(","));
-            while (source_ext_tknzr.HasMoreTokens())
-                source_ext.Add(source_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
-
-            cfg_read = true; // caching done
-        }
-
-        if (filename.IsEmpty())
-            return ParserCommon::ftOther;
-
-        const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
-        const int      pos  = file.Find(_T('.'), true);
-        wxString       ext;
-        if (pos != wxNOT_FOUND)
-            ext = file.SubString(pos + 1, file.Len());
-
-        if (empty_ext && ext.IsEmpty())
-            return ParserCommon::ftHeader;
-
-        for (size_t i=0; i<header_ext.GetCount(); ++i)
-        {
-            if (ext==header_ext[i])
-                return ParserCommon::ftHeader;
-        }
-
-        for (size_t i=0; i<source_ext.GetCount(); ++i)
-        {
-            if (ext==source_ext[i])
-                return ParserCommon::ftSource;
-        }
-
-        return ParserCommon::ftOther;
-    }
 }// namespace ParserCommon
-
-ParserBase::ParserBase()
-{
-    m_TokenTree     = new TokenTree;
-    m_TempTokenTree = new TokenTree;
-    ReadOptions();
-}
-
-ParserBase::~ParserBase()
-{
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-    Delete(m_TokenTree);
-    Delete(m_TempTokenTree);
-
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-}
-
-TokenTree* ParserBase::GetTokenTree()
-{
-    return m_TokenTree;
-}
-
-bool ParserBase::ParseFile(cb_unused const wxString& filename, cb_unused bool isGlobal, cb_unused bool locked)
-{
-    return false;
-}
-
-bool ParserBase::Reparse(cb_unused const wxString& filename, cb_unused bool isLocal)
-{
-    return false;
-}
-
-void ParserBase::ReadOptions()
-{
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-
-    // one-time default settings change: upgrade everyone
-    bool force_all_on = !cfg->ReadBool(_T("/parser_defaults_changed"), false);
-    if (force_all_on)
-    {
-        cfg->Write(_T("/parser_defaults_changed"),       true);
-
-        cfg->Write(_T("/parser_follow_local_includes"),  true);
-        cfg->Write(_T("/parser_follow_global_includes"), true);
-        cfg->Write(_T("/want_preprocessor"),             true);
-        cfg->Write(_T("/parse_complex_macros"),          true);
-    }
-
-    // Page "Code Completion"
-    m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"),                true);
-    m_Options.whileTyping          = cfg->ReadBool(_T("/while_typing"),                  true);
-    m_Options.caseSensitive        = cfg->ReadBool(_T("/case_sensitive"),                false);
-
-    // Page "C / C++ parser"
-    m_Options.followLocalIncludes  = cfg->ReadBool(_T("/parser_follow_local_includes"),  true);
-    m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
-    m_Options.wantPreprocessor     = cfg->ReadBool(_T("/want_preprocessor"),             true);
-    m_Options.parseComplexMacros   = cfg->ReadBool(_T("/parse_complex_macros"),          true);
-
-    // Page "Symbol browser"
-    m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"),    false);
-    m_BrowserOptions.expandNS        = cfg->ReadBool(_T("/browser_expand_ns"),           false);
-    m_BrowserOptions.treeMembers     = cfg->ReadBool(_T("/browser_tree_members"),        true);
-
-    // Token tree
-    m_BrowserOptions.displayFilter   = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
-    m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
-
-    // Page "Documentation:
-    m_Options.storeDocumentation     = cfg->ReadBool(_T("/use_documentation_helper"),         false);
-
-    // force re-read of file types
-    ParserCommon::EFileType ft_dummy = ParserCommon::FileType(wxEmptyString, true);
-    wxUnusedVar(ft_dummy);
-}
-
-void ParserBase::WriteOptions()
-{
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-
-    // Page "Code Completion"
-    cfg->Write(_T("/use_SmartSense"),                m_Options.useSmartSense);
-    cfg->Write(_T("/while_typing"),                  m_Options.whileTyping);
-    cfg->Write(_T("/case_sensitive"),                m_Options.caseSensitive);
-
-    // Page "C / C++ parser"
-    cfg->Write(_T("/parser_follow_local_includes"),  m_Options.followLocalIncludes);
-    cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
-    cfg->Write(_T("/want_preprocessor"),             m_Options.wantPreprocessor);
-    cfg->Write(_T("/parse_complex_macros"),          m_Options.parseComplexMacros);
-
-    // Page "Symbol browser"
-    cfg->Write(_T("/browser_show_inheritance"),      m_BrowserOptions.showInheritance);
-    cfg->Write(_T("/browser_expand_ns"),             m_BrowserOptions.expandNS);
-    cfg->Write(_T("/browser_tree_members"),          m_BrowserOptions.treeMembers);
-
-    // Token tree
-    cfg->Write(_T("/browser_display_filter"),        m_BrowserOptions.displayFilter);
-    cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
-
-    // Page "Documentation:
-    // m_Options.storeDocumentation will be written by DocumentationPopup
-}
-
-void ParserBase::AddIncludeDir(const wxString& dir)
-{
-    if (dir.IsEmpty())
-        return;
-
-    wxString base = dir;
-    if (base.Last() == wxFILE_SEP_PATH)
-        base.RemoveLast();
-    if (!wxDir::Exists(base))
-    {
-        TRACE(_T("ParserBase::AddIncludeDir(): Directory %s does not exist?!"), base.wx_str());
-        return;
-    }
-
-    if (m_IncludeDirs.Index(base) == wxNOT_FOUND)
-    {
-        TRACE(_T("ParserBase::AddIncludeDir(): Adding %s"), base.wx_str());
-        m_IncludeDirs.Add(base);
-    }
-}
-
-wxString ParserBase::FindFirstFileInIncludeDirs(const wxString& file)
-{
-    wxString FirstFound = m_GlobalIncludes.GetItem(file);
-    if (FirstFound.IsEmpty())
-    {
-        wxArrayString FoundSet = FindFileInIncludeDirs(file,true);
-        if (FoundSet.GetCount())
-        {
-            FirstFound = UnixFilename(FoundSet[0]);
-            m_GlobalIncludes.AddItem(file, FirstFound);
-        }
-    }
-    return FirstFound;
-}
-
-wxArrayString ParserBase::FindFileInIncludeDirs(const wxString& file, bool firstonly)
-{
-    wxArrayString FoundSet;
-    for (size_t idxSearch = 0; idxSearch < m_IncludeDirs.GetCount(); ++idxSearch)
-    {
-        wxString base = m_IncludeDirs[idxSearch];
-        wxFileName tmp = file;
-        NormalizePath(tmp,base);
-        wxString fullname = tmp.GetFullPath();
-        if (wxFileExists(fullname))
-        {
-            FoundSet.Add(fullname);
-            if (firstonly)
-                break;
-        }
-    }
-
-    TRACE(_T("ParserBase::FindFileInIncludeDirs(): Searching %s"), file.wx_str());
-    TRACE(_T("ParserBase::FindFileInIncludeDirs(): Found %lu"), static_cast<unsigned long>(FoundSet.GetCount()));
-
-    return FoundSet;
-}
-
-wxString ParserBase::GetFullFileName(const wxString& src, const wxString& tgt, bool isGlobal)
-{
-    wxString fullname;
-    if (isGlobal)
-    {
-        fullname = FindFirstFileInIncludeDirs(tgt);
-        if (fullname.IsEmpty())
-        {
-            // not found; check this case:
-            //
-            // we had entered the previous file like this: #include <gl/gl.h>
-            // and it now does this: #include "glext.h"
-            // glext.h was correctly not found above but we can now search
-            // for gl/glext.h.
-            // if we still not find it, it's not there. A compilation error
-            // is imminent (well, almost - I guess the compiler knows a little better ;).
-            wxString base = wxFileName(src).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-            fullname = FindFirstFileInIncludeDirs(base + tgt);
-        }
-    }
-
-    // NOTE: isGlobal is always true. The following code never executes...
-
-    else // local files are more tricky, since they depend on two filenames
-    {
-        wxFileName fname(tgt);
-        wxFileName source(src);
-        if (NormalizePath(fname,source.GetPath(wxPATH_GET_VOLUME)))
-        {
-            fullname = fname.GetFullPath();
-            if (!wxFileExists(fullname))
-                fullname.Clear();
-        }
-    }
-
-    return fullname;
-}
-
-size_t ParserBase::FindTokensInFile(const wxString& filename, TokenIdxSet& result, short int kindMask)
-{
-    result.clear();
-    size_t tokens_found = 0;
-
-    TRACE(_T("Parser::FindTokensInFile() : Searching for file '%s' in tokens tree..."), filename.wx_str());
-
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-    TokenIdxSet tmpresult;
-    if ( m_TokenTree->FindTokensInFile(filename, tmpresult, kindMask) )
-    {
-        for (TokenIdxSet::const_iterator it = tmpresult.begin(); it != tmpresult.end(); ++it)
-        {
-            const Token* token = m_TokenTree->at(*it);
-            if (token)
-                result.insert(*it);
-        }
-        tokens_found = result.size();
-    }
-
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
-    return tokens_found;
-}
 
 Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_Parent(parent),
@@ -1087,4 +807,76 @@ void Parser::ProcessParserEvent(ParserCommon::ParserState state, int id, const w
     evt.SetInt(state);
     evt.SetString(info);
     m_Parent->ProcessEvent(evt);
+}
+
+void Parser::ReadOptions()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+    // one-time default settings change: upgrade everyone
+    bool force_all_on = !cfg->ReadBool(_T("/parser_defaults_changed"), false);
+    if (force_all_on)
+    {
+        cfg->Write(_T("/parser_defaults_changed"),       true);
+
+        cfg->Write(_T("/parser_follow_local_includes"),  true);
+        cfg->Write(_T("/parser_follow_global_includes"), true);
+        cfg->Write(_T("/want_preprocessor"),             true);
+        cfg->Write(_T("/parse_complex_macros"),          true);
+    }
+
+    // Page "Code Completion"
+    m_Options.useSmartSense        = cfg->ReadBool(_T("/use_SmartSense"),                true);
+    m_Options.whileTyping          = cfg->ReadBool(_T("/while_typing"),                  true);
+    m_Options.caseSensitive        = cfg->ReadBool(_T("/case_sensitive"),                false);
+
+    // Page "C / C++ parser"
+    m_Options.followLocalIncludes  = cfg->ReadBool(_T("/parser_follow_local_includes"),  true);
+    m_Options.followGlobalIncludes = cfg->ReadBool(_T("/parser_follow_global_includes"), true);
+    m_Options.wantPreprocessor     = cfg->ReadBool(_T("/want_preprocessor"),             true);
+    m_Options.parseComplexMacros   = cfg->ReadBool(_T("/parse_complex_macros"),          true);
+
+    // Page "Symbol browser"
+    m_BrowserOptions.showInheritance = cfg->ReadBool(_T("/browser_show_inheritance"),    false);
+    m_BrowserOptions.expandNS        = cfg->ReadBool(_T("/browser_expand_ns"),           false);
+    m_BrowserOptions.treeMembers     = cfg->ReadBool(_T("/browser_tree_members"),        true);
+
+    // Token tree
+    m_BrowserOptions.displayFilter   = (BrowserDisplayFilter)cfg->ReadInt(_T("/browser_display_filter"), bdfFile);
+    m_BrowserOptions.sortType        = (BrowserSortType)cfg->ReadInt(_T("/browser_sort_type"),           bstKind);
+
+    // Page "Documentation:
+    m_Options.storeDocumentation     = cfg->ReadBool(_T("/use_documentation_helper"),         false);
+
+    // force re-read of file types
+    ParserCommon::EFileType ft_dummy = ParserCommon::FileType(wxEmptyString, true);
+    wxUnusedVar(ft_dummy);
+}
+
+void Parser::WriteOptions()
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+
+    // Page "Code Completion"
+    cfg->Write(_T("/use_SmartSense"),                m_Options.useSmartSense);
+    cfg->Write(_T("/while_typing"),                  m_Options.whileTyping);
+    cfg->Write(_T("/case_sensitive"),                m_Options.caseSensitive);
+
+    // Page "C / C++ parser"
+    cfg->Write(_T("/parser_follow_local_includes"),  m_Options.followLocalIncludes);
+    cfg->Write(_T("/parser_follow_global_includes"), m_Options.followGlobalIncludes);
+    cfg->Write(_T("/want_preprocessor"),             m_Options.wantPreprocessor);
+    cfg->Write(_T("/parse_complex_macros"),          m_Options.parseComplexMacros);
+
+    // Page "Symbol browser"
+    cfg->Write(_T("/browser_show_inheritance"),      m_BrowserOptions.showInheritance);
+    cfg->Write(_T("/browser_expand_ns"),             m_BrowserOptions.expandNS);
+    cfg->Write(_T("/browser_tree_members"),          m_BrowserOptions.treeMembers);
+
+    // Token tree
+    cfg->Write(_T("/browser_display_filter"),        m_BrowserOptions.displayFilter);
+    cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
+
+    // Page "Documentation:
+    // m_Options.storeDocumentation will be written by DocumentationPopup
 }
