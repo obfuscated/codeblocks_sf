@@ -307,7 +307,16 @@ struct cbEditorInternalData
         if (!control)
             return wxEmptyString;
 
-        wxRegEx reUrl(wxT("***:(((ht|f)tp(s?)\\:\\/\\/)|(www\\.))(([a-zA-Z0-9\\-\\._]+(\\.[a-zA-Z0-9\\-\\._]+)+)|localhost)(\\/?)([a-zA-Z0-9\\-\\.\\?\\,\\'\\/\\\\\\+&amp;%\\$#_]*)?([\\d\\w\\.\\/\\%\\+\\-\\=\\&amp;\\?\\:\\\\\\&quot;\\'\\,\\|\\~\\;]*)"));
+        wxRegEx reUrl(wxT("***:("
+                                "((ht|f)tp(s?)\\:\\/\\/)"
+                                "|(www\\.)"
+                              ")"
+                              "("
+                                "([\\w\\-]+(\\.[\\w\\-]+)+)"
+                                "|localhost"
+                              ")"
+                              "(\\/?)([\\w\\-\\.\\?\\,\\'\\/\\\\\\+&amp;%\\$#]*)?"
+                              "([\\d\\w\\.\\/\\%\\+\\-\\=\\&amp;\\?\\:\\\\\\&quot;\\'\\,\\|\\~\\;]*)"));
         wxString url = control->GetSelectedText();
         // Is the URL selected?
         if (reUrl.Matches(url))
@@ -350,7 +359,7 @@ struct cbEditorInternalData
             if (   (url.Find(match) + startPos                       < control->GetCurrentPos())
                 && (url.Find(match) + startPos + (int)match.Length() > control->GetCurrentPos()) )
             {
-                url = match;
+                url = match(0, match.find_last_not_of(wxT(",.")) + 1); // trim trailing
             }
             else
                 url = wxEmptyString; // nope, too far from cursor, return invalid (empty)
