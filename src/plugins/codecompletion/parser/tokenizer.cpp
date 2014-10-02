@@ -1931,8 +1931,10 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
 
     // sanity check if we have such macro definition that #define AAA(x,y) x+y+AAA
     // if a macro name exists in its definition, it will cause a infinite expansion loop
-    if (tk->m_FullType.Find(tk->m_Name) != wxNOT_FOUND)
-        return false;
+    // Note: disable this sanity check to work around the issue here:
+    // http://forums.codeblocks.org/index.php/topic,19661.msg134291.html#msg134291
+    //if (tk->m_FullType.Find(tk->m_Name) != wxNOT_FOUND)
+    //    return false;
 
     // if it's a variable like macro definition simply return the replacement text
     if (tk->m_Args.IsEmpty())
