@@ -1005,26 +1005,25 @@ void ParserThread::DoParse()
         else if (!switchHandled)
         {
             // since we can't recognize the pattern by token, then the token
-            // is normally an identifier style lexme, now we try to peek the next token
+            // is normally an identifier style lexeme, now we try to peek the next token
             wxString peek = m_Tokenizer.PeekToken();
             if (!peek.IsEmpty())
             {
-                if (   (peek.GetChar(0) == ParserConsts::opbracket_chr)
-                    && m_Options.handleFunctions
-                    && m_Str.IsEmpty()
-                    && m_EncounteredNamespaces.empty()
-                    && m_EncounteredTypeNamespaces.empty()
-                    && (!m_LastParent || m_LastParent->m_Name != token) ) // if func has same name as current scope (class)
+                // pattern: AAA or AAA (...)
+                int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
+                // if AAA is a macro definition, then expand this macro
+                if (id != -1)
                 {
-                    // pattern: AAA (...)
-                    int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
-                    // if AAA is a macro definition, then expand this macro
-                    if (id != -1)
-                    {
-                        HandleMacroExpansion(id, peek);
-                        m_Str.Clear();
-                    }
-                    else
+                    HandleMacroExpansion(id, peek);
+                }
+                // any function like pattern
+                else if (   (peek.GetChar(0) == ParserConsts::opbracket_chr)
+                         && m_Options.handleFunctions )
+                {
+                    if (   m_Str.IsEmpty()
+                        && m_EncounteredNamespaces.empty()
+                        && m_EncounteredTypeNamespaces.empty()
+                        && (!m_LastParent || m_LastParent->m_Name != token) ) // if func has same name as current scope (class)
                     {
                         // see what is inside the (...)
                         wxString arg = m_Tokenizer.GetToken(); // eat args ()
@@ -1033,20 +1032,20 @@ void ParserThread::DoParse()
                         if (pos != wxNOT_FOUND)
                         {
                             peek = m_Tokenizer.PeekToken();
+                            // see whether there is a (...) after (* BBB)
                             if (peek.GetChar(0) == ParserConsts::opbracket_chr)
                             {
                                 // pattern: AAA (* BBB) (...)
                                 // where peek is (...) and arg is (* BBB)
-                                arg.Trim(true).RemoveLast();
-                                arg.Remove(0, pos+1);
-                                arg.Trim(true).Trim(false);
+                                arg.RemoveLast();
+                                arg.Remove(0, pos+1).Trim(false);
                                 // NOTE: support func ptr in local block, show return type.
                                 // if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                                 //     HandleFunction(arg); // function
                                 // AAA now becomes the last element of stacked type string
                                 // which is the return type of function ptr
                                 m_Str << token << ParserConsts::space_chr;
-                                // * BBB is now the function ptr's name
+                                // BBB is now the function ptr's name
                                 HandleFunction(/*function name*/ arg,
                                                /*isOperator*/    false,
                                                /*isPointer*/     true);
@@ -1056,9 +1055,6 @@ void ParserThread::DoParse()
                         else // wxString arg = m_Tokenizer.GetToken(); // eat args ()
                             m_Str = token + arg;
                     }
-                }
-                else if (peek.GetChar(0) == ParserConsts::opbracket_chr && m_Options.handleFunctions)
-                {
                     // NOTE: support some more cases..., such as m_Str is not empty
                     // if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     //     HandleFunction(token); // function
@@ -1068,42 +1064,64 @@ void ParserThread::DoParse()
                     // function ptr with pointer return type
                     // eg: void *(*Alloc)(void *p, size_t size);
                     // where, m_Str=void, token=(*Alloc), peek=(void *p, size_t size)
-                    if (   (m_LastToken == ParserConsts::ref_chr || m_LastToken == ParserConsts::ptr_chr) // (m_PointerOrRef)
-                        && (token.GetChar(0) == ParserConsts::opbracket_chr))
+                    else if (   (m_LastToken == ParserConsts::ptr_chr) //(m_PointerOrRef)
+                             && (token.GetChar(0) == ParserConsts::opbracket_chr) )
                     {
                         int pos = token.find(ParserConsts::ptr);
                         if (pos != wxNOT_FOUND)
                         {
                             wxString arg = token;
-                            arg.Trim(true).RemoveLast();
-                            arg.Remove(0, pos+1);
-                            arg.Trim(true).Trim(false);
+                            arg.RemoveLast();
+                            arg.Remove(0, pos+1).Trim(false);
+                            HandleFunction(/*function name*/ arg,
+                                           /*isOperator*/    false,
+                                           /*isPointer*/     true);
+                            m_Str.Clear();
+                        }
+                    }
+                    else
+                    {
+                        // pattern unsigned int (*getClientLibVersion)(char** result);
+                        // currently, m_Str = unsigned, token = int, peek = (*getClientLibVersion)
+                        // this may be a function pointer declaration, we can guess without
+                        // reading the next token, if "peek" has a ptr char and only 1 argument
+                        // in it.
+
+                        // see what is inside the (...)
+                        // try to see whether the peek pattern is (* BBB)
+                        if (peek.GetChar(1) == ParserConsts::ptr)
+                        {
+                            wxString arg = peek;
+                            arg.RemoveLast(); // remove ")"
+                            arg.Remove(0,2).Trim(false); // remove "(* "
+                            m_Str << token;
+                            token = m_Tokenizer.GetToken(); //consume the peek
+                            // BBB is now the function ptr's name
                             HandleFunction(/*function name*/ arg,
                                            /*isOperator*/    false,
                                            /*isPointer*/     true);
                         }
-                    }
-                    else if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
-                    {
-                        // pattern AAA BBB (...) in global namespace (not in local block)
-                        // so, this is mostly like a function declaration, but in-fact this
-                        // can also be a global variable initializized with ctor, but for
-                        // simplicity, we drop the later case
-                        HandleFunction(token); // function
-                    }
-                    else
-                    {
-                        // local variables initialized with ctor
-                        if (!m_Str.IsEmpty() && m_Options.handleVars)
+                        else if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                         {
-                            Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
-                            if (newToken && !m_TemplateArgument.IsEmpty())
-                                ResolveTemplateArgs(newToken);
+                            // pattern AAA BBB (...) in global namespace (not in local block)
+                            // so, this is mostly like a function declaration, but in-fact this
+                            // can also be a global variable initializized with ctor, but for
+                            // simplicity, we drop the later case
+                            HandleFunction(token); // function
                         }
-                        m_Tokenizer.GetToken(); // eat args when parsing block
+                        else
+                        {
+                            // local variables initialized with ctor
+                            if (!m_Str.IsEmpty() && m_Options.handleVars)
+                            {
+                                Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
+                                if (newToken && !m_TemplateArgument.IsEmpty())
+                                    ResolveTemplateArgs(newToken);
+                            }
+                            m_Tokenizer.GetToken(); // eat args when parsing block
+                        }
+                        m_Str.Clear();
                     }
-
-                    m_Str.Clear();
                 }
                 else if (   (peek  == ParserConsts::colon)
                          && (token != ParserConsts::kw_private)
