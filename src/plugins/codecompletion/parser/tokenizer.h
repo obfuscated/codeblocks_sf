@@ -91,7 +91,7 @@ struct TokenizerOptions
  * the next token string(peeked string). The peeked string will be cached until the next GetToken() call,
  * thus performance can be improved.
  * Also, Tokenizer class does some kind of handling "Macro replacement" on the buffer to imitate the macro expansion in
- * C-preprocessor, see member-function ReplaceMacro() for details.
+ * C-preprocessor, see member-function GetReplacedToken() for details.
  * Further more, it handles some "conditional preprocessor directives"(like "#if xxx").
  */
 class Tokenizer
@@ -298,11 +298,10 @@ public:
     /** Get expanded text for the current macro usage, then replace buffer for re-parsing
      * @param tk the macro definition token
      * @return true if macro expansion successes, thus buffer is really changed and m_TokenIndex
-     * moved backword a bit, and peek status get cleared
-     * this is usually happens we want to expand a function like macro, since a variable like macro
-     * just did a simple text replacement by using the ReplaceBufferText() function call
+     * moved backward a bit, and peek status get cleared
+     * Both the function like macro or variable like macro usage can be handled in this function.
      */
-    bool ReplaceFunctionLikeMacro(const Token* tk);
+    bool ReplaceMacroUsage(const Token* tk);
 
     /** Get first token position in buffer */
     int GetFirstTokenPosition(const wxString& buffer, const wxString& target)
@@ -456,7 +455,7 @@ private:
      *  up a token in the token tree takes more time, the later case only happens in some special
      *  cases, such has we are handling #if directives.
      */
-    void ReplaceMacro(wxString& str);
+    void GetReplacedToken(wxString& str);
 
     /** Judge what is the first block
       * It will call 'SkipToEOL(false, true)' before returned.

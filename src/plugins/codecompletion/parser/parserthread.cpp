@@ -2678,7 +2678,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
                 }
                 else if (!tk->m_Args.IsEmpty())
                 {
-                    if (m_Tokenizer.ReplaceFunctionLikeMacro(tk))
+                    if (m_Tokenizer.ReplaceMacroUsage(tk))
                         continue;
                 }
                 else if (wxIsdigit(tk->m_FullType[0]))
@@ -2956,7 +2956,7 @@ void ParserThread::HandleMacroExpansion(int id, const wxString &peek)
         DoAddToken(tkMacroUse, tk->m_Name, m_Tokenizer.GetLineNumber(), 0, 0, peek);
 
         if (m_Options.parseComplexMacros)
-            m_Tokenizer.ReplaceFunctionLikeMacro(tk);
+            m_Tokenizer.ReplaceMacroUsage(tk);
     }
 }
 

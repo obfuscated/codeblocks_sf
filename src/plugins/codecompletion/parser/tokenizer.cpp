@@ -1238,12 +1238,12 @@ wxString Tokenizer::DoGetToken()
     }
 
     if (needReplace && m_State ^ tsReadRawExpression)
-        ReplaceMacro(str);
+        GetReplacedToken(str);
 
     return str;
 }
 
-void Tokenizer::ReplaceMacro(wxString& str)
+void Tokenizer::GetReplacedToken(wxString& str)
 {
     // this indicates we are already in macro replacement mode
     if (m_RepeatReplaceCount > 0)
@@ -1256,7 +1256,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
             {
                 bool replaced = false;
                 if (!token->m_Args.IsEmpty())
-                    replaced = ReplaceFunctionLikeMacro(token);
+                    replaced = ReplaceMacroUsage(token);
                 else if (token->m_FullType != token->m_Name)
                     replaced = ReplaceBufferText(token->m_FullType);
 
@@ -1277,7 +1277,7 @@ void Tokenizer::ReplaceMacro(wxString& str)
     if (it == s_Replacements.end())
         return;
 
-    TRACE(_T("ReplaceMacro() : Replacing '%s' with '%s' (file='%s', line='%u')."), it->first.wx_str(),
+    TRACE(_T("GetReplacedToken() : Replacing '%s' with '%s' (file='%s', line='%u')."), it->first.wx_str(),
           it->second.wx_str(), m_Filename.wx_str(), m_LineNumber);
 
     if (it->second.IsEmpty())
@@ -1392,7 +1392,7 @@ bool Tokenizer::CalcConditionExpression()
                     }
                     else if (!tk->m_Args.IsEmpty()) //function like macro definition, expand them
                     {
-                        if (ReplaceFunctionLikeMacro(tk))
+                        if (ReplaceMacroUsage(tk))
                             continue; //after the expansion, m_TokenIndex is adjusted, so continue again
                     }
                     else if (wxIsdigit(tk->m_FullType[0]))
@@ -1838,7 +1838,7 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
     return true;
 }
 
-bool Tokenizer::ReplaceFunctionLikeMacro(const Token* tk)
+bool Tokenizer::ReplaceMacroUsage(const Token* tk)
 {
     wxString macroExpandedText;
     if ( GetMacroExpandedText(tk, macroExpandedText) )
