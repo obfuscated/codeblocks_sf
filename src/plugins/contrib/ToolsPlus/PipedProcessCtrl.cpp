@@ -276,6 +276,7 @@ void PipedProcessCtrl::OnUserInput(wxKeyEvent& ke)
         {
             m_ostream->Write(kc1,1);
             m_textctrl->AppendText(kc2);
+            m_textctrl->GotoPos(m_textctrl->GetLength());
             return;
         }
 
