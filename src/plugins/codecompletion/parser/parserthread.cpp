@@ -94,6 +94,7 @@ namespace ParserConsts
     const wxChar   space_chr       (_T(' '));
     const wxChar   tab_chr         (_T('\t'));
     const wxString equals          (_T("="));
+    const wxChar   equals_chr      (_T('='));
     const wxString hash            (_T("#"));
     const wxChar   hash_chr        (_T('#'));
     const wxString plus            (_T("+"));
@@ -125,6 +126,7 @@ namespace ParserConsts
     const wxString gt              (_T(">"));
     const wxChar   gt_chr          (_T('>'));
     const wxChar   underscore_chr  (_T('_'));
+    const wxChar   question_chr    (_T('?'));
     // length: 2
     const wxString dcolon          (_T("::"));
     const wxString opbracesemicolon(_T("{;"));
@@ -139,6 +141,7 @@ namespace ParserConsts
     const wxString spaced_colon    (_T(" : "));
     const wxString kw__C_          (_T("\"C\""));
     const wxString kw_for          (_T("for"));
+    const wxString commasemicolonopbrace(_T(",;}"));
     // length: 4
     const wxString kw___at         (_T("__at"));
     const wxString kw_else         (_T("else"));
@@ -649,6 +652,21 @@ void ParserThread::DoParse()
             case ParserConsts::ptr_chr:
                 {
                     m_PointerOrRef << token;
+                }
+                break;
+
+            case ParserConsts::equals_chr:
+                {
+                    // pattern int a = 3;
+                    // m_Str.Clear();
+                    SkipToOneOfChars(ParserConsts::commasemicolonopbrace, true);
+                }
+                break;
+
+            case ParserConsts::question_chr:
+                {
+                    m_Str.Clear();
+                    SkipToOneOfChars(ParserConsts::semicolonopbrace, true);
                 }
                 break;
 

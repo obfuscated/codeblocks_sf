@@ -1003,6 +1003,7 @@ bool Tokenizer::SkipUnwanted()
         }
     }
 
+#if 0 // move the code to parserthread
     // skip the following = or ?
     if (m_State & tsSkipEqual)
     {
@@ -1020,6 +1021,7 @@ bool Tokenizer::SkipUnwanted()
                 return false;
         }
     }
+#endif // 0
 
     // skip the following white space and comments
     while (SkipWhiteSpace() || SkipComment())
