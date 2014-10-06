@@ -1246,8 +1246,8 @@ wxString Tokenizer::DoGetToken()
 void Tokenizer::GetReplacedToken(wxString& str)
 {
     // this indicates we are already in macro replacement mode
-    if (m_RepeatReplaceCount > 0)
-    {
+//    if (m_RepeatReplaceCount > 0)
+//   {
         const int id = m_TokenTree->TokenExists(str, -1, tkMacroDef);
         if (id != -1)
         {
@@ -1271,8 +1271,9 @@ void Tokenizer::GetReplacedToken(wxString& str)
         // if in macro expansion mode, we don't want to let the user replacement rule executed
         // again, so just returned
         return;
-    }
+//    }
 
+#if 0
     wxStringHashMap::const_iterator it = s_Replacements.find(str);
     if (it == s_Replacements.end())
         return;
@@ -1345,6 +1346,7 @@ void Tokenizer::GetReplacedToken(wxString& str)
         if (it->second != str && ReplaceBufferText(it->second))
             str = DoGetToken();
     }
+#endif // 0
 }
 
 bool Tokenizer::CalcConditionExpression()
@@ -1738,6 +1740,7 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
 
     const TokenizerState oldState = m_State;
     m_State = tsReadRawExpression;
+    const unsigned int oldNestLevel = m_NestLevel; //
 
     int level = 1; // include '('
 
@@ -1779,6 +1782,7 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
 
     // reset tokenizer's functionality
     m_State = oldState;
+    m_NestLevel = oldNestLevel;
     return true;
 }
 
