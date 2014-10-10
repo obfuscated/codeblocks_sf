@@ -40,10 +40,10 @@ class NassiEditorPanel: public cbEditorPanel , public FileContentObserver
         void ZoomIn();
         void ZoomOut();
 
-        void ExportSVG();
         void ExportCSource();
         bool GetCSource(wxTextOutputStream &text_stream, wxUint32 n);
         void ExportVHDLSource();
+        void ExportSVG();
         #if wxUSE_POSTSCRIPT
         void ExportPS();
         #endif

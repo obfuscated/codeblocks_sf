@@ -211,10 +211,11 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_STRUKTEX) )
         exportmenu->Append(NASSI_ID_EXPORT_STRUKTEX, _T("StrukTeX"), _("export to StrukTeX format"));
 
-    #ifdef USE_SVG
-    if ( !exportmenu->FindItem(NASSI_ID_EXPORT_SVG) )
-        exportmenu->Append(NASSI_ID_EXPORT_SVG, _T("SVG"), _("export to SVG format"));
-    #endif
+// TODO (danselmi#1#): check why svg export crashes on wx30; fix and enable feature again
+        //    #if wxCHECK_VERSION(3, 0, 0)
+//    if ( !exportmenu->FindItem(NASSI_ID_EXPORT_SVG) )
+//        exportmenu->Append(NASSI_ID_EXPORT_SVG, _T("SVG"), _("export to SVG format"));
+//    #endif
 
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_BITMAP) )
         exportmenu->Append(NASSI_ID_EXPORT_BITMAP, _T("PNG"), _("export to PNG format"));
@@ -593,7 +594,7 @@ void NassiPlugin::OnExport(wxCommandEvent &event)
 
     int id = event.GetId();
     if( id == NASSI_ID_EXPORT_SOURCE )        ed->ExportCSource();
-    #ifdef USE_SVG
+    #if wxCHECK_VERSION(3, 0, 0)
         else if ( id == NASSI_ID_EXPORT_SVG ) ed->ExportSVG();
     #endif
     else if( id == NASSI_ID_EXPORT_VHDL )     ed->ExportVHDLSource();

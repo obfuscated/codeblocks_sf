@@ -152,12 +152,6 @@ bool NassiEditorPanel::CanExport()
     NassiFileContent *nfc = (NassiFileContent *)m_filecontent;
     return m_view->HasSelectedBricks() || nfc->GetFirstBrick();
 }
-#ifdef USE_SVG
-void NassiEditorPanel::ExportSVG()
-{
-    m_view->ExportSVG();
-}
-#endif
 void NassiEditorPanel::ExportCSource()
 {
     m_view->ExportCSource();
@@ -166,6 +160,12 @@ void NassiEditorPanel::ExportVHDLSource()
 {
     m_view->ExportVHDLSource();
 }
+#if wxCHECK_VERSION(3, 0, 0)
+void NassiEditorPanel::ExportSVG()
+{
+    m_view->ExportSVG();
+}
+#endif
 #if wxUSE_POSTSCRIPT
 void NassiEditorPanel::ExportPS()
 {

@@ -183,7 +183,7 @@ class NassiView : public FileContentObserver
         void OnDragEnter(void);
 
     public:
-        #ifdef USE_SVG
+        #if wxCHECK_VERSION(3, 0, 0)
             void ExportSVG();
         #endif
         void ExportCSource();
