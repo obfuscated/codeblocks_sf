@@ -125,7 +125,7 @@ class BrowseTracker : public cbPlugin
 		 * @param toolBar the wxToolBar to create items on
 		 * @return The plugin should return true if it needed the toolbar, false if not
 		*/
-		bool BuildToolBar(wxToolBar* /*toolBar*/){ return false; }
+		bool BuildToolBar(wxToolBar* /*toolBar*/);/*{ return false; }*/
 	protected:
 		/** Any descendent plugin should override this virtual method and
 		 * perform any necessary initialization. This method is called by
@@ -225,6 +225,7 @@ class BrowseTracker : public cbPlugin
         void OnMenuBrowseMarkNext(wxCommandEvent& event);
         void OnMenuRecordBrowseMark(wxCommandEvent& event);
         void OnMenuClearBrowseMark(wxCommandEvent& event);
+        void OnMenuToggleBrowseMark(wxCommandEvent& event);
         void OnMenuClearAllBrowse_Marks(wxCommandEvent& event);
         void OnMenuSortBrowse_Marks( wxCommandEvent& event);
         void OnMenuSettings( wxCommandEvent& event);
@@ -276,6 +277,8 @@ class BrowseTracker : public cbPlugin
         ProjectManager* m_pPrjMgr;
 		wxWindow*       m_pAppWin;
         wxMenuBar*      m_pMenuBar;
+        wxToolBar*      m_pToolBar;
+
         wxString        m_ConfigFolder;
         wxString        m_ExecuteFolder;
         wxString        m_AppName;

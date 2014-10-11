@@ -7,7 +7,7 @@
     const int MaxEntries = 20;
 
     // from cbeditor.cpp
-    #define BOOKMARK_MARKER        2
+    #define BOOKMARK_MARKER        4
     #define BOOKMARK_STYLE         wxSCI_MARK_ARROW
 
     const int BROWSETRACKER_MARKER       = 9 ;

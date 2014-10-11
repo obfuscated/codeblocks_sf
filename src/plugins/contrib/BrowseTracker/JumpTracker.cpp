@@ -31,6 +31,9 @@ namespace
     int idMenuJumpNext = wxNewId();
     int idMenuJumpClear = wxNewId();
     int idMenuJumpDump = wxNewId();
+
+    int idToolJumpPrev = XRCID("idJumpPrev");
+    int idToolJumpNext = XRCID("idJumpNext");
 }
 
 // ----------------------------------------------------------------------------
@@ -63,13 +66,14 @@ JumpTracker::JumpTracker()
     m_bShuttingDown = false;
     m_FilenameLast = wxEmptyString;
     m_PosnLast = 0;
-    m_Cursor = maxJumpEntries;
+    m_cursor = 0;
+    m_insertNext = maxJumpEntries;
     m_ArrayOfJumpData.Clear();
     m_bProjectClosing = false;
     m_IsAttached = false;
     m_bJumpInProgress = false;
     m_bWrapJumpEntries = false;
-
+    m_pToolBar = 0;
 }
 // ----------------------------------------------------------------------------
 JumpTracker::~JumpTracker()
@@ -109,23 +113,23 @@ void JumpTracker::OnAttach()
 
     wxWindow* appWin = Manager::Get()->GetAppWindow();
     appWin->PushEventHandler(this);
-    appWin->Connect(idMenuJumpBack, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpBack, 0, this);
-    appWin->Connect(idMenuJumpNext, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpNext, 0, this);
-    appWin->Connect(idMenuJumpClear, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpClear, 0, this);
-    appWin->Connect(idMenuJumpDump, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpDump, 0, this);
+    appWin->Connect(idMenuJumpBack, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpBack), 0, this);
+    appWin->Connect(idMenuJumpNext, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpNext), 0, this);
+    appWin->Connect(idMenuJumpClear, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpClear), 0, this);
+    appWin->Connect(idMenuJumpDump, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpDump), 0, this);
+
+    appWin->Connect(idToolJumpPrev, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JumpTracker::OnMenuJumpBack), 0, this);
+    appWin->Connect(idToolJumpNext, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JumpTracker::OnMenuJumpNext), 0, this);
+    appWin->Connect(idToolJumpPrev, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(JumpTracker::OnUpdateUI), 0, this);
+    appWin->Connect(idToolJumpNext, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(JumpTracker::OnUpdateUI), 0, this);
+
 
     // Codeblocks Events registration
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_UPDATE_UI   , new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorUpdateEvent));
    //-Manager::Get()->RegisterEventSink(cbEVT_EDITOR_ACTIVATED, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorActivated));
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_DEACTIVATED, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorDeactivated));
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_CLOSE, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnEditorClosed));
+
     Manager::Get()->RegisterEventSink(cbEVT_APP_START_SHUTDOWN, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnStartShutdown));
     // -- Project events
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<JumpTracker, CodeBlocksEvent>(this, &JumpTracker::OnProjectActivatedEvent));
@@ -147,19 +151,15 @@ void JumpTracker::OnRelease(bool /*appShutDown*/)
     OnMenuJumpClear(evt);
 
     wxWindow* appWin = Manager::Get()->GetAppWindow();
-    appWin->Disconnect(idMenuJumpBack, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpBack, 0, this);
-    appWin->Disconnect(idMenuJumpNext, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpNext, 0, this);
-    appWin->Disconnect(idMenuJumpClear, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpClear, 0, this);
-    appWin->Disconnect(idMenuJumpDump, -1, wxEVT_COMMAND_MENU_SELECTED,
-            (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-            &JumpTracker::OnMenuJumpDump, 0, this);
-    appWin->RemoveEventHandler(this);
+    appWin->Disconnect(idMenuJumpBack, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpBack), 0, this);
+    appWin->Disconnect(idMenuJumpNext, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpNext), 0, this);
+    appWin->Disconnect(idMenuJumpClear, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpClear), 0, this);
+    appWin->Disconnect(idMenuJumpDump, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(JumpTracker::OnMenuJumpDump), 0, this);
+
+    appWin->Disconnect(idToolJumpPrev, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JumpTracker::OnMenuJumpBack), 0, this);
+    appWin->Disconnect(idToolJumpNext, wxEVT_COMMAND_TOOL_CLICKED, wxCommandEventHandler(JumpTracker::OnMenuJumpNext), 0, this);
+    appWin->Disconnect(idToolJumpPrev, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(JumpTracker::OnUpdateUI), 0, this);
+    appWin->Disconnect(idToolJumpNext, wxEVT_UPDATE_UI, wxUpdateUIEventHandler(JumpTracker::OnUpdateUI), 0, this);
 
 }
 // ----------------------------------------------------------------------------
@@ -202,9 +202,11 @@ void JumpTracker::BuildModuleMenu(const ModuleType /*type*/, wxMenu* /*menu*/, c
     //-NotImplemented(_T("JumpTracker::BuildModuleMenu()"));
 }
 // ----------------------------------------------------------------------------
-bool JumpTracker::BuildToolBar(wxToolBar* /*toolBar*/)
+bool JumpTracker::BuildToolBar(wxToolBar* toolBar)
 // ----------------------------------------------------------------------------
 {
+    m_pToolBar = toolBar;
+
     //The application is offering its toolbar for your plugin,
     //to add any toolbar items you want...
     //Append any items you need on the toolbar...
@@ -252,23 +254,28 @@ void JumpTracker::OnEditorUpdateEvent(CodeBlocksEvent& event)
     {
         m_PosnLast = edPosn;
         m_FilenameLast = edFilename;
-        //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
+        //if ( m_cursor not_eq JumpDataContains(edFilename, edPosn) )
             JumpDataAdd(edFilename, edPosn, edLine);
     }
 
     // If new line within half screen of old line, don't record current line
-    long lineLast = edstc->LineFromPosition(m_PosnLast);
-    //bool bIsVis = ( edstc->GetLineVisible(lineLast) ); doesnt work
-    //if ( (lineLast >= topLine) &&                      doesnt work
-    //    (lineLast < botLine) )
-    int halfPageSize = edstc->LinesOnScreen()>>1;
-    if ( halfPageSize > abs(edLine - lineLast))
+    //-long lineLast = edstc->LineFromPosition(m_PosnLast);
+
+    //-bool bIsVis = ( edstc->GetLineVisible(lineLast) ); doesnt work
+    //-if ( (lineLast >= topLine) &&                      doesnt work
+    //-    (lineLast < botLine) )
+    //-int halfPageSize = edstc->LinesOnScreen()>>1;
+    //-if ( halfPageSize > abs(edLine - lineLast))
+    //-    ;//return;
+
+    // if user has not moved cursor, ignore this update
+    if (m_PosnLast == edPosn)
         return;
 
     // record new posn
     m_PosnLast = edPosn;
     m_FilenameLast = edFilename;
-    //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
+    //if ( m_cursor not_eq JumpDataContains(edFilename, edPosn) )
         JumpDataAdd(edFilename, edPosn, edLine);
 
     return;
@@ -312,7 +319,7 @@ void JumpTracker::OnEditorActivated(CodeBlocksEvent& event)
         return;
 
     long edPosn = edstc->GetCurrentPos();
-    //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
+    //if ( m_cursor not_eq JumpDataContains(edFilename, edPosn) )
         JumpDataAdd(edFilename, edPosn, edstc->GetCurrentLine());
     return;
 }//OnEditorActivated
@@ -328,6 +335,9 @@ void JumpTracker::OnEditorDeactivated(CodeBlocksEvent& event)
 
     // Don't record closing editor deactivations
     if (m_bProjectClosing)
+        return;
+
+    if ( Manager::Get()->GetProjectManager()->IsLoading() )
         return;
 
     EditorBase* eb = event.GetEditor();
@@ -352,10 +362,48 @@ void JumpTracker::OnEditorDeactivated(CodeBlocksEvent& event)
         return;
 
     long edPosn = edstc->GetCurrentPos();
-    //if ( m_Cursor not_eq JumpDataContains(edFilename, edPosn) )
+    //if ( m_cursor not_eq JumpDataContains(edFilename, edPosn) )
         JumpDataAdd(edFilename, edPosn, edstc->GetCurrentLine());
     return;
 }//OnEditorDeactivated
+// ----------------------------------------------------------------------------
+void JumpTracker::OnEditorClosed(CodeBlocksEvent& event)
+// ----------------------------------------------------------------------------
+{
+    // clear this editor out of our arrays and pointers
+
+    //_NOTE: using Manager::Get->GetEditorManager()->GetEditor... etc will
+    //      fail in this codeblocks event.
+    //      The cbEditors are nolonger available
+
+    event.Skip();
+
+    if (not IsAttached())
+        return;
+
+    wxString filePath = event.GetString();
+
+    #if defined(LOGGING)
+        EditorBase* eb = event.GetEditor();
+        LOGIT( _T("JT OnEditorClosed Eb[%p][%s]"), eb, eb->GetShortName().c_str() );
+    #endif
+
+
+    for (int ii=m_ArrayOfJumpData.GetCount()-1; ii > -1; --ii)
+    {
+        if (m_ArrayOfJumpData[ii].GetFilename() == filePath)
+            m_ArrayOfJumpData.RemoveAt(ii);
+        if (((int)m_ArrayOfJumpData.GetCount()-1) < m_cursor)
+            m_cursor = GetPreviousIndex(m_cursor);
+        if (((int)m_ArrayOfJumpData.GetCount()-1) < m_insertNext)
+            m_insertNext = GetPreviousIndex(m_insertNext);
+    }
+    #if defined(LOGGING)
+    wxCommandEvent evt;
+    OnMenuJumpDump(evt);
+    #endif
+
+}//OnEditorClosed
 
 // ----------------------------------------------------------------------------
 void JumpTracker::OnStartShutdown(CodeBlocksEvent& /*event*/)
@@ -400,6 +448,31 @@ void JumpTracker::OnProjectActivatedEvent(CodeBlocksEvent& event)
 
 }//OnProjectActivatedEvent
 // ----------------------------------------------------------------------------
+void JumpTracker::OnUpdateUI(wxUpdateUIEvent& event)
+// ----------------------------------------------------------------------------
+{
+    int count = m_ArrayOfJumpData.GetCount();
+    //-m_pToolBar->EnableTool(idToolJumpNext, count > 0 /*&& m_cursor != m_insertNext - 1*/);
+    //-m_pToolBar->EnableTool(idToolJumpPrev, count > 0 /*&& m_cursor != m_insertNext*/);
+
+    // If not  wrapping && we're about to advance into the insert index, diable
+    bool enableNext = (count > 0);
+    if (not m_bWrapJumpEntries)
+        if (m_cursor == m_insertNext)
+            enableNext = false;
+
+    bool enablePrev = count > 0;
+    // If not wrapping && we're about to backup into the insert index, disable
+    if (not m_bWrapJumpEntries)
+        if (GetPreviousIndex(m_cursor) == m_insertNext)
+            enablePrev = false;
+
+    m_pToolBar->EnableTool( idToolJumpNext, enableNext);
+    m_pToolBar->EnableTool( idToolJumpPrev, enablePrev);
+
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
 void JumpTracker::JumpDataAdd(const wxString& filename, const long posn, const long lineNum)
 // ----------------------------------------------------------------------------
 {
@@ -411,37 +484,41 @@ void JumpTracker::JumpDataAdd(const wxString& filename, const long posn, const l
     // Dont record position if line number is < 1 since a newly loaded
     // file always reports an event for line 0
      if (lineNum < 1)       // user requested feature 2010/06/1
-     {
-        return;
-     }
-
-    // if current entry is identical, return
-    if (m_Cursor == JumpDataContains(filename, posn))
         return;
 
+    // if current entry is identical edit line, just update position
+    if ( JumpDataContains(m_cursor,filename, posn))
+    {
+        m_ArrayOfJumpData[m_cursor].SetPosition(posn);
+        return;
+    }
+    if ( JumpDataContains(GetPreviousIndex(m_insertNext), filename, posn))
+    {
+        m_ArrayOfJumpData[GetPreviousIndex(m_insertNext)].SetPosition(posn);
+        return;
+    }
+
+    //
     // record new jump entry
-    size_t count = m_ArrayOfJumpData.GetCount();
-    m_Cursor += 1;
-    if ( m_Cursor > maxJumpEntries-1 )
-        m_Cursor = 0;
+    //
+
+    size_t kount = m_ArrayOfJumpData.GetCount();
+    if ( m_insertNext > maxJumpEntries-1 )
+            m_insertNext = 0;
 
     #if defined(LOGGING)
-    LOGIT( _T("JT JumpDataAdd[%s][%ld][%d]"), filename.wx_str(), posn, m_Cursor);
+    LOGIT( _T("JT JumpDataAdd[%s][%ld][%d]"), filename.c_str(), posn, m_insertNext);
     #endif
 
-    do {
-        if ( count <= (size_t)m_Cursor )
-        {   //initialize new item
-            m_ArrayOfJumpData.Add(new JumpData(filename, posn));
-            //return;
-            break;
-        }
+    if ( kount == maxJumpEntries )
+    {   //remove last item in the array
+        m_ArrayOfJumpData.RemoveAt(maxJumpEntries-1);
+    }
 
-        JumpData& jumpData = m_ArrayOfJumpData.Item(m_Cursor);
-        jumpData.SetFilename( filename );
-        jumpData.SetPosition(  posn );
-        break;
-    }while(0);
+   //initialize new item
+    m_insertNext = GetNextIndex(m_insertNext);
+    m_ArrayOfJumpData.Insert(new JumpData(filename, posn), m_insertNext);
+    m_cursor = m_insertNext;
 
     #if defined(LOGGING)
     wxCommandEvent evt;
@@ -450,13 +527,13 @@ void JumpTracker::JumpDataAdd(const wxString& filename, const long posn, const l
     return;
 }
 // ----------------------------------------------------------------------------
-int JumpTracker::JumpDataContains(const wxString& filename, const long posn)
+int JumpTracker::FindJumpDataContaining(const wxString& filename, const long posn)
 // ----------------------------------------------------------------------------
 {
-    size_t count = m_ArrayOfJumpData.GetCount();
-    if (not count) return wxNOT_FOUND;
+    size_t kount = m_ArrayOfJumpData.GetCount();
+    if (not kount) return wxNOT_FOUND;
 
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(filename);
     if (not ed) return wxNOT_FOUND;
 
     cbStyledTextCtrl* pstc = ed->GetControl();
@@ -464,11 +541,11 @@ int JumpTracker::JumpDataContains(const wxString& filename, const long posn)
 
     int halfPageSize = pstc->LinesOnScreen()>>1;
 
-    // search from cursor posn so we check last entry first
-    size_t j = m_Cursor;
-    for (size_t i=0; i<count; ++i, ++j)
+    // search from array insertion point so we check last entered entry first
+    size_t j = m_insertNext;
+    for (size_t i=0; i<kount; ++i, ++j)
     {
-        if (j > count-1) j = 0;
+        j = GetPreviousIndex(j);
         JumpData& jumpData = m_ArrayOfJumpData.Item(j);
         if ( jumpData.GetFilename() not_eq filename )
             continue;
@@ -481,6 +558,32 @@ int JumpTracker::JumpDataContains(const wxString& filename, const long posn)
     return wxNOT_FOUND;
 }
 // ----------------------------------------------------------------------------
+bool JumpTracker::JumpDataContains(const int indx, const wxString& filename, const long posn)
+// ----------------------------------------------------------------------------
+{
+    size_t kount = m_ArrayOfJumpData.GetCount();
+    if (not kount) return false;
+
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(filename);
+    if (not ed) return false;
+
+    cbStyledTextCtrl* pstc = ed->GetControl();
+    if (not pstc) return false;
+
+    int halfPageSize = pstc->LinesOnScreen()>>1;
+
+    JumpData& jumpData = m_ArrayOfJumpData.Item(indx);
+    if ( jumpData.GetFilename() not_eq filename )
+        return false;
+    long jumpLine = pstc->LineFromPosition(jumpData.GetPosition());
+    long currLine = pstc->LineFromPosition(posn);
+    if ( halfPageSize > abs(jumpLine - currLine))
+       return true;
+
+
+    return false;
+}
+// ----------------------------------------------------------------------------
 void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
@@ -488,58 +591,74 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
     LOGIT( _T("JT [%s]"), _T("OnMenuJumpBack"));
     #endif
 
+    int knt = m_ArrayOfJumpData.GetCount();
+    if (0 == knt)
+        return;
+
+    // If not wrapping && we're about to backup into the insert index, return
+    if (not m_bWrapJumpEntries)
+        if (GetPreviousIndex(m_cursor) == m_insertNext)
+            return;
+
     m_bJumpInProgress = true;
 
-    do {
-        int knt = m_ArrayOfJumpData.GetCount();
-        if (not knt) break;
+    EditorManager* edmgr = Manager::Get()->GetEditorManager();
+    EditorBase* eb = edmgr->GetActiveEditor();
+    cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+    //-long activeEdLine = 0;
+    long activeEdPosn = 0;
+    wxString activeEdFilename = wxEmptyString;
+    if (cbed)
+    {
+        //-activeEdLine = cbed->GetControl()->GetCurrentLine();
+        activeEdPosn = cbed->GetControl()->GetCurrentPos();
+        activeEdFilename = cbed->GetFilename();
+    }
 
-        if ( knt > 1 )
-            m_Cursor -= 1;
-        if (m_Cursor < 0)
+    // if active editor line == m_cursor, back up the m_cursor
+    // until finding an entry that does not match this m_cursor entry.
+    // else
+    // find the previous m_insertNext entry that does not match this editor or line number
+
+    do {    // find the previous appropriate jump position
+
+        // if current cursor position is also current editor and line,
+        // return the previous m_cursor entry
+        if ( JumpDataContains(m_cursor, cbed->GetFilename(), activeEdPosn))
         {
-            if (m_bWrapJumpEntries)
-                m_Cursor = maxJumpEntries-1;  //wrap code
-            else
+            // FIXME (ph#): a dead editor can be returned here
+            m_cursor = GetPreviousIndex(m_cursor);
+        }
+        else    //find an entry (backward) from the insertion point
+        {
+            int idx = m_insertNext;
+
+            for (int ii=0; ii<knt; ++ii)
             {
-                m_Cursor = 0;
-                return;
-            }
-        }
-        if (m_Cursor > (int)knt-1)
-        {
-            if (m_bWrapJumpEntries)
-                m_Cursor = knt-1;           //wrap code
-            else
-            {
-                m_Cursor = (int)knt-1;
-                return;
-            }
-        }
+                idx = GetPreviousIndex(idx);
+                if ( idx == wxNOT_FOUND)
+                    break;
+                JumpData& jumpdata = m_ArrayOfJumpData[idx];
+                if (not edmgr->IsOpen(jumpdata.GetFilename()))
+                    continue;
+                // skip entry when same as current position
+                if ( JumpDataContains(idx, activeEdFilename, activeEdPosn))
+                    continue;
+                else
+                {
+                    m_cursor = idx;
+                    break; //for
+                }
+            }//for
+        }//else
 
-        EditorManager* edmgr = Manager::Get()->GetEditorManager();
-        int cursor = m_Cursor;
-        wxString edFilename;
-        long edPosn;
-        bool found = false;
-        for (int i = 0; i<knt; ++i, --cursor)
-        {
-            if (cursor < 0) cursor = knt-1;
-            JumpData& jumpBack = m_ArrayOfJumpData.Item(cursor);
-            edFilename = jumpBack.GetFilename();
-            edPosn = jumpBack.GetPosition();
-            if (not edmgr->IsOpen(edFilename))
-                continue;
-            found = true;
-            break;
-        }
-        if (not found) break;
-
-        m_Cursor = cursor;
-
+        JumpData& jumpData = m_ArrayOfJumpData[m_cursor];
+        wxString edFilename = jumpData.GetFilename();
+        long edPosn = jumpData.GetPosition();
         #if defined(LOGGING)
-        LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.wx_str(), edPosn, m_Cursor);
+        LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.wx_str(), edPosn, m_cursor);
         #endif
+
         // activate editor
         EditorBase* eb = edmgr->GetEditor(edFilename);
         if (not eb) break;
@@ -554,11 +673,13 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
 
     }while(0);
 
-    m_bJumpInProgress = false;
     #if defined(LOGGING)
     LOGIT( _T("JT [%s]"), _T("END OnMenuJumpBack"));
+    wxCommandEvent evt;
+    OnMenuJumpDump(evt);
     #endif
 
+    m_bJumpInProgress = false;
     return;
 }
 // ----------------------------------------------------------------------------
@@ -566,62 +687,94 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
-    //LOGIT( _T("JT [%s]"), _T("OnMenuJumpNext"));
+    LOGIT( _T("JT [%s]"), _T("OnMenuJumpNext"));
     #endif
 
+    int knt = m_ArrayOfJumpData.GetCount();
+    if (0 == knt)
+        return;
+
+    // If not  wrapping && we're about to advance into the insert index, return
+    //-if (GetNextIndex(m_cursor) == m_insertNext)
+    if (not m_bWrapJumpEntries)
+        if (m_cursor == m_insertNext)
+            return;
+
     m_bJumpInProgress = true;
-    do {
-        int knt = m_ArrayOfJumpData.GetCount();
-        if (not knt) break;
 
-        if ( knt > 1 )
-            m_Cursor += 1;
-        if (m_bWrapJumpEntries)
+    EditorManager* edmgr = Manager::Get()->GetEditorManager();
+    EditorBase* eb = edmgr->GetActiveEditor();
+    cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+    //-long activeEdLine = 0;
+    long activeEdPosn = 0;
+    wxString activeEdFilename = wxEmptyString;
+    if (cbed)
+    {
+        //-activeEdLine = cbed->GetControl()->GetCurrentLine();
+        activeEdPosn = cbed->GetControl()->GetCurrentPos();
+        activeEdFilename = cbed->GetFilename();
+    }
+
+    // if active editor line == m_cursor, advance up the m_cursor
+    // until finding an entry that does not match this m_cursor entry.
+    // else
+    // find the next m_insertNext entry that does not match this editor or line number
+
+    do {    // find the next appropriate jump position
+
+        // if current cursor position is also current editor and line,
+        // return the next m_cursor entry
+        if ( JumpDataContains(m_cursor, cbed->GetFilename(), activeEdPosn))
         {
-            if (m_Cursor > (int)knt-1)  //wrap code
-            m_Cursor = 0;               //wrap code
+            m_cursor = GetNextIndex(m_cursor);
         }
-        else //dont wrap
+        else    //find an entry (forward) from the insertion point
         {
-            if (m_Cursor > (int)knt-1)
-                m_Cursor = (int)knt-1;
+            int idx = m_insertNext;
+
+            for (int ii=0; ii<knt; ++ii)
+            {
+                idx = GetNextIndex(idx);
+                if ( idx == wxNOT_FOUND)
+                    break;
+                JumpData& jumpdata = m_ArrayOfJumpData[idx];
+                if (not edmgr->IsOpen(jumpdata.GetFilename()))
+                    continue;
+
+                if ( not JumpDataContains(idx, activeEdFilename, activeEdPosn))
+                {
+                    m_cursor = idx;
+                    break; //for
+                }
+            }//for
         }
 
-        EditorManager* edmgr = Manager::Get()->GetEditorManager();
-        int cursor = m_Cursor;
-        wxString edFilename;
-        long edPosn;
-        bool found = false;
-        for (int i = 0; i<knt; ++i, ++cursor)
-        {
-            if (cursor > knt-1) cursor = 0;
-            JumpData& jumpNext = m_ArrayOfJumpData.Item(cursor);
-            edFilename = jumpNext.GetFilename();
-            edPosn = jumpNext.GetPosition();
-            if (not edmgr->IsOpen(edFilename))
-                continue;
-            found = true;
-            break;
-        }
-        if (not found) break;
-
-        m_Cursor = cursor;
-
+        JumpData& jumpData = m_ArrayOfJumpData[m_cursor];
+        wxString edFilename = jumpData.GetFilename();
+        long edPosn = jumpData.GetPosition();
         #if defined(LOGGING)
-        LOGIT( _T("JT OnMenuJumpNext [%s][%ld]curs[%d]"), edFilename.wx_str(), edPosn, m_Cursor);
+        LOGIT( _T("JT OnMenuJumpBack [%s][%ld]curs[%d]"), edFilename.wx_str(), edPosn, m_cursor);
         #endif
+
         // activate editor
         EditorBase* eb = edmgr->GetEditor(edFilename);
         if (not eb) break;
 
-        edmgr->SetActiveEditor(eb);
+        edmgr->SetActiveEditor(eb); // cause a cbEVT_EditorActivated event
         // position to editor line
         cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
         if (not cbed) break;
 
         cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
         cbed->GetControl()->GotoPos(edPosn);
+
     }while(0);
+
+    #if defined(LOGGING)
+    LOGIT( _T("JT [%s]"), _T("END OnMenuJumpBack"));
+    wxCommandEvent evt;
+    OnMenuJumpDump(evt);
+    #endif
 
     m_bJumpInProgress = false;
     return;
@@ -630,24 +783,39 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
 void JumpTracker::OnMenuJumpClear(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
-    m_Cursor = maxJumpEntries;
+    m_insertNext = m_cursor = maxJumpEntries;
     m_ArrayOfJumpData.Clear();
 }
 // ----------------------------------------------------------------------------
 void JumpTracker::OnMenuJumpDump(wxCommandEvent &/*event*/)
 // ----------------------------------------------------------------------------
 {
-    //-return; //debugging
     #if defined(LOGGING)
+    if (not m_ArrayOfJumpData.GetCount())
+        LOGIT( _T("JumpDump Empty"));
 
     for (size_t count = 0; count < m_ArrayOfJumpData.GetCount(); ++count)
     {
         JumpData& jumpData = m_ArrayOfJumpData.Item(count);
         wxString edFilename = jumpData.GetFilename();
+        long edLine = wxNOT_FOUND;
         long edPosn = jumpData.GetPosition();
-        wxString msg = wxString::Format(_T("[%lu][%s][%ld]"), static_cast<unsigned long>(count), edFilename.wx_str(), edPosn);
-        if (count == (size_t)m_Cursor)
-            msg.Append(_T("<--"));
+        cbStyledTextCtrl* pstc = 0;
+        cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(edFilename);
+        if ( ed )
+        {
+            pstc = ed->GetControl();
+            if (not pstc) pstc = 0;
+            if (pstc)
+            edLine = pstc->LineFromPosition(jumpData.GetPosition());
+            edLine +=1; //editors are 0 origin
+        }
+
+        wxString msg = wxString::Format(_T("[%d][%s][%ld][%ld]"), count, edFilename.c_str(), edPosn, edLine);
+        if (count == (size_t)m_cursor)
+            msg.Append(_T("<--c"));
+        if (count == (size_t)m_insertNext)
+            msg.Append(_T("<--i"));
         LOGIT( msg );
     }
 
@@ -658,4 +826,28 @@ void JumpTracker::SetWrapJumpEntries(const bool tf)
 // ----------------------------------------------------------------------------
 {
     m_bWrapJumpEntries = tf;
+}
+// ----------------------------------------------------------------------------
+int JumpTracker::GetPreviousIndex(const int idx)
+// ----------------------------------------------------------------------------
+{
+    int prev = idx;
+    int knt = m_ArrayOfJumpData.GetCount();
+    prev--;
+    if ( prev < 0 )
+        prev = knt-1;
+    if ( prev < 0 )
+        prev = 0;
+    return prev;
+}
+// ----------------------------------------------------------------------------
+int JumpTracker::GetNextIndex(const int idx)
+// ----------------------------------------------------------------------------
+{
+    int next = idx;
+    int knt = m_ArrayOfJumpData.GetCount();
+    next++;
+    if ( next > (knt-1) )
+        next = 0;
+    return next;
 }

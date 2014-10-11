@@ -1,0 +1,70 @@
+<?xml version="1.0" ?>
+<resource>
+  <object class="wxToolBarAddOn" name="browse_tracker_toolbar_16x16">
+    <object class="tool" name="idJumpPrev">
+      <tooltip>Jump back</tooltip>
+      <longhelp>Jump back</longhelp>
+      <bitmap>images/16x16/prev.png</bitmap>
+    </object>
+    <object class="tool" name="idJumpNext">
+      <tooltip>Jump forward</tooltip>
+      <longhelp>Jump forward</longhelp>
+      <bitmap>images/16x16/next.png</bitmap>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idMarkToggle">
+      <tooltip>Toggle bookmark</tooltip>
+      <longhelp>Toggle bookmark</longhelp>
+      <bitmap>images/16x16/mark.png</bitmap>
+    </object>
+    <object class="tool" name="idMarkPrev">
+      <tooltip>Prev bookmark</tooltip>
+      <longhelp>Prev bookmark</longhelp>
+      <bitmap>images/16x16/mark_prev.png</bitmap>
+    </object>
+    <object class="tool" name="idMarkNext">
+      <tooltip>Next bookmark</tooltip>
+      <longhelp>Next bookmark</longhelp>
+      <bitmap>images/16x16/mark_next.png</bitmap>
+    </object>
+    <object class="tool" name="idMarksClear">
+      <tooltip>Clear bookmarks</tooltip>
+      <longhelp>Clear bookmarks</longhelp>
+      <bitmap>images/16x16/mark_clear.png</bitmap>
+    </object>
+  </object>
+  <object class="wxToolBarAddOn" name="browse_tracker_toolbar">
+    <object class="tool" name="idJumpPrev">
+      <tooltip>Jump back</tooltip>
+      <longhelp>Jump back</longhelp>
+      <bitmap>images/prev.png</bitmap>
+    </object>
+    <object class="tool" name="idJumpNext">
+      <tooltip>Jump forward</tooltip>
+      <longhelp>Jump forward</longhelp>
+      <bitmap>images/next.png</bitmap>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idMarkToggle">
+      <tooltip>Toggle bookmark</tooltip>
+      <longhelp>Toggle bookmark</longhelp>
+      <bitmap>images/mark.png</bitmap>
+    </object>
+    <object class="tool" name="idMarkPrev">
+      <tooltip>Prev bookmark</tooltip>
+      <longhelp>Prev bookmark</longhelp>
+      <bitmap>images/mark_prev.png</bitmap>
+    </object>
+    <object class="tool" name="idMarkNext">
+      <tooltip>Next bookmark</tooltip>
+      <longhelp>Next bookmark</longhelp>
+      <bitmap>images/mark_next.png</bitmap>
+    </object>
+    <object class="tool" name="idMarksClear">
+      <tooltip>Clear bookmarks</tooltip>
+      <longhelp>Clear bookmarks</longhelp>
+      <bitmap>images/mark_clear.png</bitmap>
+    </object>
+  </object>
+</resource>
+

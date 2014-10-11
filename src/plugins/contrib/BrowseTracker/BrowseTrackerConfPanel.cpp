@@ -51,6 +51,9 @@ BrowseTrackerConfPanel::BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugi
 	m_pConfigPanel->Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnToggleBrowseMarkKey ), NULL, this );
 	m_pConfigPanel->Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnClearAllBrowseMarksKey ), NULL, this );
 
+    // FIXME (ph#): Something fishy here. On the first use of View/BrowseTracker/Settings
+    // the BrowseMark is not set to the BookMark style when selected.
+    // It does work when the Editor/Config BrowseTracker settings is used
     // save some old data for later comparison
     m_BrowseTrackerPlugin.m_OldUserMarksStyle = m_BrowseTrackerPlugin.m_UserMarksStyle;
     m_BrowseTrackerPlugin.m_OldBrowseMarksEnabled = m_BrowseTrackerPlugin.m_BrowseMarksEnabled;

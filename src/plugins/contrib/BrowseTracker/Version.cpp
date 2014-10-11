@@ -250,6 +250,11 @@ AppVersion::~AppVersion()
 //       98) Add Wrap Jump Entries option
 //  Commit 1.2.99 2012/11/18
 //       99) remove shadowed var from GetCurrentScreenPosition()
+//  Commit 1.2.100 2014/10/9
+//      100) Fix incorrect scintilla margin marker usage
+//           Better resolution of Jump line recording
+//           Add modifed user contrib tool bar (by sbezgodov)
+//
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

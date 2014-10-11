@@ -48,7 +48,7 @@
 //      Copy the editor BrowseMarks back to the BrowseMark archive so we can
 //      use them if the user reopens this editor.
 //      Clear this editor out of our containers and arrays. (Except the archive)
-//  OnStartShutdown/OnRelease
+//  OnStartShutdown
 //      This happens before the editors are actually closed.
 //      We simulate closing the editors to force the current Markers into
 //      the ProjectData archive markers. Then write a layout
@@ -134,6 +134,11 @@ namespace
     int idMenuTrackerDump           = wxNewId();
     #endif
     int idEditBookmarksToggle = XRCID("idEditBookmarksToggle");
+
+    int idToolMarkToggle = XRCID("idMarkToggle");
+    int idToolMarkPrev = XRCID("idMarkPrev");
+    int idToolMarkNext = XRCID("idMarkNext");
+    int idToolMarksClear = XRCID("idMarksClear");
 };
 
 // ----------------------------------------------------------------------------
@@ -141,7 +146,11 @@ namespace
 // ----------------------------------------------------------------------------
 BEGIN_EVENT_TABLE(BrowseTracker, cbPlugin)
 
-	//-EVT_UPDATE_UI(idMenuViewTracker, BrowseTracker::OnUpdateUI)
+	EVT_UPDATE_UI(idToolMarkToggle, BrowseTracker::OnUpdateUI)
+	EVT_UPDATE_UI(idToolMarkPrev,   BrowseTracker::OnUpdateUI)
+	EVT_UPDATE_UI(idToolMarkNext,   BrowseTracker::OnUpdateUI)
+	EVT_UPDATE_UI(idToolMarksClear, BrowseTracker::OnUpdateUI)
+
     EVT_IDLE(                BrowseTracker::OnIdle)
 	// --
 	// The following replaced by OnMenuTrackerSelect() dialog popup
@@ -163,6 +172,12 @@ BEGIN_EVENT_TABLE(BrowseTracker, cbPlugin)
    #endif
    // -- BOOK Marks --
     EVT_MENU(idEditBookmarksToggle, BrowseTracker::OnBook_MarksToggle)
+
+    EVT_TOOL(idToolMarkToggle,  BrowseTracker::OnMenuToggleBrowseMark)
+    EVT_TOOL(idToolMarkPrev,    BrowseTracker::OnMenuBrowseMarkPrevious)
+    EVT_TOOL(idToolMarkNext,    BrowseTracker::OnMenuBrowseMarkNext)
+    EVT_TOOL(idToolMarksClear,  BrowseTracker::OnMenuClearAllBrowse_Marks)
+
 END_EVENT_TABLE()
 
 // ----------------------------------------------------------------------------
@@ -195,12 +210,18 @@ BrowseTracker::BrowseTracker()
     m_bAppShutdown = false;
     m_nProjectClosingFileCount = 0;
     m_LastEbDeactivated = 0;
+
+    if (!Manager::LoadResource(_T("BrowseTracker.zip")))
+        NotifyMissingFile(_T("BrowseTracker.zip"));
 }
 // ----------------------------------------------------------------------------
 BrowseTracker::~BrowseTracker()
 // ----------------------------------------------------------------------------
 {
     //dtor
+    m_bProjectClosing = false;
+    m_pMenuBar = 0;
+    m_pToolBar = 0;
 }
 
 // ----------------------------------------------------------------------------
@@ -373,63 +394,6 @@ void BrowseTracker::OnRelease(bool appShutDown)
         m_pJumpTracker = 0;
     }
 
-    if ( m_InitDone )
-    {
-        Manager::Get()->GetLogManager()->Log(_T("BrowseTracker Released"));
-
-        //*SDK Gotcha* A cbEVT_PROJECT_CLOSE is issued, but only
-        // after the plugin OnRelease() is called. So we
-        // simulate closing all open projects in order to save
-        // current Browse/Book marks in layout
-        ProjectsArray* pPrjs = m_pPrjMgr->GetProjects();
-        for (size_t i=0; i<pPrjs->GetCount(); ++i )
-        {
-            CodeBlocksEvent evtpa(cbEVT_PROJECT_ACTIVATE);
-            evtpa.SetProject(pPrjs->Item(i));
-            OnProjectActivatedEvent(evtpa);
-
-            CodeBlocksEvent evtpc(cbEVT_PROJECT_CLOSE);
-            evtpc.SetProject(pPrjs->Item(i));
-            OnProjectClosing(evtpc);
-        }
-
-        // remove project load/save hook
-        ProjectLoaderHooks::UnregisterHook(m_ProjectHookId, true);
-
-        // remove editor/scintilla hook
-        EditorHooks::UnregisterHook(m_EditorHookId, true);
-
-        //  Remove menu item
-        int idx = m_pMenuBar->FindMenu(_("&View"));
-        if (idx != wxNOT_FOUND)
-        {
-            wxMenu* viewMenu = m_pMenuBar->GetMenu(idx);
-            viewMenu->Destroy(idMenuViewTracker);
-        }
-
-        // *Book_Marks* release the editor hash table ptrs to Book_Marks
-        for (EbBrowse_MarksHash::iterator it = m_EdBook_MarksHash.begin(); it != m_EdBook_MarksHash.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_EdBook_MarksHash.clear();
-
-        // *BrowseMarks* release the editor hash table ptrs to BrowseMarks
-        for (EbBrowse_MarksHash::iterator it = m_EbBrowse_MarksHash.begin(); it != m_EbBrowse_MarksHash.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_EbBrowse_MarksHash.clear();
-
-        // *ProjectData* release any ProjectData remaining in the ProjectDataHash
-        for (ProjectDataHash::iterator it = m_ProjectDataHash.begin(); it != m_ProjectDataHash.end(); ++it)
-        {
-            delete it->second;
-        }
-        m_ProjectDataHash.clear();
-
-    }
-	m_InitDone = false;
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
@@ -473,7 +437,22 @@ void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
      LOGIT(wxT("Menubar[%p]idMenuViewTracker[%d]"),menuBar, idMenuViewTracker);
     #endif
 
+    idx = menuBar->FindMenu(_("&Edit"));
+    if (idx != wxNOT_FOUND)
+    {
+        wxMenu* editMenu = menuBar->GetMenu(idx);
+        idx = editMenu->FindItem(_("&Bookmarks"));
+        // main menu will be automatically recreated after plugin disable
+        //-editMenu->Destroy(idx);
+    }
+
 	m_InitDone = true;
+
+    EditorBase* eb = m_pEdMgr->GetActiveEditor();
+    if (eb) {
+        CodeBlocksEvent evtea(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
+        //OnEditorActivated(evtea);
+    }
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const FileTreeData* /*data*/)
@@ -510,7 +489,7 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
         #else
         wxString menuLabel = item->GetLabel();
         #endif
-        ///LOGIT( _T("BT OnContextMenu insert[%s]"),menuLabel.c_str() );
+        //LOGIT( _T("BT OnContextMenu insert[%s]"),menuLabel.c_str() );
         wxMenuItem* pContextItem= new wxMenuItem(sub_menu, menuId, menuLabel); //patch 2886
         sub_menu->Append( pContextItem );
     }
@@ -520,6 +499,26 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
     popup->Append(pbtMenuItem);
 
 }//BuildModuleMenu
+// ----------------------------------------------------------------------------
+bool BrowseTracker::BuildToolBar(wxToolBar* toolBar)
+// ----------------------------------------------------------------------------
+{
+    if (m_pJumpTracker) {
+        m_pJumpTracker->BuildToolBar(toolBar);
+    }
+
+    m_pToolBar = toolBar;
+
+    if (!m_IsAttached || !toolBar)
+    {
+        return false;
+    }
+    wxString is16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
+    Manager::Get()->AddonToolBar(toolBar, _T("browse_tracker_toolbar") + is16x16);
+    m_pToolBar->Realize();
+
+    return true;
+}
 // ----------------------------------------------------------------------------
 int BrowseTracker::Configure()
 // ----------------------------------------------------------------------------
@@ -872,6 +871,23 @@ void BrowseTracker::OnMenuClearBrowseMark(wxCommandEvent& WXUNUSED(event))
     if ( GetBrowseMarkerId() == BOOKMARK_MARKER ) ClearLineBookMark();
 }
 // ----------------------------------------------------------------------------
+void BrowseTracker::OnMenuToggleBrowseMark(wxCommandEvent& WXUNUSED(event))
+// ----------------------------------------------------------------------------
+{
+    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+
+    if (cbed) {
+        cbStyledTextCtrl* control = cbed->GetControl();
+        int line = control->GetCurrentLine();
+
+        if (LineHasBrowseMarker(control, line))
+            ClearLineBrowseMark(true);
+        else
+            RecordBrowseMark(eb);
+    }
+}
+// ----------------------------------------------------------------------------
 void BrowseTracker::ClearLineBrowseMark(bool removeScreenMark)
 // ----------------------------------------------------------------------------
 {
@@ -976,6 +992,8 @@ void BrowseTracker::OnConfigApply( )
 	LOGIT( _T("BT New Config values: BrowseMarksStyle[%d]ToggleKey[%d]MouseDelay[%d]ClearKey[%d]"),
             m_UserMarksStyle, m_ToggleKey, m_LeftMouseDelay, m_ClearAllKey);
 	#endif
+	// FIXME (ph#): This may not be working when View/BrowseTracker/Settings used
+	// as opposed to Settings/Editor/Browstracker.
     if (m_OldUserMarksStyle not_eq m_UserMarksStyle)
         SetBrowseMarksStyle( m_UserMarksStyle );
 
@@ -1018,7 +1036,8 @@ void BrowseTracker::ClearAllBrowse_Marks(bool clearScreenMarks)
             cbStyledTextCtrl* control = cbed->GetControl();
             BrowseMarks& EdBrowse_Marks = *m_EbBrowse_MarksHash[eb];
             EdBrowse_Marks.ClearAllBrowse_Marks();
-            if (clearScreenMarks) control->MarkerDeleteAll( GetBrowseMarkerId());
+            if (clearScreenMarks)
+                control->MarkerDeleteAll( GetBrowseMarkerId());
             #if defined(LOGGING)
             LOGIT( _T("BT ClearAllBrowseMarks()") );
             #endif
@@ -1609,7 +1628,28 @@ void BrowseTracker::OnEditorActivated(CodeBlocksEvent& event)
 void BrowseTracker::OnUpdateUI(wxUpdateUIEvent& event)
 // ----------------------------------------------------------------------------
 {
-    // unused
+    if (Manager::Get()->IsAppShuttingDown())
+        return;
+
+    EditorBase* eb = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (m_EbBrowse_MarksHash.find(eb) != m_EbBrowse_MarksHash.end())
+    {
+        int count = m_EbBrowse_MarksHash[eb]->GetMarkCount();
+
+        m_pToolBar->EnableTool(idToolMarkToggle, true);
+        m_pToolBar->EnableTool(idToolMarkNext, count > 0);
+        m_pToolBar->EnableTool(idToolMarkPrev, count > 0);
+        m_pToolBar->EnableTool(idToolMarksClear, count > 0);
+
+    }
+    else // This editor not recorded
+    {
+        m_pToolBar->EnableTool(idToolMarkToggle, true);
+        m_pToolBar->EnableTool(idToolMarkNext, false);
+        m_pToolBar->EnableTool(idToolMarkPrev, false);
+        m_pToolBar->EnableTool(idToolMarksClear, false);
+    }
+
     event.Skip();
 }
 // ----------------------------------------------------------------------------
@@ -1655,8 +1695,69 @@ void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
     #endif
     Manager::Get()->GetLogManager()->Log(_T("BrowseTracker OnStartShutdown() initiated."));
     event.Skip();
+
     m_bAppShutdown = true;
-    OnRelease(true);
+
+    InfoWindow::Display(_T("Browstracker"),_T("Browstracker OnStartShutdown"), 7000);
+
+    if ( m_InitDone )
+    {
+        Manager::Get()->GetLogManager()->Log(_T("BrowseTracker Released"));
+
+        //*SDK Gotcha* A cbEVT_PROJECT_CLOSE is issued, but only
+        // after the plugin OnRelease() is called. So we
+        // simulate closing all open projects in order to save
+        // current Browse/Book marks in layout
+        ProjectsArray* pPrjs = m_pPrjMgr->GetProjects();
+        for (size_t i=0; i<pPrjs->GetCount(); ++i )
+        {
+            CodeBlocksEvent evtpa(cbEVT_PROJECT_ACTIVATE);
+            evtpa.SetProject(pPrjs->Item(i));
+            OnProjectActivatedEvent(evtpa);
+
+            CodeBlocksEvent evtpc(cbEVT_PROJECT_CLOSE);
+            evtpc.SetProject(pPrjs->Item(i));
+            OnProjectClosing(evtpc);
+        }
+
+        // remove project load/save hook
+        ProjectLoaderHooks::UnregisterHook(m_ProjectHookId, true);
+
+        // remove editor/scintilla hook
+        EditorHooks::UnregisterHook(m_EditorHookId, true);
+
+        //  Remove menu item
+        int idx = m_pMenuBar->FindMenu(_("&View"));
+        if (idx != wxNOT_FOUND)
+        {
+            wxMenu* viewMenu = m_pMenuBar->GetMenu(idx);
+            viewMenu->Destroy(idMenuViewTracker);
+        }
+
+        // *Book_Marks* release the editor hash table ptrs to Book_Marks
+        for (EbBrowse_MarksHash::iterator it = m_EdBook_MarksHash.begin(); it != m_EdBook_MarksHash.end(); ++it)
+        {
+            delete it->second;
+        }
+        m_EdBook_MarksHash.clear();
+
+        // *BrowseMarks* release the editor hash table ptrs to BrowseMarks
+        for (EbBrowse_MarksHash::iterator it = m_EbBrowse_MarksHash.begin(); it != m_EbBrowse_MarksHash.end(); ++it)
+        {
+            delete it->second;
+        }
+        m_EbBrowse_MarksHash.clear();
+
+        // *ProjectData* release any ProjectData remaining in the ProjectDataHash
+        for (ProjectDataHash::iterator it = m_ProjectDataHash.begin(); it != m_ProjectDataHash.end(); ++it)
+        {
+            delete it->second;
+        }
+        m_ProjectDataHash.clear();
+
+    }
+	m_InitDone = false;
+
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::OnEditorDeactivated(CodeBlocksEvent& event)
@@ -1812,7 +1913,11 @@ void BrowseTracker::OnEditorClosed(CodeBlocksEvent& event)
 
 }//OnEditorClosed
 // ----------------------------------------------------------------------------
+#if defined(LOGGING)
+void BrowseTracker::OnWindowSetFocus(wxFocusEvent& event)
+#else
 void BrowseTracker::OnWindowSetFocus(wxFocusEvent& WXUNUSED(event))
+#endif
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
@@ -2669,7 +2774,11 @@ BrowseMarks* BrowseTracker::GetBook_MarksFromHash( wxString filePath)
     return 0;
 }
 // ----------------------------------------------------------------------------
+#if defined(LOGGING)
+void BrowseTracker::DumpHash( const wxString hashType)
+#else
 void BrowseTracker::DumpHash( const wxString /*hashType*/)
+#endif
 // ----------------------------------------------------------------------------
 {
 
