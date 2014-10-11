@@ -33,7 +33,8 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel/share/codeblocks/BrowseTracker.zip manifest.xml" />
-					<Mode after="always" />
+					<Add after="zip -j9 ..\..\..\devel\share\codeblocks\BrowseTracker.zip BrowseTrackerToolbar.xrc" />
+					<Add after="zip -9r  ..\..\..\devel\share\codeblocks\BrowseTracker.zip .\images" />
 				</ExtraCommands>
 			</Target>
 		</Build>
@@ -63,6 +64,7 @@
 		<Unit filename="BrowseTrackerDefs.h" />
 		<Unit filename="BrowseTrackerLayout.cpp" />
 		<Unit filename="BrowseTrackerLayout.h" />
+		<Unit filename="BrowseTrackerToolbar.xrc" />
 		<Unit filename="BrowseXpms.h" />
 		<Unit filename="ConfigPanel.cpp" />
 		<Unit filename="ConfigPanel.h" />
