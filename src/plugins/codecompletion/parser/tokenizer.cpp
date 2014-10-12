@@ -1369,7 +1369,7 @@ bool Tokenizer::CalcConditionExpression()
         if (token[0] <= _T(' ') || token == _T("defined") || token == _T("\\"))
             continue;
 
-        if (token.Len() > 1 && !wxIsdigit(token[0])) // handle macro
+        if (token.Len() > 0 && !wxIsdigit(token[0])) // handle macro
         {
             const int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
             if (id != -1)
