@@ -22,6 +22,7 @@
 #endif
 
 #include "projectlayoutloader.h"
+#include "annoyingdialog.h"
 #include "tinyxml/tinyxml.h"
 #include "tinyxml/tinywxuni.h"
 
@@ -65,6 +66,73 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         {
             pMsg->DebugLog(_T("Not a valid Code::Blocks layout file..."));
             return false;
+        }
+    }
+
+    int major = 0;
+    int minor = 0;
+
+    TiXmlElement* version = root->FirstChildElement("FileVersion");
+    // don't show messages if we 're running a batch build (i.e. no gui)
+    if (!Manager::IsBatchBuild() && version)
+    {
+        version->QueryIntAttribute("major", &major);
+        version->QueryIntAttribute("minor", &minor);
+
+    }
+
+    if (major >= PROJECT_LAYOUT_FILE_VERSION_MAJOR && minor > PROJECT_LAYOUT_FILE_VERSION_MINOR)
+    {
+        pMsg->DebugLog(F(_T("Project layout file version is > %d.%d. Trying to load..."), PROJECT_LAYOUT_FILE_VERSION_MAJOR, PROJECT_LAYOUT_FILE_VERSION_MINOR));
+        AnnoyingDialog dlg(_("Project layout file format is newer/unknown"),
+                            F(_("This project layout file was saved with a newer version of Code::Blocks.\n"
+                            "Will try to load, but you might see unexpected results.\n"
+                            "In this case close the project, delete %s and reopen the project."),filename.wx_str()),
+                            wxART_WARNING,
+                            AnnoyingDialog::OK);
+        dlg.ShowModal();
+    }
+    else
+    {
+        // use one message for all changes
+        wxString msg;
+        wxString warn_msg;
+
+        if (major == 0 && minor == 0)
+        {
+            msg << _("0.0 (unversioned) to 1.0:\n");
+            msg << _("  * save editor-pane layout and order.\n");
+            msg << _("\n");
+        }
+
+        if (!msg.IsEmpty())
+        {
+            msg.Prepend(wxString::Format(_("Project layout file format is older (%d.%d) than the current format (%d.%d).\n"
+                                            "The file will automatically be upgraded on close.\n"
+                                            "But please read the following list of changes, as some of them\n"
+                                            "might not automatically convert existing (old) settings.\n"
+                                            "If you don't understand what a change means, you probably don't\n"
+                                            "use that feature so you don't have to worry about it.\n\n"
+                                            "List of changes:\n"),
+                                        major,
+                                        minor,
+                                        PROJECT_LAYOUT_FILE_VERSION_MAJOR,
+                                        PROJECT_LAYOUT_FILE_VERSION_MINOR));
+            AnnoyingDialog dlg(_("Project layout file format changed"),
+                                msg,
+                                wxART_INFORMATION,
+                                AnnoyingDialog::OK);
+            dlg.ShowModal();
+        }
+
+        if (!warn_msg.IsEmpty())
+        {
+            warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
+            AnnoyingDialog dlg(_("Project layout file upgrade warning"),
+                                warn_msg,
+                                wxART_WARNING,
+                                AnnoyingDialog::OK);
+            dlg.ShowModal();
         }
     }
 
@@ -167,12 +235,15 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         elem = elem->NextSiblingElement();
     }
 
-    elem = root->FirstChildElement("EditorTabsLayout");
-    if (elem)
+    if (major >= 1)
     {
-        m_NotebookLayout = cbC2U(elem->Attribute("layout"));
+        elem = root->FirstChildElement("EditorTabsLayout");
+        if (elem)
+        {
+            m_NotebookLayout = cbC2U(elem->Attribute("layout"));
+        }
+        // else ?!
     }
-    // else ?!
 
     return true;
 }
@@ -187,6 +258,10 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
     TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
     if (!rootnode)
         return false;
+
+    rootnode->InsertEndChild(TiXmlElement("FileVersion"));
+    rootnode->FirstChildElement("FileVersion")->SetAttribute("major", PROJECT_LAYOUT_FILE_VERSION_MAJOR);
+    rootnode->FirstChildElement("FileVersion")->SetAttribute("minor", PROJECT_LAYOUT_FILE_VERSION_MINOR);
 
     TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
     tgtidx->SetAttribute("name", cbU2C(m_pProject->GetActiveBuildTarget()));

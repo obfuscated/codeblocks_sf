@@ -8,6 +8,9 @@
 
 #include "ibaseworkspaceloader.h"
 
+#define WORKSPACE_LAYOUT_FILE_VERSION_MAJOR 1
+#define WORKSPACE_LAYOUT_FILE_VERSION_MINOR 0
+
 class WorkspaceLoader : public IBaseWorkspaceLoader
 {
     public:

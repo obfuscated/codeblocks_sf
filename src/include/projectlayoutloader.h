@@ -11,6 +11,9 @@
     #include "cbauibook.h"
 #endif
 
+#define PROJECT_LAYOUT_FILE_VERSION_MAJOR 1
+#define PROJECT_LAYOUT_FILE_VERSION_MINOR 0
+
 class cbProject;
 
 class DLLIMPORT ProjectLayoutLoader
