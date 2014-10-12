@@ -162,6 +162,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void SetZoom(int zoom);
         int GetZoom()const;
 
+        void MarkReadOnly(int page, bool readOnly = true);
+
         void OnAppActivated(CodeBlocksEvent& event);
         wxString GetSelectionClipboard();
         void SetSelectionClipboard(const wxString& data);

@@ -160,7 +160,11 @@ void EditorBase::SetTitle(const wxString& newTitle)
         toolTip += _("\nProject: ") + prj->GetTitle();
     cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
     if (nb)
-        nb->SetPageToolTip(nb->GetPageIndex(this), toolTip);
+    {
+        int idx = nb->GetPageIndex(this);
+        nb->SetPageToolTip(idx, toolTip);
+        Manager::Get()->GetEditorManager()->MarkReadOnly(idx, fname.FileExists() && !wxFile::Access(fname.GetFullPath(), wxFile::write) );
+    }
 }
 
 void EditorBase::Activate()

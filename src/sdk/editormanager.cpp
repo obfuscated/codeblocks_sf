@@ -779,6 +779,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 Manager::Get()->GetProjectManager()->FindProjectForFile(fn.GetFullPath(), &pf, false, false);
 
                 bool readOnly = fn.FileExists() && !wxFile::Access(fn.GetFullPath(), wxFile::write);
+                MarkReadOnly(i, readOnly);
 
                 if (pf)
                 {
@@ -860,6 +861,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         {
             b_modified = false;
             ed->GetControl()->SetReadOnly(false);
+            MarkReadOnly(i, false);
             if (pf)
                 pf->SetFileState(fvsNormal);
         }
@@ -869,6 +871,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
         {
             b_modified = false;
             ed->GetControl()->SetReadOnly(true);
+            MarkReadOnly(i);
             if (pf)
                 pf->SetFileState(fvsReadOnly);
         }
@@ -924,6 +927,18 @@ void EditorManager::CheckForExternallyModifiedFiles()
     }
     m_isCheckingForExternallyModifiedFiles = false;
 }
+
+void EditorManager::MarkReadOnly(int page, bool readOnly)
+{
+    if (page > -1)
+    {
+        wxBitmap bmp = readOnly?cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/") + _T("readonly.png")):wxNullBitmap;
+        if (m_pNotebook)
+            m_pNotebook->SetPageBitmap(page, bmp);
+    }
+}
+
+
 
 bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate)
 {
