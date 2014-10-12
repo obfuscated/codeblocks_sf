@@ -220,10 +220,19 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
     }
 	else
 	{
-		wxString temp(name);
-		temp.append(wxT(".temp"));
+        if (!wxFile::Access(name, wxFile::write))
+            return false;
 
-		if(wxFile(temp, wxFile::write).Write(data, len) == len)
+        wxString temp(name);
+        temp.append(wxT(".temp"));
+
+        wxStructStat buff;
+        wxLstat( name, &buff );
+
+        wxFile f;
+        f.Create(temp, true, buff.st_mode);
+
+		if(f.Write(data, len) == len)
 		{
 			if(platform::move(temp, name))
 			{
@@ -249,11 +258,19 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
     }
 	else
 	{
-		wxString temp(name);
-		temp.append(wxT(".temp"));
+        if (!wxFile::Access(name, wxFile::write))
+            return false;
 
-		wxFile f(temp, wxFile::write);
-		if(WriteWxStringToFile(f, data, encoding, bom))
+        wxString temp(name);
+        temp.append(wxT(".temp"));
+
+        wxStructStat buff;
+        wxLstat( name, &buff );
+
+        wxFile f;
+        f.Create(temp, true, buff.st_mode);
+
+        if(WriteWxStringToFile(f, data, encoding, bom))
 		{
 			f.Close();
 			if(platform::move(temp, name))
