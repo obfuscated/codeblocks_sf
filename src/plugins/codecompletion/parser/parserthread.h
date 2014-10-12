@@ -223,9 +223,9 @@ protected:
     /** handle typedef directive */
     void HandleTypedef();
 
-    /** handle macro expansion
+    /** We guess this is a macro usage, so try to expand macro
       * @param id token id in Token tree
-      * @param peek macro body
+      * @param peek macro actual arguments
       */
     void HandleMacroExpansion(int id, const wxString& peek);
 
