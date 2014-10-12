@@ -627,9 +627,6 @@ bool DebuggerGDB::Debug(bool breakOnEntry)
     m_pProject = 0;
     m_NoDebugInfo = false;
 
-    // clear the debug log
-    ClearLog();
-
     // can only debug projects or attach to processes
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
     cbProject* project = prjMan->GetActiveProject();
