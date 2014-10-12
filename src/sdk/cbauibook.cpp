@@ -742,7 +742,7 @@ int cbAuiNotebook::GetTabIndexFromTooltip (const wxString& text) {
 bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) {
     if (layout.IsEmpty())
         return false;
-    wxWindowUpdateLocker locker(this);
+
     wxString tabs = layout.BeforeFirst (wxT ('@') );
     // Remove all tab ctrls (but still keep them in main index)
     const size_t tab_count = m_tabs.GetPageCount();
