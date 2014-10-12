@@ -42,4 +42,4 @@ pkgdata_DATA = BrowseTracker.zip
 CLEANFILES = $(pkgdata_DATA)
 
 BrowseTracker.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip $(PWD)/BrowseTracker.zip manifest.xml > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/BrowseTracker.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null

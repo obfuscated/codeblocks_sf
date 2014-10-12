@@ -33,8 +33,8 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ../../../devel30/share/codeblocks/BrowseTracker.zip manifest.xml" />
-					<Add after="zip -j9 ..\..\..\devel\share\codeblocks\BrowseTracker.zip BrowseTrackerToolbar.xrc" />
-					<Add after="zip -9r  ..\..\..\devel\share\codeblocks\BrowseTracker.zip .\images" />
+					<Add after="zip -j9 ../../../devel30/share/codeblocks/BrowseTracker.zip BrowseTrackerToolbar.xrc" />
+					<Add after="zip -9r  ../../../devel30/share/codeblocks/BrowseTracker.zip ./images" />
 				</ExtraCommands>
 			</Target>
 			<Environment>
