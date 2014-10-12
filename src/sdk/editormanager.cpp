@@ -860,7 +860,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
         {
             b_modified = false;
-            ed->GetControl()->SetReadOnly(false);
+            ed->SetReadOnly(false);
             MarkReadOnly(i, false);
             if (pf)
                 pf->SetFileState(fvsNormal);
@@ -870,7 +870,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 !wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
         {
             b_modified = false;
-            ed->GetControl()->SetReadOnly(true);
+            ed->SetReadOnly(true);
             MarkReadOnly(i);
             if (pf)
                 pf->SetFileState(fvsReadOnly);

@@ -271,6 +271,12 @@ class DLLIMPORT EditorBase : public wxPanel
           */
         virtual bool IsReadOnly() const { return false; }
 
+        /** Set the editor read-only.
+          *
+          * @param readonly If true, mark as readonly. If false, mark as read-write.
+          */
+        virtual void SetReadOnly(bool /*readonly*/ = true) {}
+
         /** Can the editor select everything?
           *
           * @return True if the editor can select all content, false if not.

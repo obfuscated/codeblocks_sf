@@ -1686,7 +1686,7 @@ bool cbEditor::Open(bool detectEncoding)
         return false;
 
     // open file
-    m_pControl->SetReadOnly(false);
+    SetReadOnly(false);
 
     m_pControl->ClearAll();
     m_pControl->SetModEventMask(0);
@@ -1723,7 +1723,7 @@ bool cbEditor::Open(bool detectEncoding)
 
     // mark the file read-only, if applicable
     bool read_only = !wxFile::Access(m_Filename.c_str(), wxFile::write);
-    m_pControl->SetReadOnly(read_only);
+    SetReadOnly(read_only);
 
     wxFileName fname(m_Filename);
     m_LastModified = fname.GetModificationTime();
@@ -2463,6 +2463,12 @@ bool cbEditor::IsReadOnly() const
 {
     cbAssert(GetControl());
     return GetControl()->GetReadOnly();
+}
+
+void cbEditor::SetReadOnly(bool readonly)
+{
+    cbAssert(GetControl());
+    GetControl()->SetReadOnly(readonly);
 }
 
 bool cbEditor::LineHasMarker(int marker, int line) const

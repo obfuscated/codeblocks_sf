@@ -273,6 +273,7 @@ class DLLIMPORT cbEditor : public EditorBase
         bool HasSelection() const;
         bool CanPaste() const;
         bool IsReadOnly() const;
+        void SetReadOnly(bool readonly = true);
 
         bool CanSelectAll() const;
         void SelectAll();
