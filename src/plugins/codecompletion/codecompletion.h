@@ -31,34 +31,38 @@ class wxChoice;
 class DocumentationHelper;
 
 /** Code completion plugin has those features:
- * show function call-tip when the mouse hover over the variables/functions.
+ * show tool-tip when the mouse hover over the variables/functions.
+ * show call-tip when you hit the ( after the function name
  * automatically auto-completion lists prompted while entering code.
  * navigate the source files, jump between declarations and implementations.
  * find symbol usage, or even rename a symbol(code re-factoring).
  *
- *  We later use "CC" as an abbreviation of Code Completion plugin.
+ * We later use "CC" as an abbreviation of Code Completion plugin.
  * See the general architecture of code completion plugin on wiki page
  *  http://wiki.codeblocks.org/index.php?title=Code_Completion_Design
  */
 class CodeCompletion : public cbCodeCompletionPlugin
 {
 public:
-    /** the underline data structure of the second wxChoice of CC's toolbar*/
+    /** Identify a function body's position, the underline data structure of the second wxChoice of
+     * CC's toolbar
+     */
     struct FunctionScope
     {
         FunctionScope() {}
-        FunctionScope(const NameSpace& ns): StartLine(ns.StartLine), EndLine(ns.EndLine), Scope(ns.Name) {}
+        FunctionScope(const NameSpace& ns):
+            StartLine(ns.StartLine), EndLine(ns.EndLine), Scope(ns.Name) {}
 
-        int StartLine;      // function body (implementation) start line
-        int EndLine;        // function body (implementation) end line
-        wxString ShortName; // function's base name (without scope prefix)
-        wxString Name;      // function's long name (including arguments and return type)
-        wxString Scope;     // class or namespace
+        int StartLine;      ///< function body (implementation) start line
+        int EndLine;        ///< function body (implementation) end line
+        wxString ShortName; ///< function's base name (without scope prefix)
+        wxString Name;      ///< function's long name (including arguments and return type)
+        wxString Scope;     ///< class or namespace
     };
 
-    /** each file has one such vector instance, containing all the function information in the file */
+    /** vector containing all the function information of a single source file */
     typedef std::vector<FunctionScope> FunctionsScopeVec;
-    /** helper class to support FunctionsScopeVec*/
+    /** helper class to support FunctionsScopeVec */
     typedef std::vector<int> ScopeMarksVec;
 
 
@@ -306,15 +310,15 @@ private:
     wxToolBar*              m_ToolBar;
     /** function choice control of CC's toolbar, it is the second choice */
     wxChoice*               m_Function;
-    /** namespace/scope choice control, it is the first choice control*/
+    /** namespace/scope choice control, it is the first choice control */
     wxChoice*               m_Scope;
     /** current active file's function body info*/
     FunctionsScopeVec       m_FunctionsScope;
     /** current active file's namespace/scope info */
     NameSpaceVec            m_NameSpaces;
-    /** current active file's line info, helper member to access function scopes*/
+    /** current active file's line info, helper member to access function scopes */
     ScopeMarksVec           m_ScopeMarks;
-    /** this is a "filename->info" map containing all the opening files choice info*/
+    /** this is a "filename->info" map containing all the opening files choice info */
     FunctionsScopeMap       m_AllFunctionsScopes;
     /** indicate whether the CC's toolbar need a refresh */
     bool                    m_ToolbarNeedRefresh;
@@ -324,7 +328,7 @@ private:
     /** current caret line */
     int                     m_CurrentLine;
 
-    /** the file updating the toolbar info*/
+    /** the file updating the toolbar info */
     wxString                m_LastFile;
 
     /** indicate whether the predefined keywords set should be added in the suggestion list*/
