@@ -767,7 +767,60 @@ void EditorManager::CheckForExternallyModifiedFiles()
         bool b_modified = false;
 
         // no builtin editor or new file not yet saved
-        if (!ed || !ed->IsOK())
+        if (!ed)
+        {
+            EditorBase* eb = InternalGetEditorBase(i);
+            if (eb)
+            {
+                ProjectFile* pf = nullptr;
+
+                wxFileName fn(eb->GetFilename());
+                fn.MakeAbsolute();
+                Manager::Get()->GetProjectManager()->FindProjectForFile(fn.GetFullPath(), &pf, false, false);
+
+                bool readOnly = fn.FileExists() && !wxFile::Access(fn.GetFullPath(), wxFile::write);
+
+                if (pf)
+                {
+                    if (!fn.FileExists()) // file was deleted ?
+                    {
+                        if (pf->GetFileState() != fvsMissing) // already asked
+                        {
+                            wxString msg;
+                            msg.Printf(_("%s has been deleted, or is no longer available.\n"
+                                         "Do you wish to try to save the file to disk?\n"
+                                         "If you close it, it will most likely be lost !\n"
+                                         "If you cancel this dialog, you have to take care yourself !\n"
+                                         "Yes: save the file, No: close it, Cancel: keep your fingers crossed."), eb->GetFilename().c_str());
+                            int ret = cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO | wxCANCEL );
+                            switch (ret)
+                            {
+                                case wxID_YES:
+                                {
+                                    eb->Save();
+                                    break;
+                                }
+                                case wxID_NO:
+                                {
+                                    pf->SetFileState(fvsMissing);
+                                    eb->Close();
+                                    break;
+                                }
+                                case wxID_CANCEL: // fall through
+                                default:
+                                    eb->SetModified(true); // some editors might implement it
+                                    pf->SetFileState(fvsMissing);
+                                    break;
+                            }
+                        }
+                    }
+                    else
+                        pf->SetFileState(readOnly?fvsReadOnly:fvsNormal);
+                }
+                continue;
+            }
+        }
+        if (!ed->IsOK())
             continue;
 
         ProjectFile* pf = ed->GetProjectFile();
