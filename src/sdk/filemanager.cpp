@@ -234,6 +234,7 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
 
 		if(f.Write(data, len) == len)
 		{
+			f.Close();
 			if(platform::move(temp, name))
 			{
 				return true;
