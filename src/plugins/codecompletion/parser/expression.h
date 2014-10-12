@@ -59,6 +59,9 @@ public:
     static ExpressionNodeType ParseNodeType(wxString token);
     static long GetNodeTypePriority(ExpressionNodeType type);
     static bool IsUnaryNode(ExpressionNodeType type);
+    // check to see the two char token can be merged to create a single operator
+    // e.g.  if the first is '&' and the second is '&', then the function will return true since
+    // "&&" is a valid operator.
     static bool IsBinaryOperator(wxString first, wxString second);
 
 private:
