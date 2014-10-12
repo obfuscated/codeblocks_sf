@@ -2035,8 +2035,21 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
         expandedText = alreadyReplaced;
     }
 
-    // 4. erase string "##"
-    expandedText.Replace(_T("##"), wxEmptyString);
+    // 4. handling operator ## which concatenates two tokens leaving no blank spaces between them
+    for (int pos = expandedText.Find(_T("##"));
+         pos != wxNOT_FOUND;
+         pos = expandedText.Find(_T("##")))
+    {
+        int beginPos = pos;
+        int length = expandedText.size();
+        while (beginPos > 0 && expandedText[beginPos-1] == _T(' '))
+            beginPos--;
+        int endPos = pos + 1;
+        while (endPos < length - 1 && expandedText[endPos+1] == _T(' '))
+            endPos++;
+        // remove the ## with surrounding spaces
+        expandedText.Remove(beginPos, endPos - beginPos + 1);
+    }
 
     TRACE(_T("The actual macro expanded text is '%s'."), expandedText.wx_str());
     return true;
