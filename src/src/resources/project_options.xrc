@@ -212,6 +212,32 @@
 											</object>
 											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="ID_STATICTEXT22">
+												<label>Check for externally modified files:</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>4</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxBoxSizer">
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkCheckFiles">
+														<label>Check for externally modified files (should be true in most cases).</label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+												</object>
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT23">
+														<label>(disabling the checking for externally modified files is mostly useful for projects&#x0A;on slow network shares. Be careful, external modification might silently&#x0A;override the files, if you do not save them from inside Code::Blocks)</label>
+														<fg>#800000</fg>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+												</object>
+											</object>
+											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 									<border>4</border>
@@ -677,6 +703,15 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxTreeCtrl" name="tcOverview">
+												<image_list></image_list>
+												<tree_items>
+													<item>TreeCtrl1</item>
+													<item></item>
+												</tree_items>
+												<items_text>
+													<item2>TreeCtrl1</item2>
+													<item2></item2>
+												</items_text>
 												<style>wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER</style>
 											</object>
 											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>

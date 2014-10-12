@@ -615,6 +615,18 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         bool GetShowNotesOnLoad() const;
 
+        /** Set check for externally modified files.
+          *
+          * @param True if check for externally modified files is set, false if not.
+          */
+        void SetCheckForExternallyModifiedFiles(bool check);
+
+        /** Get check for externally modified files.
+          *
+          * @return True if check for externally modified files is set, false if not.
+          */
+        bool GetCheckForExternallyModifiedFiles() const;
+
         /** Show project notes now.
           *
           * @param nonEmptyOnly If true, show notes only if non-empty.
@@ -715,6 +727,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         bool     m_ExtendedObjectNamesGeneration;
         wxString m_Notes;
         bool     m_AutoShowNotesOnLoad;
+        bool     m_CheckForExternallyModifiedFiles;
 
         // copy of <Extensions> element, in case certain plugins are disabled
         // so that the contents are not lost

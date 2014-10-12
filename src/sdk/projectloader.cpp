@@ -397,6 +397,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     int platformsFinal = spAll;
     PCHMode pch_mode = m_IsPre_1_2 ? pchSourceDir : pchObjectDir;
     bool showNotes = false;
+    bool checkFiles = true;
     wxString notes;
 
     // loop through all options
@@ -450,6 +451,8 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
                 notes = cbC2U(t->Value());
             showNotes = !notes.IsEmpty() && strncmp(node->Attribute("show_notes"), "1", 1) == 0;
         }
+        else if (node->Attribute("check_files"))
+            checkFiles = strncmp(node->Attribute("check_files"), "0", 1) != 0;
 
         node = node->NextSiblingElement("Option");
     }
@@ -466,6 +469,7 @@ void ProjectLoader::DoProjectOptions(TiXmlElement* parentNode)
     m_pProject->SetVirtualFolders(vfolders);
     m_pProject->SetNotes(notes);
     m_pProject->SetShowNotesOnLoad(showNotes);
+    m_pProject->SetCheckForExternallyModifiedFiles(checkFiles);
 
     DoMakeCommands(parentNode->FirstChildElement("MakeCommands"), m_pProject);
     DoVirtualTargets(parentNode->FirstChildElement("VirtualTargets"));
@@ -1256,6 +1260,8 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             notes->InsertEndChild(t);
         }
     }
+    if (!m_pProject->GetCheckForExternallyModifiedFiles())
+        AddElement(prjnode, "Option", "check_files", 0);
 
     if (m_pProject->MakeCommandsModified())
     {

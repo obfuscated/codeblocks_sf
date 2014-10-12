@@ -769,6 +769,15 @@ void EditorManager::CheckForExternallyModifiedFiles()
         // no builtin editor or new file not yet saved
         if (!ed || !ed->IsOK())
             continue;
+
+        ProjectFile* pf = ed->GetProjectFile();
+        if (pf)
+        {
+            cbProject* prj = pf->GetParentProject();
+            if (prj && !prj->GetCheckForExternallyModifiedFiles())
+                continue;
+        }
+
         // File was deleted?
         if (!wxFileExists(ed->GetFilename()))
         {
@@ -782,7 +791,6 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 ed->SetModified(true);
             else
             {
-                ProjectFile* pf = ed->GetProjectFile();
                 if (pf)
                     pf->SetFileState(fvsMissing);
                 ed->Close();
@@ -790,7 +798,6 @@ void EditorManager::CheckForExternallyModifiedFiles()
             continue;
         }
 
-        ProjectFile* pf = ed->GetProjectFile();
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
 

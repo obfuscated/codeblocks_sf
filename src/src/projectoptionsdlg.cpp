@@ -131,6 +131,8 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     XRCCTRL(*this, "chkShowNotes", wxCheckBox)->SetValue(m_Project->GetShowNotesOnLoad());
     XRCCTRL(*this, "txtNotes", wxTextCtrl)->SetValue(m_Project->GetNotes());
 
+    XRCCTRL(*this, "chkCheckFiles", wxCheckBox)->SetValue(m_Project->GetCheckForExternallyModifiedFiles());
+
     FillBuildTargets();
 
     PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
@@ -1295,6 +1297,7 @@ void ProjectOptionsDlg::EndModal(int retCode)
         m_Project->SetModeForPCH((PCHMode)XRCCTRL(*this, "rbPCHStrategy", wxRadioBox)->GetSelection());
         m_Project->SetExtendedObjectNamesGeneration(XRCCTRL(*this, "chkExtendedObjNames", wxCheckBox)->GetValue());
         m_Project->SetShowNotesOnLoad(XRCCTRL(*this, "chkShowNotes", wxCheckBox)->GetValue());
+        m_Project->SetCheckForExternallyModifiedFiles(XRCCTRL(*this, "chkCheckFiles", wxCheckBox)->GetValue());
         m_Project->SetNotes(XRCCTRL(*this, "txtNotes", wxTextCtrl)->GetValue());
 
         if (m_Current_Sel == -1)

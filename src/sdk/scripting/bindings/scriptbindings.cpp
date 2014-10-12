@@ -567,6 +567,8 @@ namespace ScriptBindings
                 func(&cbProject::GetNotes, "GetNotes").
                 func(&cbProject::SetShowNotesOnLoad, "SetShowNotesOnLoad").
                 func(&cbProject::GetShowNotesOnLoad, "GetShowNotesOnLoad").
+                func(&cbProject::SetCheckForExternallyModifiedFiles, "SetCheckForExternallyModifiedFiles").
+                func(&cbProject::GetCheckForExternallyModifiedFiles, "GetCheckForExternallyModifiedFiles").
                 func(&cbProject::ShowNotes, "ShowNotes").
                 func(&cbProject::AddToExtensions, "AddToExtensions").
                 func(&cbProject::DefineVirtualBuildTarget, "DefineVirtualBuildTarget").

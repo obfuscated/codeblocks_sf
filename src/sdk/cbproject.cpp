@@ -63,6 +63,7 @@ cbProject::cbProject(const wxString& filename) :
     m_CurrentlyCompilingTarget(nullptr),
     m_ExtendedObjectNamesGeneration(false),
     m_AutoShowNotesOnLoad(false),
+    m_CheckForExternallyModifiedFiles(true),
     m_pExtensionsElement(nullptr)
 {
     SetCompilerID(CompilerFactory::GetDefaultCompilerID());
@@ -1598,6 +1599,20 @@ void cbProject::SetShowNotesOnLoad(bool show)
 bool cbProject::GetShowNotesOnLoad() const
 {
     return m_AutoShowNotesOnLoad;
+}
+
+void cbProject::SetCheckForExternallyModifiedFiles(bool check)
+{
+    if (m_CheckForExternallyModifiedFiles != check)
+    {
+        m_CheckForExternallyModifiedFiles = check;
+        SetModified(true);
+    }
+}
+
+bool cbProject::GetCheckForExternallyModifiedFiles() const
+{
+    return m_CheckForExternallyModifiedFiles;
 }
 
 void cbProject::ShowNotes(bool nonEmptyOnly, bool editable)
