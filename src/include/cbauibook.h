@@ -47,17 +47,23 @@ class cbAuiNotebook : public wxAuiNotebook
         void AdvanceSelection(bool forward = true);
         /** \brief Save layout of the notebook
          * \return wxString the serialized layout
-         * @remarks Not used at the moment, because it's not (yet) possible to restore the layout,
-         * due to limitations of the base class.
          */
         wxString SavePerspective();
         /** \brief Loads serialized notebook layout
          * \param layout the serialized layout
          * \return bool true if successfull
-         * @remarks Not implemented. Don't use it.
          *
          */
-        bool LoadPerspective(cb_unused const wxString& layout) {return false;};
+        bool LoadPerspective(const wxString& layout, bool mergeLayouts = false);
+        /** \brief Get the tab index from tooltiptext
+         * \param text the notebooks name
+         * \return int the tab's index
+         * @remarks We use the name internally to store the tooltip-text. To use it
+         * in this function, we create a unique string from the relative filename
+         * and the projects title. So it should be unique even after a
+         * restart of C::B.
+         */
+        int GetTabIndexFromTooltip(const wxString& text);
         /** \brief Get the tab position
          *
          * Returns the position of the tab as it is visible.
@@ -160,6 +166,17 @@ class cbAuiNotebook : public wxAuiNotebook
          */
         void FocusActiveTabCtrl();
     protected:
+        /** \brief Create a unique id from the tooltip-text
+         *
+         * Tries to create a unique id from the tooltip.
+         * Find the projectfile, geet the relative filename and put it
+         * together with the projects name.
+         * We use it to save and load the pane layout.
+         * By using the relative filename, it works even if the project
+         * gets moved to another place.
+         * \param text The tooltip text
+         */
+        wxString UniqueIdFromTooltip(const wxString& text);
         /** \brief Minmize free horizontal page of tabCtrl
          *
          * Moves the active tab of tabCtrl to the rightmost place,

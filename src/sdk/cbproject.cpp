@@ -566,6 +566,7 @@ bool cbProject::LoadLayout()
                     if (eb)
                         eb->Activate();
                 }
+                loader.LoadNotebookLayout();
             }
             result = true;
         }

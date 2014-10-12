@@ -6,7 +6,10 @@
 #ifndef PROJECTLAYOUTLOADER_H
 #define PROJECTLAYOUTLOADER_H
 
-#include <wx/string.h>
+#ifndef CB_PRECOMP
+    #include <wx/string.h>
+    #include "cbauibook.h"
+#endif
 
 class cbProject;
 
@@ -19,11 +22,18 @@ class DLLIMPORT ProjectLayoutLoader
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
 
+        bool LoadNotebookLayout() {
+            return Manager::Get()->GetEditorManager()->GetNotebook()->LoadPerspective( m_NotebookLayout,
+                                                                                      !Manager::Get()->GetProjectManager()->IsLoadingWorkspace());
+
+        };
+
         ProjectFile* GetTopProjectFile() { return m_TopProjectFile; }
     protected:
     private:
         cbProject* m_pProject;
         ProjectFile* m_TopProjectFile;
+        wxString m_NotebookLayout;
 };
 
 #endif // PROJECTLAYOUTLOADER_H

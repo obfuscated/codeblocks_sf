@@ -167,6 +167,13 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         elem = elem->NextSiblingElement();
     }
 
+    elem = root->FirstChildElement("EditorTabsLayout");
+    if (elem)
+    {
+        m_NotebookLayout = cbC2U(elem->Attribute("layout"));
+    }
+    // else ?!
+
     return true;
 }
 
@@ -239,5 +246,15 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
             node->SetAttribute("folder", cbU2C(en[i]));
         }
     }
+
+    if (true) // make configurable ?
+    {
+        TiXmlElement *el =
+            static_cast<TiXmlElement*>(
+                rootnode->InsertEndChild( TiXmlElement("EditorTabsLayout") ) );
+        el->SetAttribute("layout", cbU2C( Manager::Get()->GetEditorManager()->GetNotebook()->SavePerspective() ));
+    }
+    // else ?!
+
     return cbSaveTinyXMLDocument(&doc, filename);
 }

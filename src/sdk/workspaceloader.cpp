@@ -23,6 +23,8 @@
     #include "cbproject.h"
     #include "globals.h"
     #include "cbworkspace.h"
+    #include "editormanager.h"
+    #include "cbauibook.h"
 #endif
 
 
@@ -241,6 +243,15 @@ bool WorkspaceLoader::SaveLayout(const wxString& filename)
     }
     // else No workspace present to save.
 
+    if (true) // make configurable ?
+    {
+        TiXmlElement *el =
+            static_cast<TiXmlElement*>(
+                rootnode->InsertEndChild( TiXmlElement("EditorTabsLayout") ) );
+        el->SetAttribute("layout", cbU2C( Manager::Get()->GetEditorManager()->GetNotebook()->SavePerspective() ));
+    }
+    // else ?!
+
     return cbSaveTinyXMLDocument(&doc, filename);
 }
 
@@ -286,6 +297,13 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
             wsp->SetPreferredTarget(name);
     }
     // else XML element 'PreferredTarget' not found?!
+
+    if (TiXmlElement* el = root->FirstChildElement("EditorTabsLayout")) // make configurable ?
+    {
+        if(el->Attribute("layout"))
+            Manager::Get()->GetEditorManager()->GetNotebook()->LoadPerspective(cbC2U(el->Attribute("layout")));
+    }
+    // else ?!
 
     return true;
 }

@@ -2317,23 +2317,29 @@ bool ProjectManagerUI::QueryCloseWorkspace()
     if (!wkspc)
         return true;
 
+
     // Don't ask to save the default workspace, if blank workspace is used on app startup.
     bool blankWorkspace = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true);
-    if (!(wkspc->IsDefault() && blankWorkspace) && wkspc->GetModified())
+    if (!(wkspc->IsDefault() && blankWorkspace))
     {
-        // workspace needs save
-        wxString msg;
-        msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), wkspc->GetTitle().c_str());
-        switch (cbMessageBox(msg, _("Save workspace"),
-                             wxYES_NO | wxCANCEL | wxICON_QUESTION))
+        // always save workspace layout
+        wkspc->SaveLayout();
+        if(wkspc->GetModified())
         {
-            case wxID_YES:
-                Manager::Get()->GetProjectManager()->SaveWorkspace();
-                break;
-            case wxID_CANCEL:
-                return false;
-            default:
-                break;
+            // workspace needs save
+            wxString msg;
+            msg.Printf(_("Workspace '%s' is modified. Do you want to save it?"), wkspc->GetTitle().c_str());
+            switch (cbMessageBox(msg, _("Save workspace"),
+                                 wxYES_NO | wxCANCEL | wxICON_QUESTION))
+            {
+                case wxID_YES:
+                    Manager::Get()->GetProjectManager()->SaveWorkspace();
+                    break;
+                case wxID_CANCEL:
+                    return false;
+                default:
+                    break;
+            }
         }
     }
 

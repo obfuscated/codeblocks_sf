@@ -118,6 +118,7 @@ class cbWorkspace
 
         void ActiveProjectChanged();
 
+        bool SaveLayout();
     private:
         bool m_IsOK; // succeeded loading?
         bool m_IsDefault; // is this the Code::Blocks default workspace?
@@ -127,7 +128,6 @@ class cbWorkspace
         wxString m_PreferredTargetName;
 
         void Load(); // utility function
-        bool SaveLayout();
         bool LoadLayout();
 };
 
