@@ -4,8 +4,10 @@
 #include <sdk.h> // Code::Blocks SDK
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
+#include <projectmanager.h>
 #include <editormanager.h>
 #include <cbeditor.h>
+#include <wx/xrc/xmlres.h>
 
 #include "Version.h"
 #include "JumpTracker.h"

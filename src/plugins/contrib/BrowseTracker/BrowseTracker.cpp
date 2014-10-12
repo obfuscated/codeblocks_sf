@@ -78,6 +78,7 @@
 	#include "configmanager.h"
 	#include "logmanager.h"
 	#include "cbauibook.h"
+	#include "infowindow.h"
 #endif
 #include "projectloader_hooks.h"
 #include "configurationpanel.h"
