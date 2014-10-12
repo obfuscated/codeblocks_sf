@@ -163,7 +163,7 @@ void EditorBase::SetTitle(const wxString& newTitle)
     {
         int idx = nb->GetPageIndex(this);
         nb->SetPageToolTip(idx, toolTip);
-        Manager::Get()->GetEditorManager()->MarkReadOnly(idx, fname.FileExists() && !wxFile::Access(fname.GetFullPath(), wxFile::write) );
+        Manager::Get()->GetEditorManager()->MarkReadOnly(idx, IsReadOnly() || (fname.FileExists() && !wxFile::Access(fname.GetFullPath(), wxFile::write)) );
     }
 }
 

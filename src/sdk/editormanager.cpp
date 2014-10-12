@@ -778,7 +778,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                 fn.MakeAbsolute();
                 Manager::Get()->GetProjectManager()->FindProjectForFile(fn.GetFullPath(), &pf, false, false);
 
-                bool readOnly = fn.FileExists() && !wxFile::Access(fn.GetFullPath(), wxFile::write);
+                bool readOnly = eb->IsReadOnly() || (fn.FileExists() && !wxFile::Access(fn.GetFullPath(), wxFile::write));
                 MarkReadOnly(i, readOnly);
 
                 if (pf)
