@@ -16,8 +16,11 @@
     #include "configmanager.h"
     #include "editormanager.h"
     #include "cbeditor.h"
+    #include "cbproject.h"
+    #include "projectmanager.h"
     #include <wx/dcclient.h>
     #include <wx/app.h>
+    #include <wx/regex.h>
 #endif
 
     #include <wx/tooltip.h>
