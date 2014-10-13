@@ -31,6 +31,7 @@
 //*)
 
 #include <wx/arrstr.h>
+#include <wx/dir.h>
 #include <wx/filename.h>
 #include <wx/font.h>
 #include <wx/progdlg.h>
@@ -293,6 +294,13 @@ void CCTestFrame::Start()
     fn.Normalize(); // cwd is used
     wxString absFilePath = fn.GetFullPath();
     CCTestAppGlobal::s_fileQueue.Add(absFilePath);
+
+    // scan the files with pattern "cc_*.cpp"
+    wxArrayString testFiles;
+    wxDir::GetAllFiles(wxGetCwd(), &testFiles, wxT("cc_*.cpp"));
+
+    for (size_t i=0; i<testFiles.size(); i++)
+        CCTestAppGlobal::s_fileQueue.Add(testFiles[i]);
 
     AppendToLog(_T("--------------M-a-i-n--L-o-g--------------\r\n\r\n"));
 
