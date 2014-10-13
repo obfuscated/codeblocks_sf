@@ -320,9 +320,14 @@ void CCTestFrame::Start()
         CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
 
-    if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
+    if (m_ProgDlg)
+    {
+        delete m_ProgDlg;
+        m_ProgDlg = 0;
+    }
 
-    if ( !IsShown() ) Show();
+    if ( !IsShown() )
+        Show();
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)
