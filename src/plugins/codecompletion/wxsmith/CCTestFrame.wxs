@@ -61,7 +61,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_TEST_SINGLE" variable="btnTestSingle" member="yes">
-							<label>Test</label>
+							<label>Test Single</label>
 							<handler function="OnTestSingle" entry="EVT_BUTTON" />
 						</object>
 						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
@@ -70,11 +70,12 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_PARSE" variable="btnParse" member="yes">
-							<label>Parse</label>
+							<label>Test All</label>
 							<handler function="OnParse" entry="EVT_BUTTON" />
 						</object>
 						<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
+						<option>1</option>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_PRINT_TREE" variable="btnPrintTree" member="yes">

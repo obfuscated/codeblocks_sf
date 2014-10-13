@@ -123,10 +123,10 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     m_DoHideCtrl->SetValue(true);
     bsz_search_tree->Add(m_DoHideCtrl, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     bsz_search_tree->Add(-1,-1,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    btnTestSingle = new wxButton(this, wxID_TEST_SINGLE, _("Test"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_TEST_SINGLE"));
+    btnTestSingle = new wxButton(this, wxID_TEST_SINGLE, _("Test Single"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_TEST_SINGLE"));
     bsz_search_tree->Add(btnTestSingle, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-    btnParse = new wxButton(this, wxID_PARSE, _("Parse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_PARSE"));
-    bsz_search_tree->Add(btnParse, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    btnParse = new wxButton(this, wxID_PARSE, _("Test All"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_PARSE"));
+    bsz_search_tree->Add(btnParse, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
     btnPrintTree = new wxButton(this, wxID_PRINT_TREE, _("Print Tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_PRINT_TREE"));
     bsz_search_tree->Add(btnPrintTree, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_search_tree, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
