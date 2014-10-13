@@ -120,7 +120,7 @@ bool CCTestApp::OnInit()
     wxInitAllImageHandlers();
     //*)
 
-    CCTestFrame* frame = new CCTestFrame(_T("testing/cc_function_decls.cpp"));
+    CCTestFrame* frame = new CCTestFrame(_T(""));
     frame->Center();
     frame->Show();
     // run testing here

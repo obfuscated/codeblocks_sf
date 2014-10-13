@@ -246,16 +246,10 @@ CCTestFrame::~CCTestFrame()
     delete m_FRDlg;
 }
 
-
-/*
-There are currently two stages in this function:
-1, run parse function on all the CCTestAppGlobal::s_fileQueue files, and print token tree
-2, run BatchTest function, this will parse a single file, then does a code-completion test
-Both the two stages will log the messages to the main text ctrl of the frame
-*/
 void CCTestFrame::Start()
 {
-    if (m_ParserCtrl) m_ParserCtrl->SetSelection(1); // make sure "Output" tab is selected
+    if (m_ParserCtrl)
+        m_ParserCtrl->SetSelection(1); // make sure "Output" tab is selected
 
     CCTestAppGlobal::s_includeDirs.Clear();
     CCTestAppGlobal::s_fileQueue.Clear();
@@ -270,16 +264,11 @@ void CCTestFrame::Start()
             CCTestAppGlobal::s_includeDirs.Add(include);
     }
 
-    if (CCTestAppGlobal::s_fileQueue.IsEmpty() && !m_Control->GetLength())
-    {
-        wxMessageBox(wxT("Main file not found and buffer empty. Nothing to do."),
-                     _("Information"), wxOK | wxICON_INFORMATION, this);
-        return;
-    }
+    if (m_DoHideCtrl && m_DoHideCtrl->IsChecked())
+        Hide();
 
-    if (m_DoHideCtrl && m_DoHideCtrl->IsChecked()) Hide();
-
-    m_ProgDlg = new wxProgressDialog(_T("Please wait, operating..."), _("Preparing...\nPlease wait..."), 0, this, wxPD_APP_MODAL);
+    m_ProgDlg = new wxProgressDialog(_T("Please wait, operating..."),
+                                     _("Preparing...\nPlease wait..."), 0, this, wxPD_APP_MODAL);
     m_ProgDlg->SetSize(640,100);
     m_ProgDlg->Layout();
     m_ProgDlg->CenterOnParent();
@@ -287,20 +276,28 @@ void CCTestFrame::Start()
     m_LogCount = 0;
     m_LogCtrl->Clear();
 
-
     m_NativeParser.Clear(); // initial clearance
 
-    wxFileName fn(m_MainFile);
-    fn.Normalize(); // cwd is used
-    wxString absFilePath = fn.GetFullPath();
-    CCTestAppGlobal::s_fileQueue.Add(absFilePath);
+    if (!m_MainFile.IsEmpty())
+    {
+        wxFileName fn(m_MainFile);
+        fn.Normalize(); // cwd is used
+        wxString absFilePath = fn.GetFullPath();
+        CCTestAppGlobal::s_fileQueue.Add(absFilePath);
+    }
 
     // scan the files with pattern "cc_*.cpp"
     wxArrayString testFiles;
-    wxDir::GetAllFiles(wxGetCwd(), &testFiles, wxT("cc_*.cpp"));
-
-    for (size_t i=0; i<testFiles.size(); i++)
-        CCTestAppGlobal::s_fileQueue.Add(testFiles[i]);
+    // if we only debug a single file, we use a file pattern ccc_*.cpp
+    wxDir::GetAllFiles (wxGetCwd(),&testFiles,wxT("ccc_*.cpp"));
+    if (testFiles.size() > 0)
+        CCTestAppGlobal::s_fileQueue.Add(testFiles[0]);
+    else // otherwise, we collect all the files with pattern cc_*.cpp
+    {
+        wxDir::GetAllFiles 	(wxGetCwd(),&testFiles,wxT("cc_*.cpp"));
+        for (size_t i=0; i<testFiles.size(); i++)
+            CCTestAppGlobal::s_fileQueue.Add(testFiles[i]);
+    }
 
     AppendToLog(_T("--------------M-a-i-n--L-o-g--------------\r\n\r\n"));
 
@@ -317,7 +314,7 @@ void CCTestFrame::Start()
         m_ProgDlg->Update(-1, m_CurrentFile);
         m_StatuBar->SetStatusText(m_CurrentFile);
 
-        // Here we are going to test the expression solving algorithm
+        // parse the file and test the expression solving algorithm
         m_NativeParser.BatchTest(m_CurrentFile);
 
         CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
@@ -326,7 +323,6 @@ void CCTestFrame::Start()
     if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
 
     if ( !IsShown() ) Show();
-
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)
@@ -459,11 +455,12 @@ void CCTestFrame::SetMarkerStyle(int marker, int markerType, wxColor fore, wxCol
 
 void CCTestFrame::LoadToControl()
 {
-  if (!m_MainFile.IsEmpty() && !m_Control->LoadFile(m_MainFile))
-  {
-      wxMessageBox(_("Could not load input file."), _("CCTest"),
-                   wxOK | wxICON_EXCLAMATION, this);
-  }
+    if (!m_MainFile.IsEmpty() && !m_Control->LoadFile(m_MainFile))
+    {
+        // NOTE: comment out the below lines, since we can have m_MainFile empty
+        //wxMessageBox(_("Could not load input file."), _("CCTest"),
+        //             wxOK | wxICON_EXCLAMATION, this);
+    }
 }
 
 void CCTestFrame::OnMenuQuitSelected(wxCommandEvent& /*event*/)
