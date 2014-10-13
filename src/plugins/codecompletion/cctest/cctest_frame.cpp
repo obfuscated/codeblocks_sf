@@ -305,7 +305,16 @@ void CCTestFrame::Start()
     // if we only debug a single file, we use a file pattern ccc_*.cpp
     wxDir::GetAllFiles (wxGetCwd(),&testFiles,wxT("ccc_*.cpp"));
     if (testFiles.size() > 0)
-        CCTestAppGlobal::s_fileQueue.Add(testFiles[0]);
+    {
+        wxString filename = testFiles[0];
+        // only test the first matched file
+        CCTestAppGlobal::s_fileQueue.Add(filename);
+        if (!filename.IsEmpty() && !m_Control->LoadFile(filename))
+        {
+            wxMessageBox(_("Could not load input file."), _("CCTest"),
+                         wxOK | wxICON_EXCLAMATION, this);
+        }
+    }
     else // otherwise, we collect all the files with pattern cc_*.cpp
     {
         wxDir::GetAllFiles 	(wxGetCwd(),&testFiles,wxT("cc_*.cpp"));
