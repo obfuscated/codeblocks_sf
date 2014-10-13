@@ -289,14 +289,10 @@ void CCTestFrame::Start()
 
     m_NativeParser.Clear(); // initial clearance
 
-    // make sure not to over-write an existing file (in case content had changed)
-    wxString tf(wxFileName::CreateTempFileName(wxT("cc")));
-    // make the parser recognize it as header file:
-    wxFileName fn(tf); fn.SetExt(wxT("h")); wxRemoveFile(tf); // no longer needed
-    if (m_Control->SaveFile(fn.GetFullPath()))
-        CCTestAppGlobal::s_fileQueue.Add(fn.GetFullPath());
-    else
-        AppendToLog(_T("Unable to parse buffer (could not convert to file)."));
+    wxFileName fn(m_MainFile);
+    fn.Normalize(); // cwd is used
+    wxString absFilePath = fn.GetFullPath();
+    CCTestAppGlobal::s_fileQueue.Add(absFilePath);
 
     AppendToLog(_T("--------------M-a-i-n--L-o-g--------------\r\n\r\n"));
 
@@ -318,9 +314,6 @@ void CCTestFrame::Start()
 
         CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
-
-    // don't forget to remove the temporary file (w/ ".h" extension)
-    wxRemoveFile(fn.GetFullPath());
 
     if (m_ProgDlg) { delete m_ProgDlg; m_ProgDlg = 0; }
 

@@ -199,6 +199,8 @@ void NativeParserTest::Init()
         wxString include_dir = CCTestAppGlobal::s_includeDirs.Item(i);
         m_Parser.AddIncludeDir(include_dir);
     }
+    // add the "testing" folder as include search path
+    m_Parser.AddIncludeDir(wxGetCwd()+wxT("/testing"));
 }
 
 bool NativeParserTest::TestParseAndCodeCompletion(wxString filename)
