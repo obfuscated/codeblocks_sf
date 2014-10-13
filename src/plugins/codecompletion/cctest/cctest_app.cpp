@@ -11,21 +11,33 @@
  * <CALL_GRAPH>
  * CCTestApp():
  * - Creates the CCTestFrame
- * -> CCTestFrame(): will get a singleton CCTest instance pointer by calling CCTest::Get().
- *   - Provided an initial dummy file, can be set by the user later.
+ *
+ * -> CCTestFrame(): contains an instance of NativeParserTest class
  *   -> CCTestFrame::Start():
- *      - Reads all UI values into global vars (includes, headers)
+ *      - Reads all UI values into global vars (includes)
  *      - compiles initial global file queue
  *      - Creates global "Busy" dialog
- *      - Calls CCTest::Clear()
- *      - Iterates over global file queue and calls CCTest::Start(file)
- *      - Creates a local NativeParserTest instance, prepares an expression string
+ *      - Iterates over global file queue and calls NativeParserTest::ParseAndCodeCompletion(file)
+ *      - destroys "Busy" dialog
+ *
+ * -> NativeParserTest(): contains a ParserBase instance, which mimic the NativeParser in C::B.
+ *   -> NativeParserTest()::ParseAndCodeCompletion(): parse the file, run tests contains in the file
+ *      - Determine whether the file should be read from hard disk or wxScintilla control
+ *      - parse it by calling ParserBase::ReParse() or ParserBase::ParseBuffer()
+ *      - prepares an expression string
  *      - Tests the expression matching algorithms by call NativeParserTest::TestExpression()
  *      - Prints results to UI
- *      - destroys "Busy" dialog
- * -> CCTest(): holds dummy tree "TokenTree* m_pTokenTree;"
- *   -> CCTest::Start(file)
- *      - Note: In CCTest::Init() the macro replacements are setup
+ *   -> NativeParserTest::Init() the macro replacements are setup
+ *
+ * -> ParserBase(): holds tree "TokenTree* m_pTokenTree;" and the include search paths
+ *      - ParserCommon::FileType():
+ *        - determines file type as source/header according extension
+ *      - ParserBase::GetFullFileName():
+ *        - uses includes provided to compute full file name
+ *      - ParserBase::ParseFile():
+ *        - Monitors the parsing of files to avoid re-parsing the same file
+ *        - Appends new files to file global file queue
+ *    -> ParserBase::Reparse() or ParserBase::ParseBuffer():
  *      - Creates and initializes FileLoader for provided file
  *      - Sets up ParserThreadOptions (like follow local/global includes etc...)
  *      - Creates a ParserBase instance "client"
@@ -33,6 +45,7 @@
  *      - Calls ParserThread::Parse() and provides:
  *        ParserBase, file, ParserThreadOptions, TokenTree
  *      - Allows to access the results, like tokens tree
+ *
  * -> ParserThread(): same as in Code::Blocks implementation
  *    -> ParserThread::Parse():
  *       - Calls ParserThread::InitTokenizer()
@@ -43,20 +56,31 @@
  *       - Read the file or buffer and tokenises it into elements
  *    -> ParserThread::DoParse():
  *       - Recursive function that handles all the dirty stuff
- *       - Calls ParserDummy::ParserCommon::FileType() in ParserThread::HandleIncludes()
+ *       - Calls ParserCommon::FileType() in ParserThread::HandleIncludes()
  *         to parse additionally encountered files (#includes)
- *       - Calls ParserDummy::ParserBase::ParseFile() in ParserThread::HandleIncludes()
+ *       - Calls ParserBase::ParseFile() in ParserThread::HandleIncludes()
  *         to parse additionally encountered files (#includes)
- * -> ParserDummy(): it shares the header file "parser.h" with CodeCompletion plugin projects, but
- *        provides its own implementation to "Parser", namely:
- *      - ParserDummy::ParserCommon::FileType:
- *        - determines file type as source/header according extension
- *      - ParserDummy::ParserBase::GetFullFileName:
- *        - uses includes provided to compute full file name
- *      - ParserDummy::ParserBase::ParseFile():
- *        - Monitors the parsing of files to avoid re-parsing the same file
- *        - Appends new files to file global file queue
+ *
  * </CALL_GRAPH>
+ */
+
+/**
+ * In the CCTestFrame class, we have a member of NativeParserTest which is derived from
+ * NativeParserBase class.
+ * In the NativeParserTest class, we have a member of ParserBase.
+ *
+ * To parse a local file, we need the ParserBase::Reparse() function, which simply create a
+ * ParserThread instance, and run ParserThread::Parse().
+ *
+ * To parse a buffer(the buffer is the content of wxScintilla edit control), we need ParseBuffer()
+ * function from ParserBase class, which also run a ParserThread::Parse() there.
+ *
+ * To store the Tokens, we have a TokenTree member in ParserBase class.
+ *
+ * To handle #include directive in ParserThread::Parse() function, we need to use a function
+ * ParserBase::GetFullFileName(). That's because ParserThread will generally call
+ * m_Parent->GetFullFileName() to locate the file, and then m_Parent->ParseFile() to recursively
+ * handling the included files.
  */
 
 #ifdef __BORLANDC__
@@ -99,6 +123,7 @@ bool CCTestApp::OnInit()
     CCTestFrame* frame = new CCTestFrame(_T("testing/cc_function_decls.cpp"));
     frame->Center();
     frame->Show();
+    // run testing here
     frame->Start();
 
     return wxsOK;
