@@ -31,4 +31,4 @@ class DLLIMPORT Logger
 {
 public:
     enum level { caption, info, warning, success, error };
-}
+};
