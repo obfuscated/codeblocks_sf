@@ -40,6 +40,9 @@ public:
 protected:
     //(*Identifiers(CCTestFrame)
     static const long ID_CHK_HIDE;
+    static const long wxID_TEST_SINGLE;
+    static const long wxID_PARSE;
+    static const long wxID_PRINT_TREE;
     static const long wxID_TOKEN;
     //*)
 
@@ -60,6 +63,7 @@ private:
     void OnMenuAboutSelected(wxCommandEvent& event);
     void OnParse(wxCommandEvent& event);
     void OnPrintTree(wxCommandEvent& event);
+    void OnTestSingle(wxCommandEvent& event);
     //*)
 
     void OnMarginClick(wxScintillaEvent& event);
@@ -73,8 +77,10 @@ private:
     wxTextCtrl* m_TreeCtrl;
     wxCheckBox* m_DoTreeCtrl;
     wxFileDialog* m_SaveFile;
+    wxButton* btnTestSingle;
     wxStatusBar* m_StatuBar;
     wxTextCtrl* m_LogCtrl;
+    wxButton* btnParse;
     wxNotebook* m_ParserCtrl;
     wxCheckBox* m_DoHideCtrl;
     wxTextCtrl* m_IncludeCtrl;

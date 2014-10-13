@@ -13,7 +13,7 @@ public:
     bool TestExpression(wxString&          expression,
                         const TokenIdxSet& searchScope,
                         TokenIdxSet&       result);
-    bool Parse(wxString & file);
+    bool Parse(wxString& file, bool isLocalFile);
     ParserBase m_Parser;
 
     void PrintList();
@@ -28,7 +28,7 @@ public:
 
     void Init();
 
-    bool TestParseAndCodeCompletion(wxString filename);
+    bool TestParseAndCodeCompletion(wxString filename, bool isLocalFile = true);
 
     // run test on the file
     void BatchTest(wxString file);

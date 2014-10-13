@@ -40,6 +40,9 @@
 
 //(*IdInit(CCTestFrame)
 const long CCTestFrame::ID_CHK_HIDE = wxNewId();
+const long CCTestFrame::wxID_TEST_SINGLE = wxNewId();
+const long CCTestFrame::wxID_PARSE = wxNewId();
+const long CCTestFrame::wxID_PRINT_TREE = wxNewId();
 const long CCTestFrame::wxID_TOKEN = wxNewId();
 //*)
 
@@ -87,7 +90,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     wxMenu* mnu_help;
     wxStaticText* lbl_include;
     wxMenuItem* mnu_itm_quit;
-    wxButton* btnParse;
     wxBoxSizer* bsz_include;
     wxBoxSizer* bsz_misc;
     wxMenuItem* mnu_item_about;
@@ -120,9 +122,11 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     m_DoHideCtrl->SetValue(true);
     bsz_search_tree->Add(m_DoHideCtrl, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
     bsz_search_tree->Add(-1,-1,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    btnParse = new wxButton(this, wxID_ANY, _("Parse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    btnTestSingle = new wxButton(this, wxID_TEST_SINGLE, _("Test"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_TEST_SINGLE"));
+    bsz_search_tree->Add(btnTestSingle, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+    btnParse = new wxButton(this, wxID_PARSE, _("Parse"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_PARSE"));
     bsz_search_tree->Add(btnParse, 0, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-    btnPrintTree = new wxButton(this, wxID_ANY, _("Print Tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
+    btnPrintTree = new wxButton(this, wxID_PRINT_TREE, _("Print Tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_PRINT_TREE"));
     bsz_search_tree->Add(btnPrintTree, 1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_search_tree, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_parser = new wxBoxSizer(wxVERTICAL);
@@ -192,8 +196,9 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_main->SetSizeHints(this);
     Center();
 
-    Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
-    Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnPrintTree);
+    Connect(wxID_TEST_SINGLE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnTestSingle);
+    Connect(wxID_PARSE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
+    Connect(wxID_PRINT_TREE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnPrintTree);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
     Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReparseSelected);
     Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuSaveSelected);
@@ -669,8 +674,8 @@ void CCTestFrame::OnCCLogger(wxCommandEvent& event)
 void CCTestFrame::OnCCAddToken(wxCommandEvent& event)
 {
     wxString log(event.GetString());
-
-    m_ProgDlg->Update(-1, m_CurrentFile + wxT("\n") + log);
+    if (m_ProgDlg)
+        m_ProgDlg->Update(-1, m_CurrentFile + wxT("\n") + log);
 }
 
 void CCTestFrame::OnPrintTree(cb_unused wxCommandEvent& event)
@@ -709,3 +714,14 @@ void CCTestFrame::OnPrintTree(cb_unused wxCommandEvent& event)
                                       static_cast<unsigned long>(tt->size()), static_cast<unsigned long>(tt->m_FileMap.size()))));
     }
 }
+
+void CCTestFrame::OnTestSingle(wxCommandEvent& event)
+{
+    // read the contents of the Control, and parse it.
+    // no need to save the file to hard dist and after parsing, delete it.
+    wxString content = m_Control->GetText();
+    m_NativeParser.Clear();
+    m_NativeParser.TestParseAndCodeCompletion(content, /* isLocalFile */ false);
+
+}
+

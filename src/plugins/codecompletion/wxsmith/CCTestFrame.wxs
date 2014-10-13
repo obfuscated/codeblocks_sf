@@ -60,7 +60,16 @@
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
-						<object class="wxButton" name="wxID_ANY" variable="btnParse" member="no">
+						<object class="wxButton" name="wxID_TEST_SINGLE" variable="btnTestSingle" member="yes">
+							<label>Test</label>
+							<handler function="OnTestSingle" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_PARSE" variable="btnParse" member="yes">
 							<label>Parse</label>
 							<handler function="OnParse" entry="EVT_BUTTON" />
 						</object>
@@ -68,7 +77,7 @@
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
-						<object class="wxButton" name="wxID_ANY" variable="btnPrintTree" member="yes">
+						<object class="wxButton" name="wxID_PRINT_TREE" variable="btnPrintTree" member="yes">
 							<label>Print Tree</label>
 							<handler function="OnPrintTree" entry="EVT_BUTTON" />
 						</object>

@@ -88,9 +88,12 @@ bool NativeParserTest::TestExpression(wxString&          expression,
     return true;
 }
 
-bool NativeParserTest::Parse(wxString & filename)
+bool NativeParserTest::Parse(wxString& file, bool isLocalFile)
 {
-    return m_Parser.Reparse(filename, true);
+    if (isLocalFile)
+        return m_Parser.Reparse(file, true);
+    else
+        return m_Parser.ParseBuffer(file, true);
 }
 
 void NativeParserTest::PrintList()
@@ -203,13 +206,15 @@ void NativeParserTest::Init()
     m_Parser.AddIncludeDir(wxGetCwd()+wxT("/testing"));
 }
 
-bool NativeParserTest::TestParseAndCodeCompletion(wxString filename)
+bool NativeParserTest::TestParseAndCodeCompletion(wxString filename, bool isLocalFile)
 {
     Clear();//clear the tree
+
     bool parseResult = false;
-    parseResult = Parse(filename);
+    parseResult = Parse(filename, isLocalFile);
     if(!parseResult)
         return false;
+
     int passCount = 0;
     int failCount = 0;
 
@@ -218,17 +223,34 @@ bool NativeParserTest::TestParseAndCodeCompletion(wxString filename)
     wxLogMessage(message);
     testResult<<message<<wxT("\n");
 
+    std::vector<wxString> allLines;
+    if (isLocalFile)
+    {
+        // read the test cases of CodeCompletion test
+        wxTextFile source;
+        source.Open(filename);
+        wxString str;
+        for ( str = source.GetFirstLine();
+          source.GetCurrentLine() < source.GetLineCount();
+          str = source.GetNextLine() )
+        {
+            allLines.push_back(str);
+        }
+    }
+    else
+    {
+        wxStringTokenizer tokenizer(filename, wxT("\n"), wxTOKEN_RET_EMPTY);
+        while ( tokenizer.HasMoreTokens() )
+        {
+            wxString token = tokenizer.GetNextToken();
+            allLines.push_back(token);
+        }
+    }
 
-    // read the test cases of CodeCompletion test
-    wxTextFile source;
-    source.Open(filename);
-    wxString str;
-
-    for ( str = source.GetLastLine();
-          source.GetCurrentLine() > 0;
-          str = source.GetPrevLine() )
+    for (size_t i = allLines.size() - 1; i >= 0; i--)
     {
 
+        wxString str = allLines[i];
         // a test case should be put in a line, and start with the double slash
         if (str.StartsWith(_T("//")))
         {

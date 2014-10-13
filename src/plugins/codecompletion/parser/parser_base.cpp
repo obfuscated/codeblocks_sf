@@ -238,6 +238,41 @@ bool ParserBase::Reparse(const wxString& file, cb_unused bool isLocal)
     return success;
 }
 
+
+bool ParserBase::ParseBuffer(const wxString& buffer,
+                             bool isLocal,
+                             bool bufferSkipBlocks,
+                             bool isTemp,
+                             const wxString& filename,
+                             int parentIdx,
+                             int initLine)
+{
+    ParserThreadOptions opts;
+
+    opts.useBuffer            = true;
+    opts.fileOfBuffer         = filename;
+    opts.parentIdxOfBuffer    = parentIdx;
+    opts.initLineOfBuffer     = initLine;
+    opts.bufferSkipBlocks     = bufferSkipBlocks;
+    opts.isTemp               = isTemp;
+
+    opts.followLocalIncludes  = true;
+    opts.followGlobalIncludes = true;
+    opts.wantPreprocessor     = m_Options.wantPreprocessor;
+    opts.parseComplexMacros   = true;
+
+    opts.handleFunctions      = true;   // enabled to support function ptr in local block
+
+    opts.storeDocumentation   = false;
+
+    ParserThread thread(this, buffer, isLocal, opts, m_TokenTree);
+
+    bool success = thread.Parse();
+
+    return success;
+
+}
+
 void ParserBase::AddIncludeDir(const wxString& dir)
 {
     if (dir.IsEmpty())
