@@ -76,6 +76,7 @@ private:
     wxScintilla* m_Control;
     wxTextCtrl* m_TreeCtrl;
     wxCheckBox* m_DoTreeCtrl;
+    wxPanel* panCompletionTest;
     wxFileDialog* m_SaveFile;
     wxButton* btnTestSingle;
     wxStatusBar* m_StatuBar;
@@ -83,6 +84,7 @@ private:
     wxButton* btnParse;
     wxNotebook* m_ParserCtrl;
     wxCheckBox* m_DoHideCtrl;
+    wxTextCtrl* m_CompletionTestCtrl;
     wxTextCtrl* m_IncludeCtrl;
     wxFileDialog* m_OpenFile;
     wxButton* btnPrintTree;

@@ -88,6 +88,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     wxBoxSizer* bszParserSearchTree;
     wxBoxSizer* bszParserOutput;
     wxMenu* mnu_help;
+    wxBoxSizer* bszCompletionTest;
     wxStaticText* lbl_include;
     wxMenuItem* mnu_itm_quit;
     wxBoxSizer* bsz_include;
@@ -154,9 +155,17 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     panParserSearchTree->SetSizer(bszParserSearchTree);
     bszParserSearchTree->Fit(panParserSearchTree);
     bszParserSearchTree->SetSizeHints(panParserSearchTree);
+    panCompletionTest = new wxPanel(m_ParserCtrl, wxID_ANY, wxPoint(274,5), wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    bszCompletionTest = new wxBoxSizer(wxHORIZONTAL);
+    m_CompletionTestCtrl = new wxTextCtrl(panCompletionTest, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_RICH2|wxHSCROLL, wxDefaultValidator, _T("wxID_ANY"));
+    bszCompletionTest->Add(m_CompletionTestCtrl, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+    panCompletionTest->SetSizer(bszCompletionTest);
+    bszCompletionTest->Fit(panCompletionTest);
+    bszCompletionTest->SetSizeHints(panCompletionTest);
     m_ParserCtrl->AddPage(panParserInput, _("Parser input"), true);
     m_ParserCtrl->AddPage(panParserOutput, _("Parser output"), false);
     m_ParserCtrl->AddPage(panParserSearchTree, _("Parser search tree"), false);
+    m_ParserCtrl->AddPage(panCompletionTest, _("Completion test"), false);
     bsz_parser->Add(m_ParserCtrl, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_main->Add(bsz_parser, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     SetSizer(bsz_main);
@@ -209,7 +218,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     //*)
 
     // redirect the wxLogMessage to the text ctrl of the frame
-    wxLogTextCtrl *textLog = new wxLogTextCtrl(m_LogCtrl);
+    wxLogTextCtrl *textLog = new wxLogTextCtrl(m_CompletionTestCtrl);
     wxLog::SetActiveTarget(textLog);
 #if wxCHECK_VERSION(2,9,0)
     wxLog::DisableTimestamp(); // do not show the time stamp
