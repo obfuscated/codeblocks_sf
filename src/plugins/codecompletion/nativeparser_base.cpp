@@ -31,11 +31,11 @@
 
 #ifdef CC_PARSER_TEST
     #define ADDTOKEN(format, args...) \
-            wxLogMessage(F(format, ##args))
+            CCLogger::Get()->AddToken(F(format, ##args))
     #define TRACE(format, args...) \
-            wxLogMessage(F(format, ##args))
+            CCLogger::Get()->DebugLog(F(format, ##args))
     #define TRACE2(format, args...) \
-            wxLogMessage(F(format, ##args))
+            CCLogger::Get()->DebugLog(F(format, ##args))
 #else
     #if CC_NATIVEPARSERBASE_DEBUG_OUTPUT == 1
         #define ADDTOKEN(format, args...) \
