@@ -117,9 +117,6 @@
 			<Option compilerVar="WINDRES" />
 			<Option target="cctest" />
 		</Unit>
-		<Unit filename="cctest/test.h">
-			<Option target="&lt;{~None~}&gt;" />
-		</Unit>
 		<Unit filename="cctreectrl.cpp">
 			<Option target="Code-completion" />
 		</Unit>
