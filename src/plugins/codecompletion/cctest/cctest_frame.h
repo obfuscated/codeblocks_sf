@@ -39,7 +39,6 @@ public:
 
 protected:
     //(*Identifiers(CCTestFrame)
-    static const long ID_CHK_DO_HEADERS;
     static const long ID_CHK_HIDE;
     static const long wxID_TOKEN;
     //*)
@@ -59,7 +58,6 @@ private:
     void OnMenuReparseSelected(wxCommandEvent& event);
     void OnMenuTokenSelected(wxCommandEvent& event);
     void OnMenuAboutSelected(wxCommandEvent& event);
-    void OnDoHeadersClick(wxCommandEvent& event);
     void OnParse(wxCommandEvent& event);
     void OnPrintTree(wxCommandEvent& event);
     //*)
@@ -79,8 +77,6 @@ private:
     wxTextCtrl* m_LogCtrl;
     wxNotebook* m_ParserCtrl;
     wxCheckBox* m_DoHideCtrl;
-    wxCheckBox* m_DoHeadersCtrl;
-    wxTextCtrl* m_HeadersCtrl;
     wxTextCtrl* m_IncludeCtrl;
     wxFileDialog* m_OpenFile;
     wxButton* btnPrintTree;

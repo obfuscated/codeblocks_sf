@@ -33,28 +33,6 @@
 						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
-					<object class="sizeritem">
-						<object class="wxBoxSizer" variable="bsz_headers" member="no">
-							<orient>wxVERTICAL</orient>
-							<object class="sizeritem">
-								<object class="wxCheckBox" name="ID_CHK_DO_HEADERS" variable="m_DoHeadersCtrl" member="yes">
-									<label>Parse the following priority files/headers first (colon separated):</label>
-									<handler function="OnDoHeadersClick" entry="EVT_CHECKBOX" />
-								</object>
-								<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-								<border>5</border>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="wxID_ANY" variable="m_HeadersCtrl" member="yes">
-									<enabled>0</enabled>
-								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-								<border>5</border>
-							</object>
-						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-						<border>5</border>
-					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>

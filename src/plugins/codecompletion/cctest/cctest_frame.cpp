@@ -38,7 +38,6 @@
 #include <wx/tokenzr.h>
 
 //(*IdInit(CCTestFrame)
-const long CCTestFrame::ID_CHK_DO_HEADERS = wxNewId();
 const long CCTestFrame::ID_CHK_HIDE = wxNewId();
 const long CCTestFrame::wxID_TOKEN = wxNewId();
 //*)
@@ -87,7 +86,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     wxMenu* mnu_help;
     wxStaticText* lbl_include;
     wxMenuItem* mnu_itm_quit;
-    wxBoxSizer* bsz_headers;
     wxButton* btnParse;
     wxBoxSizer* bsz_include;
     wxBoxSizer* bsz_misc;
@@ -112,14 +110,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     m_IncludeCtrl->SetMinSize(wxSize(-1,60));
     bsz_include->Add(m_IncludeCtrl, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_misc->Add(bsz_include, 0, wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-    bsz_headers = new wxBoxSizer(wxVERTICAL);
-    m_DoHeadersCtrl = new wxCheckBox(this, ID_CHK_DO_HEADERS, _("Parse the following priority files/headers first (colon separated):"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_DO_HEADERS"));
-    m_DoHeadersCtrl->SetValue(false);
-    bsz_headers->Add(m_DoHeadersCtrl, 0, wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-    m_HeadersCtrl = new wxTextCtrl(this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
-    m_HeadersCtrl->Disable();
-    bsz_headers->Add(m_HeadersCtrl, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-    bsz_misc->Add(bsz_headers, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_misc, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     bsz_search_tree = new wxBoxSizer(wxHORIZONTAL);
     m_DoTreeCtrl = new wxCheckBox(this, wxID_ANY, _("Enable creation of parser\'s internal search tree (might get HUGE!!!)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_ANY"));
@@ -201,7 +191,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_main->SetSizeHints(this);
     Center();
 
-    Connect(ID_CHK_DO_HEADERS,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnDoHeadersClick);
     Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
     Connect(wxID_ANY,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnPrintTree);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
@@ -241,8 +230,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
                             gcc_base + _T("lib\\gcc\\")+mingwver+_T("\\")+gccver+_T("\\include-fixed")              + _T("\n") +
                             gcc_base + mingwver + _T("\\include")                                                   + _T("\n"));
 
-    m_HeadersCtrl->SetValue(_T("<_mingw.h>,<cstddef>,<w32api.h>,<winbase.h>,<wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
-//  m_HeadersCtrl->SetValue(_T("           <cstddef>,<w32api.h>,            <wx/defs.h>,<wx/dlimpexp.h>,<wx/toplevel.h>,<boost/config.hpp>,<boost/filesystem/config.hpp>,\"pch.h\",\"sdk.h\",\"stdafx.h\""));
 
     CCLogger::Get()->Init(this, idCCLogger, idCCLogger, idCCAddToken);
     m_StatuBar->SetStatusText(_("Ready!"));
@@ -280,44 +267,6 @@ void CCTestFrame::Start()
         wxString include = tkz_inc.GetNextToken().Trim(true).Trim(false);
         if (!include.IsEmpty())
             CCTestAppGlobal::s_includeDirs.Add(include);
-    }
-
-    // if this option is selected, we should parse the priority header files first
-    // the priority header files can be contained from m_HeadersCtrl
-    if (m_DoHeadersCtrl->IsChecked())
-    {
-        // Obtain all priority header files
-        wxStringTokenizer tkz_hdr(m_HeadersCtrl->GetValue(), _T(","));
-        while (tkz_hdr.HasMoreTokens())
-        {
-            wxString header = tkz_hdr.GetNextToken().Trim(false).Trim(true);
-
-            // Remove <> (if any)
-            int lt = header.Find(wxT('<')); int gt = header.Find(wxT('>'),true);
-            if (lt!=wxNOT_FOUND && gt!=wxNOT_FOUND && gt>lt)
-                header = header.AfterFirst(wxT('<')).BeforeLast(wxT('>'));
-            // Remove "" (if any)
-            int oq = header.Find(wxT('"')); int cq = header.Find(wxT('"'),true);
-            if (oq!=wxNOT_FOUND && cq!=wxNOT_FOUND && cq>oq)
-                header = header.AfterFirst(wxT('"')).BeforeLast(wxT('"'));
-
-            header = header.Trim(false).Trim(true);
-
-            // Find the header files in include path's as provided
-            // (practically the same as ParserBase::FindFileInIncludeDirs())
-            for (size_t i=0; i<CCTestAppGlobal::s_includeDirs.GetCount(); ++i)
-            {
-                // Normalize the path (as in C::B's "NormalizePath()")
-                wxFileName f_header(header);
-                wxString   base_path(CCTestAppGlobal::s_includeDirs[i]);
-                if (f_header.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base_path))
-                {
-                    wxString this_header = f_header.GetFullPath();
-                    if ( ::wxFileExists(this_header) )
-                        CCTestAppGlobal::s_fileQueue.Add(this_header);
-                }
-            }
-        }
     }
 
     if (CCTestAppGlobal::s_fileQueue.IsEmpty() && !m_Control->GetLength())
@@ -595,12 +544,6 @@ void CCTestFrame::OnMenuAboutSelected(wxCommandEvent& /*event*/)
     str.Printf(_("CCTest build with %s!\nRunning under %s."),
                wxVERSION_STRING, wxGetOsDescription().c_str());
     wxMessageBox(str, _("About CCTest"), wxOK | wxICON_INFORMATION, this);
-}
-
-void CCTestFrame::OnDoHeadersClick(wxCommandEvent& event)
-{
-    if (m_HeadersCtrl)
-        m_HeadersCtrl->Enable(event.IsChecked());
 }
 
 void CCTestFrame::OnParse(wxCommandEvent& WXUNUSED(event))
