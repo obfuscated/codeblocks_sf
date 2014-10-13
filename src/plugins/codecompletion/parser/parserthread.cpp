@@ -1766,7 +1766,7 @@ void ParserThread::HandleNamespace()
             m_Tokenizer.GetToken(); // eat {
             int lineStart = m_Tokenizer.GetLineNumber();
 
-            Token*     lastParent = m_LastParent;
+            Token*     lastParent = m_LastParent; // save status, will restore after DoParse()
             TokenScope lastScope  = m_LastScope;
 
             m_LastParent = newToken;
@@ -2043,7 +2043,7 @@ void ParserThread::HandleClass(EClassType ct)
 
             m_Tokenizer.GetToken(); // eat {
 
-            Token* lastParent = m_LastParent;
+            Token* lastParent = m_LastParent; // save status, and will restore after DoParse()
             TokenScope lastScope = m_LastScope;
             bool parsingTypedef = m_ParsingTypedef;
 
@@ -2084,7 +2084,7 @@ void ParserThread::HandleClass(EClassType ct)
             }
             else
             {
-                m_Str = newToken->m_Name;
+                m_Str = newToken->m_Name;   // pattern: class A{} b; b is a variable
                 if ( !ReadVarNames() )
                 {   TRACE(_T("HandleClass() : ReadVarNames returned false [2].")); }
                 m_Str.Clear();
