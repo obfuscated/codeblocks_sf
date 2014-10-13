@@ -41,7 +41,7 @@ class CodeBlocksApp : public wxApp
         virtual int OnExit();
         virtual int OnRun();
         wxString GetAppPath() const;
-        int ParseCmdLine(MainFrame* handlerFrame);
+        int ParseCmdLine(MainFrame* handlerFrame, const wxString &CmdLine = wxEmptyString);
         void OnAppActivate(wxActivateEvent& event);
         bool OnCmdLineParsed(wxCmdLineParser& parser);
         void OnFatalException();
@@ -53,6 +53,7 @@ class CodeBlocksApp : public wxApp
         // in response of a print-document apple event
         virtual void         MacPrintFile(const wxString &fileName) ;
 #endif
+        void AddFileToOpenDelayed(const wxString &filename);
     protected:
         void OnBatchBuildDone(CodeBlocksEvent& event);
         void OnTBIconLeftDown(wxTaskBarIconEvent& event);
@@ -65,6 +66,7 @@ class CodeBlocksApp : public wxApp
         void InitLocale();
         int BatchJob();
         wxLocale m_locale; // locale we'll be using
+        wxArrayString m_DelayedFilesToOpen;
     private:
         void SetupPersonality(const wxString& personality);
 

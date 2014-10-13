@@ -40,6 +40,7 @@
 #include "crashhandler.h"
 #include "cbstyledtextctrl.h"
 #include <wx/ipc.h>
+#include <wx/msgout.h>
 
 #include "projectmanagerui.h"
 
@@ -73,9 +74,6 @@ inline wxString GetResourcesDir(){ return wxEmptyString; }
 
 namespace
 {
-// this list will be filled with files (received through DDE or command line)
-// to be loaded after the app has started up
-wxArrayString s_DelayedFilesToOpen;
 bool s_Loading = false;
 
 class DDEServer : public wxServer
@@ -127,7 +125,8 @@ bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, cb_
             const wxString file = reCmd.GetMatch(strData, 1);
             // always put files in the delayed queue, the will either be loaded in OnDisconnect, or after creating of MainFrame
             // if we open the files directly it can lead to an applicaton hang (at least when opening C::B's project-file on linux)
-            s_DelayedFilesToOpen.Add(file);
+            CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
+            if(cb)cb->AddFileToOpenDelayed(file);
         }
         return true;
     }
@@ -149,6 +148,26 @@ bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, cb_
             if (m_Frame->IsIconized())
                 m_Frame->Iconize(false);
             m_Frame->Raise();
+        }
+        return true;
+    }
+    else if (strData.StartsWith(_T("[CmdLine({")))
+    {
+        int pos = strData.Find(_T("})]"));
+        if (pos!=wxNOT_FOUND)
+        {
+            wxString line = strData.Mid(10, pos-10);
+            line.Replace(_T("\\)"), _T(")"));
+            line.Replace(_T("\\("), _T("("));
+            CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
+            if ( m_Frame && !line.empty())
+            {
+                //Manager::Get()->GetLogManager()->Log(wxString::Format(_T("DDEConnection::OnExecute line = ") + line));
+                cb->ParseCmdLine(m_Frame, line);
+                CodeBlocksEvent event(cbEVT_APP_CMDLINE);
+                Manager::Get()->ProcessEvent(event);
+            }
+
         }
         return true;
     }
@@ -273,6 +292,22 @@ class Splash
     private:
         cbSplashScreen* m_pSplash;
 };
+
+class cbMessageOutputNull : public wxMessageOutput
+{
+public:
+
+#if wxCHECK_VERSION(3,0,0)
+    virtual void Output(const wxString &str);
+#else
+    virtual void Printf(const wxChar* format, ...)  ATTRIBUTE_PRINTF_2;
+#endif // wxCHECK_VERSION
+};
+#if wxCHECK_VERSION(3,0,0)
+void cbMessageOutputNull::Output(const wxString &str){}
+#else
+void cbMessageOutputNull::Printf(const wxChar* format, ...){}
+#endif
 } // namespace
 
 IMPLEMENT_APP(CodeBlocksApp) // TODO: This gives a "redundant declaration" warning, though I think it's false. Dig through macro and check.
@@ -312,9 +347,6 @@ static wxString GetResourcesDir()
 
 bool CodeBlocksApp::LoadConfig()
 {
-    if (ParseCmdLine(nullptr) == -1) // only abort if '--help' was passed in the command line
-        return false;
-
     if (m_UserDataDir!=wxEmptyString)
     {
         // if --user-data-dir=path was specified we tell
@@ -451,11 +483,7 @@ MainFrame* CodeBlocksApp::InitFrame()
 
     if (g_DDEServer && m_DDE)
         g_DDEServer->SetFrame(frame); // Set m_Frame in DDE-Server
-    if (ParseCmdLine(frame) == 0)
-    {
-        if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
-            Manager::Get()->GetProjectManager()->LoadWorkspace();
-    }
+
     return frame;
 }
 
@@ -565,6 +593,14 @@ bool CodeBlocksApp::OnInit()
 
         InitExceptionHandler();
 
+        delete wxMessageOutput::Set(new cbMessageOutputNull);//no output. (suppress warnings about unknown options from plugins)
+        if (ParseCmdLine(nullptr) == -1) // only abort if '--help' was passed in the command line
+        {
+            delete wxMessageOutput::Set(new wxMessageOutputMessageBox);
+            parser.Usage();
+            return false;
+        }
+
         if ( !LoadConfig() )
             return false;
 
@@ -587,44 +623,19 @@ bool CodeBlocksApp::OnInit()
 
             if (connection)
             {
-                wxArrayString strFilesInCommandLine;
-                parser.SetCmdLine(argc, argv);
-
-                // search for valid filenames passed as argument on command line
-                // we can not use "FileTypeOf" here, because it can crash if it tries to Get the projectmanager,
-                // before the MainFrame exists
-                if (parser.Parse(false) == 0)
+                /// don't eval here just forward the whole command line to the other instance
+                wxString cmdLine;
+                for (int i = 1 ; i < argc; ++i)
+                    cmdLine += wxString(argv[i]) + _T(' ');
+                if(!cmdLine.empty())
                 {
-                    int count = parser.GetParamCount();
-                    for ( int param = 0; param < count; ++param )
-                    {
-                        if (wxFile::Exists(parser.GetParam(param)))
-                            strFilesInCommandLine.Add(parser.GetParam(param));
-                    }
+                    // escape openings and closings so it is easily possible to find the end on the rx side
+                    cmdLine.Replace(_T("("), _T("\\("));
+                    cmdLine.Replace(_T(")"), _T("\\)"));
+                    connection->Execute(_T("[CmdLine({") + cmdLine + _T("})]"));
                 }
 
-                if (strFilesInCommandLine.Count() > 0)
-                {
-                    for (size_t i = 0; i < strFilesInCommandLine.Count(); i++)
-                    {
-                        wxFileName fn(strFilesInCommandLine[i]);
-                        fn.Normalize(); // really important so that two same files with different names are not loaded twice
-                        // filenames have to be sent with full path, or they can not be found in most cases
-                        connection->Execute(_T("[Open(\"") + fn.GetFullPath() +_T("\"]"));
-                    }
-                }
 
-                if (!m_AutoFile.empty())
-                {
-                    // filenames have to be sent with full path, or they can not be found in most cases,
-                    // to get full path we have to split off the name
-                    wxFileName fn(m_AutoFile.BeforeLast(_T(':')));
-                    fn.Normalize(); // really important so that two same files with different names are not loaded twice
-                    if (m_AutoFile.Find(_T(":")) != wxNOT_FOUND)
-                        connection->Execute(_T("[OpenLine(\"") + fn.GetFullPath() + _T(":") + m_AutoFile.AfterLast(_T(':')) +_T("\"]"));
-                    else
-                        connection->Execute(_T("[Open(\"") + fn.GetFullPath() +_T("\"]"));
-                }
                 // On Linux, C::B has to be raised explicitely if it's wanted
                 if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/raise_via_ipc"), true))
                     connection->Execute(_T("[Raise]"));
@@ -671,6 +682,14 @@ bool CodeBlocksApp::OnInit()
         MainFrame* frame = nullptr;
         frame = InitFrame();
         m_Frame = frame;
+
+		// plugins loaded -> check command line arguments again
+		delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
+        if (ParseCmdLine(m_Frame) == 0)
+        {
+            if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
+                Manager::Get()->GetProjectManager()->LoadWorkspace();
+        }
 
         if (m_SafeMode) wxLog::EnableLogging(true); // re-enable logging in safe-mode
 
@@ -1054,110 +1073,114 @@ void CodeBlocksApp::SetAutoFile(wxString& file)
     m_AutoFile = file;
 }
 
-int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame)
+int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString &CmdLineString )
 {
     // code shamelessely taken from the console wxWindows sample :)
     bool filesInCmdLine = false;
 
 #if wxUSE_CMDLINE_PARSER
     wxCmdLineParser& parser = *Manager::GetCmdLineParser();
-    parser.SetCmdLine(argc, argv);
+    if( CmdLineString.IsEmpty() )
+        parser.SetCmdLine(argc, argv);
+    else
+        parser.SetCmdLine(CmdLineString);
     // wxApp::argc is a wxChar**
 
     // don't display errors as plugins will have the chance to parse the command-line
     // too, so we don't know here what exactly are the supported options
-    switch ( parser.Parse(false) )
+    int res = parser.Parse(false);
+    if (res == -1)
     {
-        case -1:
-            parser.Usage();
-            return -1;
+        return -1;
+    }
+    else
+    {
+        if (handlerFrame)
+        {
+            m_HasProject = false;
+            m_HasWorkSpace = false;
+            int count = parser.GetParamCount();
 
-        case 0:
+            parser.Found(_T("file"),   &m_AutoFile);
+
+            filesInCmdLine = (count != 0) || (!m_AutoFile.empty());
+
+            for ( int param = 0; param < count; ++param )
             {
-                if (handlerFrame)
+                // is it a project/workspace?
+                FileType ft = FileTypeOf(parser.GetParam(param));
+                wxFileName fn(parser.GetParam(param));
+                fn.Normalize(); // really important so that two same files with different names are not loaded twice
+                if (ft == ftCodeBlocksProject)
                 {
-                    int count = parser.GetParamCount();
-                    filesInCmdLine = count != 0;
-                    m_HasProject = false;
-                    m_HasWorkSpace = false;
-                    for ( int param = 0; param < count; ++param )
-                    {
-                        // is it a project/workspace?
-                        FileType ft = FileTypeOf(parser.GetParam(param));
-                        if (ft == ftCodeBlocksProject)
-                        {
-                            m_HasProject = true;
-                            s_DelayedFilesToOpen.Add(parser.GetParam(param));
-                        }
-                        else if (ft == ftSource || ft == ftHeader || ft == ftResource)
-                        {
-                            s_DelayedFilesToOpen.Add(parser.GetParam(param));
-                        }
-                        else if (ft == ftCodeBlocksWorkspace)
-                        {
-                            // only one workspace can be opened
-                            m_HasWorkSpace = true;
-                            s_DelayedFilesToOpen.Clear(); // remove all other files
-                            s_DelayedFilesToOpen.Add(parser.GetParam(param)); // and add only the workspace
-                            break; // and stop processing any more files
-                        }
-                    }
-
-                    // batch jobs
-                    m_Batch = m_HasProject || m_HasWorkSpace;
-                    m_Batch = m_Batch && (m_Build || m_ReBuild || m_Clean);
+                    m_HasProject = true;
+                    m_DelayedFilesToOpen.Add(parser.GetParam(param));
                 }
-                else
+                else if (ft == ftCodeBlocksWorkspace)
                 {
-                    wxString val;
-                    parser.Found(_T("prefix"), &m_Prefix);
-                    parser.Found(_T("user-data-dir"), &m_UserDataDir);
-#ifdef __WXMSW__
-                    m_DDE = !parser.Found(_T("no-dde"));
-                    m_Assocs = !parser.Found(_T("no-check-associations"));
-#else
-                    m_DDE = !parser.Found(_T("no-ipc"));
-#endif
-                    m_SafeMode = parser.Found(_T("safe-mode"));
-                    m_Splash = !parser.Found(_T("no-splash-screen"));
-                    m_HasDebugLog = parser.Found(_T("debug-log"));
-                    m_CrashHandler = !parser.Found(_T("no-crash-handler"));
-
-                    wxLog::EnableLogging(parser.Found(_T("verbose")));
-
-                    if (   parser.Found(_T("personality"), &val)
-                        || parser.Found(_T("profile"),     &val) )
-                    {
-                        SetupPersonality(val);
-                    }
-
-                    // batch jobs
-                    m_BatchNotify          = parser.Found(_T("batch-build-notify"));
-                    m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
-                    m_Build                = parser.Found(_T("build"));
-                    m_ReBuild              = parser.Found(_T("rebuild"));
-                    m_Clean                = parser.Found(_T("clean"));
-                    parser.Found(_T("target"), &m_BatchTarget);
-                    parser.Found(_T("script"), &m_Script);
-                    parser.Found(_T("file"),   &m_AutoFile);
-                    // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
-                    m_Batch = m_Build || m_ReBuild || m_Clean;
-
-
-                    if (parser.Found(_T("no-log")) == false)
-                        Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::app_log);
-                    if (parser.Found(_T("log-to-file")))
-                        Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
-                    if (m_HasDebugLog)
-                        Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::debug_log);
-                    if (parser.Found(_T("debug-log-to-file")))
-                        Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks-debug.log")), LogManager::debug_log);
+                    // only one workspace can be opened
+                    m_HasWorkSpace = true;
+                    m_DelayedFilesToOpen.Clear(); // remove all other files
+                    m_DelayedFilesToOpen.Add(fn.GetFullPath()); // and add only the workspace
+                    break; // and stop processing any more files
+                }
+                //else if (ft == ftSource || ft == ftHeader || ft == ftResource)
+                else if (wxFile::Exists(fn.GetFullPath())) //also try to open non source, header and resource files
+                {
+                    m_DelayedFilesToOpen.Add(fn.GetFullPath());
                 }
             }
-            break;
 
-        default:
-            return 1; // syntax error / unknown option
+            // batch jobs
+            m_Batch = m_HasProject || m_HasWorkSpace;
+            m_Batch = m_Batch && (m_Build || m_ReBuild || m_Clean);
+        }
+        else
+        {
+            wxString val;
+            parser.Found(_T("prefix"), &m_Prefix);
+                    parser.Found(_T("user-data-dir"), &m_UserDataDir);
+#ifdef __WXMSW__
+            m_DDE = !parser.Found(_T("no-dde"));
+            m_Assocs = !parser.Found(_T("no-check-associations"));
+#else
+            m_DDE = !parser.Found(_T("no-ipc"));
+#endif
+            m_SafeMode = parser.Found(_T("safe-mode"));
+            m_Splash = !parser.Found(_T("no-splash-screen"));
+            m_HasDebugLog = parser.Found(_T("debug-log"));
+            m_CrashHandler = !parser.Found(_T("no-crash-handler"));
+
+            wxLog::EnableLogging(parser.Found(_T("verbose")));
+
+            if (   parser.Found(_T("personality"), &val)
+                || parser.Found(_T("profile"),     &val) )
+            {
+                SetupPersonality(val);
+            }
+
+            // batch jobs
+            m_BatchNotify          = parser.Found(_T("batch-build-notify"));
+            m_BatchWindowAutoClose = !parser.Found(_T("no-batch-window-close"));
+            m_Build                = parser.Found(_T("build"));
+            m_ReBuild              = parser.Found(_T("rebuild"));
+            m_Clean                = parser.Found(_T("clean"));
+            parser.Found(_T("target"), &m_BatchTarget);
+            parser.Found(_T("script"), &m_Script);
+            // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
+            m_Batch = m_Build || m_ReBuild || m_Clean;
+
+
+            if (parser.Found(_T("no-log")) == false)
+                Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::app_log);
+            if (parser.Found(_T("log-to-file")))
+                Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks.log")), LogManager::app_log);
+            if (m_HasDebugLog)
+                Manager::Get()->GetLogManager()->SetLog(new TextCtrlLogger, LogManager::debug_log);
+            if (parser.Found(_T("debug-log-to-file")))
+                Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks-debug.log")), LogManager::debug_log);
+        }
+
     }
 #endif // wxUSE_CMDLINE_PARSER
     return filesInCmdLine ? 1 : 0;
@@ -1184,35 +1207,45 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 {
-    for (size_t i = 0; i < s_DelayedFilesToOpen.GetCount(); ++i)
-        frame->Open(s_DelayedFilesToOpen[i], true);
-    s_DelayedFilesToOpen.Clear();
+    for (size_t i = 0; i < m_DelayedFilesToOpen.GetCount(); ++i)
+        frame->Open(m_DelayedFilesToOpen[i], true);
+    m_DelayedFilesToOpen.Clear();
 
     // --file foo.cpp[:line]
     if (!m_AutoFile.IsEmpty())
     {
         wxString linePart;
+        wxString filePart;
         // wxString::Last is deprecated
         long linePos = m_AutoFile.Find(_T(':'), true);
         if (linePos != wxNOT_FOUND)
         {
             linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);
-            m_AutoFile.Remove(linePos);
+            filePart = m_AutoFile;
+            filePart.Remove(linePos);
         }
 
-//        Manager::Get()->GetLogManager()->Log(m_AutoFile);
-//        Manager::Get()->GetLogManager()->Log(linePart);
-
-        if (frame->Open(m_AutoFile, false) && linePos != wxNOT_FOUND)
+        long line = -1;
+        if (linePos != wxNOT_FOUND)
         {
-            long line;
-            if (linePart.ToLong(&line))
+            // on windows, if ":line" is omitted:
+            // assuming drive letter before the colon if ToLong fails
+            // c:\foo\bar.h gives \foo\bar.h
+            if(!linePart.ToLong(&line))
             {
-                EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(m_AutoFile);
-                if (eb)
-                    eb->GotoLine(line - 1, true);
+                // on windows, if :line is omitted: c:\foo\bar.h -> \foo\bar.h is not the line number!
+                filePart = m_AutoFile;
             }
         }
+        wxFileName fn(filePart);
+        fn.Normalize(); // really important so that two same files with different names are not loaded twice
+        if (frame->Open(fn.GetFullPath(), false))
+        {
+            EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(fn.GetFullPath());
+            if (eb && (line != -1))
+                eb->GotoLine(line - 1, true);
+        }
+        m_AutoFile.Clear();
     }
 }
 
@@ -1222,7 +1255,7 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 void CodeBlocksApp::MacOpenFile(const wxString & fileName )
 {
     if (s_Loading)
-        s_DelayedFilesToOpen.Add(fileName);
+        m_DelayedFilesToOpen.Add(fileName);
     else if (m_Frame)
         m_Frame->Open(fileName, true);
 }
@@ -1285,4 +1318,9 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
         Manager::Get()->GetEditorManager()->GetNotebook()->SetFocus();
         ed->GetControl()->SetFocus();
     }
+}
+
+void CodeBlocksApp::AddFileToOpenDelayed(const wxString &filename)
+{
+    m_DelayedFilesToOpen.Add(filename);
 }

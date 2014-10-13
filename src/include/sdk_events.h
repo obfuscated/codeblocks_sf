@@ -256,6 +256,8 @@ extern EVTIMPORT const wxEventType cbEVT_APP_ACTIVATED;
 #define EVT_APP_ACTIVATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_ACTIVATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_APP_DEACTIVATED;
 #define EVT_APP_DEACTIVATED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_DEACTIVATED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_APP_CMDLINE;
+#define EVT_APP_CMDLINE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_APP_CMDLINE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 
 // plugin events

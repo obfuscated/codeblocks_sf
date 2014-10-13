@@ -69,6 +69,7 @@ const wxEventType cbEVT_APP_STARTUP_DONE = wxNewEventType();
 const wxEventType cbEVT_APP_START_SHUTDOWN = wxNewEventType();
 const wxEventType cbEVT_APP_ACTIVATED = wxNewEventType();
 const wxEventType cbEVT_APP_DEACTIVATED = wxNewEventType();
+const wxEventType cbEVT_APP_CMDLINE = wxNewEventType();
 // plugin events
 const wxEventType cbEVT_PLUGIN_ATTACHED = wxNewEventType();
 const wxEventType cbEVT_PLUGIN_RELEASED = wxNewEventType();
