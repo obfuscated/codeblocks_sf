@@ -22,7 +22,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_SUFFIX" value="u" />
-				<Variable name="WX_VER" value="30" />
+				<Variable name="WX_VERSION" value="30" />
 				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
@@ -46,7 +46,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="wxmsw$(WX_VER)$(WX_SUFFIX)" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="Addr2LineUIApp.cpp" />
