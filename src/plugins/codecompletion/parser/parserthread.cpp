@@ -180,6 +180,8 @@ namespace ParserConsts
     // length: 9
     const wxString kw_namespace    (_T("namespace"));
     const wxString kw_protected    (_T("protected"));
+    // length: 10
+    const wxString kw_declspec     (_T("__declspec"));
     // length: 13
     const wxString kw_attribute    (_T("__attribute__"));
 }
@@ -1850,9 +1852,10 @@ void ParserThread::HandleClass(EClassType ct)
         wxString current = m_Tokenizer.GetToken(); // class name
         wxString next    = m_Tokenizer.PeekToken();
 
-        if (current == ParserConsts::kw_attribute) // special case
+        // remove __attribute__ or __declspec qualifiers
+        if (current == ParserConsts::kw_attribute || current == ParserConsts::kw_declspec)
         {
-            TRACE(_T("HandleClass() : Skip __attribute__"));
+            TRACE(_T("HandleClass() : Skip __attribute__ or __declspec"));
 
             // Handle stuff like: __attribute__(( whatever ))
             current = m_Tokenizer.GetToken();  // eat __attribute__
