@@ -10,11 +10,12 @@ class NativeParserTest : public NativeParserBase
 public:
     NativeParserTest();
     ~NativeParserTest();
+
     bool TestExpression(wxString&          expression,
                         const TokenIdxSet& searchScope,
                         TokenIdxSet&       result);
+
     bool Parse(wxString& file, bool isLocalFile);
-    ParserBase m_Parser;
 
     void PrintList();
 
@@ -24,14 +25,20 @@ public:
 
     void PrintTree();
 
+    /** clear the token tree */
     void Clear();
 
+    /** set the include search paths of the parser */
     void Init();
 
-    bool TestParseAndCodeCompletion(wxString filename, bool isLocalFile = true);
+    /** parse and run test on the file
+     * @param file this can be either a file name, which is a file name in hard disk or a file
+     * contents.
+     * @param isLocalFile true if is is a file name otherwise it is a file contents (buffer).
+     */
+    bool ParseAndCodeCompletion(wxString file, bool isLocalFile = true);
 
-    // run test on the file
-    void BatchTest(wxString file);
+    ParserBase m_Parser;
 };
 
 #endif //NATIVEPARSERTEST_H

@@ -117,7 +117,6 @@ void NativeParserTest::PrintList()
 wxString NativeParserTest::SerializeTree()
 {
     return m_Parser.GetTokenTree()->m_Tree.Serialize();
-    //return wxEmptyString;
 }
 
 void NativeParserTest::PrintTokenTree(Token* token)
@@ -206,7 +205,7 @@ void NativeParserTest::Init()
     m_Parser.AddIncludeDir(wxGetCwd()+wxT("/testing"));
 }
 
-bool NativeParserTest::TestParseAndCodeCompletion(wxString filename, bool isLocalFile)
+bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFile)
 {
     Clear();//clear the tree
 
@@ -219,10 +218,18 @@ bool NativeParserTest::TestParseAndCodeCompletion(wxString filename, bool isLoca
     int failCount = 0;
 
     wxString testResult;
-    wxString message = wxString::Format(_T("********************************************************\n  Testing in file: %s\n********************************************************"),filename.wx_str());
+    wxString message;
+
+    if (isLocalFile)
+        message = wxString::Format(_T("********************************************************\n  Testing in file: %s\n********************************************************"),filename.wx_str());
+    else
+        message = wxString::Format(_T("********************************************************\n  Testing file in edit control\n********************************************************"));
+
     wxLogMessage(message);
     testResult<<message<<wxT("\n");
 
+    // reading the test cases, first we read all the lines of the file
+    // handling local files and wxScintilla control differently
     std::vector<wxString> allLines;
     if (isLocalFile)
     {
@@ -247,6 +254,8 @@ bool NativeParserTest::TestParseAndCodeCompletion(wxString filename, bool isLoca
         }
     }
 
+    // the test cases are list as the last line of the file, so we loop backword, and stop if an
+    // empty line is found
     for (size_t i = allLines.size() - 1; i >= 0; i--)
     {
 
@@ -330,10 +339,3 @@ bool NativeParserTest::TestParseAndCodeCompletion(wxString filename, bool isLoca
 
     return true;
 }
-
-void NativeParserTest::BatchTest(wxString file)
-{
-    TestParseAndCodeCompletion(file);
-}
-
-

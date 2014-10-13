@@ -320,7 +320,7 @@ void CCTestFrame::Start()
         m_StatuBar->SetStatusText(m_CurrentFile);
 
         // parse the file and test the expression solving algorithm
-        m_NativeParser.BatchTest(m_CurrentFile);
+        m_NativeParser.ParseAndCodeCompletion(m_CurrentFile);
 
         CCTestAppGlobal::s_filesParsed.Add(m_CurrentFile); // done
     }
@@ -721,7 +721,7 @@ void CCTestFrame::OnTestSingle(wxCommandEvent& event)
     // no need to save the file to hard dist and after parsing, delete it.
     wxString content = m_Control->GetText();
     m_NativeParser.Clear();
-    m_NativeParser.TestParseAndCodeCompletion(content, /* isLocalFile */ false);
+    m_NativeParser.ParseAndCodeCompletion(content, /* isLocalFile */ false);
 
 }
 
