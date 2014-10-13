@@ -21,7 +21,7 @@
 class ClassBrowserBuilderThread : public wxThread
 {
 public:
-    /** the builder threads' event sent to the GUI(class browser window)*/
+    /** the builder threads' event sent to the GUI(class browser window) */
     enum EThreadEvent
     {
         selectItemRequired,  /// an item is selected

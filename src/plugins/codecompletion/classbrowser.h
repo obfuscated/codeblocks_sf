@@ -98,6 +98,9 @@ private:
 
     void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
 
+    /** create a thread to update the symbol tree, if the thread is already created, just pause and
+     * resume the thread.
+     */
     void ThreadedBuildTree(cbProject* activeProject);
 
     void OnTreeItemExpanding(wxTreeEvent& event);
