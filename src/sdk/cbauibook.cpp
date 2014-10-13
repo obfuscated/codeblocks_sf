@@ -751,8 +751,10 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
     const size_t tab_count = m_tabs.GetPageCount();
     for (size_t i = 0; i < tab_count; ++i) {
         // only remove tabs that are in the layout-string, do not touch others,
-        // so the layout of an already loaded workspace will not get destroyed
-        if (mergeLayouts &&  tabs.Find(UniqueIdFromTooltip(GetPageToolTip(i))) < 0 )
+        // so the layout of an already loaded workspace or project will not get destroyed, if the
+        // current layout did not know the tab. The layout file which is loaded last takes precedence,
+        // if there are two or more layout strings containing the actual tab.
+        if (tabs.Find(UniqueIdFromTooltip(GetPageToolTip(i))) < 0 )
             continue;
 
         wxWindow* wnd = m_tabs.GetWindowFromIdx (i);
