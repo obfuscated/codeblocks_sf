@@ -364,9 +364,6 @@ void CCTestFrame::Start()
         m_ProgDlg->Update(-1, m_CurrentFile);
         m_StatuBar->SetStatusText(m_CurrentFile);
 
-        // This is the core parse stage for files
-        m_NativeParser.Parse(m_CurrentFile);
-
         // Here we are going to test the expression solving algorithm
         m_NativeParser.BatchTest(m_CurrentFile);
 
