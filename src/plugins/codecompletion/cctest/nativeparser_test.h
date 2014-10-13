@@ -2,7 +2,7 @@
 #ifndef NATIVEPARSERTEST_H
 #define NATIVEPARSERTEST_H
 
-#include "parser.h"
+#include "parser_base.h"
 #include "nativeparser_base.h"
 
 class NativeParserTest : public NativeParserBase
