@@ -300,7 +300,7 @@ public:
 #if wxCHECK_VERSION(3,0,0)
     virtual void Output(const wxString &str);
 #else
-    #if wxCHECK_VERSION(2,9,0)
+    #ifdef WX_ATTRIBUTE_PRINTF
     virtual void Printf(const wxChar* format, ...)  WX_ATTRIBUTE_PRINTF_2;
     #else
     virtual void Printf(const wxChar* format, ...)  ATTRIBUTE_PRINTF_2;
