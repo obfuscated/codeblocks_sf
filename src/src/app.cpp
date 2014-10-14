@@ -300,13 +300,13 @@ public:
 #if wxCHECK_VERSION(3,0,0)
     virtual void Output(const wxString &str);
 #else
-    virtual void Printf(const wxChar* format, ...)  ATTRIBUTE_PRINTF_2;
+    virtual void Printf(const wxChar* format, ...)  WX_ATTRIBUTE_PRINTF_2;
 #endif // wxCHECK_VERSION
 };
 #if wxCHECK_VERSION(3,0,0)
-void cbMessageOutputNull::Output(const wxString &str){}
+void cbMessageOutputNull::Output(cb_unused const wxString &str){}
 #else
-void cbMessageOutputNull::Printf(const wxChar* format, ...){}
+void cbMessageOutputNull::Printf(cb_unused const wxChar* format, ...){}
 #endif
 } // namespace
 
