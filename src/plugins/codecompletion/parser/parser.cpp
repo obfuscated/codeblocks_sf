@@ -116,7 +116,6 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
 
 Parser::~Parser()
 {
-    WriteOptions();
     // Don't wrap the s_ParserMutex lock around TerminateAllThreads(), since, it will cause a deadlock
     // in TerminateAllThreads() when calling DeleteParser() before parsing has finished.
 
