@@ -110,11 +110,13 @@ Parser::Parser(wxEvtHandler* parent, cbProject* project) :
     m_ParserState(ParserCommon::ptCreateParser),
     m_NeedMarkFileAsLocal(true)
 {
+    ReadOptions();
     ConnectEvents();
 }
 
 Parser::~Parser()
 {
+    WriteOptions();
     // Don't wrap the s_ParserMutex lock around TerminateAllThreads(), since, it will cause a deadlock
     // in TerminateAllThreads() when calling DeleteParser() before parsing has finished.
 

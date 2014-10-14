@@ -181,7 +181,6 @@ ParserBase::ParserBase()
 {
     m_TokenTree     = new TokenTree;
     m_TempTokenTree = new TokenTree;
-    ReadOptions();
 }
 
 ParserBase::~ParserBase()

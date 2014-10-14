@@ -139,7 +139,7 @@ NativeParser::NativeParser() :
     m_LastLine(-1),
     m_LastResult(-1)
 {
-    m_TempParser = new ParserBase;
+    m_TempParser = new Parser(this, nullptr);
     m_Parser     = m_TempParser;
 
     m_ImageList = new wxImageList(16, 16);
