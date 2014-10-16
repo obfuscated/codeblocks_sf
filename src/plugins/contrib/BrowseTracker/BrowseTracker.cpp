@@ -1698,8 +1698,9 @@ void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
     event.Skip();
 
     m_bAppShutdown = true;
-
+    #if defined(LOGGING)
     InfoWindow::Display(_T("Browstracker"),_T("Browstracker OnStartShutdown"), 7000);
+    #endif
 
     if ( m_InitDone )
     {
