@@ -16,7 +16,6 @@
 #include <wx/timer.h>
 #include <wx/treectrl.h>
 
-
 #include <cbthreadpool.h>
 #include <sdk_events.h>
 

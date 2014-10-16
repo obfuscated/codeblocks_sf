@@ -92,8 +92,8 @@ bool NativeParserTest::Parse(wxString& file, bool isLocalFile)
 {
     if (isLocalFile)
         return m_Parser.Reparse(file, true);
-    else
-        return m_Parser.ParseBuffer(file, true);
+
+    return m_Parser.ParseBuffer(file, true);
 }
 
 void NativeParserTest::PrintList()

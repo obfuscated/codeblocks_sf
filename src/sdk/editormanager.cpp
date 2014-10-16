@@ -932,13 +932,11 @@ void EditorManager::MarkReadOnly(int page, bool readOnly)
 {
     if (page > -1)
     {
-        wxBitmap bmp = readOnly?cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/") + _T("readonly.png")):wxNullBitmap;
+        wxBitmap bmp = readOnly ? cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/") + _T("readonly.png")) : wxNullBitmap;
         if (m_pNotebook)
             m_pNotebook->SetPageBitmap(page, bmp);
     }
 }
-
-
 
 bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate)
 {

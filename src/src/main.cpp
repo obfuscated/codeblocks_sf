@@ -3759,7 +3759,7 @@ void MainFrame::OnViewLayout(wxCommandEvent& event)
 void MainFrame::OnViewLayoutSave(cb_unused wxCommandEvent& event)
 {
     wxString def = m_LastLayoutName;
-    if (def.empty())
+    if ( def.empty() )
         def = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
     wxString name = wxGetTextFromUser(_("Enter the name for this perspective"), _("Save current perspective"), def);
     if (!name.IsEmpty())

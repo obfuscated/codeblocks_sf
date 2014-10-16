@@ -6,7 +6,7 @@ if not defined CB_ROOT set CB_ROOT=C:\Devel\CodeBlocks
 rem ------------------------------------------
 rem Setup GCC root folder with "bin" subfolder
 rem ------------------------------------------
-if not defined GCC_ROOT set GCC_ROOT=C:\Devel\GCC46TDM
+if not defined GCC_ROOT set GCC_ROOT=%CB_ROOT%\MinGW
 rem change this name to suit your needs
 rem if not defined CB_RUN_UPDATE_BAT set CB_RUN_UPDATE_BAT=0
 

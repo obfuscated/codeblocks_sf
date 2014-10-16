@@ -1092,7 +1092,7 @@ void CompilerOptionsDlg::DoSaveCompilerPrograms()
     }
     compiler->SetPrograms(progs);
     compiler->SetMasterPath(masterPath);
-    compiler->SetOptions(m_Options); //LDC : DOES NOT BELONG HERE !!!
+    compiler->SetOptions(m_Options);
     // and the extra paths
     wxListBox* control = XRCCTRL(*this, "lstExtraPaths", wxListBox);
     if (control)

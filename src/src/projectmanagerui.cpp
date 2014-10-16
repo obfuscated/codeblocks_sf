@@ -2317,14 +2317,13 @@ bool ProjectManagerUI::QueryCloseWorkspace()
     if (!wkspc)
         return true;
 
-
     // Don't ask to save the default workspace, if blank workspace is used on app startup.
     bool blankWorkspace = Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true);
-    if (!(wkspc->IsDefault() && blankWorkspace))
+    if ( !(wkspc->IsDefault() && blankWorkspace) )
     {
         // always save workspace layout
         wkspc->SaveLayout();
-        if(wkspc->GetModified())
+        if ( wkspc->GetModified() )
         {
             // workspace needs save
             wxString msg;

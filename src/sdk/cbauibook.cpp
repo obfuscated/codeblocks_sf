@@ -12,19 +12,20 @@
 
 #ifndef CB_PRECOMP
     #include "cbauibook.h"
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
     #include "cbeditor.h"
     #include "cbproject.h"
+    #include "configmanager.h"
+    #include "editormanager.h"
+    #include "manager.h"
     #include "projectmanager.h"
-    #include <wx/dcclient.h>
+
     #include <wx/app.h>
+    #include <wx/dcclient.h>
     #include <wx/regex.h>
 #endif
 
-    #include <wx/tooltip.h>
-    #include  <wx/wupdlock.h>
+#include <wx/tooltip.h>
+#include <wx/wupdlock.h>
 
 // static
 bool cbAuiNotebook::s_AllowMousewheel = true;
@@ -139,9 +140,9 @@ void cbAuiNotebook::UpdateTabControlsArray()
     for (size_t i = 0; i < m_TabCtrls.GetCount(); ++i)
     {
         int pageCount = m_TabCtrls[i]->GetPageCount();
-        if( m_TabCtrls[i]->GetActivePage() < 0 && pageCount > 0)
+        if (m_TabCtrls[i]->GetActivePage() < 0 && pageCount > 0)
              m_TabCtrls[i]->SetActivePage((size_t)0);
-        if( m_TabCtrls[i]->GetActivePage() >= pageCount && pageCount > 0)
+        if (m_TabCtrls[i]->GetActivePage() >= pageCount && pageCount > 0)
              m_TabCtrls[i]->SetActivePage(pageCount - 1);
         m_TabCtrls[i]->DoShowHide();
     }
@@ -432,7 +433,7 @@ void cbAuiNotebook::OnMotion(wxMouseEvent& event)
         tabCtrl->UnsetToolTip();
 }
 
-bool cbAuiNotebook::SetPageToolTip(size_t idx, const wxString & text )
+bool cbAuiNotebook::SetPageToolTip(size_t idx, const wxString & text)
 {
     if (!m_HasToolTip)
         UpdateTabControlsArray();
@@ -445,7 +446,7 @@ bool cbAuiNotebook::SetPageToolTip(size_t idx, const wxString & text )
         return false;
     return true;
 }
-wxString cbAuiNotebook::GetPageToolTip(size_t idx )
+wxString cbAuiNotebook::GetPageToolTip(size_t idx)
 {
     wxWindow* win = GetPage(idx);
     if (win)
@@ -640,9 +641,7 @@ void cbAuiNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
 {
     // if we change window, we call our own AdvanceSelection
     if ( event.IsWindowChange() )
-    {
         AdvanceSelection(event.GetDirection());
-    }
     else // otherwise we call the event-handler from the parent-class
     {
 #if wxCHECK_VERSION(2, 9, 0)
@@ -719,7 +718,8 @@ wxString cbAuiNotebook::SavePerspective()
     return tabs;
 }
 
-wxString cbAuiNotebook::UniqueIdFromTooltip(const wxString& text) {
+wxString cbAuiNotebook::UniqueIdFromTooltip(const wxString& text)
+{
     ProjectFile* pf = nullptr;
     cbProject* prj = nullptr;
     wxString id =  wxT("");
@@ -730,31 +730,33 @@ wxString cbAuiNotebook::UniqueIdFromTooltip(const wxString& text) {
     return id;
 }
 
-int cbAuiNotebook::GetTabIndexFromTooltip (const wxString& text) {
+int cbAuiNotebook::GetTabIndexFromTooltip(const wxString& text)
+{
     if (text == wxT(""))
         return -1;
-    for (size_t i = 0; i < m_tabs.GetPageCount(); ++i) {
+    for (size_t i = 0; i < m_tabs.GetPageCount(); ++i)
+    {
         if (UniqueIdFromTooltip(GetPageToolTip(i)) == text)
-        {
             return i;
-        }
     }
     return -1;
 }
 
-bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) {
+bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
+{
     if (layout.IsEmpty())
         return false;
 
     wxString tabs = layout.BeforeFirst (wxT ('@') );
     // Remove all tab ctrls (but still keep them in main index)
     const size_t tab_count = m_tabs.GetPageCount();
-    for (size_t i = 0; i < tab_count; ++i) {
+    for (size_t i = 0; i < tab_count; ++i)
+    {
         // only remove tabs that are in the layout-string, do not touch others,
         // so the layout of an already loaded workspace or project will not get destroyed, if the
         // current layout did not know the tab. The layout file which is loaded last takes precedence,
         // if there are two or more layout strings containing the actual tab.
-        if (tabs.Find(UniqueIdFromTooltip(GetPageToolTip(i))) < 0 )
+        if ( tabs.Find( UniqueIdFromTooltip(GetPageToolTip(i)) ) < 0 )
             continue;
 
         wxWindow* wnd = m_tabs.GetWindowFromIdx (i);
@@ -762,25 +764,23 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
         // find out which onscreen tab ctrl owns this tab
         wxAuiTabCtrl* ctrl;
         int ctrl_idx;
-        if (!FindTab (wnd, &ctrl, &ctrl_idx) ) {
+        if ( !FindTab(wnd, &ctrl, &ctrl_idx) )
             return false;
-        }
 
         // remove the tab from ctrl
-        if (!ctrl->RemovePage (wnd) ) {
+        if ( !ctrl->RemovePage(wnd) )
             return false;
-        }
     }
     RemoveEmptyTabFrames();
     wxString currentLayout;
-    if(mergeLayouts)
+    if (mergeLayouts)
     {
         currentLayout = m_mgr.SavePerspective();
         wxString tempLayout;
         while (!currentLayout.empty())
         {
-            if(currentLayout.BeforeFirst('|').StartsWith(_("layout2")) ||
-               currentLayout.BeforeFirst('|').StartsWith(_("name=dummy")))
+            if ( currentLayout.BeforeFirst('|').StartsWith(_("layout2")) ||
+                 currentLayout.BeforeFirst('|').StartsWith(_("name=dummy")) )
             {
                 currentLayout=currentLayout.AfterFirst(('|'));
             }
@@ -790,9 +790,8 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
                 pane_part.Trim();
                 pane_part.Trim(true);
                 if (!pane_part.empty())
-                {
                     tempLayout += pane_part + wxT("|");
-                }
+
                 currentLayout=currentLayout.AfterFirst('|');
                 currentLayout.Trim();
                 currentLayout.Trim(true);
@@ -803,29 +802,27 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
             mergeLayouts = false;
     }
 
-
     size_t sel_page = 0;
     int active_tab = 0;
     bool found = false;
 
     wxString frames = layout.AfterFirst (wxT ('@') );
     // if we load an additional project to an exiting layout, the first new tab always goes into a new frame
-    bool firstTabInNewCtrl=!currentLayout.empty();
+    bool firstTabInNewCtrl =! currentLayout.empty();
     // This creates a new tabframe if none exists; a workaround, because we can not directly access
     // the needed wxTabFrame class, because it is not exported.
     // This also takes care of all needed pane-info
     wxAuiTabCtrl* dest_tabs = GetActiveTabCtrl();
     while (1)
     {
-        const wxString tab_part = tabs.BeforeFirst (wxT ('|') );
+        const wxString tab_part = tabs.BeforeFirst(wxT('|'));
 
         // if the string is empty, we're done parsing
-        if (tab_part.empty() ) {
+        if (tab_part.empty())
             break;
-        }
 
         // Get pane name
-        wxString pane_name = tab_part.BeforeFirst (wxT ('=') );
+        wxString pane_name = tab_part.BeforeFirst(wxT('='));
 
         // create a new tab frame
 #if wxCHECK_VERSION(2, 9, 3)
@@ -835,21 +832,21 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
 #endif
 
         // Get list of tab id's and move them to pane
-        wxString tab_list = tab_part.AfterFirst (wxT ('=') );
+        wxString tab_list = tab_part.AfterFirst(wxT('='));
         while (1)
         {
-            wxString tab = tab_list.BeforeFirst (wxT (',') );
+            wxString tab = tab_list.BeforeFirst(wxT(','));
             wxString name = tab.AfterFirst(wxT(';'));
-            tab = tab.BeforeFirst (wxT (';') );
+            tab = tab.BeforeFirst(wxT(';'));
 
-            if (tab.empty() ) { break; }
-            tab_list = tab_list.AfterFirst (wxT (',') );
+            if (tab.empty())
+                break;
+            tab_list = tab_list.AfterFirst(wxT(','));
 
             // Check if this page has an 'active' marker
             const wxChar c = tab[0];
-            if (c == wxT ('+') || c == wxT ('*') ) {
-                tab = tab.Mid (1);
-            }
+            if (c == wxT('+') || c == wxT('*'))
+                tab = tab.Mid(1);
 
             // Move tab to pane
             const int index_in_m_tabs = GetTabIndexFromTooltip(name);
@@ -861,24 +858,24 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
             // save the actual active tab, because it will be set to 0 after a Split()
             active_tab = dest_tabs->GetActivePage();
             const size_t newpage_idx = dest_tabs->GetPageCount();
-            dest_tabs->InsertPage (page.window, page, newpage_idx);
+            dest_tabs->InsertPage(page.window, page, newpage_idx);
 
-            if (c == wxT ('+'))
-                dest_tabs->SetActivePage (newpage_idx);
-            else if (c == wxT ('*'))
+            if (c == wxT('+'))
+                dest_tabs->SetActivePage(newpage_idx);
+            else if (c == wxT('*'))
                 sel_page = index_in_m_tabs;
 
             // If we should be the first tab in a new tab-ctrl we create it by calling Split()
             // and update the dest_tabs accordingly
             if (firstTabInNewCtrl)
             {
-                Split (index_in_m_tabs, wxRIGHT);
+                Split(index_in_m_tabs, wxRIGHT);
                 // reset the active tab, because a Split() set it to zero
                 dest_tabs->SetActivePage(active_tab);
                 dest_tabs = GetActiveTabCtrl();
             }
             // Change the pane name to the one we have stored in the layout-string.
-            wxAuiPaneInfo& pane = m_mgr.GetPane (GetTabFrameFromTabCtrl (dest_tabs) );
+            wxAuiPaneInfo& pane = m_mgr.GetPane( GetTabFrameFromTabCtrl(dest_tabs) );
             if (pane.name != pane_name)
             {
                 tab.Replace(pane_name, pane.name);
@@ -891,25 +888,27 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
         // We come here after at least one tabctrl is filled, so the next tab should go in a new one
         firstTabInNewCtrl = true;
 
-        tabs = tabs.AfterFirst (wxT ('|') );
+        tabs = tabs.AfterFirst(wxT('|'));
     }
 
     // Check for windows not readded to the notebook and add the at the end.
-    for (size_t i = 0; i < tab_count; ++i) {
-        wxAuiNotebookPage& page = m_tabs.GetPage (i);
+    for (size_t i = 0; i < tab_count; ++i)
+    {
+        wxAuiNotebookPage& page = m_tabs.GetPage(i);
 
         // find out which onscreen tab ctrl owns this tab
         // if none then add it to the last used tabctrl
         wxAuiTabCtrl* ctrl;
         int ctrl_idx;
-        if (!FindTab (page.window, &ctrl, &ctrl_idx) ) {
+        if ( !FindTab(page.window, &ctrl, &ctrl_idx) )
+        {
             const size_t newpage_idx = dest_tabs->GetPageCount();
             dest_tabs->InsertPage (page.window, page, newpage_idx);
         }
 
     }
 
-    if(mergeLayouts)
+    if (mergeLayouts)
     {
         wxRegEx reDockSize(_T("(dock_size[()0-9,]+=)[0-9]+"));
         const wxString replacement(wxT("\\1-1"));
@@ -933,8 +932,8 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
         }
     }
 
-    if(found)
-        m_mgr.LoadPerspective (frames);
+    if (found)
+        m_mgr.LoadPerspective(frames);
     RemoveEmptyTabFrames();
 
     // Force refresh of selection
@@ -943,7 +942,7 @@ bool cbAuiNotebook::LoadPerspective (const wxString& layout, bool mergeLayouts) 
 #else
     m_curpage = -1;
 #endif
-    SetSelection (sel_page);
+    SetSelection(sel_page);
 
     UpdateTabControlsArray();
     return true;

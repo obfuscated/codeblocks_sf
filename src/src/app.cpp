@@ -9,6 +9,7 @@
 
 #include <sdk.h>
 #include "app.h"
+
 #include <wx/arrstr.h>
 #include <wx/fs_zip.h>
 #include <wx/fs_mem.h>
@@ -21,42 +22,40 @@
 #include <wx/choicdlg.h>
 #include <wx/notebook.h>
 #include <wx/clipbrd.h>
-
-#include "cbauibook.h"
-#include <cbexception.h>
 #include <wx/debugrpt.h>
-#include <configmanager.h>
-#include <editormanager.h>
-#include <projectmanager.h>
-#include <personalitymanager.h>
-#include <pluginmanager.h>
-#include <sdk_events.h>
-#include <manager.h>
-#include <scriptingmanager.h>
-#include <globals.h>
-#include <logmanager.h>
-#include <loggers.h>
-#include "splashscreen.h"
-#include "crashhandler.h"
-#include "cbstyledtextctrl.h"
 #include <wx/ipc.h>
 #include <wx/msgout.h>
 
-#include "projectmanagerui.h"
-
+#include <cbexception.h>
+#include <configmanager.h>
+#include <editormanager.h>
+#include <globals.h>
+#include <loggers.h>
+#include <logmanager.h>
+#include <manager.h>
+#include <personalitymanager.h>
+#include <pluginmanager.h>
+#include <projectmanager.h>
+#include <scriptingmanager.h>
+#include <sdk_events.h>
 #include <sqplus.h>
+
+#include "appglobals.h"
+#include "associations.h"
+#include "cbauibook.h"
+#include "cbstyledtextctrl.h"
+#include "crashhandler.h"
+#include "projectmanagerui.h"
+#include "splashscreen.h"
 
 #ifndef __WXMSW__
     #include "prefix.h" // binreloc
 #endif
-#include "associations.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
 #endif
-
-#include "appglobals.h"
 
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
@@ -126,7 +125,8 @@ bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, cb_
             // always put files in the delayed queue, the will either be loaded in OnDisconnect, or after creating of MainFrame
             // if we open the files directly it can lead to an applicaton hang (at least when opening C::B's project-file on linux)
             CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
-            if(cb)cb->AddFileToOpenDelayed(file);
+            if (cb)
+                cb->AddFileToOpenDelayed(file);
         }
         return true;
     }
@@ -160,9 +160,9 @@ bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, cb_
             line.Replace(_T("\\)"), _T(")"));
             line.Replace(_T("\\("), _T("("));
             CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
-            if ( m_Frame && !line.empty())
+            if (m_Frame && !line.empty())
             {
-                //Manager::Get()->GetLogManager()->Log(wxString::Format(_T("DDEConnection::OnExecute line = ") + line));
+                // Manager::Get()->GetLogManager()->Log(wxString::Format(_T("DDEConnection::OnExecute line = ") + line));
                 cb->ParseCmdLine(m_Frame, line);
                 CodeBlocksEvent event(cbEVT_APP_CMDLINE);
                 Manager::Get()->ProcessEvent(event);
@@ -597,7 +597,7 @@ bool CodeBlocksApp::OnInit()
 
         InitExceptionHandler();
 
-        delete wxMessageOutput::Set(new cbMessageOutputNull);//no output. (suppress warnings about unknown options from plugins)
+        delete wxMessageOutput::Set(new cbMessageOutputNull); // No output. (suppress warnings about unknown options from plugins)
         if (ParseCmdLine(nullptr) == -1) // only abort if '--help' was passed in the command line
         {
             delete wxMessageOutput::Set(new wxMessageOutputMessageBox);
@@ -627,18 +627,18 @@ bool CodeBlocksApp::OnInit()
 
             if (connection)
             {
-                /// don't eval here just forward the whole command line to the other instance
+                // don't eval here just forward the whole command line to the other instance
                 wxString cmdLine;
                 for (int i = 1 ; i < argc; ++i)
                     cmdLine += wxString(argv[i]) + _T(' ');
-                if(!cmdLine.empty())
+
+                if ( !cmdLine.IsEmpty() )
                 {
                     // escape openings and closings so it is easily possible to find the end on the rx side
                     cmdLine.Replace(_T("("), _T("\\("));
                     cmdLine.Replace(_T(")"), _T("\\)"));
                     connection->Execute(_T("[CmdLine({") + cmdLine + _T("})]"));
                 }
-
 
                 // On Linux, C::B has to be raised explicitely if it's wanted
                 if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/raise_via_ipc"), true))
@@ -659,6 +659,7 @@ bool CodeBlocksApp::OnInit()
             g_DDEServer = new DDEServer(nullptr);
             g_DDEServer->Create(F(DDE_SERVICE, wxGetUserId().wx_str()));
         }
+
         m_pSingleInstance = nullptr;
         if (   Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/single_instance"), true)
             && !parser.Found(_T("multiple-instance")) )
@@ -687,9 +688,9 @@ bool CodeBlocksApp::OnInit()
         frame = InitFrame();
         m_Frame = frame;
 
-		// plugins loaded -> check command line arguments again
-		delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
-        if (ParseCmdLine(m_Frame) == 0)
+        // plugins loaded -> check command line arguments again
+        delete wxMessageOutput::Set(new wxMessageOutputBest); // warn about unknown options
+        if ( ParseCmdLine(m_Frame) == 0 )
         {
             if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/blank_workspace"), true) == false)
                 Manager::Get()->GetProjectManager()->LoadWorkspace();
@@ -1077,14 +1078,14 @@ void CodeBlocksApp::SetAutoFile(wxString& file)
     m_AutoFile = file;
 }
 
-int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString &CmdLineString )
+int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLineString)
 {
     // code shamelessely taken from the console wxWindows sample :)
     bool filesInCmdLine = false;
 
 #if wxUSE_CMDLINE_PARSER
     wxCmdLineParser& parser = *Manager::GetCmdLineParser();
-    if( CmdLineString.IsEmpty() )
+    if ( CmdLineString.IsEmpty() )
         parser.SetCmdLine(argc, argv);
     else
         parser.SetCmdLine(CmdLineString);
@@ -1105,11 +1106,11 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString &CmdLine
             m_HasWorkSpace = false;
             int count = parser.GetParamCount();
 
-            parser.Found(_T("file"),   &m_AutoFile);
+            parser.Found(_T("file"), &m_AutoFile);
 
             filesInCmdLine = (count != 0) || (!m_AutoFile.empty());
 
-            for ( int param = 0; param < count; ++param )
+            for (int param = 0; param < count; ++param)
             {
                 // is it a project/workspace?
                 FileType ft = FileTypeOf(parser.GetParam(param));
@@ -1235,7 +1236,7 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
             // on windows, if ":line" is omitted:
             // assuming drive letter before the colon if ToLong fails
             // c:\foo\bar.h gives \foo\bar.h
-            if(!linePart.ToLong(&line))
+            if ( !linePart.ToLong(&line) )
             {
                 // on windows, if :line is omitted: c:\foo\bar.h -> \foo\bar.h is not the line number!
                 filePart = m_AutoFile;
@@ -1324,7 +1325,7 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
     }
 }
 
-void CodeBlocksApp::AddFileToOpenDelayed(const wxString &filename)
+void CodeBlocksApp::AddFileToOpenDelayed(const wxString& filename)
 {
     m_DelayedFilesToOpen.Add(filename);
 }

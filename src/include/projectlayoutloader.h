@@ -25,11 +25,11 @@ class DLLIMPORT ProjectLayoutLoader
         bool Open(const wxString& filename);
         bool Save(const wxString& filename);
 
-        bool LoadNotebookLayout() {
+        bool LoadNotebookLayout()
+        {
             return Manager::Get()->GetEditorManager()->GetNotebook()->LoadPerspective( m_NotebookLayout,
                                                                                       !Manager::Get()->GetProjectManager()->IsLoadingWorkspace());
-
-        };
+        }
 
         ProjectFile* GetTopProjectFile() { return m_TopProjectFile; }
     protected:
