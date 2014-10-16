@@ -1353,6 +1353,9 @@ bool Tokenizer::CalcConditionExpression()
     const TokenizerState oldState = m_State;
     m_State = tsReadRawExpression; // parentheses are not returned as a single token
 
+    // we need to know what is the end of the preprocessor directive by calling SkipToEOL(), which
+    // go to the end of the current logical line. After that, we rewind the m_TokenIndex and parse
+    // the tokens again until we pass the EOL.
     const unsigned int undoIndex = m_TokenIndex;
     const unsigned int undoLine = m_LineNumber;
     SkipToEOL(false);
@@ -1370,47 +1373,40 @@ bool Tokenizer::CalcConditionExpression()
             ;
         wxString token = DoGetToken();
 
+        // skip the whitespace token here, not before the DoGetToken(), because if we call
+        // SkipWhiteSpace() before DoGetToken(), we may get a token AFTER the index located by
+        // m_BufferLen - untouchedBufferLen
         if (token[0] <= _T(' ') || token == _T("\\"))
             continue;
 
-        if (token == _T("defined"))
+        if(token.Len() > 0
+           && (token[0] == _T('_') || wxIsalnum(token[0]))) // identifier like token
         {
-            if (IsMacroDefined())
-                exp.AddToInfixExpression(_T("1"));
-            else
-                exp.AddToInfixExpression(_T("0"));
-        }
-        else if(token.Len() > 0 && !wxIsdigit(token[0])) // identifier like token, check macro expansion
-        {
-            const int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
-            if (id != -1)
-            {
-                const Token* tk = m_TokenTree->at(id);
-                if (tk)
-                {
-                    // this is a macro usage, tk->m_Args is the macro formal args
-                    // tk->m_FullType is the macro definition
-                    if (!tk->m_Args.IsEmpty()) //function like macro definition, expand them
-                    {
-                        if (tk->m_FullType == token) // just skip the special case, such as #define A(x,y) A
-                            continue;
 
-                        if (ReplaceMacroUsage(tk))
-                            continue; //after the expansion, m_TokenIndex is adjusted, so continue again
-                        else
-                            exp.AddToInfixExpression(_T("1")); // fall back value is 1
-                    }
-                    else // variable like macro definition
-                    {
-                        if (tk->m_FullType == token) // just skip the special case, such as #define A A
-                            continue;
-                        ReplaceBufferText(tk->m_FullType);
-                        continue;
-                    }
-                }
+            if (token == _T("defined"))
+            {
+                if (IsMacroDefined())
+                    exp.AddToInfixExpression(_T("1"));
+                else
+                    exp.AddToInfixExpression(_T("0"));
             }
             else
-                exp.AddToInfixExpression(token); // not a macro usage token, just add to expression
+            {
+                const int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
+                if (id != -1)
+                {
+                    const Token* tk = m_TokenTree->at(id);
+                    if (tk)
+                    {
+                        if(ReplaceMacroUsage(tk))
+                            continue;
+                        else
+                            exp.AddToInfixExpression(_T("0")); // macro expansion fall back value
+                    }
+                }
+                else
+                    exp.AddToInfixExpression(token); // not a macro usage token
+            }
         }
         else if (token.StartsWith(_T("0x"))) // hex value
         {
@@ -1421,7 +1417,7 @@ bool Tokenizer::CalcConditionExpression()
                 exp.AddToInfixExpression(_T("0"));
         }
         else
-            exp.AddToInfixExpression(token); // not identifier like token, such as operators
+            exp.AddToInfixExpression(token); // other kinds of tokens, such as operators, numbers
     }
 
     // reset tokenizer's functionality
