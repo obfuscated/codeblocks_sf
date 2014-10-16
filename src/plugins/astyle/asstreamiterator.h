@@ -7,35 +7,41 @@
 #define ASSTREAMITERATOR_H
 
 #include <iostream>
+
 #include <wx/string.h>
+
 #include <cbeditor.h>
-#include <vector>
+
 #include "astyle/astyle.h"
 
 class ASStreamIterator : public astyle::ASSourceIterator
 {
     public:
-        ASStreamIterator(cbEditor *cbe, const wxChar *in);
+        ASStreamIterator(cbEditor* cbe, const wxChar* in);
         virtual ~ASStreamIterator();
 
         bool hasMoreLines() const;
+        int  getStreamLength() const;
         std::string nextLine(bool emptyLineWasDeleted = false);
         std::string peekNextLine();
         void peekReset();
-        bool FoundBookmark() const { return m_foundBookmark; }
-        void ClearFoundBookmark() { m_foundBookmark = false; }
-        bool FoundBreakpoint() const { return m_foundBreakpoint; }
-        void ClearFoundBreakpoint() { m_foundBreakpoint = false; }
+        std::streamoff tellg();
+
+        bool FoundBookmark() const   { return m_FoundBookmark;    }
+        void ClearFoundBookmark()    { m_FoundBookmark = false;   }
+        bool FoundBreakpoint() const { return m_FoundBreakpoint;  }
+        void ClearFoundBreakpoint()  { m_FoundBreakpoint = false; }
 
     protected:
-        bool IsEOL(wxChar ch);
-        cbEditor *m_cbe;
-        const wxChar *m_In;
-        const wxChar *m_PeekStart;
-        std::vector<wxChar> m_buffer;
-        int m_curline;
-        bool m_foundBookmark;
-        bool m_foundBreakpoint;
+        inline bool IsEOL(wxChar ch) { return (ch == _T('\r') || ch == _T('\n')); }
+
+        cbEditor*           m_Ed;
+        const wxChar*       m_CharPtr;
+        const wxChar*       m_SavedCharPtr;
+        int                 m_CurChar;
+        int                 m_CurLine;
+        bool                m_FoundBookmark;
+        bool                m_FoundBreakpoint;
 
     private:
         std::string readLine();

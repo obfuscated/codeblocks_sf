@@ -40,27 +40,9 @@
 #include <string>
 #include <vector>
 
-#if defined(__GNUC__)
+#ifdef __GNUC__
 #include <string.h>		// need both string and string.h for GCC
 #endif
-
-// define STDCALL and EXPORT for Windows
-// MINGW defines STDCALL in Windows.h (actually windef.h)
-// EXPORT has no value ASTYLE_NO_EXPORT is defined
-#ifdef _WIN32
-#ifndef STDCALL
-#define STDCALL __stdcall
-#endif
-#ifdef ASTYLE_NO_EXPORT
-#define EXPORT
-#else
-#define EXPORT __declspec(dllexport)
-#endif
-// define STDCALL and EXPORT for non-Windows
-#else
-#define STDCALL
-#define EXPORT
-#endif	// #ifdef _WIN32
 
 #ifdef _MSC_VER
 #pragma warning(disable: 4996)  // secure version deprecation warnings
@@ -68,15 +50,17 @@
 #endif
 
 #ifdef __BORLANDC__
-#pragma warn -8004	// variable is assigned a value that is never used
+#pragma warn -8004	            // variable is assigned a value that is never used
 #endif
 
 #ifdef __INTEL_COMPILER
 #pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
-// #pragma warning(disable:  444)  // destructor for base class is not virtual
 #pragma warning(disable:  981)  // operands are evaluated in unspecified order
 #endif
 
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wshorten-64-to-32"
+#endif
 
 namespace astyle {
 
@@ -95,6 +79,7 @@ enum FormatStyle
 	STYLE_KR,
 	STYLE_STROUSTRUP,
 	STYLE_WHITESMITH,
+	STYLE_VTK,
 	STYLE_BANNER,
 	STYLE_GNU,
 	STYLE_LINUX,
@@ -117,7 +102,7 @@ enum BracketMode
 
 enum BracketType
 {
-	NULL_TYPE = 0,
+	NULL_TYPE = 0,				// do NOT use isBracketType() to check
 	NAMESPACE_TYPE = 1,			// also a DEFINITION_TYPE
 	CLASS_TYPE = 2,				// also a DEFINITION_TYPE
 	STRUCT_TYPE = 4,			// also a DEFINITION_TYPE
@@ -125,9 +110,10 @@ enum BracketType
 	DEFINITION_TYPE = 16,
 	COMMAND_TYPE = 32,
 	ARRAY_NIS_TYPE = 64,		// also an ARRAY_TYPE
-	ARRAY_TYPE = 128,			// arrays and enums
-	EXTERN_TYPE = 256,			// extern "C", not a command type extern
-	SINGLE_LINE_TYPE = 512
+	ENUM_TYPE = 128,			// also an ARRAY_TYPE
+	ARRAY_TYPE = 256,			// arrays and enums
+	EXTERN_TYPE = 512,			// extern "C", not a command type extern
+	SINGLE_LINE_TYPE = 1024
 };
 
 enum MinConditional
@@ -198,10 +184,12 @@ class ASSourceIterator
 	public:
 		ASSourceIterator() {}
 		virtual ~ASSourceIterator() {}
+		virtual int getStreamLength() const = 0;
 		virtual bool hasMoreLines() const = 0;
 		virtual string nextLine(bool emptyLineWasDeleted = false) = 0;
 		virtual string peekNextLine() = 0;
 		virtual void peekReset() = 0;
+		virtual streamoff tellg() = 0;
 };
 
 //-----------------------------------------------------------------------------
@@ -216,6 +204,7 @@ class ASResource
 		void buildAssignmentOperators(vector<const string*>* assignmentOperators);
 		void buildCastOperators(vector<const string*>* castOperators);
 		void buildHeaders(vector<const string*>* headers, int fileType, bool beautifier = false);
+		void buildIndentableMacros(vector<const pair<const string, const string>* >* indentableMacros);
 		void buildIndentableHeaders(vector<const string*>* indentableHeaders);
 		void buildNonAssignmentOperators(vector<const string*>* nonAssignmentOperators);
 		void buildNonParenHeaders(vector<const string*>* nonParenHeaders, int fileType, bool beautifier = false);
@@ -237,7 +226,8 @@ class ASResource
 		static const string AS_SELECTOR;
 		static const string AS_EXTERN, AS_ENUM;
 		static const string AS_STATIC, AS_CONST, AS_SEALED, AS_OVERRIDE, AS_VOLATILE, AS_NEW;
-		static const string AS_WHERE, AS_SYNCHRONIZED;
+		static const string AS_NOEXCEPT, AS_INTERRUPT, AS_AUTORELEASEPOOL;
+		static const string AS_WHERE, AS_LET, AS_SYNCHRONIZED;
 		static const string AS_OPERATOR, AS_TEMPLATE;
 		static const string AS_OPEN_BRACKET, AS_CLOSE_BRACKET;
 		static const string AS_OPEN_LINE_COMMENT, AS_OPEN_COMMENT, AS_CLOSE_COMMENT;
@@ -257,6 +247,7 @@ class ASResource
 		static const string AS_NOT, AS_BIT_XOR, AS_BIT_OR, AS_BIT_AND, AS_BIT_NOT;
 		static const string AS_QUESTION, AS_COLON, AS_SEMICOLON, AS_COMMA;
 		static const string AS_ASM, AS__ASM__, AS_MS_ASM, AS_MS__ASM;
+		static const string AS_QFOREACH, AS_QFOREVER, AS_FOREVER;
 		static const string AS_FOREACH, AS_LOCK, AS_UNSAFE, AS_FIXED;
 		static const string AS_GET, AS_SET, AS_ADD, AS_REMOVE;
 		static const string AS_DELEGATE, AS_UNCHECKED;
@@ -387,20 +378,22 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool getForceTabIndentation(void) const;
 		bool getModeManuallySet(void) const;
 		bool getModifierIndent(void) const;
+		bool getNamespaceIndent(void) const;
 		bool getPreprocDefineIndent(void) const;
 		bool getSwitchIndent(void) const;
 
 		void setBlockIndent(bool state);
 		void setBracketIndent(bool state);
-
 	protected:
 		void deleteBeautifierVectors();
 		const string* findHeader(const string &line, int i,
 		                         const vector<const string*>* possibleHeaders) const;
 		const string* findOperator(const string &line, int i,
 		                           const vector<const string*>* possibleOperators) const;
-		int getNextProgramCharDistance(const string &line, int i) const;
+		int  getNextProgramCharDistance(const string &line, int i) const;
 		int  indexOf(vector<const string*> &container, const string* element) const;
+		void setBracketIndentVtk(bool state);
+		string extractPreprocessorStatement(const string &line) const;
 		string trim(const string &str) const;
 		string rtrim(const string &str) const;
 
@@ -417,6 +410,7 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool isInExternC;
 		bool isInBeautifySQL;
 		bool isInIndentableStruct;
+		bool isInIndentablePreproc;
 
 	private:  // functions
 		ASBeautifier(const ASBeautifier &copy);
@@ -445,7 +439,6 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool isPreprocessorConditionalCplusplus(const string &line) const;
 		bool isInPreprocessorUnterminatedComment(const string &line);
 		bool statementEndsWithComma(const string &line, int index) const;
-		string extractPreprocessorStatement(const string &line) const;
 		string preLineWS(int lineIndentCount, int lineSpaceIndentCount) const;
 		template<typename T> void deleteContainer(T &container);
 		template<typename T> void initContainer(T &container, T value);
@@ -501,17 +494,22 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool isInDefine;
 		bool isInDefineDefinition;
 		bool classIndent;
-		bool isInClassInitializer;
-		bool isInClassHeaderTab;
+		bool isInClassHeader;			// is in a class before the opening bracket
+		bool isInClassHeaderTab;		// is in an indentable class header line
+		bool isInClassInitializer;		// is in a class after the ':' initializer
+		bool isInClass;					// is in a class after the opening bracket
 		bool isInObjCMethodDefinition;
 		bool isImmediatelyPostObjCMethodDefinition;
+		bool isInIndentablePreprocBlock;
 		bool isInObjCInterface;
 		bool isInEnum;
+		bool isInLet;
 		bool modifierIndent;
 		bool switchIndent;
 		bool caseIndent;
 		bool namespaceIndent;
 		bool bracketIndent;
+		bool bracketIndentVtk;
 		bool blockIndent;
 		bool labelIndent;
 		bool shouldIndentPreprocDefine;
@@ -529,7 +527,6 @@ class ASBeautifier : protected ASResource, protected ASBase
 		bool lineBeginsWithOpenBracket;
 		bool lineBeginsWithCloseBracket;
 		bool shouldIndentBrackettedLine;
-		bool isInClass;
 		bool isInSwitch;
 		bool foundPreCommandHeader;
 		bool foundPreCommandMacro;
@@ -555,6 +552,7 @@ class ASBeautifier : protected ASResource, protected ASBase
 		int  prevFinalLineSpaceIndentCount;
 		int  prevFinalLineIndentCount;
 		int  defineIndentCount;
+		int  preprocBlockIndent;
 		char quoteChar;
 		char prevNonSpaceCh;
 		char currentNonSpaceCh;
@@ -571,8 +569,9 @@ class ASEnhancer : protected ASBase
 	public:  // functions
 		ASEnhancer();
 		virtual ~ASEnhancer();
-		void init(int, int, int, bool, bool, bool, bool, bool);
-		void enhance(string &line, bool isInPreprocessor, bool isInSQL);
+		void init(int, int, int, bool, bool, bool, bool, bool, bool, bool,
+		          vector<const pair<const string, const string>* >*);
+		void enhance(string &line, bool isInNamespace, bool isInPreprocessor, bool isInSQL);
 
 	private:  // functions
 		void    convertForceTabIndentToSpaces(string  &line) const;
@@ -592,8 +591,10 @@ class ASEnhancer : protected ASBase
 		int  tabLength;
 		bool useTabs;
 		bool forceTab;
+		bool namespaceIndent;
 		bool caseIndent;
-		bool preprocessorIndent;
+		bool preprocBlockIndent;
+		bool preprocDefineIndent;
 		bool emptyLineFill;
 
 		// parsing variables
@@ -605,6 +606,7 @@ class ASEnhancer : protected ASBase
 		// unindent variables
 		int  bracketCount;
 		int  switchDepth;
+		int  eventPreprocDepth;
 		bool lookingForCaseBracket;
 		bool unindentNextLine;
 		bool shouldUnindentLine;
@@ -625,6 +627,7 @@ class ASEnhancer : protected ASBase
 		// event table variables
 		bool nextLineIsEventIndent;             // begin event table indent is reached
 		bool isInEventTable;                    // need to indent an event table
+		vector<const pair<const string, const string>* >* indentableMacros;
 
 		// SQL variables
 		bool nextLineIsDeclareIndent;           // begin declare section indent is reached
@@ -676,6 +679,7 @@ class ASFormatter : public ASBeautifier
 		void setParensHeaderPaddingMode(bool mode);
 		void setParensUnPaddingMode(bool state);
 		void setPointerAlignment(PointerAlign alignment);
+		void setPreprocBlockIndent(bool state);
 		void setReferenceAlignment(ReferenceAlign alignment);
 		void setSingleStatementsMode(bool state);
 		void setStripCommentPrefix(bool state);
@@ -717,6 +721,7 @@ class ASFormatter : public ASBeautifier
 		bool isPointerOrReferenceVariable(string &word) const;
 		bool isSharpStyleWithParen(const string* header) const;
 		bool isStructAccessModified(string  &firstLine, size_t index) const;
+		bool isIndentablePreprocessorBlock(string  &firstLine, size_t index);
 		bool isUnaryOperator() const;
 		bool isImmediatelyPostCast() const;
 		bool isInExponent() const;
@@ -791,6 +796,7 @@ class ASFormatter : public ASBeautifier
 		vector<const string*>* operators;
 		vector<const string*>* assignmentOperators;
 		vector<const string*>* castOperators;
+		vector<const pair<const string, const string>* >* indentableMacros;	// for ASEnhancer
 
 		ASSourceIterator* sourceIterator;
 		ASEnhancer* enhancer;
@@ -804,6 +810,7 @@ class ASFormatter : public ASBeautifier
 		string readyFormattedLine;
 		string currentLine;
 		string formattedLine;
+		string verbatimDelimiter;
 		const string* currentHeader;
 		const string* previousOperator;    // used ONLY by pad-oper
 		char currentChar;
@@ -811,6 +818,7 @@ class ASFormatter : public ASBeautifier
 		char previousNonWSChar;
 		char previousCommandChar;
 		char quoteChar;
+		streamoff preprocBlockEnd;
 		int  charNum;
 		int  horstmannIndentChars;
 		int  nextLineSpacePadNum;
@@ -818,7 +826,6 @@ class ASFormatter : public ASBeautifier
 		int  spacePadNum;
 		int  tabIncrementIn;
 		int  templateDepth;
-		int  traceLineNumber;
 		int  squareBracketCount;
 		size_t checksumIn;
 		size_t checksumOut;
@@ -860,6 +867,7 @@ class ASFormatter : public ASBeautifier
 		bool shouldUnPadParens;
 		bool shouldConvertTabs;
 		bool shouldIndentCol1Comments;
+		bool shouldIndentPreprocBlock;
 		bool shouldCloseTemplates;
 		bool shouldAttachExternC;
 		bool shouldAttachNamespace;
@@ -959,12 +967,16 @@ class ASFormatter : public ASBeautifier
 		bool shouldBreakClosingHeaderBlocks;
 		bool isPrependPostBlockEmptyLineRequested;
 		bool isAppendPostBlockEmptyLineRequested;
+		bool isIndentableProprocessor;
+		bool isIndentableProprocessorBlock;
 		bool prependEmptyLine;
 		bool appendOpeningBracket;
 		bool foundClosingHeader;
 		bool isInHeader;
 		bool isImmediatelyPostHeader;
 		bool isInCase;
+		bool isFirstPreprocConditional;
+		bool processedFirstConditional;
 		bool isJavaStaticConstructor;
 
 	private:  // inline functions
@@ -1000,17 +1012,5 @@ bool sortOnName(const string* a, const string* b);
 }   // end of astyle namespace
 
 // end of astyle namespace  --------------------------------------------------
-
-
-//-----------------------------------------------------------------------------
-// declarations for library build
-// global because they are called externally and are NOT part of the namespace
-//-----------------------------------------------------------------------------
-
-typedef void (STDCALL* fpError)(int, const char*);      // pointer to callback error handler
-typedef char* (STDCALL* fpAlloc)(unsigned long);		// pointer to callback memory allocation
-extern "C" EXPORT char* STDCALL AStyleMain(const char*, const char*, fpError, fpAlloc);
-extern "C" EXPORT const char* STDCALL AStyleGetVersion (void);
-
 
 #endif // closes ASTYLE_H
