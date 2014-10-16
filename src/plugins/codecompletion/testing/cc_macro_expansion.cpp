@@ -1,11 +1,13 @@
 /****************************************/
 
-#define A(x,y)  (x+y)
-#define B 1
-#define C 2
+#define ADD(x,y)  (x+y)
+#define ONE 1
+#define TWO 2
+
+#define ZERO 0
 
 
-#if A(B,C) == 3
+#if ADD(ONE,TWO) == 3
 
 void f1234();
 
@@ -13,15 +15,31 @@ void f1234();
 
 void f2345();
 
-#if (defined B) && (defined ( C ))
-void test_defined_expand();
+#if defined TWO && defined ( THREE )
+void test_defined_expand_1();
+#elif defined ONE
+void test_defined_expand_2();
 #endif
 
+#if defined (ZERO)
+int zero_defined;
+#endif
 
 A(B,C);
 
+// see whether we correctly handle ## operator
+#define _GLIBCXX_PSEUDO_VISIBILITY_default
+#define _GLIBCXX_PSEUDO_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY_ ## V
+# define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
+namespace std _GLIBCXX_VISIBILITY(default)
+{
+    class string { };
+}
 
 
-// f123      //f1234
-// f234      //f2345
-// test_defined_expand //test_defined_expand
+
+// std::        //string
+// f123         //f1234
+// f234         //f2345
+// test_defined //test_defined_expand_2
+// zero_        //zero_defined
