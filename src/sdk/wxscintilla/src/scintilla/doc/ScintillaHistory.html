@@ -457,6 +457,9 @@
 	<td>Holger Stenger</td>
       </tr><tr>
 	<td>danselmi</td>
+	<td>Mat Berchtold</td>
+	<td>Michael Staszewski</td>
+	<td>Baurzhan Muftakhidinov</td>
     </tr>
     </table>
     <p>
@@ -469,11 +472,63 @@
       </li>
     </ul>
     <h3>
-       <a href="http://prdownloads.sourceforge.net/scintilla/scite350.zip?download">Release 3.5.0</a>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite351.zip?download">Release 3.5.1</a>
     </h3>
     <ul>
 	<li>
-	Released 13 August 2014.
+	Released 30 September 2014.
+	</li>
+	<li>
+	For OS X Cocoa switch C++ runtime to libc++ to enable use of features that will never
+	be added to libstdc++ including those part of C++11.
+	Scintilla will now run only on OS X 10.7 or later and only in 64-bit mode.
+	</li>
+	<li>
+	Include support for using C++11 &lt;regex&gt; for regular expression searches.
+	Enabling this requires rebuilding Scintilla with a non-default option.
+	This is a provisional feature and may change API before being made permanent.
+	</li>
+	<li>
+	Allocate indicators used for Input Method Editors after 31 which was the previous limit of indicators to
+	ensure no clash between the use of indicators for IME and for the application.
+	</li>
+	<li>
+	VHDL folder fixes "block" keyword.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1664/">Bug #1664</a>.
+	</li>
+	<li>
+	Prevent caret blinking when holding down Delete key.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1657/">Bug #1657</a>.
+	</li>
+	<li>
+	On Windows, allow right click selection in popup menu.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1080/">Feature #1080.</a>
+	</li>
+	<li>
+	For GTK+ on Windows, avoid extra space when pasting from external application.
+	</li>
+	<li>
+	On GTK+ 2.x allow Scintilla to be used inside tool tips by changing when preedit window created.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1662/">Bug #1662</a>.
+	</li>
+	<li>
+	Support MinGW compilation under Linux.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1077/">Feature #1077.</a>
+	</li>
+    </ul>
+    <h3>
+       <a href="http://prdownloads.sourceforge.net/scintilla/scite351.zip?download">Release 3.5.1</a>
+    </h3>
+    <ul>
+	<li>
+	Released 30 September 2014.
+	</li>
+	<li>
+	BibTeX lexer added.
+	<a href="http://sourceforge.net/p/scintilla/feature-requests/1071/">Feature #1071.</a>
+	</li>
+	<li>
+	SQL lexer supports the q-quote operator as SCE_SQL_QOPERATOR(24).
 	</li>
 	<li>
 	VHDL lexer supports block comments.
@@ -484,8 +539,28 @@
 	<a href="http://sourceforge.net/p/scintilla/bugs/613/">Bug #613</a>.
 	</li>
 	<li>
+	Restore fractional pixel tab positioning which was truncated to whole pixels in 3.5.0.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1652/">Bug #1652</a>.
+	</li>
+	<li>
+	Allow choice between windowed and inline IME on some platforms.
+	</li>
+	<li>
+	On GTK+ cache autocomplete window to avoid platform bug where windows
+	were sometimes lost.
+	<a href="http://sourceforge.net/p/scintilla/bugs/1649/">Bug #1649</a>.
+	</li>
+	<li>
+	On GTK+ size autocomplete window more accurately.
+	</li>
+	<li>
 	On Windows only unregister windows classes registered.
 	<a href="http://sourceforge.net/p/scintilla/bugs/1639/">Bug #1639</a>.
+	</li>
+	<li>
+	On Windows another DirectWrite mode SC_TECHNOLOGY_DIRECTWRITERETAIN added
+	which may avoid drawing failures on some cards and drivers.
+	This feature is provisional and may be changed or removed if a better solution is found.
 	</li>
 	<li>
 	On Windows support the Visual Studio 2010+ clipboard format that indicates a line copy.

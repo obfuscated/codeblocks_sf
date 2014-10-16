@@ -629,6 +629,18 @@ void wxScintilla::SetCodePage(int codePage)
     SendMsg(SCI_SETCODEPAGE, codePage);
 }
 
+// Is the IME displayed in a winow or inline?
+int wxScintilla::GetIMEInteraction() const
+{
+    return SendMsg(SCI_GETIMEINTERACTION, 0, 0);
+}
+
+// Choose to display the the IME in a winow or inline.
+void wxScintilla::SetIMEInteraction(int imeInteraction)
+{
+    SendMsg(SCI_SETIMEINTERACTION, imeInteraction, 0);
+}
+
 // Set the symbol used for a particular marker number,
 // and optionally the fore and background colours.
 void wxScintilla::MarkerDefine(int markerNumber, int markerSymbol,
@@ -1614,9 +1626,9 @@ int wxScintilla::FindText(int minPos, int maxPos,
     int ret = SendMsg(SCI_FINDTEXT, flags, (uptr_t)&ft);
     if (lengthFound)
         *lengthFound = ft.chrgText.cpMax - ft.chrgText.cpMin;
-/* C::B end */
 
     return ret;
+/* C::B end */
 }
 
 // On Windows, will draw the document into a display context such as a printer.
@@ -1717,7 +1729,7 @@ wxString wxScintilla::GetSelectedText()
      * selection it may cause a crash. */
 
     // determine the selected text range
-    const long len = SendMsg(SCI_GETSELTEXT, 0, 0);
+    const long len = SendMsg(SCI_GETSELTEXT, 0, (uptr_t)0);
     if (!len) return wxEmptyString;
 /* C::B end */
 
@@ -3440,7 +3452,7 @@ void wxScintilla::SetPunctuationChars(const wxString& characters)
 // Get the set of characters making up punctuation characters
 wxString wxScintilla::GetPunctuationChars() const
 {
-    int msg = SCI_GETPUNCTUATIONCHARS;
+    const int msg = SCI_GETPUNCTUATIONCHARS;
     const long len = SendMsg(msg, 0, (uptr_t)NULL);
     if (!len) return wxEmptyString;
 
@@ -4401,15 +4413,16 @@ void wxScintilla::SetRepresentation(const wxString& encodedCharacter, const wxSt
 
 // Set the way a character is drawn.
 /* C::B begin */
-wxString wxScintilla::GetRepresentation(const wxString& WXUNUSED(encodedCharacter)) const
+wxString wxScintilla::GetRepresentation(const wxString& encodedCharacter) const
 /* C::B end */
 {
-    const long len = SendMsg(SCI_GETREPRESENTATION, 0, (uptr_t)NULL);
+    const int msg = SCI_GETREPRESENTATION;
+    const long len = SendMsg(msg, (sptr_t)(const char*)wx2sci(encodedCharacter), (uptr_t)NULL);
     if (!len) return wxEmptyString;
 
     wxMemoryBuffer mbuf(len+1);
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
-    SendMsg(SCI_GETREPRESENTATION, 0, (uptr_t)buf);
+    SendMsg(msg, (sptr_t)(const char*)wx2sci(encodedCharacter), (uptr_t)buf);
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
@@ -4561,7 +4574,7 @@ int wxScintilla::PropertyType(const wxString& name)
 // Describe a property.
 wxString wxScintilla::DescribeProperty(const wxString& name) const
 {
-    int msg = SCI_DESCRIBEPROPERTY;
+    const int msg = SCI_DESCRIBEPROPERTY;
     const long len = SendMsg(msg, (sptr_t)(const char*)wx2sci(name), (uptr_t)NULL);
     if (!len) return wxEmptyString;
 
@@ -4647,12 +4660,13 @@ int wxScintilla::DistanceToSecondaryStyles() const
 // Get the set of base styles that can be extended with sub styles
 wxString wxScintilla::GetSubStyleBases() const
 {
-    const long len = SendMsg(SCI_GETSUBSTYLEBASES, 0, (uptr_t)NULL);
+    const int msg = SCI_GETSUBSTYLEBASES;
+    const long len = SendMsg(msg, 0, (uptr_t)NULL);
     if (!len) return wxEmptyString;
 
     wxMemoryBuffer mbuf(len+1);
     char* buf = (char*)mbuf.GetWriteBuf(len+1);
-    SendMsg(SCI_GETSUBSTYLEBASES, 0, (uptr_t)buf);
+    SendMsg(msg, 0, (uptr_t)buf);
     mbuf.UngetWriteBuf(len);
     mbuf.AppendByte(0);
     return sci2wx(buf);
@@ -4793,9 +4807,9 @@ void wxScintilla::StyleSetFont(int styleNum, wxFont& font)
 #endif
     int            size     = font.GetPointSize();
     wxString       faceName = font.GetFaceName();
-    bool           bold     = font.GetWeight() == wxBOLD;
+    bool           bold     = font.GetWeight() == wxFONTWEIGHT_BOLD;
 /* C::B begin */
-    bool           italic   = font.GetStyle() == wxITALIC;
+    bool           italic   = font.GetStyle() == wxFONTSTYLE_ITALIC;
 /* C::B end */
     bool           under    = font.GetUnderlined();
     wxFontEncoding encoding = font.GetEncoding();
@@ -5289,6 +5303,9 @@ void wxScintilla::OnSize(wxSizeEvent& WXUNUSED(evt))
     if (m_swx) {
         wxSize sz = GetClientSize();
         m_swx->DoSize(sz.x, sz.y);
+#if defined(__WXX11__)
+        PositionScrollbars();
+#endif
     }
 }
 
@@ -5494,7 +5511,9 @@ wxSize wxScintilla::DoGetBestSize() const
 {
     // What would be the best size for a wxSintilla?
     // Just give a reasonable minimum until something else can be figured out.
+/* C::B begin */
     return wxSize(600,440);
+/* C::B end */
 }
 
 
@@ -5773,7 +5792,7 @@ wxScintillaEvent::wxScintillaEvent(const wxScintillaEvent& event):
 /*static*/ wxVersionInfo wxScintilla::GetLibraryVersionInfo()
 {
     /* C::B -> Don't forget to change version number here and in wxscintilla.h at the top */
-    return wxVersionInfo("Scintilla", 3, 50, 0, "Scintilla 3.50");
+    return wxVersionInfo("Scintilla", 3, 51, 0, "Scintilla 3.51");
 }
 #endif
 /* C::B end */

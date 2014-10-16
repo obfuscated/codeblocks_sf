@@ -3374,6 +3374,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexBasic.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexBibTeX.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexBullant.cxx">
 			<Option target="scintilla" />
 		</Unit>

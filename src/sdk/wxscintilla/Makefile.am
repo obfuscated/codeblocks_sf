@@ -26,6 +26,7 @@ libwxscintilla_la_SOURCES = src/PlatWX.cpp \
 			src/scintilla/lexers/LexBaan.cxx \
 			src/scintilla/lexers/LexBash.cxx \
 			src/scintilla/lexers/LexBasic.cxx \
+			src/scintilla/lexers/LexBibTeX.cxx \
 			src/scintilla/lexers/LexBullant.cxx \
 			src/scintilla/lexers/LexCLW.cxx \
 			src/scintilla/lexers/LexCOBOL.cxx \

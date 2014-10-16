@@ -358,7 +358,8 @@ void ScintillaWX::StartDrag() {
     evt.SetEventObject (sci);
     evt.SetDragText(dragText);
     evt.SetDragFlags(wxDrag_DefaultMove);
-    evt.SetPosition(wxMin(sci->GetSelectionStart(), sci->GetSelectionEnd()));
+    evt.SetPosition(wxMin(sci->GetSelectionStart(),
+                          sci->GetSelectionEnd()));
     sci->GetEventHandler()->ProcessEvent(evt);
 
 /* C::B begin */
@@ -621,15 +622,15 @@ void ScintillaWX::Paste() {
         }
     }
 /* C::B end */
-    ClearSelection();
+    ClearSelection(multiPasteMode == SC_MULTIPASTE_EACH);
 
 #if wxUSE_DATAOBJ
     wxTextDataObject data;
 /* C::B begin */
     wxString textString;
 
-    bool rectangular = false;
     bool haveTextString = false;
+    bool isRectangularClipboard = false;
 
     wxTheClipboard->UsePrimarySelection(false);
     if (wxTheClipboard->Open()) {
@@ -641,7 +642,7 @@ void ScintillaWX::Paste() {
         if (gotRectData && selData.GetSize()>1) {
             wxTheClipboard->Close();
             const char* rectBuf = (const char*)selData.GetData();
-            rectangular = rectBuf[0] == (char)1;
+            isRectangularClipboard = rectBuf[0] == (char)1;
             int len = selData.GetDataSize()-1;
             char* buffer = new char[len];
             memcpy (buffer, rectBuf+1, len);
@@ -675,14 +676,14 @@ void ScintillaWX::Paste() {
     int len  = strlen(buf);
     int newPos = 0;
     int caretMain = CurrentPosition();
-    if (rectangular) {
+    if (isRectangularClipboard) {
         SelectionPosition selStart = sel.Range(sel.Main()).Start();
         int newLine = pdoc->LineFromPosition (caretMain) + wxCountLines (buf, pdoc->eolMode);
         int newCol = pdoc->GetColumn(caretMain);
-        PasteRectangular (selStart, buf, len);
+        PasteRectangular(selStart, buf, len);
         newPos = pdoc->FindColumn (newLine, newCol);
     } else {
-        pdoc->InsertString (caretMain, buf, len);
+        pdoc->InsertString(caretMain, buf, len);
         newPos = caretMain + len;
     }
     SetEmptySelection (newPos);
@@ -790,7 +791,7 @@ void ScintillaWX::ClaimSelection() {
         CopySelectionRange(&st);
         wxTheClipboard->UsePrimarySelection(true);
         if (wxTheClipboard->Open()) {
-            wxString text = sci2wx(st.s, st.len);
+            wxString text = sci2wx(st.Data(), st.Length());
             wxTheClipboard->SetData(new wxTextDataObject(text));
             wxTheClipboard->Close();
         }

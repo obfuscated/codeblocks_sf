@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.50.0")
+#define wxSCINTILLA_VERSION _T("3.51.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -84,6 +84,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 /// The SC_CP_UTF8 value can be used to enter Unicode mode.
 /// This is the same value as CP_UTF8 in Windows
 #define wxSCI_CP_UTF8 65001
+#define wxSCI_IME_WINDOWED 0
+#define wxSCI_IME_INLINE 1
 #define wxSCI_MARKER_MAX 31
 #define wxSCI_MARK_CIRCLE 0
 #define wxSCI_MARK_ROUNDRECT 1
@@ -210,7 +212,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 /* C::B begin */
 #define wxSCI_INDIC_HIGHLIGHT 31 // please change also in Scintilla.h !!
 /* C::B end */
-#define wxSCI_INDIC_MAX 31
+#define wxSCI_INDIC_IME 32
+#define wxSCI_INDIC_IME_MAX 35
+#define wxSCI_INDIC_MAX 35
 #define wxSCI_INDIC_CONTAINER 8
 #define wxSCI_INDIC0_MASK 0x20
 #define wxSCI_INDIC1_MASK 0x40
@@ -240,6 +244,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_FIND_WORDSTART 0x00100000
 #define wxSCI_FIND_REGEXP 0x00200000
 #define wxSCI_FIND_POSIX 0x00400000
+#define wxSCI_FIND_CXX11REGEX 0x00800000
 #define wxSCI_FOLDLEVELBASE 0x400
 #define wxSCI_FOLDLEVELWHITEFLAG 0x1000
 #define wxSCI_FOLDLEVELHEADERFLAG 0x2000
@@ -293,6 +298,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_STATUS_OK 0
 #define wxSCI_STATUS_FAILURE 1
 #define wxSCI_STATUS_BADALLOC 2
+#define wxSCI_STATUS_WARN_START 1000
+#define wxSCI_STATUS_WARN_REGEX 1001
 #define wxSCI_CURSORNORMAL -1
 #define wxSCI_CURSORARROW 2
 #define wxSCI_CURSORWAIT 4
@@ -358,6 +365,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SCVS_USERACCESSIBLE 2
 #define wxSCI_TECHNOLOGY_DEFAULT 0
 #define wxSCI_TECHNOLOGY_DIRECTWRITE 1
+#define wxSCI_TECHNOLOGY_DIRECTWRITERETAIN 2
 
 /// Line end types which may be used in addition to LF, CR, and CRLF
 /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
@@ -553,8 +561,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LEX_AS 113
 #define wxSCI_LEX_DMIS 114
 #define wxSCI_LEX_REGISTRY 115
+#define wxSCI_LEX_BIBTEX 116
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_REGISTRY // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_BIBTEX // update if the above gets extended!
 /* C::B end */
 
 /// When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -1570,6 +1579,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_VHDL_STDPACKAGE 12
 #define wxSCI_VHDL_STDTYPE 13
 #define wxSCI_VHDL_USERWORD 14
+#define wxSCI_VHDL_BLOCK_COMMENT 15
 
 /// Lexical states for SCLEX_CAML
 #define wxSCI_CAML_DEFAULT 0
@@ -1691,6 +1701,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_SQL_USER3 21
 #define wxSCI_SQL_USER4 22
 #define wxSCI_SQL_QUOTEDIDENTIFIER 23
+#define wxSCI_SQL_QOPERATOR 24
 
 /// Lexical states for SCLEX_SMALLTALK
 #define wxSCI_ST_DEFAULT 0
@@ -2380,6 +2391,15 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_REG_PARAMETER 11
 #define wxSCI_REG_OPERATOR 12
 
+/// Lexical state for SCLEX_BIBTEX
+#define wxSCI_BIBTEX_DEFAULT 0
+#define wxSCI_BIBTEX_ENTRY 1
+#define wxSCI_BIBTEX_UNKNOWN_ENTRY 2
+#define wxSCI_BIBTEX_KEY 3
+#define wxSCI_BIBTEX_PARAMETER 4
+#define wxSCI_BIBTEX_VALUE 5
+#define wxSCI_BIBTEX_COMMENT 6
+
 /// Events
 /// GTK+ Specific to work around focus and accelerator problems:
 /// Line end types which may be used in addition to LF, CR, and CRLF
@@ -2913,6 +2933,12 @@ public:
 
     // Set the code page used to interpret the bytes of the document as characters.
     void SetCodePage(int codePage);
+
+    // Is the IME displayed in a winow or inline?
+    int GetIMEInteraction() const;
+
+    // Choose to display the the IME in a winow or inline.
+    void SetIMEInteraction(int imeInteraction);
 
     // Set the symbol used for a particular marker number,
     // and optionally the fore and background colours.
@@ -5118,7 +5144,9 @@ protected:
     void OnMenu(wxCommandEvent& evt);
     void OnListBox(wxCommandEvent& evt);
     void OnIdle(wxIdleEvent& evt);
+/* C::B begin */
     void OnTimer(wxTimerEvent& evt);
+/* C::B end */
 
     virtual wxSize DoGetBestSize() const;
 

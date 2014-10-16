@@ -312,7 +312,6 @@ void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesire
 {
     PenColour(fore);
     BrushColour(back);
-/* C::B begin */
     wxPoint *p = new wxPoint[npts];
 
     for (int i=0; i<npts; i++) {
@@ -321,7 +320,6 @@ void SurfaceImpl::Polygon(Point *pts, int npts, ColourDesired fore, ColourDesire
     }
     hDC->DrawPolygon(npts, p);
     delete [] p;
-/* C::B end */
 }
 
 void SurfaceImpl::RectangleDraw(PRectangle rc, ColourDesired fore, ColourDesired back)
@@ -1498,7 +1496,7 @@ int ListBoxImpl::GetSelection()
 int ListBoxImpl::Find(const char *prefix)
 {
 /* C::B begin */
-    wxListView *list = GETLB(wid);
+    wxListView* list = GETLB(wid);
     wxString sPrefix = unicodeMode ? sci2wx(prefix) : wxString::From8BitData(prefix);
     for (int i=0; i<list->GetItemCount(); ++i) {
         if (list->GetItemText(i).StartsWith(sPrefix))
