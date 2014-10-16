@@ -1349,27 +1349,38 @@ void Tokenizer::GetReplacedToken(wxString& str)
 
 bool Tokenizer::CalcConditionExpression()
 {
-    // need to force the tokenizer skip raw expression
+    // need to force the tokenizer to read raw expression
     const TokenizerState oldState = m_State;
-    m_State = tsReadRawExpression;
+    m_State = tsReadRawExpression; // parentheses are not returned as a single token
 
     const unsigned int undoIndex = m_TokenIndex;
     const unsigned int undoLine = m_LineNumber;
     SkipToEOL(false);
-    const unsigned int lastBufferLen = m_BufferLen - m_TokenIndex;
+    // length from the current m_TokenIndex to the End
+    const unsigned int untouchedBufferLen = m_BufferLen - m_TokenIndex;
     m_TokenIndex = undoIndex;
     m_LineNumber = undoLine;
 
     Expression exp;
-    while (m_BufferLen - m_TokenIndex > lastBufferLen)
+
+    // rescan happens once macro expansion happens (m_TokenIndex rewind)
+    while (m_TokenIndex < m_BufferLen - untouchedBufferLen)
     {
         while (SkipComment())
             ;
         wxString token = DoGetToken();
-        if (token[0] <= _T(' ') || token == _T("defined") || token == _T("\\"))
+
+        if (token[0] <= _T(' ') || token == _T("\\"))
             continue;
 
-        if (token.Len() > 0 && !wxIsdigit(token[0])) // handle macro
+        if (token == _T("defined"))
+        {
+            if (IsMacroDefined())
+                exp.AddToInfixExpression(_T("1"));
+            else
+                exp.AddToInfixExpression(_T("0"));
+        }
+        else if(token.Len() > 0 && !wxIsdigit(token[0])) // identifier like token, check macro expansion
         {
             const int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
             if (id != -1)
@@ -1377,44 +1388,31 @@ bool Tokenizer::CalcConditionExpression()
                 const Token* tk = m_TokenTree->at(id);
                 if (tk)
                 {
-                    if (tk->m_FullType.IsEmpty() || tk->m_FullType == token)
+                    // this is a macro usage, tk->m_Args is the macro formal args
+                    // tk->m_FullType is the macro definition
+                    if (!tk->m_Args.IsEmpty()) //function like macro definition, expand them
                     {
-                        if (tk->m_Args.IsEmpty()) //variable like macro definition, but no definition, set 1
-                        {
-                            exp.AddToInfixExpression(_T("1"));
+                        if (tk->m_FullType == token) // just skip the special case, such as #define A(x,y) A
                             continue;
-                        }
-                        else //variable like macro definition, need to replace texts
-                        {
-                            if (ReplaceBufferText(tk->m_Args))
-                                continue;
-                        }
-                    }
-                    else if (!tk->m_Args.IsEmpty()) //function like macro definition, expand them
-                    {
+
                         if (ReplaceMacroUsage(tk))
                             continue; //after the expansion, m_TokenIndex is adjusted, so continue again
+                        else
+                            exp.AddToInfixExpression(_T("1")); // fall back value is 1
                     }
-                    else if (wxIsdigit(tk->m_FullType[0]))
-                        token = tk->m_FullType;
-                    else if (tk->m_FullType != tk->m_Name)
+                    else // variable like macro definition
                     {
-                        if (ReplaceBufferText(tk->m_FullType))
+                        if (tk->m_FullType == token) // just skip the special case, such as #define A A
                             continue;
+                        ReplaceBufferText(tk->m_FullType);
+                        continue;
                     }
                 }
             }
             else
-            {
-                exp.AddToInfixExpression(_T("0"));
-                continue;
-            }
+                exp.AddToInfixExpression(token); // not a macro usage token, just add to expression
         }
-
-        // only remaining number now
-        if (!token.StartsWith(_T("0x")))
-            exp.AddToInfixExpression(token);
-        else
+        else if (token.StartsWith(_T("0x"))) // hex value
         {
             long value;
             if (token.ToLong(&value, 16))
@@ -1422,6 +1420,8 @@ bool Tokenizer::CalcConditionExpression()
             else
                 exp.AddToInfixExpression(_T("0"));
         }
+        else
+            exp.AddToInfixExpression(token); // not identifier like token, such as operators
     }
 
     // reset tokenizer's functionality
@@ -1441,10 +1441,26 @@ bool Tokenizer::CalcConditionExpression()
 
 bool Tokenizer::IsMacroDefined()
 {
+    // pattern 1: #ifdef ( xxx )
+    // pattern 2: #ifdef xxx
     while (SkipWhiteSpace() || SkipComment())
         ;
-    int id = m_TokenTree->TokenExists(DoGetToken(), -1, tkMacroDef);
-    SkipToEOL(false);
+    bool haveParen = false;
+    wxString token = DoGetToken();
+    if (token == _T("("))
+    {
+        haveParen = true;
+        while (SkipWhiteSpace() || SkipComment())
+            ;
+        token = DoGetToken();
+    }
+    int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
+    if (haveParen)
+    {
+        while (SkipWhiteSpace() || SkipComment())
+            ;
+        DoGetToken(); // eat the ")"
+    }
     return (id != -1);
 }
 
@@ -1611,11 +1627,9 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             if (m_TokenizerOptions.wantPreprocessor)
                 result = IsMacroDefined();
             else
-            {
-                SkipToEOL(false);
-                result = true;
-            }
+                result = true; // default value
 
+            SkipToEOL(false);
             m_ExpressionResult.push(result);
             if (!result)
                SkipToNextConditionPreprocessor();
@@ -1629,11 +1643,9 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             if (m_TokenizerOptions.wantPreprocessor)
                 result = !IsMacroDefined();
             else
-            {
-                SkipToEOL(false);
-                result = true;
-            }
+                result = true; // default value
 
+            SkipToEOL(false);
             m_ExpressionResult.push(result);
             if (!result)
                SkipToNextConditionPreprocessor();
@@ -1658,7 +1670,11 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             TRACE(_T("HandleConditionPreprocessor() : #elifdef at line = %u"), m_LineNumber);
             bool result = false;
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
+            {
                 result = IsMacroDefined();
+                SkipToEOL(false);
+            }
+
             if (result)
                 m_ExpressionResult.top() = true;
             else
@@ -1671,7 +1687,11 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             TRACE(_T("HandleConditionPreprocessor() : #elifndef at line = %u"), m_LineNumber);
             bool result = false;
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
+            {
                 result = !IsMacroDefined();
+                SkipToEOL(false);
+            }
+
             if (result)
                 m_ExpressionResult.top() = true;
             else
@@ -1790,15 +1810,15 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
     }
 
     // Keep all in one line
-    wxString buffer(target);
-    for (size_t i = 0; i < buffer.Len(); ++i)
+    wxString substitute(target);
+    for (size_t i = 0; i < substitute.Len(); ++i)
     {
-        switch ((wxChar)buffer.GetChar(i))
+        switch ((wxChar)substitute.GetChar(i))
         {
             case _T('\\'):
             case _T('\r'):
             case _T('\n'):
-                buffer.SetChar(i, _T(' '));
+                substitute.SetChar(i, _T(' '));
                 break;
             default:
                 break;
@@ -1807,25 +1827,25 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
 
     // Increase memory if there is not enough space before the m_TokenIndex (between beginning of the
     // the m_Buffer to the m_TokenIndex)
-    const size_t bufferLen = buffer.Len();
-    if (m_TokenIndex < bufferLen)
+    const size_t len = substitute.Len();
+    if (m_TokenIndex < len)
     {
-        const size_t diffLen = bufferLen - m_TokenIndex;
+        const size_t diffLen = len - m_TokenIndex;
         m_Buffer.insert(0, wxString(_T(' '), diffLen));
         m_BufferLen += diffLen;
         m_TokenIndex += diffLen;
     }
 
     // Replacement backward
-    wxChar* p = const_cast<wxChar*>((const wxChar*)m_Buffer) + m_TokenIndex - bufferLen;
-    TRACE(_T("ReplaceBufferText() : <FROM>%s<TO>%s"), wxString(p, bufferLen).wx_str(), buffer.wx_str());
+    wxChar* p = const_cast<wxChar*>((const wxChar*)m_Buffer) + m_TokenIndex - len;
+    TRACE(_T("ReplaceBufferText() : <FROM>%s<TO>%s"), wxString(p, len).wx_str(), substitute.wx_str());
     // NOTE (ollydbg#1#): This function should be changed to a native wx function if wxString (wxWidgets
     // library) is built with UTF8 encoding for wxString. Luckily, both wx2.8.12 and wx 3.0 use the fixed length
     // (wchar_t) for the wxString encoding unit, so memcpy is safe here.
-    memcpy(p, (const wxChar*)target, bufferLen * sizeof(wxChar));
+    memcpy(p, (const wxChar*)target, len * sizeof(wxChar));
 
-    // Fix token index
-    m_TokenIndex -= bufferLen;
+    // move the token index to the beginning of the substituted text
+    m_TokenIndex -= len;
 
     // Reset undo token
     m_SavedTokenIndex   = m_UndoTokenIndex = m_TokenIndex;

@@ -458,13 +458,11 @@ private:
     void GetReplacedToken(wxString& str);
 
     /** Judge what is the first block
-      * It will call 'SkipToEOL(false, true)' before returned.
-      */
+     * It will call 'SkipToEOL(false, true)' before returned.
+     */
     bool CalcConditionExpression();
 
-    /** If the next token string is macro usage, return true
-      * It will call 'SkipToEOL(false, true)' before returned.
-      */
+    /** If the next token string is macro usage, return true */
     bool IsMacroDefined();
 
     /** Skip to the next conditional preprocessor directive branch. */
