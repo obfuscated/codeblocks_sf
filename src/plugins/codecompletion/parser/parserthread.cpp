@@ -981,7 +981,35 @@ void ParserThread::DoParse()
                 switchHandled = false;
             break;
 
-            // token length of other than 1 .. 9
+            // ---------------------------------------------------------------
+            // token length of 10
+            // ---------------------------------------------------------------
+            case 10:
+            if (token == ParserConsts::kw_declspec)
+            {
+                // Handle stuff like:  int __declspec ((whatever)) fun();
+                //  __declspec already be eat
+                m_Tokenizer.GetToken();  // eat (( whatever ))
+            }
+            else
+                switchHandled = false;
+            break;
+
+            // ---------------------------------------------------------------
+            // token length of 13
+            // ---------------------------------------------------------------
+            case 13:
+            if (token == ParserConsts::kw_attribute)
+            {
+                // Handle stuff like:  int __attribute__((whatever)) fun();
+                //  __attribute__ already be eat
+                m_Tokenizer.GetToken();  // eat (( whatever ))
+            }
+            else
+                switchHandled = false;
+            break;
+
+            // token length of other than 1 .. 13
             default:
                 switchHandled = false;
             break;
@@ -997,12 +1025,6 @@ void ParserThread::DoParse()
             //       __asm mov dx, 0xD007
             // OR:   __asm mov al, 2   __asm mov dx, 0xD007
             SkipToOneOfChars(ParserConsts::semicolon, true, true);
-        }
-        else if (token == ParserConsts::kw_attribute)
-        {
-            // Handle stuff like:  int __attribute__((whatever)) fun();
-            //  __attribute__ already be eat
-            m_Tokenizer.GetToken();  // eat (( whatever ))
         }
         else if (!switchHandled)
         {
