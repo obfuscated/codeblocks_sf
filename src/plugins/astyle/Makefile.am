@@ -42,10 +42,7 @@ EXTRA_DIST = astyle/ASLocalizer.cpp \
              astyle/links.html \
              astyle/news.html \
              astyle/notes.html \
-             astyle/redirect.html \
              astyle/scripts.html \
              astyle/styles.css \
              astyle/subversion.html \
-             astyle/SurveyGeneralInfo.html \
-             astyle/SurveyOptions.html \
              astyle/vsinstall.html
