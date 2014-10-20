@@ -2997,19 +2997,6 @@ void ParserThread::HandleTypedef()
     }
 }
 
-void ParserThread::HandleMacroExpansion(int id, const wxString &peek)
-{
-    Token* tk = m_TokenTree->at(id);
-    if (tk)
-    {
-        TRACE(_T("HandleMacroExpansion() : Adding token '%s' (peek='%s')"), tk->m_Name.wx_str(), peek.wx_str());
-        DoAddToken(tkMacroUse, tk->m_Name, m_Tokenizer.GetLineNumber(), 0, 0, peek);
-
-        if (m_Options.parseComplexMacros)
-            m_Tokenizer.ReplaceMacroUsage(tk);
-    }
-}
-
 bool ParserThread::ReadVarNames()
 {
     bool success = true; // optimistic start value
