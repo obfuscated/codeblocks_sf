@@ -2,7 +2,7 @@
 <!DOCTYPE CodeBlocks_lexer_properties>
 <CodeBlocks_lexer_properties>
   <Lexer name="BibTeX"
-         index="100"
+         index="116"
          filemasks="*.bib">
 <!--#define SCE_BIBTEX_DEFAULT 0-->
     <Style name="Default"
@@ -64,14 +64,19 @@
            fg="255,255,255"
            bg="255,0,0"
            bold="1" />
+	<Keywords>
+      <Set index="0"
+           value="article book booklet conference inbook incollection inproceedings manual mastersthesis
+                  misc phdthesis proceedings techreport unpublished string url" />
+    </Keywords>
     <SampleCode value="lexer_bibtex.sample"/>
-<!--    <LanguageAttributes-->
-<!--        LineComment=""-->
-<!--        StreamCommentStart=""-->
-<!--        StreamCommentEnd=""-->
-<!--        BoxCommentStart=""-->
-<!--        BoxCommentMid=""-->
-<!--        BoxCommentEnd=""-->
-<!--        CaseSensitive="1"/>-->
+    <LanguageAttributes
+        LineComment=""
+        StreamCommentStart=""
+        StreamCommentEnd=""
+        BoxCommentStart=""
+        BoxCommentMid=""
+        BoxCommentEnd=""
+        CaseSensitive="0"/>
   </Lexer>
 </CodeBlocks_lexer_properties>
