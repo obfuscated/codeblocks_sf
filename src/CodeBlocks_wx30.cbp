@@ -985,6 +985,9 @@
 		<Unit filename="include/menuitemsmanager.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/misctreeitemdata.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/mozilla_chardet/CharDistribution.h">
 			<Option target="sdk" />
 		</Unit>
