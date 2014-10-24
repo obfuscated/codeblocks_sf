@@ -6,18 +6,15 @@
 #ifndef X_DEBUGGER_MANAGER_H
 #define X_DEBUGGER_MANAGER_H
 
-#include "sdk.h"
+#include <map>
+#include <vector>
 
-#ifndef CB_PRECOMP
-#   include <map>
-#   include <vector>
+#include <wx/string.h>
 
-#   include <manager.h>
-#   include <settings.h>
-#   include <wx/string.h>
-
-#   include "configmanager.h"
-#endif
+#include "prep.h"
+#include "settings.h"
+#include "manager.h"
+#include "configmanager.h"
 
 class wxMenu;
 class wxToolBar;
