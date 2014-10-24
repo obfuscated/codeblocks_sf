@@ -1015,9 +1015,6 @@
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/NullPtr.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/mozilla/StandardInteger.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/mozilla_chardet/mfbt/mozilla/TypedEnum.h">
 			<Option target="sdk" />
 		</Unit>
