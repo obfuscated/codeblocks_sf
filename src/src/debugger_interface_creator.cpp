@@ -2,12 +2,16 @@
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/gpl-3.0.html
  */
-#include "debugger_interface_creator.h"
+
+// sdk.h must be the first include in the file to work as a PCH
+#include <sdk.h>
 
 #ifndef CB_PRECOMP
     #include "cbeditor.h"
     #include "editormanager.h"
 #endif
+
+#include "debugger_interface_creator.h"
 
 #include "backtracedlg.h"
 #include "breakpointsdlg.h"
