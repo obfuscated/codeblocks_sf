@@ -368,6 +368,11 @@ protected:
      */
     bool SkipComment();
 
+    /** Skip the C preprocessor directive, such as #ifdef xxxx
+     *  @return true if we do move m_TokenIndex
+     */
+    bool SkipPreprocessorBranch();
+
     /** Skip the string literal(enclosed in double quotes) or character literal(enclosed in single quotes).*/
     bool SkipString();
 

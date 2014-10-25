@@ -118,7 +118,9 @@ namespace ParserConsts
     const wxChar   opbrace_chr     (_T('{'));
     const wxString clbrace         (_T("}"));
     const wxChar   clbrace_chr     (_T('}'));
+    const wxString oparray         (_T("["));
     const wxChar   oparray_chr     (_T('['));
+    const wxString clarray         (_T("]"));
     const wxChar   clarray_chr     (_T(']'));
     const wxString tilde           (_T("~"));
     const wxString lt              (_T("<"));
@@ -684,6 +686,13 @@ void ParserThread::DoParse()
                         m_Str.Clear();
                         SkipToOneOfChars(ParserConsts::semicolonclbrace);
                     }
+                }
+                break;
+
+            case ParserConsts::oparray_chr:
+                {
+
+                    SkipToOneOfChars(ParserConsts::clarray);
                 }
                 break;
 
