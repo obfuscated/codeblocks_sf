@@ -34,7 +34,6 @@ class AStylePlugin : public cbToolPlugin
     void OnFormatProject( wxCommandEvent& event );
     void FormatFile( const wxString &filename );
     bool FormatEditor( cbEditor *ed );
-    void ApplyTextDelta(cbStyledTextCtrl* stc, wxString text, int rangeStart, int rangeEnd);
 
     DECLARE_EVENT_TABLE()
 };
