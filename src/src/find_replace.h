@@ -15,7 +15,8 @@ class FindReplace
         void CreateSearchLog();
 
         int ShowFindDialog(bool replace,  bool explicitly_find_in_files = false);
-        int FindNext(bool goingDown, cbStyledTextCtrl* control = nullptr, cbFindReplaceData* data = nullptr);
+        int FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindReplaceData* data, bool selected);
+        int FindSelectedText(bool goingDown);
 
     private:
         void LogSearch(const wxString& file, int line, const wxString& lineText);

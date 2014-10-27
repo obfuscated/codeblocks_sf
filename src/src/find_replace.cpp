@@ -1487,7 +1487,7 @@ int FindReplace::FindInFiles(cbFindReplaceData* data)
         ++count;
 
         // now loop finding the next occurence
-        while ( FindNext(true, control, data) != -1 )
+        while ( FindNext(true, control, data, false) != -1 )
         {
             if (data->startFile) // we already found it, so break and avoid possible infinite loop
                 break;
@@ -1539,7 +1539,7 @@ int FindReplace::FindInFiles(cbFindReplaceData* data)
     return count;
 }
 
-int FindReplace::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindReplaceData* data)
+int FindReplace::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindReplaceData* data, bool selected)
 {
     if (!control)
     {
@@ -1559,13 +1559,49 @@ int FindReplace::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRepla
     }
 
     if (!data)
-        return ShowFindDialog(false, false);
+    {
+        if (selected)
+        {
+            m_LastFindReplaceData = new cbFindReplaceData;
+            data = m_LastFindReplaceData;
+            data->findInFiles = false;
+        }
+        else
+            return ShowFindDialog(false, false);
+    }
 
     if (!data->findInFiles)
     {
+        if (selected)
+        {
+            data->start = 0;
+            data->end = 0;
+            data->findText = control->GetSelectedText();
+            data->replaceText = wxEmptyString;
+            data->eolMode = wxSCI_EOL_LF;
+            data->multiLine = false;
+            data->fixEOLs = false;
+            data->startFile = false;
+            data->findInFiles = false;
+            data->matchWord = false;
+            data->startWord = false;
+            data->matchCase = false;
+            data->regEx = false;
+            data->originEntireScope = false;
+            data->scope = 0; // global
+            data->searchPath = wxEmptyString;
+            data->searchMask = wxEmptyString;
+            data->recursiveSearch = false;
+            data->searchProject = false;
+            data->searchTarget = false;
+            data->hiddenSearch = false;
+            data->initialreplacing = false;
+            data->NewSearch = false;
+        }
+
         wxString phraseAtCursor = control->GetSelectedText();
 
-        if ( not data->findUsesSelectedText )
+        if (!data->findUsesSelectedText && !selected)
         {   // The mandrav find behavior
             // change findText to selected text (if any text is selected and no search text was set before)
             if (!phraseAtCursor.IsEmpty() && data->findText.IsEmpty())
@@ -1582,7 +1618,28 @@ int FindReplace::FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindRepla
             }
         }
     }
-
     data->directionDown = goingDown;
     return Find(control, data);
+}
+
+int FindReplace::FindSelectedText(bool goingDown)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        cbStyledTextCtrl *stc = ed->GetControl();
+        wxString text = stc->GetSelectedText();
+        if (!text.size())
+        {
+            //selecting word at current cursor position
+            int iCurrentPos = stc->GetCurrentPos();
+
+            stc->SetSelectionStart(stc->WordStartPosition(iCurrentPos, true));
+            stc->SetSelectionEnd(stc->WordEndPosition(iCurrentPos, true));
+        }
+
+        return FindNext(goingDown, nullptr, nullptr, true);
+    }
+
+    return -1;
 }

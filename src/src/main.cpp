@@ -268,15 +268,17 @@ int idViewFocusLogsAndOthers = XRCID("idViewFocusLogsAndOthers");
 int idViewSwitchTabs         = XRCID("idViewSwitchTabs");
 int idViewFullScreen         = XRCID("idViewFullScreen");
 
-int idSearchFind                = XRCID("idSearchFind");
-int idSearchFindInFiles         = XRCID("idSearchFindInFiles");
-int idSearchFindNext            = XRCID("idSearchFindNext");
-int idSearchFindPrevious        = XRCID("idSearchFindPrevious");
-int idSearchReplace             = XRCID("idSearchReplace");
-int idSearchReplaceInFiles      = XRCID("idSearchReplaceInFiles");
-int idSearchGotoLine            = XRCID("idSearchGotoLine");
-int idSearchGotoNextChanged     = XRCID("idSearchGotoNextChanged");
-int idSearchGotoPreviousChanged = XRCID("idSearchGotoPreviousChanged");
+int idSearchFind                    = XRCID("idSearchFind");
+int idSearchFindInFiles             = XRCID("idSearchFindInFiles");
+int idSearchFindNext                = XRCID("idSearchFindNext");
+int idSearchFindPrevious            = XRCID("idSearchFindPrevious");
+int idSearchFindSelectedNext        = XRCID("idSearchFindSelectedNext");
+int idSearchFindSelectedPrevious    = XRCID("idSearchFindSelectedPrevious");
+int idSearchReplace                 = XRCID("idSearchReplace");
+int idSearchReplaceInFiles          = XRCID("idSearchReplaceInFiles");
+int idSearchGotoLine                = XRCID("idSearchGotoLine");
+int idSearchGotoNextChanged         = XRCID("idSearchGotoNextChanged");
+int idSearchGotoPreviousChanged     = XRCID("idSearchGotoPreviousChanged");
 
 int idSettingsEnvironment    = XRCID("idSettingsEnvironment");
 int idSettingsGlobalUserVars = XRCID("idSettingsGlobalUserVars");
@@ -358,15 +360,17 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditShowCallTip,           MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCompleteCode,          MainFrame::OnEditMenuUpdateUI)
 
-    EVT_UPDATE_UI(idSearchFind,                MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchFindInFiles,         MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchFindNext,            MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchFindPrevious,        MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchReplace,             MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchReplaceInFiles,      MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchGotoLine,            MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchGotoNextChanged,     MainFrame::OnSearchMenuUpdateUI)
-    EVT_UPDATE_UI(idSearchGotoPreviousChanged, MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFind,                 MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFindInFiles,          MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFindNext,             MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFindPrevious,         MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFindSelectedNext,     MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchFindSelectedPrevious, MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchReplace,              MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchReplaceInFiles,       MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchGotoLine,             MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchGotoNextChanged,      MainFrame::OnSearchMenuUpdateUI)
+    EVT_UPDATE_UI(idSearchGotoPreviousChanged,  MainFrame::OnSearchMenuUpdateUI)
 
     EVT_UPDATE_UI(idViewToolMain,           MainFrame::OnViewMenuUpdateUI)
     EVT_UPDATE_UI(idViewLogManager,         MainFrame::OnViewMenuUpdateUI)
@@ -486,15 +490,17 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditShowCallTip,           MainFrame::OnEditShowCallTip)
     EVT_MENU(idEditCompleteCode,          MainFrame::OnEditCompleteCode)
 
-    EVT_MENU(idSearchFind,                MainFrame::OnSearchFind)
-    EVT_MENU(idSearchFindInFiles,         MainFrame::OnSearchFind)
-    EVT_MENU(idSearchFindNext,            MainFrame::OnSearchFindNext)
-    EVT_MENU(idSearchFindPrevious,        MainFrame::OnSearchFindNext)
-    EVT_MENU(idSearchReplace,             MainFrame::OnSearchReplace)
-    EVT_MENU(idSearchReplaceInFiles,      MainFrame::OnSearchReplace)
-    EVT_MENU(idSearchGotoLine,            MainFrame::OnSearchGotoLine)
-    EVT_MENU(idSearchGotoNextChanged,     MainFrame::OnSearchGotoNextChanged)
-    EVT_MENU(idSearchGotoPreviousChanged, MainFrame::OnSearchGotoPrevChanged)
+    EVT_MENU(idSearchFind,                  MainFrame::OnSearchFind)
+    EVT_MENU(idSearchFindInFiles,           MainFrame::OnSearchFind)
+    EVT_MENU(idSearchFindNext,              MainFrame::OnSearchFindNext)
+    EVT_MENU(idSearchFindPrevious,          MainFrame::OnSearchFindNext)
+    EVT_MENU(idSearchFindSelectedNext,      MainFrame::OnSearchFindNextSelected)
+    EVT_MENU(idSearchFindSelectedPrevious,  MainFrame::OnSearchFindNextSelected)
+    EVT_MENU(idSearchReplace,               MainFrame::OnSearchReplace)
+    EVT_MENU(idSearchReplaceInFiles,        MainFrame::OnSearchReplace)
+    EVT_MENU(idSearchGotoLine,              MainFrame::OnSearchGotoLine)
+    EVT_MENU(idSearchGotoNextChanged,       MainFrame::OnSearchGotoNextChanged)
+    EVT_MENU(idSearchGotoPreviousChanged,   MainFrame::OnSearchGotoPrevChanged)
 
     EVT_MENU(idViewLayoutSave,            MainFrame::OnViewLayoutSave)
     EVT_MENU(idViewLayoutDelete,          MainFrame::OnViewLayoutDelete)
@@ -3880,7 +3886,13 @@ void MainFrame::OnSearchFind(wxCommandEvent& event)
 void MainFrame::OnSearchFindNext(wxCommandEvent& event)
 {
     bool bNext = !(event.GetId() == idSearchFindPrevious);
-    m_findReplace.FindNext(bNext);
+    m_findReplace.FindNext(bNext, nullptr, nullptr, false);
+}
+
+void MainFrame::OnSearchFindNextSelected(wxCommandEvent& event)
+{
+    bool bNext = !(event.GetId() == idSearchFindSelectedPrevious);
+    m_findReplace.FindSelectedText(bNext);
 }
 
 void MainFrame::OnSearchReplace(wxCommandEvent& event)
@@ -4186,13 +4198,15 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
     // 'Find' and 'Replace' are always enabled for (find|replace)-in-files
     // (idSearchFindInFiles and idSearchReplaceInFiles)
 
-    mbar->Enable(idSearchFind,                ed);
-    mbar->Enable(idSearchFindNext,            ed);
-    mbar->Enable(idSearchFindPrevious,        ed);
-    mbar->Enable(idSearchReplace,             ed);
-    mbar->Enable(idSearchGotoLine,            ed);
-    mbar->Enable(idSearchGotoNextChanged,     enableGoto);
-    mbar->Enable(idSearchGotoPreviousChanged, enableGoto);
+    mbar->Enable(idSearchFind,                  ed);
+    mbar->Enable(idSearchFindNext,              ed);
+    mbar->Enable(idSearchFindPrevious,          ed);
+    mbar->Enable(idSearchFindSelectedNext,      ed);
+    mbar->Enable(idSearchFindSelectedPrevious,  ed);
+    mbar->Enable(idSearchReplace,               ed);
+    mbar->Enable(idSearchGotoLine,              ed);
+    mbar->Enable(idSearchGotoNextChanged,       enableGoto);
+    mbar->Enable(idSearchGotoPreviousChanged,   enableGoto);
 
     event.Skip();
 }

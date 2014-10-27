@@ -631,6 +631,18 @@
         <accel>Shift-F3</accel>
         <help>Repeat the last search in the opposite direction</help>
       </object>
+      <object class="wxMenuItem" name="idSearchFindSelectedNext">
+        <label>Find &amp;next selected</label>
+        <bitmap>images\16x16\filefindnext.png</bitmap>
+        <accel></accel>
+        <help>Search for selected text in the same direction</help>
+      </object>
+      <object class="wxMenuItem" name="idSearchFindSelectedPrevious">
+        <label>Find &amp;previous selected</label>
+        <bitmap>images\16x16\filefindprev.png</bitmap>
+        <accel></accel>
+        <help>Search for selected text in the opposite direction</help>
+      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idSearchReplace">
         <label>&amp;Replace...</label>
