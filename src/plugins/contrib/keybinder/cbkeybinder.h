@@ -108,11 +108,11 @@ class cbKeyBinder : public cbPlugin
         void OnProjectFileRemoved(CodeBlocksEvent& event);
         void OnEditorOpen(CodeBlocksEvent& event);
         void OnEditorClose(CodeBlocksEvent& event);
-        void OnSplit(CodeBlocksEvent& event);
-        void OnUnsplit(CodeBlocksEvent& event);
         void OnMergeTimer(wxTimerEvent& event);
         void OnAppStartupDone(CodeBlocksEvent& event);
         void AttachEditor(wxWindow* pEditor);
+        void OnWindowCreateEvent(wxEvent& event); 
+        void OnWindowDestroyEvent(wxEvent& event);
         void DetachEditor(wxWindow* pWindow, bool deleteEvtHandler = true);
         void MergeDynamicMenus();
         void OnAppStartShutdown(CodeBlocksEvent& event);
