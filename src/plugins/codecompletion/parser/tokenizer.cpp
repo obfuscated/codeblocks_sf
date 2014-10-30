@@ -475,7 +475,7 @@ wxString Tokenizer::ReadToEOL(bool stripUnneeded)
     else
     {
         const unsigned int idx = m_TokenIndex;
-        SkipToEOL(false);
+        SkipToEOL();
         return m_Buffer.Mid(idx, m_TokenIndex - idx);
     }
 }
@@ -518,11 +518,11 @@ void Tokenizer::ReadParentheses(wxString& str)
 
 }
 
-bool Tokenizer::SkipToEOL(bool nestBraces)
+bool Tokenizer::SkipToEOL()
 {
-    TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
+    TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
           wxString(__PRETTY_FUNCTION__, wxConvUTF8).wc_str(), m_LineNumber, CurrentChar(),
-          PreviousChar(), NextChar(), nestBraces ? 1 : 0);
+          PreviousChar(), NextChar());
 
     // skip everything until we find EOL
     for (;;)
@@ -535,11 +535,6 @@ bool Tokenizer::SkipToEOL(bool nestBraces)
                 if (CurrentChar() == _T('\n'))
                     break;
             }
-
-            if (nestBraces && CurrentChar() == _T('{'))
-                ++m_NestLevel;
-            else if (nestBraces && CurrentChar() == _T('}'))
-                --m_NestLevel;
 
             MoveToNextChar();
         }
@@ -1046,7 +1041,7 @@ bool Tokenizer::CalcConditionExpression()
     // the tokens again until we pass the EOL.
     const unsigned int undoIndex = m_TokenIndex;
     const unsigned int undoLine = m_LineNumber;
-    SkipToEOL(false);
+    SkipToEOL();
     // length from the current m_TokenIndex to the End
     const unsigned int untouchedBufferLen = m_BufferLen - m_TokenIndex;
     m_TokenIndex = undoIndex;
@@ -1207,7 +1202,7 @@ void Tokenizer::SkipToEndConditionPreprocessor()
             // #endif
             else if (current == _T('e') && next == _T('n'))
             {
-                SkipToEOL(false);
+                SkipToEOL();
                 break;
             }
         }
@@ -1285,7 +1280,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
                 result = CalcConditionExpression();
             else
             {
-                SkipToEOL(false);
+                SkipToEOL();
                 result = true;
             }
 
@@ -1304,7 +1299,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             else
                 result = true; // default value
 
-            SkipToEOL(false);
+            SkipToEOL();
             m_ExpressionResult.push(result);
             if (!result)
                SkipToNextConditionPreprocessor();
@@ -1320,7 +1315,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             else
                 result = true; // default value
 
-            SkipToEOL(false);
+            SkipToEOL();
             m_ExpressionResult.push(result);
             if (!result)
                SkipToNextConditionPreprocessor();
@@ -1347,7 +1342,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
             {
                 result = IsMacroDefined();
-                SkipToEOL(false);
+                SkipToEOL();
             }
 
             if (result)
@@ -1364,7 +1359,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
             {
                 result = !IsMacroDefined();
-                SkipToEOL(false);
+                SkipToEOL();
             }
 
             if (result)
@@ -1378,7 +1373,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         {
             TRACE(_T("HandleConditionPreprocessor() : #else at line = %u"), m_LineNumber);
             if (!m_ExpressionResult.empty() && !m_ExpressionResult.top())
-                SkipToEOL(false);
+                SkipToEOL();
             else
                 SkipToEndConditionPreprocessor();
         }
@@ -1387,7 +1382,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         case ptEndif:
         {
             TRACE(_T("HandleConditionPreprocessor() : #endif at line = %u"), m_LineNumber);
-            SkipToEOL(false);
+            SkipToEOL();
             if (!m_ExpressionResult.empty())
                 m_ExpressionResult.pop();
         }
@@ -1475,7 +1470,7 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
         {
             m_TokenIndex = m_BufferLen - m_FirstRemainingLength;
             m_PeekAvailable = false;
-            SkipToEOL(false);
+            SkipToEOL();
             return false;
         }
         else
