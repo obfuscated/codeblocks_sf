@@ -384,7 +384,7 @@ bool Tokenizer::SkipString()
     return false;
 }
 
-wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
+wxString Tokenizer::ReadToEOL(bool stripUnneeded)
 {
     if (stripUnneeded)
     {
@@ -401,9 +401,9 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
         // a macro definition has ending C++ comments
         // #define xxx yyy zzz // aaa bbb
 
-        TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c', nestBrace(%d)"),
+        TRACE(_T("%s : line=%u, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
               wxString(__PRETTY_FUNCTION__, wxConvUTF8).wc_str(), m_LineNumber, CurrentChar(),
-              PreviousChar(), NextChar(), nestBraces ? 1 : 0);
+              PreviousChar(), NextChar());
 
         static const size_t maxBufferLen = 4094;
         wxChar buffer[maxBufferLen + 2];
@@ -445,14 +445,6 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
                     p = buffer;
                 }
 
-                if (nestBraces)
-                {
-                    if (ch == _T('{'))
-                        ++m_NestLevel;
-                    else if (ch == _T('}'))
-                        --m_NestLevel;
-                }
-
                 MoveToNextChar();
             }
 
@@ -483,7 +475,7 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
     else
     {
         const unsigned int idx = m_TokenIndex;
-        SkipToEOL(nestBraces);
+        SkipToEOL(false);
         return m_Buffer.Mid(idx, m_TokenIndex - idx);
     }
 }
