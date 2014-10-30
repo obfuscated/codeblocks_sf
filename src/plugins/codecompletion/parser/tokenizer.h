@@ -356,13 +356,6 @@ protected:
     /** Skip character until we meet a ch */
     bool SkipToChar(const wxChar& ch);
 
-    /** Skip characters until we meet any characters in a wxChar Array.
-     * @param supportNesting handling brace level in this function.
-     * @param skipPreprocessor handling preprocessor directive.
-     * @param skipAngleBrace if this value is false, we will not do a match of "< > "
-     */
-    bool SkipToOneOfChars(const wxChar* chars, bool supportNesting = false, bool skipPreprocessor = false, bool skipAngleBrace = true);
-
     /** Skip the blocks like <>, {}, [], () */
     bool SkipBlock(const wxChar& ch);
 
