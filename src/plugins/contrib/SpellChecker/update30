@@ -5,9 +5,9 @@
 #
 # Copyright: 2011 Jens Lody
 #
-# $Revision: 7326 $
-# $Id: update 7326 2011-08-05 09:48:57Z jenslody $
-# $HeadURL: https://mortenmacfly@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/SpellChecker/update $
+# $Revision$
+# $Id$
+# $HeadURL$
 #
 
 mkdir -p "../../../devel30/share/codeblocks/SpellChecker"
