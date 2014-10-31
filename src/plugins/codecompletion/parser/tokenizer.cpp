@@ -334,35 +334,18 @@ bool Tokenizer::SkipToStringEnd(const wxChar& ch)
     return true;
 }
 
-bool Tokenizer::MoveToNextChar(const unsigned int amount)
+bool Tokenizer::MoveToNextChar()
 {
-    assert(amount);
-    if(amount == 1) // compiler will dead-strip this
+    ++m_TokenIndex;
+    if (IsEOF())
     {
-        ++m_TokenIndex;
-        if (IsEOF())
-        {
-            m_TokenIndex = m_BufferLen;
-            return false;
-        }
-
-        if (PreviousChar() == _T('\n'))
-            ++m_LineNumber;
-        return true;
+        m_TokenIndex = m_BufferLen;
+        return false;
     }
-    else
-    {
-        m_TokenIndex += amount;
-        if (IsEOF())
-        {
-            m_TokenIndex = m_BufferLen;
-            return false;
-        }
 
-        if (PreviousChar() == _T('\n'))
-            ++m_LineNumber;
-        return true;
-    }
+    if (PreviousChar() == _T('\n'))
+        ++m_LineNumber;
+    return true;
 }
 
 // return true if we really skip a string, that means m_TokenIndex has changed.
@@ -629,7 +612,8 @@ bool Tokenizer::SkipComment()
     else
         return false;     // Not a comment, return false;
 
-    MoveToNextChar(2);    // Skip the comment prompt
+    MoveToNextChar();     // Skip the comment prompt
+    MoveToNextChar();
 
     bool isDoc = false;
     if (m_TokenizerOptions.storeDocumentation)
@@ -658,7 +642,8 @@ bool Tokenizer::SkipComment()
                 SkipToChar('*');
                 if (NextChar() == '/') // end of a C style comment
                 {
-                    MoveToNextChar(2);
+                    MoveToNextChar();
+                    MoveToNextChar();
                     break;
                 }
                 if (!MoveToNextChar())
@@ -695,7 +680,8 @@ bool Tokenizer::SkipComment()
                 c = CurrentChar();
                 if (c == '*' && NextChar() == '/') //End of block comment
                 {
-                    MoveToNextChar(2); // eat '/'
+                    MoveToNextChar();   // eat '/'
+                    MoveToNextChar();
                     break;
                 }
                 else
