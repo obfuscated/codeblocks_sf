@@ -46,7 +46,11 @@ using namespace wxsFlags;
 
 namespace
 {
+#if wxCHECK_VERSION(3,1,0)
+    static const char* wxsColourLabels[] = {
+#else
     static const wxChar* wxsColourLabels[] = {
+#endif // wxCHECK_VERSION
         _("Default"),
         _("Custom"),
         _("Scrollbar"),
