@@ -84,6 +84,33 @@ private:
     cb::shared_ptr<cbWatch> m_watch;
 };
 
+#if wxCHECK_VERSION(2, 9, 0)
+class cbDummyEditor : public wxPGEditor
+{
+    DECLARE_DYNAMIC_CLASS(cbDummyEditor)
+public:
+    cbDummyEditor() {}
+    virtual wxPG_CONST_WXCHAR_PTR GetName() const
+    {
+        return wxT("cbDummyEditor");
+    }
+
+    virtual wxPGWindowList CreateControls(wxPropertyGrid* propgrid, wxPGProperty* property,
+                                          const wxPoint& pos, const wxSize& sz) const
+    {
+        wxPGWindowList const list;
+        return list;
+    }
+    virtual void UpdateControl( wxPGProperty* property,
+                                wxWindow* ctrl ) const {}
+    virtual bool OnEvent( wxPropertyGrid* propgrid, wxPGProperty* property,
+        wxWindow* wnd_primary, wxEvent& event ) const {return false;};
+
+};
+
+IMPLEMENT_DYNAMIC_CLASS(cbDummyEditor, wxPGEditor);
+#endif // wxCHECK_VERSION
+static wxPGEditor *watchesDummyEditor = nullptr;
 class cbTextCtrlAndButtonTooltipEditor : public wxPGTextCtrlAndButtonEditor
 {
     DECLARE_DYNAMIC_CLASS(cbTextCtrlAndButtonTooltipEditor)
@@ -125,7 +152,7 @@ class WatchesProperty : public wxStringProperty
         // Set editor to have button
         virtual const wxPGEditor* DoGetEditorClass() const
         {
-            return m_readonly ? nullptr : watchesPropertyEditor;
+            return m_readonly ? watchesDummyEditor : watchesPropertyEditor;
         }
 
         // Set what happens on button click
@@ -155,7 +182,7 @@ class WatchRawDialogAdapter : public wxPGEditorDialogAdapter
 
 IMPLEMENT_DYNAMIC_CLASS(WatchesProperty, wxStringProperty);
 
-/// @breif dialog to show the value of a watch
+/// @brief dialog to show the value of a watch
 class WatchRawDialog : public wxScrollingDialog
 {
     private:
@@ -358,6 +385,13 @@ WatchesDlg::WatchesDlg() :
                                                                     true);
 #endif
     }
+
+#if wxCHECK_VERSION(2, 9, 0)
+    if (!watchesDummyEditor)
+    {
+        watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, true);
+    }
+#endif
 
     m_grid->SetColumnProportion(0, 40);
     m_grid->SetColumnProportion(1, 40);
