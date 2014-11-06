@@ -30,10 +30,10 @@
 struct wxsFontData
 {
     long Size;
-    long Style;
-    long Weight;
+    wxFontStyle Style;
+    wxFontWeight Weight;
     bool Underlined;
-    long Family;
+    wxFontFamily Family;
     wxArrayString Faces;
     wxString Encoding;
     wxString SysFont;
