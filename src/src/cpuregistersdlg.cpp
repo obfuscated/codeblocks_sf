@@ -27,7 +27,7 @@ CPURegistersDlg::CPURegistersDlg(wxWindow* parent) :
     SetSizer(sizer);
     Layout();
 
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_pList->SetFont(font);
 
     Clear();

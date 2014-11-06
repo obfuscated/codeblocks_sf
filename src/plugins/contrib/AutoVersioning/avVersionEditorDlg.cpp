@@ -106,7 +106,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
 
     Create(parent, wxID_ANY, _("Auto Versioning Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxRESIZE_BORDER, _T("wxID_ANY"));
     SetClientSize(wxSize(469,364));
-    wxFont thisFont(10,wxDEFAULT,wxFONTSTYLE_NORMAL,wxNORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
+    wxFont thisFont(10,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     SetFont(thisFont);
     mainSizer = new wxBoxSizer(wxVERTICAL);
     nbAutoVersioning = new wxNotebook(this, ID_AV_NOTEBOOK, wxDefaultPosition, wxSize(456,283), 0, _T("ID_AV_NOTEBOOK"));

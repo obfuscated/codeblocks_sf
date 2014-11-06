@@ -2002,7 +2002,7 @@ void wxTreeListMainWindow::Init() {
     m_boldFont = wxFont( m_normalFont.GetPointSize(),
                          m_normalFont.GetFamily(),
                          m_normalFont.GetStyle(),
-                         wxBOLD,
+                         wxFONTWEIGHT_BOLD,
                          m_normalFont.GetUnderlined(),
                          m_normalFont.GetFaceName(),
                          m_normalFont.GetEncoding());
@@ -2326,7 +2326,7 @@ bool wxTreeListMainWindow::SetFont (const wxFont &font) {
     m_boldFont = wxFont (m_normalFont.GetPointSize(),
                          m_normalFont.GetFamily(),
                          m_normalFont.GetStyle(),
-                         wxBOLD,
+                         wxFONTWEIGHT_BOLD,
                          m_normalFont.GetUnderlined(),
                          m_normalFont.GetFaceName());
     CalculateLineHeight();

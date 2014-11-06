@@ -190,7 +190,7 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
         }
 
         titleC->SetForegroundColour(*wxWHITE);
-        titleC->SetFont(wxFont(11, wxSWISS, wxNORMAL, wxBOLD));
+        titleC->SetFont(wxFont(11, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
         bs->Add(o, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
 
         ForwardingTextControl *text = new ForwardingTextControl(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);

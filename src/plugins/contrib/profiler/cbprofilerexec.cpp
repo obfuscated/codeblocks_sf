@@ -74,7 +74,7 @@ int CBProfilerExecDlg::Execute(wxString exename, wxString dataname, struct_confi
     else
     {
         wxXmlResource::Get()->LoadObject(this, parent, _T("dlgCBProfilerExec"),_T("wxScrollingDialog"));
-        wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+        wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
         outputFlatProfileArea     = XRCCTRL(*this, "lstFlatProfile",     wxListCtrl);
         outputHelpFlatProfileArea = XRCCTRL(*this, "txtHelpFlatProfile", wxTextCtrl);
         outputHelpFlatProfileArea->SetFont(font);

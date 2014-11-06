@@ -26,7 +26,7 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 
 	m_staticText2 = new wxStaticText( this, wxID_ANY, _("BrowseTracker Options"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText2->Wrap( -1 );
-	m_staticText2->SetFont( wxFont( 9, 74, 90, 92, false, wxT("Tahoma") ) );
+	m_staticText2->SetFont( wxFont( 9, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Tahoma") ) );
 
 	bSizer3->Add( m_staticText2, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
 

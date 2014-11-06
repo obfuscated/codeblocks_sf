@@ -46,7 +46,7 @@ byoGameSelect::byoGameSelect(wxWindow* parent,wxWindowID id)
 	StaticText1 = new wxStaticText(Panel1,ID_STATICTEXT1,_("BYO Games collection"),wxDefaultPosition,wxDefaultSize,wxALIGN_CENTRE,_T("ID_STATICTEXT1"));
 	StaticText1->SetForegroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_CAPTIONTEXT));
 	StaticText1->SetBackgroundColour(wxColour(0,0,128));
-	wxFont StaticText1Font(16,wxSWISS,wxFONTSTYLE_ITALIC,wxNORMAL,true,_("Arial"),wxFONTENCODING_DEFAULT);
+	wxFont StaticText1Font(16,wxFONTFAMILY_SWISS,wxFONTSTYLE_ITALIC,wxFONTWEIGHT_NORMAL,true,_("Arial"),wxFONTENCODING_DEFAULT);
 	StaticText1->SetFont(StaticText1Font);
 	BoxSizer3->Add(StaticText1,0,wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
 	Panel1->SetSizer(BoxSizer3);

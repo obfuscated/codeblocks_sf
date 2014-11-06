@@ -962,7 +962,7 @@ void ScbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
     // 8 point is not readable on Mac OS X, increase font size
-    wxFont font(platform::macosx ? 10 : 8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(platform::macosx ? 10 : 8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
 

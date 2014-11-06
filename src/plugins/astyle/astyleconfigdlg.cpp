@@ -48,7 +48,7 @@ AstyleConfigDlg::AstyleConfigDlg(wxWindow* parent)
 {
   //ctor
   wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgAstyleConfig"));
-  wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+  wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
   XRCCTRL(*this, "txtSample", wxTextCtrl)->SetFont(font);
 
   LoadSettings();

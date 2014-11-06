@@ -68,7 +68,7 @@ void wxLabel::Draw(
 	//-----------------------------------------------------------------------
 	// Set new values
 	//-----------------------------------------------------------------------
-	wxFont font( 8, wxROMAN, wxNORMAL, wxNORMAL );
+	wxFont font( 8, wxFONTFAMILY_ROMAN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
     hp->SetFont( font );
     hp->SetBrush( wxBrush(c, wxSOLID) );
     hp->SetPen( wxPen(LBL_LINE_COL, 1, wxSOLID) );

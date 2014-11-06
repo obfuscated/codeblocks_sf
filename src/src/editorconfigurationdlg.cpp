@@ -240,7 +240,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetValue(cfg->Read(key, wxEmptyString));
 
     // setting the default editor font size to 10 point
-    wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont tmpFont(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
     XRCCTRL(*this, "txtDefCode", wxTextCtrl)->SetFont(tmpFont);
     // read them all in the array
@@ -510,7 +510,7 @@ void EditorConfigurationDlg::WriteColours()
 void EditorConfigurationDlg::UpdateSampleFont(bool askForNewFont)
 {
     // setting the default editor font size to 10 point
-    wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont tmpFont(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
     if (!m_FontString.IsEmpty())
     {

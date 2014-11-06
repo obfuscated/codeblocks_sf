@@ -121,7 +121,7 @@ void SymTabExecDlg::DoInitDialog()
     SymTabExecDlgLoaded =
       wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSymTabExec"),_T("wxScrollingDialog"));
 
-    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
     m_ListCtrl = XRCCTRL(*this, "lstLib2Symbol",     wxListCtrl);
     // Setting colums names

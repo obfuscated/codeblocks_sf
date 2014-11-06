@@ -44,7 +44,7 @@ ThreadsDlg::ThreadsDlg(wxWindow* parent) : wxPanel(parent)
     SetAutoLayout(true);
     SetSizer(bs);
 
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_list->SetFont(font);
     m_list->InsertColumn(0, _("Active"), wxLIST_FORMAT_LEFT, 64);
     m_list->InsertColumn(1, _("Number"), wxLIST_FORMAT_RIGHT, 64);

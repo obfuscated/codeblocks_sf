@@ -58,7 +58,7 @@ class DebuggerInfoWindow : public wxScrollingDialog
             : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
             wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-            wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+            wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
             m_pText = new wxTextCtrl(this, -1, content, wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
             m_pText->SetFont(font);
 

@@ -36,7 +36,7 @@ ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent) :
         return;
     m_pText = XRCCTRL(*this, "txtDump", wxTextCtrl);
 
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     m_pText->SetFont(font);
 
     Clear();

@@ -153,7 +153,7 @@ wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, co
 
     Create(parent, wxID_ANY, _("wxImageList Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
-    wxFont thisFont(8,wxSWISS,wxFONTSTYLE_NORMAL,wxNORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont thisFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     SetFont(thisFont);
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Image List"));
@@ -285,7 +285,7 @@ wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, co
     BoxSizer19->Add(BoxSizer24, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer25 = new wxBoxSizer(wxHORIZONTAL);
     bColor = new wxButton(this, ID_BUTTON2, _("C"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
-    wxFont bColorFont(10,wxSWISS,wxFONTSTYLE_ITALIC,wxBOLD,false,_T("Sans"),wxFONTENCODING_DEFAULT);
+    wxFont bColorFont(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_ITALIC,wxFONTWEIGHT_BOLD,false,_T("Sans"),wxFONTENCODING_DEFAULT);
     bColor->SetFont(bColorFont);
     BoxSizer25->Add(bColor, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
     StaticText21 = new wxStaticText(this, ID_STATICTEXT21, _("Mask Color"), wxPoint(136,200), wxDefaultSize, 0, _T("ID_STATICTEXT21"));

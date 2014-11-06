@@ -91,7 +91,7 @@ void AbbreviationsConfigPanel::ApplyColours()
     if (colour_set)
     {
         wxString FontString = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
-        wxFont tmpFont(10, wxMODERN, wxNORMAL, wxNORMAL);
+        wxFont tmpFont(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
         if (!FontString.IsEmpty())
         {

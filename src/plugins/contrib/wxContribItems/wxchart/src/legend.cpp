@@ -400,7 +400,7 @@ void wxLegend::WriteLabel(
 {
     int iDatas = GetCount();
 
-    wxFont font(8, wxROMAN, wxNORMAL, wxNORMAL);
+    wxFont font( 8, wxFONTFAMILY_ROMAN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
     hp->SetFont(font);
     hp->SetPen( *wxBLACK_PEN );
 

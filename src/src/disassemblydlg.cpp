@@ -64,7 +64,7 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent) :
     wxXmlResource::Get()->AttachUnknownControl(_T("lcCode"), m_pCode);
 
     // use the same font as editor's
-    wxFont font(8, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
     if (!fontstring.IsEmpty())
     {

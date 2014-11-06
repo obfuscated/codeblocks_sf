@@ -246,7 +246,7 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
     wxColour selectionTextColour = wxSystemSettings::GetColour(wxSYS_COLOUR_HIGHLIGHTTEXT);
     wxFont standardFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     wxFont groupFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-    groupFont.SetWeight(wxBOLD);
+    groupFont.SetWeight(wxFONTWEIGHT_BOLD);
 
     if (GetBackgroundColour().Ok())
         backgroundColour = GetBackgroundColour();
@@ -267,7 +267,7 @@ void wxSwitcherItems::PaintItems(wxDC& dc, wxWindow* win)
     {
         standardFont = GetItemFont();
         groupFont = wxFont(standardFont.GetPointSize(), standardFont.GetFamily(), standardFont.GetStyle(),
-            wxBOLD, standardFont.GetUnderlined(), standardFont.GetFaceName());
+            wxFONTWEIGHT_BOLD, standardFont.GetUnderlined(), standardFont.GetFaceName());
     }
 
     int textMarginX = wxSWITCHER_TEXT_MARGIN_X;
@@ -345,7 +345,7 @@ wxSize wxSwitcherItems::CalculateItemSize(wxDC& dc)
     wxSize sz(150, 16);
     wxFont standardFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
     wxFont groupFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-    groupFont.SetWeight(wxBOLD);
+    groupFont.SetWeight(wxFONTWEIGHT_BOLD);
 
     int textMarginX = wxSWITCHER_TEXT_MARGIN_X;
     int textMarginY = wxSWITCHER_TEXT_MARGIN_Y;

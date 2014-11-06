@@ -49,7 +49,7 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
 	m_activeInfo = new wxStaticText(header, ID_LABEL_ACTIVE_INFO, _("Active debugger config"), wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTRANSPARENT_WINDOW, _T("ID_LABEL_ACTIVE_INFO"));
 	m_activeInfo->SetForegroundColour(wxColour(255,255,255));
 	m_activeInfo->SetBackgroundColour(wxColour(0,64,128));
-	wxFont m_activeInfoFont(12,wxDEFAULT,wxFONTSTYLE_NORMAL,wxBOLD,false,wxEmptyString,wxFONTENCODING_DEFAULT);
+	wxFont m_activeInfoFont(12,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,wxEmptyString,wxFONTENCODING_DEFAULT);
 	m_activeInfo->SetFont(m_activeInfoFont);
 	headerSizer->Add(m_activeInfo, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	header->SetSizer(headerSizer);

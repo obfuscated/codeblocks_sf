@@ -86,12 +86,12 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     wxBoxSizer* BoxSizer5;
 
     Create(parent, wxID_ANY, _("Tree Item Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
-    wxFont thisFont(8,wxSWISS,wxFONTSTYLE_NORMAL,wxNORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont thisFont(8,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     SetFont(thisFont);
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Edit Tree Items"), wxPoint(0,0), wxSize(400,20), wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT1"));
-    wxFont StaticText1Font(10,wxSWISS,wxFONTSTYLE_NORMAL,wxBOLD,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont StaticText1Font(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     StaticText1->SetFont(StaticText1Font);
     BoxSizer2->Add(StaticText1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
     BoxSizer1->Add(BoxSizer2, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
@@ -134,7 +134,7 @@ wxsImageTreeEditorDlg::wxsImageTreeEditorDlg(wxWindow *parent, wxWindowID id, co
     StaticBoxSizer2->Add(BoxSizer10, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
     BoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
     bItemColor = new wxButton(this, ID_BUTTON3, _("C"), wxPoint(256,156), wxSize(24,24), 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    wxFont bItemColorFont(10,wxSWISS,wxFONTSTYLE_NORMAL,wxBOLD,false,_T("Arial Black"),wxFONTENCODING_DEFAULT);
+    wxFont bItemColorFont(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Arial Black"),wxFONTENCODING_DEFAULT);
     bItemColor->SetFont(bItemColorFont);
     bItemColor->SetToolTip(_("Set Item Text Color"));
     BoxSizer11->Add(bItemColor, 0, wxALIGN_LEFT|wxALIGN_BOTTOM, 5);

@@ -50,7 +50,7 @@ void wxXAxis::Draw(
 
 	if ( GetVirtualMax() > 0 )
 	{
-		wxFont font(8, wxROMAN, wxNORMAL, wxNORMAL);
+		wxFont font( 8, wxFONTFAMILY_ROMAN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL );
         hp->SetFont(font);
         hp->SetPen( *wxBLACK_PEN );
 

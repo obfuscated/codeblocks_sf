@@ -34,8 +34,8 @@ void cbSplashScreen::DrawReleaseInfo(wxDC  &dc)
     static const wxString release(wxT(RELEASE));
     static const wxString revision = wxT(" ")+ ConfigManager::GetRevisionString();
 
-    wxFont largeFont(15, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
-    wxFont smallFont(10, wxSWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    wxFont largeFont(15, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
+    wxFont smallFont(10, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD);
 
     wxCoord lf_width, lf_height, lf_descend;
     dc.GetTextExtent(release,  &lf_width, &lf_height, &lf_descend, nullptr, &largeFont);

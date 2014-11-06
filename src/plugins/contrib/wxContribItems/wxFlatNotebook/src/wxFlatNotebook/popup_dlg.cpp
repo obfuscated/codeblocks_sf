@@ -64,7 +64,7 @@ void wxTabNavigatorWindow::Create(wxWindow* parent)
 		mem_dc.SelectObject(bmp);
 
 		wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-		font.SetWeight( wxBOLD );
+		font.SetWeight( wxFONTWEIGHT_BOLD );
 		mem_dc.SetFont(font);
 		int w;
 		mem_dc.GetTextExtent(wxT("Tp"), &w, &panelHeight);
@@ -216,7 +216,7 @@ void wxTabNavigatorWindow::OnPanelPaint(wxPaintEvent &event)
 		// get the text position, and draw it
 		int fontHeight(0), w(0);
 		wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-		font.SetWeight( wxBOLD );
+		font.SetWeight( wxFONTWEIGHT_BOLD );
 		mem_dc.SetFont( font );
 		mem_dc.GetTextExtent( wxT("Tp"), &w, &fontHeight );
 

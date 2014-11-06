@@ -127,13 +127,13 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 		mem_dc.SelectObject(bmp);
 
 		wxFont font(wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT));
-		font.SetWeight( wxBOLD );
+		font.SetWeight( wxFONTWEIGHT_BOLD );
 		mem_dc.SetFont(font);
 		int w;
 		mem_dc.GetTextExtent(wxT("Tp"), &w, &panelHeight);
 		panelHeight += 4; // Place a spacer of 2 pixels
 
-		font.SetWeight( wxNORMAL );
+		font.SetWeight( wxFONTWEIGHT_NORMAL );
 		mem_dc.SetFont(font);
 
 		// Out signpost bitmap is 24 pixels
@@ -330,7 +330,7 @@ void BrowseSelector::OnPanelPaint(wxPaintEvent &event)
 		// get the text position, and draw it
 		int fontHeight(0), w(0);
 		wxFont font = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
-		font.SetWeight( wxBOLD );
+		font.SetWeight( wxFONTWEIGHT_BOLD );
 		mem_dc.SetFont( font );
 		mem_dc.GetTextExtent( wxT("Tp"), &w, &fontHeight );
 

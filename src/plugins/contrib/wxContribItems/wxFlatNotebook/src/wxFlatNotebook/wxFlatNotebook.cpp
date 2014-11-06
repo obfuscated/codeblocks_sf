@@ -792,7 +792,7 @@ wxPageContainer::wxPageContainer(wxWindow* parent, wxWindowID id, const wxPoint&
 #ifdef __WXGTK__
 	wxFont normalFont = wxSystemSettings::GetFont(wxSYS_DEFAULT_GUI_FONT);
 	wxFont boldFont = normalFont;
-	boldFont.SetWeight(wxBOLD);
+	boldFont.SetWeight(wxFONTWEIGHT_BOLD);
 	memDc.SetFont( boldFont );
 #endif
 

@@ -594,7 +594,7 @@ void ConfigPanel::InitSTC(cbStyledTextCtrl *stc)
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("editor"));
     wxString sFont = cfg->Read(wxT("/font"), wxEmptyString);
-    wxFont fnt(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont fnt(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
     if (!sFont.IsEmpty())
     {
         wxNativeFontInfo nfi;

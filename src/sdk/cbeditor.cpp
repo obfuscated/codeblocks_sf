@@ -1322,7 +1322,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
     // setting the default editor font size to 10 point
-    wxFont font(10, wxMODERN, wxNORMAL, wxNORMAL);
+    wxFont font(10, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
 
     wxString fontstring = mgr->Read(_T("/font"), wxEmptyString);
 
