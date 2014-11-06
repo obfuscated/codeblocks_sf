@@ -1072,15 +1072,13 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
         m_ticount=m_Tree->GetSelections(m_selectti);
         m_Tree->Update();
     }
-    wxString filename=m_Tree->GetItemText(m_selectti[0]);
-    wxString filepath=GetFullPath(m_selectti[0]);
-    int img = m_Tree->GetItemImage(m_selectti[0]);
     FileTreeData* ftd = new FileTreeData(0, FileTreeData::ftdkUndefined);
     ftd->SetKind(FileTreeData::ftdkFile);
     if(m_ticount>0)
     {
         if(m_ticount==1)
         {
+            int img = m_Tree->GetItemImage(m_selectti[0]);
             if(img==fvsFolder)
             {
                 ftd->SetKind(FileTreeData::ftdkFolder);
@@ -1119,13 +1117,16 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     if(m_ticount>1)
     {
         ftd->SetKind(FileTreeData::ftdkVirtualGroup);
-        wxString pathlist=GetFullPath(m_selectti[0]);
+        wxString pathlist = GetFullPath(m_selectti[0]);
         for(int i=1;i<m_ticount;i++)
-            pathlist+=_T("*")+GetFullPath(m_selectti[i]); //passing a '*' separated list of files/directories to any plugin takers
+            pathlist += _T("*") + GetFullPath(m_selectti[i]); //passing a '*' separated list of files/directories to any plugin takers
         ftd->SetFolder(pathlist);
     }
-    else
+    else if ( m_ticount > 0)
+    {
+        wxString filepath = GetFullPath(m_selectti[0]);
         ftd->SetFolder(filepath);
+    }
     if(m_ticount>0)
         Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtUnknown, Popup, ftd);
     delete ftd;
