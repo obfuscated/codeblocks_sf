@@ -662,12 +662,12 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
         #endif
 
         // activate editor
-        EditorBase* eb = edmgr->GetEditor(edFilename);
+        eb = edmgr->GetEditor(edFilename);
         if (not eb) break;
 
         edmgr->SetActiveEditor(eb); // cause a cbEVT_EditorActivated event
         // position to editor line
-        cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+        cbed = edmgr->GetBuiltinEditor(eb);
         if (not cbed) break;
 
         cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
@@ -759,12 +759,12 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
         #endif
 
         // activate editor
-        EditorBase* eb = edmgr->GetEditor(edFilename);
+        eb = edmgr->GetEditor(edFilename);
         if (not eb) break;
 
         edmgr->SetActiveEditor(eb); // cause a cbEVT_EditorActivated event
         // position to editor line
-        cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+        cbed = edmgr->GetBuiltinEditor(eb);
         if (not cbed) break;
 
         cbed->GotoLine(cbed->GetControl()->LineFromPosition(edPosn)); //center on scrn
