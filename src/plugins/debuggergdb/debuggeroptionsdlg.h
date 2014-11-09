@@ -21,6 +21,7 @@ class DebuggerConfiguration : public cbDebuggerConfiguration
     public:
         enum Flags
         {
+            DisableInit,
             WatchFuncArgs,
             WatchLocals,
             WatchScriptPrinters,

@@ -190,8 +190,9 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& de
 {
     wxString cmd;
     cmd << debugger;
-    cmd << _T(" -nx");          // don't run .gdbinit
-    cmd << _T(" -fullname ");   // report full-path filenames when breaking
+    if (m_pDBG->GetActiveConfigEx().GetFlag(DebuggerConfiguration::DisableInit))
+        cmd << _T(" -nx");      // don't run .gdbinit
+    cmd << _T(" -fullname");    // report full-path filenames when breaking
     cmd << _T(" -quiet");       // don't display version on startup
     cmd << wxT(" ") << userArguments;
     cmd << _T(" -args ") << debuggee;
@@ -202,8 +203,9 @@ wxString GDB_driver::GetCommandLine(const wxString& debugger, cb_unused int pid,
 {
     wxString cmd;
     cmd << debugger;
-    cmd << _T(" -nx");          // don't run .gdbinit
-    cmd << _T(" -fullname ");   // report full-path filenames when breaking
+    if (m_pDBG->GetActiveConfigEx().GetFlag(DebuggerConfiguration::DisableInit))
+        cmd << _T(" -nx");      // don't run .gdbinit
+    cmd << _T(" -fullname");    // report full-path filenames when breaking
     cmd << _T(" -quiet");       // don't display version on startup
     cmd << wxT(" ") << userArguments;
     return cmd;

@@ -90,6 +90,23 @@
 					<vgap>4</vgap>
 					<growablecols>0</growablecols>
 					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkDisableInit">
+							<label>Disable startup scripts (-nx) (GDB only)</label>
+							<enabled>1</enabled>
+							<tooltip>Disables autoloading of startup scripts (.gdbinit)</tooltip>
+						</object>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>1</cols>
+					<vgap>4</vgap>
+					<growablecols>0</growablecols>
+					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkWatchArgs">
 							<label>Watch function arguments</label>
 							<enabled>1</enabled>

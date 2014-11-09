@@ -92,6 +92,7 @@ wxPanel* DebuggerConfiguration::MakePanel(wxWindow *parent)
 
     XRCCTRL(*panel, "txtExecutablePath", wxTextCtrl)->ChangeValue(GetDebuggerExecutable(false));
     panel->ValidateExecutablePath();
+    XRCCTRL(*panel, "chkDisableInit", wxCheckBox)->SetValue(GetFlag(DisableInit));
     XRCCTRL(*panel, "txtArguments", wxTextCtrl)->ChangeValue(GetUserArguments(false));
 
     XRCCTRL(*panel, "rbType",            wxRadioBox)->SetSelection(IsGDB() ? 0 : 1);
@@ -112,7 +113,8 @@ wxPanel* DebuggerConfiguration::MakePanel(wxWindow *parent)
 bool DebuggerConfiguration::SaveChanges(wxPanel *panel)
 {
     m_config.Write(wxT("executable_path"),       XRCCTRL(*panel, "txtExecutablePath", wxTextCtrl)->GetValue());
-    m_config.Write(wxT("user_arguments"),       XRCCTRL(*panel, "txtArguments", wxTextCtrl)->GetValue());
+    m_config.Write(wxT("disable_init"),          XRCCTRL(*panel, "chkDisableInit",    wxCheckBox)->GetValue());
+    m_config.Write(wxT("user_arguments"),        XRCCTRL(*panel, "txtArguments",      wxTextCtrl)->GetValue());
     m_config.Write(wxT("type"),                  XRCCTRL(*panel, "rbType",            wxRadioBox)->GetSelection());
     m_config.Write(wxT("init_commands"),         XRCCTRL(*panel, "txtInit",           wxTextCtrl)->GetValue());
     m_config.Write(wxT("watch_args"),            XRCCTRL(*panel, "chkWatchArgs",      wxCheckBox)->GetValue());
@@ -132,6 +134,8 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
 {
     switch (flag)
     {
+        case DisableInit:
+            return m_config.ReadBool(wxT("disable_init"), true);
         case WatchFuncArgs:
             return m_config.ReadBool(wxT("watch_args"), true);
         case WatchLocals:
@@ -154,6 +158,9 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
 {
     switch (flag)
     {
+        case DisableInit:
+            m_config.Write(wxT("disable_init"), value);
+            break;
         case WatchFuncArgs:
             m_config.Write(wxT("watch_args"), value);
             break;
