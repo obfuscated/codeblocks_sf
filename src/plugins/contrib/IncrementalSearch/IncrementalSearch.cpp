@@ -347,12 +347,13 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition, wxSize(160,-1));
     if (m_pComboCtrl)
     {
+        m_pComboCtrl->SetTextIndent(0);
         m_pToolbar->InsertControl(1, m_pComboCtrl);
         m_pToolbar->Realize();
         m_pTextCtrl = m_pComboCtrl->GetTextCtrl();
         if (m_pTextCtrl)
         {
-            m_pTextCtrl->SetWindowStyleFlag(wxTE_PROCESS_ENTER|wxTE_NOHIDESEL);
+            m_pTextCtrl->SetWindowStyleFlag(wxTE_PROCESS_ENTER|wxTE_NOHIDESEL|wxBORDER_NONE);
             m_pChoice = new cbIncSearchComboPopUp();
             m_pComboCtrl->SetPopupControl(m_pChoice);
             m_pTextCtrl->Connect(wxEVT_KEY_DOWN,
