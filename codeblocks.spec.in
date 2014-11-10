@@ -247,15 +247,11 @@ This package contains the development libraries and headers needed to build wxSm
   rm -f $RPM_BUILD_ROOT%{plugindir}/*.la
 
 %post
-  if [ -x /usr/bin/update-mime-database ]; then
-      /usr/bin/update-mime-database "%{_datadir}/mime"
-  fi
+  /usr/bin/update-mime-database "%{_datadir}/mime" &> /dev/null || :
   test -x /sbin/ldconfig && /sbin/ldconfig
 
 %preun
-  if [ -x /usr/bin/update-mime-database ]; then
-     /usr/bin/update-mime-database "%{_datadir}/mime"
-  fi
+  /usr/bin/update-mime-database "%{_datadir}/mime" &> /dev/null || :
 
 %clean
   test -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != "/" && %{__rm} -rf $RPM_BUILD_ROOT
