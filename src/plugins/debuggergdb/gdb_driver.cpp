@@ -293,6 +293,15 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
                 QueueCommand(new DebuggerCmd(this, initCmds[i]));
             }
         }
+        if (!rd->additionalShellCmdsBefore.IsEmpty())
+        {
+            wxArrayString initCmds = GetArrayFromString(rd->additionalShellCmdsBefore, _T('\n'));
+            for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+            {
+                macrosManager->ReplaceMacros(initCmds[i]);
+                QueueCommand(new DebuggerCmd(this, _T("shell ") + initCmds[i]));
+            }
+        }
     }
 
     // if performing remote debugging, now is a good time to try and connect to the target :)
@@ -314,6 +323,15 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
             {
                 macrosManager->ReplaceMacros(initCmds[i]);
                 QueueCommand(new DebuggerCmd(this, initCmds[i]));
+            }
+        }
+        if (!rd->additionalShellCmdsAfter.IsEmpty())
+        {
+            wxArrayString initCmds = GetArrayFromString(rd->additionalShellCmdsAfter, _T('\n'));
+            for (unsigned int i = 0; i < initCmds.GetCount(); ++i)
+            {
+                macrosManager->ReplaceMacros(initCmds[i]);
+                QueueCommand(new DebuggerCmd(this, _T("shell ") + initCmds[i]));
             }
         }
     }
