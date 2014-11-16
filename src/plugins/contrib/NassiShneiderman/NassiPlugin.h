@@ -35,8 +35,6 @@ class NassiPlugin : public cbMimePlugin
 
     /// configuration interface
     //{
-        /** Invoke configuration dialog. */
-        virtual int Configure();
 
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins

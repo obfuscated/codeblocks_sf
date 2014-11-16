@@ -236,36 +236,6 @@ void SEditorManager::ReleaseMenu(wxMenuBar* menuBar)
 {
 }
 
-void SEditorManager::Configure()
-{
-    //(pecan 2008/5/06) This belongs to the sdk, not this separate editor
-////    // editor lexers loading takes some time; better reflect this with a hourglass
-////    wxBeginBusyCursor();
-////
-////    EditorConfigurationDlg dlg(Manager::Get()->GetAppWindow());
-////    PlaceWindow(&dlg);
-////
-////    // done, restore pointer
-////    wxEndBusyCursor();
-////
-////    if (dlg.ShowModal() == wxID_OK)
-////    {
-////        // tell all open editors to re-create their styles
-////        for (int i = 0; i < m_pNotebook->GetPageCount(); ++i)
-////        {
-////            ScbEditor* ed = (ScbEditor*)InternalGetBuiltinEditor(i);
-////            if (ed)
-////            {
-////                bool saveSuccess = ed->SaveFoldState(); //First Save the old fold levels
-////                ed->SetEditorStyle();
-////                if(saveSuccess)
-////                {
-////                    ed->FixFoldState(); //Compare old fold levels with new and change the bugs
-////                }
-////            }
-////        }
-////    }
-} // end of Configure
 // ----------------------------------------------------------------------------
 void SEditorManager::CreateSearchLog()
 // ----------------------------------------------------------------------------

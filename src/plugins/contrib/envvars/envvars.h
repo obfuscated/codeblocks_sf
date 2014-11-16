@@ -56,9 +56,6 @@ private:
   /// fires when the plugin is released from the application:
   void     OnRelease(bool appShutDown);
 
-  /// configures the plugin
-  int      Configure();
-
   /// returns the configuration priority (when to setup the plugin)
   int      GetConfigurationPriority() const
   { return 50; }

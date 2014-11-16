@@ -401,29 +401,6 @@ void ThreadSearch::OnThreadSearchViewDestruction()
 
 
 // ----------------------------------------------------------------------------
-int ThreadSearch::Configure()
-// ----------------------------------------------------------------------------
-{
-    if ( !IsAttached() )
-        return -1;
-
-    // Creates and displays the configuration dialog for the plugin
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, wxT("Snippets search"));
-    cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-    if (panel)
-    {
-        dlg.AttachConfigurationPanel(panel);
-        //-PlaceWindow(&dlg);
-        // move dialog into the parents frame space
-        wxPoint mousePosn = ::wxGetMousePosition();
-        (&dlg)->Move(mousePosn.x, mousePosn.y);
-
-        return dlg.ShowModal() == wxID_OK ? 0 : -1;
-    }
-    return -1;
-}
-
-// ----------------------------------------------------------------------------
 void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 // ----------------------------------------------------------------------------
 {

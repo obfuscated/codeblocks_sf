@@ -502,20 +502,6 @@ void ToolsPlus::OnRelease(bool /*appShutDown*/)
     m_shellmgr = 0;
 }
 
-int ToolsPlus::Configure()
-{
-	//create and display the configuration dialog for your plugin
-	cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Tool Output Settings"));
-	cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-	if (panel)
-	{
-		dlg.AttachConfigurationPanel(panel);
-		PlaceWindow(&dlg);
-		return dlg.ShowModal() == wxID_OK ? 0 : -1;
-	}
-	return -1;
-}
-
 void ToolsPlus::CreateMenu()
 {
     unsigned int i;

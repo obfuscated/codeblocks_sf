@@ -165,20 +165,6 @@ void NassiPlugin::OnRelease(bool appShutDown)
     }
 }
 
-int NassiPlugin::Configure()
-{
-    //create and display the configuration dialog for your plugin
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Your dialog title"));
-    cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-    if (panel)
-    {
-        dlg.AttachConfigurationPanel(panel);
-        PlaceWindow(&dlg);
-        return dlg.ShowModal() == wxID_OK ? 0 : -1;
-    }
-    return -1;
-}
-
 void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
 {
     //The application is offering its menubar for your plugin,

@@ -31,9 +31,6 @@ class ToolsPlus : public cbPlugin
 		/** Destructor. */
         virtual ~ToolsPlus();
 
-		/** Invoke configuration dialog. */
-        virtual int Configure();
-
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins
           * in configuration dialogs. Lower numbers mean the plugin's

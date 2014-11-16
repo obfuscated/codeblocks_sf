@@ -212,7 +212,6 @@ void cbKeyBinder::OnRelease(bool /*appShutDown*/)
 cbConfigurationPanel* cbKeyBinder::GetConfigurationPanel(wxWindow* parent)
 {
     //create and display the configuration dialog for your plugin
-    //NotImplemented(_T("cbKeyBinder::Configure()"));
     if(!IsAttached()) {    return 0;}
 
     //call configuation dialogue

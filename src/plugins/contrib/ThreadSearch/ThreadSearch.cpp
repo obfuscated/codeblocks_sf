@@ -258,24 +258,6 @@ void ThreadSearch::OnThreadSearchViewDestruction()
     m_pThreadSearchView = NULL;
 }
 
-
-int ThreadSearch::Configure()
-{
-    if ( !IsAttached() )
-        return -1;
-
-    // Creates and displays the configuration dialog for the plugin
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, wxT("Thread search"));
-    cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-    if (panel)
-    {
-        dlg.AttachConfigurationPanel(panel);
-        PlaceWindow(&dlg);
-        return dlg.ShowModal() == wxID_OK ? 0 : -1;
-    }
-    return -1;
-}
-
 void ThreadSearch::BuildMenu(wxMenuBar* menuBar)
 {
     //The application is offering its menubar for your plugin,

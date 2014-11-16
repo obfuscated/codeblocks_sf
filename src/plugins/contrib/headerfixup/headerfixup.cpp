@@ -54,21 +54,6 @@ void HeaderFixup::OnRelease(bool /*appShutDown*/)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-int HeaderFixup::Configure()
-{
-  cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Header Fixup Config"));
-  cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-  if (panel)
-  {
-    dlg.AttachConfigurationPanel(panel);
-    PlaceWindow(&dlg);
-    return dlg.ShowModal() == wxID_OK ? 0 : -1;
-  }
-  return 1;
-}// Configure
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
 int HeaderFixup::Execute()
 {
   // if not attached, exit

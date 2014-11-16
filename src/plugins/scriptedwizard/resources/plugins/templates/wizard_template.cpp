@@ -44,21 +44,7 @@ void [PLUGIN_NAME]::OnRelease(bool appShutDown)
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
 }
-[IF HAS_CONFIGURE]
-int [PLUGIN_NAME]::Configure()
-{
-    //create and display the configuration dialog for your plugin
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Your dialog title"));
-    cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-    if (panel)
-    {
-        dlg.AttachConfigurationPanel(panel);
-        PlaceWindow(&dlg);
-        return dlg.ShowModal() == wxID_OK ? 0 : -1;
-    }
-    return -1;
-}
-[ENDIF HAS_CONFIGURE]
+
 int [PLUGIN_NAME]::GetCount() const
 {
     return 0;

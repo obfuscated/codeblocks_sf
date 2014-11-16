@@ -27,9 +27,6 @@ class [PLUGIN_NAME] : public cbPlugin
         /** Destructor. */
         virtual ~[PLUGIN_NAME]();
 [IF HAS_CONFIGURE]
-        /** Invoke configuration dialog. */
-        virtual int Configure();
-
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins
           * in configuration dialogs. Lower numbers mean the plugin's
@@ -48,7 +45,7 @@ class [PLUGIN_NAME] : public cbPlugin
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
         virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
-        
+
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's
           * configuration dialog.
@@ -56,8 +53,8 @@ class [PLUGIN_NAME] : public cbPlugin
           * @param project The project that is being edited.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }[ENDIF HAS_CONFIGURE]
-
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+[ENDIF HAS_CONFIGURE]
         /** This method is called by Code::Blocks and is used by the plugin
           * to add any menu items it needs on Code::Blocks's menu bar.\n
           * It is a pure virtual method that needs to be implemented by all

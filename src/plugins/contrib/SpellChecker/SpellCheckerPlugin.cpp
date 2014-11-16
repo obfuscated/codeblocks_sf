@@ -231,19 +231,6 @@ void SpellCheckerPlugin::SavePersonalDictionary()
     HunspellInterface *hsi = dynamic_cast<HunspellInterface *>(m_pSpellChecker);
     if (hsi) hsi->GetPersonalDictionary()->SavePersonalDictionary();
 }
-int SpellCheckerPlugin::Configure()
-{
-    //create and display the configuration dialog for your plugin
-    cbConfigurationDialog dlg(Manager::Get()->GetAppWindow(), wxID_ANY, _("Your dialog title"));
-    cbConfigurationPanel* panel = GetConfigurationPanel(&dlg);
-    if (panel)
-    {
-        dlg.AttachConfigurationPanel(panel);
-        PlaceWindow(&dlg);
-        return dlg.ShowModal() == wxID_OK ? 0 : -1;
-    }
-    return -1;
-}
 void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
 {
     //NOTE: Be careful in here... The application's menubar is at your disposal.

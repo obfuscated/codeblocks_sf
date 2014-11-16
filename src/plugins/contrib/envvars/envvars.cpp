@@ -281,18 +281,6 @@ void EnvVars::OnRelease(bool /*appShutDown*/)
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-int EnvVars::Configure()
-{
-#if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("Configure")));
-#endif
-
-  // Nothing to do (so far...) -> just return success
-  return 0;
-}// Configure
-
-// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-
 cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 {
   EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent);

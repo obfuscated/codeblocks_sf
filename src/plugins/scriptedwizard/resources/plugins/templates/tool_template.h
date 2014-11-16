@@ -27,9 +27,6 @@ class [PLUGIN_NAME] : public cbToolPlugin
         /** Destructor. */
         virtual ~[PLUGIN_NAME]();
 [IF HAS_CONFIGURE]
-        /** Invoke configuration dialog. */
-        virtual int Configure();
-
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins
           * in configuration dialogs. Lower numbers mean the plugin's
@@ -48,7 +45,7 @@ class [PLUGIN_NAME] : public cbToolPlugin
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
         virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
-        
+
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's
           * configuration dialog.

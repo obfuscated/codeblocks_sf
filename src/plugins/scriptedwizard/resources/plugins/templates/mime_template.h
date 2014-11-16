@@ -27,8 +27,6 @@ class [PLUGIN_NAME] : public cbMimePlugin
         /** Destructor. */
         virtual ~[PLUGIN_NAME]();
 [IF HAS_CONFIGURE]
-        /** Invoke configuration dialog. */
-        virtual int Configure();
 
         /** Return the plugin's configuration priority.
           * This is a number (default is 50) that is used to sort plugins
@@ -48,7 +46,7 @@ class [PLUGIN_NAME] : public cbMimePlugin
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
         virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
-        
+
         /** Return plugin's configuration panel for projects.
           * The panel returned from this function will be added in the project's
           * configuration dialog.
@@ -56,7 +54,8 @@ class [PLUGIN_NAME] : public cbMimePlugin
           * @param project The project that is being edited.
           * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
           */
-        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }[ENDIF HAS_CONFIGURE]
+        virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+[ENDIF HAS_CONFIGURE]
         /** @brief Can a file be handled by this plugin?
           *
           * @param filename The file in question.
@@ -64,14 +63,14 @@ class [PLUGIN_NAME] : public cbMimePlugin
           * false if not.
           */
         virtual bool CanHandleFile(const wxString& filename) const;
-        
+
         /** @brief Open the file.
           *
           * @param filename The file to open.
           * @return The plugin should return zero on success, other value on error.
           */
         virtual int OpenFile(const wxString& filename);
-        
+
         /** @brief Is this a default handler?
           *
           * This is a flag notifying the main app that this plugin can handle
