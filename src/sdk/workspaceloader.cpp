@@ -287,60 +287,59 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
         version->QueryIntAttribute("major", &major);
         version->QueryIntAttribute("minor", &minor);
 
-    }
-
-    if (major >= WORKSPACE_LAYOUT_FILE_VERSION_MAJOR && minor > WORKSPACE_LAYOUT_FILE_VERSION_MINOR)
-    {
-        GetpMsg()->DebugLog(F(_T("Workspace layout file version is > %d.%d. Trying to load..."), WORKSPACE_LAYOUT_FILE_VERSION_MAJOR, WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
-        AnnoyingDialog dlg(_("Workspace layout file format is newer/unknown"),
-                            F(_("This workspace layout file was saved with a newer version of Code::Blocks.\n"
-                            "Will try to load, but you might see unexpected results.\n"
-                            "In this case close the workspace, delete %s and reopen the workspace."),filename.wx_str()),
-                            wxART_WARNING,
-                            AnnoyingDialog::OK);
-        dlg.ShowModal();
-    }
-    else
-    {
-        // use one message for all changes
-        wxString msg;
-        wxString warn_msg;
-
-        if (major == 0 && minor == 0)
+        if (major >= WORKSPACE_LAYOUT_FILE_VERSION_MAJOR && minor > WORKSPACE_LAYOUT_FILE_VERSION_MINOR)
         {
-            msg << _("0.0 (unversioned) to 1.0:\n");
-            msg << _("  * save editor-pane layout and order.\n");
-            msg << _("\n");
-        }
-
-        if (!msg.IsEmpty())
-        {
-            msg.Prepend(wxString::Format(_("Workspace layout file format is older (%d.%d) than the current format (%d.%d).\n"
-                                            "The file will automatically be upgraded on close.\n"
-                                            "But please read the following list of changes, as some of them\n"
-                                            "might not automatically convert existing (old) settings.\n"
-                                            "If you don't understand what a change means, you probably don't\n"
-                                            "use that feature so you don't have to worry about it.\n\n"
-                                            "List of changes:\n"),
-                                        major,
-                                        minor,
-                                        WORKSPACE_LAYOUT_FILE_VERSION_MAJOR,
-                                        WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
-            AnnoyingDialog dlg(_("Workspace layout file format changed"),
-                                msg,
-                                wxART_INFORMATION,
-                                AnnoyingDialog::OK);
-            dlg.ShowModal();
-        }
-
-        if (!warn_msg.IsEmpty())
-        {
-            warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
-            AnnoyingDialog dlg(_("Workspace layout file upgrade warning"),
-                                warn_msg,
+            GetpMsg()->DebugLog(F(_T("Workspace layout file version is > %d.%d. Trying to load..."), WORKSPACE_LAYOUT_FILE_VERSION_MAJOR, WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
+            AnnoyingDialog dlg(_("Workspace layout file format is newer/unknown"),
+                                F(_("This workspace layout file was saved with a newer version of Code::Blocks.\n"
+                                "Will try to load, but you might see unexpected results.\n"
+                                "In this case close the workspace, delete %s and reopen the workspace."),filename.wx_str()),
                                 wxART_WARNING,
                                 AnnoyingDialog::OK);
             dlg.ShowModal();
+        }
+        else
+        {
+            // use one message for all changes
+            wxString msg;
+            wxString warn_msg;
+
+            if (major == 0 && minor == 0)
+            {
+                msg << _("0.0 (unversioned) to 1.0:\n");
+                msg << _("  * save editor-pane layout and order.\n");
+                msg << _("\n");
+            }
+
+            if (!msg.IsEmpty())
+            {
+                msg.Prepend(wxString::Format(_("Workspace layout file format is older (%d.%d) than the current format (%d.%d).\n"
+                                                "The file will automatically be upgraded on close.\n"
+                                                "But please read the following list of changes, as some of them\n"
+                                                "might not automatically convert existing (old) settings.\n"
+                                                "If you don't understand what a change means, you probably don't\n"
+                                                "use that feature so you don't have to worry about it.\n\n"
+                                                "List of changes:\n"),
+                                            major,
+                                            minor,
+                                            WORKSPACE_LAYOUT_FILE_VERSION_MAJOR,
+                                            WORKSPACE_LAYOUT_FILE_VERSION_MINOR));
+                AnnoyingDialog dlg(_("Workspace layout file format changed"),
+                                    msg,
+                                    wxART_INFORMATION,
+                                    AnnoyingDialog::OK);
+                dlg.ShowModal();
+            }
+
+            if (!warn_msg.IsEmpty())
+            {
+                warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
+                AnnoyingDialog dlg(_("Workspace layout file upgrade warning"),
+                                    warn_msg,
+                                    wxART_WARNING,
+                                    AnnoyingDialog::OK);
+                dlg.ShowModal();
+            }
         }
     }
 
