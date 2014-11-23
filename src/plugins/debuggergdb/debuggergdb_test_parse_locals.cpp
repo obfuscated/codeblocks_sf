@@ -51,6 +51,24 @@ TEST(TokenizeString1)
     CHECK_EQUAL(wxT("b|10"), results[1]);
 }
 
+TEST(TokenizeString1Escaped1)
+{
+    std::vector<GDBLocalVariable> results;
+    TokenizeGDBLocals(results, wxT("a = \"test\\\"{\"\nb = 10"));
+    CHECK_EQUAL(2u, results.size());
+    CHECK_EQUAL(wxT("a|\"test\\\"{\""), results[0]);
+    CHECK_EQUAL(wxT("b|10"), results[1]);
+}
+
+TEST(TokenizeString1Escaped2)
+{
+    std::vector<GDBLocalVariable> results;
+    TokenizeGDBLocals(results, wxT("a = \"test{\\\\\"\nb = 10"));
+    CHECK_EQUAL(2u, results.size());
+    CHECK_EQUAL(wxT("a|\"test{\\\\\""), results[0]);
+    CHECK_EQUAL(wxT("b|10"), results[1]);
+}
+
 TEST(TokenizeString2)
 {
     std::vector<GDBLocalVariable> results;
@@ -77,4 +95,24 @@ TEST(TokenizeString4)
     CHECK_EQUAL(wxT("a|\"test's\""), results[0]);
     CHECK_EQUAL(wxT("b|10"), results[1]);
 }
+
+TEST(TokenizeCharSingleQuoteEscaped1)
+{
+    std::vector<GDBLocalVariable> results;
+    TokenizeGDBLocals(results, wxT("a = 5\nl = {a = 100094, b = 39 '\\''}\nb = 4"));
+    CHECK_EQUAL(3u, results.size());
+    CHECK_EQUAL(wxT("a|5"), results[0]);
+    CHECK_EQUAL(wxT("l|{a = 100094, b = 39 '\\''}"), results[1]);
+    CHECK_EQUAL(wxT("b|4"), results[2]);
+}
+TEST(TokenizeCharSingleQuoteEscaped2)
+{
+    std::vector<GDBLocalVariable> results;
+    TokenizeGDBLocals(results, wxT("a = 5\nl = {a = 100094, b = 39 '\\\\'}\nb = 4"));
+    CHECK_EQUAL(3u, results.size());
+    CHECK_EQUAL(wxT("a|5"), results[0]);
+    CHECK_EQUAL(wxT("l|{a = 100094, b = 39 '\\\\'}"), results[1]);
+    CHECK_EQUAL(wxT("b|4"), results[2]);
+}
+
 } // SUITE(GDBLocalsParser)

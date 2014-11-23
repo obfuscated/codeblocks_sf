@@ -839,6 +839,8 @@ void TokenizeGDBLocals(std::vector<GDBLocalVariable> &results, wxString const &v
     size_t start = 0;
     int curlyBraces = 0;
     bool inString = false, inChar = false;
+    bool escaped = false;
+
     for (size_t ii = 0; ii < count; ++ii)
     {
         wxChar ch = value[ii];
@@ -860,16 +862,18 @@ void TokenizeGDBLocals(std::vector<GDBLocalVariable> &results, wxString const &v
                 curlyBraces--;
             break;
         case wxT('"'):
-            if (!inChar)
+            if (!inChar && !escaped)
                 inString=!inString;
             break;
         case wxT('\''):
-            if (!inString)
+            if (!inString && !escaped)
                 inChar=!inChar;
             break;
         default:
             break;
         }
+
+        escaped = (ch == wxT('\\') && !escaped);
     }
     results.push_back(GDBLocalVariable(value, start, value.length() - start));
 }
