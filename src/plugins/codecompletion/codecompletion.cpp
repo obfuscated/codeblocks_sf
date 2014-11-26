@@ -64,14 +64,10 @@
 
 #define CC_CODECOMPLETION_DEBUG_OUTPUT 0
 
+// let the global debug macro overwrite the local debug macro value
 #if defined(CC_GLOBAL_DEBUG_OUTPUT)
-    #if CC_GLOBAL_DEBUG_OUTPUT == 1
-        #undef CC_CODECOMPLETION_DEBUG_OUTPUT
-        #define CC_CODECOMPLETION_DEBUG_OUTPUT 1
-    #elif CC_GLOBAL_DEBUG_OUTPUT == 2
-        #undef CC_CODECOMPLETION_DEBUG_OUTPUT
-        #define CC_CODECOMPLETION_DEBUG_OUTPUT 2
-    #endif
+    #undef CC_CODECOMPLETION_DEBUG_OUTPUT
+    #define CC_CODECOMPLETION_DEBUG_OUTPUT CC_GLOBAL_DEBUG_OUTPUT
 #endif
 
 #if CC_CODECOMPLETION_DEBUG_OUTPUT == 1
