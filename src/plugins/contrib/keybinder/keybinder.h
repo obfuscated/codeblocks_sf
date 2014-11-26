@@ -97,7 +97,13 @@ public:
 
     wxKeyBind(const wxString &key) {
         m_nFlags = StringToKeyModifier(key);
-        m_nKeyCode = StringToKeyCode(key.AfterLast('+').AfterLast('-'));
+        //Handle Ctrl-- and Ctrl-+ keys
+        if (key.Last() == '-')
+            m_nKeyCode = '-';
+        else if (key.Last() == '+')
+            m_nKeyCode = '+';
+        else
+            m_nKeyCode = StringToKeyCode(key.AfterLast('+').AfterLast('-'));
     }
 
     virtual void DeepCopy(const wxKeyBind &p) {
@@ -1188,7 +1194,13 @@ public:
     //! Returns TRUE if this window is containing a valid key combination.
     bool IsValidKeyComb() const {
         //-return !GetValue().IsEmpty() && GetValue().Last() != '+';
-        return !GetValue().IsEmpty() && GetValue().Last() != '-';
+        if (GetValue().IsEmpty())
+            return false;
+        //Handle Ctrl-- and Ctrl-+ keys
+        if( (GetValue().Last() == '-') && (GetValue()[GetValue().Length() - 2] != '-') )
+            return false;
+
+        return true;
     }
 
 private:
