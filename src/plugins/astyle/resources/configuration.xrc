@@ -56,7 +56,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rbGNU">
-												<label>Gnu</label>
+												<label>GNU</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>8</border>
