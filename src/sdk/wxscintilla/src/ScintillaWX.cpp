@@ -343,7 +343,10 @@ void ScintillaWX::Initialise() {
 
 void ScintillaWX::Finalise() {
     ScintillaBase::Finalise();
-    SetTicking(false);
+/* C::B begin */
+// SetTicking function is deprecated since we implement fine grained timers
+//    SetTicking(false);
+/* C::B end */
     SetIdle(false);
     DestroySystemCaret();
 }
@@ -405,7 +408,9 @@ bool ScintillaWX::SetIdle(bool on) {
     return idler.state;
 }
 
-
+/* C::B begin */
+#if 0 // SetTicking function get deprecated
+/* C::B end */
 void ScintillaWX::SetTicking(bool on) {
     wxSCITimer* sciTimer;
     if (timer.ticking != on) {
@@ -423,6 +428,9 @@ void ScintillaWX::SetTicking(bool on) {
     }
     timer.ticksToWait = caret.period;
 }
+/* C::B begin */
+#endif
+/* C::B end */
 
 
 void ScintillaWX::SetMouseCapture(bool on) {
@@ -1127,7 +1135,9 @@ void ScintillaWX::DoLoseFocus(){
     SetMouseCapture(false);
 /* C::B end */
     DestroySystemCaret();
-    SetTicking(false);
+/* C::B begin */
+    //SetTicking(false);
+/* C::B end */
 }
 
 void ScintillaWX::DoGainFocus(){
@@ -1136,7 +1146,9 @@ void ScintillaWX::DoGainFocus(){
     focusEvent = false;
     DestroySystemCaret();
     CreateSystemCaret();
-    SetTicking(true);
+/* C::B begin */
+    //SetTicking(true);
+/* C::B end */
 }
 
 void ScintillaWX::DoSysColourChange() {

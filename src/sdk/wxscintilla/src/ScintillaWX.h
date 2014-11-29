@@ -119,7 +119,9 @@ public:
     virtual void Finalise();
     virtual void StartDrag();
     virtual bool SetIdle(bool on);
-    virtual void SetTicking(bool on);
+/* C::B begin */
+    //virtual void SetTicking(bool on);
+/* C::B end */
     virtual void SetMouseCapture(bool on);
     virtual bool HaveMouseCapture();
     virtual void ScrollText(int linesToMove);
