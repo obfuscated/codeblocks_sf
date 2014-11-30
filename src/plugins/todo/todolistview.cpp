@@ -617,6 +617,15 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 // do some clean-up
                 item.text.Trim();
                 item.text.Trim(false);
+                // for a C block style comment like /* TODO: xxx */
+                // we should delete the "*/" at the end of the item.text
+                if (startStrings[k].StartsWith(_T("/*")) && item.text.EndsWith(_T("*/")))
+                {
+                    // remove the tailing "*/"
+                    item.text.RemoveLast();
+                    item.text.RemoveLast();
+                }
+
                 item.user.Trim();
                 item.user.Trim(false);
                 wxDateTime date;
