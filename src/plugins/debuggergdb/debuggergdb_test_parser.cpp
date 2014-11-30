@@ -559,5 +559,13 @@ TEST(PythonSTLVectorEmptyInStruct3_count)
     CHECK_EQUAL(3, w->GetChildCount());
 }
 
+TEST(Python3dVectorInfiniteLoop)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
+    ParseGDBWatchValue(w, wxT("{ double = -3.18, vector = (x=5.7, y=2.9, z=-8.4) = {x = 5.7, y = 2.9, z = -8.4}}"));
+    CHECK_EQUAL(2, w->GetChildCount());
+    CHECK_EQUAL(wxT("s= {double=-3.18,vector=(x=5.7, y=2.9, z=-8.4) {x=5.7,y=2.9,z=-8.4}}"), *w);
+}
+
 } // SUITE(GDBWatchParser)
 

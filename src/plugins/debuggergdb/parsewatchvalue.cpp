@@ -127,7 +127,7 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
     token.start = -1;
     bool in_quote = false, in_char = false;
     int open_braces = 0;
-    struct BraceType { enum Enum { None, Angle, Square }; };
+    struct BraceType { enum Enum { None, Angle, Square, Normal }; };
     BraceType::Enum brace_type = BraceType::None;
 
     switch (static_cast<wxChar>(str[pos]))
@@ -166,6 +166,12 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
         token.start = pos;
         open_braces = 1;
         brace_type = BraceType::Square;
+        break;
+    case wxT('('):
+        token.type = Token::String;
+        open_braces = 1;
+        brace_type = BraceType::Normal;
+        token.start = pos;
         break;
     default:
         token.type = Token::String;
@@ -257,6 +263,12 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
                     if (str[pos] == wxT('['))
                         open_braces++;
                     else if (str[pos] == wxT(']'))
+                        --open_braces;
+                    break;
+                case BraceType::Normal:
+                    if (str[pos] == wxT('('))
+                        open_braces++;
+                    else if (str[pos] == wxT(')'))
                         --open_braces;
                     break;
                 case BraceType::None:
