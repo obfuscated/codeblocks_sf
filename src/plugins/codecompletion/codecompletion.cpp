@@ -247,8 +247,8 @@ namespace CodeCompletionHelper
 
     struct GotoDeclarationItem
     {
-      wxString filename;
-      unsigned line;
+        wxString filename;
+        unsigned line;
     };
 
     static wxString AutocompGetName(const wxString& selected)
