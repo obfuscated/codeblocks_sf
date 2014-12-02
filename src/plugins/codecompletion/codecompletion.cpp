@@ -245,29 +245,6 @@ namespace CodeCompletionHelper
         return ReturnValue;
     }
 
-    template<class T, class U>
-    static bool CompareFirst( const std::pair<T,U>& left, const std::pair<T,U>& right )
-    {
-        return left.first < right.first;
-    }
-
-    template<class T>
-    static wxString GetStringFromVector( const std::vector<T>& vec,
-                                         const wxString& separator,
-                                         wxString T::*ptrToString )
-    {
-        wxString output;
-        output.Alloc(separator.Length()*vec.size());
-
-        for (unsigned int i = 0; i < vec.size(); ++i )
-        {
-            output += vec[i].*ptrToString;
-            output += separator;
-        }
-
-        return output;
-    }
-
     struct GotoDeclarationItem
     {
       wxString filename;
