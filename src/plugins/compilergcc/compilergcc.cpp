@@ -1902,7 +1902,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     }
 
     if (   target->GetTargetType() == ttDynamicLib
-        || target->GetTargetType() == ttStaticLib )
+        || target->GetTargetType() == ttStaticLib
+        || target->GetTargetType() == ttEmbedded )
     {
         // check for hostapp
         if (target->GetHostApplication().IsEmpty())

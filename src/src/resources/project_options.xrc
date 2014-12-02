@@ -425,6 +425,7 @@
 																	<item>Dynamic library</item>
 																	<item>Commands only</item>
 																	<item>Native</item>
+																	<item>Embedded Application</item>
 																</content>
 																<style>wxCB_READONLY|wxCB_DROPDOWN</style>
 															</object>

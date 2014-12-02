@@ -87,6 +87,21 @@
         <border>8</border>
       </object>
       <object class="sizeritem">
+        <object class="wxStaticText" name="ID_STATICTEXT3">
+          <label>Host application debug arguments:</label>
+        </object>
+        <flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+        <border>8</border>
+      </object>
+      <object class="sizeritem">
+        <object class="wxTextCtrl" name="txtHostDebugParameters">
+          <style>wxTE_MULTILINE</style>
+        </object>
+        <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+        <border>8</border>
+        <option>1</option>
+      </object>
+      <object class="sizeritem">
         <object class="wxStaticLine" name="ID_STATICLINE1"/>
         <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
         <border>8</border>

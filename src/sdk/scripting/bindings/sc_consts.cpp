@@ -114,6 +114,7 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(ttDynamicLib);
         BIND_INT_CONSTANT(ttCommandsOnly);
         BIND_INT_CONSTANT(ttNative);
+        BIND_INT_CONSTANT(ttEmbedded);
 
         // MakeCommand
         BIND_INT_CONSTANT(mcClean);

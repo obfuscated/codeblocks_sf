@@ -276,6 +276,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
             case ttExecutable:
             case ttDynamicLib:
             case ttNative:
+            case ttEmbedded:
             case ttStaticLib:
                 txt->SetValue(target->GetOutputFilename());
                 txt->Enable(true);
@@ -287,6 +288,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
                 txtW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                             (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                             (TargetType)cmb->GetSelection() == ttNative ||
+                            (TargetType)cmb->GetSelection() == ttEmbedded ||
                             (TargetType)cmb->GetSelection() == ttDynamicLib);
                 txtO->SetValue(target->GetObjectOutput());
                 txtO->Enable(true);
@@ -296,6 +298,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
                 browseW->Enable((TargetType)cmb->GetSelection() == ttExecutable ||
                                 (TargetType)cmb->GetSelection() == ttConsoleOnly ||
                                 (TargetType)cmb->GetSelection() == ttNative ||
+                                (TargetType)cmb->GetSelection() == ttEmbedded ||
                                 (TargetType)cmb->GetSelection() == ttDynamicLib);
                 browseO->Enable(true);
                 break;
@@ -510,6 +513,16 @@ void ProjectOptionsDlg::OnProjectTypeChanged(cb_unused wxCommandEvent& event)
             if (!libpre.IsEmpty() && !name.StartsWith(libpre))
             {
                 name.Prepend(libpre);
+                fname.SetName(name);
+            }
+            txt->SetValue(fname.GetFullPath());
+            txtI->SetValue(_T(""));
+            txtD->SetValue(_T(""));
+            break;
+        case ttEmbedded:
+            if (!libpre.IsEmpty() && name.StartsWith(libpre))
+            {
+                name.Remove(0, libpre.Length());
                 fname.SetName(name);
             }
             txt->SetValue(fname.GetFullPath());
