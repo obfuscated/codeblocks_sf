@@ -2067,6 +2067,38 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
         expandedText.Remove(beginPos, endPos - beginPos + 1);
     }
 
+    // 5. handling stringizing operator #
+    for (int pos = expandedText.Find(_T("#"));
+         pos != wxNOT_FOUND;
+         pos = expandedText.Find(_T("#")))
+    {
+        // here, we may have spaces between the # and the next token (a macro argument)
+        // we need to locate the next token's position, here the next token is xxxxxxxxxxxxxx
+        // #       xxxxxxxxxxxxxx
+        // ^pos   ^beginPos      ^endPos
+
+        // let beginPos points to the space char before the next token by looping on spaces
+        int beginPos = pos;
+        int length = expandedText.size();
+        while (beginPos < length - 1 && expandedText[beginPos+1] == _T(' '))
+            beginPos++;
+
+        // let endPos points to the space char after the next token by looping on non spaces
+        int endPos = beginPos + 1;
+        while (endPos < length - 1 && expandedText[endPos+1] != _T(' '))
+            endPos++;
+        endPos++;
+
+        // reach the end of string, so append an extra space
+        if (endPos == length)
+            expandedText << _T(" ");
+
+        // replace the space to '"', also, remove the #
+        expandedText.SetChar(pos, _T(' '));
+        expandedText.SetChar(beginPos, _T('"'));
+        expandedText.SetChar(endPos, _T('"'));
+    }
+
     TRACE(_T("The actual macro expanded text is '%s'."), expandedText.wx_str());
     return true;
 }
