@@ -783,6 +783,8 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
                  currentLayout.BeforeFirst('|').StartsWith(_("name=dummy")) )
             {
                 currentLayout=currentLayout.AfterFirst(('|'));
+                currentLayout.Trim();
+                currentLayout.Trim(true);
             }
             else
             {
@@ -808,7 +810,7 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
 
     wxString frames = layout.AfterFirst (wxT ('@') );
     // if we load an additional project to an exiting layout, the first new tab always goes into a new frame
-    bool firstTabInNewCtrl =! currentLayout.empty();
+    bool firstTabInCtrl =! currentLayout.empty();
     // This creates a new tabframe if none exists; a workaround, because we can not directly access
     // the needed wxTabFrame class, because it is not exported.
     // This also takes care of all needed pane-info
@@ -865,14 +867,20 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
             else if (c == wxT('*'))
                 sel_page = index_in_m_tabs;
 
-            // If we should be the first tab in a new tab-ctrl we create it by calling Split()
-            // and update the dest_tabs accordingly
-            if (firstTabInNewCtrl)
+            // If we should be the first tab in a tab-ctrl we switch to the next existing tab,
+            // or create a new one  by calling Split() and update the dest_tabs accordingly.
+            if (firstTabInCtrl)
             {
-                Split(index_in_m_tabs, wxRIGHT);
-                // reset the active tab, because a Split() set it to zero
-                dest_tabs->SetActivePage(active_tab);
-                dest_tabs = GetActiveTabCtrl();
+                int nextIndex = m_TabCtrls.Index(dest_tabs) + 1;
+                if (nextIndex == 0 || nextIndex >= static_cast<int>(m_TabCtrls.GetCount()))
+                {
+                    Split(index_in_m_tabs, wxRIGHT);
+                    // reset the active tab, because a Split() set it to zero
+                    dest_tabs->SetActivePage(active_tab);
+                    dest_tabs = GetActiveTabCtrl();
+                }
+                else
+                    dest_tabs = m_TabCtrls.Item(nextIndex);
             }
             // Change the pane name to the one we have stored in the layout-string.
             wxAuiPaneInfo& pane = m_mgr.GetPane( GetTabFrameFromTabCtrl(dest_tabs) );
@@ -882,11 +890,11 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
                 frames.Replace(pane_name, pane.name);
                 pane_name = pane.name;
             }
-            firstTabInNewCtrl = false;
+            firstTabInCtrl = false;
             found = true;
         }
         // We come here after at least one tabctrl is filled, so the next tab should go in a new one
-        firstTabInNewCtrl = true;
+        firstTabInCtrl = true;
 
         tabs = tabs.AfterFirst(wxT('|'));
     }
