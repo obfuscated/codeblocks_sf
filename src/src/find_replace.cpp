@@ -153,6 +153,8 @@ void FindReplace::LogSearch(const wxString& file, int line, const wxString& line
     lineTextL.Replace(_T("\n"), _T(" "));
     lineTextL.Trim(false);
     lineTextL.Trim(true);
+    if (lineTextL.Length() > 300)
+        lineTextL.Truncate(280) += _T("...");
 
     values.Add(file);
     values.Add(lineStr);
