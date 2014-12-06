@@ -20,7 +20,7 @@ class CompilerMessages : public wxEvtHandler, public ListCtrlLogger
         virtual void SetCompilerErrors(CompilerErrors* errors){ m_pErrors = errors; }
         virtual void FocusError(int nr);
 
-        void AutoFitColumns();
+        void AutoFitColumns(int column);
 
         virtual wxWindow* CreateControl(wxWindow* parent);
         void DestroyControls();

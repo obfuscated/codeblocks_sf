@@ -144,7 +144,7 @@ void CompilerMessages::OnAutoFit(wxCommandEvent& event)
     Manager::Get()->GetConfigManager(wxT("compiler"))->Write(wxT("/autofit_during_build"), m_autoFit);
 }
 
-void CompilerMessages::AutoFitColumns()
+void CompilerMessages::AutoFitColumns(int cb_unused column)
 {
     if (m_autoFit)
         FitColumns();

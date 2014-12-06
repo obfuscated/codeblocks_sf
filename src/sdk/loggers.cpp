@@ -382,8 +382,7 @@ void ListCtrlLogger::Append(const wxArrayString& colValues, Logger::level lv, in
     int idx = control->GetItemCount() - 1;
     for (size_t i = 1; i < colValues.GetCount(); ++i)
         control->SetItem(idx, i, colValues[i]);
-    if (autoSize != -1)
-        control->SetColumnWidth(autoSize, wxLIST_AUTOSIZE);
+    AutoFitColumns(autoSize);
     control->Thaw();
 }
 
@@ -421,6 +420,12 @@ bool ListCtrlLogger::HasFeature(Feature::Enum feature) const
     default:
         return false;
     }
+}
+
+void ListCtrlLogger::AutoFitColumns(int column)
+{
+    if (column != -1)
+        control->SetColumnWidth(column, wxLIST_AUTOSIZE);
 }
 
 CSS::CSS() :

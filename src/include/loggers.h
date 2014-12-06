@@ -147,6 +147,7 @@ public:
     virtual void      Clear();
     virtual wxWindow* CreateControl(wxWindow* parent);
     virtual bool      HasFeature(Feature::Enum feature) const;
+    virtual void      AutoFitColumns(int column);
 };
 
 #endif // LOGGERS_H
