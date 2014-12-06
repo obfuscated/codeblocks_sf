@@ -141,7 +141,7 @@ void CompilerMessages::OnFit(wxCommandEvent& WXUNUSED(event))
 void CompilerMessages::OnAutoFit(wxCommandEvent& event)
 {
     m_autoFit = event.IsChecked();
-    Manager::Get()->GetConfigManager(wxT("compiler"))->ReadBool(wxT("/autofit_during_build"), m_autoFit);
+    Manager::Get()->GetConfigManager(wxT("compiler"))->Write(wxT("/autofit_during_build"), m_autoFit);
 }
 
 void CompilerMessages::AutoFitColumns()
