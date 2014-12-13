@@ -132,7 +132,11 @@ namespace CodeCompletionHelper
         return ns1.Name == ns2.Name;
     }
 
-    // for OnGotoFunction()
+    // for OnGotoFunction(), search backword
+    // xxxxx  /* yyy */
+    //     ^             ^
+    //     result        begin
+
     inline wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     {
         if (!control)
@@ -154,7 +158,10 @@ namespace CodeCompletionHelper
         return 0;
     }
 
-    // for OnGotoFunction()
+    // for OnGotoFunction(), search forward
+    //        /* yyy */  xxxxx
+    //     ^             ^
+    //     begin         result
     inline wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     {
         if (!control)
@@ -185,6 +192,8 @@ namespace CodeCompletionHelper
     }
 
     // for CodeCompleteIncludes()
+    // a line has some patter like below
+    // # [space or tab] include
     inline bool TestIncludeLine(wxString const &line)
     {
         size_t index = line.find(_T('#'));
@@ -204,7 +213,10 @@ namespace CodeCompletionHelper
         return false;
     }
 
-    // invariant : on return true : NameUnderCursor is NOT empty
+    // return identifier like token string under the current position
+    // @param NameUnderCursor the identifier like token string
+    // @param IsInclude true if is is a #include command
+    // @return true if the underlining text is a #include command, or a normal identifier
     inline bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
     {
         bool ReturnValue = false;
