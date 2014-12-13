@@ -435,6 +435,7 @@ BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
     EVT_MENU(idSelectedProjectReparse,             CodeCompletion::OnSelectedProjectReparse)
     EVT_MENU(idSelectedFileReparse,                CodeCompletion::OnSelectedFileReparse   )
 
+    // CC's toolbar
     EVT_CHOICE(XRCID("chcCodeCompletionScope"),    CodeCompletion::OnScope   )
     EVT_CHOICE(XRCID("chcCodeCompletionFunction"), CodeCompletion::OnFunction)
 END_EVENT_TABLE()
@@ -465,11 +466,14 @@ CodeCompletion::CodeCompletion() :
     m_SystemHeadersThreadCS(),
     m_DocHelper(this)
 {
+    // CCLogger are the log event bridges, those events were finally handled by its parent, here
+    // it is the CodeCompletion plugin ifself.
     CCLogger::Get()->Init(this, g_idCCLogger, g_idCCDebugLogger);
 
     if (!Manager::LoadResource(_T("codecompletion.zip")))
         NotifyMissingFile(_T("codecompletion.zip"));
 
+    // handling events send from CCLogger
     Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCLogger)     );
     Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCDebugLogger));
 
@@ -522,6 +526,7 @@ void CodeCompletion::OnAttach()
     m_SearchMenu  = 0;
     m_ViewMenu    = 0;
     m_ProjectMenu = 0;
+    // toolbar related variables
     m_ToolBar     = 0;
     m_Function    = 0;
     m_Scope       = 0;
@@ -535,7 +540,7 @@ void CodeCompletion::OnAttach()
     LoadTokenReplacements();
     RereadOptions();
 
-    // Events m_NativeParser does not handle will go to the the next event
+    // Events which m_NativeParser does not handle will go to the the next event
     // handler which is the instance of a CodeCompletion.
     m_NativeParser.SetNextHandler(this);
 
@@ -802,13 +807,18 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
 
 bool CodeCompletion::BuildToolBar(wxToolBar* toolBar)
 {
+    // load the toolbar resource
     Manager::Get()->AddonToolBar(toolBar,_T("codecompletion_toolbar"));
-
+    // get the wxChoice control pointers
     m_Function = XRCCTRL(*toolBar, "chcCodeCompletionFunction", wxChoice);
     m_Scope    = XRCCTRL(*toolBar, "chcCodeCompletionScope",    wxChoice);
 
     m_ToolBar = toolBar;
+
+    // set the wxChoice and best toolbar size
     UpdateToolBar();
+
+    // disable the wxChoices
     EnableToolbarTools(false);
 
     return true;
@@ -846,6 +856,8 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
 
     if (isAuto) // filter illogical cases of auto-launch
     {
+        // AutocompList can be prompt after user typed "::" or "->"
+        // or if in preprocessor directive, after user typed "<" or "\"" or "/"
         if (   (   curChar == wxT(':') // scope operator
                 && stc->GetCharAt(tknEnd - 2) != wxT(':') )
             || (   curChar == wxT('>') // '->'
