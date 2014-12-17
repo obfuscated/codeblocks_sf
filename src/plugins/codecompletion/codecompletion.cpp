@@ -252,13 +252,14 @@ namespace CodeCompletionHelper
         }
         return ReturnValue;
     }
-
+    // NOTE (ollydbg#1#12/06/14): comment
     struct GotoDeclarationItem
     {
         wxString filename;
         unsigned line;
     };
 
+    // NOTE (ollydbg#1#12/06/14): comment
     static wxString AutocompGetName(const wxString& selected)
     {
         size_t nameEnd = selected.find_first_of(_T("(: "));
@@ -547,6 +548,7 @@ void CodeCompletion::OnAttach()
     m_NativeParser.CreateClassBrowser();
 
     // hook to editors
+    // NOTE (ollydbg#1#12/06/14): both ccmanager and cc will have hooks, do they conflict?
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
 
@@ -1660,6 +1662,8 @@ void CodeCompletion::RereadOptions()
     m_CCFillupChars          = cfg->Read(_T("/fillup_chars"),              wxEmptyString);
     m_CCEnableHeaders        = cfg->ReadBool(_T("/enable_headers"),        true);
 
+    // update the CC toolbar option, and tick the timer for toolbar
+    // NOTE (ollydbg#1#12/06/14): why?
     if (m_ToolBar)
     {
         UpdateToolBar();
