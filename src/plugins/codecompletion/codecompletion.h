@@ -348,6 +348,10 @@ private:
     size_t                  m_CCMaxMatches;
     /** whether add parentheses after user select a function name in the code-completion suggestion list*/
     bool                    m_CCAutoAddParentheses;
+
+    /** add function arguments' types and names when autocompleted outside function. The default
+     * value is false.
+     */
     bool                    m_CCDetectImplementation;
     /** defines characters that work like Tab (empty by Default) but are also inserted*/
     wxString                m_CCFillupChars;
