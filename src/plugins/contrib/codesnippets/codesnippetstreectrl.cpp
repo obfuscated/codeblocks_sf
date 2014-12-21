@@ -1885,10 +1885,10 @@ void CodeSnippetsTreeCtrl::SaveAllOpenEditors()
 // ----------------------------------------------------------------------------
 {
     // 2014/12/20
-    UINT knt = m_EditorPtrArray.GetCount();
+    size_t knt = m_EditorPtrArray.GetCount();
     if (not knt) return;
 
-    for (UINT ii=0; ii<knt; ++ii)
+    for (size_t ii=0; ii<knt; ++ii)
     {
         EditorBase* eb = m_EditorPtrArray[ii];
 
