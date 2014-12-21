@@ -296,34 +296,6 @@ void CodeSnippets::OnRelease(bool appShutDown)
         return;
     }
 
-    // ----------------------------------
-    if (not GetSnippetsWindow()) return;
-    // ----------------------------------
-
-    // Don't close down if file checking is active
-    while ( m_nOnActivateBusy )
-    {   wxMilliSleep(10) ; wxYield();
-    }
-
-    //-CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-    //--CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
-    //-evt.pWindow = GetSnippetsWindow();
-    //-Manager::Get()->ProcessEvent(evt);
-
-    #if defined(__WXMSW__)
-    wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
-    //-wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetTree();
-    RemoveTreeCtrlHandler( pPrjTree, wxEVT_COMMAND_TREE_BEGIN_DRAG );
-    RemoveTreeCtrlHandler( GetConfig()->GetOpenFilesList(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
-    #endif
-
-    if (GetSnippetsWindow())
-            if ( GetSnippetsWindow()->GetFileChanged() )
-                GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
-
-    wxCloseEvent closeevt;
-    closeevt.SetEventObject(GetConfig()->GetSnippetsWindow());
-    GetConfig()->GetSnippetsWindow()->OnClose(closeevt);
 
     // Make sure user cannot re-enable CodeSnippets until a CB restart
     GetConfig()->m_appIsShutdown = true;
@@ -432,9 +404,41 @@ void CodeSnippets::OnAppStartShutdown(CodeBlocksEvent& event)
     //NOTE: This Event is begin called twice from main.cpp
     if (GetConfig()->m_appIsShutdown)
         return;
+    // ----------------------------------
+    if (not GetSnippetsWindow()) return;
+    // ----------------------------------
+
+    // Don't close down if file checking is active
+    while ( m_nOnActivateBusy )
+    {   wxMilliSleep(10) ; wxYield();
+    }
+
+    //-CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    //--CodeBlocksDockEvent evt(cbEVT_HIDE_DOCK_WINDOW);
+    //-evt.pWindow = GetSnippetsWindow();
+    //-Manager::Get()->ProcessEvent(evt);
+
+    #if defined(__WXMSW__)
+    wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
+    //-wxTreeCtrl* pPrjTree = Manager::Get()->GetProjectManager()->GetTree();
+    RemoveTreeCtrlHandler( pPrjTree, wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    RemoveTreeCtrlHandler( GetConfig()->GetOpenFilesList(),  wxEVT_COMMAND_TREE_BEGIN_DRAG );
+    #endif
+
+    // Assure all open editor data is saved 2014/12/20
+    GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveAllOpenEditors();
+
+    if (GetSnippetsWindow())
+            if ( GetSnippetsWindow()->GetFileChanged() )
+                GetSnippetsWindow()->GetSnippetsTreeCtrl()->SaveItemsToFile(GetConfig()->SettingsSnippetsXmlPath);
+
+    wxCloseEvent closeevt;
+    closeevt.SetEventObject(GetConfig()->GetSnippetsWindow());
+    GetConfig()->GetSnippetsWindow()->OnClose(closeevt);
+//--
     GetConfig()->SettingsSave();
     // Call OnRelease() before CodeBlocks actually closes down or we'll crash
-    OnRelease(true);
+    //OnRelease(true);
 }
 // ----------------------------------------------------------------------------
 void CodeSnippets::CreateSnippetWindow()

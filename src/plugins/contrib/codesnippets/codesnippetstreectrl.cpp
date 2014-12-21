@@ -1631,7 +1631,7 @@ bool CodeSnippetsTreeCtrl::EditSnippetProperties(wxTreeItemId& itemId)
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EditSnippet(SnippetTreeItemData* pSnippetTreeItemData, wxString fileName)
 // ----------------------------------------------------------------------------
-{//asm("int3"); /*trap*/
+{
 
     // Create editor for snippet item
     if ((SnippetTreeItemData*)( GetItemData(GetAssociatedItemID() )))
@@ -1665,7 +1665,7 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetTreeItemData* pSnippetTreeItemData
                 m_EditorSnippetIdArray.Add(m_SnippetItemId);
         }
         else // open file from a temp file
-        { //asm("int3"); /*trap*/
+        {
             // Need temp file for snippet text
             wxString m_TmpFileName = wxFileName::GetTempDir();
             m_TmpFileName << wxFILE_SEP_PATH << m_EditSnippetLabel << _T(".txt");
@@ -1690,7 +1690,7 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetTreeItemData* pSnippetTreeItemData
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
 // ----------------------------------------------------------------------------
-{//asm("int3"); /*trap*/
+{
     wxTreeItemId itemId = GetAssociatedItemID();
     if (not itemId.IsOk()) return;
     if ( not IsSnippet()) return;
@@ -1867,7 +1867,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& wa
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::SaveEditorsXmlData(cbEditor* pcbEditor)
 // ----------------------------------------------------------------------------
-{//asm("int3"); /*trap*/
+{
     int idx = m_EditorPtrArray.Index(pcbEditor);
     if (wxNOT_FOUND == idx)
         return;
@@ -1878,8 +1878,38 @@ void CodeSnippetsTreeCtrl::SaveEditorsXmlData(cbEditor* pcbEditor)
     //-    return;
     pSnippetTreeItemData->SetSnippetString(pcbEditor->GetControl()->GetText());
     //-wrong--SetItemText(snippetID, pcbEditor->GetName());
-    //-SetFileChanged(true);
+    SetFileChanged(true); //(pecan 2014/12/20)
 }
+// ----------------------------------------------------------------------------
+void CodeSnippetsTreeCtrl::SaveAllOpenEditors()
+// ----------------------------------------------------------------------------
+{
+    // 2014/12/20
+    UINT knt = m_EditorPtrArray.GetCount();
+    if (not knt) return;
+
+    for (UINT ii=0; ii<knt; ++ii)
+    {
+        EditorBase* eb = m_EditorPtrArray[ii];
+
+        // Is this a snippet editor?
+        int idx = m_EditorPtrArray.Index((cbEditor*)eb);
+        if (wxNOT_FOUND == idx)
+            continue;
+        if (eb)
+        {   // Save local XML data (snippet text)
+            if (eb->GetModified())
+            {
+                int rep = cbMessageBox(wxString::Format(_T("Save? %s"),eb->GetName().wx_str()), _T("Save File?"), wxOK|wxCANCEL, this);
+                if (wxID_OK == rep)
+                    eb->Save();
+                     //SaveEditorsXmlData((cbEditor*)eb) called by eb->Save();
+            }
+            eb->Close();
+        }
+    }
+
+}//SaveAndCloseFrame
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnEditorSave(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
@@ -1898,11 +1928,12 @@ void CodeSnippetsTreeCtrl::OnEditorSave(CodeBlocksEvent& event)
         SaveEditorsXmlData((cbEditor*)eb);
     }
 
+
 }//SaveAndCloseFrame
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnEditorClose(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
-{ //asm("int3"); /*trap*/
+{
     event.Skip();
 
     EditorBase* eb = event.GetEditor();

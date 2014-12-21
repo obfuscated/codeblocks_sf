@@ -585,4 +585,7 @@ AppVersion::~AppVersion()
 //		        wxRadioButton* m_RadioDockBtn;
 //		        wxRadioButton* m_RadioExternalBtn;
 //		        wxCheckBox* m_EditorsStayOnTopChkBox;
+// Fix:     1.4.1 2014/12/20
+//          Save modified temp file data to XML data
+//          Save xml data when CB issues StartAppShutdown
 // ----------------------------------------------------------------------------

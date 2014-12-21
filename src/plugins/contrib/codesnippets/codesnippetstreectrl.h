@@ -75,6 +75,7 @@ class CodeSnippetsTreeCtrl : public wxTreeCtrl
         void OnEditorSave(CodeBlocksEvent& event);
         void OnEditorClose(CodeBlocksEvent& event);
         void SaveEditorsXmlData(cbEditor* pcbEditor);
+        void SaveAllOpenEditors();
 
         // This OnIdle() is driven from the plugin|app OnIdle routines
         void OnIdle();
