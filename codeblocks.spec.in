@@ -1,6 +1,5 @@
 %define _svnrev             @REVISION@
 %define req_wxgtk           2.8.0
-%define _fedora             %(if [ -f /etc/fedora-release ]; then echo 1; else echo 0; fi)
 %define _redhat             %(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
 %define _mandrake           %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
 %define _version            13.12.svn.%{_svnrev}
@@ -15,13 +14,13 @@
 %define _release            %{_rel}.mdk%{mandrake_version}
 %define _redhat 0
 %endif
-%if 0%{?fedora_version}
-%define _release            %{_rel}.fc%{fedora_version}
+%if 0%{?fedora}
+%define _release            %{_rel}.fc%{fedora}
 %define _redhat 0
 %endif
 %if 0%{?_redhat}
 %define _redhat_prefix      %(grep -q "Red Hat Linux" /etc/redhat-release && echo rhl || echo el)
-%define _redhat_vernum      %(rpm -qf --queryformat %{VERSION} /etc/redhat-release|tr -d '.')
+%define _redhat_vernum      %(cat /etc/redhat-release | sed -rn 's/[^0-9]*([0-9]*).*/\\1/p')
 %define _release            %{_rel}.%{_redhat_prefix}%{_redhat_vernum}
 %endif
 
@@ -34,21 +33,23 @@
 %endif
 
 %define nassi_shneiderman   1
-%define automake17          0
+%define spellchecker        1
 
-%if 0%{?_redhat}
-%if 0%{?_redhat_vernum} < 4
-%define automake17          1
-%endif
 %if 0%{?_redhat_vernum} < 6
 %define nassi_shneiderman   0
-%endif
+%define spellchecker        0
 %endif
 
 %if 0%{?nassi_shneiderman}
 %define no_nassi_flag ""
 %else
 %define no_nassi_flag ,-NassiShneiderman
+%endif
+
+%if 0%{?spellchecker}
+%define no_spellchecker_flag ""
+%else
+%define no_spellchecker_flag ,-spellchecker
 %endif
 
 Name:                       codeblocks
@@ -84,13 +85,7 @@ BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 
 BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, libtool >= 1.4, m4
 BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
-BuildRequires:              zip, pkgconfig
-
-%if ! 0%{?automake17}
-BuildRequires:              automake >= 1.7
-%else
-BuildRequires:              automake17
-%endif
+BuildRequires:              zip, pkgconfig, automake >= 1.9
 
 %if 0%{?suse_version}
 BuildRequires:              update-desktop-files
@@ -131,9 +126,12 @@ Summary:                    Code::Blocks contrib plugins
 Group:                      Development/Tools/IDE
 Requires:                   %{name}%{?_isa} = %{version}
 Requires:                   %{name}-contrib-libs%{?_isa} = %{version}
-BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, hunspell-devel, fontconfig-devel
+BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, fontconfig-devel
 %if 0%{?nassi_shneiderman}
 BuildRequires:              boost-devel
+%endif
+%if 0%{?spellchecker}
+BuildRequires:              hunspell-devel
 %endif
 
 %description contrib
@@ -208,11 +206,7 @@ This package contains the development libraries and headers needed to build wxSm
 %{?suse_update_libdir:%{suse_update_libdir}}
 %{?suse_update_config:%{suse_update_config -f}}
 
-  %if ! %{automake17}
-     ./bootstrap
-  %else
-     AUTOMAKE=automake-1.7 ACLOCAL=aclocal-1.7 ACLOCAL_FLAGS="-I %{_datadir}/aclocal" ./bootstrap
-  %endif
+  ./bootstrap
   %if 0%{?suse_version}
   %if 0%{?suse_version} > 1020
   %configure \
@@ -231,7 +225,7 @@ This package contains the development libraries and headers needed to build wxSm
   %configure \
       --disable-pch \
       --with-wx-config="%{_bindir}/wx-config" \
-      --with-contrib-plugins=all%no_nassi_flag \
+      --with-contrib-plugins=all%no_nassi_flag%no_spellchecker_flag \
       $CONF_OPTS
   %endif
 
@@ -343,10 +337,12 @@ This package contains the development libraries and headers needed to build wxSm
 %if 0%{?nassi_shneiderman}
 %{plugindir}/libNassiShneiderman.so
 %endif
+%if 0%{?spellchecker}
+%{plugindir}/libSpellChecker.so
+%endif
 %{plugindir}/libProfiler.so
 %{plugindir}/libProjectOptionsManipulator.so
 %{plugindir}/libRegExTestbed.so
-%{plugindir}/libSpellChecker.so
 %{plugindir}/libSymTab.so
 %{plugindir}/libThreadSearch.so
 %{plugindir}/libToolsPlus.so
@@ -385,11 +381,13 @@ This package contains the development libraries and headers needed to build wxSm
 %if 0%{?nassi_shneiderman}
 %{pkgdatadir}/NassiShneiderman.zip
 %endif
+%if 0%{?spellchecker}
+%{pkgdatadir}/SpellChecker.zip
+%endif
 %{pkgdatadir}/Profiler.zip
 %{pkgdatadir}/ProjectOptionsManipulator.zip
 %{pkgdatadir}/RegExTestbed.zip
 %{pkgdatadir}/ReopenEditor.zip
-%{pkgdatadir}/SpellChecker.zip
 %{pkgdatadir}/SymTab.zip
 %{pkgdatadir}/ThreadSearch.zip
 %{pkgdatadir}/ToolsPlus.zip
@@ -402,7 +400,9 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/images/ThreadSearch/*
 %{pkgdatadir}/images/wxsmith/*
 %{pkgdatadir}/lib_finder/*
+%if 0%{?spellchecker}
 %{pkgdatadir}/SpellChecker/*
+%endif
 %{_mandir}/man1/*snippets*
 
 %files contrib-libs
@@ -449,6 +449,12 @@ This package contains the development libraries and headers needed to build wxSm
 %{_includedir}/wxsmith/*
 
 %changelog
+* Tue Dec 23 2014 jens <jens@codeblocks.org>
+- do not try to build Spellchecker-plugin on CentOS/RedHat < 6, because the
+  hunspell packages are only available from a thirdparty repo (atomicorp),
+  therefore an automatic build is not possible and the users are forced to
+  enable this repo.
+- fix determining of redhat and fedora release-numbers
 * Tue Dec 24 2013 Jens Lody <jens@codeblocks.org>
 - Changes for release 13.12.
 * Sun Dec 08 2013 Jens Lody <jens@codeblocks.org>
