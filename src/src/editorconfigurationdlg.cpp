@@ -250,6 +250,15 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
         m_DefaultCode.Add(cfg->Read(key, wxEmptyString));
     }// end for : idx
 
+    // code completion
+    cfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
+    XRCCTRL(*this, "chkCodeCompletion",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/code_completion"),     true));
+    XRCCTRL(*this, "chkCCCaseSensitive",    wxCheckBox)->SetValue(cfg->ReadBool(_T("/case_sensitive"),      false));
+    XRCCTRL(*this, "chkAutoselectSingle",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_single"),  false));
+    XRCCTRL(*this, "spnAutolaunchCount",    wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_count"),    3));
+    XRCCTRL(*this, "chkDocumentationPopup", wxCheckBox)->SetValue(cfg->ReadBool(_T("/documentation_popup"), true));
+    XRCCTRL(*this, "cmbTooltipMode",        wxChoice)->SetSelection(cfg->ReadInt(_T("/tooltip_mode"),       1));
+
     LoadListbookImages();
 
     // add all plugins configuration panels
@@ -1138,6 +1147,15 @@ void EditorConfigurationDlg::EndModal(int retCode)
         cfg->Write(_T("/default_encoding/use_option"),  XRCCTRL(*this, "rbEncodingUseOption", wxRadioBox)->GetSelection());
         cfg->Write(_T("/default_encoding/find_latin2"), XRCCTRL(*this, "chkEncodingFindLatin2", wxCheckBox)->GetValue());
         cfg->Write(_T("/default_encoding/use_system"),  XRCCTRL(*this, "chkEncodingUseSystem", wxCheckBox)->GetValue());
+
+        // code completion
+        cfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
+        cfg->Write(_T("/code_completion"),     XRCCTRL(*this, "chkCodeCompletion",     wxCheckBox)->GetValue());
+        cfg->Write(_T("/case_sensitive"),      XRCCTRL(*this, "chkCCCaseSensitive",    wxCheckBox)->GetValue());
+        cfg->Write(_T("/auto_select_single"),  XRCCTRL(*this, "chkAutoselectSingle",   wxCheckBox)->GetValue());
+        cfg->Write(_T("/auto_launch_count"),   XRCCTRL(*this, "spnAutolaunchCount",    wxSpinCtrl)->GetValue());
+        cfg->Write(_T("/documentation_popup"), XRCCTRL(*this, "chkDocumentationPopup", wxCheckBox)->GetValue());
+        cfg->Write(_T("/tooltip_mode"),        XRCCTRL(*this, "cmbTooltipMode",        wxChoice)->GetSelection());
 
         // finally, apply settings in all plugins' panels
         for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)

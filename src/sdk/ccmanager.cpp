@@ -406,6 +406,9 @@ struct TokenSorter
 void CCManager::OnCompleteCode(CodeBlocksEvent& event)
 {
     event.Skip();
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("ccmanager"));
+    if (!cfg->ReadBool(wxT("/code_completion"), true))
+        return;
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
@@ -451,7 +454,8 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     if (!stc->CallTipActive() && !stc->AutoCompActive())
         m_CallTipActive = wxSCI_INVALID_POSITION;
 
-    stc->AutoCompSetIgnoreCase(true);
+    stc->AutoCompSetIgnoreCase(!cfg->ReadBool(wxT("/case_sensitive"), false));
+    stc->AutoCompSetChooseSingle(cfg->ReadBool(wxT("/auto_select_single"), false));
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompSetSeparator(wxT('\r'));
@@ -536,6 +540,10 @@ void CCManager::OnEditorClose(CodeBlocksEvent& event)
 void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
 {
     event.Skip();
+
+    int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
+    if (tooltipMode == 0) // disabled
+        return;
 
     if (wxGetKeyState(WXK_CONTROL))
         return;
@@ -643,9 +651,9 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             CCPluginCharMap::const_iterator alChars = m_AutoLaunchChars.find(GetProviderFor(ed));
             if (alChars == m_AutoLaunchChars.end())
                 alChars = m_AutoLaunchChars.find(nullptr); // default
-            // TODO: read settings
-            if (   (pos - wordStartPos >= 3 && !stc->AutoCompActive())
-                || pos - wordStartPos == 3 + 4 )
+            int autolaunchCt = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/auto_launch_count"), 3);
+            if (   (pos - wordStartPos >= autolaunchCt && !stc->AutoCompActive())
+                || pos - wordStartPos == autolaunchCt + 4 )
             {
                 CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
                 Manager::Get()->ProcessEvent(evt);
@@ -736,7 +744,7 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             {
                 ccPlugin->DoAutocomplete(m_AutocompTokens[m_LastAutocompIndex], ed);
             }
-            else
+            else // this case should not normally happen
             {
                 ccPlugin->DoAutocomplete(event.GetText(), ed);
             }
@@ -772,6 +780,13 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
 {
     event.Skip();
 
+    int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
+    // 0 - disable
+    // 1 - enable
+    // 2 - force single page
+    if (tooltipMode == 0)
+        return;
+
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return;
@@ -792,7 +807,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         while (wxIsspace(stc->GetCharAt(lnStart)))
             ++lnStart; // do not show too far left on multi-line call tips
         if (   m_CallTips.size() > 1
-            && !Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadBool(wxT("multi_page_tips"), true) )
+            && tooltipMode == 2 ) // force single page
         {
             wxString tip;
             int hlStart, hlEnd;
@@ -1042,6 +1057,9 @@ void CCManager::DoHidePopup()
 
 void CCManager::DoShowDocumentation(cbEditor* ed)
 {
+    if (!Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadBool(wxT("/documentation_popup"), true))
+        return;
+
     cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
     if (!ccPlugin)
         return;

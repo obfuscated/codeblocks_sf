@@ -133,8 +133,8 @@
 																						<object class="wxStaticText" name="ID_STATICTEXT1">
 																							<label>TAB size in spaces:</label>
 																						</object>
-																						<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																						<border>4</border>
+																						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																						<border>2</border>
 																					</object>
 																					<object class="sizeritem">
 																						<object class="wxSpinCtrl" name="spnTabSize">
@@ -197,7 +197,7 @@
 																						<object class="wxStaticText" name="ID_STATICTEXT2">
 																							<label>End-of-line mode:</label>
 																						</object>
-																						<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 																						<border>4</border>
 																					</object>
 																					<object class="sizeritem">
@@ -286,6 +286,106 @@
 																		</object>
 																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 																		<border>4</border>
+																	</object>
+																</object>
+																<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																<option>1</option>
+															</object>
+															<object class="sizeritem">
+																<object class="wxStaticBoxSizer">
+																	<label>Code Completion</label>
+																	<orient>wxVERTICAL</orient>
+																	<object class="sizeritem">
+																		<object class="wxFlexGridSizer">
+																			<cols>1</cols>
+																			<object class="sizeritem">
+																				<object class="wxCheckBox" name="chkCodeCompletion">
+																					<label>Code completion</label>
+																					<checked>1</checked>
+																				</object>
+																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																				<border>5</border>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxCheckBox" name="chkCCCaseSensitive">
+																					<label>Case sensitive</label>
+																				</object>
+																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxCheckBox" name="chkAutoselectSingle">
+																					<label>Autoselect single match</label>
+																				</object>
+																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxBoxSizer">
+																					<object class="sizeritem">
+																						<object class="wxStaticText" name="ID_STATICTEXT3">
+																							<label>Autolaunch after typing # letters:</label>
+																						</object>
+																						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																						<border>2</border>
+																					</object>
+																					<object class="sizeritem">
+																						<object class="wxSpinCtrl" name="spnAutolaunchCount">
+																							<value>3</value>
+																							<min>1</min>
+																							<max>8</max>
+																							<size>71,21</size>
+																						</object>
+																						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																						<border>16</border>
+																					</object>
+																				</object>
+																				<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxCheckBox" name="chkDocumentationPopup">
+																					<label>Documentation popup</label>
+																					<checked>1</checked>
+																				</object>
+																				<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxBoxSizer">
+																					<object class="sizeritem">
+																						<object class="wxStaticText" name="ID_STATICTEXT11">
+																							<label>Tooltips:</label>
+																						</object>
+																						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																						<border>4</border>
+																					</object>
+																					<object class="sizeritem">
+																						<object class="wxChoice" name="cmbTooltipMode">
+																							<content>
+																								<item>disable</item>
+																								<item>enable</item>
+																								<item>force single page</item>
+																							</content>
+																							<selection>1</selection>
+																						</object>
+																						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																						<border>16</border>
+																						<option>1</option>
+																					</object>
+																				</object>
+																				<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																		</object>
+																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>4</border>
+																		<option>1</option>
 																	</object>
 																</object>
 																<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
