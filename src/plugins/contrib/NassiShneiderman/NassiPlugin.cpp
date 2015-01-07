@@ -117,6 +117,7 @@ BEGIN_EVENT_TABLE(NassiPlugin, cbPlugin)
     EVT_UPDATE_UI_RANGE(NASSI_ID_EXPORT_SVG, NASSI_ID_EXPORT_BITMAP, NassiPlugin::OnUpdateExport)
     EVT_MENU_RANGE(NASSI_ID_EXPORT_SVG, NASSI_ID_EXPORT_BITMAP,      NassiPlugin::OnExport)
 
+    EVT_UPDATE_UI(idParseC, NassiPlugin::OnUpdateUIMenuItem)
 END_EVENT_TABLE()
 
 // constructor
@@ -230,6 +231,13 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
     if ( !filenewmenu->FindItem(NASSI_ID_NEW_FILE) )
         filenewmenu->Append(NASSI_ID_NEW_FILE, _("Nassi Shneiderman diagram"), _("Create a new Nassi Shneiderman diagram"));
 
+    pos = menuBar->FindMenu(_("&View"));
+    if (pos == wxNOT_FOUND)
+        return;
+
+    wxMenu* viewmenu = menuBar->GetMenu(pos);
+    viewmenu->Append(idParseC, _("Nassi-Shneiderman diagram"), _("Construct Nassi-Shneiderman diagram from selected text"));
+    viewmenu->Enable(idParseC, false);
 }
 
 void NassiPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* /*data*/)
@@ -593,3 +601,20 @@ void NassiPlugin::OnExport(wxCommandEvent &event)
 
 //} export end
 
+void NassiPlugin::OnUpdateUIMenuItem(wxUpdateUIEvent &event)
+{
+    bool enable = false;
+
+    EditorManager* emngr = Manager::Get()->GetEditorManager();
+    if (emngr)
+    {
+        EditorBase *edb = emngr->GetActiveEditor();
+        if (edb && edb->IsBuiltinEditor())
+        {
+            cbStyledTextCtrl* stc = static_cast<cbEditor*>(edb)->GetControl();
+            if (stc && stc->GetLexer() == wxSCI_LEX_CPP)
+                enable = edb->HasSelection();
+        }
+    }
+    event.Enable(enable);
+}

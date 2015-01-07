@@ -164,6 +164,7 @@ class NassiPlugin : public cbMimePlugin
         void OnNewDiagram(wxCommandEvent &event);
         void ParseC(wxCommandEvent &event);
         void OnInsertCFromDiagram(wxCommandEvent &event);
+        void OnUpdateUIMenuItem(wxUpdateUIEvent &event);
 
         static void PopulateToolbar16(wxToolBar* toolBar);
         static void PopulateToolbar22(wxToolBar* toolBar);
