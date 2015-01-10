@@ -10,14 +10,6 @@
 							<object class="wxBoxSizer">
 								<orient>wxVERTICAL</orient>
 								<object class="sizeritem">
-									<object class="wxCheckBox" name="chkNoCC">
-										<label>Disable code-completion</label>
-										<tooltip>If check this, no code suggestion list will be shown when your entering characters.</tooltip>
-									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-									<border>8</border>
-								</object>
-								<object class="sizeritem">
 									<object class="wxStaticBoxSizer">
 										<label>Options</label>
 										<orient>wxVERTICAL</orient>
@@ -31,27 +23,6 @@
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkWhileTyping">
 												<label>Update parser when typing (on save otherwise)</label>
-											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="chkCaseSensitive">
-												<label>Case sensitive matches</label>
-											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="chkEvalTooltip">
-												<label>Display info when hovering mouse over a token in the editor</label>
-											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>5</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="chkAutoSelectOne">
-												<label>Auto-select, if only one match</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>5</border>
@@ -102,20 +73,6 @@
 												<cols>2</cols>
 												<vgap>8</vgap>
 												<hgap>8</hgap>
-												<object class="sizeritem">
-													<object class="wxCheckBox" name="chkAutoLaunch">
-														<label>Automatically launch when typed # letters:</label>
-													</object>
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-												</object>
-												<object class="sizeritem">
-													<object class="wxSpinCtrl" name="spnAutoLaunchChars">
-														<value>4</value>
-														<min>1</min>
-														<max>8</max>
-													</object>
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
-												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="lblMaxMatches">
 														<label>Maximum allowed code-completion matches:</label>

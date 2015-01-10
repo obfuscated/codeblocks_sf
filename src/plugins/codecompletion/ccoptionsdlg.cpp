@@ -104,16 +104,11 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     // -----------------------------------------------------------------------
 
     // Page "Code Completion"
-    XRCCTRL(*this, "chkNoCC",               wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_code_completion"), true));
     XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->SetValue(!cfg->ReadBool(_T("/semantic_keywords"),   false));
-    XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/eval_tooltip"),         true));
-    XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_select_one"),      false));
     XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_add_parentheses"), true));
     XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/detect_implementation"),false));
     XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_doxgen_comment"),   false));
     XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/enable_headers"),       true));
-    XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/auto_launch"),          true));
-    XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/auto_launch_chars"),     3));
     XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/max_matches"),           16384));
     XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->SetValue(cfg->Read(_T("/fillup_chars"),             wxEmptyString));
     XRCCTRL(*this, "sldCCDelay",            wxSlider)->SetValue(cfg->ReadInt(_T("/cc_delay"),                300) / 100);
@@ -160,7 +155,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     // Page "Code Completion"
     XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->SetValue(!m_Parser.Options().useSmartSense);
     XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->SetValue(m_Parser.Options().whileTyping);
-    XRCCTRL(*this, "chkCaseSensitive",      wxCheckBox)->SetValue(m_Parser.Options().caseSensitive);
 
     // Page "C / C++ parser"
     XRCCTRL(*this, "chkLocals",             wxCheckBox)->SetValue(m_Parser.Options().followLocalIncludes);
@@ -201,19 +195,13 @@ void CCOptionsDlg::OnApply()
     // -----------------------------------------------------------------------
 
     // Page "Code Completion"
-    cfg->Write(_T("/use_code_completion"),  (bool)!XRCCTRL(*this, "chkNoCC",               wxCheckBox)->GetValue());
     cfg->Write(_T("/semantic_keywords"),    (bool)!XRCCTRL(*this, "chkNoSemantic",         wxCheckBox)->GetValue());
     cfg->Write(_T("/use_SmartSense"),       (bool) XRCCTRL(*this, "chkUseSmartSense",      wxCheckBox)->GetValue());
     cfg->Write(_T("/while_typing"),         (bool) XRCCTRL(*this, "chkWhileTyping",        wxCheckBox)->GetValue());
-    cfg->Write(_T("/case_sensitive"),       (bool) XRCCTRL(*this, "chkCaseSensitive",      wxCheckBox)->GetValue());
-    cfg->Write(_T("/eval_tooltip"),         (bool) XRCCTRL(*this, "chkEvalTooltip",        wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_select_one"),      (bool) XRCCTRL(*this, "chkAutoSelectOne",      wxCheckBox)->GetValue());
     cfg->Write(_T("/auto_add_parentheses"), (bool) XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue());
     cfg->Write(_T("/detect_implementation"),(bool) XRCCTRL(*this, "chkDetectImpl",         wxCheckBox)->GetValue());
     cfg->Write(_T("/add_doxgen_comment"),   (bool) XRCCTRL(*this, "chkAddDoxgenComment",   wxCheckBox)->GetValue());
     cfg->Write(_T("/enable_headers"),       (bool) XRCCTRL(*this, "chkEnableHeaders",      wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_launch"),          (bool) XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->GetValue());
-    cfg->Write(_T("/auto_launch_chars"),    (int)  XRCCTRL(*this, "spnAutoLaunchChars",    wxSpinCtrl)->GetValue());
     cfg->Write(_T("/max_matches"),          (int)  XRCCTRL(*this, "spnMaxMatches",         wxSpinCtrl)->GetValue());
     cfg->Write(_T("/fillup_chars"),                XRCCTRL(*this, "txtFillupChars",        wxTextCtrl)->GetValue());
     cfg->Write(_T("/cc_delay"),             (int)  XRCCTRL(*this, "sldCCDelay",            wxSlider)->GetValue() * 100);
@@ -265,7 +253,6 @@ void CCOptionsDlg::OnApply()
     // Page "Code Completion"
     m_Parser.Options().useSmartSense = !XRCCTRL(*this, "chkUseSmartSense",    wxCheckBox)->GetValue();
     m_Parser.Options().whileTyping   =  XRCCTRL(*this, "chkWhileTyping",      wxCheckBox)->GetValue();
-    m_Parser.Options().caseSensitive =  XRCCTRL(*this, "chkCaseSensitive",    wxCheckBox)->GetValue();
 
     // Page "C / C++ parser"
     m_Parser.Options().followLocalIncludes  = XRCCTRL(*this, "chkLocals",             wxCheckBox)->GetValue();
@@ -380,23 +367,19 @@ void CCOptionsDlg::OnCCDelayScroll(cb_unused wxScrollEvent& event)
 
 void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
-    bool en = !XRCCTRL(*this, "chkNoCC",               wxCheckBox)->GetValue();
-    bool al =  XRCCTRL(*this, "chkAutoLaunch",         wxCheckBox)->GetValue();
+    // ccmanager's config
+    ConfigManager* ccmcfg = Manager::Get()->GetConfigManager(_T("ccmanager"));
+    bool en = ccmcfg->ReadBool(_T("/code_completion"), true);
     bool aap = XRCCTRL(*this, "chkAutoAddParentheses", wxCheckBox)->GetValue();
 
     // Page "Code Completion"
     XRCCTRL(*this, "chkUseSmartSense",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkWhileTyping",                wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkCaseSensitive",              wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkEvalTooltip",                wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoSelectOne",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkAutoAddParentheses",         wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkDetectImpl",                 wxCheckBox)->Enable(en && aap);
     XRCCTRL(*this, "chkAddDoxgenComment",           wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkEnableHeaders",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkNoSemantic",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkAutoLaunch",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "spnAutoLaunchChars",            wxSpinCtrl)->Enable(en && al);
     XRCCTRL(*this, "lblMaxMatches",                 wxStaticText)->Enable(en);
     XRCCTRL(*this, "spnMaxMatches",                 wxSpinCtrl)->Enable(en);
     XRCCTRL(*this, "lblFillupChars",                wxStaticText)->Enable(en);
@@ -414,7 +397,8 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "spnParsersNum",                 wxSpinCtrl)->Enable(!en);
 
     // Page "C / C++ parser (adv.)"
-    en = !XRCCTRL(*this, "chkNoCC",           wxCheckBox)->GetValue();
+    // FIXME (ollydbg#1#01/07/15): should code_completion option affect our parser's behavior?
+    en = ccmcfg->ReadBool(_T("/code_completion"), true);
     XRCCTRL(*this, "txtCCFileExtHeader",      wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "chkCCFileExtEmpty",       wxCheckBox)->Enable(en);
     XRCCTRL(*this, "txtCCFileExtSource",      wxTextCtrl)->Enable(en);

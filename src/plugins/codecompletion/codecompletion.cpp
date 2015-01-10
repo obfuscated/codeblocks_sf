@@ -441,8 +441,6 @@ CodeCompletion::CodeCompletion() :
     m_TimerReparsing(this, idReparsingTimer),
     m_TimerEditorActivated(this, idEditorActivatedTimer),
     m_LastEditor(0),
-    m_ActiveCalltipsNest(0),
-    m_IsAutoPopup(false),
     m_ToolBar(0),
     m_Function(0),
     m_Scope(0),
@@ -452,14 +450,9 @@ CodeCompletion::CodeCompletion() :
     m_NeedReparse(false),
     m_CurrentLength(-1),
     m_NeedsBatchColour(true),
-    m_UseCodeCompletion(true),
-    m_CCAutoLaunchChars(3),
-    m_CCAutoLaunch(true),
-    m_CCLaunchDelay(300),
     m_CCMaxMatches(16384),
     m_CCAutoAddParentheses(true),
     m_CCDetectImplementation(false),
-    m_CCAutoSelectOne(false),
     m_CCEnableHeaders(false),
     m_SystemHeadersThreadCS(),
     m_DocHelper(this)
@@ -471,6 +464,7 @@ CodeCompletion::CodeCompletion() :
 
     Connect(g_idCCLogger,                wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCLogger)     );
     Connect(g_idCCDebugLogger,           wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnCCDebugLogger));
+
     // the two events below were generated from NativeParser, as currently, CodeCompletionPlugin is
     // set as the next event handler for m_NativeParser, so it get chance to handle them.
     Connect(ParserCommon::idParserStart, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CodeCompletion::OnParserStart)  );
@@ -516,7 +510,6 @@ CodeCompletion::~CodeCompletion()
 
 void CodeCompletion::OnAttach()
 {
-    m_PageIndex   = -1;
     m_EditMenu    = 0;
     m_SearchMenu  = 0;
     m_ViewMenu    = 0;
@@ -533,8 +526,6 @@ void CodeCompletion::OnAttach()
 
     LoadTokenReplacements();
     RereadOptions();
-
-    m_LastPosForCodeCompletion = -1;
 
     // Events m_NativeParser does not handle will go to the the next event
     // handler which is the instance of a CodeCompletion.
@@ -1565,7 +1556,7 @@ void CodeCompletion::GetAbsolutePath(const wxString& basePath, const wxArrayStri
 
 void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 {
-    if (!IsAttached() || !m_InitDone || !m_UseCodeCompletion)
+    if (!IsAttached() || !m_InitDone)
     {
         event.Skip();
         return;
@@ -1641,15 +1632,10 @@ void CodeCompletion::RereadOptions()
     m_LexerKeywordsToInclude[8] = cfg->ReadBool(_T("/lexer_keywords_set9"), false);
 
     // for CC
-    m_UseCodeCompletion      = cfg->ReadBool(_T("/use_code_completion"),   true);
-    m_CCAutoLaunchChars      = cfg->ReadInt(_T("/auto_launch_chars"),      3);
-    m_CCAutoLaunch           = cfg->ReadBool(_T("/auto_launch"),           true);
-    m_CCLaunchDelay          = cfg->ReadInt(_T("/cc_delay"),               300);
     m_CCMaxMatches           = cfg->ReadInt(_T("/max_matches"),            16384);
     m_CCAutoAddParentheses   = cfg->ReadBool(_T("/auto_add_parentheses"),  true);
     m_CCDetectImplementation = cfg->ReadBool(_T("/detect_implementation"), false); //depends on auto_add_parentheses
     m_CCFillupChars          = cfg->Read(_T("/fillup_chars"),              wxEmptyString);
-    m_CCAutoSelectOne        = cfg->ReadBool(_T("/auto_select_one"),       false);
     m_CCEnableHeaders        = cfg->ReadBool(_T("/enable_headers"),        true);
 
     if (m_ToolBar)

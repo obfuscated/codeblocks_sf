@@ -270,8 +270,6 @@ private:
     /** delayed running of editor activated event, only the last activated editor should be considered*/
     void OnEditorActivatedTimer(wxTimerEvent& event);
 
-    /** Not used*/
-    int                     m_PageIndex;
     /** Indicates CC's initialization is done*/
     bool                    m_InitDone;
 
@@ -287,7 +285,6 @@ private:
     CodeRefactoring         m_CodeRefactoring;
 
     int                     m_EditorHookId;
-    int                     m_LastPosForCodeCompletion;
 
     /** timer triggered by editor hook function to delay the real-time parse*/
     wxTimer                 m_TimerRealtimeParsing;
@@ -301,9 +298,6 @@ private:
     wxTimer                 m_TimerEditorActivated;
 
     cbEditor*               m_LastEditor;
-    int                     m_ActiveCalltipsNest;
-
-    bool                    m_IsAutoPopup;
 
     // The variables below were related to CC's toolbar
     /** the CC's toolbar */
@@ -344,16 +338,7 @@ private:
     bool                    m_NeedsBatchColour;
 
     //options on code completion (auto suggestion list) feature
-    /** disable the code-completion while editing*/
-    bool                    m_UseCodeCompletion;
-    /** how many characters will the user entered to trigger the code-completion*/
-    int                     m_CCAutoLaunchChars;
-    /** will the code-completion list pop-up automatically or not*/
-    bool                    m_CCAutoLaunch;
-    /** how long will the code-completion list delayed(in microseconds) after you hit the key, if
-        the value is zero, then the list will show immediately
-     */
-    int                     m_CCLaunchDelay;
+
     /** maximum allowed code-completion list entries*/
     size_t                  m_CCMaxMatches;
     /** whether add parentheses after user select a function name in the code-completion suggestion list*/
@@ -361,8 +346,6 @@ private:
     bool                    m_CCDetectImplementation;
     /** defines characters that work like Tab (empty by Default) but are also inserted*/
     wxString                m_CCFillupChars;
-    /** Should a single item auto-completion list automatically choose the item */
-    bool                    m_CCAutoSelectOne;
 
     /** give code completion list for header files, it happens after the #include directive */
     bool                    m_CCEnableHeaders;
