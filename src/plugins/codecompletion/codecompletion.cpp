@@ -2110,7 +2110,8 @@ void CodeCompletion::OnOpenIncludeFile(cb_unused wxCommandEvent& event)
 
     // look in the same dir as the source file
     wxFileName fname = NameUnderCursor;
-    NormalizePath(fname, lastIncludeFileFrom);
+    wxFileName base = lastIncludeFileFrom;
+    NormalizePath(fname, base.GetPath());
     if (wxFileExists(fname.GetFullPath()) )
         foundSet.Add(fname.GetFullPath());
 
