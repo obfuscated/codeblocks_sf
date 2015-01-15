@@ -32,6 +32,15 @@ public:
 private:
     wxString &m_str;
 };
+class MoveComment
+{
+public:
+	MoveComment(wxString &src, wxString &dst);
+	void operator() ( wxChar const *first, wxChar const *last ) const;
+private:
+	wxString &m_src;
+	wxString &m_dst;
+};
 class instr_collector
 {
 public:
@@ -138,11 +147,12 @@ private:
 class CreateNassiIfBrick
 {
 public:
-    CreateNassiIfBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick);
+    CreateNassiIfBrick(wxString &c_str, wxString &tc_str, wxString &s_str, NassiBrick *&brick);
     //void operator()(iterator_t first, iterator_t const& last)const;
     void operator() ( wxChar const *first, wxChar const *last ) const;
 private:
     wxString &m_c_str;
+    wxString &m_tc_str;
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };

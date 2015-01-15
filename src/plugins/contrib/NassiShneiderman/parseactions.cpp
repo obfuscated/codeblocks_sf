@@ -78,7 +78,16 @@ void comment_collector::operator() ( wxChar const *first, wxChar const *last ) c
     }
     //wxMessageBox( m_str, _T("Comment:"));
 }
-
+MoveComment::MoveComment(wxString &src, wxString &dst):
+	m_src(src), m_dst(dst) {}
+void MoveComment::operator()( wxChar const *first, wxChar const *last ) const
+{
+	if (!m_src.IsEmpty())
+    {
+        m_dst = m_src;
+        m_src.clear();
+    }
+}
 instr_collector::instr_collector(wxString &str):m_str(str) {}
 //void instr_collector::operator() (iterator_t first, iterator_t const& last) const
 void instr_collector::operator() ( wxChar const *first, wxChar const *last ) const
@@ -232,8 +241,8 @@ void CreateNassiBlockEnd::DoEnd() const
     m_s_str.clear();
 }
 
-CreateNassiIfBrick::CreateNassiIfBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiIfBrick::CreateNassiIfBrick(wxString &c_str, wxString &tc_str, wxString &s_str, NassiBrick *&brick)
+     :   m_c_str(c_str), m_tc_str(tc_str), m_s_str(s_str),m_brick(brick){}
 //void CreateNassiIfBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiIfBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -243,8 +252,10 @@ void CreateNassiIfBrick::operator() ( wxChar const * /*first*/, wxChar const * /
     m_brick->SetNext( brick );
     brick->SetTextByNumber(m_c_str, 0);
     brick->SetTextByNumber(m_s_str, 1);
+    brick->SetTextByNumber(m_tc_str, 2);
     m_c_str.clear();
     m_s_str.clear();
+    m_tc_str.clear();
     m_brick = brick;
 
     brick = new NassiInstructionBrick();
