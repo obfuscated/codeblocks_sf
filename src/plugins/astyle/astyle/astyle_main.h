@@ -1,8 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   astyle_main.h
  *
- *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
- *   Copyright (C) 1998-2002 by Tal Davidson
+ *   Copyright (C) 2014 by Jim Pattee
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
  *   This file is a part of Artistic Style - an indentation and
@@ -38,48 +37,48 @@
 #include <ctime>
 
 #if defined(__BORLANDC__) && __BORLANDC__ < 0x0650
-// Embarcadero needs this for the following utime.h
-// otherwise "struct utimbuf" gets an error on time_t
-// 0x0650 for C++Builder XE3
-using std::time_t;
+	// Embarcadero needs this for the following utime.h
+	// otherwise "struct utimbuf" gets an error on time_t
+	// 0x0650 for C++Builder XE3
+	using std::time_t;
 #endif
 
 #if defined(_MSC_VER) || defined(__DMC__)
-#include <sys/utime.h>
-#include <sys/stat.h>
+	#include <sys/utime.h>
+	#include <sys/stat.h>
 #else
-#include <utime.h>
-#include <sys/stat.h>
+	#include <utime.h>
+	#include <sys/stat.h>
 #endif                         // end compiler checks
 
 #ifdef ASTYLE_JNI
-#include <jni.h>
-#ifndef ASTYLE_LIB    // ASTYLE_LIB must be defined for ASTYLE_JNI
-#define ASTYLE_LIB
-#endif
+	#include <jni.h>
+	#ifndef ASTYLE_LIB    // ASTYLE_LIB must be defined for ASTYLE_JNI
+		#define ASTYLE_LIB
+	#endif
 #endif  //  ASTYLE_JNI
 
 #ifndef ASTYLE_LIB
-// for console build only
-#include "ASLocalizer.h"
-#define _(a) localizer.settext(a)
+	// for console build only
+	#include "ASLocalizer.h"
+	#define _(a) localizer.settext(a)
 #endif	// ASTYLE_LIB
 
 // for G++ implementation of string.compare:
 #if defined(__GNUC__) && __GNUC__ < 3
-#error - Use GNU C compiler release 3 or higher
+	#error - Use GNU C compiler release 3 or higher
 #endif
 
 // for namespace problem in version 5.0
 #if defined(_MSC_VER) && _MSC_VER < 1200        // check for V6.0
-#error - Use Microsoft compiler version 6 or higher
+	#error - Use Microsoft compiler version 6 or higher
 #endif
 
 // for mingw BOM, UTF-16, and Unicode functions
 #if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
-#if (__MINGW32_MAJOR_VERSION > 3)  || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 16))
-#error - Use MinGW compiler version 4 or higher
-#endif
+	#if (__MINGW32_MAJOR_VERSION > 3) || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 16))
+		#error - Use MinGW compiler version 4 or higher
+	#endif
 #endif
 
 //----------------------------------------------------------------------------
@@ -88,35 +87,35 @@ using std::time_t;
 
 #ifdef ASTYLE_LIB
 
-// define STDCALL and EXPORT for Windows
-// MINGW defines STDCALL in Windows.h (actually windef.h)
-// EXPORT has no value if ASTYLE_NO_EXPORT is defined
-#ifdef _WIN32
-#ifndef STDCALL
-#define STDCALL __stdcall
-#endif
-// define this to prevent compiler warning and error messages
-#ifdef ASTYLE_NO_EXPORT
-#define EXPORT
-#else
-#define EXPORT __declspec(dllexport)
-#endif
-// define STDCALL and EXPORT for non-Windows
-// visibility attribute allows "-fvisibility=hidden" compiler option
-#else
-#define STDCALL
-#if __GNUC__ >= 4
-#define EXPORT __attribute__ ((visibility ("default")))
-#else
-#define EXPORT
-#endif
-#endif	// #ifdef _WIN32
+	// define STDCALL and EXPORT for Windows
+	// MINGW defines STDCALL in Windows.h (actually windef.h)
+	// EXPORT has no value if ASTYLE_NO_EXPORT is defined
+	#ifdef _WIN32
+		#ifndef STDCALL
+			#define STDCALL __stdcall
+		#endif
+		// define this to prevent compiler warning and error messages
+		#ifdef ASTYLE_NO_EXPORT
+			#define EXPORT
+		#else
+			#define EXPORT __declspec(dllexport)
+		#endif
+		// define STDCALL and EXPORT for non-Windows
+		// visibility attribute allows "-fvisibility=hidden" compiler option
+	#else
+		#define STDCALL
+		#if __GNUC__ >= 4
+			#define EXPORT __attribute__ ((visibility ("default")))
+		#else
+			#define EXPORT
+		#endif
+	#endif	// #ifdef _WIN32
 
-// define utf-16 bit text for the platform
-typedef unsigned short utf16_t;
-// define pointers to callback error handler and memory allocation
-typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
-typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
+	// define utf-16 bit text for the platform
+	typedef unsigned short utf16_t;
+	// define pointers to callback error handler and memory allocation
+	typedef void (STDCALL* fpError)(int errorNumber, const char* errorMessage);
+	typedef char* (STDCALL* fpAlloc)(unsigned long memoryNeeded);
 
 #endif  // #ifdef ASTYLE_LIB
 
@@ -313,6 +312,7 @@ class ASConsole
 		void formatCinToCout();
 		vector<string> getArgvOptions(int argc, char** argv) const;
 		bool fileNameVectorIsEmpty() const;
+		bool getFilesAreIdentical() const;
 		int  getFilesFormatted() const;
 		bool getIgnoreExcludeErrors() const;
 		bool getIgnoreExcludeErrorsDisplay() const;
@@ -421,11 +421,13 @@ class ASLibrary
 void  STDCALL javaErrorHandler(int errorNumber, const char* errorMessage);
 char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded);
 // the following function names are constructed from method names in the calling java program
-extern "C"  EXPORT
+extern "C" EXPORT
 jstring STDCALL Java_AStyleInterface_AStyleGetVersion(JNIEnv* env, jclass);
-extern "C"  EXPORT
-jstring STDCALL Java_AStyleInterface_AStyleMain
-(JNIEnv* env, jobject obj, jstring textInJava, jstring optionsJava);
+extern "C" EXPORT
+jstring STDCALL Java_AStyleInterface_AStyleMain(JNIEnv* env,
+                                                jobject obj,
+                                                jstring textInJava,
+                                                jstring optionsJava);
 #endif //  ASTYLE_JNI
 
 //----------------------------------------------------------------------------
@@ -433,9 +435,11 @@ jstring STDCALL Java_AStyleInterface_AStyleMain
 // they are called externally and are NOT part of the namespace
 //----------------------------------------------------------------------------
 #ifdef ASTYLE_LIB
-extern "C"
-EXPORT utf16_t* STDCALL AStyleMainUtf16
-(const utf16_t* pSourceIn, const utf16_t* pOptions, fpError fpErrorHandler, fpAlloc fpMemoryAlloc);
+extern "C" EXPORT
+utf16_t* STDCALL AStyleMainUtf16(const utf16_t* pSourceIn,
+                                 const utf16_t* pOptions,
+                                 fpError fpErrorHandler,
+                                 fpAlloc fpMemoryAlloc);
 #endif	// ASTYLE_LIB
 
 //-----------------------------------------------------------------------------

@@ -1,8 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   ASEnhancer.cpp
  *
- *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
- *   Copyright (C) 1998-2002 by Tal Davidson
+ *   Copyright (C) 2014 by Jim Pattee
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
  *   This file is a part of Artistic Style - an indentation and
@@ -130,9 +129,9 @@ void ASEnhancer::enhance(string &line, bool isInNamespace, bool isInPreprocessor
 	}
 
 	if (line.length() == 0
-	        && ! isInEventTable
-	        && ! isInDeclareSection
-	        && ! emptyLineFill)
+	        && !isInEventTable
+	        && !isInDeclareSection
+	        && !emptyLineFill)
 		return;
 
 	// test for unindent on attached brackets
@@ -214,7 +213,7 @@ void ASEnhancer::convertSpaceIndentToForceTab(string &line) const
  * @param caseIndex     the line index of the case statement.
  * @return              the line index of the colon.
  */
-size_t ASEnhancer::findCaseColon(string  &line, size_t caseIndex) const
+size_t ASEnhancer::findCaseColon(string &line, size_t caseIndex) const
 {
 	size_t i = caseIndex;
 	bool isInQuote_ = false;
@@ -264,10 +263,10 @@ size_t ASEnhancer::findCaseColon(string  &line, size_t caseIndex) const
  * @param indent        the number of tabsets to insert.
  * @return              the number of characters inserted.
  */
-int ASEnhancer::indentLine(string  &line, int indent) const
+int ASEnhancer::indentLine(string &line, int indent) const
 {
 	if (line.length() == 0
-	        && ! emptyLineFill)
+	        && !emptyLineFill)
 		return 0;
 
 	size_t charsToInsert;
@@ -304,7 +303,7 @@ int ASEnhancer::indentLine(string  &line, int indent) const
  * @param index         the current line index.
  * @return              true if a hit.
  */
-bool ASEnhancer::isBeginDeclareSectionSQL(string  &line, size_t index) const
+bool ASEnhancer::isBeginDeclareSectionSQL(string &line, size_t index) const
 {
 	string word;
 	size_t hits = 0;
@@ -353,7 +352,7 @@ bool ASEnhancer::isBeginDeclareSectionSQL(string  &line, size_t index) const
  * @param index         the current line index.
  * @return              true if a hit.
  */
-bool ASEnhancer::isEndDeclareSectionSQL(string  &line, size_t index) const
+bool ASEnhancer::isEndDeclareSectionSQL(string &line, size_t index) const
 {
 	string word;
 	size_t hits = 0;
@@ -755,7 +754,7 @@ size_t ASEnhancer::processSwitchBlock(string &line, size_t index)
  * @param unindent      the number of tabsets to erase.
  * @return              the number of characters erased.
  */
-int ASEnhancer::unindentLine(string  &line, int unindent) const
+int ASEnhancer::unindentLine(string &line, int unindent) const
 {
 	size_t whitespace = line.find_first_not_of(" \t");
 

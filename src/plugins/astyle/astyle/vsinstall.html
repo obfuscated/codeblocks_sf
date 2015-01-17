@@ -6,6 +6,7 @@
     <title>.NET Framework SDK</title>
     <meta http-equiv="Content-Language" content="en-us" />
     <meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
     <link href="styles.css" rel="stylesheet" type="text/css" />
 </head>
 
@@ -32,18 +33,20 @@
         platform is not available and a warning will occur if you open a project containing a 64-bit target.
     </p>
     <p>
-        Install the <a href="http://www.microsoft.com/en-us/download/details.aspx?id=8279" target="_blank" title="open new window">Windows
-            SDK</a> appropriate for your operating system. Use the "Install Now" link to get the SDK. You can optionally
-        install the Windows Performance Toolkit, Debugging Tools, and Application Verifier. The Help is also optional.
+        Install the <a href="http://www.microsoft.com/en-us/download/details.aspx?id=8279" target="_blank" title="open new window">
+            Windows SDK</a> appropriate for your operating system. Use the "Install Now" link to get the SDK. You can
+        optionally install the Windows Performance Toolkit, Debugging Tools, and Application Verifier. The Help is also
+        optional.
     </p>
     <p>
         After installing this package the x64 configurations can be created.
-           <p>
-               IMPORTANT: If Visual Studio 2010 Service Pack 1 is applied after the .NET Framework SDK install, an additional
-        update is required to restore the Visual C++ compilers and libraries that may have been removed. Information is available
-        <a href="http://msdn.microsoft.com/en-us/vstudio//gg697159" target="_blank" title="open new window">here</a>.
-           </p>
     </p>
+    <p>
+        IMPORTANT: If Visual Studio 2010 Service Pack 1 is applied after the .NET Framework SDK install, an additional
+        update is required to restore the Visual C++ compilers and libraries that may have been removed. Information is
+        available <a href="http://msdn.microsoft.com/en-us/vstudio//gg697159" target="_blank" title="open new window">here</a>.
+    </p>
+
 
     <h4>Adding x64 to Project Files</h4>
 
@@ -70,12 +73,12 @@
         entry becomes $(SolutionDir)<strong>$(Platform)\</strong>$(Configuration)\.
     </p>
     <p>
-        Leave &#8220;Configuration Properties&nbsp; &gt; General&gt; Intermediate Directory&#8221; at the default which should be
-        <strong>$(Platform)\</strong>$(Configuration)\.
+        Leave &#8220;Configuration Properties&nbsp; &gt; General&gt; Intermediate Directory&#8221; at the default which
+        should be <strong>$(Platform)\</strong>$(Configuration)\.
     </p>
     <p>
-        Check the x64 Debug configuration &#8220;Configuration Properties &gt; Linker &gt; Debugging &gt; Generate Program Database
-        File&#8221; for $(TargetDir)$(TargetName).pdb.
+        Check the x64 Debug configuration &#8220;Configuration Properties &gt; Linker &gt; Debugging &gt; Generate Program
+        Database File&#8221; for $(TargetDir)$(TargetName).pdb.
     </p>
     <p>
         Compile the project. If there are compile errors you may need to add the <strong>$(Platform)</strong> macro

@@ -5,8 +5,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   ASLocalizer.cpp
  *
- *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
- *   Copyright (C) 1998-2002 by Tal Davidson
+ *   Copyright (C) 2014 by Jim Pattee
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
  *   This file is a part of Artistic Style - an indentation and
@@ -45,21 +44,21 @@
 #include "ASLocalizer.h"
 
 #ifdef _WIN32
-#include <windows.h>
+	#include <windows.h>
 #endif
 
 #ifdef __DMC__
-#include <locale.h>
-// digital mars doesn't have these
-const size_t SUBLANG_CHINESE_MACAU = 5;
-const size_t LANG_HINDI = 57;
+	#include <locale.h>
+	// digital mars doesn't have these
+	const size_t SUBLANG_CHINESE_MACAU = 5;
+	const size_t LANG_HINDI = 57;
 #endif
 
 #ifdef __VMS
-#define __USE_STD_IOSTREAM 1
-#include <assert>
+	#define __USE_STD_IOSTREAM 1
+	#include <assert>
 #else
-#include <cassert>
+	#include <cassert>
 #endif
 
 #include <cstdio>
@@ -68,12 +67,17 @@ const size_t LANG_HINDI = 57;
 #include <typeinfo>
 
 #ifdef _MSC_VER
-#pragma warning(disable: 4996)  // secure version deprecation warnings
-// #pragma warning(disable: 4267)  // 64 bit signed/unsigned loss of data
+	#pragma warning(disable: 4996)  // secure version deprecation warnings
+	// #pragma warning(disable: 4267)  // 64 bit signed/unsigned loss of data
 #endif
 
 #ifdef __BORLANDC__
-#pragma warn -8104	    // Local Static with constructor dangerous for multi-threaded apps
+	#pragma warn -8104	    // Local Static with constructor dangerous for multi-threaded apps
+#endif
+
+#ifdef __INTEL_COMPILER
+	#pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
+	#pragma warning(disable:  981)  // operands are evaluated in unspecified order
 #endif
 
 namespace astyle {
@@ -166,7 +170,7 @@ void ASLocalizer::setLanguageFromLCID(size_t lcid)
 	size_t sublang = SUBLANGID(LANGIDFROMLCID(m_lcid));
 	// find language in the wlc table
 	size_t count = sizeof(wlc) / sizeof(wlc[0]);
-	for (size_t i = 0; i < count; i++ )
+	for (size_t i = 0; i < count; i++)
 	{
 		if (wlc[i].winLang == lang)
 		{
@@ -303,7 +307,7 @@ void ASLocalizer::setTranslationClass()
 void Translation::addPair(const string &english, const wstring &translated)
 // Add a string pair to the translation vector.
 {
-	pair<string, wstring> entry (english, translated);
+	pair<string, wstring> entry(english, translated);
 	m_translation.push_back(entry);
 }
 

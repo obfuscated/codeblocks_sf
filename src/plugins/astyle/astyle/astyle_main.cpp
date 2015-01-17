@@ -1,8 +1,7 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  *   astyle_main.cpp
  *
- *   Copyright (C) 2006-2013 by Jim Pattee <jimp03@email.com>
- *   Copyright (C) 1998-2002 by Tal Davidson
+ *   Copyright (C) 2014 by Jim Pattee
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
  *   This file is a part of Artistic Style - an indentation and
@@ -59,30 +58,30 @@
 
 // includes for recursive getFileNames() function
 #ifdef _WIN32
-#undef UNICODE		// use ASCII windows functions
-#include <windows.h>
+	#undef UNICODE		// use ASCII windows functions
+	#include <windows.h>
 #else
-#include <dirent.h>
-#include <unistd.h>
-#include <sys/stat.h>
-#ifdef __VMS
-#include <unixlib.h>
-#include <rms.h>
-#include <ssdef.h>
-#include <stsdef.h>
-#include <lib$routines.h>
-#include <starlet.h>
-#endif /* __VMS */
+	#include <dirent.h>
+	#include <unistd.h>
+	#include <sys/stat.h>
+	#ifdef __VMS
+		#include <unixlib.h>
+		#include <rms.h>
+		#include <ssdef.h>
+		#include <stsdef.h>
+		#include <lib$routines.h>
+		#include <starlet.h>
+	#endif /* __VMS */
 #endif
 
 #ifdef __DMC__
-#include <locale.h>
+	#include <locale.h>
 #endif
 
 // turn off MinGW automatic file globbing
 // this CANNOT be in the astyle namespace
 #ifndef ASTYLE_LIB
-int _CRT_glob = 0;
+	int _CRT_glob = 0;
 #endif
 
 //----------------------------------------------------------------------------
@@ -93,25 +92,25 @@ namespace astyle {
 
 // console build variables
 #ifndef ASTYLE_LIB
-ASConsole* g_console = NULL;     // class to encapsulate console variables
-ostream* _err = &cerr;           // direct error messages to cerr
-#ifdef _WIN32
-char g_fileSeparator = '\\';     // Windows file separator
-bool g_isCaseSensitive = false;  // Windows IS case sensitive
-#else
-char g_fileSeparator = '/';      // Linux file separator
-bool g_isCaseSensitive = true;   // Linux IS NOT case sensitive
-#endif	// _WIN32
+	ASConsole* g_console = NULL;     // class to encapsulate console variables
+	ostream* _err = &cerr;           // direct error messages to cerr
+	#ifdef _WIN32
+		char g_fileSeparator = '\\';     // Windows file separator
+		bool g_isCaseSensitive = false;  // Windows IS case sensitive
+	#else
+		char g_fileSeparator = '/';      // Linux file separator
+		bool g_isCaseSensitive = true;   // Linux IS NOT case sensitive
+	#endif	// _WIN32
 #endif	// ASTYLE_LIB
 
-#ifdef ASTYLE_JNI
 // java library build variables
-JNIEnv*   g_env;
-jobject   g_obj;
-jmethodID g_mid;
+#ifdef ASTYLE_JNI
+	JNIEnv*   g_env;
+	jobject   g_obj;
+	jmethodID g_mid;
 #endif
 
-const char* g_version = "2.05 beta";
+const char* g_version = "2.05.1";
 
 //-----------------------------------------------------------------------------
 // ASStreamIterator class
@@ -163,7 +162,7 @@ template<typename T>
 string ASStreamIterator<T>::nextLine(bool emptyLineWasDeleted)
 {
 	// verify that the current position is correct
-	assert (peekStart == 0);
+	assert(peekStart == 0);
 
 	// a deleted line may be replaced if break-blocks is requested
 	// this sets up the compare to check for a replaced empty line
@@ -247,7 +246,7 @@ string ASStreamIterator<T>::nextLine(bool emptyLineWasDeleted)
 template<typename T>
 string ASStreamIterator<T>::peekNextLine()
 {
-	assert (hasMoreLines());
+	assert(hasMoreLines());
 	string nextLine_;
 	char ch;
 
@@ -344,7 +343,7 @@ void ASConsole::convertLineEnds(ostringstream &out, int lineEnd)
 {
 	assert(lineEnd == LINEEND_WINDOWS || lineEnd == LINEEND_LINUX || lineEnd == LINEEND_MACOLD);
 	const string &inStr = out.str();	// avoids strange looking syntax
-	string outStr;						// the converted ouput
+	string outStr;						// the converted output
 	int inLength = inStr.length();
 	for (int pos = 0; pos < inLength; pos++)
 	{
@@ -655,6 +654,10 @@ vector<string> ASConsole::getFileOptionsVector() const
 { return fileOptionsVector; }
 
 // for unit testing
+bool ASConsole::getFilesAreIdentical() const
+{ return filesAreIdentical; }
+
+// for unit testing
 int ASConsole::getFilesFormatted() const
 { return filesFormatted; }
 
@@ -775,7 +778,7 @@ FileEncoding ASConsole::readFile(const string &fileName_, stringstream &in) cons
 			size_t utf8Len = utf8_16.Utf16ToUtf8(data, dataSize, isBigEndian, firstBlock, utf8Out);
 			assert(utf8Len == utf8Size);
 			in << string(utf8Out, utf8Len);
-			delete []utf8Out;
+			delete [] utf8Out;
 		}
 		else
 			in << string(data, dataSize);
@@ -855,15 +858,14 @@ void ASConsole::displayLastError()
 {
 	LPSTR msgBuf;
 	DWORD lastError = GetLastError();
-	FormatMessage(
-	    FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
-	    NULL,
-	    lastError,
-	    MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),  // Default language
-	    (LPSTR) &msgBuf,
-	    0,
-	    NULL
-	);
+	FormatMessage(FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM,
+	              NULL,
+	              lastError,
+	              MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),  // Default language
+	              (LPSTR) &msgBuf,
+	              0,
+	              NULL
+	             );
 	// Display the string.
 	(*_err) << "Error (" << lastError << ") " << msgBuf << endl;
 	// Free the buffer.
@@ -1355,7 +1357,7 @@ void ASConsole::getFilePaths(string &filePath)
 
 	// check filename for wildcards
 	hasWildcard = false;
-	if (targetFilename.find_first_of( "*?") != string::npos)
+	if (targetFilename.find_first_of("*?") != string::npos)
 		hasWildcard = true;
 
 	// clear exclude hits vector
@@ -1551,6 +1553,16 @@ void ASConsole::printHelp() const
 	cout << "    Long options within the default option file may be written without\n";
 	cout << "    the preliminary '--'.\n";
 	cout << endl;
+	cout << "Disable Formatting:\n";
+	cout << "----------------------\n";
+	cout << "    Disable Block\n";
+	cout << "    Blocks of code can be disabled with the comment tags *INDENT-OFF*\n";
+	cout << "    and *INDENT-ON*. It must be contained in a one-line comment.\n";
+	cout << endl;
+	cout << "    Disable Line\n";
+	cout << "    Padding of operators can be disabled on a single line using the\n";
+	cout << "    comment tag *NOPAD*. It must be contained in a line-end comment.\n";
+	cout << endl;
 	cout << "Bracket Style Options:\n";
 	cout << "----------------------\n";
 	cout << "    default bracket style\n";
@@ -1685,12 +1697,12 @@ void ASConsole::printHelp() const
 	cout << "    Indent preprocessor blocks at bracket level 0.\n";
 	cout << "    Without this option the preprocessor block is not indented.\n";
 	cout << endl;
-	cout << "    --indent-preproc-define  OR  -w\n";
-	cout << "    Indent multi-line preprocessor #define statements.\n";
-	cout << endl;
 	cout << "    --indent-preproc-cond  OR  -xw\n";
 	cout << "    Indent preprocessor conditional statements #if/#else/#endif\n";
 	cout << "    to the same level as the source code.\n";
+	cout << endl;
+	cout << "    --indent-preproc-define  OR  -w\n";
+	cout << "    Indent multi-line preprocessor #define statements.\n";
 	cout << endl;
 	cout << "    --indent-col1-comments  OR  -Y\n";
 	cout << "    Indent line comments that start in column one.\n";
@@ -1854,7 +1866,7 @@ void ASConsole::printHelp() const
 	cout << "    Process subdirectories recursively.\n";
 	cout << endl;
 	cout << "    --dry-run\n";
-	cout << "    Perform a trial run with no changes made (for checking if formatted).\n";
+	cout << "    Perform a trial run with no changes made to check for formatting.\n";
 	cout << endl;
 	cout << "    --exclude=####\n";
 	cout << "    Specify a file or directory #### to be excluded from processing.\n";
@@ -2130,15 +2142,15 @@ void ASConsole::standardizePath(string &path, bool removeBeginningSeparator /*fa
 	fab.fab$b_fns = 0;
 	fab.fab$l_naml = &naml;
 	naml = cc$rms_naml;
-	strcpy (sess, path.c_str());
+	strcpy(sess, path.c_str());
 	naml.naml$l_long_filename = (char*)sess;
 	naml.naml$l_long_filename_size = path.length();
 	naml.naml$l_long_expand = less;
-	naml.naml$l_long_expand_alloc = sizeof (less);
+	naml.naml$l_long_expand_alloc = sizeof(less);
 	naml.naml$l_esa = sess;
-	naml.naml$b_ess = sizeof (sess);
+	naml.naml$b_ess = sizeof(sess);
 	naml.naml$v_no_short_upcase = 1;
-	r0_status = sys$parse (&fab);
+	r0_status = sys$parse(&fab);
 	if (r0_status == RMS$_SYN)
 	{
 		error("File syntax error", path.c_str());
@@ -2158,7 +2170,7 @@ void ASConsole::standardizePath(string &path, bool removeBeginningSeparator /*fa
 	}
 	else
 	{
-		path = decc$translate_vms (sess);
+		path = decc$translate_vms(sess);
 	}
 #endif /* __VMS */
 
@@ -2170,10 +2182,6 @@ void ASConsole::standardizePath(string &path, bool removeBeginningSeparator /*fa
 			break;
 		path[i] = g_fileSeparator;
 	}
-//  The following was removed in release 2.02 - jimp
-//	// remove separator from the end
-//	if (path[path.length()-1] == g_fileSeparator)
-//		path.erase(path.length()-1, 1);
 	// remove beginning separator if requested
 	if (removeBeginningSeparator && (path[0] == g_fileSeparator))
 		path.erase(0, 1);
@@ -2389,7 +2397,7 @@ void ASConsole::writeFile(const string &fileName_, FileEncoding encoding, ostrin
 		                                      out.str().length(), isBigEndian, utf16Out);
 		assert(utf16Len == utf16Size);
 		fout << string(utf16Out, utf16Len);
-		delete []utf16Out;
+		delete [] utf16Out;
 	}
 	else
 		fout << out.str();
@@ -2473,7 +2481,7 @@ utf16_t* ASLibrary::formatUtf16(const utf16_t* pSourceIn,		// the source to be f
 // The data will be converted before being returned to the calling program.
 char* STDCALL ASLibrary::tempMemoryAllocation(unsigned long memoryNeeded)
 {
-	char* buffer = new(nothrow) char [memoryNeeded];
+	char* buffer = new(nothrow) char[memoryNeeded];
 	return buffer;
 }
 
@@ -3173,9 +3181,12 @@ void ASOptions::parseOption(const string &arg, const string &errorInfo)
 #endif
 }	// End of parseOption function
 
+// Parse options from the options file.
 void ASOptions::importOptions(istream &in, vector<string> &optionsVector)
 {
 	char ch;
+	bool isInQuote = false;
+	char quoteChar = ' ';
 	string currentToken;
 
 	while (in)
@@ -3195,17 +3206,27 @@ void ASOptions::importOptions(istream &in, vector<string> &optionsVector)
 						break;
 				}
 
-			// break options on spaces, tabs, commas, or new-lines
-			if (in.eof() || ch == ' ' || ch == '\t' || ch == ',' || ch == '\n' || ch == '\r')
+			// break options on new-lines, tabs, commas, or spaces
+			// remove quotes from output
+			if (in.eof() || ch == '\n' || ch == '\r' || ch == '\t' || ch == ',')
 				break;
-			else
-				currentToken.append(1, ch);
-
+			if (ch == ' ' && !isInQuote)
+				break;
+			if (ch == quoteChar && isInQuote)
+				break;
+			if (ch == '"' || ch == '\'')
+			{
+				isInQuote = true;
+				quoteChar = ch;
+				continue;
+			}
+			currentToken.append(1, ch);
 		}
 		while (in);
 
 		if (currentToken.length() != 0)
 			optionsVector.push_back(currentToken);
+		isInQuote = false;
 	}
 }
 
@@ -3586,7 +3607,7 @@ void STDCALL javaErrorHandler(int errorNumber, const char* errorMessage)
 char* STDCALL javaMemoryAlloc(unsigned long memoryNeeded)
 {
 	// error condition is checked after return from AStyleMain
-	char* buffer = new(nothrow) char [memoryNeeded];
+	char* buffer = new(nothrow) char[memoryNeeded];
 	return buffer;
 }
 #endif	// ASTYLE_JNI
