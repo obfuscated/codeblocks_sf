@@ -5,6 +5,8 @@
 
 #include <stdio.h>
 
+#include <string>
+
 #include "atypes.hxx"
 #include "baseaffix.hxx"
 #include "hashmgr.hxx"
@@ -142,11 +144,11 @@ public:
   char * suffix_check_twosfx_morph(const char * word, int len,
             int sfxopts, PfxEntry * ppfx, const FLAG needflag = FLAG_NULL);
 
-  char * morphgen(char * ts, int wl, const unsigned short * ap,
-            unsigned short al, char * morph, char * targetmorph, int level);
+  char * morphgen(const char * ts, int wl, const unsigned short * ap,
+            unsigned short al, const char * morph, const char * targetmorph, int level);
 
   int    expand_rootword(struct guessword * wlst, int maxn, const char * ts,
-            int wl, const unsigned short * ap, unsigned short al, char * bad,
+            int wl, const unsigned short * ap, unsigned short al, const char * bad,
             int, char *);
 
   short       get_syllable (const char * word, int wlen);
@@ -165,6 +167,9 @@ public:
   int compound_check_morph(const char * word, int len, short wordnum,
             short numsyllable, short maxwordnum, short wnum, hentry ** words,
             char hu_mov_rule, char ** result, char * partresult);
+
+  int get_suffix_words(short unsigned *suff, int len,const char * root_word,
+		       char **slst);
 
   struct hentry * lookup(const char * word);
   int                 get_numrep() const;
@@ -233,6 +238,7 @@ private:
 
   void reverse_condition(char *);
   void debugflag(char * result, unsigned short flag);
+  std::string& debugflag(std::string& result, unsigned short flag);
   int condlen(char *);
   int encodeit(affentry &entry, char * cs);
   int build_pfxtree(PfxEntry* pfxptr);

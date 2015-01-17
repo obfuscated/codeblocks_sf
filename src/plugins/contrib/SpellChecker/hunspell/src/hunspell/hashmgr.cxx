@@ -16,7 +16,6 @@
 HashMgr::HashMgr(const char * tpath, const char * apath, const char * key)
   : tablesize(0)
   , tableptr(NULL)
-  , userword(0)
   , flag_mode(FLAG_CHAR)
   , complexprefixes(0)
   , utf8(0)
@@ -484,10 +483,9 @@ int HashMgr::load_tables(const char * tpath, const char * key)
 
 // the hash function is a simple load and rotate
 // algorithm borrowed
-
 int HashMgr::hash(const char * word) const
 {
-    long  hv = 0;
+    unsigned long hv = 0;
     for (int i=0; i < 4  &&  *word != 0; i++)
         hv = (hv << 8) | (*word++);
     while (*word != 0) {

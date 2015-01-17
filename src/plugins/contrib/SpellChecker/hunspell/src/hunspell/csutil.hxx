@@ -6,6 +6,7 @@
 // First some base level utility routines
 
 #include <string>
+#include <vector>
 #include <string.h>
 #include "w_char.hxx"
 #include "htypes.hxx"
@@ -58,9 +59,13 @@ LIBHUNSPELL_DLL_EXPORTED FILE * myfopen(const char * path, const char * mode);
 
 // convert UTF-16 characters to UTF-8
 LIBHUNSPELL_DLL_EXPORTED char * u16_u8(char * dest, int size, const w_char * src, int srclen);
+// convert UTF-16 characters to UTF-8
+LIBHUNSPELL_DLL_EXPORTED std::string& u16_u8(std::string& dest, const std::vector<w_char>& src);
 
 // convert UTF-8 characters to UTF-16
 LIBHUNSPELL_DLL_EXPORTED int u8_u16(w_char * dest, int size, const char * src);
+// convert UTF-8 characters to UTF-16
+LIBHUNSPELL_DLL_EXPORTED int u8_u16(std::vector<w_char>& dest, const std::string& src);
 
 // sort 2-byte vector
 LIBHUNSPELL_DLL_EXPORTED void flag_qsort(unsigned short flags[], int begin, int end);
@@ -92,6 +97,9 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mystrrep(std::string& str, const std::stri
 // append s to ends of every lines in text
 LIBHUNSPELL_DLL_EXPORTED void strlinecat(char * lines, const char * s);
 
+// append s to ends of every lines in text
+LIBHUNSPELL_DLL_EXPORTED std::string& strlinecat(std::string& str, const std::string& apd);
+
 // tokenize into lines with new line
 LIBHUNSPELL_DLL_EXPORTED int line_tok(const char * text, char *** lines, char breakchar);
 
@@ -109,6 +117,8 @@ LIBHUNSPELL_DLL_EXPORTED std::string& reverseword(std::string& word);
 
 // reverse word
 LIBHUNSPELL_DLL_EXPORTED int reverseword_utf(char *);
+// reverse word
+LIBHUNSPELL_DLL_EXPORTED std::string& reverseword_utf(std::string&);
 
 // remove duplicates
 LIBHUNSPELL_DLL_EXPORTED int uniqlist(char ** list, int n);
@@ -162,15 +172,21 @@ LIBHUNSPELL_DLL_EXPORTED std::string& mkallcap(std::string &s, const struct cs_i
 
 // convert null terminated string to all little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall(char * p, const struct cs_info * csconv);
+// convert null terminated string to all little
+LIBHUNSPELL_DLL_EXPORTED std::string& mkallsmall(std::string &s, const struct cs_info * csconv);
 
 // convert null terminated string to have initial capital
 LIBHUNSPELL_DLL_EXPORTED void mkinitcap(char * p, const struct cs_info * csconv);
 
 // convert first nc characters of UTF-8 string to little
 LIBHUNSPELL_DLL_EXPORTED void mkallsmall_utf(w_char * u, int nc, int langnum);
+// convert first nc characters of UTF-8 string to little
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>& mkallsmall_utf(std::vector<w_char>& u, int nc, int langnum);
 
 // convert first nc characters of UTF-8 string to capital
 LIBHUNSPELL_DLL_EXPORTED void mkallcap_utf(w_char * u, int nc, int langnum);
+// convert first nc characters of UTF-8 string to capital
+LIBHUNSPELL_DLL_EXPORTED std::vector<w_char>& mkallcap_utf(std::vector<w_char>& u, int nc, int langnum);
 
 // get type of capitalization
 LIBHUNSPELL_DLL_EXPORTED int get_captype(char * q, int nl, cs_info *);
@@ -180,9 +196,13 @@ LIBHUNSPELL_DLL_EXPORTED int get_captype_utf8(w_char * q, int nl, int langnum);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars_utf(char * word, unsigned short ignored_chars[], int ignored_len);
+// strip all ignored characters in the string
+LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars_utf(std::string& word, unsigned short ignored_chars[], int ignored_len);
 
 // strip all ignored characters in the string
 LIBHUNSPELL_DLL_EXPORTED void remove_ignored_chars(char * word, char * ignored_chars);
+// strip all ignored characters in the string
+LIBHUNSPELL_DLL_EXPORTED std::string& remove_ignored_chars(std::string& word, const std::string& ignored_chars);
 
 LIBHUNSPELL_DLL_EXPORTED int parse_string(char * line, char ** out, int ln);
 
@@ -190,7 +210,9 @@ LIBHUNSPELL_DLL_EXPORTED int parse_array(char * line, char ** out, unsigned shor
     int * out_utf16_len, int utf8, int ln);
 
 LIBHUNSPELL_DLL_EXPORTED int fieldlen(const char * r);
+
 LIBHUNSPELL_DLL_EXPORTED char * copy_field(char * dest, const char * morph, const char * var);
+LIBHUNSPELL_DLL_EXPORTED bool copy_field(std::string& dest, const std::string& morph, const std::string& var);
 
 LIBHUNSPELL_DLL_EXPORTED int morphcmp(const char * s, const char * t);
 
@@ -206,6 +228,18 @@ LIBHUNSPELL_DLL_EXPORTED char * get_stored_pointer(const char * s);
 LIBHUNSPELL_DLL_EXPORTED inline char* HENTRY_DATA(struct hentry *h)
 {
     char *ret;
+    if (!h->var)
+        ret = NULL;
+    else if (h->var & H_OPT_ALIASM)
+        ret = get_stored_pointer(HENTRY_WORD(h) + h->blen + 1);
+    else
+        ret = HENTRY_WORD(h) + h->blen + 1;
+    return ret;
+}
+
+LIBHUNSPELL_DLL_EXPORTED inline const char* HENTRY_DATA(const struct hentry *h)
+{
+    const char *ret;
     if (!h->var)
         ret = NULL;
     else if (h->var & H_OPT_ALIASM)

@@ -1,3 +1,26 @@
+2014-12-03 Németh László <nemeth at numbertext dot org>:
+    * tools/hunspell.cxx: security fixes of the Hunspell executable
+	  - secure file name handling, the problem (checking
+	    OpenDocument files with malicious file names)
+	    reported by Eric Sesterhenn
+      - using tmpnam() only with system("mkdir tempname && ...")
+
+2014-10-17 Caolán McNamara <caolanm at LibO>:
+	* sf#245 Feature from Anish Patil -S mode
+	  to show suggestions for completion of
+	  correctly spelled words
+	* sf#248 Fix manpage about how to include
+
+2014-10-16 Caolán McNamara <caolanm at LibO>:
+	* rhbz#915448, sf#57, sf#185 report character offset
+	  and not byte offset in ispell mode
+	* sf#56 segv in experimental mode
+	* sf#228 don't translate init string
+
+2014-09-22 Németh László <nemeth at numbertext dot org>:
+	* fix crash in morphological analysis of the Hungarian
+	  compound word 'művészegyéniség', reported by Gáspár Sinai
+
 2014-08-26 Németh László <nemeth at numbertext dot org>:
 	* unmunch separates flags of prefixes from the word,
 	  bug reported by Daniel Naber

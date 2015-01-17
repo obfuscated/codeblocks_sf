@@ -66,7 +66,7 @@ public:
   int suggest_pos_stems(char*** slst, const char * word, int nsug);
 
   char * suggest_morph(const char * word);
-  char * suggest_gen(char ** pl, int pln, char * pattern);
+  char * suggest_gen(char ** pl, int pln, const char * pattern);
   char * suggest_morph_for_spelling_error(const char * word);
 
 private:
@@ -100,14 +100,15 @@ private:
 
    int mapchars(char**, const char *, int, int);
    int map_related(const char *, char *, int, int, char ** wlst, int, int, const mapentry*, int, int *, clock_t *);
-   int ngram(int n, char * s1, const char * s2, int opt);
+   int ngram(int n, const std::string& s1, const std::string& s2, int opt);
    int mystrlen(const char * word);
-   int leftcommonsubstring(char * s1, const char * s2);
-   int commoncharacterpositions(char * s1, const char * s2, int * is_swap);
+   int leftcommonsubstring(const char * s1, const char * s2);
+   int commoncharacterpositions(const char * s1, const char * s2, int * is_swap);
    void bubblesort( char ** rwd, char ** rwd2, int * rsc, int n);
    void lcs(const char * s, const char * s2, int * l1, int * l2, char ** result);
    int lcslen(const char * s, const char* s2);
-   char * suggest_hentry_gen(hentry * rv, char * pattern);
+   int lcslen(const std::string& s, const std::string& s2);
+   char * suggest_hentry_gen(hentry * rv, const char * pattern);
 
 };
 

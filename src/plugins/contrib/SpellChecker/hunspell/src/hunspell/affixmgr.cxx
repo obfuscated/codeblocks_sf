@@ -1065,6 +1065,18 @@ void AffixMgr::debugflag(char * result, unsigned short flag) {
     }
 }
 
+// add flags to the result for dictionary debugging
+std::string& AffixMgr::debugflag(std::string& result, unsigned short flag) {
+    char * st = encode_flag(flag);
+    result.append(" ");
+    result.append(MORPH_FLAG);
+    if (st) {
+        result.append(st);
+        free(st);
+    }
+    return result;
+}
+
 // calculate the character length of the condition
 int AffixMgr::condlen(char * st)
 {
@@ -1085,8 +1097,8 @@ int AffixMgr::encodeit(affentry &entry, char * cs)
 {
   if (strcmp(cs,".") != 0) {
     entry.numconds = (char) condlen(cs);
+    // coverity[buffer_size_warning] - deliberate use of lack of end of conds padded by strncpy as long condition flag
     strncpy(entry.c.conds, cs, MAXCONDLEN);
-    // long condition (end of conds padded by strncpy)
     if (entry.c.conds[MAXCONDLEN - 1] && cs[MAXCONDLEN]) {
       entry.opts += aeLONGCOND;
       entry.c.l.conds2 = mystrdup(cs + MAXCONDLEN_1);
@@ -1309,14 +1321,12 @@ char * AffixMgr::prefix_check_twosfx_morph(const char * word, int len,
 int AffixMgr::cpdrep_check(const char * word, int wl)
 {
   const char * r;
-  int lenr, lenp;
 
   if ((wl < 2) || !numrep) return 0;
 
   for (int i=0; i < numrep; i++ ) {
       r = word;
-      lenr = strlen(reptable[i].pattern2);
-      lenp = strlen(reptable[i].pattern);
+      int lenp = strlen(reptable[i].pattern);
       // search every occurence of the pattern in the word
       while ((r=strstr(r, reptable[i].pattern)) != NULL) {
           std::string candidate(word);
@@ -2031,8 +2041,7 @@ struct hentry * AffixMgr::compound_check(const char * word, int len,
           soldi = 0;
         } else st[i] = ch;
 
-        } while (numdefcpd && oldwordnum == 0 && !onlycpdrule && (onlycpdrule = 1)); // end of onlycpd loop
-
+        } while (numdefcpd && oldwordnum == 0 && onlycpdrule++ < 1); // end of onlycpd loop
     }
 
     return NULL;
@@ -2395,8 +2404,10 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                       }
                       mystrcat(*result, presult, MAXLNLEN);
                       if (m || (*m != '\0')) {
-                        sprintf(*result + strlen(*result), "%c%s%s%s", MSEP_FLD,
+                        char m2[MAXLNLEN];
+                        sprintf(m2, "%c%s%s%s", MSEP_FLD,
                             MORPH_PART, word + i, line_uniq_app(&m, MSEP_REC));
+                        mystrcat(*result, m2, MAXLNLEN);
                       }
                       if (m) free(m);
                       mystrcat(*result, "\n", MAXLNLEN);
@@ -2476,11 +2487,13 @@ int AffixMgr::compound_check_morph(const char * word, int len,
                       }
                       mystrcat(*result, presult, MAXLNLEN);
                       if (m && (*m != '\0')) {
-                        sprintf(*result + strlen(*result), "%c%s%s%s", MSEP_FLD,
+                        char m2[MAXLNLEN];
+                        sprintf(m2, "%c%s%s%s", MSEP_FLD,
                             MORPH_PART, word + i, line_uniq_app(&m, MSEP_REC));
+                        mystrcat(*result, m2, MAXLNLEN);
                       }
                       if (m) free(m);
-                      sprintf(*result + strlen(*result), "%c", MSEP_REC);
+                      if (strlen(*result) + 1 < MAXLNLEN) sprintf(*result + strlen(*result), "%c", MSEP_REC);
                       ok = 1;
             }
 
@@ -2499,7 +2512,7 @@ int AffixMgr::compound_check_morph(const char * word, int len,
         wordnum = oldwordnum;
         numsyllable = oldnumsyllable;
 
-        } while (numdefcpd && oldwordnum == 0 && !onlycpdrule && (onlycpdrule = 1)); // end of onlycpd loop
+        } while (numdefcpd && oldwordnum == 0 && onlycpdrule++ < 1); // end of onlycpd loop
 
     }
     return 0;
@@ -2671,15 +2684,11 @@ struct hentry * AffixMgr::suffix_check_twosfx(const char * word, int len,
 char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len, 
        int sfxopts, PfxEntry * ppfx, const FLAG needflag)
 {
-    char result[MAXLNLEN];
-    char result2[MAXLNLEN];
-    char result3[MAXLNLEN];
+    std::string result;
+    std::string result2;
+    std::string result3;
     
     char * st;
-
-    result[0] = '\0';
-    result2[0] = '\0';
-    result3[0] = '\0';
 
     // first handle the special case of 0 length suffixes
     SfxEntry * se = sStart[0];
@@ -2690,17 +2699,17 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
             if (st) {
                 if (ppfx) {
                     if (ppfx->getMorph()) {
-                        mystrcat(result, ppfx->getMorph(), MAXLNLEN);
-                        mystrcat(result, " ", MAXLNLEN);
+                        result.append(ppfx->getMorph());
+                        result.append(" ");
                     } else debugflag(result, ppfx->getFlag());
                 }
-                mystrcat(result, st, MAXLNLEN);
+                result.append(st);
                 free(st);
                 if (se->getMorph()) {
-                    mystrcat(result, " ", MAXLNLEN);
-                    mystrcat(result, se->getMorph(), MAXLNLEN);
+                    result.append(" ");
+                    result.append(se->getMorph());
                 } else debugflag(result, se->getFlag());
-                mystrcat(result, "\n", MAXLNLEN);
+                result.append("\n");
             }
         }
         se = se->getNext();
@@ -2719,26 +2728,29 @@ char * AffixMgr::suffix_check_twosfx_morph(const char * word, int len,
                 if (st) {
                     sfxflag = sptr->getFlag(); // BUG: sfxflag not stateless
                     if (!sptr->getCont()) sfxappnd=sptr->getKey(); // BUG: sfxappnd not stateless
-                    strcpy(result2, st);
+                    result2.assign(st);
                     free(st);
 
-                result3[0] = '\0';
+                result3.clear();
 
                 if (sptr->getMorph()) {
-                    mystrcat(result3, " ", MAXLNLEN);
-                    mystrcat(result3, sptr->getMorph(), MAXLNLEN);
+                    result3.append(" ");
+                    result3.append(sptr->getMorph());
                 } else debugflag(result3, sptr->getFlag());
                 strlinecat(result2, result3);
-                mystrcat(result2, "\n", MAXLNLEN);
-                mystrcat(result,  result2, MAXLNLEN);
+                result2.append("\n");
+                result.append(result2);
                 }
             }
             sptr = sptr->getNextEQ();
         } else {
-             sptr = sptr->getNextNE();
+            sptr = sptr->getNextNE();
         }
     }
-    if (*result) return mystrdup(result);
+
+    if (!result.empty())
+        return mystrdup(result.c_str());
+
     return NULL;
 }
 
@@ -2950,14 +2962,10 @@ char * AffixMgr::affix_check_morph(const char * word, int len, const FLAG needfl
     return mystrdup(result);
 }
 
-char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
-    unsigned short al, char * morph, char * targetmorph, int level)
+char * AffixMgr::morphgen(const char * ts, int wl, const unsigned short * ap,
+    unsigned short al, const char * morph, const char * targetmorph, int level)
 {
     // handle suffixes
-    char * stemmorph;
-    char * stemmorphcatpos;
-    char mymorph[MAXLNLEN];
-
     if (!morph) return NULL;
 
     // check substandard flag
@@ -2965,17 +2973,16 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
 
     if (morphcmp(morph, targetmorph) == 0) return mystrdup(ts);
 
-//    int targetcount = get_sfxcount(targetmorph);
+    size_t stemmorphcatpos;
+    std::string mymorph;
 
     // use input suffix fields, if exist
     if (strstr(morph, MORPH_INFL_SFX) || strstr(morph, MORPH_DERI_SFX)) {
-        stemmorph = mymorph;
-        strcpy(stemmorph, morph);
-        mystrcat(stemmorph, " ", MAXLNLEN);
-        stemmorphcatpos = stemmorph + strlen(stemmorph);
+        mymorph.assign(morph);
+        mymorph.append(" ");
+        stemmorphcatpos = mymorph.size();
     } else {
-        stemmorph = morph;
-        stemmorphcatpos = NULL;
+        stemmorphcatpos = std::string::npos;
     }
 
     for (int i = 0; i < al; i++) {
@@ -2986,8 +2993,14 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
                 // don't generate forms with substandard affixes
                 !TESTAFF(sptr->getCont(), substandard, sptr->getContLen()))) {
 
-                if (stemmorphcatpos) strcpy(stemmorphcatpos, sptr->getMorph());
-                else stemmorph = (char *) sptr->getMorph();
+                const char * stemmorph;
+                if (stemmorphcatpos != std::string::npos) {
+                    mymorph.replace(stemmorphcatpos, std::string::npos, sptr->getMorph());
+                    stemmorph = mymorph.c_str();
+                }
+                else {
+                    stemmorph = sptr->getMorph();
+                }
 
                 int cmp = morphcmp(stemmorph, targetmorph);
 
@@ -3028,9 +3041,8 @@ char * AffixMgr::morphgen(char * ts, int wl, const unsigned short * ap,
    return NULL;
 }
 
-
 int AffixMgr::expand_rootword(struct guessword * wlst, int maxn, const char * ts,
-    int wl, const unsigned short * ap, unsigned short al, char * bad, int badl,
+    int wl, const unsigned short * ap, unsigned short al, const char * bad, int badl,
     char * phon)
 {
     int nh=0;
@@ -4536,4 +4548,32 @@ int AffixMgr::redundant_condition(char ft, char * strip, int stripl, const char 
     }
   }
   return 0;
+}
+
+int AffixMgr::get_suffix_words(short unsigned  *suff, int len,const char * root_word,char **slst){
+  int suff_words_cnt = 0;
+  short unsigned  * start_ptr = suff;
+  for (int j=0; j < SETSIZE ; j++) {
+    SfxEntry * ptr = sStart[j];
+    while (ptr) {
+      suff = start_ptr;
+      for (int i=0;i<len;i++){
+        if ( (*suff) == ptr->getFlag() ){
+          std::string nw(root_word);
+          nw.append(ptr->getAffix());
+          hentry * ht = ptr->checkword(nw.c_str(),nw.size(),0,NULL,NULL,0,NULL,0,0,0);
+          if (ht){
+	    slst[suff_words_cnt] = (char *) malloc(MAXWORDUTF8LEN * sizeof(char));
+	    if(slst[suff_words_cnt]){
+	      strcpy(slst[suff_words_cnt],nw.c_str());
+	      suff_words_cnt++;
+	    }
+          }
+        }
+        suff++;
+      }
+      ptr = ptr->getNext();
+    }
+  }
+  return suff_words_cnt;
 }
