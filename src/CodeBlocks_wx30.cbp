@@ -3458,6 +3458,9 @@
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexHaskell.cxx">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexHex.cxx">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/wxscintilla/src/scintilla/lexers/LexInno.cxx">
 			<Option target="scintilla" />
 		</Unit>

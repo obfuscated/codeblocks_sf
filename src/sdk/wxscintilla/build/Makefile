@@ -49,6 +49,7 @@ SRC = PlatWX.cpp \
       LexFortran.cxx \
       LexGui4Cli.cxx \
       LexHaskell.cxx \
+      LexHex.cxx \
       LexHTML.cxx \
       LexInno.cxx \
       LexKix.cxx \

@@ -23,7 +23,7 @@
 #include <wx/defs.h>
 
 /* C::B -> Don't forget to change version number here and in wxscintilla.cpp at the bottom */
-#define wxSCINTILLA_VERSION _T("3.51.0")
+#define wxSCINTILLA_VERSION _T("3.53.0")
 
 #include <wx/control.h>
 #include <wx/dnd.h>
@@ -367,6 +367,7 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_TECHNOLOGY_DEFAULT 0
 #define wxSCI_TECHNOLOGY_DIRECTWRITE 1
 #define wxSCI_TECHNOLOGY_DIRECTWRITERETAIN 2
+#define wxSCI_TECHNOLOGY_DIRECTWRITEDC 3
 
 /// Line end types which may be used in addition to LF, CR, and CRLF
 /// SC_LINE_END_TYPE_UNICODE includes U+2028 Line Separator,
@@ -563,8 +564,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_LEX_DMIS 114
 #define wxSCI_LEX_REGISTRY 115
 #define wxSCI_LEX_BIBTEX 116
+#define wxSCI_LEX_SREC 117
+#define wxSCI_LEX_IHEX 118
+#define wxSCI_LEX_TEHEX 119
 /* C::B begin */
-#define wxSCI_LEX_LAST wxSCI_LEX_BIBTEX // update if the above gets extended!
+#define wxSCI_LEX_LAST wxSCI_LEX_TEHEX // update if the above gets extended!
 /* C::B end */
 
 /// When a lexer specifies its language as SCLEX_AUTOMATIC it receives a
@@ -1457,6 +1461,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_V_IDENTIFIER 11
 #define wxSCI_V_STRINGEOL 12
 #define wxSCI_V_USER 19
+#define wxSCI_V_COMMENT_WORD 20
+#define wxSCI_V_INPUT 21
+#define wxSCI_V_OUTPUT 22
+#define wxSCI_V_INOUT 23
+#define wxSCI_V_PORT_CONNECT 24
 
 /// Lexical states for SCLEX_KIX
 #define wxSCI_KIX_DEFAULT 0
@@ -2400,6 +2409,27 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_BIBTEX_PARAMETER 4
 #define wxSCI_BIBTEX_VALUE 5
 #define wxSCI_BIBTEX_COMMENT 6
+
+/// Lexical state for SCLEX_SREC
+#define wxSCI_HEX_DEFAULT 0
+#define wxSCI_HEX_RECSTART 1
+#define wxSCI_HEX_RECTYPE 2
+#define wxSCI_HEX_RECTYPE_UNKNOWN 3
+#define wxSCI_HEX_BYTECOUNT 4
+#define wxSCI_HEX_BYTECOUNT_WRONG 5
+#define wxSCI_HEX_NOADDRESS 6
+#define wxSCI_HEX_DATAADDRESS 7
+#define wxSCI_HEX_RECCOUNT 8
+#define wxSCI_HEX_STARTADDRESS 9
+#define wxSCI_HEX_ADDRESSFIELD_UNKNOWN 10
+#define wxSCI_HEX_EXTENDEDADDRESS 11
+#define wxSCI_HEX_DATA_ODD 12
+#define wxSCI_HEX_DATA_EVEN 13
+#define wxSCI_HEX_DATA_UNKNOWN 14
+#define wxSCI_HEX_DATA_EMPTY 15
+#define wxSCI_HEX_CHECKSUM 16
+#define wxSCI_HEX_CHECKSUM_WRONG 17
+#define wxSCI_HEX_GARBAGE 18
 
 /// Events
 /// GTK+ Specific to work around focus and accelerator problems:

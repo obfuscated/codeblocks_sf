@@ -467,6 +467,10 @@ SOURCE=..\src\scintilla\src\LexHaskell.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=..\src\scintilla\src\LexHex.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=..\src\scintilla\src\LexHTML.cxx
 # End Source File
 # Begin Source File

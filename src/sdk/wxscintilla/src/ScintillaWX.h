@@ -120,7 +120,7 @@ public:
     virtual void StartDrag();
     virtual bool SetIdle(bool on);
 /* C::B begin */
-    //virtual void SetTicking(bool on);
+    // SetTicking function is deprecated since we implement fine grained timers
 /* C::B end */
     virtual void SetMouseCapture(bool on);
     virtual bool HaveMouseCapture();

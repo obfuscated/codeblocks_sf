@@ -344,8 +344,7 @@ void ScintillaWX::Initialise() {
 void ScintillaWX::Finalise() {
     ScintillaBase::Finalise();
 /* C::B begin */
-// SetTicking function is deprecated since we implement fine grained timers
-//    SetTicking(false);
+    // SetTicking function is deprecated since we implement fine grained timers
 /* C::B end */
     SetIdle(false);
     DestroySystemCaret();
@@ -409,27 +408,7 @@ bool ScintillaWX::SetIdle(bool on) {
 }
 
 /* C::B begin */
-#if 0 // SetTicking function get deprecated
-/* C::B end */
-void ScintillaWX::SetTicking(bool on) {
-    wxSCITimer* sciTimer;
-    if (timer.ticking != on) {
-        timer.ticking = on;
-        if (timer.ticking) {
-            sciTimer = new wxSCITimer(this);
-            sciTimer->Start(timer.tickSize);
-            timer.tickerID = sciTimer;
-        } else {
-            sciTimer = (wxSCITimer*)timer.tickerID;
-            sciTimer->Stop();
-            delete sciTimer;
-            timer.tickerID = 0;
-        }
-    }
-    timer.ticksToWait = caret.period;
-}
-/* C::B begin */
-#endif
+    // SetTicking function is deprecated since we implement fine grained timers
 /* C::B end */
 
 
@@ -1136,7 +1115,7 @@ void ScintillaWX::DoLoseFocus(){
 /* C::B end */
     DestroySystemCaret();
 /* C::B begin */
-    //SetTicking(false);
+    // SetTicking function is deprecated since we implement fine grained timers
 /* C::B end */
 }
 
@@ -1147,7 +1126,7 @@ void ScintillaWX::DoGainFocus(){
     DestroySystemCaret();
     CreateSystemCaret();
 /* C::B begin */
-    //SetTicking(true);
+    // SetTicking function is deprecated since we implement fine grained timers
 /* C::B end */
 }
 
