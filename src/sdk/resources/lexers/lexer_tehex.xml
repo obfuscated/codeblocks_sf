@@ -17,13 +17,13 @@
                         index="1"
                         bg="255,255,204"/>
 
-                <!--#define SCE_HEX_BYTECOUNT 3-->
+                <!--#define SCE_HEX_BYTECOUNT 4-->
                 <Style name="Byte count field"
-                        index="3"
-                        bg="102,255,204"/>
-                <!--#define SCE_HEX_BYTECOUNT_WRONG 4-->
-                <Style name="Byte count field wrong"
                         index="4"
+                        bg="102,255,204"/>
+                <!--#define SCE_HEX_BYTECOUNT_WRONG 5-->
+                <Style name="Byte count field wrong"
+                        index="5"
                         fg="255,0,0"
                         bg="102,255,204"/>
 
@@ -31,46 +31,46 @@
                 <Style name="Record type"
                         index="2"
                         bg="153,153,255"/>
-                <!--#define SCE_HEX_RECTYPE_UNKNOW 17-->
+                <!--#define SCE_HEX_RECTYPE_UNKNOW 3-->
                 <Style name="Unknown record type"
-                        index="17"
+                        index="3"
                         fg="255,0,0"
                         bg="153,153,255"/>
 
-                <!--#define SCE_HEX_CHECKSUM 15-->
+                <!--#define SCE_HEX_CHECKSUM 16-->
                 <Style name="Checksum field"
-                        index="15"
-                        bg="255,153,153"/>
-                <!--#define SCE_HEX_CHECKSUM_WRONG 16-->
-                <Style name="Checksum field wrong"
                         index="16"
+                        bg="255,153,153"/>
+                <!--#define SCE_HEX_CHECKSUM_WRONG 17-->
+                <Style name="Checksum field wrong"
+                        index="17"
                         fg="255,0,0"
                         bg="255,153,153"/>
 
 
-                <!--#define SCE_HEX_NOADDRESS 5-->
-                <!--#define SCE_HEX_DATAADDRESS 6-->
+                <!--#define SCE_HEX_DATAADDRESS 7-->
+                <!--#define SCE_HEX_STARTADDRESS 9-->
+                <!--#define SCE_HEX_NOADDRESS 6 unused-->
                 <Style name="Address field"
-                        index="5,6"
+                        index="7,9"
                         bg="204,204,255"/>
-                <!--#define SCE_HEX_ADDRESSFIELD_UNKNOWN 9-->
+                <!--#define SCE_HEX_ADDRESSFIELD_UNKNOWN 10-->
                 <Style name="Unknown address field"
-                        index="9"
+                        index="10"
                         fg="255,0,0"
                         bg="204,204,255"/>
 
 
-                <!--#define SCE_HEX_DATA_ODD 11-->
-                <!--#define SCE_HEX_DATA_EVEN 12-->
-                <!--#define SCE_HEX_DATA_EMPTY 14-->
-                <!--#define SCE_HEX_EXTENDEDADDRESS 10-->
-                <!--#define SCE_HEX_STARTADDRESS 8-->
+                <!--#define SCE_HEX_DATA_ODD 12-->
+                <!--#define SCE_HEX_DATA_EVEN 13-->
+                <!--#define SCE_HEX_DATA_EMPTY 15 unused-->
+                <!--#define SCE_HEX_EXTENDEDADDRESS 11 unused-->
                 <Style name="Data field"
-                        index="11,12,14,10,8"
+                        index="12,13"
                         bg="153,255,255"/>
-                <!--#define SCE_HEX_DATA_UNKNOWN 13-->
+                <!--#define SCE_HEX_DATA_UNKNOWN 14-->
                 <Style name="Data field unknown"
-                        index="13"
+                        index="14"
                         fg="255,0,0"
                         bg="153,255,255"/>
                 <!--#define SCE_HEX_GARBAGE 18-->
