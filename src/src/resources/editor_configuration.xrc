@@ -370,6 +370,7 @@
 																								<item>disable</item>
 																								<item>enable</item>
 																								<item>force single page</item>
+																								<item>keybound only</item>
 																							</content>
 																							<selection>1</selection>
 																						</object>

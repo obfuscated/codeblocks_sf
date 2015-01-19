@@ -111,6 +111,7 @@ template<> bool Mgr<CCManager>::isShutdown = false;
 const int idCallTipTimer = wxNewId();
 const int idAutoLaunchTimer = wxNewId();
 const int idAutocompSelectTimer = wxNewId();
+const int idShowTooltip = wxNewId();
 const int idCallTipNext = wxNewId();
 const int idCallTipPrevious = wxNewId();
 
@@ -277,9 +278,22 @@ CCManager::CCManager() :
     {
         int idx = menuBar->FindMenu(wxT("&Edit"));
         wxMenu* edMenu = menuBar->GetMenu(idx < 0 ? 0 : idx);
-        edMenu->Append(idCallTipNext, _("Next call tip\tCtrl-N"));
-        edMenu->Append(idCallTipPrevious,  _("Previous call tip\tCtrl-P"));
+        const wxMenuItemList& itemsList = edMenu->GetMenuItems();
+        size_t insertPos = itemsList.GetCount();
+        for (size_t i = 0; i < insertPos; ++i)
+        {
+            if (itemsList[i]->GetText() == _("Complete code"))
+            {
+                insertPos = i + 1;
+                break;
+            }
+        }
+        // insert after Edit->Complete code
+        edMenu->Insert(insertPos,     idShowTooltip,     _("Show tooltip\tShift-Alt-Space"));
+        edMenu->Insert(insertPos + 1, idCallTipNext,     _("Next call tip\tCtrl-N"));
+        edMenu->Insert(insertPos + 2, idCallTipPrevious, _("Previous call tip\tCtrl-P"));
     }
+    mainFrame->Connect(idShowTooltip,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
     mainFrame->Connect(idCallTipNext,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
     mainFrame->Connect(idCallTipPrevious, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
 
@@ -306,6 +320,7 @@ CCManager::~CCManager()
     m_pHtml->Destroy();
     m_pPopup->Destroy();
     wxFrame* mainFrame = Manager::Get()->GetAppFrame();
+    mainFrame->Disconnect(idShowTooltip,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
     mainFrame->Disconnect(idCallTipNext,     wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
     mainFrame->Disconnect(idCallTipPrevious, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(CCManager::OnMenuSelect), nullptr, this);
     Manager::Get()->RemoveAllEventSinksFor(this);
@@ -545,7 +560,10 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     if (tooltipMode == 0) // disabled
         return;
 
-    if (wxGetKeyState(WXK_CONTROL))
+    bool fromMouseDwell = event.GetString().IsEmpty();
+    if (wxGetKeyState(WXK_CONTROL) && fromMouseDwell)
+        return;
+    if (tooltipMode == 3 && fromMouseDwell) // keybound only
         return;
 
     EditorBase* base = event.GetEditor();
@@ -784,6 +802,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     // 0 - disable
     // 1 - enable
     // 2 - force single page
+    // 3 - keybound only
     if (tooltipMode == 0)
         return;
 
@@ -992,10 +1011,27 @@ void CCManager::OnTimer(wxTimerEvent& event)
 
 void CCManager::OnMenuSelect(wxCommandEvent& event)
 {
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return;
+    if (event.GetId() == idShowTooltip)
+    {
+        // compare this with cbStyledTextCtrl::EmulateDwellStart()
+        cbStyledTextCtrl* stc = ed->GetControl();
+        CodeBlocksEvent evt(cbEVT_EDITOR_TOOLTIP);
+        wxPoint pt = stc->PointFromPosition(stc->GetCurrentPos());
+        evt.SetX(pt.x);
+        evt.SetY(pt.y);
+        evt.SetInt(stc->GetStyleAt(stc->GetCurrentPos()));
+        evt.SetEditor(ed);
+        evt.SetExtraLong(0);
+        evt.SetString(wxT("evt from menu"));
+        Manager::Get()->ProcessEvent(evt);
+        return;
+    }
     if (m_CallTips.empty() || m_CallTipActive == wxSCI_INVALID_POSITION)
         return;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !ed->GetControl()->CallTipActive())
+    if (!ed->GetControl()->CallTipActive())
         return;
     if (event.GetId() == idCallTipNext)
     {
