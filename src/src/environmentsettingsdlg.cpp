@@ -468,8 +468,7 @@ void EnvironmentSettingsDlg::OnUseIpcCheck(wxCommandEvent& event)
 
 void EnvironmentSettingsDlg::OnDblClickMaximizes(cb_unused wxCommandEvent& event)
 {
-    bool en = XRCCTRL(*this, "chkDblClkMaximizes", wxCheckBox)->GetValue();
-    XRCCTRL(*this, "choLayoutToToggle", wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Enable(event.IsChecked());
 }
 
 void EnvironmentSettingsDlg::OnMousewheelModifier(cb_unused wxKeyEvent& event)
