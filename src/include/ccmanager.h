@@ -48,6 +48,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 
         /** event handler to list the suggestion, when a user press Ctrl-space (by default) */
         void OnCompleteCode(CodeBlocksEvent& event);
+        /** event handlers to avoid tooltips getting stuck active */
         void OnDeactivateApp(CodeBlocksEvent& event);
         void OnDeactivateEd(CodeBlocksEvent& event);
         void OnEditorOpen(CodeBlocksEvent& event);
@@ -79,8 +80,8 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void CallSmartIndentCCDone(cbEditor* ed);
 
         typedef std::map< cbCodeCompletionPlugin*, std::set<wxChar> > CCPluginCharMap;
-        CCPluginCharMap m_CallTipChars;
-        CCPluginCharMap m_AutoLaunchChars;
+        CCPluginCharMap m_CallTipChars;    //!< chars each plugin is interested in for calltip state
+        CCPluginCharMap m_AutoLaunchChars; //!< chars each plugin is interested in for autocomplete
         int m_EditorHookID;
         int m_AutocompPosition;
         int m_CallTipActive;
@@ -89,24 +90,24 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         int m_WindowBound;
         bool m_OwnsAutocomp;
         typedef std::vector<cbCodeCompletionPlugin::CCCallTip> CallTipVec;
-        CallTipVec m_CallTips;
-        CallTipVec::const_iterator m_CurCallTip;
-        std::map<int, size_t> m_CallTipChoiceDict; // remember past choices
-        std::map<int, size_t> m_CallTipFuzzyChoiceDict; // remember past choices based on prefix
+        CallTipVec m_CallTips; //!< cached calltips
+        CallTipVec::const_iterator m_CurCallTip;   //!< remember current choice
+        std::map<int, size_t> m_CallTipChoiceDict; //!< remember past choices
+        std::map<int, size_t> m_CallTipFuzzyChoiceDict; //!< remember past choices based on prefix
         wxTimer m_CallTipTimer;
         wxTimer m_AutoLaunchTimer;
         wxTimer m_AutocompSelectTimer;
-        wxSize m_DocSize;
-        wxPoint m_DocPos;
+        wxSize m_DocSize; //!< size of the documentation popup
+        wxPoint m_DocPos; //!< location of the documentation popup
 #ifdef __WXMSW__
         wxListView* m_pAutocompPopup;
 #endif // __WXMSW__
-        cbEditor* m_pLastEditor;
-        cbCodeCompletionPlugin* m_pLastCCPlugin;
-        UnfocusablePopupWindow* m_pPopup;
-        wxHtmlWindow* m_pHtml;
+        cbEditor* m_pLastEditor; //!< last editor operated on
+        cbCodeCompletionPlugin* m_pLastCCPlugin; //!< the plugin handling m_pLastEditor
+        UnfocusablePopupWindow* m_pPopup; //!< container for documentation popup
+        wxHtmlWindow* m_pHtml;            //!< documentation popup
         int m_LastACLaunchState[2];
-        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens;
+        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens; //!< cached autcomplete list
 };
 
 #endif // CCMANAGER_H

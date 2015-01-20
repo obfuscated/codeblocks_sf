@@ -279,8 +279,8 @@ class DLLIMPORT cbEditor : public EditorBase
         void SelectAll();
 
         // Workaround for shift-tab bug in wx2.4.2
-        void DoIndent(); /// Indents current line/block
-        void DoUnIndent(); /// UnIndents current line/block
+        void DoIndent();   //!< Indents current line/block
+        void DoUnIndent(); //!< UnIndents current line/block
 
         // misc. functions
         virtual wxMenu* CreateContextSubMenu(long id);

@@ -3406,7 +3406,7 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
         return;
     CompilerLineType clt = compiler->CheckForWarningsAndErrors(output);
 
-    // if max_errors reached, display a one-time message and do not log anymore
+    // if max_errors reached, display a one-time message and do not log any more
     size_t maxErrors = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/max_reported_errors"), 50);
     if (maxErrors > 0 && m_Errors.GetCount(cltError) == maxErrors)
     {

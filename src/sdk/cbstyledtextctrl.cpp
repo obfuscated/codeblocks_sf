@@ -65,8 +65,8 @@ cbStyledTextCtrl::~cbStyledTextCtrl()
 {
     //dtor
     // remove remaining event-handlers to avoid asserts in wx2.9
-    // the ymight be added by plugins (at least keybinder does it), but can not
-    // be removed by them, because the EditorCclose-event is sent from EditorBase
+    // they might be added by plugins (at least keybinder does it), but can not
+    // be removed by them, because the EditorClose-event is sent from EditorBase
     // after destroying the underlying editors (e.g. cbStyledTextCtrl).
     // Doing this here should not harm.
     while(GetEventHandler() != this)
