@@ -281,7 +281,7 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
     if (id != wxNOT_FOUND)
     {
         wxMenuItem* subMenuItem = menu->FindItem(id, 0);
-        wxMenu* subMenu;
+        wxMenu* subMenu = nullptr;
         if (subMenuItem)
             subMenu = subMenuItem->GetSubMenu();
         if (subMenu)
