@@ -658,8 +658,13 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             ctChars = m_CallTipChars.find(nullptr); // default
         if (ctChars->second.find(ch) != ctChars->second.end())
         {
-            CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
-            Manager::Get()->ProcessEvent(evt);
+            int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
+            if (   tooltipMode != 3 // keybound only
+                || m_CallTipActive != wxSCI_INVALID_POSITION )
+            {
+                CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+                Manager::Get()->ProcessEvent(evt);
+            }
         }
         else
         {
