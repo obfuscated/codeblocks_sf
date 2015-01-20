@@ -703,15 +703,6 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxTreeCtrl" name="tcOverview">
-												<image_list></image_list>
-												<tree_items>
-													<item>TreeCtrl1</item>
-													<item></item>
-												</tree_items>
-												<items_text>
-													<item2>TreeCtrl1</item2>
-													<item2></item2>
-												</items_text>
 												<style>wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER</style>
 											</object>
 											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
