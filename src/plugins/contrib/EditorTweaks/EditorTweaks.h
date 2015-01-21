@@ -141,6 +141,7 @@ class EditorTweaks : public cbPlugin
         void DoAlignAuto();
         void OnAlignLast(wxCommandEvent& event);
 		void OnSuppressInsert(wxCommandEvent& event);
+		void OnLaptopFriendly(wxCommandEvent& event);
 		void OnConvertBraces(wxCommandEvent& event);
 		void AlignToString(const wxString AlignmentString);
 		wxString GetPadding(const wxString& Padding, const int Count);
@@ -159,6 +160,7 @@ class EditorTweaks : public cbPlugin
     private:
 
         bool m_suppress_insert;
+        bool m_laptop_friendly;
         bool m_convert_braces;
         int  m_buffer_caret;
         wxMenu *m_tweakmenu;

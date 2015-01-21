@@ -71,6 +71,7 @@ int id_et_Unfold5             = wxNewId();
 int id_et_align_others        = wxNewId();
 int id_et_align_auto          = wxNewId();
 int id_et_align_last          = wxNewId();
+int id_et_LaptopFriendly      = wxNewId();
 int id_et_SuppressInsertKey   = wxNewId();
 int id_et_ConvertBraces       = wxNewId();
 int id_et_ScrollTimer         = wxNewId();
@@ -122,11 +123,12 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_Unfold4, EditorTweaks::OnUnfold)
     EVT_MENU(id_et_Unfold5, EditorTweaks::OnUnfold)
 
-    EVT_MENU(id_et_SuppressInsertKey, EditorTweaks::OnSuppressInsert)
-    EVT_MENU(id_et_ConvertBraces,     EditorTweaks::OnConvertBraces)
-    EVT_MENU(id_et_align_others,      EditorTweaks::OnAlignOthers)
-    EVT_MENU(id_et_align_auto,        EditorTweaks::OnAlignAuto)
-    EVT_MENU(id_et_align_last,        EditorTweaks::OnAlignLast)
+    EVT_MENU(id_et_LaptopFriendly,     EditorTweaks::OnLaptopFriendly)
+    EVT_MENU(id_et_SuppressInsertKey,  EditorTweaks::OnSuppressInsert)
+    EVT_MENU(id_et_ConvertBraces,      EditorTweaks::OnConvertBraces)
+    EVT_MENU(id_et_align_others,       EditorTweaks::OnAlignOthers)
+    EVT_MENU(id_et_align_auto,         EditorTweaks::OnAlignAuto)
+    EVT_MENU(id_et_align_last,         EditorTweaks::OnAlignLast)
 
     EVT_TIMER(id_et_ScrollTimer, EditorTweaks::OnScrollTimer)
 END_EVENT_TABLE()
@@ -191,6 +193,7 @@ void EditorTweaks::OnAttach()
         Connect(e.id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     }
     m_suppress_insert = cfg->ReadBool(wxT("/suppress_insert_key"), false);
+    m_laptop_friendly = cfg->ReadBool(wxT("/laptop_friendly"),     false);
     m_convert_braces  = cfg->ReadBool(wxT("/convert_braces"),      false);
     m_buffer_caret    = -1;
 }
@@ -228,6 +231,7 @@ void EditorTweaks::OnRelease(bool /*appShutDown*/)
     for (; i < static_cast<int>(AlignerMenuEntries.size()) ; ++i)
         Disconnect(AlignerMenuEntries[i].id, wxEVT_COMMAND_MENU_SELECTED,  wxCommandEventHandler(EditorTweaks::OnAlign) );
     cfg->Write(wxT("/suppress_insert_key"), m_suppress_insert);
+    cfg->Write(wxT("/laptop_friendly"),     m_laptop_friendly);
     cfg->Write(wxT("/convert_braces"),      m_convert_braces);
 }
 
@@ -304,8 +308,9 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     submenu->Append( id_et_StripTrailingBlanks, _( "Strip Trailing Blanks Now" ), _( "Strip trailing blanks from each line" ) );
     submenu->Append( id_et_EnsureConsistentEOL, _( "Make EOLs Consistent Now" ),  _( "Convert End-of-Line Characters to the Active Setting" ) );
     submenu->AppendSeparator();
-    submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"),     _("Disable toggle between insert and overwrite mode using the insert key") );
-    submenu->AppendCheckItem( id_et_ConvertBraces,     _("Convert Matching Braces"), _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
+    submenu->AppendCheckItem( id_et_LaptopFriendly,    _("Laptop Friendly Keyboard Navigation"),   _("Enables keyboard shortcuts: Shift+Backspace = Delete, Alt+Down = Page Down, Alt+Up = Page Up, Alt+Left = Home, Alt+Right = End") );
+    submenu->AppendCheckItem( id_et_SuppressInsertKey, _("Suppress Insert Key"),                   _("Disable the effect of the insert key (toggle between insert and overwrite mode)") );
+    submenu->AppendCheckItem( id_et_ConvertBraces,     _("Convert Matching Braces"),               _("Selecting a brace and typing a new brace character will change the matching brace appropriately") );
     submenu->AppendSeparator();
     submenu->Append( id_et_align_last,        _("Last Align"), _("repeat last Align command") );
     submenu->Append( id_et_align_auto,        _("Auto Align"), _("Align lines automatically") );
@@ -354,43 +359,44 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
 
 void EditorTweaks::UpdateUI()
 {
-    if ( !IsAttached() )
-        return;
-
     if (!m_tweakmenu)
     	return;
 
     cbStyledTextCtrl* control = GetSafeControl();
     if (!control)
-    {
         m_tweakmenuitem->Enable(false);
-        return;
+    else
+        m_tweakmenuitem->Enable(true);
+
+    wxMenu *submenu = m_tweakmenu;
+
+    if(control)
+    {
+        submenu->Check(id_et_WordWrap,control->GetWrapMode()==wxSCI_WRAP_WORD);
+        submenu->Check(id_et_CharWrap,control->GetWrapMode()==wxSCI_WRAP_CHAR);
+        submenu->Check(id_et_ShowLineNumbers,control->GetMarginWidth(0)>0);
+        submenu->Check(id_et_TabChar,control->GetUseTabs());
+        submenu->Check(id_et_TabIndent,control->GetTabIndents());
+        submenu->Check(id_et_TabSize2,control->GetTabWidth()==2);
+        submenu->Check(id_et_TabSize4,control->GetTabWidth()==4);
+        submenu->Check(id_et_TabSize6,control->GetTabWidth()==6);
+        submenu->Check(id_et_TabSize8,control->GetTabWidth()==8);
+        submenu->Check(id_et_EOLCRLF,control->GetEOLMode()==wxSCI_EOL_CRLF);
+        submenu->Check(id_et_EOLCR,control->GetEOLMode()==wxSCI_EOL_CR);
+        submenu->Check(id_et_EOLLF,control->GetEOLMode()==wxSCI_EOL_LF);
+        submenu->Check(id_et_ShowEOL,control->GetViewEOL());
+        submenu->Check(id_et_ShowWhitespaceChars, control->GetViewWhiteSpace()!=wxSCI_WS_INVISIBLE);
     }
-
-    m_tweakmenuitem->Enable(true);
-
-    wxMenu *submenu = m_tweakmenu; //_("Editor Tweaks") TODO: Retrieve actual menu
-
-    submenu->Check(id_et_WordWrap,control->GetWrapMode()==wxSCI_WRAP_WORD);
-    submenu->Check(id_et_CharWrap,control->GetWrapMode()==wxSCI_WRAP_CHAR);
-    submenu->Check(id_et_ShowLineNumbers,control->GetMarginWidth(0)>0);
-    submenu->Check(id_et_TabChar,control->GetUseTabs());
-    submenu->Check(id_et_TabIndent,control->GetTabIndents());
-    submenu->Check(id_et_TabSize2,control->GetTabWidth()==2);
-    submenu->Check(id_et_TabSize4,control->GetTabWidth()==4);
-    submenu->Check(id_et_TabSize6,control->GetTabWidth()==6);
-    submenu->Check(id_et_TabSize8,control->GetTabWidth()==8);
-    submenu->Check(id_et_EOLCRLF,control->GetEOLMode()==wxSCI_EOL_CRLF);
-    submenu->Check(id_et_EOLCR,control->GetEOLMode()==wxSCI_EOL_CR);
-    submenu->Check(id_et_EOLLF,control->GetEOLMode()==wxSCI_EOL_LF);
-    submenu->Check(id_et_ShowEOL,control->GetViewEOL());
     submenu->Check(id_et_SuppressInsertKey, m_suppress_insert);
+    submenu->Check(id_et_LaptopFriendly, m_laptop_friendly);
     submenu->Check(id_et_ConvertBraces,     m_convert_braces);
-    submenu->Check(id_et_ShowWhitespaceChars, control->GetViewWhiteSpace()!=wxSCI_WS_INVISIBLE);
 }
 
 void EditorTweaks::OnUpdateUI(wxUpdateUIEvent &/*event*/)
 {
+    if ( !IsAttached() )
+        return;
+
     UpdateUI();
 }
 
@@ -444,11 +450,76 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
     default:
         break;
     }
-    if (m_suppress_insert && keyCode == WXK_INSERT && event.GetModifiers() == wxMOD_NONE)
+    // This set of laptop friendly helpers are a bit of a hack to make up for the lack of
+    // page up, page down, home, end, and delete keys on some laptops (especially Chromebooks)
+    if (m_laptop_friendly && keyCode == WXK_LEFT && event.AltDown())
+    {
+        cbStyledTextCtrl* control = GetSafeControl();
+        if (event.ShiftDown())
+            control->VCHomeDisplayExtend();
+        else
+            control->VCHomeDisplay();
         event.Skip(false);
-    else
-        event.Skip(true);
-    if (m_convert_braces && keyCode == WXK_DELETE && (event.GetModifiers() == wxMOD_NONE || event.GetModifiers() == wxMOD_SHIFT))
+    }
+    else if (m_laptop_friendly && keyCode == WXK_RIGHT && event.AltDown())
+    {
+        cbStyledTextCtrl* control = GetSafeControl();
+        if (event.ShiftDown())
+            control->LineEndDisplayExtend();
+        else
+            control->LineEndDisplay();
+        event.Skip(false);
+    }
+    else if (m_laptop_friendly && keyCode == WXK_UP && event.AltDown())
+    {
+        cbStyledTextCtrl* control = GetSafeControl();
+        if (event.ControlDown())
+        {
+            if (event.ShiftDown())
+                control->DocumentStartExtend();
+            else
+                control->DocumentStart();
+        } else
+        {
+            if (event.ShiftDown())
+                control->PageUpExtend();
+            else
+                control->PageUp();
+        }
+        event.Skip(false);
+    }
+    else if (m_laptop_friendly && keyCode == WXK_DOWN && event.AltDown())
+    {
+        cbStyledTextCtrl* control = GetSafeControl();
+        if (event.ControlDown())
+        {
+            if (event.ShiftDown())
+                control->DocumentEndExtend();
+            else
+                control->DocumentEnd();
+        } else
+        {
+            if (event.ShiftDown())
+                control->PageDownExtend();
+            else
+                control->PageDown();
+        }
+        event.Skip(false);
+    }
+    else if (m_laptop_friendly && keyCode == WXK_BACK && event.GetModifiers() == wxMOD_SHIFT)
+    {
+        cbStyledTextCtrl* control = GetSafeControl();
+        int anchor = control->GetAnchor();
+        int pos = control->GetCurrentPos();
+        if (anchor >= 0 && anchor != pos)
+            control->DeleteRange(control->GetSelectionStart(), control->GetSelectionEnd() - control->GetSelectionStart());
+        else
+            control->DeleteRange(control->GetCurrentPos(), 1);
+        event.Skip(false);
+    }
+    else if (m_suppress_insert && keyCode == WXK_INSERT && event.GetModifiers() == wxMOD_NONE)
+        event.Skip(false);
+    else if (m_convert_braces && keyCode == WXK_DELETE && (event.GetModifiers() == wxMOD_NONE || event.GetModifiers() == wxMOD_SHIFT))
     {
         event.Skip(true);
 
@@ -481,6 +552,8 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
         control->EndUndoAction();
         event.Skip(false);
     }
+    else
+        event.Skip(true);
 }
 
 void EditorTweaks::OnChar(wxKeyEvent& event)
@@ -558,6 +631,11 @@ void EditorTweaks::OnChar(wxKeyEvent& event)
 void EditorTweaks::OnSuppressInsert(wxCommandEvent& event)
 {
     m_suppress_insert = event.IsChecked();
+}
+
+void EditorTweaks::OnLaptopFriendly(wxCommandEvent& event)
+{
+    m_laptop_friendly = event.IsChecked();
 }
 
 void EditorTweaks::OnConvertBraces(wxCommandEvent& event)
