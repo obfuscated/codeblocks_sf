@@ -391,6 +391,27 @@ void CCManager::InjectAutoCompShow(int lenEntered, const wxString& itemList)
     }
 }
 
+bool CCManager::ProcessArrow(int key)
+{
+    bool wasProcessed = false;
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed)
+        return wasProcessed;
+    cbStyledTextCtrl* stc = ed->GetControl();
+    if (stc->CallTipActive() && m_CallTipActive != wxSCI_INVALID_POSITION && m_CallTips.size() > 1)
+    {
+        if (key == WXK_DOWN && (m_CurCallTip + 1) != m_CallTips.end())
+            ++m_CurCallTip;
+        else if (key == WXK_UP && m_CurCallTip != m_CallTips.begin())
+            --m_CurCallTip;
+        else
+            return wasProcessed; // moved off end, cancel tip
+        DoUpdateCallTip(ed);
+        wasProcessed = true;
+    }
+    return wasProcessed;
+}
+
 // priority, then alphabetical
 struct TokenSorter
 {

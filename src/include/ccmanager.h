@@ -42,6 +42,8 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** if for some reason you *need* to use wxScintilla::AutoCompShow(), call this instead so CCManager does not step on you */
         void InjectAutoCompShow(int lenEntered, const wxString& itemList);
 
+        /** used by cbStyledTextCtrl to process ArrowUp and ArrowDown key press. It is not intended to be called by ccPlugins. */
+        bool ProcessArrow(int key);
     private:
         CCManager();
         ~CCManager();

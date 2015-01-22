@@ -26,6 +26,7 @@
 #include <wx/textfile.h> // for wxTextBuffer::Translate()
 
 #include "cbdebugger_interfaces.h"
+#include "ccmanager.h"
 #include "debuggermanager.h"
 
 static const wxString s_leftBrace(_T("([{'\""));
@@ -224,6 +225,17 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
         {
             EmulateDwellStart();
             emulateDwellStart = true;
+        }
+        break;
+
+        case WXK_UP:
+        case WXK_DOWN:
+        {
+            if (event.GetModifiers() == wxMOD_NONE)
+            {
+                if (Manager::Get()->GetCCManager()->ProcessArrow(event.GetKeyCode()))
+                    return;
+            }
         }
         break;
         default: break;
