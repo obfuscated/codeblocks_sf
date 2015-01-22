@@ -99,7 +99,7 @@ VS_VERSION_INFO    VERSIONINFO
       VALUE "FileDescription",  "Code::Blocks IDE\0"
       VALUE "FileVersion",      "13.12.0.0\0"
       VALUE "InternalName",     "Code::Blocks\0"
-      VALUE "LegalCopyright",   "Copyright (C) 2004-2014 Code::Blocks Team\0"
+      VALUE "LegalCopyright",   "Copyright (C) 2004-2015 Code::Blocks Team\0"
       VALUE "LegalTrademarks",  "All rights reserved.\0"
       VALUE "OriginalFilename", "codeblocks.exe\0"
       VALUE "PrivateBuild",     "\0"
