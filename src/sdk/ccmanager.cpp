@@ -30,6 +30,7 @@
 #include <wx/html/htmlwin.h>
 #include <wx/display.h>
 
+#include "cbcolourmanager.h"
 #include "cbstyledtextctrl.h"
 #include "editor_hooks.h"
 
@@ -271,6 +272,11 @@ CCManager::CCManager() :
     m_pHtml->SetFonts(wxEmptyString, wxEmptyString, &sizes[0]);
     m_pHtml->Connect(wxEVT_COMMAND_HTML_LINK_CLICKED,
                      wxHtmlLinkEventHandler(CCManager::OnHtmlLink), nullptr, this);
+
+    ColourManager* cmgr = Manager::Get()->GetColourManager();
+    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip background"), wxT("cc_tips_back"),      *wxWHITE);
+    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip foreground"), wxT("cc_tips_fore"),      wxColour(wxT("DimGrey")));
+    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip highlight"),  wxT("cc_tips_highlight"), wxColour(wxT("DarkBlue")));
 
     wxFrame* mainFrame = Manager::Get()->GetAppFrame();
     wxMenuBar* menuBar = mainFrame->GetMenuBar();
@@ -552,8 +558,14 @@ void CCManager::OnEditorOpen(CodeBlocksEvent& event)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(event.GetEditor());
     if (ed)
     {
-        ed->GetControl()->Connect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
-                                  wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
+        cbStyledTextCtrl* stc = ed->GetControl();
+        stc->Connect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
+                     wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
+
+        ColourManager* cmgr = Manager::Get()->GetColourManager();
+        stc->CallTipSetBackground(cmgr->GetColour(wxT("cc_tips_back")));
+        stc->CallTipSetForeground(cmgr->GetColour(wxT("cc_tips_fore")));
+        stc->CallTipSetForegroundHighlight(cmgr->GetColour(wxT("cc_tips_highlight")));
     }
 }
 
