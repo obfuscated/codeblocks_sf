@@ -288,7 +288,7 @@ CCManager::CCManager() :
         size_t insertPos = itemsList.GetCount();
         for (size_t i = 0; i < insertPos; ++i)
         {
-            if (itemsList[i]->GetText() == _("Complete code"))
+            if (itemsList[i]->GetItemLabel() == _("Complete code"))
             {
                 insertPos = i + 1;
                 break;
