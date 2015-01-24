@@ -483,9 +483,9 @@ void Tokenizer::ReadParentheses(wxString& str)
         }
         else
         {
-            if (str.Last() == _T('('))
+            if (str.Last() == _T('(')) // there is no space between '(' and the following token
                 str << token;
-            else
+            else                       // otherwise, a space is needed
                 str << _T(" ") << token;
         }
 
@@ -710,7 +710,7 @@ bool Tokenizer::SkipComment()
             }
         }
 
-        if (doc.size()>0) // dont push empty strings
+        if (doc.size() > 0) // don't push empty strings
         {
             doc += _T('\n');
 
@@ -794,11 +794,10 @@ wxString Tokenizer::GetToken()
     {
         if (SkipUnwanted())
         {
-            m_Token = DoGetToken();
+            m_Token = DoGetToken();// this function always return a fully expanded token
             if (m_Token == _T("(") && m_State^tsReadRawExpression)
                 ReadParentheses(m_Token);
         }
-
         else
             m_Token.Clear();
     }
@@ -834,7 +833,6 @@ wxString Tokenizer::PeekToken()
             if (m_PeekToken == _T("(") && m_State^tsReadRawExpression)
                 ReadParentheses(m_PeekToken);
         }
-
         else
             m_PeekToken.Clear();
 
@@ -1016,9 +1014,7 @@ bool Tokenizer::CheckMacroUsageAndReplace()
     {
         const Token* token = m_TokenTree->at(id);
         if (token)
-        {
-            return ReplaceMacroUsage(token);
-        }
+            return ReplaceMacroUsage(token);// either object like macro or function like macro can be handled
     }
     return false;
 }
@@ -1114,6 +1110,7 @@ bool Tokenizer::IsMacroDefined()
         haveParen = true;
         while (SkipWhiteSpace() || SkipComment())
             ;
+        // don't call DoGetToken() here, because it automatically expand macros, call Lex() instead.
         Lex();
         token = m_Lex;
     }
