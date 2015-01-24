@@ -192,7 +192,7 @@ namespace CodeCompletionHelper
     }
 
     // for CodeCompleteIncludes()
-    // a line has some patter like below
+    // a line has some pattern like below
     // # [space or tab] include
     inline bool TestIncludeLine(wxString const &line)
     {
