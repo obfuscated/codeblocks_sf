@@ -778,7 +778,7 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
             int category;         //!< The category corresponding to the index of the registered image (during autocomplete).
             int weight;           //!< Lower numbers are placed earlier in listing, 5 is default; try to keep 0-10.
             wxString displayName; //!< Verbose string representing the token.
-            wxString name;        //!< Minimal name of the token.
+            wxString name;        //!< Minimal name of the token that CCManager may choose to display in restricted circumstances.
         };
 
         /** Structure representing an individual calltip with an optional highlighted range */
