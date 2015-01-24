@@ -27,9 +27,6 @@ public:
     virtual void OnCancel()                    { ; }
 
 protected:
-    void OnAddRepl(wxCommandEvent& event);
-    void OnEditRepl(wxCommandEvent& event);
-    void OnDelRepl(wxCommandEvent& event);
     void OnChooseColour(wxCommandEvent& event);
     void OnCCDelayScroll(wxScrollEvent& event);
 
