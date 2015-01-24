@@ -7,7 +7,6 @@
 #define TOKENIZER_H
 
 #include <wx/string.h>
-#include <wx/hashmap.h>
 #include <configmanager.h>
 #include <filemanager.h>
 #include "token.h"
@@ -15,36 +14,6 @@
 #include <stack>
 #include <list>
 
-///Calculate the hash value for a wxString
-class HashForWxStringMap
-{
-public:
-    HashForWxStringMap() {}
-    unsigned long operator()(const wxString& x) const
-    {
-        const size_t len = x.length();
-        const size_t intWxChar = sizeof(unsigned int) / sizeof(wxChar);
-        const size_t shortWxChar = sizeof(unsigned short) / sizeof(wxChar);
-        if (len >= intWxChar)
-            return size_t((128 ^ len) + *((unsigned int*)((const wxChar*)x + len - intWxChar)));
-        else if (len >= shortWxChar)
-            return size_t((256 ^ len) + *((unsigned short*)((const wxChar*)x + len - shortWxChar)));
-        else
-            return size_t((512 ^ len) + *((const wxChar*)x + len - 1));
-    }
-    HashForWxStringMap& operator=(const HashForWxStringMap&) { return *this; }
-};
-
-class EqualForWxStringMap
-{
-public:
-    EqualForWxStringMap() { }
-    bool operator()(const wxString& a, const wxString& b) const { return a == b; }
-    EqualForWxStringMap& operator=(const EqualForWxStringMap&) { return *this; }
-};
-
-///wxString->wxString hash map used to store the macro replacement rules
-WX_DECLARE_HASH_MAP(wxString, wxString, HashForWxStringMap, EqualForWxStringMap, wxStringHashMap);
 
 /// Enum defines the skip state of the Tokenizer
 enum TokenizerState
@@ -213,43 +182,6 @@ public:
 
     /** Skip to then end of the C++ style comment */
     bool SkipToInlineCommentEnd();
-
-    /** Add one "replacement rule", this is just a simple way of defining a macro definition.
-     * The rule composites two strings: the key string and the value string.
-     * When the Tokenizer gets an identifier kind string, it is lookuped in the
-     * replacement rules map, if it matches one rule, the rule's value string will be returned instead..
-     * Other rules are some function like macro definition,
-     * E.g. to replace the "_GLIBCXX_BEGIN_NAMESPACE(std)" to  "namespace std {"
-     * We can use: Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"), _T("+namespace"));
-     * See more details in CodeCompletion::LoadTokenReplacements() function.
-     * @param from the matching key string
-     * @param to the matching value string
-     */
-    static void SetReplacementString(const wxString& from, const wxString& to)
-    {
-        s_Replacements[from] = to;
-    };
-
-    /** Remove a macro replacement rule */
-    static void RemoveReplacementString(const wxString& from)
-    {
-        wxStringHashMap::iterator it = s_Replacements.find(from);
-        if (it != s_Replacements.end())
-            s_Replacements.erase(it);
-    };
-
-    /** return the macro replacement map */
-    static wxStringHashMap& GetTokenReplacementsMap()
-    {
-        return s_Replacements;
-    }
-
-    static void ConvertToHashReplacementMap(const ConfigManagerContainer::StringToStringMap& map)
-    {
-        ConfigManagerContainer::StringToStringMap::const_iterator it = map.begin();
-        for (; it != map.end(); it++)
-            s_Replacements[it->first] = it->second;
-    }
 
     /** Check whether the Tokenizer reaches the end of the buffer (file) */
     bool IsEOF() const
@@ -460,19 +392,6 @@ private:
             return m_Buffer.GetChar(m_TokenIndex - 2) == _T('\\');
         return last == _T('\\');
     }
-
-    /** Do the Macro replacement according to the macro replacement rules, generally we have two
-     *  kinds of macro replacements. One is the user defined macro replacement rules, which is
-     *  hold by static member variable s_Replacements, you can let the tokenizer directly return
-     *  a "BBB" string if the origin token is"AAA" , but you have a "AAA" -> "BBB" rule. Another
-     *  kind of macro replacement is that the tokenizer try to look up the token tree to see
-     *  whether a token is a macro definition, if yes, it can expand the macro. The first kind of
-     *  macro replacement happens every time when a tokenizer try to return a token, it is very fast
-     *  as s_Replacements is a hash table, and have very limited entries, on the other side, looking
-     *  up a token in the token tree takes more time, the later case only happens in some special
-     *  cases, such has we are handling #if directives.
-     */
-    void GetReplacedToken(wxString& str);
 
     /** Judge what is the first block
      * It will call 'SkipToEOL()' before returned.
