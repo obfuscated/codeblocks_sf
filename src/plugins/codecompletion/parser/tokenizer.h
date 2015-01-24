@@ -334,6 +334,19 @@ protected:
      */
     wxString DoGetToken();
 
+    /** check the m_Lex to see it is a identifier like token, and also if it is a macro usage,
+     * replace it.
+     * @return true if some text replacement happens in the m_Buffer, otherwise return false
+     */
+    bool CheckMacroUsageAndReplace();
+
+    /** this function only move the m_TokenIndex and get a lexeme and store it in m_Lex, the m_Lex
+     * will be further checked if it is a macro usage or not.
+     * @return true if it is an identifier like token. note we need to check an identifier like
+     * token is a macro usage.
+     */
+    bool Lex();
+
     /** Read a file, and fill the m_Buffer */
     bool ReadFile();
 
@@ -518,6 +531,11 @@ private:
     wxString             m_Buffer;
     /** Buffer length */
     unsigned int         m_BufferLen;
+
+    /** a lexeme string return by the Lex() function, this is a candidate token string, but may be
+     * replaced if it is a macro usage
+     */
+    wxString             m_Lex;
 
     /** These variables define the current token string and its auxiliary information,
      * such as the token name, the line number of the token, the current brace nest level.
