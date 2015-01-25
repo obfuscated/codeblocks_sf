@@ -1871,8 +1871,7 @@ void CompilerOptionsDlg::OnRemoveDirClick(cb_unused wxCommandEvent& event)
 void CompilerOptionsDlg::OnClearDirClick(cb_unused wxCommandEvent& event)
 {
     wxListBox* control = GetDirsListBox();
-    wxArrayInt selections;
-    if (!control || control->GetSelections(selections) < 1)
+    if (!control || control->GetCount() == 0)
         return;
 
     if (cbMessageBox(_("Remove all directories from the list?"),
