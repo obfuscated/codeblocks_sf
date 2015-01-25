@@ -8,6 +8,7 @@
 #endif
 #include <configurationpanel.h>
 #include <cbstyledtextctrl.h>
+#include <cbcolourmanager.h>
 #include <filefilters.h>
 #include "NassiPlugin.h"
 
@@ -147,10 +148,21 @@ void NassiPlugin::OnAttach()
     // is FALSE, it means that the application did *not* "load"
     // (see: does not need) this plugin...
 
+    ColourManager* cmgr = Manager::Get()->GetColourManager();
+    cmgr->RegisterColour(_("NassiShneiderman"), _("Brick background"), wxT("nassi_brick_background"), *wxWHITE);
+    cmgr->RegisterColour(_("NassiShneiderman"), _("Empty brick background"), wxT("nassi_empty_brick_background"), *wxLIGHT_GREY);
+    cmgr->RegisterColour(_("NassiShneiderman"), _("Graphics colour"), wxT("nassi_graphics_colour"), *wxBLACK);
+    cmgr->RegisterColour(_("NassiShneiderman"), _("Selection colour"), wxT("nassi_selection_colour"), *wxCYAN);
+    cmgr->RegisterColour(_("NassiShneiderman"), _("Source colour"), wxT("nassi_source_colour"), *wxBLACK);
+    cmgr->RegisterColour(_("NassiShneiderman"), _("Comment colour"), wxT("nassi_comment_colour"), *wxRED);
 
     for ( int i = 0 ; i < MaxInsertMenuEntries ; i++ )
         Connect(insertCFromDiagram[i], wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NassiPlugin::OnInsertCFromDiagram), 0, this);
     Connect(idParseC, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(NassiPlugin::ParseC), 0, this);
+
+    cbEventFunctor<NassiPlugin, CodeBlocksEvent> *functor;
+    functor = new cbEventFunctor<NassiPlugin, CodeBlocksEvent>(this, &NassiPlugin::OnSettingsChanged);
+    Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED, functor);
 
     FileFilters::Add(_("Nassi Shneiderman diagram"), _T("*.nsd") );
 }
@@ -617,4 +629,20 @@ void NassiPlugin::OnUpdateUIMenuItem(wxUpdateUIEvent &event)
         }
     }
     event.Enable(enable);
+}
+
+void NassiPlugin::OnSettingsChanged(CodeBlocksEvent &event)
+{
+    if (event.GetInt()==cbSettingsType::Environment)
+    {
+        for (int i = 0 ; i < Manager::Get()->GetEditorManager()->GetEditorsCount() ; i++)
+        {
+            EditorBase *ed = Manager::Get()->GetEditorManager()->GetEditor(i);
+            if (NassiEditorPanel::IsNassiEditor(ed))
+            {
+                NassiEditorPanel *ned = static_cast<NassiEditorPanel*>(ed);
+                ned->UpdateColors();
+            }
+        }
+    }
 }

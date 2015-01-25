@@ -1,3 +1,5 @@
+#include <manager.h>
+
 #include "GraphBricks.h"
 #include "TextGraph.h"
 #include "bricks.h"
@@ -24,7 +26,8 @@ GraphNassiBrick::GraphNassiBrick(NassiView *view, NassiBrick *brick, BricksMap *
     m_active(false),
     m_used(true),
     m_map(bmap)
-{}
+{
+}
 GraphNassiBrick::~GraphNassiBrick(void){}
 
 bool GraphNassiBrick::IsVisible()
@@ -78,12 +81,13 @@ wxUint32 GraphNassiBrick::GetMinimumHeight()
 void GraphNassiBrick::DrawActive(wxDC *dc)
 {
     if ( !IsActive() || !IsVisible() ) return;
-    wxBrush *brush = new wxBrush(*wxBLUE, wxTRANSPARENT);
-    wxPen *pen = new wxPen(*wxBLUE, 3);
+    const NassiViewColors &colors = m_view->GetColors();
+    wxBrush *brush = new wxBrush(colors.selectionPen, wxTRANSPARENT);
+    wxPen *pen = new wxPen(colors.selectionPen, 3);
     dc->SetBrush(*brush);
     dc->SetPen(*pen);
     dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
-    dc->SetBrush(*wxWHITE_BRUSH);
+    dc->SetBrush(colors.defaultBrush);
     dc->SetPen(wxNullPen);
     delete brush;
     delete pen;
@@ -171,7 +175,9 @@ HooverDrawlet *GraphNassiBrick::GetDrawlet(const wxPoint &pos, bool HasNoBricks)
 }
 void GraphNassiBrick::Draw(wxDC *dc)
 {
-    dc->SetBrush(*wxWHITE_BRUSH);
+    const NassiViewColors &colors = m_view->GetColors();
+    dc->SetBrush(colors.defaultBrush);
+    dc->SetPen(colors.defaultPen);
 }
 
 
@@ -281,12 +287,14 @@ void GraphNassiInstructionBrick::Draw(wxDC *dc)
     dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
     if ( m_view->IsDrawingComment() )
     {
+        dc->SetTextForeground(m_view->GetColors().commentColor);
         dc->SetFont(m_view->GetCommentFont());
         //MultilineTextGraph *comment = m_view->GetTextGraph(m_brick, 0);
         comment.Draw(dc);
     }
     if ( m_view->IsDrawingSource() )
     {
+        dc->SetTextForeground(m_view->GetColors().sourceColor);
         dc->SetFont(m_view->GetSourceFont());
         //MultilineTextGraph *source = m_view->GetTextGraph(m_brick, 1);
         source.Draw(dc);
@@ -401,6 +409,7 @@ void GraphNassiBreakBrick::Draw(wxDC *dc)
 
     if ( m_view->IsDrawingComment() )
     {
+        dc->SetTextForeground(m_view->GetColors().commentColor);
         dc->SetFont(m_view->GetCommentFont());
         //MultilineTextGraph *comment = m_view->GetTextGraph(m_brick, 0);
         comment.Draw( dc );
@@ -503,6 +512,7 @@ void GraphNassiContinueBrick::Draw(wxDC *dc)
 
     if ( m_view->IsDrawingComment() )
     {
+        dc->SetTextForeground(m_view->GetColors().commentColor);
         dc->SetFont(m_view->GetCommentFont());
         //MultilineTextGraph *comment = m_view->GetTextGraph(m_brick, 0);
         comment.Draw( dc );
@@ -610,12 +620,14 @@ void GraphNassiReturnBrick::Draw(wxDC *dc)
 
     if ( m_view->IsDrawingComment() )
     {
+        dc->SetTextForeground(m_view->GetColors().commentColor);
         dc->SetFont(m_view->GetCommentFont());
         //MultilineTextGraph *comment = m_view->GetTextGraph(m_brick, 0);
         comment.Draw( dc );
     }
     if ( m_view->IsDrawingSource() )
     {
+        dc->SetTextForeground(m_view->GetColors().sourceColor);
         dc->SetFont(m_view->GetSourceFont());
         //MultilineTextGraph *source = m_view->GetTextGraph(m_brick, 1);
         source.Draw( dc );
@@ -742,6 +754,7 @@ void GraphNassiIfBrick::Draw(wxDC *dc)
         dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             commentHead.Draw( dc );
         }
@@ -760,6 +773,7 @@ void GraphNassiIfBrick::Draw(wxDC *dc)
 
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont( m_view->GetCommentFont() );
             commentHead.Draw( dc );
             commentTrue.Draw( dc );
@@ -767,6 +781,7 @@ void GraphNassiIfBrick::Draw(wxDC *dc)
         }
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             source.Draw( dc );
         }
@@ -776,10 +791,11 @@ void GraphNassiIfBrick::Draw(wxDC *dc)
         GraphNassiBrick *gchildt = this->GetGraphBrick(childt);
         if ( !gchildt )
         {
-            dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+            const NassiViewColors &colors = m_view->GetColors();
+            dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x, m_offset.y + m_hh - 1,
                                 m_p + 1,  m_size.y   - m_hh + 1 );
-            dc->SetBrush(*wxWHITE_BRUSH);
+            dc->SetBrush(colors.defaultBrush);
         }
 
         /// draw the false brick
@@ -787,10 +803,11 @@ void GraphNassiIfBrick::Draw(wxDC *dc)
         GraphNassiBrick *gchildf = this->GetGraphBrick(childf);
         if ( !gchildf )
         {
-            dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+            const NassiViewColors &colors = m_view->GetColors();
+            dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + m_p, m_offset.y + m_hh - 1,
                               m_size.x - m_p,   m_size.y - m_hh + 1 );
-            dc->SetBrush(*wxWHITE_BRUSH);
+            dc->SetBrush(colors.defaultBrush);
         }
     }
 
@@ -1155,6 +1172,7 @@ void GraphNassiWhileBrick::Draw(wxDC *dc)
         dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             comment.Draw( dc );
         }
@@ -1178,11 +1196,13 @@ void GraphNassiWhileBrick::Draw(wxDC *dc)
 
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont( m_view->GetCommentFont() );
             comment.Draw(dc);
         }
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             source.Draw(dc);
         }
@@ -1191,10 +1211,11 @@ void GraphNassiWhileBrick::Draw(wxDC *dc)
         GraphNassiBrick *gchild = this->GetGraphBrick(child);
         if ( !gchild )
         {
-            dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+            const NassiViewColors &colors = m_view->GetColors();
+            dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + m_bb, m_offset.y + m_hh,
                                 m_size.x - m_bb, m_size.y - m_hh);
-            dc->SetBrush(*wxWHITE_BRUSH);
+            dc->SetBrush(colors.defaultBrush);
         }
     }
 
@@ -1405,6 +1426,7 @@ void GraphNassiDoWhileBrick::Draw(wxDC *dc)
         dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             comment.Draw( dc );
         }
@@ -1428,11 +1450,13 @@ void GraphNassiDoWhileBrick::Draw(wxDC *dc)
 
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             comment.Draw( dc );
         }
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             source.Draw( dc );
         }
@@ -1444,10 +1468,11 @@ void GraphNassiDoWhileBrick::Draw(wxDC *dc)
         }
         else
         {
-            dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+            const NassiViewColors &colors = m_view->GetColors();
+            dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + m_bb, m_offset.y ,
                                 m_size.x - m_bb, m_size.y - m_hh);
-            dc->SetBrush(*wxWHITE_BRUSH);
+            dc->SetBrush(colors.defaultBrush);
         }
     }
 
@@ -1663,6 +1688,7 @@ void GraphNassiForBrick::Draw(wxDC *dc)
         dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             comment.Draw( dc );
         }
@@ -1687,11 +1713,13 @@ void GraphNassiForBrick::Draw(wxDC *dc)
 
         if ( m_view->IsDrawingComment() )
         {
+			dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont( m_view->GetCommentFont() );
             comment.Draw(dc);
         }
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             source.Draw(dc);
         }
@@ -1699,10 +1727,11 @@ void GraphNassiForBrick::Draw(wxDC *dc)
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( !gchild )
         {
-            dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+            const NassiViewColors &colors = m_view->GetColors();
+            dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + m_bb, m_offset.y + m_hh,
                                 m_size.x - m_bb, m_size.y   - m_hh - m_b);
-            dc->SetBrush(*wxWHITE_BRUSH);
+            dc->SetBrush(colors.defaultBrush);
         }
     }
 
@@ -1922,6 +1951,7 @@ void GraphNassiBlockBrick::Draw(wxDC *dc)
         dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont(m_view->GetSourceFont());
             dc->DrawText(this->GetSource(),
                 m_offset.x + dc->GetCharWidth() + 10,
@@ -1938,8 +1968,10 @@ void GraphNassiBlockBrick::Draw(wxDC *dc)
         wxBrush currentBrush = dc->GetBrush();
         wxPen currentPen = dc->GetPen();
 
+        const NassiViewColors &colors = m_view->GetColors();
+
         // frame around block:
-        dc->SetPen( *wxWHITE_PEN );
+        dc->SetPen(colors.emptyBrush);
         dc->DrawRectangle(m_offset.x,                m_offset.y,              m_size.x, m_hh);
         dc->DrawRectangle(m_offset.x,                m_offset.y,              3,        m_size.y);
         dc->DrawRectangle(m_offset.x,                m_offset.y + m_size.y-6, m_size.x, 6);
@@ -1951,6 +1983,7 @@ void GraphNassiBlockBrick::Draw(wxDC *dc)
 
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(colors.sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             dc->DrawText(this->GetSource(),
                 m_offset.x + dc->GetCharWidth() + 10,
@@ -1960,10 +1993,10 @@ void GraphNassiBlockBrick::Draw(wxDC *dc)
         GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild());
         if ( !gchild )
         {
-            dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+            dc->SetBrush(colors.emptyBrush);
             dc->DrawRectangle(m_offset.x + 3, m_offset.y + m_hh ,
                               m_size.x - 6,   m_size.y - m_hh - 6);
-            dc->SetBrush(*wxWHITE_BRUSH);
+            dc->SetBrush(colors.defaultBrush);
         }
     }
 
@@ -2143,6 +2176,7 @@ void GraphNassiSwitchBrick::Draw(wxDC *dc)
         dc->DrawRectangle(m_offset.x, m_offset.y, m_size.x, m_size.y);
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             comment.Draw( dc );
         }
@@ -2162,6 +2196,7 @@ void GraphNassiSwitchBrick::Draw(wxDC *dc)
                      m_offset.x + m_b/2, m_offset.y + m_size.y);
         if ( m_view->IsDrawingComment() )
         {
+            dc->SetTextForeground(m_view->GetColors().commentColor);
             dc->SetFont(m_view->GetCommentFont());
             comment.Draw(dc);
             for ( wxUint32 i = 0 ; i < childcomment.size() ; i++ )
@@ -2169,6 +2204,7 @@ void GraphNassiSwitchBrick::Draw(wxDC *dc)
         }
         if ( m_view->IsDrawingSource() )
         {
+            dc->SetTextForeground(m_view->GetColors().sourceColor);
             dc->SetFont( m_view->GetSourceFont() );
             source.Draw(dc);
             for ( wxUint32 i = 0 ; i < childsource.size() ; i++ )
@@ -2183,10 +2219,11 @@ void GraphNassiSwitchBrick::Draw(wxDC *dc)
             GraphNassiBrick *gchild = this->GetGraphBrick(m_brick->GetChild(i));
             if ( !gchild )
             {
-                dc->SetBrush(*wxLIGHT_GREY_BRUSH);
+                const NassiViewColors &colors = m_view->GetColors();
+                dc->SetBrush(colors.emptyBrush);
                 dc->DrawRectangle(m_offset.x + m_hw-1, m_offset.y + offsetToChild[i],
                                     m_size.x - m_hw+1, heightOfChildBricks[i]);
-                dc->SetBrush(*wxWHITE_BRUSH);
+                dc->SetBrush(colors.defaultBrush);
             }
         }
     }
@@ -2689,8 +2726,9 @@ void GraphNassiSwitchBrick::DrawActive(wxDC *dc)
 
     if ( !m_ChildIndicatorIsActive || !IsVisible() ) return;
 
-    wxBrush *brush = new wxBrush(*wxBLUE, wxTRANSPARENT);
-    wxPen *pen = new wxPen(*wxBLUE, 3);
+    const NassiViewColors &colors = m_view->GetColors();
+    wxBrush *brush = new wxBrush(colors.selectionPen, wxTRANSPARENT);
+    wxPen *pen = new wxPen(colors.selectionPen, 3);
     dc->SetBrush(*brush);
     dc->SetPen(*pen);
 
@@ -2712,7 +2750,7 @@ void GraphNassiSwitchBrick::DrawActive(wxDC *dc)
     points[4] = points[0];
 
     dc->DrawLines(5, points, m_offset.x, m_offset.y);
-    dc->SetBrush(*wxWHITE_BRUSH);
+    dc->SetBrush(colors.defaultBrush);
     dc->SetPen(wxNullPen);
     delete brush;
     delete pen;

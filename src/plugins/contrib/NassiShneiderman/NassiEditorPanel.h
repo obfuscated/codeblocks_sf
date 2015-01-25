@@ -51,9 +51,7 @@ class NassiEditorPanel: public cbEditorPanel , public FileContentObserver
         void ExportBitmap();
         bool CanExport();
 
-//    public:
-//        virtual void Update( wxObject* hint = 0 );
-
+        void UpdateColors();
     private:
         NassiView *m_view;
         NassiDiagramWindow *m_diagramwindow;

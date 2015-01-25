@@ -28,6 +28,18 @@ class TextCtrl;
 
 class Task;
 
+struct NassiViewColors
+{
+    void Init();
+
+    wxColor defaultBrush;
+    wxColor emptyBrush;
+    wxColor defaultPen;
+    wxColor selectionPen;
+    wxColor sourceColor;
+    wxColor commentColor;
+};
+
 class NassiView : public FileContentObserver
 {
     public:
@@ -53,6 +65,10 @@ class NassiView : public FileContentObserver
         //bool IsExportPossible();
         bool CanSelectAll();
         void MoveTextCtrl(const wxPoint &pt );
+
+        /// Called when the environment settings have changed.
+        void UpdateColors();
+        const NassiViewColors& GetColors() const { return m_colors; }
     private:
         NassiView(const NassiView &p);
         NassiView &operator=(const NassiView &rhs);
@@ -200,6 +216,10 @@ class NassiView : public FileContentObserver
         void MoveCaret(const wxPoint& pt);
     private:
         TextCtrl *m_txt;
+
+
+    private:
+        NassiViewColors m_colors;
 };
 
 #endif

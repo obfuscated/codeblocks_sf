@@ -166,6 +166,8 @@ class NassiPlugin : public cbMimePlugin
         void OnInsertCFromDiagram(wxCommandEvent &event);
         void OnUpdateUIMenuItem(wxUpdateUIEvent &event);
 
+        void OnSettingsChanged(CodeBlocksEvent &event);
+
         static void PopulateToolbar16(wxToolBar* toolBar);
         static void PopulateToolbar22(wxToolBar* toolBar);
         bool IsNassiEditorPanelActive();

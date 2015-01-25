@@ -31,6 +31,19 @@
 #include "rc/dnd_move_cur.xpm"
 #include "rc/dnd_none_cur.xpm"
 
+#include <cbcolourmanager.h>
+
+void NassiViewColors::Init()
+{
+    ColourManager* cmgr = Manager::Get()->GetColourManager();
+    defaultBrush = cmgr->GetColour(wxT("nassi_brick_background"));
+    emptyBrush = cmgr->GetColour(wxT("nassi_empty_brick_background"));
+    defaultPen = cmgr->GetColour(wxT("nassi_graphics_colour"));
+    selectionPen = cmgr->GetColour(wxT("nassi_selection_colour"));
+    sourceColor = cmgr->GetColour(wxT("nassi_source_colour"));
+    commentColor = cmgr->GetColour(wxT("nassi_comment_colour"));
+}
+
 NassiView::NassiView(NassiFileContent *nfc):
     m_nfc(nfc),
     m_fontsize(10),
@@ -59,6 +72,8 @@ NassiView::NassiView(NassiFileContent *nfc):
 {
     m_graphFabric = new GraphFabric(this, &m_GraphBricks);
     nfc->AddObserver(this);
+
+    m_colors.Init();
 }
 const wxPoint NassiView::offset = wxPoint(20,20);
 NassiView::~NassiView()
@@ -1606,3 +1621,8 @@ void NassiView::MoveCaret(const wxPoint& pt)
     if ( caret ) caret->Move( unscrolledpoint );
 }
 
+void NassiView::UpdateColors()
+{
+    m_colors.Init();
+    m_diagramwindow->Refresh();
+}

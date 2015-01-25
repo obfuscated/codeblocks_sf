@@ -186,3 +186,7 @@ bool NassiEditorPanel::GetCSource(wxTextOutputStream &text_stream, wxUint32 n)
     return m_view->ExportCSource(text_stream,n);
 }
 
+void NassiEditorPanel::UpdateColors()
+{
+    m_view->UpdateColors();
+}
