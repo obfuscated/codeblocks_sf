@@ -4630,6 +4630,10 @@ void MainFrame::OnSettingsEnvironment(cb_unused wxCommandEvent& event)
         Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
         m_pPrjManUI->RebuildTree();
         ShowHideStartPage();
+
+        CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
+        event2.SetInt(cbSettingsType::Environment);
+        Manager::Get()->ProcessEvent(event2);
     }
     if (needRestart)
         cbMessageBox(_("Code::Blocks needs to be restarted for the changes to take effect."), _("Information"), wxICON_INFORMATION);
@@ -4652,7 +4656,13 @@ void MainFrame::OnSettingsEditor(cb_unused wxCommandEvent& event)
     wxEndBusyCursor();
 
     if (dlg.ShowModal() == wxID_OK)
+    {
         Manager::Get()->GetEditorManager()->RecreateOpenEditorStyles();
+
+        CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
+        event2.SetInt(cbSettingsType::Editor);
+        Manager::Get()->ProcessEvent(event2);
+    }
 }
 
 void MainFrame::OnSettingsCompiler(cb_unused wxCommandEvent& event)
@@ -4681,7 +4691,12 @@ void MainFrame::OnSettingsDebugger(cb_unused wxCommandEvent& event)
 
 void MainFrame::OnSettingsPlugins(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetPluginManager()->Configure();
+    if (Manager::Get()->GetPluginManager()->Configure() == wxID_OK)
+    {
+        CodeBlocksEvent event2(cbEVT_SETTINGS_CHANGED);
+        event2.SetInt(cbSettingsType::Plugins);
+        Manager::Get()->ProcessEvent(event2);
+    }
 }
 
 void MainFrame::OnSettingsScripting(cb_unused wxCommandEvent& event)

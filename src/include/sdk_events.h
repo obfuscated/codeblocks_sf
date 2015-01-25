@@ -480,7 +480,10 @@ struct cbSettingsType
     enum Type
     {
         Compiler,
-        Debugger
+        Debugger,
+        Environment,
+        Editor,
+        Plugins
     };
 };
 extern EVTIMPORT const wxEventType cbEVT_SETTINGS_CHANGED;
