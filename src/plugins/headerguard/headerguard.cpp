@@ -57,6 +57,9 @@ void HeaderGuard::OnSave(CodeBlocksEvent& event)
 	b ^= (b >> 17); c ^= (c << 11); b ^= (b << 9);
 
 	n.Printf(_T("#ifndef HEADER_%X%X\n#define HEADER_%X%X\n\n"), b, c, b, c);
+
+	ed->GetControl()->BeginUndoAction();
 	ed->GetControl()->InsertText (0, n);
-	ed->GetControl()->InsertText (ed->GetControl()->GetLength(), _T("\n#endif // header guard \n"));
+	ed->GetControl()->InsertText (ed->GetControl()->GetLength() - 1, _T("\n#endif // header guard \n"));
+	ed->GetControl()->EndUndoAction();
 }
