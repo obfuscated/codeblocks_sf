@@ -49,6 +49,7 @@ int ID_FILEPARSECVS=wxNewId();
 int ID_FILEPARSESVN=wxNewId();
 int ID_FILEPARSEHG=wxNewId();
 int ID_FILEPARSEBZR=wxNewId();
+int ID_FILEPARSEGIT=wxNewId();
 int ID_FILE_UPBUTTON=wxNewId();
 int ID_FILEREFRESH=wxNewId();
 int ID_FILEADDTOPROJECT=wxNewId();
@@ -242,6 +243,7 @@ BEGIN_EVENT_TABLE(FileExplorer, wxPanel)
     EVT_MENU(ID_FILEPARSESVN,FileExplorer::OnParseSVN)
     EVT_MENU(ID_FILEPARSEHG,FileExplorer::OnParseHG)
     EVT_MENU(ID_FILEPARSEBZR,FileExplorer::OnParseBZR)
+    EVT_MENU(ID_FILEPARSEGIT,FileExplorer::OnParseGIT)
     EVT_MENU(ID_FILEREFRESH,FileExplorer::OnRefresh)
     EVT_MENU(ID_FILEADDTOPROJECT,FileExplorer::OnAddToProject)
     EVT_KEY_DOWN(FileExplorer::OnKeyDown)
@@ -276,6 +278,7 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
     m_parse_cvs=false;
     m_parse_hg=false;
     m_parse_bzr=false;
+    m_parse_git=false;
     m_parse_svn=false;
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* bsh = new wxBoxSizer(wxHORIZONTAL);
@@ -832,8 +835,9 @@ void FileExplorer::ReadConfig()
     }
     cfg->Read(_T("FileExplorer/ParseCVS"), &m_parse_cvs);
     cfg->Read(_T("FileExplorer/ParseSVN"), &m_parse_svn);
-    cfg->Read(_T("FileExplorer/ParseHG"), &m_parse_bzr);
-    cfg->Read(_T("FileExplorer/ParseBZR"), &m_parse_hg);
+    cfg->Read(_T("FileExplorer/ParseHG"), &m_parse_hg);
+    cfg->Read(_T("FileExplorer/ParseBZR"), &m_parse_bzr);
+    cfg->Read(_T("FileExplorer/ParseGIT"), &m_parse_git);
     cfg->Read(_T("FileExplorer/ShowHiddenFiles"), &m_show_hidden);
 }
 
@@ -869,8 +873,9 @@ void FileExplorer::WriteConfig()
     }
     cfg->Write(_T("FileExplorer/ParseCVS"), m_parse_cvs);
     cfg->Write(_T("FileExplorer/ParseSVN"), m_parse_svn);
-    cfg->Write(_T("FileExplorer/ParseHG"), m_parse_bzr);
-    cfg->Write(_T("FileExplorer/ParseBZR"), m_parse_hg);
+    cfg->Write(_T("FileExplorer/ParseHG"), m_parse_hg);
+    cfg->Write(_T("FileExplorer/ParseBZR"), m_parse_bzr);
+    cfg->Write(_T("FileExplorer/ParseGIT"), m_parse_git);
     cfg->Write(_T("FileExplorer/ShowHiddenFiles"), m_show_hidden);
 }
 
@@ -1112,6 +1117,7 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     viewpop->AppendCheckItem(ID_FILEPARSESVN,_("SVN Decorators"))->Check(m_parse_svn);
     viewpop->AppendCheckItem(ID_FILEPARSEHG,_("Hg Decorators"))->Check(m_parse_hg);
     viewpop->AppendCheckItem(ID_FILEPARSEBZR,_("Bzr Decorators"))->Check(m_parse_bzr);
+    viewpop->AppendCheckItem(ID_FILEPARSEGIT,_("Git Decorators"))->Check(m_parse_git);
     Popup->AppendSubMenu(viewpop,_("&View"));
     Popup->Append(ID_FILEREFRESH,_("Re&fresh"));
     if(m_ticount>1)
@@ -1456,6 +1462,12 @@ void FileExplorer::OnParseCVS(wxCommandEvent &/*event*/)
 void FileExplorer::OnParseSVN(wxCommandEvent &/*event*/)
 {
     m_parse_svn=!m_parse_svn;
+    Refresh(m_Tree->GetRootItem());
+}
+
+void FileExplorer::OnParseGIT(wxCommandEvent &/*event*/)
+{
+    m_parse_git=!m_parse_git;
     Refresh(m_Tree->GetRootItem());
 }
 

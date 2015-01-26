@@ -100,9 +100,16 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
     VCSstatearray sa;
     bool is_vcs=false;
     bool is_cvs=false;
+    bool is_git=false;
 
     // TODO: THIS NEEDS TO BE CALLED FROM MAIN THREAD BUT CAN'T BE UI-BLOCKING (CAN'T CALL wxExecute FROM THREADS)
     // TODO: IDEALLY THE VCS COMMAND LINE PROGRAM SHOULD BE CALLED ONCE ON THE BASE DIRECTORY (SINCE THEY ARE USUALLY RECURSIVE) TO AVOID REPEATED CALLS FOR SUB-DIRS
+    if(m_fe->m_parse_git)
+        if(ParseGITstate(path,sa))
+        {
+            is_vcs=true;
+            is_git=true;
+        }
     if(m_fe->m_parse_svn)
         if(ParseSVNstate(path,sa))
             is_vcs=true;
@@ -129,7 +136,7 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
             itemstate=fvsFolder;
         if(wxFileName::FileExists(fullpath))
         {
-            if(is_vcs&&!is_cvs)
+            if(is_vcs&&!is_cvs&&!is_git)
                 itemstate=fvsVcUpToDate;
             else
                 itemstate=fvsNormal;
@@ -323,6 +330,120 @@ bool FileExplorerUpdater::ParseSVNstate(const wxString &path, VCSstatearray &sa)
 #else
         s.path=wxFileName(output[i].Mid(1).Strip(wxString::both)).GetFullPath();
 #endif
+        sa.Add(s);
+    }
+    return true;
+}
+
+bool FileExplorerUpdater::ParseGITstate(const wxString &path, VCSstatearray &sa)
+{
+    wxString parent=path;
+    while(true)
+    {
+        if(wxFileName::DirExists(wxFileName(parent,_T(".git")).GetFullPath()))
+            break;
+        wxString oldparent=parent;
+        parent=wxFileName(parent).GetPath();
+        if(oldparent==parent||parent.IsEmpty())
+            return false;
+    }
+    if(parent.IsEmpty())
+        return false;
+    wxArrayString output;
+    wxString rpath=parent;
+    wxString old_dir = wxFileName::GetCwd();
+    wxSetWorkingDirectory(parent);
+    #ifdef __WXMSW__
+    int hresult=Exec(_T("cmd /c git status --short"),output);
+    #else
+    int hresult=Exec(_T("git status --short"),output);
+    #endif
+    wxSetWorkingDirectory(old_dir);
+    if(hresult!=0)
+    {
+        return false;
+    }
+    for(size_t i=0;i<output.GetCount();i++)
+    {
+
+/*
+Per git status --help.
+Status code is 2 letter code
+       o   ' ' = unmodified
+       o   M = modified
+       o   A = added
+       o   D = deleted
+       o   R = renamed
+       o   C = copied
+       o   U = updated but unmerged
+
+*/
+        if(output[i].Len()<=3)
+            break;
+        VCSstate s;
+        wxChar a=output[i][0];
+        switch(a)
+        {
+            case 'M':
+                s.state=fvsVcUpToDate;
+                break;
+            case 'A':
+                s.state=fvsVcUpToDate;
+                break;
+            case 'D':
+                s.state=fvsVcUpToDate;
+                break;
+            case 'R':
+                s.state=fvsVcUpToDate;
+                break;
+            case 'C':
+                s.state=fvsVcUpToDate;
+                break;
+            case 'U':
+                s.state=fvsVcUpToDate;
+                break;
+            case '?':
+                s.state=fvsVcNonControlled;
+                break;
+            default:
+                s.state=fvsNormal;
+                break;
+        }
+        a=output[i][1];
+        switch(a)
+        {
+            case 'M':
+                s.state=fvsVcModified;
+                break;
+            case 'A':
+                s.state=fvsVcAdded;
+                break;
+            case 'D':
+                s.state=fvsVcModified;
+                break;
+            case 'R':
+                s.state=fvsVcModified;
+                break;
+            case 'C':
+                s.state=fvsVcModified;
+                break;
+            case 'U':
+                s.state=fvsVcModified;
+                break;
+            case '?':
+                s.state=fvsVcNonControlled;
+                break;
+            case ' ':
+                break;
+            default:
+                s.state=fvsNormal;
+                break;
+        }
+        if(output[i][0]!=' ' && output[i][1]!=' ' && output[i][0]!=output[i][1])
+            s.state=fvsVcConflict;
+        wxFileName f(output[i].Mid(3));
+        f.MakeAbsolute(rpath);
+        s.path=f.GetFullPath();
         sa.Add(s);
     }
     return true;

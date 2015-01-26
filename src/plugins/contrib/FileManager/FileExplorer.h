@@ -99,6 +99,7 @@ private:
     void OnParseSVN(wxCommandEvent &event);
     void OnParseHG(wxCommandEvent &event);
     void OnParseBZR(wxCommandEvent &event);
+    void OnParseGIT(wxCommandEvent &event);
     void OnUpButton(wxCommandEvent &event);
     void OnRefresh(wxCommandEvent &event);
     void OnBeginDragTreeItem(wxTreeEvent &event);
@@ -120,6 +121,7 @@ private:
     void ReadConfig();
 
     wxArrayString GetSelectedPaths();
+    bool ParseGITstate(const wxString &path, VCSstatearray &sa);
     bool ParseBZRstate(const wxString &path, VCSstatearray &sa);
     bool ParseHGstate(const wxString &path, VCSstatearray &sa);
     bool ParseCVSstate(const wxString &path, VCSstatearray &sa);
@@ -169,6 +171,7 @@ private:
     bool m_parse_svn;
     bool m_parse_hg;
     bool m_parse_bzr;
+    bool m_parse_git;
     bool m_kill;
     DECLARE_EVENT_TABLE()
 };

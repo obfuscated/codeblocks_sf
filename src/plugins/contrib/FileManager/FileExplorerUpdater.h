@@ -62,6 +62,7 @@ private:
     wxString m_wildcard;
     wxArrayString m_exec_output;
     virtual ExitCode Entry();
+    bool ParseGITstate(const wxString &path, VCSstatearray &sa);
     bool ParseBZRstate(const wxString &path, VCSstatearray &sa);
     bool ParseHGstate(const wxString &path, VCSstatearray &sa);
     bool ParseCVSstate(const wxString &path, VCSstatearray &sa);
