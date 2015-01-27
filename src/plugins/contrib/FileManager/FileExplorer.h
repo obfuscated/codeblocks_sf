@@ -121,23 +121,16 @@ private:
     void ReadConfig();
 
     wxArrayString GetSelectedPaths();
-    bool ParseGITstate(const wxString &path, VCSstatearray &sa);
-    bool ParseBZRstate(const wxString &path, VCSstatearray &sa);
-    bool ParseHGstate(const wxString &path, VCSstatearray &sa);
-    bool ParseCVSstate(const wxString &path, VCSstatearray &sa);
-    bool ParseSVNstate(const wxString &path, VCSstatearray &sa);
     bool IsFilesOnly(wxArrayTreeItemIds tis);
     void FindFile(const wxString &findfilename, const wxTreeItemId &ti);
     void FocusFile(const wxTreeItemId &ti);
     bool IsInSelection(const wxTreeItemId &ti);
-    bool AddTreeItems(const wxTreeItemId &ti);
     wxString GetFullPath(const wxTreeItemId &ti);
     bool GetItemFromPath(const wxString &path, wxTreeItemId &ti);
     void GetExpandedNodes(wxTreeItemId ti, Expansion *exp);
     void GetExpandedPaths(wxTreeItemId ti, wxArrayString &paths);
     wxTreeItemId GetNextExpandedNode(wxTreeItemId ti);
     bool ValidateRoot();
-    void RecursiveRebuild(wxTreeItemId ti, Expansion *exp);
     void Refresh(wxTreeItemId ti);
     void RefreshExpanded(wxTreeItemId ti);
     void SetImages();
@@ -166,7 +159,7 @@ private:
     wxString m_dragtest;
     size_t m_findmatchcount;
     wxArrayString m_findmatch;
-//    bool m_show_vcs_state;
+
     bool m_parse_cvs;
     bool m_parse_svn;
     bool m_parse_hg;
