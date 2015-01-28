@@ -1148,7 +1148,7 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
         {
             wxString val;
             parser.Found(_T("prefix"), &m_Prefix);
-                    parser.Found(_T("user-data-dir"), &m_UserDataDir);
+            parser.Found(_T("user-data-dir"), &m_UserDataDir);
 #ifdef __WXMSW__
             m_DDE = !parser.Found(_T("no-dde"));
             m_Assocs = !parser.Found(_T("no-check-associations"));
