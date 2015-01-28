@@ -584,12 +584,12 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
 
 bool CreateDirRecursively(const wxString& full_path, int perms)
 {
-    if (wxDirExists(full_path)) // early out
+    wxFileName tmp(full_path);
+    if (wxDirExists(tmp.GetPath())) // early out, even if full_path is a filename, but the path already exists
         return true;
 
     wxArrayString dirs;
     wxString currdir;
-    wxFileName tmp(full_path);
     currdir = tmp.GetVolume() + tmp.GetVolumeSeparator() + wxFILE_SEP_PATH;
     dirs = tmp.GetDirs();
 
