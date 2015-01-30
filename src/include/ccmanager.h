@@ -76,6 +76,10 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void DoHidePopup();
         void DoShowDocumentation(cbEditor* ed);
         void DoUpdateCallTip(cbEditor* ed);
+
+        enum Direction { Previous, Next };
+
+        void AdvanceTip(Direction direction);
         /** format tips by breaking long lines at (hopefully) logical places */
         void DoShowTips(const wxStringVec& tips, cbStyledTextCtrl* stc, int pos, int argsPos, int hlStart, int hlEnd);
 

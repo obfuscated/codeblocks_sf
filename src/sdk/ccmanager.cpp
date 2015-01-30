@@ -397,6 +397,28 @@ void CCManager::InjectAutoCompShow(int lenEntered, const wxString& itemList)
     }
 }
 
+// Change the current call tip to be the next or the previous.
+// Do wrapping if the end is reached in both directions.
+void CCManager::AdvanceTip(Direction direction)
+{
+    if (direction == Next)
+    {
+        ++m_CurCallTip;
+        if (m_CurCallTip == m_CallTips.end())
+            m_CurCallTip = m_CallTips.begin();
+    }
+    else
+    {
+        if (m_CurCallTip == m_CallTips.begin())
+        {
+            if (m_CallTips.size() > 1)
+                m_CurCallTip = m_CallTips.begin() + m_CallTips.size() - 1;
+        }
+        else
+            --m_CurCallTip;
+    }
+}
+
 bool CCManager::ProcessArrow(int key)
 {
     bool wasProcessed = false;
@@ -406,12 +428,13 @@ bool CCManager::ProcessArrow(int key)
     cbStyledTextCtrl* stc = ed->GetControl();
     if (stc->CallTipActive() && m_CallTipActive != wxSCI_INVALID_POSITION && m_CallTips.size() > 1)
     {
-        if (key == WXK_DOWN && (m_CurCallTip + 1) != m_CallTips.end())
-            ++m_CurCallTip;
-        else if (key == WXK_UP && m_CurCallTip != m_CallTips.begin())
-            --m_CurCallTip;
+        if (key == WXK_DOWN)
+            AdvanceTip(Next);
+        else if (key == WXK_UP)
+            AdvanceTip(Previous);
         else
-            return wasProcessed; // moved off end, cancel tip
+            return wasProcessed;
+
         DoUpdateCallTip(ed);
         wasProcessed = true;
     }
@@ -814,12 +837,12 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         switch (event.GetPosition())
         {
             case 1: // up
-                --m_CurCallTip;
+                AdvanceTip(Previous);
                 DoUpdateCallTip(ed);
                 break;
 
             case 2: // down
-                ++m_CurCallTip;
+                AdvanceTip(Next);
                 DoUpdateCallTip(ed);
                 break;
 
@@ -1073,16 +1096,12 @@ void CCManager::OnMenuSelect(wxCommandEvent& event)
         return;
     if (event.GetId() == idCallTipNext)
     {
-        if ((m_CurCallTip + 1) == m_CallTips.end())
-            return;
-        ++m_CurCallTip;
+        AdvanceTip(Next);
         DoUpdateCallTip(ed);
     }
     else if (event.GetId() == idCallTipPrevious)
     {
-        if (m_CurCallTip == m_CallTips.begin())
-            return;
-        --m_CurCallTip;
+        AdvanceTip(Previous);
         DoUpdateCallTip(ed);
     }
 }
@@ -1184,16 +1203,9 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
     cbStyledTextCtrl* stc = ed->GetControl();
     if (m_CallTips.size() > 1)
     {
-        ++offset;
-        if (m_CurCallTip == m_CallTips.begin())
-            tips.front().Prepend(wxT('\002')); // down arrow
-        else if (m_CurCallTip + 1 == m_CallTips.end())
-            tips.front().Prepend(wxT('\001')); // up arrow
-        else
-        {
-            tips.front().Prepend(wxT("\001\002")); // up/down arrows
-            ++offset;
-        }
+        tips.front().Prepend(wxT("\001\002")); // up/down arrows
+        offset += 2;
+
         tips.push_back(wxString::Format(wxT("(%d/%u)"), m_CurCallTip - m_CallTips.begin() + 1, m_CallTips.size()));
         // store for better first choice later
         m_CallTipChoiceDict[CCManagerHelper::CallTipToInt(m_CallTips.front().tip, m_CallTips.size())] = m_CurCallTip - m_CallTips.begin();
