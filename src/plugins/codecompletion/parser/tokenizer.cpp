@@ -754,6 +754,7 @@ bool Tokenizer::SkipPreprocessorBranch()
 
     if (c == _T('#'))
     {
+        // this use the Lex() to fetch an unexpanded token
         const PreprocessorType type = GetPreprocessorType();
         if (type != ptOthers)
         {
@@ -1044,10 +1045,11 @@ bool Tokenizer::CalcConditionExpression()
     while (m_TokenIndex < m_BufferLen - untouchedBufferLen)
     {
 
-        // DoGetToken() internally call SkipUnwanted() function, we call SkipUnwanted() explicitly
-        // because if m_TokenIndex pass the EOL, we should stop the calculating of preprocessor
+        // we run the while loop explicitly before calling the DoGetToken() function.
+        // if m_TokenIndex pass the EOL, we should stop the calculating of preprocessor
         // condition
-        SkipUnwanted();
+        while (SkipWhiteSpace() || SkipComment())
+            ;
 
         if (m_TokenIndex >= m_BufferLen - untouchedBufferLen)
             break;
@@ -1204,6 +1206,8 @@ void Tokenizer::SkipToEndConditionPreprocessor()
 
 PreprocessorType Tokenizer::GetPreprocessorType()
 {
+    // those saved m_TokenIndex only rewind for
+    // the type of ptOthers, so that Parserthread can handle # include xxxx
     const unsigned int undoIndex = m_TokenIndex;
     const unsigned int undoLine = m_LineNumber;
     const unsigned int undoNest = m_NestLevel;
@@ -1258,6 +1262,7 @@ PreprocessorType Tokenizer::GetPreprocessorType()
             break;
     }
 
+    // only rewind m_TokenIndex for ptOthers
     m_TokenIndex = undoIndex;
     m_LineNumber = undoLine;
     m_NestLevel = undoNest;
@@ -1915,7 +1920,10 @@ void Tokenizer::HandleUndefs()
     {
         int index = m_TokenTree->TokenExists(token, -1, tkMacroDef);
         if (index != wxNOT_FOUND)
+        {
+            TRACE(F(_T("macro %s undefined from %s:%d"), token.wx_str(), m_Filename.wx_str(), m_LineNumber));
             m_TokenTree->erase(index);
+        }
     }
     SkipToEOL();
 }
