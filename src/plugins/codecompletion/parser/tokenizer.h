@@ -18,17 +18,10 @@
 /// Enum defines the skip state of the Tokenizer
 enum TokenizerState
 {
-    tsSkipEqual         = 0x0001,         //!< Skip the assignment statement
-    tsSkipQuestion      = 0x0002,         //!< Skip the conditional evaluation statement
-    tsSkipSubScrip      = 0x0004,         //!< Skip the array-subscript notation statement
-
-    tsSingleAngleBrace  = 0x0008,         //!< Reserve angle braces
-    tsReadRawExpression = 0x0010,         //!< Reserve every chars
-
-    tsSkipNone          = 0x1000,         //!< Skip None
-    // convenient masks
-    tsSkipUnWanted      = tsSkipEqual    | tsSkipQuestion | tsSkipSubScrip,
-    tsTemplateArgument  = tsSkipUnWanted | tsSingleAngleBrace
+    // read parentheses as a single token
+    tsNormal        = 0x0000,
+    // read parentheses as token lists.
+    tsRawExpression = 0x0001
 };
 
 /// Enum categorizing C-preprocessor directives
@@ -121,12 +114,6 @@ public:
     {
         return m_State;
     }
-
-    /** Checking the TokenizerState */
-    bool IsSkippingUnwantedTokens() const
-    {
-        return (m_State == tsSkipUnWanted);
-    };
 
     /** Return the opened files name */
     const wxString& GetFilename() const

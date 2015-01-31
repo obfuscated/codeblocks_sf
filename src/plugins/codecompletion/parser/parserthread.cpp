@@ -114,6 +114,8 @@ namespace ParserConsts
     const wxChar   semicolon_chr   (_T(';'));
     const wxChar   opbracket_chr   (_T('('));
     const wxChar   clbracket_chr   (_T(')'));
+    const wxString opbracket       (_T("("));
+    const wxString clbracket       (_T(")"));
     const wxString opbrace         (_T("{"));
     const wxChar   opbrace_chr     (_T('{'));
     const wxString clbrace         (_T("}"));
@@ -257,7 +259,7 @@ void ParserThread::SkipBlock()
     // need to force the tokenizer _not_ skip anything
     // or else default values for template params would cause us to miss everything (because of the '=' symbol)
     TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsSkipNone);
+    m_Tokenizer.SetState(tsNormal);
 
     // skip tokens until we reach }
     // block nesting is taken into consideration too ;)
@@ -286,7 +288,7 @@ void ParserThread::SkipAngleBraces()
     // need to force the tokenizer _not_ skip anything
     // or else default values for template params would cause us to miss everything (because of the '=' symbol)
     TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsSkipNone);
+    m_Tokenizer.SetState(tsNormal);
 
     int nestLvl = 0;
     // NOTE: only exit this loop with 'break' so the tokenizer's state can
@@ -323,7 +325,7 @@ bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec
     result.clear();
 
     wxArrayString nsStack;
-    m_Tokenizer.SetState(tsSkipUnWanted);
+    m_Tokenizer.SetState(tsNormal);
     m_ParsingTypedef = false;
 
     while (m_Tokenizer.NotEOF() && IS_ALIVE)
@@ -343,9 +345,7 @@ bool ParserThread::ParseBufferForNamespaces(const wxString& buffer, NameSpaceVec
                 name = wxEmptyString; // anonymous namespace
             else
             {
-                m_Tokenizer.SetState(tsSkipNone);
                 wxString next = m_Tokenizer.PeekToken();
-                m_Tokenizer.SetState(tsSkipUnWanted);
                 if (next == ParserConsts::equals)
                 {
                     SkipToOneOfChars(ParserConsts::semicolonclbrace);
@@ -533,7 +533,7 @@ void ParserThread::DoParse()
     // need to reset tokenizer's behavior
     // don't forget to reset that if you add any early exit condition!
     TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsSkipUnWanted);
+    m_Tokenizer.SetState(tsNormal);
 
     m_Str.Clear();
     m_LastToken.Clear();
@@ -631,9 +631,6 @@ void ParserThread::DoParse()
 
             case ParserConsts::hash_chr:
                 {
-                    TokenizerState oldState2 = m_Tokenizer.GetState();
-                    m_Tokenizer.SetState(tsSkipNone);
-
                     token = m_Tokenizer.GetToken();
                     if (token == ParserConsts::kw_include)
                         HandleIncludes();
@@ -641,7 +638,6 @@ void ParserThread::DoParse()
                         m_Tokenizer.SkipToEOL();
 
                     m_Str.Clear();
-                    m_Tokenizer.SetState(oldState2);
                 }
                 break;
 
@@ -946,7 +942,6 @@ void ParserThread::DoParse()
                 m_TemplateArgument = ReadAngleBrackets();
                 TRACE(_T("DoParse() : Template argument='%s'"), m_TemplateArgument.wx_str());
                 m_Str.Clear();
-                m_Tokenizer.SetState(tsSkipUnWanted);
                 if (m_Tokenizer.PeekToken() != ParserConsts::kw_class)
                     m_TemplateArgument.clear();
             }
@@ -956,8 +951,6 @@ void ParserThread::DoParse()
             }
             else if (token == ParserConsts::kw_operator)
             {
-                TokenizerState oldState2 = m_Tokenizer.GetState();
-                m_Tokenizer.SetState(tsSkipNone);
                 wxString func = token;
                 while (IS_ALIVE)
                 {
@@ -981,7 +974,6 @@ void ParserThread::DoParse()
                     else
                         break;
                 }
-                m_Tokenizer.SetState(oldState2);
                 HandleFunction(func, true);
                 m_Str.Clear();
             }
@@ -1732,12 +1724,12 @@ void ParserThread::HandleNamespace()
         // not to skip the usually unwanted tokens. One of those tokens is the
         // "assignment" (=).
         // we just have to remember to revert this setting below, or else problems will follow
-        m_Tokenizer.SetState(tsSkipNone);
+        m_Tokenizer.SetState(tsNormal);
 
         wxString next = m_Tokenizer.PeekToken(); // named namespace
         if (next==ParserConsts::opbrace)
         {
-            m_Tokenizer.SetState(tsSkipUnWanted);
+            m_Tokenizer.SetState(tsNormal);
 
             // use the existing copy (if any)
             Token* newToken = TokenExists(ns, m_LastParent, tkNamespace);
@@ -1783,7 +1775,7 @@ void ParserThread::HandleNamespace()
             // namespace abi = __cxxabiv1; <-- we 're in this case now
 
             m_Tokenizer.GetToken(); // eat '='
-            m_Tokenizer.SetState(tsSkipUnWanted);
+            m_Tokenizer.SetState(tsNormal);
 
             Token* lastParent = m_LastParent;
             Token* aliasToken = NULL;
@@ -1813,7 +1805,7 @@ void ParserThread::HandleNamespace()
         }
         else
         {
-            m_Tokenizer.SetState(tsSkipUnWanted);
+            m_Tokenizer.SetState(tsNormal);
             // probably some kind of error in code ?
             SkipToOneOfChars(ParserConsts::semicolonopbrace);
         }
@@ -1826,7 +1818,7 @@ void ParserThread::HandleClass(EClassType ct)
     // as we 're manually parsing class decls
     // don't forget to reset that if you add any early exit condition!
     TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsSkipUnWanted);
+    m_Tokenizer.SetState(tsNormal);
 
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString ancestors;
@@ -2552,7 +2544,7 @@ void ParserThread::HandleEnum()
     bool updateValue = true;
 
     const TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsSkipNone);
+    m_Tokenizer.SetState(tsNormal);
 
     while (IS_ALIVE)
     {
@@ -2615,7 +2607,8 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
 {
     // need to force the tokenizer skip raw expression
     const TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsReadRawExpression);
+    // expand macros, but don't read a single parentheses
+    m_Tokenizer.SetState(tsRawExpression);
 
     Expression exp;
     wxString token, next;
@@ -3204,7 +3197,7 @@ void ParserThread::GetTemplateArgs()
     // need to force the tokenizer _not_ skip anything
     // otherwise default values for template params would cause us to miss everything (because of the '=' symbol)
     TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsSkipNone);
+    m_Tokenizer.SetState(tsNormal);
     m_TemplateArgument.clear();
     int nestLvl = 0;
     // NOTE: only exit this loop with 'break' so the tokenizer's state can
