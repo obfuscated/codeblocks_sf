@@ -42,7 +42,9 @@ enum PreprocessorType
     ptElifndef          = 0x0006,   //!< #elifndef
     ptElse              = 0x0007,   //!< #else
     ptEndif             = 0x0008,   //!< #endif
-    ptOthers            = 0x0009    //!< #include, #define ...
+    ptDefine            = 0x0009,   //!< #define
+    ptUndef             = 0x000A,   //!< #undef
+    ptOthers            = 0x000B    //!< #include
 };
 
 /// Whether we need to handle C-preprocessor directives
@@ -402,6 +404,15 @@ private:
 
     /** If the next token string is macro usage, return true */
     bool IsMacroDefined();
+
+    /** handle the statement: #define XXXXX */
+    void HandleDefines();
+
+    /** handle the statement: #undef XXXXX */
+    void HandleUndefs();
+
+    /** add a macro definition */
+    void AddMacroDefinition(wxString name, int line, wxString para, wxString substitues);
 
     /** Skip to the next conditional preprocessor directive branch. */
     void SkipToNextConditionPreprocessor();
