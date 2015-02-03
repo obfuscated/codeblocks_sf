@@ -1865,11 +1865,18 @@ void EditorManager::OnAppActivated(CodeBlocksEvent& event)
     event.Skip();
     if (!platform::gtk)
         return;
+    static bool firstLaunch = true;
+    if (firstLaunch)
+    {
+        firstLaunch = false;
+        return; // avoid startup crash
+    }
     wxTextDataObject data;
     bool gotData = false;
     wxTheClipboard->UsePrimarySelection(true);
     if (wxTheClipboard->Open())
     {
+        // this line crashes on startup if splash lose focus
         gotData = wxTheClipboard->GetData(data);
         wxTheClipboard->Close();
     }
