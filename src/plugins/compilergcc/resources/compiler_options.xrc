@@ -1141,6 +1141,14 @@
 													<border>8</border>
 												</object>
 												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkSkipIncludeDeps">
+														<label>Skip include dependency check to compute what files need to be compiled (HANDLE WITH CARE!)</label>
+														<help>Enabling this option will skip the calculation of files to be forced to be compiled due to #includes.&#x0A;Setting this option wrong may break the build process.&#x0A;It is intended for compilers/languages not working with the default #include statements.</help>
+													</object>
+													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<border>8</border>
+												</object>
+												<object class="sizeritem">
 													<object class="wxStaticLine" name="ID_STATICLINE7" />
 													<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 													<border>8</border>

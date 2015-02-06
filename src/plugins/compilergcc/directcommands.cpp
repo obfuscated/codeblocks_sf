@@ -1088,6 +1088,10 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
     if (timeSrc > timeObj)
         return true;
 
+    // Do the check for includes only, if not disabled by the user, e.g. in case of non C/C++ compilers
+    if ( Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/skip_include_deps"), false) )
+        return false;
+
     // Scan the source file for headers. Result is NULL if the file does
     // not exist. If one of the descendent header files is newer than the
     // object file, then the object file must be built.

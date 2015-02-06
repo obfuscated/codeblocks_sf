@@ -537,6 +537,10 @@ void CompilerOptionsDlg::DoFillOthers()
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false));
 
+    chk = XRCCTRL(*this, "chkSkipIncludeDeps", wxCheckBox);
+    if (chk)
+        chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/skip_include_deps"), false));
+
     chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
     if (chk)
         chk->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/save_html_build_log"), false));
@@ -2745,6 +2749,9 @@ void CompilerOptionsDlg::OnApply()
         chk = XRCCTRL(*this, "chkIncludePrjCwd", wxCheckBox);
         if (chk)
             cfg->Write(_T("/include_prj_cwd"), (bool)chk->IsChecked());
+        chk = XRCCTRL(*this, "chkSkipIncludeDeps", wxCheckBox);
+        if (chk)
+            cfg->Write(_T("/skip_include_deps"), (bool)chk->IsChecked());
         chk = XRCCTRL(*this, "chkSaveHtmlLog", wxCheckBox);
         if (chk)
             cfg->Write(_T("/save_html_build_log"), (bool)chk->IsChecked());

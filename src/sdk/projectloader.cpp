@@ -729,7 +729,15 @@ void ProjectLoader::DoResourceCompilerOptions(TiXmlElement* parentNode, ProjectB
     TiXmlElement* child = node->FirstChildElement("Add");
     while (child)
     {
+        wxString option = cbC2U(child->Attribute("option"));
         wxString dir = UnixFilename(cbC2U(child->Attribute("directory")));
+        if (!option.IsEmpty())
+        {
+            if (target)
+                target->AddResourceCompilerOption(option);
+            else
+                m_pProject->AddResourceCompilerOption(option);
+        }
         if (!dir.IsEmpty())
         {
             if (target)
@@ -1404,6 +1412,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
             tgtnode->RemoveChild(node);
 
         node = AddElement(tgtnode, "ResourceCompiler");
+        AddArrayOfElements(node, "Add", "option",    target->GetResourceCompilerOptions());
         AddArrayOfElements(node, "Add", "directory", target->GetResourceIncludeDirs(), true);
         if (node->NoChildren())
             tgtnode->RemoveChild(node);
@@ -1468,6 +1477,7 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
         prjnode->RemoveChild(node);
 
     node = AddElement(prjnode, "ResourceCompiler");
+    AddArrayOfElements(node, "Add", "option",    m_pProject->GetResourceCompilerOptions());
     AddArrayOfElements(node, "Add", "directory", m_pProject->GetResourceIncludeDirs(), true);
     if (node->NoChildren())
         prjnode->RemoveChild(node);
