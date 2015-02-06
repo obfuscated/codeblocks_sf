@@ -505,7 +505,10 @@ bool Manager::LoadResource(const wxString& file)
     wxString memoryFile = _T("memory:") + file;
 
     if (wxFile::Access(resourceFile, wxFile::read) == false)
+    {
+        Get()->GetLogManager()->LogError(_("Manager failed to access XRC resource '") + resourceFile + _("'."));
         return false;
+    }
 
     // The code below forces a reload of the resource
     // Currently unused...
@@ -529,13 +532,15 @@ bool Manager::LoadResource(const wxString& file)
         {
             wxMemoryFSHandler::AddFile(file, buf, len);
         }
-        wxXmlResource::Get()->Load(memoryFile);
+        if ( !wxXmlResource::Get()->Load(memoryFile) )
+            Get()->GetLogManager()->LogError(_("Manager failed to load XRC resource '") + resourceFile + _("'."));
         delete[] buf;
         return true;
     }
     catch (...)
     {
         delete[] buf;
+        Get()->GetLogManager()->LogError(_("Manager failed to load XRC resource '") + resourceFile + _("'."));
         return false;
     }
 }

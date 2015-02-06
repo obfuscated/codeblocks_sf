@@ -104,6 +104,8 @@ namespace ScriptBindings
                             _("Error"), wxICON_ERROR);
             }
         }
+        else
+            Manager::Get()->GetLogManager()->DebugLog(_T("Loading XRC: '") + actual + _T("' FAILED!"));
         return -1;
     }
 
