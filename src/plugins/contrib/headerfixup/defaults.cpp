@@ -2045,12 +2045,16 @@ void Bindings::SetDefaultsSTL()
   AddBinding(_T("STL"),_T("clog"),                               _T("iostream"));
   AddBinding(_T("STL"),_T("cout"),                               _T("iostream"));
   AddBinding(_T("STL"),_T("endl"),                               _T("iostream"));
-  AddBinding(_T("STL"),_T("istream"),                            _T("iostream"));
-  AddBinding(_T("STL"),_T("ostream"),                            _T("iostream"));
   AddBinding(_T("STL"),_T("wcerr"),                              _T("iostream"));
   AddBinding(_T("STL"),_T("wcin"),                               _T("iostream"));
   AddBinding(_T("STL"),_T("wclog"),                              _T("iostream"));
   AddBinding(_T("STL"),_T("wcout"),                              _T("iostream"));
+  AddBinding(_T("STL"),_T("basic_istream"),                      _T("istream"));
+  AddBinding(_T("STL"),_T("basic_iostream"),                     _T("istream"));
+  AddBinding(_T("STL"),_T("istream"),                            _T("istream"));
+  AddBinding(_T("STL"),_T("iostream"),                           _T("istream"));
+  AddBinding(_T("STL"),_T("wistream"),                           _T("istream"));
+  AddBinding(_T("STL"),_T("wiostream"),                          _T("istream"));
   AddBinding(_T("STL"),_T("advance"),                            _T("iterator"));
   AddBinding(_T("STL"),_T("back_inserter"),                      _T("iterator"));
   AddBinding(_T("STL"),_T("distance"),                           _T("iterator"));
@@ -2123,6 +2127,9 @@ void Bindings::SetDefaultsSTL()
   AddBinding(_T("STL"),_T("partial_sum"),                        _T("numeric"));
   AddBinding(_T("STL"),_T("unchecked_adjacent_difference"),      _T("numeric"));
   AddBinding(_T("STL"),_T("unchecked_partial_sum"),              _T("numeric"));
+  AddBinding(_T("STL"),_T("basic_ostream"),                      _T("ostream"));
+  AddBinding(_T("STL"),_T("ostream"),                            _T("ostream"));
+  AddBinding(_T("STL"),_T("wostream"),                           _T("ostream"));
   AddBinding(_T("STL"),_T("priority_queue "),                    _T("queue"));
   AddBinding(_T("STL"),_T("queue"),                              _T("queue"));
   AddBinding(_T("STL"),_T("multiset"),                           _T("set"));
