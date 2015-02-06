@@ -111,6 +111,19 @@ const wxArrayString& CompileOptionsBase::GetCompilerOptions() const
     return m_CompilerOptions;
 }
 
+void CompileOptionsBase::SetResourceCompilerOptions(const wxArrayString& resourceCompilerOpts)
+{
+    if (m_ResourceCompilerOptions == resourceCompilerOpts)
+        return;
+    m_ResourceCompilerOptions = resourceCompilerOpts;
+    SetModified(true);
+}
+
+const wxArrayString& CompileOptionsBase::GetResourceCompilerOptions() const
+{
+    return m_ResourceCompilerOptions;
+}
+
 void CompileOptionsBase::SetIncludeDirs(const wxArrayString& includeDirs)
 {
     if (m_IncludeDirs == includeDirs)
@@ -282,6 +295,16 @@ void CompileOptionsBase::AddCompilerOption(const wxString& option)
     }
 }
 
+void CompileOptionsBase::AddResourceCompilerOption(const wxString& option)
+{
+    wxString envopt = option;
+    if (m_ResourceCompilerOptions.Index(envopt, case_sensitive) == wxNOT_FOUND)
+    {
+        m_ResourceCompilerOptions.Add(envopt);
+        SetModified(true);
+    }
+}
+
 void CompileOptionsBase::AddIncludeDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
@@ -365,6 +388,17 @@ void CompileOptionsBase::RemoveCompilerOption(const wxString& option)
     if (idx != wxNOT_FOUND)
     {
         m_CompilerOptions.RemoveAt(idx);
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::RemoveResourceCompilerOption(const wxString& option)
+{
+    wxString envopt = option;
+    int idx = m_ResourceCompilerOptions.Index(envopt, case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_ResourceCompilerOptions.RemoveAt(idx);
         SetModified(true);
     }
 }

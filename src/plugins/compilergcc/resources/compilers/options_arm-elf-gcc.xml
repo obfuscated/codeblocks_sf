@@ -388,7 +388,7 @@
     <Command name="GenDependencies"
              value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
     <Command name="CompileResource"
-             value="$rescomp -i $file -J rc -o $resource_output -O coff $res_includes"/>
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
     <Command name="LinkConsoleExe"
              value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
     <if platform="windows">

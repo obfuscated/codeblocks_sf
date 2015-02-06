@@ -169,7 +169,7 @@
                  value="$compiler /nologo $options $includes /c $file /Fo$object"/>
         <!-- The rest are part of the microsoft sdk. The xilink.exe calls link.exe eventually. -->
         <Command name="CompileResource"
-                 value="$rescomp $res_includes -fo$resource_output $file"/>
+                 value="$rescomp $res_includes $res_options -fo$resource_output $file"/>
         <Command name="LinkExe"
                  value="$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
         <Command name="LinkConsoleExe"
@@ -381,7 +381,7 @@
         <Command name="GenDependencies"
                  value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
         <Command name="CompileResource"
-                 value="$rescomp -i $file -J rc -o $resource_output -O coff $res_includes"/>
+                 value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
         <Command name="LinkConsoleExe"
                  value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
         <Command name="LinkExe"

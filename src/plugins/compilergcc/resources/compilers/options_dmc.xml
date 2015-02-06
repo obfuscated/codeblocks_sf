@@ -173,7 +173,7 @@
     <Command name="CompileObject"
              value="$compiler -mn -c $options $includes -o$object $file"/>
     <Command name="CompileResource"
-             value="$rescomp -32 $res_includes -o$resource_output $file"/>
+             value="$rescomp -32 $res_includes $res_options -o$resource_output $file"/>
     <Command name="LinkConsoleExe"
              value="$linker /NOLOGO $link_objects, $exe_output, , $libs $link_options"/>
     <Command name="LinkNative"

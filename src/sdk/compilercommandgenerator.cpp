@@ -56,8 +56,8 @@ void CompilerCommandGenerator::Init(cbProject* project)
     m_Lib.clear();
     m_RC.clear();
     m_CFlags.clear();
-    m_LDFlags.clear();
     m_RCFlags.clear();
+    m_LDFlags.clear();
     m_LDAdd.clear();
 
     // don't clear the backticks cache - it wouldn't be a cache then :)
@@ -78,9 +78,9 @@ void CompilerCommandGenerator::Init(cbProject* project)
         m_Lib[nullptr]       = SetupLibrariesDirs(compiler, nullptr);
         m_RC[nullptr]        = SetupResourceIncludeDirs(compiler, nullptr);
         m_CFlags[nullptr]    = SetupCompilerOptions(compiler, nullptr);
+        m_RCFlags[nullptr]   = SetupResourceCompilerOptions(compiler, nullptr);
         m_LDFlags[nullptr]   = SetupLinkerOptions(compiler, nullptr);
         m_LDAdd[nullptr]     = SetupLinkLibraries(compiler, nullptr);
-        m_RCFlags[nullptr]   = SetupResourceCompilerOptions(compiler, nullptr);
         return;
     }
     else
@@ -134,9 +134,9 @@ void CompilerCommandGenerator::Init(cbProject* project)
             m_Lib[target]          = wxEmptyString;
             m_RC[target]           = wxEmptyString;
             m_CFlags[target]       = wxEmptyString;
+            m_RCFlags[target]      = wxEmptyString;
             m_LDFlags[target]      = wxEmptyString;
             m_LDAdd[target]        = wxEmptyString;
-            m_RCFlags[target]      = wxEmptyString;
             // continue with next target
             continue;
         }
@@ -159,9 +159,9 @@ void CompilerCommandGenerator::Init(cbProject* project)
         m_Lib[target]       = SetupLibrariesDirs(compiler, target);
         m_RC[target]        = SetupResourceIncludeDirs(compiler, target);
         m_CFlags[target]    = SetupCompilerOptions(compiler, target);
+        m_RCFlags[target]   = SetupResourceCompilerOptions(compiler, target);
         m_LDFlags[target]   = SetupLinkerOptions(compiler, target);
         m_LDAdd[target]     = SetupLinkLibraries(compiler, target);
-        m_RCFlags[target]   = SetupResourceCompilerOptions(compiler, target);
 
         // restore target settings
         *(CompileTargetBase*)target = backuptarget;
@@ -362,7 +362,8 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[1]: macro='%s', fileInc='%s'."),
                                                 macro.wx_str(), fileInc.wx_str()));
 #endif
-    wxString cFlags  = m_CFlags[target];
+    // Special handling for compiler options to filter between C and C++ compilers
+    wxString cFlags = m_CFlags[target];
     wxArrayString remFlags;
     if (compExec == ceC)
         remFlags = GetArrayFromString(compiler->GetCPPOnlyFlags(), wxT(" "));
@@ -395,6 +396,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     macro.Replace(_T("$lib_linker"),    compiler->GetPrograms().LIB);
     macro.Replace(_T("$rescomp"),       compiler->GetPrograms().WINDRES);
     macro.Replace(_T("$options"),       cFlags);
+    macro.Replace(_T("$res_options"),   m_RCFlags[target]);
     macro.Replace(_T("$link_options"),  m_LDFlags[target]);
     macro.Replace(_T("$includes"),      tmpIncludes);
     macro.Replace(_T("$res_includes"),  tmpResIncludes);
@@ -719,11 +721,9 @@ wxArrayString CompilerCommandGenerator::GetOrderedIncludeDirs(Compiler* compiler
         for (unsigned int x = 0; x < searchDirs.GetCount(); ++x)
             Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
         // respect include dirs set by specific options (helps dependency tracking)
-        bool incPrjDir = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false);
-        if (incPrjDir)
+        if ( Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_prj_cwd"), false) )
             searchDirs.Add(target->GetParentProject()->GetBasePath());
-        bool incFileDir = Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false);
-        if (incFileDir)
+        if ( Manager::Get()->GetConfigManager(_T("compiler"))->ReadBool(_T("/include_file_cwd"), false) )
             searchDirs.Add(_T("."));
         m_CompilerSearchDirs.insert(m_CompilerSearchDirs.end(), std::make_pair(target, searchDirs));
 

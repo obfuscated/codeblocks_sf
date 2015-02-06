@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_compiler>
-<CodeBlocks_compiler name="GNU GCC Compiler for PowerPC"
+<CodeBlocks_compiler name="GNU GCC Compiler for PowerPC (HighTec)"
                      id="ppc-gcc"
                      weight="68">
     <Path type="master">

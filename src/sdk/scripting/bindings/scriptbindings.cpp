@@ -429,6 +429,7 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::SetLinkerOptions, "SetLinkerOptions").
                 func(&CompileOptionsBase::SetLinkLibs, "SetLinkLibs").
                 func(&CompileOptionsBase::SetCompilerOptions, "SetCompilerOptions").
+                func(&CompileOptionsBase::SetResourceCompilerOptions, "SetResourceCompilerOptions").
                 func(&CompileOptionsBase::SetIncludeDirs, "SetIncludeDirs").
                 func(&CompileOptionsBase::SetResourceIncludeDirs, "SetResourceIncludeDirs").
                 func(&CompileOptionsBase::SetLibDirs, "SetLibDirs").
@@ -437,6 +438,7 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::GetLinkerOptions, "GetLinkerOptions").
                 func(&CompileOptionsBase::GetLinkLibs, "GetLinkLibs").
                 func(&CompileOptionsBase::GetCompilerOptions, "GetCompilerOptions").
+                func(&CompileOptionsBase::GetResourceCompilerOptions, "GetResourceCompilerOptions").
                 func(&CompileOptionsBase::GetIncludeDirs, "GetIncludeDirs").
                 func(&CompileOptionsBase::GetResourceIncludeDirs, "GetResourceIncludeDirs").
                 func(&CompileOptionsBase::GetLibDirs, "GetLibDirs").
@@ -447,6 +449,7 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::AddLinkerOption, "AddLinkerOption").
                 func(&CompileOptionsBase::AddLinkLib, "AddLinkLib").
                 func(&CompileOptionsBase::AddCompilerOption, "AddCompilerOption").
+                func(&CompileOptionsBase::AddResourceCompilerOption, "AddResourceCompilerOption").
                 func(&CompileOptionsBase::AddIncludeDir, "AddIncludeDir").
                 func(&CompileOptionsBase::AddResourceIncludeDir, "AddResourceIncludeDir").
                 func(&CompileOptionsBase::AddLibDir, "AddLibDir").
@@ -456,6 +459,7 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::RemoveLinkLib, "RemoveLinkLib").
                 func(&CompileOptionsBase::RemoveCompilerOption, "RemoveCompilerOption").
                 func(&CompileOptionsBase::RemoveIncludeDir, "RemoveIncludeDir").
+                func(&CompileOptionsBase::RemoveResourceCompilerOption, "RemoveResourceCompilerOption").
                 func(&CompileOptionsBase::RemoveResourceIncludeDir, "RemoveResourceIncludeDir").
                 func(&CompileOptionsBase::RemoveLibDir, "RemoveLibDir").
                 func(&CompileOptionsBase::RemoveCommandsBeforeBuild, "RemoveCommandsBeforeBuild").

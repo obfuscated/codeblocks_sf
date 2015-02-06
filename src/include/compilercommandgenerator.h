@@ -91,9 +91,9 @@ class DLLIMPORT CompilerCommandGenerator
         OptionsMap m_Lib;          ///< linker 'include' dirs, per-target
         OptionsMap m_RC;           ///< resource compiler 'include' dirs, per-target
         OptionsMap m_CFlags;       ///< compiler flags, per-target
+        OptionsMap m_RCFlags;      ///< resource compiler flags, per-target
         OptionsMap m_LDFlags;      ///< linker flags, per-target
         OptionsMap m_LDAdd;        ///< link libraries, per-target
-        OptionsMap m_RCFlags;      ///< resource compiler flags, per-target
 
         wxString m_PrjIncPath; ///< directive to add the project's top-level path in compiler search dirs (ready for the command line)
 

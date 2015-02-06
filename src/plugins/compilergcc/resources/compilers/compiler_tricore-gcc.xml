@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_compiler>
-<CodeBlocks_compiler name="GNU GCC Compiler for TriCore"
+<CodeBlocks_compiler name="GNU GCC Compiler for TriCore (HighTec)"
                      id="tricore-gcc"
-                     weight="72">
+                     weight="67">
     <Path type="master">
         <Search envVar="PATH"
                 for="C"/>

@@ -181,7 +181,7 @@
     <Command name="CompileObject"
              value="$compiler -q $options $includes -o$object -c $file"/>
     <Command name="CompileResource"
-             value="$rescomp -32 -fo$resource_output $res_includes $file"/>
+             value="$rescomp -32 -fo$resource_output $res_includes $res_options $file"/>
     <Command name="LinkExe"
              value="$linker -q -aa  $link_options $libdirs c0w32 $link_objects,$exe_output,,$libs,,$link_resobjects"/>
     <Command name="LinkConsoleExe"

@@ -1064,7 +1064,7 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
             *errorStr = _("WARNING: Can't read file's timestamp: ") + pfd.source_file_absolute_native;
 
         if (wxFileExists(pfd.source_file_absolute_native))
-            return true;
+            return true; // fall-back: Its better to compile in that case
 
         return false;
     }
@@ -1080,7 +1080,7 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
                                                                   : pfd.object_file_absolute_native;
     depsTimeStamp(ObjectAbs.mb_str(), &timeObj);
     if (!timeObj)
-        return true;
+        return true; // fall-back: Its better to compile in that case
 
     // If the source file is newer than the object file, then the object file
     // must be built. In this case there is no need to scan the source file
@@ -1099,7 +1099,7 @@ bool DirectCommands::IsObjectOutdated(ProjectBuildTarget* target, const pfDetail
         return (timeNewest > timeObj);
     }
 
-    // object file is up to date with source file
+    // object file is up to date with source file and does not depend on #includes
     return false;
 }
 

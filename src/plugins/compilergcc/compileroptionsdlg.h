@@ -124,6 +124,7 @@ class CompilerOptionsDlg : public cbConfigurationPanel
         wxArrayString                m_LinkerOptions;
         wxArrayString                m_LinkLibs;
         wxArrayString                m_CompilerOptions;
+        wxArrayString                m_ResourceCompilerOptions;
         int                          m_CurrentCompilerIdx;
         cbProject*                   m_pProject;
         ProjectBuildTarget*          m_pTarget;

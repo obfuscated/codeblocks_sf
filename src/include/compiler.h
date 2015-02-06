@@ -30,6 +30,7 @@ class wxXmlNode;
     Linker executable: $linker
     Linker executable for static libs: $lib_linker
     Compiler options: $options
+    Resource compiler options: $res_options
     Linker options: $link_options
     Include dirs: $includes
     Resource include dirs: $res_includes

@@ -26,7 +26,7 @@
         <Switch name="linkerNeedsLibExtension" value="true"/>
 
         <Command name="CompileResource"
-                 value="$rescomp -o$resource_output $res_includes $file -32 -r"/>
+                 value="$rescomp -o$resource_output $res_options $res_includes $file -32 -r"/>
         <Command name="LinkExe"
                  value="$linker $exe_output $link_options $link_objects $link_resobjects $libs"/>
         <Command name="LinkConsoleExe"

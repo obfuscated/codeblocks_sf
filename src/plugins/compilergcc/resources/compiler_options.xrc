@@ -170,10 +170,26 @@
 																	</object>
 																</object>
 															</object>
-															<label>Other options</label>
+															<label>Other compiler options</label>
 														</object>
 														<object class="notebookpage">
 															<object class="wxPanel" name="ID_PANEL3">
+																<object class="wxBoxSizer">
+																	<orient>wxVERTICAL</orient>
+																	<object class="sizeritem">
+																		<object class="wxTextCtrl" name="txtResourceCompilerOptions">
+																			<style>wxTE_MULTILINE|wxHSCROLL</style>
+																		</object>
+																		<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<border>8</border>
+																		<option>1</option>
+																	</object>
+																</object>
+															</object>
+															<label>Other resource compiler options</label>
+														</object>
+														<object class="notebookpage">
+															<object class="wxPanel" name="ID_PANEL6">
 																<object class="wxBoxSizer">
 																	<orient>wxVERTICAL</orient>
 																	<object class="sizeritem">

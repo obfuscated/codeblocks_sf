@@ -52,6 +52,11 @@ class DLLIMPORT CompileOptionsBase
         virtual void AddCompilerOption(const wxString& option);
         virtual void RemoveCompilerOption(const wxString& option);
 
+        virtual void SetResourceCompilerOptions(const wxArrayString& resourceCompilerOpts);
+        virtual const wxArrayString& GetResourceCompilerOptions() const;
+        virtual void AddResourceCompilerOption(const wxString& option);
+        virtual void RemoveResourceCompilerOption(const wxString& option);
+
         virtual void SetIncludeDirs(const wxArrayString& includeDirs);
         virtual const wxArrayString& GetIncludeDirs() const;
         virtual void AddIncludeDir(const wxString& option);
@@ -99,6 +104,7 @@ class DLLIMPORT CompileOptionsBase
         wxArrayString m_LinkerOptions;
         wxArrayString m_LinkLibs;
         wxArrayString m_CompilerOptions;
+        wxArrayString m_ResourceCompilerOptions;
         wxArrayString m_IncludeDirs;
         wxArrayString m_ResIncludeDirs;
         wxArrayString m_LibDirs;

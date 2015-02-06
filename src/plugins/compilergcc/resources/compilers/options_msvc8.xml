@@ -84,7 +84,7 @@
     <Command name="CompileObject"
              value="$compiler /nologo $options $includes /c $file /Fo$object"/>
     <Command name="CompileResource"
-             value="$rescomp $res_includes -fo$resource_output $file"/>
+             value="$rescomp $res_includes $res_options -fo$resource_output $file"/>
     <Command name="LinkExe"
              value="$linker /nologo /subsystem:windows $libdirs /out:$exe_output $libs $link_objects $link_resobjects $link_options"/>
     <Command name="LinkConsoleExe"

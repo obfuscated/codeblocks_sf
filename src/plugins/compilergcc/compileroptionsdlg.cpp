@@ -161,6 +161,7 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_CHECKBOX(              XRCID("chkAlwaysRunPost"),               CompilerOptionsDlg::OnDirty)
     EVT_CHECKBOX(              XRCID("chkNonPlatComp"),                 CompilerOptionsDlg::OnDirty)
     EVT_TEXT(                  XRCID("txtCompilerOptions"),             CompilerOptionsDlg::OnDirty)
+    EVT_TEXT(                  XRCID("txtResourceCompilerOptions"),     CompilerOptionsDlg::OnDirty)
     EVT_TEXT(                  XRCID("txtCompilerDefines"),             CompilerOptionsDlg::OnDirty)
     EVT_TEXT(                  XRCID("txtLinkerOptions"),               CompilerOptionsDlg::OnDirty)
     EVT_TEXT(                  XRCID("txtCmdBefore"),                   CompilerOptionsDlg::OnDirty)
@@ -756,7 +757,8 @@ inline void DoGetCompileOptions(wxArrayString& array, const wxTextCtrl* control)
 {
 /* NOTE (mandrav#1#): Under Gnome2, wxTextCtrl::GetLineLength() returns always 0,
                       so wxTextCtrl::GetLineText() is always empty...
-                      Now, we 're breaking up by newlines. */    array.Clear();
+                      Now, we 're breaking up by newlines. */
+    array.Clear();
 #if 1
     wxString tmp = control->GetValue();
     int nl = tmp.Find(_T('\n'));
@@ -821,6 +823,7 @@ void CompilerOptionsDlg::DoLoadOptions()
             ResDirs = compiler->GetResourceIncludeDirs();
             LibDirs = compiler->GetLibDirs();
             m_CompilerOptions = compiler->GetCompilerOptions();
+            m_ResourceCompilerOptions = compiler->GetResourceCompilerOptions();
             m_LinkerOptions = compiler->GetLinkerOptions();
             m_LinkLibs = compiler->GetLinkLibs();
 
@@ -839,18 +842,19 @@ void CompilerOptionsDlg::DoLoadOptions()
             ResDirs = m_pProject->GetResourceIncludeDirs();
             LibDirs = m_pProject->GetLibDirs();
             m_CompilerOptions = m_pProject->GetCompilerOptions();
+            m_ResourceCompilerOptions = m_pProject->GetResourceCompilerOptions();
             m_LinkerOptions = m_pProject->GetLinkerOptions();
             m_LinkLibs = m_pProject->GetLinkLibs();
             CommandsAfterBuild = m_pProject->GetCommandsAfterBuild();
             CommandsBeforeBuild = m_pProject->GetCommandsBeforeBuild();
             AlwaysUsePost = m_pProject->GetAlwaysRunPostBuildSteps();
 
-            XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcBuild));
-            XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcCompileFile));
-            XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcClean));
-            XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcDistClean));
+            XRCCTRL(*this, "txtMakeCmd_Build",            wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcBuild));
+            XRCCTRL(*this, "txtMakeCmd_Compile",          wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcCompileFile));
+            XRCCTRL(*this, "txtMakeCmd_Clean",            wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcClean));
+            XRCCTRL(*this, "txtMakeCmd_DistClean",        wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcDistClean));
             XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcAskRebuildNeeded));
-            XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcSilentBuild));
+            XRCCTRL(*this, "txtMakeCmd_SilentBuild",      wxTextCtrl)->SetValue(m_pProject->GetMakeCommandFor(mcSilentBuild));
         }
         else
         {
@@ -860,33 +864,35 @@ void CompilerOptionsDlg::DoLoadOptions()
             ResDirs = m_pTarget->GetResourceIncludeDirs();
             LibDirs = m_pTarget->GetLibDirs();
             m_CompilerOptions = m_pTarget->GetCompilerOptions();
+            m_ResourceCompilerOptions = m_pTarget->GetResourceCompilerOptions();
             m_LinkerOptions = m_pTarget->GetLinkerOptions();
             m_LinkLibs = m_pTarget->GetLinkLibs();
             CommandsAfterBuild = m_pTarget->GetCommandsAfterBuild();
             CommandsBeforeBuild = m_pTarget->GetCommandsBeforeBuild();
             AlwaysUsePost = m_pTarget->GetAlwaysRunPostBuildSteps();
             XRCCTRL(*this, "cmbCompilerPolicy", wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortCompilerOptions));
-            XRCCTRL(*this, "cmbLinkerPolicy", wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortLinkerOptions));
+            XRCCTRL(*this, "cmbLinkerPolicy",   wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortLinkerOptions));
             XRCCTRL(*this, "cmbIncludesPolicy", wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortIncludeDirs));
-            XRCCTRL(*this, "cmbLibDirsPolicy", wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortLibDirs));
-            XRCCTRL(*this, "cmbResDirsPolicy", wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortResDirs));
+            XRCCTRL(*this, "cmbLibDirsPolicy",  wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortLibDirs));
+            XRCCTRL(*this, "cmbResDirsPolicy",  wxChoice)->SetSelection(m_pTarget->GetOptionRelation(ortResDirs));
 
-            XRCCTRL(*this, "txtMakeCmd_Build", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcBuild));
-            XRCCTRL(*this, "txtMakeCmd_Compile", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcCompileFile));
-            XRCCTRL(*this, "txtMakeCmd_Clean", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcClean));
-            XRCCTRL(*this, "txtMakeCmd_DistClean", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcDistClean));
+            XRCCTRL(*this, "txtMakeCmd_Build",            wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcBuild));
+            XRCCTRL(*this, "txtMakeCmd_Compile",          wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcCompileFile));
+            XRCCTRL(*this, "txtMakeCmd_Clean",            wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcClean));
+            XRCCTRL(*this, "txtMakeCmd_DistClean",        wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcDistClean));
             XRCCTRL(*this, "txtMakeCmd_AskRebuildNeeded", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcAskRebuildNeeded));
-            XRCCTRL(*this, "txtMakeCmd_SilentBuild", wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcSilentBuild));
+            XRCCTRL(*this, "txtMakeCmd_SilentBuild",      wxTextCtrl)->SetValue(m_pTarget->GetMakeCommandFor(mcSilentBuild));
         }
     }
     TextToOptions();
 
     DoFillOptions();
-    ArrayString2ListBox(IncludeDirs,        XRCCTRL(*this, "lstIncludeDirs", wxListBox));
-    ArrayString2ListBox(LibDirs,            XRCCTRL(*this, "lstLibDirs", wxListBox));
-    ArrayString2ListBox(ResDirs,            XRCCTRL(*this, "lstResDirs", wxListBox));
-    ArrayString2TextCtrl(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
-    ArrayString2TextCtrl(m_LinkerOptions,   XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
+    ArrayString2ListBox(IncludeDirs,                XRCCTRL(*this, "lstIncludeDirs",             wxListBox));
+    ArrayString2ListBox(LibDirs,                    XRCCTRL(*this, "lstLibDirs",                 wxListBox));
+    ArrayString2ListBox(ResDirs,                    XRCCTRL(*this, "lstResDirs",                 wxListBox));
+    ArrayString2TextCtrl(m_CompilerOptions,         XRCCTRL(*this, "txtCompilerOptions",         wxTextCtrl));
+    ArrayString2TextCtrl(m_ResourceCompilerOptions, XRCCTRL(*this, "txtResourceCompilerOptions", wxTextCtrl));
+    ArrayString2TextCtrl(m_LinkerOptions,           XRCCTRL(*this, "txtLinkerOptions",           wxTextCtrl));
 
     // only if "Commands" page exists
     if (m_pProject)
@@ -978,11 +984,12 @@ void CompilerOptionsDlg::DoSaveOptions()
     wxArrayString IncludeDirs;
     wxArrayString LibDirs;
     wxArrayString ResDirs;
-    ListBox2ArrayString(IncludeDirs,       XRCCTRL(*this, "lstIncludeDirs", wxListBox));
-    ListBox2ArrayString(LibDirs,           XRCCTRL(*this, "lstLibDirs", wxListBox));
-    ListBox2ArrayString(ResDirs,           XRCCTRL(*this, "lstResDirs", wxListBox));
-    DoGetCompileOptions(m_CompilerOptions, XRCCTRL(*this, "txtCompilerOptions", wxTextCtrl));
-    DoGetCompileOptions(m_LinkerOptions,   XRCCTRL(*this, "txtLinkerOptions", wxTextCtrl));
+    ListBox2ArrayString(IncludeDirs,               XRCCTRL(*this, "lstIncludeDirs",             wxListBox));
+    ListBox2ArrayString(LibDirs,                   XRCCTRL(*this, "lstLibDirs",                 wxListBox));
+    ListBox2ArrayString(ResDirs,                   XRCCTRL(*this, "lstResDirs",                 wxListBox));
+    DoGetCompileOptions(m_CompilerOptions,         XRCCTRL(*this, "txtCompilerOptions",         wxTextCtrl));
+    DoGetCompileOptions(m_ResourceCompilerOptions, XRCCTRL(*this, "txtResourceCompilerOptions", wxTextCtrl));
+    DoGetCompileOptions(m_LinkerOptions,           XRCCTRL(*this, "txtLinkerOptions",           wxTextCtrl));
     OptionsToText();
 
     if (!m_pProject && !m_pTarget)
@@ -995,6 +1002,7 @@ void CompilerOptionsDlg::DoSaveOptions()
             compiler->SetLibDirs(LibDirs);
             compiler->SetResourceIncludeDirs(ResDirs);
             compiler->SetCompilerOptions(m_CompilerOptions);
+            compiler->SetResourceCompilerOptions(m_ResourceCompilerOptions);
             compiler->SetLinkerOptions(m_LinkerOptions);
             compiler->SetLinkLibs(m_LinkLibs);
 
@@ -1026,6 +1034,7 @@ void CompilerOptionsDlg::DoSaveOptions()
             m_pProject->SetResourceIncludeDirs(ResDirs);
             m_pProject->SetLibDirs(LibDirs);
             m_pProject->SetCompilerOptions(m_CompilerOptions);
+            m_pProject->SetResourceCompilerOptions(m_ResourceCompilerOptions);
             m_pProject->SetLinkerOptions(m_LinkerOptions);
             m_pProject->SetLinkLibs(m_LinkLibs);
             m_pProject->SetCommandsBeforeBuild(CommandsBeforeBuild);
@@ -1047,6 +1056,7 @@ void CompilerOptionsDlg::DoSaveOptions()
             m_pTarget->SetResourceIncludeDirs(ResDirs);
             m_pTarget->SetLibDirs(LibDirs);
             m_pTarget->SetCompilerOptions(m_CompilerOptions);
+            m_pTarget->SetResourceCompilerOptions(m_ResourceCompilerOptions);
             m_pTarget->SetLinkerOptions(m_LinkerOptions);
             m_pTarget->SetLinkLibs(m_LinkLibs);
             m_pTarget->SetOptionRelation(ortCompilerOptions, OptionsRelation(XRCCTRL(*this, "cmbCompilerPolicy", wxChoice)->GetSelection()));
