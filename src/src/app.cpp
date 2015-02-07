@@ -415,7 +415,7 @@ void CodeBlocksApp::InitAssociations()
             switch(dlg.ShowModal())
             {
             case ASC_ASSOC_DLG_NO_DONT_ASK:
-                Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/check_associations"), false);
+                cfg->Write(_T("/environment/check_associations"), false);
                 break;
             case ASC_ASSOC_DLG_NO_ONLY_NOW:
                 break;
