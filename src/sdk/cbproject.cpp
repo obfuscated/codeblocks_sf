@@ -853,18 +853,22 @@ bool cbProject::RemoveFile(ProjectFile* pf)
     m_ProjectFilesMap.erase(UnixFilename(pf->relativeFilename)); // remove from hashmap
     Manager::Get()->GetEditorManager()->Close(pf->file.GetFullPath());
 
-	{
+    {
 		FilesList::iterator it = m_Files.find(pf);
 
 		if (it == m_Files.end())
+		{
 			Manager::Get()->GetLogManager()->DebugLog(_T("Can't locate node for ProjectFile* !"));
+		}
 		else
-			m_Files.erase(it);
+		{
+			if (!m_FileArray.IsEmpty())
+				m_FileArray.Remove(*it);
 
-		if ( m_FileArray.GetCount() > 0 )
-			m_FileArray.Remove(*it);
+			m_Files.erase(it);
+		}
 	}
-    // remove this file from all targets too
+	// remove this file from all targets too
     for (unsigned int i = 0; i < m_Targets.GetCount(); ++i)
     {
         if (ProjectBuildTarget* target = m_Targets[i])
