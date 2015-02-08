@@ -274,7 +274,8 @@ void BrowseTracker::OnAttach()
     //-wxStandardPaths stdPaths;
     // memorize the key file name as {%HOME%}\codesnippets.ini
     //-m_ConfigFolder = stdPaths.GetUserDataDir();
-    m_ConfigFolder = GetCBConfigDir();
+    //-m_ConfigFolder = GetCBConfigDir();
+    m_ConfigFolder = Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder();
     #if defined(LOGGING)
      LOGIT( _T("BT Argv[0][%s] Cwd[%s]"), wxTheApp->argv[0], ::wxGetCwd().GetData() );
     #endif
@@ -2882,22 +2883,6 @@ wxString BrowseTracker::FindAppPath(const wxString& argv0, const wxString& cwd, 
     return wxEmptyString;
     //return cwd;
 }//FindAppPath
-// ----------------------------------------------------------------------------
-wxString BrowseTracker::GetCBConfigFile()
-// ----------------------------------------------------------------------------
-{
-    PersonalityManager* PersMan = Manager::Get()->GetPersonalityManager();
-    wxString personality = PersMan->GetPersonality();
-    ConfigManager* CfgMan = Manager::Get()->GetConfigManager(_T("app"));
-    wxString current_conf_file = CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown);
-    return current_conf_file;
-}
-// ----------------------------------------------------------------------------
-wxString BrowseTracker::GetCBConfigDir()
-// ----------------------------------------------------------------------------
-{
-    return GetCBConfigFile().BeforeLast(wxFILE_SEP_PATH);
-}
 // ----------------------------------------------------------------------------
 bool BrowseTracker::IsEditorBaseOpen(EditorBase* eb)
 // ----------------------------------------------------------------------------
