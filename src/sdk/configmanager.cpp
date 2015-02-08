@@ -65,8 +65,6 @@ wxString ConfigManager::plugin_path_global;
 #endif
 wxString ConfigManager::app_path;
 wxString ConfigManager::temp_folder;
-bool ConfigManager::relo = 0;
-
 
 
 namespace CfgMgrConsts
@@ -185,7 +183,7 @@ CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
 
     if (cfg.IsEmpty())
     {
-        cfg = ConfigManager::GetUserDataFolder() + wxFILE_SEP_PATH + personality + _T(".conf");
+        cfg = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + personality + _T(".conf");
         doc = new TiXmlDocument();
         doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
         doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
@@ -198,14 +196,14 @@ CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
 
 wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
 {
-    wxPathList searchPaths;
 
     wxString u(ConfigManager::GetUserDataFolder() + wxFILE_SEP_PATH + filename);
-    wxString e(::DetermineExecutablePath() + wxFILE_SEP_PATH + filename);
+    wxString exePath(::DetermineExecutablePath());
+    wxString e(exePath + wxFILE_SEP_PATH + filename);
 
     if (!ConfigManager::has_alternate_user_data_path && ::wxFileExists(e))
     {
-        ConfigManager::relo = true;
+        ConfigManager::SetUserDataFolder(exePath);
         return e;
     }
     if (::wxFileExists(u))
@@ -1512,7 +1510,9 @@ void ConfigManager::InitPaths()
     }
 #endif
 
-    ConfigManager::data_path_user = ConfigManager::relo ? data_path_global : config_folder + wxFILE_SEP_PATH + _T("share") + wxFILE_SEP_PATH + _T("codeblocks");
+    wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + _T("share");
+
+    ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + _T("codeblocks");
 
     CreateDirRecursively(ConfigManager::config_folder);
     CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));

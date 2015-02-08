@@ -120,7 +120,6 @@ class DLLIMPORT ConfigManager
 #endif
     static wxString app_path;
     static wxString temp_folder;
-    static bool relo;
     static wxString alternate_user_data_path;
     static bool has_alternate_user_data_path;
 
