@@ -50,6 +50,10 @@
 #include "tinyxml/tinywxuni.h"
 #include <stdlib.h>
 
+#ifdef __linux__
+#include <glib.h>
+#endif // __linux__
+
 template<> CfgMgrBldr* Mgr<CfgMgrBldr>::instance = nullptr;
 template<> bool  Mgr<CfgMgrBldr>::isShutdown = false;
 
@@ -170,6 +174,8 @@ ISerializable::~ISerializable()
 
 CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
 {
+    ConfigManager::MigrateFolders();
+
     TiXmlBase::SetCondenseWhiteSpace(false);
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
 
@@ -546,8 +552,12 @@ inline wxString ConfigManager::GetUserDataFolder()
     else
         return wxStandardPathsBase::Get().GetUserDataDir();
 #else
+#ifdef __linux__
+    return wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
+#else
     return wxStandardPathsBase::Get().GetUserDataDir();
-#endif
+#endif // __linux__
+#endif // __WINDOWS__
 }
 
 
@@ -1489,6 +1499,7 @@ void ConfigManager::InitPaths()
     }
     else
         ConfigManager::data_path_global = UnixFilename(data_path_global);
+
 #ifdef CB_AUTOCONF
     if (plugin_path_global.IsEmpty())
     {
@@ -1511,6 +1522,10 @@ void ConfigManager::InitPaths()
 #endif
 
     wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + _T("share");
+#ifdef __linux__
+    if (!has_alternate_user_data_path)
+      dataPathUser = wxString::FromUTF8(g_build_filename (g_get_user_data_dir(), NULL));
+#endif // __linux__
 
     ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + _T("codeblocks");
 
@@ -1521,6 +1536,67 @@ void ConfigManager::InitPaths()
     ConfigManager::temp_folder = wxStandardPathsBase::Get().GetTempDir();
 }
 
+void ConfigManager::MigrateFolders()
+{
+#ifdef __linux__
+    // if the old config-folder (~/.codeblocks) does not exist, we have nothing to do.
+    if (!wxDirExists(wxStandardPaths::Get().GetUserDataDir()))
+        return;
+
+    // ConfigManager::config_folder might be the portable-path but we want to migrate the standard-conform folder,
+    // but only if it not aöready exists
+    wxString newConfigFolder = wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
+    // if the new config folder already exist, we step out immediately
+    if (wxDirExists(newConfigFolder))
+        return;
+
+    wxString oldConfigFolder = wxStandardPaths::Get().GetUserDataDir();
+    wxString oldDataFolder = oldConfigFolder + wxFILE_SEP_PATH + _T("share") + wxFILE_SEP_PATH + _T("codeblocks");
+    wxString newDataFolder = wxString::FromUTF8(g_build_filename (g_get_user_data_dir(), NULL)) + wxFILE_SEP_PATH + _T("codeblocks");
+    wxString msg;
+    msg = F(_("The places where the configuration files and user-data files are stored\n"
+              "have been changed to be more standard-conform.\n"
+              "\n"
+              "Now moving \"%s\"\n"
+              "to \"%s\"\n"
+              "and \"%s\"\n"
+              "to \"%s\".\n"),
+            oldDataFolder.wx_str(),
+            newDataFolder.wx_str(),
+            oldConfigFolder.wx_str(),
+            newConfigFolder.wx_str());
+    cbMessageBox(msg, _("Try to migrate config-folder ..."), wxICON_INFORMATION);
+
+    bool success = true;
+    if (wxDirExists(oldDataFolder))
+    {
+        // make sure the target-folder exists
+        CreateDirRecursively(newDataFolder);
+        success = wxRenameFile(oldDataFolder, newDataFolder);
+        wxRmdir(oldConfigFolder + wxFILE_SEP_PATH + _T("share"));
+    }
+    if (success)
+    {
+        // make sure the target-folder exists
+        CreateDirRecursively(newConfigFolder);
+        success = wxRenameFile(oldConfigFolder, newConfigFolder);
+    }
+    if (!success)
+    {
+        msg = F(_("Error moving \"%s\"\n"
+                  "to \"%s\"\n"
+                  "or \"%s\"\n"
+                  "to \"%s\".\n\n"
+                  "Please check the folders manually (access rights?) !\n"
+                  "A new configuration will be created from scratch!"),
+                oldDataFolder.wx_str(),
+                newDataFolder.wx_str(),
+                oldConfigFolder.wx_str(),
+                newConfigFolder.wx_str());
+        cbMessageBox(msg, _("Error migrating config-folder ..."), wxICON_ERROR);
+    }
+#endif // __linux__
+}
 
 void ConfigManagerWrapper::Write(const wxString& name, const wxString& value, bool ignoreEmpty)
 {

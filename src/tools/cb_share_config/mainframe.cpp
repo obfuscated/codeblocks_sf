@@ -24,6 +24,11 @@
   #include <shlobj.h>
 #endif
 
+#ifdef __linux__
+  #include <glib.h>
+#endif // __linux__
+
+
 #include "tinyxml/tinywxuni.h"
 
 //***********************************************************************
@@ -423,10 +428,12 @@ wxString MainFrame::FileSelector()
   SHGetFolderPath(NULL, CSIDL_APPDATA, 0, 0, szPath);
   wxString config_folder = wxString(szPath) + wxT("\\codeblocks");
 #else
-  wxFileName f;
-  f.AssignHomeDir();
-  wxString home_folder   = f.GetFullPath();
-  wxString config_folder = home_folder + wxT("/.codeblocks");
+#ifdef __linux__
+  wxString config_folder = wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
+#else
+  wxString config_folder =  wxStandardPathsBase::Get().GetUserDataDir();
+#endif // __linux__
+
 #endif
 
   wxString filename = wxFileSelector

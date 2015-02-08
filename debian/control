@@ -18,6 +18,7 @@ Build-Depends: debhelper (>= 7.4.11~)
  , libboost1.40-dev | libboost-dev (>= 1.40)
  , libhunspell-dev
  , libfontconfig1-dev
+ , libglib2.0-dev
 Standards-Version: 3.9.1
 
 Package: codeblocks

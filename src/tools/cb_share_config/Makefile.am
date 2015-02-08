@@ -1,13 +1,15 @@
 bin_PROGRAMS = cb_share_config
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+			$(CB_GLIB2_CFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/include/tinyxml
 
 cb_share_config_LDFLAGS =
 
 cb_share_config_LDADD =  ../../base/tinyxml/libtinyxml.la \
-			$(WX_LIBS)
+			$(WX_LIBS) \
+			$(CB_GLIB2_LIBS)
 
 cb_share_config_SOURCES = app.cpp \
 			mainframe.cpp

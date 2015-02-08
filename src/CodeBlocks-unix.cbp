@@ -136,6 +136,7 @@
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="`pkg-config glib-2.0 --cflags`" />
 					<Add directory="include" />
 					<Add directory="include/tinyxml" />
 					<Add directory="include/scripting/bindings" />
@@ -150,6 +151,7 @@
 					<Add directory="sdk/wxpropgrid/include" />
 				</Compiler>
 				<Linker>
+					<Add option="`pkg-config glib-2.0 --libs`" />
 					<Add library="txml" />
 					<Add library="wxscintilla_cb" />
 					<Add library="sqplus" />
@@ -496,7 +498,6 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
 			<Add option="`wx-config --cflags`" />
-			<Add option="`pkg-config --cflags gtk+-2.0`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="sdk/wxscintilla/include" />

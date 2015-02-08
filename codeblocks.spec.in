@@ -85,7 +85,7 @@ BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
 
 BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, libtool >= 1.4, m4
 BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
-BuildRequires:              zip, pkgconfig, automake >= 1.9
+BuildRequires:              zip, pkgconfig, automake >= 1.9, glib2-devel
 
 %if 0%{?suse_version}
 BuildRequires:              update-desktop-files

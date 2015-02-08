@@ -134,6 +134,7 @@
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="`pkg-config glib-2.0 --cflags`" />
 					<Add directory="include" />
 					<Add directory="include/tinyxml" />
 					<Add directory="include/scripting/bindings" />
@@ -147,6 +148,7 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
+					<Add option="`pkg-config glib-2.0 --libs`" />
 					<Add library="txml30" />
 					<Add library="wxscintilla_cb" />
 					<Add library="sqplus30" />

@@ -1,6 +1,7 @@
 SUBDIRS = scripting wxscintilla $(WXPROPGRID_DIR) resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+			$(CB_GLIB2_CFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			 $(WXPROPGRID_INCLUDE) \
@@ -26,6 +27,7 @@ libcodeblocks_la_LIBADD = scripting/bindings/libsqbindings.la \
 			../base/tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la \
 			$(WX_LIBS) \
+			$(CB_GLIB2_LIBS) \
 			$(WXPROPGRID_LIB)
 
 libcodeblocks_la_SOURCES = annoyingdialog.cpp \

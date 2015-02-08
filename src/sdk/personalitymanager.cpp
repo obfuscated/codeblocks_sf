@@ -41,7 +41,7 @@ const wxString PersonalityManager::GetPersonality()
 const wxArrayString PersonalityManager::GetPersonalitiesList()
 {
     wxArrayString list;
-    wxDir::GetAllFiles(ConfigManager::GetFolder(sdConfig), &list, _T("*.conf"), wxDIR_FILES);
+    wxDir::GetAllFiles(ConfigManager::GetConfigFolder(), &list, _T("*.conf"), wxDIR_FILES);
 
     for(size_t i = 0; i < list.GetCount(); ++i)
         list[i] = wxFileName(list[i]).GetName();

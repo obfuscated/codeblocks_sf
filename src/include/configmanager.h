@@ -108,7 +108,7 @@ class DLLIMPORT ConfigManager
     inline void Collapse(wxString& str) const;
     wxString InvalidNameMessage(const wxString& what, const wxString& sub, TiXmlElement *localPath) const;
     static void InitPaths();
-    static inline wxString GetUserConfigDir();
+    static void MigrateFolders();
 
     static wxString config_folder;
     static wxString home_folder;

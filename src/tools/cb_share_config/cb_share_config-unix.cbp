@@ -24,6 +24,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
+			<Add option="`pkg-config glib-2.0 --cflags`" />
 			<Add option="-DPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
@@ -34,6 +35,7 @@
 		<Linker>
 			<Add option="`wx-config --libs`" />
 			<Add option="-Wl,--no-undefined" />
+			<Add option="`pkg-config glib-2.0 --libs`" />
 			<Add library="txml" />
 			<Add library="wxpropgrid" />
 			<Add directory="../../base/tinyxml" />

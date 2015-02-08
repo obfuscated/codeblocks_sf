@@ -18,6 +18,9 @@ AC_CONFIG_HEADER([src/include/config.h])
 
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
+AM_CONDITIONAL([LINUX], [test `uname` = "Linux"])
+AM_CONDITIONAL([DARWIN], [test `uname` = "Darwin"])
+
 CODEBLOCKS_CHECK_DEBUG
 
 dnl Checks for programs.
@@ -143,7 +146,8 @@ case $WX_BASENAME in
 				"x$BUILD_SPELLCHECKER_TRUE" = "x" -o \
 				"x$BUILD_MOUSESAP_TRUE" = "x" -o \
 				"x$BUILD_EXPORTER_TRUE" = "x" -o \
-				"x$GTK_NOTEBOOK_TRUE" = "x" ; then
+				"x$GTK_NOTEBOOK_TRUE" = "x" -o \
+				"x$LINUX_TRUE" = "x" ; then
 
 			AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
 
@@ -160,6 +164,12 @@ case $WX_BASENAME in
             dnl PKG_CHECK_MODULES might not happen, you should be sure
             dnl to include an explicit call to PKG_PROG_PKG_CONFIG"
 			PKG_PROG_PKG_CONFIG
+
+			if test "x$LINUX_TRUE" = "x" ; then
+				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+					PKG_CHECK_MODULES([GLIB2], [glib-2.0])
+				fi
+			fi
 
 			if test "x$BUILD_SPELLCHECKER_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
@@ -200,6 +210,8 @@ case $WX_BASENAME in
         fi
 
 
+	CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
+	CB_GLIB2_LIBS="$GLIB2_LIBS"
 	CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
 	CB_GAMIN_LIBS="$GAMIN_LIBS"
 	CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
@@ -259,6 +271,8 @@ fi
 
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
+AC_SUBST(CB_GLIB2_CFLAGS)
+AC_SUBST(CB_GLIB2_LIBS)
 AC_SUBST(CB_GAMIN_CFLAGS)
 AC_SUBST(CB_GAMIN_LIBS)
 AC_SUBST(CB_HUNSPELL_CFLAGS)
@@ -298,9 +312,6 @@ AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 dnl AM_PATH_GTK(1.2.7, ,
 dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),
 dnl             gthread)
-
-AM_CONDITIONAL([LINUX], [test `uname` = "Linux"])
-AM_CONDITIONAL([DARWIN], [test `uname` = "Darwin"])
 
 AC_MSG_NOTICE([Configuring Code::Blocks...])
 AC_MSG_NOTICE(SVN revision SVN_REVISION (SVN_DATE))

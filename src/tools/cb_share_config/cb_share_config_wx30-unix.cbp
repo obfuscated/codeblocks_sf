@@ -27,6 +27,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
+			<Add option="`pkg-config glib-2.0 --cflags`" />
 			<Add option="-DPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
@@ -37,6 +38,7 @@
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 			<Add option="-Wl,--no-undefined" />
+			<Add option="`pkg-config glib-2.0 --libs`" />
 			<Add library="txml30" />
 			<Add directory="../../base/tinyxml" />
 			<Add directory="../../devel30" />
