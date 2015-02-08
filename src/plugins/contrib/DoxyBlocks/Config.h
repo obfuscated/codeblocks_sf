@@ -682,9 +682,6 @@ class DoxyBlocksConfig
          * \return The default value.
          */
         bool GetDefaultRunCHM() const { return false; }
-    public:
-        // Config. template.
-        wxString GetCBConfigDir();
 };
 
 #endif // CONFIG_H

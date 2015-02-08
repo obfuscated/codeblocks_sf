@@ -132,7 +132,9 @@ bool DoxyBlocksConfig::WritePrefsTemplate()
     wxString sUseAtInTags(wxT("UseAtInTags"));
 
     wxString sCfgIni(wxT("DoxyBlocks.ini"));
-    wxFileConfig *cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, GetCBConfigDir() + sCfgIni, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
+    wxString sCfgPath(Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder() + wxFILE_SEP_PATH + sCfgIni);
+
+    wxFileConfig *cfgFile = new wxFileConfig(wxEmptyString, wxEmptyString, sCfgPath, wxEmptyString, wxCONFIG_USE_GLOBAL_FILE);
 
     // Comment style.
     cfgFile->Write(sSectionCommentStyle + sCommentBlock, static_cast<int>(m_iBlockComment));
@@ -226,7 +228,7 @@ bool DoxyBlocksConfig::ReadPrefsTemplate()
     wxString sUseAtInTags(wxT("UseAtInTags"));
 
     wxString sCfgIni(wxT("DoxyBlocks.ini"));
-    wxString sCfgPath(GetCBConfigDir() + sCfgIni);
+    wxString sCfgPath(Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder() + wxFILE_SEP_PATH + sCfgIni);
     if(!wxFile::Exists(sCfgPath)){
         return false;
     }
@@ -272,18 +274,4 @@ bool DoxyBlocksConfig::ReadPrefsTemplate()
     wxDELETE(cfgFile);
     wxASSERT(!cfgFile);
     return true;
-}
-
-/*! \brief Get the global configuration directory path.
- *
- * \return wxString    The directory path with trailing separator.
- *
- */
-wxString DoxyBlocksConfig::GetCBConfigDir()
-{
-    PersonalityManager* PersMan = Manager::Get()->GetPersonalityManager();
-    const wxString personality = PersMan->GetPersonality();
-    ConfigManager* CfgMan = Manager::Get()->GetConfigManager(_T("app"));
-    const wxFileName fnConf(CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown));
-    return fnConf.GetPathWithSep();
 }
