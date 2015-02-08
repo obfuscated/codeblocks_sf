@@ -170,9 +170,6 @@ class CodeSnippets : public cbPlugin
         void SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY);
         void MSW_MouseMove(int x, int y );
 
-        wxString      GetCBConfigFile();
-        wxString      GetCBConfigDir();
-
 		wxWindow*       m_pAppWin;
         ProjectManager* m_pProjectMgr;
         wxTreeCtrl*     m_pMgtTreeBeginDrag;

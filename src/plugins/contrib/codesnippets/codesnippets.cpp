@@ -156,7 +156,8 @@ void CodeSnippets::OnAttach()
     // determine location of settings
     // ---------------------------------------
     //memorize the key file name as {%HOME%}\codesnippets.ini
-    GetConfig()->m_ConfigFolder = GetCBConfigDir();
+    //-GetConfig()->m_ConfigFolder = GetCBConfigDir();
+    GetConfig()->m_ConfigFolder = Manager::Get()->GetConfigManager(_T("app"))->GetConfigFolder();
     #if defined(LOGGING)
      LOGIT( _T("Argv[0][%s] Cwd[%s]"), wxTheApp->argv[0], ::wxGetCwd().GetData() );
     #endif
@@ -1506,33 +1507,3 @@ wxWindow* CodeSnippets::FindOpenFilesListWindow()
     }
     return 0;
 }//FindOpenFilesListWindow
-// ----------------------------------------------------------------------------
-wxString CodeSnippets::GetCBConfigFile()
-// ----------------------------------------------------------------------------
-{
-    PersonalityManager* PersMan = Manager::Get()->GetPersonalityManager();
-    wxString personality = PersMan->GetPersonality();
-    ConfigManager* CfgMan = Manager::Get()->GetConfigManager(_T("app"));
-    wxString current_conf_file = CfgMan->LocateDataFile(personality+_T(".conf"), sdAllKnown);
-
-    // Config manager will return an empty string on the first run of CodeBlocks
-    if (current_conf_file.IsEmpty())
-    {
-        wxString appdata;
-        if ( personality == _T("default") )
-            personality = _T("");
-        // Get APPDATA env var and append ".codeblocks" to it
-        wxGetEnv(_T("APPDATA"), &appdata);
-        current_conf_file = appdata +
-                    //-wxFILE_SEP_PATH + _T("codeblocks") + wxFILE_SEP_PATH
-                    wxFILE_SEP_PATH + wxTheApp->GetAppName() + wxFILE_SEP_PATH
-                    + personality + _T(".codesnippets.ini");
-    }
-    return current_conf_file;
-}
-// ----------------------------------------------------------------------------
-wxString CodeSnippets::GetCBConfigDir()
-// ----------------------------------------------------------------------------
-{
-    return GetCBConfigFile().BeforeLast(wxFILE_SEP_PATH);
-}
