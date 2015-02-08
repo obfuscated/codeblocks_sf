@@ -98,9 +98,9 @@ public:
     wxKeyBind(const wxString &key) {
         m_nFlags = StringToKeyModifier(key);
         //Handle Ctrl-- and Ctrl-+ keys
-        if (key.Last() == '-')
+        if (!key.IsEmpty() && key.Last() == '-')
             m_nKeyCode = '-';
-        else if (key.Last() == '+')
+        else if (!key.IsEmpty() && key.Last() == '+')
             m_nKeyCode = '+';
         else
             m_nKeyCode = StringToKeyCode(key.AfterLast('+').AfterLast('-'));
