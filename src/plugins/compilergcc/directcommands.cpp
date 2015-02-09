@@ -21,6 +21,7 @@
 #include <globals.h>
 #include <manager.h>
 #include <logmanager.h>
+#include <configmanager.h>
 #include <macrosmanager.h>
 #include "directcommands.h"
 #include "compilercommandgenerator.h"
