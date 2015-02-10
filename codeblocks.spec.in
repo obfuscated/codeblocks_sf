@@ -35,9 +35,11 @@
 %define nassi_shneiderman   1
 %define spellchecker        1
 
+%if 0%{?_redhat_vernum}
 %if 0%{?_redhat_vernum} < 6
 %define nassi_shneiderman   0
 %define spellchecker        0
+%endif
 %endif
 
 %if 0%{?nassi_shneiderman}
