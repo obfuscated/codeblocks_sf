@@ -3,7 +3,6 @@
 #include <wx/filename.h>
 #include <wx/aui/aui.h>
 
-
 #include <sdk.h>
 #ifndef CB_PRECOMP
     #include <wx/dnd.h>
@@ -18,10 +17,8 @@
 #include <vector>
 #include <iostream>
 
-
 #include "se_globals.h"
-
-
+#include "CommitBrowser.h"
 
 #include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
 WX_DEFINE_OBJARRAY(VCSstatearray);
@@ -31,6 +28,8 @@ int ID_FILETREE=wxNewId();
 int ID_FILELOC=wxNewId();
 int ID_FILEWILD=wxNewId();
 int ID_SETLOC=wxNewId();
+int ID_VCSCONTROL=wxNewId();
+int ID_VCSTYPE=wxNewId();
 
 int ID_OPENINED=wxNewId();
 int ID_FILENEWFILE=wxNewId();
@@ -53,6 +52,21 @@ int ID_FILEPARSEGIT=wxNewId();
 int ID_FILE_UPBUTTON=wxNewId();
 int ID_FILEREFRESH=wxNewId();
 int ID_FILEADDTOPROJECT=wxNewId();
+
+int ID_FILEDIFF=wxNewId();
+// 10 additional ID's reserved for FILE DIFF items
+int ID_FILEDIFF1=wxNewId();
+int ID_FILEDIFF2=wxNewId();
+int ID_FILEDIFF3=wxNewId();
+int ID_FILEDIFF4=wxNewId();
+int ID_FILEDIFF5=wxNewId();
+int ID_FILEDIFF6=wxNewId();
+int ID_FILEDIFF7=wxNewId();
+int ID_FILEDIFF8=wxNewId();
+int ID_FILEDIFF9=wxNewId();
+int ID_FILEDIFF10=wxNewId();
+//
+
 
 class UpdateQueue
 {
@@ -220,8 +234,9 @@ int FileTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& 
 BEGIN_EVENT_TABLE(FileExplorer, wxPanel)
     EVT_TIMER(ID_UPDATETIMER, FileExplorer::OnTimerCheckUpdates)
     EVT_MONITOR_NOTIFY(wxID_ANY, FileExplorer::OnDirMonitor)
-    EVT_COMMAND(0, wxEVT_NOTIFY_UPDATE_TREE, FileExplorer::OnUpdateTreeItems)
-    EVT_COMMAND(0, wxEVT_NOTIFY_EXEC_REQUEST, FileExplorer::OnExecRequest)
+    EVT_COMMAND(0, wxEVT_NOTIFY_UPDATE_COMPLETE, FileExplorer::OnUpdateTreeItems)
+    EVT_COMMAND(0, wxEVT_NOTIFY_LOADER_UPDATE_COMPLETE, FileExplorer::OnVCSFileLoaderComplete)
+//    EVT_COMMAND(0, wxEVT_NOTIFY_EXEC_REQUEST, FileExplorer::OnExecRequest)
     EVT_TREE_BEGIN_DRAG(ID_FILETREE, FileExplorer::OnBeginDragTreeItem)
     EVT_TREE_END_DRAG(ID_FILETREE, FileExplorer::OnEndDragTreeItem)
     EVT_BUTTON(ID_FILE_UPBUTTON, FileExplorer::OnUpButton)
@@ -246,6 +261,7 @@ BEGIN_EVENT_TABLE(FileExplorer, wxPanel)
     EVT_MENU(ID_FILEPARSEGIT,FileExplorer::OnParseGIT)
     EVT_MENU(ID_FILEREFRESH,FileExplorer::OnRefresh)
     EVT_MENU(ID_FILEADDTOPROJECT,FileExplorer::OnAddToProject)
+    EVT_MENU_RANGE(ID_FILEDIFF, ID_FILEDIFF+10, FileExplorer::OnVCSDiff)
     EVT_KEY_DOWN(FileExplorer::OnKeyDown)
     EVT_TREE_ITEM_EXPANDING(ID_FILETREE, FileExplorer::OnExpand)
     //EVT_TREE_ITEM_COLLAPSED(id, func) //delete the children
@@ -256,6 +272,7 @@ BEGIN_EVENT_TABLE(FileExplorer, wxPanel)
     //EVT_TEXT(ID_FILELOC, FileExplorer::OnLocChanging) //provide autotext hint for dir name in combo box
     EVT_TEXT_ENTER(ID_FILELOC, FileExplorer::OnEnterLoc) //location entered in combo box - set as root
     EVT_TEXT_ENTER(ID_FILEWILD, FileExplorer::OnEnterWild) //location entered in combo box - set as root  ** BUG RIDDEN
+    EVT_CHOICE(ID_VCSCONTROL, FileExplorer::OnVCSControl)
 END_EVENT_TABLE()
 
 FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
@@ -280,14 +297,18 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
     m_parse_bzr=false;
     m_parse_git=false;
     m_parse_svn=false;
+    m_vcs_file_loader=0;
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* bsh = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* bshloc = new wxBoxSizer(wxHORIZONTAL);
+    m_Box_VCS_Control = new wxBoxSizer(wxHORIZONTAL);
     m_Tree = new FileTreeCtrl(this, ID_FILETREE);
     m_Tree->SetIndent(m_Tree->GetIndent()/2);
     m_Tree->SetDropTarget(m_droptarget);
     m_Loc = new wxComboBox(this,ID_FILELOC,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxTE_PROCESS_ENTER|wxCB_DROPDOWN);
     m_WildCards = new wxComboBox(this,ID_FILEWILD,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxTE_PROCESS_ENTER|wxCB_DROPDOWN);
+    m_VCS_Control = new wxChoice(this,ID_VCSCONTROL);
+    m_VCS_Type = new wxStaticText(this,ID_VCSTYPE,_T(""));
     m_UpButton = new wxButton(this,ID_FILE_UPBUTTON,_("^"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
     bshloc->Add(m_Loc, 1, wxEXPAND);
     bshloc->Add(m_UpButton, 0, wxEXPAND);
@@ -295,7 +316,12 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
     bsh->Add(new wxStaticText(this,wxID_ANY,_("Mask: ")),0,wxALIGN_CENTRE);
     bsh->Add(m_WildCards,1);
     bs->Add(bsh, 0, wxEXPAND);
+    m_Box_VCS_Control->Add(m_VCS_Type,0,wxALIGN_CENTER);
+    m_Box_VCS_Control->Add(m_VCS_Control,1,wxEXPAND);
+    bs->Add(m_Box_VCS_Control, 0, wxEXPAND);
     bs->Add(m_Tree, 1, wxEXPAND | wxALL);
+
+    m_Box_VCS_Control->Hide(true);
     SetAutoLayout(TRUE);
 
     SetImages();
@@ -351,11 +377,16 @@ bool FileExplorer::SetRootFolder(wxString root)
         return false;
     }
     m_root=root;
+    m_VCS_Control->Clear();
+    m_commit = wxEmptyString;
+    m_VCS_Type->SetLabel(wxEmptyString);
+    m_Box_VCS_Control->Hide(true);
     m_Loc->SetValue(m_root);
     m_Tree->DeleteAllItems();
     m_Tree->AddRoot(m_root,fvsFolder);
     m_Tree->SetItemHasChildren(m_Tree->GetRootItem());
     m_Tree->Expand(m_Tree->GetRootItem());
+    Layout();
 
     return true;
 //    return AddTreeItems(m_Tree->GetRootItem());
@@ -573,7 +604,28 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent &/*e*/)
         return;
     m_updater->Wait();
     wxTreeItemId ti=m_updated_node;
-//    cbMessageBox(_T("Update Returned"));
+    bool viewing_commit = (m_updater->m_vcs_commit_string != wxEmptyString) &&
+                          (m_updater->m_vcs_commit_string != _T("Working copy"));
+    if (ti == m_Tree->GetRootItem() && !viewing_commit)
+    {
+        m_VCS_Type->SetLabel(m_updater->m_vcs_type);
+        if (m_updater->m_vcs_type == wxEmptyString)
+        {
+            m_VCS_Control->Clear();
+            m_Box_VCS_Control->Hide(true);
+            m_commit = _T("");
+        }
+        else if (m_commit == wxEmptyString)
+        {
+            m_VCS_Control->Clear();
+            m_VCS_Control->Append(_T("Working copy"));
+            m_VCS_Control->Append(_T("Select commit..."));
+            m_VCS_Control->SetSelection(0);
+            m_commit = _T("Working copy");
+            m_Box_VCS_Control->Show(true);
+        }
+        Layout();
+    }
     if(m_updater_cancel || !ti.IsOk())
     { //NODE WAS DELETED - REFRESH NOW!
         //TODO: Should only need to clean up and restart the timer (no need to change queue)
@@ -628,20 +680,6 @@ void FileExplorer::OnUpdateTreeItems(wxCommandEvent &/*e*/)
         m_update_expand=true;
         m_Tree->Expand(ti);
     }
-    //RESTART THE TIMER
-//    else
-//    {
-//        //TODO: Should not need to do anything here (see OnDirMonitor)
-//        m_updating_node=GetNextExpandedNode(m_updating_node);
-//        if(m_updating_node!=m_Tree->GetRootItem())
-//            m_updatetimer->Start(10,true);
-//        else
-//            ResetDirMonitor();
-////        LogMessage(_("Done restarting updater or monitor"));
-//
-////        else //TODO: Replace this with a directory monitor
-////            m_updatetimer->Start(3000,true);
-//    }
     delete m_updater;
     m_updater=NULL;
     m_update_active=false;
@@ -893,28 +931,169 @@ void FileExplorer::OnSetLoc(wxCommandEvent &/*event*/)
         m_Loc->Delete(10+m_favdirs.GetCount());
 }
 
+void FileExplorer::OnVCSControl(wxCommandEvent &/*event*/)
+{
+    wxString commit = m_VCS_Control->GetString(m_VCS_Control->GetSelection());
+    if (commit == _T("Select commit..."))
+    {
+        CommitBrowser *cm = new CommitBrowser(this, GetFullPath(m_Tree->GetRootItem()), m_VCS_Type->GetLabel());
+        if(cm->ShowModal() == wxID_OK)
+        {
+            commit = cm->GetSelectedCommit();
+            cm->Destroy();
+            if (commit != wxEmptyString)
+            {
+                unsigned int i=0;
+                for (; i<m_VCS_Control->GetCount(); ++i)
+                {
+                    if (m_VCS_Control->GetString(i) == commit)
+                    {
+                        m_VCS_Control->SetSelection(i);
+                        break;
+                    }
+                }
+                if (i == m_VCS_Control->GetCount())
+                    m_VCS_Control->Append(commit);
+                m_VCS_Control->SetSelection(m_VCS_Control->GetCount()-1);
+            }
+        }
+        else
+            commit = wxEmptyString;
+    }
+    if (commit!=wxEmptyString)
+    {
+        m_commit = commit;
+        Refresh(m_Tree->GetRootItem());
+    } else
+    {
+        unsigned int i=0;
+        for (; i<m_VCS_Control->GetCount(); ++i)
+        {
+            if (m_VCS_Control->GetString(i) == m_commit)
+                m_VCS_Control->SetSelection(i);
+                break;
+        }
+    }
+}
+
 void FileExplorer::OnOpenInEditor(wxCommandEvent &/*event*/)
 {
     for(int i=0;i<m_ticount;i++)
     {
-        wxFileName path(GetFullPath(m_selectti[i]));  //SINGLE: m_Tree->GetSelection()
-        wxString filename=path.GetFullPath();
-        if(!path.FileExists())
-            continue;
-        EditorManager* em = Manager::Get()->GetEditorManager();
-        EditorBase* eb = em->IsOpen(filename);
-        if (eb)
+        if (IsBrowsingVCSTree())
         {
-            // open files just get activated
-            eb->Activate();
-            return;
-        } else
-        em->Open(filename);
+            wxFileName path(GetFullPath(m_selectti[i]));
+            wxString original_path = path.GetFullPath();
+            path.MakeRelativeTo(GetRootFolder());
+            wxString name = path.GetFullName();
+            wxString vcs_type = m_VCS_Type->GetLabel();
+            name = vcs_type + _T("-") + m_commit.Mid(0,6) + _T("-") + name;
+            path.SetFullName(name);
+            wxFileName tmp = wxFileName(wxFileName::GetTempDir(),_T(""));
+            tmp.AppendDir(_T("codeblocks-fm"));
+            path.MakeAbsolute(tmp.GetFullPath());
+            if(!path.FileExists())
+                m_vcs_file_loader_queue.Add(_T("cat"), original_path, path.GetFullPath());
+            else
+                DoOpenInEditor(path.GetFullPath());
+        }
+        else
+        {
+            wxFileName path(GetFullPath(m_selectti[i]));
+            wxString filename=path.GetFullPath();
+            if(!path.FileExists())
+                continue;
+            DoOpenInEditor(filename);
+        }
     }
+    if (m_vcs_file_loader==0 && !m_vcs_file_loader_queue.empty())
+    {
+        LoaderQueueItem item = m_vcs_file_loader_queue.Pop();
+        m_vcs_file_loader = new VCSFileLoader(this);
+        m_vcs_file_loader->Update(item.op, item.source, item.destination, item.comp_commit);
+    }
+}
+
+void FileExplorer::OnVCSDiff(wxCommandEvent &event)
+{
+    wxString comp_commit;
+    if (event.GetId() == ID_FILEDIFF) //Diff with head (for working copy) or previous (for commit)
+        comp_commit = _T("Previous");
+    else //Otherwise diff against specific revision
+        comp_commit = m_VCS_Control->GetString(event.GetId()-ID_FILEDIFF1);
+    if (m_commit == _T("Working copy") && comp_commit == _T("Working copy"))
+        comp_commit = _T("Previous");
+    if (comp_commit == _T("Select commit..."))
+    {
+        CommitBrowser *cm = new CommitBrowser(this, GetFullPath(m_Tree->GetRootItem()), m_VCS_Type->GetLabel());
+        if(cm->ShowModal() == wxID_OK)
+        {
+            comp_commit = cm->GetSelectedCommit();
+        }
+        else
+            return;
+    }
+    wxString diff_paths = wxEmptyString;
+    for(int i=0;i<m_ticount;i++)
+    {
+        wxFileName path(GetFullPath(m_selectti[i]));
+        path.MakeRelativeTo(GetRootFolder());
+        if (path != wxEmptyString)
+            diff_paths+=_T(" \"") + path.GetFullPath() + _T("\"");
+    }
+    wxFileName tmp = wxFileName(wxFileName::GetTempDir(),_T(""));
+    wxFileName root_path(GetRootFolder());
+    wxString name = root_path.GetName();
+    wxString vcs_type = m_VCS_Type->GetLabel();
+    tmp.AppendDir(_T("codeblocks-fm"));
+    name = _T("diff-") + vcs_type + _T("-") + m_commit.Mid(0,7) +_T("~") + comp_commit + _T("-") + name + _T(".patch");
+    wxString dest_tmp_path = wxFileName(tmp.GetFullPath(), name).GetFullPath();
+    m_vcs_file_loader_queue.Add(_T("diff"), diff_paths, dest_tmp_path, comp_commit);
+    if (m_vcs_file_loader==0 && !m_vcs_file_loader_queue.empty())
+    {
+        LoaderQueueItem item = m_vcs_file_loader_queue.Pop();
+        m_vcs_file_loader = new VCSFileLoader(this);
+        m_vcs_file_loader->Update(item.op, item.source, item.destination, item.comp_commit);
+    }
+}
+
+void FileExplorer::OnVCSFileLoaderComplete(wxCommandEvent& /*event*/)
+{
+    m_vcs_file_loader->Wait();
+    DoOpenInEditor(m_vcs_file_loader->m_destination_path);
+    delete m_vcs_file_loader;
+    m_vcs_file_loader = 0;
+    if (!m_vcs_file_loader_queue.empty())
+    {
+        LoaderQueueItem item = m_vcs_file_loader_queue.Pop();
+        m_vcs_file_loader = new VCSFileLoader(this);
+        m_vcs_file_loader->Update(item.op, item.source, item.destination, item.comp_commit);
+    }
+}
+
+void FileExplorer::DoOpenInEditor(const wxString &filename)
+{
+    EditorManager* em = Manager::Get()->GetEditorManager();
+    EditorBase* eb = em->IsOpen(filename);
+    if (eb)
+    {
+        // open files just get activated
+        eb->Activate();
+        return;
+    } else
+        em->Open(filename);
 }
 
 void FileExplorer::OnActivate(wxTreeEvent &event)
 {
+    if (IsBrowsingVCSTree())
+    {
+        //TODO: Should just retrieve the file and use the same mimetype handling as a regular file
+        wxCommandEvent e;
+        m_ticount=m_Tree->GetSelections(m_selectti);
+        OnOpenInEditor(e);
+        return;
+    }
     wxString filename=GetFullPath(event.GetItem());
     if(m_Tree->GetItemImage(event.GetItem())==fvsFolder)
     {
@@ -957,11 +1136,24 @@ void FileExplorer::OnKeyDown(wxKeyEvent &event)
 {
     if(event.GetKeyCode() == WXK_DELETE)
     {
-        wxCommandEvent event2;
-        OnDelete(event2);
+        if (IsBrowsingVCSTree())
+        {
+            wxCommandEvent event2;
+            OnDelete(event2);
+        }
     }
 }
 
+
+bool FileExplorer::IsBrowsingVCSTree()
+{
+    return m_commit != _T("Working copy") && m_commit != wxEmptyString;
+}
+
+bool FileExplorer::IsBrowsingWorkingCopy()
+{
+    return m_commit == _T("Working copy") && m_commit != wxEmptyString;
+}
 
 void FileExplorer::OnRightClick(wxTreeEvent &event)
 {
@@ -986,38 +1178,67 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
             {
                 ftd->SetKind(FileTreeData::ftdkFolder);
                 Popup->Append(ID_SETLOC,_("Make roo&t"));
-                Popup->Append(ID_FILEEXPANDALL,_("Expand All Children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
-                Popup->Append(ID_FILECOLLAPSEALL,_("Collapse All Children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
-                Popup->Append(ID_FILEMAKEFAV,_("Add to Favorites"));
-                Popup->Append(ID_FILENEWFILE,_("New File..."));
-                Popup->Append(ID_FILENEWFOLDER,_("New Directory..."));
-                Popup->Append(ID_FILERENAME,_("&Rename..."));
+                Popup->Append(ID_FILEEXPANDALL,_("Expand all children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
+                Popup->Append(ID_FILECOLLAPSEALL,_("Collapse all children")); //TODO: check availability in wx2.8 for win32 (not avail wx2.6)
+                if (!IsBrowsingVCSTree())
+                {
+                    Popup->Append(ID_FILEMAKEFAV,_("Add to favorites"));
+                    Popup->Append(ID_FILENEWFILE,_("New file..."));
+                    Popup->Append(ID_FILENEWFOLDER,_("New directory..."));
+                    Popup->Append(ID_FILERENAME,_("&Rename..."));
+                }
             } else
             {
-                Popup->Append(ID_FILERENAME,_("&Rename..."));
+                if (!IsBrowsingVCSTree())
+                    Popup->Append(ID_FILERENAME,_("&Rename..."));
             }
         }
         if(IsFilesOnly(m_selectti))
         {
-            Popup->Append(ID_OPENINED,_("&Open in CB Editor"));
-            if(Manager::Get()->GetProjectManager()->GetActiveProject())
-                Popup->Append(ID_FILEADDTOPROJECT,_("&Add to Active Project..."));
+            Popup->Append(ID_OPENINED,_("&Open in CB editor"));
+            if (!IsBrowsingVCSTree())
+                if(Manager::Get()->GetProjectManager()->GetActiveProject())
+                    Popup->Append(ID_FILEADDTOPROJECT,_("&Add to active project..."));
         }
-        Popup->Append(ID_FILEDUP,_("&Duplicate"));
-        Popup->Append(ID_FILECOPY,_("&Copy To..."));
-        Popup->Append(ID_FILEMOVE,_("&Move To..."));
-        Popup->Append(ID_FILEDELETE,_("D&elete"));
+        if (!IsBrowsingVCSTree())
+        {
+            Popup->Append(ID_FILEDUP,_("&Duplicate"));
+            Popup->Append(ID_FILECOPY,_("&Copy to..."));
+            Popup->Append(ID_FILEMOVE,_("&Move to..."));
+            Popup->Append(ID_FILEDELETE,_("D&elete"));
+        }
+        if ( IsBrowsingVCSTree() || IsBrowsingWorkingCopy() )
+        {
+            if (IsBrowsingWorkingCopy())
+                Popup->Append(ID_FILEDIFF,_("&Diff"));
+            else
+                Popup->Append(ID_FILEDIFF,_("&Diff previous"));
+            wxMenu *diff_menu = new wxMenu();
+            unsigned int n = m_VCS_Control->GetCount();
+            if (n>10)
+                n=10;
+            if (IsBrowsingWorkingCopy())
+            {
+                diff_menu->Append(ID_FILEDIFF1, _("Head"));
+                for (unsigned int i = 1; i<n; ++i)
+                    diff_menu->Append(ID_FILEDIFF1 + i, m_VCS_Control->GetString(i));
+            }
+            else
+            {
+                for (unsigned int i = 0; i<n; ++i)
+                    diff_menu->Append(ID_FILEDIFF1 + i, m_VCS_Control->GetString(i));
+            }
+            Popup->AppendSubMenu(diff_menu,_("Diff against"));
+        }
     }
     wxMenu *viewpop=new wxMenu();
-    viewpop->Append(ID_FILESETTINGS,_("Favorite Directories..."));
-    viewpop->AppendCheckItem(ID_FILESHOWHIDDEN,_("Show &Hidden Files"))->Check(m_show_hidden);
-    viewpop->AppendCheckItem(ID_FILEPARSECVS,_("CVS Decorators"))->Check(m_parse_cvs);
-    viewpop->AppendCheckItem(ID_FILEPARSESVN,_("SVN Decorators"))->Check(m_parse_svn);
-    viewpop->AppendCheckItem(ID_FILEPARSEHG,_("Hg Decorators"))->Check(m_parse_hg);
-    viewpop->AppendCheckItem(ID_FILEPARSEBZR,_("Bzr Decorators"))->Check(m_parse_bzr);
-    viewpop->AppendCheckItem(ID_FILEPARSEGIT,_("Git Decorators"))->Check(m_parse_git);
-    Popup->AppendSubMenu(viewpop,_("&View"));
-    Popup->Append(ID_FILEREFRESH,_("Re&fresh"));
+    viewpop->Append(ID_FILESETTINGS,_("Favorite directories..."));
+    viewpop->AppendCheckItem(ID_FILESHOWHIDDEN,_("Show &hidden files"))->Check(m_show_hidden);
+//    viewpop->AppendCheckItem(ID_FILEPARSECVS,_("CVS decorators"))->Check(m_parse_cvs);
+    viewpop->AppendCheckItem(ID_FILEPARSESVN,_("SVN integration"))->Check(m_parse_svn);
+    viewpop->AppendCheckItem(ID_FILEPARSEHG,_("Hg integration"))->Check(m_parse_hg);
+    viewpop->AppendCheckItem(ID_FILEPARSEBZR,_("Bzr integration"))->Check(m_parse_bzr);
+    viewpop->AppendCheckItem(ID_FILEPARSEGIT,_("Git integration"))->Check(m_parse_git);
     if(m_ticount>1)
     {
         ftd->SetKind(FileTreeData::ftdkVirtualGroup);
@@ -1034,6 +1255,9 @@ void FileExplorer::OnRightClick(wxTreeEvent &event)
     if(m_ticount>0)
         Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(mtUnknown, Popup, ftd);
     delete ftd;
+    Popup->AppendSeparator();
+    Popup->AppendSubMenu(viewpop,_("&Settings"));
+    Popup->Append(ID_FILEREFRESH,_("Re&fresh"));
     wxWindow::PopupMenu(Popup);
     delete Popup;
 }
@@ -1493,9 +1717,4 @@ bool FileExplorer::IsFilesOnly(wxArrayTreeItemIds tis)
         if(m_Tree->GetItemImage(tis[i])==fvsFolder)
             return false;
     return true;
-}
-
-void FileExplorer::OnExecRequest(wxCommandEvent &/*event*/)
-{
-    m_updater->ExecMain();
 }

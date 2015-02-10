@@ -60,6 +60,7 @@ protected:
 class FileExplorer: public wxPanel
 {
     friend class FileExplorerUpdater;
+    friend class VCSFileLoader;
     friend class wxFEDropTarget;
 public:
     FileExplorer(wxWindow *parent,wxWindowID id = wxID_ANY,
@@ -74,16 +75,21 @@ public:
 
 private:
     // User initiated events
+    bool IsBrowsingVCSTree();
+    bool IsBrowsingWorkingCopy();
     void OnRightClick(wxTreeEvent &event);
     void OnActivate(wxTreeEvent &event);
     void OnExpand(wxTreeEvent &event);
     void OnEnterLoc(wxCommandEvent &event);
     void OnEnterWild(wxCommandEvent &event);
+    void OnVCSControl(wxCommandEvent &event);
     void OnChooseLoc(wxCommandEvent &event);
     void OnChooseWild(wxCommandEvent &event);
     void OnSetLoc(wxCommandEvent &event);
     void OnNewFile(wxCommandEvent &event);
     void OnOpenInEditor(wxCommandEvent &event);
+    void DoOpenInEditor(const wxString &filename);
+    void OnVCSFileLoaderComplete(wxCommandEvent &event);
     void OnNewFolder(wxCommandEvent &event);
     void OnAddFavorite(wxCommandEvent &event);
     void OnCopy(wxCommandEvent &event);
@@ -102,6 +108,7 @@ private:
     void OnParseGIT(wxCommandEvent &event);
     void OnUpButton(wxCommandEvent &event);
     void OnRefresh(wxCommandEvent &event);
+    void OnVCSDiff(wxCommandEvent &event);
     void OnBeginDragTreeItem(wxTreeEvent &event);
     void OnEndDragTreeItem(wxTreeEvent &event);
     void OnKeyDown(wxKeyEvent &event);
@@ -112,7 +119,6 @@ private:
     void OnDirMonitor(wxDirectoryMonitorEvent &e);
     void OnUpdateTreeItems(wxCommandEvent &event);
     void OnTimerCheckUpdates(wxTimerEvent &event);
-    void OnExecRequest(wxCommandEvent &event);
 
     void UpdateAbort();
     void ResetDirMonitor();
@@ -135,10 +141,14 @@ private:
     void RefreshExpanded(wxTreeItemId ti);
     void SetImages();
     wxString m_root;
+    wxString m_commit;
     FileTreeCtrl *m_Tree; //the widget display the file tree from root defined by m_Loc
     wxComboBox *m_Loc; // the combo box maintaining a list of useful locations and the current location
     wxComboBox *m_WildCards; // the combo box maintaining a list of wildcard filters for files
     wxButton *m_UpButton;
+    wxBoxSizer *m_Box_VCS_Control;
+    wxChoice *m_VCS_Control;
+    wxStaticText *m_VCS_Type;
     bool m_show_hidden;
     wxArrayTreeItemIds m_selectti; //contains selections after context menu is called up
     FavoriteDirs m_favdirs;
@@ -159,6 +169,9 @@ private:
     wxString m_dragtest;
     size_t m_findmatchcount;
     wxArrayString m_findmatch;
+
+    LoaderQueue m_vcs_file_loader_queue;
+    VCSFileLoader *m_vcs_file_loader;
 
     bool m_parse_cvs;
     bool m_parse_svn;

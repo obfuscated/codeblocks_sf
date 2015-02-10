@@ -12,7 +12,7 @@
 				<Option object_output="../../../.objs/plugins/contrib/FileManager" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ni -ns -v -p debug" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
@@ -60,9 +60,11 @@
 			<Add directory="../../../devel" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel/share/codeblocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc" />
+			<Add after="zip -j9 ../../../devel/share/codeblocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc Resources/CommitBrowser.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="CommitBrowser.cpp" />
+		<Unit filename="CommitBrowser.h" />
 		<Unit filename="FileExplorer.cpp" />
 		<Unit filename="FileExplorer.h" />
 		<Unit filename="FileExplorerSettings.cpp" />
@@ -71,6 +73,7 @@
 		<Unit filename="FileExplorerUpdater.h" />
 		<Unit filename="FileManager.cpp" />
 		<Unit filename="FileManager.h" />
+		<Unit filename="Resources/CommitBrowser.xrc" />
 		<Unit filename="Resources/fileexplorersettings.xrc" />
 		<Unit filename="directorymonitor.cpp" />
 		<Unit filename="directorymonitor.h" />
@@ -81,6 +84,9 @@
 			<code_completion />
 			<envvars />
 			<debugger />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
