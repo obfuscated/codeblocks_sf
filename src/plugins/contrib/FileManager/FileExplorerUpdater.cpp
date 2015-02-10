@@ -1088,7 +1088,7 @@ void *CommitUpdater::Entry()
             if (m_opts.commits_per_retrieve > 0)
             {
                 n = wxString::Format(_T(" -n %i "),m_opts.commits_per_retrieve);
-                n+= wxString::Format(_T("--skip %i"),m_continue_count*m_opts.commits_per_retrieve);
+                n+= wxString::Format(_T("--skip %i "),m_continue_count*m_opts.commits_per_retrieve);
             }
             Exec(_T("git log --pretty=format:%H~%an~%ad~%s ") + commit_date_range + n + branch,output, m_repo_path);
             for (unsigned int i=0; i<output.GetCount(); ++i)
