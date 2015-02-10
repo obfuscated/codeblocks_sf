@@ -1,6 +1,7 @@
 #include <sdk.h>
 
 #include <wx/sstream.h>
+#include <wx/regex.h>
 #include <set>
 
 #include "FileExplorerUpdater.h"
