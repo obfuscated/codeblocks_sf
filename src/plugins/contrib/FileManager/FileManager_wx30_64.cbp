@@ -57,8 +57,10 @@
 			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ExtraCommands>
-			<Add after="zip -j9 ..\..\..\devel30_64\share\codeblocks\FileManager.zip manifest.xml Resources\fileexplorersettings.xrc" />
+			<Add after="zip -j9 ..\..\..\devel30_64\share\codeblocks\FileManager.zip manifest.xml Resources\fileexplorersettings.xrc Resources\CommitBrowser.xrc" />
 		</ExtraCommands>
+		<Unit filename="CommitBrowser.cpp" />
+		<Unit filename="CommitBrowser.h" />
 		<Unit filename="FileExplorer.cpp" />
 		<Unit filename="FileExplorer.h" />
 		<Unit filename="FileExplorerSettings.cpp" />

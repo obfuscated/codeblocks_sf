@@ -55,9 +55,11 @@
 			<Add directory="../../../devel30" />
 		</Linker>
 		<ExtraCommands>
-			<Add after="zip -j9 ../../../devel30/share/codeblocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc" />
+			<Add after="zip -j9 ../../../devel30/share/codeblocks/FileManager.zip manifest.xml Resources/fileexplorersettings.xrc Resource/CommitBrowser.xrc" />
 			<Mode after="always" />
 		</ExtraCommands>
+		<Unit filename="CommitBrowser.cpp" />
+		<Unit filename="CommitBrowser.h" />
 		<Unit filename="FileExplorer.cpp" />
 		<Unit filename="FileExplorer.h" />
 		<Unit filename="FileExplorerSettings.cpp" />
@@ -67,6 +69,7 @@
 		<Unit filename="FileManager.cpp" />
 		<Unit filename="FileManager.h" />
 		<Unit filename="Resources/fileexplorersettings.xrc" />
+		<Unit filename="Resources/CommitBrowser.xrc" />
 		<Unit filename="directorymonitor.cpp" />
 		<Unit filename="directorymonitor.h" />
 		<Unit filename="manifest.xml" />
