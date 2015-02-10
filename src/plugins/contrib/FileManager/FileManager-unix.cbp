@@ -2,7 +2,8 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="File Manager Plugin (Unix)" />
+		<Option title="File Manager Plugin wx2.8.x (Unix)" />
+		<Option platforms="Unix;" />
 		<Option pch_mode="0" />
 		<Option compiler="gcc" />
 		<Build>
@@ -74,6 +75,7 @@
 		<Unit filename="FileManager.cpp" />
 		<Unit filename="FileManager.h" />
 		<Unit filename="Resources/CommitBrowser.xrc" />
+		<Unit filename="Resources/fileexplorersettings.fbp" />
 		<Unit filename="Resources/fileexplorersettings.xrc" />
 		<Unit filename="directorymonitor.cpp" />
 		<Unit filename="directorymonitor.h" />
@@ -84,9 +86,6 @@
 			<code_completion />
 			<envvars />
 			<debugger />
-			<wxsmith version="1">
-				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
-			</wxsmith>
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
