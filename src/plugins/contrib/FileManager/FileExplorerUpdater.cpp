@@ -23,15 +23,16 @@ END_EVENT_TABLE()
 
 Updater::~Updater()
 {
-    if(m_exec_proc)
+    if (m_exec_proc)
     {
-        m_exec_timer->Stop();
+        if (m_exec_timer)
+            m_exec_timer->Stop();
         delete m_exec_timer;
         m_exec_proc->Detach();
         m_exec_cond->Signal();
         m_exec_mutex->Unlock();
     }
-    if(IsRunning())
+    if (IsRunning())
     {
         m_kill=true;
         Wait();
@@ -52,7 +53,7 @@ int Updater::Exec(const wxString &command, wxString &output, const wxString &pat
     m_exec_mutex->Unlock();
     delete m_exec_cond;
     delete m_exec_mutex;
-    if(m_exec_proc_id==0)
+    if (m_exec_proc_id==0)
         exitcode=1;
 //    DetectEncodingAndConvert(m_exec_output.mb_str(), output);
 //    wxString a(m_exec_output.c_str(), wxConvAuto);
@@ -89,7 +90,7 @@ void Updater::OnExecMain(wxCommandEvent &/*event*/)
     wxSetWorkingDirectory(wdir);
 //    if (!wxProcess::Exists(m_exec_proc_id))
 //        m_exec_proc_id = 0;
-    if(m_exec_proc_id==0)
+    if (m_exec_proc_id==0)
     {
         m_exec_cond->Signal();
         m_exec_mutex->Unlock();
@@ -103,7 +104,8 @@ void Updater::OnExecMain(wxCommandEvent &/*event*/)
 void Updater::OnExecTerminate(wxProcessEvent &e)
 {
     ReadStream(true);
-    m_exec_timer->Stop();
+    if (m_exec_timer)
+        m_exec_timer->Stop();
     delete m_exec_sstream;
     delete m_exec_timer;
     delete m_exec_proc;
@@ -118,7 +120,7 @@ void Updater::OnExecTerminate(wxProcessEvent &e)
 
 void Updater::OnExecTimer(wxTimerEvent &/*e*/)
 {
-    if(m_exec_proc)
+    if (m_exec_proc)
         ReadStream();
 }
 
@@ -134,10 +136,10 @@ void Updater::ReadStream(bool all)
             c = m_exec_stream->GetC();
         if (m_exec_stream->LastRead()>0)
             m_exec_sstream->PutC(c);
-        if(!all && sw.Time()>30)
+        if (!all && sw.Time()>30)
             break;
     }
-    if(!all)
+    if (!all)
     {
         m_exec_timer->Start(150,true);
     }
@@ -153,7 +155,7 @@ void FileExplorerUpdater::Update(const wxTreeItemId &ti)
     if (m_vcs_type != wxEmptyString)
         m_repo_path=wxString(m_fe->GetRootFolder().c_str());
     GetTreeState(ti);
-    if(Create()==wxTHREAD_NO_ERROR)
+    if (Create()==wxTHREAD_NO_ERROR)
     {
         SetPriority(20);
         Run();
@@ -163,13 +165,13 @@ void FileExplorerUpdater::Update(const wxTreeItemId &ti)
 void *FileExplorerUpdater::Entry()
 {
     CodeBlocksThreadEvent ne(wxEVT_NOTIFY_UPDATE_COMPLETE,0);
-    if(!GetCurrentState(m_path))
+    if (!GetCurrentState(m_path))
     {
         m_cancelled=true; //TODO: SEND A CANCEL EVENT INSTEAD
         m_fe->AddPendingEvent(ne);
         return NULL;
     }
-    if(!CalcChanges())
+    if (!CalcChanges())
     {
         m_cancelled=true;
         m_fe->AddPendingEvent(ne);
@@ -212,7 +214,7 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
     }
     wxString filename;
     int flags=wxDIR_FILES|wxDIR_DIRS;
-    if(m_fe->m_show_hidden)
+    if (m_fe->m_show_hidden)
         flags|=wxDIR_HIDDEN;
     VCSstatearray sa;
     bool is_vcs=false;
@@ -273,33 +275,33 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
 
     // TODO: THIS NEEDS TO BE CALLED FROM MAIN THREAD BUT CAN'T BE UI-BLOCKING (CAN'T CALL wxExecute FROM THREADS)
     // TODO: IDEALLY THE VCS COMMAND LINE PROGRAM SHOULD BE CALLED ONCE ON THE BASE DIRECTORY (SINCE THEY ARE USUALLY RECURSIVE) TO AVOID REPEATED CALLS FOR SUB-DIRS
-    if(m_fe->m_parse_git)
-        if(ParseGITstate(path,sa))
+    if (m_fe->m_parse_git)
+        if (ParseGITstate(path,sa))
         {
             is_vcs=true;
             is_git=true;
             m_vcs_type = _T("GIT");
         }
-    if(m_fe->m_parse_svn)
-        if(ParseSVNstate(path,sa))
+    if (m_fe->m_parse_svn)
+        if (ParseSVNstate(path,sa))
         {
             is_vcs=true;
             m_vcs_type = _T("SVN");
         }
-    if(m_fe->m_parse_bzr && !is_vcs)
-        if(ParseBZRstate(path,sa))
+    if (m_fe->m_parse_bzr && !is_vcs)
+        if (ParseBZRstate(path,sa))
         {
             is_vcs=true;
             m_vcs_type = _T("BZR");
         }
-    if(m_fe->m_parse_hg && !is_vcs)
-        if(ParseHGstate(path,sa))
+    if (m_fe->m_parse_hg && !is_vcs)
+        if (ParseHGstate(path,sa))
         {
             is_vcs=true;
             m_vcs_type = _T("Hg");
         }
-/*    if(m_fe->m_parse_cvs && !is_vcs)
-        if(ParseCVSstate(path,sa))
+/*    if (m_fe->m_parse_cvs && !is_vcs)
+        if (ParseCVSstate(path,sa))
         {
             is_vcs=true;
             is_cvs=true;
@@ -311,35 +313,35 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
         int itemstate=fvsNormal;
         bool match=true;
         wxString fullpath=wxFileName(path,filename).GetFullPath();
-        if(wxFileName::DirExists(fullpath))
+        if (wxFileName::DirExists(fullpath))
             itemstate=fvsFolder;
-        if(wxFileName::FileExists(fullpath))
+        if (wxFileName::FileExists(fullpath))
         {
-            if(is_vcs&&!is_cvs&&!is_git)
+            if (is_vcs&&!is_cvs&&!is_git)
                 itemstate=fvsVcUpToDate;
             else
                 itemstate=fvsNormal;
             wxFileName fn(path,filename);
 #if wxCHECK_VERSION(2,8,0)
-            if(!fn.IsFileWritable())
+            if (!fn.IsFileWritable())
                 itemstate=fvsReadOnly;
 #endif
             int deli=-1;
             for(size_t i=0;i<sa.GetCount();i++)
             {
-                if(fn.SameAs(sa[i].path))
+                if (fn.SameAs(sa[i].path))
                 {
                     itemstate=sa[i].state;
                     deli=i;
                     break;
                 }
             }
-            if(deli>=0)
+            if (deli>=0)
                 sa.RemoveAt(deli);
-            if(!WildCardListMatch(m_wildcard,filename,true))
+            if (!WildCardListMatch(m_wildcard,filename,true))
                 match=false;
         }
-        if(match)
+        if (match)
         {
             FileData fd;
             fd.name=filename;
@@ -360,10 +362,10 @@ bool FileExplorerUpdater::CalcChanges()
     {
         bool match=false;
         for(FileDataVec::iterator it=m_currentstate.begin();it!=m_currentstate.end();it++)
-            if(it->name==tree_it->name)
+            if (it->name==tree_it->name)
             {
                 match=true;
-                if(it->state!=tree_it->state)
+                if (it->state!=tree_it->state)
                 {
                     m_adders.push_back(*it);
                     m_removers.push_back(*tree_it);
@@ -372,7 +374,7 @@ bool FileExplorerUpdater::CalcChanges()
                 tree_it=m_treestate.erase(tree_it);
                 break;
             }
-        if(!match)
+        if (!match)
             tree_it++;
     }
     for(FileDataVec::iterator tree_it2 = m_treestate.begin(); tree_it2 != m_treestate.end(); ++tree_it2)
@@ -384,15 +386,15 @@ bool FileExplorerUpdater::CalcChanges()
 
 bool FileExplorerUpdater::ParseSVNstate(const wxString &path, VCSstatearray &sa)
 {
-    if(!wxFileName::DirExists(wxFileName(path,_T(".svn")).GetFullPath()))
+    if (!wxFileName::DirExists(wxFileName(path,_T(".svn")).GetFullPath()))
         return false;
     wxArrayString output;
     int hresult=Exec(_T("svn stat -N ")+path,output);
-    if(hresult!=0)
+    if (hresult!=0)
         return false;
     for(size_t i=0;i<output.GetCount();i++)
     {
-        if(output[i].Len()<=7)
+        if (output[i].Len()<=7)
             break;
         VCSstate s;
         wxChar a=output[i][0];
@@ -448,14 +450,14 @@ bool FileExplorerUpdater::ParseGITstate(const wxString &path, VCSstatearray &sa)
     wxString parent=path;
     while(true)
     {
-        if(wxFileName::DirExists(wxFileName(parent,_T(".git")).GetFullPath()))
+        if (wxFileName::DirExists(wxFileName(parent,_T(".git")).GetFullPath()))
             break;
         wxString oldparent=parent;
         parent=wxFileName(parent).GetPath();
-        if(oldparent==parent||parent.IsEmpty())
+        if (oldparent==parent||parent.IsEmpty())
             return false;
     }
-    if(parent.IsEmpty())
+    if (parent.IsEmpty())
         return false;
     wxArrayString output;
     wxString rpath=parent;
@@ -464,7 +466,7 @@ bool FileExplorerUpdater::ParseGITstate(const wxString &path, VCSstatearray &sa)
     #else
     int hresult=Exec(_T("git status --short"),output, parent);
     #endif
-    if(hresult!=0)
+    if (hresult!=0)
     {
         return false;
     }
@@ -483,7 +485,7 @@ Status code is 2 letter code
        o   U = updated but unmerged
 
 */
-        if(output[i].Len()<=3)
+        if (output[i].Len()<=3)
             break;
         VCSstate s;
         wxChar a=output[i][0];
@@ -544,7 +546,7 @@ Status code is 2 letter code
                 s.state=fvsNormal;
                 break;
         }
-        if(output[i][0]!=' ' && output[i][1]!=' ' && output[i][0]!=output[i][1])
+        if (output[i][0]!=' ' && output[i][1]!=' ' && output[i][0]!=output[i][1])
             s.state=fvsVcConflict;
         wxFileName f(output[i].Mid(3));
         f.MakeAbsolute(rpath);
@@ -559,14 +561,14 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
     wxString parent=path;
     while(true)
     {
-        if(wxFileName::DirExists(wxFileName(parent,_T(".bzr")).GetFullPath()))
+        if (wxFileName::DirExists(wxFileName(parent,_T(".bzr")).GetFullPath()))
             break;
         wxString oldparent=parent;
         parent=wxFileName(parent).GetPath();
-        if(oldparent==parent||parent.IsEmpty())
+        if (oldparent==parent||parent.IsEmpty())
             return false;
     }
-    if(parent.IsEmpty())
+    if (parent.IsEmpty())
         return false;
     wxArrayString output;
     wxString rpath=parent;
@@ -575,13 +577,13 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
     #else
     int hresult=Exec(_T("bzr stat --short ")+path,output);
     #endif
-    if(hresult!=0)
+    if (hresult!=0)
     {
         return false;
     }
     for(size_t i=0;i<output.GetCount();i++)
     {
-        if(output[i].Len()<=4)
+        if (output[i].Len()<=4)
             break;
         VCSstate s;
         wxChar a=output[i][0];
@@ -624,7 +626,7 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
             default:
                 break;
         }
-        if(output[i][0]=='C')
+        if (output[i][0]=='C')
             s.state=fvsVcConflict;
         wxFileName f(output[i].Mid(4));
         f.MakeAbsolute(rpath);
@@ -639,22 +641,22 @@ bool FileExplorerUpdater::ParseHGstate(const wxString &path, VCSstatearray &sa)
     wxString parent=path;
     while(true)
     {
-        if(wxFileName::DirExists(wxFileName(parent,_T(".hg")).GetFullPath()))
+        if (wxFileName::DirExists(wxFileName(parent,_T(".hg")).GetFullPath()))
             break;
         wxString oldparent=parent;
         parent=wxFileName(parent).GetPath();
-        if(oldparent==parent||parent.IsEmpty())
+        if (oldparent==parent||parent.IsEmpty())
             return false;
     }
-    if(parent.IsEmpty())
+    if (parent.IsEmpty())
         return false;
     wxArrayString output;
     int hresult=Exec(_T("hg -y stat ."), output, path);
-    if(hresult!=0)
+    if (hresult!=0)
         return false;
     for(size_t i=0;i<output.GetCount();i++)
     {
-        if(output[i].Len()<=2)
+        if (output[i].Len()<=2)
             break;
         VCSstate s;
         wxChar a=output[i][0];
@@ -694,29 +696,29 @@ bool FileExplorerUpdater::ParseCVSstate(const wxString &path, VCSstatearray &sa)
     wxArrayString output;
     wxString wdir=wxGetCwd();
     Exec(_T("cvs stat -q -l  ."),output,path);
-//    if(hresult!=0)
+//    if (hresult!=0)
 //        return false;
     for(size_t i=0;i<output.GetCount();i++)
     {
         int ind1=output[i].Find(_T("File: "));
         int ind2=output[i].Find(_T("Status: "));
-        if(ind1<0||ind2<0)
+        if (ind1<0||ind2<0)
             return false;
         wxString state=output[i].Mid(ind2+8).Strip();
         VCSstate s;
         while(1)
         {
-            if(state==_T("Up-to-date"))
+            if (state==_T("Up-to-date"))
             {
                 s.state=fvsVcUpToDate;
                 break;
             }
-            if(state==_T("Locally Modified"))
+            if (state==_T("Locally Modified"))
             {
                 s.state=fvsVcModified;
                 break;
             }
-            if(state==_T("Locally Added"))
+            if (state==_T("Locally Added"))
             {
                 s.state=fvsVcAdded;
                 break;
@@ -728,7 +730,7 @@ bool FileExplorerUpdater::ParseCVSstate(const wxString &path, VCSstatearray &sa)
         s.path=f.GetFullPath();
         sa.Add(s);
     }
-    if(output.GetCount()>0)
+    if (output.GetCount()>0)
         return true;
     else
         return false;
@@ -870,7 +872,7 @@ void VCSFileLoader::Update(const wxString &op, const wxString &source_path, cons
     m_vcs_comp_commit = wxString(comp_commit.c_str());
     if (m_vcs_type != wxEmptyString)
         m_repo_path=wxString(m_fe->GetRootFolder().c_str());
-    if(Create()==wxTHREAD_NO_ERROR)
+    if (Create()==wxTHREAD_NO_ERROR)
     {
         SetPriority(20);
         Run();
@@ -1046,7 +1048,7 @@ bool CommitUpdater::Update(const wxString &what, const wxString &repo_branch, Co
     m_opts = opts;
     m_continue_count = 0;
     m_last_commit_retrieved = wxEmptyString;
-    if(Create()!=wxTHREAD_NO_ERROR)
+    if (Create()!=wxTHREAD_NO_ERROR)
         return false;
     SetPriority(20);
     Run();
@@ -1061,7 +1063,7 @@ bool CommitUpdater::UpdateContinueCommitRetrieve()
         return false;
     if (!m_what.StartsWith(_T("COMMITS:")))
         return false;
-    if(Create()!=wxTHREAD_NO_ERROR)
+    if (Create()!=wxTHREAD_NO_ERROR)
         return false;
     SetPriority(20);
     Run();
@@ -1149,7 +1151,7 @@ void *CommitUpdater::Entry()
                 else
                 {
                     long hi_commit;
-                    if(m_last_commit_retrieved.ToLong(&hi_commit))
+                    if (m_last_commit_retrieved.ToLong(&hi_commit))
                     {
                         hi_commit--;
                         long low_commit = hi_commit - m_opts.commits_per_retrieve + 1;
@@ -1238,7 +1240,7 @@ void *CommitUpdater::Entry()
             else
             {
                 long hi_commit;
-                if(m_last_commit_retrieved.ToLong(&hi_commit))
+                if (m_last_commit_retrieved.ToLong(&hi_commit))
                 {
                     hi_commit--;
                     long low_commit = hi_commit - m_opts.commits_per_retrieve + 1;
@@ -1324,7 +1326,7 @@ void *CommitUpdater::Entry()
             else
             {
                 long hi_commit;
-                if(m_last_commit_retrieved.ToLong(&hi_commit))
+                if (m_last_commit_retrieved.ToLong(&hi_commit))
                 {
                     hi_commit--;
                     long low_commit = hi_commit - m_opts.commits_per_retrieve + 1;
@@ -1367,7 +1369,7 @@ void *CommitUpdater::Entry()
                 s = s.AfterFirst(_T('|'));
                 wxString lines = s.BeforeFirst(_T('l')).Strip(wxString::both);
                 long line;
-                if(!lines.ToLong(&line))
+                if (!lines.ToLong(&line))
                     continue;
                 while(i<n && line>0 && !output[i].StartsWith(_T("------------------")))
                 {

@@ -44,7 +44,11 @@ public:
     Updater() : wxThread(wxTHREAD_JOINABLE)
     {
         m_kill=false;
+        m_exec_mutex=NULL;
         m_exec_proc=NULL;
+        m_exec_stream=NULL;
+        m_exec_sstream=NULL;
+        m_exec_timer=NULL;
         m_cancelled = false;
     }
     ~Updater();
