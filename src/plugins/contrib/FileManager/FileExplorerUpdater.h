@@ -154,9 +154,10 @@ class CommitUpdaterOptions
 {
 public:
     CommitUpdaterOptions() {}
-    CommitUpdaterOptions(const wxString &grep0, const wxString &start_commit0, const wxString &end_commit0,
+    CommitUpdaterOptions(const wxString &file0, const wxString &grep0, const wxString &start_commit0, const wxString &end_commit0,
                        const wxString &date_before0, const wxString &date_after0, long commits_per_retrieve0)
     {
+        file = wxString(file0.c_str());
         grep = wxString(grep0.c_str());
         start_commit = wxString(start_commit0.c_str());
         end_commit = wxString(end_commit0.c_str());
@@ -164,6 +165,7 @@ public:
         date_after = wxString(date_after0.c_str());
         commits_per_retrieve = commits_per_retrieve0;
     }
+    wxString file;
     wxString grep;
     wxString date_before;
     wxString date_after;

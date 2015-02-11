@@ -1082,7 +1082,10 @@ void *CommitUpdater::Entry()
             Exec(_T("git branch"),output, m_repo_path);
             for (unsigned int i=0; i<output.GetCount(); ++i)
                 if (output[i].Strip(wxString::both) != wxEmptyString)
-                    m_branches.Add(output[i].Mid(2));
+                    if (output[i].StartsWith(_T("*")))
+                        m_branches.Insert(output[i].Mid(2), 0);
+                    else
+                        m_branches.Add(output[i].Mid(2));
         }
         if (m_repo_type == _T("Hg"))
         {
@@ -1118,7 +1121,10 @@ void *CommitUpdater::Entry()
                 n = wxString::Format(_T(" -n %i "),m_opts.commits_per_retrieve);
                 n+= wxString::Format(_T("--skip %i "),m_continue_count*m_opts.commits_per_retrieve);
             }
-            Exec(_T("git log --pretty=format:%H~%an~%ad~%s ") + commit_date_range + n + branch,output, m_repo_path);
+            wxString file;
+            if (m_opts.file != wxEmptyString)
+                file = _T(" -- ") + m_opts.file;
+            Exec(_T("git log --pretty=format:%H~%an~%ad~%s ") + commit_date_range + n + branch + file,output, m_repo_path);
             for (unsigned int i=0; i<output.GetCount(); ++i)
             {
                 wxString s = output[i];
@@ -1168,8 +1174,11 @@ void *CommitUpdater::Entry()
                     }
                 }
             }
+            wxString file;
+            if (m_opts.file != wxEmptyString)
+                file = _T(" ") + m_opts.file;
 
-            Exec(_T("hg log --only-branch ") + m_repo_branch + commit_date_range + commit_range, output, m_repo_path);
+            Exec(_T("hg log --only-branch ") + m_repo_branch + commit_date_range + commit_range + file, output, m_repo_path);
             size_t i=0;
             size_t n = output.GetCount();
             while (i<n && !TestDestroy())
@@ -1259,7 +1268,10 @@ void *CommitUpdater::Entry()
                         commit_range = wxString::Format(_T(" -r%i..%i "),low_commit,hi_commit);
                 }
             }
-            Exec(_T("bzr log ") + commit_range, output, m_repo_path);
+            wxString file;
+            if (m_opts.file != wxEmptyString)
+                file = _T(" ") + m_opts.file;
+            Exec(_T("bzr log ") + commit_range + file, output, m_repo_path);
             size_t i=0;
             size_t n = output.GetCount();
             while (i<n && !TestDestroy())
@@ -1345,7 +1357,10 @@ void *CommitUpdater::Entry()
                         commit_range = wxString::Format(_T(" -r%i:%i "),hi_commit,low_commit);
                 }
             }
-            Exec(_T("svn log ") + commit_range, output, m_repo_path);
+            wxString file;
+            if (m_opts.file != wxEmptyString)
+                file = _T(" ") + m_opts.file;
+            Exec(_T("svn log ") + commit_range + file, output, m_repo_path);
             size_t i=0;
             size_t n = output.GetCount();
             while (i<n && !TestDestroy())

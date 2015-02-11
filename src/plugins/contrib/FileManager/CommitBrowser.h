@@ -19,7 +19,7 @@
 class CommitBrowser: public wxDialog
 {
 	public:
-		CommitBrowser(wxWindow* parent, const wxString& repo_path, const wxString &repo_type);
+		CommitBrowser(wxWindow* parent, const wxString& repo_path, const wxString &repo_type, const wxString &files = wxEmptyString);
 		virtual ~CommitBrowser();
         wxString GetSelectedCommit();
         wxString GetRepoBranch();
@@ -42,6 +42,7 @@ class CommitBrowser: public wxDialog
         wxCheckBox* CheckBeforeDate;
         wxDatePickerCtrl* BeforeDate;
         wxTextCtrl* Grep;
+        wxTextCtrl* FileEntry;
 		//*)
 		long m_autofetch_count;
 		CommitUpdater *m_updater;

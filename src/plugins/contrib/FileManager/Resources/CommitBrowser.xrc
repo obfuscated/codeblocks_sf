@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="CommitBrowser">
 		<title>Commits</title>
 		<centered>1</centered>
-		<size>600,600</size>
+		<size>800,600</size>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
@@ -27,6 +27,19 @@
 									</object>
 									<object class="sizeritem">
 										<object class="wxChoice" name="ID_BRANCH_CHOICE" />
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT2">
+											<label>File</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="ID_FILE_ENTRY" />
 										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>

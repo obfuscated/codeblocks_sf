@@ -1042,7 +1042,15 @@ void FileExplorer::OnVCSDiff(wxCommandEvent &event)
         comp_commit = _T("Previous");
     if (comp_commit == _T("Select commit..."))
     {
-        CommitBrowser *cm = new CommitBrowser(this, GetFullPath(m_Tree->GetRootItem()), m_VCS_Type->GetLabel());
+        wxString diff_paths;
+        for(int i=0;i<m_ticount;i++)
+        {
+            wxFileName path(GetFullPath(m_selectti[i]));
+            path.MakeRelativeTo(GetRootFolder());
+            if (path != wxEmptyString)
+                diff_paths+=_T(" \"") + path.GetFullPath() + _T("\"");
+        }
+        CommitBrowser *cm = new CommitBrowser(this, GetFullPath(m_Tree->GetRootItem()), m_VCS_Type->GetLabel(), diff_paths);
         if(cm->ShowModal() == wxID_OK)
         {
             comp_commit = cm->GetSelectedCommit();

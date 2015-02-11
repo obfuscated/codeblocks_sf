@@ -21,7 +21,7 @@ BEGIN_EVENT_TABLE(CommitBrowser,wxDialog)
     EVT_CHECKBOX(XRCID("ID_CHECK_END_COMMIT"), CommitBrowser::OnCheckCommitEnd)
 END_EVENT_TABLE()
 
-CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const wxString &repo_type)
+CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const wxString &repo_type, const wxString &files)
 {
 	//(*Initialize(CommitBrowser)
 	wxXmlResource::Get()->LoadObject(this,parent,_T("CommitBrowser"),_T("wxDialog"));
@@ -43,6 +43,7 @@ CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const 
     CheckBeforeDate = (wxCheckBox*)FindWindow(XRCID("ID_CHECK_COMMIT_BEFORE"));
     BeforeDate = (wxDatePickerCtrl*)FindWindow(XRCID("ID_COMMIT_BEFORE_DATE"));
     Grep = (wxTextCtrl*)FindWindow(XRCID("ID_GREP_ENTRY"));
+    FileEntry = (wxTextCtrl*)FindWindow(XRCID("ID_FILE_ENTRY"));
 
 	Connect(XRCID("ID_SEARCH_BUTTON"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnSearch);
 	Connect(XRCID("ID_CANCEL"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButton1Click);
@@ -50,12 +51,10 @@ CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const 
 	Connect(XRCID("ID_BUTTON_MORE"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CommitBrowser::OnButtonMore);
 	//*)
 
+
     m_autofetch_count = 0;
 	m_repo_path = repo_path;
 	m_repo_type = repo_type;
-    m_updater_commits = new CommitUpdater(this, m_repo_path, m_repo_type);
-	m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
-	m_updater->Update(_T("BRANCHES"));
 
 	CommitList->InsertColumn(0,_T("ID"));
 	CommitList->InsertColumn(1,_T("Author"));
@@ -70,6 +69,11 @@ CommitBrowser::CommitBrowser(wxWindow* parent, const wxString& repo_path, const 
 	m_rev_fetch_amt[_T("GIT")] = 100;
 	m_rev_fetch_amt[_T("BZR")] = 100;
 	m_rev_fetch_amt[_T("Hg")] = 100;
+	FileEntry->SetValue(files);
+
+    m_updater_commits = new CommitUpdater(this, m_repo_path, m_repo_type);
+	m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
+	m_updater->Update(_T("BRANCHES"));
 }
 
 CommitBrowser::~CommitBrowser()
@@ -191,7 +195,8 @@ void CommitBrowser::OnListItemSelected(wxListEvent &event)
 CommitUpdaterOptions CommitBrowser::GetCommitOptions()
 {
     wxString e(wxEmptyString);
-    return CommitUpdaterOptions(Grep->GetValue(),
+    return CommitUpdaterOptions(FileEntry->GetValue(),
+                                Grep->GetValue(),
                                 CheckStartCommit->IsChecked()? StartCommit->GetValue(): e,
                                 CheckEndCommit->IsChecked()? EndCommit->GetValue(): e,
                                 CheckBeforeDate->IsChecked()? wxString(BeforeDate->GetValue().FormatISODate()): e,
