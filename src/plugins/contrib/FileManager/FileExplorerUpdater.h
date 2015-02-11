@@ -85,6 +85,7 @@ public:
     FileDataVec m_removers;
     wxString m_vcs_type;
     wxString m_vcs_commit_string;
+    bool m_vcs_changes_only;
     void Update(const wxTreeItemId &ti); //call on main thread to do the background magic
 private:
     //FileExplorerUpdater specific code

@@ -83,6 +83,7 @@ private:
     void OnEnterLoc(wxCommandEvent &event);
     void OnEnterWild(wxCommandEvent &event);
     void OnVCSControl(wxCommandEvent &event);
+    void OnVCSChangesCheck(wxCommandEvent &event);
     void OnChooseLoc(wxCommandEvent &event);
     void OnChooseWild(wxCommandEvent &event);
     void OnSetLoc(wxCommandEvent &event);
@@ -149,6 +150,7 @@ private:
     wxBoxSizer *m_Box_VCS_Control;
     wxChoice *m_VCS_Control;
     wxStaticText *m_VCS_Type;
+    wxCheckBox *m_VCS_ChangesOnly;
     bool m_show_hidden;
     wxArrayTreeItemIds m_selectti; //contains selections after context menu is called up
     FavoriteDirs m_favdirs;

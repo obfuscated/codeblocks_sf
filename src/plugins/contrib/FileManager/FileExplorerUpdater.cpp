@@ -149,6 +149,7 @@ void FileExplorerUpdater::Update(const wxTreeItemId &ti)
     m_wildcard=wxString(m_fe->m_WildCards->GetValue().c_str());
     m_vcs_type=wxString(m_fe->m_VCS_Type->GetLabel().c_str());
     m_vcs_commit_string=wxString(m_fe->m_VCS_Control->GetString(m_fe->m_VCS_Control->GetSelection()).c_str());
+    m_vcs_changes_only = m_fe->m_VCS_ChangesOnly->IsChecked();
     if (m_vcs_type != wxEmptyString)
         m_repo_path=wxString(m_fe->GetRootFolder().c_str());
     GetTreeState(ti);
@@ -241,6 +242,29 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
         {
             if (GetVCSCommitState(path, _T("svn")))
                 return !TestDestroy();
+        }
+    }
+    if (m_vcs_changes_only && m_vcs_commit_string == _T("Working copy"))
+    {
+        bool parsed = false;
+        if (m_vcs_type == _T("GIT"))
+            parsed = ParseGITstate(path, sa);
+        else if (m_vcs_type == _T("Hg"))
+            parsed = ParseHGstate(path, sa);
+        else if (m_vcs_type == _T("BZR"))
+            parsed = ParseBZRstate(path, sa);
+        else if (m_vcs_type == _T("SVN"))
+            parsed = ParseSVNstate(path, sa);
+        if (parsed)
+        {
+            for (unsigned int i = 0; i<sa.size(); ++i)
+            {
+                FileData fd;
+                fd.name=sa[i].path;
+                fd.state=sa[i].state;
+                m_currentstate.push_back(fd);
+            }
+            return !TestDestroy();
         }
     }
 

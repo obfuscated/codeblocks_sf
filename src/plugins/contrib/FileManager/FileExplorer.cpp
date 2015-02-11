@@ -30,6 +30,7 @@ int ID_FILEWILD=wxNewId();
 int ID_SETLOC=wxNewId();
 int ID_VCSCONTROL=wxNewId();
 int ID_VCSTYPE=wxNewId();
+int ID_VCSCHANGESCHECK = wxNewId();
 
 int ID_OPENINED=wxNewId();
 int ID_FILENEWFILE=wxNewId();
@@ -228,6 +229,10 @@ int FileTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& 
         return -1;
     if((GetItemImage(item1)==fvsFolder)<(GetItemImage(item2)==fvsFolder))
         return 1;
+    if((GetItemImage(item1)==fvsVcNonControlled)<(GetItemImage(item2)==fvsVcNonControlled))
+        return -1;
+    if((GetItemImage(item1)==fvsVcNonControlled)<(GetItemImage(item2)==fvsVcNonControlled))
+        return 1;
     return (GetItemText(item1).CmpNoCase(GetItemText(item2)));
 }
 
@@ -273,6 +278,7 @@ BEGIN_EVENT_TABLE(FileExplorer, wxPanel)
     EVT_TEXT_ENTER(ID_FILELOC, FileExplorer::OnEnterLoc) //location entered in combo box - set as root
     EVT_TEXT_ENTER(ID_FILEWILD, FileExplorer::OnEnterWild) //location entered in combo box - set as root  ** BUG RIDDEN
     EVT_CHOICE(ID_VCSCONTROL, FileExplorer::OnVCSControl)
+    EVT_CHECKBOX(ID_VCSCHANGESCHECK, FileExplorer::OnVCSChangesCheck)
 END_EVENT_TABLE()
 
 FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
@@ -301,14 +307,13 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
     wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
     wxBoxSizer* bsh = new wxBoxSizer(wxHORIZONTAL);
     wxBoxSizer* bshloc = new wxBoxSizer(wxHORIZONTAL);
-    m_Box_VCS_Control = new wxBoxSizer(wxHORIZONTAL);
+    m_Box_VCS_Control = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *box_vcs_top = new wxBoxSizer(wxHORIZONTAL);
     m_Tree = new FileTreeCtrl(this, ID_FILETREE);
     m_Tree->SetIndent(m_Tree->GetIndent()/2);
     m_Tree->SetDropTarget(m_droptarget);
     m_Loc = new wxComboBox(this,ID_FILELOC,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxTE_PROCESS_ENTER|wxCB_DROPDOWN);
     m_WildCards = new wxComboBox(this,ID_FILEWILD,_T(""),wxDefaultPosition,wxDefaultSize,0,NULL,wxTE_PROCESS_ENTER|wxCB_DROPDOWN);
-    m_VCS_Control = new wxChoice(this,ID_VCSCONTROL);
-    m_VCS_Type = new wxStaticText(this,ID_VCSTYPE,_T(""));
     m_UpButton = new wxButton(this,ID_FILE_UPBUTTON,_("^"),wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT);
     bshloc->Add(m_Loc, 1, wxEXPAND);
     bshloc->Add(m_UpButton, 0, wxEXPAND);
@@ -316,12 +321,19 @@ FileExplorer::FileExplorer(wxWindow *parent,wxWindowID id,
     bsh->Add(new wxStaticText(this,wxID_ANY,_("Mask: ")),0,wxALIGN_CENTRE);
     bsh->Add(m_WildCards,1);
     bs->Add(bsh, 0, wxEXPAND);
-    m_Box_VCS_Control->Add(m_VCS_Type,0,wxALIGN_CENTER);
-    m_Box_VCS_Control->Add(m_VCS_Control,1,wxEXPAND);
+
+    m_VCS_Control = new wxChoice(this,ID_VCSCONTROL);
+    m_VCS_Type = new wxStaticText(this,ID_VCSTYPE,_T(""));
+    m_VCS_ChangesOnly = new wxCheckBox(this, ID_VCSCHANGESCHECK, _T("Show changed files only"));
+    box_vcs_top->Add(m_VCS_Type,0,wxALIGN_CENTER);
+    box_vcs_top->Add(m_VCS_Control,1,wxEXPAND);
+    m_Box_VCS_Control->Add(box_vcs_top, 0, wxEXPAND);
+    m_Box_VCS_Control->Add(m_VCS_ChangesOnly, 0, wxEXPAND);
+    m_Box_VCS_Control->Hide(true);
     bs->Add(m_Box_VCS_Control, 0, wxEXPAND);
+
     bs->Add(m_Tree, 1, wxEXPAND | wxALL);
 
-    m_Box_VCS_Control->Hide(true);
     SetAutoLayout(TRUE);
 
     SetImages();
@@ -929,6 +941,11 @@ void FileExplorer::OnSetLoc(wxCommandEvent &/*event*/)
     m_Loc->Insert(m_root,m_favdirs.GetCount());
     if(m_Loc->GetCount()>10+m_favdirs.GetCount())
         m_Loc->Delete(10+m_favdirs.GetCount());
+}
+
+void FileExplorer::OnVCSChangesCheck(wxCommandEvent &/*event*/)
+{
+    Refresh(m_Tree->GetRootItem());
 }
 
 void FileExplorer::OnVCSControl(wxCommandEvent &/*event*/)
