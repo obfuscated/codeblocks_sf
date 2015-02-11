@@ -322,6 +322,9 @@ class CompilerGCC : public cbCompilerPlugin
         size_t m_CurrentProgress;
         bool   m_LogBuildProgressPercentage;
 
+        // id wxCommandEvent
+        int m_EventId;
+
         DECLARE_EVENT_TABLE()
 };
 
