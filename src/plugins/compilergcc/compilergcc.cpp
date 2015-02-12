@@ -313,8 +313,7 @@ CompilerGCC::CompilerGCC() :
     m_RunProjectPostBuild(false),
     m_IsWorkspaceOperation(false),
     m_IsCompileFileRequest(false),
-    m_LogBuildProgressPercentage(false),
-    m_EventId(0)
+    m_LogBuildProgressPercentage(false)
 {
     if (!Manager::LoadResource(_T("compiler.zip")))
         NotifyMissingFile(_T("compiler.zip"));
@@ -628,52 +627,52 @@ bool CompilerGCC::BuildToolBar(wxToolBar* toolBar)
 
 void CompilerGCC::Dispatcher(wxCommandEvent& event)
 {
-    m_EventId = event.GetId();
+    int eventId = event.GetId();
 
 //    Manager::Get()->GetMessageManager()->Log(wxT("Dispatcher")));
 
-    if (m_EventId == idMenuRun)
+    if (eventId == idMenuRun)
         OnRun(event);
-    else if (m_EventId == idMenuCompileAndRun)
+    else if (eventId == idMenuCompileAndRun)
         OnCompileAndRun(event);
-    else if (m_EventId == idMenuCompile)
+    else if (eventId == idMenuCompile)
         OnCompile(event);
-    else if (m_EventId == idMenuCompileFromProjectManager)
+    else if (eventId == idMenuCompileFromProjectManager)
         OnCompile(event);
-    else if (m_EventId == idMenuCompileFile)
+    else if (eventId == idMenuCompileFile)
         OnCompileFile(event);
-    else if (m_EventId == idMenuCompileFileFromProjectManager)
+    else if (eventId == idMenuCompileFileFromProjectManager)
         OnCompileFile(event);
-    else if (m_EventId == idMenuCleanFileFromProjectManager)
+    else if (eventId == idMenuCleanFileFromProjectManager)
         OnCleanFile(event);
-    else if (m_EventId == idMenuRebuild)
+    else if (eventId == idMenuRebuild)
         OnRebuild(event);
-    else if (m_EventId == idMenuRebuildFromProjectManager)
+    else if (eventId == idMenuRebuildFromProjectManager)
         OnRebuild(event);
-    else if (m_EventId == idMenuBuildWorkspace)
+    else if (eventId == idMenuBuildWorkspace)
         OnCompileAll(event);
-    else if (m_EventId == idMenuRebuildWorkspace)
+    else if (eventId == idMenuRebuildWorkspace)
         OnRebuildAll(event);
-    else if (   m_EventId == idMenuProjectCompilerOptions
-             || m_EventId == idMenuProjectCompilerOptionsFromProjectManager )
+    else if (   eventId == idMenuProjectCompilerOptions
+             || eventId == idMenuProjectCompilerOptionsFromProjectManager )
         OnProjectCompilerOptions(event);
-    else if (m_EventId == idMenuTargetCompilerOptions)
+    else if (eventId == idMenuTargetCompilerOptions)
         OnTargetCompilerOptions(event);
-    else if (m_EventId == idMenuClean)
+    else if (eventId == idMenuClean)
         OnClean(event);
-    else if (m_EventId == idMenuCleanWorkspace)
+    else if (eventId == idMenuCleanWorkspace)
         OnCleanAll(event);
-    else if (m_EventId == idMenuCleanFromProjectManager)
+    else if (eventId == idMenuCleanFromProjectManager)
         OnClean(event);
-    else if (m_EventId == idMenuKillProcess)
+    else if (eventId == idMenuKillProcess)
         OnKillProcess(event);
-    else if (m_EventId == idMenuNextError)
+    else if (eventId == idMenuNextError)
         OnNextError(event);
-    else if (m_EventId == idMenuPreviousError)
+    else if (eventId == idMenuPreviousError)
         OnPreviousError(event);
-    else if (m_EventId == idMenuClearErrors)
+    else if (eventId == idMenuClearErrors)
         OnClearErrors(event);
-    else if (m_EventId == idMenuSettings)
+    else if (eventId == idMenuSettings)
         OnConfig(event);
 
     // Return focus to current editor
@@ -1555,7 +1554,7 @@ void CompilerGCC::DoPrepareQueue(bool clearLog)
 {
     if (m_CommandQueue.GetCount() == 0)
     {
-        CodeBlocksEvent evt(cbEVT_COMPILER_STARTED,  m_EventId, m_pProject, 0, this);
+        CodeBlocksEvent evt(cbEVT_COMPILER_STARTED, 0, m_pProject, 0, this);
         Manager::Get()->ProcessEvent(evt);
 
         if (clearLog)
@@ -1573,7 +1572,7 @@ void CompilerGCC::NotifyCleanProject(const wxString& target)
 {
     if (m_CommandQueue.GetCount() == 0)
     {
-        CodeBlocksEvent evt(cbEVT_CLEAN_PROJECT_STARTED,  m_EventId, m_pProject, 0, this);
+        CodeBlocksEvent evt(cbEVT_CLEAN_PROJECT_STARTED, 0, m_pProject, 0, this);
         evt.SetBuildTargetName(target);
         Manager::Get()->ProcessEvent(evt);
     }
@@ -1584,7 +1583,7 @@ void CompilerGCC::NotifyCleanWorkspace()
 {
     if (m_CommandQueue.GetCount() == 0)
     {
-        CodeBlocksEvent evt(cbEVT_CLEAN_WORKSPACE_STARTED,  m_EventId, 0, 0, this);
+        CodeBlocksEvent evt(cbEVT_CLEAN_WORKSPACE_STARTED, 0, 0, 0, this);
         Manager::Get()->ProcessEvent(evt);
     }
     Manager::Yield();
@@ -3839,7 +3838,7 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
         if (manager->GetIsRunning() == this)
             manager->SetIsRunning(NULL);
 
-        CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, m_EventId, m_pProject, 0, this);
+        CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_pProject, 0, this);
         evt.SetInt(m_LastExitCode);
         Manager::Get()->ProcessEvent(evt);
         m_LastExitCode = 0;
