@@ -328,7 +328,7 @@ CompilerOptionsDlg::CompilerOptionsDlg(wxWindow* parent, CompilerGCC* compiler, 
             OnCompilerChanged(Dummy);
         }
         else
-        {   // the user canceled and wants to keep the compiler
+        {   // the user cancelled and wants to keep the compiler
             DoFillCompilerSets(compilerIdx);
             if (nb)
                 nb->Disable();
@@ -1530,7 +1530,7 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
             OnCompilerChanged(Dummy);
         }
         else
-        { // the user canceled and wants to keep the compiler
+        { // the user cancelled and wants to keep the compiler
             if (wxNotebook* nb = XRCCTRL(*this, "nbMain", wxNotebook))
                 nb->Disable();
         }
@@ -2285,7 +2285,7 @@ void CompilerOptionsDlg::OnRemoveLibClick(cb_unused wxCommandEvent& event)
         wxString msg; msg.Printf(_("Remove all (%d) selected libraries from the list?"), num);
         if (cbMessageBox(msg, _("Confirmation"), wxICON_QUESTION | wxOK | wxCANCEL) == wxID_OK)
         {
-            // remove starting with the last lib. otherwise indizes will change
+            // remove starting with the last lib. otherwise indices will change
             for (size_t i = sels.GetCount(); i>0; --i)
                 lstLibs->Delete(sels[i-1]);
             m_bDirty = true;

@@ -154,7 +154,7 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np) :
     XRCCTRL(*this, "splitterWin", wxSplitterWindow)->SetMinSize(wxSize(-1, 200));
     // if the classbrowser is put under the control of a wxFlatNotebook,
     // somehow the main panel is like "invisible" :/
-    // so we force the correct color for the panel here...
+    // so we force the correct colour for the panel here...
     XRCCTRL(*this, "MainPanel", wxPanel)->SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 }
 
@@ -176,7 +176,7 @@ ClassBrowser::~ClassBrowser()
         m_ClassBrowserSemaphore.Post();
         // free the system-resources
         m_ClassBrowserBuilderThread->Wait();
-        // according to the wxWidgets-documentation the wxThread object itself has to be deleted explicitely,
+        // according to the wxWidgets-documentation the wxThread object itself has to be deleted explicitly,
         // to free the memory, if it is created on the heap, this is not done by Wait()
         delete m_ClassBrowserBuilderThread;
     }

@@ -397,7 +397,7 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "spnParsersNum",                 wxSpinCtrl)->Enable(!en);
 
     // Page "C / C++ parser (adv.)"
-    // FIXME (ollydbg#1#01/07/15): should code_completion option affect our parser's behavior?
+    // FIXME (ollydbg#1#01/07/15): should code_completion option affect our parser's behaviour?
     en = ccmcfg->ReadBool(_T("/code_completion"), true);
     XRCCTRL(*this, "txtCCFileExtHeader",      wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "chkCCFileExtEmpty",       wxCheckBox)->Enable(en);

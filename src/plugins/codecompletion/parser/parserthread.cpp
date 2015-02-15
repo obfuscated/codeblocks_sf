@@ -527,7 +527,7 @@ bool ParserThread::Parse()
 
 void ParserThread::DoParse()
 {
-    // need to reset tokenizer's behavior
+    // need to reset tokenizer's behaviour
     // don't forget to reset that if you add any early exit condition!
     TokenizerState oldState = m_Tokenizer.GetState();
     m_Tokenizer.SetState(tsSkipUnWanted);
@@ -1129,7 +1129,7 @@ void ParserThread::DoParse()
                         {
                             // pattern AAA BBB (...) in global namespace (not in local block)
                             // so, this is mostly like a function declaration, but in-fact this
-                            // can also be a global variable initializized with ctor, but for
+                            // can also be a global variable initialized with ctor, but for
                             // simplicity, we drop the later case
                             HandleFunction(token); // function
                         }
@@ -1249,7 +1249,7 @@ void ParserThread::DoParse()
         m_LastToken = token;
     }
 
-    // reset tokenizer behavior
+    // reset tokenizer behaviour
     m_Tokenizer.SetState(oldState);
 }
 
@@ -1315,7 +1315,7 @@ wxString ParserThread::GetTokenBaseType()
     // m_Str would be: const wxString&
     // what we do here is locate the actual return value (wxString in this example)
     // it will be needed by code completion code ;)
-    // Note that generally the returned type string is the identifer like token near the variable
+    // Note that generally the returned type string is the identifier like token near the variable
     // name, there may be some exceptions. E.g. "wxString const &s;", here, "const" should not be
     // returned as a type name.
 
@@ -1717,7 +1717,7 @@ void ParserThread::HandleDefines()
             m_Str << readToEOL;
     }
 
-    // macro definitions's scope are always in the global namespace, so we need to temperary switch
+    // macro definitions's scope are always in the global namespace, so we need to temporary switch
     // the m_LastParent token to Null
     Token* oldParent = m_LastParent;
     m_LastParent = 0L;
@@ -3531,7 +3531,7 @@ void ParserThread::RemoveTemplateArgs(const wxString &exp, wxString &expNoArgs, 
         {
             bool wanted = true;
 
-            // dont add unwanted whitespaces, i.e. ws around '<' and '>'
+            // don't add unwanted whitespaces, i.e. ws around '<' and '>'
             if(c == ParserConsts::space)
             {
                 wxChar last = 0;
@@ -3564,11 +3564,11 @@ bool ParserThread::IsStillAlive(cb_unused const wxString& funcInfo)
     return alive;
 }
 
-void  ParserThread::RefineAnonymousTypeToken(short int typeMask, wxString alias)
+void ParserThread::RefineAnonymousTypeToken(short int typeMask, wxString alias)
 {
     // we expect the m_Str are storing the unnamed type token, like UnnamedClassAA_BBB
     // AA is the file index, BBB is the unnamed token index
-    // now, we are going to rename its name to classAA_CCC, CCC is the alise name
+    // now, we are going to rename its name to classAA_CCC, CCC is the alias name
     Token* unnamedAncestor = TokenExists(m_Str, m_LastParent, typeMask);
     if (unnamedAncestor && unnamedAncestor->m_IsAnonymous) // Unnamed ancestor found - rename it to something useful.
     {

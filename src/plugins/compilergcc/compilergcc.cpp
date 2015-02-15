@@ -3757,7 +3757,7 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             // last command was "Run"
             // force exit code to zero (0) or else debugger will think build failed if last run returned non-zero...
 // TODO (mandrav##): Maybe create and use GetLastRunExitCode()? Is it needed?
-            m_LastExitCode = 0; // *might* not be needed anymore, see NotifyJobDone()
+            m_LastExitCode = 0; // *might* not be needed any more, see NotifyJobDone()
         }
         Manager::Get()->GetLogManager()->Log(_T(" "), m_PageIndex); // blank line
 

@@ -89,12 +89,12 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         CCPluginCharMap m_CallTipChars;    //!< chars each plugin is interested in for calltip state
         CCPluginCharMap m_AutoLaunchChars; //!< chars each plugin is interested in for autocomplete
         int m_EditorHookID;
-        int m_AutocompPosition;
-        int m_CallTipActive;
-        int m_LastAutocompIndex;
-        int m_LastTipPos;
-        int m_WindowBound;
-        bool m_OwnsAutocomp;
+        int m_AutocompPosition;  //!< location of caret when autocomplete timer starts, if caret is still there, launch autocomplete
+        int m_CallTipActive;     //!< is CCManager currently displaying a calltip, and if so, where
+        int m_LastAutocompIndex; //!< index of currently selected entry in autocomplete popup
+        int m_LastTipPos;        //!< last location a tool/call tip was displayed
+        int m_WindowBound;       //!< right-most boundary the documentation popup is allowed to stretch to
+        bool m_OwnsAutocomp;     //!< do we control the current autocomplete popup?
         typedef std::vector<cbCodeCompletionPlugin::CCCallTip> CallTipVec;
         CallTipVec m_CallTips; //!< cached calltips
         CallTipVec::const_iterator m_CurCallTip;   //!< remember current choice

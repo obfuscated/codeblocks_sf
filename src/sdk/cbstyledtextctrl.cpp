@@ -7,11 +7,6 @@
  * $HeadURL$
  */
 
-//#include "sdk_precomp.h"
-//#ifndef CB_PRECOMP
-//    #include "globals.h"
-//#endif
-
 #include "sdk_precomp.h"
 #include "cbstyledtextctrl.h"
 #ifndef CB_PRECOMP

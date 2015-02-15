@@ -262,7 +262,7 @@ bool Tokenizer::ReadFile()
     return success;
 }
 
-// Behavior consistent with SkipComment
+// Behaviour consistent with SkipComment
 bool Tokenizer::SkipWhiteSpace()
 {
     if (CurrentChar() > _T(' ') || IsEOF())
@@ -937,7 +937,7 @@ bool Tokenizer::SkipComment()
             }
         }
 
-        if (doc.size()>0) // dont push empty strings
+        if (doc.size()>0) // don't push empty strings
         {
             doc += _T('\n');
 

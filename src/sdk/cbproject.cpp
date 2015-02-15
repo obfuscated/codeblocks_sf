@@ -443,7 +443,7 @@ bool cbProject::SaveAs()
 
     wxFileName newName(dlg.GetPath());
 
-    // if the filename has changed, we need to recalulate the common toplevel path
+    // if the filename has changed, we need to recalculate the common toplevel path
     bool pathChanged = !newName.GetPath().IsSameAs(fname.GetPath());
 
     m_Filename = newName.GetFullPath();
@@ -451,7 +451,7 @@ bool cbProject::SaveAs()
 
     // make sure the project file uses the correct extension
     // we don't use wxFileName::SetExt() because if the user has added a dot
-    // in the filename, the part after it would be interpeted as extension
+    // in the filename, the part after it would be interpreted as extension
     // (and it might not be)
     // so we just append the correct extension
     if (!fname.GetExt().Matches(FileFilters::CODEBLOCKS_EXT))
@@ -615,7 +615,7 @@ ProjectFile* cbProject::AddFile(const wxString& targetName, const wxString& file
 ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool compile, bool link, cb_unused unsigned short int weight)
 {
 //  NOTE (Rick#1#): When loading the project, do not search for existing files
-//  (Assumming that there are no duplicate entries in the .cbp file)
+//  (Assuming that there are no duplicate entries in the .cbp file)
 //  This saves us a lot of processing when loading large projects.
 //  Remove the if to do the search anyway
 

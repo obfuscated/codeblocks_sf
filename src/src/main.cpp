@@ -1801,7 +1801,7 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             cbProject* prj = Manager::Get()->GetProjectManager()->IsOpen(fname.GetFullPath());
             if (!prj)
             {
-                wxBusyCursor wait; // loading a worspace can take some time -> showhourglass
+                wxBusyCursor wait; // loading a workspace can take some time -> showhourglass
                 return DoOpenProject(filename, addToHistory);
             }
             else

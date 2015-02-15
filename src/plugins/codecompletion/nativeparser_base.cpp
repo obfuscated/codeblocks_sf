@@ -351,7 +351,7 @@ void NativeParserBase::CleanupSearchScope(TokenTree*   tree,
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
-    // ...but alwayse search the global scope.
+    // ...but always search the global scope.
     searchScope->insert(-1);
 }
 
@@ -980,7 +980,7 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
     // initialScope contains all the matching tokens after the cascade matching algorithm
     if (!initialScope.empty())
     {
-        // normally, tokens have hireachies. E.g. a constructor token is a child of a class token.
+        // normally, tokens have hierarchies. E.g. a constructor token is a child of a class token.
         // but here we promote (expose) the constructor tokens to the user. if a Token in initialScope
         // is a class, we add all its public constructors to the results, this give us a chance to let
         // CC jump to the declaration of a constructor, see

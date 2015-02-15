@@ -785,7 +785,7 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
     Thaw();
     m_pSizer->SetItemMinSize(m_pControl, 32, 32);
 
-    // by default we show no markers, marginMasks are set explicitely in "InternalSetEditorStyleBeforeFileOpen()"
+    // by default we show no markers, marginMasks are set explicitly in "InternalSetEditorStyleBeforeFileOpen()"
     // and/or by plugins, that use markers, like browsemarks-plugin
     m_pControl->SetMarginMask(C_LINE_MARGIN,      0);
     m_pControl->SetMarginMask(C_MARKER_MARGIN,    0);
@@ -810,7 +810,7 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 void cbEditor::NotifyPlugins(wxEventType type, int intArg, const wxString& strArg, int xArg, int yArg)
 {
     if (!Manager::Get()->GetPluginManager())
-        return; // no plugin manager! app shuting down?
+        return; // no plugin manager! app shutting down?
     CodeBlocksEvent event(type);
     event.SetEditor(this);
     event.SetInt(intArg);
@@ -1110,7 +1110,7 @@ void cbEditor::Split(cbEditor::SplitType split)
 
     // update controls' look'n'feel
     // do it here (before) document is attached, speeds up syntaxhighlighting
-    // we do not call "SetEditorStyleAfterFileOpen" here becaus it calls SetLanguage for the already loaded text inside
+    // we do not call "SetEditorStyleAfterFileOpen" here because it calls SetLanguage for the already loaded text inside
     // the left control and slows down loading of large files a lot.
     InternalSetEditorStyleBeforeFileOpen(m_pControl2);
 
@@ -1393,7 +1393,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT,wxSCI_CMD_HOMEWRAPEXTEND);
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_HOMEEXTEND);
         }
-        else // else set default "Home" key behavior
+        else // else set default "Home" key behaviour
         {
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_NORM,wxSCI_CMD_VCHOMEWRAP);
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOME);
@@ -1412,7 +1412,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_HOMEWRAP);
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_HOMEWRAPEXTEND);
         }
-        else // else set default "Home" key behavior
+        else // else set default "Home" key behaviour
         {
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEWRAP);
             control->CmdKeyAssign(wxSCI_KEY_HOME,wxSCI_SCMOD_SHIFT|wxSCI_SCMOD_ALT,wxSCI_CMD_VCHOMEWRAPEXTEND);
