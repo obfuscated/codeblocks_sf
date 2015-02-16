@@ -20,7 +20,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --version=2.8 --cflags`" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
@@ -33,7 +33,7 @@
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
+			<Add option="`wx-config --version=2.8 --libs`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add option="`pkg-config glib-2.0 --libs`" />
 			<Add library="txml" />

@@ -207,7 +207,7 @@
 					<Add directory="include/scripting/bindings" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -224,7 +224,7 @@
 					<Add directory="plugins/astyle/astyle" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -240,7 +240,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -273,7 +273,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add library="depslib" />
@@ -297,7 +297,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -319,7 +319,7 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -335,7 +335,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -351,7 +351,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -367,7 +367,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -383,7 +383,7 @@
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -405,7 +405,7 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -423,7 +423,7 @@
 					<Add directory="include/scripting/sqplus" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -445,7 +445,7 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
 					<Add directory="devel" />
@@ -497,7 +497,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fPIC" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --version=2.8 --cflags`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add directory="sdk/wxscintilla/include" />
@@ -505,7 +505,7 @@
 			<Add directory="include/tinyxml" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs std,aui`" />
+			<Add option="`wx-config --version=2.8 --libs std,aui`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add directory="base/tinyxml" />
 		</Linker>

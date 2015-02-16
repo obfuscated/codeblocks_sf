@@ -19,7 +19,7 @@
 					<Add option="-DWXMAKINGLIB_PDFDOC" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="`pkg-config --libs fontconfig`" />
 					<Add option="-Wl,--no-undefined" />
 				</Linker>
@@ -35,7 +35,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="`pkg-config --libs fontconfig`" />
 					<Add library="libcodeblocks.a" />
 					<Add library="wxPdfDocument" />
@@ -55,7 +55,7 @@
 			<Add option="-Wall" />
 			<Add option="-ansi" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --version=2.8 --cflags`" />
 			<Add option="`pkg-config --cflags fontconfig`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />

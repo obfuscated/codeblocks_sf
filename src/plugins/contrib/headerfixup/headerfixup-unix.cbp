@@ -19,7 +19,7 @@
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-fPIC" />
-					<Add option="`wx-config --cflags`" />
+					<Add option="`wx-config --version=2.8 --cflags`" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
@@ -33,7 +33,7 @@
 					<Add directory="../../../include/mozilla_chardet/xpcom/glue" />
 				</Compiler>
 				<Linker>
-					<Add option="`wx-config --libs`" />
+					<Add option="`wx-config --version=2.8 --libs`" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="libcodeblocks.a" />
 					<Add directory="../../../devel" />

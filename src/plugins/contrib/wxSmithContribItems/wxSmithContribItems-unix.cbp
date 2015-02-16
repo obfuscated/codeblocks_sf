@@ -70,7 +70,7 @@
 			<Add option="-Wall" />
 			<Add option="-ansi" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="`wx-config --cflags`" />
+			<Add option="`wx-config --version=2.8 --cflags`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
@@ -78,7 +78,7 @@
 			<Add option="-DCB_PRECOMP" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
+			<Add option="`wx-config --version=2.8 --libs`" />
 			<Add option="-Wl,--no-undefined" />
 		</Linker>
 		<Unit filename="manifest.xml" />
