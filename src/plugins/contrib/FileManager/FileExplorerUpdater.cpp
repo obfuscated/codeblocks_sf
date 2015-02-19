@@ -259,21 +259,21 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
         else if (m_vcs_type == _T("Hg"))
         {
             if (m_vcs_commit_string == _T("Working copy"))
-                parsed = ParseHGChanges(path, sa);
+                parsed = ParseHGChanges(path, sa, true);
             else
                 parsed = ParseHGChangesTree(sa, true);
         }
         else if (m_vcs_type == _T("BZR"))
         {
             if (m_vcs_commit_string == _T("Working copy"))
-                parsed = ParseBZRChanges(path, sa);
+                parsed = ParseBZRChanges(path, sa, true);
             else
                 parsed = ParseBZRChangesTree(sa, true);
         }
         else if (m_vcs_type == _T("SVN"))
         {
             if (m_vcs_commit_string == _T("Working copy"))
-                parsed = ParseSVNChanges(path, sa);
+                parsed = ParseSVNChanges(path, sa, true);
             else
                 parsed = ParseSVNChangesTree(sa, true);
         }
