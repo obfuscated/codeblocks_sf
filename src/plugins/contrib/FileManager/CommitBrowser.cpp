@@ -208,12 +208,7 @@ CommitUpdaterOptions CommitBrowser::GetCommitOptions()
 void CommitBrowser::OnBranchSelected(wxCommandEvent & /*event*/)
 {
     wxString br = Choice1->GetString(Choice1->GetSelection());
-    if (m_updater == 0)
-    {
-        m_updater = new CommitUpdater(this, m_repo_path, m_repo_type);
-        m_updater->Update(_T("COMMITS:")+br);
-    } else
-        m_update_queue = _T("COMMITS:")+br;
+    CommitsUpdaterQueue(_T("COMMITS:")+br);
     CommitList->DeleteAllItems();
     ButtonMore->Disable();
     Button2->Disable();

@@ -1337,13 +1337,14 @@ void FileExplorer::OnNewFolder(wxCommandEvent &/*event*/)
     wxFileName dir(workingdir);
     dir.Assign(dir.GetFullPath(),name);
     wxString mkd=dir.GetFullPath();
-    if(!wxFileName::DirExists(mkd) &&!wxFileName::DirExists(mkd))
+    if(!wxFileName::DirExists(mkd) &&!wxFileName::FileExists(mkd))
     {
-        dir.Mkdir(mkd);
+        if (!dir.Mkdir(mkd))
+            cbMessageBox(_("A directory could not be created with name ")+name);
         Refresh(m_selectti[0]); //SINGLE: m_Tree->GetSelection()
     }
     else
-        cbMessageBox(_("File/Directory Already Exists with Name ")+name);
+        cbMessageBox(_("A file or directory already exists with name ")+name);
 }
 
 void FileExplorer::OnDuplicate(wxCommandEvent &/*event*/)

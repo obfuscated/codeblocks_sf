@@ -223,7 +223,7 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
 
     //If we are browsing a repo we get the tree for the requested commit
     if (m_vcs_type != wxEmptyString && m_vcs_commit_string != _T("Working copy") &&
-            m_vcs_commit_string != wxEmptyString)
+            m_vcs_commit_string != wxEmptyString && !m_vcs_changes_only)
     {
         if (m_vcs_type == _T("GIT"))
         {
@@ -246,17 +246,37 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
                 return !TestDestroy();
         }
     }
-    if (m_vcs_changes_only && m_vcs_commit_string == _T("Working copy"))
+    if (m_vcs_type != wxEmptyString  && m_vcs_changes_only)
     {
         bool parsed = false;
         if (m_vcs_type == _T("GIT"))
-            parsed = ParseGITstate(path, sa);
+        {
+            if (m_vcs_commit_string == _T("Working copy"))
+                parsed = ParseGITChanges(path, sa, true);
+            else
+                parsed = ParseGITChangesTree(sa, true);
+        }
         else if (m_vcs_type == _T("Hg"))
-            parsed = ParseHGstate(path, sa);
+        {
+            if (m_vcs_commit_string == _T("Working copy"))
+                parsed = ParseHGChanges(path, sa);
+            else
+                parsed = ParseHGChangesTree(sa, true);
+        }
         else if (m_vcs_type == _T("BZR"))
-            parsed = ParseBZRstate(path, sa);
+        {
+            if (m_vcs_commit_string == _T("Working copy"))
+                parsed = ParseBZRChanges(path, sa);
+            else
+                parsed = ParseBZRChangesTree(sa, true);
+        }
         else if (m_vcs_type == _T("SVN"))
-            parsed = ParseSVNstate(path, sa);
+        {
+            if (m_vcs_commit_string == _T("Working copy"))
+                parsed = ParseSVNChanges(path, sa);
+            else
+                parsed = ParseSVNChangesTree(sa, true);
+        }
         if (parsed)
         {
             for (unsigned int i = 0; i<sa.size(); ++i)
@@ -276,32 +296,32 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
     // TODO: THIS NEEDS TO BE CALLED FROM MAIN THREAD BUT CAN'T BE UI-BLOCKING (CAN'T CALL wxExecute FROM THREADS)
     // TODO: IDEALLY THE VCS COMMAND LINE PROGRAM SHOULD BE CALLED ONCE ON THE BASE DIRECTORY (SINCE THEY ARE USUALLY RECURSIVE) TO AVOID REPEATED CALLS FOR SUB-DIRS
     if (m_fe->m_parse_git)
-        if (ParseGITstate(path,sa))
+        if (ParseGITChanges(path,sa))
         {
             is_vcs=true;
             is_git=true;
             m_vcs_type = _T("GIT");
         }
     if (m_fe->m_parse_svn)
-        if (ParseSVNstate(path,sa))
+        if (ParseSVNChanges(path,sa))
         {
             is_vcs=true;
             m_vcs_type = _T("SVN");
         }
     if (m_fe->m_parse_bzr && !is_vcs)
-        if (ParseBZRstate(path,sa))
+        if (ParseBZRChanges(path,sa))
         {
             is_vcs=true;
             m_vcs_type = _T("BZR");
         }
     if (m_fe->m_parse_hg && !is_vcs)
-        if (ParseHGstate(path,sa))
+        if (ParseHGChanges(path,sa))
         {
             is_vcs=true;
             m_vcs_type = _T("Hg");
         }
 /*    if (m_fe->m_parse_cvs && !is_vcs)
-        if (ParseCVSstate(path,sa))
+        if (ParseCVSChanges(path,sa))
         {
             is_vcs=true;
             is_cvs=true;
@@ -384,11 +404,12 @@ bool FileExplorerUpdater::CalcChanges()
     return !TestDestroy();
 }
 
-bool FileExplorerUpdater::ParseSVNstate(const wxString &path, VCSstatearray &sa)
+bool FileExplorerUpdater::ParseSVNChanges(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     if (!wxFileName::DirExists(wxFileName(path,_T(".svn")).GetFullPath()))
         return false;
     wxArrayString output;
+    int name_pos = 7;
     int hresult=Exec(_T("svn stat -N ")+path,output);
     if (hresult!=0)
         return false;
@@ -433,19 +454,90 @@ bool FileExplorerUpdater::ParseSVNstate(const wxString &path, VCSstatearray &sa)
             default:
                 break;
         }
-#ifdef __WXMSW__
-        wxFileName f(output[i].Mid(1).Strip(wxString::both));
-        f.MakeAbsolute(path);
-        s.path=f.GetFullPath();
-#else
-        s.path=wxFileName(output[i].Mid(1).Strip(wxString::both)).GetFullPath();
-#endif
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(path);
+            s.path=f.GetFullPath();
+        }
         sa.Add(s);
     }
     return true;
 }
 
-bool FileExplorerUpdater::ParseGITstate(const wxString &path, VCSstatearray &sa)
+bool FileExplorerUpdater::ParseSVNChangesTree(VCSstatearray &sa, bool relative_paths)
+{
+    wxArrayString output;
+    int name_pos = 5;
+    if (m_vcs_commit_string == wxEmptyString)
+        return false;
+    int hresult = Exec(_T("svn log --verbose -r") + m_vcs_commit_string, output, m_repo_path);
+    if (hresult!=0)
+        return false;
+    while (output.GetCount() > 0 && !output[0].StartsWith(_T("Changed paths:"))) // first line is the one-line commit summary
+        output.RemoveAt(0);
+    output.RemoveAt(0);
+    for(size_t i=0;i<output.GetCount();i++)
+    {
+        if (output[i].Len()<=3)
+            break;
+        VCSstate s;
+        wxChar a=output[i][3];
+        switch(a)
+        {
+            case ' ':
+                s.state=fvsVcUpToDate;
+                break;
+            case '?':
+                s.state=fvsVcNonControlled;
+                break;
+            case 'A':
+                s.state=fvsVcAdded;
+                break;
+            case 'M':
+                s.state=fvsVcModified;
+                break;
+            case 'C':
+                s.state=fvsVcConflict;
+                break;
+            case 'D':
+                s.state=fvsVcMissing;
+                break;
+            case 'I':
+                s.state=fvsVcNonControlled;
+                break;
+            case 'X':
+                s.state=fvsVcExternal;
+                break;
+            case '!':
+                s.state=fvsVcMissing;
+                break;
+            case '~':
+                s.state=fvsVcLockStolen;
+                break;
+            default:
+                break;
+        }
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(m_repo_path);
+            s.path=f.GetFullPath();
+        }
+        sa.Add(s);
+    }
+    return true;
+}
+
+bool FileExplorerUpdater::ParseGITChanges(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxString parent=path;
     while(true)
@@ -461,16 +553,16 @@ bool FileExplorerUpdater::ParseGITstate(const wxString &path, VCSstatearray &sa)
         return false;
     wxArrayString output;
     wxString rpath=parent;
+    int name_pos;
     #ifdef __WXMSW__
-    int hresult=Exec(_T("cmd /c git status --short"), output, parent);
+    int hresult = Exec(_T("cmd /c git status --short"), output, parent);
     #else
-    int hresult=Exec(_T("git status --short"),output, parent);
+    int hresult = Exec(_T("git status --short"), output, parent);
     #endif
     if (hresult!=0)
-    {
         return false;
-    }
-    for(size_t i=0;i<output.GetCount();i++)
+    name_pos = 3;
+    for (size_t i=0;i<output.GetCount();i++)
     {
 
 /*
@@ -548,15 +640,96 @@ Status code is 2 letter code
         }
         if (output[i][0]!=' ' && output[i][1]!=' ' && output[i][0]!=output[i][1])
             s.state=fvsVcConflict;
-        wxFileName f(output[i].Mid(3));
-        f.MakeAbsolute(rpath);
-        s.path=f.GetFullPath();
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(path);
+            s.path=f.GetFullPath();
+        }
         sa.Add(s);
     }
     return true;
 }
 
-bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
+bool FileExplorerUpdater::ParseGITChangesTree(VCSstatearray &sa, bool relative_paths)
+{
+    wxArrayString output;
+    int name_pos = 2;
+    if (m_vcs_commit_string == wxEmptyString)
+        return false;
+    int hresult = Exec(_T("git show --name-status --format=oneline ") + m_vcs_commit_string, output, m_repo_path);
+    if (hresult!=0)
+        return false;
+    if (output.GetCount() > 0) // first line is the one-line commit summary
+        output.RemoveAt(0);
+    for (size_t i=0;i<output.GetCount();i++)
+    {
+
+/*
+Per git status --help.
+Status code is 2 letter code
+       o   ' ' = unmodified
+       o   M = modified
+       o   A = added
+       o   D = deleted
+       o   R = renamed
+       o   C = copied
+       o   U = updated but unmerged
+
+*/
+        if (output[i].Len()<=3)
+            continue;
+        VCSstate s;
+        wxChar a=output[i][0];
+        switch(a)
+        {
+            case 'M':
+                s.state=fvsVcModified;
+                break;
+            case 'A':
+                s.state=fvsVcAdded;
+                break;
+            case 'D':
+                s.state=fvsVcModified;
+                break;
+            case 'R':
+                s.state=fvsVcModified;
+                break;
+            case 'C':
+                s.state=fvsVcModified;
+                break;
+            case 'U':
+                s.state=fvsVcModified;
+                break;
+            case '?':
+                s.state=fvsVcNonControlled;
+                break;
+            case ' ':
+                break;
+            default:
+                s.state=fvsNormal;
+                break;
+        }
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(m_repo_path);
+            s.path=f.GetFullPath();
+        }
+        sa.Add(s);
+    }
+    return true;
+}
+
+bool FileExplorerUpdater::ParseBZRChanges(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxString parent=path;
     while(true)
@@ -571,6 +744,7 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
     if (parent.IsEmpty())
         return false;
     wxArrayString output;
+    int name_pos = 4;
     wxString rpath=parent;
     #ifdef __WXMSW__
     int hresult=Exec(_T("cmd /c bzr stat --short ")+path,output);
@@ -628,15 +802,93 @@ bool FileExplorerUpdater::ParseBZRstate(const wxString &path, VCSstatearray &sa)
         }
         if (output[i][0]=='C')
             s.state=fvsVcConflict;
-        wxFileName f(output[i].Mid(4));
-        f.MakeAbsolute(rpath);
-        s.path=f.GetFullPath();
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(path);
+            s.path=f.GetFullPath();
+        }
         sa.Add(s);
     }
     return true;
 }
 
-bool FileExplorerUpdater::ParseHGstate(const wxString &path, VCSstatearray &sa)
+bool FileExplorerUpdater::ParseBZRChangesTree(VCSstatearray &sa, bool relative_paths)
+{
+    wxArrayString output;
+    int name_pos = 2;
+    if (m_vcs_commit_string == wxEmptyString)
+        return false;
+    int hresult = Exec(_T("bzr status --short -c ") + m_vcs_commit_string, output, m_repo_path);
+    if (hresult!=0)
+        return false;
+    for(size_t i=0;i<output.GetCount();i++)
+    {
+        if (output[i].Len()<=4)
+            break;
+        VCSstate s;
+        wxChar a=output[i][0];
+        switch(a)
+        {
+            case '+':
+                s.state=fvsVcUpToDate;
+                break;
+            case '-':
+                s.state=fvsVcNonControlled;
+                break;
+//            case 'C':
+//                s.state=fvsVcConflict;
+//                break;
+            case '?':
+                s.state=fvsVcNonControlled;
+                break;
+            case 'R':
+                s.state=fvsVcModified;
+                break;
+            case 'P': //pending merge
+                s.state=fvsVcOutOfDate;
+                break;
+            default:
+                break;
+        }
+        a=output[i][1];
+        switch(a)
+        {
+            case 'N': // created
+                s.state=fvsVcAdded;
+                break;
+            case 'D': //deleted
+                s.state=fvsVcMissing;
+                break;
+            case 'K': //kind changed
+            case 'M': //modified
+                s.state=fvsVcModified;
+                break;
+            default:
+                break;
+        }
+        if (output[i][0]=='C')
+            s.state=fvsVcConflict;
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(m_repo_path);
+            s.path=f.GetFullPath();
+        }
+        sa.Add(s);
+    }
+    return true;
+}
+
+bool FileExplorerUpdater::ParseHGChanges(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxString parent=path;
     while(true)
@@ -650,6 +902,7 @@ bool FileExplorerUpdater::ParseHGstate(const wxString &path, VCSstatearray &sa)
     }
     if (parent.IsEmpty())
         return false;
+    int name_pos = 2;
     wxArrayString output;
     int hresult=Exec(_T("hg -y stat ."), output, path);
     if (hresult!=0)
@@ -683,15 +936,75 @@ bool FileExplorerUpdater::ParseHGstate(const wxString &path, VCSstatearray &sa)
             default:
                 break;
         }
-        wxFileName f(output[i].Mid(2));
-        f.MakeAbsolute(path);
-        s.path=f.GetFullPath();
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(path);
+            s.path=f.GetFullPath();
+        }
         sa.Add(s);
     }
     return true;
 }
 
-bool FileExplorerUpdater::ParseCVSstate(const wxString &path, VCSstatearray &sa)
+bool FileExplorerUpdater::ParseHGChangesTree(VCSstatearray &sa, bool relative_paths)
+{
+    wxArrayString output;
+    int name_pos = 2;
+    if (m_vcs_commit_string == wxEmptyString)
+        return false;
+    int hresult = Exec(_T("hg status --change ") + m_vcs_commit_string, output, m_repo_path);
+    if (hresult!=0)
+        return false;
+    for(size_t i=0;i<output.GetCount();i++)
+    {
+        if (output[i].Len()<=2)
+            break;
+        VCSstate s;
+        wxChar a=output[i][0];
+        switch(a)
+        {
+            case 'C': //clean
+                s.state=fvsVcUpToDate;
+                break;
+            case '?': //not tracked
+                s.state=fvsVcNonControlled;
+                break;
+            case '!': // local copy removed -- will not see this file
+                s.state=fvsVcMissing;
+                break;
+            case 'A': // added
+                s.state=fvsVcAdded;
+                break;
+            case 'R': //removed from branch, but exists in local copy
+                s.state=fvsVcMissing;
+                break;
+            case 'M': //modified
+                s.state=fvsVcModified;
+                break;
+            default:
+                break;
+        }
+        if (relative_paths)
+        {
+            s.path = output[i].Mid(name_pos);
+        }
+        else
+        {
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeAbsolute(m_repo_path);
+            s.path=f.GetFullPath();
+        }
+        sa.Add(s);
+    }
+    return true;
+}
+
+bool FileExplorerUpdater::ParseCVSChanges(const wxString &path, VCSstatearray &sa)
 {
     wxArrayString output;
     wxString wdir=wxGetCwd();
@@ -1082,10 +1395,12 @@ void *CommitUpdater::Entry()
             Exec(_T("git branch"),output, m_repo_path);
             for (unsigned int i=0; i<output.GetCount(); ++i)
                 if (output[i].Strip(wxString::both) != wxEmptyString)
+                {
                     if (output[i].StartsWith(_T("*")))
                         m_branches.Insert(output[i].Mid(2), 0);
                     else
                         m_branches.Add(output[i].Mid(2));
+                }
         }
         if (m_repo_type == _T("Hg"))
         {
@@ -1170,6 +1485,7 @@ void *CommitUpdater::Entry()
                             m_parent->AddPendingEvent(ne);
                             return 0;
                         }
+                        m_last_commit_retrieved = wxString::Format(_T("%i"),low_commit); //THIS IS SPECIAL LOGIC FOR HG BRANCHES (SEE BELOW)
                         commit_range = wxString::Format(_T(" -r%i:%i "),hi_commit,low_commit);
                     }
                 }
@@ -1190,9 +1506,8 @@ void *CommitUpdater::Entry()
                 ++i;
                 if (!s.StartsWith(_T("changeset:")))
                     continue;
-                cdata.id = s.AfterFirst(_T(' ')).BeforeFirst(_T(':')).Strip(wxString::both);
-
-                if (i<=n)
+                cdata.id = s.AfterFirst(_T(':')).BeforeFirst(_T(':')).Strip(wxString::both);
+                if (i>=n)
                     continue;
                 s = output[i];
                 ++i;
@@ -1399,10 +1714,13 @@ void *CommitUpdater::Entry()
             m_continue_count++;
         else
             m_continue_count = 0;
-        bool hg_not_done;
+        bool hg_not_done = false;
         if (m_repo_type == _T("Hg"))
         {
             long last;
+            if (m_last_commit_retrieved == wxEmptyString)
+                if (commits.size()>0)
+                    m_last_commit_retrieved = commits.back().id;
             if (m_last_commit_retrieved.ToLong(&last))
                 if (last > 0)
                     hg_not_done = true;
@@ -1413,13 +1731,16 @@ void *CommitUpdater::Entry()
             m_retrieved_all = false;
         else
             m_retrieved_all = true;
-        if (commits.size()>0)
+        if (m_repo_type != _T("Hg"))
         {
-            m_last_commit_retrieved = commits.back().id;
-        }
-        else
-        {
-            m_last_commit_retrieved = wxEmptyString;
+            if (commits.size()>0)
+            {
+                m_last_commit_retrieved = commits.back().id;
+            }
+            else
+            {
+                m_last_commit_retrieved = wxEmptyString;
+            }
         }
         if (m_opts.grep != wxEmptyString)
         {

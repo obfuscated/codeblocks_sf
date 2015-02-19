@@ -43,12 +43,13 @@ class Updater:public wxEvtHandler, public wxThread
 public:
     Updater() : wxThread(wxTHREAD_JOINABLE)
     {
-        m_kill=false;
-        m_exec_mutex=NULL;
-        m_exec_proc=NULL;
-        m_exec_stream=NULL;
-        m_exec_sstream=NULL;
-        m_exec_timer=NULL;
+        m_kill = false;
+        m_exec_mutex = NULL;
+        m_exec_proc = NULL;
+        m_exec_stream = NULL;
+        m_exec_sstream = NULL;
+        m_exec_timer = NULL;
+        m_exec_cond = NULL;
         m_cancelled = false;
     }
     ~Updater();
@@ -100,11 +101,15 @@ private:
     wxString m_path;
     wxString m_repo_path;
     wxString m_wildcard;
-    bool ParseGITstate(const wxString &path, VCSstatearray &sa);
-    bool ParseBZRstate(const wxString &path, VCSstatearray &sa);
-    bool ParseHGstate(const wxString &path, VCSstatearray &sa);
-    bool ParseCVSstate(const wxString &path, VCSstatearray &sa);
-    bool ParseSVNstate(const wxString &path, VCSstatearray &sa);
+    bool ParseGITChangesTree(VCSstatearray &sa, bool relative_paths = false);
+    bool ParseSVNChangesTree(VCSstatearray &sa, bool relative_paths = false);
+    bool ParseBZRChangesTree(VCSstatearray &sa, bool relative_paths = false);
+    bool ParseHGChangesTree(VCSstatearray &sa, bool relative_paths = false);
+    bool ParseGITChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseBZRChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseHGChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseSVNChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseCVSChanges(const wxString &path, VCSstatearray &sa);
     bool GetGITCommitState(const wxString &path);
     bool GetHgCommitState(const wxString &path);
     bool GetVCSCommitState(const wxString &path, const wxString &cmd);
