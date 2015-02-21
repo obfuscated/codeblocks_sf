@@ -254,28 +254,28 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
             if (m_vcs_commit_string == _T("Working copy"))
                 parsed = ParseGITChanges(path, sa, true);
             else
-                parsed = ParseGITChangesTree(sa, true);
+                parsed = ParseGITChangesTree(path, sa, true);
         }
         else if (m_vcs_type == _T("Hg"))
         {
             if (m_vcs_commit_string == _T("Working copy"))
                 parsed = ParseHGChanges(path, sa, true);
             else
-                parsed = ParseHGChangesTree(sa, true);
+                parsed = ParseHGChangesTree(path, sa, true);
         }
         else if (m_vcs_type == _T("BZR"))
         {
             if (m_vcs_commit_string == _T("Working copy"))
                 parsed = ParseBZRChanges(path, sa, true);
             else
-                parsed = ParseBZRChangesTree(sa, true);
+                parsed = ParseBZRChangesTree(path, sa, true);
         }
         else if (m_vcs_type == _T("SVN"))
         {
             if (m_vcs_commit_string == _T("Working copy"))
                 parsed = ParseSVNChanges(path, sa, true);
             else
-                parsed = ParseSVNChangesTree(sa, true);
+                parsed = ParseSVNChangesTree(path, sa, true);
         }
         if (parsed)
         {
@@ -337,27 +337,23 @@ bool FileExplorerUpdater::GetCurrentState(const wxString &path)
             itemstate=fvsFolder;
         if (wxFileName::FileExists(fullpath))
         {
-            if (is_vcs&&!is_cvs&&!is_git)
-                itemstate=fvsVcUpToDate;
-            else
-                itemstate=fvsNormal;
+//            if (is_vcs&&!is_cvs&&!is_git)
+//                itemstate=fvsVcUpToDate;
+//            else
+//            itemstate=fvsNormal;
             wxFileName fn(path,filename);
 #if wxCHECK_VERSION(2,8,0)
             if (!fn.IsFileWritable())
                 itemstate=fvsReadOnly;
 #endif
-            int deli=-1;
             for(size_t i=0;i<sa.GetCount();i++)
             {
-                if (fn.SameAs(sa[i].path))
+                if (fn.GetFullPath() == sa[i].path || fn.SameAs(sa[i].path))
                 {
                     itemstate=sa[i].state;
-                    deli=i;
                     break;
                 }
             }
-            if (deli>=0)
-                sa.RemoveAt(deli);
             if (!WildCardListMatch(m_wildcard,filename,true))
                 match=false;
         }
@@ -406,12 +402,24 @@ bool FileExplorerUpdater::CalcChanges()
 
 bool FileExplorerUpdater::ParseSVNChanges(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
-    if (!wxFileName::DirExists(wxFileName(path,_T(".svn")).GetFullPath()))
-        return false;
+    wxString parent = path;
+// Older versions of subversion had a hidden .svn folder in every directory in the repo, but
+// that's no longer the case
+//    if (!wxFileName::DirExists(wxFileName(path,_T(".svn")).GetFullPath()))
+//        return false;
+    while(true)
+    {
+        if (wxFileName::DirExists(wxFileName(parent,_T(".svn")).GetFullPath()))
+            break;
+        wxString oldparent=parent;
+        parent=wxFileName(parent).GetPath();
+        if (oldparent==parent||parent.IsEmpty())
+            return false;
+    }
     wxArrayString output;
-    int name_pos = 7;
-    int hresult=Exec(_T("svn stat -N ")+path,output);
-    if (hresult!=0)
+    int name_pos = 8;
+    int hresult = Exec(_T("svn stat -N ."), output, path);
+    if (hresult != 0)
         return false;
     for(size_t i=0;i<output.GetCount();i++)
     {
@@ -469,24 +477,24 @@ bool FileExplorerUpdater::ParseSVNChanges(const wxString &path, VCSstatearray &s
     return true;
 }
 
-bool FileExplorerUpdater::ParseSVNChangesTree(VCSstatearray &sa, bool relative_paths)
+bool FileExplorerUpdater::ParseSVNChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxArrayString output;
-    int name_pos = 5;
+    int name_pos = 8;
     if (m_vcs_commit_string == wxEmptyString)
         return false;
-    int hresult = Exec(_T("svn log --verbose -r") + m_vcs_commit_string, output, m_repo_path);
+    wxFileName rel_root_fn = wxFileName(path);
+    rel_root_fn.MakeRelativeTo(m_repo_path);
+    wxString rel_root_path = rel_root_fn.GetFullPath();
+    int hresult = Exec(_T("svn diff --summarize -c") + m_vcs_commit_string + _T(" ") + rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
-    while (output.GetCount() > 0 && !output[0].StartsWith(_T("Changed paths:"))) // first line is the one-line commit summary
-        output.RemoveAt(0);
-    output.RemoveAt(0);
     for(size_t i=0;i<output.GetCount();i++)
     {
         if (output[i].Len()<=3)
             break;
         VCSstate s;
-        wxChar a=output[i][3];
+        wxChar a=output[i][0];
         switch(a)
         {
             case ' ':
@@ -524,7 +532,10 @@ bool FileExplorerUpdater::ParseSVNChangesTree(VCSstatearray &sa, bool relative_p
         }
         if (relative_paths)
         {
-            s.path = output[i].Mid(name_pos);
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeRelativeTo(rel_root_path);
+            s.path=f.GetFullPath();
+//            s.path = output[i].Mid(name_pos);
         }
         else
         {
@@ -532,6 +543,7 @@ bool FileExplorerUpdater::ParseSVNChangesTree(VCSstatearray &sa, bool relative_p
             f.MakeAbsolute(m_repo_path);
             s.path=f.GetFullPath();
         }
+        //TODO: Filter out subpaths
         sa.Add(s);
     }
     return true;
@@ -655,13 +667,16 @@ Status code is 2 letter code
     return true;
 }
 
-bool FileExplorerUpdater::ParseGITChangesTree(VCSstatearray &sa, bool relative_paths)
+bool FileExplorerUpdater::ParseGITChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxArrayString output;
+    wxFileName rel_root_fn = wxFileName(path);
+    rel_root_fn.MakeRelativeTo(m_repo_path);
+    wxString rel_root_path = rel_root_fn.GetFullPath();
     int name_pos = 2;
     if (m_vcs_commit_string == wxEmptyString)
         return false;
-    int hresult = Exec(_T("git show --name-status --format=oneline ") + m_vcs_commit_string, output, m_repo_path);
+    int hresult = Exec(_T("git show --name-status --format=oneline ") + m_vcs_commit_string + _T(" ")+rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
     if (output.GetCount() > 0) // first line is the one-line commit summary
@@ -714,16 +729,26 @@ Status code is 2 letter code
                 s.state=fvsNormal;
                 break;
         }
+        s.path = output[i].Mid(name_pos);
+        if (!s.path.StartsWith(rel_root_path))
+            continue;
+        //GIT returns all paths relative to the root of the repo path, so need to convert it to be relative to the sub-path
         if (relative_paths)
         {
-            s.path = output[i].Mid(name_pos);
+            if (path != m_repo_path)
+            {
+                wxFileName f(s.path);
+                f.MakeRelativeTo(rel_root_path);
+                s.path = f.GetFullPath();
+            }
         }
         else
         {
-            wxFileName f(output[i].Mid(name_pos));
+            wxFileName f(s.path);
             f.MakeAbsolute(m_repo_path);
             s.path=f.GetFullPath();
         }
+        //TODO: Filter out subpaths if we don't want to recurse into subdirs
         sa.Add(s);
     }
     return true;
@@ -747,9 +772,9 @@ bool FileExplorerUpdater::ParseBZRChanges(const wxString &path, VCSstatearray &s
     int name_pos = 4;
     wxString rpath=parent;
     #ifdef __WXMSW__
-    int hresult=Exec(_T("cmd /c bzr stat --short ")+path,output);
+    int hresult=Exec(_T("cmd /c bzr stat --short ")+path, output, path);
     #else
-    int hresult=Exec(_T("bzr stat --short ")+path,output);
+    int hresult=Exec(_T("bzr stat --short ")+path, output, path);
     #endif
     if (hresult!=0)
     {
@@ -812,18 +837,22 @@ bool FileExplorerUpdater::ParseBZRChanges(const wxString &path, VCSstatearray &s
             f.MakeAbsolute(path);
             s.path=f.GetFullPath();
         }
+        //TODO: Filter out subpaths (if required) and make sure the file path is expressed relative to the parent path
         sa.Add(s);
     }
     return true;
 }
 
-bool FileExplorerUpdater::ParseBZRChangesTree(VCSstatearray &sa, bool relative_paths)
+bool FileExplorerUpdater::ParseBZRChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxArrayString output;
-    int name_pos = 2;
+    int name_pos = 4;
     if (m_vcs_commit_string == wxEmptyString)
         return false;
-    int hresult = Exec(_T("bzr status --short -c ") + m_vcs_commit_string, output, m_repo_path);
+    wxFileName rel_root_fn = wxFileName(path);
+    rel_root_fn.MakeRelativeTo(m_repo_path);
+    wxString rel_root_path = rel_root_fn.GetFullPath();
+    int hresult = Exec(_T("bzr status --short -c ") + m_vcs_commit_string + _T(" ") + rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
     for(size_t i=0;i<output.GetCount();i++)
@@ -875,12 +904,14 @@ bool FileExplorerUpdater::ParseBZRChangesTree(VCSstatearray &sa, bool relative_p
             s.state=fvsVcConflict;
         if (relative_paths)
         {
-            s.path = output[i].Mid(name_pos);
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeRelativeTo(rel_root_path);
+            s.path=f.GetFullPath();
         }
         else
         {
-            wxFileName f(output[i].Mid(name_pos));
-            f.MakeAbsolute(m_repo_path);
+            wxFileName f(s.path);
+            f.MakeAbsolute(path);
             s.path=f.GetFullPath();
         }
         sa.Add(s);
@@ -951,13 +982,16 @@ bool FileExplorerUpdater::ParseHGChanges(const wxString &path, VCSstatearray &sa
     return true;
 }
 
-bool FileExplorerUpdater::ParseHGChangesTree(VCSstatearray &sa, bool relative_paths)
+bool FileExplorerUpdater::ParseHGChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths)
 {
     wxArrayString output;
     int name_pos = 2;
     if (m_vcs_commit_string == wxEmptyString)
         return false;
-    int hresult = Exec(_T("hg status --change ") + m_vcs_commit_string, output, m_repo_path);
+    wxFileName rel_root_fn = wxFileName(path);
+    rel_root_fn.MakeRelativeTo(m_repo_path);
+    wxString rel_root_path = rel_root_fn.GetFullPath();
+    int hresult = Exec(_T("hg status --change ") + m_vcs_commit_string + _T(" ") + rel_root_path, output, m_repo_path);
     if (hresult!=0)
         return false;
     for(size_t i=0;i<output.GetCount();i++)
@@ -991,14 +1025,17 @@ bool FileExplorerUpdater::ParseHGChangesTree(VCSstatearray &sa, bool relative_pa
         }
         if (relative_paths)
         {
-            s.path = output[i].Mid(name_pos);
+            wxFileName f(output[i].Mid(name_pos));
+            f.MakeRelativeTo(rel_root_path);
+            s.path=f.GetFullPath();
         }
         else
         {
             wxFileName f(output[i].Mid(name_pos));
-            f.MakeAbsolute(m_repo_path);
+            f.MakeAbsolute(path);
             s.path=f.GetFullPath();
         }
+        //TODO: Filter out subpaths (if required) and make sure the file path is expressed relative to the parent path
         sa.Add(s);
     }
     return true;
@@ -1055,10 +1092,10 @@ bool FileExplorerUpdater::GetGITCommitState(const wxString &path)
     wxArrayString output, dir_output;
 
     // git ls-tree requires a relative path with appended separator to work correctly
-    wxFileName fn = wxFileName(path);
+    wxFileName root_fn = wxFileName(path);
 //    fn.AppendDir(_T("a")); //append a fake part to the path
-    fn.MakeRelativeTo(m_repo_path); //make it relative to the repo_path
-    wxString rel_path = fn.GetFullPath(); //then extract the path (without the "a") with separator
+    root_fn.MakeRelativeTo(m_repo_path); //make it relative to the repo_path
+    wxString rel_path = root_fn.GetFullPath(); //then extract the path (without the "a") with separator
     if (rel_path == wxEmptyString)
         rel_path = _T(".");
     else
@@ -1068,12 +1105,17 @@ bool FileExplorerUpdater::GetGITCommitState(const wxString &path)
     Exec(_T("git ls-tree --name-only ")+m_vcs_commit_string + _T(" ") + rel_path, output, m_repo_path);
     Exec(_T("git ls-tree -d --name-only ")+m_vcs_commit_string + _T(" ") + rel_path, dir_output, m_repo_path);
 
+    VCSstatearray sa;
+    ParseGITChangesTree(path, sa, true);
+
     for (unsigned int i=0; i<output.GetCount(); ++i)
     {
         FileData fd;
         if (output[i] == wxEmptyString)
             continue;
-        fd.name = wxFileName(output[i]).GetFullName();
+        wxFileName fn(output[i]);
+        fn.MakeRelativeTo(rel_path);
+        fd.name = fn.GetFullName();
         fd.state = fvsNormal;
         for (unsigned int j=0; j<dir_output.GetCount(); ++j)
         {
@@ -1081,6 +1123,15 @@ bool FileExplorerUpdater::GetGITCommitState(const wxString &path)
             {
                 dir_output.RemoveAt(j);
                 fd.state = fvsFolder;
+                break;
+            }
+        }
+        for(size_t j=0;j<sa.GetCount();j++)
+        {
+            if (fn.GetFullPath() == sa[j].path || fn.SameAs(sa[j].path))
+            {
+                fd.state=sa[j].state;
+                sa.RemoveAt(j);
                 break;
             }
         }
@@ -1097,9 +1148,9 @@ bool FileExplorerUpdater::GetHgCommitState(const wxString &path)
     //TODO: Should check TestDestroy here and return prematurely if necessary
     wxArrayString output, dir_output;
 
-    wxFileName fn = wxFileName(path);
-    fn.MakeRelativeTo(m_repo_path); //make the target path relative to the repo_path
-    wxString rel_path = fn.GetFullPath();
+    wxFileName root_fn = wxFileName(path);
+    root_fn.MakeRelativeTo(m_repo_path); //make the target path relative to the repo_path
+    wxString rel_path = root_fn.GetFullPath();
     if (rel_path != wxEmptyString)
         rel_path += wxFileName::GetPathSeparator();
 
@@ -1108,6 +1159,9 @@ bool FileExplorerUpdater::GetHgCommitState(const wxString &path)
     //all files from the repo root (so probably should only allow user to browse the repo history
     // from the root of the repo)
     Exec(_T("hg manifest -r") + m_vcs_commit_string, output, m_repo_path);
+
+    VCSstatearray sa;
+    ParseHGChangesTree(path, sa, true);
 
     std::set<wxString> dirs;
 
@@ -1118,7 +1172,9 @@ bool FileExplorerUpdater::GetHgCommitState(const wxString &path)
             continue;
         if (!output[i].StartsWith(rel_path))
             continue;
-        wxString name = output[i].Mid(rel_path.Len());
+        wxFileName fn(output[i]);
+        fn.MakeRelativeTo(rel_path);
+        wxString name = fn.GetFullPath();
         wxString subdir = name.BeforeFirst(_T('/'));
         if (subdir != name)
         {
@@ -1133,6 +1189,16 @@ bool FileExplorerUpdater::GetHgCommitState(const wxString &path)
             fd.state = fvsNormal;
             fd.name = name;
         }
+        for(size_t j=0;j<sa.GetCount();j++)
+        {
+            if (fn.GetFullPath() == sa[j].path || fn.SameAs(sa[j].path))
+            {
+                if (fd.state != fvsFolder)
+                    fd.state=sa[j].state;
+                sa.RemoveAt(j);
+                break;
+            }
+        }
         m_currentstate.push_back(fd);
     }
 
@@ -1144,9 +1210,9 @@ bool FileExplorerUpdater::GetVCSCommitState(const wxString &path, const wxString
     //TODO: Should check TestDestroy here and return prematurely if necessary
     wxArrayString output, dir_output;
 
-    wxFileName fn = wxFileName(path);
-    fn.MakeRelativeTo(m_repo_path); //make it relative to the repo_path
-    wxString rel_path = fn.GetFullPath(); //then extract the relative path
+    wxFileName root_fn = wxFileName(path);
+    root_fn.MakeRelativeTo(m_repo_path); //make it relative to the repo_path
+    wxString rel_path = root_fn.GetFullPath(); //then extract the relative path
     if (rel_path == wxEmptyString)
         rel_path = _T(".");
     else
@@ -1154,22 +1220,38 @@ bool FileExplorerUpdater::GetVCSCommitState(const wxString &path, const wxString
 
     Exec(cmd + _T(" ls -r") + m_vcs_commit_string + _T(" ") + rel_path, output, m_repo_path);
 
+    VCSstatearray sa;
+    if (m_vcs_type == _T("SVN"))
+        ParseSVNChangesTree(path, sa, true);
+    else if (m_vcs_type == _T("BZR"))
+        ParseBZRChangesTree(path, sa, true);
+
     for (unsigned int i=0; i<output.GetCount(); ++i)
     {
         FileData fd;
         if (output[i] == wxEmptyString)
             continue;
-        wxString name = output[i];
+        wxFileName fn(output[i]);
+        fn.MakeRelativeTo(rel_path);
         fd.state = fvsNormal;
-        if (name.EndsWith(_T("/")) || name.EndsWith(_T("\\")))
+        if (fn.IsDir())
         {
             fd.state = fvsFolder;
-            name = name.Mid(0, name.Len()-1);
+            fn = wxFileName(fn.GetPath());
         }
-        fd.name = name;
+        else
+        for(size_t j=0;j<sa.GetCount();j++)
+        {
+            if (fn.GetFullName() == sa[j].path || fn.SameAs(sa[j].path))
+            {
+                fd.state = sa[j].state;
+                sa.RemoveAt(j);
+                break;
+            }
+        }
+        fd.name = fn.GetFullName();;
         m_currentstate.push_back(fd);
     }
-
     //TODO: We could also get the changed file info from the previous commit
     return !TestDestroy();
 }
@@ -1589,50 +1671,33 @@ void *CommitUpdater::Entry()
             Exec(_T("bzr log ") + commit_range + file, output, m_repo_path);
             size_t i=0;
             size_t n = output.GetCount();
+            output.RemoveAt(0); //First line of ----------------------
+            CommitEntry cdata;
             while (i<n && !TestDestroy())
             {
-                CommitEntry cdata;
                 wxString s = output[i];
                 ++i;
-                if (!s.StartsWith(_T("---------------------")))
-                    continue;
-
-                if (i>=n)
-                    continue;
-                s = output[i];
-                ++i;
-                if (!s.StartsWith(_T("revno:")))
-                    continue;
-                cdata.id = s.AfterFirst(_T(' ')).BeforeFirst(_T(' ')).Strip(wxString::both);
-
-                if (i>=n)
-                    continue;
-                s = output[i];
-                ++i;
-                if (!s.StartsWith(_T("committer:")))
-                    continue;
-                cdata.author = s.AfterFirst(_T(':')).Strip(wxString::both);
-
-                if (i>=n)
-                    continue;
-                s = output[i];
-                ++i;
-                if (!s.StartsWith(_T("timestamp:")))
-                    continue;
-                cdata.date = s.AfterFirst(_T(':')).Strip(wxString::both);
-
-                if (i>=n)
-                    continue;
-                s = output[i];
-                ++i;
-                if (!s.StartsWith(_T("message:")))
-                    continue;
-                while(i<n && !output[i].StartsWith(_T("------------------")))
+                if (s.StartsWith(_T("revno:")))
+                    cdata.id = s.AfterFirst(_T(' ')).BeforeFirst(_T(' ')).Strip(wxString::both);
+                else if (s.StartsWith(_T("committer:")))
+                    cdata.author = s.AfterFirst(_T(':')).Strip(wxString::both);
+                else if (s.StartsWith(_T("timestamp:")))
+                    cdata.date = s.AfterFirst(_T(':')).Strip(wxString::both);
+                else if (s.StartsWith(_T("message:")))
                 {
-                    cdata.message += output[i] + _T(" ");
-                    ++i;
+                    while(i<n && !output[i].StartsWith(_T("------------------")))
+                    {
+                        cdata.message += output[i] + _T(" ");
+                        ++i;
+                    }
                 }
-                commits.push_back(cdata);
+                else if (s.StartsWith(_T("---------------------")))
+                {
+                    //finalize
+                    commits.push_back(cdata);
+                    cdata = CommitEntry();
+                    continue;
+                }
             }
         }
         if (m_repo_type == _T("SVN"))

@@ -101,10 +101,10 @@ private:
     wxString m_path;
     wxString m_repo_path;
     wxString m_wildcard;
-    bool ParseGITChangesTree(VCSstatearray &sa, bool relative_paths = false);
-    bool ParseSVNChangesTree(VCSstatearray &sa, bool relative_paths = false);
-    bool ParseBZRChangesTree(VCSstatearray &sa, bool relative_paths = false);
-    bool ParseHGChangesTree(VCSstatearray &sa, bool relative_paths = false);
+    bool ParseGITChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseSVNChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseBZRChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
+    bool ParseHGChangesTree(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
     bool ParseGITChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
     bool ParseBZRChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
     bool ParseHGChanges(const wxString &path, VCSstatearray &sa, bool relative_paths = false);
