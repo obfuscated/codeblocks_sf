@@ -321,10 +321,10 @@ protected:
     /** For ComputeCallTip()
      * No critical section needed in this recursive function!
      * All functions that call this recursive function, should already entered a critical section. */
-    bool PrettyPrintToken(const TokenTree*   tree,
-                          const Token*       token,
-                          wxString&          result,
-                          bool               isRoot = true);
+    bool PrettyPrintToken(TokenTree*   tree,
+                          const Token* token,
+                          wxString&    result,
+                          bool         isRoot = true);
 
     // convenient static funcs for fast access and improved readability
 

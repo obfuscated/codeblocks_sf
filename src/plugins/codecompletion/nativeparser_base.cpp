@@ -1685,7 +1685,7 @@ void NativeParserBase::ComputeCallTip(TokenTree*         tree,
 
             // either a function or a variable, but it is OK if a macro with not empty m_Args.
             if (tk && ((tk->m_TokenKind ^ tkMacroDef) || !tk->m_Args.empty()))
-                token = tk; // tkVariable could be a typedef'd function ptr (checked later down below)
+                token = tk; // tkVariable could be a typedef'd function ptr (checked in PrettyPrintToken())
             else
             {
                 // a variable like macro, this token don't have m_Args(call tip information), but
@@ -1711,33 +1711,36 @@ void NativeParserBase::ComputeCallTip(TokenTree*         tree,
             }
         }
 
-        // a variable basically don't have call tips, but if it's type is a typedef'd function
-        // pointer, we can still have call tips (which is the typedef function's arguments)
-        if (token->m_TokenKind == tkVariable)
-        {
-            const Token* tk = tree->at(tree->TokenExists(token->m_BaseType, token->m_ParentIndex, tkTypedef));
-            if (!tk && token->m_ParentIndex != -1)
-                tk = tree->at(tree->TokenExists(token->m_BaseType, -1, tkTypedef));
-            if (tk && !tk->m_Args.empty())
-                token = tk; // typedef'd function pointer
-        }
+        wxString tkTip;
+        if ( !PrettyPrintToken(tree, token, tkTip) )
+            tkTip = wxT("Error while pretty printing token!");
+        items.Add(tkTip);
 
-        {
-            wxString tkTip;
-            if ( !PrettyPrintToken(tree, token, tkTip) )
-                tkTip = wxT("Error while pretty printing token!");
-            items.Add(tkTip);
-        }
     }// for
 
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 }
 
-bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
-                                        const Token*      token,
-                                        wxString&         result,
-                                        bool              isRoot)
+bool NativeParserBase::PrettyPrintToken(TokenTree*   tree,
+                                        const Token* token,
+                                        wxString&    result,
+                                        bool         isRoot)
 {
+    wxString name = token->m_Name;
+    // a variable basically don't have call tips, but if it's type is a typedef'd function
+    // pointer, we can still have call tips (which is the typedef function's arguments)
+    if (token->m_TokenKind == tkVariable)
+    {
+        const Token* tk = tree->at(tree->TokenExists(token->m_BaseType, token->m_ParentIndex, tkTypedef));
+        if (!tk && token->m_ParentIndex != -1)
+            tk = tree->at(tree->TokenExists(token->m_BaseType, -1, tkTypedef));
+        if (tk && !tk->m_Args.empty()) // typedef'd function pointer
+        {
+            name = token->m_Name;
+            token = tk;
+        }
+    }
+
     // if the token has parents and the token is a container or a function,
     // then pretty print the parent of the token->
     if (   (token->m_ParentIndex != -1)
@@ -1776,7 +1779,7 @@ bool NativeParserBase::PrettyPrintToken(const TokenTree*  tree,
             return true;
 
         case tkTypedef:
-            result = token->m_BaseType + wxT(" ") + result + token->m_Name + token->GetFormattedArgs();
+            result = token->m_BaseType + wxT(" ") + result + name + token->GetFormattedArgs();
             return true;
 
         case tkEnum:
