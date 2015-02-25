@@ -70,7 +70,9 @@ public:
     static const long ID_COMBOBOX1;
     static const long ID_BUTTON2;
     static const long ID_STATICTEXT26;
+    static const long ID_BUTTON7;
     static const long ID_STATICTEXT28;
+    static const long ID_BUTTON8;
     static const long ID_STATICTEXT35;
     static const long ID_PANEL1;
     static const long ID_LISTBOX1;
@@ -90,6 +92,8 @@ protected:
     void OnGoParentClick(wxCommandEvent& event);
     void OnGoChildrenClick(wxCommandEvent& event);
     void OnSave(wxCommandEvent& event);
+    void OnGoDeclClick(wxCommandEvent& event);
+    void OnGoImplClick(wxCommandEvent& event);
     //*)
 
     //(*Declarations(CCDebugInfo)
@@ -105,7 +109,9 @@ protected:
     wxStaticText* txtIsNoExcept;
     wxStaticText* txtImplFile;
     wxStaticText* txtScope;
+    wxBoxSizer* BoxSizer11;
     wxStaticText* txtID;
+    wxBoxSizer* BoxSizer12;
     wxListBox* lstDirs;
     wxStaticText* txtIsOp;
     wxStaticText* txtDeclFile;

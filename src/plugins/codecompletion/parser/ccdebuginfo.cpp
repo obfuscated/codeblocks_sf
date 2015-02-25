@@ -115,7 +115,9 @@ const long CCDebugInfo::ID_BUTTON3 = wxNewId();
 const long CCDebugInfo::ID_COMBOBOX1 = wxNewId();
 const long CCDebugInfo::ID_BUTTON2 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT26 = wxNewId();
+const long CCDebugInfo::ID_BUTTON7 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT28 = wxNewId();
+const long CCDebugInfo::ID_BUTTON8 = wxNewId();
 const long CCDebugInfo::ID_STATICTEXT35 = wxNewId();
 const long CCDebugInfo::ID_PANEL1 = wxNewId();
 const long CCDebugInfo::ID_LISTBOX1 = wxNewId();
@@ -149,6 +151,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     wxBoxSizer* BoxSizer7;
     wxStaticText* lblName;
     wxBoxSizer* BoxSizer8;
+    wxButton* btnGoImpl;
     wxStaticText* lblIsConst;
     wxStaticText* lblTemplateArg;
     wxButton* btnGoAsc;
@@ -160,6 +163,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     wxButton* btnGoParent;
     wxPanel* Panel1;
     wxBoxSizer* BoxSizer2;
+    wxButton* btnGoDecl;
     wxPanel* Panel3;
     wxStaticLine* StaticLine2;
     wxStaticText* lblNameSpace;
@@ -294,12 +298,20 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     FlexGridSizer1->Add(BoxSizer5, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
     lblDeclFile = new wxStaticText(Panel1, wxID_ANY, _("Decl. filename:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(lblDeclFile, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
+    BoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
     txtDeclFile = new wxStaticText(Panel1, ID_STATICTEXT26, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT26"));
-    FlexGridSizer1->Add(txtDeclFile, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
+    BoxSizer11->Add(txtDeclFile, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    btnGoDecl = new wxButton(Panel1, ID_BUTTON7, _("Go"), wxDefaultPosition, wxSize(36,23), 0, wxDefaultValidator, _T("ID_BUTTON7"));
+    BoxSizer11->Add(btnGoDecl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    FlexGridSizer1->Add(BoxSizer11, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
     lblImplfile = new wxStaticText(Panel1, wxID_ANY, _("Impl. filename:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(lblImplfile, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
+    BoxSizer12 = new wxBoxSizer(wxHORIZONTAL);
     txtImplFile = new wxStaticText(Panel1, ID_STATICTEXT28, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT28"));
-    FlexGridSizer1->Add(txtImplFile, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
+    BoxSizer12->Add(txtImplFile, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    btnGoImpl = new wxButton(Panel1, ID_BUTTON8, _("Go"), wxDefaultPosition, wxSize(36,23), 0, wxDefaultValidator, _T("ID_BUTTON8"));
+    BoxSizer12->Add(btnGoImpl, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+    FlexGridSizer1->Add(BoxSizer12, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
     lblUserData = new wxStaticText(Panel1, wxID_ANY, _("User data:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     FlexGridSizer1->Add(lblUserData, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
     txtUserData = new wxStaticText(Panel1, ID_STATICTEXT35, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT35"));
@@ -348,6 +360,8 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoChildrenClick);
     Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoAscClick);
     Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoDescClick);
+    Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoDeclClick);
+    Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoImplClick);
     Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnSave);
     Connect(wxID_ANY,wxEVT_INIT_DIALOG,(wxObjectEventFunction)&CCDebugInfo::OnInit);
     //*)
@@ -759,5 +773,53 @@ void CCDebugInfo::OnSave(cb_unused wxCommandEvent& event)
             break;
         default:
             cbMessageBox(_("Invalid selection."), _("CC Debug Info"));
+    }
+}
+
+void CCDebugInfo::OnGoDeclClick(wxCommandEvent& event)
+{
+    wxString file;
+    int line;
+
+    if (m_Token && !m_Token->GetFilename().IsEmpty())
+    {
+        file = m_Token->GetFilename();
+        line = m_Token->m_Line;
+    }
+    else
+        return;
+
+    cbEditor* ed = (cbEditor*)Manager::Get()->GetEditorManager()->IsBuiltinOpen(file);
+    if (!ed)
+        ed = Manager::Get()->GetEditorManager()->Open(file);
+
+    if (ed)
+    {
+        ed->Activate();
+        ed->GotoLine(line);
+    }
+}
+
+void CCDebugInfo::OnGoImplClick(wxCommandEvent& event)
+{
+    wxString file;
+    int line;
+
+    if (m_Token && !m_Token->GetImplFilename().IsEmpty())
+    {
+        file = m_Token->GetImplFilename();
+        line = m_Token->m_ImplLine;
+    }
+    else
+        return;
+
+    cbEditor* ed = (cbEditor*)Manager::Get()->GetEditorManager()->IsBuiltinOpen(file);
+    if (!ed)
+        ed = Manager::Get()->GetEditorManager()->Open(file);
+
+    if (ed)
+    {
+        ed->Activate();
+        ed->GotoLine(line);
     }
 }

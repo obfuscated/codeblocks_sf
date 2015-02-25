@@ -349,10 +349,24 @@
 											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT26" variable="txtDeclFile" member="yes">
-												<label></label>
+											<object class="wxBoxSizer" variable="BoxSizer11" member="yes">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT26" variable="txtDeclFile" member="yes">
+														<label></label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON7" variable="btnGoDecl" member="no">
+														<label>Go</label>
+														<size>36,23</size>
+														<handler function="OnGoDeclClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												</object>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblImplfile" member="no">
@@ -361,10 +375,24 @@
 											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT28" variable="txtImplFile" member="yes">
-												<label></label>
+											<object class="wxBoxSizer" variable="BoxSizer12" member="yes">
+												<object class="sizeritem">
+													<object class="wxStaticText" name="ID_STATICTEXT28" variable="txtImplFile" member="yes">
+														<label></label>
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<option>1</option>
+												</object>
+												<object class="sizeritem">
+													<object class="wxButton" name="ID_BUTTON8" variable="btnGoImpl" member="no">
+														<label>Go</label>
+														<size>36,23</size>
+														<handler function="OnGoImplClick" entry="EVT_BUTTON" />
+													</object>
+													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												</object>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblUserData" member="no">
