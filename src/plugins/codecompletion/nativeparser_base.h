@@ -56,9 +56,9 @@ public:
      */
     struct ParserComponent
     {
-        wxString        component;  /// name
+        wxString        component;          /// name
         ParserTokenType tokenType;          /// type
-        OperatorType    tokenOperatorType;/// operator type
+        OperatorType    tokenOperatorType;  /// operator type
 
         ParserComponent() { Clear(); }
         void Clear()
@@ -89,7 +89,8 @@ protected:
     * the output result becomes the search scope of the next match.
     * finally, give the results which match the last ParserComponent.
     * @param components input ParserComponent queue
-    * @param parentTokenIdx, initial search scope of the left most component
+    * @param parentTokenIdx, initial search scope of the left most component, this is the direct
+    * parent of the current statement(expression)
     * @param fullMatch the result should be a full text match or prefix match
     * @return matching token number, it is the size of result
     */
@@ -103,10 +104,16 @@ protected:
                          short int                   kindMask = 0xFFFF,
                          TokenIdxSet*                search_scope = 0);
 
+    /** if the expression return the container tokens, which are the
+     *  parent of the expression.
+     *  @param procResult input function index collection
+     *  @param scopeResult filtered output function index collection
+     */
     void FindCurrentFunctionScope(TokenTree*         tree,
                                   const TokenIdxSet& procResult,
                                   TokenIdxSet&       scopeResult);
 
+    /** remove all the container tokens in the token index set. */
     void CleanupSearchScope(TokenTree*  tree,
                             TokenIdxSet* searchScope);
 
@@ -119,12 +126,6 @@ protected:
     /** for GetCallTipHighlight()
         Finds the position of the opening parenthesis marking the beginning of the params. */
     int FindFunctionOpenParenthesis(const wxString& calltip);
-
-    /** Decides if the token belongs to its parent or one of its ancestors */
-    bool BelongsToParentOrItsAncestors(TokenTree*   tree,
-                                       const Token* token,
-                                       int          parentIdx,
-                                       bool         use_inheritance = true);
 
     /** helper function to split the statement
      * line contains a string on the following form:
@@ -171,8 +172,9 @@ protected:
 
     /** Remove the last function's children, when doing codecompletion in a function body, the
      *  function body up to the caret position was parsed, and the local variables defined in
-     *  the function were recorded as the function's children. If the caret moves to another function,
-     *  those children tokens previously recorded in the tokentree should be removed.
+     *  the function were recorded as the function's children.
+     *  Note that there tokens are marked as temporary tokens, so If the edit caret moves to another
+     *  function body, those temporary tokens should be removed.
      */
     void RemoveLastFunctionChildren(TokenTree* tree, int& lastFuncTokenIdx);
 

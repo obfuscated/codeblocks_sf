@@ -2017,14 +2017,16 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
     expandedText = tk->m_FullType;
     const size_t totalCount = formalArgs.GetCount();
 
-    // loop on all the arguments
+    // substitute all the arguments
     for (size_t i = 0; i < totalCount; ++i)
     {
         TRACE(_T("GetMacroExpandedText(): The formal args are '%s' and the actual args are '%s'."),
               formalArgs[i].wx_str(), actualArgs[i].wx_str());
 
+        // we search replacement token list
         wxChar* data = const_cast<wxChar*>((const wxChar*)expandedText.GetData());
         const wxChar* dataEnd = data + expandedText.Len();
+        // check whether a formal arg exists
         const wxChar* key = formalArgs[i].GetData();
         const int keyLen = formalArgs[i].Len();
 
@@ -2033,6 +2035,7 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
 
         while (true)
         {
+            // find the first exist of formal arg from data to dataEnd
             const int pos = GetFirstTokenPosition(data, dataEnd - data, key, keyLen);
             if (pos != -1)
             {

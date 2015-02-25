@@ -308,7 +308,8 @@ void NativeParserBase::FindCurrentFunctionScope(TokenTree*        tree,
                                                 TokenIdxSet&       scopeResult)
 {
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
+    // loop on the input parameter procResult, and only record some container tokens, such as
+    // class token, function token.
     for (TokenIdxSet::const_iterator it = procResult.begin(); it != procResult.end(); ++it)
     {
         const Token* token = tree->at(*it);
@@ -339,7 +340,7 @@ void NativeParserBase::CleanupSearchScope(TokenTree*   tree,
                                           TokenIdxSet* searchScope)
 {
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
+    // remove all the container tokens in the token index set
     for (TokenIdxSet::const_iterator it = searchScope->begin(); it != searchScope->end();)
     {
         const Token* token = tree->at(*it);
@@ -413,42 +414,6 @@ int NativeParserBase::FindFunctionOpenParenthesis(const wxString& calltip)
             ++nest;
     }
     return -1;
-}
-
-// Decides if the token belongs to its parent or one of its ancestors
-bool NativeParserBase::BelongsToParentOrItsAncestors(TokenTree*   tree,
-                                                     const Token* token,
-                                                     int          parentIdx,
-                                                     bool         use_inheritance)
-{
-    // sanity check
-    if (!tree || !token)
-        return false;
-
-    if (token->m_ParentIndex == parentIdx)
-        return true; // direct child of parent (matches globals too)
-
-    if (token->m_ParentIndex == -1)
-        return false; // global
-
-    if (!use_inheritance)
-        return false;
-
-    bool belongsTo = false;
-
-    CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
-
-    // no parent token? no ancestors...
-    Token* parentToken = tree->at(parentIdx);
-    if (parentToken)
-    {
-        tree->RecalcInheritanceChain(parentToken);
-        belongsTo = parentToken->m_Ancestors.find(token->m_ParentIndex) != parentToken->m_Ancestors.end();
-    }
-
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
-
-    return belongsTo;
 }
 
 wxString NativeParserBase::GetCCToken(wxString&        line,

@@ -84,7 +84,10 @@ public:
     virtual void OnAttach();
     virtual void OnRelease(bool appShutDown);
     virtual int GetConfigurationGroup() const { return cgEditor; }
+
+    /** CC's config dialog */
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
+    /** CC's config dialog which show in the project options panel */
     virtual cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project);
     /** build menus in the main frame */
     virtual void BuildMenu(wxMenuBar* menuBar);
@@ -137,7 +140,9 @@ public:
     void RereadOptions(); // called by the configuration panel
 
 private:
-    /** update CC's ToolBar*/
+    /** update CC's ToolBar, the user may disable the first wxChoice, so we need to recreate the
+     * wxChoice and measure the best fit size
+     */
     void UpdateToolBar();
 
     /** load the token replacement map (macro definitions) from configuration file*/
@@ -219,8 +224,11 @@ private:
     void OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event);
     void OnSystemHeadersThreadError(CodeBlocksThreadEvent& event);
 
+    /** fill the tokens with correct code complete words */
     void DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly = false);
+    /** fill the tokens with correct preprocessor directives */
     void DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor* ed, std::vector<CCToken>& tokens);
+    /** fill the tokens with correct include file names */
     void DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens);
 
     /** ContextMenu->Insert-> declaration/implementation*/
@@ -246,6 +254,8 @@ private:
     void ParseFunctionsAndFillToolbar();
     void FindFunctionAndUpdate(int currentLine);
     void UpdateFunctions(unsigned int scopeItem);
+
+    /** enable the two wxChoices */
     void EnableToolbarTools(bool enable = true);
     void DoParseOpenedProjectAndActiveEditor();
 
@@ -343,6 +353,10 @@ private:
     size_t                  m_CCMaxMatches;
     /** whether add parentheses after user select a function name in the code-completion suggestion list*/
     bool                    m_CCAutoAddParentheses;
+
+    /** add function arguments' types and names when autocompleted outside function. The default
+     * value is false.
+     */
     bool                    m_CCDetectImplementation;
     /** defines characters that work like Tab (empty by Default) but are also inserted*/
     wxString                m_CCFillupChars;

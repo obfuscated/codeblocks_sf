@@ -556,8 +556,9 @@ private:
     TokenizerState       m_State;
     /** File loader */
     LoaderBase*          m_Loader;
-
-    /** Calculate Expression's result, stack for Shunting-yard algorithm */
+    /** preprocessor branch stack, if we meet a #if 1, then the value true will be pushed to
+     * to the stack, if we skip the #endif, the true value should be popped.
+     */
     std::stack<bool>     m_ExpressionResult;
 
 
