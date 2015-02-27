@@ -22,6 +22,8 @@
     #include <wx/string.h>
     //*)
 
+    #include <cbeditor.h>
+    #include <editormanager.h>
     #include <logmanager.h>
 #endif
 
