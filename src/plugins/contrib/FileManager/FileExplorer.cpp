@@ -1659,7 +1659,7 @@ void FileExplorer::OnBeginDragTreeItem(wxTreeEvent &event)
 //    SetCursor(wxCROSS_CURSOR);
 //    if(IsInSelection(event.GetItem()))
 //        return; // don't start a drag for an unselected item
-    if(m_Tree->GetItemImage(event.GetItem())==fvsNormal||m_Tree->GetItemImage(event.GetItem())==fvsFolder)
+    if (!IsBrowsingVCSTree())
         event.Allow();
 //    m_dragtest=GetFullPath(event.GetItem());
     m_ticount=m_Tree->GetSelections(m_selectti);
