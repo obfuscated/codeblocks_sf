@@ -711,23 +711,30 @@ void FileExplorer::SetImages()
 
 wxString FileExplorer::GetFullPath(const wxTreeItemId &ti)
 {
-    if(!ti.IsOk())
+    if (!ti.IsOk())
         return wxEmptyString;
     wxFileName path(m_root);
-    if(ti!=m_Tree->GetRootItem())
+    if (ti!=m_Tree->GetRootItem())
     {
         std::vector<wxTreeItemId> vti;
         vti.push_back(ti);
         wxTreeItemId pti=m_Tree->GetItemParent(vti[0]);
-        if(!pti.IsOk())
+        if (!pti.IsOk())
             return wxEmptyString;
-        while(pti!=m_Tree->GetRootItem())
+        while (pti != m_Tree->GetRootItem())
         {
-            vti.insert(vti.begin(),pti);
+            vti.insert(vti.begin(), pti);
             pti=m_Tree->GetItemParent(pti);
         }
-        for(size_t i=0;i<vti.size();i++)
-            path.Assign(path.GetFullPath(),m_Tree->GetItemText(vti[i]));
+        //Complicated logic to deal with the fact that the selected item might
+        //be a partial path and not just a filename. It would be far simpler to
+        for (size_t i=0; i<vti.size() - 1; i++)
+            path.AppendDir(m_Tree->GetItemText(vti[i]));
+        wxFileName last_part(m_Tree->GetItemText(vti[vti.size()-1]));
+        wxArrayString as = last_part.GetDirs();
+        for (size_t i=0;i<as.size();i++)
+            path.AppendDir(as[i]);
+        path = wxFileName(path.GetFullPath(), last_part.GetFullName()).GetFullPath();
     }
     return path.GetFullPath();
 }
