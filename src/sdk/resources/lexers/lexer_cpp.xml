@@ -127,16 +127,14 @@
                 <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"
-                            value="_Char16_t _Char32_t align_union alignof
-                                   asm auto bool break case catch char class const
-                                   const_cast constexpr continue decltype default delete do double
-                                   dynamic_cast else enum explicit export extern
-                                   false final float for friend goto if import inline int long
-                                   mutable namespace new nullptr operator override private protected
-                                   public register reinterpret_cast return short signed
-                                   sizeof static static_cast struct switch template this
-                                   throw true try typedef typeid typename union unsigned
-                                   using virtual void volatile wchar_t while static_assert
+                            value="alignas alignof asm auto bool break case catch char char16_t char32_t
+                                   class const const_cast constexpr continue decltype default delete do
+                                   double dynamic_cast else enum explicit export extern false float for
+                                   friend goto if inline int long mutable namespace new noexcept nullptr
+                                   operator private protected public register reinterpret_cast return short
+                                   signed sizeof static static_assert static_cast struct switch template
+                                   this thread_local throw true try typedef typeid typename union unsigned
+                                   using virtual void volatile wchar_t while 
 
                                    int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t uint64_t
                                    int_least8_t uint_least8_t int_least16_t uint_least16_t
@@ -144,8 +142,8 @@
                                    int_fast8_t uint_fast8_t int_fast16_t uint_fast16_t
                                    int_fast32_t uint_fast32_t int_fast64_t uint_fast64_t
                                    intptr_t uintptr_t intmax_t uintmax_t
-                                   wint_t wchar_t wctrans_t wctype_t size_t time_t
-                                   and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq"/>
+                                   wint_t wchar_t wctrans_t wctype_t size_t time_t"/>
+                        <!-- and and_eq bitand bitor compl not not_eq or or_eq xor xor_eq -->
                         <!-- Secondary keywords and identifiers -->
                         <Set index="1"
                             value="__gnu_cxx accumulate add_const add_cv add_lvalue_reference add_pointer add_reference add_rvalue_reference add_volatile adjacent_difference adjacent_find aligned_storage Alignment alignment_of all_of allocate_shared allocator allocator_base allocator_chunklist allocator_fixed_size allocator_newdel allocator_suballoc allocator_unbounded allocator_variable_size any_of array assign at atomic_bool atomic_char atomic_char16_t atomic_char32_t atomic_compare_exchange_strong
