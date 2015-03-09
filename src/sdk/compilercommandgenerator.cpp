@@ -1059,8 +1059,30 @@ wxString CompilerCommandGenerator::SetupLinkLibraries(Compiler* compiler, Projec
 /// Setup resource compiler flags for build target.
 wxString CompilerCommandGenerator::SetupResourceCompilerOptions(cb_unused Compiler* compiler, cb_unused ProjectBuildTarget* target)
 {
-    // resource compiler options are not implemented in C::B yet
-    return wxEmptyString;
+    wxString result;
+
+    if (target)
+    {
+        // target options
+        wxString tstr = GetStringFromArray(target->GetResourceCompilerOptions(), _T(' '));
+
+        // project options
+        wxString pstr = GetStringFromArray(target->GetParentProject()->GetResourceCompilerOptions(), _T(' '));
+
+        // decide order
+        result = GetOrderedOptions(target, ortCompilerOptions, pstr, tstr);
+    }
+
+    // resource compiler options
+    result << GetStringFromArray(compiler->GetResourceCompilerOptions(), _T(' '));
+
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(result, target);
+
+    wxString bt = ExpandBackticks(result);
+    SearchDirsFromBackticks(compiler, target, bt);
+
+    // add in array
+    return result;
 }
 
 const wxArrayString& CompilerCommandGenerator::GetCompilerSearchDirs(ProjectBuildTarget* target)
