@@ -25,6 +25,7 @@
 #include <wx/url.h>
 #include <wx/stream.h>
 #include <wx/stdpaths.h>
+#include <wx/filename.h>
 
 #ifdef __WXMSW__
 #include <shlobj.h>
@@ -1528,6 +1529,11 @@ void ConfigManager::InitPaths()
 #endif // __linux__
 
     ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + _T("codeblocks");
+
+    // if user- and global-datapath are the same (can happen in portable mode) we run in conflicts
+    // so we extend the user-datapath with the users name
+    if (wxFileName(ConfigManager::data_path_user) == wxFileName(ConfigManager::data_path_global))
+        ConfigManager::data_path_user.append(_(".")+wxGetUserId());
 
     CreateDirRecursively(ConfigManager::config_folder);
     CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));
