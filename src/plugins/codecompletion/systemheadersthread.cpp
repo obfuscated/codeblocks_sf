@@ -73,12 +73,14 @@ public:
     /** call back function when we meet a dir */
     virtual wxDirTraverseResult OnDir(const wxString& dirname);
 
+private:
     /** this function will be called every time we meet a file or a dir, and we count the file and
      * dir, we temporary leave the critical section to give other thread a change to access the file
      * maps.
      */
     void AddLock(bool is_file);
 
+    wxDirTraverseResult GetStatus(const wxString &path);
 private:
     /* the thread call Traverse() on this instance*/
     wxThread*               m_Thread;
@@ -90,10 +92,17 @@ private:
      * c:/b  ---> {c:/b/b1.h, c:/b/b2.h} ---> {b1.h, b2.h}
      */
     const SystemHeadersMap& m_SystemHeadersMap;
+
+#ifndef _WIN32
+    // Set of already visited directories (stored as absolute paths).
+    std::set<wxString>      m_VisitedDirs;
+#endif // _WIN32
+
     /* top level dir we are traversing header files */
     const wxString&         m_SearchDir;
     /* string set for header files */
     StringSet&              m_Headers;
+
     /** indicates whether the critical section is entered or not, used in AddLock() function*/
     bool                    m_Locked;
     /* numbers of dirs in the traversing */
@@ -241,10 +250,43 @@ wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
     if (path.Last() != wxFILE_SEP_PATH)
         path.Append(wxFILE_SEP_PATH);
 
-    if (m_SystemHeadersMap.find(path) != m_SystemHeadersMap.end())
+#ifndef _WIN32
+    struct stat fileStats;
+    if (lstat(dirname.mb_str(wxConvUTF8), &fileStats) != 0)
         return wxDIR_IGNORE;
 
-    return wxDIR_CONTINUE;
+    // If the path is a symbolic link, then try to resolve it.
+    // This is needed to prevent infinite loops, when a folder is pointing to itself or its parent folder.
+    if (S_ISLNK(fileStats.st_mode))
+    {
+        char buffer[4096];
+        int result = readlink(dirname.mb_str(wxConvUTF8), buffer, WXSIZEOF(buffer) - 1);
+        if (result != -1)
+        {
+            buffer[result] = '\0'; // readlink() doesn't NUL-terminate the buffer
+            wxString pathStr(buffer, wxConvUTF8);
+            wxFileName fileName(pathStr);
+
+            // If this is a relative symbolic link, we need to make it absolute.
+            if (!fileName.IsAbsolute())
+            {
+                wxFileName dirNamePath(path);
+                dirNamePath.RemoveLastDir();
+                // Make the new filename absolute relative to the parent folder.
+                fileName.MakeAbsolute(dirNamePath.GetFullPath());
+            }
+
+            wxString fullPath = fileName.GetFullPath();
+            if (fullPath.Last() == wxT('.')) // this case should be handled because of a bug in wxWidgets
+                fullPath.RemoveLast();
+            if (fullPath.Last() != wxFILE_SEP_PATH)
+                fullPath.Append(wxFILE_SEP_PATH);
+            return GetStatus(fullPath);
+        }
+    }
+#endif // _WIN32
+
+    return GetStatus(path);
 }
 
 void HeaderDirTraverser::AddLock(bool is_file)
@@ -267,4 +309,16 @@ void HeaderDirTraverser::AddLock(bool is_file)
         m_SystemHeadersThreadCS->Enter();
         m_Locked = true;
     }
+}
+
+wxDirTraverseResult HeaderDirTraverser::GetStatus(const wxString &path)
+{
+    if (m_SystemHeadersMap.find(path) != m_SystemHeadersMap.end())
+        return wxDIR_IGNORE;
+#ifndef _WIN32
+    if (m_VisitedDirs.find(path) != m_VisitedDirs.end())
+        return wxDIR_IGNORE;
+    m_VisitedDirs.insert(path);
+#endif // _WIN32
+    return wxDIR_CONTINUE;
 }
