@@ -10,7 +10,7 @@
 			<Target title="bzip2">
 				<Option output="bzip2/libbzip2" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../../.objs/plugins/contrib/help_plugin" />
+				<Option object_output="../../../.objs/plugins/contrib/help_plugin/bzip2" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -22,7 +22,7 @@
 			<Target title="zlib">
 				<Option output="zlib/libz" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="" />
-				<Option object_output="../../../.objs/plugins/contrib/help_plugin" />
+				<Option object_output="../../../.objs/plugins/contrib/help_plugin/zlib" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Option createDefFile="1" />
@@ -154,6 +154,9 @@
 		<Unit filename="man2html.h">
 			<Option target="help_plugin" />
 		</Unit>
+		<Unit filename="manifest.xml">
+			<Option target="help_plugin" />
+		</Unit>
 		<Unit filename="zlib/adler32.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
@@ -176,7 +179,22 @@
 		<Unit filename="zlib/deflate.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/gzio.c">
+		<Unit filename="zlib/gzclose.c">
+			<Option compilerVar="CC" />
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzguts.h">
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzlib.c">
+			<Option compilerVar="CC" />
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzread.c">
+			<Option compilerVar="CC" />
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzwrite.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
@@ -234,8 +252,8 @@
 		</Unit>
 		<Extensions>
 			<code_completion />
-			<envvars />
 			<debugger />
+			<envvars />
 		</Extensions>
 	</Project>
 </CodeBlocks_project_file>
