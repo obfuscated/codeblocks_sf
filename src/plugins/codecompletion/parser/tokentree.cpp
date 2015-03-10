@@ -147,10 +147,9 @@ int TokenTree::TokenExists(const wxString& name, int parent, short int kindMask)
         return -1;
 
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
-    int result = -1;
     for (TokenIdxSet::const_iterator it = curList.begin(); it != curList.end(); ++it)
     {
-        result = *it;
+        int result = *it;
         if (result < 0 || (size_t)result >= m_Tokens.size())
             continue;
 
@@ -175,10 +174,9 @@ int TokenTree::TokenExists(const wxString& name, const wxString& baseArgs, int p
 
     TokenIdxSet::const_iterator it;
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
-    int result = -1;
     for (it = curList.begin(); it != curList.end(); ++it)
     {
-        result = *it;
+        int result = *it;
         if (result < 0 || (size_t)result >= m_Tokens.size())
             continue;
 
@@ -207,10 +205,9 @@ int TokenTree::TokenExists(const wxString& name, const TokenIdxSet& parents, sho
 
     TokenIdxSet::const_iterator it;
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
-    int result = -1;
     for (it = curList.begin(); it != curList.end(); ++it)
     {
-        result = *it;
+        int result = *it;
         if (result < 0 || (size_t)result >= m_Tokens.size())
             continue;
 
@@ -240,10 +237,9 @@ int TokenTree::TokenExists(const wxString& name, const wxString& baseArgs, const
 
     TokenIdxSet::const_iterator it;
     TokenIdxSet& curList = m_Tree.GetItemAtPos(idx);
-    int result = -1;
     for (it = curList.begin(); it != curList.end(); ++it)
     {
-        result = *it;
+        int result = *it;
         if (result < 0 || (size_t)result >= m_Tokens.size())
             continue;
 
