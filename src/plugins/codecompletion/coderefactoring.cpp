@@ -435,12 +435,11 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
 {
     const int end = control->GetLength();
     int start = 0;
-    int pos = 0;
 
     for (;;)
     {
         int lengthFound;
-        pos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, &lengthFound);
+        int pos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, &lengthFound);
         if (pos != wxSCI_INVALID_POSITION)
         {
             start = pos + lengthFound;
