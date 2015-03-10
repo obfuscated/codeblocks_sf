@@ -122,7 +122,6 @@ ExpressionNode::ExpressionNodeType ExpressionNode::ParseNodeType(wxString token)
     else if (token == ExpressionConsts::LTOrEqual)    return ExpressionNode::LTOrEqual;
     else if (token == ExpressionConsts::LShift)       return ExpressionNode::LShift;
     else if (token == ExpressionConsts::RShift)       return ExpressionNode::RShift;
-    else if (token == ExpressionConsts::Plus)         return ExpressionNode::Plus;
     else
     {
         if (wxIsdigit(token[0]))                      return ExpressionNode::Numeric;
