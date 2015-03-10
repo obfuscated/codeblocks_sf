@@ -595,7 +595,7 @@ SearchTreeNode* BasicSearchTree::GetNode(nSearchTreeNode n,bool NullOnZero)
 bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, SearchTreePoint* result)
 {
     SearchTreeNode *parentnode, *childnode;
-    nSearchTreeNode nchild;
+
     size_t top_depth = m_Nodes[nparent]->GetDepth();
     size_t curpos = 0; /* Current position inside the string */
     bool found = false;
@@ -625,7 +625,7 @@ bool BasicSearchTree::FindNode(const wxString& s, nSearchTreeNode nparent, Searc
             break;
         }
 
-        nchild = parentnode->GetChild(s[curpos]);
+        nSearchTreeNode nchild = parentnode->GetChild(s[curpos]);
         childnode = GetNode(nchild,true);
         if (!childnode)
         {
@@ -667,7 +667,7 @@ SearchTreeNode* BasicSearchTree::CreateNode(unsigned int depth,
 SearchTreePoint BasicSearchTree::AddNode(const wxString& s, nSearchTreeNode nparent)
 {
     SearchTreePoint result(0,0);
-    nSearchTreeNode n = 0;
+
     bool found = this->FindNode(s,nparent,&result);
     if (!found)
     {
@@ -680,6 +680,7 @@ SearchTreePoint BasicSearchTree::AddNode(const wxString& s, nSearchTreeNode npar
         // Now add the node to the middle node
         SearchTreeNode* newnode;
         wxString newlabel;
+        nSearchTreeNode n = 0;
         if (m_Nodes[middle]->IsLeaf())
         {
             // If it's a leaf node, just extend the label and change
@@ -756,8 +757,6 @@ size_t BasicSearchTree::FindMatches(const wxString& s, std::set<size_t>& result,
     BasicSearchTreeIterator it(this);
     SearchTreeItemsMap::const_iterator it2;
 
-    bool matches;
-
     if (!caseSensitive)
         s2 = s.Lower();
     else
@@ -765,7 +764,7 @@ size_t BasicSearchTree::FindMatches(const wxString& s, std::set<size_t>& result,
 
     while (!it.Eof())
     {
-        matches = false;
+        bool matches = false;
         curnode = m_Nodes[*it];
         if (!curnode)
             break; // Error! Found a NULL Node
@@ -986,9 +985,10 @@ bool SearchTreeNode::S2I(const wxString& s,int& i)
 {
     bool is_ok = true;
     i = 0;
-    unsigned int u = 0;
+
     if (!s.IsEmpty())
     {
+        unsigned int u = 0;
         if (s[0]==_T('-'))
         {
             if (!S2U(s.substr(1),u))
