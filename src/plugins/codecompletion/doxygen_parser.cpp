@@ -842,7 +842,7 @@ wxString DocumentationHelper::GenerateHTML(const TokenIdxSet& tokensIdx, TokenTr
 {
     using namespace HTMLTags;
 
-    if (tokensIdx.size() == 0)
+    if (tokensIdx.empty())
         return wxEmptyString;
 
     if (tokensIdx.size() == 1)
