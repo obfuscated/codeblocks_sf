@@ -51,11 +51,19 @@ enum BrowserSortType
 
 struct BrowserOptions
 {
+    BrowserOptions():
+        showInheritance(false),
+        expandNS(false),
+        treeMembers(true),
+        displayFilter(bdfFile),
+        sortType(bstKind)
+    {}
+
     bool                 showInheritance; //!< default: false
     bool                 expandNS;        //!< default: false (auto-expand namespaces)
-    bool                 treeMembers;     //
+    bool                 treeMembers;     //!< default: true
     BrowserDisplayFilter displayFilter;   //!< default: bdfFile
-    BrowserSortType      sortType;        //
+    BrowserSortType      sortType;        //!< default: bstKind
 };
 
 /** Setting of the Parser, some of them will be passed down to ParserThreadOptions */
