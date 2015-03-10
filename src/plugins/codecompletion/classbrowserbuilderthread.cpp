@@ -75,7 +75,8 @@ ClassBrowserBuilderThread::ClassBrowserBuilderThread(wxEvtHandler* evtHandler, w
     m_BrowserOptions(),
     m_TokenTree(0),
     m_InitDone(false),
-    m_TerminationRequested(false)
+    m_TerminationRequested(false),
+    m_idThreadEvent(wxID_NONE)
 
 {
 }
