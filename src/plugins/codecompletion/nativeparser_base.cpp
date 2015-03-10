@@ -866,7 +866,6 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
                 // handle it if the token is a function/variable(i.e. is not a type)
                 if (isFuncOrVar)
                 {
-                    TokenIdxSet autualTypeResult;
                     TokenIdxSet actualTypeScope;
                     if (searchScope.empty())
                         actualTypeScope.insert(-1);
