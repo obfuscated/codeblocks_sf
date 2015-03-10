@@ -1880,7 +1880,7 @@ void ParserThread::HandleClass(EClassType ct)
             TRACE(_T("HandleClass() : Skip __attribute__ or __declspec"));
 
             // Handle stuff like: __attribute__(( whatever ))
-            current = m_Tokenizer.GetToken();  // eat __attribute__
+            m_Tokenizer.GetToken();  // eat __attribute__
             current = m_Tokenizer.GetToken();  // eat (( whatever ))
             next    = m_Tokenizer.PeekToken(); // peek again
         }
