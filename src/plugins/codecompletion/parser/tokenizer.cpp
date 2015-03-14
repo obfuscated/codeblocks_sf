@@ -1792,9 +1792,14 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
         if (m_RepeatReplaceCount >= s_MaxRepeatReplaceCount)
         {
             m_TokenIndex = m_BufferLen - m_FirstRemainingLength;
+
+            // Reset undo token
+            m_SavedTokenIndex   = m_UndoTokenIndex = m_TokenIndex;
+            m_SavedLineNumber   = m_UndoLineNumber = m_LineNumber;
+            m_SavedNestingLevel = m_UndoNestLevel  = m_NestLevel;
+
             m_PeekAvailable = false;
-            SkipToEOL(false);
-            return false;
+            return true; // NOTE: we have to skip the problem token by returning true.
         }
         else
             ++m_RepeatReplaceCount;
