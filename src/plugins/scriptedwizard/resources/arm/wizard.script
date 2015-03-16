@@ -1,5 +1,5 @@
 board <- 1;
-derivative <- 1;
+derivative <- 0;
 outputvariant <- 1;
 function BeginWizard()
 {
@@ -22,7 +22,7 @@ function BeginWizard()
 	// select project name and path
 	Wizard.AddProjectPathPage();
 	// select compiler and configurations
-	Wizard.AddCompilerPage(_T(""), _T("armelf*"), false, false);
+	Wizard.AddCompilerPage(_T(""), _T("arm-elf*"), false, false);
 	// select language
 	Wizard.AddGenericSingleChoiceListPage(_T("ARMBoards"), _T("Please select your ARM evaluation board."), ARM_boards , board);
 
