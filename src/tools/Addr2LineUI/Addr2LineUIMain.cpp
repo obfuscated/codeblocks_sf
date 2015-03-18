@@ -224,8 +224,8 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& event)
           // append mask if needed
           if (FILE.Contains(wxT(" "))) FILE = wxT("\"") + FILE + wxT("\"");
 
-          // compute (initial) command line
-          wxString command = mAddr2Line + wxT(" -e ") + FILE + wxT(" ") + ADDR;
+          // compute (initial) command line argument to addr2line
+          wxString command_args = wxT(" -e ") + FILE + wxT(" ") + ADDR;
 
           // replacements in command (if any):
           if (chkReplace->IsChecked())
@@ -239,7 +239,7 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& event)
                 && !(repl_this.Trim(true).Trim(false).IsSameAs(
                        repl_that.Trim(true).Trim(false)) ) )
             {
-              command.Replace(repl_this, repl_that);
+              command_args.Replace(repl_this, repl_that);
             }
             else
             {
@@ -247,6 +247,9 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& event)
               chkReplace->SetValue(false);
             }
           }
+
+          // Now prepend the addr2line tool and compile the full command
+          wxString command = mAddr2Line + command_args;
 
           { // Lifetime of wxWindowDisabler and wxBusyInfo
             wxWindowDisabler disableAll;
