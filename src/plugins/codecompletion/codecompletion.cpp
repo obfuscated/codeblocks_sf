@@ -264,6 +264,12 @@ namespace CodeCompletionHelper
         unsigned line;
     };
 
+    /** when user select one item in the suggestion list, the selected contains the full display
+     * name, for example, "function_name():function_return_type", and we only need to insert the
+     * "function_name" to the editor, so this function just get the actual inserted text.
+     * @param selected a full display name of the selected token in the suggestion list
+     * @return the stripped text which are used to insert to the editor
+     */
     static wxString AutocompGetName(const wxString& selected)
     {
         size_t nameEnd = selected.find_first_of(_T("(: "));
