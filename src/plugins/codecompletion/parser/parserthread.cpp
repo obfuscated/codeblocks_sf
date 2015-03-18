@@ -2144,7 +2144,35 @@ void ParserThread::HandleClass(EClassType ct)
                  || (next.GetChar(0) == ParserConsts::ref_chr) )
         // -------------------------------------------------------------------
         {
-            m_Str << current;
+            // e.g. typedef struct A * a;
+            if (next.GetChar(0) == ParserConsts::ptr_chr && m_ParsingTypedef)
+            {
+                wxString args;
+
+                Token* newToken = DoAddToken(tkClass, current, lineNr, 0, 0, args);
+
+                if (!newToken)
+                {
+                    TRACE(_T("HandleClass() : Unable to create/add new token: ") + current);
+
+                    // restore tokenizer's functionality
+                    m_Tokenizer.SetState(oldState);
+                    return;
+                }
+                newToken->m_AncestorsString = ancestors;
+
+                m_PointerOrRef << m_Tokenizer.GetToken();
+
+                m_Str.Clear();
+                if ( !ReadClsNames(newToken->m_Name) )
+                {
+                    TRACE(_T("HandleClass() : ReadClsNames returned false [2]."));
+                }
+
+                break;
+            }
+            else
+                m_Str << current;
             break;
         }
         // -------------------------------------------------------------------
