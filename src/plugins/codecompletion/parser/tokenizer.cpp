@@ -2091,6 +2091,13 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
         while (beginPos < length - 1 && expandedText[beginPos+1] == _T(' '))
             beginPos++;
 
+        // expandedText[beginPos] is not a space char, but we expect an identifier like token
+        // if # is inside a string, such as "abc#+", then we should not stringizing
+        // this is just a work around, the correct way is to use Lex() function to cut the
+        // expandedText into tokens, and compare with tokens, not compared with raw text
+        if (!wxIsalpha(expandedText[beginPos]))
+            break;
+
         // let endPos points to the space char after the next token by looping on non spaces
         int endPos = beginPos + 1;
         while (endPos < length - 1 && expandedText[endPos+1] != _T(' '))
