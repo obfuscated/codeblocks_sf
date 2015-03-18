@@ -29,7 +29,16 @@ ThreadSearchEvent::ThreadSearchEvent(wxEventType commandType, int id)
 ThreadSearchEvent::ThreadSearchEvent(const ThreadSearchEvent& Event)
                   :wxCommandEvent(Event)
 {
-    m_LineTextArray = Event.GetLineTextArray();
+    // code copied from class CodeBlocksThreadEvent in SDK
+    // make sure our string member (which uses COW, aka refcounting) is not
+    // shared by other wxString instances:
+    SetString(GetString().c_str());
+
+    // clone the wxArrayString, since wxArrayString internally use wxString,
+    // and wxString does not do a deep copy in copy constructor
+    int count = Event.m_LineTextArray.GetCount();
+    for (int i = 0; i < count; ++i)
+        m_LineTextArray.Add(Event.m_LineTextArray[i].c_str());
 }
 
 
