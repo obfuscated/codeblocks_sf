@@ -257,7 +257,7 @@ namespace CodeCompletionHelper
         }
         return ReturnValue;
     }
-
+    /** used to record the position of a token when user click find declaration or implementation */
     struct GotoDeclarationItem
     {
         wxString filename;
@@ -419,9 +419,20 @@ int idProjectSavedTimer         = wxNewId();
 int idReparsingTimer            = wxNewId();
 int idEditorActivatedTimer      = wxNewId();
 
-// milliseconds
+// all the below delay time is in milliseconds units
+// when the user enables the parsing while typing option, this is the time delay when parsing
+// would happen after the editor has changed.
 #define REALTIME_PARSING_DELAY    500
+
+// there are many reasons to trigger the refreshing of CC toolbar. But to avoid refreshing
+// the toolbar to often, we add a timer to delay the refresh, this is just like a mouse dwell
+// event, which means we do the real job when the editor is stable for a while (no event
+// happens in the delay time period).
 #define TOOLBAR_REFRESH_DELAY     150
+
+// the time delay between an editor activated event and the updating of the CC toolbar.
+// Note that we are only interest in a stable activated editor, so if another editor is activated
+// during the time delay, the timer will be restarted.
 #define EDITOR_ACTIVATED_DELAY    300
 
 BEGIN_EVENT_TABLE(CodeCompletion, cbCodeCompletionPlugin)
@@ -558,6 +569,11 @@ void CodeCompletion::OnAttach()
     m_NativeParser.CreateClassBrowser();
 
     // hook to editors
+    // both ccmanager and cc have hooks, but they don't conflict. ccmanager are mainly
+    // hooking to the event such as key stroke or mouse dwell events, so the code completion, call tip
+    // and tool tip will be handled in ccmanager. The other cases such as caret movement triggers
+    // updating the CC's toolbar, modifing the editor causing the real time content reparse will be
+    // handled inside cc's own editor hook.
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
 
@@ -1557,8 +1573,7 @@ wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool for
     {
         if (incDirs[i].Last() != wxFILE_SEP_PATH)
             incDirs[i].Append(wxFILE_SEP_PATH);
-        // since this function only get "system include dirs", so the dirs which has prjPath prefix
-        // should be removed
+        // the dirs which have prjPath prefix are local dirs, so they should be removed
         if (project && incDirs[i].StartsWith(prjPath))
             incDirs.RemoveAt(i);
         else
@@ -1618,6 +1633,8 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_CANCELLED)
     {   TRACE(_T("wxEVT_SCI_AUTOCOMP_CANCELLED")); }
 
+    // if the user is modifying the editor, then CC should try to reparse the editor's content
+    // and update the token tree.
     if (   m_NativeParser.GetParser().Options().whileTyping
         && (   (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
             || (event.GetModificationType() & wxSCI_MOD_DELETETEXT) ) )
@@ -1627,6 +1644,8 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
 
     if (control->GetCurrentLine() != m_CurrentLine)
     {
+        // reparsing the editor only happens in the condition that the caret's line number
+        // is changed.
         if (m_NeedReparse)
         {
             TRACE(_T("CodeCompletion::EditorEventHook: Starting m_TimerRealtimeParsing."));
@@ -1634,7 +1653,8 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
             m_CurrentLength = control->GetLength();
             m_NeedReparse = false;
         }
-
+        // wxEVT_SCI_UPDATEUI will be sent on caret's motion, but we are only interested in the
+        // cases where line number is changed. Then we need to update the CC's toolbar.
         if (event.GetEventType() == wxEVT_SCI_UPDATEUI)
         {
             m_ToolbarNeedRefresh = true;
@@ -2308,10 +2328,13 @@ void CodeCompletion::OnProjectClosed(CodeBlocksEvent& event)
         cbProject* project = event.GetProject();
         if (project && m_NativeParser.GetParserByProject(project))
         {
+            // there may be some pending files to be reparsed in m_ReparsingMap
+            // so just remove them
             ReparsingMap::iterator it = m_ReparsingMap.find(project);
             if (it != m_ReparsingMap.end())
                 m_ReparsingMap.erase(it);
 
+            // remove the Parser instance associated with the project
             m_NativeParser.DeleteParser(project);
         }
     }
@@ -2363,6 +2386,9 @@ void CodeCompletion::OnEditorSave(CodeBlocksEvent& event)
     if (!ProjectManager::IsBusy() && IsAttached() && m_InitDone && event.GetEditor())
     {
         cbProject* project = event.GetProject();
+
+        // we know which project the editor belongs to, so put a (project, file) pair to the
+        // m_ReparsingMap
         ReparsingMap::iterator it = m_ReparsingMap.find(project);
         if (it == m_ReparsingMap.end())
             it = m_ReparsingMap.insert(std::make_pair(project, wxArrayString())).first;
@@ -2371,6 +2397,7 @@ void CodeCompletion::OnEditorSave(CodeBlocksEvent& event)
         if (it->second.Index(filename) == wxNOT_FOUND)
             it->second.Add(filename);
 
+        // start the timer, so that it will be handled in timer event handler
         TRACE(_T("CodeCompletion::OnEditorSave: Starting m_TimerReparsing."));
         m_TimerReparsing.Start(EDITOR_ACTIVATED_DELAY + it->second.GetCount() * 10, wxTIMER_ONE_SHOT);
     }
@@ -2626,6 +2653,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         {
             pos = control->GetCurrentPos();
             line = control->LineFromPosition(pos);
+            // get the indent string from previous line
             wxString str = ed->GetLineIndentString(line - 1) + result[i];
             MatchCodeStyle(str, control->GetEOLMode(), ed->GetLineIndentString(line - 1), control->GetUseTabs(), control->GetTabWidth());
             control->SetTargetStart(pos);
@@ -2807,8 +2835,11 @@ void CodeCompletion::FunctionPosition(int &scopeItem, int &functionItem) const
 
     for (unsigned int idxSc = 0; idxSc < m_ScopeMarks.size(); ++idxSc)
     {
+        // this is the start and end of a scope
         unsigned int start = m_ScopeMarks[idxSc];
         unsigned int end = (idxSc + 1 < m_ScopeMarks.size()) ? m_ScopeMarks[idxSc + 1] : m_FunctionsScope.size();
+
+        // the scope could have many functions, so loop on the functions
         for (int idxFn = 0; start + idxFn < end; ++idxFn)
         {
             const FunctionScope fs = m_FunctionsScope[start + idxFn];
@@ -2922,6 +2953,41 @@ void CodeCompletion::OnFunction(cb_unused wxCommandEvent& event)
     }
 }
 
+/** Here is the expansion of how the two wxChoices are constructed.
+ * for a file have such contents below
+ *
+ * Line  0     void g_func1(){
+ * Line  1     }
+ * Line  2
+ * Line  3     void ClassA::func1(){
+ * Line  4     }
+ * Line  5
+ * Line  6     void ClassA::func2(){
+ * Line  7     }
+ * Line  8
+ * Line  9     void ClassB::func1(){
+ * Line 10     }
+ * Line 11
+ * Line 12     void ClassB::func2(){
+ * Line 13     }
+ *
+ * m_FunctionsScope is std::vector of length 5, capacity 8 = {
+ * {StartLine = 0, EndLine = 1, ShortName = L"g_func1", Name = L"g_func1() : void", Scope = L"<global>"},
+ * {StartLine = 3, EndLine = 4, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassA::"},
+ * {StartLine = 6, EndLine = 7, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassA::"},
+ * {StartLine = 9, EndLine = 10, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassB::"},
+ * {StartLine = 12, EndLine = 13, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassB::"}}
+ *
+ * m_ScopeMarks is std::vector of length 3, capacity 4 = {0, 1, 3}, which is the start of Scope "<global>"
+ * Scope "ClassA::" and Scope "ClassB::".
+ *
+ * Then we have wxChoice Scopes and Functions like below
+ *
+ *     <global>          ClassA::        ClassB::
+ *       |- g_func1()      |- func1()      |- func1()
+ *                         |- func2()      |- func2()
+ *
+ */
 void CodeCompletion::ParseFunctionsAndFillToolbar()
 {
     TRACE(_T("ParseFunctionsAndFillToolbar() : m_ToolbarNeedReparse=%d, m_ToolbarNeedRefresh=%d, "),
@@ -3016,6 +3082,9 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
         m_NativeParser.GetParser().ParseBufferForNamespaces(ed->GetControl()->GetText(), nameSpaces);
         std::sort(nameSpaces.begin(), nameSpaces.end(), CodeCompletionHelper::LessNameSpace);
 
+        // copy the namespace information collected in ParseBufferForNamespaces() to
+        // the functionsScopes, note that the element type FunctionScope has a constructor
+        // FunctionScope(const NameSpace& ns), type conversion is done automatically
         std::copy(nameSpaces.begin(), nameSpaces.end(), back_inserter(functionsScopes));
         std::sort(functionsScopes.begin(), functionsScopes.end(), CodeCompletionHelper::LessFunctionScope);
 
@@ -3044,12 +3113,15 @@ void CodeCompletion::ParseFunctionsAndFillToolbar()
     if (!m_FunctionsScope.empty())
     {
         m_ScopeMarks.push_back(0);
-        if (m_Scope)
+
+        if (m_Scope) // show scope wxChoice
         {
             wxString lastScope = m_FunctionsScope[0].Scope;
             for (unsigned int idx = 1; idx < fsSize; ++idx)
             {
                 const wxString& currentScope = m_FunctionsScope[idx].Scope;
+
+                // if the scope name has changed, push a new index
                 if (lastScope != currentScope)
                 {
                     m_ScopeMarks.push_back(idx);
@@ -3319,6 +3391,8 @@ void CodeCompletion::OnRealtimeParsingTimer(cb_unused wxTimerEvent& event)
 
     TRACE(_T("OnRealtimeParsingTimer"));
 
+    // the real time parsing timer event has arrived, but the document size has changed, in this
+    // case, we should fire another timer event, and do the parsing job later
     const int curLen = editor->GetControl()->GetLength();
     if (curLen != m_CurrentLength)
     {

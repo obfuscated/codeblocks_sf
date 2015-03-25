@@ -50,6 +50,8 @@ public:
     struct FunctionScope
     {
         FunctionScope() {}
+
+        /** a namespace token can be convert to a FunctionScope type */
         FunctionScope(const NameSpace& ns):
             StartLine(ns.StartLine), EndLine(ns.EndLine), Scope(ns.Name) {}
 
@@ -98,7 +100,7 @@ public:
     /** toolbar priority value */
     virtual int GetToolBarPriority() { return 10; }
 
-    // override
+    // override virtual functions in cbCodeCompletionPlugin class
     virtual CCProviderStatus GetProviderStatusFor(cbEditor* ed);
     virtual std::vector<CCToken> GetAutocompList(bool isAuto, cbEditor* ed, int& tknStart, int& tknEnd);
     virtual std::vector<CCCallTip> GetCallTips(int pos, int style, cbEditor* ed, int& argsPos);
@@ -133,10 +135,10 @@ public:
      */
     void GetAbsolutePath(const wxString& basePath, const wxArrayString& targets, wxArrayString& dirs);
 
-    /** handle all the editor event*/
+    /** handle all the editor event */
     void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
 
-    /** read CC's options, mostly happens the user change some setting and press APPLY*/
+    /** read CC's options, mostly happens the user change some setting and press APPLY */
     void RereadOptions(); // called by the configuration panel
 
 private:
@@ -156,28 +158,25 @@ private:
     /** event handler when user click Menu->View->Symbols browser */
     void OnViewClassBrowser(wxCommandEvent& event);
 
-    /** event handler to list the suggestion, when a user press CTRL+space(by default)*/
-    void OnCodeComplete(wxCommandEvent& event);
-
-    /** event handler when user click Menu->Search->Goto function*/
+    /** event handler when user click Menu->Search->Goto function */
     void OnGotoFunction(wxCommandEvent& event);
 
-    /** navigate to the previous function body*/
+    /** navigate to the previous function body */
     void OnGotoPrevFunction(wxCommandEvent& event);
 
-    /** navigate to the next function body*/
+    /** navigate to the next function body */
     void OnGotoNextFunction(wxCommandEvent& event);
 
-    /** handle CC's context menu->insert */
+    /** handle CC's context menu->insert "Class method declaration/implementation..." */
     void OnClassMethod(wxCommandEvent& event);
 
-    /** handle CC's context menu->insert */
+    /** handle CC's context menu->insert "All class methods without implementation..." */
     void OnUnimplementedClassMethods(wxCommandEvent& event);
 
     /** handle both goto declaration and implementation event */
     void OnGotoDeclaration(wxCommandEvent& event);
 
-    /** CC's re-factoring function, find all the reference place*/
+    /** CC's re-factoring function, find all the reference place */
     void OnFindReferences(wxCommandEvent& event);
 
     /** CC's re-factoring function, rename a symbol */
@@ -209,14 +208,24 @@ private:
     void OnEditorActivated(CodeBlocksEvent& event);
     void OnEditorClosed(CodeBlocksEvent& event);
 
-    /** CC's own logger, to handle event sent from other thread or itself*/
+    /** CC's own logger, to handle log events sent from other worker threads or itself(the main GUI
+     * thread), the log messages will be printed in the "Code::Blocks" log panel.
+     */
     void OnCCLogger(CodeBlocksThreadEvent& event);
-    /** CC's own debug logger, to handle event sent from other thread or itself*/
+    /** CC's own debug logger, to handle log event sent from other worker threads or itself(the main
+     * GUI thread), the log messages will be printed in the "Code::Blocks Debug" log panel.
+     */
     void OnCCDebugLogger(CodeBlocksThreadEvent& event);
 
-    /** batch parsing start event*/
+    /** batch parsing start event
+     * this event usually be fired when an Parser object try to start parsing tasks in the thread
+     * pool
+     */
     void OnParserStart(wxCommandEvent& event);
-    /** batch parsing end event*/
+
+    /** batch parsing end event
+     * this event usually be fired when the task pool becomes empty
+     */
     void OnParserEnd(wxCommandEvent& event);
 
     /** receive event from SystemHeadersThread */
@@ -224,51 +233,96 @@ private:
     void OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event);
     void OnSystemHeadersThreadError(CodeBlocksThreadEvent& event);
 
-    /** fill the tokens with correct code complete words */
+    /** fill the tokens with correct code complete words
+     * @param caretPos the location of caret
+     * @param ed the context editor where we locates
+     * @param tokens the stored token results
+     * @param preprocessorOnly if true, we only collect macro definition tokens
+     */
     void DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly = false);
-    /** fill the tokens with correct preprocessor directives */
+
+    /** fill the tokens with correct preprocessor directives, such as #i will prompt "if", "include"
+     * @param tknStart the start of the completed word
+     * @param tknEnd current caret location
+     * @param ed current active editor
+     * @param tokens results storing all the suggesting texts
+     */
     void DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEditor* ed, std::vector<CCToken>& tokens);
-    /** fill the tokens with correct include file names */
+
+    /** fill the tokens with correct include file names
+     * @param tknStart the start of the completed word
+     * @param tknEnd current caret location
+     * @param ed current active editor
+     * @param tokens results storing all the suggested include files
+     */
     void DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tknEnd, std::vector<CCToken>& tokens);
 
-    /** ContextMenu->Insert-> declaration/implementation*/
+    /** ContextMenu->Insert-> declaration/implementation */
     int DoClassMethodDeclImpl();
-    /** ContextMenu->Insert-> All class methods*/
+
+    /** ContextMenu->Insert-> All class methods */
     int DoAllMethodsImpl();
 
+    /** modify the string content to follow the current editor's code style
+     * The code style includes the EOL, TAB and indent
+     * @param[in,out] str the input string, but also the modified string
+     * @param eolStyle an int value to indicate the EOL style
+     * @param indent a wxString containing the whole intent text
+     * @param useTabs whether TAB is used
+     * @param tabSize how long is the TAB
+     */
     void MatchCodeStyle(wxString& str, int eolStyle = wxSCI_EOL_LF, const wxString& indent = wxEmptyString, bool useTabs = false, int tabSize = 4);
 
     // CC's toolbar related functions
-    /** helper method in finding the function position in the vector for the function containing the current line*/
+    /** helper method in finding the function position in the vector for the function containing the current line */
     void FunctionPosition(int &scopeItem, int &functionItem) const;
-    /** navigate between function bodies*/
+
+    /** navigate between function bodies */
     void GotoFunctionPrevNext(bool next = false);
-    /** help method in finding the namespace position in the vector for the namespace containing the current line*/
+
+    /** find the namespace whose scope covers the current line
+     * the m_CurrentLine is used
+     * @return  the found namespace index
+     */
     int NameSpacePosition() const;
 
     /** Toolbar select event */
     void OnScope(wxCommandEvent& event);
+
     /** Toolbar select event */
     void OnFunction(wxCommandEvent& event);
 
+    /** normally the editor has changed, then CC need to parse the document again, and (re)construct
+     * the internal database, and refresh the toolbar(wxChoice's content)
+     */
     void ParseFunctionsAndFillToolbar();
+
+    /** the caret has changed, so the wxChoice need to be updated to indicates which scope and
+     * function in which the caret locates.
+     */
     void FindFunctionAndUpdate(int currentLine);
+
+    /** the scope item has changed or becomes invalid, so the associated function wxChoice should
+     * be updated.
+     * @param scopeItem the new item in scope wxChoice.
+     */
     void UpdateFunctions(unsigned int scopeItem);
 
     /** enable the two wxChoices */
     void EnableToolbarTools(bool enable = true);
+
+    /** if C::B starts up with some projects opened, this function will be called to parse the
+     * already opened projects
+     */
     void DoParseOpenedProjectAndActiveEditor();
 
     /** highlight member variables */
     void UpdateEditorSyntax(cbEditor* ed = NULL);
 
-    /** delayed for code completion */
-    void OnCodeCompleteTimer(wxTimerEvent& event);
-
     /** delayed for toolbar update */
     void OnToolbarTimer(wxTimerEvent& event);
 
-    /** event fired from the edit event hook function to indicate parsing while editing*/
+    /** event fired from the edit event hook function to indicate parsing while editing */
     void OnRealtimeParsingTimer(wxTimerEvent& event);
 
     /** delayed running after saving project, while many projects' saving */
@@ -277,36 +331,48 @@ private:
     /** delayed for re-parsing */
     void OnReparsingTimer(wxTimerEvent& event);
 
-    /** delayed running of editor activated event, only the last activated editor should be considered*/
+    /** delayed running of editor activated event, only the last activated editor should be considered */
     void OnEditorActivatedTimer(wxTimerEvent& event);
 
-    /** Indicates CC's initialization is done*/
+    /** Indicates CC's initialization is done */
     bool                    m_InitDone;
 
-    /** menu pointers to the frame's main menu*/
+    /** menu pointers to the frame's main menu */
     wxMenu*                 m_EditMenu;
     wxMenu*                 m_SearchMenu;
     wxMenu*                 m_ViewMenu;
     wxMenu*                 m_ProjectMenu;
 
-    /** this member will actually manage all the Parser instances*/
+    /** this member will actually manage all the Parser instances */
     NativeParser            m_NativeParser;
-    /** code re-factoring tool*/
+
+    /** code re-factoring tool */
     CodeRefactoring         m_CodeRefactoring;
 
     int                     m_EditorHookId;
 
-    /** timer triggered by editor hook function to delay the real-time parse*/
+    /** timer triggered by editor hook function to delay the real-time parse */
     wxTimer                 m_TimerRealtimeParsing;
-    /** timer for toolbar*/
+    /** timer for toolbar */
     wxTimer                 m_TimerToolbar;
-    /** delay after project saved event*/
+
+    /* FIXME (ollydbg#1#03/20/15): This timer is added by rev 6510, but I don't know what is the
+     * exact reason to delay the reparsing by a timer
+     * Note that we also save the project pointer in the m_TimerProjectSaved, so that we can
+     * see which project is saved in the timer event handler, it looks like a bug here, which means
+     * if two Project Saved event happens continuously, the first one will be overwritten because we
+     * save the project pointer member of m_TimerProjectSaved.
+     */
+
+    /** delay after project saved event */
     wxTimer                 m_TimerProjectSaved;
-    /** delay after receive a project save/modified event*/
+
+    /** delay after receive a project save/modified event */
     wxTimer                 m_TimerReparsing;
-    /** delay after receive editor activated event*/
+    /** delay after receive editor activated event */
     wxTimer                 m_TimerEditorActivated;
 
+    /** the last valid editor */
     cbEditor*               m_LastEditor;
 
     // The variables below were related to CC's toolbar
@@ -316,7 +382,7 @@ private:
     wxChoice*               m_Function;
     /** namespace/scope choice control, it is the first choice control */
     wxChoice*               m_Scope;
-    /** current active file's function body info*/
+    /** current active file's function body info */
     FunctionsScopeVec       m_FunctionsScope;
     /** current active file's namespace/scope info */
     NameSpaceVec            m_NameSpaces;
@@ -335,10 +401,10 @@ private:
     /** the file updating the toolbar info */
     wxString                m_LastFile;
 
-    /** indicate whether the predefined keywords set should be added in the suggestion list*/
+    /** indicate whether the predefined keywords set should be added in the suggestion list */
     bool                    m_LexerKeywordsToInclude[9];
 
-    /** indicate the editor has modified by the user and a real-time parse should be start*/
+    /** indicate the editor has modified by the user and a real-time parse should be start */
     bool                    m_NeedReparse;
 
     /** remember the number of bytes in the current editor/document */
@@ -349,36 +415,56 @@ private:
 
     //options on code completion (auto suggestion list) feature
 
-    /** maximum allowed code-completion list entries*/
+    /** maximum allowed code-completion list entries */
     size_t                  m_CCMaxMatches;
-    /** whether add parentheses after user select a function name in the code-completion suggestion list*/
+
+    /** whether add parentheses after user selects a function name in the code-completion suggestion list */
     bool                    m_CCAutoAddParentheses;
 
     /** add function arguments' types and names when autocompleted outside function. The default
      * value is false.
      */
     bool                    m_CCDetectImplementation;
-    /** defines characters that work like Tab (empty by Default) but are also inserted*/
+
+    /** user defined characters that work like Tab (empty by Default). They will be inserted 
+     * with the selected item.
+     */
     wxString                m_CCFillupChars;
 
     /** give code completion list for header files, it happens after the #include directive */
     bool                    m_CCEnableHeaders;
 
-    /* dir to files map, for example, you are two dirs c:/a and c:/b
+    /* dir to files map, for example, there are two dirs c:/a and c:/b
      * so the map looks like: (usually the relative file path is stored
      * c:/a  ---> {c:/a/a1.h, c:/a/a2.h} ---> {a1.h, a2.h}
      * c:/b  ---> {c:/b/b1.h, c:/b/b2.h} ---> {b1.h, b2.h}
      */
     SystemHeadersMap        m_SystemHeadersMap;
+
     /** thread to collect header file names, these header file names can be prompt for auto
      * suggestion after #include <  or #include " directives.
      */
     std::list<SystemHeadersThread*> m_SystemHeadersThreads;
+
     /**  critical section to protect accessing m_SystemHeadersMap */
     wxCriticalSection               m_SystemHeadersThreadCS;
 
-    /** map to record all re-parsing files */
+    /** map to record all re-parsing files
+     *
+     * Here is an example how the ReparsingMap is used. Suppose you have two cbp opened:
+     * a.cbp, which contains a1.cpp, a2.cpp and a3.cpp
+     * b.cbp, which contains b1,cpp, b2,cpp and b3.cpp
+     * now, if a1,cpp and b2.cpp b3.cpp are modified, and the user press the Save all button
+     * Then CC receives event about project saved, then we store such information.
+     * ReparsingMap contains such two elements
+     * (a.cbp, (a1,cpp))
+     * (b.cbp, (b2.cpp, b3.cpp))
+     * there two elements will be passed to m_NativeParser, and m_NativeParser will distribute
+     * to each Parser objects
+     */
     typedef std::map<cbProject*, wxArrayString> ReparsingMap;
+
+    /** all the files need to be parsed and their associated projects */
     ReparsingMap m_ReparsingMap;
 
     /** Provider of documentation for the popup window */

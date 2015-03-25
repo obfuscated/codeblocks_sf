@@ -79,13 +79,15 @@ namespace ParserCommon
     static const int PARSER_BATCHPARSE_TIMER_DELAY_LONG      = 1000;
     static const int PARSER_REPARSE_TIMER_DELAY              = 100;
 
+    // this static variable point to the Parser instance which is currently running the taskpool
+    // when the taskpool finishes, the pointer is set to nullptr.
     static volatile Parser* s_CurrentParser = nullptr;
 
-    // NOTE (ollydbg#1#): This static variable is used to project changing the member variable of
-    // the Parser class from different thread. Basically, I should not be a static wxMutex for all
-    // the instance of the Parser instance, it should  be a member variable of the Parser class.
-    // Maybe, the author of this locker (Loaden?) think that access to different Parser instance
-    // from different thread should also be avoid.
+    // NOTE (ollydbg#1#): This static variable is used to prevent changing the member variables of
+    // the Parser class from different threads. Basically, It should not be a static wxMutex for all
+    // the instances of the Parser class, it should be a member variable of the Parser class.
+    // Maybe, the author of this locker (Loaden?) thought that accessing to different Parser instances
+    // from different threads should also be avoided.
     static          wxMutex s_ParserMutex;
 
     int idParserStart = wxNewId();
