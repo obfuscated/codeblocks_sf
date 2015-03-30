@@ -68,9 +68,6 @@ cd ..\..\..\plugins\debuggergdb\resources
 %ZIPCMD% -0 -qu ..\..\..\%CB_DEVEL_RESDIR%\debugger.zip images\*.png images\16x16\*.png > nul
 cd ..\..\..
 
-echo Copying external exception handler
-if exist devel30_64\exchndl.dll xcopy /D /y devel30_64\exchndl.dll output30_64 > nul
-if exist devel30_64\exchndl.dll xcopy /D /y devel30_64\exchndl.dll devel30_64 > nul
 echo Copying files
 xcopy /D /y %CB_DEVEL_RESDIR%\*.zip %CB_OUTPUT_RESDIR% > nul
 xcopy /D /y sdk\resources\lexers\lexer_* %CB_DEVEL_RESDIR%\lexers > nul

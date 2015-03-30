@@ -6,22 +6,6 @@
 		<Option default_target="src" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="exchndl">
-				<Option platforms="Windows;" />
-				<Option output="devel/exchndl" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="devel" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Compiler>
-					<Add directory="base/exchndl/include" />
-				</Compiler>
-				<Linker>
-					<Add library="bfd" />
-					<Add library="iberty" />
-					<Add library="z" />
-					<Add directory="base/exchndl/lib" />
-				</Linker>
-			</Target>
 			<Target title="tinyXML">
 				<Option output="base/tinyxml/txml" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
@@ -751,22 +735,6 @@
 			<Add directory="base/tinyxml" />
 			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
-		<Unit filename="base/exchndl/exchndl.c">
-			<Option compilerVar="CC" />
-			<Option target="exchndl" />
-		</Unit>
-		<Unit filename="base/exchndl/include/coff/internal.h">
-			<Option target="exchndl" />
-		</Unit>
-		<Unit filename="base/exchndl/include/demangle.h">
-			<Option target="exchndl" />
-		</Unit>
-		<Unit filename="base/exchndl/include/libcoff.h">
-			<Option target="exchndl" />
-		</Unit>
-		<Unit filename="base/exchndl/include/libiberty.h">
-			<Option target="exchndl" />
-		</Unit>
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
