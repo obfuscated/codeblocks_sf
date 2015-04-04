@@ -1216,8 +1216,9 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 
 void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
 {
-    for (size_t i = 0; i < m_DelayedFilesToOpen.GetCount(); ++i)
-        frame->Open(m_DelayedFilesToOpen[i], true);
+    std::set<wxString> uniqueFilesToOpen(m_DelayedFilesToOpen.begin(), m_DelayedFilesToOpen.end());
+    for (std::set<wxString>::const_iterator it = uniqueFilesToOpen.begin(); it != uniqueFilesToOpen.end(); ++it)
+        frame->Open(*it, true);
     m_DelayedFilesToOpen.Clear();
 
     // --file foo.cpp[:line]
