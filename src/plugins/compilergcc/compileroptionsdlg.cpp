@@ -1876,8 +1876,9 @@ void CompilerOptionsDlg::OnRemoveDirClick(cb_unused wxCommandEvent& event)
                      _("Confirmation"),
                      wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
     {
-        for (size_t i=0; i<selections.GetCount(); ++i)
-            control->Delete(selections[static_cast<unsigned int>(i)]);
+        std::sort(selections.begin(), selections.end());
+        for (unsigned int i=selections.GetCount(); i>0; --i)
+            control->Delete(selections[i-1]);
         m_bDirty = true;
     }
 } // OnRemoveDirClick
