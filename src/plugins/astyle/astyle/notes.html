@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Artistic Style - Release Notes</title>
@@ -17,6 +17,23 @@
     <p>
         &nbsp;
     </p>
+
+    <h3>Artistic Style 2.06&nbsp; (Pending)</h3>
+
+    <ul>
+        <li>Add new Objective&#8209;C options "pad-return-type" (-xq) and "unpad-return-type" (-xr).</li>
+        <li>Add new option pad-comma (#100).</li>
+        <li>Add removing spaces before a comma (#100).</li>
+        <li>Fix C# to recognize &quot;using&quot; as a header.</li>
+        <li>Fix C# to always recognize &quot;forever&quot; as a header.</li>
+        <li>Fix end of line comments for &quot;pad-method-prefix&quot; and &quot;unpad-method-prefix&quot;.</li>
+        <li>Fix end of line comments for &quot;pad-method-colon&quot;.</li>
+        <li>Refactoring:
+            <ul>
+                <li>Consolidate scattered ASFormatter conditional statements into a padParenObjC method.</li>
+           </ul>
+        </li>
+    </ul>
 
     <h3>Artistic Style 2.05.1&nbsp; (December 2014)</h3>
 
@@ -79,7 +96,7 @@
         <li>Fix indentation of C# &quot;let&quot; statements.</li>
         <li>Fix a few omissions with &quot;fill-empty-lines&quot;.</li>
         <li>Fix file read to read 64K blocks of data.</li>
-        <li>Refactor to un-obfuscate (clarify) the code, and improve design and decomposition::
+        <li>Refactor to un-obfuscate (clarify) the code, and improve design and decomposition:
             <ul>
                 <li>Extract class Utf8_16 from ASConsole. </li>
                 <li>Replace Linux dependency on iconv with a Utf8_16 class for ASLibrary.</li>
@@ -252,29 +269,6 @@
     <p>
         &nbsp;
     </p>
-
-    <!-- Piwik -->
-
-    <script type="text/javascript">
-        var pkBaseURL = (("https:" == document.location.protocol) ? "https://sourceforge.net/apps/piwik/astyle/" : "http://sourceforge.net/apps/piwik/astyle/");
-        document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-
-    <script type="text/javascript">
-        try {
-            var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-            piwikTracker.trackPageView();
-            piwikTracker.enableLinkTracking();
-        } catch (err) { }
-    </script>
-
-    <noscript>
-        <p>
-            <img src="http://sourceforge.net/apps/piwik/astyle/piwik.php?idsite=1" style="border: 0" alt="" />
-        </p>
-    </noscript>
-
-    <!-- End Piwik Tag -->
 
 </body>
 

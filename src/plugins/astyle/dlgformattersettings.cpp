@@ -39,6 +39,8 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setFormattingStyle(astyle::STYLE_STROUSTRUP);
     else if (XRCCTRL(*m_dlg, "rbWhitesmith", wxRadioButton)->GetValue())
         formatter.setFormattingStyle(astyle::STYLE_WHITESMITH);
+    else if (XRCCTRL(*m_dlg, "rbVTK", wxRadioButton)->GetValue())
+        formatter.setFormattingStyle(astyle::STYLE_VTK);
     else if (XRCCTRL(*m_dlg, "rbBanner", wxRadioButton)->GetValue())
         formatter.setFormattingStyle(astyle::STYLE_BANNER);
     else if (XRCCTRL(*m_dlg, "rbGNU", wxRadioButton)->GetValue())
@@ -49,6 +51,8 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
         formatter.setFormattingStyle(astyle::STYLE_HORSTMANN);
     else if (XRCCTRL(*m_dlg, "rb1TBS", wxRadioButton)->GetValue())
         formatter.setFormattingStyle(astyle::STYLE_1TBS);
+    else if (XRCCTRL(*m_dlg, "rbGoogle", wxRadioButton)->GetValue())
+        formatter.setFormattingStyle(astyle::STYLE_GOOGLE);
     else if (XRCCTRL(*m_dlg, "rbPico", wxRadioButton)->GetValue())
         formatter.setFormattingStyle(astyle::STYLE_PICO);
     else if (XRCCTRL(*m_dlg, "rbLisp", wxRadioButton)->GetValue())
@@ -62,15 +66,15 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
     else
         formatter.setSpaceIndentation(spaceNum);
 
-    formatter.setClassIndent(XRCCTRL(*m_dlg, "chkIndentClasses",                 wxCheckBox)->GetValue());
-    formatter.setSwitchIndent(XRCCTRL(*m_dlg, "chkIndentSwitches",               wxCheckBox)->GetValue());
-    formatter.setCaseIndent(XRCCTRL(*m_dlg, "chkIndentCase",                     wxCheckBox)->GetValue());
-    formatter.setBracketIndent(XRCCTRL(*m_dlg, "chkIndentBrackets",              wxCheckBox)->GetValue());
-    formatter.setBlockIndent(XRCCTRL(*m_dlg, "chkIndentBlocks",                  wxCheckBox)->GetValue());
-    formatter.setNamespaceIndent(XRCCTRL(*m_dlg, "chkIndentNamespaces",          wxCheckBox)->GetValue());
-    formatter.setLabelIndent(XRCCTRL(*m_dlg, "chkIndentLabels",                  wxCheckBox)->GetValue());
-    formatter.setPreprocDefineIndent(XRCCTRL(*m_dlg, "chkIndentPreprocessor",    wxCheckBox)->GetValue());
-    formatter.setIndentCol1CommentsMode(XRCCTRL(*m_dlg, "chkIndentCol1Comments", wxCheckBox)->GetValue());
+    formatter.setCaseIndent(XRCCTRL(*m_dlg,               "chkIndentCase",                    wxCheckBox)->GetValue());
+    formatter.setClassIndent(XRCCTRL(*m_dlg,              "chkIndentClasses",                 wxCheckBox)->GetValue());
+    formatter.setLabelIndent(XRCCTRL(*m_dlg,              "chkIndentLabels",                  wxCheckBox)->GetValue());
+    formatter.setModifierIndent(XRCCTRL(*m_dlg,           "chkIndentModifiers",               wxCheckBox)->GetValue());
+    formatter.setNamespaceIndent(XRCCTRL(*m_dlg,          "chkIndentNamespaces",              wxCheckBox)->GetValue());
+    formatter.setSwitchIndent(XRCCTRL(*m_dlg,             "chkIndentSwitches",                wxCheckBox)->GetValue());
+    formatter.setPreprocDefineIndent(XRCCTRL(*m_dlg,      "chkIndentPreprocessor",            wxCheckBox)->GetValue());
+    formatter.setPreprocConditionalIndent(XRCCTRL(*m_dlg, "chkIndentPreprocessorConditional", wxCheckBox)->GetValue());
+    formatter.setIndentCol1CommentsMode(XRCCTRL(*m_dlg,   "chkIndentCol1Comments",            wxCheckBox)->GetValue());
 
     wxString pointerAlign = XRCCTRL(*m_dlg, "cmbPointerAlign", wxComboBox)->GetValue();
 

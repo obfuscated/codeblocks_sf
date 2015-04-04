@@ -51,6 +51,10 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setFormattingStyle(astyle::STYLE_WHITESMITH);
       break;
 
+    case aspsVTK: // VTK
+      formatter.setFormattingStyle(astyle::STYLE_VTK);
+      break;
+
     case aspsBanner: // Banner
       formatter.setFormattingStyle(astyle::STYLE_BANNER);
       break;
@@ -71,6 +75,10 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setFormattingStyle(astyle::STYLE_1TBS);
       break;
 
+    case aspsGoogle: // Google
+      formatter.setFormattingStyle(astyle::STYLE_GOOGLE);
+      break;
+
     case aspsPico: // Pico
       formatter.setFormattingStyle(astyle::STYLE_PICO);
       break;
@@ -85,24 +93,22 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
   bool value = cfg->ReadBool(_T("/force_tabs"));
   int spaceNum = cfg->ReadInt(_T("/indentation"), 4);
-
   if (cfg->ReadBool(_T("/use_tabs")))
     formatter.setTabIndentation(spaceNum, value);
   else
     formatter.setSpaceIndentation(spaceNum);
 
-  formatter.setClassIndent(cfg->ReadBool(_T("/indent_classes")));
-  formatter.setSwitchIndent(cfg->ReadBool(_T("/indent_switches")));
   formatter.setCaseIndent(cfg->ReadBool(_T("/indent_case")));
-  formatter.setBracketIndent(cfg->ReadBool(_T("/indent_brackets")));
-  formatter.setBlockIndent(cfg->ReadBool(_T("/indent_blocks")));
-  formatter.setNamespaceIndent(cfg->ReadBool(_T("/indent_namespaces")));
+  formatter.setClassIndent(cfg->ReadBool(_T("/indent_classes")));
   formatter.setLabelIndent(cfg->ReadBool(_T("/indent_labels")));
+  formatter.setModifierIndent(cfg->ReadBool(_T("/indent_modifiers")));
+  formatter.setNamespaceIndent(cfg->ReadBool(_T("/indent_namespaces")));
+  formatter.setSwitchIndent(cfg->ReadBool(_T("/indent_switches")));
   formatter.setPreprocDefineIndent(cfg->ReadBool(_T("/indent_preprocessor")));
+  formatter.setPreprocConditionalIndent(cfg->ReadBool(_T("/indent_preprocessor_conditional")));
   formatter.setIndentCol1CommentsMode(cfg->ReadBool(_T("/indent_col1_comments")));
 
   wxString pointerAlign = cfg->Read(_T("/pointer_align"));
-
   if      (pointerAlign == _T("Type"))
     formatter.setPointerAlignment(astyle::PTR_ALIGN_TYPE);
   else if (pointerAlign == _T("Middle"))

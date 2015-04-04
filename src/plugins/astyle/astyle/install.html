@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Artistic Style - Install Information</title>
@@ -309,7 +309,7 @@
         To install the astyle executable to the default directory:
     </p>
     <pre>cd astyle/build/xcode
-sudo xcodebuild install -project AStyle.xcodeproj
+sudo xcodebuild install -project AStyle.xcodeproj 
 </pre>
     <p>
         A script is used to install the documentation
@@ -376,14 +376,15 @@ sudo xcodebuild install -project AStyle.xcodeproj
     </h4>
 
     <p>
-        There are configuration and project files for
-        several versions of the Visual C compiler. Open the AStyle configuration
-        file in the appropriate &quot;build&quot; directory. All project files have Debug, Release and Static configurations.
+        There are 
+        solution and project files for
+        several versions of the Visual C compiler. Open an Artistic Style solution
+        file in the appropriate &quot;build&quot; directory. All projects have Debug, Release and Static configurations.
         Debug file output will be in the &quot;debug&quot; directory. Release file output will be in the &quot;bin&quot;
         directory. Static file output will be in the "binstatic" directory. The following solution files are available.
     </p>
     <ul>
-        <li><b>All AStyle </b>builds the release and the debug configurations for all the following.</li>
+        <li><b>All AStyle ll AStyle </b>builds the release and the debug configurations for all the following.</li>
         <li><b>AStyle </b>builds the Artistic Style command line program (AStyle.exe). This project has an extra "Static"
             option. It is the same as the "Release" build except that it is linked with a static runtime library. This is
             needed if the executable is to be run on a system without Visual Studio installed. The builds for this configuration
@@ -446,29 +447,6 @@ sudo xcodebuild install -project AStyle.xcodeproj
     <p>
         &nbsp;
     </p>
-
-    <!-- Piwik -->
-
-    <script type="text/javascript">
-        var pkBaseURL = (("https:" == document.location.protocol) ? "https://sourceforge.net/apps/piwik/astyle/" : "http://sourceforge.net/apps/piwik/astyle/");
-        document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-
-    <script type="text/javascript">
-        try {
-            var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
-            piwikTracker.trackPageView();
-            piwikTracker.enableLinkTracking();
-        } catch (err) { }
-    </script>
-
-    <noscript>
-        <p>
-            <img src="http://sourceforge.net/apps/piwik/astyle/piwik.php?idsite=1" style="border: 0" alt="" />
-        </p>
-    </noscript>
-
-    <!-- End Piwik Tag -->
 
 </body>
 

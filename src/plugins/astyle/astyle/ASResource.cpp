@@ -4,9 +4,7 @@
  *   Copyright (C) 2014 by Jim Pattee
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
- *   This file is a part of Artistic Style - an indentation and
- *   reformatting tool for C, C++, C# and Java source files.
- *   <http://astyle.sourceforge.net>
+ *   This file is a part of Artistic Style <http://astyle.sourceforge.net>.
  *
  *   Artistic Style is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Lesser General Public License as published
@@ -62,6 +60,7 @@ const string ASResource::AS_TRY = string("try");
 const string ASResource::AS_CATCH = string("catch");
 const string ASResource::AS_THROW = string("throw");
 const string ASResource::AS_FINALLY = string("finally");
+const string ASResource::AS_USING = string("using");
 const string ASResource::_AS_TRY = string("__try");
 const string ASResource::_AS_FINALLY = string("__finally");
 const string ASResource::_AS_EXCEPT = string("__except");
@@ -277,6 +276,7 @@ void ASResource::buildHeaders(vector<const string*>* headers, int fileType, bool
 		headers->push_back(&AS_SET);
 		headers->push_back(&AS_ADD);
 		headers->push_back(&AS_REMOVE);
+		headers->push_back(&AS_USING);
 	}
 
 	if (beautifier)
@@ -570,7 +570,7 @@ void ASResource::buildPreDefinitionHeaders(vector<const string*>* preDefinitionH
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 // check if a specific line position contains a keyword.
-bool ASBase::findKeyword(const string &line, int i, const string &keyword) const
+bool ASBase::findKeyword(const string& line, int i, const string& keyword) const
 {
 	assert(isCharPotentialHeader(line, i));
 	// check the word
@@ -594,7 +594,7 @@ bool ASBase::findKeyword(const string &line, int i, const string &keyword) const
 
 // get the current word on a line
 // index must point to the beginning of the word
-string ASBase::getCurrentWord(const string &line, size_t index) const
+string ASBase::getCurrentWord(const string& line, size_t index) const
 {
 	assert(isCharPotentialHeader(line, index));
 	size_t lineLength = line.length();

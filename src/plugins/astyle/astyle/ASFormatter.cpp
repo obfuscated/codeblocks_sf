@@ -4,9 +4,7 @@
  *   Copyright (C) 2014 by Jim Pattee
  *   <http://www.gnu.org/licenses/lgpl-3.0.html>
  *
- *   This file is a part of Artistic Style - an indentation and
- *   reformatting tool for C, C++, C# and Java source files.
- *   <http://astyle.sourceforge.net>
+ *   This file is a part of Artistic Style <http://astyle.sourceforge.net>.
  *
  *   Artistic Style is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU Lesser General Public License as published
@@ -51,6 +49,7 @@ ASFormatter::ASFormatter()
 	objCColonPadMode = COLON_PAD_NO_CHANGE;
 	lineEnd = LINEEND_DEFAULT;
 	maxCodeLength = string::npos;
+	shouldPadCommas = false;
 	shouldPadOperators = false;
 	shouldPadParensOutside = false;
 	shouldPadFirstParen = false;
@@ -81,6 +80,8 @@ ASFormatter::ASFormatter()
 	shouldPadMethodColon = false;
 	shouldPadMethodPrefix = false;
 	shouldUnPadMethodPrefix = false;
+	shouldPadReturnType = false;
+	shouldUnPadReturnType = false;
 
 	// initialize ASFormatter member vectors
 	formatterFileType = 9;		// reset to an invalid type
@@ -251,6 +252,7 @@ void ASFormatter::init(ASSourceIterator* si)
 	isImmediatelyPostComment = false;
 	isImmediatelyPostLineComment = false;
 	isImmediatelyPostEmptyBlock = false;
+	isImmediatelyPostObjCMethodPrefix = false;
 	isImmediatelyPostPreprocessor = false;
 	isImmediatelyPostReturn = false;
 	isImmediatelyPostThrow = false;
@@ -267,8 +269,9 @@ void ASFormatter::init(ASSourceIterator* si)
 	isCharImmediatelyPostCloseBlock = false;
 	isCharImmediatelyPostTemplate = false;
 	isCharImmediatelyPostPointerOrReference = false;
-	isInObjCMethodDefinition = false;
 	isInObjCInterface = false;
+	isInObjCMethodDefinition = false;
+	isInObjCReturnType = false;
 	isInObjCSelector = false;
 	breakCurrentOneLineBlock = false;
 	shouldRemoveNextClosingBracket = false;
@@ -1038,11 +1041,16 @@ string ASFormatter::nextLine()
 			newHeader = findHeader(headers);
 
 			// Qt headers may be variables in C++
-			if (newHeader == &AS_FOREVER || newHeader == &AS_FOREACH)
+			if (isCStyle()
+			        && (newHeader == &AS_FOREVER || newHeader == &AS_FOREACH))
 			{
 				if (currentLine.find_first_of("=;", charNum) != string::npos)
 					newHeader = NULL;
 			}
+			else if (newHeader == &AS_USING
+			         && ASBeautifier::peekNextChar(currentLine,
+			                                       charNum + (*newHeader).length() - 1) != '(')
+				newHeader = NULL;
 
 			if (newHeader != NULL)
 			{
@@ -1430,21 +1438,15 @@ string ASFormatter::nextLine()
 			continue;
 		}
 		else if ((currentChar == '-' || currentChar == '+')
+		         && charNum == 0
 		         && peekNextChar() == '('
 		         && isBracketType(bracketTypeStack->back(), NULL_TYPE)
 		         && !isInPotentialCalculation)
 		{
 			isInObjCMethodDefinition = true;
+			isImmediatelyPostObjCMethodPrefix = true;
 			isInObjCInterface = false;
 			appendCurrentChar();
-			if (shouldPadMethodPrefix || shouldUnPadMethodPrefix)
-			{
-				size_t i = currentLine.find_first_not_of(" \t", charNum + 1);
-				if (i != string::npos)
-					goForward(i - charNum - 1);
-				if (shouldPadMethodPrefix)
-					appendSpaceAfter();
-			}
 			continue;
 		}
 
@@ -1513,9 +1515,22 @@ string ASFormatter::nextLine()
 			continue;
 		}
 
+		// remove spaces before commas
+		if (currentChar == ',')
+		{
+			const size_t len = formattedLine.length();
+			size_t lastText = formattedLine.find_last_not_of(' ');
+			if (lastText != string::npos && lastText < len - 1)
+			{
+				formattedLine.resize(lastText + 1);
+				int size_diff = len - (lastText + 1);
+				spacePadNum -= size_diff;
+			}
+		}
+
 		// pad commas and semi-colons
 		if (currentChar == ';'
-		        || (currentChar == ',' && shouldPadOperators))
+		        || (currentChar == ',' && (shouldPadOperators || shouldPadCommas)))
 		{
 			char nextChar = ' ';
 			if (charNum + 1 < (int) currentLine.length())
@@ -1536,16 +1551,38 @@ string ASFormatter::nextLine()
 			}
 		}
 
-		// do NOT use 'continue' after this, it must do padParens if necessary
-		if (currentChar == '('
-		        && shouldPadHeader
-		        && (isCharImmediatelyPostReturn || isCharImmediatelyPostThrow))
-			appendSpacePad();
-
-		if ((currentChar == '(' || currentChar == ')')
-		        && (shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens || shouldPadFirstParen))
+		// pad parens
+		if (currentChar == '(' || currentChar == ')')
 		{
-			padParens();
+			if (currentChar == '(')
+			{
+				if (shouldPadHeader
+				        && (isCharImmediatelyPostReturn || isCharImmediatelyPostThrow))
+					appendSpacePad();
+			}
+
+			if (shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens || shouldPadFirstParen)
+				padParens();
+			else
+				appendCurrentChar();
+
+			if (currentChar == '('
+			        && isImmediatelyPostObjCMethodPrefix
+			        && (shouldPadMethodPrefix || shouldUnPadMethodPrefix))
+				padParenObjC();
+			if (currentChar == ')'
+			        && isInObjCReturnType
+			        && (shouldPadReturnType || shouldUnPadReturnType))
+				padParenObjC();
+
+			if (currentChar == '(' && isImmediatelyPostObjCMethodPrefix)
+			{
+				isImmediatelyPostObjCMethodPrefix = false;
+				isInObjCReturnType = true;
+			}
+			else if (currentChar == ')' && isInObjCReturnType)
+				isInObjCReturnType = false;
+
 			continue;
 		}
 
@@ -1726,6 +1763,19 @@ void ASFormatter::setBreakElseIfsMode(bool state)
 }
 
 /**
+* set comma padding mode.
+* options:
+*    true     statement commas and semicolons will be padded with spaces around them.
+*    false    statement commas and semicolons will not be padded.
+*
+* @param state         the padding mode.
+*/
+void ASFormatter::setCommaPaddingMode(bool state)
+{
+	shouldPadCommas = state;
+}
+
+/**
  * set maximum code length
  *
  * @param max         the maximum code length.
@@ -1861,6 +1911,18 @@ void ASFormatter::setMethodPrefixPaddingMode(bool state)
 void ASFormatter::setMethodPrefixUnPaddingMode(bool state)
 {
 	shouldUnPadMethodPrefix = state;
+}
+
+// set objective-c '-' or '+' return type padding mode.
+void ASFormatter::setReturnTypePaddingMode(bool state)
+{
+	shouldPadReturnType = state;
+}
+
+// set objective-c '-' or '+' return type unpadding mode.
+void ASFormatter::setReturnTypeUnPaddingMode(bool state)
+{
+	shouldUnPadReturnType = state;
 }
 
 /**
@@ -2427,7 +2489,7 @@ void ASFormatter::appendChar(char ch, bool canBreakLine)
  * @param sequence         the sequence to append.
  * @param canBreakLine     if true, a registered line-break
  */
-void ASFormatter::appendSequence(const string &sequence, bool canBreakLine)
+void ASFormatter::appendSequence(const string& sequence, bool canBreakLine)
 {
 	if (canBreakLine && isInLineBreak)
 		breakLine();
@@ -2443,7 +2505,7 @@ void ASFormatter::appendSequence(const string &sequence, bool canBreakLine)
  * @param sequence         the sequence to append.
  * @param canBreakLine     if true, a registered line-break
  */
-void ASFormatter::appendOperator(const string &sequence, bool canBreakLine)
+void ASFormatter::appendOperator(const string& sequence, bool canBreakLine)
 {
 	if (canBreakLine && isInLineBreak)
 		breakLine();
@@ -2664,7 +2726,7 @@ bool ASFormatter::isClassInitializer() const
  *
  * @return        whether line is empty
  */
-bool ASFormatter::isEmptyLine(const string &line) const
+bool ASFormatter::isEmptyLine(const string& line) const
 {
 	return line.find_first_not_of(" \t") == string::npos;
 }
@@ -2976,7 +3038,7 @@ bool ASFormatter::isPointerOrReferenceCentered() const
  *
  * @return        whether word is a pointer or reference variable.
  */
-bool ASFormatter::isPointerOrReferenceVariable(string &word) const
+bool ASFormatter::isPointerOrReferenceVariable(string& word) const
 {
 	if (word == "char"
 	        || word == "int"
@@ -3082,7 +3144,7 @@ bool ASFormatter::isNonInStatementArrayBracket() const
  *             1 = one-line bracket has been reached.
  *             2 = one-line bracket has been reached and is followed by a comma.
  */
-int ASFormatter::isOneLineBlockReached(string &line, int startChar) const
+int ASFormatter::isOneLineBlockReached(string& line, int startChar) const
 {
 	assert(line[startChar] == '{');
 
@@ -3251,7 +3313,7 @@ bool ASFormatter::isUniformInitializerBracket() const
  * @param   firstLine   the first line to check
  * @return  the next non-whitespace substring.
  */
-string ASFormatter::peekNextText(const string &firstLine, bool endOnEmptyLine /*false*/, bool shouldReset /*false*/) const
+string ASFormatter::peekNextText(const string& firstLine, bool endOnEmptyLine /*false*/, bool shouldReset /*false*/) const
 {
 	bool isFirstLine = true;
 	bool needReset = shouldReset;
@@ -3881,16 +3943,6 @@ void ASFormatter::formatPointerOrReferenceCast(void)
 	}
 	else
 		appendSequence(sequenceToInsert, false);
-	// remove trailing whitespace if comma follows
-	char nextChar = peekNextChar();
-	if (nextChar == ',')
-	{
-		while (isWhiteSpace(currentLine[charNum + 1]))
-		{
-			goForward(1);
-			spacePadNum--;
-		}
-	}
 }
 
 /**
@@ -3901,8 +3953,8 @@ void ASFormatter::formatPointerOrReferenceCast(void)
  */
 void ASFormatter::padParens(void)
 {
-	assert(shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens || shouldPadFirstParen);
 	assert(currentChar == '(' || currentChar == ')');
+	assert(shouldPadParensOutside || shouldPadParensInside || shouldUnPadParens || shouldPadFirstParen);
 
 	int spacesOutsideToDelete = 0;
 	int spacesInsideToDelete = 0;
@@ -4094,6 +4146,99 @@ void ASFormatter::padParens(void)
 				appendSpaceAfter();
 	}
 	return;
+}
+
+/**
+* add or remove space padding to objective-c parens
+* these options have precedence over the padParens methods
+* the padParens method has already been called, this method adjusts
+*/
+void ASFormatter::padParenObjC(void)
+{
+	// the paren was previously been written to formattedLine
+	assert(formattedLine[0] == '+' || formattedLine[0] == '-');
+	assert(formattedLine.find('(') != string::npos
+	       || formattedLine.find(')') != string::npos);
+	assert(isImmediatelyPostObjCMethodPrefix || isInObjCReturnType);
+	assert(shouldPadMethodPrefix || shouldUnPadMethodPrefix
+	       || shouldPadReturnType || shouldUnPadReturnType);
+
+	if (isImmediatelyPostObjCMethodPrefix)
+	{
+		size_t prefix = formattedLine.find_first_of("+-");
+		if (prefix == string::npos)
+			return;
+		size_t paren = formattedLine.find_first_of("(");
+		if (paren == string::npos)
+			return;
+		int spaces = paren - prefix - 1;
+		if (shouldPadMethodPrefix)
+		{
+			if (spaces == 0)
+			{
+				formattedLine.insert(prefix + 1, 1, ' ');
+				spacePadNum += 1;
+			}
+			else if (spaces > 1)
+			{
+				formattedLine.erase(prefix + 1, spaces - 1);
+				spacePadNum -= spaces - 1;
+			}
+		}
+		// this option will be ignored if used with pad-method-prefix
+		else if (shouldUnPadMethodPrefix)
+		{
+			if (spaces > 0)
+			{
+				formattedLine.erase(prefix + 1, spaces);
+				spacePadNum -= spaces;
+			}
+		}
+	}
+
+	if (isInObjCReturnType)
+	{
+		size_t nextText = currentLine.find_first_not_of(" \t", charNum + 1);
+		if (nextText == string::npos)
+			return;
+		int spaces = nextText - charNum - 1;
+		if (shouldPadReturnType)
+		{
+			if (spaces == 0)
+			{
+				// this will already be padded if pad-paren is used
+				if (formattedLine[formattedLine.length() - 1] != ' ')
+				{
+					formattedLine.append(" ");
+					spacePadNum += 1;
+				}
+			}
+			else if (spaces > 1)
+			{
+				// do not use goForward here
+				currentLine.erase(charNum + 1, spaces - 1);
+				spacePadNum -= spaces - 1;
+			}
+		}
+		// this option will be ignored if used with pad-return-type
+		else if (shouldUnPadReturnType)
+		{
+			// this will already be padded if pad-paren is used
+			if (formattedLine[formattedLine.length() - 1] == ' ')
+			{
+				spacePadNum -= formattedLine.length() - 1 - nextText;
+				int lastText = formattedLine.find_last_not_of(" \t");
+				formattedLine.resize(lastText + 1);
+			}
+			if (spaces > 0)
+			{
+
+				// do not use goForward here
+				currentLine.erase(charNum + 1, spaces);
+				spacePadNum -= spaces;
+			}
+		}
+	}
 }
 
 /**
@@ -4658,7 +4803,7 @@ void ASFormatter::formatArrayRunIn()
  * delete a bracketTypeStack vector object
  * BracketTypeStack did not work with the DeleteContainer template
  */
-void ASFormatter::deleteContainer(vector<BracketType>* &container)
+void ASFormatter::deleteContainer(vector<BracketType>*& container)
 {
 	if (container != NULL)
 	{
@@ -4674,7 +4819,7 @@ void ASFormatter::deleteContainer(vector<BracketType>* &container)
  * used for all vectors except bracketTypeStack
  */
 template<typename T>
-void ASFormatter::deleteContainer(T &container)
+void ASFormatter::deleteContainer(T& container)
 {
 	if (container != NULL)
 	{
@@ -4688,7 +4833,7 @@ void ASFormatter::deleteContainer(T &container)
  * initialize a BracketType vector object
  * BracketType did not work with the DeleteContainer template
  */
-void ASFormatter::initContainer(vector<BracketType>* &container, vector<BracketType>* value)
+void ASFormatter::initContainer(vector<BracketType>*& container, vector<BracketType>* value)
 {
 	if (container != NULL)
 		deleteContainer(container);
@@ -4701,7 +4846,7 @@ void ASFormatter::initContainer(vector<BracketType>* &container, vector<BracketT
  * used for all vectors except bracketTypeStack
  */
 template<typename T>
-void ASFormatter::initContainer(T &container, T value)
+void ASFormatter::initContainer(T& container, T value)
 {
 	// since the ASFormatter object is never deleted,
 	// the existing vectors must be deleted before creating new ones
@@ -4767,7 +4912,7 @@ bool ASFormatter::isSharpStyleWithParen(const string* header) const
  * firstLine must contain the start of the comment.
  * return value is a pointer to the header or NULL.
  */
-const string* ASFormatter::checkForHeaderFollowingComment(const string &firstLine) const
+const string* ASFormatter::checkForHeaderFollowingComment(const string& firstLine) const
 {
 	assert(isInComment || isInLineComment);
 	assert(shouldBreakElseIfs || shouldBreakBlocks || isInSwitchStatement());
@@ -5422,7 +5567,7 @@ int ASFormatter::getCurrentLineCommentAdjustment()
  *
  * @return is the previous word or an empty string if none found.
  */
-string ASFormatter::getPreviousWord(const string &line, int currPos) const
+string ASFormatter::getPreviousWord(const string& line, int currPos) const
 {
 	// get the last legal word (may be a number)
 	if (currPos == 0)
@@ -5672,7 +5817,7 @@ bool ASFormatter::removeBracketsFromStatement()
  * @param searchStart  the start position on the line (default is 0).
  * @return the position on the line or string::npos if not found.
  */
-size_t ASFormatter::findNextChar(string &line, char searchChar, int searchStart /*0*/)
+size_t ASFormatter::findNextChar(string& line, char searchChar, int searchStart /*0*/)
 {
 	// find the next searchChar
 	size_t i;
@@ -5726,7 +5871,7 @@ size_t ASFormatter::findNextChar(string &line, char searchChar, int searchStart 
  * @param index         the current line index.
  * @return              true if the struct has access modifiers.
  */
-bool ASFormatter::isStructAccessModified(string &firstLine, size_t index) const
+bool ASFormatter::isStructAccessModified(string& firstLine, size_t index) const
 {
 	assert(firstLine[index] == '{');
 	assert(isCStyle());
@@ -5829,7 +5974,7 @@ bool ASFormatter::isStructAccessModified(string &firstLine, size_t index) const
 * @param index         the current line index.
 * @return              true if the block is indentable.
 */
-bool ASFormatter::isIndentablePreprocessorBlock(string &firstLine, size_t index)
+bool ASFormatter::isIndentablePreprocessorBlock(string& firstLine, size_t index)
 {
 	assert(firstLine[index] == '#');
 
@@ -5984,7 +6129,7 @@ EndOfWhileLoop:
  * @param index         the current line index.
  * @return              true if the statement is EXEC SQL.
  */
-bool ASFormatter::isExecSQL(string  &line, size_t index) const
+bool ASFormatter::isExecSQL(string& line, size_t index) const
 {
 	if (line[index] != 'e' && line[index] != 'E')	// quick check to reject most
 		return false;
@@ -6364,7 +6509,7 @@ void ASFormatter::updateFormattedLineSplitPoints(char appendedChar)
 	}
 }
 
-void ASFormatter::updateFormattedLineSplitPointsOperator(const string &sequence)
+void ASFormatter::updateFormattedLineSplitPointsOperator(const string& sequence)
 {
 	assert(maxCodeLength != string::npos);
 	assert(formattedLine.length() > 0);
@@ -6684,7 +6829,7 @@ bool ASFormatter::pointerSymbolFollows() const
  * Compute the input checksum.
  * This is called as an assert so it for is debug config only
  */
-bool ASFormatter::computeChecksumIn(const string &currentLine_)
+bool ASFormatter::computeChecksumIn(const string& currentLine_)
 {
 	for (size_t i = 0; i < currentLine_.length(); i++)
 		if (!isWhiteSpace(currentLine_[i]))
@@ -6716,7 +6861,7 @@ size_t ASFormatter::getChecksumIn() const
  * Compute the output checksum.
  * This is called as an assert so it is for debug config only
  */
-bool ASFormatter::computeChecksumOut(const string &beautifiedLine)
+bool ASFormatter::computeChecksumOut(const string& beautifiedLine)
 {
 	for (size_t i = 0; i < beautifiedLine.length(); i++)
 		if (!isWhiteSpace(beautifiedLine[i]))
@@ -6849,6 +6994,7 @@ void ASFormatter::resetEndOfStatement()
 void ASFormatter::padObjCMethodColon()
 {
 	assert(currentChar == ':');
+	int commentAdjust = 0;
 	char nextChar = peekNextChar();
 	if (objCColonPadMode == COLON_PAD_NONE
 	        || objCColonPadMode == COLON_PAD_AFTER
@@ -6856,14 +7002,20 @@ void ASFormatter::padObjCMethodColon()
 	{
 		// remove spaces before
 		for (int i = formattedLine.length() - 1; (i > -1) && isWhiteSpace(formattedLine[i]); i--)
+		{
 			formattedLine.erase(i);
+			--commentAdjust;
+		}
 	}
 	else
 	{
 		// pad space before
 		for (int i = formattedLine.length() - 1; (i > 0) && isWhiteSpace(formattedLine[i]); i--)
 			if (isWhiteSpace(formattedLine[i - 1]))
+			{
 				formattedLine.erase(i);
+				--commentAdjust;
+			}
 		appendSpacePad();
 	}
 	if (objCColonPadMode == COLON_PAD_NONE
@@ -6871,21 +7023,37 @@ void ASFormatter::padObjCMethodColon()
 	        || nextChar == ')')
 	{
 		// remove spaces after
-		// do not need to bump i since a char is erased
-		size_t i = charNum + 1;
-		while ((i < currentLine.length()) && isWhiteSpace(currentLine[i]))
-			currentLine.erase(i, 1);
+		int nextText = currentLine.find_first_not_of(" \t", charNum + 1);
+		if (nextText == (int)string::npos)
+			nextText = currentLine.length();
+		int spaces = nextText - charNum - 1;
+		if (spaces > 0)
+		{
+			// do not use goForward here
+			currentLine.erase(charNum + 1, spaces);
+			spacePadNum -= spaces;
+		}
 	}
 	else
 	{
 		// pad space after
-		// do not need to bump i since a char is erased
-		size_t i = charNum + 1;
-		while ((i + 1 < currentLine.length()) && isWhiteSpace(currentLine[i]))
-			currentLine.erase(i, 1);
-		if (((int) currentLine.length() > charNum + 1) && !isWhiteSpace(currentLine[charNum + 1]))
-			currentLine.insert(charNum + 1, " ");
+		int nextText = currentLine.find_first_not_of(" \t", charNum + 1);
+		if (nextText == (int)string::npos)
+			nextText = currentLine.length();
+		int spaces = nextText - charNum - 1;
+		if (spaces == 0)
+		{
+			currentLine.insert(charNum + 1, 1, ' ');
+			spacePadNum += 1;
+		}
+		else if (spaces > 1)
+		{
+			// do not use goForward here
+			currentLine.erase(charNum + 1, spaces - 1);
+			spacePadNum -= spaces - 1;
+		}
 	}
+	spacePadNum += commentAdjust;
 }
 
 // Remove the leading '*' from a comment line and indent to the next tab.
