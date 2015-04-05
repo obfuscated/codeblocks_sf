@@ -206,14 +206,25 @@ public:
     size_t MarkItemsByAI(TokenIdxSet& result, bool reallyUseAI = true, bool isPrefix = true,
                          bool caseSensitive = false, int caretPos = -1);
 
-    /** Call tips are when you mouse pointer hover some statement and show the information of statement below caret.
+    /** Call tips are tips when you are typing function arguments
      * these tips information could be:
      * the prototypes information of the current function,
-     * the type information of the variable...
+     * the type information of the variable.
+     * Here are the basic algorithm
      *
-     * @param items array to store result in.
+     * if you have a function declaration like this: int fun(int a, float b, char c);
+     * when user are typing code, the caret is located here
+     * fun(arg1, arg2|
+     *    ^end       ^ begin
+     * we first do a backward search, should find the "fun" as the function name
+     * and later return the string "int fun(int a, float b, char c)" as the call tip
+     * typedCommas is 1, since one argument is already typed.
+     *
+     * @param[out] items array to store the tip results.
      * @param typedCommas how much comma characters the user has typed in the current line before the cursor.
-     * @return position index of the start of the arguments
+     * @param ed the editor
+     * @param pos the location of the caret, if not supplied, the current caret is used
+     * @return The location in the editor of the beginning of the argument list
      */
     int GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* ed, int pos = wxNOT_FOUND);
 
