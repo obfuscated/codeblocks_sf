@@ -130,8 +130,6 @@ NativeParser::NativeParser() :
     m_ClassBrowserIsFloating(false),
     m_ImageList(nullptr),
     m_ParserPerWorkspace(false),
-    m_EditorStartWord(-1),
-    m_EditorEndWord(-1),
     m_LastAISearchWasGlobal(false),
     m_LastControl(nullptr),
     m_LastFunctionIndex(-1),
@@ -1317,8 +1315,6 @@ size_t NativeParser::AI(TokenIdxSet&    result,
     if (pos < 0 || pos > searchData->control->GetLength())
         return 0;
 
-    m_EditorStartWord = searchData->control->WordStartPosition(pos, true);
-    m_EditorEndWord   = pos; //editor->GetControl()->WordEndPosition(pos, true);
     int line = searchData->control->LineFromPosition(pos);
 
     // Get the actual search text, such as "objA.m_aaa.m_bbb"
@@ -2662,8 +2658,6 @@ void NativeParser::InitCCSearchVariables()
 {
     m_LastControl       = nullptr;
     m_LastFunctionIndex = -1;
-    m_EditorStartWord   = -1;
-    m_EditorEndWord     = -1;
     m_LastLine          = -1;
     m_LastResult        = -1;
     m_LastFile.Clear();

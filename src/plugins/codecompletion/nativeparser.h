@@ -228,16 +228,6 @@ public:
      */
     int GetCallTips(wxArrayString& items, int& typedCommas, cbEditor* ed, int pos = wxNOT_FOUND);
 
-    /** Word start position in the editor
-     * @return position index
-     */
-    int GetEditorStartWord() const { return m_EditorStartWord; }
-
-    /** Word end position in the editor
-     * @return  position index
-     */
-    int GetEditorEndWord() const { return m_EditorEndWord; }
-
     /** project search path is used for auto completion for #include <> */
     wxArrayString& GetProjectSearchDirs(cbProject* project);
 
@@ -496,8 +486,6 @@ private:
     std::set<cbProject*>         m_ParsedProjects;
 
     /* CC Search Member Variables => START */
-    int               m_EditorStartWord;
-    int               m_EditorEndWord;
     wxString          m_LastAIGlobalSearch;    //!< same case like above, it holds the search string
     bool              m_LastAISearchWasGlobal; //!< true if the phrase for code-completion is empty or partial text (i.e. no . -> or :: operators)
     cbStyledTextCtrl* m_LastControl;
