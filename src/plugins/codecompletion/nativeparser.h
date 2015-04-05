@@ -130,7 +130,7 @@ public:
      * @param path the new added path
      * @param hasExt the file path has extensions, such as C:/aaa/bbb.cpp
      */
-    void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
+static void AddPaths(wxArrayString& dirs, const wxString& path, bool hasExt);
 
     // the functions below are handling and managing Parser object
 
