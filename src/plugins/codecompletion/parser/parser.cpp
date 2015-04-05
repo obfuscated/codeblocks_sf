@@ -193,6 +193,9 @@ void Parser::AddPredefinedMacros(const wxString& defs)
 
     m_PredefinedMacros << defs;
 
+    // ptUndefined means at least the cbproject is parsed already, this means the user try to
+    // reparse the project, since the predefined macro buffer is only collected when a new Parser
+    // is created
     if (m_ParserState == ParserCommon::ptUndefined)
         m_ParserState = ParserCommon::ptCreateParser;
 
@@ -612,8 +615,14 @@ void Parser::OnAllThreadsDone(CodeBlocksEvent& event)
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
+        // tell the parent(native parser and the code completion plugin) that some tasks are done
+        // and the task pool switches to idle mode.
         ProcessParserEvent(m_ParserState, ParserCommon::idParserEnd, parseEndLog);
+
+        // reset the parser state
         m_ParserState = ParserCommon::ptUndefined;
+
+        // the current parser is not parsing any files, so set the static pointer to NULL
         ParserCommon::s_CurrentParser = nullptr;
         TRACE(_T("Parser::OnAllThreadsDone(): Post a PARSER_END event"));
     }

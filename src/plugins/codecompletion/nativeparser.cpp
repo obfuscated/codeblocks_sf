@@ -120,8 +120,10 @@ namespace NativeParserHelper
     };
 }// namespace NativeParserHelper
 
+/** event id for the sequence project parsing timer */
 int idTimerParsingOneByOne = wxNewId();
 
+/** if this option is enabled, there will be many log messages when doing semantic match */
 bool s_DebugSmartSense = false;
 
 NativeParser::NativeParser() :
@@ -1358,7 +1360,7 @@ size_t NativeParser::AI(TokenIdxSet&    result,
         search_scope = &scope_result;
     else
     {
-        // add scopes
+        // add scopes, "tis" refer to "token index set"
         for (TokenIdxSet::const_iterator tis_it = scope_result.begin(); tis_it != scope_result.end(); ++tis_it)
             search_scope->insert(*tis_it);
     }

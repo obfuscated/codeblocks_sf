@@ -170,7 +170,7 @@ protected:
 
 
 private:
-    /** wxString -> wxString map*/
+    /** wxString -> wxString map */
     SearchTree<wxString> m_GlobalIncludes;
 
     /** the include directories can be either three kinds below:

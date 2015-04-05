@@ -2512,6 +2512,9 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 {
     cbProject*                project = static_cast<cbProject*>(event.GetClientData());
     ParserCommon::ParserState state   = static_cast<ParserCommon::ParserState>(event.GetInt());
+    // Parser::OnBatchTimer will send this Parser Start event
+    // If it starts a full parsing(ptCreateParser), we should prepare some data for the header
+    // file clawler
     if (state == ParserCommon::ptCreateParser)
     {
         if (m_CCEnableHeaders)
@@ -2530,6 +2533,9 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
     ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
+
+    // ParserCommon::ptCreateParser means a full parsing stage is done, so it is the time to
+    // start the header file clawler
     if (state == ParserCommon::ptCreateParser)
     {
         if (   m_CCEnableHeaders

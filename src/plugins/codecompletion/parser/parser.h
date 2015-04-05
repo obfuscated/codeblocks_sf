@@ -87,9 +87,20 @@ namespace ParserCommon
 
     enum ParserState
     {
+        /** the Parser object is newly created, and we are parsing the predefined macro buffer, the
+         * source files, and finally mark the project's tokens as local
+         */
         ptCreateParser    = 1,
+
+        /** some files are changed by the user, so we are parsing the changed files */
         ptReparseFile     = 2,
+
+        /** the user has add some files to the cbproject, so we are parsing the new added files */
         ptAddFileToParser = 3,
+
+        /** non of the above three status, this means our Parser has finish all the jobs, and it is
+         * in idle mode
+         */
         ptUndefined       = 4
     };
 }
@@ -98,10 +109,10 @@ namespace ParserCommon
   *
   * Parser class contains the TokenTree which is a trie structure to record the token information.
   * For details about trie, see http://en.wikipedia.org/wiki/Trie
-  * The parser class manages ParserThreads in a ThreadPool. A ParserThread object is associated with a single
-  * source file.
-  * Batch parse mode means we have a lot of files to be parsed, so a lot of ParserThreads were generated and
-  * added to the ThreadPool, and finally, the ParserThread was executed by ThreadPool.
+  * The parser class manages Parser threaded Tasks in a ThreadPool. A ParserThread object is
+  * associated with a single source file.
+  * Batch parse mode means we have a lot of files to be parsed, so a lot of ParserThreads were
+  * generated and added to the ThreadPool, and finally, the ParserThread was executed by ThreadPool.
   */
 class Parser : public ParserBase
 {
@@ -208,14 +219,13 @@ protected:
     /** delete those files from the TokenTree, and add them again through AddParse() function */
     void ReparseModifiedFiles();
 
-    /** cancel all the tasks in m_Pool*/
+    /** cancel all the tasks in the thread pool m_Pool*/
     void TerminateAllThreads();
 
     /** When a ThreadPool batch parse stage is done, it will issue a cbEVT_THREADTASK_ALLDONE message.
      * In some situations this event will be triggered, such as:
-     * - after "Priority" header parsing
-     * - batch parsing for general (normal) source files
-     * - system header files parsing
+     * - batch parsing for cpp source files
+     * - mark tokens belong to the cb project as local tokens
      */
     void OnAllThreadsDone(CodeBlocksEvent& event);
 
@@ -226,14 +236,18 @@ protected:
      */
     void OnReparseTimer(wxTimerEvent& event);
 
-    /** A timer is used to optimized the event handling for parsing, e.g. several files/projects were added
-     * the the project, so we don't start the real parsing stage until the last file/project was added,
+    /** A timer is used to optimized the event handling for parsing, e.g. several files/projects
+     * were added to the project, so we don't start the real parsing stage until the last
+     * file/project was added,
      */
     void OnBatchTimer(wxTimerEvent& event);
 
     /** The parser will let its parent (NativeParser) to handle the event, as the CodeCompletion instance
      * was set as the next handler of the NativeParser. Those events can finally go to the CodeCompletion's
      * event handler.
+     * @param state the state of the Parser, it could be any kind of enum ParserState
+     * @param id either idParserStart or idParserEnd
+     * @param info the log message
      */
     void ProcessParserEvent(ParserCommon::ParserState state, int id, const wxString& info = wxEmptyString);
 
@@ -254,17 +268,22 @@ private:
      * the locked value should be set as true.
      */
     virtual bool ParseFile(const wxString& filename, bool isGlobal, bool locked = false);
+
+    /** connect event handlers of the timers and thread pool */
     void ConnectEvents();
+
+    /** connect event handlers of the timers and thread pool */
     void DisconnectEvents();
+
     /** when initialized, this variable will be an instance of a NativeParser */
     wxEvtHandler*             m_Parent;
-    /** referring to the C::B cbp project currently parsing in one parser per workspace mode*/
+
+    /** referring to the C::B cbp project currently parsing in one parser per workspace mode */
     cbProject*                m_Project;
 
 protected:
-    // the following three members are used to detect changes between
-    // in-memory data and cache
-    bool                      m_UsingCache; //!< true if loaded from cache
+    /** used to detect changes between in-memory data and cache, true if loaded from cache */
+    bool                      m_UsingCache;
 
     /** Thread Pool, executing all the ParserThread, used in batch parse mode. The thread pool can
      * add/remove/execute the ParserThread tasks, it will also notify the Parser that all the thread
@@ -290,13 +309,23 @@ protected:
     bool                      m_IsFirstBatch;
 
 private:
+
+    /** a file is need to be reparsed, maybe another file will to be reparsed very soon, so use
+     * a timer to collect all the files need to be reparsed. This avoid starting running the thread
+     * pool to quickly
+     */
     wxTimer                   m_ReparseTimer;
-    /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a reference*/
+
+    /** a timer to delay the operation of batch parsing, see OnBatchTimer() member function as a
+     * reference
+     */
     wxTimer                   m_BatchTimer;
+
     /** a stop watch to measure parsing time*/
     wxStopWatch               m_StopWatch;
     bool                      m_StopWatchRunning;
     long                      m_LastStopWatchTime;
+
     /** Parser::OnAllThreadsDone will be called when m_Pool finished its job, but when we run a
      * batch parsing, we may receive several such event from the m_Pool, because
      * 1, when ParserThreadedTask finished
@@ -305,11 +334,18 @@ private:
      */
     bool                      m_IgnoreThreadEvents;
 
-    StringList                m_BatchParseFiles;       //!< All other batch parse files, like the normal headers/sources
-    wxString                  m_PredefinedMacros;      //!< Pre-defined macros, its a buffer queried from the compiler command line
+    /** All other batch parse files, like the normal headers/sources */
+    StringList                m_BatchParseFiles;
+
+    /** Pre-defined macros, its a buffer queried from the compiler command line */
+    wxString                  m_PredefinedMacros;
+
     /** used to measure batch parse time*/
     bool                      m_IsBatchParseDone;
-    ParserCommon::ParserState m_ParserState;           //!< indicated the current state the parser is in
+
+    /** indicated the current state the parser */
+    ParserCommon::ParserState m_ParserState;
+
     /** if true, all the files of the current project will be labeled as "local" */
     bool                      m_NeedMarkFileAsLocal;
 };

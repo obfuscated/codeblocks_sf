@@ -103,8 +103,8 @@ class ParserThread : public cbThreadedTask
 public:
     /** ParserThread constructor.
       * @param parent the parent Parser object which contain the token tree.
-      * @param bufferOrFilename if isLocal is true, it's the filename to open, otherwise it is a wxString already in memory.
-      * @param isLocal determine whether this is a file in local disk or already in memory.
+      * @param bufferOrFilename it's either the filename to open or a wxString buffer already in memory.
+      * @param isLocal determine whether this is a file locally belong to a cbp or in other global paths.
       * @param parserThreadOptions parser thread options, see ParserThreadOptions Class for details.
       * @param tokenTree it is the tree structure holding all the tokens, ParserThread will add every token when it parsed.
       */

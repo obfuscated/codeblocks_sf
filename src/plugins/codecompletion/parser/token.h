@@ -299,7 +299,7 @@ protected:
     TokenTree*                   m_TokenTree;
 
     /** This is used in class browser to avoid duplication nodes in the class browser tree. Once a
-     *  Token is allocated from the heap, a new ticket number is assigned to the Token, so if a new
+     *  Token is allocated from the heap, a new ticket number is assigned to the Token, so a new
      *  node is only added to the class browser tree if a Token with new ticket is detected.
      */
     size_t                       m_Ticket;
