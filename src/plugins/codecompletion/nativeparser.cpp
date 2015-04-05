@@ -1542,41 +1542,6 @@ int NativeParser::FindCurrentFunctionStart(ccSearchData* searchData,
     return -1;
 }
 
-bool NativeParser::SkipWhitespaceForward(cbEditor* editor, int& pos)
-{
-    if (!editor)
-        return false;
-    wxChar ch = editor->GetControl()->GetCharAt(pos);
-    int len = editor->GetControl()->GetLength() - 1;
-    if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
-    {
-        while (pos < len && (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n'))
-        {
-            ++pos;
-            ch = editor->GetControl()->GetCharAt(pos);
-        }
-        return true;
-    }
-    return false;
-}
-
-bool NativeParser::SkipWhitespaceBackward(cbEditor* editor, int& pos)
-{
-    if (!editor)
-        return false;
-    wxChar ch = editor->GetControl()->GetCharAt(pos);
-    if (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
-    {
-        while (pos > 0 && (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n'))
-        {
-            --pos;
-            ch = editor->GetControl()->GetCharAt(pos);
-        }
-        return true;
-    }
-    return false;
-}
-
 bool NativeParser::ParseUsingNamespace(ccSearchData* searchData, TokenIdxSet& search_scope, int caretPos)
 {
     if (s_DebugSmartSense)

@@ -271,7 +271,7 @@ protected:
      */
     void RemoveObsoleteParsers();
 
-    /** Get cbProject and Parser pointer, according to the current active editor*/
+    /** Get cbProject and Parser pointer, according to the current active editor */
     std::pair<cbProject*, ParserBase*> GetParserInfoByCurrentEditor();
 
     /** Used to support Symbol browser and codecompletion UI
@@ -281,7 +281,7 @@ protected:
     void SetTokenKindImage(int kind, const wxBitmap& bitmap, const wxColour& maskColour);
     void SetTokenKindImage(int kind, const wxIcon& icon);
 
-    /** set the class browser view mode*/
+    /** set the class browser view mode */
     void SetCBViewMode(const BrowserViewMode& mode);
 
 private:
@@ -304,7 +304,7 @@ private:
      * @param caseSensitive true is case sensitive is enabled on the match.
      * @param search_scope it is the "parent token" where we match the "search-key".
      * @param caretPos use current caret position if it is -1.
-     * @return match token number
+     * @return matched token number
      */
     size_t AI(TokenIdxSet& result,
               ccSearchData* searchData,
@@ -336,12 +336,6 @@ private:
                                  wxString*     procName = 0L,
                                  int*          functionIndex = 0L,
                                  int           caretPos = -1);
-
-    /** helper function for statement parsing*/
-    bool SkipWhitespaceForward(cbEditor* editor, int& pos);
-
-    /** helper function for statement parsing*/
-    bool SkipWhitespaceBackward(cbEditor* editor, int& pos);
 
     /** used in CodeCompletion suggestion list to boost the performance, we use a caches*/
     bool LastAISearchWasGlobal() const { return m_LastAISearchWasGlobal; }
