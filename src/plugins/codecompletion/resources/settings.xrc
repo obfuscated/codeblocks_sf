@@ -270,6 +270,14 @@
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkPlatformCheck">
+												<label>Enable platform checks when collecting include folders to parse</label>
+												<checked>1</checked>
+											</object>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
 											<object class="wxStaticLine" name="ID_STATICLINE1">
 												<size>10,-1</size>
 											</object>

@@ -51,6 +51,7 @@ struct ParserThreadOptions
         followGlobalIncludes(true),
         wantPreprocessor(true),
         parseComplexMacros(true),
+        platformCheck(true),
 
         handleFunctions(true),
         handleVars(true),
@@ -79,6 +80,7 @@ struct ParserThreadOptions
     bool        followGlobalIncludes;
     bool        wantPreprocessor;
     bool        parseComplexMacros;
+    bool        platformCheck;
 
     bool        handleFunctions;
     bool        handleVars;

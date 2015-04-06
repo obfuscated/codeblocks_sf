@@ -161,6 +161,7 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkGlobals",            wxCheckBox)->SetValue(m_Parser.Options().followGlobalIncludes);
     XRCCTRL(*this, "chkPreprocessor",       wxCheckBox)->SetValue(m_Parser.Options().wantPreprocessor);
     XRCCTRL(*this, "chkComplexMacros",      wxCheckBox)->SetValue(m_Parser.Options().parseComplexMacros);
+    XRCCTRL(*this, "chkPlatformCheck",      wxCheckBox)->SetValue(m_Parser.Options().platformCheck);
 
     XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->SetValue( m_NativeParser->IsParserPerWorkspace());
     XRCCTRL(*this, "rdoOneParserPerProject",   wxRadioButton)->SetValue(!m_NativeParser->IsParserPerWorkspace());
@@ -220,6 +221,8 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/parser_follow_global_includes"), (bool) XRCCTRL(*this, "chkGlobals",               wxCheckBox)->GetValue());
     cfg->Write(_T("/want_preprocessor"),             (bool) XRCCTRL(*this, "chkPreprocessor",          wxCheckBox)->GetValue());
     cfg->Write(_T("/parse_complex_macros"),          (bool) XRCCTRL(*this, "chkComplexMacros",         wxCheckBox)->GetValue());
+    cfg->Write(_T("/platform_check"),                (bool) XRCCTRL(*this, "chkPlatformCheck",         wxCheckBox)->GetValue());
+
     cfg->Write(_T("/max_threads"),                   (int)  XRCCTRL(*this, "spnThreadsNum",            wxSpinCtrl)->GetValue());
     cfg->Write(_T("/parser_per_workspace"),          (bool) XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue());
     cfg->Write(_T("/max_parsers"),                   (int)  XRCCTRL(*this, "spnParsersNum",            wxSpinCtrl)->GetValue());
@@ -259,6 +262,7 @@ void CCOptionsDlg::OnApply()
     m_Parser.Options().followGlobalIncludes = XRCCTRL(*this, "chkGlobals",            wxCheckBox)->GetValue();
     m_Parser.Options().wantPreprocessor     = XRCCTRL(*this, "chkPreprocessor",       wxCheckBox)->GetValue();
     m_Parser.Options().parseComplexMacros   = XRCCTRL(*this, "chkComplexMacros",      wxCheckBox)->GetValue();
+    m_Parser.Options().platformCheck        = XRCCTRL(*this, "chkPlatformCheck",      wxCheckBox)->GetValue();
 
     // Page "Symbol browser"
     m_Parser.ClassBrowserOptions().showInheritance = XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue();
@@ -391,6 +395,7 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkGlobals",                    wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkPreprocessor",               wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkComplexMacros",              wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkPlatformCheck",              wxCheckBox)->Enable(en);
 
     en = XRCCTRL(*this, "rdoOneParserPerWorkspace", wxRadioButton)->GetValue();
     XRCCTRL(*this, "lblParsersNum",                 wxStaticText)->Enable(!en);

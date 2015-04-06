@@ -426,13 +426,18 @@ private:
      */
     bool                    m_CCDetectImplementation;
 
-    /** user defined characters that work like Tab (empty by Default). They will be inserted 
-     * with the selected item.
+    /** user defined characters that work like Tab (empty by Default). They will be inserted
+     *  with the selected item.
      */
     wxString                m_CCFillupChars;
 
     /** give code completion list for header files, it happens after the #include directive */
     bool                    m_CCEnableHeaders;
+
+    /** do not allow code completion to add include files of projects/targets
+     *  to the parser that are not supported by the current platform
+     */
+    bool                    m_CCEnablePlatformCheck;
 
     /* dir to files map, for example, there are two dirs c:/a and c:/b
      * so the map looks like: (usually the relative file path is stored

@@ -221,6 +221,7 @@ bool ParserBase::Reparse(const wxString& file, cb_unused bool isLocal)
     opts.followGlobalIncludes  = true;  // default
     opts.wantPreprocessor      = true;  // default
     opts.parseComplexMacros    = true;  // default
+    opts.platformCheck         = true;  // default
 
     opts.handleFunctions       = true;  // default
     opts.handleVars            = true;  // default
@@ -259,6 +260,7 @@ bool ParserBase::ParseBuffer(const wxString& buffer,
     opts.followGlobalIncludes = true;
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
     opts.parseComplexMacros   = true;
+    opts.platformCheck        = true;
 
     opts.handleFunctions      = true;   // enabled to support function ptr in local block
 

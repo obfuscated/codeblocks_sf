@@ -731,6 +731,7 @@ void NativeParser::RereadParserOptions()
         || opts.followGlobalIncludes != m_Parser->Options().followGlobalIncludes
         || opts.wantPreprocessor     != m_Parser->Options().wantPreprocessor
         || opts.parseComplexMacros   != m_Parser->Options().parseComplexMacros
+        || opts.platformCheck        != m_Parser->Options().platformCheck
         || m_ParserPerWorkspace      != parserPerWorkspace )
     {
         // important options changed... flag for reparsing
@@ -1058,8 +1059,12 @@ bool NativeParser::DoFullParsing(cbProject* project, ParserBase* parser)
     // add per-project dirs
     if (project)
     {
-        AddIncludeDirsToParser(GetProjectSearchDirs(project),
-                               project->GetBasePath(), parser);
+        if (   !parser->Options().platformCheck
+            || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
+        {
+            AddIncludeDirsToParser(GetProjectSearchDirs(project),
+                                   project->GetBasePath(), parser);
+        }
     }
 
     StringList localSources;
@@ -1875,15 +1880,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     // If there is no project, work on default compiler
     if (!project)
     {
-        Compiler* compiler = CompilerFactory::GetDefaultCompiler();
-        if (compiler)
-        {
-            // these dirs were the user's compiler include search dirs
-            AddIncludeDirsToParser(compiler->GetIncludeDirs(), wxEmptyString, parser);
-
-            if (compiler->GetID().Contains(_T("gcc")))
-                AddGCCCompilerDirs(compiler->GetMasterPath(), compiler->GetPrograms().CPP, parser);
-        }
+        AddCompilerIncludeDirsToParser(CompilerFactory::GetDefaultCompiler(), parser);
         TRACE(_T("NativeParser::AddCompilerDirs(): Leave"));
         return true;
     }
@@ -1900,7 +1897,11 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
         generator->Init(project);
 
     // get project include dirs
-    AddIncludeDirsToParser(project->GetIncludeDirs(), base, parser);
+    if (   !parser->Options().platformCheck
+        || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
+    {
+        AddIncludeDirsToParser(project->GetIncludeDirs(), base, parser);
+    }
 
     // alloc array for project compiler AND "no. of targets" times target compilers
     int nCompilers = 1 + project->GetBuildTargetsCount();
@@ -1912,7 +1913,10 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
     {
         ProjectBuildTarget* target = project->GetBuildTarget(i);
-        if (target && target->SupportsCurrentPlatform())
+        if (!target) continue;
+
+        if (   !parser->Options().platformCheck
+            || (parser->Options().platformCheck && target->SupportsCurrentPlatform()) )
         {
             // post-processed search dirs (from build scripts)
             if (compiler && generator)
@@ -1943,19 +1947,7 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
 
     // add compiler include dirs
     for (int idxCompiler = 0; idxCompiler < nCompilers; ++idxCompiler)
-    {
-        compiler = Compilers[idxCompiler];
-        if (!compiler) continue;
-
-        AddIncludeDirsToParser(compiler->GetIncludeDirs(), base, parser);
-
-        // find out which compiler, if gnu, do the special trick
-        // to find it's internal include paths
-        // but do only once per C::B session, thus cache for later calls
-        wxString CompilerID = compiler->GetID();
-        if (CompilerID.Contains(_T("gcc")))
-            AddGCCCompilerDirs(Compilers[idxCompiler]->GetMasterPath(), compiler->GetPrograms().CPP, parser);
-    } // end of while loop over the found compilers
+        AddCompilerIncludeDirsToParser(Compilers[idxCompiler], parser);
 
     if (!nCompilers)
         CCLogger::Get()->DebugLog(_T("NativeParser::AddCompilerDirs(): No compilers found!"));
@@ -2251,6 +2243,24 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
         return false;
 
     return true;
+}
+
+void NativeParser::AddCompilerIncludeDirsToParser(const Compiler* compiler, ParserBase* parser)
+{
+    if (!compiler || !parser) return;
+
+    if (   !parser->Options().platformCheck
+        || (parser->Options().platformCheck && compiler->SupportsCurrentPlatform()) )
+    {
+        // these dirs were the user's compiler include search dirs
+        AddIncludeDirsToParser(compiler->GetIncludeDirs(), wxEmptyString, parser);
+
+        // find out which compiler, if gnu, do the special trick
+        // to find it's internal include paths
+        // but do only once per C::B session, thus cache for later calls
+        if (compiler->GetID().Contains(_T("gcc")))
+            AddGCCCompilerDirs(compiler->GetMasterPath(), compiler->GetPrograms().CPP, parser);
+    }
 }
 
 // These dirs are the built-in search dirs of the compiler itself (GCC).

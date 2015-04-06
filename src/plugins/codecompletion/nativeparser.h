@@ -401,10 +401,13 @@ private:
      */
     bool AddProjectDefinedMacros(cbProject* project, ParserBase* parser);
 
+    /** Add compiler include directories (from search paths) to a parser */
+    void AddCompilerIncludeDirsToParser(const Compiler* compiler, ParserBase* parser);
+
     /** Collect the default compiler include file search paths. called by AddCompilerDirs() function*/
     const wxArrayString& GetGCCCompilerDirs(const wxString &cpp_compiler);
 
-    /** Add the collected default GCC compiler include file search paths to a parser */
+    /** Add the collected default GCC compiler include search paths to a parser */
     void AddGCCCompilerDirs(const wxString& masterPath, const wxString& compilerCpp, ParserBase* parser);
 
     /** Add a list of directories to the parser's search directories, normalise to "base" path, if

@@ -77,6 +77,7 @@ struct ParserOptions
         useSmartSense(true),
         whileTyping(true),
         parseComplexMacros(true),
+        platformCheck(true),
         storeDocumentation(true)
     {}
 
@@ -87,6 +88,7 @@ struct ParserOptions
     bool useSmartSense;        /// use real AI(scope sequence match) or not(plain text match)
     bool whileTyping;          /// reparse the active editor while editing
     bool parseComplexMacros;   /// this will let the Tokenizer to recursive expand macros
+    bool platformCheck;        /// this will check for the platform of the project/target when adding include folders to the parser
     bool storeDocumentation;   /// should tokenizer detect and store doxygen documentation?
 };
 

@@ -485,6 +485,7 @@ CodeCompletion::CodeCompletion() :
     m_CCAutoAddParentheses(true),
     m_CCDetectImplementation(false),
     m_CCEnableHeaders(false),
+    m_CCEnablePlatformCheck(true),
     m_SystemHeadersThreadCS(),
     m_DocHelper(this)
 {
@@ -1131,12 +1132,6 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
 
     const wxString curFile(ed->GetFilename());
     const wxString curPath(wxFileName(curFile).GetPath());
-    wxArrayString buildTargets;
-
-    cbProject* project = m_NativeParser.GetProjectByEditor(ed);
-    ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
-    if (pf)
-        buildTargets = pf->buildTargets;
 
     FileType ft = FileTypeOf(ed->GetShortName());
     if ( ft != ftHeader && ft != ftSource) // only parse source/header files
@@ -1172,6 +1167,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     StringSet files;
 
     // #include < or #include "
+    cbProject* project = m_NativeParser.GetProjectByEditor(ed);
     {
         // since we are going to access the m_SystemHeadersMap, we add a locker here
         // here we collect all the header files names which is under "system include search dirs"
@@ -1202,6 +1198,11 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     // #include "
     if (project)
     {
+        wxArrayString buildTargets;
+        ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
+        if (pf)
+            buildTargets = pf->buildTargets;
+
         const wxArrayString localIncludeDirs = GetLocalIncludeDirs(project, buildTargets);
         for (FilesList::const_iterator it = project->GetFilesList().begin();
                                        it != project->GetFilesList().end(); ++it)
@@ -1512,11 +1513,23 @@ void CodeCompletion::DoAutocomplete(const CCToken& token, cbEditor* ed)
 wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxArrayString& buildTargets)
 {
     wxArrayString dirs;
+    // Do not try to operate include directories if the project is not for this platform
+    if (m_CCEnablePlatformCheck && !project->SupportsCurrentPlatform())
+        return dirs;
+
     const wxString prjPath = project->GetCommonTopLevelPath();
     GetAbsolutePath(prjPath, project->GetIncludeDirs(), dirs);
 
     for (size_t i = 0; i < buildTargets.GetCount(); ++i)
-        GetAbsolutePath(prjPath, project->GetBuildTarget(buildTargets[i])->GetIncludeDirs(), dirs);
+    {
+        ProjectBuildTarget* tgt = project->GetBuildTarget(buildTargets[i]);
+        // Do not try to operate include directories if the target is not for this platform
+        if (   !m_CCEnablePlatformCheck
+            || (m_CCEnablePlatformCheck && tgt->SupportsCurrentPlatform()) )
+        {
+            GetAbsolutePath(prjPath, tgt->GetIncludeDirs(), dirs);
+        }
+    }
 
     // if a path has prefix with the project's path, it is a local include search dir
     // other wise, it is a system level include search dir, we try to collect all the system dirs
@@ -1692,6 +1705,7 @@ void CodeCompletion::RereadOptions()
     m_CCDetectImplementation = cfg->ReadBool(_T("/detect_implementation"), false); //depends on auto_add_parentheses
     m_CCFillupChars          = cfg->Read(_T("/fillup_chars"),              wxEmptyString);
     m_CCEnableHeaders        = cfg->ReadBool(_T("/enable_headers"),        true);
+    m_CCEnablePlatformCheck  = cfg->ReadBool(_T("/platform_check"),        true);
 
     if (m_ToolBar)
     {
