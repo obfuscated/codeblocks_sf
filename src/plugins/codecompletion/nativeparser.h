@@ -384,7 +384,7 @@ private:
     bool AddCompilerPredefinedMacros(cbProject* project, ParserBase* parser);
 
     /** collect GCC compiler predefined preprocessor definition */
-    bool AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs);
+    bool AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cbProject* project, wxString& defs, ParserBase* parser);
 
     /** lookup GCC compiler -std=XXX option */
     wxString GetCompilerStandardGCC(Compiler* compiler, cbProject* project);
@@ -393,7 +393,7 @@ private:
     wxString GetCompilerUsingStandardGCC(const wxArrayString& compilerOptions);
 
     /** collect VC compiler predefined preprocessor definition */
-    bool AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxString& defs);
+    bool AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxString& defs, ParserBase* parser);
 
     /** collect project (user) defined preprocessor definition, such as for wxWidgets project, the
      * macro may have "#define wxUSE_UNICODE" defined in its project file.
