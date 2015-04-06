@@ -50,8 +50,8 @@
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor.cbp" />
 		<Project filename="plugins/contrib/rndgen/rndgen.cbp" />
 		<Project filename="plugins/contrib/SmartIndent/SmartIndent.cbp" />
-		<Project filename="plugins/contrib/SpellChecker/SpellChecker.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter.cbp" />
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab.cbp" />
 		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch.cbp">
 			<Depends filename="plugins/contrib/wxContribItems/wxContribItems.cbp" />
