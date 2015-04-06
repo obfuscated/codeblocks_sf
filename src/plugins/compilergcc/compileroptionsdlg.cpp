@@ -10,6 +10,7 @@
 #include <sdk.h>
 #include <prep.h>
 #ifndef CB_PRECOMP
+    #include <algorithm>
     #include <wx/arrstr.h>
     #include <wx/button.h>
     #include <wx/checkbox.h>
