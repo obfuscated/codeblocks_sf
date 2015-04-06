@@ -23,11 +23,11 @@ WX_DEFINE_ARRAY(ProjectBuildTarget*, BuildTargets);
 /** Represents a Code::Blocks project build target. */
 class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
 {
-	public:
-		/// Constructor
-		ProjectBuildTarget(cbProject* parentProject);
-		/// Destructor
-		~ProjectBuildTarget();
+    public:
+        /// Constructor
+        ProjectBuildTarget(cbProject* parentProject);
+        /// Destructor
+        ~ProjectBuildTarget();
 
         /** @return The target's parent project. */
         virtual cbProject* GetParentProject();

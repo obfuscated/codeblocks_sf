@@ -310,7 +310,6 @@ class CompilerGCC : public cbCompilerPlugin
         bool m_RunProjectPostBuild;
 
         bool m_IsWorkspaceOperation; // true for workspace commands
-        bool m_IsCompileFileRequest; // true for plugin compile file requests
 
         wxString   m_BuildLogFilename;
         wxString   m_BuildLogTitle;

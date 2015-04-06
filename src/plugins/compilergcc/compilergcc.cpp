@@ -312,7 +312,6 @@ CompilerGCC::CompilerGCC() :
     m_RunTargetPostBuild(false),
     m_RunProjectPostBuild(false),
     m_IsWorkspaceOperation(false),
-    m_IsCompileFileRequest(false),
     m_LogBuildProgressPercentage(false)
 {
     if (!Manager::LoadResource(_T("compiler.zip")))
@@ -353,7 +352,6 @@ void CompilerGCC::OnAttach()
     m_Build = false;
     m_LastBuildStep = true;
     m_IsWorkspaceOperation = false;
-    m_IsCompileFileRequest = false;
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
@@ -3334,8 +3332,6 @@ void CompilerGCC::OnCompileFileRequest(CodeBlocksEvent& event)
         return;
     }
 
-    m_IsCompileFileRequest = true;
-
     ProjectFile* pf = prj->GetFileByFilename(UnixFilename(filepath), true, false);
     if (!pf || !pf->buildTargets.GetCount())
     {
@@ -3356,8 +3352,6 @@ void CompilerGCC::OnCompileFileRequest(CodeBlocksEvent& event)
 
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Executing incoming compile file request for '%s'."), filepath.wx_str()));
     CompileFileDefault(prj, pf, bt);
-
-    m_IsCompileFileRequest = false;
 }
 
 void CompilerGCC::OnGCCOutput(CodeBlocksEvent& event)
