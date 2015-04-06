@@ -239,8 +239,11 @@ CompileTargetBase* Wiz::Launch(int index, wxString* pFilename)
     wxString user_commons = ConfigManager::GetFolder(sdDataUser) + _T("/templates/wizard/common_functions.script");
 
     m_LastXRC = m_Wizards[index].xrc;
-    if (wxFileExists(m_LastXRC))
-        wxXmlResource::Get()->Load(m_LastXRC);
+    if ( wxFileExists(m_LastXRC) )
+    {
+        if ( !wxXmlResource::Get()->Load(m_LastXRC) )
+            cbMessageBox(m_Wizards[index].title + _(" has failed to load XRC resource..."), _("Error"), wxICON_ERROR);
+    }
     else
         m_LastXRC.Clear();
 
