@@ -2003,7 +2003,7 @@ bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cb
     if (   !parser->Options().platformCheck
         || (parser->Options().platformCheck && compiler->SupportsCurrentPlatform()) )
     {
-        TRACE(_T("NativeParser::AddCompilerPredefinedMacrosGCC: No supported on current platform!"));
+        TRACE(_T("NativeParser::AddCompilerPredefinedMacrosGCC: Not supported on current platform!"));
         return false;
     }
 
@@ -2119,7 +2119,7 @@ bool NativeParser::AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxS
     if (   !parser->Options().platformCheck
         || (parser->Options().platformCheck && compiler->SupportsCurrentPlatform()) )
     {
-        TRACE(_T("NativeParser::AddCompilerPredefinedMacrosVC: No supported on current platform!"));
+        TRACE(_T("NativeParser::AddCompilerPredefinedMacrosVC: Not supported on current platform!"));
         return false;
     }
 
