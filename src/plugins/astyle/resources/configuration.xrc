@@ -95,7 +95,7 @@
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rb1TBS">
 												<label>1TBS</label>
-												<tooltip>&quot;One True Brace Style&quot; uses linux brackets and adds brackets to unbracketed one line conditional statements. Opening brackets are broken from namespaces, classes, and function definitions. Brackets are attached to everything else including statements within a function, arrays, structs, and enums. &#x0A;In the following example brackets have been added to the &quot;return 0;&quot; statement. The option ‑‑add‑one‑line‑brackets can also be used with this style. </tooltip>
+												<tooltip>&quot;One True Brace Style&quot; uses linux brackets and adds brackets to unbracketed one line conditional statements. Opening brackets are broken from namespaces, classes, and function definitions. Brackets are attached to everything else including statements within a function, arrays, structs, and enums. &#x0A;In the following example brackets have been added to the &quot;return 0;&quot; statement. The option --add-one-line-brackets can also be used with this style. </tooltip>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>5</border>
