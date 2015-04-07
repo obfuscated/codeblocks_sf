@@ -28,6 +28,7 @@
 #endif
 
 #include <wx/busyinfo.h>
+#include <wx/tokenzr.h>
 
 #include "ccdebuginfo.h"
 #include "parser.h"
@@ -126,6 +127,8 @@ const long CCDebugInfo::ID_LISTBOX1 = wxNewId();
 const long CCDebugInfo::ID_PANEL2 = wxNewId();
 const long CCDebugInfo::ID_LISTBOX2 = wxNewId();
 const long CCDebugInfo::ID_PANEL3 = wxNewId();
+const long CCDebugInfo::ID_LISTBOX3 = wxNewId();
+const long CCDebugInfo::ID_PANEL4 = wxNewId();
 const long CCDebugInfo::ID_NOTEBOOK1 = wxNewId();
 const long CCDebugInfo::ID_BUTTON6 = wxNewId();
 //*)
@@ -155,6 +158,7 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     wxBoxSizer* BoxSizer8;
     wxButton* btnGoImpl;
     wxStaticText* lblIsConst;
+    wxBoxSizer* BoxSizer13;
     wxStaticText* lblTemplateArg;
     wxButton* btnGoAsc;
     wxStaticText* lblChildren;
@@ -336,9 +340,17 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     Panel3->SetSizer(BoxSizer9);
     BoxSizer9->Fit(Panel3);
     BoxSizer9->SetSizeHints(Panel3);
+    Panel4 = new wxPanel(Notebook1, ID_PANEL4, wxPoint(170,6), wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL4"));
+    BoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
+    lstMacros = new wxListBox(Panel4, ID_LISTBOX3, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX3"));
+    BoxSizer13->Add(lstMacros, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    Panel4->SetSizer(BoxSizer13);
+    BoxSizer13->Fit(Panel4);
+    BoxSizer13->SetSizeHints(Panel4);
     Notebook1->AddPage(Panel1, _("Tokens"), false);
     Notebook1->AddPage(Panel2, _("Files list"), false);
     Notebook1->AddPage(Panel3, _("Search dirs"), false);
+    Notebook1->AddPage(Panel4, _("Predefined macros"), false);
     BoxSizer1->Add(Notebook1, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
     BoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
     txtInfo = new wxStaticText(this, wxID_ANY, _("The parser contains 0 tokens found in 0 files"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
@@ -357,15 +369,15 @@ CCDebugInfo::CCDebugInfo(wxWindow* parent, ParserBase* parser, Token* token) :
     BoxSizer1->SetSizeHints(this);
     Center();
 
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnFindClick);
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoParentClick);
-    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoChildrenClick);
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoAscClick);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoDescClick);
-    Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoDeclClick);
-    Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnGoImplClick);
-    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCDebugInfo::OnSave);
-    Connect(wxID_ANY,wxEVT_INIT_DIALOG,(wxObjectEventFunction)&CCDebugInfo::OnInit);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnFindClick));
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnGoParentClick));
+    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnGoChildrenClick));
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnGoAscClick));
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnGoDescClick));
+    Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnGoDeclClick));
+    Connect(ID_BUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnGoImplClick));
+    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(CCDebugInfo::OnSave));
+    Connect(wxID_ANY,wxEVT_INIT_DIALOG,wxInitDialogEventHandler(CCDebugInfo::OnInit));
     //*)
 }
 
@@ -374,7 +386,6 @@ CCDebugInfo::~CCDebugInfo()
     //(*Destroy(CCDebugInfo)
     //*)
 }
-
 
 void CCDebugInfo::FillFiles()
 {
@@ -408,6 +419,22 @@ void CCDebugInfo::FillDirs()
     }
 
     lstDirs->Thaw();
+}
+
+void CCDebugInfo::FillMacros()
+{
+    lstMacros->Freeze();
+    lstMacros->Clear();
+
+    wxStringTokenizer tknzr(m_Parser->GetPredefinedMacros(), wxT("#"));
+    while ( tknzr.HasMoreTokens() )
+    {
+        wxString macro = tknzr.GetNextToken();
+        if (!macro.IsEmpty())
+            lstMacros->Append(wxT("#") + macro);
+    }
+
+    lstMacros->Thaw();
 }
 
 void CCDebugInfo::DisplayTokenInfo()
@@ -544,6 +571,7 @@ void CCDebugInfo::OnInit(cb_unused wxInitDialogEvent& event)
     DisplayTokenInfo();
     FillFiles();
     FillDirs();
+    FillMacros();
 
     txtFilter->SetFocus();
 }
@@ -778,7 +806,7 @@ void CCDebugInfo::OnSave(cb_unused wxCommandEvent& event)
     }
 }
 
-void CCDebugInfo::OnGoDeclClick(wxCommandEvent& event)
+void CCDebugInfo::OnGoDeclClick(cb_unused wxCommandEvent& event)
 {
     wxString file;
     int line;
@@ -802,7 +830,7 @@ void CCDebugInfo::OnGoDeclClick(wxCommandEvent& event)
     }
 }
 
-void CCDebugInfo::OnGoImplClick(wxCommandEvent& event)
+void CCDebugInfo::OnGoImplClick(cb_unused wxCommandEvent& event)
 {
     wxString file;
     int line;

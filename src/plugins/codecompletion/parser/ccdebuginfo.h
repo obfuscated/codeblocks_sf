@@ -38,6 +38,7 @@ public:
 
     void FillFiles();
     void FillDirs();
+    void FillMacros();
     void DisplayTokenInfo();
     void FillChildren();
     void FillAncestors();
@@ -79,6 +80,8 @@ public:
     static const long ID_PANEL2;
     static const long ID_LISTBOX2;
     static const long ID_PANEL3;
+    static const long ID_LISTBOX3;
+    static const long ID_PANEL4;
     static const long ID_NOTEBOOK1;
     static const long ID_BUTTON6;
     //*)
@@ -101,10 +104,12 @@ protected:
     wxStaticText* txtTemplateArg;
     wxStaticText* txtArgsStripped;
     wxStaticText* txtFullType;
+    wxListBox* lstMacros;
     wxStaticText* txtIsConst;
     wxBoxSizer* BoxSizer5;
     wxStaticText* txtIsTemp;
     wxButton* btnSave;
+    wxPanel* Panel4;
     wxComboBox* cmbAncestors;
     wxStaticText* txtIsNoExcept;
     wxStaticText* txtImplFile;

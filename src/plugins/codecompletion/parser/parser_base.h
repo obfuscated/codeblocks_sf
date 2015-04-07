@@ -123,8 +123,10 @@ public:
     virtual bool     Done()          { return true; }
     virtual wxString NotDoneReason() { return wxEmptyString; }
 
-    virtual TokenTree* GetTokenTree(); // allow other implementations of derived (dummy) classes
+    virtual TokenTree* GetTokenTree() const; // allow other implementations of derived (dummy) classes
     TokenTree* GetTempTokenTree()    { return m_TempTokenTree; }
+
+    virtual const wxString GetPredefinedMacros() const { return wxEmptyString; } // allow other implementations of derived (dummy) classes
 
     /** add a directory to the Parser's include path database */
     void                 AddIncludeDir(const wxString& dir);

@@ -123,58 +123,58 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool /*
 }
 #else
 ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool force_refresh)
+{
+    static bool          cfg_read  = false;
+    static bool          empty_ext = true;
+    static wxArrayString header_ext;
+    static wxArrayString source_ext;
+
+    if (!cfg_read || force_refresh)
     {
-        static bool          cfg_read  = false;
-        static bool          empty_ext = true;
-        static wxArrayString header_ext;
-        static wxArrayString source_ext;
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+        empty_ext               = cfg->ReadBool(_T("/empty_ext"), true);
+        wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,tcc,xpm"));
+        wxString source_ext_str = cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++"));
 
-        if (!cfg_read || force_refresh)
-        {
-            ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-            empty_ext               = cfg->ReadBool(_T("/empty_ext"), true);
-            wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,tcc,xpm"));
-            wxString source_ext_str = cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++"));
+        header_ext.Clear();
+        wxStringTokenizer header_ext_tknzr(header_ext_str, _T(","));
+        while (header_ext_tknzr.HasMoreTokens())
+            header_ext.Add(header_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
 
-            header_ext.Clear();
-            wxStringTokenizer header_ext_tknzr(header_ext_str, _T(","));
-            while (header_ext_tknzr.HasMoreTokens())
-                header_ext.Add(header_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
+        source_ext.Clear();
+        wxStringTokenizer source_ext_tknzr(source_ext_str, _T(","));
+        while (source_ext_tknzr.HasMoreTokens())
+            source_ext.Add(source_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
 
-            source_ext.Clear();
-            wxStringTokenizer source_ext_tknzr(source_ext_str, _T(","));
-            while (source_ext_tknzr.HasMoreTokens())
-                source_ext.Add(source_ext_tknzr.GetNextToken().Trim(false).Trim(true).Lower());
-
-            cfg_read = true; // caching done
-        }
-
-        if (filename.IsEmpty())
-            return ParserCommon::ftOther;
-
-        const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
-        const int      pos  = file.Find(_T('.'), true);
-        wxString       ext;
-        if (pos != wxNOT_FOUND)
-            ext = file.SubString(pos + 1, file.Len());
-
-        if (empty_ext && ext.IsEmpty())
-            return ParserCommon::ftHeader;
-
-        for (size_t i=0; i<header_ext.GetCount(); ++i)
-        {
-            if (ext==header_ext[i])
-                return ParserCommon::ftHeader;
-        }
-
-        for (size_t i=0; i<source_ext.GetCount(); ++i)
-        {
-            if (ext==source_ext[i])
-                return ParserCommon::ftSource;
-        }
-
-        return ParserCommon::ftOther;
+        cfg_read = true; // caching done
     }
+
+    if (filename.IsEmpty())
+        return ParserCommon::ftOther;
+
+    const wxString file = filename.AfterLast(wxFILE_SEP_PATH).Lower();
+    const int      pos  = file.Find(_T('.'), true);
+    wxString       ext;
+    if (pos != wxNOT_FOUND)
+        ext = file.SubString(pos + 1, file.Len());
+
+    if (empty_ext && ext.IsEmpty())
+        return ParserCommon::ftHeader;
+
+    for (size_t i=0; i<header_ext.GetCount(); ++i)
+    {
+        if (ext==header_ext[i])
+            return ParserCommon::ftHeader;
+    }
+
+    for (size_t i=0; i<source_ext.GetCount(); ++i)
+    {
+        if (ext==source_ext[i])
+            return ParserCommon::ftSource;
+    }
+
+    return ParserCommon::ftOther;
+}
 #endif //CC_PARSER_TEST
 
 ParserBase::ParserBase()
@@ -193,7 +193,7 @@ ParserBase::~ParserBase()
     CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 }
 
-TokenTree* ParserBase::GetTokenTree()
+TokenTree* ParserBase::GetTokenTree() const
 {
     return m_TokenTree;
 }

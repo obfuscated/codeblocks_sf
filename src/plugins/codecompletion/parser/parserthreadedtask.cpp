@@ -69,7 +69,6 @@ int ParserThreadedTask::Execute()
     CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
 
     wxString   preDefs(m_Parser->m_PredefinedMacros);
-
     StringList batchFiles(m_Parser->m_BatchParseFiles);
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
@@ -78,11 +77,7 @@ int ParserThreadedTask::Execute()
     if (!preDefs.IsEmpty())
         m_Parser->ParseBuffer(preDefs, false, false);
 
-    CC_LOCKER_TRACK_P_MTX_LOCK(m_ParserMutex)
-
-    m_Parser->m_PredefinedMacros.Clear();
-
-    CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
+    m_Parser->ClearPredefinedMacros();
 
     if (m_Parser->m_IgnoreThreadEvents)
         m_Parser->m_IsFirstBatch = true;

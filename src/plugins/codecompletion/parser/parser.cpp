@@ -208,6 +208,22 @@ void Parser::AddPredefinedMacros(const wxString& defs)
     CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
 }
 
+void Parser::ClearPredefinedMacros()
+{
+    CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
+
+    m_LastPredefinedMacros = m_PredefinedMacros;
+    m_PredefinedMacros.Clear();
+
+    CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex);
+}
+
+const wxString Parser::GetPredefinedMacros() const
+{
+    CCLogger::Get()->DebugLog(_T("Parser::GetPredefinedMacros()"));
+    return m_LastPredefinedMacros;
+}
+
 void Parser::AddBatchParse(const StringList& filenames)
 {
     // this function has the same logic as the previous function Parser::AddPriorityHeader

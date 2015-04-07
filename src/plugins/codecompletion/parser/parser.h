@@ -139,10 +139,16 @@ public:
      */
     virtual void AddParse(const wxString& filename);
 
-    /** the predefined macro definition string was collected from the GCC command line, this function
-     *  add the string to an internal m_PredefinedMacros, and switch the ParserState
+    /** set the predefined macro definition string was collected from the GCC command line,
+     *  this function adds the string to an internal m_PredefinedMacros, and switch the ParserState
      */
     virtual void AddPredefinedMacros(const wxString& defs);
+
+    /** clears the list of predefined macros after it has been parsed */
+    virtual void ClearPredefinedMacros();
+
+    /** return the predefined macro definition string that has been collected */
+    virtual const wxString GetPredefinedMacros() const;
 
     /** set the associated C::B project pointer. (only used by one parser for whole workspace)
      *  @return true if it can do the switch, other wise, return false, and print some debug logs.
@@ -339,6 +345,7 @@ private:
 
     /** Pre-defined macros, its a buffer queried from the compiler command line */
     wxString                  m_PredefinedMacros;
+    wxString                  m_LastPredefinedMacros; // for debugging
 
     /** used to measure batch parse time*/
     bool                      m_IsBatchParseDone;
