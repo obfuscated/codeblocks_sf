@@ -870,6 +870,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (!ed)
         return;
+
     cbCodeCompletionPlugin* ccPlugin = GetProviderFor(ed);
     if (!ccPlugin)
         return;
@@ -949,14 +950,16 @@ void CCManager::OnAutocompleteSelect(wxListEvent& event)
     event.Skip();
     m_AutocompSelectTimer.Start(AUTOCOMP_SELECT_DELAY, wxTIMER_ONE_SHOT);
     wxObject* evtObj = event.GetEventObject();
+    if (!evtObj)
+        return;
 #ifdef __WXMSW__
     m_pAutocompPopup = static_cast<wxListView*>(evtObj);
 #endif // __WXMSW__
-    if (!evtObj)
-        return;
+
     wxWindow* evtWin = static_cast<wxWindow*>(evtObj)->GetParent();
     if (!evtWin)
         return;
+
     m_DocPos = m_pPopup->GetParent()->ScreenToClient(evtWin->GetScreenPosition());
     m_DocPos.x += evtWin->GetSize().x;
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
