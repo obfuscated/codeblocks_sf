@@ -200,8 +200,8 @@ class DLLIMPORT cbThreadPool
     WorkerThreadsArray m_threads;
 
     // the pending tasks (cbThreadedTaskElement), usually we have many tasks to run in the pool, but
-    // we have limited number of threads to run those tasks, so tasks which don't have the change to
-    // run will be put in the queue. Once a thread is finish a task, it will fetch a new task from
+    // we have limited number of threads to run those tasks, so tasks which don't have the chance to
+    // run will be put in the queue. Once a thread finishes a task, it will fetch a new task from
     // this task queue.
     TasksQueue m_tasksQueue;
 
