@@ -2008,7 +2008,11 @@ bool NativeParser::AddCompilerPredefinedMacrosGCC(const wxString& compilerId, cb
 
     wxString masterPath = compiler->GetMasterPath();
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+#ifdef __WXMSW__
     const wxString cpp_compiler = masterPath + _T("\\bin\\") + compiler->GetPrograms().CPP;
+#else
+    const wxString cpp_compiler = masterPath + _T("/bin/") + compiler->GetPrograms().CPP;
+#endif
     if ( !wxFileName::FileExists(cpp_compiler) )
         return false;
 
@@ -2123,7 +2127,11 @@ bool NativeParser::AddCompilerPredefinedMacrosVC(const wxString& compilerId, wxS
 
     wxString masterPath = compiler->GetMasterPath();
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
+#ifdef __WXMSW__
     const wxString c_compiler = masterPath + _T("\\bin\\") + compiler->GetPrograms().C;
+#else
+    const wxString c_compiler = masterPath + _T("/bin/") + compiler->GetPrograms().C;
+#endif
     if ( !wxFileName::FileExists(c_compiler) )
         return false;
 
