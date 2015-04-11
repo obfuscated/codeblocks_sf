@@ -13,6 +13,6 @@ typedef struct foo2
     int bar;
 } foo2, * foo2Ptr;
 
-
+//foo1Ptr   //foo1Ptr
 //foo1Ptr-> //bar
 //foo2Ptr-> //bar
