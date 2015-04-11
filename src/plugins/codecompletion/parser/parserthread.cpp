@@ -2807,6 +2807,8 @@ void ParserThread::HandleTypedef()
     //
     // even harder:
     // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
+    // or
+    // typedef void (MyClass::*Function)(int);
 
     size_t lineNr = m_Tokenizer.GetLineNumber();
     bool is_function_pointer = false;
@@ -2827,7 +2829,13 @@ void ParserThread::HandleTypedef()
 
         TRACE(_T("HandleTypedef() : token=%s, peek=%s"), token.wx_str(), peek.wx_str());
         if (token.IsEmpty() || token == ParserConsts::semicolon)
+        {
+            m_Tokenizer.UngetToken();   // NOTE: preserve ';' for the next GetToken();
             break;
+        }
+
+        if (token == ParserConsts::kw_const)
+            continue;
 
         if (   token == ParserConsts::kw_class
             || token == ParserConsts::kw_struct
@@ -2909,6 +2917,7 @@ void ParserThread::HandleTypedef()
                     token.Remove(0, 1); // remove opening parenthesis
                 }
                 args = peek;
+                m_Tokenizer.GetToken(); // eat args
 
                 TRACE(_("HandleTypedef() : Pushing component='%s' (typedef args='%s')"), token.Trim(true).Trim(false).wx_str(), args.wx_str());
                 components.push(token.Trim(true).Trim(false));

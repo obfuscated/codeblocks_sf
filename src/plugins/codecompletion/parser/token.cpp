@@ -93,7 +93,14 @@ wxString Token::DisplayName() const
         if (!m_FullType.IsEmpty())
             result << _T(" ") << m_FullType;
 
-        if (result.Find('*', true) != wxNOT_FOUND)
+        // we support 2 cases of typedef'd function pointers, and in each case the type is stored
+        // as below:
+        // typedef void (*dMessageFunction)(int errnum, const char *msg, va_list ap);
+        // --> type is stored as: (*)
+        // typedef void (MyClass::*Function)(int);
+        // --> type is stored as: (MyClass::*)
+        // so, ensure we really have ')' as the last char.
+        if (result.Find('*', true) != wxNOT_FOUND && result.Last() == ')')
         {
             result.RemoveLast();
             return result << m_Name << _T(")") <<  GetFormattedArgs();
