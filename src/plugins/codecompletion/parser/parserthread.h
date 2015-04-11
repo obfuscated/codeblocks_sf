@@ -204,7 +204,7 @@ protected:
       * @param isOperator if true, means it is an operator overload function
       * @param isPointer if true, means it is a function pointer
       */
-    void HandleFunction(const wxString& name, bool isOperator = false, bool isPointer = false);
+    void HandleFunction(wxString& name, bool isOperator = false, bool isPointer = false);
 
     /** parse for loop arguments:
       * for(int X; ... ; ...)
