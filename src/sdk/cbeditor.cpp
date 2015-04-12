@@ -1510,10 +1510,15 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetScrollWidthTracking(      mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
     control->SetMultipleSelection(        mgr->ReadBool(_T("/selection/multi_select"),       false));
     control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"),       false));
+
+    unsigned virtualSpace = 0;
+    if (mgr->ReadBool(_T("/selection/use_rect_vspace"), false))
+        virtualSpace |= wxSCI_SCVS_RECTANGULARSELECTION;
     if (mgr->ReadBool(_T("/selection/use_vspace"), false))
-        control->SetVirtualSpaceOptions(wxSCI_SCVS_RECTANGULARSELECTION | wxSCI_SCVS_USERACCESSIBLE);
-    else
-        control->SetVirtualSpaceOptions(wxSCI_SCVS_NONE);
+        virtualSpace |= wxSCI_SCVS_USERACCESSIBLE;
+    if (!virtualSpace)
+        virtualSpace = wxSCI_SCVS_NONE; // Just in case wxSCI_SCVS_NONE != 0
+    control->SetVirtualSpaceOptions(virtualSpace);
 }
 
 // static

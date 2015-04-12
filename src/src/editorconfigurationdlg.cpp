@@ -177,7 +177,8 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "slCaretPeriod",  wxSlider)->SetValue(cfg->ReadInt(_T("/caret/period"), 500));
 
     //selections
-    XRCCTRL(*this, "chkEnableVirtualSpace", wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/use_vspace"), false));
+    XRCCTRL(*this, "chkEnableVirtualSpace",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/use_vspace"),      false));
+    XRCCTRL(*this, "chkEnableRectVirtualSpace", wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/use_rect_vspace"), false));
     bool multiSelectEnabled = cfg->ReadBool(_T("/selection/multi_select"), false);
     XRCCTRL(*this, "chkEnableMultipleSelections",        wxCheckBox)->SetValue(multiSelectEnabled);
     XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/multi_typing"), false));
@@ -1092,6 +1093,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
 
         //selections
         cfg->Write(_T("/selection/use_vspace"),      (bool)XRCCTRL(*this, "chkEnableVirtualSpace",              wxCheckBox)->GetValue());
+        cfg->Write(_T("/selection/use_rect_vspace"), (bool)XRCCTRL(*this, "chkEnableRectVirtualSpace",          wxCheckBox)->GetValue());
         cfg->Write(_T("/selection/multi_select"),    (bool)XRCCTRL(*this, "chkEnableMultipleSelections",        wxCheckBox)->GetValue());
         cfg->Write(_T("/selection/multi_typing"),    (bool)XRCCTRL(*this, "chkEnableAdditionalSelectionTyping", wxCheckBox)->GetValue());
 

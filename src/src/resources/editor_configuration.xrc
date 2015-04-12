@@ -90,7 +90,7 @@
 																<border>4</border>
 															</object>
 														</object>
-														<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														<border>4</border>
 													</object>
 													<object class="sizeritem">
@@ -389,12 +389,56 @@
 																<option>1</option>
 															</object>
 														</object>
-														<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														<border>4</border>
 													</object>
 													<object class="sizeritem">
 														<object class="wxStaticBoxSizer">
-															<label>Other options</label>
+															<label>Selections</label>
+															<orient>wxVERTICAL</orient>
+															<object class="sizeritem">
+																<object class="wxCheckBox" name="chkEnableVirtualSpace">
+																	<label>Enable virtual space (space beyond the end of line)</label>
+																</object>
+																<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																<border>4</border>
+															</object>
+															<object class="sizeritem">
+																<object class="wxCheckBox" name="chkEnableRectVirtualSpace">
+																	<label>Enable virtual space for rectangle selections</label>
+																</object>
+																<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																<border>4</border>
+															</object>
+															<object class="sizeritem">
+																<object class="wxCheckBox" name="chkEnableMultipleSelections">
+																	<label>Allow multiple selections</label>
+																</object>
+																<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																<border>4</border>
+															</object>
+															<object class="sizeritem">
+																<object class="wxCheckBox" name="chkEnableAdditionalSelectionTyping">
+																	<label>Enable typing (and deleting) in multiple selections simultaneously</label>
+																</object>
+																<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																<border>16</border>
+															</object>
+														</object>
+														<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<border>4</border>
+													</object>
+												</object>
+											</object>
+											<label>Editor settings</label>
+										</object>
+										<object class="notebookpage">
+											<object class="wxPanel" name="ID_PANEL1">
+												<object class="wxBoxSizer">
+													<orient>wxVERTICAL</orient>
+													<object class="sizeritem">
+														<object class="wxStaticBoxSizer">
+															<label>Miscellaneous options</label>
 															<orient>wxVERTICAL</orient>
 															<object class="sizeritem">
 																<object class="wxFlexGridSizer">
@@ -454,13 +498,38 @@
 																		<object class="wxCheckBox" name="chkZoomAll">
 																			<label>Zooming resizes all editors</label>
 																		</object>
-																		<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 																	</object>
 																	<object class="sizeritem">
 																		<object class="wxCheckBox" name="chkSyncEditorWithProjectManager">
 																			<label>S&amp;ynchronise Editor with Project Manager</label>
 																		</object>
-																		<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																		<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	</object>
+																	<object class="sizeritem">
+																		<object class="wxBoxSizer">
+																			<object class="sizeritem">
+																				<object class="wxStaticText" name="wxID_ANY">
+																					<label>Show spaces in editor:</label>
+																				</object>
+																				<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																				<border>4</border>
+																			</object>
+																			<object class="sizeritem">
+																				<object class="wxChoice" name="cmbViewWS">
+																					<content>
+																						<item>No</item>
+																						<item>Always</item>
+																						<item>Only after indent</item>
+																					</content>
+																					<size>95,24</size>
+																				</object>
+																				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																				<border>5</border>
+																				<option>1</option>
+																			</object>
+																		</object>
+																		<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 																	</object>
 																</object>
 																<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -470,9 +539,44 @@
 														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														<border>4</border>
 													</object>
+													<object class="sizeritem">
+														<object class="wxStaticBoxSizer">
+															<label>Browser option</label>
+															<object class="sizeritem">
+																<object class="wxStaticText" name="wxID_ANY">
+																	<label>Open containing folder:</label>
+																</object>
+																<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+															</object>
+															<object class="sizeritem">
+																<object class="wxTextCtrl" name="txtOpenFolder">
+																	<fg>#8000FF</fg>
+																	<tooltip>Enter system command to open the folder where the file resides in</tooltip>
+																</object>
+																<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																<border>5</border>
+																<option>1</option>
+															</object>
+														</object>
+														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<border>4</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxRadioBox" name="rbTabText">
+															<label>Label in editor tab is the file&apos;s...</label>
+															<content>
+																<item>name only (no path information)</item>
+																<item>relative filename (to the project file)</item>
+															</content>
+															<style>wxRA_SPECIFY_COLS</style>
+														</object>
+														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+														<border>4</border>
+													</object>
 												</object>
 											</object>
-											<label>Editor settings</label>
+											<label>Other editor settings</label>
 										</object>
 										<object class="notebookpage">
 											<object class="wxPanel" name="wxID_ANY">
@@ -600,75 +704,9 @@
 														<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 														<border>4</border>
 													</object>
-													<object class="sizeritem">
-														<object class="wxRadioBox" name="rbTabText">
-															<label>Editor title is the file&apos;s</label>
-															<content>
-																<item>name only (no path information)</item>
-																<item>relative filename (to the project file)</item>
-															</content>
-															<style>wxRA_SPECIFY_COLS</style>
-														</object>
-														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-														<border>4</border>
-													</object>
-													<object class="sizeritem">
-														<object class="wxStaticBoxSizer">
-															<label>Other options</label>
-															<object class="sizeritem">
-																<object class="wxFlexGridSizer">
-																	<cols>2</cols>
-																	<vgap>4</vgap>
-																	<hgap>4</hgap>
-																	<growablecols>1</growablecols>
-																	<growablerows>0</growablerows>
-																	<object class="sizeritem">
-																		<object class="wxStaticText" name="wxID_ANY">
-																			<label>Show spaces in editor:</label>
-																		</object>
-																		<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>4</border>
-																	</object>
-																	<object class="sizeritem">
-																		<object class="wxChoice" name="cmbViewWS">
-																			<content>
-																				<item>No</item>
-																				<item>Always</item>
-																				<item>Only after indent</item>
-																			</content>
-																			<size>95,24</size>
-																		</object>
-																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>4</border>
-																		<option>1</option>
-																	</object>
-																	<object class="sizeritem">
-																		<object class="wxStaticText" name="wxID_ANY">
-																			<label>Open containing folder:</label>
-																		</object>
-																		<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>4</border>
-																	</object>
-																	<object class="sizeritem">
-																		<object class="wxTextCtrl" name="txtOpenFolder">
-																			<fg>#8000FF</fg>
-																		</object>
-																		<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																		<border>4</border>
-																		<option>1</option>
-																	</object>
-																</object>
-																<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-																<border>4</border>
-																<option>1</option>
-															</object>
-														</object>
-														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-														<border>4</border>
-													</object>
 												</object>
 											</object>
-											<label>Other settings</label>
+											<label>Encoding settings</label>
 										</object>
 									</object>
 									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
@@ -991,35 +1029,6 @@
 											</object>
 											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
 											<border>4</border>
-										</object>
-									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-									<border>4</border>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticBoxSizer">
-										<label>Selections</label>
-										<orient>wxVERTICAL</orient>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="chkEnableVirtualSpace">
-												<label>Enable virtual space (space beyond the end of line)</label>
-											</object>
-											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>4</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="chkEnableMultipleSelections">
-												<label>Allow multiple selections</label>
-											</object>
-											<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>4</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxCheckBox" name="chkEnableAdditionalSelectionTyping">
-												<label>Enable typing (and deleting) in multiple selections simultaneously</label>
-											</object>
-											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-											<border>16</border>
 										</object>
 									</object>
 									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
