@@ -21,9 +21,9 @@ class wxChoice;
 class ProjectOptionsManipulatorDlg: public wxDialog
 {
 	public:
-	  enum EProjectScanOption   { eSearch, eSearchNot, eRemove, eAdd };
+	  enum EProjectScanOption   { eSearch, eSearchNot, eRemove, eAdd, eFiles };
 	  enum EProjectSearchOption { eEquals, eContains };
-	  enum EProjectOption       { eCompiler,      eLinker,
+	  enum EProjectOption       { eCompiler,      eLinker,      eResCompiler,
 	                              eCompilerPaths, eLinkerPaths, eResCompPaths,
 	                              eLinkerLibs,    eCustomVars };
 	  enum EProjectLevelOption  { eProject, eTarget };
@@ -48,6 +48,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		wxCheckBox* m_ChkOptionsLinkerPath;
 		wxChoice* m_ChoOptionsLevel;
 		wxRadioBox* m_RboSearch;
+		wxCheckBox* m_ChkOptionsResCompiler;
 		wxCheckBox* m_ChkOptionsLinker;
 		wxCheckBox* m_ChkOptionsLinkerLibs;
 		wxCheckBox* m_ChkOptionsCompiler;
@@ -68,6 +69,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		static const long ID_TXT_OPTIONS;
 		static const long ID_CHK_OPTIONS_COMPILER;
 		static const long ID_CHK_OPTIONS_LINKER;
+		static const long ID_CHK_OPTIONS_RES_COMPILER;
 		static const long ID_CHK_OPTIONS_COMPILER_PATH;
 		static const long ID_CHK_OPTIONS_LINKER_PATH;
 		static const long ID_CHK_OPTIONS_RES_COMP_PATH;
@@ -81,6 +83,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 
 		//(*Handlers(ProjectOptionsManipulatorDlg)
 		void OnScanSelect(wxCommandEvent& event);
+		void OnOperationSelect(wxCommandEvent& event);
 		//*)
 
 		void OnOk(wxCommandEvent& event);

@@ -11,7 +11,7 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="lblScanWithin" member="no">
 							<label>Scan within:</label>
 						</object>
-						<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -23,26 +23,26 @@
 							<selection>0</selection>
 							<handler function="OnScanSelect" entry="EVT_CHOICE" />
 						</object>
-						<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="wxID_ANY" variable="lblScanColon" member="no">
 							<label>:</label>
 						</object>
-						<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxChoice" name="ID_CHO_SCAN_PROJECTS" variable="m_ChoScanProjects" member="yes">
 							<enabled>0</enabled>
 						</object>
-						<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -60,7 +60,9 @@
 										<item>Search for option NOT present</item>
 										<item>Remove option</item>
 										<item>Add option</item>
+										<item>Remove files w/o target</item>
 									</content>
+									<handler function="OnOperationSelect" entry="EVT_RADIOBOX" />
 								</object>
 								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 								<border>5</border>
@@ -109,6 +111,13 @@
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHK_OPTIONS_LINKER" variable="m_ChkOptionsLinker" member="yes">
 									<label>Linker options</label>
+								</object>
+								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OPTIONS_RES_COMPILER" variable="m_ChkOptionsResCompiler" member="yes">
+									<label>Resource compiler options</label>
 								</object>
 								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>

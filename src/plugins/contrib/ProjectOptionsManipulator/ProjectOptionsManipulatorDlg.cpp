@@ -29,6 +29,7 @@ const long ProjectOptionsManipulatorDlg::ID_RBO_SEARCH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_TXT_OPTIONS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_RES_COMPILER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_PATH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_RES_COMP_PATH = wxNewId();
@@ -67,28 +68,29 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	bszMainH = new wxBoxSizer(wxVERTICAL);
 	bszScan = new wxBoxSizer(wxHORIZONTAL);
 	lblScanWithin = new wxStaticText(this, wxID_ANY, _("Scan within:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-	bszScan->Add(lblScanWithin, 0, wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	bszScan->Add(lblScanWithin, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChoScan = new wxChoice(this, ID_CHO_SCAN, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_SCAN"));
 	m_ChoScan->SetSelection( m_ChoScan->Append(_("Workspace")) );
 	m_ChoScan->Append(_("Project"));
-	bszScan->Add(m_ChoScan, 0, wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	bszScan->Add(m_ChoScan, 0, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	lblScanColon = new wxStaticText(this, wxID_ANY, _(":"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-	bszScan->Add(lblScanColon, 0, wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	bszScan->Add(lblScanColon, 0, wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChoScanProjects = new wxChoice(this, ID_CHO_SCAN_PROJECTS, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_SCAN_PROJECTS"));
 	m_ChoScanProjects->Disable();
-	bszScan->Add(m_ChoScanProjects, 1, wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	bszMainH->Add(bszScan, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	bszScan->Add(m_ChoScanProjects, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	bszMainH->Add(bszScan, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	flsOptions = new wxFlexGridSizer(0, 2, 0, 0);
 	flsOptions->AddGrowableCol(1);
 	bszOperation = new wxBoxSizer(wxVERTICAL);
-	wxString __wxRadioBoxChoices_1[4] =
+	wxString __wxRadioBoxChoices_1[5] =
 	{
 		_("Search for option present"),
 		_("Search for option NOT present"),
 		_("Remove option"),
-		_("Add option")
+		_("Add option"),
+		_("Remove files w/o target")
 	};
-	m_RboOperation = new wxRadioBox(this, ID_RBO_OPERATION, _("Operation:"), wxDefaultPosition, wxDefaultSize, 4, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RBO_OPERATION"));
+	m_RboOperation = new wxRadioBox(this, ID_RBO_OPERATION, _("Operation:"), wxDefaultPosition, wxDefaultSize, 5, __wxRadioBoxChoices_1, 1, 0, wxDefaultValidator, _T("ID_RBO_OPERATION"));
 	m_RboOperation->SetSelection(0);
 	bszOperation->Add(m_RboOperation, 0, wxALIGN_LEFT|wxALIGN_TOP, 5);
 	wxString __wxRadioBoxChoices_2[2] =
@@ -112,6 +114,9 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChkOptionsLinker = new wxCheckBox(this, ID_CHK_OPTIONS_LINKER, _("Linker options"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_LINKER"));
 	m_ChkOptionsLinker->SetValue(false);
 	bszOptions->Add(m_ChkOptionsLinker, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	m_ChkOptionsResCompiler = new wxCheckBox(this, ID_CHK_OPTIONS_RES_COMPILER, _("Resource compiler options"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_RES_COMPILER"));
+	m_ChkOptionsResCompiler->SetValue(false);
+	bszOptions->Add(m_ChkOptionsResCompiler, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_ChkOptionsCompilerPath = new wxCheckBox(this, ID_CHK_OPTIONS_COMPILER_PATH, _("Compiler path\'s"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_COMPILER_PATH"));
 	m_ChkOptionsCompilerPath->SetValue(false);
 	bszOptions->Add(m_ChkOptionsCompilerPath, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
@@ -148,7 +153,8 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	bszMainH->Fit(this);
 	bszMainH->SetSizeHints(this);
 
-	Connect(ID_CHO_SCAN,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&ProjectOptionsManipulatorDlg::OnScanSelect);
+	Connect(ID_CHO_SCAN,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEventHandler(ProjectOptionsManipulatorDlg::OnScanSelect));
+	Connect(ID_RBO_OPERATION,wxEVT_COMMAND_RADIOBOX_SELECTED,wxCommandEventHandler(ProjectOptionsManipulatorDlg::OnOperationSelect));
 	//*)
 }
 
@@ -181,6 +187,7 @@ ProjectOptionsManipulatorDlg::EProjectScanOption ProjectOptionsManipulatorDlg::G
     case 1: { return eSearchNot; } break;
     case 2: { return eRemove;    } break;
     case 3: { return eAdd;       } break;
+    case 4: { return eFiles;     } break;
     default:                       break;
   }
   return eSearch; // should never happen, but is safe to do
@@ -211,6 +218,7 @@ bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectOption opt)
 {
   if ( m_ChkOptionsCompiler->GetValue()     && (opt==eCompiler)      ) return true;
   if ( m_ChkOptionsLinker->GetValue()       && (opt==eLinker)        ) return true;
+  if ( m_ChkOptionsResCompiler->GetValue()  && (opt==eResCompiler)   ) return true;
   if ( m_ChkOptionsCompilerPath->GetValue() && (opt==eCompilerPaths) ) return true;
   if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eLinkerPaths)   ) return true;
   if ( m_ChkOptionsLinkerPath->GetValue()   && (opt==eResCompPaths)  ) return true;
@@ -225,6 +233,42 @@ bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectLevelOption opt)
   if ( m_ChoOptionsLevel->GetSelection()==1 && (opt==eTarget)  ) return true;
   if ( m_ChoOptionsLevel->GetSelection()==2 )                    return true;
   return false;
+}
+
+void ProjectOptionsManipulatorDlg::OnOperationSelect(wxCommandEvent& event)
+{
+  if ( event.GetInt()==4 ) // Files w/o target
+  {
+    m_RboSearch->Disable();
+
+    m_TxtOptions->Disable();
+    m_ChkOptionsCompiler->Disable();
+    m_ChkOptionsLinker->Disable();
+    m_ChkOptionsResCompiler->Disable();
+    m_ChkOptionsCompilerPath->Disable();
+    m_ChkOptionsLinkerPath->Disable();
+    m_ChkOptionsResCompPath->Disable();
+    m_ChkOptionsLinkerLibs->Disable();
+    m_ChkOptionsCustomVar->Disable();
+    m_TxtCustomVar->Disable();
+    m_ChoOptionsLevel->Disable();
+  }
+  else
+  {
+    m_RboSearch->Enable();
+
+    m_TxtOptions->Enable();
+    m_ChkOptionsCompiler->Enable();
+    m_ChkOptionsLinker->Enable();
+    m_ChkOptionsResCompiler->Enable();
+    m_ChkOptionsCompilerPath->Enable();
+    m_ChkOptionsLinkerPath->Enable();
+    m_ChkOptionsResCompPath->Enable();
+    m_ChkOptionsLinkerLibs->Enable();
+    m_ChkOptionsCustomVar->Enable();
+    m_TxtCustomVar->Enable();
+    m_ChoOptionsLevel->Enable();
+  }
 }
 
 void ProjectOptionsManipulatorDlg::OnScanSelect(wxCommandEvent& event)
@@ -253,14 +297,23 @@ void ProjectOptionsManipulatorDlg::OnScanSelect(wxCommandEvent& event)
 
 void ProjectOptionsManipulatorDlg::OnOk(wxCommandEvent& WXUNUSED(event))
 {
+  if ( GetScanOption()==eFiles ) // No need to validate any further options
+  {
+    EndModal(wxID_OK);
+    return;
+  }
+
+  // Validate that at least an option is provided
   if ( m_TxtOptions->GetValue().Trim().IsEmpty() )
   {
     cbMessageBox(_("You need to provide an option to search for!"), _("Error"), wxICON_ERROR, this);
     return;
   }
 
+  // Validate that at least a search option is selected
   if (   !m_ChkOptionsCompiler->GetValue()
       && !m_ChkOptionsLinker->GetValue()
+      && !m_ChkOptionsResCompiler->GetValue()
       && !m_ChkOptionsCompilerPath->GetValue()
       && !m_ChkOptionsLinkerPath->GetValue()
       && !m_ChkOptionsLinkerLibs->GetValue()

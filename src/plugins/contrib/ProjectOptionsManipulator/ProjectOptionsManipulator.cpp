@@ -14,6 +14,8 @@
 #include <manager.h>
 #include <projectmanager.h>
 
+#include <vector>
+
 #include "ProjectOptionsManipulatorDlg.h"
 #include "ProjectOptionsManipulatorResultDlg.h"
 
@@ -104,7 +106,7 @@ int ProjectOptionsManipulator::Execute()
 
   if ( !result.IsEmpty() )
   {
-    ProjectOptionsManipulatorResultDlg dlg( Manager::Get()->GetAppWindow(),ID_PROJECT_OPTIONS_RESULT_DLG );
+    ProjectOptionsManipulatorResultDlg dlg( Manager::Get()->GetAppWindow(), ID_PROJECT_OPTIONS_RESULT_DLG );
     dlg.ApplyResult(result);
     dlg.ShowModal();
   }
@@ -145,31 +147,70 @@ bool ProjectOptionsManipulator::OperateProject(cbProject* prj, wxArrayString& re
 {
   if (!prj) return false;
 
-  const wxString opt = m_Dlg->GetOption();
-  const wxString val = m_Dlg->GetValue();
+  ProjectOptionsManipulatorDlg::EProjectScanOption scan_opt = m_Dlg->GetScanOption();
+  if (scan_opt==ProjectOptionsManipulatorDlg::eFiles)
+    ProcessFiles(prj, result);
+  else
+  {
+    const wxString opt = m_Dlg->GetOption();
+    const wxString val = m_Dlg->GetValue();
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompiler) )
-    ProcessCompilerOptions(prj, opt, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompiler) )
+      ProcessCompilerOptions(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinker) )
-    ProcessLinkerOptions(prj, opt, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinker) )
+      ProcessLinkerOptions(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompilerPaths) )
-    ProcessCompilerPaths(prj, opt, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eResCompiler) )
+      ProcessResCompilerOptions(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerPaths) )
-    ProcessLinkerPaths(prj, opt, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCompilerPaths) )
+      ProcessCompilerPaths(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eResCompPaths) )
-    ProcessResCompPaths(prj, opt, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerPaths) )
+      ProcessLinkerPaths(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerLibs) )
-    ProcessLinkerLibs(prj, opt, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eResCompPaths) )
+      ProcessResCompPaths(prj, opt, result);
 
-  if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCustomVars) )
-    ProcessCustomVars(prj, opt, val, result);
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eLinkerLibs) )
+      ProcessLinkerLibs(prj, opt, result);
+
+    if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eCustomVars) )
+      ProcessCustomVars(prj, opt, val, result);
+  }
 
   return true;
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+
+void ProjectOptionsManipulator::ProcessFiles(cbProject* prj, wxArrayString& result)
+{
+  result.Add(wxString::Format(_("Project '%s': Scanning %d files for assigned targets..."),
+                              prj->GetTitle().wx_str(), prj->GetFilesCount()));
+
+  // First: scan for file not manipulating the file list
+  std::vector<ProjectFile*> files_to_remove;
+  for (int idx=0; idx<prj->GetFilesCount(); ++idx)
+  {
+    ProjectFile* prj_file = prj->GetFile(idx);
+    if (prj_file->GetBuildTargets().IsEmpty())
+      files_to_remove.push_back(prj_file);
+  }
+
+  // Second: manipulate the file list and remove the files not assigned to any target
+  for (int idx=0; idx<files_to_remove.size(); ++idx)
+  {
+    ProjectFile* prj_file  = files_to_remove.at(idx);
+    wxString     file_path = prj_file->file.GetFullPath().wx_str();
+    prj->RemoveFile(prj_file); // Don't care about return value
+    result.Add(wxString::Format(_("Project '%s': Removed file '%s' not assigned to any target."),
+                                prj->GetTitle().wx_str(), file_path.wx_str()));
+  }
+
+  result.Add(wxString::Format(_("Project '%s': %d files assigned to targets (%d files removed)."),
+                              prj->GetTitle().wx_str(), prj->GetFilesCount(), files_to_remove.size()));
 }
 
 /* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
@@ -253,6 +294,7 @@ void ProjectOptionsManipulator::ProcessCompilerOptions(cbProject* prj, const wxS
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
@@ -340,6 +382,94 @@ void ProjectOptionsManipulator::ProcessLinkerOptions(cbProject* prj, const wxStr
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
+    default:
+    break;
+  }
+}
+
+/* ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- */
+
+void ProjectOptionsManipulator::ProcessResCompilerOptions(cbProject* prj, const wxString& opt, wxArrayString& result)
+{
+  ProjectOptionsManipulatorDlg::EProjectScanOption scan_opt = m_Dlg->GetScanOption();
+  switch (scan_opt)
+  {
+    case ProjectOptionsManipulatorDlg::eSearch:
+    case ProjectOptionsManipulatorDlg::eSearchNot:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+      {
+        bool has_opt = SearchOption(prj->GetResourceCompilerOptions(), opt);
+        if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+        {
+          result.Add(wxString::Format(_("Project '%s': Contains resource compiler option '%s'."),
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
+        }
+        else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+        {
+          result.Add(wxString::Format(_("Project '%s': Does not contain resource compiler option '%s'."),
+                                      prj->GetTitle().wx_str(), opt.wx_str()));
+        }
+      }
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt)
+          {
+            bool has_opt = SearchOption(tgt->GetResourceCompilerOptions(), opt);
+            if (has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearch)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Contains resource compiler option '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+            }
+            else if (!has_opt && scan_opt==ProjectOptionsManipulatorDlg::eSearchNot)
+            {
+              result.Add(wxString::Format(_("Project '%s', target '%s': Does not contain resource compiler option '%s'."),
+                                          prj->GetTitle().wx_str(), tgt->GetTitle().wx_str(), opt.wx_str()));
+            }
+          }
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eRemove:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->RemoveResourceCompilerOption(opt);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->RemoveResourceCompilerOption(opt);
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eAdd:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->AddResourceCompilerOption(opt);
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if (tgt) tgt->AddResourceCompilerOption(opt);
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
@@ -426,6 +556,7 @@ void ProjectOptionsManipulator::ProcessCompilerPaths(cbProject* prj, const wxStr
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
@@ -512,6 +643,7 @@ void ProjectOptionsManipulator::ProcessLinkerPaths(cbProject* prj, const wxStrin
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
@@ -598,6 +730,7 @@ void ProjectOptionsManipulator::ProcessResCompPaths(cbProject* prj, const wxStri
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
@@ -684,6 +817,7 @@ void ProjectOptionsManipulator::ProcessLinkerLibs(cbProject* prj, const wxString
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
@@ -770,6 +904,7 @@ void ProjectOptionsManipulator::ProcessCustomVars(cbProject* prj, const wxString
     }
     break;
 
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }

@@ -28,8 +28,11 @@ private:
   bool OperateProject(size_t prj_idx, wxArrayString& result);
   bool OperateProject(cbProject* prj, wxArrayString& result);
 
-  void ProcessCompilerOptions(cbProject* prj, const wxString& opt, wxArrayString& result);
-  void ProcessLinkerOptions  (cbProject* prj, const wxString& opt, wxArrayString& result);
+  void ProcessFiles(cbProject* prj, wxArrayString& result);
+
+  void ProcessCompilerOptions   (cbProject* prj, const wxString& opt, wxArrayString& result);
+  void ProcessLinkerOptions     (cbProject* prj, const wxString& opt, wxArrayString& result);
+  void ProcessResCompilerOptions(cbProject* prj, const wxString& opt, wxArrayString& result);
 
   void ProcessCompilerPaths(cbProject* prj, const wxString& path, wxArrayString& result);
   void ProcessLinkerPaths  (cbProject* prj, const wxString& path, wxArrayString& result);
