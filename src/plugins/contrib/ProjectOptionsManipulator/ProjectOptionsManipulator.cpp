@@ -200,7 +200,7 @@ void ProjectOptionsManipulator::ProcessFiles(cbProject* prj, wxArrayString& resu
   }
 
   // Second: manipulate the file list and remove the files not assigned to any target
-  for (int idx=0; idx<files_to_remove.size(); ++idx)
+  for (unsigned int idx=0; idx<files_to_remove.size(); ++idx)
   {
     ProjectFile* prj_file  = files_to_remove.at(idx);
     wxString     file_path = prj_file->file.GetFullPath().wx_str();
