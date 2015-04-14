@@ -2708,6 +2708,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
         if (token == ParserConsts::dcolon)
         {
             peek = SkipToOneOfChars(ParserConsts::commaclbrace);
+            m_Tokenizer.UngetToken();
             exp.Clear();
             break;
         }
@@ -2750,6 +2751,7 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
             else
             {
                 peek = SkipToOneOfChars(ParserConsts::commaclbrace);
+                m_Tokenizer.UngetToken();
                 exp.Clear();
                 break;
             }
