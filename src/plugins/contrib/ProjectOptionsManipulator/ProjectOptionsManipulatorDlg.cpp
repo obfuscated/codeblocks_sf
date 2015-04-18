@@ -84,7 +84,7 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChoScanProjects->Disable();
 	bszScan->Add(m_ChoScanProjects, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszMainH->Add(bszScan, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	flsOptions = new wxFlexGridSizer(0, 4, 0, 0);
+	flsOptions = new wxFlexGridSizer(0, 3, 0, 0);
 	flsOptions->AddGrowableCol(1);
 	bszOperation = new wxBoxSizer(wxVERTICAL);
 	wxString __wxRadioBoxChoices_1[6] =
@@ -131,7 +131,7 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_RboSearch = new wxRadioBox(this, ID_RBO_SEARCH, _("When searching..."), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, 0, wxDefaultValidator, _T("ID_RBO_SEARCH"));
 	m_RboSearch->SetSelection(0);
 	sbsItem->Add(m_RboSearch, 0, wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-	flsOptions->Add(sbsItem, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	flsOptions->Add(sbsItem, 1, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
 	sbsScope = new wxStaticBoxSizer(wxVERTICAL, this, _("Search scope:"));
 	m_ChkOptionsCompiler = new wxCheckBox(this, ID_CHK_OPTIONS_COMPILER, _("Compiler options"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_COMPILER"));
 	m_ChkOptionsCompiler->SetValue(true);
@@ -162,7 +162,7 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_TxtCustomVar->SetToolTip(_("This is the value to set set for the custom var, if \"add option\" is chosen"));
 	bszCustomVar->Add(m_TxtCustomVar, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	sbsScope->Add(bszCustomVar, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-	flsOptions->Add(sbsScope, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	flsOptions->Add(sbsScope, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
 	bszMainH->Add(flsOptions, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	sbzOKCancel = new wxStdDialogButtonSizer();
 	sbzOKCancel->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
