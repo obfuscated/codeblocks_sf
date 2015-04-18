@@ -47,7 +47,7 @@
 			</object>
 			<object class="sizeritem">
 				<object class="wxFlexGridSizer" variable="flsOptions" member="no">
-					<cols>2</cols>
+					<cols>4</cols>
 					<growablecols>1</growablecols>
 					<object class="sizeritem">
 						<object class="wxBoxSizer" variable="bszOperation" member="no">
@@ -60,11 +60,76 @@
 										<item>Search for option NOT present</item>
 										<item>Remove option</item>
 										<item>Add option</item>
+										<item>Change option</item>
 										<item>Remove files w/o target</item>
 									</content>
 									<handler function="OnOperationSelect" entry="EVT_RADIOBOX" />
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblOptionsLevel" member="no">
+									<label>Search for option:</label>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxChoice" name="ID_CHO_OPTIONS_LEVEL" variable="m_ChoOptionsLevel" member="yes">
+									<content>
+										<item>At project level</item>
+										<item>At target level</item>
+										<item>At project and target level</item>
+									</content>
+									<selection>2</selection>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="sbsItem" member="no">
+							<label>Search item:</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblOptionSearch" member="no">
+									<label>Option/Var (i.e. -Wl,--no-undefined):</label>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TXT_OPTIONS" variable="m_TxtOptionSearch" member="yes">
+									<tooltip>This is the compiler/linker option or path, linker lib or custom var to search for...</tooltip>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblOptionReplace" member="no">
+									<label>Replace with:</label>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="TD_TXT_OPTION_REPLACE" variable="m_TxtOptionReplace" member="yes">
+									<enabled>0</enabled>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_OPTION_REPLACE_PATTERN" variable="m_ChkOptionReplacePattern" member="yes">
+									<label>Replace only search pattern</label>
+									<enabled>0</enabled>
+									<tooltip>Either only the search pattern (strin) is replaced within the option&#x0A;or the whole options is replaced with the string to replace with.</tooltip>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -79,33 +144,20 @@
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
+						<option>1</option>
 					</object>
 					<object class="sizeritem">
-						<object class="wxBoxSizer" variable="bszOptions" member="no">
+						<object class="wxStaticBoxSizer" variable="sbsScope" member="no">
+							<label>Search scope:</label>
 							<orient>wxVERTICAL</orient>
-							<object class="sizeritem">
-								<object class="wxStaticText" name="wxID_ANY" variable="lblOptions" member="no">
-									<label>Option/Var (i.e. -Wl,--no-undefined):</label>
-								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-								<option>1</option>
-							</object>
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TXT_OPTIONS" variable="m_TxtOptions" member="yes">
-									<tooltip>This is the compiler/linker option or path, linker lib or custom var to search for...</tooltip>
-								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-							</object>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHK_OPTIONS_COMPILER" variable="m_ChkOptionsCompiler" member="yes">
 									<label>Compiler options</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -171,22 +223,9 @@
 								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
-							<object class="sizeritem">
-								<object class="wxChoice" name="ID_CHO_OPTIONS_LEVEL" variable="m_ChoOptionsLevel" member="yes">
-									<content>
-										<item>At project level</item>
-										<item>At target level</item>
-										<item>Both (project and target level)</item>
-									</content>
-									<selection>2</selection>
-								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
-								<border>5</border>
-							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
-						<option>1</option>
 					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>

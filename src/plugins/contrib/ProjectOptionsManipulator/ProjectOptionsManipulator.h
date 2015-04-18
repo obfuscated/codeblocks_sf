@@ -30,19 +30,22 @@ private:
 
   void ProcessFiles(cbProject* prj, wxArrayString& result);
 
-  void ProcessCompilerOptions   (cbProject* prj, const wxString& opt, wxArrayString& result);
-  void ProcessLinkerOptions     (cbProject* prj, const wxString& opt, wxArrayString& result);
-  void ProcessResCompilerOptions(cbProject* prj, const wxString& opt, wxArrayString& result);
+  void ProcessCompilerOptions   (cbProject* prj, const wxString& opt, const wxString& opt_new, wxArrayString& result);
+  void ProcessLinkerOptions     (cbProject* prj, const wxString& opt, const wxString& opt_new, wxArrayString& result);
+  void ProcessResCompilerOptions(cbProject* prj, const wxString& opt, const wxString& opt_new, wxArrayString& result);
 
-  void ProcessCompilerPaths(cbProject* prj, const wxString& path, wxArrayString& result);
-  void ProcessLinkerPaths  (cbProject* prj, const wxString& path, wxArrayString& result);
-  void ProcessResCompPaths (cbProject* prj, const wxString& path, wxArrayString& result);
+  void ProcessCompilerPaths(cbProject* prj, const wxString& path, const wxString& path_new, wxArrayString& result);
+  void ProcessLinkerPaths  (cbProject* prj, const wxString& path, const wxString& path_new, wxArrayString& result);
+  void ProcessResCompPaths (cbProject* prj, const wxString& path, const wxString& path_new, wxArrayString& result);
 
-  void ProcessLinkerLibs(cbProject* prj, const wxString& lib, wxArrayString& result);
+  void ProcessLinkerLibs(cbProject* prj, const wxString& lib, const wxString& lib_new, wxArrayString& result);
 
   void ProcessCustomVars(cbProject* prj, const wxString& var, const wxString& value, wxArrayString& result);
 
-  bool SearchOption(const wxArrayString& opt_array, const wxString& opt);
+  bool HasOption(const wxArrayString& opt_array, const wxString& opt);
+  bool HasOption(const wxArrayString& opt_array, const wxString& opt, wxString& full_opt);
+
+  wxString ManipulateOption(wxString full_opt, const wxString& src, const wxString& dst);
 
   ProjectOptionsManipulatorDlg* m_Dlg;
 
