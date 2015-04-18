@@ -16,7 +16,7 @@
     #include "macrosmanager.h"
 #endif
 
-namespace { static const bool case_sensitive = platform::windows ? false : true; }
+namespace { static const bool s_case_sensitive = platform::windows ? false : true; }
 
 CompileOptionsBase::CompileOptionsBase()
     : m_Platform(spAll),
@@ -136,7 +136,7 @@ void CompileOptionsBase::SetIncludeDirs(const wxArrayString& includeDirs)
     for (size_t i = 0; i < includeDirs.GetCount(); ++i)
     {
         wxString entry = UnixFilename(includeDirs[i]);
-        if (m_IncludeDirs.Index(entry, case_sensitive) == wxNOT_FOUND)
+        if (m_IncludeDirs.Index(entry, s_case_sensitive) == wxNOT_FOUND)
             m_IncludeDirs.Add(entry);
     }
     SetModified(true);
@@ -159,7 +159,7 @@ void CompileOptionsBase::SetResourceIncludeDirs(const wxArrayString& resIncludeD
     for (size_t i = 0; i < resIncludeDirs.GetCount(); ++i)
     {
         wxString entry = UnixFilename(resIncludeDirs[i]);
-        if (m_ResIncludeDirs.Index(entry, case_sensitive) == wxNOT_FOUND)
+        if (m_ResIncludeDirs.Index(entry, s_case_sensitive) == wxNOT_FOUND)
             m_ResIncludeDirs.Add(entry);
     }
     SetModified(true);
@@ -182,7 +182,7 @@ void CompileOptionsBase::SetLibDirs(const wxArrayString& libDirs)
     for (size_t i = 0; i < libDirs.GetCount(); ++i)
     {
         wxString entry = UnixFilename(libDirs[i]);
-        if (m_LibDirs.Index(entry, case_sensitive) == wxNOT_FOUND)
+        if (m_LibDirs.Index(entry, s_case_sensitive) == wxNOT_FOUND)
             m_LibDirs.Add(entry);
     }
     SetModified(true);
@@ -205,7 +205,7 @@ void CompileOptionsBase::SetBuildScripts(const wxArrayString& scripts)
     for (size_t i = 0; i < scripts.GetCount(); ++i)
     {
         wxString entry = UnixFilename(scripts[i]);
-        if (m_Scripts.Index(entry, case_sensitive) == wxNOT_FOUND)
+        if (m_Scripts.Index(entry, s_case_sensitive) == wxNOT_FOUND)
             m_Scripts.Add(entry);
     }
     SetModified(true);
@@ -267,40 +267,36 @@ void CompileOptionsBase::SetModified(bool modified)
 
 void CompileOptionsBase::AddLinkerOption(const wxString& option)
 {
-    wxString envopt = option;
-    if (m_LinkerOptions.Index(envopt, case_sensitive) == wxNOT_FOUND)
+    if (m_LinkerOptions.Index(option, s_case_sensitive) == wxNOT_FOUND)
     {
-        m_LinkerOptions.Add(envopt);
+        m_LinkerOptions.Add(option);
         SetModified(true);
     }
 }
 
-void CompileOptionsBase::AddLinkLib(const wxString& lib)
+void CompileOptionsBase::AddLinkLib(const wxString& option)
 {
-    wxString envopt = lib;
-    if (m_LinkLibs.Index(envopt, case_sensitive) == wxNOT_FOUND)
+    if (m_LinkLibs.Index(option, s_case_sensitive) == wxNOT_FOUND)
     {
-        m_LinkLibs.Add(envopt);
+        m_LinkLibs.Add(option);
         SetModified(true);
     }
 }
 
 void CompileOptionsBase::AddCompilerOption(const wxString& option)
 {
-    wxString envopt = option;
-    if (m_CompilerOptions.Index(envopt, case_sensitive) == wxNOT_FOUND)
+    if (m_CompilerOptions.Index(option, s_case_sensitive) == wxNOT_FOUND)
     {
-        m_CompilerOptions.Add(envopt);
+        m_CompilerOptions.Add(option);
         SetModified(true);
     }
 }
 
 void CompileOptionsBase::AddResourceCompilerOption(const wxString& option)
 {
-    wxString envopt = option;
-    if (m_ResourceCompilerOptions.Index(envopt, case_sensitive) == wxNOT_FOUND)
+    if (m_ResourceCompilerOptions.Index(option, s_case_sensitive) == wxNOT_FOUND)
     {
-        m_ResourceCompilerOptions.Add(envopt);
+        m_ResourceCompilerOptions.Add(option);
         SetModified(true);
     }
 }
@@ -308,7 +304,7 @@ void CompileOptionsBase::AddResourceCompilerOption(const wxString& option)
 void CompileOptionsBase::AddIncludeDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
-    if (m_IncludeDirs.Index(entry, case_sensitive) == wxNOT_FOUND)
+    if (m_IncludeDirs.Index(entry, s_case_sensitive) == wxNOT_FOUND)
     {
         m_IncludeDirs.Add(entry);
         SetModified(true);
@@ -318,7 +314,7 @@ void CompileOptionsBase::AddIncludeDir(const wxString& option)
 void CompileOptionsBase::AddResourceIncludeDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
-    if (m_ResIncludeDirs.Index(entry, case_sensitive) == wxNOT_FOUND)
+    if (m_ResIncludeDirs.Index(entry, s_case_sensitive) == wxNOT_FOUND)
     {
         m_ResIncludeDirs.Add(entry);
         SetModified(true);
@@ -328,7 +324,7 @@ void CompileOptionsBase::AddResourceIncludeDir(const wxString& option)
 void CompileOptionsBase::AddLibDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
-    if (m_LibDirs.Index(entry, case_sensitive) == wxNOT_FOUND)
+    if (m_LibDirs.Index(entry, s_case_sensitive) == wxNOT_FOUND)
     {
         m_LibDirs.Add(entry);
         SetModified(true);
@@ -337,32 +333,99 @@ void CompileOptionsBase::AddLibDir(const wxString& option)
 
 void CompileOptionsBase::AddCommandsBeforeBuild(const wxString& command)
 {
-    wxString envopt = command;
-    m_CmdsBefore.Add(envopt);
+    m_CmdsBefore.Add(command);
     SetModified(true);
 }
 
 void CompileOptionsBase::AddCommandsAfterBuild(const wxString& command)
 {
-    wxString envopt = command;
-    m_CmdsAfter.Add(envopt);
+    m_CmdsAfter.Add(command);
     SetModified(true);
 }
 
 void CompileOptionsBase::AddBuildScript(const wxString& script)
 {
     wxString envopt = UnixFilename(script);
-    if (m_Scripts.Index(envopt, case_sensitive) == wxNOT_FOUND)
+    if (m_Scripts.Index(envopt, s_case_sensitive) == wxNOT_FOUND)
     {
         m_Scripts.Add(envopt);
         SetModified(true);
     }
 }
 
+void CompileOptionsBase::ReplaceLinkerOption(const wxString& option, const wxString& new_option)
+{
+    int idx = m_LinkerOptions.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_LinkerOptions.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::ReplaceLinkLib(const wxString& option, const wxString& new_option)
+{
+    int idx = m_LinkLibs.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_LinkLibs.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::ReplaceCompilerOption(const wxString& option, const wxString& new_option)
+{
+    int idx = m_CompilerOptions.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_CompilerOptions.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::ReplaceResourceCompilerOption(const wxString& option, const wxString& new_option)
+{
+    int idx = m_ResourceCompilerOptions.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_ResourceCompilerOptions.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::ReplaceIncludeDir(const wxString& option, const wxString& new_option)
+{
+    int idx = m_IncludeDirs.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_IncludeDirs.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::ReplaceResourceIncludeDir(const wxString& option, const wxString& new_option)
+{
+    int idx = m_ResIncludeDirs.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_ResIncludeDirs.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
+void CompileOptionsBase::ReplaceLibDir(const wxString& option, const wxString& new_option)
+{
+    int idx = m_LibDirs.Index(option, s_case_sensitive);
+    if (idx != wxNOT_FOUND)
+    {
+        m_LibDirs.Item(idx) = new_option;
+        SetModified(true);
+    }
+}
+
 void CompileOptionsBase::RemoveLinkerOption(const wxString& option)
 {
-    wxString envopt = option;
-    int idx = m_LinkerOptions.Index(envopt, case_sensitive);
+    int idx = m_LinkerOptions.Index(option, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_LinkerOptions.RemoveAt(idx);
@@ -370,10 +433,9 @@ void CompileOptionsBase::RemoveLinkerOption(const wxString& option)
     }
 }
 
-void CompileOptionsBase::RemoveLinkLib(const wxString& lib)
+void CompileOptionsBase::RemoveLinkLib(const wxString& option)
 {
-    wxString envopt = lib;
-    int idx = m_LinkLibs.Index(envopt, case_sensitive);
+    int idx = m_LinkLibs.Index(option, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_LinkLibs.RemoveAt(idx);
@@ -383,8 +445,7 @@ void CompileOptionsBase::RemoveLinkLib(const wxString& lib)
 
 void CompileOptionsBase::RemoveCompilerOption(const wxString& option)
 {
-    wxString envopt = option;
-    int idx = m_CompilerOptions.Index(envopt, case_sensitive);
+    int idx = m_CompilerOptions.Index(option, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_CompilerOptions.RemoveAt(idx);
@@ -394,8 +455,7 @@ void CompileOptionsBase::RemoveCompilerOption(const wxString& option)
 
 void CompileOptionsBase::RemoveResourceCompilerOption(const wxString& option)
 {
-    wxString envopt = option;
-    int idx = m_ResourceCompilerOptions.Index(envopt, case_sensitive);
+    int idx = m_ResourceCompilerOptions.Index(option, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_ResourceCompilerOptions.RemoveAt(idx);
@@ -406,7 +466,7 @@ void CompileOptionsBase::RemoveResourceCompilerOption(const wxString& option)
 void CompileOptionsBase::RemoveIncludeDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
-    int idx = m_IncludeDirs.Index(entry, case_sensitive);
+    int idx = m_IncludeDirs.Index(entry, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_IncludeDirs.RemoveAt(idx);
@@ -417,7 +477,7 @@ void CompileOptionsBase::RemoveIncludeDir(const wxString& option)
 void CompileOptionsBase::RemoveResourceIncludeDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
-    int idx = m_ResIncludeDirs.Index(entry, case_sensitive);
+    int idx = m_ResIncludeDirs.Index(entry, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_ResIncludeDirs.RemoveAt(idx);
@@ -428,7 +488,7 @@ void CompileOptionsBase::RemoveResourceIncludeDir(const wxString& option)
 void CompileOptionsBase::RemoveLibDir(const wxString& option)
 {
     wxString entry = UnixFilename(option);
-    int idx = m_LibDirs.Index(entry, case_sensitive);
+    int idx = m_LibDirs.Index(entry, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_LibDirs.RemoveAt(idx);
@@ -438,22 +498,20 @@ void CompileOptionsBase::RemoveLibDir(const wxString& option)
 
 void CompileOptionsBase::RemoveCommandsBeforeBuild(const wxString& command)
 {
-    wxString envopt = command;
-    m_CmdsBefore.Remove(envopt);
+    m_CmdsBefore.Remove(command);
     SetModified(true);
 }
 
 void CompileOptionsBase::RemoveCommandsAfterBuild(const wxString& command)
 {
-    wxString envopt = command;
-    m_CmdsAfter.Remove(envopt);
+    m_CmdsAfter.Remove(command);
     SetModified(true);
 }
 
 void CompileOptionsBase::RemoveBuildScript(const wxString& script)
 {
     wxString envopt = UnixFilename(script);
-    int idx = m_Scripts.Index(envopt, case_sensitive);
+    int idx = m_Scripts.Index(envopt, s_case_sensitive);
     if (idx != wxNOT_FOUND)
     {
         m_Scripts.RemoveAt(idx);

@@ -40,36 +40,43 @@ class DLLIMPORT CompileOptionsBase
         virtual void SetLinkerOptions(const wxArrayString& linkerOpts);
         virtual const wxArrayString& GetLinkerOptions() const;
         virtual void AddLinkerOption(const wxString& option);
+        virtual void ReplaceLinkerOption(const wxString& option, const wxString& new_option);
         virtual void RemoveLinkerOption(const wxString& option);
 
         virtual void SetLinkLibs(const wxArrayString& linkLibs);
         virtual const wxArrayString& GetLinkLibs() const;
-        virtual void AddLinkLib(const wxString& lib);
-        virtual void RemoveLinkLib(const wxString& lib);
+        virtual void AddLinkLib(const wxString& option);
+        virtual void ReplaceLinkLib(const wxString& option, const wxString& new_option);
+        virtual void RemoveLinkLib(const wxString& option);
 
         virtual void SetCompilerOptions(const wxArrayString& compilerOpts);
         virtual const wxArrayString& GetCompilerOptions() const;
         virtual void AddCompilerOption(const wxString& option);
+        virtual void ReplaceCompilerOption(const wxString& option, const wxString& new_option);
         virtual void RemoveCompilerOption(const wxString& option);
 
         virtual void SetResourceCompilerOptions(const wxArrayString& resourceCompilerOpts);
         virtual const wxArrayString& GetResourceCompilerOptions() const;
         virtual void AddResourceCompilerOption(const wxString& option);
+        virtual void ReplaceResourceCompilerOption(const wxString& option, const wxString& new_option);
         virtual void RemoveResourceCompilerOption(const wxString& option);
 
         virtual void SetIncludeDirs(const wxArrayString& includeDirs);
         virtual const wxArrayString& GetIncludeDirs() const;
         virtual void AddIncludeDir(const wxString& option);
+        virtual void ReplaceIncludeDir(const wxString& option, const wxString& new_option);
         virtual void RemoveIncludeDir(const wxString& option);
 
         virtual void SetResourceIncludeDirs(const wxArrayString& resIncludeDirs);
         virtual const wxArrayString& GetResourceIncludeDirs() const;
         virtual void AddResourceIncludeDir(const wxString& option);
+        virtual void ReplaceResourceIncludeDir(const wxString& option, const wxString& new_option);
         virtual void RemoveResourceIncludeDir(const wxString& option);
 
         virtual void SetLibDirs(const wxArrayString& libDirs);
         virtual const wxArrayString& GetLibDirs() const;
         virtual void AddLibDir(const wxString& option);
+        virtual void ReplaceLibDir(const wxString& option, const wxString& new_option);
         virtual void RemoveLibDir(const wxString& option);
 
         virtual void SetCommandsBeforeBuild(const wxArrayString& commands);

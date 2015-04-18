@@ -455,6 +455,13 @@ namespace ScriptBindings
                 func(&CompileOptionsBase::AddLibDir, "AddLibDir").
                 func(&CompileOptionsBase::AddCommandsBeforeBuild, "AddCommandsBeforeBuild").
                 func(&CompileOptionsBase::AddCommandsAfterBuild, "AddCommandsAfterBuild").
+                func(&CompileOptionsBase::ReplaceLinkerOption, "ReplaceLinkerOption").
+                func(&CompileOptionsBase::ReplaceLinkLib, "ReplaceLinkLib").
+                func(&CompileOptionsBase::ReplaceCompilerOption, "ReplaceCompilerOption").
+                func(&CompileOptionsBase::ReplaceResourceCompilerOption, "ReplaceResourceCompilerOption").
+                func(&CompileOptionsBase::ReplaceIncludeDir, "ReplaceIncludeDir").
+                func(&CompileOptionsBase::ReplaceResourceIncludeDir, "ReplaceResourceIncludeDir").
+                func(&CompileOptionsBase::ReplaceLibDir, "ReplaceLibDir").
                 func(&CompileOptionsBase::RemoveLinkerOption, "RemoveLinkerOption").
                 func(&CompileOptionsBase::RemoveLinkLib, "RemoveLinkLib").
                 func(&CompileOptionsBase::RemoveCompilerOption, "RemoveCompilerOption").
