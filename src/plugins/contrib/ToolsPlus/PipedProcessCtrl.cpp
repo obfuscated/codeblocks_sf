@@ -263,7 +263,7 @@ void PipedProcessCtrl::OnUserInput(wxKeyEvent& ke)
         return;
     }
     //todo: if user presses navigational keys accept them as navigational (also copy/paste shortcuts?)
-    char* kc1=new char[2];
+    char kc1[2];
     kc1[0]=ke.GetKeyCode()%256;
     kc1[1]=0;
     if(kc1[0]=='\r')
@@ -274,7 +274,7 @@ void PipedProcessCtrl::OnUserInput(wxKeyEvent& ke)
         if (ke.GetKeyCode()<WXK_START ||
            ke.GetKeyCode()>WXK_COMMAND)
         {
-            m_ostream->Write(kc1,1);
+            m_ostream->Write(&kc1,1);
             m_textctrl->AppendText(kc2);
             m_textctrl->GotoPos(m_textctrl->GetLength());
             return;
