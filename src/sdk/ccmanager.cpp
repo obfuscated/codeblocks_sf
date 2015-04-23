@@ -47,7 +47,7 @@ namespace CCManagerHelper
     // wxScintilla::FindColumn seems to be broken; re-implement:
     // Find the position of a column on a line taking into account tabs and
     // multi-byte characters. If beyond end of line, return line end position.
-    int FindColumn(int line, int column, wxScintilla* stc)
+    inline int FindColumn(int line, int column, wxScintilla* stc)
     {
         int lnEnd = stc->GetLineEndPosition(line);
         for (int pos = stc->PositionFromLine(line); pos < lnEnd; ++pos)
@@ -58,7 +58,7 @@ namespace CCManagerHelper
         return lnEnd;
     }
 
-    bool IsPosVisible(int pos, wxScintilla* stc)
+    inline bool IsPosVisible(int pos, wxScintilla* stc)
     {
         const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(pos)) - stc->GetFirstVisibleLine();
         return !(dist < 0 || dist > stc->LinesOnScreen()); // caret is off screen
@@ -879,6 +879,9 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         return;
 
     cbStyledTextCtrl* stc = ed->GetControl();
+    if (!stc)
+        return;
+
     int pos = stc->GetCurrentPos();
     int argsPos = wxSCI_INVALID_POSITION;
     wxString curTip;
