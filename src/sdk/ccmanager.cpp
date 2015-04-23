@@ -116,6 +116,7 @@ const int idShowTooltip = wxNewId();
 const int idCallTipNext = wxNewId();
 const int idCallTipPrevious = wxNewId();
 
+DEFINE_EVENT_TYPE(cbEVT_DEFERRED_CALLTIP_SHOW)
 DEFINE_EVENT_TYPE(cbEVT_DEFERRED_CALLTIP_CANCEL)
 
 // milliseconds
@@ -315,6 +316,7 @@ CCManager::CCManager() :
     Connect(idCallTipTimer,        wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
     Connect(idAutoLaunchTimer,     wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
     Connect(idAutocompSelectTimer, wxEVT_TIMER, wxTimerEventHandler(CCManager::OnTimer));
+    Connect(cbEVT_DEFERRED_CALLTIP_SHOW,   wxCommandEventHandler(CCManager::OnDeferredCallTipShow));
     Connect(cbEVT_DEFERRED_CALLTIP_CANCEL, wxCommandEventHandler(CCManager::OnDeferredCallTipCancel));
 }
 
@@ -334,6 +336,7 @@ CCManager::~CCManager()
     Disconnect(idCallTipTimer);
     Disconnect(idAutoLaunchTimer);
     Disconnect(idAutocompSelectTimer);
+    Disconnect(cbEVT_DEFERRED_CALLTIP_SHOW);
     Disconnect(cbEVT_DEFERRED_CALLTIP_CANCEL);
 }
 
@@ -718,8 +721,8 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             if (   tooltipMode != 3 // keybound only
                 || m_CallTipActive != wxSCI_INVALID_POSITION )
             {
-                CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
-                Manager::Get()->ProcessEvent(evt);
+                wxCommandEvent pendingShow(cbEVT_DEFERRED_CALLTIP_SHOW);
+                AddPendingEvent(pendingShow);
             }
         }
         else
@@ -1001,6 +1004,17 @@ void CCManager::OnAutocompleteHide(wxShowEvent& event)
         m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
 }
 
+// cbEVT_DEFERRED_CALLTIP_SHOW
+void CCManager::OnDeferredCallTipShow(wxCommandEvent& event)
+{
+    // Launching this event directly seems to be a candidate for race condition
+    // and crash in OnShowCallTip() so we attempt to serialize it. See:
+    // http://forums.codeblocks.org/index.php/topic,20181.msg137762.html#msg137762
+    CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+    evt.SetInt(event.GetInt());
+    Manager::Get()->ProcessEvent(evt);
+}
+
 // cbEVT_DEFERRED_CALLTIP_CANCEL
 void CCManager::OnDeferredCallTipCancel(wxCommandEvent& WXUNUSED(event))
 {
@@ -1041,9 +1055,9 @@ void CCManager::OnTimer(wxTimerEvent& event)
 {
     if (event.GetId() == idCallTipTimer) // m_CallTipTimer
     {
-        CodeBlocksEvent evt(cbEVT_SHOW_CALL_TIP);
+        wxCommandEvent evt(cbEVT_DEFERRED_CALLTIP_SHOW);
         evt.SetInt(FROM_TIMER);
-        Manager::Get()->ProcessEvent(evt);
+        AddPendingEvent(evt);
     }
     else if (event.GetId() == idAutoLaunchTimer) // m_AutoLaunchTimer
     {
