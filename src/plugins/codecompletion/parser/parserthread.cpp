@@ -148,6 +148,7 @@ namespace ParserConsts
     // length: 5
     const wxString kw__CPP_        (_T("\"C++\""));
     const wxString kw___asm        (_T("__asm"));
+    const wxString kw_catch        (_T("catch"));
     const wxString kw_class        (_T("class"));
     const wxString kw_const        (_T("const"));
     const wxString kw_undef        (_T("undef"));
@@ -744,7 +745,7 @@ void ParserThread::DoParse()
             // token length of 5
             // ---------------------------------------------------------------
             case 5:
-            if (token == ParserConsts::kw_while)
+            if (token == ParserConsts::kw_while || token == ParserConsts::kw_catch)
             {
                 if (!m_Options.useBuffer || m_Options.bufferSkipBlocks)
                     SkipToOneOfChars(ParserConsts::semicolonclbrace, true, true);
@@ -2380,12 +2381,13 @@ void ParserThread::HandleConditionalArguments()
     // (var <= 12 && (getType() != 23))
     wxString args = m_Tokenizer.GetToken();
 
-    // remove braces
+    // remove braces, we should replace them with spaces, so that we have some extra spaces at the
+    // end of the buffer
     if (args.StartsWith(_T("(")))
-        args = args.Mid(1, args.length() - 1);
+        args[0] = _T(' ');
 
     if (args.EndsWith(_T(")")))
-        args = args.Mid(0, args.length() - 1);
+        args[args.length() - 1] = _T(' ');
 
     // parse small tokens inside for loop head
     TokenTree tree;

@@ -1810,7 +1810,7 @@ bool NativeParser::ParseLocalBlock(ccSearchData* searchData, TokenIdxSet& search
                                                     stc->WordEndPosition(  prevCharIdx, true));
             if (text == wxT("for"))
                 buffer.Prepend(wxT("(;;){"));
-            else if (text == wxT("if") || text == wxT("while"))
+            else if (text == wxT("if") || text == wxT("while") || text == wxT("catch"))
                 buffer.Prepend(wxT("(0){"));
             else
                 continue;
