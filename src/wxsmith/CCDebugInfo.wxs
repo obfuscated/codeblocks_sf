@@ -442,6 +442,22 @@
 						</object>
 						<label>Search dirs</label>
 					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="ID_PANEL4" variable="Panel4" member="yes">
+							<pos>170,6</pos>
+							<object class="wxBoxSizer" variable="BoxSizer13" member="no">
+								<object class="sizeritem">
+									<object class="wxListBox" name="ID_LISTBOX3" variable="lstMacros" member="yes">
+										<default>-1</default>
+									</object>
+									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Predefined macros</label>
+					</object>
 				</object>
 				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 				<border>5</border>
