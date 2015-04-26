@@ -40,8 +40,6 @@ class wxsGauge: public wxsWidget
 
         long Range;
         long Value;
-        long Shadow;
-        long Bezel;
 };
 
 #endif
