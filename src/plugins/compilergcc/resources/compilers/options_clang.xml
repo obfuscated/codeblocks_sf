@@ -198,7 +198,7 @@
                  value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
     </else>
     <Command name="LinkStatic"
-             value="$lib_linker -r -s $static_output $link_objects"/>
+             value="$lib_linker r $static_output $link_objects"/>
     <Common name="cmds"/>
 
     <Common name="re"/>
