@@ -179,7 +179,22 @@
 		<Unit filename="zlib/deflate.h">
 			<Option target="zlib" />
 		</Unit>
-		<Unit filename="zlib/gzio.c">
+		<Unit filename="zlib/gzclose.c">
+			<Option compilerVar="CC" />
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzguts.h">
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzlib.c">
+			<Option compilerVar="CC" />
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzread.c">
+			<Option compilerVar="CC" />
+			<Option target="zlib" />
+		</Unit>
+		<Unit filename="zlib/gzwrite.c">
 			<Option compilerVar="CC" />
 			<Option target="zlib" />
 		</Unit>
