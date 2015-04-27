@@ -133,7 +133,7 @@ ParserCommon::EFileType ParserCommon::FileType(const wxString& filename, bool fo
     {
         ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
         empty_ext               = cfg->ReadBool(_T("/empty_ext"), true);
-        wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,tcc,xpm"));
+        wxString header_ext_str = cfg->Read(_T("/header_ext"), _T("h,hpp,hxx,hh,h++,tcc,xpm"));
         wxString source_ext_str = cfg->Read(_T("/source_ext"), _T("c,cpp,cxx,cc,c++"));
 
         header_ext.Clear();
