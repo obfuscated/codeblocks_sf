@@ -2770,7 +2770,7 @@ void CompilerOptionsDlg::OnApply()
             m_Compiler->m_LogBuildProgressPercentage = chk->IsChecked();
         }
         wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
-        if (spn)
+        if (spn && (((int)spn->GetValue()) != cfg->ReadInt(_T("/parallel_processes"), 1)))
         {
             if (m_Compiler->IsRunning())
                 cbMessageBox(_("You can't change the number of parallel processes while building!\nSetting ignored..."), _("Warning"), wxICON_WARNING);
