@@ -9,48 +9,57 @@
 				<object class="wxBoxSizer" variable="bszMainV" member="no">
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxBoxSizer" variable="bszLogFile" member="no">
-							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TXT_CRASH_LOG" variable="txtCrashLog" member="yes">
-									<style>wxTE_READONLY</style>
-								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<border>5</border>
-								<option>1</option>
-							</object>
-							<object class="sizeritem">
-								<object class="wxButton" name="ID_BTN_CRASH_LOG" variable="btnCrashLog" member="no">
-									<label>Crash log...</label>
-									<handler function="OnFileClick" entry="EVT_BUTTON" />
-								</object>
-								<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-								<border>5</border>
-							</object>
-						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<border>5</border>
-					</object>
-					<object class="sizeritem">
 						<object class="wxBoxSizer" variable="bszAddr2Line" member="no">
+							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TXT_ADDR2LINE" variable="txtAddr2Line" member="yes">
-									<value>addr2line</value>
-									<style>wxTE_READONLY</style>
+								<object class="wxStaticText" name="wxID_ANY" variable="lblCrashLog" member="no">
+									<label>Select crash log file:</label>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
-								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxButton" name="ID_BTN_ADDR2LINE" variable="btnAddr2Line" member="no">
-									<label>addr2line</label>
-									<handler function="OnAddr2LineClick" entry="EVT_BUTTON" />
+								<object class="wxFilePickerCtrl" name="ID_CRASH_LOG" variable="m_FPCrashLog" member="yes">
+									<message>Select crash log</message>
+									<wildcard>Report files (*.rpt)|*.rpt|Log files (*.log)|*.log|All files (*.*)|*.*</wildcard>
+									<handler function="OnCrashLogFile" entry="EVT_FILEPICKER_CHANGED" />
 								</object>
-								<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblAddr2Line" member="no">
+									<label>Select Addr2Line tool:</label>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxFilePickerCtrl" name="ID_ADDR2LINE" variable="m_FPAddr2Line" member="yes">
+									<message>Select addr2line tool</message>
+									<wildcard>Executables (*.exe)|*.exe|All files (*.*)|*.*</wildcard>
+									<handler function="OnAddr2LineFile" entry="EVT_FILEPICKER_CHANGED" />
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblDirPrepend" member="no">
+									<label>(Optionally) Select directory to prepend:</label>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxDirPickerCtrl" name="ID_DIR_PREPEND" variable="m_DPDirPrepend" member="yes">
+									<message>Select directory to prepend</message>
+									<handler function="OnDirPrependDir" entry="EVT_DIRPICKER_CHANGED" />
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -153,17 +162,6 @@
 				<border>4</border>
 				<option>1</option>
 			</object>
-		</object>
-		<object class="wxFileDialog" variable="fdCrashLog" member="yes">
-			<message>Select crash log</message>
-			<wildcard>Report files (*.rpt)|*.rpt|Log files (*.log)|*.log|All files (*.*)|*.*</wildcard>
-			<style>wxFD_DEFAULT_STYLE|wxFD_OPEN|wxFD_FILE_MUST_EXIST</style>
-		</object>
-		<object class="wxFileDialog" variable="fdAddr2Line" member="yes">
-			<message>Select addr2line tool</message>
-			<default_file>addr2line</default_file>
-			<wildcard>Executables (*.exe)|*.exe|All files (*.*)|*.*</wildcard>
-			<style>wxFD_DEFAULT_STYLE|wxFD_OPEN|wxFD_FILE_MUST_EXIST</style>
 		</object>
 	</object>
 </wxsmith>
