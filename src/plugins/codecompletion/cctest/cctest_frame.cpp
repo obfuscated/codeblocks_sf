@@ -351,7 +351,10 @@ void CCTestFrame::Start()
     m_ProgDlg = 0;
 
     if ( !IsShown() )
+    {
         Show();
+        Raise();
+    }
 }
 
 void CCTestFrame::AppendToLog(const wxString& log)
