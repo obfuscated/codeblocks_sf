@@ -12,8 +12,9 @@
 #include <wx/file.h> // wxFile, wxTempFile
 #include <wx/filedlg.h>
 #include <wx/msgdlg.h>
-#include <wx/settings.h>
 #include <wx/statusbr.h>
+#include <wx/stdpaths.h> // wxStandardPathsBase
+#include <wx/settings.h>
 #include <wx/tokenzr.h>
 
 #ifndef __WXMSW__
