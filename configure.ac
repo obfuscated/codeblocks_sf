@@ -237,6 +237,27 @@ case $WX_BASENAME in
         AC_CHECK_PROG(SETFILE, SetFile, SetFile, /Developer/Tools/SetFile)
         MACSETFILE="\$(SETFILE)"
     ;;
+    *wx_osx*)
+        AC_MSG_RESULT(wxOSX)
+
+        if test "x$BUILD_SPELLCHECKER_TRUE" = "x" ; then
+
+            AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
+            ifdef([PKG_CHECK_MODULES],[],[
+                define([PKG_CHECK_MODULES],
+                [ echo "You don't have pkg.m4 properly installed" >&2
+                    exit 1
+                ])
+            ])
+            PKG_PROG_PKG_CONFIG
+
+            if test "x$HAVE_PKG_CONFIG" = "xyes"; then
+                PKG_CHECK_MODULES([HUNSPELL], [hunspell])
+            fi
+        fi
+        CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
+        CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
+    ;;
     *)
         AC_MSG_RESULT(other)
     ;;
