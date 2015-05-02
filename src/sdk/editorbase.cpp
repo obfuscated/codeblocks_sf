@@ -58,20 +58,25 @@ const int idCloseAllOthers = wxNewId();
 const int idSaveMe = wxNewId();
 const int idSaveAll = wxNewId();
 const int idSwitchTo = wxNewId();
-const int idGoogle = wxNewId();
-const int idGoogleCode = wxNewId();
-const int idMsdn = wxNewId();
+
+// Search for... in the context menu, visible with CTRL + right click
+const long idGoogle        = wxNewId();
+const long idMsdn          = wxNewId();
+const long idStackOverflow = wxNewId();
+const long idCodeProject   = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorBase, wxPanel)
-    EVT_MENU_RANGE(idSwitchFile1, idSwitchFileMax,EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCloseMe, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCloseAll, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCloseAllOthers, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idSaveMe, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idSaveAll, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idGoogle, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idGoogleCode, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idMsdn, EditorBase::OnContextMenuEntry)
+    EVT_MENU_RANGE(idSwitchFile1, idSwitchFileMax, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseMe,           EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseAll,          EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseAllOthers,    EditorBase::OnContextMenuEntry)
+    EVT_MENU(idSaveMe,            EditorBase::OnContextMenuEntry)
+    EVT_MENU(idSaveAll,           EditorBase::OnContextMenuEntry)
+
+    EVT_MENU(idGoogle,            EditorBase::OnContextMenuEntry)
+    EVT_MENU(idMsdn,              EditorBase::OnContextMenuEntry)
+    EVT_MENU(idStackOverflow,     EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCodeProject,       EditorBase::OnContextMenuEntry)
 END_EVENT_TABLE()
 
 void EditorBase::InitFilename(const wxString& filename)
@@ -288,9 +293,10 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
 
         if (wxMinimumVersion<2,6,1>::eval && !text.IsEmpty())
         {
-            popup->Append(idGoogle,     _("Search the Internet for \"") + text + _("\""));
-            popup->Append(idMsdn,       _("Search MSDN for \"")         + text + _("\""));
-            popup->Append(idGoogleCode, _("Search Google Code for \"")  + text + _("\""));
+            popup->Append(idGoogle,        _("Search the Internet for \"")  + text + _T("\""));
+            popup->Append(idMsdn,          _("Search MSDN for \"")          + text + _T("\""));
+            popup->Append(idStackOverflow, _("Search StackOverflow for \"") + text + _T("\""));
+            popup->Append(idCodeProject,   _("Search CodeProject for \"")   + text + _T("\""));
         }
         lastWord = text;
 
@@ -392,27 +398,22 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     else if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
         // "Switch to..." item
-        EditorBase *const ed = m_SwitchTo[id];
+        EditorBase* const ed = m_SwitchTo[id];
         if (ed)
-        {
             Manager::Get()->GetEditorManager()->SetActiveEditor(ed);
-        }
+
         m_SwitchTo.clear();
     }
     else if (wxMinimumVersion<2,6,1>::eval)
     {
-        if (id == idGoogleCode)
-        {
-            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/codesearch?q=")) << URLEncode(lastWord));
-        }
-        else if (id == idGoogle)
-        {
-            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q=")) << URLEncode(lastWord));
-        }
+        if      (id == idGoogle)
+            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q="))                       << URLEncode(lastWord));
         else if (id == idMsdn)
-        {
             wxLaunchDefaultBrowser(wxString(_T("http://social.msdn.microsoft.com/Search/en-US/?query=")) << URLEncode(lastWord) << _T("&ac=8"));
-        }
+        else if (id == idStackOverflow)
+            wxLaunchDefaultBrowser(wxString(_T("http://stackoverflow.com/search?q="))                    << URLEncode(lastWord));
+        else if (id == idCodeProject)
+            wxLaunchDefaultBrowser(wxString(_T("http://www.codeproject.com/search.aspx?q="))             << URLEncode(lastWord));
     }
     else
     {
