@@ -31,19 +31,19 @@ END_EVENT_TABLE()
 KodersDialog::KodersDialog(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(KodersDialog)
-	Create(parent, id, _("OLOHO query"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
+	Create(parent, id, _("BlackDuck query"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
 	bszMain = new wxBoxSizer(wxVERTICAL);
 	bszIntro = new wxBoxSizer(wxHORIZONTAL);
-	lblIntro = new wxStaticText(this, ID_LBL_INTRO, _("Specify search to query the OLOHO webpage:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_INTRO"));
+	lblIntro = new wxStaticText(this, ID_LBL_INTRO, _("Specify search to query the BlackDuck webpage:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_INTRO"));
 	bszIntro->Add(lblIntro, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszMain->Add(bszIntro, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
 	bszSearch = new wxBoxSizer(wxHORIZONTAL);
 	txtSearch = new wxTextCtrl(this, ID_TXT_SEARCH, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_SEARCH"));
-	txtSearch->SetToolTip(_("Enter keyword to search for (at koders)"));
+	txtSearch->SetToolTip(_("Enter keyword to search for (at BlackDuck)"));
 	bszSearch->Add(txtSearch, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	btnSearch = new wxButton(this, ID_BTN_SEARCH, _("Search"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_SEARCH"));
 	btnSearch->SetDefault();
-	btnSearch->SetToolTip(_("Click to search at the koders webpage..."));
+	btnSearch->SetToolTip(_("Click to search at the BlackDuck webpage..."));
 	bszSearch->Add(btnSearch, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
 	bszMain->Add(bszSearch, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	bszFilter = new wxBoxSizer(wxHORIZONTAL);

@@ -83,11 +83,11 @@ int CB_Koders::Execute()
       wxString query;
       if ( language.IsEmpty() )
       {
-        query.Printf(_("http://code.ohloh.net/search?s=%s"), search.c_str());
+        query.Printf(_("http://code.openhub.net/search?s=%s"), search.c_str());
       }
       else
       {
-        query.Printf(_("http://code.ohloh.net/search?s=%s&fl=%s"),
+        query.Printf(_("http://code.openhub.net/search?s=%s&fl=%s"),
                      search.c_str(), language.c_str());
       }
 
@@ -107,7 +107,7 @@ void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
 	if (type == mtEditorManager)
 	{
 		menu->AppendSeparator();
-		menu->Append(idSearchKoders, _("Search at OLOHO..."), _("Search keyword at OLOHO webpage..."));
+		menu->Append(idSearchKoders, _("Search at BlackDuck..."), _("Search keyword at BlackDuck webpage..."));
 	}
 }
 

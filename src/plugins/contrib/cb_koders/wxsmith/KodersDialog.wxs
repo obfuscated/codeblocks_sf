@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxScrollingDialog" name="KodersDialog">
-		<title>OLOHO query</title>
+		<title>BlackDuck query</title>
 		<centered>1</centered>
 		<object class="wxBoxSizer" variable="bszMain" member="yes">
 			<orient>wxVERTICAL</orient>
@@ -9,7 +9,7 @@
 				<object class="wxBoxSizer" variable="bszIntro" member="yes">
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_LBL_INTRO" variable="lblIntro" member="yes">
-							<label>Specify search to query the OLOHO webpage:</label>
+							<label>Specify search to query the BlackDuck webpage:</label>
 						</object>
 						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -21,7 +21,7 @@
 				<object class="wxBoxSizer" variable="bszSearch" member="yes">
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TXT_SEARCH" variable="txtSearch" member="yes">
-							<tooltip>Enter keyword to search for (at koders)</tooltip>
+							<tooltip>Enter keyword to search for (at BlackDuck)</tooltip>
 						</object>
 						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
@@ -31,7 +31,7 @@
 						<object class="wxButton" name="ID_BTN_SEARCH" variable="btnSearch" member="yes">
 							<label>Search</label>
 							<default>1</default>
-							<tooltip>Click to search at the koders webpage...</tooltip>
+							<tooltip>Click to search at the BlackDuck webpage...</tooltip>
 							<handler function="OnBtnSearchClick" entry="EVT_BUTTON" />
 						</object>
 						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
