@@ -203,7 +203,10 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& WXUNUSED(event))
 00401CCE 00000004 40B33333 0028FF08  sample_r.exe!Class::StaticMethod(int, float)
   */
 
-  wxRegEx reAddr(wxT("([A-Fa-f0-9]{8})"));
+  // The address element "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX " needs to be removed later, compute size here.
+  wxRegEx reAddr32(wxT("([A-Fa-f0-9]{8})"));  wxString tag32(wxT("AddrPC   Params"));         size_t len32 = 4*8 +4; // 4 times 8bit  address + 4 times space
+  wxRegEx reAddr64(wxT("([A-Fa-f0-9]{16})")); wxString tag64(wxT("AddrPC           Params")); size_t len64 = 4*16+4; // 4 times 16bit address + 4 times space
+  bool is64Bit = false;
   txtResult->Clear();
 
   txtResult->AppendText(wxT("Working directory is '") + wxGetCwd() + wxT("'.\n"));
@@ -213,12 +216,21 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& WXUNUSED(event))
   for (size_t i=0; i<mCrashLogFileContent.Count(); i++)
   {
     wxString line = mCrashLogFileContent.Item(i);
-    if (line.IsSameAs(wxT("AddrPC   Params")))
+    if (line.IsSameAs(tag32))
     {
-      txtResult->AppendText(wxT("******************************\n"));
-      txtResult->AppendText(wxT("* Found (another) call stack *\n"));
-      txtResult->AppendText(wxT("******************************\n"));
+      txtResult->AppendText(wxT("*************************************\n"));
+      txtResult->AppendText(wxT("* Found (another) 32 bit call stack *\n"));
+      txtResult->AppendText(wxT("*************************************\n"));
       operate_line = true;
+      continue;
+    }
+    else if (line.IsSameAs(tag64))
+    {
+      txtResult->AppendText(wxT("*************************************\n"));
+      txtResult->AppendText(wxT("* Found (another) 64 bit call stack *\n"));
+      txtResult->AppendText(wxT("*************************************\n"));
+      operate_line = true;
+      is64Bit = true;
       continue;
     }
 
@@ -229,7 +241,9 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& WXUNUSED(event))
     if (line.IsEmpty())
       continue;
 
-    if ( !reAddr.Matches(line) )
+    if (!is64Bit && !reAddr32.Matches(line) )
+      continue;
+    if ( is64Bit && !reAddr64.Matches(line) )
       continue;
 
     wxString theAddr;
@@ -237,15 +251,32 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& WXUNUSED(event))
 
 
     // Obtain address
-    for (size_t j=1; j<=reAddr.GetMatchCount(); j++)
+    if (is64Bit)
     {
-      switch (j)
+      for (size_t j=1; j<=reAddr64.GetMatchCount(); j++)
       {
-        case 1: { theAddr = reAddr.GetMatch(line, 1); } break;
-        case 2: // fall through
-        case 3: // fall through
-        case 4: // fall through
-        default: break;
+        switch (j)
+        {
+          case 1: { theAddr = reAddr64.GetMatch(line, 1); } break;
+          case 2: // fall through
+          case 3: // fall through
+          case 4: // fall through
+          default: break;
+        }
+      }
+    }
+    else // 32 bit
+    {
+      for (size_t j=1; j<=reAddr32.GetMatchCount(); j++)
+      {
+        switch (j)
+        {
+          case 1: { theAddr = reAddr32.GetMatch(line, 1); } break;
+          case 2: // fall through
+          case 3: // fall through
+          case 4: // fall through
+          default: break;
+        }
       }
     }
 
@@ -257,7 +288,7 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& WXUNUSED(event))
     }
 
     // Remove "XXXXXXXX XXXXXXXX XXXXXXXX XXXXXXXX "
-    line = line.Right(line.Length() - (8*4+4)).Trim(true).Trim(false) ; // 8 times address + 8 times space
+    line = line.Right(line.Length() - (is64Bit ? len64 : len32)).Trim(true).Trim(false) ; // 8 times address + 8 times space
     wxString sep = wxT("!");
     int sep_pos = line.Find(wxT('!'), true);
     if (sep_pos!=wxNOT_FOUND)
