@@ -1063,7 +1063,7 @@ void NassiView::DragStart()
 
     if ( dataptr )
     {
-        #if defined(__WXMSW__)
+        #if defined(__WXMSW__) || defined(__WXMAC__)
             wxCursor copycursor(dnd_copy_cur_xpm);
             wxCursor movecursor(dnd_move_cur_xpm);
             wxCursor nonecursor(dnd_none_cur_xpm);
