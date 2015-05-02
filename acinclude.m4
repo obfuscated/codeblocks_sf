@@ -69,12 +69,10 @@ AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (defau
     if test "x$enable_debug" = "xyes"; then
         CFLAGS="-g -DDEBUG -DCB_AUTOCONF $CFLAGS"
         CXXFLAGS="-g -DDEBUG -DCB_AUTOCONF $CXXFLAGS"
-        LDFLAGS="-Wl,--no-undefined"
         AC_MSG_RESULT(yes)
     else
         CFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CFLAGS"
         CXXFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CXXFLAGS"
-        LDFLAGS="-Wl,--no-undefined"
         AC_MSG_RESULT(no)
     fi
 ])
