@@ -55,7 +55,6 @@
 			<Add option="-ansi" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --libs`" />
 			<Add option="-Wl,--no-undefined" />
 		</Linker>
 		<Unit filename="AutoDoc.cpp" />
