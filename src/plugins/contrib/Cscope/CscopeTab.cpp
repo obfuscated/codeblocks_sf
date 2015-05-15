@@ -24,7 +24,7 @@ CscopeTab::CscopeTab( wxWindow* parent, CscopeConfig *cfg )
 
 	m_statusMessage = new wxStaticText( this, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0 );
 	m_statusMessage->Wrap( -1 );
-	bSizer3->Add( m_statusMessage, 1, wxALIGN_CENTER_VERTICAL|wxEXPAND|wxALL, 5 );
+	bSizer3->Add( m_statusMessage, 1, wxEXPAND|wxALL, 5 );
 
 	m_gauge = new wxGauge( this, wxID_ANY, 100, wxDefaultPosition, wxSize( -1,15 ), wxGA_HORIZONTAL|wxGA_SMOOTH );
 	m_gauge->SetValue( 0 );
