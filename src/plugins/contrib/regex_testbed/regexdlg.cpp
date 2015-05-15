@@ -43,8 +43,6 @@ RegExDlg::RegExDlg(wxWindow* parent,wxWindowID /*id*/)
     m_newlines = (wxCheckBox*)FindWindow(XRCID("ID_NEWLINES"));
     m_text = (wxTextCtrl*)FindWindow(XRCID("ID_TEXT"));
     m_output = (wxHtmlWindow*)FindWindow(XRCID("ID_OUT"));
-
-    Connect(wxID_ANY,wxEVT_CLOSE_WINDOW,(wxObjectEventFunction)&RegExDlg::OnClose);
     //*)
 
     assert(m_regex);

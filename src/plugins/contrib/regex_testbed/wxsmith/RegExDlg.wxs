@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<resource_extra>
-		<object root="1">
-			<handler function="OnClose" entry="EVT_CLOSE" />
-		</object>
+		<object root="1" />
 		<object name="ID_3" class="wxStaticText" variable="StaticText1" member="no" />
 		<object name="ID_REGEX" class="wxTextCtrl" variable="m_regex" member="yes" />
 		<object name="ID_QUOTED" class="wxTextCtrl" variable="m_quoted" member="yes" />

@@ -11,21 +11,21 @@
 				<object class="wxStaticText" name="ID_3">
 					<label>Regular expression:</label>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 				<border>10</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_REGEX">
 					<size>80,-1</size>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>10</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_QUOTED">
 					<size>80,-1</size>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>10</border>
 			</object>
 			<object class="sizeritem">
@@ -34,7 +34,7 @@
 						<object class="wxStaticText" name="ID_1">
 							<label>Regex library:</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
@@ -45,25 +45,25 @@
 								<item>wxWidgets (wxRE_BASIC)</item>
 							</content>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_NOCASE">
 							<label>Case insensitive</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_NEWLINES">
 							<label>Match newlines</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>10</border>
 					</object>
 				</object>
-				<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -73,7 +73,7 @@
 						<object class="wxStaticText" name="ID_STATICTEXT1">
 							<label>Text:</label>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
@@ -81,7 +81,7 @@
 							<size>600,60</size>
 							<style>wxTE_MULTILINE</style>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>10</border>
 						<option>1</option>
 					</object>
@@ -89,12 +89,12 @@
 						<object class="wxHtmlWindow" name="ID_OUT">
 							<size>80,200</size>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>10</border>
 						<option>3</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
