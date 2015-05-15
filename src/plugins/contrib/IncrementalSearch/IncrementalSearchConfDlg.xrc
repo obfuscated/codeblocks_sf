@@ -13,7 +13,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT1">
 									<label>Current occurrence in active editor</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -21,7 +21,7 @@
 								<object class="wxButton" name="btnIncSearchConfColourFound">
 									<label>...</label>
 								</object>
-								<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -29,7 +29,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT2">
 									<label>Additional occurrences in active editor</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -37,17 +37,17 @@
 								<object class="wxButton" name="btnIncSearchConfColourHighlight">
 									<label>...</label>
 								</object>
-								<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -60,7 +60,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT3">
 									<label>No occurrences in active editor</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -68,7 +68,7 @@
 								<object class="wxButton" name="btnIncSearchConfNotFoundBG">
 									<label>...</label>
 								</object>
-								<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -76,7 +76,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT4">
 									<label>Search wrapped at top or bottom</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -84,17 +84,17 @@
 								<object class="wxButton" name="btnIncSearchConfWrappedBG">
 									<label>...</label>
 								</object>
-								<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -106,7 +106,7 @@
 							<label>Center-align current occurrence in active editor</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_LEFT</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -114,7 +114,7 @@
 						<object class="wxCheckBox" name="idIncSearchSelectOnEscape">
 							<label>Leaving with ESC selects current occurrence</label>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_LEFT</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -122,7 +122,7 @@
 						<object class="wxCheckBox" name="idIncSearchSelectOnFocus">
 							<label>Auto-select content of input field when starting incremental search</label>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_LEFT</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -140,19 +140,19 @@
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON1">
 													<bitmap>images/incsearchhighlight.png</bitmap>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT5">
 													<label>&quot;Highlight&quot;-button</label>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -164,7 +164,7 @@
 											</content>
 											<selection>0</selection>
 										</object>
-										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -175,19 +175,19 @@
 													<bitmap>images/incsearchselectedonly.png</bitmap>
 													<default>1</default>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT6">
 													<label>&quot;Selected text&quot;-button</label>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -199,7 +199,7 @@
 											</content>
 											<selection>0</selection>
 										</object>
-										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -210,19 +210,19 @@
 													<bitmap>images/incsearchcase.png</bitmap>
 													<default>1</default>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT7">
 													<label>&quot;Match case&quot;-button</label>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -234,7 +234,7 @@
 											</content>
 											<selection>0</selection>
 										</object>
-										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -244,19 +244,19 @@
 												<object class="wxBitmapButton" name="ID_BITMAPBUTTON4">
 													<bitmap>images/incsearchregex.png</bitmap>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT8">
 													<label>&quot;Regular Expression&quot;-button</label>
 												</object>
-												<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALL|wxALIGN_BOTTOM</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -268,12 +268,12 @@
 											</content>
 											<selection>0</selection>
 										</object>
-										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -282,7 +282,7 @@
 										<object class="wxStaticText" name="ID_STATICTEXT9">
 											<label>Maximum amount of items in search history</label>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -294,18 +294,18 @@
 											<tooltip>1 - 200</tooltip>
 											<help>Maximum amount of items in search history must be between 1 and 200 (both included).&#x0A;Setting a value smaler than the actual count of elements truncates the history, if the dialog is closed.</help>
 										</object>
-										<flag>wxALL|wxALIGN_RIGHT|wxALIGN_BOTTOM</flag>
+										<flag>wxALL|wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALL|wxEXPAND</flag>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 		</object>
