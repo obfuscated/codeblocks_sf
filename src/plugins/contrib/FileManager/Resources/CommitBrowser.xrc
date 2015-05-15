@@ -22,12 +22,12 @@
 										<object class="wxStaticText" name="ID_STATICTEXT1">
 											<label>Branch</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxChoice" name="ID_BRANCH_CHOICE" />
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -35,12 +35,12 @@
 										<object class="wxStaticText" name="ID_STATICTEXT2">
 											<label>File</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxTextCtrl" name="ID_FILE_ENTRY" />
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -48,12 +48,12 @@
 										<object class="wxStaticText" name="ID_STATICTEXT4">
 											<label>Grep</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxTextCtrl" name="ID_GREP_ENTRY" />
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -62,11 +62,11 @@
 											<label>Search</label>
 											<default>1</default>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer">
@@ -75,7 +75,7 @@
 											<label>Starting commit</label>
 											<hidden>1</hidden>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -83,7 +83,7 @@
 											<enabled>0</enabled>
 											<hidden>1</hidden>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -92,7 +92,7 @@
 											<label>Ending commit</label>
 											<hidden>1</hidden>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -100,12 +100,12 @@
 											<enabled>0</enabled>
 											<hidden>1</hidden>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer">
@@ -113,14 +113,14 @@
 										<object class="wxCheckBox" name="ID_CHECK_COMMIT_AFTER">
 											<label>Committed after</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxDatePickerCtrl" name="ID_COMMIT_AFTER_DATE">
 											<enabled>0</enabled>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -128,25 +128,25 @@
 										<object class="wxCheckBox" name="ID_CHECK_COMMIT_BEFORE">
 											<label>Committed before</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxDatePickerCtrl" name="ID_COMMIT_BEFORE_DATE">
 											<enabled>0</enabled>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxListCtrl" name="ID_COMMITLIST">
 									<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -156,7 +156,7 @@
 										<object class="wxStaticText" name="ID_COMMIT_STATUS">
 											<label>Loading commits...</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -164,11 +164,11 @@
 										<object class="wxButton" name="ID_BUTTON_MORE">
 											<label>Fetch &amp;More</label>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 							</object>
 						</object>
 					</object>
@@ -179,16 +179,16 @@
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_COMMIT_MESSAGE">
 									<value>This&#x0A;is a&#x0A;sample &#x0A;commit &#x0A;message&#x0A;to test&#x0A;out spacing&#x0A;and scrollbars</value>
-									<style>wxTE_AUTO_SCROLL|wxTE_MULTILINE|wxTE_READONLY</style>
+									<style>wxTE_MULTILINE|wxTE_READONLY</style>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -198,18 +198,18 @@
 						<object class="wxButton" name="ID_CANCEL">
 							<label>Cancel</label>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="ID_BROWSE_COMMIT">
 							<label>Use Selected Commit</label>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>
