@@ -17,14 +17,14 @@
 									<label>Highlight occurrences</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_TOP</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="chkHighlightOccurrencesCaseSensitive">
 									<label>Case sensitive</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxALIGN_TOP</flag>
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
@@ -32,7 +32,7 @@
 									<label>Whole words only</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxALIGN_TOP</flag>
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
@@ -42,7 +42,7 @@
 										<object class="wxStaticText" name="stHighlightColour">
 											<label>Highlight colour</label>
 										</object>
-										<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -50,14 +50,14 @@
 											<label>...</label>
 											<bg>#FF0000</bg>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="stHighlightLength">
 											<label>Mininum selected length</label>
 										</object>
-										<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -66,21 +66,21 @@
 											<value>3</value>
 											<min>1</min>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>10</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>4</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
@@ -96,7 +96,7 @@
 									<label>Case sensitive</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxALIGN_TOP</flag>
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
@@ -104,7 +104,7 @@
 									<label>Whole words only</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxALIGN_TOP</flag>
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
@@ -114,7 +114,7 @@
 										<object class="wxStaticText" name="IstHighlightPermanentlyColour">
 											<label>Highlight colour</label>
 										</object>
-										<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -122,7 +122,7 @@
 											<label>...</label>
 											<bg>#00FF00</bg>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -130,7 +130,7 @@
 											<label>Minimum selected length</label>
 											<hidden>1</hidden>
 										</object>
-										<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -139,21 +139,21 @@
 											<value>0</value>
 											<hidden>1</hidden>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>10</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>4</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxEXPAND</flag>
 			</object>
 		</object>
 	</object>
