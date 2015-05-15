@@ -18,7 +18,7 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="lbl_include" member="no">
 									<label>Add include directories to search for files here (one directory per line):</label>
 								</object>
-								<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxBOTTOM|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -26,15 +26,15 @@
 									<minsize>-1,60</minsize>
 									<style>wxTE_MULTILINE</style>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -43,7 +43,7 @@
 						<object class="wxCheckBox" name="wxID_ANY" variable="m_DoTreeCtrl" member="yes">
 							<label>Enable creation of parser&apos;s internal search tree (might get HUGE!!!)</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -51,11 +51,11 @@
 							<label>Hide frame</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="spacer">
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -64,7 +64,7 @@
 							<label>Test Single</label>
 							<handler function="OnTestSingle" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -73,7 +73,7 @@
 							<label>Test All</label>
 							<handler function="OnParse" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -82,12 +82,12 @@
 							<label>Print Tree</label>
 							<handler function="OnPrintTree" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -106,7 +106,7 @@
 												<local_include>1</local_include>
 												<style></style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -124,7 +124,7 @@
 												<minsize>640,250</minsize>
 												<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -141,7 +141,7 @@
 												<minsize>640,150</minsize>
 												<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -157,7 +157,7 @@
 											<object class="wxTextCtrl" name="wxID_ANY" variable="m_CompletionTestCtrl" member="yes">
 												<style>wxTE_MULTILINE|wxTE_RICH2|wxHSCROLL</style>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -166,12 +166,12 @@
 								<label>Completion test</label>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

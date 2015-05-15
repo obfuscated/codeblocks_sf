@@ -18,7 +18,7 @@
 									<object class="wxStaticText" name="ID_STATICTEXT1">
 										<label>View:</label>
 									</object>
-									<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALIGN_CENTER_VERTICAL</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxChoice" name="cmbView">
@@ -30,42 +30,60 @@
 										</content>
 										<selection>0</selection>
 									</object>
-									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxEXPAND</flag>
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_STATICTEXT2">
 										<label>Search:</label>
 									</object>
-									<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALIGN_CENTER_VERTICAL</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxComboBox" name="cmbSearch">
 										<style>wxCB_DROPDOWN</style>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<option>1</option>
 								</object>
 							</object>
-							<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							<flag>wxALL|wxEXPAND</flag>
 							<border>4</border>
 						</object>
 						<object class="sizeritem">
 							<object class="wxSplitterWindow" name="splitterWin">
 								<style>wxSP_LIVE_UPDATE</style>
 								<object class="wxTreeCtrl" name="treeAll" subclass="CCTreeCtrl">
+									<image_list></image_list>
+									<tree_items>
+										<item>TreeCtrl1</item>
+										<item></item>
+									</tree_items>
+									<items_text>
+										<item2>TreeCtrl1</item2>
+										<item2></item2>
+									</items_text>
 									<style>wxTR_HAS_VARIABLE_ROW_HEIGHT|wxTR_DEFAULT_STYLE</style>
 								</object>
 								<object class="wxTreeCtrl" name="treeMembers" subclass="CCTreeCtrl">
+									<image_list></image_list>
+									<tree_items>
+										<item>TreeCtrl2</item>
+										<item></item>
+									</tree_items>
+									<items_text>
+										<item2>TreeCtrl2</item2>
+										<item2></item2>
+									</items_text>
 									<style>wxTR_HAS_BUTTONS|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_HAS_VARIABLE_ROW_HEIGHT</style>
 								</object>
 							</object>
-							<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+							<flag>wxALL|wxEXPAND</flag>
 							<option>1</option>
 						</object>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxEXPAND</flag>
 				<option>1</option>
 			</object>
 		</object>

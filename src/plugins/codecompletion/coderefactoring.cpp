@@ -74,20 +74,20 @@ public:
         wxBoxSizer* infoSizer = new wxBoxSizer(wxHORIZONTAL);
         wxString findImgFile = ConfigManager::GetDataFolder() + _T("/images/filefind.png");
         wxStaticBitmap* findIco = new wxStaticBitmap(this, wxID_ANY, wxBitmap(wxImage(findImgFile)));
-        infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        infoSizer->Add(findIco, 0, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         wxStaticText* scopeText = new wxStaticText(this, wxID_ANY, _("Please choose the find scope for search tokens"));
-        infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL,
+        infoSizer->Add(scopeText, 1, wxALL | wxALIGN_CENTER_VERTICAL,
                        wxDLG_UNIT(this, wxSize(5, 0)).GetWidth());
-        sizer->Add(infoSizer, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        sizer->Add(infoSizer, 1, wxALL | wxALIGN_CENTER_HORIZONTAL, 5);
         wxBoxSizer* btnSizer = new wxBoxSizer(wxHORIZONTAL);
         m_OpenFiles = new wxButton(this, ID_OPEN_FILES, _("&Open files"), wxDefaultPosition, wxDefaultSize, 0,
                                    wxDefaultValidator, _T("ID_OPEN_FILES"));
         m_OpenFiles->SetDefault();
-        btnSizer->Add(m_OpenFiles, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        btnSizer->Add(m_OpenFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
         m_ProjectFiles = new wxButton(this, ID_PROJECT_FILES, _("&Project files"), wxDefaultPosition,
                                       wxDefaultSize, 0, wxDefaultValidator, _T("ID_PROJECT_FILES"));
-        btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
-        sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_HORIZONTAL | wxALIGN_CENTER_VERTICAL, 5);
+        btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+        sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
         SetSizer(sizer);
         sizer->Fit(this);
         sizer->SetSizeHints(this);

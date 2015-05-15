@@ -20,7 +20,7 @@
 											<object class="wxStaticText" name="wxID_ANY" variable="StaticText29" member="no">
 												<label>Find:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -28,7 +28,7 @@
 												<value>*</value>
 												<size>401,21</size>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -38,18 +38,18 @@
 												<default>1</default>
 												<handler function="OnFindClick" entry="EVT_BUTTON" />
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="wxID_ANY" variable="StaticLine1" member="no">
 										<size>10,-1</size>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -62,187 +62,187 @@
 											<object class="wxStaticText" name="wxID_ANY" variable="lblID" member="no">
 												<label>ID:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT18" variable="txtID" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblName" member="no">
 												<label>Name:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT2" variable="txtName" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblKind" member="no">
 												<label>Kind:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT10" variable="txtKind" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblScope" member="no">
 												<label>Scope:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT12" variable="txtScope" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblFullType" member="no">
 												<label>Full type:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT4" variable="txtFullType" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblBaseType" member="no">
 												<label>Base type:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT6" variable="txtBaseType" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblArgs" member="no">
 												<label>Arguments:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT8" variable="txtArgs" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblArgsStripped" member="no">
 												<label>Arguments (str.):</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT37" variable="txtArgsStripped" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblTemplateArg" member="no">
 												<label>Templ. args:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT41" variable="txtTemplateArg" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblIsOp" member="no">
 												<label>Is operator?</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT14" variable="txtIsOp" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblIsLocal" member="no">
 												<label>Is local?</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT16" variable="txtIsLocal" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblIsTemp" member="no">
 												<label>Is temp?</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT33" variable="txtIsTemp" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblIsConst" member="no">
 												<label>Is const?</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT39" variable="txtIsConst" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblIsNoExcept" member="no">
 												<label>Is noexcept?</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT1" variable="txtIsNoExcept" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblNameSpace" member="no">
 												<label>Namespace:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT20" variable="txtNamespace" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblParent" member="no">
 												<label>Parent:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer7" member="no">
@@ -250,7 +250,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT24" variable="txtParent" member="yes">
 														<label></label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -259,16 +259,16 @@
 														<size>36,23</size>
 														<handler function="OnGoParentClick" entry="EVT_BUTTON" />
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblChildren" member="no">
 												<label>Children:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer8" member="no">
@@ -276,7 +276,7 @@
 													<object class="wxComboBox" name="ID_COMBOBOX3" variable="cmbChildren" member="yes">
 														<style>wxCB_READONLY</style>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -285,16 +285,16 @@
 														<size>36,23</size>
 														<handler function="OnGoChildrenClick" entry="EVT_BUTTON" />
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblAncestors" member="no">
 												<label>Ancestors:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer6" member="no">
@@ -302,7 +302,7 @@
 													<object class="wxComboBox" name="ID_COMBOBOX2" variable="cmbAncestors" member="yes">
 														<style>wxCB_READONLY</style>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -311,16 +311,16 @@
 														<size>36,23</size>
 														<handler function="OnGoAscClick" entry="EVT_BUTTON" />
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblDescendants" member="no">
 												<label>Descendants:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer5" member="yes">
@@ -328,7 +328,7 @@
 													<object class="wxComboBox" name="ID_COMBOBOX1" variable="cmbDescendants" member="yes">
 														<style>wxCB_READONLY</style>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -337,16 +337,16 @@
 														<size>36,23</size>
 														<handler function="OnGoDescClick" entry="EVT_BUTTON" />
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblDeclFile" member="no">
 												<label>Decl. filename:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer11" member="yes">
@@ -354,7 +354,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT26" variable="txtDeclFile" member="yes">
 														<label></label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -363,16 +363,16 @@
 														<size>36,23</size>
 														<handler function="OnGoDeclClick" entry="EVT_BUTTON" />
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblImplfile" member="no">
 												<label>Impl. filename:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer12" member="yes">
@@ -380,7 +380,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT28" variable="txtImplFile" member="yes">
 														<label></label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -389,25 +389,25 @@
 														<size>36,23</size>
 														<handler function="OnGoImplClick" entry="EVT_BUTTON" />
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="wxID_ANY" variable="lblUserData" member="no">
 												<label>User data:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT35" variable="txtUserData" member="yes">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 							</object>
@@ -419,7 +419,7 @@
 							<object class="wxBoxSizer" variable="BoxSizer3" member="no">
 								<object class="sizeritem">
 									<object class="wxListBox" name="ID_LISTBOX1" variable="lstFiles" member="yes" />
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -434,7 +434,7 @@
 									<object class="wxListBox" name="ID_LISTBOX2" variable="lstDirs" member="yes">
 										<default>-1</default>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -450,7 +450,7 @@
 									<object class="wxListBox" name="ID_LISTBOX3" variable="lstMacros" member="yes">
 										<default>-1</default>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -459,7 +459,7 @@
 						<label>Predefined macros</label>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -469,7 +469,7 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="txtInfo" member="yes">
 							<label>The parser contains 0 tokens found in 0 files</label>
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -478,18 +478,18 @@
 							<label>Save</label>
 							<handler function="OnSave" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="wxID_ANY" variable="StaticLine2" member="no">
 					<size>10,-1</size>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -500,7 +500,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>

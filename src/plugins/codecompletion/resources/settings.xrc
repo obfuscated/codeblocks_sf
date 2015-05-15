@@ -17,25 +17,25 @@
 											<object class="wxCheckBox" name="chkUseSmartSense">
 												<label>Disable SmartSense</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkWhileTyping">
 												<label>Update parser when typing (on save otherwise)</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAutoAddParentheses">
 												<label>Add parentheses after function name auto completion</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="spacer">
-											<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxBOTTOM|wxEXPAND</flag>
 											<border>5</border>
 											<size>581,0</size>
 										</object>
@@ -43,21 +43,21 @@
 											<object class="wxCheckBox" name="chkDetectImpl">
 												<label>Add function arguments&apos; types and names when autocompleted outside function</label>
 											</object>
-											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxEXPAND</flag>
 											<border>20</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAddDoxgenComment">
 												<label>Add doxgen comment, when implementing the function method</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkEnableHeaders">
 												<label>Enable headers code-completion</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -65,7 +65,7 @@
 												<label>Disable pseudo semantic keyword highlighting</label>
 												<tooltip>If this is checked, member variables will not be highlighted in the editor.</tooltip>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -77,36 +77,36 @@
 													<object class="wxStaticText" name="lblMaxMatches">
 														<label>Maximum allowed code-completion matches:</label>
 													</object>
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 												<object class="sizeritem">
 													<object class="wxSpinCtrl" name="spnMaxMatches">
 														<value>16384</value>
 														<max>100000</max>
 													</object>
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALL|wxALIGN_TOP</flag>
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="lblFillupChars">
 														<label>Fillup characters:</label>
 													</object>
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtFillupChars" />
-													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALL|wxEXPAND</flag>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT1">
 												<label>Delay for auto-kick-in when typing [. :: -&gt;]:</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -115,7 +115,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT2">
 														<label>1 ms</label>
 													</object>
-													<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxLEFT|wxALIGN_TOP</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
@@ -129,7 +129,7 @@
 																<pagesize>10</pagesize>
 																<style>wxSL_AUTOTICKS</style>
 															</object>
-															<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>5</border>
 															<option>1</option>
 														</object>
@@ -137,10 +137,10 @@
 															<object class="wxStaticText" name="lblDelay">
 																<label>500 ms</label>
 															</object>
-															<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+															<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 														</object>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxEXPAND</flag>
 													<border>8</border>
 													<option>1</option>
 												</object>
@@ -148,15 +148,15 @@
 													<object class="wxStaticText" name="ID_STATICTEXT3">
 														<label>2.5 sec</label>
 													</object>
-													<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
 													<border>5</border>
 												</object>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -166,67 +166,67 @@
 											<object class="wxCheckBox" name="chkKL_1">
 												<label>1</label>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_2">
 												<label>2</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_3">
 												<label>3</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_4">
 												<label>4</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_5">
 												<label>5</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_6">
 												<label>6</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_7">
 												<label>7</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_8">
 												<label>8</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkKL_9">
 												<label>9</label>
 											</object>
-											<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>8</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -245,28 +245,28 @@
 											<object class="wxCheckBox" name="chkLocals">
 												<label>Follow LOCAL includes</label>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkGlobals">
 												<label>Follow GLOBAL includes</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkPreprocessor">
 												<label>Parse preprocessor directives</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkComplexMacros">
 												<label>Parse complex macros (needs more time)</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -274,14 +274,14 @@
 												<label>Enable platform checks when collecting include folders to parse</label>
 												<checked>1</checked>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticLine" name="ID_STATICLINE1">
 												<size>10,-1</size>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -293,7 +293,7 @@
 															<object class="wxStaticText" name="ID_STATICTEXT6">
 																<label>Concurrently parsing threads:</label>
 															</object>
-															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
@@ -303,11 +303,11 @@
 																<max>16</max>
 																<style>wxSP_ARROW_KEYS</style>
 															</object>
-															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>8</border>
 														</object>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
@@ -317,7 +317,7 @@
 															<object class="wxRadioButton" name="rdoOneParserPerWorkspace">
 																<label>Use one parser for the whole workspace</label>
 															</object>
-															<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
@@ -325,20 +325,20 @@
 																<label>Use one parser per project</label>
 																<selected>1</selected>
 															</object>
-															<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxBoxSizer">
 																<object class="spacer">
-																	<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<flag>wxALIGN_CENTER_VERTICAL</flag>
 																	<border>5</border>
 																</object>
 																<object class="sizeritem">
 																	<object class="wxStaticText" name="lblParsersNum">
 																		<label>Maximum allowed parsers:</label>
 																	</object>
-																	<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<flag>wxALIGN_CENTER_VERTICAL</flag>
 																	<border>5</border>
 																</object>
 																<object class="sizeritem">
@@ -348,23 +348,23 @@
 																		<max>32</max>
 																		<style>wxSP_ARROW_KEYS</style>
 																	</object>
-																	<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 																	<border>8</border>
 																</object>
 															</object>
-															<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxEXPAND</flag>
 															<border>5</border>
 														</object>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 												</object>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -383,14 +383,14 @@
 											<object class="wxStaticText" name="ID_STATICTEXT8">
 												<label>File extensions to parse as header files (separated by colons):</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtCCFileExtHeader">
 												<value>h,hpp,hxx,hh,h++,tcc,xpm</value>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
@@ -398,25 +398,25 @@
 												<label>Include files w/o extension (i.e. C++ &lt;iostream&gt;)</label>
 												<checked>1</checked>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT9">
 												<label>File extensions to parse as source files (separated by colons):</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtCCFileExtSource">
 												<value>c,cpp,cxx,cc,c++</value>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -429,7 +429,7 @@
 													<object class="wxListBox" name="lstRepl">
 														<size>-1,100</size>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALL|wxEXPAND</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -439,28 +439,28 @@
 															<object class="wxButton" name="btnAddRepl">
 																<label>&amp;Add</label>
 															</object>
-															<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxALL|wxALIGN_LEFT</flag>
 														</object>
 														<object class="sizeritem">
 															<object class="wxButton" name="btnEditRepl">
 																<label>&amp;Edit</label>
 															</object>
-															<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxTOP|wxALIGN_LEFT</flag>
 															<border>4</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxButton" name="btnDelRepl">
 																<label>&amp;Delete</label>
 															</object>
-															<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxTOP|wxALIGN_LEFT</flag>
 															<border>4</border>
 														</object>
 													</object>
-													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxLEFT|wxALIGN_TOP</flag>
 													<border>8</border>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -468,18 +468,18 @@
 											<object class="wxStaticText" name="ID_STATICTEXT4">
 												<label>The more replacement tokens you add, the slower the parser will become.</label>
 											</object>
-											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT5">
 												<label>So try not to over-do it :).</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -494,7 +494,7 @@
 									<object class="wxCheckBox" name="chkNoSB">
 										<label>Disable symbols browser</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -505,33 +505,33 @@
 											<object class="wxCheckBox" name="chkInheritance">
 												<label>Display inheritance info</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkExpandNS">
 												<label>Automatically expand namespaces</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkFloatCB">
 												<label>Display as free floating/docking window</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkTreeMembers">
 												<label>Display member list in separate tree</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -542,12 +542,12 @@
 											<object class="wxCheckBox" name="chkScopeFilter">
 												<label>Use scope filtering</label>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxALL|wxALIGN_LEFT</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -563,7 +563,7 @@
 									<object class="wxCheckBox" name="chkDocumentation">
 										<label>Parse documentation</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -579,7 +579,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT10">
 														<label>Background color</label>
 													</object>
-													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -589,7 +589,7 @@
 														<bg>wxSYS_COLOUR_INFOBK</bg>
 														<style>wxBU_EXACTFIT</style>
 													</object>
-													<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -597,7 +597,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT11">
 														<label>Text color</label>
 													</object>
-													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -607,7 +607,7 @@
 														<bg>wxSYS_COLOUR_INFOTEXT</bg>
 														<style>wxBU_EXACTFIT</style>
 													</object>
-													<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -615,7 +615,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT12">
 														<label>Link color</label>
 													</object>
-													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -625,16 +625,16 @@
 														<bg>wxSYS_COLOUR_HIGHLIGHT</bg>
 														<style>wxBU_EXACTFIT</style>
 													</object>
-													<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -642,7 +642,7 @@
 						<label>Documentation</label>
 					</object>
 				</object>
-				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>

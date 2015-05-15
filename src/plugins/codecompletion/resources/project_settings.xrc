@@ -1,49 +1,47 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxPanel" name="pnlProjectCCOptions">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>Additional search paths:</label>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxListBox" name="lstPaths">
-          <content/>
-        </object>
-        <option>1</option>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="btnAdd">
-              <label>&amp;Add</label>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="btnEdit">
-              <label>&amp;Edit</label>
-            </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="btnDelete">
-              <label>&amp;Delete</label>
-            </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxPanel" name="pnlProjectCCOptions">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Additional search paths:</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxListBox" name="lstPaths" />
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="btnAdd">
+							<label>&amp;Add</label>
+						</object>
+						<flag></flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnEdit">
+							<label>&amp;Edit</label>
+						</object>
+						<flag>wxLEFT</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnDelete">
+							<label>&amp;Delete</label>
+						</object>
+						<flag>wxLEFT</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>
