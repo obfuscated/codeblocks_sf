@@ -3,7 +3,6 @@
 	<object class="wxScrollingDialog" name="avVersionEditorDlg">
 		<title>Auto Versioning Editor</title>
 		<centered>1</centered>
-		<size>469,364</size>
 		<font>
 			<size>10</size>
 		</font>
@@ -14,7 +13,6 @@
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxNotebook" name="ID_AV_NOTEBOOK" variable="nbAutoVersioning" member="yes">
-					<size>456,283</size>
 					<focused>1</focused>
 					<maxsize>-1,-1</maxsize>
 					<object class="notebookpage">
@@ -27,7 +25,7 @@
 											<object class="wxStaticText" name="ID_MAJOR_LABEL" variable="lblMajor" member="yes">
 												<label>Major Version</label>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -36,12 +34,12 @@
 												<value>1</value>
 												<tooltip>Increments by 1 when the &#x0A;minor version reaches its&#x0A;maximun value.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 								<object class="sizeritem">
@@ -50,7 +48,7 @@
 											<object class="wxStaticText" name="ID_MINOR_LABEL" variable="lblMinor" member="yes">
 												<label>Minor Version</label>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -59,12 +57,12 @@
 												<value>0</value>
 												<tooltip>Increments by one everytime &#x0A;that the build number pass the&#x0A;barrier of build times. The value &#x0A;is reset to 0 when it reaches its&#x0A;maximun value.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 								<object class="sizeritem">
@@ -73,7 +71,7 @@
 											<object class="wxStaticText" name="ID_BUILD_LABEL" variable="lblBuild" member="yes">
 												<label>Build Number</label>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -82,12 +80,12 @@
 												<value>0</value>
 												<tooltip>Increments by 1 everytime &#x0A;that the revision number is&#x0A;incremented.&#x0A;&#x0A;Equivalent to &quot;Release&quot; on&#x0A;unix systems.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 								<object class="sizeritem">
@@ -96,7 +94,7 @@
 											<object class="wxStaticText" name="ID_REVISION_LABEL" variable="lblRevision" member="yes">
 												<label>Revision</label>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -105,19 +103,19 @@
 												<value>0</value>
 												<tooltip>Increments randomly when&#x0A;some file is modified.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
 										<size>10,-1</size>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -126,7 +124,7 @@
 											<object class="wxStaticText" name="ID_COUNT_LABEL" variable="lblCount" member="yes">
 												<label>Build Count</label>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -135,12 +133,12 @@
 												<value>0</value>
 												<tooltip>Increments every time the&#x0A;program is compiled. Also if &#x0A;no changes has been made.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 							</object>
@@ -153,7 +151,7 @@
 							<object class="wxBoxSizer" variable="statusSizer" member="yes">
 								<orient>wxVERTICAL</orient>
 								<object class="spacer">
-									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -161,7 +159,7 @@
 									<object class="wxStaticText" name="ID_SATUS_LABEL" variable="lblStatus" member="yes">
 										<label>Software Status:</label>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -176,21 +174,21 @@
 										<tooltip>Example: 1.0 Alpha</tooltip>
 										<handler function="OnCmbStatusSelect" entry="EVT_COMBOBOX" />
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE4" variable="StaticLine4" member="yes">
 										<size>10,-1</size>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
 										<label>Abbreviation:</label>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -203,11 +201,11 @@
 										</content>
 										<tooltip>Example 1.0a</tooltip>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -225,20 +223,21 @@
 											<object class="wxStaticText" name="ID_MINORMAXIMUN_LABEL" variable="lblMinorMaximum" member="yes">
 												<label>Minor maximum:</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
+											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_MINORMAXIMUM_TEXT" variable="txtMinorMaximun" member="yes">
 												<value>10</value>
 												<tooltip>Resets the minor to&#x0A;zero when the specified&#x0A;value is reached.</tooltip>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxBoxSizer" variable="buildNumberMaxSizer" member="yes">
@@ -246,20 +245,21 @@
 											<object class="wxStaticText" name="ID_BUILDNUMBERMAX_LABEL" variable="lblBuildNumberMaximun" member="yes">
 												<label>Build Number maximum:</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
+											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_BUILDNUMBERMAX_TEXT" variable="txtBuildNumberMaximun" member="yes">
 												<value>0</value>
 												<tooltip>Reset the build number&#x0A;to zero when the specified&#x0A;value is reached.&#x0A;&#x0A;0 equals to unlimited.</tooltip>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
@@ -267,20 +267,21 @@
 											<object class="wxStaticText" name="ID_REVISIONMAX_LABEL" variable="lblRevisionMax" member="yes">
 												<label>Revision maximum:</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
+											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_REVISIONMAX_TEXT" variable="txtRevisionMax" member="yes">
 												<value>0</value>
 												<tooltip>Reset the revision to zero&#x0A;when the specified value &#x0A;is reached.&#x0A;&#x0A;0 equals to unlimited.</tooltip>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxBoxSizer" variable="BoxSizer2" member="yes">
@@ -288,25 +289,27 @@
 											<object class="wxStaticText" name="ID_REVISIONRANDOM_LABEL" variable="lblRevisionRandom" member="yes">
 												<label>Revision random maximum:</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
+											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_REVISIONRANDOM_TEXT" variable="txtRevisionRandom" member="yes">
 												<value>10</value>
 												<tooltip>Maximun number value&#x0A;used for the random&#x0A;incrementation of the&#x0A;revision.</tooltip>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
+											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_BUILDTIMES_LABEL" variable="lblBuildTimes" member="yes">
 										<label>Build times before incrementing Minor:</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -314,7 +317,7 @@
 										<value>100</value>
 										<tooltip>Indicates the times&#x0A;that the project have&#x0A;to be build before&#x0A;incrementing the minor.</tooltip>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 							</object>
@@ -329,40 +332,40 @@
 									<object class="wxStaticText" name="ID_HEADER_GUARD_LABEL" variable="lblHeaderGuard" member="yes">
 										<label>Header guard:</label>
 									</object>
-									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxALIGN_LEFT</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxTextCtrl" name="ID_HEADER_GUARD_TEXT" variable="txtHeaderGuard" member="yes">
 										<value>VERSION__H</value>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_NAMESPACE_LABEL" variable="lblNamespace" member="yes">
 										<label>Namespace:</label>
 									</object>
-									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxALIGN_LEFT</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxTextCtrl" name="ID_NAMESPACE_TEXT" variable="txtNameSpace" member="yes">
 										<value>AutoVersion</value>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_PREFIX_LABEL" variable="lblPrefix" member="yes">
 										<label>Variables prefix:</label>
 									</object>
-									<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxALIGN_LEFT</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxTextCtrl" name="ID_PREFIX_TEXT" variable="txtPrefix" member="yes" />
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 							</object>
@@ -384,7 +387,7 @@
 														<checked>1</checked>
 														<tooltip>Use the default scheme for &#x0A;autoincrementing the major &#x0A;and minor versions.</tooltip>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
@@ -393,7 +396,15 @@
 														<checked>1</checked>
 														<tooltip>Create variable declarations&#x0A;for date, month and year. And &#x0A;also an ubuntu version style.</tooltip>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxEXPAND</flag>
+													<border>5</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="ID_DEFINE_CHECK" variable="chkDefine" member="yes">
+														<label>Use #define</label>
+														<tooltip>Use #define declaration instead of static variables</tooltip>
+													</object>
+													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
@@ -401,12 +412,11 @@
 														<label>Update manifest.xml</label>
 														<tooltip>Update manifest.xml&apos;s version field with AutoVersion&apos;s&#x0A;values using the format MAJOR.MINOR.BUILD.&#x0A;This setting is mainly useful for plugin developers.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<flag>wxALL|wxALIGN_LEFT</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -419,7 +429,7 @@
 														<tooltip>If you check this the version&#x0A;info will increment when files have&#x0A;been modified every time before&#x0A;compilation takes effect.</tooltip>
 														<handler function="OnChkCommitClick" entry="EVT_CHECKBOX" />
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
@@ -428,20 +438,20 @@
 														<enabled>0</enabled>
 														<tooltip>Ask you to increment every time&#x0A;a change has been made to the &#x0A;source code, before the compilation&#x0A;takes effect.</tooltip>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 												</object>
 												<object class="spacer">
-													<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<flag>wxALL|wxALIGN_LEFT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -449,7 +459,7 @@
 									<object class="wxStaticLine" name="ID_STATICLINE3" variable="StaticLine3" member="yes">
 										<size>10,-1</size>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>1</border>
 								</object>
 								<object class="sizeritem">
@@ -461,7 +471,7 @@
 													<object class="wxStaticText" name="ID_HEADERPATH_LABEL" variable="lblHeaderPath" member="yes">
 														<label>Header Path:</label>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL|wxEXPAND</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
@@ -471,7 +481,7 @@
 																<value>version.h</value>
 																<tooltip>Header path</tooltip>
 															</object>
-															<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>
 															<option>1</option>
 														</object>
@@ -482,15 +492,14 @@
 																<tooltip>Select header path and filename</tooltip>
 																<handler function="OnHeaderPathClick" entry="EVT_BUTTON" />
 															</object>
-															<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALIGN_CENTER_VERTICAL</flag>
 														</object>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -506,25 +515,25 @@
 														<default>1</default>
 														<dimension>2</dimension>
 														<tooltip>Sets the language output.</tooltip>
-														<style>wxRA_HORIZONTAL</style>
+														<style>wxRA_VERTICAL</style>
 													</object>
-													<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_NOT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
 										<size>10,-1</size>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -533,7 +542,7 @@
 										<tooltip>Check this if your project is controlled by svn&#x0A;to generate an SVN__REVISION declaration.</tooltip>
 										<handler function="OnSvnCheck" entry="EVT_CHECKBOX" />
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 								<object class="sizeritem">
@@ -544,7 +553,7 @@
 												<enabled>0</enabled>
 												<tooltip>Current SVN directory.</tooltip>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>2</border>
 											<option>1</option>
 										</object>
@@ -556,11 +565,11 @@
 												<tooltip>Choose current svn directory project&#x0A;if diffrent from the project default.</tooltip>
 												<handler function="OnSvnDirectoryClick" entry="EVT_BUTTON" />
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>2</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>2</border>
 								</object>
 							</object>
@@ -576,14 +585,14 @@
 										<label>Show changes editor when incrementing version</label>
 										<tooltip>This will open a window&#x0A;everytime you commit or&#x0A;the project version increments.&#x0A;&#x0A;Then you can enter the&#x0A;changes made to the project.</tooltip>
 									</object>
-									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_CHANGESPATH_STATICTEXT" variable="lblChangesPath" member="yes">
 										<label>File path;</label>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -593,7 +602,7 @@
 												<value>ChangesLog.txt</value>
 												<tooltip>ChangesLog Path</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -604,10 +613,10 @@
 												<tooltip>Select ChangesLog path and filename</tooltip>
 												<handler function="OnChangesLogPathClick" entry="EVT_BUTTON" />
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -616,19 +625,19 @@
 											<object class="wxStaticText" name="ID_FORMAT_STATICTEXT" variable="lblChangesTitle" member="yes">
 												<label>Title Format:</label>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="ID_CHANGESTITLE_TEXTCTRL" variable="txtChangesTitle" member="yes">
 												<value>released version %M.%m.%b of %p</value>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 								<object class="sizeritem">
@@ -636,7 +645,7 @@
 										<label>Major: %M, Minor: %m, Build: %b, Revision: %r, SVN Revision: %s, Date: %d, Month: %o, Year: %y, Ubuntu Style Version: %u, Status: %T, Status Short: %t, Project title: %p</label>
 										<size>413,80</size>
 									</object>
-									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 									<border>5</border>
 								</object>
 							</object>
@@ -644,7 +653,7 @@
 						<label>Changes Log</label>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -653,7 +662,7 @@
 					<label>Current Project:</label>
 					<style>wxALIGN_CENTRE</style>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -665,12 +674,12 @@
 							<tooltip>Accept changes made.</tooltip>
 							<handler function="OnAcceptClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 					<object class="spacer">
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>2</border>
 					</object>
 					<object class="sizeritem">
@@ -679,12 +688,12 @@
 							<tooltip>Cancel changes made&#x0A;to the values in the editor.</tooltip>
 							<handler function="OnCancelClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>1</border>
 			</object>
 		</object>

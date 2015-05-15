@@ -14,18 +14,18 @@
 #include <typeinfo>
 
 //(*Headers(avVersionEditorDlg)
-#include <wx/notebook.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/radiobox.h>
-#include <wx/textctrl.h>
-#include <wx/checkbox.h>
-#include <wx/statline.h>
-#include <wx/panel.h>
-#include <wx/button.h>
-#include "scrollingdialog.h"
-#include <wx/timer.h>
 #include <wx/combobox.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include <wx/notebook.h>
+#include <wx/button.h>
+#include <wx/panel.h>
+#include "scrollingdialog.h"
+#include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/radiobox.h>
+#include <wx/timer.h>
 //*)
 
 #include <wx/event.h>
@@ -163,92 +163,92 @@ public:
 		//*)
 
 		//(*Declarations(avVersionEditorDlg)
-		wxBoxSizer* BoxSizer4;
-		wxStaticText* lblRevision;
-		wxStaticText* lblRevisionRandom;
-		wxComboBox* cmbStatus;
-		wxPanel* pnlVersionValues;
-		wxBoxSizer* BoxSizer6;
-		wxTextCtrl* txtBuildNumber;
-		wxCheckBox* chkAutoIncrement;
-		wxCheckBox* chkDates;
-		wxCheckBox* chkDefine;
-		wxStaticText* lblChangesPath;
-		wxRadioBox* rbHeaderLanguage;
-		wxBoxSizer* BoxSizer19;
-		wxCheckBox* chkCommit;
-		wxStaticText* lblCount;
-		wxTextCtrl* txtRevisionNumber;
-		wxBoxSizer* BoxSizer5;
-		wxBoxSizer* BoxSizer7;
-		wxBoxSizer* minorMaxSizer;
-		wxBoxSizer* BoxSizer8;
-		wxCheckBox* chkChanges;
-		wxButton* btnCancel;
-		wxBoxSizer* schemeSizer;
-		wxComboBox* cmbAbbreviation;
-		wxPanel* pnlStatus;
-		wxStaticText* lblBuildTimes;
-		wxTextCtrl* txtBuildNumberMaximun;
-		wxTextCtrl* txtMinorMaximun;
-		wxStaticText* lblChangesTitle;
-		wxBoxSizer* statusSizer;
-		wxButton* btnHeaderPath;
-		wxButton* btnChangesLogPath;
-		wxStaticText* lblHeaderPath;
-		wxBoxSizer* settingsSizer;
-		wxStaticText* lblNamespace;
-		wxTextCtrl* txtChangesLogPath;
-		wxStaticText* StaticText1;
+		wxPanel* pnlCode;
+		wxButton* btnAccept;
 		wxBoxSizer* buttonsSizer;
-		wxStaticText* lblMajor;
+		wxCheckBox* chkAutoIncrement;
+		wxStaticText* lblBuildTimes;
+		wxRadioBox* rbHeaderLanguage;
+		wxNotebook* nbAutoVersioning;
+		wxStaticText* lblChangesFormats;
+		wxButton* btnChangesLogPath;
+		wxBoxSizer* BoxSizer3;
+		wxStaticLine* StaticLine2;
+		wxTextCtrl* txtChangesLogPath;
+		wxStaticText* lblRevisionMax;
+		wxBoxSizer* statusSizer;
+		wxPanel* pnlVersionValues;
+		wxTextCtrl* txtChangesTitle;
+		wxCheckBox* chkSvn;
+		wxBoxSizer* BoxSizer7;
+		wxStaticText* lblCount;
+		wxComboBox* cmbStatus;
+		wxCheckBox* chkChanges;
+		wxCheckBox* chkAskCommit;
+		wxPanel* pnlSettings;
+		wxBoxSizer* minorMaxSizer;
 		wxBoxSizer* BoxSizer2;
 		wxStaticText* lblMinorMaximum;
-		wxTextCtrl* txtRevisionRandom;
-		wxBoxSizer* valuesSizer;
-		wxBoxSizer* BoxSizer12;
-		wxStaticLine* StaticLine4;
-		wxStaticLine* StaticLine2;
-		wxPanel* pnlCode;
-		wxTextCtrl* txtHeaderGuard;
-		wxStaticText* lblRevisionMax;
-		wxButton* btnSvnDir;
-		wxCheckBox* chkSvn;
-		wxBoxSizer* svnSizer;
-		wxStaticText* lblChangesFormats;
-		wxPanel* pnlSettings;
-		wxTextCtrl* txtChangesTitle;
-		wxStaticText* lblBuildNumberMaximun;
-		wxTextCtrl* txtMajorVersion;
-		wxTextCtrl* txtBuildTimes;
-		wxTextCtrl* txtHeaderPath;
-		wxStaticLine* StaticLine3;
-		wxStaticLine* StaticLine1;
-		wxBoxSizer* changesSizer;
-		wxStaticText* lblPrefix;
-		wxBoxSizer* BoxSizer1;
-		wxPanel* pnlChanges;
-		wxBoxSizer* BoxSizer9;
-		wxButton* btnAccept;
-		wxStaticText* lblStatus;
-		wxTextCtrl* txtBuildCount;
 		wxTextCtrl* txtNameSpace;
-		wxPanel* pnlScheme;
-		wxStaticText* lblBuild;
-		wxBoxSizer* BoxSizer3;
+		wxStaticText* StaticText1;
 		wxTimer tmrValidateInput;
-		wxCheckBox* chkUpdateManifest;
-		wxTextCtrl* txtPrefix;
-		wxTextCtrl* txtRevisionMax;
-		wxCheckBox* chkAskCommit;
-		wxStaticText* lblHeaderGuard;
-		wxTextCtrl* txtSvnDir;
-		wxTextCtrl* txtMinorVersion;
-		wxStaticText* lblMinor;
+		wxStaticText* lblRevisionRandom;
 		wxBoxSizer* mainSizer;
-		wxStaticText* lblCurrentProject;
+		wxCheckBox* chkCommit;
+		wxButton* btnHeaderPath;
+		wxBoxSizer* changesSizer;
+		wxBoxSizer* BoxSizer9;
+		wxPanel* pnlStatus;
+		wxBoxSizer* settingsSizer;
+		wxTextCtrl* txtPrefix;
 		wxBoxSizer* buildNumberMaxSizer;
-		wxNotebook* nbAutoVersioning;
+		wxStaticText* lblStatus;
+		wxStaticText* lblPrefix;
+		wxTextCtrl* txtRevisionRandom;
+		wxTextCtrl* txtBuildNumber;
+		wxPanel* pnlChanges;
+		wxStaticLine* StaticLine1;
+		wxBoxSizer* valuesSizer;
+		wxStaticText* lblChangesPath;
+		wxCheckBox* chkUpdateManifest;
+		wxStaticText* lblHeaderPath;
+		wxBoxSizer* BoxSizer19;
+		wxBoxSizer* BoxSizer4;
+		wxStaticLine* StaticLine3;
+		wxStaticText* lblNamespace;
+		wxTextCtrl* txtMajorVersion;
+		wxStaticText* lblBuildNumberMaximun;
+		wxBoxSizer* BoxSizer8;
+		wxButton* btnSvnDir;
+		wxPanel* pnlScheme;
+		wxTextCtrl* txtBuildCount;
+		wxTextCtrl* txtBuildNumberMaximun;
+		wxTextCtrl* txtMinorVersion;
+		wxCheckBox* chkDefine;
+		wxStaticText* lblHeaderGuard;
+		wxBoxSizer* BoxSizer1;
+		wxStaticText* lblBuild;
+		wxComboBox* cmbAbbreviation;
+		wxStaticText* lblMinor;
+		wxTextCtrl* txtRevisionMax;
+		wxButton* btnCancel;
+		wxTextCtrl* txtHeaderPath;
+		wxStaticLine* StaticLine4;
+		wxBoxSizer* BoxSizer12;
+		wxTextCtrl* txtHeaderGuard;
+		wxTextCtrl* txtBuildTimes;
+		wxTextCtrl* txtMinorMaximun;
+		wxStaticText* lblCurrentProject;
+		wxBoxSizer* BoxSizer6;
+		wxBoxSizer* svnSizer;
+		wxTextCtrl* txtRevisionNumber;
+		wxBoxSizer* schemeSizer;
+		wxStaticText* lblMajor;
+		wxTextCtrl* txtSvnDir;
+		wxBoxSizer* BoxSizer5;
+		wxStaticText* lblRevision;
+		wxCheckBox* chkDates;
+		wxStaticText* lblChangesTitle;
 		//*)
 
 public:
