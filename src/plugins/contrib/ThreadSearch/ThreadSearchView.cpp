@@ -401,12 +401,12 @@ void ThreadSearchView::do_layout()
     m_pSizerSearchItems->Add(m_pCboSearchExpr, 2, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     m_pSizerSearchItems->Add(m_pBtnSearch, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     m_pSizerSearchItems->Add(m_pBtnOptions, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    m_pSizerSearchItems->Add(m_pStaticLine1, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_VERTICAL, 2);
+    m_pSizerSearchItems->Add(m_pStaticLine1, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
     m_pSizerSearchItems->Add(m_pStaTxtSearchIn, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
     m_pSizerSearchItems->Add(m_pPnlSearchIn, 0, wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 0);
-    m_pSizerSearchItems->Add(m_pStaticLine2, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_VERTICAL, 2);
+    m_pSizerSearchItems->Add(m_pStaticLine2, 0, wxLEFT|wxRIGHT|wxEXPAND, 2);
     m_pSizerSearchItems->Add(m_pBtnShowDirItems, 0, wxALL|wxALIGN_CENTER_VERTICAL|wxADJUST_MINSIZE, 4);
-    m_pSizerTop->Add(m_pSizerSearchItems, 0, wxEXPAND|wxALIGN_CENTER_VERTICAL, 0);
+    m_pSizerTop->Add(m_pSizerSearchItems, 0, wxEXPAND, 0);
     m_pSizerSearchDirItems->Add(m_pPnlDirParams, 1, wxALIGN_CENTER_VERTICAL, 0);
     m_pSizerTop->Add(m_pSizerSearchDirItems, 0, wxBOTTOM|wxEXPAND, 4);
     m_pSizerSearchPreview->Add(m_pSearchPreview, 1, wxEXPAND|wxADJUST_MINSIZE, 0);

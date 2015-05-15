@@ -309,7 +309,7 @@ void ThreadSearchConfPanel::do_layout()
     wxStaticBoxSizer* SizerThreadSearchOptions = new wxStaticBoxSizer(SizerThreadSearchOptions_staticbox, wxVERTICAL);
     wxStaticBoxSizer* SizerSearchIn = new wxStaticBoxSizer(SizerSearchIn_staticbox, wxVERTICAL);
     SizerSearchIn->Add(m_pPnlSearchIn, 0, wxALL|wxEXPAND, 2);
-    SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND|wxALIGN_CENTER_VERTICAL, 2);
+    SizerSearchIn->Add(m_pPnlDirParams, 0, wxALL|wxEXPAND, 2);
     SizerTop->Add(SizerSearchIn, 0, wxALL|wxEXPAND, 4);
     wxBoxSizer* SizerOptions = new wxBoxSizer(wxHORIZONTAL);
     SizerOptions->Add(m_pChkWholeWord, 0, wxLEFT | wxRIGHT, 4);
