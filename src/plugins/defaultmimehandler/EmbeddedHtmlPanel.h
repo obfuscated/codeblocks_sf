@@ -9,9 +9,9 @@
 #ifndef CB_PRECOMP
     //(*HeadersPCH(EmbeddedHtmlPanel)
     #include <wx/panel.h>
-    class wxStaticText;
     class wxBitmapButton;
     class wxBoxSizer;
+    class wxStaticText;
     //*)
 #endif
 //(*Headers(EmbeddedHtmlPanel)
@@ -30,11 +30,11 @@ class EmbeddedHtmlPanel: public wxPanel
         void Open(const wxString& url);
 
         //(*Declarations(EmbeddedHtmlPanel)
-        wxBitmapButton* btnBack;
         wxPanel* Panel1;
-        wxHtmlWindow* winHtml;
-        wxStaticText* lblStatus;
         wxBitmapButton* btnForward;
+        wxBitmapButton* btnBack;
+        wxStaticText* lblStatus;
+        wxHtmlWindow* winHtml;
         //*)
 
     protected:

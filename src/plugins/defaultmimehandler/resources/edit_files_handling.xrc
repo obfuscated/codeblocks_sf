@@ -11,7 +11,7 @@
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxListBox" name="lstWild" />
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -21,21 +21,21 @@
 										<object class="wxButton" name="btnNew">
 											<label>&amp;New</label>
 										</object>
-										<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxALIGN_TOP</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="btnDelete">
 											<label>&amp;Delete</label>
 										</object>
-										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxALIGN_TOP</flag>
 										<border>8</border>
 									</object>
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>4</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer">
@@ -44,11 +44,11 @@
 								<object class="wxStaticText" name="ID_STATICTEXT1">
 									<label>Wildcard:</label>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="txtWild" />
-								<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxBOTTOM|wxEXPAND</flag>
 								<border>8</border>
 							</object>
 							<object class="sizeritem">
@@ -61,20 +61,20 @@
 									</content>
 									<style>wxRA_SPECIFY_COLS</style>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT2">
 									<label>External program:</label>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>8</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer">
 									<object class="sizeritem">
 										<object class="wxTextCtrl" name="txtProgram" />
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
@@ -82,10 +82,10 @@
 											<label>...</label>
 											<size>22,22</size>
 										</object>
-										<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxALIGN_TOP</flag>
 									</object>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer">
@@ -93,20 +93,20 @@
 										<object class="wxCheckBox" name="chkModal">
 											<label>Wait for the external program to terminate</label>
 										</object>
-										<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxALIGN_TOP</flag>
 										<border>4</border>
 									</object>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 								<border>8</border>
 							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>8</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxEXPAND</flag>
 				<border>4</border>
 				<option>1</option>
 			</object>

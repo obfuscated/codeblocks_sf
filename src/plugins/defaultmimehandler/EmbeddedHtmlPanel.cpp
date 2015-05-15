@@ -12,18 +12,18 @@
 
 #ifndef CB_PRECOMP
     //(*InternalHeadersPCH(EmbeddedHtmlPanel)
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
     #include <wx/bmpbuttn.h>
-    #include <wx/intl.h>
+    #include <wx/sizer.h>
     #include <wx/string.h>
+    #include <wx/intl.h>
+    #include <wx/stattext.h>
     //*)
 #endif
 //(*InternalHeaders(EmbeddedHtmlPanel)
-#include <wx/artprov.h>
 #include <wx/bitmap.h>
 #include <wx/image.h>
 #include <wx/html/htmlwin.h>
+#include <wx/artprov.h>
 //*)
 
 //(*IdInit(EmbeddedHtmlPanel)
@@ -81,17 +81,17 @@ EmbeddedHtmlPanel::EmbeddedHtmlPanel(wxWindow* parent)
     Panel1 = new wxPanel(this, ID_PANEL1, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     btnBack = new wxBitmapButton(Panel1, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_BACK")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
-    BoxSizer2->Add(btnBack, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(btnBack, 0, wxALIGN_CENTER_VERTICAL, 5);
     btnForward = new wxBitmapButton(Panel1, ID_BITMAPBUTTON3, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_FORWARD")),wxART_BUTTON), wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON3"));
-    BoxSizer2->Add(btnForward, 0, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(btnForward, 0, wxALIGN_CENTER_VERTICAL, 5);
     lblStatus = new wxStaticText(Panel1, ID_STATICTEXT1, _("Label"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    BoxSizer2->Add(lblStatus, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(lblStatus, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     Panel1->SetSizer(BoxSizer2);
     BoxSizer2->Fit(Panel1);
     BoxSizer2->SetSizeHints(Panel1);
-    BoxSizer1->Add(Panel1, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(Panel1, 0, wxEXPAND, 5);
     winHtml = new wxHtmlWindow(this, ID_HTMLWINDOW1, wxDefaultPosition, wxSize(340,180), wxHW_SCROLLBAR_AUTO, _T("ID_HTMLWINDOW1"));
-    BoxSizer1->Add(winHtml, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(winHtml, 1, wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
