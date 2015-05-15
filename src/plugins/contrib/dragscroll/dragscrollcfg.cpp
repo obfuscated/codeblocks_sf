@@ -23,7 +23,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	bSizer2->SetMinSize(wxSize( -1,50 ));
 	StaticText1 = new wxStaticText( this, wxID_ANY, _("Mouse Drag Scrolling Configuration"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer2->Add( StaticText1, 0, wxALIGN_CENTER|wxALL, 5 );
+	bSizer2->Add( StaticText1, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	bSizer2->Add( 0, 0, 1, wxEXPAND, 0 );
 
@@ -43,11 +43,11 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	EditorFocusEnabled = new wxCheckBox( this, wxID_ANY, _("Auto Focus Editors"), wxDefaultPosition, wxDefaultSize, 0 );
 
-	bSizer6->Add( EditorFocusEnabled, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizer6->Add( EditorFocusEnabled, 0, wxALL, 5 );
 
 	MouseFocusEnabled = new wxCheckBox( this, wxID_ANY, _("Focus follows Mouse"), wxDefaultPosition, wxDefaultSize, 0 );
 
-	bSizer6->Add( MouseFocusEnabled, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizer6->Add( MouseFocusEnabled, 0, wxALL, 5 );
 
 	bSizer1->Add( bSizer6, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -65,7 +65,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	wxString ScrollDirectionChoices[] = { _("With Mouse"), _("Opposite Mouse") };
 	int ScrollDirectionNChoices = sizeof( ScrollDirectionChoices ) / sizeof( wxString );
 	ScrollDirection = new wxRadioBox( this, wxID_ANY, _("Scroll Direction"), wxDefaultPosition, wxDefaultSize, ScrollDirectionNChoices, ScrollDirectionChoices, 2, wxRA_SPECIFY_COLS );
-	bSizer3->Add( ScrollDirection, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizer3->Add( ScrollDirection, 0, wxALL, 5 );
 
 	bSizer1->Add( bSizer3, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
@@ -102,7 +102,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	if ( 0 ) Sensitivity->SetThumbLength(0);
 	if ( 1 ) Sensitivity->SetTick(1);
 	if ( 1 ) Sensitivity->SetSelection(1,10);
-	bSizer7->Add( Sensitivity, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	bSizer7->Add( Sensitivity, 0, wxALL|wxEXPAND, 5 );
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
@@ -120,7 +120,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	if ( 0 ) MouseToLineRatio->SetThumbLength(0);
 	if ( 1 ) MouseToLineRatio->SetTick(10);
 	if ( 1 ) MouseToLineRatio->SetSelection(10,100);
-	bSizer7->Add( MouseToLineRatio, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	bSizer7->Add( MouseToLineRatio, 0, wxALL|wxEXPAND, 5 );
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
@@ -139,7 +139,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	if ( 1 ) MouseContextDelay->SetThumbLength(10);
 	if ( 1 ) MouseContextDelay->SetTick(100);
 	if ( 1 ) MouseContextDelay->SetSelection(10,500);
-	bSizer7->Add( MouseContextDelay, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	bSizer7->Add( MouseContextDelay, 0, wxALL|wxEXPAND, 5 );
 
 	bSizer7->Add( 0, 0, 1, wxEXPAND, 0 );
 
