@@ -12,7 +12,7 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="lblCppCheckApp" member="no">
 							<label>CppCheck application:</label>
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -21,7 +21,7 @@
 								<object class="wxTextCtrl" name="ID_TXT_CPP_CHECK_APP" variable="txtCppCheckApp" member="yes">
 									<value>cppcheck</value>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -31,11 +31,11 @@
 									<minsize>30,-1</minsize>
 									<handler function="OnCppCheckApp" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -43,14 +43,14 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="lblCppCheckArgs" member="no">
 							<label>CppCheck arguments:</label>
 						</object>
-						<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TXT_CPP_CHECK_ARGS" variable="txtCppCheckArgs" member="yes">
 							<value>--verbose --enable=all --enable=style --xml</value>
 						</object>
-						<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -58,16 +58,16 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="lblCppCheckArgsComment" member="no">
 							<label>(before &quot;--file-list&quot;)</label>
 						</object>
-						<flag>wxLEFT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<flag>wxLEFT|wxALIGN_TOP</flag>
 						<border>5</border>
 					</object>
 					<object class="spacer">
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

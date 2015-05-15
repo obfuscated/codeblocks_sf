@@ -4,10 +4,10 @@
 //(*Headers(ConfigPanel)
 #include <wx/panel.h>
 class wxTextCtrl;
-class wxStaticText;
 class wxFlexGridSizer;
-class wxBoxSizer;
 class wxButton;
+class wxBoxSizer;
+class wxStaticText;
 //*)
 
 #include <wx/string.h>
@@ -24,8 +24,8 @@ public:
     virtual ~ConfigPanel();
 
     //(*Declarations(ConfigPanel)
-    wxTextCtrl* txtCppCheckApp;
     wxTextCtrl* txtCppCheckArgs;
+    wxTextCtrl* txtCppCheckApp;
     //*)
 
     /// @return the panel's title.
