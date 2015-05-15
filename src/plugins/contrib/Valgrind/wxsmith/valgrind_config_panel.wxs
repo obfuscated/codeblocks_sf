@@ -10,14 +10,14 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="StaticText1" member="no">
 							<label>Executable:</label>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="IdExecutablePath" variable="m_ExecutablePath" member="yes">
 							<value>valgrind</value>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -27,11 +27,11 @@
 							<size>29,28</size>
 							<handler function="OnBrowseButtonClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="MemCheckOptSizer" member="no">
@@ -43,24 +43,24 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="MemCheckArgs" member="no">
 									<label>Args:</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="IdMemCheckArgs" variable="m_MemCheckArgs" member="yes" />
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="IdFullMemCheck" variable="m_FullMemCheck" member="yes">
 							<label>Full MemCheck</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -69,7 +69,7 @@
 							<label>Track Origins</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -77,12 +77,12 @@
 						<object class="wxCheckBox" name="IdShowReachable" variable="m_ShowReachable" member="yes">
 							<label>Show reachable</label>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -92,17 +92,17 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="CacheGrindArgs" member="no">
 							<label>Args:</label>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="IdCachegrindArgs" variable="m_CachegrindArgs" member="yes" />
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 		</object>
