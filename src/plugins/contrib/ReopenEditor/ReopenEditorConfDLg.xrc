@@ -13,7 +13,7 @@
 					<default>-1</default>
 					<style>wxRA_SPECIFY_COLS</style>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>
