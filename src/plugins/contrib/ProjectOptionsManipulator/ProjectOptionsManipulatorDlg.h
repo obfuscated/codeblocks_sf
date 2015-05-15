@@ -8,15 +8,15 @@
 
 //(*Headers(ProjectOptionsManipulatorDlg)
 #include <wx/dialog.h>
-class wxStdDialogButtonSizer;
-class wxCheckBox;
 class wxTextCtrl;
-class wxRadioBox;
-class wxStaticText;
-class wxFlexGridSizer;
-class wxBoxSizer;
 class wxStaticBoxSizer;
 class wxChoice;
+class wxFlexGridSizer;
+class wxStdDialogButtonSizer;
+class wxBoxSizer;
+class wxStaticText;
+class wxRadioBox;
+class wxCheckBox;
 //*)
 
 class ProjectOptionsManipulatorDlg: public wxDialog
@@ -46,23 +46,23 @@ class ProjectOptionsManipulatorDlg: public wxDialog
     bool                 GetOptionActive(EProjectLevelOption opt);
 
 		//(*Declarations(ProjectOptionsManipulatorDlg)
-		wxRadioBox* m_RboOperation;
 		wxTextCtrl* m_TxtCustomVar;
-		wxCheckBox* m_ChkOptionReplacePattern;
-		wxCheckBox* m_ChkOptionsCustomVar;
 		wxCheckBox* m_ChkOptionsLinkerPath;
+		wxChoice* m_ChoScan;
+		wxTextCtrl* m_TxtOptionSearch;
+		wxCheckBox* m_ChkOptionsResCompiler;
+		wxCheckBox* m_ChkOptionReplacePattern;
+		wxCheckBox* m_ChkOptionsResCompPath;
+		wxChoice* m_ChoScanProjects;
+		wxCheckBox* m_ChkOptionsCompilerPath;
+		wxCheckBox* m_ChkOptionsLinker;
+		wxTextCtrl* m_TxtOptionReplace;
 		wxRadioBox* m_RboSearch;
 		wxChoice* m_ChoOptionsLevel;
-		wxCheckBox* m_ChkOptionsResCompiler;
-		wxTextCtrl* m_TxtOptionReplace;
-		wxCheckBox* m_ChkOptionsLinker;
-		wxCheckBox* m_ChkOptionsLinkerLibs;
 		wxCheckBox* m_ChkOptionsCompiler;
-		wxChoice* m_ChoScanProjects;
-		wxChoice* m_ChoScan;
-		wxCheckBox* m_ChkOptionsResCompPath;
-		wxCheckBox* m_ChkOptionsCompilerPath;
-		wxTextCtrl* m_TxtOptionSearch;
+		wxCheckBox* m_ChkOptionsLinkerLibs;
+		wxRadioBox* m_RboOperation;
+		wxCheckBox* m_ChkOptionsCustomVar;
 		//*)
 
 	protected:
