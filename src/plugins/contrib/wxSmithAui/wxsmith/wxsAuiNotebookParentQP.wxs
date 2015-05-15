@@ -12,11 +12,11 @@
 							<style>wxTE_PROCESS_ENTER</style>
 							<handler function="OnLabelText" entry="EVT_TEXT_ENTER" />
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -28,12 +28,12 @@
 							<label>Selected</label>
 							<handler function="OnSelectionChange" entry="EVT_CHECKBOX" />
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
