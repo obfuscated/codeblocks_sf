@@ -7,14 +7,14 @@
 				<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
 					<label>Please enter the file&apos;s location and name and&#x0A;whether to add it to the active project.</label>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
 					<label>Filename with full path:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -24,7 +24,7 @@
 							<value>Text</value>
 							<handler function="OntxtFilenameText" entry="EVT_TEXT" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_TOP</flag>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
@@ -33,35 +33,35 @@
 							<size>22,22</size>
 							<handler function="OnbtnBrowseClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_TOP</flag>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="ID_STATICTEXT3" variable="lblGuard" member="yes">
 					<label>Header guard word:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="txtGuard" member="yes">
 					<value>Text</value>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="spacer">
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkAddToProject" member="yes">
 					<label>Add file to active project</label>
 					<handler function="OnchkAddToProjectChange" entry="EVT_CHECKBOX" />
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -70,17 +70,17 @@
 					<growablecols>1</growablecols>
 					<growablerows>1</growablerows>
 					<object class="spacer">
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_TOP</flag>
 						<size>16,16</size>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="no">
 							<label>In build target(s):</label>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND</flag>
 					</object>
 					<object class="spacer">
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_TOP</flag>
 						<size>16,16</size>
 					</object>
 					<object class="sizeritem">
@@ -89,11 +89,11 @@
 							<enabled>0</enabled>
 							<style>wxLB_SINGLE|wxLB_HSCROLL</style>
 						</object>
-						<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE</flag>
 						<option>1</option>
 					</object>
 					<object class="spacer">
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_TOP</flag>
 						<size>16,16</size>
 					</object>
 					<object class="sizeritem">
@@ -104,7 +104,7 @@
 									<enabled>0</enabled>
 									<handler function="OnbtnAllClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 							</object>
 							<object class="sizeritem">
@@ -113,13 +113,13 @@
 									<enabled>0</enabled>
 									<handler function="OnbtnNoneClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxALIGN_TOP</flag>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
@@ -127,7 +127,7 @@
 				<object class="wxBoxSizer" variable="BoxSizer3" member="yes">
 					<orient>wxVERTICAL</orient>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>

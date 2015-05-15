@@ -8,7 +8,7 @@
 					<label>Welcome to the new console application wizard!&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;&#x0A;</label>
 					<style>wxST_NO_AUTORESIZE</style>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
@@ -16,7 +16,7 @@
 				<object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkSkip" member="yes">
 					<label>Skip this page next time</label>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>

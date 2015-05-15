@@ -7,7 +7,7 @@
 				<object class="wxStaticText" name="textChoice">
 					<label>Please choose a processor for this project...</label>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
@@ -232,7 +232,7 @@
 						<item>m3001b</item>
 					</content>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
@@ -240,7 +240,7 @@
 					<label>Use external memory</label>
 					<tooltip>Use external memory SRAM instead of internal SRAM. &#x0A;This option will pass information to the linker which will relocate the &#x0A;.data section of the application to a memory address that you specify.&#x0A;&#x0A;See the processor datasheet for the address that you should use.</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -248,7 +248,7 @@
 				<object class="wxTextCtrl" name="textctrlExtMem">
 					<value>0x801100</value>
 				</object>
-				<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_RIGHT</flag>
 				<border>3</border>
 				<option>1</option>
 			</object>
@@ -257,7 +257,7 @@
 					<label>Define F__CPU with the following value:</label>
 					<checked>1</checked>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -265,7 +265,7 @@
 				<object class="wxTextCtrl" name="textctrlF_CPU">
 					<value>16000000UL</value>
 				</object>
-				<flag>wxALL|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_RIGHT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -275,7 +275,7 @@
 					<checked>1</checked>
 					<tooltip>Create an extended symbol file from the .elf output file</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -285,7 +285,7 @@
 					<checked>1</checked>
 					<tooltip>Create Intel hex files from the .elf output file</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -294,7 +294,7 @@
 					<label>Create Motorola S-Record files (.srec .eep.srec)</label>
 					<tooltip>Create Motorola S-Record output files from the .elf output of the project</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -303,7 +303,7 @@
 					<label>Create Binary files (.bin .eep.bin)</label>
 					<tooltip>Create binary image files from the .elf output file</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -313,7 +313,7 @@
 					<checked>1</checked>
 					<tooltip>Create Fuse, Lock and Signature files from the .elf output file. &#x0A;Requires &apos;srec&amp;cat&apos; to be installed to extract the fuse bytes &#x0A;into seperate files. For hex output only.</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -322,7 +322,7 @@
 					<label>Create extended listing file (.lss)</label>
 					<checked>1</checked>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -331,7 +331,7 @@
 					<label>Run avr-size after build</label>
 					<tooltip>Run avr-size after a build to display how much resource is being used in the microcontroller.</tooltip>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -344,7 +344,7 @@
 				<object class="wxStaticText" name="textChoice">
 					<label>Please choose the programmer and connection type for AVRDude...</label>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
@@ -413,14 +413,14 @@
 						<item>xil</item>
 					</content>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxStaticText" name="textChoice">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
 					<label>Please choose a debugger for Avarice...</label>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
@@ -431,14 +431,14 @@
 						<item>--dragon</item>
 					</content>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxStaticText" name="textChoice">
+				<object class="wxStaticText" name="ID_STATICTEXT2">
 					<label>Please choose the connection type for Avarice...</label>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 			<object class="sizeritem">
@@ -448,7 +448,7 @@
 						<item>--debugwire</item>
 					</content>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>3</border>
 			</object>
 		</object>

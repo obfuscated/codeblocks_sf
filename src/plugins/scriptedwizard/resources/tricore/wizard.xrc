@@ -7,7 +7,7 @@
 				<object class="wxStaticText" name="lblintro">
 					<label>Please configure your TriCore hardware.</label>
 				</object>
-				<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxALIGN_LEFT</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -19,7 +19,7 @@
 							<label>Select hardware:</label>
 							<tooltip>Choose a TriCore derivative to configure the compiler settings.</tooltip>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>3</border>
 					</object>
 					<object class="sizeritem">
@@ -42,7 +42,7 @@
 							<size>120,-1</size>
 							<style>wxCB_READONLY</style>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -50,7 +50,7 @@
 							<label>Choose type of flash:</label>
 							<tooltip>Choose type of flash chip and access mode (32-Bit or 16-Bit).</tooltip>
 						</object>
-						<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -66,12 +66,12 @@
 							<size>120,-1</size>
 							<style>wxCB_READONLY</style>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

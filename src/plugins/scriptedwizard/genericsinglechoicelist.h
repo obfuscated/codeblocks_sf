@@ -9,9 +9,9 @@
 
 //(*HeadersPCH(GenericSingleChoiceList)
 #include <wx/sizer.h>
+#include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/listbox.h>
-#include <wx/panel.h>
 //*)
 
 class wxArrayString;
@@ -46,8 +46,8 @@ class GenericSingleChoiceList: public wxPanel
 		//*)
 
 		//(*Declarations(GenericSingleChoiceList)
-		wxStaticText* lblDescr;
 		wxListBox* GenericChoiceList;
+		wxStaticText* lblDescr;
 		//*)
 
 	private:

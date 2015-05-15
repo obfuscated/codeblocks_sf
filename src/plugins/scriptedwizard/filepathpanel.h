@@ -8,13 +8,13 @@
 
 
 //(*HeadersPCH(FilePathPanel)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/checklst.h>
 #include <wx/checkbox.h>
-#include <wx/panel.h>
+#include <wx/sizer.h>
 #include <wx/button.h>
+#include <wx/panel.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 #include <wx/string.h>
@@ -63,18 +63,18 @@ class FilePathPanel: public wxPanel
 		//*)
 
 		//(*Declarations(FilePathPanel)
-		wxBoxSizer* BoxSizer6;
-		wxButton* btnBrowse;
-		wxBoxSizer* BoxSizer2;
+		wxButton* btnAll;
 		wxStaticText* lblGuard;
-		wxButton* btnNone;
-		wxCheckListBox* clbTargets;
-		wxTextCtrl* txtGuard;
 		wxFlexGridSizer* FlexGridSizer1;
 		wxBoxSizer* BoxSizer3;
-		wxTextCtrl* txtFilename;
-		wxButton* btnAll;
+		wxCheckListBox* clbTargets;
+		wxBoxSizer* BoxSizer2;
 		wxCheckBox* chkAddToProject;
+		wxTextCtrl* txtFilename;
+		wxButton* btnNone;
+		wxButton* btnBrowse;
+		wxTextCtrl* txtGuard;
+		wxBoxSizer* BoxSizer6;
 		//*)
 
 		wxString m_ExtFilter;
