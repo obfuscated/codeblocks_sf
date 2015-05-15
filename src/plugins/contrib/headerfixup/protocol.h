@@ -13,12 +13,11 @@
 #endif
 
 //(*Headers(Protocol)
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include "scrollingdialog.h"
-class wxTextCtrl;
-class wxStaticText;
-class wxBoxSizer;
-class wxButton;
-class wxStaticBoxSizer;
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 

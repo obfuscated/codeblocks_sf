@@ -13,13 +13,12 @@
 #endif
 
 //(*Headers(Configuration)
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include <wx/panel.h>
-class wxTextCtrl;
-class wxListBox;
-class wxStaticText;
-class wxBoxSizer;
-class wxButton;
-class wxStaticBoxSizer;
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/listbox.h>
 //*)
 
 #include <wx/event.h>
@@ -66,16 +65,16 @@ protected:
   //*)
 
   //(*Declarations(Configuration)
-  wxButton* m_DeleteIdentifier;
-  wxListBox* m_Groups;
-  wxListBox* m_Identifiers;
-  wxTextCtrl* m_Headers;
-  wxButton* m_ChangeIdentifier;
-  wxButton* m_DeleteGroup;
-  wxButton* m_RenameGroup;
-  wxButton* m_AddIdentifier;
   wxButton* m_AddGroup;
+  wxButton* m_DeleteIdentifier;
+  wxListBox* m_Identifiers;
+  wxButton* m_ChangeIdentifier;
+  wxButton* m_RenameGroup;
   wxButton* m_Defaults;
+  wxTextCtrl* m_Headers;
+  wxButton* m_DeleteGroup;
+  wxButton* m_AddIdentifier;
+  wxListBox* m_Groups;
   //*)
 
 private:

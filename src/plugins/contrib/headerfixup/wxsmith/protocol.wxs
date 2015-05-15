@@ -15,21 +15,22 @@
 						<object class="wxStaticText" name="wxID_ANY" variable="lblProtocol" member="no">
 							<label>Protocol for last operation:</label>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TXT_PROTOCOL" variable="m_Protocol" member="yes">
+							<pos>-1,-1</pos>
 							<size>480,240</size>
 							<tooltip>This is the full log of the parser operations.</tooltip>
 							<style>wxTE_MULTILINE|wxTE_READONLY</style>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -40,7 +41,7 @@
 					<tooltip>Click to exit the protocol and return to C::B.</tooltip>
 					<handler function="OnBtnOKClick" entry="EVT_BUTTON" />
 				</object>
-				<flag>wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>

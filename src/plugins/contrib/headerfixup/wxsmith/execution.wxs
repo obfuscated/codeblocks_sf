@@ -19,7 +19,7 @@
 							<tooltip>This will setup on what files to operate: All from active project or whole workspace.</tooltip>
 							<style>wxRA_SPECIFY_ROWS</style>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -34,7 +34,7 @@
 							<tooltip>This will setup the way missing header files are included: By quotation mark or brackets.</tooltip>
 							<style>wxRA_SPECIFY_ROWS</style>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -46,7 +46,7 @@
 									<label>Ignore any existing includes / forward decls</label>
 									<tooltip>This will work as if there were no incluides / forwards decls at all int the files (as &quot;from scratch&quot;).</tooltip>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -54,7 +54,7 @@
 									<label>Try to use forward declarations in header files</label>
 									<tooltip>This will setup if forward declarations shall be used for objects apearing *only* as pointers/references in header files.</tooltip>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -62,7 +62,7 @@
 									<label>Show includes not required (only for known bindings)</label>
 									<tooltip>This will show a list of included files in the log (protocol) which were found with unknown bindings that could *possibly* be removed.</tooltip>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -78,7 +78,7 @@
 									<tooltip>This will setup on what file types the plugin shall operate: Header files, implementation files or both (after each other).</tooltip>
 									<style>wxRA_SPECIFY_ROWS</style>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -86,7 +86,7 @@
 									<label>Show full log of parser operations in a protocol.</label>
 									<tooltip>This will show *all* interesting parser operations in a protocol window in the end as summary.</tooltip>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -95,15 +95,15 @@
 									<tooltip>This will setup if all operation shall be simulated only - interesting in combination with full log (protocol) to analyse a project without modifications.</tooltip>
 									<handler function="OnChkSimulationClick" entry="EVT_CHECKBOX" />
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -114,7 +114,7 @@
 							<label>Header sets</label>
 							<object class="sizeritem">
 								<object class="wxCheckListBox" name="ID_LST_SETS" variable="m_Sets" member="yes" />
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -128,7 +128,7 @@
 											<style>wxBU_EXACTFIT</style>
 											<handler function="OnBtnSelectAllClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -138,7 +138,7 @@
 											<style>wxBU_EXACTFIT</style>
 											<handler function="OnBtnSelectNoneClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -148,15 +148,15 @@
 											<style>wxBU_EXACTFIT</style>
 											<handler function="OnBtnInvertClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -166,7 +166,7 @@
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxGauge" name="ID_GAU_PROGRESS" variable="m_Progress" member="yes" />
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -177,7 +177,7 @@
 											<tooltip>Run the fixup plugin and begin parsing...</tooltip>
 											<handler function="OnBtnRunClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -187,20 +187,20 @@
 											<tooltip>Exit the plugin without (further) modifications.</tooltip>
 											<handler function="OnBtnExitClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

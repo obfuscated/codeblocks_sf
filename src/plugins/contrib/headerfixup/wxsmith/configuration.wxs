@@ -14,7 +14,7 @@
 							<handler function="OnGroupsSelect" entry="EVT_LISTBOX" />
 							<handler function="OnRenameGroup" entry="EVT_LISTBOX_DCLICK" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -27,7 +27,7 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnBtnAddGroupClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
@@ -38,7 +38,7 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnBtnDeleteGroupClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
@@ -49,12 +49,12 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnRenameGroup" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -62,11 +62,11 @@
 							<label>Defaults</label>
 							<handler function="OnBtnDefaultsClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -80,7 +80,7 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="lblIdentifiers" member="no">
 									<label>Identifiers:</label>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -93,7 +93,7 @@
 											<handler function="OnIdentifiersSelect" entry="EVT_LISTBOX" />
 											<handler function="OnChangeIdentifier" entry="EVT_LISTBOX_DCLICK" />
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -107,7 +107,7 @@
 													<style>wxBU_EXACTFIT</style>
 													<handler function="OnBtnAddIdentifierClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -117,7 +117,7 @@
 													<style>wxBU_EXACTFIT</style>
 													<handler function="OnBtnDeleteIdentifierClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -127,20 +127,20 @@
 													<style>wxBU_EXACTFIT</style>
 													<handler function="OnChangeIdentifier" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -151,7 +151,7 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="lblHeaders" member="no">
 									<label>Headers:</label>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -160,17 +160,17 @@
 									<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE</style>
 									<handler function="OnHeadersText" entry="EVT_TEXT" />
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

@@ -10,12 +10,8 @@
 #include "protocol.h"
 
 //(*InternalHeaders(Protocol)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/intl.h>
-#include <wx/button.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 #include <wx/event.h>
@@ -43,23 +39,23 @@ Protocol::Protocol(wxWindow* parent,wxWindowID /*id*/)
 {
   //(*Initialize(Protocol)
   wxBoxSizer* sizMain;
+  wxStaticText* lblProtocol;
   wxStaticBoxSizer* sizProtocol;
   wxButton* btnOK;
-  wxStaticText* lblProtocol;
 
   Create(parent, wxID_ANY, _("Header Fixup - Protocol"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
   sizMain = new wxBoxSizer(wxVERTICAL);
   sizProtocol = new wxStaticBoxSizer(wxVERTICAL, this, _("Protocol"));
   lblProtocol = new wxStaticText(this, wxID_ANY, _("Protocol for last operation:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-  sizProtocol->Add(lblProtocol, 0, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-  m_Protocol = new wxTextCtrl(this, ID_TXT_PROTOCOL, wxEmptyString, wxDefaultPosition, wxSize(480,240), wxTE_MULTILINE|wxTE_READONLY, wxDefaultValidator, _T("ID_TXT_PROTOCOL"));
+  sizProtocol->Add(lblProtocol, 0, wxEXPAND, 5);
+  m_Protocol = new wxTextCtrl(this, ID_TXT_PROTOCOL, wxEmptyString, wxPoint(-1,-1), wxSize(480,240), wxTE_MULTILINE|wxTE_READONLY, wxDefaultValidator, _T("ID_TXT_PROTOCOL"));
   m_Protocol->SetToolTip(_("This is the full log of the parser operations."));
-  sizProtocol->Add(m_Protocol, 1, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-  sizMain->Add(sizProtocol, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizProtocol->Add(m_Protocol, 1, wxTOP|wxEXPAND, 5);
+  sizMain->Add(sizProtocol, 1, wxALL|wxEXPAND, 5);
   btnOK = new wxButton(this, wxID_OK, _("OK"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_OK"));
   btnOK->SetDefault();
   btnOK->SetToolTip(_("Click to exit the protocol and return to C::B."));
-  sizMain->Add(btnOK, 0, wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+  sizMain->Add(btnOK, 0, wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
   SetSizer(sizMain);
   sizMain->Fit(this);
   sizMain->SetSizeHints(this);

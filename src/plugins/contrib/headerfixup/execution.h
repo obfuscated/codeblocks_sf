@@ -13,14 +13,13 @@
 #endif
 
 //(*Headers(Execution)
+#include <wx/gauge.h>
+#include <wx/checklst.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include "scrollingdialog.h"
-class wxGauge;
-class wxCheckBox;
-class wxRadioBox;
-class wxBoxSizer;
-class wxButton;
-class wxStaticBoxSizer;
-class wxCheckListBox;
+#include <wx/radiobox.h>
 //*)
 
 #include <wx/arrstr.h>
@@ -73,23 +72,23 @@ protected:
   //*)
 
   //(*Declarations(Execution)
-  wxCheckBox* m_Protocol;
+  wxButton* m_Exit;
+  wxGauge* m_Progress;
   wxRadioBox* m_Scope;
+  wxButton* m_SelectNone;
+  wxCheckBox* m_Ignore;
+  wxCheckBox* m_FwdDecl;
+  wxCheckBox* m_Simulation;
+  wxButton* m_SelectAll;
   wxBoxSizer* sizRunExit;
+  wxCheckListBox* m_Sets;
+  wxCheckBox* m_Protocol;
+  wxRadioBox* m_FileType;
+  wxButton* m_Run;
+  wxCheckBox* m_ObsoleteLog;
   wxButton* m_Invert;
   wxStaticBoxSizer* sizExecute;
-  wxCheckBox* m_Ignore;
   wxRadioBox* m_Options;
-  wxButton* m_Exit;
-  wxButton* m_SelectAll;
-  wxButton* m_SelectNone;
-  wxCheckBox* m_ObsoleteLog;
-  wxGauge* m_Progress;
-  wxButton* m_Run;
-  wxRadioBox* m_FileType;
-  wxCheckBox* m_Simulation;
-  wxCheckBox* m_FwdDecl;
-  wxCheckListBox* m_Sets;
   //*)
 
 private:
