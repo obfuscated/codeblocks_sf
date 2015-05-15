@@ -10,12 +10,12 @@
 						<object class="wxSpinCtrl" name="ID_SPINCTRL1">
 							<value>0</value>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -33,16 +33,16 @@
 							</content>
 							<selection>4</selection>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="spacer">
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
