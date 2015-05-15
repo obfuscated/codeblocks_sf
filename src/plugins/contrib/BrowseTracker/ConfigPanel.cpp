@@ -28,7 +28,7 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	m_staticText2->Wrap( -1 );
 	m_staticText2->SetFont( wxFont( 9, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Tahoma") ) );
 
-	bSizer3->Add( m_staticText2, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	bSizer3->Add( m_staticText2, 0, wxALL|wxEXPAND, 5 );
 
 
 	bSizer3->Add( 0, 10, 0, 0, 5 );
@@ -37,12 +37,12 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 
 	Cfg_BrowseMarksEnabled = new wxCheckBox( this, wxID_ANY, _("Enable BrowseMarks"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer7->Add( Cfg_BrowseMarksEnabled, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizer7->Add( Cfg_BrowseMarksEnabled, 1, wxALL, 5 );
 
 	Cfg_WrapJumpEntries = new wxCheckBox( this, wxID_ANY, _("Wrap Jump Entries"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer7->Add( Cfg_WrapJumpEntries, 1, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
+	bSizer7->Add( Cfg_WrapJumpEntries, 1, wxALL, 5 );
 
-	bSizer3->Add( bSizer7, 0, wxALIGN_CENTER_HORIZONTAL|wxEXPAND|wxSHAPED, 5 );
+	bSizer3->Add( bSizer7, 0, wxEXPAND|wxSHAPED, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
