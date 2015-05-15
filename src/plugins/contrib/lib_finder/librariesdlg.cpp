@@ -1,17 +1,17 @@
 #include "librariesdlg.h"
 
 //(*InternalHeaders(LibrariesDlg)
+#include <wx/checkbox.h>
 #include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/panel.h>
+#include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/wxFlatNotebook/renderer.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/wxFlatNotebook/wxFlatNotebook.h>
-#include <wx/checkbox.h>
 #include <wx/listbox.h>
-#include <wx/wxFlatNotebook/renderer.h>
-#include <wx/panel.h>
-#include <wx/intl.h>
-#include <wx/button.h>
-#include <wx/string.h>
 //*)
 
 #include <algorithm>
@@ -95,36 +95,34 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
     , m_WhileUpdating(false)
 {
     //(*Initialize(LibrariesDlg)
-    wxBoxSizer* BoxSizer4;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxBoxSizer* BoxSizer6;
-    wxBoxSizer* BoxSizer19;
     wxBoxSizer* BoxSizer15;
-    wxBoxSizer* BoxSizer20;
-    wxBoxSizer* BoxSizer5;
+    wxStaticBoxSizer* StaticBoxSizer2;
+    wxFlexGridSizer* FlexGridSizer1;
+    wxFlexGridSizer* FlexGridSizer2;
+    wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer16;
     wxBoxSizer* BoxSizer10;
     wxBoxSizer* BoxSizer7;
-    wxBoxSizer* BoxSizer8;
-    wxBoxSizer* BoxSizer13;
-    wxStaticBoxSizer* StaticBoxSizer4;
-    wxFlexGridSizer* FlexGridSizer3;
-    wxFlexGridSizer* FlexGridSizer2;
-    wxBoxSizer* BoxSizer2;
     wxBoxSizer* BoxSizer11;
-    wxBoxSizer* BoxSizer16;
-    wxBoxSizer* BoxSizer12;
-    wxBoxSizer* BoxSizer18;
-    wxBoxSizer* BoxSizer14;
+    wxBoxSizer* BoxSizer13;
+    wxBoxSizer* BoxSizer2;
     wxStaticBoxSizer* StaticBoxSizer3;
     wxBoxSizer* BoxSizer17;
-    wxBoxSizer* BoxSizer1;
     wxBoxSizer* BoxSizer9;
-    wxStaticBoxSizer* StaticBoxSizer1;
-    wxFlexGridSizer* FlexGridSizer1;
-    wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer18;
+    wxFlexGridSizer* FlexGridSizer3;
+    wxBoxSizer* BoxSizer19;
+    wxBoxSizer* BoxSizer4;
+    wxStaticBoxSizer* StaticBoxSizer4;
+    wxBoxSizer* BoxSizer8;
+    wxBoxSizer* BoxSizer20;
+    wxBoxSizer* BoxSizer1;
+    wxBoxSizer* BoxSizer12;
+    wxBoxSizer* BoxSizer14;
+    wxBoxSizer* BoxSizer6;
     wxStdDialogButtonSizer* StdDialogButtonSizer1;
-
-    std::copy(m_KnownLibraries, m_KnownLibraries+sizeof(m_WorkingCopy)/sizeof(m_WorkingCopy[0]), m_WorkingCopy);
+    wxBoxSizer* BoxSizer5;
+    wxStaticBoxSizer* StaticBoxSizer1;
 
     Create(parent, wxID_ANY, _("Registered libraries"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -132,56 +130,56 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
     BoxSizer14 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Registered libraries"));
     m_Libraries = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(180,250), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
-    StaticBoxSizer1->Add(m_Libraries, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(m_Libraries, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_ShowPredefined = new wxCheckBox(this, ID_CHECKBOX1, _("Show Predefined libraries"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
     m_ShowPredefined->SetValue(true);
-    StaticBoxSizer1->Add(m_ShowPredefined, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(m_ShowPredefined, 0, wxEXPAND, 5);
     m_ShowPkgConfig = new wxCheckBox(this, ID_CHECKBOX2, _("Show Pkg-Config entries"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
     m_ShowPkgConfig->SetValue(false);
-    StaticBoxSizer1->Add(m_ShowPkgConfig, 0, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(m_ShowPkgConfig, 0, wxBOTTOM|wxEXPAND, 5);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     Button1 = new wxButton(this, ID_BUTTON1, _("Add"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
-    BoxSizer2->Add(Button1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(Button1, 1, wxEXPAND, 5);
     Button2 = new wxButton(this, ID_BUTTON2, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-    BoxSizer2->Add(Button2, 1, wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer2->Add(Button2, 1, wxLEFT|wxEXPAND, 5);
+    StaticBoxSizer1->Add(BoxSizer2, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
     Button3 = new wxButton(this, ID_BUTTON11, _("Download definitions"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON11"));
-    StaticBoxSizer1->Add(Button3, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer14->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer1->Add(Button3, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    BoxSizer14->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND, 5);
     StaticBoxSizer4 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Autodetection of libraries"));
     Button8 = new wxButton(this, ID_BUTTON8, _("Scan"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON8"));
-    StaticBoxSizer4->Add(Button8, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer14->Add(StaticBoxSizer4, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer16->Add(BoxSizer14, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer4->Add(Button8, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer14->Add(StaticBoxSizer4, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    BoxSizer16->Add(BoxSizer14, 1, wxEXPAND, 5);
     BoxSizer3 = new wxBoxSizer(wxVERTICAL);
     StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Available configurations"));
     BoxSizer18 = new wxBoxSizer(wxHORIZONTAL);
     m_Configurations = new wxListBox(this, ID_LISTBOX2, wxDefaultPosition, wxSize(201,44), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX2"));
-    BoxSizer18->Add(m_Configurations, 1, wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer18->Add(m_Configurations, 1, wxTOP|wxBOTTOM|wxLEFT|wxEXPAND, 5);
     BoxSizer17 = new wxBoxSizer(wxVERTICAL);
     m_ConfigUp = new wxButton(this, ID_BUTTON9, _("^"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON9"));
-    BoxSizer17->Add(m_ConfigUp, 1, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer17->Add(m_ConfigUp, 1, wxTOP|wxEXPAND, 5);
     m_ConfigDown = new wxButton(this, ID_BUTTON10, _("v"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON10"));
-    BoxSizer17->Add(m_ConfigDown, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer18->Add(BoxSizer17, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer17->Add(m_ConfigDown, 1, wxBOTTOM|wxEXPAND, 5);
+    BoxSizer18->Add(BoxSizer17, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
     BoxSizer4 = new wxBoxSizer(wxVERTICAL);
     m_ConfDuplicate = new wxButton(this, ID_BUTTON3, _("Duplicate"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
-    BoxSizer4->Add(m_ConfDuplicate, 1, wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer4->Add(m_ConfDuplicate, 1, wxTOP|wxALIGN_CENTER_HORIZONTAL, 5);
     m_ConfDelete = new wxButton(this, ID_BUTTON4, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
-    BoxSizer4->Add(m_ConfDelete, 1, wxBOTTOM|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer18->Add(BoxSizer4, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer2->Add(BoxSizer18, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer4->Add(m_ConfDelete, 1, wxBOTTOM|wxALIGN_CENTER_HORIZONTAL, 5);
+    BoxSizer18->Add(BoxSizer4, 0, wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(BoxSizer18, 1, wxEXPAND, 5);
     StaticText9 = new wxStaticText(this, ID_STATICTEXT10, _("Note: Order on this list set priorities of configurations."), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT10"));
-    StaticBoxSizer2->Add(StaticText9, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer3->Add(StaticBoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer2->Add(StaticText9, 0, wxEXPAND, 5);
+    BoxSizer3->Add(StaticBoxSizer2, 1, wxEXPAND, 5);
     StaticBoxSizer3 = new wxStaticBoxSizer(wxVERTICAL, this, _("Configuration options"));
     FlexGridSizer1 = new wxFlexGridSizer(0, 2, 5, 5);
     FlexGridSizer1->AddGrowableCol(1);
     StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Type:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-    FlexGridSizer1->Add(StaticText1, 1, wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(StaticText1, 1, wxALIGN_CENTER_VERTICAL, 5);
     m_Type = new wxStaticText(this, ID_STATICTEXT9, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT9"));
-    FlexGridSizer1->Add(m_Type, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    StaticBoxSizer3->Add(FlexGridSizer1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer1->Add(m_Type, 1, wxEXPAND, 5);
+    StaticBoxSizer3->Add(FlexGridSizer1, 0, wxALL|wxEXPAND, 5);
     FlatNotebook1 = new wxFlatNotebook(this, ID_FLATNOTEBOOK1, wxDefaultPosition, wxDefaultSize, wxFNB_DEFAULT_STYLE|wxFNB_NO_X_BUTTON|wxFNB_NODRAG|wxFNB_FF2|wxCLIP_CHILDREN);
     Panel1 = new wxPanel(FlatNotebook1, ID_PANEL1, wxPoint(53,10), wxDefaultSize, wxSUNKEN_BORDER|wxTAB_TRAVERSAL, _T("ID_PANEL1"));
     FlexGridSizer2 = new wxFlexGridSizer(0, 2, 5, 0);
@@ -190,112 +188,112 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
     FlexGridSizer3 = new wxFlexGridSizer(0, 2, 5, 5);
     FlexGridSizer3->AddGrowableCol(1);
     StaticText2 = new wxStaticText(Panel1, ID_STATICTEXT2, _("Name:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
-    FlexGridSizer3->Add(StaticText2, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(StaticText2, 1, wxALIGN_CENTER_VERTICAL, 5);
     m_Name = new wxTextCtrl(Panel1, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     m_Name->SetToolTip(_("Full name of the library"));
-    FlexGridSizer3->Add(m_Name, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_Name, 1, wxEXPAND, 5);
     StaticText5 = new wxStaticText(Panel1, ID_STATICTEXT5, _("Base path:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
-    FlexGridSizer3->Add(StaticText5, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(StaticText5, 1, wxALIGN_CENTER_VERTICAL, 5);
     m_BasePath = new wxTextCtrl(Panel1, ID_TEXTCTRL4, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL4"));
-    FlexGridSizer3->Add(m_BasePath, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_BasePath, 1, wxEXPAND, 5);
     StaticText4 = new wxStaticText(Panel1, ID_STATICTEXT4, _("Pkg-Config name:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
-    FlexGridSizer3->Add(StaticText4, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(StaticText4, 1, wxALIGN_CENTER_VERTICAL, 5);
     m_PkgConfigName = new wxTextCtrl(Panel1, ID_TEXTCTRL3, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL3"));
-    FlexGridSizer3->Add(m_PkgConfigName, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_PkgConfigName, 1, wxEXPAND, 5);
     StaticText3 = new wxStaticText(Panel1, ID_STATICTEXT3, _("Description:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-    FlexGridSizer3->Add(StaticText3, 1, wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(StaticText3, 1, wxALIGN_CENTER_VERTICAL, 5);
     m_Description = new wxTextCtrl(Panel1, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxSize(103,116), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-    FlexGridSizer3->Add(m_Description, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    FlexGridSizer2->Add(FlexGridSizer3, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    FlexGridSizer3->Add(m_Description, 1, wxEXPAND, 5);
+    FlexGridSizer2->Add(FlexGridSizer3, 1, wxALL|wxEXPAND, 5);
     Panel1->SetSizer(FlexGridSizer2);
     FlexGridSizer2->Fit(Panel1);
     FlexGridSizer2->SetSizeHints(Panel1);
     Panel8 = new wxPanel(FlatNotebook1, ID_PANEL8, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL8"));
     BoxSizer15 = new wxBoxSizer(wxHORIZONTAL);
     m_Categories = new wxTextCtrl(Panel8, ID_TEXTCTRL13, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL13"));
-    BoxSizer15->Add(m_Categories, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer15->Add(m_Categories, 1, wxALL|wxEXPAND, 5);
     Panel8->SetSizer(BoxSizer15);
     BoxSizer15->Fit(Panel8);
     BoxSizer15->SetSizeHints(Panel8);
     Panel2 = new wxPanel(FlatNotebook1, ID_PANEL6, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL6"));
     BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
     m_Compilers = new wxTextCtrl(Panel2, ID_TEXTCTRL5, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL5"));
-    BoxSizer5->Add(m_Compilers, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer5->Add(m_Compilers, 1, wxALL|wxEXPAND, 5);
     Panel2->SetSizer(BoxSizer5);
     BoxSizer5->Fit(Panel2);
     BoxSizer5->SetSizeHints(Panel2);
     Panel4 = new wxPanel(FlatNotebook1, ID_PANEL3, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL3"));
     BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
     m_Defines = new wxTextCtrl(Panel4, ID_TEXTCTRL8, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL8"));
-    BoxSizer8->Add(m_Defines, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer8->Add(m_Defines, 1, wxALL|wxEXPAND, 5);
     Panel4->SetSizer(BoxSizer8);
     BoxSizer8->Fit(Panel4);
     BoxSizer8->SetSizeHints(Panel4);
     Panel6 = new wxPanel(FlatNotebook1, ID_PANEL5, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL5"));
     BoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
     m_Libs = new wxTextCtrl(Panel6, ID_TEXTCTRL12, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL12"));
-    BoxSizer13->Add(m_Libs, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer13->Add(m_Libs, 1, wxALL|wxEXPAND, 5);
     Panel6->SetSizer(BoxSizer13);
     BoxSizer13->Fit(Panel6);
     BoxSizer13->SetSizeHints(Panel6);
     Panel5 = new wxPanel(FlatNotebook1, ID_PANEL4, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL4"));
     BoxSizer9 = new wxBoxSizer(wxVERTICAL);
     StaticText6 = new wxStaticText(Panel5, ID_STATICTEXT6, _("Compiler:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
-    BoxSizer9->Add(StaticText6, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(StaticText6, 0, wxTOP|wxALIGN_LEFT, 5);
     BoxSizer10 = new wxBoxSizer(wxHORIZONTAL);
     m_CompilerDirs = new wxTextCtrl(Panel5, ID_TEXTCTRL9, wxEmptyString, wxDefaultPosition, wxSize(25,12), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL9"));
-    BoxSizer10->Add(m_CompilerDirs, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer10->Add(m_CompilerDirs, 1, wxEXPAND, 5);
     Button5 = new wxButton(Panel5, ID_BUTTON5, _("+"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON5"));
-    BoxSizer10->Add(Button5, 0, wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-    BoxSizer9->Add(BoxSizer10, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer10->Add(Button5, 0, wxALIGN_TOP, 5);
+    BoxSizer9->Add(BoxSizer10, 1, wxEXPAND, 5);
     StaticText7 = new wxStaticText(Panel5, ID_STATICTEXT7, _("Linker:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
-    BoxSizer9->Add(StaticText7, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(StaticText7, 0, wxTOP|wxALIGN_LEFT, 5);
     BoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
     m_LinkerDir = new wxTextCtrl(Panel5, ID_TEXTCTRL10, wxEmptyString, wxDefaultPosition, wxSize(48,8), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL10"));
-    BoxSizer11->Add(m_LinkerDir, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer11->Add(m_LinkerDir, 1, wxEXPAND, 5);
     Button6 = new wxButton(Panel5, ID_BUTTON6, _("+"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON6"));
-    BoxSizer11->Add(Button6, 0, wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-    BoxSizer9->Add(BoxSizer11, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer11->Add(Button6, 0, wxALIGN_TOP, 5);
+    BoxSizer9->Add(BoxSizer11, 1, wxEXPAND, 5);
     StaticText8 = new wxStaticText(Panel5, ID_STATICTEXT8, _("Extra objects (like resources):"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
-    BoxSizer9->Add(StaticText8, 0, wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer9->Add(StaticText8, 0, wxTOP|wxALIGN_LEFT, 5);
     BoxSizer12 = new wxBoxSizer(wxHORIZONTAL);
     m_ObjectsDir = new wxTextCtrl(Panel5, ID_TEXTCTRL11, wxEmptyString, wxDefaultPosition, wxSize(78,12), wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL11"));
-    BoxSizer12->Add(m_ObjectsDir, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer12->Add(m_ObjectsDir, 1, wxEXPAND, 5);
     Button7 = new wxButton(Panel5, ID_BUTTON7, _("+"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON7"));
-    BoxSizer12->Add(Button7, 0, wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
-    BoxSizer9->Add(BoxSizer12, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer12->Add(Button7, 0, wxALIGN_TOP, 5);
+    BoxSizer9->Add(BoxSizer12, 1, wxEXPAND, 5);
     Panel5->SetSizer(BoxSizer9);
     BoxSizer9->Fit(Panel5);
     BoxSizer9->SetSizeHints(Panel5);
     Panel7 = new wxPanel(FlatNotebook1, ID_PANEL7, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL7"));
     BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
     m_CFlags = new wxTextCtrl(Panel7, ID_TEXTCTRL6, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL6"));
-    BoxSizer6->Add(m_CFlags, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer6->Add(m_CFlags, 1, wxALL|wxEXPAND, 5);
     Panel7->SetSizer(BoxSizer6);
     BoxSizer6->Fit(Panel7);
     BoxSizer6->SetSizeHints(Panel7);
     Panel3 = new wxPanel(FlatNotebook1, ID_PANEL2, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL2"));
     BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
     m_LFlags = new wxTextCtrl(Panel3, ID_TEXTCTRL7, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL7"));
-    BoxSizer7->Add(m_LFlags, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer7->Add(m_LFlags, 1, wxALL|wxEXPAND, 5);
     Panel3->SetSizer(BoxSizer7);
     BoxSizer7->Fit(Panel3);
     BoxSizer7->SetSizeHints(Panel3);
     Panel9 = new wxPanel(FlatNotebook1, ID_PANEL9, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL9"));
     BoxSizer19 = new wxBoxSizer(wxVERTICAL);
     StaticText10 = new wxStaticText(Panel9, ID_STATICTEXT11, _("Header files used by this library:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT11"));
-    BoxSizer19->Add(StaticText10, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer19->Add(StaticText10, 0, wxALL|wxEXPAND, 5);
     m_Headers = new wxTextCtrl(Panel9, ID_TEXTCTRL14, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL14"));
-    BoxSizer19->Add(m_Headers, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer19->Add(m_Headers, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
     Panel9->SetSizer(BoxSizer19);
     BoxSizer19->Fit(Panel9);
     BoxSizer19->SetSizeHints(Panel9);
     Panel10 = new wxPanel(FlatNotebook1, ID_PANEL10, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("ID_PANEL10"));
     BoxSizer20 = new wxBoxSizer(wxVERTICAL);
     StaticText11 = new wxStaticText(Panel10, ID_STATICTEXT12, _("List of required libraries:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT12"));
-    BoxSizer20->Add(StaticText11, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer20->Add(StaticText11, 0, wxALL|wxEXPAND, 5);
     m_Required = new wxTextCtrl(Panel10, ID_TEXTCTRL15, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE, wxDefaultValidator, _T("ID_TEXTCTRL15"));
-    BoxSizer20->Add(m_Required, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer20->Add(m_Required, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
     Panel10->SetSizer(BoxSizer20);
     BoxSizer20->Fit(Panel10);
     BoxSizer20->SetSizeHints(Panel10);
@@ -309,15 +307,15 @@ LibrariesDlg::LibrariesDlg(wxWindow* parent, TypedResults& knownLibraries)
     FlatNotebook1->AddPage(Panel3, _("LFlags"), false);
     FlatNotebook1->AddPage(Panel9, _("Headers"), false);
     FlatNotebook1->AddPage(Panel10, _("Requirements"), false);
-    StaticBoxSizer3->Add(FlatNotebook1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer3->Add(StaticBoxSizer3, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer16->Add(BoxSizer3, 2, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    BoxSizer1->Add(BoxSizer16, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    StaticBoxSizer3->Add(FlatNotebook1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    BoxSizer3->Add(StaticBoxSizer3, 0, wxTOP|wxEXPAND, 5);
+    BoxSizer16->Add(BoxSizer3, 2, wxALL|wxEXPAND, 5);
+    BoxSizer1->Add(BoxSizer16, 1, wxEXPAND, 5);
     StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
     StdDialogButtonSizer1->Realize();
-    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer1->Add(StdDialogButtonSizer1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);

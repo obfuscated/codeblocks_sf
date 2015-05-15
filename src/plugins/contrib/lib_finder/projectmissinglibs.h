@@ -2,12 +2,13 @@
 #define PROJECTMISSINGLIBS_H
 
 //(*Headers(ProjectMissingLibs)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/statline.h>
-#include <wx/panel.h>
-#include <wx/button.h>
 #include "scrollingdialog.h"
+class wxStaticBoxSizer;
+class wxFlexGridSizer;
+class wxButton;
+class wxStaticLine;
+class wxStaticText;
+class wxPanel;
 //*)
 
 #include <wx/stattext.h>
@@ -27,11 +28,11 @@ class ProjectMissingLibs: public wxScrollingDialog, public WebResourcesManager::
 	private:
 
 		//(*Declarations(ProjectMissingLibs)
-		wxButton* Button1;
-		wxButton* m_MissingDefsBtn;
 		wxPanel* m_LibsBack;
 		wxStaticText* m_StatusText;
 		wxFlexGridSizer* m_LibsContainer;
+		wxButton* Button1;
+		wxButton* m_MissingDefsBtn;
 		//*)
 
 		//(*Identifiers(ProjectMissingLibs)

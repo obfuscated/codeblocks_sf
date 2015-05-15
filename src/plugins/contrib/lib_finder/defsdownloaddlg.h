@@ -2,14 +2,16 @@
 #define DEFSDOWNLOADDLG_H
 
 //(*Headers(DefsDownloadDlg)
-#include <wx/treectrl.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/checkbox.h>
-#include <wx/listbox.h>
-#include <wx/button.h>
 #include "scrollingdialog.h"
+class wxTextCtrl;
+class wxStaticBoxSizer;
+class wxListBox;
+class wxButton;
+class wxTreeEvent;
+class wxBoxSizer;
+class wxStaticText;
+class wxTreeCtrl;
+class wxCheckBox;
 //*)
 
 
@@ -23,14 +25,14 @@ class DefsDownloadDlg: public wxScrollingDialog
 	private:
 
 		//(*Declarations(DefsDownloadDlg)
-		wxCheckBox* m_Tree;
 		wxButton* Button1;
 		wxStaticText* StaticText1;
+		wxButton* m_Remove;
 		wxTreeCtrl* m_KnownLibrariesTree;
 		wxTextCtrl* m_Filter;
 		wxButton* m_Add;
+		wxCheckBox* m_Tree;
 		wxListBox* m_UsedLibraries;
-		wxButton* m_Remove;
 		//*)
 
 		//(*Identifiers(DefsDownloadDlg)

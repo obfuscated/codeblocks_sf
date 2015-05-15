@@ -10,14 +10,14 @@
 				<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
 					<label>Select libraries You want to set up:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>10</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxCheckListBox" name="ID_CHECKLISTBOX1" variable="m_Libraries" member="yes">
 					<size>361,251</size>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>10</border>
 				<option>1</option>
 			</object>
@@ -30,7 +30,7 @@
 							<label>Do not clear previous results (but remove duplicates)</label>
 							<style>wxRB_GROUP</style>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
@@ -38,18 +38,18 @@
 							<label>Clear previous results for selected libraries</label>
 							<selected>1</selected>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxRadioButton" name="ID_RADIOBUTTON3" variable="m_ClearAll" member="yes">
 							<label>Clear all previous libraries settings</label>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>10</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>10</border>
 			</object>
 			<object class="sizeritem">
@@ -57,7 +57,7 @@
 					<label>Set up Global Variables</label>
 					<checked>1</checked>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>10</border>
 			</object>
 			<object class="sizeritem">
@@ -73,7 +73,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>10</border>
 			</object>
 		</object>

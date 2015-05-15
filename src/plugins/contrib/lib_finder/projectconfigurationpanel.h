@@ -27,15 +27,15 @@
 //(*Headers(ProjectConfigurationPanel)
 #include <wx/panel.h>
 #include <wx/timer.h>
-class wxCheckBox;
 class wxTextCtrl;
-class wxTreeCtrl;
-class wxTreeEvent;
-class wxListBox;
-class wxStaticText;
-class wxBoxSizer;
-class wxButton;
 class wxStaticBoxSizer;
+class wxListBox;
+class wxButton;
+class wxTreeEvent;
+class wxBoxSizer;
+class wxStaticText;
+class wxTreeCtrl;
+class wxCheckBox;
 //*)
 
 #include <configurationpanel.h>
@@ -79,21 +79,21 @@ class ProjectConfigurationPanel: public cbConfigurationPanel
         bool m_IsPkgConfig;
 
 		//(*Declarations(ProjectConfigurationPanel)
-		wxButton* m_AddUnknown;
-		wxCheckBox* m_Tree;
+		wxStaticText* m_EventText;
 		wxButton* Button1;
-		wxStaticText* StaticText1;
-		wxTreeCtrl* m_KnownLibrariesTree;
-		wxTextCtrl* m_UnknownLibrary;
 		wxButton* Button2;
+		wxStaticText* StaticText1;
+		wxButton* m_Remove;
+		wxTimer Timer1;
+		wxTreeCtrl* m_KnownLibrariesTree;
+		wxButton* m_AddUnknown;
 		wxTextCtrl* m_Filter;
 		wxButton* m_AddScript;
 		wxButton* m_Add;
+		wxCheckBox* m_Tree;
+		wxTextCtrl* m_UnknownLibrary;
 		wxCheckBox* m_NoAuto;
 		wxListBox* m_UsedLibraries;
-		wxStaticText* m_EventText;
-		wxTimer Timer1;
-		wxButton* m_Remove;
 		//*)
 
 		//(*Identifiers(ProjectConfigurationPanel)

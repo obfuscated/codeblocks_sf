@@ -24,15 +24,15 @@
 #include "projectconfigurationpanel.h"
 
 //(*InternalHeaders(ProjectConfigurationPanel)
-#include <wx/treectrl.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
 #include <wx/checkbox.h>
-#include <wx/listbox.h>
-#include <wx/intl.h>
+#include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/treectrl.h>
+#include <wx/listbox.h>
 //*)
 
 #include <wx/tokenzr.h>
@@ -95,17 +95,17 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
     m_KnownLibs(KnownLibs)
 {
 	//(*Initialize(ProjectConfigurationPanel)
-	wxBoxSizer* BoxSizer4;
 	wxStaticBoxSizer* StaticBoxSizer2;
-	wxBoxSizer* BoxSizer6;
-	wxBoxSizer* BoxSizer5;
+	wxBoxSizer* BoxSizer3;
 	wxBoxSizer* BoxSizer7;
 	wxBoxSizer* BoxSizer2;
 	wxStaticBoxSizer* StaticBoxSizer3;
+	wxBoxSizer* BoxSizer4;
 	wxBoxSizer* BoxSizer1;
-	wxStaticBoxSizer* StaticBoxSizer1;
-	wxBoxSizer* BoxSizer3;
 	wxStaticBoxSizer* m_DisableAuto;
+	wxBoxSizer* BoxSizer6;
+	wxBoxSizer* BoxSizer5;
+	wxStaticBoxSizer* StaticBoxSizer1;
 
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -113,61 +113,61 @@ ProjectConfigurationPanel::ProjectConfigurationPanel(wxWindow* parent,ProjectCon
 	BoxSizer5 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Libraries used in project"));
 	m_UsedLibraries = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(147,123), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
-	StaticBoxSizer1->Add(m_UsedLibraries, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer1->Add(m_UsedLibraries, 1, wxALL|wxEXPAND, 5);
 	Button2 = new wxButton(this, ID_BUTTON6, _("Try to detect missing ones"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON6"));
-	StaticBoxSizer1->Add(Button2, 0, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer5->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer1->Add(Button2, 0, wxLEFT|wxRIGHT|wxEXPAND, 5);
+	BoxSizer5->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND, 5);
 	m_DisableAuto = new wxStaticBoxSizer(wxVERTICAL, this, _("Extra settings"));
 	m_NoAuto = new wxCheckBox(this, ID_CHECKBOX2, _("Don\'t setup automatically"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
 	m_NoAuto->SetValue(false);
 	m_NoAuto->SetToolTip(_("If you check this option, lib_finder won\'t add settings of libraries automatically.\nNote that automatic setup is available only after applying extra patch to code::blocks available at forums."));
-	m_DisableAuto->Add(m_NoAuto, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_DisableAuto->Add(m_NoAuto, 0, wxEXPAND, 5);
 	m_AddScript = new wxButton(this, ID_BUTTON4, _("Add manual build script"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON4"));
 	m_AddScript->SetToolTip(_("When you use this option, extra script will be added to the project.\nThis script does invoke lib_finder and will add settings of libraries\njust as in case of automatic setup.\nIt may be usefull when no extra-event patch has been applied."));
-	m_DisableAuto->Add(m_AddScript, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer5->Add(m_DisableAuto, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer6->Add(BoxSizer5, 3, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	m_DisableAuto->Add(m_AddScript, 0, wxEXPAND, 5);
+	BoxSizer5->Add(m_DisableAuto, 0, wxALL|wxEXPAND, 5);
+	BoxSizer6->Add(BoxSizer5, 3, wxEXPAND, 5);
 	BoxSizer2 = new wxBoxSizer(wxVERTICAL);
 	m_Add = new wxButton(this, ID_BUTTON1, _("<"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
 	m_Add->Disable();
 	m_Add->SetToolTip(_("Add selected library to project"));
-	BoxSizer2->Add(m_Add, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(m_Add, 1, wxEXPAND, 5);
 	m_Remove = new wxButton(this, ID_BUTTON2, _(">"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
 	m_Remove->Disable();
 	m_Remove->SetToolTip(_("Remove selected library from project"));
-	BoxSizer2->Add(m_Remove, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer6->Add(BoxSizer2, 0, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(m_Remove, 1, wxEXPAND, 5);
+	BoxSizer6->Add(BoxSizer2, 0, wxALIGN_CENTER_VERTICAL, 5);
 	BoxSizer3 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer2 = new wxStaticBoxSizer(wxVERTICAL, this, _("Known libraries"));
 	m_KnownLibrariesTree = new wxTreeCtrl(this, ID_TREECTRL1, wxDefaultPosition, wxDefaultSize, wxTR_HIDE_ROOT|wxTR_SINGLE|wxTR_DEFAULT_STYLE|wxSUNKEN_BORDER, wxDefaultValidator, _T("ID_TREECTRL1"));
-	StaticBoxSizer2->Add(m_KnownLibrariesTree, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer2->Add(m_KnownLibrariesTree, 1, wxALL|wxEXPAND, 5);
 	BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
 	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Filter:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
-	BoxSizer4->Add(StaticText1, 0, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer4->Add(StaticText1, 0, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
 	m_Filter = new wxTextCtrl(this, ID_TEXTCTRL2, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL2"));
-	BoxSizer4->Add(m_Filter, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer2->Add(BoxSizer4, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer4->Add(m_Filter, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer2->Add(BoxSizer4, 0, wxEXPAND, 5);
 	BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
 	m_Tree = new wxCheckBox(this, ID_CHECKBOX1, _("Show as tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
 	m_Tree->SetValue(true);
-	BoxSizer7->Add(m_Tree, 1, wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer7->Add(m_Tree, 1, wxLEFT|wxRIGHT|wxEXPAND, 5);
 	Button1 = new wxButton(this, ID_BUTTON5, _("Edit"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON5"));
 	Button1->Hide();
-	BoxSizer7->Add(Button1, 0, wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer2->Add(BoxSizer7, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer3->Add(StaticBoxSizer2, 1, wxBOTTOM|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer7->Add(Button1, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer2->Add(BoxSizer7, 0, wxEXPAND, 5);
+	BoxSizer3->Add(StaticBoxSizer2, 1, wxBOTTOM|wxEXPAND, 5);
 	StaticBoxSizer3 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Unknown library"));
 	m_UnknownLibrary = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-	StaticBoxSizer3->Add(m_UnknownLibrary, 1, wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer3->Add(m_UnknownLibrary, 1, wxTOP|wxBOTTOM|wxLEFT|wxEXPAND, 5);
 	m_AddUnknown = new wxButton(this, ID_BUTTON3, _("Add"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
 	m_AddUnknown->Disable();
-	StaticBoxSizer3->Add(m_AddUnknown, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer3->Add(StaticBoxSizer3, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer6->Add(BoxSizer3, 4, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(BoxSizer6, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer3->Add(m_AddUnknown, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer3->Add(StaticBoxSizer3, 0, wxTOP|wxEXPAND, 5);
+	BoxSizer6->Add(BoxSizer3, 4, wxALL|wxEXPAND, 5);
+	BoxSizer1->Add(BoxSizer6, 1, wxEXPAND, 5);
 	m_EventText = new wxStaticText(this, ID_STATICTEXT2, _("Note: Because there\'s not yet ability to update project\'s build options\nfrom plugin, the only way to automatically add library configurations\nis to use build script"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
 	m_EventText->Hide();
-	BoxSizer1->Add(m_EventText, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer1->Add(m_EventText, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 	SetSizer(BoxSizer1);
 	Timer1.SetOwner(this, ID_TIMER1);
 	BoxSizer1->Fit(this);

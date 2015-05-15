@@ -23,7 +23,7 @@
 									<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
 										<label>Name</label>
 									</object>
-									<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -31,7 +31,7 @@
 									<object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="no">
 										<style>wxLI_VERTICAL</style>
 									</object>
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -39,7 +39,7 @@
 									<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="no">
 										<label>Scan</label>
 									</object>
-									<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -47,7 +47,7 @@
 									<object class="wxStaticLine" name="ID_STATICLINE3" variable="StaticLine3" member="no">
 										<style>wxLI_VERTICAL</style>
 									</object>
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -55,43 +55,43 @@
 									<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="no">
 										<label>web</label>
 									</object>
-									<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE10" variable="StaticLine10" member="no" />
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE11" variable="StaticLine11" member="no" />
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE12" variable="StaticLine12" member="no" />
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE13" variable="StaticLine13" member="no" />
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticLine" name="ID_STATICLINE14" variable="StaticLine14" member="no" />
-									<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -105,7 +105,7 @@
 									<label>Download missing defs.</label>
 									<handler function="OnButton1Click" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -114,16 +114,16 @@
 									<label>Scan for selected</label>
 									<handler function="OnButton1Click1" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -134,12 +134,12 @@
 						<object class="wxStaticText" name="ID_STATICTEXT4" variable="m_StatusText" member="yes">
 							<label>Ready</label>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
