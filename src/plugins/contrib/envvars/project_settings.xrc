@@ -1,33 +1,31 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxPanel" name="pnlProjectEnvVarsOptions">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxCheckBox" name="chkEnvvarSet">
-          <label>Select environment variables set to be applied:</label>
-          <tooltip>Enable this option to select a specific environment variables set for this project.</tooltip>
-        </object>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxChoice" name="choEnvvarSets">
-          <content/>
-          <enabled>0</enabled>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>NOTE: Environment variables sets can be setup (globally within C::B) under:
-Settings -&gt; Environment -&gt; Environment variables</label>
-          <fg>#800000</fg>
-        </object>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxPanel" name="pnlProjectEnvVarsOptions">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="chkEnvvarSet">
+					<label>Select environment variables set to be applied:</label>
+					<tooltip>Enable this option to select a specific environment variables set for this project.</tooltip>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxChoice" name="choEnvvarSets">
+					<enabled>0</enabled>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>NOTE: Environment variables sets can be setup (globally within C::B) under:&#x0A;Settings -&gt; Environment -&gt; Environment variables</label>
+					<fg>#800000</fg>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>
