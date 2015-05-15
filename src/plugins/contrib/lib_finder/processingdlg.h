@@ -27,6 +27,11 @@
 #include <wx/string.h>
 #include <wx/hashmap.h>
 #include <wx/arrstr.h>
+#ifdef(__WXMSW__)
+    #include <wx/gauge.h>
+#endif
+
+
 
 //(*Headers(ProcessingDlg)
 #include "scrollingdialog.h"
