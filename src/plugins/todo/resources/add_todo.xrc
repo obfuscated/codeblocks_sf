@@ -10,14 +10,14 @@
 				<object class="wxStaticText" name="ID_STATICTEXT1">
 					<label>Text:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="txtText">
 					<style>wxTE_MULTILINE</style>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
@@ -30,15 +30,15 @@
 						<object class="wxStaticText" name="ID_STATICTEXT2">
 							<label>User:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="spacer">
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 						<size>0,0</size>
 					</object>
 					<object class="sizeritem">
 						<object class="wxChoice" name="chcUser" />
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>8</border>
 					</object>
 					<object class="sizeritem">
@@ -47,29 +47,29 @@
 								<object class="wxButton" name="btAddUser">
 									<label>Add new user</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_TOP</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btDelUser">
 									<label>Delete user</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_TOP</flag>
 							</object>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT3">
 							<label>Type:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="spacer">
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxChoice" name="chcType" />
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>8</border>
 					</object>
 					<object class="sizeritem">
@@ -78,28 +78,28 @@
 								<object class="wxButton" name="btAddType">
 									<label>Add new type</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_TOP</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btDelType">
 									<label>Delete type</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALIGN_TOP</flag>
 							</object>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT4">
 							<label>Priority (1-9):</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT5">
 							<label>Position:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxSpinCtrl" name="spnPriority">
@@ -107,7 +107,7 @@
 							<min>1</min>
 							<max>9</max>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>8</border>
 					</object>
 					<object class="sizeritem">
@@ -119,17 +119,17 @@
 							</content>
 							<selection>0</selection>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>8</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT6">
 							<label>Comment style:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="spacer">
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxChoice" name="chcStyle">
@@ -144,24 +144,24 @@
 							</content>
 							<selection>0</selection>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>8</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="ID_CHECKBOX1">
 							<label>Add current date to item</label>
 						</object>
-						<flag>wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxEXPAND</flag>
 						<border>8</border>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE1" />
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -171,17 +171,17 @@
 							<label>&amp;OK</label>
 							<default>1</default>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_CANCEL">
 							<label>&amp;Cancel</label>
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxALIGN_TOP</flag>
 						<border>8</border>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>8</border>
 			</object>
 		</object>
