@@ -10,7 +10,7 @@
 				<object class="wxCheckBox" name="ID_CHK_ENABLED" variable="m_enabled" member="yes">
 					<label>Enabled</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -19,7 +19,7 @@
 					<focused>1</focused>
 					<style>wxTE_PROCESS_ENTER</style>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
@@ -33,7 +33,7 @@
 					</content>
 					<default>-1</default>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -49,7 +49,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>8</border>
 			</object>
 		</object>

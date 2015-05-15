@@ -13,11 +13,11 @@
 						<object class="wxStaticText" name="ID_STATICTEXT1">
 							<label>Keyword:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_LEFT</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="txtKeyword" />
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer">
@@ -35,7 +35,7 @@
 									<dimension>2</dimension>
 									<style>wxRA_SPECIFY_COLS</style>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
@@ -46,7 +46,7 @@
 										<object class="wxCheckBox" name="chkArray">
 											<label>Watch as array</label>
 										</object>
-										<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
 										<border>8</border>
 									</object>
 									<object class="sizeritem">
@@ -60,49 +60,49 @@
 												<object class="wxStaticText" name="ID_STATICTEXT2">
 													<label>Start:</label>
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxALIGN_CENTER_VERTICAL</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxSpinCtrl" name="spnArrStart">
 													<value>0</value>
 													<max>32000</max>
 												</object>
-												<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<flag>wxEXPAND</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxStaticText" name="ID_STATICTEXT3">
 													<label>Count:</label>
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<flag>wxALIGN_TOP</flag>
 											</object>
 											<object class="sizeritem">
 												<object class="wxSpinCtrl" name="spnArrCount">
 													<value>0</value>
 													<max>1000</max>
 												</object>
-												<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+												<flag>wxEXPAND</flag>
 											</object>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>8</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>8</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE1" />
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -112,17 +112,17 @@
 							<label>&amp;OK</label>
 							<default>1</default>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_CANCEL">
 							<label>&amp;Cancel</label>
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxALIGN_TOP</flag>
 						<border>8</border>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>8</border>
 			</object>
 		</object>

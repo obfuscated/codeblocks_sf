@@ -11,7 +11,7 @@
 							<default>-1</default>
 							<style>wxLB_SINGLE</style>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -22,28 +22,28 @@
 								<object class="wxButton" name="btnAdd">
 									<label>&amp;Add</label>
 								</object>
-								<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnEdit">
 									<label>&amp;Edit</label>
 								</object>
-								<flag>wxTOP|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnDelete">
 									<label>&amp;Delete</label>
 								</object>
-								<flag>wxTOP|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxTOP|wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<flag>wxTOP|wxBOTTOM|wxALIGN_TOP</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -57,19 +57,19 @@
 								<object class="wxStaticText" name="ID_STATICTEXT6">
 									<label>Select target:</label>
 								</object>
-								<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALL|wxALIGN_LEFT</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxListBox" name="lstTargets">
 									<default>-1</default>
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -90,7 +90,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT1">
 														<label>Connection type:</label>
 													</object>
-													<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -102,14 +102,14 @@
 															<item>Serial port</item>
 														</content>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT2">
 														<label>Serial port:</label>
 													</object>
-													<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -119,14 +119,14 @@
 															<object class="wxTextCtrl" name="txtSerial">
 																<value>/dev/ttyS0</value>
 															</object>
-															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT8">
 																<label>Baud:</label>
 															</object>
-															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>10</border>
 														</object>
 														<object class="sizeritem">
@@ -142,11 +142,11 @@
 																	<item>1200</item>
 																</content>
 															</object>
-															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>
 														</object>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -154,7 +154,7 @@
 													<object class="wxStaticText" name="ID_STATICTEXT3">
 														<label>IP address:</label>
 													</object>
-													<flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -165,30 +165,30 @@
 																<value>192.168.0.1</value>
 																<size>120,23</size>
 															</object>
-															<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT4">
 																<label>Port:</label>
 															</object>
-															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>10</border>
 														</object>
 														<object class="sizeritem">
 															<object class="wxTextCtrl" name="txtPort">
 																<value>12345</value>
 															</object>
-															<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 															<border>5</border>
 														</object>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -196,14 +196,14 @@
 											<object class="wxCheckBox" name="chkExtendedRemote">
 												<label>Connect with extended-remote</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkSkipLDpath">
 												<label>Do NOT adjust LD__LIBRARY__PATH before launching the debugger</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 									</object>
@@ -225,14 +225,14 @@
 													<object class="wxStaticText" name="ID_STATICTEXT5">
 														<label>Before connection:</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtCmdsBefore">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxTE_DONTWRAP|wxHSCROLL</style>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -240,19 +240,19 @@
 													<object class="wxStaticText" name="ID_STATICTEXT9">
 														<label>After connection:</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtCmds">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxTE_DONTWRAP|wxHSCROLL</style>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -260,7 +260,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT7">
 												<label>Tip: the additional initialization commands will be issued no matter&#x0A;if you define a remote target connection or not</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 									</object>
@@ -282,14 +282,14 @@
 													<object class="wxStaticText" name="ID_STATICTEXT11">
 														<label>Before connection:</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtShellCmdsBefore">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxTE_DONTWRAP|wxHSCROLL</style>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -297,19 +297,19 @@
 													<object class="wxStaticText" name="ID_STATICTEXT12">
 														<label>After connection:</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtShellCmdsAfter">
-														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxHSCROLL|wxTE_DONTWRAP</style>
+														<style>wxTE_PROCESS_ENTER|wxTE_MULTILINE|wxTE_DONTWRAP|wxHSCROLL</style>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxEXPAND</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -317,7 +317,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT10">
 												<label>Tip: the additional shell commands will be issued no matter&#x0A;if you define a remote target connection or not</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 									</object>
@@ -325,12 +325,12 @@
 								<label>Additional shell commands</label>
 							</object>
 						</object>
-						<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
