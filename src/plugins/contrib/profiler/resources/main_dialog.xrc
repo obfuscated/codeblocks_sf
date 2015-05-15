@@ -1,116 +1,116 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxScrollingDialog" name="dlgCBProfilerExec">
-    <title>C::B Profiler Results</title>
-    <centered>1</centered>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticText" name="stxtAbout">
-          <label>Gprof's Output</label>
-          <font>
-            <size>14</size>
-            <weight>bold</weight>
-          </font>
-        </object>
-        <flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxNotebook" name="tabs">
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabFlatProfile">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxSplitterWindow" name="ID_SPLITTERWINDOW1">
-                    <sashpos>-1</sashpos>
-                    <minsize>100</minsize>
-                    <style>wxSP_3DSASH|wxSP_LIVE_UPDATE</style>
-                    <object class="wxListCtrl" name="lstFlatProfile">
-                      <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
-                    </object>
-                    <object class="wxTextCtrl" name="txtHelpFlatProfile">
-                      <bg>wxSYS_COLOUR_MENU</bg>
-                      <style>wxNO_BORDER|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-                    </object>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                  <border>5</border>
-                  <option>1</option>
-                </object>
-              </object>
-            </object>
-            <label>Flat Profile</label>
-          </object>
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabCallGraph">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxSplitterWindow" name="ID_SPLITTERWINDOW2">
-                    <sashpos>-1</sashpos>
-                    <minsize>100</minsize>
-                    <style>wxSP_3D|wxSP_LIVE_UPDATE</style>
-                    <object class="wxListCtrl" name="lstCallGraph">
-                      <style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
-                    </object>
-                    <object class="wxTextCtrl" name="txtHelpCallGraph">
-                      <bg>wxSYS_COLOUR_MENU</bg>
-                      <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxNO_BORDER</style>
-                    </object>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
-                  <border>5</border>
-                  <option>1</option>
-                </object>
-              </object>
-            </object>
-            <label>Call Graph</label>
-          </object>
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabMisc">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxTextCtrl" name="txtMisc">
-                    <size>600,400</size>
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL|wxNO_BORDER</style>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-                  <border>5</border>
-                  <option>1</option>
-                </object>
-              </object>
-            </object>
-            <label>Misc</label>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-        <border>5</border>
-        <option>1</option>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;Close</label>
-              <default>1</default>
-            </object>
-            <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="btnExport">
-              <label>Export to File</label>
-            </object>
-            <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgCBProfilerExec">
+		<title>C::B Profiler Results</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="stxtAbout">
+					<label>Gprof&apos;s Output</label>
+					<font>
+						<size>14</size>
+						<weight>bold</weight>
+					</font>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxNotebook" name="tabs">
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabFlatProfile">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxSplitterWindow" name="ID_SPLITTERWINDOW1">
+										<sashpos>-1</sashpos>
+										<minsize>100</minsize>
+										<style>wxSP_3DSASH|wxSP_LIVE_UPDATE</style>
+										<object class="wxListCtrl" name="lstFlatProfile">
+											<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+										</object>
+										<object class="wxTextCtrl" name="txtHelpFlatProfile">
+											<bg>wxSYS_COLOUR_MENU</bg>
+											<style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxHSCROLL</style>
+										</object>
+									</object>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Flat Profile</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabCallGraph">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxSplitterWindow" name="ID_SPLITTERWINDOW2">
+										<sashpos>-1</sashpos>
+										<minsize>100</minsize>
+										<style>wxSP_3D|wxSP_LIVE_UPDATE</style>
+										<object class="wxListCtrl" name="lstCallGraph">
+											<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
+										</object>
+										<object class="wxTextCtrl" name="txtHelpCallGraph">
+											<bg>wxSYS_COLOUR_MENU</bg>
+											<style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxHSCROLL</style>
+										</object>
+									</object>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Call Graph</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabMisc">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="txtMisc">
+										<size>600,400</size>
+										<style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER|wxHSCROLL</style>
+									</object>
+									<flag>wxEXPAND</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Misc</label>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK">
+							<label>&amp;Close</label>
+							<default>1</default>
+						</object>
+						<flag>wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnExport">
+							<label>Export to File</label>
+						</object>
+						<flag>wxALIGN_TOP</flag>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>
