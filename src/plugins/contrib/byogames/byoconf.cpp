@@ -14,13 +14,8 @@
 #include "byogamebase.h"
 
 //(*InternalHeaders(byoConf)
-#include <wx/bitmap.h>
-#include <wx/font.h>
-#include <wx/fontenum.h>
-#include <wx/fontmap.h>
-#include <wx/image.h>
+#include <wx/string.h>
 #include <wx/intl.h>
-#include <wx/settings.h>
 //*)
 
 //(*IdInit(byoConf)
@@ -52,72 +47,73 @@ END_EVENT_TABLE()
 byoConf::byoConf(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(byoConf)
-	Create(parent,id,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxPanel"));
-	FlexGridSizer1 = new wxFlexGridSizer(0,1,0,0);
+	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
+	FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
 	FlexGridSizer1->AddGrowableCol(0);
-	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Back-To-Work settings"));
-	FlexGridSizer2 = new wxFlexGridSizer(0,2,0,0);
+	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Back-To-Work settings"));
+	FlexGridSizer2 = new wxFlexGridSizer(0, 2, 0, 0);
 	FlexGridSizer2->AddGrowableCol(1);
-	m_MaxPlaytimeChk = new wxCheckBox(this,ID_CHECKBOX1,_("Maximum play time (sec)"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX1"));
+	m_MaxPlaytimeChk = new wxCheckBox(this, ID_CHECKBOX1, _("Maximum play time (sec)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
 	m_MaxPlaytimeChk->SetValue(true);
-	FlexGridSizer2->Add(m_MaxPlaytimeChk,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
-	m_MaxPlaytimeSpn = new wxSpinCtrl(this,ID_SPINCTRL1,_T("1"),wxDefaultPosition,wxDefaultSize,0,1,1000000,1,_T("ID_SPINCTRL1"));
+	FlexGridSizer2->Add(m_MaxPlaytimeChk, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+	m_MaxPlaytimeSpn = new wxSpinCtrl(this, ID_SPINCTRL1, _T("1"), wxDefaultPosition, wxDefaultSize, 0, 1, 1000000, 1, _T("ID_SPINCTRL1"));
 	m_MaxPlaytimeSpn->SetValue(_T("1"));
-	FlexGridSizer2->Add(m_MaxPlaytimeSpn,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	m_MinWorkChk = new wxCheckBox(this,ID_CHECKBOX2,_("Minimum work time (sec)"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX2"));
+	FlexGridSizer2->Add(m_MaxPlaytimeSpn, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 4);
+	m_MinWorkChk = new wxCheckBox(this, ID_CHECKBOX2, _("Minimum work time (sec)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
 	m_MinWorkChk->SetValue(true);
-	FlexGridSizer2->Add(m_MinWorkChk,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
-	m_MinWorkSpn = new wxSpinCtrl(this,ID_SPINCTRL2,_T("1"),wxDefaultPosition,wxDefaultSize,0,1,1000000,1,_T("ID_SPINCTRL2"));
+	FlexGridSizer2->Add(m_MinWorkChk, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+	m_MinWorkSpn = new wxSpinCtrl(this, ID_SPINCTRL2, _T("1"), wxDefaultPosition, wxDefaultSize, 0, 1, 1000000, 1, _T("ID_SPINCTRL2"));
 	m_MinWorkSpn->SetValue(_T("1"));
-	FlexGridSizer2->Add(m_MinWorkSpn,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	m_OverworkChk = new wxCheckBox(this,ID_CHECKBOX3,_("Overwork time (sec)"),wxDefaultPosition,wxDefaultSize,0,wxDefaultValidator,_T("ID_CHECKBOX3"));
+	FlexGridSizer2->Add(m_MinWorkSpn, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 4);
+	m_OverworkChk = new wxCheckBox(this, ID_CHECKBOX3, _("Overwork time (sec)"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX3"));
 	m_OverworkChk->SetValue(true);
-	FlexGridSizer2->Add(m_OverworkChk,0,wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL,4);
-	m_OverworkSpn = new wxSpinCtrl(this,ID_SPINCTRL3,_T("1"),wxDefaultPosition,wxDefaultSize,0,1,1000000,1,_T("ID_SPINCTRL3"));
+	FlexGridSizer2->Add(m_OverworkChk, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL, 4);
+	m_OverworkSpn = new wxSpinCtrl(this, ID_SPINCTRL3, _T("1"), wxDefaultPosition, wxDefaultSize, 0, 1, 1000000, 1, _T("ID_SPINCTRL3"));
 	m_OverworkSpn->SetValue(_T("1"));
-	FlexGridSizer2->Add(m_OverworkSpn,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticBoxSizer1->Add(FlexGridSizer2,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	FlexGridSizer1->Add(StaticBoxSizer1,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL,this,_("Default colours"));
-	FlexGridSizer3 = new wxFlexGridSizer(0,8,0,0);
+	FlexGridSizer2->Add(m_OverworkSpn, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 4);
+	StaticBoxSizer1->Add(FlexGridSizer2, 1, wxEXPAND, 4);
+	FlexGridSizer1->Add(StaticBoxSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 4);
+	StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Default colours"));
+	FlexGridSizer3 = new wxFlexGridSizer(0, 8, 0, 0);
 	FlexGridSizer3->AddGrowableCol(1);
 	FlexGridSizer3->AddGrowableCol(4);
 	FlexGridSizer3->AddGrowableCol(7);
 	FlexGridSizer3->AddGrowableRow(0);
 	FlexGridSizer3->AddGrowableRow(1);
-	StaticText1 = new wxStaticText(this,ID_STATICTEXT1,_("1"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT1"));
-	FlexGridSizer3->Add(StaticText1,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,4);
-	m_Col1 = new wxButton(this,ID_BUTTON1,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON1"));
-	FlexGridSizer3->Add(m_Col1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	FlexGridSizer3->Add(-1,-1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticText2 = new wxStaticText(this,ID_STATICTEXT2,_("3"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT2"));
-	FlexGridSizer3->Add(StaticText2,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,4);
-	m_Col3 = new wxButton(this,ID_BUTTON2,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON2"));
-	FlexGridSizer3->Add(m_Col3,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	FlexGridSizer3->Add(-1,-1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticText3 = new wxStaticText(this,ID_STATICTEXT3,_("5"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT3"));
-	FlexGridSizer3->Add(StaticText3,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,4);
-	m_Col5 = new wxButton(this,ID_BUTTON3,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON3"));
-	FlexGridSizer3->Add(m_Col5,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticText4 = new wxStaticText(this,ID_STATICTEXT4,_("2"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT4"));
-	FlexGridSizer3->Add(StaticText4,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,4);
-	m_Col2 = new wxButton(this,ID_BUTTON4,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON4"));
-	FlexGridSizer3->Add(m_Col2,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	FlexGridSizer3->Add(-1,-1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticText5 = new wxStaticText(this,ID_STATICTEXT5,_("4"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT5"));
-	FlexGridSizer3->Add(StaticText5,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,4);
-	m_Col4 = new wxButton(this,ID_BUTTON5,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON5"));
-	FlexGridSizer3->Add(m_Col4,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	FlexGridSizer3->Add(-1,-1,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticText6 = new wxStaticText(this,ID_STATICTEXT6,_("6"),wxDefaultPosition,wxDefaultSize,0,_T("ID_STATICTEXT6"));
-	FlexGridSizer3->Add(StaticText6,1,wxTOP|wxBOTTOM|wxLEFT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL,4);
-	m_Col6 = new wxButton(this,ID_BUTTON6,wxEmptyString,wxDefaultPosition,wxDefaultSize,wxBU_EXACTFIT,wxDefaultValidator,_T("ID_BUTTON6"));
-	FlexGridSizer3->Add(m_Col6,1,wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	StaticBoxSizer2->Add(FlexGridSizer3,1,wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
-	FlexGridSizer1->Add(StaticBoxSizer2,1,wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL,4);
+	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("1"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT1"));
+	FlexGridSizer3->Add(StaticText1, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 4);
+	m_Col1 = new wxButton(this, ID_BUTTON1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
+	FlexGridSizer3->Add(m_Col1, 1, wxALL|wxEXPAND, 4);
+	FlexGridSizer3->Add(-1,-1,1, wxALL|wxEXPAND, 4);
+	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("3"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT2"));
+	FlexGridSizer3->Add(StaticText2, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 4);
+	m_Col3 = new wxButton(this, ID_BUTTON2, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON2"));
+	FlexGridSizer3->Add(m_Col3, 1, wxALL|wxEXPAND, 4);
+	FlexGridSizer3->Add(-1,-1,1, wxALL|wxEXPAND, 4);
+	StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("5"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
+	FlexGridSizer3->Add(StaticText3, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 4);
+	m_Col5 = new wxButton(this, ID_BUTTON3, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON3"));
+	FlexGridSizer3->Add(m_Col5, 1, wxALL|wxEXPAND, 4);
+	StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("2"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
+	FlexGridSizer3->Add(StaticText4, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 4);
+	m_Col2 = new wxButton(this, ID_BUTTON4, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON4"));
+	FlexGridSizer3->Add(m_Col2, 1, wxALL|wxEXPAND, 4);
+	FlexGridSizer3->Add(-1,-1,1, wxALL|wxEXPAND, 4);
+	StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("4"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
+	FlexGridSizer3->Add(StaticText5, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 4);
+	m_Col4 = new wxButton(this, ID_BUTTON5, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON5"));
+	FlexGridSizer3->Add(m_Col4, 1, wxALL|wxEXPAND, 4);
+	FlexGridSizer3->Add(-1,-1,1, wxALL|wxEXPAND, 4);
+	StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("6"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
+	FlexGridSizer3->Add(StaticText6, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 4);
+	m_Col6 = new wxButton(this, ID_BUTTON6, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON6"));
+	FlexGridSizer3->Add(m_Col6, 1, wxALL|wxEXPAND, 4);
+	StaticBoxSizer2->Add(FlexGridSizer3, 1, wxEXPAND, 4);
+	FlexGridSizer1->Add(StaticBoxSizer2, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 4);
 	SetSizer(FlexGridSizer1);
 	FlexGridSizer1->Fit(this);
 	FlexGridSizer1->SetSizeHints(this);
+
 	Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&byoConf::BTWSRefresh);
 	Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&byoConf::BTWSRefresh);
 	Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&byoConf::BTWSRefresh);

@@ -64,8 +64,16 @@
 		<Unit filename="byogameselect.h" />
 		<Unit filename="byosnake.cpp" />
 		<Unit filename="byosnake.h" />
+		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
+			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
+				<resources>
+					<wxScrollingDialog wxs="wxsmith/byoGameSelect.wxs" src="byogameselect.cpp" hdr="byogameselect.h" name="byoGameSelect" language="CPP" />
+					<wxPanel wxs="wxsmith/byoConf.wxs" src="byoconf.cpp" hdr="byoconf.h" name="byoConf" language="CPP" />
+				</resources>
+			</wxsmith>
 			<envvars />
 			<debugger />
 		</Extensions>
