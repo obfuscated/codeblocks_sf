@@ -95,20 +95,20 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	BoxSizer1 = new wxBoxSizer(wxVERTICAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Search for"));
 	m_SearchValue = new wxComboBox(this, ID_COMBOBOX1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_COMBOBOX1"));
-	StaticBoxSizer1->Add(m_SearchValue, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer1->Add(m_SearchValue, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
 	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
 	m_SearchTypeString = new wxRadioButton(this, ID_RADIOBUTTON1, _("String"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON1"));
 	m_SearchTypeString->SetValue(true);
-	BoxSizer2->Add(m_SearchTypeString, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(m_SearchTypeString, 0, wxALL|wxEXPAND, 5);
 	m_SearchTypeHex = new wxRadioButton(this, ID_RADIOBUTTON2, _("Hex"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON2"));
-	BoxSizer2->Add(m_SearchTypeHex, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(m_SearchTypeHex, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
 	m_SearchTypeExpression = new wxRadioButton(this, ID_RADIOBUTTON3, _("Expression"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_RADIOBUTTON3"));
-	BoxSizer2->Add(m_SearchTypeExpression, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer2->Add(13,8,1, wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(m_SearchTypeExpression, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(13,8,1, wxALIGN_CENTER_VERTICAL, 5);
 	Button1 = new wxButton(this, ID_BUTTON1, _("\?"), wxDefaultPosition, wxDefaultSize, wxBU_EXACTFIT, wxDefaultValidator, _T("ID_BUTTON1"));
-	BoxSizer2->Add(Button1, 0, wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	StaticBoxSizer1->Add(BoxSizer2, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 0, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer2->Add(Button1, 0, wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer1->Add(BoxSizer2, 0, wxEXPAND, 5);
+	BoxSizer1->Add(StaticBoxSizer1, 0, wxALL|wxEXPAND, 5);
 	BoxSizer3 = new wxBoxSizer(wxHORIZONTAL);
 	wxString __wxRadioBoxChoices_1[2] =
 	{
@@ -117,7 +117,7 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	};
 	m_StartFrom = new wxRadioBox(this, ID_RADIOBOX2, _("Start from"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX2"));
 	m_StartFrom->SetSelection(0);
-	BoxSizer3->Add(m_StartFrom, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer3->Add(m_StartFrom, 1, wxALL|wxEXPAND, 5);
 	wxString __wxRadioBoxChoices_2[2] =
 	{
 		_("Up"),
@@ -125,13 +125,13 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	};
 	m_Direction = new wxRadioBox(this, ID_RADIOBOX1, _("Direction"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, wxRA_HORIZONTAL, wxDefaultValidator, _T("ID_RADIOBOX1"));
 	m_Direction->SetSelection(1);
-	BoxSizer3->Add(m_Direction, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(BoxSizer3, 0, wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer3->Add(m_Direction, 1, wxALL|wxEXPAND, 5);
+	BoxSizer1->Add(BoxSizer3, 0, wxTOP|wxEXPAND, 5);
 	StdDialogButtonSizer1 = new wxStdDialogButtonSizer();
 	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
 	StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
 	StdDialogButtonSizer1->Realize();
-	BoxSizer1->Add(StdDialogButtonSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	BoxSizer1->Add(StdDialogButtonSizer1, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
 	SetSizer(BoxSizer1);
 	BoxSizer1->Fit(this);
 	BoxSizer1->SetSizeHints(this);

@@ -54,10 +54,10 @@ void TestCasesDlg::BuildContent(wxWindow* parent)
 	BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
 	StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Test log:"));
 	ListBox1 = new wxListBox(this, ID_LISTBOX1, wxDefaultPosition, wxSize(410,268), 0, 0, 0, wxDefaultValidator, _T("ID_LISTBOX1"));
-	StaticBoxSizer1->Add(ListBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer1->Add(ListBox1, 1, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
 	Button1 = new wxButton(this, ID_BUTTON1, _("Stop"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
-	StaticBoxSizer1->Add(Button1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	StaticBoxSizer1->Add(Button1, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT, 5);
+	BoxSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND, 5);
 	SetSizer(BoxSizer1);
 	Timer1.SetOwner(this, ID_TIMER1);
 	Timer1.Start(50, false);

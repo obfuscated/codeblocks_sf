@@ -26,9 +26,9 @@
 //(*Headers(TestCasesDlg)
 #include <wx/sizer.h>
 #include <wx/button.h>
+#include "scrollingdialog.h"
 #include <wx/timer.h>
 #include <wx/listbox.h>
-#include "scrollingdialog.h"
 //*)
 #include <wx/thread.h>
 
