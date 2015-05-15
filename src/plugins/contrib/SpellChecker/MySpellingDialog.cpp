@@ -98,10 +98,10 @@ void MySpellingDialog::CreateDialog()
 	wxFlexGridSizer* pMisspellingSizer = new wxFlexGridSizer(3, 5, 5);
 
 	pMisspellingSizer->Add(new wxStaticText(this, -1, _T("Misspelled Word:"), wxDefaultPosition));
-	pMisspellingSizer->Add(new wxTextCtrl(this, IDC_TEXT_MISSPELLED_WORD, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY, wxTextValidator(wxFILTER_NONE, &m_strMisspelledWord)), 1, wxEXPAND | wxALIGN_CENTER);
+	pMisspellingSizer->Add(new wxTextCtrl(this, IDC_TEXT_MISSPELLED_WORD, _T(""), wxDefaultPosition, wxDefaultSize, wxTE_READONLY, wxTextValidator(wxFILTER_NONE, &m_strMisspelledWord)), 1, wxEXPAND);
 	pMisspellingSizer->Add(new wxButton(this, IDC_BUTTON_RECHECK_PAGE, _T("Recheck Page")), 0, wxEXPAND);
-	pMisspellingSizer->Add(new wxStaticText(this, -1, _T("Replace with:"), wxDefaultPosition), 0, wxEXPAND | wxGROW | wxALIGN_CENTER);
-	pMisspellingSizer->Add(new wxTextCtrl(this, IDC_TEXT_REPLACE_WITH, _T(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &m_strReplaceWithText)), 1, wxEXPAND | wxALIGN_CENTER);
+	pMisspellingSizer->Add(new wxStaticText(this, -1, _T("Replace with:"), wxDefaultPosition), 0, wxEXPAND | wxGROW);
+	pMisspellingSizer->Add(new wxTextCtrl(this, IDC_TEXT_REPLACE_WITH, _T(""), wxDefaultPosition, wxDefaultSize, 0, wxTextValidator(wxFILTER_NONE, &m_strReplaceWithText)), 1, wxEXPAND);
 	pMisspellingSizer->Add(new wxButton(this, IDC_BUTTON_CHECK_WORD, _T("Check Word")), 0, wxEXPAND);
 	pMisspellingSizer->AddGrowableCol(1);
 
@@ -142,7 +142,7 @@ void MySpellingDialog::CreateDialog()
 	pTopSizer->Add(pBottomRowSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
   // Add a context section
-  pTopSizer->Add(new wxTextCtrl(this, IDC_TEXT_CONTEXT, _T(""), wxDefaultPosition, wxSize(320,100), wxTE_MULTILINE | wxTE_READONLY | wxTE_NOHIDESEL | wxTE_RICH2 ), 0, wxEXPAND | wxALIGN_CENTER);
+  pTopSizer->Add(new wxTextCtrl(this, IDC_TEXT_CONTEXT, _T(""), wxDefaultPosition, wxSize(320,100), wxTE_MULTILINE | wxTE_READONLY | wxTE_NOHIDESEL | wxTE_RICH2 ), 0, wxEXPAND);
 
 	// Now attach the main sizer to the window
 	SetSizer(pTopSizer);
