@@ -14,7 +14,7 @@
 								<object class="wxListBox" name="lstHelp">
 									<style>wxLB_SINGLE</style>
 								</object>
-								<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -25,25 +25,25 @@
 										<object class="wxButton" name="btnAdd">
 											<label>Add</label>
 										</object>
-										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="btnRename">
 											<label>Rename</label>
 										</object>
-										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="btnDelete">
 											<label>Delete</label>
 										</object>
-										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 										<border>5</border>
 									</object>
 									<object class="spacer">
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxALL|wxALIGN_LEFT</flag>
 										<border>5</border>
 										<size>10,10</size>
 									</object>
@@ -52,7 +52,7 @@
 											<label>Up</label>
 											<enabled>0</enabled>
 										</object>
-										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -60,15 +60,15 @@
 											<label>Down</label>
 											<enabled>0</enabled>
 										</object>
-										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxTOP|wxALIGN_TOP</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -76,7 +76,7 @@
 						<object class="wxBoxSizer">
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="txtHelp" />
-								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -85,11 +85,11 @@
 									<label>...</label>
 									<size>22,-1</size>
 								</object>
-								<flag>wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -97,28 +97,28 @@
 							<label>TIP: $$(keyword) will be replaced by the word under the cursor</label>
 							<fg>#800000</fg>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkDefault">
 							<label>This is the default help file (shortcut: F1)</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkExecute">
 							<label>This line represents a full command to be executed</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkEmbeddedViewer">
 							<label>Open this file with the embedded help viewer (only for HTML files)</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -130,7 +130,7 @@
 							</content>
 							<size>-1,-1</size>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -139,21 +139,21 @@
 								<object class="wxStaticText" name="ID_STATICTEXT2">
 									<label>Default keyword value:</label>
 								</object>
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="textDefaultKeyword" />
-								<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
