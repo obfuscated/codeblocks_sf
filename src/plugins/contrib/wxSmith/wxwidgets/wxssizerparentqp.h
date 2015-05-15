@@ -24,12 +24,12 @@
 #define WXSSIZERPARENTQP_H
 
 //(*Headers(wxsSizerParentQP)
-#include <wx/sizer.h>
-#include <wx/checkbox.h>
 #include <wx/spinctrl.h>
-#include <wx/statline.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
 #include <wx/radiobut.h>
 #include <wx/panel.h>
+#include <wx/statline.h>
 //*)
 
 #include "wxssizer.h"
@@ -77,26 +77,26 @@ class wxsSizerParentQP: public wxsAdvQPPChild
         //*)
 
         //(*Declarations(wxsSizerParentQP)
-        wxRadioButton* PlaceCB;
-        wxCheckBox* BrdAll;
-        wxCheckBox* PlaceShp;
-        wxCheckBox* BrdLeft;
-        wxSpinCtrl* BrdSize;
-        wxCheckBox* BrdTop;
-        wxCheckBox* BrdRight;
-        wxRadioButton* PlaceRT;
-        wxRadioButton* PlaceRC;
-        wxCheckBox* PlaceExp;
-        wxRadioButton* PlaceCT;
-        wxCheckBox* BrdDlg;
-        wxCheckBox* BrdBottom;
-        wxRadioButton* PlaceLB;
         wxRadioButton* PlaceRB;
-        wxRadioButton* PlaceCC;
-        wxStaticLine* StaticLine1;
-        wxSpinCtrl* Proportion;
+        wxCheckBox* BrdDlg;
+        wxRadioButton* PlaceCB;
+        wxRadioButton* PlaceRT;
         wxRadioButton* PlaceLT;
+        wxCheckBox* BrdLeft;
+        wxCheckBox* BrdTop;
+        wxSpinCtrl* Proportion;
+        wxRadioButton* PlaceLB;
+        wxStaticLine* StaticLine1;
+        wxCheckBox* PlaceShp;
+        wxCheckBox* PlaceExp;
+        wxRadioButton* PlaceRC;
+        wxRadioButton* PlaceCC;
+        wxCheckBox* BrdAll;
         wxRadioButton* PlaceLC;
+        wxCheckBox* BrdRight;
+        wxSpinCtrl* BrdSize;
+        wxCheckBox* BrdBottom;
+        wxRadioButton* PlaceCT;
         //*)
 
         virtual void Update();

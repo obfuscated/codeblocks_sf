@@ -15,7 +15,7 @@
 							<label>Physically delete WXS file</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -23,7 +23,7 @@
 							<label>Delete source files from project</label>
 							<handler function="Onm_DeleteSourcesClick" entry="EVT_CHECKBOX" />
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -31,7 +31,7 @@
 							<label>Physically delete source files</label>
 							<enabled>0</enabled>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -39,12 +39,12 @@
 							<label>Note that there&apos;s no undo&#x0A;after deleting resource</label>
 							<style>wxALIGN_CENTRE</style>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -61,7 +61,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>

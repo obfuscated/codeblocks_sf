@@ -26,15 +26,15 @@
 #include <wx/listbook.h>
 
 //(*Headers(wxsListbookParentQP)
-#include <wx/sizer.h>
-#include <wx/textctrl.h>
 #include <wx/checkbox.h>
+#include <wx/sizer.h>
 #include <wx/panel.h>
+#include <wx/textctrl.h>
 //*)
 
 //(*InternalHeaders(wxsListbookParentQP)
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
 //*)
 
 // TODO: Add images
@@ -75,20 +75,20 @@ namespace
             {
                 //(*Initialize(wxsListbookParentQP)
                 wxStaticBoxSizer* StaticBoxSizer2;
-                wxStaticBoxSizer* StaticBoxSizer1;
                 wxFlexGridSizer* FlexGridSizer1;
+                wxStaticBoxSizer* StaticBoxSizer1;
 
                 Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
                 StaticBoxSizer1 = new wxStaticBoxSizer(wxVERTICAL, this, _("Label"));
                 Label = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
-                StaticBoxSizer1->Add(Label, 0, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                StaticBoxSizer1->Add(Label, 0, wxEXPAND, 5);
+                FlexGridSizer1->Add(StaticBoxSizer1, 1, wxEXPAND, 5);
                 StaticBoxSizer2 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Selection"));
                 Selected = new wxCheckBox(this, ID_CHECKBOX1, _("Selected"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
                 Selected->SetValue(false);
-                StaticBoxSizer2->Add(Selected, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+                StaticBoxSizer2->Add(Selected, 1, wxEXPAND, 5);
+                FlexGridSizer1->Add(StaticBoxSizer2, 1, wxEXPAND, 5);
                 SetSizer(FlexGridSizer1);
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
@@ -141,8 +141,8 @@ namespace
             //*)
 
             //(*Declarations(wxsListbookParentQP)
-            wxCheckBox* Selected;
             wxTextCtrl* Label;
+            wxCheckBox* Selected;
             //*)
 
             wxsListbookExtra* m_Extra;

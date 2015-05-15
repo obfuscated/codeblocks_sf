@@ -27,15 +27,15 @@
 #include <configurationpanel.h>
 
 //(*Headers(wxsSettings)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/checkbox.h>
 #include <wx/spinctrl.h>
+#include <wx/combobox.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
+#include <wx/button.h>
 #include <wx/radiobut.h>
 #include <wx/panel.h>
+#include <wx/stattext.h>
 #include <wx/choice.h>
-#include <wx/button.h>
-#include <wx/combobox.h>
 //*)
 
 class wxsSettings: public cbConfigurationPanel
@@ -85,31 +85,31 @@ private:
     //*)
 
     //(*Declarations(wxsSettings)
-    wxComboBox* m_DragAssistType;
-    wxCheckBox* chkLeft;
-    wxCheckBox* m_RemovePrefix;
-    wxRadioButton* m_Icons32;
-    wxCheckBox* m_UniqueIDsOnly;
-    wxChoice* choicePlacement;
-    wxCheckBox* chkTop;
-    wxChoice* m_BrowserPlacements;
-    wxSpinCtrl* spinProportion;
-    wxCheckBox* m_Continous;
-    wxBoxSizer* BoxSizer2;
-    wxRadioButton* m_TIcons16;
-    wxRadioButton* m_TIcons32;
     wxCheckBox* chkRight;
-    wxCheckBox* chkExpand;
-    wxSpinCtrl* m_GridSize;
-    wxCheckBox* chkBottom;
-    wxSpinCtrl* spinBorder;
+    wxRadioButton* m_TIcons16;
     wxRadioButton* m_Icons16;
-    wxFlexGridSizer* FlexGridSizer6;
+    wxCheckBox* m_Continous;
+    wxCheckBox* chkTop;
+    wxCheckBox* chkExpand;
     wxButton* m_DragTargetCol;
-    wxCheckBox* chkShaped;
-    wxCheckBox* chkBorderDU;
+    wxChoice* m_BrowserPlacements;
+    wxBoxSizer* BoxSizer2;
+    wxCheckBox* m_UniqueIDsOnly;
+    wxFlexGridSizer* FlexGridSizer6;
+    wxRadioButton* m_Icons32;
+    wxCheckBox* m_RemovePrefix;
+    wxSpinCtrl* spinProportion;
+    wxCheckBox* chkBottom;
+    wxChoice* choicePlacement;
+    wxSpinCtrl* m_GridSize;
+    wxComboBox* m_DragAssistType;
+    wxRadioButton* m_TIcons32;
     wxButton* m_DragParentCol;
+    wxCheckBox* chkLeft;
     wxCheckBox* m_UseGrid;
+    wxSpinCtrl* spinBorder;
+    wxCheckBox* chkBorderDU;
+    wxCheckBox* chkShaped;
     //*)
 
     int m_InitialPlacement;

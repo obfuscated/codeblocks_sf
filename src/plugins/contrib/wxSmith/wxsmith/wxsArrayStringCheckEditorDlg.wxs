@@ -11,7 +11,7 @@
 						<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="EditArea" member="yes">
 							<handler function="OnButton1Click" entry="EVT_TEXT_ENTER" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -20,17 +20,17 @@
 							<label>Add</label>
 							<handler function="OnButton1Click" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="wxID_ANY" variable="StaticLine1" member="no">
 					<size>10,-1</size>
 				</object>
-				<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -40,7 +40,7 @@
 							<size>180,255</size>
 							<handler function="OnStringListToggled" entry="EVT_CHECKLISTBOX" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -52,7 +52,7 @@
 									<label>Update</label>
 									<handler function="OnButton2Click" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -60,7 +60,7 @@
 									<label>Remove</label>
 									<handler function="OnButton4Click" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -68,7 +68,7 @@
 									<label>Up</label>
 									<handler function="OnButton3Click" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -76,15 +76,15 @@
 									<label>Down</label>
 									<handler function="OnButton5Click" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxLEFT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<flag>wxLEFT|wxALIGN_TOP</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -92,7 +92,7 @@
 				<object class="wxStaticLine" name="wxID_ANY" variable="StaticLine2" member="no">
 					<size>10,-1</size>
 				</object>
-				<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -102,7 +102,7 @@
 							<label>OK</label>
 							<handler function="OnButton6Click" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -111,12 +111,12 @@
 							<label>Cancel</label>
 							<handler function="OnButton7Click" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxALIGN_RIGHT</flag>
 				<border>5</border>
 			</object>
 		</object>

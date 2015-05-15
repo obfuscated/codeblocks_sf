@@ -20,12 +20,12 @@
 							<style>wxTR_HIDE_ROOT|wxTR_DEFAULT_STYLE</style>
 							<handler function="OnContentSelectionChanged" entry="EVT_TREE_SEL_CHANGED" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>4</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>4</border>
 				<option>1</option>
 			</object>
@@ -43,7 +43,7 @@
 									<enabled>0</enabled>
 									<handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -53,7 +53,7 @@
 									<enabled>0</enabled>
 									<handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -63,7 +63,7 @@
 									<enabled>0</enabled>
 									<handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -73,7 +73,7 @@
 									<enabled>0</enabled>
 									<handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -83,19 +83,19 @@
 									<enabled>0</enabled>
 									<handler function="OnTypeChanged" entry="EVT_RADIOBUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
 							<size>10,-1</size>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>4</border>
 					</object>
 					<object class="sizeritem">
@@ -105,7 +105,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText6" member="yes">
 									<label>Id:</label>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -113,7 +113,7 @@
 								<object class="wxTextCtrl" name="ID_TEXTCTRL4" variable="m_Id" member="yes">
 									<enabled>0</enabled>
 								</object>
-								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -121,7 +121,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
 									<label>Label:</label>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -130,7 +130,7 @@
 									<enabled>0</enabled>
 									<handler function="OnLabelChanged" entry="EVT_TEXT" />
 								</object>
-								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -138,7 +138,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
 									<label>Accelerator:</label>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -146,7 +146,7 @@
 								<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="m_Accelerator" member="yes">
 									<enabled>0</enabled>
 								</object>
-								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -154,7 +154,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT3" variable="StaticText3" member="yes">
 									<label>Help:</label>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -162,7 +162,7 @@
 								<object class="wxTextCtrl" name="ID_TEXTCTRL3" variable="m_Help" member="yes">
 									<enabled>0</enabled>
 								</object>
-								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -170,7 +170,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
 									<label>Checked:</label>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -178,7 +178,7 @@
 								<object class="wxCheckBox" name="ID_CHECKBOX1" variable="m_Checked" member="yes">
 									<enabled>0</enabled>
 								</object>
-								<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -186,7 +186,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT5" variable="StaticText5" member="yes">
 									<label>Enabled:</label>
 								</object>
-								<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -194,19 +194,19 @@
 								<object class="wxCheckBox" name="ID_CHECKBOX2" variable="m_Enabled" member="yes">
 									<enabled>0</enabled>
 								</object>
-								<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>10</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
 							<size>10,-1</size>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>4</border>
 					</object>
 					<object class="sizeritem">
@@ -217,7 +217,7 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnButtonLeftClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
@@ -227,7 +227,7 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnButtonRightClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
@@ -237,7 +237,7 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnButtonUpClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
@@ -247,16 +247,16 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnButtonDownClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>2</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 						<border>4</border>
 					</object>
 					<object class="spacer">
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -268,7 +268,7 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnButtonNewClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxRIGHT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
@@ -278,16 +278,16 @@
 									<style>wxBU_EXACTFIT</style>
 									<handler function="OnButtonDelClick" entry="EVT_BUTTON" />
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>4</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 						<border>4</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>4</border>
 			</object>
 		</object>

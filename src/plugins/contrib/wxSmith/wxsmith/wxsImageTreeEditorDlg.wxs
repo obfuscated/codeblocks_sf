@@ -30,11 +30,11 @@
 							</font>
 							<style>wxST_NO_AUTORESIZE|wxALIGN_CENTRE</style>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxBoxSizer" variable="BoxSizer3" member="no">
@@ -59,15 +59,15 @@
 											<style>wxTR_EDIT_LABELS|wxTR_DEFAULT_STYLE</style>
 											<handler function="OnTreeCtrl1SelectionChanged" entry="EVT_TREE_SEL_CHANGED" />
 										</object>
-										<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxALIGN_BOTTOM</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxALIGN_BOTTOM</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer" variable="BoxSizer6" member="no">
@@ -89,7 +89,7 @@
 													<tooltip>Add A New Item</tooltip>
 													<handler function="OnbAddItemClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -97,11 +97,11 @@
 													<label>Add Item</label>
 													<pos>290,40</pos>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxEXPAND</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxBoxSizer" variable="BoxSizer8" member="no">
@@ -117,7 +117,7 @@
 													<tooltip>Add A New Child</tooltip>
 													<handler function="OnbAddSubItemClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -125,11 +125,11 @@
 													<label>Add Sub-Item</label>
 													<pos>290,70</pos>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -146,7 +146,7 @@
 													<tooltip>Delete Current Item</tooltip>
 													<handler function="OnbDelItemClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -154,11 +154,11 @@
 													<label>Delete Current Item</label>
 													<pos>290,100</pos>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -175,7 +175,7 @@
 													<tooltip>Delete All Items</tooltip>
 													<handler function="OnbDelAllItemsClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -183,11 +183,11 @@
 													<label>Delete All Items</label>
 													<pos>290,130</pos>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -208,7 +208,7 @@
 													<tooltip>Set Item Text Color</tooltip>
 													<handler function="OnbItemColorClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -216,11 +216,11 @@
 													<label>Set Item Text Color</label>
 													<pos>290,160</pos>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -232,11 +232,11 @@
 													<tooltip>Set Item Text Bold</tooltip>
 													<handler function="OncxItemBoldClick" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -253,7 +253,7 @@
 													<tooltip>Start Editor On Current Item</tooltip>
 													<handler function="OnbEditItemClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxALIGN_BOTTOM</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -261,11 +261,11 @@
 													<label>Edit Current Item</label>
 													<pos>290,220</pos>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -277,7 +277,7 @@
 													<label>Image-List</label>
 													<pos>256,272</pos>
 												</object>
-												<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -288,7 +288,7 @@
 													<fg>#0000FF</fg>
 													<style>wxST_NO_AUTORESIZE</style>
 												</object>
-												<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -307,7 +307,7 @@
 													<style>wxCB_READONLY</style>
 													<handler function="OncbNormalSelect" entry="EVT_COMBOBOX" />
 												</object>
-												<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxTOP|wxEXPAND</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -315,7 +315,7 @@
 													<label>Normal Image</label>
 													<pos>310,300</pos>
 												</object>
-												<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -334,7 +334,7 @@
 													<style>wxCB_READONLY</style>
 													<handler function="OncbSelectedSelect" entry="EVT_COMBOBOX" />
 												</object>
-												<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxEXPAND</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -342,7 +342,7 @@
 													<label>Selected Image</label>
 													<pos>310,330</pos>
 												</object>
-												<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -361,7 +361,7 @@
 													<style>wxCB_READONLY</style>
 													<handler function="OncbExpandedSelect" entry="EVT_COMBOBOX" />
 												</object>
-												<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxEXPAND</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -369,7 +369,7 @@
 													<label>Expanded Image</label>
 													<pos>310,360</pos>
 												</object>
-												<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -388,7 +388,7 @@
 													<style>wxCB_READONLY</style>
 													<handler function="OncbSelExpandedSelect" entry="EVT_COMBOBOX" />
 												</object>
-												<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+												<flag>wxTOP|wxEXPAND</flag>
 												<border>3</border>
 											</object>
 											<object class="sizeritem">
@@ -396,22 +396,22 @@
 													<label>Sel+Exp Image</label>
 													<pos>310,390</pos>
 												</object>
-												<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>3</border>
 											</object>
 										</object>
-										<flag>wxTOP|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+										<flag>wxTOP|wxALIGN_LEFT</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALL|wxEXPAND</flag>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxBoxSizer" variable="BoxSizer4" member="no">
@@ -422,11 +422,11 @@
 							<pos>48,440</pos>
 							<handler function="OnbOKClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
 					<object class="spacer">
-						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -436,11 +436,11 @@
 							<pos>280,440</pos>
 							<handler function="OnbCancelClick" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxTOP|wxEXPAND</flag>
 			</object>
 		</object>
 		<object class="wxImageList" variable="ImageList1" member="yes">

@@ -27,11 +27,11 @@
 
 //(*Headers(wxsSimpleFontEditorDlg)
 #include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/statline.h>
 #include <wx/button.h>
 #include "scrollingdialog.h"
+#include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 
@@ -64,18 +64,18 @@ class wxsSimpleFontEditorDlg: public wxScrollingDialog
         //*)
 
         //(*Declarations(wxsSimpleFontEditorDlg)
-        wxStaticText* StaticText2;
-        wxButton* Button1;
-        wxTextCtrl* TestArea;
         wxFlexGridSizer* FlexGridSizer2;
+        wxStaticLine* StaticLine2;
+        wxButton* Button1;
+        wxButton* Button2;
+        wxButton* Button3;
         wxBoxSizer* BoxSizer2;
         wxStaticText* StaticText3;
-        wxButton* Button2;
-        wxStaticLine* StaticLine2;
-        wxStaticText* FontDescription;
-        wxButton* Button3;
         wxStaticLine* StaticLine1;
+        wxStaticText* FontDescription;
+        wxStaticText* StaticText2;
         wxStaticBoxSizer* StaticBoxSizer1;
+        wxTextCtrl* TestArea;
         //*)
 
         wxsFontData& m_Data;

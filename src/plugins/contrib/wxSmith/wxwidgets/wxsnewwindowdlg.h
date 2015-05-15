@@ -24,13 +24,13 @@
 #define WXSNEWWINDOWDLG_H
 
 //(*Headers(wxsNewWindowDlg)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
+#include <wx/combobox.h>
 #include <wx/checkbox.h>
+#include <wx/sizer.h>
 #include <wx/button.h>
 #include "scrollingdialog.h"
-#include <wx/combobox.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 #include "wxsitemres.h"
@@ -101,37 +101,37 @@ protected:
     //*)
 
     //(*Declarations(wxsNewWindowDlg)
-    wxBoxSizer* m_RootSizer;
-    wxTextCtrl* m_Header;
-    wxCheckBox* m_UseFwdDecl;
-    wxTextCtrl* m_CtorCustom;
-    wxButton* m_ScopeHandlers;
-    wxTextCtrl* m_InitFunc;
-    wxTextCtrl* m_BaseClass;
-    wxCheckBox* m_CtorIdDef;
-    wxTextCtrl* m_Source;
-    wxCheckBox* m_CtorParent;
-    wxCheckBox* m_CtorId;
-    wxCheckBox* m_AddWxs;
-    wxTextCtrl* m_PchGuard;
-    wxTextCtrl* m_Class;
-    wxCheckBox* m_UsePCH;
-    wxStaticBoxSizer* m_AdvancedOptionsSizer;
-    wxCheckBox* m_CtorParentDef;
-    wxCheckBox* m_CtorSizeDef;
-    wxCheckBox* m_XRCAutoload;
-    wxTextCtrl* m_Xrc;
-    wxButton* m_ScopeIds;
-    wxButton* m_ScopeMembers;
-    wxBoxSizer* BoxSizer1;
-    wxCheckBox* m_UseXrc;
-    wxButton* m_AdvOps;
-    wxCheckBox* m_CtorPosDef;
-    wxCheckBox* m_CtorPos;
-    wxCheckBox* m_UseI18n;
-    wxComboBox* m_Pch;
-    wxCheckBox* m_CtorSize;
     wxCheckBox* m_UseInitFunc;
+    wxTextCtrl* m_InitFunc;
+    wxCheckBox* m_CtorParentDef;
+    wxCheckBox* m_CtorSize;
+    wxTextCtrl* m_Xrc;
+    wxCheckBox* m_CtorIdDef;
+    wxCheckBox* m_UseI18n;
+    wxButton* m_ScopeHandlers;
+    wxCheckBox* m_AddWxs;
+    wxButton* m_ScopeMembers;
+    wxCheckBox* m_UseFwdDecl;
+    wxCheckBox* m_CtorPos;
+    wxTextCtrl* m_CtorCustom;
+    wxBoxSizer* m_RootSizer;
+    wxCheckBox* m_CtorSizeDef;
+    wxComboBox* m_Pch;
+    wxStaticBoxSizer* m_AdvancedOptionsSizer;
+    wxCheckBox* m_CtorParent;
+    wxTextCtrl* m_PchGuard;
+    wxBoxSizer* BoxSizer1;
+    wxTextCtrl* m_Source;
+    wxTextCtrl* m_BaseClass;
+    wxCheckBox* m_CtorPosDef;
+    wxTextCtrl* m_Class;
+    wxCheckBox* m_XRCAutoload;
+    wxCheckBox* m_CtorId;
+    wxButton* m_AdvOps;
+    wxButton* m_ScopeIds;
+    wxCheckBox* m_UseXrc;
+    wxTextCtrl* m_Header;
+    wxCheckBox* m_UsePCH;
     //*)
 
     virtual bool PrepareResource(wxsItemRes* Res, wxsItemResData* Data);

@@ -14,7 +14,7 @@
 									<label>Each line will be passed as file name to&#x0A;wxXmlResource::Get()-&gt;Load.</label>
 									<style>wxALIGN_CENTRE</style>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -22,7 +22,7 @@
 									<size>218,102</size>
 									<style>wxTE_MULTILINE</style>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -33,11 +33,11 @@
 											<label>Add file</label>
 											<handler function="OnButton1Click" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="spacer">
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -46,15 +46,15 @@
 											<label>Clear all</label>
 											<handler function="OnButton2Click" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -70,7 +70,7 @@
 											<size>201,21</size>
 											<style>wxCB_READONLY</style>
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -78,11 +78,11 @@
 											<label>Window selected here will be created and&#x0A;shown while initializing application.&#x0A;You should use one of frames here.&#x0A;Using dialog as main resource is also&#x0A;acceptable but may lead to problems&#x0A;with terminating application&#x0A;after closing main dialog.</label>
 											<style>wxALIGN_CENTRE</style>
 										</object>
-										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -95,7 +95,7 @@
 											<label>Call wxXmlResource::InitAllHandlers()</label>
 											<handler function="OnInitAllChange" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
@@ -103,19 +103,19 @@
 											<label>Only when necessary</label>
 											<enabled>0</enabled>
 										</object>
-										<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

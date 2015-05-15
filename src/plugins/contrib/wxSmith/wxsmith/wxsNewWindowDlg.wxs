@@ -18,7 +18,7 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText1" member="no">
 									<label>Class Name:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -26,14 +26,14 @@
 									<size>80,-1</size>
 									<handler function="OnClassChanged" entry="EVT_TEXT" />
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText2" member="no">
 									<label>Header file:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -41,14 +41,14 @@
 									<size>80,-1</size>
 									<handler function="OnHeaderChanged" entry="EVT_TEXT" />
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText3" member="no">
 									<label>Source file:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -56,7 +56,7 @@
 									<size>80,-1</size>
 									<handler function="OnSourceChanged" entry="EVT_TEXT" />
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -64,7 +64,7 @@
 									<label>Xrc File:</label>
 									<handler function="OnUseXrcChange" entry="EVT_CHECKBOX" />
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -72,11 +72,11 @@
 									<size>80,-1</size>
 									<handler function="OnXrcChanged" entry="EVT_TEXT" />
 								</object>
-								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="spacer">
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 								<size>10,6</size>
@@ -86,16 +86,16 @@
 									<label>Add XRC file to autoload list</label>
 									<enabled>0</enabled>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxButton" name="ID_BUTTON1" variable="m_AdvOps" member="yes">
@@ -103,7 +103,7 @@
 					<style>wxBU_LEFT|wxNO_BORDER</style>
 					<handler function="OnAdvOpsClick" entry="EVT_BUTTON" />
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="m_AdvancedOptionsSizer" member="yes">
@@ -119,44 +119,44 @@
 									<label>Use PCH:</label>
 									<handler function="OnUsePCHClick" entry="EVT_CHECKBOX" />
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
 								<object class="wxComboBox" name="ID_COMBOBOX1" variable="m_Pch" member="yes" />
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer" variable="BoxSizer1" member="yes">
 									<object class="spacer">
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										<size>21,16</size>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="wxID_ANY" variable="StaticText11" member="no">
 											<label>PCH guard define:</label>
 										</object>
-										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALL|wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL8" variable="m_PchGuard" member="yes">
 									<value>WX__PRECOMP</value>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHECKBOX4" variable="m_UseInitFunc" member="yes">
 									<label>Init code in function:</label>
 									<handler function="OnUseInitFuncClick" entry="EVT_CHECKBOX" />
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -165,7 +165,7 @@
 									<value>BuildContent</value>
 									<enabled>0</enabled>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -173,13 +173,13 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText4" member="no">
 									<label>Base class name:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL6" variable="m_BaseClass" member="yes" />
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -187,7 +187,7 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText7" member="no">
 									<label>Scopes:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxFlexGridSizer" variable="FlexGridSizer4" member="no">
@@ -198,7 +198,7 @@
 										<object class="wxStaticText" name="wxID_ANY" variable="StaticText8" member="no">
 											<label>IDs:</label>
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -206,7 +206,7 @@
 										<object class="wxStaticText" name="wxID_ANY" variable="StaticText9" member="no">
 											<label>Members:</label>
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -214,7 +214,7 @@
 										<object class="wxStaticText" name="wxID_ANY" variable="StaticText10" member="no">
 											<label>Handlers:</label>
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -223,7 +223,7 @@
 											<label>Public</label>
 											<handler function="OnScopeIdsClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -232,7 +232,7 @@
 											<label>Public</label>
 											<handler function="OnScopeMembersClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -241,18 +241,18 @@
 											<label>Public</label>
 											<handler function="OnScopeHandlersClick" entry="EVT_BUTTON" />
 										</object>
-										<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText5" member="no">
 									<label>Constructor arguments:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -267,7 +267,7 @@
 											<checked>1</checked>
 											<handler function="OnCtorParentClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -276,7 +276,7 @@
 											<label>Def. value</label>
 											<handler function="OnCtorParentDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -286,7 +286,7 @@
 											<checked>1</checked>
 											<handler function="OnCtorIdClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -296,7 +296,7 @@
 											<checked>1</checked>
 											<handler function="OnCtorIdDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -305,7 +305,7 @@
 											<label>Position</label>
 											<handler function="OnCtorPosClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -316,7 +316,7 @@
 											<enabled>0</enabled>
 											<handler function="OnCtorPosDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -325,7 +325,7 @@
 											<label>Size</label>
 											<handler function="OnCtorSizeClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -336,12 +336,12 @@
 											<enabled>0</enabled>
 											<handler function="OnCtorSizeDefClick" entry="EVT_CHECKBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -349,18 +349,18 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="StaticText6" member="no">
 									<label>Custom arguments:</label>
 								</object>
-								<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
 								<object class="wxTextCtrl" name="ID_TEXTCTRL7" variable="m_CtorCustom" member="yes" />
-								<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -368,7 +368,7 @@
 						<object class="wxCheckBox" name="ID_CHECKBOX14" variable="m_UseFwdDecl" member="yes">
 							<label>Use forward declarations</label>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -376,7 +376,7 @@
 							<label>Use internationalisation (translatable applications)</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
@@ -384,11 +384,11 @@
 							<label>Add wxs file to project</label>
 							<checked>1</checked>
 						</object>
-						<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -404,7 +404,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>

@@ -11,11 +11,11 @@
 						<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="Label" member="yes">
 							<handler function="OnLabelText" entry="EVT_TEXT_ENTER" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -27,12 +27,12 @@
 							<label>Selected</label>
 							<handler function="OnSelectionChange" entry="EVT_CHECKBOX" />
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>

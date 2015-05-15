@@ -22,12 +22,12 @@
 											<selection>0</selection>
 											<handler function="OnUpdateContent" entry="EVT_CHOICE" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -46,19 +46,19 @@
 															<enabled>0</enabled>
 															<handler function="OnBaseFontUseChange" entry="EVT_CHECKBOX" />
 														</object>
-														<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 														<border>5</border>
 													</object>
 													<object class="sizeritem">
 														<object class="wxStaticText" name="ID_STATICTEXT1" variable="BaseFontTxt" member="yes">
 															<label>Base Font:</label>
 														</object>
-														<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+														<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 														<border>5</border>
 														<option>1</option>
 													</object>
 												</object>
-												<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxEXPAND</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -77,7 +77,7 @@
 													<selection>0</selection>
 													<handler function="OnUpdatePreview" entry="EVT_CHOICE" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -86,7 +86,7 @@
 													<label>Family:</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -103,7 +103,7 @@
 													<selection>0</selection>
 													<handler function="OnUpdatePreview" entry="EVT_COMBOBOX" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -112,7 +112,7 @@
 													<label>Font encoding:</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -120,7 +120,7 @@
 												<object class="wxChoice" name="ID_CHOICE3" variable="EncodVal" member="yes">
 													<handler function="OnUpdatePreview" entry="EVT_CHOICE" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -129,7 +129,7 @@
 													<label>Size:</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -140,7 +140,7 @@
 													<max>1000</max>
 													<handler function="OnSizeValChange" entry="EVT_SPINCTRL" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -148,7 +148,7 @@
 													<label>Relative size:</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 												<border>5</border>
 												<option>1</option>
 											</object>
@@ -157,15 +157,15 @@
 													<value>1.0</value>
 													<handler function="OnUpdatePreview" entry="EVT_TEXT" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -178,7 +178,7 @@
 													<label>Style</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -187,7 +187,7 @@
 													<style>wxRB_GROUP</style>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -195,7 +195,7 @@
 													<label>Italic</label>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -203,11 +203,11 @@
 													<label>Slant</label>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxRIGHT|wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -219,7 +219,7 @@
 													<label>Weight</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -228,7 +228,7 @@
 													<style>wxRB_GROUP</style>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -236,7 +236,7 @@
 													<label>Normal</label>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -244,11 +244,11 @@
 													<label>Bold</label>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxRIGHT|wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -260,7 +260,7 @@
 													<label>Underlined</label>
 													<handler function="OnUpdateContent" entry="EVT_CHECKBOX" />
 												</object>
-												<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxALL|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -269,7 +269,7 @@
 													<style>wxRB_GROUP</style>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -277,21 +277,21 @@
 													<label>No</label>
 													<handler function="OnUpdatePreview" entry="EVT_RADIOBUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxRIGHT|wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxBOTTOM|wxLEFT|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxTOP|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxTOP|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -305,7 +305,7 @@
 										<object class="wxListBox" name="ID_LISTBOX1" variable="FaceList" member="yes">
 											<handler function="OnUpdateContent" entry="EVT_LISTBOX" />
 										</object>
-										<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -317,7 +317,7 @@
 													<label>Add</label>
 													<handler function="OnFaceAddClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -325,7 +325,7 @@
 													<label>Delete</label>
 													<handler function="OnFaceDelClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -333,7 +333,7 @@
 													<label>Edit</label>
 													<handler function="OnFaceEditClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -341,7 +341,7 @@
 													<label>Move Up</label>
 													<handler function="OnFaceUpClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
@@ -349,24 +349,24 @@
 													<label>Move Down</label>
 													<handler function="OnFaceDownClick" entry="EVT_BUTTON" />
 												</object>
-												<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 												<border>5</border>
 											</object>
 										</object>
-										<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+										<flag>wxALIGN_TOP</flag>
 									</object>
 								</object>
-								<flag>wxTOP|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<flag>wxTOP|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -378,12 +378,12 @@
 							<value>This is sample text</value>
 							<size>316,53</size>
 						</object>
-						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -399,7 +399,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 		</object>

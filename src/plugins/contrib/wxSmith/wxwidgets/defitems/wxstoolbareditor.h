@@ -28,15 +28,15 @@
 #include "wxstoolbar.h"
 
 //(*Headers(wxsToolBarEditor)
+#include <wx/bmpbuttn.h>
 #include <wx/sizer.h>
+#include <wx/button.h>
+#include <wx/radiobut.h>
+#include <wx/panel.h>
+#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
-#include <wx/statline.h>
-#include <wx/radiobut.h>
-#include <wx/panel.h>
-#include <wx/bmpbuttn.h>
-#include <wx/button.h>
 //*)
 
 class wxsToolBarEditor: public wxPanel
@@ -83,19 +83,19 @@ class wxsToolBarEditor: public wxPanel
         //*)
 
         //(*Declarations(wxsToolBarEditor)
-        wxBitmapButton* m_Bitmap2;
-        wxTextCtrl* m_HelpText;
-        wxRadioButton* m_TypeNormal;
-        wxRadioButton* m_TypeRadio;
-        wxBitmapButton* m_Bitmap;
-        wxStaticLine* StaticLine2;
-        wxRadioButton* m_TypeCheck;
-        wxRadioButton* m_TypeSeparator;
-        wxStaticLine* StaticLine1;
-        wxTextCtrl* m_ToolTip;
-        wxListBox* m_Content;
         wxTextCtrl* m_Label;
+        wxStaticLine* StaticLine2;
+        wxBitmapButton* m_Bitmap;
+        wxStaticLine* StaticLine1;
+        wxRadioButton* m_TypeCheck;
+        wxListBox* m_Content;
+        wxTextCtrl* m_HelpText;
         wxTextCtrl* m_Id;
+        wxRadioButton* m_TypeSeparator;
+        wxBitmapButton* m_Bitmap2;
+        wxRadioButton* m_TypeRadio;
+        wxRadioButton* m_TypeNormal;
+        wxTextCtrl* m_ToolTip;
         //*)
 
         enum ItemType

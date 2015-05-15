@@ -23,11 +23,11 @@
 
 
 //(*InternalHeaders(wxsImageComboEditorDlg)
-#include <wx/artprov.h>
-#include <wx/bitmap.h>
-#include <wx/intl.h>
-#include <wx/image.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/bitmap.h>
+#include <wx/image.h>
+#include <wx/artprov.h>
 //*)
 #include "../wxsitemresdata.h"
 #include "../wxsitem.h"
@@ -65,20 +65,20 @@ END_EVENT_TABLE()
     wxsImageComboEditorDlg::wxsImageComboEditorDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
     {
         //(*Initialize(wxsImageComboEditorDlg)
-        wxBoxSizer* BoxSizer4;
-        wxBoxSizer* BoxSizer6;
-        wxBoxSizer* BoxSizer5;
+        wxBoxSizer* BoxSizer3;
         wxBoxSizer* BoxSizer10;
         wxBoxSizer* BoxSizer7;
-        wxBoxSizer* BoxSizer8;
+        wxBoxSizer* BoxSizer11;
         wxBoxSizer* BoxSizer13;
         wxBoxSizer* BoxSizer2;
-        wxBoxSizer* BoxSizer11;
+        wxBoxSizer* BoxSizer9;
+        wxBoxSizer* BoxSizer4;
+        wxBoxSizer* BoxSizer8;
+        wxBoxSizer* BoxSizer1;
         wxBoxSizer* BoxSizer12;
         wxBoxSizer* BoxSizer14;
-        wxBoxSizer* BoxSizer1;
-        wxBoxSizer* BoxSizer9;
-        wxBoxSizer* BoxSizer3;
+        wxBoxSizer* BoxSizer6;
+        wxBoxSizer* BoxSizer5;
 
         Create(parent, wxID_ANY, _("wxBitmapComboBox Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
         SetMinSize(wxSize(-1,-1));
@@ -87,75 +87,75 @@ END_EVENT_TABLE()
         BoxSizer13 = new wxBoxSizer(wxHORIZONTAL);
         BoxSizer2 = new wxBoxSizer(wxVERTICAL);
         StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("Combo-Box"), wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT1"));
-        BoxSizer2->Add(StaticText1, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+        BoxSizer2->Add(StaticText1, 0, wxALL|wxALIGN_LEFT, 5);
         m_pTree = new wxTreeCtrl(this, ID_TREECTRL1, wxPoint(0,32), wxSize(240,272), wxTR_EDIT_LABELS|wxTR_NO_BUTTONS|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxRAISED_BORDER, wxDefaultValidator, _T("ID_TREECTRL1"));
-        BoxSizer2->Add(m_pTree, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
-        BoxSizer13->Add(BoxSizer2, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
+        BoxSizer2->Add(m_pTree, 0, wxALL|wxEXPAND, 0);
+        BoxSizer13->Add(BoxSizer2, 0, wxALL|wxALIGN_TOP, 5);
         BoxSizer3 = new wxBoxSizer(wxVERTICAL);
         StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Edit Items"), wxPoint(264,8), wxDefaultSize, wxST_NO_AUTORESIZE|wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
-        BoxSizer3->Add(StaticText2, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
+        BoxSizer3->Add(StaticText2, 0, wxALL|wxALIGN_LEFT, 5);
         BoxSizer4 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnAddItem = new wxBitmapButton(this, ID_BITMAPBUTTON1, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_ADD_BOOKMARK")),wxART_BUTTON), wxDefaultPosition, wxSize(32,32), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON1"));
         m_pBtnAddItem->SetDefault();
-        BoxSizer4->Add(m_pBtnAddItem, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+        BoxSizer4->Add(m_pBtnAddItem, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
         StaticText3 = new wxStaticText(this, ID_STATICTEXT3, _("Add Item"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT3"));
-        BoxSizer4->Add(StaticText3, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer3->Add(BoxSizer4, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+        BoxSizer4->Add(StaticText3, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer3->Add(BoxSizer4, 0, wxALL|wxEXPAND, 0);
         BoxSizer5 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnMoveUp = new wxBitmapButton(this, ID_BITMAPBUTTON2, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_UP")),wxART_BUTTON), wxDefaultPosition, wxSize(32,32), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON2"));
         m_pBtnMoveUp->SetDefault();
-        BoxSizer5->Add(m_pBtnMoveUp, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+        BoxSizer5->Add(m_pBtnMoveUp, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
         StaticText4 = new wxStaticText(this, ID_STATICTEXT4, _("Move Item Up"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT4"));
-        BoxSizer5->Add(StaticText4, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer3->Add(BoxSizer5, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+        BoxSizer5->Add(StaticText4, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer3->Add(BoxSizer5, 0, wxALL|wxEXPAND, 0);
         BoxSizer6 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnMoveDown = new wxBitmapButton(this, ID_BITMAPBUTTON3, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_GO_DOWN")),wxART_BUTTON), wxDefaultPosition, wxSize(32,32), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON3"));
         m_pBtnMoveDown->SetDefault();
-        BoxSizer6->Add(m_pBtnMoveDown, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+        BoxSizer6->Add(m_pBtnMoveDown, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
         StaticText5 = new wxStaticText(this, ID_STATICTEXT5, _("Move Item Down"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT5"));
-        BoxSizer6->Add(StaticText5, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer3->Add(BoxSizer6, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+        BoxSizer6->Add(StaticText5, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer3->Add(BoxSizer6, 0, wxALL|wxEXPAND, 0);
         BoxSizer7 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnDeleteItem = new wxBitmapButton(this, ID_BITMAPBUTTON4, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DEL_BOOKMARK")),wxART_BUTTON), wxDefaultPosition, wxSize(32,32), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON4"));
-        BoxSizer7->Add(m_pBtnDeleteItem, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+        BoxSizer7->Add(m_pBtnDeleteItem, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
         StaticText6 = new wxStaticText(this, ID_STATICTEXT6, _("Delete Item"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT6"));
-        BoxSizer7->Add(StaticText6, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer3->Add(BoxSizer7, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+        BoxSizer7->Add(StaticText6, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer3->Add(BoxSizer7, 0, wxALL|wxEXPAND, 0);
         BoxSizer8 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnDeleteAll = new wxBitmapButton(this, ID_BITMAPBUTTON5, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DELETE")),wxART_BUTTON), wxDefaultPosition, wxSize(32,32), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON5"));
-        BoxSizer8->Add(m_pBtnDeleteAll, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+        BoxSizer8->Add(m_pBtnDeleteAll, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
         StaticText7 = new wxStaticText(this, ID_STATICTEXT7, _("Delete All Items"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT7"));
-        BoxSizer8->Add(StaticText7, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer3->Add(BoxSizer8, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+        BoxSizer8->Add(StaticText7, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer3->Add(BoxSizer8, 0, wxALL|wxEXPAND, 0);
         BoxSizer9 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnEditItem = new wxBitmapButton(this, ID_BITMAPBUTTON6, wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_HELP_SETTINGS")),wxART_BUTTON), wxDefaultPosition, wxSize(32,32), wxBU_AUTODRAW, wxDefaultValidator, _T("ID_BITMAPBUTTON6"));
         m_pBtnEditItem->SetDefault();
-        BoxSizer9->Add(m_pBtnEditItem, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 0);
+        BoxSizer9->Add(m_pBtnEditItem, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
         StaticText8 = new wxStaticText(this, ID_STATICTEXT8, _("Edit Item Text"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_STATICTEXT8"));
-        BoxSizer9->Add(StaticText8, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer3->Add(BoxSizer9, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+        BoxSizer9->Add(StaticText8, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer3->Add(BoxSizer9, 0, wxALL|wxEXPAND, 0);
         BoxSizer10 = new wxBoxSizer(wxVERTICAL);
         BoxSizer11 = new wxBoxSizer(wxHORIZONTAL);
         StaticText9 = new wxStaticText(this, ID_STATICTEXT9, _("Image-List"), wxPoint(256,240), wxDefaultSize, wxST_NO_AUTORESIZE, _T("ID_STATICTEXT9"));
-        BoxSizer11->Add(StaticText9, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer10->Add(BoxSizer11, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+        BoxSizer11->Add(StaticText9, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer10->Add(BoxSizer11, 0, wxALL|wxALIGN_LEFT, 0);
         BoxSizer12 = new wxBoxSizer(wxHORIZONTAL);
         m_pCmbImage = new wxBitmapComboBox(this, ID_COMBOBOX1, wxEmptyString, wxPoint(256,272), wxSize(100,22), 0, 0, wxCB_READONLY, wxDefaultValidator, _T("ID_COMBOBOX1"));
-        BoxSizer12->Add(m_pCmbImage, 0, wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer12->Add(m_pCmbImage, 0, wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL, 5);
         StaticText10 = new wxStaticText(this, ID_STATICTEXT10, _("Item Image"), wxPoint(352,276), wxDefaultSize, 0, _T("ID_STATICTEXT10"));
-        BoxSizer12->Add(StaticText10, 0, wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-        BoxSizer10->Add(BoxSizer12, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
-        BoxSizer3->Add(BoxSizer10, 1, wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-        BoxSizer13->Add(BoxSizer3, 0, wxALL|wxALIGN_LEFT|wxALIGN_TOP, 5);
-        BoxSizer1->Add(BoxSizer13, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+        BoxSizer12->Add(StaticText10, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+        BoxSizer10->Add(BoxSizer12, 0, wxALL|wxALIGN_LEFT, 0);
+        BoxSizer3->Add(BoxSizer10, 1, wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND, 5);
+        BoxSizer13->Add(BoxSizer3, 0, wxALL|wxALIGN_TOP, 5);
+        BoxSizer1->Add(BoxSizer13, 0, wxALL|wxALIGN_LEFT, 5);
         BoxSizer14 = new wxBoxSizer(wxHORIZONTAL);
         m_pBtnOK = new wxButton(this, ID_BUTTON1, _("OK"), wxPoint(64,320), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
         m_pBtnOK->SetDefault();
-        BoxSizer14->Add(m_pBtnOK, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-        BoxSizer14->Add(-1,-1,1, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+        BoxSizer14->Add(m_pBtnOK, 0, wxALL|wxALIGN_BOTTOM, 5);
+        BoxSizer14->Add(-1,-1,1, wxALL|wxALIGN_BOTTOM, 5);
         m_pBtnCancel = new wxButton(this, ID_BUTTON2, _("Cancel"), wxPoint(272,320), wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
-        BoxSizer14->Add(m_pBtnCancel, 0, wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-        BoxSizer1->Add(BoxSizer14, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+        BoxSizer14->Add(m_pBtnCancel, 0, wxALL|wxALIGN_BOTTOM, 5);
+        BoxSizer1->Add(BoxSizer14, 0, wxALL|wxEXPAND, 5);
         SetSizer(BoxSizer1);
         BoxSizer1->Fit(this);
         BoxSizer1->SetSizeHints(this);

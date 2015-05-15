@@ -24,13 +24,13 @@
 #define WXWIDGETSGUIAPPADOPTINGDLG_H
 
 //(*Headers(wxWidgetsGUIAppAdoptingDlg)
+#include <wx/gauge.h>
 #include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/listbox.h>
-#include <wx/statline.h>
 #include <wx/button.h>
 #include "scrollingdialog.h"
-#include <wx/gauge.h>
+#include <wx/statline.h>
+#include <wx/stattext.h>
+#include <wx/listbox.h>
 //*)
 
 #include <wx/timer.h>
@@ -81,18 +81,18 @@ class wxWidgetsGUIAppAdoptingDlg: public wxScrollingDialog
         //*)
 
         //(*Declarations(wxWidgetsGUIAppAdoptingDlg)
-        wxButton* Button4;
-        wxButton* CreateBtn;
-        wxBoxSizer* BoxSizer2;
+        wxStaticText* ScanningFile;
         wxStaticLine* StaticLine2;
-        wxButton* Button6;
+        wxButton* UseFileBtn;
+        wxListBox* FoundFiles;
+        wxStaticText* ScanningTxt;
+        wxButton* Button4;
+        wxBoxSizer* BoxSizer2;
+        wxButton* CreateBtn;
         wxButton* SelectBtn;
         wxStaticLine* StaticLine1;
-        wxButton* UseFileBtn;
         wxGauge* Progress;
-        wxStaticText* ScanningFile;
-        wxStaticText* ScanningTxt;
-        wxListBox* FoundFiles;
+        wxButton* Button6;
         //*)
 
     private:
