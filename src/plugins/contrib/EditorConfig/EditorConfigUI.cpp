@@ -1,13 +1,13 @@
 #include "EditorConfigUI.h"
 
 //(*InternalHeaders(EditorConfigUI)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/checkbox.h>
 #include <wx/spinctrl.h>
-#include <wx/choice.h>
-#include <wx/intl.h>
+#include <wx/checkbox.h>
+#include <wx/sizer.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/stattext.h>
+#include <wx/choice.h>
 //*)
 
 #include <cbproject.h>
@@ -35,11 +35,11 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* pr
     m_Project(prj)
 {
     //(*Initialize(EditorConfigUI)
-    wxStaticText* lblTab;
     wxFlexGridSizer* flsMain;
-    wxStaticText* lblTabWidth;
-    wxStaticText* lblIndent;
     wxStaticText* lblEOLMode;
+    wxStaticText* lblTab;
+    wxStaticText* lblIndent;
+    wxStaticText* lblTabWidth;
     wxBoxSizer* bszTab;
 
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
@@ -47,40 +47,40 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* pr
     flsMain->AddGrowableCol(1);
     chkActive = new wxCheckBox(this, ID_CHK_ACTIVE, _("Activate for project"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_ACTIVE"));
     chkActive->SetValue(false);
-    flsMain->Add(chkActive, 1, wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    flsMain->Add(-1,-1,1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(chkActive, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(-1,-1,1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     lblTab = new wxStaticText(this, wxID_ANY, _("Specify tab behaviour:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblTab, 1, wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblTab, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     bszTab = new wxBoxSizer(wxHORIZONTAL);
     chkUseTabs = new wxCheckBox(this, ID_CHK_USE_TABS, _("Use tabs"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_USE_TABS"));
     chkUseTabs->SetValue(false);
     chkUseTabs->Disable();
-    bszTab->Add(chkUseTabs, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    bszTab->Add(chkUseTabs, 1, wxEXPAND, 5);
     chkTabIndents = new wxCheckBox(this, ID_CHK_TAB_INDENTS, _("Tab indents"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_TAB_INDENTS"));
     chkTabIndents->SetValue(true);
     chkTabIndents->Disable();
-    bszTab->Add(chkTabIndents, 1, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
-    flsMain->Add(bszTab, 1, wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+    bszTab->Add(chkTabIndents, 1, wxLEFT|wxEXPAND, 5);
+    flsMain->Add(bszTab, 1, wxTOP|wxLEFT|wxRIGHT|wxALIGN_BOTTOM, 5);
     lblTabWidth = new wxStaticText(this, wxID_ANY, _("Specify tab width:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblTabWidth, 1, wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblTabWidth, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     spnTabWidth = new wxSpinCtrl(this, ID_SPN_TAB_WIDTH, _T("4"), wxDefaultPosition, wxDefaultSize, 0, 0, 10, 4, _T("ID_SPN_TAB_WIDTH"));
     spnTabWidth->SetValue(_T("4"));
     spnTabWidth->Disable();
-    flsMain->Add(spnTabWidth, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(spnTabWidth, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     lblIndent = new wxStaticText(this, wxID_ANY, _("Specify indent width:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblIndent, 1, wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblIndent, 1, wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     spnIndent = new wxSpinCtrl(this, ID_SPN_INDENT, _T("4"), wxDefaultPosition, wxDefaultSize, 0, 0, 10, 4, _T("ID_SPN_INDENT"));
     spnIndent->SetValue(_T("4"));
     spnIndent->Disable();
-    flsMain->Add(spnIndent, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(spnIndent, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     lblEOLMode = new wxStaticText(this, wxID_ANY, _("Specify EOL mode:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    flsMain->Add(lblEOLMode, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(lblEOLMode, 1, wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
     choEOLMode = new wxChoice(this, ID_CHO_EOL_MODE, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_EOL_MODE"));
     choEOLMode->SetSelection( choEOLMode->Append(_("CR/LF")) );
     choEOLMode->Append(_("CR"));
     choEOLMode->Append(_("LF"));
     choEOLMode->Disable();
-    flsMain->Add(choEOLMode, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+    flsMain->Add(choEOLMode, 1, wxALL|wxEXPAND, 5);
     SetSizer(flsMain);
     flsMain->Fit(this);
     flsMain->SetSizeHints(this);

@@ -11,12 +11,12 @@
 					<label>Activate for project</label>
 					<handler function="OnActiveClick" entry="EVT_CHECKBOX" />
 				</object>
-				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
 			<object class="spacer">
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -24,7 +24,7 @@
 				<object class="wxStaticText" name="wxID_ANY" variable="lblTab" member="no">
 					<label>Specify tab behaviour:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -35,7 +35,7 @@
 							<label>Use tabs</label>
 							<enabled>0</enabled>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -45,12 +45,12 @@
 							<checked>1</checked>
 							<enabled>0</enabled>
 						</object>
-						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_BOTTOM</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -58,7 +58,7 @@
 				<object class="wxStaticText" name="wxID_ANY" variable="lblTabWidth" member="no">
 					<label>Specify tab width:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -68,7 +68,7 @@
 					<max>10</max>
 					<enabled>0</enabled>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -76,7 +76,7 @@
 				<object class="wxStaticText" name="wxID_ANY" variable="lblIndent" member="no">
 					<label>Specify indent width:</label>
 				</object>
-				<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -86,7 +86,7 @@
 					<max>10</max>
 					<enabled>0</enabled>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -94,7 +94,7 @@
 				<object class="wxStaticText" name="wxID_ANY" variable="lblEOLMode" member="no">
 					<label>Specify EOL mode:</label>
 				</object>
-				<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -108,7 +108,7 @@
 					<selection>0</selection>
 					<enabled>0</enabled>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
