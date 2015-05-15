@@ -20,10 +20,10 @@
 												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxListCtrl" name="chkStartupScripts">
-														<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER</style>
 														<size>-1,160</size>
+														<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER</style>
 													</object>
-													<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxEXPAND</flag>
 													<option>1</option>
 												</object>
 												<object class="sizeritem">
@@ -34,7 +34,7 @@
 															<object class="wxStaticText" name="ID_STATICTEXT1">
 																<label>Enabling a script makes it run on application startup. But if you&#x0D;&#x0A;register it with a menu item too, then it does not run on startup&#x0D;&#x0A;anymore. In this case, it only runs when the specified menu item&#x0D;&#x0A;is clicked.</label>
 															</object>
-															<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
@@ -43,12 +43,12 @@
 																	<object class="wxCheckBox" name="chkEnableScript">
 																		<label>Enabled:</label>
 																	</object>
-																	<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<flag>wxALIGN_CENTER_VERTICAL</flag>
 																	<border>5</border>
 																</object>
 																<object class="sizeritem">
 																	<object class="wxTextCtrl" name="txtScript" />
-																	<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	<flag>wxLEFT|wxALIGN_TOP</flag>
 																	<border>5</border>
 																	<option>1</option>
 																</object>
@@ -56,10 +56,10 @@
 																	<object class="wxButton" name="btnBrowseScript">
 																		<label>...</label>
 																	</object>
-																	<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	<flag>wxALIGN_TOP</flag>
 																</object>
 															</object>
-															<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
 														</object>
 														<object class="sizeritem">
@@ -68,23 +68,23 @@
 																	<object class="wxCheckBox" name="chkRegisterScript">
 																		<label>Register in menus: </label>
 																	</object>
-																	<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+																	<flag>wxALIGN_CENTER_VERTICAL</flag>
 																</object>
 																<object class="sizeritem">
 																	<object class="wxTextCtrl" name="txtScriptMenu" />
-																	<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+																	<flag>wxALIGN_TOP</flag>
 																	<option>1</option>
 																</object>
 															</object>
-															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+															<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 															<border>5</border>
 														</object>
 													</object>
-													<flag>wxTOP|wxBOTTOM|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
 													<border>5</border>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -95,21 +95,21 @@
 													<object class="wxButton" name="btnAdd">
 														<label>Add</label>
 													</object>
-													<flag>wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+													<flag>wxALIGN_CENTER_HORIZONTAL</flag>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnDelete">
 														<label>Remove</label>
 													</object>
-													<flag>wxTOP|wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+													<flag>wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
 													<border>5</border>
 												</object>
 											</object>
-											<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_TOP</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -117,7 +117,7 @@
 									<object class="wxStaticText" name="ID_STATICTEXT2">
 										<label>Note: any changes you make here will take effect on next startup...</label>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 							</object>
@@ -136,60 +136,60 @@
 											<object class="wxStaticText" name="ID_STATICTEXT3">
 												<label>When a script tries to perform any of the following operations, it is first checked&#x0D;&#x0A;whether it is allowed to do so. If it is not, then you are asked whether to allow it&#x0D;&#x0A;or not (on a case-by-case basis).&#x0D;&#x0A;By checking a box below, you explicitly allow the releveant operation to be&#x0D;&#x0A;performed by any script (without you being asked again).</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkMkDir">
 												<label>Create directories</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkRmDir">
 												<label>Delete (non-empty) directories</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkCp">
 												<label>Copy files</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkMv">
 												<label>Rename files</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkRm">
 												<label>Delete files</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkTouch">
 												<label>Create new files</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkExec">
 												<label>Launch executables</label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 								</object>
 							</object>
@@ -208,14 +208,14 @@
 											<object class="wxStaticText" name="ID_STATICTEXT4">
 												<label>Trusted scripts are allowed to perform any of the above operations unconditionally.&#x0D;&#x0A;Make sure you only trust scripts coming from a known source (e.g. written by you)!&#x0D;&#x0A;To trust a script, just select the relevant option in the security dialog that pops up&#x0D;&#x0A;when it tries to perform any of the above operations (and this operation is not&#x0D;&#x0A;allowed).</label>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxListCtrl" name="lstTrustedScripts">
 												<style>wxLC_REPORT|wxLC_SINGLE_SEL|wxSUNKEN_BORDER</style>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -225,10 +225,10 @@
 													<object class="wxButton" name="btnValidateTrusts">
 														<label>Validate all trusts</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 												</object>
 												<object class="spacer">
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 													<option>1</option>
 													<size>0,0</size>
 												</object>
@@ -236,14 +236,14 @@
 													<object class="wxButton" name="btnDeleteTrust">
 														<label>Delete trust</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_TOP</flag>
 												</object>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -252,7 +252,7 @@
 						<label>Trusts</label>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -269,7 +269,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>

@@ -13,12 +13,12 @@
 #endif
 
 //(*Headers(ScriptConsole)
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/panel.h>
 #include <wx/bmpbuttn.h>
 #include <wx/combobox.h>
+#include <wx/sizer.h>
+#include <wx/panel.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
 //*)
 
 class ScriptConsole: public wxPanel
@@ -48,13 +48,13 @@ class ScriptConsole: public wxPanel
 		//*)
 
 		//(*Declarations(ScriptConsole)
-		wxStaticText* lblCommand;
-		wxBitmapButton* btnClear;
-		wxComboBox* txtCommand;
-		wxBitmapButton* btnExecute;
 		wxPanel* Panel1;
 		wxBitmapButton* btnLoad;
+		wxComboBox* txtCommand;
+		wxBitmapButton* btnExecute;
+		wxBitmapButton* btnClear;
 		wxTextCtrl* txtConsole;
+		wxStaticText* lblCommand;
 		//*)
 
 	private:

@@ -533,11 +533,11 @@ public:
         button_clear->SetDefault();
         button_clear->SetToolTip(_("Clear output window"));
 
-        control_sizer->Add(label, 0, wxALIGN_CENTER | wxALL, 2);
+        control_sizer->Add(label, 0, wxALIGN_CENTER_VERTICAL | wxALL, 2);
         control_sizer->Add(m_command_entry, wxEXPAND, wxEXPAND | wxALL, 2);
         control_sizer->Add(button_execute, 0, wxEXPAND | wxALL, 0);
-        control_sizer->Add(button_load, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
-        control_sizer->Add(button_clear, 0, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 0);
+        control_sizer->Add(button_load, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+        control_sizer->Add(button_clear, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
 
         SetSizer(sizer);
 

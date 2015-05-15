@@ -1,194 +1,194 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxScrollingDialog" name="dlgAbout">
-    <title>About...</title>
-    <centered>1</centered>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticBitmap" name="lblTitle">
-          <font>
-            <size>14</size>
-            <style>normal</style>
-            <weight>normal</weight>
-            <underlined>0</underlined>
-            <face>Arial</face>
-          </font>
-        </object>
-        <flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticText" name="lblBuildTimestamp">
-          <label/>
-          <style>wxALIGN_RIGHT</style>
-        </object>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine" name="ID_STATICLINE1"/>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-        <border>5</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxNotebook" name="nbAbout">
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabDescription">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxTextCtrl" name="txtDescription">
-                    <style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER</style>
-                  </object>
-                  <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                  <option>1</option>
-                </object>
-              </object>
-            </object>
-            <label>Description</label>
-            <selected>1</selected>
-          </object>
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabInfo">
-              <object class="wxFlexGridSizer">
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="ID_STATICTEXT1">
-                    <label>Name:</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblName">
-                    <label>nnn</label>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="ID_STATICTEXT2">
-                    <label>Version:</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblVersion">
-                    <label>vvv</label>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="ID_STATICTEXT6">
-                    <label>SDK Version:</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                  <border>5</border>
-                  <option>1</option>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblSDK">
-                    <label>sss</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
-                  <border>5</border>
-                  <option>1</option>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="ID_STATICTEXT3">
-                    <label>Author:</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblAuthor">
-                    <label>aaa</label>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="ID_STATICTEXT4">
-                    <label>E-mail:</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblEmail">
-                    <label>eee</label>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="ID_STATICTEXT5">
-                    <label>Website:</label>
-                  </object>
-                  <flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <object class="sizeritem">
-                  <object class="wxStaticText" name="lblWebsite">
-                    <label>www</label>
-                  </object>
-                  <flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-                <cols>2</cols>
-                <rows>6</rows>
-                <vgap>4</vgap>
-                <hgap>8</hgap>
-                <growablecols>1</growablecols>
-              </object>
-            </object>
-            <label>Information</label>
-          </object>
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabThanksTo">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxTextCtrl" name="txtThanksTo">
-                    <font>
-                      <size>8</size>
-                      <family>modern</family>
-                    </font>
-                    <style>wxBORDER_NONE|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-                  </object>
-                  <option>1</option>
-                  <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-              </object>
-            </object>
-            <label>Thanks to...</label>
-          </object>
-          <object class="notebookpage">
-            <object class="wxPanel" name="tabLicense">
-              <object class="wxBoxSizer">
-                <orient>wxVERTICAL</orient>
-                <object class="sizeritem">
-                  <object class="wxTextCtrl" name="txtLicense">
-                    <font>
-                      <size>8</size>
-                      <family>modern</family>
-                    </font>
-                    <style>wxBORDER_NONE|wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
-                  </object>
-                  <option>1</option>
-                  <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-                </object>
-              </object>
-            </object>
-            <label>License</label>
-          </object>
-        </object>
-        <flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-        <border>8</border>
-        <option>1</option>
-      </object>
-      <object class="sizeritem">
-        <object class="wxButton" name="wxID_CANCEL">
-          <label>Close</label>
-          <default>1</default>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgAbout">
+		<title>About...</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticBitmap" name="lblTitle">
+					<font>
+						<size>14</size>
+						<style>normal</style>
+						<weight>normal</weight>
+						<underlined>0</underlined>
+						<face>Arial</face>
+					</font>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="lblBuildTimestamp">
+					<label></label>
+					<style>wxALIGN_RIGHT</style>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxNotebook" name="nbAbout">
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabDescription">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="txtDescription">
+										<style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER</style>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Description</label>
+						<selected>1</selected>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabInfo">
+							<object class="wxFlexGridSizer">
+								<cols>2</cols>
+								<rows>6</rows>
+								<vgap>4</vgap>
+								<hgap>8</hgap>
+								<growablecols>1</growablecols>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT1">
+										<label>Name:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblName">
+										<label>nnn</label>
+									</object>
+									<flag>wxEXPAND</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT2">
+										<label>Version:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblVersion">
+										<label>vvv</label>
+									</object>
+									<flag>wxEXPAND</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT6">
+										<label>SDK Version:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblSDK">
+										<label>sss</label>
+									</object>
+									<flag>wxALIGN_BOTTOM</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT3">
+										<label>Author:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblAuthor">
+										<label>aaa</label>
+									</object>
+									<flag>wxEXPAND</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT4">
+										<label>E-mail:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblEmail">
+										<label>eee</label>
+									</object>
+									<flag>wxEXPAND</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT5">
+										<label>Website:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblWebsite">
+										<label>www</label>
+									</object>
+									<flag>wxEXPAND</flag>
+								</object>
+							</object>
+						</object>
+						<label>Information</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabThanksTo">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="txtThanksTo">
+										<font>
+											<size>8</size>
+											<family>modern</family>
+										</font>
+										<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>Thanks to...</label>
+					</object>
+					<object class="notebookpage">
+						<object class="wxPanel" name="tabLicense">
+							<object class="wxBoxSizer">
+								<orient>wxVERTICAL</orient>
+								<object class="sizeritem">
+									<object class="wxTextCtrl" name="txtLicense">
+										<font>
+											<size>8</size>
+											<family>modern</family>
+										</font>
+										<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<option>1</option>
+								</object>
+							</object>
+						</object>
+						<label>License</label>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxButton" name="wxID_CANCEL">
+					<label>Close</label>
+					<default>1</default>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

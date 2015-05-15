@@ -10,7 +10,7 @@
 				<object class="wxStaticText" name="ID_STATICTEXT2">
 					<label>Note: After auto-detection, at least one compiler&apos;s master path is still empty and therefore invalid.&#x0A;Inspect the list below and change the compiler&apos;s master path later in the compiler options.&#x0A;Select you favourite default compiler here:</label>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -24,17 +24,16 @@
 						<object class="wxListCtrl" name="lcCompilers">
 							<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
-						<minsize>460,240</minsize>
+						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="btnDefault">
 							<label>Set as default</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
@@ -44,24 +43,24 @@
 						<object class="wxStaticText" name="ID_STATICTEXT1">
 							<label>Current default compiler:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblDefCompiler">
 							<label>xxx</label>
 							<fg>#800000</fg>
 						</object>
-						<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>8</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE1" />
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -72,7 +71,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>8</border>
 			</object>
 		</object>

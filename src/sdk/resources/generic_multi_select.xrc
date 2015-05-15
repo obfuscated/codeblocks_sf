@@ -1,97 +1,91 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxScrollingDialog" name="dlgGenericMultiSelect">
-    <title>Multiple selection</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxStaticText" name="lblLabel">
-          <label>Select items:</label>
-        </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxCheckListBox" name="lstItems">
-              <style>wxLB_HSCROLL</style>
-              <content/>
-            </object>
-            <option>1</option>
-            <flag>wxGROW</flag>
-            <minsize>272,160</minsize>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxVERTICAL</orient>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnSelectWild">
-                  <label>&amp;Wildcard select</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnToggle">
-                  <label>&amp;Toggle selection</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnSelectAll">
-                  <label>Select &amp;All</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnDeselectAll">
-                  <label>&amp;Deselect All</label>
-                </object>
-                <flag>wxGROW</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxStaticText" name="lblStatus">
-                  <label>Selected: 0</label>
-                </object>
-                <flag>wxTOP|wxGROW</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <flag>wxLEFT|wxGROW</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label></label>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="button">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label></label>
-              <label>&amp;Cancel</label>
-            </object>
-          </object>
-        </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-  </object>
+	<object class="wxScrollingDialog" name="dlgGenericMultiSelect">
+		<title>Multiple selection</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="lblLabel">
+					<label>Select items:</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxCheckListBox" name="lstItems">
+							<style>wxLB_HSCROLL</style>
+						</object>
+						<flag>wxEXPAND</flag>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnSelectWild">
+									<label>&amp;Wildcard select</label>
+								</object>
+								<flag>wxEXPAND</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnToggle">
+									<label>&amp;Toggle selection</label>
+								</object>
+								<flag>wxEXPAND</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnSelectAll">
+									<label>Select &amp;All</label>
+								</object>
+								<flag>wxEXPAND</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnDeselectAll">
+									<label>&amp;Deselect All</label>
+								</object>
+								<flag>wxEXPAND</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="lblStatus">
+									<label>Selected: 0</label>
+								</object>
+								<flag>wxTOP|wxEXPAND</flag>
+								<border>8</border>
+							</object>
+						</object>
+						<flag>wxLEFT|wxEXPAND</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

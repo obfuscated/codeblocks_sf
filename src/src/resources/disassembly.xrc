@@ -13,7 +13,7 @@
 						<object class="wxStaticText" name="ID_STATICTEXT1">
 							<label>Function:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblFunction">
@@ -25,7 +25,7 @@
 						<object class="wxStaticText" name="ID_STATICTEXT2">
 							<label>Frame start:</label>
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALIGN_TOP</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblAddress">
@@ -39,13 +39,14 @@
 			</object>
 			<object class="sizeritem">
 				<object class="unknown" name="lcCode">
+					<style></style>
+					<style></style>
 				</object>
 				<flag>wxEXPAND</flag>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxBoxSizer">
-					<orient>wxHORIZONTAL</orient>
 					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkMode">
 							<label>Mixed Mode</label>

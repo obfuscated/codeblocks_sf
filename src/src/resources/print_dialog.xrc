@@ -1,80 +1,76 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxScrollingDialog" name="dlgPrint">
-    <title>Print...</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxRadioBox" name="rbScope">
-              <label>Printing scope</label>
-              <content>
-                <item>Selected text only</item>
-                <item>Active editor</item>
-                <item>All open files</item>
-              </content>
-              <dimension>1</dimension>
-              <style>wxRA_SPECIFY_COLS</style>
-            </object>
-            <flag>wxGROW</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxRadioBox" name="rbColourMode">
-              <label>Colour Mode</label>
-              <content>
-                <item>Black &amp;&amp; White</item>
-                <item>Colour on white background</item>
-                <item>Invert colours</item>
-                <item>As on screen</item>
-              </content>
-              <selection>1</selection>
-              <dimension>1</dimension>
-              <style>wxRA_SPECIFY_COLS</style>
-            </object>
-            <flag>wxLEFT|wxGROW</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxCheckBox" name="chkLineNumbers">
-          <label>Print line numbers</label>
-        </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxALL|wxGROW</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_OK">
-              <label>&amp;Print</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label>&amp;Cancel</label>
-            </object>
-            <flag>wxLEFT</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgPrint">
+		<title>Print...</title>
+		<centered>1</centered>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxRadioBox" name="rbScope">
+							<label>Printing scope</label>
+							<content>
+								<item>Selected text only</item>
+								<item>Active editor</item>
+								<item>All open files</item>
+							</content>
+							<style>wxRA_SPECIFY_COLS</style>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxRadioBox" name="rbColourMode">
+							<label>Colour Mode</label>
+							<content>
+								<item>Black &amp;&amp; White</item>
+								<item>Colour on white background</item>
+								<item>Invert colours</item>
+								<item>As on screen</item>
+							</content>
+							<style>wxRA_SPECIFY_COLS</style>
+						</object>
+						<flag>wxLEFT|wxEXPAND</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="chkLineNumbers">
+					<label>Print line numbers</label>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK">
+							<label>&amp;Print</label>
+							<default>1</default>
+						</object>
+						<flag></flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label>&amp;Cancel</label>
+						</object>
+						<flag>wxLEFT</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

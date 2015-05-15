@@ -3,8 +3,8 @@
 
 #ifndef CB_PRECOMP
 	//(*InternalHeadersPCH(DebuggerSettingsPanel)
-	#include <wx/intl.h>
 	#include <wx/string.h>
+	#include <wx/intl.h>
 	//*)
 
 	#include <wx/textdlg.h>
@@ -34,29 +34,29 @@ DebuggerSettingsPanel::DebuggerSettingsPanel(wxWindow* parent, DebuggerSettingsD
     m_plugin(plugin)
 {
 	//(*Initialize(DebuggerSettingsPanel)
-	wxButton* butReset;
-	wxTextCtrl* textInfo;
-	wxButton* butCreate;
-	wxButton* butDelete;
-	wxStaticBoxSizer* infoSizer;
 	wxBoxSizer* buttonSizer;
+	wxTextCtrl* textInfo;
+	wxButton* butReset;
+	wxButton* butCreate;
 	wxBoxSizer* mainSizer;
+	wxStaticBoxSizer* infoSizer;
+	wxButton* butDelete;
 
 	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
 	mainSizer = new wxBoxSizer(wxVERTICAL);
 	buttonSizer = new wxBoxSizer(wxHORIZONTAL);
 	butCreate = new wxButton(this, ID_BUTTON_CREATE, _("Create Config"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_CREATE"));
-	buttonSizer->Add(butCreate, 1, wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	buttonSizer->Add(butCreate, 1, wxALIGN_BOTTOM, 5);
 	butDelete = new wxButton(this, ID_BUTTON_DELETE, _("Delete Config"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_DELETE"));
-	buttonSizer->Add(butDelete, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
+	buttonSizer->Add(butDelete, 1, wxLEFT|wxALIGN_BOTTOM, 5);
 	butReset = new wxButton(this, ID_BUTTON_RESET, _("Reset defaults"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_RESET"));
-	buttonSizer->Add(butReset, 1, wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-	mainSizer->Add(buttonSizer, 0, wxALL|wxEXPAND|wxSHAPED|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+	buttonSizer->Add(butReset, 1, wxLEFT|wxALIGN_BOTTOM, 5);
+	mainSizer->Add(buttonSizer, 0, wxALL|wxEXPAND|wxSHAPED, 0);
 	infoSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Info"));
 	textInfo = new wxTextCtrl(this, ID_TEXTCTRL_INFO, wxEmptyString, wxDefaultPosition, wxSize(186,243), 0, wxDefaultValidator, _T("ID_TEXTCTRL_INFO"));
 	textInfo->Disable();
-	infoSizer->Add(textInfo, 1, wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 5);
-	mainSizer->Add(infoSizer, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM, 0);
+	infoSizer->Add(textInfo, 1, wxEXPAND, 5);
+	mainSizer->Add(infoSizer, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 0);
 	SetSizer(mainSizer);
 	mainSizer->Fit(this);
 	mainSizer->SetSizeHints(this);

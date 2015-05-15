@@ -2229,7 +2229,7 @@ bool wxLongStringProperty::DisplayEditorDialog( wxPGProperty* prop, wxPropertyGr
     buttonSizer->AddButton(new wxButton(dlg, wxID_CANCEL));
     buttonSizer->Realize();
     topsizer->Add( buttonSizer, 0,
-                   wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL|wxBOTTOM|wxRIGHT,
+                   wxALIGN_RIGHT|wxBOTTOM|wxRIGHT,
                    spacing );
 
     dlg->SetSizer( topsizer );
@@ -2392,7 +2392,7 @@ bool wxArrayEditorDialog::Create( wxWindow *parent,
     // Message
     if ( message.length() )
         topsizer->Add( new wxStaticText(this,-1,message),
-            0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL|wxALL, spacing );
+            0, wxALIGN_LEFT|wxALL, spacing );
 
     // String editor
     wxBoxSizer* rowsizer = new wxBoxSizer( wxHORIZONTAL );
@@ -2405,12 +2405,12 @@ bool wxArrayEditorDialog::Create( wxWindow *parent,
         delete validator;
     }
     rowsizer->Add( m_edValue,
-        1, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL|wxALL, spacing );
+        1, wxALIGN_CENTRE_VERTICAL|wxALL, spacing );
 
     // Add button
     m_butAdd = new wxButton(this,22,_("Add"));
     rowsizer->Add( m_butAdd,
-        0, wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL|wxTOP|wxBOTTOM|wxRIGHT, spacing );
+        0, wxALIGN_CENTRE_VERTICAL|wxTOP|wxBOTTOM|wxRIGHT, spacing );
     topsizer->Add( rowsizer, 0, wxEXPAND, spacing );
 
     // Separator line
@@ -2433,21 +2433,21 @@ bool wxArrayEditorDialog::Create( wxWindow *parent,
     {
         m_butCustom = new wxButton(this,28,::wxGetTranslation(m_custBtText));
         colsizer->Add( m_butCustom,
-            0, wxALIGN_CENTER|wxTOP/*wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL|wxTOP|wxBOTTOM|wxRIGHT*/,
+            0, wxALIGN_CENTER_HORIZONTAL|wxTOP/*wxALIGN_LEFT|wxALIGN_CENTRE_VERTICAL|wxTOP|wxBOTTOM|wxRIGHT*/,
             spacing );
     }
     m_butUpdate = new wxButton(this,27,_("Update"));
     colsizer->Add( m_butUpdate,
-        0, wxALIGN_CENTER|wxTOP, spacing );
+        0, wxALIGN_CENTER_HORIZONTAL|wxTOP, spacing );
     m_butRemove = new wxButton(this,23,_("Remove"));
     colsizer->Add( m_butRemove,
-        0, wxALIGN_CENTER|wxTOP, spacing );
+        0, wxALIGN_CENTER_HORIZONTAL|wxTOP, spacing );
     m_butUp = new wxButton(this,25,_("Up"));
     colsizer->Add( m_butUp,
-        0, wxALIGN_CENTER|wxTOP, spacing );
+        0, wxALIGN_CENTER_HORIZONTAL|wxTOP, spacing );
     m_butDown = new wxButton(this,26,_("Down"));
     colsizer->Add( m_butDown,
-        0, wxALIGN_CENTER|wxTOP, spacing );
+        0, wxALIGN_CENTER_HORIZONTAL|wxTOP, spacing );
     rowsizer->Add( colsizer, 0, 0, spacing );
 
     topsizer->Add( rowsizer, 1, wxLEFT|wxRIGHT|wxEXPAND, spacing );
@@ -2462,7 +2462,7 @@ bool wxArrayEditorDialog::Create( wxWindow *parent,
     buttonSizer->AddButton(new wxButton(this, wxID_CANCEL));
     buttonSizer->Realize();
     topsizer->Add( buttonSizer, 0,
-                   wxALIGN_RIGHT|wxALIGN_CENTRE_VERTICAL|wxALL,
+                   wxALIGN_RIGHT|wxALL,
                    spacing );
 
     m_edValue->SetFocus();

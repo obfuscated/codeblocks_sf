@@ -11,7 +11,7 @@
 							<label>Create Config</label>
 							<handler function="OnButtonCreate" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -20,7 +20,7 @@
 							<label>Delete Config</label>
 							<handler function="OnButtonDelete" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -29,12 +29,12 @@
 							<label>Reset defaults</label>
 							<handler function="OnButtonReset" entry="EVT_BUTTON" />
 						</object>
-						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxLEFT|wxALIGN_BOTTOM</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxSHAPED|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxALL|wxEXPAND|wxSHAPED</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer" variable="infoSizer" member="no">
@@ -44,12 +44,12 @@
 							<size>186,243</size>
 							<enabled>0</enabled>
 						</object>
-						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<option>1</option>
 			</object>
 		</object>

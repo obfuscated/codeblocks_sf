@@ -1,125 +1,118 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxScrollingDialog" name="dlgExternalDeps">
-    <title>External dependencies</title>
-    <centered>1</centered>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxStaticBoxSizer">
-              <label>Additional output files</label>
-              <orient>wxVERTICAL</orient>
-              <object class="sizeritem">
-                <object class="wxListBox" name="lstAdditionalFiles">
-                  <content/>
-                </object>
-                <option>1</option>
-                <flag>wxALL|wxEXPAND</flag>
-                <border>8</border>
-                <minsize>-1,160</minsize>
-              </object>
-              <object class="sizeritem">
-                <object class="wxBoxSizer">
-                  <orient>wxHORIZONTAL</orient>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnAddAdditional">
-                      <label>Add</label>
-                    </object>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnEditAdditional">
-                      <label>Edit</label>
-                    </object>
-                    <flag>wxLEFT</flag>
-                    <border>4</border>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnDelAdditional">
-                      <label>Delete</label>
-                    </object>
-                    <flag>wxLEFT</flag>
-                    <border>4</border>
-                  </object>
-                </object>
-                <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <option>1</option>
-            <flag>wxALL|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticBoxSizer">
-              <label>External dependency files</label>
-              <orient>wxVERTICAL</orient>
-              <object class="sizeritem">
-                <object class="wxListBox" name="lstExternalFiles">
-                  <content/>
-                </object>
-                <option>1</option>
-                <flag>wxALL|wxEXPAND</flag>
-                <border>8</border>
-                <minsize>-1,160</minsize>
-              </object>
-              <object class="sizeritem">
-                <object class="wxBoxSizer">
-                  <orient>wxHORIZONTAL</orient>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnAddExternal">
-                      <label>Add</label>
-                    </object>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnEditExternal">
-                      <label>Edit</label>
-                    </object>
-                    <flag>wxLEFT</flag>
-                    <border>4</border>
-                  </object>
-                  <object class="sizeritem">
-                    <object class="wxButton" name="btnDelExternal">
-                      <label>Delete</label>
-                    </object>
-                    <flag>wxLEFT</flag>
-                    <border>4</border>
-                  </object>
-                </object>
-                <flag>wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-                <border>8</border>
-              </object>
-            </object>
-            <option>1</option>
-            <flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-            <border>8</border>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxEXPAND</flag>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticText">
-          <label>If the target's output, or any of the additional files, is older than any of the external dependencies,\na target re-link is forced.</label>
-          <fg>#800040</fg>
-        </object>
-        <flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxButton" name="wxID_CANCEL">
-          <label>&amp;Close</label>
-        </object>
-        <flag>wxTOP|wxBOTTOM|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgExternalDeps">
+		<title>External dependencies</title>
+		<centered>1</centered>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer">
+							<label>Additional output files</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxListBox" name="lstAdditionalFiles" />
+								<flag>wxALL|wxEXPAND</flag>
+								<border>8</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxButton" name="btnAddAdditional">
+											<label>Add</label>
+										</object>
+										<flag></flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnEditAdditional">
+											<label>Edit</label>
+										</object>
+										<flag>wxLEFT</flag>
+										<border>4</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnDelAdditional">
+											<label>Delete</label>
+										</object>
+										<flag>wxLEFT</flag>
+										<border>4</border>
+									</object>
+								</object>
+								<flag>wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>8</border>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>8</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer">
+							<label>External dependency files</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxListBox" name="lstExternalFiles" />
+								<flag>wxALL|wxEXPAND</flag>
+								<border>8</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxButton" name="btnAddExternal">
+											<label>Add</label>
+										</object>
+										<flag></flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnEditExternal">
+											<label>Edit</label>
+										</object>
+										<flag>wxLEFT</flag>
+										<border>4</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnDelExternal">
+											<label>Delete</label>
+										</object>
+										<flag>wxLEFT</flag>
+										<border>4</border>
+									</object>
+								</object>
+								<flag>wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+								<border>8</border>
+							</object>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+						<border>8</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxEXPAND</flag>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>If the target&apos;s output, or any of the additional files, is older than any of the external dependencies,&#x0A;a target re-link is forced.</label>
+					<fg>#800040</fg>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxButton" name="wxID_CANCEL">
+					<label>&amp;Close</label>
+				</object>
+				<flag>wxTOP|wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

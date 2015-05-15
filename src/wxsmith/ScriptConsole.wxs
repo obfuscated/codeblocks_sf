@@ -11,7 +11,7 @@
 					</font>
 					<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
@@ -22,7 +22,7 @@
 							<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblCommand" member="yes">
 								<label>Command:</label>
 							</object>
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 							<border>5</border>
 						</object>
 						<object class="sizeritem">
@@ -34,7 +34,7 @@
 								<style>wxCB_DROPDOWN|wxTE_PROCESS_ENTER</style>
 								<handler function="OnbtnExecuteClick" entry="EVT_TEXT_ENTER" />
 							</object>
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 							<option>1</option>
 						</object>
 						<object class="sizeritem">
@@ -43,7 +43,7 @@
 								<tooltip>Execute current command</tooltip>
 								<handler function="OnbtnExecuteClick" entry="EVT_BUTTON" />
 							</object>
-							<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALIGN_CENTER_VERTICAL</flag>
 							<border>5</border>
 						</object>
 						<object class="sizeritem">
@@ -53,7 +53,7 @@
 								<tooltip>Load from file</tooltip>
 								<handler function="OnbtnLoadClick" entry="EVT_BUTTON" />
 							</object>
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						</object>
 						<object class="sizeritem">
 							<object class="wxBitmapButton" name="ID_BITMAPBUTTON3" variable="btnClear" member="yes">
@@ -62,11 +62,11 @@
 								<tooltip>Clear output window</tooltip>
 								<handler function="OnbtnClearClick" entry="EVT_BUTTON" />
 							</object>
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 			</object>
 		</object>
 	</object>

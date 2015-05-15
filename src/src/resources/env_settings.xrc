@@ -10,9 +10,9 @@
 					<bg>#004080</bg>
 					<object class="wxBoxSizer">
 						<object class="spacer">
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 							<border>4</border>
-							<option>1</option>
+							<option>2</option>
 						</object>
 						<object class="sizeritem">
 							<object class="wxStaticText" name="lblBigTitle">
@@ -26,22 +26,23 @@
 								</font>
 								<style>wxALIGN_CENTRE|wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
 							</object>
-							<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
-							<border>4</border>
-						</object>
-						<object class="spacer">
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALIGN_TOP</flag>
 							<border>4</border>
 							<option>1</option>
 						</object>
+						<object class="spacer">
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>4</border>
+							<option>2</option>
+						</object>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE1" />
-				<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxEXPAND</flag>
 			</object>
 			<object class="sizeritem">
 				<object class="wxListbook" name="nbMain">
@@ -54,7 +55,7 @@
 										<label>Show splash screen on start-up</label>
 										<checked>1</checked>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -62,7 +63,7 @@
 										<label>Allow only one running instance (will take place after restart)</label>
 										<checked>1</checked>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -74,7 +75,7 @@
 												<label>Use an already running instance (if possible)</label>
 												<checked>1</checked>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>2</border>
 										</object>
 										<object class="sizeritem">
@@ -82,11 +83,11 @@
 												<label>Bring it on top afterwards</label>
 												<checked>1</checked>
 											</object>
-											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>4</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -96,11 +97,11 @@
 												<label>Check &amp;&amp; set file associations (Windows only)</label>
 												<checked>1</checked>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<border>4</border>
 										</object>
 										<object class="spacer">
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -108,18 +109,18 @@
 											<object class="wxButton" name="btnSetAssocs">
 												<label>Set now</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnManageAssocs">
 												<label>Manage...</label>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -128,7 +129,7 @@
 										<checked>1</checked>
 										<tooltip>When checked, Code::Blocks will regularly check whether any open files have been modified by other applications, and prompt the user to take action.</tooltip>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -136,11 +137,11 @@
 										<label>Ignore invalid targets</label>
 										<tooltip>When checked the user will not be prompted to deal with invalid targets,&#x0A;during the build process they will be ignored (example : the target&apos;s compiler is not installed)</tooltip>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALIGN_LEFT</flag>
 									<size>0,16</size>
 								</object>
 								<object class="sizeritem">
@@ -158,7 +159,7 @@
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
@@ -171,15 +172,15 @@
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALIGN_LEFT</flag>
 									<size>0,16</size>
 								</object>
 								<object class="sizeritem">
@@ -193,26 +194,26 @@
 											<object class="wxStaticText" name="ID_STATICTEXT8">
 												<label>Shell to run commands in:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtConsoleShell" />
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT9">
 												<label>Terminal to launch console programs:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxComboBox" name="cbConsoleTerm" />
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 							</object>
@@ -228,7 +229,7 @@
 										<label>Show &quot;Start here&quot; page (shown only when there are no open projects)</label>
 										<checked>1</checked>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -238,7 +239,7 @@
 												<label>Internationalization (will take place after restart)</label>
 												<style>wxCHK_2STATE</style>
 											</object>
-											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
@@ -249,16 +250,16 @@
 												<size>135,-1</size>
 												<style>wxCB_SIMPLE|wxCB_READONLY</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALIGN_LEFT</flag>
 									<size>0,16</size>
 								</object>
 								<object class="sizeritem">
@@ -270,7 +271,7 @@
 												<label>Double-Click on editor tab toggles layout</label>
 												<checked>1</checked>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
@@ -280,50 +281,50 @@
 													<object class="wxStaticText" name="ID_STATICTEXT10">
 														<label>Layout to toggle with, if no previous layout can be found</label>
 													</object>
-													<flag>wxBOTTOM|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxBOTTOM|wxALIGN_LEFT</flag>
 													<border>5</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxChoice" name="choLayoutToToggle" />
-													<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxALIGN_LEFT</flag>
 													<border>4</border>
 												</object>
 											</object>
-											<flag>wxTOP|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxTOP|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALIGN_LEFT</flag>
 									<size>0,8</size>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkDoPlace">
 										<label>Enhanced multi-monitor dialog placement</label>
 									</object>
-									<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkPlaceHead">
 										<label>Move to &quot;head up&quot; position</label>
 									</object>
-									<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxLEFT|wxALIGN_LEFT</flag>
 									<border>16</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALIGN_LEFT</flag>
 									<size>0,8</size>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkAutoHideMessages">
 										<label>Auto show/hide message pane</label>
 									</object>
-									<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -333,35 +334,35 @@
 											<object class="wxCheckBox" name="chkAutoShowMessagesOnSearch">
 												<label>Keep open after search-in-files</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_LEFT</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAutoShowMessagesOnWarn">
 												<label>Keep open after build warnings</label>
 											</object>
-											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAutoShowMessagesOnErr">
 												<label>Keep open after build errors</label>
 											</object>
-											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>4</border>
 										</object>
 									</object>
-									<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxLEFT|wxALIGN_LEFT</flag>
 									<border>16</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkSaveSelectionChangeInMP">
 										<label>Save selected tab in message pane on perspective change</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
 									<border>4</border>
 								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALIGN_LEFT</flag>
 									<size>0,8</size>
 								</object>
 								<object class="sizeritem">
@@ -370,7 +371,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT22">
 												<label>Message logs&apos; font size:</label>
 											</object>
-											<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxSpinCtrl" name="spnLogFontSize">
@@ -378,11 +379,11 @@
 												<min>6</min>
 												<max>32</max>
 											</object>
-											<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 											<border>5</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -400,7 +401,7 @@
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
@@ -413,12 +414,12 @@
 												</content>
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 							</object>
@@ -440,7 +441,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT1">
 												<label>Tabs style:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
@@ -452,12 +453,12 @@
 													<item>Firefox 2</item>
 												</content>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -466,7 +467,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT3">
 												<label>Show close button on</label>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxChoice" name="cmbTabCloseStyle">
@@ -476,26 +477,26 @@
 													<item>the right side</item>
 												</content>
 											</object>
-											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkListTabs">
 										<label>Use drop-down tab list</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkStackedBasedTabSwitching">
 										<label>Use stacked based tab-switching</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
@@ -506,14 +507,14 @@
 											<object class="wxCheckBox" name="chkNBUseMousewheel">
 												<label>Enable scrolling with mousewheel</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxRadioButton" name="rbNBModToAdvance">
 												<label>Modifier needed to advance through the tabs (changes selection)</label>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxLEFT|wxALIGN_LEFT</flag>
 											<border>16</border>
 										</object>
 										<object class="sizeritem">
@@ -521,21 +522,21 @@
 												<label>Modifier needed to move the tabs (if some of them are invisible)</label>
 												<selected>1</selected>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxLEFT|wxALIGN_LEFT</flag>
 											<border>16</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkNBInvertAdvance">
 												<label>Invert advance direction</label>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxALIGN_LEFT</flag>
 											<border>28</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkNBInvertMove">
 												<label>Invert move direction</label>
 											</object>
-											<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxALIGN_LEFT</flag>
 											<border>28</border>
 										</object>
 										<object class="sizeritem">
@@ -544,21 +545,21 @@
 													<object class="wxStaticText" name="ID_STATICTEXT2">
 														<label>Modifier key (default is Cmd on Mac and Ctrl on other platforms):</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="txtMousewheelModifier" />
-													<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+													<flag>wxLEFT|wxALIGN_BOTTOM</flag>
 													<border>4</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxTOP|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>4</border>
 										</object>
 									</object>
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 							</object>
@@ -575,17 +576,17 @@
 											<object class="wxStaticText" name="ID_STATICTEXT4">
 												<label>Category:</label>
 											</object>
-											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxChoice" name="chCategory" />
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<flag>wxALL|wxEXPAND</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxBoxSizer">
@@ -593,7 +594,7 @@
 											<object class="wxListBox" name="lstColours">
 												<default>-1</default>
 											</object>
-											<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+											<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
@@ -604,14 +605,14 @@
 													<object class="wxStaticText" name="ID_STATICTEXT11">
 														<label>Colour:</label>
 													</object>
-													<flag>wxTOP|wxEXPAND|wxALIGN_BOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnColour">
 														<label>...</label>
 													</object>
-													<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>
 													<option>1</option>
 												</object>
@@ -619,7 +620,7 @@
 													<object class="wxStaticLine" name="ID_STATICLINE4">
 														<size>10,-1</size>
 													</object>
-													<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>
 													<option>1</option>
 												</object>
@@ -627,23 +628,23 @@
 													<object class="wxStaticText" name="ID_STATICTEXT25">
 														<label>Default:</label>
 													</object>
-													<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>
 												</object>
 												<object class="sizeritem">
 													<object class="wxButton" name="btnDefaultColour">
 														<label>Default</label>
 													</object>
-													<flag>wxTOP|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxTOP|wxALIGN_LEFT</flag>
 													<border>4</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxALIGN_TOP</flag>
 											<border>4</border>
 										</object>
 									</object>
-									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+									<flag>wxEXPAND</flag>
 									<border>4</border>
 									<option>1</option>
 								</object>
@@ -664,109 +665,109 @@
 											<object class="wxStaticText" name="ID_STATICTEXT5">
 												<label>Pane border size:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxSpinCtrl" name="spnAuiBorder">
 												<value>1</value>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT6">
 												<label>Sash size:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxSpinCtrl" name="spnAuiSash">
 												<value>4</value>
 												<min>1</min>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT7">
 												<label>Caption height:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxSpinCtrl" name="spnAuiCaption">
 												<value>17</value>
 												<min>4</min>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT12">
 												<label>Active caption colour:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnAuiActiveCaptionColour" />
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT13">
 												<label>Active caption gradient colour:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnAuiActiveCaptionGradientColour" />
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT14">
 												<label>Active caption text colour:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnAuiActiveCaptionTextColour" />
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT15">
 												<label>Inactive caption colour:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnAuiInactiveCaptionColour" />
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT16">
 												<label>Inactive caption gradient colour:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnAuiInactiveCaptionGradientColour" />
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT17">
 												<label>Inactive caption text colour:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxButton" name="btnAuiInactiveCaptionTextColour" />
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxButton" name="btnResetDefaultColours">
 										<label>Reset to defaults</label>
 									</object>
-									<flag>wxTOP|wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxALIGN_RIGHT</flag>
 									<border>4</border>
 								</object>
 							</object>
@@ -781,19 +782,19 @@
 									<object class="wxStaticText" name="ID_STATICTEXT18">
 										<label>Re-enable the following confirmation dialogs:</label>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_STATICTEXT19">
 										<label>(list will be empty if all dialogs are enabled)</label>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckListBox" name="chkDialogs" />
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 									<option>1</option>
 								</object>
@@ -809,19 +810,19 @@
 									<object class="wxStaticText" name="ID_STATICTEXT20">
 										<label>Use the following proxy when making network connections:</label>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_STATICTEXT21">
 										<label>(Format: hostname:port)</label>
 									</object>
-									<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxTextCtrl" name="txtProxy" />
-									<flag>wxTOP|wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
 							</object>
@@ -829,12 +830,12 @@
 						<label>Network proxy</label>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE2" />
-				<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
@@ -850,7 +851,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>8</border>
 			</object>
 		</object>

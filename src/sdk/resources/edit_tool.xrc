@@ -1,154 +1,137 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxScrollingDialog" name="dlgEditTool">
-    <title>Edit tool</title>
-    <centered>1</centered>
-    <style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxFlexGridSizer">
-          <cols>2</cols>
-          <vgap>8</vgap>
-          <hgap>8</hgap>
-          <growablecols>1</growablecols>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Name:</label>
-            </object>
-            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtName"/>
-            <flag>wxEXPAND</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Executable:</label>
-            </object>
-            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txtCommand"/>
-                <option>1</option>
-                <flag>wxEXPAND</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnBrowseCommand">
-                  <label>...</label>
-                  <size>24,-1</size>
-                </object>
-              </object>
-            </object>
-            <flag>wxEXPAND</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Parameters:</label>
-            </object>
-            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxTextCtrl" name="txtParams"/>
-            <flag>wxEXPAND</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Working directory:</label>
-            </object>
-            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxBoxSizer">
-              <orient>wxHORIZONTAL</orient>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txtDir"/>
-                <option>1</option>
-                <flag>wxEXPAND</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxButton" name="btnBrowseDir">
-                  <label>...</label>
-                  <size>24,-1</size>
-                </object>
-              </object>
-            </object>
-            <flag>wxEXPAND</flag>
-          </object>
-          <object class="spacer">
-            <size>0,0</size>
-          </object>
-          <object class="sizeritem">
-            <object class="wxRadioBox" name="rbLaunchOptions">
-              <label>Launching options</label>
-              <content>
-                <item>Launch tool in a new console window and wait for a keypress when done</item>
-                <item>Launch tool hidden with standard output redirected</item>
-                <item>Launch tool visible (without output redirection)</item>
-                <item>Launch tool visible detached (without output redirection)</item>
-              </content>
-              <selection>0</selection>
-              <dimension>1</dimension>
-              <style>wxRA_SPECIFY_COLS</style>
-            </object>
-          </object>
-          <object class="spacer">
-            <size>0,0</size>
-          </object>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>You can use the following macros:
-
-$${PROJECT_FILENAME}
-$${PROJECT_NAME}
-$${PROJECT_DIR}
-$${ACTIVE_EDITOR_FILENAME}
-$${ACTIVE_EDITOR_LINE} ($${ACTIVE_EDITOR_LINE_0})
-$${ACTIVE_EDITOR_COLUMN} ($${ACTIVE_EDITOR_COLUMN_0})
-$${ACTIVE_EDITOR_SELECTION}
-$${ALL_PROJECT_FILES}
-$${TARGET_OUTPUT_DIR}
-$${TARGET_NAME}
-$${TARGET_OUTPUT_BASENAME}
-$${TARGET_OUTPUT_FILE}
-$${MAKEFILE}</label>
-            </object>
-            <option>1</option>
-            <flag>wxEXPAND</flag>
-          </object>
-        </object>
-        <option>1</option>
-        <flag>wxALL|wxEXPAND</flag>
-        <border>8</border>
-        <minsize>320,-1</minsize>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticLine"/>
-        <flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStdDialogButtonSizer">
-          <object class="button">
-            <object class="wxButton" name="wxID_OK">
-              <label/>
-              <label>&amp;Ok</label>
-              <default>1</default>
-            </object>
-          </object>
-          <object class="button">
-            <object class="wxButton" name="wxID_CANCEL">
-              <label/>
-              <label>&amp;Cancel</label>
-            </object>
-          </object>
-        </object>
-        <flag>wxALL|wxALIGN_CENTRE_HORIZONTAL</flag>
-        <border>8</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxScrollingDialog" name="dlgEditTool">
+		<title>Edit tool</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<vgap>8</vgap>
+					<hgap>8</hgap>
+					<growablecols>1</growablecols>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Name:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtName" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Executable:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtCommand" />
+								<flag>wxEXPAND</flag>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnBrowseCommand">
+									<label>...</label>
+									<size>24,-1</size>
+								</object>
+								<flag></flag>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT3">
+							<label>Parameters:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtParams" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT4">
+							<label>Working directory:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtDir" />
+								<flag>wxEXPAND</flag>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="btnBrowseDir">
+									<label>...</label>
+									<size>24,-1</size>
+								</object>
+								<flag></flag>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="spacer">
+						<flag></flag>
+						<size>0,0</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxRadioBox" name="rbLaunchOptions">
+							<label>Launching options</label>
+							<content>
+								<item>Launch tool in a new console window and wait for a keypress when done</item>
+								<item>Launch tool hidden with standard output redirected</item>
+								<item>Launch tool visible (without output redirection)</item>
+								<item>Launch tool visible detached (without output redirection)</item>
+							</content>
+							<style>wxRA_SPECIFY_COLS</style>
+						</object>
+						<flag></flag>
+					</object>
+					<object class="spacer">
+						<flag></flag>
+						<size>0,0</size>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT5">
+							<label>You can use the following macros:&#x0A;&#x0A;$${PROJECT&amp;FILENAME}&#x0A;$${PROJECT&amp;NAME}&#x0A;$${PROJECT&amp;DIR}&#x0A;$${ACTIVE&amp;EDITOR&amp;FILENAME}&#x0A;$${ACTIVE&amp;EDITOR&amp;LINE} ($${ACTIVE&amp;EDITOR&amp;LINE&amp;0})&#x0A;$${ACTIVE&amp;EDITOR&amp;COLUMN} ($${ACTIVE&amp;EDITOR&amp;COLUMN&amp;0})&#x0A;$${ACTIVE&amp;EDITOR&amp;SELECTION}&#x0A;$${ALL&amp;PROJECT&amp;FILES}&#x0A;$${TARGET&amp;OUTPUT&amp;DIR}&#x0A;$${TARGET&amp;NAME}&#x0A;$${TARGET&amp;OUTPUT&amp;BASENAME}&#x0A;$${TARGET&amp;OUTPUT&amp;FILE}&#x0A;$${MAKEFILE}</label>
+						</object>
+						<flag>wxEXPAND</flag>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="ID_STATICLINE1" />
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
 </resource>

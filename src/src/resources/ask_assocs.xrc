@@ -1,44 +1,38 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-<object class="wxScrollingDialog" name="askAssoc">
-    <title>File associations</title>
-    <object class="wxBoxSizer">
-        <orient>wxVERTICAL</orient>
-        <object class="sizeritem">
-            <flag>wxALIGN_CENTER_VERTICAL|wxALL</flag>
-            <border>10</border>
-            <object class="wxStaticText">
-                <label>Code::Blocks is currently not the default application for C/C++ source files.
-Do you want to set it as default?
-
-You can always change associations from the environment settings later.</label>
-            </object>
-        </object>
-        <object class="sizeritem">
-            <flag>wxALIGN_CENTER|wxALL</flag>
-            <border>10</border>
-            <object class="wxRadioBox" name="choice">
-                <style>wxRA_SPECIFY_COLS|wxNO_BORDER</style>
-                <dimension>1</dimension>
-                <selection>2</selection>
-                <content>
-                    <item>No, leave everything as it is</item>
-                    <item>No, leave everything as it is (but ask me again next time)</item>
-                    <item>Yes, associate Code::Blocks with C/C++ file types</item>
-                    <item>Yes, associate Code::Blocks with every supported type (including project files from other IDEs)</item>
-                </content>
-            </object>
-        </object>
-        <object class="sizeritem">
-            <flag>wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL|wxALL</flag>
-            <border>10</border>
-            <object class="wxButton" name="wxID_OK">
-                <label>OK</label>
-            </object>
-        </object>
-    </object>
-    <centered>1</centered>
-</object>
-
-
+	<object class="wxScrollingDialog" name="askAssoc">
+		<title>File associations</title>
+		<centered>1</centered>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Code::Blocks is currently not the default application for C/C++ source files.&#x0A;Do you want to set it as default?&#x0A;&#x0A;You can always change associations from the environment settings later.</label>
+				</object>
+				<flag>wxALL</flag>
+				<border>10</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="choice">
+					<label></label>
+					<content>
+						<item>No, leave everything as it is</item>
+						<item>No, leave everything as it is (but ask me again next time)</item>
+						<item>Yes, associate Code::Blocks with C/C++ file types</item>
+						<item>Yes, associate Code::Blocks with every supported type (including project files from other IDEs)</item>
+					</content>
+					<style>wxRA_SPECIFY_COLS|wxNO_BORDER</style>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>10</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxButton" name="wxID_OK">
+					<label>OK</label>
+				</object>
+				<flag>wxALL|wxALIGN_RIGHT</flag>
+				<border>10</border>
+			</object>
+		</object>
+	</object>
 </resource>

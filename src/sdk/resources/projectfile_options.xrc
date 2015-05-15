@@ -23,26 +23,26 @@
 											<object class="wxStaticText" name="ID_STATICTEXT1">
 												<label>In Project :</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtProject">
 												<style>wxTE_MULTILINE|wxTE_READONLY</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT17">
 												<label>Project base path:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtProjectBasePath">
 												<style>wxTE_READONLY</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -50,30 +50,30 @@
 											<object class="wxStaticText" name="ID_STATICTEXT2">
 												<label>File name (absolute) :</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtAbsName">
 												<style>wxTE_READONLY</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT3">
 												<label>File name (relative) :</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtRelName">
 												<style>wxTE_READONLY</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -87,76 +87,76 @@
 											<object class="wxStaticText" name="ID_STATICTEXT4">
 												<label>Total Lines : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticTotalLines">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT5">
 												<label>Empty Lines : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticEmptyLines">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT6">
 												<label>Actual Code Lines : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticActualLines">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT7">
 												<label>File Size : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticFileSize">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT8">
 												<label>Comment Lines : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticCommentLines">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticIncludedFilesLabel">
 												<label>Included files : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticIncludedFiles">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -169,16 +169,16 @@
 											<object class="wxStaticText" name="ID_STATICTEXT9">
 												<label>File&apos;s date/time stamp : </label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="staticDateTimeStamp">
 												<label></label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -191,14 +191,14 @@
 											<object class="wxCheckBox" name="chkReadOnly">
 												<label>File is read-only</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="spacer">
-									<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxEXPAND</flag>
 									<option>1</option>
 									<size>0,0</size>
 								</object>
@@ -210,7 +210,7 @@
 											<weight>bold</weight>
 										</font>
 									</object>
-									<flag>wxBOTTOM|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+									<flag>wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -225,14 +225,14 @@
 									<object class="wxCheckBox" name="chkCompile">
 										<label>Compile file</label>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkLink">
 										<label>Link file</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -243,12 +243,12 @@
 											<object class="wxCheckListBox" name="lstTargets">
 												<size>-1,150</size>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -261,7 +261,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT10">
 												<label>Priority weight:</label>
 											</object>
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxSlider" name="sliderWeight">
@@ -270,11 +270,11 @@
 												<pagesize>10</pagesize>
 												<style>wxSL_AUTOTICKS|wxSL_LABELS</style>
 											</object>
-											<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxEXPAND</flag>
 											<option>1</option>
 										</object>
 										<object class="spacer">
-											<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALIGN_TOP</flag>
 											<size>0,0</size>
 										</object>
 										<object class="sizeritem">
@@ -282,10 +282,10 @@
 												<label>Lower weight means higher priority (order of compiling)</label>
 												<fg>#A52A2A</fg>
 											</object>
-											<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -306,12 +306,12 @@
 											<object class="wxStaticText" name="ID_STATICTEXT12">
 												<label>Compiler variable:</label>
 											</object>
-											<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtCompiler" />
-											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
@@ -319,17 +319,17 @@
 											<object class="wxStaticText" name="ID_STATICTEXT13">
 												<label>Object file:</label>
 											</object>
-											<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxRIGHT|wxALIGN_TOP</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtObjName" />
-											<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
 								<object class="sizeritem">
@@ -342,30 +342,30 @@
 													<object class="wxStaticText" name="ID_STATICTEXT14">
 														<label>For this compiler:</label>
 													</object>
-													<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALIGN_CENTER_VERTICAL</flag>
 												</object>
 												<object class="sizeritem">
 													<object class="wxChoice" name="cmbBuildStageCompiler" />
-													<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+													<flag>wxLEFT|wxEXPAND</flag>
 													<border>4</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkBuildStage">
 												<label>Use custom command to build this file:</label>
 											</object>
-											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxTextCtrl" name="txtBuildStage">
 												<style>wxTE_MULTILINE</style>
 											</object>
-											<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxALL|wxEXPAND</flag>
 											<border>4</border>
 											<option>1</option>
 										</object>
@@ -373,18 +373,18 @@
 											<object class="wxStaticText" name="ID_STATICTEXT15">
 												<label>You can use the same macros as those in advanced compiler options.</label>
 											</object>
-											<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>4</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblBuildCommand">
 												<label>Default: </label>
 											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>4</border>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 									<option>1</option>
 								</object>
@@ -393,7 +393,7 @@
 										<label>Please, don&apos;t change anything unless you really know what you &apos;re doing.&#x0A;You could *really* mess-up Code::Blocks&apos; Build System...</label>
 										<fg>#FF0000</fg>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 									<border>8</border>
 								</object>
 							</object>
@@ -401,7 +401,7 @@
 						<label>Advanced</label>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 				<option>1</option>
 			</object>
@@ -418,7 +418,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>

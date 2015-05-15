@@ -14,7 +14,7 @@
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxListBox" name="ID_LST_ALIASES" />
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -24,28 +24,28 @@
 										<object class="wxButton" name="ID_BTN_ADD">
 											<label>&amp;Add</label>
 										</object>
-										<flag>wxALL|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxALL|wxALIGN_TOP</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="ID_BTN_EDIT">
 											<label>&amp;Edit</label>
 										</object>
-										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxALIGN_TOP</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="ID_BTN_REMOVE">
 											<label>&amp;Remove</label>
 										</object>
-										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+										<flag>wxLEFT|wxALIGN_TOP</flag>
 										<border>5</border>
 									</object>
 								</object>
-								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxALL|wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticBoxSizer">
@@ -54,17 +54,17 @@
 								<object class="wxCheckListBox" name="ID_LST_TARGETS">
 									<size>212,207</size>
 								</object>
-								<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
@@ -72,7 +72,7 @@
 				<object class="wxStaticLine" name="ID_STATIC_LINE">
 					<size>10,-1</size>
 				</object>
-				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
@@ -83,7 +83,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
 				<border>5</border>
 			</object>
 		</object>

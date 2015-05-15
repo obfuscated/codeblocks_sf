@@ -177,7 +177,7 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
             wxPanel* pnl = new wxPanel(this, -1, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
             pnl->SetBackgroundColour(titleBackground);
             titleC = new ForwardingTextControl(pnl, -1, title, wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE);
-            pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER, 5);
+            pbs->Add(titleC, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 5);
             pnl->SetSizer(pbs);
             pbs->SetSizeHints(pnl);
             o = pnl;
@@ -191,12 +191,12 @@ InfoWindow::InfoWindow(const wxString& title, const wxString& message, unsigned 
 
         titleC->SetForegroundColour(*wxWHITE);
         titleC->SetFont(wxFont(11, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD));
-        bs->Add(o, 0, wxGROW|wxALIGN_CENTER_VERTICAL, 5);
+        bs->Add(o, 0, wxGROW, 5);
 
         ForwardingTextControl *text = new ForwardingTextControl(this, -1, message, wxDefaultPosition, wxDefaultSize, 0);
         text->SetBackgroundColour(textBackground);
         text->SetForegroundColour(textForeground);
-        bs->Add(text, 0, wxALIGN_CENTER|wxALL, 12);
+        bs->Add(text, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 12);
         SetBackgroundColour(textBackground);
         SetSizer(bs);
         bs->SetSizeHints(this);
