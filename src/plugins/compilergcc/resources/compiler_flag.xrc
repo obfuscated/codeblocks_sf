@@ -18,7 +18,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Name:</label>
 									</object>
-									<flag>wxALL|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -26,7 +26,7 @@
 									<object class="wxTextCtrl" name="ID_Name">
 										<tooltip>Human readable description of this flag</tooltip>
 									</object>
-									<flag>wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -34,7 +34,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Compiler flags:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -42,7 +42,7 @@
 									<object class="wxTextCtrl" name="ID_Compiler">
 										<tooltip>Flags to be sent to the compiler</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -50,7 +50,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Linker flags:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -58,7 +58,7 @@
 									<object class="wxTextCtrl" name="ID_Linker">
 										<tooltip>Flags to be sent to the linker</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -66,7 +66,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Category:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -74,7 +74,7 @@
 									<object class="wxComboBox" name="ID_Category">
 										<tooltip>The category this flag is in</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -82,7 +82,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Check against:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -90,7 +90,7 @@
 									<object class="wxTextCtrl" name="ID_Against">
 										<tooltip>Show a warning message if any of these flags are enabled</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -98,7 +98,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Check message:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -106,7 +106,7 @@
 									<object class="wxTextCtrl" name="ID_Message">
 										<tooltip>Warning message to show upon conflict</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -114,7 +114,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Supersedes:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -122,7 +122,7 @@
 									<object class="wxTextCtrl" name="ID_Supersede">
 										<tooltip>Automatically disable the list of superseded&#x0A;flags if this flag is enabled</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -130,7 +130,7 @@
 									<object class="wxStaticText" name="wxID_ANY">
 										<label>Exclusive:</label>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -139,12 +139,12 @@
 										<label>False</label>
 										<tooltip>Disable all other flags in this category if this flag is enabled</tooltip>
 									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
 							</object>
-							<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxEXPAND</flag>
 							<border>5</border>
 							<option>1</option>
 						</object>
@@ -152,7 +152,7 @@
 							<object class="wxStaticLine" name="wxID_ANY">
 								<size>10,-1</size>
 							</object>
-							<flag>wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 							<border>5</border>
 							<option>1</option>
 						</object>
@@ -169,13 +169,13 @@
 									</object>
 								</object>
 							</object>
-							<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 							<border>5</border>
 							<option>-1</option>
 						</object>
 					</object>
 				</object>
-				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
