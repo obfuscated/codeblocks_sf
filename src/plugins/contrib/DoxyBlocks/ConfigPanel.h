@@ -24,15 +24,15 @@
 #define CONFIGPANEL_H
 
 //(*Headers(ConfigPanel)
-#include <wx/notebook.h>
-#include <wx/sizer.h>
-#include <wx/stattext.h>
-#include <wx/radiobox.h>
-#include <wx/textctrl.h>
 #include <wx/checkbox.h>
-#include <wx/panel.h>
-#include <wx/choice.h>
+#include <wx/sizer.h>
+#include <wx/notebook.h>
 #include <wx/button.h>
+#include <wx/panel.h>
+#include <wx/stattext.h>
+#include <wx/textctrl.h>
+#include <wx/choice.h>
+#include <wx/radiobox.h>
 //*)
 #include <cbstyledtextctrl.h>
 #include <configurationpanel.h>
@@ -380,52 +380,52 @@ class ConfigPanel: public cbConfigurationPanel
         void SetAutoVersioning(bool val) { m_bAutoVersioning = val; }
 
         //(*Declarations(ConfigPanel)
-        cbStyledTextCtrl* TextCtrlBlockComment;
-        wxCheckBox* CheckBoxGenerateHTML;
-        wxButton* ButtonBrowseHHC;
-        wxCheckBox* CheckBoxGenerateLatex;
-        wxCheckBox* CheckBoxOverwriteDoxyfile;
-        wxButton* ButtonBrowseCHMViewer;
-        wxCheckBox* CheckBoxClassDiagrams;
-        wxTextCtrl* TextCtrlOutputDirectory;
-        wxButton* ButtonBrowseDoxywizard;
-        wxCheckBox* CheckBoxGenerateHTMLHelp;
-        wxTextCtrl* TextCtrlPathHHC;
-        wxRadioBox* RadioBoxBlockComments;
-        wxChoice* ChoiceOutputLanguage;
-        wxCheckBox* CheckBoxRunHTML;
-        wxTextCtrl* TextCtrlPathDot;
-        wxCheckBox* CheckBoxUseInternalViewer;
-        wxCheckBox* CheckBoxGenerateCHI;
-        wxCheckBox* CheckBoxGenerateRTF;
-        wxCheckBox* CheckBoxWarnIfUndocumented;
-        wxCheckBox* CheckBoxGenerateAutogenDef;
-        wxCheckBox* CheckBoxExtractAll;
-        wxButton* ButtonBrowseDot;
-        wxTextCtrl* TextCtrlPathDoxygen;
-        wxCheckBox* CheckBoxWarnings;
-        wxTextCtrl* TextCtrlProjectNumber;
-        wxTextCtrl* TextCtrlPathDoxywizard;
-        wxCheckBox* CheckBoxAlphabeticalIndex;
         wxCheckBox* CheckBoxRunCHM;
-        wxCheckBox* CheckBoxWarnIfDocError;
-        wxCheckBox* CheckBoxGeneratePerlMod;
         wxButton* ButtonBrowseDoxygen;
-        wxCheckBox* CheckBoxGenerateXML;
-        wxCheckBox* CheckBoxUseAtInTags;
-        wxCheckBox* CheckBoxHaveDot;
         wxCheckBox* CheckBoxExtractStatic;
-        cbStyledTextCtrl* TextCtrlLineComment;
-        wxCheckBox* CheckBoxWarnNoParamdoc;
-        wxCheckBox* CheckBoxBinaryTOC;
+        cbStyledTextCtrl* TextCtrlBlockComment;
+        wxCheckBox* CheckBoxWarnings;
         wxRadioBox* RadioBoxLineComments;
-        wxCheckBox* CheckBoxGenerateMan;
-        wxCheckBox* CheckBoxUseAutoVersion;
+        wxTextCtrl* TextCtrlPathDoxygen;
+        cbStyledTextCtrl* TextCtrlLineComment;
+        wxCheckBox* CheckBoxGeneratePerlMod;
         wxCheckBox* CheckBoxEnablePreprocessing;
-        wxTextCtrl* TextCtrlPathCHMViewer;
-        wxCheckBox* CheckBoxExtractPrivate;
+        wxCheckBox* CheckBoxUseInternalViewer;
+        wxCheckBox* CheckBoxWarnIfUndocumented;
+        wxRadioBox* RadioBoxBlockComments;
+        wxCheckBox* CheckBoxHaveDot;
+        wxCheckBox* CheckBoxOverwriteDoxyfile;
+        wxCheckBox* CheckBoxWarnIfDocError;
+        wxCheckBox* CheckBoxUseAtInTags;
+        wxCheckBox* CheckBoxBinaryTOC;
+        wxCheckBox* CheckBoxGenerateHTMLHelp;
+        wxCheckBox* CheckBoxExtractAll;
+        wxCheckBox* CheckBoxRunHTML;
+        wxCheckBox* CheckBoxWarnNoParamdoc;
+        wxTextCtrl* TextCtrlOutputDirectory;
         wxCheckBox* CheckBoxLoadTemplate;
+        wxChoice* ChoiceOutputLanguage;
+        wxCheckBox* CheckBoxClassDiagrams;
+        wxCheckBox* CheckBoxGenerateMan;
+        wxCheckBox* CheckBoxGenerateXML;
         wxCheckBox* CheckBoxPromptBeforeOverwriting;
+        wxCheckBox* CheckBoxAlphabeticalIndex;
+        wxCheckBox* CheckBoxGenerateLatex;
+        wxCheckBox* CheckBoxExtractPrivate;
+        wxTextCtrl* TextCtrlPathHHC;
+        wxButton* ButtonBrowseDoxywizard;
+        wxTextCtrl* TextCtrlProjectNumber;
+        wxCheckBox* CheckBoxGenerateCHI;
+        wxCheckBox* CheckBoxGenerateAutogenDef;
+        wxButton* ButtonBrowseDot;
+        wxTextCtrl* TextCtrlPathDot;
+        wxButton* ButtonBrowseHHC;
+        wxTextCtrl* TextCtrlPathDoxywizard;
+        wxTextCtrl* TextCtrlPathCHMViewer;
+        wxCheckBox* CheckBoxGenerateRTF;
+        wxButton* ButtonBrowseCHMViewer;
+        wxCheckBox* CheckBoxUseAutoVersion;
+        wxCheckBox* CheckBoxGenerateHTML;
         //*)
 
     protected:
