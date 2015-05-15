@@ -1249,7 +1249,6 @@
 					<wxPanel wxs="wxsmith/wxsNotebookParentQP.wxs" src="wxwidgets/defitems/wxsnotebook.cpp" hdr="wxwidgets/defitems/wxsnotebook.cpp" fwddecl="0" i18n="1" name="wxsNotebookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsChoicebookParentQP.wxs" src="wxwidgets/defitems/wxschoicebook.cpp" hdr="wxwidgets/defitems/wxschoicebook.cpp" fwddecl="0" i18n="1" name="wxsChoicebookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsListbookParentQP.wxs" src="wxwidgets/defitems/wxslistbook.cpp" hdr="wxwidgets/defitems/wxslistbook.cpp" fwddecl="0" i18n="1" name="wxsListbookParentQP" language="CPP" />
-					<wxPanel wxs="wxsmith/wxsTreebookParentQP.wxs" src="wxwidgets/defitems/wxstreebook.cpp" hdr="wxwidgets/defitems/wxstreebook.cpp" fwddecl="0" i18n="1" name="wxsTreebookParentQP" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsSettings.wxs" src="wxssettings.cpp" hdr="wxssettings.h" fwddecl="0" i18n="1" name="wxsSettings" language="CPP" />
 					<wxPanel wxs="wxsmith/wxsmenueditor.wxs" src="wxwidgets/defitems/wxsmenueditor.cpp" hdr="wxwidgets/defitems/wxsmenueditor.h" fwddecl="0" i18n="1" name="wxsMenuEditor" language="CPP" />
 					<wxPanel wxs="wxsmith/wxstoolbareditor.wxs" src="wxwidgets/defitems/wxstoolbareditor.cpp" hdr="wxwidgets/defitems/wxstoolbareditor.h" fwddecl="0" i18n="1" name="wxsToolBarEditor" language="CPP" />
