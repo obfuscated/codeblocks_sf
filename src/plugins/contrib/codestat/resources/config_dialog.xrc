@@ -1,116 +1,109 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
-  <object class="wxPanel" name="dlgCodeStatConfig">
-    <object class="wxBoxSizer">
-      <orient>wxVERTICAL</orient>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxStaticText">
-              <label>Language:</label>
-            </object>
-            <flag>wxALIGN_CENTRE_VERTICAL</flag>
-          </object>
-          <object class="sizeritem">
-            <object class="wxComboBox" name="combo_Names">
-              <content/>
-            </object>
-          </object>
-        </object>
-        <flag>wxLEFT|wxALIGN_CENTRE</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxStaticBoxSizer">
-          <label></label>
-          <orient>wxVERTICAL</orient>
-          <object class="sizeritem">
-            <object class="wxGridSizer">
-              <cols>2</cols>
-              <rows>4</rows>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>File types:</label>
-                </object>
-                <flag>wxALIGN_CENTRE_VERTICAL</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txt_FileTypes">
-                </object>
-                <flag>wxALL</flag>
-                <border>3</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>Single comment:</label>
-                </object>
-                <flag>wxALIGN_CENTRE_VERTICAL</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txt_SingleComment">
-                </object>
-                <flag>wxALL</flag>
-                <border>3</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>Multi-line comment begin:</label>
-                </object>
-                <flag>wxALIGN_CENTRE_VERTICAL</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txt_MultiLineCommentBegin">
-                </object>
-                <flag>wxALL</flag>
-                <border>3</border>
-              </object>
-              <object class="sizeritem">
-                <object class="wxStaticText">
-                  <label>Multi-line comment end:</label>
-                </object>
-                <flag>wxALIGN_CENTRE_VERTICAL</flag>
-              </object>
-              <object class="sizeritem">
-                <object class="wxTextCtrl" name="txt_MultiLineCommentEnd">
-                </object>
-                <flag>wxALL</flag>
-                <border>3</border>
-              </object>
-            </object>
-          </object>
-        </object>
-        <flag>wxLEFT|wxTOP|wxALIGN_CENTRE</flag>
-        <border>8</border>
-      </object>
-      <object class="sizeritem">
-        <object class="wxBoxSizer">
-          <orient>wxHORIZONTAL</orient>
-          <object class="sizeritem">
-            <object class="wxButton" name="btn_Add">
-              <label>Add</label>
-            </object>
-            <flag>wxLEFT|wxRIGHT</flag>
-            <border>5</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="btn_Remove">
-              <label>Remove</label>
-            </object>
-            <flag>wxLEFT|wxRIGHT</flag>
-            <border>5</border>
-          </object>
-          <object class="sizeritem">
-            <object class="wxButton" name="btn_Default">
-              <label>Default</label>
-            </object>
-            <flag>wxLEFT|wxRIGHT</flag>
-            <border>5</border>
-          </object>
-        </object>
-        <flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTRE</flag>
-        <border>10</border>
-      </object>
-    </object>
-  </object>
+	<object class="wxPanel" name="dlgCodeStatConfig">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Language:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="combo_Names" />
+						<flag></flag>
+					</object>
+				</object>
+				<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxGridSizer">
+							<cols>2</cols>
+							<rows>4</rows>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>File types:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txt_FileTypes" />
+								<flag>wxALL</flag>
+								<border>3</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT3">
+									<label>Single comment:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txt_SingleComment" />
+								<flag>wxALL</flag>
+								<border>3</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT4">
+									<label>Multi-line comment begin:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txt_MultiLineCommentBegin" />
+								<flag>wxALL</flag>
+								<border>3</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT5">
+									<label>Multi-line comment end:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txt_MultiLineCommentEnd" />
+								<flag>wxALL</flag>
+								<border>3</border>
+							</object>
+						</object>
+						<flag></flag>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="btn_Add">
+							<label>Add</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btn_Remove">
+							<label>Remove</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btn_Default">
+							<label>Default</label>
+						</object>
+						<flag>wxLEFT|wxRIGHT</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>10</border>
+			</object>
+		</object>
+	</object>
 </resource>
