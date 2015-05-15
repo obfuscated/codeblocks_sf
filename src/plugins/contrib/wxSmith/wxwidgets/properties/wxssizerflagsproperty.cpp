@@ -71,6 +71,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     #endif
 
     wxPGChoices PGC2;
+    PGC2.Add(_(""),AlignNot);
     PGC2.Add(_("Left"),AlignLeft);
     PGC2.Add(_("Center"),AlignCenterHorizontal);
     PGC2.Add(_("Right"),AlignRight);
@@ -82,6 +83,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     #endif
 
     wxPGChoices PGC3;
+    PGC3.Add(_(""),AlignNot);
     PGC3.Add(_("Top"),AlignTop);
     PGC3.Add(_("Center"),AlignCenterVertical);
     PGC3.Add(_("Bottom"),AlignBottom);
@@ -242,19 +244,45 @@ bool wxsSizerFlagsProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridM
     return true;
 }
 
+long wxsSizerFlagsProperty::GetParentOrientation(TiXmlElement* Element)
+{
+    if ( Element->Parent() && Element->Parent()->Parent() )
+    {
+        TiXmlNode* p = Element->Parent()->Parent();
+        TiXmlElement* e = p->ToElement();
+        if ( e && ( strcasecmp(e->Attribute("class"), "wxBoxSizer") || strcasecmp(e->Attribute("class"), "wxStaticBoxSizer")) )
+        {
+            if ( p->FirstChild("orient") && p->FirstChild("orient")->ToElement() )
+            {
+                const char* value = p->FirstChild("orient")->ToElement()->Value();
+                if ( strcasecmp(value, "wxVERTICAL") )
+                    return ParentAlignVertical;
+                else if ( strcasecmp(value, "wxHORIZONTAL") )
+                    return ParentAlignHorizontal;
+                else return 0;
+            }
+            else
+                return ParentAlignHorizontal;
+        }
+    }
+    return 0;
+}
+
 bool wxsSizerFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
     if ( !Element )
     {
-        FLAGS = AlignLeft | AlignTop;
+        FLAGS = AlignNot;
         return false;
     }
 
+    FLAGS &= ~ParentAlignMask;
+    FLAGS |= GetParentOrientation(Element);
+
     const char* Text = Element->GetText();
-    wxString Str;
     if ( !Text )
     {
-        FLAGS = AlignLeft | AlignTop;
+        FLAGS = AlignNot;
         return false;
     }
     FLAGS = ParseString(cbC2U(Text));
@@ -263,13 +291,22 @@ bool wxsSizerFlagsProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* E
 
 bool wxsSizerFlagsProperty::XmlWrite(wxsPropertyContainer* Object,TiXmlElement* Element)
 {
+    if ( Element )
+    {
+        FLAGS &= ~ParentAlignMask;
+        FLAGS |= GetParentOrientation(Element);
+    }
+
+    FixFlags(FLAGS);
+
     Element->InsertEndChild(TiXmlText(cbU2C(GetString(FLAGS))));
+
     return true;
 }
 
 bool wxsSizerFlagsProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
-    if ( Stream->GetLong(GetDataName(),FLAGS,AlignTop|AlignLeft) )
+    if ( Stream->GetLong(GetDataName(),FLAGS,AlignNot) )
     {
         FixFlags(FLAGS);
         return true;
@@ -279,7 +316,7 @@ bool wxsSizerFlagsProperty::PropStreamRead(wxsPropertyContainer* Object,wxsPrope
 
 bool wxsSizerFlagsProperty::PropStreamWrite(wxsPropertyContainer* Object,wxsPropertyStream* Stream)
 {
-    return Stream->PutLong(GetDataName(),FLAGS,AlignTop|AlignLeft);
+    return Stream->PutLong(GetDataName(),FLAGS,AlignNot);
 }
 
 long wxsSizerFlagsProperty::ParseString(const wxString& String)
@@ -333,19 +370,26 @@ wxString wxsSizerFlagsProperty::GetString(long Flags)
         if ( Flags & BorderRight  ) Result.Append(_T("wxRIGHT|"));
     }
 
-    if ( Flags & Expand                 ) Result.Append(_T("wxEXPAND|"));
+    if ( Flags & Expand )
+    {
+        Result.Append(_T("wxEXPAND|"));
+    }
+    else
+    {
+        if ( Flags & AlignLeft              ) Result.Append(_T("wxALIGN_LEFT|"));
+        if ( Flags & AlignRight             ) Result.Append(_T("wxALIGN_RIGHT|"));
+        if ( Flags & AlignTop               ) Result.Append(_T("wxALIGN_TOP|"));
+        if ( Flags & AlignBottom            ) Result.Append(_T("wxALIGN_BOTTOM|"));
+        if ( Flags & AlignCenterHorizontal  ) Result.Append(_T("wxALIGN_CENTER_HORIZONTAL|"));
+        if ( Flags & AlignCenterVertical    ) Result.Append(_T("wxALIGN_CENTER_VERTICAL|"));
+    }
     if ( Flags & Shaped                 ) Result.Append(_T("wxSHAPED|"));
     if ( Flags & FixedMinSize           ) Result.Append(_T("wxFIXED_MINSIZE|"));
-    if ( Flags & AlignLeft              ) Result.Append(_T("wxALIGN_LEFT|"));
-    if ( Flags & AlignRight             ) Result.Append(_T("wxALIGN_RIGHT|"));
-    if ( Flags & AlignTop               ) Result.Append(_T("wxALIGN_TOP|"));
-    if ( Flags & AlignBottom            ) Result.Append(_T("wxALIGN_BOTTOM|"));
-    if ( Flags & AlignCenterHorizontal  ) Result.Append(_T("wxALIGN_CENTER_HORIZONTAL|"));
-    if ( Flags & AlignCenterVertical    ) Result.Append(_T("wxALIGN_CENTER_VERTICAL|"));
 
     if ( Result.empty() )
     {
-        return _T("0");
+        // do not return "0" to avoid asserts in xrc-files
+        return _T("wxALIGN_NOT");
     }
 
     Result.RemoveLast();
@@ -375,29 +419,38 @@ long wxsSizerFlagsProperty::GetWxFlags(long Flags)
 
 void wxsSizerFlagsProperty::FixFlags(long& Flags)
 {
-    if ( Flags & AlignLeft )
+    if ( Flags & Expand )
     {
-        Flags &= ~(AlignCenterHorizontal|AlignRight);
+        Flags &= ~(AlignHMask|AlignVMask);
     }
-    else if ( Flags & AlignCenterHorizontal )
+    else
     {
-        Flags &= ~AlignRight;
-    }
-    else if ( ! (Flags & AlignRight) )
-    {
-        Flags |= AlignLeft;
-    }
+        if ( Flags & ParentAlignVertical )
+        {
+            Flags &= ~AlignVMask;
+        }
 
-    if ( Flags & AlignTop )
-    {
-        Flags &= ~(AlignCenterVertical|AlignBottom);
-    }
-    else if ( Flags & AlignCenterVertical )
-    {
-        Flags &= ~AlignBottom;
-    }
-    else if ( ! (Flags & AlignBottom) )
-    {
-        Flags |= AlignTop;
+        if ( Flags & ParentAlignHorizontal )
+        {
+            Flags &= ~AlignHMask;
+        }
+
+        if ( Flags & AlignLeft )
+        {
+            Flags &= ~(AlignCenterHorizontal|AlignRight);
+        }
+        else if ( Flags & AlignCenterHorizontal )
+        {
+            Flags &= ~AlignRight;
+        }
+
+        if ( Flags & AlignTop )
+        {
+            Flags &= ~(AlignCenterVertical|AlignBottom);
+        }
+        else if ( Flags & AlignCenterVertical )
+        {
+            Flags &= ~AlignBottom;
+        }
     }
 }

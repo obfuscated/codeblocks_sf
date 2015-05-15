@@ -36,21 +36,24 @@ class wxsSizerFlagsProperty: public wxsProperty
 {
     public:
 
-        static const long BorderTop             = 0x0001;
-        static const long BorderBottom          = 0x0002;
-        static const long BorderLeft            = 0x0004;
-        static const long BorderRight           = 0x0008;
-        static const long BorderAll             = 0x0010;
-        static const long BorderPrevAll         = 0x0020;
-        static const long Expand                = 0x0040;
-        static const long Shaped                = 0x0080;
-        static const long FixedMinSize          = 0x0100;
-        static const long AlignLeft             = 0x0200;
-        static const long AlignRight            = 0x0400;
-        static const long AlignTop              = 0x0800;
-        static const long AlignBottom           = 0x1000;
-        static const long AlignCenterVertical   = 0x2000;
-        static const long AlignCenterHorizontal = 0x4000;
+        static const long BorderTop             = 0x00001;
+        static const long BorderBottom          = 0x00002;
+        static const long BorderLeft            = 0x00004;
+        static const long BorderRight           = 0x00008;
+        static const long BorderAll             = 0x00010;
+        static const long BorderPrevAll         = 0x00020;
+        static const long Expand                = 0x00040;
+        static const long Shaped                = 0x00080;
+        static const long FixedMinSize          = 0x00100;
+        static const long AlignLeft             = 0x00200;
+        static const long AlignRight            = 0x00400;
+        static const long AlignTop              = 0x00800;
+        static const long AlignBottom           = 0x01000;
+        static const long AlignCenterVertical   = 0x02000;
+        static const long AlignCenterHorizontal = 0x04000;
+        static const long AlignNot              = 0x08000;
+        static const long ParentAlignVertical   = 0x10000;
+        static const long ParentAlignHorizontal = 0x20000;
 
         /** \brief Ctor
          *  \param Offset   offset to long handling border flags
@@ -82,11 +85,14 @@ class wxsSizerFlagsProperty: public wxsProperty
         static long ParseString(const wxString& String);
         static void FixFlags(long& Flags);
 
+        long GetParentOrientation(TiXmlElement* Element);
+
         long Offset;
 
-        static const long BorderMask = BorderTop|BorderBottom|BorderLeft|BorderRight;
-        static const long AlignHMask = AlignLeft|AlignRight|AlignCenterHorizontal;
-        static const long AlignVMask = AlignTop|AlignBottom|AlignCenterVertical;
+        static const long BorderMask      = BorderTop|BorderBottom|BorderLeft|BorderRight;
+        static const long AlignHMask      = AlignLeft|AlignRight|AlignCenterHorizontal;
+        static const long AlignVMask      = AlignTop|AlignBottom|AlignCenterVertical;
+        static const long ParentAlignMask = ParentAlignVertical|ParentAlignHorizontal;
 };
 
 /** \addtogroup ext_properties_macros
