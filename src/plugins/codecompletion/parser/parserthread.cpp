@@ -139,6 +139,7 @@ namespace ParserConsts
     const wxString spaced_colon    (_T(" : "));
     const wxString kw__C_          (_T("\"C\""));
     const wxString kw_for          (_T("for"));
+    const wxString kw_try          (_T("try"));
     // length: 4
     const wxString kw___at         (_T("__at"));
     const wxString kw_else         (_T("else"));
@@ -2331,6 +2332,40 @@ void ParserThread::HandleFunction(wxString& name, bool isOperator, bool isPointe
             {
                 // Handle something like: std::string MyClass::MyMethod() throw(std::exception)
                 wxString arg = m_Tokenizer.GetToken(); // eat args ()
+            }
+            else if (peek == ParserConsts::kw_try)
+            {
+                // function-try-block pattern: AAA(...)try{}catch{}
+                m_Tokenizer.GetToken(); // eat the try keyword
+
+                if (m_Tokenizer.PeekToken() == ParserConsts::colon)
+                {
+                        // skip ctor initialization list
+                        SkipToOneOfChars(ParserConsts::opbrace);
+                        m_Tokenizer.UngetToken(); // leave brace there
+                }
+                if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
+                {
+                    isImpl = true;
+                    m_Tokenizer.GetToken(); // eat {
+                    lineStart = m_Tokenizer.GetLineNumber();
+                    SkipBlock(); // skip to matching }
+
+                    while (m_Tokenizer.PeekToken() == ParserConsts::kw_catch)
+                    {
+                        m_Tokenizer.GetToken(); // eat catch
+                        m_Tokenizer.GetToken(); // eat catch args
+
+                        if (m_Tokenizer.PeekToken() == ParserConsts::opbrace)
+                        {
+                            m_Tokenizer.GetToken(); // eat {
+                            SkipBlock(); // skip to matching }
+                        }
+                    }
+
+                    lineEnd = m_Tokenizer.GetLineNumber();
+                    break;
+                }
             }
             else
             {
