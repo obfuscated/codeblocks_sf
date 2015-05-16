@@ -105,7 +105,9 @@ protected:
     /** Some member functions of ClassBrowserBuilderThread such as ExpandItem() can either be called
      * from the main GUI thread(in ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)), or be
      * called in the worker thread(in BuildTree() which is called in ClassBrowserBuilderThread::Entry()),
-     * so we need this Mutex to serialize the function calls. **/
+     * to protect the member variables of the class, we use the Mutex so that only one thread can
+     * access to those member variables.
+     */
     wxMutex          m_ClassBrowserBuilderThreadMutex;
     NativeParser*    m_NativeParser;
     CCTreeCtrl*      m_CCTreeCtrlTop;

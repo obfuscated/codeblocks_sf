@@ -81,8 +81,6 @@ int idMenuJumpToImplementation = wxNewId();
 int idMenuRefreshTree          = wxNewId();
 int idCBViewInheritance        = wxNewId();
 int idCBExpandNS               = wxNewId();
-int idCBViewModeFlat           = wxNewId();
-int idCBViewModeStructured     = wxNewId();
 int idMenuForceReparse         = wxNewId();
 int idMenuDebugSmartSense      = wxNewId();
 int idCBNoSort                 = wxNewId();
@@ -91,6 +89,8 @@ int idCBSortByKind             = wxNewId();
 int idCBSortByScope            = wxNewId();
 int idCBSortByLine             = wxNewId();
 int idCBBottomTree             = wxNewId();
+
+/** the event ID which will be sent from worker thread to ClassBrowser */
 int idThreadEvent              = wxNewId();
 
 BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
@@ -107,9 +107,9 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
 
     EVT_TEXT_ENTER(XRCID("cmbSearch"),                   ClassBrowser::OnSearch)
     EVT_COMBOBOX  (XRCID("cmbSearch"),                   ClassBrowser::OnSearch)
+    EVT_BUTTON(XRCID("btnSearch"),                       ClassBrowser::OnSearch)
 
     EVT_CHOICE(XRCID("cmbView"),                         ClassBrowser::OnViewScope)
-    EVT_BUTTON(XRCID("btnSearch"),                       ClassBrowser::OnSearch)
 
     EVT_MENU(idMenuJumpToDeclaration,                    ClassBrowser::OnJumpTo)
     EVT_MENU(idMenuJumpToImplementation,                 ClassBrowser::OnJumpTo)
@@ -117,7 +117,6 @@ BEGIN_EVENT_TABLE(ClassBrowser, wxPanel)
     EVT_MENU(idMenuForceReparse,                         ClassBrowser::OnForceReparse)
     EVT_MENU(idCBViewInheritance,                        ClassBrowser::OnCBViewMode)
     EVT_MENU(idCBExpandNS,                               ClassBrowser::OnCBExpandNS)
-    EVT_MENU(idCBViewModeFlat,                           ClassBrowser::OnCBViewMode)
     EVT_MENU(idMenuDebugSmartSense,                      ClassBrowser::OnDebugSmartSense)
     EVT_MENU(idCBNoSort,                                 ClassBrowser::OnSetSortType)
     EVT_MENU(idCBSortByAlpabet,                          ClassBrowser::OnSetSortType)
@@ -134,10 +133,10 @@ ClassBrowser::ClassBrowser(wxWindow* parent, NativeParser* np) :
     m_NativeParser(np),
     m_TreeForPopupMenu(0),
     m_Parser(0L),
-    m_ClassBrowserSemaphore(0, 1),
+    m_ClassBrowserSemaphore(/*initialcount*/ 0, /*maxcount*/ 1),
     m_ClassBrowserBuilderThread(0)
 {
-    wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB"));
+    wxXmlResource::Get()->LoadPanel(this, parent, _T("pnlCB")); // panel class browser -> pnlCB
     m_Search = XRCCTRL(*this, "cmbSearch", wxComboBox);
 
     if (platform::windows)
