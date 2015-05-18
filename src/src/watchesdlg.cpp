@@ -645,8 +645,13 @@ void WatchesDlg::OnPropertySelected(wxPropertyGridEvent &event)
     if (plugin && !plugin->SupportsFeature(cbDebuggerFeature::Watches))
         return;
 
+    // Newer wx versions seems to send selection events for the unselected property too
+    // and so they set the property to non null value. Thus we have to check for this case.
     wxPGProperty *property = event.GetProperty();
-    if (property && property->GetLabel() == wxEmptyString)
+    wxPGProperty *selected = m_grid->GetSelection();
+    if (!selected || !property || property != selected)
+        return;
+    if (property->GetLabel() == wxEmptyString)
         m_grid->BeginLabelEdit(0);
 }
 
