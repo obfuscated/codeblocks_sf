@@ -52,7 +52,7 @@
 				<Option object_output="../../../.objs30/plugins/contrib/SmartIndent" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option host_application="../../../devel30/codeblocks" />
+				<Option host_application="./codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectCompilerOptionsRelation="2" />
 				<Compiler>
