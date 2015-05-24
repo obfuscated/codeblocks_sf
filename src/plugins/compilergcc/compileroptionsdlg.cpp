@@ -204,6 +204,12 @@ struct DebuggerClientData : wxClientData
     wxString string;
 };
 
+struct VariableListClientData : wxClientData
+{
+    VariableListClientData(const wxString &key, const wxString &value) : key(key), value(value) {}
+    wxString key, value;
+};
+
 /*
     CompilerOptions can exist on 3 different levels :
     Level 1 : compiler level
@@ -521,7 +527,7 @@ void CompilerOptionsDlg::DoFillVars()
     for (StringHash::const_iterator it = vars->begin(); it != vars->end(); ++it)
     {
         wxString text = it->first + _T(" = ") + it->second;
-        lst->Append(text);
+        lst->Append(text, new VariableListClientData(it->first, it->second));
     }
 } // DoFillVars
 
@@ -1977,23 +1983,21 @@ void CompilerOptionsDlg::OnAddVarClick(cb_unused wxCommandEvent& event)
         QuoteString(value, _("Add variable quote string"));
         CustomVarAction Action = {CVA_Add, key, value};
         m_CustomVarActions.push_back(Action);
-        XRCCTRL(*this, "lstVars", wxListBox)->Append(key + _T(" = ") + value);
+        XRCCTRL(*this, "lstVars", wxListBox)->Append(key + _T(" = ") + value, new VariableListClientData(key, value));
         m_bDirty = true;
     }
 } // OnAddVarClick
 
 void CompilerOptionsDlg::OnEditVarClick(cb_unused wxCommandEvent& event)
 {
-    int sel = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection();
+    wxListBox *list = XRCCTRL(*this, "lstVars", wxListBox);
+    int sel = list->GetSelection();
     if (sel == -1)
         return;
 
-    wxString key = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
-    if (key.IsEmpty())
-        return;
-    wxString old_key = key;
-    wxString value = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
-    wxString old_value = value;
+    VariableListClientData *data = static_cast<VariableListClientData*>(list->GetClientObject(sel));
+    wxString key = data->key;
+    wxString value = data->value;
 
     EditPairDlg dlg(this, key, value, _("Edit variable"), EditPairDlg::bmBrowseForDirectory);
     PlaceWindow(&dlg);
@@ -2003,11 +2007,13 @@ void CompilerOptionsDlg::OnEditVarClick(cb_unused wxCommandEvent& event)
         value.Trim(true).Trim(false);
         QuoteString(value, _("Edit variable quote string"));
 
-        if (value != old_value  ||  key != old_key)
+        if (value != data->value  ||  key != data->key)
         { // something has changed
-            CustomVarAction Action = {CVA_Edit, old_key, key + _T(" = ") + value};
+            CustomVarAction Action = {CVA_Edit, data->key, key + _T(" = ") + value};
             m_CustomVarActions.push_back(Action);
-            XRCCTRL(*this, "lstVars", wxListBox)->SetString(sel, key + _T(" = ") + value);
+            list->SetString(sel, key + _T(" = ") + value);
+            data->key = key;
+            data->value = value;
             m_bDirty = true;
         }
     }
@@ -2015,11 +2021,11 @@ void CompilerOptionsDlg::OnEditVarClick(cb_unused wxCommandEvent& event)
 
 void CompilerOptionsDlg::OnRemoveVarClick(cb_unused wxCommandEvent& event)
 {
-    int sel = XRCCTRL(*this, "lstVars", wxListBox)->GetSelection();
+    wxListBox *list = XRCCTRL(*this, "lstVars", wxListBox);
+    int sel = list->GetSelection();
     if (sel == -1)
         return;
-
-    wxString key = XRCCTRL(*this, "lstVars", wxListBox)->GetStringSelection().BeforeFirst(_T('=')).Trim(true);
+    const wxString &key = static_cast<VariableListClientData*>(list->GetClientObject(sel))->key;
     if (key.IsEmpty())
         return;
 
@@ -2029,7 +2035,7 @@ void CompilerOptionsDlg::OnRemoveVarClick(cb_unused wxCommandEvent& event)
     {
         CustomVarAction Action = {CVA_Remove, key, wxEmptyString};
         m_CustomVarActions.push_back(Action);
-        XRCCTRL(*this, "lstVars", wxListBox)->Delete(sel);
+        list->Delete(sel);
         m_bDirty = true;
     }
 } // OnRemoveVarClick
@@ -2047,7 +2053,7 @@ void CompilerOptionsDlg::OnClearVarClick(cb_unused wxCommandEvent& event)
         // Unset all variables of lstVars
         for (size_t i=0; i < lstVars->GetCount(); ++i)
         {
-            wxString key = lstVars->GetString(i).BeforeFirst(_T('=')).Trim(true);
+            const wxString &key = static_cast<VariableListClientData*>(lstVars->GetClientObject(i))->key;
             if (!key.IsEmpty())
             {
                 CustomVarAction Action = {CVA_Remove, key, wxEmptyString};
