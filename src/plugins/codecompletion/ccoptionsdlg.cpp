@@ -89,6 +89,13 @@ BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_BUTTON(XRCID("btnDocLinkColor"),    CCOptionsDlg::OnChooseColour)
 END_EVENT_TABLE()
 
+
+struct ReplacementTokenListClientData : wxClientData
+{
+    ReplacementTokenListClientData(const wxString &key, const wxString &value) : key(key), value(value) {}
+    wxString key, value;
+};
+
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc, DocumentationHelper* dh) :
     m_NativeParser(np),
     m_CodeCompletion(cc),
@@ -135,12 +142,12 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/empty_ext"), true));
     XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"),    _T("c,cpp,cxx,cc,c++")));
 
+    wxListBox *listRepl = XRCCTRL(*this, "lstRepl", wxListBox);
     const wxStringHashMap& repl = Tokenizer::GetTokenReplacementsMap();
-    wxStringHashMap::const_iterator it = repl.begin();
-    while (it != repl.end())
+    for (wxStringHashMap::const_iterator it = repl.begin(); it != repl.end(); ++it)
     {
-        XRCCTRL(*this, "lstRepl", wxListBox)->Append(it->first + _T(" -> ") + it->second);
-        ++it;
+        listRepl->Append(it->first + _T(" -> ") + it->second,
+                         new ReplacementTokenListClientData(it->first, it->second));
     }
 
     // Page "Symbol browser"
@@ -301,25 +308,22 @@ void CCOptionsDlg::OnAddRepl(cb_unused wxCommandEvent& event)
         if ( ValidateReplacementToken(key, value) )
         {
             Tokenizer::SetReplacementString(key, value);
-            XRCCTRL(*this, "lstRepl", wxListBox)->Append(key + _T(" -> ") + value);
+            XRCCTRL(*this, "lstRepl", wxListBox)->Append(key + _T(" -> ") + value,
+                                                         new ReplacementTokenListClientData(key, value));
         }
     }
 }
 
 void CCOptionsDlg::OnEditRepl(cb_unused wxCommandEvent& event)
 {
-    wxString key;
-    wxString value;
-
-    int sel = XRCCTRL(*this, "lstRepl", wxListBox)->GetSelection();
+    wxListBox *list = XRCCTRL(*this, "lstRepl", wxListBox);
+    int sel = list->GetSelection();
     if (sel == -1)
         return;
 
-    key = XRCCTRL(*this, "lstRepl", wxListBox)->GetStringSelection();
-    value = key;
-
-    key = key.BeforeFirst(_T(' '));
-    value = value.AfterLast(_T(' '));
+    ReplacementTokenListClientData *data = static_cast<ReplacementTokenListClientData*>(list->GetClientObject(sel));
+    wxString key = data->key;
+    wxString value = data->value;
 
     EditPairDlg dlg(this, key, value, _("Edit replacement token"), EditPairDlg::bmDisable);
     PlaceWindow(&dlg);
@@ -328,24 +332,26 @@ void CCOptionsDlg::OnEditRepl(cb_unused wxCommandEvent& event)
         if ( ValidateReplacementToken(key, value) )
         {
             Tokenizer::SetReplacementString(key, value);
-            XRCCTRL(*this, "lstRepl", wxListBox)->SetString(sel, key + _T(" -> ") + value);
+            list->SetString(sel, key + _T(" -> ") + value);
+            data->key = key;
+            data->value = value;
         }
     }
 }
 
 void CCOptionsDlg::OnDelRepl(cb_unused wxCommandEvent& event)
 {
-    int sel = XRCCTRL(*this, "lstRepl", wxListBox)->GetSelection();
+    wxListBox *list = XRCCTRL(*this, "lstRepl", wxListBox);
+    int sel = list->GetSelection();
     if (sel == -1)
         return;
 
     if (cbMessageBox(_("Are you sure you want to delete this replacement token?"),
                      _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
     {
-        wxString key = XRCCTRL(*this, "lstRepl", wxListBox)->GetStringSelection();
-        key = key.BeforeFirst(_T(' '));
+        const wxString &key = static_cast<ReplacementTokenListClientData*>(list->GetClientObject(sel))->key;
         Tokenizer::RemoveReplacementString(key);
-        XRCCTRL(*this, "lstRepl", wxListBox)->Delete(sel);
+        list->Delete(sel);
     }
 }
 
