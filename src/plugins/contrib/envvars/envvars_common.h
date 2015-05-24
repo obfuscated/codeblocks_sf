@@ -102,6 +102,13 @@ namespace nsEnvVars
     * \param set_name envvar set to discard completely
     */
   void          EnvvarSetDiscard(const wxString& set_name);
+
+
+  struct EnvVariableListClientData : wxClientData
+  {
+      EnvVariableListClientData(const wxString &key, const wxString &value) : key(key), value(value) {}
+      wxString key, value;
+  };
 }// nsEnvVars
 
 #endif // ENVVARS_COMMON_H

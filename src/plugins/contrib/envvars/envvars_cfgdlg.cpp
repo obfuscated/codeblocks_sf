@@ -36,6 +36,7 @@
 // Uncomment this for tracing of method calls in C::B's DebugLog:
 //#define TRACE_ENVVARS
 
+
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
 BEGIN_EVENT_TABLE(EnvVarsConfigDlg, wxPanel)
@@ -449,7 +450,7 @@ void EnvVarsConfigDlg::OnAddEnvVarClick(wxCommandEvent& WXUNUSED(event))
     if (nsEnvVars::EnvvarVetoUI(key, NULL, -1))
       return;
 
-    int  sel     = lstEnvVars->Append(key + _T(" = ") + value);
+    int  sel     = lstEnvVars->Append(key + _T(" = ") + value, new nsEnvVars::EnvVariableListClientData(key, value));
     bool success = nsEnvVars::EnvvarApply(key, value);
     if (sel>=0)
       lstEnvVars->Check(sel, success);
@@ -472,14 +473,13 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   if (sel == -1)
     return;
 
-  wxString key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
+  nsEnvVars::EnvVariableListClientData *data;
+  data = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(sel));
+  wxString key = data->key;
   if (key.IsEmpty())
     return;
   bool was_checked = lstEnvVars->IsChecked(sel);
-
-  wxString value     = lstEnvVars->GetStringSelection().AfterFirst(_T('=')).Trim(true).Trim(false);
-  wxString old_key   = key;
-  wxString old_value = value;
+  wxString value = data->value;
 
   EditPairDlg dlg(this, key, value, _("Edit variable"),
     EditPairDlg::bmBrowseForDirectory);
@@ -499,14 +499,14 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   }
 
   // is this envvar to be set?
-  bool bDoSet = (   ((key != old_key) || (value != old_value))
+  bool bDoSet = (   ((key != data->key) || (value != data->value))
                  && lstEnvVars->IsChecked(sel) );
   if (bDoSet)
   {
     // unset the old envvar if it's key name has changed
-    if (key != old_key)
+    if (key != data->key)
     {
-      nsEnvVars::EnvvarDiscard(old_key); // Don't care about return value
+      nsEnvVars::EnvvarDiscard(data->key); // Don't care about return value
       if (nsEnvVars::EnvvarVetoUI(key, lstEnvVars, sel))
         return;
     }
@@ -522,6 +522,8 @@ void EnvVarsConfigDlg::OnEditEnvVarClick(wxCommandEvent& WXUNUSED(event))
   // update the GUI to the (new/updated/same) key/value pair anyway
   lstEnvVars->SetString(sel, key + _T(" = ") + value);
   lstEnvVars->Check(sel, was_checked);
+  data->key = key;
+  data->value = value;
 }// OnEditEnvVarClick
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -540,7 +542,7 @@ void EnvVarsConfigDlg::OnDeleteEnvVarClick(wxCommandEvent& WXUNUSED(event))
   if (sel == -1)
     return;
 
-  wxString key = lstEnvVars->GetStringSelection().BeforeFirst(_T('=')).Trim(true).Trim(false);
+  const wxString &key = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(sel))->key;
   if (key.IsEmpty())
     return;
 
@@ -601,19 +603,19 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
   {
     if (lstEnvVars->IsChecked(i))
     {
-      wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
-      wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
-      if (!key.IsEmpty())
+      nsEnvVars::EnvVariableListClientData *data;
+      data = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(i));
+      if (!data->key.IsEmpty())
       {
-        if (!nsEnvVars::EnvvarApply(key, value))
+        if (!nsEnvVars::EnvvarApply(data->key, data->value))
         {
           lstEnvVars->Check(i, false); // Unset on UI to mark it's NOT set
 
           // Setting envvar failed. Remember this key to report later.
           if (envsNotSet.IsEmpty())
-            envsNotSet << key;
+            envsNotSet << data->key;
           else
-            envsNotSet << _T(", ") << key;
+            envsNotSet << _T(", ") << data->key;
         }
       }
     }

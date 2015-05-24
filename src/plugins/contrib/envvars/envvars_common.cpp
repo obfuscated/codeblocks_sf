@@ -475,7 +475,7 @@ bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
     int sel = -1;
     if (lstEnvVars)
     {
-      sel = lstEnvVars->Append(key + _T(" = ") + value);
+      sel = lstEnvVars->Append(key + _T(" = ") + value, new EnvVariableListClientData(key, value));
       lstEnvVars->Check(sel, bCheck);
     }
 
