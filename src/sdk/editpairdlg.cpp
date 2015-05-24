@@ -13,12 +13,15 @@
     #include <wx/xrc/xmlres.h>
     #include <wx/button.h>
     #include <wx/textctrl.h>
+    #include <wx/regex.h>
     #include "globals.h"
 #endif
 
 #include <wx/filedlg.h>
 #include "editpairdlg.h"
 #include "filefilters.h"
+
+static const wxRegEx reKey(wxT("^[[:alnum:]_]+$"), wxRE_EXTENDED);
 
 BEGIN_EVENT_TABLE(EditPairDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btnBrowse"), EditPairDlg::OnBrowse)
@@ -45,7 +48,11 @@ EditPairDlg::~EditPairDlg()
 
 void EditPairDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
 {
-    XRCCTRL(*this, "wxID_OK", wxButton)->Enable(!XRCCTRL(*this, "txtKey", wxTextCtrl)->GetValue().IsEmpty());
+    const wxString &value = XRCCTRL(*this, "txtKey", wxTextCtrl)->GetValue();
+    bool enable = !value.IsEmpty();
+    if (enable)
+        enable = reKey.Matches(value);
+    XRCCTRL(*this, "wxID_OK", wxButton)->Enable(enable);
 }
 
 void EditPairDlg::OnBrowse(cb_unused wxCommandEvent& event)
