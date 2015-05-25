@@ -1,4 +1,5 @@
 SUBDIRS = scripting wxscintilla $(WXPROPGRID_DIR) resources
+DIST_SUBDIRS = scripting wxscintilla  wxpropgrid resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			$(CB_GLIB2_CFLAGS) \
