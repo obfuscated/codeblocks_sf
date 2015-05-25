@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 7.4.11~)
  , cdbs
  , automake (>= 1.9)
  , libtool (>= 1.4)
- , libwxgtk2.8-dev
+ , libwxgtk2.8-dev | libwxgtk3.0-dev
  , wx-common
  , zip
  , libbz2-dev
