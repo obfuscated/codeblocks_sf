@@ -1,6 +1,6 @@
 usr/include/codeblocks/scripting
 usr/include/codeblocks/tinyxml
-@WXPROPGRID_HEADERS@
+usr/include/codeblocks/wxpropgrid
 usr/include/codeblocks/wxscintilla
 usr/include/codeblocks/*.h
 

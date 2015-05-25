@@ -278,13 +278,11 @@ if test "x$HAVE_WX29_TRUE" = "x" ; then
     WXPROPGRID_DIR=
     WXPROPGRID_LIB=
     WXPROPGRID_INCLUDE=
-    WXPROPGRID_HEADERS=
 else
     AC_MSG_RESULT(no)
     WXPROPGRID_DIR=wxpropgrid
     WXPROPGRID_LIB=wxpropgrid/libwxpropgrid.la
     WXPROPGRID_INCLUDE=-I\$\(top_srcdir\)/src/sdk/wxpropgrid/include
-    WXPROPGRID_HEADERS=usr/include/codeblocks/wxpropgrid
 
     if test "x$HAVE_GCC48_TRUE" = "x" ; then
 	gcc48_flags="-Wno-unused-local-typedefs"
@@ -344,10 +342,7 @@ AC_MSG_NOTICE(SVN revision SVN_REVISION (SVN_DATE))
 AC_SUBST(REVISION, SVN_REV)
 AC_SUBST(DATE, "SVN_DATE")
 
-SCRIPT_DIR=`dirname "$0"`
-
 AC_CONFIG_FILES([Makefile
-	$SCRIPT_DIR/debian/codeblocks-headers.install
 	src/Makefile
 	src/base/Makefile
 	src/base/tinyxml/Makefile
