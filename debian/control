@@ -31,7 +31,7 @@ Recommends:
  gcc | g++
  , gdb
 Suggests:
- libwxgtk2.8-dev
+ libwxgtk2.8-dev | libwxgtk3.0-dev
  , wx-common
  , codeblocks-contrib
 Description: Code::Blocks integrated development environment (IDE)
