@@ -426,19 +426,29 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
         }
         else if (token==ParserConsts::kw_using)
         {
+            // there are some kinds of using keyword usage
+            // (1) using namespace A;
+            // (2) using namespace A::B;
+            // (3) using A::B;
+            token = m_Tokenizer.GetToken();
             wxString peek = m_Tokenizer.PeekToken();
-            if (peek == ParserConsts::kw_namespace)
+            if (token == ParserConsts::kw_namespace || peek == ParserConsts::dcolon)
             {
-                // ok
-                m_Tokenizer.GetToken(); // eat namespace
-                while (IS_ALIVE) // support full namespaces
+                if (peek == ParserConsts::dcolon) // using declaration, such as case (3)
+                    m_Str << token; // push the A to the m_Str(type stack)
+                else //handling the case (1) and (2)
                 {
-                    m_Str << m_Tokenizer.GetToken();
-                    if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                    // using directive
+                    while (IS_ALIVE) // support full namespaces
+                    {
                         m_Str << m_Tokenizer.GetToken();
-                    else
-                        break;
+                        if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                            m_Str << m_Tokenizer.GetToken();
+                        else
+                            break;
+                    }
                 }
+                // now, m_Str contains "A" in case (1) and (3), and "A::B" in case (2)
                 if (!m_Str.IsEmpty())
                     result.Add(m_Str);
                 m_Str.Clear();
