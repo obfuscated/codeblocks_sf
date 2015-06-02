@@ -428,8 +428,8 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
         {
             // there are some kinds of using keyword usage
             // (1) using namespace A;
-            // (2) using namespace A::B;
-            // (3) using A::B;
+            // (2) using namespace A::B; // where B is a namespace
+            // (3) using A::B;           // where B is NOT a namespace
             token = m_Tokenizer.GetToken();
             wxString peek = m_Tokenizer.PeekToken();
             if (token == ParserConsts::kw_namespace || peek == ParserConsts::dcolon)
@@ -448,6 +448,7 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
                             break;
                     }
                 }
+                // m_Str must end with a namespace for CC to work
                 // now, m_Str contains "A" in case (1) and (3), and "A::B" in case (2)
                 if (!m_Str.IsEmpty())
                     result.Add(m_Str);
