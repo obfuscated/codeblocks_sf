@@ -205,7 +205,6 @@ void OpenFilesListPlugin::RebuildOpenFilesTree()
     }
 
     m_pTree->SortChildren(m_pTree->GetRootItem());
-    m_pTree->Expand(m_pTree->GetRootItem());
     m_pTree->Thaw();
 }
 
