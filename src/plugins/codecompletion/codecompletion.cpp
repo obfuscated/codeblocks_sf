@@ -1156,7 +1156,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     // which has the prefix "abc"
     wxString filename = line.SubString(keyPos, tknEnd - lineStartPos - 1);
     filename.Replace(wxT("\\"), wxT("/"), true);
-    if (filename.Last() == wxT('"') || filename.Last() == wxT('>'))
+    if (!filename.empty() && (filename.Last() == wxT('"') || filename.Last() == wxT('>')))
         filename.RemoveLast();
 
     size_t maxFiles = m_CCMaxMatches;
