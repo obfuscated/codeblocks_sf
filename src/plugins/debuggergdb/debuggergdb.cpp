@@ -170,6 +170,8 @@ DebuggerGDB::DebuggerGDB() :
     m_StoppedOnSignal(false),
     m_pProject(0),
     m_stopDebuggerConsoleClosed(false),
+    m_bIsConsole(false),
+    m_nConsolePid(0),
     m_TemporaryBreak(false),
     m_printElements(0)
 {
@@ -662,6 +664,9 @@ int DebuggerGDB::DoDebug(bool breakOnEntry)
 {
     // set this to true before every error exit point in this function
     m_Canceled = false;
+    // Init these just in case.
+    m_bIsConsole = false;
+    m_nConsolePid = 0;
     ProjectManager* prjMan = Manager::Get()->GetProjectManager();
 
     // select the build target to debug
