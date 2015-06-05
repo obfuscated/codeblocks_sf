@@ -159,22 +159,27 @@ int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
             if (needsSep)
                 current.Remove(0, 1); // remove dash (-)
 
-            wxMenu* existingMenu = nullptr;
-            int existing = menu->FindItem(current);
-            if (existing != wxNOT_FOUND)
+            int existingID = menu->FindItem(current);
+            if (existingID != wxNOT_FOUND)
             {
                 // existing menu
                 // if it is the final item we want to create, display error and stop
 
-                if (isLast || existing >= (int)menu->GetMenuItemCount())
-                    return existing;
+                if (isLast)
+                    return existingID;
 
                 // else just keep the menu pointer updated
-                existingMenu = menu->GetMenuItems()[existing]->GetSubMenu();
-                if (!existingMenu)
+                wxMenuItem *item = menu->FindChildItem(existingID);
+                if (item)
+                {
+                    wxMenu* existingMenu = item->GetSubMenu();
+                    if (existingMenu)
+                        menu = existingMenu;
+                    else
+                        return 0;
+                }
+                else
                     return 0;
-
-                menu = existingMenu;
             }
             else
             {
