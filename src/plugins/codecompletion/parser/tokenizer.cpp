@@ -463,6 +463,13 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
             // this while statement end up in one physical EOL '\n'
             while (NotEOF() && CurrentChar() != _T('\n'))
             {
+
+                // a macro definition has ending C++ comments, we should stop the parsing before
+                // the "//" chars, so that the doxygen document can be added correctly to previous
+                // added Macro definition token.
+                if(CurrentChar() == _T('/') && NextChar() == _T('/'))
+                    break;
+
                 // Note that SkipComment() function won't skip the '\n' after comments
                 while (SkipComment())
                     ;
