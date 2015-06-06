@@ -169,8 +169,8 @@ DebuggerGDB::DebuggerGDB() :
     m_NoDebugInfo(false),
     m_StoppedOnSignal(false),
     m_pProject(0),
-    m_stopDebuggerConsoleClosed(false),
     m_bIsConsole(false),
+    m_stopDebuggerConsoleClosed(false),
     m_nConsolePid(0),
     m_TemporaryBreak(false),
     m_printElements(0)
