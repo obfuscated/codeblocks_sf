@@ -36,7 +36,10 @@ noinst_HEADERS =  	BrowseTracker.h \
 			JumpData.h
 
 EXTRA_DIST = 	$(srcdir)/*.cbp \
-		manifest.xml
+			BrowseTrackerToolbar.xrc \
+			manifest.xml \
+			$(srcdir)/images/*.png \
+			$(srcdir)/images/16x16/*.png
 
 pkgdata_DATA = BrowseTracker.zip
 CLEANFILES = $(pkgdata_DATA)
