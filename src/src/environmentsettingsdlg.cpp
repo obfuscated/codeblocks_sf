@@ -138,11 +138,11 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     wxComboBox *combo = XRCCTRL(*this, "cbConsoleTerm", wxComboBox);
     combo->Append(DEFAULT_CONSOLE_TERM);
 
-    if (platform::id == platform::windows)
+    if (platform::windows)
         combo->Enable(false);
     else
     {
-        if (platform::id != platform::macosx && platform::id != platform::darwin)
+        if (!platform::macosx && !platform::darwin)
         {
             combo->Append(wxT("gnome-terminal -t $TITLE -x "));
             combo->Append(wxT("konsole -e "));
