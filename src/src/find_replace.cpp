@@ -1209,19 +1209,19 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 || (!data->directionDown && data->start != EndPos) )
             {
                 wxString msg;
-                if (!data->scope == 1) // selected text
-                {
-                    if (data->directionDown)
-                        msg = _("Text not found.\nSearch from the start of the document?");
-                    else
-                        msg = _("Text not found.\nSearch from the end of the document?");
-                }
-                else
+                if (data->scope == 1) // selected text
                 {
                     if (data->directionDown)
                         msg = _("Text not found.\nSearch from the start of the selection?");
                     else
                         msg = _("Text not found.\nSearch from the end of the selection?");
+                }
+                else
+                {
+                    if (data->directionDown)
+                        msg = _("Text not found.\nSearch from the start of the document?");
+                    else
+                        msg = _("Text not found.\nSearch from the end of the document?");
                 }
 
                 bool auto_wrap_around = data->autoWrapSearch;
@@ -1231,20 +1231,7 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                 if (auto_wrap_around || cbMessageBox(msg, _("Result"), wxOK | wxCANCEL | wxICON_QUESTION) == wxID_OK)
                 {
                     wrapAround = true; // signal the wrap-around
-                    if (!data->scope == 1) // selected text
-                    {
-                        if (data->directionDown)
-                        {
-                            data->start = 0;
-                            data->end = control->GetLength();
-                        }
-                        else
-                        {
-                            data->start = control->GetLength();
-                            data->end = 0;
-                        }
-                    }
-                    else // global
+                    if (data->scope == 1) // selected text
                     {
                         if (data->directionDown)
                         {
@@ -1255,6 +1242,19 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
                         {
                             data->start = data->SearchInSelectionEnd;
                             data->end = data->SearchInSelectionStart;
+                        }
+                    }
+                    else // global
+                    {
+                        if (data->directionDown)
+                        {
+                            data->start = 0;
+                            data->end = control->GetLength();
+                        }
+                        else
+                        {
+                            data->start = control->GetLength();
+                            data->end = 0;
                         }
                     }
                 }
