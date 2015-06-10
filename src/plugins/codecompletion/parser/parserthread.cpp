@@ -3007,17 +3007,25 @@ void ParserThread::HandleTypedef()
     // now get the type
     wxString ancestor;
     wxString alias;
+
+    // handle the special cases below, a template type parameter is used in typedef
+    // template<typename _Tp>
+    // class c2
+    // {
+    //    public:
+    //        typedef _Tp  alise;
+    //
+    // };
     if (   (components.size() == 2)
         && m_LastParent
         && m_LastParent->m_TokenKind == tkClass
-        && (!m_LastParent->m_TemplateType.IsEmpty()) )
+        && (!m_LastParent->m_TemplateType.IsEmpty())
+        && m_LastParent->m_TemplateType.Index(components.front()) != wxNOT_FOUND )
     {
         wxArrayString templateType = m_LastParent->m_TemplateType;
-        wxString type = components.front();
+        alias = components.front();
         components.pop();
         ancestor = components.front();
-        if (templateType.Index(type) != wxNOT_FOUND)
-            alias = type;
     }
     else
     {
