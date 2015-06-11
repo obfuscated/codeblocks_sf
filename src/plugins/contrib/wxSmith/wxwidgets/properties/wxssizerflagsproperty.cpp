@@ -250,14 +250,14 @@ long wxsSizerFlagsProperty::GetParentOrientation(TiXmlElement* Element)
     {
         TiXmlNode* p = Element->Parent()->Parent();
         TiXmlElement* e = p->ToElement();
-        if ( e && ( strcasecmp(e->Attribute("class"), "wxBoxSizer") || strcasecmp(e->Attribute("class"), "wxStaticBoxSizer")) )
+        if ( e &&( !strcmp(e->Attribute("class"), "wxBoxSizer") || !strcmp(e->Attribute("class"), "wxStaticBoxSizer") ) )
         {
             if ( p->FirstChild("orient") && p->FirstChild("orient")->ToElement() )
             {
                 const char* value = p->FirstChild("orient")->ToElement()->Value();
-                if ( strcasecmp(value, "wxVERTICAL") )
+                if ( !strcmp(value, "wxVERTICAL") )
                     return ParentAlignVertical;
-                else if ( strcasecmp(value, "wxHORIZONTAL") )
+                else if ( !strcmp(value, "wxHORIZONTAL") )
                     return ParentAlignHorizontal;
                 else return 0;
             }
