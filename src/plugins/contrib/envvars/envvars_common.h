@@ -11,6 +11,13 @@
 
 class wxCheckListBox;
 
+
+#if (defined (__WIN32__) || defined (_WIN64)) && !wxCHECK_VERSION(3, 0, 0)
+    #define CHECK_LIST_BOX_CLIENT_DATA 0
+#else
+    #define CHECK_LIST_BOX_CLIENT_DATA 1
+#endif
+
 #define EV_DBGLOG nsEnvVars::EnvVarsDebugLog
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -104,11 +111,14 @@ namespace nsEnvVars
   void          EnvvarSetDiscard(const wxString& set_name);
 
 
+#if CHECK_LIST_BOX_CLIENT_DATA==1
   struct EnvVariableListClientData : wxClientData
   {
       EnvVariableListClientData(const wxString &key, const wxString &value) : key(key), value(value) {}
       wxString key, value;
   };
+#endif
+
 }// nsEnvVars
 
 #endif // ENVVARS_COMMON_H

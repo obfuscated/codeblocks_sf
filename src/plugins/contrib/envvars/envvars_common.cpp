@@ -475,7 +475,11 @@ bool nsEnvVars::EnvvarArrayApply(const wxArrayString& envvar,
     int sel = -1;
     if (lstEnvVars)
     {
+#if CHECK_LIST_BOX_CLIENT_DATA==1
       sel = lstEnvVars->Append(key + _T(" = ") + value, new EnvVariableListClientData(key, value));
+#else
+      sel = lstEnvVars->Append(key + _T(" = ") + value);
+#endif
       lstEnvVars->Check(sel, bCheck);
     }
 
