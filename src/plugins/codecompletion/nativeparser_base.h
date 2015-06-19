@@ -189,8 +189,51 @@ protected:
     /** A statement(expression) is expressed by a ParserComponent queue
      *  We do a match from the left of the queue one by one.
      *
+     *
+     * Here is a simple description about the algorithm, suppose we have such code snippet
+     * namespace AAA
+     * {
+     *     class BBB
+     *     {
+     *     public:
+     *         int m_aaa;
+     *     }
+     *     class CCC
+     *     {
+     *     public:
+     *         BBB fun();
+     *     }
+     * }
+     * AAA::CCC obj;
+     * obj.fun().|-----we want to get code suggestion list here
+     *
+     * We first split the statement "obj.fun()." into 3 components:
+     * component name
+     * 1, obj
+     * 2, fun
+     * 3, empty
+     *
+     * We do three loops here, each loop, we consume one component. Also each loop's result will
+     * serve as the next loop's search scope.
+     *
+     * Loop 1
+     * We first search the tree by the text "obj", we find a matched variable token, which has the
+     * type string "AAA::CCC", then the text "AAA::CCC" is resolved to a class kind token "class CCC"
+     * Loop 2
+     * We search the tree by the text "fun". Here the search scope should be "CCC", it's the result
+     * from the previous loop, so we find that there is a function kind token under "class CCC",
+     * which is "function fun()" token. Then we need to see the return type of the fun() token,
+     * which is the name "BBB". Then we do another text search for "BBB" in the tree, and find a
+     * class kind token "class BBB"
+     * Loop 3
+     * Since the last search text is empty, we just return all the children of the "class BBB" token,
+     * so finally, we give the child variable kind token "m_aaa", then the code suggestion should
+     * prompt the string "m_aaa"
+     *
+     * @param tree the token tree pointer
      * @param components expression structure expressed in std::queue<ParserComponent>
      * @param searchScope search scope defined by TokenIdxSet
+     * @param[out] the final result token index
      * @param caseSense case sensitive match
      * @param isPrefix match type( full match or prefix match)
      * @return result tokens count
