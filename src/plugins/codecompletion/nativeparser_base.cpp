@@ -446,11 +446,16 @@ wxString NativeParserBase::GetCCToken(wxString&        line,
             tokenType = pttClass;
             line.Remove(0, startAt + 1);
         }
-        // Check for [Class]-> ('>' pressed)
-        // Check for [Class]:: (':' pressed)
+        // Check for
+        // (1) "AAA->" ('>' pressed)
+        // (2) "AAA::" (':' pressed)
+        // If (1) and tokenOperatorType == otOperatorSquare, then we have
+        // special case "AAA[]->" and should not change tokenOperatorType.
         else if (IsOperatorEnd(startAt, line))
         {
-            if (IsOperatorPointer(startAt, line) && !res.IsEmpty())
+            if (    IsOperatorPointer(startAt, line)
+                 && !res.IsEmpty()
+                 && tokenOperatorType != otOperatorSquare)
                 tokenOperatorType = otOperatorPointer;
             if (line.GetChar(startAt) == ':')
                 tokenType = pttNamespace;
@@ -1173,6 +1178,10 @@ void NativeParserBase::AddTemplateAlias(TokenTree*         tree,
     if (it != m_TemplateMap.end())
     {
         actualTypeStr = it->second;
+
+        if (actualTypeStr.Last() == _T('&') || actualTypeStr.Last() == _T('*'))
+            actualTypeStr.RemoveLast();
+
         TokenIdxSet actualTypeResult;
         ResolveActualType(tree, actualTypeStr, actualTypeScope, actualTypeResult);
         if (!actualTypeResult.empty())
@@ -1322,6 +1331,69 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*      tree,
 
 // No critical section needed in this recursive function!
 // All functions that call this recursive function, should already entered a critical section.
+/** detailed description
+ * we have special handling of the c++ stl container with some template related code:
+ * example:
+ *
+ * vector<string> AAA;
+ * AAA.back().     // should display tokens of string members
+ *
+ * Cause of problem:
+ *
+ * The root of the problem is that CC can't parse some pieces of the C++ library. STL containers have
+ * return types like "const_reference", which users of the library can treat as typedef aliases of
+ * their template arguments.
+ *
+ * E.g. "back()" returns "const_reference", which we can assume to
+ *     be a typedef alias of "const string&"
+ *
+ * However, these return types are actually defined through a complicated chain of typedefs,
+ * templates, and inheritance. For example, the C++ library defines "const_reference" in vector
+ * as a typedef alias of "_Alloc_traits::const_reference", which is a typedef alias of
+ * "__gnu_cxx::_alloc_traits<_Tp_alloc_type>::const_reference". This chain actually continues, but
+ * it would be too much to list here. The main thing to understand is that CC will not be able to
+ * figure out what "const_reference" is supposed to be.
+ *
+ * Solution:
+ *
+ * Trying get CC to understand this chain would have made the template code even more complicated
+ * and error-prone, so I used a trick. STL containers are based on the allocator class. And the
+ * allocator class contains all the simple typedefs we need. For example, in the allocator class we
+ * find the definition of const_reference:
+ *
+ * typedef const _Tp&   const_reference
+ *
+ * Where _Tp is a template parameter. Here's another trick - because most STL containers use the
+ * name "_Tp" for their template parameter, the above definition can be directly applied to these
+ * containers.
+ *
+ * E.g. vector is defined as:
+ *         template <typename _Tp>
+ *         vector { ... }
+ * So AAA's template map will connect "_Tp" to "string".
+ *
+ * So we can look up "const_reference" in allocator, see that it returns "_Tp", look up "_Tp" in
+ * the template map and add its actual value to the search scope.
+ *
+ * Walking through the example:
+ *
+ * [in NativeParserBase::GenerateResultSet()]
+ * CC sees that back() returns const_reference. It searches the TokenTree for const_reference and
+ * finds the typedef belonging to allocator:
+ *
+ * "typedef const _Tp&   const_reference"
+ *
+ * CC then checks that back()'s parent, AAA, is an STL container which relies on allocator. Since it
+ * is, this typedef is added to the search scope.
+ *
+ * [in NativeParserBase::AddTemplateAlias()]
+ * CC sees the typedef in the search scope. It searches AAA's template map for the actual type of
+ * "_Tp" and finds "string". So "string" is added to the scope.
+ *
+ * That's the big picture. The negative of this patch is that it relies on how the C++ STL library
+ * is written. If the library is ever changed significantly, then this patch will need to be updated.
+ * It was an ok sacrifice to make for cleaner, maintainable code.
+ */
 size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
                                            const wxString&     target,
                                            const TokenIdxSet&  parentSet,
@@ -1470,6 +1542,21 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
                         if (parentToken && parentToken->m_TokenKind == tkEnum)
                             result.insert(*it);
                     }
+
+                    // Check if allocator class tokens should be added to the search scope.
+                    // allocator holds the typedefs that CC needs to handle STL containers.
+                    // An allocator token will be added if parentIdx is a child of an allocator dependent class.
+                    // Most STL containers are dependent on allocator.
+                    //
+                    // For example, suppose we are completing:
+                    //     vector<string> AAA;
+                    //     AAA.back().
+                    //
+                    // Here, parentIdx == "back()", which is a child of the allocator dependent class, vector.
+                    // So we add (*it) to the search scope if it is an allocator token.
+                    if (token && IsAllocator(tree, token->m_ParentIndex)
+                              && DependsOnAllocator(tree, parentIdx))
+                        result.insert(*it);
                 }
             }
         }
@@ -1500,6 +1587,46 @@ size_t NativeParserBase::GenerateResultSet(TokenTree*          tree,
     }
 
     return result.size();
+}
+
+// No critical section needed in this function!
+// All functions that call this function, should already entered a critical section.
+bool NativeParserBase::IsAllocator(TokenTree*   tree,
+                                   const int&   id)
+{
+    if (!tree)
+        return false;
+
+    const Token* token = tree->at(id);
+    return (token && token->m_Name.IsSameAs(_T("allocator")));
+}
+
+// No critical section needed in this recursive function!
+// All functions that call this recursive function, should already entered a critical section.
+//
+// Currently, this function only identifies STL containers dependent on allocator.
+bool NativeParserBase::DependsOnAllocator(TokenTree*    tree,
+                                          const int&    id)
+{
+    if (!tree)
+        return false;
+
+    const Token* token = tree->at(id);
+    if (!token)
+        return false;
+
+    // If the STL class depends on allocator, it will have the form:
+    // template <typename T, typename _Alloc = std::allocator<T> > class AAA { ... };
+    if (token->m_TemplateArgument.Find(_T("_Alloc")) != wxNOT_FOUND)
+        return true;
+
+    // The STL class could also be a container adapter:
+    // template <typename T, typename _Sequence = AAA<T> > class BBB { ... };
+    // where AAA depends on allocator.
+    if (token->m_TemplateArgument.Find(_T("_Sequence")) != wxNOT_FOUND)
+        return true;
+
+    return DependsOnAllocator(tree, token->m_ParentIndex);
 }
 
 void NativeParserBase::CollectSearchScopes(const TokenIdxSet& searchScope,

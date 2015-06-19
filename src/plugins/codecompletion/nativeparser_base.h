@@ -322,6 +322,27 @@ protected:
                              bool               isPrefix = false,
                              short int          kindMask = 0xFFFF);
 
+    /** Test if token with this id is allocator class.
+     *
+     * All functions that call this function, should already entered a critical section.
+     *
+     * @param tree TokenTree pointer
+     * @param id token idx
+     */
+    bool IsAllocator(TokenTree*   tree,
+                     const int&     id);
+
+    /** Test if token with this id depends on allocator class.
+     * Currently, this function only identifies STL containers dependent on allocator.
+     *
+     * All functions that call this recursive function, should already entered a critical section.
+     *
+     * @param tree TokenTree pointer
+     * @param id token idx
+     */
+    bool DependsOnAllocator(TokenTree*    tree,
+                            const int&    id);
+
     /** Collect search scopes, add the searchScopes's parent scope
      * @param searchScope input search scope
      * @param actualTypeScope returned search scope

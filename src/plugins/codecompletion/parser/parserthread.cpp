@@ -102,6 +102,7 @@ namespace ParserConsts
     const wxChar   dash_chr        (_T('-'));
     const wxString ptr             (_T("*"));
     const wxChar   ptr_chr         (_T('*'));
+    const wxString ref             (_T("&"));
     const wxChar   ref_chr         (_T('&'));
     const wxString comma           (_T(","));
     const wxChar   comma_chr       (_T(','));
@@ -2899,7 +2900,7 @@ void ParserThread::HandleTypedef()
             token = m_LastUnnamedTokenName;
             TRACE(_("HandleTypedef() : After HandleClass m_LastUnnamedTokenName='%s'"), m_LastUnnamedTokenName.wx_str());
         }
-        else if (token == ParserConsts::ptr)
+        else if (token == ParserConsts::ptr || token == ParserConsts::ref)
         {
             m_PointerOrRef << token;
             continue;
