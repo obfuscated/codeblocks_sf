@@ -265,8 +265,8 @@ protected:
                              bool            isPrefix = false,
                              short int       kindMask = 0xFFFF);
 
-    /** This function is just like the one above, especially that no Token tree information is used
-     * So, it use the current parser's Token tree.
+    /** This function is just like the one above, especially that it use a single parent Token id,
+     *  not the parent id set in previous one.
      *
      * All functions that call this recursive function, should already entered a critical section.
      *

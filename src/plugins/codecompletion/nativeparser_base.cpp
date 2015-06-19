@@ -1185,6 +1185,27 @@ void NativeParserBase::AddTemplateAlias(TokenTree*         tree,
 
 // No critical section needed in this recursive function!
 // All functions that call this recursive function, should already entered a critical section.
+//
+// Here are sample algorithm, if we have code snippet
+//
+// class AAA { public: void f1(); int m_aaa;};
+// class BBB : public AAA {public: void f2(); int m_bbb;};
+// BBB obj;
+// obj.f|-------CC Here, we expect "f1" and "f2" be prompt
+//
+// Here, we do a search with the following states:
+// the search text target = "f", and isPrefix = true
+// parentIdx points to the class type Token "BBB"
+// caseSens could be true, kindMask could be to list any function kind tokens.
+//
+// First, we first list the children of BBB, there are two "f1", and "m_aaa", and text match should
+// only find one "f1".
+// Second, we try to calculate all the ancestors of BBB, which we see a class type Token "AAA"
+// list the children of AAA, and do a text match, we find "f2"
+// Last, we return a Token set which contains two elements ["f1", "f2"]
+//
+// Note that parentIdx could be the global namespace
+// Some kinds of Token types, such as Enum or Namespaces could be handled specially
 size_t NativeParserBase::GenerateResultSet(TokenTree*      tree,
                                            const wxString& target,
                                            int             parentIdx,
