@@ -65,7 +65,7 @@
                         fg="190,137,190"
                         bold="1"/>
                 <Style name="String"
-                        index="6,12"
+                        index="6,12,20"
                         fg="0,0,255"/>
                 <Style name="String (inactive)"
                         index="70,76"
@@ -134,7 +134,7 @@
                                    operator override private protected public register reinterpret_cast return short
                                    signed sizeof static static_assert static_cast struct switch template
                                    this thread_local throw true try typedef typeid typename union unsigned
-                                   using virtual void volatile wchar_t while 
+                                   using virtual void volatile wchar_t while
 
                                    int8_t uint8_t int16_t uint16_t int32_t uint32_t int64_t uint64_t
                                    int_least8_t uint_least8_t int_least16_t uint_least16_t
