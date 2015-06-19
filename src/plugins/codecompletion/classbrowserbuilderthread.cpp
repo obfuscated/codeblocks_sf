@@ -154,6 +154,10 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
     }
 
+    // our token tree has an internal map file -> tokens, so, we can collect all the tokens if we
+    // are given the file set.
+    // the tokens are stored in m_CurrentTokenSet, and the special global scope tokens are stored
+    // in the m_CurrentGlobalTokensSet.
     if (!m_CurrentFileSet.empty())
     {
         CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
@@ -163,7 +167,8 @@ void ClassBrowserBuilderThread::Init(NativeParser*         np,
         for (TokenFileSet::const_iterator itf = m_CurrentFileSet.begin(); itf != m_CurrentFileSet.end(); ++itf)
         {
             const TokenIdxSet* tokens = tree->GetTokensBelongToFile(*itf);
-            if (!tokens) continue;
+            if (!tokens)
+                continue;
 
             // loop tokens in file
             for (TokenIdxSet::const_iterator its = tokens->begin(); its != tokens->end(); ++its)

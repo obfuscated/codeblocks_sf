@@ -110,22 +110,33 @@ protected:
      */
     wxMutex          m_ClassBrowserBuilderThreadMutex;
     NativeParser*    m_NativeParser;
+
+    /** pointer to the top wxTreeCtrl */
     CCTreeCtrl*      m_CCTreeCtrlTop;
+    /** pointer to the bottom wxTreeCtrl */
     CCTreeCtrl*      m_CCTreeCtrlBottom;
+
     wxString         m_ActiveFilename;
     void*            m_UserData; // active project
     BrowserOptions   m_BrowserOptions;
     TokenTree*       m_TokenTree;
 
     // pair of current-file-filter
+    /** symbol tree contains the tokens from those files, e.g. if we specify only show tokens
+     * from a.cpp, then m_CurrentFileSet could maybe contains two files: a.cpp and a.h
+     */
     TokenFileSet     m_CurrentFileSet;
+    /** tokens belong to the files in m_CurrentFileSet */
     TokenIdxSet      m_CurrentTokenSet;
+    /** special global scope tokens to the files in m_CurrentFileSet */
     TokenIdxSet      m_CurrentGlobalTokensSet;
 
 private:
     ExpandedItemVect m_ExpandedVect;
     SelectedItemPath m_SelectedPath;
     bool             m_InitDone;
+
+    /** if this variable is true, the Entry() function should return */
     bool             m_TerminationRequested;
     int              m_idThreadEvent;
     wxTreeItemId     m_SelectItemRequired;

@@ -532,7 +532,9 @@ void ClassBrowser::OnJumpTo(wxCommandEvent& event)
         }
     }
 }
-
+/* NOTE (ollydbg#1#05/17/15): This function can directly access to the TokenTree, but I don't see
+  any protector here, do we need one? In the meanwhile, the parserthread may be running, and the
+  TokenTree could be updated. */
 void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
 {
     wxTreeCtrl* wx_tree = (wxTreeCtrl*)event.GetEventObject();
@@ -543,6 +545,8 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
     CCTreeCtrlData* ctd = (CCTreeCtrlData*)wx_tree->GetItemData(id);
     if (ctd && ctd->m_Token)
     {
+        // when user double click on an item, also with CONTROL and SHIFT key pressed, then we
+        // pop up a cc debugging dialog.
         if (wxGetKeyState(WXK_CONTROL) && wxGetKeyState(WXK_SHIFT))
         {
 //            TokenTree* tree = m_Parser->GetTokenTree(); // the one used inside CCDebugInfo
@@ -557,6 +561,8 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
             return;
         }
 
+        // jump to the implementation line only if the token is a function, and has a valid
+        // implementation field
         bool toImp = false;
         switch (ctd->m_Token->m_TokenKind)
         {
@@ -612,6 +618,8 @@ void ClassBrowser::OnTreeItemDoubleClick(wxTreeEvent& event)
         cbEditor* ed = Manager::Get()->GetEditorManager()->Open(fname.GetFullPath());
         if (ed)
         {
+            // our Token's line is zero based, but Scintilla's one based, so we need to adjust the
+            // line number
             int line;
             if (toImp)
                 line = ctd->m_Token->m_ImplLine - 1;
@@ -853,6 +861,12 @@ void ClassBrowser::OnSearch(cb_unused wxCommandEvent& event)
     }
 }
 
+/* There are several cases:
+ A: If the worker thread is not created yet, just create one, and build the tree.
+ B: If the worker thread is already created
+    B1: the thread is running, then we need to pause it, and  re-initialize it and rebuild the tree.
+    B2: if the thread is already paused, then we only need to resume it again.
+*/
 void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
 {
     if (Manager::IsAppShuttingDown() || !m_Parser)
@@ -890,7 +904,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
         TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused."));
     }
 
-    // initialise it
+    // initialise it, this function is called from the GUI main thread.
     m_ClassBrowserBuilderThread->Init(m_NativeParser,
                                       m_CCTreeCtrl,
                                       m_CCTreeCtrlBottom,
