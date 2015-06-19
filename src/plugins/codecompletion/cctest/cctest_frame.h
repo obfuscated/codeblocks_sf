@@ -35,6 +35,9 @@ public:
     virtual ~CCTestFrame();
 
     void AppendToLog(const wxString& log);
+
+    // copy the include search paths and macro replacement rules to the Parser
+    // and run the cctest in each file. (currently the file has cc_*.cpp or ccc_*.cpp)
     void Start();
 
 protected:

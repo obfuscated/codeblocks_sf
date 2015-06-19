@@ -28,7 +28,7 @@ public:
     /** clear the token tree */
     void Clear();
 
-    /** set the include search paths of the parser */
+    /** set the include search paths and the macro replacement rules of the parser */
     void Init();
 
     /** parse and run test on the file

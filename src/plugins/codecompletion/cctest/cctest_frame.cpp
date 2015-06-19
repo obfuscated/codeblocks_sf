@@ -226,9 +226,6 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     wxLog::SetTimestamp(NULL); // do not show the time stamp
 #endif
 
-    //Setting the macro replacements
-    m_NativeParser.Init();
-
     // TODO: Make this base folders configurable
     wxString wx_base (wxT("E:\\code\\cb\\wx\\wxWidgets-2.8.12\\"));
     wxString gcc_base(wxT("E:\\code\\gcc\\pcxmingw463\\" ));
@@ -269,7 +266,7 @@ void CCTestFrame::Start()
     CCTestAppGlobal::s_fileQueue.Clear();
     CCTestAppGlobal::s_filesParsed.Clear();
 
-    // Obtain all include directories
+    // Obtain all include directories, this is copy the paths in UI to CCTestAppGlobal::s_includeDirs
     wxStringTokenizer tkz_inc(m_IncludeCtrl->GetValue(), wxT("\r\n"));
     while ( tkz_inc.HasMoreTokens() )
     {
@@ -277,6 +274,9 @@ void CCTestFrame::Start()
         if (!include.IsEmpty())
             CCTestAppGlobal::s_includeDirs.Add(include);
     }
+
+    // set the macro replacement rule, and include search paths of the Parser object
+    m_NativeParser.Init();
 
     if (m_DoHideCtrl && m_DoHideCtrl->IsChecked())
         Hide();
@@ -289,8 +289,6 @@ void CCTestFrame::Start()
 
     m_LogCount = 0;
     m_LogCtrl->Clear();
-
-    m_NativeParser.Clear(); // initial clearance
 
     if (!m_MainFile.IsEmpty())
     {
@@ -739,10 +737,11 @@ void CCTestFrame::OnPrintTree(cb_unused wxCommandEvent& event)
 
 void CCTestFrame::OnTestSingle(wxCommandEvent& WXUNUSED(event))
 {
+    // Note that we don't call the Start() here, because we only want to test a single file,
+    // so the include paths is not updated here(It will be updated in Start() function)
+
     // read the contents of the Control, and parse it.
     // no need to save the file to hard dist and after parsing, delete it.
     wxString content = m_Control->GetText();
-    m_NativeParser.Clear();
     m_NativeParser.ParseAndCodeCompletion(content, /* isLocalFile */ false);
-
 }
