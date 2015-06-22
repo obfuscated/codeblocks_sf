@@ -1226,7 +1226,10 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
         tips.front().Prepend(wxT("\001\002")); // up/down arrows
         offset += 2;
 
-        tips.push_back(wxString::Format(wxT("(%d/%u)"), m_CurCallTip - m_CallTips.begin() + 1, m_CallTips.size()));
+        wxString tip;
+        tip << wxT("(") << (m_CurCallTip - m_CallTips.begin() + 1) << wxT("/") << m_CallTips.size() << wxT(")");
+
+        tips.push_back(tip);
         // store for better first choice later
         m_CallTipChoiceDict[CCManagerHelper::CallTipToInt(m_CallTips.front().tip, m_CallTips.size())] = m_CurCallTip - m_CallTips.begin();
         // fuzzy store
