@@ -27,7 +27,7 @@ class cbProject;
  *
  *
  *  It mainly has four parts, see the simple diagram below.
- *
+ * @code
  *     +----------------+
  *     | view option    |
  *     +----------------+
@@ -39,7 +39,7 @@ class cbProject;
  *     |  bottom tree   |
  *     |                |
  *     +----------------+
- *
+ * @endcode
  *  1, the view option is a list box to let user choose which tokens should be shown in the trees
  *     it can either show the tokens for the whole workspace, or only the active C::B project, or
  *     the active editor (source files)

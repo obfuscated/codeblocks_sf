@@ -238,14 +238,16 @@ protected:
     bool ReadVarNames();
 
     /** handle class names, e.g., the code below
-      *typedef class AAA{
-      *   int m_a;
-      *   int m_b;
-      *} BBB,CCC;
-      * @param ancestor class name = "AAA"
-      * this function reads the following "BBB" and "CCC", and regard them as derived classes of "AAA"
-      * @return True, if token was handled, false, if an unexpected token was read.
-      */
+     *  @code
+     *  typedef class AAA{
+     *      int m_a;
+     *      int m_b;
+     *  } BBB,CCC;
+     *  @endcode
+     *  @param ancestor class name = "AAA"
+     *  this function reads the following "BBB" and "CCC", and regard them as derived classes of "AAA"
+     *  @return True, if token was handled, false, if an unexpected token was read.
+     */
     bool ReadClsNames(wxString& ancestor);
 
     /** add one token to the token tree
@@ -314,8 +316,10 @@ private:
 
     /** this function just associate the formal template argument to actual argument
      *  For example, we have such code:
+     *  @code
      *  template <typename T> class AAA { T m_aaa;};
      *  AAA<int> bbb;
+     *  @endcode
      *  When handling the "bbb", we need to construct a TemplateMap, we store the map
      *  in the "bbb"'s member variable, which is "T"->"int".
      */
@@ -349,11 +353,13 @@ private:
 
     /** change an anonymous(unnamed) token's name to a human readable name, the m_Str is expect to
      *  store the unnamed token name, for example, for parsing the code
+     *  @code
      *  struct
      *  {
      *      int x;
      *      float y;
      *  } abc;
+     *  @endcode
      *  when we first find an anonymous token, which is named _UnnamedStruct1_2, after this function
      *  call, the anonymous token name will becomes struct1_abc, and m_Str will changed from
      *  _UnnamedStruct1_2 to struct1_abc.

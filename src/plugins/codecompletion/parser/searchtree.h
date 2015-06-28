@@ -103,20 +103,23 @@ protected:
 };
 
 /** This class is used to access items of the tree, each node may contains a lot of items, E.g.
+ * @code
  *   - "" (0)
  *         \- "p" (4)
  *                 +- "hysi" (2)
  *                 |          +- "cs" (1)
  *                 |          \- "ology" (3)
  *                 \- "sychic" (5)
- *
+ * @endcode
  *  In the above tree, we have totally 6 nodes, each node can have an items map
  *  such as the node (2), we may have a item map with up to 4 elements
+ * @code
  *  depth -> string
  *  2     -> "ph"
  *  3     -> "phy"
  *  4     -> "phys"
  *  5     -> "physi"
+ * @endcode
  *  the value of the item map is not the string, but an size_t value (item number)
  *  To access one item, we can use a SearchTreePoint, \see SearchTreePoint
  *  Now, if you have a SearchTreePoint(n=2, depth=2), you can get the string "ph" and its item number
@@ -131,20 +134,22 @@ public:
 };
 
 /** This class represents a node of the tree, we still take an example E.g.
- *
+ * @code
  *   - "" (0)
  *         \- "p" (4)
  *                 +- "hysi" (2)
  *                 |          +- "cs" (1)
  *                 |          \- "ology" (3)
  *                 \- "sychic" (5)
- *
+ * @endcode
  *  Here, a tree of 6 nodes. Let's look at node (2), its incoming edge is "hysi", it has two child nodes
  *  "cs" (1) and "ology" (3). To access child nodes from parent node, we need a link map, here is
  *  an example of link map for node (2), note that link map's key is always a single character.
+ * @code
  *  char -> node index
  *   'c' -> 1
  *   'o' -> 3
+ * @endcode
  *  The parent node of the node (2) is the node (4), note that the left most node in the above tree
  *  is the root node, the root node has index number 0, because it was the first node created
  *  when the tree constructed.
