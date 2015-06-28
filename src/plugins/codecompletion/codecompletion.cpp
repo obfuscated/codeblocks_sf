@@ -2975,42 +2975,42 @@ void CodeCompletion::OnFunction(cb_unused wxCommandEvent& event)
 
 /** Here is the expansion of how the two wxChoices are constructed.
  * for a file have such contents below
- \code{.cpp}
-   Line  0     void g_func1(){
-   Line  1     }
-   Line  2
-   Line  3     void ClassA::func1(){
-   Line  4     }
-   Line  5
-   Line  6     void ClassA::func2(){
-   Line  7     }
-   Line  8
-   Line  9     void ClassB::func1(){
-   Line 10     }
-   Line 11
-   Line 12     void ClassB::func2(){
-   Line 13     }
- \endcode
-
- The two key variable will be constructed like below
- \verbatim
-   m_FunctionsScope is std::vector of length 5, capacity 8 = {
-   {StartLine = 0, EndLine = 1, ShortName = L"g_func1", Name = L"g_func1() : void", Scope = L"<global>"},
-   {StartLine = 3, EndLine = 4, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassA::"},
-   {StartLine = 6, EndLine = 7, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassA::"},
-   {StartLine = 9, EndLine = 10, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassB::"},
-   {StartLine = 12, EndLine = 13, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassB::"}}
-
-   m_ScopeMarks is std::vector of length 3, capacity 4 = {0, 1, 3}, which is the start of Scope "<global>"
-   Scope "ClassA::" and Scope "ClassB::".
- \endverbatim
-
-  Then we have wxChoice Scopes and Functions like below
- \verbatim
-       <global>          ClassA::        ClassB::
-         |- g_func1()      |- func1()      |- func1()
-                           |- func2()      |- func2()
- \endverbatim
+ * @code{.cpp}
+ *  Line  0     void g_func1(){
+ *  Line  1     }
+ *  Line  2
+ *  Line  3     void ClassA::func1(){
+ *  Line  4     }
+ *  Line  5
+ *  Line  6     void ClassA::func2(){
+ *  Line  7     }
+ *  Line  8
+ *  Line  9     void ClassB::func1(){
+ *  Line 10     }
+ *  Line 11
+ *  Line 12     void ClassB::func2(){
+ *  Line 13     }
+ * @endcode
+ *
+ * The two key variable will be constructed like below
+ * @code
+ *  m_FunctionsScope is std::vector of length 5, capacity 8 = {
+ *  {StartLine = 0, EndLine = 1, ShortName = L"g_func1", Name = L"g_func1() : void", Scope = L"<global>"},
+ *  {StartLine = 3, EndLine = 4, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassA::"},
+ *  {StartLine = 6, EndLine = 7, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassA::"},
+ *  {StartLine = 9, EndLine = 10, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassB::"},
+ *  {StartLine = 12, EndLine = 13, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassB::"}}
+ *
+ *  m_ScopeMarks is std::vector of length 3, capacity 4 = {0, 1, 3}, which is the start of Scope "<global>"
+ *  Scope "ClassA::" and Scope "ClassB::".
+ * @endcode
+ *
+ * Then we have wxChoice Scopes and Functions like below
+ * @code
+ *      <global>          ClassA::        ClassB::
+ *        |- g_func1()      |- func1()      |- func1()
+ *                          |- func2()      |- func2()
+ * @endcode
  */
 void CodeCompletion::ParseFunctionsAndFillToolbar()
 {
