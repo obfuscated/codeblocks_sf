@@ -829,6 +829,32 @@ class PLUGIN_EXPORT cbCodeCompletionPlugin : public cbPlugin
           * CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
           * Manager::Get()->ProcessEvent(evt);
           * @endcode
+          * In this case, the parameter isAuto is passed as false value.
+          *
+          * Here is an example
+          * @code
+          * #include <math.h>
+          * int main()
+          * {
+          *     float i = cos|------auto completion here
+          *               ^  ^
+          * }
+          * @endcode
+          * This is the case the user has just enter the chars "cos", now to get a suggestion list.
+          * The first '^' is the position of tknStart, and the second '^' is the position of tknEnd
+          * In this case, the cc plugin would supply a CCToken vectors, which could contains "cos",
+          * "cosh" and "cosh"...
+          * In some special cases, the tknStart tknEnd may point to the same position, such as
+          * @code
+          * struct AAA { int m_aaa1; };
+          * int main()
+          * {
+          *     AAA obj;
+          *     obj.|------auto completion here
+          *         ^
+          * }
+          * @endcode
+          * Here, '^' are the positions of both tknStart and tknEnd.
           *
           * @param isAuto Passed as @c true if autocompletion was launched by typing an 'interesting'
           *               character such as '<tt>&gt;</tt>' (for '<tt>-&gt;</tt>'). It is the plugin's job

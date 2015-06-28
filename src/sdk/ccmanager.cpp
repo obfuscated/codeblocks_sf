@@ -124,6 +124,14 @@ DEFINE_EVENT_TYPE(cbEVT_DEFERRED_CALLTIP_CANCEL)
 #define AUTOCOMP_SELECT_DELAY 35
 #define SCROLL_REFRESH_DELAY 500
 
+/** FROM_TIMER means the event is automatically fired from the ccmanager, not explicitly called
+ *  by the user. For example, if the code suggestion is fired by the client code, such as:
+ * @code
+ * CodeBlocksEvent evt(cbEVT_COMPLETE_CODE);
+ * Manager::Get()->ProcessEvent(evt);
+ * @endcode
+ * Then the event has int value 0.
+ */
 #define FROM_TIMER 1
 
 enum ACLaunchState
