@@ -254,7 +254,7 @@ long wxsSizerFlagsProperty::GetParentOrientation(TiXmlElement* Element)
         {
             if ( p->FirstChild("orient") && p->FirstChild("orient")->ToElement() )
             {
-                const char* value = p->FirstChild("orient")->ToElement()->Value();
+                const char* value = p->FirstChild("orient")->ToElement()->GetText();
                 if ( !strcmp(value, "wxVERTICAL") )
                     return ParentAlignVertical;
                 else if ( !strcmp(value, "wxHORIZONTAL") )
