@@ -431,6 +431,7 @@ bool ParserThread::ParseBufferForUsingNamespace(const wxString& buffer, wxArrayS
             // (1) using namespace A;
             // (2) using namespace A::B; // where B is a namespace
             // (3) using A::B;           // where B is NOT a namespace
+            // (4) using A = B;          // doesn't import anything, so we don't handle this here
             token = m_Tokenizer.GetToken();
             wxString peek = m_Tokenizer.PeekToken();
             if (token == ParserConsts::kw_namespace || peek == ParserConsts::dcolon)
@@ -773,11 +774,18 @@ void ParserThread::DoParse()
             }
             else if (token==ParserConsts::kw_using)
             {
+                // there are some kinds of using keyword usage
+                // (1) using namespace A;
+                // (2) using namespace A::B;
+                // (3) using A::B;
+                // (4) using A = B;
+                TokenizerState oldState2 = m_Tokenizer.GetState();
+                m_Tokenizer.SetState(tsSkipNone); // don't want to skip equals
+                token = m_Tokenizer.GetToken();
                 wxString peek = m_Tokenizer.PeekToken();
+                m_Tokenizer.SetState(oldState2);
                 if (peek == ParserConsts::kw_namespace)
                 {
-                    // ok
-                    m_Tokenizer.GetToken(); // eat namespace
                     while (true) // support full namespaces
                     {
                         m_Str << m_Tokenizer.GetToken();
@@ -812,6 +820,34 @@ void ParserThread::DoParse()
                             foundNsToken->m_TokenKind = tkNamespace;
                         }
                         m_UsedNamespacesIds.insert(foundNsToken->m_Index);
+                    }
+                }
+                else if (peek == ParserConsts::equals)
+                {
+                    // Type alias pattern: using AAA = BBB::CCC;
+                    // Handle same as a typedef
+                    wxString args;
+                    size_t lineNr = m_Tokenizer.GetLineNumber();
+                    Token* tdef = DoAddToken(tkTypedef, token, lineNr, 0, 0, args);
+
+                    m_Tokenizer.GetToken(); // eat equals
+                    wxString type;
+
+                    while (IS_ALIVE) // support full namespaces
+                    {
+                        type << m_Tokenizer.GetToken();
+                        if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                            type << m_Tokenizer.GetToken();
+                        else
+                            break;
+                    }
+
+                    if (tdef)
+                    {
+                        tdef->m_FullType = type;
+                        tdef->m_BaseType = type;
+                        if (tdef->IsValidAncestor(type))
+                            tdef->m_AncestorsString = type;
                     }
                 }
                 else
