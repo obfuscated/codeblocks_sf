@@ -1,20 +1,5 @@
-usr/lib/codeblocks/wxContribItems/libwxchartctrl.so
-usr/lib/codeblocks/wxContribItems/libwxcustombutton.so
-usr/lib/codeblocks/wxContribItems/libwxflatnotebook.so
-usr/lib/codeblocks/wxContribItems/libwximagepanel.so
-usr/lib/codeblocks/wxContribItems/libwxkwic.so
-usr/lib/codeblocks/wxContribItems/libwxled.so
-usr/lib/codeblocks/wxContribItems/libwxspeedbutton.so
-usr/lib/codeblocks/wxContribItems/libwxtreelist.so
+usr/lib/codeblocks/wxContribItems/*.so
 
-usr/lib/pkgconfig/cb_wxchartctrl.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxcontrib.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxcustombutton.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxflatnotebook.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wximagepanel.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxKWIC.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxled.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxspeedbutton.pc usr/lib/pkgconfig/
-usr/lib/pkgconfig/cb_wxtreelist.pc usr/lib/pkgconfig/
+usr/lib/pkgconfig/*.pc usr/lib/pkgconfig/
 usr/lib/pkgconfig/wxsmith-contrib.pc usr/lib/pkgconfig/
 
