@@ -82,17 +82,6 @@
 					<Add option="-Wl,--export-all-symbols" />
 				</Linker>
 			</Target>
-			<Target title="wxTreeList">
-				<Option platforms="Windows;" />
-				<Option output="../../../devel30/wxtreelist" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems/wxtreelist" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option createStaticLib="1" />
-				<Compiler>
-					<Add directory="wxTreeList/include" />
-				</Compiler>
-			</Target>
 			<Target title="wxLED">
 				<Option platforms="Windows;" />
 				<Option output="../../../devel30/wxled" prefix_auto="1" extension_auto="1" />
@@ -117,7 +106,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxTreeList;wxLED;" />
+			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
@@ -289,12 +278,6 @@
 		</Unit>
 		<Unit filename="wxSpeedButton/wxSpeedButton.h">
 			<Option target="wxSpeedButton" />
-		</Unit>
-		<Unit filename="wxTreeList/include/wx/treelistctrl.h">
-			<Option target="wxTreeList" />
-		</Unit>
-		<Unit filename="wxTreeList/src/treelistctrl.cpp">
-			<Option target="wxTreeList" />
 		</Unit>
 		<Unit filename="wxchart/include/wx/axis.h">
 			<Option target="wxChartCtrl" />

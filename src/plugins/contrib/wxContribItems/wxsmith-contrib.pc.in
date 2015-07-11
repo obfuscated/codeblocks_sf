@@ -4,11 +4,15 @@ libdir=@libdir@/codeblocks/wxContribItems
 includedir=@includedir@/codeblocks/wxContribItems
 datarootdir = @datarootdir@
 sharedir=@datadir@
+@HAVE_WX29_FALSE@TREELIST_INCLUDE=-I${includedir}/wxTreeList/include
+@HAVE_WX29_TRUE@TREELIST_INCLUDE=
+@HAVE_WX29_FALSE@TREELIST_LIB=-lwxtreelist
+@HAVE_WX29_TRUE@TREELIST_LIB=
 
 Name: wxSmithContribItems
 Description: wxWidgets contrib items also used for the wxSmith
 Version: @VERSION@
-Libs: -L${libdir} -lwxchartctrl -lwxcustombutton -lwxflatnotebook -lwximagepanel -lwxkwic -lwxled -lwxspeedbutton -lwxtreelist
+Libs: -L${libdir} -lwxchartctrl -lwxcustombutton -lwxflatnotebook -lwximagepanel -lwxkwic -lwxled -lwxspeedbutton ${TREELIST_LIB}
 Cflags: -fPIC -I${includedir}/KWIC/include \
 		-I${includedir}/wxchart/include \
 		-I${includedir}/wxFlatNotebook/include \
@@ -18,5 +22,5 @@ Cflags: -fPIC -I${includedir}/KWIC/include \
 		-I${includedir}/wxled/ledpanel/include \
 		-I${includedir}/wxSpeedButton \
 		-I${includedir}/wxthings/include \
-		-I${includedir}/wxTreeList/include
+		${TREELIST_INCLUDE}
 

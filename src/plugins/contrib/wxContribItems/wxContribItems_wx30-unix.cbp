@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="wxFlatNoteBook">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxflatnotebook" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wxflatnotebook" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -20,7 +20,7 @@
 			</Target>
 			<Target title="wxChartCtrl">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxchartctrl" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wxchartctrl" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -30,7 +30,7 @@
 				</Compiler>
 			</Target>
 			<Target title="wxCustomButton">
-				<Option output="../../../devel30/libwxcustombutton" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wxcustombutton" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -41,7 +41,7 @@
 			</Target>
 			<Target title="wxImagePanel">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwximagepanel" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wximagepanel" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -52,7 +52,7 @@
 			</Target>
 			<Target title="wxSpeedButton">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxspeedbutton" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wxspeedbutton" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -60,7 +60,7 @@
 			</Target>
 			<Target title="wxKWIC">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxkwic" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wxkwic" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -69,20 +69,9 @@
 					<Add directory="KWIC/include" />
 				</Compiler>
 			</Target>
-			<Target title="wxTreeList">
-				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxtreelist" prefix_auto="1" extension_auto="1" />
-				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option createStaticLib="1" />
-				<Compiler>
-					<Add directory="wxTreeList/include" />
-				</Compiler>
-			</Target>
 			<Target title="wxLED">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxled" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/wxled" prefix_auto="1" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -101,7 +90,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxTreeList;wxLED;" />
+			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
@@ -266,12 +255,6 @@
 		</Unit>
 		<Unit filename="wxSpeedButton/wxSpeedButton.h">
 			<Option target="wxSpeedButton" />
-		</Unit>
-		<Unit filename="wxTreeList/include/wx/treelistctrl.h">
-			<Option target="wxTreeList" />
-		</Unit>
-		<Unit filename="wxTreeList/src/treelistctrl.cpp">
-			<Option target="wxTreeList" />
 		</Unit>
 		<Unit filename="wxchart/include/wx/axis.h">
 			<Option target="wxChartCtrl" />

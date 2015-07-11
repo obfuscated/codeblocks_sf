@@ -1,3 +1,12 @@
+if ! HAVE_WX29
+TREELIST_INCLUDE=-I$(srcdir)/../wxContribItems/wxTreeList/include
+TREELIST_LA=../wxContribItems/wxTreeList/libwxtreelist.la
+TREELIST_SRC=./wxtreelist/wxsTreeListCtrl.cpp
+TREELIST_HDR=./wxtreelist/wxsTreeListCtrl.h
+else
+TREELIST_DIST="$(srcdir)/wxtreelist/wxsTreeListCtrl.cpp $(srcdir)/wxtreelist/wxsTreeListCtrl.h"
+endif
+
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
@@ -11,7 +20,7 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(srcdir)/../wxContribItems/wxImagePanel/include \
 		-I$(srcdir)/../wxContribItems/wxthings/include \
 		-I$(srcdir)/../wxContribItems/KWIC/include \
-		-I$(srcdir)/../wxContribItems/wxTreeList/include \
+		$(TREELIST_INCLUDE) \
 		-I$(srcdir)/../wxContribItems/wxSpeedButton \
 		-I$(srcdir)/../wxContribItems/wxled/gizmosled/include \
 		-I$(srcdir)/../wxContribItems/wxled/lcdWindow/include \
@@ -32,7 +41,7 @@ libwxsmithcontribitems_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			../wxContribItems/wxImagePanel/libwximagepanel.la \
 			../wxContribItems/wxSpeedButton/libwxspeedbutton.la \
 			../wxContribItems/KWIC/libwxkwic.la \
-			../wxContribItems/wxTreeList/libwxtreelist.la \
+			$(TREELIST_LA) \
 			../wxContribItems/wxthings/libwxcustombutton.la \
 			../wxContribItems/wxled/libwxled.la \
 			$(WX_LIBS)
@@ -48,6 +57,7 @@ EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxflatnotebook/images/*.png \
 		$(srcdir)/wxSmithKWIC/images/*.xpm \
 		$(srcdir)/wxtreelist/images/*.xpm \
+		$(TREELIST_DIST) \
 		$(srcdir)/wxgbsizer/images/*.xpm \
 		$(srcdir)/wxled/images/*.xpm \
 		$(srcdir)/*.cbp \
@@ -74,7 +84,7 @@ libwxsmithcontribitems_la_SOURCES = \
 ./wxSmithKWIC/wxslcddisplay.cpp \
 ./wxSmithKWIC/wxslinearmeter.cpp \
 ./wxSmithKWIC/wxslinearregulator.cpp \
-./wxtreelist/wxsTreeListCtrl.cpp \
+$(TREELIST_SRC) \
 ./wxgbsizer/wxsGridBagSizer.cpp \
 ./wxled/wxsLcdWindow.cpp \
 ./wxled/wxsLed.cpp \
@@ -98,7 +108,7 @@ noinst_HEADERS = \
 ./wxSmithKWIC/wxslcddisplay.h \
 ./wxSmithKWIC/wxslinearmeter.h \
 ./wxSmithKWIC/wxslinearregulator.h \
-./wxtreelist/wxsTreeListCtrl.h \
+$(TREELIST_HDR) \
 ./wxgbsizer/wxsGridBagSizer.h \
 ./wxled/wxsLcdWindow.h \
 ./wxled/wxsLed.h \

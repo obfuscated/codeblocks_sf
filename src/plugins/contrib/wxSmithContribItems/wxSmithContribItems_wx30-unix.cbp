@@ -33,7 +33,6 @@
 					<Add directory="../wxContribItems/wxthings/include" />
 					<Add directory="../wxContribItems/KWIC/include" />
 					<Add directory="../wxContribItems/wxSpeedButton" />
-					<Add directory="../wxContribItems/wxTreeList/include" />
 					<Add directory="../wxContribItems/wxled/gizmosled/include" />
 					<Add directory="../wxContribItems/wxled/lcdWindow/include" />
 					<Add directory="../wxContribItems/wxled/led/include" />
@@ -48,7 +47,6 @@
 					<Add library="wxcustombutton" />
 					<Add library="wximagepanel" />
 					<Add library="wxspeedbutton" />
-					<Add library="wxtreelist" />
 					<Add library="wxled" />
 					<Add directory="../../../devel30" />
 				</Linker>
@@ -168,10 +166,6 @@
 		<Unit filename="wxthings/wxcustombutton32.xpm" />
 		<Unit filename="wxthings/wxscustombutton.cpp" />
 		<Unit filename="wxthings/wxscustombutton.h" />
-		<Unit filename="wxtreelist/images/TreeList16.xpm" />
-		<Unit filename="wxtreelist/images/TreeList32.xpm" />
-		<Unit filename="wxtreelist/wxsTreeListCtrl.cpp" />
-		<Unit filename="wxtreelist/wxsTreeListCtrl.h" />
 		<Extensions>
 			<code_completion />
 			<envvars />
