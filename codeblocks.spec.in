@@ -410,14 +410,7 @@ This package contains the development libraries and headers needed to build wxSm
 %files contrib-libs
 %defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so.*
-%{pkglibdir}/wxContribItems/libwxchartctrl.so.*
-%{pkglibdir}/wxContribItems/libwxcustombutton.so.*
-%{pkglibdir}/wxContribItems/libwxflatnotebook.so.*
-%{pkglibdir}/wxContribItems/libwximagepanel.so.*
-%{pkglibdir}/wxContribItems/libwxkwic.so.*
-%{pkglibdir}/wxContribItems/libwxled.so.*
-%{pkglibdir}/wxContribItems/libwxspeedbutton.so.*
-%{pkglibdir}/wxContribItems/libwxtreelist.so.*
+%{pkglibdir}/wxContribItems/*.so.*
 
 %files devel
 %defattr(-,root,root)
@@ -427,23 +420,8 @@ This package contains the development libraries and headers needed to build wxSm
 
 %files contrib-devel
 %defattr(-,root,root)
-%{pkglibdir}/wxContribItems/libwxchartctrl.so
-%{pkglibdir}/wxContribItems/libwxcustombutton.so
-%{pkglibdir}/wxContribItems/libwxflatnotebook.so
-%{pkglibdir}/wxContribItems/libwximagepanel.so
-%{pkglibdir}/wxContribItems/libwxkwic.so
-%{pkglibdir}/wxContribItems/libwxled.so
-%{pkglibdir}/wxContribItems/libwxspeedbutton.so
-%{pkglibdir}/wxContribItems/libwxtreelist.so
-%{_libdir}/pkgconfig/cb_wxchartctrl.pc
-%{_libdir}/pkgconfig/cb_wxcontrib.pc
-%{_libdir}/pkgconfig/cb_wxcustombutton.pc
-%{_libdir}/pkgconfig/cb_wxflatnotebook.pc
-%{_libdir}/pkgconfig/cb_wximagepanel.pc
-%{_libdir}/pkgconfig/cb_wxKWIC.pc
-%{_libdir}/pkgconfig/cb_wxled.pc
-%{_libdir}/pkgconfig/cb_wxspeedbutton.pc
-%{_libdir}/pkgconfig/cb_wxtreelist.pc
+%{pkglibdir}/wxContribItems/*.so
+%{_libdir}/pkgconfig/cb_*.pc
 %{_libdir}/pkgconfig/wxsmith.pc
 %{_includedir}/%{name}/wxContribItems/*
 %{_libdir}/libwxsmithlib.so
