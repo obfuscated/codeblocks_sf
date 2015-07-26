@@ -104,6 +104,8 @@ if exist devel30\cb_console_runner.exe del devel30\cb_console_runner.exe > nul
 ren devel30\cb_console_runner30.exe cb_console_runner.exe > nul
 if exist output30\cb_console_runner.exe del output30\cb_console_runner.exe > nul
 ren output30\cb_console_runner30.exe cb_console_runner.exe > nul
+xcopy /D /y exchndl\win32\bin\*.dll devel30 > nul
+xcopy /D /y exchndl\win32\bin\*.yes devel30 > nul
 xcopy /D /y devel30\*.exe output30 > nul
 xcopy /D /y devel30\*.dll output30 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
