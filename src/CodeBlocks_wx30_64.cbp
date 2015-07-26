@@ -178,11 +178,13 @@
 					<Add directory="include/mozilla_chardet/xpcom" />
 					<Add directory="include/mozilla_chardet/xpcom/base" />
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
+					<Add directory="exchndl/win64/include" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="codeblocks" />
+					<Add library="exchndl" />
 					<Add library="shfolder" />
 					<Add library="kernel32" />
 					<Add library="user32" />
@@ -199,6 +201,7 @@
 					<Add library="advapi32" />
 					<Add library="wsock32" />
 					<Add directory="devel30_64" />
+					<Add directory="exchndl/win64/lib" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel30_64\share\CodeBlocks mkdir devel30_64\share\CodeBlocks" />
