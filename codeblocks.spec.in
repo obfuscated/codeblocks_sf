@@ -58,10 +58,9 @@ Name:                       codeblocks
 Version:                    %{_version}
 Release:                    %{_release}
 Summary:                    OpenSource Cross Platform Free C++ IDE
-Group:                      Development/Tools/IDE
+Group:                      Development/Tools
 License:                    GPLv3+
 URL:                        http://www.codeblocks.org/
-Packager:                   Jens Lody <jens@codeblocks.org>
 Source:                     %{name}-@VERSION@.tar.bz2
 BuildRoot:                  %{_tmppath}/%{name}-%{version}-buildroot
 Requires:                   %{name}-libs%{?_isa} = %{version}
@@ -100,9 +99,12 @@ BuildRequires:              update-desktop-files
 %define plugindir           %{pkglibdir}/plugins
 
 %description
-Code::Blocks is the open-source, cross-platform Integrated Development Environment (IDE).
+Code::Blocks is the open-source, cross-platform Integrated Development
+Environment (IDE).
 
-It is based on a self-developed plugin framework allowing unlimited extensibility. Most of its functionality is already provided by plugins.
+It is based on a self-developed plugin framework allowing unlimited
+extensibility.
+Most of its functionality is already provided by plugins.
 
  Plugins included in the base package are:
   * Compiler frontend to many free compilers
@@ -118,14 +120,20 @@ It is based on a self-developed plugin framework allowing unlimited extensibilit
 
 %package libs
 Summary:                    Libraries needed to run Code::Blocks
-Group:                      Development/Tools/IDE
+Group:                      Development/Tools
 
 %description libs
 Libraries needed to run Code::Blocks.
 
+%post libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%postun libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
 %package contrib
 Summary:                    Code::Blocks contrib plugins
-Group:                      Development/Tools/IDE
+Group:                      Development/Tools
 Requires:                   %{name}%{?_isa} = %{version}
 Requires:                   %{name}-contrib-libs%{?_isa} = %{version}
 BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, fontconfig-devel
@@ -137,7 +145,8 @@ BuildRequires:              hunspell-devel
 %endif
 
 %description contrib
-This package extends Code::Blocks functionality a great deal with the included plugins. These are:
+This package extends Code::Blocks functionality a great deal with the included
+plugins. These are:
  * Autoversioning
  * BrowseTracker
  * Cccc
@@ -178,32 +187,40 @@ This package extends Code::Blocks functionality a great deal with the included p
 
 %package contrib-libs
 Summary:                    Libraries needed to run Code::Blocks contrib-plugins
-Group:                      Development/Tools/IDE
+Group:                      Development/Tools
 
 %description contrib-libs
 Libraries needed to run Code::Blocks contrib-plugins.
 
+%post contrib-libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%postun contrib-libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
 %package devel
 Summary:                    Code::Blocks development libraries and headers (SDK)
-Group:                      Development/Tools/IDE
+Group:                      Development/Tools
 Requires:                   %{name}%{?_isa} = %{version}
 
 %description devel
-This package contains the development libraries and headers for creating plugins for the Code::Blocks IDE.
+This package contains the development libraries and headers for creating plugins
+for the Code::Blocks IDE.
 
 %package contrib-devel
 Summary:                    Code::Blocks development libraries and headers for wxSmith and wxContribItems
-Group:                      Development/Tools/IDE
+Group:                      Development/Tools
 Requires:                   %{name}-contrib%{?_isa} = %{version}
 
 %description contrib-devel
-This package contains the development libraries and headers needed to build wxSmith-plugins and to use the wxContribItems in own programs.
+This package contains the development libraries and headers needed to build
+wxSmith-plugins and to use the wxContribItems in own programs.
 
 %{?debugrpm:%debug_package}
 
 %prep
 
-%setup -n codeblocks-@VERSION@
+%setup -q -n codeblocks-@VERSION@
 
 %{?suse_update_libdir:%{suse_update_libdir}}
 %{?suse_update_config:%{suse_update_config -f}}
@@ -244,7 +261,7 @@ This package contains the development libraries and headers needed to build wxSm
 
 %post
   /usr/bin/update-mime-database "%{_datadir}/mime" &> /dev/null || :
-  test -x /sbin/ldconfig && /sbin/ldconfig
+#  test -x /sbin/ldconfig && /sbin/ldconfig
 
 %preun
   /usr/bin/update-mime-database "%{_datadir}/mime" &> /dev/null || :
@@ -309,6 +326,7 @@ This package contains the development libraries and headers needed to build wxSm
 %files libs
 %defattr(-,root,root)
 %{_libdir}/libcodeblocks.so.*
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
 
 %files contrib
 %defattr(-,root,root)
@@ -406,11 +424,13 @@ This package contains the development libraries and headers needed to build wxSm
 %{pkgdatadir}/SpellChecker/*
 %endif
 %{_mandir}/man1/*snippets*
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
 
 %files contrib-libs
 %defattr(-,root,root)
 %{_libdir}/libwxsmithlib.so.*
 %{pkglibdir}/wxContribItems/*.so.*
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
 
 %files devel
 %defattr(-,root,root)
