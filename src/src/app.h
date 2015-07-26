@@ -169,7 +169,6 @@ class CodeBlocksApp : public wxApp
         bool m_DDE; // DDE enabled?
 #ifdef __WXMSW__
         bool m_Assocs; // associations check enabled
-        HINSTANCE m_ExceptionHandlerLib;
 #endif
         int m_BatchExitCode;
 

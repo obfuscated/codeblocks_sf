@@ -49,7 +49,7 @@
 #include "splashscreen.h"
 
 #ifndef __WXMSW__
-    #include "prefix.h" // binreloc
+    #include "prefix.h"  // binreloc
 #endif
 
 #if defined(__APPLE__) && defined(__MACH__)
@@ -65,6 +65,11 @@
 
 #ifndef APP_PREFIX
 #define APP_PREFIX ""
+#endif
+
+#ifdef __WXMSW__
+#include "exchndl.h"         // Crash handler DLL -> includes windows.h, therefore
+#include <wx/msw/winundef.h> // ...include this header file on the NEXT LINE (wxWidgets docs say so)
 #endif
 
 #ifndef __WXMAC__
@@ -451,7 +456,7 @@ void CodeBlocksApp::InitDebugConsole()
 void CodeBlocksApp::InitExceptionHandler()
 {
 #ifdef __WXMSW__
-    m_ExceptionHandlerLib = LoadLibrary(_T("exchndl.dll"));
+    ExcHndlInit();
 #endif
 }
 
@@ -797,10 +802,7 @@ int CodeBlocksApp::OnExit()
     wxTheClipboard->Flush();
 
     if (g_DDEServer) delete g_DDEServer;
-#ifdef __WXMSW__
-    if (m_ExceptionHandlerLib)
-        FreeLibrary(m_ExceptionHandlerLib);
-#endif
+
     if (m_pSingleInstance)
         delete m_pSingleInstance;
 
