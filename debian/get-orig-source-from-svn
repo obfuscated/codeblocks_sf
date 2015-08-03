@@ -90,7 +90,7 @@ echo "Create sources tarball"
 #./configure --enable-keep-dlls=no
 cd ..
 echo "creating tarball $CODEBLOCKS_ORIG_TARBALL "
-tar zcf $CODEBLOCKS_ORIG_TARBALL --exclude=".svn" --exclude="*.dll" codeblocks-$CODEBLOCKS_BASE_VERSION
+tar zcf $CODEBLOCKS_ORIG_TARBALL --exclude=".svn" --exclude="autom4te.cache" --exclude="*.dll" codeblocks-$CODEBLOCKS_BASE_VERSION
 
 # Move tarball to right directory
 mv $CODEBLOCKS_ORIG_TARBALL ..
