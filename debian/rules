@@ -2,9 +2,6 @@
 include /usr/share/cdbs/1/class/autotools.mk
 include /usr/share/cdbs/1/rules/debhelper.mk
 
-makebuilddir::
-	./bootstrap
-
 DEB_BUILD_PARALLEL= yes
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))

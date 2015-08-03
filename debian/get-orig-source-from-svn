@@ -59,8 +59,8 @@ echo "update Changelog"
 ./updateChangeLog.sh
 
 # run bootstrap
-#echo "update/create Makefile's and configure-script"
-#./bootstrap
+echo "update/create Makefile's and configure-script"
+./bootstrap
 
 # fetching actual svn-revision
 if svn --xml info >/dev/null 2>&1; then
