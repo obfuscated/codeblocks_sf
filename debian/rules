@@ -21,5 +21,4 @@ DEB_DBG_PACKAGE_libcodeblocks0= codeblocks-dbg
 DEB_DBG_PACKAGE_libwxsmithlib0= codeblocks-contrib-dbg
 
 DEB_DH_MAKESHLIBS_ARGS_codeblocks-contrib= -Ncodeblocks-contrib
-DEB_DH_BUILDDEB_ARGS= -- -Zlzma
 
