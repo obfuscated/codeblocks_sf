@@ -161,9 +161,11 @@ void IncrementalSelectListDlg::FillList()
         }
     }
 
-    m_List->Set(result, reinterpret_cast<void**>(&indexes[0]));
-    if (m_List->GetCount())
+    if (!result.empty())
+    {
+        m_List->Set(result, reinterpret_cast<void**>(&indexes[0]));
         m_List->SetSelection(0);
+    }
 
     Thaw();
 }
