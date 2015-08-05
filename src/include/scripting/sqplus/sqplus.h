@@ -417,7 +417,7 @@ void BindConstant(SquirrelObject & so,T constant,const SQChar * scriptVarName) {
     T var;
   } cv; // Cast Variable helper.
   cv.var = constant;
-  *pvr = VarRef(*(void **)&cv,TypeInfo<T>(),0,0,sizeof(constant),VAR_ACCESS_CONSTANT,TypeInfo<T>().typeName);
+  *pvr = VarRef(&cv,TypeInfo<T>(),0,0,sizeof(constant),VAR_ACCESS_CONSTANT,TypeInfo<T>().typeName);
   createTableSetGetHandlers(so);
 } // BindConstant
 
