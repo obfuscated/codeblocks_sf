@@ -235,18 +235,23 @@ void ThreadSearchLoggerList::OnThreadSearchEvent(const ThreadSearchEvent& event)
         }
         index++;
     }
+
+    size_t count = m_pListLog->GetItemCount();
     size_t countPerPage = std::max<size_t>(m_pListLog->GetCountPerPage() - 1, 0);
-    size_t markerLine = m_IndexOffset - 1;
-    if (m_TotalLinesFound <= countPerPage)
+    if (count > countPerPage && m_IndexOffset > 0)
     {
-        m_pListLog->EnsureVisible(markerLine + m_TotalLinesFound);
-    }
-    else if (m_TotalLinesFound > countPerPage && !m_MadeVisible)
-    {
-        m_pListLog->EnsureVisible(markerLine + countPerPage);
-        if (static_cast<size_t>(m_pListLog->GetTopItem()) != markerLine)
-            m_pListLog->EnsureVisible(markerLine);
-        m_MadeVisible = true;
+        size_t markerLine = m_IndexOffset - 1;
+        if (m_TotalLinesFound <= countPerPage)
+        {
+            m_pListLog->EnsureVisible(markerLine + m_TotalLinesFound);
+        }
+        else if (m_TotalLinesFound > countPerPage && !m_MadeVisible)
+        {
+            m_pListLog->EnsureVisible(markerLine + countPerPage);
+            if (static_cast<size_t>(m_pListLog->GetTopItem()) != markerLine)
+                m_pListLog->EnsureVisible(markerLine);
+            m_MadeVisible = true;
+        }
     }
 
     m_pListLog->Thaw();
