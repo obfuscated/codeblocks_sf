@@ -274,12 +274,30 @@ function OnEnter_WxConf(fwd)
 {
     if (fwd)
     {
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
+        {
+            WxCompiler = _T("gcc");
+        }
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+        {
+            WxCompiler = _T("vc");
+        }
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc*")))
+        {
+            WxCompiler = _T("bcc");
+        }
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
+        {
+            WxCompiler = _T("wat");
+        }
+
         Wizard.CheckCheckbox(_T("chkWxConfDLL"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/dll"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfMono"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/monolithic"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfUni"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/unicode"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfAdvOpt"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/debug"), 0)));
         Wizard.CheckCheckbox(_T("chkWxConfPCH"), IntToBool(ConfigManager.Read(_T("/wx_project_wizard/pch"), 0)));
         Wizard.SetTextControlValue(_T("txtWxConfConfig"), ConfigManager.Read(_T("/wx_project_wizard/configuration"), _T("")));
+        Wizard.SetTextControlValue(_T("txtWxCompiler"), ConfigManager.Read(_T("/wx_project_wizard/complier"), WxCompiler));
     }
     return true;
 }
@@ -295,6 +313,7 @@ function OnLeave_WxConf(fwd)
         IsAdvOpt = Wizard.IsCheckboxChecked(_T("chkWxConfAdvOpt"));
         WantPCH = Wizard.IsCheckboxChecked(_T("chkWxConfPCH"));
         Configuration = Wizard.GetTextControlValue(_T("txtWxConfConfig"));
+        WxCompiler = Wizard.GetTextControlValue(_T("txtWxCompiler"));
 
         // Ask the user whether wizard shall add PCH support when empty Project is selected
         if (IsEmpty && WantPCH)
@@ -331,25 +350,21 @@ function OnLeave_WxConf(fwd)
         local lib = WxPathDefaultLib + _T("/");
         if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
         {
-            WxCompiler = _T("gcc");
             lib_prefix = _T("lib");
             lib_suffix = _T(".a");
         }
         else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
         {
-            WxCompiler = _T("vc");
             lib_prefix = _T("");
             lib_suffix = _T(".lib");
         }
         else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc*")))
         {
-            WxCompiler = _T("bcc");
             lib_prefix = _T("");
             lib_suffix = _T(".lib");
         }
         else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("ow")))
         {
-            WxCompiler = _T("wat");
             lib_prefix = _T("");
             lib_suffix = _T(".lib");
         }

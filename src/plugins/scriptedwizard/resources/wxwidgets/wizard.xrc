@@ -76,6 +76,24 @@
 						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxStaticText" name="m_staticText3">
+									<label>wx Compiler:</label>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>8</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtWxCompiler" />
+								<flag>wxALL|wxEXPAND</flag>
+								<border>8</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkWxConfAdvOpt">
 							<label>Configure Advanced Options</label>
 						</object>
