@@ -110,6 +110,7 @@ class MainFrame : public wxFrame
 
         // common function to show context menu for toggle toolbars
         void PopupToggleToolbarMenu();
+        void SetChecksForViewToolbarsMenu(wxMenu &menu);
 
         // File->New submenu entries handler
         void OnFileNewWhat(wxCommandEvent& event);

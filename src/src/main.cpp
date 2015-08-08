@@ -4154,23 +4154,11 @@ void MainFrame::OnViewMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idViewFocusLogsAndOthers, m_pInfoPane->IsShown());
 
     // toolbars
-    mbar->Check(idViewToolMain,     m_LayoutManager.GetPane(m_pToolbar).IsShown());
-    mbar->Check(idViewToolDebugger, m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
     wxMenu* viewToolbars = nullptr;
     GetMenuBar()->FindItem(idViewToolMain, &viewToolbars);
     if (viewToolbars)
     {
-        for (size_t i = 0; i < viewToolbars->GetMenuItemCount(); ++i)
-        {
-            wxMenuItem* item = viewToolbars->GetMenuItems()[i];
-            wxString pluginName = m_PluginIDsMap[item->GetId()];
-            if (!pluginName.IsEmpty())
-            {
-                cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
-                if (plugin)
-                    item->Check(m_LayoutManager.GetPane(m_PluginsTools[plugin]).IsShown());
-            }
-        }
+        SetChecksForViewToolbarsMenu(*viewToolbars);
     }
 
     event.Skip();
@@ -5022,15 +5010,43 @@ void MainFrame::PopupToggleToolbarMenu()
 {
     wxMenuBar* menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
     int idx = menuBar->FindMenu(_("&View"));
-    if (idx != wxNOT_FOUND)
+    if (idx == wxNOT_FOUND)
+        return;
+    wxMenu* viewMenu = menuBar->GetMenu(idx);
+    idx = viewMenu->FindItem(_("Toolbars"));
+    if (idx == wxNOT_FOUND)
+        return;
+
+    // Clone the View -> Toolbars menu and show it as popup.
+    wxMenu* toolbarMenu = viewMenu->FindItem(idx)->GetSubMenu();
+    wxMenu menu;
+    for (size_t ii = 0; ii < toolbarMenu->GetMenuItemCount(); ++ii)
     {
-        wxMenu* viewMenu = menuBar->GetMenu(idx);
-        idx = viewMenu->FindItem(_("Toolbars"));
-        if (idx != wxNOT_FOUND)
-        {
-            wxMenu* toolbarMenu = viewMenu->FindItem(idx)->GetSubMenu();
-            PopupMenu(toolbarMenu);
-        }
+        wxMenuItem *old = toolbarMenu->FindItemByPosition(ii);
+        if (!old)
+            continue;
+        wxMenuItem *item;
+        item = new wxMenuItem(NULL, old->GetId(), old->GetItemLabelText(), old->GetHelp(), old->GetKind());
+        menu.Append(item);
     }
+    SetChecksForViewToolbarsMenu(menu);
+    PopupMenu(&menu);
 }
 
+void MainFrame::SetChecksForViewToolbarsMenu(wxMenu &menu)
+{
+    for (size_t i = 0; i < menu.GetMenuItemCount(); ++i)
+    {
+        wxMenuItem* item = menu.GetMenuItems()[i];
+        wxString pluginName = m_PluginIDsMap[item->GetId()];
+        if (!pluginName.IsEmpty())
+        {
+            cbPlugin* plugin = Manager::Get()->GetPluginManager()->FindPluginByName(pluginName);
+            if (plugin)
+                item->Check(m_LayoutManager.GetPane(m_PluginsTools[plugin]).IsShown());
+        }
+    }
+
+    menu.Check(idViewToolMain,     m_LayoutManager.GetPane(m_pToolbar).IsShown());
+    menu.Check(idViewToolDebugger, m_LayoutManager.GetPane(m_debuggerToolbarHandler->GetToolbar(false)).IsShown());
+}
