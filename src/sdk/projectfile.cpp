@@ -125,7 +125,9 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
             FilesList::iterator it = target->m_Files.find(this);
             if (it != target->m_Files.end())
             {
-                target->m_FileArray.Remove(*it);
+                int item = target->m_FileArray.Index(*it);
+                if (item != wxNOT_FOUND)
+                    target->m_FileArray.RemoveAt(item);
                 target->m_Files.erase(it);
             }
         }
