@@ -702,7 +702,13 @@ void ProjectOptionsDlg::OnRemoveBuildTargetClick(cb_unused wxCommandEvent& event
         return;
 
     lstTargets->Delete(targetIdx);
-    lstTargets->SetSelection(targetIdx);
+    if (lstTargets->GetCount() > 0)
+    {
+        if (targetIdx >= lstTargets->GetCount())
+            lstTargets->SetSelection(lstTargets->GetCount() - 1);
+        else
+            lstTargets->SetSelection(targetIdx);
+    }
     // the target name in the units is changed by the project...
     m_Project->RemoveBuildTarget(targetIdx);
     m_Current_Sel = -1;
