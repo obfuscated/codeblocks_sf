@@ -3608,8 +3608,35 @@ void ParserThread::SplitTemplateActualParameters(const wxString& templateArgs, w
 bool ParserThread::ResolveTemplateMap(const wxString& typeStr, const wxArrayString& actuals,
                                       std::map<wxString, wxString>& results)
 {
-    wxString parentType = typeStr;
+    // Check if type is an alias template. If it is, then we use the actual type's template map.
+    // For example, given:
+    // template <class T> using AAA = BBB<T>;
+    // AAA<MyClass> obj;
+    // When handling obj, typeStr would equal AAA, but we would use BBB's template map.
+    wxString tokenFullType = typeStr;
+    TokenIdxSet fullTypeMatches;
+    size_t matchesCount = m_TokenTree->FindMatches(tokenFullType, fullTypeMatches, true, false, tkTypedef);
+    if (matchesCount > 0)
+    {
+        for (TokenIdxSet::const_iterator it= fullTypeMatches.begin(); it!= fullTypeMatches.end(); ++it)
+        {
+            int id = (*it);
+            Token* token = m_TokenTree->at(id);
+
+            if (token->m_TokenKind == tkTypedef)
+            {
+                tokenFullType = token->m_FullType;
+                // we are only interested in the type name, so remove the scope qualifiers
+                if (tokenFullType.Find(_T("::")) != wxNOT_FOUND)
+                    tokenFullType = tokenFullType.substr(tokenFullType.Find(_T("::"))+2);
+                break;
+            }
+        }
+    }
+
+    wxString parentType = tokenFullType;
     parentType.Trim(true).Trim(false);
+    // Note that we only search by the type name, and we don't care about the scope qualifiers
     // I add this for temporary support of templates under std, I will write better code later.
     TokenIdxSet parentResult;
     size_t tokenCounts = m_TokenTree->FindMatches(parentType, parentResult, true, false, tkClass);
