@@ -413,11 +413,11 @@ template<typename T>
 void BindConstant(SquirrelObject & so,T constant,const SQChar * scriptVarName) {
   validateConstantType(constant);
   VarRefPtr pvr = createVarRef(so,scriptVarName);
-  struct CV {
-    T var;
-  } cv; // Cast Variable helper.
-  cv.var = constant;
-  *pvr = VarRef(*(void **)&cv,TypeInfo<T>(),0,0,sizeof(constant),VAR_ACCESS_CONSTANT,TypeInfo<T>().typeName);
+#if __cplusplus>=201103L
+  static_assert(sizeof(constant)<=sizeof(void*), "using larger type");
+#endif
+  void *ptr = reinterpret_cast<void*>(constant);
+  *pvr = VarRef(ptr,TypeInfo<T>(),0,0,sizeof(constant),VAR_ACCESS_CONSTANT,TypeInfo<T>().typeName);
   createTableSetGetHandlers(so);
 } // BindConstant
 
