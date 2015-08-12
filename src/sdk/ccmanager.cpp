@@ -866,6 +866,16 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
 }
 
 // cbEVT_SHOW_CALL_TIP
+// There are some caches used in this function
+// see the comment "search long term recall" and "search short term recall"
+// They remember which page on the calltip was last selected, and show that again first next time it
+// is requested.
+// Short term recall caches the current calltip, so it can be displayed exactly if a calltip is
+// re-requested in the same location.
+// Long term recall uses two dictionaries, the first one based on the tip's content, and will
+// display the last shown page when a new calltip is requested that has the same content.
+// The second (fuzzy) dictionary remembers which page was shown based on the typed word prefix
+// (this is to support FortranProject, which uses more dynamic calltips).
 void CCManager::OnShowCallTip(CodeBlocksEvent& event)
 {
     event.Skip();
@@ -1227,6 +1237,8 @@ void CCManager::DoUpdateCallTip(cbEditor* ed)
     }
     if (sRange < m_CurCallTip->tip.Length())
         tips.push_back(m_CurCallTip->tip.Mid(sRange));
+    // for multiply tips(such as tips for some overload functions
+    // some more text were added to the single tip, such as the up/down arrows, the x/y indicator.
     int offset = 0;
     cbStyledTextCtrl* stc = ed->GetControl();
     if (m_CallTips.size() > 1)
