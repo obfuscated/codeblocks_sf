@@ -627,6 +627,8 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     if (tooltipMode == 0) // disabled
         return;
 
+    // if the event comes from user menu click, then its String field isn't empty
+    // @see CCManager::OnMenuSelect() for details
     bool fromMouseDwell = event.GetString().IsEmpty();
     if (wxGetKeyState(WXK_CONTROL) && fromMouseDwell)
         return;
@@ -723,6 +725,8 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
         CCPluginCharMap::const_iterator ctChars = m_CallTipChars.find(GetProviderFor(ed));
         if (ctChars == m_CallTipChars.end())
             ctChars = m_CallTipChars.find(nullptr); // default
+
+        // Are there any characters which could trigger the call tip?
         if (ctChars->second.find(ch) != ctChars->second.end())
         {
             int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
@@ -741,6 +745,10 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             CCPluginCharMap::const_iterator alChars = m_AutoLaunchChars.find(GetProviderFor(ed));
             if (alChars == m_AutoLaunchChars.end())
                 alChars = m_AutoLaunchChars.find(nullptr); // default
+
+            // auto suggest list can be triggered either:
+            // 1, some number of chars are entered
+            // 2, an intrested char belong to alChars is entered
             int autolaunchCt = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/auto_launch_count"), 3);
             if (   (pos - wordStartPos >= autolaunchCt && !stc->AutoCompActive())
                 || pos - wordStartPos == autolaunchCt + 4 )
@@ -762,6 +770,8 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             cbStyledTextCtrl* stc = ed->GetControl();
             if (stc->CallTipActive())
             {
+                // force to call the wxScintilla::CallTipCancel to avoid the smart indent condition check
+                // @see cbStyledTextCtrl::CallTipCancel() for the details
                 static_cast<wxScintilla*>(stc)->CallTipCancel();
                 if (m_CallTipActive != wxSCI_INVALID_POSITION && CCManagerHelper::IsPosVisible(m_CallTipActive, stc))
                     m_CallTipTimer.Start(SCROLL_REFRESH_DELAY, wxTIMER_ONE_SHOT);
@@ -934,15 +944,22 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         if (m_CallTips.size() > 1)
         {
             // search long term recall
+            // convert the wxString to a hash value, then search the hash value map cache
+            // thus we can avoid directly lookup the cache by wxString
             std::map<int, size_t>::const_iterator choiceItr =
                 m_CallTipChoiceDict.find(CCManagerHelper::CallTipToInt(m_CurCallTip->tip, m_CallTips.size()));
+
+            // choiceItr is an iterator in the Dict, and choiceItr->second is the zero based index in m_CallTips
             if (choiceItr != m_CallTipChoiceDict.end() && choiceItr->second < m_CallTips.size())
                 m_CurCallTip = m_CallTips.begin() + choiceItr->second;
+
             if (choiceItr == m_CallTipChoiceDict.end() || argsPos == m_CallTipActive)
             {
                 int prefixEndPos = argsPos;
                 while (prefixEndPos > 0 && wxIsspace(stc->GetCharAt(prefixEndPos - 1)))
                     --prefixEndPos;
+
+                // convert the prefix string to hash, check to see whether the hash is in the cache
                 const wxString& prefix = stc->GetTextRange(stc->WordStartPosition(prefixEndPos, true), prefixEndPos);
                 choiceItr = m_CallTipFuzzyChoiceDict.find(CCManagerHelper::CallTipToInt(prefix, m_CallTips.size()));
                 if (choiceItr != m_CallTipFuzzyChoiceDict.end() && choiceItr->second < m_CallTips.size())
