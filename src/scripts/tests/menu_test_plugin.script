@@ -1,0 +1,87 @@
+
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+// Script plugins must extend cbScriptPlugin
+
+//Include(_("wx_test.script"));
+
+class Menu_test_plugin extends cbScriptPlugin
+{
+    // mandatory to setup the plugin's info
+    constructor()
+    {
+		info = PluginInfo();
+        info.name = _T("Menu_test_plugin");
+        info.title = _T("Test menus in the scripting engine of C::B");
+        info.version = _T("0.1a");
+        info.license = _T("GPL");
+    }
+
+    // optional to create menubar items
+    function GetMenu()
+    {
+        local entries = ::wxArrayString();
+        entries.Add(_T("Plugins/Test/Menu Test"), 1);
+        entries.Add(_T("Plugins/Test/-Menu Test2"), 1);
+        entries.Add(_T("Plugins/Test/Menu Test3"), 1);
+        entries.Add(_T("Plugins/Test/Menu/Test0"), 1);
+        entries.Add(_T("Plugins/Test/Menu/Test/0"), 1);
+        entries.Add(_T("Menu Test Plugin/Test1"), 1);
+
+        ::print("##########################################\n");
+        ::print(" Welcome to the Menu_test_plugin\n");
+        ::print("There should have been created 6 menu:\n");
+        ::print("Plugins/Test/Menu Test\n");
+        ::print("Plugins/Test/-Menu Test2\n");
+        ::print("Plugins/Test/Menu Test3\n");
+        ::print("Plugins/Test/Menu/Test0\n");
+        ::print("Plugins/Test/Menu/Test/0\n");
+        ::print("Menu Test Plugin/Test1\n");
+        ::print("##########################################\n");
+
+        return entries;
+    }
+
+    // optional to create context menu entries
+    /*function GetModuleMenu(who, data)
+    {
+
+    }*/
+
+    // optional to support ExecutePlugin(pluginNameString)
+    function Execute()
+    {
+        StartTest();
+        return 0;
+    }
+
+    // optional calback for menubar items clicking
+    function OnMenuClicked(index)
+    {
+        print("Menu: " + index + "\n");
+    }
+
+    // optional calback for context menu items clicking
+    function OnModuleMenuClicked(index)
+    {
+
+    }
+
+    function StartTest()
+    {
+    }
+
+}
+
+// this call actually registers the script plugin with Code::Blocks
+RegisterPlugin(Menu_test_plugin());
+
+// if you want to call this plugin's Execute() function, use this in a script:
+// ExecutePlugin(_T("Menu_test_plugin"));

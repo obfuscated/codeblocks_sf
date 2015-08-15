@@ -2486,6 +2486,21 @@
 		<Unit filename="scripts/startup.script">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="scripts/tests/menu_test_plugin.script">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="scripts/tests/script_test_plugin.script">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="scripts/tests/test_base.script">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="scripts/tests/user_dialog_test_plugin.script">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="scripts/tests/wx_test.script">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="scripts/wx_help.script">
 			<Option target="src" />
 		</Unit>

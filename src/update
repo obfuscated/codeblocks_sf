@@ -28,7 +28,7 @@ mkdir -p output/share/codeblocks/images/16x16
 mkdir -p output/share/codeblocks/plugins
 mkdir -p output/share/codeblocks/templates
 mkdir -p output/share/codeblocks/templates/wizard
-mkdir -p output/share/codeblocks/scripts
+mkdir -p output/share/codeblocks/scripts/tests
 mkdir -p devel/share/codeblocks/compilers
 mkdir -p devel/share/codeblocks/lexers
 mkdir -p devel/share/codeblocks/images/settings
@@ -38,7 +38,7 @@ mkdir -p devel/share/codeblocks/images/16x16
 mkdir -p devel/share/codeblocks/plugins
 mkdir -p devel/share/codeblocks/templates
 mkdir -p devel/share/codeblocks/templates/wizard
-mkdir -p devel/share/codeblocks/scripts
+mkdir -p devel/share/codeblocks/scripts/tests
 
 ZIPCMD="zip"
 RESDIR="devel/share/codeblocks"
@@ -137,6 +137,8 @@ rsync -au --exclude-from=excludes.txt templates/common/ ${RESDIR}/templates > /d
 rsync -au --exclude-from=excludes.txt templates/unix/ ${RESDIR}/templates > /dev/null
 cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
+cp -f scripts/tests/*.script ${RESDIR}/scripts/tests > /dev/null
+cp -f scripts/tests/*.script output/share/codeblocks/scripts/tests > /dev/null
 cp -f scripts/*.gdb ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.gdb output/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel/share/codeblocks > /dev/null
