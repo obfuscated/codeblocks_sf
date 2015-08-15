@@ -37,7 +37,7 @@ class wxsSizerExtra: public wxsPropertyContainer
         long Proportion;                ///< \brief Proportion param (see wxW documentation for details)
         long Flags;                     ///< \brief Sizer item flags
         wxsDimensionData Border;        ///< \brief Size of additional border
-//        wxSizeData MinSize;             ///< \brief Minimal size
+        wxsSizeData MinSize;            ///< \brief Minimal size
 //        wxSizeData Ratio;               ///< \brief Ratio
 
         wxsSizerExtra():
