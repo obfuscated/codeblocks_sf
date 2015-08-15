@@ -4,7 +4,7 @@ TREELIST_LA=../wxContribItems/wxTreeList/libwxtreelist.la
 TREELIST_SRC=./wxtreelist/wxsTreeListCtrl.cpp
 TREELIST_HDR=./wxtreelist/wxsTreeListCtrl.h
 else
-TREELIST_DIST="$(srcdir)/wxtreelist/wxsTreeListCtrl.cpp $(srcdir)/wxtreelist/wxsTreeListCtrl.h"
+TREELIST_DIST=$(srcdir)/wxtreelist/wxsTreeListCtrl.cpp $(srcdir)/wxtreelist/wxsTreeListCtrl.h
 endif
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
