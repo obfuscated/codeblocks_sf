@@ -1277,7 +1277,7 @@ bool EditorManager::SwapActiveHeaderSource()
 
         // verify that the open files are still in sync
         // the new file might have overwritten an existing one)
-        Manager::Get()->GetEditorManager()->CheckForExternallyModifiedFiles();
+        CheckForExternallyModifiedFiles();
     }
 
     return false;
@@ -1519,37 +1519,37 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
 
 void EditorManager::OnClose(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->Close(GetActiveEditor());
+    Close(GetActiveEditor());
 }
 
 void EditorManager::OnCloseAll(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->CloseAll();
+    CloseAll();
 }
 
 void EditorManager::OnCloseAllOthers(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->CloseAllExcept(GetActiveEditor());
+    CloseAllExcept(GetActiveEditor());
 }
 
 void EditorManager::OnSave(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->Save(m_pNotebook->GetSelection());
+    Save(m_pNotebook->GetSelection());
 }
 
 void EditorManager::OnSaveAll(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->SaveAll();
+    SaveAll();
 }
 
 void EditorManager::OnSwapHeaderSource(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->SwapActiveHeaderSource();
+    SwapActiveHeaderSource();
 }
 
 void EditorManager::OnOpenContainingFolder(cb_unused wxCommandEvent& event)
 {
-    Manager::Get()->GetEditorManager()->OpenContainingFolder();
+    OpenContainingFolder();
 }
 
 void EditorManager::OnTabPosition(wxCommandEvent& event)

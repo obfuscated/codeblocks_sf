@@ -135,6 +135,14 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         /** Check if one of the open files has been modified outside the IDE. If so, ask to reload it. */
         void CheckForExternallyModifiedFiles();
 
+        void SetZoom(int zoom);
+        int GetZoom()const;
+
+        void MarkReadOnly(int page, bool readOnly = true);
+
+        wxString GetSelectionClipboard();
+        void SetSelectionClipboard(const wxString& data);
+    private:
         void OnGenericContextMenuHandler(wxCommandEvent& event);
         void OnPageChanged(wxAuiNotebookEvent& event);
         void OnPageChanging(wxAuiNotebookEvent& event);
@@ -159,14 +167,8 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnTreeItemActivated(wxTreeEvent &event);
         void OnTreeItemRightClick(wxTreeEvent &event);
         void CollectDefines(CodeBlocksEvent& event);
-        void SetZoom(int zoom);
-        int GetZoom()const;
-
-        void MarkReadOnly(int page, bool readOnly = true);
 
         void OnAppActivated(CodeBlocksEvent& event);
-        wxString GetSelectionClipboard();
-        void SetSelectionClipboard(const wxString& data);
 
     protected:
         // m_EditorsList access
