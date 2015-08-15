@@ -3,6 +3,7 @@
 	<object class="wxScrollingDialog" name="avVersionEditorDlg">
 		<title>Auto Versioning Editor</title>
 		<centered>1</centered>
+		<size>469,364</size>
 		<font>
 			<size>10</size>
 		</font>
@@ -13,6 +14,7 @@
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxNotebook" name="ID_AV_NOTEBOOK" variable="nbAutoVersioning" member="yes">
+					<size>456,283</size>
 					<focused>1</focused>
 					<maxsize>-1,-1</maxsize>
 					<object class="notebookpage">
