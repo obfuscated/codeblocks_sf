@@ -27,6 +27,7 @@
 				</object>
 				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
+				<minsize>320,160</minsize>
 				<option>1</option>
 			</object>
 		</object>

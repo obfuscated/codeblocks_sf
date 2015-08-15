@@ -40,7 +40,7 @@
 									<label>...</label>
 									<size>24,-1</size>
 								</object>
-								<flag></flag>
+								<flag>wxALIGN_NOT</flag>
 							</object>
 						</object>
 						<flag>wxEXPAND</flag>
@@ -73,13 +73,13 @@
 									<label>...</label>
 									<size>24,-1</size>
 								</object>
-								<flag></flag>
+								<flag>wxALIGN_NOT</flag>
 							</object>
 						</object>
 						<flag>wxEXPAND</flag>
 					</object>
 					<object class="spacer">
-						<flag></flag>
+						<flag>wxALIGN_NOT</flag>
 						<size>0,0</size>
 					</object>
 					<object class="sizeritem">
@@ -93,10 +93,10 @@
 							</content>
 							<style>wxRA_SPECIFY_COLS</style>
 						</object>
-						<flag></flag>
+						<flag>wxALIGN_NOT</flag>
 					</object>
 					<object class="spacer">
-						<flag></flag>
+						<flag>wxALIGN_NOT</flag>
 						<size>0,0</size>
 					</object>
 					<object class="sizeritem">
@@ -115,6 +115,7 @@
 				<object class="wxStaticLine" name="ID_STATICLINE1" />
 				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
+				<minsize>320,-1</minsize>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStdDialogButtonSizer">

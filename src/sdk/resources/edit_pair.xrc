@@ -39,7 +39,8 @@
 								<object class="wxButton" name="btnBrowse">
 									<label>...</label>
 								</object>
-								<flag></flag>
+								<flag>wxALIGN_NOT</flag>
+								<minsize>24,-1</minsize>
 							</object>
 						</object>
 						<flag>wxEXPAND</flag>
@@ -53,6 +54,7 @@
 				<object class="wxStaticLine" name="ID_STATICLINE1" />
 				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>8</border>
+				<minsize>240,-1</minsize>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStdDialogButtonSizer">

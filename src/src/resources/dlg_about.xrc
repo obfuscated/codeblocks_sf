@@ -170,6 +170,7 @@
 										<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
 									</object>
 									<flag>wxALL|wxEXPAND</flag>
+									<minsize>320,240</minsize>
 									<option>1</option>
 								</object>
 							</object>

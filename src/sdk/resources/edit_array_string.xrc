@@ -11,6 +11,7 @@
 					<object class="sizeritem">
 						<object class="wxListBox" name="lstItems" />
 						<flag>wxEXPAND</flag>
+						<minsize>240,160</minsize>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
@@ -20,19 +21,19 @@
 								<object class="wxButton" name="btnAdd">
 									<label>&amp;Add</label>
 								</object>
-								<flag></flag>
+								<flag>wxALIGN_NOT</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnEdit">
 									<label>&amp;Edit</label>
 								</object>
-								<flag></flag>
+								<flag>wxALIGN_NOT</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnDelete">
 									<label>&amp;Delete</label>
 								</object>
-								<flag></flag>
+								<flag>wxALIGN_NOT</flag>
 							</object>
 						</object>
 						<flag>wxLEFT</flag>

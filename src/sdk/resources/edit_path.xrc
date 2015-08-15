@@ -18,6 +18,7 @@
 						<object class="wxTextCtrl" name="txtPath" />
 						<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>8</border>
+						<minsize>240,-1</minsize>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
@@ -25,7 +26,8 @@
 							<label>...</label>
 							<tooltip>Browse</tooltip>
 						</object>
-						<flag></flag>
+						<flag>wxALIGN_NOT</flag>
+						<minsize>24,24</minsize>
 					</object>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>

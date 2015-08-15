@@ -20,6 +20,7 @@
 							<style>wxLB_HSCROLL</style>
 						</object>
 						<flag>wxEXPAND</flag>
+						<minsize>272,160</minsize>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">

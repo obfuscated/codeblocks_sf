@@ -25,6 +25,7 @@
 							<style>wxLC_REPORT|wxLC_SINGLE_SEL</style>
 						</object>
 						<flag>wxEXPAND</flag>
+						<minsize>460,240</minsize>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="btnDefault">
