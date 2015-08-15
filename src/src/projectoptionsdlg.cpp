@@ -11,6 +11,7 @@
 
 #ifndef CB_PRECOMP
     #include "manager.h"
+    #include "logmanager.h"
     #include "macrosmanager.h"
     #include "pluginmanager.h"
     #include "projectmanager.h"
