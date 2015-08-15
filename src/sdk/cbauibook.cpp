@@ -199,6 +199,32 @@ void cbAuiNotebook::FocusActiveTabCtrl()
     }
 }
 
+wxAuiTabCtrl* cbAuiNotebook::GetTabCtrl(wxWindow *page)
+{
+    if (page)
+    {
+        wxAuiTabCtrl *tabCtrl = nullptr;
+        int idx;
+        if (!FindTab(page, &tabCtrl, &idx))
+            return nullptr;
+        return tabCtrl;
+    }
+    else
+        return GetActiveTabCtrl();
+}
+
+void cbAuiNotebook::GetPagesInTabCtrl(std::vector<wxWindow*> &result, wxWindow *page)
+{
+    result.clear();
+    wxAuiTabCtrl* tabCtrl = GetTabCtrl(page);
+    if (tabCtrl)
+    {
+        int count = tabCtrl->GetPageCount();
+        for (int ii = 0; ii < count; ++ii)
+            result.push_back(tabCtrl->GetPage(ii).window);
+    }
+}
+
 void cbAuiNotebook::SetZoom(int zoom)
 {
     // we only set zoom-factor for active (visible) tabs,

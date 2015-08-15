@@ -377,15 +377,15 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     {
         if (m_pData->m_DisplayingPopupMenu)
         {
-            Manager::Get()->GetEditorManager()->CloseAllExcept(this);
+            Manager::Get()->GetEditorManager()->CloseAllInTabCtrlExcept(this);
             m_pData->m_CloseMe = true; // defer delete 'this' until after PopupMenu() call returns
         }
         else
-            Manager::Get()->GetEditorManager()->CloseAll();
+            Manager::Get()->GetEditorManager()->CloseAllInTabCtrl();
     }
     else if (id == idCloseAllOthers)
     {
-        Manager::Get()->GetEditorManager()->CloseAllExcept(this);
+        Manager::Get()->GetEditorManager()->CloseAllInTabCtrlExcept(this);
     }
     else if (id == idSaveMe)
     {

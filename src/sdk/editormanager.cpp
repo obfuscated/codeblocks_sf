@@ -564,7 +564,16 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 
 bool EditorManager::CloseAll(bool dontsave)
 {
-    return CloseAllExcept(GetEditor(_("Start here")), dontsave);
+    EditorBase *startPage = GetEditor(_("Start here"));
+    std::vector<EditorBase*> editors;
+    editors.reserve(m_pNotebook->GetPageCount());
+    for (size_t ii = 0; ii < m_pNotebook->GetPageCount(); ++ii)
+    {
+        EditorBase *eb = static_cast<EditorBase*>(m_pNotebook->GetPage(ii));
+        if (startPage != eb)
+            editors.push_back(eb);
+    }
+    return CloseEditors(editors, dontsave);
 }
 
 bool EditorManager::QueryCloseAll()
@@ -580,26 +589,68 @@ bool EditorManager::QueryCloseAll()
 
 bool EditorManager::CloseAllExcept(EditorBase* editor, bool dontsave)
 {
+    std::vector<EditorBase*> editors;
+    editors.reserve(m_pNotebook->GetPageCount());
+    for (size_t ii = 0; ii < m_pNotebook->GetPageCount(); ++ii)
+        editors.push_back(InternalGetEditorBase(ii));
+
+    editors.erase(std::remove(editors.begin(), editors.end(), editor), editors.end());
+
+    return CloseEditors(editors, dontsave);
+}
+
+bool EditorManager::CloseAllInTabCtrl(bool dontsave)
+{
+    std::vector<EditorBase*> editors;
+    GetEditorsInTabCtrl(editors, GetActiveEditor());
+
+    return CloseEditors(editors, dontsave);
+}
+
+bool EditorManager::CloseAllInTabCtrlExcept(EditorBase* editor, bool dontsave)
+{
+    std::vector<EditorBase*> editors;
+    GetEditorsInTabCtrl(editors, GetActiveEditor());
+
+    editors.erase(std::remove(editors.begin(), editors.end(), editor), editors.end());
+
+    return CloseEditors(editors, dontsave);
+}
+
+void EditorManager::GetEditorsInTabCtrl(std::vector<EditorBase*> &editors, EditorBase *editor)
+{
+    std::vector<wxWindow*> windows;
+    m_pNotebook->GetPagesInTabCtrl(windows, editor);
+    if (!windows.empty())
+    {
+        editors.reserve(windows.size());
+        for (std::vector<wxWindow*>::const_iterator it = windows.begin(); it != windows.end(); ++it)
+            editors.push_back(static_cast<EditorBase*>(*it));
+    }
+}
+
+bool EditorManager::CloseEditors(const std::vector<EditorBase*> &editors, bool dontsave)
+{
     if (!dontsave)
     {
-        for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
+        for (std::vector<EditorBase*>::const_iterator it = editors.begin(); it != editors.end(); ++it)
         {
-            EditorBase* eb = InternalGetEditorBase(i);
-            if (eb && eb != editor && !QueryClose(eb))
+            EditorBase* eb = *it;
+            if (eb && !QueryClose(eb))
                 return false; // aborted
         }
     }
 
     m_pNotebook->Freeze();
-    int count = m_pNotebook->GetPageCount();
-    for (int i = m_pNotebook->GetPageCount() - 1; i >= 0; --i)
+    int count = editors.size();
+    for (std::vector<EditorBase*>::const_reverse_iterator it = editors.rbegin(); it != editors.rend(); ++it)
     {
-        EditorBase* eb = InternalGetEditorBase(i);
-        if (eb && eb != editor && Close(eb, true))
+        EditorBase* eb = *it;
+        if (eb && Close(eb, true))
             --count;
     }
     m_pNotebook->Thaw();
-    return count == (editor ? 1 : 0);
+    return (count == 0);
 }
 
 bool EditorManager::CloseActive(bool dontsave)
@@ -1441,10 +1492,14 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     m_pNotebook->SetSelection(event.GetSelection());
     wxMenu* pop = new wxMenu;
     pop->Append(idNBTabClose, _("Close"));
-    if (GetEditorsCount() > 1)
+    pop->Append(idNBTabCloseAll, _("Close all"));
+    pop->Append(idNBTabCloseAllOthers, _("Close all others"));
+
+    wxAuiTabCtrl *activeTabCtrl = m_pNotebook->GetTabCtrl(GetActiveEditor());
+    if (!activeTabCtrl || activeTabCtrl->GetPageCount() <= 1)
     {
-        pop->Append(idNBTabCloseAll, _("Close all"));
-        pop->Append(idNBTabCloseAllOthers, _("Close all others"));
+        pop->Enable(idNBTabCloseAll, false);
+        pop->Enable(idNBTabCloseAllOthers, false);
     }
 
     int any_modified = 0;
@@ -1457,13 +1512,19 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
                 break; // more than one editor is modified -> enable "Save all"
         }
     }
+
+    pop->AppendSeparator();
+    pop->Append(idNBTabSave, _("Save"));
+    pop->Append(idNBTabSaveAll, _("Save all"));
+    pop->Enable(idNBTabSave, false);
+    pop->Enable(idNBTabSaveAll, false);
+
     if (any_modified > 0)
     {
-        pop->AppendSeparator();
         if (GetEditor(event.GetSelection())->GetModified())
-            pop->Append(idNBTabSave, _("Save"));
+            pop->Enable(idNBTabSave, true);
         if (any_modified > 1 || !GetEditor(event.GetSelection())->GetModified())
-            pop->Append(idNBTabSaveAll, _("Save all"));
+            pop->Enable(idNBTabSaveAll, true);
     }
 
     pop->AppendSeparator();
@@ -1524,12 +1585,12 @@ void EditorManager::OnClose(cb_unused wxCommandEvent& event)
 
 void EditorManager::OnCloseAll(cb_unused wxCommandEvent& event)
 {
-    CloseAll();
+    CloseAllInTabCtrl();
 }
 
 void EditorManager::OnCloseAllOthers(cb_unused wxCommandEvent& event)
 {
-    CloseAllExcept(GetActiveEditor());
+    CloseAllInTabCtrlExcept(GetActiveEditor());
 }
 
 void EditorManager::OnSave(cb_unused wxCommandEvent& event)

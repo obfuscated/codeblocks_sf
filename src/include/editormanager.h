@@ -117,8 +117,14 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         // Returns false on "cancel".
         bool QueryClose(EditorBase* editor);
         bool QueryCloseAll();
+        /** Closes all opened editors. */
         bool CloseAll(bool dontsave = false);
+        /** Closes all opened editors, except the editor passed as parameter. */
         bool CloseAllExcept(EditorBase* editor, bool dontsave = false);
+        /** Closes all editors in the same tab control as the active editor. */
+        bool CloseAllInTabCtrl(bool dontsave = false);
+        /** Closes all editors in the same tab control as the active editor, except the editor passed as parameter. */
+        bool CloseAllInTabCtrlExcept(EditorBase* editor, bool dontsave = false);
         bool Save(const wxString& filename);
         bool Save(int index);
         bool SaveActive();
@@ -185,6 +191,11 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnCheckForModifiedFiles(wxCommandEvent& event);
         bool IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate);
         wxFileName FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate);
+
+        /** Closes all editors passed to the function. */
+        bool CloseEditors(const std::vector<EditorBase*> &editors, bool dontsave = false);
+        /** Returns a vector with pointers to the editors that are in the same tab control as the passed editor. */
+        void GetEditorsInTabCtrl(std::vector<EditorBase*> &editors, EditorBase *editor);
 
         cbAuiNotebook*             m_pNotebook;
         cbNotebookStack*           m_pNotebookStackHead;

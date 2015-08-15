@@ -7,6 +7,9 @@
 #define CBAUIBOOK_H_INCLUDED
 
 #include "prep.h"
+
+#include <vector>
+
 #include <wx/aui/auibook.h>
 #include <wx/dynarray.h>
 
@@ -165,6 +168,15 @@ class cbAuiNotebook : public wxAuiNotebook
         /** \brief Set Focus on the tabCtrl belonging to the active tab
          */
         void FocusActiveTabCtrl();
+
+        /** \brief Returns a pointer to the page's tab control or nullptr.
+         */
+        wxAuiTabCtrl* GetTabCtrl(wxWindow *page);
+
+        /** \brief Return a vector containing all pages that are in the same
+         * tab control as the page passed as parameter.
+         */
+        void GetPagesInTabCtrl(std::vector<wxWindow*> &result, wxWindow *page);
     protected:
         /** \brief Create a unique id from the tooltip-text
          *
