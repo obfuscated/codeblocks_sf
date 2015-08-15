@@ -36,6 +36,19 @@ namespace ScriptBindings
             frmEnd = sa.GetBool(4);
         return sa.Return((SQInteger)self.Index(inpstr.c_str(), chkCase, frmEnd));
     }
+    SQInteger wxArrayString_SetItem(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        if (sa.GetParamCount() != 3)
+            return sq_throwerror(v, "wxArrayString::SetItem wrong number of parameters!");
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
+        int index = sa.GetInt(2);
+        if (index < 0 || size_t(index) >= self.GetCount())
+            return sq_throwerror(v, "wxArrayString::SetItem index out of bounds!");
+        const wxString &value = *SqPlus::GetInstance<wxString,false>(v, 3);
+        self[index] = value;
+        return 0;
+    }
 
     //////////////
     // wxColour //
@@ -260,7 +273,8 @@ namespace ScriptBindings
 //                func(&wxArrayString::Index, "Index").
                 staticFuncVarArgs(&wxArrayString_Index, "Index", "*").
                 func(&wxArrayString::GetCount, "GetCount").
-                func<WXARRAY_STRING_ITEM>(&wxArrayString::Item, "Item");
+                func<WXARRAY_STRING_ITEM>(&wxArrayString::Item, "Item").
+                staticFuncVarArgs(&wxArrayString_SetItem, "SetItem", "*");
 
         //////////////
         // wxColour //

@@ -210,6 +210,10 @@ class wxTest extends script_test_base
         itemValue = _T("String2 modified");
         test_string("Item after modify", array.Item(2),_T("String2"));
 
+        // Test SetItem.
+        array.SetItem(2, _T("String2 modified"));
+        test_string("SetItem", array.Item(2),_T("String2 modified"));
+
         array.Clear();
         test_equal("Clear",array.GetCount(),0);
 
