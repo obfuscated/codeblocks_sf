@@ -66,6 +66,7 @@ class Scripting_TestPlugin extends cbScriptPlugin
     function StartTest()
     {
         local wx = wxTest();
+        wx.clear_global_test_results();
         wx.Run();
     }
 }
