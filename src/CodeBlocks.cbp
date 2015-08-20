@@ -221,6 +221,7 @@
 					<Add directory="exchndl/win32/lib" />
 				</Linker>
 				<ExtraCommands>
+					<Add before="cmd.exe /c if exist devel\exchndl.dll del devel\exchndl.dll" />
 					<Add after="cmd /c if not exist devel\share\CodeBlocks mkdir devel\share\CodeBlocks" />
 					<Add after="zip -jq9 devel\share\CodeBlocks\resources.zip src\resources\*.xrc" />
 					<Add after="zip -jq9 devel\share\CodeBlocks\start_here.zip src\resources\start_here\*.html src\resources\start_here\*.png" />
