@@ -1,53 +1,85 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<assembly xmlns="urn:schemas-microsoft-com:asm.v1"
-          manifestVersion="1.0"
-          xmlns:asmv3="urn:schemas-microsoft-com:asm.v3" >
+<?xml version="1.0" encoding="utf-8"?>
+<asmv1:assembly manifestVersion="1.0"
+                xsi:schemaLocation="urn:schemas-microsoft-com:asm.v1 assembly.adaptive.xsd"
+                xmlns="urn:schemas-microsoft-com:asm.v2"
+                xmlns:asmv1="urn:schemas-microsoft-com:asm.v1"
+                xmlns:asmv2="urn:schemas-microsoft-com:asm.v2"
+                xmlns:asmv3="urn:schemas-microsoft-com:asm.v3"
+                xmlns:co.v1="urn:schemas-microsoft-com:clickonce.v1"
+                xmlns:co.v2="urn:schemas-microsoft-com:clickonce.v2"
+                xmlns:dsig="http://www.w3.org/2000/09/xmldsig#"
+                xmlns:xrml="urn:mpeg:mpeg21:2003:01-REL-R-NS"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 
-  <assemblyIdentity
-    type="win32"
-    name="codeblocks.exe"
-    version="1.0.0.1"
-    processorArchitecture="x86"
-  />
+  <asmv1:assemblyIdentity type="win32"
+                          name="codeblocks.exe"
+                          version="1.0.0.1"
+                          processorArchitecture="x86"
+                          publicKeyToken="0000000000000000" />
 
-  <description>Code::Blocks application</description>
+  <description xmlns="urn:schemas-microsoft-com:asm.v1">Code::Blocks application</description>
 
   <dependency>
     <dependentAssembly>
-      <assemblyIdentity
-        type="win32"
-        name="Microsoft.Windows.Common-Controls"
-        version="6.0.0.0"
-        processorArchitecture="x86"
-        publicKeyToken="6595b64144ccf1df"
-        language="*"
-      />
+      <assemblyIdentity language="*"
+                        name="Microsoft.Windows.Common-Controls"
+                        processorArchitecture="x86"
+                        publicKeyToken="6595b64144ccf1df"
+                        type="win32"
+                        version="6.0.0.0" />
     </dependentAssembly>
   </dependency>
 
+  <!-- User Account Control:
+       Back when Windows Vista launched and the User Account Control feature was first introduced,
+       there was one key recommendation for game developer writing PC games: your game should not
+       require administrator rights to run, and you should add the proper embedded manifest to the
+       game EXE so Windows Vista could tell the game was updated for the new OS. With Visual Studio
+       2005, this was done by turning on some settings for the Linker (Generate Manifest File: Yes)
+       and Manifest Tool (Embed Manifest: Yes) and then setting the "Additional Manifest Files"
+       field to point to a text file that contained:
+  -->
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
       <requestedPrivileges>
-        <requestedExecutionLevel
-          level="asInvoker"
-          uiAccess="false"/>
-        </requestedPrivileges>
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
     </security>
   </trustInfo>
 
-  <asmv3:application>
+  <!-- High-DPI
+       Windows Vista introduced another feature, High-DPI which scaled the UI by a factor of
+       125% or 150% but is off by default. With Windows 7 this was enabled by default depending
+       on the EDID native DPI information so the recommendation is for all Direct3D full-screen
+       applications to declare themselves "High-DPI Aware". This is done via another manifest
+       element. With Visual Studio 2005 and VS 2008, you add an "Additional Manifest Files" file
+       reference to a text file containing:
+  -->
+  <asmv3:application xmlns="urn:schemas-microsoft-com:asm.v1">
     <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
-      <dpiAware>true</dpiAware>
+      <dpiAware>True/PM</dpiAware>
     </asmv3:windowsSettings>
   </asmv3:application>
 
+  <!-- Program Compatibility Assistant (PCA)
+       With Windows Vista, just having the UAC elements was enough to know that the application
+       had been updated for Windows Vista. If no UAC manifest element was found, Windows Vista
+       enabled the Program Compatibility Assistant (PCA) which could check for common failures
+       and resolve them.
+       Windows 7 needed a new way to detect if the EXE really understood Windows 7 to avoid any
+       use of the PCA, and UAC manifest elements alone wasn't sufficient. The solution was more
+       manifest elements! You again add an "Additional Manifest Files" file reference to a text
+       file containing:
+  -->
   <compatibility xmlns="urn:schemas-microsoft-com:compatibility.v1">
     <application>
       <!--The ID's below indicates application support for specific Windows versions -->
-      <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}"/><!-- Vista -->
-      <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}"/><!-- Win7 -->
-      <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}"/><!-- Win8 -->
+      <supportedOS Id="{e2011457-1546-43c5-a5fe-008deee3d3f0}" /><!-- Windows Vista/Server 2008     -->
+      <supportedOS Id="{35138b9a-5d96-4fbd-8e2d-a2440225f93a}" /><!-- Windows 7/Server 2008 R2      -->
+      <supportedOS Id="{4a2f28e3-53b9-4441-ba9c-d69d4a4a6e38}" /><!-- Windows 8/Server 2012         -->
+      <supportedOS Id="{1f676c76-80e1-4239-95bb-83d0f6d0da78}" /><!-- Windows 8/Blue/Server 2012 R2 -->
+      <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" /><!-- Windows 10 / Threshold        -->
     </application>
   </compatibility>
 
-</assembly>
+</asmv1:assembly>
