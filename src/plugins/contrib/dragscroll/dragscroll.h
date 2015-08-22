@@ -31,16 +31,13 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.3.26 2011/01/2"
+#define VERSION "1.3.27 2015/08/21"
 //----------------------------------------
 
-#undef LOGGING
-#define LOGIT wxLogDebug
-#if defined(dsLOGGING)
- #define LOGGING 1
- #undef LOGIT
+//-#undef LOGGING
+//-#define LOGIT wxLogDebug
+#if defined(LOGGING)
  #define LOGIT wxLogMessage
- #define TRAP asm("int3")
 #endif
 
 // anchor to one and only DragScroll object
@@ -206,22 +203,27 @@ private:
     unsigned    m_gtkContextDelay;
 
     bool KeyDown(wxMouseEvent& event)
-        { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
-            return event.RightDown();
+        {
+            if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
+                return event.RightDown();
             return event.MiddleDown();
         }
     bool KeyIsDown(wxMouseEvent& event)
-        { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
-            return event.RightIsDown();
+        {
+            if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
+                return event.RightIsDown();
             return event.MiddleIsDown();
         }
     bool KeyUp(wxMouseEvent& event)
-        { if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
-            return event.RightUp();
+        {
+            if ( 0 ==  cbDragScroll::pDragScroll->GetMouseDragKey() )
+                return event.RightUp();
             return event.MiddleUp();
         }
     int GetUserDragKey()
-        { return ( cbDragScroll::pDragScroll->GetMouseDragKey() ? wxMOUSE_BTN_MIDDLE:wxMOUSE_BTN_RIGHT );}
+        {
+            return ( cbDragScroll::pDragScroll->GetMouseDragKey() ? wxMOUSE_BTN_MIDDLE:wxMOUSE_BTN_RIGHT );
+        }
 
     DECLARE_EVENT_TABLE()
 };
@@ -461,6 +463,9 @@ private:
 //          25) re-instate wxCHECK_VERSION(2, 9, 0) accidently removed.
 //  Commit 1.3.26 2011/01/2
 //          26) Linux: check ClassInfo before scrolling wxListCtrl(s)
+// ----------------------------------------------------------------------------
+//  Commit 1.3.27 2015/08/21
+//          27 Fixes for wxWidgets 3.0 SIGFPE during mouse wheel scroll
 // ----------------------------------------------------------------------------
 //  ToDo
 // ----------------------------------------------------------------------------

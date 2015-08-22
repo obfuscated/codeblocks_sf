@@ -172,7 +172,9 @@ void cbDragScroll::OnAttach()
     // get the CodeBlocks "personality" argument
     wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
 	if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+	#if defined(LOGGING)
      LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
+	#endif
 
     // if DragScroll.ini is in the executable folder, use it
     // else use the default config folder
@@ -186,7 +188,9 @@ void cbDragScroll::OnAttach()
         if (not m_Personality.IsEmpty()) m_CfgFilenameStr << m_Personality + wxT(".") ;
         m_CfgFilenameStr << _T("DragScroll.ini");
     }
+    #if defined(LOGGING)
     LOGIT(_T("DragScroll Config Filename:[%s]"), m_CfgFilenameStr.GetData());
+    #endif
     // read configuaton file
     wxFileConfig cfgFile(wxEmptyString,     // appname
                         wxEmptyString,      // vendor
@@ -323,7 +327,6 @@ int cbDragScroll::Configure(wxWindow* parent)
 void cbDragScroll::CenterChildOnParent(wxWindow* parent, wxWindow* child)
 // ----------------------------------------------------------------------------
 {
-
     int displayX; int displayY;
     ::wxDisplaySize(&displayX, &displayY);
 
@@ -389,8 +392,9 @@ void cbDragScroll::OnDoConfigRequests(wxUpdateUIEvent& /*event*/)
 // ----------------------------------------------------------------------------
 {
     // This is an event triggered by OnDialogDone() to update config settings
-
+    #if defined(LOGGING)
     LOGIT(_T("OnDoConfigRequest event"));
+    #endif
 
     // Attach or Detach windows to match  Mouse Enabled config setting
     if (GetMouseDragScrollEnabled() )  //v04.14
@@ -572,8 +576,9 @@ void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& /*event*/ )
     #endif
 
     wxString cfgFilenameStr = m_CfgFilenameStr;
-
+    #if defined(LOGGING)
     LOGIT(_T("DragScroll Config Filename:[%s]"), cfgFilenameStr.GetData());
+    #endif
     // read configuaton file
     wxFileConfig cfgFile(wxEmptyString,     // appname
                         wxEmptyString,      // vendor
@@ -654,7 +659,6 @@ MouseEventsHandler* cbDragScroll::GetMouseEventsHandler()
 // ----------------------------------------------------------------------------
 bool cbDragScroll::IsAttachedTo(wxWindow* p)
 // ----------------------------------------------------------------------------
-
 {
     if ( wxNOT_FOUND == m_WindowPtrs.Index(p))
         return false;
@@ -679,11 +683,14 @@ void cbDragScroll::Attach(wxWindow *p)
 
     if (wxNOT_FOUND == m_UsableWindows.Index(windowName,false))
      {
+        #if defined(LOGGING)
         LOGIT(wxT("cbDS::Attach skipping [%s]"), p->GetName().c_str());
+        #endif
         return;
      }
-
+    #if defined(LOGGING)
     LOGIT(wxT("cbDS::Attach - attaching to [%s][%d][%p]"), p->GetName().c_str(),p->GetId(),p);
+    #endif
 
     // add window to our array, create a mouse event handler
     // and memorize event handler instance
@@ -749,7 +756,7 @@ void cbDragScroll::AttachRecursively(wxWindow *p)
 // ----------------------------------------------------------------------------
 wxWindow* cbDragScroll::FindWindowRecursively(const wxWindow* parent, const wxWindow* handle)
 // ----------------------------------------------------------------------------{
-{//+v0.4.4
+{
     if ( parent )
     {
         // see if this is the one we're looking for
@@ -809,8 +816,10 @@ void cbDragScroll::Detach(wxWindow* pWindow)
         // If win already deleted, dont worry about disconnectng events
 	    if ( not winExists(pWindow) )
 	    {
+            #if defined(LOGGING)
 	        LOGIT(_T("cbDS:Detach window NOT found %p Handlr: %p"),
                     pWindow, thisEvtHandler);
+            #endif
             return;
 	    } else {
             pWindow->Disconnect(wxEVT_MIDDLE_DOWN,
@@ -853,7 +862,9 @@ void cbDragScroll::DetachAll()
 // ----------------------------------------------------------------------------
 {
 	// delete all handlers
+	#if defined(LOGGING)
 	LOGIT(wxT("cbDS:DetachAll - detaching all [%lu] targets"), static_cast<unsigned long>(m_WindowPtrs.GetCount()) );
+	#endif
 
     // Detach from memorized windows and remove event handlers
     while( m_WindowPtrs.GetCount() )
@@ -960,7 +971,7 @@ void cbDragScroll::OnAppStartupDoneInit()
     // So find & issue the users font zoom change here.
     if ( GetMouseWheelZoom() ) do
     {   // Tell mouse handler to initalize the mouseWheel data
-        // after the htmlWindow is fully initialied
+        // after the htmlWindow is fully initialized
         const EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(_T("Start here"));
         if (not sh) break;
         wxWindow* pWindow = ((dsStartHerePage*)sh)->m_pWin; //htmlWindow
@@ -969,6 +980,7 @@ void cbDragScroll::OnAppStartupDoneInit()
         wheelEvt.SetEventObject(pWindow);
         wheelEvt.m_controlDown = true;
         wheelEvt.m_wheelRotation = 0;
+        wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
         #if wxCHECK_VERSION(2, 9, 0)
         pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
         #else
@@ -1013,6 +1025,7 @@ void cbDragScroll::OnAppStartupDoneInit()
                 wheelEvt.SetEventObject(pWindow);
                 wheelEvt.m_controlDown = true;
                 wheelEvt.m_wheelRotation = 0;
+                wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
                 #if wxCHECK_VERSION(2, 9, 0)
                 pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                 #else
@@ -1154,6 +1167,7 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
                     wheelEvt.SetEventObject(pWindow);
                     wheelEvt.m_controlDown = true;
                     wheelEvt.m_wheelRotation = 0; //set user font
+                    wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
                     #if wxCHECK_VERSION(2, 9, 0)
                     pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                     #else
@@ -1438,7 +1452,6 @@ MouseEventsHandler::~MouseEventsHandler()
 void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
 // ----------------------------------------------------------------------------
 {
-
     // Why is an event getting in here when this window doesnt have the OS focus
     wxWindow* pTopWin = ::wxGetActiveWindow();
     if (pTopWin) pTopWin = ::wxGetTopLevelParent(pTopWin);
