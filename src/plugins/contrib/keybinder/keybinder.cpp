@@ -1027,8 +1027,10 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             pCmd = wxCmd::CreateNew(menuItemLabel, wxMENUCMD_TYPE, nMenuItemID, false);
             if (not pCmd)
             { //CreateNew command did not allocate
+                #if defined(LOGGING)
                 LOGIT(wxT("Merge:CreateNew refused to allocate the new wxCmd"));
                 LOGIT(wxT("Label[%s],ID[%d]"), menuItemLabel.GetData(), nMenuItemID);
+                #endif
                 return modified;
             }
             pCmd->m_strName = menuItemLabel;
@@ -1040,7 +1042,11 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //   menu items will never match causing constant update overhead
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
-             LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
+                #if wxCHECK_VERSION(2, 9, 0)
+                LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetItemLabel().wx_str(), menuItemKeyStr.wx_str() );
+                #else
+                LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
+                #endif
             #endif
         }//if changed
         else
@@ -1090,7 +1096,9 @@ int wxKeyBinder::MergeDynamicMenuItems(wxMenuBar* pMenuBar)     //v0.4.25
         wxCmd* pCmd = pCmdArray->Item(i);
         if (not pMenuBar->FindItem( pCmd->GetId(), NULL) )
         {
+            #if defined(LOGGING)
             LOGIT( _T("Merge Removing old[%s][%d]"), pCmd->GetName().c_str(),pCmd->GetId() );
+            #endif
             RemoveCmd( pCmd);
             ++changed;
         }
@@ -1358,8 +1366,9 @@ void wxKeyBinder::Detach(wxWindow *p, bool deleteEvtHandler)
 {
 	if (!p || !IsAttachedTo(p))
 		return;		// this is not attached...
-
+    #if defined(LOGGING)
     LOGIT(wxT("wxKeyBinder::Detach - detaching from [%s] %p"), p->GetName().c_str(),p);
+    #endif
 
 	// remove the event handler
 	int idx = FindHandlerIdxFor(p);
@@ -1390,7 +1399,9 @@ void wxKeyBinder::DetachAll()
         {   //+v0.4.9
             // tell dtor not to crash by using RemoveEventHander()
             pHdlr->SetWndInvalid(0);
+            #if defined(LOGGING)
             LOGIT( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
+            #endif
         }
         #if LOGGING
          if (pHdlr->GetTargetWnd())
@@ -1556,6 +1567,14 @@ bool wxKeyBinder::Load(wxConfigBase *p, const wxString &key)
 			wxString type(str.AfterFirst(wxT('-')));
 			id = id.Right(id.Len()-wxString(wxCMD_CONFIG_PREFIX).Len());
 			type = type.Right(type.Len()-wxString(wxT("type")).Len());
+
+            if (str.StartsWith(_T("bind-"))) //oops, negative menu id //(2015/08/21)
+            {
+                id = _T("-") + str.Mid(5).BeforeFirst(_T('-')); // eg. "bind-31782-type4660="
+                int typepos = str.Find(_T("type"));
+                if (typepos != wxNOT_FOUND)
+                    type = str.Mid(typepos+4).BeforeFirst(_T('='));
+            }
 
 			// is this a valid entry ?
 			if (id.IsNumber() && type.IsNumber()
@@ -1737,7 +1756,9 @@ bool wxKeyProfileArray::Save(wxConfigBase *cfg, const wxString &key, bool bClean
 
 	for (int i=0; i<GetCount(); i++)
     {
+        #if defined(LOGGING)
         LOGIT(wxT("wxKeyProfileArray::Save profile[%d]"),i);
+        #endif
 		// save all our elements into a subkey of the given key
 		b &= Item(i)->Save(cfg, basekey + wxKEYPROFILE_CONFIG_PREFIX +
 									wxString::Format(wxT("%d"), i), bCleanOld);
@@ -1848,7 +1869,9 @@ void wxKeyMonitorTextCtrl::OnKey(wxKeyEvent &event)
 
         // Command must begin with 'Ctrl-' 'Alt-' or 'Shift-' F1-F??
             wxString keyStrokeString = wxKeyBind::GetKeyStrokeString(event);
+            #if defined(LOGGING)
             LOGIT( _T("KeyStrokString[%s]"),keyStrokeString.c_str() );
+            #endif
         if (not keyStrokeString.IsEmpty() ) do{
             if (keyStrokeString.Length() <2) { keyStrokeString.Clear(); break;}
             if ( (keyStrokeString[0] == 'F') && (keyStrokeString.Mid(1,1).IsNumber()) ) break;
@@ -2762,7 +2785,7 @@ void wxKeyConfigPanel::OnAssignKey(wxCommandEvent &)
 	wxCmd *sel = GetSelCmd();
     if (!sel)
     {  //got null sel
-        wxLogDebug(wxT("GetSelCmd() error in OnAssignKey()"));
+        wxLogDebug(wxT("KeyBinder:GetSelCmd() error in OnAssignKey()"));
         //wxMessageBox(wxT("KeyBinding file corrupted. Please delete it.")); //+v0.4
         wxMessageBox(wxT("KeyBinding file corrupted. Please delete\n")
             + *pKeyFilename); //v0.4.24

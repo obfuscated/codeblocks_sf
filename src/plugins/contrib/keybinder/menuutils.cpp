@@ -72,23 +72,23 @@ int wxFindMenuItem(wxMenuBar *p, const wxString &str)
 
 namespace
 {
-// ----------------------------------------------------------------------------
-int FindMenuDuplicateCount(wxMenuBar *p, wxString &str)
-// ----------------------------------------------------------------------------
-{
-    //int id = wxNOT_FOUND;
-    int count = 0;
-
-    for (int i = 0; i < (int)p->GetMenuCount(); ++i) {
-
-        //id = p->GetMenu(i)->FindItem(str);
-        //if (id != wxNOT_FOUND)
-        //  count++;
-        FindMenuDuplicateItems( p->GetMenu(i), str, count);
-    }
-
-    return count;
-}
+//// ----------------------------------------------------------------------------
+//int FindMenuDuplicateCount(wxMenuBar *p, wxString &str)
+//// ----------------------------------------------------------------------------
+//{
+//    //int id = wxNOT_FOUND;
+//    int count = 0;
+//
+//    for (int i = 0; i < (int)p->GetMenuCount(); ++i) {
+//
+//        //id = p->GetMenu(i)->FindItem(str);
+//        //if (id != wxNOT_FOUND)
+//        //  count++;
+//        FindMenuDuplicateItems( p->GetMenu(i), str, count);
+//    }
+//
+//    return count;
+//}
 }
 // ----------------------------------------------------------------------------
 int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
@@ -123,11 +123,13 @@ int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
         if (rStr == pMenuItem->GetLabel().Trim() )
         #endif
         {    rCount++;
+            #if defined(LOGGING)
              #if wxCHECK_VERSION(2, 9, 0)
              LOGIT( _T("Duplicate menu item [%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabelText().GetData()  );
              #else
              LOGIT( _T("Duplicate menu item [%d][%s]"), pMenuItem->GetId(), pMenuItem->GetLabel().GetData()  );
              #endif
+            #endif
         }
     }//for
     return rCount;
@@ -213,7 +215,9 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // like a file path.
 
     if ( sFullMenuPath.IsEmpty() ) return wxNOT_FOUND;
+    #if defined(LOGGING)
     LOGIT( _T("FindMenuIdUsingFullMenuPath[%s]"), sFullMenuPath.c_str() );
+    #endif
     wxMenuBar* pMenuBar = wxMenuCmd::m_pMenuBar;
     int id = wxNOT_FOUND;
     int menuIndex = wxNOT_FOUND;
@@ -240,7 +244,9 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
     // find and compare file key path levels to each level of the actual menu
     for (int i=1; i < (int)levels.GetCount(); ++i)
     {
+        #if defined(LOGGING)
         LOGIT( _T("Searching for Level[%d][%s]"), i, levels[i].wx_str() );
+        #endif
         if (not pMenu) return wxNOT_FOUND;
         found = false;
         for (int j=0; j < (int)pMenu->GetMenuItemCount(); ++j )
@@ -255,10 +261,12 @@ int FindMenuIdUsingFullMenuPath( const wxString& sFullMenuPath )
             {   menuIndex = j;
                 pMenu = pMenuItem->GetSubMenu();
                 found = true;
-                #if wxCHECK_VERSION(2, 9, 0)
-                LOGIT( _T("Found menuItem [%s]"), pMenuItem->GetItemLabelText().c_str() );
-                #else
-                LOGIT( _T("Found menuItem [%s]"), pMenuItem->GetLabel().c_str() );
+                #if defined(LOGGING)
+                    #if wxCHECK_VERSION(2, 9, 0)
+                    LOGIT( _T("Found menuItem [%s]"), pMenuItem->GetItemLabelText().c_str() );
+                    #else
+                    LOGIT( _T("Found menuItem [%s]"), pMenuItem->GetLabel().c_str() );
+                    #endif
                 #endif
                 break;
             }
@@ -600,19 +608,23 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
     else
     {   // didn't find the menu id from the config file.
         // find actual id using the full menu path string
+        #if defined(LOGGING)
         LOGIT( _T("CreateNew() Unmatched id[%d][%s]"), id, cmdName.GetData() );
+        #endif
         actualMenuID = FindMenuIdUsingFullMenuPath( fullMenuPath ) ;
         if (not (wxNOT_FOUND == actualMenuID) )
             pMenuItem = m_pMenuBar->FindItem( actualMenuID );
+        #if defined(LOGGING)
         else
             LOGIT( _T("CreateNew() UnFound id[%d][%s]"), id, cmdName.GetData() );
+        #endif
 
 
     }//end else
 
     if (not pMenuItem)
     {
-        wxLogDebug(_T("CreateNew() not created[%d][%s]"), id, cmdName.GetData());
+        wxLogDebug(_T("KeyBinder:CreateNew() not created[%d][%s]"), id, cmdName.GetData());
         return NULL;
     }
 

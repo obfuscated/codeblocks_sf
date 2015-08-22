@@ -29,6 +29,10 @@
     #include "personalitymanager.h"
 #endif
 
+#if defined(LOGGING)
+#include "debugging.h"
+#endif
+
 #include <wx/fileconf.h>
 #if defined(__WXMSW__) && wxCHECK_VERSION(2,9,0)
     #include <wx/msw/private/keyboard.h>
@@ -284,7 +288,9 @@ void cbKeyBinder::BuildMenu(wxMenuBar* menuBar)
     // get the CodeBlocks "personality" argument
     wxString m_Personality = Manager::Get()->GetPersonalityManager()->GetPersonality();
     if (m_Personality == wxT("default")) m_Personality = wxEmptyString;
+    #if defined(LOGGING)
     LOGIT( _T("Personality is[%s]"), m_Personality.GetData() );
+    #endif
 
     // if cbKeyBinder##.ini is in the executable folder, use it
     // else use the default config folder
@@ -373,7 +379,7 @@ void cbKeyBinder::Rebind(bool update)
         UpdateArr(*m_pKeyProfArr);
 
     #ifdef LOGGING
-        wxLogDebug(_T("cbKeyBinder Rebind\n"));
+        wxLogDebug(_T("KeyBinder Rebind\n"));
     #endif
 
     return;
@@ -709,9 +715,11 @@ void cbKeyBinder::OnSave(bool backitup)
         for (int i=0; i<m_pKeyProfArr->GetCount(); i++)
             total += m_pKeyProfArr->Item(i)->GetCmdCount();
         cfg->Flush();
+        #if defined(LOGGING)
         LOGIT(wxString::Format(wxT("All the [%d] keyprofiles ([%d] commands ")
             wxT("in total) have been saved in \n\"")+path, //+wxT(".ini\""),
               m_pKeyProfArr->GetCount(), total) );
+        #endif
 
         // copy the .ini file to a .ini.bak file
         #ifdef LOGGING
@@ -811,6 +819,7 @@ void cbKeyBinder::MergeAcceleratorTable(const bool mergeAccelTable)
 #endif
         #if defined(LOGGING)
         LOGIT( _T("accelEntry[%d]mods[%d]code[%d],id[%d]"),
+                    ii,
                     entries[ii].GetFlags(),
                     entries[ii].GetKeyCode(),
                     entries[ii].GetCommand()
@@ -1127,8 +1136,10 @@ void cbKeyBinder::AttachEditor(wxWindow* pWindow)
              LOGIT(_T("cbKB:AttachEditor %s %p"), thisEditor->GetLabel().c_str(), thisEditor);
             #endif
         }
+        #if defined(LOGGING)
         else
             LOGIT( _T("AttachEditor failed[%p][%p]"), pWindow, thisEditor );
+        #endif
     }
 }
 // ----------------------------------------------------------------------------
@@ -1246,7 +1257,6 @@ void cbKeyBinder::OnEditorClose(CodeBlocksEvent& event)
 void cbKeyBinder::OnAppStartupDone(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
-
     // if keys still unbound, do it here.
     // load key binding from file
 
@@ -1308,7 +1318,10 @@ void cbKeyBinder::OnWindowCreateEvent(wxEvent& event)
                 //-if (pRightSplitWin eq pWindow)
                 //-{    Attach(pRightSplitWin);
                 if (pWindow->GetParent() == ed)
-                {   LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
+                {
+                    #if defined(LOGGING)
+                    LOGIT( _T("OnWindowCreateEvent Attaching:%p"), pWindow );
+                    #endif
                     AttachEditor(pWindow);
                 }
             }
@@ -1398,7 +1411,9 @@ void cbKeyBinder::OnAppStartShutdown(CodeBlocksEvent& event)
 {
     // currently this is defined in the sdk, but not implemented
     // and never called. Another sdk gotcha! And another reason to avoid it.
+    #if defined(LOGGING)
      LOGIT( _T("OnAppStartShutdown") );
+    #endif
     m_bAppShutDown = true;
     // stop the merge timer
     EnableMerge(false);
@@ -1423,7 +1438,9 @@ void cbKeyBinder::OnMenuBarModify(CodeBlocksEvent& event)
     int modType = event.GetEventType();
     if ( modType == cbEVT_MENUBAR_CREATE_BEGIN ) sEventType = wxT("BEGIN");
     if ( modType == cbEVT_MENUBAR_CREATE_END ) sEventType = wxT("END");
+    #if defined(LOGGING)
     LOGIT( _T("OnMenuBarModify[%d][%s]"), modType , sEventType.wx_str() );
+    #endif
 
     if ( modType == cbEVT_MENUBAR_CREATE_BEGIN )
     {
@@ -1477,7 +1494,9 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
 
     if (wxIsAbsolutePath(argv0Str))
     {
+        #if defined(LOGGING)
         LOGIT( _T("FindAppPath: AbsolutePath[%s]"), wxPathOnly(argv0Str).GetData() );
+        #endif
         return wxPathOnly(argv0Str);
     }
     else
@@ -1490,7 +1509,9 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
         str = currentDir + argv0Str;
         if (wxFileExists(str))
         {
+            #if defined(LOGGING)
             LOGIT( _T("FindAppPath: RelativePath[%s]"), wxPathOnly(str).GetData() );
+            #endif
             return wxPathOnly(str);
         }
     }
@@ -1503,12 +1524,16 @@ wxString cbKeyBinder::FindAppPath(const wxString& argv0, const wxString& cwd, co
     str = pathList.FindAbsoluteValidPath(argv0Str);
     if (!str.IsEmpty())
     {
+        #if defined(LOGGING)
         LOGIT( _T("FindAppPath: SearchPath[%s]"), wxPathOnly(str).GetData() );
+        #endif
         return wxPathOnly(str);
     }
 
     // Failed
+     #if defined(LOGGING)
      LOGIT(  _T("FindAppPath: Failed, returning cwd") );
+     #endif
     return wxEmptyString;
     //return cwd;
 }

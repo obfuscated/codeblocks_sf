@@ -30,7 +30,7 @@
 //int /*-lf-WXDLLIMPEXP_KEYBINDER*/ wxFindMenuItem(wxMenuBar *, const wxString &strMenuItemName);
 
 int wxFindMenuItem(wxMenuBar *, const wxString &strMenuItemName);
-int FindMenuDuplicateCount(wxMenuBar *p, const wxString &str);
+//-int FindMenuDuplicateCount(wxMenuBar *p, const wxString &str);
 int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount);
 wxString GetFullMenuPath(int);
 
