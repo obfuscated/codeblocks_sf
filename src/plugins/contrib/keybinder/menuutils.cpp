@@ -375,7 +375,9 @@ void wxMenuCmd::Update(wxMenuItem* pSpecificMenuItem) //for __WXGTK__
     }
 
     wxString newtext = str+wxT("\t")+GetShortcut(0)->GetStr();
+    #if defined(LOGGING)
     LOGIT(wxT("wxMenuCmd::Update - setting the new text to [%s]"), newtext.c_str());
+    #endif
 
 
     // on GTK, the SetAccel() function doesn't have any effect...
