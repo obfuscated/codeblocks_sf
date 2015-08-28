@@ -586,7 +586,26 @@ private:
     /** Static member, this is a hash map storing all user defined macro replacement rules */
     static wxStringHashMap s_Replacements;
 
+    /** normally, this record the doxygen style comments for the next token definition
+     *  for example, here is a comment
+     *  @code
+     *      /// description of aaa
+     *      int aaa;
+     *  @endcode
+     *  Then, the "description of aaa" is stored in this variable
+     *  when the token "aaa" is added to the TokenTree, it will associate the documen and token
+     */
     wxString             m_NextTokenDoc;
+
+    /** store the recent added token index
+     *  for example, here is a comment
+     *  @code
+     *      int aaa; //!< description of aaa
+     *  @endcode
+     *  the token "aaa" is added to the token tree before reading the description. After that the
+     *  token index is stored, and later if we read the "description of aaa", we will attach the
+     *  document to the token
+     */
     int                  m_LastTokenIdx;
 };
 
