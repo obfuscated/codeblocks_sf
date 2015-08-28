@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="SpellChecker" />
+		<Option title="SpellChecker wx2.8.x" />
 		<Option pch_mode="2" />
 		<Option default_target="plugin" />
 		<Option compiler="gcc" />
@@ -29,7 +29,7 @@
 					<Add directory="hunspell/" />
 				</Compiler>
 				<Linker>
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
@@ -55,7 +55,7 @@
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="../../../devel" />
 					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
@@ -90,7 +90,7 @@
 					<Add library="wxSpellChecker" />
 					<Add library="hunspell" />
 					<Add library="codeblocks" />
-					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add directory="../../../devel" />
 					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
@@ -112,6 +112,7 @@
 				<Environment>
 					<Variable name="WX_CFG" value="" />
 					<Variable name="WX_SUFFIX" value="u" />
+					<Variable name="WX_VERSION" value="28" />
 				</Environment>
 			</Target>
 		</Build>
@@ -285,6 +286,18 @@
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="hunspell/src/hunspell/w_char.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/odfparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/odfparser.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/xmlparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/xmlparser.hxx">
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="manifest.xml">

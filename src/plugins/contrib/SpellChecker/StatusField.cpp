@@ -5,6 +5,7 @@
 #include <wx/image.h>
 #include <wx/menu.h>
 #include <wx/msgdlg.h>
+#include <wx/filefn.h>
 
 #include <algorithm>
 #include <vector>
@@ -12,6 +13,7 @@
 #include "SpellCheckerConfig.h"
 #include "SpellCheckerPlugin.h"
 #define LANGS 10
+
 namespace
 {
     const int idCommand[LANGS]  = {static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),static_cast<int>(wxNewId()),
@@ -22,14 +24,21 @@ namespace
 
 SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerPlugin *plugin, SpellCheckerConfig *sccfg)
     :wxPanel(parent, wxID_ANY),
+    m_text(NULL),
+    m_bitmap(NULL),
     m_sccfg(sccfg),
     m_plugin(plugin)
 {
     //ctor
     m_text = new wxStaticText(this, wxID_ANY, m_sccfg->GetDictionaryName());
 
-    wxBitmap bm(wxImage( m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + m_sccfg->GetDictionaryName() + _T(".png"), wxBITMAP_TYPE_PNG ));
-    m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
+    wxString imgPath = m_sccfg->GetBitmapPath() + wxFILE_SEP_PATH + m_sccfg->GetDictionaryName() + _T(".png");
+    if ( wxFileExists(imgPath) )
+    {
+        wxBitmap bm(wxImage(imgPath, wxBITMAP_TYPE_PNG));
+        if ( bm.IsOk() )
+            m_bitmap = new wxStaticBitmap(this, wxID_ANY, bm);
+    }
 
     Update();
 
@@ -39,10 +48,12 @@ SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerP
     Connect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
     m_text->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    m_bitmap->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+    if (m_bitmap)
+        m_bitmap->Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     Connect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     m_text->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
-    m_bitmap->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
+    if (m_bitmap)
+        m_bitmap->Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
     Connect(wxEVT_LEFT_DCLICK, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp), NULL, this);
 }
 
@@ -55,7 +66,8 @@ SpellCheckerStatusField::~SpellCheckerStatusField()
     Disconnect(idEditPersonalDictionary, wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerStatusField::OnEditPersonalDictionary), NULL, this);
 
     m_text->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
-    m_bitmap->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
+    if (m_bitmap)
+        m_bitmap->Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
     Disconnect(wxEVT_RIGHT_UP, wxMouseEventHandler(SpellCheckerStatusField::OnRightUp));
 }
 //void SpellCheckerStatusField::SetLanguage(const wxString &language)
@@ -75,19 +87,28 @@ void SpellCheckerStatusField::Update()
         m_text->SetLabel(_("off"));
         imgPath += _T("disabled.png");
     }
-    wxBitmap bm(wxImage(imgPath, wxBITMAP_TYPE_PNG));
-    if ( bm.IsOk() )
+
+    bool imgOK = false;
+    if ( m_bitmap && wxFileExists(imgPath) )
     {
-        m_text->Hide();
-        m_bitmap->Hide();
-        m_bitmap->SetBitmap(bm);
-        m_bitmap->Show();
+        wxBitmap bm(wxImage(imgPath, wxBITMAP_TYPE_PNG));
+        if ( bm.IsOk() )
+        {
+            m_text->Hide();
+            m_bitmap->Hide();
+            m_bitmap->SetBitmap(bm);
+            m_bitmap->Show();
+            imgOK = true;
+        }
     }
-    else
+
+    if (!imgOK)
     {
-        m_bitmap->Hide();
+        if (m_bitmap)
+            m_bitmap->Hide();
         m_text->Show();
     }
+
     DoSize();
 }
 
@@ -97,12 +118,15 @@ void SpellCheckerStatusField::OnSize(wxSizeEvent &event)
 }
 void SpellCheckerStatusField::DoSize()
 {
-    //m_bitmap->SetSize(this->GetSize());
     wxSize msize = this->GetSize();
-    wxSize bsize = m_bitmap->GetSize();
 
     m_text->SetSize(msize);
-    m_bitmap->Move(msize.x/2 - bsize.x/2, msize.y/2 - bsize.y/2);
+
+    if (m_bitmap)
+    {
+        wxSize bsize = m_bitmap->GetSize();
+        m_bitmap->Move(msize.x/2 - bsize.x/2, msize.y/2 - bsize.y/2);
+    }
 }
 
 void SpellCheckerStatusField::OnRightUp(wxMouseEvent &event)

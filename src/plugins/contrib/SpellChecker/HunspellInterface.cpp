@@ -362,10 +362,7 @@ wxString HunspellInterface::GetSelectedLanguage()
   {
     return it->second.GetValueAsString();
   }
-  else
-  {
-    return wxEmptyString;
-  }
+  return wxEmptyString;
 }
 
 wxString HunspellInterface::GetAffixFileName()
@@ -382,11 +379,8 @@ wxString HunspellInterface::GetAffixFileName()
     {
       return GetAffixFileName(strLanguage);
     }
-    else
-    {
-      return wxEmptyString;
-    }
   }
+  return wxEmptyString;
 }
 
 wxString HunspellInterface::GetAffixFileName(const wxString& strDictionaryName)
@@ -396,10 +390,7 @@ wxString HunspellInterface::GetAffixFileName(const wxString& strDictionaryName)
   {
     return (m_strDictionaryPath + wxFILE_SEP_PATH + (*finder).second + _T(".aff"));
   }
-  else
-  {
-    return wxEmptyString;
-  }
+  return wxEmptyString;
 }
 
 wxString HunspellInterface::GetDictionaryFileName()
@@ -416,11 +407,8 @@ wxString HunspellInterface::GetDictionaryFileName()
     {
       return GetDictionaryFileName(strLanguage);
     }
-    else
-    {
-      return wxEmptyString;
-    }
   }
+  return wxEmptyString;
 }
 
 wxString HunspellInterface::GetDictionaryFileName(const wxString& strDictionaryName)
@@ -430,10 +418,7 @@ wxString HunspellInterface::GetDictionaryFileName(const wxString& strDictionaryN
   {
     return (m_strDictionaryPath + wxFILE_SEP_PATH + (*finder).second + _T(".dic"));
   }
-  else
-  {
-    return wxEmptyString;
-  }
+  return wxEmptyString;
 }
 
 void HunspellInterface::AddCustomMySpellDictionary(const wxString& strDictionaryName, const wxString& strDictionaryFileRoot)
@@ -456,7 +441,6 @@ wxString HunspellInterface::GetCharacterEncoding()
   return encoding;
 }
 
-
 ///////////// Options /////////////////
 // "dictionary-path" - location of dictionary files
 // "language" - selected language
@@ -465,4 +449,3 @@ wxString HunspellInterface::GetCharacterEncoding()
 //
 // "dict-file" - dictionary file
 // "affix-file" - affix file
-
