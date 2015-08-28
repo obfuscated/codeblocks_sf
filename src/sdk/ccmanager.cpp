@@ -912,10 +912,15 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
 
     int pos = stc->GetCurrentPos();
     int argsPos = wxSCI_INVALID_POSITION;
+    // save the current tip shown text for later recalling
     wxString curTip;
-    if (!m_CallTips.empty())
+    // check whether m_CurCallTip is invalid(point to the end of m_CallTips)
+    if (!m_CallTips.empty() && m_CurCallTip != m_CallTips.end())
         curTip = m_CurCallTip->tip;
+
     m_CallTips = ccPlugin->GetCallTips(pos, stc->GetStyleAt(pos), ed, argsPos);
+    // since m_CallTips get updated, we should update the m_CurCallTip, they are done in
+    // the following if/else statement.
     if (!m_CallTips.empty() && (event.GetInt() != FROM_TIMER || argsPos == m_CallTipActive))
     {
         int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
@@ -983,6 +988,8 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     {
         static_cast<wxScintilla*>(stc)->CallTipCancel();
         m_CallTipActive = wxSCI_INVALID_POSITION;
+        // make m_CurCallTip invalid
+        m_CurCallTip = m_CallTips.end();
     }
 }
 
