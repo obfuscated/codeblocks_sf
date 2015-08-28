@@ -2293,8 +2293,10 @@ void CodeCompletion::OnWorkspaceChanged(CodeBlocksEvent& event)
     if (IsAttached() && m_InitDone)
     {
         cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
-        // if we receive a workspace changed event, but the project is NULL, this means the user
-        // try to close the application, so we don't need to update the UI here.
+        // if we receive a workspace changed event, but the project is NULL, this means two condition
+        // could happen.
+        // (1) the user try to close the application, so we don't need to update the UI here.
+        // (2) the user just open a new project after cb started up
         if (project)
         {
             if (!m_NativeParser.GetParserByProject(project))
