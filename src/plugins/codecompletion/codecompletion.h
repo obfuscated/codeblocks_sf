@@ -353,7 +353,11 @@ private:
 
     /** timer triggered by editor hook function to delay the real-time parse */
     wxTimer                 m_TimerRealtimeParsing;
-    /** timer for toolbar */
+
+    /** timer for toolbar
+     *  we only show an updated item in CC's toolbar's item list when caret position is stable for
+     *  a period of time.
+     */
     wxTimer                 m_TimerToolbar;
 
     /* FIXME (ollydbg#1#03/20/15): This timer is added by rev 6510, but I don't know what is the
@@ -369,10 +373,18 @@ private:
 
     /** delay after receive a project save/modified event */
     wxTimer                 m_TimerReparsing;
-    /** delay after receive editor activated event */
+
+    /** delay after receive editor activated event
+     *  the reason we need a timer is that we want to get a stable editor activate information
+     *  thus we will only handle the last editor activated editor
+     *  The timer will be restart when an editor activated event happens.
+     */
     wxTimer                 m_TimerEditorActivated;
 
-    /** the last valid editor */
+    /** the last valid editor
+     *  it is saved in editor activated event handler, and will be verified in editor activated timer
+     *  event handler
+     */
     cbEditor*               m_LastEditor;
 
     // The variables below were related to CC's toolbar
@@ -390,12 +402,19 @@ private:
     ScopeMarksVec           m_ScopeMarks;
     /** this is a "filename->info" map containing all the opening files choice info */
     FunctionsScopeMap       m_AllFunctionsScopes;
-    /** indicate whether the CC's toolbar need a refresh */
+
+    /** indicate whether the CC's toolbar need a refresh, this means the toolbar list will be
+     *  reconstructed
+     */
     bool                    m_ToolbarNeedRefresh;
-    /** force update toolbar */
+
+    /** force to re-collect the CC toolbar's item information
+     *  this means we will parse the buffer to collect the scope information
+     *  and then rebuild the toolbar items
+     */
     bool                    m_ToolbarNeedReparse;
 
-    /** current caret line */
+    /** current caret line, this is actually the saved caret line */
     int                     m_CurrentLine;
 
     /** the file updating the toolbar info */
@@ -407,7 +426,9 @@ private:
     /** indicate the editor has modified by the user and a real-time parse should be start */
     bool                    m_NeedReparse;
 
-    /** remember the number of bytes in the current editor/document */
+    /** remember the number of bytes in the current editor/document
+     *  this is actually the saved editor or file's size
+     */
     int                     m_CurrentLength;
 
     /** batch run UpdateEditorSyntax() after first parsing */
