@@ -321,7 +321,7 @@ public:
     /** KMP find, get the first position, if find nothing, return -1 */
     int KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen);
 
-    /** a Token is added, this function also add doxygen style document attached to the Token */
+    /** a Token is added, associate doxygen style documents(comments before the variables) to the Token */
     void SetLastTokenIdx(int tokenIdx);
 
 protected:
@@ -607,6 +607,12 @@ private:
      *  document to the token
      */
     int                  m_LastTokenIdx;
+
+    /** indicates whether we are reading the macro definition
+     *  This variable will affect how the doxygen comments will be associated to the Token.
+     *  @see Tokenizer::SkipComment for details
+     */
+    bool m_ReadingMacroDefinition;
 };
 
 #endif // TOKENIZER_H

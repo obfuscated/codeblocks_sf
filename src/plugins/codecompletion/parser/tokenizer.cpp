@@ -111,7 +111,8 @@ Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_FirstRemainingLength(0),
     m_RepeatReplaceCount(0),
     m_NextTokenDoc(),
-    m_LastTokenIdx(-1)
+    m_LastTokenIdx(-1),
+    m_ReadingMacroDefinition(false)
 {
     m_TokenizerOptions.wantPreprocessor = true;
     m_TokenizerOptions.storeDocumentation = true;
@@ -433,6 +434,7 @@ bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting, bool 
 
 wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
 {
+    m_ReadingMacroDefinition = true;
     if (stripUnneeded)
     {
         // there are many cases when reading the #define xxx *****
@@ -531,13 +533,14 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
         TRACE(_T("ReadToEOL(): (END) We are now at line %u, CurrentChar='%c', PreviousChar='%c', NextChar='%c'"),
               m_LineNumber, CurrentChar(), PreviousChar(), NextChar());
         TRACE(_T("ReadToEOL(): %s"), str.wx_str());
-
+        m_ReadingMacroDefinition = false;
         return str;
     }
     else
     {
         const unsigned int idx = m_TokenIndex;
         SkipToEOL(nestBraces);
+        m_ReadingMacroDefinition = false;
         return m_Buffer.Mid(idx, m_TokenIndex - idx);
     }
 }
@@ -857,6 +860,17 @@ bool Tokenizer::SkipComment()
             isDoc = (CurrentChar() == '/' && NextChar() != '/'); // "///" but not "////"
     }
 
+    // m_ExpressionResult.empty() == true means we are running the Tokenizer in global level, no
+    // preprocessor branch is entered.
+    // m_ExpressionResult.top() == true means we are in the top true branch of the conditional
+    // preprocessor directives, those scopes covers the valid doxygen comments. E.g.
+    // #if 1
+    //     /** valid documents */
+    //     int a;
+    // #else
+    //     /** invalid documents */
+    //     int a;
+    // #endif
     if (isDoc)
         isDoc = m_ExpressionResult.empty() || m_ExpressionResult.top();
 
@@ -950,10 +964,24 @@ bool Tokenizer::SkipComment()
 
             if (lineToAppend >= 0) // we have document after the token place
             {
-                if (m_LastTokenIdx != -1)
-                    m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_NextTokenDoc + doc);
+                // if we are reading the macro definition(m_ReadingMacroDefinition==true) 
+                // then don't run the AppendDocumentation() to the previous Token. E.g.
+                //     int aaa;
+                //     #define FOO /*!< comments */
+                // That is: we read the "comments", but don't attach to Token aaa, instead, we
+                // translate this kind of comments as "document before the token", at this time
+                // the Token FOO is not constructed yet, but once it is constructed, the "comments"
+                // will attach to Token FOO
+                if (m_ReadingMacroDefinition)
+                    m_NextTokenDoc = doc + m_NextTokenDoc;
+                else
+                {
+                    // we need to attach the document to recent added Token
+                    if (m_LastTokenIdx != -1)
+                        m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_NextTokenDoc + doc);
 
-                m_NextTokenDoc.clear();
+                    m_NextTokenDoc.clear();
+                }
             }
             else
             {
