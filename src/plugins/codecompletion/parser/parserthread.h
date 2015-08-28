@@ -404,10 +404,10 @@ private:
     bool                 m_IsLocal;
 
     /** This is a very important member variables! It serves as a type stack,
-      * eg: parsing the statement: "int wxString const varA;"
+      * eg: parsing the statement: "unsigned int const varA;"
       * we determine 'varA' is a token variable, until we searching to the last semicolon.
       * every token before 'varA' will be pushed to m_Str, at this time
-      * m_Str = "int wxString const"
+      * m_Str = "unsigned int const"
       */
     wxString             m_Str;
 
