@@ -21,12 +21,18 @@ typedef std::list<wxString> StringList;
 
 namespace ParserCommon
 {
+    /** the enum type of the file type */
     enum EFileType
     {
         ftHeader,
         ftSource,
         ftOther
     };
+
+    /** return a file type, which can be either header files or implementation files or other files
+     *  @param filename the input file name
+     *  @param force_refresh read the user's option of file extension to classify the file type
+     */
     EFileType FileType(const wxString& filename, bool force_refresh = false);
 }// namespace ParserCommon
 
