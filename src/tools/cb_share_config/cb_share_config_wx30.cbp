@@ -43,7 +43,7 @@
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
-			<Add library="txml30" />
+			<Add library="txml" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
 			<Add directory="..\..\base\tinyxml" />

@@ -39,7 +39,7 @@
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add option="`pkg-config glib-2.0 --libs`" />
-			<Add library="txml30" />
+			<Add library="txml" />
 			<Add directory="../../base/tinyxml" />
 			<Add directory="../../devel30" />
 		</Linker>
