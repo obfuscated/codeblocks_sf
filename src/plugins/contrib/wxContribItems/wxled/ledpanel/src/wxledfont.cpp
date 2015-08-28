@@ -161,7 +161,7 @@ AdvancedMatrixObject* wxLEDFont::GetMOForText(const wxString& text, wxAlignment 
 	mo_forText->FitRight();
 
 	// free the array for the lines
-	delete mo_lines;
+	delete[] mo_lines;
 
 	// return the mo
 	return mo_forText;
