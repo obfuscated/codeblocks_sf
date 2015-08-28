@@ -12,7 +12,7 @@
 
 class Parser;
 class cbProject;
-
+// the files and the macro definition are ready, so we put them in the thread pool
 class ParserThreadedTask : public cbThreadedTask
 {
 public:

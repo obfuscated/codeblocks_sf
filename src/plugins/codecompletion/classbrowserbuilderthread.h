@@ -44,17 +44,27 @@ public:
               const BrowserOptions& bo, TokenTree* tt,
               int idThreadEvent);
 
-    // Called from external, BuildTree():
+
+    /** construct the children of the tree item
+     *  Called from external, BuildTree():
+     */
     void ExpandItem(wxTreeItemId item);
 #ifndef CC_NO_COLLAPSE_ITEM
-    // Called from external, BuildTree(), RemoveInvalidNodes():
+    /** remove the children of the tree item
+     *  Called from external, BuildTree(), RemoveInvalidNodes():
+     */
     void CollapseItem(wxTreeItemId item);
 #endif // CC_NO_COLLAPSE_ITEM
+
     // Called from external and SelectItemRequired():
     void SelectItem(wxTreeItemId item);
+
     // Called from external:
     void SelectItemRequired();
 
+    /** ask the worker thread to die
+     *  Called from external: when the class browser window get destroyed
+     */
     void RequestTermination(bool terminate = true) { m_TerminationRequested = terminate; }
 
 protected:
@@ -65,10 +75,16 @@ protected:
 
     // Called from BuildTree():
     void RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemId parent); // recursive
-    void ExpandNamespaces(wxTreeItemId node, TokenKind tokenKind, int level);            // recursive
+
+    /** recursively construct the children of node's children, which matches tokenKind
+     *  Called from BuildTree():
+     *  @param level the recursive level
+     */
+    void ExpandNamespaces(wxTreeItemId node, TokenKind tokenKind, int level);
 
     // Called from ExpandItem():
     bool CreateSpecialFolders(CCTreeCtrl* tree, wxTreeItemId parent);
+
     // Called from CreateSpecialFolders():
     wxTreeItemId AddNodeIfNotThere(CCTreeCtrl* tree, wxTreeItemId parent,
                                    const wxString& name, int imgIndex = -1, CCTreeCtrlData* data = 0);
@@ -105,8 +121,8 @@ protected:
     /** Some member functions of ClassBrowserBuilderThread such as ExpandItem() can either be called
      * from the main GUI thread(in ClassBrowser::OnTreeItemExpanding(wxTreeEvent& event)), or be
      * called in the worker thread(in BuildTree() which is called in ClassBrowserBuilderThread::Entry()),
-     * to protect the member variables of the class, we use the Mutex so that only one thread can
-     * access to those member variables.
+     * to protect the member variables of the class(especially the wxTreeCtrl, we use the Mutex so
+     * that only one thread can access to those member variables.
      */
     wxMutex          m_ClassBrowserBuilderThreadMutex;
     NativeParser*    m_NativeParser;

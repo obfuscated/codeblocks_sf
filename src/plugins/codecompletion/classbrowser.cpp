@@ -883,13 +883,15 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
         thread_needs_run = true; // just created, so surely need to run it
     }
 
-    if (!thread_needs_run)
+    if (!thread_needs_run) // this means a worker thread is already created
     {
         TRACE(wxT("ClassBrowser: Pausing ClassBrowserBuilderThread..."));
     }
 
+    // whether the thread is running or paused, we try to pause the tree
+    // this is an infinite loop, the loop only exists when the thread is actually paused
     bool thread_needs_resume = false;
-    while (   !thread_needs_run
+    while (   !thread_needs_run  // the thread already created
            &&  m_ClassBrowserBuilderThread->IsAlive()     // thread is alive: i.e. running or suspended
            &&  m_ClassBrowserBuilderThread->IsRunning()   // running
            && !m_ClassBrowserBuilderThread->IsPaused() )  // not paused
@@ -899,7 +901,10 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
         wxMilliSleep(20); // allow processing
     }
 
-    if (thread_needs_resume)
+    // there are two conditions here:
+    // 1, the thread is newly created, but hasn't run yet
+    // 2, the thread is already created, and we have paused it
+    if (thread_needs_resume) // satisfy the above condition 2
     {
         TRACE(wxT("ClassBrowser: ClassBrowserBuilderThread: Paused."));
     }
@@ -914,6 +919,7 @@ void ClassBrowser::ThreadedBuildTree(cbProject* activeProject)
                                       m_Parser->GetTokenTree(),
                                       idThreadEvent);
 
+    // when m_ClassBrowserSemaphore.Post(), the worker thread has chance to build the tree
     if      (thread_needs_run)
     {
         TRACE(wxT("ClassBrowser: Run ClassBrowserBuilderThread."));

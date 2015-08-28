@@ -59,19 +59,22 @@ public:
      */
     ClassBrowser(wxWindow* parent, NativeParser* np);
 
-    // class destructor
+    /** class destructor */
     virtual ~ClassBrowser();
 
+    /** return a pointer to the top tree control */
     const wxTreeCtrl* GetCCTreeCtrl() { return m_CCTreeCtrl; }
 
     /** Set the Parser object associated with the class browser
      *
-     * the browser tree must access to the TokenTree, so it needs a ParserBase pointer
+     *  the browser tree must access to the TokenTree, so it needs a ParserBase pointer
      *  @param parser the Parser instance
      */
     void  SetParser(ParserBase* parser);
 
-    /** update or refresh the symbol browser trees, there are many cases the tree need to be updated.
+    /** update or refresh the symbol browser trees
+     *
+     *  There are many cases the tree need to be updated.
      *  E.g. if the View option of the tree is the "Current file's symbols", the user switch the editor
      *  to a new source file, then the tree should be updated(rebuild).
      *  @param checkHeaderSwap if true, we should check if the new editor opened has the same base file
@@ -123,15 +126,32 @@ private:
     /** when user try to search a word in the symbols tree */
     void OnSearch(wxCommandEvent& event);
 
+    /** string compare between the search and the token's name associated with item
+     *  @return true if their name matches
+     */
     bool FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item);
+
+    /** get the next item of the "start" item, if no next item in the current level, go up one level
+     *  @note it looks like the "search" parameter is not used in this function
+     */
     wxTreeItemId FindNext(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start);
+
+    /** get a child of the parent item, which matches the "search" key
+     *  @param recurse whether recursive search to the children of the children
+     *  @partialMatch "search" key is the prefix of the item's text
+     */
     wxTreeItemId FindChild(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start, bool recurse = false, bool partialMatch = false);
+
+    /** find an item whose item name matches the "search" key string in the sub-tree
+     *  @param parent search will start from this parent item, and recursively to the sub-tree
+     */
     bool RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result);
 
+    /** build and show a context menu when user click on the tree item "id" */
     void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
 
     /** create a thread to update the symbol tree, if the thread is already created, just pause and
-     * resume the thread.
+     *  resume the thread.
      */
     void ThreadedBuildTree(cbProject* activeProject);
 
