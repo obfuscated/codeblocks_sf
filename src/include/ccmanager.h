@@ -154,7 +154,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         UnfocusablePopupWindow* m_pPopup; //!< container for documentation popup
         wxHtmlWindow* m_pHtml;            //!< documentation popup
         int m_LastACLaunchState[2];
-        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens; //!< cached autcomplete list
+        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens; //!< cached autocomplete list
 };
 
 #endif // CCMANAGER_H
