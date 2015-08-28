@@ -105,8 +105,8 @@ cp -f scripts/*.gdb ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.gdb output30/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel30/share/codeblocks > /dev/null
 cp -f tips.txt output30/share/codeblocks > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner30${EXEEXT} output30/cb_console_runner${EXEEXT} > /dev/null
-cp -f tools/ConsoleRunner/cb_console_runner30${EXEEXT} devel30/cb_console_runner${EXEEXT} > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output30 > /dev/null
+cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel30 > /dev/null
 cp -f devel30/codeblocks${EXEEXT} output30 > /dev/null
 # cp -f devel30/cb_share_config${EXEEXT} output30 > /dev/null
 cp -f devel30/*.${LIBEXT} output30 > /dev/null
