@@ -28,6 +28,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DNOPCH" />
 					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
 					<Add directory="$(#WX30.include)" />

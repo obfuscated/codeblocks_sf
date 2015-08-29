@@ -30,6 +30,7 @@
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
 					<Add directory="$(#wx.include)" />

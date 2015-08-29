@@ -31,6 +31,7 @@
 					<Add option="-DNOPCH" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-D_WIN64" />
+					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
 					<Add directory="..\..\..\include" />
 					<Add directory="..\..\..\sdk\wxscintilla\include" />
 					<Add directory="$(#WX30_64.include)" />
