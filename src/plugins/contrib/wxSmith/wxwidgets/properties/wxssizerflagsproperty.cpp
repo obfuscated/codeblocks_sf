@@ -411,8 +411,10 @@ wxString wxsSizerFlagsProperty::GetString(long Flags)
 
     if ( Result.empty() )
     {
-        // do not return "0" to avoid asserts in xrc-files
-        return _T("wxALIGN_NOT");
+        // returning empty-string breaks .wxs-files, returning 0 breaks .xrc
+        // wxALIGN_NOT is not parsed by xrc-handler either, so we return wxALIGN_LEFT,
+        // which is 0 (or wxALIGN_NOT) internally
+        return _T("wxALIGN_LEFT");
     }
 
     Result.RemoveLast();
