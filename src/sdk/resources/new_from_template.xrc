@@ -196,14 +196,14 @@
 									<object class="wxStaticText" name="ID_STATICTEXT6">
 										<label>* To delete a user template, delete the similarly named folder created&#x0A;   in %APPDATA%\\codeblocks\\UserTemplates (for Windows) or&#x0A;   ~/Library/Application Support/CodeBlocks (for Mac OS X) or&#x0A;   ~/.config/codeblocks (for other platforms).</label>
 									</object>
-									<flag>wxALIGN_NOT</flag>
+									<flag>wxALIGN_LEFT</flag>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticText" name="ID_STATICTEXT7">
 										<label>   Please note the dot (.) in front of &quot;codeblocks&quot;!</label>
 										<fg>#800000</fg>
 									</object>
-									<flag>wxALIGN_NOT</flag>
+									<flag>wxALIGN_LEFT</flag>
 								</object>
 							</object>
 						</object>
