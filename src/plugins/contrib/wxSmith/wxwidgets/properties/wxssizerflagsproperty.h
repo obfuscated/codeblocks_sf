@@ -92,6 +92,7 @@ class wxsSizerFlagsProperty: public wxsProperty
         static const long BorderMask      = BorderTop|BorderBottom|BorderLeft|BorderRight;
         static const long AlignHMask      = AlignLeft|AlignRight|AlignCenterHorizontal;
         static const long AlignVMask      = AlignTop|AlignBottom|AlignCenterVertical;
+        static const long AlignCMask      = AlignCenterHorizontal|AlignCenterVertical;
         static const long ParentAlignMask = ParentAlignVertical|ParentAlignHorizontal;
 };
 

@@ -184,6 +184,8 @@ void wxsSizerParentQP::ReadData()
 {
     if ( !GetPropertyContainer() || !m_Extra ) return;
 
+    m_ParentOrientation = m_Extra->Flags & (wxsSizerFlagsProperty::ParentAlignHorizontal|wxsSizerFlagsProperty::ParentAlignVertical);
+
     BrdLeft   ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderLeft)   != 0 );
     BrdRight  ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderRight)  != 0 );
     BrdTop    ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::BorderTop)    != 0 );
@@ -198,6 +200,19 @@ void wxsSizerParentQP::ReadData()
     PlaceShp  ->SetValue((m_Extra->Flags & wxsSizerFlagsProperty::Shaped) != 0);
 
     Proportion->SetValue(m_Extra->Proportion);
+
+    if (PlaceExp->GetValue())
+    {
+        PlaceLT->Disable();
+        PlaceLC->Disable();
+        PlaceLB->Disable();
+        PlaceCT->Disable();
+        PlaceCC->Disable();
+        PlaceCB->Disable();
+        PlaceRT->Disable();
+        PlaceRC->Disable();
+        PlaceRB->Disable();
+    }
 
     if ( m_Extra->Flags & wxsSizerFlagsProperty::AlignBottom )
     {
@@ -223,7 +238,7 @@ void wxsSizerParentQP::SaveData()
 {
     if ( !GetPropertyContainer() || !m_Extra ) return;
 
-    m_Extra->Flags = 0;
+    m_Extra->Flags = m_ParentOrientation;
     if ( BrdLeft  ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderLeft;
     if ( BrdRight ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderRight;
     if ( BrdTop   ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::BorderTop;
@@ -231,8 +246,23 @@ void wxsSizerParentQP::SaveData()
     m_Extra->Border.Value       = BrdSize->GetValue();
     m_Extra->Border.DialogUnits = BrdDlg->GetValue();
 
-    if ( PlaceExp ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::Expand;
+    if ( PlaceExp ->GetValue() )
+        m_Extra->Flags |= wxsSizerFlagsProperty::Expand;
+    else
+    {
+        PlaceLT->Enable();
+        PlaceLC->Enable();
+        PlaceLB->Enable();
+        PlaceCT->Enable();
+        PlaceCC->Enable();
+        PlaceCB->Enable();
+        PlaceRT->Enable();
+        PlaceRC->Enable();
+        PlaceRB->Enable();
+    }
+
     if ( PlaceShp ->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::Shaped;
+
 
     if ( PlaceLT->GetValue() || PlaceCT->GetValue() || PlaceRT->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignTop;
     if ( PlaceLC->GetValue() || PlaceCC->GetValue() || PlaceRC->GetValue() ) m_Extra->Flags |= wxsSizerFlagsProperty::AlignCenterVertical;

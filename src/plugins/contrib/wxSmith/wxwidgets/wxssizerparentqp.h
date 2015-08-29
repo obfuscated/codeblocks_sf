@@ -107,6 +107,7 @@ class wxsSizerParentQP: public wxsAdvQPPChild
         void SaveData();
 
         wxsSizerExtra* m_Extra;
+        long m_ParentOrientation;
 
         DECLARE_EVENT_TABLE()
 };
