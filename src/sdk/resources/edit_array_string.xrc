@@ -21,19 +21,19 @@
 								<object class="wxButton" name="btnAdd">
 									<label>&amp;Add</label>
 								</object>
-								<flag>wxALIGN_NOT</flag>
+								<flag>wxALIGN_LEFT</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnEdit">
 									<label>&amp;Edit</label>
 								</object>
-								<flag>wxALIGN_NOT</flag>
+								<flag>wxALIGN_LEFT</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnDelete">
 									<label>&amp;Delete</label>
 								</object>
-								<flag>wxALIGN_NOT</flag>
+								<flag>wxALIGN_LEFT</flag>
 							</object>
 						</object>
 						<flag>wxLEFT</flag>

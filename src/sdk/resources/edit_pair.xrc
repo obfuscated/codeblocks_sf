@@ -39,7 +39,7 @@
 								<object class="wxButton" name="btnBrowse">
 									<label>...</label>
 								</object>
-								<flag>wxALIGN_NOT</flag>
+								<flag>wxALIGN_LEFT</flag>
 								<minsize>24,-1</minsize>
 							</object>
 						</object>

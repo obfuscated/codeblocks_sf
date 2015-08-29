@@ -15,7 +15,7 @@
 								<object class="wxStaticText" name="ID_STATICTEXT1">
 									<label>Categories:</label>
 								</object>
-								<flag>wxALIGN_NOT</flag>
+								<flag>wxALIGN_LEFT</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxBoxSizer">
@@ -53,7 +53,7 @@
 												<object class="wxButton" name="btnSetDefault">
 													<label>Set De&amp;fault</label>
 												</object>
-												<flag>wxALIGN_NOT</flag>
+												<flag>wxALIGN_LEFT</flag>
 											</object>
 										</object>
 										<flag>wxLEFT</flag>

@@ -295,7 +295,7 @@ avVersionEditorDlg::avVersionEditorDlg(wxWindow* parent,wxWindowID /*id*/)
     rbHeaderLanguage = new wxRadioBox(pnlSettings, ID_HEADERLANGUAGE_RADIOBOX, _("Header language"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_1, 2, wxRA_VERTICAL, wxDefaultValidator, _T("ID_HEADERLANGUAGE_RADIOBOX"));
     rbHeaderLanguage->SetSelection(1);
     rbHeaderLanguage->SetToolTip(_("Sets the language output."));
-    BoxSizer8->Add(rbHeaderLanguage, 1, wxALIGN_NOT, 5);
+    BoxSizer8->Add(rbHeaderLanguage, 1, wxALIGN_LEFT, 5);
     BoxSizer5->Add(BoxSizer8, 0, wxEXPAND, 5);
     settingsSizer->Add(BoxSizer5, 0, wxALL|wxEXPAND, 5);
     StaticLine1 = new wxStaticLine(pnlSettings, ID_STATICLINE1, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("ID_STATICLINE1"));

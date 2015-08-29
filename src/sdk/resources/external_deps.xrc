@@ -24,7 +24,7 @@
 										<object class="wxButton" name="btnAddAdditional">
 											<label>Add</label>
 										</object>
-										<flag>wxALIGN_NOT</flag>
+										<flag>wxALIGN_LEFT</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="btnEditAdditional">
@@ -66,7 +66,7 @@
 										<object class="wxButton" name="btnAddExternal">
 											<label>Add</label>
 										</object>
-										<flag>wxALIGN_NOT</flag>
+										<flag>wxALIGN_LEFT</flag>
 									</object>
 									<object class="sizeritem">
 										<object class="wxButton" name="btnEditExternal">

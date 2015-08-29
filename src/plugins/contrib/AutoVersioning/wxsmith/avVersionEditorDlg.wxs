@@ -519,7 +519,7 @@
 														<tooltip>Sets the language output.</tooltip>
 														<style>wxRA_VERTICAL</style>
 													</object>
-													<flag>wxALIGN_NOT</flag>
+													<flag>wxALIGN_LEFT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>

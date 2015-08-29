@@ -21,7 +21,7 @@
 								<object class="wxButton" name="btnMoveUp">
 									<label>Move up</label>
 								</object>
-								<flag>wxALIGN_NOT</flag>
+								<flag>wxALIGN_LEFT</flag>
 							</object>
 							<object class="sizeritem">
 								<object class="wxButton" name="btnMoveDown">
