@@ -1020,8 +1020,6 @@ wxString Tokenizer::DoGetToken()
     }
 }
 
-
-
 bool Tokenizer::Lex()
 {
     int start = m_TokenIndex;
@@ -1149,15 +1147,19 @@ bool Tokenizer::CalcConditionExpression()
     // rescan happens once macro expansion happens (m_TokenIndex rewind)
     while (m_TokenIndex < m_BufferLen - untouchedBufferLen)
     {
-        while (SkipComment())
-            ;
-        wxString token = DoGetToken();
 
-        // skip the whitespace token here, not before the DoGetToken(), because if we call
-        // SkipWhiteSpace() before DoGetToken(), we may get a token AFTER the index located by
-        // m_BufferLen - untouchedBufferLen
-        if (token[0] <= _T(' ') || token == _T("\\"))
-            continue;
+        // DoGetToken() internally call SkipUnwanted() function, we call SkipUnwanted() explicitly
+        // because if m_TokenIndex pass the EOL, we should stop the calculating of preprocessor
+        // condition
+        SkipUnwanted();
+
+        if (m_TokenIndex >= m_BufferLen - untouchedBufferLen)
+            break;
+
+
+        wxString token = DoGetToken();
+        // token are generally the fully macro expanded tokens, so mostly they are some numbers,
+        // unknown tokens are pushed to Infix express, and later they will be seen as 0.
 
         if(token.Len() > 0
            && (token[0] == _T('_') || wxIsalnum(token[0]))) // identifier like token
@@ -1171,22 +1173,7 @@ bool Tokenizer::CalcConditionExpression()
                     exp.AddToInfixExpression(_T("0"));
             }
             else
-            {
-                const int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
-                if (id != -1)
-                {
-                    const Token* tk = m_TokenTree->at(id);
-                    if (tk)
-                    {
-                        if(ReplaceMacroUsage(tk))
-                            continue;
-                        else
-                            exp.AddToInfixExpression(_T("0")); // macro expansion fall back value
-                    }
-                }
-                else
-                    exp.AddToInfixExpression(token); // not a macro usage token
-            }
+                exp.AddToInfixExpression(token); // not a macro usage token
         }
         else if (token.StartsWith(_T("0x"))) // hex value
         {
