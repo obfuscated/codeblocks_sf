@@ -3,6 +3,7 @@
 	<object class="wxScrollingDialog" name="dlgNewFromTemplate">
 		<title>New from template</title>
 		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
 		<object class="wxFlexGridSizer">
 			<cols>2</cols>
 			<rows>2</rows>
