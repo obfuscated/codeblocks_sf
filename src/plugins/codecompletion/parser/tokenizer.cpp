@@ -923,28 +923,29 @@ wxString Tokenizer::DoGetToken()
     while(true)
     {
         SkipUnwanted();
-        bool candidate = Lex();
-        if (candidate)
+        bool identifier = Lex();
+        // only check macro usage on identifier like tokens
+        if (identifier)
         {
             bool replaced = CheckMacroUsageAndReplace();
+            // replaced is true means macro expansion happens, so we need to call Lex()
             if (replaced)
                 continue;
             else
                 return m_Lex;
         }
         else
-        {
             return m_Lex;
-        }
     }
 }
 
 bool Tokenizer::Lex()
 {
     int start = m_TokenIndex;
-    bool needReplace = false;
+    // identifier like token
+    bool identifier = false;
 
-    wxChar   c = CurrentChar();
+    wxChar c = CurrentChar();
 
     if (c == '_' || wxIsalpha(c))
     {
@@ -961,7 +962,7 @@ bool Tokenizer::Lex()
             return false;
         }
 
-        needReplace = true;
+        identifier = true;
         m_Lex = m_Buffer.Mid(start, m_TokenIndex - start);
     }
 #ifdef __WXMSW__ // This is a Windows only bug!
@@ -1014,7 +1015,6 @@ bool Tokenizer::Lex()
         {
             MoveToNextChar();
             MoveToNextChar();
-            // this only copies a pointer, but operator= allocates memory and does a memcpy!
             m_Lex = m_Buffer.Mid(start, m_TokenIndex - start);
         }
         else
@@ -1039,7 +1039,7 @@ bool Tokenizer::Lex()
     while ( !m_ExpandedMacros.empty() && m_ExpandedMacros.front().m_End < m_TokenIndex)
         m_ExpandedMacros.pop_front();
 
-    return needReplace;
+    return identifier;
 }
 
 bool Tokenizer::CheckMacroUsageAndReplace()
