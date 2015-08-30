@@ -385,53 +385,6 @@ bool Tokenizer::SkipString()
     return false;
 }
 
-// expect we are not in a C-string.
-bool Tokenizer::SkipToOneOfChars(const wxChar* chars, bool supportNesting, bool skipPreprocessor, bool skipAngleBrace)
-{
-    while (NotEOF() && !CharInString(CurrentChar(), chars))
-    {
-        MoveToNextChar();
-
-        while (SkipString() || SkipComment())
-            ;
-
-        // use 'while' here to cater for consecutive blocks to skip (e.g. sometemplate<foo>(bar)
-        // must skip <foo> and immediately after (bar))
-        // because if we don't, the next block won't be skipped ((bar) in the example) leading to weird
-        // parsing results
-        bool done = false;
-        while (supportNesting && !done)
-        {
-            switch (CurrentChar())
-            {
-                case '#':
-                    if (skipPreprocessor)
-                        SkipToEOL(true);
-                    else
-                        done = true;
-                    break;
-                case '{': SkipBlock('{'); break;
-                case '(': SkipBlock('('); break;
-                case '[': SkipBlock('['); break;
-                case '<': // don't skip if << operator
-                    if (skipAngleBrace)
-                    {
-                        if (NextChar() == '<')
-                            MoveToNextChar(2); // skip it and also the next '<' or the next '<' leads to a SkipBlock('<');
-                        else
-                            SkipBlock('<');
-                        break;
-                    }
-
-                default: done = true; break;
-            }
-        }
-
-    }
-
-    return NotEOF();
-}
-
 wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
 {
     m_ReadingMacroDefinition = true;
