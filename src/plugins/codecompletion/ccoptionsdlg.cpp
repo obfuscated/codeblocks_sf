@@ -79,22 +79,12 @@ static const wxString g_SampleClasses =
 
 BEGIN_EVENT_TABLE(CCOptionsDlg, wxPanel)
     EVT_UPDATE_UI(-1,                       CCOptionsDlg::OnUpdateUI)
-    EVT_BUTTON(XRCID("btnAddRepl"),         CCOptionsDlg::OnAddRepl)
-    EVT_BUTTON(XRCID("btnEditRepl"),        CCOptionsDlg::OnEditRepl)
-    EVT_BUTTON(XRCID("btnDelRepl"),         CCOptionsDlg::OnDelRepl)
     EVT_BUTTON(XRCID("btnColour"),          CCOptionsDlg::OnChooseColour)
     EVT_COMMAND_SCROLL(XRCID("sldCCDelay"), CCOptionsDlg::OnCCDelayScroll)
     EVT_BUTTON(XRCID("btnDocBgColor"),      CCOptionsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnDocTextColor"),    CCOptionsDlg::OnChooseColour)
     EVT_BUTTON(XRCID("btnDocLinkColor"),    CCOptionsDlg::OnChooseColour)
 END_EVENT_TABLE()
-
-
-struct ReplacementTokenListClientData : wxClientData
-{
-    ReplacementTokenListClientData(const wxString &key, const wxString &value) : key(key), value(value) {}
-    wxString key, value;
-};
 
 CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* cc, DocumentationHelper* dh) :
     m_NativeParser(np),
@@ -141,14 +131,6 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "txtCCFileExtHeader",       wxTextCtrl)->SetValue(cfg->Read(_T("/header_ext"),    _T("h,hpp,hxx,hh,h++,tcc,xpm")));
     XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/empty_ext"), true));
     XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"),    _T("c,cpp,cxx,cc,c++")));
-
-    wxListBox *listRepl = XRCCTRL(*this, "lstRepl", wxListBox);
-    const wxStringHashMap& repl = Tokenizer::GetTokenReplacementsMap();
-    for (wxStringHashMap::const_iterator it = repl.begin(); it != repl.end(); ++it)
-    {
-        listRepl->Append(it->first + _T(" -> ") + it->second,
-                         new ReplacementTokenListClientData(it->first, it->second));
-    }
 
     // Page "Symbol browser"
     XRCCTRL(*this, "chkNoSB",        wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
@@ -295,64 +277,6 @@ void CCOptionsDlg::OnApply()
     m_NativeParser->RereadParserOptions();
     m_Documentation->WriteOptions(cfg);
     m_CodeCompletion->RereadOptions();
-}
-
-void CCOptionsDlg::OnAddRepl(cb_unused wxCommandEvent& event)
-{
-    wxString key;
-    wxString value;
-    EditPairDlg dlg(this, key, value, _("Add new replacement token"), EditPairDlg::bmDisable);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        if ( ValidateReplacementToken(key, value) )
-        {
-            Tokenizer::SetReplacementString(key, value);
-            XRCCTRL(*this, "lstRepl", wxListBox)->Append(key + _T(" -> ") + value,
-                                                         new ReplacementTokenListClientData(key, value));
-        }
-    }
-}
-
-void CCOptionsDlg::OnEditRepl(cb_unused wxCommandEvent& event)
-{
-    wxListBox *list = XRCCTRL(*this, "lstRepl", wxListBox);
-    int sel = list->GetSelection();
-    if (sel == -1)
-        return;
-
-    ReplacementTokenListClientData *data = static_cast<ReplacementTokenListClientData*>(list->GetClientObject(sel));
-    wxString key = data->key;
-    wxString value = data->value;
-
-    EditPairDlg dlg(this, key, value, _("Edit replacement token"), EditPairDlg::bmDisable);
-    PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        if ( ValidateReplacementToken(key, value) )
-        {
-            Tokenizer::SetReplacementString(key, value);
-            list->SetString(sel, key + _T(" -> ") + value);
-            data->key = key;
-            data->value = value;
-        }
-    }
-}
-
-void CCOptionsDlg::OnDelRepl(cb_unused wxCommandEvent& event)
-{
-    wxListBox *list = XRCCTRL(*this, "lstRepl", wxListBox);
-    int sel = list->GetSelection();
-    if (sel == -1)
-        return;
-
-    if (cbMessageBox(_("Are you sure you want to delete this replacement token?"),
-                     _("Confirmation"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
-    {
-        const wxString &key = static_cast<ReplacementTokenListClientData*>(list->GetClientObject(sel))->key;
-        Tokenizer::RemoveReplacementString(key);
-        list->Delete(sel);
-    }
 }
 
 void CCOptionsDlg::OnChooseColour(wxCommandEvent& event)

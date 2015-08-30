@@ -163,37 +163,6 @@ void NativeParserTest::Clear()
 
 void NativeParserTest::Init()
 {
-    // Keep this in sync with CodeCompletion::LoadTokenReplacements()
-
-    // for GCC
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_STD"),                     _T("std"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_STD_D"),                   _T("std"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NESTED_NAMESPACE"),  _T("+namespace std {"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NESTED_NAMESPACE"),    _T("}"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE"),         _T("+namespace std {"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE"),           _T("}"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_TR1"),       _T("}"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_TR1"),     _T("namespace tr1 {"));
-
-    // for GCC 4.6.x
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_VISIBILITY"),              _T("+"));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_BEGIN_NAMESPACE_VERSION"), _T(""));
-    Tokenizer::SetReplacementString(_T("_GLIBCXX_END_NAMESPACE_VERSION"),   _T(""));
-
-    // for VC
-    Tokenizer::SetReplacementString(_T("_STD_BEGIN"),                       _T("namespace std {"));
-    Tokenizer::SetReplacementString(_T("_STD_END"),                         _T("}"));
-    Tokenizer::SetReplacementString(_T("_STDEXT_BEGIN"),                    _T("namespace std {"));
-    Tokenizer::SetReplacementString(_T("_STDEXT_END"),                      _T("}"));
-
-    // for wxWidgets
-    Tokenizer::SetReplacementString(_T("BEGIN_EVENT_TABLE"),                _T("-END_EVENT_TABLE"));
-    Tokenizer::SetReplacementString(_T("WXDLLEXPORT"),                      _T(""));
-    Tokenizer::SetReplacementString(_T("WXDLLIMPORT"),                      _T(""));
-    Tokenizer::SetReplacementString(_T("WXEXPORT"),                         _T(""));
-    Tokenizer::SetReplacementString(_T("WXIMPORT"),                         _T(""));
-
-
     // initialize the include files
     // second, try taking include directories into account
     for (size_t i=0; i<CCTestAppGlobal::s_includeDirs.GetCount(); i++)
