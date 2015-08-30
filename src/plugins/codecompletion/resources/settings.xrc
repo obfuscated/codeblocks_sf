@@ -419,69 +419,6 @@
 									<flag>wxALL|wxEXPAND</flag>
 									<border>8</border>
 								</object>
-								<object class="sizeritem">
-									<object class="wxStaticBoxSizer">
-										<label>Replacement tokens</label>
-										<orient>wxVERTICAL</orient>
-										<object class="sizeritem">
-											<object class="wxBoxSizer">
-												<object class="sizeritem">
-													<object class="wxListBox" name="lstRepl">
-														<size>-1,100</size>
-													</object>
-													<flag>wxALL|wxEXPAND</flag>
-													<option>1</option>
-												</object>
-												<object class="sizeritem">
-													<object class="wxBoxSizer">
-														<orient>wxVERTICAL</orient>
-														<object class="sizeritem">
-															<object class="wxButton" name="btnAddRepl">
-																<label>&amp;Add</label>
-															</object>
-															<flag>wxALL|wxALIGN_LEFT</flag>
-														</object>
-														<object class="sizeritem">
-															<object class="wxButton" name="btnEditRepl">
-																<label>&amp;Edit</label>
-															</object>
-															<flag>wxTOP|wxALIGN_LEFT</flag>
-															<border>4</border>
-														</object>
-														<object class="sizeritem">
-															<object class="wxButton" name="btnDelRepl">
-																<label>&amp;Delete</label>
-															</object>
-															<flag>wxTOP|wxALIGN_LEFT</flag>
-															<border>4</border>
-														</object>
-													</object>
-													<flag>wxLEFT|wxALIGN_TOP</flag>
-													<border>8</border>
-												</object>
-											</object>
-											<flag>wxALL|wxEXPAND</flag>
-											<border>5</border>
-											<option>1</option>
-										</object>
-										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT4">
-												<label>The more replacement tokens you add, the slower the parser will become.</label>
-											</object>
-											<flag>wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
-											<border>5</border>
-										</object>
-										<object class="sizeritem">
-											<object class="wxStaticText" name="ID_STATICTEXT5">
-												<label>So try not to over-do it :).</label>
-											</object>
-											<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
-											<border>5</border>
-										</object>
-									</object>
-									<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>8</border>
-								</object>
 							</object>
 						</object>
 						<label>C/C++ parser (adv.)</label>

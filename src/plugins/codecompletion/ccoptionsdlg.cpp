@@ -338,10 +338,6 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkCCFileExtEmpty",       wxCheckBox)->Enable(en);
     XRCCTRL(*this, "txtCCFileExtSource",      wxTextCtrl)->Enable(en);
 
-    int sel = XRCCTRL(*this, "lstRepl",       wxListBox)->GetSelection();
-    XRCCTRL(*this, "btnEditRepl",             wxButton)->Enable(sel != -1);
-    XRCCTRL(*this, "btnDelRepl",              wxButton)->Enable(sel != -1);
-
     XRCCTRL(*this, "chkKL_1",                 wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkKL_2",                 wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkKL_3",                 wxCheckBox)->Enable(en);
