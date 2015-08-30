@@ -469,13 +469,25 @@ wxString Tokenizer::ReadToEOL(bool stripUnneeded)
     }
 }
 
+// there are some rules which make the parentheses very compact
+// 1, here should be no space before ',' , '*' and '&', but should have a space after that
+// 2, two or more spaces becomes one space
+// 3, no spaces after the '(' and before ')'
+// 4, there need a space to separate to identifier. see the "unsigned" and "int" below
+// 5, there is a space before and after the "=" char
+// "(  unsigned  int   *  a, float  & b  )" -> "(unsigned int* a, float& b)"
+// "( int a  [ 10 ], float ** b )" -> "(int a [10], float** b)"
+// "( int a  =   5)" -> "(int a = 5)"
+
 void Tokenizer::ReadParentheses(wxString& str)
 {
-    int level = 1; // brace level of '(' and ')'
+    // brace level of '(' and ')', the str is currently "(", so the level is 1
+    int level = 1;
 
     while (NotEOF())
     {
         wxString token = DoGetToken();
+
         if (token == _T("("))
         {
             ++level;
@@ -489,16 +501,30 @@ void Tokenizer::ReadParentheses(wxString& str)
                 break;
 
         }
-        else if (token == _T("*") || token == _T("&") || token == _T(","))
+        else if (token == _T("*") || token == _T("&") )
         {
             str << token;
         }
+        else if (token == _T("=")) // space before and after "="
+        {
+            str << _T(" ") << token << _T(" ");
+        }
+        else if (token == _T(",")) // space after ","
+        {
+            str << token << _T(" ");
+        }
         else
         {
-            if (str.Last() == _T('(')) // there is no space between '(' and the following token
-                str << token;
-            else                       // otherwise, a space is needed
+            // there is a space between two identifier like token
+            wxChar nextChar = token[0];
+            wxChar lastChar = str.Last();
+            if (   (wxIsalpha(nextChar) || nextChar == _T('_'))
+                && (wxIsalnum(lastChar) || lastChar == _T('_')) )
+            {
                 str << _T(" ") << token;
+            }
+            else // otherwise, no space is needed
+                str << token;
         }
 
         if (level == 0)
