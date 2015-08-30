@@ -3134,6 +3134,10 @@ bool ParserThread::ReadVarNames()
             m_PointerOrRef.Clear();
             break;
         }
+        else if (token == ParserConsts::oparray)
+        {
+            SkipToOneOfChars(ParserConsts::clarray);
+        }
         else if (token == ParserConsts::ptr)     // variable is a pointer
             m_PointerOrRef << token;
         else if (   wxIsalpha(token.GetChar(0))
