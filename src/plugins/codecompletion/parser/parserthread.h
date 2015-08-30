@@ -225,12 +225,6 @@ protected:
     /** handle typedef directive */
     void HandleTypedef();
 
-    /** We guess this is a macro usage, so try to expand macro
-      * @param id token id in Token tree
-      * @param peek macro actual arguments
-      */
-    void HandleMacroExpansion(int id, const wxString& peek);
-
     /** eg: class ClassA{...} varA, varB, varC
       * This function will read the "varA, varB, varC"
       * \return True, if token was handled, false, if an unexpected token was read.
