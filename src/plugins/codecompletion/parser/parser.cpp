@@ -372,7 +372,7 @@ bool Parser::ParseBuffer(const wxString& buffer,   bool isLocal,
     opts.followLocalIncludes  = false;
     opts.followGlobalIncludes = false;
     opts.wantPreprocessor     = m_Options.wantPreprocessor;
-    opts.parseComplexMacros   = false;
+    opts.parseComplexMacros   = m_Options.parseComplexMacros;
     opts.platformCheck        = true;
 
     opts.handleFunctions      = true;   // enabled to support function ptr in local block
