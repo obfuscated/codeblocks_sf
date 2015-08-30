@@ -1778,7 +1778,7 @@ void ParserThread::HandleDefines()
     // #endif
     // The AAA is not add to token tree, so, when call GetToken(), "#ifdef AAA" parse failed
     m_Str.Clear();
-    wxString readToEOL = m_Tokenizer.ReadToEOL(false, true);
+    wxString readToEOL = m_Tokenizer.ReadToEOL(true);
     wxString para; // function-like macro's args
     if (!readToEOL.IsEmpty())
     {

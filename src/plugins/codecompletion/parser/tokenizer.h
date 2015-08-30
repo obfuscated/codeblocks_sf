@@ -200,7 +200,7 @@ public:
      * @param stripUnneeded true if you are going to remove comments and compression spaces(two or
      * more spaces should become one space)
      */
-    wxString ReadToEOL(bool nestBraces = true, bool stripUnneeded = true);
+    wxString ReadToEOL(bool stripUnneeded = true);
 
     /** read a string from '(' to ')', note that inner parentheses considered */
     void ReadParentheses(wxString& str);
