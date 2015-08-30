@@ -547,187 +547,40 @@ wxString Tokenizer::ReadToEOL(bool nestBraces, bool stripUnneeded)
 
 void Tokenizer::ReadParentheses(wxString& str)
 {
-    // we create a local buffer here, so the data is copied from m_Buffer to buffer
-    // once the local buffer is full, we append the content in local buffer to the result str
-    static const size_t maxBufferLen = 4093;
-    // local buffer
-    wxChar buffer[maxBufferLen + 3];
-    buffer[0] = _T('$'); // avoid segfault error, because we have some *(p - 1) = x in the code
-    wxChar* realBuffer = buffer + 1;
-    // p points to the local buffer
-    wxChar* p = realBuffer;
-
-    int level = 0; // brace level of '(' and ')'
+    int level = 1; // brace level of '(' and ')'
 
     while (NotEOF())
     {
-        while (SkipComment())
-            ;
-        wxChar ch = CurrentChar();
-
-        while (ch == _T('#')) // do not use if
+        wxString token = DoGetToken();
+        if (token == _T("("))
         {
-            const PreprocessorType type = GetPreprocessorType();
-            if (type == ptOthers)
+            ++level;
+            str << token;
+        }
+        else if (token == _T(")"))
+        {
+            --level;
+            str << token;
+            if (level == 0)
                 break;
-            HandleConditionPreprocessor(type);
-            ch = CurrentChar();
+
         }
-
-        const unsigned int startIndex = m_TokenIndex;
-
-        switch(ch)
+        else if (token == _T("*") || token == _T("&") || token == _T(","))
         {
-        case _T('('):
-            {
-                ++level;
-                *p = ch;
-                ++p;
-            }
-            break;
-
-        case _T(')'):
-            {
-                if (*(p - 1) <= _T(' '))
-                    --p; // if previous char is a space, we overwrite the space with a ')', so we save one char
-                --level;
-                *p = ch;
-                ++p;
-            }
-            break;
-
-        case _T('\''):
-        case _T('"'):
-            {
-                MoveToNextChar();     // skip the leading '"' or '\''
-                SkipToStringEnd(ch);  // m_TokenIndex point to the trailing '"' or '\'' now
-                MoveToNextChar();     // move to the char after trailing char
-                const size_t writeLen = m_TokenIndex - startIndex; // the string length
-                const size_t usedLen = p - realBuffer;
-                if (usedLen + writeLen > maxBufferLen) // there is not enough space left to write the string
-                {
-                    if (writeLen > maxBufferLen) // to big string?
-                    {
-                        TRACE(_T("ReadParentheses(): Catch exception 1: %lu"), static_cast<unsigned long>(writeLen));
-                        return;
-                    }
-
-                    if (p != realBuffer) // add the used string to the result str
-                    {
-                        str.Append(realBuffer, usedLen);
-                        p = realBuffer;  // adjust the p, as it was an empty buffer
-                    }
-                    // append the string to str (not write the string to the buffer)
-                    str.Append((const wxChar*)m_Buffer + startIndex, writeLen);
-                }
-                else
-                {   // the buffer can hold the string, so copy it to the buffer
-                    memcpy(p, (const wxChar*)m_Buffer + startIndex, writeLen * sizeof(wxChar));
-                    p += writeLen;
-                }
-
-                continue;
-            }
-            break;
-
-        case _T(','): // if there is a space before the comma, we just remove it, but we should add a space after the comma
-        case _T('*'):
-        case _T('&'):
-            {
-                if (*(p - 1) <= _T(' '))
-                    --p;
-
-                *p = ch;
-                *++p = _T(' ');
-                ++p;
-            }
-            break;
-
-        case _T('='):
-            {
-                if (*(p - 1) <= _T(' '))
-                {
-                    *p = _T('=');
-                    // Don't add a space after '=' sign, in case another '=' follows it
-                    // (see how the 'else' block below works).
-                    //*++p = _T(' ');
-                    ++p;
-                }
-                else // special handling of "==" "=!" "=>" and "=<"
-                {
-                    switch (*(p - 1))
-                    {
-                    case _T('='):
-                    case _T('!'):
-                    case _T('>'):
-                    case _T('<'):
-                        {
-                            *p = _T('=');
-                            *++p = _T(' ');
-                            ++p;
-                        }
-                        break;
-
-                    default:
-                        {
-                            *p = _T(' ');
-                            *++p = _T('=');
-                            *++p = _T(' ');
-                            ++p;
-                        }
-                        break;
-                    }
-                }
-            }
-            break;
-
-        case _T(' '): // we only add a space if the former char is not a space, also not a '('
-        case _T('\r'): // the tab char are regard as space
-        case _T('\t'):
-            {
-                if (*(p - 1) != _T(' ') && *(p - 1) != _T('('))
-                {
-                    *p = _T(' ');
-                    ++p;
-                }
-            }
-            break;
-
-        case _T('\n'): // we need keep the \n for records paras correct position
-            if (*(p - 1) == _T(' '))
-                --p;
-            if (*(p - 1) != _T('('))
-            {
-                *p = ch;
-                ++p;
-            }
-            break;
-
-        default: // any other case, we can directly copy the char
-            {
-                *p = ch;
-                ++p;
-            }
-            break;
+            str << token;
         }
-
-        if (p >= realBuffer + maxBufferLen)
+        else
         {
-            str.Append(realBuffer, p - realBuffer);
-            p = realBuffer;
+            if (str.Last() == _T('('))
+                str << token;
+            else
+                str << _T(" ") << token;
         }
-
-        MoveToNextChar();
 
         if (level == 0)
             break;
     }//while (NotEOF())
 
-    if (p > realBuffer)
-        str.Append(realBuffer, p - realBuffer);
-    TRACE(_T("ReadParentheses(): %s, line=%u"), str.wx_str(), m_LineNumber);
-    if (str.Len() > 512)
-    {   TRACE(_T("ReadParentheses(): Catch exception 2: %lu"), static_cast<unsigned long>(str.Len())); }
 }
 
 bool Tokenizer::SkipToEOL(bool nestBraces)
@@ -1019,7 +872,10 @@ bool Tokenizer::SkipPreprocessorBranch()
         {
             HandleConditionPreprocessor(type);
             c = CurrentChar();
+            return true;
         }
+        else
+            return false;
     }
 
     if (startIndex != m_TokenIndex)
@@ -1052,7 +908,12 @@ wxString Tokenizer::GetToken()
     else
     {
         if (SkipUnwanted())
+        {
             m_Token = DoGetToken();
+            if (m_Token == _T("(") && m_State^tsReadRawExpression)
+                ReadParentheses(m_Token);
+        }
+
         else
             m_Token.Clear();
     }
@@ -1083,7 +944,12 @@ wxString Tokenizer::PeekToken()
         m_SavedNestingLevel = m_NestLevel;
 
         if (SkipUnwanted())
+        {
             m_PeekToken = DoGetToken();
+            if (m_PeekToken == _T("(") && m_State^tsReadRawExpression)
+                ReadParentheses(m_PeekToken);
+        }
+
         else
             m_PeekToken.Clear();
 
@@ -1135,10 +1001,32 @@ void Tokenizer::UngetToken()
  */
 wxString Tokenizer::DoGetToken()
 {
+    while(true)
+    {
+        SkipUnwanted();
+        bool candidate = Lex();
+        if (candidate)
+        {
+            bool replaced = CheckMacroUsageAndReplace();
+            if (replaced)
+                continue;
+            else
+                return m_Lex;
+        }
+        else
+        {
+            return m_Lex;
+        }
+    }
+}
+
+
+
+bool Tokenizer::Lex()
+{
     int start = m_TokenIndex;
     bool needReplace = false;
 
-    wxString str;
     wxChar   c = CurrentChar();
 
     if (c == '_' || wxIsalpha(c))
@@ -1151,16 +1039,19 @@ wxString Tokenizer::DoGetToken()
             c = CurrentChar(); // repeat
 
         if (IsEOF())
-            return wxEmptyString;
+        {
+            m_Lex = wxEmptyString;
+            return false;
+        }
 
         needReplace = true;
-        str = m_Buffer.Mid(start, m_TokenIndex - start);
+        m_Lex = m_Buffer.Mid(start, m_TokenIndex - start);
     }
 #ifdef __WXMSW__ // This is a Windows only bug!
     // fetch non-English characters, see more details in: http://forums.codeblocks.org/index.php/topic,11387.0.html
     else if (c == 178 || c == 179 || c == 185)
     {
-        str = c;
+        m_Lex = c;
         MoveToNextChar();
     }
 #endif
@@ -1171,15 +1062,18 @@ wxString Tokenizer::DoGetToken()
             MoveToNextChar();
 
         if (IsEOF())
-            return wxEmptyString;
+        {
+            m_Lex = wxEmptyString;
+            return false;
+        }
 
-        str = m_Buffer.Mid(start, m_TokenIndex - start);
+        m_Lex = m_Buffer.Mid(start, m_TokenIndex - start);
     }
     else if ( (c == '"') || (c == '\'') )
     {
         SkipString();
         //Now, we are after the end of the C-string, so return the whole string as a token.
-        str = m_Buffer.Mid(start, m_TokenIndex - start);
+        m_Lex = m_Buffer.Mid(start, m_TokenIndex - start);
     }
     else if (c == ':')
     {
@@ -1188,39 +1082,12 @@ wxString Tokenizer::DoGetToken()
             MoveToNextChar();
             MoveToNextChar();
             // this only copies a pointer, but operator= allocates memory and does a memcpy!
-            str.assign(TokenizerConsts::colon_colon);
+            m_Lex.assign(TokenizerConsts::colon_colon);
         }
         else
         {
             MoveToNextChar();
-            str.assign(TokenizerConsts::colon);
-        }
-    }
-    else if (c == '<')
-    {
-        if (m_State&tsSingleAngleBrace)
-        {
-            if ( !SkipToOneOfChars(  _T(">"), true, true)   )
-                return wxEmptyString;
-            MoveToNextChar();
-            str= m_Buffer.Mid(start, m_TokenIndex - start);
-        }
-        else
-        {
-            str = c;
-            MoveToNextChar();
-        }
-    }
-    else if (c == '(')
-    {
-        if (m_State & tsReadRawExpression)
-        {
-            str = c;
-            MoveToNextChar();
-        }
-        else
-        {
-            ReadParentheses(str);
+            m_Lex.assign(TokenizerConsts::colon);
         }
     }
     else
@@ -1230,9 +1097,10 @@ wxString Tokenizer::DoGetToken()
         else if (c == '}')
             --m_NestLevel;
 
-        str = c;
+        m_Lex = c;
         MoveToNextChar();
     }
+
     // m_FirstRemainingLength != 0 means we are in macro replace mode, but when m_TokenIndex goes
     // forward and exceed the anchor point where we start the macro replacement, we should stop and
     // reset to non-macro replace mode
@@ -1242,31 +1110,21 @@ wxString Tokenizer::DoGetToken()
         m_RepeatReplaceCount = 0;
     }
 
-    if (needReplace && m_State ^ tsReadRawExpression)
-        GetReplacedToken(str);
-
-    return str;
+    return needReplace;
 }
 
-void Tokenizer::GetReplacedToken(wxString& str)
+bool Tokenizer::CheckMacroUsageAndReplace()
 {
-    const int id = m_TokenTree->TokenExists(str, -1, tkMacroDef);
+    const int id = m_TokenTree->TokenExists(m_Lex, -1, tkMacroDef);
     if (id != -1)
     {
         const Token* token = m_TokenTree->at(id);
         if (token)
         {
-            bool replaced = ReplaceMacroUsage(token);
-
-            if (replaced)
-            {
-                SkipUnwanted();
-                // recursive call the DoGetToken function here
-                str = DoGetToken();
-            }
+            return ReplaceMacroUsage(token);
         }
     }
-    return;
+    return false;
 }
 
 bool Tokenizer::CalcConditionExpression()
@@ -1364,20 +1222,22 @@ bool Tokenizer::IsMacroDefined()
     while (SkipWhiteSpace() || SkipComment())
         ;
     bool haveParen = false;
-    wxString token = DoGetToken();
+    Lex();
+    wxString token = m_Lex;
     if (token == _T("("))
     {
         haveParen = true;
         while (SkipWhiteSpace() || SkipComment())
             ;
-        token = DoGetToken();
+        Lex();
+        token = m_Lex;
     }
     int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
     if (haveParen)
     {
         while (SkipWhiteSpace() || SkipComment())
             ;
-        DoGetToken(); // eat the ")"
+        Lex(); // eat the ")"
     }
     return (id != -1);
 }
@@ -1467,8 +1327,8 @@ PreprocessorType Tokenizer::GetPreprocessorType()
     MoveToNextChar();
     while (SkipWhiteSpace() || SkipComment())
         ;
-
-    const wxString token = DoGetToken();
+    Lex();
+    const wxString token = m_Lex;
 
     switch (token.Len())
     {
@@ -1667,7 +1527,8 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
     wxString piece;
     while (NotEOF())
     {
-        wxString token = DoGetToken();
+        Lex();
+        wxString token = m_Lex;
         if (token.IsEmpty())
             break;
 
