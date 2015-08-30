@@ -320,6 +320,17 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "txtFillupChars",                wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "sldCCDelay",                    wxSlider)->Enable(en);
 
+    // keyword sets
+    XRCCTRL(*this, "chkKL_1",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_2",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_3",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_4",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_5",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_6",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_7",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_8",                 wxCheckBox)->Enable(en);
+    XRCCTRL(*this, "chkKL_9",                 wxCheckBox)->Enable(en);
+
     // Page "C / C++ parser"
     XRCCTRL(*this, "chkLocals",                     wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkGlobals",                    wxCheckBox)->Enable(en);
@@ -337,16 +348,6 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "txtCCFileExtHeader",      wxTextCtrl)->Enable(en);
     XRCCTRL(*this, "chkCCFileExtEmpty",       wxCheckBox)->Enable(en);
     XRCCTRL(*this, "txtCCFileExtSource",      wxTextCtrl)->Enable(en);
-
-    XRCCTRL(*this, "chkKL_1",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_2",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_3",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_4",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_5",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_6",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_7",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_8",                 wxCheckBox)->Enable(en);
-    XRCCTRL(*this, "chkKL_9",                 wxCheckBox)->Enable(en);
 
     // Page "Symbol browser"
     en = !XRCCTRL(*this, "chkNoSB",           wxCheckBox)->GetValue();
