@@ -2834,37 +2834,11 @@ bool ParserThread::CalcEnumExpression(Token* tokenParent, long& result, wxString
         if (wxIsalpha(token[0]) || token[0] == ParserConsts::underscore_chr) // handle enum or macro
         {
             const Token* tk = m_TokenTree->at(m_TokenTree->TokenExists(token, tokenParent->m_Index, tkEnumerator));
-            if (!tk)
-                tk = m_TokenTree->at(m_TokenTree->TokenExists(token, -1, tkMacroDef));
 
-            if (tk)
+            if (tk) // the enumerator token
             {
-                if (tk->m_FullType.IsEmpty() || tk->m_FullType == token)
-                {
-                    if (tk->m_Args.IsEmpty())
-                    {
-                        peek = SkipToOneOfChars(ParserConsts::commaclbrace);
-                        exp.Clear();
-                        break;
-                    }
-                    else
-                    {
-                        if (m_Tokenizer.ReplaceBufferText(tk->m_Args))
-                            continue;
-                    }
-                }
-                else if (!tk->m_Args.IsEmpty())
-                {
-                    if (m_Tokenizer.ReplaceMacroUsage(tk))
-                        continue;
-                }
-                else if (wxIsdigit(tk->m_FullType[0]))
-                    token = tk->m_FullType;
-                else if (tk->m_FullType != tk->m_Name)
-                {
-                    if (m_Tokenizer.ReplaceBufferText(tk->m_FullType))
-                        continue;
-                }
+                if (!tk->m_Args.IsEmpty() && wxIsdigit(tk->m_Args[0]))
+                    token = tk->m_Args; // add the value to exp
             }
             else
             {
