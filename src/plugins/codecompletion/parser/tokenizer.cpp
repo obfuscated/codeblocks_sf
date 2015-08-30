@@ -85,8 +85,8 @@ namespace TokenizerConsts
 // static
 wxStringHashMap     Tokenizer::s_Replacements;
 
-// macro replacement may recursive call to an infinite loop, so we should set a limit to avoid this case
-static const size_t s_MaxRepeatReplaceCount = 50;
+// maximun macro replacement stack size
+static const size_t s_MaxMacroReplaceDepth = 5;
 
 Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_TokenTree(tokenTree),
@@ -108,8 +108,6 @@ Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_IsOK(false),
     m_State(tsSkipUnWanted),
     m_Loader(0),
-    m_FirstRemainingLength(0),
-    m_RepeatReplaceCount(0),
     m_NextTokenDoc(),
     m_LastTokenIdx(-1),
     m_ReadingMacroDefinition(false)
@@ -206,8 +204,6 @@ void Tokenizer::BaseInit()
     m_SavedLineNumber      = 1;
     m_SavedNestingLevel    = 0;
     m_IsOK                 = false;
-    m_FirstRemainingLength = 0;
-    m_RepeatReplaceCount   = 0;
     m_Buffer.Clear();
     m_NextTokenDoc.clear();
     m_LastTokenIdx         = -1;
@@ -1041,14 +1037,10 @@ bool Tokenizer::Lex()
         MoveToNextChar();
     }
 
-    // m_FirstRemainingLength != 0 means we are in macro replace mode, but when m_TokenIndex goes
-    // forward and exceed the anchor point where we start the macro replacement, we should stop and
-    // reset to non-macro replace mode
-    if (m_FirstRemainingLength != 0 && m_BufferLen - m_FirstRemainingLength < m_TokenIndex)
-    {
-        m_FirstRemainingLength = 0;
-        m_RepeatReplaceCount = 0;
-    }
+    // when m_TokenIndex exceeds the anchor point where we start the macro replacement, we should
+    // pop the remembered macro usage
+    while ( !m_ExpandedMacros.empty() && m_ExpandedMacros.front().m_End < m_TokenIndex)
+        m_ExpandedMacros.pop_front();
 
     return needReplace;
 }
@@ -1496,33 +1488,27 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
     return true;
 }
 
-bool Tokenizer::ReplaceBufferText(const wxString& target)
+bool Tokenizer::ReplaceBufferText(const wxString& target, const Token* macro)
 {
     if (target.IsEmpty())
         return true; // the token is removed from the buffer, return true, so we need to fetch another token
 
-    if (m_RepeatReplaceCount > 0)
+    if (m_ExpandedMacros.size() >= s_MaxMacroReplaceDepth)
     {
-        if (m_RepeatReplaceCount >= s_MaxRepeatReplaceCount)
-        {
-            m_TokenIndex = m_BufferLen - m_FirstRemainingLength;
+        // clear the macro expansion stack
+        m_ExpandedMacros.clear();
 
-            // Reset undo token
-            m_SavedTokenIndex   = m_UndoTokenIndex = m_TokenIndex;
-            m_SavedLineNumber   = m_UndoLineNumber = m_LineNumber;
-            m_SavedNestingLevel = m_UndoNestLevel  = m_NestLevel;
-
-            m_PeekAvailable = false;
-            return true; // NOTE: we have to skip the problem token by returning true.
-        }
-        else
-            ++m_RepeatReplaceCount;
+        m_PeekAvailable = false;
+        return true; // NOTE: we have to skip the problem token by returning true.
     }
-    else  // Set replace parsing state, and save first replace token index
+    else if (macro)  // Set replace parsing state, and save first replace token index
     {
-        m_FirstRemainingLength = m_BufferLen - m_TokenIndex;
-        ++m_RepeatReplaceCount;
+        ExpandedMacro rep;
+        rep.m_End = m_TokenIndex;
+        rep.m_Macro = macro;
+        m_ExpandedMacros.push_front(rep);
     }
+    // we don't push the stack if we don't have macro referenced(macro is 0)
 
     // Keep all in one line
     wxString substitute(target);
@@ -1549,6 +1535,14 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
         m_Buffer.insert(0, wxString(_T(' '), diffLen));
         m_BufferLen += diffLen;
         m_TokenIndex += diffLen;
+        // loop the macro expansion stack and adjust them
+        for (std::list<ExpandedMacro>::iterator i = m_ExpandedMacros.begin();
+             i != m_ExpandedMacros.end();
+             ++i)
+        {
+            (*i).m_Begin += diffLen;
+            (*i).m_End += diffLen;
+        }
     }
 
     // Replacement backward
@@ -1561,6 +1555,9 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
 
     // move the token index to the beginning of the substituted text
     m_TokenIndex -= len;
+
+    if (macro)
+        m_ExpandedMacros.front().m_Begin = m_TokenIndex;
 
     // Reset undo token
     m_SavedTokenIndex   = m_UndoTokenIndex = m_TokenIndex;
@@ -1575,9 +1572,19 @@ bool Tokenizer::ReplaceBufferText(const wxString& target)
 
 bool Tokenizer::ReplaceMacroUsage(const Token* tk)
 {
+    // loop on the m_ExpandedMacros to see the macro is already used
+    for (std::list<ExpandedMacro>::iterator i = m_ExpandedMacros.begin();
+         i != m_ExpandedMacros.end();
+         ++i)
+    {
+        if (tk == (*i).m_Macro)
+            return false; // this macro is already used
+    }
+
     wxString macroExpandedText;
     if ( GetMacroExpandedText(tk, macroExpandedText) )
-        return ReplaceBufferText(macroExpandedText);
+        return ReplaceBufferText(macroExpandedText, tk);
+
     return false;
 }
 

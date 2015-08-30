@@ -13,6 +13,7 @@
 #include "token.h"
 
 #include <stack>
+#include <list>
 
 ///Calculate the hash value for a wxString
 class HashForWxStringMap
@@ -264,7 +265,13 @@ public:
 
     /** Backward buffer replacement for re-parsing
      *
-     * @param target the new text going to replace some other text on the m_Buffer
+     * @param target the new text going to replace some text on the m_Buffer
+     * @param macro if it is a macro expansion, we need to remember the referenced(used) macro token
+     * so that we can avoid the recursive macro expansion such as the below code:
+     *
+     * #define X Y
+     * #define Y X
+     * int X;
      *
      * http://forums.codeblocks.org/index.php/topic,13384.msg90391.html#msg90391
      *
@@ -273,19 +280,18 @@ public:
      * xxxxxxxxxAAAA(u,v)yyyyyyyyy
      *                   ^------ m_TokenIndex (anchor point)
      *
-     * For example, the above is a wxChar Array(m_Buffer), a macro expansion is needed to replace
-     * "AAAA(u,v)" to some new text. We just do a "backward" text replace here. Before the
-     * replacement, m_TokenIndex point to the next char of ")" in "AAAA(u,v)" (We say it as an
-     * anchor point),
-     * so the new buffer becomes:
+     * For example, the above is a wxChar Array(m_Buffer), a macro usage "AAAA(u,v)" is detected and
+     * need to expanded. We just do a "backward" text replace here.
+     * Before replacement, m_TokenIndex points to the next char of ")" in "AAAA(u,v)"(We say it as an
+     * anchor point). After replacement, the new buffer becomes:
      *
      * xxxNNNNNNNNNNNNNNNyyyyyyyyy
      *    ^ <----------- ^
      *    m_TokenIndex was moved backward
      *
-     * Note that "NNNNNNNNNNNNNNN" is the new text. The m_TokenIndex was moved backward to the
-     * beginning of the new added text.
-     * if the new text is small enough, then m_Buffer's length do not need to increase.
+     * Note that "NNNNNNNNNNNNNNN" is the expanded new text. The m_TokenIndex was moved backward to
+     * the beginning of the new added text.
+     * If the new text is small enough, then m_Buffer's length do not need to increase.
      * The situation when our m_Buffer's length need to be increased is that the new text
      * is too long, so the buffer before "anchor point" can not hold the new text, this way,
      * m_Buffer's length will adjusted. like below:
@@ -293,7 +299,7 @@ public:
      * NNNNNNNNNNNNNNNNNNNNNNyyyyyyyyy
      * ^---m_TokenIndex
      */
-    bool ReplaceBufferText(const wxString& target);
+    bool ReplaceBufferText(const wxString& target, const Token* macro = 0);
 
     /** Get expanded text for the current macro usage, then replace buffer for re-parsing
      * @param tk the macro definition token
@@ -492,7 +498,7 @@ private:
     void HandleConditionPreprocessor(const PreprocessorType type);
 
     /** Split the macro arguments, and store them in results, when calling this function, we expect
-     * that m_TokenIndex point to the opening parthense, or some spaces befor the opening parthense.
+     * that m_TokenIndex point to the opening '(', or some spaces before the opening '('.
      * such as below
      *
      *    ..... ABC  ( xxx, yyy ) zzz .....
@@ -578,30 +584,68 @@ private:
     std::stack<bool>     m_ExpressionResult;
 
 
-    /** Save the remaining length from m_TokenIndex to the end of m_Buffer before replace m_Buffer.
+    /** replaced buffer information
+     * Here is an example of how macro are expanded
      *
-     *  ..........AAA..................
-     *               ^                 [EOF]
+     * #define AAA BBBB
+     * ..........AAA..................[EOF]
+     *              ^
+     * '^' is the m_TokenIndex.
+     * As you can see, AAA need to be replaced to BBBB, and this is the buffer content after
+     * replacement.
      *
-     * It is the length between '^'(m_TokenIndex) and [EOF], sometimes there are not enough spaces
-     * to put the substitute before TokenIndex, so the m_Buffer will grows after the replacement:
+     * .........BBBB..................[EOF]
+     *          ^   ^
+     * The first '^' is the new m_TokenIndex, we store is as m_Begin, the second '^' is the anchor
+     * point, we store it as m_End, normally the content from m_End to [EOF] are unchanged, unless
+     * m_Buffer is too small to store the substituted text.
      *
-     *  BBBBBBBBBBBBBBBBBBBBBBBBB..................
-     *  ^                        !                 [EOF]
-     *
-     * Here, m_TokenIndex is moved backward to the beginning of the new substitute
-     * string, but the length between '!' and [EOF] should not be changed.
      */
-    size_t               m_FirstRemainingLength;
+    struct ExpandedMacro
+    {
+        ExpandedMacro():m_Macro(0)
+        {
+        };
+        unsigned int m_Begin; // the token index we begin to parse after replacement
+        unsigned int m_End;   // the end token index, if beyond this index, we need to pop the buffer
+        const Token* m_Macro; // the referenced used macro
+    };
 
-    /** Save the repeat replace buffer count if currently in replace parsing, if it is 0, this means
-     * replace buffer does not happen.
+    /** this serves as a macro replacement stack, in the above example, if AAA is replaced by BBBB,
+     * we store the macro definition of AAA in the m_ExpandedMacros, and if BBBB is also defined as
+     *
+     * #define BBBB CCC + DDD
+     * #define CCC 1
+     *
+     * When expanding BBBB, the new m_Buffer becomes
+     *
+     * ....CCC + DDD..................[EOF]
+     *     ^
+     * here, m_TokenIndex is moved back to the beginning of CCC, and you have the macro replacement
+     * stack m_ExpandedMacros like below
+     *
+     *  The stack becomes
+     *  top -> macro BBBB
+     *      -> macro AAA
+     *
+     * next, if CCC is expand to 1, you have this
+     *
+     * ......1 + DDD..................[EOF]
+     *       ^
+     *  The stack becomes
+     *  top -> macro CCC
+     *      -> macro BBBB
+     *      -> macro AAA
+     *
+     *  if 1 is parsed, and we get a next token '+', the CCC in the top is popped.
+     *
+     * when we try to expand a macro usage, we can look up in the stack to see whether the macro is
+     * already used. C preprocessor don't allow recursively expand a same macro twice.
+     * since std::stack does not allow us to loop all its elements, we use std::list.
      */
-    size_t               m_RepeatReplaceCount;
+    std::list<ExpandedMacro>    m_ExpandedMacros;
 
-    /** Static member, this is a hash map storing all user defined macro replacement rules */
-    static wxStringHashMap s_Replacements;
-
+    // TODO (ollydbg#1#01/19/15): comment those two
     /** normally, this record the doxygen style comments for the next token definition
      *  for example, here is a comment
      *  @code
