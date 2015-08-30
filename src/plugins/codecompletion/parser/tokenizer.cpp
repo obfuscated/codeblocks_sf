@@ -106,7 +106,7 @@ Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
     m_SavedLineNumber(1),
     m_SavedNestingLevel(0),
     m_IsOK(false),
-    m_State(tsSkipUnWanted),
+    m_State(tsNormal),
     m_Loader(0),
     m_NextTokenDoc(),
     m_LastTokenIdx(-1),
@@ -832,7 +832,7 @@ wxString Tokenizer::GetToken()
         if (SkipUnwanted())
         {
             m_Token = DoGetToken();// this function always return a fully expanded token
-            if (m_Token == _T("(") && m_State^tsReadRawExpression)
+            if (m_Token == _T("(") && m_State^tsRawExpression)
                 ReadParentheses(m_Token);
         }
         else
@@ -867,7 +867,7 @@ wxString Tokenizer::PeekToken()
         if (SkipUnwanted())
         {
             m_PeekToken = DoGetToken();
-            if (m_PeekToken == _T("(") && m_State^tsReadRawExpression)
+            if (m_PeekToken == _T("(") && m_State^tsRawExpression)
                 ReadParentheses(m_PeekToken);
         }
         else
@@ -1060,7 +1060,7 @@ bool Tokenizer::CalcConditionExpression()
 {
     // need to force the tokenizer to read raw expression
     const TokenizerState oldState = m_State;
-    m_State = tsReadRawExpression; // parentheses are not returned as a single token
+    m_State = tsRawExpression; // parentheses are not returned as a single token
 
     // we need to know what is the end of the preprocessor directive by calling SkipToEOL(), which
     // go to the end of the current logical line. After that, we rewind the m_TokenIndex and parse
@@ -1456,7 +1456,7 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
         ;
 
     const TokenizerState oldState = m_State;
-    m_State = tsReadRawExpression;
+    m_State = tsRawExpression;
     const unsigned int oldNestLevel = m_NestLevel; //
 
     int level = 1; // include '('
