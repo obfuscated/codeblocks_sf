@@ -208,7 +208,7 @@ public:
     /** Skip from the current position to the end of line.
      * @param nestBraces if true, we should still counting the brace levels in this function.
      */
-    bool SkipToEOL(bool nestBraces = true); // use with care outside this class!
+    bool SkipToEOL(); // use with care outside this class!
 
     /** Skip to then end of the C++ style comment */
     bool SkipToInlineCommentEnd();
@@ -469,7 +469,7 @@ private:
     void GetReplacedToken(wxString& str);
 
     /** Judge what is the first block
-     * It will call 'SkipToEOL(false, true)' before returned.
+     * It will call 'SkipToEOL()' before returned.
      */
     bool CalcConditionExpression();
 
