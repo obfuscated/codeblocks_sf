@@ -1264,6 +1264,28 @@ void ParserThread::DoParse()
                     else // case like, std::map<int, int> somevar;
                         m_Str << token << ParserConsts::space_chr;
                 }
+                else if (peek==ParserConsts::equals_chr)
+                {
+                    // pattern int a = 3;
+                    // this is much similar like handling int a, b;
+                    // m_Str = int, token = a
+                    if (   !m_Str.IsEmpty()
+                        && (    wxIsalpha(token.GetChar(0))
+                            || (token.GetChar(0) == ParserConsts::underscore_chr) ) )
+                    {
+                        // pattern: m_Str AAA;
+                        // where AAA is the variable name, m_Str contains type string
+                        if (m_Options.handleVars)
+                        {
+                            Token* newToken = DoAddToken(tkVariable, token, m_Tokenizer.GetLineNumber());
+                            if (newToken && !m_TemplateArgument.IsEmpty())
+                                ResolveTemplateArgs(newToken);
+                        }
+                        else
+                            SkipToOneOfChars(ParserConsts::semicolonclbrace, true, true);
+                    }
+                    SkipToOneOfChars(ParserConsts::commasemicolonopbrace, true);
+                }
                 else if (peek==ParserConsts::dcolon)
                 {
                     wxString str_stripped(m_Str); str_stripped.Trim(true).Trim(false);
