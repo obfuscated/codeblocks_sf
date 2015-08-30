@@ -183,12 +183,6 @@ protected:
       */
     void HandleIncludes();
 
-    /** handle the statement: #define XXXXX */
-    void HandleDefines();
-
-    /** handle the statement: #undef XXXXX */
-    void HandleUndefs();
-
     /** handle the statement:
       * namespace XXX {
       */
@@ -243,6 +237,9 @@ protected:
      *  @return True, if token was handled, false, if an unexpected token was read.
      */
     bool ReadClsNames(wxString& ancestor);
+
+    /** read <> as a whole token */
+    wxString ReadAngleBrackets();
 
     /** add one token to the token tree
       * @param kind Token type, see @TokenKind Emun for more details

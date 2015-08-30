@@ -158,13 +158,11 @@ namespace ParserConsts
     const wxString kw_catch        (_T("catch"));
     const wxString kw_class        (_T("class"));
     const wxString kw_const        (_T("const"));
-    const wxString kw_undef        (_T("undef"));
     const wxString kw_union        (_T("union"));
     const wxString kw_using        (_T("using"));
     const wxString kw_throw        (_T("throw"));
     const wxString kw_while        (_T("while"));
     // length: 6
-    const wxString kw_define       (_T("define"));
     const wxString kw_delete       (_T("delete"));
     const wxString kw_extern       (_T("extern"));
     const wxString kw_friend       (_T("friend"));
@@ -652,12 +650,8 @@ void ParserThread::DoParse()
                     m_Tokenizer.SetState(tsSkipNone);
 
                     token = m_Tokenizer.GetToken();
-                    if      (token == ParserConsts::kw_include)
+                    if (token == ParserConsts::kw_include)
                         HandleIncludes();
-                    else if (token == ParserConsts::kw_define)
-                        HandleDefines();
-                    else if (token == ParserConsts::kw_undef)
-                        HandleUndefs();
                     else
                         m_Tokenizer.SkipToEOL();
 
@@ -997,8 +991,8 @@ void ParserThread::DoParse()
                 // extern template
                 //    const codecvt<char, char, mbstate_t>&
                 //    use_facet<codecvt<char, char, mbstate_t> >(const locale&);
-                m_Tokenizer.SetState(tsTemplateArgument);
-                m_TemplateArgument = m_Tokenizer.GetToken();
+                // read <> as a whole token
+                m_TemplateArgument = ReadAngleBrackets();
                 TRACE(_T("DoParse() : Template argument='%s'"), m_TemplateArgument.wx_str());
                 m_Str.Clear();
                 m_Tokenizer.SetState(tsSkipUnWanted);
@@ -1758,73 +1752,6 @@ void ParserThread::HandleIncludes()
         }
         while (false);
     }
-}
-
-void ParserThread::HandleDefines()
-{
-    size_t lineNr = m_Tokenizer.GetLineNumber();
-    TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsReadRawExpression); // do not use macro replace, we need raw token
-    wxString token = m_Tokenizer.GetToken(); // read the token after #define
-    m_Tokenizer.SetState(oldState);
-    if (token.IsEmpty())
-        return;
-
-    // do *NOT* use m_Tokenizer.GetToken()
-    // e.g.
-    // #define AAA
-    // #ifdef AAA
-    // void fly() {}
-    // #endif
-    // The AAA is not add to token tree, so, when call GetToken(), "#ifdef AAA" parse failed
-    m_Str.Clear();
-    wxString readToEOL = m_Tokenizer.ReadToEOL(true);
-    wxString para; // function-like macro's args
-    if (!readToEOL.IsEmpty())
-    {
-        // a '(' char follow the macro name (without space between them) is regard as a
-        // function like macro definition
-        if (readToEOL[0] == ParserConsts::opbracket_chr) // function-like macro definition
-        {
-            int level = 1;
-            size_t pos = 0;
-            while (level && pos < readToEOL.Len())
-            {
-                wxChar ch = readToEOL.GetChar(++pos);
-                if      (ch == ParserConsts::clbracket_chr)
-                    --level;
-                else if (ch == ParserConsts::opbracket_chr)
-                    ++level;
-            }
-            para = readToEOL.Left(++pos);
-            m_Str << readToEOL.Right(readToEOL.Len() - (++pos));
-        }
-        else // variable like macro definition
-            m_Str << readToEOL;
-    }
-
-    // macro definitions's scope are always in the global namespace, so we need to temporary switch
-    // the m_LastParent token to Null
-    Token* oldParent = m_LastParent;
-    m_LastParent = 0L;
-    DoAddToken(tkMacroDef, token, lineNr, lineNr, m_Tokenizer.GetLineNumber(), para, false, true);
-    m_LastParent = oldParent;
-}
-
-void ParserThread::HandleUndefs()
-{
-    TokenizerState oldState = m_Tokenizer.GetState();
-    m_Tokenizer.SetState(tsReadRawExpression);
-    const wxString token = m_Tokenizer.GetToken(); // read the token after #undef
-    m_Tokenizer.SetState(oldState);
-    if (!token.IsEmpty())
-    {
-        Token* tk = TokenExists(token, nullptr, tkMacroDef);
-        if (tk != nullptr)
-            m_TokenTree->erase(tk);
-    }
-
-    m_Tokenizer.SkipToEOL();
 }
 
 void ParserThread::HandleNamespace()
@@ -3703,4 +3630,47 @@ void ParserThread::RefineAnonymousTypeToken(short int typeMask, wxString alias)
         m_Str << m_FileIdx << _T("_") << alias;
         m_TokenTree->RenameToken(unnamedAncestor, m_Str);
     }
+}
+
+wxString ParserThread::ReadAngleBrackets()
+{
+    wxString str = m_Tokenizer.GetToken();
+    if (str != wxT("<"))
+        return wxEmptyString;
+
+    int level = 1; // brace level of '<' and '>'
+
+    while (m_Tokenizer.NotEOF())
+    {
+        wxString token = m_Tokenizer.GetToken();
+        if (token == _T("<"))
+        {
+            ++level;
+            str << token;
+        }
+        else if (token == _T(">"))
+        {
+            --level;
+            str << token;
+            if (level == 0)
+                break;
+
+        }
+        else if (token == _T("*") || token == _T("&") || token == _T(","))
+        {
+            str << token;
+        }
+        else
+        {
+            if (str.Last() == _T('<')) // there is no space between '(' and the following token
+                str << token;
+            else                       // otherwise, a space is needed
+                str << _T(" ") << token;
+        }
+
+        if (level == 0)
+            break;
+    }//while (NotEOF())
+
+    return str;
 }

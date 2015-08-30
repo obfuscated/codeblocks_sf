@@ -81,6 +81,8 @@ namespace TokenizerConsts
     const wxString kw_endif     (_T("endif"));
     const wxString hash         (_T("#"));
     const wxString tabcrlf      (_T("\t\n\r"));
+    const wxString kw_define    (_T("define"));
+    const wxString kw_undef     (_T("undef"));
 }// namespace TokenizerConsts
 
 // maximun macro replacement stack size
@@ -1266,11 +1268,15 @@ PreprocessorType Tokenizer::GetPreprocessorType()
                 return ptIfdef;
             else if (token == TokenizerConsts::kw_endif)
                 return ptEndif;
+            else if (token == TokenizerConsts::kw_undef)
+                return ptUndef;
             break;
 
         case 6:
             if (token == TokenizerConsts::kw_ifndef)
                 return ptIfndef;
+            else if (token == TokenizerConsts::kw_define)
+                return ptDefine;
             break;
 
         case 7:
@@ -1410,6 +1416,20 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
             SkipToEOL();
             if (!m_ExpressionResult.empty())
                 m_ExpressionResult.pop();
+        }
+        break;
+
+        case ptDefine:
+        {
+            TRACE(_T("HandleConditionPreprocessor() : #define at line = %u"), m_LineNumber);
+            HandleDefines();
+        }
+        break;
+
+        case ptUndef:
+        {
+            TRACE(_T("HandleConditionPreprocessor() : #undef at line = %u"), m_LineNumber);
+            HandleUndefs();
         }
         break;
 
@@ -1879,3 +1899,87 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
 
     return pos;
 }
+
+void Tokenizer::HandleDefines()
+{
+    size_t lineNr = GetLineNumber();
+    while (SkipWhiteSpace() || SkipComment())
+        ;
+    Lex();
+    wxString token = m_Lex; // read the token after #define
+    if (token.IsEmpty())
+        return;
+
+    // do *NOT* use m_Tokenizer.GetToken()
+    // e.g.
+    // #define AAA
+    // #ifdef AAA
+    // void fly() {}
+    // #endif
+    // The AAA is not add to token tree, so, when call GetToken(), "#ifdef AAA" parse failed
+    wxString readToEOL = ReadToEOL(true);
+    wxString para; // function-like macro's args
+    wxString replaceList;
+    if (!readToEOL.IsEmpty())
+    {
+        // a '(' char follow the macro name (without space between them) is regard as a
+        // function like macro definition
+        if (readToEOL[0] == wxT('(')) // function-like macro definition
+        {
+            int level = 1;
+            size_t pos = 0;
+            while (level && pos < readToEOL.Len())
+            {
+                wxChar ch = readToEOL.GetChar(++pos);
+                if      (ch == wxT(')'))
+                    --level;
+                else if (ch == wxT('('))
+                    ++level;
+            }
+            para = readToEOL.Left(++pos);
+            replaceList << readToEOL.Right(readToEOL.Len() - (++pos));
+        }
+        else // variable like macro definition
+            replaceList << readToEOL;
+    }
+
+    AddMacroDefinition(token, lineNr, para, replaceList);
+}
+
+void Tokenizer::HandleUndefs()
+{
+    while (SkipWhiteSpace() || SkipComment())
+        ;
+    Lex();
+    wxString token = m_Lex; // read the token after #undef
+    if (!token.IsEmpty())
+    {
+        int index = m_TokenTree->TokenExists(token, -1, tkMacroDef);
+        if (index != wxNOT_FOUND)
+            m_TokenTree->erase(index);
+    }
+    SkipToEOL();
+}
+
+void Tokenizer::AddMacroDefinition(wxString name, int line, wxString para, wxString substitues)
+{
+    int index = m_TokenTree->TokenExists(name, -1, tkMacroDef);
+    Token* token;
+
+    if (index != wxNOT_FOUND) // already exists, so overwrite! or report a warning!
+        token = m_TokenTree->at(index);
+    else
+    {
+        token = new Token(name, m_FileIdx, line, ++m_TokenTree->m_TokenTicketCount);
+        token->m_TokenKind = tkMacroDef;// type of the token
+        token->m_ParentIndex = -1;      // global namespace
+        m_TokenTree->insert(token); // by default, it was added under m_ParentIndex member
+    }
+
+    // update the definition
+    token->m_Args = para;           // macro call's formal args
+    token->m_FullType = substitues; // replace list
+}
+
+
+
