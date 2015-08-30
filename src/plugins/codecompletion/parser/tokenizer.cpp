@@ -70,6 +70,7 @@ namespace TokenizerConsts
 {
     const wxString colon        (_T(":"));
     const wxString colon_colon  (_T("::"));
+    const wxString equal        (_T("="));
     const wxString kw_if        (_T("if"));
     const wxString kw_ifdef     (_T("ifdef"));
     const wxString kw_ifndef    (_T("ifndef"));
@@ -1020,7 +1021,8 @@ bool Tokenizer::Lex()
         else
         {
             MoveToNextChar();
-            m_Lex.assign(_T('='));
+            // this only copies a pointer, but operator= allocates memory and does a memcpy!
+            m_Lex.assign(TokenizerConsts::equal);
         }
     }
     else
