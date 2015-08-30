@@ -82,9 +82,6 @@ namespace TokenizerConsts
     const wxString tabcrlf      (_T("\t\n\r"));
 }// namespace TokenizerConsts
 
-// static
-wxStringHashMap     Tokenizer::s_Replacements;
-
 // maximun macro replacement stack size
 static const size_t s_MaxMacroReplaceDepth = 5;
 
