@@ -1038,26 +1038,6 @@ bool Tokenizer::SkipUnwanted()
         }
     }
 
-#if 0 // move the code to parserthread
-    // skip the following = or ?
-    if (m_State & tsSkipEqual)
-    {
-        if (c == _T('=') && NextChar() != _T('=')) //only skip after single equal sign, not double equals sign
-        {
-            if (!SkipToOneOfChars(_T(",;}"), true, true, false))
-                return false;
-        }
-    }
-    else if (m_State & tsSkipQuestion)
-    {
-        if (c == _T('?'))
-        {
-            if (!SkipToOneOfChars(_T(";}"), false, true))
-                return false;
-        }
-    }
-#endif // 0
-
     // skip the following white space and comments
     while (SkipWhiteSpace() || SkipComment())
         ;
@@ -1282,108 +1262,23 @@ wxString Tokenizer::DoGetToken()
 
 void Tokenizer::GetReplacedToken(wxString& str)
 {
-    // this indicates we are already in macro replacement mode
-//    if (m_RepeatReplaceCount > 0)
-//   {
-        const int id = m_TokenTree->TokenExists(str, -1, tkMacroDef);
-        if (id != -1)
+    const int id = m_TokenTree->TokenExists(str, -1, tkMacroDef);
+    if (id != -1)
+    {
+        const Token* token = m_TokenTree->at(id);
+        if (token)
         {
-            const Token* token = m_TokenTree->at(id);
-            if (token)
-            {
-                bool replaced = false;
-                if (!token->m_Args.IsEmpty())
-                    replaced = ReplaceMacroUsage(token);
-                else if (token->m_FullType != token->m_Name)
-                    replaced = ReplaceBufferText(token->m_FullType);
+            bool replaced = ReplaceMacroUsage(token);
 
-                if (replaced || token->m_FullType.IsEmpty())
-                {
-                    SkipUnwanted();
-                    // recursive call the DoGetToken function here
-                    str = DoGetToken();
-                }
+            if (replaced)
+            {
+                SkipUnwanted();
+                // recursive call the DoGetToken function here
+                str = DoGetToken();
             }
         }
-        // if in macro expansion mode, we don't want to let the user replacement rule executed
-        // again, so just returned
-        return;
-//    }
-
-#if 0
-    wxStringHashMap::const_iterator it = s_Replacements.find(str);
-    if (it == s_Replacements.end())
-        return;
-
-    TRACE(_T("GetReplacedToken() : Replacing '%s' with '%s' (file='%s', line='%u')."), it->first.wx_str(),
-          it->second.wx_str(), m_Filename.wx_str(), m_LineNumber);
-
-    if (it->second.IsEmpty())
-    {
-        SkipUnwanted();
-        str = DoGetToken();
     }
-    else if (it->second[0] == _T('+'))
-    {
-        while (SkipWhiteSpace() || SkipComment())
-            ;
-        DoGetToken(); // eat (...)
-        wxString target = (const wxChar*)it->second + 1;
-        if (target.IsEmpty())
-        {
-            while (SkipWhiteSpace() || SkipComment())
-                ;
-            str = DoGetToken();
-        }
-        else if (target != str && ReplaceBufferText(target))
-            str = DoGetToken();
-    }
-    else if (it->second[0] == _T('-'))
-    {
-        // sample rule:  "BEGIN_EVENT_TABLE" -> "-END_EVENT_TABLE"
-        // we should skip to END_EVENT_TABLE, so the contents between BEGIN_EVENT_TABLE and
-        // END_EVENT_TABLE is skipped, also the "()" after END_EVENT_TABLE is skipped.
-        wxString end((const wxChar*)it->second + 1); // strip the '-'
-        if (end.IsEmpty())
-            return;
-
-        while (NotEOF())
-        {
-            while (SkipComment() || SkipWhiteSpace())
-                ;
-            if (CurrentChar() == end[0])
-            {
-                if (DoGetToken() == end)
-                    break;
-            }
-            else
-                MoveToNextChar();
-        }
-
-        // eat ()
-        SkipUnwanted();
-        str = DoGetToken();
-        if (str[0] == _T('('))
-        {
-            SkipUnwanted();
-            str = DoGetToken();
-        }
-    }
-    else if (it->second[0] == _T('@'))
-    {
-        // trigger the macro replacement mode, so that we can look up the keyword in TokenTree for a
-        // macro usage, note that ReplaceBufferText() below just move the token index backword, but
-        // don't change the buffer
-        if(ReplaceBufferText(it->first))
-            str = DoGetToken();
-
-    }
-    else // for other user defined rules, just do a buffer content replacement
-    {
-        if (it->second != str && ReplaceBufferText(it->second))
-            str = DoGetToken();
-    }
-#endif // 0
+    return;
 }
 
 bool Tokenizer::CalcConditionExpression()
@@ -1826,7 +1721,7 @@ bool Tokenizer::SplitArguments(wxArrayString& results)
 bool Tokenizer::ReplaceBufferText(const wxString& target)
 {
     if (target.IsEmpty())
-        return false;
+        return true; // the token is removed from the buffer, return true, so we need to fetch another token
 
     if (m_RepeatReplaceCount > 0)
     {
