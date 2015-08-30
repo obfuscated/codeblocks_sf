@@ -389,8 +389,8 @@ protected:
      */
     bool SkipToStringEnd(const wxChar& ch);
 
-    /** Move to the next character in the buffer, amount defines the steps (by default, it is one) */
-    bool MoveToNextChar(const unsigned int amount = 1);
+    /** Move to the next character in the buffer */
+    bool MoveToNextChar();
 
     /** Return the current character indexed by m_TokenIndex in the m_Buffer */
     wxChar CurrentChar() const
