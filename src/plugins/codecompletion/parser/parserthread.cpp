@@ -701,6 +701,9 @@ void ParserThread::DoParse()
                 }
                 break;
 
+            case ParserConsts::comma_chr:
+                break;
+
             default:
                 switchHandled = false;
                 break;
