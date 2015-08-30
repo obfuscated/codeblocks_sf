@@ -1007,11 +1007,8 @@ bool Tokenizer::SkipComment()
     return true;
 }
 
-bool Tokenizer::SkipUnwanted()
+bool Tokenizer::SkipPreprocessorBranch()
 {
-    while (SkipWhiteSpace() || SkipComment())
-        ;
-
     wxChar c = CurrentChar();
     const unsigned int startIndex = m_TokenIndex;
 
@@ -1025,25 +1022,16 @@ bool Tokenizer::SkipUnwanted()
         }
     }
 
-    // skip [XXX][YYY]
-    if (m_State & tsSkipSubScrip)
-    {
-        while (c == _T('[') )
-        {
-            SkipBlock('[');
-            SkipWhiteSpace();
-            if (IsEOF())
-                return false;
-            c = CurrentChar();
-        }
-    }
+    if (startIndex != m_TokenIndex)
+        return true;
+    else
+        return false;
+}
 
-    // skip the following white space and comments
-    while (SkipWhiteSpace() || SkipComment())
+bool Tokenizer::SkipUnwanted()
+{
+    while (SkipWhiteSpace() || SkipComment() || SkipPreprocessorBranch())
         ;
-
-    if (startIndex != m_TokenIndex && CurrentChar() == _T('#'))
-        return SkipUnwanted();
 
     return NotEOF();
 }
