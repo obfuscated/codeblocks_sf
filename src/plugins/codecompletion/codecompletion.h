@@ -147,11 +147,6 @@ private:
      */
     void UpdateToolBar();
 
-    /** load the token replacement map (macro definitions) from configuration file*/
-    void LoadTokenReplacements();
-    /** write the Token replacement map to the configure file */
-    void SaveTokenReplacements();
-
     /** event handler for updating UI e.g. menu statues*/
     void OnUpdateUI(wxUpdateUIEvent& event);
 
