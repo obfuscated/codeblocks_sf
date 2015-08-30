@@ -1701,6 +1701,8 @@ void CodeCompletion::RereadOptions()
     m_CCEnableHeaders        = cfg->ReadBool(_T("/enable_headers"),        true);
     m_CCEnablePlatformCheck  = cfg->ReadBool(_T("/platform_check"),        true);
 
+    // update the CC toolbar option, and tick the timer for toolbar
+    // NOTE (ollydbg#1#12/06/14): why?
     if (m_ToolBar)
     {
         UpdateToolBar();
