@@ -166,17 +166,17 @@ public:
 
     /** return the string from the current position to the end of current line, in most case, this
      * function is used in handling #define, use with care outside this class!
-     * @param nestBraces true if you still need to count the '{' and '}' levels
      * @param stripUnneeded true if you are going to remove comments and compression spaces(two or
      * more spaces should become one space)
      */
     wxString ReadToEOL(bool stripUnneeded = true);
 
-    /** read a string from '(' to ')', note that inner parentheses considered */
+    /** read a string from '(' to ')', note that inner parentheses considered
+     * @param str the returned string
+     */
     void ReadParentheses(wxString& str);
 
-    /** Skip from the current position to the end of line.
-     * @param nestBraces if true, we should still counting the brace levels in this function.
+    /** Skip from the current position to the end of line, this is used to read the macro definition
      */
     bool SkipToEOL(); // use with care outside this class!
 
@@ -241,7 +241,9 @@ public:
      */
     bool ReplaceMacroUsage(const Token* tk);
 
-    /** Get first token position in buffer */
+    /** Get first token position in buffer, it is used to find the formal argument in the macro
+     * definition body.
+     */
     int GetFirstTokenPosition(const wxString& buffer, const wxString& target)
     {
         return GetFirstTokenPosition(buffer.GetData(), buffer.Len(), target.GetData(), target.Len());
