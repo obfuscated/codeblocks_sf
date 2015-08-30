@@ -1722,7 +1722,11 @@ bool Tokenizer::GetMacroExpandedText(const Token* tk, wxString& expandedText)
     // ..... AAA ;
     //          ^----m_TokenIndex, we can't find a opening '('
     if (!SplitArguments(actualArgs))
+    {
+        // reset the m_Lex since macro expansion failed
+        m_Lex = tk->m_Name;
         return false;
+    }
 
     // NOTE: some macros have no args (see above)
     //if (actualArgs.GetCount()==0)
