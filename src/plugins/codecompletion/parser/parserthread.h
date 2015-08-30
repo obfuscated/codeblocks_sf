@@ -305,12 +305,6 @@ private:
       */
     bool GetBaseArgs(const wxString & args, wxString& baseArgs);
 
-    /** Get the class name from a macro */
-    wxString GetClassFromMacro(const wxString& macro);
-
-    /** Get the macro's type, if the token is a macro, and saved the type in tokenName */
-    bool GetRealTypeIfTokenIsMacro(wxString& tokenName);
-
     /** Read the <xxxx=yyy, zzz> , and store the value in m_TemplateArgs */
     void GetTemplateArgs();
 

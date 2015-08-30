@@ -1101,15 +1101,8 @@ void ParserThread::DoParse()
             wxString peek = m_Tokenizer.PeekToken();
             if (!peek.IsEmpty())
             {
-                // pattern: AAA or AAA (...)
-                int id = m_TokenTree->TokenExists(token, -1, tkMacroDef);
-                // if AAA is a macro definition, then expand this macro
-                if (id != -1)
-                {
-                    HandleMacroExpansion(id, peek);
-                }
-                // any function like pattern
-                else if (   (peek.GetChar(0) == ParserConsts::opbracket_chr)
+
+                if (   (peek.GetChar(0) == ParserConsts::opbracket_chr)
                          && m_Options.handleFunctions )
                 {
                     if (   m_Str.IsEmpty()
@@ -1829,13 +1822,6 @@ void ParserThread::HandleUndefs()
 void ParserThread::HandleNamespace()
 {
     wxString ns = m_Tokenizer.GetToken();
-    Token* tk = TokenExists(ns, nullptr, tkMacroDef);
-    if (tk && tk->m_Name != tk->m_FullType)
-    {
-        if (m_Tokenizer.ReplaceBufferText(tk->m_FullType))
-            ns = m_Tokenizer.GetToken();
-    }
-
     int line = m_Tokenizer.GetLineNumber();
 
     if (ns == ParserConsts::opbrace)
@@ -1992,7 +1978,7 @@ void ParserThread::HandleClass(EClassType ct)
             m_Tokenizer.GetToken(); // eat ":"
             while (IS_ALIVE)
             {
-                wxString tmp = GetClassFromMacro(m_Tokenizer.GetToken());
+                wxString tmp = m_Tokenizer.GetToken();
                 next = m_Tokenizer.PeekToken();
                 // -----------------------------------------------------------
                 if (   tmp == ParserConsts::kw_public
@@ -2116,7 +2102,6 @@ void ParserThread::HandleClass(EClassType ct)
         else if (next == ParserConsts::opbrace)
         // -------------------------------------------------------------------
         {
-            GetRealTypeIfTokenIsMacro(current);
             // for a template class definition like
             // template <typename x, typename y>class AAA : public BBB, CCC {;}
             // we would like to show its ancestors and template formal parameters on the tooltip,
@@ -3450,46 +3435,6 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
 
     TRACE(_T("GetBaseArgs() : baseArgs='%s'."), baseArgs.wx_str());
     return true;
-}
-
-wxString ParserThread::GetClassFromMacro(const wxString& macro)
-{
-    wxString real(macro);
-    if (GetRealTypeIfTokenIsMacro(real))
-    {
-        Token* tk = TokenExists(real, nullptr, tkClass);
-        if (tk)
-            return tk->m_Name;
-    }
-
-    TRACE(_T("GetClassFromMacro() : macro='%s' -> real='%s'."), macro.wx_str(), real.wx_str());
-
-    return real;
-}
-
-bool ParserThread::GetRealTypeIfTokenIsMacro(wxString& tokenName)
-{
-    bool tokenIsMacro = false;
-    Token* tk = nullptr;
-    int count = 10;
-    while (IS_ALIVE && --count > 0)
-    {
-        tk = TokenExists(tokenName, nullptr, tkMacroDef);
-        if (   !tk
-            || tk->m_FullType.IsEmpty()
-            || tk->m_FullType == tokenName
-            || (   !wxIsalpha(tk->m_FullType[0])
-                && (tk->m_FullType[0] != ParserConsts::underscore_chr) ) )
-        {
-            break;
-        }
-        tokenName = tk->m_FullType;
-        tokenIsMacro = true;
-    }
-
-    TRACE(_T("GetRealTypeIfTokenIsMacro() : tokenIsMacro=%s -> tokenName='%s'."), tokenIsMacro ? wxString(_T("yes")).wx_str() : wxString(_T("no")).wx_str(), tokenName.wx_str());
-
-    return tokenIsMacro;
 }
 
 void ParserThread::GetTemplateArgs()
