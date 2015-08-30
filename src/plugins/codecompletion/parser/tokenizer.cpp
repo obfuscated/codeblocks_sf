@@ -1028,6 +1028,22 @@ bool Tokenizer::Lex()
             m_Lex.assign(TokenizerConsts::colon);
         }
     }
+    else if (c == '=')
+    {
+        wxChar next = NextChar();
+        if (next == _T('=') || next == _T('!') || next == _T('>') || next == _T('<'))
+        {
+            MoveToNextChar();
+            MoveToNextChar();
+            // this only copies a pointer, but operator= allocates memory and does a memcpy!
+            m_Lex = m_Buffer.Mid(start, m_TokenIndex - start);
+        }
+        else
+        {
+            MoveToNextChar();
+            m_Lex.assign(_T('='));
+        }
+    }
     else
     {
         if      (c == '{')
