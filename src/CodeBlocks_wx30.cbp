@@ -204,11 +204,13 @@
 					<Add directory="exchndl/win32/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="cmd.exe /c if exist devel30\exchndl.dll del devel30\exchndl.dll" />
+					<Add before="cmd /c if exist devel30\exchndl.dll del devel30\exchndl.dll" />
 					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
 					<Add after="zip -jq9 devel30\share\CodeBlocks\resources.zip src\resources\*.xrc" />
 					<Add after="zip -jq9 devel30\share\CodeBlocks\start_here.zip src\resources\start_here\*.html src\resources\start_here\*.png" />
 					<Add after='cmd /c &quot;cd src\resources &amp; zip -0 -q ..\..\devel30\share\CodeBlocks\resources.zip images\*.png images\16x16\*.png&quot;' />
+					<Add after="cmd /c if not exist devel30\exchndl.dll if exist exchndl\win32\bin\*.dll xcopy /Y exchndl\win32\bin\*.dll devel30\" />
+					<Add after="cmd /c if not exist devel30\symsrv.yes if exist exchndl\win32\bin\symsrv.yes xcopy /Y exchndl\win32\bin\symsrv.yes devel30\" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
