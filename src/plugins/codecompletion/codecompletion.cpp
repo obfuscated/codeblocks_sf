@@ -2742,7 +2742,8 @@ int CodeCompletion::DoAllMethodsImpl()
                 str << ed->GetLineIndentString(line - 1);
             if (addDoxgenComment)
                 str << _T("/** @brief ") << token->m_Name << _T("\n  *\n  * @todo: document this function\n  */\n");
-            wxString type = token->m_BaseType;
+            wxString type = token->m_FullType;
+            // "int *" or "int &" ->  "int*" or "int&"
             if ((type.Last() == _T('&') || type.Last() == _T('*')) && type[type.Len() - 2] == _T(' '))
             {
                 type[type.Len() - 2] = type.Last();
