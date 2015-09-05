@@ -657,6 +657,7 @@ void ParserThread::DoParse()
                 break;
 
             case ParserConsts::ptr_chr:
+            case ParserConsts::ref_chr:
                 {
                     m_PointerOrRef << token;
                 }
