@@ -516,10 +516,14 @@ void Tokenizer::ReadParentheses(wxString& str)
         else
         {
             // there is a space between two identifier like token
+            // (int var)
+            // also, a space between '*' and "var"
+            // (int* var) or (int& var)
             wxChar nextChar = token[0];
             wxChar lastChar = str.Last();
             if (   (wxIsalpha(nextChar) || nextChar == _T('_'))
-                && (wxIsalnum(lastChar) || lastChar == _T('_')) )
+                && (   wxIsalnum(lastChar) || lastChar == _T('_')
+                    || lastChar == _T('*') || lastChar == _T('&')))
             {
                 str << _T(" ") << token;
             }
