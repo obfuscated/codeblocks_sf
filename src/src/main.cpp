@@ -1097,12 +1097,12 @@ void MainFrame::CreateToolbars()
     m_pToolbar->Realize();
 
     // Right click on the main toolbar will popup a context menu
-    m_pToolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick) );
+    m_pToolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this);
 
     m_pToolbar->SetInitialSize();
 
     // Right click on the debugger toolbar will popup a context menu
-    m_debuggerToolbarHandler->GetToolbar()->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick) );
+    m_debuggerToolbarHandler->GetToolbar()->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this );
 
     std::vector<ToolbarInfo> toolbars;
 
@@ -1123,7 +1123,8 @@ void MainFrame::CreateToolbars()
             {
                 toolbars.push_back(info);
                 // support showing context menu of the plugins' toolbar
-                info.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick) );
+                info.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED,
+                                      wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this );
             }
         }
     }
@@ -1725,7 +1726,8 @@ void MainFrame::DoAddPlugin(cbPlugin* plugin)
                 wxAuiPaneInfo paneInfo(toolbarInfo.paneInfo);
                 m_LayoutManager.AddPane(toolbarInfo.toolbar, paneInfo. ToolbarPane().Top().Row(row).Position(position));
                 // Add the event handler for mouse right click
-                toolbarInfo.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
+                toolbarInfo.toolbar->Connect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED,
+                                             wxCommandEventHandler(MainFrame::OnToolBarRightClick), NULL, this);
 
                 DoUpdateLayout();
             }
