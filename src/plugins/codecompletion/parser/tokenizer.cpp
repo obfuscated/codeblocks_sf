@@ -765,7 +765,7 @@ bool Tokenizer::SkipComment()
 
             if (lineToAppend >= 0) // we have document after the token place
             {
-                // if we are reading the macro definition(m_ReadingMacroDefinition==true) 
+                // if we are reading the macro definition(m_ReadingMacroDefinition==true)
                 // then don't run the AppendDocumentation() to the previous Token. E.g.
                 //     int aaa;
                 //     #define FOO /*!< comments */
