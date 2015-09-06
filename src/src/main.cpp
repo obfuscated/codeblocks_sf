@@ -5028,7 +5028,7 @@ void MainFrame::PopupToggleToolbarMenu()
         if (!old)
             continue;
         wxMenuItem *item;
-        item = new wxMenuItem(NULL, old->GetId(), old->GetItemLabelText(), old->GetHelp(), old->GetKind());
+        item = new wxMenuItem(&menu, old->GetId(), old->GetItemLabelText(), old->GetHelp(), old->GetKind());
         menu.Append(item);
     }
     SetChecksForViewToolbarsMenu(menu);
