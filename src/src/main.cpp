@@ -2776,7 +2776,10 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     {
         wxToolBar* toolbar = it->second;
         if (toolbar)//Disconnect the mouse right click event handler before the toolbar is destroyed
-            toolbar->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
+        {
+            bool result = toolbar->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
+            cbAssert(result);
+        }
     }
 
     Manager::Shutdown(); // Shutdown() is not Free(), Manager is automatically destroyed at exit
@@ -4592,7 +4595,8 @@ void MainFrame::OnPluginUnloaded(CodeBlocksEvent& event)
     if (m_PluginsTools[plugin])
     {
         // Disconnect the mouse right click event handler before the toolbar is destroyed
-        m_PluginsTools[plugin]->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
+        bool result = m_PluginsTools[plugin]->Disconnect(wxID_ANY, wxEVT_COMMAND_TOOL_RCLICKED, wxCommandEventHandler(MainFrame::OnToolBarRightClick));
+        cbAssert(result);
         m_LayoutManager.DetachPane(m_PluginsTools[plugin]);
         m_PluginsTools[plugin]->Destroy();
         m_PluginsTools.erase(plugin);
