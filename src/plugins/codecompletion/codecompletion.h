@@ -122,7 +122,7 @@ public:
     /** get the whole search dirs except the ones locally belong to the c::b project, note this
      * function is used for auto suggestion for #include directives.
      * @param force if the value is false, just return a static (cached) wxArrayString to optimize
-     * the performance, it it is true, we try to update the cache.
+     * the performance, if it is true, we try to update the cache.
      */
     wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
 
@@ -147,7 +147,7 @@ private:
      */
     void UpdateToolBar();
 
-    /** event handler for updating UI e.g. menu statues*/
+    /** event handler for updating UI e.g. menu statues */
     void OnUpdateUI(wxUpdateUIEvent& event);
 
     /** event handler when user click Menu->View->Symbols browser */
@@ -456,7 +456,7 @@ private:
     bool                    m_CCEnablePlatformCheck;
 
     /* dir to files map, for example, there are two dirs c:/a and c:/b
-     * so the map looks like: (usually the relative file path is stored
+     * so the map looks like: (usually the relative file path is stored)
      * c:/a  ---> {c:/a/a1.h, c:/a/a2.h} ---> {a1.h, a2.h}
      * c:/b  ---> {c:/b/b1.h, c:/b/b2.h} ---> {b1.h, b2.h}
      */
