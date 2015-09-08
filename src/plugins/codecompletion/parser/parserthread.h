@@ -288,7 +288,7 @@ private:
                               Token*                parentIfCreated = 0);
 
     /** Converts a full argument list (including variable names) to argument types only and strips spaces.
-      * eg: if the argument list is like "(const TheClass* the_class, int my_int)"
+      * eg: if the argument list is like "(const TheClass* the_class = 0x1234, int my_int = 567)"
       * then, the returned argument list is "(const TheClass*,int)"
       * @param args Full argument list
       * @param baseArgs argument types only
