@@ -421,7 +421,7 @@ int idEditorActivatedTimer      = wxNewId();
 #define REALTIME_PARSING_DELAY    500
 
 // there are many reasons to trigger the refreshing of CC toolbar. But to avoid refreshing
-// the toolbar to often, we add a timer to delay the refresh, this is just like a mouse dwell
+// the toolbar too often, we add a timer to delay the refresh, this is just like a mouse dwell
 // event, which means we do the real job when the editor is stable for a while (no event
 // happens in the delay time period).
 #define TOOLBAR_REFRESH_DELAY     150
