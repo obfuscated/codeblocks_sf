@@ -519,11 +519,13 @@ void Tokenizer::ReadParentheses(wxString& str)
             // (int var)
             // also, a space between '*' and "var"
             // (int* var) or (int& var)
+            // space between ')' and the "int"
+            // (__attribute__(xxx) int var)
             wxChar nextChar = token[0];
             wxChar lastChar = str.Last();
             if (   (wxIsalpha(nextChar) || nextChar == _T('_'))
                 && (   wxIsalnum(lastChar) || lastChar == _T('_')
-                    || lastChar == _T('*') || lastChar == _T('&')))
+                    || lastChar == _T('*') || lastChar == _T('&') || lastChar == _T(')')))
             {
                 str << _T(" ") << token;
             }
