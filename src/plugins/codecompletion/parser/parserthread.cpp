@@ -3294,6 +3294,47 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
             // we have just skip the "abc", and now, we see the ","
             if (skip && *ptr == ParserConsts::comma_chr)
                 one = false; // see a comma, which means we have at least two parameter!
+
+            // try to remove the __attribute__(xxx) decoration in the parameter
+            // such as: int f(__attribute__(xxx) wxCommandEvent & event);
+            // should be convert to : int f(wxCommandEvent & event);
+            if(*ptr == ParserConsts::opbracket_chr && word == ParserConsts::kw_attribute)
+            {
+                // remove the "__attribute__" keywords from the baseArgs
+                // the length of "__attribute__" is 13
+                baseArgs = baseArgs.Mid(0, baseArgs.Len()-13);
+
+                // skip the next "(xxx)
+                int brackets = 1; // skip the first "(" already
+                ptr++; // next char
+
+                while (*ptr != ParserConsts::null)
+                {
+                    if      (*ptr == ParserConsts::opbracket_chr)
+                        brackets++;
+                    else if (*ptr == ParserConsts::clbracket_chr)
+                    {
+                        brackets--;
+                        if (brackets == 0)
+                        {
+                            ptr++;
+                            break;
+                        }
+
+                    }
+                    ptr++; // next char
+                }
+                // skip the spaces after the "__attribute__(xxx)"
+                while (   *ptr     != ParserConsts::null
+                       && *(ptr) == ParserConsts::space_chr )
+                {
+                    ++ptr; // next char
+                }
+                word = _T(""); // reset
+                sym  = false;  // no symbol is added
+                skip = false;  // don't skip the next token
+                break;
+            }
             word = _T(""); // reset
             sym  = true;
             skip = false;
@@ -3310,7 +3351,7 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
             if (*ptr != ParserConsts::null)
             {
                 baseArgs << *ptr; // append to baseArgs
-                if (wxIsalnum(*ptr) /*|| *ptr != ParserConsts::underscore_chr*/)
+                if (wxIsalnum(*ptr) || *ptr == ParserConsts::underscore_chr)
                     word << *ptr; // append to word
             }
         }
