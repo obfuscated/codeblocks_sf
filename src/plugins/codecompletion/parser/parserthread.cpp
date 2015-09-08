@@ -3211,10 +3211,20 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
                 // extract last stripped argument from baseArgs
                 wxString lastStrippedArg;
                 int lastArgComma = baseArgs.Find(ParserConsts::comma_chr, true);
-                if (lastArgComma) lastStrippedArg = baseArgs.Mid(1);
-                else              lastStrippedArg = baseArgs.Mid(lastArgComma);
+                if (lastArgComma)
+                    lastStrippedArg = baseArgs.Mid(1);
+                else
+                    lastStrippedArg = baseArgs.Mid(lastArgComma);
 
+
+                // input:  (float a = 0.0, int* f1(char x, char y), void z)
+                // output: (float, int*, z)
+                // the internal "(char x, char y)" should be removed
                 // No opening brackets in last stripped arg?
+                // this means if we have function pointer in the argument
+                // input:   void foo(double (*fn)(double))
+                // we should not skip the content after '*', since the '(' before '*' is already
+                // pushed to the lastStrippedArg.
                 if ( lastStrippedArg.Find(ParserConsts::opbracket_chr) == wxNOT_FOUND )
                 {
                     baseArgs << *ptr; // append to baseArgs
@@ -3233,8 +3243,11 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
                                 break;
                             brackets--;
                         }
-                        else if (*ptr == ParserConsts::comma_chr)
+                        else if (*ptr == ParserConsts::comma_chr && brackets == 0)
                         {
+                            // don't stop at the inner comma char, such as '^' pointed below
+                            // (float a = 0.0, int* f1(char x, char y), void z)
+                            //                               ^
                             skip = false;
                             break;
                         }
