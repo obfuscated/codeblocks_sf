@@ -3155,6 +3155,14 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
     bool skip = false;         // skip the next char (do not add to stripped args)
     bool sym  = false;         // current char symbol
     bool one  = true;          // only one argument
+    //   ( int abc = 5 , float * def )
+    //        ^
+    // ptr point to the next char of "int"
+    // word = "int"
+    // sym = true means ptr is point to an identifier like token
+    // here, if we find an identifier like token which is "int", we just skip the next token
+    // until we meet a "," or ")".
+
 
     TRACE(_T("GetBaseArgs() : args='%s'."), args.wx_str());
     baseArgs.Alloc(args.Len() + 1);
@@ -3165,6 +3173,7 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
         switch (*ptr)
         {
         case ParserConsts::eol_chr:
+            // skip the "\r\n"
             while (*ptr != ParserConsts::null && *ptr <= ParserConsts::space_chr)
                 ++ptr;
             break;
@@ -3239,6 +3248,8 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
             sym  = true;
             break;
         case ParserConsts::oparray_chr: // array handling like for 'int[20]'
+            // [   128   ]  ->   [128]
+            // space between the [] is stripped
             while (   *ptr != ParserConsts::null
                    && *ptr != ParserConsts::clarray_chr )
             {
@@ -3250,6 +3261,9 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
             sym  = true;
             break;
         case ParserConsts::lt_chr: // template arg handling like for 'vector<int>'
+            // <   int   >  ->   <int>
+            // space between the <> is stripped
+            // note that embeded <> such as vector<vector<int>> is not handled here
             while (   *ptr != ParserConsts::null
                    && *ptr != ParserConsts::gt_chr )
             {
@@ -3263,15 +3277,17 @@ bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
         case ParserConsts::comma_chr:     // fall through
         case ParserConsts::clbracket_chr: // fall through
         case ParserConsts::opbracket_chr:
+            // ( int abc, .....)
+            // we have just skip the "abc", and now, we see the ","
             if (skip && *ptr == ParserConsts::comma_chr)
-                one = false;
+                one = false; // see a comma, which means we have at least two parameter!
             word = _T(""); // reset
             sym  = true;
             skip = false;
             break;
         default:
             sym = false;
-        }
+        }// switch (*ptr)
 
         // Now handle the char processed in this loop:
         if (!skip || sym)
