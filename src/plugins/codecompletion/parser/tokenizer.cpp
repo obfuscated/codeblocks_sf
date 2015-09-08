@@ -656,10 +656,18 @@ bool Tokenizer::SkipComment()
     bool isDoc = false;
     if (m_TokenizerOptions.storeDocumentation)
     {
-        isDoc = (CurrentChar() == '!');	//	"/*!" or "//!"
+        isDoc = (CurrentChar() == '!'); // "/*!" or "//!"
 
-        if (!isDoc && cstyle) //  "/*" + ?
-            isDoc = (CurrentChar() == '*' && NextChar() != '/'); //	"/**" but not "/**/" and not //*
+        // "/*" + ? check
+        // "/**" is OK, but not "/**/" and not //* and not /***
+        // since
+        // /********* not a doxygen comment ********** */
+        // or
+        // /********************************************/
+        // /*       also not a doxygen comment         */
+        // /********************************************/
+        if (!isDoc && cstyle)
+            isDoc = (CurrentChar() == '*' && NextChar() != '/' && NextChar() != '*');
 
         if (!isDoc && !cstyle) // "//" + ?
             isDoc = (CurrentChar() == '/' && NextChar() != '/'); // "///" but not "////"
