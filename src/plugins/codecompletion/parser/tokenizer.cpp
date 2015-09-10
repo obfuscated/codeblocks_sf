@@ -1065,6 +1065,18 @@ bool Tokenizer::CheckMacroUsageAndReplace()
     return false;
 }
 
+// if we have such code
+// #define A 1
+// #define B 1
+//
+// #if A+B == 2
+//    ^begin   ^end
+//
+// we first call SkipToEOL() which actually doesn't care about macro expansion
+// then, we get the end of the expression
+// now, we rewind the m_TokenIndex to the "begin", and run DoGetToken(), thus we get all the
+// expanded tokens like "1+1 == 2"
+// thus, we can calculate the expression.
 bool Tokenizer::CalcConditionExpression()
 {
     // need to force the tokenizer to read raw expression
@@ -1997,6 +2009,3 @@ void Tokenizer::AddMacroDefinition(wxString name, int line, wxString para, wxStr
     token->m_Args = para;           // macro call's formal args
     token->m_FullType = substitues; // replace list
 }
-
-
-
