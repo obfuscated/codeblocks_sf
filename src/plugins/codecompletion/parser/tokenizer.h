@@ -291,9 +291,6 @@ protected:
     /** Skip character until we meet a ch */
     bool SkipToChar(const wxChar& ch);
 
-    /** Skip the blocks like <>, {}, [], () */
-    bool SkipBlock(const wxChar& ch);
-
     /** skips comments, spaces, preprocessor branch. */
     bool SkipUnwanted();
 

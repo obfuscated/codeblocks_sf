@@ -172,7 +172,7 @@ protected:
     /** actually run the syntax analysis*/
     void DoParse();
 
-    /** skip blocks () [] {} <> */
+    /** skip blocks {} */
     void SkipBlock();
 
     /** skip the template argument*/

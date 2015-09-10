@@ -470,7 +470,7 @@ wxString Tokenizer::ReadToEOL(bool stripUnneeded)
 }
 
 // there are some rules which make the parentheses very compact
-// 1, here should be no space before ',' , '*' and '&', but should have a space after that
+// 1, there should be no space before ',' , '*' and '&', but should have a space after that
 // 2, two or more spaces becomes one space
 // 3, no spaces after the '(' and before ')'
 // 4, there need a space to separate to identifier. see the "unsigned" and "int" below
@@ -590,40 +590,6 @@ bool Tokenizer::SkipToInlineCommentEnd()
 
     TRACE(_T("SkipToInlineCommentEnd(): (END) We are now at line %u, CurrentChar='%c', PreviousChar='%c',")
           _T(" NextChar='%c'"), m_LineNumber, CurrentChar(), PreviousChar(), NextChar());
-
-    return NotEOF();
-}
-
-bool Tokenizer::SkipBlock(const wxChar& ch)
-{
-    // skip blocks () [] {} <>
-    wxChar match;
-    switch (ch)
-    {
-        case '(': match = ')'; break;
-        case '[': match = ']'; break;
-        case '{': match = '}'; break;
-        case '<': match = '>'; break;
-        default : return false;
-    }
-
-    MoveToNextChar();
-    int nestLevel = 1; // counter for nested blocks (xxx())
-    while (NotEOF())
-    {
-        while (SkipWhiteSpace() || SkipString() || SkipComment())
-            ;
-
-        if (CurrentChar() == ch)
-            ++nestLevel;
-        else if (CurrentChar() == match)
-            --nestLevel;
-
-        MoveToNextChar();
-
-        if (nestLevel == 0)
-            break;
-    }
 
     return NotEOF();
 }
