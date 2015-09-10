@@ -18,9 +18,9 @@
 /// Enum defines the skip state of the Tokenizer
 enum TokenizerState
 {
-    // read parentheses as a single token
+    /** read parentheses as a single token */
     tsNormal        = 0x0000,
-    // read parentheses as token lists.
+    /** read parentheses as token lists, so it return several tokens like '(' ... ')' */
     tsRawExpression = 0x0001
 };
 
@@ -37,13 +37,15 @@ enum PreprocessorType
     ptEndif             = 0x0008,   //!< #endif
     ptDefine            = 0x0009,   //!< #define
     ptUndef             = 0x000A,   //!< #undef
-    ptOthers            = 0x000B    //!< #include
+    ptOthers            = 0x000B    //!< #include #warning and other #xxx
 };
 
 /// Whether we need to handle C-preprocessor directives
 struct TokenizerOptions
 {
+    /** do we expand the macros in #if like conditional preprocessor directives */
     bool wantPreprocessor;
+    /** do we store the doxygen like document */
     bool storeDocumentation;
 };
 
@@ -55,8 +57,8 @@ struct TokenizerOptions
  * The former one eats one token string from buffer, the later one does a "look ahead" on the buffer and return
  * the next token string(peeked string). The peeked string will be cached until the next GetToken() call,
  * thus performance can be improved.
- * Also, Tokenizer class does some kind of handling "Macro replacement" on the buffer to imitate the macro expansion in
- * C-preprocessor, see member-function GetReplacedToken() for details.
+ * Also, Tokenizer class does some kind of handling "Macro expansion" on the buffer, from this point of view, this
+ * class is a kind of preprocessor
  * Further more, it handles some "conditional preprocessor directives"(like "#if xxx").
  */
 class Tokenizer
@@ -79,7 +81,7 @@ public:
     /** Initialize the buffer by directly using a wxString's content.
      *  @param initLineNumber the start line of the buffer, usually the parser try to parse a function
      *  body, so the line information of each local variable tokens are correct.
-     *  @param buffer text used for parsing
+     *  @param buffer text content used for parsing
      *  @param fileOfBuffer the file name where the buffer come from.
      */
     bool InitFromBuffer(const wxString& buffer, const wxString& fileOfBuffer = wxEmptyString,
@@ -109,7 +111,7 @@ public:
         m_State = state;
     };
 
-    /** Return the skipping options value, see TokenizerState for more details.*/
+    /** Return the skipping options value, see TokenizerState for more details. */
     TokenizerState GetState()
     {
         return m_State;
@@ -165,8 +167,7 @@ public:
      */
     void ReadParentheses(wxString& str);
 
-    /** Skip from the current position to the end of line, this is used to read the macro definition
-     */
+    /** Skip from the current position to the end of line */
     bool SkipToEOL(); // use with care outside this class!
 
     /** Skip to then end of the C++ style comment */
@@ -189,27 +190,27 @@ public:
      * @param target the new text going to replace some text on the m_Buffer
      * @param macro if it is a macro expansion, we need to remember the referenced(used) macro token
      * so that we can avoid the recursive macro expansion such as the below code:
-     *
+     * @code
      * #define X Y
      * #define Y X
      * int X;
-     *
+     * @endcode
      * http://forums.codeblocks.org/index.php/topic,13384.msg90391.html#msg90391
      *
      * Macro expansion is just replace some characters in the m_Buffer.
-     *
+     * @code
      * xxxxxxxxxAAAA(u,v)yyyyyyyyy
      *                   ^------ m_TokenIndex (anchor point)
-     *
+     * @endcode
      * For example, the above is a wxChar Array(m_Buffer), a macro usage "AAAA(u,v)" is detected and
      * need to expanded. We just do a "backward" text replace here.
      * Before replacement, m_TokenIndex points to the next char of ")" in "AAAA(u,v)"(We say it as an
      * anchor point). After replacement, the new buffer becomes:
-     *
+     * @code
      * xxxNNNNNNNNNNNNNNNyyyyyyyyy
      *    ^ <----------- ^
      *    m_TokenIndex was moved backward
-     *
+     * @endcode
      * Note that "NNNNNNNNNNNNNNN" is the expanded new text. The m_TokenIndex was moved backward to
      * the beginning of the new added text.
      * If the new text is small enough, then m_Buffer's length do not need to increase.
@@ -230,8 +231,11 @@ public:
      */
     bool ReplaceMacroUsage(const Token* tk);
 
-    /** Get first token position in buffer, it is used to find the formal argument in the macro
+    /** Search "target" in the buffer, return first position in buffer.
+     * it is used to find the formal argument in the macro
      * definition body.
+     * @param buffer the content
+     * @param target the search key
      */
     int GetFirstTokenPosition(const wxString& buffer, const wxString& target)
     {
@@ -247,7 +251,9 @@ public:
     int GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLen,
                               const wxChar* key, const size_t keyLen);
 
-    /** KMP find, get the first position, if find nothing, return -1 */
+    /** KMP find, get the first position, if find nothing, return -1
+     *  https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
+     */
     int KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen);
 
     /** a Token is added, associate doxygen style documents(comments before the variables) to the Token */
@@ -263,7 +269,7 @@ protected:
      */
     wxString DoGetToken();
 
-    /** check the m_Lex to see it is a identifier like token, and also if it is a macro usage,
+    /** check the m_Lex to see it is an identifier like token, and also if it is a macro usage,
      * replace it.
      * @return true if some text replacement happens in the m_Buffer, otherwise return false
      */
@@ -288,9 +294,7 @@ protected:
     /** Skip the blocks like <>, {}, [], () */
     bool SkipBlock(const wxChar& ch);
 
-    /** skips comments, assignments, preprocessor etc. Eg, sometimes, it will skip the statement after
-     * the "=" statement (depend on the TokenizerState value).
-     */
+    /** skips comments, spaces, preprocessor branch. */
     bool SkipUnwanted();
 
     /** Skip any "tab" "white-space" */
@@ -304,6 +308,8 @@ protected:
     bool SkipComment();
 
     /** Skip the C preprocessor directive, such as #ifdef xxxx
+     *  only the conditional preprocessor directives are handled here, the others such as
+     *  #include or #warning and all kinds of ptOthers will passed to Parserthread class
      *  @return true if we do move m_TokenIndex
      */
     bool SkipPreprocessorBranch();
@@ -370,10 +376,12 @@ private:
 
     /** Check the previous char before EOL is a backslash, call this function in the condition that
      * the CurrentChar is '\n', here we have two cases:
-     * ......\\\r\n......
-     *            ^--current char, this is DOS style EOL
-     * ......\\\n......
-     *          ^--current char, this is Linux style EOL
+     * @code
+     * ......\ \ \r \n......
+     *               ^--current char, this is DOS style EOL
+     * ......\ \ \n......
+     *            ^--current char, this is Linux style EOL
+     * @endcode
      */
     inline bool IsBackslashBeforeEOL()
     {
@@ -384,9 +392,7 @@ private:
         return last == _T('\\');
     }
 
-    /** Judge what is the first block
-     * It will call 'SkipToEOL()' before returned.
-     */
+    /** #if xxxx, calculate the value of "xxxx" */
     bool CalcConditionExpression();
 
     /** If the next token string is macro usage, return true */
@@ -398,13 +404,43 @@ private:
     /** handle the statement: #undef XXXXX */
     void HandleUndefs();
 
-    /** add a macro definition */
+    /** add a macro definition
+     *  for example: #define AAA(x,y) x+y
+     *  @param name macro name which is "AAA"
+     *  @param line the line of the macro definition locates
+     *  @param para the formal parameters, which is "(x,y)"
+     *  @param substitues the definition which is "x+y"
+     */
     void AddMacroDefinition(wxString name, int line, wxString para, wxString substitues);
 
-    /** Skip to the next conditional preprocessor directive branch. */
+    /** Skip to the next conditional preprocessor directive branch.
+     *  for example:
+     *  @code
+     *    #if 0
+     *      // skipped statements
+     *    #elif 0
+     *      // skipped statements
+     *    #else
+     *      // active statements
+     *    #endif
+     *  @endcode
+     *  if we see a "#if 0", we need to jump to the next "#elif xxx"
+     */
     void SkipToNextConditionPreprocessor();
 
-    /** Skip to the #endif conditional preprocessor directive. */
+    /** Skip to the #endif conditional preprocessor directive.
+     *  for example:
+     *  @code
+     *    #if 1
+     *      // active statements
+     *    #elif x
+     *      // skipped statements
+     *    #else
+     *      // skipped statements
+     *    #endif
+     *  @endcode
+     *  if we see a "#if 1" branch we need to skip the next two branches, and go to "#endif"
+     */
     void SkipToEndConditionPreprocessor();
 
     /** Get current conditional preprocessor type */
@@ -419,10 +455,10 @@ private:
     /** Split the macro arguments, and store them in results, when calling this function, we expect
      * that m_TokenIndex point to the opening '(', or some spaces before the opening '('.
      * such as below
-     *
+     * @code
      *    ..... ABC  ( xxx, yyy ) zzz .....
      *             ^--------m_TokenIndex
-     *
+     * @endcode
      * @param results in the above example, the result contains two items (xxx and yyy)
      * @return false if arguments (the parenthesis) are not found.
      */
@@ -439,6 +475,8 @@ private:
 
     /** Tokenizer options specify the skipping option */
     TokenizerOptions     m_TokenizerOptions;
+
+    /** the Token tree to store the macro definition */
     TokenTree*           m_TokenTree;
 
     /** Filename of the buffer */
@@ -460,8 +498,10 @@ private:
      */
     wxString             m_Token;                //!< token name
     /** index offset in buffer, when parsing a buffer
+     * @code
      * ....... namespace std { int a; .......
      *                      ^ --- m_TokenIndex, m_Token = "std"
+     * @endcode
      * m_TokenIndex always points to the next character of a valid token, in the above example,
      * it points to the space after "std".
      */
@@ -506,7 +546,9 @@ private:
     /** replaced buffer information
      * Here is an example of how macro are expanded
      *
+     * @code
      * #define AAA BBBB
+     * if we see a macro usage below
      * ..........AAA..................[EOF]
      *              ^
      * '^' is the m_TokenIndex.
@@ -515,6 +557,7 @@ private:
      *
      * .........BBBB..................[EOF]
      *          ^   ^
+     * @endcode
      * The first '^' is the new m_TokenIndex, we store is as m_Begin, the second '^' is the anchor
      * point, we store it as m_End, normally the content from m_End to [EOF] are unchanged, unless
      * m_Buffer is too small to store the substituted text.
@@ -525,14 +568,17 @@ private:
         ExpandedMacro():m_Macro(0)
         {
         };
-        unsigned int m_Begin; // the token index we begin to parse after replacement
-        unsigned int m_End;   // the end token index, if beyond this index, we need to pop the buffer
-        const Token* m_Macro; // the referenced used macro
+        /** the token index we begin to parse after replacement */
+        unsigned int m_Begin;
+        /** the end token index, if beyond this index, we need to pop the buffer */
+        unsigned int m_End;
+        /** the referenced used macro */
+        const Token* m_Macro;
     };
 
     /** this serves as a macro replacement stack, in the above example, if AAA is replaced by BBBB,
      * we store the macro definition of AAA in the m_ExpandedMacros, and if BBBB is also defined as
-     *
+     * @code
      * #define BBBB CCC + DDD
      * #define CCC 1
      *
@@ -555,7 +601,7 @@ private:
      *  top -> macro CCC
      *      -> macro BBBB
      *      -> macro AAA
-     *
+     * @endcode
      *  if 1 is parsed, and we get a next token '+', the CCC in the top is popped.
      *
      * when we try to expand a macro usage, we can look up in the stack to see whether the macro is
@@ -564,7 +610,6 @@ private:
      */
     std::list<ExpandedMacro>    m_ExpandedMacros;
 
-    // TODO (ollydbg#1#01/19/15): comment those two
     /** normally, this record the doxygen style comments for the next token definition
      *  for example, here is a comment
      *  @code

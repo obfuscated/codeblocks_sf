@@ -647,9 +647,12 @@ void ParserThread::DoParse()
             case ParserConsts::hash_chr:
                 {
                     token = m_Tokenizer.GetToken();
+                    // only the ptOthers kinds of preprocessor directives will be passed here
+                    // see details in: Tokenizer::SkipPreprocessorBranch()
+                    // those could be: "#include" or "#warning" or "#xxx" and more
                     if (token == ParserConsts::kw_include)
                         HandleIncludes();
-                    else
+                    else // handle "#warning" or "#xxx" and more, just skip them
                         m_Tokenizer.SkipToEOL();
 
                     m_Str.Clear();

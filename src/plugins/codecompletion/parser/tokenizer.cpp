@@ -831,6 +831,8 @@ bool Tokenizer::SkipPreprocessorBranch()
     {
         // this use the Lex() to fetch an unexpanded token
         const PreprocessorType type = GetPreprocessorType();
+        // ptOthers is not handled here, we will pass them to Parserthread class
+        // so that #include can be handled in Parserthread
         if (type != ptOthers)
         {
             HandleConditionPreprocessor(type);
@@ -1479,6 +1481,7 @@ void Tokenizer::HandleConditionPreprocessor(const PreprocessorType type)
         break;
 
         case ptOthers:
+            // ptOthers won't happens here, because it was excluded before calling this function
         default:
             break;
     }

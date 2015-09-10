@@ -73,7 +73,7 @@ public:
 
     bool FindNext(bool includechildren = true);
 
-    /** overload the *() operator, get the node index pointed by the iterator*/
+    /** overload the *() operator, get the node index pointed by the iterator */
     const nSearchTreeNode& operator* () const { return m_CurNode; }
 
     /** go to next node */
@@ -88,7 +88,7 @@ public:
     /** go to the previous node under the same parent's link map */
     bool FindPrevSibling();
 
-    /** check to see a sibling node with the first character 'ch' exists*/
+    /** check to see a sibling node with the first character 'ch' exists */
     bool FindSibling(wxChar ch);
 
     /** reach the end of the tree */
@@ -192,31 +192,31 @@ public:
      */
     SearchTreeNode* GetChild(BasicSearchTree* tree,wxChar ch);
 
-    /** get the incoming edge string of the node, in the above example, it is "hysi" for node(2)*/
+    /** get the incoming edge string of the node, in the above example, it is "hysi" for node(2) */
     wxString GetLabel(const BasicSearchTree* tree) const;
 
-    /** get first character of the incoming edge, in the above example, it is 'h' for node(2)*/
+    /** get first character of the incoming edge, in the above example, it is 'h' for node(2) */
     wxChar GetChar(const BasicSearchTree* tree) const;
 
-    /** the the full label string, note the incoming edge is only a sub string of the full label*/
+    /** get the full label string, note the incoming edge is only a sub string of the full label */
     const wxString& GetActualLabel(const BasicSearchTree* tree) const;
 
     /** the index of the full label in tree->m_Labels array */
     nSearchTreeLabel GetLabelNo() const { return m_Label; }
 
-    /** the first character index in the full label*/
+    /** the first character index in the full label */
     unsigned int GetLabelStart() const { return m_LabelStart; }
 
     /** the length of the incoming label, in the above example, it is 4 for node"hysi"(2) */
     unsigned int GetLabelLen() const { return m_LabelLen; }
 
-    /** specify the incoming edge of the current node*/
+    /** specify the incoming edge of the current node */
     void SetLabel(nSearchTreeLabel label, unsigned int labelstart, unsigned int labellen);
 
-    /** the depth of node is the string length from root node to the last character of the incoming edge*/
+    /** the depth of node is the string length from root node to the last character of the incoming edge */
     unsigned int GetDepth() const { return m_Depth; }
 
-    /** Updates the depth by recalculate the m_Depth of the node, this happens the parent node has changed*/
+    /** Updates the depth by recalculate the m_Depth of the node, this happens the parent node has changed */
     void RecalcDepth(BasicSearchTree* tree);
 
     /**  Updates items with parent, move some items upward to its parent node */
@@ -236,7 +236,7 @@ public:
      */
     unsigned int GetDeepestMatchingPosition(BasicSearchTree* tree, const wxString& s, unsigned int StringStartDepth);
 
-    /** serialize the node information to a string*/
+    /** serialize the node information to a string */
     wxString Serialize(BasicSearchTree* tree, nSearchTreeNode node_id, bool withchildren = false);
     /** pretty print the node to a string, used for debugging */
     void Dump(BasicSearchTree* tree, nSearchTreeNode node_id, const wxString& prefix, wxString& result);
@@ -271,7 +271,7 @@ protected:
 };
 
 /** This class is generally a string -> size_t map, the tree details (graph) is already show in the
- * declaration of \see SearchTreeNode and \see BasicSearchTreeIterator.
+ *  declaration of \see SearchTreeNode and \see BasicSearchTreeIterator.
  */
 class BasicSearchTree
 {
@@ -285,7 +285,8 @@ public:
     virtual void clear(); /// Clear items and tree
 
     /** Adds an item number to position defined by s.
-        If the string already exists, returns the corresponding item no. */
+     *  If the string already exists, returns the corresponding item no.
+     */
     size_t insert(const wxString& s);
 
     /// Tells if there is an item for string s
@@ -301,9 +302,9 @@ public:
     const wxString GetString(size_t n) const;
 
     /** Finds items that match a given string.
-        if is_prefix==true, it finds items that start with the string.
-        returns the number of matches.
-    */
+     *  if is_prefix==true, it finds items that start with the string.
+     *  returns the number of matches.
+     */
     size_t FindMatches(const wxString& s, std::set<size_t>& result, bool caseSensitive, bool is_prefix);
 
     /// Serializes the labels into an XML-compatible string
@@ -351,10 +352,10 @@ private:
     void CreateRootNode();
 
     /** Splits the Branch that leads to node n, at the given depth.
-        Used by AddNode.
-        @return the newly created node
-        if the given position is exactly the length of n's vertex,
-        just return n.
+     *  Used by AddNode.
+     *  @return the newly created node
+     *  if the given position is exactly the length of n's vertex,
+     *  just return n.
      */
     nSearchTreeNode SplitBranch(nSearchTreeNode n, size_t depth);
 
