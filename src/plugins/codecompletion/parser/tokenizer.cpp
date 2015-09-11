@@ -1537,8 +1537,15 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, const Token* macro)
 
     if (m_ExpandedMacros.size() >= s_MaxMacroReplaceDepth)
     {
-        // clear the macro expansion stack
-        m_ExpandedMacros.clear();
+        // do not clear the macro expansion stack here
+        // since it will destroy the anchor point recorded, for example
+        // if we have a macro definition "#define member FF.member", and expanding the usage.
+        // "FF" could also be expanded many times, which exceeds the s_MaxMacroReplaceDepth
+        // When initially expand the "FF.member", the anchor point is recorded as below.
+        //                                     ^-----anchor point
+        // This protect the "member" get expand again. But if we reset the m_ExpandedMacros when
+        // expanding the "FF", then the "member" will expand again, which leads to infinite loop.
+        //m_ExpandedMacros.clear();
 
         m_PeekAvailable = false;
         return true; // NOTE: we have to skip the problem token by returning true.
