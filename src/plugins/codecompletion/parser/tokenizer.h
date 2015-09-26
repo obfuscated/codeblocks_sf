@@ -479,7 +479,7 @@ private:
     /** Filename of the buffer */
     wxString             m_Filename;
     /** File index, useful when parsing documentation; \sa SkipComment */
-    int                  m_FileIdx;
+    unsigned int         m_FileIdx;
     /** Buffer content, all the lexical analysis is done on this */
     wxString             m_Buffer;
     /** Buffer length */

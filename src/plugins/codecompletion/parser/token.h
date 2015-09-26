@@ -209,6 +209,9 @@ public:
     /** Line index where the token was met, which is 1 based */
     unsigned int                 m_Line;
 
+    /** doxygen style comments */
+    wxString                     m_Doc;
+
     /** function implementation file index */
     unsigned int                 m_ImplFileIdx;
 
@@ -220,6 +223,9 @@ public:
 
     /** if token is impl, closing brace line */
     unsigned int                 m_ImplLineEnd;
+
+    /** doxygen style comments in the Impl file */
+    wxString                     m_ImplDoc;
 
     /** public? private? protected? */
     TokenScope                   m_Scope;

@@ -1625,8 +1625,6 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
     newToken->m_IsTemp     = m_Options.isTemp;
     newToken->m_IsOperator = isOperator;
 
-    m_Tokenizer.SetLastTokenIdx(newToken->m_Index);
-
     if (!isImpl)
     {
         newToken->m_FileIdx = m_FileIdx;
@@ -1640,6 +1638,10 @@ Token* ParserThread::DoAddToken(TokenKind       kind,
         newToken->m_ImplLineEnd   = implLineEnd;
         m_TokenTree->InsertTokenBelongToFile(newToken->m_ImplFileIdx, newToken->m_Index);
     }
+
+    // this will append the doxygen style comments to the Token
+    m_Tokenizer.SetLastTokenIdx(newToken->m_Index);
+
     TRACE(_T("DoAddToken() : Added/updated token '%s' (%d), kind '%s', type '%s', actual '%s'. Parent is %s (%d)"),
           name.wx_str(), newToken->m_Index, newToken->GetTokenKindString().wx_str(), newToken->m_FullType.wx_str(),
           newToken->m_BaseType.wx_str(), m_TokenTree->at(newToken->m_ParentIndex) ?

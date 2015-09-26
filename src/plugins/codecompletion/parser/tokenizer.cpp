@@ -759,7 +759,7 @@ bool Tokenizer::SkipComment()
                 {
                     // we need to attach the document to recent added Token
                     if (m_LastTokenIdx != -1)
-                        m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_NextTokenDoc + doc);
+                        m_TokenTree->AppendDocumentation(m_LastTokenIdx, m_FileIdx, m_NextTokenDoc + doc);
 
                     m_NextTokenDoc.clear();
                 }
@@ -1709,7 +1709,7 @@ void Tokenizer::SetLastTokenIdx(int tokenIdx)
     if (tokenIdx != -1 && !m_NextTokenDoc.IsEmpty())
     {
         if (m_ExpressionResult.empty() || m_ExpressionResult.top())
-            m_TokenTree->AppendDocumentation(tokenIdx, m_NextTokenDoc);
+            m_TokenTree->AppendDocumentation(tokenIdx, m_FileIdx, m_NextTokenDoc);
     }
     m_NextTokenDoc.clear();
 }

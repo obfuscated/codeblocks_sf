@@ -280,9 +280,10 @@ public:
     /** @brief associate a document string with the token
      *
      * @param tokenIdx token index
+     * @param fileIdx the file index where the doc locates
      * @param doc document string
      */
-    void AppendDocumentation(int tokenIdx, const wxString& doc);
+    void AppendDocumentation(int tokenIdx, unsigned int fileIdx, const wxString& doc);
 
     /** @brief get the document string associated with the token
      *
@@ -363,9 +364,6 @@ protected:
 
     /** Set: file indices */
     TokenFileSet        m_FilesToBeReparsed;
-
-    /** Map: token index -> documentation */
-    TokenIdxStringMap   m_TokenDocumentationMap;
 };
 
 #endif // TOKENTREE_H

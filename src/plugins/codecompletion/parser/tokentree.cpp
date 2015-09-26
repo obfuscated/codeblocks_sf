@@ -93,8 +93,6 @@ void TokenTree::clear()
             delete token;
     }
     m_Tokens.clear();
-
-    m_TokenDocumentationMap.clear();
 }
 
 size_t TokenTree::size()
@@ -479,11 +477,7 @@ void TokenTree::RemoveToken(Token* oldToken)
         m_TopNameSpaces.erase(idx);
     }
 
-    // Step 6: Delete documentation associated with removed token
-
-    m_TokenDocumentationMap.erase(oldToken->m_Index);
-
-    // Step 7: Finally, remove it from the list.
+    // Step 6: Finally, remove it from the list.
 
     RemoveTokenFromList(idx);
 }
@@ -598,11 +592,13 @@ void TokenTree::RemoveFile(int fileIdx)
             {
                 the_token->m_FileIdx = 0;
                 the_token->m_Line = 0;
+                the_token->m_Doc.clear();
             }
             else if (match2)
             {
                 the_token->m_ImplFileIdx = 0;
                 the_token->m_ImplLine = 0;
+                the_token->m_ImplDoc.clear();
             }
         }
 
@@ -937,16 +933,35 @@ void TokenTree::FlagFileAsParsed(const wxString& filename)
     m_FileStatusMap[ InsertFileOrGetIndex(filename) ] = fpsDone;
 }
 
-void TokenTree::AppendDocumentation(int tokenIdx, const wxString& doc)
+void TokenTree::AppendDocumentation(int tokenIdx, unsigned int fileIdx, const wxString& doc)
 {
-    wxString& newDoc = m_TokenDocumentationMap[tokenIdx];
-    if (newDoc == doc) // Do not duplicate
+    // fetch the Token pointer
+    Token* tk = GetTokenAt(tokenIdx);
+    if (!tk)
         return;
-    newDoc += doc;
-    newDoc.Shrink();
+    if (tk->m_FileIdx == fileIdx) // in the same file index
+    {
+        wxString& newDoc = tk->m_Doc;
+        if (newDoc == doc) // Do not duplicate
+            return;
+        newDoc += doc; // document could happens before and after the Token, we combine them
+        newDoc.Shrink();
+    }
+    else if (tk->m_ImplFileIdx == fileIdx)
+    {
+        wxString& newDoc = tk->m_ImplDoc;
+        if (newDoc == doc) // Do not duplicate
+            return;
+        newDoc += doc; // document could happens before and after the Token, we combine them
+        newDoc.Shrink();
+    }
 }
 
 wxString TokenTree::GetDocumentation(int tokenIdx)
 {
-    return m_TokenDocumentationMap[tokenIdx];
+    // fetch the Token pointer
+    Token* tk = GetTokenAt(tokenIdx);
+    if (!tk)
+        return wxEmptyString;
+    return tk->m_Doc + tk->m_ImplDoc;
 }
