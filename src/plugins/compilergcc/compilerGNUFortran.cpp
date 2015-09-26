@@ -25,6 +25,7 @@ CompilerGNUFortran::CompilerGNUFortran()
     : Compiler(_("GNU Fortran Compiler"), _T("gfortran"))
 {
     m_Weight = 88;
+    m_MultiLineMessages = true;
     Reset();
 }
 

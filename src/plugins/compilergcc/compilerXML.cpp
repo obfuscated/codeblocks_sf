@@ -20,6 +20,7 @@ CompilerXML::CompilerXML(const wxString& name, const wxString& ID, const wxStrin
     wxXmlDocument compiler;
     compiler.Load(m_fileName);
     m_Weight = wxAtoi(compiler.GetRoot()->GetAttribute(wxT("weight"), wxT("100")));
+    m_MultiLineMessages = _T("0") != compiler.GetRoot()->GetAttribute(wxT("multilinemessages"), wxT("0"));
     Reset();
 }
 

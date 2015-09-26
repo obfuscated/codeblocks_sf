@@ -357,6 +357,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         const wxString& GetCOnlyFlags()   { return m_SortOptions[0]; };
         const wxString& GetCPPOnlyFlags() { return m_SortOptions[1]; };
 
+        /** @brief Do compiler writes multi-line messages? */
+        bool WithMultiLineMsg() { return m_MultiLineMessages; };
+
     protected:
         friend class CompilerFactory;
         Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID
@@ -398,6 +401,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         wxString            m_SortOptions[2]; // m_SortOptions[0] == C-only flags; m_SortOptions[1] == C++-only flags
 
         int m_Weight; // lower means listed sooner (try to keep between 0 and 100)
+        bool m_MultiLineMessages; // true if the compiler writes multi-line error/warning messages
     private:
         wxString m_ID;
         wxString m_ParentID; // -1 for builtin compilers, the builtin compiler's ID to derive from for user compilers...

@@ -193,10 +193,10 @@
     </RegEx>
     <RegEx name="Info line"
            type="info"
-           msg="1;2;3"
+           msg="0"
            file="1"
            line="2">
-        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)(\.[0-9]+.*:)]]>
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)(\.[0-9]+:)]]>
     </RegEx>
     <RegEx name="Compiler error"
            type="error"
@@ -250,7 +250,7 @@
     </RegEx>
     <RegEx name="Info line (2)"
            type="info"
-           msg="1"
+           msg="0"
            file="1"
            line="2">
         <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):]]>

@@ -3441,7 +3441,9 @@ void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
                 last_error_filename = last_error_file.GetFullPath();
             }
         }
-        LogWarningOrError(clt, m_pBuildingProject, last_error_filename, compiler->GetLastErrorLine(), compiler->GetLastError());
+        wxString msg = compiler->GetLastError();
+        if (!compiler->WithMultiLineMsg() || (compiler->WithMultiLineMsg() && !msg.IsEmpty()))
+            LogWarningOrError(clt, m_pBuildingProject, last_error_filename, compiler->GetLastErrorLine(), msg);
     }
 
     // add to log

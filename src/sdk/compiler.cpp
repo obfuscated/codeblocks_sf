@@ -91,6 +91,7 @@ wxString Compiler::CommandTypeDescriptions[ctCount] =
 
 Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& parentID, int weight) :
     m_Name(name),
+    m_MultiLineMessages(false),
     m_ID(ID.Lower()),
     m_ParentID(parentID.Lower()),
     m_Valid(false),
@@ -115,6 +116,7 @@ Compiler::Compiler(const Compiler& other) :
     m_Mirrored(other.m_Mirrored)
 {
     m_Name = _("Copy of ") + other.m_Name;
+    m_MultiLineMessages = other.m_MultiLineMessages;
     // generate unique ID
     // note that this copy constructor is protected and can only be called
     // by our friend CompilerFactory. It knows what it's doing ;)
@@ -742,9 +744,12 @@ void Compiler::LoadSettings(const wxString& baseKey)
 
 CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)
 {
-    m_ErrorFilename.Clear();
-    m_ErrorLine.Clear();
-    m_Error.Clear();
+    if (!m_MultiLineMessages || (m_MultiLineMessages && !m_Error.IsEmpty()))
+    {
+        m_ErrorFilename.Clear();
+        m_ErrorLine.Clear();
+        m_Error.Clear();
+    }
 
     for (size_t i = 0; i < m_RegExes.Count(); ++i)
     {
