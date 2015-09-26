@@ -40,7 +40,7 @@ void CPURegistersDlg::Clear()
     m_pList->DeleteAllItems();
     m_pList->InsertColumn(0, _("Register"), wxLIST_FORMAT_LEFT);
     m_pList->InsertColumn(1, _("Hex"), wxLIST_FORMAT_RIGHT);
-    m_pList->InsertColumn(2, _("Integer"), wxLIST_FORMAT_RIGHT);
+    m_pList->InsertColumn(2, _("Interpreted"), wxLIST_FORMAT_LEFT);
     m_pList->Thaw();
 }
 
@@ -54,7 +54,7 @@ int CPURegistersDlg::RegisterIndex(const wxString& reg_name)
     return -1;
 }
 
-void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, size_t value)
+void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, const wxString& hexValue, const wxString& interpreted)
 {
     // find existing register
     int idx = RegisterIndex(reg_name);
@@ -65,11 +65,8 @@ void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, size_t value)
         m_pList->InsertItem(idx, reg_name);
     }
 
-    wxString fmt;
-    fmt.Printf(_T("0x%x"), value);
-    m_pList->SetItem(idx, 1, fmt);
-    fmt.Printf(_T("%lu"), value);
-    m_pList->SetItem(idx, 2, fmt);
+    m_pList->SetItem(idx, 1, hexValue);
+    m_pList->SetItem(idx, 2, interpreted);
 
     for (int i = 0; i < 3; ++i)
     {

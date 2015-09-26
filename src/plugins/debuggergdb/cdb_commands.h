@@ -548,11 +548,7 @@ class CdbCmd_InfoRegisters : public DebuggerCmd
                 wxString reg = lines[i].BeforeFirst(_T('='));
                 wxString addr = lines[i].AfterFirst(_T('='));
                 if (!reg.IsEmpty() && !addr.IsEmpty())
-                {
-                    long int addrL;
-                    addr.ToLong(&addrL, 16);
-                    dialog->SetRegisterValue(reg, addrL);
-                }
+                    dialog->SetRegisterValue(reg, addr, wxEmptyString);
             }
         }
 };

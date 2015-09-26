@@ -1413,8 +1413,10 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
                 {
                     if (reRegisters.Matches(lines[i]))
                     {
-                        long int addr = wxStrHexTo<long int>(reRegisters.GetMatch(lines[i], 2));
-                        dialog->SetRegisterValue(reRegisters.GetMatch(lines[i], 1), addr);
+                        const wxString &addr = reRegisters.GetMatch(lines[i], 1);
+                        const wxString &hex = reRegisters.GetMatch(lines[i], 2);
+                        const wxString &interpreted = reRegisters.GetMatch(lines[i], 3);
+                        dialog->SetRegisterValue(addr, hex, interpreted);
                     }
                 }
             }
@@ -1481,16 +1483,7 @@ class GdbCmd_InfoRegisters : public DebuggerCmd
                     wxString addr = regValues.Item(j);
 
                     if (!reg.IsEmpty() && !addr.IsEmpty())
-                    {
-                        #if defined(_WIN64)
-                        size_t addrL;
-                        addr.ToULongLong(&addrL, 16);
-                        #else
-                        unsigned long int addrL;
-                        addr.ToULong(&addrL, 16);
-                        #endif
-                        dialog->SetRegisterValue(reg, addrL);
-                    }
+                        dialog->SetRegisterValue(reg, addr, wxEmptyString);
                 }
             }
         }

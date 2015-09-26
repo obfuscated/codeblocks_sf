@@ -50,7 +50,7 @@ class DLLIMPORT cbCPURegistersDlg
         virtual wxWindow* GetWindow() = 0;
 
         virtual void Clear() = 0;
-        virtual void SetRegisterValue(const wxString& reg_name, size_t value) = 0;
+        virtual void SetRegisterValue(const wxString& reg_name, const wxString& hexValue, const wxString& interpreted) = 0;
         virtual void EnableWindow(bool enable) = 0;
 };
 
