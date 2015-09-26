@@ -573,6 +573,10 @@ bool ProjectManager::CloseWorkspace()
 {
     bool result = false;
     m_IsClosingWorkspace = true;
+
+    CodeBlocksEvent eventBegin(cbEVT_WORKSPACE_CLOSING_BEGIN);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(eventBegin);
+
     if (m_pWorkspace)
     {
         if (!m_ui->QueryCloseWorkspace())
@@ -596,6 +600,10 @@ bool ProjectManager::CloseWorkspace()
     else
         result = CloseAllProjects(false);
     m_IsClosingWorkspace = false;
+
+    CodeBlocksEvent eventComplete(cbEVT_WORKSPACE_CLOSING_COMPLETE);
+    Manager::Get()->GetPluginManager()->NotifyPlugins(eventComplete);
+
     WorkspaceChanged();
     return result;
 }

@@ -110,6 +110,8 @@ const wxEventType cbEVT_PROJECT_RENAMED = wxNewEventType();
 const wxEventType cbEVT_PROJECT_OPTIONS_CHANGED = wxNewEventType();
 const wxEventType cbEVT_WORKSPACE_CHANGED = wxNewEventType();
 const wxEventType cbEVT_WORKSPACE_LOADING_COMPLETE = wxNewEventType();
+const wxEventType cbEVT_WORKSPACE_CLOSING_BEGIN = wxNewEventType();
+const wxEventType cbEVT_WORKSPACE_CLOSING_COMPLETE = wxNewEventType();
 // build targets events
 const wxEventType cbEVT_BUILDTARGET_ADDED = wxNewEventType();
 const wxEventType cbEVT_BUILDTARGET_REMOVED = wxNewEventType();
