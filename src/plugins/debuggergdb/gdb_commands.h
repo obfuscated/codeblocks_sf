@@ -1553,11 +1553,11 @@ class GdbCmd_Disassembly : public DebuggerCmd
             //   0x004015aa <+658>:   ret
             //
             //End of assembler dump.
+            const wxString disasmerror(_T("No function contains specified address."));
             cbDisassemblyDlg *dialog = Manager::Get()->GetDebuggerManager()->GetDisassemblyDialog();
             wxArrayString lines = GetArrayFromString(output, _T('\n'));
             for (unsigned int i = 0; i < lines.GetCount(); ++i)
             {
-                wxString disasmerror(_T("No function contains specified address."));
                 if (lines[i].StartsWith(disasmerror))
                 {
                     //So, GDB won't disassemble anywhere there is code????
