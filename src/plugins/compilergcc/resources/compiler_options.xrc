@@ -7,15 +7,6 @@
 				<object class="wxBoxSizer">
 					<object class="sizeritem">
 						<object class="wxTreeCtrl" name="tcScope">
-							<image_list></image_list>
-							<tree_items>
-								<item>TreeCtrl1</item>
-								<item></item>
-							</tree_items>
-							<items_text>
-								<item2>TreeCtrl1</item2>
-								<item2></item2>
-							</items_text>
 							<style>wxTR_NO_BUTTONS|wxTR_SINGLE</style>
 						</object>
 						<flag>wxRIGHT|wxEXPAND</flag>
@@ -148,8 +139,6 @@
 																	<orient>wxVERTICAL</orient>
 																	<object class="sizeritem">
 																		<object class="unknown" name="pgCompilerFlags">
-																			<style></style>
-																			<style></style>
 																		</object>
 																		<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 																		<border>5</border>

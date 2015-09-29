@@ -27,13 +27,15 @@
     <Category name="Debugging">
         <Option name="Produce debugging symbols"
                 option="/Zi"
-                additionalLibs="/DEBUG"
-                checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /NDEBUG"
+                additionalLibs="/debug"
+                checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /DNDEBUG"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
         <Option name="Enable Edit and Continue debug info"
                 option="/ZI"
-                checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /NDEBUG"
+                checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /DNDEBUG"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+        <Option name="Name .pdb same as output file"
+                additionalLibs="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb"/>
     </Category>
 
     <Category name="Language">
@@ -77,6 +79,12 @@
         <Option name="Compile all files as .cpp"
                 option="/TP"
                 supersedes="/TC"/>
+        <Option name="use UNICODE (wchar_t)"
+                option="/D_UNICODE /DUNICODE"
+                supersedes="/D_MBCS"/>
+        <Option name="use MultiByte (char)"
+                option="/D_MBCS"
+                supersedes="/D_UNICODE /DUNICODE"/>
     </Category>
 
     <Common name="runtime"/>

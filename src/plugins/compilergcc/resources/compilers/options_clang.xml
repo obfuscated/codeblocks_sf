@@ -65,21 +65,32 @@
                 checkAgainst="-O1 -O2 -Os -O3 -O4"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
                 supersedes="-s -gline-tables-only"/>
+        <Option name="Target x86 (32bit)"
+                option="-m32"
+                additionalLibs="-m32"
+                supersedes="-m64"/>
+        <Option name="Target x86_64 (64bit)"
+                option="-m64"
+                additionalLibs="-m64"
+                supersedes="-m32"/>
     </Category>
 
     <Category name="Warnings">
+        <Option name="Have clang follow the 1999 ISO C language standard"
+                option="-std=c99"
+                supersedes="-std=c++98 -std=c++0x -std=c++11 -std=c++14"/>
         <Option name="Have clang++ follow the 1998 ISO C++ language standard"
                 option="-std=c++98"
-                supersedes="-std=c++0x -std=c++11 -std=c++14"/>
+                supersedes="-std=c99 -std=c++0x -std=c++11 -std=c++14"/>
         <Option name="Have clang++ follow the coming C++0x ISO C++ language standard"
                 option="-std=c++0x"
-                supersedes="-std=c++98 -std=c++11 -std=c++14"/>
+                supersedes="-std=c99 -std=c++98 -std=c++11 -std=c++14"/>
         <Option name="Have clang++ follow the C++11 ISO C++ language standard"
                 option="-std=c++11"
-                supersedes="-std=c++98 -std=c++0x -std=c++14"/>
+                supersedes="-std=c99 -std=c++98 -std=c++0x -std=c++14"/>
         <Option name="Have clang++ follow the C++14 ISO C++ language standard"
                 option="-std=c++14"
-                supersedes="-std=c++98 -std=c++0x -std=c++11"/>
+                supersedes="-std=c99 -std=c++98 -std=c++0x -std=c++11"/>
         <Option name="Enable all common compiler warnings"
                 option="-Wall"
                 supersedes="-w"/>

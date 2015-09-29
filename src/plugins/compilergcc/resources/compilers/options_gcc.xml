@@ -46,6 +46,14 @@
             checkAgainst="-O -O1 -O2 -O3 -Os"
             checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
             supersedes="-s"/>
+    <Option name="Target x86 (32bit)"
+            option="-m32"
+            additionalLibs="-m32"
+            supersedes="-m64"/>
+    <Option name="Target x86_64 (64bit)"
+            option="-m64"
+            additionalLibs="-m64"
+            supersedes="-m32"/>
     <if platform="windows">
         <Option name="Profile code when executed"
                 option="-pg"
