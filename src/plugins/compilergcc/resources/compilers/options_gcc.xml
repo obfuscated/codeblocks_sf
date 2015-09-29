@@ -79,7 +79,7 @@
         <Option name="Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"
                 option="-Wswitch-enum"/>
         <if exec="C -dumpversion"
-            regex="^[4-9]\.[0-9]"
+            regex="^[4-9]"
             default="true">
             <Option name="Warn if a user supplied include directory does not exist"
                     option="-Wmissing-include-dirs"/>

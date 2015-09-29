@@ -26,13 +26,13 @@
         <Option name="Intel Pentium M (MMX, SSE, SSE2)"
                 option="-march=pentium-m"/>
         <if exec="C -dumpversion"
-            regex="^4\.[3-9]|^[5-9]\.[0-9]"
+            regex="^4\.[3-9]|^[5-9]"
             default="true">
             <Option name="Intel Core2 (MMX, SSE, SSE2, SSE3, SSSE3, 64bit extensions)"
                     option="-march=core2"/>
         </if>
         <if exec="C -dumpversion"
-            regex="^4\.[6-9]|^[5-9]\.[0-9]"
+            regex="^4\.[6-9]|^[5-9]"
             default="true">
             <Option name="Intel Core i7 CPU (MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, 64-bit extensions)"
                     option="-march=corei7"/>
@@ -40,7 +40,7 @@
                     option="-march=corei7-avx"/>
         </if>
         <if exec="C -dumpversion"
-            regex="^4\.[5-9]|^[5-9]\.[0-9]"
+            regex="^4\.[5-9]|^[5-9]"
             default="true">
             <Option name="Intel Atom (MMX, SSE, SSE2, SSE3 SSSE3, 64-bit extensions)"
                     option="-march=atom"/>
