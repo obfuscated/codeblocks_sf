@@ -98,6 +98,6 @@ public:
     replentry * item(int n);
     int near(const char * word);
     int match(const char * word, int n);
-    int conv(const char * word, char * dest);
+    int conv(const char * word, char * dest, size_t destsize);
 };
 #endif

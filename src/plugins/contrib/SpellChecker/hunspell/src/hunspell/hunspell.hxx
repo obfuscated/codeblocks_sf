@@ -225,8 +225,8 @@ public:
   int get_langnum() const;
 
   /* need for putdic */
-  int input_conv(const char * word, char * dest);
-  
+  int input_conv(const char * word, char * dest, size_t destsize);
+ 
   /* experimental and deprecated functions */
 
 #ifdef HUNSPELL_EXPERIMENTAL
