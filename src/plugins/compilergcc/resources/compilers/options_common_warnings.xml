@@ -14,14 +14,14 @@
                 option="-std=c++0x"
                 supersedes="-std=c99 -std=c++98 -std=c++11 -std=c++14"/>
         <if exec="C -dumpversion"
-            regex="^4\.[7-9]|^[5-9]\.[0-9]"
+            regex="^4\.[7-9]|^[5-9]"
             default="true">
             <Option name="Have g++ follow the C++11 ISO C++ language standard"
                     option="-std=c++11"
                     supersedes="-std=c99 -std=c++98 -std=c++0x -std=c++14"/>
         </if>
         <if exec="C -dumpversion"
-            regex="^[5-9]\.[0-9]"
+            regex="^[5-9]"
             default="true">
             <Option name="Have g++ follow the C++14 ISO C++ language standard"
                     option="-std=c++14"
@@ -46,7 +46,7 @@
         <Option name="Warn if main() is not conformant"
                 option="-Wmain"/>
         <if exec="C -dumpversion"
-            regex="^4\.[7-9]|^[5-9]\.[0-9]"
+            regex="^4\.[7-9]|^[5-9]"
             default="true">
             <Option name="Warn if '0' is used as a null pointer constant"
                     option="-Wzero-as-null-pointer-constant"/>
