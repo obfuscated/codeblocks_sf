@@ -34,8 +34,6 @@
                 option="/ZI"
                 checkAgainst="/Og /O1 /O2 /Os /Ot /Ox /DNDEBUG"
                 checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
-        <Option name="Name .pdb same as output file"
-                additionalLibs="/pdb:$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).pdb"/>
     </Category>
 
     <Category name="Language">
