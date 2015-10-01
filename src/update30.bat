@@ -108,6 +108,7 @@ xcopy /D /y exchndl\win32\bin\*.dll devel30 > nul
 xcopy /D /y exchndl\win32\bin\*.yes devel30 > nul
 xcopy /D /y devel30\*.exe output30 > nul
 xcopy /D /y devel30\*.dll output30 > nul
+xcopy /D /y devel30\*.yes output30 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
 
 echo Stripping debug info from output30 tree
