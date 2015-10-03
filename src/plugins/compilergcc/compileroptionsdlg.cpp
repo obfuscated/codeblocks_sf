@@ -1492,15 +1492,22 @@ void CompilerOptionsDlg::OnTreeSelectionChange(wxTreeEvent& event)
             {
                 // enable/disable invalid pages for commands only target
                 const bool cmd = (m_pTarget && m_pTarget->GetTargetType() == ttCommandsOnly);
-                nb->GetPage(0)->Enable(!cmd); // Compiler settings
-                nb->GetPage(1)->Enable(!cmd); // Linker settings
-                nb->GetPage(2)->Enable(!cmd); // Search directories
-                nb->GetPage(5)->Enable(!cmd); // "Make" commands
-                if (   cmd
-                    && nb->GetSelection() != 3   // Pre/post build steps
-                    && nb->GetSelection() != 4 ) // Custom variables
+                int pageOffset;
+                if (!m_pProject->IsMakefileCustom())
                 {
-                    nb->SetSelection(3);
+                    nb->GetPage(0)->Enable(!cmd); // Compiler settings
+                    nb->GetPage(1)->Enable(!cmd); // Linker settings
+                    nb->GetPage(2)->Enable(!cmd); // Search directories
+                    pageOffset = 3;
+                }
+                else
+                    pageOffset = 0;
+                nb->GetPage(pageOffset + 2)->Enable(!cmd); // "Make" commands
+                if (   cmd
+                    && nb->GetSelection() != pageOffset   // Pre/post build steps
+                    && nb->GetSelection() != pageOffset + 1 ) // Custom variables
+                {
+                    nb->SetSelection(pageOffset);
                 }
 
                 nb->Enable();
