@@ -7,6 +7,7 @@
 extern const wxString COMPILER_SIMPLE_LOG;
 extern const wxString COMPILER_NOTE_LOG;
 extern const wxString COMPILER_WARNING_LOG;
+extern const wxString COMPILER_ERROR_LOG;
 extern const wxString COMPILER_TARGET_CHANGE;
 extern const wxString COMPILER_WAIT;
 extern const wxString COMPILER_WAIT_LINK;

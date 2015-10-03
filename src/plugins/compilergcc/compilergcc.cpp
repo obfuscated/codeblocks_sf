@@ -2020,23 +2020,47 @@ int CompilerGCC::Clean(const wxString& target)
     return DoBuild(target, true, false);
 }
 
-bool CompilerGCC::DoCleanWithMake(const wxString& cmd, bool showOutput)
+static inline wxString getBuildTargetName(const ProjectBuildTarget *bt)
 {
-    LogManager *logManager = showOutput ? Manager::Get()->GetLogManager() : nullptr;
+    return bt ? bt->GetTitle() : wxString(_("<all targets>"));
+}
+
+bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
+{
+    const wxString &cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
+    if (cmd.empty())
+    {
+        LogMessage(COMPILER_ERROR_LOG +
+                   wxT("Make command for 'Clean project/target' is empty. Nothing will be cleaned!"),
+                   cltError);
+        return false;
+    }
+    Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
+    if (!tgtCompiler)
+    {
+        const wxString &message = F(_("Invalid compiler selected for target '%s'!"), getBuildTargetName(bt).wx_str());
+
+        LogMessage(COMPILER_ERROR_LOG + message, cltError);
+        return false;
+    }
+
+    bool showOutput = (tgtCompiler->GetSwitches().logging == clogFull);
+
     wxArrayString output, errors;
     wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
 
-    if (logManager)
-        logManager->Log(F(_("Executing clean command: %s"), cmd.wx_str()), m_PageIndex);
+    if (showOutput)
+        LogMessage(F(_("Executing clean command: %s"), cmd.wx_str()), cltNormal);
 
     long result = wxExecute(cmd, output, errors, wxEXEC_SYNC);
-    if (logManager)
+    if (showOutput)
     {
         for(size_t i = 0; i < output.GetCount(); i++)
-            logManager->Log(F(_("%s"), output[i].wx_str()), m_PageIndex);
+            LogMessage(F(_("%s"), output[i].wx_str()), cltNormal);
         for(size_t i = 0; i < errors.GetCount(); i++)
-            logManager->Log(F(_("%s"), errors[i].wx_str()), m_PageIndex);
+            LogMessage(F(_("%s"), errors[i].wx_str()), cltNormal);
     }
+
     return (result == 0);
 }
 
@@ -2296,50 +2320,27 @@ void CompilerGCC::BuildStateManagement()
         {
             PrintBanner(baClean, m_pBuildingProject, bt);
 
+            bool result;
             if ( UseMake(m_pBuildingProject) )
-            {
-                wxString cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
-                bool cleanOK = false;
-                Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
-                if (tgtCompiler)
-                {
-                    switch (tgtCompiler->GetSwitches().logging)
-                    {
-                        case clogFull:
-                            cleanOK = DoCleanWithMake(cmd, true);
-                            break;
-
-                        case clogSimple:
-                        case clogNone:
-                            cleanOK = DoCleanWithMake(cmd);
-                            break;
-
-                        default:
-                            break;
-                    }
-                    if (cleanOK)
-                    #if wxCHECK_VERSION(2, 9, 0)
-                        Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str() ), m_PageIndex);
-                    #else
-                        Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>") ), m_PageIndex);
-                    #endif
-                    else
-                    #if wxCHECK_VERSION(2, 9, 0)
-                        Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
-                    #else
-                        Manager::Get()->GetLogManager()->Log(F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>")), m_PageIndex);
-                    #endif
-                }
-            }
+                result = DoCleanWithMake(bt);
             else
             {
                 wxArrayString clean = dc.GetCleanCommands(bt, true);
                 DoClean(clean);
-            #if wxCHECK_VERSION(2, 9, 0)
-                Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>").wx_str()), m_PageIndex);
-            #else
-                Manager::Get()->GetLogManager()->Log(F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(), bt ? bt->GetTitle().wx_str() : _("<all targets>")), m_PageIndex);
-            #endif
+                result = true;
+            }
+
+            if (result)
+            {
+                const wxString &message = F(_("Cleaned \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(),
+                                            getBuildTargetName(bt).wx_str());
+                LogMessage(message, cltNormal);
+            }
+            else
+            {
+                const wxString &message = F(_("Error cleaning \"%s - %s\""), m_pBuildingProject->GetTitle().wx_str(),
+                                            getBuildTargetName(bt).wx_str());
+                LogMessage(COMPILER_ERROR_LOG + message, cltError);
             }
             break;
         }
@@ -2357,30 +2358,62 @@ void CompilerGCC::BuildStateManagement()
                 const wxString &askCmd = GetMakeCommandFor(mcAskRebuildNeeded, m_pBuildingProject, bt);
 
                 Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
-                if (tgtCompiler && tgtCompiler->GetSwitches().logging == clogFull)
-                    cmds.Add(COMPILER_SIMPLE_LOG + _("Checking if target is up-to-date: ") + askCmd);
 
-                if (wxExecute(askCmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
+                bool runMake = false;
+                if (!askCmd.empty())
                 {
-                    if (tgtCompiler)
+                    if (tgtCompiler && tgtCompiler->GetSwitches().logging == clogFull)
+                        cmds.Add(COMPILER_SIMPLE_LOG + _("Checking if target is up-to-date: ") + askCmd);
+
+                    runMake = (wxExecute(askCmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE) != 0);
+                }
+                else
+                {
+                    cmds.Add(COMPILER_SIMPLE_LOG +
+                             _("The command that asks if a rebuild is needed is empty. Assuming rebuild is needed!"));
+                    runMake = true;
+                }
+
+                if (runMake && tgtCompiler)
+                {
+                    bool isEmpty = false;
+                    switch (tgtCompiler->GetSwitches().logging)
                     {
-                        switch (tgtCompiler->GetSwitches().logging)
+                        case clogFull:
                         {
-                            case clogFull:
-                                cmds.Add(COMPILER_SIMPLE_LOG + _("Running command: ") + GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
-                                cmds.Add(GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
-                                break;
-
-                            case clogSimple:
-                                cmds.Add(COMPILER_SIMPLE_LOG + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
-                            case clogNone:
-                                cmds.Add(GetMakeCommandFor(mcSilentBuild, m_pBuildingProject, bt));
-                                break;
-
-                            default:
-                                break;
+                            const wxString &cmd = GetMakeCommandFor(mcBuild, m_pBuildingProject, bt);
+                            if (!cmd.empty())
+                            {
+                                cmds.Add(COMPILER_SIMPLE_LOG + _("Running command: ") + cmd);
+                                cmds.Add(cmd);
+                            }
+                            else
+                                isEmpty = true;
+                            break;
                         }
+
+                        case clogSimple:
+                            cmds.Add(COMPILER_SIMPLE_LOG + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
+                        case clogNone:
+                        {
+                            const wxString &cmd = GetMakeCommandFor(mcSilentBuild, m_pBuildingProject, bt);
+                            if (!cmd.empty())
+                                cmds.Add(cmd);
+                            else
+                                isEmpty = true;
+                            break;
+                        }
+
+                        default:
+                            break;
                     }
+
+                    if (isEmpty)
+                    {
+                        cmds.Add(COMPILER_ERROR_LOG +
+                                 _("Make command for 'Build/Project target' is empty. Nothing will be built!"));
+                    }
+
                 }
             }
             else
@@ -3476,21 +3509,34 @@ namespace
 {
 const wxString noteStr = COMPILER_NOTE_LOG.AfterFirst(wxT(':'));
 const wxString warnStr = COMPILER_WARNING_LOG.AfterFirst(wxT(':'));
+const wxString errStr = COMPILER_ERROR_LOG.AfterFirst(wxT(':'));
 } // anonymous namespace
 
 void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle, bool updateProgress)
 {
-    wxString msg;
-    if (message.StartsWith(noteStr, &msg))
+    // Strip the
+    wxString msgInput, msg;
+    if (message.StartsWith(COMPILER_SIMPLE_LOG, &msg))
+        msgInput = msg;
+    else
+        msgInput = message;
+
+    if (msgInput.StartsWith(noteStr, &msg))
         LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);
-    else if (message.StartsWith(warnStr, &msg))
+    else if (msgInput.StartsWith(warnStr, &msg))
     {
         if (lt != cltError)
             lt = cltWarning;
-        LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);
+        LogWarningOrError(lt, nullptr, wxEmptyString, wxEmptyString, msg);
+    }
+    else if (msgInput.StartsWith(errStr, &msg))
+    {
+        if (lt != cltError)
+            lt = cltWarning;
+        LogWarningOrError(cltError, nullptr, wxEmptyString, wxEmptyString, msg);
     }
     else
-        msg = message;
+        msg = msgInput;
 
     // log file
     if (log & ltFile)

@@ -229,7 +229,7 @@ class CompilerGCC : public cbCompilerPlugin
         void UpdateProjectTargets(cbProject* project);
         wxString GetTargetString(int index = -1);
         void DoClean(const wxArrayString& commands);
-        bool DoCleanWithMake(const wxString& cmd, bool showOutput=false);
+        bool DoCleanWithMake(ProjectBuildTarget* bt);
 
         // active target, currently building project or active project
         wxString GetCurrentCompilerID(ProjectBuildTarget* target);

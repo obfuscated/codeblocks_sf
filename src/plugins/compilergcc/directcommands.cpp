@@ -33,9 +33,11 @@
 const wxString COMPILER_SIMPLE_LOG(_T("SLOG:"));
 const wxString COMPILER_NOTE_LOG(_T("SLOG:NLOG:"));
 const wxString COMPILER_WARNING_LOG(_T("SLOG:WLOG:"));
+const wxString COMPILER_ERROR_LOG(_T("SLOG:ELOG:"));
 const wxString COMPILER_TARGET_CHANGE(_T("TGT:"));
 const wxString COMPILER_WAIT(_T("WAIT"));
 const wxString COMPILER_WAIT_LINK(_T("LINK"));
+
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
                                Compiler*    compiler,
                                cbProject*   project,
