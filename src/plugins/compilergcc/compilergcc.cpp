@@ -1083,12 +1083,6 @@ FileTreeData* CompilerGCC::DoSwitchProjectTemporarily()
 
 void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 {
-    // loop added for compiler log when not working with Makefiles
-    wxString mySimpleLog    = wxString(COMPILER_SIMPLE_LOG);
-    wxString myTargetChange = wxString(COMPILER_TARGET_CHANGE);
-    wxString myWait         = wxString(COMPILER_WAIT);
-    wxString myWaitLink     = wxString(COMPILER_WAIT_LINK);
-
     ProjectBuildTarget* bt = m_pBuildingProject ? m_pBuildingProject->GetBuildTarget(GetTargetIndexFromName(m_pBuildingProject, m_BuildingTargetName)) : 0;
     m_CurrentProgress = 0;
     m_MaxProgress = 0;
@@ -1100,21 +1094,21 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
         wxString cmd = commands[i];
 
         // logging
-        if (cmd.StartsWith(mySimpleLog))
+        if (cmd.StartsWith(COMPILER_SIMPLE_LOG))
         {
-            cmd.Remove(0, mySimpleLog.Length());
+            cmd.Remove(0, COMPILER_SIMPLE_LOG.Length());
             m_CommandQueue.Add(new CompilerCommand(wxEmptyString, cmd, m_pBuildingProject, bt));
         }
         // compiler change
-        else if (cmd.StartsWith(myTargetChange))
+        else if (cmd.StartsWith(COMPILER_TARGET_CHANGE))
         {
             ; // nothing to do for now
         }
-        else if (cmd.StartsWith(myWait))
+        else if (cmd.StartsWith(COMPILER_WAIT))
         {
             mustWait = true;
         }
-        else if (cmd.StartsWith(myWaitLink))
+        else if (cmd.StartsWith(COMPILER_WAIT_LINK))
         {
             isLink = true;
         }
@@ -2364,7 +2358,7 @@ void CompilerGCC::BuildStateManagement()
 
                 Compiler* tgtCompiler = CompilerFactory::GetCompiler(bt->GetCompilerID());
                 if (tgtCompiler && tgtCompiler->GetSwitches().logging == clogFull)
-                    cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Checking if target is up-to-date: ") + askCmd);
+                    cmds.Add(COMPILER_SIMPLE_LOG + _("Checking if target is up-to-date: ") + askCmd);
 
                 if (wxExecute(askCmd, output, error, wxEXEC_SYNC | wxEXEC_NODISABLE))
                 {
@@ -2373,12 +2367,12 @@ void CompilerGCC::BuildStateManagement()
                         switch (tgtCompiler->GetSwitches().logging)
                         {
                             case clogFull:
-                                cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Running command: ") + GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
+                                cmds.Add(COMPILER_SIMPLE_LOG + _("Running command: ") + GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
                                 cmds.Add(GetMakeCommandFor(mcBuild, m_pBuildingProject, bt));
                                 break;
 
                             case clogSimple:
-                                cmds.Add(wxString(COMPILER_SIMPLE_LOG) + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
+                                cmds.Add(COMPILER_SIMPLE_LOG + _("Using makefile: ") + m_pBuildingProject->GetMakefile());
                             case clogNone:
                                 cmds.Add(GetMakeCommandFor(mcSilentBuild, m_pBuildingProject, bt));
                                 break;
@@ -3478,10 +3472,14 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(wxSafeConvertWX2MB(line)), msg);
 }
 
+namespace
+{
+const wxString noteStr = COMPILER_NOTE_LOG.AfterFirst(wxT(':'));
+const wxString warnStr = COMPILER_WARNING_LOG.AfterFirst(wxT(':'));
+} // anonymous namespace
+
 void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle, bool updateProgress)
 {
-    const wxString noteStr = wxString(COMPILER_NOTE_LOG).AfterFirst(wxT(':'));
-    const wxString warnStr = wxString(COMPILER_WARNING_LOG).AfterFirst(wxT(':'));
     wxString msg;
     if (message.StartsWith(noteStr, &msg))
         LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);

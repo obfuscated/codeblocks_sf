@@ -30,6 +30,12 @@
 #include "filefilters.h"
 #include <depslib.h>
 
+const wxString COMPILER_SIMPLE_LOG(_T("SLOG:"));
+const wxString COMPILER_NOTE_LOG(_T("SLOG:NLOG:"));
+const wxString COMPILER_WARNING_LOG(_T("SLOG:WLOG:"));
+const wxString COMPILER_TARGET_CHANGE(_T("TGT:"));
+const wxString COMPILER_WAIT(_T("WAIT"));
+const wxString COMPILER_WAIT_LINK(_T("LINK"));
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
                                Compiler*    compiler,
                                cbProject*   project,
@@ -105,9 +111,9 @@ void DirectCommands::AddCommandsToArray(const wxString& cmds, wxArrayString& arr
         if (!cmdpart.IsEmpty())
         {
             if (isWaitCmd)
-                array.Add(wxString(COMPILER_WAIT));
+                array.Add(COMPILER_WAIT);
             if (isLinkCmd)
-                array.Add(wxString(COMPILER_WAIT_LINK));
+                array.Add(COMPILER_WAIT_LINK);
             array.Add(cmdpart);
         }
         if (idx == -1)
@@ -168,13 +174,13 @@ wxArrayString DirectCommands::CompileFile(ProjectBuildTarget* target, ProjectFil
         if ( !IsObjectOutdated(target, pfd, &err) )
         {
             if ( !err.IsEmpty() )
-                ret.Add(wxString(COMPILER_WARNING_LOG) + err);
+                ret.Add(COMPILER_WARNING_LOG + err);
             return ret;
         }
     }
 
     if (target)
-        ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
+        ret.Add(COMPILER_TARGET_CHANGE + target->GetTitle());
     AppendArray(GetCompileFileCommand(target, pf), ret);
     return ret;
 }
@@ -273,27 +279,21 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
 
     if (!is_header && compiler_cmd.IsEmpty())
     {
-        ret.Add(  wxString(COMPILER_SIMPLE_LOG)
-                + _("Skipping file (no compiler program set): ")
-                + pfd.source_file_native );
+        ret.Add(COMPILER_SIMPLE_LOG + _("Skipping file (no compiler program set): ") + pfd.source_file_native );
         return ret;
     }
 
     switch (compiler->GetSwitches().logging)
     {
         case clogFull:
-            ret.Add(wxString(COMPILER_SIMPLE_LOG) + compiler_cmd);
+            ret.Add(COMPILER_SIMPLE_LOG + compiler_cmd);
             break;
 
         case clogSimple:
             if (is_header)
-                ret.Add(  wxString(COMPILER_SIMPLE_LOG)
-                        + _("Pre-compiling header: ")
-                        + pfd.source_file_native );
+                ret.Add(COMPILER_SIMPLE_LOG + _("Pre-compiling header: ") + pfd.source_file_native );
             else
-                ret.Add(  wxString(COMPILER_SIMPLE_LOG)
-                        + _("Compiling: ")
-                        + pfd.source_file_native );
+                ret.Add(COMPILER_SIMPLE_LOG + _("Compiling: ") + pfd.source_file_native );
             break;
 
         case clogNone: // fall-through
@@ -304,14 +304,14 @@ wxArrayString DirectCommands::GetCompileFileCommand(ProjectBuildTarget* target, 
     AddCommandsToArray(compiler_cmd, ret);
 
     if (is_header)
-        ret.Add(wxString(COMPILER_WAIT));
+        ret.Add(COMPILER_WAIT);
 
     if (ret_generated.GetCount())
     {
         // not only append commands for (any) generated files to be compiled
         // but also insert a "pause" to allow this file to generate its files first
         if (!is_header) // if is_header, the "pause" has already been added
-            ret.Add(wxString(COMPILER_WAIT));
+            ret.Add(COMPILER_WAIT);
         AppendArray(ret_generated, ret);
     }
 
@@ -382,11 +382,11 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
         switch (m_pCompiler->GetSwitches().logging)
         {
             case clogFull:
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
+                ret.Add(COMPILER_SIMPLE_LOG + compilerCmd);
                 break;
 
             case clogSimple:
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Compiling: ") + filename);
+                ret.Add(COMPILER_SIMPLE_LOG + _("Compiling: ") + filename);
                 break;
 
             case clogNone: // fall-through
@@ -396,26 +396,26 @@ wxArrayString DirectCommands::GetCompileSingleFileCommand(const wxString& filena
         AddCommandsToArray(compilerCmd, ret);
     }
     else
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping file (no compiler program set): ") + filename);
+        ret.Add(COMPILER_SIMPLE_LOG + _("Skipping file (no compiler program set): ") + filename);
 
     if (!linkerCmd.IsEmpty())
     {
         switch (m_pCompiler->GetSwitches().logging)
         {
             case clogFull:
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + linkerCmd);
+                ret.Add(COMPILER_SIMPLE_LOG + linkerCmd);
                 break;
 
             case clogSimple: // fall-through
             case clogNone:   // fall-through
             default: // linker always simple log (if not full)
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking console executable: ") + exe_filename);
+                ret.Add(COMPILER_SIMPLE_LOG + _("Linking console executable: ") + exe_filename);
                 break;
         }
         AddCommandsToArray(linkerCmd, ret, true);
     }
     else
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping linking (no linker program set): ") + exe_filename);
+        ret.Add(COMPILER_SIMPLE_LOG + _("Skipping linking (no linker program set): ") + exe_filename);
     return ret;
 }
 
@@ -492,7 +492,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
             // Because GetCompileFileCommand() already adds a wait command if it compiled a PCH we
             // check the last command to prevent two consecutive wait commands
             if (hasWeight && lastWeight != pf->weight && (ret.IsEmpty() || ret.Last() != COMPILER_WAIT))
-                ret.Add(wxString(COMPILER_WAIT));
+                ret.Add(COMPILER_WAIT);
 
             // compile file
             wxArrayString filecmd = GetCompileFileCommand(target, pf);
@@ -506,7 +506,7 @@ wxArrayString DirectCommands::GetTargetCompileCommands(ProjectBuildTarget* targe
         else
         {
             if (!err.IsEmpty())
-                ret.Add(wxString(COMPILER_WARNING_LOG) + err);
+                ret.Add(COMPILER_WARNING_LOG + err);
         }
         if (m_doYield)
             Manager::Yield();
@@ -537,15 +537,15 @@ wxArrayString DirectCommands::GetPreBuildCommands(ProjectBuildTarget* target) co
                     m_pGenerator->GenerateCommandLine(buildcmds[i], m_pProject->GetCurrentlyCompilingTarget(), 0, wxEmptyString, wxEmptyString, wxEmptyString, wxEmptyString);
             }
 
-            tmp.Add(wxString(COMPILER_WAIT)); // all commands should wait for queue to empty first
-            tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
+            tmp.Add(COMPILER_WAIT); // all commands should wait for queue to empty first
+            tmp.Add(COMPILER_SIMPLE_LOG + buildcmds[i]);
             tmp.Add(buildcmds[i]);
         }
         buildcmds = tmp;
         if (target)
-            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target pre-build steps"), 0);
+            buildcmds.Insert(COMPILER_SIMPLE_LOG + _("Running target pre-build steps"), 0);
         else
-            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project pre-build steps"), 0);
+            buildcmds.Insert(COMPILER_SIMPLE_LOG + _("Running project pre-build steps"), 0);
         if (m_doYield)
             Manager::Yield();
     }
@@ -576,15 +576,15 @@ wxArrayString DirectCommands::GetPostBuildCommands(ProjectBuildTarget* target) c
                 }
             }
 
-            tmp.Add(wxString(COMPILER_WAIT)); // all commands should wait for queue to empty first
-            tmp.Add(wxString(COMPILER_SIMPLE_LOG) + buildcmds[i]);
+            tmp.Add(COMPILER_WAIT); // all commands should wait for queue to empty first
+            tmp.Add(COMPILER_SIMPLE_LOG + buildcmds[i]);
             tmp.Add(buildcmds[i]);
         }
         buildcmds = tmp;
         if (target)
-            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running target post-build steps"), 0);
+            buildcmds.Insert(COMPILER_SIMPLE_LOG + _("Running target post-build steps"), 0);
         else
-            buildcmds.Insert(wxString(COMPILER_SIMPLE_LOG) + _("Running project post-build steps"), 0);
+            buildcmds.Insert(COMPILER_SIMPLE_LOG + _("Running project post-build steps"), 0);
         if (m_doYield)
             Manager::Yield();
     }
@@ -643,9 +643,9 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         warn.Printf(_("WARNING: Target '%s': Unable to resolve %lu external dependency/ies:"),
                     target->GetFullTitle().wx_str(), static_cast<unsigned long>(fileMissing.Count()));
 #endif // NO_TRANSLATION
-        ret.Add(wxString(COMPILER_WARNING_LOG) + warn);
+        ret.Add(COMPILER_WARNING_LOG + warn);
         for (size_t i = 0; i < fileMissing.Count(); ++i)
-            ret.Add(wxString(COMPILER_NOTE_LOG) + wxString(wxT(' '), 8) + fileMissing[i]);
+            ret.Add(COMPILER_NOTE_LOG + wxString(wxT(' '), 8) + fileMissing[i]);
     }
 
     Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID()) : m_pCompiler;
@@ -675,7 +675,7 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
     if (files.GetCount() == 0)
     {
         if (target->GetTargetType() != ttCommandsOnly)
-            ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking stage skipped (build target has no object files to link)"));
+            ret.Add(COMPILER_SIMPLE_LOG + _("Linking stage skipped (build target has no object files to link)"));
         return ret;
     }
     if (IsOpenWatcom && target->GetTargetType() != ttStaticLib)
@@ -820,26 +820,26 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         switch (compiler->GetSwitches().logging)
         {
             case clogFull:
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + compilerCmd);
+                ret.Add(COMPILER_SIMPLE_LOG + compilerCmd);
                 break;
 
             case clogSimple: // fall-through
             case clogNone:   // fall-through
             default: // linker always simple log (if not full)
-                ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Linking ") + kind_of_output + _T(": ") + output);
+                ret.Add(COMPILER_SIMPLE_LOG + _("Linking ") + kind_of_output + _T(": ") + output);
                 break;
         }
 
         // for an explanation of the following, see GetTargetCompileCommands()
         if (target && ret.GetCount() != 0)
-            ret.Add(wxString(COMPILER_TARGET_CHANGE) + target->GetTitle());
+            ret.Add(COMPILER_TARGET_CHANGE + target->GetTitle());
 
         // the 'true' will make sure all commands will be prepended by
         // COMPILER_WAIT signal
         AddCommandsToArray(compilerCmd, ret, true, true);
     }
     else
-        ret.Add(wxString(COMPILER_SIMPLE_LOG) + _("Skipping linking (no linker program set): ") + output);
+        ret.Add(COMPILER_SIMPLE_LOG + _("Skipping linking (no linker program set): ") + output);
 
     return ret;
 }
