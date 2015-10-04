@@ -3505,13 +3505,6 @@ void CompilerGCC::LogWarningOrError(CompilerLineType lt, cbProject* prj, const w
     m_Errors.AddError(lt, prj, filename, line.IsEmpty() ? 0 : atoi(wxSafeConvertWX2MB(line)), msg);
 }
 
-namespace
-{
-const wxString noteStr = COMPILER_NOTE_LOG.AfterFirst(wxT(':'));
-const wxString warnStr = COMPILER_WARNING_LOG.AfterFirst(wxT(':'));
-const wxString errStr = COMPILER_ERROR_LOG.AfterFirst(wxT(':'));
-} // anonymous namespace
-
 void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTarget log, bool forceErrorColour, bool isTitle, bool updateProgress)
 {
     // Strip the
@@ -3521,15 +3514,15 @@ void CompilerGCC::LogMessage(const wxString& message, CompilerLineType lt, LogTa
     else
         msgInput = message;
 
-    if (msgInput.StartsWith(noteStr, &msg))
+    if (msgInput.StartsWith(COMPILER_NOTE_ID_LOG, &msg))
         LogWarningOrError(lt, 0, wxEmptyString, wxEmptyString, msg);
-    else if (msgInput.StartsWith(warnStr, &msg))
+    else if (msgInput.StartsWith(COMPILER_WARNING_ID_LOG, &msg))
     {
         if (lt != cltError)
             lt = cltWarning;
         LogWarningOrError(lt, nullptr, wxEmptyString, wxEmptyString, msg);
     }
-    else if (msgInput.StartsWith(errStr, &msg))
+    else if (msgInput.StartsWith(COMPILER_ERROR_ID_LOG, &msg))
     {
         if (lt != cltError)
             lt = cltWarning;

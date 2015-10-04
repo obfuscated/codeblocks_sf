@@ -38,6 +38,10 @@ const wxString COMPILER_TARGET_CHANGE(_T("TGT:"));
 const wxString COMPILER_WAIT(_T("WAIT"));
 const wxString COMPILER_WAIT_LINK(_T("LINK"));
 
+const wxString COMPILER_NOTE_ID_LOG = COMPILER_NOTE_LOG.AfterFirst(wxT(':'));
+const wxString COMPILER_WARNING_ID_LOG = COMPILER_WARNING_LOG.AfterFirst(wxT(':'));
+const wxString COMPILER_ERROR_ID_LOG = COMPILER_ERROR_LOG.AfterFirst(wxT(':'));
+
 DirectCommands::DirectCommands(CompilerGCC* compilerPlugin,
                                Compiler*    compiler,
                                cbProject*   project,
