@@ -651,4 +651,3 @@ void wxsAuiManagerParentQP::OnStandardPaneChange(cb_unused wxCommandEvent& event
 
     NotifyChange();
 }
-            

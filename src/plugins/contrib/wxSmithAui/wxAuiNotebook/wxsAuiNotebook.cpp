@@ -473,4 +473,3 @@ bool wxsAuiNotebook::OnPopup(long Id)
 
     return true;
 }
-    
