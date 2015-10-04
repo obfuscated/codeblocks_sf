@@ -2433,6 +2433,13 @@ void ProjectManagerUI::CheckForExternallyModifiedProjects()
                     ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
                     dlg.SetTitle(_("Reload Project?"));
                     PlaceWindow(&dlg);
+
+                    // Find the window, that actually has the mouse-focus and force a release.
+                    // This prevents crash on windows or hang on wxGTK.
+                    wxWindow* win = wxWindow::GetCapture();
+                    if (win)
+                        win->ReleaseMouse();
+
                     ret = dlg.ShowModal();
                     reloadAll = ret == crAll;
                 }
