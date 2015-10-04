@@ -67,7 +67,8 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
 
             wxString sFntName = GetCoderContext()->GetUniqueName(_T("PickerFont"));
             wxString sFnt = m_fdFont.BuildFontCode(sFntName, GetCoderContext());
-            if(!sFnt.Len() > 0){
+            if ( sFnt.Len()==0 )
+            {
                 sFntName = wxT("wxNullFont");
             }
             Codef(_T("%s"), sFnt.wx_str());
