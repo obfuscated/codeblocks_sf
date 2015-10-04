@@ -30,7 +30,7 @@ class ClassWizardDlg : public wxScrollingDialog
         wxString GetIncludeDir();
 
     private:
-        struct MemberVar_impl { wxString Typ; wxString Var; wxString Get; wxString Set; };
+        struct MemberVar_impl { wxString Typ; wxString Var; wxString Get; wxString Set; int Scp; };
         typedef struct MemberVar_impl MemberVar;
         typedef std::vector<MemberVar> MemberVarsArray;
 
@@ -56,7 +56,7 @@ class ClassWizardDlg : public wxScrollingDialog
         void DoGuardBlock();
         void DoFileNames();
         void DoForceDirectory(const wxFileName & filename);
-        wxString DoMemVarRepr(const wxString & typ, const wxString & var);
+        wxString DoMemVarRepr(const wxString & typ, const wxString & var, const int & scp);
 
         // member variables
         wxString        m_Header;

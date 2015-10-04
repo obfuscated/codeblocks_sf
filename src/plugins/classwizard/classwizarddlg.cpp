@@ -75,6 +75,7 @@ ClassWizardDlg::ClassWizardDlg(wxWindow* parent)
     }
     XRCCTRL(*this, "txtInheritanceFilename", wxTextCtrl)->SetValue(_T("<>"));
     XRCCTRL(*this, "cmbInheritanceScope", wxComboBox)->SetSelection(0);
+    XRCCTRL(*this, "cmbMemberScope", wxComboBox)->SetSelection(2);
     XRCCTRL(*this, "txtHeaderInclude", wxTextCtrl)->SetValue(_T("\"\""));
 
     ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("classwizard"));
@@ -154,6 +155,7 @@ void ClassWizardDlg::OnAncestorChange(wxCommandEvent& WXUNUSED(event))
 void ClassWizardDlg::OnAddMemberVar(cb_unused wxCommandEvent& event)
 {
     wxString member = XRCCTRL(*this, "txtMemberVar",    wxTextCtrl)->GetValue();
+    int      memscp = XRCCTRL(*this, "cmbMemberScope",  wxComboBox)->GetSelection();
     bool     getter = XRCCTRL(*this, "chkGetter",       wxCheckBox)->GetValue();
     bool     setter = XRCCTRL(*this, "chkSetter",       wxCheckBox)->GetValue();
 
@@ -181,7 +183,7 @@ void ClassWizardDlg::OnAddMemberVar(cb_unused wxCommandEvent& event)
     std::vector<MemberVar>::iterator it = m_MemberVars.begin();
     while( it != m_MemberVars.end() )
     {
-        if (DoMemVarRepr((*it).Typ, (*it).Var) == DoMemVarRepr(memtyp, memvar))
+        if (DoMemVarRepr((*it).Typ, (*it).Var, (*it).Scp) == DoMemVarRepr(memtyp, memvar, memscp))
         {
             cbMessageBox(_T("This variable does already exist."),
                          _T("Error"), wxOK | wxICON_ERROR, this);
@@ -197,11 +199,12 @@ void ClassWizardDlg::OnAddMemberVar(cb_unused wxCommandEvent& event)
     MemberVar mv;
     mv.Typ = memtyp;
     mv.Var = memvar;
+    mv.Scp = memscp;
     if (getter) mv.Get = _T("Get") + method; else mv.Get = wxEmptyString;
     if (setter) mv.Set = _T("Set") + method; else mv.Set = wxEmptyString;
     m_MemberVars.push_back(mv);
 
-    XRCCTRL(*this, "lstMemberVars", wxListBox)->Append(DoMemVarRepr(memtyp, memvar));
+    XRCCTRL(*this, "lstMemberVars", wxListBox)->Append(DoMemVarRepr(memtyp, memvar, memscp));
 }
 
 void ClassWizardDlg::OnRemoveMemberVar(cb_unused wxCommandEvent& event)
@@ -217,7 +220,7 @@ void ClassWizardDlg::OnRemoveMemberVar(cb_unused wxCommandEvent& event)
     std::vector<MemberVar>::iterator it = m_MemberVars.begin();
     while( it != m_MemberVars.end() )
     {
-        if (DoMemVarRepr((*it).Typ, (*it).Var) == selection)
+        if (DoMemVarRepr((*it).Typ, (*it).Var, (*it).Scp) == selection)
         {
             m_MemberVars.erase(it);
             break; // end while loop
@@ -230,7 +233,7 @@ void ClassWizardDlg::OnRemoveMemberVar(cb_unused wxCommandEvent& event)
     it = m_MemberVars.begin();
     while( it != m_MemberVars.end() )
     {
-        XRCCTRL(*this, "lstMemberVars", wxListBox)->Append(DoMemVarRepr((*it).Typ, (*it).Var));
+        XRCCTRL(*this, "lstMemberVars", wxListBox)->Append(DoMemVarRepr((*it).Typ, (*it).Var, (*it).Scp));
         it++;
     }
 }
@@ -494,12 +497,15 @@ bool ClassWizardDlg::DoHeader()
         buffer << m_Name << _T("& ") << _T("operator=(const ") << m_Name << _T("& other)");
         buffer << (!m_GenerateImplementation ? _T(" { return *this; }") : _T(";")) << m_EolStr;
     }
+    buffer << m_EolStr;
 
+    bool addnewline = false;
     std::vector<MemberVar>::iterator it = m_MemberVars.begin();
     while( it != m_MemberVars.end() )
     {
         if (!(*it).Get.IsEmpty())
         {
+            addnewline = true;
             if (m_Documentation)
             {
                 buffer << m_TabStr << m_TabStr
@@ -514,6 +520,7 @@ bool ClassWizardDlg::DoHeader()
         }
         if (!(*it).Set.IsEmpty())
         {
+            addnewline = true;
             if (m_Documentation)
             {
                 buffer << m_TabStr << m_TabStr
@@ -526,25 +533,64 @@ bool ClassWizardDlg::DoHeader()
             buffer << m_TabStr << m_TabStr << _T("void ") << (*it).Set << _T("(")
                    << (*it).Typ << _T(" val) { ") << (*it).Var << _T(" = val; }") << m_EolStr;
         }
-        it++;
+        ++it;
     }
+
+    if (addnewline)
+        buffer << m_EolStr;
+
+    addnewline = false;
+    for( it = m_MemberVars.begin(); it != m_MemberVars.end(); ++it )
+    {
+        if ((*it).Scp == 0)
+        {
+            addnewline = true;
+            buffer << m_TabStr << m_TabStr
+                   << (*it).Typ << _T(" ") << (*it).Var << _T(";");
+
+            if (m_Documentation)
+                buffer << _T(" //!< Member variable \"") << (*it).Var << _T("\"");
+
+            buffer << m_EolStr;
+        }
+    }
+
+    if (addnewline)
+        buffer << m_EolStr;
 
     // focus: protected
     buffer << m_TabStr << _T("protected:") << m_EolStr;
+
+    for( it = m_MemberVars.begin(); it != m_MemberVars.end(); ++it )
+    {
+        if ((*it).Scp == 1)
+        {
+            buffer << m_TabStr << m_TabStr
+                   << (*it).Typ << _T(" ") << (*it).Var << _T(";");
+
+            if (m_Documentation)
+                buffer << _T(" //!< Member variable \"") << (*it).Var << _T("\"");
+
+            buffer << m_EolStr;
+        }
+    }
+    buffer << m_EolStr;
+
     // focus: private
     buffer << m_TabStr << _T("private:") << m_EolStr;
 
-    it = m_MemberVars.begin();
-    while( it != m_MemberVars.end() )
+    for( it = m_MemberVars.begin(); it != m_MemberVars.end(); ++it )
     {
-        buffer << m_TabStr << m_TabStr
-               << (*it).Typ << _T(" ") << (*it).Var << _T(";");
-        if (m_Documentation)
+        if ((*it).Scp == 2)
         {
-            buffer << _T(" //!< Member variable \"") << (*it).Var << _T("\"");
+            buffer << m_TabStr << m_TabStr
+                   << (*it).Typ << _T(" ") << (*it).Var << _T(";");
+
+            if (m_Documentation)
+                buffer << _T(" //!< Member variable \"") << (*it).Var << _T("\"");
+
+            buffer << m_EolStr;
         }
-        buffer << m_EolStr;
-        it++;
     }
 
     // End of class
@@ -710,9 +756,25 @@ void ClassWizardDlg::DoForceDirectory(const wxFileName & filename)
         wxMkdir(filename.GetPath());
 }
 
-wxString ClassWizardDlg::DoMemVarRepr(const wxString & typ, const wxString & var)
+wxString ClassWizardDlg::DoMemVarRepr(const wxString & typ, const wxString & var, const int & scp)
 {
-    return (_T("[") + typ + _T("] : ") + var);
+    wxString scpstr;
+    switch(scp)
+    {
+        case 0:
+            scpstr = _T("pub :: ");
+            break;
+
+        case 1:
+            scpstr = _T("pro :: ");
+            break;
+
+        case 2:
+            scpstr = _T("pri :: ");
+            break;
+    }
+
+    return (scpstr + _T("[") + typ + _T("] : ") + var);
 }
 
 wxString ClassWizardDlg::GetIncludeDir()

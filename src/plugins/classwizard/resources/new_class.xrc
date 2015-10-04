@@ -198,10 +198,33 @@
 													<orient>wxVERTICAL</orient>
 													<object class="sizeritem">
 														<object class="wxTextCtrl" name="txtMemberVar">
-															<value>unsigned int m&amp;Counter</value>
+															<value>unsigned int m__Counter</value>
 														</object>
 														<flag>wxBOTTOM|wxEXPAND</flag>
 														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxBoxSizer">
+															<object class="sizeritem">
+																<object class="wxStaticText" name="ID_STATICTEXT13">
+																	<label>Scope:</label>
+																</object>
+																<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+																<border>4</border>
+															</object>
+															<object class="sizeritem">
+																<object class="wxComboBox" name="cmbMemberScope">
+																	<content>
+																		<item>public</item>
+																		<item>protected</item>
+																		<item>private</item>
+																	</content>
+																	<style>wxCB_READONLY|wxCB_DROPDOWN</style>
+																</object>
+																<flag>wxEXPAND</flag>
+															</object>
+														</object>
+														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
 													</object>
 													<object class="sizeritem">
 														<object class="wxCheckBox" name="chkGetter">
