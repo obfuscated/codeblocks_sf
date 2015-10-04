@@ -98,7 +98,7 @@ namespace
 
     const wxString EmptyXrc =
         _T("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n")
-        _T("<resource xmlns=\"http://www.wxwidgets.org/wxxrc\">\n")
+        _T("<resource xmlns=\"http://www.wxwidgets.org/wxxrc\" version=\"2.5.3.0\">\n")
         _T("</resource>\n");
 
     const wxString EmptyWxs =
