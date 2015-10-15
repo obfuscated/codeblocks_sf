@@ -158,7 +158,8 @@ public:
 /* C::B end */
 
 /* C::B begin */
-    wxTimer* timers[tickDwell+1];
+    enum { timersCount = tickPlatform };
+    wxTimer* timers[timersCount];
     virtual bool FineTickerAvailable();
     virtual bool FineTickerRunning(TickReason reason);
     virtual void FineTickerStart(TickReason reason, int millis, int tolerance);

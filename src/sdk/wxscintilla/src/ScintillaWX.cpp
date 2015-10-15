@@ -288,6 +288,11 @@ static int wxCountLines(const char* text, int scintillaMode)
 }
 /* C::B end */
 
+/* C::B begin */
+// Constant ids for the timers used by every editor.
+const int timerIDs[ScintillaWX::timersCount] = { wxNewId(), wxNewId(), wxNewId(), wxNewId() };
+/* C::B end */
+
 //----------------------------------------------------------------------
 // Constructor/Destructor
 
@@ -307,7 +312,8 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
 #endif
 /* C::B begin */
     for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
-        timers[tr] = 0;
+        timers[tr] = new wxTimer(sci, timerIDs[(int)tr]);
+        sci->Connect(timers[tr]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
     }
 /* C::B end */
 }
@@ -316,7 +322,12 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
 ScintillaWX::~ScintillaWX() {
 /* C::B begin */
     for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
-        FineTickerCancel(tr);
+        if (timers[tr])
+        {
+            sci->Disconnect(timers[tr]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
+            timers[tr]->Stop();
+            delete timers[tr];
+        }
     }
 /* C::B end */
 
@@ -542,26 +553,25 @@ bool ScintillaWX::FineTickerAvailable()
 
 bool ScintillaWX::FineTickerRunning(TickReason reason)
 {
-    return (timers[reason] != 0);
+    wxASSERT(static_cast<int>(reason)>=0 && static_cast<int>(reason)<timersCount);
+    wxASSERT(timers[reason]);
+    return timers[reason]->IsRunning();
 }
 
 void ScintillaWX::FineTickerStart(TickReason reason, int millis, int /* tolerance */)
 {
     FineTickerCancel(reason);
 
-    timers[reason] = new wxTimer(sci, wxNewId());
+    wxASSERT(static_cast<int>(reason)>=0 && static_cast<int>(reason)<timersCount);
+    wxASSERT(timers[reason]);
     timers[reason]->Start(millis);
-    sci->Connect(timers[reason]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
 }
 
 void ScintillaWX::FineTickerCancel(TickReason reason)
 {
-    if (timers[reason]) {
-        sci->Disconnect(timers[reason]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
-        timers[reason]->Stop();
-        delete timers[reason];
-        timers[reason] = 0;
-    }
+    wxASSERT(static_cast<int>(reason)>=0 && static_cast<int>(reason)<timersCount);
+    wxASSERT(timers[reason]);
+    timers[reason]->Stop();
 }
 /* C::B end */
 
