@@ -64,7 +64,7 @@ public:
 };
 
 // ***** class: FileLoader *****
-class FileLoader : public LoaderBase
+class DLLIMPORT FileLoader : public LoaderBase
 {
 public:
     FileLoader(const wxString& name) { fileName = name; };
