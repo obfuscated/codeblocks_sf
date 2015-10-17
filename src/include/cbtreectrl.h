@@ -17,7 +17,7 @@ class wxWindow;
 /*
     This is a "proxy" wxTreeCtrl descendant handles several usage limitations.
 */
-class cbTreeCtrl : public wxTreeCtrl
+class DLLIMPORT cbTreeCtrl : public wxTreeCtrl
 {
     public:
         cbTreeCtrl();

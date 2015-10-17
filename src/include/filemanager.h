@@ -28,7 +28,7 @@ namespace TinyXML{ 	bool SaveDocument(const wxString&, TiXmlDocument*); }
 
 
 // ***** class: LoaderBase *****
-class LoaderBase : public AbstractJob
+class DLLIMPORT LoaderBase : public AbstractJob
 {
     wxSemaphore sem;
     bool wait;
@@ -109,7 +109,7 @@ public:
 };
 
 // ***** class: FileManager *****
-class FileManager : public Mgr<FileManager>
+class DLLIMPORT FileManager : public Mgr<FileManager>
 {
     BackgroundThread fileLoaderThread;
     BackgroundThread uncLoaderThread;

@@ -34,7 +34,7 @@
 #include <list>
 #include <algorithm>
 
-class InfoWindow : public wxInfoWindowBase
+class DLLIMPORT InfoWindow : public wxInfoWindowBase
 {
         InfoWindow(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis);
         virtual ~InfoWindow();

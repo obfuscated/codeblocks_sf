@@ -12,7 +12,7 @@
 class wxArrayString;
 class wxCommandEvent;
 
-class cbSearchResultsLog : public ListCtrlLogger, public wxEvtHandler
+class DLLIMPORT cbSearchResultsLog : public ListCtrlLogger, public wxEvtHandler
 {
 	public:
 		cbSearchResultsLog(const wxArrayString& titles, wxArrayInt& widths);

@@ -11,7 +11,7 @@
 
 class ProjectFile;
 
-class ProjectFileOptionsDlg : public wxScrollingDialog
+class DLLIMPORT ProjectFileOptionsDlg : public wxScrollingDialog
 {
     public:
         ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);

@@ -9,7 +9,7 @@
 #include "scrollingdialog.h"
 #include "filegroupsandmasks.h"
 
-class ProjectsFileMasksDlg : public wxScrollingDialog
+class DLLIMPORT ProjectsFileMasksDlg : public wxScrollingDialog
 {
     public:
         ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam);

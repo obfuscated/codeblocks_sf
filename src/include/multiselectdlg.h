@@ -11,7 +11,7 @@
 #include <wx/dynarray.h>
 #include "scrollingdialog.h"
 
-class MultiSelectDlg : public wxScrollingDialog
+class DLLIMPORT MultiSelectDlg : public wxScrollingDialog
 {
     public:
         MultiSelectDlg(wxWindow* parent,

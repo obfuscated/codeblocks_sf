@@ -20,7 +20,7 @@ cbThrow() and cbAssert().
 */
 
 /** @brief The base Code::Blocks exception object. */
-class cbException
+class DLLIMPORT cbException
 {
     public:
         cbException(const wxString& msg, const wxString& file, int line);
