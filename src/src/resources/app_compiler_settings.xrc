@@ -145,7 +145,7 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>

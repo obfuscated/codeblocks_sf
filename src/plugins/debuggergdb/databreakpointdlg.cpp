@@ -52,7 +52,7 @@ DataBreakpointDlg::DataBreakpointDlg(wxWindow *parent, const wxString& dataExpre
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
     StdDialogButtonSizer1->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
     StdDialogButtonSizer1->Realize();
-    bszMain->Add(StdDialogButtonSizer1, 0, wxALL|wxALIGN_CENTER_HORIZONTAL, 8);
+    bszMain->Add(StdDialogButtonSizer1, 0, wxALL|wxEXPAND, 8);
     SetSizer(bszMain);
     bszMain->Fit(this);
     bszMain->SetSizeHints(this);
