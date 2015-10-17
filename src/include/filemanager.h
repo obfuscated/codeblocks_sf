@@ -64,7 +64,7 @@ public:
 };
 
 // ***** class: FileLoader *****
-class FileLoader : public LoaderBase
+class DLLIMPORT FileLoader : public LoaderBase
 {
 public:
     FileLoader(const wxString& name) { fileName = name; };
@@ -72,7 +72,7 @@ public:
 };
 
 // ***** class: URLLoader *****
-class URLLoader : public LoaderBase
+class DLLIMPORT URLLoader : public LoaderBase
 {
 public:
     URLLoader(const wxString& name) { fileName = name; };
@@ -82,7 +82,7 @@ private:
 };
 
 // ***** class: NullLoader *****
-class NullLoader : public LoaderBase
+class DLLIMPORT NullLoader : public LoaderBase
 {
 public:
     NullLoader(const wxString& name, char* buffer, size_t size) { fileName = name; data = buffer; len = size; Ready(); };
@@ -90,7 +90,7 @@ public:
 };
 
 // ***** class: EditorReuser *****
-class EditorReuser : public LoaderBase
+class DLLIMPORT EditorReuser : public LoaderBase
 {
 public:
     /** Gets a UTF8 representation of the editor's content
