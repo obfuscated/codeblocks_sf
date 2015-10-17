@@ -420,7 +420,7 @@ private:
 	in a document, or stand on its own. The type of a TiXmlNode
 	can be queried, and it can be cast to its more defined type.
 */
-class TiXmlNode : public TiXmlBase
+class DLLIMPORT TiXmlNode : public TiXmlBase
 {
 	friend class TiXmlDocument;
 	friend class TiXmlElement;
@@ -937,7 +937,7 @@ private:
 	and can contain other elements, text, comments, and unknowns.
 	Elements also contain an arbitrary number of attributes.
 */
-class TiXmlElement : public TiXmlNode
+class DLLIMPORT TiXmlElement : public TiXmlNode
 {
 public:
 	/// Construct an element.
@@ -1390,7 +1390,7 @@ private:
 	XML pieces. It can be saved, loaded, and printed to the screen.
 	The 'value' of a document node is the xml file name.
 */
-class TiXmlDocument : public TiXmlNode
+class DLLIMPORT TiXmlDocument : public TiXmlNode
 {
 public:
 	/// Create an empty document, that has no name.
