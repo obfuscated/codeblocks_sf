@@ -79,7 +79,7 @@
 				<object class="wxStdDialogButtonSizer">
 					<object class="button">
 						<object class="wxButton" name="wxID_OK">
-							<label></label>
+							<label>&amp;Close</label>
 						</object>
 					</object>
 				</object>
