@@ -206,7 +206,7 @@ typedef void (wxEvtHandler::*CodeBlocksLogEventFunction)(CodeBlocksLogEvent&);
 // new event type like: cbEVT_THREAD_LOG_MESSAGE, cbEVT_THREAD_LOGDEBUG_MESSAGE
 // cbEVT_THREAD_SYSTEM_HEADER_UPDATE.
 
-class CodeBlocksThreadEvent : public wxCommandEvent
+class EVTIMPORT CodeBlocksThreadEvent : public wxCommandEvent
 {
 public:
     CodeBlocksThreadEvent(wxEventType eventType = wxEVT_NULL, int id = wxID_ANY)
