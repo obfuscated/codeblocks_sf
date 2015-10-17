@@ -142,7 +142,7 @@ struct RegExStruct
 private:
     wxRegEx regexObject;
 };
-WX_DECLARE_OBJARRAY(RegExStruct, RegExArray);
+WX_DECLARE_USER_EXPORTED_OBJARRAY(RegExStruct, RegExArray, DLLIMPORT);
 
 /// Helper enum to retrieve compiler commands
 enum CommandType
