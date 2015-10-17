@@ -32,6 +32,18 @@ distribution.
 #pragma warning( disable : 4786 )
 #endif
 
+#if defined(_WIN32)
+	#ifndef DLLIMPORT
+		#if defined(EXPORT_LIB)
+			#define DLLIMPORT __declspec (dllexport)
+		#else
+			#define DLLIMPORT
+		#endif // EXPORT_LIB
+	#endif // DLLIMPORT
+#else
+	#define DLLIMPORT
+#endif
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
