@@ -36,8 +36,14 @@ extern "C" {
 #endif
 
 #ifndef SQUIRREL_API
-#define SQUIRREL_API extern
-#endif
+#ifdef _WIN32
+    // since we build the squirrel static library, and we need to export all the symbols
+    // the codeblocks.dll, we need to add the dllexport decoration
+    #define SQUIRREL_API extern __declspec(dllexport)
+#else
+    #define SQUIRREL_API extern
+#endif // _WIN32
+#endif // SQUIRREL_API
 
 #if (defined(_WIN64) || defined(_LP64))
 #ifndef _SQ64
