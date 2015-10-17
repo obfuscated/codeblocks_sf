@@ -8,6 +8,16 @@
  */
 
 #include "sdk_precomp.h"
+
+// this workaround an issue that WXEXPORT is defined as empty, so that wxScintilla class is not
+// exported from the codeblocks.dll
+#ifdef __WXMSW__
+    #ifdef WXEXPORT
+        #undef WXEXPORT
+        #define WXEXPORT __declspec(dllexport)
+    #endif // WXEXPORT
+#endif // __WXMSW__
+
 #include "cbstyledtextctrl.h"
 #ifndef CB_PRECOMP
     #include <wx/gdicmn.h> // for wxPoint
