@@ -45,6 +45,18 @@
 #endif
 
 #include "ScintillaWX.h"
+
+// this workaround an issue that WXEXPORT is defined as empty, so that wxScintilla class is not
+// exported from the codeblocks.dll
+#ifdef __WXMSW__
+    #ifdef WXEXPORT
+        #undef WXEXPORT
+        #define WXEXPORT __declspec(dllexport)
+    #else // WXEXPORT not defined
+        #define WXEXPORT __declspec(dllexport)
+    #endif // WXEXPORT
+#endif // __WXMSW__
+
 #include "wx/wxscintilla.h"
 
 #ifdef SCI_NAMESPACE
