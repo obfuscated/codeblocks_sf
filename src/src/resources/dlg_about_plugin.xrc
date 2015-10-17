@@ -60,7 +60,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT1">
 												<label>Name:</label>
 											</object>
-											<flag></flag>
+											<flag>wxALIGN_LEFT</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblName">
@@ -72,7 +72,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT2">
 												<label>Version:</label>
 											</object>
-											<flag></flag>
+											<flag>wxALIGN_LEFT</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblVersion">
@@ -84,7 +84,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT3">
 												<label>Author:</label>
 											</object>
-											<flag></flag>
+											<flag>wxALIGN_LEFT</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblAuthor">
@@ -96,7 +96,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT4">
 												<label>E-mail:</label>
 											</object>
-											<flag></flag>
+											<flag>wxALIGN_LEFT</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblEmail">
@@ -108,7 +108,7 @@
 											<object class="wxStaticText" name="ID_STATICTEXT5">
 												<label>Website:</label>
 											</object>
-											<flag></flag>
+											<flag>wxALIGN_LEFT</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="lblWebsite">
