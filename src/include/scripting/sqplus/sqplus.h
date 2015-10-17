@@ -47,6 +47,14 @@
 #define SQ_CALL_RAISE_ERROR SQFalse
 #endif
 
+#ifdef _WIN32
+    #ifndef DLLIMPORT
+        #define DLLIMPORT __declspec(dllexport)
+    #endif // DLLIMPORT
+#else // replace it to empty string in other system
+    #define DLLIMPORT
+#endif // _WIN32
+
 #include "squirrel.h"
 
 // C::B patch: so it builds on 64bit, ecapsulate bool/int/float using Squirrel types (this patch applies everywhere, where threse types are used)
@@ -338,8 +346,8 @@ inline void getVarNameTag(SQChar * buff,INT_T maxSize,const SQChar * scriptName)
 } // getVarNameTag
 
 // Internal use only.
-SQInteger setVarFunc(HSQUIRRELVM v);
-SQInteger getVarFunc(HSQUIRRELVM v);
+DLLIMPORT SQInteger setVarFunc(HSQUIRRELVM v);
+DLLIMPORT SQInteger getVarFunc(HSQUIRRELVM v);
 SQInteger setInstanceVarFunc(HSQUIRRELVM v);
 SQInteger getInstanceVarFunc(HSQUIRRELVM v);
 
@@ -1599,7 +1607,7 @@ struct ReleaseClassPtr {
   } // release
 };
 
-BOOL_T CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType,const SQChar * name,const SQChar * baseName=0);
+DLLIMPORT BOOL_T CreateClass(HSQUIRRELVM v,SquirrelObject & newClass,SQUserPointer classType,const SQChar * name,const SQChar * baseName=0);
 
 #define SQ_ANCESTOR_CLASS_INDEX sqT("__ci")
 

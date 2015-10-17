@@ -4,7 +4,7 @@
 // C::B patch: Include required, so references are found
 #include "sqplus.h"
 
-class SquirrelObject
+class DLLIMPORT SquirrelObject
 {
 	friend class SquirrelVM;
 public:

@@ -23,7 +23,7 @@ enum SquirrelInitFlags
     sqifAll    = 0xFF
 };
 
-class SquirrelVM
+class DLLIMPORT SquirrelVM
 {
 	friend class SquirrelObject;
 	friend struct SquirrelError;
