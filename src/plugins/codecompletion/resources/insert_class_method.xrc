@@ -108,23 +108,19 @@
 				<border>8</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
-					<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
 						<object class="wxButton" name="wxID_OK">
 							<label>&amp;Insert</label>
-							<default>1</default>
 						</object>
-						<flag>wxRIGHT</flag>
-						<border>8</border>
 					</object>
-					<object class="sizeritem">
+					<object class="button">
 						<object class="wxButton" name="wxID_CANCEL">
-							<label>&amp;Cancel</label>
+							<label></label>
 						</object>
-						<flag></flag>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>
