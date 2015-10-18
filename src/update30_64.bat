@@ -118,7 +118,7 @@ strip output30_64\*.dll
 strip %CB_OUTPUT_RESDIR%\plugins\*.dll
 
 REM Copy these files later as stripping symbols would corrupt them
-xcopy /D /y exchndl\win64\bin\*.dll devel30_64  > nul
-xcopy /D /y exchndl\win64\bin\*.yes devel30_64  > nul
-xcopy /D /y exchndl\win64\bin\*.dll output30_64 > nul
-xcopy /D /y exchndl\win64\bin\*.yes output30_64 > nul
+xcopy /y exchndl\win64\bin\*.dll devel30_64  > nul
+xcopy /y exchndl\win64\bin\*.yes devel30_64  > nul
+xcopy /y exchndl\win64\bin\*.dll output30_64 > nul
+xcopy /y exchndl\win64\bin\*.yes output30_64 > nul
