@@ -37,6 +37,7 @@
 										<style>wxTE_MULTILINE|wxTE_READONLY|wxNO_BORDER</style>
 									</object>
 									<flag>wxALL|wxEXPAND</flag>
+									<minsize>400,200</minsize>
 									<option>1</option>
 								</object>
 							</object>
@@ -172,6 +173,7 @@
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
+				<minsize>400,200</minsize>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">

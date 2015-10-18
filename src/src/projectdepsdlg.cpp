@@ -47,6 +47,8 @@ ProjectDepsDlg::ProjectDepsDlg(wxWindow* parent, cbProject* sel)
     cmb->SetSelection(idx);
     m_LastSel = idx;
     FillList();
+
+    Fit();
 }
 
 ProjectDepsDlg::~ProjectDepsDlg()

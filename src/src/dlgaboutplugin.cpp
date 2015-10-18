@@ -33,6 +33,8 @@ dlgAboutPlugin::dlgAboutPlugin(wxWindow* parent, const PluginInfo* pi)
 	XRCCTRL(*this, "lblAuthor", wxStaticText)->SetLabel(pi->author);
 	XRCCTRL(*this, "lblEmail", wxStaticText)->SetLabel(pi->authorEmail);
 	XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(pi->authorWebsite);
+
+	Fit();
 }
 
 // class destructor
