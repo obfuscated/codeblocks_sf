@@ -37,6 +37,9 @@ EditBreakpointDlg::EditBreakpointDlg(const DebuggerBreakpoint &breakpoint, wxWin
     XRCCTRL(*this, "spnIgnoreCount", wxSpinCtrl)->SetValue(m_breakpoint.ignoreCount);
     XRCCTRL(*this, "chkExpr", wxCheckBox)->SetValue(m_breakpoint.useCondition);
     XRCCTRL(*this, "txtExpr", wxTextCtrl)->SetValue(m_breakpoint.condition);
+
+    // Limit vertical resizing.
+    SetMaxSize(wxSize(-1, GetMinHeight()));
 }
 
 EditBreakpointDlg::~EditBreakpointDlg()
