@@ -946,8 +946,10 @@ void CompilerOptionsDlg::OptionsToText()
         CompOption* copt = m_Options.GetOption(i);
         if (copt->enabled)
         {
-            m_CompilerOptions.Insert(copt->option, 0);
-            if (!copt->additionalLibs.IsEmpty())
+            if (!copt->option.Trim().IsEmpty()) // don't add empty options
+                m_CompilerOptions.Insert(copt->option, 0);
+
+            if (!copt->additionalLibs.Trim().IsEmpty())
             {
                 if (m_LinkerOptions.Index(copt->additionalLibs) == wxNOT_FOUND)
                     m_LinkerOptions.Insert(copt->additionalLibs, 0);
