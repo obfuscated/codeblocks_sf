@@ -104,14 +104,17 @@ xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
 xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner.exe output30 > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner.exe devel30 > nul
-xcopy /D /y exchndl\win32\bin\*.dll devel30 > nul
-xcopy /D /y exchndl\win32\bin\*.yes devel30 > nul
 xcopy /D /y devel30\*.exe output30 > nul
 xcopy /D /y devel30\*.dll output30 > nul
-xcopy /D /y devel30\*.yes output30 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
 
 echo Stripping debug info from output30 tree
 strip output30\*.exe
 strip output30\*.dll
 strip %CB_OUTPUT_RESDIR%\plugins\*.dll
+
+REM Copy these files later as stripping symbols would corrupt them
+xcopy /D /y exchndl\win32\bin\*.dll devel30  > nul
+xcopy /D /y exchndl\win32\bin\*.yes devel30  > nul
+xcopy /D /y exchndl\win32\bin\*.dll output30 > nul
+xcopy /D /y exchndl\win32\bin\*.yes output30 > nul

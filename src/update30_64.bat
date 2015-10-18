@@ -108,14 +108,17 @@ if exist devel30_64\cb_console_runner.exe del devel30_64\cb_console_runner.exe >
 ren devel30_64\cb_console_runner30_64.exe cb_console_runner.exe > nul
 if exist output30_64\cb_console_runner.exe del output30_64\cb_console_runner.exe > nul
 ren output30_64\cb_console_runner30_64.exe cb_console_runner.exe > nul
-xcopy /D /y exchndl\win64\bin\*.dll devel30_64 > nul
-xcopy /D /y exchndl\win64\bin\*.yes devel30_64 > nul
 xcopy /D /y devel30_64\*.exe output30_64 > nul
 xcopy /D /y devel30_64\*.dll output30_64 > nul
-xcopy /D /y devel30_64\*.yes output30_64 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
 
 echo Stripping debug info from output tree
 strip output30_64\*.exe
 strip output30_64\*.dll
 strip %CB_OUTPUT_RESDIR%\plugins\*.dll
+
+REM Copy these files later as stripping symbols would corrupt them
+xcopy /D /y exchndl\win64\bin\*.dll devel30_64  > nul
+xcopy /D /y exchndl\win64\bin\*.yes devel30_64  > nul
+xcopy /D /y exchndl\win64\bin\*.dll output30_64 > nul
+xcopy /D /y exchndl\win64\bin\*.yes output30_64 > nul
