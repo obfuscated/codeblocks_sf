@@ -322,8 +322,7 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
 ScintillaWX::~ScintillaWX() {
 /* C::B begin */
     for (TickReason tr = tickCaret; tr <= tickDwell; tr = static_cast<TickReason>(tr + 1)) {
-        if (timers[tr])
-        {
+        if (timers[tr]) {
             sci->Disconnect(timers[tr]->GetId(), wxEVT_TIMER, wxTimerEventHandler(wxScintilla::OnTimer));
             timers[tr]->Stop();
             delete timers[tr];
