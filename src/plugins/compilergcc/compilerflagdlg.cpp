@@ -74,6 +74,11 @@ void CompilerFlagDlg::OnAdvancedOption(cb_unused wxCommandEvent& event)
 
 void CompilerFlagDlg::EndModal(int retCode)
 {
+    if (retCode == wxID_CANCEL)
+    {
+        wxDialog::EndModal(retCode);
+        return;
+    }
     bool same = copt->name.BeforeLast(wxT('[')).Trim() == NameText->GetValue() &&
                 copt->option         == CompilerText->GetValue()  &&
                 copt->additionalLibs == LinkerText->GetValue()    &&
@@ -95,5 +100,6 @@ void CompilerFlagDlg::EndModal(int retCode)
     copt->exclusive  = ExclusiveToggle->GetValue();
     if (same || copt->name.IsEmpty() || (copt->option.IsEmpty() && copt->additionalLibs.IsEmpty()))
         wxDialog::EndModal(wxID_CANCEL);
-    wxDialog::EndModal(retCode);
+    else
+        wxDialog::EndModal(retCode);
 }
