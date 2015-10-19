@@ -93,7 +93,7 @@ void DisassemblyDlg::Clear(const cbStackFrame& frame)
     m_FrameFunction = frame.IsValid() ? frame.GetSymbol() : _T("??");
     m_FrameAddress = _T("??");
     if (frame.IsValid())
-        m_FrameAddress.Printf(_T("%p"), (void*)frame.GetAddress());
+        m_FrameAddress = frame.GetAddressAsString();
 
     m_LineTypes.clear();
 

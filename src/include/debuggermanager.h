@@ -109,13 +109,14 @@ class DLLIMPORT cbStackFrame
         cbStackFrame();
 
         void SetNumber(int number);
-        void SetAddress(size_t address);
+        void SetAddress(uint64_t address);
         void SetSymbol(const wxString& symbol);
         void SetFile(const wxString& filename, const wxString &line);
         void MakeValid(bool flag);
 
         int GetNumber() const;
-        size_t GetAddress() const;
+        uint64_t GetAddress() const;
+        wxString GetAddressAsString() const;
         const wxString& GetSymbol() const;
         const wxString& GetFilename() const;
         const wxString& GetLine() const;
@@ -123,7 +124,7 @@ class DLLIMPORT cbStackFrame
     private:
         bool m_valid; ///< Is this stack frame valid?
         int m_number; ///< Stack frame's number (used in backtraces).
-        size_t m_address; ///< Stack frame's address.
+        uint64_t m_address; ///< Stack frame's address.
         wxString m_symbol; ///< Current function name.
         wxString m_file; ///< Current file.
         wxString m_line; ///< Current line in file.
@@ -215,6 +216,11 @@ struct DLLIMPORT cbDebuggerCommonConfig
   * Tries to detect the path to the debugger's executable.
   */
 DLLIMPORT wxString cbDetectDebuggerExecutable(const wxString &exeName);
+
+/** Convert a string in hex form to a uint64_t number.
+ * \return The uint64_t representation of the string or 0 when the string can't be converted.
+ */
+DLLIMPORT uint64_t cbDebuggerStringToAddress(const wxString &address);
 
 class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
 {

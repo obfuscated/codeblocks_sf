@@ -93,12 +93,8 @@ void BacktraceDlg::Reload()
     for (int ii = 0; ii < plugin->GetStackFrameCount(); ++ii)
     {
         cb::shared_ptr<const cbStackFrame> frame = plugin->GetStackFrame(ii);
-        wxString addr, num;
-
-        if(frame->GetAddress())
-            addr.Printf(wxT("%p"), reinterpret_cast<void*>(frame->GetAddress()));
-        else
-            addr = wxT("");
+        wxString addr = frame->GetAddressAsString();
+        wxString num;
         num.Printf(wxT("%d"), frame->GetNumber());
         int idx = m_list->InsertItem(m_list->GetItemCount(), num);
         m_list->SetItem(idx, 1, addr);

@@ -1182,7 +1182,7 @@ class GdbCmd_ChangeFrame : public DebuggerCmd
             : DebuggerCmd(driver)
             ,m_addrchgmode(p_addrchgmode) //1 means do not change disassembly address
         {
-            m_Cmd << wxString::Format(_T("frame %d"), frameno);
+            m_Cmd << _T("frame ") << frameno;
         }
         void ParseOutput(const wxString& output)
         {
@@ -1283,46 +1283,24 @@ class GdbCmd_Backtrace : public DebuggerCmd
             // #0  main (argc=1, argv=0x3e2440) at my main.cpp:15
             if (reBTX.Matches(line))
             {
-                #if defined(_WIN64)
-                size_t number, address;
-                reBTX.GetMatch(line, 1).ToULongLong(&number);
-                reBTX.GetMatch(line, 2).ToULongLong(&address, 16);
-                #else
-                unsigned long number, address;
-                reBTX.GetMatch(line, 1).ToULong(&number);
-                reBTX.GetMatch(line, 2).ToULong(&address, 16);
-                #endif
-
+                long int number;
+                reBTX.GetMatch(line, 1).ToLong(&number);
                 sf.SetNumber(number);
-                sf.SetAddress(address);
+                sf.SetAddress(cbDebuggerStringToAddress(reBTX.GetMatch(line, 2)));
                 sf.SetSymbol(reBTX.GetMatch(line, 3) + reBTX.GetMatch(line, 4));
             }
             else if (reBT1.Matches(line))
             {
-                #if defined(_WIN64)
-                size_t number, address;
-                reBT1.GetMatch(line, 1).ToULongLong(&number);
-                reBT1.GetMatch(line, 2).ToULongLong(&address, 16);
-                #else
-                unsigned long number, address;
-                reBT1.GetMatch(line, 1).ToULong(&number);
-                reBT1.GetMatch(line, 2).ToULong(&address, 16);
-                #endif
-
+                long int number;
+                reBT1.GetMatch(line, 1).ToLong(&number);
                 sf.SetNumber(number);
-                sf.SetAddress(address);
+                sf.SetAddress(cbDebuggerStringToAddress(reBT1.GetMatch(line, 2)));
                 sf.SetSymbol(reBT1.GetMatch(line, 3) + reBT1.GetMatch(line, 4));
             }
             else if (reBT0.Matches(line))
             {
-                #if defined(_WIN64)
-                size_t number;
-                reBT0.GetMatch(line, 1).ToULongLong(&number);
-                #else
-                unsigned long number;
-                reBT0.GetMatch(line, 1).ToULong(&number);
-                #endif
-
+                long int number;
+                reBT0.GetMatch(line, 1).ToLong(&number);
                 sf.SetNumber(number);
                 sf.SetAddress(0);
                 sf.SetSymbol(reBT0.GetMatch(line, 2));
@@ -1330,18 +1308,10 @@ class GdbCmd_Backtrace : public DebuggerCmd
             }
             else if (reBT4.Matches(line))
             {
-                #if defined(_WIN64)
-                size_t number, address;
-                reBT4.GetMatch(line, 1).ToULongLong(&number);
-                reBT4.GetMatch(line, 2).ToULongLong(&address, 16);
-                #else
-                unsigned long number, address;
-                reBT4.GetMatch(line, 1).ToULong(&number);
-                reBT4.GetMatch(line, 2).ToULong(&address, 16);
-                #endif
-
+                long int number;
+                reBT4.GetMatch(line, 1).ToLong(&number);
                 sf.SetNumber(number);
-                sf.SetAddress(address);
+                sf.SetAddress(cbDebuggerStringToAddress(reBT4.GetMatch(line, 2)));
                 sf.SetSymbol(reBT4.GetMatch(line, 3));
             }
             else
@@ -1672,9 +1642,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
                 if (addr == LastAddr && sameSymbol)
                     return;
                 LastAddr = addr;
-                long long_address;
-                addr.ToULong((unsigned long int*)&long_address, 16);
-                sf.SetAddress(long_address);
+                sf.SetAddress(cbDebuggerStringToAddress(addr));
                 if (reDisassemblyInitFunc.Matches(output))
                     sf.SetSymbol(reDisassemblyInitFunc.GetMatch(output, 2));
 

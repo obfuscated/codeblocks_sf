@@ -430,18 +430,11 @@ class CdbCmd_Backtrace : public DebuggerCmd
                     cbStackFrame sf;
                     sf.MakeValid(true);
 
-                    #if defined(_WIN64)
-                    size_t number, address;
-                    reBT1.GetMatch(lines[i], 1).ToULongLong(&number);
-                    reBT1.GetMatch(lines[i], 2).ToULongLong(&address, 16); // match 2 or 3 ???
-                    #else
-                    unsigned long int number, address;
-                    reBT1.GetMatch(lines[i], 1).ToULong(&number);
-                    reBT1.GetMatch(lines[i], 2).ToULong(&address, 16); // match 2 or 3 ???
-                    #endif
+                    long int number;
+                    reBT1.GetMatch(lines[i], 1).ToLong(&number);
 
                     sf.SetNumber(number);
-                    sf.SetAddress(address);
+                    sf.SetAddress(cbDebuggerStringToAddress(reBT1.GetMatch(lines[i], 2)));
                     sf.SetSymbol(reBT1.GetMatch(lines[i], 4));
                     // do we have file/line info?
                     if (reBT2.Matches(lines[i]))
@@ -464,7 +457,7 @@ class CdbCmd_Backtrace : public DebuggerCmd
                 Cursor cursor;
                 cursor.file = frameToSwitch.GetFilename();
                 frameToSwitch.GetLine().ToLong(&cursor.line);
-                cursor.address = wxString::Format(wxT("0x%X"), frameToSwitch.GetAddress());
+                cursor.address = frameToSwitch.GetAddressAsString();
                 cursor.changed = true;
                 m_pDriver->SetCursor(cursor);
                 m_pDriver->NotifyCursorChanged();
@@ -626,10 +619,7 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
                         if (addr != LastAddr)
                         {
                             LastAddr = addr;
-                            long long_address;
-                            addr.ToLong((long int*)&long_address, 16);
-                            sf.SetAddress(long_address);
-
+                            sf.SetAddress(cbDebuggerStringToAddress(addr));
                             sf.MakeValid(true);
                             dialog->Clear(sf);
                             m_pDriver->QueueCommand(new CdbCmd_Disassembly(m_pDriver, sf.GetSymbol())); // chain call

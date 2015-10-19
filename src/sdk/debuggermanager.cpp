@@ -32,6 +32,7 @@
 #endif
 
 #include <algorithm>
+#include <sstream>
 #include <wx/toolbar.h>
 
 #include "debuggermanager.h"
@@ -224,7 +225,7 @@ void cbStackFrame::SetNumber(int number)
     m_number = number;
 }
 
-void cbStackFrame::SetAddress(size_t address)
+void cbStackFrame::SetAddress(uint64_t address)
 {
     m_address = address;
 }
@@ -250,9 +251,21 @@ int cbStackFrame::GetNumber() const
     return m_number;
 }
 
-size_t cbStackFrame::GetAddress() const
+uint64_t cbStackFrame::GetAddress() const
 {
     return m_address;
+}
+
+wxString cbStackFrame::GetAddressAsString() const
+{
+    if(m_address!=0)
+    {
+        std::stringstream s;
+        s << "0x" << std::hex << m_address;
+        return wxString(s.str().c_str(), wxConvUTF8);
+    }
+    else
+        return wxEmptyString;
 }
 
 const wxString& cbStackFrame::GetSymbol() const
@@ -457,6 +470,30 @@ wxString cbDetectDebuggerExecutable(const wxString &exeName)
     if (!wxDirExists(exePath))
         return wxEmptyString;
     return exePath + wxFileName::GetPathSeparator() + exeName + exeExt;
+}
+
+uint64_t cbDebuggerStringToAddress(const wxString &address)
+{
+    if (address.empty())
+        return 0;
+#if defined(__WXMSW__)
+    // Workaround for the 'ToULongLong' bug in wxWidgets 2.8.12
+#if wxCHECK_VERSION(2, 8, 12)
+    return strtoull(address.mb_str(), nullptr, 16);
+#else
+    uint64_t result;
+    if (address.ToULongLong(&result))
+        return result;
+    else
+        return 0;
+#endif // wxCHECK_VERSION
+#else
+    uint64_t result;
+    if (address.ToULong(&result, 16))
+        return result;
+    else
+        return 0;
+#endif
 }
 
 
