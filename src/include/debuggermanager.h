@@ -222,6 +222,9 @@ DLLIMPORT wxString cbDetectDebuggerExecutable(const wxString &exeName);
  */
 DLLIMPORT uint64_t cbDebuggerStringToAddress(const wxString &address);
 
+/** Convert a uint64_t variable to a hex string that will look like an address. */
+DLLIMPORT wxString cbDebuggerAddressToString(uint64_t address);
+
 class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
 {
     private:

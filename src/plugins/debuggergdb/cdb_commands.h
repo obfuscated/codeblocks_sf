@@ -572,8 +572,7 @@ class CdbCmd_Disassembly : public DebuggerCmd
             {
                 if (reDisassembly.Matches(lines[i]))
                 {
-                    long int addr;
-                    reDisassembly.GetMatch(lines[i], 1).ToLong(&addr, 16);
+                    uint64_t addr = cbDebuggerStringToAddress(reDisassembly.GetMatch(lines[i], 1));
                     dialog->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
                 }
             }
@@ -632,8 +631,8 @@ class CdbCmd_DisassemblyInit : public DebuggerCmd
                     m_pDriver->Log(_T("Checking for current function start"));
                     if (reDisassemblyFunc.Matches(lines[i]))
                     {
-                        long int start;
-                        reDisassemblyFunc.GetMatch(lines[i], 1).ToLong(&start, 16);
+                        uint64_t start = cbDebuggerStringToAddress(reDisassemblyFunc.GetMatch(lines[i], 1));
+                        // FIXME (obfuscated#): the offset is wrong type, probably should be fixed.
                         dialog->SetActiveAddress(start + offset);
                     }
                 }

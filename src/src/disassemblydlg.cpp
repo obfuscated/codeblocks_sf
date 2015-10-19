@@ -122,7 +122,7 @@ void DisassemblyDlg::Clear(const cbStackFrame& frame)
     m_pCode->MarkerDeleteAll(DEBUG_MARKER);
 }
 
-void DisassemblyDlg::AddAssemblerLine(size_t addr, const wxString& line)
+void DisassemblyDlg::AddAssemblerLine(uint64_t addr, const wxString& line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -130,18 +130,14 @@ void DisassemblyDlg::AddAssemblerLine(size_t addr, const wxString& line)
         m_ClearFlag = false;
         m_pCode->ClearAll();
     }
-    wxString fmt;
-    fmt.Printf(_T("%p\t%s\n"), (void*)addr, line.c_str());
-    if (!fmt.StartsWith(wxT("0x")))
-        fmt = wxT("0x") + fmt;
 
-    m_pCode->AppendText(fmt);
+    m_pCode->AppendText(cbDebuggerAddressToString(addr) + wxT("\t") + line + wxT("\n"));
     SetActiveAddress(m_LastActiveAddr);
     m_pCode->SetReadOnly(true);
     m_LineTypes.push_back('D') ;
 }
 
-void DisassemblyDlg::AddSourceLine(size_t lineno, const wxString& line)
+void DisassemblyDlg::AddSourceLine(int lineno, const wxString& line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -150,7 +146,7 @@ void DisassemblyDlg::AddSourceLine(size_t lineno, const wxString& line)
         m_pCode->ClearAll();
     }
     wxString fmt;
-    fmt.Printf(_T("%-3lu\t%s\n"), lineno, line.c_str());
+    fmt.Printf(_T("%-3d\t%s\n"), lineno, line.c_str());
 
     m_pCode->AppendText(fmt);
 
@@ -158,11 +154,11 @@ void DisassemblyDlg::AddSourceLine(size_t lineno, const wxString& line)
     m_LineTypes.push_back('S') ;
 }
 
-void DisassemblyDlg::CenterLine(size_t lineno)
+void DisassemblyDlg::CenterLine(int lineno)
 {
     //make line middle of display window if reasonable
     int firstdispline ;
-    unsigned int los = m_pCode->LinesOnScreen() ;
+    int los = m_pCode->LinesOnScreen() ;
     if (lineno > los / 2)
         firstdispline = lineno - (los/2) ;
     else
@@ -177,7 +173,7 @@ void DisassemblyDlg::CenterCurrentLine()
     CenterLine(displine);
 }
 
-bool DisassemblyDlg::SetActiveAddress(size_t addr)
+bool DisassemblyDlg::SetActiveAddress(uint64_t addr)
 {
     if (m_HasActiveAddr && addr == m_LastActiveAddr)
         return m_HasActiveAddr ;
@@ -189,9 +185,9 @@ bool DisassemblyDlg::SetActiveAddress(size_t addr)
         if(MixedAsmMode && m_LineTypes[i] == 'S')
             continue;
 
-        wxString str = m_pCode->GetLine(i).AfterFirst(_T('x')).BeforeFirst(_T('\t'));
-        unsigned long int lineaddr;
-        if (str.ToULong(&lineaddr, 16) && (lineaddr == addr))
+        const wxString &str = m_pCode->GetLine(i).AfterFirst(_T('x')).BeforeFirst(_T('\t'));
+        uint64_t lineaddr = cbDebuggerStringToAddress(str);
+        if (lineaddr > 0 && (lineaddr == addr))
         {
             m_pCode->MarkerDeleteAll(DEBUG_MARKER);
             m_pCode->MarkerAdd(i, DEBUG_MARKER);

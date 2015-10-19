@@ -62,10 +62,10 @@ class DLLIMPORT cbDisassemblyDlg
         virtual wxWindow* GetWindow() = 0;
 
         virtual void Clear(const cbStackFrame& frame) = 0;
-        virtual void AddAssemblerLine(size_t addr, const wxString& line) = 0;
-        virtual void AddSourceLine(size_t lineno, const wxString& line) = 0;
-        virtual bool SetActiveAddress(size_t addr) = 0;
-        virtual void CenterLine(size_t lineno) = 0;
+        virtual void AddAssemblerLine(uint64_t addr, const wxString& line) = 0;
+        virtual void AddSourceLine(int lineno, const wxString& line) = 0;
+        virtual bool SetActiveAddress(uint64_t addr) = 0;
+        virtual void CenterLine(int lineno) = 0;
         virtual void CenterCurrentLine() = 0;
         virtual bool HasActiveAddr() = 0;
         virtual void EnableWindow(bool enable) = 0;

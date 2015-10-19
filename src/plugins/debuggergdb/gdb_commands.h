@@ -1536,20 +1536,14 @@ class GdbCmd_Disassembly : public DebuggerCmd
                 }
                 else if (reDisassembly.Matches(lines[i]))
                 {
-                    #if defined(_WIN64)
-                    size_t addr;
-                    reDisassembly.GetMatch(lines[i], 1).ToULongLong(&addr, 16);
-                    #else
-                    unsigned long int addr;
-                    reDisassembly.GetMatch(lines[i], 1).ToULong(&addr, 16);
-                    #endif
+                    uint64_t addr = cbDebuggerStringToAddress(reDisassembly.GetMatch(lines[i], 1));
                     dialog->AddAssemblerLine(addr, reDisassembly.GetMatch(lines[i], 2));
                 }
                 else if (m_mixedMode && reDisassemblySource.Matches(lines[i]))
                 {
-                    unsigned long int lineno ;
-                    reDisassemblySource.GetMatch(lines[i], 1).ToULong(&lineno, 10) ;
-                    dialog->AddSourceLine(lineno, reDisassemblySource.GetMatch(lines[i], 2)) ;
+                    long int lineno;
+                    reDisassemblySource.GetMatch(lines[i], 1).ToLong(&lineno, 10);
+                    dialog->AddSourceLine(lineno, reDisassemblySource.GetMatch(lines[i], 2));
                 }
             }
             dialog->CenterCurrentLine();
@@ -1650,9 +1644,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
                 dialog->Clear(sf);
                 if(!m_hexAddrStr.empty())
                 {
-                    unsigned long active ;
-                    m_hexAddrStr.ToULong(&active, 16);
-                    dialog->SetActiveAddress(active);
+                    dialog->SetActiveAddress(cbDebuggerStringToAddress(m_hexAddrStr));
                     Cursor acursor = m_pDriver->GetCursor();
                     acursor.address = m_hexAddrStr;
                     m_pDriver->SetCursor(acursor);
@@ -1884,14 +1876,7 @@ class GdbCmd_StepOrNextInstruction : public DebuggerContinueBaseCmd
             if (addrstr.empty())
                 return;
 
-            #if defined(_WIN64)
-            size_t addr;
-            addrstr.ToULongLong(&addr, 16);
-            #else
-            unsigned long int addr;
-            addrstr.ToULong(&addr, 16);
-            #endif
-            if (!dialog->SetActiveAddress(addr))
+            if (!dialog->SetActiveAddress(cbDebuggerStringToAddress(addrstr)))
                 m_pDriver->QueueCommand(new GdbCmd_DisassemblyInit(m_pDriver,disasm_flavour ,addrstr));
         }
 };

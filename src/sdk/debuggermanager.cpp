@@ -259,11 +259,7 @@ uint64_t cbStackFrame::GetAddress() const
 wxString cbStackFrame::GetAddressAsString() const
 {
     if(m_address!=0)
-    {
-        std::stringstream s;
-        s << "0x" << std::hex << m_address;
-        return wxString(s.str().c_str(), wxConvUTF8);
-    }
+        return cbDebuggerAddressToString(m_address);
     else
         return wxEmptyString;
 }
@@ -496,6 +492,12 @@ uint64_t cbDebuggerStringToAddress(const wxString &address)
 #endif
 }
 
+wxString cbDebuggerAddressToString(uint64_t address)
+{
+    std::stringstream s;
+    s << "0x" << std::hex << address;
+    return wxString(s.str().c_str(), wxConvUTF8);
+}
 
 class DebugTextCtrlLogger : public TextCtrlLogger
 {

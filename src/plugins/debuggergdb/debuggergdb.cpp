@@ -2036,10 +2036,9 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
             // update disassembly
             if (dbg_manager->UpdateDisassembly())
             {
-                unsigned long int addrL;
-                cursor.address.ToULong(&addrL, 16);
+                uint64_t addr = cbDebuggerStringToAddress(cursor.address);
                 //if zero addr, don't attempt disassembly
-                if (addrL && !dbg_manager->GetDisassemblyDialog()->SetActiveAddress(addrL))
+                if (addr && !dbg_manager->GetDisassemblyDialog()->SetActiveAddress(addr))
                     RunCommand(CMD_DISASSEMBLE);
             }
 
