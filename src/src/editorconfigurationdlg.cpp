@@ -92,6 +92,7 @@ BEGIN_EVENT_TABLE(EditorConfigurationDlg, wxScrollingDialog)
     EVT_CHOICE(XRCID("lstCaretStyle"),                 EditorConfigurationDlg::OnCaretStyle)
 
     EVT_LISTBOOK_PAGE_CHANGED(XRCID("nbMain"), EditorConfigurationDlg::OnPageChanged)
+    EVT_BUTTON(XRCID("btnWSColour"),                   EditorConfigurationDlg::OnChooseColour)
 END_EVENT_TABLE()
 
 EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
@@ -175,6 +176,10 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "spnCaretWidth",  wxSpinCtrl)->Enable(caretStyle == wxSCI_CARETSTYLE_LINE);
     XRCCTRL(*this, "btnCaretColour", wxButton)->SetBackgroundColour(caretColour);
     XRCCTRL(*this, "slCaretPeriod",  wxSlider)->SetValue(cfg->ReadInt(_T("/caret/period"), 500));
+
+    //whitespace colour
+    wxColour whiteSpaceColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_whitespace"));
+    XRCCTRL(*this, "btnWSColour", wxButton)->SetBackgroundColour(whiteSpaceColour);
 
     //selections
     XRCCTRL(*this, "chkEnableVirtualSpace",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/selection/use_vspace"),      false));
@@ -1046,6 +1051,10 @@ void EditorConfigurationDlg::EndModal(int retCode)
         wxColour caretColour = XRCCTRL(*this, "btnCaretColour", wxButton)->GetBackgroundColour();
         Manager::Get()->GetColourManager()->SetColour(wxT("editor_caret"), caretColour);
         cfg->Write(_T("/caret/period"),                        XRCCTRL(*this, "slCaretPeriod",  wxSlider)->GetValue());
+
+        //whitespace colour
+        wxColour wsColour = XRCCTRL(*this, "btnWSColour", wxButton)->GetBackgroundColour();
+        Manager::Get()->GetColourManager()->SetColour(wxT("editor_whitespace"), wsColour);
 
         //folding
         bool enableFolding = XRCCTRL(*this, "chkEnableFolding", wxCheckBox)->GetValue();

@@ -180,6 +180,7 @@ EditorManager::EditorManager()
                             wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
     colours->RegisterColour(_("Editor"), _("Margin chrome highlight colour"), wxT("editor_margin_chrome_highlight"),
                             wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
+    colours->RegisterColour(_("Editor"), _("Whitespace"), wxT("editor_whitespace"), wxColor(195, 195, 195));
 }
 
 EditorManager::~EditorManager()

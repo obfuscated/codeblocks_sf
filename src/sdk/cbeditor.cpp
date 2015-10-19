@@ -1352,6 +1352,8 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetFoldMarginColour(true, colours->GetColour(wxT("editor_margin_chrome")));
     control->SetFoldMarginHiColour(true, colours->GetColour(wxT("editor_margin_chrome_highlight")));
 
+    control->SetWhitespaceForeground(true, colours->GetColour(wxT("editor_whitespace")));
+
     // setup for "CamelCase selection"
     if (mgr->ReadBool(_T("/camel_case"), false))
     {
