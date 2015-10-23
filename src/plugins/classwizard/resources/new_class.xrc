@@ -210,7 +210,7 @@
 																	<label>Scope:</label>
 																</object>
 																<flag>wxTOP|wxRIGHT|wxALIGN_LEFT|wxALIGN_TOP</flag>
-																<border>4</border>
+																<border>5</border>
 															</object>
 															<object class="sizeritem">
 																<object class="wxComboBox" name="cmbMemberScope">
@@ -221,7 +221,8 @@
 																	</content>
 																	<style>wxCB_READONLY|wxCB_DROPDOWN</style>
 																</object>
-																<flag>wxEXPAND</flag>
+																<flag>wxBOTTOM|wxEXPAND</flag>
+																<border>5</border>
 															</object>
 														</object>
 														<flag>wxALIGN_LEFT|wxALIGN_TOP</flag>
@@ -258,7 +259,7 @@
 															</object>
 															<object class="sizeritem">
 																<object class="wxTextCtrl" name="txtPrefix">
-																	<value>m&amp;</value>
+																	<value>m__</value>
 																</object>
 																<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
 																<border>5</border>
