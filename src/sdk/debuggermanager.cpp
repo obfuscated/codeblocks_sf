@@ -478,7 +478,7 @@ uint64_t cbDebuggerStringToAddress(const wxString &address)
     return strtoull(address.mb_str(), nullptr, 16);
 #else
     uint64_t result;
-    if (address.ToULongLong(&result))
+    if (address.ToULongLong(&result, 16))
         return result;
     else
         return 0;
