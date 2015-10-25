@@ -5,6 +5,7 @@
  * STRUCTS/TYPEDEFS
  ********************/
 
+// structs and typdef'd structs
 struct _s
 {
   int   x;
@@ -27,6 +28,7 @@ typedef struct _s_outer
   char       c;
 } t_s_outer;
 
+// typedef'd classes
 class _c
 {
   int   l;
@@ -45,6 +47,21 @@ typedef class _c_mult
     long  l;
     float f;
 } t_c_mult, *p_t_c_mult;
+
+// typedefs in classes
+class c1
+{
+    public:
+        typedef string s;
+};
+
+// typedefs in class templates
+template<typename _Tp>
+class c2
+{
+    public:
+        typedef string s;
+};
 
 typedef unsigned int i_uinteger;
 
@@ -194,6 +211,8 @@ int main (void)
 //    rts.
 //    pts.
 //    pts->
+//    c1.s1.
+//    c1.s2.
 
     std::string ss;
     my_string   ms;

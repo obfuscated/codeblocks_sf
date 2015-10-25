@@ -54,27 +54,9 @@
 							<object class="wxSplitterWindow" name="splitterWin">
 								<style>wxSP_LIVE_UPDATE</style>
 								<object class="wxTreeCtrl" name="treeAll" subclass="CCTreeCtrl">
-									<image_list></image_list>
-									<tree_items>
-										<item>TreeCtrl1</item>
-										<item></item>
-									</tree_items>
-									<items_text>
-										<item2>TreeCtrl1</item2>
-										<item2></item2>
-									</items_text>
 									<style>wxTR_HAS_VARIABLE_ROW_HEIGHT|wxTR_DEFAULT_STYLE</style>
 								</object>
 								<object class="wxTreeCtrl" name="treeMembers" subclass="CCTreeCtrl">
-									<image_list></image_list>
-									<tree_items>
-										<item>TreeCtrl2</item>
-										<item></item>
-									</tree_items>
-									<items_text>
-										<item2>TreeCtrl2</item2>
-										<item2></item2>
-									</items_text>
 									<style>wxTR_HAS_BUTTONS|wxTR_NO_LINES|wxTR_HIDE_ROOT|wxTR_HAS_VARIABLE_ROW_HEIGHT</style>
 								</object>
 							</object>
