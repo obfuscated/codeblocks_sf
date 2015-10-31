@@ -461,7 +461,7 @@ void CBProfilerExecDlg::FindInCallGraph(wxListEvent& event)
         item.SetMask(wxLIST_MASK_TEXT);
         outputCallGraphArea->GetItem(item);
         indexColumn = item.GetText();
-        if ((indexColumn.Mid(0,1)).CompareTo(_T("[")) == 0)
+        if ((indexColumn.Mid(0,1)).compare(_T("[")) == 0)
         {
             item.Clear();
             item.SetId(n);
@@ -503,7 +503,7 @@ void CBProfilerExecDlg::JumpInCallGraph(wxListEvent& event)
         outputCallGraphArea->GetItem(item);
         indexColumn = item.GetText();
 
-        if ((indexColumn.Mid(0,1)).CompareTo(_T("[")) == 0)
+        if ((indexColumn.Mid(0,1)).compare(_T("[")) == 0)
         {
             item.Clear();
             item.SetId(n);

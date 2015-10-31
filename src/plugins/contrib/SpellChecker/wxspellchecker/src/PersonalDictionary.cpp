@@ -12,7 +12,7 @@ PersonalDictionary::PersonalDictionary(wxString strFileName /*= _T(".wxSpellChec
 PersonalDictionary::~PersonalDictionary()
 {
 }
-  
+
 bool PersonalDictionary::LoadPersonalDictionary()
 {
   wxFileName sPath(m_strDictionaryFileName);
@@ -41,18 +41,19 @@ bool PersonalDictionary::LoadPersonalDictionary()
       strWord.Trim(TRUE);  // Trim on the right
       if (strWord.IsEmpty() || strWord == _T(";"))
         continue;
-  
+
       m_DictionaryWords.Add(strWord);
     }
     // Handle the last line
     strWord.Trim(FALSE); // Trim on the left
     strWord.Trim(TRUE);  // Trim on the right
-  
+
     if (!(strWord.IsEmpty()) && (strWord != _T(";")))
       m_DictionaryWords.Add(strWord);
   }
-  
+
   DictFile.Close();
+  m_DictionaryWords.Sort();
   return true;
 }
 
@@ -63,11 +64,11 @@ bool PersonalDictionary::SavePersonalDictionary()
   sPath.MakeAbsolute();
 
   wxTextFile DictFile(sPath.GetFullPath());
-  
+
   // Remove any existing personal dictionary files
   if (DictFile.Exists())
     ::wxRemoveFile(sPath.GetFullPath());
-  
+
   if (!DictFile.Create())
   {
     wxMessageOutput* msgOut = wxMessageOutput::Get();
