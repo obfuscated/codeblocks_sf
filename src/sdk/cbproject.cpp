@@ -540,8 +540,11 @@ bool cbProject::LoadLayout()
                 while (it != m_Files.end())
                 {
                     ProjectFile* f = *it++;
-                    if (f->editorOpen)
+                    // do not try to open files that do not exist, but have fileOpen set to true
+                    if (f->editorOpen && wxFileExists(f->file.GetFullPath()))
                         open_files[f->editorTabPos] = f;
+                    else
+                        f->editorOpen = false;
                 }
 
                 // Load all requested files
