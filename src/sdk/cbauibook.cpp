@@ -716,6 +716,10 @@ wxString cbAuiNotebook::SavePerspective(const wxString projectTitle)
 
                 wxString id = UniqueIdFromTooltip(GetPageToolTip(page_idx));
 
+                // file does not belong to any project, so don't save
+                if (id.BeforeLast(':').empty())
+                    continue;
+
                 // if we save a project (projectTitle non empty), but file does not belong to the project
                 // skip it
                 if (!projectTitle.empty() && id.BeforeLast(':') != projectTitle)
