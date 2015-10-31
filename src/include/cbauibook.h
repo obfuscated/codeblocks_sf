@@ -49,11 +49,13 @@ class cbAuiNotebook : public wxAuiNotebook
          */
         void AdvanceSelection(bool forward = true);
         /** \brief Save layout of the notebook
+         * \param projectTitle only save the layout of the project with this title, save all projects layout, if empty
          * \return wxString the serialized layout
          */
-        wxString SavePerspective();
+        wxString SavePerspective(const wxString projectTitle = wxEmptyString);
         /** \brief Loads serialized notebook layout
          * \param layout the serialized layout
+         * \param mergeLayouts try to merge the tab-layouts
          * \return bool true if successfull
          *
          */

@@ -326,7 +326,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
         TiXmlElement *el =
             static_cast<TiXmlElement*>(
                 rootnode->InsertEndChild( TiXmlElement("EditorTabsLayout") ) );
-        el->SetAttribute("layout", cbU2C( Manager::Get()->GetEditorManager()->GetNotebook()->SavePerspective() ));
+        el->SetAttribute("layout", cbU2C( Manager::Get()->GetEditorManager()->GetNotebook()->SavePerspective(m_pProject->GetTitle()) ));
     }
     // else ?!
 

@@ -678,10 +678,11 @@ void cbAuiNotebook::OnNavigationKey(wxNavigationKeyEvent& event)
     }
 }
 
-wxString cbAuiNotebook::SavePerspective()
+wxString cbAuiNotebook::SavePerspective(const wxString projectTitle)
 {
     // Build list of panes/tabs
-    wxString tabs;
+    wxString tabs, tabsTmp;
+    wxArrayString panes;
 
     // first get all tab-controls
     UpdateTabControlsArray();
@@ -705,12 +706,7 @@ wxString cbAuiNotebook::SavePerspective()
         }
         if (tabCtrl)
         {
-            if (!tabs.empty())
-                tabs += wxT("|");
-
-            tabs += pane.name;
-            tabs += wxT("=");
-
+            tabsTmp.Clear();
             // add tab id's
             size_t page_count = tabCtrl->GetPageCount();
             for (size_t p = 0; p < page_count; ++p)
@@ -718,28 +714,64 @@ wxString cbAuiNotebook::SavePerspective()
                 wxAuiNotebookPage& page = tabCtrl->GetPage(p);
                 const size_t page_idx = m_tabs.GetIdxFromWindow(page.window);
 
-                if (p)
-                    tabs += wxT(",");
+                wxString id = UniqueIdFromTooltip(GetPageToolTip(page_idx));
+
+                // if we save a project (projectTitle non empty), but file does not belong to the project
+                // skip it
+                if (!projectTitle.empty() && id.BeforeLast(':') != projectTitle)
+                    continue;
+
+                if (!tabsTmp.empty())
+                    tabsTmp += wxT(",");
 
 #if wxCHECK_VERSION(2, 9, 3)
                 if ((int)page_idx == m_curPage)
 #else
                 if ((int)page_idx == m_curpage)
 #endif
-                    tabs += wxT("*");
+                    tabsTmp += wxT("*");
                 else if ((int)p == tabCtrl->GetActivePage())
-                    tabs += wxT("+");
+                    tabsTmp += wxT("+");
 
-                tabs += wxString::Format(wxT("%lu"), static_cast<unsigned long>(page_idx));
-                tabs += wxT(";");
-                tabs += UniqueIdFromTooltip(GetPageToolTip(page_idx));
+                tabsTmp += wxString::Format(wxT("%lu"), static_cast<unsigned long>(page_idx));
+                tabsTmp += wxT(";");
+                tabsTmp += id;
+            }
+            if (!tabsTmp.empty())
+            {
+                if (!tabs.empty())
+                    tabs += wxT("|");
+
+                panes.Add(pane.name);
+                tabs += pane.name;
+                tabs += wxT("=");
+                tabs += tabsTmp;
             }
         }
     }
     tabs += wxT("@");
 
+    tabsTmp = m_mgr.SavePerspective();
+
+    wxArrayString arTabsTmp = GetArrayFromString(tabsTmp, wxT("|"));
+
+    for (size_t i = arTabsTmp.GetCount(); i > 0 ; )
+    {
+        if (arTabsTmp.Item(--i).StartsWith(wxT("name=")))
+        {
+            wxString strTmp = arTabsTmp.Item(i).AfterFirst('=').BeforeFirst(';');
+            Manager::Get()->GetLogManager()->DebugLogError(F(_("strTmp = %s"), strTmp.wx_str()));
+            if (strTmp == wxT("dummy"))
+                continue;
+            if (panes.Index(strTmp) < 0)
+                arTabsTmp.RemoveAt(i);
+        }
+    }
+
+    tabsTmp = GetStringFromArray(arTabsTmp, wxT("|"));
+
     // Add frame perspective
-    tabs += m_mgr.SavePerspective();
+    tabs += tabsTmp;
 
     return tabs;
 }
