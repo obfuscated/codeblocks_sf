@@ -764,7 +764,6 @@ wxString cbAuiNotebook::SavePerspective(const wxString projectTitle)
         if (arTabsTmp.Item(--i).StartsWith(wxT("name=")))
         {
             wxString strTmp = arTabsTmp.Item(i).AfterFirst('=').BeforeFirst(';');
-            Manager::Get()->GetLogManager()->DebugLogError(F(_("strTmp = %s"), strTmp.wx_str()));
             if (strTmp == wxT("dummy"))
                 continue;
             if (panes.Index(strTmp) < 0)
