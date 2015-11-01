@@ -272,11 +272,12 @@ namespace ScriptBindings
 
     void Register_wxTypes()
     {
-#if wxCHECK_VERSION(3, 0, 0)
-        typedef const wxString& (wxArrayString::*WXARRAY_STRING_ITEM)(size_t nIndex) const;
+#if wxCHECK_VERSION(3, 0, 0) && !wxUSE_STD_CONTAINERS
+        typedef const wxString& (wxArrayString::*wxArrayStringItem)(size_t nIndex) const;
 #else
-        typedef wxString& (wxArrayString::*WXARRAY_STRING_ITEM)(size_t nIndex) const;
+        typedef wxString& (wxArrayString::*wxArrayStringItem)(size_t nIndex) const;
 #endif
+        typedef size_t (wxArrayString::*wxArrayStrinGetCount)() const;
 
         ///////////////////
         // wxArrayString //
@@ -286,8 +287,8 @@ namespace ScriptBindings
                 func(&wxArrayString::Add, "Add").
                 staticFunc(&wxArrayString_Clear, "Clear").
                 staticFuncVarArgs(&wxArrayString_Index, "Index", "*").
-                func(&wxArrayString::GetCount, "GetCount").
-                func<WXARRAY_STRING_ITEM>(&wxArrayString::Item, "Item").
+                func<wxArrayStrinGetCount>(&wxArrayString::GetCount, "GetCount").
+                func<wxArrayStringItem>(&wxArrayString::Item, "Item").
                 staticFuncVarArgs(&wxArrayString_SetItem, "SetItem", "*");
 
         //////////////
