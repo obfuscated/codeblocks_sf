@@ -55,11 +55,13 @@ class DebuggerInfoWindow : public wxScrollingDialog
 {
     public:
         DebuggerInfoWindow(wxWindow *parent, const wxString& title, const wxString& content)
-            : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
+            : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize,
+                                wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
             wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
             wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-            m_pText = new wxTextCtrl(this, -1, content, wxDefaultPosition, wxDefaultSize, wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
+            m_pText = new wxTextCtrl(this, -1, content, wxDefaultPosition, wxDefaultSize,
+                                     wxTE_READONLY | wxTE_MULTILINE | wxTE_RICH2 | wxHSCROLL);
             m_pText->SetFont(font);
 
             sizer->Add(m_pText, 1, wxGROW);
