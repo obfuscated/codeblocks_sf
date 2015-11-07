@@ -22,7 +22,7 @@ class wxWindow;
 class wxCommandEvent;
 class wxMouseEvent;
 
-class DLLIMPORT InfoPane : public cbAuiNotebook
+class InfoPane : public cbAuiNotebook
 {
     DECLARE_EVENT_TABLE()
 
