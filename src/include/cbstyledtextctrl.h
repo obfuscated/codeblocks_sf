@@ -8,6 +8,7 @@
 
 #include "wx/wxscintilla.h"
 #include <wx/longlong.h>
+#include "settings.h" // DLLIMPORT
 
 #include <map>
 #include <set>

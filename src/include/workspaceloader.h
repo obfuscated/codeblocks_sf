@@ -8,6 +8,8 @@
 
 #include "ibaseworkspaceloader.h"
 
+#include "settings.h" // DLLIMPORT
+
 #define WORKSPACE_LAYOUT_FILE_VERSION_MAJOR 1
 #define WORKSPACE_LAYOUT_FILE_VERSION_MINOR 0
 

@@ -10,6 +10,7 @@
 #include <wx/xrc/xh_dlg.h>
 #include <wx/toolbar.h>
 
+#include "settings.h" // DLLIMPORT
 
 class wxXmlResourceHandler;
 

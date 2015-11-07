@@ -22,6 +22,8 @@
 #include <wx/timer.h>
 #include <wx/string.h>
 
+#include "settings.h" // DLLIMPORT
+
 #if wxUSE_POPUPWIN
     #include <wx/popupwin.h>
     typedef wxPopupWindow wxInfoWindowBase;
