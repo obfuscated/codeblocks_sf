@@ -2415,13 +2415,12 @@ void ParserThread::HandleConditionalArguments()
     // (var <= 12 && (getType() != 23))
     wxString args = m_Tokenizer.GetToken();
 
-    // remove braces, we should replace them with spaces, so that we have some extra spaces at the
-    // end of the buffer
+    // remove braces
     if (args.StartsWith(_T("(")))
-        args[0] = _T(' ');
+        args = args.Mid(1, args.length() - 1);
 
     if (args.EndsWith(_T(")")))
-        args[args.length() - 1] = _T(' ');
+        args = args.Mid(0, args.length() - 1);
 
     // parse small tokens inside for loop head
     TokenTree tree;
