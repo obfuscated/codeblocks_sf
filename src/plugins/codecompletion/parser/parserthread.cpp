@@ -2227,15 +2227,17 @@ void ParserThread::HandleFunction(wxString& name, bool isOperator, bool isPointe
         int pos = name.find(ParserConsts::ptr);
 
         // pattern: m_Str AAA (*BBB) (...);
-        if (peek == ParserConsts::semicolon && pos != wxNOT_FOUND)
+        // pattern: m_Str AAA (*BBB) (...) = some_function;
+        if (pos != wxNOT_FOUND && (peek == ParserConsts::semicolon || peek == ParserConsts::equals))
         {
             name.RemoveLast();  // remove ")"
             name.Remove(0, pos+1).Trim(false); // remove "(* "
 
             // pattern: m_Str AAA (*BBB[X][Y]) (...);
+            // Trim(true) for safety, in case the name contains a trailing space
             pos = name.find(ParserConsts::oparray_chr);
             if (pos != wxNOT_FOUND)
-                name.Remove(pos);
+                name.Remove(pos).Trim(true);
 
             TRACE(_T("HandleFunction() : Add token name='")+name+_T("', args='")+args+_T("', return type='") + m_Str+ _T("'"));
             Token* newToken =  DoAddToken(tkFunction, name, lineNr, 0, 0, args);
