@@ -2518,6 +2518,23 @@ void ParserThread::HandleForLoopArguments()
         bool createNewToken = false;
         bool finished = false;
 
+        // pattern  for(int i = 5; ...)
+        // there is a "=" after the token "i"
+        if (peek == ParserConsts::equals)
+        {
+            // skip to ',' or ';'
+            while (IS_ALIVE)
+            {
+                smallTokenizer.GetToken();
+
+                peek = smallTokenizer.PeekToken();
+                if (peek == ParserConsts::comma
+                    || peek == ParserConsts::semicolon
+                    || peek.empty())
+                    break;
+            }
+        }
+
         if (peek == ParserConsts::comma)
         {
             smallTokenizer.GetToken(); // eat comma
