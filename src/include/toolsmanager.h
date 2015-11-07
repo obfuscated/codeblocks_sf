@@ -20,7 +20,7 @@ class wxMenuItem;
 class PipedProcess;
 class CodeBlocksEvent;
 
-class ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
+class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 {
 	public:
 		friend class Mgr<ToolsManager>;

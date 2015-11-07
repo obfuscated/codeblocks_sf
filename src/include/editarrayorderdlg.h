@@ -13,7 +13,7 @@
 /*
  * No description
  */
-class EditArrayOrderDlg : public wxScrollingDialog
+class DLLIMPORT EditArrayOrderDlg : public wxScrollingDialog
 {
 	public:
 		// class constructor

@@ -9,7 +9,7 @@
 #include "scrollingdialog.h"
 #include <wx/intl.h>
 
-class EditPathDlg : public wxScrollingDialog
+class DLLIMPORT EditPathDlg : public wxScrollingDialog
 {
 	public:
 		EditPathDlg(wxWindow* parent,

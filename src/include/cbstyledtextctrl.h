@@ -17,7 +17,7 @@ class wxFocusEvent;
 class wxMouseEvent;
 class wxPoint;
 
-class cbStyledTextCtrl : public wxScintilla
+class DLLIMPORT cbStyledTextCtrl : public wxScintilla
 {
     public:
         cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);

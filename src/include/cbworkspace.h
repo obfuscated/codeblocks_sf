@@ -23,7 +23,7 @@
   * @note The way WorkspaceLoader works now, requires that you save and delete the
   * loaded workspace *before* creating a new one...
   */
-class cbWorkspace
+class DLLIMPORT cbWorkspace
 {
     public:
         /** @brief Constructor

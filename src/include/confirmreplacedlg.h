@@ -22,7 +22,7 @@ enum ConfirmResponse
 	crCancel
 };
 
-class ConfirmReplaceDlg : public wxScrollingDialog
+class DLLIMPORT ConfirmReplaceDlg : public wxScrollingDialog
 {
 	public:
 		ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles = false,
