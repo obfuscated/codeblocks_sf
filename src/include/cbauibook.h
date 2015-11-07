@@ -7,6 +7,7 @@
 #define CBAUIBOOK_H_INCLUDED
 
 #include "prep.h"
+#include "settings.h" // DLLIMPORT
 
 #include <vector>
 

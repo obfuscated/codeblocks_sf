@@ -14,6 +14,7 @@
 
 #include "wx/dialog.h"
 #include "wx/propdlg.h"
+#include "settings.h" // DLLIMPORT
 
 /*!
  * Base class for layout adapters - code that, for example, turns a dialog into a
