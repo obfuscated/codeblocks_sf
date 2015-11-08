@@ -1367,10 +1367,13 @@ void CompilerGCC::DoClearTargetMenu()
     if (m_TargetMenu)
     {
         wxMenuItemList& items = m_TargetMenu->GetMenuItems();
-        for (wxMenuItemList::iterator it = items.begin(); it != items.end(); ++it)
+        for (wxMenuItemList::iterator it = items.begin(); it != items.end(); )
         {
-            if (*it)
-                m_TargetMenu->Delete(*it);
+            wxMenuItem *item = *it;
+            // Make sure we increment valid iterator (Delete will invalidate it).
+            ++it;
+            if (item)
+                m_TargetMenu->Delete(item);
         }
 // mandrav: The following lines DO NOT clear the menu!
 //        wxMenuItemList& items = m_TargetMenu->GetMenuItems();
