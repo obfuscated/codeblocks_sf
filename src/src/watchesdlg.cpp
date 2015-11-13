@@ -371,6 +371,7 @@ WatchesDlg::WatchesDlg() :
     m_grid->SetExtraStyle(wxPG_EX_DISABLE_TLP_TRACKING | wxPG_EX_HELP_AS_TOOLTIPS);
     m_grid->SetDropTarget(new WatchesDropTarget);
     m_grid->SetColumnCount(3);
+    m_grid->SetVirtualWidth(0);
     bs->Add(m_grid, 1, wxEXPAND | wxALL);
     SetAutoLayout(TRUE);
     SetSizer(bs);
