@@ -45,6 +45,8 @@ private:
   bool HasOption(const wxArrayString& opt_array, const wxString& opt);
   bool HasOption(const wxArrayString& opt_array, const wxString& opt, wxString& full_opt);
 
+  bool IsValidTarget(const ProjectBuildTarget* tgt);
+
   wxString ManipulateOption(wxString full_opt, const wxString& src, const wxString& dst);
 
   ProjectOptionsManipulatorDlg* m_Dlg;

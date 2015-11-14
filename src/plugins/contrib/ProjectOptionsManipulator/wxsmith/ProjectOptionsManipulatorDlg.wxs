@@ -76,7 +76,7 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
-								<object class="wxChoice" name="ID_CHO_OPTIONS_LEVEL" variable="m_ChoOptionsLevel" member="yes">
+								<object class="wxChoice" name="ID_CHO_OPTION_LEVEL" variable="m_ChoOptionLevel" member="yes">
 									<content>
 										<item>At project level</item>
 										<item>At target level</item>
@@ -103,7 +103,7 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TXT_OPTIONS" variable="m_TxtOptionSearch" member="yes">
+								<object class="wxTextCtrl" name="ID_TXT_OPTION_SEARCH" variable="m_TxtOptionSearch" member="yes">
 									<tooltip>This is the compiler/linker option or path, linker lib or custom var to search for...</tooltip>
 								</object>
 								<flag>wxEXPAND</flag>
@@ -133,7 +133,7 @@
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
-								<object class="wxRadioBox" name="ID_RBO_SEARCH" variable="m_RboSearch" member="yes">
+								<object class="wxRadioBox" name="ID_RBO_OPTION_SEARCH" variable="m_RboOptionSearch" member="yes">
 									<label>When searching...</label>
 									<content>
 										<item>Search for &quot;equals option&quot;</item>
@@ -150,7 +150,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticBoxSizer" variable="sbsScope" member="no">
-							<label>Search scope:</label>
+							<label>Scope:</label>
 							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="ID_CHK_OPTIONS_COMPILER" variable="m_ChkOptionsCompiler" member="yes">
@@ -213,7 +213,7 @@
 									</object>
 									<object class="sizeritem">
 										<object class="wxTextCtrl" name="ID_TXT_CUSTOM_VAR" variable="m_TxtCustomVar" member="yes">
-											<tooltip>This is the value to set set for the custom var, if &quot;add option&quot; is chosen</tooltip>
+											<tooltip>This is the value to set for the custom var, if &quot;add option&quot; is chosen</tooltip>
 										</object>
 										<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
@@ -221,6 +221,20 @@
 									</object>
 								</object>
 								<flag>wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxChoice" name="ID_CHO_TARGET_TYPE" variable="m_ChoTargetType" member="yes">
+									<content>
+										<item>All type of targets</item>
+										<item>Application targets only</item>
+										<item>Static library targets only</item>
+										<item>Dynamic library targets only</item>
+									</content>
+									<selection>0</selection>
+									<handler function="OnTargetTypeSelect" entry="EVT_CHOICE" />
+								</object>
+								<flag>wxTOP|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 						</object>

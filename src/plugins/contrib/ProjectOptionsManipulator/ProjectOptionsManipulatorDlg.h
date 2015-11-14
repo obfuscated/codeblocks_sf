@@ -8,61 +8,64 @@
 
 //(*Headers(ProjectOptionsManipulatorDlg)
 #include <wx/dialog.h>
+class wxStdDialogButtonSizer;
+class wxCheckBox;
 class wxTextCtrl;
+class wxRadioBox;
+class wxStaticText;
+class wxFlexGridSizer;
+class wxBoxSizer;
 class wxStaticBoxSizer;
 class wxChoice;
-class wxFlexGridSizer;
-class wxStdDialogButtonSizer;
-class wxBoxSizer;
-class wxStaticText;
-class wxRadioBox;
-class wxCheckBox;
 //*)
 
 class ProjectOptionsManipulatorDlg: public wxDialog
 {
 	public:
-	  enum EProjectScanOption   { eSearch, eSearchNot, eRemove,
-	                              eAdd,    eReplace,   eFiles };
-	  enum EProjectSearchOption { eEquals, eContains };
-	  enum EProjectOption       { eReplacePattern,
-	                              eCompiler,      eLinker,      eResCompiler,
-	                              eCompilerPaths, eLinkerPaths, eResCompPaths,
-	                              eLinkerLibs,    eCustomVars };
-	  enum EProjectLevelOption  { eProject, eTarget };
+	  enum EProjectScanOption       { eSearch, eSearchNot, eRemove,
+	                                  eAdd,    eReplace,   eFiles };
+	  enum EProjectLevelOption      { eProject, eTarget };
+	  enum EProjectSearchOption     { eEquals, eContains };
+	  enum EProjectOption           { eReplacePattern,
+	                                  eCompiler,      eLinker,      eResCompiler,
+	                                  eCompilerPaths, eLinkerPaths, eResCompPaths,
+	                                  eLinkerLibs,    eCustomVars };
+	  enum EProjectTargetTypeOption { eAll, eApplication, eStaticLib, eDynamicLib };
 
 		ProjectOptionsManipulatorDlg(wxWindow* parent,wxWindowID id=wxID_ANY);
 		virtual ~ProjectOptionsManipulatorDlg();
 
-    bool                 GetScanForWorkspace();
-    bool                 GetScanForProject();
-    size_t               GetProjectIdx();
-    EProjectScanOption   GetScanOption();
-    EProjectSearchOption GetSearchOption();
-    wxString             GetSearchFor();
-    wxString             GetReplaceWith();
-    wxString             GetCustomVarValue();
-    bool                 GetOptionActive(EProjectOption opt);
-    bool                 GetOptionActive(EProjectLevelOption opt);
+    bool                     GetScanForWorkspace();
+    bool                     GetScanForProject();
+    size_t                   GetProjectIdx();
+    EProjectScanOption       GetScanOption();
+    EProjectSearchOption     GetSearchOption();
+    wxString                 GetSearchFor();
+    wxString                 GetReplaceWith();
+    wxString                 GetCustomVarValue();
+    bool                     GetOptionActive(EProjectOption opt);
+    bool                     GetOptionActive(EProjectLevelOption opt);
+    EProjectTargetTypeOption GetTargetTypeOption();
 
 		//(*Declarations(ProjectOptionsManipulatorDlg)
-		wxTextCtrl* m_TxtCustomVar;
-		wxCheckBox* m_ChkOptionsLinkerPath;
-		wxChoice* m_ChoScan;
-		wxTextCtrl* m_TxtOptionSearch;
-		wxCheckBox* m_ChkOptionsResCompiler;
-		wxCheckBox* m_ChkOptionReplacePattern;
-		wxCheckBox* m_ChkOptionsResCompPath;
-		wxChoice* m_ChoScanProjects;
-		wxCheckBox* m_ChkOptionsCompilerPath;
-		wxCheckBox* m_ChkOptionsLinker;
-		wxTextCtrl* m_TxtOptionReplace;
-		wxRadioBox* m_RboSearch;
-		wxChoice* m_ChoOptionsLevel;
-		wxCheckBox* m_ChkOptionsCompiler;
-		wxCheckBox* m_ChkOptionsLinkerLibs;
 		wxRadioBox* m_RboOperation;
+		wxTextCtrl* m_TxtCustomVar;
+		wxCheckBox* m_ChkOptionReplacePattern;
 		wxCheckBox* m_ChkOptionsCustomVar;
+		wxCheckBox* m_ChkOptionsLinkerPath;
+		wxCheckBox* m_ChkOptionsResCompiler;
+		wxTextCtrl* m_TxtOptionReplace;
+		wxChoice* m_ChoOptionLevel;
+		wxCheckBox* m_ChkOptionsLinker;
+		wxCheckBox* m_ChkOptionsLinkerLibs;
+		wxCheckBox* m_ChkOptionsCompiler;
+		wxChoice* m_ChoScanProjects;
+		wxChoice* m_ChoTargetType;
+		wxRadioBox* m_RboOptionSearch;
+		wxChoice* m_ChoScan;
+		wxCheckBox* m_ChkOptionsResCompPath;
+		wxCheckBox* m_ChkOptionsCompilerPath;
+		wxTextCtrl* m_TxtOptionSearch;
 		//*)
 
 	protected:
@@ -71,11 +74,11 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		static const long ID_CHO_SCAN;
 		static const long ID_CHO_SCAN_PROJECTS;
 		static const long ID_RBO_OPERATION;
-		static const long ID_CHO_OPTIONS_LEVEL;
-		static const long ID_TXT_OPTIONS;
+		static const long ID_CHO_OPTION_LEVEL;
+		static const long ID_TXT_OPTION_SEARCH;
 		static const long TD_TXT_OPTION_REPLACE;
 		static const long ID_CHK_OPTION_REPLACE_PATTERN;
-		static const long ID_RBO_SEARCH;
+		static const long ID_RBO_OPTION_SEARCH;
 		static const long ID_CHK_OPTIONS_COMPILER;
 		static const long ID_CHK_OPTIONS_LINKER;
 		static const long ID_CHK_OPTIONS_RES_COMPILER;
@@ -85,6 +88,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		static const long ID_CHK_OPTIONS_LINKER_LIBS;
 		static const long ID_CHK_OPTIONS_CUSTOM_VAR;
 		static const long ID_TXT_CUSTOM_VAR;
+		static const long ID_CHO_TARGET_TYPE;
 		//*)
 
 	private:
@@ -92,6 +96,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		//(*Handlers(ProjectOptionsManipulatorDlg)
 		void OnScanSelect(wxCommandEvent& event);
 		void OnOperationSelect(wxCommandEvent& event);
+		void OnTargetTypeSelect(wxCommandEvent& event);
 		//*)
 
 		void OnOk(wxCommandEvent& event);

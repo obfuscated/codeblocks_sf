@@ -10,26 +10,26 @@
 #include "ProjectOptionsManipulatorDlg.h"
 
 //(*InternalHeaders(ProjectOptionsManipulatorDlg)
-#include <wx/checkbox.h>
 #include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/radiobox.h>
+#include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/choice.h>
+#include <wx/intl.h>
 #include <wx/button.h>
 #include <wx/string.h>
-#include <wx/intl.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/choice.h>
-#include <wx/radiobox.h>
 //*)
 
 //(*IdInit(ProjectOptionsManipulatorDlg)
 const long ProjectOptionsManipulatorDlg::ID_CHO_SCAN = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHO_SCAN_PROJECTS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_RBO_OPERATION = wxNewId();
-const long ProjectOptionsManipulatorDlg::ID_CHO_OPTIONS_LEVEL = wxNewId();
-const long ProjectOptionsManipulatorDlg::ID_TXT_OPTIONS = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_CHO_OPTION_LEVEL = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_TXT_OPTION_SEARCH = wxNewId();
 const long ProjectOptionsManipulatorDlg::TD_TXT_OPTION_REPLACE = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTION_REPLACE_PATTERN = wxNewId();
-const long ProjectOptionsManipulatorDlg::ID_RBO_SEARCH = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_RBO_OPTION_SEARCH = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_COMPILER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_RES_COMPILER = wxNewId();
@@ -39,6 +39,7 @@ const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_RES_COMP_PATH = wxNewId(
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_LINKER_LIBS = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_CHK_OPTIONS_CUSTOM_VAR = wxNewId();
 const long ProjectOptionsManipulatorDlg::ID_TXT_CUSTOM_VAR = wxNewId();
+const long ProjectOptionsManipulatorDlg::ID_CHO_TARGET_TYPE = wxNewId();
 //*)
 
 #include <cbproject.h>
@@ -55,19 +56,19 @@ END_EVENT_TABLE()
 ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWindowID id)
 {
 	//(*Initialize(ProjectOptionsManipulatorDlg)
-	wxStdDialogButtonSizer* sbzOKCancel;
-	wxStaticText* lblScanColon;
 	wxBoxSizer* bszCustomVar;
-	wxStaticText* lblOptionsLevel;
-	wxStaticBoxSizer* sbsScope;
-	wxStaticText* lblOptionSearch;
-	wxStaticText* lblScanWithin;
-	wxBoxSizer* bszOperation;
-	wxFlexGridSizer* flsOptions;
-	wxBoxSizer* bszScan;
-	wxStaticBoxSizer* sbsItem;
 	wxStaticText* lblOptionReplace;
+	wxStaticText* lblOptionsLevel;
+	wxBoxSizer* bszOperation;
+	wxBoxSizer* bszScan;
+	wxFlexGridSizer* flsOptions;
+	wxStaticText* lblOptionSearch;
+	wxStdDialogButtonSizer* sbzOKCancel;
+	wxStaticBoxSizer* sbsScope;
+	wxStaticBoxSizer* sbsItem;
 	wxBoxSizer* bszMainH;
+	wxStaticText* lblScanColon;
+	wxStaticText* lblScanWithin;
 
 	Create(parent, id, _("Project Options Plugin"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("id"));
 	bszMainH = new wxBoxSizer(wxVERTICAL);
@@ -101,16 +102,16 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	bszOperation->Add(m_RboOperation, 0, wxEXPAND, 5);
 	lblOptionsLevel = new wxStaticText(this, wxID_ANY, _("Search for option:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
 	bszOperation->Add(lblOptionsLevel, 0, wxTOP|wxEXPAND, 5);
-	m_ChoOptionsLevel = new wxChoice(this, ID_CHO_OPTIONS_LEVEL, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_OPTIONS_LEVEL"));
-	m_ChoOptionsLevel->Append(_("At project level"));
-	m_ChoOptionsLevel->Append(_("At target level"));
-	m_ChoOptionsLevel->SetSelection( m_ChoOptionsLevel->Append(_("At project and target level")) );
-	bszOperation->Add(m_ChoOptionsLevel, 0, wxEXPAND, 5);
+	m_ChoOptionLevel = new wxChoice(this, ID_CHO_OPTION_LEVEL, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_OPTION_LEVEL"));
+	m_ChoOptionLevel->Append(_("At project level"));
+	m_ChoOptionLevel->Append(_("At target level"));
+	m_ChoOptionLevel->SetSelection( m_ChoOptionLevel->Append(_("At project and target level")) );
+	bszOperation->Add(m_ChoOptionLevel, 0, wxEXPAND, 5);
 	flsOptions->Add(bszOperation, 0, wxEXPAND, 5);
 	sbsItem = new wxStaticBoxSizer(wxVERTICAL, this, _("Search item:"));
 	lblOptionSearch = new wxStaticText(this, wxID_ANY, _("Option/Var (i.e. -Wl,--no-undefined):"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
 	sbsItem->Add(lblOptionSearch, 0, wxEXPAND, 5);
-	m_TxtOptionSearch = new wxTextCtrl(this, ID_TXT_OPTIONS, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_OPTIONS"));
+	m_TxtOptionSearch = new wxTextCtrl(this, ID_TXT_OPTION_SEARCH, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_OPTION_SEARCH"));
 	m_TxtOptionSearch->SetToolTip(_("This is the compiler/linker option or path, linker lib or custom var to search for..."));
 	sbsItem->Add(m_TxtOptionSearch, 0, wxEXPAND, 5);
 	lblOptionReplace = new wxStaticText(this, wxID_ANY, _("Replace with:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
@@ -128,11 +129,11 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 		_("Search for \"equals option\""),
 		_("Search for \"contains option\"")
 	};
-	m_RboSearch = new wxRadioBox(this, ID_RBO_SEARCH, _("When searching..."), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, 0, wxDefaultValidator, _T("ID_RBO_SEARCH"));
-	m_RboSearch->SetSelection(0);
-	sbsItem->Add(m_RboSearch, 0, wxTOP|wxEXPAND, 5);
+	m_RboOptionSearch = new wxRadioBox(this, ID_RBO_OPTION_SEARCH, _("When searching..."), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, 0, wxDefaultValidator, _T("ID_RBO_OPTION_SEARCH"));
+	m_RboOptionSearch->SetSelection(0);
+	sbsItem->Add(m_RboOptionSearch, 0, wxTOP|wxEXPAND, 5);
 	flsOptions->Add(sbsItem, 1, wxLEFT|wxEXPAND, 5);
-	sbsScope = new wxStaticBoxSizer(wxVERTICAL, this, _("Search scope:"));
+	sbsScope = new wxStaticBoxSizer(wxVERTICAL, this, _("Scope:"));
 	m_ChkOptionsCompiler = new wxCheckBox(this, ID_CHK_OPTIONS_COMPILER, _("Compiler options"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHK_OPTIONS_COMPILER"));
 	m_ChkOptionsCompiler->SetValue(true);
 	sbsScope->Add(m_ChkOptionsCompiler, 0, wxALIGN_LEFT, 5);
@@ -159,9 +160,15 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	m_ChkOptionsCustomVar->SetValue(false);
 	bszCustomVar->Add(m_ChkOptionsCustomVar, 0, wxALIGN_CENTER_VERTICAL, 5);
 	m_TxtCustomVar = new wxTextCtrl(this, ID_TXT_CUSTOM_VAR, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TXT_CUSTOM_VAR"));
-	m_TxtCustomVar->SetToolTip(_("This is the value to set set for the custom var, if \"add option\" is chosen"));
+	m_TxtCustomVar->SetToolTip(_("This is the value to set for the custom var, if \"add option\" is chosen"));
 	bszCustomVar->Add(m_TxtCustomVar, 1, wxLEFT|wxALIGN_CENTER_VERTICAL, 5);
 	sbsScope->Add(bszCustomVar, 0, wxEXPAND, 5);
+	m_ChoTargetType = new wxChoice(this, ID_CHO_TARGET_TYPE, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CHO_TARGET_TYPE"));
+	m_ChoTargetType->SetSelection( m_ChoTargetType->Append(_("All type of targets")) );
+	m_ChoTargetType->Append(_("Application targets only"));
+	m_ChoTargetType->Append(_("Static library targets only"));
+	m_ChoTargetType->Append(_("Dynamic library targets only"));
+	sbsScope->Add(m_ChoTargetType, 0, wxTOP|wxEXPAND, 5);
 	flsOptions->Add(sbsScope, 0, wxLEFT|wxEXPAND, 5);
 	bszMainH->Add(flsOptions, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
 	sbzOKCancel = new wxStdDialogButtonSizer();
@@ -173,8 +180,9 @@ ProjectOptionsManipulatorDlg::ProjectOptionsManipulatorDlg(wxWindow* parent,wxWi
 	bszMainH->Fit(this);
 	bszMainH->SetSizeHints(this);
 
-	Connect(ID_CHO_SCAN,wxEVT_COMMAND_CHOICE_SELECTED,(wxObjectEventFunction)&ProjectOptionsManipulatorDlg::OnScanSelect);
-	Connect(ID_RBO_OPERATION,wxEVT_COMMAND_RADIOBOX_SELECTED,(wxObjectEventFunction)&ProjectOptionsManipulatorDlg::OnOperationSelect);
+	Connect(ID_CHO_SCAN,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEventHandler(ProjectOptionsManipulatorDlg::OnScanSelect));
+	Connect(ID_RBO_OPERATION,wxEVT_COMMAND_RADIOBOX_SELECTED,wxCommandEventHandler(ProjectOptionsManipulatorDlg::OnOperationSelect));
+	Connect(ID_CHO_TARGET_TYPE,wxEVT_COMMAND_CHOICE_SELECTED,wxCommandEventHandler(ProjectOptionsManipulatorDlg::OnTargetTypeSelect));
 	//*)
 }
 
@@ -216,7 +224,7 @@ ProjectOptionsManipulatorDlg::EProjectScanOption ProjectOptionsManipulatorDlg::G
 
 ProjectOptionsManipulatorDlg::EProjectSearchOption ProjectOptionsManipulatorDlg::GetSearchOption()
 {
-  switch ( m_RboSearch->GetSelection() )
+  switch ( m_RboOptionSearch->GetSelection() )
   {
     case 0: { return eEquals;   } break;
     case 1: { return eContains; } break;
@@ -256,18 +264,32 @@ bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectOption opt)
 
 bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectLevelOption opt)
 {
-  if ( m_ChoOptionsLevel->GetSelection()==0 && (opt==eProject) ) return true;
-  if ( m_ChoOptionsLevel->GetSelection()==1 && (opt==eTarget)  ) return true;
-  if ( m_ChoOptionsLevel->GetSelection()==2 )                    return true;
+  if ( m_ChoOptionLevel->GetSelection()==0 && (opt==eProject) ) return true;
+  if ( m_ChoOptionLevel->GetSelection()==1 && (opt==eTarget)  ) return true;
+  if ( m_ChoOptionLevel->GetSelection()==2 )                    return true;
   return false;
+}
+
+ProjectOptionsManipulatorDlg::EProjectTargetTypeOption ProjectOptionsManipulatorDlg::GetTargetTypeOption()
+{
+  switch ( m_ChoTargetType->GetSelection() )
+  {
+    case 0: { return eAll;         } break;
+    case 1: { return eApplication; } break;
+    case 2: { return eStaticLib;   } break;
+    case 3: { return eDynamicLib;  } break;
+    default:                         break;
+  }
+  return eAll; // should never happen, but is safe to do
 }
 
 void ProjectOptionsManipulatorDlg::OnOperationSelect(wxCommandEvent& event)
 {
   if ( event.GetInt()==5 ) // Files w/o target
   {
-    m_RboSearch->Disable();
+    m_RboOptionSearch->Disable();
 
+    m_ChoOptionLevel->Disable();
     m_TxtOptionSearch->Disable();
     m_TxtOptionReplace->Disable();
     m_ChkOptionReplacePattern->Disable();
@@ -280,14 +302,14 @@ void ProjectOptionsManipulatorDlg::OnOperationSelect(wxCommandEvent& event)
     m_ChkOptionsLinkerLibs->Disable();
     m_ChkOptionsCustomVar->Disable();
     m_TxtCustomVar->Disable();
-    m_ChoOptionsLevel->Disable();
+    m_ChoTargetType->Disable();
   }
   else
   {
-    m_RboSearch->Enable();
-
+    m_ChoOptionLevel->Enable();
     m_TxtOptionSearch->Enable();
-    if ( event.GetInt()==4 ) // Replace
+    m_RboOptionSearch->Enable();
+    if ( event.GetInt()==4 ) // Change
     {
       m_TxtOptionReplace->Enable();
       m_ChkOptionReplacePattern->Enable();
@@ -314,7 +336,7 @@ void ProjectOptionsManipulatorDlg::OnOperationSelect(wxCommandEvent& event)
       m_ChkOptionsCustomVar->Disable();
       m_TxtCustomVar->Disable();
     }
-    m_ChoOptionsLevel->Enable();
+    m_ChoTargetType->Enable();
   }
 }
 
@@ -340,6 +362,16 @@ void ProjectOptionsManipulatorDlg::OnScanSelect(wxCommandEvent& event)
   }
   else
     m_ChoScanProjects->Disable();
+}
+
+void ProjectOptionsManipulatorDlg::OnTargetTypeSelect(wxCommandEvent& event)
+{
+  if ( GetOptionActive(eProject) && (event.GetInt()!=0) )
+  {
+    cbMessageBox(_("Warning: You have selected to operate projects but limit target types.\n"
+                   "Although this maybe intended, the limitation is only applied to targets\n"
+                   "as projects don't have/define output files."), _("Warning"), wxICON_WARNING, this);
+  }
 }
 
 void ProjectOptionsManipulatorDlg::OnOk(wxCommandEvent& WXUNUSED(event))
