@@ -1358,12 +1358,12 @@ wxString ParserThread::GetTokenBaseType()
     // which is valid C++ construct.
     // Also, spaces that follow a semicolon are removed.
     int pos = 0;
-    while (pos < (int)m_Str.Length())
+    while (pos < static_cast<int>(m_Str.Length()))
     {
-        if (   (m_Str.GetChar(pos) == ParserConsts::space_chr)
+        if (   wxIsspace(m_Str.GetChar(pos))
             && (   (   (pos > 0)
                     && (m_Str.GetChar(pos - 1) == ParserConsts::colon_chr) )
-                || (   (pos < (int)m_Str.Length() - 1)
+                || (   (pos < static_cast<int>(m_Str.Length()) - 1)
                     && (m_Str.GetChar(pos + 1) == ParserConsts::colon_chr) ) ) )
         {
             m_Str.Remove(pos, 1);
