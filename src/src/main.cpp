@@ -1396,7 +1396,7 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
     // first load taborder of MessagePane, so LoadPerspective can restore the last selected tab
     m_pInfoPane->LoadTabOrder(layoutMP);
     m_LayoutManager.LoadPerspective(layout, false);
-    DoFixToolbarsLayout();
+
     DoUpdateLayout();
 
     m_PreviousLayoutName = m_LastLayoutName;
