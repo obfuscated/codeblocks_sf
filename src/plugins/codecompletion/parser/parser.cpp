@@ -338,7 +338,9 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
 
             TRACE(_T("Parser::Parse(): Parsing included header, %s"), filename.wx_str());
             // run the parse recursively
+            AddParserThread(thread);
             result = thread->Parse();
+            RemoveParserThread(thread);
             delete thread;
             return true;
         }
@@ -538,6 +540,7 @@ void Parser::TerminateAllThreads()
     // NOTE: This should not be locked with s_ParserMutex, otherwise we'll be stuck in an
     // infinite loop below since the worker thread also enters s_ParserMutex.
     // In fact cbThreadPool maintains it's own mutex, so m_Pool is probably threadsafe.
+    AbortParserThreads();
     m_Pool.AbortAllTasks();
     while (!m_Pool.Done())
         wxMilliSleep(1);
@@ -918,4 +921,23 @@ void Parser::WriteOptions()
 
     // Page "Documentation:
     // m_Options.storeDocumentation will be written by DocumentationPopup
+}
+
+void Parser::AddParserThread (cbThreadedTask *task)
+{
+    if (task)
+        m_tasksQueue.push_back (task);
+
+}
+void Parser::RemoveParserThread (cbThreadedTask* task)
+{
+    if ( task &&  m_tasksQueue.size() )
+        m_tasksQueue.pop_back();
+}
+void Parser::AbortParserThreads()
+{
+    if ( m_tasksQueue.size() )
+        for (TasksQueue::iterator it = m_tasksQueue.begin(); it != m_tasksQueue.end(); ++it)
+                (*it)->Abort();
+
 }

@@ -355,6 +355,20 @@ private:
 
     /** if true, all the files of the current project will be labeled as "local" */
     bool                      m_NeedMarkFileAsLocal;
+
+    /** A list to contain pointers to internal running threads*/
+    typedef std::list<cbThreadedTask*> TasksQueue;
+    TasksQueue m_tasksQueue;
+
+    /** Remember a newly created internal running threads*/
+    void AddParserThread(cbThreadedTask* task);
+
+    /** Remove a completed internal running threads*/
+    void RemoveParserThread(cbThreadedTask* task);
+
+    /** Tell internal running threads to abort further processing*/
+    void AbortParserThreads();
+
 };
 
 #endif // PARSER_H
