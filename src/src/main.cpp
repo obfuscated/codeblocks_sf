@@ -1549,7 +1549,7 @@ void MainFrame::DoFixToolbarsLayout()
         wxAuiPaneInfo& info = panes[i];
         if (info.state & wxAuiPaneInfo::optionToolbar)
         {
-            info.best_size = info.window->GetSize();
+            info.best_size = info.window->GetBestSize();
             info.floating_size = wxDefaultSize;
         }
     }
@@ -4294,6 +4294,7 @@ static void FitToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
         return;
 
     int maxWidth = mainFrame->GetSize().x;
+    int gripperSize =  layoutManager.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE);
 
     // move all toolbars to the left as possible and add the non-fitting to a list
     std::vector<ToolbarRowInfo> rows;
@@ -4305,7 +4306,7 @@ static void FitToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
         while (static_cast<int>(rows.size()) <= row)
             rows.push_back(ToolbarRowInfo(0, 0));
 
-        int maxX = rows[row].width + it->window->GetSize().x;
+        int maxX = rows[row].width + it->window->GetBestSize().x + gripperSize;
         if (maxX > maxWidth)
             nonFitingToolbars.push_back(it->window);
         else
@@ -4320,12 +4321,13 @@ static void FitToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
     int position = rows.back().position, maxX = rows.back().width;
     for (std::vector<wxWindow*>::iterator it = nonFitingToolbars.begin(); it != nonFitingToolbars.end(); ++it)
     {
-        maxX += (*it)->GetSize().x;
+        maxX += (*it)->GetBestSize().x;
+        maxX += gripperSize;
         if (maxX > maxWidth)
         {
             position = 0;
             lastRow++;
-            maxX = (*it)->GetSize().x;
+            maxX = (*it)->GetBestSize().x + gripperSize;
         }
         layoutManager.GetPane(*it).Position(position++).Row(lastRow);
     }
@@ -4342,14 +4344,17 @@ static void OptimizeToolbars(wxAuiManager &layoutManager, wxWindow *mainFrame)
 
     int maxWidth = mainFrame->GetSize().x;
     int lastRow = 0, position = 0, maxX = 0;
+    int gripperSize =  layoutManager.GetArtProvider()->GetMetric(wxAUI_DOCKART_GRIPPER_SIZE);
+
     for (std::set<ToolbarFitInfo>::const_iterator it = sorted.begin(); it != sorted.end(); ++it)
     {
-        maxX += it->window->GetSize().x;
+        maxX += it->window->GetBestSize().x;
+        maxX += gripperSize;
         if (maxX > maxWidth)
         {
             position = 0;
             lastRow++;
-            maxX = it->window->GetSize().x;
+            maxX = it->window->GetBestSize().x + gripperSize;
         }
         layoutManager.GetPane(it->window).Position(position++).Row(lastRow);
     }
