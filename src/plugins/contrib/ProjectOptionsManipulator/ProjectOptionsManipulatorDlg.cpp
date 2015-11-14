@@ -204,7 +204,7 @@ bool ProjectOptionsManipulatorDlg::GetScanForProject()
 
 size_t ProjectOptionsManipulatorDlg::GetProjectIdx()
 {
-  return ( (m_ChoScan->GetSelection()==1) ? m_ChoScanProjects->GetSelection() : -1 );
+  return ( GetScanForProject() ? m_ChoScanProjects->GetSelection() : -1 );
 }
 
 ProjectOptionsManipulatorDlg::EProjectScanOption ProjectOptionsManipulatorDlg::GetScanOption()
@@ -256,7 +256,7 @@ bool ProjectOptionsManipulatorDlg::GetOptionActive(EProjectOption opt)
   if ( m_ChkOptionsResCompiler->GetValue()   && (opt==eResCompiler)    ) return true;
   if ( m_ChkOptionsCompilerPath->GetValue()  && (opt==eCompilerPaths)  ) return true;
   if ( m_ChkOptionsLinkerPath->GetValue()    && (opt==eLinkerPaths)    ) return true;
-  if ( m_ChkOptionsLinkerPath->GetValue()    && (opt==eResCompPaths)   ) return true;
+  if ( m_ChkOptionsResCompPath->GetValue()   && (opt==eResCompPaths)   ) return true;
   if ( m_ChkOptionsLinkerLibs->GetValue()    && (opt==eLinkerLibs)     ) return true;
   if ( m_ChkOptionsCustomVar->GetValue()     && (opt==eCustomVars)     ) return true;
   return false;
@@ -395,6 +395,7 @@ void ProjectOptionsManipulatorDlg::OnOk(wxCommandEvent& WXUNUSED(event))
       && !m_ChkOptionsResCompiler->GetValue()
       && !m_ChkOptionsCompilerPath->GetValue()
       && !m_ChkOptionsLinkerPath->GetValue()
+      && !m_ChkOptionsResCompPath->GetValue()
       && !m_ChkOptionsLinkerLibs->GetValue()
       && !m_ChkOptionsCustomVar->GetValue() )
   {
