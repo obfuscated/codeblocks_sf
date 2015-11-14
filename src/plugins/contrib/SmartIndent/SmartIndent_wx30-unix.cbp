@@ -173,7 +173,7 @@
 			<Add option="`$(WX_CONFIG) --libs std,aui,propgrid,richtext`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
-			<Add directory="../../../devel" />
+			<Add directory="../../../devel30" />
 		</Linker>
 		<Unit filename="SmartIndentCpp.cpp">
 			<Option target="SmartIndentCpp" />
