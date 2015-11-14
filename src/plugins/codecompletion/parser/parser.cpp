@@ -919,25 +919,27 @@ void Parser::WriteOptions()
     cfg->Write(_T("/browser_display_filter"),        m_BrowserOptions.displayFilter);
     cfg->Write(_T("/browser_sort_type"),             m_BrowserOptions.sortType);
 
-    // Page "Documentation:
+    // Page "Documentation":
     // m_Options.storeDocumentation will be written by DocumentationPopup
 }
 
-void Parser::AddParserThread (cbThreadedTask *task)
+void Parser::AddParserThread(cbThreadedTask* task)
 {
     if (task)
-        m_tasksQueue.push_back (task);
-
+        m_tasksQueue.push_back(task);
 }
-void Parser::RemoveParserThread (cbThreadedTask* task)
+
+void Parser::RemoveParserThread(cbThreadedTask* task)
 {
     if ( task &&  m_tasksQueue.size() )
         m_tasksQueue.pop_back();
 }
+
 void Parser::AbortParserThreads()
 {
     if ( m_tasksQueue.size() )
+    {
         for (TasksQueue::iterator it = m_tasksQueue.begin(); it != m_tasksQueue.end(); ++it)
-                (*it)->Abort();
-
+            (*it)->Abort();
+    }
 }

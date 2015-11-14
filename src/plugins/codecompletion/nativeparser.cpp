@@ -2312,13 +2312,21 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // keep the gcc compiler path's once if found across C::B session
     // makes opening workspaces a *lot* faster by avoiding endless calls to the compiler
     static std::map<wxString, wxArrayString> dirs;
-    if (!dirs[cpp_compiler].IsEmpty())
-        return dirs[cpp_compiler];
+    static wxArrayString cached_result; // avoid accessing "dirs" too often (re-entry)
+    cached_result = dirs[cpp_compiler];
+    if ( !cached_result.IsEmpty() )
+        return cached_result;
+
+    if ( !wxFileExists(cpp_compiler) )
+    {
+        CCLogger::Get()->DebugLog(_T("NativeParser::GetGCCCompilerDirs(): Cannot get compiler dirs due to invalid compiler: ") + cpp_compiler);
+        return cached_result;
+    }
 
     // wxExecute can be a long action and C::B might have been shutdown in the meantime...
     // This is here, to protect at re-entry:
     if (Manager::IsAppShuttingDown())
-        return dirs[cpp_compiler];
+        return cached_result;
 
     TRACE(_T("NativeParser::GetGCCCompilerDirs(): Enter"));
 
@@ -2334,29 +2342,29 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
     // use a null file handler
     // both works fine in Windows and Linux
 
-    wxString Command(cpp_compiler + _T(" -v -E -x c++ /dev/null"));
-    if (platform::windows)
-      Command = cpp_compiler + _T(" -v -E -x c++ nul"); // on Windows, its different
+    // Different command on Windows
+    wxString Command = platform::windows ? (cpp_compiler + _T(" -v -E -x c++ nul"))
+                                         : (cpp_compiler + _T(" -v -E -x c++ /dev/null"));
 
-    static bool flag = false;
-    if (flag)
-        return dirs[cpp_compiler];
+    static bool reentry_protection = false;
+    if (reentry_protection)   // still running previous command
+        return cached_result; // better return previous result...
+    reentry_protection = true;
 
-    // action time  (everything shows up on the error stream
+    // action time (everything shows up on the error stream)
     wxArrayString Output, Errors;
-    flag = true;
     if ( wxExecute(Command, Output, Errors, wxEXEC_SYNC | wxEXEC_NODISABLE) == -1 )
     {
         TRACE(_T("NativeParser::GetGCCCompilerDirs(): GetGCCCompilerDirs::wxExecute failed!"));
-        flag = false;
-        return dirs[cpp_compiler];
+        reentry_protection = false;
+        return cached_result;
     }
-    flag = false;
+    reentry_protection = false;
 
     // wxExecute can be a long action and C::B might have been shutdown in the meantime...
     // This is here, to protect a long run:
     if ( Manager::IsAppShuttingDown() )
-        return dirs[cpp_compiler];
+        return cached_result;
 
     // start from "#include <...>", and the path followed
     // let's hope this does not change too quickly, otherwise we need
@@ -2368,7 +2376,7 @@ const wxArrayString& NativeParser::GetGCCCompilerDirs(const wxString &cpp_compil
         if (!start)
         {
             if (!path.StartsWith(_T("#include <...>")))
-                continue;
+                continue; // Next for-loop
             path = Errors[++idxCount].Trim(true).Trim(false);
             start = true;
         }

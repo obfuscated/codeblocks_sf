@@ -358,7 +358,7 @@ private:
 
     /** A list to contain pointers to internal running threads*/
     typedef std::list<cbThreadedTask*> TasksQueue;
-    TasksQueue m_tasksQueue;
+    TasksQueue                m_tasksQueue;
 
     /** Remember a newly created internal running threads*/
     void AddParserThread(cbThreadedTask* task);
@@ -368,7 +368,6 @@ private:
 
     /** Tell internal running threads to abort further processing*/
     void AbortParserThreads();
-
 };
 
 #endif // PARSER_H
