@@ -357,6 +357,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_WXSMITH], [false])
 	AM_CONDITIONAL([BUILD_WXSMITHCONTRIB], [false])
 	AM_CONDITIONAL([BUILD_WXSMITHAUI], [false])
+	AM_CONDITIONAL([BUILD_WXSMITHPLOT], [false])
 	AM_CONDITIONAL([BUILD_HEXEDITOR], [false])
 	AM_CONDITIONAL([BUILD_INCSEARCH], [false])
 	AM_CONDITIONAL([BUILD_MOUSESAP], [false])
@@ -399,6 +400,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_WXSMITH], [true])
 	AM_CONDITIONAL([BUILD_WXSMITHCONTRIB], [true])
 	AM_CONDITIONAL([BUILD_WXSMITHAUI], [true])
+	AM_CONDITIONAL([BUILD_WXSMITHPLOT], [true])
 	AM_CONDITIONAL([BUILD_HEXEDITOR], [true])
 	AM_CONDITIONAL([BUILD_INCSEARCH], [true])
 	AM_CONDITIONAL([BUILD_MOUSESAP], [true])
@@ -421,7 +423,7 @@ AC_ARG_WITH(contrib-plugins,
   [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
   [                        		     NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, exporter, smartindent, spellchecker, ]
-  [                        		     symtab, ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui ],
+  [                        		     symtab, ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui, wxsmithplot ],
   plugins="$withval", plugins="none")
 
 plugins=`echo $plugins | sed 's/,/ /g'`
@@ -532,6 +534,9 @@ do
 		;;
 	wxsmithaui)
 		AM_CONDITIONAL([BUILD_WXSMITHAUI], [true])
+		;;
+	wxsmithplot)
+		AM_CONDITIONAL([BUILD_WXSMITHPLOT], [true])
 		;;
 	hexeditor)
 		AM_CONDITIONAL([BUILD_HEXEDITOR], [true])
@@ -647,6 +652,9 @@ do
 	-wxsmithaui)
 		AM_CONDITIONAL([BUILD_WXSMITHAUI], [false])
 		;;
+	-wxsmithplot)
+		AM_CONDITIONAL([BUILD_WXSMITHPLOT], [false])
+		;;
 	-hexeditor)
 		AM_CONDITIONAL([BUILD_HEXEDITOR], [false])
 		;;
@@ -714,6 +722,7 @@ AC_SUBST(BUILD_WXCONTRIB)
 AC_SUBST(BUILD_WXSMITH)
 AC_SUBST(BUILD_WXSMITHCONTRIB)
 AC_SUBST(BUILD_WXSMITHAUI)
+AC_SUBST(BUILD_WXSMITHPLOT)
 
 GCC_PCH=0
 PCH_FLAGS=

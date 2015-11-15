@@ -26,15 +26,14 @@
 #include    <cmath>
 #include    <iostream>
 
-#include    <windef.h>
 #include    <wx/settings.h>
 #include    <wx/utils.h>
 #include    <wx/string.h>
 #include    <wx/filename.h>
 
 
-#include "../wxscontainer.h"
-#include "../wxsitemresdata.h"
+#include <wxwidgets/wxscontainer.h>
+#include <wxwidgets/wxsitemresdata.h>
 
 #include    <mathplot.h>
 

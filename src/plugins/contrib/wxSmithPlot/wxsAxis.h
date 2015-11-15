@@ -23,7 +23,7 @@
 #ifndef WXSSTATICTEXT1_H
 #define WXSSTATICTEXT1_H
 
-#include    "../wxswidget.h"
+#include    <wxwidgets/wxswidget.h>
 
 #include    <wx/stattext.h>
 #include    <mathplot.h>

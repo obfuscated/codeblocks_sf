@@ -542,6 +542,8 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmithDemo/Makefile
 	src/plugins/contrib/wxSmithIExplore/Makefile
 	src/plugins/contrib/wxSmithPlot/Makefile
+	src/plugins/contrib/wxSmithPlot/wxsmithplot.pc
+	src/plugins/contrib/wxSmithPlot/wxmathplot/Makefile
 	src/plugins/contrib/wxSmithSTC/Makefile
 	src/plugins/contrib/lib_finder/Makefile
 	src/plugins/contrib/lib_finder/lib_finder/Makefile

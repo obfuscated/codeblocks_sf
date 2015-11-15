@@ -23,9 +23,8 @@
 #include    <iostream>
 
 #include    <wx/stattext.h>
-#include    "../wxswidget.h"
+#include    <wxwidgets/wxswidget.h>
 #include    <mathplot.h>
-#include    <mpMarker.h>
 
 
 class wxsMarker: public wxsWidget

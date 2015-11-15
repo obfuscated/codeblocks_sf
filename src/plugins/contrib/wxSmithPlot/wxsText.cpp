@@ -17,7 +17,7 @@
 *
 */
 
-#include "wxsMarker.h"
+#include "wxsText.h"
 #include <wxwidgets/wxsitemresdata.h>
 
 //------------------------------------------------------------------------------
@@ -27,11 +27,11 @@ namespace
 
 // Loading images from xpm files
 
-    #include "images/marker16.xpm"
-    #include "images/marker32.xpm"
+    #include "images/text16.xpm"
+    #include "images/text32.xpm"
 
-    wxsRegisterItem<wxsMarker> Reg(
-        _T("mpMarker"),                 // Class name
+    wxsRegisterItem<wxsText> Reg(
+        _T("mpText"),                 // Class name
         wxsTWidget,                     // Item type
         _T("wxWindows"),                // License
         _T("Ron Collins"),              // Author
@@ -42,13 +42,13 @@ namespace
         _T("Marker"),                   // Base part of names for new items
         wxsCPP,                         // List of coding languages supported by this item
         1, 0,                           // Version
-        wxBitmap(marker32_xpm),         // 32x32 bitmap
-        wxBitmap(marker16_xpm),         // 16x16 bitmap
+        wxBitmap(text32_xpm),         // 32x32 bitmap
+        wxBitmap(text16_xpm),         // 16x16 bitmap
         false);                         // We do not allow this item inside XRC files
 
 
-    WXS_ST_BEGIN(wxsMarkerStyles,_T(""))
-        WXS_ST_CATEGORY("mpMarker")
+    WXS_ST_BEGIN(wxsTextStyles,_T(""))
+        WXS_ST_CATEGORY("mpText")
         WXS_ST(wxST_NO_AUTORESIZE)
         WXS_ST(wxALIGN_LEFT)
         WXS_ST(wxALIGN_RIGHT)
@@ -56,19 +56,19 @@ namespace
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 
-    WXS_EV_BEGIN(wxsMarkerEvents)
+    WXS_EV_BEGIN(wxsTextEvents)
     WXS_EV_END()
 
 }
 
 //------------------------------------------------------------------------------
 
-wxsMarker::wxsMarker(wxsItemResData* Data):
+wxsText::wxsText(wxsItemResData* Data):
     wxsWidget(
         Data,
         &Reg.Info,
-        wxsMarkerEvents,
-        wxsMarkerStyles)
+        wxsTextEvents,
+        wxsTextStyles)
 {
     mLabel = _("*");
     mXpos  = _("0.0");
@@ -79,7 +79,7 @@ wxsMarker::wxsMarker(wxsItemResData* Data):
 //
 // need to set line color and style
 
-void wxsMarker::OnBuildCreatingCode() {
+void wxsText::OnBuildCreatingCode() {
 wxString    vname;
 wxString    pname;
 wxString    cname;
@@ -91,7 +91,7 @@ wxString    s;
 
 // we only know C++ language
 
-    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsMarker::OnBuildCreatingCode"),GetLanguage());
+    if (GetLanguage() != wxsCPP) wxsCodeMarks::Unknown(_T("wxsText::OnBuildCreatingCode"),GetLanguage());
 
 // usefull names
 
@@ -106,7 +106,7 @@ wxString    s;
 
 // create the vector -- but not the setup code
 
-    Codef(_T("%s = new mpMarker(%t, %s, %s);\n"), vname.wx_str(), mLabel.wx_str(), mXpos.wx_str(), mYpos.wx_str());
+    Codef(_T("%s = new mpText(%t, %s, %s);\n"), vname.wx_str(), mLabel.wx_str(), mXpos.wx_str(), mYpos.wx_str());
 //  BuildSetupWindowCode();
 
 // assign a pen to the layer
@@ -137,9 +137,9 @@ wxString    s;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsMarker::OnBuildPreview(wxWindow* Parent, long Flags) {
+wxObject* wxsText::OnBuildPreview(wxWindow* Parent, long Flags) {
 wxStaticText    *Preview;
-mpMarker        *mk;
+mpText        *mk;
 mpWindow        *mp;
 wxPen           pen;
 wxColour        cc;
@@ -191,7 +191,7 @@ double          xp, yp;
 
 // the actual marker
 
-    mk = new mpMarker(mLabel, xp, yp);
+    mk = new mpText(mLabel, xp, yp);
     mk->SetPen(pen);
     mk->SetFont(ff);
 
@@ -207,13 +207,13 @@ double          xp, yp;
 //------------------------------------------------------------------------------
 // declare the var as a simple wxPanel
 
-void wxsMarker::OnBuildDeclarationsCode() {
+void wxsText::OnBuildDeclarationsCode() {
 
     if (GetLanguage() == wxsCPP) {
-        AddDeclaration(_T("mpMarker   *") + GetVarName() + _T(";"));
+        AddDeclaration(_T("mpText   *") + GetVarName() + _T(";"));
     }
     else {
-        wxsCodeMarks::Unknown(_T("wxsMarker::OnBuildDeclarationsCode"),GetLanguage());
+        wxsCodeMarks::Unknown(_T("wxsText::OnBuildDeclarationsCode"),GetLanguage());
     };
 }
 
@@ -222,11 +222,11 @@ void wxsMarker::OnBuildDeclarationsCode() {
 
 //------------------------------------------------------------------------------
 
-void wxsMarker::OnEnumWidgetProperties(long Flags) {
+void wxsText::OnEnumWidgetProperties(long Flags) {
 
-    WXS_SHORT_STRING(wxsMarker, mLabel,      _("Marker Text"),     _("mLabelText"),  _("*"), true);
-    WXS_SHORT_STRING(wxsMarker, mXpos,       _("X Position"),      _("mXpos"),       _("0.0"), true);
-    WXS_SHORT_STRING(wxsMarker, mYpos,       _("Y Position"),      _("mYpos"),       _("0.0"), true);
-    WXS_COLOUR(      wxsMarker, mPenColour,  _("Pen Colour"),      _("mPenColour"));
-    WXS_FONT(        wxsMarker, mPenFont,    _("Pen Font"),        _("mPenFont"));
+    WXS_SHORT_STRING(wxsText, mLabel,      _("Marker Text"),     _("mLabelText"),  _("*"), true);
+    WXS_SHORT_STRING(wxsText, mXpos,       _("X Position"),      _("mXpos"),       _("0.0"), true);
+    WXS_SHORT_STRING(wxsText, mYpos,       _("Y Position"),      _("mYpos"),       _("0.0"), true);
+    WXS_COLOUR(      wxsText, mPenColour,  _("Pen Colour"),      _("mPenColour"));
+    WXS_FONT(        wxsText, mPenFont,    _("Pen Font"),        _("mPenFont"));
 }

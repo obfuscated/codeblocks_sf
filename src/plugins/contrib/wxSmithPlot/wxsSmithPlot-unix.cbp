@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="wxSmith - wxSmithPlot wx2.8.x" />
+		<Option title="wxSmithPlot - Curve Plotting" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -15,18 +15,20 @@
 				<Option createDefFile="1" />
 			</Target>
 			<Target title="wxSmithPlot">
-				<Option platforms="Windows;" />
+				<Option platforms="Unix;" />
 				<Option output="../../../devel/share/codeblocks/plugins/wxSmithPlot" prefix_auto="0" extension_auto="1" />
 				<Option working_dir="../../../devel" />
 				<Option object_output="../../../.objs/plugins/contrib/wxSmithPlot" />
-				<Option external_deps="../../../devel/wxsmithlib.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="codeblocks.exe" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
+				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
+					<Add option="-ansi" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fexceptions" />
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
@@ -40,49 +42,29 @@
 					<Add directory="images" />
 				</Compiler>
 				<Linker>
+					<Add option="-Wl,--no-undefined" />
 					<Add library="MathPlot" />
 					<Add library="wxsmithlib" />
-					<Add library="wxpropgrid" />
 					<Add library="codeblocks" />
+					<Add library="wx_gtk2u_propgrid-3.0" />
 					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
-					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\wxSmithPlot.zip manifest.xml" />
+					<Add after="zip -j9 ../../../devel/share/codeblocks/wxSmithPlot.zip manifest.xml" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
-			<Environment>
-				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_SUFFIX" value="u" />
-			</Environment>
 		</Build>
 		<VirtualTargets>
 			<Add alias="All" targets="MathPlot;wxSmithPlot;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-Wall" />
-			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="-pipe" />
-			<Add option="-mthreads" />
-			<Add option="-fmessage-length=0" />
-			<Add option="-fexceptions" />
-			<Add option="-Winvalid-pch" />
-			<Add option="-DHAVE_W32API_H" />
-			<Add option="-D__WXMSW__" />
-			<Add option="-DWXUSINGDLL" />
-			<Add option="-DWX_PRECOMP" />
-			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="$(#wx.include)" />
-			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
-			<Add directory="wxmathplot" />
-			<Add directory="." />
+			<Add option="-ansi" />
+			<Add option="`wx-config --cflags`" />
+			<Add option="-fPIC" />
 		</Compiler>
 		<Linker>
-			<Add option="-Wl,--enable-auto-image-base" />
-			<Add option="-Wl,--export-all-symbols" />
-			<Add option="-Wl,--enable-auto-import" />
-			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
+			<Add option="`wx-config --libs`" />
 		</Linker>
 		<Unit filename="images/axis16.xpm">
 			<Option target="wxSmithPlot" />

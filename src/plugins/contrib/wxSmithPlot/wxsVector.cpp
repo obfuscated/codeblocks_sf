@@ -18,7 +18,7 @@
 */
 
 #include "wxsVector.h"
-#include "../wxsitemresdata.h"
+#include <wxwidgets/wxsitemresdata.h>
 
 //------------------------------------------------------------------------------
 
@@ -27,8 +27,8 @@ namespace
 
 // Loading images from xpm files
 
-    #include "vector16.xpm"
-    #include "vector32.xpm"
+    #include "images/vector16.xpm"
+    #include "images/vector32.xpm"
 
     wxsRegisterItem<wxsVector> Reg(
         _T("mpVector"),                 // Class name
@@ -119,30 +119,30 @@ wxString    s;
 
 // create the vector -- but not the setup code
 
-    Codef(_T("%s = new mpFXYVector(_(\"%s\"), %d);\n"), vname.c_str(), mLabel.c_str(), mAlign);
+    Codef(_T("%s = new mpFXYVector(_(\"%s\"), %d);\n"), vname.wx_str(), mLabel.wx_str(), mAlign);
 //  BuildSetupWindowCode();
 
 // assign a pen to the layer
 
     dtext = mPenColour.BuildCode(GetCoderContext());
     if (dtext.Len() > 0) {
-        Codef(_T("wxPen   %s(%s);\n"), cname.c_str(), dtext.c_str());
-        Codef(_T("%s->SetPen(%s);\n"), vname.c_str(), cname.c_str());
+        Codef(_T("wxPen   %s(%s);\n"), cname.wx_str(), dtext.wx_str());
+        Codef(_T("%s->SetPen(%s);\n"), vname.wx_str(), cname.wx_str());
     };
 
 // assign a font to the layer
 
     dtext = mPenFont.BuildFontCode(fname, GetCoderContext());
     if (dtext.Len() > 0) {
-        Codef(_T("%s"), dtext.c_str());
-        Codef(_T("%s->SetFont(%s);\n"), vname.c_str(), fname.c_str());
+        Codef(_T("%s"), dtext.wx_str());
+        Codef(_T("%s->SetFont(%s);\n"), vname.wx_str(), fname.wx_str());
     };
 
 // define the arrays
 
-    dtext = _("std::vector<float>  ") + xname + _(";");
+    dtext = _("std::vector<double>  ") + xname + _(";");
     AddDeclaration(dtext);
-    dtext = _("std::vector<float>  ") + yname + _(";");
+    dtext = _("std::vector<double>  ") + yname + _(";");
     AddDeclaration(dtext);
 
 // assign the data
@@ -151,11 +151,11 @@ wxString    s;
     n = mXs.GetCount();
     if (n > 0) {
         for(i=0; i<n; i++) {
-            Codef(_T("%s.push_back(%s);   %s.push_back(%s);\n"), xname.c_str(), mXs[i].c_str(),
-                                                                 yname.c_str(), mYs[i].c_str());
+            Codef(_T("%s.push_back(%s);   %s.push_back(%s);\n"), xname.wx_str(), mXs[i].wx_str(),
+                                                                 yname.wx_str(), mYs[i].wx_str());
         };
 
-        Codef(_T("%ASetData(%s, %s);\n"), xname.c_str(), yname.c_str());
+        Codef(_T("%ASetData(%s, %s);\n"), xname.wx_str(), yname.wx_str());
     };
 
 // draw as points or a continuous line
@@ -165,13 +165,13 @@ wxString    s;
 // add to parent window -- should be a mpWindow
 
     if ((GetPropertiesFlags() & flHidden) && GetBaseProps()->m_Hidden) n = 0;        // do nothing
-    else Codef(_T("%s->AddLayer(%s);\n"), pname.c_str(), vname.c_str());
+    else Codef(_T("%s->AddLayer(%s);\n"), pname.wx_str(), vname.wx_str());
 
 
 }
 
 //------------------------------------------------------------------------------
-// parse the mXYData into strings and floats
+// parse the mXYData into strings and doubles
 
 void    wxsVector::ParseXY(void) {
 int         i,n;
@@ -215,7 +215,7 @@ wxString    s,t;
         t.Trim(false);
         t.ToDouble(&d);
         mXs.Add(t);
-        mXf.push_back((float) d);
+        mXf.push_back(d);
 
 // the second number
 
@@ -224,7 +224,7 @@ wxString    s,t;
         t.Trim(false);
         t.ToDouble(&d);
         mYs.Add(t);
-        mYf.push_back((float) d);
+        mYf.push_back(d);
     };
 
 // there is a problem with mpFXYVector getting the count of items wrong,
@@ -238,9 +238,9 @@ wxString    s,t;
         mYs.Add(s);
 
         d = mXf[n-1];
-        mXf.push_back((float) d);
+        mXf.push_back(d);
         d = mYf[n-1];
-        mYf.push_back((float) d);
+        mYf.push_back(d);
     };
 }
 

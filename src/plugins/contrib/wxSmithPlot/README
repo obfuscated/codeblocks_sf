@@ -22,7 +22,110 @@
 * 
 */
 
+=============
+wxSmithPlot
+=============
 
+-------------------
+General Description
+-------------------
+
+The wxSmithPlot build directory has the following structure:
+wxSmithPlot\   
+    images\             // a set of usefull XPM images for buttons         
+    test\               // this is the Code::Blocks project to create a test
+                        // program for wxMathPlot with wxSmithPlot
+        wxsmith\        // used by Code::Blocks and wxSmith
+    wxmathplot\         // this is the location of the wxMathPlot library
+                        // that will be built and linked to wxSmithPlot
+
+---------
+Windows
+---------
+
+The Code::Blocks projects used here (wxsSmithPlot.cbp) were created and tested under Windows XP,
+using Code::Blocks SVN version 5866, and wxWidgets version 2.8.  The correct 
+order to build these projects is:
+
+1) Build the library (target "MathPlot")
+2) Build the wxSmith plugin (target "wxSmithPlot")
+3) Exit Code::Blocks and install the plugins
+   copy "wxsSmithPlot.dll" to "<Code::Blocks>\share\CodeBlocks\plugins"
+   copy "wxsSmithPlot.zip" to "<Code::Blocks>\share\CodeBlocks"
+4) Re-start Code::Blocks and build the test program (project found in the
+   "test\" directory)
+
+---------
+Linux
+---------
+
+To build this plugin under Linux:
+
+1) Go to the root folder of the source tree
+2) Run the following commands:
+      ./bootstrap
+      ./configure --with-contrib-plugins=all
+      make
+3) Copy the newly generated files
+      "<wxsmithplot_src_dir>/wxSmithPlot.zip" into /usr/share/codeblocks
+      "<wxsmithplot_src_dir>/.libs/libwxsSmithPlot.so" into /usr/lib/codeblocks/plugins/
+
+4) Re-start Code::Blocks and build the test program (project found in the "test\" directory)
+
+
+Tips&Trick
+-----------
+
+Typically under Debian with those repo configured:
+
+deb http://apt.jenslody.de/testing jessie main
+deb-src http://apt.jenslody.de/testing jessie main
+
+Code::Blocks is linked with some wxWidget 2.8 special Debian library.
+If you want to generate wxSmithPlot plugin for a working Code::Blocks installation,
+you need to modify both Makefiles
+"<wxsmithplot_src_dir>/Makefile.am" and "<wxsmithplot_src_dir>/wxmathplot/Makefile.am"
+to link the plugin with the same libraries of your Code::Blocks binary instead of those
+generated in the source tree.
+
+
+In <wxsmithplot_src_dir>/Makefile.am, replace libwxSmithPlot_la_LIBAD variable with:
+
+-------------------------------------------
+libwxSmithPlot_la_LIBADD = -L/usr/lib/ \
+-l:libcodeblocks.so.0 \
+-l:libwxsmithlib.so.0 \
+./wxmathplot/libwxsmithplot_wxmathplot.la \
+-L/usr/lib/x86_64-linux-gnu/ \
+-l:libwx_gtk2u_richtext-2.8.so.0 \
+-l:libwx_gtk2u_aui-2.8.so.0 \
+-l:libwx_gtk2u_xrc-2.8.so.0 \
+-l:libwx_gtk2u_qa-2.8.so.0 \
+-l:libwx_gtk2u_html-2.8.so.0 \
+-l:libwx_gtk2u_adv-2.8.so.0 \
+-l:libwx_gtk2u_core-2.8.so.0 \
+-l:libwx_baseu_xml-2.8.so.0 \
+-l:libwx_baseu_net-2.8.so.0 \
+-l:libwx_baseu-2.8.so.0
+-----------------------------------------
+
+In <wxsmithplot_src_dir>/wxmathplot/Makefile.am, replace libwxsmithplot_wxmathplot_la_LIBADD variable with:
+
+-----------------------------------------
+libwxsmithplot_wxmathplot_la_LIBADD = -L/usr/lib/x86_64-linux-gnu/ \
+-l:libwx_gtk2u_richtext-2.8.so.0 \
+-l:libwx_gtk2u_aui-2.8.so.0 \
+-l:libwx_gtk2u_xrc-2.8.so.0 \
+-l:libwx_gtk2u_qa-2.8.so.0 \
+-l:libwx_gtk2u_html-2.8.so.0 \
+-l:libwx_gtk2u_adv-2.8.so.0 \
+-l:libwx_gtk2u_core-2.8.so.0 \
+-l:libwx_baseu_xml-2.8.so.0 \
+-l:libwx_baseu_net-2.8.so.0 \
+-l:libwx_baseu-2.8.so.0
+-----------------------------------------
+
+Clean the source tree of previous build files and rebuild the whole thing.
 
 =============
 wxMathPlot
@@ -69,59 +172,6 @@ Authors can be contacted via the wxMathPlot's homepage at
 http://sourceforge.net/projects/wxmathplot.
 Contributors:
 Jose Luis Blanco <jlblanco@ctima.uma.es>, Val Greene.
-
-
-
-The wxMathPlot build directory has the following structure:
-MathPlot\
-    bin\                // this dir contains the binary file output of the 
-                        // Code::Blocks projects; files include "TestPlot.exe",
-                        // "wxsSmithPlot.dll",  "wxsSmithPlot.zip", and 
-                        // "CopySmithPlot.bat"    
-    images\             // a set of usefull XPM images for buttons         
-    include\            // the include file "wxMathPlot.h" is here
-    lib\                // the library "wxMathPlot.a" is here
-    obj\                // intermediate files for all compiles
-    project\            // this is the Code::Bocks project to create the
-                        // wxMathPlot library; it creates the file
-                        // "wxMathPlot.a" and places the library file and
-                        // the include file in the proper directories 
-    src\                // source files for component wxMathPlot
-    test\               // this is the Code::Blocks project to create a test
-                        // program for wxMathPlot; the output file
-                        // "TestPlot.exe" is placed in the ..\bin\ directory
-        wxsmith\        // used by Code::Blocks and wxSmith
-    wxs\                // this is the Code::Blocks project to create the
-                        // plugin for Code::Blocks and wxSmith, to put the
-                        // component wxMathPlot on the wxSmith palette.
-                        // the output files "wxsSmithPlot.dll" and
-                        // and "wxsSmithPlot.zip" are placed in the ..\bin\
-                        // directory; they must be manually copied to the
-                        // plugin directory of your Code::Blocks installation.
-                        // see the batch file "CopySmithPlot.bat" to
-                        // make this easier  
-        images\         // images used on the wxSmith palette 
-        src\            // source code for the property pages used by
-                        // wxSmith for the wxMathPlot component
-
-The Code::Blocks projects used here were created and tested under Windows XP,
-using Code::Blocks SVN version 5866, and wxWidgets version 2.8.  The correct 
-order to build these projects is:
-
-1) Build the library (project found in the "project\" directory)
-2) Build the wxSmith plugin (project found in the "wxs\" directory)
-3) Exit Code::Blocks and install the plugins
-   copy "bin\wxsSmithPlot.dll" to "<Code::Blocks>\share\CodeBlocks\plugins"
-   copy "bin\wxsSmithPlot.zip" to "<Code::Blocks>\share\CodeBlocks"
-4) Re-start Code::Blocks and build the test program (project found in the
-   "test\" directory)
-
-(For Windows XP, all of these projects and programs are already compiled; you
-only need to install the plugin files into your own Code::Blocks installation
-directory).
-
-
- 
 
 ----------------------   
 Properties Description
@@ -180,6 +230,14 @@ this is, 2 floating-point numbers seperated by a comma.  Blank lines and lines
 starting with "!" are ignored when mpVector reads the data.  Also, since the
 data is stored as a wxArrayString, there is a limit as to how many lines may
 be entered (currently about 16 000 lines maximum).
+
+mpText
+--------
+A text is simply a text label that appears at a given location on the
+mpWindow, located in graph units. The label are positionedrelative to the
+edges of the mpWindow (such as north-east corner or along the bottom edge) and
+the location is given with an mpWindows's offset based on a percentage of
+(0-100).
 
 mpMarker
 --------

@@ -21,8 +21,7 @@
 */
 
 #include "wxsAxis.h"
-#include "../wxsitemresdata.h"
-
+#include <wxwidgets/wxsitemresdata.h>
 
 //------------------------------------------------------------------------------
 
@@ -30,8 +29,8 @@ namespace
 {
 //    wxsRegisterItem<wxsStaticText> Reg(_T("StaticText"),wxsTWidget,_T("Standard"),80);
 
-    #include "axis16.xpm"
-    #include "axis32.xpm"
+    #include "images/axis16.xpm"
+    #include "images/axis32.xpm"
 
     wxsRegisterItem<wxsAxis> Reg(
         _T("mpAxis"),                   // Class name
@@ -105,24 +104,24 @@ wxString    dtext;
 
 // create the axis -- but not the setup code
 
-    if (mType == 0) Codef(_T("%s = new mpScaleX(_(\"%s\"), %d, %b);\n"), vname.c_str(), mLabel.c_str(), mAlign, mTics);
-    else            Codef(_T("%s = new mpScaleY(_(\"%s\"), %d, %b);\n"), vname.c_str(), mLabel.c_str(), mAlign, mTics);
+    if (mType == 0) Codef(_T("%s = new mpScaleX(_(\"%s\"), %d, %b);\n"), vname.wx_str(), mLabel.wx_str(), mAlign, mTics);
+    else            Codef(_T("%s = new mpScaleY(_(\"%s\"), %d, %b);\n"), vname.wx_str(), mLabel.wx_str(), mAlign, mTics);
 //  BuildSetupWindowCode();
 
 // assign a pen to the layer
 
     dtext = mPenColour.BuildCode(GetCoderContext());
     if (dtext.Len() > 0) {
-        Codef(_T("wxPen   %s(%s);\n"), cname.c_str(), dtext.c_str());
-        Codef(_T("%s->SetPen(%s);\n"), vname.c_str(), cname.c_str());
+        Codef(_T("wxPen   %s(%s);\n"), cname.wx_str(), dtext.wx_str());
+        Codef(_T("%s->SetPen(%s);\n"), vname.wx_str(), cname.wx_str());
     };
 
 // assign a font to the layer
 
     dtext = mPenFont.BuildFontCode(fname, GetCoderContext());
     if (dtext.Len() > 0) {
-        Codef(_T("%s"), dtext.c_str());
-        Codef(_T("%s->SetFont(%s);\n"), vname.c_str(), fname.c_str());
+        Codef(_T("%s"), dtext.wx_str());
+        Codef(_T("%s->SetFont(%s);\n"), vname.wx_str(), fname.wx_str());
     };
 
 // add to parent window -- should be a mpWindow
@@ -130,7 +129,7 @@ wxString    dtext;
     if ((GetPropertiesFlags() & flHidden) && GetBaseProps()->m_Hidden)
         ; // do nothing
     else
-        Codef(_T("%s->AddLayer(%s);\n"), pname.c_str(), vname.c_str());
+        Codef(_T("%s->AddLayer(%s);\n"), pname.wx_str(), vname.wx_str());
 }
 
 //------------------------------------------------------------------------------

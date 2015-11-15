@@ -29,8 +29,8 @@ namespace
 
 // Loading images from xpm files
 
-    #include "plot16.xpm"
-    #include "plot32.xpm"
+    #include "images/plot16.xpm"
+    #include "images/plot32.xpm"
 
     wxsRegisterItem<wxsMathPlot> Reg(
         _T("mpWindow"),                 // Class name
@@ -99,7 +99,7 @@ wxString    cname;
 
 // create the panel
 
-    Codef(_T("%s = new mpWindow(%W, %I, %P, %S, %T);\n"), vname.c_str());
+    Codef(_T("%s = new mpWindow(%W, %I, %P, %S, %T);\n"), vname.wx_str());
     BuildSetupWindowCode();
 
 // add children

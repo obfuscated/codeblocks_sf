@@ -17,8 +17,8 @@
 *
 */
 
-#ifndef WXSVECTOR_H
-#define WXSVECTOR_H
+#ifndef WXSTEXT_H
+#define WXSTEXT_H
 
 #include    <iostream>
 
@@ -27,11 +27,11 @@
 #include    <mathplot.h>
 
 
-class wxsVector: public wxsWidget
+class wxsText: public wxsWidget
 {
     public:
 
-        wxsVector(wxsItemResData* Data);
+        wxsText(wxsItemResData* Data);
 
     private:
 
@@ -40,22 +40,10 @@ class wxsVector: public wxsWidget
         virtual void        OnBuildDeclarationsCode();
         virtual void        OnEnumWidgetProperties(long Flags);
 
-                void        ParseXY(void);
-
-
-
         wxString            mLabel;
-        int                 mAlign;
-        bool                mContinuous;
+        wxString            mXpos, mYpos;
         wxsColourData       mPenColour;     // color to draw
         wxsFontData         mPenFont;       // for drawing the text
-        wxArrayString       mXYData;
-
-        wxArrayString       mXs;            // internal use; X data as a string
-        wxArrayString       mYs;            // Y data as a string
-        std::vector<double>  mXf;            // X data as a double value
-        std::vector<double>  mYf;            // Y data as a double
-
 };
 
-#endif      // WXSVECTOR_H
+#endif      // WXSTEXT_H
