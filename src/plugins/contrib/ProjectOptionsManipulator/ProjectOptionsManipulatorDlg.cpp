@@ -326,7 +326,7 @@ void ProjectOptionsManipulatorDlg::OnOperationSelect(wxCommandEvent& event)
     m_ChkOptionsLinkerPath->Enable();
     m_ChkOptionsResCompPath->Enable();
     m_ChkOptionsLinkerLibs->Enable();
-    if ( event.GetInt()==3 ) // Add
+    if ( (event.GetInt()==3) || (event.GetInt()==4) ) // Add or Change (Replace)
     {
       m_ChkOptionsCustomVar->Enable();
       m_TxtCustomVar->Enable();

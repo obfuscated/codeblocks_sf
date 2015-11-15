@@ -1184,8 +1184,26 @@ void ProjectOptionsManipulator::ProcessCustomVars(cbProject* prj, const wxString
     }
     break;
 
-    case ProjectOptionsManipulatorDlg::eReplace: // fall-through
-    case ProjectOptionsManipulatorDlg::eFiles:   // fall-through
+    case ProjectOptionsManipulatorDlg::eReplace:
+    {
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eProject) )
+        prj->SetVar(var, value, true); // only if exist
+
+      if ( m_Dlg->GetOptionActive(ProjectOptionsManipulatorDlg::eTarget) )
+      {
+        for (int i=0; i<prj->GetBuildTargetsCount(); ++i)
+        {
+          ProjectBuildTarget* tgt = prj->GetBuildTarget(i);
+          if ( !IsValidTarget(tgt) )
+            continue;
+
+          tgt->SetVar(var, value, true); // only if exist
+        }
+      }
+    }
+    break;
+
+    case ProjectOptionsManipulatorDlg::eFiles: // fall-through
     default:
     break;
   }
