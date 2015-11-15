@@ -1242,18 +1242,18 @@ bool ProjectOptionsManipulator::IsValidTarget(const ProjectBuildTarget* tgt)
     return false;
 
   if (   (m_Dlg->GetTargetTypeOption() == ProjectOptionsManipulatorDlg::eApplication)
-      && (tgt->GetTargetType()         != TargetType::ttConsoleOnly)
-      && (tgt->GetTargetType()         != TargetType::ttExecutable) )
+      && (tgt->GetTargetType()         != ttConsoleOnly)
+      && (tgt->GetTargetType()         != ttExecutable) )
   {
     return false;
   }
   if (   (m_Dlg->GetTargetTypeOption() == ProjectOptionsManipulatorDlg::eStaticLib)
-      && (tgt->GetTargetType()         != TargetType::ttStaticLib) )
+      && (tgt->GetTargetType()         != ttStaticLib) )
   {
     return false;
   }
   if (   (m_Dlg->GetTargetTypeOption() == ProjectOptionsManipulatorDlg::eDynamicLib)
-      && (tgt->GetTargetType()         != TargetType::ttDynamicLib) )
+      && (tgt->GetTargetType()         != ttDynamicLib) )
   {
     return false;
   }
