@@ -677,12 +677,12 @@ int ProjectManager::DoAddFileToProject(const wxString& filename, cbProject* proj
     fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_ABSOLUTE, project->GetBasePath());
     fname.MakeRelativeTo(project->GetBasePath());
 
-    // add the file to the first selected target
-    ProjectFile* pf = project->AddFile(targets[0], fname.GetFullPath());
+    // add the file to the project first
+    ProjectFile* pf = project->AddFile(-1, fname.GetFullPath());
     if (pf)
     {
         // if the file was added successfully,
-        // add to this file the rest of the selected targets...
+        // add to this file the selected targets...
         for (size_t i = 0; i < targets.GetCount(); ++i)
         {
             ProjectBuildTarget* target = project->GetBuildTarget(targets[i]);
