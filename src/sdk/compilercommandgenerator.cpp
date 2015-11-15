@@ -258,7 +258,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     else
     {
         // filename might be quoted, so unquote it if needed or extension can be 'c"'
-        wxFileName fname(UnquoteStringIfNeeded(file));
+        wxFileName fname( UnquoteStringIfNeeded(file) );
         if (fname.GetExt().Lower().Matches(_T("c")))
         {
             compilerStr = compiler->GetPrograms().C;
@@ -294,7 +294,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         //
         // So here we add the currently compiling file's directory to the includes
         // search dir so it works.
-        wxFileName fileCwd = UnquoteStringIfNeeded(file);
+        wxFileName fileCwd( UnquoteStringIfNeeded(file) );
         wxString fileInc = fileCwd.GetPath();
         FixPathSeparators(compiler, fileInc);
         if (!fileInc.IsEmpty()) // only if non-empty! (remember r1813 errors)
@@ -345,13 +345,24 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
         }
     }
 
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[1]: tmpIncludes='%s', tmpResIncludes='%s'."),
+                                                tmpIncludes.wx_str(), tmpResIncludes.wx_str()));
+#endif
+
     wxString   tmp;
     wxString   tmpFile       = file;
     wxString   tmpDeps       = deps;
     wxString   tmpObject     = object;
     wxString   tmpFlatObject = flat_object;
-    wxFileName tmpFname      = tmpFile;
+
+    wxFileName tmpFname( UnquoteStringIfNeeded(tmpFile) );
     wxFileName tmpOutFname;
+
+#ifdef command_line_generation
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[2]: tmpFile='%s', tmpDeps='%s', tmpObject='%s', tmpFlatObject='%s',\ntmpFname.GetName='%s', tmpFname.GetPath='%s', tmpFname.GetExt='%s'."),
+                                                tmpFile.wx_str(), tmpDeps.wx_str(), tmpObject.wx_str(), tmpFlatObject.wx_str(), tmpFname.GetName().wx_str(), tmpFname.GetPath().wx_str(), tmpFname.GetExt().wx_str()));
+#endif
 
     FixPathSeparators(compiler, tmpFile);
     FixPathSeparators(compiler, tmpDeps);
@@ -359,8 +370,10 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     FixPathSeparators(compiler, tmpFlatObject);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[1]: macro='%s', fileInc='%s'."),
-                                                macro.wx_str(), fileInc.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[3]: tmpFile='%s', tmpDeps='%s', tmpObject='%s', tmpFlatObject='%s'."),
+                                                tmpFile.wx_str(), tmpDeps.wx_str(), tmpObject.wx_str(), tmpFlatObject.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[4]: macro='%s'."),
+                                                macro.wx_str()));
 #endif
     // Special handling for compiler options to filter between C and C++ compilers
     wxString cFlags = m_CFlags[target];
@@ -410,7 +423,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     macro.Replace(_T("$dep_object"),    tmpDeps);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[2]: macro='%s'."), macro.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[5]: macro='%s'."), macro.wx_str()));
 #endif
 
     if (target)
@@ -426,10 +439,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     if (!target)
     {
         // single file compilation, probably
-        wxString object_unquoted(object);
-        if (!object_unquoted.IsEmpty() && (object_unquoted.GetChar(0) == '"'))
-            object_unquoted.Replace(_T("\""), _T(""));
-        wxFileName fname(object_unquoted);
+        wxFileName fname( UnquoteStringIfNeeded(object) );
         fname.SetExt(FileFilters::EXECUTABLE_EXT);
         wxString output = fname.GetFullPath();
         QuoteStringIfNeeded(output);
@@ -458,10 +468,10 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     macro.Replace(_T("$all_link_objects_quoted"), allObjectsQuoted);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[3]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[6]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
                                                 macro.wx_str(), file.wx_str(), object.wx_str(), flat_object.wx_str(), deps.wx_str()));
 
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[4]: m_Output[target]='%s, m_StaticOutput[target]='%s', m_DefOutput[target]='%s'."),
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[7]: m_Output[target]='%s, m_StaticOutput[target]='%s', m_DefOutput[target]='%s'."),
                                                 m_Output[target].wx_str(), m_StaticOutput[target].wx_str(), m_DefOutput[target].wx_str()));
 #endif
 
@@ -488,7 +498,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     }
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[5]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[8]: macro='%s', file='%s', object='%s', flat_object='%s', deps='%s'."),
                                                 macro.wx_str(), file.wx_str(), object.wx_str(), flat_object.wx_str(), deps.wx_str()));
 #endif
 
@@ -496,7 +506,7 @@ void CompilerCommandGenerator::GenerateCommandLine(wxString&           macro,
     Manager::Get()->GetMacrosManager()->ReplaceMacros(macro, target);
 
 #ifdef command_line_generation
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[6]: macro='%s'."), macro.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(F(_T("GenerateCommandLine[9]: macro='%s'."), macro.wx_str()));
 #endif
 }
 
@@ -587,7 +597,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 
                 wxString importLibraryFileNameString(target->GetDynamicLibImportFilename());
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(importLibraryFileNameString, target);
-                wxFileName importLibraryFileName(importLibraryFileNameString);
+                wxFileName importLibraryFileName( UnquoteStringIfNeeded(importLibraryFileNameString) );
 
                 // apply prefix if needed
                 if (   (PrefixPolicy == tgfpPlatformDefault)
@@ -614,7 +624,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
 
                 wxString definitionFileFileNameString(target->GetDynamicLibDefFilename());
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(definitionFileFileNameString, target);
-                wxFileName definitionFileFileName(definitionFileFileNameString);
+                wxFileName definitionFileFileName( UnquoteStringIfNeeded(definitionFileFileNameString) );
 
                 // apply prefix if needed
                 if (   (PrefixPolicy == tgfpPlatformDefault)
@@ -653,7 +663,7 @@ wxString CompilerCommandGenerator::SetupOutputFilenames(Compiler* compiler, Proj
                 // NOTE (thomas#1#): A better solution might be to use a regex, but finding an universal regex might not be easy...
                 wxString fnameString(target->GetOutputFilename());
                 Manager::Get()->GetMacrosManager()->ReplaceMacros(fnameString, target);
-                wxFileName fname(fnameString);
+                wxFileName fname( UnquoteStringIfNeeded(fnameString) );
 
                 TargetFilenameGenerationPolicy PrefixPolicy;
                 TargetFilenameGenerationPolicy ExtensionPolicy;
@@ -742,7 +752,7 @@ wxArrayString CompilerCommandGenerator::GetOrderedIncludeDirs(Compiler* compiler
         Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
         if (platform::windows && compiler->GetSwitches().Use83Paths)
         {
-            wxFileName fn(tmp, wxEmptyString); // explicitly assign as path
+            wxFileName fn(UnquoteStringIfNeeded(tmp), wxEmptyString); // explicitly assign as path
             if (fn.DirExists())
                 tmp = fn.GetShortPath();
         }
@@ -772,7 +782,7 @@ wxArrayString CompilerCommandGenerator::GetOrderedLibrariesDirs(Compiler* compil
             Manager::Get()->GetMacrosManager()->ReplaceMacros(searchDirs[x], target);
 
             // also, normalize path (make absolute)
-            wxFileName fn(searchDirs[x]);
+            wxFileName fn( UnquoteStringIfNeeded(searchDirs[x]) );
             if (fn.IsRelative())
             {
                 fn.MakeAbsolute(target->GetParentProject()->GetBasePath());
@@ -795,7 +805,7 @@ wxArrayString CompilerCommandGenerator::GetOrderedLibrariesDirs(Compiler* compil
         Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
         if (platform::windows && compiler->GetSwitches().Use83Paths)
         {
-            wxFileName fn(tmp, wxEmptyString); // explicitly assign as path
+            wxFileName fn(UnquoteStringIfNeeded(tmp), wxEmptyString); // explicitly assign as path
             if (fn.DirExists())
                 tmp = fn.GetShortPath();
         }
@@ -825,7 +835,7 @@ wxArrayString CompilerCommandGenerator::GetOrderedResourceIncludeDirs(Compiler* 
         Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp, target);
         if (platform::windows && compiler->GetSwitches().Use83Paths)
         {
-            wxFileName fn(tmp, wxEmptyString); // explicitly assign as path
+            wxFileName fn(UnquoteStringIfNeeded(tmp), wxEmptyString); // explicitly assign as path
             if (fn.DirExists())
                 tmp = fn.GetShortPath();
         }
@@ -1185,7 +1195,7 @@ wxString CompilerCommandGenerator::GetProcessedIncludeDir(Compiler* compiler, Pr
       // probably change to 8.3 notation (on Windows)
       if (platform::windows && compiler->GetSwitches().Use83Paths)
       {
-          wxFileName fn(inc_dir, wxEmptyString); // explicitly assign as path
+          wxFileName fn(UnquoteStringIfNeeded(inc_dir), wxEmptyString); // explicitly assign as path
           if (fn.DirExists())
               inc_dir = fn.GetShortPath();
       }
