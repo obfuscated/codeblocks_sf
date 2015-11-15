@@ -2381,9 +2381,9 @@ void Bindings::SetDefaultsSTL()
   AddBinding(_T("STL"),_T("ostrstream"),                         _T("strstream"));
   AddBinding(_T("STL"),_T("strstream"),                          _T("strstream"));
   AddBinding(_T("STL"),_T("strstreambuf"),                       _T("strstream"));
-  AddBinding(_T("STL"),_T("forward_as_tuple")                    _T("tuple"));
-  AddBinding(_T("STL"),_T("ignore")                              _T("tuple"));
-  AddBinding(_T("STL"),_T("make_tuple")                          _T("tuple"));
+  AddBinding(_T("STL"),_T("forward_as_tuple"),                   _T("tuple"));
+  AddBinding(_T("STL"),_T("ignore"),                             _T("tuple"));
+  AddBinding(_T("STL"),_T("make_tuple"),                         _T("tuple"));
   AddBinding(_T("STL"),_T("tie"),                                _T("tuple"));
   AddBinding(_T("STL"),_T("tuple_cat"),                          _T("tuple"));
   AddBinding(_T("STL"),_T("tuple"),                              _T("tuple"));
