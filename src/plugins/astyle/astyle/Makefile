@@ -1,13 +1,20 @@
 # Make file for GCC compiler on Linux or compatible OS
 # The license.html file describes the conditions under which this software may be distributed.
 
-# list of source files
+# list of source files for astyle
 SRC = astyle_main.cpp \
       ASBeautifier.cpp \
       ASFormatter.cpp \
       ASEnhancer.cpp \
       ASLocalizer.cpp \
       ASResource.cpp
+
+# list of source files for libraries without ASLocalizer
+SRCx = astyle_main.cpp \
+       ASBeautifier.cpp \
+       ASFormatter.cpp \
+       ASEnhancer.cpp \
+       ASResource.cpp
 
 # source directories
 vpath %.cpp ../../src
@@ -64,12 +71,12 @@ endif
 # a suffix is added for each build
 OBJ   = $(patsubst %.cpp,$(objdir)/%.o,$(SRC))
 OBJd  = $(patsubst %.cpp,$(objdir)/%_d.o,$(SRC))
-OBJs  = $(patsubst %.cpp,$(objdir)/%_s.o,$(SRC))
-OBJsd = $(patsubst %.cpp,$(objdir)/%_sd.o,$(SRC))
-OBJa  = $(patsubst %.cpp,$(objdir)/%_a.o,$(SRC))
-OBJad = $(patsubst %.cpp,$(objdir)/%_ad.o,$(SRC))
-OBJsj  = $(patsubst %.cpp,$(objdir)/%_sj.o,$(SRC))
-OBJsjd = $(patsubst %.cpp,$(objdir)/%_sjd.o,$(SRC))
+OBJs  = $(patsubst %.cpp,$(objdir)/%_s.o,$(SRCx))
+OBJsd = $(patsubst %.cpp,$(objdir)/%_sd.o,$(SRCx))
+OBJa  = $(patsubst %.cpp,$(objdir)/%_a.o,$(SRCx))
+OBJad = $(patsubst %.cpp,$(objdir)/%_ad.o,$(SRCx))
+OBJsj  = $(patsubst %.cpp,$(objdir)/%_sj.o,$(SRCx))
+OBJsjd = $(patsubst %.cpp,$(objdir)/%_sjd.o,$(SRCx))
 
 # define object file rule (with the suffix) for each build
 
@@ -128,16 +135,16 @@ astyled:  $(OBJd)
 	$(CXX) $(LDFLAGSd) -o $(bindir)/$@ $^
 	@ echo
 
-shared:  libastyle-2.06.so
-libastyle-2.06.so:  $(OBJs)
+shared:  libastyle.so
+libastyle.so:  $(OBJs)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/libastyle-2.06.so $^
 	@ echo
 
-shareddebug:  libastyle-2.06d.so
-libastyle-2.06d.so:  $(OBJsd)
+shareddebug:  libastyled.so
+libastyled.so:  $(OBJsd)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/libastyle-2.06d.so $^
 	@ echo
 
 static:  libastyle.a
@@ -152,16 +159,16 @@ libastyled.a:  $(OBJad)
 	ar crs $(bindir)/$@ $^
 	@ echo
 
-java:  libastyle-2.06j.so
-libastyle-2.06j.so:  $(OBJsj)
+java:  libastylej.so
+libastylej.so:  $(OBJsj)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSr) -o $(bindir)/libastyle-2.06j.so $^
 	@ echo
 
-javadebug:  libastyle-2.06jd.so
-libastyle-2.06jd.so:  $(OBJsjd)
+javadebug:  libastylejd.so
+libastylejd.so:  $(OBJsjd)
 	@ mkdir -p $(bindir)
-	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/$@ $^
+	$(CXX) -shared $(LDFLAGSd) -o $(bindir)/libastyle-2.06jd.so $^
 	@ echo
 
 all:  release debug shared shareddebug static staticdebug
@@ -177,6 +184,10 @@ cleanobj:
 install:
 	$(INSTALL) -m 755 -d $(ipath)
 	@$(INSTALL) -m 755 $(bindir)/astyle  $(ipath)
+
+	@if [ -d $(SYSCONF_PATH)/html ]; then \
+		rm -rf  $(SYSCONF_PATH)/html; \
+	fi
 
 	$(INSTALL) -m 755 -d $(SYSCONF_PATH)
 	@mkdir -p $(SYSCONF_PATH)/html;

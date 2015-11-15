@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -21,23 +21,97 @@
     <h3>Artistic Style 2.06&nbsp; (Pending)</h3>
 
     <p>
-        New Objective-C options "pad-return-type" and &quot;unpad-return-type&quot; will add or remove space padding after the 
-        Objective-C return type. It is described in the "Objective-C" section of the documentation.
+        A new option, &quot;pad-comma&quot;, will add a space following a comma. The option &quot;pad-oper&quot; has not
+        been changed and will also add a space following a comma.
     </p>
     <p>
-        A new option, &quot;pad-comma&quot;, will add a space following a comma. The option &quot;pad-oper&quot; has not been changed and 
-        will also add a space following a comma.</p>
+        All spaces before a comma are now removed. Use the disable block comments if there are arrays with vertical alignment
+        where this is not wanted.
+    </p>
     <p>
-        All spaces before a comma are now removed. 
-        Use the disable block comments if there are arrays with vertical alignment where this is not wanted.</p>
+        New Objective&#8209;C options "pad-return-type" and &quot;unpad-return-type&quot; will add or remove space padding
+        after the Objective-C return type. It is described in the "Objective&#8209;C" section of the documentation.
+    </p>
+    <p>
+        The Objective&#8209;C align-method-colon has been changed for method declarations and definitions. For multi-line
+        arguments when the first keyword is shorter than the others the colons are aligned on the longest line instead
+        of the first line. The alignment includes room for the indentation. This aligns all colons after the first line
+        for a better appaerance. Arguments that do not have a short keyword in the first line will remain the same. This
+        style conforms to the Google Objective&#8209;C Style Guide.
+    </p>
+    <p>
+        The Objective&#8209;C align-method-colon option is now applied to Objective&#8209;C method calls in addition
+        to method declarations and definitions.
+    </p>
+
+    <p>
+        The Artisic Style software license has changed. It is now under the MIT license. This is a permissive license
+        which can be used in proprietory software and does NOT require the Artistic Style source code be made available.
+        It is compatable with the GNU General Public License (GPL) and most other software licenses. The change was made
+        to remove restrictions on using the software and to make it available for any project that wants to use it.
+    </p>
+
+    <h4>
+        Windows XP
+    </h4>
+
+    <p>
+        The executable in the Windows distribution package is now compiled with a Visual Studio 
+        version that will no longer work on Windows XP. Microsoft ended support and updates for XP on April 8, 2014.</p>
+    <p>
+        If you are using XP, Artistic Style should be compiled on the XP machine. Compiling on XP with any 
+        compiler should produce an XP executable.</p>
+    <p>
+        To compile on a non-XP machine for use on&nbsp; XP, using a compiler other than Visaul Studio should always 
+        produce an XP executable. Using Vusual Studio 2010 or earlier should always produce an XP executable. If 
+        you are using Visual Studio 2012, 2013, or 2015 on a non-XP machine, do the following for the Artistic Style 
+        configuration you want to use:</p>
+    <ul>
+        <li>&quot;Windows XP Support for C++&quot; must be installed. It is available as an option in the Visual Studio install and 
+            can be installed as a modification to the original install.</li>
+        <li>In the Artistic Style Properties, change General &gt; Platform Toolset, to &quot;Windows XP&quot;.</li>
+        <li>In the Artistic Style Properties, change C/C++ &gt; Preprocessor &gt; Preprocessor Definitions to include 
+            _USING_V110_SDK71_.</li>
+        <li>Change other Properties if you want, such as Output Directory or Target Name.</li>
+        <li>Compile. The output should be executable on Windows XP. It will also execute on the later versions of Windows.</li>
+    </ul>
+
+    <h4>
+        SourceForge
+    </h4>
+
+    <p>Recently, SourceForge began adding potentially unwanted programs (PUPs), also known as &quot;crapware&quot;, to
+        software installers of certain applications. Some large projects have already left the site. Artistic Style does
+        not use installer downloads and therefore was not affected by this. Downloads are in the form 
+        of .zip or .tar.gz files. However, having the PUPs available on the host site affects the integrity of every
+        application that uses the site.
+    </p>
+    <p>
+        What is even more troubling is that the uBlock browser add-on, and all of its spin-offs, is now blocking access
+        to the site by default. Even though Artistic Style has never used PUPs, the site is prevented from loading. The
+        block can be easily removed, but may discourage some people from using the software. are.
+    </p>
+    <p>
+        SourceForge is apparently taking steps to correct the situation. If this is not resolved fairly soon, Artistic
+        Style will be relocated to another site. If this happens, I will give notification of the new site at the 
+        current SourceForge address.
+    ess.
+    </p>
+
+    <h4>
+        Acknowledgments
+    </h4>
+
     <p>
         Thanks to David Faure for their contributions.
     </p>
 
     <h3>Artistic Style 2.05&nbsp; (November 2014)</h3>
 
-    <p>Release 2.05.1 (December 2014) is a maintenance release and no new features were added. A list of changes is in 
-        the Release Notes. The following information is for the original 2.05 release.</p>
+    <p>
+        Release 2.05.1 (December 2014) is a maintenance release and no new features were added. A list of changes is in
+        the Release Notes. The following information is for the original 2.05 release.
+    </p>
 
     <p>
         A new bracket style option, &quot;style=vtk&quot;, has been added. It uses indented brackets, like Whitesmith,
@@ -128,7 +202,7 @@
         been updated for both.
     </p>
     <p>
-        The Python Example in the Developer Information now supports Iron Python. The 
+        The Python Example in the Developer Information now supports Iron Python. The
         programming instructions are sometimes different since the ctypes module works differently. The example script
         documents the differences. If you use Python Tools for Visual Studio, it now installs in the Express editions
         (beginning with release 2.1). Node.js can also be installed in Visual Studio Express.
@@ -138,10 +212,10 @@
         work on XP. If you are using XP, Artistic Style will need to be recompiled on the XP machine.
     </p>
     <p>
-        A new <a href="http://www.visualstudio.com/news/vs2013-community-vs" target="astyle" title="open new window">Visual
+        A new <a href="http://www.visualstudio.com/news/vs2013-community-vs" target="_blank" title="open new window">Visual
             Studio Community Edition</a> has been released. It is free, combines all of the Express editions into a single
-        development environment, and allows the addition of Visual Studio extensions. There is an 
-        <a href="https://visualstudiogallery.msdn.microsoft.com/2f3f04cd-2866-4e47-a671-d1cc9cc3fb02" target="astyle" title="open new window">
+        development environment, and allows the addition of Visual Studio extensions. There is an
+        <a href="https://visualstudiogallery.msdn.microsoft.com/2f3f04cd-2866-4e47-a671-d1cc9cc3fb02" target="_blank" title="open new window">
             AStyle Extension</a> available for installation. It has a graphic interface, adds menu entries, and can be
         used from within Visual Studio. To install it search the &quot;Extensions and Updates&quot;, &quot;Online&quot;
         entry for &quot;astyle&quot;.
@@ -374,10 +448,10 @@
         &nbsp;
     </p>
 
-    <center style="margin-left: -0.4in;">
+    <p style="margin-left: -0.4in; text-align: center;">
         <a href="http://sourceforge.net/projects/astyle">
             <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=16" alt="" /></a>
-    </center>
+    </p>
 
     <p>
         &nbsp;

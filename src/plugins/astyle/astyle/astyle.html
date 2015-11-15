@@ -1,6 +1,6 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
     <title>Artistic Style</title>
@@ -16,7 +16,6 @@
 
     <style type="text/css">
         hr { margin-left: -0.4in; }
-
         /* the following styles are for formatting code samples */
         div.code { background: #D8D8FF; }
         /* code */
@@ -2091,18 +2090,18 @@ else
     <h3 id="_Objective_C_Options">Objective&#8209;C Options</h3>
 
     <p>
-        These options are effective for Objective&#8209;C files only
+        These options are effective for Objective&#8209;C files only. The paren padding options will still apply to the
+        Objective-C method prefix and return type unless overridden by the following options.
     </p>
     <p>
         Because of the longer indents sometimes needed for Objective&#8209;C, the option "max-instatement-indent" may
-        need to be increased. If you are not getting the paren and square bracket alignment you want, try increasing this
+        need to be increased. If you are not getting the paren and square bracket alignment you want try increasing this
         value. The option is described in the "Indentation Options" section.
     </p>
     <p id="_pad-method-prefix">
         <code class="title">--pad-method-prefix / -xQ</code><br />
-        Insert space padding <b>after</b> the '-' or '+' Objective&#8209;C method prefix. This will add exactly one space. Any
-        additional spaces will be deleted. This option takes 
-        precedence over the pad-paren options.
+        Insert space padding <strong>after</strong> the '-' or '+' Objective&#8209;C method prefix. This will add exactly
+        one space. Any additional spaces will be deleted. This option takes precedence over the pad-paren options.
     </p>
     <div class="code">
         <pre>-(void)foo1;
@@ -2118,8 +2117,9 @@ else
     </p>
     <p id="_unpad-method-prefix">
         <code class="title">--unpad-method-prefix / -xR</code><br />
-        Remove all space padding <b>after</b> the &#39;-&#39; or &#39;+&#39; Objective&#8209;C method prefix.&nbsp; This option
-        will be ignored if used with pad&#8209;method&#8209;prefix. It takes precedence over the pad-paren options.
+        Remove all space padding <strong>after</strong> the &#39;-&#39; or &#39;+&#39; Objective&#8209;C method prefix.&nbsp;
+        This option will be ignored if used with pad&#8209;method&#8209;prefix. It takes precedence over the pad-paren
+        options.
     </p>
     <div class="code">
         <pre>- (void)foo1;
@@ -2135,7 +2135,7 @@ else
     </p>
     <p id="_pad-return-type">
         <code class="title">--pad-return-type / -xq</code><br />
-        Insert space padding <b>after</b> the Objective&#8209;C return type. This will add exactly one
+        Insert space padding <strong>after</strong> the Objective&#8209;C return type. This will add exactly one
         space. Any additional spaces will be deleted. This option takes precedence over the pad-paren options.
     </p>
     <div class="code">
@@ -2152,7 +2152,7 @@ else
     </p>
     <p id="_unpad-return-type">
         <code class="title">--unpad-return-type / -xr</code><br />
-        Remove all space padding <b>after</b> the Objective&#8209;C return type. This option
+        Remove all space padding <strong>after</strong> the Objective&#8209;C return type. This option
         will be ignored if used with pad&#8209;return&#8209;type. It takes precedence over the pad-paren options.
     </p>
     <div class="code">
@@ -2169,7 +2169,8 @@ else
     </p>
     <p id="_align-method-colon">
         <code class="title">--align-method-colon / -xM</code><br />
-        Align the colons in Objective&#8209;C method declarations.</p>
+        Align the colons in Objective&#8209;C method declarations.
+    </p>
     <div class="code">
         <pre>-(void)deleteKey:(id)key
     atIndex:(int)index
@@ -2190,8 +2191,9 @@ else
             --pad-method-colon=after&nbsp; / -xP2<br />
             --pad-method-colon=before / -xP3
         </code><br />
-        Add or remove space padding before or after the colons in an Objective&#8209;C method call. These options will pad 
-        exactly one space. Any additional spaces will be deleted.</p>
+        Add or remove space padding before or after the colons in an Objective&#8209;C method call. These options will
+        pad exactly one space. Any additional spaces will be deleted.
+    </p>
     <div class="code">
         <p class="code">
             with pad-method-colon=none:
@@ -2289,7 +2291,7 @@ else
     </p>
     <p id="_verbose">
         <code class="title">--verbose / -v</code><br />
-        Verbose display mode. Display optional information, such as release number and statistical data.
+        Verbose display mode. Display optional information, such as release number, date, and statistical data.
     </p>
     <p id="_formatted">
         <code class="title">--formatted / -Q</code><br />
@@ -2374,30 +2376,11 @@ else
     </p>
     <hr style="margin-left: -0.4in;" />
 
-    <center class="footer">
-        <table width="100%">
-            <col width="30%" />
-            <col width="40%" />
-            <col width="30%" />
-            <tr>
-                <td align="left">
-                    <a href="http://www.gnu.org/copyleft/lesser.html">
-                        <img src="http://www.gnu.org/graphics/lgplv3-88x31.png" alt="" />
-                    </a>
-                    <a href="http://www.gnu.org/licenses/gpl.html">
-                        <img src="http://www.gnu.org/graphics/gplv3-88x31.png" alt="" />
-                    </a>
-                </td>
-                <td align="center" style="color: #0000A0; font-size: x-large; font-weight: bold;">ENJOY !!!</td>
-                <td align="right">
-                    <a href="http://sourceforge.net/projects/astyle">
-                        <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=15"
-                            alt="" />
-                    </a>
-                </td>
-            </tr>
-        </table>
-    </center>
+    <p style="margin-left: -0.4in; text-align: center;">
+        <a href="http://sourceforge.net/projects/astyle">
+            <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=16" alt="" />
+        </a>
+    </p>
 
     <p>
         &nbsp;

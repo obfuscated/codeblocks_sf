@@ -7,7 +7,6 @@
  * p.contents entries are for the table of contents
  * a.contents are table of contents links (not underlined)
  * a.links are links (underlined)
- * .footer is the image table at the bottom of the page
  * img does not have a border
  * pre is a predefined format for formatting code
  */
@@ -19,7 +18,7 @@ h1 { color: #0000A0; text-align: center; font-style: italic; margin-top: 18pt; m
 h2.large { color: #0000A0; text-align: center; font-size: x-large; margin-top: 0.4in; margin-left: -0.5in; }
 h2 { color: #0000A0; text-align: center; font-size: larger; margin-top: 0.4in; margin-left: -0.5in; }
 h3 { color: #0000A0; margin-top: 0.4in; margin-left: -0.4in; }
-h4 { color: #0000A0; }
+h4 { color: #0000A0; margin-top: 0.3in; }
 
 p.noindent { margin-left: -0.4in; }
 p.contents1 { font-size: 105%; margin-top: 0in; margin-left: 0in; margin-bottom: 0in; margin-right: 0in; }
@@ -30,9 +29,6 @@ a.contents:hover { color: #F00000; text-decoration: none; }
 
 a:link, a:visited { color: #0000A0; text-decoration: underline; }
 a:hover { color: #F00000; text-decoration: underline; }
-
-center.footer { margin-left: -0.4in; margin-top: 0.25in; }
-h2.footer { font-size: x-large; margin-top: 0; margin-left: 0; }
 
 img { border: none; }
 

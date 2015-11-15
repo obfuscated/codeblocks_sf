@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -767,11 +767,11 @@
         See the Release Notes for a complete list of changes.
     </p>
     <p>
-        Starting with this release, if a file is <b>not</b> changed by Artistic Style a new file and a backup file are
-        not created. A "make" will not recompile the unchanged file and it will not be committed to a revision control
-        system. A console message will indicate that the file is unchanged. Note that this is different from using the
-        &#8209;&#8209;preserve&#8209;date option. This option retains the date on files that <b>have</b> changed. In this
-        case the changed files will still be recompiled and committed to revision control. (&#8209;&#8209;preserve&#8209;date
+        Starting with this release, if a file is <strong>not</strong> changed by Artistic Style a new file and a backup
+        file are not created. A "make" will not recompile the unchanged file and it will not be committed to a revision
+        control system. A console message will indicate that the file is unchanged. Note that this is different from using
+        the &#8209;&#8209;preserve&#8209;date option. This option retains the date on files that <strong>have</strong>
+        changed. In this case the changed files will still be recompiled and committed to revision control. (&#8209;&#8209;preserve&#8209;date
         actually changes the time by one unit).
     </p>
     <p>
@@ -862,11 +862,12 @@
         the new formatted file. Otherwise the new file will contain the current date.
     </p>
     <p>
-        The option --errors-to-standard-output has been shortened to --errors-to-stdout. The <b>short</b> options -c (mode=c)
-        and -j (mode=java) have been removed. The options should seldom be needed since the mode is now set automatically
-        from the file extension for <b>each source file</b> instead of for each program execution. A new long option --mode=cs
-        (C#) has been added. Key words are now set for each file depending on the file mode (C, Java, or C#). This will
-        eliminate formatting problems caused by not being able to identify the source code language.
+        The option --errors-to-standard-output has been shortened to --errors-to-stdout. The <strong>short</strong> options
+        -c (mode=c) and -j (mode=java) have been removed. The options should seldom be needed since the mode is now set
+        automatically from the file extension for <strong>each source file</strong> instead of for each program execution.
+        A new long option --mode=cs (C#) has been added. Key words are now set for each file depending on the file mode
+        (C, Java, or C#). This will eliminate formatting problems caused by not being able to identify the source code
+        language.
     </p>
     <p>
         There has been a change to the Linux style bracket formatting for C++ header files. In the past brackets have
@@ -886,16 +887,16 @@
     </p>
     <p>
         If you have broken brackets with comments attached to the opening bracket instead of the previous line, do the
-        following <b>before formatting</b> again with broken brackets. Use the current Artistic Style release (1.21).
-        Format the source using attached brackets to reattach the brackets and the comments to the previous line. Then
-        format the source again using broken brackets. This will move the brackets to the next line without the comments.
+        following <strong>before formatting</strong> again with broken brackets. Use the current Artistic Style release
+        (1.21). Format the source using attached brackets to reattach the brackets and the comments to the previous line.
+        Then format the source again using broken brackets. This will move the brackets to the next line without the comments.
         The comments will now be on the correct line.
     </p>
     <p>
-        There is a new multi-platform GUI program, <b>UniversalIndent</b>, available at sourceforge.net/projects/universalindent.
+        There is a new multi-platform GUI program, <strong>UniversalIndent</strong>, available at sourceforge.net/projects/universalindent.
         It allows you to view the effects of the Artistic Style options on your source code without saving the file. You
         can review the results of the formatting options before updating the file. It can be used with a test file or
-        with your actual source code. It supports several other formatting programs. The <b>Artistic Style for Windows</b>
+        with your actual source code. It supports several other formatting programs. The <strong>Artistic Style for Windows</strong>
         program has been updated to support the current release. It is available at jimp03.zxq.net
     </p>
     <p>

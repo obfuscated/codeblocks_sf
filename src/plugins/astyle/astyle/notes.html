@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
@@ -24,6 +24,10 @@
         <li>Add new Objective&#8209;C options "pad-return-type" (-xq) and "unpad-return-type" (-xr).</li>
         <li>Add new option pad-comma (#100).</li>
         <li>Add removing spaces before a comma (#100).</li>
+        <li>Improve align-method-colon to applied to Objective&#8209;C method calls.</li>
+        <li>Change align-method-colon short first line to align on the longest line instead of the first line.</li>
+        <li>Fix attaching &quot;if&quot; statements to a #else preprocessor directive (#356).</li>
+        <li>Fix not clearing global variables for a new file (#364).</li>
         <li>Fix C# to recognize &quot;using&quot; as a header.</li>
         <li>Fix C# to always recognize &quot;forever&quot; as a header.</li>
         <li>Fix end of line comments for &quot;pad-method-prefix&quot; and &quot;unpad-method-prefix&quot;.</li>
@@ -31,6 +35,7 @@
         <li>Refactoring:
             <ul>
                 <li>Consolidate scattered ASFormatter conditional statements into a padParenObjC method.</li>
+                <li>Portability changes for additional compiler support (#352).</li>
            </ul>
         </li>
     </ul>
@@ -56,7 +61,7 @@
         <li>Add new option, "dry-run", to run AStyle without updating the files (#184, #285).</li>
         <li>Add new options, "html" (-!") and "html=###", to display the HTML help documentation in the default browser.
         </li>
-        <li>Add tags &quot;*INDENT-OFF*&quot; and &quot;*INDENT_ON*&quot; to disable formatting of source code blocks 
+        <li>Add tags &quot;*INDENT-OFF*&quot; and &quot;*INDENT_ON*&quot; to disable formatting of source code blocks
             (#2, #47, #55, #78, #110, #176).</li>
         <li>Add tag *NOPAD* to disable selected formatting on a single line.</li>
         <li>Add &#39;__attribute__ ((visibility (&quot;default&quot;)))&#39; to Linux exported functions.</li>
@@ -261,10 +266,10 @@
         &nbsp;
     </p>
 
-    <center style="margin-left: -0.4in;">
+    <p style="margin-left: -0.4in; text-align: center;">
         <a href="http://sourceforge.net/projects/astyle">
             <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=16" alt="" /></a>
-    </center>
+    </p>
 
     <p>
         &nbsp;
