@@ -18,6 +18,10 @@ Preparations for a release:
     Check if it works, also for SAFE-MODE (start C::B w/ safe-mode option).
 
 5.) Make relevant changes in specific files, set new version number in:
+    [C::B]\codeblocks.plist.in
+    [C::B]\codeblocks.spec.in    <- careful here: don't change the changelog
+    [C::B]\README
+    [C::B]\update_revision.sh
     [C::B]\debian\get-orig-source
     [C::B]\debian\get-orig-source-from-svn
     [C::B]\src\src\build_tools\Info.plist
