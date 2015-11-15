@@ -374,7 +374,8 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this,   "chkIndentPreprocDefine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_preproc_define"), false));
   XRCCTRL(*this,   "chkIndentPreprocCond",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_preproc_cond"),   false));
   XRCCTRL(*this,   "chkIndentCol1Comments",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_col1_comments"),  false));
-  XRCCTRL(*this,   "txtMaxInStatementIndent",wxTextCtrl)->SetValue(cfg->Read(_T("/max_instatement_indent"),    _T("40")));
+  XRCCTRL(*this,   "spnMinConditionalEvent", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/min_conditional_indent"), 2));
+  XRCCTRL(*this,   "txtMaxInStatementIndent",wxTextCtrl)->SetValue(cfg->Read(_T("/max_instatement_indent"),    _T("40"))); // Don#t read int as we apply the value to a textbox
 
   XRCCTRL(*this,   "chkBreakClosing",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_closing"),         false));
   XRCCTRL(*this,   "chkBreakElseIfs",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_elseifs"),         false));
@@ -398,8 +399,8 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this,   "chkBreakBlocks",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks"),          false));
   XRCCTRL(*this,   "chkBreakBlocksAll",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks_all"),      false));
   XRCCTRL(*this,   "chkPadOperators",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_operators"),         false));
-  XRCCTRL(*this,   "chkPadParensIn",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_in"),    false));
   XRCCTRL(*this,   "chkPadParensOut",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_out"),   false));
+  XRCCTRL(*this,   "chkPadParensIn",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_parentheses_in"),    false));
   XRCCTRL(*this,   "chkPadHeader",           wxCheckBox)->SetValue(cfg->ReadBool(_T("/pad_header"),            false));
   XRCCTRL(*this,   "chkUnpadParens",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/unpad_parentheses"),     false));
   XRCCTRL(*this,   "chkDelEmptyLine",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/delete_empty_lines"),    false));
@@ -466,6 +467,7 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/indent_preproc_define"),    XRCCTRL(*this, "chkIndentPreprocDefine", wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preprocessor_cond"), XRCCTRL(*this, "chkIndentPreprocCond",   wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_col1_comments"),     XRCCTRL(*this, "chkIndentCol1Comments",  wxCheckBox)->GetValue());
+  cfg->Write(_T("/min_conditional_indent"),   XRCCTRL(*this, "spnMinConditionalEvent", wxSpinCtrl)->GetValue());
   cfg->Write(_T("/max_instatement_indent"),   XRCCTRL(*this, "txtMaxInStatementIndent",wxTextCtrl)->GetValue());
 
   cfg->Write(_T("/break_closing"),            XRCCTRL(*this, "chkBreakClosing",        wxCheckBox)->GetValue());
@@ -485,8 +487,8 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/break_blocks"),             XRCCTRL(*this, "chkBreakBlocks",         wxCheckBox)->GetValue());
   cfg->Write(_T("/break_blocks_all"),         XRCCTRL(*this, "chkBreakBlocksAll",      wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_operators"),            XRCCTRL(*this, "chkPadOperators",        wxCheckBox)->GetValue());
-  cfg->Write(_T("/pad_parentheses_in"),       XRCCTRL(*this, "chkPadParensIn",         wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_parentheses_out"),      XRCCTRL(*this, "chkPadParensOut",        wxCheckBox)->GetValue());
+  cfg->Write(_T("/pad_parentheses_in"),       XRCCTRL(*this, "chkPadParensIn",         wxCheckBox)->GetValue());
   cfg->Write(_T("/pad_header"),               XRCCTRL(*this, "chkPadHeader",           wxCheckBox)->GetValue());
   cfg->Write(_T("/unpad_parentheses"),        XRCCTRL(*this, "chkUnpadParens",         wxCheckBox)->GetValue());
   cfg->Write(_T("/delete_empty_lines"),       XRCCTRL(*this, "chkDelEmptyLine",        wxCheckBox)->GetValue());

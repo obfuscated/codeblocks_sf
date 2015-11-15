@@ -95,8 +95,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setAttachNamespace(cfg->ReadBool(_T("/attach_namespaces")));
   formatter.setAttachInline(cfg->ReadBool(_T("/attach_inlines")));
 
-  bool value = cfg->ReadBool(_T("/force_tabs"));
   int spaceNum = cfg->ReadInt(_T("/indentation"), 4);
+  bool value = cfg->ReadBool(_T("/force_tabs"));
   if (cfg->ReadBool(_T("/use_tabs")))
     formatter.setTabIndentation(spaceNum, value);
   else
@@ -112,15 +112,16 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setPreprocDefineIndent(cfg->ReadBool(_T("/indent_preproc_define")));
   formatter.setPreprocConditionalIndent(cfg->ReadBool(_T("/indent_preproc_cond")));
   formatter.setIndentCol1CommentsMode(cfg->ReadBool(_T("/indent_col1_comments")));
-  formatter.setMaxInStatementIndentLength(cfg->ReadBool(_T("/max_instatement_indent")));
+  formatter.setMinConditionalIndentOption(cfg->ReadInt(_T("/min_conditional_indent"), 2));
+  formatter.setMaxInStatementIndentLength(cfg->ReadInt(_T("/max_instatement_indent"), 40));
 
   formatter.setBreakClosingHeaderBracketsMode(cfg->ReadBool(_T("/break_closing")));
   formatter.setBreakElseIfsMode(cfg->ReadBool(_T("/break_elseifs")));
   formatter.setAddBracketsMode(cfg->ReadBool(_T("/add_brackets")));
   formatter.setAddOneLineBracketsMode(cfg->ReadBool(_T("/add_one_line_brackets")));
-  formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
   formatter.setRemoveBracketsMode(cfg->ReadBool(_T("/remove_brackets")));
   formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
+  formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
   formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
   formatter.setCloseTemplatesMode(cfg->ReadBool(_T("/close_templates")));
   formatter.setStripCommentPrefix(cfg->ReadBool(_T("/remove_comment_prefix")));
