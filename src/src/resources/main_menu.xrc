@@ -140,6 +140,7 @@
       <object class="separator"/>
       <object class="wxMenuItem" name="idFilePrint">
         <label>Print...</label>
+        <accel>Ctrl-P</accel>
         <bitmap>images\16x16\fileprint.png</bitmap>
       </object>
       <object class="separator"/>
