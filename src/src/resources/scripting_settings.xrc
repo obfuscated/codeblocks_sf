@@ -32,7 +32,7 @@
 														<orient>wxVERTICAL</orient>
 														<object class="sizeritem">
 															<object class="wxStaticText" name="ID_STATICTEXT1">
-																<label>Enabling a script makes it run on application startup. But if you&#x0D;&#x0A;register it with a menu item too, then it does not run on startup&#x0D;&#x0A;anymore. In this case, it only runs when the specified menu item&#x0D;&#x0A;is clicked.</label>
+																<label>Enabling a script makes it run on application startup.&#x0A;But if you register it with a menu item too, then it&#x0A;does not run on startup anymore. In this case, it&#x0A;only runs when the specified menu item is clicked.</label>
 															</object>
 															<flag>wxALL|wxEXPAND</flag>
 															<border>5</border>
