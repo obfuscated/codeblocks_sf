@@ -23,7 +23,6 @@ EXTRA_DIST = 	$(srcdir)/*.cpp \
 		$(srcdir)/*.h \
 		$(srcdir)/*.cbp \
 		$(srcdir)/manifest.xml \
-		$(srcdir)/*.txt \
 		$(srcdir)/images/*.bmp \
 		$(srcdir)/images/*.xpm \
 		$(srcdir)/test/*.h \
