@@ -2,20 +2,20 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Code::Blocks Share Config" />
+		<Option title="Code::Blocks Share Config wx2.8.x" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\devel\cb_share_config" prefix_auto="0" extension_auto="1" />
-				<Option working_dir="..\..\..\devel" />
-				<Option object_output="..\..\.objs\tools\cb_share_config" />
+				<Option output="../../devel/cb_share_config" prefix_auto="0" extension_auto="1" />
+				<Option working_dir="../../../devel" />
+				<Option object_output="../../.objs/tools/cb_share_config" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -34,9 +34,9 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\..\include" />
-			<Add directory="..\..\include\tinyxml" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../include" />
+			<Add directory="../../include/tinyxml" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -45,20 +45,20 @@
 			<Add option="-mthreads" />
 			<Add library="txml" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\base\tinyxml" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="../../base/tinyxml" />
 		</Linker>
 		<Unit filename="app.cpp" />
 		<Unit filename="app.h" />
 		<Unit filename="mainframe.cpp" />
 		<Unit filename="mainframe.h" />
-		<Unit filename="wxsmith\MainFrame.wxs" />
+		<Unit filename="wxsmith/MainFrame.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="app.cpp" main="MainFrame" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxFrame wxs="wxsmith/MainFrame.wxs" src="mainframe.cpp" hdr="mainframe.h" name="MainFrame" language="CPP" />
+					<wxFrame wxs="wxsmith/MainFrame.wxs" src="mainframe.cpp" hdr="mainframe.h" fwddecl="0" i18n="1" name="MainFrame" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />
