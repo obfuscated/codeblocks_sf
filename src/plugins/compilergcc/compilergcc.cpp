@@ -1711,29 +1711,29 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     m_CdRun = fname.GetPath();
     fname.SetExt(FileFilters::EXECUTABLE_EXT);
     wxString exe_filename = fname.GetFullPath();
-    wxString cmd;
+    wxString command;
 
     if (!platform::windows)
     {
         // for non-win platforms, use m_ConsoleTerm to run the console app
         wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
         term.Replace(_T("$TITLE"), _T("'") + exe_filename + _T("'"));
-        cmd << term << strSPACE;
+        command << term << strSPACE;
     }
+
     wxString baseDir = ConfigManager::GetExecutableFolder();
+    wxString crunnStr = strQUOTE + baseDir + strSLASH + strCONSOLE_RUNNER + strQUOTE;
+    if ( wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER) )
+        command << crunnStr << strSPACE;
 
-    if (wxFileExists(baseDir + strSLASH + strCONSOLE_RUNNER))
-        cmd << baseDir << strSLASH << strCONSOLE_RUNNER << strSPACE;
-
-    if (!cmd.Replace(_T("$SCRIPT"), exe_filename))
-        // if they didn't specify $SCRIPT, append:
-        cmd << _T("\"") << exe_filename << _T("\"");
+    if (!command.Replace(_T("$SCRIPT"), exe_filename))
+        command << strQUOTE << exe_filename << strQUOTE; // if they didn't specify $SCRIPT, append:
 
     Manager::Get()->GetLogManager()->Log(_("Checking for existence: ") + exe_filename, m_PageIndex);
-    if (!wxFileExists(exe_filename))
+    if ( !wxFileExists(exe_filename) )
     {
         int ret = cbMessageBox(_("It seems that this file has not been built yet.\n"
-                                "Do you want to build it now?"),
+                                 "Do you want to build it now?"),
                                 _("Information"),
                                 wxYES_NO | wxCANCEL | wxICON_QUESTION);
         switch (ret)
@@ -1752,8 +1752,8 @@ int CompilerGCC::RunSingleFile(const wxString& filename)
     }
 
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(m_CdRun);
-    Manager::Get()->GetLogManager()->Log(F(_("Executing: %s (in %s)"), cmd.wx_str(), m_CdRun.wx_str()), m_PageIndex);
-    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, 0, 0, true));
+    Manager::Get()->GetLogManager()->Log(F(_("Executing: '%s' (in '%s')"), command.wx_str(), m_CdRun.wx_str()), m_PageIndex);
+    m_CommandQueue.Add(new CompilerCommand(command, wxEmptyString, 0, 0, true));
     return 0;
 }
 
@@ -1831,20 +1831,20 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     wxString baseDir = ConfigManager::GetExecutableFolder();
 
     wxString titleStr = platform::windows
-                        ? strQUOTE + m_pProject->GetTitle() + strQUOTE
-                        : EscapeSpaces(m_pProject->GetTitle());
+                      ? strQUOTE + m_pProject->GetTitle() + strQUOTE
+                      : EscapeSpaces(m_pProject->GetTitle());
     wxString dirStr = platform::windows
-                        ? strQUOTE + m_CdRun + strQUOTE
-                        : EscapeSpaces(m_CdRun);
+                    ? strQUOTE + m_CdRun + strQUOTE
+                    : EscapeSpaces(m_CdRun);
     wxString crunnStr = platform::windows
-                        ? strQUOTE + baseDir + strSLASH + strCONSOLE_RUNNER + strQUOTE
-                        : EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER);
+                      ? strQUOTE + baseDir + strSLASH + strCONSOLE_RUNNER + strQUOTE
+                      : EscapeSpaces(baseDir + strSLASH + strCONSOLE_RUNNER);
     wxString hostapStr = platform::windows
-                        ? strQUOTE + target->GetHostApplication() + strQUOTE
-                        : EscapeSpaces(target->GetHostApplication());
+                       ? strQUOTE + target->GetHostApplication() + strQUOTE
+                       : EscapeSpaces(target->GetHostApplication());
     wxString execStr = platform::windows
-                        ? strQUOTE + f.GetFullPath() + strQUOTE
-                        : EscapeSpaces(f.GetFullPath());
+                     ? strQUOTE + f.GetFullPath() + strQUOTE
+                     : EscapeSpaces(f.GetFullPath());
 
     // for console projects, use helper app to wait for a key after
     // execution ends...
