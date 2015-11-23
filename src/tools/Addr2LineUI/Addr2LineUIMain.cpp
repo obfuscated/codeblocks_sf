@@ -336,7 +336,7 @@ void Addr2LineUIDialog::OnOperateClick(wxCommandEvent& WXUNUSED(event))
     if (theFile.Contains(wxT(" "))) theFile = wxT("\"") + theFile + wxT("\"");
 
     // compute (initial) command line argument to addr2line
-    wxString command_args = wxT(" -e ") + theFile + wxT(" ") + theAddr;
+    wxString command_args = wxT(" -C -e ") + theFile + wxT(" ") + theAddr;
     // Now prepend the addr2line tool and compile the full command
     wxString command      = mAddr2Line + command_args;
 
