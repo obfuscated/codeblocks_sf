@@ -177,7 +177,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     XRCCTRL(*this, "btnCaretColour", wxButton)->SetBackgroundColour(caretColour);
     XRCCTRL(*this, "slCaretPeriod",  wxSlider)->SetValue(cfg->ReadInt(_T("/caret/period"), 500));
 
-    //whitespace colour
+    // whitespace colour
     wxColour whiteSpaceColour = Manager::Get()->GetColourManager()->GetColour(wxT("editor_whitespace"));
     XRCCTRL(*this, "btnWSColour", wxButton)->SetBackgroundColour(whiteSpaceColour);
 
@@ -1052,7 +1052,7 @@ void EditorConfigurationDlg::EndModal(int retCode)
         Manager::Get()->GetColourManager()->SetColour(wxT("editor_caret"), caretColour);
         cfg->Write(_T("/caret/period"),                        XRCCTRL(*this, "slCaretPeriod",  wxSlider)->GetValue());
 
-        //whitespace colour
+        // whitespace colour
         wxColour wsColour = XRCCTRL(*this, "btnWSColour", wxButton)->GetBackgroundColour();
         Manager::Get()->GetColourManager()->SetColour(wxT("editor_whitespace"), wsColour);
 

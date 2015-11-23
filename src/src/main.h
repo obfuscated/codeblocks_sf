@@ -59,13 +59,13 @@ struct ToolbarInfo
 
 class MainFrame : public wxFrame
 {
-	public:
+    public:
         // needed for binding with SqPlus
         MainFrame& operator=(cb_unused const MainFrame& rhs) // prevent assignment operator
         {
-        	cbThrow(_T("Can't use MainFrame's operator="));
-        	return *this;
-		}
+            cbThrow(_T("Can't use MainFrame's operator="));
+            return *this;
+        }
     private:
         MainFrame(cb_unused const MainFrame& rhs); // prevent copy construction
 

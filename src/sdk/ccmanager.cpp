@@ -332,7 +332,7 @@ CCManager::CCManager() :
 CCManager::~CCManager()
 {
     m_pHtml->Disconnect(wxEVT_COMMAND_HTML_LINK_CLICKED,
-                       wxHtmlLinkEventHandler(CCManager::OnHtmlLink), nullptr, this);
+                        wxHtmlLinkEventHandler(CCManager::OnHtmlLink), nullptr, this);
     m_pHtml->Destroy();
     m_pPopup->Destroy();
     wxFrame* mainFrame = Manager::Get()->GetAppFrame();
