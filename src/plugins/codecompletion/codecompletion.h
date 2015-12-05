@@ -64,6 +64,7 @@ public:
 
     /** vector containing all the function information of a single source file */
     typedef std::vector<FunctionScope> FunctionsScopeVec;
+
     /** helper class to support FunctionsScopeVec */
     typedef std::vector<int> ScopeMarksVec;
 
@@ -389,12 +390,22 @@ private:
     wxChoice*               m_Function;
     /** namespace/scope choice control, it is the first choice control */
     wxChoice*               m_Scope;
-    /** current active file's function body info */
+
+    /** current active file's function body info
+     *  @see CodeCompletion::ParseFunctionsAndFillToolbar for more details about how the data
+     *  structure of the CC's toolbar is constructed
+     */
     FunctionsScopeVec       m_FunctionsScope;
+
     /** current active file's namespace/scope info */
     NameSpaceVec            m_NameSpaces;
-    /** current active file's line info, helper member to access function scopes */
+
+    /** current active file's line info, helper member to access function scopes
+     *  @see CodeCompletion::ParseFunctionsAndFillToolbar for more details about how the data
+     *  structure of the CC's toolbar is constructed
+     */
     ScopeMarksVec           m_ScopeMarks;
+
     /** this is a "filename->info" map containing all the opening files choice info */
     FunctionsScopeMap       m_AllFunctionsScopes;
 

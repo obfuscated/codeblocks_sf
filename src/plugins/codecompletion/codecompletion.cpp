@@ -2938,19 +2938,42 @@ void CodeCompletion::OnFunction(cb_unused wxCommandEvent& event)
  *  Line 11
  *  Line 12     void ClassB::func2(){
  *  Line 13     }
+ *  Line 14
+ *  Line 15     namespace NamespaceA{
+ *  Line 16         void func3(){
+ *  Line 17         }
+ *  Line 18
+ *  Line 19         class ClassC {
+ *  Line 20
+ *  Line 21             void func4(){
+ *  Line 22             }
+ *  Line 23         }
+ *  Line 24     }
+ *  Line 25
+ *
  * @endcode
  *
  * The two key variable will be constructed like below
  * @code
- *  m_FunctionsScope is std::vector of length 5, capacity 8 = {
+ *  m_FunctionsScope is std::vector of length 9, capacity 9 =
+ *  {
  *  {StartLine = 0, EndLine = 1, ShortName = L"g_func1", Name = L"g_func1() : void", Scope = L"<global>"},
  *  {StartLine = 3, EndLine = 4, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassA::"},
  *  {StartLine = 6, EndLine = 7, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassA::"},
  *  {StartLine = 9, EndLine = 10, ShortName = L"func1", Name = L"func1() : void", Scope = L"ClassB::"},
- *  {StartLine = 12, EndLine = 13, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassB::"}}
+ *  {StartLine = 12, EndLine = 13, ShortName = L"func2", Name = L"func2() : void", Scope = L"ClassB::"},
+ *  {StartLine = 14, EndLine = 23, ShortName = L"", Name = L"", Scope = L"NamespaceA::"},
+ *  {StartLine = 16, EndLine = 17, ShortName = L"func3", Name = L"func3() : void", Scope = L"NamespaceA::"},
+ *  {StartLine = 19, EndLine = 23, ShortName = L"", Name = L"", Scope = L"NamespaceA::ClassC::"},
+ *  {StartLine = 21, EndLine = 22, ShortName = L"func4", Name = L"func4() : void", Scope = L"NamespaceA::ClassC::"}
+ *  }
  *
- *  m_ScopeMarks is std::vector of length 3, capacity 4 = {0, 1, 3}, which is the start of Scope "<global>"
- *  Scope "ClassA::" and Scope "ClassB::".
+ *  m_NameSpaces is std::vector of length 1, capacity 1 =
+ *  {{Name = L"NamespaceA::", StartLine = 14, EndLine = 23}}
+ *
+ *  m_ScopeMarks is std::vector of length 5, capacity 8 = {0, 1, 3, 5, 7}
+ * which is the start of Scope "<global>", Scope "ClassA::" and Scope "ClassB::",
+ * "NamespaceA::" and "NamespaceA::ClassC::"
  * @endcode
  *
  * Then we have wxChoice Scopes and Functions like below
