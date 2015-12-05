@@ -752,7 +752,7 @@ void ConfigManager::Delete()
 void ConfigManager::DeleteAll()
 {
     CfgMgrBldr * bld = CfgMgrBldr::Get();
-    wxString ns(cbC2U(root->Value()));
+    const wxString ns(cbC2U(root->Value()));
 
     if (!ns.IsSameAs(_T("app")))
         cbThrow(_T("Illegal attempt to invoke DeleteAll()."));
@@ -760,10 +760,9 @@ void ConfigManager::DeleteAll()
     wxCriticalSectionLocker(bld->cs);
     doc->RootElement()->Clear();
     for (NamespaceMap::iterator it = bld->namespaces.begin(); it != bld->namespaces.end(); ++it)
-    {
         delete it->second;
-        bld->namespaces.erase(it);
-    }
+
+    bld->namespaces.clear();
 }
 
 void ConfigManager::Flush()
