@@ -154,7 +154,7 @@ bool cbThreadPool::WaitingThread()
     }
   }
   else
-    m_semaphore->Post();
+    m_semaphore->Post(); // return the resource back to pool
 
   return true;
 }
@@ -182,6 +182,7 @@ cbThreadPool::cbWorkerThread::cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSe
 wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
 {
   bool workingThread = false; // keeps the state of the thread so it knows better what to do
+  // a working thread  = true means it is running a task, false means it is waiting a task
 
   while (!Aborted())
   {
@@ -189,11 +190,14 @@ wxThread::ExitCode cbThreadPool::cbWorkerThread::Entry()
     {
       workingThread = false;
 
+      // normally if pool own some resource, it will release one
       // If a call to WaitingThread returns false, we must abort
       if (!m_pPool->WaitingThread())
         break;
       // if there are still some tasks in the queue, WaitingThread() function will Post the
       // semaphore, and we don't delay much here for the Wait() function.
+      // if there are no tasks to do, then WaitingThread() does not Post the semaphore, then
+      // we are going to Idle mode now... Until some one release the resource
 
       m_semaphore->Wait(); // nothing to do... so just wait until it get the resource
     }

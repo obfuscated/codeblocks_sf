@@ -51,7 +51,7 @@ class DLLIMPORT cbThreadPool
     /** Adds a new task to the pool
       *
       * @param task The task to execute
-      * @param autodelete If true, the task will be deleted when it finish or be aborted
+      * @param autodelete If true, the task will be deleted when it finishes or be aborted
       */
     void AddTask(cbThreadedTask *task, bool autodelete = true);
 
@@ -72,6 +72,8 @@ class DLLIMPORT cbThreadPool
       * @note EVIL: Call it if you want to add all tasks first and get none executed yet.
       * If you DON'T call it, tasks will be executed as you add them (in fact it's what
       * one would expect).
+      * @note If when calling the BatchBegin(), the pool is ready running tasks, then the added
+      * task still has chance to run, so be best time to call this function is Done() returns true
       */
     void BatchBegin();
 
@@ -104,14 +106,15 @@ class DLLIMPORT cbThreadPool
         CountedPtr(const CountedPtr<T> &p) throw();
         // destructor (delete value if this was the last owner)
         ~CountedPtr() throw();
-        // assignment (unshare old and share new value)
+        /// assignment (unshare old and share new value)
         CountedPtr<T> &operator = (const CountedPtr<T> &p) throw();
-         // access the value to which the pointer refers
+        /// access the value to which the pointer refers
         T &operator * () const throw();
         T *operator -> () const throw();
 
       private:
-        void dispose(); //decrease the counter, and if it get 0, destroy both counter and ptr
+        /** decrease the counter, and if it get 0, destroy both counter and value */
+        void dispose();
     };
 
     /** A Worker Thread class.
@@ -146,12 +149,26 @@ class DLLIMPORT cbThreadPool
         void AbortTask();
 
       private:
+        /** whether is is aborted or not */
         bool m_abort;
+
+        /** point to the pool which the thread belong to */
         cbThreadPool *m_pPool;
-        // a counted semaphore shared with all the cbWorkerThread
+
+        /** a pointer to the wxSemaphore
+         *  it is a counted semaphore pointer shared with all the cbWorkerThread
+         */
         CountedPtr<wxSemaphore> m_semaphore;
+
+        /** a pointer to the running task */
         cbThreadedTask *m_pTask;
-        wxMutex m_taskMutex;// to protect the member variable accessing from multiply threads
+
+        /** to protect the member variable accessing from multiply threads
+         *  lock the access to the m_pTask
+         *  cbWorkerThread::AbortTask() which access to m_pTask may be called from poll when thread
+         *  is running
+         */
+        wxMutex m_taskMutex;
     };
 
     typedef std::vector<cbWorkerThread *> WorkerThreadsArray;
@@ -208,18 +225,24 @@ class DLLIMPORT cbThreadPool
     // true if any task added, reset to false if all the tasks is done
     bool m_taskAdded;
 
-    int m_workingThreads; // how many working threads are running tasks
+    /** how many working threads are running tasks
+     *  m_workingThreads + thread in Idle = m_concurrentThreads
+     */
+    int m_workingThreads;
 
     mutable wxMutex m_Mutex; // we better be safe, protect the change of member variables
 
     // used to synchronize the Worker Threads, the counted value is that how many threads are
     // sharing this semaphore. The semaphore's initial value is the thread number we can used to
     // run the tasks.
+    // initial counted value = m_concurrentThreads
+    // the value of semaphore = the number of threads in Idle mode
     CountedPtr<wxSemaphore> m_semaphore;
 
     void _SetConcurrentThreads(int concurrentThreads); // like SetConcurrentThreads, but non-thread safe
 
-    // awakes all threads, this is used when we are going to abort all the threads, there are two
+    // awakes all threads, so they will leave from the Idle mode to working mode
+    // this is used when we are going to abort all the threads, there are two
     // cases we need to call Broadcast(), one is the destructor, the other is the user need to
     // change the concurrent thread numbers, so we abort all the threads, and re-create them again.
     void Broadcast();
@@ -232,7 +255,7 @@ class DLLIMPORT cbThreadPool
   protected:
     friend class cbWorkerThread;
 
-    /** Returns the next task to run
+    /** Returns the next task in the queue to run
       *
       * @return Next task to run, or a NULL task (set in .task) if none
       */
@@ -240,10 +263,14 @@ class DLLIMPORT cbThreadPool
 
     /// Mechanism for the threads to tell the Pool they're running, a thread is switch from the idle
     /// mode to working mode. This is triggered by semaphore released somewhere
+    /// this function will be called in the worker thread, the thread just say: hey, I'm running now
+    /// so increase the running thread number by one
     void WorkingThread();
 
     /** Mechanism for the threads to tell the Pool they're done and will go to idle, so we can assign
       * another task to this thread.
+      * this function will be called in the worker thread, it just say: hey, I have finished one task
+      * thus, decrease the running thread number by one, and let me go to idle mode
       *
       * @return true if everything is OK, false if we should abort, this usually happens we need to
       * set a scheduled m_concurrentThreads value.
