@@ -132,11 +132,12 @@ namespace CodeCompletionHelper
         return ns1.Name == ns2.Name;
     }
 
-    // for OnGotoFunction(), search backword
-    // xxxxx  /* yyy */
-    //     ^             ^
-    //     result        begin
-
+    /// for OnGotoFunction(), search backward
+    /// @code
+    /// xxxxx  /* yyy */
+    ///     ^             ^
+    ///     result        begin
+    /// @endcode
     inline wxChar GetLastNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     {
         if (!control)
@@ -158,10 +159,10 @@ namespace CodeCompletionHelper
         return 0;
     }
 
-    // for OnGotoFunction(), search forward
-    //        /* yyy */  xxxxx
-    //     ^             ^
-    //     begin         result
+    /// for OnGotoFunction(), search forward
+    ///        /* yyy */  xxxxx
+    ///     ^             ^
+    ///     begin         result
     inline wxChar GetNextNonWhitespaceChar(cbStyledTextCtrl* control, int position)
     {
         if (!control)
@@ -185,15 +186,18 @@ namespace CodeCompletionHelper
         return 0;
     }
 
-    // Sorting in GetLocalIncludeDirs()
+    /**  Sorting in GetLocalIncludeDirs() */
     inline int CompareStringLen(const wxString& first, const wxString& second)
     {
         return second.Len() - first.Len();
     }
 
-    // for CodeCompleteIncludes()
-    // a line has some pattern like below
-    // # [space or tab] include
+    /**  for CodeCompleteIncludes()
+     * a line has some pattern like below
+     @code
+        # [space or tab] include
+     @endcode
+     */
     inline bool TestIncludeLine(wxString const &line)
     {
         size_t index = line.find(_T('#'));
@@ -214,8 +218,8 @@ namespace CodeCompletionHelper
     }
 
     /** return identifier like token string under the current cursor pointer
-     * @param NameUnderCursor the identifier like token string
-     * @param IsInclude true if it is a #include command
+     * @param[out] NameUnderCursor the identifier like token string
+     * @param[out] IsInclude true if it is a #include command
      * @return true if the underlining text is a #include command, or a normal identifier
      */
     inline bool EditorHasNameUnderCursor(wxString& NameUnderCursor, bool& IsInclude)
@@ -390,6 +394,7 @@ static const char* header_file_xpm[] = {
 // just because we don't know other plugins' used identifiers,
 // we use wxNewId() to generate a guaranteed unique ID ;), instead of enum
 // (don't forget that, especially in a plugin)
+// used in the wxFrame's main menu
 int idMenuGotoFunction          = wxNewId();
 int idMenuGotoPrevFunction      = wxNewId();
 int idMenuGotoNextFunction      = wxNewId();
@@ -399,6 +404,7 @@ int idMenuOpenIncludeFile       = wxNewId();
 int idMenuFindReferences        = wxNewId();
 int idMenuRenameSymbols         = wxNewId();
 int idViewClassBrowser          = wxNewId();
+// used in context menu
 int idCurrentProjectReparse     = wxNewId();
 int idSelectedProjectReparse    = wxNewId();
 int idSelectedFileReparse       = wxNewId();
@@ -569,7 +575,7 @@ void CodeCompletion::OnAttach()
     // both ccmanager and cc have hooks, but they don't conflict. ccmanager are mainly
     // hooking to the event such as key stroke or mouse dwell events, so the code completion, call tip
     // and tool tip will be handled in ccmanager. The other cases such as caret movement triggers
-    // updating the CC's toolbar, modifing the editor causing the real time content reparse will be
+    // updating the CC's toolbar, modifying the editor causing the real time content reparse will be
     // handled inside cc's own editor hook.
     EditorHooks::HookFunctorBase* myhook = new EditorHooks::HookFunctor<CodeCompletion>(this, &CodeCompletion::EditorEventHook);
     m_EditorHookId = EditorHooks::RegisterHook(myhook);
@@ -2981,6 +2987,9 @@ void CodeCompletion::OnFunction(cb_unused wxCommandEvent& event)
  *      <global>          ClassA::        ClassB::
  *        |- g_func1()      |- func1()      |- func1()
  *                          |- func2()      |- func2()
+ *
+ *      NamespaceA::      NamespaceA::ClassC::
+ *        |- func3()        |- func4()
  * @endcode
  */
 void CodeCompletion::ParseFunctionsAndFillToolbar()
