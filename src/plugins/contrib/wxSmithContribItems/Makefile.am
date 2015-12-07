@@ -61,7 +61,6 @@ EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxtreelist/images/*.xpm \
 		$(TREELIST_DIST) \
 		$(srcdir)/wxgbsizer/images/*.xpm \
-		$(srcdir)/wxled/images/*.bmp \
 		$(srcdir)/wxled/images/*.xpm \
 		$(srcdir)/wxSmithPlot/images/*.xpm \
 		$(srcdir)/wxSmithPlot/test/*.h \
