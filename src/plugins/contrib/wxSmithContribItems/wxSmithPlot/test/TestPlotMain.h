@@ -14,7 +14,6 @@
 #include <mathplot.h>
 #include <wx/menu.h>
 #include <wx/panel.h>
-#include <mpMarker.h>
 #include <wx/frame.h>
 //*)
 
@@ -49,23 +48,23 @@ class TestPlotFrame: public wxFrame
         //*)
 
         //(*Declarations(TestPlotFrame)
-        mpScaleX   *Axis1;
-        mpMarker   *Marker1;
-        mpScaleY   *Axis2;
-        std::vector<float>  Vector2_Y;
-        wxPanel* Panel1;
-        mpWindow* MathPlot1;
-        mpFXYVector   *Vector2;
-        std::vector<float>  Vector3_X;
-        mpFXYVector   *Vector1;
-        std::vector<float>  Vector2_X;
-        std::vector<float>  Vector4_Y;
-        mpFXYVector   *Vector4;
-        std::vector<float>  Vector1_Y;
         mpFXYVector   *Vector3;
-        std::vector<float>  Vector1_X;
-        std::vector<float>  Vector3_Y;
-        std::vector<float>  Vector4_X;
+        std::vector<double>  Vector2_X;
+        mpWindow* MathPlot1;
+        wxPanel* Panel1;
+        std::vector<double>  Vector3_X;
+        std::vector<double>  Vector3_Y;
+        std::vector<double>  Vector4_Y;
+        std::vector<double>  Vector4_X;
+        mpScaleX   *Axis1;
+        std::vector<double>  Vector2_Y;
+        mpFXYVector   *Vector1;
+        mpFXYVector   *Vector4;
+        mpScaleY   *Axis2;
+        std::vector<double>  Vector1_Y;
+        std::vector<double>  Vector1_X;
+        mpFXYVector   *Vector2;
+        mpMarker   *Marker1;
         //*)
 
         DECLARE_EVENT_TABLE()

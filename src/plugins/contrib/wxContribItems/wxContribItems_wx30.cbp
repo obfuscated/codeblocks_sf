@@ -99,6 +99,20 @@
 					<Add option="-Wl,--export-all-symbols" />
 				</Linker>
 			</Target>
+			<Target title="wxMathPlot">
+				<Option platforms="Windows;" />
+				<Option output="../../../devel30/wxmathplot" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems/wxmathplot" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Compiler>
+					<Add directory="wxmathplot" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--export-all-symbols" />
+				</Linker>
+			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
@@ -106,7 +120,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;" />
+			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;wxMathPlot;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
@@ -479,6 +493,12 @@
 		</Unit>
 		<Unit filename="wxled/ledpanel/src/wxledpanel.cpp">
 			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxmathplot/mathplot.cpp">
+			<Option target="wxMathPlot" />
+		</Unit>
+		<Unit filename="wxmathplot/mathplot.h">
+			<Option target="wxMathPlot" />
 		</Unit>
 		<Unit filename="wxthings/include/wx/things/toggle.h">
 			<Option target="wxCustomButton" />

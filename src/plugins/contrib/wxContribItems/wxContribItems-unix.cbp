@@ -96,13 +96,26 @@
 					<Add directory="wxled/led/include" />
 				</Compiler>
 			</Target>
+			<Target title="wxMathPlot">
+				<Option platforms="Unix;Mac;" />
+				<Option output="../../../devel/wxmathplot" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/wxContribItems/wxmathplot" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option createStaticLib="1" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Option projectIncludeDirsRelation="2" />
+				<Compiler>
+					<Add directory="wxmathplot" />
+				</Compiler>
+			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxTreeList;wxLED;" />
+			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxTreeList;wxLED;wxMathPlot;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
@@ -424,6 +437,15 @@
 		<Unit filename="wxled/led/include/wx/led.h">
 			<Option target="wxLED" />
 		</Unit>
+		<Unit filename="wxled/led/include/wx/stateLed.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled/led/include/xrc/xh_ledHandler.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled/led/include/xrc/xh_stateLedHandler.h">
+			<Option target="wxLED" />
+		</Unit>
 		<Unit filename="wxled/led/src/led.cpp">
 			<Option target="wxLED" />
 		</Unit>
@@ -465,6 +487,12 @@
 		</Unit>
 		<Unit filename="wxled/ledpanel/src/wxledpanel.cpp">
 			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxmathplot/mathplot.cpp">
+			<Option target="wxMathPlot" />
+		</Unit>
+		<Unit filename="wxmathplot/mathplot.h">
+			<Option target="wxMathPlot" />
 		</Unit>
 		<Unit filename="wxthings/include/wx/things/toggle.h">
 			<Option target="wxCustomButton" />

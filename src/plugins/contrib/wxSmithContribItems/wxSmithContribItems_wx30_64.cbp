@@ -39,6 +39,7 @@
 					<Add directory="../wxContribItems/wxled/lcdWindow/include" />
 					<Add directory="../wxContribItems/wxled/led/include" />
 					<Add directory="../wxContribItems/wxled/ledpanel/include" />
+					<Add directory="../wxContribItems/wxmathplot" />
 				</Compiler>
 				<Linker>
 					<Add library="wxsmithlib" />
@@ -50,6 +51,7 @@
 					<Add library="wximagepanel" />
 					<Add library="wxspeedbutton" />
 					<Add library="wxled" />
+					<Add library="wxmathplot" />
 					<Add directory="../../../devel30_64" />
 				</Linker>
 				<ExtraCommands>
@@ -121,6 +123,38 @@
 		<Unit filename="wxSmithKWIC/wxslinearmeter.h" />
 		<Unit filename="wxSmithKWIC/wxslinearregulator.cpp" />
 		<Unit filename="wxSmithKWIC/wxslinearregulator.h" />
+		<Unit filename="wxSmithPlot/images/axis16.bmp" />
+		<Unit filename="wxSmithPlot/images/axis16.xpm" />
+		<Unit filename="wxSmithPlot/images/axis32.bmp" />
+		<Unit filename="wxSmithPlot/images/axis32.xpm" />
+		<Unit filename="wxSmithPlot/images/marker16.bmp" />
+		<Unit filename="wxSmithPlot/images/marker16.xpm" />
+		<Unit filename="wxSmithPlot/images/marker32.bmp" />
+		<Unit filename="wxSmithPlot/images/marker32.xpm" />
+		<Unit filename="wxSmithPlot/images/plot16.bmp" />
+		<Unit filename="wxSmithPlot/images/plot16.xpm" />
+		<Unit filename="wxSmithPlot/images/plot32.bmp" />
+		<Unit filename="wxSmithPlot/images/plot32.xpm" />
+		<Unit filename="wxSmithPlot/images/text16.bmp" />
+		<Unit filename="wxSmithPlot/images/text16.xpm" />
+		<Unit filename="wxSmithPlot/images/text32.bmp" />
+		<Unit filename="wxSmithPlot/images/text32.xpm" />
+		<Unit filename="wxSmithPlot/images/vector16.bmp" />
+		<Unit filename="wxSmithPlot/images/vector16.xpm" />
+		<Unit filename="wxSmithPlot/images/vector32.bmp" />
+		<Unit filename="wxSmithPlot/images/vector32.xpm" />
+		<Unit filename="wxSmithPlot/wxsAxis.cpp" />
+		<Unit filename="wxSmithPlot/wxsAxis.h" />
+		<Unit filename="wxSmithPlot/wxsMarker.cpp" />
+		<Unit filename="wxSmithPlot/wxsMarker.h" />
+		<Unit filename="wxSmithPlot/wxsMathPlot.cpp" />
+		<Unit filename="wxSmithPlot/wxsMathPlot.h" />
+		<Unit filename="wxSmithPlot/wxsSmithPlot.cpp" />
+		<Unit filename="wxSmithPlot/wxsSmithPlot.h" />
+		<Unit filename="wxSmithPlot/wxsText.cpp" />
+		<Unit filename="wxSmithPlot/wxsText.h" />
+		<Unit filename="wxSmithPlot/wxsVector.cpp" />
+		<Unit filename="wxSmithPlot/wxsVector.h" />
 		<Unit filename="wxchart/wxchart16.png" />
 		<Unit filename="wxchart/wxchart16.xpm" />
 		<Unit filename="wxchart/wxchart32.png" />

@@ -130,10 +130,6 @@ if BUILD_WXSMITHAUI
 MAYBE_WXSMITHAUI=wxSmith wxSmithAui
 endif
 
-if BUILD_WXSMITHPLOT
-MAYBE_WXSMITHPLOT=wxSmith wxSmithPlot
-endif
-
 if BUILD_HEXEDITOR
 MAYBE_HEXEDITOR=HexEditor
 endif
@@ -196,8 +192,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_WXCONTRIB) \
 		$(MAYBE_WXSMITH) \
 		$(MAYBE_WXSMITHCONTRIB) \
-		$(MAYBE_WXSMITHAUI) \
-		$(MAYBE_WXSMITHPLOT)
+		$(MAYBE_WXSMITHAUI)
 
 DIST_SUBDIRS = AutoVersioning \
 		BrowseTracker \
@@ -242,7 +237,6 @@ DIST_SUBDIRS = AutoVersioning \
 		wxSmithDateTimePicker \
 		wxSmithDemo \
 		wxSmithIExplore \
-		wxSmithPlot \
 		wxSmithSTC
 
 EXTRA_DIST = rndgen

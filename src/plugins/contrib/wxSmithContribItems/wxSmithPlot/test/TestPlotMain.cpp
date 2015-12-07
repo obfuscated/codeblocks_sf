@@ -11,9 +11,9 @@
 #include <wx/msgdlg.h>
 
 //(*InternalHeaders(TestPlotFrame)
-#include <wx/font.h>
-#include <wx/intl.h>
 #include <wx/string.h>
+#include <wx/intl.h>
+#include <wx/font.h>
 //*)
 
 //helper functions
@@ -78,19 +78,19 @@ TestPlotFrame::TestPlotFrame(wxWindow* parent,wxWindowID id)
     Axis1 = new mpScaleX(_("Deg"), 4, true);
     wxPen   Axis1_PEN(wxColour(255,255,255));
     Axis1->SetPen(Axis1_PEN);
-    wxFont Axis1_FONT(10,wxSWISS,wxFONTSTYLE_NORMAL,wxNORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont Axis1_FONT(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     Axis1->SetFont(Axis1_FONT);
     MathPlot1->AddLayer(Axis1);
     Axis2 = new mpScaleY(_("Range"), 5, true);
     wxPen   Axis2_PEN(wxColour(255,255,255));
     Axis2->SetPen(Axis2_PEN);
-    wxFont Axis2_FONT(10,wxSWISS,wxFONTSTYLE_NORMAL,wxNORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont Axis2_FONT(10,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     Axis2->SetFont(Axis2_FONT);
     MathPlot1->AddLayer(Axis2);
     Marker1 = new mpMarker(_("Trig Curves"), 180, 1.5);
     wxPen   Marker1_PEN(wxColour(255,255,0));
     Marker1->SetPen(Marker1_PEN);
-    wxFont Marker1_FONT(12,wxSWISS,wxFONTSTYLE_NORMAL,wxBOLD,false,_T("Arial"),wxFONTENCODING_DEFAULT);
+    wxFont Marker1_FONT(12,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,_T("Arial"),wxFONTENCODING_DEFAULT);
     Marker1->SetFont(Marker1_FONT);
     MathPlot1->AddLayer(Marker1);
     Vector1 = new mpFXYVector(_("Sin"), 0);

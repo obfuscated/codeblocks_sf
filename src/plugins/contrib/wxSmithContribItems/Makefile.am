@@ -25,7 +25,8 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(srcdir)/../wxContribItems/wxled/gizmosled/include \
 		-I$(srcdir)/../wxContribItems/wxled/lcdWindow/include \
 		-I$(srcdir)/../wxContribItems/wxled/led/include \
-		-I$(srcdir)/../wxContribItems/wxled/ledpanel/include
+		-I$(srcdir)/../wxContribItems/wxled/ledpanel/include \
+		-I$(srcdir)/../wxContribItems/wxmathplot
 
 
 pluginlibdir = $(pkglibdir)/plugins
@@ -44,6 +45,7 @@ libwxsmithcontribitems_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(TREELIST_LA) \
 			../wxContribItems/wxthings/libwxcustombutton.la \
 			../wxContribItems/wxled/libwxled.la \
+			../wxContribItems/wxmathplot/libwxmathplot.la \
 			$(WX_LIBS)
 
 EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
@@ -59,7 +61,14 @@ EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxtreelist/images/*.xpm \
 		$(TREELIST_DIST) \
 		$(srcdir)/wxgbsizer/images/*.xpm \
+		$(srcdir)/wxled/images/*.bmp \
 		$(srcdir)/wxled/images/*.xpm \
+		$(srcdir)/wxSmithPlot/images/*.xpm \
+		$(srcdir)/wxSmithPlot/test/*.h \
+		$(srcdir)/wxSmithPlot/test/*.cpp \
+		$(srcdir)/wxSmithPlot/test/resource.rc \
+		$(srcdir)/wxSmithPlot/test/*.cbp \
+		$(srcdir)/wxSmithPlot/test/wxsmith/*.wxs \
 		$(srcdir)/*.cbp \
 		manifest.xml
 
@@ -91,6 +100,12 @@ $(TREELIST_SRC) \
 ./wxled/wxsLedNumber.cpp \
 ./wxled/wxsLedPanel.cpp \
 ./wxled/wxsStateLed.cpp \
+./wxSmithPlot/wxsAxis.cpp \
+./wxSmithPlot/wxsMarker.cpp \
+./wxSmithPlot/wxsMathPlot.cpp \
+./wxSmithPlot/wxsSmithPlot.cpp \
+./wxSmithPlot/wxsText.cpp \
+./wxSmithPlot/wxsVector.cpp \
 ./wxSmithContribItems.cpp
 
 noinst_HEADERS = \
@@ -115,4 +130,10 @@ $(TREELIST_HDR) \
 ./wxled/wxsLedNumber.h \
 ./wxled/wxsLedPanel.h \
 ./wxled/wxsStateLed.h \
+./wxSmithPlot/wxsAxis.h \
+./wxSmithPlot/wxsMarker.h \
+./wxSmithPlot/wxsMathPlot.h \
+./wxSmithPlot/wxsSmithPlot.h \
+./wxSmithPlot/wxsText.h \
+./wxSmithPlot/wxsVector.h \
 ./wxSmithContribItems.h

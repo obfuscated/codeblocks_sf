@@ -512,6 +512,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxContribItems/cb_wxKWIC.pc
 	src/plugins/contrib/wxContribItems/cb_wxtreelist.pc
 	src/plugins/contrib/wxContribItems/cb_wxled.pc
+	src/plugins/contrib/wxContribItems/cb_wxmathplot.pc
 	src/plugins/contrib/wxContribItems/wxchart/Makefile
 	src/plugins/contrib/wxContribItems/wxFlatNotebook/Makefile
 	src/plugins/contrib/wxContribItems/wxImagePanel/Makefile
@@ -527,6 +528,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxContribItems/wxled/led/include/wx/Makefile
 	src/plugins/contrib/wxContribItems/wxled/led/include/xrc/Makefile
 	src/plugins/contrib/wxContribItems/wxled/ledpanel/include/wx/Makefile
+	src/plugins/contrib/wxContribItems/wxmathplot/Makefile
 	src/plugins/contrib/wxSmith/Makefile
 	src/plugins/contrib/wxSmith/wxsmith.pc
 	src/plugins/contrib/wxSmith/plugin/Makefile
@@ -541,9 +543,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmithDateTimePicker/Makefile
 	src/plugins/contrib/wxSmithDemo/Makefile
 	src/plugins/contrib/wxSmithIExplore/Makefile
-	src/plugins/contrib/wxSmithPlot/Makefile
-	src/plugins/contrib/wxSmithPlot/wxsmithplot.pc
-	src/plugins/contrib/wxSmithPlot/wxmathplot/Makefile
 	src/plugins/contrib/wxSmithSTC/Makefile
 	src/plugins/contrib/lib_finder/Makefile
 	src/plugins/contrib/lib_finder/lib_finder/Makefile
