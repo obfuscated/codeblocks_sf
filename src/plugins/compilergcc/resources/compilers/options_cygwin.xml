@@ -1,12 +1,13 @@
 ﻿<?xml version="1.0"?>
 <!DOCTYPE CodeBlocks_compiler_options>
 <CodeBlocks_compiler_options extends="gcc">
-    <!-- NOTE: Cygwin's gcc.exe maybe a file link and
-         is not a good default name for running via cmd.exe
-         TODO: May also be gcc-4.exe!!! -->
-    <Program name="C"         value="gcc-3.exe"/>
-    <Program name="CPP"       value="g++-3.exe"/>
-    <Program name="LD"        value="g++-3.exe"/>
+    <!-- NOTE: In the old Cygwin's gcc.exe maybe a file
+         link and is not a good default name for
+         running via cmd.exe; tested good using gcc.exe
+         and g++.exe under Cygwin 2.873 32 bit -->
+    <Program name="C"         value="gcc.exe"/>
+    <Program name="CPP"       value="g++.exe"/>
+    <Program name="LD"        value="g++.exe"/>
     <Program name="DBGconfig" value="gdb_debugger:Default"/>
     <Program name="LIB"       value="ar.exe"/>
     <Program name="WINDRES"   value="windres.exe"/>

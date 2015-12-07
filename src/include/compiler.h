@@ -24,29 +24,37 @@ class wxXmlNode;
 
 /*
     Macros used in command specs:
+    (keep in sync with `src/plugins/compilergcc/resources/advanced_compiler_options.xrc`)
 
     Compiler executable: $compiler
     Resource compiler executable: $rescomp
     Linker executable: $linker
     Linker executable for static libs: $lib_linker
-    Compiler options: $options
-    Resource compiler options: $res_options
-    Linker options: $link_options
-    Include dirs: $includes
-    Resource include dirs: $res_includes
-    Library dirs: $libdirs
+    Compiler flags: $options
+    Resource compiler flags: $res_options
+    Linker flags: $link_options
+    Compiler include paths: $includes
+    Resource include paths: $res_includes
+    Linker include paths: $libdirs
     Link libraries: $libs
-    Source file: $file
+    Source file (full name): $file
+    Source file dir (no name, no ext.): $file_dir
+    Source file name (no path, no ext.): $file_name
+    Source file extension: $file_ext
     Object file: $object
     Dependency result: $dep_object
     All *linkable* object files: $link_objects
     All *linkable* flat object files: $link_flat_objects
-    Exe output file: $exe_output
-    Static lib output file: $static_output
-    Dynamic lib output file: $dynamic_output
-    Dynamic lib DEF output file: $def_output
+    All *linkable* resource object files: $link_resobjects
+    Executable output file (full name): $exe_output
+    Executable dir (no name, no ext): $exe_dir
+    Executable name (no path, no ext): $exe_name
+    Executable extension: $exe_ext
+    Static library output file: $static_output
+    Dynamic library output file: $exe_output
+    Dynamic library DEF output file: $def_output
     Resources output file: $resource_output
-    Objects output dir: $output_dir_objects
+    Objects output dir: $objects_output_dir
 
     Usual special chars apply: \t, \n, etc.
     The command output should be ready for inclusion

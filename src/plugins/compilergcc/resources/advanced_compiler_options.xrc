@@ -93,7 +93,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT5">
-												<label>Add different command line macros for different&#x0D;&#x0A;extensions. This effectively adds support for non C/C++&#x0D;&#x0A;files.&#x0D;&#x0A;In the generated files box, add macros for any files that&#x0D;&#x0A;will be generated when the command runs. These are&#x0D;&#x0A;files that will further need to be compiled by the build&#x0D;&#x0A;system.&#x0D;&#x0A;Currently, only the $$file* macros are allowed to appear&#x0D;&#x0A;in the generated files box.&#x0D;&#x0A;&#x0D;&#x0A;See docs for more info.</label>
+												<label>Add different command line macros for different&#x0D;&#x0A;extensions. This effectively adds support for non C/C++&#x0D;&#x0A;files.&#x0D;&#x0A;In the generated files box, add macros for any files that&#x0D;&#x0A;will be generated when the command runs. These are&#x0D;&#x0A;files that will further need to be compiled by the build&#x0D;&#x0A;system.&#x0D;&#x0A;Currently, only the $file* macros are allowed to appear&#x0D;&#x0A;in the generated files box.&#x0D;&#x0A;&#x0D;&#x0A;See docs for more info.</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>4</border>
@@ -127,15 +127,16 @@
 											<flag>wxALIGN_TOP</flag>
 											<size>0,0</size>
 										</object>
+										<!-- keep in sync with src/include/compiler.h -->
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT7">
-												<label>Compiler executable:&#x0A;Resource compiler executable:&#x0A;Linker executable:&#x0A;Linker executable for static libs:&#x0A;Compiler flags:&#x0A;Resource compiler flags:&#x0A;Linker flags:&#x0A;Compiler include paths:&#x0A;Resource include paths:&#x0A;Linker include paths:&#x0A;Link libraries:&#x0A;Source file (full name):&#x0A;Source file dir (no name, no ext.):&#x0A;Source file name (no path, no ext.):&#x0A;Source file extension:&#x0A;Object file:&#x0A;Dependency result:&#x0A;All *linkable* object files:&#x0A;All *linkable* flat object files:&#x0A;All *linkable* resource object files:&#x0A;Executable output file (full name):&#x0A;Executable dir (no name, no ext):&#x0A;Executable name (no path, no ext):&#x0A;Executable extension:&#x0A;Static library output file:&#x0A;Dynamic library output file:&#x0A;Dynamic library DEF output file:&#x0A;Resources output file:&#x0A;Objects Output Dir:</label>
+												<label>Compiler executable:&#x0A;Resource compiler executable:&#x0A;Linker executable:&#x0A;Linker executable for static libs:&#x0A;Compiler flags:&#x0A;Resource compiler flags:&#x0A;Linker flags:&#x0A;Compiler include paths:&#x0A;Resource include paths:&#x0A;Linker include paths:&#x0A;Link libraries:&#x0A;Source file (full name):&#x0A;Source file dir (no name, no ext.):&#x0A;Source file name (no path, no ext.):&#x0A;Source file extension:&#x0A;Object file:&#x0A;Dependency result:&#x0A;All *linkable* object files:&#x0A;All *linkable* flat object files:&#x0A;All *linkable* resource object files:&#x0A;Executable output file (full name):&#x0A;Executable dir (no name, no ext):&#x0A;Executable name (no path, no ext):&#x0A;Executable extension:&#x0A;Static library output file:&#x0A;Dynamic library output file:&#x0A;Dynamic library DEF output file:&#x0A;Resources output file:&#x0A;Objects output dir:</label>
 											</object>
 											<flag>wxALIGN_TOP</flag>
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT8">
-												<label>$$compiler&#x0A;$$rescomp&#x0A;$$linker&#x0A;$$lib&amp;linker&#x0A;$$options&#x0A;$$res__options&#x0A;$$link&amp;options&#x0A;$$includes&#x0A;$$res&amp;includes&#x0A;$$libdirs&#x0A;$$libs&#x0A;$$file&#x0A;$$file&amp;dir&#x0A;$$file&amp;name&#x0A;$$file&amp;ext&#x0A;$$object&#x0A;$$dep&amp;object&#x0A;$$link&amp;objects&#x0A;$$link&amp;flat&amp;objects&#x0A;$$link&amp;resobjects&#x0A;$$exe&amp;output&#x0A;$$exe&amp;dir&#x0A;$$exe&amp;name&#x0A;$$exe&amp;ext&#x0A;$$static&amp;output&#x0A;$$exe&amp;output&#x0A;$$def&amp;output&#x0A;$$resource&amp;output&#x0A;$$objects&amp;output&amp;dir</label>
+												<label>$compiler&#x0A;$rescomp&#x0A;$linker&#x0A;$lib__linker&#x0A;$options&#x0A;$res__options&#x0A;$link__options&#x0A;$includes&#x0A;$res__includes&#x0A;$libdirs&#x0A;$libs&#x0A;$file&#x0A;$file__dir&#x0A;$file__name&#x0A;$file__ext&#x0A;$object&#x0A;$dep__object&#x0A;$link__objects&#x0A;$link__flat__objects&#x0A;$link__resobjects&#x0A;$exe__output&#x0A;$exe__dir&#x0A;$exe__name&#x0A;$exe__ext&#x0A;$static__output&#x0A;$exe__output&#x0A;$def__output&#x0A;$resource__output&#x0A;$objects__output__dir</label>
 											</object>
 											<flag>wxALIGN_TOP</flag>
 										</object>
