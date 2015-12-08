@@ -1026,7 +1026,6 @@ inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *
                          state->GetColumnMinWidth(1),
                          state->GetColumnMinWidth(2) };
 
-#if !wxCHECK_VERSION(2,9,0)
     for (unsigned ii = 0; ii < root->GetChildCount(); ++ii)
     {
         wxPGProperty* p = root->Item(ii);
@@ -1035,7 +1034,7 @@ inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *
         width[1] = std::max(width[1], state->GetColumnFullWidth(dc, p, 1));
         width[2] = std::max(width[2], state->GetColumnFullWidth(dc, p, 2));
     }
-    for (unsigned ii = 0; ii < root->GetCount(); ++ii)
+    for (unsigned ii = 0; ii < root->GetChildCount(); ++ii)
     {
         wxPGProperty* p = root->Item(ii);
         if (p->IsExpanded())
@@ -1047,7 +1046,6 @@ inline void GetColumnWidths(wxClientDC &dc, wxPropertyGrid *grid, wxPGProperty *
             width[2] = std::max(width[2], w[2]);
         }
     }
-#endif
 
     width[0] = std::max(width[0], minWidths[0]);
     width[1] = std::max(width[1], minWidths[1]);
