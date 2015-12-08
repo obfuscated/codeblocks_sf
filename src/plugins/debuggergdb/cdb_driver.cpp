@@ -122,7 +122,7 @@ void CDB_driver::Start(cb_unused bool breakOnEntry)
 
     if (!m_pDBG->GetActiveConfigEx().GetFlag(DebuggerConfiguration::DoNotRun))
     {
-        QueueCommand(new DebuggerCmd(this, _T("g")));
+        QueueCommand(new CdbCmd_Continue(this));
         m_IsStarted = true;
     }
 }
