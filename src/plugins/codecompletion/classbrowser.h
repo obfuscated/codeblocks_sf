@@ -82,7 +82,7 @@ public:
     void  UpdateClassBrowserView(bool checkHeaderSwap = false);
 
     /** update the position sash bar between top tree and the bottom tree, the position (percentage)
-     *  of the two trees are saved in the configuration files.
+     *  of the two trees are saved in the C::B's configuration file.
      */
     void  UpdateSash();
 
@@ -105,13 +105,15 @@ private:
     /** reparse the current project */
     void OnForceReparse(wxCommandEvent& event);
 
-    /** user change the view mode (inherent or bottom tree) */
+    /** user change the view mode (View Inheritance or View the bottom tree) */
     void OnCBViewMode(wxCommandEvent& event);
 
     /** whether automatically expand the namespace option switch */
     void OnCBExpandNS(wxCommandEvent& event);
 
-    /** the view scope choice has changed */
+    /** the view scope choice has changed, user can switch between view everything, view a single
+     *  file, or view the project
+     */
     void OnViewScope(wxCommandEvent& event);
 
     /** whether print the debug log message */
@@ -124,12 +126,23 @@ private:
     void OnSearch(wxCommandEvent& event);
 
     /** string compare between the search and the token's name associated with item
+     *  @param search the search key
+     *  @param tree tree control
+     *  @param item the item id of the tree
      *  @return true if their name matches
      */
     bool FoundMatch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& item);
 
     /** get the next item of the "start" item, if no next item in the current level, go up one level
      *  @note it looks like the "search" parameter is not used in this function
+     *  @code
+     *  --node1
+     *    |--start item
+     *    |--returned item(a)
+     *  --node2
+     *    |--returned item(b)
+     *  @endcode
+     *  return the item(a) in the same level, if there is no such item, then return item(b)
      */
     wxTreeItemId FindNext(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& start);
 
@@ -144,7 +157,7 @@ private:
      */
     bool RecursiveSearch(const wxString& search, wxTreeCtrl* tree, const wxTreeItemId& parent, wxTreeItemId& result);
 
-    /** build and show a context menu when user click on the tree item "id" */
+    /** build and show a context menu when user right click on the tree item "id" */
     void ShowMenu(wxTreeCtrl* tree, wxTreeItemId id, const wxPoint& pt);
 
     /** create a thread to update the symbol tree, if the thread is already created, just pause and
@@ -152,21 +165,33 @@ private:
      */
     void ThreadedBuildTree(cbProject* activeProject);
 
+    /** expanding one node of top tree
+     *  @note that the bottom tree do not actually show a tree structure, it just list the members
+     *  of the selected node in the top tree
+     */
     void OnTreeItemExpanding(wxTreeEvent& event);
+
 #ifndef CC_NO_COLLAPSE_ITEM
+    /** collapse one node of the top tree */
     void OnTreeItemCollapsing(wxTreeEvent& event);
 #endif // CC_NO_COLLAPSE_ITEM
+
+    /** item selection changed in the top tree */
     void OnTreeSelChanged(wxTreeEvent& event);
 
     /** class browser builder thread will send notification event to the parent, this is the event
      *  handler function
+     *  currently, there are three kinds of events send from the builder thread
+     *  @see EThreadEvent for details.
      */
     void OnThreadEvent(wxCommandEvent& event);
 
 private:
+
+    /** the pointer to parser manager object */
     NativeParser*              m_NativeParser;
 
-    /** the top(main) level tree control, see above diagram for details*/
+    /** the top(main) level tree control, see above diagram for details */
     CCTreeCtrl*                m_CCTreeCtrl;
 
     /** the bottom tree control, mainly used to show the member variable and member functions */
@@ -175,7 +200,10 @@ private:
     /** remember the context menu is created from which tree control, the upper or the bottom */
     wxTreeCtrl*                m_TreeForPopupMenu;
 
+    /** the search combobox in the header of the window */
     wxComboBox*                m_Search;
+
+    /** a pointer to the associated parser object */
     ParserBase*                m_Parser;
 
     /** source file name of active editor, used for filtering(if view option is Current file's symbols) */
