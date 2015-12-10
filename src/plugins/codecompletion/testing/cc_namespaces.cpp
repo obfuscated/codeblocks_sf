@@ -51,9 +51,24 @@ namespace my_namespace
   }
 }
 
+// test the bug reported here:
+// http://forums.codeblocks.org/index.php/topic,20729.msg141341.html#msg141341
+// where, if the _GLIBCXX_PSEUDO_VISIBILITY is undefined, we still need to parse the body
+// of the namespace std
+# define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
+namespace std _GLIBCXX_VISIBILITY(default)
+{
+    class vector
+    {
+        size_t size();
+    }
+}
+
+
 //temp_        //temp_string
 //newline_     //newline_string
 //Logger.      //caption,info,warning,success,error
 //my_namespace.  //ConstInt
 //my_namespace.NameSpaces.  //MethodA,MethodB
 //my_namespace.nested_namespace. //variable
+//std::vector.size  //size

@@ -1761,95 +1761,123 @@ void ParserThread::HandleNamespace()
     }
     else
     {
-        // for namespace aliases to be parsed, we need to tell the tokenizer
-        // not to skip the usually unwanted tokens. One of those tokens is the
-        // "assignment" (=).
-        // we just have to remember to revert this setting below, or else problems will follow
-        m_Tokenizer.SetState(tsNormal);
 
-        wxString next = m_Tokenizer.PeekToken(); // named namespace
-        if (next==ParserConsts::opbrace)
+        while (true)
         {
+            // for namespace aliases to be parsed, we need to tell the tokenizer
+            // not to skip the usually unwanted tokens. One of those tokens is the
+            // "assignment" (=).
+            // we just have to remember to revert this setting below, or else problems will follow
             m_Tokenizer.SetState(tsNormal);
 
-            // use the existing copy (if any)
-            Token* newToken = TokenExists(ns, m_LastParent, tkNamespace);
-            if (!newToken)
-                newToken = DoAddToken(tkNamespace, ns, line);
-            if (!newToken)
+            wxString next = m_Tokenizer.PeekToken(); // named namespace
+            if (next==ParserConsts::opbrace)
             {
-                TRACE(_T("HandleNamespace() : Unable to create/add new token: ") + ns);
-                return;
-            }
-
-            m_Tokenizer.GetToken(); // eat {
-            int lineStart = m_Tokenizer.GetLineNumber();
-
-            Token*     lastParent = m_LastParent; // save status, will restore after DoParse()
-            TokenScope lastScope  = m_LastScope;
-
-            m_LastParent = newToken;
-            // default scope is: public for namespaces (actually no, but emulate it)
-            m_LastScope   = tsPublic;
-
-            DoParse();
-
-            m_LastParent = lastParent;
-            m_LastScope   = lastScope;
-
-            // update implementation file and lines of namespace.
-            // this doesn't make much sense because namespaces are all over the place,
-            // but do it anyway so that buffer-based parsing returns the correct values.
-            newToken->m_ImplFileIdx   = m_FileIdx;
-            newToken->m_ImplLine      = line;
-            newToken->m_ImplLineStart = lineStart;
-            newToken->m_ImplLineEnd   = m_Tokenizer.GetLineNumber();
-        }
-        else if (next==ParserConsts::equals)
-        {
-            // namespace alias; example from cxxabi.h:
-            //
-            // namespace __cxxabiv1
-            // {
-            // ...
-            // }
-            // namespace abi = __cxxabiv1; <-- we 're in this case now
-
-            m_Tokenizer.GetToken(); // eat '='
-            m_Tokenizer.SetState(tsNormal);
-
-            Token* lastParent = m_LastParent;
-            Token* aliasToken = NULL;
-
-            while (IS_ALIVE)
-            {
-                wxString aliasStr = m_Tokenizer.GetToken();
+                m_Tokenizer.SetState(tsNormal);
 
                 // use the existing copy (if any)
-                aliasToken = TokenExists(aliasStr, m_LastParent, tkNamespace);
-                if (!aliasToken)
-                    aliasToken = DoAddToken(tkNamespace, aliasStr, line);
-                if (!aliasToken)
-                    return;
-
-                if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                Token* newToken = TokenExists(ns, m_LastParent, tkNamespace);
+                if (!newToken)
+                    newToken = DoAddToken(tkNamespace, ns, line);
+                if (!newToken)
                 {
-                    m_Tokenizer.GetToken();
-                    m_LastParent = aliasToken;
+                    TRACE(_T("HandleNamespace() : Unable to create/add new token: ") + ns);
+                    return;
                 }
+
+                m_Tokenizer.GetToken(); // eat {
+                int lineStart = m_Tokenizer.GetLineNumber();
+
+                Token*     lastParent = m_LastParent; // save status, will restore after DoParse()
+                TokenScope lastScope  = m_LastScope;
+
+                m_LastParent = newToken;
+                // default scope is: public for namespaces (actually no, but emulate it)
+                m_LastScope   = tsPublic;
+
+                DoParse();
+
+                m_LastParent = lastParent;
+                m_LastScope   = lastScope;
+
+                // update implementation file and lines of namespace.
+                // this doesn't make much sense because namespaces are all over the place,
+                // but do it anyway so that buffer-based parsing returns the correct values.
+                newToken->m_ImplFileIdx   = m_FileIdx;
+                newToken->m_ImplLine      = line;
+                newToken->m_ImplLineStart = lineStart;
+                newToken->m_ImplLineEnd   = m_Tokenizer.GetLineNumber();
+
+                // the namespace body is correctly parsed
+                break;
+            }
+            else if (next==ParserConsts::equals)
+            {
+                // namespace alias; example from cxxabi.h:
+                //
+                // namespace __cxxabiv1
+                // {
+                // ...
+                // }
+                // namespace abi = __cxxabiv1; <-- we 're in this case now
+
+                m_Tokenizer.GetToken(); // eat '='
+                m_Tokenizer.SetState(tsNormal);
+
+                Token* lastParent = m_LastParent;
+                Token* aliasToken = NULL;
+
+                while (IS_ALIVE)
+                {
+                    wxString aliasStr = m_Tokenizer.GetToken();
+
+                    // use the existing copy (if any)
+                    aliasToken = TokenExists(aliasStr, m_LastParent, tkNamespace);
+                    if (!aliasToken)
+                        aliasToken = DoAddToken(tkNamespace, aliasStr, line);
+                    if (!aliasToken)
+                        return;
+
+                    if (m_Tokenizer.PeekToken() == ParserConsts::dcolon)
+                    {
+                        m_Tokenizer.GetToken();
+                        m_LastParent = aliasToken;
+                    }
+                    else
+                        break;
+                }
+
+                aliasToken->m_Aliases.Add(ns);
+                m_LastParent = lastParent;
+
+                // the namespace alias statement is correctly parsed
+                break;
+            }
+            else
+            {
+                m_Tokenizer.SetState(tsNormal);
+                // probably some kind of error in code ?
+                SkipToOneOfChars(ParserConsts::semicolonopbrace);
+
+                // in case of the code:
+                //
+                //    # define _GLIBCXX_VISIBILITY(V) _GLIBCXX_PSEUDO_VISIBILITY(V)
+                //    namespace std _GLIBCXX_VISIBILITY(default)
+                //    {
+                //        class vector
+                //        {
+                //            size_t size();
+                //        }
+                //    }
+                // we still want to parse the body of the namespace, but skip the tokens before "{"
+                m_Tokenizer.UngetToken();
+                wxString peek = m_Tokenizer.PeekToken();
+                if(peek == ParserConsts::opbrace)
+                    continue;
                 else
                     break;
             }
-
-            aliasToken->m_Aliases.Add(ns);
-            m_LastParent = lastParent;
-        }
-        else
-        {
-            m_Tokenizer.SetState(tsNormal);
-            // probably some kind of error in code ?
-            SkipToOneOfChars(ParserConsts::semicolonopbrace);
-        }
+        } // while(true)
     }
 }
 
