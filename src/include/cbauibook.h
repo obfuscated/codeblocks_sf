@@ -393,6 +393,11 @@ class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
          */
         static int s_advanceDirection;
 
+    private:
+        // the following two using directives remove the "-Woverloaded-virtual" warnings
+        using wxAuiNotebook::AddPage;
+        using wxAuiNotebook::InsertPage;
+
         DECLARE_EVENT_TABLE()
 };
 
