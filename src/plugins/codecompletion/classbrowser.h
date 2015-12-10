@@ -62,9 +62,6 @@ public:
     /** class destructor */
     virtual ~ClassBrowser();
 
-    /** return a pointer to the top tree control */
-    const wxTreeCtrl* GetCCTreeCtrl() { return m_CCTreeCtrl; }
-
     /** Set the Parser object associated with the class browser
      *
      *  the browser tree must access to the TokenTree, so it needs a ParserBase pointer
