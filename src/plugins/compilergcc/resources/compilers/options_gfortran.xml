@@ -118,7 +118,8 @@
         <Option name="No implicit typing is allowed"
                 option="-fimplicit-none"/>
         <Option name="Enable the OpenMP extensions"
-                option="-fopenmp"/>
+                option="-fopenmp"
+                additionalLibs="-fopenmp"/>
         <Option name="Strict conformance to the Fortran 95 standard"
                 option="-std=f95"
                 supersedes="-std=f2003 -std=f2008"/>
@@ -177,7 +178,7 @@
            msg="4;5"
            file="1"
            line="2">
-        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)\.([0-9]+):.*(Fatal Error:.*)at \([0-9]+\)(.*)]]>
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)[\.:]{1}([0-9]+):.*(Fatal Error:.*)at \([0-9]+\)(.*)]]>
     </RegEx>
     <RegEx name="Fatal error"
            type="error"
@@ -196,7 +197,7 @@
            msg="0"
            file="1"
            line="2">
-        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)(\.[0-9]+:)]]>
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)([\.:]{1}[0-9]+:)[\t ]*$]]>
     </RegEx>
     <RegEx name="Compiler error"
            type="error"
