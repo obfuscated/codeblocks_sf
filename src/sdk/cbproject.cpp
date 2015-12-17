@@ -497,6 +497,9 @@ bool cbProject::SaveLayout()
     if (m_Filename.IsEmpty())
         return false;
 
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_project_layout"), true) == false)
+        return true;
+
     wxFileName fname(m_Filename);
     fname.SetExt(_T("layout"));
     ProjectLayoutLoader loader(this);
@@ -505,79 +508,83 @@ bool cbProject::SaveLayout()
 
 bool cbProject::LoadLayout()
 {
-   if (m_Filename.IsEmpty())
+    if (m_Filename.IsEmpty())
         return false;
-    int openmode = Manager::Get()->GetConfigManager(_T("project_manager"))->ReadInt(_T("/open_files"), (long int)1);
-    bool result = false;
 
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_project_layout"), true) == false)
+        return true;
+
+    int openmode = Manager::Get()->GetConfigManager(_T("project_manager"))->ReadInt(_T("/open_files"), (long int)1);
     if (openmode==2)
-        result = true; // Do not open any files
-    else
+        return true; // Do not open any files
+
+    Manager::Get()->GetEditorManager()->HideNotebook();
+
+    bool result = false;
+    if (openmode == 0) // Open all files
     {
-        Manager::Get()->GetEditorManager()->HideNotebook();
-        if (openmode == 0) // Open all files
+        FilesList::iterator it = m_Files.begin();
+        while (it != m_Files.end())
         {
+            ProjectFile* f = *it++;
+            Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
+        }
+        result = true;
+    }
+    else if (openmode == 1)// Open last open files
+    {
+        wxFileName fname(m_Filename);
+        fname.SetExt(_T("layout"));
+        ProjectLayoutLoader loader(this);
+        if (loader.Open(fname.GetFullPath()))
+        {
+            typedef std::map<int, ProjectFile*> open_files_map;
+            open_files_map open_files;
+
+            // Get all files to open and sort them according to their tab-position:
             FilesList::iterator it = m_Files.begin();
             while (it != m_Files.end())
             {
                 ProjectFile* f = *it++;
-                Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath(),0,f);
+                // do not try to open files that do not exist, but have fileOpen set to true
+                if (f->editorOpen && wxFileExists(f->file.GetFullPath()))
+                    open_files[f->editorTabPos] = f;
+                else
+                    f->editorOpen = false;
             }
-            result = true;
-        }
-        else if (openmode == 1)// Open last open files
-        {
-            wxFileName fname(m_Filename);
-            fname.SetExt(_T("layout"));
-            ProjectLayoutLoader loader(this);
-            if (loader.Open(fname.GetFullPath()))
+
+            // Load all requested files
+            std::vector<LoaderBase*> filesInMemory;
+            for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
+                filesInMemory.push_back(Manager::Get()->GetFileManager()->Load((*ofm_it).second->file.GetFullPath()));
+
+            // Open all requested files:
+            size_t i = 0;
+            for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
             {
-                typedef std::map<int, ProjectFile*> open_files_map;
-                open_files_map open_files;
-
-                // Get all files to open and sort them according to their tab-position:
-                FilesList::iterator it = m_Files.begin();
-                while (it != m_Files.end())
-                {
-                    ProjectFile* f = *it++;
-                    // do not try to open files that do not exist, but have fileOpen set to true
-                    if (f->editorOpen && wxFileExists(f->file.GetFullPath()))
-                        open_files[f->editorTabPos] = f;
-                    else
-                        f->editorOpen = false;
-                }
-
-                // Load all requested files
-                std::vector<LoaderBase*> filesInMemory;
-                for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
-                    filesInMemory.push_back(Manager::Get()->GetFileManager()->Load((*ofm_it).second->file.GetFullPath()));
-
-                // Open all requested files:
-                size_t i = 0;
-                for (open_files_map::iterator ofm_it = open_files.begin(); ofm_it != open_files.end(); ++ofm_it)
-                {
-                    cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filesInMemory[i], (*ofm_it).second->file.GetFullPath(),0,(*ofm_it).second);
-                    if (ed)
-                        ed->SetProjectFile((*ofm_it).second);
-                    ++i;
-                }
-
-                ProjectFile* f = loader.GetTopProjectFile();
-                if (f)
-                {
-                    Manager::Get()->GetLogManager()->DebugLog(_T("Top Editor: ") + f->file.GetFullPath());
-                    EditorBase* eb = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
-                    if (eb)
-                        eb->Activate();
-                }
-                loader.LoadNotebookLayout();
+                cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filesInMemory[i], (*ofm_it).second->file.GetFullPath(),0,(*ofm_it).second);
+                if (ed)
+                    ed->SetProjectFile((*ofm_it).second);
+                ++i;
             }
-            result = true;
+
+            ProjectFile* f = loader.GetTopProjectFile();
+            if (f)
+            {
+                Manager::Get()->GetLogManager()->DebugLog(_T("Top Editor: ") + f->file.GetFullPath());
+                EditorBase* eb = Manager::Get()->GetEditorManager()->Open(f->file.GetFullPath());
+                if (eb)
+                    eb->Activate();
+            }
+            loader.LoadNotebookLayout();
         }
-        else
-            result = false;
-        Manager::Get()->GetEditorManager()->ShowNotebook();
+        result = true;
     }
+    else
+        result = false;
+
+    Manager::Get()->GetEditorManager()->ShowNotebook();
+
     return result;
 }
 

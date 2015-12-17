@@ -234,14 +234,12 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         elem = elem->NextSiblingElement();
     }
 
-    if (major >= 1)
+    if (   (major >= 1)
+        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), true)) )
     {
         elem = root->FirstChildElement("EditorTabsLayout");
         if (elem)
-        {
             m_NotebookLayout = cbC2U(elem->Attribute("layout"));
-        }
-        // else ?!
     }
 
     return true;
@@ -321,7 +319,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
         }
     }
 
-    if (true) // make configurable ?
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), true))
     {
         TiXmlElement *el =
             static_cast<TiXmlElement*>(

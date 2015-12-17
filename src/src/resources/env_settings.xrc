@@ -146,7 +146,7 @@
 								</object>
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer">
-										<cols>2</cols>
+										<cols>3</cols>
 										<rows>1</rows>
 										<vgap>4</vgap>
 										<hgap>4</hgap>
@@ -160,6 +160,31 @@
 												<style>wxRA_SPECIFY_COLS</style>
 											</object>
 											<flag>wxEXPAND</flag>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticBoxSizer">
+												<label>Layout options</label>
+												<orient>wxVERTICAL</orient>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkProjectLayout">
+														<label>Save/restore project layout</label>
+														<checked>1</checked>
+													</object>
+													<flag>wxTOP|wxEXPAND</flag>
+													<border>4</border>
+												</object>
+												<object class="sizeritem">
+													<object class="wxCheckBox" name="chkEditorLayout">
+														<label>Save/restore editor layout</label>
+														<checked>1</checked>
+													</object>
+													<flag>wxTOP|wxEXPAND</flag>
+													<border>4</border>
+												</object>
+											</object>
+											<flag>wxEXPAND</flag>
+											<border>5</border>
 											<option>1</option>
 										</object>
 										<object class="sizeritem">
