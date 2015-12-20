@@ -14,6 +14,7 @@
     #include <wx/fileconf.h>
     #include <wx/intl.h>
     #include "manager.h"
+    #include "configmanager.h"
     #include "projectmanager.h"
     #include "logmanager.h"
     #include "editormanager.h"
