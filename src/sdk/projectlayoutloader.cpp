@@ -236,7 +236,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     }
 
     if (   (major >= 1)
-        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), true)) )
+        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
     {
         elem = root->FirstChildElement("EditorTabsLayout");
         if (elem)
@@ -320,7 +320,7 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
         }
     }
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), true))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false))
     {
         TiXmlElement *el =
             static_cast<TiXmlElement*>(

@@ -128,7 +128,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkInvalidTargets",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/ignore_invalid_targets"), true));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
     XRCCTRL(*this, "chkProjectLayout",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/enable_project_layout"),  true));
-    XRCCTRL(*this, "chkEditorLayout",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/enable_editor_layout"),   true));
+    XRCCTRL(*this, "chkEditorLayout",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/enable_editor_layout"),   false));
 
     wxTextCtrl* txt = XRCCTRL(*this, "txtConsoleShell", wxTextCtrl);
     txt->SetValue(cfg->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL));

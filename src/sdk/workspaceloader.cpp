@@ -249,7 +249,7 @@ bool WorkspaceLoader::SaveLayout(const wxString& filename)
     }
     // else No workspace present to save.
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), true))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false))
     {
         TiXmlElement *el =
             static_cast<TiXmlElement*>(
@@ -372,7 +372,7 @@ bool WorkspaceLoader::LoadLayout(const wxString& filename)
     // else XML element 'PreferredTarget' not found?!
 
     if (   (major >= 1)
-        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), true)) )
+        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
     {
         if (TiXmlElement* el = root->FirstChildElement("EditorTabsLayout"))
         {

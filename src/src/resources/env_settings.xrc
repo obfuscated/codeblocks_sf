@@ -177,7 +177,7 @@
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="chkEditorLayout">
 														<label>Save/restore editor layout</label>
-														<checked>1</checked>
+														<checked>0</checked>
 													</object>
 													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>

@@ -580,8 +580,6 @@ bool cbProject::LoadLayout()
         }
         result = true;
     }
-    else
-        result = false;
 
     Manager::Get()->GetEditorManager()->ShowNotebook();
 
