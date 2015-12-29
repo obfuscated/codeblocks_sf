@@ -38,7 +38,7 @@ BasicSearchTreeIterator::BasicSearchTreeIterator(BasicSearchTree* tree) :
 
 bool BasicSearchTreeIterator::IsValid()
 {
-    if (!this || !m_Tree || m_LastTreeSize!= m_Tree->m_Nodes.size() || m_LastAddedNode != m_Tree->m_Nodes[m_LastTreeSize - 1])
+    if (!m_Tree || m_LastTreeSize!= m_Tree->m_Nodes.size() || m_LastAddedNode != m_Tree->m_Nodes[m_LastTreeSize - 1])
         return false;
     return true;
 }

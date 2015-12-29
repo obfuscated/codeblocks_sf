@@ -76,8 +76,6 @@ wxTreeItemId cbTreeCtrl::GetPrevVisible(const wxTreeItemId& item) const
 */
 void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
 {
-    if (!this) return;
-
     int flags;
     HitTest(wxPoint(event.GetX(), event.GetY()), flags);
     if (flags & (wxTREE_HITTEST_ABOVE | wxTREE_HITTEST_BELOW | wxTREE_HITTEST_NOWHERE))
@@ -97,7 +95,7 @@ void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
 void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
 {
     // Don't care about special key combinations
-    if ( !this || (event.GetModifiers()!=wxMOD_NONE) )
+    if (event.GetModifiers()!=wxMOD_NONE)
     {
         event.Skip();
         return;

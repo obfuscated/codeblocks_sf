@@ -129,20 +129,6 @@ public:
         die = true;
     };
 
-    /*
-    * This function is inherently unsafe!
-    * Also, if used on a thread belonging to a pool, it will not do what you think it does!
-    * Do not use this function unless you are sure you really know what you are doing.
-    */
-    void MurderDeathKill()
-    {
-        Die();
-        wxMilliSleep(0);
-        wxMilliSleep(0);
-
-        if (this && IsRunning())
-            Kill();
-    };
 
     ExitCode Entry()
     {
