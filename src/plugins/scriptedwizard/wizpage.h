@@ -94,7 +94,6 @@ class WizFilePathPanel : public WizPageBase
         wxString m_Filename;
         wxString m_HeaderGuard;
         bool m_AddToProject;
-        int m_TargetIndex;
 };
 
 class WizProjectPathPanel : public WizPageBase

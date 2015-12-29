@@ -635,7 +635,6 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         void OnCompilerFinished(CodeBlocksEvent& event);
         void OnEditorHook(cbEditor* editor, wxScintillaEvent& event);
     private:
-        wxToolBar *m_toolbar;
         wxString m_PreviousLayout;
         cbCompilerPlugin* m_pCompiler;
         bool m_WaitingCompilerToFinish;

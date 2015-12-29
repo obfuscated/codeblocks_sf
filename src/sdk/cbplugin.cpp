@@ -125,7 +125,6 @@ cbCompilerPlugin::cbCompilerPlugin()
 /////
 
 cbDebuggerPlugin::cbDebuggerPlugin(const wxString &guiName, const wxString &settingsName) :
-    m_toolbar(nullptr),
     m_pCompiler(nullptr),
     m_WaitingCompilerToFinish(false),
     m_EditorHookId(-1),

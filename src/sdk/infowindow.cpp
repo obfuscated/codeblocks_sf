@@ -129,7 +129,7 @@ class Stacker
 static Stacker stacker;
 
 static std::list<wxString> active_messages;
-static unsigned lastDisplay = std::numeric_limits<long>::max();
+static unsigned lastDisplay = std::numeric_limits<unsigned>::max();
 static wxRect displayGeometry;
 }
 

@@ -30,7 +30,6 @@ class FindReplace
     private:
         cbFindReplaceData   *m_LastFindReplaceData;
         cbSearchResultsLog  *m_pSearchLog;
-        int                  m_SearchLogIndex;
 };
 
 #endif // _CODEBLOCKS_SRC_FIND_REPLACE_H_
