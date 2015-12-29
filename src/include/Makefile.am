@@ -94,7 +94,6 @@ ALLHEADERS = annoyingdialog.h \
 				loggers.h \
 				logmanager.h \
 				macrosmanager.h \
-				managedthread.h \
 				manager.h \
 				menuitemsmanager.h \
 				misctreeitemdata.h \

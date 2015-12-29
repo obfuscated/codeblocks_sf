@@ -952,9 +952,6 @@
 		<Unit filename="include/macrosmanager.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/managedthread.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/manager.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2670,9 +2667,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/macrosmanager.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/managedthread.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/manager.cpp">
