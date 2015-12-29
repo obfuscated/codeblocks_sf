@@ -441,6 +441,10 @@ void ProjectManagerUI::FinishLoadingWorkspace(cbProject* activeProject, const wx
 
 void ProjectManagerUI::SwitchToProjectsPage()
 {
+    CodeBlocksDockEvent showEvent(cbEVT_SHOW_DOCK_WINDOW);
+    showEvent.pWindow = m_pNotebook;
+    Manager::Get()->ProcessEvent(showEvent);
+
     int page = m_pNotebook->GetPageIndex(m_pTree);
     if (page != wxNOT_FOUND)
         m_pNotebook->SetSelection(page);
