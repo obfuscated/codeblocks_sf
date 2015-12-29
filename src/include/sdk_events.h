@@ -341,9 +341,9 @@ extern EVTIMPORT const wxEventType cbEVT_WORKSPACE_CHANGED;
 extern EVTIMPORT const wxEventType cbEVT_WORKSPACE_LOADING_COMPLETE;
 #define EVT_WORKSPACE_LOADING_COMPLETE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_LOADING_COMPLETE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_WORKSPACE_CLOSING_BEGIN;
-#define EVT_WORKSPACE_CLOSING_BEGIN(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_CLOSE_BEGIN, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_WORKSPACE_CLOSING_BEGIN(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_CLOSING_BEGIN, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_WORKSPACE_CLOSING_COMPLETE;
-#define EVT_WORKSPACE_CLOSING_COMPLETE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_CLOSE_COMPLETE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+#define EVT_WORKSPACE_CLOSING_COMPLETE(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_WORKSPACE_CLOSING_COMPLETE, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 
 // build targets events
 extern EVTIMPORT const wxEventType cbEVT_BUILDTARGET_ADDED;
