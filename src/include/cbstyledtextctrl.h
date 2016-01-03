@@ -31,14 +31,37 @@ class DLLIMPORT cbStyledTextCtrl : public wxScintilla
         wxString GetLastSelectedText() const {return m_lastSelectedText;}
 
         void EnableTabSmartJump(bool enable = true);
+        /** Is style classified as character for current language? */
         bool IsCharacter(int style);
+        /** Is style classified as string for current language? */
         bool IsString(int style);
+        /** Is style classified as preprocessor for current language? */
         bool IsPreprocessor(int style);
+        /** Is style classified as comment for current language? */
         bool IsComment(int style);
+        /** Cancel calltip only if not jumping braces via tab. */
         void CallTipCancel();
+        /** @todo Remove? This is undocumented and unexpected by users. */
         bool IsBraceShortcutActive();
 
+        /**
+         * @brief Automated braces/quotes completion.
+         *
+         * Add a close brace when an open brace is typed, but there is not
+         * already a following close brace.
+         * Allow typing a brace/quote to overwrite if it is already the next
+         * character in the editor.
+         *
+         * @param ch The last character typed.
+         */
         void DoBraceCompletion(const wxChar& ch);
+        /**
+         * @brief Put braces/quotes around the current selection in the editor.
+         *
+         * @param ch The last character typed.
+         * @return True if selection brace completion was applicable and
+         *         edited the text.
+         */
         bool DoSelectionBraceCompletion(const wxChar& ch);
 
         static std::map<int, std::set<int> > &GetCharacterLexerStyles();
@@ -46,6 +69,12 @@ class DLLIMPORT cbStyledTextCtrl : public wxScintilla
         static std::map<int, std::set<int> > &GetPreprocessorLexerStyles();
         static std::map<int, std::set<int> > &GetCommentLexerStyles();
 
+        /**
+         * @brief Scroll minimum amount such that 2 lines above and below
+         *        @c line are shown.
+         *
+         * @param line The line to scroll focus around.
+         */
         void MakeNearbyLinesVisible(int line);
     private:
         void OnContextMenu(wxContextMenuEvent& event);

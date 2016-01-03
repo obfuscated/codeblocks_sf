@@ -12,6 +12,11 @@
 
 //namespace cb
 //{
+    /**
+     * @brief sprintf-like function
+     * @warning NOT thread safe within a single compilation unit due to use of
+     *          static @c temp_string.
+     */
     inline wxString F(const wxChar* msg, ...)
     {
         va_list arg_list;

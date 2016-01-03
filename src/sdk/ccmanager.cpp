@@ -36,6 +36,7 @@
 
 namespace CCManagerHelper
 {
+    // shift points if they are past the insertion/deletion point
     inline void RipplePts(int& ptA, int& ptB, int len, int delta)
     {
         if (ptA > len - delta)
@@ -58,6 +59,7 @@ namespace CCManagerHelper
         return lnEnd;
     }
 
+    // test if an editor position is displayed
     inline bool IsPosVisible(int pos, wxScintilla* stc)
     {
         const int dist = stc->VisibleFromDocLine(stc->LineFromPosition(pos)) - stc->GetFirstVisibleLine();

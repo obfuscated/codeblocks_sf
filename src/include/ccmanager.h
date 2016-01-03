@@ -109,9 +109,16 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         /** handle the CC related menu click */
         void OnMenuSelect(wxCommandEvent& event);
 
+        /** CC launched in the same state as last run, display via cached data */
         void DoBufferedCC(cbStyledTextCtrl* stc);
+
+        /** hide the documentation popup */
         void DoHidePopup();
+
+        /** show the documentation popup */
         void DoShowDocumentation(cbEditor* ed);
+
+        /** update which tip to show next and where to show it */
         void DoUpdateCallTip(cbEditor* ed);
 
         /** user click the next or previous small button of the tip window */

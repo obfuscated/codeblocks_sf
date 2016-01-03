@@ -159,6 +159,7 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
     {
         case _T('I'):
         {
+            // todo: this feature is undocumented and unexpected, remove?
             if (event.GetModifiers() == wxMOD_ALT)
                 m_braceShortcutState = true;
             break;
