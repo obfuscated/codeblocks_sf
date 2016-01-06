@@ -546,9 +546,11 @@ function SilentVerifyLibFile(dir, file)
 {
     return (   IO.FileExists(dir + wxFILE_SEP_PATH + file)
             || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".dll.a"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file)
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".dll.a"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la"))
             || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so")) );
