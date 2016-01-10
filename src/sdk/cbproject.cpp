@@ -16,7 +16,6 @@
 #include <wx/choicdlg.h>
 #include <wx/filedlg.h>
 #include <wx/filename.h>
-#include <wx/textdlg.h>
 
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
@@ -1255,7 +1254,7 @@ bool cbProject::ExportTargetAsProject(const wxString& targetName)
         return false;
 
     // ask for the new project's name
-    wxString newName = wxGetTextFromUser(_("Please enter the new project's name (no path, no extension)."),
+    wxString newName = cbGetTextFromUser(_("Please enter the new project's name (no path, no extension)."),
                                         _("Export target as new project"),
                                         target->GetTitle());
     if (newName.IsEmpty())

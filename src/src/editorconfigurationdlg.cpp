@@ -758,7 +758,7 @@ void EditorConfigurationDlg::OnEditFilemasks(cb_unused wxCommandEvent& event)
 {
     if (m_Theme && m_Lang != HL_NONE)
     {
-        wxString masks = wxGetTextFromUser(_("Edit filemasks (use commas to separate them - case insensitive):"),
+        wxString masks = cbGetTextFromUser(_("Edit filemasks (use commas to separate them - case insensitive):"),
                                         m_Theme->GetLanguageName(m_Lang),
                                         GetStringFromArray(m_Theme->GetFileMasks(m_Lang), _T(",")));
         if (!masks.IsEmpty())

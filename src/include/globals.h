@@ -330,6 +330,13 @@ extern DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxStr
                                             const wxSize &size = wxSize(300, 300),
                                             int initialSelection = 0);
 
+extern DLLIMPORT const char *cbGetTextFromUserPromptStr;
+
+extern DLLIMPORT wxString cbGetTextFromUser(const wxString &message,
+                                            const wxString &caption = cbGetTextFromUserPromptStr,
+                                            const wxString &default_value = wxEmptyString, wxWindow *parent = NULL,
+                                            int x = wxDefaultCoord, int y = wxDefaultCoord, bool centre = true);
+
 inline void NotifyMissingFile(const wxString &name)
 {
     wxString msg;

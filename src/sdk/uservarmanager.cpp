@@ -24,12 +24,12 @@
     #include <wx/intl.h>
     #include <wx/xrc/xmlres.h>
     #include <wx/textctrl.h>
+    #include <wx/textdlg.h>
     #include <wx/splitter.h>
 #endif
 
 #include "annoyingdialog.h"
 #include <wx/choice.h>
-#include <wx/textdlg.h> //wxTextEntryDialog
 
 #if wxCHECK_VERSION(2, 9, 0)
 #include <wx/unichar.h>

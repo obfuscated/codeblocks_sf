@@ -275,7 +275,7 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
 
             wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
             msgMan->DebugLog(_T("Found macro: ") + macroName);
-            wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"),
+            wxString macro = cbGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"),
                                                _("Macro substitution"));
             if (macro.IsEmpty())
                 return;

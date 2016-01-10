@@ -1099,7 +1099,7 @@ void ProjectManagerUI::OnRenameWorkspace(cb_unused wxCommandEvent& event)
     cbWorkspace* wkspc = Manager::Get()->GetProjectManager()->GetWorkspace();
     if (wkspc)
     {
-        wxString text = wxGetTextFromUser(_("Please enter the new name for the workspace:"),
+        wxString text = cbGetTextFromUser(_("Please enter the new name for the workspace:"),
                                           _("Rename workspace"),
                                           wkspc->GetTitle());
         if (!text.IsEmpty())
@@ -2047,7 +2047,7 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
 
 void ProjectManagerUI::OnAddVirtualFolder(cb_unused wxCommandEvent& event)
 {
-    wxString fld = wxGetTextFromUser(_("Please enter the new virtual folder path:"), _("New virtual folder"));
+    wxString fld = cbGetTextFromUser(_("Please enter the new virtual folder path:"), _("New virtual folder"));
     if (fld.IsEmpty())
         return;
 

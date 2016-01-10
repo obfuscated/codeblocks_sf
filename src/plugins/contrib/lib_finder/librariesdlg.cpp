@@ -823,7 +823,7 @@ void LibrariesDlg::OnButton1Click(wxCommandEvent& /*event*/)
 {
     StoreConfiguration();
 
-    wxString ShortCode = wxGetTextFromUser( _("Enter Shortcode for new library"), _("New library"), wxEmptyString, this );
+    wxString ShortCode = cbGetTextFromUser( _("Enter Shortcode for new library"), _("New library"), wxEmptyString, this );
     if ( ShortCode.IsEmpty() ) return;
 
     // Detect whether such shortcode is used

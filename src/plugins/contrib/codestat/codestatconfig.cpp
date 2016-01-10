@@ -8,16 +8,16 @@
  **************************************************************/
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/combobox.h>
-#include <wx/event.h>
-#include <wx/stattext.h>
-#include <wx/textctrl.h>
-#include <wx/xrc/xmlres.h>
-#include "configmanager.h"
-#include "globals.h"
-#include "manager.h"
+    #include <wx/combobox.h>
+    #include <wx/event.h>
+    #include <wx/stattext.h>
+    #include <wx/textctrl.h>
+    #include <wx/textdlg.h>
+    #include <wx/xrc/xmlres.h>
+    #include "configmanager.h"
+    #include "globals.h"
+    #include "manager.h"
 #endif
-#include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 #include "codestatconfig.h"
 
@@ -163,6 +163,7 @@ void CodeStatConfigDlg::PrintLanguageInfo(int id)
 void CodeStatConfigDlg::Add(wxCommandEvent& /*event*/)
 {
    wxTextEntryDialog dialog(this, _("Enter name of the new language:"), _("New language"), _T(""), wxOK|wxCANCEL);
+   PlaceWindow(&dialog);
    if (dialog.ShowModal() == wxID_OK)
    {
        if (nb_languages < NB_FILETYPES_MAX)

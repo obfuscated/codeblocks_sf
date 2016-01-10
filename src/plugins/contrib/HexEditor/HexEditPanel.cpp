@@ -45,7 +45,6 @@
 #include <wx/filename.h>
 #include <wx/numdlg.h>
 #include <wx/sizer.h>
-#include <wx/textdlg.h>
 #include <wx/choicdlg.h>
 
 #include <manager.h>
@@ -1415,7 +1414,7 @@ void HexEditPanel::ProcessGoto()
     wxString str = wxString::Format( _T("%lld"), m_Current );
     for ( ;; )
     {
-        str = wxGetTextFromUser(
+        str = cbGetTextFromUser(
             _("Enter offset\n"
               "\n"
               "Available forms are:\n"

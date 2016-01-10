@@ -17,7 +17,6 @@
   #include <wx/checklst.h>
   #include <wx/choice.h>
   #include <wx/panel.h>
-  #include <wx/textdlg.h>
   #include <wx/xrc/xmlres.h>
 
   #include "globals.h"
@@ -281,7 +280,7 @@ void EnvVarsConfigDlg::OnCreateSetClick(wxCommandEvent& WXUNUSED(event))
   if (!choSet)
     return;
 
-  wxString set = wxGetTextFromUser(_("Enter (lower case) name for new environment variables set:"),
+  wxString set = cbGetTextFromUser(_("Enter (lower case) name for new environment variables set:"),
                                    _("Input Set"), nsEnvVars::EnvVarsDefault);
   if (set.IsEmpty() || (!VerifySetUnique(choSet, set)))
     return;
@@ -318,7 +317,7 @@ void EnvVarsConfigDlg::OnCloneSetClick(wxCommandEvent& WXUNUSED(event))
   if (!cfg)
     return;
 
-  wxString set = wxGetTextFromUser(_("Enter (lower case) name for cloned environment variables set:"),
+  wxString set = cbGetTextFromUser(_("Enter (lower case) name for cloned environment variables set:"),
                                    _("Input Set"), nsEnvVars::EnvVarsDefault);
   if (set.IsEmpty() || (!VerifySetUnique(choSet, set)))
     return;

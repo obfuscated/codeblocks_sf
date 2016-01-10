@@ -15,7 +15,6 @@
     #include <wx/sizer.h>
     #include <wx/statbmp.h>
     #include <wx/stattext.h>
-    #include <wx/textdlg.h>
 
     #include <cbeditor.h>
     #include <cbproject.h>
@@ -225,7 +224,7 @@ void CodeRefactoring::RenameSymbols()
     if (targetText.IsEmpty())
         return;
 
-    wxString replaceText = wxGetTextFromUser(_("Rename symbols under cursor"),
+    wxString replaceText = cbGetTextFromUser(_("Rename symbols under cursor"),
                                              _("Code Refactoring"),
                                              targetText,
                                              Manager::Get()->GetAppWindow());

@@ -10,6 +10,7 @@
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
     #include <wx/string.h>
+    #include <wx/textdlg.h>
     #include <globals.h>
     #include <settings.h>
     #include <manager.h>
@@ -24,7 +25,6 @@
 
 #include <wx/colordlg.h>
 #include <wx/numdlg.h>
-#include <wx/textdlg.h>
 #include <infowindow.h>
 
 namespace ScriptBindings
@@ -185,7 +185,7 @@ namespace ScriptBindings
     }
     wxString wx_GetTextFromUser(const wxString& message, const wxString& caption, const wxString& default_value)
     {
-        return wxGetTextFromUser(message, caption, default_value);
+        return cbGetTextFromUser(message, caption, default_value);
     }
 
     long wxString_ToLong(wxString const &str)

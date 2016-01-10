@@ -15,6 +15,7 @@
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
     #include <wx/dir.h>
+    #include <wx/textdlg.h>
 
     #include "templatemanager.h"
     #include "manager.h"
@@ -29,7 +30,6 @@
 #endif
 
 #include <wx/filedlg.h>
-#include <wx/textdlg.h>
 #include "filefilters.h"
 #include "newfromtemplatedlg.h"
 
@@ -204,7 +204,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
         {
             // ask to rename the project file, if need be
             wxFileName fname(project_filename);
-            wxString newname = wxGetTextFromUser(_("If you want, you can change the project's filename here (without extension):"), _("Change project's filename"), fname.GetName());
+            wxString newname = cbGetTextFromUser(_("If you want, you can change the project's filename here (without extension):"), _("Change project's filename"), fname.GetName());
             if (!newname.IsEmpty() && newname != fname.GetName())
             {
                 fname.SetName(newname);

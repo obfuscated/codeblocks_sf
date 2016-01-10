@@ -28,7 +28,6 @@
 
 #include <vector>
 
-#include <wx/textdlg.h>
 #include <wx/mimetype.h>
 #include <wx/help.h> //(wxWindows chooses the appropriate help controller class)
 #include <wx/helpbase.h> //(wxHelpControllerBase class)

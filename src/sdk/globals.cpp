@@ -18,6 +18,7 @@
     #include <wx/imaglist.h>
     #include <wx/listctrl.h>
     #include <wx/menu.h>
+    #include <wx/textdlg.h>
 
     #include "wx/wxscintilla.h"
 
@@ -1348,6 +1349,26 @@ DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& ca
     PlaceWindow(&dialog);
     return (dialog.ShowModal() == wxID_OK ? dialog.GetSelection() : -1);
 }
+
+const char* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
+
+wxString cbGetTextFromUser(const wxString& message, const wxString& caption, const wxString& defaultValue,
+                           wxWindow *parent, wxCoord x, wxCoord y, bool centre)
+{
+    long style = wxTextEntryDialogStyle;
+    if (centre)
+        style |= wxCENTRE;
+    else
+        style &= ~wxCENTRE;
+
+    wxTextEntryDialog dialog(parent, message, caption, defaultValue, style, wxPoint(x, y));
+    PlaceWindow(&dialog);
+    wxString str;
+    if (dialog.ShowModal() == wxID_OK)
+        str = dialog.GetValue();
+    return str;
+}
+
 
 wxImageList* cbProjectTreeImages::MakeImageList()
 {
