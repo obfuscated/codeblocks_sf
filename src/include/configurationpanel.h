@@ -45,10 +45,10 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
             no parent window specified */
         int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1)
         {
-            if (parent)
+//            if (parent)
                 return ::cbMessageBox(message, caption, style, parent, x, y);
-            else
-                return ::cbMessageBox(message, caption, style, m_parentDialog, x, y);
+//            else
+//                return ::cbMessageBox(message, caption, style, m_parentDialog, x, y);
         }
     private:
         wxWindow* m_parentDialog;

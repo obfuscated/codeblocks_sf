@@ -1309,29 +1309,29 @@ wxString realpath(const wxString& path)
 
 int cbMessageBox(const wxString& message, const wxString& caption, int style, wxWindow *parent, int x, int y)
 {
-    if (!parent)
-        parent = Manager::Get()->GetAppWindow();
-
-    // Cannot create a wxMessageDialog with a NULL as parent
-    if (!parent)
-    {
-      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
-      int answer = wxMessageBox(message, caption, style, parent, x, y);
-      switch (answer)
-      {
-        // map answer to the one of wxMessage*Dialog* to ensure compatibility
-        case (wxOK):
-          return wxID_OK;
-        case (wxCANCEL):
-          return wxID_CANCEL;
-        case (wxYES):
-          return wxID_YES;
-        case (wxNO):
-          return wxID_NO;
-        default:
-          return -1; // NOTE: Cannot happen unless wxWidgets API changes
-      }
-    }
+//    if (!parent)
+//        parent = Manager::Get()->GetAppWindow();
+//
+//    // Cannot create a wxMessageDialog with a NULL as parent
+//    if (!parent)
+//    {
+//      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
+//      int answer = wxMessageBox(message, caption, style, parent, x, y);
+//      switch (answer)
+//      {
+//        // map answer to the one of wxMessage*Dialog* to ensure compatibility
+//        case (wxOK):
+//          return wxID_OK;
+//        case (wxCANCEL):
+//          return wxID_CANCEL;
+//        case (wxYES):
+//          return wxID_YES;
+//        case (wxNO):
+//          return wxID_NO;
+//        default:
+//          return -1; // NOTE: Cannot happen unless wxWidgets API changes
+//      }
+//    }
 
     wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
     PlaceWindow(&dlg);
@@ -1362,8 +1362,8 @@ const wxChar* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
 wxString cbGetTextFromUser(const wxString& message, const wxString& caption, const wxString& defaultValue,
                            wxWindow *parent, wxCoord x, wxCoord y, bool centre)
 {
-    if (!parent)
-        parent = Manager::Get()->GetAppWindow();
+//    if (!parent)
+//        parent = Manager::Get()->GetAppWindow();
 
     long style = wxTextEntryDialogStyle;
     if (centre)
