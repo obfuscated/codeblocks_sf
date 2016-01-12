@@ -330,7 +330,11 @@ extern DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxStr
                                             const wxSize &size = wxSize(300, 300),
                                             int initialSelection = 0);
 
+#if wxCHECK_VERSION(3, 0, 0)
 extern DLLIMPORT const char *cbGetTextFromUserPromptStr;
+#else
+extern DLLIMPORT const wxChar *cbGetTextFromUserPromptStr;
+#endif // wxCHECK_VERSION
 
 extern DLLIMPORT wxString cbGetTextFromUser(const wxString &message,
                                             const wxString &caption = cbGetTextFromUserPromptStr,

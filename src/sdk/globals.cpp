@@ -1353,7 +1353,11 @@ DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& ca
     return (dialog.ShowModal() == wxID_OK ? dialog.GetSelection() : -1);
 }
 
+#if wxCHECK_VERSION(3, 0, 0)
 const char* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
+#else
+const wxChar* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
+#endif // wxCHECK_VERSION
 
 wxString cbGetTextFromUser(const wxString& message, const wxString& caption, const wxString& defaultValue,
                            wxWindow *parent, wxCoord x, wxCoord y, bool centre)
