@@ -9,12 +9,6 @@ init:
 - cmd: >-
     mkdir c:\downloads\
 
-
     curl -fsS -o c:\downloads\CB_20151121_rev10595_win32.7z http://downloads.sourceforge.net/project/codeblocks/Binaries/Nightlies/2015/CB_20151121_rev10595_win32.7z?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fcodeblocks%2Ffiles%2FBinaries%2FNightlies%2F2015%2F&ts=1452638431&use_mirror=netix
-
-
     curl -fsS -o c:\downloads\mingwm10_gcc492-TDM.7z http://downloads.sourceforge.net/project/codeblocks/Binaries/Nightlies/Prerequisites/mingwm10_gcc492-TDM.7z?r=http%3A%2F%2Fforums.codeblocks.org%2Findex.php%2Ftopic%2C20724.0.html&ts=1452639620&use_mirror=netassist
-
-
-
     curl -fsS -o c:\downloads\wxmsw28u_gcc_cb_wx2812_gcc492-TDM.7z http://downloads.sourceforge.net/project/codeblocks/Binaries/Nightlies/Prerequisites/wxmsw28u_gcc_cb_wx2812_gcc492-TDM.7z?r=http%3A%2F%2Fforums.codeblocks.org%2Findex.php%2Ftopic%2C20724.0.html&ts=1452639708&use_mirror=vorboss
