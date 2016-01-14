@@ -45,6 +45,8 @@ init:
 
 build_script:
 - cmd: >-
-    c:\projects\cb\src
+    cd c:\projects\cb\src
+
+    dir
 
     c:\nightly\codeblocks.exe --user-data-dir=c:\downloads\cb_conf -p appveyor --target=All --build CodeBlocks_wx30.workspace
