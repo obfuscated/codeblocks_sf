@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 1.0.{build}-{branch}
 branches:
   only:
   - ci/appveyor
@@ -6,8 +6,8 @@ skip_tags: true
 shallow_clone: true
 clone_folder: c:\projects\cb
 init:
-  - git config --global core.autocrlf input
-  - cmd: >-
+- git config --global core.autocrlf input
+- cmd: >-
     mkdir c:\downloads\
 
     curl -fsS -o c:\downloads\CB_20151121_rev10595_win32.7z "http://downloads.sourceforge.net/project/codeblocks/Binaries/Nightlies/2015/CB_20151121_rev10595_win32.7z?r=http%3A%2F%2Fsourceforge.net%2Fprojects%2Fcodeblocks%2Ffiles%2FBinaries%2FNightlies%2F2015%2F&ts=1452638431&use_mirror=netix"
