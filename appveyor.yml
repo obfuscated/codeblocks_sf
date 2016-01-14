@@ -16,6 +16,10 @@ init:
 
     curl -fsS -vL -o c:\downloads\wxmsw28u_gcc_cb_wx2812_gcc492-TDM.7z "http://downloads.sourceforge.net/project/codeblocks/Binaries/Nightlies/Prerequisites/wxmsw28u_gcc_cb_wx2812_gcc492-TDM.7z?r=http%3A%2F%2Fforums.codeblocks.org%2Findex.php%2Ftopic%2C20724.0.html&ts=1452639708&use_mirror=vorboss"
 
+    curl -fsS -vL -o c:\downloads\appveyor.conf "http://cmpt.benbmp.org/codeblocks/nightlies/appveyor.conf"
+
+    curl -fsS -vL -o c:\downloads\wx3.0.2_mingw4.8.1_built.7z "http://cmpt.benbmp.org/codeblocks/nightlies/wx3.0.2_mingw4.8.1_built.7z"
+
     dir c:\downloads\
 
     mkdir c:\nightly
@@ -29,3 +33,11 @@ init:
     7z x c:\downloads\wxmsw28u_gcc_cb_wx2812_gcc492-TDM.7z
 
     dir c:\nightly\
+
+    mkdir c:\libs
+
+    cd c:\libs
+
+    7z x c:\downloads\wx3.0.2_mingw4.8.1_built.7z
+
+    dir c:\libs
