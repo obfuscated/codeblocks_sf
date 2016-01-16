@@ -1,0 +1,17 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for Blackfin"
+                     id="bfin-elf-gcc"
+                     weight="60">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search path="C:\bfin-elf-gcc*"/>
+            <Fallback path="C:\bfin-elf-gcc"/>
+        </if>
+        <else>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+</CodeBlocks_compiler>

@@ -1,0 +1,42 @@
+--
+-- Sample preview code
+--
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity shiftregister is
+    generic
+    (
+        left          : boolean := false -- so shift right
+    )
+	port
+	(
+		clk           : in  std_logic;
+		rst           : in  std_logic;
+		en            : in  std_logic;
+		d             : in  std_logic
+		q             : out std_logic_vector
+    );
+end shiftregister;
+
+architecture behavioral of shiftregister is
+	constant crcpoly   : std_logic_vector(7 downto 0) := x"8D";
+
+	type   utxstates   is (idle, data, parity, stop);
+	signal utxstate    : utxstates;
+begin
+
+    shift: process ( rst, clk ) begin
+        if rst = '1' then
+            q <= (others => '0');
+        elsif clk'event and clk = '1' then
+            if left then
+                q <= q(q'left - 1 downto q'right) & d;
+            else
+                q <= d & q(q'left downto q'right + 1);
+            end if;
+        end if;
+    end process;
+
+end behavioral;

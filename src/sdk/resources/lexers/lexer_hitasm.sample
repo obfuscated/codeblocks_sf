@@ -1,0 +1,81 @@
+#pragma language=extended
+#include "p3048.inc"
+
+    PUBLIC Bits0, dummy
+    EXTERN main, putb
+
+/*--------------------------------------------------*/
+/*  system variables                                */
+/*--------------------------------------------------*/
+        RSEG SHORTAD        ;16 bytes long
+Bits0   DS.B 1      ;shortad byte ff00
+
+        RSEG GDAT:DATA(1)   ;global data
+        EVEN
+dummy1  DS.L 1      ;testvariable
+
+        RSEG CSTACK:DATA(1)  
+stack   DS.B   400  ; stack area  
+
+/*--------------------------------------------------*/
+/*  code                                            */
+/*--------------------------------------------------*/
+        RSEG ACOD:CODE(1)  ;reset, trap & interrupt vectors
+;************************
+#define VECT DC.L
+#define VECL 4
+
+    ORG 0
+    VECT start      ;reset vector
+upcks:
+    DS.L 1          ;ROM check sum
+    ORG  7*VECL
+pro_beg:            ;program begin for up ROM check sum
+    VECT nmii       ;#07
+    VECT xint       ;#08
+    VECT xint       ;#09
+
+rom_constants
+;**************************
+rRTCINIYMD:
+    DC.B 05,01,01
+rRTCINIHMS:
+    DC.W 00,00,00
+
+start:                  ;here points the reset vector
+;************************
+
+    ADD #'0',R6L
+    BCLR #0,@TSR4
+    BSET #4,@TSTR       ;start timer 4 - int1ms
+    BIST #SDAb          ;ERROR LINE
+    BRA xtx
+    CMP #SMRK,R6
+;NOTE: Bcc
+    BNE zerram
+    BEQ gomain
+    BGE rd1bl
+    DEC #1,R0
+    DIVXU R2,ER6
+    INC #1,ER6
+    MOV R0L,@Bits0      
+    OR R3,R4
+    SHLL R3
+    SUB ER6,ER6         ;zero system time
+    PUSH R3
+    POP R3
+    RTS
+    RTE
+    XOR E6,E6
+
+#ifndef H8_ICE
+    BSR Error
+#else
+    NOP
+    NOP
+#endif
+
+    JMP @main           ;and now go to the big C-code
+
+
+

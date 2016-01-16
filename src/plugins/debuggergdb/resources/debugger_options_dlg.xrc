@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="dlgDebuggerOptions">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="m_staticText3">
+							<label>Executable path:</label>
+						</object>
+						<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtExecutablePath" />
+						<flag>wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnBrowse">
+							<label>...</label>
+							<style>wxBU_EXACTFIT</style>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Arguments:</label>
+						</object>
+						<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtArguments" />
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="rbType">
+					<label>Debugger Type</label>
+					<content>
+						<item>GDB</item>
+						<item>CDB</item>
+					</content>
+					<style>wxRA_SPECIFY_ROWS</style>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Debugger initialization commands</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtInit">
+							<style>wxTE_MULTILINE</style>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>These commands will be sent to the debugger on each session start</label>
+							<fg>#800000</fg>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>1</cols>
+					<vgap>4</vgap>
+					<growablecols>0</growablecols>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkDisableInit">
+							<label>Disable startup scripts (-nx) (GDB only)</label>
+							<tooltip>Disables autoloading of startup scripts (.gdbinit)</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>1</cols>
+					<vgap>4</vgap>
+					<growablecols>0</growablecols>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkWatchArgs">
+							<label>Watch function arguments</label>
+							<tooltip>Automatic watches are added for the current function&apos;s arguments</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkWatchLocals">
+							<label>Watch local variables</label>
+							<tooltip>Automatic watches are added for all the local variables of the current function</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkWatchScriptPrinters">
+							<label>Enable watch scripts</label>
+							<tooltip>Enable the execution of scripts to pretty print the watch values (do not use it if you have python enabled GDB)</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkCatchExceptions">
+							<label>Catch C++ exceptions</label>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkTooltipEval">
+							<label>Evaluate expression under cursor</label>
+							<tooltip>While debugging, leaving the mouse over a variable (or the selection) evaluates it in a tooltip</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkAddForeignDirs">
+							<label>Add other open projects&apos; paths in the debugger&apos;s search list</label>
+							<tooltip>If enabled, the other open projects&apos; paths will be added in the debugger&apos;s search list</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkDoNotRun">
+							<label>Do *not* run the debugee</label>
+							<tooltip>If enabled, the debugger will not a send a run/continue command</tooltip>
+						</object>
+						<flag>wxEXPAND</flag>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Choose disassembly flavor (GDB only):</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxChoice" name="choDisassemblyFlavor">
+									<content>
+										<item>System default</item>
+										<item>AT&amp;T</item>
+										<item>Intel</item>
+										<item>Custom (specify instruction-set:)</item>
+									</content>
+								</object>
+								<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="spacer">
+								<flag>wxALIGN_TOP</flag>
+								<size>5,0</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="txtInstructionSet" />
+								<flag>wxEXPAND</flag>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</resource>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="BYOGames">
+        <Value title="BYO Games" />
+        <Value version="1.0" />
+        <Value description="Collection of games for C::B IDE" />
+        <Value author="BYO" />
+        <Value authorEmail="byo.spoon@gmail.com" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

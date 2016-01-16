@@ -1,0 +1,163 @@
+codeblocks (13.12svn10508) unstable; urgency=low
+
+  * New svn revision
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 31 Dec 2013 20:30:37 +0100
+
+codeblocks (13.12-1) unstable; urgency=low
+
+  * Changes for release 13.12.
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 24 Dec 2013 13:12:58 +0100
+
+codeblocks (13.12-rc2) unstable; urgency=low
+
+  * Second release candidate of release 13.12.
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 08 Dec 2013 14:07:37 +0100
+
+codeblocks (13.12-rc1) unstable; urgency=low
+
+  * First release candidate of release 13.12.
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 17 Nov 2013 19:33:23 +0100
+
+codeblocks (10.05svn8324) unstable; urgency=low
+
+  * Linux build-fixes; moved wxSmithKWIC into wxContribItems and
+    splitted it into the items lib and the wxSmith part
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 21 Dec 2011 10:14:46 +0100
+
+codeblocks (10.05svn6916) unstable; urgency=low
+
+  * New svn revision
+
+ -- Jens Lody <jens@codeblocks.org>  Wed, 12 Jan 2011 11:12:27 +0000
+
+codeblocks (10.05svn6787) unstable; urgency=low
+
+  * New svn revision
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 05 Sep 2010 09:58:05 +0000
+
+codeblocks (10.05svn6570) unstable; urgency=low
+
+  * New svn revision
+   - Add debian/get-orig-source  and debian/get-orig-source-from-svn
+     scripts that create orig-tarballs and remove Windows prebuilt
+     binaries
+  * Bump Standards-Version to 3.9.1
+   - Stop shipping *.la files
+  * Removed doc-packages, because they can not be build directly from
+    svn-sources, a standalone package might come.
+  * debian/control
+   - Add cdbs package as Build-Depend
+   - Add libbz2-dev and zlib1g-dev packages as
+     Build-Depends (needed by libhelp_plugin.so)
+   - Add libboost-dev (>=1.40) as Build-Depends (needed
+     for Nassi-Shneiderman-plugin)
+   - Removed Build-Depends for pngnq, wget (was only needed for
+     the removed doc-packages)
+  * debian/rules
+   - Switch to CDBS rules system
+   - Add parallel build support
+   - Use lzma compression
+  * Added option to keep (or remove) winodows dll's from dist-tarball
+  * Some of the changes are based on the work of the ubuntu maintainers,
+    especially Michael Casadevall.
+
+ -- Jens Lody <jens@codeblocks.org>  Fri, 03 Sep 2010 20:38:29 +0000
+
+codeblocks (10.05svn6372) unstable; urgency=low
+
+  * tagged svn to 10.05
+  * added automatically update-script for docs
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 30 May 2010 16:40:18 +0200
+
+codeblocks (10.05-1) unstable; urgency=low
+
+  * new upstream release
+  * includes the official manual in english and german
+
+ -- Jens Lody <jens@codeblocks.org>  Thu, 27 May 2010 12:51:19 +0200
+
+codeblocks (8.02svn5933) unstable; urgency=low
+
+  * more fixes to debian build system, sources and packages are now
+    lintian-clean, except for some words guessed as spelling-errors.
+  * changed name and installation directory for mimetype-icons
+  * fixed typo
+
+ -- Jens Lody <jens@codeblocks.org>  Sat, 20 Jun 2009 00:10:04 +0200
+
+codeblocks (8.02svn5607) unstable; urgency=low
+
+  * reorganised debug-packages after changing compatibility level to 5:
+    codeblocks shared library is now in codeblocks-dbg,
+    added codeblocks-contrib-dbg package containing debug libraries for
+    the contrib-plugins,
+  * moved codesnippets executable from codeblocks to contrib-plugins
+    package
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 17 May 2009 23:15:02 +0200
+
+codeblocks (8.02svn5600) unstable; urgency=low
+
+  * some changes to make debian-files more standard-compliant
+
+ -- Jens Lody <jens@codeblocks.org>  Tue, 05 May 2009 22:45:16 +0200
+
+codeblocks (8.02svn5586) unstable; urgency=low
+
+  * add subversion and xsltproc to build dependcies
+  * run bootstrap if needed
+  * automatically update ChangeLog to HEAD
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 21:43:39 +0200
+
+codeblocks (8.02svn5584) unstable; urgency=low
+
+  * add libtool and automake to build depend
+
+ -- Jens Lody <jens@codeblocks.org>  Sun, 03 May 2009 18:47:34 +0200
+
+codeblocks (8.02svn5409) unstable; urgency=low
+
+  * Nightly linux build
+  * some more changes to package and filesystem-layout
+  * included wxSmith-headers
+  * merged to codeblocks trunk
+  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz
+
+ -- Jens Lody <jens@codeblocks.org>  Fri, 12 Dec 2008 21:40:51 +0100
+
+codeblocks (8.02svn5331) unstable; urgency=low
+
+  * Nightly linux build
+  * tagged version to last [stable revision]+[svn revision] to make
+    updates on actual ubuntu systems possible
+  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz
+
+ -- Jens Lody <debian@jenslody.de>  Sun, 09 Nov 2008 18:24:45 +0100
+
+codeblocks (1.0svn5297) unstable; urgency=low
+
+  * Nightly linux build
+  * package- and directory-structure overworked:
+    moved plugins from /usr/share/codeblocks to /usr/lib/codeblocks,
+    split off a codeblocks-common-package, that includes
+    architecture independent files
+  * changes to make lintian run without errors on sources and *.deb-files
+  * no further patches of mine, they are all in svn now
+  * the svn-log can be found in /usr/share/doc/codeblocks/changelog.gz
+
+ -- Jens Lody <jens@lody.name>  Sun, 03 Aug 2008 08:50:21 +0200
+
+codeblocks (1.0svn4511) dapper; urgency=low
+
+  * Nightly linux build
+
+ -- Yiannis Mandravellos <mandrav@codeblocks.org>  Sat, 25 Feb 2006 12:26:36 +0200
+

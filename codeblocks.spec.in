@@ -1,0 +1,541 @@
+%define _svnrev             @REVISION@
+%define req_wxgtk           2.8.0
+%define _redhat             %(if [ -f /etc/redhat-release ]; then echo 1; else echo 0; fi)
+%define _mandrake           %(if [ -f /etc/mandrake-release ]; then echo 1; else echo 0; fi)
+%define _version            16.01.svn.%{_svnrev}
+%define _rel                1
+%define _release            %{_rel}
+%define jobs                %(if [ -e /usr/bin/getconf ]; then echo $(( `/usr/bin/getconf _NPROCESSORS_ONLN` + 1 )); else echo 1; fi)
+
+%if 0%{?suse_version}
+%define _release            %{_rel}.suse%{suse_version}
+%endif
+%if 0%{?mandriva_version}
+%define _release            %{_rel}.mdk%{mandrake_version}
+%define _redhat 0
+%endif
+%if 0%{?fedora}
+%define _release            %{_rel}.fc%{fedora}
+%define _redhat 0
+%endif
+%if 0%{?_redhat}
+%define _redhat_prefix      %(grep -q "Red Hat Linux" /etc/redhat-release && echo rhl || echo el)
+%define _redhat_vernum      %(cat /etc/redhat-release | sed -rn 's/[^0-9]*([0-9]*).*/\\1/p')
+%define _release            %{_rel}.%{_redhat_prefix}%{_redhat_vernum}
+%endif
+
+%if 0%{?suse_version} >= 930
+%define debugrpm            1
+%endif
+
+%if 0%{?mandriva_version}
+%define debugrpm            1
+%endif
+
+%define nassi_shneiderman   1
+%define spellchecker        1
+
+%if 0%{?_redhat_vernum}
+%if 0%{?_redhat_vernum} < 6
+%define nassi_shneiderman   0
+%define spellchecker        0
+%endif
+%endif
+
+%if 0%{?nassi_shneiderman}
+%define no_nassi_flag ""
+%else
+%define no_nassi_flag ,-NassiShneiderman
+%endif
+
+%if 0%{?spellchecker}
+%define no_spellchecker_flag ""
+%else
+%define no_spellchecker_flag ,-spellchecker
+%endif
+
+Name:                       codeblocks
+Version:                    %{_version}
+Release:                    %{_release}
+Summary:                    OpenSource Cross Platform Free C++ IDE
+Group:                      Development/Tools
+License:                    GPLv3+
+URL:                        http://www.codeblocks.org/
+Source:                     %{name}-@VERSION@.tar.bz2
+BuildRoot:                  %{_tmppath}/%{name}-%{version}-buildroot
+Requires:                   %{name}-libs%{?_isa} = %{version}
+Requires:                   xterm
+
+%if 0%{?mandriva_version}
+Requires:                   wxgtk2.8 >= %{req_wxgtk}
+BuildRequires:              wxgtk2.8 >= %{req_wxgtk}, libwxgtku2.8-devel >= %{req_wxgtk}
+%else
+%if 0%{?suse_version}
+%if 0%{?suse_version} < 1030
+Requires:                   wxWidgets >= %{req_wxgtk}
+BuildRequires:              wxWidgets >= %{req_wxgtk}, wxWidgets-devel >= %{req_wxgtk}
+%else
+Requires:                   wxGTK >= %{req_wxgtk}
+BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
+%endif
+%else
+Requires:                   wxGTK >= %{req_wxgtk}
+BuildRequires:              wxGTK >= %{req_wxgtk}, wxGTK-devel >= %{req_wxgtk}
+%endif
+%endif
+
+BuildRequires:              intltool, gcc-c++, make, gettext, autoconf >= 2.5, libtool >= 1.4, m4
+BuildRequires:              libstdc++, libstdc++-devel, gtk2-devel, libjpeg-devel, libtiff-devel
+BuildRequires:              zip, pkgconfig, automake >= 1.9, glib2-devel
+
+%if 0%{?suse_version}
+BuildRequires:              update-desktop-files
+%endif
+
+#{?_distribution:Distribution:%_distribution}
+
+%define pkgdatadir          %{_datadir}/%{name}
+%define pkglibdir           %{_libdir}/%{name}
+%define plugindir           %{pkglibdir}/plugins
+
+%description
+Code::Blocks is the open-source, cross-platform Integrated Development
+Environment (IDE).
+
+It is based on a self-developed plugin framework allowing unlimited
+extensibility.
+Most of its functionality is already provided by plugins.
+
+ Plugins included in the base package are:
+  * Compiler frontend to many free compilers
+  * Debugger frontend for GDB (and CDB for windows platforms)
+  * Source formatter (based on AStyle)
+  * Wizard to create new C++ classes
+  * Code-completion / symbols-browser (work in progress)
+  * Default MIME handler
+  * Wizard to create new Code::Blocks plugins
+  * To-do list
+  * Extensible wizard based on scripts
+  * Autosave (saves your work in the unfortunate case of a crash)
+
+%package libs
+Summary:                    Libraries needed to run Code::Blocks
+Group:                      Development/Tools
+
+%description libs
+Libraries needed to run Code::Blocks.
+
+%post libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%postun libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%package contrib
+Summary:                    Code::Blocks contrib plugins
+Group:                      Development/Tools
+Requires:                   %{name}%{?_isa} = %{version}
+Requires:                   %{name}-contrib-libs%{?_isa} = %{version}
+BuildRequires:              gamin-devel, bzip2-devel, zlib-devel, fontconfig-devel
+%if 0%{?nassi_shneiderman}
+BuildRequires:              boost-devel
+%endif
+%if 0%{?spellchecker}
+BuildRequires:              hunspell-devel
+%endif
+
+%description contrib
+This package extends Code::Blocks functionality a great deal with the included
+plugins. These are:
+ * Autoversioning
+ * BrowseTracker
+ * Cccc
+ * Code profiler (based on gprof)
+ * Code statistics (SLOCs etc)
+ * Codesnippets
+ * Copy strings
+ * CppCheck
+ * Cscope
+ * DoxyBlocks
+ * DragScroll (enhances mouse operations)
+ * EditorConfig
+ * EditorTweaks
+ * Selection of small games for relaxing between coding sessions! (BYOGames)
+ * Setting of environment variables
+ * Source exporter to PDF/HTML/ODT/RTF
+ * FileManager
+ * Header fixup
+ * Help
+ * HexEditor
+ * IncrementalSearch
+ * Keyboard shortcuts configuration
+ * CB koders
+ * Library finder
+ * MouseSap
+ * NassiShneiderman
+ * Regular expression testbed
+ * Reopen last closed editor(s) via menu or hotkey
+ * Smartindent plugin (cpp, HDL, Fortran, Lua, Pascal, Python, XML)
+ * Spellchecker plugin
+ * Symbol table plugin
+ * ThreadSearch
+ * ToolsPlus
+ * Valgrind
+ * RAD gui-builder for wxWidgets (wxSmith)
+ * wxSmith contrib items
+ * wxSmith AUI
+
+%package contrib-libs
+Summary:                    Libraries needed to run Code::Blocks contrib-plugins
+Group:                      Development/Tools
+
+%description contrib-libs
+Libraries needed to run Code::Blocks contrib-plugins.
+
+%post contrib-libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%postun contrib-libs
+  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%package devel
+Summary:                    Code::Blocks development libraries and headers (SDK)
+Group:                      Development/Tools
+Requires:                   %{name}%{?_isa} = %{version}
+
+%description devel
+This package contains the development libraries and headers for creating plugins
+for the Code::Blocks IDE.
+
+%package contrib-devel
+Summary:                    Code::Blocks development libraries and headers for wxSmith and wxContribItems
+Group:                      Development/Tools
+Requires:                   %{name}-contrib%{?_isa} = %{version}
+
+%description contrib-devel
+This package contains the development libraries and headers needed to build
+wxSmith-plugins and to use the wxContribItems in own programs.
+
+%{?debugrpm:%debug_package}
+
+%prep
+
+%setup -q -n codeblocks-@VERSION@
+
+%{?suse_update_libdir:%{suse_update_libdir}}
+%{?suse_update_config:%{suse_update_config -f}}
+
+  ./bootstrap
+  %if 0%{?suse_version}
+  %if 0%{?suse_version} > 1020
+  %configure \
+      --disable-pch \
+      --with-wx-config="%{_bindir}/wx-config" \
+      --with-contrib-plugins=all \
+      $CONF_OPTS
+  %else
+  %configure \
+      --disable-pch \
+      --with-wx-config="%{_bindir}/wx-config-2.8" \
+      --with-contrib-plugins=all \
+      $CONF_OPTS
+  %endif
+  %else
+  %configure \
+      --disable-pch \
+      --with-wx-config="%{_bindir}/wx-config" \
+      --with-contrib-plugins=all%no_nassi_flag%no_spellchecker_flag \
+      $CONF_OPTS
+  %endif
+
+%build
+
+  %{__make} %{?jobs:-j %{jobs}}
+
+%install
+  %__make DESTDIR=$RPM_BUILD_ROOT install
+
+  rm -f $RPM_BUILD_ROOT%{_libdir}/*.la
+  rm -f $RPM_BUILD_ROOT%{pkglibdir}/wxContribItems/*.la
+  rm -f $RPM_BUILD_ROOT%{plugindir}/*.la
+
+%post
+  /usr/bin/update-mime-database "%{_datadir}/mime" &> /dev/null || :
+#  test -x /sbin/ldconfig && /sbin/ldconfig
+
+%preun
+  /usr/bin/update-mime-database "%{_datadir}/mime" &> /dev/null || :
+
+%clean
+  test -n "$RPM_BUILD_ROOT" -a "$RPM_BUILD_ROOT" != "/" && %{__rm} -rf $RPM_BUILD_ROOT
+
+%files
+%defattr(-,root,root)
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+
+%{_bindir}/codeblocks
+%{_bindir}/cb_console_runner
+%{_bindir}/cb_share_config
+%{plugindir}/libabbreviations.so
+%{plugindir}/libastyle.so
+%{plugindir}/libautosave.so
+%{plugindir}/libclasswizard.so
+%{plugindir}/libcodecompletion.so
+%{plugindir}/libcompiler.so
+%{plugindir}/libdebugger.so
+%{plugindir}/libdefaultmimehandler.so
+%{plugindir}/liboccurrenceshighlighting.so
+%{plugindir}/libopenfileslist.so
+%{plugindir}/libprojectsimporter.so
+%{plugindir}/libscriptedwizard.so
+%{plugindir}/libtodo.so
+%{_datadir}/applications/codeblocks.desktop
+%{_datadir}/icons/hicolor/48x48/mimetypes/*
+%{_datadir}/mime/packages/codeblocks.xml
+%{_datadir}/pixmaps/codeblocks.png
+%{_mandir}/man1/codeblocks.*
+%{_mandir}/man1/cb_console_runner.*
+%{_mandir}/man1/cb_share_config.*
+%{pkgdatadir}/compilers/*
+%{pkgdatadir}/icons/*
+%{pkgdatadir}/images/*.png
+%{pkgdatadir}/images/16x16/*
+%{pkgdatadir}/images/codecompletion/*
+%{pkgdatadir}/images/settings/*
+%{pkgdatadir}/lexers/*
+%{pkgdatadir}/scripts/*
+%{pkgdatadir}/templates/*
+%{pkgdatadir}/abbreviations.zip
+%{pkgdatadir}/astyle.zip
+%{pkgdatadir}/autosave.zip
+%{pkgdatadir}/classwizard.zip
+%{pkgdatadir}/codecompletion.zip
+%{pkgdatadir}/compiler.zip
+%{pkgdatadir}/debugger.zip
+%{pkgdatadir}/defaultmimehandler.zip
+%{pkgdatadir}/manager_resources.zip
+%{pkgdatadir}/occurrenceshighlighting.zip
+%{pkgdatadir}/openfileslist.zip
+%{pkgdatadir}/projectsimporter.zip
+%{pkgdatadir}/resources.zip
+%{pkgdatadir}/scriptedwizard.zip
+%{pkgdatadir}/start_here.zip
+%{pkgdatadir}/todo.zip
+%{pkgdatadir}/tips.txt
+
+%files libs
+%defattr(-,root,root)
+%{_libdir}/libcodeblocks.so.*
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+
+%files contrib
+%defattr(-,root,root)
+%{plugindir}/libAutoVersioning.so
+%{plugindir}/libBrowseTracker.so
+%{plugindir}/libbyogames.so
+%{plugindir}/libCccc.so
+%{plugindir}/libCppCheck.so
+%{plugindir}/libSmartIndent*.so
+%{plugindir}/libcb_koders.so
+%{plugindir}/libcodesnippets.so
+%{plugindir}/libcodestat.so
+%{plugindir}/libcopystrings.so
+%{plugindir}/libCscope.so
+%{plugindir}/libDoxyBlocks.so
+%{plugindir}/libdragscroll.so
+%{plugindir}/libEditorConfig.so
+%{plugindir}/libEditorTweaks.so
+%{plugindir}/libenvvars.so
+%{plugindir}/libexporter.so
+%{plugindir}/libFileManager.so
+%{plugindir}/libheaderfixup.so
+%{plugindir}/libhelp_plugin.so
+%{plugindir}/libHexEditor.so
+%{plugindir}/libIncrementalSearch.so
+%{plugindir}/libkeybinder.so
+%{plugindir}/liblib_finder.so
+%if 0%{?nassi_shneiderman}
+%{plugindir}/libNassiShneiderman.so
+%endif
+%if 0%{?spellchecker}
+%{plugindir}/libSpellChecker.so
+%endif
+%{plugindir}/libProfiler.so
+%{plugindir}/libProjectOptionsManipulator.so
+%{plugindir}/libRegExTestbed.so
+%{plugindir}/libSymTab.so
+%{plugindir}/libThreadSearch.so
+%{plugindir}/libToolsPlus.so
+%{plugindir}/libValgrind.so
+%{plugindir}/libMouseSap.so
+%{plugindir}/libReopenEditor.so
+%{plugindir}/libwxsmith.so
+%{plugindir}/libwxsmithcontribitems.so
+%{plugindir}/libwxSmithAui.so
+%{_libdir}/pkgconfig/wxsmithaui.pc
+%{pkgdatadir}/AutoVersioning.zip
+%{pkgdatadir}/BrowseTracker.zip
+%{pkgdatadir}/byogames.zip
+%{pkgdatadir}/Cccc.zip
+%{pkgdatadir}/CppCheck.zip
+%{pkgdatadir}/SmartIndent*.zip
+%{pkgdatadir}/cb_koders.zip
+%{pkgdatadir}/codesnippets.zip
+%{pkgdatadir}/codestat.zip
+%{pkgdatadir}/copystrings.zip
+%{pkgdatadir}/Cscope.zip
+%{pkgdatadir}/DoxyBlocks.zip
+%{pkgdatadir}/dragscroll.zip
+%{pkgdatadir}/EditorConfig.zip
+%{pkgdatadir}/EditorTweaks.zip
+%{pkgdatadir}/envvars.zip
+%{pkgdatadir}/exporter.zip
+%{pkgdatadir}/FileManager.zip
+%{pkgdatadir}/headerfixup.zip
+%{pkgdatadir}/help_plugin.zip
+%{pkgdatadir}/HexEditor.zip
+%{pkgdatadir}/IncrementalSearch.zip
+%{pkgdatadir}/keybinder.zip
+%{pkgdatadir}/lib_finder.zip
+%{pkgdatadir}/MouseSap.zip
+%if 0%{?nassi_shneiderman}
+%{pkgdatadir}/NassiShneiderman.zip
+%endif
+%if 0%{?spellchecker}
+%{pkgdatadir}/SpellChecker.zip
+%endif
+%{pkgdatadir}/Profiler.zip
+%{pkgdatadir}/ProjectOptionsManipulator.zip
+%{pkgdatadir}/RegExTestbed.zip
+%{pkgdatadir}/ReopenEditor.zip
+%{pkgdatadir}/SymTab.zip
+%{pkgdatadir}/ThreadSearch.zip
+%{pkgdatadir}/ToolsPlus.zip
+%{pkgdatadir}/Valgrind.zip
+%{pkgdatadir}/wxsmith.zip
+%{pkgdatadir}/wxsmithcontribitems.zip
+%{pkgdatadir}/wxSmithAui.zip
+%{pkgdatadir}/images/codesnippets/*
+%{pkgdatadir}/images/DoxyBlocks/*
+%{pkgdatadir}/images/ThreadSearch/*
+%{pkgdatadir}/images/wxsmith/*
+%{pkgdatadir}/lib_finder/*
+%if 0%{?spellchecker}
+%{pkgdatadir}/SpellChecker/*
+%endif
+%{_mandir}/man1/*snippets*
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+
+%files contrib-libs
+%defattr(-,root,root)
+%{_libdir}/libwxsmithlib.so.*
+%{pkglibdir}/wxContribItems/*.so.*
+%doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+
+%files devel
+%defattr(-,root,root)
+%{_libdir}/libcodeblocks.so
+%{_libdir}/pkgconfig/codeblocks.pc
+%{_includedir}/%{name}/*
+
+%files contrib-devel
+%defattr(-,root,root)
+%{pkglibdir}/wxContribItems/*.so
+%{_libdir}/pkgconfig/cb_*.pc
+%{_libdir}/pkgconfig/wxsmith.pc
+%{_includedir}/%{name}/wxContribItems/*
+%{_libdir}/libwxsmithlib.so
+%{_libdir}/pkgconfig/wxsmith-contrib.pc
+%{_includedir}/wxsmith/*
+
+%changelog
+* Tue Dec 23 2014 jens <jens@codeblocks.org>
+- do not try to build Spellchecker-plugin on CentOS/RedHat < 6, because the
+  hunspell packages are only available from a thirdparty repo (atomicorp),
+  therefore an automatic build is not possible and the users are forced to
+  enable this repo.
+- fix determining of redhat and fedora release-numbers
+* Tue Dec 24 2013 Jens Lody <jens@codeblocks.org>
+- Changes for release 13.12.
+* Sun Dec 08 2013 Jens Lody <jens@codeblocks.org>
+- Second release candidate of release 13.12.
+* Sun Nov 17 2013 Jens Lody <jens@codeblocks.org>
+- First release candidate of release 13.12.
+* Fri Jun 08 2012 jens <jens@codeblocks.org>
+- partly reverted last change, to keep the package layout more clear
+- do not try to build NassiShneiderman-plugin on CentOS/RedHat < 6, because the
+  boost packages are too old (based on changes of oBFusCATed)
+- move some build-dependencies to the contrib-plugins package, because they are
+  only needed there, thanks oBFusCATed
+* Sat May 26 2012 jens <jens@codeblocks.org>
+- split packages in binaries, arch-independent, development- and header-packages,
+  similar to the debian package-layout
+* Fri May 25 2012 jens <jens@codeblocks.org>
+- Fixed: missing build-dependencies
+- Fixed: RPM build error, because of new contrib-packages
+- Layout changes in codeblocks.spec.in, to enhance readability
+* Sat Feb 20 2010 Biplab <bkmodak@gmail.com>
+- Fixed typos: In wxSmithAui generated files.
+- Fixed: RPM build error due to inclusion of contrib plugins twice.
+- Fixed: Copystrings plugin was not included properly in rpm.
+- Fixed: Pkgconfig macros of wxsmithaui and wxsmith-contrib were not included.
+- Moved: libwxsmithlib.so to contrib package.
+- Removed: 'lynx' as a dependency.
+* Thu Feb 18 2010 Biplab <bkmodak@gmail.com>
+- Changed source tarball extension to .bz2
+- Fixed: broken rpm build due to path change from icons/gnome/* to icons/hicolor/*
+* Sun Dec 14 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- some fixes for changes in rev 5334
+* Sat Jul 26 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- moved libwxsmithlib.so and .la into devel package
+- removed selfprovide codeblocks
+- removed subversion dependency
+- changed release and version tag (version now only contains version + revision)
+- added libValgrind.* to file list
+* Thu Jan 03 2008 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- added missing files to file list (libfinder)
+- changed dependencies for mandriva
+- some clean-ups
+* Wed Nov 14 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- added new plugin to file list
+- added make job number "detection"
+* Sun Oct 14 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- applied changes made on opensuse buildservice
+* Mon Apr 16 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- added wxsmithcontribitems files to filelist
+* Fri Jan  5 2007 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- changed prefix on suse to default (from /opt/gnome to /usr)
+* Sat Dec  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- Added RegExTestbed plugin to filelist
+* Sun Nov  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- applied patch #1605
+- renamed _mandriva to _mandrake
+* Wed Oct 11 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- Added cb_share_config to filelist
+* Sun Aug 20 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- Added missing files to filelist
+* Sat Jul 22 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- adapted versioning to autotools
+* Fri Jul 14 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- added man pages to filelist
+* Tue Jul 11 2006 Yiannis Mandravellos <mandrav@codeblocks.org>
+- removed pluginwizard files
+- replaced libprojectwizard by libscriptedwizard (renamed)
+* Tue Jul 11 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- removed libwxscintilla from filelist
+* Mon Jul 10 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- fixed wrong path of fedora-release file
+- fixed mixed cases in one description macro call
+- removed and added finally again libwxscintilla from/to filelist
+- added versions to some buildrequires
+- added byogames plugin to filelist
+* Sun Mar  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- rewrite of release tag setting
+* Thu Jan  5 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- had to add Mandriva specific requires
+* Mon Jan  2 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- simplified the changes made before
+* Sun Jan  1 2006 TheTuxKeeper <thetuxkeeper@googlemail.com>
+- added distribution check (SuSE, Fedora, Mandriva/Mandrake)
+- added distribution specific Requires and BuildRequires
+- added run of update-mime-database if installed

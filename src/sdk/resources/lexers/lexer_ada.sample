@@ -1,0 +1,11 @@
+with ada.text_io;
+procedure HALLO_01 is
+	VOR : character;
+	NACH : character;
+begin
+	ada.text_io.put(item => "Bitte geben Sie Ihre Initialen (z.B. AB) ein: ");
+	ada.text_io.get(item => VOR);
+	ada.text_io.get(item => NACH);
+	ada.text_io.put(item => "Hallo " & VOR & NACH & ", wie geht es?");
+	ada.text_io.new_line;
+end HALLO_01;

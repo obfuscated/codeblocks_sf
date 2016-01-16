@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<library name="wxWidgets" short_code="wx" category1="Gui" category2="Cross-Platform">
+
+    <settings>
+        <!-- All includes which start with wx/ force detection of this library -->
+        <header file="wx/*.h"/>
+    </settings>
+
+    <config description="wxWidgets configured through wx-config">
+        <!-- Confugration for systems where you can find wx-config -->
+        <filters>
+            <exec name="wx-config"/>
+        </filters>
+        <settings>
+            <add cflags="`wx-config --cxxflags`"/>
+            <add lflags="`wx-config --libs`"/>
+        </settings>
+    </config>
+
+    <config>
+        <!-- Configurations for windows hosts -->
+
+        <!-- These are the same for all configurations -->
+        <platform name="win"/>
+        <filters>
+            <file name="include/wx/wx.h"/>
+            <file name="include/wx/wxprec.h"/>
+        </filters>
+        <settings>
+            <path include="$(BASE_DIR)/include"/>
+            <!-- NOTE: This is needed inly to force compatibility with current usage of $(#wx.libs) variable -->
+            <path lib="$(BASE_DIR)/lib"/>
+            <path lib="$(BASE_DIR)/lib/$(CONFIG_NAME)"/>
+            <path obj="$(BASE_DIR)/include"/>
+            <add define="__GNUWIN32__"/>
+            <add define="HAVE_W32API_H"/>
+            <add define="__WXMSW__"/>
+        </settings>
+
+        <!-- Next we have settings for different configurations -->
+
+        <config description="wxWidgets 2.6 Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/msw/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw26.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
+                <add define="WXUSINGDLL"/>
+                <add lib="wxmsw26"/>
+            </settings>
+        </config>
+
+        <config description="wxWidgets 2.6 Unicode Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/mswu/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw26.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/mswu"/>
+                <add define="WXUSINGDLL"/>
+                <add define="wxUSE_UNICODE"/>
+                <add lib="wxmsw26u"/>
+            </settings>
+        </config>
+
+        <config description="wxWidgets 2.8 Unicode Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/mswu/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw28u.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/mswu"/>
+                <add define="WXUSINGDLL"/>
+                <add define="wxUSE_UNICODE"/>
+                <add lib="wxmsw28u"/>
+            </settings>
+        </config>
+
+        <config description="wxWidgets 2.8 Monolithic DLL (Configuration: $(CONFIG_NAME))">
+            <filters>
+                <file name="lib/*$(CONFIG_NAME)/msw/wx/setup.h"/>
+                <file name="lib/*$(CONFIG_NAME)/libwxmsw28.a"/>
+            </filters>
+            <settings>
+                <path include="$(BASE_DIR)/lib/$(CONFIG_NAME)/msw"/>
+                <add define="WXUSINGDLL"/>
+                <add lib="wxmsw28"/>
+            </settings>
+        </config>
+
+    </config>
+
+</library>

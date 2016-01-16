@@ -1,0 +1,153 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/byogames/byocbtris.cpp:455
+#: ../plugins/contrib/byogames/byosnake.cpp:264
+msgid "Game over"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byocbtris.cpp:517
+#, possible-c-format
+msgid "Score: %d"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byocbtris.cpp:518
+#, possible-c-format
+msgid "Level: %d"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byocbtris.cpp:527
+#: ../plugins/contrib/byogames/byosnake.cpp:303
+msgid "Paused"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:36
+msgid "Back-To-Work settings"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:39
+msgid "Maximum play time (sec)"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:41
+#: ../plugins/contrib/byogames/byoconf.cpp:44
+#: ../plugins/contrib/byogames/byoconf.cpp:47
+#: ../plugins/contrib/byogames/byoconf.cpp:62
+msgid "1"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:42
+msgid "Minimum work time (sec)"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:45
+msgid "Overwork time (Sec)"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:55
+msgid "Default colours"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:65
+msgid "3"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:68
+msgid "5"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:71
+msgid "2"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:74
+msgid "4"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.cpp:77
+msgid "6"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byoconf.h:22
+msgid "C::B games"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogamebase.cpp:101
+msgid "Work reminder (stop playing games!)"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogamebase.cpp:102
+msgid ""
+"Don't you think you had enough already?\n"
+"Get back to work, NOW!"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogamebase.cpp:145
+msgid "Repose reminder"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogamebase.cpp:146
+msgid ""
+"You've been working for a long time.\n"
+"Please stand up, take small walk,\n"
+"make tea or cofee, smile to your neighbours :)\n"
+"\n"
+"I'm watching you, do not cheat\n"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogamebase.cpp:267
+#, possible-c-format
+msgid "Please wait... %d:%d left"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogames.cpp:34
+msgid "BYO Games"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogames.cpp:36
+msgid "Collection of games for C::B IDE"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogameselect.cpp:26
+msgid "Select game to play"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogameselect.cpp:31
+msgid "BYO Games collection"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogameselect.cpp:34
+msgid "Arial"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogameselect.cpp:40
+msgid "Select game"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogameselect.cpp:44
+msgid "Play"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byogameselect.cpp:47
+msgid "Cancel"
+msgstr ""
+
+#: ../plugins/contrib/byogames/byosnake.cpp:302
+#, possible-c-format
+msgid "Lives: %d    Score: %d   Length: %d"
+msgstr ""

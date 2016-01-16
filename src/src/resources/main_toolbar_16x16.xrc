@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+<object class="wxToolBarAddOn" name="main_toolbar_16x16">
+<bitmapsize>16,16</bitmapsize>
+<style>wxTB_HORIZONTAL</style>
+ <object class="tool" name="idToolNew">
+  <tooltip>New file</tooltip>
+  <longhelp>Create a new source file</longhelp>
+  <bitmap>images/16x16/filenew.png</bitmap>
+ </object>
+ <object class="tool" name="idFileOpen">
+  <tooltip>Open</tooltip>
+  <longhelp>Open an existing file</longhelp>
+  <bitmap>images/16x16/fileopen.png</bitmap>
+ </object>
+ <object class="tool" name="idFileSave">
+  <tooltip>Save</tooltip>
+  <longhelp>Save current file</longhelp>
+  <bitmap>images/16x16/filesave.png</bitmap>
+ </object>
+ <object class="tool" name="idFileSaveAllFiles">
+  <tooltip>Save all files</tooltip>
+  <longhelp>Save all modified files</longhelp>
+  <bitmap>images/16x16/filesaveall.png</bitmap>
+ </object>
+ <object class="separator"/>
+  <object class="tool" name="idEditUndo">
+   <tooltip>Undo</tooltip>
+   <longhelp>Undo the last editing action</longhelp>
+   <bitmap>images/16x16/undo.png</bitmap>
+</object>
+  <object class="tool" name="idEditRedo">
+   <tooltip>Redo</tooltip><longhelp>Redo the last editing action</longhelp>
+   <bitmap>images/16x16/redo.png</bitmap>
+  </object>
+    <object class="separator"/>
+  <object class="tool" name="idEditCut">
+   <tooltip>Cut</tooltip>
+   <longhelp>Cut selected text to clipboard</longhelp>
+   <bitmap>images/16x16/editcut.png</bitmap>
+  </object>
+  <object class="tool" name="idEditCopy">
+   <tooltip>Copy</tooltip>
+   <longhelp>Copy selected text to clipboard</longhelp>
+   <bitmap>images/16x16/editcopy.png</bitmap>
+  </object>
+  <object class="tool" name="idEditPaste">
+   <tooltip>Paste</tooltip>
+   <longhelp>Paste text from clipboard</longhelp>
+   <bitmap>images/16x16/editpaste.png</bitmap>
+  </object>
+    <object class="separator"/>
+  <object class="tool" name="idSearchFind">
+   <tooltip>Find</tooltip>
+   <longhelp>Find text</longhelp>
+   <bitmap>images/16x16/filefind.png</bitmap>
+  </object>
+  <object class="tool" name="idSearchReplace">
+   <tooltip>Replace</tooltip>
+   <longhelp>Replace text</longhelp>
+   <bitmap>images/16x16/searchreplace.png</bitmap>
+  </object>
+</object>
+</resource>

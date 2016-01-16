@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="CppCheck (Unix)" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel/share/codeblocks/plugins/libCppCheck" prefix_auto="0" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/CppCheck" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
+				<Option host_application="../../../devel/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectCompilerOptionsRelation="0" />
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wshadow" />
+			<Add option="-Winit-self" />
+			<Add option="-Wmissing-declarations" />
+			<Add option="-Wmissing-include-dirs" />
+			<Add option="-Wswitch-enum" />
+			<Add option="-Wswitch-default" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-ansi" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="`wx-config --version=2.8 --cflags`" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-fexceptions" />
+			<Add option="-fPIC" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-DcbDEBUG" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --version=2.8 --libs`" />
+			<Add option="-Wl,--no-undefined" />
+			<Add library="libcodeblocks.a" />
+			<Add directory="../../../devel" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ../../../devel/share/codeblocks/CppCheck.zip resources/manifest.xml" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="ConfigPanel.cpp" />
+		<Unit filename="ConfigPanel.h" />
+		<Unit filename="CppCheck.cpp" />
+		<Unit filename="CppCheck.h" />
+		<Unit filename="CppCheckListLog.cpp" />
+		<Unit filename="CppCheckListLog.h" />
+		<Unit filename="wxsmith/ConfigPanel.wxs" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<wxsmith version="1">
+				<resources>
+					<wxPanel wxs="wxsmith/ConfigPanel.wxs" src="ConfigPanel.cpp" hdr="ConfigPanel.h" fwddecl="1" i18n="1" name="ConfigPanel" language="CPP" />
+				</resources>
+			</wxsmith>
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

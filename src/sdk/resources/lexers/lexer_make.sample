@@ -1,0 +1,8 @@
+# C++ compiler flags.
+
+CXXFLAGS = -Wall
+
+# Top-level rule to compile everything.
+
+all:
+	g++ $(CXXFLAGS) main.cpp -o main

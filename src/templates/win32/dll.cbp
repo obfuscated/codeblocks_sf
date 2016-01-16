@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="DLL Sample"/>
+		<Option makefile="Makefile"/>
+		<Option makefile_is_custom="0"/>
+		<Build>
+			<Target title="default">
+				<Option type="3"/>
+				<Option createStaticLib="1"/>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DBUILD_DLL"/>
+		</Compiler>
+	</Project>
+</CodeBlocks_project_file>

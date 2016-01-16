@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="4" />
+	<Project>
+		<Option title="glut" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="glut.exe" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add directory="$(#glut.include)" />
+		</Compiler>
+		<Linker>
+			<Add library="glut32" />
+			<Add library="glu32" />
+			<Add library="opengl32" />
+			<Add library="winmm" />
+			<Add library="gdi32" />
+			<Add library="user32" />
+			<Add library="kernel32" />
+			<Add directory="$(#glut.lib)" />
+		</Linker>
+		<Unit filename="main.cpp">
+			<Option compilerVar="CPP" />
+			<Option target="default" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

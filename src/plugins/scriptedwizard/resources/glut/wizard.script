@@ -1,0 +1,160 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// GLUT project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals
+GlutPathDefault    <- _T("$(#glut)");
+GlutPathDefaultInc <- _T("$(#glut.include)");
+GlutPathDefaultLib <- _T("$(#glut.lib)");
+GlutPath <- _T("");
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new GLUT project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using the GLUT OpenGL extensions.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    local glutpath_descr = _T("Please select the location of GLUT on your computer.\n" +
+                              "This is the top-level folder where GLUT was installed (unpacked).\n" +
+                              "To help you, this folder must contain the subfolders\n" +
+                              "\"include\" and \"lib\".");
+
+    Wizard.AddInfoPage(_T("GlutIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    if (PLATFORM == PLATFORM_MAC)
+    {
+        GlutPathDefault="/System/Library/Frameworks/GLUT.framework";
+    }
+    else
+        Wizard.AddGenericSelectPathPage(_T("GlutPath"), glutpath_descr, _T("Please select GLUT's location:"), GlutPathDefault);
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// GLUT's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_GlutPath(fwd)
+{
+    if (fwd)
+    {
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, GlutPathDefault, GlutPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (!VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("GL"), _T("glut.h"), _T("GLUT's include"))) return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, GlutPathDefault, GlutPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+
+        if (PLATFORM == PLATFORM_MSW)
+        {
+            if (!VerifyLibFile(dir_nomacro_lib, _T("glut32"), _T("GLUT's"))) return false;
+        }
+        else
+        {
+            if (!VerifyLibFile(dir_nomacro_lib, _T("glut"), _T("GLUT's"))) return false;
+        }
+
+
+        GlutPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, GlutPathDefault, GlutPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            GlutPathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, GlutPathDefault, GlutPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            GlutPathDefaultLib = dir_nomacro_lib;
+        }
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("glut/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    // set project options
+    if (PLATFORM != PLATFORM_MAC)
+    {
+        project.AddIncludeDir(GlutPathDefaultInc);
+        project.AddLibDir(GlutPathDefaultLib);
+    }
+
+    // add link libraries
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddLinkLib(_T("glut32"));
+        project.AddLinkLib(_T("opengl32"));
+        project.AddLinkLib(_T("glu32"));
+        project.AddLinkLib(_T("winmm"));
+        project.AddLinkLib(_T("gdi32"));
+    }
+    else if (PLATFORM == PLATFORM_MAC)
+    {
+        project.AddLinkerOption(_T("-framework GLUT"));
+        project.AddLinkerOption(_T("-framework OpenGL"));
+
+        project.AddLinkerOption(_T("-framework Cocoa")); // GLUT dependency
+    }
+    else
+    {
+        project.AddLinkLib(_T("glut"));
+        project.AddLinkLib(_T("GL"));
+        project.AddLinkLib(_T("GLU"));
+        project.AddLinkLib(_T("Xxf86vm"));
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        target.SetWorkingDir(GlutPath + _T("/bin"));
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        target.SetWorkingDir(GlutPath + _T("/bin"));
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

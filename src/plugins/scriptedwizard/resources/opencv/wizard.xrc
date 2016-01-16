@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="VersionSelection">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Enter the OpenCV Version information, E.g. for OpenCV 2.4.3, the major is 2, the minor is 4, the revision is 3.</label>
+					<size>411,40</size>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>major</label>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxSpinCtrl" name="ID_SPINCTRL1">
+									<value>2</value>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT3">
+									<label>minor</label>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxSpinCtrl" name="ID_SPINCTRL2">
+									<value>4</value>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT4">
+									<label>revision</label>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxSpinCtrl" name="ID_SPINCTRL3">
+									<value>4</value>
+								</object>
+								<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT5">
+							<label>include path</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL1" />
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT6">
+							<label>lib path</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL2" />
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT7">
+							<label>bin path</label>
+						</object>
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL3" />
+						<flag>wxALL|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_BOTTOM</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</resource>

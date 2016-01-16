@@ -1,0 +1,100 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/dragscroll/dragscroll.cpp:52
+msgid "DragScroll"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscroll.cpp:54
+msgid ""
+"Mouse Drag and Scroll\n"
+"Using Right or Middle Mouse Key"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscroll.cpp:58
+msgid "wxWidgets & Code::Blocks Team"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:21
+msgid "Mouse Drag Scrolling Configuration"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:23
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:27
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:32
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:37
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:39
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:46
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:49
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:55
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:58
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:68
+msgid "Arial"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:25
+msgid "Scrolling Enabled"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:30
+msgid "Auto Editor Focus Enabled"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:35
+msgid "Smooth Message List Scrolling"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:38
+msgid "(Conflicts with some Context Menus)"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:42
+msgid "With Mouse"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:43
+msgid "Opposite Mouse"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:45
+msgid "Scroll Direction"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:48
+msgid "Mouse Key To Use"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:52
+msgid " Right"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:53
+msgid " Middle"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:57
+msgid "-- Adaptive Mouse Speed Sensitivity --"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.cpp:67
+msgid "-- Mouse Movement to Text Scroll Ratio --"
+msgstr ""
+
+#: ../plugins/contrib/dragscroll/dragscrollcfg.h:35
+msgid "Mouse Drag Scrolling"
+msgstr ""

@@ -1,0 +1,14 @@
+You can disable these tips on startup if you uncheck the "Show tips at startup" box below
+You can have more than one project open simultaneously
+Each project can have more than one build target. For example, a target to build a library and a target to build an application using that library
+You can quickly create a new project by using one of the ready-made templates, by clicking on "Project/New"
+You can zoom in and out in the editor by holding Control while rolling the mousewheel
+You can change the colours of the editor by either using "Settings/Editor/Colours" or right-clicking inside the editor and click "Configure editor"
+You can create a duplicate of the line the caret is on, by pressing Ctrl+D
+You can indent / unindent blocks of text using the TAB and SHIFT-TAB keys
+You can press F2 and Shift-F2 to hide the messages and manager pane respectively
+You can easily find/open files as you type in the project tree by pressing ALT-G. (similar to desktop-search)
+You can close all open files by pressing Ctrl-Shift-F4
+You can close a tab by clicking it with the middle mouse button
+You can perform a quick search to Google, Google Code or MSDN by holding Ctrl and right-clicking the text you want to search
+You can change the log level for the compiler in: Settings -> Compiler -> Tab "Other" -> Compiler logging. The default is Full command line mode.

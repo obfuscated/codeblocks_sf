@@ -1,0 +1,219 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Matlab"
+				index="32"
+				filemasks="*.m,*.mdl">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="2"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="8"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="User keyword"
+						index="9,10"
+						fg="0,160,0"
+						bold="1"/>
+				<Style name="String"
+						index="3,4,5"
+						fg="0,0,255"/>
+				<Style name="Label"
+						index="13"
+						fg="0,0,255"/>
+				<Style name="Continuation"
+						index="14"
+						fg="0,0,255"/>
+				<Style name="Preprocessor"
+						index="11"
+						fg="0,160,0"/>
+				<Style name="Operator"
+						index="6,12"
+						fg="255,0,0"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Breakpoint line"
+						index="-2"
+						bg="255,160,160"/>
+				<Style name="Debugger active line"
+						index="-3"
+						bg="160,160,255"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,0,0"/>
+				<Keywords>
+						<Set index="0"
+								value="break case catch continue else elseif end
+								       for function global if otherwise persistent
+								       return switch try while"/>
+						<Set index="1"
+								value="abs acos acosh acot acoth acsc acsch actxcontrol
+                       actxserver addframe addpath airy alim all allchild
+                       alpha alphamap angle ans any area asec asech asin
+                       asinh assignin atan atanh atan2 audioplayer
+                       audiorecorder auread auwrite avifile aviinfo aviread
+                       axes axis balance bar barh bar3 bar3h base2dec beep
+                       besselh besseli besselk besselj bessely beta betainc
+                       betaln bicg bicgstab bin2dec bitand bitcmp bitget
+                       bitmax bitor bitset bitshift bitxor blanks blkdiag box
+                       brighten builtin bvp4c bvpget bvpinit bvpset
+                       bvpval calendar camdolly camlight camlookat camorbit
+                       campan campos camproj camroll camtarget camup camva
+                       camzoom capture cart2pol cart2sph cat caxis
+                       cd cdf2rdf cdfinfo cdfread ceil cell cell2struct
+                       celldisp cellfun cellplot cellstr cgs char checkin
+                       checkout chol cholinc cholupdate cla clabel class clc
+                       clear clf clipboard clock close closereq cmopts colamd
+                       colmmd colorbar colordef colormap ColorSpec colperm
+                       comet comet3 compan compass complex computer cond
+                       condeig condest coneplot conj contour contour3
+                       contourc contourf contourslice contrast conv conv2
+                       convhull convhulln convn copyfile copyobj corrcoef cos
+                       cosh cot coth cov cplxpair cputime cross csc csch
+                       csvread csvwrite cumprod cumsum cumtrapz curl
+                       customverctrl cylinder daspect date datenum datestr
+                       datetick datevec dbclear dbcont dbdown dblquad dbmex
+                       dbquit dbstack dbstatus dbstep dbstop dbtype dbup
+                       ddeadv ddeexec ddeinit ddepoke ddereq ddeterm ddeunadv
+                       deal deblank dec2base dec2bin dec2hex deconv default4
+                       del2 delaunay delaunay3 delaunayn delete depdir depfun
+                       det detrend deval diag dialog diary diff dir disp
+                       display divergence dlmread dlmwrite dmperm doc docopt
+                       dos dot double dragrect drawnow dsearch dsearchn echo
+                       edit eig eigs ellipj ellipke ellipsoid
+                       eomday eps erf erfc erfcx erfinv erfcinv error errorbar
+                       errordlg etime etree etreeplot eval evalc evalin exist
+                       exit exp expint expm eye ezcontour ezcontourf ezmesh
+                       ezmeshc ezplot ezplot3 ezpolar ezsurf ezsurfc factor
+                       factorial fclose feather feof ferror feval fft fft2
+                       fftn fftshift fgetl fgets fieldnames figflag figure
+                       file filebrowser fileparts filesep fill fill3
+                       filter filter2 find  findall findfigs findobj findstr
+                       finish fitsinfo fitsread fix flipdim fliplr flipud
+                       floor flops flow fmin fminbnd fmins fminsearch fopen
+                       format fplot fprintf frame2im frameedit fread
+                       freeserial freqspace frewind fscanf fseek ftell full
+                       fullfile func2str funm fwrite fzero gallery
+                       gamma gammainc gammaln gca gcbf gcbo gcd gcf gco
+                       genpath get getappdata getenv getfield getframe ginput
+                       gmres gplot gradient graymon grid griddata
+                       griddata3 griddatan gsvd gtext guidata guide guihandles
+                       hadamard hankel hdf hdfinfo hdfread help helpbrowser
+                       helpdesk helpdlg helpwin hess hex2dec hex2num hgload
+                       hgsave hidden hilb hist histc hold home horzcat hsv2rgb
+                       ifft ifft2 ifftn ifftshift im2frame imag image
+                       imagesc imfinfo import importdata imread imwrite
+                       ind2rgb ind2sub Inf inferiorto info inline inmem
+                       inpolygon input inputdlg inputname inspect
+                       instrcallback instrfind int2str int8 int16 int32
+                       interp1 interp2 interp3 interpft interpn
+                       interpstreamspeed intersect inv invhilb invoke
+                       ipermute isa isappdata iscell iscellstr ischar isempty
+                       isequal isfield isfinite isglobal ishandle ishold isinf
+                       isjava iskeyword isletter islogical ismember isnan
+                       isnumeric isobject isocaps isocolors isonormals
+                       isosurface ispc isprime isreal isruntime isspace
+                       issparse isstr isstruct isstudent isunix isvalid
+                       isvarname javaArray javachk javaMethod javaObject
+                       keyboard kron lasterr lastwarn lcm legend legendre
+                       length license light lightangle lighting lin2mu line
+                       LineSpec linspace listdlg load loadobj log log10 log2
+                       logical loglog logm logspace lookfor lower ls lscov
+                       lsqnonneg lsqr lu luinc magic mat2str material matlab
+                       matlabrc matlabroot max mean median memory menu mesh
+                       meshc meshz meshgrid methods methodsview mex mexext
+                       mfilename min minres mislocked mkdir mkpp mlock mod
+                       more move movegui movie movie2avi moviein msgbox mu2lin
+                       munlock NaN nargchk nargin nargout nargoutchk nchoosek
+                       ndgrid ndims newplot nextpow2 nnls nnz noanimate
+                       nonzeros norm normest notebook now null num2cell
+                       num2str numel nzmax ode45 ode23 ode113 ode15s ode23s
+                       ode23t ode23tb odefile odeget odeset ones open openfig
+                       opengl openvar optimget optimset orient orth
+                       pack pagedlg pagesetupdlg pareto partialpath pascal
+                       patch path pathtool pause pbaspect pcg pchip pcode
+                       pcolor pdepe pdeval peaks perms permute pi
+                       pie pie3 pinv planerot plot plot3 plotedit plotmatrix
+                       plotyy pol2cart polar poly polyarea polyder polyeig
+                       polyfit polyint polyval polyvalm pow2 ppval primes
+                       print printopt printdlg printpreview prod profile
+                       profreport propedit pwd qmr qr qrdelete qrinsert
+                       qrupdate quad quad8 quadl questdlg quit quiver quiver3
+                       qz rand randn randperm rank rat rats rbbox rcond
+                       readasync real realmax realmin record rectangle rectint
+                       reducepatch reducevolume refresh rehash release rem
+                       repmat reset reshape residue rgb2hsv rgbplot
+                       ribbon rmappdata rmfield rmpath roots rose rosser rot90
+                       rotate rotate3d round rref rsf2csf run runtime save
+                       saveas saveobj scatter scatter3 schur script sec sech
+                       selectmoveresize semilogx semilogy send serial
+                       serialbreak set setappdata setdiff setfield setstr
+                       setxor shading shiftdim shrinkfaces sign sin sinh single
+                       size slice smooth3 sort sortrows sound soundsc spalloc
+                       sparse spaugment spconvert spdiags speye spfun sph2cart
+                       sphere spinmap spline spones spparms sprand sprandn
+                       sprandsym sprank sprintf spy sqrt sqrtm squeeze sscanf
+                       stairs startup std stem stem3 stopasync str2double
+                       str2func str2mat str2num strcat strcmp strcmpi stream2
+                       stream3 streamline streamparticles streamribbon
+                       streamslice streamtube strfind strings strjust strmatch
+                       strncmp strncmpi strread strrep strtok struct
+                       struct2cell strvcat sub2ind subplot subsasgn subsindex
+                       subspace subsref substruct subvolume sum superiorto
+                       support surf surfc surf2patch surface surfl surfnorm
+                       svd svds symamd symbfact symmlq symmmd symrcm
+                       symvar tan tanh tempdir tempname terminal tetramesh
+                       texlabel text textread textwrap tic toc title toeplitz
+                       trace trapz treelayout treeplot tril trimesh triplot
+                       trisurf triu tsearch tsearchn type uicontextmenu
+                       uicontrol uigetfile uiimport uimenu uint8 uint16
+                       uint32 uiputfile uiresume uiwait uisetcolor uisetfont
+                       undocheckout union unique unix unmkpp unwrap upper
+                       usejava vander var varargin varargout vectorize ver
+                       version vertcat view viewmtx volumebounds voronoi
+                       voronoin waitbar waitfor waitforbuttonpress warndlg
+                       warning waterfall wavplay wavread wavrecord wavwrite
+                       web weekday what whatsnew which whitebg who whos
+                       wilkinson wk1read wk1write workspace xlabel ylabel
+                       zlabel xlim ylim zlim xlsfinfo xlsread xor zeros zoom"/>
+				</Keywords>
+				<SampleCode value="lexer_matlab.sample"
+						breakpoint_line="10"
+						debug_line="8"
+						error_line="14"/>
+                <LanguageAttributes
+                    LineComment="%"
+                    StreamCommentStart="%{"
+                    StreamCommentEnd="}%"
+                    BoxCommentStart="%{ "
+                    BoxCommentMid="   "
+                    BoxCommentEnd=" }%"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="3,4,5"
+                    LexerPreprocessorStyles="11"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

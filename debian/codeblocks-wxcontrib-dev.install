@@ -1,0 +1,5 @@
+usr/lib/codeblocks/wxContribItems/*.so
+
+usr/lib/pkgconfig/cb_*.pc usr/lib/pkgconfig/
+usr/lib/pkgconfig/wxsmith-contrib.pc usr/lib/pkgconfig/
+

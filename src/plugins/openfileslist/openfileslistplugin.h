@@ -1,0 +1,62 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ */
+
+#ifndef OPENFILESLISTPLUGIN_H
+#define OPENFILESLISTPLUGIN_H
+
+#include <cbplugin.h>
+
+#include <wx/dynarray.h>
+
+class wxTreeCtrl;
+class wxTreeEvent;
+class wxMenuBar;
+class wxImageList;
+class EditorBase;
+
+WX_DEFINE_ARRAY(EditorBase*, EditorArray);
+
+class OpenFilesListPlugin : public cbPlugin
+{
+    public:
+        OpenFilesListPlugin();
+        virtual ~OpenFilesListPlugin();
+
+        virtual int GetConfigurationGroup() const { return cgEditor; }
+
+        virtual void BuildMenu(wxMenuBar* menuBar);
+
+        virtual void OnAttach();
+        virtual void OnRelease(bool appShutDown);
+    protected:
+        int GetOpenFilesListIcon(EditorBase* ed);
+        void RebuildOpenFilesTree();
+        void RefreshOpenFilesTree(EditorBase* ed, bool remove = false);
+
+        void OnTreeItemActivated(wxTreeEvent& event);
+        void OnTreeItemRightClick(wxTreeEvent& event);
+        void OnViewOpenFilesTree(wxCommandEvent& event);
+        void OnUpdateUI(wxUpdateUIEvent& event);
+
+        void OnEditorActivated(CodeBlocksEvent& event);
+        void OnEditorClosed(CodeBlocksEvent& event);
+        void OnEditorDeactivated(CodeBlocksEvent& event);
+        void OnEditorModified(CodeBlocksEvent& event);
+        void OnEditorOpened(CodeBlocksEvent& event);
+        void OnEditorSaved(CodeBlocksEvent& event);
+
+        void OnProjectOpened(CodeBlocksEvent& event);
+
+        wxTreeCtrl* m_pTree;
+        wxImageList* m_pImages;
+        wxMenu* m_ViewMenu;
+    private:
+        EditorArray m_EditorArray;
+        DECLARE_EVENT_TABLE();
+};
+
+
+
+#endif // OPENFILESLISTPLUGIN_H

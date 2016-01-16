@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxMenu" name="compiler_menu">
+    <object class="wxMenuItem" name="idCompilerMenuCompile">
+      <label>&amp;Build</label>
+      <bitmap>images\16x16\compile.png</bitmap>
+      <accel>Ctrl-F9</accel>
+      <help>Build current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuCompileFile">
+      <label>Compile current &amp;file</label>
+      <accel>Ctrl-Shift-F9</accel>
+      <help>Compile current file</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuRun">
+      <label>&amp;Run</label>
+      <bitmap>images\16x16\run.png</bitmap>
+      <accel>Ctrl-F10</accel>
+      <help>Run current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuCompileAndRun">
+      <label>Bui&amp;ld and run</label>
+      <bitmap>images\16x16\compilerun.png</bitmap>
+      <accel>F9</accel>
+      <help>Build and run current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuRebuild">
+      <label>Rebuil&amp;d</label>
+      <bitmap>images\16x16\rebuild.png</bitmap>
+      <accel>Ctrl-F11</accel>
+      <help>Rebuild current project</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuClean">
+      <label>&amp;Clean</label>
+      <help>Clean current project</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idCompilerMenuBuildWorkspace">
+      <label>Build &amp;workspace</label>
+      <help>Build all projects in workspace</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuRebuildWorkspace">
+      <label>Reb&amp;uild workspace</label>
+      <help>Rebuild all projects in workspace</help>
+    </object>
+    <object class="wxMenuItem" name="idCompilerMenuCleanWorkspace">
+      <label>Clean workspace</label>
+      <help>Clean current project (dependencies too)</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idCompilerMenuKillProcess">
+      <label>&amp;Abort</label>
+      <bitmap>images\16x16\stop.png</bitmap>
+      <help>Abort the running build process</help>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenu" name="idCompilerMenuErrors">
+      <label>&amp;Errors</label>
+      <object class="wxMenuItem" name="idCompilerMenuPreviousError">
+        <label>&amp;Previous error</label>
+        <accel>Alt-F1</accel>
+        <help>Go to previous compilation error</help>
+      </object>
+      <object class="wxMenuItem" name="idCompilerMenuNextError">
+        <label>&amp;Next error</label>
+        <accel>Alt-F2</accel>
+        <help>Go to next compilation error</help>
+      </object>
+      <object class="separator"/>
+      <object class="wxMenuItem" name="idCompilerMenuClearErrors">
+        <label>&amp;Clear all errors</label>
+        <help>Clear all compilation errors</help>
+      </object>
+    </object>
+    <object class="wxMenu" name="idCompilerMenuSelectTarget">
+      <label>Select target</label>
+    </object>
+    <object class="separator"/>
+    <object class="wxMenuItem" name="idCompilerMenuExportMakefile">
+      <label>E&amp;xport Makefile</label>
+      <help>Export Makefile so that you can build the program from the command line</help>
+      <enabled>0</enabled>
+    </object>
+  </object>
+</resource>

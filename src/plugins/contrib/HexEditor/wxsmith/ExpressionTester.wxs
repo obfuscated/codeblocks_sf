@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxScrollingDialog" name="ExpressionTester">
+		<title>ExpressionTester</title>
+		<centered>1</centered>
+		<id_arg>0</id_arg>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="no">
+							<cols>2</cols>
+							<vgap>5</vgap>
+							<hgap>5</hgap>
+							<growablecols>1</growablecols>
+							<growablerows>3</growablerows>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+									<label>Expr:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Expr" member="yes">
+											<value>1 + 2 * 3</value>
+											<handler function="OnButton1Click" entry="EVT_TEXT_ENTER" />
+										</object>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON3" variable="Button3" member="yes">
+											<label>v</label>
+											<style>wxBU_EXACTFIT</style>
+											<handler function="OnButton3Click" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxLEFT|wxEXPAND</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxALL|wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+									<label>Parsing:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT3" variable="m_Parsing" member="yes">
+									<label></label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT4" variable="StaticText4" member="yes">
+									<label>Result:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT5" variable="m_Result" member="yes">
+									<label></label>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT6" variable="StaticText3" member="yes">
+									<label>Code dump:</label>
+								</object>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="m_Dump" member="yes">
+									<style>wxTE_MULTILINE|wxTE_READONLY</style>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BUTTON4" variable="Button4" member="yes">
+									<label>Auto test</label>
+									<tooltip>Perform automatic parser and executor test</tooltip>
+									<handler function="OnButton4Click" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="spacer">
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+								<size>15,9</size>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BUTTON2" variable="Button2" member="yes">
+									<label>?</label>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnButton2Click" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxRIGHT|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BUTTON1" variable="Button1" member="yes">
+									<label>Parse</label>
+									<style>wxBU_EXACTFIT</style>
+									<handler function="OnButton1Click" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxRIGHT|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="spacer">
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<size>357,2</size>
+			</object>
+		</object>
+	</object>
+</wxsmith>

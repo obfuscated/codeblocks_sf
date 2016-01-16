@@ -1,0 +1,17 @@
+%%
+% Sample Matlab preview code
+% This is a block comment
+%%
+function ret_val = foo(in_par)
+
+  ret_val = []; % error
+  
+  for (i=1:in_par)
+
+    disp(['i is currently = ' num2str(i)]);
+
+  end
+
+  diss('This is the end.');
+
+  ret_val = 1; % success

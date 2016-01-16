@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxFrame" name="CCTestFrame">
+		<title>CC Testing</title>
+		<centered>1</centered>
+		<bg>wxSYS_COLOUR_MENUBAR</bg>
+		<parent_arg>0</parent_arg>
+		<id_arg>0</id_arg>
+		<object class="wxBoxSizer" variable="bsz_main" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bsz_misc" member="no">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="bsz_include" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lbl_include" member="no">
+									<label>Add include directories to search for files here (one directory per line):</label>
+								</object>
+								<flag>wxBOTTOM|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="wxID_ANY" variable="m_IncludeCtrl" member="yes">
+									<minsize>-1,60</minsize>
+									<style>wxTE_MULTILINE</style>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxBOTTOM|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bsz_search_tree" member="no">
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="wxID_ANY" variable="m_DoTreeCtrl" member="yes">
+							<label>Enable creation of parser&apos;s internal search tree (might get HUGE!!!)</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHK_HIDE" variable="m_DoHideCtrl" member="yes">
+							<label>Hide frame</label>
+							<checked>1</checked>
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_TEST_SINGLE" variable="btnTestSingle" member="yes">
+							<label>Test Single</label>
+							<handler function="OnTestSingle" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_PARSE" variable="btnParse" member="yes">
+							<label>Test All</label>
+							<handler function="OnParse" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_PRINT_TREE" variable="btnPrintTree" member="yes">
+							<label>Print Tree</label>
+							<handler function="OnPrintTree" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bsz_parser" member="no">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxNotebook" name="wxID_ANY" variable="m_ParserCtrl" member="yes">
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panParserInput" member="no">
+									<object class="wxBoxSizer" variable="bszParserInput" member="no">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="Custom" name="wxID_ANY" subclass="wxScintilla" variable="m_Control" member="yes">
+												<creating_code>$(THIS) = new $(CLASS)($(PARENT),$(ID),$(POS),$(SIZE));</creating_code>
+												<include_file>wx/wxscintilla.h</include_file>
+												<local_include>1</local_include>
+												<style></style>
+											</object>
+											<flag>wxEXPAND</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+								</object>
+								<label>Parser input</label>
+								<selected>1</selected>
+							</object>
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panParserOutput" member="no">
+									<object class="wxBoxSizer" variable="bszParserOutput" member="no">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="wxID_ANY" variable="m_LogCtrl" member="yes">
+												<minsize>640,250</minsize>
+												<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+											</object>
+											<flag>wxEXPAND</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+								</object>
+								<label>Parser output</label>
+							</object>
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panParserSearchTree" member="no">
+									<object class="wxBoxSizer" variable="bszParserSearchTree" member="no">
+										<orient>wxVERTICAL</orient>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="wxID_ANY" variable="m_TreeCtrl" member="yes">
+												<minsize>640,150</minsize>
+												<style>wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH2|wxHSCROLL</style>
+											</object>
+											<flag>wxEXPAND</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+								</object>
+								<label>Parser search tree</label>
+							</object>
+							<object class="notebookpage">
+								<object class="wxPanel" name="wxID_ANY" variable="panCompletionTest" member="yes">
+									<pos>274,5</pos>
+									<object class="wxBoxSizer" variable="bszCompletionTest" member="no">
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="wxID_ANY" variable="m_CompletionTestCtrl" member="yes">
+												<style>wxTE_MULTILINE|wxTE_RICH2|wxHSCROLL</style>
+											</object>
+											<flag>wxALL|wxEXPAND</flag>
+											<border>5</border>
+											<option>1</option>
+										</object>
+									</object>
+								</object>
+								<label>Completion test</label>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+		<object class="wxMenuBar" variable="mnu_main" member="no">
+			<object class="wxMenu" variable="mnu_file" member="no">
+				<label>&amp;File</label>
+				<object class="wxMenuItem" name="wxID_OPEN" variable="mnu_itm_open" member="no">
+					<label>&amp;Open...</label>
+					<accel>Ctrl+O</accel>
+					<help>Open the source code to be tested</help>
+					<handler function="OnMenuOpenSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="wxID_REFRESH" variable="mnu_itm_reparse" member="no">
+					<label>&amp;Re-parse</label>
+					<accel>F5</accel>
+					<help>Re-parse test file / buffer</help>
+					<handler function="OnMenuReparseSelected" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="wxID_SAVE" variable="mnu_itm_save_log" member="no">
+					<label>&amp;Save Log...</label>
+					<accel>Ctrl+S</accel>
+					<help>Save log file to hard disk </help>
+					<handler function="OnMenuSaveSelected" entry="EVT_MENU" />
+				</object>
+				<object class="separator" />
+				<object class="wxMenuItem" name="wxID_EXIT" variable="mnu_itm_quit" member="no">
+					<label>&amp;Quit</label>
+					<accel>Ctrl+Q</accel>
+					<handler function="OnMenuQuitSelected" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="mnu_search" member="no">
+				<label>&amp;Search</label>
+				<object class="wxMenuItem" name="wxID_FIND" variable="mnu_item_find" member="no">
+					<label>&amp;Find...</label>
+					<accel>Ctrl+F</accel>
+					<help>Find keyword</help>
+					<handler function="OnMenuFindSelected" entry="EVT_MENU" />
+				</object>
+				<object class="wxMenuItem" name="wxID_TOKEN" variable="mnu_item_token" member="no">
+					<label>&amp;Token...</label>
+					<accel>Ctrl+T</accel>
+					<help>Find token</help>
+					<handler function="OnMenuTokenSelected" entry="EVT_MENU" />
+				</object>
+			</object>
+			<object class="wxMenu" variable="mnu_help" member="no">
+				<label>&amp;Help</label>
+				<object class="wxMenuItem" name="wxID_ABOUT" variable="mnu_item_about" member="no">
+					<label>&amp;About</label>
+					<handler function="OnMenuAboutSelected" entry="EVT_MENU" />
+				</object>
+			</object>
+		</object>
+		<object class="wxStatusBar" name="wxID_ANY" variable="m_StatuBar" member="yes">
+			<fields>1</fields>
+			<widths>-10</widths>
+			<styles>wxSB_NORMAL</styles>
+		</object>
+		<object class="wxFileDialog" variable="m_OpenFile" member="yes">
+			<message>Select Test Source File</message>
+			<default_dir>.</default_dir>
+			<wildcard>*.cpp;*.h</wildcard>
+		</object>
+		<object class="wxFileDialog" variable="m_SaveFile" member="yes">
+			<message>Select file</message>
+			<default_dir>.</default_dir>
+			<default_file>log.txt</default_file>
+			<wildcard>*.txt</wildcard>
+			<style>wxFD_SAVE</style>
+		</object>
+	</object>
+</wxsmith>

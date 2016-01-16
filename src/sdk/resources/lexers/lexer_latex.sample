@@ -1,0 +1,32 @@
+\documentclass[12pt]{article}
+\begin{document}
+
+\section{First section}
+
+  \begin{table}[!ht]
+    \centering
+    \begin{tabular}{|r|l|}
+      \hline
+      row1col1 & row1col2\\
+      \hline
+      row2col1 & row2col2\\
+      \hline
+    \end{tabular}
+    \caption{A table caption}
+    \label{tab_the_table}
+  \end{table}
+
+  \subsection{First sub-section}
+  \emph{Hello} \texttt{World} to \LaTeX.\\
+  Look up the table \ref{tab_the_table}!
+  \begin{itemize}
+    \item one
+    \item two
+    \item three
+  \end{itemize}
+
+  \subsection{Second sub-section}
+  % Believe in Einstein.
+  $E = m \cdot c^2$... for real.
+
+\end{document}

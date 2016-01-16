@@ -1,0 +1,440 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/devpak_plugin/cbnetwork.cpp:66
+msgid "Disconnected"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/cbnetwork.cpp:92
+msgid "Connected"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/cbnetwork.cpp:134
+msgid "Aborted"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/conf.cpp:15
+#, possible-c-format
+msgid "%.2f MB"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/conf.cpp:17
+#, possible-c-format
+msgid "%.2f KB"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/conf.cpp:19
+#, possible-c-format
+msgid "%ld bytes"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:24
+msgid "Progress"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:51
+msgid "Decompressing "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:57
+msgid " [Decompression failed]"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:64
+msgid "Unpacking control-file"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:72
+msgid " [Control file unpacking failed] - "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:81
+msgid "Unpacking all files"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:85
+msgid " [Unpacking failed]"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:93
+msgid "Done"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:110
+msgid "No [Files] section in "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:118
+msgid "Removing: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:120
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:148
+msgid "Can't remove "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:141
+msgid "Removing directory: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:167
+msgid "Error opening input file!"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:176
+msgid "Can't read compressed stream!"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:185
+msgid "Error opening output file!"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:197
+msgid "Error reading from stream!"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:249
+msgid ""
+"This package contains some DLLs.\n"
+"Do you want to install them system-wide (YES recommended)?"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakinstaller.cpp:249
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:405
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:417
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:420
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:697
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:716
+msgid "Confirmation"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:28
+msgid "Dev-C++ DevPak updater/installer"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:30
+msgid "Installs selected DevPaks from the Internet"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:31
+msgid "Yiannis Mandravellos"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:32
+msgid "mandrav@codeblocks.org"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:33
+msgid "http://www.codeblocks.org"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:34
+msgid ""
+"Dev-C++ community.\n"
+"Julian R Seward for libbzip2.\n"
+"\tlibbzip2 copyright notice:\n"
+"\t\"bzip2\" and associated library \"libbzip2\", are\n"
+"\tcopyright (C) 1996-2000 Julian R Seward.\n"
+"\tAll rights reserved."
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:67
+msgid ""
+"The Dev-C++ DevPak Plugin is not configured yet.\n"
+"Do you want to configure it now?"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:67
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:74
+msgid "Question"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:72
+msgid ""
+"Do you want to add this path to the compiler's search dirs?\n"
+"(needed to be able to actually compile anything)"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:79
+msgid "Invalid compiler!?!"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:79
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:398
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:411
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:447
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:470
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:492
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:501
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:517
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:535
+msgid "Error"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/devpakupdater.cpp:93
+msgid "Please select the path where DevPaks will be downloaded and installed:"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/mytar.cpp:166
+msgid "Failed extracting"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/mytar.cpp:234
+msgid "Unpacking "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/mytar.cpp:241
+msgid "Can't open file "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/mytar.cpp:253
+msgid "Failure reading file "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:61
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:287
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:399
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:437
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:448
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:458
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:463
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:469
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:494
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:518
+msgid "Ready"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:86
+msgid "Title"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:87
+msgid "Version"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:88
+msgid "Installed"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:89
+msgid "Size"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:146
+msgid "Parsing list of updates"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:168
+msgid "All categories"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:178
+msgid "Done parsing list of updates"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:223
+msgid "Name: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:226
+msgid "Version: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:227
+msgid "Size: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:228
+msgid "Date: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:229
+msgid "Description: \n"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:238
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:394
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:443
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:513
+msgid "Please wait..."
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:250
+msgid "Error downloading list of mirrors"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:264
+msgid "Error downloading list of updates"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:272
+msgid "Failed to retrieve the list of updates"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:308
+msgid "devpaks.org Community Devpaks"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:398
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:447
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:517
+msgid "No file selected!"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:405
+msgid ""
+"You seem to have installed the latest version.\n"
+"Are you sure you want to proceed?"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:411
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:470
+msgid "Can't create directory "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:417
+msgid ""
+"This file already exists!\n"
+"Are you sure you want to download it again?"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:420
+msgid "Do you want to force-install it?"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:432
+msgid "Error downloading file: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:483
+msgid "DevPak installed"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:483
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:526
+msgid "Message"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:492
+msgid ""
+"DevPak was not installed.\n"
+"Status:\n"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:501
+msgid "Can't install mirrors file: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:507
+msgid "Mirrors installed"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:507
+msgid "Information"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:526
+msgid "DevPak uninstalled"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:535
+msgid ""
+"DevPak was not uninstalled.\n"
+"Status:\n"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:568
+msgid "Download && install"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:570
+msgid "Download"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:571
+msgid "Install"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:573
+msgid "Uninstall"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:638
+msgid "Abort"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:644
+msgid "Close"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:653
+msgid "Downloading: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:658
+#, possible-c-format
+msgid "%s of %s"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:664
+msgid "Download aborted: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:672
+msgid "Download started: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:679
+msgid "Download finished: "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:689
+msgid "File size mismatch for "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:689
+msgid ""
+"!\n"
+"\n"
+"This, usually, means one of three things:\n"
+"1) The reported size in the update list is wrong. The DevPak might still be "
+"valid.\n"
+"2) The file's location returned a web error-page. Invalid DevPak...\n"
+"3) The file is corrupt...\n"
+"\n"
+"You can try to install it anyway. If it is not a valid DevPak, the operation "
+"will fail."
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:695
+msgid "Warning"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:697
+msgid "Do you want to install "
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:697
+msgid " now?"
+msgstr ""
+
+#: ../plugins/contrib/devpak_plugin/updatedlg.cpp:716
+msgid ""
+"A list of updates needs to be downloaded.\n"
+"Do you want to do this now?"
+msgstr ""

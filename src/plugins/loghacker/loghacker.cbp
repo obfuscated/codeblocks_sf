@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="LogHacker" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\devel\share\codeblocks\plugins\loghacker" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\.objs\plugins\loghacker" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option host_application="..\..\devel\codeblocks.exe" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add directory="..\..\include" />
+					<Add directory="..\..\sdk\wxscintilla\include" />
+					<Add directory="$(#WX.include)" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,--enable-auto-import" />
+					<Add library="wxmsw28$(WX_SUFFIX)" />
+					<Add library="codeblocks" />
+					<Add directory="..\..\devel" />
+					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\devel\share\CodeBlocks\loghacker.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Unit filename="loghacker.cpp" />
+		<Unit filename="loghacker.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<debugger />
+			<envvars />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

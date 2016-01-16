@@ -1,0 +1,35 @@
+# This is a comment
+## This is a comment block
+
+import sys, time, string
+
+month_names = ['Januari', 'Februari', 'Maart',      # These are the
+               'April',   'Mei',      'Juni',       # Dutch names
+               "Juli",    "Augustus", "September",  # for the months
+               "Oktober", "November", "December"]   # of the year
+
+if len(sys.argv)!=2:
+    print '''Usage: This is a 'Code::Blocks' Example'''
+    print "This String goes to EOL
+    sys.exit(0)
+
+class ClassName:
+  def perm(l):
+  # Compute the list of all permutations of l
+    if len(l) <= 1:
+      return [l]
+    r = []
+    for i in range(len(l)):
+      s = l[:i] + l[i+1:]
+      p = perm(s)
+      for x in p:
+        r.append(l[i:i+1] + x)
+    return r
+
+@classmethod           # This is a decorator
+@synchronized(lock)    # And so is this
+def func(self):
+  try:
+    return  """A "Triple Double Quote" String\n"""
+  except SystemExit:
+    pass

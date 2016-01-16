@@ -1,0 +1,19 @@
+usr/bin/codeblocks
+usr/bin/cb_console_runner
+usr/bin/cb_share_config
+
+usr/lib/codeblocks/plugins/libabbreviations.so
+usr/lib/codeblocks/plugins/libastyle.so
+usr/lib/codeblocks/plugins/libautosave.so
+usr/lib/codeblocks/plugins/libclasswizard.so
+usr/lib/codeblocks/plugins/libcodecompletion.so
+usr/lib/codeblocks/plugins/libcompiler.so
+usr/lib/codeblocks/plugins/libdebugger.so
+usr/lib/codeblocks/plugins/libdefaultmimehandler.so
+usr/lib/codeblocks/plugins/liboccurrenceshighlighting.so
+usr/lib/codeblocks/plugins/libopenfileslist.so
+usr/lib/codeblocks/plugins/libprojectsimporter.so
+usr/lib/codeblocks/plugins/libscriptedwizard.so
+usr/lib/codeblocks/plugins/libtodo.so
+../lintian/codeblocks  usr/share/lintian/overrides
+

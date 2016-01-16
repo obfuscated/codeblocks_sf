@@ -1,0 +1,171 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="NSIS"
+                index="43"
+                filemasks="*.nsi,*.nsh">
+                <Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+                <Style name="Comment"
+                        index="1"
+                        fg="160,160,160"/>
+                <Style name="Double quote string"
+                        index="2"
+                        fg="0,0,255"/>
+                <Style name="Left quote string"
+                        index="3"
+                        fg="128,0,0"/>
+                <Style name="Right quote string"
+                        index="4"
+                        fg="128,0,128"/>
+                <Style name="Function"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Variable"
+                        index="6"
+                        fg="160,0,0"/>
+                <Style name="Label"
+                        index="7"
+                        fg="224,160,0"/>
+                <Style name="User defined"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Section"
+                        index="9"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Sub section"
+                        index="10"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="If def"
+                        index="11"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Macro definition"
+                        index="12"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Variable within a string"
+                        index="13"
+                        fg="255,0,0"/>
+                <Style name="Number"
+                        index="14"
+                        fg="240,0,240"/>
+                <Style name="Section group"
+                        index="15"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Page Ex"
+                        index="16"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Function definition"
+                        index="17"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Comment box"
+                        index="18"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Keywords>
+                        <!-- Functions -->
+                        <Set index="0"
+                            value="!addincludedir !addplugindir MakeNSIS Portions
+                                   Contributors: Abort AddBrandingImage AddSize AutoCloseWindow
+                                   BGFont BGGradient BrandingText BringToFront Call CallInstDLL
+                                   Caption ChangeUI ClearErrors ComponentText GetDLLVersion
+                                   GetDLLVersionLocal GetFileTime GetFileTimeLocal CopyFiles CRCCheck
+                                   CreateDirectory CreateFont CreateShortCut SetDatablockOptimize
+                                   DeleteINISec DeleteINIStr DeleteRegKey DeleteRegValue Delete
+                                   DetailPrint DirText DirShow DirVar DirVerify GetInstDirError
+                                   AllowRootDirInstall CheckBitmap EnableWindow EnumRegKey
+                                   EnumRegValue Exch Exec ExecWait ExecShell ExpandEnvStrings
+                                   FindWindow FindClose FindFirst FindNext File FileBufSize FlushINI
+                                   ReserveFile FileClose FileErrorText FileOpen FileRead FileWrite
+                                   FileReadByte FileWriteByte FileSeek Function FunctionEnd
+                                   GetDlgItem GetFullPathName GetTempFileName HideWindow Icon IfAbort
+                                   IfErrors IfFileExists IfRebootFlag IfSilent InstallDirRegKey
+                                   InstallColors InstallDir InstProgressFlags InstType IntOp IntCmp
+                                   IntCmpU IntFmt IsWindow Goto LangString LangStringUP LicenseData
+                                   LicenseForceSelection LicenseLangString LicenseText
+                                   LicenseBkColor LoadLanguageFile LogSet LogText MessageBox Nop
+                                   Name OutFile Page PageCallbacks PageEx PageExEnd Pop Push Quit
+                                   ReadINIStr ReadRegDWORD ReadRegStr ReadEnvStr Reboot RegDLL Rename
+                                   Return RMDir Section SectionEnd SectionIn SubSection SectionGroup
+                                   SubSectionEnd SectionGroupEnd SearchPath SectionSetFlags
+                                   SectionGetFlags SectionSetInstTypes SectionGetInstTypes
+                                   SectionGetText SectionSetText SectionGetSize SectionSetSize
+                                   GetCurInstType SetCurInstType InstTypeSetText InstTypeGetText
+                                   SendMessage SetAutoClose SetCtlColors SetBrandingImage SetCompress
+                                   SetCompressor SetCompressorDictSize SetCompressionLevel
+                                   SetDateSave SetDetailsView SetDetailsPrint SetErrors SetErrorLevel
+                                   GetErrorLevel SetFileAttributes SetFont SetOutPath SetOverwrite
+                                   SetPluginUnload SetRebootFlag SetShellVarContext SetSilent
+                                   ShowInstDetails ShowUninstDetails ShowWindow SilentInstall
+                                   SilentUnInstall Sleep StrCmp StrCpy StrLen SubCaption
+                                   UninstallExeName UninstallCaption UninstallIcon UninstPage
+                                   UninstallText UninstallSubCaption UnRegDLL WindowIcon WriteINIStr
+                                   WriteRegBin WriteRegDWORD WriteRegStr WriteRegExpandStr
+                                   WriteUninstaller XPStyle !packhdr !system !execute !AddIncludeDir
+                                   !include !cd !ifdef !ifndef !endif !define !undef !else !echo
+                                   !warning !error !verbose !macro !macroend !insertmacro !ifmacrodef
+                                   !ifmacrondef MiscButtonText DetailsButtonText UninstallButtonText
+                                   InstallButtonText SpaceTexts CompletedText GetFunctionAddress
+                                   GetLabelAddress GetCurrentAddress !AddPluginDir InitPluginsDir
+                                   AllowSkipFiles Var VIAddVersionKey VIProductVersion LockWindow"/>
+                        <!-- Variables -->
+                        <Set index="1"
+                            value="$0 $1 $2 $3 $4 $5 $6 $7 $8 $9 $R0 $R1 $R2 $R3 $R4 $R5 $R6 $R7
+                                   $R8 $R9 $\t $\&quot; $\' $\` $VARNAME $0, $INSTDIR $OUTDIR $CMDLINE
+                                   $LANGUAGE $PROGRAMFILES $COMMONFILES $DESKTOP $EXEDIR ${NSISDIR}
+                                   $WINDIR $SYSDIR $TEMP $STARTMENU $SMPROGRAMS $SMSTARTUP
+                                   $QUICKLAUNCH $DOCUMENTS $SENDTO $RECENT $FAVORITES $MUSIC
+                                   $PICTURES $VIDEOS $NETHOOD $FONTS $TEMPLATES $APPDATA $PRINTHOOD
+                                   $INTERNET_CACHE $COOKIES $HISTORY $PROFILE $ADMINTOOLS $RESOURCES
+                                   $RESOURCES_LOCALIZED $CDBURN_AREA $HWNDPARENT $PLUGINSDIR
+                                   $$ $\r $\n"/>
+                        <!-- Labels -->
+                        <Set index="2"
+                            value="ARCHIVE FILE_ATTRIBUTE_ARCHIVE FILE_ATTRIBUTE_HIDDEN
+                                   FILE_ATTRIBUTE_NORMAL FILE_ATTRIBUTE_OFFLINE
+                                   FILE_ATTRIBUTE_READONLY FILE_ATTRIBUTE_SYSTEM
+                                   FILE_ATTRIBUTE_TEMPORARY HIDDEN HKCC HKCR HKCU HKDD
+                                   HKEY_CLASSES_ROOT HKEY_CURRENT_CONFIG HKEY_CURRENT_USER
+                                   HKEY_DYN_DATA HKEY_LOCAL_MACHINE HKEY_PERFORMANCE_DATA HKEY_USERS
+                                   HKLM HKPD HKU IDABORT IDCANCEL IDIGNORE IDNO IDOK IDRETRY IDYES
+                                   MB_ABORTRETRYIGNORE MB_DEFBUTTON1 MB_DEFBUTTON2 MB_DEFBUTTON3
+                                   MB_DEFBUTTON4 MB_ICONEXCLAMATION MB_ICONINFORMATION
+                                   MB_ICONQUESTION MB_ICONSTOP MB_OK MB_OKCANCEL MB_RETRYCANCEL
+                                   MB_RIGHT MB_SETFOREGROUND MB_TOPMOST MB_YESNO MB_YESNOCANCEL
+                                   NORMAL OFFLINE READONLY SW_SHOWMAXIMIZED SW_SHOWMINIMIZED
+                                   SW_SHOWNORMAL SYSTEM TEMPORARY auto colored false force hide
+                                   ifnewer nevershow normal off on show silent silentlog smooth true
+                                   try lzma zlib bzip2 none listonly textonly both top left bottom
+                                   right license components directory instfiles uninstConfirm custom
+                                   all leave current ifdiff lastused LEFT RIGHT CENTER dlg_id ALT
+                                   CONTROL EXT SHIFT open print manual alwaysoff"/>
+                        <!-- User defined -->
+                        <Set index="3"
+                            value=""/>
+                </Keywords>
+                <SampleCode value="lexer_nsis.sample"/>
+                <LanguageAttributes
+                    LineComment=";"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    LexerCommentStyles="1,18"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="2,3,4"
+                    LexerPreprocessorStyles=""/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

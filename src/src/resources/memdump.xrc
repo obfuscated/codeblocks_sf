@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="MemoryDumpPanel">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT1">
+							<label>Address:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtAddress">
+							<value>0x0</value>
+							<style>wxTE_PROCESS_ENTER</style>
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Bytes:</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="cmbBytes">
+							<content>
+								<item>16</item>
+								<item>32</item>
+								<item>64</item>
+								<item>128</item>
+								<item>256</item>
+								<item>512</item>
+								<item>1024</item>
+								<item>2048</item>
+								<item>4096</item>
+							</content>
+							<selection>1</selection>
+							<style>wxCB_SIMPLE|wxCB_READONLY</style>
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnGo">
+							<label>Go</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>4</border>
+					</object>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT3">
+					<label>(e.g. 0x401060, or &amp;&amp;variable, or $$eax)</label>
+				</object>
+				<flag>wxLEFT|wxRIGHT</flag>
+				<border>4</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="txtDump">
+					<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+				</object>
+				<flag>wxTOP|wxEXPAND</flag>
+				<border>4</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

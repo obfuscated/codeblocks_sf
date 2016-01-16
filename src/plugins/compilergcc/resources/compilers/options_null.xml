@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <!-- No options -->
+    <Option name="No active compiler"
+            option="none"
+            checkAgainst="none"
+            checkMessage="This is not a switch; it does nothing."
+            supersedes="none"/>
+</CodeBlocks_compiler_options>

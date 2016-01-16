@@ -1,0 +1,19 @@
+/* a fragment program */
+
+#pragma	optimize(on)
+
+uniform float T;  //threshold
+uniform sampler2D sampler; 
+
+const vec4 fcolor=vec4(1, 1, 1, 0);
+const vec4 bcolor=vec4(0, 0, 0, 0);
+
+void main (void)
+{
+	float I = texture2D(sampler, gl_TexCoord[0].xy ).r; 
+	
+	if (I>T)
+		gl_FragColor = fcolor;
+	else
+		gl_FragColor = bcolor;
+}

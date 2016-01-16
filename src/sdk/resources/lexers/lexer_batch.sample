@@ -1,0 +1,23 @@
+:: This is a simple batch file demonstrating the lexer's capabilities
+
+@echo off
+
+if %OS% == Windows_NT goto Windows-NT
+
+if not %OS% == Windows_NT goto Other
+
+:Windows-NT
+
+echo This is Windows NT4/2000/XP/2003
+
+goto end
+
+:Other
+
+echo This is Windows 95/98/ME
+
+goto end
+
+:end
+
+pause

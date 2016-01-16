@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Properties"
+                index="9"
+                filemasks="*.properties,*.ini,*.inf,*.url,*.cfg,*.cnf,*.aut,*.doxy,*Doxyfile">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment"
+                        index="1"
+                        fg="160,160,160"/>
+                <Style name="Section"
+                        index="2"
+                        fg="128,0,128"/>
+                <Style name="Assignment operator"
+                        index="3"
+                        fg="255,0,0"/>
+                <Style name="Default value (@)"
+                        index="4"
+                        fg="128,128,0"/>
+                <SampleCode value="lexer_properties.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles=""
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

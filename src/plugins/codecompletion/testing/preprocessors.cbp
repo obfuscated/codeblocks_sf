@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="preprocessors" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="preprocessors">
+				<Option output=".bin\preprocessors" prefix_auto="1" extension_auto="1" />
+				<Option object_output="..\..\..\.objs\plugins\codecompletion\testing" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="preprocessors;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add directory="..\testing" />
+			<Add directory="duplicate_header\P" />
+		</Compiler>
+		<Unit filename="preprocessors.cpp" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

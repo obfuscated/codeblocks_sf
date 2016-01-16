@@ -1,0 +1,16 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/codeblocks/wxContribItems
+includedir=@includedir@/codeblocks/wxContribItems/wxled
+datarootdir = @datarootdir@
+sharedir=@datadir@
+
+Name: wxSmithLed
+Description: LedCtrl(s) also used for the wxSmith Contrib Items
+Version: @VERSION@
+Libs: -L${libdir} -lwxled
+Cflags: -fPIC -I${includedir}/gizmosled/include/ \
+		-I${includedir}/lcdwindow/include \
+		-I${includedir}/led/include \
+		-I${includedir}/ledpanel/include
+

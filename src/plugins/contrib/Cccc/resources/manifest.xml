@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="Cccc">
+        <Value title="Cccc" />
+        <Value version="1.1" />
+        <Value description="A simple plugin for launching Cccc on the current project." />
+        <Value author="killerbot" />
+        <Value authorEmail="killerbot@telenet.be" />
+        <Value authorWebsite="" />
+        <Value thanksTo="All the Code::Blocks team!" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

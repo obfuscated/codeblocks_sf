@@ -1,0 +1,430 @@
+extern <- _T("amd intel amd16 intel16");
+
+TriCoreConfig <- {
+    tc1130 = {
+		linkerfile_rom = _T("memoryROM.x"),
+		linkerfile_ram = _T(""),
+		flashtype = extern
+	},
+    tc1161 = {
+		linkerfile_rom = _T("target.ld"),
+        linkerfile_ram = _T("targetIntResources.ld"),
+		flashtype = _T("intern")
+	},
+    tc1162 = {
+		linkerfile_rom = _T("target.ld"),
+        linkerfile_ram = _T("targetIntResources.ld"),
+		flashtype = _T("intern")
+	},
+    tc1762 = {
+		linkerfile_rom = _T("target.ld"),
+        linkerfile_ram = _T("targetIntResources.ld"),
+		flashtype = _T("intern")
+	},
+    tc1766 = {
+		linkerfile_rom = _T("target.ld"),
+        linkerfile_ram = _T("targetIntResources.ld"),
+		flashtype = _T("intern")
+	},
+    tc1767 = {
+		linkerfile_rom = _T("target.ld"),
+        linkerfile_ram = _T("targetIntResources.ld"),
+		flashtype = _T("intern")
+	},
+    tc1792 = {
+		linkerfile_rom = _T("memoryROM.x"),
+		linkerfile_ram = _T(""),
+		flashtype = _T("intern")
+	},
+    tc1796 = {
+		linkerfile_rom = _T("memoryROM.x"),
+		linkerfile_ram = _T(""),
+		flashtype = _T("intern ") + extern
+	},
+    tc1797 = {
+		linkerfile_rom = _T("memoryROM.x"),
+		linkerfile_ram = _T(""),
+		flashtype = _T("intern ") + extern
+	}
+}
+Processor_t <- _T("");  // structure to reference the tricore configuration
+Processor <- _T("");    // The chosen processor
+Board <- _T("");        // The chosen hardware
+FlashType <- _T("");    // Type of flash intern/extern and access 16/32-Bit
+
+TemplateDir <- _T("tricore") + wxFILE_SEP_PATH + _T("templates");
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new TriCore project wizard!\n" +
+                             "This wizard will guide you to create a new TriCore project.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("TriCoreIntro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T("GNU TriCore GCC Compiler"), _T("tricore*"), false, false);
+        Wizard.AddPage(_T("processorChoice"));
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new TriCore target wizard!\n" +
+                             "This wizard will generate a build target for flash version of your program.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("TriCoreIntro"), intro_msg);
+        Wizard.AddPage(_T("processorChoice"));
+    }
+    else
+        print(wiz_type);
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+// Processor choice page
+////////////////////////////////////////////////////////////////////////////////
+function OnEnter_processorChoice(fwd)
+{
+    if (fwd)
+    {
+        local wiz_type = Wizard.GetWizardType();
+        if ((wiz_type == wizTarget))
+        {
+            // check first target options
+            local project = GetProjectManager().GetActiveProject();
+            // check if board is already selected in the project settings
+            Board = project.GetVar(_T("BOARD"));
+            local options = project.GetBuildTarget(project.GetActiveBuildTarget()).GetCompilerOptions();
+            // check first target options
+            if (!CheckOptions(options))
+            {
+                // check project options
+                options = project.GetCompilerOptions();
+                CheckOptions(options);
+            }
+        }
+    }
+}
+
+function CheckOptions(options)
+{
+    for(local i = 0; i < options.GetCount(); i++)
+    {
+        if (options.Item(i).Find(_T("-mcpu=")) != -1)
+        {
+            // Get processor from compiler option list
+            Processor = options.Item(i).AfterLast('=').MakeLower();
+            Processor_t = TriCoreConfig[Processor.tostring()];
+            if (Processor.Matches(_T("tc1765")) || Processor.Matches(_T("tc1775")) || Processor.Matches(_T("tc1920")))
+            {
+                ShowMessage(_T("Processor ") + Processor.Upper() + _T(" is not supported by this wizard. Please select one of the supported one."));
+            }
+            else
+            {
+                if (!Board.IsEmpty())
+                    Wizard.EnableWindow(_T("comboboxProc"), false);
+                ShowMessage(_T("For the Flash version of new build target ROM the processor ") + Processor.Upper() + _T(" will be used."));
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+function OnClick_comboboxProc()
+{
+    GetHardware();
+    GetFlashType();
+}
+
+function OnClick_comboboxFlashType()
+{
+    GetHardware();
+    if (Processor.IsEmpty())
+        ShowMessage(_T("You must select a Processor"));
+    else
+        GetFlashType();
+}
+
+function GetHardware()
+{
+    local hardware = Wizard.GetComboboxStringSelection(_T("comboboxProc"));
+    Processor = hardware.AfterLast(' ').MakeLower();
+    Processor_t = TriCoreConfig[Processor.tostring()];
+    Board = hardware.BeforeLast(' ');
+}
+
+function GetFlashType()
+{
+    FlashType = Wizard.GetComboboxStringSelection(_T("comboboxFlashType"));
+    if (Processor_t.flashtype.Find(FlashType) == -1)
+        ShowMessage(Processor.Upper() + _T(" ") + _T("does not support this type of flash."));
+}
+
+function OnLeave_processorChoice(fwd)
+{
+    if (fwd)
+    {
+        if (Processor.IsEmpty())
+            GetHardware();
+        if (FlashType.IsEmpty())
+            GetFlashType();
+    }
+    return true;
+}
+
+
+function GetTemplate(type)
+{
+    local prefix = TemplateDir + wxFILE_SEP_PATH + Board + _T("-") + Processor.Upper() + wxFILE_SEP_PATH;
+	local template;
+
+	switch (type) {
+		case 0:
+			template = IO.ReadFileContents(Wizard.FindTemplateFile(TemplateDir + wxFILE_SEP_PATH + _T("main.c")));
+			break;
+		case 1:
+            if (FlashType.Matches(_T("intern")) && !Board.Matches(_T("EasyRun")))
+                template = IO.ReadFileContents(Wizard.FindTemplateFile(prefix + Processor_t.linkerfile_rom.BeforeLast('.') + _T("-intern.x")));
+            else
+                template = IO.ReadFileContents(Wizard.FindTemplateFile(prefix + Processor_t.linkerfile_rom));
+		    break;
+		case 2:
+		    template = IO.ReadFileContents(Wizard.FindTemplateFile(prefix + Processor_t.linkerfile_ram));
+			if (!Processor_t.linkerfile_ram.IsEmpty())
+                break;
+		case 3:
+			template = IO.ReadFileContents(Wizard.FindTemplateFile(prefix + _T("src") + wxFILE_SEP_PATH + _T("setup.c")));
+			break;
+		case 4:
+		    template = IO.ReadFileContents(Wizard.FindTemplateFile(prefix + _T("h") + wxFILE_SEP_PATH + Board.Lower() + _T("_") + _T("setup.h")));
+		    break;
+	}
+	return template;
+}
+
+function GetGeneratedFile(file_index)
+{
+	switch (file_index)
+	{
+		case 0:
+            return _T("src") + wxFILE_SEP_PATH + _T("main.c;") + SubstituteMacros(GetTemplate(file_index));
+            break;
+		case 1:
+			return _T("ld") + wxFILE_SEP_PATH +  Processor_t.linkerfile_rom + _T(";") + SubstituteMacros(GetTemplate(file_index));
+			break;
+		case 2:
+			return _T("ld") + wxFILE_SEP_PATH +  Processor_t.linkerfile_ram + _T(";") + SubstituteMacros(GetTemplate(file_index));
+			if (!Processor_t.linkerfile_ram.IsEmpty())
+                break;
+		case 3:
+			return _T("src") + wxFILE_SEP_PATH + _T("setup.c;") + SubstituteMacros(GetTemplate(file_index));
+			break;
+		case 4:
+			return _T("h") + wxFILE_SEP_PATH +  Board.Lower() + _T("_") + _T("setup.h;") + SubstituteMacros(GetTemplate(file_index));
+			break;
+	}
+	return _T("");
+}
+
+function SetupProject(project)
+{
+	local target = ::wxString();
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+    DebugSymbolsOn(project, Wizard.GetCompilerID());
+    OptimizationsOn(project, Wizard.GetCompilerID());
+    // Add subdirectories for includes
+    project.AddIncludeDir(_T("src"));
+    project.AddIncludeDir(_T("h"));
+    // Add recommended options
+    project.AddCompilerOption(_T("-fno-common"));
+    project.AddCompilerOption(_T("-fno-short-enums"));
+    project.AddLinkerOption(_T("-Wl,-Map,Mapfile.map"));
+    // setup tricore options
+    SetupDerivative(project);
+
+    //configure default target
+    target = project.GetBuildTarget(_T("default"));
+    project.RenameBuildTarget(_T("default"),_T("RAM"));
+    if (IsNull(target))
+        target = project.AddBuildTarget(target);
+    // use setting of ROM version
+    target = project.DuplicateBuildTarget(_T("RAM"),_T("ROM"));
+    // setup target for RAM version
+    target = project.GetBuildTarget(_T("RAM"));
+    SetupTarget(target,true);
+    // setup target for ROM version
+    target = project.GetBuildTarget(_T("ROM"));
+    SetupTarget(target,true);
+    for (local i = 0; i < project.GetFilesCount(); i++)
+    {
+        if ((project.GetFile(i).relativeFilename.Matches(_T("*S"))) || (project.GetFile(i).relativeFilename.Matches(_T("*s"))))
+        {
+            project.GetFile(i).compile = true;
+            project.GetFile(i).link = true;
+        }
+    }
+    return true;
+
+}
+//
+//------------------------------------------------------------------------------
+//
+function SetupTarget(target,is_debug)
+{
+	if (IsNull(target))
+		return false;
+    local project = target.GetParentProject();
+    local projectname;
+    local wiz_type = Wizard.GetWizardType();
+    if (wiz_type == wizProject)
+        projectname = Wizard.GetProjectName();
+    else
+        projectname = project.GetTitle();
+	target.SetTargetType(ttConsoleOnly);
+	target.SetTargetFilenameGenerationPolicy(1, 1);
+	target.SetWorkingDir (_T("."));
+    if (wiz_type == wizTarget)
+    {
+        // delete empty target, because  Wizard.AddBuildTargetPage is skipped
+        project.RemoveBuildTarget(_T(""));
+        // duplicate active build target
+        project.DuplicateBuildTarget(project.GetActiveBuildTarget() ,_T("ROM"));
+        // set ROM version as active target to set the parameters (object output etc.)
+        project.SetActiveBuildTarget(_T("ROM"));
+        // use new target options if set
+        SetupDerivative(project.GetBuildTarget(project.GetActiveBuildTarget()));
+    }
+   	target.SetOutputFilename(target.GetTitle() + wxFILE_SEP_PATH + projectname + _T(".elf"));
+	target.SetObjectOutput(target.GetTitle());
+	if (is_debug)
+	{
+        // enable debugging symbols for this target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+	}
+    if (target.GetTitle().Matches(_T("ROM")))
+    {
+       // set linker flags for ROM version
+        if (Processor_t.linkerfile_rom.AfterLast('.').Matches(_T("ld")))
+            target.AddLinkerOption(_T("-T ") + _T("ld/") + Processor_t.linkerfile_rom);
+        else if (Processor_t.linkerfile_rom.AfterLast('.').Matches(_T("x")))
+            target.AddLinkerOption(_T("ld/") + Processor_t.linkerfile_rom);
+        // Set variable for flash programming tool
+        target.SetVar(_T("DERIVATIVE"), Processor.Upper(), false);
+        target.SetVar(_T("FLASHTYPE"), FlashType, false);
+        if (!FlashType.Matches(_T("intern")))
+        {
+            LogWarning(_T("Please adjust in ") + Processor_t.linkerfile_rom + _T(" the symbol __EBMCFG for 16-Bit or 32-Bit access of external Flash."));
+            project.SetNotes(_T("Please look at the tab Code::Blocks in the 'Log & others' console to see how to do adjust your settings for using external Flash."));
+            project.ShowNotes(true,false);
+            project.SetShowNotesOnLoad(true);
+        }
+        target.SetVar(_T("DOWNLOAD"), _T("0"), false);
+        target.SetVar(_T("BREAKMAIN"), _T("0"), false);
+        target.SetVar(_T("HWBREAK"), _T("1"), false);
+    }
+    else
+    {
+        // set linker flags for RAM version
+        if (Processor_t.linkerfile_ram.AfterLast('.').Matches(_T("ld")))
+            target.AddLinkerOption(_T("-T ") + _T("ld/") + Processor_t.linkerfile_ram);
+        target.SetVar(_T("DOWNLOAD"), _T("1"), false);
+        target.SetVar(_T("BREAKMAIN"),_T("1"), false);
+    }
+    if (!Board.Lower().Matches(_T("triboard")))
+    {
+        local inifile = _T("$(JIOBASE)") + wxFILE_SEP_PATH + Board + _T("-") + Processor.Lower() + _T(".ini");
+        target.SetVar(_T("JTAGINIT"), inifile, false);
+    }
+    target.SetVar(_T("STRCONFIGFILE"), Board.Upper() + _T("_") + Processor.Upper() + _T("_") + target.GetTitle() + _T(".cfg"), false);
+    target.SetVar(_T("IP"), _T("localhost"), false);
+    target.SetVar(_T("PORT"), _T("6785"), false);
+
+	return true;
+}
+
+function SetupDerivative(project)
+{
+  	project.AddCompilerOption(_T("-mcpu=") + Processor.Lower());
+    project.AddLinkerOption(_T("-mcpu=") + Processor.Lower());
+	// Set define for header files
+	project.AddCompilerOption(_T("-D") + Board.Upper() + _T("_") + Processor.Upper());
+    project.SetVar(_T("BOARD"), Board, false);
+}
+
+function SubstituteMacros(buffer)
+{
+	// handle [IF] / [ENDIF] pairs
+	buffer.Replace(_T("[!PXROS_NAME!]"), _T("") + _T("test"));
+
+	buffer.Replace(_T("[!NOW!]"), ReplaceMacros(_T("$(NOW_L)"), true));
+	buffer.Replace(_T("[!TODAY!]"), ReplaceMacros(_T("$(TODAY)"), true));
+	buffer.Replace(_T("[!PROJECTNAME!]"), ReplaceMacros(_T("$(PROJECTNAME)"), true));
+	buffer.Replace(_T("[!PROJECTDIR!]"), ReplaceMacros(_T("$(PROJECTDIR)"), true));
+
+	return buffer;
+}
+
+// -----------------------------------------------------------------------------
+// if <enabled> is true, removes the [IF <directive>] and [ENDIF <directive>]
+// macros.
+// if <enabled> is false, removes everything enclosed by the [IF <directive>]
+// and [ENDIF <directive>] macros (including them).
+function HandleDirective(buffer, directive, enabled)
+{
+	local dir_if = _T("[!IF ") + directive + _T("!]");
+	local dir_endif = _T("[!ENDIF ") + directive + _T("!]");
+
+	while (1)
+	{
+
+		local findStart = buffer.Find(dir_if);
+		if (findStart == -1)
+			return buffer;
+
+		local findEnd = buffer.Find(dir_endif);
+		if (findEnd == -1 || findEnd <= findStart)
+			return buffer;
+
+		// look for [ELSE]
+		local block = buffer.Mid(findStart, findEnd - findStart);
+		local findElse = block.Find(_T("[!ELSE!]")); // findElse is in "local scope", i.e. offset from findStart
+
+		if (!enabled)
+		{
+			if (findElse == -1)
+			{
+				// remove whole section
+				buffer.Remove(findStart, (findEnd - findStart) + dir_endif.Length());
+			}
+			else
+			{
+				// remove [ENDIF]
+				buffer.Remove(findEnd, dir_endif.Length());
+				// remove from [IF] to [ELSE] (including)
+				buffer.Remove(findStart, findElse + 6); // 6 is the [ELSE] size
+			}
+		}
+		else
+		{
+			if (findElse == -1)
+			{
+				// just remove the directives
+				// we must remove the [ENDIF] first because if we removed the [IF] it would
+				// render the findEnd index invalid!
+				buffer.Remove(findEnd, dir_endif.Length());
+				buffer.Remove(findStart, dir_if.Length());
+			}
+			else
+			{
+				// remove from [ELSE] to [ENDIF]
+				local start = findStart + findElse;
+				buffer.Remove(start, (findEnd - start) + dir_endif.Length());
+				// remove from [IF]
+				buffer.Remove(findStart, dir_if.Length());
+			}
+    	}
+	}
+    return buffer;
+}

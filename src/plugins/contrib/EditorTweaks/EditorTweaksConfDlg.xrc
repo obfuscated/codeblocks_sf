@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="EditorTweaksConfDlg">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Max stored aligner items</label>
+					<object class="sizeritem">
+						<object class="wxSpinCtrl" name="ID_SPINCTRL1">
+							<value>0</value>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Editor caret buffer</label>
+					<object class="sizeritem">
+						<object class="wxChoice" name="ID_CHOICE1">
+							<content>
+								<item>None</item>
+								<item>1 line</item>
+								<item>2 lines</item>
+								<item>3 lines</item>
+								<item>4 lines</item>
+								<item>Center caret</item>
+							</content>
+							<selection>4</selection>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="spacer">
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="cbDragScroll">
+        <Value title="DragScroll" />
+        <Value version="0.28 2006/09/11" />
+        <Value description="Mouse Drag and Scroll using Right or Middle Mouse Key" />
+        <Value author="Pecan" />
+        <Value authorEmail=" " />
+        <Value authorWebsite=" " />
+        <Value thanksTo="wxWidgets & Code::Blocks Team" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

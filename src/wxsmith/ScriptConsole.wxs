@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="ScriptConsole">
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtConsole" member="yes">
+					<font>
+						<size>10</size>
+						<family>modern</family>
+					</font>
+					<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxPanel" name="ID_PANEL1" variable="Panel1" member="yes">
+					<bg>wxSYS_COLOUR_BTNFACE</bg>
+					<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+						<object class="sizeritem">
+							<object class="wxStaticText" name="ID_STATICTEXT1" variable="lblCommand" member="yes">
+								<label>Command:</label>
+							</object>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+						</object>
+						<object class="sizeritem">
+							<object class="wxComboBox" name="ID_COMBOBOX1" variable="txtCommand" member="yes">
+								<font>
+									<size>10</size>
+									<family>modern</family>
+								</font>
+								<style>wxCB_DROPDOWN|wxTE_PROCESS_ENTER</style>
+								<handler function="OnbtnExecuteClick" entry="EVT_TEXT_ENTER" />
+							</object>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+							<option>1</option>
+						</object>
+						<object class="sizeritem">
+							<object class="wxBitmapButton" name="ID_BITMAPBUTTON1" variable="btnExecute" member="yes">
+								<bitmap stock_id="wxART_EXECUTABLE_FILE" stock_client="wxART_BUTTON" />
+								<tooltip>Execute current command</tooltip>
+								<handler function="OnbtnExecuteClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALIGN_CENTER_VERTICAL</flag>
+							<border>5</border>
+						</object>
+						<object class="sizeritem">
+							<object class="wxBitmapButton" name="ID_BITMAPBUTTON2" variable="btnLoad" member="yes">
+								<bitmap stock_id="wxART_FILE_OPEN" stock_client="wxART_BUTTON" />
+								<default>1</default>
+								<tooltip>Load from file</tooltip>
+								<handler function="OnbtnLoadClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						</object>
+						<object class="sizeritem">
+							<object class="wxBitmapButton" name="ID_BITMAPBUTTON3" variable="btnClear" member="yes">
+								<bitmap stock_id="wxART_DELETE" stock_client="wxART_BUTTON" />
+								<default>1</default>
+								<tooltip>Clear output window</tooltip>
+								<handler function="OnbtnClearClick" entry="EVT_BUTTON" />
+							</object>
+							<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+			</object>
+		</object>
+	</object>
+</wxsmith>

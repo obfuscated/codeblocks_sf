@@ -1,0 +1,16 @@
+-- LUA sample script
+-- comments start with --
+--[[ and this is a multi-line
+     comment]]
+
+print("Hello world")
+
+function SomeFunction(a, b)
+	local x = a
+	x = x + 1
+	print(a,b,"x="..x)
+end
+
+SomeFunction(1, 2)
+var = {x = 0, y = 0)
+print(var, var.x, var.y)

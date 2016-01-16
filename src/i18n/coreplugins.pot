@@ -1,0 +1,4679 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/astyle/astyleconfigdlg.h:27
+msgid "Source formatter"
+msgstr ""
+
+#: ../plugins/autosave/autosave.cpp:48
+msgid "Autosave"
+msgstr ""
+
+#: ../plugins/autosave/autosave.cpp:50
+msgid "Saves your work in regular intervals"
+msgstr ""
+
+#: ../plugins/classwizard/classwizard.cpp:54
+msgid "Class wizard"
+msgstr ""
+
+#: ../plugins/classwizard/classwizard.cpp:56
+msgid ""
+"This plugin provides an easy way to create a new C++ class file pair. It's "
+"by no means complete yet but it's here nevertheless;)"
+msgstr ""
+
+#: ../plugins/classwizard/classwizard.cpp:90
+msgid "The new class has been created."
+msgstr ""
+
+#: ../plugins/classwizard/classwizard.cpp:91
+#: ../plugins/compilergcc/compilergcc.cpp:1289
+#: ../plugins/compilergcc/compilergcc.cpp:1452
+#: ../plugins/compilergcc/compilergcc.cpp:1597
+#: ../plugins/compilergcc/compilergcc.cpp:2410
+#: ../plugins/compilergcc/compilergcc.cpp:2466
+#: ../plugins/debuggergdb/debuggergdb.cpp:819
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:176
+msgid "Information"
+msgstr ""
+
+#: ../plugins/classwizard/classwizard.cpp:95
+msgid ""
+"The new class has been created.\n"
+"Do you want to add it to the current project?"
+msgstr ""
+
+#: ../plugins/classwizard/classwizard.cpp:97
+msgid "Add to project?"
+msgstr ""
+
+#: ../plugins/classwizard/classwizarddlg.cpp:166
+#, possible-c-format
+msgid ""
+"Could not create header file %s.\n"
+"Aborting..."
+msgstr ""
+
+#: ../plugins/classwizard/classwizarddlg.cpp:167
+#: ../plugins/classwizard/classwizarddlg.cpp:193
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:261
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:285
+#: ../plugins/compilergcc/compilergcc.cpp:1306
+#: ../plugins/compilergcc/compilergcc.cpp:1318
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1411
+#: ../plugins/debuggergdb/backtracedlg.cpp:188
+#: ../plugins/debuggergdb/debuggergdb.cpp:835
+#: ../plugins/debuggergdb/debuggergdb.cpp:862
+#: ../plugins/debuggergdb/debuggergdb.cpp:1861
+#: ../plugins/debuggergdb/gdb_commands.h:724
+#: ../plugins/scriptedwizard/wiz.cpp:81 ../plugins/scriptedwizard/wiz.cpp:220
+#: ../plugins/scriptedwizard/wiz.cpp:248 ../plugins/scriptedwizard/wiz.cpp:261
+#: ../plugins/scriptedwizard/wiz.cpp:287 ../plugins/scriptedwizard/wiz.cpp:298
+#: ../plugins/scriptedwizard/wiz.cpp:336 ../plugins/scriptedwizard/wiz.cpp:345
+#: ../plugins/scriptedwizard/wiz.cpp:471 ../plugins/scriptedwizard/wiz.cpp:501
+#: ../plugins/scriptedwizard/wiz.cpp:565 ../plugins/scriptedwizard/wiz.cpp:587
+#: ../plugins/scriptedwizard/wiz.cpp:608
+#: ../plugins/scriptedwizard/wizpage.cpp:265
+#: ../plugins/scriptedwizard/wizpage.cpp:345
+#: ../plugins/scriptedwizard/wizpage.cpp:351
+#: ../plugins/scriptedwizard/wizpage.cpp:428
+#: ../plugins/scriptedwizard/wizpage.cpp:559
+#: ../plugins/scriptedwizard/wizpage.cpp:565
+#: ../plugins/scriptedwizard/wizpage.cpp:676
+#: ../plugins/scriptedwizard/wizpage.cpp:684
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:95
+msgid "Error"
+msgstr ""
+
+#: ../plugins/classwizard/classwizarddlg.cpp:192
+#, possible-c-format
+msgid ""
+"Could not create implementation file %s.\n"
+"Aborting..."
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:27
+msgid "Code-completion debug tool"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:29
+msgid "ID_NOTEBOOK1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:30
+msgid "ID_PANEL1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:33
+msgid "Find:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:33
+msgid "ID_STATICTEXT29"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:34
+msgid "*"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:34
+#: ../plugins/scriptedwizard/filepathpanel.cpp:45
+msgid "ID_TEXTCTRL1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:36
+msgid "Find"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:36
+#: ../plugins/scriptedwizard/filepathpanel.cpp:47
+msgid "ID_BUTTON1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:41
+msgid "ID_STATICLINE1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:44
+msgid "ID:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:44
+msgid "ID_STATICTEXT17"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:45
+msgid "ID_STATICTEXT18"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:46
+msgid "Name:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:46
+#: ../plugins/scriptedwizard/filepathpanel.cpp:42
+#: ../plugins/scriptedwizard/genericsinglechoicelist.cpp:16
+#: ../plugins/scriptedwizard/infopanel.cpp:13
+msgid "ID_STATICTEXT1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:47
+#: ../plugins/scriptedwizard/filepathpanel.cpp:43
+msgid "ID_STATICTEXT2"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:48
+msgid "Kind:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:48
+msgid "ID_STATICTEXT9"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:49
+msgid "ID_STATICTEXT10"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:50
+#: ../plugins/todo/todolistview.cpp:60
+msgid "Scope:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:50
+msgid "ID_STATICTEXT11"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:51
+msgid "ID_STATICTEXT12"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:52
+msgid "Type:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:52
+#: ../plugins/scriptedwizard/filepathpanel.cpp:51
+msgid "ID_STATICTEXT3"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:53
+#: ../plugins/scriptedwizard/filepathpanel.cpp:58
+msgid "ID_STATICTEXT4"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:54
+msgid "Actual type:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:54
+msgid "ID_STATICTEXT5"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:55
+msgid "ID_STATICTEXT6"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:56
+msgid "Arguments:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:56
+msgid "ID_STATICTEXT7"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:57
+msgid "ID_STATICTEXT8"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:58
+msgid "Is operator?"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:58
+msgid "ID_STATICTEXT13"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:59
+msgid "ID_STATICTEXT14"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:60
+msgid "Is local?"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:60
+msgid "ID_STATICTEXT15"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:61
+msgid "ID_STATICTEXT16"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:62
+msgid "Namespace:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:62
+msgid "ID_STATICTEXT19"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:63
+msgid "ID_STATICTEXT20"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:64
+msgid "Parent:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:64
+msgid "ID_STATICTEXT22"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:66
+msgid "ID_STATICTEXT24"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:67
+#: ../plugins/codecompletion/ccdebuginfo.cpp:74
+#: ../plugins/codecompletion/ccdebuginfo.cpp:81
+#: ../plugins/codecompletion/ccdebuginfo.cpp:88
+msgid "Go"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:67
+msgid "ID_BUTTON4"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:71
+msgid "Children:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:71
+msgid "ID_STATICTEXT30"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:73
+msgid "ID_COMBOBOX3"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:74
+msgid "ID_BUTTON5"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:78
+msgid "Ancestors:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:78
+msgid "ID_STATICTEXT21"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:80
+msgid "ID_COMBOBOX2"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:81
+#: ../plugins/scriptedwizard/filepathpanel.cpp:70
+msgid "ID_BUTTON3"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:85
+msgid "Descendants:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:85
+msgid "ID_STATICTEXT23"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:87
+msgid "ID_COMBOBOX1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:88
+#: ../plugins/scriptedwizard/filepathpanel.cpp:67
+msgid "ID_BUTTON2"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:92
+msgid "Decl. filename:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:92
+msgid "ID_STATICTEXT25"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:93
+msgid "ID_STATICTEXT26"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:94
+msgid "Impl. filename:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:94
+msgid "ID_STATICTEXT27"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:95
+msgid "ID_STATICTEXT28"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:134
+msgid "ID_PANEL2"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:136
+#: ../plugins/scriptedwizard/genericsinglechoicelist.cpp:18
+msgid "ID_LISTBOX1"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:142
+msgid "Tokens"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:143
+msgid "Files list"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:144
+msgid "The parser contains 0 tokens found in 0 files"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:144
+msgid "ID_STATICTEXT31"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:145
+msgid "ID_STATICLINE2"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:147
+msgid "Close"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:329
+#: ../plugins/codecompletion/codecompletion.cpp:1014
+msgid "Please make a selection:"
+msgstr ""
+
+#: ../plugins/codecompletion/ccdebuginfo.cpp:329
+#: ../plugins/codecompletion/codecompletion.cpp:1014
+msgid "Multiple matches"
+msgstr ""
+
+#: ../plugins/codecompletion/ccoptionsdlg.cpp:137
+#, possible-c-format
+msgid "%d.%d sec"
+msgstr ""
+
+#: ../plugins/codecompletion/ccoptionsdlg.cpp:139
+#, possible-c-format
+msgid "%d ms"
+msgstr ""
+
+#: ../plugins/codecompletion/ccoptionsdlg.h:16
+msgid "Code-completion and symbols browser"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:202
+msgid "Jump to &implementation"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:205
+msgid "Jump to &declaration"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:213
+msgid "Show inherited members"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:215
+msgid "Flat"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:216
+msgid "Structured"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:218
+msgid "&View options"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:219
+msgid "&Refresh tree"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowser.cpp:224
+msgid "Re-parse now"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowserbuilderthread.cpp:77
+#: ../plugins/codecompletion/nativeparser.cpp:81
+msgid "Symbols"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowserbuilderthread.cpp:101
+msgid "Global namespace"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowserbuilderthread.cpp:208
+msgid "Classes"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowserbuilderthread.cpp:216
+msgid "Enums"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowserbuilderthread.cpp:224
+msgid "Preprocessor"
+msgstr ""
+
+#: ../plugins/codecompletion/classbrowserbuilderthread.cpp:235
+#: ../plugins/compilergcc/compilerDMC.cpp:80
+#: ../plugins/compilergcc/compilerDMC.cpp:82
+#: ../plugins/compilergcc/compilerDMC.cpp:84
+#: ../plugins/compilergcc/compilerDMC.cpp:85
+#: ../plugins/compilergcc/compilerDMC.cpp:86
+#: ../plugins/compilergcc/compilerDMC.cpp:87
+#: ../plugins/compilergcc/compilerDMC.cpp:88
+#: ../plugins/compilergcc/compilerDMC.cpp:94
+#: ../plugins/compilergcc/compilerDMC.cpp:96
+#: ../plugins/compilergcc/compilerDMC.cpp:98
+#: ../plugins/compilergcc/compilerDMC.cpp:102
+#: ../plugins/compilergcc/compilerDMC.cpp:103
+#: ../plugins/compilergcc/compilerDMC.cpp:108
+#: ../plugins/compilergcc/compilerDMC.cpp:109
+#: ../plugins/compilergcc/compilerDMC.cpp:111
+#: ../plugins/compilergcc/compilerDMC.cpp:124
+#: ../plugins/compilergcc/compilerDMC.cpp:129
+#: ../plugins/compilergcc/compilerDMC.cpp:132
+#: ../plugins/compilergcc/compilerDMC.cpp:133
+#: ../plugins/compilergcc/compilerDMC.cpp:134
+#: ../plugins/compilergcc/compilerDMC.cpp:135
+#: ../plugins/compilergcc/compilerDMD.cpp:67
+#: ../plugins/compilergcc/compilerDMD.cpp:72
+#: ../plugins/compilergcc/compilerDMD.cpp:75
+#: ../plugins/compilergcc/compilerDMD.cpp:76
+#: ../plugins/compilergcc/compilerMSVC.cpp:91
+#: ../plugins/compilergcc/compilerMSVC.cpp:92
+#: ../plugins/compilergcc/compilerMSVC.cpp:93
+#: ../plugins/compilergcc/compilerMSVC.cpp:94
+#: ../plugins/compilergcc/compilerMSVC.cpp:95
+#: ../plugins/compilergcc/compilerMSVC.cpp:96
+msgid "Others"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:124
+msgid "Code completion"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:126
+msgid ""
+"This plugin provides a symbols browser for your projects and code-completion "
+"inside the editor.\n"
+"\n"
+"Note: Only C/C++ language is supported by this plugin (currently)..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:172
+msgid "&Edit"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:177
+msgid "Complete code\tCtrl-Space"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:178
+msgid "Show call tip\tCtrl-Shift-Space"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:182
+msgid "Sea&rch"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:186
+msgid "Goto function...\tCtrl-Alt-G"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:192
+#: ../plugins/todo/todolist.cpp:122
+msgid "View"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:202
+#: ../plugins/codecompletion/codecompletion.cpp:207
+#: ../plugins/codecompletion/nativeparser.cpp:91
+msgid "Symbols browser"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:202
+#: ../plugins/codecompletion/codecompletion.cpp:207
+msgid "Toggle displaying the symbols browser"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:235
+#, possible-c-format
+msgid "Open #include file: '%s'"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:249
+#, possible-c-format
+msgid "Find declaration of: '%s'"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:252
+#, possible-c-format
+msgid "Find implementation of: '%s'"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:259
+msgid "Insert..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:268
+msgid "Class method declaration/implementation..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:434
+msgid ""
+"Too many results.Please edit results' limit in code-completion options,\n"
+"or type at least one more character to narrow the scope down..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:447
+msgid "C++ Parser is still parsing files..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:449
+msgid "No matches"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:932
+msgid "No functions parsed in this file..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:947
+msgid "Select function..."
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:947
+msgid "Please select function to go to:"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:1030
+#, possible-c-format
+msgid "Implementation not found: %s"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:1030
+#: ../plugins/codecompletion/codecompletion.cpp:1038
+#: ../plugins/codecompletion/codecompletion.cpp:1042
+#: ../plugins/codecompletion/codecompletion.cpp:1093
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:285
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1571
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1606
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1875
+#: ../plugins/debuggergdb/debuggergdb.cpp:1984
+#: ../plugins/debuggergdb/debuggergdb.cpp:2010
+#: ../plugins/debuggergdb/gdb_commands.h:322
+msgid "Warning"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:1038
+#, possible-c-format
+msgid "Declaration not found: %s"
+msgstr ""
+
+#: ../plugins/codecompletion/codecompletion.cpp:1042
+#: ../plugins/codecompletion/codecompletion.cpp:1093
+#, possible-c-format
+msgid "Not found: %s"
+msgstr ""
+
+#: ../plugins/codecompletion/insertclassmethoddlg.cpp:51
+msgid ""
+"/** @brief (one liner)\n"
+"  *\n"
+"  * (documentation goes here)\n"
+"  */\n"
+msgstr ""
+
+#: ../plugins/codecompletion/nativeparser.cpp:169
+msgid ""
+"You changed some class parser options. Do you want to reparse your projects "
+"now, using the new options?"
+msgstr ""
+
+#: ../plugins/codecompletion/nativeparser.cpp:171
+msgid "Reparse?"
+msgstr ""
+
+#: ../plugins/codecompletion/nativeparser.cpp:337
+msgid "#include <...> search starts here:"
+msgstr ""
+
+#: ../plugins/codecompletion/nativeparser.cpp:341
+msgid "End of search list."
+msgstr ""
+
+#: ../plugins/codecompletion/nativeparser.cpp:509
+msgid "Exception thrown!"
+msgstr ""
+
+#: ../plugins/codecompletion/nativeparser.cpp:509
+msgid "ERROR"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/parser.cpp:205
+msgid "Code-completion"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/parser.cpp:206
+msgid ""
+"The default options for the code-completion parser\n"
+"have changed and your settings have been updated.\n"
+"\n"
+"You can review them by going to \"Settings->Editor->\n"
+"Code-completion and symbols browser\"."
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:207
+msgid "class"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:208
+msgid "namespace"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:209
+msgid "enum"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:210
+msgid "enumerator"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:211
+msgid "function"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:212
+msgid "constructor"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:213
+msgid "destructor"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:214
+msgid "preprocessor"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:215
+msgid "variable"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:224
+msgid "private"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:225
+msgid "protected"
+msgstr ""
+
+#: ../plugins/codecompletion/parser/token.cpp:226
+msgid "public"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:197
+msgid "New regular expression"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:204
+msgid "Are you sure you want to delete this regular expression?"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:204
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:219
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1135
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1238
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1252
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1320
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1337
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1447
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1465
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1469
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1533
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1545
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1630
+#: ../plugins/defaultmimehandler/editmimetypesdlg.cpp:148
+#: ../plugins/scriptedwizard/wizpage.cpp:359
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:136
+msgid "Confirmation"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:215
+msgid ""
+"Are you sure you want to load the default regular expressions for this "
+"compiler?\n"
+"ALL regular expressions will be erased and replaced with their default "
+"counterparts!\n"
+"\n"
+"Are you REALLY sure?"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:261
+msgid "Please enter a compiler line in the \"Compiler output\" text box..."
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:280
+#, possible-c-format
+msgid ""
+"Regular expression analyzed as follows:\n"
+"\n"
+"Type: %s message\n"
+"Filename: %s\n"
+"Line number: %s\n"
+"Message: %s"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:285
+#: ../plugins/debuggergdb/threadsdlg.cpp:44
+msgid "Info"
+msgstr ""
+
+#: ../plugins/compilergcc/advancedcompileroptionsdlg.cpp:291
+msgid "Test results"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:11
+msgid "Borland C++ Compiler 5.5"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:55
+#: ../plugins/compilergcc/compilerDMC.cpp:89
+#: ../plugins/compilergcc/compilerDMC.cpp:90
+#: ../plugins/compilergcc/compilerDMC.cpp:91
+#: ../plugins/compilergcc/compilerDMC.cpp:110
+#: ../plugins/compilergcc/compilerDMC.cpp:119
+#: ../plugins/compilergcc/compilerDMC.cpp:120
+#: ../plugins/compilergcc/compilerDMC.cpp:121
+#: ../plugins/compilergcc/compilerDMC.cpp:122
+#: ../plugins/compilergcc/compilerDMC.cpp:126
+#: ../plugins/compilergcc/compilerDMC.cpp:127
+#: ../plugins/compilergcc/compilerGDC.cpp:120
+#: ../plugins/compilergcc/compilerGNUARM.cpp:98
+#: ../plugins/compilergcc/compilerMINGW.cpp:119
+#: ../plugins/compilergcc/compilerMSVC.cpp:75
+#: ../plugins/compilergcc/compilerMSVC.cpp:76
+#: ../plugins/compilergcc/compilerMSVC.cpp:77
+#: ../plugins/compilergcc/compilerMSVC.cpp:78
+#: ../plugins/compilergcc/compilerMSVC.cpp:79
+#: ../plugins/compilergcc/compilerMSVC.cpp:80
+#: ../plugins/compilergcc/compilerMSVC.cpp:81
+#: ../plugins/compilergcc/compilerMSVC8.cpp:90
+#: ../plugins/compilergcc/compilerMSVC8.cpp:91
+#: ../plugins/compilergcc/compilerMSVC8.cpp:92
+#: ../plugins/compilergcc/compilerMSVC8.cpp:93
+#: ../plugins/compilergcc/compilerMSVC8.cpp:94
+#: ../plugins/compilergcc/compilerMSVC8.cpp:95
+#: ../plugins/compilergcc/compilerMSVC8.cpp:96
+#: ../plugins/compilergcc/compilerMSVC8.cpp:97
+#: ../plugins/compilergcc/compilerMSVC8.cpp:98
+#: ../plugins/compilergcc/compilerMSVC8.cpp:99
+#: ../plugins/compilergcc/compilerSDCC.cpp:98
+msgid "Optimization"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:56
+msgid "Optimizations for size"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:57
+msgid "Optimizations for speed"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:58
+msgid "Optimize jumps"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:59
+msgid "Eliminate duplicate expressions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:60
+#: ../plugins/compilergcc/compilerICC.cpp:94
+#: ../plugins/compilergcc/compilerICC.cpp:198
+#: ../plugins/compilergcc/compilerMSVC.cpp:77
+#: ../plugins/compilergcc/compilerMSVC8.cpp:92
+msgid "Disable optimizations"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:61
+msgid "Expand intrinsic functions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:62
+msgid "Enable instruction scheduling for Pentium"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:63
+msgid "Disable instruction scheduling"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:64
+msgid "Enable loop induction variable and strength reduction"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:65
+msgid "Disable register variables"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:66
+msgid "Merge duplicate strings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:67
+msgid "Function stack frame optimization"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:70
+#: ../plugins/compilergcc/compilerDMC.cpp:72
+#: ../plugins/compilergcc/compilerDMC.cpp:73
+#: ../plugins/compilergcc/compilerDMC.cpp:74
+#: ../plugins/compilergcc/compilerDMC.cpp:75
+#: ../plugins/compilergcc/compilerDMC.cpp:76
+#: ../plugins/compilergcc/compilerDMC.cpp:79
+#: ../plugins/compilergcc/compilerDMC.cpp:92
+#: ../plugins/compilergcc/compilerDMC.cpp:136
+#: ../plugins/compilergcc/compilerDMC.cpp:146
+#: ../plugins/compilergcc/compilerMSVC.cpp:82
+#: ../plugins/compilergcc/compilerMSVC.cpp:83
+msgid "C++ Features"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:71
+msgid "Disable runtime type information"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:72
+msgid "Disable exception handling"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:73
+msgid "Enable destructor cleanup"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:74
+msgid "Use global destructor count"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:75
+msgid "Enable fast exception prologs"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:76
+msgid "Enable exception location information"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:77
+msgid "Enable slow exception epilogues"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:78
+msgid "Zero length empty class members"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:79
+msgid "Zero-length empty base classes"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:82
+msgid "C Features"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:83
+msgid "Emulate floating point"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:84
+msgid "Disable floating point"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:85
+msgid "Fast floating point"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:86
+msgid "Pentium FDIV workaround"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:87
+msgid "Pascal calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:88
+msgid "C calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:89
+msgid "__msfastcall calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:90
+msgid "fastcall calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:91
+msgid "stdcall calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:92
+msgid "Align data by byte"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:93
+msgid "Align data by word (2 bytes)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:94
+msgid "Align data by double word (4 bytes)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:95
+msgid "Align data by quad word (8 bytes)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:96
+msgid "Align data by paragraph (16 bytes)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:97
+msgid "Use minimum sized enums"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:98
+msgid "Use unsigned char"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:101
+#: ../plugins/compilergcc/compilerICC.cpp:122
+#: ../plugins/compilergcc/compilerICC.cpp:228
+#: ../plugins/compilergcc/compilerMSVC8.cpp:65
+#: ../plugins/compilergcc/compilerMSVC8.cpp:70
+#: ../plugins/compilergcc/compilerMSVC8.cpp:73
+#: ../plugins/compilergcc/compilerMSVC8.cpp:74
+#: ../plugins/compilergcc/compilerMSVC8.cpp:75
+#: ../plugins/compilergcc/compilerMSVC8.cpp:76
+msgid "Language"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:102
+msgid "ANSI keywords and extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:103
+msgid "Kernighan and Ritchie keywords and extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:104
+msgid "Borland C++ keywords and extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:105
+msgid "UNIX V keywords and extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:106
+msgid "Allow nested comments"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:109
+#: ../plugins/compilergcc/compilerDMC.cpp:61
+#: ../plugins/compilergcc/compilerDMC.cpp:81
+#: ../plugins/compilergcc/compilerDMC.cpp:83
+#: ../plugins/compilergcc/compilerDMC.cpp:93
+#: ../plugins/compilergcc/compilerDMC.cpp:95
+#: ../plugins/compilergcc/compilerDMD.cpp:71
+#: ../plugins/compilergcc/compilerDMD.cpp:74
+#: ../plugins/compilergcc/compilerGDC.cpp:88
+#: ../plugins/compilergcc/compilerGNUARM.cpp:75
+#: ../plugins/compilergcc/compilerMINGW.cpp:96
+#: ../plugins/compilergcc/compilerMSVC.cpp:63
+msgid "Debugging"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:110
+msgid "debugging on, inline expansion off"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:111
+msgid "debugging off, inline expansion on"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:112
+msgid "inline function expansion on"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:113
+msgid "inline function expansion off"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:114
+msgid "Include line numbers"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:117
+#: ../plugins/compilergcc/compilerDMC.cpp:143
+#: ../plugins/compilergcc/compilerDMC.cpp:144
+#: ../plugins/compilergcc/compilerDMC.cpp:150
+#: ../plugins/compilergcc/compilerDMC.cpp:151
+#: ../plugins/compilergcc/compilerDMC.cpp:152
+#: ../plugins/compilergcc/compilerDMC.cpp:153
+#: ../plugins/compilergcc/compilerMSVC.cpp:84
+#: ../plugins/compilergcc/compilerMSVC.cpp:85
+#: ../plugins/compilergcc/compilerMSVC.cpp:86
+#: ../plugins/compilergcc/compilerMSVC.cpp:87
+#: ../plugins/compilergcc/compilerMSVC.cpp:88
+#: ../plugins/compilergcc/compilerMSVC.cpp:89
+#: ../plugins/compilergcc/compilerMSVC.cpp:90
+msgid "Architecture"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:118
+#: ../plugins/compilergcc/compilerDMC.cpp:150
+#: ../plugins/compilergcc/compilerMSVC.cpp:84
+msgid "Optimize for 80386"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:119
+#: ../plugins/compilergcc/compilerDMC.cpp:151
+#: ../plugins/compilergcc/compilerMSVC.cpp:85
+msgid "Optimize for 80486"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:120
+#: ../plugins/compilergcc/compilerDMC.cpp:152
+#: ../plugins/compilergcc/compilerMSVC.cpp:86
+msgid "Optimize for Pentium"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:121
+#: ../plugins/compilergcc/compilerDMC.cpp:153
+#: ../plugins/compilergcc/compilerMSVC.cpp:87
+msgid "Optimize for Pentium Pro, Pentium II, Pentium III"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:124
+msgid "Target"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:125
+msgid "Windows application"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:126
+msgid "Console application"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:127
+msgid ".DLL executable"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:128
+msgid "32-bit multi-threaded"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:129
+msgid "Target uses the dynamic RTL"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:130
+msgid "Target uses the VCL"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:133
+#: ../plugins/compilergcc/compilerDMC.cpp:138
+#: ../plugins/compilergcc/compilerDMC.cpp:139
+#: ../plugins/compilergcc/compilerDMC.cpp:141
+#: ../plugins/compilergcc/compilerDMC.cpp:145
+#: ../plugins/compilergcc/compilerGDC.cpp:100
+#: ../plugins/compilergcc/compilerGNUARM.cpp:87
+#: ../plugins/compilergcc/compilerMINGW.cpp:108
+#: ../plugins/compilergcc/compilerMSVC.cpp:68
+#: ../plugins/compilergcc/compilerMSVC.cpp:69
+#: ../plugins/compilergcc/compilerMSVC.cpp:70
+#: ../plugins/compilergcc/compilerMSVC.cpp:71
+#: ../plugins/compilergcc/compilerMSVC.cpp:72
+#: ../plugins/compilergcc/compilerMSVC.cpp:73
+#: ../plugins/compilergcc/compilerMSVC.cpp:74
+#: ../plugins/compilergcc/compilerMSVC8.cpp:79
+#: ../plugins/compilergcc/compilerMSVC8.cpp:80
+#: ../plugins/compilergcc/compilerMSVC8.cpp:81
+#: ../plugins/compilergcc/compilerMSVC8.cpp:82
+#: ../plugins/compilergcc/compilerMSVC8.cpp:83
+#: ../plugins/compilergcc/compilerMSVC8.cpp:84
+#: ../plugins/compilergcc/compilerMSVC8.cpp:85
+#: ../plugins/compilergcc/compilerMSVC8.cpp:86
+#: ../plugins/compilergcc/compilerMSVC8.cpp:87
+msgid "Warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:134
+msgid "Display all warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:156
+#: ../plugins/compilergcc/compilerDMC.cpp:176
+#: ../plugins/compilergcc/compilerDMD.cpp:98
+#: ../plugins/compilergcc/compilerGDC.cpp:184
+#: ../plugins/compilergcc/compilerGNUARM.cpp:179
+#: ../plugins/compilergcc/compilerMINGW.cpp:183
+#: ../plugins/compilergcc/compilerMSVC.cpp:125
+#: ../plugins/compilergcc/compilerMSVC8.cpp:171
+#: ../plugins/compilergcc/compilerOW.cpp:342
+#: ../plugins/compilergcc/compilerSDCC.cpp:160
+msgid "Compiler warning"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:157
+#: ../plugins/compilergcc/compilerDMC.cpp:177
+#: ../plugins/compilergcc/compilerDMD.cpp:99
+#: ../plugins/compilergcc/compilerGDC.cpp:185
+#: ../plugins/compilergcc/compilerGNUARM.cpp:180
+#: ../plugins/compilergcc/compilerMINGW.cpp:184
+#: ../plugins/compilergcc/compilerMSVC.cpp:126
+#: ../plugins/compilergcc/compilerMSVC8.cpp:172
+#: ../plugins/compilergcc/compilerOW.cpp:341
+#: ../plugins/compilergcc/compilerSDCC.cpp:161
+msgid "Compiler error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:158
+msgid "Unknown error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerBCC.cpp:159
+#: ../plugins/compilergcc/compilerDMC.cpp:178
+#: ../plugins/compilergcc/compilerGDC.cpp:179
+#: ../plugins/compilergcc/compilerGNUARM.cpp:174
+#: ../plugins/compilergcc/compilerMINGW.cpp:178
+#: ../plugins/compilergcc/compilerSDCC.cpp:156
+msgid "Fatal error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:16
+msgid "Digital Mars Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:59
+#: ../plugins/compilergcc/compilerGDC.cpp:86
+#: ../plugins/compilergcc/compilerGNUARM.cpp:73
+#: ../plugins/compilergcc/compilerMINGW.cpp:94
+#: ../plugins/compilergcc/compilerMSVC.cpp:61
+#: ../plugins/compilergcc/compilerMSVC8.cpp:63
+#: ../plugins/compilergcc/compilerSDCC.cpp:85
+msgid "Produce debugging symbols"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:65
+#: ../plugins/compilergcc/compilerGDC.cpp:92
+#: ../plugins/compilergcc/compilerGNUARM.cpp:79
+#: ../plugins/compilergcc/compilerMINGW.cpp:100
+#: ../plugins/compilergcc/compilerMSVC.cpp:67
+#: ../plugins/compilergcc/compilerMSVC8.cpp:69
+#: ../plugins/compilergcc/compilerSDCC.cpp:88
+msgid ""
+"You have optimizations enabled. This is Not A Good Thing(tm) when producing "
+"debugging symbols..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:72
+msgid "Enforce strict compliance with ANSI C/C++"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:73
+msgid "Enable new[] and delete[] overloading"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:74
+msgid "Enable bool"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:75
+msgid "Enable exception handling"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:76
+msgid "Enable RTTI"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:79
+msgid "Compile all source files as C++"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:80
+msgid "Generate .cod (assemply) file"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:81
+msgid "No inline function expansion"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:82
+msgid "Generate .dep (make dependency) file"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:84
+msgid "Show results of preprocessor"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:85
+msgid "Do not elide comments"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:86
+msgid "#line directives not output"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:87
+msgid "IEEE 754 inline 8087 code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:88
+msgid "Work around FDIV problem"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:89
+msgid "Fast inline 8087 code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:90
+msgid "Disable debug info optimization"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:91
+msgid "Make static functions global"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:92
+msgid "Symbol info for globals"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:93
+msgid "Debug line numbers only"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:94
+msgid "Generate pointer validations"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:95
+msgid "Debug symbol info only"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:96
+msgid "Generate trace prolog/epilog"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:98
+msgid "Use precompiled headers (ph)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:102
+msgid "Include files only once"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:103
+msgid "Only search -I directories"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:108
+msgid "Relaxed type checking"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:110
+msgid "No empty base class optimization"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:111
+msgid "chars are unsigned"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:119
+msgid "Perform function level linking"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:120
+msgid "No default library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:121
+msgid "Place expr strings in code seg"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:122
+msgid "New code seg for each function"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:124
+msgid "vtables in far data"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:126
+#: ../plugins/compilergcc/compilerMSVC.cpp:78
+#: ../plugins/compilergcc/compilerMSVC8.cpp:93
+msgid "Minimize space"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:127
+#: ../plugins/compilergcc/compilerMSVC.cpp:79
+#: ../plugins/compilergcc/compilerMSVC8.cpp:94
+msgid "Maximize speed"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:129
+msgid "Turn off function auto-prototyping"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:130
+msgid "Make Pascal linkage the default"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:130
+#: ../plugins/compilergcc/compilerDMC.cpp:131
+msgid "Linkage"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:131
+msgid "Make stdcall linkage the default"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:132
+msgid "Require strict function prototyping"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:133
+msgid "Put switch tables in code seg"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:134
+msgid "Stack overflow checking"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:135
+msgid "Always generate stack frame"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:136
+msgid "Suppress non-ANSI predefined macros"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:138
+msgid "Suppress all warning messages"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:139
+msgid "Warn on C style casts"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:141
+#: ../plugins/compilergcc/compilerMSVC.cpp:74
+#: ../plugins/compilergcc/compilerMSVC8.cpp:87
+msgid "Treat warnings as errors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:143
+msgid "Windows prolog/epilog : Win32 Exe"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:144
+msgid "Windows prolog/epilog : Win32 Dll"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:145
+msgid "Turn off error maximum"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:146
+msgid "Instantiate templates"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMC.cpp:175
+#: ../plugins/compilergcc/compilerDMD.cpp:100
+#: ../plugins/compilergcc/compilerGDC.cpp:186
+#: ../plugins/compilergcc/compilerGNUARM.cpp:181
+#: ../plugins/compilergcc/compilerMINGW.cpp:185
+#: ../plugins/compilergcc/compilerMSVC.cpp:128
+#: ../plugins/compilergcc/compilerMSVC8.cpp:174
+msgid "Linker error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:16
+msgid "Digital Mars D Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:62
+msgid "instrument for code coverage analysis"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:62
+#: ../plugins/compilergcc/compilerDMD.cpp:63
+#: ../plugins/compilergcc/compilerDMD.cpp:64
+#: ../plugins/compilergcc/compilerDMD.cpp:65
+#: ../plugins/compilergcc/compilerDMD.cpp:66
+#: ../plugins/compilergcc/compilerDMD.cpp:69
+#: ../plugins/compilergcc/compilerDMD.cpp:70
+#: ../plugins/compilergcc/compilerDMD.cpp:73
+msgid "D Features"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:63
+#: ../plugins/compilergcc/compilerGDC.cpp:112
+msgid "generate documentation"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:64
+#: ../plugins/compilergcc/compilerGDC.cpp:113
+msgid "allow deprecated features"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:65
+#: ../plugins/compilergcc/compilerGDC.cpp:114
+msgid "compile in debug code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:66
+msgid "add symbolic debug info"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:67
+msgid "generate D interface file"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:68
+#: ../plugins/compilergcc/compilerGDC.cpp:115
+msgid "inline expand functions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:68
+msgid "Optimize"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:69
+msgid "optimize"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:70
+msgid "suppress generation of object file"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:71
+msgid "profile the runtime performance of the generated code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:72
+msgid "suppress non-essential compiler messages"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:73
+#: ../plugins/compilergcc/compilerGDC.cpp:116
+msgid ""
+"compile release version, which means not generating code for contracts and "
+"asserts"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:74
+#: ../plugins/compilergcc/compilerGDC.cpp:117
+msgid "compile in unittest code, also turns on asserts"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:75
+msgid "verbose"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:76
+msgid "enable warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerDMD.cpp:101
+#: ../plugins/compilergcc/compilerMSVC.cpp:127
+#: ../plugins/compilergcc/compilerMSVC8.cpp:173
+#: ../plugins/compilergcc/compilerSDCC.cpp:163
+msgid "Linker warning"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:233
+msgid ""
+"This plugin is an interface to various compilers:\n"
+"\n"
+"\tGNU GCC compiler\n"
+"\tMicrosoft Visual C++ Free Toolkit 2003\n"
+"\tBorland C++ Compiler 5.5"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:240
+msgid "All the free (and not) compilers out there"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:396
+msgid "Build log"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:408
+#: ../plugins/debuggergdb/backtracedlg.cpp:56 ../plugins/todo/todolist.cpp:88
+msgid "File"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:409
+#: ../plugins/debuggergdb/backtracedlg.cpp:57
+#: ../plugins/debuggergdb/breakpointsdlg.cpp:40
+#: ../plugins/todo/todolist.cpp:87
+msgid "Line"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:410
+msgid "Message"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:414
+msgid "Build messages"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:485
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:676
+msgid "Project build options"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:531
+#: ../plugins/debuggergdb/debuggergdb.cpp:494
+msgid "&Debug"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:536
+#: ../plugins/compilergcc/compilergcc.cpp:543
+#: ../plugins/debuggergdb/debuggergdb.cpp:490
+msgid "&Project"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:540
+#: ../plugins/debuggergdb/debuggergdb.cpp:482
+msgid "&Build"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:550
+msgid "Properties"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:553
+#: ../plugins/compilergcc/compilergcc.cpp:590
+msgid "Build options"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:553
+msgid "Set the project's build options"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:579
+msgid "Build workspace"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:580
+#: ../plugins/compilergcc/compilergcc.cpp:2639
+msgid "Rebuild workspace"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:586
+msgid "Build\tCtrl-F9"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:587
+msgid "Rebuild\tCtrl-F11"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:588
+msgid "Clean"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:599
+msgid "Build file"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:645
+msgid ""
+"Could not read the PATH environment variable!\n"
+"This can't be good. There may be problems running system commands and the "
+"application might not behave the way it was designed to..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:702
+msgid "Can't find compiler executable in your search path for "
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:747
+msgid "Debugger is active"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:748
+msgid "Aborting build"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:749
+msgid "The debugger is currently active. Aborting build..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:749
+msgid "Debugger active"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1046
+#, possible-c-format
+msgid "Execution of '%s' in '%s' failed."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1111
+#, possible-c-format
+msgid "Build virtual target '%s' in current project"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1128
+#, possible-c-format
+msgid "Build target '%s' in current project"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1282
+msgid ""
+"Code::Blocks no longer supports the \"GNU make\" build method, except for "
+"projects which\n"
+"are using a custom Makefile (in which case, this build method is selected "
+"automatically).\n"
+"This poses no problem on the overall build process and this notification is "
+"displayed\n"
+"just to alert you about this change.\n"
+"\n"
+"No further action is required on your part."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1305
+#, possible-c-format
+msgid ""
+"This %s is configured to use an invalid compiler.\n"
+"The operation failed..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1305
+#: ../plugins/debuggergdb/debuggergdb.cpp:834
+msgid "target"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1305
+#: ../plugins/debuggergdb/debuggergdb.cpp:834
+msgid "project"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1382
+#, possible-c-format
+msgid "-------------- Build: %s in %s ---------------"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1385
+msgid "\"no target\""
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1388
+msgid "\"no project\""
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1447
+#: ../plugins/compilergcc/compilergcc.cpp:1592
+#, possible-c-format
+msgid "Checking for existence: %s"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1450
+msgid ""
+"It seems that this file has not been built yet.\n"
+"Do you want to build it now?"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1470
+#: ../plugins/compilergcc/compilergcc.cpp:1616
+#, possible-c-format
+msgid "Executing: %s (in %s)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1564
+#: ../plugins/debuggergdb/debuggergdb.cpp:699
+msgid "You must select a host application to \"run\" a library..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1587
+msgid "You can't \"run\" a commands-only target..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1595
+msgid ""
+"It seems that this project has not been built yet.\n"
+"Do you want to build it now?"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1654
+#: ../plugins/compilergcc/compilergcc.cpp:1711
+#: ../plugins/compilergcc/compilergcc.cpp:2078
+#: ../plugins/compilergcc/compilergcc.cpp:2213
+#: ../plugins/compilergcc/compilergcc.cpp:2256
+#: ../plugins/compilergcc/compilergcc.cpp:2590
+msgid "Could not save all files..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1683
+#, possible-c-format
+msgid "Cleaning %s..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1691
+msgid "Cleaning object and output files..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1694
+msgid "Done."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1739
+msgid ""
+"This functionality has been temporarily removed from Code::Blocks.\n"
+"With all the updates from the last couple of months, the makefile exporter "
+"is not anymore in-sync with the rest of the build process.\n"
+"We are sorry for the inconvenience..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1749
+msgid "Please enter the \"Makefile\" name:"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1749
+msgid "Export Makefile"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:1764
+#, possible-c-format
+msgid "\"%s\" has been exported in the same directory as the project file."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2011
+msgid "Target is up to date."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2012
+msgid "Target is up to date.\n"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2097
+#, possible-c-format
+msgid "%s doesn't have a target named \"%s\"..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2099
+msgid "Build aborted."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2176
+#, possible-c-format
+msgid "Circular dependency detected between \"%s\" and \"%s\". Skipping..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2301
+#, possible-c-format
+msgid "Could not save all files of %s..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2381
+#, possible-c-format
+msgid "Aborting process %d..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2409
+msgid "That file isn't assigned to any target."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2463
+msgid ""
+"That file doesn't belong to a project.\n"
+"If you want to compile it as stand-alone, please use the \"Invoke compiler "
+"directly\" build method\n"
+"(Settings->Compiler->Other->Build method)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2605
+msgid "Rebuild project"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2606
+msgid ""
+"Rebuilding the project will cause the deletion of all object files and "
+"building it from scratch.\n"
+"This action might take a while, especially if your project contains more "
+"than a few files.\n"
+"Another factor is your CPU and the available system memory.\n"
+"\n"
+"Are you sure you want to rebuild the entire project?"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2640
+msgid ""
+"Rebuilding ALL the open projects will cause the deletion of all object files "
+"and building them from scratch.\n"
+"This action might take a while, especially if your projects contain more "
+"than a few files.\n"
+"Another factor is your CPU and the available system memory.\n"
+"\n"
+"Are you sure you want to rebuild ALL the projects?"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2658
+#: ../plugins/compilergcc/compilergcc.cpp:2680
+msgid "Clean project"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2659
+msgid ""
+"Cleaning ALL the open projects will cause the deletion of all relevant "
+"object files.\n"
+"This means that you will have to build ALL your projects from scratch next "
+"time you 'll want to build them.\n"
+"That action might take a while, especially if your projects contain more "
+"than a few files.\n"
+"Another factor is your CPU and the available system memory.\n"
+"\n"
+"Are you sure you want to proceed to cleaning?"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2681
+msgid ""
+"Cleaning the target or project will cause the deletion of all relevant "
+"object files.\n"
+"This means that you will have to build your project from scratch next time "
+"you 'll want to build it.\n"
+"That action might take a while, especially if your project contains more "
+"than a few files.\n"
+"Another factor is your CPU and the available system memory.\n"
+"\n"
+"Are you sure you want to proceed to cleaning?"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2885
+msgid "More errors follow but not being shown."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:2886
+msgid "Edit the max errors limit in compiler options..."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:3010
+#, possible-c-format
+msgid "Process terminated with status %d (%d minutes, %d seconds)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:3016
+#, possible-c-format
+msgid "%d errors, %d warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:3019
+#, possible-c-format
+msgid "=== Build finished: %s ==="
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:3078
+msgid "Nothing to be done."
+msgstr ""
+
+#: ../plugins/compilergcc/compilergcc.cpp:3079
+msgid "Nothing to be done.\n"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:31
+msgid "GNU GDC Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:98
+#: ../plugins/compilergcc/compilerGNUARM.cpp:85
+#: ../plugins/compilergcc/compilerMINGW.cpp:106
+msgid "Profile code when executed"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:98
+#: ../plugins/compilergcc/compilerGNUARM.cpp:85
+#: ../plugins/compilergcc/compilerMINGW.cpp:106
+msgid "Profiling"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:103
+#: ../plugins/compilergcc/compilerGNUARM.cpp:90
+#: ../plugins/compilergcc/compilerMINGW.cpp:111
+msgid "Enable all compiler warnings (overrides every other setting)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:104
+#: ../plugins/compilergcc/compilerGNUARM.cpp:91
+#: ../plugins/compilergcc/compilerMINGW.cpp:112
+msgid "Enable standard compiler warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:105
+#: ../plugins/compilergcc/compilerGNUARM.cpp:92
+#: ../plugins/compilergcc/compilerMINGW.cpp:113
+msgid "Stop compiling after first error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:106
+#: ../plugins/compilergcc/compilerGNUARM.cpp:93
+#: ../plugins/compilergcc/compilerMINGW.cpp:114
+msgid "Inhibit all warning messages"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:107
+#: ../plugins/compilergcc/compilerGNUARM.cpp:94
+#: ../plugins/compilergcc/compilerMINGW.cpp:115
+msgid "Enable warnings demanded by strict ISO C and ISO C++"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:108
+#: ../plugins/compilergcc/compilerGNUARM.cpp:95
+#: ../plugins/compilergcc/compilerMINGW.cpp:116
+msgid "Treat as errors the warnings demanded by strict ISO C and ISO C++"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:109
+#: ../plugins/compilergcc/compilerGNUARM.cpp:96
+#: ../plugins/compilergcc/compilerMINGW.cpp:117
+msgid "Warn if main() is not conformant"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:111
+msgid "D"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:121
+#: ../plugins/compilergcc/compilerGNUARM.cpp:99
+#: ../plugins/compilergcc/compilerMINGW.cpp:120
+msgid "Strip all symbols from binary (minimizes size)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:121
+#: ../plugins/compilergcc/compilerGNUARM.cpp:99
+#: ../plugins/compilergcc/compilerMINGW.cpp:120
+msgid "Stripping the binary will strip debugging symbols as well!"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:122
+#: ../plugins/compilergcc/compilerGNUARM.cpp:100
+#: ../plugins/compilergcc/compilerMINGW.cpp:121
+#: ../plugins/compilergcc/compilerSDCC.cpp:99
+msgid "Optimize generated code (for speed)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:123
+#: ../plugins/compilergcc/compilerGNUARM.cpp:101
+#: ../plugins/compilergcc/compilerMINGW.cpp:122
+msgid "Optimize more (for speed)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:124
+#: ../plugins/compilergcc/compilerGNUARM.cpp:102
+#: ../plugins/compilergcc/compilerMINGW.cpp:123
+msgid "Optimize even more (for speed)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:125
+#: ../plugins/compilergcc/compilerGNUARM.cpp:103
+#: ../plugins/compilergcc/compilerMINGW.cpp:124
+msgid "Optimize fully (for speed)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:126
+#: ../plugins/compilergcc/compilerGNUARM.cpp:104
+#: ../plugins/compilergcc/compilerMINGW.cpp:125
+#: ../plugins/compilergcc/compilerSDCC.cpp:100
+msgid "Optimize generated code (for size)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:127
+#: ../plugins/compilergcc/compilerGNUARM.cpp:105
+#: ../plugins/compilergcc/compilerMINGW.cpp:126
+msgid "Expensive optimizations"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:129
+#: ../plugins/compilergcc/compilerMINGW.cpp:128
+msgid "CPU architecture tuning (choose none, or only one of these)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:130
+#: ../plugins/compilergcc/compilerMINGW.cpp:129
+msgid "i386"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:131
+#: ../plugins/compilergcc/compilerMINGW.cpp:130
+msgid "i486"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:132
+#: ../plugins/compilergcc/compilerMINGW.cpp:131
+msgid "Intel Pentium"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:133
+#: ../plugins/compilergcc/compilerMINGW.cpp:132
+msgid "Intel Pentium (MMX)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:134
+#: ../plugins/compilergcc/compilerMINGW.cpp:133
+msgid "Intel Pentium PRO"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:135
+#: ../plugins/compilergcc/compilerMINGW.cpp:134
+msgid "Intel Pentium 2 (MMX)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:136
+#: ../plugins/compilergcc/compilerMINGW.cpp:135
+msgid "Intel Pentium 3 (MMX, SSE)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:137
+#: ../plugins/compilergcc/compilerMINGW.cpp:136
+msgid "Intel Pentium 4 (MMX, SSE, SSE2)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:138
+#: ../plugins/compilergcc/compilerMINGW.cpp:137
+msgid "Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:139
+#: ../plugins/compilergcc/compilerMINGW.cpp:138
+msgid "Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:140
+#: ../plugins/compilergcc/compilerMINGW.cpp:139
+msgid "Intel Pentium M (MMX, SSE, SSE2)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:141
+#: ../plugins/compilergcc/compilerMINGW.cpp:140
+msgid "AMD K6 (MMX)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:142
+#: ../plugins/compilergcc/compilerMINGW.cpp:141
+msgid "AMD K6-2 (MMX, 3DNow!)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:143
+#: ../plugins/compilergcc/compilerMINGW.cpp:142
+msgid "AMD K6-3 (MMX, 3DNow!)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:144
+#: ../plugins/compilergcc/compilerMINGW.cpp:143
+msgid "AMD Athlon (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:145
+#: ../plugins/compilergcc/compilerMINGW.cpp:144
+msgid "AMD Athlon Thunderbird (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:146
+#: ../plugins/compilergcc/compilerMINGW.cpp:145
+msgid "AMD Athlon 4 (MMX, 3DNow!, enhanced 3DNow!, full SSE)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:147
+#: ../plugins/compilergcc/compilerMINGW.cpp:146
+msgid "AMD Athlon XP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:148
+#: ../plugins/compilergcc/compilerMINGW.cpp:147
+msgid "AMD Athlon MP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:149
+#: ../plugins/compilergcc/compilerMINGW.cpp:148
+msgid "AMD K8 core (x86-64 instruction set)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:150
+#: ../plugins/compilergcc/compilerMINGW.cpp:149
+msgid "AMD Opteron (x86-64 instruction set)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:151
+#: ../plugins/compilergcc/compilerMINGW.cpp:150
+msgid "AMD Athlon64 (x86-64 instruction set)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:152
+#: ../plugins/compilergcc/compilerMINGW.cpp:151
+msgid "AMD Athlon-FX (x86-64 instruction set)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:180
+#: ../plugins/compilergcc/compilerGNUARM.cpp:175
+#: ../plugins/compilergcc/compilerMINGW.cpp:179
+msgid "Resource compiler error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:181
+#: ../plugins/compilergcc/compilerGNUARM.cpp:176
+#: ../plugins/compilergcc/compilerMINGW.cpp:180
+msgid "Resource compiler error (2)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:182
+#: ../plugins/compilergcc/compilerGNUARM.cpp:177
+#: ../plugins/compilergcc/compilerMINGW.cpp:181
+msgid "Preprocessor warning"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:183
+#: ../plugins/compilergcc/compilerGNUARM.cpp:178
+#: ../plugins/compilergcc/compilerMINGW.cpp:182
+msgid "Preprocessor error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:187
+#: ../plugins/compilergcc/compilerGNUARM.cpp:182
+#: ../plugins/compilergcc/compilerMINGW.cpp:186
+msgid "Linker error (2)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:188
+#: ../plugins/compilergcc/compilerGNUARM.cpp:183
+#: ../plugins/compilergcc/compilerMINGW.cpp:187
+msgid "Linker error (lib not found)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:189
+#: ../plugins/compilergcc/compilerGNUARM.cpp:184
+#: ../plugins/compilergcc/compilerMINGW.cpp:188
+msgid "Undefined reference"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGDC.cpp:190
+#: ../plugins/compilergcc/compilerGNUARM.cpp:185
+#: ../plugins/compilergcc/compilerICC.cpp:271
+#: ../plugins/compilergcc/compilerMINGW.cpp:189
+msgid "General warning"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:18
+msgid "GNU ARM GCC Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:107
+msgid "ARM CPU architecture specific"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:108
+msgid "-mapcs-frame"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:109
+msgid "-mno-apcs-frame"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:110
+msgid "-mabi=NAME"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:111
+msgid "-mapcs-stack-check"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:112
+msgid "-mno-apcs-stack-check"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:113
+msgid "-mapcs-float"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:114
+msgid "-mno-apcs-float"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:115
+msgid "-mapcs-reentrant"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:116
+msgid "-mno-apcs-reentrant"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:117
+msgid "-msched-prolog"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:118
+msgid "-mno-sched-prolog"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:119
+msgid "-mlittle-endian"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:120
+msgid "-mbig-endian"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:121
+msgid "-mwords-little-endian"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:122
+msgid "-mfloat-abi=NAME"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:123
+msgid "-msoft-float"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:124
+msgid "-mhard-float"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:125
+msgid "-mfpe"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:126
+msgid "-mthumb-interwork"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:127
+msgid "-mno-thumb-interwork"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:128
+msgid "-mcpu=NAME"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:129
+msgid "-march=NAME"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:130
+msgid "-mfpu=NAME"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:131
+msgid "-mstructure-size-boundary=N"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:132
+msgid "-mabort-on-noreturn"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:133
+msgid "-mlong-calls"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:134
+msgid "-mno-long-calls"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:135
+msgid "-msingle-pic-base"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:136
+msgid "-mno-single-pic-base"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:137
+msgid "-mpic-register=REG"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:138
+msgid "-mnop-fun-dllimport"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:139
+msgid "-mcirrus-fix-invalid-insns"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:140
+msgid "-mno-cirrus-fix-invalid-insns"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:141
+msgid "-mpoke-function-name"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:142
+msgid "-mthumb"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:143
+msgid "-marm"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:144
+msgid "-mtpcs-frame"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:145
+msgid "-mtpcs-leaf-frame"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:146
+msgid "-mcaller-super-interworking"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerGNUARM.cpp:147
+msgid "-mcallee-super-interworking"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:19
+msgid "Intel C/C++ Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:72
+msgid "Output and Debug"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:73
+#: ../plugins/compilergcc/compilerICC.cpp:170
+msgid "Trap uninitialized variables"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:78
+#: ../plugins/compilergcc/compilerICC.cpp:171
+msgid "Enable automatic precompiled header file creation/usage"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:79
+#: ../plugins/compilergcc/compilerICC.cpp:172
+msgid "Perform syntax and semantic checking only (no object file produced)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:80
+#: ../plugins/compilergcc/compilerICC.cpp:173
+msgid ""
+"Produce symbolic debug information in object files (you should avoid using "
+"any optimizations)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:83
+#: ../plugins/compilergcc/compilerICC.cpp:177
+msgid "Compiler Diagnostics (some options overide each other)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:84
+#: ../plugins/compilergcc/compilerICC.cpp:178
+msgid "Only display errors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:85
+#: ../plugins/compilergcc/compilerICC.cpp:180
+msgid "Enable more strict diagnostics"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:86
+#: ../plugins/compilergcc/compilerICC.cpp:181
+msgid "Force warnings to be reported as errors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:87
+#: ../plugins/compilergcc/compilerICC.cpp:182
+msgid "Print brief one-line diagnostics"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:88
+#: ../plugins/compilergcc/compilerICC.cpp:183
+msgid "Enable all compiler diagnostics"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:89
+msgid "Issue portability diagnostics"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:90
+#: ../plugins/compilergcc/compilerICC.cpp:194
+msgid "Print diagnostics for 64-bit porting"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:93
+#: ../plugins/compilergcc/compilerICC.cpp:197
+msgid "Performance"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:95
+#: ../plugins/compilergcc/compilerICC.cpp:199
+msgid ""
+"Optimize for maximum speed, but disable some optimizations which increase "
+"code size for a small speed benefit."
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:96
+#: ../plugins/compilergcc/compilerICC.cpp:200
+msgid "Enable optimizations"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:97
+#: ../plugins/compilergcc/compilerICC.cpp:201
+msgid ""
+"Enable -O2 plus more aggressive optimizations that may not improve "
+"performance for all programs"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:98
+#: ../plugins/compilergcc/compilerICC.cpp:202
+msgid ""
+"Enable speed optimizations, but disable some optimizations which increase "
+"code size for small speed benefit"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:99
+#: ../plugins/compilergcc/compilerICC.cpp:203
+msgid "Enable -xP -O3 -ipo -no-prec-div -static"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:100
+#: ../plugins/compilergcc/compilerICC.cpp:204
+msgid "Disable inlining"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:101
+#: ../plugins/compilergcc/compilerICC.cpp:205
+msgid "Inline functions declared with __inline, and perform C++ inlining"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:102
+#: ../plugins/compilergcc/compilerICC.cpp:206
+msgid "Inline any function, at the compiler's discretion"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:103
+#: ../plugins/compilergcc/compilerICC.cpp:207
+msgid "Assume no aliasing in program"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:104
+#: ../plugins/compilergcc/compilerICC.cpp:208
+msgid "Assume no aliasing within functions, but assume aliasing across calls"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:105
+#: ../plugins/compilergcc/compilerICC.cpp:209
+msgid "Maintain floating point precision (disables some optimizations)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:106
+#: ../plugins/compilergcc/compilerICC.cpp:210
+msgid "Improve floating-point precision (speed impact is less than -mp)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:107
+#: ../plugins/compilergcc/compilerICC.cpp:211
+msgid "Disable using EBP as general purpose register"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:108
+#: ../plugins/compilergcc/compilerICC.cpp:212
+msgid "Improve precision of floating-point divides (some speed impact)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:109
+#: ../plugins/compilergcc/compilerICC.cpp:213
+msgid "Determine if certain square root optimizations are enabled"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:110
+#: ../plugins/compilergcc/compilerICC.cpp:214
+msgid "Round fp results at assignments & casts (some speed impact)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:111
+#: ../plugins/compilergcc/compilerICC.cpp:215
+msgid "Enable fp stack checking after every function/procedure call"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:112
+#: ../plugins/compilergcc/compilerICC.cpp:216
+msgid "Rounding mode to enable fast float-to-int conversions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:113
+#: ../plugins/compilergcc/compilerICC.cpp:217
+msgid "Optimize specificly for Pentium processor"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:114
+#: ../plugins/compilergcc/compilerICC.cpp:218
+msgid ""
+"Optimize specificly for Pentium Pro, Pentium II and Pentium III processors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:115
+msgid "Code is optimized for Intel Pentium III"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:116
+msgid "Code is optimized for Intel Pentium 4"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:117
+msgid "Code is optimized for Intel Pentium 4 and enables new optimizations"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:118
+msgid "Code is optimized for Intel Pentium M"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:119
+msgid "Code is optimized for Intel Pentium 4 with SSE3 support"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:123
+#: ../plugins/compilergcc/compilerICC.cpp:229
+msgid "Enable the 'restrict' keyword for disambiguating pointers"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:124
+#: ../plugins/compilergcc/compilerICC.cpp:231
+msgid "Strict ANSI conformance dialects"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:125
+#: ../plugins/compilergcc/compilerICC.cpp:232
+msgid "Compile all source or unrecognized file types as C++ source files"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:126
+#: ../plugins/compilergcc/compilerICC.cpp:233
+msgid "Disable RTTI support"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:127
+#: ../plugins/compilergcc/compilerICC.cpp:235
+msgid "Specify alignment constraint for structures to 1"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:128
+#: ../plugins/compilergcc/compilerICC.cpp:236
+msgid "Specify alignment constraint for structures to 2"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:129
+#: ../plugins/compilergcc/compilerICC.cpp:237
+msgid "Specify alignment constraint for structures to 4"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:130
+#: ../plugins/compilergcc/compilerICC.cpp:238
+msgid "Specify alignment constraint for structures to 8"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:131
+#: ../plugins/compilergcc/compilerICC.cpp:239
+msgid "Specify alignment constraint for structures to 16"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:132
+#: ../plugins/compilergcc/compilerICC.cpp:241
+msgid "Change default char type to unsigned"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:169
+msgid "Output, Debug and Profile"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:174
+msgid "Compile and link for function profiling with UNIX gprof tool"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:179
+msgid "Display remarks, warnings, and errors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:184
+msgid "Warn for missing prototypes"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:185
+msgid "Warn for questionable pointer arithmetic"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:186
+msgid "Warn if a variable is used before being initialized"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:187
+msgid "Enable inline diagnostics"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:188
+msgid "Print warnings related to deprecated features"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:189
+msgid "Warn if declared function is not used"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:190
+msgid "Don't warn if an unknown #pragma directive is used"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:191
+msgid "Warn if return type of main is not expected"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:192
+msgid "Warn when /* appears in the middle of a /* */ comment"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:193
+msgid ""
+"Warn when a function uses the default int return type and warn when a return "
+"statement is used in a void function"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:219
+msgid ""
+"Generate code excusively for Pentium Pro and Pentium II processor "
+"instructions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:220
+msgid "Generate code excusively for MMX instructions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:221
+msgid "Generate code excusively for streaming SIMD extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:222
+msgid "Generate code excusively for Pentium 4 New Instructions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:223
+msgid "Generate code for Intel Pentium III and compatible Intel processors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:224
+msgid "Generate code for Intel Pentium 4 and compatible Intel processors"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:225
+msgid "Generate code for Intel Pentium 4 processors with SSE3 extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:230
+msgid "Equivalent to GNU -ansi"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:234
+msgid "Analyze and reorder memory layout for variables and arrays"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:240
+msgid "Allocate as many bytes as needed for enumerated types"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:242
+msgid "Change default bitfield type to unsigned"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:243
+msgid "Disable support for operator name keywords"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:244
+msgid "Do not recognize 'typeof' as a keyword"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:245
+msgid "Allow for non-conformant code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:268
+msgid "Compilation remark"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:269
+msgid "Compilation warning"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:270
+msgid "Compilation error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerICC.cpp:272
+msgid "General error"
+msgstr ""
+
+#: ../plugins/compilergcc/compilermessages.cpp:76
+msgid "Jump to selected message"
+msgstr ""
+
+#: ../plugins/compilergcc/compilermessages.cpp:78
+msgid "Copy all messages to clipboard"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMINGW.cpp:32
+msgid "GNU GCC Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:17
+msgid "Microsoft Visual C++ Toolkit 2003"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:68
+#: ../plugins/compilergcc/compilerMSVC8.cpp:80
+msgid "Enable all compiler warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:69
+#: ../plugins/compilergcc/compilerMSVC8.cpp:81
+msgid "Enable warnings level 1"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:70
+#: ../plugins/compilergcc/compilerMSVC8.cpp:82
+msgid "Enable warnings level 2"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:71
+#: ../plugins/compilergcc/compilerMSVC8.cpp:83
+msgid "Enable warnings level 3"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:72
+#: ../plugins/compilergcc/compilerMSVC8.cpp:84
+msgid "Enable warnings level 4"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:73
+#: ../plugins/compilergcc/compilerMSVC8.cpp:86
+msgid "Enable 64bit porting warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:75
+#: ../plugins/compilergcc/compilerMSVC8.cpp:90
+msgid "Enable global optimization"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:76
+#: ../plugins/compilergcc/compilerMSVC8.cpp:91
+msgid "Maximum optimization (no need for other options)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:80
+#: ../plugins/compilergcc/compilerMSVC8.cpp:95
+msgid "Favor code space"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:81
+#: ../plugins/compilergcc/compilerMSVC8.cpp:96
+msgid "Favor code speed"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:82
+#: ../plugins/compilergcc/compilerMSVC8.cpp:105
+msgid "Enable C++ RTTI"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:83
+msgid "Enable C++ exception handling"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:88
+msgid "Optimize for Pentium 4 or Athlon"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:89
+#: ../plugins/compilergcc/compilerMSVC8.cpp:137
+msgid "Enable SSE instruction set"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:90
+#: ../plugins/compilergcc/compilerMSVC8.cpp:138
+msgid "Enable SSE2 instruction set"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:91
+#: ../plugins/compilergcc/compilerMSVC8.cpp:114
+msgid "Enable minimal rebuild"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:92
+#: ../plugins/compilergcc/compilerMSVC8.cpp:115
+msgid "Enable link-time code generation"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:92
+#: ../plugins/compilergcc/compilerMSVC8.cpp:115
+msgid "Link-time code generation is incompatible with debugging info"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:93
+#: ../plugins/compilergcc/compilerMSVC8.cpp:116
+msgid "Optimize for windows application"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:94
+#: ../plugins/compilergcc/compilerMSVC8.cpp:132
+msgid "__cdecl calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:95
+#: ../plugins/compilergcc/compilerMSVC8.cpp:133
+msgid "__fastcall calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:96
+#: ../plugins/compilergcc/compilerMSVC8.cpp:134
+msgid "__stdcall calling convention"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:98
+msgid "Single-threaded Runtime Library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:98
+#: ../plugins/compilergcc/compilerMSVC.cpp:99
+#: ../plugins/compilergcc/compilerMSVC.cpp:100
+#: ../plugins/compilergcc/compilerMSVC.cpp:101
+#: ../plugins/compilergcc/compilerMSVC.cpp:102
+#: ../plugins/compilergcc/compilerMSVC.cpp:103
+#: ../plugins/compilergcc/compilerMSVC8.cpp:146
+#: ../plugins/compilergcc/compilerMSVC8.cpp:147
+#: ../plugins/compilergcc/compilerMSVC8.cpp:148
+#: ../plugins/compilergcc/compilerMSVC8.cpp:149
+msgid "Runtime"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:99
+msgid "Single-threaded Debug Runtime Library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:100
+#: ../plugins/compilergcc/compilerMSVC8.cpp:146
+msgid "Multi-threaded Runtime Library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:101
+#: ../plugins/compilergcc/compilerMSVC8.cpp:147
+msgid "Multi-threaded Debug Runtime Library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:102
+#: ../plugins/compilergcc/compilerMSVC8.cpp:148
+msgid "Multi-threaded DLL Runtime Library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC.cpp:103
+#: ../plugins/compilergcc/compilerMSVC8.cpp:149
+msgid "Multi-threaded DLL Debug Runtime Library"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:17
+msgid "Microsoft Visual C++ 2005"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:70
+msgid "Disable extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:73
+msgid "Enforce Standard C++ for scoping rules"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:74
+msgid "wchar_t is the native type, not a typedef"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:75
+msgid "Enable Edit and Continue debug info"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:76
+msgid "Enable OpenMP 2.0 language extensions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:79
+msgid "Disable all warnings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:85
+msgid "Enable one line diagnostics"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:97
+msgid "Enable intrinsic functions"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:98
+msgid "Enable frame pointer omission"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:99
+msgid "Inline expansion"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:102
+msgid "Enable read-only string pooling"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:102
+#: ../plugins/compilergcc/compilerMSVC8.cpp:103
+#: ../plugins/compilergcc/compilerMSVC8.cpp:104
+#: ../plugins/compilergcc/compilerMSVC8.cpp:105
+#: ../plugins/compilergcc/compilerMSVC8.cpp:106
+#: ../plugins/compilergcc/compilerMSVC8.cpp:107
+#: ../plugins/compilergcc/compilerMSVC8.cpp:108
+#: ../plugins/compilergcc/compilerMSVC8.cpp:109
+#: ../plugins/compilergcc/compilerMSVC8.cpp:110
+#: ../plugins/compilergcc/compilerMSVC8.cpp:111
+#: ../plugins/compilergcc/compilerMSVC8.cpp:112
+#: ../plugins/compilergcc/compilerMSVC8.cpp:113
+#: ../plugins/compilergcc/compilerMSVC8.cpp:114
+#: ../plugins/compilergcc/compilerMSVC8.cpp:115
+#: ../plugins/compilergcc/compilerMSVC8.cpp:116
+#: ../plugins/compilergcc/compilerMSVC8.cpp:117
+#: ../plugins/compilergcc/compilerMSVC8.cpp:119
+#: ../plugins/compilergcc/compilerMSVC8.cpp:120
+#: ../plugins/compilergcc/compilerMSVC8.cpp:121
+#: ../plugins/compilergcc/compilerMSVC8.cpp:122
+#: ../plugins/compilergcc/compilerMSVC8.cpp:123
+#: ../plugins/compilergcc/compilerMSVC8.cpp:124
+#: ../plugins/compilergcc/compilerMSVC8.cpp:125
+#: ../plugins/compilergcc/compilerMSVC8.cpp:132
+#: ../plugins/compilergcc/compilerMSVC8.cpp:133
+#: ../plugins/compilergcc/compilerMSVC8.cpp:134
+#: ../plugins/compilergcc/compilerMSVC8.cpp:135
+#: ../plugins/compilergcc/compilerMSVC8.cpp:137
+#: ../plugins/compilergcc/compilerMSVC8.cpp:138
+msgid "Code generation"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:103
+msgid "Separate functions for linker"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:104
+msgid "Enable security checks"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:106
+msgid "Enable C++ exception handling (no SEH)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:107
+msgid "Enable C++ exception handling (w/ SEH)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:108
+msgid "extern \"C\" defaults to nothrow"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:109
+msgid "Consider floating-point exceptions when generating code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:110
+msgid "Do not consider floating-point exceptions when generating code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:111
+msgid "\"fast\" floating-point model; results are less predictable"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:112
+msgid "\"precise\" floating-point model; results are predictable"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:113
+msgid "\"strict\" floating-point model (implies /fp:except)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:117
+msgid "Force stack checking for all funcs"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:119
+msgid "Enable _penter function call"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:120
+msgid "Enable _pexit function call"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:121
+msgid "Generate fiber-safe TLS accesses"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:122
+msgid "Enable fast checks (/RTCsu)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:123
+msgid "Convert to smaller type checks"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:124
+msgid "Stack Frame runtime checking"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:125
+msgid "Uninitialized local usage checks"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:135
+msgid "use FIST instead of ftol("
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:141
+msgid "Default char type is unsigned"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:141
+#: ../plugins/compilergcc/compilerMSVC8.cpp:142
+#: ../plugins/compilergcc/compilerMSVC8.cpp:143
+msgid "Other"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:142
+msgid "Compile all files as .c"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerMSVC8.cpp:143
+msgid "Compile all files as .cpp"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:252
+msgid "Compiler Settings"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:444
+msgid "Global options"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:482
+msgid "<All categories>"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:695
+msgid "Target build options: "
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:962
+msgid ""
+"You changed the compiler used for this target.\n"
+"It is recommended that you fully rebuild this target, otherwise linking "
+"errors might occur..."
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:965
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:978
+msgid "Notice"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:975
+msgid ""
+"You changed the compiler used for this project.\n"
+"It is recommended that you fully rebuild this project, otherwise linking "
+"errors might occur..."
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1018
+msgid ""
+"You have changed some settings. Do you want these settings saved ?\n"
+"\n"
+"Yes    : will apply the changes\n"
+"No     : will undo the changes\n"
+"Cancel : will revert your selection in the project/target tree"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1022
+msgid "Project/Target change with changed settings"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1048
+msgid ""
+"You have changed some settings. Do you want these settings saved ?\n"
+"\n"
+"Yes    : will apply the changes\n"
+"No     : will undo the changes\n"
+"Cancel : will revert your compiler change."
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1052
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1373
+msgid "Compiler change with changed settings"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1096
+msgid ""
+"You have changed the compiler used for the project.\n"
+"Do you want to use the same compiler for all the project's build targets too?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1098
+#: ../plugins/debuggergdb/debuggertree.cpp:747
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:166
+msgid "Question"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1124
+#, possible-c-format
+msgid ""
+"Auto-detected installation path of \"%s\"\n"
+"in \"%s\""
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1132
+#, possible-c-format
+msgid ""
+"Could not auto-detect installation path of \"%s\"...\n"
+"Do you want to use this compiler's default installation directory?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1196
+msgid "Add directory"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1221
+msgid "Edit directory"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1237
+msgid "Remove '"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1237
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1533
+msgid "' from the list?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1251
+msgid "Remove all directories from the list?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1264
+msgid "Add new variable"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1291
+msgid "Edit variable"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1319
+msgid "Are you sure you want to delete this variable?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1336
+msgid "Are you sure you want to clear all variables?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1361
+#, possible-c-format
+msgid "%s is now selected as the default compiler for new projects"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1369
+msgid ""
+"You have changed some settings. Do you want these settings saved ?\n"
+"\n"
+"Yes    : will apply the changes\n"
+"No     : will undo the changes\n"
+"Cancel : will cancel your compiler addition."
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1390
+msgid "Please enter the new compiler's name:"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1391
+msgid "Add new compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1392
+msgid "Copy of "
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1410
+msgid ""
+"The new compiler could not be created.\n"
+"(maybe a compiler with the same name already exists?)"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1422
+msgid ""
+"The new compiler has been added! Don't forget to update the \"Programs\" "
+"page..."
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1435
+msgid "Please edit the compiler's name:"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1435
+msgid "Rename compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1446
+msgid "Are you sure you want to remove this compiler?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1464
+msgid "Reset this compiler's settings to the defaults?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1467
+msgid ""
+"Reset this compiler's settings to the defaults?\n"
+"\n"
+"Are you REALLY sure?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1489
+msgid "Add library"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1490
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1515
+msgid "Choose library to link"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1493
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1518
+msgid "Library files (*.a, *.so, *.lib)|*.a;*.so;*.lib|All files (*)|*"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1514
+msgid "Edit library"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1533
+msgid "Remove library '"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1545
+msgid "Remove all libraries from the list?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1555
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1593
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1692
+msgid "Select directory"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1571
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1606
+msgid "Path already in extra paths list!"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1630
+msgid "Remove all extra paths from the list?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1730
+msgid "Select file"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1734
+msgid "Executable files (*.exe)|*.exe"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1736
+msgid "All files (*)|*"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1751
+msgid "Edit advanced compiler settings?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1752
+msgid ""
+"The compiler's advanced settings, need command-line compiler knowledge to be "
+"tweaked.\n"
+"If you don't know *exactly* what you 're doing, it is suggested to NOT "
+"tamper with these...\n"
+"\n"
+"Are you sure you want to proceed?"
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.cpp:1875
+msgid ""
+"You can't change the number of parallel processes while building!\n"
+"Setting ignored..."
+msgstr ""
+
+#: ../plugins/compilergcc/compileroptionsdlg.h:27
+msgid "Global compiler settings"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerOW.cpp:340
+msgid "Note"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:27
+msgid "SDCC Compiler"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:84
+msgid "General"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:90
+msgid "All functions will be compiled as reentrant"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:91
+msgid "Be verbose"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:92
+msgid "Generate extra profiling information"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:93
+msgid "Callee will always save registers used"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:94
+msgid "Leave out the frame pointer"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:95
+msgid "[MCS51/DS390] - use Bank1 for parameter passing"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:103
+msgid "CPU architecture (choose none, or only one of these)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:104
+msgid "[CPU] Intel MCS51 (default)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:105
+msgid "[CPU] Dallas DS80C390"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:106
+msgid "[CPU] Dallas DS80C400"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:107
+msgid "[CPU] Freescale/Motorola HC08"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:108
+msgid "[CPU] Zilog Z80"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:109
+msgid "[CPU] GameBoy Z80 (Not actively maintained)."
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:110
+msgid "[CPU] Atmel AVR (In development, not complete)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:111
+msgid ""
+"[CPU] Microchip PIC 14-bit (p16f84 and variants. In development, not "
+"complete)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:112
+msgid "[CPU] PIC 16-bit (p18f452 and variants. In development, not complete)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:115
+msgid "MCS51 Options"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:116
+msgid "[MCS51] Large model programs (default is Small)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:117
+msgid "[MCS51] Use a pseudo stack in the first 256 bytes in the external ram"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:118
+msgid "[MCS51] Linker use old style for allocating memory areas."
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:121
+msgid "DS390 / DS400 Options"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:122
+msgid "[DS390 / DS400] Generate 24-bit flat mode code"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:123
+msgid "[DS390 / DS400] Disable interrupts during ESP:SP updates"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:124
+msgid ""
+"[DS390 / DS400] Insert call to function __stack_probe at each function "
+"prologue"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:125
+msgid "[DS390 / DS400] Generate code for DS390 Arithmetic Accelerator"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:128
+msgid "Z80 Options"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:129
+msgid "[Z80] Force a called function to always save BC"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:130
+msgid "[Z80] When linking, skip the standard crt0.o object file"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:133
+msgid "Linker output format (choose none, or only one of these)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:134
+msgid "Output Intel Hex (default)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:135
+msgid "Output Motorola S19"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:136
+msgid "Output ELF (Currently only supported for the HC08 processors)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:159
+msgid "Compiler warning (.h)"
+msgstr ""
+
+#: ../plugins/compilergcc/compilerSDCC.cpp:162
+msgid "Compiler error (2)"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:65
+#, possible-c-format
+msgid "Scanned %d files for #includes, cache used %d, cache updated %d"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:161
+msgid "Can't create object output directory "
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:205
+msgid "Precompiling header: "
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:207
+#: ../plugins/compilergcc/directcommands.cpp:277
+msgid "Compiling: "
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:295
+msgid "Linking console executable: "
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:366
+msgid "Could not save all files. Build might be incomplete..."
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:418
+msgid "Running target pre-build steps"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:420
+msgid "Running project pre-build steps"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:443
+msgid "Running target post-build steps"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:445
+msgid "Running project post-build steps"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:551
+msgid "Can't create output directory "
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:561
+msgid "console executable"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:566
+msgid "executable"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:571
+msgid "dynamic library"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:576
+msgid "static library"
+msgstr ""
+
+#: ../plugins/compilergcc/directcommands.cpp:608
+msgid "Linking "
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1275
+msgid "Running pre-build step"
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1278
+msgid "Running post-build step"
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1769
+msgid ""
+"# Makefile automatically generated by Code::Blocks "
+"IDE                        #"
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1772
+msgid "# Project:          "
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1773
+msgid "# Project filename: "
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1775
+msgid "# Compiler used:    "
+msgstr ""
+
+#: ../plugins/compilergcc/makefilegenerator.cpp:1786
+msgid ""
+"#         You shouldn't need to modify anything beyond this "
+"point             #"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:53
+msgid "Nr"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:54
+msgid "Address"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:55
+msgid "Function"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:94
+msgid "Jump to this file/line"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:95
+msgid "Switch to this frame"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:97
+msgid "Save to file..."
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:133
+#: ../plugins/debuggergdb/disassemblydlg.cpp:141
+msgid "Save as text file"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:166
+#: ../plugins/debuggergdb/disassemblydlg.cpp:169
+msgid "File saved"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:166
+#: ../plugins/debuggergdb/disassemblydlg.cpp:153
+#: ../plugins/debuggergdb/disassemblydlg.cpp:169
+msgid "Result"
+msgstr ""
+
+#: ../plugins/debuggergdb/backtracedlg.cpp:188
+msgid "Couldn't find out the frame number!"
+msgstr ""
+
+#: ../plugins/debuggergdb/breakpointsdlg.cpp:39
+msgid "Filename"
+msgstr ""
+
+#: ../plugins/debuggergdb/breakpointsdlg.cpp:161
+msgid "Open in editor"
+msgstr ""
+
+#: ../plugins/debuggergdb/breakpointsdlg.cpp:162
+msgid "Breakpoint properties"
+msgstr ""
+
+#: ../plugins/debuggergdb/breakpointsdlg.cpp:164
+msgid "Remove breakpoint"
+msgstr ""
+
+#: ../plugins/debuggergdb/breakpointsdlg.cpp:165
+msgid "Remove all breakpoints"
+msgstr ""
+
+#: ../plugins/debuggergdb/cdb_driver.cpp:308
+#: ../plugins/debuggergdb/cdb_driver.cpp:311
+msgid "Access violation"
+msgstr ""
+
+#: ../plugins/debuggergdb/cdb_driver.cpp:311
+#, possible-c-format
+msgid ""
+"%s\n"
+"\n"
+"Do you want to view the backtrace?"
+msgstr ""
+
+#: ../plugins/debuggergdb/cpuregistersdlg.cpp:39
+msgid "Register"
+msgstr ""
+
+#: ../plugins/debuggergdb/cpuregistersdlg.cpp:40
+msgid "Hex"
+msgstr ""
+
+#: ../plugins/debuggergdb/cpuregistersdlg.cpp:41
+msgid "Integer"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:233
+#: ../plugins/debuggergdb/debuggergdb.cpp:249
+msgid "Debugger"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:235
+msgid "Plugin that interfaces the GNU GDB and MS CDB debuggers."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:260
+#: ../plugins/debuggergdb/debuggergdb.cpp:461
+msgid " (debug)"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:277
+#: ../plugins/debuggergdb/debuggergdb.cpp:1756
+msgid "Disassembly"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:286
+#: ../plugins/debuggergdb/debuggergdb.cpp:1755
+msgid "CPU Registers"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:295
+#: ../plugins/debuggergdb/debuggergdb.cpp:1754
+msgid "Call stack"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:304
+#: ../plugins/debuggergdb/debuggergdb.cpp:1759
+#: ../plugins/debuggergdb/debuggertree.cpp:120
+msgid "Watches"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:313
+#: ../plugins/debuggergdb/debuggergdb.cpp:1753
+msgid "Breakpoints"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:322
+msgid "Memory"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:331
+#: ../plugins/debuggergdb/debuggergdb.cpp:1758
+msgid "Running threads"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:484
+msgid "&Compile"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:514
+msgid "Toggle breakpoint"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:516
+msgid "Run to cursor"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:526
+#, possible-c-format
+msgid "Watch '%s'"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:643
+msgid "Starting debugger: "
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:650
+msgid "failed"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:657
+msgid "failed (to get debugger's stdin)"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:664
+msgid "failed (to get debugger's stdout)"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:671
+msgid "failed (to get debugger's stderr)"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:674
+msgid "done"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:690
+#: ../plugins/debuggergdb/debuggergdb.cpp:704
+#, possible-c-format
+msgid "Adding file: %s"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:769
+msgid "Compiler in use..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:770
+#: ../plugins/debuggergdb/debuggergdb.cpp:786
+msgid "Aborting debugging session"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:771
+msgid "The compiler is currently in use. Aborting debugging session..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:771
+msgid "Compiler running"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:775
+msgid "Building to ensure sources are up-to-date"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:785
+msgid "Build failed..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:787
+msgid "Build failed. Aborting debugging session..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:787
+msgid "Build failed"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:790
+msgid "Build succeeded"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:801
+msgid "Selecting target: "
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:807
+msgid "canceled"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:818
+msgid ""
+"The selected target is only running pre/post build step commands\n"
+"Can't debug such a target..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:820
+msgid "aborted"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:834
+#, possible-c-format
+msgid ""
+"This %s is configured to use an invalid debugger.\n"
+"The operation failed..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:846
+msgid ""
+"ERROR: You need to specify a debugger program in the compiler's settings."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:848
+msgid ""
+"\n"
+"(For MinGW compilers, it's 'gdb.exe' (without the quotes))"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:849
+msgid ""
+"\n"
+"(For MSVC compilers, it's 'cdb.exe' (without the quotes))"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:851
+msgid ""
+"\n"
+"(For GCC compilers, it's 'gdb' (without the quotes))"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:860
+msgid ""
+"The debugger executable is not set.\n"
+"To set it, go to \"Settings/Compiler and debugger\", switch to the \"Programs"
+"\" tab,\n"
+"and select the debugger program."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:863
+msgid "Aborted"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:919
+#, possible-c-format
+msgid "Changing directory to: %s"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:965
+#, possible-c-format
+msgid "Adding source dir: %s"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1106
+msgid "Continuing..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1642
+msgid "Enter command for GDB:"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1642
+msgid "Send command to GDB:"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1651
+msgid "Choose file to read symbols from"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1655
+msgid "Executables and libraries|*.exe;*.dll"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1757
+msgid "Memory dump"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1776
+msgid "Current stack frame"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1777
+#: ../plugins/debuggergdb/gdb_driver.cpp:340
+msgid "Loaded libraries"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1778
+msgid "Targets and files"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1779
+msgid "FPU status"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1780
+msgid "Signal handling"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1855
+#, possible-c-format
+msgid "Debugger finished with status %d"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1859
+msgid ""
+"This project/target has no debugging info.Please change this in the "
+"project's build options and retry..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:1981
+msgid ""
+"You can't change the active project while you 're actively debugging "
+"another.\n"
+"Do you want to stop debugging?\n"
+"\n"
+"Click \"Yes\" to stop debugging now or click \"No\" to re-activate the "
+"debuggee."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:2008
+msgid ""
+"The project you were debugging has closed.\n"
+"The debugging session will terminate immediately."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:2045
+#, possible-c-format
+msgid "At %s:%d"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:2047
+#, possible-c-format
+msgid "In %s (%s)"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggergdb.cpp:2088
+msgid "PID to attach to:"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggeroptionsdlg.h:23
+msgid "Debugger settings"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggerstate.cpp:268
+msgid "Setting breakpoints"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:568
+#, possible-c-format
+msgid "Dereference pointer '%s'"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:573
+msgid "&Add watch"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:574
+msgid "Watch '*&this'"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:581
+msgid "&Edit watch"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:582
+msgid "&Delete watch"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:585
+msgid "&Change value..."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:587
+msgid "&Load watch file"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:588
+msgid "&Save watch file"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:590
+msgid "Delete all watches"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:665
+msgid "There are no watches in the list to save."
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:666
+msgid "Save Watches"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:747
+msgid "Are you sure you want to delete all watches?"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:817
+#, possible-c-format
+msgid "Please enter the new value for %s"
+msgstr ""
+
+#: ../plugins/debuggergdb/debuggertree.cpp:818
+msgid "Change variable's value"
+msgstr ""
+
+#: ../plugins/debuggergdb/disassemblydlg.cpp:88
+msgid "\"Please wait while disassemblying...\""
+msgstr ""
+
+#: ../plugins/debuggergdb/disassemblydlg.cpp:153
+msgid "Could not open file for saving..."
+msgstr ""
+
+#: ../plugins/debuggergdb/editwatchesdlg.cpp:77
+msgid "Please enter the new watch keyword:"
+msgstr ""
+
+#: ../plugins/debuggergdb/editwatchesdlg.cpp:77
+msgid "Add watch"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_commands.h:314
+#, possible-c-format
+msgid ""
+"While setting up custom conditions for breakpoint %d (%s, line %d),\n"
+"the debugger responded with the following error:\n"
+"\n"
+"Error: %s\n"
+"\n"
+"Do you want to make this an un-conditional breakpoint?"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_commands.h:388
+msgid "GDB workaround for constructor/destructor breakpoints activated."
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:54
+msgid "Scripting engine not running. Debugger scripts disabled..."
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:100
+msgid "Registered new type: "
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:335
+msgid "Selected frame"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:345
+msgid "Files and targets"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:350
+msgid "Floating point unit"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:355
+msgid "Signals handling"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:485
+msgid "Debugger name and version: "
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:528
+#: ../plugins/debuggergdb/gdb_driver.cpp:530
+msgid "Signal received"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_driver.cpp:530
+#, possible-c-format
+msgid ""
+"%s\n"
+"Do you want to view the backtrace?"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_tipwindow.cpp:442
+msgid "Symbol  : "
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_tipwindow.cpp:444
+msgid "Symbol  :"
+msgstr ""
+
+#: ../plugins/debuggergdb/gdb_tipwindow.cpp:447
+#: ../plugins/debuggergdb/gdb_tipwindow.cpp:448
+msgid "Address : "
+msgstr ""
+
+#: ../plugins/debuggergdb/threadsdlg.cpp:42
+msgid "Active"
+msgstr ""
+
+#: ../plugins/debuggergdb/threadsdlg.cpp:43
+msgid "Number"
+msgstr ""
+
+#: ../plugins/debuggergdb/threadsdlg.cpp:67
+msgid "Switch to this thread"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:35
+msgid "Files extension handler"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:37
+msgid "This is the default files extension handler for Code::Blocks"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:40
+msgid "http://www.codeblocks.org"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:137
+msgid "Select an external program to open it."
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:138
+msgid "Open it inside the Code::Blocks editor."
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:140
+msgid ""
+"Code::Blocks does not yet know how to open this kind of file.\n"
+"Please select what you want to do with it:"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:142
+msgid "What to do?"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:166
+msgid ""
+"Do you want Code::Blocks to be disabled while the external program is "
+"running?"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/defaultmimehandler.cpp:213
+#: ../plugins/defaultmimehandler/editmimetypesdlg.cpp:161
+msgid "Select program"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/editmimetypesdlg.cpp:125
+msgid "Enter the new wildcard to add:"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/editmimetypesdlg.cpp:148
+msgid "Are you sure you want to remove this wildcard?"
+msgstr ""
+
+#: ../plugins/defaultmimehandler/editmimetypesdlg.h:23
+msgid "Files extension handling"
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:25
+msgid "Please setup the options for the new build target."
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:26
+msgid "Build target name:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:29
+#: ../plugins/scriptedwizard/compilerpanel.cpp:30
+msgid "Compiler:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:31
+msgid "Options"
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:34
+#: ../plugins/scriptedwizard/compilerpanel.cpp:43
+#: ../plugins/scriptedwizard/compilerpanel.cpp:67
+msgid "Output dir.:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:37
+#: ../plugins/scriptedwizard/compilerpanel.cpp:46
+#: ../plugins/scriptedwizard/compilerpanel.cpp:70
+msgid "Objects output dir.:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/buildtargetpanel.cpp:44
+msgid "Enable debugging symbols for this target"
+msgstr ""
+
+#: ../plugins/scriptedwizard/compilerpanel.cpp:29
+msgid ""
+"Please select the compiler to use and which configurations\n"
+"you want enabled in your project."
+msgstr ""
+
+#: ../plugins/scriptedwizard/compilerpanel.cpp:33
+msgid "Create \"Debug\" configuration:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/compilerpanel.cpp:40
+msgid "\"Debug\" options"
+msgstr ""
+
+#: ../plugins/scriptedwizard/compilerpanel.cpp:57
+msgid "Create \"Release\" configuration:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/compilerpanel.cpp:64
+msgid "\"Release\" options"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:42
+msgid ""
+"Please enter the file's location and name and\n"
+"whether to add it to the active project."
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:43
+msgid "Filename with full path:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:45
+#: ../plugins/scriptedwizard/filepathpanel.cpp:52
+#: ../plugins/scriptedwizard/genericselectpath.cpp:17
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:35
+#: ../plugins/todo/todolist.cpp:84
+msgid "Text"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:47
+#: ../plugins/scriptedwizard/genericselectpath.cpp:19
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:37
+msgid "..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:51
+msgid "Header guard word:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:52
+msgid "ID_TEXTCTRL2"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:54
+msgid "Add file to active project"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:54
+#: ../plugins/scriptedwizard/infopanel.cpp:14
+msgid "ID_CHECKBOX1"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:58
+msgid "In build target(s):"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:62
+msgid "ID_CHECKLISTBOX2"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:67
+msgid "All"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:70
+msgid "None"
+msgstr ""
+
+#: ../plugins/scriptedwizard/filepathpanel.cpp:172
+msgid "Select filename"
+msgstr ""
+
+#: ../plugins/scriptedwizard/genericselectpath.cpp:14
+msgid ""
+"Please select the location of XXX\n"
+"on your computer. This is the top-level folder where\n"
+"XXX is installed."
+msgstr ""
+
+#: ../plugins/scriptedwizard/genericselectpath.cpp:15
+msgid "Location of XXX:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/genericsinglechoicelist.cpp:16
+msgid "Description"
+msgstr ""
+
+#: ../plugins/scriptedwizard/genericsinglechoicelist.cpp:17
+msgid "Please make a selection"
+msgstr ""
+
+#: ../plugins/scriptedwizard/infopanel.cpp:13
+msgid ""
+"Welcome to the new console application wizard!\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+"\n"
+msgstr ""
+
+#: ../plugins/scriptedwizard/infopanel.cpp:14
+msgid "Skip this page next time"
+msgstr ""
+
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:29
+msgid ""
+"Please select the folder where you want the new project\n"
+"to be created as well as its title."
+msgstr ""
+
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:30
+msgid "Project title:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:33
+msgid "Folder to create project in:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:41
+msgid "Project filename:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:44
+msgid "Resulting filename:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:91
+#: ../plugins/scriptedwizard/projectpathpanel.cpp:104
+msgid "<invalid path>"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/plugins/templates/generic_template.cpp:16
+#: ../plugins/scriptedwizard/resources/plugins/templates/mime_template.cpp:11
+#: ../plugins/scriptedwizard/resources/plugins/templates/tool_template.cpp:11
+#: ../plugins/scriptedwizard/resources/plugins/templates/wizard_template.cpp:11
+msgid "[PLUGIN_TITLE]"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/plugins/templates/generic_template.cpp:18
+#: ../plugins/scriptedwizard/resources/plugins/templates/mime_template.cpp:13
+#: ../plugins/scriptedwizard/resources/plugins/templates/tool_template.cpp:13
+#: ../plugins/scriptedwizard/resources/plugins/templates/wizard_template.cpp:13
+msgid "[PLUGIN_DESCRIPTION]"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/plugins/templates/generic_template.cpp:22
+#: ../plugins/scriptedwizard/resources/plugins/templates/mime_template.cpp:17
+#: ../plugins/scriptedwizard/resources/plugins/templates/tool_template.cpp:17
+#: ../plugins/scriptedwizard/resources/plugins/templates/wizard_template.cpp:17
+msgid "[THANKS_TO]"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/plugins/templates/generic_template.cpp:53
+#: ../plugins/scriptedwizard/resources/plugins/templates/mime_template.cpp:48
+#: ../plugins/scriptedwizard/resources/plugins/templates/tool_template.cpp:48
+#: ../plugins/scriptedwizard/resources/plugins/templates/wizard_template.cpp:48
+msgid "Your dialog title"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/app.cpp:8
+msgid "wxWidgets Application Template"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:44
+msgid "&Quit\tAlt-F4"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:44
+msgid "Quit the application"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:45
+msgid "&File"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:48
+msgid "&About\tF1"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:48
+msgid "Show info about this application"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:49
+msgid "&Help"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:57
+msgid "Hello Code::Blocks user !"
+msgstr ""
+
+#: ../plugins/scriptedwizard/resources/wxwidgets/common/main.cpp:74
+msgid "Welcome to..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:59
+msgid "Scripted wizard"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:61
+msgid "A generic scripted wizard"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:81
+msgid "Project wizard disabled: scripting not initialized"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:220
+msgid "You need to open (or create) a project first!"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:248
+msgid ""
+"Failed to load the common functions script.\n"
+"Please check the debug log for details..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:261
+msgid ""
+"Failed to load the wizard's script.\n"
+"Please check the debug log for details..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:287
+msgid " has failed to run..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:296
+msgid ""
+"This wizard is missing the following mandatory wizard page:\n"
+"\n"
+"Project path selection\n"
+"Execution aborted..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:336
+msgid "Couldn't create the project directory:\n"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:345
+msgid "Couldn't create the new project:\n"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:469
+#, possible-c-format
+msgid ""
+"Couldn't setup project options:\n"
+"%s"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:501
+msgid "Failed to create build target!"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:516
+msgid ""
+"No compiler had been specified. The new target will use the default compiler."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:517 ../plugins/scriptedwizard/wiz.cpp:524
+msgid "Fallback compiler selected"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:523
+msgid ""
+"No compiler had been specified. The new target will use the same compiler as "
+"the project."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:565
+msgid "Couldn't setup target options:"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wiz.cpp:587 ../plugins/scriptedwizard/wiz.cpp:608
+msgid "Wizard failed..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:265
+msgid "Please select a filename with full path for your new file..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:323
+msgid "Please select the folder to create your project in"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:345
+msgid "Please select a title for your project..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:351
+msgid "Please select a name for your project..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:357
+msgid ""
+"A project with the same name already exists in the project folder.\n"
+"Are you sure you want to use this directory (files may be OVERWRITTEN)?"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:415
+msgid "Please select location"
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:428
+msgid "Please select a valid location..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:559
+msgid "You must select a compiler for your project..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:565
+msgid "You must select at least one configuration..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:676
+msgid "You must select a compiler for your build target..."
+msgstr ""
+
+#: ../plugins/scriptedwizard/wizpage.cpp:684
+msgid "A build target with that name already exists in the active project..."
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:63
+msgid "To-Do List"
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:65
+msgid "Code::Blocks To-Do List plugin"
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:83
+msgid "Type"
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:85
+msgid "User"
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:86
+msgid "Prio."
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:96 ../plugins/todo/todolist.cpp:132
+#: ../plugins/todo/todolist.cpp:137
+msgid "To-Do list"
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:132 ../plugins/todo/todolist.cpp:137
+msgid "Toggle displaying the To-Do list"
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:148
+msgid "Add To-Do item..."
+msgstr ""
+
+#: ../plugins/todo/todolist.cpp:148
+msgid "Add new To-Do item..."
+msgstr ""
+
+#: ../plugins/todo/todolistview.cpp:55
+msgid "Current file"
+msgstr ""
+
+#: ../plugins/todo/todolistview.cpp:56
+msgid "Open files"
+msgstr ""
+
+#: ../plugins/todo/todolistview.cpp:57
+msgid "All project files"
+msgstr ""
+
+#: ../plugins/todo/todolistview.cpp:66
+msgid "User:"
+msgstr ""
+
+#: ../plugins/todo/todolistview.cpp:69 ../plugins/todo/todolistview.cpp:89
+msgid "<All users>"
+msgstr ""
+
+#: ../plugins/todo/todolistview.cpp:73
+msgid "Refresh list"
+msgstr ""
+
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:52
+msgid ""
+"This plugin creates a manifest file that makes use of common controls 6.0 "
+"under Windows XP. You must copy this manifest file in the same path as your "
+"app's main executable in order for your application to use common controls "
+"version 6.0..."
+msgstr ""
+
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:94
+msgid "No active project!"
+msgstr ""
+
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:135
+msgid "Do you want to create the manifest file?"
+msgstr ""
+
+#: ../plugins/xpmanifest/windowsxplooknfeel.cpp:176
+msgid "Manifest file created"
+msgstr ""

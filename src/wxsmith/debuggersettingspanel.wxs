@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="DebuggerSettingsPanel">
+		<id_arg>0</id_arg>
+		<object class="wxBoxSizer" variable="mainSizer" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="buttonSizer" member="no">
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON_CREATE" variable="butCreate" member="no">
+							<label>Create Config</label>
+							<handler function="OnButtonCreate" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON_DELETE" variable="butDelete" member="no">
+							<label>Delete Config</label>
+							<handler function="OnButtonDelete" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON_RESET" variable="butReset" member="no">
+							<label>Reset defaults</label>
+							<handler function="OnButtonReset" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxLEFT|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxSHAPED</flag>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="infoSizer" member="no">
+					<label>Info</label>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL_INFO" variable="textInfo" member="no">
+							<size>186,243</size>
+							<enabled>0</enabled>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

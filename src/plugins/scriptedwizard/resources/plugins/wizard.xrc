@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="PluginInfo">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Please enter the needed information for the new Code::Blocks plugin.</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<rows>7</rows>
+					<vgap>4</vgap>
+					<hgap>8</hgap>
+					<growablecols>1</growablecols>
+					<growablerows>6</growablerows>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Title:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtTitle" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT3">
+							<label>Version:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtVersion" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT4">
+							<label>Description:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtDescription" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT5">
+							<label>Author:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtAuthor" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT6">
+							<label>Author&apos;s email:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtEmail" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT7">
+							<label>Author&apos;s website:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtWebsite" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT8">
+							<label>Thanks to:</label>
+						</object>
+						<flag>wxTOP</flag>
+						<border>4</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtThanksTo">
+							<style>wxTE_MULTILINE</style>
+						</object>
+						<flag>wxEXPAND</flag>
+						<minsize>240,128</minsize>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+	<object class="wxPanel" name="PluginOptions">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Please select various options for your plugin.</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<rows>2</rows>
+					<vgap>8</vgap>
+					<hgap>8</hgap>
+					<growablecols>1</growablecols>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT2">
+							<label>Plugin name:</label>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="txtPluginName" />
+						<flag>wxEXPAND</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="ID_STATICTEXT3">
+							<label>Plugin type:</label>
+						</object>
+						<flag />
+					</object>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="cmbPluginType">
+							<content>
+								<item>Generic</item>
+								<item>Tool</item>
+								<item>MIME handler</item>
+								<item>Wizard</item>
+							</content>
+							<selection>1</selection>
+							<style>wxCB_READONLY</style>
+						</object>
+						<flag />
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Options</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkHasConfig">
+							<label>Provides configuration dialog</label>
+							<tooltip>Check this if your plugin will have a configuration panel</tooltip>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkHasMenu">
+							<label>Creates menu entries</label>
+							<tooltip>Check this if it will add menu items in the application main menu</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkHasModuleMenu">
+							<label>Creates popup menu entries</label>
+							<tooltip>Check this if it will add menu items in application popup menus</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>8</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="chkHasToolbar">
+							<label>Creates toolbar</label>
+							<tooltip>Check this if it will create a new toolbar</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
+</resource>

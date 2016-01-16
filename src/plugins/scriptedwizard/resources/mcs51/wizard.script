@@ -1,0 +1,307 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: MCS51 project
+// Author:  H. Metin OZER
+// Keil/IAR: Thomas Sailer
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// Global Vars
+MemoryModel <- _T("");     // The chosen memory model
+MemoryModelIndex <- 0;     // The memory model as integer
+IntelHex <- true;          // produce Intel Hex file?
+SizeCODE <- 65536;
+SizeIDATA <- 256;
+SizeXDATA <- 4096;
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the MCS51 project wizard!\n" +
+                             "This wizard will guide you to create a new MCS51 project.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddInfoPage(_T("MCS51Intro"), intro_msg);
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T("SDCC Compiler"), _T("sdcc*;keil*;iar8051"), true, true);
+        Wizard.AddPage(_T("memoryModelChoice"));
+    }
+    else
+        print(wiz_type);
+}
+
+function GetGeneratedFile(file_index)
+{
+    if (file_index == 0)
+    {
+        local path    = Wizard.FindTemplateFile(_T("mcs51/files/main.c"));
+        local buffer  = IO.ReadFileContents(path);
+        local hdrName = _T("mcs51/8051.h");
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("keil*")))
+        {
+            hdrName = _T("reg51.h");
+        }
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("iar8051")))
+        {
+            hdrName = _T("io80C52.h");
+        }
+        buffer.Replace(_T("[SYSTEM_HDR]"), hdrName);
+        return _T("main.c;") + buffer;
+    }
+    return _T(""); // no other files
+}
+
+function GetFilesDir()
+{
+    local result = _T(""); // file is generated
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Memory Model choice page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnEnter_memoryModelChoice(fwd)
+{
+    if (fwd)
+    {
+        Wizard.SetComboboxSelection(_T("comboboxMem"), ConfigManager.Read(_T("/mcs51_project_wizard/memorymodel"), 0));
+        Wizard.SetSpinControlValue(_T("spnSizeCODE"),  ConfigManager.Read(_T("/mcs51_project_wizard/codesize"), 65536));
+        Wizard.SetSpinControlValue(_T("spnSizeIDATA"), ConfigManager.Read(_T("/mcs51_project_wizard/idatasize"), 256));
+        Wizard.SetSpinControlValue(_T("spnSizeXDATA"), ConfigManager.Read(_T("/mcs51_project_wizard/xdatasize"), 4096));
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("sdcc*")))
+        {
+            Wizard.EnableWindow(_T("radioboxOutput"), true);
+        }
+        else
+        {
+            Wizard.EnableWindow(_T("radioboxOutput"), false);
+        }
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("iar8051")))
+        {
+            Wizard.EnableWindow(_T("spnSizeIDATA"), false);
+        }
+        else
+        {
+            Wizard.EnableWindow(_T("spnSizeIDATA"), true);
+        }
+    }
+    return true;
+}
+
+function OnLeave_memoryModelChoice(fwd)
+{
+    if (fwd)
+    {
+        MemoryModel = Wizard.GetComboboxStringSelection(_T("comboboxMem"));
+        MemoryModelIndex = Wizard.GetComboboxSelection(_T("comboboxMem"));
+        SizeCODE = Wizard.GetSpinControlValue(_T("spnSizeCODE"));
+        SizeIDATA = Wizard.GetSpinControlValue(_T("spnSizeIDATA"));
+        SizeXDATA = Wizard.GetSpinControlValue(_T("spnSizeXDATA"));
+        if ( Wizard.GetRadioboxSelection(_T("radioboxOutput")) == 1 )
+        {
+            IntelHex = false;
+        }
+        ConfigManager.Write(_T("/mcs51_project_wizard/memorymodel"), MemoryModelIndex);
+        ConfigManager.Write(_T("/mcs51_project_wizard/codesize"),  SizeCODE);
+        ConfigManager.Write(_T("/mcs51_project_wizard/idatasize"), SizeIDATA);
+        ConfigManager.Write(_T("/mcs51_project_wizard/xdatasize"), SizeXDATA);
+    }
+    return true;
+}
+
+function SetupProject(project)
+{
+    //Variables
+    local out_ext = ::wxString();
+
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("sdcc*")))
+    {
+        // Post Build steps
+        local pb_hex = ::wxString();
+
+        // Post build commands
+        if (PLATFORM_MSW == PLATFORM)
+            pb_hex = _T("cmd /c \"packihx <$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).ihx >$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).hex\"");
+        else
+            pb_hex = _T("packihx <$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).ihx >$(TARGET_OUTPUT_DIR)$(TARGET_OUTPUT_BASENAME).hex");
+
+        // Project compiler options
+        project.AddCompilerOption(_T("-mmcs51"));
+        project.AddCompilerOption(_T("--model-") + MemoryModel);
+        project.AddLinkerOption(_T("--xram-size " + format("%u", SizeXDATA)));
+        project.AddLinkerOption(_T("--iram-size " + format("%u", SizeIDATA)));
+        project.AddLinkerOption(_T("--code-size " + format("%u", SizeCODE)));
+
+        // Project linker options
+
+        // Project post-build steps
+        if (IntelHex)
+        {
+            project.AddLinkerOption(_T("--out-fmt-ihx"));
+            project.AddCommandsAfterBuild(pb_hex);
+            out_ext = _T(".ihx");
+        }
+        else // (MotS19)
+        {
+            project.AddLinkerOption(_T("--out-fmt-s19"));
+            out_ext = _T(".s19");
+        }
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("keilc51")))
+    {
+        switch (MemoryModelIndex) {
+            case 0:
+                project.AddCompilerOption(_T("SMALL"));
+                project.AddLinkLib(_T("C51S"));
+                break;
+
+            case 1:
+                project.AddCompilerOption(_T("COMPACT"));
+                project.AddLinkLib(_T("C51C"));
+                break;
+
+            case 2:
+                project.AddCompilerOption(_T("LARGE"));
+                project.AddLinkLib(_T("C51L"));
+                break;
+
+            case 3:
+                project.AddCompilerOption(_T("LARGE"));
+                project.AddLinkerOption(_T("BANKAREA(8000H,0FFFFH)"));
+                project.AddLinkLib(_T("C51L"));
+                break;
+
+            default:
+                break;
+        }
+        project.AddLinkerOption(_T("RAMSIZE("   + format("%u",     SizeIDATA)     + ")"));
+        project.AddLinkerOption(_T("XDATA(0x0-" + format("0x%04X", SizeXDATA - 1) + ")"));
+        project.AddLinkerOption(_T("CODE(0x0-"  + format("0x%04X", SizeCODE - 1)  + ")"));
+        out_ext = _T(".omf");
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("keilcx51")))
+    {
+        switch (MemoryModelIndex) {
+            case 0:
+                project.AddCompilerOption(_T("SMALL"));
+                project.AddLinkLib(_T("C51S"));
+                break;
+
+            case 1:
+                project.AddCompilerOption(_T("COMPACT"));
+                project.AddLinkLib(_T("C51C"));
+                break;
+
+            case 2:
+                project.AddCompilerOption(_T("LARGE"));
+                project.AddLinkLib(_T("C51L"));
+                break;
+
+            case 3:
+                project.AddCompilerOption(_T("LARGE"));
+                project.AddLinkerOption(_T("BANKAREA(8000H,0FFFFH)"));
+                project.AddLinkLib(_T("C51L"));
+                break;
+
+            default:
+                break;
+        }
+        project.AddLinkerOption(_T("CLASSES (XDATA (X:0x0-X:" + format("0x%04X", SizeXDATA - 1) +
+                                   "), HDATA (X:0x0-X:"  + format("0x%04X", SizeXDATA - 1) +
+                                   "), CODE (C:0x0-C:"   + format("0x%04X", SizeCODE - 1) +
+                                   "), CONST (C:0x0-C:"  + format("0x%04X", SizeCODE - 1) +
+                                   "), ECODE (C:0x0-C:"  + format("0x%04X", SizeCODE - 1) +
+                                   "), HCONST (C:0x0-C:" + format("0x%04X", SizeCODE - 1) + "))"));
+        out_ext = _T(".omf");
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("iar8051")))
+    {
+        switch (MemoryModelIndex) {
+            case 0:
+                project.AddCompilerOption(_T("--calling_convention=data_overlay"));
+                project.AddCompilerOption(_T("--data_model=small"));
+                project.AddCompilerOption(_T("--code_model=near"));
+                project.AddLinkLib(_T("cl-pli-nsdc-1e16x01.r51"));
+                break;
+
+            case 1:
+                project.AddCompilerOption(_T("--calling_convention=pdata_reentrant"));
+                project.AddCompilerOption(_T("--data_model=large"));
+                project.AddCompilerOption(_T("--code_model=near"));
+                project.AddLinkLib(_T("cl-pli-nlpc-1e16x01.r51"));
+                break;
+
+            case 2:
+                project.AddCompilerOption(_T("--calling_convention=xdata_reentrant"));
+                project.AddCompilerOption(_T("--data_model=large"));
+                project.AddCompilerOption(_T("--code_model=near"));
+                project.AddLinkLib(_T("cl-pli-nlxc-1e16x01.r51"));
+                break;
+
+            case 3:
+                project.AddCompilerOption(_T("--calling_convention=xdata_reentrant"));
+                project.AddCompilerOption(_T("--data_model=large"));
+                project.AddCompilerOption(_T("--code_model=banked"));
+                project.AddLinkLib(_T("cl-pli-blxc-1e16x01.r51"));
+                break;
+
+            default:
+                break;
+        }
+        project.AddCompilerOption(_T("-e"));
+        project.AddCompilerOption(_T("-Om"));
+        project.AddCompilerOption(_T("--clib"));
+        project.AddCompilerOption(_T("--place_constants=code"));
+        project.AddCompilerOption(_T("--core=plain"));
+        project.AddCompilerOption(_T("--dptr=16"));
+        project.AddCompilerOption(_T("--dptr=1"));
+        project.AddCompilerOption(_T("--dptr=separate"));
+        project.AddCompilerOption(_T("--dptr=xor"));
+        project.AddLinkerOption(_T("-Faomf8051"));
+        project.AddLinkerOption(_T("-D_PDATA_STACK_SIZE=0x80"));
+        project.AddLinkerOption(_T("-D_XDATA_STACK_SIZE=0xFFF"));
+        project.AddLinkerOption(_T("-D_IDATA_STACK_SIZE=0x40"));
+        project.AddLinkerOption(_T("-D_EXTENDED_STACK_START=0x00"));
+        project.AddLinkerOption(_T("-D_EXTENDED_STACK_END=0x00"));
+        project.AddLinkerOption(_T("-D_EXTENDED_STACK_SIZE=0x00"));
+        project.AddLinkerOption(_T("-D_NR_OF_VIRTUAL_REGISTERS=8"));
+        project.AddLinkerOption(_T("-D_CODEBANK_START=0"));
+        project.AddLinkerOption(_T("-D_CODEBANK_END=0"));
+        project.AddLinkerOption(_T("-D_XDATA_HEAP_SIZE=0xff"));
+        project.AddLinkerOption(_T("-D_FAR_HEAP_SIZE=0xfff"));
+        project.AddLinkerOption(_T("-D_HUGE_HEAP_SIZE=0xfff"));
+        project.AddLinkerOption(_T("-D_FAR22_HEAP_SIZE=0xfff"));
+        project.AddLinkerOption(_T("-D_XDATA0_END=" + format("0x%04x", SizeXDATA - 1)));
+        project.AddLinkerOption(_T("-D_CODE0_END="  + format("0x%04x", SizeCODE - 1)));
+        project.AddLinkerOption(_T("-s __program_start"));
+        out_ext = _T(".omf");
+    }
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttNative);
+        target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + out_ext);
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttNative);
+        target.SetTargetFilenameGenerationPolicy(tgfpPlatformDefault, tgfpNone);
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + out_ext);
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

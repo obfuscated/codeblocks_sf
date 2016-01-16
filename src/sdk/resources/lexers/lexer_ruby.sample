@@ -1,0 +1,40 @@
+$LOAD_PATH << '.'
+
+module mymodule
+	# The Greeter class
+	class Greeter <- Base
+		@@species = "H. sapiens"
+		def initialize(name)
+			@name = name.capitalize
+		end
+
+		def salute
+			puts "Hello #{@name}!"
+		end
+		attr_accessor :name
+	end
+end
+
+puts "Hello" +
+" World!";
+
+line1 = "Cats are smarter than dogs";
+if ( line1 =~ /Cats(.*)/ )
+	puts "Line1 contains Cats"
+end
+
+output = `ls -lh`
+puts $?.success?
+
+$var = "I'm a global var"
+defined? $var #=> "global-variable"
+
+hash = {'color' => 'green', "number" => 5}
+hash.each do |key, value|
+	puts "#{key} is #{value}"
+end
+
+(1..5).each {|counter| puts "iteration #{counter}"}
+
+__END__
+Some thing stored here

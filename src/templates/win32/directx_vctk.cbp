@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="DirectX Project" />
+		<Option compiler="msvctk" />
+		<Build>
+			<Target title="default">
+				<Option output="DirectX.exe" />
+				<Option object_output="." />
+				<Option type="0" />
+				<Option compiler="msvctk" />
+				<Option includeInTargetAll="1" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-DWIN32" />
+			<Add option="-DNDEBUG" />
+			<Add option="-D_WINDOWS" />
+			<Add option="-D_MBCS" />
+			<Add directory="$(#dx.include)" />
+			<Add directory="$(#psdk.include)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#dx.include)" />
+			<Add directory="$(#psdk.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="kernel32" />
+			<Add library="user32" />
+			<Add library="gdi32" />
+			<Add library="winspool" />
+			<Add library="comdlg32" />
+			<Add library="advapi32" />
+			<Add library="shell32" />
+			<Add library="ole32" />
+			<Add library="oleaut32" />
+			<Add library="uuid" />
+			<Add library="odbc32" />
+			<Add library="odbccp32" />
+			<Add library="d3d8" />
+			<Add directory="$(#dx.lib)\X86" />
+			<Add directory="$(#psdk.lib)" />
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>
