@@ -176,11 +176,11 @@ void NativeParserTest::Init()
 
 bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFile)
 {
-    Clear();//clear the tree
+    Clear(); //clear the tree
 
     bool parseResult = false;
     parseResult = Parse(filename, isLocalFile);
-    if(!parseResult)
+    if (!parseResult)
         return false;
 
     int passCount = 0;
@@ -195,7 +195,7 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
         message = wxString::Format(_T("********************************************************\n  Testing file in edit control\n********************************************************"));
 
     wxLogMessage(message);
-    testResult<<message<<wxT("\n");
+    testResult << message << wxT("\n");
 
     // reading the test cases, first we read all the lines of the file
     // handling local files and wxScintilla control differently
@@ -207,8 +207,8 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
         source.Open(filename);
         wxString str;
         for ( str = source.GetFirstLine();
-          source.GetCurrentLine() < source.GetLineCount();
-          str = source.GetNextLine() )
+              source.GetCurrentLine() < source.GetLineCount();
+              str = source.GetNextLine() )
         {
             allLines.push_back(str);
         }
@@ -267,7 +267,7 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             TestExpression(expression,searchScope,result);
 
             // loop the suggestList to see it is in the result Tokens
-            for (size_t i=0;i<suggestList.GetCount();i++)
+            for (size_t i=0; i<suggestList.GetCount(); i++)
             {
                 wxString element = suggestList[i];
                 bool pass = false; // pass the test?
@@ -278,10 +278,11 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                     const Token* token = m_Parser.GetTokenTree()->at(*it);
                     if (!token || token->m_Name.IsEmpty())
                         continue;
+
                     if (element.IsSameAs(token->m_Name))
                     {
-                        message = wxString::Format(_T("-PASS: %s  %s"),expression.wx_str(),element.wx_str());
-                        testResult<<message<<wxT("\n");
+                        message = wxString::Format(_T("+ PASS: %s  %s"), expression.wx_str(), element.wx_str());
+                        testResult << message << wxT("\n");
                         wxLogMessage(message);
                         pass = true;
                         passCount++;
@@ -290,8 +291,8 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                 }
                 if (pass == false)
                 {
-                    message = wxString::Format(_T("*FAIL: %s  %s"),expression.wx_str(),element.wx_str());
-                    testResult<<message<<wxT("\n");
+                    message = wxString::Format(_T("- FAIL: %s  %s"), expression.wx_str(), element.wx_str());
+                    testResult << message << wxT("\n");
                     wxLogMessage(message);
                     failCount++;
                 }
