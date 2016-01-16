@@ -21,6 +21,7 @@
 				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="-v +wx +int +t .. include/autorevision.h" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -151,7 +152,7 @@
 					<Add directory="sdk/scripting/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision +wx +int +t . include/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision +wx +int +t .. include/autorevision.h" />
 					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
 					<Add after="zip -jq9 devel30\share\CodeBlocks\manager_resources.zip sdk\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd sdk\resources &amp; zip -0 -q ..\..\devel30\share\CodeBlocks\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png&quot;' />
