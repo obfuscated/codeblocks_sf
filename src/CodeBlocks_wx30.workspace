@@ -32,7 +32,6 @@
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_wx30.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars_wx30.cbp" />
 		<Project filename="plugins/contrib/FileManager/FileManager_wx30.cbp" />
-		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx30.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx30.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin_wx30.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor_wx30.cbp" />
