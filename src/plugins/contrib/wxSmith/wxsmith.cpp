@@ -327,7 +327,9 @@ bool wxSmith::BuildToolBar(cb_unused wxToolBar* toolBar)
 
 void wxSmith::OnProjectHook(cbProject* project,TiXmlElement* elem,bool loading)
 {
+    assert(project);
     wxsProject* Proj = GetSmithProject(project);
+    assert(Proj);
     if ( loading ) Proj->ReadConfiguration(elem);
     else           Proj->WriteConfiguration(elem);
 }
@@ -419,6 +421,7 @@ cbProject* wxSmith::GetCBProject(wxsProject* Proj)
 
 wxsProject* wxSmith::GetSmithProject(cbProject* Proj)
 {
+    assert(Proj);
     ProjectMapI i = m_ProjectMap.find(Proj);
     if ( i == m_ProjectMap.end() )
     {

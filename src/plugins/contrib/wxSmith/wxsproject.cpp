@@ -44,11 +44,13 @@ wxsProject::wxsProject(cbProject* Project):
     m_UnknownResources("unknown_resource"),
     m_WasModifiedDuringLoad(false)
 {
+    assert(Project);
+
     // Creating resource tree entery for this project
     m_TreeItem = wxsTree()->NewProjectItem(GetCBProject()->GetTitle(),this);
 
     // Building paths
-    wxFileName PathBuilder(Project->GetFilename());
+    wxFileName PathBuilder( (Project->GetFilename()) );
     m_ProjectPath = PathBuilder.GetPath(wxPATH_GET_VOLUME|wxPATH_GET_SEPARATOR);
 }
 
