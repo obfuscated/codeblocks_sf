@@ -22,8 +22,8 @@ if [ -e $CB_APP ]; then
     $CB_APP $CB_PARAMS $CB_TARGET $CB_CMD
     echo "Do not forget to run 'update' after successful build!"
   else
-    echo "File '$CB_APP' does not exists."
+    echo "C::B sources at '$CB_SRC' not found."
   fi
 else
-  echo "C::B sources at '$CB_SRC' not found."
+  echo "File '$CB_APP' does not exists."
 fi
