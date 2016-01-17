@@ -5,179 +5,167 @@
 		<centered>1</centered>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
 		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxPanel" name="ID_PANEL1">
-					<object class="wxFlexGridSizer">
-						<cols>1</cols>
-						<growablecols>0</growablecols>
-						<object class="sizeritem">
-							<object class="wxFlexGridSizer">
-								<cols>2</cols>
-								<growablecols>1</growablecols>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Name:</label>
-									</object>
-									<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxTextCtrl" name="ID_Name">
-										<tooltip>Human readable description of this flag</tooltip>
-									</object>
-									<flag>wxALL|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Compiler flags:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxTextCtrl" name="ID_Compiler">
-										<tooltip>Flags to be sent to the compiler</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Linker flags:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxTextCtrl" name="ID_Linker">
-										<tooltip>Flags to be sent to the linker</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Category:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxComboBox" name="ID_Category">
-										<tooltip>The category this flag is in</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Check against:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxTextCtrl" name="ID_Against">
-										<tooltip>Show a warning message if any of these flags are enabled</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Check message:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxTextCtrl" name="ID_Message">
-										<tooltip>Warning message to show upon conflict</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Supersedes:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxTextCtrl" name="ID_Supersede">
-										<tooltip>Automatically disable the list of superseded&#x0A;flags if this flag is enabled</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxStaticText" name="wxID_ANY">
-										<label>Exclusive:</label>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-								<object class="sizeritem">
-									<object class="wxToggleButton" name="ID_Exclusive">
-										<label>False</label>
-										<tooltip>Disable all other flags in this category if this flag is enabled</tooltip>
-									</object>
-									<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-									<border>5</border>
-									<option>1</option>
-								</object>
-							</object>
-							<flag>wxEXPAND</flag>
-							<border>5</border>
-							<option>1</option>
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<growablecols>1</growablecols>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Name:</label>
 						</object>
-						<object class="sizeritem">
-							<object class="wxStaticLine" name="wxID_ANY">
-								<size>10,-1</size>
-							</object>
-							<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-							<border>5</border>
-							<option>1</option>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_Name">
+							<tooltip>Human readable description of this flag</tooltip>
 						</object>
-						<object class="sizeritem">
-							<object class="wxStdDialogButtonSizer">
-								<object class="button">
-									<object class="wxButton" name="wxID_OK">
-										<label></label>
-									</object>
-								</object>
-								<object class="button">
-									<object class="wxButton" name="wxID_CANCEL">
-										<label></label>
-									</object>
-								</object>
-							</object>
-							<flag>wxALL|wxEXPAND</flag>
-							<border>8</border>
-							<option>-1</option>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Compiler flags:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_Compiler">
+							<tooltip>Flags to be sent to the compiler</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Linker flags:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_Linker">
+							<tooltip>Flags to be sent to the linker</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Category:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxComboBox" name="ID_Category">
+							<tooltip>The category this flag is in</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Check against:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_Against">
+							<tooltip>Show a warning message if any of these flags are enabled</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Check message:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_Message">
+							<tooltip>Warning message to show upon conflict</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Supersedes:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_Supersede">
+							<tooltip>Automatically disable the list of superseded&#x0A;flags if this flag is enabled</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY">
+							<label>Exclusive:</label>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxToggleButton" name="ID_Exclusive">
+							<label>False</label>
+							<tooltip>Disable all other flags in this category if this flag is enabled</tooltip>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticLine" name="wxID_ANY">
+					<size>10,-1</size>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
 						</object>
 					</object>
 				</object>
-				<flag>wxEXPAND</flag>
-				<border>5</border>
-				<option>1</option>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
 			</object>
 		</object>
 	</object>
