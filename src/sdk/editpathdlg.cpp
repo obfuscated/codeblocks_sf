@@ -61,6 +61,9 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     m_AskMakeRelative = true;
     m_ShowCreateDirButton = false;
     XRCCTRL(*this, "txtPath", wxTextCtrl)->SetFocus();
+
+    // Limit vertical resizing.
+    SetMaxSize(wxSize(-1, GetMinHeight()));
 }
 
 EditPathDlg::~EditPathDlg()
