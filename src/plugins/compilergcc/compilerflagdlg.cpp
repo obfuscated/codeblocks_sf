@@ -54,7 +54,7 @@ CompilerFlagDlg::CompilerFlagDlg(wxWindow* parent, CompOption* opt, wxArrayStrin
         CategoryCombo->SetStringSelection(selectedCategory);
     MessageText->Enable(!AgainstText->GetValue().Trim().Trim(false).IsEmpty());
 
-    SetSize(GetPosition().x - 57, wxDefaultCoord, GetMinWidth() + 114, GetMinHeight());
+    // Limit vertical resizing.
     SetMaxSize(wxSize(-1, GetMinHeight()));
 }
 
