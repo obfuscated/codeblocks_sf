@@ -17,7 +17,7 @@
 				</Compiler>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools/autorevision/autorevision30" prefix_auto="1" extension_auto="1" />
+				<Option output="build_tools/autorevision/autorevision" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -141,7 +141,7 @@
 					<Add directory="sdk/scripting/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision30 +wx +int +t .. include/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision +wx +int +t .. include/autorevision.h" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
