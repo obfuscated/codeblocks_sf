@@ -244,7 +244,6 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
 
 bool WriteOutput(const string& outputFile, string& revision, string& date)
 {
-    string old;
     string comment("/*");
     comment.append(revision);
     comment.append(",");
@@ -255,7 +254,8 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
         ifstream in(outputFile.c_str());
         if (!in.bad() && !in.eof())
         {
-            in >> old;
+            string old;
+            getline(in, old);
             size_t l_old = old.length();
             size_t l_comment = comment.length();
             if(l_old > l_comment || ((l_old == l_comment) && old >= comment))
