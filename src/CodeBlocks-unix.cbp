@@ -116,7 +116,9 @@
 				<Option external_deps="base/tinyxml/libtxml.a;sdk/scripting/lib/libsquirrel.a;sdk/scripting/lib/libsqstdlib.a;sdk/scripting/lib/libsqplus.a;devel/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --multiple-instance -ni -p debug" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option createStaticLib="1" />
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
@@ -183,6 +185,9 @@
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -202,6 +207,9 @@
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
@@ -219,6 +227,9 @@
 				<Option working_dir="devel/share/codeblocks/plugins" />
 				<Option type="3" />
 				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -v -p debug" />
+				<Option host_application="./codeblocks" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
