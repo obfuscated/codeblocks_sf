@@ -1343,6 +1343,9 @@ DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& ca
                                      const wxArrayString& choices, wxWindow *parent,
                                      const wxSize &size, int initialSelection)
 {
+    if (!parent)
+        parent = Manager::Get()->GetAppWindow();
+
     wxSingleChoiceDialog dialog(parent, message, caption, choices);
     dialog.SetSelection(initialSelection);
     dialog.SetSize(size);
@@ -1355,6 +1358,9 @@ const char* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
 wxString cbGetTextFromUser(const wxString& message, const wxString& caption, const wxString& defaultValue,
                            wxWindow *parent, wxCoord x, wxCoord y, bool centre)
 {
+    if (!parent)
+        parent = Manager::Get()->GetAppWindow();
+
     long style = wxTextEntryDialogStyle;
     if (centre)
         style |= wxCENTRE;
