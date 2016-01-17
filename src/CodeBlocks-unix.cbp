@@ -146,7 +146,7 @@
 					<Add directory="sdk/propgrid" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision +wx +int +t . include/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision +wx +int +t .. include/autorevision.h" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>

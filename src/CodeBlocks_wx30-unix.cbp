@@ -141,7 +141,7 @@
 					<Add directory="sdk/scripting/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools/autorevision/autorevision30 +wx +int +t . include/autorevision.h" />
+					<Add before="build_tools/autorevision/autorevision30 +wx +int +t .. include/autorevision.h" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
