@@ -10,6 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/choicdlg.h>
     #include <wx/file.h>
     #include <wx/filename.h>
     #include <wx/filesys.h>
@@ -1335,6 +1336,17 @@ int cbMessageBox(const wxString& message, const wxString& caption, int style, wx
     PlaceWindow(&dlg);
     // wxMessage*Dialog* returns any of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO
     return dlg.ShowModal();
+}
+
+DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& caption,
+                                     const wxArrayString& choices, wxWindow *parent,
+                                     const wxSize &size, int initialSelection)
+{
+    wxSingleChoiceDialog dialog(parent, message, caption, choices);
+    dialog.SetSelection(initialSelection);
+    dialog.SetSize(size);
+    PlaceWindow(&dialog);
+    return (dialog.ShowModal() == wxID_OK ? dialog.GetSelection() : -1);
 }
 
 wxImageList* cbProjectTreeImages::MakeImageList()

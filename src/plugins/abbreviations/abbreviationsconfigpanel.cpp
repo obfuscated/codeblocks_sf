@@ -274,7 +274,7 @@ int AbbreviationsConfigPanel::LanguageAdd()
             newLangs.Add(langs[i]);
     }
 
-    int sel = wxGetSingleChoiceIndex(_("Select language:"), _("Languages"), newLangs, this);
+    int sel = cbGetSingleChoiceIndex(_("Select language:"), _("Languages"), newLangs, this);
     if (sel == -1)
         return sel;
 

@@ -325,6 +325,11 @@ extern DLLIMPORT void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = 
   */
 extern DLLIMPORT int cbMessageBox(const wxString& message, const wxString& caption = wxEmptyString, int style = wxOK, wxWindow *parent = NULL, int x = -1, int y = -1);
 
+extern DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& caption,
+                                            const wxArrayString& choices, wxWindow *parent = NULL,
+                                            const wxSize &size = wxSize(300, 300),
+                                            int initialSelection = 0);
+
 inline void NotifyMissingFile(const wxString &name)
 {
     wxString msg;

@@ -2365,7 +2365,7 @@ int ProjectManagerUI::AskForBuildTargetIndex(cbProject* project)
     int count = prj->GetBuildTargetsCount();
     for (int i = 0; i < count; ++i)
         array.Add(prj->GetBuildTarget(i)->GetTitle());
-    int target = wxGetSingleChoiceIndex(_("Select the target:"), _("Project targets"), array);
+    int target = cbGetSingleChoiceIndex(_("Select the target:"), _("Project targets"), array, m_pTree, wxSize(300, 400));
 
     return target;
 }

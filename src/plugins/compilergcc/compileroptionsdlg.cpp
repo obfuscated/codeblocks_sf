@@ -36,7 +36,6 @@
     #include "logmanager.h"
     #include "projectmanager.h"
 #endif
-#include <wx/choicdlg.h>    // wxGetSingleChoiceIndex
 #include <wx/filedlg.h>
 #include <wx/propgrid/propgrid.h>
 #include <wx/textdlg.h>     // wxGetTextFromUser
@@ -1932,7 +1931,7 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
         choices.Add(bt->GetTitle());
     }
 
-    int sel = wxGetSingleChoiceIndex(_("Please select which target to copy these directories to:"),
+    int sel = cbGetSingleChoiceIndex(_("Please select which target to copy these directories to:"),
                                      _("Copy directories"), choices, this);
     // -1 means no selection (Cancel)
     if (sel == -1)
@@ -2339,7 +2338,7 @@ void CompilerOptionsDlg::OnCopyLibsClick(cb_unused wxCommandEvent& event)
         choices.Add(bt->GetTitle());
     }
 
-    int sel = wxGetSingleChoiceIndex(_("Please select which target to copy these libraries to:"),
+    int sel = cbGetSingleChoiceIndex(_("Please select which target to copy these libraries to:"),
                                     _("Copy libraries"),
                                     choices,
                                     this);
