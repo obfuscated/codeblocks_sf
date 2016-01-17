@@ -226,6 +226,9 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
                 string::size_type lineEnd = lineStart;
                 while (lineEnd < output.length() && output[lineEnd] != ' ')
                     lineEnd++;
+                lineEnd++;
+                while (lineEnd < output.length() && output[lineEnd] != ' ')
+                    lineEnd++;
                 date = output.substr(lineStart, lineEnd - lineStart);
                 hasDate = true;
             }
