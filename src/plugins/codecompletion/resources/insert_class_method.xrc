@@ -18,13 +18,13 @@
 						<object class="wxStaticText" name="ID_STATICTEXT1">
 							<label>Known classes:</label>
 						</object>
-						<flag></flag>
+						<flag>wxALIGN_LEFT</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT2">
 							<label>Class methods:</label>
 						</object>
-						<flag></flag>
+						<flag>wxALIGN_LEFT</flag>
 					</object>
 					<object class="sizeritem">
 						<object class="wxListBox" name="lstClasses" />
