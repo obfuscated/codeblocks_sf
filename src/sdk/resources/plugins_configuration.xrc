@@ -120,16 +120,14 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
-					<orient>wxVERTICAL</orient>
-					<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
 						<object class="wxButton" name="wxID_CANCEL">
 							<label>C&amp;lose</label>
 						</object>
-						<flag>wxALIGN_LEFT</flag>
 					</object>
 				</object>
-				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
 			</object>
 		</object>
