@@ -64,7 +64,7 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
 	stdDialogButtons->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
 	stdDialogButtons->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
 	stdDialogButtons->Realize();
-	mainSizer->Add(stdDialogButtons, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL, 5);
+	mainSizer->Add(stdDialogButtons, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
 	SetSizer(mainSizer);
 	mainSizer->Fit(this);
 	mainSizer->SetSizeHints(this);
