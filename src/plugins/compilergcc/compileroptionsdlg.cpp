@@ -24,6 +24,7 @@
     #include <wx/stattext.h>
     #include <wx/sizer.h>
     #include <wx/spinctrl.h>
+    #include <wx/textdlg.h>
     #include <wx/treectrl.h>
     #include <wx/xrc/xmlres.h>
 
@@ -38,7 +39,6 @@
 #endif
 #include <wx/filedlg.h>
 #include <wx/propgrid/propgrid.h>
-#include <wx/textdlg.h>     // wxGetTextFromUser
 #include <wx/xml/xml.h>
 
 #include "advancedcompileroptionsdlg.h"
@@ -2114,7 +2114,7 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent& event)
     }
     wxChoice* cmb = 0;
     cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
-    wxString value = wxGetTextFromUser(_("Please enter the new compiler's name:"),
+    wxString value = cbGetTextFromUser(_("Please enter the new compiler's name:"),
                                     _("Add new compiler"),
                                     _("Copy of ") + CompilerFactory::GetCompiler(m_CurrentCompilerIdx)->GetName());
     if (!value.IsEmpty())
@@ -2159,7 +2159,7 @@ void CompilerOptionsDlg::OnAddCompilerClick(cb_unused wxCommandEvent& event)
 void CompilerOptionsDlg::OnEditCompilerClick(cb_unused wxCommandEvent& event)
 {
     wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
-    wxString value = wxGetTextFromUser(_("Please edit the compiler's name:"), _("Rename compiler"), cmb->GetStringSelection());
+    wxString value = cbGetTextFromUser(_("Please edit the compiler's name:"), _("Rename compiler"), cmb->GetStringSelection());
     if (!value.IsEmpty())
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
@@ -2932,6 +2932,7 @@ void CompilerOptionsDlg::OnFlagsPopup(wxPropertyGridEvent& event)
             dlg.SetSize(dlg.GetPosition().x, dlg.GetPosition().y - (220 - dlg.GetSize().GetHeight()) / 2,
                         dlg.GetSize().GetWidth(), 220);
         }
+        PlaceWindow(&dlg);
         dlg.ShowModal();
         wxString flags = dlg.GetValue();
         flags.Replace(wxT("\n"), wxT(" "));

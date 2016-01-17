@@ -421,6 +421,7 @@ bool wxsAuiNotebook::OnPopup(long Id)
     if ( Id == popupNewPageId )
     {
         wxTextEntryDialog Dlg(0,_("Enter name of new page"),_("Adding page"),_("New page"));
+        PlaceWindow(&Dlg);
         if ( Dlg.ShowModal() == wxID_OK )
         {
             wxsItem* Panel = wxsItemFactory::Build(_T("wxPanel"),GetResourceData());

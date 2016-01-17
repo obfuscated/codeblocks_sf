@@ -121,7 +121,7 @@ void AbbreviationsConfigPanel::AutoCompUpdate(const wxString& key, const wxStrin
 
 void AbbreviationsConfigPanel::OnAutoCompAdd(cb_unused wxCommandEvent& event)
 {
-    wxString key = wxGetTextFromUser(_("Please enter the new keyword"), _("Add keyword"));
+    wxString key = cbGetTextFromUser(_("Please enter the new keyword"), _("Add keyword"));
     if (!key.IsEmpty())
     {
         AutoCompleteMap::iterator it = m_pCurrentAutoCompMap->find(key);

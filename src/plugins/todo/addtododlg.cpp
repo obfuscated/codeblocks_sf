@@ -16,10 +16,11 @@
   #include <wx/spinctrl.h>
   #include <wx/textctrl.h>
   #include <wx/xrc/xmlres.h>
+
   #include "manager.h"
   #include "configmanager.h"
+  #include "globals.h"
 #endif
-#include <wx/textdlg.h>
 #include "addtododlg.h"
 
 BEGIN_EVENT_TABLE(AddTodoDlg, wxScrollingDialog)
@@ -214,13 +215,9 @@ void AddTodoDlg::EndModal(int retVal)
 void AddTodoDlg::OnAddUser(wxCommandEvent&)
 {
     // ask for the new user to be added to the "choice" list
-    wxTextEntryDialog dlg(this, _T("Enter the user you wish to add"), _T("Add user"), _T(""), wxOK|wxCANCEL);
-    if(dlg.ShowModal() == wxID_OK)
-    {
-        wxString User = dlg.GetValue();
-        if(!User.IsEmpty())
+    const wxString &User = cbGetTextFromUser(_T("Enter the user you wish to add"), _T("Add user"), wxEmptyString, this);
+    if (!User.empty())
             XRCCTRL(*this, "chcUser", wxChoice)->Append(User);
-    }
 }
 
 void AddTodoDlg::OnDelUser(wxCommandEvent&)
@@ -243,13 +240,9 @@ void AddTodoDlg::OnDelUser(wxCommandEvent&)
 void AddTodoDlg::OnAddType(wxCommandEvent&)
 {
     // ask for the new type to be added to the "choice" list
-    wxTextEntryDialog dlg(this, _T("Enter the type you wish to add"), _T("Add type"), _T(""), wxOK|wxCANCEL);
-    if(dlg.ShowModal() == wxID_OK)
-    {
-        wxString Type = dlg.GetValue();
-        if(!Type.IsEmpty())
-            XRCCTRL(*this, "chcType", wxChoice)->Append(Type);
-    }
+    const wxString &Type = cbGetTextFromUser(_T("Enter the type you wish to add"), _T("Add type"), wxEmptyString, this);
+    if (!Type.empty())
+        XRCCTRL(*this, "chcType", wxChoice)->Append(Type);
 }
 
 void AddTodoDlg::OnDelType(wxCommandEvent&)

@@ -8,7 +8,6 @@
     //*)
 
     #include <wx/fontutil.h>
-    #include <wx/textdlg.h>
 #endif
 
 #include <wx/fontdlg.h>
