@@ -101,20 +101,53 @@ class DLLIMPORT cbThreadPool
       public:
         // initialize pointer with existing pointer
         // - requires that the pointer p is a return value of new
-        explicit CountedPtr(T *p = 0);
+        explicit CountedPtr(T *p = nullptr) : ptr(p), count(new long(1)) {}
         // copy pointer (one more owner)
-        CountedPtr(const CountedPtr<T> &p) throw();
+        CountedPtr(const CountedPtr<T> &p) : ptr(p.ptr), count(p.count)
+        {
+          ++*count;
+        }
+
         // destructor (delete value if this was the last owner)
-        ~CountedPtr() throw();
+        ~CountedPtr()
+        {
+            dispose();
+        }
         /// assignment (unshare old and share new value)
-        CountedPtr<T> &operator = (const CountedPtr<T> &p) throw();
+        CountedPtr<T> &operator = (const CountedPtr<T> &p)
+        {
+            if (this != &p)
+            {
+                dispose();
+                ptr = p.ptr;
+                count = p.count;
+                ++*count;
+            }
+
+            return *this;
+        }
+
         /// access the value to which the pointer refers
-        T &operator * () const throw();
-        T *operator -> () const throw();
+        T &operator * () const
+        {
+            return *ptr;
+        }
+
+        T *operator -> () const
+        {
+            return ptr;
+        }
 
       private:
         /** decrease the counter, and if it get 0, destroy both counter and value */
-        void dispose();
+        void dispose()
+        {
+            if (--*count == 0)
+            {
+                delete count;
+                delete ptr;
+            }
+        }
     };
 
     /** A Worker Thread class.
@@ -342,66 +375,6 @@ inline void cbThreadPool::AwakeNeeded()
                                                         (m_concurrentThreads - m_workingThreads));
   for (std::size_t i = 0; i < awakeThreadNumber; ++i)
     m_semaphore->Post();
-}
-
-/* *** Josuttis' CountedPtr *** */
-
-template <typename T>
-inline cbThreadPool::CountedPtr<T>::CountedPtr(T *p)
-: ptr(p),
-  count(new long(1))
-{
-  // empty
-}
-
-template <typename T>
-inline cbThreadPool::CountedPtr<T>::CountedPtr(const CountedPtr<T> &p) throw()
-: ptr(p.ptr),
-  count(p.count)
-{
-  ++*count;
-}
-
-template <typename T>
-inline cbThreadPool::CountedPtr<T>::~CountedPtr() throw()
-{
-  dispose();
-}
-
-template <typename T>
-inline cbThreadPool::CountedPtr<T> &cbThreadPool::CountedPtr<T>::operator = (const CountedPtr<T> &p) throw()
-{
-  if (this != &p)
-  {
-    dispose();
-    ptr = p.ptr;
-    count = p.count;
-    ++*count;
-  }
-
-  return *this;
-}
-
-template <typename T>
-inline T &cbThreadPool::CountedPtr<T>::operator * () const throw()
-{
-  return *ptr;
-}
-
-template <typename T>
-inline T *cbThreadPool::CountedPtr<T>::operator -> () const throw()
-{
-  return ptr;
-}
-
-template <typename T>
-inline void cbThreadPool::CountedPtr<T>::dispose()
-{
-  if (--*count == 0)
-  {
-    delete count;
-    delete ptr;
-  }
 }
 
 #endif  //CBTHREADPOOL_H
