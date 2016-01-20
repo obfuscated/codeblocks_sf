@@ -143,18 +143,19 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     // load search path options
     XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path"),
                                                                     (active_project ? active_project->GetBasePath() : wxT(""))));
-	if(cfg->Exists(CONF_GROUP _T("/search_mask")))
-	{
-		// Migrate from previous config setting of "search_mask" string (since it used to be a textbox)
-		// to new config setting of "search_masks" array for the combobox
-		XRCCTRL(*this, "cmbSearchMask", wxComboBox)->Append(cfg->Read(CONF_GROUP _T("/search_mask")));
-		cfg->UnSet(CONF_GROUP _T("/search_mask"));
-	}
-	else
-	{
-		FillComboWithLastValues(XRCCTRL(*this, "cmbSearchMask", wxComboBox), CONF_GROUP _T("/search_masks"));
-	}
-    XRCCTRL(*this, "cmbSearchMask", wxComboBox)->SetSelection(0);
+    wxComboBox *cmbSearchMask = XRCCTRL(*this, "cmbSearchMask", wxComboBox);
+    if (cfg->Exists(CONF_GROUP _T("/search_mask")))
+    {
+        // Migrate from previous config setting of "search_mask" string (since it used to be a textbox)
+        // to new config setting of "search_masks" array for the combobox
+        cmbSearchMask->Append(cfg->Read(CONF_GROUP _T("/search_mask")));
+        cfg->UnSet(CONF_GROUP _T("/search_mask"));
+    }
+    else
+        FillComboWithLastValues(cmbSearchMask, CONF_GROUP _T("/search_masks"));
+
+    if (cmbSearchMask->GetCount() > 0)
+        XRCCTRL(*this, "cmbSearchMask", wxComboBox)->SetSelection(0);
 
     XRCCTRL(*this, "chkSearchRecursively", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_recursive"), false));
     XRCCTRL(*this, "chkSearchHidden", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/search_hidden"), false));
