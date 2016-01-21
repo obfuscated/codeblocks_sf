@@ -11,6 +11,8 @@
 
 #include "findreplacedlg.h"
 
+#include <algorithm>
+
 #ifndef CB_PRECOMP
     #include <wx/button.h>
     #include <wx/checkbox.h>
@@ -143,7 +145,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     // load search path options
     XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(cfg->Read(CONF_GROUP _T("/search_path"),
                                                                     (active_project ? active_project->GetBasePath() : wxT(""))));
-    wxComboBox *cmbSearchMask = XRCCTRL(*this, "cmbSearchMask", wxComboBox);
+    wxComboBox* cmbSearchMask = XRCCTRL(*this, "cmbSearchMask", wxComboBox);
     if (cfg->Exists(CONF_GROUP _T("/search_mask")))
     {
         // Migrate from previous config setting of "search_mask" string (since it used to be a textbox)
@@ -181,7 +183,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     wxRadioBox* rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
     EditorManager* edMgr = Manager::Get()->GetEditorManager();
     bool filesOpen = false;
-    for (int i = 0; i < edMgr->GetEditorsCount(); ++i)
+    for (size_t i = 0; i < edMgr->GetEditorsCount(); ++i)
     {
         if (edMgr->GetBuiltinEditor(i))
         {
@@ -346,6 +348,7 @@ wxString FindReplaceDlg::GetFindString() const
     }
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "cmbFind2", wxComboBox)->GetValue();
+
     return XRCCTRL(*this, "cmbFind1", wxComboBox)->GetValue();
 }
 
@@ -361,6 +364,7 @@ wxString FindReplaceDlg::GetReplaceString() const
     }
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "cmbReplace2", wxComboBox)->GetValue();
+
     return XRCCTRL(*this, "cmbReplace1", wxComboBox)->GetValue();
 }
 
@@ -373,6 +377,7 @@ bool FindReplaceDlg::GetDeleteOldSearches() const
 {
     if ( IsFindInFiles() )
         return XRCCTRL(*this, "chkDelOldSearchRes2", wxCheckBox)->GetValue();
+
     return true; // checkbox doesn't exist in Find dialog
 }
 
@@ -388,6 +393,7 @@ bool FindReplaceDlg::GetMatchWord() const
         bool flgLimitTo = XRCCTRL(*this, "chkLimitTo2", wxCheckBox)->GetValue();
         return flgLimitTo && XRCCTRL(*this, "rbLimitTo2", wxRadioBox)->GetSelection() == 0;
     }
+
     bool flgLimitTo = XRCCTRL(*this, "chkLimitTo1", wxCheckBox)->GetValue();
     return flgLimitTo && XRCCTRL(*this, "rbLimitTo1", wxRadioBox)->GetSelection() == 0;
 }
@@ -543,8 +549,8 @@ void FindReplaceDlg::OnScopeChange(cb_unused wxCommandEvent& event)
 
 void FindReplaceDlg::OnBrowsePath(cb_unused wxCommandEvent& event)
 {
-    wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
-    wxString dir = ChooseDirectory(nullptr, _("Select search path"), txtSearchPath);
+    const wxString txtSearchPath = XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->GetValue();
+    const wxString dir = ChooseDirectory(nullptr, _("Select search path"), txtSearchPath);
     if (!dir.IsEmpty())
         XRCCTRL(*this, "txtSearchPath", wxTextCtrl)->SetValue(dir);
 }
@@ -711,25 +717,32 @@ void FindReplaceDlg::FillComboWithLastValues(wxComboBox* combo, const wxString& 
 {
     wxArrayString values;
     Manager::Get()->GetConfigManager(_T("editor"))->Read(configKey, &values);
-    for (unsigned int i = 0; i < values.GetCount(); ++i)
-    {
-        if (!values[i].IsEmpty())
-            combo->Append(values[i]);
-    }
+
+    combo->Append(values);
 }
 
 void FindReplaceDlg::SaveComboValues(wxComboBox* combo, const wxString& configKey)
 {
+    // there should be only a maximum of entries in the config to limit data use
+    // so we define a reasonable maximal of entries to be taken from
+    // the combobox to be written into the config
+    static const unsigned int max_value = 10u;
+
     wxArrayString values;
-    for (int i = 0; (i < (int)combo->GetCount()) && (i < 10); ++i)
+
+    values.Add(combo->GetValue());
+
+    const unsigned int item_count = std::min(combo->GetCount(), max_value);
+    for (unsigned int i = 0; i < item_count; ++i)
     {
-        if (!combo->GetString(i).IsEmpty() && (values.Index(combo->GetString(i)) == wxNOT_FOUND))
-            values.Add(combo->GetString(i));
+        const wxString item = combo->GetString(i);
+
+        if ( item.IsEmpty() )
+            continue;
+
+        if ( values.Index(item) == wxNOT_FOUND )
+            values.Add(item);
     }
-    wxString find = combo->GetValue();
-    int prev_pos = values.Index(find);
-    if (prev_pos != wxNOT_FOUND)
-        values.RemoveAt(prev_pos);
-    values.Insert(find, 0);
+
     Manager::Get()->GetConfigManager(_T("editor"))->Write(configKey, values);
 }
