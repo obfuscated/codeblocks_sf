@@ -84,24 +84,24 @@ int CodeStat::Execute()
 
    const cbProject* project = Manager::Get()->GetProjectManager()->GetActiveProject();
    // if no project open, exit
-	if (!project)
-	{
-		wxString msg = _("You need to open a project\nbefore using the plugin!");
-		cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
-		Manager::Get()->GetLogManager()->DebugLog(msg);
-		return -1;
-	}
+    if (!project)
+    {
+        wxString msg = _("You need to open a project\nbefore using the plugin!");
+        cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+        Manager::Get()->GetLogManager()->DebugLog(msg);
+        return -1;
+    }
 
-    dlg = new CodeStatExecDlg(Manager::Get()->GetAppWindow());
+    m_dlg = new CodeStatExecDlg(Manager::Get()->GetAppWindow());
 
     // Load the language settings and launch the main function
     LanguageDef languages[NB_FILETYPES_MAX];
     int nb_languages = LoadSettings(languages);
     int dlgReturnCode = 0;
-    if(dlg->Execute(languages,nb_languages) != 0)
+    if(m_dlg->Execute(languages,nb_languages) != 0)
     {
         dlgReturnCode = -1;
     }
-    dlg->Destroy();
+    m_dlg->Destroy();
     return dlgReturnCode;
 } // end of Execute

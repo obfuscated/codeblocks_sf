@@ -25,11 +25,11 @@ class wxCommandEvent;
  */
 class CodeStatConfigDlg : public cbConfigurationPanel
 {
-	public:
-		CodeStatConfigDlg(wxWindow* parent);
-		virtual ~CodeStatConfigDlg();
+    public:
+        CodeStatConfigDlg(wxWindow* parent);
+        virtual ~CodeStatConfigDlg();
 
-	protected:
+    protected:
       void ComboBoxEvent(wxCommandEvent & event);
       void PrintLanguageInfo(int id);
       void SaveSettings();
@@ -44,11 +44,11 @@ class CodeStatConfigDlg : public cbConfigurationPanel
       virtual void OnApply(){SaveSettings();};
       virtual void OnCancel(){}
 
-	private:
-	   LanguageDef languages[NB_FILETYPES_MAX]; /**< Languages settings. */
-	   int nb_languages;                        /**< Number of languages defined in 'languages'. */
-	   int selected_language;                   /**< Language currently selected in the combo-box. */
-      DECLARE_EVENT_TABLE()
+    private:
+       LanguageDef m_languages[NB_FILETYPES_MAX]; /**< Languages settings. */
+       int m_nb_languages;                        /**< Number of languages defined in 'languages'. */
+       int m_selected_language;                   /**< Language currently selected in the combo-box. */
+       DECLARE_EVENT_TABLE()
 };
 
 #endif // CODESTATCONFIG_H

@@ -21,16 +21,16 @@ class wxWindow;
  */
 class CodeStat : public cbToolPlugin
 {
-	public:
-		CodeStat();
-		~CodeStat();
-		int GetConfigurationGroup()  const { return cgEditor; }
+    public:
+        CodeStat();
+        ~CodeStat();
+        int GetConfigurationGroup()  const { return cgEditor; }
         cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent);
-		int Execute();
-		void OnAttach(); // fires when the plugin is attached to the application
-		void OnRelease(bool appShutDown); // fires when the plugin is released from the application
-	private:
-      CodeStatExecDlg* dlg;
+        int Execute();
+        void OnAttach(); // fires when the plugin is attached to the application
+        void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+    private:
+        CodeStatExecDlg* m_dlg;
 };
 
 #endif // CODESTAT_H
