@@ -43,7 +43,7 @@ namespace
 
         private:
 
-            void OnPaint(wxPaintEvent& event)
+            void OnPaint(cb_unused wxPaintEvent& event)
             {
                 // Drawing additional border around te panel
                 wxPaintDC DC(this);
@@ -56,7 +56,7 @@ namespace
     };
 }
 
-void wxsSizerExtra::OnEnumProperties(long Flags)
+void wxsSizerExtra::OnEnumProperties(cb_unused long _Flags)
 {
     static const int Priority = 20;
     WXS_SIZERFLAGS_P(wxsSizerExtra,Flags,Priority);
@@ -74,6 +74,7 @@ wxString wxsSizerExtra::AllParamsCode(wxsCoderContext* Ctx)
                    wxsSizerFlagsProperty::GetString(Flags) +
                    _T(", ") << Border.GetPixelsCode(Ctx);
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsSizerExtra::AllParamsCode"),Ctx->m_Language);
     }
@@ -105,7 +106,7 @@ void wxsSizer::OnBuildCreatingCode()
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsSizerExtra* Extra = (wxsSizerExtra*)GetChildExtra(i);
+        wxsSizerExtra* SizerExtra = (wxsSizerExtra*)GetChildExtra(i);
 
         // Using same parent as we got, sizer is not a parent window
         Child->BuildCode(GetCoderContext());
@@ -119,10 +120,11 @@ void wxsSizer::OnBuildCreatingCode()
                 {
                     case wxsCPP:
                     {
-                        Codef(_T("%AAdd(%o, %s);\n"),i,Extra->AllParamsCode(GetCoderContext()).wx_str());
+                        Codef(_T("%AAdd(%o, %s);\n"),i,SizerExtra->AllParamsCode(GetCoderContext()).wx_str());
                         break;
                     }
 
+                    case wxsUnknownLanguage: // fall-through
                     default:
                     {
                         UnknownLang = true;
@@ -134,6 +136,8 @@ void wxsSizer::OnBuildCreatingCode()
                 // Spacer is responsible for adding itself into sizer
                 break;
 
+            case wxsTTool:           // fall-through
+            case wxsTInvalid:        // fall-through
             default:
                 break;
         }
@@ -167,7 +171,7 @@ wxObject* wxsSizer::OnBuildPreview(wxWindow* Parent,long Flags)
     for ( int i=0; i<Count; i++ )
     {
         wxsItem* Child = GetChild(i);
-        wxsSizerExtra* Extra = (wxsSizerExtra*)GetChildExtra(i);
+        wxsSizerExtra* SizerExtra = (wxsSizerExtra*)GetChildExtra(i);
 
         // We pass either Parent passed to current BuildPreview function
         // or pointer to additional parent currently created
@@ -179,21 +183,21 @@ wxObject* wxsSizer::OnBuildPreview(wxWindow* Parent,long Flags)
         wxSizerItem* ChildAsItem = wxDynamicCast(ChildPreview,wxSizerItem);
         if ( ChildAsSizer )
         {
-            Sizer->Add(ChildAsSizer,Extra->Proportion,
-                wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
-                Extra->Border.GetPixels(Parent));
+            Sizer->Add(ChildAsSizer,SizerExtra->Proportion,
+                wxsSizerFlagsProperty::GetWxFlags(SizerExtra->Flags),
+                SizerExtra->Border.GetPixels(Parent));
         }
         else if ( ChildAsWindow )
         {
-            Sizer->Add(ChildAsWindow,Extra->Proportion,
-                wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
-                Extra->Border.GetPixels(Parent));
+            Sizer->Add(ChildAsWindow,SizerExtra->Proportion,
+                wxsSizerFlagsProperty::GetWxFlags(SizerExtra->Flags),
+                SizerExtra->Border.GetPixels(Parent));
         }
         else if ( ChildAsItem )
         {
-            ChildAsItem->SetProportion(Extra->Proportion);
-            ChildAsItem->SetFlag(wxsSizerFlagsProperty::GetWxFlags(Extra->Flags));
-            ChildAsItem->SetBorder(Extra->Border.GetPixels(Parent));
+            ChildAsItem->SetProportion(SizerExtra->Proportion);
+            ChildAsItem->SetFlag(wxsSizerFlagsProperty::GetWxFlags(SizerExtra->Flags));
+            ChildAsItem->SetBorder(SizerExtra->Border.GetPixels(Parent));
             Sizer->Add(ChildAsItem);
         }
     }

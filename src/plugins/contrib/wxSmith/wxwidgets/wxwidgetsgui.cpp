@@ -83,7 +83,9 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
     {
         case wxsCPP: NewCode = _T("\nbool wxsOK = true;\n")
                                _T("wxInitAllImageHandlers();\n"); break;
-        default:;
+        case wxsUnknownLanguage: // fall-through
+        default:
+            break;
     }
 
     bool InitAllXRCHandlers = m_CallInitAll && ( IsAnyXRC || !m_CallInitAllNecessary );
@@ -92,7 +94,9 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
         switch ( m_AppLanguage )
         {
             case wxsCPP: NewCode.Append(_T("wxXmlResource::Get()->InitAllHandlers();\n")); break;
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
     }
 
@@ -105,7 +109,9 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
                 NewCode.Append(m_LoadedResources[i]);
                 NewCode.Append(_T("\"));\n"));
                 break;
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
     }
 
@@ -118,7 +124,9 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
                 NewCode << MainResPtr->GetAppBuildingCode();
                 NewCode << _T("}\n");
                 break;
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
     }
 
@@ -149,7 +157,9 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
                 NewCode << _T("#include \"") << IncludeFile << _T("\"\n");
                 break;
             }
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
     }
     if ( InitAllXRCHandlers || m_LoadedResources.Count() )
@@ -157,14 +167,18 @@ void wxWidgetsGUI::OnRebuildApplicationCode()
         switch ( m_AppLanguage )
         {
             case wxsCPP: NewCode.Append(_T("#include <wx/xrc/xmlres.h>\n")); break;
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
     }
 
     switch ( m_AppLanguage )
     {
         case wxsCPP: NewCode.Append(_T("#include <wx/image.h>\n")); break;
-        default:;
+        case wxsUnknownLanguage: // fall-through
+        default:
+            break;
     }
 
     wxsCoder::Get()->AddCode(
@@ -302,7 +316,9 @@ bool wxWidgetsGUI::ScanForApp(ProjectFile* File)
             // TODO: Do extra checks of this OnInit
             return true;
         }
-        default:;
+        case wxsUnknownLanguage: // fall-through
+        default:
+            break;
     }
     return false;
 }
@@ -390,7 +406,9 @@ bool wxWidgetsGUI::AddSmithToApp(const wxString& RelativeFileName,wxsCodingLang 
                 wxsCoder::Get()->PutFullCode(FullPath,Source,Encoding,UseBOM);
                 break;
             }
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
     }
 
@@ -433,7 +451,9 @@ wxString wxWidgetsGUI::GetAppClassName(const wxString& Source,wxsCodingLang Lang
             if ( Source[Pos] != _T(')') ) return wxEmptyString;
             return ClassName;
         }
-        default:;
+        case wxsUnknownLanguage: // fall-through
+        default:
+            break;
     }
     return wxEmptyString;
 }
@@ -486,7 +506,9 @@ bool wxWidgetsGUI::CreateNewApp(const wxString& FileName)
                 _T("\n"));
             break;
         }
-        default:;
+        case wxsUnknownLanguage: // fall-through
+        default:
+            break;
     }
 
     // Applying default configuration

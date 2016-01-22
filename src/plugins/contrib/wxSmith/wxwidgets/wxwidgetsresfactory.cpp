@@ -243,7 +243,7 @@ wxsResource* wxWidgetsResFactory::OnBuildExternal(const wxString& FileName)
     int Choice = 0;
     if ( ResourcesFound.size() > 1 )
     {
-        Choice = ::wxGetSingleChoiceIndex(
+        Choice = ::cbGetSingleChoiceIndex(
             _("There's more than one resource in this file.\n"
               "Please select which one should be edited."),
             _("Choose resource to edit"),
