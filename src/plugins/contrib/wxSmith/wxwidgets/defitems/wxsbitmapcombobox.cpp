@@ -176,7 +176,7 @@ wxBitmap            bmp;
 
 //------------------------------------------------------------------------------
 
-void wxsBitmapComboBox::OnEnumWidgetProperties(long Flags) {
+void wxsBitmapComboBox::OnEnumWidgetProperties(cb_unused long Flags) {
 static wxString         sImageNames[128];
 static const wxChar    *pImageNames[128];
 

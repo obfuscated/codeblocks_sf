@@ -90,6 +90,8 @@ void wxsToolBarItem::OnBuildCreatingCode()
                     {
                         case Normal: ItemType = _T("wxITEM_NORMAL"); break;
                         case Radio:  ItemType = _T("wxITEM_RADIO");  break;
+                        case Check:     // fall-through
+                        case Separator: // fall-through
                         default:     ItemType = _T("wxITEM_CHECK");  break;
                     }
 
@@ -115,15 +117,19 @@ void wxsToolBarItem::OnBuildCreatingCode()
                     break;
                 }
 
+                default:
+                    break;
+
             }
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsToolBarItem::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
-void wxsToolBarItem::OnEnumToolProperties(long Flags)
+void wxsToolBarItem::OnEnumToolProperties(cb_unused long Flags)
 {
 
     switch ( m_Type )
@@ -138,7 +144,9 @@ void wxsToolBarItem::OnEnumToolProperties(long Flags)
             WXS_STRING(wxsToolBarItem,m_HelpText,_("Help text"),_T("longhelp"),_T(""),false);
             break;
 
-        default:;
+        case Separator: // fall-through
+        default:
+            break;
     }
 }
 
@@ -164,7 +172,8 @@ bool wxsToolBarItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 Element->InsertEndChild(TiXmlElement("check"))->ToElement()->InsertEndChild(TiXmlText("1"));
                 break;
 
-            case Normal:
+            case Normal: // fall-through
+            default:
                 break;
         }
     }
@@ -219,13 +228,16 @@ bool wxsToolBarItem::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
     return true;
 }
 
-wxString wxsToolBarItem::OnGetTreeLabel(int& Image)
+wxString wxsToolBarItem::OnGetTreeLabel(cb_unused int& Image)
 {
     switch ( m_Type )
     {
         case Separator:
             return _T("--------");
 
+        case Radio:  // fall-through
+        case Check:  // fall-through
+        case Normal: // fall-through
         default:
             return _("Item: ") + m_Label;
     }

@@ -120,7 +120,7 @@ void wxsImageList::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsImageList::OnEnumToolProperties(long Flags)
+void wxsImageList::OnEnumToolProperties(cb_unused long Flags)
 {
     // starting a new build cycle
     m_IsBuilt = false;

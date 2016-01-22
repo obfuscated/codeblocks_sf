@@ -37,7 +37,7 @@ class wxsToolBarItem : public wxsTool
         virtual void OnBuildCreatingCode();
         virtual void OnEnumToolProperties(long Flags);
         virtual bool OnIsPointer() { return true; }
-        virtual bool OnCanAddToResource(wxsItemResData* Data,bool ShowMessage) { return false; }
+        virtual bool OnCanAddToResource(cb_unused wxsItemResData* Data,cb_unused bool ShowMessage) { return false; }
         virtual bool OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual bool OnXmlRead(TiXmlElement* Element,bool IsXRC,bool IsExtra);
         virtual bool OnCanAddToParent(wxsParent* Parent,bool ShowMessage);

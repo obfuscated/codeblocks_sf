@@ -48,7 +48,7 @@ namespace
                 PlaceWindow(this,pdlCentre,true);
             }
 
-            void OnOK(wxCommandEvent& event)
+            void OnOK(cb_unused wxCommandEvent& event)
             {
                 Editor->ApplyChanges();
                 EndModal(wxID_OK);
@@ -160,12 +160,13 @@ void wxsToolBar::OnBuildCreatingCode()
             }
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsToolBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
-void wxsToolBar::OnEnumToolProperties(long Flags)
+void wxsToolBar::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_SIZE(wxsToolBar,m_BitmapSize,_("Use Bitmap size"),_("  Bitmapwidth"),_("  Bitmapheight"),_("  Bmp in Dialog Units"),_T("bitmapsize"));
     WXS_SIZE(wxsToolBar,m_Margins,_("Use Margins"),_("  Marginwidth"),_("  MarginhHeight"),_("  Margin in Dialog Units "),_T("margins"));
@@ -249,7 +250,7 @@ bool wxsToolBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
     return true;
 }
 
-bool wxsToolBar::OnMouseDClick(wxWindow* Preview,int PosX,int PosY)
+bool wxsToolBar::OnMouseDClick(cb_unused wxWindow* Preview,cb_unused int PosX,cb_unused int PosY)
 {
     ToolBarEditorDialog Dlg(this);
     Dlg.ShowModal();
