@@ -26,15 +26,15 @@
 #include <wx/listbook.h>
 
 //(*Headers(wxsListbookParentQP)
-#include <wx/checkbox.h>
 #include <wx/sizer.h>
-#include <wx/panel.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
 //*)
 
 //(*InternalHeaders(wxsListbookParentQP)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 // TODO: Add images
@@ -57,7 +57,7 @@ namespace
 
         protected:
 
-            virtual void OnEnumProperties(long Flags)
+            virtual void OnEnumProperties(cb_unused long Flags)
             {
                 WXS_SHORT_STRING(wxsListbookExtra,m_Label,_("Page name"),_T("label"),_T(""),false);
                 WXS_BOOL(wxsListbookExtra,m_Selected,_("Page selected"),_T("selected"),false);
@@ -75,8 +75,8 @@ namespace
             {
                 //(*Initialize(wxsListbookParentQP)
                 wxStaticBoxSizer* StaticBoxSizer2;
-                wxFlexGridSizer* FlexGridSizer1;
                 wxStaticBoxSizer* StaticBoxSizer1;
+                wxFlexGridSizer* FlexGridSizer1;
 
                 Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
@@ -93,8 +93,8 @@ namespace
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
 
-                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsListbookParentQP::OnLabelText);
-                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsListbookParentQP::OnSelectionChange);
+                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(wxsListbookParentQP::OnLabelText));
+                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsListbookParentQP::OnSelectionChange));
                 //*)
                 ReadData();
 
@@ -141,8 +141,8 @@ namespace
             //*)
 
             //(*Declarations(wxsListbookParentQP)
-            wxTextCtrl* Label;
             wxCheckBox* Selected;
+            wxTextCtrl* Label;
             //*)
 
             wxsListbookExtra* m_Extra;
@@ -160,9 +160,9 @@ namespace
         //*)
     END_EVENT_TABLE()
 
-    void wxsListbookParentQP::OnLabelText(wxCommandEvent& event)       { SaveData(); }
-    void wxsListbookParentQP::OnLabelKillFocus(wxFocusEvent& event)    { SaveData(); event.Skip(); }
-    void wxsListbookParentQP::OnSelectionChange(wxCommandEvent& event) { SaveData(); }
+    void wxsListbookParentQP::OnLabelText(cb_unused wxCommandEvent& event)       { SaveData(); }
+    void wxsListbookParentQP::OnLabelKillFocus(wxFocusEvent& event)              { SaveData(); event.Skip(); }
+    void wxsListbookParentQP::OnSelectionChange(cb_unused wxCommandEvent& event) { SaveData(); }
 
     WXS_ST_BEGIN(wxsListbookStyles,_T(""))
         WXS_ST_CATEGORY("wxListbook")
@@ -192,7 +192,7 @@ wxsListbook::wxsListbook(wxsItemResData* Data):
 {
 }
 
-void wxsListbook::OnEnumContainerProperties(long Flags)
+void wxsListbook::OnEnumContainerProperties(cb_unused long Flags)
 {
 }
 

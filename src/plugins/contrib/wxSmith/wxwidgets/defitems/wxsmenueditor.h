@@ -24,15 +24,15 @@
 #define WXSMENUEDITOR_H
 
 //(*Headers(wxsMenuEditor)
-#include <wx/checkbox.h>
+#include <wx/treectrl.h>
 #include <wx/sizer.h>
-#include <wx/button.h>
-#include <wx/radiobut.h>
-#include <wx/panel.h>
-#include <wx/statline.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
-#include <wx/treectrl.h>
+#include <wx/checkbox.h>
+#include <wx/statline.h>
+#include <wx/radiobut.h>
+#include <wx/panel.h>
+#include <wx/button.h>
 //*)
 
 #include "wxsmenu.h"
@@ -187,31 +187,31 @@ class wxsMenuEditor: public wxPanel
         //*)
 
         //(*Declarations(wxsMenuEditor)
-        wxTextCtrl* m_Label;
-        wxStaticLine* StaticLine2;
-        wxCheckBox* m_Enabled;
         wxButton* Button4;
-        wxButton* Button1;
-        wxButton* Button2;
-        wxButton* Button3;
-        wxStaticText* StaticText1;
-        wxCheckBox* m_Checked;
-        wxStaticText* StaticText3;
-        wxRadioButton* m_TypeBreak;
-        wxStaticLine* StaticLine1;
-        wxButton* Button5;
-        wxRadioButton* m_TypeCheck;
-        wxStaticText* StaticText4;
-        wxStaticText* StaticText5;
         wxStaticText* StaticText2;
-        wxTextCtrl* m_Id;
-        wxTextCtrl* m_Help;
-        wxRadioButton* m_TypeSeparator;
-        wxStaticText* StaticText6;
-        wxRadioButton* m_TypeRadio;
-        wxTreeCtrl* m_Content;
-        wxButton* Button6;
         wxRadioButton* m_TypeNormal;
+        wxButton* Button1;
+        wxStaticText* StaticText6;
+        wxTreeCtrl* m_Content;
+        wxRadioButton* m_TypeRadio;
+        wxStaticText* StaticText1;
+        wxStaticText* StaticText3;
+        wxCheckBox* m_Checked;
+        wxButton* Button2;
+        wxStaticLine* StaticLine2;
+        wxButton* Button6;
+        wxRadioButton* m_TypeCheck;
+        wxRadioButton* m_TypeSeparator;
+        wxButton* Button5;
+        wxButton* Button3;
+        wxStaticText* StaticText5;
+        wxCheckBox* m_Enabled;
+        wxStaticLine* StaticLine1;
+        wxRadioButton* m_TypeBreak;
+        wxStaticText* StaticText4;
+        wxTextCtrl* m_Label;
+        wxTextCtrl* m_Help;
+        wxTextCtrl* m_Id;
         wxTextCtrl* m_Accelerator;
         //*)
 

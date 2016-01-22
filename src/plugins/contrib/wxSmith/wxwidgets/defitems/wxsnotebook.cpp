@@ -33,15 +33,15 @@
 using namespace wxsFlags;
 
 //(*Headers(wxsNotebookParentQP)
-#include <wx/checkbox.h>
 #include <wx/sizer.h>
-#include <wx/panel.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
 //*)
 
 //(*InternalHeaders(wxsNotebookParentQP)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 // TODO: Add notebook images
@@ -82,8 +82,8 @@ namespace
             {
                 //(*Initialize(wxsNotebookParentQP)
                 wxStaticBoxSizer* StaticBoxSizer2;
-                wxFlexGridSizer* FlexGridSizer1;
                 wxStaticBoxSizer* StaticBoxSizer1;
+                wxFlexGridSizer* FlexGridSizer1;
 
                 Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
@@ -100,8 +100,8 @@ namespace
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
 
-                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsNotebookParentQP::OnLabelText);
-                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsNotebookParentQP::OnSelectionChange);
+                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(wxsNotebookParentQP::OnLabelText));
+                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsNotebookParentQP::OnSelectionChange));
                 //*)
                 ReadData();
 
@@ -148,8 +148,8 @@ namespace
             //*)
 
             //(*Declarations(wxsNotebookParentQP)
-            wxTextCtrl* Label;
             wxCheckBox* Selected;
+            wxTextCtrl* Label;
             //*)
 
             wxsNotebookExtra* m_Extra;

@@ -28,15 +28,15 @@
 #include <prep.h>
 
 //(*Headers(wxsChoicebookParentQP)
-#include <wx/checkbox.h>
 #include <wx/sizer.h>
-#include <wx/panel.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
 //*)
 
 //(*InternalHeaders(wxsChoicebookParentQP)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 namespace
@@ -76,8 +76,8 @@ namespace
             {
                 //(*Initialize(wxsChoicebookParentQP)
                 wxStaticBoxSizer* StaticBoxSizer2;
-                wxFlexGridSizer* FlexGridSizer1;
                 wxStaticBoxSizer* StaticBoxSizer1;
+                wxFlexGridSizer* FlexGridSizer1;
 
                 Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
                 FlexGridSizer1 = new wxFlexGridSizer(0, 1, 0, 0);
@@ -94,8 +94,8 @@ namespace
                 FlexGridSizer1->Fit(this);
                 FlexGridSizer1->SetSizeHints(this);
 
-                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsChoicebookParentQP::OnLabelText);
-                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsChoicebookParentQP::OnSelectionChange);
+                Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(wxsChoicebookParentQP::OnLabelText));
+                Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsChoicebookParentQP::OnSelectionChange));
                 //*)
                 ReadData();
 
@@ -142,8 +142,8 @@ namespace
             //*)
 
             //(*Declarations(wxsChoicebookParentQP)
-            wxTextCtrl* Label;
             wxCheckBox* Selected;
+            wxTextCtrl* Label;
             //*)
 
             wxsChoicebookExtra* m_Extra;
@@ -194,7 +194,7 @@ wxsChoicebook::wxsChoicebook(wxsItemResData* Data):
 {
 }
 
-void wxsChoicebook::OnEnumContainerProperties(long Flags)
+void wxsChoicebook::OnEnumContainerProperties(cb_unused long Flags)
 {
 }
 
