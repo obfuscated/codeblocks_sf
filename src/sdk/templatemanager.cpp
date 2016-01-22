@@ -15,7 +15,6 @@
     #include <wx/filename.h>
     #include <wx/msgdlg.h>
     #include <wx/dir.h>
-    #include <wx/textdlg.h>
 
     #include "templatemanager.h"
     #include "manager.h"
@@ -30,6 +29,7 @@
 #endif
 
 #include <wx/filedlg.h>
+#include <wx/textdlg.h>
 #include "filefilters.h"
 #include "newfromtemplatedlg.h"
 
