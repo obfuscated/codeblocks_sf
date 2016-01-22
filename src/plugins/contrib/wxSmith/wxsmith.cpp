@@ -533,7 +533,7 @@ void wxSmith::OnImportXrc(wxCommandEvent& event)
     }
     else
     {
-        int Index = ::wxGetSingleChoiceIndex(
+        int Index = ::cbGetSingleChoiceIndex(
             _("Select resource to import"),
             _("Importing XRC"),
             Resources );

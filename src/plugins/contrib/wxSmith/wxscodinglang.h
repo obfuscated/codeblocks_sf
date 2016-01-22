@@ -57,7 +57,7 @@ namespace wxsCodeMarks
     wxString String(wxsCodingLang Lang,const wxString& Source);
 
     /** \brief Converting given string into Wx-like representation */
-    wxString WxString(wxsCodingLang Lang,const wxString& Source,bool WithTranslation=true);
+    wxString WxString(wxsCodingLang Lang,const wxString& Source,bool WithTranslation);
 
     /** \brief Checking if given string can be valid identifier in selected language
      *         (can be name of variable)

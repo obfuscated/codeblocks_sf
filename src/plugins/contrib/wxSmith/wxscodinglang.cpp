@@ -21,6 +21,9 @@
 */
 
 #include "wxscodinglang.h"
+
+#include <manager.h>
+#include <configmanager.h>
 #include <logmanager.h>
 
 namespace wxsCodeMarks
@@ -30,7 +33,9 @@ namespace wxsCodeMarks
         switch ( Lang )
         {
             case wxsCPP: return _T("CPP");
-            default:;
+            case wxsUnknownLanguage: // fall-through
+            default:
+                break;
         }
         return wxEmptyString;
     }
@@ -56,6 +61,7 @@ namespace wxsCodeMarks
         switch ( Lang )
         {
             case wxsCPP: return _T("//(*") + BlockName;
+            case wxsUnknownLanguage: // fall-through
             default:     return wxEmptyString;
         }
     }
@@ -65,6 +71,7 @@ namespace wxsCodeMarks
         switch ( Lang )
         {
             case wxsCPP: return wxString::Format(_T("//(*%s(%s)"),BlockName.c_str(),Param.c_str());
+            case wxsUnknownLanguage: // fall-through
             default:     return wxEmptyString;
         }
     }
@@ -74,6 +81,7 @@ namespace wxsCodeMarks
         switch ( Lang )
         {
             case wxsCPP: return _T("//*)");
+            case wxsUnknownLanguage: // fall-through
             default:     return wxEmptyString;
         }
     }
@@ -139,6 +147,7 @@ namespace wxsCodeMarks
                 return Result;
             }
 
+            case wxsUnknownLanguage: // fall-through
             default:
             {
                 Unknown(_T("wxsCodeMarks::String"),Lang);
@@ -149,6 +158,18 @@ namespace wxsCodeMarks
 
     wxString WxString(wxsCodingLang Lang, const wxString& Source, bool WithTranslation)
     {
+        ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("wxsmith"));
+        bool DoTranslation = WithTranslation && (cfg->ReadBool(_T("/useI18N"), true));
+
+        wxString NonTransPrefix = _T("_T("); wxString NonTransPostfix = _T(")");
+        switch (cfg->ReadInt(_T("/noneI18N"),0))
+        {
+          case 1: NonTransPrefix = _T("wxT(");                       break;
+          case 2: NonTransPrefix = _T(""); NonTransPostfix = _T(""); break;
+          case 0: // fall-through
+          default:                                                   break;
+        }
+
         switch ( Lang )
         {
             case wxsCPP:
@@ -159,16 +180,17 @@ namespace wxsCodeMarks
                     return _T("wxEmptyString");
                 }
 
-                if ( WithTranslation )
+                if ( DoTranslation )
                 {
                     return _T("_(") + String(Lang,Source) + _T(")");
                 }
                 else
                 {
-                    return _T("_T(") + String(Lang,Source) + _T(")");
+                    return NonTransPrefix + String(Lang,Source) + NonTransPostfix;
                 }
             }
 
+            case wxsUnknownLanguage: // fall-through
             default:
             {
                 Unknown(_T("wxsCodeMarks::WxString"),Lang);
@@ -185,22 +207,22 @@ namespace wxsCodeMarks
          */
         static const wxChar* DeadNamesCPP[] =
         {
-            _T("asm"), _T("auto"), _T("bool"), _T("break"), _T("case"), _T("catch"),
-            _T("char"), _T("class"), _T("const"), _T("const_cast"), _T("continue"),
-            _T("default"), _T("delete"), _T("do"), _T("double"), _T("dynamic_cast"),
-            _T("else"), _T("enum"), _T("explicit"), _T("export"), _T("extern"),
-            _T("false"), _T("float"), _T("for"), _T("friend"), _T("goto"), _T("if"),
-            _T("inline"), _T("int"), _T("long"), _T("mutable"), _T("namespace"),
-            _T("new"), _T("operator"), _T("private"), _T("protected"), _T("public"),
-            _T("register"), _T("reinterpret_cast"), _T("return"), _T("short"),
-            _T("signed"), _T("sizeof"), _T("sizeritem"), _T("static"),
-            _T("static_cast"), _T("struct"), _T("switch"), _T("template"), _T("this"),
-            _T("throw"), _T("true"), _T("try"), _T("typedef"), _T("typeid"),
-            _T("typename"), _T("union"), _T("unsigned"), _T("using"), _T("virtual"),
-            _T("void"), _T("volatile"), _T("wchar_t"), _T("while")
+            _T("asm"),          _T("auto"),      _T("bool"),     _T("break"),            _T("case"),
+            _T("catch"),        _T("char"),      _T("class"),    _T("const"),            _T("const_cast"),
+            _T("continue"),     _T("default"),   _T("delete"),   _T("do"),               _T("double"),
+            _T("dynamic_cast"), _T("else"),      _T("enum"),     _T("explicit"),         _T("export"),
+            _T("extern"),       _T("false"),     _T("float"),    _T("for"),              _T("friend"),
+            _T("goto"),         _T("if"),        _T("inline"),   _T("int"),              _T("long"),
+            _T("mutable"),      _T("namespace"), _T("new"),      _T("operator"),         _T("private"),
+            _T("protected"),    _T("public"),    _T("register"), _T("reinterpret_cast"), _T("return"),
+            _T("short"),        _T("signed"),    _T("sizeof"),   _T("sizeritem"),        _T("static"),
+            _T("static_cast"),  _T("struct"),    _T("switch"),   _T("template"),         _T("this"),
+            _T("throw"),        _T("true"),      _T("try"),      _T("typedef"),          _T("typeid"),
+            _T("typename"),     _T("union"),     _T("unsigned"), _T("using"),            _T("virtual"),
+            _T("void"),         _T("volatile"),  _T("wchar_t"),  _T("while")
         };
 
-        /** \brief Number of enteries in array of dead names */
+        /** \brief Number of entries in array of dead names */
         static const int DeadNamesCPPLen = sizeof(DeadNamesCPP) / sizeof(DeadNamesCPP[0]);
     }
 
@@ -258,6 +280,7 @@ namespace wxsCodeMarks
                 return true;
             }
 
+            case wxsUnknownLanguage: // fall-through
             default:
             {
                 Unknown(_T("wxscodeMarks::ValidateIdentifier"),Lang);
