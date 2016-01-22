@@ -579,7 +579,7 @@ bool ProjectManager::CloseWorkspace()
 
     if (m_pWorkspace)
     {
-        if (!m_ui->QueryCloseWorkspace())
+        if (!Manager::IsBatchBuild() && !m_ui->QueryCloseWorkspace())
         {
             m_IsClosingWorkspace = false;
             return false;
