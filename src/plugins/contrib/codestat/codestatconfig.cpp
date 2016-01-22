@@ -12,12 +12,12 @@
     #include <wx/event.h>
     #include <wx/stattext.h>
     #include <wx/textctrl.h>
-    #include <wx/textdlg.h>
     #include <wx/xrc/xmlres.h>
     #include "configmanager.h"
     #include "globals.h"
     #include "manager.h"
 #endif
+#include <wx/textdlg.h>
 #include <wx/tokenzr.h>
 #include "codestatconfig.h"
 
