@@ -349,7 +349,7 @@ void wxsCorrector::BeforePasteReq(wxsItem* Item)
     }
 }
 
-void wxsCorrector::AfterPaste(wxsItem* Item)
+void wxsCorrector::AfterPaste(cb_unused wxsItem* Item)
 {
     // TODO: Add new items into current sets
 }

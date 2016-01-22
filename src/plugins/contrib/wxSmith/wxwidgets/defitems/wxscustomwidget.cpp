@@ -76,7 +76,7 @@ void wxsCustomWidget::OnBuildCreatingCode()
     AddBuildingCode(Result+_T("\n"));
 }
 
-wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject* wxsCustomWidget::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
 {
     wxPanel* Background = new wxPanel(Parent,-1,Pos(Parent),wxDefaultSize);
     wxStaticText* Wnd = new wxStaticText(Background,-1,_T("???"),

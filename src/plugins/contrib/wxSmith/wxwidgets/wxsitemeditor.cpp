@@ -381,6 +381,9 @@ void wxsItemEditor::Paste()
             Parent = Reference->ConvertToParent();
             RefIndex = Parent ? Parent->GetChildCount() : 0;
             break;
+
+        default:
+            break;
     }
 
     m_Data->Paste(Parent,RefIndex);
@@ -727,27 +730,27 @@ void wxsItemEditor::BuildPalette(wxNotebook* Palette)
     }
 }
 
-void wxsItemEditor::OnInsPoint(wxCommandEvent& event)
+void wxsItemEditor::OnInsPoint(cb_unused wxCommandEvent& event)
 {
     SetInsertionType(itPoint);
 }
 
-void wxsItemEditor::OnInsInto(wxCommandEvent& event)
+void wxsItemEditor::OnInsInto(cb_unused wxCommandEvent& event)
 {
     SetInsertionType(itInto);
 }
 
-void wxsItemEditor::OnInsAfter(wxCommandEvent& event)
+void wxsItemEditor::OnInsAfter(cb_unused wxCommandEvent& event)
 {
     SetInsertionType(itAfter);
 }
 
-void wxsItemEditor::OnInsBefore(wxCommandEvent& event)
+void wxsItemEditor::OnInsBefore(cb_unused wxCommandEvent& event)
 {
     SetInsertionType(itBefore);
 }
 
-void wxsItemEditor::OnDelete(wxCommandEvent& event)
+void wxsItemEditor::OnDelete(cb_unused wxCommandEvent& event)
 {
     if ( !m_Data ) return;
     m_Data->BeginChange();
@@ -755,7 +758,7 @@ void wxsItemEditor::OnDelete(wxCommandEvent& event)
     m_Data->EndChange();
 }
 
-void wxsItemEditor::OnPreview(wxCommandEvent& event)
+void wxsItemEditor::OnPreview(cb_unused wxCommandEvent& event)
 {
     if ( !m_Data ) return;
 
@@ -773,7 +776,7 @@ void wxsItemEditor::OnPreview(wxCommandEvent& event)
     m_Content->BlockFetch(false);
 }
 
-void wxsItemEditor::OnQuickProps(wxCommandEvent& event)
+void wxsItemEditor::OnQuickProps(cb_unused wxCommandEvent& event)
 {
     m_QuickPropsOpen = !m_QuickPropsOpen;
     RebuildQuickPropsIcon();
@@ -844,6 +847,9 @@ void wxsItemEditor::OnKeyDown(wxKeyEvent& event)
             m_Data->BeginChange();
             m_Data->DeleteSelected();
             m_Data->EndChange();
+            break;
+
+        default:
             break;
     }
 }

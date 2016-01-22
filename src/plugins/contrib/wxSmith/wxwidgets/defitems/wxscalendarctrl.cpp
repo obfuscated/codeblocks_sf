@@ -73,6 +73,7 @@ void wxsCalendarCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsCalendarCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -86,6 +87,6 @@ wxObject* wxsCalendarCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsCalendarCtrl::OnEnumWidgetProperties(long Flags)
+void wxsCalendarCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
 }

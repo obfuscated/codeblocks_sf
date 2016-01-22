@@ -54,6 +54,7 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsStaticBoxSizer::OnBuildSizerCreatingCode"),GetLanguage());
@@ -61,7 +62,7 @@ void wxsStaticBoxSizer::OnBuildSizerCreatingCode()
     }
 }
 
-void wxsStaticBoxSizer::OnEnumSizerProperties(long Flags)
+void wxsStaticBoxSizer::OnEnumSizerProperties(cb_unused long Flags)
 {
     static const long    OrientValues[] = { wxHORIZONTAL, wxVERTICAL, 0 };
     static const wxChar* OrientNames[]  = { _T("wxHORIZONTAL"), _T("wxVERTICAL"), 0 };

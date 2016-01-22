@@ -184,7 +184,7 @@ wxObject* wxsFrame::OnBuildPreview(wxWindow* Parent,long Flags)
     return NewItem;
 }
 
-void wxsFrame::OnEnumContainerProperties(long Flags)
+void wxsFrame::OnEnumContainerProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsFrame,Title,_("Title"),_T("title"),_T(""),false)
     WXS_BOOL(wxsFrame,Centered,_("Centered"),_T("centered"),false);

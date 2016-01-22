@@ -169,7 +169,7 @@ wxObject* wxsDialog::OnBuildPreview(wxWindow* Parent,long Flags)
     return NewItem;
 }
 
-void wxsDialog::OnEnumContainerProperties(long Flags)
+void wxsDialog::OnEnumContainerProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsDialog,Title,_("Title"),_T("title"),_T(""),false)
     WXS_BOOL(wxsDialog,Centered,_("Centered"),_T("centered"),false);

@@ -74,6 +74,6 @@ wxObject* wxsScrolledWindow::OnBuildPreview(wxWindow* Parent,long Flags)
     return NewItem;
 }
 
-void wxsScrolledWindow::OnEnumContainerProperties(long Flags)
+void wxsScrolledWindow::OnEnumContainerProperties(cb_unused long Flags)
 {
 }

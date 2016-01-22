@@ -59,6 +59,7 @@ void wxsTimer::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsTimer::OnBuildCreatingCode"),GetLanguage());
@@ -66,7 +67,7 @@ void wxsTimer::OnBuildCreatingCode()
     }
 }
 
-void wxsTimer::OnEnumToolProperties(long Flags)
+void wxsTimer::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_LONG(wxsTimer,m_Interval,_("Interval"),_T("interval"),0);
     WXS_BOOL(wxsTimer,m_OneShot,_("One Shot"),_T("oneshot"),false);

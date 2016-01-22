@@ -119,7 +119,7 @@ void wxsToolSpace::RefreshSelection()
     Refresh();
 }
 
-void wxsToolSpace::OnPaint(wxPaintEvent& event)
+void wxsToolSpace::OnPaint(cb_unused wxPaintEvent& event)
 {
     wxPaintDC DC(this);
 

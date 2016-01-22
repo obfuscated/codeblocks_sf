@@ -44,7 +44,7 @@ namespace
 
         private:
 
-            void OnPaint(wxPaintEvent& event)
+            void OnPaint(cb_unused wxPaintEvent& event)
             {
                 // Drawing additional border around te panel
                 wxPaintDC DC(this);
@@ -112,7 +112,7 @@ long wxsStdDialogButtonSizer::OnGetPropertiesFlags()
     return wxsItem::OnGetPropertiesFlags();
 }
 
-void wxsStdDialogButtonSizer::OnEnumItemProperties(long Flags)
+void wxsStdDialogButtonSizer::OnEnumItemProperties(cb_unused long Flags)
 {
 }
 
@@ -181,6 +181,7 @@ void wxsStdDialogButtonSizer::OnBuildCreatingCode()
 
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsStdDialogButtonSizer::OnBuildCreatingCode"),GetLanguage());

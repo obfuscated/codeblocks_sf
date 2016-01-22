@@ -68,6 +68,7 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsHtmlEasyPrinting::OnBuildCreatingCode"),GetLanguage());
@@ -81,7 +82,7 @@ void wxsHtmlEasyPrinting::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsHtmlEasyPrinting::OnEnumToolProperties(long flags)
+void wxsHtmlEasyPrinting::OnEnumToolProperties(cb_unused long Flags)
 {
     static const long arrHeaderPages[] = {wxPAGE_ALL, wxPAGE_EVEN, wxPAGE_ODD};                                                                            //!< Header and footer page values.
     static const wxChar* arrHeaderPageNames[]  = {wxT("wxPAGE_ALL"), wxT("wxPAGE_EVEN"), wxT("wxPAGE_ODD"), NULL};        //!< Header and footer page value names.

@@ -73,7 +73,7 @@ namespace
 
         protected:
 
-            virtual void OnEnumProperties(long Flags)
+            virtual void OnEnumProperties(cb_unused long Flags)
             {
                 WXS_SHORT_STRING(wxsTreebookExtra, m_Label, _("Page name"), _T("label"), _T(""), false);
                 WXS_BOOL(wxsTreebookExtra, m_Selected, _("Page selected"), _T("selected"), false);
@@ -174,14 +174,14 @@ namespace
         //*)
     END_EVENT_TABLE()
 
-    void wxsTreebookParentQP::OnLabelText(wxCommandEvent &event)       {
+    void wxsTreebookParentQP::OnLabelText(cb_unused wxCommandEvent &event)       {
         SaveData();
     }
     void wxsTreebookParentQP::OnLabelKillFocus(wxFocusEvent &event)    {
         SaveData();
         event.Skip();
     }
-    void wxsTreebookParentQP::OnSelectionChange(wxCommandEvent &event) {
+    void wxsTreebookParentQP::OnSelectionChange(cb_unused wxCommandEvent &event) {
         SaveData();
     }
 
@@ -219,7 +219,7 @@ wxsTreebook::wxsTreebook(wxsItemResData *Data):
 {
 }
 
-void wxsTreebook::OnEnumContainerProperties(long Flags)
+void wxsTreebook::OnEnumContainerProperties(cb_unused long Flags)
 {
 }
 

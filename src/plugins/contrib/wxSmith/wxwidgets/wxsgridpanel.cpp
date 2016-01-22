@@ -45,7 +45,7 @@ wxsGridPanel::~wxsGridPanel()
 {
 }
 
-void wxsGridPanel::OnPaint(wxPaintEvent& event)
+void wxsGridPanel::OnPaint(cb_unused wxPaintEvent& event)
 {
     wxPaintDC DC(this);
 

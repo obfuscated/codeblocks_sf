@@ -74,6 +74,7 @@ void wxsRichTextStyleComboCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsRichTextStyleComboCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -101,7 +102,7 @@ wxObject* wxsRichTextStyleComboCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsRichTextStyleComboCtrl::OnEnumWidgetProperties(long Flags)
+void wxsRichTextStyleComboCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsRichTextStyleComboCtrl, m_sControl, _("Control"), _T("control"), wxEmptyString, true)
     WXS_SHORT_STRING(wxsRichTextStyleComboCtrl, m_sStyleSheet, _("Style Sheet"), _T("style_sheet"), wxEmptyString, true)

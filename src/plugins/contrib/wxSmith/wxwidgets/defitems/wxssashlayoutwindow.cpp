@@ -140,7 +140,7 @@ void wxsSashLayoutWindow::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-void wxsSashLayoutWindow::OnEnumContainerProperties(long Flags)
+void wxsSashLayoutWindow::OnEnumContainerProperties(cb_unused long Flags)
 {
     static const long    valign[] = {    wxLAYOUT_TOP,       wxLAYOUT_LEFT,       wxLAYOUT_RIGHT,       wxLAYOUT_BOTTOM,   0};
     static const wxChar *nalign[] = {_T("wxLAYOUT_TOP"), _T("wxLAYOUT_LEFT"), _T("wxLAYOUT_RIGHT"), _T("wxLAYOUT_BOTTOM"), 0};
@@ -161,7 +161,7 @@ void wxsSashLayoutWindow::OnEnumContainerProperties(long Flags)
 
 //------------------------------------------------------------------------------
 
-bool wxsSashLayoutWindow::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+bool wxsSashLayoutWindow::OnCanAddChild(cb_unused wxsItem* Item,cb_unused bool ShowMessage)
 {
     return true;
 }

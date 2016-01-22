@@ -41,7 +41,7 @@ const wxsVersionConverter& wxsVersionConverter::Get()
     return Singleton;
 }
 
-bool wxsVersionConverter::DetectOldConfig(TiXmlElement* Node,wxsProject* Project) const
+bool wxsVersionConverter::DetectOldConfig(TiXmlElement* Node,cb_unused wxsProject* Project) const
 {
     // New wxSmith style has resources put into <resources> node
     // and configuration to <gui> node
@@ -296,17 +296,17 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
             while ( ++Pos < (int)Code.Len() )
             {
                 PreviousChar = Ch;
-                wxChar Ch = Code.GetChar(Pos);
-                if ( Ch==_T('\n') || Ch==_T('\r') )
+                wxChar _Ch = Code.GetChar(Pos);
+                if ( _Ch==_T('\n') || _Ch==_T('\r') )
                 {
                     if ( PreviousChar == _T('\\') )
                     {
                         // Backslash removes EOL
                         if ( ++Pos < (int)Code.Len() )
                         {
-                            PreviousChar = Ch;
-                            Ch = Code.GetChar(Pos);
-                            if ( (Ch!=_T('\n') && Ch==_T('\r')) || (Ch==PreviousChar) )
+                            PreviousChar = _Ch;
+                            _Ch = Code.GetChar(Pos);
+                            if ( (_Ch!=_T('\n') && _Ch==_T('\r')) || (_Ch==PreviousChar) )
                             {
                                 // One-char EOL
                                 --Pos;
@@ -318,8 +318,8 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
                         // End-Of-Line and End-Of-Comment
                         while ( Pos<(int)Code.Len() )
                         {
-                            wxChar Ch = Code.GetChar(Pos);
-                            if ( Ch!=_T('\n') && Ch!=_T('\r') ) break;
+                            wxChar __Ch = Code.GetChar(Pos);
+                            if ( __Ch!=_T('\n') && __Ch!=_T('\r') ) break;
                             Pos++;
                         }
 
@@ -338,9 +338,9 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
             while ( ++Pos < (int)Code.Len() )
             {
                 PreviousChar = Ch;
-                wxChar Ch = Code.GetChar(Pos);
+                wxChar _Ch = Code.GetChar(Pos);
 
-                if ( Ch==_T('/') && PreviousChar==_T('*') )
+                if ( _Ch==_T('/') && PreviousChar==_T('*') )
                 {
                     // End of comment, breaking
                     break;
@@ -467,7 +467,7 @@ bool wxsVersionConverter::LineContainDirectivesOnly(const wxString& Code,int& Be
 }
 
 
-TiXmlElement* wxsVersionConverter::Convert(TiXmlElement* ConfigNode,TiXmlDocument* Doc,wxsProject* Project) const
+TiXmlElement* wxsVersionConverter::Convert(cb_unused TiXmlElement* ConfigNode,cb_unused TiXmlDocument* Doc,cb_unused wxsProject* Project) const
 {
     // Currently there's only one version of wxSmith, no need to convert
     return 0;

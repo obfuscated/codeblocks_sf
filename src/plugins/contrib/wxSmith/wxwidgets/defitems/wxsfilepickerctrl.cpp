@@ -80,6 +80,7 @@ void wxsFilePickerCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsFilePickerCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -107,7 +108,7 @@ wxObject* wxsFilePickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsFilePickerCtrl::OnEnumWidgetProperties(long Flags)
+void wxsFilePickerCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsFilePickerCtrl, m_sMessage, _("Message"), _T("message"), wxFileSelectorPromptStr, false)
     WXS_SHORT_STRING(wxsFilePickerCtrl, m_sPath, _("Path"), _T("path"), wxEmptyString, false)

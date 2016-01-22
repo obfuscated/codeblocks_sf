@@ -88,6 +88,7 @@ void wxsFindReplaceDialog::OnBuildCreatingCode()
             BuildSetupWindowCode();
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsFindReplaceDialog::OnBuildCreatingCode"), GetLanguage());
     }
@@ -99,7 +100,7 @@ void wxsFindReplaceDialog::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsFindReplaceDialog::OnEnumToolProperties(long Flags)
+void wxsFindReplaceDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsFindReplaceDialog, m_sCaption, _("Caption"), _T("caption"), wxEmptyString, false);
 }

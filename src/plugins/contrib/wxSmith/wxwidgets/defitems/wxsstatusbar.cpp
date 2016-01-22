@@ -50,6 +50,7 @@ void wxsStatusBar::OnBuildCreatingCode()
     switch ( GetLanguage() )
     {
         case wxsCPP:
+        {
             AddHeader(_T("<wx/statusbr.h>"),GetInfo().ClassName,hfInPCH);
             Codef(_T("%C(%W, %I, %T, %N);\n"));
             if ( m_Fields>0 )
@@ -79,13 +80,15 @@ void wxsStatusBar::OnBuildCreatingCode()
             }
             BuildSetupWindowCode();
             break;
+        }
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsStatusBar::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
-void wxsStatusBar::OnEnumToolProperties(long Flags)
+void wxsStatusBar::OnEnumToolProperties(cb_unused long Flags)
 {
 }
 
@@ -115,7 +118,7 @@ bool wxsStatusBar::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
     return true;
 }
 
-bool wxsStatusBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
+        bool wxsStatusBar::OnCanAddChild(cb_unused wxsItem* Item,bool ShowMessage)
 {
     if ( ShowMessage )
     {
@@ -124,7 +127,7 @@ bool wxsStatusBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
     return false;
 }
 
-bool wxsStatusBar::OnCanAddToParent(wxsParent* Item,bool ShowMessage)
+bool wxsStatusBar::OnCanAddToParent(cb_unused wxsParent* Item,bool ShowMessage)
 {
     if ( ShowMessage )
     {

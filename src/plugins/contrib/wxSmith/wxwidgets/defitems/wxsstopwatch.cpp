@@ -59,6 +59,7 @@ void wxsStopWatch::OnBuildCreatingCode()
             BuildSetupWindowCode();
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsStopWatch::OnBuildCreatingCode"),GetLanguage());
     }
@@ -66,6 +67,6 @@ void wxsStopWatch::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-void wxsStopWatch::OnEnumToolProperties(long Flags)
+void wxsStopWatch::OnEnumToolProperties(cb_unused long Flags)
 {
 }

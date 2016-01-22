@@ -74,6 +74,7 @@ void wxsColourDialog::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsColourDialog::OnBuildCreatingCode"),GetLanguage());
@@ -81,7 +82,7 @@ void wxsColourDialog::OnBuildCreatingCode()
     }
 }
 
-void wxsColourDialog::OnEnumToolProperties(long Flags)
+void wxsColourDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_BOOL(wxsColourDialog,m_ChooseFull,_("Full dialog"),_T("choosefull"),true);
     WXS_COLOUR(wxsColourDialog,m_Colour,_("Colour"),_T("colour"));

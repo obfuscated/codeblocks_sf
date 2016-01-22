@@ -622,7 +622,7 @@ void wxsCoder::FlushAll()
     //Manager::Get()->GetLogManager()->DebugLog(F(_T("wxSmith: Flushing of code done in %d ms"),SW.Time()));
 }
 
-void wxsCoder::FlushTimerEvent(wxTimerEvent& event)
+void wxsCoder::FlushTimerEvent(cb_unused wxTimerEvent& event)
 {
     FlushAll();
 }

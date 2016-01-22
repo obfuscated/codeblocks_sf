@@ -320,6 +320,7 @@ void wxsEventsEditor::FindFunctions(const wxString& ArgType,wxArrayString& Array
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsEventsEditor::FindFunctions"),m_Language);
@@ -448,6 +449,7 @@ bool wxsEventsEditor::CreateNewFunction(const wxsEventDesc* Event,const wxString
             return true;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsEventsEditor::CreateNewFunction"),m_Language);

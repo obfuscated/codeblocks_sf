@@ -163,7 +163,7 @@ void wxsDrawingWindow::StartFetchingSequence()
     GetEventHandler()->AddPendingEvent(event);
 }
 
-void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
+void wxsDrawingWindow::OnFetchSequence(cb_unused wxCommandEvent& event)
 {
     if ( m_IsDestroyed ) return;
 
@@ -208,11 +208,14 @@ void wxsDrawingWindow::OnFetchSequence(wxCommandEvent& event)
             // while fetching bitmap.
             m_RefreshTimer.Start(1,true);
             break;
+
+        default:
+            break;
     }
 
 }
 
-void wxsDrawingWindow::OnRefreshTimer(wxTimerEvent& event)
+void wxsDrawingWindow::OnRefreshTimer(cb_unused wxTimerEvent& event)
 {
     FetchSequencePhase2();
 }

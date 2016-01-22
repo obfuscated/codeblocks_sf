@@ -320,6 +320,7 @@ void wxsItemEditorContent::OnMouse(wxMouseEvent& event)
         case msDraggingItem:      OnMouseDraggingItem      (event); break;
         case msTargetSearch:      OnMouseTargetSearch      (event); break;
         case msWaitForIdle:                                         break;
+        case msIdle: // fall-through
         default:                  OnMouseIdle              (event); break;
     }
 
@@ -453,6 +454,7 @@ void wxsItemEditorContent::OnMouseIdle(wxMouseEvent& event)
                     SetCur(wxCURSOR_SIZEWE);
                     break;
 
+                case DragBoxTypeCnt: // fall-through
                 default:
                     SetCur(wxCURSOR_ARROW);
             }
@@ -626,7 +628,9 @@ void wxsItemEditorContent::OnMouseDraggingPoint(wxMouseEvent& event)
             GridFixupForGlobalCoordinates(rightBtm->PosX,rightBtm->PosY,m_CurDragItem);
             break;
 
-        default:;
+        case DragBoxTypeCnt: // fall-through
+        default:
+            break;
     }
 
     int LX = leftTop->PosX;

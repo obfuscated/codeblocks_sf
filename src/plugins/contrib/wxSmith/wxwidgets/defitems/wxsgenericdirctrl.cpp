@@ -67,6 +67,7 @@ void wxsGenericDirCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsGenericDirCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -80,7 +81,7 @@ wxObject* wxsGenericDirCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsGenericDirCtrl::OnEnumWidgetProperties(long Flags)
+void wxsGenericDirCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsGenericDirCtrl,DefaultFolder,_("Default Folder"),_T("defaultfolder"),_T(""),true)
     WXS_SHORT_STRING(wxsGenericDirCtrl,Filter,_("Filter"),_T("filter"),_T(""),true)

@@ -70,6 +70,7 @@ void wxsSingleInstanceChecker::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown( _T("wxsSingleInstanceChecker::OnBuildCreatingCode"), GetLanguage() );
@@ -79,7 +80,7 @@ void wxsSingleInstanceChecker::OnBuildCreatingCode()
 
 //------------------------------------------------------------------------------
 
-void wxsSingleInstanceChecker::OnEnumToolProperties(long Flags)
+void wxsSingleInstanceChecker::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING( wxsSingleInstanceChecker, AppName, _("Custom app name"), _T("appname"), wxEmptyString, false );
 }

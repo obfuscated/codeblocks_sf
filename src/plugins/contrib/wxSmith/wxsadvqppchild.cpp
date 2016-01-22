@@ -22,7 +22,9 @@
 
 #include "wxsadvqppchild.h"
 
-wxsAdvQPPChild::wxsAdvQPPChild(wxsAdvQPP* _Parent,const wxString Title):
+#include <prep.h>
+
+wxsAdvQPPChild::wxsAdvQPPChild(wxsAdvQPP* _Parent,cb_unused const wxString Title):
     Parent(_Parent)
 {
 }

@@ -107,7 +107,7 @@ wxObject* wxsCheckListBox::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsCheckListBox::OnEnumWidgetProperties(long Flags)
+void wxsCheckListBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_ARRAYSTRINGCHECK(wxsCheckListBox,ArrayChoices,ArrayChecks,_("Choices"),_T("content"),_T("item"));
 }

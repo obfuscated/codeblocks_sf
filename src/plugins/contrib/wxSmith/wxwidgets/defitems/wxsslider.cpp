@@ -99,6 +99,7 @@ void wxsSlider::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsSlider::OnBuildCreatingCode"),GetLanguage());
@@ -122,7 +123,7 @@ wxObject* wxsSlider::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsSlider::OnEnumWidgetProperties(long Flags)
+void wxsSlider::OnEnumWidgetProperties(cb_unused long Flags)
 {
    WXS_LONG(wxsSlider,Value,_("Value"),_T("value"),0)
    WXS_LONG(wxsSlider,Min,_("Min"),_T("min"),0)

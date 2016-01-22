@@ -67,7 +67,7 @@ void wxsBaseProperties::OnEnumProperties(long Flags)
     if ( m_StyleSet                                 ) WXS_EXSTYLE_P      (wxsBaseProperties,m_ExStyleBits,    _("Extra style"),                                                                   _T("exstyle"),       m_StyleSet,   Priority2);
 }
 
-void wxsBaseProperties::AddQPPChild(wxsAdvQPP* QPP,long Flags)
+void wxsBaseProperties::AddQPPChild(cb_unused wxsAdvQPP* QPP,cb_unused long Flags)
 {
     // TODO: Add it
 }

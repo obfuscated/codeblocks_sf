@@ -85,6 +85,7 @@ void wxsFontDialog::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsFontDialog::OnBuildCreatingCode"),GetLanguage());
@@ -98,7 +99,7 @@ void wxsFontDialog::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsFontDialog::OnEnumToolProperties(long Flags)
+void wxsFontDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     // These functions are Windows only.
     if((wxPlatformInfo::Get().GetOperatingSystemId() & wxOS_WINDOWS) > 0){

@@ -69,6 +69,7 @@ void wxsHtmlWindow::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsHtmlWindow::OnBuildCreatingCode"),GetLanguage());
@@ -105,7 +106,7 @@ wxObject* wxsHtmlWindow::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsHtmlWindow::OnEnumWidgetProperties(long Flags)
+void wxsHtmlWindow::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsHtmlWindow,Url,_("Url"),_T("url"),_T(""),false)
     WXS_STRING(wxsHtmlWindow,HtmlCode,_("Html Code"),_T("htmlcode"),_T(""),false)

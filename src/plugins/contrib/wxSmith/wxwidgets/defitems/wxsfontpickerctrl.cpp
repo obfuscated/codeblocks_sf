@@ -77,6 +77,7 @@ void wxsFontPickerCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsFontPickerCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -105,7 +106,7 @@ wxObject* wxsFontPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsFontPickerCtrl::OnEnumWidgetProperties(long Flags)
+void wxsFontPickerCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_FONT(wxsFontPickerCtrl, m_fdFont, _("Font"), _T("font"))
 }

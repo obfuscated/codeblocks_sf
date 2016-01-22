@@ -93,6 +93,7 @@ void wxsRadioBox::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsRadioBox::OnBuildCreatingCode"),GetLanguage());
@@ -111,7 +112,7 @@ wxObject* wxsRadioBox::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsRadioBox::OnEnumWidgetProperties(long Flags)
+void wxsRadioBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsRadioBox,Label,_("Label"),_T("label"),_T(""),true)
     WXS_ARRAYSTRING(wxsRadioBox,ArrayChoices,_("Choices"),_T("content"),_T("item"))

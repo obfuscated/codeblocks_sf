@@ -94,6 +94,7 @@ void wxsListCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsListCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -107,6 +108,6 @@ wxObject* wxsListCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsListCtrl::OnEnumWidgetProperties(long Flags)
+void wxsListCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
 }

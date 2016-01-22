@@ -77,6 +77,7 @@ void wxsPasswordEntryDialog::OnBuildCreatingCode()
             BuildSetupWindowCode();
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsPasswordEntryDialog::OnBuildCreatingCode"), GetLanguage());
     }
@@ -88,7 +89,7 @@ void wxsPasswordEntryDialog::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsPasswordEntryDialog::OnEnumToolProperties(long Flags)
+void wxsPasswordEntryDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsPasswordEntryDialog, m_sCaption, _("Caption"), _T("caption"), wxGetPasswordFromUserPromptStr, false);
     WXS_SHORT_STRING(wxsPasswordEntryDialog, m_sMessage, _("Message"), _T("message"), wxEmptyString, false);

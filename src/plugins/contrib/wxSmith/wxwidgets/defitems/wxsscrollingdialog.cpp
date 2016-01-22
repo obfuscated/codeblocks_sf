@@ -170,7 +170,7 @@ wxObject* wxsScrollingDialog::OnBuildPreview(wxWindow* Parent,long Flags)
     return NewItem;
 }
 
-void wxsScrollingDialog::OnEnumContainerProperties(long Flags)
+void wxsScrollingDialog::OnEnumContainerProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsScrollingDialog,Title,_("Title"),_T("title"),_T(""),false)
     WXS_BOOL(wxsScrollingDialog,Centered,_("Centered"),_T("centered"),false);

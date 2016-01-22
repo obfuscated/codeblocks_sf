@@ -210,6 +210,7 @@ void wxsGLCanvas::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsGLCanvas::OnBuildCreatingCode"),GetLanguage());
@@ -247,7 +248,7 @@ wxGLCanvas  *gc;
 
 //------------------------------------------------------------------------------
 
-void wxsGLCanvas::OnEnumWidgetProperties(long Flags)
+void wxsGLCanvas::OnEnumWidgetProperties(cb_unused long Flags)
 {
 //    mContextVarName = GetVarName() + _("RC");
 //

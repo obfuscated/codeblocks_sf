@@ -65,11 +65,11 @@ void wxsRichTextStyleListBox::OnBuildCreatingCode()
 
             wxString sVarName = GetVarName();
             // Add the control and stylesheet setting calls at the bottom of the code, hopefully after the control and stylesheet have been declared.
-            if(!m_sControl.IsEmpty()){
+            if (!m_sControl.IsEmpty()){
                 AddEventCode(wxString::Format(_("// Set the wxRichtTextCtrl for %s. \n"), sVarName.wx_str()));
                 AddEventCode(wxString::Format(wxT("%s->SetRichTextCtrl(%s);\n"), sVarName.wx_str(), m_sControl.wx_str()));
             }
-            if(!m_sStyleSheet.IsEmpty()){
+            if (!m_sStyleSheet.IsEmpty()){
                 AddEventCode(wxString::Format(_("// Set the wxRichTextStyleSheet for %s. \n"), sVarName.wx_str()));
                 AddEventCode(wxString::Format(wxT("%s->SetStyleSheet(%s);\n"), sVarName.wx_str(), m_sStyleSheet.wx_str()));
                 AddEventCode(wxString::Format(wxT("%s->UpdateStyles();\n"), sVarName.wx_str()));
@@ -86,9 +86,11 @@ void wxsRichTextStyleListBox::OnBuildCreatingCode()
                 case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
                     Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST"));
                     break;
+                default:
+                      break;
             }
             // Default is false.
-            if(m_bApplyOnSelection){
+            if (m_bApplyOnSelection){
                 Codef( _T("%ASetApplyOnSelection(%b);\n"), m_bApplyOnSelection);
             }
 
@@ -96,6 +98,7 @@ void wxsRichTextStyleListBox::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsRichTextStyleListBox::OnBuildCreatingCode"),GetLanguage());
@@ -114,10 +117,10 @@ wxObject* wxsRichTextStyleListBox::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxRichTextStyleListBox *Preview = new wxRichTextStyleListBox(Parent, GetId(), Pos(Parent), Size(Parent), Style());
 
-//    if(!m_sControl.IsEmpty()){
+//    if (!m_sControl.IsEmpty()){
 //        Preview->SetRichTextCtrl(m_sControl);
 //    }
-//    if(!m_sStyleSheet.IsEmpty()){
+//    if (!m_sStyleSheet.IsEmpty()){
 //        Preview->SetStyleSheet(m_sStyleSheet);
 //        Preview->UpdateStyles();
 //    }
@@ -133,8 +136,10 @@ wxObject* wxsRichTextStyleListBox::OnBuildPreview(wxWindow* Parent,long Flags)
         case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
             Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST);
             break;
+        default:
+            break;
     }
-    if(m_bApplyOnSelection){
+    if (m_bApplyOnSelection){
         Preview->SetApplyOnSelection(m_bApplyOnSelection);
     }
 
@@ -147,7 +152,7 @@ wxObject* wxsRichTextStyleListBox::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsRichTextStyleListBox::OnEnumWidgetProperties(long Flags)
+void wxsRichTextStyleListBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
     static const long StyleStates[] = {wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL,
                                                                 wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER,

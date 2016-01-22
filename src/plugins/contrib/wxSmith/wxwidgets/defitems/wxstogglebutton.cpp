@@ -63,6 +63,7 @@ void wxsToggleButton::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsToggleButton::OnBuildCreatingCode"),GetLanguage());
@@ -77,7 +78,7 @@ wxObject* wxsToggleButton::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsToggleButton::OnEnumWidgetProperties(long Flags)
+void wxsToggleButton::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_STRING(wxsToggleButton,Label,_("Label"),_T("label"),_T(""),false)
     WXS_BOOL(wxsToggleButton,IsChecked,_("Is checked"),_T("checked"),false)

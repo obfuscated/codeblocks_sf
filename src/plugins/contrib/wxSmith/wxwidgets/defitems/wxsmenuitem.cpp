@@ -123,6 +123,9 @@ void wxsMenuItem::OnBuildCreatingCode()
                     {
                         case Normal: ItemType = _T("wxITEM_NORMAL"); break;
                         case Radio:  ItemType = _T("wxITEM_RADIO");  break;
+                        case Break:     // fall-through
+                        case Check:     // fall-through
+                        case Separator: // fall-through
                         default:     ItemType = _T("wxITEM_CHECK");  break;
                     }
 
@@ -161,6 +164,8 @@ void wxsMenuItem::OnBuildCreatingCode()
                     break;
                 }
 
+                default:
+                    break;
             }
             BuildSetupWindowCode();
             break;
@@ -188,7 +193,6 @@ void wxsMenuItem::OnEnumToolProperties(cb_unused long Flags)
             }
             // When there are no children, we threat this item as wxMenuItem
 
-     /* case Normal: */
         case Radio:
         case Check:
             WXS_SHORT_STRING(wxsMenuItem,m_Label,_("Label"),_T("label"),_T(""),true);
@@ -202,7 +206,10 @@ void wxsMenuItem::OnEnumToolProperties(cb_unused long Flags)
             }
             break;
 
-        default:;
+        case Separator: // fall-through
+        case Break:     // fall-through
+        default:
+            break;
     }
 }
 
@@ -232,6 +239,9 @@ bool wxsMenuItem::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
                 break;
 
             case Normal:
+                break;
+
+            default:
                 break;
         }
     }
@@ -326,7 +336,7 @@ bool wxsMenuItem::OnXmlReadChild(TiXmlElement* Elem,bool IsXRC,bool IsExtra)
     return true;
 }
 
-wxString wxsMenuItem::OnGetTreeLabel(int& Image)
+wxString wxsMenuItem::OnGetTreeLabel(cb_unused int& Image)
 {
     switch ( m_Type )
     {
@@ -336,6 +346,9 @@ wxString wxsMenuItem::OnGetTreeLabel(int& Image)
         case Break:
             return _("** BREAK **");
 
+        case Normal: // fall-through
+        case Radio:  // fall-through
+        case Check:  // fall-through
         default:
             return m_Label;
     }
@@ -351,7 +364,11 @@ void wxsMenuItem::OnBuildDeclarationsCode()
             case Separator:
                 return;
 
-            default:;
+            case Normal: // fall-through
+            case Radio:  // fall-through
+            case Check:  // fall-through
+            default:
+                break;
         }
     }
 

@@ -99,6 +99,7 @@ void wxsRichTextFormattingDialog::OnBuildCreatingCode()
             BuildSetupWindowCode();
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsRichTextFormattingDialog::OnBuildCreatingCode"), GetLanguage());
     }
@@ -110,7 +111,7 @@ void wxsRichTextFormattingDialog::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsRichTextFormattingDialog::OnEnumToolProperties(long Flags)
+void wxsRichTextFormattingDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_FLAGS(wxsRichTextFormattingDialog, m_iFlags, _("Page Flags"), _T("page_flags"), arrPageValues, arrPageValueNames,
                                 wxRICHTEXT_FORMAT_FONT|wxRICHTEXT_FORMAT_TABS|wxRICHTEXT_FORMAT_BULLETS|wxRICHTEXT_FORMAT_INDENTS_SPACING )

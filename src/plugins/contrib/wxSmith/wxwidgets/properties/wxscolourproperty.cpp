@@ -550,7 +550,7 @@ namespace
         return ColourToString(val.m_colour, index, argFlags);
     }
 #else
-    wxString wxsMyColourPropertyClass::GetValueAsString( int argFlags ) const
+    wxString wxsMyColourPropertyClass::GetValueAsString(cb_unused int argFlags) const
     {
         wxColourPropertyValue val = GetVal();
 
@@ -805,7 +805,7 @@ namespace
                 if ( res && GetIndex() >= 0 )
                 {
                     val.m_type = GetIndex();
-                    if ( val.m_type >= 0 && val.m_type < m_choices.GetCount() )
+                    if ( val.m_type < m_choices.GetCount() )
                         val.m_type = m_choices[val.m_type].GetValue();
 
                     // Get proper colour for type.
@@ -844,7 +844,7 @@ namespace
         return true;
     }
 
-    bool wxsMyColourPropertyClass::DoSetAttribute( const wxString& name, wxVariant& value )
+    bool wxsMyColourPropertyClass::DoSetAttribute(cb_unused const wxString& name, cb_unused wxVariant& value)
     {
         return false;
 
@@ -937,6 +937,7 @@ wxString wxsColourData::BuildCode(wxsCoderContext* Context)
             return _T("wxSystemSettings::GetColour(") + SysColName + _T(")");
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsColourData::BuildCode"),Context->m_Language);
@@ -965,7 +966,7 @@ void wxsColourProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMana
     PGRegister(Object,Grid,Grid->AppendIn(Parent,new wxsMyColourPropertyClass(GetPGName(),wxPG_LABEL,VALUE)));
 }
 
-bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,cb_unused long Index)
 {
 #if wxCHECK_VERSION(2, 9, 0)
     VALUE.m_type = wxsColourValues[Id->GetChoiceSelection()];
@@ -995,7 +996,7 @@ bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManage
     return true;
 }
 
-bool wxsColourProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,long Index)
+bool wxsColourProperty::PGWrite(cb_unused wxsPropertyContainer* Object,cb_unused wxPropertyGridManager* Grid,cb_unused wxPGId Id,cb_unused long Index)
 {
     return true;
 }

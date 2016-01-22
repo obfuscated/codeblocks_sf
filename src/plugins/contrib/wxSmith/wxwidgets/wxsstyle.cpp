@@ -118,6 +118,7 @@ wxString wxsStyleSet::GetString(long Bits,bool IsExtra,wxsCodingLang Language) c
             return Result;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsStyleSet::BitsToString"),Language);

@@ -72,6 +72,7 @@ void wxsColourPickerCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsColourPickerCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -105,7 +106,7 @@ wxObject* wxsColourPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsColourPickerCtrl::OnEnumWidgetProperties(long Flags)
+void wxsColourPickerCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_COLOUR(wxsColourPickerCtrl, m_cdColour, _("Colour"), _T("colour"));
 }

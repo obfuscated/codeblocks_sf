@@ -57,6 +57,9 @@ bool wxsTool::OnCanAddToResource(wxsItemResData* Data,bool ShowMessage)
                     _("Tool insertion error"));
             }
             return false;
+
+        default:
+            break;
     }
 
     return false;

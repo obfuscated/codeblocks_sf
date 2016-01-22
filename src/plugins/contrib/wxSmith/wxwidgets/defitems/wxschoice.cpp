@@ -99,7 +99,7 @@ wxObject* wxsChoice::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsChoice::OnEnumWidgetProperties(long Flags)
+void wxsChoice::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_ARRAYSTRING(wxsChoice,ArrayChoices,_("Choices"),_T("content"),_T("item"))
     WXS_LONG(wxsChoice,DefaultSelection,_("Selection"),_T("selection"),-1)

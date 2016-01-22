@@ -103,6 +103,6 @@ wxObject* wxsPanel::OnBuildPreview(wxWindow* Parent,long Flags)
     return NewItem;
 }
 
-void wxsPanel::OnEnumContainerProperties(long Flags)
+void wxsPanel::OnEnumContainerProperties(cb_unused long Flags)
 {
 }

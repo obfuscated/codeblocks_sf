@@ -33,6 +33,7 @@ wxString wxsDimensionData::GetPixelsCode(wxsCoderContext* Context)
             return wxString::Format(_T("wxDLG_UNIT(%s,wxSize(%ld,0)).GetWidth()"),Context->m_WindowParent.c_str(),Value);
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsDimensionData::GetPixelsCode"),Context->m_Language);
@@ -93,6 +94,9 @@ bool wxsDimensionProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridMan
         case DIM_UNITS:
             UNITS = Grid->GetPropertyValue(Id).GetBool();
             return true;
+
+        default:
+            break;
     }
     return false;
 }
@@ -108,6 +112,9 @@ bool wxsDimensionProperty::PGWrite(wxsPropertyContainer* Object,wxPropertyGridMa
         case DIM_UNITS:
             Grid->SetPropertyValue(Id,UNITS);
             return true;
+
+        default:
+            break;
     }
     return false;
 }

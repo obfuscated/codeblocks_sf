@@ -101,6 +101,7 @@ wxFont wxsFontData::BuildFont()
     }
 
     return wxFont(
+        // TODO (mortenmacfly#1#): wxDEFAULT looks like a bug to me: wxDEFAULT is 70, Size should be e.g. 8..12
         HasSize ? Size : wxDEFAULT,
         HasFamily ? Family : wxFONTFAMILY_DEFAULT,
         HasStyle ? Style : wxFONTSTYLE_NORMAL,

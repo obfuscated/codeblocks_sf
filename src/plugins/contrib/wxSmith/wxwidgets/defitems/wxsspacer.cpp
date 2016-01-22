@@ -50,7 +50,7 @@ namespace
 
         private:
 
-            void OnPaint(wxPaintEvent& event)
+            void OnPaint(cb_unused wxPaintEvent& event)
             {
                 wxPaintDC DC(this);
 #if wxCHECK_VERSION(2,9,0)
@@ -74,7 +74,7 @@ namespace
 wxsSpacer::wxsSpacer(wxsItemResData* Data): wxsItem(Data,&Reg.Info,flSize,0,0)
 {}
 
-void wxsSpacer::OnEnumItemProperties(long Flags)
+void wxsSpacer::OnEnumItemProperties(cb_unused long Flags)
 {}
 
 wxObject* wxsSpacer::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -124,6 +124,7 @@ void wxsSpacer::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsSpacer::OnBuildCreatingCode"),GetLanguage());

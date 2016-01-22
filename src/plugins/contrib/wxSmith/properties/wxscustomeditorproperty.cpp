@@ -72,7 +72,7 @@ namespace
 #if wxCHECK_VERSION(2,9,0)
             virtual wxString ValueToString(cb_unused wxVariant& value, cb_unused int argFlags = 0) const
 #else
-            virtual wxString GetValueAsString( int flags = 0 ) const
+            virtual wxString GetValueAsString( cb_unused int flags = 0 ) const
 #endif
             {
                 return Property->GetStr(Object);

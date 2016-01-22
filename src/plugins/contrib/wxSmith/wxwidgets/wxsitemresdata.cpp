@@ -276,20 +276,20 @@ bool wxsItemResData::LoadInMixedMode()
         {
             IdToXmlMapT IdToXmlMap;
 
-            TiXmlElement* Object = Extra->FirstChildElement("object");
-            while ( Object )
+            TiXmlElement* _Object = Extra->FirstChildElement("object");
+            while ( _Object )
             {
-                wxString IdName = cbC2U(Object->Attribute("name"));
+                wxString IdName = cbC2U(_Object->Attribute("name"));
                 if ( !IdName.empty() )
                 {
-                    IdToXmlMap[IdName] = Object;
+                    IdToXmlMap[IdName] = _Object;
                 }
-                else if ( Object->Attribute("root") )
+                else if ( _Object->Attribute("root") )
                 {
                     // Empty id simulates root node
-                    IdToXmlMap[_T("")] = Object;
+                    IdToXmlMap[_T("")] = _Object;
                 }
-                Object = Object->NextSiblingElement("object");
+                _Object = _Object->NextSiblingElement("object");
             }
 
             UpdateExtraDataReq(m_RootItem,IdToXmlMap);
@@ -414,6 +414,9 @@ bool wxsItemResData::Save()
 
         case flSource:
             return SaveInSourceMode();
+
+        default:
+            break;
     }
 
     return false;
@@ -526,6 +529,9 @@ void wxsItemResData::RebuildFiles()
         case flMixed:
             RebuildSourceCode();
             RebuildXrcFile();
+            break;
+
+        default:
             break;
     }
 }
@@ -697,6 +703,7 @@ void wxsItemResData::RebuildSourceCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsItemResData::RebuildSourceCode"),m_Language);

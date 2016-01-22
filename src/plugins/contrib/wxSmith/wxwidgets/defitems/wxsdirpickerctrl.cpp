@@ -75,6 +75,7 @@ void wxsDirPickerCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsDirPickerCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -102,7 +103,7 @@ wxObject* wxsDirPickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsDirPickerCtrl::OnEnumWidgetProperties(long Flags)
+void wxsDirPickerCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsDirPickerCtrl, m_sMessage, _("Message"), _T("message"), wxDirSelectorPromptStr, false)
     WXS_SHORT_STRING(wxsDirPickerCtrl, m_sPath, _("Path"), _T("path"), wxEmptyString, false)

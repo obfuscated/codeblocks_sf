@@ -81,7 +81,7 @@ wxObject* wxsCheckBox::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsCheckBox::OnEnumWidgetProperties(long Flags)
+void wxsCheckBox::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsCheckBox,Label,_("Label"),_T("label"),_T(""),false)
     WXS_BOOL(wxsCheckBox,IsChecked,_("Checked"),_T("checked"),false)

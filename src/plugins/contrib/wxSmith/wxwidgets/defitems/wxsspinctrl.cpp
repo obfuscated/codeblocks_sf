@@ -72,6 +72,7 @@ void wxsSpinCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsSpinCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -86,7 +87,7 @@ wxObject* wxsSpinCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
     return SetupWindow(Preview,Flags);
 }
 
-void wxsSpinCtrl::OnEnumWidgetProperties(long Flags)
+void wxsSpinCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_SHORT_STRING(wxsSpinCtrl,Value,_("Value"),_T("value"),_T(""),true)
     WXS_LONG(wxsSpinCtrl,Min,_("Min"),_T("min"),0)

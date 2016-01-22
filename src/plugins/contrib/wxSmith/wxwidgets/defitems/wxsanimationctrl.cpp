@@ -114,7 +114,7 @@ wxObject* wxsAnimationCtrl::OnBuildPreview(wxWindow* parent,long flags)
  * \return void
  *
  */
-void wxsAnimationCtrl::OnEnumWidgetProperties(long flags)
+void wxsAnimationCtrl::OnEnumWidgetProperties(cb_unused long flags)
 {
     WXS_SHORT_STRING(wxsAnimationCtrl, m_sAnimation, _("Animation"), _T("animation"), _T(""), false)
     WXS_BITMAP(wxsAnimationCtrl, m_bmpInactive, _("Inactive Bitmap"), _T("inactive_bitmap"), _T("wxART_OTHER"));

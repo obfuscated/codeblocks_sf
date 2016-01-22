@@ -88,6 +88,7 @@ void wxsProgressDialog::OnBuildCreatingCode()
             BuildSetupWindowCode();
             break;
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsProgressDialog::OnBuildCreatingCode"), GetLanguage());
     }
@@ -99,7 +100,7 @@ void wxsProgressDialog::OnBuildCreatingCode()
  * \return void
  *
  */
-void wxsProgressDialog::OnEnumToolProperties(long Flags)
+void wxsProgressDialog::OnEnumToolProperties(cb_unused long Flags)
 {
     WXS_BOOL(wxsProgressDialog, m_bRunAtStartup, _("Run At Startup"), _T("run_at_startup"), false)
     WXS_SHORT_STRING(wxsProgressDialog, m_sTitle, _("Title"), _T("title"), wxEmptyString, true);

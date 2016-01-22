@@ -27,8 +27,8 @@ BEGIN_EVENT_TABLE(wxsAdvQPP,wxsQuickPropsPanel)
     EVT_BUTTON(wxID_ANY,wxsAdvQPP::OnToggleButton)
 END_EVENT_TABLE()
 
-wxsAdvQPP::wxsAdvQPP(wxWindow* Parent,wxsPropertyContainer* Container):
-    wxsQuickPropsPanel(Parent,Container,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxsAdvQPP"))
+wxsAdvQPP::wxsAdvQPP(wxWindow* Parent,wxsPropertyContainer* _Container):
+    wxsQuickPropsPanel(Parent,_Container,-1,wxDefaultPosition,wxDefaultSize,wxTAB_TRAVERSAL,_T("wxsAdvQPP"))
 {
     Sizer = new wxBoxSizer(wxVERTICAL);
     SetSizer(Sizer);

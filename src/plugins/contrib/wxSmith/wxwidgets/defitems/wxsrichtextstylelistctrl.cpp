@@ -87,12 +87,15 @@ void wxsRichTextStyleListCtrl::OnBuildCreatingCode()
                 case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
                     Codef(_T("%ASetStyleType(%s);\n"), wxT("wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST"));
                     break;
+                default:
+                    break;
             }
 
             BuildSetupWindowCode();
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsRichTextStyleListCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -130,6 +133,8 @@ wxObject* wxsRichTextStyleListCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
         case wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST:
             Preview->SetStyleType(wxRichTextStyleListBox::wxRICHTEXT_STYLE_LIST);
             break;
+        default:
+            break;
     }
 
     return SetupWindow(Preview,Flags);
@@ -141,7 +146,7 @@ wxObject* wxsRichTextStyleListCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsRichTextStyleListCtrl::OnEnumWidgetProperties(long Flags)
+void wxsRichTextStyleListCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
     static const long StyleStates[] = {wxRichTextStyleListBox::wxRICHTEXT_STYLE_ALL,
                                                                 wxRichTextStyleListBox::wxRICHTEXT_STYLE_CHARACTER,

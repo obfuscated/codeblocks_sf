@@ -35,13 +35,13 @@ wxsItemResDataObject::~wxsItemResDataObject()
 {
 }
 
-void wxsItemResDataObject::GetAllFormats(wxDataFormat *formats, Direction dir) const
+void wxsItemResDataObject::GetAllFormats(wxDataFormat *formats, cb_unused Direction dir) const
 {
     formats[0] = wxDataFormat(wxDF_TEXT);
     formats[1] = wxDataFormat(wxsDF_WIDGET);
 }
 
-bool wxsItemResDataObject::GetDataHere(const wxDataFormat& format,void *buf) const
+bool wxsItemResDataObject::GetDataHere(cb_unused const wxDataFormat& format,void *buf) const
 {
     wxString XmlData = GetXmlData();
     const wxWX2MBbuf str = cbU2C(XmlData);
@@ -49,24 +49,24 @@ bool wxsItemResDataObject::GetDataHere(const wxDataFormat& format,void *buf) con
        return true;
 }
 
-size_t wxsItemResDataObject::GetDataSize(const wxDataFormat& format) const
+size_t wxsItemResDataObject::GetDataSize(cb_unused const wxDataFormat& format) const
 {
     wxString XmlData = GetXmlData();
     const wxWX2MBbuf str = cbU2C(XmlData);
     return strlen(str)+1;
 }
 
-size_t wxsItemResDataObject::GetFormatCount(Direction dir) const
+size_t wxsItemResDataObject::GetFormatCount(cb_unused Direction dir) const
 {
     return 2;
 }
 
-wxDataFormat wxsItemResDataObject::GetPreferredFormat(Direction dir) const
+wxDataFormat wxsItemResDataObject::GetPreferredFormat(cb_unused Direction dir) const
 {
     return wxDataFormat(wxsDF_WIDGET);
 }
 
-bool wxsItemResDataObject::SetData(const wxDataFormat& format, size_t len, const void *buf)
+bool wxsItemResDataObject::SetData(cb_unused const wxDataFormat& format, size_t len, const void *buf)
 {
     char* CharBuff = new char[len+1];
     memcpy(CharBuff,buf,len);
