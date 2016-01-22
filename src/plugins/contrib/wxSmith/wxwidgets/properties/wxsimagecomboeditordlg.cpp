@@ -23,11 +23,11 @@
 
 
 //(*InternalHeaders(wxsImageComboEditorDlg)
-#include <wx/string.h>
-#include <wx/intl.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
 #include <wx/artprov.h>
+#include <wx/bitmap.h>
+#include <wx/intl.h>
+#include <wx/image.h>
+#include <wx/string.h>
 //*)
 #include "../wxsitemresdata.h"
 #include "../wxsitem.h"
@@ -62,23 +62,23 @@ BEGIN_EVENT_TABLE(wxsImageComboEditorDlg,wxScrollingDialog)
     //*)
 END_EVENT_TABLE()
 
-    wxsImageComboEditorDlg::wxsImageComboEditorDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
+    wxsImageComboEditorDlg::wxsImageComboEditorDlg(wxWindow* parent)
     {
         //(*Initialize(wxsImageComboEditorDlg)
-        wxBoxSizer* BoxSizer3;
-        wxBoxSizer* BoxSizer10;
-        wxBoxSizer* BoxSizer7;
-        wxBoxSizer* BoxSizer11;
-        wxBoxSizer* BoxSizer13;
-        wxBoxSizer* BoxSizer2;
-        wxBoxSizer* BoxSizer9;
         wxBoxSizer* BoxSizer4;
-        wxBoxSizer* BoxSizer8;
-        wxBoxSizer* BoxSizer1;
-        wxBoxSizer* BoxSizer12;
-        wxBoxSizer* BoxSizer14;
         wxBoxSizer* BoxSizer6;
         wxBoxSizer* BoxSizer5;
+        wxBoxSizer* BoxSizer10;
+        wxBoxSizer* BoxSizer7;
+        wxBoxSizer* BoxSizer8;
+        wxBoxSizer* BoxSizer13;
+        wxBoxSizer* BoxSizer2;
+        wxBoxSizer* BoxSizer11;
+        wxBoxSizer* BoxSizer12;
+        wxBoxSizer* BoxSizer14;
+        wxBoxSizer* BoxSizer1;
+        wxBoxSizer* BoxSizer9;
+        wxBoxSizer* BoxSizer3;
 
         Create(parent, wxID_ANY, _("wxBitmapComboBox Editor"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
         SetMinSize(wxSize(-1,-1));
@@ -160,16 +160,16 @@ END_EVENT_TABLE()
         BoxSizer1->Fit(this);
         BoxSizer1->SetSizeHints(this);
 
-        Connect(ID_TREECTRL1,wxEVT_COMMAND_TREE_SEL_CHANGED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnTreeSelectionChanged);
-        Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnAddItemClick);
-        Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnMoveUpClick);
-        Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnMoveDownClick);
-        Connect(ID_BITMAPBUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnDeleteItemClick);
-        Connect(ID_BITMAPBUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnDeleteAllClick);
-        Connect(ID_BITMAPBUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnEditItemClick);
-        Connect(ID_COMBOBOX1,wxEVT_COMMAND_COMBOBOX_SELECTED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnCmbImageSelect);
-        Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnOKClick);
-        Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageComboEditorDlg::OnBtnCancelClick);
+        Connect(ID_TREECTRL1,wxEVT_COMMAND_TREE_SEL_CHANGED,wxTreeEventHandler(wxsImageComboEditorDlg::OnTreeSelectionChanged));
+        Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnAddItemClick));
+        Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnMoveUpClick));
+        Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnMoveDownClick));
+        Connect(ID_BITMAPBUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnDeleteItemClick));
+        Connect(ID_BITMAPBUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnDeleteAllClick));
+        Connect(ID_BITMAPBUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnEditItemClick));
+        Connect(ID_COMBOBOX1,wxEVT_COMMAND_COMBOBOX_SELECTED,wxCommandEventHandler(wxsImageComboEditorDlg::OnCmbImageSelect));
+        Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnOKClick));
+        Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageComboEditorDlg::OnBtnCancelClick));
         //*)
     }
 
@@ -310,7 +310,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnDeleteAllClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnDeleteAllClick(cb_unused wxCommandEvent& event)
     {
         int         n;
 
@@ -326,7 +326,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnAddItemClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnAddItemClick(cb_unused wxCommandEvent& event)
     {
         int             n;
         wxTreeItemId    root = m_pTree->GetRootItem();
@@ -364,7 +364,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnMoveUpClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnMoveUpClick(cb_unused wxCommandEvent& event)
     {
         int         xi, xp;
         wxString    si, sp;
@@ -407,7 +407,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnMoveDownClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnMoveDownClick(cb_unused wxCommandEvent& event)
     {
         int         xi, xp;
         wxString    si, sp;
@@ -450,7 +450,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnDeleteItemClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnDeleteItemClick(cb_unused wxCommandEvent& event)
     {
         wxTreeItemId    item;
 
@@ -470,7 +470,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnEditItemClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnEditItemClick(cb_unused wxCommandEvent& event)
     {
         wxTreeItemId    item;
 
@@ -490,7 +490,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnOKClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnOKClick(cb_unused wxCommandEvent& event)
     {
         EndModal(wxOK);
     }
@@ -501,7 +501,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnBtnCancelClick(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnBtnCancelClick(cb_unused wxCommandEvent& event)
     {
         EndModal(wxCANCEL);
     }
@@ -512,7 +512,7 @@ END_EVENT_TABLE()
      * \return void
      *
      */
-    void wxsImageComboEditorDlg::OnCmbImageSelect(wxCommandEvent& event)
+    void wxsImageComboEditorDlg::OnCmbImageSelect(cb_unused wxCommandEvent& event)
     {
         int             n;
         wxTreeItemId    item;

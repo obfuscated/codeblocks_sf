@@ -23,8 +23,8 @@
 #include "wxsarraystringcheckeditordlg.h"
 
 //(*InternalHeaders(wxsArrayStringCheckEditorDlg)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsArrayStringCheckEditorDlg)
@@ -50,12 +50,12 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
     Bools(_Bools)
 {
     //(*Initialize(wxsArrayStringCheckEditorDlg)
-    wxBoxSizer* BoxSizer3;
-    wxStaticLine* StaticLine2;
+    wxBoxSizer* BoxSizer5;
     wxBoxSizer* BoxSizer2;
+    wxStaticLine* StaticLine2;
     wxStaticLine* StaticLine1;
     wxBoxSizer* BoxSizer1;
-    wxBoxSizer* BoxSizer5;
+    wxBoxSizer* BoxSizer3;
 
     Create(parent, id, _("Choices:"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -94,15 +94,15 @@ wxsArrayStringCheckEditorDlg::wxsArrayStringCheckEditorDlg(wxWindow* parent,wxAr
     BoxSizer1->SetSizeHints(this);
     Center();
 
-    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton1Click);
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton1Click);
-    Connect(ID_CHECKLISTBOX1,wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnStringListToggled);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton2Click);
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton4Click);
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton3Click);
-    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton5Click);
-    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton6Click);
-    Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringCheckEditorDlg::OnButton7Click);
+    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_ENTER,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton1Click));
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton1Click));
+    Connect(ID_CHECKLISTBOX1,wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnStringListToggled));
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton2Click));
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton4Click));
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton3Click));
+    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton5Click));
+    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton6Click));
+    Connect(ID_BUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringCheckEditorDlg::OnButton7Click));
     //*)
 
     for ( size_t i = 0; i<Strings.Count(); i++ )
@@ -119,26 +119,26 @@ wxsArrayStringCheckEditorDlg::~wxsArrayStringCheckEditorDlg()
 }
 
 
-void wxsArrayStringCheckEditorDlg::OnButton1Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton1Click(cb_unused wxCommandEvent& event)
 {
     StringList->Append(EditArea->GetValue());
 }
 
-void wxsArrayStringCheckEditorDlg::OnButton2Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton2Click(cb_unused wxCommandEvent& event)
 {
     int Sel = StringList->GetSelection();
     if ( Sel == wxNOT_FOUND ) return;
     StringList->SetString(Sel,EditArea->GetValue());
 }
 
-void wxsArrayStringCheckEditorDlg::OnButton4Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton4Click(cb_unused wxCommandEvent& event)
 {
     int Sel = StringList->GetSelection();
     if ( Sel == wxNOT_FOUND ) return;
     StringList->Delete(Sel);
 }
 
-void wxsArrayStringCheckEditorDlg::OnButton3Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton3Click(cb_unused wxCommandEvent& event)
 {
     int Sel = StringList->GetSelection();
     if ( Sel == wxNOT_FOUND ) return;
@@ -151,7 +151,7 @@ void wxsArrayStringCheckEditorDlg::OnButton3Click(wxCommandEvent& event)
     StringList->SetSelection(Sel);
 }
 
-void wxsArrayStringCheckEditorDlg::OnButton5Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton5Click(cb_unused wxCommandEvent& event)
 {
     int Sel = StringList->GetSelection();
     if ( Sel == wxNOT_FOUND ) return;
@@ -164,7 +164,7 @@ void wxsArrayStringCheckEditorDlg::OnButton5Click(wxCommandEvent& event)
     StringList->SetSelection(Sel);
 }
 
-void wxsArrayStringCheckEditorDlg::OnButton6Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton6Click(cb_unused wxCommandEvent& event)
 {
     size_t Count = StringList->GetCount();
     Strings.Clear();
@@ -177,12 +177,12 @@ void wxsArrayStringCheckEditorDlg::OnButton6Click(wxCommandEvent& event)
     EndModal(wxID_OK);
 }
 
-void wxsArrayStringCheckEditorDlg::OnButton7Click(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnButton7Click(cb_unused wxCommandEvent& event)
 {
     EndModal(wxID_CANCEL);
 }
 
-void wxsArrayStringCheckEditorDlg::OnStringListToggled(wxCommandEvent& event)
+void wxsArrayStringCheckEditorDlg::OnStringListToggled(cb_unused wxCommandEvent& event)
 {
     EditArea->SetValue(StringList->GetStringSelection());
 }

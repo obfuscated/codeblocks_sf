@@ -22,13 +22,13 @@
 */
 
 //(*InternalHeaders(wxsImageListEditorDlg)
-#include <wx/settings.h>
-#include <wx/string.h>
-#include <wx/intl.h>
-#include <wx/font.h>
-#include <wx/bitmap.h>
-#include <wx/image.h>
 #include <wx/artprov.h>
+#include <wx/bitmap.h>
+#include <wx/settings.h>
+#include <wx/font.h>
+#include <wx/intl.h>
+#include <wx/image.h>
+#include <wx/string.h>
 //*)
 
 #include <wx/app.h>
@@ -115,41 +115,41 @@ BEGIN_EVENT_TABLE(wxsImageListEditorDlg, wxScrollingDialog)
     //*)
 END_EVENT_TABLE()
 
-wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, const wxPoint &pos, const wxSize &size)
+wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent)
 {
     //(*Initialize(wxsImageListEditorDlg)
-    wxBoxSizer* BoxSizer15;
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxBoxSizer* BoxSizer33;
-    wxBoxSizer* BoxSizer32;
-    wxBoxSizer* BoxSizer3;
-    wxBoxSizer* BoxSizer16;
-    wxBoxSizer* BoxSizer27;
-    wxBoxSizer* BoxSizer10;
-    wxBoxSizer* BoxSizer25;
-    wxBoxSizer* BoxSizer24;
-    wxBoxSizer* BoxSizer7;
-    wxBoxSizer* BoxSizer11;
-    wxBoxSizer* BoxSizer13;
-    wxBoxSizer* BoxSizer2;
-    wxBoxSizer* BoxSizer28;
-    wxStaticBoxSizer* StaticBoxSizer3;
-    wxBoxSizer* BoxSizer17;
-    wxBoxSizer* BoxSizer9;
-    wxBoxSizer* BoxSizer18;
-    wxBoxSizer* BoxSizer34;
-    wxBoxSizer* BoxSizer19;
     wxBoxSizer* BoxSizer4;
-    wxBoxSizer* BoxSizer8;
-    wxBoxSizer* BoxSizer23;
-    wxBoxSizer* BoxSizer20;
-    wxBoxSizer* BoxSizer1;
-    wxBoxSizer* BoxSizer12;
-    wxBoxSizer* BoxSizer14;
-    wxBoxSizer* BoxSizer26;
+    wxStaticBoxSizer* StaticBoxSizer2;
     wxBoxSizer* BoxSizer6;
+    wxBoxSizer* BoxSizer19;
+    wxBoxSizer* BoxSizer15;
+    wxBoxSizer* BoxSizer20;
     wxBoxSizer* BoxSizer5;
+    wxBoxSizer* BoxSizer10;
+    wxBoxSizer* BoxSizer7;
+    wxBoxSizer* BoxSizer8;
+    wxBoxSizer* BoxSizer13;
+    wxBoxSizer* BoxSizer23;
+    wxBoxSizer* BoxSizer2;
+    wxBoxSizer* BoxSizer11;
+    wxBoxSizer* BoxSizer16;
+    wxBoxSizer* BoxSizer18;
+    wxBoxSizer* BoxSizer12;
+    wxBoxSizer* BoxSizer28;
+    wxBoxSizer* BoxSizer14;
+    wxStaticBoxSizer* StaticBoxSizer3;
+    wxBoxSizer* BoxSizer27;
+    wxBoxSizer* BoxSizer17;
+    wxBoxSizer* BoxSizer24;
+    wxBoxSizer* BoxSizer26;
+    wxBoxSizer* BoxSizer32;
+    wxBoxSizer* BoxSizer1;
+    wxBoxSizer* BoxSizer9;
     wxStaticBoxSizer* StaticBoxSizer1;
+    wxBoxSizer* BoxSizer34;
+    wxBoxSizer* BoxSizer33;
+    wxBoxSizer* BoxSizer3;
+    wxBoxSizer* BoxSizer25;
 
     Create(parent, wxID_ANY, _("wxImageList Editor"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -355,41 +355,41 @@ wxsImageListEditorDlg::wxsImageListEditorDlg(wxWindow *parent, wxWindowID id, co
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
-    Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbLeftClick);
-    Panel2->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel2->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel2LeftUp,0,this);
-    Panel3->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel3->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel3LeftUp,0,this);
-    Panel4->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel4->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel4LeftUp,0,this);
-    Panel5->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel5->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel5LeftUp,0,this);
-    Panel8->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel8->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel8LeftUp,0,this);
-    Panel6->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel6->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel6LeftUp,0,this);
-    Panel7->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel7->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel7LeftUp,0,this);
-    Panel9->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel9->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel9LeftUp,0,this);
-    Panel10->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel10->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel10LeftUp,0,this);
-    Panel11->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::PaintPreviewPanel,0,this);
-    Panel11->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel11LeftUp,0,this);
-    Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbRightClick);
-    Panel1->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel1Paint,0,this);
-    Panel1->Connect(wxEVT_LEFT_UP,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel1LeftUp,0,this);
-    Connect(ID_BITMAPBUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbReadClick);
-    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OncxTransparentClick);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbColorClick);
-    Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbAddClick);
-    Panel12->Connect(wxEVT_PAINT,(wxObjectEventFunction)&wxsImageListEditorDlg::OnPanel12Paint,0,this);
-    Connect(ID_BITMAPBUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbDelClick);
-    Connect(ID_BITMAPBUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbClearClick);
-    Connect(ID_BITMAPBUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbSaveClick);
-    Connect(ID_BITMAPBUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbSaveListClick);
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbOKClick);
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsImageListEditorDlg::OnbCancelClick);
+    Connect(ID_BITMAPBUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbLeftClick));
+    Panel2->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel2->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel2LeftUp),0,this);
+    Panel3->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel3->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel3LeftUp),0,this);
+    Panel4->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel4->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel4LeftUp),0,this);
+    Panel5->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel5->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel5LeftUp),0,this);
+    Panel8->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel8->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel8LeftUp),0,this);
+    Panel6->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel6->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel6LeftUp),0,this);
+    Panel7->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel7->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel7LeftUp),0,this);
+    Panel9->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel9->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel9LeftUp),0,this);
+    Panel10->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel10->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel10LeftUp),0,this);
+    Panel11->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::PaintPreviewPanel),0,this);
+    Panel11->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel11LeftUp),0,this);
+    Connect(ID_BITMAPBUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbRightClick));
+    Panel1->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::OnPanel1Paint),0,this);
+    Panel1->Connect(wxEVT_LEFT_UP,wxMouseEventHandler(wxsImageListEditorDlg::OnPanel1LeftUp),0,this);
+    Connect(ID_BITMAPBUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbReadClick));
+    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OncxTransparentClick));
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbColorClick));
+    Connect(ID_BITMAPBUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbAddClick));
+    Panel12->Connect(wxEVT_PAINT,wxPaintEventHandler(wxsImageListEditorDlg::OnPanel12Paint),0,this);
+    Connect(ID_BITMAPBUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbDelClick));
+    Connect(ID_BITMAPBUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbClearClick));
+    Connect(ID_BITMAPBUTTON7,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbSaveClick));
+    Connect(ID_BITMAPBUTTON8,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbSaveListClick));
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbOKClick));
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsImageListEditorDlg::OnbCancelClick));
     //*)
 
     // reading images
@@ -487,7 +487,7 @@ bool wxsImageListEditorDlg::Execute(wxString &inName, wxArrayString &aImageData)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbAddClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbAddClick(cb_unused wxCommandEvent &event)
 {
     int         n;
     int         iw = 0, ih = 0;
@@ -540,7 +540,7 @@ void wxsImageListEditorDlg::OnbAddClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbReadClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbReadClick(cb_unused wxCommandEvent &event)
 {
     int         n;
     wxBitmap    bmp;
@@ -594,7 +594,7 @@ void wxsImageListEditorDlg::PreviewList(void)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel1Paint(wxPaintEvent &event)
+void wxsImageListEditorDlg::OnPanel1Paint(cb_unused wxPaintEvent &event)
 {
     int         iw, ih;
     wxPaintDC   dc(Panel1);
@@ -632,7 +632,7 @@ void wxsImageListEditorDlg::OnPanel1Paint(wxPaintEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbColorClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbColorClick(cb_unused wxCommandEvent &event)
 {
     int             n;
     wxColourData    cd;
@@ -739,7 +739,7 @@ void wxsImageListEditorDlg::UpdateEnabled(void)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OncxTransparentClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OncxTransparentClick(cb_unused wxCommandEvent &event)
 {
     UpdateEnabled();
     PreviewImport();
@@ -751,7 +751,7 @@ void wxsImageListEditorDlg::OncxTransparentClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbOKClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbOKClick(cb_unused wxCommandEvent &event)
 {
     EndModal(wxID_OK);
 }
@@ -762,7 +762,7 @@ void wxsImageListEditorDlg::OnbOKClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbCancelClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbCancelClick(cb_unused wxCommandEvent &event)
 {
     EndModal(wxID_CANCEL);
 }
@@ -813,7 +813,7 @@ void wxsImageListEditorDlg::PaintPreviewPanel(wxPaintEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbLeftClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbLeftClick(cb_unused wxCommandEvent &event)
 {
 
     m_FirstImage -= 1;
@@ -828,7 +828,7 @@ void wxsImageListEditorDlg::OnbLeftClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbRightClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbRightClick(cb_unused wxCommandEvent &event)
 {
     int     n;
 
@@ -846,7 +846,7 @@ void wxsImageListEditorDlg::OnbRightClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel2LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel2LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(0);
 }
@@ -857,7 +857,7 @@ void wxsImageListEditorDlg::OnPanel2LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel3LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel3LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(1);
 }
@@ -868,7 +868,7 @@ void wxsImageListEditorDlg::OnPanel3LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel4LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel4LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(2);
 }
@@ -879,7 +879,7 @@ void wxsImageListEditorDlg::OnPanel4LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel5LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel5LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(3);
 }
@@ -890,7 +890,7 @@ void wxsImageListEditorDlg::OnPanel5LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel8LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel8LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(4);
 }
@@ -901,7 +901,7 @@ void wxsImageListEditorDlg::OnPanel8LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel6LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel6LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(5);
 }
@@ -912,7 +912,7 @@ void wxsImageListEditorDlg::OnPanel6LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel7LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel7LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(6);
 }
@@ -923,7 +923,7 @@ void wxsImageListEditorDlg::OnPanel7LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel9LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel9LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(7);
 }
@@ -934,7 +934,7 @@ void wxsImageListEditorDlg::OnPanel9LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel10LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel10LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(8);
 }
@@ -945,7 +945,7 @@ void wxsImageListEditorDlg::OnPanel10LeftUp(wxMouseEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel11LeftUp(wxMouseEvent &event)
+void wxsImageListEditorDlg::OnPanel11LeftUp(cb_unused wxMouseEvent &event)
 {
     SelectPreviewPanel(9);
 }
@@ -973,7 +973,7 @@ void wxsImageListEditorDlg::SelectPreviewPanel(int aIndex)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnPanel12Paint(wxPaintEvent &event)
+void wxsImageListEditorDlg::OnPanel12Paint(cb_unused wxPaintEvent &event)
 {
     wxPaintDC   dc(Panel12);
     wxBitmap    bmp;
@@ -1009,7 +1009,7 @@ void wxsImageListEditorDlg::PreviewSelected(void)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbDelClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbDelClick(cb_unused wxCommandEvent &event)
 {
     int         n;
     wxString    ss;
@@ -1040,7 +1040,7 @@ void wxsImageListEditorDlg::OnbDelClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbClearClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbClearClick(cb_unused wxCommandEvent &event)
 {
     int         n;
     wxString    ss;
@@ -1068,7 +1068,7 @@ void wxsImageListEditorDlg::OnbClearClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbSaveClick(wxCommandEvent &event)
+void wxsImageListEditorDlg::OnbSaveClick(cb_unused wxCommandEvent &event)
 {
     int         n;
     wxBitmap    bmp;
@@ -1099,7 +1099,7 @@ void wxsImageListEditorDlg::OnbSaveClick(wxCommandEvent &event)
  * \return void
  *
  */
-void wxsImageListEditorDlg::OnbSaveListClick(wxCommandEvent& event)
+void wxsImageListEditorDlg::OnbSaveListClick(cb_unused wxCommandEvent& event)
 {
     int         i, n;
     int         w, h;

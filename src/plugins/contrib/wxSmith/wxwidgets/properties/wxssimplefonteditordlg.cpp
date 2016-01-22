@@ -26,8 +26,8 @@
 #include <wx/fontdlg.h>
 
 //(*InternalHeaders(wxsSimpleFontEditorDlg)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsSimpleFontEditorDlg)
@@ -52,11 +52,11 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
     m_Data(Data)
 {
     //(*Initialize(wxsSimpleFontEditorDlg)
+    wxBoxSizer* BoxSizer4;
     wxStaticBoxSizer* StaticBoxSizer2;
+    wxBoxSizer* BoxSizer1;
     wxFlexGridSizer* FlexGridSizer1;
     wxBoxSizer* BoxSizer3;
-    wxBoxSizer* BoxSizer4;
-    wxBoxSizer* BoxSizer1;
     wxStdDialogButtonSizer* StdDialogButtonSizer1;
 
     Create(parent, id, _("Font settings"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("id"));
@@ -105,9 +105,9 @@ wxsSimpleFontEditorDlg::wxsSimpleFontEditorDlg(wxWindow* parent,wxsFontData& Dat
     FlexGridSizer1->SetSizeHints(this);
     Center();
 
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton1Click);
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton3Click);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsSimpleFontEditorDlg::OnButton2Click);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton1Click));
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton3Click));
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsSimpleFontEditorDlg::OnButton2Click));
     //*)
 
     m_WorkingCopy = m_Data;
@@ -151,6 +151,7 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
             {
                 case wxFONTWEIGHT_BOLD:  Description << _("Bold\n"); break;
                 case wxFONTWEIGHT_LIGHT: Description << _("Light\n"); break;
+                case wxFONTWEIGHT_NORMAL: // fall-through
                 default:                 Description << _("Normal\n");
             }
         }
@@ -162,6 +163,7 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
             {
                 case wxFONTSTYLE_ITALIC: Description << _("Italic\n"); break;
                 case wxFONTSTYLE_SLANT:  Description << _("Slant\n"); break;
+                case wxFONTWEIGHT_NORMAL: // fall-through
                 default:                 Description << _("Normal\n");
             }
         }
@@ -180,14 +182,14 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
     TestArea->SetFont(m_WorkingCopy.BuildFont());
 }
 
-void wxsSimpleFontEditorDlg::OnOK(wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnOK(cb_unused wxCommandEvent& event)
 {
     m_Data = m_WorkingCopy;
     EndModal(wxID_OK);
 }
 
 
-void wxsSimpleFontEditorDlg::OnButton1Click(wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnButton1Click(cb_unused wxCommandEvent& event)
 {
     wxFont Font = ::wxGetFontFromUser(0,m_WorkingCopy.BuildFont());
     if ( !Font.Ok() ) return;
@@ -218,14 +220,14 @@ void wxsSimpleFontEditorDlg::OnButton1Click(wxCommandEvent& event)
     UpdateFontDescription();
 }
 
-void wxsSimpleFontEditorDlg::OnButton2Click(wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnButton2Click(cb_unused wxCommandEvent& event)
 {
     wxsFontEditorDlg Dlg(this,m_WorkingCopy);
     Dlg.ShowModal();
     UpdateFontDescription();
 }
 
-void wxsSimpleFontEditorDlg::OnButton3Click(wxCommandEvent& event)
+void wxsSimpleFontEditorDlg::OnButton3Click(cb_unused wxCommandEvent& event)
 {
     m_WorkingCopy.IsDefault = true;
     UpdateFontDescription();

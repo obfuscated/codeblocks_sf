@@ -26,12 +26,12 @@
 #include "wxsarraystringcheckproperty.h"
 
 //(*Headers(wxsArrayStringCheckEditorDlg)
-#include <wx/checklst.h>
 #include <wx/sizer.h>
+#include <wx/textctrl.h>
+#include <wx/checklst.h>
+#include <wx/statline.h>
 #include <wx/button.h>
 #include "scrollingdialog.h"
-#include <wx/statline.h>
-#include <wx/textctrl.h>
 //*)
 
 
@@ -68,16 +68,16 @@ class wxsArrayStringCheckEditorDlg: public wxScrollingDialog
         //*)
 
         //(*Declarations(wxsArrayStringCheckEditorDlg)
+        wxBoxSizer* BoxSizer4;
         wxButton* Button4;
         wxButton* Button1;
         wxButton* Button2;
-        wxButton* Button3;
+        wxButton* Button6;
         wxButton* Button5;
-        wxBoxSizer* BoxSizer4;
+        wxButton* Button3;
+        wxButton* Button7;
         wxCheckListBox* StringList;
         wxTextCtrl* EditArea;
-        wxButton* Button7;
-        wxButton* Button6;
         //*)
 
     private:
