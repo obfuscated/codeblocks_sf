@@ -221,6 +221,11 @@
           <accel>Alt-PgDn</accel>
           <help>Goto next bookmark</help>
         </object>
+        <object class="wxMenuItem" name="idEditBookmarksClearAll">
+          <label>Clear &amp;all bookmarks</label>
+          <accel></accel>
+          <help>Clear all bookmarks</help>
+        </object>
       </object>
       <object class="wxMenu" name="idEditFolding">
         <label>&amp;Folding</label>

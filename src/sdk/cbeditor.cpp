@@ -517,6 +517,7 @@ const int idBookmarks = wxNewId();
 const int idBookmarksToggle = wxNewId();
 const int idBookmarksPrevious = wxNewId();
 const int idBookmarksNext = wxNewId();
+const int idBookmarksClearAll = wxNewId();
 const int idFolding = wxNewId();
 const int idFoldingFoldAll = wxNewId();
 const int idFoldingUnfoldAll = wxNewId();
@@ -564,6 +565,7 @@ BEGIN_EVENT_TABLE(cbEditor, EditorBase)
     EVT_MENU(idBookmarksToggle, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarksPrevious, cbEditor::OnContextMenuEntry)
     EVT_MENU(idBookmarksNext, cbEditor::OnContextMenuEntry)
+    EVT_MENU(idBookmarksClearAll, cbEditor::OnContextMenuEntry)
     EVT_MENU(idFoldingFoldAll, cbEditor::OnContextMenuEntry)
     EVT_MENU(idFoldingUnfoldAll, cbEditor::OnContextMenuEntry)
     EVT_MENU(idFoldingToggleAll, cbEditor::OnContextMenuEntry)
@@ -2345,6 +2347,12 @@ void cbEditor::GotoPreviousBookmark()
     MarkerPrevious(BOOKMARK_MARKER);
 }
 
+void cbEditor::ClearAllBookmarks()
+{
+    cbStyledTextCtrl* control = GetControl();
+    control->MarkerDeleteAll(BOOKMARK_MARKER);
+}
+
 void cbEditor::SetDebugLine(int line)
 {
     MarkLine(DEBUG_MARKER, line);
@@ -2499,6 +2507,17 @@ void cbEditor::MarkerNext(int marker)
 {
     int line = GetControl()->GetCurrentLine() + 1;
     int newLine = GetControl()->MarkerNext(line, 1 << marker);
+
+    // Start from beginning if at last marker.
+    if (newLine == -1)
+    {
+        line = 0;
+        newLine = GetControl()->MarkerNext(line, 1 << marker);
+
+        if (newLine != -1)
+            InfoWindow::Display(_("Find bookmark action"), _("Reached the end of the document"), 1000);
+    }
+
     if (newLine != -1)
         GotoLine(newLine);
 }
@@ -2507,6 +2526,17 @@ void cbEditor::MarkerPrevious(int marker)
 {
     int line = GetControl()->GetCurrentLine() - 1;
     int newLine = GetControl()->MarkerPrevious(line, 1 << marker);
+
+    // Back to last one if at first marker.
+    if (newLine == -1)
+    {
+        line = GetControl()->GetLineCount();
+        newLine = GetControl()->MarkerPrevious(line, 1 << marker);
+
+        if (newLine != -1)
+            InfoWindow::Display(_("Find bookmark action"), _("Reached the end of the document"), 1000);
+    }
+
     if (newLine != -1)
         GotoLine(newLine);
 }
@@ -2710,6 +2740,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu->Append(idBookmarksToggle, _("Toggle bookmark"));
         menu->Append(idBookmarksPrevious, _("Goto previous bookmark"));
         menu->Append(idBookmarksNext, _("Goto next bookmark"));
+        menu->Append(idBookmarksClearAll, _("Clear all bookmarks"));
     }
     else if (id == idFolding)
     {
@@ -3016,6 +3047,8 @@ void cbEditor::OnContextMenuEntry(wxCommandEvent& event)
         MarkerNext(BOOKMARK_MARKER);
     else if (id == idBookmarksPrevious)
         MarkerPrevious(BOOKMARK_MARKER);
+    else if (id == idBookmarksClearAll)
+        control->MarkerDeleteAll(BOOKMARK_MARKER);
     else if (id == idFoldingFoldAll)
         FoldAll();
     else if (id == idFoldingUnfoldAll)

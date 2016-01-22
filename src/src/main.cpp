@@ -185,6 +185,7 @@ int idEditBookmarks               = XRCID("idEditBookmarks");
 int idEditBookmarksToggle         = XRCID("idEditBookmarksToggle");
 int idEditBookmarksPrevious       = XRCID("idEditBookmarksPrevious");
 int idEditBookmarksNext           = XRCID("idEditBookmarksNext");
+int idEditBookmarksClearAll       = XRCID("idEditBookmarksClearAll");
 int idEditFolding                 = XRCID("idEditFolding");
 int idEditFoldAll                 = XRCID("idEditFoldAll");
 int idEditUnfoldAll               = XRCID("idEditUnfoldAll");
@@ -352,6 +353,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idEditBookmarksToggle,       MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksNext,         MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditBookmarksPrevious,     MainFrame::OnEditMenuUpdateUI)
+    EVT_UPDATE_UI(idEditBookmarksClearAll,     MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditCommentSelected,       MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditUncommentSelected,     MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditToggleCommentSelected, MainFrame::OnEditMenuUpdateUI)
@@ -482,6 +484,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditBookmarksToggle,       MainFrame::OnEditBookmarksToggle)
     EVT_MENU(idEditBookmarksNext,         MainFrame::OnEditBookmarksNext)
     EVT_MENU(idEditBookmarksPrevious,     MainFrame::OnEditBookmarksPrevious)
+    EVT_MENU(idEditBookmarksClearAll,     MainFrame::OnEditBookmarksClearAll)
     EVT_MENU(idEditCommentSelected,       MainFrame::OnEditCommentSelected)
     EVT_MENU(idEditUncommentSelected,     MainFrame::OnEditUncommentSelected)
     EVT_MENU(idEditToggleCommentSelected, MainFrame::OnEditToggleCommentSelected)
@@ -2820,6 +2823,13 @@ void MainFrame::OnEditBookmarksPrevious(cb_unused wxCommandEvent& event)
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed)
         ed->GotoPreviousBookmark();
+}
+
+void MainFrame::OnEditBookmarksClearAll(wxCommandEvent& event)
+{
+    EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
+    if (ed)
+        ed->ClearAllBookmarks();
 }
 
 void MainFrame::OnEditUndo(cb_unused wxCommandEvent& event)

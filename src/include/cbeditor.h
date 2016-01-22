@@ -229,6 +229,9 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Go to previous debugger breakpoint. */
         void GotoPreviousBreakpoint();
 
+        /** Clear all bookmarks. */
+        void ClearAllBookmarks();
+
         /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
         void RefreshBreakpointMarkers();
 

@@ -200,6 +200,9 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Go to previous bookmark. */
         virtual void GotoPreviousBookmark(){}
 
+        /** Clear all bookmarks. */
+        virtual void ClearAllBookmarks(){}
+
         /** @brief Mark the debugger's active line.
           *
           * Highlight the line the debugger will execute next.
