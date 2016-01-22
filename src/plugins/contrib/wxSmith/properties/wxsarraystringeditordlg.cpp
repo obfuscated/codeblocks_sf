@@ -25,8 +25,8 @@
 #include <wx/tokenzr.h>
 
 //(*InternalHeaders(wxsArrayStringEditorDlg)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsArrayStringEditorDlg)
@@ -45,8 +45,8 @@ wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString&
 {
     //(*Initialize(wxsArrayStringEditorDlg)
     wxButton* Button1;
-    wxButton* Button2;
     wxBoxSizer* BoxSizer2;
+    wxButton* Button2;
     wxBoxSizer* BoxSizer1;
     wxStaticBoxSizer* StaticBoxSizer1;
 
@@ -67,8 +67,8 @@ wxsArrayStringEditorDlg::wxsArrayStringEditorDlg(wxWindow* parent,wxArrayString&
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
-    Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnOK);
-    Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxsArrayStringEditorDlg::OnCancel);
+    Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringEditorDlg::OnOK));
+    Connect(wxID_CANCEL,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxsArrayStringEditorDlg::OnCancel));
     //*)
 
     size_t Count = Data.Count();
