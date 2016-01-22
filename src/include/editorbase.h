@@ -159,44 +159,6 @@ class DLLIMPORT EditorBase : public wxPanel
           */
         virtual void GotoLine(int /*line*/, bool /*centerOnScreen*/ = true){}
 
-        /** Toggle breakpoint at specified line.
-          * @param line The line to toggle the breakpoint on. If @c line is -1,
-          *             use current line.
-          * @param notifyDebugger If true (and a debugger plugin is loaded),
-          *                       tell the debugger about this breakpoint.
-          */
-        virtual void ToggleBreakpoint(int /*line*/ = -1, bool /*notifyDebugger*/ = true){}
-
-        /** Does @c line has breakpoint?
-          * @param line The line to check for breakpoint existence.
-          * @return True if there is a breakpoint on this line, false if not.
-          */
-        virtual bool HasBreakpoint(cb_optional int line) const { return false; }
-
-        /** Go to next breakpoint. */
-        virtual void GotoNextBreakpoint(){}
-
-        /** Go to previous breakpoint. */
-        virtual void GotoPreviousBreakpoint(){}
-
-        /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
-        virtual void RefreshBreakpointMarkers(){}
-
-
-        /** @brief Mark the debugger's active line.
-          *
-          * Highlight the line the debugger will execute next.
-          * @param line The line in question.
-          */
-        virtual void SetDebugLine(cb_optional int line){}
-
-        /** @brief Mark line as error.
-          *
-          * Highlight the specified line as compiler error.
-          * @param line The line in question.
-          */
-        virtual void SetErrorLine(cb_optional int line){}
-
         /** Undo changes. */
         virtual void Undo(){}
 

@@ -421,8 +421,8 @@ void BreakpointsDlg::OnBreakpointEdit(CodeBlocksEvent& event)
             if (it->breakpoint->IsVisibleInEditor())
             {
                 EditorBase *ed = Manager::Get()->GetEditorManager()->GetEditor(filename);
-                if (ed)
-                    ed->RefreshBreakpointMarkers();
+                if (ed && ed->IsBuiltinEditor())
+                    static_cast<cbEditor*>(ed)->RefreshBreakpointMarkers();
             }
             break;
         }

@@ -218,19 +218,19 @@ class DLLIMPORT cbEditor : public EditorBase
         bool RemoveBreakpoint(int line = -1, bool notifyDebugger = true);
 
         /** Toggle debugger breakpoint at specified line. If @c line is -1, use current line. */
-        void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
+        virtual void ToggleBreakpoint(int line = -1, bool notifyDebugger = true);
 
         /** Does @c line has debugger breakpoint? If @c line is -1, use current line. */
-        bool HasBreakpoint(int line) const;
+        virtual bool HasBreakpoint(int line) const;
 
         /** Go to next debugger breakpoint. */
-        void GotoNextBreakpoint();
+        virtual void GotoNextBreakpoint();
 
         /** Go to previous debugger breakpoint. */
-        void GotoPreviousBreakpoint();
+        virtual void GotoPreviousBreakpoint();
 
         /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
-        void RefreshBreakpointMarkers();
+        virtual void RefreshBreakpointMarkers();
 
         /** Clear all bookmarks. */
         virtual void ClearAllBookmarks();
@@ -248,10 +248,10 @@ class DLLIMPORT cbEditor : public EditorBase
         virtual void GotoPreviousBookmark();
 
         /** Highlight the line the debugger will execute next. */
-        void SetDebugLine(int line);
+        virtual void SetDebugLine(int line);
 
         /** Highlight the specified line as error. */
-        void SetErrorLine(int line);
+        virtual void SetErrorLine(int line);
 
         /** Split the editor window.
           * @param split The type of split: horizontal or vertical. */

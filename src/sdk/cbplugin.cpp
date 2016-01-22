@@ -434,9 +434,10 @@ void cbDebuggerPlugin::OnEditorOpened(CodeBlocksEvent& event)
     // when an editor opens, look if we have breakpoints for it
     // and notify it...
     EditorBase* ed = event.GetEditor();
-    if (ed)
+    if (ed && ed->IsBuiltinEditor())
     {
-        ed->RefreshBreakpointMarkers();
+        cbEditor *editor = static_cast<cbEditor*>(ed);
+        editor->RefreshBreakpointMarkers();
 
         if (IsRunning())
         {
@@ -451,7 +452,7 @@ void cbDebuggerPlugin::OnEditorOpened(CodeBlocksEvent& event)
             dbgFileName.Normalize();
             if (dbgFileName.GetFullPath().IsSameAs(edFileName.GetFullPath()) && line != -1)
             {
-                ed->SetDebugLine(line - 1);
+                editor->SetDebugLine(line - 1);
             }
         }
     }
