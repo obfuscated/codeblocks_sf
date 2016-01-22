@@ -229,23 +229,23 @@ class DLLIMPORT cbEditor : public EditorBase
         /** Go to previous debugger breakpoint. */
         void GotoPreviousBreakpoint();
 
-        /** Clear all bookmarks. */
-        void ClearAllBookmarks();
-
         /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
         void RefreshBreakpointMarkers();
 
+        /** Clear all bookmarks. */
+        virtual void ClearAllBookmarks();
+
         /** Toggle bookmark at specified line. If @c line is -1, use current line. */
-        void ToggleBookmark(int line = -1);
+        virtual void ToggleBookmark(int line = -1);
 
         /** Does @c line has bookmark? */
-        bool HasBookmark(int line) const;
+        virtual bool HasBookmark(int line) const;
 
         /** Go to next bookmark. */
-        void GotoNextBookmark();
+        virtual void GotoNextBookmark();
 
         /** Go to previous bookmark. */
-        void GotoPreviousBookmark();
+        virtual void GotoPreviousBookmark();
 
         /** Highlight the line the debugger will execute next. */
         void SetDebugLine(int line);

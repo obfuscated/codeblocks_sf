@@ -182,26 +182,6 @@ class DLLIMPORT EditorBase : public wxPanel
         /** Refresh all markers for the breakpoints (only the markers for the current debugger will be shown) */
         virtual void RefreshBreakpointMarkers(){}
 
-        /** Toggle bookmark at specified line.
-          * @param line The line to toggle the bookmark on. If @c line is -1,
-          *             use current line.
-          */
-        virtual void ToggleBookmark(int /*line*/ = -1){}
-
-        /** Does @c line has bookmark?
-          * @param line The line to check for bookmark existence.
-          * @return True if there is a bookmark on this line, false if not.
-          */
-        virtual bool HasBookmark(cb_optional int line) const { return false; }
-
-        /** Go to next bookmark. */
-        virtual void GotoNextBookmark(){}
-
-        /** Go to previous bookmark. */
-        virtual void GotoPreviousBookmark(){}
-
-        /** Clear all bookmarks. */
-        virtual void ClearAllBookmarks(){}
 
         /** @brief Mark the debugger's active line.
           *

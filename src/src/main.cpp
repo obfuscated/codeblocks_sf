@@ -2807,29 +2807,29 @@ void MainFrame::OnEditGotoMatchingBrace(cb_unused wxCommandEvent& event)
 void MainFrame::OnEditBookmarksToggle(cb_unused wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (ed)
-        ed->ToggleBookmark();
+    if (ed && ed->IsBuiltinEditor())
+        static_cast<cbEditor*>(ed)->ToggleBookmark();
 }
 
 void MainFrame::OnEditBookmarksNext(cb_unused wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (ed)
-        ed->GotoNextBookmark();
+    if (ed && ed->IsBuiltinEditor())
+        static_cast<cbEditor*>(ed)->GotoNextBookmark();
 }
 
 void MainFrame::OnEditBookmarksPrevious(cb_unused wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (ed)
-        ed->GotoPreviousBookmark();
+    if (ed && ed->IsBuiltinEditor())
+        static_cast<cbEditor*>(ed)->GotoPreviousBookmark();
 }
 
 void MainFrame::OnEditBookmarksClearAll(wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
-    if (ed)
-        ed->ClearAllBookmarks();
+    if (ed && ed->IsBuiltinEditor())
+        static_cast<cbEditor*>(ed)->ClearAllBookmarks();
 }
 
 void MainFrame::OnEditUndo(cb_unused wxCommandEvent& event)

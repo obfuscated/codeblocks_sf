@@ -642,10 +642,6 @@ namespace ScriptBindings
                 func(&EditorBase::HasBreakpoint, "HasBreakpoint").
                 func(&EditorBase::GotoNextBreakpoint, "GotoNextBreakpoint").
                 func(&EditorBase::GotoPreviousBreakpoint, "GotoPreviousBreakpoint").
-                func(&EditorBase::ToggleBookmark, "ToggleBookmark").
-                func(&EditorBase::HasBookmark, "HasBookmark").
-                func(&EditorBase::GotoNextBookmark, "GotoNextBookmark").
-                func(&EditorBase::GotoPreviousBookmark, "GotoPreviousBookmark").
                 func(&EditorBase::Undo, "Undo").
                 func(&EditorBase::Redo, "Redo").
                 func(&EditorBase::Cut, "Cut").
@@ -676,6 +672,12 @@ namespace ScriptBindings
                 func(&cbEditor::AutoComplete, "AutoComplete").
                 func(&cbEditor::AddBreakpoint, "AddBreakpoint").
                 func(&cbEditor::RemoveBreakpoint, "RemoveBreakpoint").
+                func(&cbEditor::ToggleBookmark, "ToggleBookmark").
+                func(&cbEditor::HasBookmark, "HasBookmark").
+                func(&cbEditor::GotoNextBookmark, "GotoNextBookmark").
+                func(&cbEditor::GotoPreviousBookmark, "GotoPreviousBookmark").
+                func(&cbEditor::ClearAllBookmarks, "ClearAllBookmarks").
+
                 // these are not present in cbEditor; included to help scripts edit text
                 staticFuncVarArgs(&cbEditor_SetText, "SetText", "*").
                 staticFuncVarArgs(&cbEditor_GetText, "GetText", "*");
