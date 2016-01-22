@@ -935,7 +935,7 @@ void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,
                         case _T('t'):
                         {
                             wxChar* String = va_arg(ap,wxChar*);
-                            Result << wxsCodeMarks::WxString(Language, String ? String : _T(""), Translation);
+                            Result << wxsCodeMarks::WxString(Language,String?String:_T(""),Translation);
                             break;
                         }
 

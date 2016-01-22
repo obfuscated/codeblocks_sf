@@ -22,10 +22,12 @@
 
 #include "wxsdeleteitemres.h"
 
+#include <prep.h>
+
 //(*InternalHeaders(wxsDeleteItemRes)
+#include <wx/intl.h>
 #include <wx/button.h>
 #include <wx/string.h>
-#include <wx/intl.h>
 //*)
 
 //(*IdInit(wxsDeleteItemRes)
@@ -44,8 +46,8 @@ wxsDeleteItemRes::wxsDeleteItemRes()
     //(*Initialize(wxsDeleteItemRes)
     wxStaticText* StaticText1;
     wxBoxSizer* BoxSizer1;
-    wxStdDialogButtonSizer* StdDialogButtonSizer1;
     wxStaticBoxSizer* StaticBoxSizer1;
+    wxStdDialogButtonSizer* StdDialogButtonSizer1;
 
     Create(0, wxID_ANY, _("Deleting resource"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -72,7 +74,7 @@ wxsDeleteItemRes::wxsDeleteItemRes()
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
-    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsDeleteItemRes::Onm_DeleteSourcesClick);
+    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsDeleteItemRes::Onm_DeleteSourcesClick));
     //*)
 }
 
@@ -83,7 +85,7 @@ wxsDeleteItemRes::~wxsDeleteItemRes()
 }
 
 
-void wxsDeleteItemRes::Onm_DeleteSourcesClick(wxCommandEvent& event)
+void wxsDeleteItemRes::Onm_DeleteSourcesClick(cb_unused wxCommandEvent& event)
 {
     m_PhysDeleteSources->Enable(m_DeleteSources->GetValue());
 }

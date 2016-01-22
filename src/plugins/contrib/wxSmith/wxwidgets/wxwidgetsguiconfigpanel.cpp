@@ -27,8 +27,8 @@
 #include <wx/filedlg.h>
 
 //(*InternalHeaders(wxWidgetsGUIConfigPanel)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 #include <prep.h>
@@ -51,17 +51,17 @@ wxWidgetsGUIConfigPanel::wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* 
 {
     static const wxWindowID id = -1;
     //(*Initialize(wxWidgetsGUIConfigPanel)
-    wxStaticBoxSizer* StaticBoxSizer2;
-    wxBoxSizer* BoxSizer3;
-    wxButton* Button1;
-    wxButton* Button2;
-    wxBoxSizer* BoxSizer2;
-    wxStaticText* StaticText1;
-    wxStaticBoxSizer* StaticBoxSizer3;
     wxBoxSizer* BoxSizer4;
-    wxBoxSizer* BoxSizer1;
+    wxStaticBoxSizer* StaticBoxSizer2;
     wxStaticText* StaticText2;
+    wxButton* Button1;
+    wxStaticText* StaticText1;
+    wxBoxSizer* BoxSizer2;
+    wxButton* Button2;
+    wxStaticBoxSizer* StaticBoxSizer3;
+    wxBoxSizer* BoxSizer1;
     wxStaticBoxSizer* StaticBoxSizer1;
+    wxBoxSizer* BoxSizer3;
 
     Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -101,9 +101,9 @@ wxWidgetsGUIConfigPanel::wxWidgetsGUIConfigPanel(wxWindow* parent,wxWidgetsGUI* 
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIConfigPanel::OnButton1Click);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIConfigPanel::OnButton2Click);
-    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIConfigPanel::OnInitAllChange);
+    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIConfigPanel::OnButton1Click));
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIConfigPanel::OnButton2Click));
+    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxWidgetsGUIConfigPanel::OnInitAllChange));
     //*)
 
     for ( size_t i=0; i<m_GUI->m_LoadedResources.Count(); ++i )
@@ -137,12 +137,12 @@ wxWidgetsGUIConfigPanel::~wxWidgetsGUIConfigPanel()
 }
 
 
-void wxWidgetsGUIConfigPanel::OnInitAllChange(wxCommandEvent& event)
+void wxWidgetsGUIConfigPanel::OnInitAllChange(cb_unused wxCommandEvent& event)
 {
     InitAllNecessary->Enable(InitAll->GetValue());
 }
 
-void wxWidgetsGUIConfigPanel::OnButton1Click(wxCommandEvent& event)
+void wxWidgetsGUIConfigPanel::OnButton1Click(cb_unused wxCommandEvent& event)
 {
     wxString FileName = ::wxFileSelector(
         _("Select resource file"),
@@ -172,7 +172,7 @@ void wxWidgetsGUIConfigPanel::OnButton1Click(wxCommandEvent& event)
     }
 }
 
-void wxWidgetsGUIConfigPanel::OnButton2Click(wxCommandEvent& event)
+void wxWidgetsGUIConfigPanel::OnButton2Click(cb_unused wxCommandEvent& event)
 {
     AutoLoad->Clear();
 }

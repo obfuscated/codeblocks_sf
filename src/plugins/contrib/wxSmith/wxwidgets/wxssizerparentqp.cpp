@@ -23,8 +23,8 @@
 #include "wxssizerparentqp.h"
 
 //(*InternalHeaders(wxsSizerParentQP)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxsSizerParentQP)
@@ -55,17 +55,17 @@ BEGIN_EVENT_TABLE(wxsSizerParentQP,wxPanel)
     //*)
 END_EVENT_TABLE()
 
-wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWindowID id):
+wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra):
     wxsAdvQPPChild(parent,_("Sizer")),
     m_Extra(Extra)
 {
     //(*Initialize(wxsSizerParentQP)
     wxStaticBoxSizer* StaticBoxSizer2;
-    wxGridSizer* GridSizer1;
-    wxGridSizer* GridSizer2;
     wxStaticBoxSizer* StaticBoxSizer3;
+    wxGridSizer* GridSizer1;
     wxBoxSizer* BoxSizer1;
     wxStaticBoxSizer* StaticBoxSizer1;
+    wxGridSizer* GridSizer2;
 
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
@@ -136,46 +136,46 @@ wxsSizerParentQP::wxsSizerParentQP(wxsAdvQPP* parent,wxsSizerExtra* Extra,wxWind
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
 
-    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
-    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
-    Connect(ID_CHECKBOX8,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdAll);
-    Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
-    Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdChange);
-    Connect(ID_SPINCTRL1,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdSizeChange);
-    Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnBrdDlgChange);
-    Connect(ID_RADIOBUTTON4,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON5,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON6,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON7,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON8,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON9,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON10,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON11,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_RADIOBUTTON12,wxEVT_COMMAND_RADIOBUTTON_SELECTED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&wxsSizerParentQP::OnPlaceChange);
-    Connect(ID_SPINCTRL2,wxEVT_COMMAND_SPINCTRL_UPDATED,(wxObjectEventFunction)&wxsSizerParentQP::OnProportionChange);
+    Connect(ID_CHECKBOX1,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_CHECKBOX2,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_CHECKBOX8,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdAll));
+    Connect(ID_CHECKBOX3,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_CHECKBOX4,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdChange));
+    Connect(ID_SPINCTRL1,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEventHandler(wxsSizerParentQP::OnBrdSizeChange));
+    Connect(ID_CHECKBOX7,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnBrdDlgChange));
+    Connect(ID_RADIOBUTTON4,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON5,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON6,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON7,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON8,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON9,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON10,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON11,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_RADIOBUTTON12,wxEVT_COMMAND_RADIOBUTTON_SELECTED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_CHECKBOX6,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_CHECKBOX5,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(wxsSizerParentQP::OnPlaceChange));
+    Connect(ID_SPINCTRL2,wxEVT_COMMAND_SPINCTRL_UPDATED,wxSpinEventHandler(wxsSizerParentQP::OnProportionChange));
     //*)
 
     ReadData();
 }
 
-void wxsSizerParentQP::OnBrdChange(wxCommandEvent& event)
+void wxsSizerParentQP::OnBrdChange(cb_unused wxCommandEvent& event)
 {
     SaveData();
 }
 
-void wxsSizerParentQP::OnBrdSizeChange(wxSpinEvent& event)
+void wxsSizerParentQP::OnBrdSizeChange(cb_unused wxSpinEvent& event)
 {
     SaveData();
 }
 
-void wxsSizerParentQP::OnPlaceChange(wxCommandEvent& event)
+void wxsSizerParentQP::OnPlaceChange(cb_unused wxCommandEvent& event)
 {
     SaveData();
 }
 
-void wxsSizerParentQP::OnProportionChange(wxSpinEvent& event)
+void wxsSizerParentQP::OnProportionChange(cb_unused wxSpinEvent& event)
 {
     SaveData();
 }
@@ -282,7 +282,7 @@ wxsSizerParentQP::~wxsSizerParentQP()
     //*)
 }
 
-void wxsSizerParentQP::OnBrdDlgChange(wxCommandEvent& event)
+void wxsSizerParentQP::OnBrdDlgChange(cb_unused wxCommandEvent& event)
 {
     SaveData();
 }

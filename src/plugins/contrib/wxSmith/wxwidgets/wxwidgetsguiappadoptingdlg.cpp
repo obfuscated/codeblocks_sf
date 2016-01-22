@@ -28,8 +28,8 @@
 #include <projectmanager.h>
 
 //(*InternalHeaders(wxWidgetsGUIAppAdoptingDlg)
-#include <wx/string.h>
 #include <wx/intl.h>
+#include <wx/string.h>
 //*)
 
 //(*IdInit(wxWidgetsGUIAppAdoptingDlg)
@@ -60,9 +60,9 @@ wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidget
     m_Run(true)
 {
     //(*Initialize(wxWidgetsGUIAppAdoptingDlg)
-    wxBoxSizer* BoxSizer3;
     wxBoxSizer* BoxSizer1;
     wxStaticBoxSizer* StaticBoxSizer1;
+    wxBoxSizer* BoxSizer3;
 
     Create(parent, id, _("Integrating application class with wxSmith"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxHORIZONTAL);
@@ -101,11 +101,11 @@ wxWidgetsGUIAppAdoptingDlg::wxWidgetsGUIAppAdoptingDlg(wxWindow* parent,wxWidget
     BoxSizer1->SetSizeHints(this);
     Center();
 
-    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick);
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick);
-    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnButton4Click);
-    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&wxWidgetsGUIAppAdoptingDlg::OnButton6Click);
+    Connect(ID_BUTTON5,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick));
+    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick));
+    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick));
+    Connect(ID_BUTTON4,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnButton4Click));
+    Connect(ID_BUTTON6,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(wxWidgetsGUIAppAdoptingDlg::OnButton6Click));
     //*)
 
     m_Timer.Start(100,true);
@@ -117,7 +117,7 @@ wxWidgetsGUIAppAdoptingDlg::~wxWidgetsGUIAppAdoptingDlg()
     //*)
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(cb_unused wxCommandEvent& event)
 {
     wxMessageBox(
         _("In order to fully integrate wxSmith with wxWidgets application\n"
@@ -132,7 +132,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnButton6Click(wxCommandEvent& event)
         wxICON_ASTERISK|wxOK);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnButton4Click(wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnButton4Click(cb_unused wxCommandEvent& event)
 {
     EndModal(wxID_CANCEL);
 }
@@ -143,12 +143,12 @@ void wxWidgetsGUIAppAdoptingDlg::OnClose(wxCloseEvent& event)
     event.Skip();
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnTimer(wxTimerEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnTimer(cb_unused wxTimerEvent& event)
 {
     Run();
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick(wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnUseFileBtnClick(cb_unused wxCommandEvent& event)
 {
     int Index = FoundFiles->GetSelection();
     if ( Index < 0 ) return;
@@ -194,7 +194,7 @@ bool wxWidgetsGUIAppAdoptingDlg::ScanFile(ProjectFile* File)
     return m_GUI->ScanForApp(File);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(cb_unused wxCommandEvent& event)
 {
     wxString FileName = ::wxFileSelector(
         _("Select file with implementation of application class"),
@@ -227,7 +227,7 @@ void wxWidgetsGUIAppAdoptingDlg::OnSelectBtnClick(wxCommandEvent& event)
     AddSmith(PF->relativeFilename);
 }
 
-void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(wxCommandEvent& event)
+void wxWidgetsGUIAppAdoptingDlg::OnCreateBtnClick(cb_unused wxCommandEvent& event)
 {
     wxString FileName = ::wxFileSelector(
         _("Please select cpp file where application class should be created"),

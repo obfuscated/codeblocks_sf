@@ -24,13 +24,13 @@
 #define WXWIDGETSGUICONFIGPANEL_H
 
 //(*Headers(wxWidgetsGUIConfigPanel)
-#include <wx/combobox.h>
-#include <wx/checkbox.h>
 #include <wx/sizer.h>
-#include <wx/button.h>
-#include <wx/panel.h>
 #include <wx/stattext.h>
 #include <wx/textctrl.h>
+#include <wx/checkbox.h>
+#include <wx/panel.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
 //*)
 
 #include "wxwidgetsgui.h"
@@ -67,9 +67,9 @@ class wxWidgetsGUIConfigPanel: public cbConfigurationPanel
 
         //(*Declarations(wxWidgetsGUIConfigPanel)
         wxTextCtrl* AutoLoad;
+        wxComboBox* MainRes;
         wxCheckBox* InitAll;
         wxCheckBox* InitAllNecessary;
-        wxComboBox* MainRes;
         //*)
 
         wxWidgetsGUI* m_GUI;
