@@ -60,8 +60,8 @@ X_PRJ_FILE_PROJ  ICON "src/resources/icons/proj.ico"
 ///////////////////////////////////////////////////////////////////////////////
 // Version information
 VS_VERSION_INFO    VERSIONINFO
-  FILEVERSION      13,12,0,0
-  PRODUCTVERSION   13,12,0,1
+  FILEVERSION      16,01,0,0
+  PRODUCTVERSION   16,01,0,1
   FILEFLAGSMASK    0x3fL // VS_FFI_FILEFLAGSMASK
 #ifdef _DEBUG
   // Can be a combination of the following OR'ed flags:
@@ -92,19 +92,19 @@ VS_VERSION_INFO    VERSIONINFO
   {
     BLOCK "040904E4" // Lang=US English, CharSet=Windows Multilingual
     {
-      VALUE "Build",            "November 2013\0"
+      VALUE "Build",            "January 2016\0"
       VALUE "Comments",         "Cross-platform IDE built around wxWidgets, designed to be extensible and configurable. Licensed under GPL3.\0"
       VALUE "CompanyName",      "Code::Blocks Team\0"
       VALUE "Developer",        "Code::Blocks Team\0"
       VALUE "FileDescription",  "Code::Blocks IDE\0"
-      VALUE "FileVersion",      "13.12.0.0\0"
+      VALUE "FileVersion",      "16.01.0.0\0"
       VALUE "InternalName",     "Code::Blocks\0"
-      VALUE "LegalCopyright",   "Copyright (C) 2004-2015 Code::Blocks Team\0"
+      VALUE "LegalCopyright",   "Copyright (C) 2004-2016 Code::Blocks Team\0"
       VALUE "LegalTrademarks",  "All rights reserved.\0"
       VALUE "OriginalFilename", "codeblocks.exe\0"
       VALUE "PrivateBuild",     "\0"
       VALUE "ProductName",      "Code::Blocks\0"
-      VALUE "ProductVersion",   "13.12.0.0\0"
+      VALUE "ProductVersion",   "16.01.0.0\0"
       VALUE "SpecialBuild",     "\0"
       VALUE "Support",          "mandrav at codeblocks.org\0"
       VALUE "Users",            "Unlimited.\0"
