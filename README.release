@@ -1,14 +1,14 @@
 Preparations for a release:
 
 1.) Make a release branch in SVN, e.g.
-    http://svn.code.sf.net/p/codeblocks/code/branches/release-15.xx
+    http://svn.code.sf.net/p/codeblocks/code/branches/release-16.xx
 
 2.) Adopt the RELEASE #define in:
-    [C::B]\src\src\appglobals.h 
+    [C::B]\src\src\appglobals.h
     ...and remove the comment.
 
 3.) Feel free to adopt or add a new logo in e.g.:
-    [C::B]\src\src\resources\images\splash_1312.png
+    [C::B]\src\src\resources\images\splash_1601.png
 
 4.) With repect to changes in the logo, adopt:
     [C::B]\src\src\splashscreen.cpp
@@ -36,4 +36,4 @@ Preparations for a release:
     alike. (But including logos etc. if not yet done.)
 
 6.) After release, rename the branch to the date C::B was actually released:
-    branches/release-15.xx -> branches/release-15.12
+    branches/release-16.xx -> branches/release-16.01
