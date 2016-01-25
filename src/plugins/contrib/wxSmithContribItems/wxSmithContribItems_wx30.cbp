@@ -148,8 +148,6 @@
 		<Unit filename="wxSmithPlot/wxsMarker.h" />
 		<Unit filename="wxSmithPlot/wxsMathPlot.cpp" />
 		<Unit filename="wxSmithPlot/wxsMathPlot.h" />
-		<Unit filename="wxSmithPlot/wxsSmithPlot.cpp" />
-		<Unit filename="wxSmithPlot/wxsSmithPlot.h" />
 		<Unit filename="wxSmithPlot/wxsText.cpp" />
 		<Unit filename="wxSmithPlot/wxsText.h" />
 		<Unit filename="wxSmithPlot/wxsVector.cpp" />

@@ -102,7 +102,6 @@ $(TREELIST_SRC) \
 ./wxSmithPlot/wxsAxis.cpp \
 ./wxSmithPlot/wxsMarker.cpp \
 ./wxSmithPlot/wxsMathPlot.cpp \
-./wxSmithPlot/wxsSmithPlot.cpp \
 ./wxSmithPlot/wxsText.cpp \
 ./wxSmithPlot/wxsVector.cpp \
 ./wxSmithContribItems.cpp
@@ -132,7 +131,6 @@ $(TREELIST_HDR) \
 ./wxSmithPlot/wxsAxis.h \
 ./wxSmithPlot/wxsMarker.h \
 ./wxSmithPlot/wxsMathPlot.h \
-./wxSmithPlot/wxsSmithPlot.h \
 ./wxSmithPlot/wxsText.h \
 ./wxSmithPlot/wxsVector.h \
 ./wxSmithContribItems.h
