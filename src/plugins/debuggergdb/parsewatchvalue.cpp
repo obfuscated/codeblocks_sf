@@ -393,7 +393,7 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
                         token_real_end = expanded_token.end;
                     }
                 }
-                else if (expanded_token.end == static_cast<int>(value.length()))
+                else if (expanded_token.end == static_cast<int>(value.length()) || value[expanded_token.end] == wxT('}'))
                 {
                     token.end = expanded_token.end;
                     token_real_end = expanded_token.end;

@@ -398,6 +398,24 @@ TEST(RepeatingChars11_children_name)
     CHECK_EQUAL(wxT("[2]"), getName(*w->GetChild(2)));
 }
 
+TEST(RepeatingChars12)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{m_pchData = 0x75225a4 L'/' <repeats 12 times>, '/' <repeats 43 times>}")));
+    CHECK_EQUAL(wxT("t= {m_pchData=0x75225a4 L'/' <repeats 12 times>, '/' <repeats 43 times>}"), *w);
+}
+
+TEST(RepeatingChars13)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("t")));
+    CHECK(ParseGDBWatchValue(w, wxT("{<wxStringBase> = {static npos = 4294967295, m_pchData = 0x75225a4 L'/' ")
+                                wxT("<repeats 43 times>, \"\\n//\\n\", '/' <repeats 43 times>}, <No data fields>}")));
+    CHECK_EQUAL(wxT("t= {<wxStringBase>= {static npos=4294967295,m_pchData=0x75225a4 L'/' ")
+                wxT("<repeats 43 times>, \"\\n//\\n\", '/' <repeats 43 times>},[1]=<No data fields>}"),
+                *w);
+}
+
+
 TEST(StringWide)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
