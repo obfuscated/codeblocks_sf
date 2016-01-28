@@ -44,24 +44,24 @@ AbbreviationsConfigPanel::AbbreviationsConfigPanel(wxWindow* parent, Abbreviatio
 
     FillKeywords();
 
-    Connect(XRCID("lstAutoCompKeyword"), wxEVT_COMMAND_LISTBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompKeyword);
-    Connect(XRCID("btnAutoCompAdd"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompAdd);
-    Connect(XRCID("btnAutoCompDelete"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompDelete);
-    Connect(XRCID("cmbAutoCompLanguage"), wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageSelect);
-    Connect(XRCID("btnAutoCompAddLanguage"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageAdd);
-    Connect(XRCID("btnAutoCompCopyLanguage"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageCopy);
-    Connect(XRCID("btnAutoCompDelLanguage"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageDelete);
+    Connect(XRCID("lstAutoCompKeyword"),      wxEVT_COMMAND_LISTBOX_SELECTED,  (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompKeyword);
+    Connect(XRCID("btnAutoCompAdd"),          wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompAdd);
+    Connect(XRCID("btnAutoCompDelete"),       wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompDelete);
+    Connect(XRCID("cmbAutoCompLanguage"),     wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageSelect);
+    Connect(XRCID("btnAutoCompAddLanguage"),  wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageAdd);
+    Connect(XRCID("btnAutoCompCopyLanguage"), wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageCopy);
+    Connect(XRCID("btnAutoCompDelLanguage"),  wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageDelete);
 }
 
 AbbreviationsConfigPanel::~AbbreviationsConfigPanel()
 {
-    Disconnect(XRCID("lstAutoCompKeyword"), wxEVT_COMMAND_LISTBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompKeyword);
-    Disconnect(XRCID("btnAutoCompAdd"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompAdd);
-    Disconnect(XRCID("btnAutoCompDelete"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompDelete);
-    Disconnect(XRCID("cmbAutoCompLanguage"), wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageSelect);
-    Disconnect(XRCID("btnAutoCompAddLanguage"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageAdd);
-    Disconnect(XRCID("btnAutoCompCopyLanguage"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageCopy);
-    Disconnect(XRCID("btnAutoCompDelLanguage"), wxEVT_COMMAND_BUTTON_CLICKED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageDelete);
+    Disconnect(XRCID("lstAutoCompKeyword"),      wxEVT_COMMAND_LISTBOX_SELECTED,  (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompKeyword);
+    Disconnect(XRCID("btnAutoCompAdd"),          wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompAdd);
+    Disconnect(XRCID("btnAutoCompDelete"),       wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnAutoCompDelete);
+    Disconnect(XRCID("cmbAutoCompLanguage"),     wxEVT_COMMAND_COMBOBOX_SELECTED, (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageSelect);
+    Disconnect(XRCID("btnAutoCompAddLanguage"),  wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageAdd);
+    Disconnect(XRCID("btnAutoCompCopyLanguage"), wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageCopy);
+    Disconnect(XRCID("btnAutoCompDelLanguage"),  wxEVT_COMMAND_BUTTON_CLICKED,    (wxObjectEventFunction)&AbbreviationsConfigPanel::OnLanguageDelete);
 
     if (m_AutoCompTextControl)
         delete m_AutoCompTextControl;
@@ -189,20 +189,22 @@ void AbbreviationsConfigPanel::OnApply()
     AutoCompUpdate(m_Keyword->GetStringSelection(),m_LanguageCmb->GetValue());
 
     for (AutoCompLanguageMap::iterator it = m_Plugin->m_AutoCompLanguageMap.begin(); it != m_Plugin->m_AutoCompLanguageMap.end(); ++it)
-    {
         Abbreviations::ExchangeTabAndSpaces(*it->second);
-    }
-    //*(m_Plugin->m_AutoCompLanguageMap[defaultLanguageStr]) = m_AutoCompMap;
 }
 
 void AbbreviationsConfigPanel::OnCancel()
-{}
+{
+}
 
 wxString AbbreviationsConfigPanel::GetTitle() const
-{ return _("Abbreviations"); }
+{
+  return _("Abbreviations");
+}
 
 wxString AbbreviationsConfigPanel::GetBitmapBaseName() const
-{ return _T("abbrev"); }
+{
+  return _T("abbrev");
+}
 
 void AbbreviationsConfigPanel::FillLangugages()
 {
@@ -211,9 +213,8 @@ void AbbreviationsConfigPanel::FillLangugages()
     wxSortedArrayString langs;
     AutoCompLanguageMap::iterator it;
     for (it = m_Plugin->m_AutoCompLanguageMap.begin(); it != m_Plugin->m_AutoCompLanguageMap.end(); ++it)
-    {
         langs.Add(it->first);
-    }
+
     m_LanguageCmb->Append(langs);
 }
 
@@ -294,9 +295,8 @@ void AbbreviationsConfigPanel::OnLanguageCopy(cb_unused wxCommandEvent& event)
     AutoCompleteMap* pMapCopy = m_Plugin->m_AutoCompLanguageMap[langCopy];
     AutoCompleteMap* pMapNew  = m_Plugin->m_AutoCompLanguageMap[langNew];
     for (AutoCompleteMap::iterator it = pMapCopy->begin(); it != pMapCopy->end(); ++it)
-    {
         (*pMapNew)[it->first] = it->second;
-    }
+
     FillKeywords();
 }
 

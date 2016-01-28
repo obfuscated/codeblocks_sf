@@ -103,7 +103,7 @@ private:
     static Abbreviations* Get() { return m_Singleton; }
 
     void DoAutoComplete(cbEditor* ed);
-    static Abbreviations* m_Singleton;            ///< \brief Singleton object
+    static Abbreviations* m_Singleton; ///< \brief Singleton object
 
     /** \brief Registering scripting stuff */
     void RegisterScripting();
@@ -122,14 +122,14 @@ private:
     void OnEditMenuUpdateUI(wxUpdateUIEvent& event);
 
 public:
-  void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
+    void EditorEventHook(cbEditor* editor, wxScintillaEvent& event);
 
 private:
     friend class AbbreviationsConfigPanel;
     AutoCompLanguageMap m_AutoCompLanguageMap;
 
-    int             m_EditorHookId;
-    bool            m_IsAutoCompVisible; //!< is AutoComp opened by Abbreviations
+    int                 m_EditorHookId;
+    bool                m_IsAutoCompVisible; //!< is AutoComp opened by Abbreviations
 private:
     DECLARE_EVENT_TABLE();
 };
