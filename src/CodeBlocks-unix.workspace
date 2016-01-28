@@ -3,6 +3,7 @@
 	<Workspace title="CodeBlocks Workspace wx2.8.x (Unix)">
 		<Project filename="CodeBlocks-unix.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config-unix.cbp" />
+		<Project filename="tools/cbp2make/cbp2make-unix.cbp" />
 		<Project filename="plugins/codecompletion/cctest-unix.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
