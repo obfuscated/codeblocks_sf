@@ -130,11 +130,12 @@ void MacrosManager::ClearProjectKeys()
 
     if (platform::windows)
     {
+        m_Macros[_T("CMD_NULL")]  = _T("NUL");
+
         const wxString cmd(_T("cmd /c "));
         m_Macros[_T("CMD_CP")]    = cmd + _T("copy");
         m_Macros[_T("CMD_RM")]    = cmd + _T("del");
         m_Macros[_T("CMD_MV")]    = cmd + _T("move");
-        m_Macros[_T("CMD_NULL")]  = cmd + _T("NUL");
         m_Macros[_T("CMD_MKDIR")] = cmd + _T("md");
         m_Macros[_T("CMD_RMDIR")] = cmd + _T("rd");
     }
@@ -190,7 +191,8 @@ wxString GetSelectedText()
             else
             {
                 int iCurrentPos = stc->GetCurrentPos();
-                return stc->GetTextRange(stc->WordStartPosition(iCurrentPos, true), stc->WordEndPosition(iCurrentPos, true));
+                return stc->GetTextRange(stc->WordStartPosition(iCurrentPos, true),
+                                         stc->WordEndPosition(iCurrentPos, true));
             }
         }
     }
