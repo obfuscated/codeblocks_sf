@@ -72,6 +72,7 @@ function RegisterWizards()
     //
     RegisterWizard(wizFiles,       _T("empty_file"),   _T("Empty file"),            _T("C/C++"));
     RegisterWizard(wizFiles,       _T("c_file"),       _T("C/C++ source"),          _T("C/C++"));
+    RegisterWizard(wizFiles,       _T("d_source"),     _T("D source"),              _T("D language"));
     RegisterWizard(wizFiles,       _T("h_file"),       _T("C/C++ header"),          _T("C/C++"));
     RegisterWizard(wizFiles,       _T("fortran/file"), _T("Fortran source"),        _T("Fortran"));
 }
