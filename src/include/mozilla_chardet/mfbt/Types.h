@@ -37,7 +37,7 @@
  * These macros are designed for use by library interfaces -- not for normal
  * methods or data used cross-file.
  */
-#if defined(WIN32) || defined(XP_OS2)
+#if defined(WIN32)
 #  define MOZ_EXPORT   __declspec(dllexport)
 #else /* Unix */
 #  ifdef HAVE_VISIBILITY_ATTRIBUTE
@@ -63,15 +63,11 @@
 #  else
 #    define MOZ_IMPORT_API __declspec(dllimport)
 #  endif
-#elif defined(XP_OS2)
-#  define MOZ_IMPORT_API  __declspec(dllimport)
 #else
 #  define MOZ_IMPORT_API MOZ_EXPORT
 #endif
 
 #if defined(_WIN32) && !defined(__MWERKS__)
-#  define MOZ_IMPORT_DATA  __declspec(dllimport)
-#elif defined(XP_OS2)
 #  define MOZ_IMPORT_DATA  __declspec(dllimport)
 #else
 #  define MOZ_IMPORT_DATA  MOZ_EXPORT
@@ -93,7 +89,7 @@
    * symbols. We add the weak attribute to the import version of the MFBT API
    * macros to exploit this.
    */
-#  if defined(MOZ_GLUE_IN_PROGRAM)
+#  if defined(MOZ_GLUE_IN_PROGRAM) && !defined(MOZILLA_XPCOMRT_API)
 #    define MFBT_API   __attribute__((weak)) MOZ_IMPORT_API
 #    define MFBT_DATA  __attribute__((weak)) MOZ_IMPORT_DATA
 #  else

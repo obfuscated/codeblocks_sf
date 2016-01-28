@@ -1,4 +1,5 @@
-/* -*- Mode: C++; tab-width: 4; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
+/* vim: set ts=8 sts=2 et sw=2 tw=80: */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -6,8 +7,11 @@
 #ifndef nsError_h__
 #define nsError_h__
 
-#include "mozilla/Likely.h"
-#include "mozilla/TypedEnum.h"
+#ifndef __cplusplus
+#error nsError.h no longer supports C sources
+#endif
+
+#include "Likely.h" // C::B change
 
 #include <stdint.h>
 
@@ -69,6 +73,11 @@
 #define NS_ERROR_MODULE_DOM_INDEXEDDB 33
 #define NS_ERROR_MODULE_DOM_FILEHANDLE 34
 #define NS_ERROR_MODULE_SIGNED_JAR 35
+#define NS_ERROR_MODULE_DOM_FILESYSTEM 36
+#define NS_ERROR_MODULE_DOM_BLUETOOTH 37
+#define NS_ERROR_MODULE_SIGNED_APP 38
+#define NS_ERROR_MODULE_DOM_ANIM 39
+#define NS_ERROR_MODULE_DOM_PUSH 40
 
 /* NS_ERROR_MODULE_GENERAL should be used by modules that do not
  * care if return code values overlap. Callers of methods that
@@ -109,76 +118,23 @@
 
 /*@{*/
 
-/* Unfortunately, our workaround for compilers that don't support enum class
- * doesn't really work for nsresult.  We need constants like NS_OK with type
- * nsresult, but they can't be used in (e.g.) switch cases if they're objects.
- * But if we define them to be of type nsresult::Enum instead, that causes
- *   return foo ? F() : NS_ERROR_FAILURE;
- * to fail, because nsresult and nsresult::Enum are two distinct types and
- * either can be converted to the other, so it's ambiguous.  So we have to fall
- * back to a regular enum.
- */
-/*
-#if defined(MOZ_HAVE_CXX11_STRONG_ENUMS)
-  typedef enum class tag_nsresult : uint32_t
-  {
-    #undef ERROR
-    #define ERROR(key, val) key = val
-    #include "ErrorList.h"
-    #undef ERROR
-  } nsresult;
-*/
-
-  /*
-   * enum classes don't place their initializers in the global scope, so we need
-   * #define's for compatibility with old code.
-   */
-/*
-  #include "ErrorListCxxDefines.h"
-#elif defined(MOZ_HAVE_CXX11_ENUM_TYPE)
-  typedef enum tag_nsresult : uint32_t
-  {
-    #undef ERROR
-    #define ERROR(key, val) key = val
-    #include "ErrorList.h"
-    #undef ERROR
-  } nsresult;
-#elif defined(__cplusplus)
-*/
-  /*
-   * We're C++ in an old compiler lacking enum classes *and* typed enums (likely
-   * gcc < 4.5.1 as clang/MSVC have long supported one or both), or compiler
-   * support is unknown.  Yet nsresult must have unsigned 32-bit representation.
-   * So just make it a typedef, and implement the constants with global consts.
-   */
-/*
-  typedef uint32_t nsresult;
-
-  const nsresult
+enum class nsresult : uint32_t
+{
   #undef ERROR
   #define ERROR(key, val) key = val
   #include "ErrorList.h"
   #undef ERROR
-    ;
-#else
-*/
-  /*
-   * C doesn't have any way to fix the type underlying an enum, and enum
-   * initializers can't have values outside the range of 'int'.  So typedef
-   * nsresult to the correct unsigned type, and fall back to using #defines for
-   * all error constants.
-   */
-  typedef uint32_t nsresult;
-// Error codes, see ErrorList.h:
-  #define NS_OK                    0
-  #define nsMBCSGroupProberFailed  1
-  #define nsSBCSGroupProberFailed  2
-  #define nsLatin1ProberFailed     3
-  #define nsEscCharSetProberFailed 4
+};
+
 /*
-  #include "ErrorListCDefines.h"
-#endif
-*/
+ * enum classes don't place their initializers in the global scope, so we need
+ * constants for compatibility with old code.
+ */
+const nsresult
+  #define ERROR(key, val) key = nsresult::key
+  #include "ErrorList.h"
+  #undef ERROR
+;
 
 #undef SUCCESS_OR_FAILURE
 #undef SUCCESS
@@ -189,34 +145,32 @@
  * @return 0 or 1 (false/true with bool type for C++)
  */
 
-#ifdef __cplusplus
-inline uint32_t NS_FAILED_impl(nsresult _nsresult) {
-  return static_cast<uint32_t>(_nsresult) & 0x80000000;
+inline uint32_t
+NS_FAILED_impl(nsresult aErr)
+{
+  return static_cast<uint32_t>(aErr) & 0x80000000;
 }
 #define NS_FAILED(_nsresult)    ((bool)MOZ_UNLIKELY(NS_FAILED_impl(_nsresult)))
 #define NS_SUCCEEDED(_nsresult) ((bool)MOZ_LIKELY(!NS_FAILED_impl(_nsresult)))
 
 /* Check that our enum type is actually uint32_t as expected */
+// C::B change start
 /*
 static_assert(((nsresult)0) < ((nsresult)-1),
               "nsresult must be an unsigned type");
 static_assert(sizeof(nsresult) == sizeof(uint32_t),
               "nsresult must be 32 bits");
 */
-#else
-#define NS_FAILED_impl(_nsresult) ((_nsresult) & 0x80000000)
-#define NS_FAILED(_nsresult)    (MOZ_UNLIKELY(NS_FAILED_impl(_nsresult)))
-#define NS_SUCCEEDED(_nsresult) (MOZ_LIKELY(!NS_FAILED_impl(_nsresult)))
-#endif
+// C::B change end
 
 /**
  * @name Standard Error Generating Macros
  */
 
 #define NS_ERROR_GENERATE(sev, module, code) \
-    (nsresult)(((uint32_t)(sev) << 31) | \
-               ((uint32_t)(module + NS_ERROR_MODULE_BASE_OFFSET) << 16) | \
-               ((uint32_t)(code)))
+  (nsresult)(((uint32_t)(sev) << 31) | \
+             ((uint32_t)(module + NS_ERROR_MODULE_BASE_OFFSET) << 16) | \
+             ((uint32_t)(code)))
 
 #define NS_ERROR_GENERATE_SUCCESS(module, code) \
   NS_ERROR_GENERATE(NS_ERROR_SEVERITY_SUCCESS, module, code)
@@ -232,31 +186,33 @@ static_assert(sizeof(nsresult) == sizeof(uint32_t),
   *      Do not depend on this function. It will be going away!
   ***********************************************************************
   */
+// C::B change start
 /*
 extern nsresult
 NS_ErrorAccordingToNSPR();
 */
+// C::B change end
 
 
 /**
  * @name Standard Macros for retrieving error bits
  */
 
-#ifdef __cplusplus
-inline uint16_t NS_ERROR_GET_CODE(nsresult err) {
-  return uint32_t(err) & 0xffff;
+inline uint16_t
+NS_ERROR_GET_CODE(nsresult aErr)
+{
+  return uint32_t(aErr) & 0xffff;
 }
-inline uint16_t NS_ERROR_GET_MODULE(nsresult err) {
-  return ((uint32_t(err) >> 16) - NS_ERROR_MODULE_BASE_OFFSET) & 0x1fff;
+inline uint16_t
+NS_ERROR_GET_MODULE(nsresult aErr)
+{
+  return ((uint32_t(aErr) >> 16) - NS_ERROR_MODULE_BASE_OFFSET) & 0x1fff;
 }
-inline bool NS_ERROR_GET_SEVERITY(nsresult err) {
-  return uint32_t(err) >> 31;
+inline bool
+NS_ERROR_GET_SEVERITY(nsresult aErr)
+{
+  return uint32_t(aErr) >> 31;
 }
-#else
-#define NS_ERROR_GET_CODE(err)     ((err) & 0xffff)
-#define NS_ERROR_GET_MODULE(err)   ((((err) >> 16) - NS_ERROR_MODULE_BASE_OFFSET) & 0x1fff)
-#define NS_ERROR_GET_SEVERITY(err) (((err) >> 31) & 0x1)
-#endif
 
 
 #ifdef _MSC_VER

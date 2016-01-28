@@ -132,32 +132,26 @@ ALLHEADERS = annoyingdialog.h \
 				xtra_res.h \
 				mozilla_chardet/CharDistribution.h \
 				mozilla_chardet/JpCntx.h \
-				mozilla_chardet/nsBig5Prober.h \
 				mozilla_chardet/nsCharSetProber.h \
 				mozilla_chardet/nsCodingStateMachine.h \
 				mozilla_chardet/nsEscCharsetProber.h \
 				mozilla_chardet/nsEUCJPProber.h \
-				mozilla_chardet/nsEUCKRProber.h \
-				mozilla_chardet/nsEUCTWProber.h \
-				mozilla_chardet/nsGB2312Prober.h \
-				mozilla_chardet/nsHebrewProber.h \
 				mozilla_chardet/nsLatin1Prober.h \
 				mozilla_chardet/nsMBCSGroupProber.h \
 				mozilla_chardet/nsPkgInt.h \
-				mozilla_chardet/nsSBCharSetProber.h \
-				mozilla_chardet/nsSBCSGroupProber.h \
 				mozilla_chardet/nsSJISProber.h \
 				mozilla_chardet/nsUniversalDetector.h \
 				mozilla_chardet/nsUTF8Prober.h \
-				mozilla_chardet/mfbt/mozilla/Alignment.h \
-				mozilla_chardet/mfbt/mozilla/Assertions.h \
-				mozilla_chardet/mfbt/mozilla/Attributes.h \
-				mozilla_chardet/mfbt/mozilla/Compiler.h \
-				mozilla_chardet/mfbt/mozilla/Likely.h \
-				mozilla_chardet/mfbt/mozilla/NullPtr.h \
-				mozilla_chardet/mfbt/mozilla/TypedEnum.h \
-				mozilla_chardet/mfbt/mozilla/Types.h \
-				mozilla_chardet/mfbt/mozilla/Util.h \
+				mozilla_chardet/mfbt/Alignment.h \
+				mozilla_chardet/mfbt/Assertions.h \
+				mozilla_chardet/mfbt/Attributes.h \
+				mozilla_chardet/mfbt/Compiler.h \
+				mozilla_chardet/mfbt/Likely.h \
+				mozilla_chardet/mfbt/MacroArgs.h \
+				mozilla_chardet/mfbt/NullPtr.h \
+				mozilla_chardet/mfbt/RefCountType.h \
+				mozilla_chardet/mfbt/Types.h \
+				mozilla_chardet/mfbt/TypeTraits.h \
 				mozilla_chardet/nsprpub/pr/include/prcpucfg.h \
 				mozilla_chardet/nsprpub/pr/include/prcpucfg_darwin.h \
 				mozilla_chardet/nsprpub/pr/include/prcpucfg_linux.h \

@@ -2089,6 +2089,9 @@
 		<Unit filename="plugins/scriptedwizard/resources/d/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/d_source/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/directx/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2152,6 +2155,12 @@
 		<Unit filename="plugins/scriptedwizard/resources/mcs51/wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/msp430/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/msp430/wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/ogre/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2168,6 +2177,9 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/qt4/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/qt4dll/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/sdl/wizard.script">
@@ -2663,6 +2675,12 @@
 		<Unit filename="sdk/resources/incremental_select_list.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_A68k.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_A68k.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_OgreCompositor.sample">
 			<Option target="scintilla" />
 		</Unit>
@@ -2685,6 +2703,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_angelscript.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_autotools.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_autotools.xml">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_bash.sample">
@@ -2736,6 +2760,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_css.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cu.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cu.xml">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_d.sample">

@@ -2057,6 +2057,9 @@
 		<Unit filename="plugins/scriptedwizard/resources/d/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/d_source/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/directx/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2120,6 +2123,12 @@
 		<Unit filename="plugins/scriptedwizard/resources/mcs51/wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/msp430/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/msp430/wizard.xrc">
+			<Option target="Scripted wizard" />
+		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/ogre/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2136,6 +2145,9 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/qt4/wizard.script">
+			<Option target="Scripted wizard" />
+		</Unit>
+		<Unit filename="plugins/scriptedwizard/resources/qt4dll/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/sdl/wizard.script">
@@ -2631,6 +2643,12 @@
 		<Unit filename="sdk/resources/incremental_select_list.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_A68k.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_A68k.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_OgreCompositor.sample">
 			<Option target="scintilla" />
 		</Unit>
@@ -2653,6 +2671,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_angelscript.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_autotools.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_autotools.xml">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_bash.sample">
@@ -2704,6 +2728,12 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_css.xml">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cu.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_cu.xml">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_d.sample">
@@ -4008,6 +4038,42 @@
 		</Unit>
 		<Unit filename="tools/ConsoleRunner/main.cpp">
 			<Option target="ConsoleRunner" />
+		</Unit>
+		<Unit filename="wxsmith/BuildTargetPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/CCDebugInfo.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/CompilerPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/EmbeddedHtmlPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/FilePathPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/GenericSelectPath.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/GenericSingleChoiceList.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/InfoPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/ProjectPathPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/ScriptConsole.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/VirtualBuildTargetsDlg.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/databreakpointdlg.wxs">
+			<Option target="src" />
 		</Unit>
 		<Unit filename="wxsmith/debuggersettingscommonpanel.wxs">
 			<Option target="src" />

@@ -3,30 +3,28 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-#include "mozilla/NullPtr.h"
+#include "NullPtr.h" // C::B change
 
 #include "nscore.h"
 
 #include "nsUniversalDetector.h"
 
 #include "nsMBCSGroupProber.h"
-#include "nsSBCSGroupProber.h"
 #include "nsEscCharsetProber.h"
 #include "nsLatin1Prober.h"
 
-nsUniversalDetector::nsUniversalDetector(uint32_t aLanguageFilter)
+nsUniversalDetector::nsUniversalDetector()
 {
   mDone = false;
   mBestGuess = -1;   //illegal value as signal
   mInTag = false;
   mEscCharSetProber = nullptr;
 
-//  mStart = true; // not needed for C::B (jens 2009-08-05)
+//  mStart = true; // C::B change
   mDetectedCharset = nullptr;
   mGotData = false;
   mInputState = ePureAscii;
   mLastChar = '\0';
-  mLanguageFilter = aLanguageFilter;
 
   uint32_t i;
   for (i = 0; i < NUM_OF_CHARSET_PROBERS; i++)
@@ -48,7 +46,7 @@ nsUniversalDetector::Reset()
   mBestGuess = -1;   //illegal value as signal
   mInTag = false;
 
-//  mStart = true; // not needed for C::B (jens 2009-08-05)
+//  mStart = true; // C::B change
   mDetectedCharset = nullptr;
   mGotData = false;
   mInputState = ePureAscii;
@@ -75,7 +73,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
   if (aLen > 0)
     mGotData = true;
 
-// don't need to check for BOM, C::B does it itself (jens 2009-08-05)
+// C::B change start
 /*
   //If the data starts with BOM, we know it is UTF
   if (mStart)
@@ -111,6 +109,8 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
     }
   }
 */
+// C::B change end
+
   uint32_t i;
   for (i = 0; i < aLen; i++)
   {
@@ -132,32 +132,24 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
         //start multibyte and singlebyte charset prober
         if (nullptr == mCharSetProbers[0])
         {
-          mCharSetProbers[0] = new nsMBCSGroupProber(mLanguageFilter);
+          mCharSetProbers[0] = new nsMBCSGroupProber();
           if (nullptr == mCharSetProbers[0])
-            return nsMBCSGroupProberFailed;
-        }
-        if (nullptr == mCharSetProbers[1] &&
-            (mLanguageFilter & NS_FILTER_NON_CJK))
-        {
-          mCharSetProbers[1] = new nsSBCSGroupProber;
-          if (nullptr == mCharSetProbers[1])
-            return nsSBCSGroupProberFailed;
+            return NS_ERROR_OUT_OF_MEMORY;
         }
         if (nullptr == mCharSetProbers[2])
         {
           mCharSetProbers[2] = new nsLatin1Prober;
           if (nullptr == mCharSetProbers[2])
-            return nsLatin1ProberFailed;
+            return NS_ERROR_OUT_OF_MEMORY;
         }
       }
     }
     else
     {
       //ok, just pure ascii so far
-      if ( ePureAscii == mInputState &&
-        (aBuf[i] == '\033' || (aBuf[i] == '{' && mLastChar == '~')) )
+      if ((ePureAscii == mInputState) && (aBuf[i] == '\033'))
       {
-        //found escape character or HZ "~{"
+        //found escape character
         mInputState = eEscAscii;
       }
       mLastChar = aBuf[i];
@@ -169,9 +161,9 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
   {
   case eEscAscii:
     if (nullptr == mEscCharSetProber) {
-      mEscCharSetProber = new nsEscCharSetProber(mLanguageFilter);
+      mEscCharSetProber = new nsEscCharSetProber();
       if (nullptr == mEscCharSetProber)
-        return nsEscCharSetProberFailed;
+        return NS_ERROR_OUT_OF_MEMORY;
     }
     st = mEscCharSetProber->HandleData(aBuf, aLen);
     if (st == eFoundIt)
@@ -196,7 +188,7 @@ nsresult nsUniversalDetector::HandleData(const char* aBuf, uint32_t aLen)
     }
     break;
 
-  case ePureAscii: // fall-through
+  case ePureAscii: // C::B change
   default:  //pure ascii
     ;//do nothing here
   }
@@ -247,11 +239,11 @@ void nsUniversalDetector::DataEnd()
     }
     break;
   case eEscAscii:
-    Report("Escaped *ASCII*");
+    Report("Escaped *ASCII*"); // C::B change
     break;
-  case ePureAscii:
-    Report("Pure *ASCII*");
-    break;
+  case ePureAscii:             // C::B change
+    Report("Pure *ASCII*");    // C::B change
+    break;                     // C::B change
   default:
     ;
   }

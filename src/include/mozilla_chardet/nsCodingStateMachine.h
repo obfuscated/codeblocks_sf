@@ -5,19 +5,21 @@
 #ifndef nsCodingStateMachine_h__
 #define nsCodingStateMachine_h__
 
+// #include "mozilla/ArrayUtils.h" // C::B change
+#include "assert.h" // C::B change
+
 #include "nsPkgInt.h"
-#include "mozilla/Util.h"
 
 typedef enum {
    eStart = 0,
    eError = 1,
-   eItsMe = 2 
+   eItsMe = 2
 } nsSMState;
 
 #define GETCLASS(c) GETFROMPCK(((unsigned char)(c)), mModel->classTable)
 
 //state machine model
-typedef struct 
+typedef struct
 {
   nsPkgInt classTable;
   uint32_t classFactor;
@@ -31,14 +33,14 @@ typedef struct
 
 class nsCodingStateMachine {
 public:
-  nsCodingStateMachine(const SMModel* sm) : mModel(sm) { mCurrentState = eStart; }
+  explicit nsCodingStateMachine(const SMModel* sm) : mModel(sm) { mCurrentState = eStart; }
   nsSMState NextState(char c){
     //for each byte we get its class , if it is first byte, we also get byte length
     uint32_t byteCls = GETCLASS(c);
     if (mCurrentState == eStart)
-    { 
-      mCurrentBytePos = 0; 
-      MOZ_ASSERT(byteCls < mModel->charLenTableLength);
+    {
+      mCurrentBytePos = 0;
+//      MOZ_ASSERT(byteCls < mModel->charLenTableLength); // C::B change
       mCurrentCharLen = mModel->charLenTable[byteCls];
     }
     //from byte's class and stateTable, we get its next state
