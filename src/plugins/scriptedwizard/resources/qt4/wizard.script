@@ -54,7 +54,7 @@ function OnLeave_QtPath(fwd)
         local dir_nomacro_lib = GetCompilerLibDir(dir, QtPathDefault, QtPathDefaultLib);
         if (dir_nomacro_lib.IsEmpty())
             return false;
-        if (PLATFORM == PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore4"), _T("Qt's")))
+        if (PLATFORM == PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore"), _T("Qt's")))
             return false;
         else if (PLATFORM != PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore"), _T("Qt's")))
             return false;
@@ -92,7 +92,20 @@ function GetFilesDir()
 // setup the already created project
 function SetupProject(project)
 {
+    //enable using of custom makefile
+    project.SetMakefileCustom(true);
+    
+    //enable using QtHelper plugin
+    project.AddToExtensions(_T("qt_helper/enabled:value=true"));
+    
+    //setting make commands for project and targets
+    project.SetMakeCommandFor(mcBuild, _T("$make -f $makefile"));
+    project.SetMakeCommandFor(mcCompileFile, _T("$make -f $makefile $file"));
+    project.SetMakeCommandFor(mcClean, _T("$make -f $makefile clean"));
+    project.SetMakeCommandFor(mcDistClean, _T("$make -f $makefile distclean"));
+    
     project.AddIncludeDir(QtPathDefaultInc);
+    project.AddIncludeDir(QtPathDefaultInc + wxFILE_SEP_PATH + _T("QtCore"));
     project.AddIncludeDir(QtPathDefaultInc + wxFILE_SEP_PATH + _T("QtGui"));
 
     project.AddLibDir(QtPathDefaultLib);
@@ -100,8 +113,8 @@ function SetupProject(project)
     // add link libraries
     if (PLATFORM == PLATFORM_MSW)
     {
-        project.AddLinkLib(_T("QtCore4"));
-        project.AddLinkLib(_T("QtGui4"));
+        project.AddLinkLib(_T("QtCore"));
+        project.AddLinkLib(_T("QtGui"));
     }
     else
     {
@@ -113,24 +126,42 @@ function SetupProject(project)
     WarningsOn(project, Wizard.GetCompilerID());
 
     // Debug
-    local target = project.GetBuildTarget(Wizard.GetDebugName());
-    if (!IsNull(target))
+    local debug_target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(debug_target))
     {
-        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
-        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        debug_target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        debug_target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
         // enable generation of debugging symbols for target
-        DebugSymbolsOn(target, Wizard.GetCompilerID());
+        DebugSymbolsOn(debug_target, Wizard.GetCompilerID());
+        
+	//setting make commands for target
+	debug_target.SetMakeCommandFor(mcBuild, _T("$make -f $makefile debug"));
+    	debug_target.SetMakeCommandFor(mcCompileFile, _T("$make -f $makefile $file debug"));
+	debug_target.SetMakeCommandFor(mcClean, _T("$make -f $makefile clean debug"));
+    	debug_target.SetMakeCommandFor(mcDistClean, _T("$make -f $makefile distclean debug"));
+
+	debug_target.AddIncludeDir(Wizard.GetDebugObjectOutputDir() + _T("uic"));
+	debug_target.SetOptionRelation(ortIncludeDirs, orUseParentOptionsOnly);    
     }
 
     // Release
-    target = project.GetBuildTarget(Wizard.GetReleaseName());
-    if (!IsNull(target))
+    local release_target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(release_target))
     {
-        target.SetTargetType(ttExecutable); // ttExecutable: no console
-        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        release_target.SetTargetType(ttExecutable); // ttExecutable: no console
+        release_target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
         // enable optimizations for target
-        OptimizationsOn(target, Wizard.GetCompilerID());
-    }
+        OptimizationsOn(release_target, Wizard.GetCompilerID());
 
+        //setting make commands for target
+        release_target.SetMakeCommandFor(mcBuild, _T("$make -f $makefile release"));
+    	release_target.SetMakeCommandFor(mcCompileFile, _T("$make -f $makefile $file release"));
+    	release_target.SetMakeCommandFor(mcClean, _T("$make -f $makefile clean release"));
+    	release_target.SetMakeCommandFor(mcDistClean, _T("$make -f $makefile distclean release"));
+
+    	release_target.AddIncludeDir(Wizard.GetReleaseObjectOutputDir() + _T("uic"));
+    	release_target.SetOptionRelation(ortIncludeDirs, orUseParentOptionsOnly);
+    }
+    
     return true;
 }

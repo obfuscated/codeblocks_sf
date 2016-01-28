@@ -41,6 +41,8 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("ogre"),         _T("Ogre project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("plugins"),      _T("Code::Blocks plugin"),   _T("Code::Blocks"));
     RegisterWizard(wizProject,     _T("qt4"),          _T("QT4 project"),           _T("GUI"));
+    RegisterWizard(wizProject,     _T("qt4dll"),       _T("QT4 (shared) project"),  _T("GUI"));
+    RegisterWizard(wizProject,     _T("qt5"),          _T("QT5 project"),           _T("GUI"));
     RegisterWizard(wizProject,     _T("sdl"),          _T("SDL project"),           _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("sdl2"),         _T("SDL2 project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("sfml"),         _T("SFML project"),          _T("2D/3D Graphics"));
