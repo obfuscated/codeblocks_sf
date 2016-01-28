@@ -128,6 +128,14 @@
                 option="-mmcu=msp1"/>
         <Option name="MSP430 MSP2"
                 option="-mmcu=msp2"/>
+        <Option name="MSP430 MSP3"
+                option="-mmcu=msp3"/>
+        <Option name="MSP430 MSP4"
+                option="-mmcu=msp4"/>
+        <Option name="MSP430 MSP5"
+                option="-mmcu=msp5"/>
+        <Option name="MSP430 MSP6"
+                option="-mmcu=msp6"/>
         <Option name="MSP430 110"
                 option="-mmcu=msp430x110"/>
         <Option name="MSP430 112"
@@ -204,16 +212,76 @@
                 option="-mmcu=msp430x2101"/>
         <Option name="MSP430 2111"
                 option="-mmcu=msp430x2111"/>
+        <Option name="MSP430 2112"
+                option="-mmcu=msp430x2112"/>
         <Option name="MSP430 2121"
                 option="-mmcu=msp430x2121"/>
+        <Option name="MSP430 2122"
+                option="-mmcu=msp430x2122"/>
         <Option name="MSP430 2131"
                 option="-mmcu=msp430x2131"/>
+        <Option name="MSP430 2132"
+                option="-mmcu=msp430x2132"/>
+        <Option name="MSP430 2201"
+                option="-mmcu=msp430x2201"/>
+        <Option name="MSP430 2211"
+                option="-mmcu=msp430x2211"/>
+        <Option name="MSP430 2221"
+                option="-mmcu=msp430x2221"/>
+        <Option name="MSP430 2231"
+                option="-mmcu=msp430x2231"/>
+        <Option name="MSP430 2232"
+                option="-mmcu=msp430x2232"/>
         <Option name="MSP430 2234"
                 option="-mmcu=msp430x2234"/>
         <Option name="MSP430 2254"
                 option="-mmcu=msp430x2254"/>
+        <Option name="MSP430 2252"
+                option="-mmcu=msp430x2252"/>
+        <Option name="MSP430 2272"
+                option="-mmcu=msp430x2272"/>
         <Option name="MSP430 2274"
                 option="-mmcu=msp430x2274"/>
+        <Option name="MSP430 233"
+                option="-mmcu=msp430x233"/>
+        <Option name="MSP430 235"
+                option="-mmcu=msp430x235"/>
+        <Option name="MSP430 2330"
+                option="-mmcu=msp430x2330"/>
+        <Option name="MSP430 2350"
+                option="-mmcu=msp430x2350"/>
+        <Option name="MSP430 2370"
+                option="-mmcu=msp430x2370"/>
+        <Option name="MSP430 247"
+                option="-mmcu=msp430x247"/>
+        <Option name="MSP430 248"
+                option="-mmcu=msp430x248"/>
+        <Option name="MSP430 249"
+                option="-mmcu=msp430x249"/>
+        <Option name="MSP430 2410"
+                option="-mmcu=msp430x2410"/>
+        <Option name="MSP430 2471"
+                option="-mmcu=msp430x2471"/>
+        <Option name="MSP430 2481"
+                option="-mmcu=msp430x2481"/>
+        <Option name="MSP430 2491"
+                option="-mmcu=msp430x2491"/>
+        <Option name="MSP430 2416"
+                option="-mmcu=msp430x2416"/>
+        <Option name="MSP430 2417"
+                option="-mmcu=msp430x2417"/>
+        <Option name="MSP430 2418"
+                option="-mmcu=msp430x2418"/>
+        <Option name="MSP430 2419"
+                option="-mmcu=msp430x2419"/>
+        <Option name="MSP430 2616"
+                option="-mmcu=msp430x2616"/>
+        <Option name="MSP430 2617"
+                option="-mmcu=msp430x2617"/>
+        <Option name="MSP430 2618"
+                option="-mmcu=msp430x2618"/>
+        <Option name="MSP430 2619"
+                option="-mmcu=msp430x2619"/>
         <Option name="MSP430 311"
                 option="-mmcu=msp430x311"/>
         <Option name="MSP430 312"
@@ -258,12 +326,26 @@
                 option="-mmcu=msp430xE425"/>
         <Option name="MSP430 E427"
                 option="-mmcu=msp430xE427"/>
+        <Option name="MSP430 E4232"
+                option="-mmcu=msp430xE4232"/>
+        <Option name="MSP430 E4242"
+                option="-mmcu=msp430xE4242"/>
+        <Option name="MSP430 E4252"
+                option="-mmcu=msp430xE4252"/>
+        <Option name="MSP430 E4272"
+                option="-mmcu=msp430xE4272"/>
         <Option name="MSP430 W423"
                 option="-mmcu=msp430xW423"/>
         <Option name="MSP430 W425"
                 option="-mmcu=msp430xW425"/>
         <Option name="MSP430 W427"
                 option="-mmcu=msp430xW427"/>
+        <Option name="MSP430 G4250"
+                option="-mmcu=msp430xG4250"/>
+        <Option name="MSP430 G4260"
+                option="-mmcu=msp430xG4260"/>
+        <Option name="MSP430 G4270"
+                option="-mmcu=msp430xG4270"/>
         <Option name="MSP430 G437"
                 option="-mmcu=msp430xG437"/>
         <Option name="MSP430 G438"
@@ -276,6 +358,12 @@
                 option="-mmcu=msp430x436"/>
         <Option name="MSP430 437"
                 option="-mmcu=msp430x437"/>
+        <Option name="MSP430 4351"
+                option="-mmcu=msp430x4351"/>
+        <Option name="MSP430 4361"
+                option="-mmcu=msp430x4361"/>
+        <Option name="MSP430 4371"
+                option="-mmcu=msp430x4371"/>
         <Option name="MSP430 447"
                 option="-mmcu=msp430x447"/>
         <Option name="MSP430 448"
@@ -290,6 +378,124 @@
                 option="-mmcu=msp430xG4618"/>
         <Option name="MSP430 4619"
                 option="-mmcu=msp430xG4619"/>
+        <Option name="MSP430 G4616"
+                option="-mmcu=msp430xG4616"/>
+        <Option name="MSP430 G4617"
+                option="-mmcu=msp430xG4617"/>
+        <Option name="MSP430 G4618"
+                option="-mmcu=msp430xG4618"/>
+        <Option name="MSP430 G4619"
+                option="-mmcu=msp430xG4619"/>
+        <Option name="MSP430 4783"
+                option="-mmcu=msp430x4783"/>
+        <Option name="MSP430 4784"
+                option="-mmcu=msp430x4784"/>
+        <Option name="MSP430 4793"
+                option="-mmcu=msp430x4793"/>
+        <Option name="MSP430 4794"
+                option="-mmcu=msp430x4794"/>
+        <Option name="MSP430 47163"
+                option="-mmcu=msp430x47163"/>
+        <Option name="MSP430 47173"
+                option="-mmcu=msp430x47173"/>
+        <Option name="MSP430 47183"
+                option="-mmcu=msp430x47183"/>
+        <Option name="MSP430 47193"
+                option="-mmcu=msp430x47193"/>
+        <Option name="MSP430 47166"
+                option="-mmcu=msp430x47166"/>
+        <Option name="MSP430 47176"
+                option="-mmcu=msp430x47176"/>
+        <Option name="MSP430 47186"
+                option="-mmcu=msp430x47186"/>
+        <Option name="MSP430 47196"
+                option="-mmcu=msp430x47196"/>
+        <Option name="MSP430 47167"
+                option="-mmcu=msp430x47167"/>
+        <Option name="MSP430 47177"
+                option="-mmcu=msp430x47177"/>
+        <Option name="MSP430 47187"
+                option="-mmcu=msp430x47187"/>
+        <Option name="MSP430 47197"
+                option="-mmcu=msp430x47197"/>
+        <Option name="MSP430 5418"
+                option="-mmcu=msp430x5418"/>
+        <Option name="MSP430 5419"
+                option="-mmcu=msp430x5419"/>
+        <Option name="MSP430 5435"
+                option="-mmcu=msp430x5435"/>
+        <Option name="MSP430 5436"
+                option="-mmcu=msp430x5436"/>
+        <Option name="MSP430 5437"
+                option="-mmcu=msp430x5437"/>
+        <Option name="MSP430 5438"
+                option="-mmcu=msp430x5438"/>
+        <Option name="MSP430 5500"
+                option="-mmcu=msp430x5500"/>
+        <Option name="MSP430 5501"
+                option="-mmcu=msp430x5501"/>
+        <Option name="MSP430 5502"
+                option="-mmcu=msp430x5502"/>
+        <Option name="MSP430 5503"
+                option="-mmcu=msp430x5503"/>
+        <Option name="MSP430 5504"
+                option="-mmcu=msp430x5504"/>
+        <Option name="MSP430 5505"
+                option="-mmcu=msp430x5505"/>
+        <Option name="MSP430 5506"
+                option="-mmcu=msp430x5506"/>
+        <Option name="MSP430 5507"
+                option="-mmcu=msp430x5507"/>
+        <Option name="MSP430 5508"
+                option="-mmcu=msp430x5508"/>
+        <Option name="MSP430 5509"
+                option="-mmcu=msp430x5509"/>
+        <Option name="MSP430 5510"
+                option="-mmcu=msp430x5510"/>
+        <Option name="MSP430 5513"
+                option="-mmcu=msp430x5513"/>
+        <Option name="MSP430 5514"
+                option="-mmcu=msp430x5514"/>
+        <Option name="MSP430 5515"
+                option="-mmcu=msp430x5515"/>
+        <Option name="MSP430 5517"
+                option="-mmcu=msp430x5517"/>
+        <Option name="MSP430 5519"
+                option="-mmcu=msp430x5519"/>
+        <Option name="MSP430 5521"
+                option="-mmcu=msp430x5521"/>
+        <Option name="MSP430 5522"
+                option="-mmcu=msp430x5522"/>
+        <Option name="MSP430 5524"
+                option="-mmcu=msp430x5524"/>
+        <Option name="MSP430 5525"
+                option="-mmcu=msp430x5525"/>
+        <Option name="MSP430 5526"
+                option="-mmcu=msp430x5526"/>
+        <Option name="MSP430 5527"
+                option="-mmcu=msp430x5527"/>
+        <Option name="MSP430 5528"
+                option="-mmcu=msp430x5528"/>
+        <Option name="MSP430 5529"
+                option="-mmcu=msp430x5529"/>
+        <Option name="MSP430 6638"
+                option="-mmcu=msp430x6638"/>
+        <Option name="CC430 5133"
+                option="-mmcu=cc430x5133"/>
+        <Option name="CC430 5125"
+                option="-mmcu=cc430x5125"/>
+        <Option name="CC430 6125"
+                option="-mmcu=cc430x6125"/>
+        <Option name="CC430 6135"
+                option="-mmcu=cc430x6135"/>
+        <Option name="CC430 6126"
+                option="-mmcu=cc430x6126"/>
+        <Option name="CC430 5137"
+                option="-mmcu=cc430x5137"/>
+        <Option name="CC430 6127"
+                option="-mmcu=cc430x6127"/>
+        <Option name="CC430 6137"
+                option="-mmcu=cc430x6137"/>
     </Category>
 
     <Command name="CompileObject"

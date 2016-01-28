@@ -73,6 +73,8 @@
                 option="-m64"
                 additionalLibs="-m64"
                 supersedes="-m32"/>
+        <Option name="Position Independent Code"
+                option="-fPIC"/>
     </Category>
 
     <Category name="Warnings">

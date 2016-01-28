@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="Code Warrior Compiler for PowerPC"
+                     id="mw"
+                     weight="72"
+                     platform="windows">
+    <Path type="master">
+        <Search registry="HKEY_LOCAL_MACHINE\SOFTWARE\Freescale\CodeWarrior\Product Versions\CW for MPC55xx MPC56xx v2.10"
+                value="PATH"/>
+		<Search path="%ProgramFiles%\Freescale\CW for MPC55xx and MPC56xx 2.10\PowerPC_EABI_Tools\Command_Line_Tools"
+                for="C"/>
+        <Fallback path="%ProgramFiles%\Freescale\CodeWarrior\PowerPC_EABI_Tools\Command_Line_Tools"/>
+    </Path>
+</CodeBlocks_compiler>

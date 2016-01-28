@@ -46,6 +46,10 @@
             checkAgainst="-O -O1 -O2 -O3 -Os"
             checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
             supersedes="-s"/>
+    <Option name="Optimize debugging executable (compile speed, execution speed and better debugging)"
+            option="-Og"
+            category="Debugging"
+            supersedes="-O -O1 -O2 -O3"/>
     <Option name="Target x86 (32bit)"
             option="-m32"
             additionalLibs="-m32"
@@ -54,6 +58,14 @@
             option="-m64"
             additionalLibs="-m64"
             supersedes="-m32"/>
+    <Option name="Position Independent Code"
+            option="-fPIC"/>
+    <Option name="Static linking"
+            additionalLibs="-static"/>
+    <Option name="Static libgcc"
+            additionalLibs="-static-libgcc"/>
+    <Option name="Static libstdc++"
+            additionalLibs="-static-libstdc++"/>
     <if platform="windows">
         <Option name="Profile code when executed"
                 option="-pg"
