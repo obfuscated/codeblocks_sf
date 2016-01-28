@@ -20,6 +20,7 @@ function WarningsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
@@ -85,6 +86,7 @@ function DebugSymbolsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc"))
@@ -179,7 +181,8 @@ function OptimizationsOn(base, compilerID)
             base.AddLinkerOption(_T("-s"));
         }
     }
-    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*")) )
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*")) )
     {
         base.AddCompilerOption(_T("-Os"));
     }
