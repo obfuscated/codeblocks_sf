@@ -28,7 +28,6 @@
     #include <wx/sizer.h>
     #include <wx/textctrl.h>
     #include <wx/menu.h>
-    #include <wx/textdlg.h>
     #include <wx/colour.h>
     #include <wx/filedlg.h>
     #include <wx/tokenzr.h>
@@ -707,7 +706,7 @@ void CodeSnippetsWindow::OnMnuRename(wxCommandEvent& event)
     wxPoint currentMousePosn = ::wxGetMousePosition();
 
     // get new label(on ok) or empty string(on cancel)
-    wxString newLabel = ::wxGetTextFromUser(wxT("New Category Label"),wxT("Rename"),
+    wxString newLabel = ::cbGetTextFromUser(wxT("New Category Label"),wxT("Rename"),
         itemLabel, pTree,
         currentMousePosn.x, currentMousePosn.y,false);
     LOGIT( _T("GetTextFromUser[%s] oldLabel[%s]"),newLabel.c_str(),itemLabel.c_str() );
@@ -1140,7 +1139,7 @@ void CodeSnippetsWindow::CheckForMacros(wxString& snippet)
             Manager::Get()->GetMacrosManager()->ReplaceMacros(defaultResult);
         //-#endif
 
-		wxString macro = wxGetTextFromUser(wxString::Format(_("Please enter the text for \"%s\":"), macroName.c_str()),
+		wxString macro = cbGetTextFromUser(wxString::Format(_("Please enter the text for \"%s\":"), macroName.c_str()),
             _("Macro substitution"),defaultResult,0,
             currentMousePosn.x, currentMousePosn.y,false);
 		if (not macro.IsEmpty())

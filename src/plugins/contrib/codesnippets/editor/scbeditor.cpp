@@ -18,7 +18,6 @@
 #ifndef CB_PRECOMP
     #include <wx/filename.h>
     #include <wx/filedlg.h>
-    #include <wx/textdlg.h> // wxGetTextFromUser
     #include <wx/menu.h>
     #include <wx/notebook.h>
     #include <wx/wfstream.h>
@@ -1520,7 +1519,7 @@ void ScbEditor::AutoComplete()
 
                 wxString macroName = code.SubString(macroPos + 2, macroPosEnd - 1);
                 msgMan->DebugLog(_T("Found macro: ") + macroName);
-                wxString macro = wxGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
+                wxString macro = cbGetTextFromUser(_("Please enter the text for \"") + macroName + _T("\":"), _("Macro substitution"));
                 if (macro.IsEmpty())
                 {
                     canceled = true;

@@ -20,7 +20,6 @@
     #include <wx/filename.h>
     #include <wx/notebook.h>
     #include <wx/menu.h>
-    #include <wx/textdlg.h> // wxGetTextFromUser
     #include <wx/wfstream.h>
 
     #include "manager.h"
@@ -444,7 +443,7 @@ void SEditorBase::SearchGotoLine()
     However, this is just a temporary hack, because the default dialog used isn't
     that suitable either.
     */
-    wxString strLine = wxGetTextFromUser( wxString::Format(_("Line (1 - %d): "), max),
+    wxString strLine = cbGetTextFromUser( wxString::Format(_("Line (1 - %d): "), max),
                                         _("Goto line"),
                                         _T( "" ),
                                         this );
