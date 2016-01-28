@@ -296,6 +296,8 @@ class MainFrame : public wxFrame
         void OnShiftTab(wxCommandEvent& event);
         void OnCtrlAltTab(wxCommandEvent& event);
         void OnNotebookDoubleClick(CodeBlocksEvent& event);
+        // Statusbar highlighting menu
+        void OnHighlightMenu(wxCommandEvent& event);
     protected:
         void CreateIDE();
         void CreateMenubar();
@@ -396,6 +398,7 @@ class MainFrame : public wxFrame
         MenuIDToScript m_MenuIDToScript;
 
         wxScrollingDialog* m_pBatchBuildDialog;
+        wxButton*          m_pHighlightButton;
 
         DebuggerMenuHandler*    m_debuggerMenuHandler;
         DebuggerToolbarHandler* m_debuggerToolbarHandler;

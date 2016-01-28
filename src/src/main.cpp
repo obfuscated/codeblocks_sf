@@ -301,6 +301,7 @@ int idFilePrev              = wxNewId();
 int idShiftTab              = wxNewId();
 int idCtrlAltTab            = wxNewId();
 int idStartHerePageLink     = wxNewId();
+int idHighlightButton       = wxNewId();
 
 BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_ERASE_BACKGROUND(MainFrame::OnEraseBackground)
@@ -539,6 +540,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_CBAUIBOOK_LEFT_DCLICK(ID_NBEditorManager, MainFrame::OnNotebookDoubleClick)
     EVT_NOTEBOOK_PAGE_CHANGED(ID_NBEditorManager, MainFrame::OnPageChanged)
 
+    // Highlightbutton
+    EVT_BUTTON(idHighlightButton, MainFrame::OnHighlightMenu)
     /// CloseFullScreen event handling
     EVT_BUTTON(idCloseFullScreen, MainFrame::OnToggleFullScreen)
 
@@ -573,7 +576,9 @@ MainFrame::MainFrame(wxWindow* parent)
        m_LastCtrlAltTabWindow(0),
        m_LastLayoutIsTemp(false),
        m_pScriptConsole(nullptr),
-       m_pBatchBuildDialog(nullptr)
+       m_pBatchBuildDialog(nullptr),
+       // Highlightbutton
+       m_pHighlightButton(nullptr)
 {
     Manager::Get(this); // provide manager with handle to MainFrame (this)
 
@@ -791,7 +796,7 @@ void MainFrame::SetupGUILogging()
 
         wxWindow* log;
 
-        for(size_t i = LogManager::app_log; i < LogManager::max_logs; ++i)
+        for (size_t i = LogManager::app_log; i < LogManager::max_logs; ++i)
         {
             if ((log = mgr->Slot(i).GetLogger()->CreateControl(m_pInfoPane)))
                 m_pInfoPane->AddLogger(mgr->Slot(i).GetLogger(), log, mgr->Slot(i).title, mgr->Slot(i).icon);
@@ -1224,11 +1229,11 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
 
     while(!item)
     {
-        #if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 0)
         if (!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetItemLabelText()) > 0)
-        #else
+#else
         if (!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetLabel()) > 0)
-        #endif
+#endif
             item = menu->Insert(pos, id, title, wxEmptyString, checkable ? wxITEM_CHECK : wxITEM_NORMAL);
 
         --pos;
@@ -1571,11 +1576,11 @@ void MainFrame::DoSelectLayout(const wxString& name)
         {
             if (!items[i]->IsCheckable())
                 continue;
-            #if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 0)
             items[i]->Check(items[i]->GetItemLabel().IsSameAs(name));
-            #else
+#else
             items[i]->Check(items[i]->GetText().IsSameAs(name));
-            #endif
+#endif
         }
 
         if (!m_LastLayoutIsTemp)
@@ -1614,13 +1619,13 @@ inline void InitToolbar(wxToolBar *tb)
                 ++ccount;
             }
         }
-        #if wxCHECK_VERSION(2, 8, 0)
+#if wxCHECK_VERSION(2, 8, 0)
         wxSize s(w + tb->GetEffectiveMinSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
         tb->SetInitialSize(s);
-        #else
+#else
         wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
         tb->SetBestFittingSize(s);
-        #endif
+#endif
     }
     else
         tb->SetInitialSize();
@@ -1899,6 +1904,8 @@ void MainFrame::DoCreateStatusBar()
 
     wxCoord width[16]; // 16 max
     width[num++] = -1; // main field
+
+    dc.GetTextExtent(_(" Highlight Button "),       &width[num++], &h);
     dc.GetTextExtent(_(" Windows (CR+LF) "),        &width[num++], &h);
     dc.GetTextExtent(_(" WINDOWS-1252 "),           &width[num++], &h);
     dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[num++], &h);
@@ -1911,6 +1918,15 @@ void MainFrame::DoCreateStatusBar()
     if (!sb) return;
 
     SetStatusWidths(num, width);
+
+    // Highlightbutton
+    wxRect rect;
+    if ( sb->GetFieldRect(1, rect) )
+    {
+      m_pHighlightButton = new wxButton(sb, idHighlightButton, wxEmptyString,
+                                        rect.GetPosition(), rect.GetSize(),
+                                        wxNO_BORDER|wxBU_LEFT);
+    }
 }
 
 void MainFrame::DoUpdateStatusBar()
@@ -1926,6 +1942,18 @@ void MainFrame::DoUpdateStatusBar()
         int pos = ed->GetControl()->GetCurrentPos();
         wxString msg;
         SetStatusText(ed->GetFilename(), panel++);
+
+        // Highlightbutton
+        if (m_pHighlightButton)
+        {
+            EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+            if (colour_set)
+                m_pHighlightButton->SetLabel(colour_set->GetLanguageName(ed->GetLanguage()));
+            else
+                m_pHighlightButton->SetLabel(wxEmptyString);
+        }
+        // EOL mode
+        panel++;
         switch (ed->GetControl()->GetEOLMode())
         {
             case wxSCI_EOL_CRLF: msg = _T("Windows (CR+LF)"); break;
@@ -1938,11 +1966,11 @@ void MainFrame::DoUpdateStatusBar()
         msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
-        #if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 0)
         SetStatusText(ed->GetModified() ? _("Modified") : _T(""), panel++);
-        #else
+#else
         SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
-        #endif
+#endif
         SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
         SetStatusText(personality, panel++);
     }
@@ -1954,6 +1982,12 @@ void MainFrame::DoUpdateStatusBar()
             SetStatusText(eb->GetFilename(), panel++);
         else
             SetStatusText(_("Welcome to ") + appglobals::AppName + _T("!"), panel++);
+
+        // Highlightbutton
+        if (m_pHighlightButton)
+            m_pHighlightButton->SetLabel(wxEmptyString);
+        panel++;
+
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
         SetStatusText(wxEmptyString, panel++);
@@ -1988,11 +2022,11 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
             break;
 
         default: // default style
-#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
+            #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
             target->SetArtProvider(new NbStyleGTK());
-#else
+            #else
             target->SetArtProvider(new wxAuiDefaultTabArt());
-#endif
+            #endif
             break;
     }
 
@@ -2695,6 +2729,16 @@ void MainFrame::OnEraseBackground(wxEraseEvent& event)
 
 void MainFrame::OnSize(wxSizeEvent& event)
 {
+    // Highlightbutton
+    if (m_pHighlightButton)
+    {
+        wxRect rect;
+        if ( GetStatusBar()->GetFieldRect(1, rect) )
+        {
+            m_pHighlightButton->SetPosition(rect.GetPosition());
+            m_pHighlightButton->SetSize(rect.GetSize());
+        }
+    }
 
     // for flicker-free display
     event.Skip();
@@ -3656,13 +3700,16 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
         {
             wxMenuItem* item = hl->FindItem(event.GetId());
             if (item)
-            #if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(2, 9, 0)
                 lang = colour_set->GetHighlightLanguage(item->GetItemLabelText());
-            #else
+#else
                 lang = colour_set->GetHighlightLanguage(item->GetLabel());
-            #endif
+#endif
         }
     }
+    // Highlightbutton
+    if (m_pHighlightButton)
+        m_pHighlightButton->SetLabel(colour_set->GetLanguageName(lang));
     ed->SetLanguage(lang);
     Manager::Get()->GetCCManager()->NotifyPluginStatus();
 }
@@ -5002,6 +5049,45 @@ void MainFrame::OnUnlockLogManager(cb_unused CodeBlocksLogEvent& event)
         m_LayoutManager.GetPane(m_pInfoPane).Show(false);
         DoUpdateLayout();
     }
+}
+
+// Highlight Button
+void MainFrame::OnHighlightMenu(cb_unused wxCommandEvent& event)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (!ed) return;
+
+    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    if (!colour_set) return;
+
+    wxMenu* hl = nullptr;
+    GetMenuBar()->FindItem(idEditHighlightModeText, &hl);
+    wxArrayString langs = colour_set->GetAllHighlightLanguages();
+
+    wxMenu mm;
+    mm.AppendRadioItem(idEditHighlightModeText, _("Plain text"),
+                       _("Switch highlighting mode for current document to \"Plain text\""));
+    Connect(hl->FindItem(_("Plain text")), -1, wxEVT_COMMAND_MENU_SELECTED,
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                &MainFrame::OnEditHighlightMode);
+    for (size_t i = 0; i < langs.GetCount(); ++i)
+    {
+        if (i > 0 && !(i % 20))
+            mm.Break(); // break into columns every 20 items
+        mm.AppendRadioItem(hl->FindItem(langs[i]), langs[i],
+                    wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].wx_str()));
+        Connect(hl->FindItem(langs[i]), -1, wxEVT_COMMAND_MENU_SELECTED,
+                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
+                &MainFrame::OnEditHighlightMode);
+    }
+    int checkeditem = -1;
+    checkeditem = hl->FindItem(colour_set->GetLanguageName(ed->GetLanguage()));
+    if (checkeditem!=wxNOT_FOUND)
+        mm.Check(checkeditem,true);
+
+    wxRect rect;
+    GetStatusBar()->GetFieldRect(1, rect);
+    PopupMenu(&mm, GetStatusBar()->GetPosition() + rect.GetPosition());
 }
 
 void MainFrame::StartupDone()
