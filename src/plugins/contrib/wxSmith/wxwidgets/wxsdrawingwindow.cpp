@@ -39,9 +39,6 @@ namespace
     /** \brief Event type for background-fetching system */
     const int wxEVT_FETCH_SEQUENCE = wxNewEventType();
 
-    /** \brief Identifier used by internal DrawingPanel class inside wxsDrawingWindow */
-    const int DrawingPanelId = wxNewId();
-
     /** \brief Identifier used by refresh timer */
     const int RefreshTimerId = wxNewId();
 

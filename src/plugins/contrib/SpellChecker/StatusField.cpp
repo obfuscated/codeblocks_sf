@@ -24,8 +24,8 @@ namespace
 
 SpellCheckerStatusField::SpellCheckerStatusField(wxWindow* parent, SpellCheckerPlugin *plugin, SpellCheckerConfig *sccfg)
     :wxPanel(parent, wxID_ANY),
-    m_text(NULL),
     m_bitmap(NULL),
+    m_text(NULL),
     m_sccfg(sccfg),
     m_plugin(plugin)
 {

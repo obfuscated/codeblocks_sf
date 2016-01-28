@@ -131,7 +131,7 @@ void Updater::ReadStream(bool all)
     wxStopWatch sw;
     while(m_exec_proc->IsInputAvailable())
     {
-        int c;
+        int c = 0;
         if (m_exec_stream->CanRead())
             c = m_exec_stream->GetC();
         if (m_exec_stream->LastRead()>0)

@@ -42,8 +42,6 @@ namespace
     const int IDC_BUTTON_ADD_TO_DICT         = wxNewId();
     const int IDC_BUTTON_REPLACE_IN_DICT     = wxNewId();
     const int IDC_BUTTON_REMOVE_FROM_DICT    = wxNewId();
-    const int IDC_COMBO_DICTIONARY           = wxNewId();
-    const int IDC_BUTTON_OPTIONS             = wxNewId();
     //const int                = wxNewId();
 }
 

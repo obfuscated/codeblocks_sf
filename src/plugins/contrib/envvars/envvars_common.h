@@ -114,7 +114,7 @@ namespace nsEnvVars
 #if CHECK_LIST_BOX_CLIENT_DATA==1
   struct EnvVariableListClientData : wxClientData
   {
-      EnvVariableListClientData(const wxString &key, const wxString &value) : key(key), value(value) {}
+      EnvVariableListClientData(const wxString &_key, const wxString &_value) : key(_key), value(_value) {}
       wxString key, value;
   };
 #endif

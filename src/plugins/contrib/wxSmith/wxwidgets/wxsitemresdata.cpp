@@ -908,8 +908,8 @@ bool wxsItemResData::RebuildXrcFile()
 {
     // First - opening file
     TiXmlDocument Doc;
-    TiXmlElement* Resources;
-    TiXmlElement* Object;
+    TiXmlElement* Resources = nullptr;
+    TiXmlElement* Object = nullptr;
 
     if ( TinyXML::LoadDocument(m_XrcFileName,&Doc) )
     {

@@ -203,7 +203,6 @@ namespace
     WXS_EV_END()
 
     const long popupNewPageId = wxNewId();
-    const long popupSubPageId = wxNewId();
     const long popupPrevPageId = wxNewId();
     const long popupNextPageId = wxNewId();
     const long popupFirstId = wxNewId();

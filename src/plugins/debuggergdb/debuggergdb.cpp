@@ -118,7 +118,6 @@ long idMenuInfoCatchThrow = wxNewId();
 
 long idGDBProcess = wxNewId();
 long idTimerPollDebugger = wxNewId();
-long idMenuSettings = wxNewId();
 
 long idMenuWatchDereference = wxNewId();
 

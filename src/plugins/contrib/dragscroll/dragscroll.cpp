@@ -1677,8 +1677,8 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //GTK
             ((wxWindow*)pEvtObject)->SetFocus();
     }
 
-    int scrollx;
-    int scrolly;
+    int scrollx = 0;
+    int scrolly = 0;
 
     #if defined(LOGGING)
      //LOGIT(_T("OnMouseEvent"));

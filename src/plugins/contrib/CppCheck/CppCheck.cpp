@@ -67,9 +67,9 @@ namespace
 
 
 CppCheck::CppCheck() :
-    m_LogPageIndex(0), // good init value ???
     m_CppCheckLog(0),
     m_ListLog(0),
+    m_LogPageIndex(0), // good init value ???
     m_ListLogPageIndex(0),
     m_PATH(wxEmptyString)
 {

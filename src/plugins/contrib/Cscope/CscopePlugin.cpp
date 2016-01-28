@@ -27,9 +27,6 @@ namespace
 
     const int idOnFindFunctionsCallingThisFunction = wxNewId();
     const int idOnFindFunctionsCalledByThisFuncion = wxNewId();
-//    const int idOnFindGlobalDefinition             = wxNewId();
-//    const int idOnFindSymbol                       = wxNewId();
-    const int idOnCscopeReturned                   = wxNewId();
 }
 
 

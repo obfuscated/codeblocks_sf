@@ -34,8 +34,6 @@
 namespace
 {
     PluginRegistrant<DefaultMimeHandler> reg(_T("FilesExtensionHandler"));
-
-    const int idHtml = wxNewId();
 }
 
 DefaultMimeHandler::DefaultMimeHandler()
