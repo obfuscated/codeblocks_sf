@@ -51,6 +51,7 @@
 #include <editormanager.h>
 #include <configmanager.h>
 #include <logmanager.h>
+#include <globals.h>
 #include "prep.h"
 
 namespace
@@ -902,12 +903,10 @@ void HexEditPanel::RefreshStatus()
             default: m_DigitBits->SetLabel( wxString::Format( _("%d bits") , m_DigitView->GetDigitBits() ) );
         }
 
-        switch ( m_DigitView->GetLittleEndian() )
-        {
-            case true:  m_Endianess->SetLabel( _("LE") ); break;
-            case false: m_Endianess->SetLabel( _("BE") ); break;
-            default: break;
-        }
+        if ( m_DigitView->GetLittleEndian() )
+            m_Endianess->SetLabel( _("LE") );
+        else
+            m_Endianess->SetLabel( _("BE") );
 
         m_BlockSize->SetLabel( wxString::Format( _("%dB"), m_DigitView->GetBlockBytes() ) );
 
@@ -1807,13 +1806,11 @@ bool HexEditPanel::MatchColumnsCount(int colsCount)
 
 void HexEditPanel::OnButton4Click1(wxCommandEvent& /*event*/)
 {
-    wxString tests[] =
-    {
-        _("Expression parser"),
-        _("On-Disk file edition")
-    };
+    wxArrayString tests;
+    tests.Add(_("Expression parser"));
+    tests.Add(_("On-Disk file edition"));
 
-    int index = wxGetSingleChoiceIndex( _("Select tests to perform"), _("Self tests"), sizeof( tests ) / sizeof( tests[0] ), tests, this );
+    int index = cbGetSingleChoiceIndex( _("Select tests to perform"), _("Self tests"), tests, this);
     TestCasesBase* test = 0;
 
     switch ( index )
