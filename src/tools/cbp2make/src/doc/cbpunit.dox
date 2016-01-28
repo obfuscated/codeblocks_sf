@@ -1,0 +1,141 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file cbpunit.h
+  \brief Build unit description.
+*/
+
+/*!
+  \file cbpunit.cpp
+  \brief Build unit description.
+*/
+
+/*!
+  \class CBuildUnit
+  \brief Build unit description.
+
+  Contains properties of a build unit.
+*/
+
+/*!
+  \typedef CBuildUnit::UnitType
+  \brief Defines known types of build units.
+*/
+
+/*!
+  \var CBuildUnit::m_FileName
+  \brief File name of the build unit.
+*/
+
+/*!
+  \var CBuildUnit::m_Targets
+  \brief List of build target names to which this build unit belong.
+*/
+
+/*!
+  \var CBuildUnit::m_CompileVariable
+  \brief Selects compiler variable ("CC", "CXX", etc) for the build unit.
+
+  If the value is not an empty string,
+  it overrides the default compiler variable for the build unit.
+*/
+
+/*!
+  \var CBuildUnit::m_DoCompile
+  \brief Allows compilation of the build unit.
+*/
+
+/*!
+  \var CBuildUnit::m_DoLink
+  \brief Allows linking of the build unit.
+*/
+
+/*!
+  \var CBuildUnit::m_Type
+  \brief Type of the build unit (source file, resource, header file, etc).
+
+  \sa CBuildUnit::UnitType
+*/
+
+/*!
+  \var CBuildUnit::m_Weight
+  \brief Weight (priority) of the build unit.
+
+  Normally build unit weights range from 0 to 100.
+  Lower weight means higher priority and vice versa.
+  Build units with lower weights are compiled and linked first.
+*/
+
+/*!
+  \var CBuildUnit::m_ObjectFileName
+  \brief File name of the object file (a result of compilation) of this build unit.
+*/
+
+/*!
+  \fn CBuildUnit::GetUnitType(const CString& Extension)
+  \brief Returns build unit type for units with file extension specified by \a Extension.
+  \param Extension file extension without leading dot separator.
+
+  \return type of build unit.
+*/
+
+/*!
+  \fn CBuildUnit::IsCompilable(void)
+  \brief Tells if the build unit requires compilation.
+
+  \return \a true if the build unit requires compilation, \a false otherwise.
+
+  Compilability of a build unit is decided from the type of the build unit.
+*/
+
+/*!
+  \fn CBuildUnit::Clear(void)
+  \brief Resets the build unit to the initial state.
+*/
+
+/*!
+  \fn CBuildUnit::Read(const TiXmlElement *UnitRoot)
+  \brief Reads the build unit settings from an XML document.
+  \param UnitRoot an element of an XML document.
+*/
+
+/*!
+  \fn CBuildUnit::Show(void)
+  \brief Prints the build unit contents to standard output.
+*/
+
+/*!
+  \fn CBuildUnit::CBuildUnit(void)
+  \brief Creates build unit.
+*/
+
+/*!
+  \fn CBuildUnit::~CBuildUnit(void)
+  \brief Destroys build unit.
+*/
+
+/* !
+  \fn CBuildUnit::
+  \brief .
+  \param .
+
+  \return .
+*/
+
+//------------------------------------------------------------------------------

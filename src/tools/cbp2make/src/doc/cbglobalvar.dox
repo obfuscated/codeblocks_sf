@@ -1,0 +1,441 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file cbglobalvar.h
+  \brief Description of global compiler variables.
+*/
+
+/*!
+  \file cbglobalvar.cpp
+  \brief Description of global compiler variables.
+*/
+
+/*!
+  \class CGlobalVariable
+  \brief Contains properties of global compiler variables.
+
+  Global compiler variables store installation-specific file paths
+  and build options.
+*/
+
+/*!
+  \var CGlobalVariable::m_Name
+  \brief Name of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Description
+  \brief Description of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Base
+  \brief Value of the built-in default field of the variable.
+
+  When a global variable field is not specified, this value should used
+  as variable's value. The base field usually points to root directory
+  of a library.
+*/
+
+/*!
+  \var CGlobalVariable::m_Include
+  \brief Value of the built-in "Include" field of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Lib
+  \brief Value of the built-in "Lib" field of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Obj
+  \brief Value of the built-in "Obj" field of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Cflags
+  \brief Value of the built-in "Cflags" field of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Lflags
+  \brief Value of the built-in "Lflags" field of the variable.
+*/
+
+/*!
+  \var CGlobalVariable::m_Fields
+  \brief User-defined fields of the global compiler variable.
+*/
+
+/* !
+  \var CGlobalVariable::
+  \brief .
+*/
+
+/*!
+  \fn CGlobalVariable::Name(void)
+  \brief Name of the variable.
+  \return reference to CGlobalVariable::m_Name.
+*/
+
+/*!
+  \fn CGlobalVariable::Description(void)
+  \brief Description of the variable.
+  \return reference to CGlobalVariable::m_Description.
+*/
+
+/*!
+  \fn CGlobalVariable::Base(void)
+  \brief Value of the built-in default field of the variable.
+  \return default field value.
+*/
+
+/*!
+  \fn CGlobalVariable::Include(void)
+  \brief Value of the built-in "Include" field of the variable.
+  \return "Include" field value.
+*/
+
+/*!
+  \fn CGlobalVariable::Lib(void)
+  \brief Value of the built-in "Lib" field of the variable.
+  \return "Lib" field value.
+*/
+
+/*!
+  \fn CGlobalVariable::Obj(void)
+  \brief Value of the built-in "Obj" field of the variable.
+  \return reference to .
+*/
+
+/*!
+  \fn CGlobalVariable::Cflags(void)
+  \brief Value of the built-in "Cflags" field of the variable.
+  \return reference to .
+*/
+
+/*!
+  \fn CGlobalVariable::Lflags(void)
+  \brief Value of the built-in "Lflags" field of the variable.
+  \return reference to .
+*/
+
+/*!
+  \fn CGlobalVariable::CString Convert(const CString& Value, const int Case = 0)
+  \brief Converts global compiler variable into macro variable for makefile.
+  \param Value global compiler variable value.
+  \param Case variale name casing.
+  \return makefile variable value.
+
+  The \a Case parameter defines how casing of characters will change. Valid
+  values are: 0 - keep existing casing, don't change anything, 1 - make all
+  characters into lower case, 2 - make all characters into upper case.
+*/
+
+/*!
+  \fn CGlobalVariable::Count(void)
+  \brief Returns number of user-defined fields.
+  \return number of user-defined fields.
+*/
+
+/*!
+  \fn CGlobalVariable::GetField(const int Index)
+  \brief Returns name of user-defined field.
+  \param Index index of user-defined field.
+  \return field name.
+*/
+
+/*!
+  \fn CGlobalVariable::GetValue(const int Index)
+  \brief Returns value of user-defined field.
+  \param Index index of user-defined field.
+  \return field value.
+*/
+
+/*!
+  \fn CGlobalVariable::Clear(void)
+  \brief Resets the global compiler variable to the initial state.
+*/
+
+/*!
+  \fn CGlobalVariable::Add(const CString& Name, const CString& Value)
+  \brief Adds new user-defined field.
+  \param Name field name.
+  \param Value field value.
+*/
+
+/*!
+  \fn CGlobalVariable::Remove(const CString& Name)
+  \brief Removes user-defined field.
+  \param Name field name.
+*/
+
+/*!
+  \fn CGlobalVariable::Read(const TiXmlElement *GlobalVariableRoot)
+  \brief Reads the global variable settings from an XML document.
+  \param GlobalVariableRoot an element of XML document.
+*/
+
+/*!
+  \fn CGlobalVariable::Write(TiXmlElement *GlobalVariableRoot)
+  \brief Writes the global variable settings to an XML document.
+  \param GlobalVariableRoot an element of XML document.
+*/
+
+/*!
+  \fn CGlobalVariable::Show(void)
+  \brief Prints the global compiler variable contents to standard output.
+*/
+
+/*!
+  \fn CGlobalVariable::CGlobalVariable(void)
+  \brief Creates global compiler variable.
+*/
+
+/*!
+  \fn CGlobalVariable::~CGlobalVariable(void)
+  \brief Destroys global compiler variable.
+*/
+
+/* !
+  \fn CGlobalVariable::
+  \brief .
+  \param .
+  \return .
+*/
+
+/*!
+  \class CGlobalVariableSet
+  \brief Manages a set of global compiler variables.
+*/
+
+/*!
+  \var CGlobalVariableSet::m_Name
+  \brief Name of the variable set.
+*/
+
+/*!
+  \var CGlobalVariableSet::m_Variables
+  \brief List of global compiler variables.
+*/
+
+/*!
+  \var CGlobalVariableSet::m_Active
+  \brief Indicates that this variable set should be defined in makefile.
+*/
+
+/* !
+  \var CGlobalVariableSet::
+  \brief .
+*/
+
+/*!
+  \fn CGlobalVariableSet::Name(void)
+  \brief Name of the set.
+  \return reference to CGlobalVariableSet::m_Name.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Active(void)
+  \brief Indicates that this variable set should be defined in makefile.
+  \return CGlobalVariableSet::m_Active.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Clear(void)
+  \brief Resets the set of variables to the initial state.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Count(void) const
+  \brief Returns number of variables.
+  \return number of variables.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Get(const size_t Index)
+  \brief Returns a variable by index.
+  \param Index index of a variable.
+  \return pointer to a variable or \a NULL if a variable with index
+  \a Index does not exist.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Find(const CString& Name)
+  \brief Returns a variable by name.
+  \param Name name of a variable.
+  \return pointer to the variable or \a NULL if variable with index
+  \a Index does not exist.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Add(const CString& Name, const CString& Description = "")
+  \brief Adds new variable with name \a Name and description \a Description.
+  \param Name name of the variable.
+  \param Description description of the variable (optional).
+  \return pointer to global compiler variable.
+
+  If a variable with name \a Name already exists, new variable will not
+  be created.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Remove(const CString& Name)
+  \brief Removes variable with name \a Name.
+  \param Name name of a variable.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Read(const TiXmlElement *GlobalVariableSetRoot)
+  \brief Reads the global variable set settings from an XML document.
+  \param GlobalVariableSetRoot an element of XML document.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Write(TiXmlElement *GlobalVariableSetRoot)
+  \brief Writes the global variable set settings to an XML document.
+  \param GlobalVariableSetRoot an element of XML document.
+*/
+
+/*!
+  \fn CGlobalVariableSet::Show(void)
+  \brief Prints the global compiler variable set contents to standard output.
+*/
+
+/*!
+  \fn CGlobalVariableSet::CGlobalVariableSet(void)
+  \brief Creates global compiler variable set.
+*/
+
+/*!
+  \fn CGlobalVariableSet::~CGlobalVariableSet(void)
+  \brief Destroys global compiler variable set.
+*/
+
+/* !
+  \fn CGlobalVariableSet::
+  \brief .
+  \param .
+  \return .
+*/
+
+/*!
+  \class CGlobalVariableConfig
+  \brief Manages global compiler variables configuration.
+
+  Configuration consists of a number of sets of variables.
+*/
+
+/*!
+  \var CGlobalVariableConfig::m_VariableSets
+  \brief List of variable sets.
+*/
+
+/* !
+  \var CGlobalVariableConfig::
+  \brief .
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Clear(void)
+  \brief Resets the configuration to the initial state.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Count(void) const
+  \brief Returns the number of variable sets in configuration.
+  \return number of sets.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Get(const size_t Index)
+  \brief Returns a set of variables by index.
+  \param Index index of a set of variables.
+  \return pointer to a set of variables or \a NULL if a set with index
+  \a Index does not exist.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Find(const CString& Name)
+  \brief Returns a set of variables by name.
+  \param Name name of a set of variables.
+  \return pointer to a set of variables or \a NULL if a set with name
+  \a Name does not exist.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Add(const CString& Name)
+  \brief Adds new set of global compiler variables.
+  \param Name name of the set.
+  \return pointer to the set of variables.
+
+  If a variable set with name \a Name already exists, new variable set
+  will not be created.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::AddDefault(void)
+  \brief Adds the 'default' set of variables.
+
+  The default set cannot be removed. However, it can be cleared by a
+  call <em>Remove("default")</em> which removes the existing default
+  set and creates an empty default set again right away.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Remove(const CString& Name)
+  \brief Removes a set of variables.
+  \param Name name of set of global compiler variables.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Read(const TiXmlElement *GlobalVariableConfigRoot)
+  \brief Reads the global compiler variable configuration from an XML document.
+  \param GlobalVariableConfigRoot an element of XML document.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Write(TiXmlElement *GlobalVariableConfigRoot)
+  \brief Writes the global compiler variable configuration to an XML document.
+  \param GlobalVariableConfigRoot an element of XML document.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::Show(void)
+  \brief Prints the global compiler variable configuration contents to standard output.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::CGlobalVariableConfig(void)
+  \brief Creates global compiler variable configuration.
+*/
+
+/*!
+  \fn CGlobalVariableConfig::~CGlobalVariableConfig(void)
+  \brief Destroys global compiler variable configuration.
+*/
+
+/* !
+  \fn CGlobalVariableConfig::
+  \brief .
+  \param .
+  \return .
+*/
+
+//------------------------------------------------------------------------------

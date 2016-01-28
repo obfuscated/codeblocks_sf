@@ -1,0 +1,610 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file platforms.h
+  \brief Platform / Operating System specific functions.
+*/
+
+/*!
+  \file platforms.cpp
+  \brief Platform / Operating System specific functions.
+*/
+
+/*!
+  \var STR_UNIX
+  \brief UNIX platform name for configuration files.
+*/
+
+/*!
+  \var STR_WINDOWS
+  \brief Windows platform name for configuration files.
+*/
+
+/*!
+  \var STR_MAC
+  \brief Mac platform name for configuration files.
+*/
+
+/*!
+  \class CPlatform
+  \brief Contains platform-specific settings and generates commands from templates.
+
+  Command templates use few special macros that should be substituted to get a
+  working command:
+
+  \li \a $src for source file or directory name.
+  \li \a $dst for destination file or directory name.
+  \li \a $opts for command options
+  \li \a $file for file name
+  \li \a $dir for directory name
+
+  A command template looks like this: <tt>"make $opts -f $file"</tt> (make tool invocation).
+*/
+
+/*!
+  \enum CPlatform::OS_Type
+  \brief Type of Operating System for a platform.
+*/
+
+/*!
+  \var CPlatform::OS_Type CPlatform::OS_Other
+  \brief Type for undefined or unknown OS.
+*/
+
+/*!
+  \var CPlatform::OS_Type CPlatform::OS_Unix
+  \brief Type for UNIX-like OS.
+*/
+
+/*!
+  \var CPlatform::OS_Type CPlatform::OS_Windows
+  \brief Type for OS Windows.
+*/
+
+/*!
+  \var CPlatform::OS_Type CPlatform::OS_Mac
+  \brief Type for MacOS.
+*/
+
+/*!
+  \var CPlatform::OS_Type CPlatform::OS_Count
+  \brief Number of OS types.
+*/
+
+/*!
+  \var CPlatform::m_Active
+  \brief Indicates that this platform is used by a build target.
+
+  This property is modified by CCodeBlocksProject during makefile creation.
+*/
+
+/*!
+  \var CPlatform::m_OS_Type
+  \brief Type of operating system for this platform.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_Null
+  \brief Name of the NULL device (/dev/null etc).
+*/
+
+/*!
+  \var CPlatform::m_Cmd_Copy
+  \brief File copying command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_Move
+  \brief File moving command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_Make
+  \brief Make tool invocation template.
+*/
+
+/*!
+  \var CPlatform::m_Tool_Make
+  \brief File name of the make tool.
+*/
+
+/* !
+  \var CPlatform::m_Cmd_TestFile
+  \brief .
+*/
+
+/*!
+  \var CPlatform::m_Cmd_RemoveFile
+  \brief File removing (deleting) command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_ForceRemoveFile
+  \brief Forced file removing command template.
+*/
+
+/* !
+  \var CPlatform::m_Cmd_TestDir
+  \brief .
+*/
+
+/*!
+  \var CPlatform::m_Cmd_MakeDir
+  \brief Directory creation command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_TestMakeDir
+  \brief Directory existence checking and creation command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_ForceMakeDir
+  \brief Forced directory creation (including parent directories) command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_RemoveDir
+  \brief Directory removing command template.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_PrintWorkDir
+  \brief Template of command to print working directory.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_EvalWorkDir
+  \brief Template of command that evaluates working directory to assign it to a variable.
+*/
+
+/*!
+  \var CPlatform::m_Cmd_ChangeDir
+  \brief Current directory changing command template.
+*/
+
+/*!
+  \var CPlatform::m_PathDelimiter
+  \brief File system path delimiter (separator).
+*/
+
+/* !
+  \var CPlatform::
+  \brief .
+*/
+
+/*!
+  \fn CPlatform::Name(const OS_Type PlatformOS)
+  \brief Returns name of platform for type \a PlatformOS.
+  \param PlatformOS a platform / operating system type.
+  \return name of platform.
+*/
+
+/*!
+  \fn CPlatform::OS(CString& PlatformName)
+  \brief Returns platform type for name \a PlatformName.
+  \param PlatformName a name of platform / operating system.
+  \return type of platform.
+*/
+
+/*!
+  \fn CPlatform::Active(void)
+  \brief Indicates that this platform is used by a build target.
+  \return reference to CPlatform::m_Active.
+*/
+
+/*!
+  \fn CPlatform::OS(void) const
+  \brief Type of operating system for this platform.
+  \return value of CPlatform::m_OS_Type.
+*/
+
+/*!
+  \fn CPlatform::Name(void)
+  \brief Returns the name of this platform.
+  \return name of this platform.
+*/
+
+/*!
+  \fn CPlatform::Cmd_Copy(void)
+  \brief File copying command template.
+  \return reference to CPlatform::m_Cmd_Copy.
+*/
+
+/*!
+  \fn CPlatform::Cmd_Move(void)
+  \brief File moving command template.
+  \return reference to CPlatform::m_Cmd_Move.
+*/
+
+/*!
+  \fn CPlatform::Cmd_Make(void)
+  \brief Make tool invocation template.
+  \return reference to CPlatform::m_Cmd_Make.
+*/
+
+/*!
+  \fn CPlatform::Tool_Make(void)
+  \brief File name of the 'make' tool.
+  \return reference to CPlatform::m_Tool_Make.
+*/
+
+/*!
+  \fn CPlatform::Cmd_RemoveFile(void)
+  \brief File removing (deleting) command template.
+  \return reference to CPlatform::m_Cmd_RemoveFile.
+*/
+
+/*!
+  \fn CPlatform::Cmd_ForceRemoveFile(void)
+  \brief Forced file removing command template.
+  \return reference to CPlatform::m_Cmd_ForceRemoveFile.
+*/
+
+/*!
+  \fn CPlatform::Cmd_MakeDir(void)
+  \brief Directory creation command template.
+  \return reference to CPlatform::m_Cmd_ForceMakeDir.
+*/
+
+/*!
+  \fn CPlatform::Cmd_TestMakeDir(void)
+  \brief Directory existence checking and creation command template.
+  \return reference to CPlatform::m_Cmd_TestMakeDir.
+*/
+
+/*!
+  \fn CPlatform::Cmd_ForceMakeDir(void)
+  \brief Forced directory creation (including parent directories) command template.
+  \return reference to CPlatform::m_Cmd_ForceMakeDir.
+*/
+
+/*!
+  \fn CPlatform::Cmd_RemoveDir(void)
+  \brief Directory removing command template.
+  \return reference to CPlatform::m_Cmd_RemoveDir.
+*/
+
+/*!
+  \fn CPlatform::Cmd_PrintWorkDir(void)
+  \brief Template of command to print working directory.
+  \return reference to CPlatform::m_Cmd_PrintWorkDir.
+*/
+
+/*!
+  \fn CPlatform::Cmd_EvalWorkDir(void)
+  \brief Template of command that evaluates working directory to assign it to a variable.
+  \return reference to CPlatform::m_Cmd_EvalWorkDir.
+*/
+
+/*!
+  \fn CPlatform::Cmd_ChangeDir(void)
+  \brief Current directory changing command template.
+  \return reference to CPlatform::m_Cmd_ChangeDir.
+*/
+
+/*!
+  \fn CPlatform::Pd(void) const
+  \brief Returns path delimiter (separator) for this platform.
+  \return path delimiter (separator) for this platform.
+*/
+
+/*!
+  \fn CPlatform::Pd(const CString& Path) const
+  \brief Converts path separators in given path to valid for this platform.
+  \param Path a file path.
+  \return file path with valid separators.
+*/
+
+/*!
+  \fn CPlatform::Copy(const CString& Source, const CString& Destination) const
+  \brief Generates file copying command from template.
+  \param Source source file.
+  \param Destination target file.
+  \return file copying command.
+
+  \sa CPlatform::Cmd_Copy().
+*/
+
+/*!
+  \fn CPlatform::Move(const CString& Source, const CString& Destination) const
+  \brief Generates file moving command from template.
+  \param Source source file.
+  \param Destination target file.
+  \return file moving command.
+
+  \sa CPlatform::Cmd_Move().
+*/
+
+/*!
+  \fn CPlatform::Make(const CString& Options, const CString& Path) const
+  \brief Generates command to invoke make tool from template.
+  \param Options make tool options.
+  \param Path path to a makefile.
+  \return make tool invocation command.
+
+  \sa CPlatform::Cmd_Make().
+*/
+
+/*!
+  \fn CPlatform::RemoveFile(const CString& Path) const
+  \brief Generates file removing command from template.
+  \param Path a file path.
+  \return file removing command.
+
+  \sa CPlatform::Cmd_RemoveFile().
+*/
+
+/*!
+  \fn CPlatform::ForceRemoveFile(const CString& Path) const
+  \brief Generates forced file removing command from template.
+  \param Path a file path.
+  \return  forced file removing command.
+
+  \sa CPlatform::Cmd_ForceRemoveFile().
+*/
+
+/*!
+  \fn CPlatform::MakeDir(const CString& Path) const
+  \brief Generates directory creation command from template.
+  \param Path a directory path.
+  \return directory creation command.
+
+  \sa CPlatform::Cmd_MakeDir().
+*/
+
+/*!
+  \fn CPlatform::TestMakeDir(const CString& Path) const
+  \brief Generates conditional (by existence) directory creation command from template.
+  \param Path a directory path.
+  \return conditional directory creation command.
+
+  \sa CPlatform::Cmd_TestMakeDir().
+*/
+
+/*!
+  \fn CPlatform::ForceMakeDir(const CString& Path) const
+  \brief Generates forced directory creation command from template.
+  \param Path a directory path.
+  \return forced directory creation command.
+
+  \sa CPlatform::Cmd_ForceMakeDir().
+*/
+
+/*!
+  \fn CPlatform::RemoveDir(const CString& Path) const
+  \brief Generates directory removing command from template.
+  \param Path a directory path.
+  \return directory removing command.
+
+  \sa CPlatform::Cmd_RemoveDir().
+*/
+
+/*!
+  \fn CPlatform::PrintWorkDir(void) const
+  \brief Generates command to print current working directory from template.
+  \return command to print current working directory.
+
+  \sa CPlatform::Cmd_PrintWorkDir().
+*/
+
+/*!
+  \fn CPlatform::EvalWorkDir(void) const
+  \brief Generates command to evaluate working directory value from template.
+  \return working directory expression for assignment to a variable.
+
+  \sa CPlatform::Cmd_EvalWorkDir().
+*/
+
+/*!
+  \fn CPlatform::ChangeDir(const CString& Path) const
+  \brief Generates current directory changing command from template.
+  \param Path a directory path.
+  \return current directory changing command.
+
+  \sa CPlatform::Cmd_ChangeDir().
+*/
+
+/*!
+  \fn CPlatform::MakefileCmd(const CString& Command) const
+  \brief Converts raw command text to makefile-compatible form.
+  \param Command a command text.
+  \return makefile-compatible command.
+
+  In Windows, it is required to prepend commands with "cmd /c" in order to make
+  them work as intended from the makefile, while in UNIX is is not required to
+  change commands anyhow. This function is invented to deal with compatibility
+  issues for other platforms as well.
+*/
+
+/*!
+  \fn CPlatform::Read(const TiXmlElement *Root, const CString& Name, CString& Value)
+  \brief Reads template of command \a Name to \a Value from an XML document.
+  \param Root an element of an XML document.
+  \param Name name of a command.
+  \param Value command template.
+*/
+
+/*!
+  \fn CPlatform::Write(TiXmlElement *Root, const CString& Name, const CString& Value)
+  \brief Writes template of command \a Name to \a Value from an XML document.
+  \param Root an element of an XML document.
+  \param Name name of a command.
+  \param Value command template.
+*/
+
+/*!
+  \fn CPlatform::Assign(const CPlatform& Platform)
+  \brief Copies another platform to this platform.
+  \param Platform another platform.
+*/
+
+/*!
+  \fn CPlatform::Clear(void)
+  \brief Resets the platform to the initial state.
+*/
+
+/*!
+  \fn CPlatform::Reset(const CPlatform::OS_Type OS)
+  \brief Resets the platform to default settings for specified OS.
+  \param OS operating system type.
+*/
+
+/*!
+  \fn CPlatform::Read(const TiXmlElement *PlatformRoot)
+  \brief Reads the platform settings from an XML document.
+  \param PlatformRoot an element of an XML document.
+*/
+
+/*!
+  \fn CPlatform::Write(TiXmlElement *PlatformRoot)
+  \brief Writes the platform settings to an XML document.
+  \param PlatformRoot an element of an XML document.
+*/
+
+/*!
+  \fn CPlatform::Show(void)
+  \brief Prints the platform settings to the standard output.
+*/
+
+/*!
+  \fn CPlatform::operator =(const CPlatform& Platform)
+  \brief Copies another platform to this platform.
+  \param Platform another platform.
+  \return reference to this platform.
+*/
+
+/*!
+  \fn CPlatform::CPlatform(void)
+  \brief Creates platform description.
+*/
+
+/*!
+  \fn CPlatform::CPlatform(const CPlatform& Platform)
+  \brief Copies another platform to this platform.
+  \param Platform another platform.
+*/
+
+/* !
+  \fn CPlatform::~CPlatform(void)
+  \brief Destroys platform description.
+*/
+
+/* !
+  \fn CPlatform::
+  \brief .
+  \param .
+  \return .
+*/
+
+/*!
+  \class CPlatformSet
+  \brief Manages a set of platforms.
+*/
+
+/*!
+  \var CPlatformSet::m_Platforms
+  \brief A collection of known platfroms.
+*/
+
+/*!
+  \var CPlatformSet::m_Locked
+  \brief A lock for preventing from accidental changes during makefile generation.
+*/
+
+/* !
+  \var CPlatformSet::
+  \brief .
+*/
+
+/*!
+  \fn CPlatformSet::Lock(void)
+  \brief Locks the platform set to avoid accidental changes.
+*/
+
+/*!
+  \fn CPlatformSet::Unlock(void)
+  \brief Unlocks the platform set.
+*/
+
+/*!
+  \fn CPlatformSet::Clear(void)
+  \brief Resets the platform set to the initial state.
+*/
+
+/*!
+  \fn CPlatformSet::GetCount(void) const
+  \brief Returns the number of platforms in the set.
+  \return number of platforms.
+*/
+
+/*!
+  \fn CPlatformSet::Platform(const size_t Index) const
+  \brief Returns a plafrorm by index.
+  \param Index a platform index.
+  \return pointer to CPlatform or \a NULL if the \a Index parameter is not valid.
+*/
+
+/*!
+  \fn CPlatformSet::Find(const CPlatform::OS_Type OS)
+  \brief Searches a platform by operating system type.
+  \param OS an operating system type.
+  \return pointer to CPlatform or \a NULL if the \a OS parameter is not valid.
+*/
+
+/*!
+  \fn CPlatformSet::AddDefault(void)
+  \brief Registers three default platforms: UNIX, MacOS, Windows.
+*/
+
+/*!
+  \fn CPlatformSet::Read(const TiXmlElement *ConfigRoot)
+  \brief Reads a platform set configuration from an XML document.
+  \param ConfigRoot an XML document.
+*/
+
+/*!
+  \fn CPlatformSet::Write(TiXmlElement *ConfigRoot)
+  \brief Writes a platform set configuration to an XML document.
+  \param ConfigRoot an XML document.
+*/
+
+/*!
+  \fn CPlatformSet::Show(void)
+  \brief Prints the platform set contents to the standard output.
+*/
+
+/*!
+  \fn CPlatformSet::CPlatformSet(void)
+  \brief Creates set of platforms.
+*/
+
+/*!
+  \fn CPlatformSet::~CPlatformSet(void)
+  \brief Destroys set of platforms.
+*/
+
+/* !
+  \fn CPlatformSet::
+  \brief .
+  \param .
+  \return .
+*/
+
+//------------------------------------------------------------------------------

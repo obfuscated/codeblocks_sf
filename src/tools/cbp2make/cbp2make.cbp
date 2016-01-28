@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="cbp2make wx2.8.x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="..\..\devel\cbp2make" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="..\..\devel" />
+				<Option object_output="..\..\.objs\tools\cbp2make" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Option parameters="-in cbp2make.cbp" />
+				<Option host_application="codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+			<Target title="Doxygen">
+				<Option type="4" />
+				<Option compiler="gcc" />
+				<ExtraCommands>
+					<Add before="doxygen Doxyfile" />
+				</ExtraCommands>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-fexceptions" />
+			<Add option="-fno-strict-aliasing" />
+			<Add option="-Wno-write-strings" />
+			<Add directory="lib" />
+			<Add directory="lib\tinyxml" />
+			<Add directory="src" />
+		</Compiler>
+		<Unit filename="lib\doc\macros.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="lib\doc\stringhash.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="lib\macros.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlconfig.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlconfig.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlconvert.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlconvert.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlfutils.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlfutils.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlgpm.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlgpm.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlstrings.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlstrings.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlvariables.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stlvariables.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stringhash.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\stringhash.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\tinyxml\tinystr.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\tinyxml\tinystr.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\tinyxml\tinyxml.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\tinyxml\tinyxml.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\tinyxml\tinyxmlerror.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="lib\tinyxml\tinyxmlparser.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\buildtools.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\buildtools.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbbuildcfg.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbbuildcfg.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbbuildmgr.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbbuildmgr.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbglobalvar.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbglobalvar.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbhelper.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbhelper.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbp2make.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbproject.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbproject.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbptarget.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbptarget.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbpunit.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbpunit.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbworkspace.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\cbworkspace.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src/depsearch.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src/depsearch.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src/doc/cbbuildcfg.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/cbbuildmgr.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/cbglobalvar.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/cbhelper.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/cbproject.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/cbpunit.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/cbworkspace.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/depsearch.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/makefile.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/platforms.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/doc/toolchains.dox">
+			<Option target="Doxygen" />
+		</Unit>
+		<Unit filename="src/makefile.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src/makefile.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\platforms.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\platforms.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\revision.h">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\toolchains.cpp">
+			<Option target="default" />
+		</Unit>
+		<Unit filename="src\toolchains.h">
+			<Option target="default" />
+		</Unit>
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
