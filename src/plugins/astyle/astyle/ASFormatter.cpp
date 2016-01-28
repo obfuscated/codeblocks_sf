@@ -1,16 +1,27 @@
 // ASFormatter.cpp
-// Copyright (c) 2015 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
 // Licensed under the MIT license.
 // License.txt describes the conditions under which this software may be distributed.
 
+//-----------------------------------------------------------------------------
+// headers
+//-----------------------------------------------------------------------------
 
 #include "astyle.h"
 
 #include <algorithm>
 #include <fstream>
 
+//-----------------------------------------------------------------------------
+// astyle namespace
+//-----------------------------------------------------------------------------
 
 namespace astyle {
+//
+//-----------------------------------------------------------------------------
+// ASFormatter class
+//-----------------------------------------------------------------------------
+
 /**
  * Constructor of ASFormatter
  */
@@ -424,7 +435,7 @@ void ASFormatter::fixOptionVariableConflicts()
  */
 string ASFormatter::nextLine()
 {
-	const string* newHeader;
+	const string* newHeader = NULL;
 	bool isInVirginLine = isVirgin;
 	isCharImmediatelyPostComment = false;
 	isPreviousCharPostComment = false;
@@ -542,7 +553,8 @@ string ASFormatter::nextLine()
 			testForTimeToSplitFormattedLine();
 			continue;
 		}
-		else if (currentChar == '"' || currentChar == '\'')
+		else if (currentChar == '"'
+		         || (currentChar == '\'' && !isDigitSeparator(currentLine, charNum)))
 		{
 			formatQuoteOpener();
 			testForTimeToSplitFormattedLine();
@@ -1038,8 +1050,6 @@ string ASFormatter::nextLine()
 
 			if (newHeader != NULL)
 			{
-				const string* previousHeader;
-
 				// recognize closing headers of do..while, if..else, try..catch..finally
 				if ((newHeader == &AS_ELSE && currentHeader == &AS_IF)
 				        || (newHeader == &AS_WHILE && currentHeader == &AS_DO)
@@ -1053,7 +1063,7 @@ string ASFormatter::nextLine()
 				        || (newHeader == &AS_REMOVE && currentHeader == &AS_ADD))
 					foundClosingHeader = true;
 
-				previousHeader = currentHeader;
+				const string* previousHeader = currentHeader;
 				currentHeader = newHeader;
 				needHeaderOpeningBracket = true;
 
@@ -1188,9 +1198,7 @@ string ASFormatter::nextLine()
 			else if ((newHeader = findHeader(preCommandHeaders)) != NULL)
 			{
 				// a 'const' variable is not a preCommandHeader
-				if (previousNonWSChar != ';'
-				        && previousNonWSChar != '{'
-				        && getPreviousWord(currentLine, charNum) != AS_STATIC)
+				if (previousNonWSChar == ')')
 					foundPreCommandHeader = true;
 			}
 			else if ((newHeader = findHeader(castOperators)) != NULL)
@@ -2599,7 +2607,7 @@ BracketType ASFormatter::getBracketType()
 {
 	assert(currentChar == '{');
 
-	BracketType returnVal;
+	BracketType returnVal = NULL_TYPE;
 
 	if ((previousNonWSChar == '='
 	        || isBracketType(bracketTypeStack->back(), ARRAY_TYPE))
@@ -3174,7 +3182,8 @@ int ASFormatter::isOneLineBlockReached(string& line, int startChar) const
 			continue;
 		}
 
-		if (ch == '"' || ch == '\'')
+		if (ch == '"'
+		        || (ch == '\'' && !isDigitSeparator(line, i)))
 		{
 			isInQuote_ = true;
 			quoteChar_ = ch;
@@ -4223,7 +4232,6 @@ void ASFormatter::padParenObjC(void)
 			}
 			if (spaces > 0)
 			{
-
 				// do not use goForward here
 				currentLine.erase(charNum + 1, spaces);
 				spacePadNum -= spaces;
@@ -5463,7 +5471,8 @@ void ASFormatter::formatQuoteBody()
  */
 void ASFormatter::formatQuoteOpener()
 {
-	assert(currentChar == '"' || currentChar == '\'');
+	assert(currentChar == '"'
+	       || (currentChar == '\'' && !isDigitSeparator(currentLine, charNum)));
 
 	isInQuote = true;
 	quoteChar = currentChar;
@@ -5807,7 +5816,7 @@ bool ASFormatter::removeBracketsFromStatement()
  * @param searchStart  the start position on the line (default is 0).
  * @return the position on the line or string::npos if not found.
  */
-size_t ASFormatter::findNextChar(string& line, char searchChar, int searchStart /*0*/)
+size_t ASFormatter::findNextChar(string& line, char searchChar, int searchStart /*0*/) const
 {
 	// find the next searchChar
 	size_t i;
@@ -5824,7 +5833,8 @@ size_t ASFormatter::findNextChar(string& line, char searchChar, int searchStart 
 			if (i >= line.length())
 				return string::npos;
 		}
-		if (line[i] == '\'' || line[i] == '\"')
+		if (line[i] == '"'
+		        || (line[i] == '\'' && !isDigitSeparator(line, i)))
 		{
 			char quote = line[i];
 			while (i < line.length())
@@ -5913,7 +5923,8 @@ bool ASFormatter::isStructAccessModified(string& firstLine, size_t index) const
 				continue;
 			}
 
-			if (nextLine_[i] == '"' || nextLine_[i] == '\'')
+			if (nextLine_[i] == '"'
+			        || (nextLine_[i] == '\'' && !isDigitSeparator(nextLine_, i)))
 			{
 				isInQuote_ = true;
 				quoteChar_ = nextLine_[i];
@@ -6019,7 +6030,8 @@ bool ASFormatter::isIndentablePreprocessorBlock(string& firstLine, size_t index)
 				continue;
 			}
 
-			if (nextLine_[i] == '"' || nextLine_[i] == '\'')
+			if (nextLine_[i] == '"'
+			        || (nextLine_[i] == '\'' && !isDigitSeparator(nextLine_, i)))
 			{
 				isInQuote_ = true;
 				quoteChar_ = nextLine_[i];
@@ -6309,7 +6321,8 @@ void ASFormatter::checkIfTemplateOpener()
 				continue;
 			}
 
-			if (currentChar_ == '"' || currentChar_ == '\'')
+			if (currentChar_ == '"'
+			        || (currentChar_ == '\'' && !isDigitSeparator(nextLine_, i)))
 			{
 				isInQuote_ = true;
 				quoteChar_ = currentChar_;
@@ -7034,7 +7047,8 @@ int ASFormatter::findObjCColonAlignment() const
 				continue;
 			}
 
-			if (nextLine_[i] == '"' || nextLine_[i] == '\'')
+			if (nextLine_[i] == '"'
+			        || (nextLine_[i] == '\''  && !isDigitSeparator(nextLine_, i)))
 			{
 				isInQuote_ = true;
 				quoteChar_ = nextLine_[i];

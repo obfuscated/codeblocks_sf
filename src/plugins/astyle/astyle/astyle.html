@@ -1418,9 +1418,9 @@ if (a &lt; b
     <p id="_max-instatement-indent">
         <code class="title">--max-instatement-indent=<span class="option">#</span> / -M<span class="option">#</span></code><br />
         Set the &nbsp;maximum of <span class="option">#</span> spaces to indent a continuation line. The <span class="option">
-            <strong>#</strong></span> indicates a number of columns and must not be greater than <strong>120</strong>.
-        If no <span class="option"><strong>#</strong></span> is set, the default value of <strong>40</strong> will be
-        used. A maximum of less than two indent lengths will be ignored. This option will prevent continuation lines from
+            <strong>#</strong></span> indicates a number of columns and must not be less than <strong>40</strong> nor greater than <strong>120</strong>.
+        If no value is set, the default value of <strong>40</strong> will be
+        used. This option will prevent continuation lines from
         extending too far to the right. Setting a larger value will allow the code to be extended further to the right.
     </p>
     <div class="code">

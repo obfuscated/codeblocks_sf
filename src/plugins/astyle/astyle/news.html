@@ -21,34 +21,116 @@
     <h3>Artistic Style 2.06&nbsp; (Pending)</h3>
 
     <p>
-        A new option, &quot;pad-comma&quot;, will add a space following a comma. The option &quot;pad-oper&quot; has not
-        been changed and will also add a space following a comma.
+        A new option, &quot;pad&#8209;comma&quot;, will add a space following a comma. The option &quot;pad&#8209;oper&quot;
+        has not been changed and will also add a space following a comma.
     </p>
     <p>
         All spaces before a comma are now removed. Use the disable block comments if there are arrays with vertical alignment
         where this is not wanted.
     </p>
     <p>
-        New Objective&#8209;C options "pad-return-type" and &quot;unpad-return-type&quot; will add or remove space padding
-        after the Objective-C return type. It is described in the "Objective&#8209;C" section of the documentation.
+        New Objective&#8209;C options "pad&#8209;return&#8209;type" and &quot;unpad&#8209;return&#8209;type&quot; will
+        add or remove space padding after the Objective&#8209;C return type. It is described in the "Objective&#8209;C"
+        section of the documentation.
     </p>
     <p>
-        The Objective&#8209;C align-method-colon has been changed for method declarations and definitions. For multi-line
-        arguments when the first keyword is shorter than the others the colons are aligned on the longest line instead
-        of the first line. The alignment includes room for the indentation. This aligns all colons after the first line
-        for a better appaerance. Arguments that do not have a short keyword in the first line will remain the same. This
-        style conforms to the Google Objective&#8209;C Style Guide.
+        The Objective&#8209;C align&#8209;method&#8209;colon has been changed for method declarations and definitions.
+        For multi&#8209;line arguments when the first keyword is shorter than the others the colons are aligned on the
+        longest line instead of the first line. The alignment includes room for the indentation. This aligns all colons
+        after the first line for a better appaerance. Arguments that do not have a short keyword in the first line will
+        remain the same. This style conforms to the Google Objective&#8209;C Style Guide.
     </p>
     <p>
-        The Objective&#8209;C align-method-colon option is now applied to Objective&#8209;C method calls in addition
-        to method declarations and definitions.
+        The Objective&#8209;C align&#8209;method&#8209;colon option is now applied to Objective&#8209;C method calls in
+        addition to method declarations and definitions.
     </p>
+    <p>
+        Processing for c++14 single&#8209;quote digit separators has been added.
+    </p>
+
+    <h4>
+        New
+        Software License
+    </h4>
 
     <p>
         The Artisic Style software license has changed. It is now under the MIT license. This is a permissive license
-        which can be used in proprietory software and does NOT require the Artistic Style source code be made available.
+        which can be used in proprietory software and does NOT require modified Artistic Style source code be made available.
         It is compatable with the GNU General Public License (GPL) and most other software licenses. The change was made
         to remove restrictions on using the software and to make it available for any project that wants to use it.
+    </p>
+    <p>
+        If there are problems with the license change send an email to Artistic Style and its use will be approved on
+        a individual basis.
+    </p>
+
+    <h4>
+        Assignment Operator Alignment
+    </h4>
+
+    <p>
+        Visual Studio 2013 and 2015 have an Edit option &quot;Align Assignments&quot; that will align assignment operators
+        across multiple lines. There is also an extension named &quot;Code alignment&quot; that will align the code on
+        other items as well. Other development environments may have something similar. These will selectively align the
+        data and allow for customization of the format.
+    </p>
+    <p>
+        These options and extensions can be used with Artistic Style. If you choose to do this, the space padding will
+        be maintained and the alignment will be preserved.
+    </p>
+
+    <h4>
+        Microsoft Clang Compiler
+    </h4>
+
+
+    <p>
+        The Microsoft Clang Compiler is available with Visual Studio 2015 Update 1. It is usually 
+        used for Android or iOS
+        support but the CodeGen support can be used with Windows. The Clang Update 1 version is a preview and is 
+        incomplete, but can be used if you want. It will require modification of the Visual Studio 2015 project files.
+    </p>
+    <p>
+        The Clang compiler can be installed from the Visual Studio 2015 install program by selecting the &quot;Clang
+        with Microsoft CodeGen&quot; option. If Visual Studio 2015 Update 1 is already installed, Clang can be installed
+        by selecting File &gt; New &gt; Project &gt; Visual C++ &gt; Cross Platform, select CodeGen support option.
+    </p>
+    <p>
+        To use Clang open a Visual Studio 2015 AStyle Solution. Make the following change to all configurations:
+    </p>
+    <ul>
+        <li>General &gt; Platform Toolset, select &quot;Clang 3.7 with Microsoft CodeGen&quot;.</li>
+    </ul>
+    <p>
+        Make sure to hit &quot;Apply&quot; before editing other properties to let the project system load the corresponding
+        toolset definition.
+    </p>
+    <p>
+        The Update 1 preview release does not provide any support for automatic migration of values between Visual Studio
+        2015 and Clang 3.7. The invalid properties must be fixed manually manually. These may change with subsequent Visual
+        Studio updates.
+    </p>
+    <p>
+        The properties that need changing in Visual Studio Update 1 are:
+    </p>
+    <ul>
+        <li>C/C++ &gt; General &gt; Debug Information Format, select &quot;Full Debug Information (DWARF2)&quot; for Debug
+            or &quot;None&quot; for Release.</li>
+        <li>C/C++ &gt; General &gt; Warning Level, select &quot;Enable All Warnings&quot;.</li>
+        <li>C/C++ &gt; Code Generation &gt; Enable C++ Exceptions, select &quot;Yes&quot; for Debug or &quot;No&quot; for
+            Release.</li>
+        <li>C/C++ &gt; Precompiled Headers &gt; Precompiled Header, select &quot;Not Using Precompiled Headers&quot;.</li>
+    </ul>
+    <p>
+        The following is needed if you are building an executable instead of a static or dynamic library:
+    </p>
+    <ul>
+        <li>C/C++ &gt; Preprocessor &gt; Preprocessor Definitions, add &quot;&nbsp;__STDC__=0&quot;. To remove the warnings
+            this causes, C/C++ &gt; Command Line &gt; Additional Options, enter &quot;-Wno-macro-redefined&quot;.
+        </li>
+    </ul>
+    <p>
+        The project should now compile and run.
     </p>
 
     <h4>
@@ -56,40 +138,48 @@
     </h4>
 
     <p>
-        The executable in the Windows distribution package is now compiled with a Visual Studio 
-        version that will no longer work on Windows XP. Microsoft ended support and updates for XP on April 8, 2014.</p>
+        The executable in the Windows distribution package is now compiled with a Visual Studio version that will no 
+        longer work on Windows XP. Beginning with Visual Studio 2012, auto&#8209;vectorization tries to make loops run
+        faster by automatically vectorizing the code. Auto&#8209;vectorization is on by default, there are no compiler
+        switches, #pragmas, or hints. But it uses SSE instructions not available in Windows XP. Microsoft ended 
+        support and updates for XP on April 8, 2014, and the usage share percentage continues to decrease.
+    </p>
     <p>
         If you are using XP, Artistic Style should be compiled on the XP machine. Compiling on XP with any 
-        compiler should produce an XP executable.</p>
+        compiler should produce an XP executable.
+    </p>
     <p>
-        To compile on a non-XP machine for use on&nbsp; XP, using a compiler other than Visaul Studio should always 
+        To compile on a non&#8209;XP machine for use on&nbsp; XP, using a compiler other than Visaul Studio should always
         produce an XP executable. Using Vusual Studio 2010 or earlier should always produce an XP executable. If 
-        you are using Visual Studio 2012, 2013, or 2015 on a non-XP machine, do the following for the Artistic Style 
-        configuration you want to use:</p>
+        you are using Visual Studio 2012, 2013, or 2015 on a non&#8209;XP machine, do the following for the Artistic Style
+        configuration you want to use:
+    </p>
     <ul>
-        <li>&quot;Windows XP Support for C++&quot; must be installed. It is available as an option in the Visual Studio install and 
-            can be installed as a modification to the original install.</li>
+        <li>&quot;Windows XP Support for C++&quot; must be installed. It is available as an option in the Visual Studio install
+            and can be installed as a modification to the original install.</li>
         <li>In the Artistic Style Properties, change General &gt; Platform Toolset, to &quot;Windows XP&quot;.</li>
         <li>In the Artistic Style Properties, change C/C++ &gt; Preprocessor &gt; Preprocessor Definitions to include 
             _USING_V110_SDK71_.</li>
         <li>Change other Properties if you want, such as Output Directory or Target Name.</li>
-        <li>Compile. The output should be executable on Windows XP. It will also execute on the later versions of Windows.</li>
+        <li>Compile. The output should be executable on Windows XP. It will also execute on the later versions of Windows.
+        </li>
     </ul>
 
     <h4>
         SourceForge
     </h4>
 
-    <p>Recently, SourceForge began adding potentially unwanted programs (PUPs), also known as &quot;crapware&quot;, to
+    <p>
+        Recently, SourceForge began adding potentially unwanted programs (PUPs), also known as &quot;crapware&quot;, to
         software installers of certain applications. Some large projects have already left the site. Artistic Style does
         not use installer downloads and therefore was not affected by this. Downloads are in the form 
         of .zip or .tar.gz files. However, having the PUPs available on the host site affects the integrity of every
         application that uses the site.
     </p>
     <p>
-        What is even more troubling is that the uBlock browser add-on, and all of its spin-offs, is now blocking access
-        to the site by default. Even though Artistic Style has never used PUPs, the site is prevented from loading. The
-        block can be easily removed, but may discourage some people from using the software. are.
+        What is even more troubling is that the uBlock browser add&#8209;on, and all of its spin&#8209;offs, is now blocking
+        access to the site by default. Even though Artistic Style has never used PUPs, the site is prevented from loading.
+        The block can be easily removed, but may discourage some people from using the software. are.
     </p>
     <p>
         SourceForge is apparently taking steps to correct the situation. If this is not resolved fairly soon, Artistic

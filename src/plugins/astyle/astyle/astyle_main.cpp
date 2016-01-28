@@ -1,5 +1,5 @@
 // astyle_main.cpp
-// Copyright (c) 2015 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
 // Licensed under the MIT license.
 // License.txt describes the conditions under which this software may be distributed.
 
@@ -29,6 +29,9 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  */
 
+//-----------------------------------------------------------------------------
+// headers
+//-----------------------------------------------------------------------------
 
 #include "astyle_main.h"
 
@@ -57,6 +60,10 @@
 	#endif /* __VMS */
 #endif
 
+//-----------------------------------------------------------------------------
+// declarations
+//-----------------------------------------------------------------------------
+
 // turn off MinGW automatic file globbing
 // this CANNOT be in the astyle namespace
 #ifndef ASTYLE_LIB
@@ -68,7 +75,7 @@
 //----------------------------------------------------------------------------
 
 namespace astyle {
-
+//
 // console build variables
 #ifndef ASTYLE_LIB
 	ASConsole* g_console = NULL;     // class to encapsulate console variables
@@ -3386,6 +3393,7 @@ size_t Utf8_16::Utf8ToUtf16(char* utf8In, size_t inLen, bool isBigEndian, char* 
 				nCur |= (0x3F & *pRead);
 				state = eStart;
 				break;
+				// no default case is needed
 		}
 		++pRead;
 
@@ -3527,6 +3535,7 @@ size_t Utf8_16::Utf16ToUtf8(char* utf16In, size_t inLen, bool isBigEndian,
 				nCur = static_cast<ubyte>(0x80 | (nCur16 & 0x3F));
 				state = eStart;
 				break;
+				// no default case is needed
 		}
 		*pCur++ = static_cast<ubyte>(nCur);
 	}

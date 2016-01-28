@@ -2,7 +2,7 @@
 //  русский    中文（简体）    日本    한국의
 //
 // ASLocalizer.cpp
-// Copyright (c) 2015 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
 // Licensed under the MIT license.
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
@@ -48,7 +48,6 @@
 
 #ifdef _MSC_VER
 	#pragma warning(disable: 4996)  // secure version deprecation warnings
-	// #pragma warning(disable: 4267)  // 64 bit signed/unsigned loss of data
 #endif
 
 #ifdef __BORLANDC__
@@ -58,6 +57,10 @@
 #ifdef __INTEL_COMPILER
 	#pragma warning(disable:  383)  // value copied to temporary, reference to temporary used
 	#pragma warning(disable:  981)  // operands are evaluated in unspecified order
+#endif
+
+#ifdef __clang__
+	#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // wcstombs
 #endif
 
 namespace astyle {

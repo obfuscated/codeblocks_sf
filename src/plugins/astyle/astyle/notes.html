@@ -24,7 +24,9 @@
         <li>Add new Objective&#8209;C options "pad-return-type" (-xq) and "unpad-return-type" (-xr).</li>
         <li>Add new option pad-comma (#100).</li>
         <li>Add removing spaces before a comma (#100).</li>
+        <li>Add formatting of C++14 single-quote digit separators (#337).</li>
         <li>Improve align-method-colon to applied to Objective&#8209;C method calls.</li>
+        <li>Improve recognition of C++11 uniform initializer brackets (#381).</li>
         <li>Change align-method-colon short first line to align on the longest line instead of the first line.</li>
         <li>Fix attaching &quot;if&quot; statements to a #else preprocessor directive (#356).</li>
         <li>Fix not clearing global variables for a new file (#364).</li>
@@ -35,6 +37,7 @@
         <li>Refactoring:
             <ul>
                 <li>Consolidate scattered ASFormatter conditional statements into a padParenObjC method.</li>
+                <li>Remove ASBase methods from being inlined as class definitions.</li>
                 <li>Portability changes for additional compiler support (#352).</li>
            </ul>
         </li>

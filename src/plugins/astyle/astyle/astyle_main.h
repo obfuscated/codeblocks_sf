@@ -1,8 +1,7 @@
 // astyle_main.h
-// Copyright (c) 2015 by Jim Pattee <jimp03@email.com>.
+// Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
 // Licensed under the MIT license.
 // License.txt describes the conditions under which this software may be distributed.
-
 
 #ifndef ASTYLE_MAIN_H
 #define ASTYLE_MAIN_H
@@ -44,6 +43,10 @@
 	#define _(a) localizer.settext(a)
 #endif	// ASTYLE_LIB
 
+//-----------------------------------------------------------------------------
+// declarations
+//-----------------------------------------------------------------------------
+
 // for G++ implementation of string.compare:
 #if defined(__GNUC__) && __GNUC__ < 3
 	#error - Use GNU C compiler release 3 or higher
@@ -60,10 +63,6 @@
 		#error - Use MinGW compiler version 4 or higher
 	#endif
 #endif
-
-//----------------------------------------------------------------------------
-// definitions
-//----------------------------------------------------------------------------
 
 #ifdef ASTYLE_LIB
 
@@ -104,7 +103,7 @@
 //----------------------------------------------------------------------------
 
 namespace astyle {
-
+//
 //----------------------------------------------------------------------------
 // ASStreamIterator class
 // typename will be istringstream for GUI and istream otherwise
