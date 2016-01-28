@@ -736,7 +736,7 @@ void ConfigManager::Clear()
 void ConfigManager::Delete()
 {
     CfgMgrBldr * bld = CfgMgrBldr::Get();
-    wxString ns(cbC2U(root->Value()));
+    const wxString ns(cbC2U(root->Value()));
 
     root->Clear();
     doc->RootElement()->RemoveChild(root);

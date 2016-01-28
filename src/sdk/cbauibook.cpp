@@ -325,7 +325,7 @@ void cbAuiNotebook::StoreFocus()
 {
     // save Id of last focused window and last selected tab
     wxWindow* win = wxWindow::FindFocus();
-    if(win)
+    if (win)
         m_LastId = win->GetId();
     else
         m_LastId = 0;
@@ -419,7 +419,7 @@ void cbAuiNotebook::OnResize(wxSizeEvent& event)
         cbAuiNotebook* nb = (cbAuiNotebook*)tabCtrl->GetParent();
         if (nb)
         {
-            if(nb->m_TabCtrlSize != event.GetSize())
+            if (nb->m_TabCtrlSize != event.GetSize())
             {
                 nb->m_TabCtrlSize = event.GetSize();
                 nb->MinimizeFreeSpace();
@@ -501,7 +501,7 @@ void cbAuiNotebook::MinimizeFreeSpace(wxAuiTabCtrl* tabCtrl)
         wxClientDC dc(win);
         size_t lastTabIdx = tabCtrl->GetPageCount() - 1;
 
-        if(!tabCtrl->IsTabVisible(ctrl_idx, tabOffset, & dc, win))
+        if (!tabCtrl->IsTabVisible(ctrl_idx, tabOffset, & dc, win))
         {
             for (int i = lastTabIdx ; i >= 0; --i)
             {
@@ -843,7 +843,7 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
             if ( currentLayout.BeforeFirst('|').StartsWith(_("layout2")) ||
                  currentLayout.BeforeFirst('|').StartsWith(_("name=dummy")) )
             {
-                currentLayout=currentLayout.AfterFirst(('|'));
+                currentLayout = currentLayout.AfterFirst(('|'));
                 currentLayout.Trim();
                 currentLayout.Trim(true);
             }
@@ -855,13 +855,13 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
                 if (!pane_part.empty())
                     tempLayout += pane_part + wxT("|");
 
-                currentLayout=currentLayout.AfterFirst('|');
+                currentLayout = currentLayout.AfterFirst('|');
                 currentLayout.Trim();
                 currentLayout.Trim(true);
             }
         }
         currentLayout = tempLayout;
-        if(currentLayout.empty())
+        if (currentLayout.empty())
             mergeLayouts = false;
     }
 
@@ -995,7 +995,7 @@ bool cbAuiNotebook::LoadPerspective(const wxString& layout, bool mergeLayouts)
             pane_part.Trim(true);
             if (!pane_part.empty())
                 frames += pane_part + wxT("|");
-            currentLayout=currentLayout.AfterFirst('|');
+            currentLayout = currentLayout.AfterFirst('|');
             currentLayout.Trim();
             currentLayout.Trim(true);
         }
