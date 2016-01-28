@@ -74,6 +74,7 @@ const int idMenuOpenFolderFilesPopup     = wxNewId();
 const int idMenuRemoveFilePopup          = wxNewId();
 const int idMenuRemoveFile               = wxNewId();
 const int idMenuRenameFile               = wxNewId();
+const int idMenuRenameVFolder            = wxNewId();
 const int idMenuProjectNotes             = wxNewId();
 const int idMenuProjectProperties        = wxNewId();
 const int idMenuFileProperties           = wxNewId();
@@ -158,6 +159,7 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_MENU(idMenuOpenFolderFilesPopup,     ProjectManagerUI::OnOpenFolderFiles)
     EVT_MENU(idMenuRemoveFilePopup,          ProjectManagerUI::OnRemoveFileFromProject)
     EVT_MENU(idMenuRenameFile,               ProjectManagerUI::OnRenameFile)
+    EVT_MENU(idMenuRenameVFolder,            ProjectManagerUI::OnRenameVirtualFolder)
     EVT_MENU(idMenuSaveProject,              ProjectManagerUI::OnSaveProject)
     EVT_MENU(idMenuSaveFile,                 ProjectManagerUI::OnSaveFile)
     EVT_MENU(idMenuCloseProject,             ProjectManagerUI::OnCloseProject)
@@ -692,6 +694,7 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         {
             menu.Append(idMenuAddVirtualFolder,    _("Add new virtual folder..."));
             menu.Append(idMenuDeleteVirtualFolder, _("Delete this virtual folder"));
+            menu.Append(idMenuRenameVFolder,       _("Rename this virtual folder"));
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile, _("Remove files..."));
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), ftd->GetFolder().c_str()));
@@ -2083,6 +2086,37 @@ void ProjectManagerUI::OnDeleteVirtualFolder(cb_unused wxCommandEvent& event)
 
     ProjectVirtualFolderDeleted(prj, m_pTree, sel);
     RebuildTree();
+}
+
+void ProjectManagerUI::OnRenameVirtualFolder(wxCommandEvent& event)
+{
+    wxTreeItemId sel = GetTreeSelection();
+    if (!sel.IsOk())
+        return;
+
+    FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(sel);
+    if (!ftd)
+        return;
+
+    cbProject* prj = ftd->GetProject();
+    if (!prj)
+        return;
+
+    wxString oldName = ftd->GetFolder();
+
+    if (oldName.EndsWith(_T("/")))
+        oldName.RemoveLast(1);
+
+    wxTextEntryDialog dlg(Manager::Get()->GetAppWindow(),
+                          _("Please enter the new name for the virtual folder:"),
+                          _("Rename Virtual Folder"),
+                          oldName,
+                          wxOK | wxCANCEL | wxCENTRE);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        ProjectVirtualFolderRenamed(prj, m_pTree, sel, dlg.GetValue());
+        RebuildTree();
+    }
 }
 
 void ProjectManagerUI::OnBeginEditNode(wxTreeEvent& event)

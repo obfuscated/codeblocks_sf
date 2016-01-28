@@ -105,6 +105,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         void OnEndEditNode(wxTreeEvent& event);
         void OnAddVirtualFolder(wxCommandEvent& event);
         void OnDeleteVirtualFolder(wxCommandEvent& event);
+        void OnRenameVirtualFolder(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnIdle(wxIdleEvent& event);
         void OnKeyDown(wxTreeEvent& event);
