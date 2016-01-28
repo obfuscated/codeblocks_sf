@@ -34,6 +34,7 @@ function RegisterWizards()
     RegisterWizard(wizProject,     _T("glut"),         _T("GLUT project"),          _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("gtk"),          _T("GTK+ project"),          _T("GUI"));
     RegisterWizard(wizProject,     _T("irrlicht"),     _T("Irrlicht project"),      _T("2D/3D Graphics"));
+    RegisterWizard(wizProject,     _T("java"),         _T("Java application"),      _T("Java"));
     RegisterWizard(wizProject,     _T("lf"),           _T("Lightfeather project"),  _T("2D/3D Graphics"));
     RegisterWizard(wizProject,     _T("matlab_csf"),   _T("Matlab project"),        _T("Console"));
     RegisterWizard(wizProject,     _T("opencv"),       _T("OpenCV project"),        _T("Console"));
@@ -80,6 +81,7 @@ function RegisterWizards()
     RegisterWizard(wizFiles,       _T("d_source"),     _T("D source"),              _T("D language"));
     RegisterWizard(wizFiles,       _T("h_file"),       _T("C/C++ header"),          _T("C/C++"));
     RegisterWizard(wizFiles,       _T("fortran/file"), _T("Fortran source"),        _T("Fortran"));
+    RegisterWizard(wizFiles,       _T("java/file"),    _T("Java source"),           _T("Java"));
 }
 
 function RegisterWizard(type, folder, title, category)
