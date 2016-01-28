@@ -771,7 +771,7 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
                  it != tempInitialScope.end(); ++it)
             {
                 const Token* token = tree->at(*it);
-                if (token && (token->m_TokenKind !=tkClass))
+                if (token && (token->m_TokenKind != tkClass))
                     initialScope.erase(*it);
             }
 
@@ -780,12 +780,15 @@ size_t NativeParserBase::ResolveExpression(TokenTree*                  tree,
             if (!initialScope.empty())
                 continue;
             else
+            {
+                CCLogger::Get()->DebugLog(F(_T("ResolveExpression() Error to find initial search scope.")));
                 break; // error happened.
+            }
         }
 
         if (s_DebugSmartSense)
         {
-            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() search scope with %lu result:"),
+            CCLogger::Get()->DebugLog(F(_T("ResolveExpression() Search scope with %lu result:"),
                                         static_cast<unsigned long>(initialScope.size())));
             for (TokenIdxSet::const_iterator tt = initialScope.begin(); tt != initialScope.end(); ++tt)
                 CCLogger::Get()->DebugLog(F(_T("- Search scope: %d"), (*tt)));
