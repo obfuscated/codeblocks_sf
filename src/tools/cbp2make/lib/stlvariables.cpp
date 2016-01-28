@@ -47,6 +47,7 @@ double CVariable::GetFloat(void) const
 
 void CVariable::SetFloat(const double Value)
 {
+ (void)Value;
  // do nothing //
 }
 
@@ -57,6 +58,7 @@ int CVariable::GetInteger(void) const
 
 void CVariable::SetInteger(const int Value)
 {
+ (void)Value;
  // do nothing //
 }
 
@@ -67,6 +69,7 @@ bool CVariable::GetBoolean(void) const
 
 void CVariable::SetBoolean(const bool Value)
 {
+ (void)Value;
  // do nothing //
 }
 
@@ -77,6 +80,7 @@ CString CVariable::GetString(void) const
 
 void CVariable::SetString(const CString& Value)
 {
+ (void)Value;
  // do nothing //
 }
 
@@ -87,6 +91,7 @@ char CVariable::GetChar(void) const
 
 void CVariable::SetChar(const char Value)
 {
+ (void)Value;
  // do nothing //
 }
 

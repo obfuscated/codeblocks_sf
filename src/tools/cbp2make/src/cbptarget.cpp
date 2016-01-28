@@ -686,6 +686,7 @@ CString CVirtualTarget::Name(const CString& Prefix) const
 
 CString CVirtualTarget::Name(const CString& Prefix, const int TargetIndex) const
 {
+   (void)Prefix;
     CString name = MakefileFriendly(m_Targets.GetString(TargetIndex));
     switch (m_NameCase) {
     default:

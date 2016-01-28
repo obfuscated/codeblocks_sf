@@ -81,7 +81,7 @@ size_t CDependencyRecord::DependenciesCount(void) const
 
 CDependencyRecord *CDependencyRecord::Dependency(const size_t Index) const
 {
-    if ((Index>=0)&&(Index<m_Dependencies.size())) {
+    if (Index<m_Dependencies.size()) {
         return m_Dependencies[Index];
     }
     return 0;
@@ -102,7 +102,7 @@ size_t CDependencyRecord::CrossReferencesCount(void) const
 
 CDependencyRecord *CDependencyRecord::CrossReference(const size_t Index) const
 {
-    if ((Index>=0)&&(Index<m_CrossReferences.size())) {
+    if (Index<m_CrossReferences.size()) {
         return m_CrossReferences[Index];
     }
     return 0;
@@ -166,7 +166,7 @@ void CDependencyInfo::Show(void)
 CString CDependencyInfo::OneLineReport(const size_t Index, const bool Deps, const bool XRefs)
 {
     CString result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         CDependencyRecord *r = m_Records[Index];
         if (Deps) {
             result += "Deps ["+IntegerToString(r->DependenciesCount())
@@ -267,7 +267,7 @@ size_t CDependencyInfo::RecordsCount(void) const
 size_t CDependencyInfo::DirectDependenciesCount(const size_t Index) const
 {
     size_t result = 0;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         result += m_Records[Index]->DependenciesCount();
     }
     return result;
@@ -276,7 +276,7 @@ size_t CDependencyInfo::DirectDependenciesCount(const size_t Index) const
 size_t CDependencyInfo::IndirectDependenciesCount(const size_t Index)
 {
     size_t result = 0;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
@@ -289,7 +289,7 @@ size_t CDependencyInfo::IndirectDependenciesCount(const size_t Index)
 size_t CDependencyInfo::AllDependenciesCount(const size_t Index)
 {
     size_t result = 0;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         return DependenciesCount(m_Records[Index]);
     }
@@ -298,7 +298,7 @@ size_t CDependencyInfo::AllDependenciesCount(const size_t Index)
 
 CString CDependencyInfo::Name(const size_t Index) const
 {
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         return m_Records[Index]->GetName();
     }
     return "";
@@ -307,7 +307,7 @@ CString CDependencyInfo::Name(const size_t Index) const
 CStringList CDependencyInfo::DirectDependencies(const size_t Index) const
 {
     CStringList result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
             result.Insert(r->Dependency(i)->GetName());
@@ -319,7 +319,7 @@ CStringList CDependencyInfo::DirectDependencies(const size_t Index) const
 CStringList CDependencyInfo::IndirectDependencies(const size_t Index)
 {
     CStringList result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
@@ -335,7 +335,7 @@ CStringList CDependencyInfo::IndirectDependencies(const size_t Index)
 CStringList CDependencyInfo::AllDependencies(const size_t Index)
 {
     CStringList result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->DependenciesCount(); i < n; i++) {
@@ -348,7 +348,7 @@ CStringList CDependencyInfo::AllDependencies(const size_t Index)
 size_t CDependencyInfo::DirectCrossReferencesCount(const size_t Index) const
 {
     size_t result = 0;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         result += m_Records[Index]->CrossReferencesCount();
     }
     return result;
@@ -357,7 +357,7 @@ size_t CDependencyInfo::DirectCrossReferencesCount(const size_t Index) const
 size_t CDependencyInfo::IndirectCrossReferencesCount(const size_t Index)
 {
     size_t result = 0;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
@@ -370,7 +370,7 @@ size_t CDependencyInfo::IndirectCrossReferencesCount(const size_t Index)
 size_t CDependencyInfo::AllCrossReferencesCount(const size_t Index)
 {
     size_t result = 0;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         return CrossReferencesCount(m_Records[Index]);
     }
@@ -380,7 +380,7 @@ size_t CDependencyInfo::AllCrossReferencesCount(const size_t Index)
 CStringList CDependencyInfo::DirectCrossReferences(const size_t Index) const
 {
     CStringList result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
             result.Insert(r->CrossReference(i)->GetName());
@@ -392,7 +392,7 @@ CStringList CDependencyInfo::DirectCrossReferences(const size_t Index) const
 CStringList CDependencyInfo::IndirectCrossReferences(const size_t Index)
 {
     CStringList result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
@@ -408,7 +408,7 @@ CStringList CDependencyInfo::IndirectCrossReferences(const size_t Index)
 CStringList CDependencyInfo::AllCrossReferences(const size_t Index)
 {
     CStringList result;
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         ResetMarkers();
         const CDependencyRecord *r = m_Records[Index];
         for (size_t i = 0, n = r->CrossReferencesCount(); i < n; i++) {
@@ -420,7 +420,7 @@ CStringList CDependencyInfo::AllCrossReferences(const size_t Index)
 
 bool CDependencyInfo::AreDependenciesComplete(const size_t Index)
 {
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         return m_Records[Index]->DependenciesComplete();
     }
     return false;
@@ -428,7 +428,7 @@ bool CDependencyInfo::AreDependenciesComplete(const size_t Index)
 
 bool CDependencyInfo::AreCrossReferencesComplete(const size_t Index)
 {
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         return m_Records[Index]->CrossReferencesComplete();
     }
     return false;
@@ -436,14 +436,14 @@ bool CDependencyInfo::AreCrossReferencesComplete(const size_t Index)
 
 void CDependencyInfo::SetDependenciesComplete(const size_t Index, const bool State)
 {
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         m_Records[Index]->DependenciesComplete() = State;
     }
 }
 
 void CDependencyInfo::SetCrossReferencesComplete(const size_t Index, const bool State)
 {
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         m_Records[Index]->CrossReferencesComplete() = State;
     }
 }
@@ -478,7 +478,7 @@ size_t CDependencyInfo::AddRecord(const CString& Name)
 
 bool CDependencyInfo::AddDependency(const size_t Index, const CString& DependencyName)
 {
-    if ((Index>=0)&&(Index<m_Records.size())) {
+    if (Index<m_Records.size()) {
         size_t dep_index = AddRecord(DependencyName);
         CDependencyRecord *r = m_Records[Index];
         CDependencyRecord *d = m_Records[dep_index];
@@ -552,11 +552,13 @@ void CIncludeSearchFilter::Assign(const CIncludeSearchFilter& Filter)
 
 bool CIncludeSearchFilter::Execute(const CString& FileName, CStringList& Includes)
 {
+   (void)FileName;(void)Includes;
     return false;
 }
 
 bool CIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& Dependencies)
 {
+   (void)FileName;(void)Dependencies;
     return false;
 }
 
@@ -614,7 +616,8 @@ CCppIncludeSearchFilter::CCppIncludeSearchFilter(void)
 //
 }
 
-CCppIncludeSearchFilter::CCppIncludeSearchFilter(const CCppIncludeSearchFilter& Filter)
+CCppIncludeSearchFilter::CCppIncludeSearchFilter(const CCppIncludeSearchFilter& Filter) :
+  CIncludeSearchFilter()
 {
     Assign(Filter);
 }
@@ -626,7 +629,7 @@ CCppIncludeSearchFilter::~CCppIncludeSearchFilter(void)
 
 void CCppIncludeSearchFilter::Assign(const CCppIncludeSearchFilter& Filter)
 {
-//
+   (void)Filter;
 }
 
 bool CCppIncludeSearchFilter::Execute(const CString& FileName, CStringList& Includes)
@@ -822,9 +825,7 @@ bool CCppIncludeSearchFilter::Execute(const CString& FileName, CDependencyInfo& 
 // check if unit is already scanned
     bool scan_unit = true;
     const size_t unit_index = Dependencies.AddRecord(file_name);
-    if (unit_index >= 0) {
-        scan_unit = !Dependencies.AreDependenciesComplete(unit_index);
-    }
+    scan_unit = !Dependencies.AreDependenciesComplete(unit_index);
     if (scan_unit) {
         CStringList source;
         if (!source.LoadFromFile(file_name)) return false;

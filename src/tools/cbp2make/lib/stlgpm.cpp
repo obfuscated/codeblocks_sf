@@ -149,11 +149,12 @@ int CGenericProcessingMachine::SetFileNameLength(const int FileNameLength)
 
 CString CGenericProcessingMachine::TargetName(const int FileIndex, const CString& SourceFileName)
 {
- return EnumStr("",FileIndex,".out",m_FileNameLength);
+ (void)SourceFileName; return EnumStr("",FileIndex,".out",m_FileNameLength);
 }
 
 bool CGenericProcessingMachine::ProcessFile(const CString& SourceFileName, CString& TargetFileName)
 {
+ (void)SourceFileName;(void)TargetFileName;
  // override this function //
  return true;
 }

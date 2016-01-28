@@ -56,7 +56,7 @@ class CGenericProcessingMachine
   virtual bool Run(void);
   virtual bool PostProcess(void);
   virtual void Finalize(void);
-  virtual void Print(std::ostream& out) { };
+  virtual void Print(std::ostream& out) { (void)out; };
  public:
   bool& AliasesEnabled(void) { return m_AliasesEnabled; }
   bool& BeVerbose(void) { return m_VerboseMode; }

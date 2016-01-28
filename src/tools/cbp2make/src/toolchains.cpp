@@ -329,72 +329,72 @@ void CToolChain::Show(void)
     }
 }
 
-void CToolChain::GatherBuildTools(std::vector<CBuildTool *>& Source,
-                                  std::vector<CBuildTool *>& Target)
+void CToolChain::GatherBuildTools(std::vector<CBuildTool *>* Source,
+                                  std::vector<CBuildTool *>* Target)
 {
-    for (size_t i = 0; i < Source.size(); i++) {
-        Target.push_back(Source[i]);
+    for (size_t i = 0; i < Source->size(); i++) {
+        Target->push_back(Source->at(i));
     }
 }
 
 void CToolChain::GatherBuildTools(void)
 {
     m_BuildTools.clear();
-    GatherBuildTools((std::vector<CBuildTool *>&)m_Preprocessors,    m_BuildTools);
-    GatherBuildTools((std::vector<CBuildTool *>&)m_Assemblers,       m_BuildTools);
-    GatherBuildTools((std::vector<CBuildTool *>&)m_Compilers,        m_BuildTools);
-    GatherBuildTools((std::vector<CBuildTool *>&)m_StaticLinkers,    m_BuildTools);
-    GatherBuildTools((std::vector<CBuildTool *>&)m_DynamicLinkers,   m_BuildTools);
-    GatherBuildTools((std::vector<CBuildTool *>&)m_ExecutableLinkers,m_BuildTools);
-    GatherBuildTools((std::vector<CBuildTool *>&)m_ResourceCompilers,m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_Preprocessors,    &m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_Assemblers,       &m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_Compilers,        &m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_StaticLinkers,    &m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_DynamicLinkers,   &m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_ExecutableLinkers,&m_BuildTools);
+    GatherBuildTools((std::vector<CBuildTool *>*)&m_ResourceCompilers,&m_BuildTools);
 }
 
 CBuildTool *CToolChain::FindBuildTool(const CString& FileExtension,
-                                      const std::vector<CBuildTool *>& Tools)
+                                      const std::vector<CBuildTool *>* Tools)
 {
-    for (size_t i = 0; i < Tools.size(); i++) {
-        CBuildTool *bt = Tools[i];
+    for (size_t i = 0; i < Tools->size(); i++) {
+        CBuildTool *bt = Tools->at(i);
         if (bt->ExpectedSourceExtension(FileExtension)) return bt;
     }
     return 0;
 }
 
-std::vector<CBuildTool *>& CToolChain::GetTools(const CBuildTool::ToolType Type)
+std::vector<CBuildTool *>* CToolChain::GetTools(const CBuildTool::ToolType Type)
 {
     switch (Type) {
-    default:
-    case CBuildTool::btOther:
-    case CBuildTool::btCount:
-        return m_BuildTools;
     case CBuildTool::btPreprocessor:
-        return (std::vector<CBuildTool *>&)m_Preprocessors;
+        return (std::vector<CBuildTool *>*)&m_Preprocessors;
     case CBuildTool::btAssembler:
-        return (std::vector<CBuildTool *>&)m_Assemblers;
+        return (std::vector<CBuildTool *>*)&m_Assemblers;
     case CBuildTool::btCompiler:
-        return (std::vector<CBuildTool *>&)m_Compilers;
+        return (std::vector<CBuildTool *>*)&m_Compilers;
     case CBuildTool::btStaticLinker:
-        return (std::vector<CBuildTool *>&)m_StaticLinkers;
+        return (std::vector<CBuildTool *>*)&m_StaticLinkers;
     case CBuildTool::btDynamicLinker:
-        return (std::vector<CBuildTool *>&)m_DynamicLinkers;
+        return (std::vector<CBuildTool *>*)&m_DynamicLinkers;
     case CBuildTool::btExecutableLinker:
-        return (std::vector<CBuildTool *>&)m_ExecutableLinkers;
+        return (std::vector<CBuildTool *>*)&m_ExecutableLinkers;
     case CBuildTool::btResourceCompiler:
-        return (std::vector<CBuildTool *>&)m_ResourceCompilers;
-        //case CBuildTool::btBuildManager,
+        return (std::vector<CBuildTool *>*)&m_ResourceCompilers;
+    //case CBuildTool::btBuildManager,
+    case CBuildTool::btOther: // fall-through
+    case CBuildTool::btCount: // fall-through
+    default:
+        break;
     }
-    return m_BuildTools;
+    return &m_BuildTools;
 }
 
 size_t CToolChain::ToolsCount(const CBuildTool::ToolType Type)
 {
-    return GetTools(Type).size();
+    return GetTools(Type)->size();
 }
 
 CBuildTool *CToolChain::GetBuildTool(const size_t index, const CBuildTool::ToolType Type)
 {
-    std::vector<CBuildTool *> tools = GetTools(Type);
-    if (index<tools.size()) {
-        return tools[index];
+    std::vector<CBuildTool *>* tools = GetTools(Type);
+    if (index<tools->size()) {
+        return tools->at(index);
     }
     return 0;
 }
@@ -410,45 +410,45 @@ CBuildTool *CToolChain::FindBuildToolByName(const CString& ToolName)
 
 CBuildTool *CToolChain::FindBuildTool(const CString& FileExtension)
 {
-    return dynamic_cast<CBuildTool *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>&)m_BuildTools));
+    return dynamic_cast<CBuildTool *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>*)&m_BuildTools));
 }
 
 CAssembler *CToolChain::FindAssembler(const CString& FileExtension)
 {
-    return dynamic_cast<CAssembler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>&)m_Assemblers));
+    return dynamic_cast<CAssembler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>*)&m_Assemblers));
 }
 
 CCompiler *CToolChain::FindCompiler(const CString& FileExtension)
 {
     CCompiler *result = 0;
 
-    result = dynamic_cast<CCompiler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>&)m_Compilers));
+    result = dynamic_cast<CCompiler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>*)&m_Compilers));
     if (0 != result)
         return result;
 
-    result = dynamic_cast<CCompiler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>&)m_Assemblers));
+    result = dynamic_cast<CCompiler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>*)&m_Assemblers));
     if (0 != result)
         return result;
 
-    result = dynamic_cast<CCompiler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>&)m_ResourceCompilers));
+    result = dynamic_cast<CCompiler *>(FindBuildTool(FileExtension,(std::vector<CBuildTool *>*)&m_ResourceCompilers));
     return result;
 }
 
-void CToolChain::RemoveTool(const CBuildTool* BuildTool, std::vector<CBuildTool *>& Tools)
+void CToolChain::RemoveTool(const CBuildTool* BuildTool, std::vector<CBuildTool *>* Tools)
 {
-    Tools.erase(std::find(Tools.begin(),Tools.end(),BuildTool));
+    Tools->erase(std::find(Tools->begin(),Tools->end(),BuildTool));
     delete BuildTool;
 }
 
 void CToolChain::RemoveTool(const CBuildTool* BuildTool)
 {
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_Preprocessors);
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_Assemblers);
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_Compilers);
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_StaticLinkers);
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_DynamicLinkers);
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_ExecutableLinkers);
-    RemoveTool(BuildTool,(std::vector<CBuildTool *>&)m_ResourceCompilers);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_Preprocessors);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_Assemblers);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_Compilers);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_StaticLinkers);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_DynamicLinkers);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_ExecutableLinkers);
+    RemoveTool(BuildTool,(std::vector<CBuildTool *>*)&m_ResourceCompilers);
 }
 
 bool CToolChain::RemoveToolByName(const CString& ToolName)
@@ -666,7 +666,7 @@ size_t CToolChainSet::GetCount(const CPlatform::OS_Type OS) const
 
 CToolChain *CToolChainSet::ToolChain(const CPlatform::OS_Type OS, const size_t Index) const
 {
-    if ((OS!=CPlatform::OS_Count)&&(Index>=0)&&(Index<m_ToolChains[OS].size())) {
+    if ((OS!=CPlatform::OS_Count)&&Index<m_ToolChains[OS].size()) {
         return m_ToolChains[OS][Index];
     } else {
         return 0;

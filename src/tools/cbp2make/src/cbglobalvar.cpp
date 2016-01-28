@@ -341,7 +341,7 @@ void CGlobalVariableSet::Clear(void)
 
 CGlobalVariable* CGlobalVariableSet::Get(const size_t Index)
 {
-    if ((Index>=0)&&(Index<m_Variables.size())) {
+    if (Index<m_Variables.size()) {
         return m_Variables[Index];
     }
     return 0;
@@ -439,7 +439,7 @@ void CGlobalVariableConfig::Clear(void)
 
 CGlobalVariableSet* CGlobalVariableConfig::Get(const size_t Index)
 {
-    if ((Index>=0)&&(Index<m_VariableSets.size())) {
+    if (Index<m_VariableSets.size()) {
         return m_VariableSets[Index];
     }
     return 0;

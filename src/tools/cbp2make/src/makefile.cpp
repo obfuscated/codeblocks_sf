@@ -222,7 +222,7 @@ size_t CMakefileSection::RulesCount(void) const
 
 CMakefileRule& CMakefileSection::GetRule(const size_t Index)
 {
-    if ((Index>=0) && (Index<m_Rules.size())) {
+    if (Index<m_Rules.size()) {
         return *m_Rules[Index];
     }
     return m_NullRule;

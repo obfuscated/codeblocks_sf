@@ -50,13 +50,13 @@ protected:
     std::vector<CDynamicLinker *>    m_DynamicLinkers;
     std::vector<CExecutableLinker *> m_ExecutableLinkers;
 protected:
-    void GatherBuildTools(std::vector<CBuildTool *>& Source,
-                          std::vector<CBuildTool *>& Target);
+    void GatherBuildTools(std::vector<CBuildTool *>* Source,
+                          std::vector<CBuildTool *>* Target);
     void GatherBuildTools(void);
     CBuildTool *FindBuildTool(const CString& FileExtension,
-                              const std::vector<CBuildTool *>& Tools);
-    std::vector<CBuildTool *>& GetTools(const CBuildTool::ToolType Type = CBuildTool::btOther);
-    void RemoveTool(const CBuildTool* BuildTool, std::vector<CBuildTool *>& Tools);
+                              const std::vector<CBuildTool *>* Tools);
+    std::vector<CBuildTool *>* GetTools(const CBuildTool::ToolType Type = CBuildTool::btOther);
+    void RemoveTool(const CBuildTool* BuildTool, std::vector<CBuildTool *>* Tools);
     void RemoveTool(const CBuildTool* BuildTool);
 protected:
     void Read(const TiXmlElement *Root, const CString& Name, CString& Value);

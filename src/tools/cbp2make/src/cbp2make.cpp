@@ -209,13 +209,14 @@ CString CProcessingMachine::ConfigurationName(void)
 
 void CProcessingMachine::ConfigureToolchain(CToolChain *ToolChain)
 {
-    /*
-    CToolChain *tc = ToolChain;
-    if (PSC().VarDefined("-"))
-    {
-     tc-> = PSC().VarNamed("-");
-    }
-    */
+ (void)ToolChain;
+  /*
+  CToolChain *tc = ToolChain;
+  if (PSC().VarDefined("-"))
+  {
+   tc-> = PSC().VarNamed("-");
+  }
+  */
 }
 
 void CProcessingMachine::ConfigureBuildTool(CBuildTool *BuildTool)
@@ -336,6 +337,7 @@ void CProcessingMachine::ConfigurePlatform(CPlatform *Platform)
 
 bool CProcessingMachine::Configure(const CString& FileName)
 {
+   (void)FileName;
     CGenericProcessingMachine::Configure(""/*FileName*/);
     if (DoShowHelp()) {
         DisplayHelpMessage();
@@ -594,6 +596,7 @@ bool CProcessingMachine::Configure(const CString& FileName)
 
 CString CProcessingMachine::TargetName(const int FileIndex, const CString& SourceFileName)
 {
+   (void)FileIndex;
     return SourceFileName+".mak";//ChangeFileExt(SourceFileName,".mak");
 }
 

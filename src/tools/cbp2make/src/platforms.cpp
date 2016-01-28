@@ -144,6 +144,7 @@ CString CPlatform::SpecialChars(void) const
 
 CString CPlatform::ProtectPath(const CString& Path, const int QuoteMode)
 {
+   (void)QuoteMode;
     if (Path.GetLength() > 0) {
         if (Path.GetFirstChar() == '$') {
             /* Do not change paths like '$(SOME_VAR)' */
@@ -502,7 +503,7 @@ size_t CPlatformSet::GetCount(void) const
 
 CPlatform *CPlatformSet::Platform(const size_t Index) const
 {
-    if ((Index>=0)&&(Index<m_Platforms.size())) {
+    if (Index<m_Platforms.size()) {
         return m_Platforms[Index];
     } else {
         return 0;

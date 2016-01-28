@@ -77,7 +77,7 @@ class CParameterString
   void AddParameters(const CParameterString& Parameters);
   int GetCount(void) const { return m_Parameters.GetCount(); }
   CString Parameter(const int Index) const;
-  virtual void Print(std::ostream& out) {};
+  virtual void Print(std::ostream& out) { (void)out; };
  public:
   CParameterString(int argc, char* argv[]);
   CParameterString(const CString& Parameters);

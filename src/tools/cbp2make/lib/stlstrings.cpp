@@ -143,7 +143,7 @@ CString& CString::AppendLF(void)
 
 CString& CString::AppendCRLF(void)
 {
- char *_CRLF = "\r\n";
+ const char *_CRLF = "\r\n";
  return Append(_CRLF);
 }
 
@@ -544,7 +544,9 @@ bool CStringList::AppendFromFile(const CString& FileName)
   while (!feof(stream))
   {
    c2 = c;
-   fread(&c,1,1,stream);
+   size_t result = fread(&c,1,1,stream);
+   if (result != 1)
+    break;
    switch (c)
    {
     case 0x00: case 0x0d:
@@ -726,6 +728,7 @@ void CCharset::Print(std::ostream& out)
 
 bool CCharIterator::Match(const CString& Pattern, const bool Move)
 {
+ (void)Move;
  bool result = true;
  for (int i = 0; i < Pattern.GetLength(); i++)
  {
@@ -749,8 +752,10 @@ CStringIterator::CStringIterator(const CString *AString)
  m_Position = 0;
 }
 
-CStringIterator::CStringIterator(const CStringIterator& AStringIterator)
+CStringIterator::CStringIterator(const CStringIterator& AStringIterator) :
+  CCharIterator()
 {
+  (void)AStringIterator;
 }
 
 int CStringIterator::FirstPosition(void)
@@ -824,7 +829,8 @@ CStringListIterator::CStringListIterator(const CStringList *AStringList)
  m_StringList = (CStringList *)AStringList;
 }
 
-CStringListIterator::CStringListIterator(const CStringListIterator& AStringListIterator)
+CStringListIterator::CStringListIterator(const CStringListIterator& AStringListIterator) :
+  CCharIterator()
 {
  m_StringList = AStringListIterator.m_StringList;
  m_Line = AStringListIterator.m_Line;
@@ -924,6 +930,7 @@ CCharHistogram::CCharHistogram(void)
 
 CCharHistogram::CCharHistogram(const CCharHistogram& AHistogram)
 {
+ (void)AHistogram;
  Reset();
 }
 

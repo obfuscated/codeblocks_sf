@@ -176,10 +176,10 @@ class CCharIterator
   virtual char& Last(void) { return m_NullChar; }
   virtual void Reset(void) {};
   virtual bool Match(const CString& Pattern, const bool Move = false);
-  virtual void Print(std::ostream& out) {};
+  virtual void Print(std::ostream& out) { (void)out; };
  public:
   CCharIterator(void) { m_NullChar = 0; };
-  CCharIterator(const CCharIterator& ACharIterator) { m_NullChar = 0; };
+  CCharIterator(const CCharIterator& ACharIterator) { (void)ACharIterator; m_NullChar = 0; };
   virtual ~CCharIterator(void) {};
 };
 

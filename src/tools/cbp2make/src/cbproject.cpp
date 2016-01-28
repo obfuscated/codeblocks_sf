@@ -501,6 +501,7 @@ void CCodeBlocksProject::UpdatePlatformIndex
 void CCodeBlocksProject::UpdateTargetIndex
 (const int Target, CCodeBlocksBuildConfig& Config)
 {
+   (void)Config;
 //std::cout<<"Clearing unit index ..."<<std::endl;
     m_UnitIndex.clear();
 //std::cout<<"Building unit index ..."<<std::endl;

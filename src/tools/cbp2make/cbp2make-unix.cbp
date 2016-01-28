@@ -4,15 +4,16 @@
 	<Project>
 		<Option title="cbp2make wx2.8.x (Unix)" />
 		<Option pch_mode="2" />
+		<Option default_target="default" />
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
 				<Option output="../../devel/cbp2make" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="../../devel" />
+				<Option working_dir="../cbp2make" />
 				<Option object_output="../../.objs/tools/cbp2make" />
-				<Option type="0" />
+				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="-in cbp2make-unix.cbp" />
+				<Option parameters="-in cbp2make-unix.cbp -out foo" />
 				<Compiler>
 					<Add option="-O2" />
 				</Compiler>
