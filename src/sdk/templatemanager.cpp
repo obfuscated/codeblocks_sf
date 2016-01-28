@@ -263,8 +263,16 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
         return;
     }
 
-    // check if it exists and ask a different title
+    // get default template title
     wxString title = prj->GetTitle();
+
+    // filter title, removing all illegal filename characters
+    wxFileName titleFileName(title) ;
+    wxString forbidden = titleFileName.GetForbiddenChars();
+    for (size_t i=0; i<forbidden.Length(); ++i)
+        title.Replace(wxString(forbidden[i]), wxT(""), true);
+
+    // check if it exists and ask a different title
     while (true)
     {
         // ask for template title (unique)
