@@ -6,7 +6,9 @@
 #ifndef FILEGROUPSANDMASKS_H
 #define FILEGROUPSANDMASKS_H
 
+#include <wx/arrstr.h>
 #include <wx/dynarray.h>
+#include <wx/string.h>
 #include <settings.h>
 
 struct FileGroups
