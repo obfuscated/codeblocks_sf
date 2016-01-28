@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+    <Lexer name="Inno Setup"
+           index="76"
+           filemasks="*.iss">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0" />
+                <Style name="Comment"
+                        index="1"
+                        fg="0,128,0" />
+                <Style name="Keyword"
+                        index="2"
+                        fg="0,0,255" />
+                <Style name="Parameters"
+                        index="3"
+                        fg="255,128,0" />
+                <Style name="Section"
+                        index="4"
+                        fg="64,128,128"
+                        bold="1" />
+                <Style name="Preproc"
+                        index="5"
+                        fg="255,32,0" />
+                <Style name="Inline Expansion"
+                        index="6"
+                        fg="190,190,190" />
+                <Style name="Comment Pascal"
+                        index="7"
+                        fg="0,128,0" />
+                <Style name="Keyword Pascal"
+                        index="8"
+                        fg="128,128,0" />
+                <Style name="KeyWord User"
+                        index="9"
+                        fg="128,0,0" />
+                <Style name="String Double"
+                        index="10"
+                        fg="0,0,128" />
+                <Style name="String Single"
+                        index="11"
+                        fg="120,120,120" />
+                <Style name="Identifier"
+                        index="12"
+                        fg="128,128,128" />
+                <Keywords>
+                        <Set index="0"
+                            value="code components custommessages dirs files icons ini installdelete
+                                  langoptins languages messages registry run setup tasks types
+                                  uninstalldelete uninstallrun"/>
+                        <Set index="1"
+                            value="allowcancelduringinstall allownoicons allowrootdirectory allowuncpath
+                                   alwayscreateuninstallicon alwaysrestart alwaysshowcomponentslist
+                                   alwaysshowdironreadypage alwaysshowgrouponreadypage alwaysusepersonalgroup appcomments
+                                   appcontact appcopyright appenddefaultdirname appenddefaultgroupname appid appmodifypath
+                                   appmutex appname apppublisher apppublisherurl appreadmefile appsupportphone appsupporturl
+                                   appupdatesurl appusermodelid appvername appversion architecturesallowed
+                                   architecturesinstallin64bitmode attribs backcolor backcolor2 backcolordirection backsolid
+                                   changesassociations changesenvironment comment components compression compressionthreads
+                                   copymode copyrightfontname copyrightfontsize createappdir createuninstallregkey
+                                   defaultdialogfontname defaultdirname defaultgroupname defaultuserinfoname
+                                   defaultuserinfoorg defaultuserinfoserial description destdir destname dialogfontname
+                                   dialogfontsize direxistswarning disableappenddir disabledirpage disablefinishedpage
+                                   disableprogramgrouppage disablereadymemo disablereadypage disablestartupprompt
+                                   disablewelcomepage diskclustersize diskslicesize diskspanning dontmergeduplicatefiles
+                                   enabledirdoesntexistwarning encryption excludes externalsize extradiskspacerequired
+                                   filename flags flatcomponentslist fontinstall groupdescription hotkey iconfilename
+                                   iconindex infoafterfile infobeforefile internalcompresslevel key languagecodepage
+                                   languagedetectionmethod languageid languagename licensefile lzmaalgorithm lzmablocksize
+                                   lzmadictionarysize lzmamatchfinder lzmanumblockthreads lzmanumfastbytes
+                                   lzmauseseparateprocess mergeduplicatefiles messagesfile minversion name onlybelowversion
+                                   outputbasefilename outputdir outputmanifestfile parameters password permissions
+                                   privilegesrequired reservebytes restartifneededbyrun righttoleft root runonceid section
+                                   setupiconfile setuplogging showcomponentsizes showlanguagedialog showtaskstreelines
+                                   showundisplayablelanguages signeduninstaller signeduninstallerdir signtool slicesperdisk
+                                   solidcompression source sourcedir statusmsg string strongassemblyname subkey
+                                   terminalservicesaware timestamprounding timestampsinutc titlefontname titlefontsize
+                                   tasks touchdate touchtime type types uninstallable uninstalldisplayicon uninstalldisplayname
+                                   uninstalldisplaysize uninstallfilesdir uninstalliconfile uninstalliconname uninstalllogmode
+                                   uninstallrestartcomputer uninstallstyle updateuninstalllogappname usepreviousappdir
+                                   usepreviousgroup usepreviouslanguage useprevioussetuptype useprevioustasks
+                                   useprevioususerinfo userinfopage userinfopage usesetupldr valuedata valuename valuetype
+                                   verb versioninfocompany versioninfocopyright versioninfodescription versioninfoproductname
+                                   versioninfoproducttextversion versioninfoproductversion versioninfotextversion
+                                   versioninfoversion welcomefontname welcomefontsize windowresizable windowshowcaption
+                                   windowstartmaximized windowvisible wizardimagebackcolor wizardimagefile wizardimagestretch
+                                   wizardsmallimagebackcolor wizardsmallimagefile wizardstyle workingdir" />
+                        <Set index="2"
+                            value=" 32bit 64bit allowunsafefiles begin checkablealone checkedonce closeonexit comparetimestamp
+                                    confirmoverwrite createallsubdirs createkeyifdoesntexist createonlyiffileexists
+                                    createvalueifdoesntexist deleteafterinstall deletekey deletevalue dirifempty
+                                    disablenouninstallwarning dontcloseonexit dontcopy dontcreatekey dontinheritcheck
+                                    dontverifychecksum end; exclusive external false files filesandordirs fixed foldershortcut
+                                    fontisnttruetype full gacinstall hidewizard if ignoreversion iscustom isreadme modify
+                                    nocompression noencryption noerror noregerror nowait onlyifdestfileexists onlyifdoesntexist
+                                    overwritereadonly postinstall preservestringtype promptifolder read readexec recursesubdirs
+                                    regserver regtypelib replacesameversion restart restartreplace runascurrentuser
+                                    runasoriginaluser runhidden runmaximized runminimized setntfscompression sharedfile
+                                    shellexec skipifdoesntexist skipifnotsilent skipifsilent skipifsourcedoesntexist solidbreak
+                                    sortfilesbyextension sortfilesbyname then touch true unchecked uninsalwaysuninstall
+                                    uninsclearvalue uninsdeleteentry uninsdeletekey uninsdeletekeyifempty uninsdeletesection
+                                    uninsdeletesectionifempty uninsdeletevalue uninsneveruninstall uninsnosharedfileprompt
+                                    uninsremovereadonly uninsrestartdelete unsetntfscompression useapppaths var waituntilidle
+                                    waituntilterminated"/>
+                        <Set index="3"
+                            value="include define else if else ifdef endif expr pragma"/>
+                        <Set index="4"
+                            value=" app cf cf32 cf64 cm: cmd code: commenstartup commonappdata commondesktop commondocs
+                                    commonfavorites commonstartmenu commontemplates compiler computername dao dotnet11 dotnet20
+                                    dotnet2032 dotnet2064 dotnet40 dotnet4032 dotnet4064 drive: fonts function group groupname
+                                    hwnd ia64 ini: language localappdata log param pf pf64 reg: result sd sendto src srcexe
+                                    sys sysuserinfoname sysuserinfoorg syswow64 tmp uninstallexe userappdata userdesktop
+                                    userdocs userfavorites userinfoname userinfoorg userinfoserial username userprograms
+                                    userstartmenu userstartup usertemplates win wizardhwnd x64 x86"/>
+                        <Set index="5"
+                            value=" $ $$ $f $p $q /d /s /x /y admin append auto bt bzip bzip/1 bzip/9 clAqua clBlack clBlue
+                                    clFuchsia clGray clGreen clLime clMaroon clNavy clOlive clPurple clRed clSilver clTeal
+                                    clWhite clYellow current hc lefttoright local lowest lzma lzma/fast lzma/max lzma/normal
+                                    lzma/ultra lzma/ultra64 lzma2 lzma2/fast lzma2/max lzma2/normal lzma2/ultra lzma2/ultra64
+                                    modern new no no none not not overwrite poweruser result through toptobottom uilanguage
+                                    yes zip zip/1 zip/9"/>
+
+				</Keywords>
+            <SampleCode value="lexer_inno.sample" />
+            <LanguageAttributes
+                    LineComment=";"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=" "
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>
