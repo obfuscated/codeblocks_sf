@@ -22,7 +22,6 @@
 				<Compiler>
 					<Add directory="../../../include" />
 					<Add directory="../../../sdk/wxscintilla/include" />
-					<Add directory="../../../sdk/wxpropgrid/include" />
 					<Add directory="../wxSmith" />
 					<Add directory="../wxSmith/wxwidgets" />
 					<Add directory="../wxSmith/wxwidgets/properties" />
