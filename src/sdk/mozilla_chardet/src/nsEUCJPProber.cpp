@@ -15,8 +15,8 @@ void  nsEUCJPProber::Reset(void)
 {
   mCodingSM->Reset(); 
   mState = eDetecting;
-  mContextAnalyser.Reset();
-  mDistributionAnalyser.Reset();
+  mContextAnalyser.Reset(mIsPreferredLanguage);
+  mDistributionAnalyser.Reset(mIsPreferredLanguage);
 }
 
 nsProbingState nsEUCJPProber::HandleData(const char* aBuf, uint32_t aLen)

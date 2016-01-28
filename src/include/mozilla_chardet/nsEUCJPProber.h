@@ -18,7 +18,8 @@
 
 class nsEUCJPProber: public nsCharSetProber {
 public:
-  nsEUCJPProber()
+  nsEUCJPProber(bool aIsPreferredLanguage)
+    :mIsPreferredLanguage(aIsPreferredLanguage)
   {mCodingSM = new nsCodingStateMachine(&EUCJPSMModel);
     Reset();}
   virtual ~nsEUCJPProber(void){delete mCodingSM;}
@@ -36,6 +37,7 @@ protected:
   EUCJPDistributionAnalysis mDistributionAnalyser;
 
   char mLastChar[2];
+  bool mIsPreferredLanguage;
 };
 
 

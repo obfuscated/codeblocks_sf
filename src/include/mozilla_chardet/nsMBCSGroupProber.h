@@ -9,12 +9,16 @@
 #include "nsSJISProber.h"
 #include "nsUTF8Prober.h"
 #include "nsEUCJPProber.h"
+#include "nsGB2312Prober.h"
+#include "nsEUCKRProber.h"
+#include "nsBig5Prober.h"
+#include "nsEUCTWProber.h"
 
-#define NUM_OF_PROBERS    3
+#define NUM_OF_PROBERS    7
 
 class nsMBCSGroupProber: public nsCharSetProber {
 public:
-  nsMBCSGroupProber();
+  nsMBCSGroupProber(uint32_t aLanguageFilter);
   virtual ~nsMBCSGroupProber();
   nsProbingState HandleData(const char* aBuf, uint32_t aLen);
   const char* GetCharSetName();

@@ -19,7 +19,8 @@
 
 class nsSJISProber: public nsCharSetProber {
 public:
-  nsSJISProber()
+  nsSJISProber(bool aIsPreferredLanguage)
+    :mIsPreferredLanguage(aIsPreferredLanguage)
   {mCodingSM = new nsCodingStateMachine(&SJISSMModel);
     Reset();}
   virtual ~nsSJISProber(void){delete mCodingSM;}
@@ -37,6 +38,8 @@ protected:
   SJISDistributionAnalysis mDistributionAnalyser;
 
   char mLastChar[2];
+  bool mIsPreferredLanguage;
+
 };
 
 

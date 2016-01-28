@@ -16,10 +16,10 @@
 
 PR_BEGIN_EXTERN_C
 
-#define PR_Malloc malloc   // C::B change
-#define PR_Calloc calloc   // C::B change
-#define PR_Realloc realloc // C::B change
-#define PR_Free free       // C::B change
+#define PR_Malloc malloc
+#define PR_Calloc calloc
+#define PR_Realloc realloc
+#define PR_Free free
 
 /*
 ** Thread safe memory allocation.
@@ -36,11 +36,11 @@ PR_BEGIN_EXTERN_C
 ** must be freed by PR_Free.
 */
 
-NSPR_API(void *) PR_Malloc(size_t size);                 // C::B change
+NSPR_API(void *) PR_Malloc(size_t size);
 
-NSPR_API(void *) PR_Calloc(size_t nelem, size_t elsize); // C::B change
+NSPR_API(void *) PR_Calloc(size_t nelem, size_t elsize);
 
-NSPR_API(void *) PR_Realloc(void *ptr, size_t size);     // C::B change
+NSPR_API(void *) PR_Realloc(void *ptr, size_t size);
 
 NSPR_API(void) PR_Free(void *ptr);
 

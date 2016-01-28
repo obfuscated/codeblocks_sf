@@ -9,7 +9,6 @@
 #ifndef mozilla_Alignment_h
 #define mozilla_Alignment_h
 
-#include "Attributes.h" // C::B change
 #include <stddef.h>
 #include <stdint.h>
 
@@ -22,14 +21,14 @@ namespace mozilla {
 template<typename T>
 class AlignmentFinder
 {
-  struct Aligner
-  {
-    char mChar;
-    T mT;
-  };
+    struct Aligner
+    {
+        char c;
+        T t;
+    };
 
-public:
-  static const size_t alignment = sizeof(Aligner) - sizeof(T);
+  public:
+    static const size_t alignment = sizeof(Aligner) - sizeof(T);
 };
 
 #define MOZ_ALIGNOF(T) mozilla::AlignmentFinder<T>::alignment
@@ -65,38 +64,38 @@ template<size_t Align>
 struct AlignedElem;
 
 /*
- * We have to specialize this template because GCC doesn't like
- * __attribute__((aligned(foo))) where foo is a template parameter.
+ * We have to specialize this template because GCC doesn't like __attribute__((aligned(foo))) where
+ * foo is a template parameter.
  */
 
 template<>
 struct AlignedElem<1>
 {
-  MOZ_ALIGNED_DECL(uint8_t elem, 1);
+    MOZ_ALIGNED_DECL(uint8_t elem, 1);
 };
 
 template<>
 struct AlignedElem<2>
 {
-  MOZ_ALIGNED_DECL(uint8_t elem, 2);
+    MOZ_ALIGNED_DECL(uint8_t elem, 2);
 };
 
 template<>
 struct AlignedElem<4>
 {
-  MOZ_ALIGNED_DECL(uint8_t elem, 4);
+    MOZ_ALIGNED_DECL(uint8_t elem, 4);
 };
 
 template<>
 struct AlignedElem<8>
 {
-  MOZ_ALIGNED_DECL(uint8_t elem, 8);
+    MOZ_ALIGNED_DECL(uint8_t elem, 8);
 };
 
 template<>
 struct AlignedElem<16>
 {
-  MOZ_ALIGNED_DECL(uint8_t elem, 16);
+    MOZ_ALIGNED_DECL(uint8_t elem, 16);
 };
 
 /*
@@ -112,27 +111,25 @@ struct AlignedElem<16>
 template<size_t Nbytes>
 struct AlignedStorage
 {
-  union U
-  {
-    char mBytes[Nbytes];
-    uint64_t mDummy;
-  } u;
+    union U {
+      char bytes[Nbytes];
+      uint64_t _;
+    } u;
 
-  const void* addr() const { return u.mBytes; }
-  void* addr() { return u.mBytes; }
+    const void* addr() const { return u.bytes; }
+    void* addr() { return u.bytes; }
 };
 
 template<typename T>
-struct MOZ_INHERIT_TYPE_ANNOTATIONS_FROM_TEMPLATE_ARGS AlignedStorage2
+struct AlignedStorage2
 {
-  union U
-  {
-    char mBytes[sizeof(T)];
-    uint64_t mDummy;
-  } u;
+    union U {
+      char bytes[sizeof(T)];
+      uint64_t _;
+    } u;
 
-  const T* addr() const { return reinterpret_cast<const T*>(u.mBytes); }
-  T* addr() { return static_cast<T*>(static_cast<void*>(u.mBytes)); }
+    const T* addr() const { return reinterpret_cast<const T*>(u.bytes); }
+    T* addr() { return static_cast<T*>(static_cast<void*>(u.bytes)); }
 };
 
 } /* namespace mozilla */

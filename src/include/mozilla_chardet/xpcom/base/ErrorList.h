@@ -16,6 +16,8 @@
   /* Returned when a given interface is not supported. */
   ERROR(NS_NOINTERFACE,                         0x80004002),
   ERROR(NS_ERROR_NO_INTERFACE,                  NS_NOINTERFACE),
+  ERROR(NS_ERROR_INVALID_POINTER,               0x80004003),
+  ERROR(NS_ERROR_NULL_POINTER,                  NS_ERROR_INVALID_POINTER),
   /* Returned when a function aborts */
   ERROR(NS_ERROR_ABORT,                         0x80004004),
   /* Returned when a function fails */
@@ -27,8 +29,6 @@
   /* Returned when an illegal value is passed */
   ERROR(NS_ERROR_ILLEGAL_VALUE,                 0x80070057),
   ERROR(NS_ERROR_INVALID_ARG,                   NS_ERROR_ILLEGAL_VALUE),
-  ERROR(NS_ERROR_INVALID_POINTER,               NS_ERROR_INVALID_ARG),
-  ERROR(NS_ERROR_NULL_POINTER,                  NS_ERROR_INVALID_ARG),
   /* Returned when a class doesn't allow aggregation */
   ERROR(NS_ERROR_NO_AGGREGATION,                0x80040110),
   /* Returned when an operation can't complete due to an unavailable resource */
@@ -108,19 +108,11 @@
   ERROR(NS_ERROR_GFX_PRINTER_STARTPAGE,                   FAILURE(6)),
   /* The document is still being loaded */
   ERROR(NS_ERROR_GFX_PRINTER_DOC_IS_BUSY,                 FAILURE(7)),
+  /* Cannot Print or Print Preview XUL Documents (bug 136185 / bug 240490) */
+  ERROR(NS_ERROR_GFX_PRINTER_NO_XUL,                      FAILURE(8)),
 
   /* Font cmap is strangely structured - avoid this font! */
   ERROR(NS_ERROR_GFX_CMAP_MALFORMED,                      FAILURE(51)),
-#undef MODULE
-
-
-  /* ======================================================================= */
-  /* 4:  NS_ERROR_MODULE_WIDGET */
-  /* ======================================================================= */
-#define MODULE  NS_ERROR_MODULE_WIDGET
-  /* Used by nsIWidget::NotifyIME(). Returned when the notification is handled
-   * and the notified event is consumed by IME. */
-  ERROR(NS_SUCCESS_EVENT_CONSUMED,                        SUCCESS(1)),
 #undef MODULE
 
 
@@ -211,8 +203,6 @@
   ERROR(NS_ERROR_NET_INTERRUPT,             FAILURE(71)),
   /* The connection attempt to a proxy failed. */
   ERROR(NS_ERROR_PROXY_CONNECTION_REFUSED,  FAILURE(72)),
-  /* A transfer was only partially done when it completed. */
-  ERROR(NS_ERROR_NET_PARTIAL_TRANSFER,      FAILURE(76)),
 
   /* XXX really need to better rationalize these error codes.  are consumers of
    * necko really expected to know how to discern the meaning of these?? */
@@ -231,8 +221,6 @@
   /* The request failed because the user tried to access to a remote XUL
    * document from a website that is not in its white-list. */
   ERROR(NS_ERROR_REMOTE_XUL,           FAILURE(75)),
-  /* The request resulted in an error page being displayed. */
-  ERROR(NS_ERROR_LOAD_SHOWED_ERRORPAGE, FAILURE(77)),
 
 
   /* FTP specific error codes: */
@@ -320,10 +308,6 @@
   ERROR(NS_NET_STATUS_SENDING_TO,      FAILURE(5)),
   ERROR(NS_NET_STATUS_WAITING_FOR,     FAILURE(10)),
   ERROR(NS_NET_STATUS_RECEIVING_FROM,  FAILURE(6)),
-
-  /* nsIInterceptedChannel */
-  /* Generic error for non-specific failures during service worker interception */
-  ERROR(NS_ERROR_INTERCEPTION_FAILED,                  FAILURE(100)),
 #undef MODULE
 
 
@@ -336,7 +320,6 @@
   ERROR(NS_ERROR_PLUGIN_BLOCKLISTED,               FAILURE(1002)),
   ERROR(NS_ERROR_PLUGIN_TIME_RANGE_NOT_SUPPORTED,  FAILURE(1003)),
   ERROR(NS_ERROR_PLUGIN_CLICKTOPLAY,               FAILURE(1004)),
-  ERROR(NS_PLUGIN_INIT_PENDING,                    SUCCESS(1005)),
 #undef MODULE
 
 
@@ -503,11 +486,8 @@
   ERROR(NS_ERROR_RANGE_ERR,                        FAILURE(27)),
   /* StringEncoding API errors from http://wiki.whatwg.org/wiki/StringEncoding */
   ERROR(NS_ERROR_DOM_ENCODING_NOT_SUPPORTED_ERR,   FAILURE(28)),
-  ERROR(NS_ERROR_DOM_INVALID_POINTER_ERR,          FAILURE(29)),
-  /* WebCrypto API errors from http://www.w3.org/TR/WebCryptoAPI/ */
-  ERROR(NS_ERROR_DOM_UNKNOWN_ERR,                  FAILURE(30)),
-  ERROR(NS_ERROR_DOM_DATA_ERR,                     FAILURE(31)),
-  ERROR(NS_ERROR_DOM_OPERATION_ERR,                FAILURE(32)),
+  ERROR(NS_ERROR_DOM_ENCODING_NOT_UTF_ERR,         FAILURE(29)),
+  ERROR(NS_ERROR_DOM_ENCODING_DECODE_ERR,          FAILURE(30)),
   /* DOM error codes defined by us */
   ERROR(NS_ERROR_DOM_SECMAN_ERR,                   FAILURE(1001)),
   ERROR(NS_ERROR_DOM_WRONG_TYPE_ERR,               FAILURE(1002)),
@@ -525,30 +505,11 @@
   ERROR(NS_ERROR_DOM_QUOTA_REACHED,                FAILURE(1014)),
   ERROR(NS_ERROR_DOM_JS_EXCEPTION,                 FAILURE(1015)),
 
-  /* A way to represent uncatchable exceptions */
-  ERROR(NS_ERROR_UNCATCHABLE_EXCEPTION,            FAILURE(1016)),
-
-  /* An nsresult value to use in ErrorResult to indicate that we want to throw
-     a DOMException */
-  ERROR(NS_ERROR_DOM_DOMEXCEPTION,                 FAILURE(1017)),
-
-  /* An nsresult value to use in ErrorResult to indicate that we
-   * should just rethrow whatever is on the JSContext (which might be
-   * nothing if an uncatchable exception was thrown).
-   */
-  ERROR(NS_ERROR_DOM_EXCEPTION_ON_JSCONTEXT,       FAILURE(1018)),
-
   /* May be used to indicate when e.g. setting a property value didn't
    * actually change the value, like for obj.foo = "bar"; obj.foo = "bar";
    * the second assignment throws NS_SUCCESS_DOM_NO_OPERATION.
    */
   ERROR(NS_SUCCESS_DOM_NO_OPERATION,               SUCCESS(1)),
-
-  /*
-   * A success code that indicates that evaluating a string of JS went
-   * just fine except it threw an exception.
-   */
-  ERROR(NS_SUCCESS_DOM_SCRIPT_EVALUATION_THREW,    SUCCESS(2)),
 #undef MODULE
 
 
@@ -639,6 +600,10 @@
   /* any new errors here should have an associated entry added in xpc.msg */
 
   ERROR(NS_SUCCESS_I_DID_SOMETHING,      SUCCESS(1)),
+  /* Classes that want to only be touched by chrome (or from code whose
+   * filename begins with chrome://global/) shoudl return this from their
+   * scriptable helper's PreCreate hook. */
+  ERROR(NS_SUCCESS_CHROME_ACCESS_ONLY,   SUCCESS(2)),
 #undef MODULE
 
 
@@ -655,13 +620,7 @@
   /* ======================================================================= */
 #define MODULE NS_ERROR_MODULE_SECURITY
   /* Error code for CSP */
-  ERROR(NS_ERROR_CSP_FORM_ACTION_VIOLATION,        FAILURE(98)),
   ERROR(NS_ERROR_CSP_FRAME_ANCESTOR_VIOLATION,     FAILURE(99)),
-
-  /* Error code for Sub-Resource Integrity */
-  ERROR(NS_ERROR_SRI_CORRUPT,                      FAILURE(200)),
-  ERROR(NS_ERROR_SRI_DISABLED,                     FAILURE(201)),
-  ERROR(NS_ERROR_SRI_NOT_ELIGIBLE,                 FAILURE(202)),
 
   /* CMS specific nsresult error codes.  Note: the numbers used here correspond
    * to the values in nsICMSMessageErrors.idl. */
@@ -704,9 +663,6 @@
    * blacklist. */
   ERROR(NS_ERROR_MALWARE_URI,           FAILURE(30)),
   ERROR(NS_ERROR_PHISHING_URI,          FAILURE(31)),
-  ERROR(NS_ERROR_TRACKING_URI,          FAILURE(34)),
-  ERROR(NS_ERROR_UNWANTED_URI,          FAILURE(35)),
-  ERROR(NS_ERROR_FORBIDDEN_URI,         FAILURE(36)),
   /* Used when "Save Link As..." doesn't see the headers quickly enough to
    * choose a filename.  See nsContextMenu.js. */
   ERROR(NS_ERROR_SAVE_LINK_AS_TIMEOUT,  FAILURE(32)),
@@ -786,25 +742,10 @@
   ERROR(NS_ERROR_XPATH_UNBALANCED_CURLY_BRACE,        FAILURE(29)),
   ERROR(NS_ERROR_XSLT_BAD_NODE_NAME,                  FAILURE(30)),
   ERROR(NS_ERROR_XSLT_VAR_ALREADY_SET,                FAILURE(31)),
-  ERROR(NS_ERROR_XSLT_CALL_TO_KEY_NOT_ALLOWED,        FAILURE(32)),
 
   ERROR(NS_XSLT_GET_NEW_HANDLER,  SUCCESS(1)),
 #undef MODULE
 
-
-  /* ======================================================================= */
-  /* 28: NS_ERROR_MODULE_IPC */
-  /* ======================================================================= */
-#define MODULE NS_ERROR_MODULE_IPC
-  // Initial creation of a Transport object failed internally for unknown reasons.
-  ERROR(NS_ERROR_TRANSPORT_INIT,          FAILURE(1)),
-  // Generic error related to duplicating handle failures.
-  ERROR(NS_ERROR_DUPLICATE_HANDLE,        FAILURE(2)),
-  // Bridging: failure trying to open the connection to the parent
-  ERROR(NS_ERROR_BRIDGE_OPEN_PARENT,      FAILURE(3)),
-  // Bridging: failure trying to open the connection to the child
-  ERROR(NS_ERROR_BRIDGE_OPEN_CHILD,       FAILURE(4)),
-#undef MODULE
 
   /* ======================================================================= */
   /* 29: NS_ERROR_MODULE_SVG */
@@ -871,10 +812,9 @@
 #define MODULE NS_ERROR_MODULE_DOM_FILEHANDLE
   ERROR(NS_ERROR_DOM_FILEHANDLE_UNKNOWN_ERR,              FAILURE(1)),
   ERROR(NS_ERROR_DOM_FILEHANDLE_NOT_ALLOWED_ERR,          FAILURE(2)),
-  ERROR(NS_ERROR_DOM_FILEHANDLE_INACTIVE_ERR,             FAILURE(3)),
+  ERROR(NS_ERROR_DOM_FILEHANDLE_LOCKEDFILE_INACTIVE_ERR,  FAILURE(3)),
   ERROR(NS_ERROR_DOM_FILEHANDLE_ABORT_ERR,                FAILURE(4)),
   ERROR(NS_ERROR_DOM_FILEHANDLE_READ_ONLY_ERR,            FAILURE(5)),
-  ERROR(NS_ERROR_DOM_FILEHANDLE_QUOTA_ERR,                FAILURE(6)),
 #undef MODULE
 
   /* ======================================================================= */
@@ -889,60 +829,6 @@
   ERROR(NS_ERROR_SIGNED_JAR_ENTRY_TOO_LARGE,              FAILURE(6)),
   ERROR(NS_ERROR_SIGNED_JAR_ENTRY_INVALID,                FAILURE(7)),
   ERROR(NS_ERROR_SIGNED_JAR_MANIFEST_INVALID,             FAILURE(8)),
-#undef MODULE
-
-  /* ======================================================================= */
-  /* 36: NS_ERROR_MODULE_DOM_FILESYSTEM */
-  /* ======================================================================= */
-#define MODULE NS_ERROR_MODULE_DOM_FILESYSTEM
-  ERROR(NS_ERROR_DOM_FILESYSTEM_INVALID_PATH_ERR,          FAILURE(1)),
-  ERROR(NS_ERROR_DOM_FILESYSTEM_INVALID_MODIFICATION_ERR,  FAILURE(2)),
-  ERROR(NS_ERROR_DOM_FILESYSTEM_NO_MODIFICATION_ALLOWED_ERR, FAILURE(3)),
-  ERROR(NS_ERROR_DOM_FILESYSTEM_PATH_EXISTS_ERR,           FAILURE(4)),
-  ERROR(NS_ERROR_DOM_FILESYSTEM_TYPE_MISMATCH_ERR,         FAILURE(5)),
-  ERROR(NS_ERROR_DOM_FILESYSTEM_UNKNOWN_ERR,               FAILURE(6)),
-#undef MODULE
-
-  /* ======================================================================= */
-  /* 37: NS_ERROR_MODULE_DOM_BLUETOOTH */
-  /* ======================================================================= */
-#define MODULE NS_ERROR_MODULE_DOM_BLUETOOTH
-  ERROR(NS_ERROR_DOM_BLUETOOTH_FAIL,                      FAILURE(1)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_NOT_READY,                 FAILURE(2)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_NOMEM,                     FAILURE(3)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_BUSY,                      FAILURE(4)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_DONE,                      FAILURE(5)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_UNSUPPORTED,               FAILURE(6)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_PARM_INVALID,              FAILURE(7)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_UNHANDLED,                 FAILURE(8)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_AUTH_FAILURE,              FAILURE(9)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_RMT_DEV_DOWN,              FAILURE(10)),
-  ERROR(NS_ERROR_DOM_BLUETOOTH_AUTH_REJECTED,             FAILURE(11)),
-#undef MODULE
-
-  /* ======================================================================= */
-  /* 38: NS_ERROR_MODULE_SIGNED_APP */
-  /* ======================================================================= */
-#define MODULE NS_ERROR_MODULE_SIGNED_APP
-  ERROR(NS_ERROR_SIGNED_APP_MANIFEST_INVALID,   FAILURE(1)),
-#undef MODULE
-
-  /* ======================================================================= */
-  /* 39: NS_ERROR_MODULE_DOM_ANIM */
-  /* ======================================================================= */
-#define MODULE NS_ERROR_MODULE_DOM_ANIM
-  ERROR(NS_ERROR_DOM_ANIM_MISSING_PROPS_ERR,              FAILURE(1)),
-  ERROR(NS_ERROR_DOM_ANIM_NO_TARGET_ERR,                  FAILURE(2)),
-#undef MODULE
-
-  /* ======================================================================= */
-  /* 40: NS_ERROR_MODULE_DOM_PUSH */
-  /* ======================================================================= */
-#define MODULE NS_ERROR_MODULE_DOM_PUSH
-  ERROR(NS_ERROR_DOM_PUSH_INVALID_REGISTRATION_ERR, FAILURE(1)),
-  ERROR(NS_ERROR_DOM_PUSH_DENIED_ERR, FAILURE(2)),
-  ERROR(NS_ERROR_DOM_PUSH_ABORT_ERR, FAILURE(3)),
-  ERROR(NS_ERROR_DOM_PUSH_SERVICE_UNREACHABLE, FAILURE(4)),
 #undef MODULE
 
   /* ======================================================================= */
@@ -970,7 +856,6 @@
    * the application should be restarted.  This condition corresponds to the
    * case in which nsIAppStartup::Quit was called with the eRestart flag. */
   ERROR(NS_SUCCESS_RESTART_APP,          SUCCESS(1)),
-  ERROR(NS_SUCCESS_RESTART_APP_NOT_SAME_PROFILE,    SUCCESS(3)),
   ERROR(NS_SUCCESS_UNORM_NOTFOUND,  SUCCESS(17)),
 
 
@@ -978,6 +863,8 @@
   /* raised when current pivot's position is needed but it's not in the tree */
   ERROR(NS_ERROR_NOT_IN_TREE,  FAILURE(38)),
 
+  /* see Accessible::GetAttrValue */
+  ERROR(NS_OK_NO_ARIA_VALUE,           SUCCESS(33)),
   /* see nsTextEquivUtils */
   ERROR(NS_OK_NO_NAME_CLAUSE_HANDLED,  SUCCESS(34))
 #undef MODULE

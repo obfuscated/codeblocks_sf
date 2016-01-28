@@ -8,11 +8,12 @@
 
 #include "nsCharSetProber.h"
 #include "nsCodingStateMachine.h"
-// #include "nsAutoPtr.h" C::B change
+
+#define NUM_OF_ESC_CHARSETS   4
 
 class nsEscCharSetProber: public nsCharSetProber {
 public:
-  nsEscCharSetProber();
+  nsEscCharSetProber(uint32_t aLanguageFilter);
   virtual ~nsEscCharSetProber(void);
   nsProbingState HandleData(const char* aBuf, uint32_t aLen);
   const char* GetCharSetName() {return mDetectedCharset;}
@@ -22,8 +23,9 @@ public:
 
 protected:
   void      GetDistribution(uint32_t aCharLen, const char* aStr);
-
-  nsCodingStateMachine* mCodingSM; // C::B change
+  
+  nsCodingStateMachine* mCodingSM[NUM_OF_ESC_CHARSETS] ;
+  uint32_t    mActiveSM;
   nsProbingState mState;
   const char *  mDetectedCharset;
 };

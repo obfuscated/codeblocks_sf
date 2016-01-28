@@ -9,36 +9,9 @@
 #ifndef mozilla_Assertions_h
 #define mozilla_Assertions_h
 
-#if defined(MOZILLA_INTERNAL_API) && defined(__cplusplus)
-#define MOZ_DUMP_ASSERTION_STACK
-#endif
-
-// C::B change start
-#include "Attributes.h"
-#include "Compiler.h"
-#include "Likely.h"
-#include "MacroArgs.h"
-// C::B change end
-#ifdef MOZ_DUMP_ASSERTION_STACK
-#include "nsTraceRefcnt.h"
-#endif
-
-#if defined(MOZ_CRASHREPORTER) && defined(MOZILLA_INTERNAL_API) && \
-    !defined(MOZILLA_EXTERNAL_LINKAGE) && defined(__cplusplus)
-namespace CrashReporter {
-// This declaration is present here as well as in nsExceptionHandler.h
-// nsExceptionHandler.h is not directly included in this file as it includes
-// windows.h, which can cause problems when it is imported into some files due
-// to the number of macros defined.
-// XXX If you change this definition - also change the definition in
-// nsExceptionHandler.h
-void AnnotateMozCrashReason(const char* aReason);
-} // namespace CrashReporter
-
-#  define MOZ_CRASH_ANNOTATE(...) CrashReporter::AnnotateMozCrashReason("" __VA_ARGS__)
-#else
-#  define MOZ_CRASH_ANNOTATE(...) do { /* nothing */ } while (0)
-#endif
+#include "mozilla/Attributes.h"
+#include "mozilla/Compiler.h"
+#include "mozilla/Likely.h"
 
 #include <stddef.h>
 #include <stdio.h>
@@ -51,13 +24,13 @@ void AnnotateMozCrashReason(const char* aReason);
     * number of undesired macros and symbols.
     */
 #  ifdef __cplusplus
-extern "C" {
+   extern "C" {
 #  endif
-__declspec(dllimport) int __stdcall
-TerminateProcess(void* hProcess, unsigned int uExitCode);
-__declspec(dllimport) void* __stdcall GetCurrentProcess(void);
+   __declspec(dllimport) int __stdcall
+   TerminateProcess(void* hProcess, unsigned int uExitCode);
+   __declspec(dllimport) void* __stdcall GetCurrentProcess(void);
 #  ifdef __cplusplus
-}
+   }
 #  endif
 #else
 #  include <signal.h>
@@ -143,42 +116,33 @@ extern "C" {
 #endif
 
 /*
- * Prints |aStr| as an assertion failure (using aFilename and aLine as the
- * location of the assertion) to the standard debug-output channel.
+ * Prints |s| as an assertion failure (using file and ln as the location of the
+ * assertion) to the standard debug-output channel.
  *
  * Usually you should use MOZ_ASSERT or MOZ_CRASH instead of this method.  This
  * method is primarily for internal use in this header, and only secondarily
  * for use in implementing release-build assertions.
  */
-static MOZ_COLD MOZ_ALWAYS_INLINE void
-MOZ_ReportAssertionFailure(const char* aStr, const char* aFilename, int aLine)
-  MOZ_PRETEND_NORETURN_FOR_STATIC_ANALYSIS
+static MOZ_ALWAYS_INLINE void
+MOZ_ReportAssertionFailure(const char* s, const char* file, int ln)
 {
 #ifdef ANDROID
   __android_log_print(ANDROID_LOG_FATAL, "MOZ_Assert",
-                      "Assertion failure: %s, at %s:%d\n",
-                      aStr, aFilename, aLine);
+                      "Assertion failure: %s, at %s:%d\n", s, file, ln);
 #else
-  fprintf(stderr, "Assertion failure: %s, at %s:%d\n", aStr, aFilename, aLine);
-#if defined (MOZ_DUMP_ASSERTION_STACK) && !defined(MOZILLA_XPCOMRT_API)
-  nsTraceRefcnt::WalkTheStack(stderr);
-#endif
+  fprintf(stderr, "Assertion failure: %s, at %s:%d\n", s, file, ln);
   fflush(stderr);
 #endif
 }
 
-static MOZ_COLD MOZ_ALWAYS_INLINE void
-MOZ_ReportCrash(const char* aStr, const char* aFilename, int aLine)
-  MOZ_PRETEND_NORETURN_FOR_STATIC_ANALYSIS
+static MOZ_ALWAYS_INLINE void
+MOZ_ReportCrash(const char* s, const char* file, int ln)
 {
 #ifdef ANDROID
-  __android_log_print(ANDROID_LOG_FATAL, "MOZ_CRASH",
-                      "Hit MOZ_CRASH(%s) at %s:%d\n", aStr, aFilename, aLine);
+    __android_log_print(ANDROID_LOG_FATAL, "MOZ_CRASH",
+                        "Hit MOZ_CRASH(%s) at %s:%d\n", s, file, ln);
 #else
-  fprintf(stderr, "Hit MOZ_CRASH(%s) at %s:%d\n", aStr, aFilename, aLine);
-#if defined(MOZ_DUMP_ASSERTION_STACK) && !defined(MOZILLA_XPCOMRT_API)
-  nsTraceRefcnt::WalkTheStack(stderr);
-#endif
+  fprintf(stderr, "Hit MOZ_CRASH(%s) at %s:%d\n", s, file, ln);
   fflush(stderr);
 #endif
 }
@@ -216,8 +180,8 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 #  ifdef __cplusplus
 #    define MOZ_REALLY_CRASH() \
        do { \
-         ::__debugbreak(); \
-         *((volatile int*) NULL) = __LINE__; \
+         __debugbreak(); \
+         *((volatile int*) NULL) = 123; \
          ::TerminateProcess(::GetCurrentProcess(), 3); \
          ::MOZ_NoReturn(); \
        } while (0)
@@ -225,7 +189,7 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 #    define MOZ_REALLY_CRASH() \
        do { \
          __debugbreak(); \
-         *((volatile int*) NULL) = __LINE__; \
+         *((volatile int*) NULL) = 123; \
          TerminateProcess(GetCurrentProcess(), 3); \
          MOZ_NoReturn(); \
        } while (0)
@@ -234,13 +198,13 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
 #  ifdef __cplusplus
 #    define MOZ_REALLY_CRASH() \
        do { \
-         *((volatile int*) NULL) = __LINE__; \
+         *((volatile int*) NULL) = 123; \
          ::abort(); \
        } while (0)
 #  else
 #    define MOZ_REALLY_CRASH() \
        do { \
-         *((volatile int*) NULL) = __LINE__; \
+         *((volatile int*) NULL) = 123; \
          abort(); \
        } while (0)
 #  endif
@@ -268,18 +232,13 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  * corrupted.
  */
 #ifndef DEBUG
-#  define MOZ_CRASH(...) \
-     do { \
-       MOZ_CRASH_ANNOTATE("MOZ_CRASH(" __VA_ARGS__ ")"); \
-       MOZ_REALLY_CRASH(); \
-     } while (0)
+#  define MOZ_CRASH(...) MOZ_REALLY_CRASH()
 #else
 #  define MOZ_CRASH(...) \
      do { \
        MOZ_ReportCrash("" __VA_ARGS__, __FILE__, __LINE__); \
-       MOZ_CRASH_ANNOTATE("MOZ_CRASH(" __VA_ARGS__ ")"); \
        MOZ_REALLY_CRASH(); \
-     } while (0)
+     } while(0)
 #endif
 
 #ifdef __cplusplus
@@ -316,94 +275,52 @@ __declspec(noreturn) __inline void MOZ_NoReturn() {}
  *              "we already set [[PrimitiveThis]] for this String object");
  *
  * MOZ_ASSERT has no effect in non-debug builds.  It is designed to catch bugs
- * *only* during debugging, not "in the field". If you want the latter, use
- * MOZ_RELEASE_ASSERT, which applies to non-debug builds as well.
- *
- * MOZ_DIAGNOSTIC_ASSERT works like MOZ_RELEASE_ASSERT in Nightly/Aurora and
- * MOZ_ASSERT in Beta/Release - use this when a condition is potentially rare
- * enough to require real user testing to hit, but is not security-sensitive.
- * This can cause user pain, so use it sparingly. If a MOZ_DIAGNOSTIC_ASSERT
- * is firing, it should promptly be converted to a MOZ_ASSERT while the failure
- * is being investigated, rather than letting users suffer.
+ * *only* during debugging, not "in the field".
  */
-
-/*
- * Implement MOZ_VALIDATE_ASSERT_CONDITION_TYPE, which is used to guard against
- * accidentally passing something unintended in lieu of an assertion condition.
- */
-
-#ifdef __cplusplus
-#  include "TypeTraits.h" // C::B change
-namespace mozilla {
-namespace detail {
-
-template<typename T>
-struct AssertionConditionType
-{
-  typedef typename RemoveReference<T>::Type ValueT;
-  static_assert(!IsArray<ValueT>::value,
-                "Expected boolean assertion condition, got an array or a "
-                "string!");
-  static_assert(!IsFunction<ValueT>::value,
-                "Expected boolean assertion condition, got a function! Did "
-                "you intend to call that function?");
-  static_assert(!IsFloatingPoint<ValueT>::value,
-                "It's often a bad idea to assert that a floating-point number "
-                "is nonzero, because such assertions tend to intermittently "
-                "fail. Shouldn't your code gracefully handle this case instead "
-                "of asserting? Anyway, if you really want to do that, write an "
-                "explicit boolean condition, like !!x or x!=0.");
-
-  static const bool isValid = true;
-};
-
-} // namespace detail
-} // namespace mozilla
-#  define MOZ_VALIDATE_ASSERT_CONDITION_TYPE(x) \
-     static_assert(mozilla::detail::AssertionConditionType<decltype(x)>::isValid, \
-                   "invalid assertion condition")
-#else
-#  define MOZ_VALIDATE_ASSERT_CONDITION_TYPE(x)
-#endif
-
-/* First the single-argument form. */
-#define MOZ_ASSERT_HELPER1(expr) \
-  do { \
-    MOZ_VALIDATE_ASSERT_CONDITION_TYPE(expr); \
-    if (MOZ_UNLIKELY(!(expr))) { \
-      MOZ_ReportAssertionFailure(#expr, __FILE__, __LINE__); \
-      MOZ_CRASH_ANNOTATE("MOZ_RELEASE_ASSERT(" #expr ")"); \
-      MOZ_REALLY_CRASH(); \
-    } \
-  } while (0)
-/* Now the two-argument form. */
-#define MOZ_ASSERT_HELPER2(expr, explain) \
-  do { \
-    MOZ_VALIDATE_ASSERT_CONDITION_TYPE(expr); \
-    if (MOZ_UNLIKELY(!(expr))) { \
-      MOZ_ReportAssertionFailure(#expr " (" explain ")", __FILE__, __LINE__); \
-      MOZ_CRASH_ANNOTATE("MOZ_RELEASE_ASSERT(" #expr ") (" explain ")"); \
-      MOZ_REALLY_CRASH(); \
-    } \
-  } while (0)
-
-#define MOZ_RELEASE_ASSERT_GLUE(a, b) a b
-#define MOZ_RELEASE_ASSERT(...) \
-  MOZ_RELEASE_ASSERT_GLUE( \
-    MOZ_PASTE_PREFIX_AND_ARG_COUNT(MOZ_ASSERT_HELPER, __VA_ARGS__), \
-    (__VA_ARGS__))
-
 #ifdef DEBUG
-#  define MOZ_ASSERT(...) MOZ_RELEASE_ASSERT(__VA_ARGS__)
+   /* First the single-argument form. */
+#  define MOZ_ASSERT_HELPER1(expr) \
+     do { \
+       if (MOZ_UNLIKELY(!(expr))) { \
+         MOZ_ReportAssertionFailure(#expr, __FILE__, __LINE__); \
+         MOZ_REALLY_CRASH(); \
+       } \
+     } while (0)
+   /* Now the two-argument form. */
+#  define MOZ_ASSERT_HELPER2(expr, explain) \
+     do { \
+       if (MOZ_UNLIKELY(!(expr))) { \
+         MOZ_ReportAssertionFailure(#expr " (" explain ")", __FILE__, __LINE__); \
+         MOZ_REALLY_CRASH(); \
+       } \
+     } while (0)
+   /* And now, helper macrology up the wazoo. */
+   /*
+    * Count the number of arguments passed to MOZ_ASSERT, very carefully
+    * tiptoeing around an MSVC bug where it improperly expands __VA_ARGS__ as a
+    * single token in argument lists.  See these URLs for details:
+    *
+    *   http://connect.microsoft.com/VisualStudio/feedback/details/380090/variadic-macro-replacement
+    *   http://cplusplus.co.il/2010/07/17/variadic-macro-to-count-number-of-arguments/#comment-644
+    */
+#  define MOZ_COUNT_ASSERT_ARGS_IMPL2(_1, _2, count, ...) \
+     count
+#  define MOZ_COUNT_ASSERT_ARGS_IMPL(args) \
+	 MOZ_COUNT_ASSERT_ARGS_IMPL2 args
+#  define MOZ_COUNT_ASSERT_ARGS(...) \
+     MOZ_COUNT_ASSERT_ARGS_IMPL((__VA_ARGS__, 2, 1, 0))
+   /* Pick the right helper macro to invoke. */
+#  define MOZ_ASSERT_CHOOSE_HELPER2(count) MOZ_ASSERT_HELPER##count
+#  define MOZ_ASSERT_CHOOSE_HELPER1(count) MOZ_ASSERT_CHOOSE_HELPER2(count)
+#  define MOZ_ASSERT_CHOOSE_HELPER(count) MOZ_ASSERT_CHOOSE_HELPER1(count)
+   /* The actual macro. */
+#  define MOZ_ASSERT_GLUE(x, y) x y
+#  define MOZ_ASSERT(...) \
+     MOZ_ASSERT_GLUE(MOZ_ASSERT_CHOOSE_HELPER(MOZ_COUNT_ASSERT_ARGS(__VA_ARGS__)), \
+                     (__VA_ARGS__))
 #else
-#  define MOZ_ASSERT(...) do { } while (0)
+#  define MOZ_ASSERT(...) do { } while(0)
 #endif /* DEBUG */
-
-#ifdef RELEASE_BUILD
-#  define MOZ_DIAGNOSTIC_ASSERT MOZ_ASSERT
-#else
-#  define MOZ_DIAGNOSTIC_ASSERT MOZ_RELEASE_ASSERT
-#endif
 
 /*
  * MOZ_ASSERT_IF(cond1, cond2) is equivalent to MOZ_ASSERT(cond2) if cond1 is
@@ -417,23 +334,37 @@ struct AssertionConditionType
 #ifdef DEBUG
 #  define MOZ_ASSERT_IF(cond, expr) \
      do { \
-       if (cond) { \
+       if (cond) \
          MOZ_ASSERT(expr); \
-       } \
      } while (0)
 #else
 #  define MOZ_ASSERT_IF(cond, expr)  do { } while (0)
 #endif
 
 /*
- * MOZ_ASSUME_UNREACHABLE_MARKER() expands to an expression which states that
- * it is undefined behavior for execution to reach this point.  No guarantees
- * are made about what will happen if this is reached at runtime.  Most code
- * should use MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE because it has extra
- * asserts.
+ * MOZ_ASSUME_UNREACHABLE_MARKER() expands to an expression which states that it is
+ * undefined behavior for execution to reach this point.  No guarantees are made
+ * about what will happen if this is reached at runtime.  Most code should
+ * probably use the higher level MOZ_ASSUME_UNREACHABLE, which uses this when
+ * appropriate.
  */
-#if defined(__clang__) || defined(__GNUC__)
+#if defined(__clang__)
 #  define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
+#elif defined(__GNUC__)
+   /*
+    * __builtin_unreachable() was implemented in gcc 4.5.  If we don't have
+    * that, call a noreturn function; abort() will do nicely.  Qualify the call
+    * in C++ in case there's another abort() visible in local scope.
+    */
+#  if MOZ_GCC_VERSION_AT_LEAST(4, 5, 0)
+#    define MOZ_ASSUME_UNREACHABLE_MARKER() __builtin_unreachable()
+#  else
+#    ifdef __cplusplus
+#      define MOZ_ASSUME_UNREACHABLE_MARKER() ::abort()
+#    else
+#      define MOZ_ASSUME_UNREACHABLE_MARKER() abort()
+#    endif
+#  endif
 #elif defined(_MSC_VER)
 #  define MOZ_ASSUME_UNREACHABLE_MARKER() __assume(0)
 #else
@@ -445,22 +376,21 @@ struct AssertionConditionType
 #endif
 
 /*
- * MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE([reason]) tells the compiler that it
- * can assume that the macro call cannot be reached during execution.  This lets
- * the compiler generate better-optimized code under some circumstances, at the
- * expense of the program's behavior being undefined if control reaches the
- * MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE.
+ * MOZ_ASSUME_UNREACHABLE([reason]) tells the compiler that it can assume that
+ * the macro call cannot be reached during execution.  This lets the compiler
+ * generate better-optimized code under some circumstances, at the expense of
+ * the program's behavior being undefined if control reaches the
+ * MOZ_ASSUME_UNREACHABLE.
  *
  * In Gecko, you probably should not use this macro outside of performance- or
  * size-critical code, because it's unsafe.  If you don't care about code size
  * or performance, you should probably use MOZ_ASSERT or MOZ_CRASH.
  *
  * SpiderMonkey is a different beast, and there it's acceptable to use
- * MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE more widely.
+ * MOZ_ASSUME_UNREACHABLE more widely.
  *
- * Note that MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE is noreturn, so it's valid
- * not to return a value following a MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE
- * call.
+ * Note that MOZ_ASSUME_UNREACHABLE is noreturn, so it's valid not to return a
+ * value following a MOZ_ASSUME_UNREACHABLE call.
  *
  * Example usage:
  *
@@ -480,61 +410,18 @@ struct AssertionConditionType
  *     case VALUE_FLOAT:
  *       return (int) *(float*) value;
  *     default:
- *       MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE("Unexpected ValueType");
+ *       MOZ_ASSUME_UNREACHABLE("can only handle VALUE_INT and VALUE_FLOAT");
  *     }
  *   }
  */
-
-/*
- * Unconditional assert in debug builds for (assumed) unreachable code paths
- * that have a safe return without crashing in release builds.
- */
-#define MOZ_ASSERT_UNREACHABLE(reason) \
-   MOZ_ASSERT(false, "MOZ_ASSERT_UNREACHABLE: " reason)
-
-#define MOZ_MAKE_COMPILER_ASSUME_IS_UNREACHABLE(reason) \
-   do { \
-     MOZ_ASSERT_UNREACHABLE(reason); \
-     MOZ_ASSUME_UNREACHABLE_MARKER(); \
-   } while (0)
-
-/**
- * MOZ_FALLTHROUGH_ASSERT is an annotation to suppress compiler warnings about
- * switch cases that MOZ_ASSERT(false) (or its alias MOZ_ASSERT_UNREACHABLE) in
- * debug builds, but intentionally fall through in release builds to handle
- * unexpected values.
- *
- * Why do we need MOZ_FALLTHROUGH_ASSERT in addition to MOZ_FALLTHROUGH? In
- * release builds, the MOZ_ASSERT(false) will expand to `do { } while (0)`,
- * requiring a MOZ_FALLTHROUGH annotation to suppress a -Wimplicit-fallthrough
- * warning. In debug builds, the MOZ_ASSERT(false) will expand to something like
- * `if (true) { MOZ_CRASH(); }` and the MOZ_FALLTHROUGH annotation will cause
- * a -Wunreachable-code warning. The MOZ_FALLTHROUGH_ASSERT macro breaks this
- * warning stalemate.
- *
- * // Example before MOZ_FALLTHROUGH_ASSERT:
- * switch (foo) {
- *   default:
- *     // This case wants to assert in debug builds, fall through in release.
- *     MOZ_ASSERT(false); // -Wimplicit-fallthrough warning in release builds!
- *     MOZ_FALLTHROUGH;   // but -Wunreachable-code warning in debug builds!
- *   case 5:
- *     return 5;
- * }
- *
- * // Example with MOZ_FALLTHROUGH_ASSERT:
- * switch (foo) {
- *   default:
- *     // This case asserts in debug builds, falls through in release.
- *     MOZ_FALLTHROUGH_ASSERT("Unexpected foo value?!");
- *   case 5:
- *     return 5;
- * }
- */
-#ifdef DEBUG
-#  define MOZ_FALLTHROUGH_ASSERT(reason) MOZ_CRASH("MOZ_FALLTHROUGH_ASSERT: " reason)
+#if defined(DEBUG)
+#  define MOZ_ASSUME_UNREACHABLE(...) \
+     do { \
+       MOZ_ASSERT(false, "MOZ_ASSUME_UNREACHABLE(" __VA_ARGS__ ")"); \
+       MOZ_ASSUME_UNREACHABLE_MARKER(); \
+     } while (0)
 #else
-#  define MOZ_FALLTHROUGH_ASSERT(...) MOZ_FALLTHROUGH
+#  define MOZ_ASSUME_UNREACHABLE(reason)  MOZ_ASSUME_UNREACHABLE_MARKER()
 #endif
 
 /*
@@ -547,21 +434,8 @@ struct AssertionConditionType
 #  define MOZ_ALWAYS_TRUE(expr)      MOZ_ASSERT((expr))
 #  define MOZ_ALWAYS_FALSE(expr)     MOZ_ASSERT(!(expr))
 #else
-#  define MOZ_ALWAYS_TRUE(expr) \
-  do { \
-    if ( ( expr ) ) {                       \
-      /* Silence MOZ_WARN_UNUSED_RESULT. */ \
-    } \
-  } while (0)
-#  define MOZ_ALWAYS_FALSE(expr) \
-  do { \
-    if ( ( expr ) ) {                       \
-      /* Silence MOZ_WARN_UNUSED_RESULT. */ \
-    } \
-  } while (0)
+#  define MOZ_ALWAYS_TRUE(expr)      ((void)(expr))
+#  define MOZ_ALWAYS_FALSE(expr)     ((void)(expr))
 #endif
-
-#undef MOZ_DUMP_ASSERTION_STACK
-#undef MOZ_CRASH_CRASHREPORT
 
 #endif /* mozilla_Assertions_h */

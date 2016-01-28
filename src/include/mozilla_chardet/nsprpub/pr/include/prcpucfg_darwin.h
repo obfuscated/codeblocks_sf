@@ -20,7 +20,7 @@
 #define  IS_BIG_ENDIAN 1
 #endif
 
-#ifdef __LP64__
+#ifdef __x86_64__
 #define IS_64
 #endif
 

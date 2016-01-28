@@ -1,5 +1,4 @@
-/* -*- Mode: C++; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
-/* vim: set ts=8 sts=2 et sw=2 tw=80: */
+/* -*- Mode: C++; tab-width: 2; indent-tabs-mode: nil; c-basic-offset: 2 -*- */
 /* This Source Code Form is subject to the terms of the Mozilla Public
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
@@ -11,22 +10,19 @@
  * Make sure that we have the proper platform specific
  * c++ definitions needed by nscore.h
  */
-// C::B change start
 /*
 #ifndef _XPCOM_CONFIG_H_
 #include "xpcom-config.h"
 #endif
 */
-// C::B change end
 
 /* Definitions of functions and operators that allocate memory. */
-// C::B change start
 /*
 #if !defined(XPCOM_GLUE) && !defined(NS_NO_XPCOM) && !defined(MOZ_NO_MOZALLOC)
 #  include "mozilla/mozalloc.h"
+#  include "mozilla/mozalloc_macro_wrappers.h"
 #endif
 */
-// C::B change end
 
 /**
  * Incorporate the integer data types which XPCOM uses.
@@ -34,12 +30,46 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// #include "mozilla/RefCountType.h" // C::B change
+/*
+#include "mozilla/NullPtr.h"
+*/
 
 /* Core XPCOM declarations. */
 
 /*----------------------------------------------------------------------*/
 /* Import/export defines */
+
+/**
+ * Using the visibility("hidden") attribute allows the compiler to use
+ * PC-relative addressing to call this function.  If a function does not
+ * access any global data, and does not call any methods which are not either
+ * file-local or hidden, then on ELF systems we avoid loading the address of
+ * the PLT into a register at the start of the function, which reduces code
+ * size and frees up a register for general use.
+ *
+ * As a general rule, this should be used for any non-exported symbol
+ * (including virtual method implementations).  NS_IMETHOD uses this by
+ * default; if you need to have your NS_IMETHOD functions exported, you can
+ * wrap your class as follows:
+ *
+ * #undef  IMETHOD_VISIBILITY
+ * #define IMETHOD_VISIBILITY NS_VISIBILITY_DEFAULT
+ *
+ * class Foo {
+ * ...
+ * };
+ *
+ * #undef  IMETHOD_VISIBILITY
+ * #define IMETHOD_VISIBILITY NS_VISIBILITY_HIDDEN
+ *
+ * Don't forget to change the visibility back to hidden before the end
+ * of a header!
+ *
+ * Other examples:
+ *
+ * NS_HIDDEN_(int) someMethod();
+ * SomeCtor() NS_HIDDEN;
+ */
 
 #ifdef HAVE_VISIBILITY_HIDDEN_ATTRIBUTE
 #define NS_VISIBILITY_HIDDEN   __attribute__ ((visibility ("hidden")))
@@ -60,6 +90,9 @@
 
 #define NS_HIDDEN           NS_VISIBILITY_HIDDEN
 #define NS_EXTERNAL_VIS     NS_VISIBILITY_DEFAULT
+
+#undef  IMETHOD_VISIBILITY
+#define IMETHOD_VISIBILITY  NS_VISIBILITY_HIDDEN
 
 /**
  * Mark a function as using a potentially non-standard function calling
@@ -84,9 +117,8 @@
  *           NS_HIDDEN_(int) NS_FASTCALL func2(char *foo);
  */
 
-// C::B change start
 /*
-#if defined(__i386__) && defined(__GNUC__)
+#if defined(__i386__) && defined(__GNUC__) && !defined(XP_OS2)
 #define NS_FASTCALL __attribute__ ((regparm (3), stdcall))
 #define NS_CONSTRUCTOR_FASTCALL __attribute__ ((regparm (3), stdcall))
 #elif defined(XP_WIN) && !defined(_WIN64)
@@ -115,6 +147,31 @@
 #define NS_STDCALL
 #endif
 #define NS_FROZENCALL __cdecl
+*/
+
+/*
+  These are needed to mark static members in exported classes, due to
+  gcc bug XXX insert bug# here.
+ */
+
+/*
+#define NS_EXPORT_STATIC_MEMBER_(type) type
+#define NS_IMPORT_STATIC_MEMBER_(type) type
+
+#elif defined(XP_OS2)
+
+#define NS_IMPORT __declspec(dllimport)
+#define NS_IMPORT_(type) type __declspec(dllimport)
+#define NS_EXPORT __declspec(dllexport)
+#define NS_EXPORT_(type) type __declspec(dllexport)
+#define NS_IMETHOD_(type) virtual type
+#define NS_IMETHODIMP_(type) type
+#define NS_METHOD_(type) type
+#define NS_CALLBACK_(_type, _name) _type (* _name)
+#define NS_STDCALL
+#define NS_FROZENCALL
+#define NS_EXPORT_STATIC_MEMBER_(type) NS_EXTERNAL_VIS_(type)
+#define NS_IMPORT_STATIC_MEMBER_(type) NS_EXTERNAL_VIS_(type)
 
 #else
 
@@ -122,22 +179,17 @@
 #define NS_IMPORT_(type) NS_EXTERNAL_VIS_(type)
 #define NS_EXPORT NS_EXTERNAL_VIS
 #define NS_EXPORT_(type) NS_EXTERNAL_VIS_(type)
-#define NS_IMETHOD_(type) virtual type
+#define NS_IMETHOD_(type) virtual IMETHOD_VISIBILITY type
 #define NS_IMETHODIMP_(type) type
 #define NS_METHOD_(type) type
 #define NS_CALLBACK_(_type, _name) _type (* _name)
 #define NS_STDCALL
 #define NS_FROZENCALL
+#define NS_EXPORT_STATIC_MEMBER_(type) NS_EXTERNAL_VIS_(type)
+#define NS_IMPORT_STATIC_MEMBER_(type) NS_EXTERNAL_VIS_(type)
 
-#endif
-
-#ifdef MOZ_WIDGET_GONK
-#define B2G_ACL_EXPORT NS_EXPORT
-#else
-#define B2G_ACL_EXPORT
 #endif
 */
-// C::B change end
 
 /**
  * Macro for creating typedefs for pointer-to-member types which are
@@ -158,7 +210,6 @@
  *  when http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11893 is fixed.
  */
 
-// C::B change start
 /*
 #ifdef __GNUC__
 #define NS_STDCALL_FUNCPROTO(ret, name, class, func, args) \
@@ -168,12 +219,10 @@
   ret (NS_STDCALL class::*name) args
 #endif
 */
-// C::B change end
 
 /**
  * Deprecated declarations.
  */
-// C::B change start
 /*
 #ifdef __GNUC__
 # define MOZ_DEPRECATED __attribute__((deprecated))
@@ -183,34 +232,20 @@
 # define MOZ_DEPRECATED
 #endif
 */
-// C::B change end
-
-/**
- * Printf style formats
- */
-#ifdef __GNUC__
-#define MOZ_FORMAT_PRINTF(stringIndex, firstToCheck)  \
-    __attribute__ ((format (printf, stringIndex, firstToCheck)))
-#else
-#define MOZ_FORMAT_PRINTF(stringIndex, firstToCheck)
-#endif
 
 /**
  * Generic API modifiers which return the standard XPCOM nsresult type
  */
-// C::B change start
 /*
 #define NS_IMETHOD          NS_IMETHOD_(nsresult)
 #define NS_IMETHODIMP       NS_IMETHODIMP_(nsresult)
 #define NS_METHOD           NS_METHOD_(nsresult)
 #define NS_CALLBACK(_name)  NS_CALLBACK_(nsresult, _name)
 */
-// C::B change end
 
 /**
  * Import/Export macros for XPCOM APIs
  */
-// C::B change start
 /*
 #ifdef __cplusplus
 #define NS_EXTERN_C extern "C"
@@ -230,9 +265,9 @@
 #define XPCOM_API(type) IMPORT_XPCOM_API(type)
 #endif
 */
-// C::B change end
 
-// #ifdef MOZILLA_INTERNAL_API // C::B change
+#ifdef MOZILLA_INTERNAL_API
+#  define NS_COM_GLUE
    /*
      The frozen string API has different definitions of nsAC?String
      classes than the internal API. On systems that explicitly declare
@@ -240,46 +275,44 @@
      internal symbols can accidentally "shine through"; we rename the
      internal classes to avoid symbol conflicts.
    */
-// C::B change start
-/*
 #  define nsAString nsAString_internal
 #  define nsACString nsACString_internal
+#else
+#  ifdef HAVE_VISIBILITY_ATTRIBUTE
+#    define NS_COM_GLUE NS_VISIBILITY_HIDDEN
+#  else
+#    define NS_COM_GLUE
+#  endif
 #endif
-*/
-// C::B change end
 
-// #if (defined(DEBUG) || defined(FORCE_BUILD_REFCNT_LOGGING)) // C::B change
+/*
+#if (defined(DEBUG) || defined(FORCE_BUILD_REFCNT_LOGGING))
+*/
 /* Make refcnt logging part of the build. This doesn't mean that
  * actual logging will occur (that requires a separate enable; see
- * nsTraceRefcnt and nsISupportsImpl.h for more information).  */
-// C::B change start
+ * nsTraceRefcnt.h for more information).  */
 /*
 #define NS_BUILD_REFCNT_LOGGING
 #endif
 */
-// C::B change end
 
 /* If NO_BUILD_REFCNT_LOGGING is defined then disable refcnt logging
  * in the build. This overrides FORCE_BUILD_REFCNT_LOGGING. */
-// C::B change start
 /*
 #if defined(NO_BUILD_REFCNT_LOGGING)
 #undef NS_BUILD_REFCNT_LOGGING
 #endif
 */
-// C::B change end
 
 /* If a program allocates memory for the lifetime of the app, it doesn't make
  * sense to touch memory pages and free that memory at shutdown,
  * unless we are running leak stats.
  */
-// C::B change start
 /*
-#if defined(NS_BUILD_REFCNT_LOGGING) || defined(MOZ_VALGRIND) || defined(MOZ_ASAN)
+#if defined(NS_TRACE_MALLOC) || defined(NS_BUILD_REFCNT_LOGGING) || defined(MOZ_VALGRIND)
 #define NS_FREE_PERMANENT_DATA
 #endif
 */
-// C::B change end
 
 /**
  * NS_NO_VTABLE is emitted by xpidl in interface declarations whenever
@@ -288,18 +321,16 @@
  * see bug 49416.  We undefine it first, as xpidl-generated headers
  * define it for IDL uses that don't include this file.
  */
-// C::B change start
 /*
 #ifdef NS_NO_VTABLE
 #undef NS_NO_VTABLE
 #endif
-#if defined(_MSC_VER) && !defined(__clang__)
+#if defined(_MSC_VER)
 #define NS_NO_VTABLE __declspec(novtable)
 #else
 #define NS_NO_VTABLE
 #endif
 */
-// C::B change end
 
 
 /**
@@ -307,47 +338,72 @@
  */
 #include "nsError.h"
 
-// typedef MozRefCountType nsrefcnt; // C::B change
+/**
+ * Reference count values
+ *
+ * This is the return type for AddRef() and Release() in nsISupports.
+ * IUnknown of COM returns an unsigned long from equivalent functions.
+ * The following ifdef exists to maintain binary compatibility with
+ * IUnknown.
+ */
+/*
+#ifdef XP_WIN
+typedef unsigned long nsrefcnt;
+#else
+typedef uint32_t nsrefcnt;
+#endif
+*/
+
+/* ------------------------------------------------------------------------ */
+/* Casting macros for hiding C++ features from older compilers */
+
+/*
+#ifndef __PRUNICHAR__
+#define __PRUNICHAR__
+  #if defined(WIN32)
+    typedef wchar_t PRUnichar;
+  #else
+    typedef uint16_t PRUnichar;
+  #endif
+#endif
+*/
 
 /*
  * Use these macros to do 64bit safe pointer conversions.
  */
 
-// C::B change start
 /*
-#define NS_PTR_TO_INT32(x) ((int32_t)(intptr_t)(x))
-#define NS_PTR_TO_UINT32(x) ((uint32_t)(intptr_t)(x))
-#define NS_INT32_TO_PTR(x) ((void*)(intptr_t)(x))
+#define NS_PTR_TO_INT32(x)  ((int32_t)  (intptr_t) (x))
+#define NS_PTR_TO_UINT32(x) ((uint32_t) (intptr_t) (x))
+#define NS_INT32_TO_PTR(x)  ((void *)   (intptr_t) (x))
 */
-// C::B change end
 
 /*
  * Use NS_STRINGIFY to form a string literal from the value of a macro.
  */
-// C::B change start
 /*
 #define NS_STRINGIFY_HELPER(x_) #x_
 #define NS_STRINGIFY(x_) NS_STRINGIFY_HELPER(x_)
 */
-// C::B change end
 
-/*
- * If we're being linked as standalone glue, we don't want a dynamic
- * dependency on NSPR libs, so we skip the debug thread-safety
- * checks, and we cannot use the THREADSAFE_ISUPPORTS macros.
- */
-// C::B change start
+ /*
+  * If we're being linked as standalone glue, we don't want a dynamic
+  * dependency on NSPR libs, so we skip the debug thread-safety
+  * checks, and we cannot use the THREADSAFE_ISUPPORTS macros.
+  */
 /*
 #if defined(XPCOM_GLUE) && !defined(XPCOM_GLUE_USE_NSPR)
 #define XPCOM_GLUE_AVOID_NSPR
 #endif
+
+#if defined(HAVE_THREAD_TLS_KEYWORD)
+#define NS_TLS __thread
+#endif
 */
-// C::B change end
 
 /*
  * SEH exception macros.
  */
-// C::B change start
 /*
 #ifdef HAVE_SEH_EXCEPTIONS
 #define MOZ_SEH_TRY           __try
@@ -357,6 +413,5 @@
 #define MOZ_SEH_EXCEPT(expr)  else
 #endif
 */
-// C::B change end
 
 #endif /* nscore_h___ */

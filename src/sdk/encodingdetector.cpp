@@ -33,7 +33,7 @@
  * ---------------------------------------------- */
 
 EncodingDetector::EncodingDetector(const wxString& filename, bool useLog) :
-    nsUniversalDetector(),
+    nsUniversalDetector(NS_FILTER_ALL),
     m_IsOK(false),
     m_UseBOM(false),
     m_UseLog(useLog),
@@ -45,7 +45,7 @@ EncodingDetector::EncodingDetector(const wxString& filename, bool useLog) :
 }
 
 EncodingDetector::EncodingDetector(LoaderBase* fileLdr, bool useLog) :
-    nsUniversalDetector(),
+    nsUniversalDetector(NS_FILTER_ALL),
     m_IsOK(false),
     m_UseBOM(false),
     m_UseLog(useLog),
@@ -57,7 +57,7 @@ EncodingDetector::EncodingDetector(LoaderBase* fileLdr, bool useLog) :
 }
 
 EncodingDetector::EncodingDetector(const wxByte* buffer, size_t size, bool useLog) :
-    nsUniversalDetector(),
+    nsUniversalDetector(NS_FILTER_ALL),
     m_IsOK(false),
     m_UseBOM(false),
     m_UseLog(useLog),

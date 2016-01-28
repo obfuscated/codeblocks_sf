@@ -4,7 +4,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 #include <stdio.h>
 
-#include "NullPtr.h" // C::B change
+#include "mozilla/NullPtr.h"
 
 #include "nsMBCSGroupProber.h"
 #include "nsUniversalDetector.h"
@@ -15,15 +15,34 @@ const char *ProberName[] =
   "UTF8",
   "SJIS",
   "EUCJP",
+  "GB18030",
+  "EUCKR",
+  "Big5",
+  "EUCTW",
 };
 
 #endif
 
-nsMBCSGroupProber::nsMBCSGroupProber()
+nsMBCSGroupProber::nsMBCSGroupProber(uint32_t aLanguageFilter)
 {
+  for (uint32_t i = 0; i < NUM_OF_PROBERS; i++)
+    mProbers[i] = nullptr;
+
   mProbers[0] = new nsUTF8Prober();
-  mProbers[1] = new nsSJISProber();
-  mProbers[2] = new nsEUCJPProber();
+  if (aLanguageFilter & NS_FILTER_JAPANESE)
+  {
+    mProbers[1] = new nsSJISProber(aLanguageFilter == NS_FILTER_JAPANESE);
+    mProbers[2] = new nsEUCJPProber(aLanguageFilter == NS_FILTER_JAPANESE);
+  }
+  if (aLanguageFilter & NS_FILTER_CHINESE_SIMPLIFIED)
+    mProbers[3] = new nsGB18030Prober(aLanguageFilter == NS_FILTER_CHINESE_SIMPLIFIED);
+  if (aLanguageFilter & NS_FILTER_KOREAN)
+    mProbers[4] = new nsEUCKRProber(aLanguageFilter == NS_FILTER_KOREAN);
+  if (aLanguageFilter & NS_FILTER_CHINESE_TRADITIONAL)
+  {
+    mProbers[5] = new nsBig5Prober(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+    mProbers[6] = new nsEUCTWProber(aLanguageFilter == NS_FILTER_CHINESE_TRADITIONAL);
+  }
   Reset();
 }
 

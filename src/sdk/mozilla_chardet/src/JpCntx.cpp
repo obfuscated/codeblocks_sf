@@ -129,7 +129,7 @@ void JapaneseContextAnalysis::HandleData(const char* aBuf, uint32_t aLen)
           mDone = true;
           break;
         }
-        mRelSample[(int)jp2CharContext[mLastCharOrder][order]]++; // C::B change
+        mRelSample[(int)jp2CharContext[mLastCharOrder][order]]++; // added (int) to avoid warnings , jens 2009 02 26
       }
       mLastCharOrder = order;
     }
@@ -138,7 +138,7 @@ void JapaneseContextAnalysis::HandleData(const char* aBuf, uint32_t aLen)
   return;
 }
 
-void JapaneseContextAnalysis::Reset()
+void JapaneseContextAnalysis::Reset(bool aIsPreferredLanguage)
 {
   mTotalRel = 0;
   for (uint32_t i = 0; i < NUM_OF_CATEGORY; i++)
@@ -146,7 +146,7 @@ void JapaneseContextAnalysis::Reset()
   mNeedToSkipCharNum = 0;
   mLastCharOrder = -1;
   mDone = false;
-  mDataThreshold = 0;
+  mDataThreshold = aIsPreferredLanguage ? 0 : MINIMUM_DATA_THRESHOLD;
 }
 #define DONT_KNOW (float)-1
 

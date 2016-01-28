@@ -967,34 +967,34 @@
 		<Unit filename="include/mozilla_chardet/JpCntx.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/Alignment.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Alignment.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/Assertions.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Assertions.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/Attributes.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Attributes.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/Compiler.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Compiler.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/Likely.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Likely.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/MacroArgs.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/NullPtr.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/NullPtr.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/TypedEnum.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/RefCountType.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Types.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/TypeTraits.h">
+		<Unit filename="include/mozilla_chardet/mfbt/mozilla/Util.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/mozilla_chardet/mfbt/Types.h">
+		<Unit filename="include/mozilla_chardet/nsBig5Prober.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsCharSetProber.h">
@@ -1006,7 +1006,19 @@
 		<Unit filename="include/mozilla_chardet/nsEUCJPProber.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/mozilla_chardet/nsEUCKRProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsEUCTWProber.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/mozilla_chardet/nsEscCharsetProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsGB2312Prober.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsHebrewProber.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsLatin1Prober.h">
@@ -1016,6 +1028,12 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsPkgInt.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsSBCSGroupProber.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/mozilla_chardet/nsSBCharSetProber.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/mozilla_chardet/nsSJISProber.h">
@@ -2272,9 +2290,6 @@
 		<Unit filename="plugins/scriptedwizard/resources/d/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins/scriptedwizard/resources/d_source/wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/directx/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2338,12 +2353,6 @@
 		<Unit filename="plugins/scriptedwizard/resources/mcs51/wizard.xrc">
 			<Option target="Scripted wizard" />
 		</Unit>
-		<Unit filename="plugins/scriptedwizard/resources/msp430/wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/resources/msp430/wizard.xrc">
-			<Option target="Scripted wizard" />
-		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/ogre/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
@@ -2360,9 +2369,6 @@
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/qt4/wizard.script">
-			<Option target="Scripted wizard" />
-		</Unit>
-		<Unit filename="plugins/scriptedwizard/resources/qt4dll/wizard.script">
 			<Option target="Scripted wizard" />
 		</Unit>
 		<Unit filename="plugins/scriptedwizard/resources/sdl/wizard.script">
@@ -2669,7 +2675,19 @@
 		<Unit filename="sdk/menuitemsmanager.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/Big5Freq.tab">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/CharDistribution.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/EUCKRFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/EUCTWFreq.tab">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/GB2312Freq.tab">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/JISFreq.tab">
@@ -2678,16 +2696,49 @@
 		<Unit filename="sdk/mozilla_chardet/src/JpCntx.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangBulgarianModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangCyrillicModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangGreekModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangHebrewModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangHungarianModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/LangThaiModel.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsBig5Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsCharSetProber.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsEUCJPProber.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEUCKRProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsEUCTWProber.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsEscCharsetProber.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsEscSM.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsGB2312Prober.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsHebrewProber.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsLatin1Prober.cpp">
@@ -2697,6 +2748,12 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsMBCSSM.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsSBCSGroupProber.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/mozilla_chardet/src/nsSBCharSetProber.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/mozilla_chardet/src/nsSJISProber.cpp">
@@ -2807,12 +2864,6 @@
 		<Unit filename="sdk/resources/incremental_select_list.xrc">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/resources/lexers/lexer_A68k.sample">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/resources/lexers/lexer_A68k.xml">
-			<Option target="scintilla" />
-		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_OgreCompositor.sample">
 			<Option target="scintilla" />
 		</Unit>
@@ -2835,12 +2886,6 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_angelscript.xml">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/resources/lexers/lexer_autotools.sample">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/resources/lexers/lexer_autotools.xml">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_bash.sample">
@@ -2892,12 +2937,6 @@
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_css.xml">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/resources/lexers/lexer_cu.sample">
-			<Option target="scintilla" />
-		</Unit>
-		<Unit filename="sdk/resources/lexers/lexer_cu.xml">
 			<Option target="scintilla" />
 		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_d.sample">
