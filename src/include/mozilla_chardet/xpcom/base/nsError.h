@@ -118,6 +118,8 @@
 
 /*@{*/
 
+// C::B change start
+/*
 enum class nsresult : uint32_t
 {
   #undef ERROR
@@ -125,16 +127,21 @@ enum class nsresult : uint32_t
   #include "ErrorList.h"
   #undef ERROR
 };
+*/
 
 /*
  * enum classes don't place their initializers in the global scope, so we need
  * constants for compatibility with old code.
  */
+/*
 const nsresult
   #define ERROR(key, val) key = nsresult::key
   #include "ErrorList.h"
   #undef ERROR
 ;
+*/
+typedef uint32_t nsresult;
+// C::B change end
 
 #undef SUCCESS_OR_FAILURE
 #undef SUCCESS
