@@ -114,6 +114,7 @@ strip output\*.dll
 strip %CB_OUTPUT_RESDIR%\plugins\*.dll
 
 REM Copy these files later as stripping symbols would corrupt them
+echo Copying crash handler files
 xcopy /y exchndl\win32\bin\*.dll devel  > nul
 xcopy /y exchndl\win32\bin\*.yes devel  > nul
 xcopy /y exchndl\win32\bin\*.dll output > nul

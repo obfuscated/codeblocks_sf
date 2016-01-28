@@ -20,16 +20,6 @@ fi
 
 echo Creating output directory tree
 
-mkdir -p output/share/codeblocks/compilers
-mkdir -p output/share/codeblocks/lexers
-mkdir -p output/share/codeblocks/images/settings
-mkdir -p output/share/codeblocks/images/codecompletion
-mkdir -p output/share/codeblocks/images/12x12
-mkdir -p output/share/codeblocks/images/16x16
-mkdir -p output/share/codeblocks/plugins
-mkdir -p output/share/codeblocks/templates
-mkdir -p output/share/codeblocks/templates/wizard
-mkdir -p output/share/codeblocks/scripts/tests
 mkdir -p devel/share/codeblocks/compilers
 mkdir -p devel/share/codeblocks/lexers
 mkdir -p devel/share/codeblocks/images/settings
@@ -40,6 +30,16 @@ mkdir -p devel/share/codeblocks/plugins
 mkdir -p devel/share/codeblocks/templates
 mkdir -p devel/share/codeblocks/templates/wizard
 mkdir -p devel/share/codeblocks/scripts/tests
+mkdir -p output/share/codeblocks/compilers
+mkdir -p output/share/codeblocks/lexers
+mkdir -p output/share/codeblocks/images/settings
+mkdir -p output/share/codeblocks/images/codecompletion
+mkdir -p output/share/codeblocks/images/12x12
+mkdir -p output/share/codeblocks/images/16x16
+mkdir -p output/share/codeblocks/plugins
+mkdir -p output/share/codeblocks/templates
+mkdir -p output/share/codeblocks/templates/wizard
+mkdir -p output/share/codeblocks/scripts/tests
 
 ZIPCMD="zip"
 RESDIR="devel/share/codeblocks"
@@ -151,6 +151,10 @@ if [ -f "devel/cb_share_config${EXEEXT}" ]
 then
   cp -f devel/cb_share_config${EXEEXT} output > /dev/null
 fi
+if [ -f "devel/cbp2make${EXEEXT}" ]
+then
+  cp -f devel/cbp2make${EXEEXT} output > /dev/null
+fi
 if [ -f "devel/codesnippets${EXEEXT}" ]
 then
   cp -f devel/codesnippets${EXEEXT} output > /dev/null
@@ -165,6 +169,10 @@ strip output/codeblocks${EXEEXT} > /dev/null
 if [ -f "output/cb_share_config${EXEEXT}" ]
 then
   strip output/cb_share_config${EXEEXT} > /dev/null
+fi
+if [ -f "output/cbp2make${EXEEXT}" ]
+then
+  strip output/cbp2make${EXEEXT} > /dev/null
 fi
 strip output/cb_console_runner${EXEEXT} > /dev/null
 if [ -f "output/codesnippets${EXEEXT}" ]

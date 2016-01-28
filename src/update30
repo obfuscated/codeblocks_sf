@@ -20,24 +20,26 @@ fi
 
 echo Creating output directory tree
 
-mkdir -p output30/share/codeblocks/compilers
-mkdir -p output30/share/codeblocks/lexers
-mkdir -p output30/share/codeblocks/images/settings
-mkdir -p output30/share/codeblocks/images/codecompletion
-mkdir -p output30/share/codeblocks/images/16x16
-mkdir -p output30/share/codeblocks/plugins
-mkdir -p output30/share/codeblocks/templates
-mkdir -p output30/share/codeblocks/templates/wizard
-mkdir -p output30/share/codeblocks/scripts/tests
 mkdir -p devel30/share/codeblocks/compilers
 mkdir -p devel30/share/codeblocks/lexers
 mkdir -p devel30/share/codeblocks/images/settings
 mkdir -p devel30/share/codeblocks/images/codecompletion
+mkdir -p devel30/share/codeblocks/images/12x12
 mkdir -p devel30/share/codeblocks/images/16x16
 mkdir -p devel30/share/codeblocks/plugins
 mkdir -p devel30/share/codeblocks/templates
 mkdir -p devel30/share/codeblocks/templates/wizard
 mkdir -p devel30/share/codeblocks/scripts/tests
+mkdir -p output30/share/codeblocks/compilers
+mkdir -p output30/share/codeblocks/lexers
+mkdir -p output30/share/codeblocks/images/settings
+mkdir -p output30/share/codeblocks/images/codecompletion
+mkdir -p output30/share/codeblocks/images/12x12
+mkdir -p output30/share/codeblocks/images/16x16
+mkdir -p output30/share/codeblocks/plugins
+mkdir -p output30/share/codeblocks/templates
+mkdir -p output30/share/codeblocks/templates/wizard
+mkdir -p output30/share/codeblocks/scripts/tests
 
 ZIPCMD="zip"
 RESDIR="devel30/share/codeblocks"
@@ -92,6 +94,42 @@ cp -f src/resources/images/16x16/*.png output30/share/codeblocks/images/16x16 > 
 cp -f plugins/codecompletion/resources/images/*.png output30/share/codeblocks/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml output30/share/codeblocks/compilers > /dev/null
 
+# several contrib plugins
+if [ -d "devel30/share/codeblocks/images/codesnippets" ]
+then
+  mkdir -p output30/share/codeblocks/images/codesnippets
+  cp -f devel30/share/codeblocks/images/codesnippets/*.png output30/share/codeblocks/images/codesnippets > /dev/null
+fi
+if [ -d "devel30/share/codeblocks/images/DoxyBlocks" ]
+then
+  mkdir -p output30/share/codeblocks/images/DoxyBlocks
+  cp -f devel30/share/codeblocks/images/DoxyBlocks/*.png       output30/share/codeblocks/images/DoxyBlocks > /dev/null
+  mkdir -p output30/share/codeblocks/images/DoxyBlocks/16x16
+  cp -f devel30/share/codeblocks/images/DoxyBlocks/16x16/*.png output30/share/codeblocks/images/DoxyBlocks/16x16 > /dev/null
+fi
+if [ -d "devel30/share/codeblocks/images/ThreadSearch" ]
+then
+  mkdir -p output30/share/codeblocks/images/ThreadSearch
+  cp -f devel30/share/codeblocks/images/ThreadSearch/*.png output30/share/codeblocks/images/ThreadSearch > /dev/null
+  mkdir -p output30/share/codeblocks/images/ThreadSearch/16x16
+  cp -f devel30/share/codeblocks/images/ThreadSearch/16x16/*.png output30/share/codeblocks/images/ThreadSearch/16x16 > /dev/null
+  mkdir -p output30/share/codeblocks/images/ThreadSearch/22x22
+  cp -f devel30/share/codeblocks/images/ThreadSearch/22x22/*.png output30/share/codeblocks/images/ThreadSearch/22x22 > /dev/null
+fi
+if [ -d "devdevel30el/share/codeblocks/images/wxsmith" ]
+then
+  mkdir -p output30/share/codeblocks/images/wxsmith
+  cp -f devel/share/codeblocks/images/wxsmith/*.png output30/share/codeblocks/images/wxsmith > /dev/null
+fi
+if [ -d "devel/share/codeblocks/lib_finder" ]
+then
+  mkdir -p output30/share/codeblocks/lib_finder
+  cp -f devel/share/codeblocks/lib_finder/*.xml output30/share/codeblocks/lib_finder > /dev/null
+fi
+# misc. contrib plugin settings:
+cp -f devel/share/codeblocks/images/16x16/*.png    output30/share/codeblocks/images/16x16    > /dev/null
+cp -f devel/share/codeblocks/images/settings/*.png output30/share/codeblocks/images/settings > /dev/null
+
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output30/share/codeblocks/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt templates/common/ output30/share/codeblocks/templates > /dev/null
@@ -109,19 +147,40 @@ cp -f tips.txt output30/share/codeblocks > /dev/null
 cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output30 > /dev/null
 cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} devel30 > /dev/null
 cp -f devel30/codeblocks${EXEEXT} output30 > /dev/null
-# cp -f devel30/cb_share_config${EXEEXT} output30 > /dev/null
+if [ -f "devel30/cb_share_config${EXEEXT}" ]
+then
+  cp -f devel30/cb_share_config${EXEEXT} output30 > /dev/null
+fi
+if [ -f "devel30/cbp2make${EXEEXT}" ]
+then
+  cp -f devel30/cbp2make${EXEEXT} output30 > /dev/null
+fi
+if [ -f "devel30/codesnippets${EXEEXT}" ]
+then
+  cp -f devel30/codesnippets${EXEEXT} output30 > /dev/null
+fi
 cp -f devel30/*.${LIBEXT} output30 > /dev/null
 cp -f ${RESDIR}/plugins/*.${LIBEXT} output30/share/codeblocks/plugins > /dev/null
 # Now remove the exclude pattern file
 rm excludes.txt
 
 echo Stripping debug info from output tree
-strip output30/codeblocks${EXEEXT}
-# strip output30/cb_share_config${EXEEXT}
-strip output30/cb_console_runner${EXEEXT}
-# strip output30/codesnippets${EXEEXT}
-strip output30/*.${LIBEXT}
-strip output30/share/codeblocks/plugins/*.${LIBEXT}
+strip output30/codeblocks${EXEEXT} > /dev/null
+if [ -f "output30/cb_share_config${EXEEXT}" ]
+then
+  strip output30/cb_share_config${EXEEXT} > /dev/null
+fi
+if [ -f "output30/cbp2make${EXEEXT}" ]
+then
+  strip output30/cbp2make${EXEEXT} > /dev/null
+fi
+strip output30/cb_console_runner${EXEEXT} > /dev/null
+if [ -f "output30/codesnippets${EXEEXT}" ]
+then
+  strip output30/codesnippets${EXEEXT} > /dev/null
+fi
+strip output30/*.${LIBEXT} > /dev/null
+strip output30/share/codeblocks/plugins/*.${LIBEXT} > /dev/null
 
 if [ "x$MSYSTEM" = "x" ] ; then
   echo Creating launch-scripts
