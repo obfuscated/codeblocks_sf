@@ -255,4 +255,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         DECLARE_EVENT_TABLE()
 };
 
+typedef char SQChar; // HACK, MUST match with the type as defined for the dedicated platform in squirrel.h
+void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl);
+
 #endif // SCRIPTING_H

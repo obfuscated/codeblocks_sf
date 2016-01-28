@@ -413,6 +413,7 @@ template<typename T>
 void BindConstant(SquirrelObject & so,T constant,const SQChar * scriptVarName) {
   validateConstantType(constant);
   VarRefPtr pvr = createVarRef(so,scriptVarName);
+  // C::B patch: Handler for newer compilers
 #if __cplusplus>=201103L
   static_assert(sizeof(constant)<=sizeof(void*), "using larger type");
 #endif

@@ -40,14 +40,32 @@ template<> bool  Mgr<ScriptingManager>::isShutdown = false;
 static wxString s_ScriptErrors;
 static wxString capture;
 
+void PrintSquirrelToWxString(wxString& msg, const SQChar* s, va_list& vl)
+{
+    int buffer_size = 2048;
+    SQChar* tmp_buffer;
+    for (;;buffer_size*=2)
+    {
+        tmp_buffer = new SQChar [buffer_size];
+        int retvalue = vsnprintf(tmp_buffer, buffer_size, s, vl);
+        if (retvalue < buffer_size)
+        {
+            // Buffersize was large enough
+            msg = cbC2U(tmp_buffer);
+            delete[] tmp_buffer;
+            break;
+        }
+        // Buffer size was not enough
+        delete[] tmp_buffer;
+    }
+}
+
 static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
-    static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-    scvsprintf( temp,s,vl);
-    wxString msg = cbC2U(temp);
-    Manager::Get()->GetLogManager()->DebugLog(msg);
+    wxString msg;
+    PrintSquirrelToWxString(msg,s,vl);
     va_end(vl);
 
     s_ScriptErrors << msg;
@@ -55,11 +73,11 @@ static void ScriptsPrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 
 static void CaptureScriptOutput(HSQUIRRELVM /*v*/, const SQChar * s, ...)
 {
-    static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-    scvsprintf(temp,s,vl);
-    ::capture.append(cbC2U(temp));
+    wxString msg;
+    PrintSquirrelToWxString(msg,s,vl);
+    ::capture.append(msg);
     va_end(vl);
 }
 
