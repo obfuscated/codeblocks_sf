@@ -11,9 +11,10 @@
 
 class MSVC7WorkspaceLoader : public IBaseWorkspaceLoader, public MSVCWorkspaceBase
 {
-	public:
-		MSVC7WorkspaceLoader();
-		virtual ~MSVC7WorkspaceLoader();
+    public:
+        static wxString g_WorkspacePath; //!< @note : maybe put into ImportersGlobals (importers_globals.h in SDK include, who ever put it there...)
+        MSVC7WorkspaceLoader();
+        virtual ~MSVC7WorkspaceLoader();
 
         bool Open(const wxString& filename, wxString& Title);
         bool Save(const wxString& title, const wxString& filename);

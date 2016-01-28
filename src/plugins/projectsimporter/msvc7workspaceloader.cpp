@@ -35,6 +35,8 @@
 #include "encodingdetector.h"
 #include "filefilters.h"
 
+wxString MSVC7WorkspaceLoader::g_WorkspacePath = wxEmptyString;
+
 MSVC7WorkspaceLoader::MSVC7WorkspaceLoader()
 {
     //ctor
@@ -47,7 +49,7 @@ MSVC7WorkspaceLoader::~MSVC7WorkspaceLoader()
 
 bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
 {
-    bool askForCompiler = false;
+    bool askForCompiler = false; // @todo : always ask for compiler, but offer to use same for all
     bool askForTargets = false;
     switch (cbMessageBox(_("Do you want the imported projects to use the default compiler?\n"
                            "(If you answer No, you will be asked for each and every project"
@@ -122,7 +124,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
             && (_version != _T("8.00"))
             && (_version != _T("9.00"))
             && (_version != _T("10.00"))
-            && (_version != _T("11.00")) )
+            && (_version != _T("11.00"))
+            && (_version != _T("12.00")) )
         {
             Manager::Get()->GetLogManager()->DebugLog(_T("Version not recognized. Will try to parse though..."));
         }
@@ -132,7 +135,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     ImportersGlobals::ImportAllTargets = !askForTargets;
 
     wxProgressDialog progress(_("Importing MSVC solution"),
-                              _("Please wait while importing MSVC 7 solution..."),
+                              _("Please wait while importing MSVC 7+ solution..."),
                               100, 0, wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT);
 
     int count = 0;
@@ -146,7 +149,8 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     bool global = false;  // global section or project section?
     wxFileName wfname = filename;
     wfname.Normalize();
-    Manager::Get()->GetLogManager()->DebugLog(_T("Workspace dir: ") + wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
+    g_WorkspacePath = wfname.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    Manager::Get()->GetLogManager()->DebugLog(_T("Workspace dir: ") + g_WorkspacePath);
     wxArrayString sUUIDArray;       // store the project UUID which has dependencies
     wxArrayString sProjectKeyArray; // store the project dependency (UUID)
 
@@ -295,6 +299,7 @@ bool MSVC7WorkspaceLoader::Open(const wxString& filename, wxString& Title)
     Manager::Get()->GetProjectManager()->SetProject(firstproject);
     updateProjects();
     ImportersGlobals::ResetDefaults();
+    g_WorkspacePath = wxEmptyString; // reset so independently opened projects won't adopt this path
 
     Title = wxFileName(filename).GetName() + _(" workspace");
     return count != 0;

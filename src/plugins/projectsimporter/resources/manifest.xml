@@ -3,7 +3,7 @@
     <SdkVersion major="1" minor="10" release="0" />
     <Plugin name="ProjectsImporter">
         <Value title="Foreign projects importer" />
-        <Value version="1.0" />
+        <Value version="1.1" />
         <Value description="Imports foreign projects/workspaces (Dev-C++, MSVC6, MSVS7, MSVS8)" />
         <Value author="Yiannis An. Mandravellos" />
         <Value authorEmail="info@codeblocks.org" />
