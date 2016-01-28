@@ -459,11 +459,24 @@ void ToDoListView::ParseFile(const wxString& filename)
     delete fileBuffer;
 }
 
-void ToDoListView::SkipSpaces(const wxString& buffer, size_t &pos)
+void SkipSpaces(const wxString& buffer, size_t &pos)
 {
-    wxChar c = buffer[pos];
+    wxChar c = buffer.GetChar(pos);
     while ( c == _T(' ') || c == _T('\t') )
-        c = buffer[++pos];
+        c = buffer.GetChar(++pos);
+}
+
+size_t CountLines(const wxString& buffer, size_t from_pos, const size_t to_pos)
+{
+    size_t number_of_lines = 0;
+    for (; from_pos < to_pos; ++from_pos)
+    {
+        if      (buffer.GetChar(from_pos) == '\r' && buffer.GetChar(from_pos + 1) == '\n')
+            continue;
+        else if (buffer.GetChar(from_pos) == '\r' || buffer.GetChar(from_pos)     == '\n')
+            ++number_of_lines;
+    }
+    return number_of_lines;
 }
 
 void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
@@ -474,20 +487,13 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
     if (!colour_set)
         return;
 
-    HighlightLanguage hlang = colour_set->GetLanguageForFilename(filename);
-    CommentToken cmttoken = colour_set->GetCommentToken(hlang);
-    wxString langName = colour_set->GetLanguageName(hlang);
+    const HighlightLanguage hlang = colour_set->GetLanguageForFilename(filename);
+    const CommentToken cmttoken = colour_set->GetCommentToken(hlang);
+    const wxString langName = colour_set->GetLanguageName(hlang);
 
     m_ItemsMap[filename].clear();
 
-    wxArrayString allowedTypes;
-    size_t t = 0;
-    while(t < m_Types.Count())
-    {
-        if(m_pAllowedTypesDlg->IsChecked(m_Types.Item(t)))
-            allowedTypes.Add(m_Types.Item(t));
-        t++;
-    }
+    const wxArrayString allowedTypes = m_pAllowedTypesDlg->GetChecked();
 
     wxArrayString startStrings;
     if (langName == _T("C/C++") )
@@ -511,31 +517,34 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
         return;
     }
 
-    for ( unsigned k = 0; k < startStrings.size(); k++)
+    for (size_t k = 0; k < startStrings.size(); ++k)
     {
         size_t pos = 0;
-        int oldline=0, oldlinepos=0;
+        size_t last_start_pos = 0;
+        size_t current_line_count = 0;
+
         while (1)
         {
             pos = buffer.find(startStrings[k], pos);
-            if ( pos == (size_t)wxNOT_FOUND )
+            if ( pos == wxString::npos )
                 break;
 
             pos += startStrings[k].length();
             SkipSpaces(buffer, pos);
 
-            for (unsigned int i = 0; i < allowedTypes.GetCount(); ++i)
+            for (size_t i = 0; i < allowedTypes.GetCount(); ++i)
             {
-                wxString type = buffer.Mid(pos, allowedTypes[i].length());
-                if ( type != allowedTypes[i])
+                const wxString type = buffer.Mid(pos, allowedTypes[i].length());
+
+                if (type != allowedTypes[i])
                     continue;
-                pos += allowedTypes[i].length();
-                SkipSpaces(buffer, pos);
 
                 ToDoItem item;
-                item.type = allowedTypes[i];
+                item.type = type;
                 item.filename = filename;
 
+                pos += type.length();
+                SkipSpaces(buffer, pos);
 
                 // ok, we look for two basic kinds of todo entries in the text
                 // our version...
@@ -543,9 +552,8 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 // and a generic version...
                 // TODO: Implement code to do this and the other...
 
-                wxChar c = buffer.GetChar(pos);
                 // is it ours or generic todo?
-                if (c == _T('('))
+                if (buffer.GetChar(pos) == _T('('))
                 {
                     // it's ours, find user and/or priority
                     ++pos;
@@ -559,38 +567,38 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                             {
                                 // allow one consecutive space
                                 if (item.user.Last() != _T(' '))
-                                    item.user << _T(' ');
+                                    item.user += _T(' ');
                             }
                             else
-                                item.user << c1;
+                                item.user += c1;
                         }
                         else if (c1 == _T('#'))
                         {
                             // look for priority
                             c1 = buffer.GetChar(++pos);
-                            const wxString allowedChars = _T("0123456789");
-                            if ((int)allowedChars.Index(c1) != wxNOT_FOUND)
-                                item.priorityStr << c1;
+                            static const wxString allowedChars = _T("0123456789");
+                            if (allowedChars.find(c1) != wxString::npos)
+                                item.priorityStr += c1;
                             // skip to start of date
                             while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
                             {
-                                wxChar c2 = buffer.GetChar(pos);
+                                const wxChar c2 = buffer.GetChar(pos);
                                 if ( c2 == _T('#'))
                                 {
-                                    pos++;
+                                    ++pos;
                                     break;
                                 }
                                 if ( c2 == _T(')') )
                                     break;
-                                pos++;
+                                ++pos;
                             }
                             // look for date
                             while (pos < buffer.length() && buffer.GetChar(pos) != _T('\r') && buffer.GetChar(pos) != _T('\n') )
                             {
-                                wxChar c2 = buffer.GetChar(pos++);
+                                const wxChar c2 = buffer.GetChar(pos++);
                                 if (c2 == _T(')'))
                                     break;
-                                item.date << c2;
+                                item.date += c2;
                             }
 
                             break;
@@ -607,16 +615,15 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 }
                 // ok, we 've reached the actual todo text :)
                 // take everything up to the end of line
-                if( buffer.GetChar(pos) == _T(':'))
+                if (buffer.GetChar(pos) == _T(':'))
                     ++pos;
                 size_t idx = pos;
                 while (buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
-                    idx++;
+                    ++idx;
                 item.text = buffer.Mid(pos, idx-pos);
 
                 // do some clean-up
-                item.text.Trim();
-                item.text.Trim(false);
+                item.text.Trim(true).Trim(false);
                 // for a C block style comment like /* TODO: xxx */
                 // we should delete the "*/" at the end of the item.text
                 if (startStrings[k].StartsWith(_T("/*")) && item.text.EndsWith(_T("*/")))
@@ -633,29 +640,21 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 {
                     item.date.clear(); // not able to parse date so clear the string
                 }
-                item.line = CalculateLineNumber(buffer, pos, oldline, oldlinepos);
-                item.lineStr << wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
+
+                // ajust line count
+                current_line_count += CountLines(buffer, last_start_pos, pos);
+                last_start_pos = pos;
+
+                item.line = current_line_count;
+                item.lineStr = wxString::Format(_T("%d"), item.line + 1); // 1-based line number for list
                 m_ItemsMap[filename].push_back(item);
                 m_Items.Add(item);
 
                 pos = idx;
             }
-            pos ++;
+            ++pos;
         }
     }
-}
-
-int ToDoListView::CalculateLineNumber(const wxString& buffer, int upTo, int &oldline, int &oldlinepos )
-{
-    for (; oldlinepos < upTo; ++oldlinepos)
-    {
-        if (buffer.GetChar(oldlinepos) == _T('\r') && buffer.GetChar(oldlinepos + 1) == _T('\n')) // CR+LF
-            continue; // we 'll count on \n (next loop)
-        else if (buffer.GetChar(oldlinepos) == _T('\r') || // CR only
-                buffer.GetChar(oldlinepos) == _T('\n')) // lf only
-            ++oldline;
-    }
-    return oldline;
 }
 
 void ToDoListView::FocusEntry(size_t index)
@@ -780,32 +779,26 @@ void CheckListDialog::OkOnButtonClick(cb_unused wxCommandEvent& event)
     Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types_selected"), GetChecked());
 }
 
-bool CheckListDialog::IsChecked(wxString item)
+bool CheckListDialog::IsChecked(const wxString& item) const
 {
     int result = m_checkList->FindString(item, true);
     result = (result == wxNOT_FOUND) ? 0 : result;
     return m_checkList->IsChecked(result);
 }
 
-wxArrayString CheckListDialog::GetChecked()
+wxArrayString CheckListDialog::GetChecked() const
 {
-    size_t item = 0;
     wxArrayString items;
-    while(item < m_checkList->GetCount())
+    for (size_t item = 0; item < m_checkList->GetCount(); ++item)
     {
         if (m_checkList->IsChecked(item))
             items.Add(m_checkList->GetString(item));
-        item++;
     }
     return items;
 }
 
-void CheckListDialog::SetChecked(wxArrayString items)
+void CheckListDialog::SetChecked(const wxArrayString& items)
 {
-    size_t item = 0;
-    while(item < items.GetCount())
-    {
+    for (size_t item = 0; item < items.GetCount(); ++item)
         m_checkList->Check(m_checkList->FindString(items.Item(item), true));
-        item++;
-    }
 }

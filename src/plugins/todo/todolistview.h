@@ -59,9 +59,9 @@ class CheckListDialog : public wxDialog
         void AddItem(const wxArrayString& items) { m_checkList->InsertItems(items, 0); }
         void Clear()                             { m_checkList->Clear();               }
 
-        bool          IsChecked(wxString item);
-        wxArrayString GetChecked();
-        void          SetChecked(wxArrayString items);
+        bool          IsChecked(const wxString& item) const;
+        wxArrayString GetChecked() const;
+        void          SetChecked(const wxArrayString& items);
 
     protected:
         wxCheckListBox* m_checkList;
@@ -105,12 +105,8 @@ class ToDoListView : public wxEvtHandler, public ListCtrlLogger
         void ParseFile(const wxString& filename);
         // this actually parse the buffer, and fill the items map
         void ParseBuffer(const wxString& buffer, const wxString& filename);
-        // only be called in ParseBuffer
-        int CalculateLineNumber(const wxString& buffer, int upTo, int &oldline, int &oldlinepos );
         // ensure the ith element of the list control is shown
         void FocusEntry(size_t index);
-        // only be called in ParseBuffer
-        void SkipSpaces(const wxString& buffer, size_t &pos);
 
 
         // GUI event handler
