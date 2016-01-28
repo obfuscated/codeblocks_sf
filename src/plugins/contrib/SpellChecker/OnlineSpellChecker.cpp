@@ -5,6 +5,7 @@
     #include <cbeditor.h>
     #include <editormanager.h>
     #include <manager.h>
+    #include <logmanager.h>
 #endif
 #include <editorcolourset.h>
 #include <cbstyledtextctrl.h>
@@ -38,13 +39,13 @@ void OnlineSpellChecker::Call(cbEditor* ctrl, wxScintillaEvent &event) const
     if ( event.GetEventType() == wxEVT_SCI_UPDATEUI )
         OnEditorUpdateUI(ctrl);
     else if ( event.GetEventType() == wxEVT_SCI_MODIFIED) {
-    	if(event.GetModificationType() & wxSCI_MOD_INSERTTEXT) {
-			OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
-    	} else if (event.GetModificationType() & wxSCI_MOD_DELETETEXT) {
-    		OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition());
-    	} else if (event.GetModificationType() & wxSCI_MOD_CHANGESTYLE) {
-    		OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
-    	}
+        if(event.GetModificationType() & wxSCI_MOD_INSERTTEXT) {
+            OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
+        } else if (event.GetModificationType() & wxSCI_MOD_DELETETEXT) {
+            OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition());
+        } else if (event.GetModificationType() & wxSCI_MOD_CHANGESTYLE) {
+            OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
+        }
     }
 }
 
@@ -80,7 +81,7 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
         cbStyledTextCtrl *stc = ctrl->GetLeftSplitViewControl();
 
         //swap and bound check (maybe not needed, but for safety)
-		if (end < start) {
+        if (end < start) {
             int t = start;
             start = end;
             end = t;
@@ -92,7 +93,7 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
 
         //find recheck range start:
         if (start > 0) start--;
-		for (; start > 0; ) {
+        for (; start > 0; ) {
             EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
             if (!colour_set)
                 break;
@@ -103,7 +104,7 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
             start--;
         }
         //find recheck range end:
-		for (; end < stc->GetLength() ; ) {
+        for (; end < stc->GetLength() ; ) {
             wxChar ch = stc->GetCharAt(end);
             if ( SpellCheckHelper::IsWhiteSpace(ch) )
                 break;
@@ -114,8 +115,8 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
             m_invalidatedRangesStart.Add(start);
             m_invalidatedRangesEnd.Add(end);
         }
-	} else {
-		alreadychecked = false;
+    } else {
+        alreadychecked = false;
     }
 }
 
@@ -285,14 +286,18 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
     }
     //check the remaining letters
     if (upper == false || b - a == 1) {
+        wxString spellcheck = word.Mid(a, b - a);
+
+//        Manager::Get()->GetLogManager()->DebugLog(_T("IsInDict: \"") + spellcheck + wxT("\": ") + (m_pSpellChecker->IsWordInDictionary(spellcheck) ? wxString(wxT("yes")) : wxString(wxT("no")) ));
+//        Manager::Get()->GetLogManager()->DebugLog(_T("Checking: \"") + spellcheck + wxT("\": ") + m_pSpellChecker->CheckSpelling(spellcheck));
+
         //check the word:
-        //Manager::Get()->GetLogManager()->Log(wxT("checking: \"") + word.Mid(a, b - a) + wxT("\""));
-        if ( !m_pSpellChecker->IsWordInDictionary(word.Mid(a, b - a)) )
+        if ( !m_pSpellChecker->IsWordInDictionary(spellcheck) )
         {
             if (isMultibyte) // not perfect, so only try if necessary
             {
                 int len = 0;
-                const int startPos = stc->FindText(wordstart + a, wordend, word.Mid(a, b - a), wxSCI_FIND_MATCHCASE, &len);
+                const int startPos = stc->FindText(wordstart + a, wordend, spellcheck, wxSCI_FIND_MATCHCASE, &len);
                 if (startPos != wxNOT_FOUND)
                     stc->IndicatorFillRange(startPos, len);
             }

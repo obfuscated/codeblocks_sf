@@ -64,6 +64,7 @@ int HunspellInterface::InitializeSpellCheckEngine()
   }
 
   m_bEngineInitialized = (m_pHunspell != NULL);
+
   return m_bEngineInitialized;
 }
 
@@ -218,7 +219,11 @@ bool HunspellInterface::IsWordInDictionary(const wxString& strWord)
   wxCharBuffer wordCharBuffer = ConvertToUnicode(strWord);
   if ( wordCharBuffer.data() == NULL )
     return false;
-  return ((m_pHunspell->spell(wordCharBuffer) == 1) || (m_PersonalDictionary.IsWordInDictionary(strWord)));
+
+  bool spelledOK = (m_pHunspell->spell(wordCharBuffer) == 1);
+  bool isInDict  = m_PersonalDictionary.IsWordInDictionary(strWord);
+
+  return (spelledOK || isInDict);
 }
 
 int HunspellInterface::AddWordToDictionary(const wxString& strWord)

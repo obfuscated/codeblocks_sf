@@ -21,6 +21,7 @@
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
+    #include <logmanager.h>
     #include <macrosmanager.h>
 #endif
 
@@ -100,7 +101,7 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
     if ( dir.Open(path) )
     {
         wxString strfilename;
-        bool cont = dir.GetFirst(&strfilename, filespec, wxDIR_FILES );
+        bool cont = dir.GetFirst(&strfilename, filespec, wxDIR_FILES);
         while ( cont )
         {
             wxFileName fname(strfilename);
@@ -108,13 +109,20 @@ void SpellCheckerConfig::ScanForDictionaries(const wxString &path)
             if ( wxFileName::FileExists(afffilename) )
             {
                 if ( fname.GetName() == m_strDictionaryName )
+                {
+                    Manager::Get()->GetLogManager()->DebugLog(_T("Selected dictionary: ") + fname.GetName());
                     selectedDictionary = m_dictionaries.size();
+                }
+                Manager::Get()->GetLogManager()->DebugLog(_T("Found dictionary: ") + fname.GetName());
                 m_dictionaries.push_back(fname.GetName());
 
             }
             cont = dir.GetNext(&strfilename);
         }
     }
+    else
+        Manager::Get()->GetLogManager()->DebugLog(_T("Could not open path to dictionaries: ") + path);
+
     // disable online checker if there are no dictionaries found
     if (selectedDictionary == wxNOT_FOUND)
     {
@@ -141,8 +149,13 @@ const wxString SpellCheckerConfig::GetBitmapPath()const
 {
     wxString bitmPath = m_BitmPath;
     Manager::Get()->GetMacrosManager()->ReplaceEnvVars(bitmPath);
-    if (wxDirExists(bitmPath) && !wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty())
+    if (    wxDirExists(bitmPath)
+        && !wxFindFirstFile(bitmPath + wxFILE_SEP_PATH + wxT("*.png"), wxFILE).IsEmpty() )
+    {
+        Manager::Get()->GetLogManager()->DebugLog(_T("Detected bitmap path: ") + bitmPath);
         return bitmPath;
+    }
+    Manager::Get()->GetLogManager()->DebugLog(_T("Current bitmap path: ") + m_pPlugin->GetOnlineCheckerConfigPath());
     return m_pPlugin->GetOnlineCheckerConfigPath();
 }
 
@@ -178,10 +191,12 @@ void SpellCheckerConfig::DetectDictionaryPath()
     dictPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
     for (size_t i = 0; i < dictPaths.GetCount(); ++i)
     {
-        if (wxDirExists(dictPaths[i]) && !wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty())
+        if (    wxDirExists(dictPaths[i])
+            && !wxFindFirstFile(dictPaths[i] + wxFILE_SEP_PATH + wxT("*.dic"), wxFILE).IsEmpty() )
         {
             if (i != 0)
                 m_DictPath = dictPaths[i];
+            Manager::Get()->GetLogManager()->DebugLog(_T("Detected dict path: ") + m_DictPath);
             break;
         }
     }
@@ -215,10 +230,12 @@ void SpellCheckerConfig::DetectThesaurusPath()
     thesPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
     for (size_t i = 0; i < thesPaths.GetCount(); ++i)
     {
-        if (wxDirExists(thesPaths[i]) && !wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty())
+        if (    wxDirExists(thesPaths[i])
+            && !wxFindFirstFile(thesPaths[i] + wxFILE_SEP_PATH + wxT("th*.dat"), wxFILE).IsEmpty() )
         {
             if (i != 0)
                 m_ThesPath = thesPaths[i];
+            Manager::Get()->GetLogManager()->DebugLog(_T("Detected thes path: ") + m_ThesPath);
             break;
         }
     }
