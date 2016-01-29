@@ -1453,3 +1453,101 @@ int cbProjectTreeImages::VirtualFolderIconIndex()
 {
     return (int)fvsVirtualFolder;
 }
+
+namespace
+{
+static int ParseParentPID(const char *line)
+{
+    const char *p = strchr(line, '(');
+    if (!p)
+        return -1;
+    ++p;
+    int open_paren_count = 1;
+    while (*p && open_paren_count > 0)
+    {
+        switch (*p)
+        {
+        case '(':
+            open_paren_count++;
+            break;
+        case ')':
+            open_paren_count--;
+            break;
+        }
+
+        ++p;
+    }
+    if (*p == ' ')
+        ++p;
+    int dummy;
+    int ppid;
+    int count = sscanf(p, "%c %d", (char *) &dummy, &ppid);
+    return count == 2 ? ppid : -1;
+}
+
+} // namespace
+
+void cbGetChildrenPIDs(std::vector<int> &children, int parent)
+{
+#ifndef __WXMSW__
+    const char *c_proc_base = "/proc";
+    DIR *dir = opendir(c_proc_base);
+    if (!dir)
+        return;
+    struct dirent *entry;
+    do
+    {
+        entry = readdir(dir);
+        if (entry)
+        {
+            int pid = atoi(entry->d_name);
+            if (pid != 0)
+            {
+                char filestr[PATH_MAX + 1];
+                snprintf(filestr, PATH_MAX, "%s/%d/stat", c_proc_base, pid);
+                FILE *file = fopen(filestr, "r");
+                if (file)
+                {
+                    char line[101];
+                    fgets(line, 100, file);
+                    fclose(file);
+                    int ppid = ParseParentPID(line);
+                    if (ppid == parent)
+                        children.push_back(pid);
+                }
+            }
+        }
+    } while (entry);
+    closedir(dir);
+#else
+    // get a function pointer to DebugBreakProcess under windows (XP+)
+    typedef HANDLE WINAPI (*CreateToolhelp32SnapshotApiCall)(DWORD dwFlags, DWORD th32ProcessID);
+    static CreateToolhelp32SnapshotApiCall CreateToolhelp32SnapshotFunc = 0;
+    #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
+    if (!CreateToolhelp32SnapshotFunc) {
+        kernelLib = LoadLibrary(TEXT("kernel32.dll"));
+        if (kernelLib)
+            CreateToolhelp32SnapshotFunc = (CreateToolhelp32SnapshotApiCall)GetProcAddress(kernelLib, "CreateToolhelp32Snapshot");
+    }
+    #endif
+
+    if ((CreateToolhelp32SnapshotFunc!=NULL) && (Process32FirstFunc!=NULL) && (Process32NextFunc!=NULL) )
+    {
+        HANDLE snap = CreateToolhelp32SnapshotFunc(TH32CS_SNAPALL,0);
+        if (snap!=INVALID_HANDLE_VALUE)
+        {
+            PROCESSENTRY32 lppe;
+            lppe.dwSize = sizeof(PROCESSENTRY32);
+            BOOL ok = Process32FirstFunc(snap, &lppe);
+            while (ok == TRUE)
+            {
+                if (lppe.th32ParentProcessID == parent) // Have my Child...
+                    children.push_back(lppe.th32ProcessID);
+                lppe.dwSize = sizeof(PROCESSENTRY32);
+                ok = Process32NextFunc(snap, &lppe);
+            }
+            CloseHandle(snap);
+        }
+    }
+#endif
+}

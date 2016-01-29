@@ -1586,7 +1586,20 @@ void DebuggerGDB::DoBreak(bool temporary)
             pid = 0;
         }
         if (pid <= 0)
-            pid = m_Pid; // try poking gdb directly
+        {
+            DebugLog(_("Child PID have not been detected!"), Logger::warning);
+            std::vector<int> childrenPIDs;
+            cbGetChildrenPIDs(childrenPIDs, m_Pid);
+            if (!childrenPIDs.empty())
+            {
+                if (childrenPIDs.size()>1)
+                    DebugLog(_("Found more than one child processes. Use the PID of the first "), Logger::warning);
+                pid = childrenPIDs.front();
+                m_State.GetDriver()->SetChildPID(pid);
+            }
+            else
+                pid = m_Pid; // try poking gdb directly
+        }
         // non-windows gdb can interrupt the running process. yay!
         if (pid <= 0) // look out for the "fake" PIDs (killall)
             cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);

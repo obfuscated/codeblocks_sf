@@ -386,4 +386,10 @@ namespace platform
 // one thing that's not checked yet are circular symlinks - watch out!
 extern DLLIMPORT wxString realpath(const wxString& path);
 
+/** Return a vector full with the PIDs of the child processes of the parent.
+  * @param[out] children List of PIDs of the child processes of the parent
+  * @param[in] parent PID of the parent process
+  */
+extern DLLIMPORT void cbGetChildrenPIDs(std::vector<int> &children, int parent);
+
 #endif // SDK_GLOBALS_H
