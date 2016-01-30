@@ -41,7 +41,8 @@ SpellCheckHelper::~SpellCheckHelper()
 
 bool SpellCheckHelper::IsWhiteSpace(const wxChar &ch)
 {
-    return wxIsspace(ch) || wxIspunct(ch) || wxIsdigit(ch);
+    // Support words like doesn't: ch!='\''
+    return wxIsspace(ch) || (wxIspunct(ch) && ch!='\'') || wxIsdigit(ch);
 }
 
 void SpellCheckHelper::LoadConfiguration()
@@ -49,11 +50,11 @@ void SpellCheckHelper::LoadConfiguration()
     //TiXmlDocument doc("OnlineSpellChecking.xml");
     wxString fname = SpellCheckerPlugin::GetOnlineCheckerConfigPath() + wxFILE_SEP_PATH + _T("OnlineSpellChecking.xml");
     TiXmlDocument doc( fname.char_str() );
-    if(  !doc.LoadFile() )
+    if ( !doc.LoadFile() )
         Manager::Get()->GetLogManager()->Log( _("SpellCheck Plugin: Error loading Online SpellChecking Configuration file \"") + fname +_T("\"") );
 
-    TiXmlNode *rootnode =  doc.FirstChildElement( "OnlineSpellCheckingConfigurationFile" );
-    if ( rootnode )
+    TiXmlNode* rootnode =  doc.FirstChildElement( "OnlineSpellCheckingConfigurationFile" );
+    if (rootnode)
     {
         for ( TiXmlElement* LangElement = rootnode->FirstChildElement("Language");
               LangElement;
@@ -67,13 +68,13 @@ void SpellCheckHelper::LoadConfiguration()
             std::set<long> idcs;
             for (size_t i = 0; i < indices.GetCount(); ++i)
             {
-            	if (indices[i].IsEmpty())
+                if ( indices[i].IsEmpty() )
                     continue;
                 long value = 0;
                 indices[i].ToLong(&value);
                 idcs.insert(value);
             }
-            if ( idcs.size() > 0)
+            if (idcs.size() > 0)
                 m_LanguageIndices[name] = idcs;
         }
     }
@@ -82,18 +83,21 @@ void SpellCheckHelper::LoadConfiguration()
 bool SpellCheckHelper::HasStyleToBeChecked(wxString langname, int style)const
 {
     std::map<wxString, std::set<long> >::const_iterator it = m_LanguageIndices.find(langname);
-    if ( it != m_LanguageIndices.end())
-    {
+    if (it != m_LanguageIndices.end())
         return it->second.find(style) != it->second.end();
-    }
+
     return false;
 }
 bool SpellCheckHelper::IsEscapeSequenceStart(wxChar ch, wxString langname, int style)
 {
     //Manager::Get()->GetLogManager()->Log(wxString(_T("check if '")) + ch +_T("' is an escape in \"")+langname + wxString::Format(_T("\" at style %d"), style));
-    if (langname == _T("C/C++") && (style == wxSCI_C_STRING || style == wxSCI_C_CHARACTER || style == wxSCI_C_STRINGEOL))
+    if (   langname == _T("C/C++")
+        && (   (style == wxSCI_C_STRING)
+            || (style == wxSCI_C_CHARACTER)
+            || (style == wxSCI_C_STRINGEOL) ) )
     {
         return ch == _T('\\');
     }
+
     return false;
 }

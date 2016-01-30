@@ -9,16 +9,13 @@
 #endif
 #include <editorcolourset.h>
 #include <cbstyledtextctrl.h>
+
 #include "SpellCheckEngineInterface.h"
 #include "SpellCheckHelper.h"
-//#include <hunspell.hxx>
 
-
-
-
-OnlineSpellChecker::OnlineSpellChecker(wxSpellCheckEngineInterface *pSpellChecker, SpellCheckHelper *pSpellHelper):
-    alreadychecked(false),
-    oldctrl(NULL),
+OnlineSpellChecker::OnlineSpellChecker(wxSpellCheckEngineInterface* pSpellChecker, SpellCheckHelper* pSpellHelper):
+    m_alreadyChecked(false),
+    m_oldCtrl(NULL),
     m_pSpellChecker(pSpellChecker),
     m_pSpellHelper(pSpellHelper),
     m_doChecks(false)
@@ -30,7 +27,7 @@ OnlineSpellChecker::~OnlineSpellChecker()
 }
 
 
-void OnlineSpellChecker::Call(cbEditor* ctrl, wxScintillaEvent &event) const
+void OnlineSpellChecker::Call(cbEditor* ctrl, wxScintillaEvent& event) const
 {
     // return if this event is not fired from the active editor (is it possible that an editor which is not active fires an event?)
     if ( Manager::Get()->GetEditorManager()->GetActiveEditor() != ctrl  ) return;
@@ -38,97 +35,112 @@ void OnlineSpellChecker::Call(cbEditor* ctrl, wxScintillaEvent &event) const
     // check the event type if it is an update event
     if ( event.GetEventType() == wxEVT_SCI_UPDATEUI )
         OnEditorUpdateUI(ctrl);
-    else if ( event.GetEventType() == wxEVT_SCI_MODIFIED) {
-        if(event.GetModificationType() & wxSCI_MOD_INSERTTEXT) {
+    else if ( event.GetEventType() == wxEVT_SCI_MODIFIED)
+    {
+        if      (event.GetModificationType() & wxSCI_MOD_INSERTTEXT)
             OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
-        } else if (event.GetModificationType() & wxSCI_MOD_DELETETEXT) {
+        else if (event.GetModificationType() & wxSCI_MOD_DELETETEXT)
             OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition());
-        } else if (event.GetModificationType() & wxSCI_MOD_CHANGESTYLE) {
+        else if (event.GetModificationType() & wxSCI_MOD_CHANGESTYLE)
             OnEditorChangeTextRange(ctrl, event.GetPosition(), event.GetPosition() + event.GetLength());
-        }
     }
 }
 
 void OnlineSpellChecker::OnEditorChange(cb_unused cbEditor* ctrl) const
 {
     // clear internal states to force a refresh at next UpdateUI;
-    alreadychecked = false;
+    m_alreadyChecked = false;
 }
 
-int OnlineSpellChecker::GetIndicator()const
+int OnlineSpellChecker::GetIndicator() const
 {
     const int theIndicator = 11;
     return theIndicator;
 }
-const wxColor OnlineSpellChecker::GetIndicatorColor()const
+const wxColor OnlineSpellChecker::GetIndicatorColor() const
 {
-    //wxColour indicatorColour(cfg->ReadColour(_T("/???/colour"), wxColour(255, 0, 0)));
+    // TODO: wxColour indicatorColour(cfg->ReadColour(_T("/???/colour"), wxColour(255, 0, 0)));
     return wxColour(255,0,0);
 }
 void OnlineSpellChecker::OnEditorUpdateUI(cbEditor* ctrl) const
 {
-    if ( !m_doChecks ) return;
+    if (!m_doChecks) return;
     DoSetIndications(ctrl);
 }
 
-void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int end)const
+void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int end) const
 {
-    if ( !m_doChecks ) return;
-    if ( alreadychecked && oldctrl == ctrl )
+    if (!m_doChecks) return;
+    if (m_alreadyChecked && (m_oldCtrl == ctrl))
     {
-        //only recheck the last word to speed things up
-
-        cbStyledTextCtrl *stc = ctrl->GetLeftSplitViewControl();
-
-        //swap and bound check (maybe not needed, but for safety)
-        if (end < start) {
+        // only recheck the last word to speed things up
+        // swap and bound check (maybe not needed, but for safety)
+        if (end < start)
+        {
             int t = start;
             start = end;
-            end = t;
+            end   = t;
         }
-        if (start < 0) start = 0;
-        if (end < 0) end = 0;
-        if (start >= stc->GetLength()) start = stc->GetLength() - 1;
-        if (end > stc->GetLength()) end = stc->GetLength();
 
-        //find recheck range start:
+        cbStyledTextCtrl* stc = ctrl->GetLeftSplitViewControl();
+        if (!stc) return;
+
+        // bound:
+        if (start < 0) start = 0;
+        if (end   < 0) end   = 0;
+        if (start >= stc->GetLength()) start = stc->GetLength() - 1;
+        if (end   >  stc->GetLength()) end   = stc->GetLength();
+
+        // find recheck range start:
         if (start > 0) start--;
-        for (; start > 0; ) {
+        while (start > 0)
+        {
             EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
             if (!colour_set)
                 break;
+
             wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
-            wxChar ch = stc->GetCharAt(start - 1);
-            if ( SpellCheckHelper::IsWhiteSpace(ch) && !SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(start-1) ) )
+            wxChar   ch   = stc->GetCharAt(start - 1);
+            bool isEscape     = SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(start-1));
+            bool isWhiteSpace = SpellCheckHelper::IsWhiteSpace(ch);
+            if (!isEscape && isWhiteSpace)
                 break;
+
             start--;
         }
-        //find recheck range end:
-        for (; end < stc->GetLength() ; ) {
+
+        // find recheck range end:
+        while (end < stc->GetLength())
+        {
             wxChar ch = stc->GetCharAt(end);
+            // TODO: Breaks with Umlauts / Russian characters (Unicode in general) here
             if ( SpellCheckHelper::IsWhiteSpace(ch) )
                 break;
             end++;
         }
 
-        if (m_invalidatedRangesStart.GetCount() == 0 || m_invalidatedRangesStart.Last() != start || m_invalidatedRangesEnd.Last() != end) {
+        if (   m_invalidatedRangesStart.GetCount() == 0
+            || m_invalidatedRangesStart.Last()     != start
+            || m_invalidatedRangesEnd.Last()       != end )
+        {
             m_invalidatedRangesStart.Add(start);
             m_invalidatedRangesEnd.Add(end);
+//            Manager::Get()->GetLogManager()->DebugLog(_T("Word: \"") + stc->GetTextRange(start, end) + wxT("\": "));
         }
-    } else {
-        alreadychecked = false;
     }
+    else
+        m_alreadyChecked = false;
 }
 
-void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
+void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
 {
-    //Returns a pointer to the left (or top) split-view cbStyledTextCtrl. This function always returns a valid pointer.
-    cbStyledTextCtrl *stc = ctrl->GetLeftSplitViewControl();
-
-    cbStyledTextCtrl *stcr =ctrl->GetRightSplitViewControl();
+    // Returns a pointer to the left (or top) split-view cbStyledTextCtrl.
+    cbStyledTextCtrl* stc  = ctrl->GetLeftSplitViewControl();
+    cbStyledTextCtrl* stcr = ctrl->GetRightSplitViewControl();
+    if (!stc) return;
 
     // whatever the current state is, we've already done it once
-    if ( alreadychecked && oldctrl == ctrl )
+    if (m_alreadyChecked && (m_oldCtrl == ctrl))
     {
         if (m_invalidatedRangesStart.GetCount() == 0)
             return;
@@ -142,11 +154,11 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
         m_invalidatedRangesStart.Add(0);
         m_invalidatedRangesEnd.Add(stc->GetLength());
     }
-    alreadychecked = true;
+    m_alreadyChecked = true;
 
     // Set Styling:
     stc->SetIndicatorCurrent(GetIndicator());
-    if (oldctrl != ctrl)
+    if (m_oldCtrl != ctrl)
     {
         stc->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_SQUIGGLE);
         stc->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
@@ -157,9 +169,9 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
         stc->IndicatorSetUnder(GetIndicator(),true);
 #endif
     }
-    if ( stcr )
+    if (stcr)
     {
-        if (oldctrl != ctrl)
+        if (m_oldCtrl != ctrl)
         {
             stcr->IndicatorSetStyle(GetIndicator(), wxSCI_INDIC_SQUIGGLE);
             stcr->IndicatorSetForeground(GetIndicator(), GetIndicatorColor() );
@@ -169,23 +181,24 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
         }
     }
 
-    oldctrl = ctrl;
+    m_oldCtrl = ctrl;
 
     // Manager::Get()->GetLogManager()->Log(wxT("OSC: update regions"));
 
     for (int i = 0; i < (int)m_invalidatedRangesStart.GetCount(); i++)
     {
         int start = m_invalidatedRangesStart[i];
-        int end = m_invalidatedRangesEnd[i];
-        //bound:
+        int end   = m_invalidatedRangesEnd[i];
+
+        // bound:
         if (start < 0) start = 0;
-        if (end < 0) end = 0;
+        if (end   < 0) end   = 0;
         if (start >= stc->GetLength()) start = stc->GetLength() - 1;
-        if (end > stc->GetLength()) end = stc->GetLength();
+        if (end   >  stc->GetLength()) end   = stc->GetLength();
 
         if (start != end)
         {
-            //remove styling:
+            // remove styling:
             stc->IndicatorClearRange(start, end - start);
 
             int wordstart = start;
@@ -198,15 +211,19 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
                 wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
                 wxChar ch = stc->GetCharAt(pos);
                 // treat chars which don't have the correct style as whitespace:
-                bool isEscape = SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(pos));
-                if ( isEscape || SpellCheckHelper::IsWhiteSpace(ch) || !m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(pos)))
+                bool isEscape     = SpellCheckHelper::IsEscapeSequenceStart(ch, lang, stc->GetStyleAt(pos));
+                bool isWhiteSpace = SpellCheckHelper::IsWhiteSpace(ch);
+                if (isEscape || isWhiteSpace || !m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(pos)))
                 {
                     if (wordstart != wordend)
                         DissectWordAndCheck(stc, wordstart, wordend);
+
                     pos++;
-                    if ( isEscape ) pos++;
+                    if (isEscape)
+                        pos++;
+
                     wordstart = pos;
-                    wordend = pos;
+                    wordend   = pos;
                 }
                 else
                 {
@@ -221,9 +238,7 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
                 {
                     wxString lang = colour_set->GetLanguageName(ctrl->GetLanguage() );
                     if ( m_pSpellHelper->HasStyleToBeChecked(lang, stc->GetStyleAt(wordstart))  )
-                    {
                         DissectWordAndCheck(stc, wordstart, wordend);
-                    }
                 }
             }
         }
@@ -232,37 +247,49 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl)const
     m_invalidatedRangesEnd.Clear();
 }
 
-void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstart, int wordend)const
+void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstart, int wordend) const
 {
     wxString word = stc->GetTextRange(wordstart, wordend);
     const bool isMultibyte = ((int)word.Length() != wordend - wordstart);
     //Manager::Get()->GetLogManager()->Log(wxT("dissecting: \"") + word + wxT("\""));
-    //and now decide whether the word is an abbreviation and split words when case changes to uppercase
+
+    // and now decide whether the word is an abbreviation and split words when case changes to uppercase
     bool upper = wxIsupper(word[0]) != 0;
     int a, b;
     a = 0; b = 0;
-    for (unsigned int c = 0; c < word.length();) {
+
+    for (unsigned int c = 0; c < word.length();)
+    {
         wxChar cc = word[c];
-        if (upper == (wxIsupper(cc) != 0)) {
-            //same case
+        if (upper == (wxIsupper(cc) != 0))
+        {
+            // same case
             c++;
             b = c;
-        } else {
-            //case changed...
-            if (upper) {
-                if (b - a == 1) {
-                    //start of word
+        }
+        else
+        {
+            // case changed...
+            if (upper)
+            {
+                if (b - a == 1)
+                {
+                    // start of word
                     c++;
                     b = c;
-                } else {
-                    //abbreviation, ignore
+                }
+                else
+                {
+                    // abbreviation, ignore
                     a = c;
                     c++;
                     b = c;
                 }
                 upper = false;
-            } else {
-                //check the word:
+            }
+            else
+            {
+                // check the word:
                 //Manager::Get()->GetLogManager()->Log(wxT("checking: \"") + word.Mid(a, b - a) + wxT("\""));
                 if ( !m_pSpellChecker->IsWordInDictionary(word.Mid(a, b - a)) )
                 {
@@ -276,7 +303,7 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
                     else
                         stc->IndicatorFillRange(wordstart + a, b - a);
                 }
-                //next:
+                // next:
                 a = c;
                 c++;
                 b = c;
@@ -284,14 +311,16 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
             }
         }
     }
-    //check the remaining letters
-    if (upper == false || b - a == 1) {
+
+    // check the remaining letters
+    if (!upper || b - a == 1)
+    {
         wxString spellcheck = word.Mid(a, b - a);
 
 //        Manager::Get()->GetLogManager()->DebugLog(_T("IsInDict: \"") + spellcheck + wxT("\": ") + (m_pSpellChecker->IsWordInDictionary(spellcheck) ? wxString(wxT("yes")) : wxString(wxT("no")) ));
 //        Manager::Get()->GetLogManager()->DebugLog(_T("Checking: \"") + spellcheck + wxT("\": ") + m_pSpellChecker->CheckSpelling(spellcheck));
 
-        //check the word:
+        // check the word:
         if ( !m_pSpellChecker->IsWordInDictionary(spellcheck) )
         {
             if (isMultibyte) // not perfect, so only try if necessary
@@ -310,40 +339,39 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl *stc, int wordstar
 
 void OnlineSpellChecker::EnableOnlineChecks(bool check)
 {
-    m_doChecks = check;
+    m_doChecks       = check;
+    m_alreadyChecked = false;
 
-    alreadychecked = false;
-
-    EditorManager *edm = Manager::Get()->GetEditorManager();
-    for ( int i = 0 ; i < edm->GetEditorsCount() ; ++i)
+    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    for (int i = 0 ; i < edMan->GetEditorsCount() ; ++i)
     {
-        cbEditor *ed = edm->GetBuiltinEditor( i );
+        cbEditor* ed = edMan->GetBuiltinEditor(i);
+        if (!ed) continue;
 
-        if ( !ed ) continue;
-        if ( check == false )
-            // clear all indications set in a previous run
-            ClearAllIndications(ed->GetControl());
+        if (!check)
+            ClearAllIndications(ed->GetControl()); // clear all indications set in a previous run
         else
             OnEditorUpdateUI(ed);
     }
 }
 
-void OnlineSpellChecker::ClearAllIndications(cbStyledTextCtrl* stc)const
+void OnlineSpellChecker::ClearAllIndications(cbStyledTextCtrl* stc) const
 {
-    if ( stc )
+    if (stc)
     {
         stc->SetIndicatorCurrent(GetIndicator());
         stc->IndicatorClearRange(0, stc->GetLength());
     }
 }
 
-void OnlineSpellChecker::ClearAllIndications()const
+void OnlineSpellChecker::ClearAllIndications() const
 {
-    EditorManager *edm = Manager::Get()->GetEditorManager();
-    for ( int i = 0 ; i < edm->GetEditorsCount() ; ++i)
+    EditorManager* edMan = Manager::Get()->GetEditorManager();
+    for (int i = 0 ; i < edMan->GetEditorsCount() ; ++i)
     {
-        cbEditor *ed = edm->GetBuiltinEditor( i );
-        if ( ed )
-            ClearAllIndications(ed->GetControl());
+        cbEditor* ed = edMan->GetBuiltinEditor(i);
+        if (!ed) continue;
+
+        ClearAllIndications(ed->GetControl()); // clear all indications set in a previous run
     }
 }

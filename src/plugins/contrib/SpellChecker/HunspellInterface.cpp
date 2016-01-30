@@ -58,8 +58,14 @@ int HunspellInterface::InitializeSpellCheckEngine()
 
   if ( wxFileName::FileExists(strAffixFile) && wxFileName::FileExists(strDictionaryFile) )
   {
-    wxCharBuffer affixFileCharBuffer = ConvertToUnicode(strAffixFile);
-    wxCharBuffer dictionaryFileCharBuffer = ConvertToUnicode(strDictionaryFile);
+    // Prepend long path prefix to make sure Hunspell uses _wopen for Unicode path's:
+#ifdef __WXMSW__
+    wxString lpPrefix = _T("\\\\?\\");
+#else
+    wxString lpPrefix = wxEmptyString;
+#endif
+    wxCharBuffer affixFileCharBuffer      = ConvertToUnicode(lpPrefix + strAffixFile);
+    wxCharBuffer dictionaryFileCharBuffer = ConvertToUnicode(lpPrefix + strDictionaryFile);
     m_pHunspell = new Hunspell(affixFileCharBuffer, dictionaryFileCharBuffer);
   }
 
@@ -137,17 +143,11 @@ wxString HunspellInterface::CheckSpelling(wxString strText)
     TokenStart += nDiff;  // Take into account any changes to the size of the strText
 
     // process token here
-    if (!IsWordInDictionary(token))
+    if ( !IsWordInDictionary(token) )
     {
       // If this word is in the always ignore list, then just move on
       if (m_AlwaysIgnoreList.Index(token) != wxNOT_FOUND)
         continue;
-
-/* dealt with by IsWordInDictionary - JACS
-       // If this word is in the personal dictionary, then just move on
-       if (m_PersonalDictionary.IsWordInDictionary(token))
-         continue;
-*/
 
       bool bReplaceFromMap = false;
       StringToStringMap::iterator WordFinder = m_AlwaysReplaceMap.find(token);
@@ -167,9 +167,7 @@ wxString HunspellInterface::CheckSpelling(wxString strText)
       }
 
       if (nUserReturnValue == wxSpellCheckUserInterface::ACTION_CLOSE)
-      {
         break;
-      }
       else if ((nUserReturnValue == wxSpellCheckUserInterface::ACTION_REPLACE) || bReplaceFromMap)
       {
         wxString strReplacementText = (bReplaceFromMap) ? (*WordFinder).second : m_pSpellUserInterface->GetReplacementText();
@@ -318,7 +316,7 @@ void HunspellInterface::PopulateDictionaryMap(StringToStringMap* pLookupMap, con
 
   // Add the custom MySpell dictionary entries to the map
   StringToStringMap::iterator start = m_CustomMySpellDictionaryMap.begin();
-  StringToStringMap::iterator stop = m_CustomMySpellDictionaryMap.end();
+  StringToStringMap::iterator stop  = m_CustomMySpellDictionaryMap.end();
   while (start != stop)
   {
     AddDictionaryElement(pLookupMap, strDictionaryPath, (*start).first, (*start).second);
@@ -328,7 +326,8 @@ void HunspellInterface::PopulateDictionaryMap(StringToStringMap* pLookupMap, con
 
 void HunspellInterface::UpdatePossibleValues(SpellCheckEngineOption& OptionDependency, SpellCheckEngineOption& OptionToUpdate)
 {
-  if ((OptionDependency.GetName().IsSameAs(_T("dictionary-path"))) && (OptionToUpdate.GetName().IsSameAs(_T("language"))))
+  if (   (OptionDependency.GetName().IsSameAs(_T("dictionary-path")))
+      && (OptionToUpdate.GetName().IsSameAs(_T("language"))) )
   {
     StringToStringMap tempLookupMap;
     wxString strDictionaryPath = OptionDependency.GetValueAsString();
@@ -346,7 +345,8 @@ void HunspellInterface::UpdatePossibleValues(SpellCheckEngineOption& OptionDepen
   {
     wxMessageOutput* msgOut = wxMessageOutput::Get();
     if (msgOut)
-      msgOut->Printf(_("Unsure how to update the possible values for %s based on the value of %s"), OptionDependency.GetText().c_str(), OptionToUpdate.GetText().c_str());
+      msgOut->Printf(_("Unsure how to update the possible values for %s based on the value of %s"),
+                     OptionDependency.GetText().c_str(), OptionToUpdate.GetText().c_str());
   }
 }
 
@@ -354,19 +354,17 @@ void HunspellInterface::AddDictionaryElement(StringToStringMap* pLookupMap, cons
 {
   wxFileName strAffixFileName(strDictionaryPath + wxFILE_SEP_PATH + strDictionaryFileRoot + _T(".aff"));
   wxFileName strDictionaryFileName(strDictionaryPath + wxFILE_SEP_PATH + strDictionaryFileRoot + _T(".dic"));
+
   if (strAffixFileName.FileExists() && strDictionaryFileName.FileExists())
-  {
     (*pLookupMap)[strDictionaryName] = strDictionaryFileRoot;
-  }
 }
 
 wxString HunspellInterface::GetSelectedLanguage()
 {
   OptionsMap::iterator it = m_Options.find(_T("language"));
   if (it != m_Options.end())
-  {
     return it->second.GetValueAsString();
-  }
+
   return wxEmptyString;
 }
 
@@ -374,16 +372,13 @@ wxString HunspellInterface::GetAffixFileName()
 {
   OptionsMap::iterator it = m_Options.find(_T("affix-file"));
   if (it != m_Options.end())
-  {
     return it->second.GetValueAsString();
-  }
+
   else
   {
     wxString strLanguage = GetSelectedLanguage();
     if (strLanguage != wxEmptyString)
-    {
       return GetAffixFileName(strLanguage);
-    }
   }
   return wxEmptyString;
 }
@@ -392,9 +387,8 @@ wxString HunspellInterface::GetAffixFileName(const wxString& strDictionaryName)
 {
   StringToStringMap::iterator finder = m_DictionaryLookupMap.find(strDictionaryName);
   if (finder != m_DictionaryLookupMap.end())
-  {
     return (m_strDictionaryPath + wxFILE_SEP_PATH + (*finder).second + _T(".aff"));
-  }
+
   return wxEmptyString;
 }
 
@@ -402,17 +396,12 @@ wxString HunspellInterface::GetDictionaryFileName()
 {
   OptionsMap::iterator it = m_Options.find(_T("dict-file"));
   if (it != m_Options.end())
-  {
     return it->second.GetValueAsString();
-  }
-  else
-  {
-    wxString strLanguage = GetSelectedLanguage();
-    if (strLanguage != wxEmptyString)
-    {
-      return GetDictionaryFileName(strLanguage);
-    }
-  }
+
+  wxString strLanguage = GetSelectedLanguage();
+  if (strLanguage != wxEmptyString)
+    return GetDictionaryFileName(strLanguage);
+
   return wxEmptyString;
 }
 
@@ -420,9 +409,8 @@ wxString HunspellInterface::GetDictionaryFileName(const wxString& strDictionaryN
 {
   StringToStringMap::iterator finder = m_DictionaryLookupMap.find(strDictionaryName);
   if (finder != m_DictionaryLookupMap.end())
-  {
     return (m_strDictionaryPath + wxFILE_SEP_PATH + (*finder).second + _T(".dic"));
-  }
+
   return wxEmptyString;
 }
 
