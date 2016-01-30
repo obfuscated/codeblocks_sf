@@ -119,16 +119,16 @@ fi
 if [ -d "devdevel30el/share/codeblocks/images/wxsmith" ]
 then
   mkdir -p output30/share/codeblocks/images/wxsmith
-  cp -f devel/share/codeblocks/images/wxsmith/*.png output30/share/codeblocks/images/wxsmith > /dev/null
+  cp -f devel30/share/codeblocks/images/wxsmith/*.png output30/share/codeblocks/images/wxsmith > /dev/null
 fi
-if [ -d "devel/share/codeblocks/lib_finder" ]
+if [ -d "devel30/share/codeblocks/lib_finder" ]
 then
   mkdir -p output30/share/codeblocks/lib_finder
-  cp -f devel/share/codeblocks/lib_finder/*.xml output30/share/codeblocks/lib_finder > /dev/null
+  cp -f devel30/share/codeblocks/lib_finder/*.xml output30/share/codeblocks/lib_finder > /dev/null
 fi
 # misc. contrib plugin settings:
-cp -f devel/share/codeblocks/images/16x16/*.png    output30/share/codeblocks/images/16x16    > /dev/null
-cp -f devel/share/codeblocks/images/settings/*.png output30/share/codeblocks/images/settings > /dev/null
+cp -f devel30/share/codeblocks/images/16x16/*.png    output30/share/codeblocks/images/16x16    > /dev/null
+cp -f devel30/share/codeblocks/images/settings/*.png output30/share/codeblocks/images/settings > /dev/null
 
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ ${RESDIR}/templates/wizard > /dev/null
 rsync -au --exclude-from=excludes.txt plugins/scriptedwizard/resources/ output30/share/codeblocks/templates/wizard > /dev/null

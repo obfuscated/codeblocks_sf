@@ -9,7 +9,7 @@
 		<Build>
 			<Target title="wxFlatNoteBook">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wxflatnotebook" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxflatnotebook" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -20,7 +20,7 @@
 			</Target>
 			<Target title="wxChartCtrl">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wxchartctrl" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxchartctrl" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -30,7 +30,7 @@
 				</Compiler>
 			</Target>
 			<Target title="wxCustomButton">
-				<Option output="../../../devel30/wxcustombutton" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxcustombutton" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -41,7 +41,7 @@
 			</Target>
 			<Target title="wxImagePanel">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wximagepanel" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwximagepanel" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -52,7 +52,7 @@
 			</Target>
 			<Target title="wxSpeedButton">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wxspeedbutton" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxspeedbutton" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -60,7 +60,7 @@
 			</Target>
 			<Target title="wxKWIC">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wxkwic" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxkwic" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -71,21 +71,21 @@
 			</Target>
 			<Target title="wxLED">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wxled" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxled" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-Iwxled/gizmosled/include" />
 					<Add directory="wxled/ledpanel/include" />
 					<Add directory="wxled/lcdWindow/include" />
 					<Add directory="wxled/led/include" />
-					<Add directory="wxled/gizmosled/include" />
 				</Compiler>
 			</Target>
 			<Target title="wxMathPlot">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/wxmathplot" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel30/libwxmathplot" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems/wxmathplot" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -419,6 +419,15 @@
 		<Unit filename="wxled/led/include/wx/led.h">
 			<Option target="wxLED" />
 		</Unit>
+		<Unit filename="wxled/led/include/wx/stateLed.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled/led/include/xrc/xh_ledHandler.h">
+			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxled/led/include/xrc/xh_stateLedHandler.h">
+			<Option target="wxLED" />
+		</Unit>
 		<Unit filename="wxled/led/src/led.cpp">
 			<Option target="wxLED" />
 		</Unit>
@@ -460,6 +469,12 @@
 		</Unit>
 		<Unit filename="wxled/ledpanel/src/wxledpanel.cpp">
 			<Option target="wxLED" />
+		</Unit>
+		<Unit filename="wxmathplot/mathplot.cpp">
+			<Option target="wxMathPlot" />
+		</Unit>
+		<Unit filename="wxmathplot/mathplot.h">
+			<Option target="wxMathPlot" />
 		</Unit>
 		<Unit filename="wxthings/include/wx/things/toggle.h">
 			<Option target="wxCustomButton" />

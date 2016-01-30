@@ -87,8 +87,6 @@
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
-				<Option projectCompilerOptionsRelation="2" />
-				<Option projectIncludeDirsRelation="2" />
 				<Compiler>
 					<Add option="-Iwxled/gizmosled/include" />
 					<Add directory="wxled/ledpanel/include" />
@@ -98,7 +96,7 @@
 			</Target>
 			<Target title="wxMathPlot">
 				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel/wxmathplot" prefix_auto="1" extension_auto="1" />
+				<Option output="../../../devel/libwxmathplot" prefix_auto="0" extension_auto="1" />
 				<Option object_output="../../../.objs/plugins/contrib/wxContribItems/wxmathplot" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -111,6 +109,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_CONFIG" value="wx-config --version=2.8" />
 				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
@@ -119,7 +118,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="`wx-config --version=2.8 --cflags`" />
+			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-Winvalid-pch" />
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
@@ -128,7 +127,7 @@
 			<Add directory="../../../include" />
 		</Compiler>
 		<Linker>
-			<Add option="`wx-config --version=2.8 --libs`" />
+			<Add option="`$(WX_CONFIG) --libs`" />
 			<Add option="-Wl,--no-undefined" />
 		</Linker>
 		<Unit filename="KWIC/include/wx/KWIC/AngularMeter.h">
