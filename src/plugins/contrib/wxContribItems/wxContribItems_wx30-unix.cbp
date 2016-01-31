@@ -18,18 +18,6 @@
 					<Add directory="wxFlatNotebook/include" />
 				</Compiler>
 			</Target>
-			<Target title="wxDateTimePicker">
-				<Option platforms="Unix;Mac;" />
-				<Option output="../../../devel30/libwxdatetimepicker" prefix_auto="0" extension_auto="1" />
-				<Option object_output="../../../.objs30/plugins/contrib/wxContribItems" />
-				<Option type="3" />
-				<Option compiler="gcc" />
-				<Option createStaticLib="1" />
-				<Compiler>
-					<Add directory="wxDateTimePicker/include" />
-					<Add directory="wxDateTimePicker/images" />
-				</Compiler>
-			</Target>
 			<Target title="wxChartCtrl">
 				<Option platforms="Unix;Mac;" />
 				<Option output="../../../devel30/libwxchartctrl" prefix_auto="0" extension_auto="1" />
