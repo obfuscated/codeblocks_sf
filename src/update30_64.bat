@@ -102,6 +102,7 @@ xcopy /D /y scripts\tests\* %CB_OUTPUT_RESDIR%\scripts\tests /EXCLUDE:excludes30
 del excludes30_64.txt
 xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
 xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
+echo Synching files between devel and output folder
 xcopy /D /y tools\ConsoleRunner\cb_console_runner30_64.exe devel30_64 > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner30_64.exe output30_64 > nul
 if exist devel30_64\cb_console_runner.exe del devel30_64\cb_console_runner.exe > nul
@@ -112,7 +113,7 @@ xcopy /D /y devel30_64\*.exe output30_64 > nul
 xcopy /D /y devel30_64\*.dll output30_64 > nul
 xcopy /D /y %CB_DEVEL_RESDIR%\plugins\*.dll %CB_OUTPUT_RESDIR%\plugins > nul
 
-echo Stripping debug info from output tree
+echo Stripping debug info from output30_64 tree
 strip output30_64\*.exe
 strip output30_64\*.dll
 strip %CB_OUTPUT_RESDIR%\plugins\*.dll

@@ -116,7 +116,7 @@ then
   mkdir -p output30/share/codeblocks/images/ThreadSearch/22x22
   cp -f devel30/share/codeblocks/images/ThreadSearch/22x22/*.png output30/share/codeblocks/images/ThreadSearch/22x22 > /dev/null
 fi
-if [ -d "devdevel30el/share/codeblocks/images/wxsmith" ]
+if [ -d "devel30/share/codeblocks/images/wxsmith" ]
 then
   mkdir -p output30/share/codeblocks/images/wxsmith
   cp -f devel30/share/codeblocks/images/wxsmith/*.png output30/share/codeblocks/images/wxsmith > /dev/null

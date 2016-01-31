@@ -102,6 +102,7 @@ xcopy /D /y scripts\tests\* %CB_OUTPUT_RESDIR%\scripts\tests /EXCLUDE:excludes30
 del excludes30.txt
 xcopy /D /y tips.txt %CB_DEVEL_RESDIR% > nul
 xcopy /D /y tips.txt %CB_OUTPUT_RESDIR% > nul
+echo Synching files between devel and output folder
 xcopy /D /y tools\ConsoleRunner\cb_console_runner.exe output30 > nul
 xcopy /D /y tools\ConsoleRunner\cb_console_runner.exe devel30 > nul
 xcopy /D /y devel30\*.exe output30 > nul
