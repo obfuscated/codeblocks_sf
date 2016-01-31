@@ -103,7 +103,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="wxFlatNoteBook;wxDateTimePicker;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;wxMathPlot;" />
+			<Add alias="All" targets="wxFlatNoteBook;wxChartCtrl;wxCustomButton;wxImagePanel;wxSpeedButton;wxKWIC;wxLED;wxMathPlot;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
@@ -208,24 +208,6 @@
 		</Unit>
 		<Unit filename="KWIC/src/wx/xrc/xh_kwxlinearregulatorhandler.cpp">
 			<Option target="wxKWIC" />
-		</Unit>
-		<Unit filename="wxDateTimePicker/images/DateTime.xpm">
-			<Option target="wxDateTimePicker" />
-		</Unit>
-		<Unit filename="wxDateTimePicker/images/DateTime16.xpm">
-			<Option target="wxDateTimePicker" />
-		</Unit>
-		<Unit filename="wxDateTimePicker/include/DateTimeCtrl.h">
-			<Option target="wxDateTimePicker" />
-		</Unit>
-		<Unit filename="wxDateTimePicker/include/TimeCtrl.h">
-			<Option target="wxDateTimePicker" />
-		</Unit>
-		<Unit filename="wxDateTimePicker/src/DateTimeCtrl.cpp">
-			<Option target="wxDateTimePicker" />
-		</Unit>
-		<Unit filename="wxDateTimePicker/src/TimeCtrl.cpp">
-			<Option target="wxDateTimePicker" />
 		</Unit>
 		<Unit filename="wxFlatNotebook/include/wx/wxFlatNotebook/fnb_customize_dlg.h">
 			<Option target="wxFlatNoteBook" />
