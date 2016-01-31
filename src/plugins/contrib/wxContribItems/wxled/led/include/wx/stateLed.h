@@ -24,7 +24,7 @@ class wxStateLed : public wxWindow
         /// Destructor
 		~wxStateLed () ;
 
-		bool Create(wxWindow * parent, wxWindowID id = wxID_ANY, wxColour disabledColor = wxColour( 128,128,128),const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+		bool Create(wxWindow * parent, wxWindowID id = wxID_ANY, wxColour disabledColor = wxColour( 128,128,128));
 
         /// Enable the Led
 		void Enable (void) ;

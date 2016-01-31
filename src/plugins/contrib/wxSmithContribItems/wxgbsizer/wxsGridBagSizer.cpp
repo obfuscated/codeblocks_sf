@@ -26,7 +26,7 @@ namespace
 			}
 
 		private:
-			void OnPaint(wxPaintEvent& event)
+			void OnPaint(cb_unused wxPaintEvent& event)
 			{
 				// Drawing additional border around te panel
 				wxPaintDC DC(this);
@@ -101,14 +101,14 @@ wxsGridBagSizerExtra::wxsGridBagSizerExtra():wxsSizerExtra(), colspan(1), rowspa
 	col = cfg->ReadInt(_T("/defsizer/col"), col);
 	row = cfg->ReadInt(_T("/defsizer/row"), row);
 }
-void wxsGridBagSizerExtra::OnEnumProperties(long Flags)
+void wxsGridBagSizerExtra::OnEnumProperties(long _Flags)
 {
 	static const int Priority = 100;
 	WXS_LONG_P(wxsGridBagSizerExtra, colspan, _("Colspan"), _T("colspan"), 1, Priority);
 	WXS_LONG_P(wxsGridBagSizerExtra, rowspan, _("Rowspan"), _T("rowspan"), 1, Priority);
 	WXS_LONG_P(wxsGridBagSizerExtra, col, _("Col"), _T("col"), -1, Priority);
 	WXS_LONG_P(wxsGridBagSizerExtra, row, _("Row"), _T("row"), -1, Priority);
-	wxsSizerExtra::OnEnumProperties(Flags);
+	wxsSizerExtra::OnEnumProperties(_Flags);
 }
 wxString wxsGridBagSizerExtra::AllParamsCode(wxsCoderContext* Ctx)
 {
@@ -125,6 +125,7 @@ wxString wxsGridBagSizerExtra::AllParamsCode(wxsCoderContext* Ctx)
 			str += wxsSizerFlagsProperty::GetString(Flags) + _T(", ") << Border.GetPixelsCode(Ctx);
 			return str;
 		}
+		case wxsUnknownLanguage: // fall-though
 		default:
 			wxsCodeMarks::Unknown(_T("wxsGridBagSizerExtra::AllParamsCode"),Ctx->m_Language);
 	}
@@ -144,7 +145,7 @@ wxsPropertyContainer* wxsGridBagSizer::OnBuildExtra()
 {
 	return new wxsGridBagSizerExtra();
 }
-void wxsGridBagSizer::OnEnumSizerProperties(long Flags)
+void wxsGridBagSizer::OnEnumSizerProperties(cb_unused long Flags)
 {
 	FixupList(GrowableCols);
 	FixupList(GrowableRows);
@@ -186,11 +187,11 @@ wxObject* wxsGridBagSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 	for ( int i=0; i<Count; i++ )
 	{
 		wxsItem* Child = GetChild(i);
-		wxsGridBagSizerExtra* Extra = (wxsGridBagSizerExtra*)GetChildExtra(i);
+		wxsGridBagSizerExtra* _Extra = (wxsGridBagSizerExtra*)GetChildExtra(i);
 
 		// Reset span in case of wrong values
-		if (Extra->colspan < 1) Extra->colspan = 1;
-		if (Extra->rowspan < 1) Extra->rowspan = 1;
+		if (_Extra->colspan < 1) _Extra->colspan = 1;
+		if (_Extra->rowspan < 1) _Extra->rowspan = 1;
 
 		// How many rows / cols ?
 		int nbRows = 0;
@@ -207,13 +208,13 @@ wxObject* wxsGridBagSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 		}
 
 		// Set the position in the sizer in case of wrong values
-		if (Extra->col < 0 && Extra->row < 0)
+		if (_Extra->col < 0 && _Extra->row < 0)
 		{
-			Extra->col = 0;
-			Extra->row = nbRows;
+			_Extra->col = 0;
+			_Extra->row = nbRows;
 		}
-		if (Extra->col < 0) Extra->col = nbCols;
-		if (Extra->row < 0) Extra->row = nbRows;
+		if (_Extra->col < 0) _Extra->col = nbCols;
+		if (_Extra->row < 0) _Extra->row = nbRows;
 
 		// We pass either Parent passed to current BuildPreview function
 		// or pointer to additional parent currently created
@@ -226,24 +227,24 @@ wxObject* wxsGridBagSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 		if ( ChildAsSizer )
 		{
 			Sizer->Add(ChildAsSizer,
-			wxGBPosition(Extra->row, Extra->col), wxGBSpan(Extra->rowspan, Extra->colspan),
-			wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
-			Extra->Border.GetPixels(Parent));
+			wxGBPosition(_Extra->row, _Extra->col), wxGBSpan(_Extra->rowspan, _Extra->colspan),
+			wxsSizerFlagsProperty::GetWxFlags(_Extra->Flags),
+			_Extra->Border.GetPixels(Parent));
 		}
 		else if ( ChildAsWindow )
 		{
 			Sizer->Add(ChildAsWindow,
-			wxGBPosition(Extra->row, Extra->col), wxGBSpan(Extra->rowspan, Extra->colspan),
-			wxsSizerFlagsProperty::GetWxFlags(Extra->Flags),
-			Extra->Border.GetPixels(Parent));
+			wxGBPosition(_Extra->row, _Extra->col), wxGBSpan(_Extra->rowspan, _Extra->colspan),
+			wxsSizerFlagsProperty::GetWxFlags(_Extra->Flags),
+			_Extra->Border.GetPixels(Parent));
 		}
 		else if ( ChildAsItem )
 		{
-			ChildAsItem->SetProportion(Extra->Proportion);
-			ChildAsItem->SetFlag(wxsSizerFlagsProperty::GetWxFlags(Extra->Flags));
-			ChildAsItem->SetBorder(Extra->Border.GetPixels(Parent));
-			ChildAsItem->SetSpan(wxGBSpan(Extra->rowspan, Extra->colspan));
-			ChildAsItem->SetPos(wxGBPosition(Extra->row, Extra->col));
+			ChildAsItem->SetProportion(_Extra->Proportion);
+			ChildAsItem->SetFlag(wxsSizerFlagsProperty::GetWxFlags(_Extra->Flags));
+			ChildAsItem->SetBorder(_Extra->Border.GetPixels(Parent));
+			ChildAsItem->SetSpan(wxGBSpan(_Extra->rowspan, _Extra->colspan));
+			ChildAsItem->SetPos(wxGBPosition(_Extra->row, _Extra->col));
 			Sizer->Add(ChildAsItem);
 		}
 	}
@@ -303,6 +304,7 @@ void wxsGridBagSizer::OnBuildSizerCreatingCode()
 			return;
 		}
 
+		case wxsUnknownLanguage: // fall-through
 		default:
 		{
 			wxsCodeMarks::Unknown(_T("wxsGridBagSizer::OnBuildSizerCreatingCode"),GetLanguage());
@@ -318,7 +320,7 @@ void wxsGridBagSizer::OnBuildCreatingCode()
 	for ( int i=0; i<Count; i++ )
 	{
 		wxsItem* Child = GetChild(i);
-		wxsGridBagSizerExtra* Extra = (wxsGridBagSizerExtra*)GetChildExtra(i);
+		wxsGridBagSizerExtra* _Extra = (wxsGridBagSizerExtra*)GetChildExtra(i);
 
 		// Using same parent as we got, sizer is not a parent window
 		Child->BuildCode(GetCoderContext());
@@ -332,9 +334,10 @@ void wxsGridBagSizer::OnBuildCreatingCode()
 				{
 					case wxsCPP:
 					{
-						Codef(_T("%AAdd(%o, %s);\n"),i,Extra->AllParamsCode(GetCoderContext()).wx_str());
+						Codef(_T("%AAdd(%o, %s);\n"),i,_Extra->AllParamsCode(GetCoderContext()).wx_str());
 						break;
 					}
+          case wxsUnknownLanguage: // fall-through
 					default:
 					{
 						UnknownLang = true;
@@ -346,6 +349,8 @@ void wxsGridBagSizer::OnBuildCreatingCode()
 				// Spacer is responsible for adding itself into sizer
 				break;
 
+			case wxsTTool:    // fall-through
+			case wxsTInvalid: // fall-through
 			default:
 				break;
 		}

@@ -179,7 +179,7 @@ wxObject* wxsImageButton::OnBuildPreview(wxWindow* Parent,long Flags) {
 
 //------------------------------------------------------------------------------
 
-void wxsImageButton::OnEnumWidgetProperties(long Flags) {
+void wxsImageButton::OnEnumWidgetProperties(cb_unused long Flags) {
 static wxString         sImageNames[128];
 static const wxChar    *pImageNames[128];
 static wxString         sIndexNames[1024];

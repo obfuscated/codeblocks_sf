@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins wx3.0.x">
+		<Project filename="tools\Addr2LineUI\Addr2LineUI_wx30.cbp" />
 		<Project filename="tools\cb_share_config\cb_share_config_wx30.cbp" />
 		<Project filename="tools\CBLauncher\CbLauncher_wx30.cbp" />
-		<Project filename="tools\Addr2LineUI\Addr2LineUI_wx30.cbp" />
-		<Project filename="plugins\codecompletion\cctest_wx30.cbp" />
+		<Project filename="tools\cbp2make\cbp2make_wx30.cbp" />
 		<Project filename="plugins\contrib\wxContribItems\wxContribItems_wx30.cbp" />
 		<Project filename="plugins\contrib\wxSmith\wxSmith_wx30.cbp" />
 		<Project filename="plugins\contrib\wxSmithContribItems\wxSmithContribItems_wx30.cbp">
@@ -14,7 +14,7 @@
 		<Project filename="plugins\contrib\wxSmithAui\wxSmithAui_wx30.cbp">
 			<Depends filename="plugins\contrib\wxSmith\wxSmith_wx30.cbp" />
 		</Project>
-		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning_wx30.cbp" active="1" />
+		<Project filename="plugins\contrib\AutoVersioning\AutoVersioning_wx30.cbp" />
 		<Project filename="plugins\contrib\BrowseTracker\BrowseTracker_wx30.cbp" />
 		<Project filename="plugins\contrib\byogames\byogames_wx30.cbp" />
 		<Project filename="plugins\contrib\cb_koders\cb_koders_wx30.cbp" />

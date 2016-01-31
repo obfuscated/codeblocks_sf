@@ -31,6 +31,7 @@
 					<Add directory="../wxSmith/properties" />
 					<Add directory="../wxContribItems/wxchart/include" />
 					<Add directory="../wxContribItems/wxFlatNotebook/include" />
+					<Add directory="../wxContribItems/wxDateTimePicker/include" />
 					<Add directory="../wxContribItems/wxImagePanel/include" />
 					<Add directory="../wxContribItems/wxthings/include" />
 					<Add directory="../wxContribItems/KWIC/include" />
@@ -46,6 +47,7 @@
 					<Add library="codeblocks" />
 					<Add library="wxkwic" />
 					<Add library="wxflatnotebook" />
+					<Add library="wxdatetimepicker" />
 					<Add library="wxchartctrl" />
 					<Add library="wxcustombutton" />
 					<Add library="wximagepanel" />
@@ -158,6 +160,10 @@
 		<Unit filename="wxchart/wxchart32.xpm" />
 		<Unit filename="wxchart/wxschart.cpp" />
 		<Unit filename="wxchart/wxschart.h" />
+		<Unit filename="wxdatetimepicker/images/wxTimePickCtrl16.xpm" />
+		<Unit filename="wxdatetimepicker/images/wxTimePickCtrl32.xpm" />
+		<Unit filename="wxdatetimepicker/wxsTimePickerCtrl.cpp" />
+		<Unit filename="wxdatetimepicker/wxsTimePickerCtrl.h" />
 		<Unit filename="wxflatnotebook/images/flatnote16.png" />
 		<Unit filename="wxflatnotebook/images/flatnote16.xpm" />
 		<Unit filename="wxflatnotebook/images/flatnote32.png" />

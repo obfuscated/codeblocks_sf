@@ -503,6 +503,7 @@ void wxBar3DChartPoints::Draw(
                         lbl,
                         UP );
             break;
+        case NONE: // fall-through
         default:
             break;
         }

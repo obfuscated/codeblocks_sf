@@ -321,7 +321,7 @@ wxBitmap        bmp;
 
 //------------------------------------------------------------------------------
 
-void wxsSpeedButton::OnEnumWidgetProperties(long Flags) {
+void wxsSpeedButton::OnEnumWidgetProperties(cb_unused long Flags) {
 static const long    TypeValues[] = {    0,                   1,                   2,                     3,                 0};
 static const wxChar* TypeNames[]  = {_T("Simple Button"), _T("Toggle Button"), _T("Group By Parent"), _T("Group By Index"),  0};
 

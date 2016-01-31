@@ -17,6 +17,7 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/plugins/contrib/wxSmith/properties \
 		-I$(srcdir)/../wxContribItems/wxchart/include \
 		-I$(srcdir)/../wxContribItems/wxFlatNotebook/include \
+		-I$(srcdir)/../wxContribItems/wxDateTimePicker/include \
 		-I$(srcdir)/../wxContribItems/wxImagePanel/include \
 		-I$(srcdir)/../wxContribItems/wxthings/include \
 		-I$(srcdir)/../wxContribItems/KWIC/include \
@@ -39,6 +40,7 @@ libwxsmithcontribitems_la_LIBADD = ../../../sdk/libcodeblocks.la \
 		       ../wxSmith/libwxsmithlib.la \
 			../wxContribItems/wxchart/libwxchartctrl.la \
 			../wxContribItems/wxFlatNotebook/libwxflatnotebook.la \
+			../wxContribItems/wxDateTimePicker/libdatetimepicker.la \
 			../wxContribItems/wxImagePanel/libwximagepanel.la \
 			../wxContribItems/wxSpeedButton/libwxspeedbutton.la \
 			../wxContribItems/KWIC/libwxkwic.la \
@@ -57,6 +59,7 @@ EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxthings/*.png \
 		$(srcdir)/wxflatnotebook/images/*.xpm \
 		$(srcdir)/wxflatnotebook/images/*.png \
+		$(srcdir)/wxdatetimepicker/images/*.xpm \
 		$(srcdir)/wxSmithKWIC/images/*.xpm \
 		$(srcdir)/wxtreelist/images/*.xpm \
 		$(TREELIST_DIST) \
@@ -79,6 +82,7 @@ wxsmithcontribitems.zip: manifest.xml
 
 libwxsmithcontribitems_la_SOURCES = \
 ./wxflatnotebook/wxsFlatNotebook.cpp \
+./wxdatetimepicker/wxsTimePickerCtrl.cpp \
 ./wxchart/wxschart.cpp \
 ./wxthings/wxscustombutton.cpp \
 ./wximagebutton/wxsimagebutton.cpp \
@@ -108,6 +112,7 @@ $(TREELIST_SRC) \
 
 noinst_HEADERS = \
 ./wxflatnotebook/wxsFlatNotebook.h \
+./wxdatetimepicker/wxsTimePickerCtrl.h \
 ./wxchart/wxschart.h \
 ./wxthings/wxscustombutton.h \
 ./wximagebutton/wxsimagebutton.h \

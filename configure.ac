@@ -540,7 +540,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/wxSmithContribItems/Makefile
 	src/plugins/contrib/wxSmithAui/Makefile
 	src/plugins/contrib/wxSmithAui/wxsmithaui.pc
-	src/plugins/contrib/wxSmithDateTimePicker/Makefile
 	src/plugins/contrib/wxSmithDemo/Makefile
 	src/plugins/contrib/wxSmithIExplore/Makefile
 	src/plugins/contrib/wxSmithSTC/Makefile

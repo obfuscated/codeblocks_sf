@@ -1,11 +1,11 @@
 /**************************************************************************//**
- * \file			wxsbmpswitcher.cpp
- * \author	Gary Harris
- * \date		19/4/2010.
+ * \file            wxsbmpswitcher.cpp
+ * \author    Gary Harris
+ * \date        19/4/2010.
  *
  * This file is part of wxSmithKWIC.
  *
- * wxSmithKWIC - an add-on for wxSmith, Code::Blocks' GUI editor.					\n
+ * wxSmithKWIC - an add-on for wxSmith, Code::Blocks' GUI editor.                    \n
  * Copyright (C) 2010 Gary Harris.
  *
  * wxSmithKWIC is free software: you can redistribute it and/or modify
@@ -34,25 +34,25 @@ namespace
     // This code provides basic informations about item and register
     // it inside wxSmith
     wxsRegisterItem<wxsBmpSwitcher> Reg(
-        _T("kwxBmpSwitcher"),                     				// Class name
-        wxsTWidget,                            						// Item type
-        _T("KWIC License"),                       				// License
-        _T("Andrea V. & Marco Cavallini"),               	// Author
-        _T("m.cavallini@koansoftware.com"),  			// Author's email
-        _T("http://www.koansoftware.com/kwic/"),    	// Item's homepage
-        _T("KWIC"),                         							// Category in palette
-        70,                                    							// Priority in palette
-        _T("BmpSwitcher"),                           				// Base part of names for new items
-        wxsCPP,                                						// List of coding languages supported by this item
-        1, 0,                                  							// Version
-        wxBitmap(bmpswi32_xpm),               				// 32x32 bitmap
-        wxBitmap(bmpswi16_xpm),               				// 16x16 bitmap
-        true);                                							// We do not allow this item inside XRC files
+        _T("kwxBmpSwitcher"),                                     // Class name
+        wxsTWidget,                                                    // Item type
+        _T("KWIC License"),                                       // License
+        _T("Andrea V. & Marco Cavallini"),                   // Author
+        _T("m.cavallini@koansoftware.com"),              // Author's email
+        _T("http://www.koansoftware.com/kwic/"),        // Item's homepage
+        _T("KWIC"),                                                     // Category in palette
+        70,                                                                // Priority in palette
+        _T("BmpSwitcher"),                                           // Base part of names for new items
+        wxsCPP,                                                        // List of coding languages supported by this item
+        1, 0,                                                              // Version
+        wxBitmap(bmpswi32_xpm),                               // 32x32 bitmap
+        wxBitmap(bmpswi16_xpm),                               // 16x16 bitmap
+        true);                                                            // We do not allow this item inside XRC files
 }
 
 /*! \brief Constructor.
  *
- * \param Data wxsItemResData*	Pointer to a resource data object.
+ * \param Data wxsItemResData*    Pointer to a resource data object.
  *
  */
 wxsBmpSwitcher::wxsBmpSwitcher(wxsItemResData *Data) :
@@ -85,25 +85,26 @@ void wxsBmpSwitcher::OnBuildCreatingCode()
     switch(GetLanguage())
     {
         case wxsCPP:
-		{
-			AddHeader(_T("\"wx/KWIC/BmpSwitcher.h\""), GetInfo().ClassName);
-			Codef(_T("%C(%W, %I, %P, %S);\n"));
+        {
+            AddHeader(_T("\"wx/KWIC/BmpSwitcher.h\""), GetInfo().ClassName);
+            Codef(_T("%C(%W, %I, %P, %S);\n"));
 
-			for(size_t i = 0; i < m_arrBmps.Count(); i++){
-				BmpDesc *Desc = m_arrBmps[i];
-				// Escape Windows path separators.
-				wxString sPath = Desc->sPath;
-				sPath.Replace(wxT("\\"), wxT("\\\\"));
-				Codef(_T("\t%AAddBitmap(new wxBitmap(wxImage(wxT(\"%s\"))));\n"), sPath.wx_str());
-			}
-			// Default is 0. If state <= 0 or > number of bitmaps, use default.
-			if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
-				Codef(_T("\t%ASetState(%d);\n"), static_cast<int>(m_iState));
-			}
+            for(size_t i = 0; i < m_arrBmps.Count(); i++){
+                BmpDesc *Desc = m_arrBmps[i];
+                // Escape Windows path separators.
+                wxString sPath = Desc->sPath;
+                sPath.Replace(wxT("\\"), wxT("\\\\"));
+                Codef(_T("\t%AAddBitmap(new wxBitmap(wxImage(wxT(\"%s\"))));\n"), sPath.wx_str());
+            }
+            // Default is 0. If state <= 0 or > number of bitmaps, use default.
+            if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
+                Codef(_T("\t%ASetState(%d);\n"), static_cast<int>(m_iState));
+            }
 
-			BuildSetupWindowCode();
-			break;
-		}
+            BuildSetupWindowCode();
+            break;
+        }
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsBmpSwitcher::OnBuildCreatingCode"), GetLanguage());
     }
@@ -111,34 +112,34 @@ void wxsBmpSwitcher::OnBuildCreatingCode()
 
 /*! \brief Build the code that creates the control preview.
  *
- * \param parent wxWindow*	The parent window.
- * \param flags long					Flags used when creating the preview.
- * \return wxObject						The control preview object.
+ * \param parent wxWindow*    The parent window.
+ * \param flags long                    Flags used when creating the preview.
+ * \return wxObject                        The control preview object.
  *
  */
 wxObject *wxsBmpSwitcher::OnBuildPreview(wxWindow *parent, long flags)
 {
     kwxBmpSwitcher *preview = new kwxBmpSwitcher(parent, GetId(), Pos(parent), Size(parent));
 
-	for(size_t i = 0; i < m_arrBmps.Count(); i++){
-		BmpDesc *Desc = m_arrBmps[i];
-		preview->AddBitmap(new wxBitmap(wxImage(Desc->sPath)));
-	}
-	// Default is 0. If state <= 0 or > number of bitmaps, use default.
-//	if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
-		preview->SetState((int)m_iState);
-//	}
+    for(size_t i = 0; i < m_arrBmps.Count(); i++){
+        BmpDesc *Desc = m_arrBmps[i];
+        preview->AddBitmap(new wxBitmap(wxImage(Desc->sPath)));
+    }
+    // Default is 0. If state <= 0 or > number of bitmaps, use default.
+//    if(m_iState > 0 && m_iState < (long)m_arrBmps.Count()){
+        preview->SetState((int)m_iState);
+//    }
 
     return SetupWindow(preview, flags);
 }
 
 /*! \brief Enumerate the control's custom properties.
  *
- * \param Flags long	Flags used when creating the control.
+ * \param Flags long    Flags used when creating the control.
  * \return void
  *
  */
-void wxsBmpSwitcher::OnEnumWidgetProperties(long Flags)
+void wxsBmpSwitcher::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_LONG(wxsBmpSwitcher, m_iState, _("State"), _T("state"), 0)
 }
@@ -147,7 +148,7 @@ void wxsBmpSwitcher::OnEnumWidgetProperties(long Flags)
 //=================
 /*! \brief Add extra control properties.
  *
- * \param Grid wxsPropertyGridManager*	A PropertyGridManager object.
+ * \param Grid wxsPropertyGridManager*    A PropertyGridManager object.
  * \return void
  *
  */
@@ -158,7 +159,7 @@ void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 #else
     Grid->SetTargetPage(0);
 #endif
-	m_BmpCountId = Grid->GetGrid()->Insert(_("Var name"), NEW_IN_WXPG14X wxIntProperty(_("Number Of Bitmaps"), wxPG_LABEL, (int)m_arrBmps.Count()));
+    m_BmpCountId = Grid->GetGrid()->Insert(_("Var name"), NEW_IN_WXPG14X wxIntProperty(_("Number Of Bitmaps"), wxPG_LABEL, (int)m_arrBmps.Count()));
     for(int i = 0; i < (int)m_arrBmps.Count(); i++){
         InsertPropertyForBmp(Grid, i);
     }
@@ -167,8 +168,8 @@ void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 
 /*! \brief One of the control's extra properties changed.
  *
- * \param Grid 	wxsPropertyGridManager*	A PropertyGridManager object.
- * \param id 		wxPGId										The property's ID.
+ * \param Grid     wxsPropertyGridManager*    A PropertyGridManager object.
+ * \param id         wxPGId                                        The property's ID.
  * \return void
  *
  */
@@ -221,10 +222,10 @@ void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
 
 /*! \brief Read XML control data.
  *
- * \param Element 	TiXmlElement*	A pointer to the parent node of the XML block.
- * \param IsXRC 		bool						Whether this is an XRC file.
- * \param IsExtra 		bool						Whether the data is extra information not conforming to the XRC standard.
- * \return bool											Success or failure.
+ * \param Element     TiXmlElement*    A pointer to the parent node of the XML block.
+ * \param IsXRC         bool                        Whether this is an XRC file.
+ * \param IsExtra         bool                        Whether the data is extra information not conforming to the XRC standard.
+ * \return bool                                            Success or failure.
  *
  */
 bool wxsBmpSwitcher::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
@@ -235,28 +236,28 @@ bool wxsBmpSwitcher::OnXmlRead(TiXmlElement *Element, bool IsXRC, bool IsExtra)
     m_arrBmps.Clear();
 
     TiXmlElement *BmpElem = Element->FirstChildElement("bitmaps");
-	// Avoid crash if bmps element doesn't exist.
-	if(BmpElem){
-		for(TiXmlElement *PathElem = BmpElem->FirstChildElement();
-				PathElem;
-				PathElem = PathElem->NextSiblingElement())
-		{
-			BmpDesc *Desc = new BmpDesc;
-			wxString sBmp(PathElem->GetText(), wxConvUTF8);
-			Desc->sPath = sBmp;
-			m_arrBmps.Add(Desc);
-		}
-	}
+    // Avoid crash if bmps element doesn't exist.
+    if(BmpElem){
+        for(TiXmlElement *PathElem = BmpElem->FirstChildElement();
+                PathElem;
+                PathElem = PathElem->NextSiblingElement())
+        {
+            BmpDesc *Desc = new BmpDesc;
+            wxString sBmp(PathElem->GetText(), wxConvUTF8);
+            Desc->sPath = sBmp;
+            m_arrBmps.Add(Desc);
+        }
+    }
 
     return wxsWidget::OnXmlRead(Element, IsXRC, IsExtra);
 }
 
 /*! \brief Write XML data.
  *
- * \param Element 	TiXmlElement*	A pointer to the parent node of the XML block.
- * \param IsXRC 		bool						Whether this is an XRC file.
- * \param IsExtra 		bool						Whether the data is extra information not conforming to the XRC standard.
- * \return bool											Success or failure.
+ * \param Element     TiXmlElement*    A pointer to the parent node of the XML block.
+ * \param IsXRC         bool                        Whether this is an XRC file.
+ * \param IsExtra         bool                        Whether the data is extra information not conforming to the XRC standard.
+ * \return bool                                            Success or failure.
  *
  */
 bool wxsBmpSwitcher::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
@@ -275,10 +276,10 @@ bool wxsBmpSwitcher::OnXmlWrite(TiXmlElement *Element, bool IsXRC, bool IsExtra)
     return wxsWidget::OnXmlWrite(Element, IsXRC, IsExtra);
 }
 
-/*! \brief	Insert a new bitmap property.
+/*! \brief    Insert a new bitmap property.
  *
- * \param Grid 			wxsPropertyGridManager*	A PropertyGridManager object.
- * \param Position 	int												The position of this item in the bitmap array.
+ * \param Grid             wxsPropertyGridManager*    A PropertyGridManager object.
+ * \param Position     int                                                The position of this item in the bitmap array.
  * \return void
  *
  */
@@ -287,17 +288,17 @@ void wxsBmpSwitcher::InsertPropertyForBmp(wxsPropertyGridManager *Grid, int Posi
     BmpDesc *Desc = m_arrBmps[Position];
     wxString sBmpName = wxString::Format(_("Bitmap %d"), Position + 1);
 
-	Desc->id = Grid->GetGrid()->Insert(_("Var name"), NEW_IN_WXPG14X wxImageFileProperty(sBmpName, wxPG_LABEL));
-	// Set the property's image path.
-	Grid->SetPropertyValueString(Desc->id, Desc->sPath);
+    Desc->id = Grid->GetGrid()->Insert(_("Var name"), NEW_IN_WXPG14X wxImageFileProperty(sBmpName, wxPG_LABEL));
+    // Set the property's image path.
+    Grid->SetPropertyValueString(Desc->id, Desc->sPath);
 }
 
 /*! \brief Check whether a bitmap property changed.
  *
- * \param Grid 			wxsPropertyGridManager*	A PropertyGridManager object.
- * \param id 				wxPGId										The property's ID.
- * \param Position 	int												The position of this item in the tag array.
- * \return bool			True if a change was recorded, false otherwise.
+ * \param Grid             wxsPropertyGridManager*    A PropertyGridManager object.
+ * \param id                 wxPGId                                        The property's ID.
+ * \param Position     int                                                The position of this item in the tag array.
+ * \return bool            True if a change was recorded, false otherwise.
  *
  */
 bool wxsBmpSwitcher::HandleChangeInBmp(wxsPropertyGridManager *Grid, wxPGId id, int Position)
@@ -305,8 +306,8 @@ bool wxsBmpSwitcher::HandleChangeInBmp(wxsPropertyGridManager *Grid, wxPGId id, 
     BmpDesc *Desc = m_arrBmps[Position];
     bool Changed = false;
 
-	if(Desc->id == id){
-		Desc->sPath = Grid->GetPropertyValueAsString(id);
+    if(Desc->id == id){
+        Desc->sPath = Grid->GetPropertyValueAsString(id);
         Changed = true;
     }
 

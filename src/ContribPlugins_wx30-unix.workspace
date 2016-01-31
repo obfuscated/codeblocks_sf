@@ -2,6 +2,7 @@
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins wx3.0.x (Unix)">
 		<Project filename="tools/cb_share_config/cb_share_config_wx30-unix.cbp" />
+		<Project filename="tools/cbp2make/cbp2make_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_wx30-unix.cbp">

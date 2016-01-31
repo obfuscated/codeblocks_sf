@@ -61,6 +61,7 @@ void wxsTimePickerCtrl::OnBuildCreatingCode()
             return;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
         {
             wxsCodeMarks::Unknown(_T("wxsTimePickerCtrl::OnBuildCreatingCode"),GetLanguage());
@@ -87,6 +88,6 @@ wxObject* wxsTimePickerCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
  * \return void
  *
  */
-void wxsTimePickerCtrl::OnEnumWidgetProperties(long Flags)
+void wxsTimePickerCtrl::OnEnumWidgetProperties(cb_unused long Flags)
 {
 }

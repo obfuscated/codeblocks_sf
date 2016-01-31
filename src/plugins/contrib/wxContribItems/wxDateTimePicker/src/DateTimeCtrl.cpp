@@ -1,5 +1,10 @@
 #include "DateTimeCtrl.h"
 
+#if wxCHECK_VERSION(3, 0, 0)
+// implementation in wxWidgets tree
+#else
+#include <wx/datectrl.h>
+
 #if wxUSE_DATEPICKCTRL
 
 #include <wx/msw/wrapwin.h>
@@ -268,3 +273,4 @@ wxDateTimePickerCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
 
 #endif // wxUSE_DATEPICKCTRL
 
+#endif // wxCHECK_VERSION(3, 0, 0)

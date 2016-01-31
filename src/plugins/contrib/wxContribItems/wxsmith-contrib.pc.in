@@ -12,9 +12,10 @@ sharedir=@datadir@
 Name: wxSmithContribItems
 Description: wxWidgets contrib items also used for the wxSmith
 Version: @VERSION@
-Libs: -L${libdir} -lwxchartctrl -lwxcustombutton -lwxflatnotebook -lwximagepanel -lwxkwic -lwxled -lwxspeedbutton ${TREELIST_LIB}
+Libs: -L${libdir} -lwxchartctrl -lwxcustombutton -lwxdatetimepicker -lwxflatnotebook -lwximagepanel -lwxkwic -lwxled -lwxspeedbutton ${TREELIST_LIB}
 Cflags: -fPIC -I${includedir}/KWIC/include \
 		-I${includedir}/wxchart/include \
+		-I${includedir}/wxDateTimePicker/include \
 		-I${includedir}/wxFlatNotebook/include \
 		-I${includedir}/wxImagePanel/include \
 		-I${includedir}/wxled/lcdwindow/include \
@@ -23,4 +24,3 @@ Cflags: -fPIC -I${includedir}/KWIC/include \
 		-I${includedir}/wxSpeedButton \
 		-I${includedir}/wxthings/include \
 		${TREELIST_INCLUDE}
-

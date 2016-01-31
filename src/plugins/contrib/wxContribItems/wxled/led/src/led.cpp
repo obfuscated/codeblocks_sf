@@ -19,7 +19,7 @@ END_EVENT_TABLE ()
 
 wxLed::wxLed(wxWindow * parent, wxWindowID id, wxColour disableColour, wxColour onColour, wxColour offColour, const wxPoint & pos, const wxSize & size)
 {
-    Create(parent, id, disableColour, onColour, offColour, pos, size);
+    Create(parent, id, disableColour, onColour, offColour);
 }
 
 wxLed::wxLed ()
@@ -29,29 +29,29 @@ wxLed::wxLed ()
 
 wxLed::~wxLed ()
 {
-	delete m_bitmap ;
+    delete m_bitmap ;
 }
 
-bool wxLed::Create(wxWindow * parent, wxWindowID id, wxColour disableColour, wxColour onColour, wxColour offColour, const wxPoint & pos, const wxSize & size)
+bool wxLed::Create(wxWindow * parent, wxWindowID id, wxColour disableColour, wxColour onColour, wxColour offColour)
 {
     if(!wxWindow::Create(parent, id, wxDefaultPosition, wxDefaultSize))
-		return false;
+        return false;
 
     m_bitmap    = NULL;
-	m_isEnabled = true ;
-	m_isOn      = false;
-	m_Disable   = disableColour;
-	m_On        = onColour;
-	m_Off       = offColour;
-	Enable();
+    m_isEnabled = true ;
+    m_isOn      = false;
+    m_Disable   = disableColour;
+    m_On        = onColour;
+    m_Off       = offColour;
+    Enable();
 
-	return true;
+    return true;
 }
 
 void wxLed::Enable (void)
 {
     m_isEnable = true;
-	if( m_isOn)
+    if( m_isOn)
         SetBitmap (m_On.GetAsString( wxC2S_HTML_SYNTAX)) ;
     else
         SetBitmap (m_Off.GetAsString( wxC2S_HTML_SYNTAX)) ;
@@ -95,7 +95,7 @@ void wxLed::SwitchOff( void)
 
 void wxLed::SetOnColour (wxColour rgb)
 {
-	m_On = rgb;
+    m_On = rgb;
     if (m_isEnabled && m_isOn)
         SetBitmap (m_On.GetAsString( wxC2S_HTML_SYNTAX)) ;
 
@@ -103,14 +103,14 @@ void wxLed::SetOnColour (wxColour rgb)
 
 void wxLed::SetOffColour(wxColour rgb)
 {
-	m_Off = rgb;
+    m_Off = rgb;
     if (m_isEnabled && !m_isOn)
         SetBitmap (m_Off.GetAsString( wxC2S_HTML_SYNTAX)) ;
 }
 
 void wxLed::SetDisableColour(wxColour rgb)
 {
-	m_Disable = rgb;
+    m_Disable = rgb;
     if (!m_isEnabled)
         SetBitmap (m_Disable.GetAsString( wxC2S_HTML_SYNTAX)) ;
 }
@@ -140,10 +140,10 @@ bool wxLed::IsOn(void)
 
 void wxLed::OnPaint (wxPaintEvent & WXUNUSED (event))
 {
-	wxPaintDC dc (this) ;
-	m_mutex.Lock () ;
-	dc.DrawBitmap (* m_bitmap, 0, 0, true) ;
-	m_mutex.Unlock () ;
+    wxPaintDC dc (this) ;
+    m_mutex.Lock () ;
+    dc.DrawBitmap (* m_bitmap, 0, 0, true) ;
+    m_mutex.Unlock () ;
 }
 
 #define WX_LED_WIDTH    17

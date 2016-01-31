@@ -332,7 +332,7 @@ void wxsVector::OnBuildDeclarationsCode() {
 
 //------------------------------------------------------------------------------
 
-void wxsVector::OnEnumWidgetProperties(long Flags) {
+void wxsVector::OnEnumWidgetProperties(cb_unused long Flags) {
 static const long    AlignValues[] = {    mpALIGN_NE,       mpALIGN_NW,       mpALIGN_SW,       mpALIGN_SE,    0};
 static const wxChar* AlignNames[]  = {_T("mpALIGN_NE"), _T("mpALIGN_NW"), _T("mpALIGN_SW"), _T("mpALIGN_SE"),  0};
 

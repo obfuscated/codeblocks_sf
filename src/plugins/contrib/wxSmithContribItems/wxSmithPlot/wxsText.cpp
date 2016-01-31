@@ -222,7 +222,7 @@ void wxsText::OnBuildDeclarationsCode() {
 
 //------------------------------------------------------------------------------
 
-void wxsText::OnEnumWidgetProperties(long Flags) {
+void wxsText::OnEnumWidgetProperties(cb_unused long Flags) {
 
     WXS_SHORT_STRING(wxsText, mLabel,      _("Marker Text"),     _("mLabelText"),  _("*"), true);
     WXS_SHORT_STRING(wxsText, mXpos,       _("X Position"),      _("mXpos"),       _("0.0"), true);

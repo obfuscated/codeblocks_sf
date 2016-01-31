@@ -187,7 +187,7 @@ wxBitmap        bmp;
 
 //------------------------------------------------------------------------------
 
-void wxsImagePanel::OnEnumContainerProperties(long Flags) {
+void wxsImagePanel::OnEnumContainerProperties(cb_unused long Flags) {
 static wxString         sImageNames[128];
 static const wxChar    *pImageNames[128];
 

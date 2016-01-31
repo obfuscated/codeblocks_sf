@@ -3,7 +3,7 @@
 
 #include <wx/datectrl.h>
 
-class wxTimePickerCtrl : public wxDatePickerCtrlBase
+class WXDLLEXPORT wxTimePickerCtrl : public wxDatePickerCtrlBase
 {
     public:
         wxTimePickerCtrl( void);

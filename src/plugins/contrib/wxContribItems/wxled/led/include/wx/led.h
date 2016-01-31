@@ -34,7 +34,7 @@ class wxLed : public wxWindow
         /// Destructor
 		~wxLed () ;
 
-		bool Create (wxWindow * parent, wxWindowID id = wxID_ANY, wxColour disableColour = wxColour( 128,128,128), wxColour onColour = wxColour( 00, 255, 00), wxColour offColour = wxColour( 255, 00, 00),const wxPoint & pos = wxDefaultPosition, const wxSize & size = wxDefaultSize);
+		bool Create (wxWindow * parent, wxWindowID id = wxID_ANY, wxColour disableColour = wxColour( 128,128,128), wxColour onColour = wxColour( 00, 255, 00), wxColour offColour = wxColour( 255, 00, 00));
 
         /// Enable the Led
 		void Enable (void) ;

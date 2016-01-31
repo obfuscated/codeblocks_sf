@@ -1,9 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="All contrib plugins wx3.0.x (64 bit)">
+		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx30_64.cbp" />
+		<Project filename="tools/cb_share_config/cb_share_config_wx30_64.cbp" />
+		<Project filename="tools/CBLauncher/CbLauncher_wx30_64.cbp" />
+		<Project filename="tools/cbp2make/cbp2make_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxSmith/wxSmith_wx30_64.cbp" />
+		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_wx30_64.cbp">
+			<Depends filename="plugins/contrib/lib_finder/lib_finder_wx30_64.cbp" />
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30_64.cbp" />
+		</Project>
+		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30_64.cbp">
+			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30_64.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx30_64.cbp" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_wx30_64.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames_wx30_64.cbp" />
+		<Project filename="plugins/contrib/cb_koders/cb_koders_wx30_64.cbp" />
 		<Project filename="plugins/contrib/Cccc/Cccc_wx30_64.cbp" />
 		<Project filename="plugins/contrib/codesnippets/codesnippets_wx30_64.cbp" />
 		<Project filename="plugins/contrib/codestat/codestat_wx30_64.cbp" />
@@ -17,12 +31,17 @@
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_wx30_64.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars_wx30_64.cbp" />
 		<Project filename="plugins/contrib/FileManager/FileManager_wx30_64.cbp" />
+		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx30_64.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx30_64.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin_wx30_64.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor_wx30_64.cbp" />
 		<Project filename="plugins/contrib/IncrementalSearch/IncrementalSearch_wx30_64.cbp" />
 		<Project filename="plugins/contrib/keybinder/keybinder_wx30_64.cbp" />
+		<Project filename="plugins/contrib/lib_finder/lib_finder_wx30_64.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_wx30_64.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/MouseSap/MouseSap_wx30_64.cbp" />
+		<Project filename="plugins/contrib/NassiShneiderman/NassiShneiderman_wx30_64.cbp" />
 		<Project filename="plugins/contrib/profiler/cbprofiler_wx30_64.cbp" />
 		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_wx30_64.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_wx30_64.cbp" />
@@ -30,12 +49,11 @@
 		<Project filename="plugins/contrib/rndgen/rndgen_wx30_64.cbp" />
 		<Project filename="plugins/contrib/SmartIndent/SmartIndent_wx30_64.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter_wx30_64.cbp" />
+		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx30_64.cbp" />
 		<Project filename="plugins/contrib/symtab/symtab_wx30_64.cbp" />
+		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_wx30_64.cbp">
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems_wx30_64.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/ToolsPlus/ToolsPlus_wx30_64.cbp" />
-		<Project filename="plugins/contrib/wxContribItems/wxContribItems_wx30_64.cbp" />
-		<Project filename="plugins/contrib/ThreadSearch/ThreadSearch_wx30_64.cbp" />
-		<Project filename="plugins/contrib/wxSmith/wxSmith_wx30_64.cbp" />
-		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30_64.cbp" />
-		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems_wx30_64.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

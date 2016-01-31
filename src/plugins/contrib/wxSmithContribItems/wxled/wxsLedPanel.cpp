@@ -74,6 +74,7 @@ void wxsLedPanel::OnBuildCreatingCode()
     switch ( GetLanguage() )
     {
         case wxsCPP:
+        {
             AddHeader(_T("<wx/wxledpanel.h>"),GetInfo().ClassName);
             Codef( _T("%C(%W,%I,wxSize( %d, %d),wxSize( %d, %d),%d);\n"), static_cast<int>(LedMatrixSize.X), static_cast<int>(LedMatrixSize.Y), static_cast<int>(LedMatrix.X), static_cast<int>(LedMatrix.Y), static_cast<int>(Space));
             Codef( _T( "%ASetContentAlign( %d);\n"), static_cast<int>(ContentAlign));
@@ -93,13 +94,15 @@ void wxsLedPanel::OnBuildCreatingCode()
                 Codef( _T( "%ASetText( _T(\"%s\"), %d);\n"), Text.wx_str(), static_cast<int>(Align));
             }
             break;
+        }
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsLedPanel::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
-wxObject* wxsLedPanel::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject* wxsLedPanel::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
 {
 
     wxLEDPanel* test = new wxLEDPanel(Parent,GetId(),wxSize( LedMatrixSize.X, LedMatrixSize.X),wxSize(LedMatrix.X,LedMatrix.Y),Space);
@@ -117,7 +120,7 @@ wxObject* wxsLedPanel::OnBuildPreview(wxWindow* Parent,long Flags)
     return test;
 }
 
-void wxsLedPanel::OnEnumWidgetProperties(long Flags)
+void wxsLedPanel::OnEnumWidgetProperties(cb_unused long Flags)
 {
 
     WXS_SIZE(

@@ -49,7 +49,7 @@ class wxSmithContribItems : public cbPlugin
 		  * just do nothing ;)
 		  * @param menuBar the wxMenuBar to create items in
 		  */
-        virtual void BuildMenu(wxMenuBar* menuBar){}
+        virtual void BuildMenu(cb_unused wxMenuBar* menuBar){}
 
 		/** This method is called by Code::Blocks core modules (EditorManager,
 		  * ProjectManager etc) and is used by the plugin to add any menu
@@ -66,7 +66,7 @@ class wxSmithContribItems : public cbPlugin
 		  * @param menu pointer to the popup menu
 		  * @param data pointer to FileTreeData object (to access/modify the file tree)
 		  */
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
+        virtual void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = 0){}
 
 		/** This method is called by Code::Blocks and is used by the plugin
 		  * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -76,7 +76,7 @@ class wxSmithContribItems : public cbPlugin
 		  * @param toolBar the wxToolBar to create items on
 		  * @return The plugin should return true if it needed the toolbar, false if not
 		  */
-        virtual bool BuildToolBar(wxToolBar* toolBar){ return false; }
+        virtual bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
     protected:
 		/** Any descendent plugin should override this virtual method and
 		  * perform any necessary initialization. This method is called by

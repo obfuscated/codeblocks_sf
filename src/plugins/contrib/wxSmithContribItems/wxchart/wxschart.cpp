@@ -144,12 +144,13 @@ void wxsChart::OnBuildCreatingCode()
             break;
         }
 
+        case wxsUnknownLanguage: // fall-through
         default:
             wxsCodeMarks::Unknown(_T("wxsChart::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
-wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
 {
     long RealFlags = m_Flags;
     if ( RealFlags & DEFAULT_STYLE_FIX ) RealFlags |= DEFAULT_STYLE;
@@ -158,37 +159,37 @@ wxObject* wxsChart::OnBuildPreview(wxWindow* Parent,long Flags)
     for ( size_t i=0; i<m_ChartPointsDesc.Count(); i++ )
     {
         ChartPointsDesc* Desc = m_ChartPointsDesc[i];
-        wxChartPoints* Points = NULL;
+        wxChartPoints* _Points = NULL;
 
         switch ( Desc->Type )
         {
-            case Bar:      Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
-            case Bar3D:    Points = wxBar3DChartPoints::CreateWxBar3DChartPoints(Desc->Name); break;
-            case Pie:      Points = wxPieChartPoints::CreateWxPieChartPoints(Desc->Name); break;
-            case Pie3D:    Points = wxPie3DChartPoints::CreateWxPie3DChartPoints(Desc->Name); break;
+            case Bar:      _Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
+            case Bar3D:    _Points = wxBar3DChartPoints::CreateWxBar3DChartPoints(Desc->Name); break;
+            case Pie:      _Points = wxPieChartPoints::CreateWxPieChartPoints(Desc->Name); break;
+            case Pie3D:    _Points = wxPie3DChartPoints::CreateWxPie3DChartPoints(Desc->Name); break;
             /*
-            case Points:   Points = wxPointsCharPoints::CreateWxPointsChartPoints(Desc->Name); break;
-            case Points3D: Points = wxPoints3DCharPoints::CreateWxPoints3DChartPoints(Desc->Name); break;
-            case Line:     Points = wxLineCharPoints::CreateWxLineChartPoints(Desc->Name); break;
-            case Line3D:   Points = wxLine3DCharPoints::CreateWxLine3DChartPoints(Desc->Name); break;
-            case Area:     Points = wxAreaCharPoints::CreateWxAreaChartPoints(Desc->Name); break;
-            case Area3D:   Points = wxArea3DCharPoints::CreateWxArea3DChartPoints(Desc->Name); break;
+            case _Points:   _Points = wxPointsCharPoints::CreateWxPointsChartPoints(Desc->Name); break;
+            case Points3D: _Points = wxPoints3DCharPoints::CreateWxPoints3DChartPoints(Desc->Name); break;
+            case Line:     _Points = wxLineCharPoints::CreateWxLineChartPoints(Desc->Name); break;
+            case Line3D:   _Points = wxLine3DCharPoints::CreateWxLine3DChartPoints(Desc->Name); break;
+            case Area:     _Points = wxAreaCharPoints::CreateWxAreaChartPoints(Desc->Name); break;
+            case Area3D:   _Points = wxArea3DCharPoints::CreateWxArea3DChartPoints(Desc->Name); break;
             */
-            default:       Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
+            default:       _Points = wxBarChartPoints::CreateWxBarChartPoints(Desc->Name); break;
         }
 
         for ( size_t j=0; j<Desc->Points.Count(); j++ )
         {
-            Points->Add(Desc->Points[j]->Name,Desc->Points[j]->X,Desc->Points[j]->Y);
+            _Points->Add(Desc->Points[j]->Name,Desc->Points[j]->X,Desc->Points[j]->Y);
         }
 
-        Chart->Add(Points);
+        Chart->Add(_Points);
     }
 
     return Chart;
 }
 
-void wxsChart::OnEnumWidgetProperties(long Flags)
+void wxsChart::OnEnumWidgetProperties(cb_unused long Flags)
 {
     WXS_FLAGS(wxsChart,m_Flags,_("wxChart style"),_T("wxchart_style"),Values,Names, DEFAULT_STYLE_FIX )
 }
@@ -341,6 +342,7 @@ bool wxsChart::OnXmlWrite(TiXmlElement* Element,bool IsXRC,bool IsExtra)
             case Line3D:   DescElem->SetAttribute("type","line3d");   break;
             case Area:     DescElem->SetAttribute("type","area");     break;
             case Area3D:   DescElem->SetAttribute("type","area3d");   break;
+            default:                                                  break;
         }
 
         for ( size_t j=0; j<Desc->Points.Count(); j++ )

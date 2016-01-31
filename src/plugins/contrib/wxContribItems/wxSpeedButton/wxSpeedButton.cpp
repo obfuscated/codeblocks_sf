@@ -352,7 +352,7 @@ wxBitmap    *bmp;
 // make sure a bitmap has a transparency mask
 
 void wxSpeedButton::MakeTransparent(wxBitmap &inBitmap) {
-int         w,h;
+int         h;
 int         r,g,b;
 wxImage     img;
 wxBitmap    *bmp;
@@ -368,7 +368,6 @@ wxBitmap    *bmp;
 
 // get the colors of the lower-left corner of the image
 
-    w = img.GetWidth();
     h = img.GetHeight();
     r = img.GetRed(0, h-1);
     b = img.GetBlue(0, h-1);

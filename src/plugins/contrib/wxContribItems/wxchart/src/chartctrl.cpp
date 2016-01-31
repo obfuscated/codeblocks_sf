@@ -524,6 +524,8 @@ void wxChartCtrl::LoadImageHandler(
         case wxCHART_BMP:
             // nothing todo
             break;
+        default:
+            break;
         }
     }
 }

@@ -265,6 +265,8 @@ wxTimePickerCtrl::MSWOnNotify(int idCtrl, WXLPARAM lParam, WXLPARAM *result)
             }
             //else: both the old and new values are invalid, nothing changed
         }
+        default:
+            break;
     }
 
     return wxDatePickerCtrlBase::MSWOnNotify(idCtrl, lParam, result);

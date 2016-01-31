@@ -212,7 +212,7 @@ void wxsAxis::OnBuildDeclarationsCode() {
 
 //------------------------------------------------------------------------------
 
-void wxsAxis::OnEnumWidgetProperties(long Flags) {
+void wxsAxis::OnEnumWidgetProperties(cb_unused long Flags) {
 static const long    TypeValues[]  = {    0,            1,        0};
 static const wxChar* TypeNames[]   = {_T("X-Axis"), _T("Y-Axis"), 0};
 static const long    AlignValues[] = {    mpALIGN_BORDER_LEFT,       mpALIGN_BORDER_TOP,       mpALIGN_LEFT,       mpALIGN_TOP,       mpALIGN_CENTER,       mpALIGN_RIGHT,       mpALIGN_BOTTOM,       mpALIGN_BORDER_RIGHT,       mpALIGN_BORDER_BOTTOM,   0};

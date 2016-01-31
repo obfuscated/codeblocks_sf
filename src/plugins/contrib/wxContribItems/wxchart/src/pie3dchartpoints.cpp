@@ -578,6 +578,7 @@ void wxPie3DChartPoints::Draw(
                         EllipsePoint( w, h, x, y, DegToRad( grad ) ).y,
                         GetColor(iData), lbl, p );
                     break;
+                case NONE: // fall-through
                 default:
                     break;
                 }

@@ -65,12 +65,13 @@ void wxsLed::OnBuildCreatingCode()
                 Codef(_T("%ASwitchOff();\n"));
             break;
 
+        case wxsUnknownLanguage: // fall-though
         default:
             wxsCodeMarks::Unknown(_T("wxsLed::OnBuildCreatingCode"),GetLanguage());
     }
 }
 
-wxObject* wxsLed::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject* wxsLed::OnBuildPreview(wxWindow* Parent,cb_unused long Flags)
 {
     wxLed *Led = new wxLed(Parent,GetId(),m_Disable.GetColour(), m_EnableOn.GetColour(), m_EnableOff.GetColour(),Pos(Parent),Size(Parent));
     if( !GetBaseProps()->m_Enabled)
@@ -82,7 +83,7 @@ wxObject* wxsLed::OnBuildPreview(wxWindow* Parent,long Flags)
     return Led;
 }
 
-void wxsLed::OnEnumWidgetProperties(long Flags)
+void wxsLed::OnEnumWidgetProperties(cb_unused long Flags)
 {
 
     WXS_COLOUR(

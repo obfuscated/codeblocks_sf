@@ -19,7 +19,7 @@ wxObject *wxLedHandler::DoCreateResource()
     // Create() it!
     XRC_MAKE_INSTANCE(control, wxLed)
 
-    control->Create(m_parentAsWindow, GetID(),GetColour(wxT("disable_colour")),GetColour(wxT("on_colour")), GetColour(wxT("off_colour")), GetPosition(), GetSize());
+    control->Create(m_parentAsWindow, GetID(),GetColour(wxT("disable_colour")),GetColour(wxT("on_colour")), GetColour(wxT("off_colour")));
     if( GetBool(wxT("enabled"),true))
         control->Enable();
     else

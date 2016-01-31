@@ -1,6 +1,11 @@
 #ifndef WXDATETIMEPICKERCTRL_H
 #define WXDATETIMEPICKERCTRL_H
 
+#include <wx/version.h>
+
+#if wxCHECK_VERSION(3, 0, 0)
+#include <wx/datetimectrl.h>
+#else
 #include <wx/datectrl.h>
 
 class wxDateTimePickerCtrl : public wxDatePickerCtrlBase
@@ -45,4 +50,5 @@ class wxDateTimePickerCtrl : public wxDatePickerCtrlBase
         wxString   m_Format;
 };
 
+#endif // wxCHECK_VERSION(3, 0, 0)
 #endif // WXTIMEPICKERCTRL_H

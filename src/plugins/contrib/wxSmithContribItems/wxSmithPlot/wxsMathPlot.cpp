@@ -17,16 +17,12 @@
 *
 */
 
-
 #include "wxsMathPlot.h"
-
-
 
 //------------------------------------------------------------------------------
 
 namespace
 {
-
 // Loading images from xpm files
 
     #include "images/plot16.xpm"
@@ -79,7 +75,8 @@ wxsMathPlot::wxsMathPlot(wxsItemResData* Data):
 //------------------------------------------------------------------------------
 // set axis color and font and line style
 
-void wxsMathPlot::OnBuildCreatingCode() {
+void wxsMathPlot::OnBuildCreatingCode()
+{
 wxString    inc;
 wxString    vname;
 wxString    aname;
@@ -114,7 +111,8 @@ wxString    cname;
 
 //------------------------------------------------------------------------------
 
-wxObject* wxsMathPlot::OnBuildPreview(wxWindow* Parent, long Flags) {
+wxObject* wxsMathPlot::OnBuildPreview(wxWindow* Parent, long Flags)
+{
 mpWindow        *mp;
 
 // make a panel
@@ -135,20 +133,18 @@ mpWindow        *mp;
 // done
 
     return mp;
-
 }
 
 //------------------------------------------------------------------------------
 
-void wxsMathPlot::OnEnumContainerProperties(long Flags) {
-
-
+void wxsMathPlot::OnEnumContainerProperties(cb_unused long Flags)
+{
 };
-
 
 //------------------------------------------------------------------------------
 
-bool wxsMathPlot::OnCanAddChild(wxsItem* Item, bool ShowMessage) {
+bool wxsMathPlot::OnCanAddChild(cb_unused wxsItem* Item, cb_unused bool ShowMessage)
+{
 
 /**
     b = (Item->GetClassName() == _("mpFXYVector")) ||
@@ -156,7 +152,8 @@ bool wxsMathPlot::OnCanAddChild(wxsItem* Item, bool ShowMessage) {
         (Item->GetClassName() == _("mpScaleY")) ||
         (Item->GetClassName() == _("wxButton"));
 
-    if ( !b) {
+    if ( !b)
+    {
         if ( ShowMessage ) wxMessageBox(_("May only add MathPlot components to this surface"));
         return false;
     };
@@ -164,6 +161,3 @@ bool wxsMathPlot::OnCanAddChild(wxsItem* Item, bool ShowMessage) {
 
     return true;
 }
-
-
-
