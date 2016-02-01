@@ -417,36 +417,23 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/java/Makefile
 	src/plugins/scriptedwizard/resources/lf/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/Makefile
-	src/plugins/scriptedwizard/resources/matlab_csf/files/Makefile
-	src/plugins/scriptedwizard/resources/matlab_csf/lccstub/Makefile
 	src/plugins/scriptedwizard/resources/mcs51/Makefile
 	src/plugins/scriptedwizard/resources/msp430/Makefile
 	src/plugins/scriptedwizard/resources/ogre/Makefile
-	src/plugins/scriptedwizard/resources/ogre/files/Makefile
 	src/plugins/scriptedwizard/resources/opencv/Makefile
 	src/plugins/scriptedwizard/resources/opengl/Makefile
-	src/plugins/scriptedwizard/resources/opengl/files_unix/Makefile
-	src/plugins/scriptedwizard/resources/opengl/files_win/Makefile
 	src/plugins/scriptedwizard/resources/plugins/Makefile
-	src/plugins/scriptedwizard/resources/plugins/templates/Makefile
 	src/plugins/scriptedwizard/resources/ppc/Makefile
 	src/plugins/scriptedwizard/resources/qt4/Makefile
-	src/plugins/scriptedwizard/resources/qt4/files/Makefile
 	src/plugins/scriptedwizard/resources/qt4dll/Makefile
 	src/plugins/scriptedwizard/resources/qt5/Makefile
 	src/plugins/scriptedwizard/resources/sdl/Makefile
-	src/plugins/scriptedwizard/resources/sdl/files/Makefile
 	src/plugins/scriptedwizard/resources/sdl2/Makefile
 	src/plugins/scriptedwizard/resources/sfml/Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/Makefile
-	src/plugins/scriptedwizard/resources/sharedlib/c/Makefile
-	src/plugins/scriptedwizard/resources/sharedlib/cpp/Makefile
 	src/plugins/scriptedwizard/resources/smartwin/Makefile
-	src/plugins/scriptedwizard/resources/smartwin/files/Makefile
 	src/plugins/scriptedwizard/resources/staticlib/Makefile
-	src/plugins/scriptedwizard/resources/staticlib/files/Makefile
 	src/plugins/scriptedwizard/resources/stlport/Makefile
-	src/plugins/scriptedwizard/resources/stlport/files/Makefile
 	src/plugins/scriptedwizard/resources/sys/Makefile
 	src/plugins/scriptedwizard/resources/tricore/Makefile
 	src/plugins/scriptedwizard/resources/win32gui/Makefile

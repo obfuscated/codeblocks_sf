@@ -1,8 +1,8 @@
 pkgdatadir = $(datadir)/@PACKAGE@/templates/wizard/d
 
 dist_pkgdata_DATA = logo.png \
-					wizard.png \
-					wizard.script
+		wizard.png \
+		wizard.script
 
 consoledir	 	= $(pkgdatadir)/console
 
