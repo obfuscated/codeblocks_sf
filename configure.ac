@@ -396,6 +396,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/projectsimporter/resources/Makefile
 	src/plugins/scriptedwizard/Makefile
 	src/plugins/scriptedwizard/resources/Makefile
+	src/plugins/scriptedwizard/resources/arduino/Makefile
 	src/plugins/scriptedwizard/resources/arm/Makefile
 	src/plugins/scriptedwizard/resources/avr/Makefile
 	src/plugins/scriptedwizard/resources/c_file/Makefile
@@ -403,6 +404,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/d/Makefile
 	src/plugins/scriptedwizard/resources/directx/Makefile
 	src/plugins/scriptedwizard/resources/dll/Makefile
+	src/plugins/scriptedwizard/resources/d_source/Makefile
 	src/plugins/scriptedwizard/resources/empty/Makefile
 	src/plugins/scriptedwizard/resources/empty_file/Makefile
 	src/plugins/scriptedwizard/resources/fltk/Makefile
@@ -412,11 +414,13 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/gtk/Makefile
 	src/plugins/scriptedwizard/resources/h_file/Makefile
 	src/plugins/scriptedwizard/resources/irrlicht/Makefile
+	src/plugins/scriptedwizard/resources/java/Makefile
 	src/plugins/scriptedwizard/resources/lf/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/files/Makefile
 	src/plugins/scriptedwizard/resources/matlab_csf/lccstub/Makefile
 	src/plugins/scriptedwizard/resources/mcs51/Makefile
+	src/plugins/scriptedwizard/resources/msp430/Makefile
 	src/plugins/scriptedwizard/resources/ogre/Makefile
 	src/plugins/scriptedwizard/resources/ogre/files/Makefile
 	src/plugins/scriptedwizard/resources/opencv/Makefile
@@ -428,8 +432,11 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/scriptedwizard/resources/ppc/Makefile
 	src/plugins/scriptedwizard/resources/qt4/Makefile
 	src/plugins/scriptedwizard/resources/qt4/files/Makefile
+	src/plugins/scriptedwizard/resources/qt4dll/Makefile
+	src/plugins/scriptedwizard/resources/qt5/Makefile
 	src/plugins/scriptedwizard/resources/sdl/Makefile
 	src/plugins/scriptedwizard/resources/sdl/files/Makefile
+	src/plugins/scriptedwizard/resources/sdl2/Makefile
 	src/plugins/scriptedwizard/resources/sfml/Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/Makefile
 	src/plugins/scriptedwizard/resources/sharedlib/c/Makefile
