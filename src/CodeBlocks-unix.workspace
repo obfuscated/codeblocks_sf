@@ -8,7 +8,7 @@
 		<Project filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		<Project filename="plugins/contrib/wxSmithContribItems/wxSmithContribItems-unix.cbp">
-			<Depends filename="plugins/contrib/lib_finder/lib_finder-unix.cbp" />
+			<Depends filename="plugins/contrib/wxContribItems/wxContribItems-unix.cbp" />
 			<Depends filename="plugins/contrib/wxSmith/wxSmith-unix.cbp" />
 		</Project>
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui.cbp">
