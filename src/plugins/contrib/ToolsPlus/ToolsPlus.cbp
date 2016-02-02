@@ -18,7 +18,6 @@
 				</Compiler>
 				<Linker>
 					<Add library="codeblocks" />
-					<Add library="wxscintilla_cb" />
 					<Add library="wxmsw28$(WX_SUFFIX)" />
 					<Add library="gdi32" />
 					<Add directory="..\..\..\devel" />

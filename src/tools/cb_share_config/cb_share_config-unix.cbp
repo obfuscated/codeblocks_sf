@@ -37,7 +37,6 @@
 			<Add option="-Wl,--no-undefined" />
 			<Add option="`pkg-config glib-2.0 --libs`" />
 			<Add library="txml" />
-			<Add library="wxpropgrid" />
 			<Add directory="../../base/tinyxml" />
 			<Add directory="../../devel" />
 		</Linker>

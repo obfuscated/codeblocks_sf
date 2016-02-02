@@ -44,7 +44,6 @@
 			<Add option="`wx-config --version=2.8 --libs`" />
 			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
-			<Add library="wxpropgrid" />
 			<Add directory="../../../devel" />
 			<Add directory="../../../base/tinyxml" />
 		</Linker>
