@@ -199,9 +199,9 @@ bool QuerySvn(const string& workingDir, string& revision, string &date)
 #endif
         bool hasRev = false, hasDate = false;
         string output;
-        if (getProcessOutput(output, "git log --grep=\"git-svn-id: https\" --max-count=1" + workingDir))
+        if (getProcessOutput(output, "git log --grep=\"git-svn-id\" --max-count=1" + workingDir))
         {
-            string::size_type lineStart = output.find("git-svn-id: https");
+            string::size_type lineStart = output.find("git-svn-id");
             if (lineStart != string::npos)
             {
                 string::size_type revStart = output.find("@", lineStart);
