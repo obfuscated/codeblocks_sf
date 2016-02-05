@@ -8,7 +8,7 @@
 	<Program name="DBGconfig" value=""/>
 	<Program name="WINDRES"   value="mwasmeppc.exe"/> <!-- used to compile asm -->
 	<Program name="MAKE"      value="make.exe"/>
-    
+
     <Switch name="includeDirs"             value="-ir "/>
     <Switch name="libDirs"                 value="-lr "/>
     <Switch name="linkLibs"                value="-l"/>
@@ -23,9 +23,9 @@
     <Switch name="libExtension"            value="a"/>
     <Switch name="linkerNeedsLibPrefix"    value="false"/>
     <Switch name="linkerNeedsLibExtension" value="false"/>
-	
+
     <!-- Summary of CodeWarrior options: freescale AN4094.pdf -->
-	
+
     <!-- Access Paths Settings -->
     <Category name="EPPC Target Settings">
         <Option name="Begins searching in current working directory (default)"
@@ -47,7 +47,7 @@
         <Option name="Source relative includes"
                 option="-convertpaths"/>
     </Category>
-	
+
 	<!-- EPPC Target Settings -->
     <Category name="EPPC Target Settings">
         <Option name="Little-endian data formats"
@@ -65,7 +65,7 @@
         <Option name="Code Model (SDA Based PIC/PID Addressing)"
                 option="-model sda_pic_pid"
 				additionalLibs="-model sda_pic_pid"
-				supersedes="-model absolute"/>				
+				supersedes="-model absolute"/>
         <Option name="Small Data"
                 option="-sdata 8"
 				additionalLibs="-sdata 8"/>
@@ -167,7 +167,7 @@
         <Option name="Bottom-up Inlining"
                 option="-inline bottomup"/>
     </Category>
-	
+
 	<!-- C/C++ Preprocessor Settings -->
     <Category name="C/C++ Preprocessor Settings">
         <Option name="Right click on a file and select preprocess"
@@ -191,8 +191,8 @@
         <Option name="Keep white space"
                 option="-ppopt space"/>
     </Category>
-	
-		
+
+
 	<!-- C/C++ Warnings Settings -->
     <Category name="C/C++ Warnings Settings">
         <Option name="Illegal Pragmas"
@@ -240,7 +240,7 @@
         <Option name="Treat All Warnings As Errors"
                 option="-warnings iserror"/>
     </Category>
-	
+
 	<!-- C/C++ Assembler Settings -->
    <Category name="C/C++ Assembler Settings">
         <Option name="Labels Must End With ':'"
@@ -291,7 +291,7 @@
                 checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
                 supersedes="-O0 -O1 -O2 -O3"/>
     </Category>
-	
+
 	<!-- EPPC Processor Settings -->
 	<Category name="EPPC Processor Settings">
         <Option name="Use conventional Power Architecture alignment"
@@ -349,7 +349,7 @@
         <Option name="Translate PPC Asm to VLE Asm"
                 option="-ppc_asm_to_vle"/>
     </Category>
-	
+
 	<Category name="CPU architecture tuning"
               exclusive="true">
         <Option name="PowerPC e300v1"
@@ -386,7 +386,7 @@
                 option="-processor gekko"
 				additionalLibs="-processor gekko"/>
     </Category>
-	
+
     <Category name="Floating-point code generation">
         <Option name="No floating point code generation"
                 option="-fp off"
@@ -396,11 +396,11 @@
                 option="-fp soft"
 				additionalLibs="-fp soft"
 				supersedes="-fp off -fp hard -fp dpfp -fp spfp -fp spfp_only"/>
-        <Option name="Use the processor’s built-in floating-point capabilities"
+        <Option name="Use the processor's built-in floating-point capabilities"
                 option="-fp hard"
 				additionalLibs="-fp hard"
 				supersedes="-fp off -fp soft -fp dpfp -fp spfp -fp spfp_only"/>
-        <Option name="Use the processor’s double-precision floating-point capabilities on the e500v2 processor"
+        <Option name="Use the processor's double-precision floating-point capabilities on the e500v2 processor"
                 option="-fp dpfp"
 				additionalLibs="-fp dpfp"
 				supersedes="-fp off -fp soft -fp hard -fp spfp -fp spfp_only"/>
@@ -408,8 +408,7 @@
                 option="-fp spfp"
 				additionalLibs="-fp spfp"
 				supersedes="-fp off -fp soft -fp hard -fp dpfp -fp spfp_only"/>
-        <Option name="Use software libraries only supported for e200 (Zen/VLE) and
-e500v1 processors that support SPFP APU"
+        <Option name="Use software libraries only supported for e200 (Zen/VLE) and e500v1 processors that support SPFP APU"
                 option="-fp spfp_only"
 				additionalLibs="-fp spfp_only"
 				supersedes="-fp off -fp soft -fp hard -fp dpfp -fp spfp"/>
@@ -469,7 +468,7 @@ e500v1 processors that support SPFP APU"
         <Option name="Verbose Info"
 				additionalLibs="-verbose"/>
     </Category>
-   
+
     <!-- EPPC Linker Settings -->
     <Category name="EPPC Linker Settings">
         <Option name="Link Mode (lessram)"
@@ -579,5 +578,5 @@ e500v1 processors that support SPFP APU"
     <Common name="cmds"/>
 
     <Common name="re"/>
-	
+
 </CodeBlocks_compiler_options>
