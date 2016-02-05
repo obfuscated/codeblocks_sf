@@ -190,7 +190,7 @@ wxStringVec GetVectorFromString(const wxString& text, const wxString& separator,
 wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens)
 {
     wxArrayString out;
-    for (unsigned int i = 0; i < array.GetCount(); ++i)
+    for (size_t i = 0; i < array.GetCount(); ++i)
     {
         if (caseSens)
         {
@@ -213,7 +213,7 @@ wxString MakeUniqueString(const wxString& text, const wxString& separator, bool 
 
 void AppendArray(const wxArrayString& from, wxArrayString& to)
 {
-    for (unsigned int i = 0; i < from.GetCount(); ++i)
+    for (size_t i = 0; i < from.GetCount(); ++i)
         to.Add(from[i]);
 }
 
