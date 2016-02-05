@@ -157,14 +157,11 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="$(#wx.include)" />
 			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
-			<Add directory="wxFlatNotebook/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-Wl,--enable-auto-import" />
 			<Add option="-mthreads" />
-			<Add library="wxpropgrid" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
-			<Add directory="../../../devel" />
 			<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="KWIC/include/wx/KWIC/AngularMeter.h">
