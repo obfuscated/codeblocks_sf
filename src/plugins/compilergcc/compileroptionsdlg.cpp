@@ -681,7 +681,7 @@ void CompilerOptionsDlg::DoFillOptions()
     {
         unsigned count = root->GetChildCount();
         for (unsigned ii = 0; ii < count; ++ii)
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
             m_FlagsPG->SortChildren(root->Item(ii), wxPG_RECURSE);
 #else
             m_FlagsPG->Sort(root->Item(ii));
@@ -2080,7 +2080,7 @@ void CompilerOptionsDlg::OnSetDefaultCompilerClick(cb_unused wxCommandEvent& eve
     CompilerFactory::SetDefaultCompiler(idx);
     wxString msg;
     Compiler* compiler = CompilerFactory::GetDefaultCompiler();
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     msg.Printf(_("%s is now selected as the default compiler for new projects"), compiler ? compiler->GetName().wx_str() : _("[invalid]").wx_str());
     #else
     msg.Printf(_("%s is now selected as the default compiler for new projects"), compiler ? compiler->GetName().c_str() : _("[invalid]"));

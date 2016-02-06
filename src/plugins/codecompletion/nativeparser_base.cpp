@@ -519,7 +519,7 @@ unsigned int NativeParserBase::FindCCTokenStart(const wxString& line)
                 while (   (--startAt >= 0)
                        && (nest != 0) )
                 {
-                    #if wxCHECK_VERSION(2, 9, 0)
+                    #if wxCHECK_VERSION(3, 0, 0)
                     switch (line.GetChar(startAt).GetValue())
                     #else
                     switch (line.GetChar(startAt))
@@ -610,7 +610,7 @@ wxString NativeParserBase::GetNextCCToken(const wxString& line,
                && (nest != 0) )
         {
             ++startAt;
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             switch (line.GetChar(startAt).GetValue())
             #else
             switch (line.GetChar(startAt))
