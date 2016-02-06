@@ -61,9 +61,8 @@ void CppCheckListLog::OnDoubleClick(wxCommandEvent& /*event*/)
 {
     // go to the relevant file/line
     if (control->GetSelectedItemCount() == 0)
-    {
         return;
-    }
+
     // find selected item index
     const int Index = control->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     SyncEditor(Index);
@@ -73,10 +72,6 @@ void CppCheckListLog::SyncEditor(int SelIndex)
 {
     wxFileName Filename(control->GetItemText(SelIndex));
     wxString File;
-//    if (!Filename.IsAbsolute())
-//    {
-//        Filename.MakeAbsolute(m_Base);
-//    }
     File = Filename.GetFullPath();
 
     wxListItem li;
@@ -89,16 +84,12 @@ void CppCheckListLog::SyncEditor(int SelIndex)
     li.m_text.ToLong(&Line);
     cbEditor* Editor = Manager::Get()->GetEditorManager()->Open(File);
     if (!Line || !Editor)
-    {
         return;
-    }
 
     Line -= 1;
     Editor->Activate();
     Editor->GotoLine(Line);
 
     if (cbStyledTextCtrl* Control = Editor->GetControl())
-    {
         Control->EnsureVisible(Line);
-    }
 }

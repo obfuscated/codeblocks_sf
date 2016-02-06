@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <wxsmith>
 	<object class="wxPanel" name="ConfigPanel">
-		<pos_arg>1</pos_arg>
-		<size_arg>1</size_arg>
+		<id_arg>0</id_arg>
 		<object class="wxBoxSizer" variable="bszMain" member="no">
 			<object class="sizeritem">
 				<object class="wxFlexGridSizer" variable="flsMain" member="no">
@@ -21,7 +20,7 @@
 								<object class="wxTextCtrl" name="ID_TXT_CPP_CHECK_APP" variable="txtCppCheckApp" member="yes">
 									<value>cppcheck</value>
 								</object>
-								<flag>wxLEFT|wxEXPAND</flag>
+								<flag>wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
@@ -35,7 +34,7 @@
 								<border>5</border>
 							</object>
 						</object>
-						<flag>wxEXPAND</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>
@@ -49,6 +48,7 @@
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="ID_TXT_CPP_CHECK_ARGS" variable="txtCppCheckArgs" member="yes">
 							<value>--verbose --enable=all --enable=style --xml</value>
+							<minsize>240,-1</minsize>
 						</object>
 						<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 						<border>5</border>
@@ -62,7 +62,142 @@
 						<border>5</border>
 					</object>
 					<object class="spacer">
-						<flag>wxEXPAND</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblCppCheckWWW" member="no">
+							<label>CppCheck homepage:</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxHyperlinkCtrl" name="ID_HYC_CPP_CHECK_WWW" variable="hycCppCheckWWW" member="no">
+							<label>http://cppcheck.sourceforge.net</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="wxID_ANY" variable="slSeparatorLeft" member="no">
+							<size>10,-1</size>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="wxID_ANY" variable="slSeparatorRight" member="no">
+							<size>10,-1</size>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblVeraApp" member="no">
+							<label>Vera++ application:</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="bszVeraApp" member="no">
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TXT_VERA_APP" variable="txtVeraApp" member="yes">
+									<value>vera++</value>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_BTN_VERA" variable="btnVeraApp" member="no">
+									<label>...</label>
+									<minsize>30,-1</minsize>
+									<handler function="OnVeraApp" entry="EVT_BUTTON" />
+								</object>
+								<flag>wxLEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblVeraArgs" member="no">
+							<label>Vera++ arguments:</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TXT_VERA_ARGS" variable="txtVeraArgs" member="yes" />
+						<flag>wxTOP|wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblVeraArgsComment" member="no">
+							<label>(before file list)</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="spacer">
+						<flag>wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblVeraWWW" member="no">
+							<label>Vera++  homepage:</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxHyperlinkCtrl" name="ID_HYC_VERA_WWW" variable="hycVeraWWW" member="no">
+							<label>https://bitbucket.org/verateam/vera</label>
+						</object>
+						<flag>wxTOP|wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE1" variable="StaticLine1" member="yes">
+							<size>10,-1</size>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxLEFT|wxEXPAND</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="ID_STATICLINE2" variable="StaticLine2" member="yes">
+							<size>10,-1</size>
+						</object>
+						<flag>wxTOP|wxBOTTOM|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="lblOperation" member="no">
+							<label>Select operation:</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxChoice" name="ID_CHO_OPERATION" variable="choOperation" member="yes">
+							<content>
+								<item>CppCheck only</item>
+								<item>Vera++ only</item>
+								<item>CppCheck and Vera++</item>
+							</content>
+							<selection>0</selection>
+						</object>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>5</border>
 						<option>1</option>
 					</object>

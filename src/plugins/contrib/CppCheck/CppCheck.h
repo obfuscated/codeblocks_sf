@@ -15,6 +15,7 @@
 #include <wx/string.h>
 
 class wxArrayString;
+class cbProject;
 class ConfigManager;
 class TextCtrlLogger;
 class CppCheckListLog;
@@ -26,10 +27,15 @@ public:
     ~CppCheck();
     void OnAttach(); // fires when the plugin is attached to the application
     void OnRelease(bool appShutDown); // fires when the plugin is released from the application
+
     int Execute();
 
     virtual cbConfigurationPanel* GetConfigurationPanel(wxWindow* /*parent*/);
 private:
+    void WriteToLog(const wxString& Text);
+    void AppendToLog(const wxString& Text);
+
+    //{ CppCheck
     struct SCppCheckAttribs
     {
       wxString InputFileName;
@@ -38,15 +44,20 @@ private:
     };
     typedef struct SCppCheckAttribs TCppCheckAttribs;
 
-    void WriteToLog(const wxString& Text);
-    void AppendToLog(const wxString& Text);
-
-    bool DoCppCheckVersion();
+    int ExecuteCppCheck(cbProject* Project);
     int  DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs);
     void DoCppCheckAnalysis(const wxString& Xml);
+    //} CppCheck
 
-    wxString GetExecutable(ConfigManager* cfg);
-    bool     CppCheckExecute(const wxString& CommandLine, wxArrayString& Output, wxArrayString& Errors);
+    //{ Vera
+    int ExecuteVera(cbProject* Project);
+    int  DoVeraExecute(const wxString& InputsFile);
+    void DoVeraAnalysis(const wxArrayString& Result);
+    //} Vera
+
+    bool DoVersion(const wxString& app, const wxString& app_cfg);
+    bool AppExecute(const wxString& app, const wxString& CommandLine, wxArrayString& Output, wxArrayString& Errors);
+    wxString GetAppExecutable(const wxString& app, const wxString& app_cfg);
 
     TextCtrlLogger*  m_CppCheckLog;      //!< log tab in the message pane
     CppCheckListLog* m_ListLog;          //!< log tab to click/double click to take you to offending line of code

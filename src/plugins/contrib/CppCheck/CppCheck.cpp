@@ -93,7 +93,7 @@ void CppCheck::OnAttach()
     {
         m_CppCheckLog = new TextCtrlLogger();
         m_LogPageIndex = LogMan->SetLog(m_CppCheckLog);
-        LogMan->Slot(m_LogPageIndex).title = _("CppCheck");
+        LogMan->Slot(m_LogPageIndex).title = _("CppCheck/Vera++");
         CodeBlocksLogEvent evtAdd1(cbEVT_ADD_LOG_WINDOW, m_CppCheckLog, LogMan->Slot(m_LogPageIndex).title);
         Manager::Get()->ProcessEvent(evtAdd1);
 
@@ -104,7 +104,7 @@ void CppCheck::OnAttach()
         m_ListLog = new CppCheckListLog(Titles, Widths);
 
         m_ListLogPageIndex = LogMan->SetLog(m_ListLog);
-        LogMan->Slot(m_ListLogPageIndex).title = _("CppCheck messages");
+        LogMan->Slot(m_ListLogPageIndex).title = _("CppCheck/Vera++ messages");
         CodeBlocksLogEvent evtAdd2(cbEVT_ADD_LOG_WINDOW, m_ListLog, LogMan->Slot(m_ListLogPageIndex).title);
         Manager::Get()->ProcessEvent(evtAdd2);
     }
@@ -162,20 +162,42 @@ cbConfigurationPanel* CppCheck::GetConfigurationPanel(wxWindow* parent)
 
 int CppCheck::Execute()
 {
-    WriteToLog(_("Running cppcppcheck analysis... please wait..."));
+    WriteToLog(_("Running cppcheck/vera++ analysis... please wait..."));
 
-    if (!CheckRequirements() || !DoCppCheckVersion())
+    if ( !CheckRequirements() )
         return -1;
 
     cbProject* Project = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (Project->GetFilesCount() < 1)
         return 0;
 
-    TCppCheckAttribs CppCheckAttribs;
-
     const wxString BasePath = Project->GetBasePath();
     AppendToLog(_T("Switching working directory to : ") + BasePath);
     ::wxSetWorkingDirectory(BasePath);
+
+
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
+    int choice = cfg->ReadInt(_T("operation"), 0);
+
+    int result_cppcheck = 0;
+    int result_vera     = 0;
+
+    if ((0==choice) || (2==choice))
+      result_cppcheck = ExecuteCppCheck(Project);
+
+    if ((1==choice) || (2==choice))
+      result_vera = ExecuteVera(Project);
+
+    return ((0==result_cppcheck) && (0==result_vera)) ? 0 : -1;
+}
+
+//{ CppCheck
+int CppCheck::ExecuteCppCheck(cbProject* Project)
+{
+    if ( !DoVersion(_T("cppcheck"), _T("cppcheck_app")) )
+        return -1;
+
+    TCppCheckAttribs CppCheckAttribs;
 
     wxFile InputFile;
     CppCheckAttribs.InputFileName = _T("CppCheckInput.txt");
@@ -258,23 +280,10 @@ int CppCheck::Execute()
     return DoCppCheckExecute(CppCheckAttribs);
 }
 
-bool CppCheck::DoCppCheckVersion()
-{
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
-    wxString cpp_exe = GetExecutable(cfg);
-
-    wxArrayString Output, Errors;
-    wxString CommandLine = cpp_exe + _T(" --version");
-    if ( !CppCheckExecute(CommandLine, Output, Errors) )
-        return false;
-
-    return true;
-}
-
 int CppCheck::DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
-    wxString cpp_exe = GetExecutable(cfg);
+    wxString cpp_exe = GetAppExecutable(_T("cppcheck"), _T("cppcheck_app"));
     wxString CommandLine = cpp_exe + _T(" ")
                          + cfg->Read(_T("cppcheck_args"), _T("--verbose --enable=all --enable=style --xml"))
                          + _T(" --file-list=") + CppCheckAttribs.InputFileName;
@@ -283,7 +292,7 @@ int CppCheck::DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs)
                      + CppCheckAttribs.DefineList.Trim();
 
     wxArrayString Output, Errors;
-    bool isOK = CppCheckExecute(CommandLine, Output, Errors);
+    bool isOK = AppExecute(_T("cppcheck"), CommandLine, Output, Errors);
     ::wxRemoveFile(CppCheckAttribs.InputFileName);
     if (!isOK)
         return -1;
@@ -361,77 +370,124 @@ void CppCheck::DoCppCheckAnalysis(const wxString& Xml)
         }
     }
 }
+//} CppCheck
 
-wxString CppCheck::GetExecutable(ConfigManager* cfg)
+//{ Vera
+int CppCheck::ExecuteVera(cbProject* Project)
 {
-    wxString Executable = ConfigPanel::GetDefaultExecutableName();
-    if (cfg)
-        Executable = cfg->Read(_T("cppcheck_app"), Executable);
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(Executable);
+    if ( !DoVersion(_T("vera++"), _T("vera_app")) )
+        return -1;
 
-    AppendToLog(wxString::Format(_("Executable cppcheck: '%s'."),
-                                 Executable.wx_str()));
-
-    // Make sure file is accessible, otherwise add path to cppcheck to PATH envvar
-    wxFileName fn(Executable);
-    if (fn.IsOk() && fn.FileExists())
+    wxFile InputFile;
+    wxString InputsFile = _T("VeraInput.txt");
+    if ( !InputFile.Create(InputsFile, true) )
     {
-        wxString CppCheckPath = fn.GetPath();
-        AppendToLog(wxString::Format(_("Path to cppcheck: '%s'."),
-                                     CppCheckPath.wx_str()));
-
-        if ( CppCheckPath.Trim().IsEmpty() )
-            return Executable; // Nothing to do, lets hope it works and cppcheck is in the PATH
-
-        bool PrependCppCheckPath = true;
-        wxString NewPathEnvVar = wxEmptyString;
-
-        wxPathList PathList;
-        PathList.AddEnvList(wxT("PATH"));
-        for (size_t i=0; i<PathList.GetCount(); ++i)
-        {
-            wxString PathItem = PathList.Item(i);
-            if ( PathItem.IsSameAs(CppCheckPath, (platform::windows ? false : true)) )
-            {
-                AppendToLog(_("Executable of cppcheck is in the path."));
-                PrependCppCheckPath = false;
-                break; // Exit for-loop
-            }
-
-            if ( !NewPathEnvVar.IsEmpty() )
-                NewPathEnvVar << wxPATH_SEP;
-            NewPathEnvVar << PathItem;
-        }
-
-        if (m_PATH.IsEmpty())
-            m_PATH = NewPathEnvVar;
-
-
-        if (PrependCppCheckPath)
-        {
-            NewPathEnvVar = NewPathEnvVar.Prepend(wxPATH_SEP);
-            NewPathEnvVar = NewPathEnvVar.Prepend(CppCheckPath);
-            wxSetEnv(wxT("PATH"), NewPathEnvVar); // Don't care about return value
-            AppendToLog(wxString::Format(_("Updated PATH environment to include path to cppcheck: '%s' ('%s')."),
-                                         CppCheckPath.wx_str(), NewPathEnvVar.wx_str()));
-        }
+        cbMessageBox(_("Failed to create input file '") + InputsFile + _("' for vera++.\nPlease check file/folder access rights."),
+                     _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
+        return -1;
     }
 
-    return Executable;
+    for (FilesList::iterator it = Project->GetFilesList().begin(); it != Project->GetFilesList().end(); ++it)
+    {
+        ProjectFile* pf = *it;
+        // filter to avoid including non C/C++ files
+        if (   pf->relativeFilename.EndsWith(FileFilters::C_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CPP_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
+            || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
+            || (FileTypeOf(pf->relativeFilename) == ftHeader) )
+        {
+            InputFile.Write(pf->relativeFilename + _T("\n"));
+        }
+    }
+    InputFile.Close();
+
+    return DoVeraExecute(InputsFile);
 }
 
-bool CppCheck::CppCheckExecute(const wxString& CommandLine, wxArrayString& Output, wxArrayString& Errors)
+int CppCheck::DoVeraExecute(const wxString& InputsFile)
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
+    wxString CommandLine = GetAppExecutable(_T("vera++"), _T("vera_app")) + _T(" ")
+                         + cfg->Read(_T("vera_args"), wxEmptyString)
+                         + _T("--inputs ") + InputsFile;
+
+    wxArrayString Output, Errors;
+    bool isOK = AppExecute(_T("vera++"), CommandLine, Output, Errors);
+    ::wxRemoveFile(InputsFile);
+    if (!isOK)
+        return -1;
+
+    DoVeraAnalysis(Output);
+
+    return 0;
+}
+
+void CppCheck::DoVeraAnalysis(const wxArrayString& Result)
+{
+  wxRegEx reVera(_T("(.+):([0-9]+):(.+)"));
+
+  bool ErrorsPresent = false;
+
+  for (size_t idxCount = 0; idxCount < Result.GetCount(); ++idxCount)
+  {
+    wxString Res = Result[idxCount];
+    if (reVera.Matches(Res))
+    {
+      wxString File = reVera.GetMatch(Res, 1);
+      wxString Line = reVera.GetMatch(Res, 2);
+      wxString Msg  = reVera.GetMatch(Res, 3);
+
+      if (!File.IsEmpty() && !Line.IsEmpty() && !Msg.IsEmpty())
+      {
+          wxArrayString Arr;
+          Arr.Add(File);
+          Arr.Add(Line);
+          Arr.Add(Msg);
+          m_ListLog->Append(Arr);
+          ErrorsPresent = true;
+      }
+      else if (!Msg.IsEmpty())
+          AppendToLog(Msg); // might be something important like config not found...
+    }
+  }
+
+  if (ErrorsPresent)
+  {
+      if ( Manager::Get()->GetLogManager() )
+      {
+          CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_ListLog);
+          Manager::Get()->ProcessEvent(evtSwitch);
+      }
+  }
+}
+//} Vera
+
+bool CppCheck::DoVersion(const wxString& app, const wxString& app_cfg)
+{
+    wxString app_exe = GetAppExecutable(app, app_cfg);
+
+    wxArrayString Output, Errors;
+    wxString CommandLine = app_exe + _T(" --version");
+    if ( !AppExecute(app, CommandLine, Output, Errors) )
+        return false;
+
+    return true;
+}
+
+bool CppCheck::AppExecute(const wxString& app, const wxString& CommandLine, wxArrayString& Output, wxArrayString& Errors)
 {
     wxWindowDisabler disableAll;
-    wxBusyInfo running(_("Running cppcheck... please wait (this may take several minutes)..."),
+    wxBusyInfo running(_("Running ") + app + _T("... please wait (this may take several minutes)..."),
                        Manager::Get()->GetAppWindow());
 
     AppendToLog(CommandLine);
     if ( -1 == wxExecute(CommandLine, Output, Errors, wxEXEC_SYNC) )
     {
-        wxString msg = _("Failed to launch cppcheck.\n"
-                         "Please setup the cppcheck executable accordingly in the settings\n"
-                        "and make sure its also in the path so cppcheck resources are found.");
+        wxString msg = _("Failed to launch ") + app + _T(".\n"
+                         "Please setup the ") + app + _T(" executable accordingly in the settings\n"
+                        "and make sure its also in the path so ") + app + _T(" resources are found.");
         AppendToLog(msg);
         cbMessageBox(msg, _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
         if (!m_PATH.IsEmpty()) wxSetEnv(wxT("PATH"), m_PATH); // Restore
@@ -448,4 +504,63 @@ bool CppCheck::CppCheckExecute(const wxString& CommandLine, wxArrayString& Outpu
 
     if (!m_PATH.IsEmpty()) wxSetEnv(wxT("PATH"), m_PATH); // Restore
     return true;
+}
+
+wxString CppCheck::GetAppExecutable(const wxString& app, const wxString& app_cfg)
+{
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
+    wxString Executable = ConfigPanel::GetDefaultCppCheckExecutableName();
+    if (cfg)
+        Executable = cfg->Read(app_cfg, Executable);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(Executable);
+
+    AppendToLog(wxString::Format(_("Executable ") + app + _T(": '%s'."),
+                                 Executable.wx_str()));
+
+    // Make sure file is accessible, otherwise add path to cppcheck to PATH envvar
+    wxFileName fn(Executable);
+    if (fn.IsOk() && fn.FileExists())
+    {
+        wxString AppPath = fn.GetPath();
+        AppendToLog(wxString::Format(_("Path to ") + app + _T(": '%s'."),
+                                     AppPath.wx_str()));
+
+        if ( AppPath.Trim().IsEmpty() )
+            return Executable; // Nothing to do, lets hope it works and cppcheck is in the PATH
+
+        bool PrependPath = true;
+        wxString NewPathEnvVar = wxEmptyString;
+
+        wxPathList PathList;
+        PathList.AddEnvList(wxT("PATH"));
+        for (size_t i=0; i<PathList.GetCount(); ++i)
+        {
+            wxString PathItem = PathList.Item(i);
+            if ( PathItem.IsSameAs(AppPath, (platform::windows ? false : true)) )
+            {
+                AppendToLog(_("Executable of cppcheck is in the path."));
+                PrependPath = false;
+                break; // Exit for-loop
+            }
+
+            if ( !NewPathEnvVar.IsEmpty() )
+                NewPathEnvVar << wxPATH_SEP;
+            NewPathEnvVar << PathItem;
+        }
+
+        if (m_PATH.IsEmpty())
+            m_PATH = NewPathEnvVar;
+
+
+        if (PrependPath)
+        {
+            NewPathEnvVar = NewPathEnvVar.Prepend(wxPATH_SEP);
+            NewPathEnvVar = NewPathEnvVar.Prepend(AppPath);
+            wxSetEnv(wxT("PATH"), NewPathEnvVar); // Don't care about return value
+            AppendToLog(wxString::Format(_("Updated PATH environment to include path to ") + app + _T(": '%s' ('%s')."),
+                                         AppPath.wx_str(), NewPathEnvVar.wx_str()));
+        }
+    }
+
+    return Executable;
 }
