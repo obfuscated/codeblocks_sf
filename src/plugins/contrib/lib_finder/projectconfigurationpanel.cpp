@@ -626,7 +626,7 @@ void ProjectConfigurationPanel::OnButton2Click(wxCommandEvent& /*event*/)
     }
 
     wxArrayInt Choices;
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxGetSelectedChoices(
 #else
     wxGetMultipleChoices(

@@ -165,11 +165,11 @@ public:
     //void  SetFindString(const wxString& str) { m_FindWhat = str; }
     //void  SetReplaceString(const wxString& str) { m_ReplaceWith = str; }
 
-#if !wxCHECK_VERSION(2,9,6)
+#if !wxCHECK_VERSION(3, 0, 0)
     // Add the const version of these functions, added to wxWidgets late in 2.9.5
     const wxString& GetFindString()    const { return ((wxFindReplaceData*)this)->GetFindString(); }
     const wxString& GetReplaceString() const { return ((wxFindReplaceData*)this)->GetReplaceString(); }
-#endif //!wxCHECK_VERSION(2,9,6)
+#endif //!wxCHECK_VERSION(3, 0, 0)
 
     bool HasFlag(int flag) const { return (GetFlags() & flag) != 0; }
 

@@ -257,13 +257,13 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     for (i = 0; i < static_cast<int>(menu->GetMenuItemCount()); ++i)
     {
         wxMenuItem *mm=menu->FindItemByPosition(i);
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         if (mm->GetItemLabel()==_("End-of-line mode"))
         #else
         if (mm->GetLabel()==_("End-of-line mode"))
         #endif
             menu->Remove(mm);
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         if (mm->GetItemLabel()==_("Special commands"))
         #else
         if (mm->GetLabel()==_("Special commands"))
@@ -319,7 +319,7 @@ void EditorTweaks::BuildMenu(wxMenuBar* menuBar)
     for (i = 0; i < static_cast<int>(menu->GetMenuItemCount()); ++i)
     {
         wxMenuItem *mm = menu->FindItemByPosition(i);
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         if (mm->GetItemLabel()==_("Folding"))
         #else
         if (mm->GetLabel()==_("Folding"))

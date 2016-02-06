@@ -138,11 +138,7 @@ void mpInfoLayer::UpdateInfo(mpWindow& w, wxEvent& event)
 
 bool mpInfoLayer::Inside(wxPoint& point)
 {
-#if wxCHECK_VERSION(2, 8, 0)
     return m_dim.Contains(point);
-#else
-    return m_dim.Inside(point);
-#endif
 }
 
 void mpInfoLayer::Move(wxPoint delta)

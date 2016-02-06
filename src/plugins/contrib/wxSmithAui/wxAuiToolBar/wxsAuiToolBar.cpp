@@ -18,8 +18,6 @@
 
 #include "wxsAuiToolBar.h"
 
-#if wxCHECK_VERSION(2,8,9)
-
 #include <wxsadvqppchild.h>
 #include <wxwidgets/wxsitemresdata.h>
 #include <wx/menu.h>
@@ -424,5 +422,3 @@ void wxsAuiToolBar::UpdateCurrentSelection()
     }
     m_CurrentSelection = NewCurrentSelection;
 }
-
-#endif // wxCHECK_VERSION(2,8,9)

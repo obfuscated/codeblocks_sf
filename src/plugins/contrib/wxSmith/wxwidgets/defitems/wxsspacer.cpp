@@ -53,7 +53,7 @@ namespace
             void OnPaint(cb_unused wxPaintEvent& event)
             {
                 wxPaintDC DC(this);
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
                 DC.SetBrush(wxBrush(wxColour(0,0,0),wxHATCHSTYLE_CROSSDIAG));
 #else
                 DC.SetBrush(wxBrush(wxColour(0,0,0),wxCROSSDIAG_HATCH));

@@ -128,11 +128,11 @@ wxString    tt;
 		tt.Printf(_("// Set the bitmap for %s.\n"), vname.wx_str());
         AddEventCode(tt);
 
-		#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         tt.Printf(_T("%s->SetBitmap(*%s);\n"), vname.wx_str(), iname.wx_str());
-        #else
+#else
         tt.Printf(_T("%s->SetBitmap(*%s);\n"), vname.c_str(), iname.c_str());
-        #endif
+#endif
         AddEventCode(tt);
     };
 

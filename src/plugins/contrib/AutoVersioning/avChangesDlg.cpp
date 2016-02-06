@@ -115,7 +115,7 @@ void avChangesDlg::OnBtnDeleteClick(wxCommandEvent& /*event*/)
 {
     if (grdChanges->GetNumberRows() > 0)
     {
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         int row = grdChanges->GetGridCursorRow();
 #else
         int row = grdChanges->GetCursorRow();

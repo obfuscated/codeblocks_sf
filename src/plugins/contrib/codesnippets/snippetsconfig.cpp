@@ -512,14 +512,7 @@ bool CodeSnippetsConfig::IsExternalWindow()
 wxString CodeSnippetsConfig::GetTempDir()
 // ----------------------------------------------------------------------------
 {
-    #if wxCHECK_VERSION(2, 8, 0)
-        return wxFileName::GetTempDir();
-    #else
-        wxString tempFile = wxFileName::CreateTempFileName(wxEmptyString);
-        wxString temp_folder = wxFileName(tempFile).GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-        ::wxRemoveFile(tempFile);
-        return temp_folder;
-    #endif
+    return wxFileName::GetTempDir();
 }
 // ----------------------------------------------------------------------------
 wxFrame* CodeSnippetsConfig::GetEditorManagerFrame(const int index)

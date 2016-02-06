@@ -155,7 +155,7 @@ void SearchInPanel::set_properties()
 
 void SearchInPanel::do_layout()
 {
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     #define wxADJUST_MINSIZE 0
 #endif
     // begin wxGlade: SearchInPanel::do_layout

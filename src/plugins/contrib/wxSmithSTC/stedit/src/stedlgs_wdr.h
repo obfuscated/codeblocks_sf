@@ -35,7 +35,7 @@
 #include <wx/fontpicker.h>
 #include <wx/clrpicker.h>
 #include <wx/srchctrl.h>
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 #include <wx/editlbox.h>
 #endif
 

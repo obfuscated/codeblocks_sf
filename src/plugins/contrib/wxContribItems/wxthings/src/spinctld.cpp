@@ -24,20 +24,7 @@
 #include "wx/things/spinctld.h"
 #include <math.h>
 
-#if wxCHECK_VERSION(2,5,0)
-    #include <wx/math.h>
-#else
-    #if defined(__VISUALC__) || defined(__BORLANDC__) || defined(__WATCOMC__)
-        #include <float.h>
-        #define wxFinite(x) _finite(x)
-    #elif defined(__GNUG__)||defined(__GNUWIN32__)||defined(__DJGPP__)|| \
-          defined(__SGI_CC__)||defined(__SUNCC__)||defined(__XLC__)|| \
-          defined(__HPUX__)||defined(__MWERKS__)
-        #define wxFinite(x) finite(x)
-    #else
-        #define wxFinite(x) ((x) == (x))
-    #endif
-#endif // wxCHECK_VERSION(2,5,0)
+#include <wx/math.h>
 
 // NOTES : if the textctrl is focused and the program is ending, a killfocus
 //         event is sent in MSW, this is why m_textCtrl is set to NULL in its
@@ -159,7 +146,6 @@ bool wxSpinCtrlDbl::Create( wxWindow *parent, wxWindowID id,
     // Create a validator for numbers, +-, and eE for exponential
     wxTextValidator validator(wxFILTER_INCLUDE_CHAR_LIST);
 
-#if wxCHECK_VERSION(2, 5, 4)
     wxArrayString list;
 
     wxString valid_chars(wxT(" 0123456789+-.eE"));
@@ -168,16 +154,6 @@ bool wxSpinCtrlDbl::Create( wxWindow *parent, wxWindowID id,
         list.Add(wxString(valid_chars.GetChar(i)));
 
     validator.SetIncludes(list);
-#else
-    wxStringList list;
-
-    wxString valid_chars(wxT(" 0123456789+-.eE"));
-    size_t len = valid_chars.Length();
-    for (size_t i=0; i<len; i++)
-        list.Add(wxString(valid_chars.GetChar(i)));
-
-    validator.SetIncludeList(list);
-#endif // wxCHECK_VER(2, 5, 4)
 
     m_spinButton = new wxSpinButton( this, id, wxPoint(0,0), wxSize(-1, height),
                                      wxSP_ARROW_KEYS|wxSP_VERTICAL|wxSP_WRAP);
@@ -187,11 +163,7 @@ bool wxSpinCtrlDbl::Create( wxWindow *parent, wxWindowID id,
                       wxTE_NOHIDESEL|wxTE_PROCESS_ENTER, validator);
 
     DoSetSize( pos.x, pos.y, width, height );
-#if wxCHECK_VERSION(2,8,2)
     SetInitialSize(wxSize(width, height));
-#else
-    SetBestSize(wxSize(width, height));
-#endif
 
     m_min = min;
     m_max = max;

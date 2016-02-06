@@ -18,8 +18,6 @@
 
 #include "wxsAuiToolBarItemBase.h"
 
-#if wxCHECK_VERSION(2,8,9)
-
 #include "wxSmithAuiToolBar.h"
 #include "../wxAuiManager/wxsAuiManager.h"
 #include <wxwidgets/wxsparent.h>
@@ -76,5 +74,3 @@ bool wxsAuiToolBarItemBase::OnCanAddToParent(wxsParent* Parent,bool ShowMessage)
 
 	return true;
 }
-
-#endif // wxCHECK_VERSION(2,8,9)

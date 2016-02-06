@@ -110,7 +110,7 @@ void wxsSlider::OnBuildCreatingCode()
 wxObject* wxsSlider::OnBuildPreview(wxWindow* Parent,long Flags)
 {
     wxSlider* Preview = new wxSlider(Parent,GetId(),Value,Min,Max,Pos(Parent),Size(Parent),Style());
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     if ( TickFrequency )    Preview->SetTickFreq(TickFrequency);
 #else
     if ( TickFrequency )    Preview->SetTickFreq(TickFrequency,0);

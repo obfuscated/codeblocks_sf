@@ -301,7 +301,7 @@ void byoSnake::DrawStats(wxDC* DC)
     DC->SetTextBackground(*wxBLACK);
     DC->SetFont(m_Font);
     wxString Line1 = wxString::Format(_("Lives: %d    Score: %d   Length: %d"),m_Lives,m_Score,m_SnakeLen);
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     wxString Line2 = IsPaused() ? wxString(_("Paused")) : wxString(wxEmptyString);
     #else
     wxString Line2 = IsPaused() ? _("Paused") : wxEmptyString;

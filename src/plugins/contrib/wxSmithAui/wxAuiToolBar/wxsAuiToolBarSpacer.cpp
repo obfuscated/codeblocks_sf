@@ -18,8 +18,6 @@
 
 #include "wxsAuiToolBarSpacer.h"
 
-#if wxCHECK_VERSION(2,8,9)
-
 #include <wx/aui/auibar.h>
 
 #include <wxwidgets/wxsflags.h>
@@ -61,5 +59,3 @@ void wxsAuiToolBarSpacer::OnEnumItemProperties(long Flags)
     WXS_LONG(wxsAuiToolBarSpacer,m_Pixels,_("Pixels"),_T("pixels"),0)
     WXS_LONG(wxsAuiToolBarSpacer,m_Proportion,_("Proportion"),_T("proportion"),1)
 }
-
-#endif // wxCHECK_VERSION(2,8,9)

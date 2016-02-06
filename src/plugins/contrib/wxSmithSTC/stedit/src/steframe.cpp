@@ -204,9 +204,9 @@ void wxSTEditorFrame::CreateOptions( const wxSTEditorOptions& options )
                                               wxFileName::GetCwd(),
                                               wxDefaultPosition, wxDefaultSize,
                                               wxDIRCTRL_3D_INTERNAL
-#if wxCHECK_VERSION(2, 9, 2)
+#if wxCHECK_VERSION(3, 0, 0)
                                               |(GetOptions().HasFrameOption(STF_CREATE_NOTEBOOK) ? wxDIRCTRL_MULTIPLE : 0)
-#endif // wxCHECK_VERSION(2, 9, 2)
+#endif // wxCHECK_VERSION(3, 0, 0)
                                               );
 
         m_sideNotebook->AddPage(m_steTreeCtrl, _("Files"));
@@ -530,7 +530,7 @@ void wxSTEditorFrame::OnDirCtrlItemActivation(wxTreeEvent &WXUNUSED(event))
     if (m_dirCtrl->GetTreeCtrl()->HasFlag(wxTR_MULTIPLE))
     {
         // We won't reach here in 2.8 since wxDIRCTRL_MULTIPLE doesn't exist
-        #if wxCHECK_VERSION(2, 9, 2)
+        #if wxCHECK_VERSION(3, 0, 0)
             // Avoid assert in GTK for calling wxTreeCtrl::GetSelection() on multiple selection treectrl
             m_dirCtrl->GetFilePaths(files);
         #endif

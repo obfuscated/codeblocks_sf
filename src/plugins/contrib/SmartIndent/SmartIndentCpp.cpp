@@ -641,7 +641,7 @@ void SmartIndentCpp::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& 
     int index = leftBrace.Find(ch);
     const wxString unWant(_T(");\n\r\t\b "));
     const wxChar nextChar = control->GetCharAt(pos);
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     if ((index != wxNOT_FOUND) && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || (pos == control->GetLength())))
     #else
     if ((index != wxNOT_FOUND) && ((unWant.Find(nextChar) != wxNOT_FOUND) || (pos == control->GetLength())))

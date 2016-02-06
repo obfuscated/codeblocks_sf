@@ -389,7 +389,7 @@ void HelpPlugin::RemoveFromHelpMenu(int id, const wxString & /*help*/)
     // remove separator too (if it's the last thing left)
     mi = helpMenu->FindItemByPosition(helpMenu->GetMenuItemCount() - 1);
 
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     if (mi && (mi->GetKind() == wxITEM_SEPARATOR || mi->GetItemLabelText().IsEmpty()))
     #else
     if (mi && (mi->GetKind() == wxITEM_SEPARATOR || mi->GetText().IsEmpty()))

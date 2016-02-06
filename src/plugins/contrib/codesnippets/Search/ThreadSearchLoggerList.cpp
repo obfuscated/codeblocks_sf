@@ -131,7 +131,7 @@ void ThreadSearchLoggerList::OnLoggerListClick(wxListEvent& event)
     // Gets file path and line from list control
 
     //Ignore the right mouse key //(pecan 2008/4/25)
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     if ( ::wxGetMouseState().RightIsDown() )
 #else
     if ( ::wxGetMouseState().RightDown() )

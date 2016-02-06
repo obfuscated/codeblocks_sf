@@ -121,7 +121,7 @@ void wxsBmpCheckbox::OnBuildCreatingCode()
                 sOffSel = wxT("*pbmpOffSel");
                 Codef(_T("wxBitmap *pbmpOffSel = new %i;\n"), &m_bdOffSel, _T("wxART_OTHER"));
             }
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
             Codef(_T("%C(%W,%I, %s, %s, %s, %s, %P,%S, %s);\n"), sOn.wx_str(), sOff.wx_str(), sOnSel.wx_str(), sOffSel.wx_str(), _T("wxBORDER_NONE"));
 #else
             Codef(_T("%C(%W,%I, %s, %s, %s, %s, %P,%S, %s);\n"), sOn.c_str(), sOff.c_str(), sOnSel.c_str(), sOffSel.c_str(), _T("wxBORDER_NONE"));

@@ -108,7 +108,7 @@ bool wxsEditEnumProperty::PGWrite(cb_unused wxsPropertyContainer *Object,
     Fixed.Replace(_T("\n"), _T("\\n"));
    if ( UpdateEntries )
     {
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         wxPGChoices(Id->GetChoices()).Set(Names,Values);
         #else
         Grid->GetPropertyChoices(Id).Set(Names,Values);

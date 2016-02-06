@@ -10,7 +10,7 @@
 //-#endif
 
 #if defined(LOGGING)
-    //-#if wxCHECK_VERSION(2, 9, 0)
+    //-#if wxCHECK_VERSION(3, 0, 0)
     // avoid redefinition warning
     #undef wxLogMessage
     //-#endif

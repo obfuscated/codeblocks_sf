@@ -18,8 +18,6 @@
 
 #include "wxsAuiToolBarSeparator.h"
 
-#if wxCHECK_VERSION(2,8,9)
-
 #include <wx/aui/auibar.h>
 
 #include <wxwidgets/wxsflags.h>
@@ -51,5 +49,3 @@ namespace
 wxsAuiToolBarSeparator::wxsAuiToolBarSeparator(wxsItemResData* Data)
     : wxsAuiToolBarItemBase(Data,&Reg.Info,0,0,0)
 {}
-
-#endif // wxCHECK_VERSION(2,8,9)

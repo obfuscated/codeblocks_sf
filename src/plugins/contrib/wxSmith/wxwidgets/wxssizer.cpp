@@ -209,11 +209,7 @@ wxObject* wxsSizer::OnBuildPreview(wxWindow* Parent,long Flags)
         {
             // Setting custom size for childless sizer to prevent
             // zero-size items
-            #if wxCHECK_VERSION(2,8,0)
-                NewParent->SetInitialSize(wxSize(20,20));
-            #else
-                NewParent->SetBestFittingSize(wxSize(20,20));
-            #endif
+            NewParent->SetInitialSize(wxSize(20,20));
             NewParent->SetSizeHints(20,20);
             NewParent->SetSize(wxSize(20,20));
         }

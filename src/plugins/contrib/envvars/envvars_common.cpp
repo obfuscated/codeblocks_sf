@@ -57,8 +57,8 @@ void nsEnvVars::EnvVarsDebugLog(const wxChar* msg, ...)
   va_list  arg_list;
 
   va_start(arg_list, msg);
-#if wxCHECK_VERSION(2,9,0) && wxUSE_UNICODE
-// in wx >=  2.9 unicode-build (default) we need the %ls here, or the strings get
+#if wxCHECK_VERSION(3, 0, 0) && wxUSE_UNICODE
+// in wx >=  3 unicode-build (default) we need the %ls here, or the strings get
 // cut after the first character
     log_msg = msg;
     log_msg.Replace(_T("%s"), _T("%ls"));

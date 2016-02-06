@@ -700,11 +700,7 @@ bool wxGenericBrush::IsSameAs(const wxGenericBrush& brush) const
     wxGenericBrushRefData *bData = (wxGenericBrushRefData*)brush.GetRefData();
     return (M_GBRUSHDATA->m_colour  == bData->m_colour) &&
            (M_GBRUSHDATA->m_style   == bData->m_style) &&
-#if wxCHECK_VERSION(2,7,2)
            (M_GBRUSHDATA->m_stipple.IsSameAs(bData->m_stipple));
-#else
-           (M_GBRUSHDATA->m_stipple == bData->m_stipple);
-#endif // wxCHECK_VERSION(2,7,2)
 }
 bool wxGenericBrush::IsSameAs(const wxBrush& brush) const
 {

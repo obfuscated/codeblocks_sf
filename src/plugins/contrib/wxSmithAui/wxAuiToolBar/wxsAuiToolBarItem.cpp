@@ -18,8 +18,6 @@
 
 #include "wxsAuiToolBarItem.h"
 
-#if wxCHECK_VERSION(2,8,9)
-
 #include <wx/aui/auibar.h>
 
 #include <wxwidgets/wxsflags.h>
@@ -77,5 +75,3 @@ void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
 
     WXS_BOOL(wxsAuiToolBarItem,m_DropDown,_("DropDown"),_T("dropdown"),false);
 }
-
-#endif // wxCHECK_VERSION(2,8,9)

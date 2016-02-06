@@ -95,7 +95,7 @@ BEGIN_EVENT_TABLE(CodeSnippetsApp, wxApp)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
-    #if wxCHECK_VERSION(2,9,0)
+    #if wxCHECK_VERSION(3, 0, 0)
         #include "wx/osx/core/cfstring.h"
     #else
         #include "wx/mac/corefoundation/cfstring.h"
@@ -116,7 +116,7 @@ END_EVENT_TABLE()
         CFRelease(resourcesURL);
         CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
         CFRelease(absoluteURL);
-        #if wxCHECK_VERSION(2,9,0)
+        #if wxCHECK_VERSION(3, 0, 0)
           return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
         #else
           return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
@@ -1335,7 +1335,7 @@ void CodeSnippetsAppFrame::ComplainBadInstall()
 // ----------------------------------------------------------------------------
 #if wxUSE_CMDLINE_PARSER
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
 #define CMD_ENTRY(X) X
 #else
 #define CMD_ENTRY(X) _T(X)

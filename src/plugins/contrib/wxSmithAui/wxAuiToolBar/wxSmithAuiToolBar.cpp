@@ -18,8 +18,6 @@
 
 #include "wxSmithAuiToolBar.h"
 
-#if wxCHECK_VERSION(2,8,9)
-
 // missing wxITEM_* items, the same as in wx/auibar.cpp, needed for adding spacer exception
 enum
 {
@@ -88,5 +86,3 @@ void wxSmithAuiToolBar::AddStretchSpacer(int proportion,wxWindowID SpacerId)
 
     m_items.Add(item);
 }
-
-#endif // wxCHECK_VERSION(2,8,9)

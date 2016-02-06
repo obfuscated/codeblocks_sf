@@ -40,16 +40,14 @@
 #include <wx/dcscreen.h>
 #include <wx/scrolwin.h>
 #include <wx/dcmemory.h>
-#if wxCHECK_VERSION(2, 7, 0)
 #include <wx/renderer.h>
-#endif
 #include <wx/apptrait.h>
 #include <wx/dcbuffer.h>
 #include <wx/tooltip.h>
 #include <wx/hashmap.h>
 
 #ifdef __WXMAC__
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 #include "wx/osx/private.h"
 #else
 #include "wx/mac/private.h"
@@ -68,11 +66,7 @@
 class wxTreeListItem;
 class wxTreeListItemCellAttr;
 
-#if !wxCHECK_VERSION(2, 5, 0)
-WX_DEFINE_ARRAY(wxTreeListItem *, wxArrayTreeListItems);
-#else
 WX_DEFINE_ARRAY_PTR(wxTreeListItem *, wxArrayTreeListItems);
-#endif
 
 #include <wx/dynarray.h>
 WX_DECLARE_OBJARRAY(wxTreeListColumnInfo, wxArrayTreeListColumnInfo);
@@ -449,17 +443,10 @@ public:
     // the same!
 
     // get child of this item
-#if !wxCHECK_VERSION(2, 5, 0)
-    wxTreeItemId GetFirstChild(const wxTreeItemId& item, long& cookie) const;
-    wxTreeItemId GetNextChild(const wxTreeItemId& item, long& cookie) const;
-    wxTreeItemId GetPrevChild(const wxTreeItemId& item, long& cookie) const;
-    wxTreeItemId GetLastChild(const wxTreeItemId& item, long& cookie) const;
-#else
     wxTreeItemId GetFirstChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
     wxTreeItemId GetNextChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
     wxTreeItemId GetPrevChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
     wxTreeItemId GetLastChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
-#endif
 
     // get sibling of this item
     wxTreeItemId GetNextSibling(const wxTreeItemId& item) const;
@@ -1159,7 +1146,7 @@ void wxEditTextCtrl::EndEdit(bool isCancelled) {
 
 bool wxEditTextCtrl::Destroy() {
     Hide();
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxTheApp->ScheduleForDestruction(this);
 #else
     wxTheApp->GetTraits()->ScheduleForDestroy(this);
@@ -1269,11 +1256,7 @@ wxTreeListHeaderWindow::wxTreeListHeaderWindow( wxWindow *win,
     m_owner = owner;
     m_resizeCursor = new wxCursor(wxCURSOR_SIZEWE);
 
-#if !wxCHECK_VERSION(2, 5, 0)
-    SetBackgroundColour (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_BTNFACE));
-#else
     SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNFACE));
-#endif
 }
 
 wxTreeListHeaderWindow::~wxTreeListHeaderWindow()
@@ -1283,11 +1266,7 @@ wxTreeListHeaderWindow::~wxTreeListHeaderWindow()
 
 void wxTreeListHeaderWindow::DoDrawRect( wxDC *dc, int x, int y, int w, int h )
 {
-#if !wxCHECK_VERSION(2, 5, 0)
-    wxPen pen (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_BTNSHADOW ), 1, wxSOLID);
-#else
     wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW ), 1, wxSOLID);
-#endif
 
     const int m_corner = 1;
 
@@ -1384,11 +1363,7 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
     // do *not* use the listctrl colour for headers - one day we will have a
     // function to set it separately
     //dc.SetTextForeground( *wxBLACK );
-#if !wxCHECK_VERSION(2, 5, 0)
-    dc.SetTextForeground (wxSystemSettings::GetSystemColour( wxSYS_COLOUR_WINDOWTEXT ));
-#else
     dc.SetTextForeground (wxSystemSettings::GetColour( wxSYS_COLOUR_WINDOWTEXT ));
-#endif
 
     int numColumns = GetColumnCount();
     for ( int i = 0; i < numColumns && x < w; i++ )
@@ -1402,13 +1377,8 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
         // inside the column rect
         int cw = wCol - 2;
 
-#if !wxCHECK_VERSION(2, 7, 0)
-        dc.SetPen( *wxWHITE_PEN );
-        DoDrawRect( &dc, x, HEADER_OFFSET_Y, cw, h-2 );
-#else
         wxRect rect(x, HEADER_OFFSET_Y, cw, h-2);
         wxRendererNative::GetDefault().DrawHeaderButton (this, dc, rect);
-#endif
 
         // if we have an image, draw it on the right of the label
         int image = column.GetImage(); //item.m_image;
@@ -1457,12 +1427,8 @@ void wxTreeListHeaderWindow::OnPaint( wxPaintEvent &WXUNUSED(event) )
 
     int more_w = m_owner->GetSize().x - x - HEADER_OFFSET_X;
     if (more_w > 0) {
-#if !wxCHECK_VERSION(2, 7, 0)
-        DoDrawRect (&dc, x, HEADER_OFFSET_Y, more_w, h-2 );
-#else
         wxRect rect (x, HEADER_OFFSET_Y, more_w, h-2);
         wxRendererNative::GetDefault().DrawHeaderButton (this, dc, rect);
-#endif
     }
 
 #endif // 2.7.0.1
@@ -1963,13 +1929,8 @@ void wxTreeListMainWindow::Init() {
     m_indent = MININDENT; // min. indent
     m_linespacing = 4;
 
-#if !wxCHECK_VERSION(2, 5, 0)
-    m_hilightBrush = new wxBrush (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_HIGHLIGHT), wxSOLID);
-    m_hilightUnfocusedBrush = new wxBrush (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_BTNSHADOW), wxSOLID);
-#else
     m_hilightBrush = new wxBrush (wxSystemSettings::GetColour (wxSYS_COLOUR_HIGHLIGHT), wxSOLID);
     m_hilightUnfocusedBrush = new wxBrush (wxSystemSettings::GetColour (wxSYS_COLOUR_BTNSHADOW), wxSOLID);
-#endif
 
     m_imageListNormal = (wxImageList *) NULL;
     m_imageListButtons = (wxImageList *) NULL;
@@ -2031,11 +1992,7 @@ bool wxTreeListMainWindow::Create (wxTreeListCtrl *parent,
     SetValidator(validator);
 #endif
 
-#if !wxCHECK_VERSION(2, 5, 0)
-    SetBackgroundColour (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_LISTBOX));
-#else
     SetBackgroundColour (wxSystemSettings::GetColour (wxSYS_COLOUR_LISTBOX));
-#endif
     // prevent any background repaint in order to reducing flicker
     SetBackgroundStyle(wxBG_STYLE_CUSTOM);
 
@@ -2398,26 +2355,16 @@ wxTreeItemId wxTreeListMainWindow::GetItemParent (const wxTreeItemId& item) cons
     return ((wxTreeListItem*) item.m_pItem)->GetItemParent();
 }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListMainWindow::GetFirstChild (const wxTreeItemId& item,
-                                                  long& cookie) const {
-#else
 wxTreeItemId wxTreeListMainWindow::GetFirstChild (const wxTreeItemId& item,
                                                   wxTreeItemIdValue& cookie) const {
-#endif
     wxCHECK_MSG (item.IsOk(), wxTreeItemId(), _T("invalid tree item"));
     wxArrayTreeListItems& children = ((wxTreeListItem*) item.m_pItem)->GetChildren();
     cookie = 0;
     return (!children.IsEmpty())? wxTreeItemId(children.Item(0)): wxTreeItemId();
 }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListMainWindow::GetNextChild (const wxTreeItemId& item,
-                                                 long& cookie) const {
-#else
 wxTreeItemId wxTreeListMainWindow::GetNextChild (const wxTreeItemId& item,
                                                  wxTreeItemIdValue& cookie) const {
-#endif
     wxCHECK_MSG (item.IsOk(), wxTreeItemId(), _T("invalid tree item"));
     wxArrayTreeListItems& children = ((wxTreeListItem*) item.m_pItem)->GetChildren();
     // it's ok to cast cookie to long, we never have indices which overflow "void*"
@@ -2425,13 +2372,8 @@ wxTreeItemId wxTreeListMainWindow::GetNextChild (const wxTreeItemId& item,
     return ((*pIndex)+1 < (long)children.Count())? wxTreeItemId(children.Item(++(*pIndex))): wxTreeItemId();
 }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListMainWindow::GetPrevChild (const wxTreeItemId& item,
-                                                 long& cookie) const {
-#else
 wxTreeItemId wxTreeListMainWindow::GetPrevChild (const wxTreeItemId& item,
                                                  wxTreeItemIdValue& cookie) const {
-#endif
     wxCHECK_MSG (item.IsOk(), wxTreeItemId(), _T("invalid tree item"));
     wxArrayTreeListItems& children = ((wxTreeListItem*) item.m_pItem)->GetChildren();
     // it's ok to cast cookie to long, we never have indices which overflow "void*"
@@ -2439,13 +2381,8 @@ wxTreeItemId wxTreeListMainWindow::GetPrevChild (const wxTreeItemId& item,
     return ((*pIndex)-1 >= 0)? wxTreeItemId(children.Item(--(*pIndex))): wxTreeItemId();
 }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListMainWindow::GetLastChild (const wxTreeItemId& item,
-                                                 long& cookie) const {
-#else
 wxTreeItemId wxTreeListMainWindow::GetLastChild (const wxTreeItemId& item,
                                                  wxTreeItemIdValue& cookie) const {
-#endif
     wxCHECK_MSG (item.IsOk(), wxTreeItemId(), _T("invalid tree item"));
     wxArrayTreeListItems& children = ((wxTreeListItem*) item.m_pItem)->GetChildren();
     // it's ok to cast cookie to long, we never have indices which overflow "void*"
@@ -2595,11 +2532,7 @@ wxTreeItemId wxTreeListMainWindow::DoInsertItem (const wxTreeItemId& parentId,
     arr[m_main_column] = text;
     wxTreeListItem *item = new wxTreeListItem (this, parent, arr, image, selImage, data);
     if (data != NULL) {
-#if !wxCHECK_VERSION(2, 5, 0)
-        data->SetId ((long)item);
-#else
         data->SetId (item);
-#endif
     }
     parent->Insert (item, previous);
 
@@ -2619,21 +2552,13 @@ wxTreeItemId wxTreeListMainWindow::AddRoot (const wxString& text,
     arr[m_main_column] = text;
     m_rootItem = new wxTreeListItem (this, (wxTreeListItem *)NULL, arr, image, selImage, data);
     if (data != NULL) {
-#if !wxCHECK_VERSION(2, 5, 0)
-        data->SetId((long)m_rootItem);
-#else
         data->SetId(m_rootItem);
-#endif
     }
     if (HasFlag(wxTR_HIDE_ROOT)) {
         // if we will hide the root, make sure children are visible
         m_rootItem->SetHasPlus();
         m_rootItem->Expand();
-#if !wxCHECK_VERSION(2, 5, 0)
-        long cookie = 0;
-#else
         wxTreeItemIdValue cookie = 0;
-#endif
         SetCurrentItem(GetFirstChild(m_rootItem, cookie));
     }
     return m_rootItem;
@@ -2826,11 +2751,7 @@ void wxTreeListMainWindow::ExpandAll (const wxTreeItemId& itemId) {
 
     Expand (itemId);
     if (!IsExpanded (itemId)) return;
-#if !wxCHECK_VERSION(2, 5, 0)
-    long cookie;
-#else
     wxTreeItemIdValue cookie;
-#endif
     wxTreeItemId child = GetFirstChild (itemId, cookie);
     while (child.IsOk()) {
         ExpandAll (child);
@@ -2960,11 +2881,7 @@ bool wxTreeListMainWindow::SelectItem (const wxTreeItemId& itemId,
     // send selecting event to the user code
     wxTreeEvent event( wxEVT_COMMAND_TREE_SEL_CHANGING, 0);
     event.SetInt(m_curColumn);
-#if !wxCHECK_VERSION(2, 5, 0)
-    event.SetOldItem ((long)m_curItem);
-#else
     event.SetOldItem (m_curItem);
-#endif
     if (SendEvent(0, item, &event) && !event.IsAllowed()) return false;  // veto on selection change
 
     // unselect all if unselect other items
@@ -3026,19 +2943,11 @@ void wxTreeListMainWindow::SelectAll() {
 
     // send event to user code
     wxTreeEvent event (wxEVT_COMMAND_TREE_SEL_CHANGING, 0);
-#if !wxCHECK_VERSION(2, 5, 0)
-    event.SetOldItem ((long)m_curItem);
-#else
     event.SetOldItem (m_curItem);
-#endif
     event.SetInt (-1); // no colum clicked
     if (SendEvent(0, m_rootItem, &event) && !event.IsAllowed()) return;  // selection change vetoed
 
-#if !wxCHECK_VERSION(2, 5, 0)
-    long cookie = 0;
-#else
     wxTreeItemIdValue cookie = 0;
-#endif
     wxTreeListItem *first = (wxTreeListItem *)GetFirstChild (root, cookie).m_pItem;
     wxTreeListItem *last = (wxTreeListItem *)GetLastChild (root, cookie).m_pItem;
     if (!TagAllChildrenUntilLast (first, last)) {
@@ -3177,11 +3086,7 @@ wxTreeItemId wxTreeListMainWindow::FindItem (const wxTreeItemId& item, int colum
         }
     }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-    long cookie = 0;
-#else
     wxTreeItemIdValue cookie = 0;
-#endif
     if (!next.IsOk()) {
         next = GetRootItem();
         if (next.IsOk() && HasFlag(wxTR_HIDE_ROOT)) {
@@ -3337,11 +3242,7 @@ void wxTreeListMainWindow::PaintItem (wxTreeListItem *item, wxDC& dc) {
 // read attributes constant for all item cells
     wxColour colText = GetItemTextColour(item);
     wxColour colBg = GetItemBackgroundColour(item);
-#if !wxCHECK_VERSION(2, 5, 0)
-    wxColour colTextHilight = wxSystemSettings::GetSystemColour (wxSYS_COLOUR_HIGHLIGHTTEXT);
-#else
     wxColour colTextHilight = wxSystemSettings::GetColour (wxSYS_COLOUR_HIGHLIGHTTEXT);
-#endif
     int total_w = m_owner->GetHeaderWindow()->GetWidth();
     int total_h = GetLineHeight(item);
     int off_h = HasFlag(wxTR_ROW_LINES) ? 1 : 0;
@@ -3471,11 +3372,7 @@ void wxTreeListMainWindow::PaintItem (wxTreeListItem *item, wxDC& dc) {
 
         // draw vertical column lines
         if (HasFlag(wxTR_COLUMN_LINES)) { // vertical lines between columns
-#if !wxCHECK_VERSION(2, 5, 0)
-            wxPen pen (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
-#else
             wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
-#endif
             dc.SetPen ((GetBackgroundColour() == *wxWHITE)? pen: *wxWHITE_PEN);
             dc.DrawLine (x_colstart+col_w-1, item->GetY(), x_colstart+col_w-1, item->GetY()+total_h);
         }
@@ -3546,11 +3443,7 @@ void wxTreeListMainWindow::PaintLevel (wxTreeListItem *item, wxDC &dc,
             int total_width = m_owner->GetHeaderWindow()->GetWidth();
             // if the background colour is white, choose a
             // contrasting color for the lines
-#if !wxCHECK_VERSION(2, 5, 0)
-            wxPen pen (wxSystemSettings::GetSystemColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
-#else
             wxPen pen (wxSystemSettings::GetColour (wxSYS_COLOUR_3DLIGHT ), 1, wxSOLID);
-#endif
             dc.SetPen ((GetBackgroundColour() == *wxWHITE)? pen: *wxWHITE_PEN);
             dc.DrawLine (0, y_top, total_width, y_top);
             dc.DrawLine (0, y_top+h, total_width, y_top+h);
@@ -3627,20 +3520,9 @@ void wxTreeListMainWindow::PaintLevel (wxTreeListItem *item, wxDC &dc,
             }else{ // if (HasFlag(wxTR_HAS_BUTTONS))
 
                 // draw the plus sign here
-#if !wxCHECK_VERSION(2, 7, 0)
-                dc.SetPen(*wxGREY_PEN);
-                dc.SetBrush(*wxWHITE_BRUSH);
-                dc.DrawRectangle (x-m_btnWidth2, y_mid-m_btnHeight2, m_btnWidth, m_btnHeight);
-                dc.SetPen(*wxBLACK_PEN);
-                dc.DrawLine (x-(m_btnWidth2-2), y_mid, x+(m_btnWidth2-1), y_mid);
-                if (!item->IsExpanded()) { // change "-" to "+"
-                    dc.DrawLine (x, y_mid-(m_btnHeight2-2), x, y_mid+(m_btnHeight2-1));
-                }
-#else
                 wxRect rect (x-m_btnWidth2, y_mid-m_btnHeight2, m_btnWidth, m_btnHeight);
                 int flag = item->IsExpanded()? wxCONTROL_EXPANDED: 0;
                 wxRendererNative::GetDefault().DrawTreeItemButton (this, dc, rect, flag);
-#endif
 
             }
 
@@ -3768,11 +3650,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         if (! GetRootItem().IsOk()) return;
         SetCurrentItem((wxTreeListItem*)GetRootItem().m_pItem);
         if (HasFlag(wxTR_HIDE_ROOT)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-            long cookie = 0;
-#else
             wxTreeItemIdValue cookie = 0;
-#endif
             SetCurrentItem((wxTreeListItem*)GetFirstChild (m_curItem, cookie).m_pItem);
         }
         SelectItem(m_curItem, (wxTreeItemId*)NULL, true);  // unselect others
@@ -3864,11 +3742,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         case WXK_UP: {
             newItem = GetPrevSibling (m_curItem);
             if (newItem) {
-#if !wxCHECK_VERSION(2, 5, 0)
-                long cookie = 0;
-#else
                 wxTreeItemIdValue cookie = 0;
-#endif
                 while (IsExpanded (newItem) && HasChildren (newItem)) {
                     newItem = GetLastChild (newItem, cookie);
                 }
@@ -3898,11 +3772,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
                 Expand (m_curItem);
             }else{
                 if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-                    long cookie = 0;
-#else
                     wxTreeItemIdValue cookie = 0;
-#endif
                     newItem = GetFirstChild (m_curItem, cookie);
                 }
             }
@@ -3911,11 +3781,7 @@ void wxTreeListMainWindow::OnChar (wxKeyEvent &event) {
         // <DOWN>: if expanded go to the first child, else to the next sibling, ect
         case WXK_DOWN: {
             if (IsExpanded (m_curItem) && HasChildren (m_curItem)) {
-#if !wxCHECK_VERSION(2, 5, 0)
-                long cookie = 0;
-#else
                 wxTreeItemIdValue cookie = 0;
-#endif
                 newItem = GetFirstChild( m_curItem, cookie );
             }
             if (!newItem) {
@@ -4419,7 +4285,7 @@ void wxTreeListMainWindow::OnScroll (wxScrollWinEvent& event) {
     // send event to wxTreeListCtrl (for user code)
     if (m_owner->GetEventHandler()->ProcessEvent(event)) return; // handled (and not skipped) in user code
 
-#if !wxCHECK_VERSION(2, 9, 0) && defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
+#if !wxCHECK_VERSION(3, 0, 0) && defined(__WXGTK__) && !defined(__WXUNIVERSAL__)
     wxScrolledWindow::OnScroll(event);
 #else
     HandleOnScroll( event );
@@ -4699,11 +4565,7 @@ wxTreeEvent nevent (event_type, 0);
     event->SetEventObject (m_owner);
     event->SetId(m_owner->GetId());
     if (item) {
-#if !wxCHECK_VERSION(2, 5, 0)
-        event->SetItem ((long)item);
-#else
         event->SetItem (item);
-#endif
     }
 
     return m_owner->GetEventHandler()->ProcessEvent (*event);
@@ -4960,40 +4822,20 @@ size_t wxTreeListCtrl::GetSelections(wxArrayTreeItemIds& arr) const
 wxTreeItemId wxTreeListCtrl::GetItemParent(const wxTreeItemId& item) const
 { return m_main_win->GetItemParent(item); }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListCtrl::GetFirstChild (const wxTreeItemId& item,
-                                            long& cookie) const
-#else
 wxTreeItemId wxTreeListCtrl::GetFirstChild (const wxTreeItemId& item,
                                             wxTreeItemIdValue& cookie) const
-#endif
 { return m_main_win->GetFirstChild(item, cookie); }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListCtrl::GetNextChild (const wxTreeItemId& item,
-                                           long& cookie) const
-#else
 wxTreeItemId wxTreeListCtrl::GetNextChild (const wxTreeItemId& item,
                                            wxTreeItemIdValue& cookie) const
-#endif
 { return m_main_win->GetNextChild(item, cookie); }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListCtrl::GetPrevChild (const wxTreeItemId& item,
-                                           long& cookie) const
-#else
 wxTreeItemId wxTreeListCtrl::GetPrevChild (const wxTreeItemId& item,
                                            wxTreeItemIdValue& cookie) const
-#endif
 { return m_main_win->GetPrevChild(item, cookie); }
 
-#if !wxCHECK_VERSION(2, 5, 0)
-wxTreeItemId wxTreeListCtrl::GetLastChild (const wxTreeItemId& item,
-                                           long& cookie) const
-#else
 wxTreeItemId wxTreeListCtrl::GetLastChild (const wxTreeItemId& item,
                                            wxTreeItemIdValue& cookie) const
-#endif
 { return m_main_win->GetLastChild(item, cookie); }
 
 

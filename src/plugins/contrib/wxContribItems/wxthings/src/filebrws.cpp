@@ -998,7 +998,7 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
 
     m_dirCtrl->Show(true);
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     m_fileCtrl = new wxFileListCtrl(m_splitterWin, wxID_ANY, GetWild(), false,
                                     wxDefaultPosition, wxSize(50,50),
                                     wxNO_BORDER|wxLC_EDIT_LABELS|FBStyleToLCStyle(style));
@@ -1006,7 +1006,7 @@ bool wxFileBrowser::Create( wxWindow *parent, const wxWindowID id,
     m_fileCtrl = new wxFileCtrl(m_splitterWin, wxID_ANY, GetWild(), false,
                                 wxDefaultPosition, wxSize(50,50),
                                 wxNO_BORDER|FBStyleToLCStyle(style));
-#endif // wxCHECK_VERSION(2, 9, 0)
+#endif // wxCHECK_VERSION(3, 0, 0)
 
     m_fileCtrl->Connect(wxID_ANY, wxID_ANY, wxEVT_COMMAND_LIST_END_LABEL_EDIT, 
                         wxListEventHandler(wxFileBrowser::OnListEndLabelEdit));
@@ -1041,7 +1041,7 @@ void wxFileBrowser::OnSize( wxSizeEvent &event )
     event.Skip();
 
     // The m_pathCombo disappears for horiz resizing, just send another event
-#if !wxCHECK_VERSION(2, 9, 0) && defined(__WXMSW__)
+#if !wxCHECK_VERSION(3, 0, 0) && defined(__WXMSW__)
     if (event.GetId() == GetId())
     {
         wxSizeEvent newEvent(event);
@@ -1055,7 +1055,7 @@ void wxFileBrowser::OnSize( wxSizeEvent &event )
     }
 #else
     DoSize();
-#endif // !wxCHECK_VERSION(2, 9, 0) && __WXMSW__
+#endif // !wxCHECK_VERSION(3, 0, 0) && __WXMSW__
 }
 
 // The code in src/gtk/window.cpp wxWindow::DoSetSize fails since
@@ -1100,9 +1100,9 @@ void wxFileBrowser::DoSize()
         GtkToolbarResizeWindow(m_filterCombo, comboSize);
 #else
         m_filterCombo->SetSize(comboSize);
-    #if !wxCHECK_VERSION(2, 9, 0)
+    #if !wxCHECK_VERSION(3, 0, 0)
         m_viewToolBar->Realize();
-    #endif // !wxCHECK_VERSION(2, 9, 0)
+    #endif // !wxCHECK_VERSION(3, 0, 0)
 #endif
 
         //wxPrintf(wxT("FilterCombo %d %d - %d\n"), comboSize.x, comboSize.y, m_filterCombo->GetSize().y);
@@ -1125,9 +1125,9 @@ void wxFileBrowser::DoSize()
 #else
         //wxPrintf(wxT("Do Size %d %d - %d %d %d\n"), clientSize.x, clientSize.y, clientSize.x, comboRect.width, clientSize.x - comboRect.x - toolSize.x - marginSize.x);
         m_pathCombo->SetSize(comboSize);
-    #if !wxCHECK_VERSION(2, 9, 0)
+    #if !wxCHECK_VERSION(3, 0, 0)
         m_pathToolBar->Realize();
-    #endif // !wxCHECK_VERSION(2, 9, 0)
+    #endif // !wxCHECK_VERSION(3, 0, 0)
 #endif
 
         //wxPrintf(wxT("PathCombo %d %d - %d\n"), clientSize.x - comboRect.x - toolSize.x - marginSize.x, comboRect.height, m_pathCombo->GetSize().y);

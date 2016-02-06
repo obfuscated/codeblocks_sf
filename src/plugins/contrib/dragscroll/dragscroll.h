@@ -460,7 +460,7 @@ private:
 //          24) Fix crash when loading .cbp via dde. OnAppStartupDoneInit()
 // ----------------------------------------------------------------------------
 //  Commit 1.3.25 2009/09/6
-//          25) re-instate wxCHECK_VERSION(2, 9, 0) accidently removed.
+//          25) re-instate wxCHECK_VERSION(3, 0, 0) accidently removed.
 //  Commit 1.3.26 2011/01/2
 //          26) Linux: check ClassInfo before scrolling wxListCtrl(s)
 // ----------------------------------------------------------------------------

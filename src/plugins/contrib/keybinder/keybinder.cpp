@@ -82,13 +82,10 @@ BEGIN_EVENT_TABLE(wxBinderEvtHandler, wxEvtHandler)
 #endif
 
 #if defined( __WXMSW__	)		// supported only on Win32
-#if wxUSE_HOTKEY                // enabled?
-#if wxCHECK_VERSION(2, 5, 1)	// and from wxWidgets 2.5.1
-
+#if wxUSE_HOTKEY            // enabled?
 	// I don't think this is needed because wxEVT_HOTKEY are generated
 	// only in some special cases...
 	EVT_HOTKEY(wxID_ANY, wxBinderEvtHandler::OnChar)
-#endif
 #endif
 #endif
 
@@ -138,14 +135,6 @@ BEGIN_EVENT_TABLE(wxKeyConfigPanel, wxPanel)
 	// associated must be cleared...
 
 END_EVENT_TABLE()
-
-
-#if !wxCHECK_VERSION(2, 5, 1)
-
-	// with wx previous to 2.5 we need to use wxWindow::Node* instead
-	// of wxWindow::compatibility_iterator (thanks to Sebastien Berthet for this)
-	#define compatibility_iterator			Node*
-#endif
 
 // ------------------
 // some statics
@@ -210,12 +199,6 @@ wxString wxKeyBind::NumpadKeyCodeToString(int keyCode)
 		res << wxT("DOWN"); break;
 	case WXK_NUMPAD_HOME:
 		res << wxT("HOME"); break;
-#if not wxCHECK_VERSION(2, 8, 0)
-	case WXK_NUMPAD_PRIOR:
-		res << wxT("PgUp"); break;
-	case WXK_NUMPAD_NEXT:
-		res << wxT("PgDn"); break;
-#endif
 	case WXK_NUMPAD_PAGEUP:
 		res << wxT("PAGEUP"); break;
 	case WXK_NUMPAD_PAGEDOWN:
@@ -332,12 +315,6 @@ wxString wxKeyBind::KeyCodeToString(int keyCode)
 	case WXK_DIVIDE:
 		res << wxT("/"); break;
 
-#if not wxCHECK_VERSION(2, 8, 0)
-	case WXK_PRIOR:
-        res << wxT("PgUp"); break;
-	case WXK_NEXT:
-        res << wxT("PgDn"); break;
-#endif
 	case WXK_PAGEUP:
 		res << wxT("PAGEUP"); break;
 	case WXK_PAGEDOWN:
@@ -433,13 +410,7 @@ int wxKeyBind::StringToKeyCode(const wxString &keyName)
 	if (keyName == wxT("SPACE"))    return WXK_SPACE;
 	if (keyName == wxT("DELETE"))   return WXK_DELETE;
 
-   #if not wxCHECK_VERSION(2, 8, 0)
-	if (keyName == wxT("PRIOR"))    return WXK_PRIOR;	           //v4.15
-	if (keyName == wxT("PgUp"))     return WXK_PRIOR;	           //v4.15
-    if (keyName == wxT("NEXT"))     return WXK_NEXT;	           //v4.15
-    if (keyName == wxT("PgDn"))     return WXK_NEXT;	           //v4.15
-   #endif
-    if (keyName == wxT("LEFT"))     return WXK_LEFT ;       //+v0.5
+	if (keyName == wxT("LEFT"))     return WXK_LEFT ;       //+v0.5
 	if (keyName == wxT("UP"))       return WXK_UP;          //+v0.5
 	if (keyName == wxT("RIGHT"))    return WXK_RIGHT;       //+v0.5
 	if (keyName == wxT("DOWN"))     return WXK_DOWN;        //+v0.5
@@ -456,9 +427,6 @@ int wxKeyBind::StringToKeyCode(const wxString &keyName)
 	if (keyName == wxT("DOWN (numpad)"))     return WXK_NUMPAD_DOWN;        //+v0.1-
 	if (keyName == wxT("HOME (numpad)"))     return WXK_NUMPAD_HOME;        //+v0.1-
 	if (keyName == wxT("PAGEUP (numpad)"))   return WXK_NUMPAD_PAGEUP;      //+v0.1-
-   #if not wxCHECK_VERSION(2, 8, 0)
-	if (keyName == wxT("PgDn (numpad)"))     return WXK_NUMPAD_NEXT;        //+v0.1-
-    #endif
 	if (keyName == wxT("PAGEDOWN (numpad)")) return WXK_NUMPAD_PAGEDOWN;    //+v0.1-
 	if (keyName == wxT("END (numpad)"))      return WXK_NUMPAD_END;         //+v0.1-
 	if (keyName == wxT("BEGIN (numpad)"))    return WXK_NUMPAD_BEGIN;       //+v0.1-
@@ -941,7 +909,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         // Find matching menu item in keybinder array of commands
         wxCmd*  pCmd = 0;
         changed = 0;
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         wxString menuItemLabel = pMenuItem->GetItemLabelText().Trim();
         #else
         wxString menuItemLabel = pMenuItem->GetLabel().Trim();
@@ -1042,7 +1010,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
             //   menu items will never match causing constant update overhead
             AddShortcut(nMenuItemID, menuItemKeyStr, true );
             #ifdef LOGGING
-                #if wxCHECK_VERSION(2, 9, 0)
+                #if wxCHECK_VERSION(3, 0, 0)
                 LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetItemLabel().wx_str(), menuItemKeyStr.wx_str() );
                 #else
                 LOGIT(wxT("Merge change type[%d]:item[%lu]:id[%d]:@[%p]text[%s]key[%s]"), changed, static_cast<unsigned long>(j), nMenuItemID, pMenuItem, pMenuItem->GetText().wx_str(), menuItemKeyStr.wx_str() );
@@ -1144,13 +1112,13 @@ void wxKeyBinder::UpdateSubMenu(wxMenu* pMenu)                  //+v0.4.24
                 && (not wxMenuCmd::IsNumericMenuItem(pMenuItem)) )
             {
                 #ifdef LOGGING
-                 #if wxCHECK_VERSION(2, 9, 0)
+                 #if wxCHECK_VERSION(3, 0, 0)
                  LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetItemLabel().GetData() );
                  #else
                  LOGIT(wxT("UpdateAllCmd ById Failed on:[%d][%s]"), pMenuItem->GetId(), pMenuItem->GetText().GetData() );
                  #endif
                 #else
-                 #if wxCHECK_VERSION(2, 9, 0)
+                 #if wxCHECK_VERSION(3, 0, 0)
                  Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetItemLabel().GetData()));
                  #else
                  Manager::Get()->GetLogManager()->DebugLog(wxString::Format(wxT("KeyBinder failed UpdateById on[%d][%s]"), nMenuItemID, pMenuItem->GetText().GetData()));
@@ -2535,11 +2503,7 @@ void wxKeyConfigPanel::ShowSizer(wxSizer *toshow, bool show)
 	if (show)
 		main->Prepend(toshow, 0, wxGROW);
 	else
-#if wxCHECK_VERSION(2, 5, 1)
 		main->Detach(toshow);
-#else
-		main->Remove(toshow);
-#endif
 
 
 	// THIS PIECE OF CODE HAS BEEN COPIED & PASTED
@@ -2565,11 +2529,7 @@ void wxKeyConfigPanel::ShowSizer(wxSizer *toshow, bool show)
     SetSizeHints(size.x, size.y, m_maxWidth, m_maxHeight);
 
     // don't change the width when expanding/collapsing
-#if wxCHECK_VERSION(2, 5, 1)
     SetSize(wxDefaultCoord, size.y);
-#else
-    SetSize(-1, size.y);
-#endif
 
 #ifdef __WXGTK__
     // VS: this is neccessary in order to force frame redraw under

@@ -44,7 +44,7 @@ wxsSizerFlagsProperty::wxsSizerFlagsProperty(long _Offset,int Priority):
 
 void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Parent)
 {
-    #if !(wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0))
+    #if !(wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0))
     wxPGId ID1, ID2, ID3, ID4, ID5, ID6, ID7;
     #endif
     // Creating border flags
@@ -64,7 +64,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     PGC.Add(_("Left"),BorderLeft);
     PGC.Add(_("Right"),BorderRight);
     PGC.Add(_("All"),BorderAll);
-    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     wxPGId ID1 = Grid->AppendIn(Parent,new wxFlagsProperty(_("Border"),wxPG_LABEL,PGC,FLAGS&(BorderMask|BorderAll)));
     PGRegister(Object,Grid,ID1,BORDERIND);
     #else
@@ -74,7 +74,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     wxPGChoices PGC2;
     PGC2.Add(_(""),AlignNot);
     PGC2.Add(_("Center"),AlignCMask);
-    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     wxPGId ID2 = Grid->AppendIn(Parent,new wxEnumProperty(_("Center align"),wxPG_LABEL,PGC2,FLAGS&AlignCMask));
     PGRegister(Object,Grid,ID2,ALIGNCIND);
     #else
@@ -86,7 +86,7 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     PGC3.Add(_("Left"),AlignLeft);
     PGC3.Add(_("Center"),AlignCenterHorizontal);
     PGC3.Add(_("Right"),AlignRight);
-    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     wxPGId ID3 = Grid->AppendIn(Parent,new wxEnumProperty(_("Horizontal align"),wxPG_LABEL,PGC3,FLAGS&AlignHMask));
     PGRegister(Object,Grid,ID3,ALIGNHIND);
     #else
@@ -98,14 +98,14 @@ void wxsSizerFlagsProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGrid
     PGC4.Add(_("Top"),AlignTop);
     PGC4.Add(_("Center"),AlignCenterVertical);
     PGC4.Add(_("Bottom"),AlignBottom);
-    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     wxPGId ID4 = Grid->AppendIn(Parent,new wxEnumProperty(_("Vertical align"),wxPG_LABEL,PGC4,FLAGS&AlignVMask));
     PGRegister(Object,Grid,ID4,ALIGNVIND);
     #else
     PGRegister(Object,Grid,ID4 = Grid->AppendIn(Parent, wxEnumProperty(_("Vertical align"),wxPG_LABEL,PGC4,FLAGS&AlignVMask)),ALIGNVIND);
     #endif
 
-    #if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+    #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     wxPGId ID5 = Grid->AppendIn(Parent,new wxBoolProperty(_("Expand"),wxPG_LABEL,(FLAGS&Expand)!=0));
     wxPGId ID6 = Grid->AppendIn(Parent,new wxBoolProperty(_("Shaped"),wxPG_LABEL,(FLAGS&Shaped)!=0));
     wxPGId ID7 = Grid->AppendIn(Parent,new wxBoolProperty(_("Fixed min size"),wxPG_LABEL,(FLAGS&FixedMinSize)!=0));

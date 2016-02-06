@@ -34,7 +34,7 @@ namespace
         WXS_ST(wxDIRCTRL_DIR_ONLY)
         WXS_ST(wxDIRCTRL_3D_INTERNAL)
         WXS_ST(wxDIRCTRL_SELECT_FIRST)
-#if !wxCHECK_VERSION(2, 9, 0)
+#if !wxCHECK_VERSION(3, 0, 0)
         WXS_ST(wxDIRCTRL_SHOW_FILTERS)
 #endif
         WXS_ST(wxDIRCTRL_EDIT_LABELS)

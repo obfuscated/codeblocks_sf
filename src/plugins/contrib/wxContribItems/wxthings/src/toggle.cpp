@@ -413,8 +413,6 @@ void wxCustomButton::Paint( wxDC &dc )
         foreColour = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
     }
 
-#if wxCHECK_VERSION(2, 8, 0)
-
     // wxCONTROL_DISABLED
     //flags may have the wxCONTROL_PRESSED, wxCONTROL_CURRENT or wxCONTROL_ISDEFAULT
 
@@ -428,17 +426,6 @@ void wxCustomButton::Paint( wxDC &dc )
 
     wxRendererNative::Get().DrawPushButton(this, dc, wxRect(0, 0, w, h), ren_flags);
 
-#else
-
-    wxBrush brush(backColour, wxSOLID);
-    dc.SetBackground(brush);
-    dc.SetBrush(brush);
-    dc.SetPen(*wxTRANSPARENT_PEN);
-
-    dc.DrawRectangle(0, 0, w, h);
-
-#endif // !wxCHECK_VERSION(2, 8, 0)
-
     if (bitmap.Ok())
         dc.DrawBitmap(bitmap, m_bitmapPos.x, m_bitmapPos.y, true );
 
@@ -449,27 +436,6 @@ void wxCustomButton::Paint( wxDC &dc )
         dc.SetTextForeground(foreColour);
         dc.DrawText(GetLabel(), m_labelPos.x, m_labelPos.y);
     }
-
-#if !wxCHECK_VERSION(2, 8, 0)
-    if (GetValue())                                        // draw sunken border
-    {
-        dc.SetPen(*wxGREY_PEN);
-        dc.DrawLine(0,h-1,0,0);     dc.DrawLine(0,0,w,0);
-        dc.SetPen(*wxWHITE_PEN);
-        dc.DrawLine(w-1,1,w-1,h-1); dc.DrawLine(w-1,h-1,0,h-1);
-        dc.SetPen(*wxBLACK_PEN);
-        dc.DrawLine(1,h-2,1,1);     dc.DrawLine(1,1,w-1,1);
-    }
-    else if (((m_button_style & wxCUSTBUT_FLAT) == 0) || m_focused) // draw raised border
-    {
-        dc.SetPen(*wxWHITE_PEN);
-        dc.DrawLine(0,h-2,0,0);     dc.DrawLine(0,0,w-1,0);
-        dc.SetPen(*wxBLACK_PEN);
-        dc.DrawLine(w-1,0,w-1,h-1); dc.DrawLine(w-1,h-1,-1,h-1);
-        dc.SetPen(*wxGREY_PEN);
-        dc.DrawLine(2,h-2,w-2,h-2); dc.DrawLine(w-2,h-2,w-2,1);
-    }
-#endif // !wxCHECK_VERSION(2, 8, 0)
 
     dc.SetBackground(wxNullBrush);
     dc.SetBrush(wxNullBrush);

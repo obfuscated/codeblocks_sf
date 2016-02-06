@@ -25,11 +25,7 @@
 
 #include "../../properties/wxsproperties.h"
 
-#if wxCHECK_VERSION(2, 8, 0)
-    WX_DEFINE_ARRAY_INT(bool,wxArrayBool);
-#else
-    WX_DEFINE_ARRAY(bool,wxArrayBool);
-#endif
+WX_DEFINE_ARRAY_INT(bool,wxArrayBool);
 
 /** \brief Property for editing arrays of strings with checked option
  *

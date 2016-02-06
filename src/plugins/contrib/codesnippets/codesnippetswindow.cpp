@@ -1166,7 +1166,6 @@ void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
         return;
 
 	// Use the following only on wxWidgets 2.8.
-	#if wxCHECK_VERSION(2, 8, 0)
 	if (const SnippetTreeItemData* itemData = (SnippetTreeItemData*)(GetSnippetsTreeCtrl()->GetItemData(event.GetItem())))
 	{
 		if (itemData->GetType() == SnippetTreeItemData::TYPE_SNIPPET)
@@ -1197,7 +1196,6 @@ void CodeSnippetsWindow::OnItemGetToolTip(wxTreeEvent& event)
 			event.SetToolTip(snippetToolTip);
 		}
 	}
-	#endif
 }
 // ----------------------------------------------------------------------------
 bool CodeSnippetsWindow::AddTextToClipBoard(const wxString& text)

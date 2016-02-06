@@ -39,7 +39,7 @@
 
 // ----------------------------------------------------------------------------
 class GenericMessageDialog:
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     public wxScrollingDialog,
 #endif
     public wxMessageDialogBase
@@ -48,7 +48,7 @@ class GenericMessageDialog:
 DECLARE_DYNAMIC_CLASS(GenericMessageDialog)
 
 public:
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     //backported from wxDialogBase in wx2.8
     enum
     {

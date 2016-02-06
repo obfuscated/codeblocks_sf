@@ -274,12 +274,7 @@ void IncrementalSearch::BuildMenu(wxMenuBar* menuBar)
         size_t i = 0;
         for (i = 0; i < items.GetCount(); ++i)
         {
-#if wxCHECK_VERSION(2,8,5)
             if (items[i]->GetLabelText(items[i]->GetItemLabelText()) == _("Find previous"))
-#else
-            if (items[i]->GetLabelFromText(items[i]->GetLabel()) == _("Find previous"))
-#endif
-
             {
                 ++i;
                 break;
@@ -347,9 +342,9 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition, wxSize(160,-1));
     if (m_pComboCtrl)
     {
-#if !wxCHECK_VERSION(3,0,0) || WXWIN_COMPATIBILITY_2_8
+#if !wxCHECK_VERSION(3, 0, 0) || WXWIN_COMPATIBILITY_2_8
         m_pComboCtrl->SetTextIndent(0);
-#endif // !wxCHECK_VERSION(3,0,0) || WXWIN_COMPATIBILITY_2_8
+#endif // !wxCHECK_VERSION(3, 0, 0) || WXWIN_COMPATIBILITY_2_8
         m_pToolbar->InsertControl(1, m_pComboCtrl);
         m_pToolbar->Realize();
         m_pTextCtrl = m_pComboCtrl->GetTextCtrl();

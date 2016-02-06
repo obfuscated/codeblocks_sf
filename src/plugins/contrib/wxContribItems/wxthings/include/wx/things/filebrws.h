@@ -17,7 +17,7 @@
 #include <wx/filedlg.h>
 #include <wx/textdlg.h>
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     #include <wx/generic/filectrlg.h>
 #else // 2.8
     #include <wx/generic/filedlgg.h>
@@ -343,11 +343,11 @@ protected :
 
     wxSplitterWindow *m_splitterWin;
     wxGenericDirCtrl *m_dirCtrl;
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxFileListCtrl   *m_fileCtrl;
 #else
     wxFileCtrl       *m_fileCtrl;
-#endif //wxCHECK_VERSION(2, 9, 0)
+#endif //wxCHECK_VERSION(3, 0, 0)
 
     wxMenu           *m_listMenu;   // popup menu in listctrl
     wxMenu           *m_treeMenu;   // popup menu in treectrl

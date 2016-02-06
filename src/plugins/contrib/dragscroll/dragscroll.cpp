@@ -981,7 +981,7 @@ void cbDragScroll::OnAppStartupDoneInit()
         wheelEvt.m_controlDown = true;
         wheelEvt.m_wheelRotation = 0;
         wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
         #else
         pWindow->AddPendingEvent(wheelEvt);
@@ -1026,7 +1026,7 @@ void cbDragScroll::OnAppStartupDoneInit()
                 wheelEvt.m_controlDown = true;
                 wheelEvt.m_wheelRotation = 0;
                 wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
-                #if wxCHECK_VERSION(2, 9, 0)
+                #if wxCHECK_VERSION(3, 0, 0)
                 pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                 #else
                 pWindow->AddPendingEvent(wheelEvt);
@@ -1168,7 +1168,7 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
                     wheelEvt.m_controlDown = true;
                     wheelEvt.m_wheelRotation = 0; //set user font
                     wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
-                    #if wxCHECK_VERSION(2, 9, 0)
+                    #if wxCHECK_VERSION(3, 0, 0)
                     pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                     #else
                     pWindow->AddPendingEvent(wheelEvt);

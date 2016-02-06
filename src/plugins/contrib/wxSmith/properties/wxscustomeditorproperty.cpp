@@ -27,7 +27,7 @@
 #include <wx/dialog.h>
 #include <wx/bitmap.h>
 #include <wx/propgrid/propgrid.h>
-#if !wxCHECK_VERSION(2, 9, 0)
+#if !wxCHECK_VERSION(3, 0, 0)
 #include <wx/propgrid/propdev.h>
 #endif
 #include <wx/propgrid/advprops.h>
@@ -69,7 +69,7 @@ namespace
                 return wxCustomPropertyClass::OnEvent(propgrid,wnd_primary,event);
             }
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
             virtual wxString ValueToString(cb_unused wxVariant& value, cb_unused int argFlags = 0) const
 #else
             virtual wxString GetValueAsString( cb_unused int flags = 0 ) const

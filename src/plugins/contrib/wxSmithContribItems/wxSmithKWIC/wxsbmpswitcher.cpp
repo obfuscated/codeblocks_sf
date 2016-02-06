@@ -154,7 +154,7 @@ void wxsBmpSwitcher::OnEnumWidgetProperties(cb_unused long Flags)
  */
 void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
 #else
     Grid->SetTargetPage(0);
@@ -175,7 +175,7 @@ void wxsBmpSwitcher::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  */
 void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
 #else
     Grid->SetTargetPage(0);
@@ -199,7 +199,7 @@ void wxsBmpSwitcher::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId
         else if(NewValue < OldValue){
             // We have to remove some entries
             for(int i = NewValue;i < OldValue;i++){
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
                 Grid->DeleteProperty(m_arrBmps[i]->id);
 #else
                 Grid->Delete(m_arrBmps[i]->id);

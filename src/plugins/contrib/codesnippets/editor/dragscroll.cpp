@@ -1036,7 +1036,7 @@ void cbDragScroll::SetWindowZoom(wxWindow* pWxWindow)
                 wheelEvt.SetEventObject(pWindow);
                 wheelEvt.m_controlDown = true;
                 wheelEvt.m_wheelRotation = 0;
-                #if wxCHECK_VERSION(2, 9, 0)
+                #if wxCHECK_VERSION(3, 0, 0)
                 pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                 #else
                 pWindow->AddPendingEvent(wheelEvt);

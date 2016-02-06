@@ -32,11 +32,7 @@ class WXDLLEXPORT wxTreeListMainWindow;
 
 // Using this typedef removes an ambiguity when calling Remove()
 #ifdef __WXMSW__
-#if !wxCHECK_VERSION(2, 5, 0)
-typedef long wxTreeItemIdValue;
-#else
 typedef void *wxTreeItemIdValue;
-#endif
 #endif
 
 //-----------------------------------------------------------------------------
@@ -382,17 +378,10 @@ public:
     // the same!
 
     // get child of this item
-#if !wxCHECK_VERSION(2, 5, 0)
-    wxTreeItemId GetFirstChild(const wxTreeItemId& item, long& cookie) const;
-    wxTreeItemId GetNextChild(const wxTreeItemId& item, long& cookie) const;
-    wxTreeItemId GetPrevChild(const wxTreeItemId& item, long& cookie) const;
-    wxTreeItemId GetLastChild(const wxTreeItemId& item, long& cookie) const;
-#else
     wxTreeItemId GetFirstChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
     wxTreeItemId GetNextChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
     wxTreeItemId GetPrevChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
     wxTreeItemId GetLastChild(const wxTreeItemId& item, wxTreeItemIdValue& cookie) const;
-#endif
 
     // get sibling of this item
     wxTreeItemId GetNextSibling(const wxTreeItemId& item) const;

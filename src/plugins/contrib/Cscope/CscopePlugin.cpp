@@ -158,7 +158,7 @@ void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     int idxocc=-1;
     for (int idx = 0; idx < (int)ItemsList.GetCount(); ++idx)
     {
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         if (ItemsList[idx]->GetItemLabelText().StartsWith(_("Find implementation of:")) )
         #else
         if (ItemsList[idx]->GetLabel().StartsWith(_("Find implementation of:")) )
@@ -166,7 +166,7 @@ void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
         {
             idximp = idx;
         }
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         if (ItemsList[idx]->GetItemLabelText().StartsWith(_("Find occurrences of:")) )
         #else
         if (ItemsList[idx]->GetLabel().StartsWith(_("Find occurrences of:")) )

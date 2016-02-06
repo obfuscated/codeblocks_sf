@@ -290,7 +290,7 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
             const wxMenuItemList itemsList = subMenu->GetMenuItems();
             for (size_t i = 0; i < itemsList.GetCount(); ++i)
             {
-                #if wxCHECK_VERSION(2, 9, 0)
+                #if wxCHECK_VERSION(3, 0, 0)
                 if (itemsList[i]->GetItemLabelText() == _("lowercase"))
                 #else
                 if (itemsList[i]->GetLabel() == _("lowercase"))

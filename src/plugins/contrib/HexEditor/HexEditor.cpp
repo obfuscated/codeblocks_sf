@@ -135,7 +135,7 @@ void HexEditor::BuildMenu(wxMenuBar* menuBar)
     for ( wxMenuItemList::iterator i = list.begin(); i != list.end(); ++i, ++pos )
     {
         wxMenuItem* item = *i;
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         wxString label = item->GetItemLabelText();
         #else
         wxString label = item->GetLabel();

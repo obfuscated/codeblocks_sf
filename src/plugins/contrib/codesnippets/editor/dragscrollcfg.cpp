@@ -93,7 +93,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	bSizer7->Add( StaticText3, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	Sensitivity = new wxSlider( this, wxID_ANY, 8, 1, 10, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 	if ( 1 ) Sensitivity->SetTickFreq(1);
 #else
 	if ( 1 ) Sensitivity->SetTickFreq(1,0);
@@ -111,7 +111,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	bSizer7->Add( StaticText4, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	MouseToLineRatio = new wxSlider( this, wxID_ANY, 30, 10, 100, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 	if ( 1 ) MouseToLineRatio->SetTickFreq(10);
 #else
 	if ( 1 ) MouseToLineRatio->SetTickFreq(10,10);
@@ -130,7 +130,7 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	MouseContextDelay = new wxSlider( this, wxID_ANY, 50, 10, 500, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS|wxSL_TOP );
 	// Above values are: default mil delay, min, max
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 	if ( 1 ) MouseContextDelay->SetTickFreq(10);
 #else
 	if ( 1 ) MouseContextDelay->SetTickFreq(10,10);

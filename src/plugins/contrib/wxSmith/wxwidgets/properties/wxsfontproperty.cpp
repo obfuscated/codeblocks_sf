@@ -58,11 +58,7 @@ wxFont wxsFontData::BuildFont()
     wxString Face;
     wxFontEnumerator Enumer;
     Enumer.EnumerateFacenames();
-    #if wxCHECK_VERSION(2, 8, 0)
-        wxArrayString faceNames = Enumer.GetFacenames();
-    #else
-        wxArrayString& faceNames = *Enumer.GetFacenames();
-    #endif
+    wxArrayString faceNames = Enumer.GetFacenames();
     size_t Count = Faces.Count();
     for ( size_t i = 0; i<Count; i++ )
     {

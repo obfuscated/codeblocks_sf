@@ -47,7 +47,7 @@ namespace
     WXS_ST(wxTR_HAS_VARIABLE_ROW_HEIGHT)
     WXS_ST(wxTR_SINGLE)
     WXS_ST(wxTR_MULTIPLE)
-#if !wxCHECK_VERSION(2, 9, 0)
+#if !wxCHECK_VERSION(3, 0, 0)
     WXS_ST(wxTR_EXTENDED)
 #endif
     WXS_ST(wxTR_DEFAULT_STYLE)

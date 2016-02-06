@@ -43,7 +43,7 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     // SashSize can not be changed in wx>=2.9
     int m_nSashSize = 2;
 #endif
@@ -282,7 +282,7 @@ void ThreadSearch::OnAttach()
     m_pMainPanel->m_pSplitterWindow->SetSashGravity(0.3);
     // The sash size gets set initially, but when the user moves it, it gets set
     // to one line only. I've found no solution.
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     // deprected in wx2.9 and does nothing atall (at least there)
     m_pMainPanel->m_pSplitterWindow->SetSashSize(m_nSashSize);
 #endif
@@ -612,7 +612,7 @@ int ThreadSearch::GetInsertionMenuIndex(const wxMenu* const pCtxMenu)
     const wxMenuItemList ItemsList = pCtxMenu->GetMenuItems();
     for (int i = 0; i < (int)ItemsList.GetCount(); ++i)
     {
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         if (ItemsList[i]->GetItemLabelText().StartsWith(_T("Find implementation of:")) )
         #else
         if (ItemsList[i]->GetLabel().StartsWith(_T("Find implementation of:")) )
@@ -793,11 +793,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     toolBar->AddControl(pBtnOptions);
 
     toolBar->Realize();
-    #if wxCHECK_VERSION(2, 8, 0)
     toolBar->SetInitialSize();
-    #else
-    toolBar->SetBestFittingSize();
-    #endif
 
     return true;
 }
@@ -1167,8 +1163,8 @@ void ThreadSearch::OnIdle(wxIdleEvent& event)
     if ( m_OnReleased ) return;
     if (m_bSashPositionChanged)
     {
-#if !wxCHECK_VERSION(2,9,0)
-    // deprected in wx2.9 and does nothing atall (at least there)
+#if !wxCHECK_VERSION(3, 0, 0)
+        // deprected in wx3 and does nothing atall (at least there)
         m_pMainPanel->m_pSplitterWindow->SetSashSize(m_nSashSize);
 #endif
         m_pMainPanel->m_pSplitterWindow->Refresh();

@@ -32,7 +32,7 @@ WX_DECLARE_OBJARRAY_WITH_DECL(wxGenericBrush,  wxArrayGenericBrush,  class WXDLL
 
 //----------------------------------------------------------------------------
 
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
 
     typedef int wxPenStyle;
     typedef int wxPenCap;
@@ -100,11 +100,7 @@ public:
 
     // -----------------------------------------------------------------------
     // Get the colour values
-#if wxCHECK_VERSION(2, 8, 0)
     inline wxColour GetColour() const { return wxColour(GetRed(), GetGreen(), GetBlue(), GetAlpha()); }
-#else
-    inline wxColour GetColour() const { return wxColour(GetRed(), GetGreen(), GetBlue()); }
-#endif // wxCHECK_VERSION(2, 8, 0)
 
     unsigned char GetRed() const;
     unsigned char GetGreen() const;

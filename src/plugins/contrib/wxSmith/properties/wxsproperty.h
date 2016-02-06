@@ -41,11 +41,11 @@
 
 class wxsPropertyContainer;
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
 #define wxCHECK_PROPGRID_VERSION(major,minor,release) (0)
 #endif
 
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
 #define wxPGVariant                     wxVariant
 #define wxPGId                          wxPGProperty*
 #define wxParentProperty                wxPGProperty

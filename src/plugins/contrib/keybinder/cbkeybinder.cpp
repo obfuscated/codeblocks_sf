@@ -34,7 +34,7 @@
 #endif
 
 #include <wx/fileconf.h>
-#if defined(__WXMSW__) && wxCHECK_VERSION(2,9,0)
+#if defined(__WXMSW__) && wxCHECK_VERSION(3, 0, 0)
     #include <wx/msw/private/keyboard.h>
 #endif
 
@@ -808,7 +808,7 @@ void cbKeyBinder::MergeAcceleratorTable(const bool mergeAccelTable)
                 modifiers |= wxACCEL_CTRL;
         }
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         WXWORD keyCode = wxMSWKeyboard::VKToWX(key);
         if (keyCode==WXK_NONE) keyCode = key;
         entries[ii].Set(modifiers, keyCode, cmd);

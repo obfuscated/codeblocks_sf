@@ -327,7 +327,7 @@ void ThreadSearchView::set_properties()
 void ThreadSearchView::do_layout()
 // ----------------------------------------------------------------------------
 {
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     #define wxADJUST_MINSIZE 0
 #endif
     // begin wxGlade: ThreadSearchView::do_layout
@@ -584,7 +584,7 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
 
                 wxFocusEvent ev(wxEVT_SET_FOCUS);
                 ev.SetWindow(this);
-                #if wxCHECK_VERSION(2, 9, 0)
+                #if wxCHECK_VERSION(3, 0, 0)
                 control->GetEventHandler()->AddPendingEvent(ev);
                 #else
                 control->AddPendingEvent(ev);
@@ -634,7 +634,7 @@ void ThreadSearchView::OnLoggerDoubleClick(const wxString& file, long line)
 
         wxFocusEvent ev(wxEVT_SET_FOCUS);
         ev.SetWindow(this);
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         control->GetEventHandler()->AddPendingEvent(ev);
         #else
         control->AddPendingEvent(ev);

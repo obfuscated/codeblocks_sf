@@ -26,12 +26,12 @@
 #include <wx/settings.h>
 #include <wx/colordlg.h>
 #include <wx/dc.h>
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
 #include <wx/wxcrtvararg.h>
 #endif
 #include "../wxsflags.h"
 
-#if wxPG_USING_WXOWNERDRAWNCOMBOBOX || wxCHECK_VERSION(2,9,0)
+#if wxPG_USING_WXOWNERDRAWNCOMBOBOX || wxCHECK_VERSION(3, 0, 0)
     #include <wx/odcombo.h>
 #else
     #include <wx/propgrid/odcombo.h>
@@ -46,7 +46,7 @@ using namespace wxsFlags;
 
 namespace
 {
-#if wxCHECK_VERSION(3,1,0)
+#if wxCHECK_VERSION(3, 1, 0)
     static const char* wxsColourLabels[] = {
 #else
     static const wxChar* wxsColourLabels[] = {
@@ -145,7 +145,7 @@ namespace
         /** Override in derived class to customize how colours are printed as strings.
         */
         virtual wxString ColourToString( const wxColour& col, int index
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
                                         , int argFlags = 0
 #endif
                                          ) const;
@@ -155,7 +155,7 @@ namespace
         */
         virtual int GetCustomColourIndex() const;
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         virtual wxString ValueToString( wxVariant& value, int argFlags = 0 ) const;
         virtual bool StringToValue( wxVariant& variant,
                                     const wxString& text,
@@ -219,7 +219,7 @@ namespace
 
         m_flags |= wxPG_PROP_STATIC_CHOICES; // Colour selection cannot be changed.
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         m_value << cpv;
 #else
         m_value = wxColourPropertyValueToVariant(cpv);
@@ -253,7 +253,7 @@ namespace
         if ( pVariant->IsNull() )
             return wxColourPropertyValue(wxPG_COLOUR_UNSPECIFIED, wxColour());
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     if ( pVariant->GetType() == wxS("wxColourPropertyValue") )
     {
         wxColourPropertyValue v;
@@ -269,7 +269,7 @@ namespace
 #endif
         wxColour col;
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     bool variantProcessed = true;
 
     if ( pVariant->GetType() == wxS("wxColour*") )
@@ -330,7 +330,7 @@ namespace
 
     wxVariant wxsMyColourPropertyClass::DoTranslateVal( wxColourPropertyValue& v ) const
     {
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxVariant variant;
     variant << v;
     return variant;
@@ -366,7 +366,7 @@ namespace
     void wxsMyColourPropertyClass::OnSetValue()
     {
         // Convert from generic wxobject ptr to wxPGVariantDataColour
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     if ( m_value.GetType() == wxS("wxColour*") )
     {
         wxColour* pCol = wxStaticCast(m_value.GetWxObjectPtr(), wxColour);
@@ -377,11 +377,7 @@ namespace
         {
             wxASSERT( m_value.IsValueKindOf(CLASSINFO(wxColour)) );
             wxColour* pCol = (wxColour*) m_value.GetWxObjectPtr();
-    #if wxCHECK_VERSION(2,8,0)
             m_value << *pCol;
-    #else
-            wxPGVariantAssign(m_value, WXVARIANT(*pCol));
-    #endif
         }
 #endif
 
@@ -401,7 +397,7 @@ namespace
             m_value = TranslateVal(val);
         }
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     int ind = wxNOT_FOUND;
 
     if ( m_value.GetType() == wxS("wxColourPropertyValue") )
@@ -495,7 +491,7 @@ namespace
     }
 
     wxString wxsMyColourPropertyClass::ColourToString( const wxColour& col,
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
                                                        int index,
                                                        int argFlags ) const
 #else
@@ -504,7 +500,7 @@ namespace
     {
         if ( index == wxNOT_FOUND )
         {
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         if ( (argFlags & wxPG_FULL_VALUE) ||
              GetAttributeAsLong(wxPG_COLOUR_HAS_ALPHA, 0) )
             return wxString::Format(wxS("(%i,%i,%i,%i)"),
@@ -523,7 +519,7 @@ namespace
             return m_choices.GetLabel(index);
     }
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxString wxsMyColourPropertyClass::ValueToString( wxVariant& value,
                                                     int argFlags ) const
     {
@@ -590,7 +586,7 @@ namespace
 
     bool wxsMyColourPropertyClass::QueryColourFromUser( wxVariant& variant ) const
     {
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         wxASSERT( m_value.GetType() != wxPG_VARIANT_TYPE_STRING );
 #else
         wxASSERT( m_value.GetType() != wxT("string") );
@@ -601,7 +597,7 @@ namespace
         wxASSERT( propgrid );
 
         // Must only occur when user triggers event
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         if ( !(propgrid->GetInternalFlags() & wxPG_FL_IN_HANDLECUSTOMEDITOREVENT) )
 #else
         if ( !(propgrid->GetInternalFlags() & wxPG_FL_IN_ONCUSTOMEDITOREVENT) )
@@ -642,7 +638,7 @@ namespace
     bool wxsMyColourPropertyClass::IntToValue( wxVariant& variant, int number, int WXUNUSED(argFlags) ) const
     {
         int index = number;
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         int type = m_choices.GetValue(index);
 #else
         int type = GetValueForIndex(index);
@@ -674,7 +670,7 @@ namespace
         {
             // Must override index detection since at this point GetIndex()
             // will return old value.
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
             wxOwnerDrawnComboBox* cb =
                 static_cast<wxOwnerDrawnComboBox*>(propgrid->GetEditorControl());
 #else
@@ -726,7 +722,7 @@ namespace
         {
             dc.SetBrush(*wxWHITE);
             dc.DrawRectangle(rect);
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
             dc.SetBrush(wxBrush(*wxBLACK,wxHATCHSTYLE_BDIAGONAL));
 #else
             dc.SetBrush(wxBrush(*wxBLACK,wxBDIAGONAL_HATCH));
@@ -968,7 +964,7 @@ void wxsColourProperty::PGCreate(wxsPropertyContainer* Object,wxPropertyGridMana
 
 bool wxsColourProperty::PGRead(wxsPropertyContainer* Object,wxPropertyGridManager* Grid,wxPGId Id,cb_unused long Index)
 {
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     VALUE.m_type = wxsColourValues[Id->GetChoiceSelection()];
 
     if ( VALUE.m_type == wxsCOLOUR_DEFAULT )

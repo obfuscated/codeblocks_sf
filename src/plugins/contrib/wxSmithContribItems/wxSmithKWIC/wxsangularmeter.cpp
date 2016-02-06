@@ -241,7 +241,7 @@ void wxsAngularMeter::OnEnumWidgetProperties(cb_unused long Flags)
  */
 void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
 #else
     Grid->SetTargetPage(0);
@@ -262,7 +262,7 @@ void wxsAngularMeter::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  */
 void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
 #else
     Grid->SetTargetPage(0);
@@ -289,7 +289,7 @@ void wxsAngularMeter::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGI
         else if(NewValue < OldValue){
             // We have to remove some entries
             for(int i = NewValue; i < OldValue; i++){
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
                 Grid->DeleteProperty(m_arrSectors[i]->id);
 #else
                 Grid->Delete(m_arrSectors[i]->id);
@@ -416,7 +416,7 @@ bool wxsAngularMeter::HandleChangeInSector(wxsPropertyGridManager *Grid, wxPGId 
 //    if(Global)
     if(Desc->id == id){
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         wxVariant var = Grid->GetPropertyValue(id);
         wxString sPropType = var.GetType();
         if(sPropType.IsSameAs(wxT("wxColourPropertyValue"))){

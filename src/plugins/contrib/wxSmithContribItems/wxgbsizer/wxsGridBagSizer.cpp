@@ -256,11 +256,7 @@ wxObject* wxsGridBagSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 		{
 			// Setting custom size for childless sizer to prevent
 			// zero-size items
-			#if wxCHECK_VERSION(2,8,0)
 			NewParent->SetInitialSize(wxSize(20,20));
-			#else
-			NewParent->SetBestFittingSize(wxSize(20,20));
-			#endif
 			NewParent->SetSizeHints(20,20);
 			NewParent->SetSize(wxSize(20,20));
 		}
@@ -281,7 +277,7 @@ void wxsGridBagSizer::OnBuildSizerCreatingCode()
 		{
 			AddHeader(_T("<wx/gbsizer.h>"),GetInfo().ClassName,hfInPCH);
 			Codef(_T("%C(%s, %s);\n"),
-				#if wxCHECK_VERSION(2, 9, 0)
+				#if wxCHECK_VERSION(3, 0, 0)
 				VGap.GetPixelsCode(GetCoderContext()).wx_str(),
 				HGap.GetPixelsCode(GetCoderContext()).wx_str());
 				#else

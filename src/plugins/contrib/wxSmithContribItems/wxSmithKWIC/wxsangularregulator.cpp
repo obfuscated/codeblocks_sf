@@ -210,7 +210,7 @@ void wxsAngularRegulator::OnEnumWidgetProperties(cb_unused long Flags)
  */
 void wxsAngularRegulator::OnAddExtraProperties(wxsPropertyGridManager *Grid)
 {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
 #else
     Grid->SetTargetPage(0);
@@ -231,7 +231,7 @@ void wxsAngularRegulator::OnAddExtraProperties(wxsPropertyGridManager *Grid)
  */
 void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, wxPGId id)
 {
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
     Grid->SelectPage(0);
 #else
     Grid->SetTargetPage(0);
@@ -255,7 +255,7 @@ void wxsAngularRegulator::OnExtraPropertyChanged(wxsPropertyGridManager *Grid, w
         else if(NewValue < OldValue){
             // We have to remove some entries
             for(int i = NewValue;i < OldValue;i++){
-#if wxCHECK_VERSION(2, 9, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
+#if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
                 Grid->DeleteProperty(m_arrTags[i]->id);
 #else
                 Grid->Delete(m_arrTags[i]->id);

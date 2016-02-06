@@ -35,7 +35,7 @@
 
 #include <prep.h>
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
 #define wxPGId wxPGProperty*
 #endif
 
@@ -62,7 +62,7 @@ class wxsPropertyGridManager: public wxPropertyGridManager
             const wxPoint& pos = wxDefaultPosition,
             const wxSize& size = wxDefaultSize,
             long style = wxPGMAN_DEFAULT_STYLE|wxPG_SPLITTER_AUTO_CENTER,
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             const char* name = wxPropertyGridManagerNameStr);
             #else
             const wxChar* name = wxPropertyGridManagerNameStr);

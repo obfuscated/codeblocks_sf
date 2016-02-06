@@ -203,7 +203,7 @@ wxIconBundle wxSTEditorArtProvider::CreateIconBundle(const wxArtID& id,
     if (id == wxART_STEDIT_APP)
         return GetDialogIconBundle();
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     return wxNullIconBundle;
 #else
     return wxIconBundle();

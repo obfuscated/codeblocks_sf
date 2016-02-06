@@ -21,8 +21,6 @@
 #include "wxsAuiToolBar.h"
 #include <wxwidgets/wxsflags.h>
 
-#if wxCHECK_VERSION(2,8,9)
-
 #include <wx/aui/auibar.h>
 
 using namespace wxsFlags;
@@ -60,5 +58,3 @@ void wxsAuiToolBarLabel::OnEnumItemProperties(long Flags)
     WXS_BOOL(wxsAuiToolBarLabel,m_IsDefault,_("Default width"),_T("isdefault"),true)
     WXS_LONG(wxsAuiToolBarLabel,m_Width,_("Width"),_T("width"),0)
 }
-
-#endif // wxCHECK_VERSION(2,8,9)

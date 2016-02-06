@@ -156,12 +156,7 @@ void ReopenEditor::BuildMenu(wxMenuBar* menuBar)
 
         for (i = 0; i < items.GetCount(); ++i)
         {
-#if wxCHECK_VERSION(2,8,5)
             if (items[i]->GetLabelText(items[i]->GetItemLabelText()) == _("Focus editor"))
-#else
-            if (items[i]->GetLabelFromText(items[i]->GetLabel()) == _("Focus editor"))
-#endif
-
             {
                 ++i;
                 break;

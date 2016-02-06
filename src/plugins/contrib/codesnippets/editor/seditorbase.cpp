@@ -293,12 +293,10 @@ void SEditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)  
             text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
         }
 
-        if(wxMinimumVersion<2,6,1>::eval)
-        {
-            popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
-            popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
-            popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
-        }
+        popup->Append(idGoogle, _("Search the Internet for \"") + text + _("\""));
+        popup->Append(idMsdn, _("Search MSDN for \"") + text + _("\""));
+        popup->Append(idGoogleCode, _("Search Google Code for \"") + text + _("\""));
+
         lastWord = text;
 
         wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
@@ -406,7 +404,7 @@ void SEditorBase::OnContextMenuEntry(wxCommandEvent& event)
         }
         m_SwitchTo.clear();
     }
-    else if(wxMinimumVersion<2,6,1>::eval)
+    else
     {
         if (id == idGoogleCode)
         {
@@ -420,10 +418,6 @@ void SEditorBase::OnContextMenuEntry(wxCommandEvent& event)
         {
             wxLaunchDefaultBrowser(wxString(_T("http://search.microsoft.com/search/results.aspx?qu=")) << URLEncode(lastWord) << _T("&View=msdn"));
         }
-    }
-    else
-    {
-        event.Skip();
     }
 }
 // ----------------------------------------------------------------------------
