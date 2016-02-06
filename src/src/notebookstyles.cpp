@@ -13,7 +13,7 @@
 #include "prep.h"
 #include "notebookstyles.h"
 
-#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(3, 0, 0)
     #define GSocket GLibSocket
     #include <gtk/gtk.h>
     #undef GSocket
@@ -21,7 +21,7 @@
     #include <wx/renderer.h>
 #endif
 
-#if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0) && !wxCHECK_VERSION(2, 9, 4)
+#if defined ( __WXGTK__ ) && !wxCHECK_VERSION(3, 0, 0)
     #include <wx/gtk/dc.h>
     #include <wx/gtk/dcclient.h>
 #else
@@ -47,7 +47,7 @@ wxAuiTabArt* NbStyleVC71::Clone()
 {
     NbStyleVC71* clone = new NbStyleVC71();
 
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     clone->SetNormalFont(m_normalFont);
     clone->SetSelectedFont(m_selectedFont);
     clone->SetMeasuringFont(m_measuringFont);
@@ -80,7 +80,7 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
                                  close_button_state,
                                  x_extent);
 
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     wxCoord tab_height = m_tabCtrlHeight - 3;
 #else
     wxCoord tab_height = m_tab_ctrl_height - 3;
@@ -171,13 +171,13 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     wxCoord textx;
     wxCoord texty;
     if (page.active)
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
         dc.SetFont(m_selectedFont);
 #else
         dc.SetFont(m_selected_font);
 #endif
     else
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
         dc.SetFont(m_normalFont);
 #else
         dc.SetFont(m_normal_font);
@@ -191,7 +191,7 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
     // draw 'x' on tab (if enabled)
     if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
     {
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
         int close_button_width = m_activeCloseBmp.GetWidth();
         wxBitmap bmp = m_disabledCloseBmp;
 #else
@@ -201,7 +201,7 @@ void NbStyleVC71::DrawTab(wxDC& dc, wxWindow* wnd,
 
         if ((close_button_state == wxAUI_BUTTON_STATE_HOVER) ||
                     (close_button_state == wxAUI_BUTTON_STATE_PRESSED))
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
             bmp = m_activeCloseBmp;
 #else
             bmp = m_active_close_bmp;
@@ -232,7 +232,7 @@ int NbStyleVC71::GetBestTabCtrlSize(wxWindow* wnd,
 //    m_requested_tabctrl_height = -1;
 //    m_tab_ctrl_height = -1;
     wxClientDC dc(wnd);
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     dc.SetFont(m_measuringFont);
 #else
     dc.SetFont(m_measuring_font);
@@ -251,7 +251,7 @@ wxAuiTabArt* NbStyleFF2::Clone()
 {
     NbStyleFF2* clone = new NbStyleFF2();
 
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     clone->SetNormalFont(m_normalFont);
     clone->SetSelectedFont(m_selectedFont);
     clone->SetMeasuringFont(m_measuringFont);
@@ -277,7 +277,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     wxSize tab_size = GetTabSize(dc, wnd, page.caption, page.bitmap,
                                     page.active, close_button_state, x_extent);
 
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     wxCoord tab_height = m_tabCtrlHeight - 2;
 #else
     wxCoord tab_height = m_tab_ctrl_height - 2;
@@ -365,13 +365,13 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     wxCoord textx;
     wxCoord texty;
     if (page.active)
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
         dc.SetFont(m_selectedFont);
 #else
         dc.SetFont(m_selected_font);
 #endif
     else
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
         dc.SetFont(m_normalFont);
 #else
         dc.SetFont(m_normal_font);
@@ -385,7 +385,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
     // draw 'x' on tab (if enabled)
     if (close_button_state != wxAUI_BUTTON_STATE_HIDDEN)
     {
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
         int close_button_width = m_activeCloseBmp.GetWidth();
         wxBitmap bmp = m_disabledCloseBmp;
 #else
@@ -395,7 +395,7 @@ void NbStyleFF2::DrawTab(wxDC& dc, wxWindow* wnd,
 
         if ((close_button_state == wxAUI_BUTTON_STATE_HOVER) ||
                     (close_button_state == wxAUI_BUTTON_STATE_PRESSED))
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
             bmp = m_activeCloseBmp;
 #else
             bmp = m_active_close_bmp;
@@ -426,7 +426,7 @@ int NbStyleFF2::GetBestTabCtrlSize(wxWindow* wnd,
 //    m_requested_tabctrl_height = -1;
 //    m_tab_ctrl_height = -1;
     wxClientDC dc(wnd);
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     dc.SetFont(m_measuringFont);
 #else
     dc.SetFont(m_measuring_font);
@@ -437,7 +437,7 @@ int NbStyleFF2::GetBestTabCtrlSize(wxWindow* wnd,
     return s.y + 6;
 }
 
-#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
+#if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(3, 0, 0)
 
 namespace
 {
@@ -500,7 +500,7 @@ wxAuiTabArt* NbStyleGTK::Clone()
 {
     NbStyleGTK* clone = new NbStyleGTK();
 
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     clone->SetNormalFont(m_normalFont);
     clone->SetSelectedFont(m_normalFont);
     clone->SetMeasuringFont(m_normalFont);
@@ -534,7 +534,7 @@ void NbStyleGTK::DrawBackground(wxDC& dc, wxWindow* wnd, const wxRect& rect)
         if(nb)
             nb->SetTabCtrlHeight(-1);
     }
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
     GdkWindow* pWin = impldc->GetGDKWindow();
 #else
@@ -603,7 +603,7 @@ wxRect DrawCloseButton(wxDC& dc,
     out_rect.width = button_size;
     out_rect.height = button_size;
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
     GdkWindow* pWin = impldc->GetGDKWindow();
 #else
@@ -664,7 +664,7 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
 
     if (page.active)
         tab_rect.height += 2 * m_TabHBorder;
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     // if no bitmap is set, we need a tiny correction
     if (! page.bitmap.IsOk())
         tab_rect.height += 1;
@@ -707,7 +707,7 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
     area.width = clip_width + m_TabVBorder;
     area.height = tab_rect.height + 2 * m_TabHBorder;
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
     GdkWindow* pWin = impldc->GetGDKWindow();
 #else
@@ -775,7 +775,7 @@ void NbStyleGTK::DrawTab(wxDC& dc, wxWindow* wnd, const wxAuiNotebookPage& page,
 
     wxCoord textW, textH, textY;
 
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     dc.SetFont(m_normalFont);
 #else
     dc.SetFont(m_normal_font);
@@ -860,7 +860,7 @@ wxRect DrawSimpleArrow(wxDC& dc,
     out_rect.width = scroll_arrow_hlength;
     out_rect.height = scroll_arrow_vlength;
 
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     wxGTKDCImpl *impldc = (wxGTKDCImpl*) dc.GetImpl();
     GdkWindow* pWin = impldc->GetGDKWindow();
 #else
@@ -926,7 +926,7 @@ int NbStyleGTK::GetBestTabCtrlSize(wxWindow* wnd,
                                    const wxAuiNotebookPageArray& pages,
                                    const wxSize& required_bmp_size)
 {
-#if wxCHECK_VERSION(2, 9, 3)
+#if wxCHECK_VERSION(3, 0, 0)
     SetMeasuringFont(m_normalFont);
     SetSelectedFont(m_normalFont);
 #else
@@ -955,4 +955,4 @@ wxSize NbStyleGTK::GetTabSize(wxDC& dc,
     return s;
 }
 
-#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
+#endif // #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(3, 0, 0)

@@ -78,7 +78,7 @@ wxUint32 wxCrc32::FromString(const wxString& text)
             // Calculate the checksum
             crc = 0xFFFFFFFFUL;
             while (text[i])
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
                 { crc = (crc>>8) ^ crc_table[ (crc^(text[i++].GetValue())) & 0xFF ]; }
             #else
                 { crc = (crc>>8) ^ crc_table[ (crc^(text[i++])) & 0xFF ]; }

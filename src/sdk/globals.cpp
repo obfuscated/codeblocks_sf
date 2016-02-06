@@ -1045,7 +1045,7 @@ void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
     long flags = lc->GetWindowStyleFlag();
     switch (style)
     {
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         case sisNoIcons: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_LIST; break;
 #else
         case sisNoIcons: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_SMALL_ICON; break;

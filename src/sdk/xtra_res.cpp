@@ -98,12 +98,12 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
         if (GetPosition() != wxDefaultPosition)
         {
             m_toolbar->AddTool(GetID(),
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
                                wxEmptyString,
             #endif
                                GetCenteredBitmap(_T("bitmap"), wxART_TOOLBAR, bitmapSize),
                                GetCenteredBitmap(_T("bitmap2"), wxART_TOOLBAR, bitmapSize),
-            #if !wxCHECK_VERSION(2, 9, 0)
+            #if !wxCHECK_VERSION(3, 0, 0)
                                GetBool(_T("toggle")),
                                GetPosition().x,
                                GetPosition().y,
@@ -254,7 +254,7 @@ bool wxToolBarAddOnXmlHandler::CanHandle(wxXmlNode *node)
 //
 // Don't ask me why... >:-|
 
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     bool istbar = node->GetAttribute(wxT("class"), wxEmptyString).Matches(_T("wxToolBarAddOn"));
     bool istool = node->GetAttribute(wxT("class"), wxEmptyString).Matches(_T("tool"));
     bool issep = node->GetAttribute(wxT("class"), wxEmptyString).Matches(_T("separator"));

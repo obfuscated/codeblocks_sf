@@ -447,11 +447,7 @@ bool wxMultiColumnListCtrl::Create(wxWindow* parent, wxWindowID id, const wxPoin
 {
     wxControl::Create(parent, id, pos, size, style);
 
-    #if wxCHECK_VERSION(2, 8, 0)
     SetInitialSize(size);
-    #else
-    SetInitialBestSize(size);
-    #endif
 
     return true;
 }
@@ -888,11 +884,7 @@ bool wxSwitcherDialog::Create( const wxSwitcherItems& items, wxWindow *parent, w
         m_listCtrl->SetModifierKey(m_modifierKey);
 
     int borderStyle = wxSIMPLE_BORDER;
-
-    borderStyle = wxBORDER_NONE;
-#if defined(__WXMSW__) && wxCHECK_VERSION(2,8,5)
-    // borderStyle = wxBORDER_THEME;
-#endif
+        borderStyle = wxBORDER_NONE;
 
     m_descriptionCtrl = new wxHtmlWindow(this, wxID_ANY, wxDefaultPosition, wxSize(-1, 100), borderStyle);
     m_descriptionCtrl->SetHTMLBackgroundColour(GetBackgroundColour());

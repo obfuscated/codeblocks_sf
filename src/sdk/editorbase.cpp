@@ -291,7 +291,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
             text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
         }
 
-        if (wxMinimumVersion<2,6,1>::eval && !text.IsEmpty())
+        if (!text.IsEmpty())
         {
             popup->Append(idGoogle,        _("Search the Internet for \"")  + text + _T("\""));
             popup->Append(idMsdn,          _("Search MSDN for \"")          + text + _T("\""));
@@ -404,7 +404,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
 
         m_SwitchTo.clear();
     }
-    else if (wxMinimumVersion<2,6,1>::eval)
+    else
     {
         if      (id == idGoogle)
             wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q="))                       << URLEncode(lastWord));
@@ -414,10 +414,6 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
             wxLaunchDefaultBrowser(wxString(_T("http://stackoverflow.com/search?q="))                    << URLEncode(lastWord));
         else if (id == idCodeProject)
             wxLaunchDefaultBrowser(wxString(_T("http://www.codeproject.com/search.aspx?q="))             << URLEncode(lastWord));
-    }
-    else
-    {
-        event.Skip();
     }
 }
 

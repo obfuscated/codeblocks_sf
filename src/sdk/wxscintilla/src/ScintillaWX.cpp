@@ -1209,7 +1209,7 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
 {
     int key = evt.GetKeyCode();
 /* C::B begin */
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
     if (key == WXK_NONE) {
         // This is a Unicode character not representable in Latin-1 or some key
         // without key code at all (e.g. dead key or VK_PROCESSKEY under MSW).
@@ -1239,16 +1239,8 @@ int  ScintillaWX::DoKeyDown(const wxKeyEvent& evt, bool* consumed)
     case WXK_NUMPAD_HOME:       key = SCK_HOME;     break;
     case WXK_END:               // fall through
     case WXK_NUMPAD_END:        key = SCK_END;      break;
-#if !wxCHECK_VERSION(2, 8, 0)
-    case WXK_PRIOR:             // fall through
-    case WXK_NUMPAD_PRIOR:      // fall through
-#endif
     case WXK_PAGEUP:            // fall through
     case WXK_NUMPAD_PAGEUP:     key = SCK_PRIOR;    break;
-#if !wxCHECK_VERSION(2, 8, 0)
-    case WXK_NEXT:              // fall through
-    case WXK_NUMPAD_NEXT:       // fall through
-#endif
     case WXK_PAGEDOWN:          // fall through
     case WXK_NUMPAD_PAGEDOWN:   key = SCK_NEXT;     break;
     case WXK_NUMPAD_DELETE:     // fall through

@@ -30,7 +30,7 @@ class wxBoxSizer;
 class wxButton;
 class wxScrolledWindow;
 
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
 class wxDialogLayoutAdapter: public wxObject
 {
     DECLARE_CLASS(wxDialogLayoutAdapter)
@@ -154,14 +154,14 @@ protected:
     static wxDialogLayoutAdapter*       sm_layoutAdapter;
     static bool                         sm_layoutAdaptation;
 };
-#endif //#if !wxCHECK_VERSION(2,9,0)
+#endif //#if !wxCHECK_VERSION(3, 0, 0)
 
 /*!
  * A class that makes its content scroll if necessary
  */
 
 class DLLIMPORT wxScrollingDialog: public wxDialog
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     , public wxDialogHelper
 #endif
 {
@@ -170,7 +170,7 @@ public:
 
     wxScrollingDialog()
     {
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
         Init();
 #else
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
@@ -184,14 +184,14 @@ public:
              long style = wxDEFAULT_DIALOG_STYLE,
              const wxString& name = _("dialogBox"))
     {
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
         Init();
 #else
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
 #endif
         Create(parent, id, title, pos, size, style, name);
     }
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     bool Create(wxWindow *parent,
              int id = wxID_ANY,
              const wxString& title = wxEmptyString,
@@ -215,7 +215,7 @@ public:
  */
 
 class wxScrollingPropertySheetDialog : public wxPropertySheetDialog
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     , public wxDialogHelper
 #endif
 
@@ -223,7 +223,7 @@ class wxScrollingPropertySheetDialog : public wxPropertySheetDialog
 public:
     wxScrollingPropertySheetDialog() : wxPropertySheetDialog()
     {
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
         Init();
 #else
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
@@ -237,7 +237,7 @@ public:
                        long style = wxDEFAULT_DIALOG_STYLE,
                        const wxString& name = wxDialogNameStr)
     {
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
         Init();
 #else
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
@@ -245,7 +245,7 @@ public:
         Create(parent, id, title, pos, sz, style, name);
     }
 
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
 //// Accessors
 
     /// Returns the content window

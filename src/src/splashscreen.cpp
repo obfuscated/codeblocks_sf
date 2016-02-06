@@ -76,7 +76,7 @@ void cbSplashScreen::DoPaint(wxDC & /*dc*/)
 {
     wxPaintDC dc(this);
 #ifdef __WIN32__
-  #if wxCHECK_VERSION(2, 9, 0)
+  #if wxCHECK_VERSION(3, 0, 0)
 //    dc.SetDeviceClippingRegion(m_region); // was used for 08/02 splash screen (transparent regions)
   #else
 //    dc.SetClippingRegion(m_region); // was used for 08/02 splash screen (transparent regions)

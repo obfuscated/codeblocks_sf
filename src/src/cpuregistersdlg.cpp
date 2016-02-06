@@ -69,9 +69,9 @@ void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, const wxString&
     m_pList->SetItem(idx, 2, interpreted);
 
 #if defined(__WXMSW__) || wxCHECK_VERSION(3, 1, 0)
-    const int autoSizeMode=wxLIST_AUTOSIZE_USEHEADER;
+    const int autoSizeMode = wxLIST_AUTOSIZE_USEHEADER;
 #else
-    const int autoSizeMode=wxLIST_AUTOSIZE;
+    const int autoSizeMode = wxLIST_AUTOSIZE;
 #endif
 
     for (int i = 0; i < 3; ++i)

@@ -1205,9 +1205,9 @@ bool Compiler::EvalXMLCondition(const wxXmlNode* node)
         if ( !cmd[0].IsEmpty() ) // should never be empty
         {
             int flags = wxEXEC_SYNC;
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
                 // Stop event-loop while wxExecute runs, to avoid a deadlock on startup,
-                // that occurs from time to time on wx2.9
+                // that occurs from time to time on wx3
                 flags |= wxEXEC_NOEVENTS;
             #else
                 flags |= wxEXEC_NODISABLE;

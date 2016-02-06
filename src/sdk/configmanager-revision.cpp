@@ -24,7 +24,7 @@
 wxString ConfigManager::GetRevisionString()
 {
     // Code::Blocks needs wxWidgets 2.8
-    CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+    CompileTimeAssertion<wxMinimumVersion<2,8,12>::eval>::Assert();
 
     return autorevision::svnRevision;
 }

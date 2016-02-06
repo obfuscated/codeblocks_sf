@@ -59,7 +59,7 @@
 
 #ifdef __WXMSW__
     #include <wx/msw/private.h>
-  #if wxCHECK_VERSION(2,9,0)
+  #if wxCHECK_VERSION(3, 0, 0)
     #include <wx/msw/dc.h>
   #endif
 #endif
@@ -143,11 +143,9 @@ public:
         Connect( wxEVT_MOTION,
                  (wxObjectEventFunction) (wxEventFunction)
                  (wxMouseEventFunction)&wxPGSpinButton::OnMouseEvent );
-#if wxCHECK_VERSION(2,8,0)
         Connect( wxEVT_MOUSE_CAPTURE_LOST,
                  (wxObjectEventFunction) (wxEventFunction)
                  (wxMouseCaptureLostEventFunction)&wxPGSpinButton::OnMouseCaptureLost );
-#endif
     }
 
 
@@ -237,12 +235,10 @@ private:
 
         event.Skip();
     }
-#if wxCHECK_VERSION(2,8,0)
     void OnMouseCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(event))
     {
         Release();
     }
-#endif
 };
 
 #endif // IS_MOTION_SPIN_SUPPORTED
@@ -581,9 +577,7 @@ static const wxChar* gs_fp_es_family_labels[] = {
     wxT("Default"), wxT("Decorative"),
     wxT("Roman"), wxT("Script"),
     wxT("Swiss"), wxT("Modern"),
-#if wxCHECK_VERSION(2,8,0)
     wxT("Teletype"), wxT("Unknown"),
-#endif
     (const wxChar*) NULL
 };
 
@@ -591,9 +585,7 @@ static long gs_fp_es_family_values[] = {
     wxFONTFAMILY_DEFAULT, wxFONTFAMILY_DECORATIVE,
     wxFONTFAMILY_ROMAN, wxFONTFAMILY_SCRIPT,
     wxFONTFAMILY_SWISS, wxFONTFAMILY_MODERN,
-#if wxCHECK_VERSION(2,8,0)
     wxFONTFAMILY_TELETYPE, wxFONTFAMILY_UNKNOWN
-#endif
 };
 
 static const wxChar* gs_fp_es_style_labels[] = {
@@ -1055,11 +1047,7 @@ void wxSystemColourProperty::OnSetValue()
     {
         wxASSERT( m_value.IsValueKindOf(CLASSINFO(wxColour)) );
         wxColour* pCol = (wxColour*) m_value.GetWxObjectPtr();
-#if wxCHECK_VERSION(2,8,0)
         m_value << *pCol;
-#else
-        wxPGVariantAssign(m_value, WXVARIANT(*pCol));
-#endif
     }
 
     wxColourPropertyValue val = GetVal(&m_value);
@@ -2064,7 +2052,7 @@ bool wxDateProperty::StringToValue( wxVariant& variant, const wxString& text,
 {
     wxDateTime dt;
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     const char* c = dt.ParseFormat(text, wxString(wxDefaultDateTimeFormat), wxDefaultDateTime, NULL);
 #else
     const wxChar* c = dt.ParseFormat(text, wxDefaultDateTimeFormat);

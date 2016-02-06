@@ -130,7 +130,7 @@ bool ToolsManager::Execute(const cbTool* tool)
 
     // log info so user can troubleshoot
     dir = wxGetCwd(); // read in the actual working dir
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"), tool->GetName().wx_str(), cmdline.wx_str(), dir.wx_str()));
     #else
     Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"), tool->GetName().c_str(), cmdline.c_str(), dir.c_str()));

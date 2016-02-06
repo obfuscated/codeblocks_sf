@@ -313,7 +313,7 @@ bool ScriptingManager::RegisterScriptMenu(const wxString& menuPath, const wxStri
         mbs.scriptOrFunc = scriptOrFunc;
         mbs.isFunc = isFunction;
         m_MenuIDToScript.insert(m_MenuIDToScript.end(), std::make_pair(id, mbs));
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.wx_str(), menuPath.wx_str()));
         #else
         Manager::Get()->GetLogManager()->Log(F(_("Script/function '%s' registered under menu '%s'"), scriptOrFunc.c_str(), menuPath.c_str()));

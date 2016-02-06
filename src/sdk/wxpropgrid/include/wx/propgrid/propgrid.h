@@ -217,11 +217,7 @@
 #endif
 
 #ifndef wxPG_USING_WXOWNERDRAWNCOMBOBOX
-    #if wxCHECK_VERSION(2,8,0)
-        #define wxPG_USING_WXOWNERDRAWNCOMBOBOX 1
-    #else
-        #define wxPG_USING_WXOWNERDRAWNCOMBOBOX 0
-    #endif
+    #define wxPG_USING_WXOWNERDRAWNCOMBOBOX 1
 #endif
 
 #if wxPG_USING_WXOWNERDRAWNCOMBOBOX
@@ -236,39 +232,19 @@
     #define wxPGComboCtrl                   wxPGComboControl
 #endif
 
-// wxRect: Inside(<=2.7.0) or Contains(>2.7.0)?
-#if !wxCHECK_VERSION(2,7,1)
-    #define wxPGRectContains    Inside
-#else
-    #define wxPGRectContains    Contains
-#endif
+#define wxPGRectContains    Contains
 
-#if wxCHECK_VERSION(2,7,0)
-    #define wxPGIndex           unsigned int
-#else
-    #define wxPGIndex           int
-#endif
+#define wxPGIndex           unsigned int
 
 #ifdef __WXMSW__
-  #if wxCHECK_VERSION(2,9,0)
+  #if wxCHECK_VERSION(3, 0, 0)
     #define wxPG_GetHDCOf(DC) ((HDC)((const wxMSWDCImpl *)DC.GetImpl())->GetHDC())
   #else
     #define wxPG_GetHDCOf(DC) ((HDC)DC.GetHDC())
   #endif
 #endif
 
-// Define wxBORDER_THEME if it is missing
-#if !wxCHECK_VERSION(2,8,0)
-  #ifndef wxBORDER_THEME
-    #define wxBORDER_THEME  wxSIMPLE_BORDER
-  #endif
-#endif
-
-#if wxCHECK_VERSION(2,8,0)
-    #define wxGDI_IS_OK(OBJ) ((OBJ).IsOk())
-#else
-    #define wxGDI_IS_OK(OBJ) ((OBJ).Ok())
-#endif
+#define wxGDI_IS_OK(OBJ) ((OBJ).IsOk())
 
 // -----------------------------------------------------------------------
 
@@ -306,7 +282,7 @@
 #endif
 
 #ifndef SWIG
-    #if !wxCHECK_VERSION(2,9,0)
+    #if !wxCHECK_VERSION(3, 0, 0)
         #if !defined(wxUniChar)
             #define wxUniChar   wxChar
         #endif
@@ -1577,12 +1553,7 @@ WX_PG_DECLARE_EDITOR_WITH_DECL(ChoiceAndButton,WXDLLIMPEXP_PG)
 //
 // For compability with wxWidgets 2.6 patched with refcounted wxVariant
 #ifndef wxVARIANT_REFCOUNTED
-  #if wxCHECK_VERSION(2,8,0)
-    #define wxVARIANT_REFCOUNTED 1
-  #else
-    #define wxVARIANT_REFCOUNTED 0
-    #error "Only supports wxWidgets 2.6 that has been patched with refcounted wxVariant"
-  #endif
+  #define wxVARIANT_REFCOUNTED 1
 #endif
 
 
@@ -1619,7 +1590,7 @@ WX_PG_DECLARE_EDITOR_WITH_DECL(ChoiceAndButton,WXDLLIMPEXP_PG)
 */
 class WXDLLIMPEXP_PG wxPGVariantData : public wxVariantData
 {
-#if !wxCHECK_VERSION(2,9,0)
+#if !wxCHECK_VERSION(3, 0, 0)
     DECLARE_ABSTRACT_CLASS(wxPGVariantData)
 #endif
 public:
@@ -1631,7 +1602,7 @@ protected:
 
 //
 // With wxWidgets 2.9 and later we demand native C++ RTTI support
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     #ifdef wxNO_RTTI
         #error "You need to enable compiler RTTI support when using wxWidgets 2.9.0 or later"
     #endif
@@ -1702,7 +1673,7 @@ template<> inline wxVariant WXVARIANT( const long& value ) { return wxVariant(va
 template<> inline wxVariant WXVARIANT( const bool& value ) { return wxVariant(value); }
 template<> inline wxVariant WXVARIANT( const double& value ) { return wxVariant(value); }
 //template<> inline wxVariant WXVARIANT( const wxChar* value ) { return wxVariant(wxString(value)); }
-//#if wxCHECK_VERSION(2,9,0)
+//#if wxCHECK_VERSION(3, 0, 0)
 //    template<> inline wxVariant WXVARIANT( const char* value ) { return wxVariant(wxString(value)); }
 //#endif
 template<> inline wxVariant WXVARIANT( const wxArrayString& value ) { return wxVariant(value); }
@@ -1711,7 +1682,7 @@ template<> inline wxVariant WXVARIANT( const wxString& value ) { return wxVarian
     template<> inline wxVariant WXVARIANT( const wxDateTime& value ) { return wxVariant(value); }
 #endif
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     #define _WX_PG_VARIANT_DATA_CLASSINFO_CONTAINER_DECL(CLASSNAME) \
         extern int CLASSNAME##_d_;
     #define _WX_PG_VARIANT_DATA_CLASSINFO_CONTAINER(CLASSNAME) \
@@ -1846,16 +1817,12 @@ WX_PG_DECLARE_VARIANT_DATA(wxPGVariantDataULongLong, wxULongLong, WXDLLIMPEXP_PG
 #endif
 
 WX_PG_DECLARE_WXOBJECT_VARIANT_DATA(wxPGVariantDataFont, wxFont, WXDLLIMPEXP_PG)
-#if !wxCHECK_VERSION(2,8,0)
-    WX_PG_DECLARE_WXOBJECT_VARIANT_DATA(wxPGVariantDataColour, wxColour, WXDLLIMPEXP_PG)
-#else
     template<> inline wxVariant WXVARIANT( const wxColour& value )
     {
         wxVariant variant;
         variant << value;
         return variant;
     }
-#endif
 
 #endif // !SWIG
 

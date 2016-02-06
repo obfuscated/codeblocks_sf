@@ -26,7 +26,7 @@
 #include "wx/propgrid/propgrid.h"
 #include "wx/propgrid/manager.h"
 
-#if wxUSE_XRC && wxCHECK_VERSION(2,8,0)
+#if wxUSE_XRC
 
 class wxPropertyGridXmlHandler : public wxXmlResourceHandler
 {
@@ -50,6 +50,6 @@ private:
     wxPropertyGridPopulator*    m_populator;
 };
 
-#endif // wxUSE_XRC && wxCHECK_VERSION(2,8,0)
+#endif // wxUSE_XRC
 
 #endif // _WX_XH_PROPGRID_H_

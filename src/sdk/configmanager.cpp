@@ -37,7 +37,7 @@
 #endif
 
 #ifdef __WXMAC__
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 #include "wx/osx/core/cfstring.h"
 #else
 #include "wx/mac/corefoundation/cfstring.h"
@@ -122,7 +122,7 @@ namespace
             CFRelease(resourcesURL);
             CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
             CFRelease(absoluteURL);
-            #if wxCHECK_VERSION(2,9,0)
+            #if wxCHECK_VERSION(3, 0, 0)
               wxString str = wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
             #else
               wxString str = wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
@@ -304,13 +304,13 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
         {
             size_t size = is->GetSize();
             wxString str;
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             wxChar* c = wxStringBuffer(str, size);
             #else
             wxChar* c = str.GetWriteBuf(size);
             #endif
             is->Read(c, size);
-            #if !wxCHECK_VERSION(2, 9, 0)
+            #if !wxCHECK_VERSION(3, 0, 0)
             str.UngetWriteBuf(size);
             #endif
 
@@ -436,7 +436,7 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 */
 inline void to_upper(wxString& s)
 {
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     wxStringCharType *p = const_cast<wxStringCharType*>(s.wx_str());
     wxStringCharType q;
     #else
@@ -454,7 +454,7 @@ inline void to_upper(wxString& s)
 
 inline void to_lower(wxString& s)
 {
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     wxStringCharType *p = const_cast<wxStringCharType*>(s.wx_str());
     wxStringCharType q;
     #else
@@ -1179,7 +1179,7 @@ wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
     {
         while (e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
         {
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             wxUniChar c = cbC2U(curr->Value())[0];
             #else
             wxChar c = *(cbC2U(curr->Value()));
@@ -1265,7 +1265,7 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     {
         while (e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
         {
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             wxUniChar c = cbC2U(curr->Value())[0];
             #else
             wxChar c = *(cbC2U(curr->Value()));

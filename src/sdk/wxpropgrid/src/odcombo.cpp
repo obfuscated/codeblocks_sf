@@ -109,14 +109,6 @@
     #define USE_TRANSIENT_POPUP 0
 #endif
 
-// For versions < 2.6.2, don't enable transient popup. There may be
-// problems I don't have time to test properly.
-#if !wxCHECK_VERSION(2, 6, 2)
-    #undef USE_TRANSIENT_POPUP
-    #define USE_TRANSIENT_POPUP 0
-#endif
-
-
 #if USE_TRANSIENT_POPUP
     #undef ALLOW_FAKE_POPUP
     #define ALLOW_FAKE_POPUP 0
@@ -493,9 +485,7 @@ BEGIN_EVENT_TABLE(wxPGVListBoxComboPopup, wxVListBox)
     EVT_MOTION(wxPGVListBoxComboPopup::OnMouseMove)
     EVT_KEY_DOWN(wxPGVListBoxComboPopup::OnKey)
     EVT_LEFT_UP(wxPGVListBoxComboPopup::OnLeftClick)
-#if wxCHECK_VERSION(2,8,0)
     EVT_MOUSE_CAPTURE_LOST(wxPGVListBoxComboPopup::OnMouseCaptureLost)
-#endif
 END_EVENT_TABLE()
 
 
@@ -1016,12 +1006,10 @@ void wxPGVListBoxComboPopup::Populate( int n, const wxString choices[] )
         m_value = m_strings.Index(strValue);
 }
 
-#if wxCHECK_VERSION(2,8,0)
 void wxPGVListBoxComboPopup::OnMouseCaptureLost(wxMouseCaptureLostEvent& event)
 {
     event.Skip(false);  // we don't want the event processed anywhere else
 }
-#endif
 
 // ----------------------------------------------------------------------------
 // input handling
@@ -1801,7 +1789,6 @@ void wxPGComboControlBase::DrawButton( wxDC& dc, const wxRect& rect, int flags )
         else
             pBmp = &m_bmpNormal;
 
-#if wxCHECK_VERSION(2, 7, 0)
         if ( m_blankButtonBg )
         {
             // If using blank button background, we need to clear its background
@@ -1824,7 +1811,6 @@ void wxPGComboControlBase::DrawButton( wxDC& dc, const wxRect& rect, int flags )
             }
         }
         else
-#endif
         {
             // Need to clear button background even if m_btn is present
             // (assume non-button background was cleared just before this call so brushes are good)
@@ -2841,20 +2827,7 @@ void wxPGGenericComboControl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
 {
     wxSize sz = GetClientSize();
 
-#if !wxCHECK_VERSION(2, 7, 1)
-    // If size is larger, recalculate double buffer bitmap
-    if ( !gs_doubleBuffer ||
-         sz.x > gs_doubleBuffer->GetWidth() ||
-         sz.y > gs_doubleBuffer->GetHeight() )
-    {
-        delete gs_doubleBuffer;
-        gs_doubleBuffer = new wxBitmap(sz.x+25,sz.y);
-    }
-
-    wxBufferedPaintDC dc(this,*gs_doubleBuffer);
-#else
     wxAutoBufferedPaintDC dc(this);
-#endif
 
     const wxRect& rectb = m_btnArea;
     wxRect rect = m_tcArea;
@@ -3116,14 +3089,7 @@ bool wxPGComboControl::Create(wxWindow *parent,
 
     if ( theme )
     {
-#if wxCHECK_VERSION(2, 8, 0)
         const bool isVista = (::wxGetWinVersion() >= wxWinVersion_6);
-#else
-        int Major = 0;
-        int family = wxGetOsVersion(&Major, NULL);
-        const bool isVista = ((family == wxWINDOWS_NT) && (Major >= 6));
-#endif
-
         if ( isVista )
             m_iFlags |= wxPGCC_BUTTON_STAYS_DOWN;
     }
@@ -3344,20 +3310,7 @@ void wxPGComboControl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
 
     wxSize sz = GetClientSize();
 
-#if !wxCHECK_VERSION(2, 7, 1)
-    // If size is larger, recalculate double buffer bitmap
-    if ( !gs_doubleBuffer ||
-         sz.x > gs_doubleBuffer->GetWidth() ||
-         sz.y > gs_doubleBuffer->GetHeight() )
-    {
-        delete gs_doubleBuffer;
-        gs_doubleBuffer = new wxBitmap(sz.x+25,sz.y);
-    }
-
-    wxBufferedPaintDC dc(this,*gs_doubleBuffer);
-#else
     wxAutoBufferedPaintDC dc(this);
-#endif
 
     const wxRect& rectButton = m_btnArea;
     wxRect rectTextField = m_tcArea;
@@ -3385,13 +3338,7 @@ void wxPGComboControl::OnPaintEvent( wxPaintEvent& WXUNUSED(event) )
 
     if ( hTheme )
     {
-#if wxCHECK_VERSION(2, 8, 0)
         const bool useVistaComboBox = (::wxGetWinVersion() >= wxWinVersion_6);
-#else
-        int Major = 0;
-        int family = wxGetOsVersion(&Major, NULL);
-        const bool useVistaComboBox = ((family == wxWINDOWS_NT) && (Major >= 6));
-#endif
 
         RECT rFull;
         wxCopyRectToRECT(borderRect, rFull);
@@ -3800,7 +3747,7 @@ int wxPGOwnerDrawnComboBox::DoInsert(const wxString& item, wxODCIndex pos)
     return pos;
 }
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 int wxPGOwnerDrawnComboBox::DoInsertItems(const wxArrayStringsAdapter& items,
                                           unsigned int pos,
                                           void **clientData,
@@ -3837,7 +3784,7 @@ void wxPGOwnerDrawnComboBox::DoSetItemClientData(wxODCIndex n, void* clientData)
 {
     wxASSERT(m_popupInterface);
     m_popupInterface->SetItemClientData(n,clientData,
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
         GetClientDataType()
 #else
         m_clientDataItemsType

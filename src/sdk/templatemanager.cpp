@@ -187,7 +187,7 @@ cbProject* TemplateManager::NewProjectFromUserTemplate(NewFromTemplateDlg& dlg, 
             ++count;
         }
         else
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Failed copying %s to %s"), src.wx_str(), dst.wx_str()));
             #else
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Failed copying %s to %s"), src.c_str(), dst.c_str()));
@@ -304,7 +304,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
     {
         wxString src = (*it)->file.GetFullPath();
         wxString dst = templ + (*it)->relativeToCommonTopLevelPath;
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Copying %s to %s"), src.wx_str(), dst.wx_str()));
         #else
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Copying %s to %s"), src.c_str(), dst.c_str()));
@@ -314,7 +314,7 @@ void TemplateManager::SaveUserTemplate(cbProject* prj)
         if (wxCopyFile(src, dst, true))
             ++count;
         else
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Failed copying %s to %s"), src.wx_str(), dst.wx_str()));
             #else
             Manager::Get()->GetLogManager()->DebugLog(F(_T("Failed copying %s to %s"), src.c_str(), dst.c_str()));

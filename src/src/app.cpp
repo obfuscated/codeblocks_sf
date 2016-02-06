@@ -95,7 +95,7 @@ class DDEConnection : public wxConnection
 {
     public:
         DDEConnection(MainFrame* frame) : m_Frame(frame) { ; }
-#if wxCHECK_VERSION(2, 9, 5)
+#if wxCHECK_VERSION(3, 0, 0)
         bool OnExecute(const wxString& topic, const void *data, size_t size, wxIPCFormat format);
 #else
         bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
@@ -110,7 +110,7 @@ wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
     return topic == DDE_TOPIC ? new DDEConnection(m_Frame) : nullptr;
 }
 
-#if wxCHECK_VERSION(2, 9, 5)
+#if wxCHECK_VERSION(3, 0, 0)
 bool DDEConnection::OnExecute(cb_unused const wxString& topic, const void *data, cb_unused size_t size, cb_unused wxIPCFormat format)
 #else
 bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, cb_unused int size, cb_unused wxIPCFormat format)
@@ -201,7 +201,7 @@ class DDEClient: public wxClient {
 };
 
 #if wxUSE_CMDLINE_PARSER
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
 #define CMD_ENTRY(X) X
 #else
 #define CMD_ENTRY(X) _T(X)
@@ -302,7 +302,7 @@ class cbMessageOutputNull : public wxMessageOutput
 {
 public:
 
-#if wxCHECK_VERSION(3,0,0)
+#if wxCHECK_VERSION(3, 0, 0)
     virtual void Output(const wxString &str);
 #else
     #ifdef WX_ATTRIBUTE_PRINTF
@@ -312,7 +312,7 @@ public:
     #endif
 #endif // wxCHECK_VERSION
 };
-#if wxCHECK_VERSION(3,0,0)
+#if wxCHECK_VERSION(3, 0, 0)
 void cbMessageOutputNull::Output(cb_unused const wxString &str){}
 #else
 void cbMessageOutputNull::Printf(cb_unused const wxChar* format, ...){}
@@ -327,7 +327,7 @@ BEGIN_EVENT_TABLE(CodeBlocksApp, wxApp)
 END_EVENT_TABLE()
 
 #ifdef __WXMAC__
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 #include "wx/osx/core/cfstring.h"
 #else
 #include "wx/mac/corefoundation/cfstring.h"
@@ -346,7 +346,7 @@ static wxString GetResourcesDir()
     CFRelease(resourcesURL);
     CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
     CFRelease(absoluteURL);
-    #if wxCHECK_VERSION(2,9,0)
+    #if wxCHECK_VERSION(3, 0, 0)
       return wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
     #else
       return wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
@@ -484,7 +484,7 @@ bool CodeBlocksApp::InitXRCStuff()
 
 MainFrame* CodeBlocksApp::InitFrame()
 {
-    CompileTimeAssertion<wxMinimumVersion<2,8,9>::eval>::Assert();
+    CompileTimeAssertion<wxMinimumVersion<2,8,12>::eval>::Assert();
 
     MainFrame *frame = new MainFrame();
     wxUpdateUIEvent::SetUpdateInterval(100);
@@ -1201,8 +1201,6 @@ void CodeBlocksApp::SetupPersonality(const wxString& personality)
 {
     if (personality.CmpNoCase(_T("ask")) == 0)
     {
-        CompileTimeAssertion<wxMinimumVersion<2,5>::eval>::Assert(); // just to make sure: wxWidgets 2.4 is dead
-
         const wxArrayString items(Manager::Get()->GetPersonalityManager()->GetPersonalitiesList());
 
         wxSingleChoiceDialog dlg(nullptr, _("Please choose which personality (profile) to load:"),

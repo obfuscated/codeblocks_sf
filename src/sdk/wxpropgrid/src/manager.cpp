@@ -400,7 +400,7 @@ void wxPropertyGridManager::Init2( int style )
 
     if ( style & wxPG_THEME_BORDER )
     {
-#if defined(__WXMSW__) && wxCHECK_VERSION(2,8,5)
+#if defined(__WXMSW__)
        propGridFlags |= GetThemedBorderStyle();
 #else
        propGridFlags |= wxPG_DEFAULT_THEME_BORDER;
@@ -1115,9 +1115,7 @@ void wxPropertyGridManager::UpdateDescriptionBox( int new_splittery, int new_wid
     else
     {
         m_pTxtHelpCaption->SetSize(3,cap_y,new_width-6,cap_hei);
-#if wxCHECK_VERSION(2,6,2)
         m_pTxtHelpCaption->Wrap(-1);
-#endif
         m_pTxtHelpCaption->Show( true );
         if ( cnt_hei <= 2 )
         {

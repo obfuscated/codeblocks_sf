@@ -179,7 +179,7 @@ void EditorLexerLoader::DoSingleKeywordNode(HighlightLanguage language, TiXmlEle
             wxString value(keywords->Attribute("value"), wxConvUTF8);
             regex.Replace(&value, _T(" "));
 
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             m_pTarget->SetKeywords(language, keyidx, value );
             #else
             m_pTarget->SetKeywords(language, keyidx, wxString ( value, wxConvUTF8 ) );

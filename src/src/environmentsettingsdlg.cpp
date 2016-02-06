@@ -197,11 +197,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
                 wxMenuItemList& items = menuLayouts->GetMenuItems();
                 for (size_t i = 0; i < items.GetCount() && ! items[i]->IsSeparator() ; ++i)
                 {
-#if wxCHECK_VERSION(2,8,5)
                     XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Append(items[i]->GetLabelText(items[i]->GetItemLabelText()));
-#else
-                    XRCCTRL(*this, "choLayoutToToggle", wxChoice)->Append(items[i]->GetLabelFromText(items[i]->GetLabel()));
-#endif
                 }
             }
         }

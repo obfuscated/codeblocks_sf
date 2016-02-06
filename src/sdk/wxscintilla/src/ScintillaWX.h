@@ -183,7 +183,7 @@ public:
     void DoLeftButtonUp(SCI_NAMESPACE_PREFIX(Point) pt, unsigned int curTime, bool ctrl);
     void DoLeftButtonMove(SCI_NAMESPACE_PREFIX(Point) pt);
     void DoMiddleButtonUp(SCI_NAMESPACE_PREFIX(Point) pt);
-#if !wxCHECK_VERSION(2,9,4)
+#if !wxCHECK_VERSION(3, 0, 0)
     enum wxMouseWheelAxis
     {
         wxMOUSE_WHEEL_VERTICAL,

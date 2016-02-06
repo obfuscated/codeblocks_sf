@@ -1135,13 +1135,13 @@ void cbEditor::Split(cbEditor::SplitType split)
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
 
     // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
     Thaw();
     #endif
     // parent both controls under the splitter
     m_pControl->Reparent(m_pSplitter);
     m_pControl2->Reparent(m_pSplitter);
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
     Freeze();
     #endif
 
@@ -1201,12 +1201,12 @@ void cbEditor::Unsplit()
     m_pSizer->Detach(m_pSplitter);
 
     // on wxGTK > 2.9 we need to thaw before reparent and refreeze the editor here or the whole app stays frozen
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
     Thaw();
     #endif
     // parent the left control under this
     m_pControl->Reparent(this);
-    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(2, 9, 0)
+    #if defined ( __WXGTK__ ) && wxCHECK_VERSION(3, 0, 0)
     Freeze();
     #endif
     // add it in the sizer

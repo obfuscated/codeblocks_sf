@@ -138,7 +138,7 @@ bool wxStringProperty::DoSetAttribute( const wxString& name, wxVariant& value )
 // -----------------------------------------------------------------------
 
 #ifndef wxHAS_STRTOLL
-    #if wxCHECK_VERSION(2,9,0)
+    #if wxCHECK_VERSION(3, 0, 0)
         #define wxHAS_STRTOLL
     #endif
 #endif

@@ -812,7 +812,7 @@ void EditorColourSet::SetKeywords(HighlightLanguage lang, int idx, const wxStrin
         wxString tmp(_T(' '), keywords.length()); // faster than using Alloc()
 
         const wxChar *src = keywords.c_str();
-        #if wxCHECK_VERSION(2, 9, 0)
+        #if wxCHECK_VERSION(3, 0, 0)
         wxStringCharType *dst = const_cast<wxStringCharType*>(tmp.wx_str());
         #else
         wxChar *dst = (wxChar *) tmp.c_str();

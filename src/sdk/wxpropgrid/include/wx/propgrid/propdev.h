@@ -65,9 +65,7 @@ public:
     wxPGVariantDataClassInfo wxVariantClassInfo_arrstring;
     wxPGVariantDataClassInfo wxVariantClassInfo_wxobject;
     wxPGVariantDataClassInfo wxVariantClassInfo_list;
-#if wxCHECK_VERSION(2,8,0)
     wxPGVariantDataClassInfo wxVariantClassInfo_wxColour;
-#endif
 #if wxUSE_DATETIME
     wxPGVariantDataClassInfo wxVariantClassInfo_datetime;
 #endif
@@ -106,7 +104,7 @@ public:
 #endif*/
 };
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
 
 #define wxPGIsVariantType(VARIANT, T) \
     ((VARIANT).GetData() && typeid(*(VARIANT).GetData()) == *wxPGGlobalVars->wxVariantClassInfo_##T)
@@ -233,19 +231,10 @@ protected:
 
 // -----------------------------------------------------------------------
 
-#if !wxCHECK_VERSION(2,8,0)
-
-// There is no wxString::EndsWith() in wxWidgets 2.6.
-bool wxPG_String_EndsWith(const wxString& str, const wxChar *suffix, wxString *rest = NULL);
-
-#else
-
 inline bool wxPG_String_EndsWith(const wxString& str, const wxChar *suffix, wxString *rest = NULL)
 {
     return str.EndsWith(suffix, rest);
 }
-
-#endif
 
 // -----------------------------------------------------------------------
 

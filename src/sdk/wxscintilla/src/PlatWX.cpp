@@ -204,7 +204,7 @@ void SurfaceImpl::Init(SurfaceID hDC_, WindowID /*wid*/)
 }
 
 /* C::B begin */
-#if wxCHECK_VERSION(2,9,5)
+#if wxCHECK_VERSION(3, 0, 0)
 void SurfaceImpl::InitPixMap(int width, int height, Surface* surface_, WindowID winid)
 #else
 void SurfaceImpl::InitPixMap(int width, int height, Surface* surface_, WindowID /*winid*/)
@@ -220,7 +220,7 @@ void SurfaceImpl::InitPixMap(int width, int height, Surface* surface_, WindowID 
     if (width < 1) width = 1;
     if (height < 1) height = 1;
 /* C::B begin */
-#if wxCHECK_VERSION(2,9,5)
+#if wxCHECK_VERSION(3, 0, 0)
     bitmap = new wxBitmap();
     bitmap->CreateScaled(width, height,wxBITMAP_SCREEN_DEPTH,((wxWindow*)winid)->GetContentScaleFactor());
 #else
@@ -410,7 +410,7 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     {
         wxAlphaPixelData pixData(bmp);
 /* C::B begin */
-        #if !wxCHECK_VERSION(2, 9, 0)
+        #if !wxCHECK_VERSION(3, 0, 0)
         pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
         #endif
 /* C::B end */
@@ -500,7 +500,7 @@ wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsI
 /* C::B end */
     wxAlphaPixelData pixData(bmp);
 /* C::B begin */
-    #if !wxCHECK_VERSION(2, 9, 0)
+    #if !wxCHECK_VERSION(3, 0, 0)
     pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
     #endif
 /* C::B end */
@@ -594,7 +594,7 @@ void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, XYPOSITION ybas
     SetFont(font);
     hDC->SetTextForeground(wxColourFromCD(fore));
 /* C::B begin */
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     hDC->SetBackgroundMode(wxBRUSHSTYLE_TRANSPARENT);
     #else
     hDC->SetBackgroundMode(wxTRANSPARENT);
@@ -606,7 +606,7 @@ void SurfaceImpl::DrawTextTransparent(PRectangle rc, Font &font, XYPOSITION ybas
     hDC->DrawText(sci2wx(s, len), rc.left, ybase - Ascent(font));
 
 /* C::B begin */
-    #if wxCHECK_VERSION(2, 9, 0)
+    #if wxCHECK_VERSION(3, 0, 0)
     hDC->SetBackgroundMode(wxBRUSHSTYLE_SOLID);
     #else
     hDC->SetBackgroundMode(wxSOLID);
@@ -1689,7 +1689,7 @@ ColourDesired Platform::ChromeHighlight()
 }
 
 /* C::B begin */
-#if !wxCHECK_VERSION(2,9,2)
+#if !wxCHECK_VERSION(3, 0, 0)
 #define wxCRT_StrlenA    strlen
 #define wxCRT_StrncpyA   strncpy
 // this is a function new in 2.9 so we don't care about backwards compatibility and

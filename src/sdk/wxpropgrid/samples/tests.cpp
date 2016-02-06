@@ -281,11 +281,7 @@ void FormMain::OnDumpList( wxCommandEvent& WXUNUSED(event) )
 
         wxString strValue = v.GetString();
 
-#if wxCHECK_VERSION(2,8,0)
         if ( v.GetName().EndsWith(wxT("@attr")) )
-#else
-        if ( v.GetName().Right(5) == wxT("@attr") )
-#endif
         {
             text += wxString::Format(wxT("Attributes:\n"));
 
@@ -1382,11 +1378,7 @@ bool FormMain::RunTests( bool fullTest, bool interactive )
         //
         // Ok, this time only hide half of them
         arr1 = GetPropertiesInRandomOrder(page);
-#if wxCHECK_VERSION(2,8,0)
         arr1.resize(arr1.size()/2);
-#else
-        arr1.SetCount(arr1.size()/2);
-#endif
 
         if ( !_failed_ )
         {

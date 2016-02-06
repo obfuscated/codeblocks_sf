@@ -17,14 +17,8 @@
 #include "wx/renderer.h"
 
 
-// Item counts in GUI components were changed in 2.7.0
-#if wxCHECK_VERSION(2,7,0)
-    #define wxODCCount  unsigned int
-    #define wxODCIndex  unsigned int
-#else
-    #define wxODCCount  int
-    #define wxODCIndex  int
-#endif
+#define wxODCCount  unsigned int
+#define wxODCIndex  unsigned int
 
 
 class WXDLLEXPORT wxTextCtrl;
@@ -968,9 +962,7 @@ protected:
     void OnKey(wxKeyEvent& event);
     void OnLeftClick(wxMouseEvent& event);
 
-#if wxCHECK_VERSION(2,8,0)
     void OnMouseCaptureLost(wxMouseCaptureLostEvent& event);
-#endif
 
     wxArrayString           m_strings;
     wxArrayPtrVoid          m_clientDatas;
@@ -1098,7 +1090,7 @@ protected:
     virtual void DoSetItemClientObject(wxODCIndex n, wxClientData* clientData);
     virtual wxClientData* DoGetItemClientObject(wxODCIndex n) const;
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     virtual int DoInsertItems(const wxArrayStringsAdapter& items,
                               unsigned int pos,
                               void **clientData,

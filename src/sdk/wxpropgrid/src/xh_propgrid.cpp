@@ -28,7 +28,7 @@
 
 */
 
-#if wxUSE_XRC && wxCHECK_VERSION(2,8,0)
+#if wxUSE_XRC
 
 #include <wx/propgrid/propgrid.h>
 
@@ -38,7 +38,7 @@
     #include "wx/intl.h"
 #endif
 
-#if wxCHECK_VERSION(2,9,0)
+#if wxCHECK_VERSION(3, 0, 0)
     #define wxXML_GetAttribute(A,B,C)   (A->GetAttribute(B,C))
 #else
     #define wxXML_GetAttribute(A,B,C)   (A->GetPropVal(B,C))
@@ -305,11 +305,7 @@ wxObject *wxPropertyGridXmlHandler::DoCreateResource()
 
 bool wxPropertyGridXmlHandler::CanHandle(wxXmlNode *node)
 {
-#if wxCHECK_VERSION(2,7,0)
     #define fOurClass(A) IsOfClass(node, A)
-#else
-    #define fOurClass(A) (wxXML_GetAttribute(node, wxT("class"), wxEmptyString) == A)
-#endif
 
     wxString name = node->GetName();
 
@@ -330,4 +326,4 @@ bool wxPropertyGridXmlHandler::CanHandle(wxXmlNode *node)
            );
 }
 
-#endif // wxUSE_XRC && wxCHECK_VERSION(2,8,0)
+#endif // wxUSE_XRC

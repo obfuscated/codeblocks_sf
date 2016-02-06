@@ -1229,7 +1229,7 @@ wxMenuItem* MainFrame::AddPluginInMenus(wxMenu* menu, cbPlugin* plugin, wxObject
 
     while(!item)
     {
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         if (!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetItemLabelText()) > 0)
 #else
         if (!pos || title.CmpNoCase(menu->FindItemByPosition(pos - 1)->GetLabel()) > 0)
@@ -1576,7 +1576,7 @@ void MainFrame::DoSelectLayout(const wxString& name)
         {
             if (!items[i]->IsCheckable())
                 continue;
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
             items[i]->Check(items[i]->GetItemLabel().IsSameAs(name));
 #else
             items[i]->Check(items[i]->GetText().IsSameAs(name));
@@ -1599,40 +1599,7 @@ void MainFrame::DoAddPluginStatusField(cbPlugin* plugin)
 
 inline void InitToolbar(wxToolBar *tb)
 {
-#if defined __WXMSW__ && !wxCHECK_VERSION(2, 8, 9)
-    // HACK: for all windows versions (including XP *without* using a manifest file),
-    //       the best size for a toolbar is not correctly calculated by wxWidgets/wxAUI/whatever.
-    //       so we try to help the situation a little. It's not perfect, but it works.
-    // not needed for versions >= 2.8.9: fixed in upstream, toolbars with standard-controls
-    // are much too large with it (at least on w2k).
-    if (!UsesCommonControls6()) // all windows versions, including XP without a manifest file
-    {
-        // calculate the total width of all wxWindow* in the toolbar (if any)
-        int w = 0;
-        int ccount = 0;
-        for (wxWindowList::compatibility_iterator node = tb->GetChildren().GetFirst(); node; node = node->GetNext())
-        {
-            wxWindow *win = (wxWindow *)node->GetData();
-            if (win)
-            {
-                w += win->GetSize().GetWidth();
-                ++ccount;
-            }
-        }
-#if wxCHECK_VERSION(2, 8, 0)
-        wxSize s(w + tb->GetEffectiveMinSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
-        tb->SetInitialSize(s);
-#else
-        wxSize s(w + tb->GetBestFittingSize().GetWidth() - (ccount * (tb->GetToolSize().GetWidth() / 3)), 0);
-        tb->SetBestFittingSize(s);
-#endif
-    }
-    else
-        tb->SetInitialSize();
-    // end of HACK
-#else
     tb->SetInitialSize();
-#endif
 }
 
 ToolbarInfo MainFrame::DoAddPluginToolbar(cbPlugin* plugin)
@@ -1966,7 +1933,7 @@ void MainFrame::DoUpdateStatusBar()
         msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         SetStatusText(ed->GetModified() ? _("Modified") : _T(""), panel++);
 #else
         SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
@@ -2022,7 +1989,7 @@ void MainFrame::DoUpdateEditorStyle(cbAuiNotebook* target, const wxString& prefi
             break;
 
         default: // default style
-            #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(2, 9, 4)
+            #if defined(__WXGTK__) && (USE_GTK_NOTEBOOK) && !wxCHECK_VERSION(3, 0, 0)
             target->SetArtProvider(new NbStyleGTK());
             #else
             target->SetArtProvider(new wxAuiDefaultTabArt());
@@ -2417,14 +2384,8 @@ bool MainFrame::OnDropFiles(wxCoord /*x*/, wxCoord /*y*/, const wxArrayString& f
         wxBusyCursor useless;
         wxPaintEvent e;
         ProcessEvent(e);
-#if !wxCHECK_VERSION(2, 8, 11)
-        Freeze();
-#endif
         for (unsigned int i = 0; i < files.GetCount(); ++i)
           success &= OpenGeneric(files[i]);
-#if !wxCHECK_VERSION(2, 8, 11)
-        Thaw();
-#endif
     }
     return success;
 }
@@ -3700,7 +3661,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
         {
             wxMenuItem* item = hl->FindItem(event.GetId());
             if (item)
-#if wxCHECK_VERSION(2, 9, 0)
+#if wxCHECK_VERSION(3, 0, 0)
                 lang = colour_set->GetHighlightLanguage(item->GetItemLabelText());
 #else
                 lang = colour_set->GetHighlightLanguage(item->GetLabel());

@@ -53,7 +53,7 @@ void AnnoyingDialog::Init(const wxString &caption, const wxString &id, const wxS
     m_Id = id;
 
     // Code::Blocks needs wxWidgets 2.8
-    CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+    CompileTimeAssertion<wxMinimumVersion<2,8,12>::eval>::Assert();
 
     ConfigManagerContainer::StringSet disabled;
     ConfigManager* cfg = Manager::Get()->GetConfigManager(wxT("an_dlg"));

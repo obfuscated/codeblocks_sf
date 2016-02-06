@@ -1258,7 +1258,7 @@ void TestPaintCallback(wxPGProperty* WXUNUSED(property),wxDC& dc,
 }
 */
 
-#if wxUSE_XRC && wxCHECK_VERSION(2,8,0)
+#if wxUSE_XRC
 #include "wx/xrc/xh_all.h"
 
 void FormMain::OnTestXRC(wxCommandEvent& WXUNUSED(event))
@@ -3170,11 +3170,7 @@ void FormMain::OnSaveToFileClick ( wxCommandEvent& event )
                      wxEmptyString,
                      wxEmptyString,
                      wxT("Text files (*.txt)|*.txt|All files (*.*)|*.*"),
-#if wxCHECK_VERSION(2,8,0)
                      wxFD_SAVE|wxFD_OVERWRITE_PROMPT
-#else
-                     wxSAVE|wxOVERWRITE_PROMPT
-#endif
                     );
 
     wxPropertyGrid* pg = m_pPropGridManager->GetGrid();
@@ -3207,11 +3203,7 @@ void FormMain::OnLoadFromFileClick ( wxCommandEvent& )
                      wxEmptyString,
                      wxEmptyString,
                      wxT("Text files (*.txt)|*.txt|All files (*.*)|*.*"),
-#if wxCHECK_VERSION(2,8,0)
                      wxFD_OPEN
-#else
-                     wxOPEN
-#endif
                      );
 
     wxPropertyGrid* pg = m_pPropGridManager->GetGrid();

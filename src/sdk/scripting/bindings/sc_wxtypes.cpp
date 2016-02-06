@@ -24,7 +24,7 @@ namespace ScriptBindings
     ///////////////////
     SQInteger wxArrayString_Index(HSQUIRRELVM v)
     {
-        CompileTimeAssertion<wxMinimumVersion<2,8>::eval>::Assert();
+        CompileTimeAssertion<wxMinimumVersion<2,8,12>::eval>::Assert();
         StackHandler sa(v);
         wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
         wxString inpstr = *SqPlus::GetInstance<wxString,false>(v, 2);
@@ -185,7 +185,7 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
             #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
@@ -201,7 +201,7 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
             #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
@@ -217,7 +217,7 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
             #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
@@ -233,7 +233,7 @@ namespace ScriptBindings
         if ( !search_char ) // Probably it's a wxString
         {
             wxString& temp = *SqPlus::GetInstance<wxString,false>(v, 2);
-            #if wxCHECK_VERSION(2, 9, 0)
+            #if wxCHECK_VERSION(3, 0, 0)
             search_char = static_cast<SQInteger>( temp.GetChar(0).GetValue() );
             #else
             search_char = static_cast<SQInteger>( temp.GetChar(0) );
@@ -296,7 +296,7 @@ namespace ScriptBindings
         typedef void(wxFileName::*WXFN_ASSIGN_FN)(const wxFileName&);
         typedef void(wxFileName::*WXFN_ASSIGN_STR)(const wxString&, wxPathFormat);
         typedef wxString(wxFileName::*WXFN_GETPATH)(int, wxPathFormat)const;
-#if wxCHECK_VERSION(2, 9, 1)
+#if wxCHECK_VERSION(3, 0, 0)
         typedef bool(wxFileName::*WXFN_SETCWD)()const;
 #else
         typedef bool(wxFileName::*WXFN_SETCWD)();

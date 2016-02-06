@@ -132,7 +132,7 @@ namespace ScriptBindings
                     if (id != wxNOT_FOUND)
                     {
                         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, id);
-                        #if wxCHECK_VERSION(2, 9, 0)
+                        #if wxCHECK_VERSION(3, 0, 0)
                         mbar->GetEventHandler()->ProcessEvent(evt);
                         #else
                         if ( !mbar->ProcessEvent(evt) )
