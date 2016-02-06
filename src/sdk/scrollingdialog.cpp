@@ -86,7 +86,7 @@ bool wxStandardDialogLayoutAdapter::DoLayoutAdaptation(wxDialogHelper* dialog)
     if (dialog->GetDialog()->GetSizer())
     {
         // The wxRTTI is wrong for wxNotebook in < 2.8.8 and 2.9, so use dynamic_cast instead
-#if !wxCHECK_VERSION(2, 8, 8) && !wxCHECK_VERSION(3, 0, 0))
+#if !wxCHECK_VERSION(2, 8, 8) && !wxCHECK_VERSION(3, 0, 0)
         wxBookCtrlBase* bookContentWindow = dynamic_cast<wxBookCtrlBase*>(dialog->GetContentWindow());
 #else
         wxBookCtrlBase* bookContentWindow = wxDynamicCast(dialog->GetContentWindow(), wxBookCtrlBase);
