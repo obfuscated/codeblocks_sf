@@ -21,13 +21,8 @@
     #include <wx/renderer.h>
 #endif
 
-#if defined ( __WXGTK__ ) && !wxCHECK_VERSION(3, 0, 0)
-    #include <wx/gtk/dc.h>
-    #include <wx/gtk/dcclient.h>
-#else
-    #include <wx/dc.h>
-    #include <wx/dcclient.h>
-#endif
+#include <wx/dc.h>
+#include <wx/dcclient.h>
 
 // Some general constants:
 namespace
