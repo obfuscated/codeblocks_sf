@@ -183,7 +183,7 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     wxRadioBox* rbScope = XRCCTRL(*this, "rbScope2", wxRadioBox);
     EditorManager* edMgr = Manager::Get()->GetEditorManager();
     bool filesOpen = false;
-    for (size_t i = 0; i < edMgr->GetEditorsCount(); ++i)
+    for (int i = 0; i < edMgr->GetEditorsCount(); ++i)
     {
         if (edMgr->GetBuiltinEditor(i))
         {
