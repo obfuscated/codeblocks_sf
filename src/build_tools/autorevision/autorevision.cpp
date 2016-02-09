@@ -246,8 +246,6 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
 {
     string comment("/*");
     comment.append(revision);
-    comment.append(",");
-    comment.append(date);
     comment.append("*/");
 
     {
@@ -261,7 +259,7 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
             if(l_old > l_comment || ((l_old == l_comment) && old >= comment))
             {
                 if(be_verbose)
-                    printf("Revision unchanged or older (%s %s). Skipping.", revision.c_str(), old.c_str());
+                    printf("Revision unchanged or older (%s). Skipping.", old.c_str());
                 in.close();
                 return false;
             }
