@@ -1,0 +1,125 @@
+
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+// Script plugins must extend cbScriptPlugin
+
+//Include(_("wx-test.script"));
+
+class CBEvent_TestPlugin extends cbScriptPlugin
+{
+    // mandatory to setup the plugin's info
+    constructor()
+    {
+        info = PluginInfo();
+        info.name = _T("CBEvent_TestPlugin");
+        info.title = _T("Test the c::b events in the scripting engine of C::B");
+        info.version = _T("0.1a");
+        info.license = _T("GPL");
+    }
+
+    // optional to create menubar items
+    function GetMenu()
+    {
+        local entries = ::wxArrayString();
+        entries.Add(_T("Plugins/Test Scripting/Test Event Scripting"), 1);
+        return entries;
+    }
+
+    // optional to create context menu entries
+    /*function GetModuleMenu(who, data)
+    {
+
+    }*/
+
+    // optional to support ExecutePlugin(pluginNameString)
+    function Execute()
+    {
+        ::ShowMessage(_T("Start the test"));
+        StartTest();
+        return 0;
+    }
+
+    // optional calback for menubar items clicking
+    function OnMenuClicked(index)
+    {
+        if (index == 0)
+        {
+            ::ShowMessage(_T("Start the Test"));
+            StartTest();
+        }
+
+    }
+
+    // optional calback for context menu items clicking
+    function OnModuleMenuClicked(index)
+    {
+
+    }
+
+    function StartTest()
+    {
+        print("Register events:\n");
+        print("OnStartShutdown\n");
+        RegisterCBEvent(this,cbEVT_APP_START_SHUTDOWN,"OnStartShutdown");
+        print("OnEditorClose\n");
+        RegisterCBEvent(this,cbEVT_EDITOR_CLOSE ,"OnEditorClose");
+        print("OnEditorOpen\n");
+        RegisterCBEvent(this,cbEVT_EDITOR_OPEN ,"OnEditorOpen");
+        print("OnProjectOpen\n");
+        RegisterCBEvent(this,cbEVT_PROJECT_OPEN ,"OnProjectOpen");
+        print("OnProjectClose\n");
+        RegisterCBEvent(this,cbEVT_PROJECT_CLOSE ,"OnProjectClose");
+        print("OnCompilerStarted\n");
+        RegisterCBEvent(this,cbEVT_COMPILER_STARTED  ,"OnCompilerStarted");
+        print("OnCompilerFinished\n");
+        RegisterCBEvent(this,cbEVT_COMPILER_FINISHED   ,"OnCompilerFinished");
+    }
+
+    function OnStartShutdown(evt)
+    {
+        print("OnStartShutdown\n");
+    }
+    function OnEditorClose(evt)
+    {
+        print("OnEditorClose: Name: " + evt.GetEditor().GetShortName() + "\n" );
+    }
+
+    function OnEditorOpen(evt)
+    {
+        print("OnEditorOpen: Name: " + evt.GetEditor().GetShortName() + "\n" );
+    }
+
+    function OnProjectOpen(evt)
+    {
+        print("OnProjectOpen: Name: " + evt.GetProject().GetTitle() + "\n" );
+    }
+
+    function OnProjectClose(evt)
+    {
+        print("OnProjectClose: Name: " + evt.GetProject().GetTitle() + "\n" );
+    }
+
+    function OnCompilerStarted(evt)
+    {
+        print("OnCompilerStarted: Name: " + evt.GetProject().GetTitle() + "\n" );
+    }
+
+    function OnCompilerFinished(evt)
+    {
+        print("OnCompilerFinished: Name: " + evt.GetProject().GetTitle() + "\n" );
+    }
+
+}
+
+// this call actually registers the script plugin with Code::Blocks
+RegisterPlugin(CBEvent_TestPlugin());
+
+// if you want to call this plugin's Execute() function, use this in a script:
+// ExecutePlugin(_T("CBEvent_TestPlugin"));

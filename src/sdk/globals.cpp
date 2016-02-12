@@ -366,7 +366,9 @@ FileType FileTypeOf(const wxString& filename)
     else if (ext.IsSameAs(FileFilters::XML_EXT))
         return ftXMLDocument;
 
-    else if (ext.IsSameAs(FileFilters::SCRIPT_EXT))
+    else if (ext.IsSameAs(FileFilters::SCRIPT_EXT) ||
+            ext.IsSameAs(FileFilters::SQ_SCRIPT_EXT) ||
+            ext.IsSameAs(FileFilters::CB_SCRIPT_PLUGIN_EXT))
         return ftScript;
 
     // DrewBoo: Before giving up, see if the ProjectManager

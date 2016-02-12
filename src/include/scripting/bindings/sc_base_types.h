@@ -8,6 +8,8 @@
 
 #include <wx/string.h>
 #include <wx/arrstr.h>
+#include <wx/animate.h>
+#include <wx/checkbox.h>
 
 #include <globals.h>
 #include <settings.h>
@@ -24,84 +26,47 @@
 #include <compiletargetbase.h>
 #include <cbproject.h>
 #include <cbeditor.h>
-#include <sqplus.h>
+#include <scripting/sqrat.h>
+#include <scripting/bindings/sc_cb_vm.h>
+#include <scripting/bindings/sc_binding_util.h>
+#include <scripting/bindings/sq_wx/sq_wx_type_handler.h>
 
-// wx primitives and types
-DECLARE_INSTANCE_TYPE(wxArrayString);
-DECLARE_INSTANCE_TYPE(wxColour);
-DECLARE_INSTANCE_TYPE(wxFileName);
-DECLARE_INSTANCE_TYPE(wxPoint);
-DECLARE_INSTANCE_TYPE(wxSize);
-DECLARE_INSTANCE_TYPE(wxString);
-
-// C::B primitives and types
-DECLARE_INSTANCE_TYPE(ConfigManager);
-DECLARE_INSTANCE_TYPE(EditorManager);
-DECLARE_INSTANCE_TYPE(UserVariableManager);
-DECLARE_INSTANCE_TYPE(ScriptingManager);
-DECLARE_INSTANCE_TYPE(EditorBase);
-DECLARE_INSTANCE_TYPE(cbEditor);
-DECLARE_INSTANCE_TYPE(CompileOptionsBase);
-DECLARE_INSTANCE_TYPE(CompileTargetBase);
-DECLARE_INSTANCE_TYPE(ProjectBuildTarget);
-DECLARE_INSTANCE_TYPE(cbProject);
-DECLARE_INSTANCE_TYPE(ProjectFile);
-DECLARE_INSTANCE_TYPE(ProjectManager);
-DECLARE_INSTANCE_TYPE(CompilerFactory);
-DECLARE_INSTANCE_TYPE(PluginInfo);
-DECLARE_INSTANCE_TYPE(FileTreeData);
-using SqPlus::GetTypeName;
-
-// make SqPlus aware of enum-type arguments
-#define DECLARE_ENUM_TYPE(T) \
-namespace SqPlus \
-{ \
-    inline void Push(HSQUIRRELVM v,T value) { sq_pushinteger(v,value); } \
-    inline bool Match(TypeWrapper<T>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_INTEGER; } \
-    inline T Get(TypeWrapper<T>,HSQUIRRELVM v,int idx) { SQInteger i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return (T)i; } \
+#define DEFINE_SQRAT_ENUM(N) namespace Sqrat                        \
+{                                                                   \
+template<>                                                          \
+struct Var<N> {                                                     \
+    N value;                                                        \
+    Var(HSQUIRRELVM v, SQInteger idx) {                             \
+        if (!Sqrat::Error::Occurred(v)) {                \
+            SQInteger tmp = 0;                                      \
+            sq_getinteger(v,idx,&tmp);                              \
+            value = static_cast<N>(tmp);                            \
+        }                                                           \
+    }                                                               \
+    static void push(HSQUIRRELVM v, const N value) {                \
+        sq_pushinteger(v,static_cast<SQInteger>(value));            \
+    }                                                               \
+};                                                                   \
 }
 
-DECLARE_ENUM_TYPE(wxPathFormat);
-DECLARE_ENUM_TYPE(wxPathNormalize);
-DECLARE_ENUM_TYPE(PrintColourMode);
-DECLARE_ENUM_TYPE(OptionsRelation);
-DECLARE_ENUM_TYPE(OptionsRelationType);
-DECLARE_ENUM_TYPE(TargetType);
-DECLARE_ENUM_TYPE(PCHMode);
-DECLARE_ENUM_TYPE(MakeCommand);
-DECLARE_ENUM_TYPE(TemplateOutputType);
-DECLARE_ENUM_TYPE(SearchDirs);
-DECLARE_ENUM_TYPE(ModuleType);
-DECLARE_ENUM_TYPE(FileTreeData::FileTreeDataKind);
-DECLARE_ENUM_TYPE(TargetFilenameGenerationPolicy);
-using SqPlus::Push;
+DEFINE_SQRAT_ENUM(TemplateOutputType);
+DEFINE_SQRAT_ENUM(FileType);
+DEFINE_SQRAT_ENUM(SearchDirs);
+DEFINE_SQRAT_ENUM(SupportedPlatforms);
+DEFINE_SQRAT_ENUM(TargetFilenameGenerationPolicy);
+DEFINE_SQRAT_ENUM(ModuleType);
+DEFINE_SQRAT_ENUM(PrintColourMode);
+DEFINE_SQRAT_ENUM(PrintScope);
+DEFINE_SQRAT_ENUM(PCHMode);
+DEFINE_SQRAT_ENUM(MakeCommand);
+DEFINE_SQRAT_ENUM(TargetType);
+DEFINE_SQRAT_ENUM(OptionsRelation);
+DEFINE_SQRAT_ENUM(OptionsRelationType);
+DEFINE_SQRAT_ENUM(wxPathNormalize);
+DEFINE_SQRAT_ENUM(wxPathFormat);
+DEFINE_SQRAT_ENUM(wxAnimationType);
+DEFINE_SQRAT_ENUM(wxCheckBoxState);
 
-namespace SqPlus
-{
-    // make SqPlus aware of wxString arguments
-//    inline void Push(HSQUIRRELVM v,const wxString& value) { sq_pushstring(v,cbU2C(value),-1); }
-//    inline bool Match(TypeWrapper<const wxString&>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_STRING; }
-//    inline wxString Get(TypeWrapper<const wxString&>,HSQUIRRELVM v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return cbC2U(s); }
 
-    // type info for short unsigned int (missing from SqPlus)
-    template<>
-    struct TypeInfo<unsigned short>
-    {
-        const SQChar * typeName;
-        TypeInfo() : typeName(sqT("int")) {}
-        enum {TypeID=VAR_TYPE_INT,Size=sizeof(unsigned short)};
-        operator ScriptVarType() { return ScriptVarType(TypeID); }
-    };
-#ifdef _SQ64
-    template<>
-    struct TypeInfo<SQInt32>
-    {
-        const SQChar * typeName;
-        TypeInfo() : typeName(sqT("int")) {}
-        enum {TypeID=VAR_TYPE_INT,Size=sizeof(SQInt32)};
-        operator ScriptVarType() { return ScriptVarType(TypeID); }
-    };
-#endif
-}
 
 #endif // SC_BASE_TYPES_H

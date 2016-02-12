@@ -282,7 +282,7 @@ bool PluginManager::InstallPlugin(const wxString& pluginName, bool forAllUsers, 
         settingsOnName.Remove(0, 3);
     if (!platform::windows && settingsOffName.StartsWith(_T("lib")))
         settingsOffName.Remove(0, 3);
-    wxString pluginFilename = UnixFilename(pluginDir + _T('/') + localName);
+    wxString pluginFilename = pluginDir + _T('/') + localName;
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin filename: ") + pluginFilename));
 //    Manager::Get()->GetLogManager()->DebugLog(F(_T("Plugin resources: ") + ConfigManager::GetDataFolder() + _T('/') + resourceName));
 
@@ -1389,23 +1389,7 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
     }
 
     // script plugins now
-    wxArrayInt ids = ScriptBindings::ScriptPluginWrapper::CreateModuleMenu(type, menu, data);
-    for (size_t i = 0; i < ids.GetCount(); ++i)
-    {
-        Connect(ids[i], -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &PluginManager::OnScriptModuleMenu);
-    }
-}
-
-void PluginManager::OnScriptMenu(wxCommandEvent& event)
-{
-    ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
-}
-
-void PluginManager::OnScriptModuleMenu(wxCommandEvent& event)
-{
-    ScriptBindings::ScriptPluginWrapper::OnScriptModuleMenu(event.GetId());
+    Manager::Get()->GetScriptingManager()->CreateModuleMenu(type,menu,data);
 }
 
 cbMimePlugin* PluginManager::GetMIMEHandlerForFile(const wxString& filename)

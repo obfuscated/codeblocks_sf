@@ -51,10 +51,8 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DSCRAT_IMPORT" />
 			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\scripting\include" />
-			<Add directory="..\..\..\include\scripting\sqplus" />
-			<Add directory="..\..\..\include\scripting\bindings" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="$(#WX30.INCLUDE)" />
 			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

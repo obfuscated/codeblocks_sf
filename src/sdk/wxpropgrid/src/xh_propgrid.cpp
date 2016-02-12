@@ -10,7 +10,10 @@
 /////////////////////////////////////////////////////////////////////////////
 
 // For compilers that support precompilation, includes "wx.h".
-#include "wx/wxprec.h"
+
+#ifdef WX_PRECOMP
+    #include "wx/wxprec.h"
+#endif
 
 #ifdef __BORLANDC__
     #pragma hdrstop
@@ -32,7 +35,13 @@
 
 #include <wx/propgrid/propgrid.h>
 
-#include <wx/propgrid/xh_propgrid.h>
+#if wxCHECK_VERSION(3,0,0)
+    #include "../sdk/wxpropgrid/include/wx/propgrid/xh_propgrid.h"
+    #include <wx/xrc/xmlres.h>
+#else
+    #include <wx/propgrid/xh_propgrid.h>
+#endif // wxCHECK_VERSION
+#include <wx/xml/xml.h>
 
 #ifndef WX_PRECOMP
     #include "wx/intl.h"
@@ -43,6 +52,7 @@
 #else
     #define wxXML_GetAttribute(A,B,C)   (A->GetPropVal(B,C))
 #endif
+
 
 IMPLEMENT_DYNAMIC_CLASS(wxPropertyGridXmlHandler, wxXmlResourceHandler)
 

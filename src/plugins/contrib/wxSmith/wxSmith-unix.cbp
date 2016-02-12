@@ -58,10 +58,6 @@
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../sdk/wxpropgrid/include" />
-			<Add directory="../../../include/scripting/include" />
-			<Add directory="../../../include/scripting/squirrel" />
-			<Add directory="../../../include/scripting/sqplus" />
-			<Add directory="../../../include/scripting/bindings" />
 			<Add directory="../../../include/mozilla_chardet" />
 			<Add directory="../../../include/mozilla_chardet/mfbt" />
 			<Add directory="../../../include/mozilla_chardet/nsprpub/pr/include" />

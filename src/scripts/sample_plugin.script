@@ -33,7 +33,7 @@ class TestPlugin extends cbScriptPlugin
 	{
 		local entries = ::wxArrayString();
 
-	    if (who == ::mtEditorManager)
+	    if (who == mtEditorManager)
 	    {
 	        local f = wxFileName();
 	        f.Assign(data.GetFolder(), ::wxPATH_NATIVE);

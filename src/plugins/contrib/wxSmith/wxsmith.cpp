@@ -35,8 +35,8 @@
 #include <configmanager.h>
 #include <projectmanager.h>
 #include <logmanager.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include <scripting/sqrat.h>
+#include <scripting/bindings/sc_base_types.h>
 
 namespace
 {
@@ -438,25 +438,26 @@ void wxSmith::ShowResourcesTab()
     Notebook->SetSelection( Notebook->GetPageIndex(m_Splitter) );
 }
 
+
+
 void wxSmith::RegisterScripting()
 {
-    Manager::Get()->GetScriptingManager();
-    if ( SquirrelVM::GetVMPtr() )
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
     {
-        SqPlus::RegisterGlobal( &wxSmith::RecoverWxsFile, "WxsRecoverWxsFile" );
+        Sqrat::RootTable(vm->GetVM()).Func("WxsRecoverWxsFile",&wxSmith::RecoverWxsFile);
     }
 }
 
 void wxSmith::UnregisterScripting()
 {
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if ( v )
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if ( vm )
     {
-        sq_pushroottable(v);
-        sq_pushstring(v,"WxsRecoverWxsFile",-1);
-        sq_deleteslot(v,-2,false);
-        sq_poptop(v);
+        sq_pushroottable(vm->GetVM());
+        sq_pushstring(vm->GetVM(),"WxsRecoverWxsFile",-1);
+        sq_deleteslot(vm->GetVM(),-2,false);
+        sq_poptop(vm->GetVM());
     }
 }
 

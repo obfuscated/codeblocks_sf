@@ -28,32 +28,91 @@ class Menu_test_plugin extends cbScriptPlugin
     function GetMenu()
     {
         local entries = ::wxArrayString();
-        entries.Add(_T("Plugins/Test/Menu Test"), 1);
-        entries.Add(_T("Plugins/Test/-Menu Test2"), 1);
-        entries.Add(_T("Plugins/Test/Menu Test3"), 1);
-        entries.Add(_T("Plugins/Test/Menu/Test0"), 1);
-        entries.Add(_T("Plugins/Test/Menu/Test/0"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Menu Test/Menu Test"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Menu Test/-Menu Test2"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Menu Test/Menu Test3"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Menu Test/Menu/Test0"), 1);
+        entries.Add(_T("Plugins/Test Scripting/Menu Test/Menu/Test/0"), 1);
         entries.Add(_T("Menu Test Plugin/Test1"), 1);
 
         ::print("##########################################\n");
         ::print(" Welcome to the Menu_test_plugin\n");
         ::print("There should have been created 6 menu:\n");
-        ::print("Plugins/Test/Menu Test\n");
-        ::print("Plugins/Test/-Menu Test2\n");
-        ::print("Plugins/Test/Menu Test3\n");
-        ::print("Plugins/Test/Menu/Test0\n");
-        ::print("Plugins/Test/Menu/Test/0\n");
-        ::print("Menu Test Plugin/Test1\n");
+        ::print("Plugins/Test Scripting/Menu Test/-Menu Test2\n");
+        ::print("Plugins/Test Scripting/Menu Test/Menu Test3\n");
+        ::print("Plugins/Test Scripting/Menu Test/Menu/Test0\n");
+        ::print("Plugins/Test Scripting/Menu Test/Menu/Test/0\n");
+		::print("Right click Menues should also be inserted in:\n");
+		::print("Project Manager: Menu test/mtProjectManager 0\n");
+		::print("Project Manager: Menu test/mtProjectManager 1\n");
+		::print("Editor Manager: Menu test/mtEditorManager 0\n");
+		::print("Editor Manager: Menu test/mtEditorManager 1\n");	
+		::print("Log Manager: Menu test/mtLogManager 0\n");
+		::print("Log Manager: Menu test/mtLogManager 1\n");	
+		::print("Open File List: Menu test/mtOpenFilesList 0\n");
+		::print("Open File List: Menu test/mtOpenFilesList 1\n");
+		::print("Editor Tab: Menu test/mtEditorTab 0\n");
+		::print("Editor Tab: Menu test/mtEditorTab 1\n");
         ::print("##########################################\n");
 
         return entries;
     }
 
     // optional to create context menu entries
-    /*function GetModuleMenu(who, data)
+    function GetModuleMenu(who, data)
     {
-
-    }*/
+		local entries = ::wxArrayString();
+		if(who == mtProjectManager)
+		{
+			entries.Add(_T("Menu test/mtProjectManager 0"), 1);
+			entries.Add(_T("Menu test/mtProjectManager 1"), 1);
+			return entries;
+		} else if(who == mtEditorManager)
+		{
+			entries.Add(_T("Menu test/mtEditorManager 0"), 1);
+			entries.Add(_T("Menu test/mtEditorManager 1"), 1);
+			return entries;
+		}else if(who == mtLogManager)
+		{
+			entries.Add(_T("Menu test/mtLogManager 0"), 1);
+			entries.Add(_T("Menu test/mtLogManager 1"), 1);
+			return entries;
+		}else if(who == mtOpenFilesList)
+		{
+			entries.Add(_T("Menu test/mtOpenFilesList 0"), 1);
+			entries.Add(_T("Menu test/mtOpenFilesList 1"), 1);
+			return entries;
+		}else if(who == mtEditorTab)
+		{
+			entries.Add(_T("Menu test/mtEditorTab 0"), 1);
+			entries.Add(_T("Menu test/mtEditorTab 1"), 1);
+			return entries;
+		}else if(who == mtUnknown)
+		{
+			//entries.Add(_T("Menu test/mtUnknown 0"), 1);
+			//entries.Add(_T("Menu test/mtUnknown 1"), 1);
+			return entries;
+		}
+    }
+	
+	function TypeToString(type)
+	{
+		switch(type)
+		{
+			case mtEditorManager:
+				return "mtEditorManager";
+			case mtProjectManager:
+				return "mtProjectManager";
+			case mtLogManager:
+				return "mtLogManager";
+			case mtOpenFilesList:
+				return "mtOpenFilesList";
+			case mtEditorTab:
+				return "mtEditorTab";
+			case mtUnknown:
+				return "mtUnknown";
+		}
+	}
 
     // optional to support ExecutePlugin(pluginNameString)
     function Execute()
@@ -69,9 +128,9 @@ class Menu_test_plugin extends cbScriptPlugin
     }
 
     // optional calback for context menu items clicking
-    function OnModuleMenuClicked(index)
+    function OnModuleMenuClicked(index,type)
     {
-
+		print("Module Menu: " + index + " type: " + TypeToString(type) +  "\n");
     }
 
     function StartTest()

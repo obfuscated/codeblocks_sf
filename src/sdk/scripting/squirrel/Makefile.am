@@ -1,5 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/include \
-				-I$(top_srcdir)/src/include/scripting/squirrel
+AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/squirrel
 
 noinst_LTLIBRARIES = libsquirrel.la
 

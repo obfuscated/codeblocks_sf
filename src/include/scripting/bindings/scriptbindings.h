@@ -6,9 +6,14 @@
 #ifndef SCRIPTBINDINGS_H
 #define SCRIPTBINDINGS_H
 
+#include <scripting/bindings/sc_cb_vm.h>
+#include <scripting/sqrat.h>
+
+
+
 namespace ScriptBindings
 {
-    void RegisterBindings();
+    void RegisterBindings(HSQUIRRELVM vm);
 }
 
 #endif // SCRIPTBINDINGS_H

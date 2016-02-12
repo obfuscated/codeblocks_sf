@@ -25,7 +25,7 @@
 #include "filefilters.h"
 
 #include "scripting/bindings/sc_base_types.h"
-#include "scripting/sqplus/sqplus.h"
+#include "scripting/bindings/sc_cb_vm.h"
 
 // move this to globals if needed
 inline wxString UnquoteStringIfNeeded(const wxString& str)
@@ -530,7 +530,7 @@ void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetB
         }
 
         // clear previous script's context
-        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts);
+        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts,_T("ClearBuildScript"));
 
         // if the script doesn't exist, just return
         if (!Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro))
@@ -538,15 +538,22 @@ void CompilerCommandGenerator::DoBuildScripts(cbProject* project, CompileTargetB
             m_NotLoadedScripts.Add(script_nomacro);
             continue;
         }
-
-        try
+        ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+        Sqrat::Function func(Sqrat::RootTable(vm->GetVM()),funcName.ToUTF8());
+        if(func.IsNull())
         {
-            SqPlus::SquirrelFunction<void> f(cbU2C(funcName));
-            f(target);
+            //Could not find the function
+            wxString msg;
+            msg << _("Function ") << funcName << _("could not be found in:\n ") << script_nomacro;
+            Manager::Get()->GetScriptingManager()->DisplayErrors(msg);
+            m_ScriptsWithErrors.Add(script_nomacro);
         }
-        catch (SquirrelError& e)
+        func(target);
+        if(vm->HasError())
         {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            wxString msg;
+            msg << _("In Script ") << script_nomacro << _(" occurred this error:\n ") << vm->getLastErrorMsg();
+            Manager::Get()->GetScriptingManager()->DisplayErrors(msg);
             m_ScriptsWithErrors.Add(script_nomacro);
         }
     }

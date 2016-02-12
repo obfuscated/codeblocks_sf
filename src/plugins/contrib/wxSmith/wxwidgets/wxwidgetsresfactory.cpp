@@ -32,8 +32,8 @@
 
 #include <wx/choicdlg.h>
 #include <tinyxml/tinywxuni.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include <scripting/sqrat.h>
+#include <scripting/bindings/sc_base_types.h>
 
 namespace
 {
@@ -60,6 +60,13 @@ namespace
     wxArrayString Names(ResourcesCount,NamesPtr);
 
     WX_DEFINE_ARRAY(TiXmlElement*,wxArrayElement);
+
+    /** \ingroup sq_wxsmith
+     *### RecoverWxsFile(Project,AppSource,MainResSource,MainResHeader,WxsFile)
+     *  see \ref AddWxExtensions for parameters
+     *  Function used inside wxWidgets wizard to bind wxSmith's extensions
+    */
+
 
     /** \brief Function used inside wxWidgets wizard to
       *        bind wxSmith's extensions
@@ -157,26 +164,27 @@ void wxWidgetsResFactory::OnAttach()
     // TODO: Call OnAttach for item factories
 
     // Registering wizard function in scripting manager
-    Manager::Get()->GetScriptingManager();
-    if (SquirrelVM::GetVMPtr())
+
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
     {
-        SqPlus::RegisterGlobal(AddWxExtensions,"WxsAddWxExtensions");
+        Sqrat::RootTable(vm->GetVM()).Func("WxsAddWxExtensions",&AddWxExtensions);
     }
 }
+
 
 void wxWidgetsResFactory::OnRelease()
 {
     // TODO: Call OnRelease for item factories
 
     // Unregistering wizard function
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if ( v )
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if ( vm )
     {
-        sq_pushroottable(v);
-        sq_pushstring(v,"WxsAddWxExtensions",-1);
-        sq_deleteslot(v,-2,false);
-        sq_poptop(v);
+        sq_pushroottable(vm->GetVM());
+        sq_pushstring(vm->GetVM(),"WxsAddWxExtensions",-1);
+        sq_deleteslot(vm->GetVM(),-2,false);
+        sq_poptop(vm->GetVM());
     }
 }
 

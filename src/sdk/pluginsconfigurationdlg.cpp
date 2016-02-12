@@ -23,6 +23,7 @@
     #include "configmanager.h"
     #include "pluginmanager.h"
     #include "cbplugin.h" // IsAttached
+    #include "scriptingmanager.h"
 #endif
 
 #include "annoyingdialog.h"
@@ -44,6 +45,9 @@ inline int wxCALLBACK sortByTitle(long item1, long item2, cb_unused long sortDat
 {
     const PluginElement* elem1 = (const PluginElement*)item1;
     const PluginElement* elem2 = (const PluginElement*)item2;
+    if(elem1 == NULL ||
+       elem2 == NULL)
+        return -1;
 
     return elem1->info.title.CompareTo(elem2->info.title);
 }
@@ -135,6 +139,7 @@ void PluginsConfigurationDlg::FillList()
         list->InsertColumn(1, _T("Version"));
         list->InsertColumn(2, _T("Enabled"), wxLIST_FORMAT_CENTER);
         list->InsertColumn(3, _T("Filename"));
+        list->InsertColumn(4, _T("type"));
     }
 
     PluginManager* man = Manager::Get()->GetPluginManager();
@@ -142,6 +147,7 @@ void PluginsConfigurationDlg::FillList()
 
     // populate Plugins checklist
     list->DeleteAllItems();
+    unsigned int list_index = 0;
     for (unsigned int i = 0; i < plugins.GetCount(); ++i)
     {
         const PluginElement* elem = plugins[i];
@@ -150,20 +156,51 @@ void PluginsConfigurationDlg::FillList()
         list->SetItem(idx, 1, elem->info.version);
         list->SetItem(idx, 2, elem->plugin->IsAttached() ? _("Yes") : _("No"));
         list->SetItem(idx, 3, UnixFilename(elem->fileName).AfterLast(wxFILE_SEP_PATH));
+        list->SetItem(idx, 4, wxT("dll"));
         list->SetItemData(idx, (wxIntPtr)elem);
 
         if (!elem->plugin->IsAttached())
             list->SetItemTextColour(idx, wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT));
         else
             list->SetItemTextColour(idx, wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT));
+
+        list_index = i;
+    }
+
+
+    // Script plugins
+    ScriptingManager* script_man = Manager::Get()->GetScriptingManager();
+    unsigned int plugin_count = script_man->GetPluginCount();
+    for(unsigned int i = 0; i < plugin_count ;i++)
+    {
+
+        list_index++;
+        cbScriptPlugin* plugin = script_man->GetPlugin(i);
+        if(plugin == nullptr)
+            continue;
+
+        PluginInfo info = plugin->GetInfo();
+
+        wxString filename = UnixFilename(plugin->GetScriptFile()).AfterLast(wxFILE_SEP_PATH);
+
+        long idx = list->InsertItem(list_index,info.title);
+        list->SetItem(idx, 1, info.version);
+        list->SetItem(idx, 2, _("Yes"));
+        list->SetItem(idx, 3, filename);
+        list->SetItem(idx, 4, wxT("script"));
+
+     /*   //list->SetItemData(idx, (wxIntPtr) NULL);*/
+
     }
 
     list->SetColumnWidth(0, wxLIST_AUTOSIZE);
     list->SetColumnWidth(1, wxLIST_AUTOSIZE_USEHEADER);
     list->SetColumnWidth(2, wxLIST_AUTOSIZE_USEHEADER);
     list->SetColumnWidth(3, wxLIST_AUTOSIZE);
+    list->SetColumnWidth(4, wxLIST_AUTOSIZE);
 
-    list->SortItems(sortByTitle, 0);
+
+    list->SortItems(sortByTitle, 0);  // if we enable this it will crash?
 }
 
 // class destructor
@@ -280,6 +317,7 @@ void PluginsConfigurationDlg::OnUninstall(cb_unused wxCommandEvent& event)
         if (sel == -1)
             break;
 
+        wxString type = GetText(list,sel,4);
         const PluginElement* elem = (const PluginElement*)list->GetItemData(sel);
         if (elem && elem->plugin)
         {
@@ -394,6 +432,16 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
         cbMessageBox(_("Failed exporting one or more plugins:\n\n") + failure, _("Warning"), wxICON_WARNING, this);
 }
 
+const wxString PluginsConfigurationDlg::GetText(wxListCtrl* list,long pos, long col) const
+{
+        wxListItem list_item;
+        list_item.SetId (pos);
+        list_item.SetColumn (col);
+        list_item.SetMask (wxLIST_MASK_TEXT);
+        list->GetItem (list_item);
+        return list_item.GetText();
+}
+
 void PluginsConfigurationDlg::OnSelect(cb_unused wxListEvent& event)
 {
     wxListCtrl* list = XRCCTRL(*this, "lstPlugins", wxListCtrl);
@@ -401,23 +449,46 @@ void PluginsConfigurationDlg::OnSelect(cb_unused wxListEvent& event)
         return;
 
     long sel = list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-    const PluginElement* elem = (const PluginElement*)list->GetItemData(sel);
-    if (!elem)
-        return;
 
-    wxString description(elem->info.description);
+    wxString filename;
+    PluginInfo info;
+    wxString type = GetText(list,sel,4);
+    if(type == wxT("dll"))
+    {
+        const PluginElement* elem = (const PluginElement*)list->GetItemData(sel);
+        if (!elem)
+            return;
+        info = elem->info;
+        filename = elem->fileName;
+    }
+    else if(type == wxT("script"))
+    {
+        ScriptingManager* script_man = Manager::Get()->GetScriptingManager();
+        unsigned int plugin_count = script_man->GetPluginCount();
+        for(unsigned int i = 0; i < plugin_count;++i)
+        {
+            if(script_man->GetPlugin(i)->GetInfo().title == GetText(list,sel,0))
+            {
+                info = script_man->GetPlugin(i)->GetInfo();
+                filename = script_man->GetPlugin(i)->GetScriptFile();
+                break;
+            }
+        }
+    }
+
+    wxString description(info.description);
     description.Replace(_T("\n"), _T("<br />\n"));
 
-    wxString info;
-    info << _T("<html><body>\n");
-    info << _T("<h3>") << elem->info.title << _T(" ");
-    info << _T("<font color=\"#0000AA\">") << elem->info.version << _T("</font></h3>");
-    info << _T("<i><font color=\"#808080\" size=\"-1\">") << UnixFilename(elem->fileName) << _T("</font></i><br />\n");
-    info << _T("<br />\n");
-    info << description << _T("<br />\n");
-    info << _T("</body></html>\n");
+    wxString info_string;
+    info_string << _T("<html><body>\n");
+    info_string << _T("<h3>") << info.title << _T(" ");
+    info_string << _T("<font color=\"#0000AA\">") << info.version << _T("</font></h3>");
+    info_string << _T("<i><font color=\"#808080\" size=\"-1\">") << UnixFilename(filename) << _T("</font></i><br />\n");
+    info_string << _T("<br />\n");
+    info_string << description << _T("<br />\n");
+    info_string << _T("</body></html>\n");
 
-    XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(info);
+    XRCCTRL(*this, "htmlInfo", wxHtmlWindow)->SetPage(info_string);
 }
 
 void PluginsConfigurationDlg::OnMouseMotion(wxMouseEvent& event)
