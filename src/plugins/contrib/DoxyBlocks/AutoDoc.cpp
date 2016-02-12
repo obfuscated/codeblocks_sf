@@ -401,6 +401,10 @@ void DoxyBlocks::CommentFunction(cbStyledTextCtrl * control, int &iPos, wxString
         }
         // The regex ensures that we don't have any other arrangements of params.
 
+        // Remove comment tokens
+        sParam.Replace( wxT("/*"), wxT(""), true );
+        sParam.Replace( wxT("*/"), wxT(""), true );
+
         AddCommentLine(control, iPos, sIndent + sMidComment + sTagParam + sSpace + sParam);
     }
 
