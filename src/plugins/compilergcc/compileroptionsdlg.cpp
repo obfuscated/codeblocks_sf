@@ -2174,7 +2174,7 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(cb_unused wxCommandEvent& event)
 {
     if (cbMessageBox(_("Are you sure you want to remove this compiler?"),
                     _("Confirmation"),
-                    wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
+                    wxYES | wxNO| wxICON_QUESTION | wxNO_DEFAULT) == wxID_YES)
     {
         wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
         int compilerIdx = m_CurrentCompilerIdx;
