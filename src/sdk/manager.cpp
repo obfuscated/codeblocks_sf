@@ -499,7 +499,7 @@ CCManager* Manager::GetCCManager() const
     return CCManager::Get();
 }
 
-bool Manager::LoadResource(const wxString& file)
+wxString Manager::FindAndLoadResource(const wxString& file)
 {
     wxString resourceFile = ConfigManager::LocateDataFile(file, sdDataGlobal | sdDataUser);
     wxString memoryFile = _T("memory:") + file;
@@ -507,8 +507,9 @@ bool Manager::LoadResource(const wxString& file)
     if (wxFile::Access(resourceFile, wxFile::read) == false)
     {
         Get()->GetLogManager()->LogError(_("Manager failed to access XRC resource '") + resourceFile + _("'."));
-        return false;
+         return wxEmptyString;
     }
+
 
     // The code below forces a reload of the resource
     // Currently unused...
@@ -535,14 +536,22 @@ bool Manager::LoadResource(const wxString& file)
         if ( !wxXmlResource::Get()->Load(memoryFile) )
             Get()->GetLogManager()->LogError(_("Manager failed to load XRC resource '") + resourceFile + _("'."));
         delete[] buf;
-        return true;
+        return memoryFile;
     }
     catch (...)
     {
         delete[] buf;
         Get()->GetLogManager()->LogError(_("Manager hardly failed to load XRC resource '") + resourceFile + _("'."));
-        return false;
+        return wxEmptyString;
     }
+}
+
+bool Manager::LoadResource(const wxString& file)
+{
+    if(FindAndLoadResource(file) == wxEmptyString)
+        return false;
+
+    return true;
 }
 
 wxCmdLineParser* Manager::GetCmdLineParser()

@@ -68,7 +68,7 @@ class MakeDistPlugin extends cbScriptPlugin
 
         // good, now let's get the project's filename
         local prj_fname = wxFileName();
-        prj_fname.Assign(prj.GetFilename(), ::wxPATH_NATIVE);
+        prj_fname.Assign(prj.GetFilename(), wxPATH_NATIVE);
         
         // now let's build a string containing all the project files.
         // to be on the safe side, we will quote them all so spaces

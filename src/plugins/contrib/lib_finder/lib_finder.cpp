@@ -38,8 +38,8 @@
 #include <projectloader_hooks.h>
 #include <compiler.h>
 #include <compilerfactory.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include <scripting/sqrat.h>
+#include <scripting/bindings/sc_base_types.h>
 #include <logmanager.h>
 
 #include "resultmap.h"
@@ -381,27 +381,33 @@ bool lib_finder::TryAddLibrary(CompileTargetBase* Target,LibraryResult* Result)
     return true;
 }
 
+
 void lib_finder::RegisterScripting()
 {
-    SqPlus::SQClassDef<LibFinder>("LibFinder")
-        .staticFunc(&lib_finder::AddLibraryToProject,"AddLibraryToProject")
-        .staticFunc(&lib_finder::IsLibraryInProject,"IsLibraryInProject")
-        .staticFunc(&lib_finder::RemoveLibraryFromProject,"RemoveLibraryFromProject")
-        .staticFunc(&lib_finder::SetupTargetManually,"SetupTarget")
-        .staticFunc(&lib_finder::EnsureIsDefined,"EnsureLibraryDefined")
-    ;
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (vm)
+    {
+        Sqrat::Class<lib_finder,Sqrat::NoCopy<lib_finder> > lib_finder_class(vm->GetVM(),"LibFinder");
+        lib_finder_class
+            .StaticFunc("AddLibraryToProject",    &lib_finder::AddLibraryToProject)
+            .StaticFunc("IsLibraryInProject",     &lib_finder::IsLibraryInProject)
+            .StaticFunc("RemoveLibraryFromProject",&lib_finder::RemoveLibraryFromProject)
+            .StaticFunc("SetupTarget",            &lib_finder::SetupTargetManually)
+            .StaticFunc("EnsureLibraryDefined",   &lib_finder::EnsureIsDefined);
+
+        Sqrat::RootTable(vm->GetVM()).Bind("LibFinder",lib_finder_class);
+    }
 }
 
 void lib_finder::UnregisterScripting()
 {
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-    if ( v )
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if ( vm )
     {
-        sq_pushroottable(v);
-        sq_pushstring(v,"LibFinder",-1);
-        sq_deleteslot(v,-2,false);
-        sq_poptop(v);
+        sq_pushroottable(vm->GetVM());
+        sq_pushstring(vm->GetVM(),"LibFinder",-1);
+        sq_deleteslot(vm->GetVM(),-2,false);
+        sq_poptop(vm->GetVM());
     }
 }
 

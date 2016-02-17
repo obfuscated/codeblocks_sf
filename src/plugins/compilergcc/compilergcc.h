@@ -20,6 +20,7 @@
 #include <logger.h>
 #include <sdk_events.h>
 #include <settings.h> // SDK
+#include <scripting/squirrel/squirrel.h>
 
 #include "compilermessages.h"
 #include "compilererrors.h"
@@ -120,6 +121,9 @@ class CompilerGCC : public cbCompilerPlugin
         virtual bool IsRunning() const;
         virtual int GetExitCode() const { return m_LastExitCode; }
         virtual int Configure(cbProject* project, ProjectBuildTarget* target = 0L); // this is NOT the obsolete cbPlugin::Configure! Do not remove!!!
+
+        virtual int GetErrorCount()     {return m_Errors.GetCount(cltError);};
+        virtual int GetWarningCount()   {return m_Errors.GetCount(cltWarning);};
 
         int GetConfigurationPriority() const { return 0; }
         int GetConfigurationGroup() const { return cgCompiler; }
@@ -255,6 +259,7 @@ class CompilerGCC : public cbCompilerPlugin
         BuildJobTarget GetNextJob();
         const BuildJobTarget& PeekNextJob();
 
+
         struct CompilerProcess
         {
             PipedProcess* pProcess;
@@ -323,5 +328,17 @@ class CompilerGCC : public cbCompilerPlugin
 
         DECLARE_EVENT_TABLE()
 };
+
+namespace ScriptBindings
+{
+    /** \brief Bind CompilerGCC to the Squirrel vm
+     *
+     * \param vm HSQUIRRELVM vm to which CompilerGCC should be bound
+     * \return void
+     *
+     */
+    void CompilerGCC_BindScripting(HSQUIRRELVM vm);
+}
+
 
 #endif // COMPILERGCC_H

@@ -9,24 +9,34 @@
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
+
     #include <wx/string.h>
+    #include <wx/filedlg.h>
+
+    #include <compileoptionsbase.h>
+    #include <cbproject.h>
+    #include <cbplugin.h>
+    #include <compileoptionsbase.h>
+    #include <configmanager.h>
     #include <globals.h>
+    #include <printing_types.h>
     #include <settings.h>
+    #include <scriptingmanager.h>
 #endif
 
 #include <filefilters.h>
-#include "sc_base_types.h"
+#include <scripting/sqrat.h>
+#include "scripting/bindings/sc_binding_util.h"
+#include "scripting/bindings/sc_plugin.h"
 
-// helper macros to bind constants
-#define BIND_INT_CONSTANT(a) SqPlus::BindConstant<SQInteger>(a, #a);
-#define BIND_INT_CONSTANT_NAMED(a,n) SqPlus::BindConstant<SQInteger>(a, n);
-#define BIND_WXSTR_CONSTANT_NAMED(a,n) BindVariable(const_cast<wxString*>(&a), n, SqPlus::VAR_ACCESS_CONSTANT);
+
 
 namespace ScriptBindings
 {
-    wxString s_PathSep = wxFILE_SEP_PATH;
+    //wxString s_PathSep = wxFILE_SEP_PATH;
 
-    void Register_Constants()
+
+    void Register_Constants(HSQUIRRELVM vm)
     {
         // platform constants
         BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
@@ -54,45 +64,10 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MINOR, "PLUGIN_SDK_VERSION_MINOR");
         BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_RELEASE, "PLUGIN_SDK_VERSION_RELEASE");
 
-        // path separator for filenames
-        BIND_WXSTR_CONSTANT_NAMED(s_PathSep, "wxFILE_SEP_PATH");
+        BIND_INT_CONSTANT_NAMED(SCRIPT_BINDING_VERSION_MAJOR,"SCRIPT_BINDING_VERSION_MAJOR");
+        BIND_INT_CONSTANT_NAMED(SCRIPT_BINDING_VERSION_MINOR,"SCRIPT_BINDING_VERSION_MINOR");
+        BIND_INT_CONSTANT_NAMED(SCRIPT_BINDING_VERSION_RELEASE,"SCRIPT_BINDING_VERSION_RELEASE");
 
-        // dialog buttons
-        BIND_INT_CONSTANT(wxOK);
-        BIND_INT_CONSTANT(wxYES_NO);
-        BIND_INT_CONSTANT(wxCANCEL);
-        BIND_INT_CONSTANT(wxID_OK);
-        BIND_INT_CONSTANT(wxID_YES);
-        BIND_INT_CONSTANT(wxID_NO);
-        BIND_INT_CONSTANT(wxID_CANCEL);
-        BIND_INT_CONSTANT(wxICON_QUESTION);
-        BIND_INT_CONSTANT(wxICON_INFORMATION);
-        BIND_INT_CONSTANT(wxICON_WARNING);
-        BIND_INT_CONSTANT(wxICON_ERROR);
-
-        // wxPathFormat
-        BIND_INT_CONSTANT(wxPATH_NATIVE);
-        BIND_INT_CONSTANT(wxPATH_UNIX);
-        BIND_INT_CONSTANT(wxPATH_BEOS);
-        BIND_INT_CONSTANT(wxPATH_MAC);
-        BIND_INT_CONSTANT(wxPATH_DOS);
-        BIND_INT_CONSTANT(wxPATH_WIN);
-        BIND_INT_CONSTANT(wxPATH_OS2);
-        BIND_INT_CONSTANT(wxPATH_VMS);
-
-        // for wxFileName::GetPath()
-        BIND_INT_CONSTANT(wxPATH_GET_VOLUME);
-        BIND_INT_CONSTANT(wxPATH_GET_SEPARATOR);
-
-        // wxPathNormalize
-        BIND_INT_CONSTANT(wxPATH_NORM_ENV_VARS);
-        BIND_INT_CONSTANT(wxPATH_NORM_DOTS);
-        BIND_INT_CONSTANT(wxPATH_NORM_TILDE);
-        BIND_INT_CONSTANT(wxPATH_NORM_CASE);
-        BIND_INT_CONSTANT(wxPATH_NORM_ABSOLUTE);
-        BIND_INT_CONSTANT(wxPATH_NORM_LONG);
-        BIND_INT_CONSTANT(wxPATH_NORM_SHORTCUT);
-        BIND_INT_CONSTANT(wxPATH_NORM_ALL);
 
         // OptionsRelationType
         BIND_INT_CONSTANT(ortCompilerOptions);
@@ -177,7 +152,33 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(mtEditorManager);
         BIND_INT_CONSTANT(mtLogManager);
         BIND_INT_CONSTANT(mtOpenFilesList);
+        BIND_INT_CONSTANT(mtEditorTab);
         BIND_INT_CONSTANT(mtUnknown);
+
+        // File Type
+        BIND_INT_CONSTANT(ftCodeBlocksProject);
+        BIND_INT_CONSTANT(ftCodeBlocksWorkspace);
+        BIND_INT_CONSTANT(ftDevCppProject);
+        BIND_INT_CONSTANT(ftMSVC6Project);
+        BIND_INT_CONSTANT(ftMSVC7Project);
+        BIND_INT_CONSTANT(ftMSVC10Project);
+        BIND_INT_CONSTANT(ftMSVC6Workspace);
+        BIND_INT_CONSTANT( ftMSVC7Workspace);
+        BIND_INT_CONSTANT(ftXcode1Project);
+        BIND_INT_CONSTANT(ftXcode2Project);
+        BIND_INT_CONSTANT(ftSource);
+        BIND_INT_CONSTANT(ftHeader);
+        BIND_INT_CONSTANT(ftObject);
+        BIND_INT_CONSTANT(ftXRCResource);
+        BIND_INT_CONSTANT(ftResource);
+        BIND_INT_CONSTANT(ftResourceBin);
+        BIND_INT_CONSTANT(ftStaticLib);
+        BIND_INT_CONSTANT(ftDynamicLib);
+        BIND_INT_CONSTANT(ftExecutable);
+        BIND_INT_CONSTANT(ftNative);
+        BIND_INT_CONSTANT(ftXMLDocument);
+        BIND_INT_CONSTANT(ftScript);
+        BIND_INT_CONSTANT(ftOther);
 
         // FileTreeDataKind
         BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkUndefined, "ftdkUndefined");
@@ -273,5 +274,113 @@ namespace ScriptBindings
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::RESOURCEBIN_DOT_EXT, "DOT_EXT_RESOURCEBIN");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::XML_DOT_EXT, "DOT_EXT_XML");
         BIND_WXSTR_CONSTANT_NAMED(FileFilters::SCRIPT_DOT_EXT, "DOT_EXT_SCRIPT");
+
+        // cbEvents
+        BIND_INT_CONSTANT(cbEVT_APP_STARTUP_DONE);
+        BIND_INT_CONSTANT(cbEVT_APP_START_SHUTDOWN);
+        BIND_INT_CONSTANT(cbEVT_APP_ACTIVATED);
+        BIND_INT_CONSTANT(cbEVT_APP_DEACTIVATED);
+        // plugin events
+        BIND_INT_CONSTANT(cbEVT_PLUGIN_ATTACHED);
+        BIND_INT_CONSTANT(cbEVT_PLUGIN_RELEASED);
+        BIND_INT_CONSTANT(cbEVT_PLUGIN_INSTALLED);
+        BIND_INT_CONSTANT(cbEVT_PLUGIN_UNINSTALLED);
+        BIND_INT_CONSTANT(cbEVT_PLUGIN_LOADING_COMPLETE);
+        // editor events
+        BIND_INT_CONSTANT(cbEVT_EDITOR_CLOSE);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_OPEN);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_SWITCHED);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_ACTIVATED);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_DEACTIVATED);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_BEFORE_SAVE);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_SAVE);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_MODIFIED);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_TOOLTIP);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_TOOLTIP_CANCEL);
+        BIND_INT_CONSTANT(cbEVT_EDITOR_UPDATE_UI);
+        // project events
+        BIND_INT_CONSTANT(cbEVT_PROJECT_NEW);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_CLOSE);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_OPEN);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_SAVE);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_ACTIVATE);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_BEGIN_ADD_FILES);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_END_ADD_FILES);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_BEGIN_REMOVE_FILES);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_END_REMOVE_FILES);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_FILE_ADDED);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_FILE_REMOVED);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_FILE_CHANGED);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_POPUP_MENU);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_TARGETS_MODIFIED);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_RENAMED);
+        BIND_INT_CONSTANT(cbEVT_PROJECT_OPTIONS_CHANGED);
+        BIND_INT_CONSTANT(cbEVT_WORKSPACE_CHANGED);
+        BIND_INT_CONSTANT(cbEVT_WORKSPACE_LOADING_COMPLETE);
+        // build targets events
+        BIND_INT_CONSTANT(cbEVT_BUILDTARGET_ADDED);
+        BIND_INT_CONSTANT(cbEVT_BUILDTARGET_REMOVED);
+        BIND_INT_CONSTANT(cbEVT_BUILDTARGET_RENAMED);
+        BIND_INT_CONSTANT(cbEVT_BUILDTARGET_SELECTED);
+        // pipedprocess events
+        BIND_INT_CONSTANT(cbEVT_PIPEDPROCESS_STDOUT);
+        BIND_INT_CONSTANT(cbEVT_PIPEDPROCESS_STDERR);
+        BIND_INT_CONSTANT(cbEVT_PIPEDPROCESS_TERMINATED);
+        // thread-pool events
+        BIND_INT_CONSTANT(cbEVT_THREADTASK_STARTED);
+        BIND_INT_CONSTANT(cbEVT_THREADTASK_ENDED);
+        BIND_INT_CONSTANT(cbEVT_THREADTASK_ALLDONE);
+        // request app to dock/undock a window
+        BIND_INT_CONSTANT(cbEVT_ADD_DOCK_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_REMOVE_DOCK_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_SHOW_DOCK_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_HIDE_DOCK_WINDOW);
+        // force update current view layout
+        BIND_INT_CONSTANT(cbEVT_UPDATE_VIEW_LAYOUT);
+        // ask which is the current view layout
+        BIND_INT_CONSTANT(cbEVT_QUERY_VIEW_LAYOUT);
+        // request app to switch view layout
+        BIND_INT_CONSTANT(cbEVT_SWITCH_VIEW_LAYOUT);
+        // app notifies that a new layout has been applied
+        BIND_INT_CONSTANT(cbEVT_SWITCHED_VIEW_LAYOUT);
+        // app notifies that a docked window has been hidden/shown
+        BIND_INT_CONSTANT(cbEVT_DOCK_WINDOW_VISIBILITY);
+        // app notifies that the menubar is started being (re)created
+        BIND_INT_CONSTANT(cbEVT_MENUBAR_CREATE_BEGIN);
+        // app notifies that the menubar (re)creation ended
+        BIND_INT_CONSTANT(cbEVT_MENUBAR_CREATE_END);
+        // compiler-related events
+        BIND_INT_CONSTANT(cbEVT_COMPILER_STARTED);
+        BIND_INT_CONSTANT(cbEVT_COMPILER_FINISHED);
+        BIND_INT_CONSTANT(cbEVT_COMPILER_SET_BUILD_OPTIONS);
+        BIND_INT_CONSTANT(cbEVT_CLEAN_PROJECT_STARTED);
+        BIND_INT_CONSTANT(cbEVT_CLEAN_WORKSPACE_STARTED);
+        BIND_INT_CONSTANT(cbEVT_COMPILER_SETTINGS_CHANGED);
+        // request app to compile a single file
+        BIND_INT_CONSTANT(cbEVT_COMPILE_FILE_REQUEST);
+        // debugger-related events
+        BIND_INT_CONSTANT(cbEVT_DEBUGGER_STARTED);
+        BIND_INT_CONSTANT(cbEVT_DEBUGGER_PAUSED);
+        BIND_INT_CONSTANT(cbEVT_DEBUGGER_FINISHED);
+
+        // logger-related events
+        BIND_INT_CONSTANT(cbEVT_ADD_LOG_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_REMOVE_LOG_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_HIDE_LOG_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_SWITCH_TO_LOG_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_GET_ACTIVE_LOG_WINDOW);
+        BIND_INT_CONSTANT(cbEVT_SHOW_LOG_MANAGER);
+        BIND_INT_CONSTANT(cbEVT_HIDE_LOG_MANAGER);
+        BIND_INT_CONSTANT(cbEVT_LOCK_LOG_MANAGER);
+        BIND_INT_CONSTANT(cbEVT_UNLOCK_LOG_MANAGER);
+
+        //cbAUiNotebook related events
+        BIND_INT_CONSTANT(cbEVT_CBAUIBOOK_LEFT_DCLICK);
+
+        // code-completion related events
+        BIND_INT_CONSTANT(cbEVT_COMPLETE_CODE);
+        BIND_INT_CONSTANT(cbEVT_SHOW_CALL_TIP);
+
+        BIND_INT_CONSTANT(cbEVT_SETTINGS_CHANGED);
     }
 };

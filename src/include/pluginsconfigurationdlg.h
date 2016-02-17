@@ -36,6 +36,8 @@ class PluginsConfigurationDlg : public wxScrollingDialog
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnLinkClicked(wxHtmlLinkEvent& event);
 
+        const wxString GetText(wxListCtrl* list,long pos, long col) const;
+
         DECLARE_EVENT_TABLE();
 };
 

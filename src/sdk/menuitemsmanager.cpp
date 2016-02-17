@@ -9,17 +9,21 @@
 
 #ifndef CB_PRECOMP
     #include <wx/frame.h> // GetMenuBar
+    #include <globals.h>
+    #include <logmanager.h>
 #endif
 
 #include "sdk_precomp.h"
 #include "manager.h"
 #include "menuitemsmanager.h"
 #include <wx/regex.h>
+#include <wx/tokenzr.h>
 
 namespace
 {
     wxRegEx reInsert(_T("([0-9]+):.+"));
 }
+
 
 MenuItemsManager::MenuItemsManager(bool autoClearOnDestroy)
     : m_AutoClearOnDestroy(autoClearOnDestroy)
@@ -33,7 +37,6 @@ MenuItemsManager::~MenuItemsManager()
     if (m_AutoClearOnDestroy)
     {
         Clear();
-        m_MenuItems.Clear();
     }
 }
 
@@ -50,10 +53,36 @@ wxMenuItem* MenuItemsManager::Add(wxMenu* parent, int id, const wxString& captio
     if (!parent)
         return nullptr;
     wxMenuItem* ni = new wxMenuItem(parent, id, caption, helptext);
-    m_MenuItems.Add(ni);
     parent->Append(ni);
+
+    Menu_point_item* menu_point = new Menu_point_item(ni,parent);
+    m_menu_points.push_back(menu_point);
+
     return ni;
 }
+
+/** @brief Insert a submenu
+  *
+  * @param parent The menu to append the menu item to
+  * @param id The menu item ID
+  * @param caption The caption for the new menu item
+  * @param helptext The help text for the new menu item
+  * @return The new menu item or NULL for failure.
+  */
+wxMenuItem* MenuItemsManager::InsertSubmenu(wxMenu* parent, int id, int pos, const wxString& caption, const wxString& helptext)
+{
+    if (!parent)
+        return nullptr;
+
+    wxMenu* submenu = new wxMenu();
+
+    wxMenuItem* ni = parent->Insert(pos ,id,caption,submenu,helptext);
+
+    Menu_point_sub_menu* menu_point = new Menu_point_sub_menu(ni,parent);
+    m_menu_points.push_back(menu_point);
+    return ni;
+}
+
 
 /** @brief Insert a menu item
   *
@@ -69,28 +98,28 @@ wxMenuItem* MenuItemsManager::Insert(wxMenu* parent, int index, int id, const wx
     if (!parent)
         return nullptr;
     wxMenuItem* ni = new wxMenuItem(parent, id, caption, helptext);
-    m_MenuItems.Add(ni);
     parent->Insert(index, ni);
+
+    Menu_point_item* menu_point = new Menu_point_item(ni,parent);
+    m_menu_points.push_back(menu_point);
+
     return ni;
 } // end of Insert
+
 
 /** @brief Clear all managed menu items
   */
 void MenuItemsManager::Clear()
 {
-    for (unsigned int i = 0; i < m_MenuItems.Count(); ++i)
+    menu_point_list::iterator itr = m_menu_points.end();    // clear it in the reverse order they were created
+    for(;itr != m_menu_points.begin();)
     {
-        wxMenuItem* ni = m_MenuItems[i];
-        wxMenu* menu = ni->GetMenu();
-        wxMenu* subMenu = ni->GetSubMenu();
-        if (menu)
-        {
-            // only delete if it's not a submenu or, if it is but it's empty
-            if (!subMenu || subMenu->GetMenuItemCount() == 0)
-                menu->Delete(ni);
-        }
+        --itr;
+        (*itr)->Delete();
+        delete (*itr);
     }
-    m_MenuItems.Clear();
+    m_menu_points.clear();
+
 } // end of Clear
 
 /** @brief Create menu path from string
@@ -106,30 +135,24 @@ int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
 {
     wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     wxMenu* menu = nullptr;
-    size_t pos = 0;
-    while (true)
+
+    wxArrayString path = wxStringTokenize(menuPath,wxT("/"),wxTOKEN_STRTOK);
+
+    if(path.IsEmpty())
+        return id;
+
+    for(size_t i = 0; i < path.GetCount();i++)
     {
-        // ignore consecutive slashes
-        while (pos < menuPath.Length() && menuPath.GetChar(pos) == _T('/'))
-        {
-            ++pos;
-        }
-
-        // find next slash
-        size_t nextPos = pos;
-        while (nextPos < menuPath.Length() && menuPath.GetChar(++nextPos) != _T('/'))
-            ;
-
-        wxString current = menuPath.Mid(pos, nextPos - pos);
-        if (current.IsEmpty())
-            break;
-        bool isLast = nextPos >= menuPath.Length();
-
+        wxString current = path[i];
         bool insert = false;
         unsigned long insertIndex = 0;
-        if (reInsert.Matches(current))
+
+        bool isLast = false;
+        if(i == path.GetCount() -1)
+            isLast = true;
+
+        if(reInsert.Matches(current))
         {
-            // insert menu instead append (format "insertIndex:menuName")
             wxString indexS = reInsert.GetMatch(current, 1);
             if (indexS.ToULong(&insertIndex, 10))
             {
@@ -137,29 +160,51 @@ int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
                 insert = true;
             }
         }
-
-        if (!menu)
+        if(i == 0)  // The menu in the menubar
         {
-            if (isLast)
-                return 0;
-
-            // for first entry we must search on the menubar
-            int menuPos = mbar->FindMenu(current);
+            // The first item is in the menubar...
+            int menuPos = mbar->FindMenu(path[0]);
             if (menuPos == wxNOT_FOUND)
             {
+                // New menu in menu bar
                 menu = new wxMenu();
-                mbar->Insert(insert ? insertIndex : mbar->GetMenuCount() - 2, menu, current); // -2 to be inserted before "Settings"
+                int pos = insert ? insertIndex : mbar->GetMenuCount() - 2;
+                mbar->Insert(pos, menu, current); // -2 to be inserted before "Settings"
+
+                Menu_point_menubar* menu_point = new Menu_point_menubar(mbar,pos);
+                m_menu_points.push_back(menu_point);
             }
             else
                 menu = mbar->GetMenu(menuPos);
         }
-        else
+        else // it is the first menu item after the menu bar
         {
             bool needsSep = current.StartsWith(_T("-"));
             if (needsSep)
                 current.Remove(0, 1); // remove dash (-)
 
-            int existingID = menu->FindItem(current);
+
+            /* The problem is, that we need the item from the current menu
+            *  with the given name FindItem searches for the given Item
+            *  in all Submenues, and FindChildItem searches only in the
+            *  current children. So if there is a submenu with the same
+            *  title like our current searched item we will get the id of
+            *  this submenu, and not of the needed menu:
+            *  ex: MainMenu/MenuA/MenuA
+            *                       ^ we get the id of this item
+            *                 ^ we need the id of this item
+            */
+            int existingID = wxNOT_FOUND;
+            wxMenuItemList item_list = menu->GetMenuItems();
+            for(size_t a = 0; a < item_list.GetCount(); ++a)
+            {
+                if(item_list[a]->GetItemLabelText() == current)
+                {
+                    existingID = item_list[a]->GetId();
+                    break;
+                }
+            }
+
             if (existingID != wxNOT_FOUND)
             {
                 // existing menu
@@ -176,10 +221,17 @@ int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
                     if (existingMenu)
                         menu = existingMenu;
                     else
+					{
+						Manager::Get()->GetLogManager()->LogError(_("item->GetSubMenu() == nullptr"));
                         return 0;
+					}
                 }
                 else
+				{
+					//FIXME: Report error
+					Manager::Get()->GetLogManager()->LogError(_("MenuItemsManager::CreateFromString: menu->FindChildItem(existingID) == nullptr"));
                     return 0;
+				}
             }
             else
             {
@@ -192,22 +244,20 @@ int MenuItemsManager::CreateFromString(const wxString& menuPath, int id)
                 if (current.IsEmpty()) // may be now if it was just a separator (-)
                     break;
 
-                if (isLast)
+                //create menu because it does not exists...
+                if(i == path.GetCount()-1)    // this is the last menu item, so insert it
                 {
-                    Insert(menu, insert ? insertIndex : menu->GetMenuItemCount(), id, current, wxEmptyString);
-                    return id;
+                    wxMenuItem* new_item = Insert(menu,insert ? insertIndex : menu->GetMenuItemCount(),id,current,wxEmptyString);
+                    return new_item->GetId();
                 }
                 else
                 {
-                    wxMenu* sub = new wxMenu;
-                    wxMenuItem* item = new wxMenuItem(menu, -1, current, wxEmptyString, wxITEM_NORMAL, sub);
-                    menu->Insert(insert ? insertIndex : menu->GetMenuItemCount(), item);
-                    menu = sub;
+                    // We need a new sub menu
+                    wxMenuItem* sub_menu_item = InsertSubmenu(menu,wxNewId(),insert ? insertIndex : menu->GetMenuItemCount(),current,wxEmptyString);
+                    menu = sub_menu_item->GetSubMenu();
                 }
             }
         }
-
-        pos = nextPos; // prepare for next loop
     }
     return 0;
 } // end of CreateFromString

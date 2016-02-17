@@ -28,7 +28,15 @@
 
 #if wxUSE_XRC
 
-class wxPropertyGridXmlHandler : public wxXmlResourceHandler
+#if wxCHECK_VERSION(3,0,0)
+
+// Does this can make problems?
+#define wxPropertyGridState wxPropertyGridPageState
+
+ class wxPropertyGridXmlHandler : public wxXmlResourceHandler
+#else
+class WXDLLIMPEXP_PG wxPropertyGridXmlHandler : public wxXmlResourceHandler
+#endif // wxCHECK_VERSION
 {
     friend class wxPropertyGridXrcPopulator;
     DECLARE_DYNAMIC_CLASS(wxPropertyGridXmlHandler)

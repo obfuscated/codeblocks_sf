@@ -105,6 +105,7 @@
     #include <wx/wfstream.h>
     #include <wx/wxscintilla.h>
     #include <wx/xrc/xmlres.h>
+    #include <wx/tokenzr.h>
 
     // basic headers
     #include "settings.h"

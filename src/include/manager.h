@@ -131,6 +131,7 @@ public:
     static void InitXRC(bool force=false);
     /// Loads XRC file(s) using data_path
     static void LoadXRC(wxString relpath);
+    static wxString FindAndLoadResource(const wxString& file);
     static bool LoadResource(const wxString& file);
 
     /// Loads Menubar from XRC

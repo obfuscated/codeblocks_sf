@@ -22,6 +22,7 @@
     #include <cbexception.h>
 #endif
 
+#include <scripting/bindings/sq_wx/sq_wx_type_handler.h>
 #include <scripting/bindings/sc_base_types.h>
 
 #include "wizpage.h"
@@ -115,81 +116,99 @@ WizPageBase::~WizPageBase()
 
 wxWizardPage* WizPageBase::GetPrev() const
 {
-    try
+
+    wxString sig = _T("OnGetPrevPage_") + m_PageName;
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    Sqrat::Function func = Sqrat::RootTable(vm->GetVM()).GetFunction(sig.ToUTF8());
+    if (func.IsNull())
+        return wxWizardPageSimple::GetPrev();
+    // TODO (bluehazzard#1#): Here should be a error checking and not suddenly a crash -.-
+    Sqrat::SharedPtr<wxString> ret_ptr = func.Evaluate<wxString>();
+    if(!ret_ptr)
     {
-        wxString sig = _T("OnGetPrevPage_") + m_PageName;
-        SqPlus::SquirrelFunction<wxString&> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return wxWizardPageSimple::GetPrev();
-        wxString prev = cb();
-        if (prev.IsEmpty())
-            return 0;
-        return s_PagesByName[prev];
+        Manager::Get()->GetLogManager()->LogError(_T(" WizPageBase::GetPrev(): could not evaluate: ") + sig );
+        return nullptr;
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-    return wxWizardPageSimple::GetPrev();
+    wxString prev = *ret_ptr.Get();
+
+
+    if(Manager::Get()->GetScriptingManager()->DisplayErrors())
+        return wxWizardPageSimple::GetPrev();
+
+    if (prev.IsEmpty())
+        return 0;
+
+    return s_PagesByName[prev];
+
 }
 
 //------------------------------------------------------------------------------
 
 wxWizardPage* WizPageBase::GetNext() const
 {
-    try
+
+    wxString sig = _T("OnGetNextPage_") + m_PageName;
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    Sqrat::Function func = Sqrat::RootTable(vm->GetVM()).GetFunction(sig.ToUTF8());
+
+    if (func.IsNull())
+        return wxWizardPageSimple::GetNext();
+    // TODO (bluehazzard#1#): Here should be a error checking and not suddenly a crash -.-
+    Sqrat::SharedPtr<wxString> ret_ptr = func.Evaluate<wxString>();
+    if(!ret_ptr)
     {
-        wxString sig = _T("OnGetNextPage_") + m_PageName;
-        SqPlus::SquirrelFunction<wxString&> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return wxWizardPageSimple::GetNext();
-        wxString next = cb();
-        if (next.IsEmpty())
-            return 0;
-        return s_PagesByName[next];
+        Manager::Get()->GetLogManager()->LogError(_T(" WizPageBase::GetNext(): could not evaluate: ") + sig );
+        return nullptr;
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
-    return wxWizardPageSimple::GetNext();
+    wxString next = *ret_ptr.Get();
+
+    if(Manager::Get()->GetScriptingManager()->DisplayErrors())
+        return wxWizardPageSimple::GetNext();
+
+    if (next.IsEmpty())
+        return 0;
+    return s_PagesByName[next];
 }
 
 void WizPageBase::OnPageChanging(wxWizardEvent& event)
 {
     Manager::Get()->GetConfigManager(_T("scripts"))->Write(_T("/generic_wizard/") + m_PageName + _T("/skip"), (bool)m_SkipPage);
 
-    try
+    wxString sig = _T("OnLeave_") + m_PageName;
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    Sqrat::Function func = Sqrat::RootTable(vm->GetVM()).GetFunction(sig.ToUTF8());
+
+    if (func.IsNull())
+        return;
+
+    // TODO (bluehazzard#1#): Here should be a error checking and not suddenly a crash -.-
+    Sqrat::SharedPtr<bool> ret_val = func.Evaluate<bool>(event.GetDirection() != 0);
+    if(!ret_val)
     {
-        wxString sig = _T("OnLeave_") + m_PageName;
-        SqPlus::SquirrelFunction<bool> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return;
-        bool allow = cb(event.GetDirection() != 0); // !=0 forward, ==0 backward
-        if (!allow)
-            event.Veto();
+        // Function could not be evaluated
+        Manager::Get()->GetLogManager()->LogError(_T(" WizPageBase::OnPageChanging(): could not evaluate: ") + sig );
+        return;
     }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
+    bool allow = *(ret_val.Get()); // !=0 forward, ==0 backward
+
+    Manager::Get()->GetScriptingManager()->DisplayErrors();
+
+    if (!allow)
+        event.Veto();
 }
 
 //------------------------------------------------------------------------------
 void WizPageBase::OnPageChanged(wxWizardEvent& event)
 {
-    try
-    {
-        wxString sig = _T("OnEnter_") + m_PageName;
-        SqPlus::SquirrelFunction<void> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return;
-        cb(event.GetDirection() != 0); // !=0 forward, ==0 backward
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
+    wxString sig = _T("OnEnter_") + m_PageName;
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    Sqrat::Function func = Sqrat::RootTable(vm->GetVM()).GetFunction(sig.ToUTF8());
+
+    if (func.IsNull())
+        return;
+    func(event.GetDirection() != 0); // !=0 forward, ==0 backward
+
+    Manager::Get()->GetScriptingManager()->DisplayErrors();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -225,18 +244,16 @@ void WizPage::OnButton(wxCommandEvent& event)
         Manager::Get()->GetLogManager()->DebugLog(F(_T("Can't locate window with id %d"), event.GetId()));
         return;
     }
-    try
-    {
-        wxString sig = _T("OnClick_") + win->GetName();
-        SqPlus::SquirrelFunction<void> cb(cbU2C(sig));
-        if (cb.func.IsNull())
-            return;
-        cb();
-    }
-    catch (SquirrelError& e)
-    {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-    }
+
+    wxString sig = _T("OnClick_") + win->GetName();
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    Sqrat::Function func = Sqrat::RootTable(vm->GetVM()).GetFunction(sig.ToUTF8());
+    if (func.IsNull())
+        return;
+    func();
+
+    Manager::Get()->GetScriptingManager()->DisplayErrors();
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////

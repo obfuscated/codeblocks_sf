@@ -12,11 +12,11 @@
 //
 
 // Warnings On
-function WarningsOn(base, compilerID)
+function WarningsOn(base_compiler, compilerID)
 {
     if      (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")) )
     {
-        base.AddCompilerOption(_T("/W3"));
+        base_compiler.AddCompilerOption(_T("/W3"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
@@ -30,29 +30,29 @@ function WarningsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
     {
-        base.AddCompilerOption(_T("-Wall"));
+        base_compiler.AddCompilerOption(_T("-Wall"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc")) )
     {
-        base.AddCompilerOption(_T("-w"));
+        base_compiler.AddCompilerOption(_T("-w"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
     {
-        base.AddCompilerOption(_T("-wx")); // max. warning level
+        base_compiler.AddCompilerOption(_T("-wx")); // max. warning level
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
     {
-        base.AddCompilerOption(_T("-w-"));
+        base_compiler.AddCompilerOption(_T("-w-"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang")) )
     {
-        base.AddCompilerOption(_T("-Weverything"));
+        base_compiler.AddCompilerOption(_T("-Weverything"));
     }
     else if(    GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
     {
-        base.AddCompilerOption(_T("-A"));
+        base_compiler.AddCompilerOption(_T("-A"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
@@ -62,11 +62,11 @@ function WarningsOn(base, compilerID)
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
     {
-        base.AddCompilerOption(_T("WARNINGLEVEL(2)"));
+        base_compiler.AddCompilerOption(_T("WARNINGLEVEL(2)"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
-        base.AddCompilerOption(_T("--remarks"));
+        base_compiler.AddCompilerOption(_T("--remarks"));
     }
     else
     {
@@ -76,13 +76,13 @@ function WarningsOn(base, compilerID)
 }// WarningsOn
 
 // Debug symbols On
-function DebugSymbolsOn(base, compilerID)
+function DebugSymbolsOn(base_compiler, compilerID)
 {
     if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        base.AddCompilerOption(_T("/Zi"));
-        base.AddCompilerOption(_T("/D_DEBUG"));
-        base.AddLinkerOption(_T("/DEBUG"));
+        base_compiler.AddCompilerOption(_T("/Zi"));
+        base_compiler.AddCompilerOption(_T("/D_DEBUG"));
+        base_compiler.AddLinkerOption(_T("/DEBUG"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
@@ -99,39 +99,39 @@ function DebugSymbolsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
     {
-        base.AddCompilerOption(_T("-g"));
+        base_compiler.AddCompilerOption(_T("-g"));
 
         if  (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
         {
-            base.AddCompilerOption(_T("-debug"));
+            base_compiler.AddCompilerOption(_T("-debug"));
         }
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
     {
-        base.AddCompilerOption(_T("-v"));
-        base.AddLinkerOption(_T("-v"));
+        base_compiler.AddCompilerOption(_T("-v"));
+        base_compiler.AddLinkerOption(_T("-v"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
     {
-        base.AddCompilerOption(_T("/Zi"));
+        base_compiler.AddCompilerOption(_T("/Zi"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")))
     {
-        base.AddCompilerOption(_T("-g2"));
+        base_compiler.AddCompilerOption(_T("-g2"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
-        base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
+        base_compiler.AddCompilerOption(_T("-d2")); // full symbolic debugging information
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
     {
-        base.AddCompilerOption(_T("DEBUG"));
-        base.AddCompilerOption(_T("OBJECTEXTEND"));
+        base_compiler.AddCompilerOption(_T("DEBUG"));
+        base_compiler.AddCompilerOption(_T("OBJECTEXTEND"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
-        base.AddCompilerOption(_T("--debug"));
+        base_compiler.AddCompilerOption(_T("--debug"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
     {
@@ -145,7 +145,7 @@ function DebugSymbolsOn(base, compilerID)
 }// DebugSymbolsOn
 
 // Optimizations On
-function OptimizationsOn(base, compilerID)
+function OptimizationsOn(base_compiler, compilerID)
 {
     if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
@@ -153,10 +153,10 @@ function OptimizationsOn(base, compilerID)
             && !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc10")) )
         {
 
-            base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8 and later (MSVC 10)
+            base_compiler.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8 and later (MSVC 10)
         }
-        base.AddCompilerOption(_T("/Ox"));
-        base.AddCompilerOption(_T("/DNDEBUG"));
+        base_compiler.AddCompilerOption(_T("/Ox"));
+        base_compiler.AddCompilerOption(_T("/DNDEBUG"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
@@ -170,7 +170,7 @@ function OptimizationsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
     {
-        base.AddCompilerOption(_T("-O2"));
+        base_compiler.AddCompilerOption(_T("-O2"));
 
         if  (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
@@ -178,49 +178,49 @@ function OptimizationsOn(base, compilerID)
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran")) )
         {
-            base.AddLinkerOption(_T("-s"));
+            base_compiler.AddLinkerOption(_T("-s"));
         }
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*")) )
     {
-        base.AddCompilerOption(_T("-Os"));
+        base_compiler.AddCompilerOption(_T("-Os"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
     {
-        base.AddCompilerOption(_T("-o"));
+        base_compiler.AddCompilerOption(_T("-o"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
     {
-        base.AddCompilerOption(_T("-O"));
+        base_compiler.AddCompilerOption(_T("-O"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")) )
     {
-        base.AddCompilerOption(_T("/O2"));
+        base_compiler.AddCompilerOption(_T("/O2"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
     {
-        base.AddCompilerOption(_T("-ot")); // optimize for time
-        base.AddCompilerOption(_T("-ox")); // Maximum optimization
+        base_compiler.AddCompilerOption(_T("-ot")); // optimize for time
+        base_compiler.AddCompilerOption(_T("-ox")); // Maximum optimization
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilc51")))
     {
-        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+        base_compiler.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilcx51")))
     {
-        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
-        base.AddCompilerOption(_T("OBJECTADVANCED"));
+        base_compiler.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+        base_compiler.AddCompilerOption(_T("OBJECTADVANCED"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
     {
-        base.AddCompilerOption(_T("-Oh"));
+        base_compiler.AddCompilerOption(_T("-Oh"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
     {
-        base.AddCompilerOption(_T("--opt-code-size"));
+        base_compiler.AddCompilerOption(_T("--opt-code-size"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
     {
@@ -234,34 +234,34 @@ function OptimizationsOn(base, compilerID)
 }// OptimizationsOn
 
 // C++ Exceptions On
-function CppExceptionsOn(base, compilerID)
+function CppExceptionsOn(base_compiler, compilerID)
 {
     if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
     {
-        base.AddCompilerOption(_T("/EHsc"));
+        base_compiler.AddCompilerOption(_T("/EHsc"));
     }
     else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
              || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin")) )
     {
-        base.AddCompilerOption(_T("-fexceptions"));
+        base_compiler.AddCompilerOption(_T("-fexceptions"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
     {
-        base.AddCompilerOption(_T("-x"));
+        base_compiler.AddCompilerOption(_T("-x"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
     {
-        base.AddCompilerOption(_T("-xs"));
+        base_compiler.AddCompilerOption(_T("-xs"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
     {
-        base.AddCompilerOption(_T("-Ae"));
+        base_compiler.AddCompilerOption(_T("-Ae"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
     {
-        base.AddCompilerOption(_T("/EHs"));
+        base_compiler.AddCompilerOption(_T("/EHs"));
     }
     else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
     {

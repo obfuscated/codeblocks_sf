@@ -41,8 +41,8 @@
 #endif
 
 #include <cbstyledtextctrl.h>
-#include <sc_base_types.h>
-#include <sqplus.h>
+#include <scripting/bindings/sc_base_types.h>
+#include <scripting/sqrat.h>
 
 
 #include "help_plugin.h"
@@ -495,14 +495,14 @@ void HelpPlugin::LaunchHelp(const wxString &c_helpfile, bool isExecutable, bool 
       {
         // help scripts must contain a function with the following signature:
         // function SearchHelp(keyword)
-        try
+        ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+        Sqrat::Function func = Sqrat::RootTable(vm->GetVM()).GetFunction("SearchHelp"); // Via the class or table
+        if(func.IsNull())
         {
-            SqPlus::SquirrelFunction<void> f("SearchHelp");
-            f(keyword);
-        }
-        catch (SquirrelError& e)
+            Manager::Get()->GetLogManager()->DebugLog(_T("Couldn't find \"SearchHelp\" function in script "));
+        } else
         {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            func.Execute(keyword);
         }
       }
       else

@@ -1,0 +1,342 @@
+
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+// Script plugins must extend cbScriptPlugin
+
+local replace_list = [
+        // String constants
+        ["::WORKSPACE_EXT",         "EXT_WORKSPACE"],
+        ["::CODEBLOCKS_EXT",    "EXT_CODEBLOCKS"],
+        ["::DEVCPP_EXT",    "EXT_DEVCPP"],
+        ["::MSVC6_EXT",     "EXT_MSVC6"],
+        ["::MSVC6_WORKSPACE_EXT", "EXT_MSVC6_WORKSPACE"],
+        ["::MSVC7_EXT",     "EXT_MSVC7"],
+        ["::MSVC7_WORKSPACE_EXT", "EXT_MSVC7_WORKSPACE"],
+        ["::MSVC10_EXT",    "EXT_MSVC10"],
+        ["::ASM_EXT",       "EXT_ASM"],
+        ["::D_EXT",         "EXT_D"],
+        ["::F_EXT",         "EXT_F"],
+        ["::F77_EXT", "EXT_F77"],
+        ["::F90_EXT", "EXT_F90"],
+        ["::F95_EXT", "EXT_F95"],
+        ["::FOR_EXT", "EXT_FOR"],
+        ["::FPP_EXT", "EXT_FPP"],
+        ["::F03_EXT", "EXT_F03"],
+        ["::F08_EXT", "EXT_F08"],
+        ["::JAVA_EXT",  "EXT_JAVA"],
+        ["::C_EXT",     "EXT_C"],
+        ["::CC_EXT",    "EXT_CC"],
+        ["::CPP_EXT",   "EXT_CPP"],
+        ["::CXX_EXT",   "EXT_CXX"],
+        ["::CPLPL_EXT", "EXT_CPLPL"],
+        ["::INL_EXT",   "EXT_INL"],
+        ["::H_EXT",     "EXT_H"],
+        ["::HH_EXT",    "EXT_HH"],
+        ["::HPP_EXT",   "EXT_HPP"],
+        ["::HXX_EXT",   "EXT_HXX"],
+        ["::HPLPL_EXT", "EXT_HPLPL"],
+        ["::S_EXT",     "EXT_S"],
+        ["::SS_EXT",    "EXT_SS"],
+        ["::S62_EXT",   "EXT_S62"],
+        ["::OBJECT_EXT",        "EXT_OBJECT"],
+        ["::XRCRESOURCE_EXT",   "EXT_XRCRESOURCE"],
+        ["::STATICLIB_EXT",     "EXT_STATICLIB"],
+        ["::DYNAMICLIB_EXT",    "EXT_DYNAMICLIB"],
+        ["::EXECUTABLE_EXT",    "EXT_EXECUTABLE"],
+        ["::EXECUTABLE_EXT",    "EXT_NATIVE"],
+        ["::RESOURCE_EXT",      "EXT_RESOURCE"],
+        ["::RESOURCEBIN_EXT",   "EXT_RESOURCEBIN"],
+        ["::XML_EXT",           "EXT_XML"],
+        ["::SCRIPT_EXT",        "EXT_SCRIPT"],
+        ["::WORKSPACE_DOT_EXT", "DOT_EXT_WORKSPACE"],
+        ["::CODEBLOCKS_DOT_EXT", "DOT_EXT_CODEBLOCKS"],
+        ["::DEVCPP_DOT_EXT",    "DOT_EXT_DEVCPP"],
+        ["::MSVC6_DOT_EXT",     "DOT_EXT_MSVC6"],
+        ["::MSVC6_WORKSPACE_DOT_EXT", "DOT_EXT_MSVC6_WORKSPACE"],
+        ["::MSVC7_DOT_EXT",     "DOT_EXT_MSVC7"],
+        ["::MSVC7_WORKSPACE_DOT_EXT", "DOT_EXT_MSVC7_WORKSPACE"],
+        ["::MSVC10_DOT_EXT",    "DOT_EXT_MSVC10"],
+        ["::ASM_DOT_EXT",   "DOT_EXT_ASM"],
+        ["::D_DOT_EXT",     "DOT_EXT_D"],
+        ["::F_DOT_EXT",     "DOT_EXT_F"],
+        ["::F77_DOT_EXT",   "DOT_EXT_F77"],
+        ["::F90_DOT_EXT",   "DOT_EXT_F90"],
+        ["::F95_DOT_EXT",   "DOT_EXT_F95"],
+        ["::FOR_DOT_EXT",   "DOT_EXT_FOR"],
+        ["::FPP_DOT_EXT",   "DOT_EXT_FPP"],
+        ["::F03_DOT_EXT",   "DOT_EXT_F03"],
+        ["::F08_DOT_EXT",   "DOT_EXT_F08"],
+        ["::JAVA_DOT_EXT",  "DOT_EXT_JAVA"],
+        ["::C_DOT_EXT",     "DOT_EXT_C"],
+        ["::CC_DOT_EXT",    "DOT_EXT_CC"],
+        ["::CPP_DOT_EXT",   "DOT_EXT_CPP"],
+        ["::CXX_DOT_EXT",   "DOT_EXT_CXX"],
+        ["::CPLPL_DOT_EXT", "DOT_EXT_CPLPL"],
+        ["::H_DOT_EXT",     "DOT_EXT_H"],
+        ["::HH_DOT_EXT",    "DOT_EXT_HH"],
+        ["::HPP_DOT_EXT",   "DOT_EXT_HPP"],
+        ["::HXX_DOT_EXT",   "DOT_EXT_HXX"],
+        ["::HPLPL_DOT_EXT", "DOT_EXT_HPLPL"],
+        ["::S_DOT_EXT",     "DOT_EXT_S"],
+        ["::SS_DOT_EXT",    "DOT_EXT_SS"],
+        ["::S62_DOT_EXT",   "DOT_EXT_S62"],
+        ["::OBJECT_DOT_EXT",        "DOT_EXT_OBJECT"],
+        ["::XRCRESOURCE_DOT_EXT",   "DOT_EXT_XRCRESOURCE"],
+        ["::STATICLIB_DOT_EXT",     "DOT_EXT_STATICLIB"],
+        ["::DYNAMICLIB_DOT_EXT",    "DOT_EXT_DYNAMICLIB"],
+        ["::EXECUTABLE_DOT_EXT",    "DOT_EXT_EXECUTABLE"],
+        ["::NATIVE_DOT_EXT",        "DOT_EXT_NATIVE"],
+        ["::RESOURCE_DOT_EXT",      "DOT_EXT_RESOURCE"],
+        ["::RESOURCEBIN_DOT_EXT",   "DOT_EXT_RESOURCEBIN"],
+        ["::XML_DOT_EXT",           "DOT_EXT_XML"],
+        ["::SCRIPT_DOT_EXT",        "DOT_EXT_SCRIPT"],
+
+        ["::ftdkUndefined",     "ftdkUndefined"],
+        ["::ftdkProject",       "ftdkProject"],
+        ["::ftdkFolder",        "ftdkFolder"],
+        ["::ftdkFile",          "ftdkFile"],
+        ["::ftdkVirtualGroup",  "ftdkVirtualGroup"],
+        ["::ftdkVirtualFolder", "ftdkVirtualFolder"],
+
+        ["::mtProjectManager",  "mtProjectManager"],
+        ["::mtEditorManager",   "mtEditorManager"],
+        ["::mtLogManager",      "mtLogManager"],
+        ["::mtOpenFilesList",   "mtOpenFilesList"],
+        ["::mtUnknown",         "mtUnknown"],
+
+        ["::tgfpPlatformDefault","tgfpPlatformDefault"],
+        ["::tgfpPlatformDefault","tgfpNone"],
+
+                // SearchDirs
+        ["::sdHome",    "sdHome"],
+        ["::sdBase",    "sdBase"],
+        ["::sdTemp",    "sdTemp"],
+        ["::sdPath",    "sdPath"],
+        ["::sdConfig",  "sdConfig"],
+        ["::sdCurrent", "sdCurrent"],
+        ["::sdPluginsUser", "sdPluginsUser"],
+        ["::sdScriptsUser", "sdScriptsUser"],
+        ["::sdDataUser",    "sdDataUser"],
+        ["::sdAllUser",     "sdAllUser"],
+        ["::sdPluginsGlobal","sdPluginsGlobal"],
+        ["::sdScriptsGlobal","sdScriptsGlobal"],
+        ["::sdDataGlobal",  "sdDataGlobal"],
+        ["::sdAllGlobal",   "sdAllGlobal"],
+        ["::sdAllKnown",    "sdAllKnown"],
+
+        // SupportedPlatforms
+        ["::spWindows", "spWindows"],
+        ["::spUnix",    "spUnix"],
+        ["::spMac",     "spMac"],
+        ["::spAll",     "spAll"],
+
+                // dialog buttons
+        ["::wxOK",      "wxOK"],
+        ["::wxYES_NO",  "wxYES_NO"],
+        ["::wxCANCEL",  "wxCANCEL"],
+        ["::wxID_OK",   "wxID_OK"],
+        ["::wxID_YES",  "wxID_YES"],
+        ["::wxID_NO",   "wxID_NO"],
+        ["::wxID_CANCEL",       "wxID_CANCEL"],
+        ["::wxICON_QUESTION",   "wxICON_QUESTION"],
+        ["::wxICON_INFORMATION", "wxICON_INFORMATION"],
+        ["::wxICON_WARNING",    "wxICON_WARNING"],
+        ["::wxICON_ERROR",      "wxICON_ERROR"],
+
+
+        // FileDialog styles
+        ["::wxFD_DEFAULT_STYLE",    "wxFD_DEFAULT_STYLE"],
+        ["::wxFD_OPEN",             "wxFD_OPEN"],
+        ["::wxFD_SAVE",             "wxFD_SAVE"],
+        ["::wxFD_OVERWRITE_PROMPT", "wxFD_OVERWRITE_PROMPT"],
+        ["::wxFD_FILE_MUST_EXIST",  "wxFD_FILE_MUST_EXIST"],
+        ["::wxFD_MULTIPLE",         "wxFD_MULTIPLE"],
+        ["::wxFD_CHANGE_DIR",       "wxFD_CHANGE_DIR"],
+        ["::wxFD_PREVIEW",          "wxFD_PREVIEW"],
+
+        // wxPathFormat
+        ["::wxPATH_NATIVE", "wxPATH_NATIVE"],
+        ["::wxPATH_UNIX",   "wxPATH_UNIX"],
+        ["::wxPATH_BEOS",   "wxPATH_BEOS"],
+        ["::wxPATH_MAC",    "wxPATH_MAC"],
+        ["::wxPATH_DOS",    "wxPATH_DOS"],
+        ["::wxPATH_WIN",    "wxPATH_WIN"],
+        ["::wxPATH_OS2",    "wxPATH_OS2"],
+        ["::wxPATH_VMS",    "wxPATH_VMS"],
+
+        // for wxFileName::GetPath()
+        ["::wxPATH_GET_VOLUME",     "wxPATH_GET_VOLUME"],
+        ["::wxPATH_GET_SEPARATOR",  "wxPATH_GET_SEPARATOR"],
+
+        // wxPathNormalize
+        ["::wxPATH_NORM_ENV_VARS",  "wxPATH_NORM_ENV_VARS"],
+        ["::wxPATH_NORM_DOTS",      "wxPATH_NORM_DOTS"],
+        ["::wxPATH_NORM_TILDE",     "wxPATH_NORM_TILDE"],
+        ["::wxPATH_NORM_CASE",      "wxPATH_NORM_CASE"],
+        ["::wxPATH_NORM_ABSOLUTE",  "wxPATH_NORM_ABSOLUTE"],
+        ["::wxPATH_NORM_LONG",      "wxPATH_NORM_LONG"],
+        ["::wxPATH_NORM_SHORTCUT",  "wxPATH_NORM_SHORTCUT"],
+        ["::wxPATH_NORM_ALL",       "wxPATH_NORM_ALL"],
+
+        // OptionsRelationType
+        ["::ortCompilerOptions", "ortCompilerOptions"],
+        ["::ortLinkerOptions",  "ortLinkerOptions"],
+        ["::ortIncludeDirs",    "ortIncludeDirs"],
+        ["::ortLibDirs",        "ortLibDirs"],
+        ["::ortResDirs",        "ortResDirs"],
+
+        // OptionsRelation
+        ["::orUseParentOptionsOnly",    "orUseParentOptionsOnly"],
+        ["::orUseTargetOptionsOnly",    "orUseTargetOptionsOnly"],
+        ["::orPrependToParentOptions",  "orPrependToParentOptions"],
+        ["::orAppendToParentOptions",   "orAppendToParentOptions"],
+
+        // TargetType
+        ["::ttExecutable",  "ttExecutable"],
+        ["::ttConsoleOnly", "ttConsoleOnly"],
+        ["::ttStaticLib",   "ttStaticLib"],
+        ["::ttDynamicLib",  "ttDynamicLib"],
+        ["::ttCommandsOnly", "ttCommandsOnly"],
+        ["::ttNative",      "ttNative"],
+
+        // MakeCommand
+        ["::mcClean",       "mcClean"],
+        ["::mcDistClean",   "mcDistClean"],
+        ["::mcBuild",       "mcBuild"],
+        ["::mcCompileFile", "mcCompileFile"],
+        ["::mcAskRebuildNeeded",    "mcAskRebuildNeeded"],
+        ["::mcSilentBuild",         "mcSilentBuild"],
+
+        // PCHMode
+        ["::pchSourceDir",  "pchSourceDir"],
+        ["::pchObjectDir",  "pchObjectDir"],
+        ["::pchSourceFile", "pchSourceFile"],
+
+        // printing scope for print dialog
+        ["::psSelection",       "psSelection"],
+        ["::psActiveEditor",    "psActiveEditor"],
+        ["::psAllOpenEditors",  "psAllOpenEditors"],
+
+        // printing colour mode
+        ["::pcmBlackAndWhite", "pcmBlackAndWhite"],
+        ["::pcmColourOnWhite", "pcmColourOnWhite"],
+        ["::pcmInvertColours", "pcmInvertColours"],
+        ["::pcmAsIs", "pcmAsIs"],
+
+                // TemplateOutputType
+        ["::totProject",    "wizProject"],
+        ["::totTarget",     "wizTarget"],
+        ["::totFiles",      "wizFiles"],
+        ["::totCustom",     "wizCustom"],
+
+        ["::PLATFORM_MSW",  "PLATFORM_MSW"],
+        ["::PLATFORM_MSW",  "PLATFORM_GTK"],
+        ["::PLATFORM_MAC",  "PLATFORM_MAC"],
+        ["::PLATFORM_OS2",  "PLATFORM_OS2"],
+        ["::PLATFORM_X11",  "PLATFORM_X11"],
+        ["::PLATFORM_UNKNOWN", "PLATFORM_UNKNOWN"],
+
+        ["::PLATFORM", "PLATFORM"],
+
+        ["::PLUGIN_SDK_VERSION_MAJOR",  "PLUGIN_SDK_VERSION_MAJOR"],
+        ["::PLUGIN_SDK_VERSION_MINOR",  "PLUGIN_SDK_VERSION_MINOR"],
+        ["::PLUGIN_SDK_VERSION_RELEASE", "PLUGIN_SDK_VERSION_RELEASE"],
+
+        // path separator for filenames
+        ["::wxFILE_SEP_PATH", "wxFILE_SEP_PATH"],
+
+        //["base" , "_base"]  // base is a keyword in squirrel 3.x.x
+    ];
+
+class ConvertOldToNewScript_Plugin extends cbScriptPlugin
+{
+    // mandatory to setup the plugin's info
+    constructor()
+    {
+		info = PluginInfo();
+        info.name = _T("ConvertOldToNewScript_Plugin");
+        info.title = _T("Converts old scripts (sqplus compatible) to new scripts (sqrat)");
+        info.version = _T("0.1a");
+        info.license = _T("GPL");
+    }
+
+    // optional to create menubar items
+    function GetMenu()
+    {
+        local entries = ::wxArrayString();
+        entries.Add(_T("Plugins/Convert Scripts"), 1);
+        return entries;
+    }
+
+    // optional to create context menu entries
+    /*function GetModuleMenu(who, data)
+    {
+
+    }*/
+
+    // optional to support ExecutePlugin(pluginNameString)
+    function Execute()
+    {
+        ::ShowMessage("Start ConvertOldToNewScript_Plugin");
+        StartConverting();
+        return 0;
+    }
+
+    // optional calback for menubar items clicking
+    function OnMenuClicked(index)
+    {
+        if (index == 0)
+        {
+            ::ShowMessage("Start ConvertOldToNewScript_Plugin");
+            StartConverting();
+        }
+
+    }
+
+    // optional calback for context menu items clicking
+    function OnModuleMenuClicked(index)
+    {
+
+    }
+	
+	function ReplaceExact(text,key_word,replace)
+	{
+		
+	}
+
+    function StartConverting()
+    {
+        local files_to_convert = ::wxGetFileFromUser("Pleas select the files to be converted","Files to be converted","","*.script",wxFD_OPEN|wxFD_FILE_MUST_EXIST|wxFD_MULTIPLE);
+        local file_count = files_to_convert.GetCount();
+        if(file_count == 0)
+            return;
+        local i = 0;
+
+        for(i=0;i < file_count;i++)
+        {
+            local editor = GetEditorManager().Open(files_to_convert.Item(i));
+            local text = editor.GetText();
+            foreach(value in replace_list)
+            {
+                local count = text.Replace(value[0],value[1],true);
+                print("replaced " + value[0] + " : " + count + " times\n");
+            }
+            editor.SetText(text);
+            editor.Save();
+            editor.Close();
+        }
+    };
+}
+
+// this call actually registers the script plugin with Code::Blocks
+RegisterPlugin(ConvertOldToNewScript_Plugin());
+
+// if you want to call this plugin's Execute() function, use this in a script:
+// ExecutePlugin(_T("Scripting_TestPlugin"));

@@ -40,15 +40,12 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DSCRAT_IMPORT" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="..\..\..\include\tinyxml" />
-			<Add directory="..\..\..\include\scripting\include" />
-			<Add directory="..\..\..\include\scripting\sqplus" />
-			<Add directory="..\..\..\include\scripting\squirrel" />
-			<Add directory="..\..\..\include\scripting\bindings" />
 			<Add directory="..\wxContribItems\wxFlatNotebook\include" />
 			<Add directory="..\..\..\include\mozilla_chardet" />
 			<Add directory="..\..\..\include\mozilla_chardet\mfbt" />

@@ -23,7 +23,7 @@
 #include <wx/utils.h>
 
 #include "scriptsecuritywarningdlg.h"
-#include "sc_base_types.h"
+#include "scripting/bindings/sc_base_types.h"
 
 namespace ScriptBindings
 {
@@ -230,35 +230,37 @@ namespace ScriptBindings
 {
     struct IONamespace {};
 
-    void Register_IO()
+    void Register_IO(HSQUIRRELVM vm)
     {
-        SqPlus::SQClassDef<IONamespace>("IO").
-
+        Sqrat::Class<IONamespace> io_class(vm,"IO");
+                io_class.
                 #ifndef NO_INSECURE_SCRIPTS
-                staticFunc(&IOLib::CreateDirRecursively,        "CreateDirectory").
-                staticFunc(&IOLib::RemoveDir,                   "RemoveDirectory").
-                staticFunc(&IOLib::CopyFile,                    "CopyFile").
-                staticFunc(&IOLib::RenameFile,                  "RenameFile").
-                staticFunc(&IOLib::RemoveFile,                  "RemoveFile").
-                staticFunc(&IOLib::WriteFileContents,           "WriteFileContents").
-                staticFunc(&IOLib::Execute,                     "Execute").
-                staticFunc(&IOLib::ExecuteAndGetOutput,         "ExecuteAndGetOutput").
-                staticFunc(&IOLib::ExecuteAndGetOutputAndError, "ExecuteAndGetOutputAndError").
+                StaticFunc("CreateDirectory",             &IOLib::CreateDirRecursively).
+                StaticFunc("RemoveDirectory",             &IOLib::RemoveDir).
+                StaticFunc("CopyFile",                    &IOLib::CopyFile).
+                StaticFunc("RenameFile",                  &IOLib::RenameFile).
+                StaticFunc("RemoveFile",                  &IOLib::RemoveFile).
+                StaticFunc("WriteFileContents",           &IOLib::WriteFileContents).
+                StaticFunc("Execute",                     &IOLib::Execute).
+                StaticFunc("ExecuteAndGetOutput",         &IOLib::ExecuteAndGetOutput).
+                StaticFunc("ExecuteAndGetOutputAndError", &IOLib::ExecuteAndGetOutputAndError).
                 #endif // NO_INSECURE_SCRIPTS
 
-                staticFunc(&IOLib::GetCwd, "GetCwd").
-                staticFunc(&IOLib::SetCwd, "SetCwd").
+                StaticFunc("GetCwd",&IOLib::GetCwd).
+                StaticFunc("SetCwd",&IOLib::SetCwd).
 
-                staticFunc(&IOLib::DirectoryExists,  "DirectoryExists").
-                staticFunc(&IOLib::ChooseDir,        "SelectDirectory").
-                staticFunc(&IOLib::FileExists,       "FileExists").
-                staticFunc(&IOLib::ChooseFile,       "SelectFile").
-                staticFunc(&IOLib::ReadFileContents, "ReadFileContents");
+                StaticFunc("DirectoryExists", &IOLib::DirectoryExists).
+                StaticFunc("SelectDirectory", &IOLib::ChooseDir).
+                StaticFunc("FileExists",      &IOLib::FileExists).
+                StaticFunc("SelectFile",      &IOLib::ChooseFile).
+                StaticFunc("ReadFileContents",&IOLib::ReadFileContents);
+
+        Sqrat::RootTable(vm).Bind("IO",io_class);
 
         #ifndef NO_INSECURE_SCRIPTS
-        SqPlus::BindConstant(true,  "allowInsecureScripts");
+        Sqrat::ConstTable(vm).Const("allowInsecureScripts", true);
         #else
-        SqPlus::BindConstant(false, "allowInsecureScripts");
+        Sqrat::ConstTable(vm).Const("allowInsecureScripts", false);
         #endif // NO_INSECURE_SCRIPTS
     }
 } // namespace ScriptBindings

@@ -25,8 +25,8 @@
 #endif
 
 #include "projectloader_hooks.h"
-#include <sqplus.h>
-#include <sc_base_types.h>
+#include <scripting/sqrat.h>
+#include <scripting/bindings/sc_base_types.h>
 
 #include "envvars_common.h"
 #include "envvars_cfgdlg.h"
@@ -213,18 +213,20 @@ void EnvVars::OnAttach()
   Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE,    new cbEventFunctor<EnvVars, CodeBlocksEvent>(this, &EnvVars::OnProjectClosed));
 
   // Register scripting
-  Manager::Get()->GetScriptingManager(); // make sure the VM is initialised
-  if (SquirrelVM::GetVMPtr())
+  ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+  if (vm)
   {
-    SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarSetNames,   "EnvvarGetEnvvarSetNames"  );
-    SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarSetNames,   "EnvvarGetActiveSetName"   );
-    SqPlus::RegisterGlobal(&nsEnvVars::GetEnvvarsBySetPath, "EnvVarGetEnvvarsBySetPath");
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetExists,     "EnvvarSetExists"          );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetApply,      "EnvvarSetApply"           );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarSetDiscard,    "EnvvarSetDiscard"         );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarApply,         "EnvvarApply"              );
-    SqPlus::RegisterGlobal(&nsEnvVars::EnvvarDiscard,       "EnvvarDiscard"            );
+    HSQUIRRELVM sq_vm = vm->GetVM();
+    Sqrat::RootTable(sq_vm).Func("EnvvarGetEnvvarSetNames",&nsEnvVars::GetEnvvarSetNames);
+    Sqrat::RootTable(sq_vm).Func("EnvvarGetActiveSetName",&nsEnvVars::GetEnvvarSetNames);
+    Sqrat::RootTable(sq_vm).Func("EnvVarGetEnvvarsBySetPath",&nsEnvVars::GetEnvvarsBySetPath);
+    Sqrat::RootTable(sq_vm).Func("EnvvarSetExists",&nsEnvVars::EnvvarSetExists);
+    Sqrat::RootTable(sq_vm).Func("EnvvarSetApply",&nsEnvVars::EnvvarSetApply);
+    Sqrat::RootTable(sq_vm).Func("EnvvarSetDiscard",&nsEnvVars::EnvvarSetDiscard);
+    Sqrat::RootTable(sq_vm).Func("EnvvarApply",&nsEnvVars::EnvvarApply);
+    Sqrat::RootTable(sq_vm).Func("EnvvarDiscard",&nsEnvVars::EnvvarDiscard);
   }
+
 }// OnAttach
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
@@ -232,50 +234,51 @@ void EnvVars::OnAttach()
 void EnvVars::OnRelease(bool /*appShutDown*/)
 {
   // Unregister scripting
-  Manager::Get()->GetScriptingManager(); // make sure the VM is initialised
-  HSQUIRRELVM v = SquirrelVM::GetVMPtr();
-  if (v)
+    ScriptBindings::CBsquirrelVM* vm = Manager::Get()->GetScriptingManager()->GetVM();
+  if (vm)
   {
+    HSQUIRRELVM sq_vm = vm->GetVM();
+
     // TODO (Morten#5#): Is that the correct way of un-registering? (Seems so weird...)
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarDiscard", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarDiscard", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarApply", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarApply", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarSetDiscard", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarSetDiscard", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarSetApply", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarSetApply", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarSetExists", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarSetExists", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvVarGetEnvvarsBySetPath", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvVarGetEnvvarsBySetPath", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarGetActiveSetName", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarGetActiveSetName", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
 
-    sq_pushroottable(v);
-    sq_pushstring(v, "EnvvarGetEnvvarSetNames", -1);
-    sq_deleteslot(v, -2, false);
-    sq_poptop(v);
+    sq_pushroottable(sq_vm);
+    sq_pushstring(sq_vm, "EnvvarGetEnvvarSetNames", -1);
+    sq_deleteslot(sq_vm, -2, false);
+    sq_poptop(sq_vm);
   }
 }// OnRelease
 

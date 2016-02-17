@@ -1,0 +1,475 @@
+
+//Include("test_base.script");
+
+class cbTest_class extends script_test_base
+{
+    function Run()
+    {
+        test_test();
+        test_const();
+        test_globals();
+        print_global_test_result();
+
+    }
+
+    function test_test()
+    {
+        local old_failed = GetGlobalFailedTests();
+        begin_test("Test environment");
+        clear_test_result();
+
+        ::print(" this is intended to fail: \n");
+        test_string("test_string","hello","nope");
+
+        //print_test_result();
+
+        ::print("This test is made for Squirrel Binding version: 2.0.0\n");
+        if(SCRIPT_BINDING_VERSION_MAJOR != 2 || SCRIPT_BINDING_VERSION_MINOR != 0 || SCRIPT_BINDING_VERSION_RELEASE != 0)
+        {
+            made_failed("This test script is not valid for this script binding version" ,"got " +
+                        SCRIPT_BINDING_VERSION_MAJOR.tostring() + "." +
+                        SCRIPT_BINDING_VERSION_MINOR.tostring() + "." +
+                        SCRIPT_BINDING_VERSION_RELEASE.tostring() + " , needed 2.0.0");
+        }
+        else
+        {
+            made_passed("Script binding matches version 2.0.0\n");
+        }
+
+
+        end_test();
+        // We have a intentional failed test, so lets fix this
+        AddGlobalPassed(1);
+        AddGlobalFailed(-1);
+
+        if(GetGlobalFailedTests() - old_failed!= 0)
+            throw "A essential test failed in cbTest_class::test_test(). See script console window for details";
+    }
+
+    function test_const()
+    {
+
+        begin_test("constants");
+        error(" !!! THIS TEST TESTS ONLY IF THE CONSTANT IS DEFINED, BUT NOT IF THE CONST HAS A MEANINGFUL VALUE !!!!\n")
+
+        try
+        {
+
+            switch(PLATFORM)
+            {
+            case PLATFORM_MSW:
+                made_passed("PLATFORM_MSW");
+                break;
+            case PLATFORM_GTK:
+                made_passed("PLATFORM_GTK");
+                break;
+            case PLATFORM_MAC:
+                made_passed("PLATFORM_MAC");
+                break;
+            case PLATFORM_OS2:
+                made_passed("PLATFORM_OS2");
+                break;
+            case PLATFORM_X11:
+                made_passed("PLATFORM_X11");
+                break;
+            case PLATFORM_UNKNOWN:
+                made_passed("PLATFORM_UNKNOWN");
+                break;
+            default:
+                made_failed("PLATFORM not defined","could not decode: " + PLATFORM);
+            }
+
+
+            made_passed("PLUGIN_SDK_VERSION_MAJOR = " + PLUGIN_SDK_VERSION_MAJOR);
+            made_passed("PLUGIN_SDK_VERSION_MINOR = " + PLUGIN_SDK_VERSION_MINOR);
+            made_passed("PLUGIN_SDK_VERSION_RELEASE = " + PLUGIN_SDK_VERSION_RELEASE);
+            made_passed("SCRIPT_BINDING_VERSION_MAJOR = " + SCRIPT_BINDING_VERSION_MAJOR);
+            made_passed("SCRIPT_BINDING_VERSION_MINOR = " + SCRIPT_BINDING_VERSION_MINOR);
+            made_passed("SCRIPT_BINDING_VERSION_RELEASE = " + SCRIPT_BINDING_VERSION_RELEASE);
+
+            made_passed("ortCompilerOptions = " + ortCompilerOptions);
+            made_passed("ortLinkerOptions = " + ortLinkerOptions);
+            made_passed("ortIncludeDirs = " + ortIncludeDirs);
+            made_passed("ortLibDirs = " + ortLibDirs);
+            made_passed("ortResDirs = " + ortResDirs);
+
+            made_passed("orUseParentOptionsOnly = " + orUseParentOptionsOnly);
+            made_passed("orUseTargetOptionsOnly = " + orUseTargetOptionsOnly);
+            made_passed("orPrependToParentOptions = " + orPrependToParentOptions);
+            made_passed("orAppendToParentOptions = " + orAppendToParentOptions);
+
+            made_passed("ttExecutable = " + ttExecutable);
+            made_passed("ttConsoleOnly = " + ttConsoleOnly);
+            made_passed("ttStaticLib = " + ttStaticLib);
+            made_passed("ttDynamicLib = " + ttDynamicLib);
+            made_passed("ttCommandsOnly = " + ttCommandsOnly);
+            made_passed("ttNative = " + ttNative);
+
+            made_passed("mcClean = " + mcClean);
+            made_passed("mcDistClean = " + mcDistClean);
+            made_passed("mcBuild = " + mcBuild);
+            made_passed("mcCompileFile = " + mcCompileFile);
+            made_passed("mcAskRebuildNeeded = " + mcAskRebuildNeeded);
+            made_passed("mcSilentBuild = " + mcSilentBuild);
+
+            made_passed("psSelection = " + psSelection);
+            made_passed("psActiveEditor = " + psActiveEditor);
+            made_passed("psAllOpenEditors = " + psAllOpenEditors);
+
+            made_passed("pcmBlackAndWhite = " + pcmBlackAndWhite);
+            made_passed("pcmColourOnWhite = " + pcmColourOnWhite);
+            made_passed("pcmInvertColours = " + pcmInvertColours);
+            made_passed("pcmAsIs = " + pcmAsIs);
+
+            made_passed("wizProject = " + wizProject);
+            made_passed("wizTarget = " + wizTarget);
+            made_passed("wizFiles = " + wizFiles);
+            made_passed("wizCustom = " + wizCustom);
+
+            made_passed("sdHome = " + sdHome);
+            made_passed("sdBase = " + sdBase);
+            made_passed("sdTemp = " + sdTemp);
+            made_passed("sdPath = " + sdPath);
+            made_passed("sdConfig = " + sdConfig);
+            made_passed("sdCurrent = " + sdCurrent);
+            made_passed("sdPluginsUser = " + sdPluginsUser);
+            made_passed("sdScriptsUser = " + sdScriptsUser);
+            made_passed("sdDataUser = " + sdDataUser);
+            made_passed("sdAllUser = " + sdAllUser);
+            made_passed("sdPluginsGlobal = " + sdPluginsGlobal);
+            made_passed("sdScriptsGlobal = " + sdScriptsGlobal);
+            made_passed("sdDataGlobal = " + sdDataGlobal);
+            made_passed("sdAllGlobal = " + sdAllGlobal);
+            made_passed("sdAllKnown = " + sdAllKnown);
+
+            made_passed("spWindows = " + spWindows);
+            made_passed("spUnix = " + spUnix);
+            made_passed("spMac = " + spMac);
+            made_passed("spAll = " + spAll);
+
+            made_passed("tgfpPlatformDefault = " + tgfpPlatformDefault);
+            made_passed("tgfpNone = " + tgfpNone);
+
+            made_passed("mtProjectManager = " + mtProjectManager);
+            made_passed("mtEditorManager = " + mtEditorManager);
+            made_passed("mtLogManager = " + mtLogManager);
+            made_passed("mtOpenFilesList = " + mtOpenFilesList);
+            made_passed("mtUnknown = " + mtUnknown);
+
+            made_passed("ftdkUndefined = " + ftdkUndefined);
+            made_passed("ftdkProject = " + ftdkProject);
+            made_passed("ftdkFolder = " + ftdkFolder);
+            made_passed("ftdkFile = " + ftdkFile);
+            made_passed("ftdkVirtualGroup = " + ftdkVirtualGroup);
+            made_passed("ftdkVirtualFolder = " + ftdkVirtualFolder);
+
+            made_passed("ftCodeBlocksProject = " +ftCodeBlocksProject );
+            made_passed("ftCodeBlocksWorkspace = " +ftCodeBlocksWorkspace );
+            made_passed("ftDevCppProject = " + ftDevCppProject);
+            made_passed("ftMSVC6Project = " + ftMSVC6Project);
+            made_passed("ftMSVC7Project = " +ftMSVC7Project);
+            made_passed("ftMSVC10Project = " + ftMSVC10Project);
+            made_passed("ftMSVC6Workspace = " +ftMSVC6Workspace );
+            made_passed("ftMSVC7Workspace = " + ftMSVC7Workspace);
+            made_passed("ftXcode1Project = " +ftXcode1Project );
+            made_passed("ftXcode2Project = " +ftXcode2Project );
+            made_passed("ftSource = " + ftSource);
+            made_passed("ftHeader = " + ftHeader);
+            made_passed("ftObject = " +ftObject );
+            made_passed("ftXRCResource = " + ftXRCResource);
+            made_passed("ftResource = " + ftResource);
+            made_passed("ftResourceBin = " + ftResourceBin);
+            made_passed("ftStaticLib = " + ftStaticLib);
+            made_passed("ftDynamicLib = " +ftDynamicLib );
+            made_passed("ftExecutable = " +ftExecutable );
+            made_passed("ftNative = " + ftNative);
+            made_passed("ftXMLDocument = " + ftXMLDocument);
+            made_passed("ftScript = " +ftScript );
+            made_passed("ftOther = " +ftOther );
+
+            made_passed("EXT_WORKSPACE = " + EXT_WORKSPACE);
+            made_passed("EXT_CODEBLOCKS = " + EXT_CODEBLOCKS);
+            made_passed("EXT_DEVCPP = " + EXT_DEVCPP);
+            made_passed("EXT_MSVC6 = " +EXT_MSVC6);
+            made_passed("EXT_MSVC6_WORKSPACE = " +EXT_MSVC6_WORKSPACE);
+            made_passed("EXT_MSVC7 = " +EXT_MSVC7);
+            made_passed("EXT_MSVC7_WORKSPACE = " +EXT_MSVC7_WORKSPACE);
+            made_passed("EXT_MSVC10 = " +EXT_MSVC10);
+            made_passed("EXT_ASM = " +EXT_ASM);
+            made_passed("EXT_D = " +EXT_D);
+            made_passed("EXT_F = " +EXT_F);
+            made_passed("EXT_F77 = " +EXT_F77);
+            made_passed("EXT_F90 = " +EXT_F90);
+            made_passed("EXT_F95 = " +EXT_F95);
+            made_passed("EXT_FOR = " +EXT_FOR);
+            made_passed("EXT_FPP = " +EXT_FPP);
+            made_passed("EXT_F03 = " +EXT_F03);
+            made_passed("EXT_F08 = " +EXT_F08);
+            made_passed("EXT_JAVA = " +EXT_JAVA);
+            made_passed("EXT_C = " +EXT_C);
+            made_passed("EXT_CC = " +EXT_CC);
+            made_passed("EXT_CPP = " +EXT_CPP);
+            made_passed("EXT_CXX = " +EXT_CXX);
+            made_passed("EXT_CPLPL = " +EXT_CPLPL);
+            made_passed("EXT_INL = " +EXT_INL);
+            made_passed("EXT_H = " +EXT_H);
+            made_passed("EXT_HH = " +EXT_HH);
+            made_passed("EXT_HPP = " +EXT_HPP);
+            made_passed("EXT_HXX = " +EXT_HXX);
+            made_passed("EXT_HPLPL = " +EXT_HPLPL);
+            made_passed("EXT_S = " +EXT_S);
+            made_passed("EXT_SS = " +EXT_SS);
+            made_passed("EXT_S62 = " +EXT_S62);
+            made_passed("EXT_OBJECT = " +EXT_OBJECT);
+            made_passed("EXT_XRCRESOURCE = " +EXT_XRCRESOURCE);
+            made_passed("EXT_STATICLIB = " +EXT_STATICLIB);
+            made_passed("EXT_DYNAMICLIB = " +EXT_DYNAMICLIB);
+            made_passed("EXT_EXECUTABLE = " +EXT_EXECUTABLE);
+            made_passed("EXT_NATIVE = " +EXT_NATIVE);
+            made_passed("EXT_RESOURCE = " +EXT_RESOURCE);
+            made_passed("EXT_RESOURCEBIN = " +EXT_RESOURCEBIN);
+            made_passed("EXT_XML = " +EXT_XML);
+            made_passed("EXT_SCRIPT = " +EXT_SCRIPT);
+            made_passed("DOT_EXT_WORKSPACE = " +DOT_EXT_WORKSPACE);
+            made_passed("DOT_EXT_CODEBLOCKS = " +DOT_EXT_CODEBLOCKS);
+            made_passed("DOT_EXT_DEVCPP = " +DOT_EXT_DEVCPP);
+            made_passed("DOT_EXT_MSVC6 = " +DOT_EXT_MSVC6);
+            made_passed("DOT_EXT_MSVC6_WORKSPACE = " +DOT_EXT_MSVC6_WORKSPACE);
+            made_passed("DOT_EXT_MSVC7 = " +DOT_EXT_MSVC7);
+            made_passed("DOT_EXT_MSVC7_WORKSPACE = " +DOT_EXT_MSVC7_WORKSPACE);
+            made_passed("DOT_EXT_MSVC10 = " +DOT_EXT_MSVC10);
+            made_passed("DOT_EXT_ASM = " +DOT_EXT_ASM);
+            made_passed("DOT_EXT_D = " +DOT_EXT_D);
+            made_passed("DOT_EXT_F = " +DOT_EXT_F);
+            made_passed("DOT_EXT_F77 = " +DOT_EXT_F77);
+            made_passed("DOT_EXT_F90 = " +DOT_EXT_F90);
+            made_passed("DOT_EXT_F95 = " +DOT_EXT_F95);
+            made_passed("DOT_EXT_FOR = " +DOT_EXT_FOR);
+            made_passed("DOT_EXT_FPP = " +DOT_EXT_FPP);
+            made_passed("DOT_EXT_F03 = " +DOT_EXT_F03);
+            made_passed("DOT_EXT_F08 = " +DOT_EXT_F08);
+            made_passed("DOT_EXT_JAVA = " +DOT_EXT_JAVA);
+            made_passed("DOT_EXT_C = " +DOT_EXT_C);
+            made_passed("DOT_EXT_CC = " +DOT_EXT_CC);
+            made_passed("DOT_EXT_CPP = " +DOT_EXT_CPP);
+            made_passed("DOT_EXT_CXX = " +DOT_EXT_CXX);
+            made_passed("DOT_EXT_CPLPL = " +DOT_EXT_CPLPL);
+            made_passed("DOT_EXT_H = " +DOT_EXT_H);
+            made_passed("DOT_EXT_HH = " +DOT_EXT_HH);
+            made_passed("DOT_EXT_HPP = " +DOT_EXT_HPP);
+            made_passed("DOT_EXT_HXX = " +DOT_EXT_HXX);
+            made_passed("DOT_EXT_HPLPL = " +DOT_EXT_HPLPL);
+            made_passed("DOT_EXT_S = " +DOT_EXT_S);
+            made_passed("DOT_EXT_SS = " +DOT_EXT_SS);
+            made_passed("DOT_EXT_S62 = " +DOT_EXT_S62);
+            made_passed("DOT_EXT_OBJECT = " +DOT_EXT_OBJECT);
+            made_passed("DOT_EXT_XRCRESOURCE = " +DOT_EXT_XRCRESOURCE);
+            made_passed("DOT_EXT_STATICLIB = " +DOT_EXT_STATICLIB);
+            made_passed("DOT_EXT_DYNAMICLIB = " +DOT_EXT_DYNAMICLIB);
+            made_passed("DOT_EXT_EXECUTABLE = " +DOT_EXT_EXECUTABLE);
+            made_passed("DOT_EXT_NATIVE = " +DOT_EXT_NATIVE);
+            made_passed("DOT_EXT_RESOURCE = " +DOT_EXT_RESOURCE);
+            made_passed("DOT_EXT_RESOURCEBIN = " +DOT_EXT_RESOURCEBIN);
+            made_passed("DOT_EXT_XML = " +DOT_EXT_XML);
+            made_passed("DOT_EXT_SCRIPT = " +DOT_EXT_SCRIPT);
+
+            // cbEvents
+        made_passed("cbEVT_APP_STARTUP_DONE = " +cbEVT_APP_STARTUP_DONE);
+        made_passed("cbEVT_APP_START_SHUTDOWN = " +cbEVT_APP_START_SHUTDOWN);
+        made_passed("cbEVT_APP_ACTIVATED = " +cbEVT_APP_ACTIVATED);
+        made_passed("cbEVT_APP_DEACTIVATED = " +cbEVT_APP_DEACTIVATED);
+        // plugin events
+        made_passed("cbEVT_PLUGIN_ATTACHED = " +cbEVT_PLUGIN_ATTACHED);
+        made_passed("cbEVT_PLUGIN_RELEASED = " +cbEVT_PLUGIN_RELEASED);
+        made_passed("cbEVT_PLUGIN_INSTALLED = " +cbEVT_PLUGIN_INSTALLED);
+        made_passed("cbEVT_PLUGIN_UNINSTALLED = " +cbEVT_PLUGIN_UNINSTALLED);
+        made_passed("cbEVT_PLUGIN_LOADING_COMPLETE = " +cbEVT_PLUGIN_LOADING_COMPLETE);
+        // editor events
+        made_passed("cbEVT_EDITOR_CLOSE = " +cbEVT_EDITOR_CLOSE);
+        made_passed("cbEVT_EDITOR_OPEN = " +cbEVT_EDITOR_OPEN);
+        made_passed("cbEVT_EDITOR_SWITCHED = " +cbEVT_EDITOR_SWITCHED);
+        made_passed("cbEVT_EDITOR_ACTIVATED = " +cbEVT_EDITOR_ACTIVATED);
+        made_passed("cbEVT_EDITOR_DEACTIVATED = " +cbEVT_EDITOR_DEACTIVATED);
+        made_passed("cbEVT_EDITOR_BEFORE_SAVE = " +cbEVT_EDITOR_BEFORE_SAVE);
+        made_passed("cbEVT_EDITOR_SAVE = " +cbEVT_EDITOR_SAVE);
+        made_passed("cbEVT_EDITOR_MODIFIED = " +cbEVT_EDITOR_MODIFIED);
+        made_passed("cbEVT_EDITOR_TOOLTIP = " +cbEVT_EDITOR_TOOLTIP);
+        made_passed("cbEVT_EDITOR_TOOLTIP_CANCEL = " +cbEVT_EDITOR_TOOLTIP_CANCEL);
+        made_passed("cbEVT_EDITOR_UPDATE_UI = " +cbEVT_EDITOR_UPDATE_UI);
+        // project events
+        made_passed("cbEVT_PROJECT_NEW = " +cbEVT_PROJECT_NEW);
+        made_passed("cbEVT_PROJECT_CLOSE = " +cbEVT_PROJECT_CLOSE);
+        made_passed("cbEVT_PROJECT_OPEN = " +cbEVT_PROJECT_OPEN);
+        made_passed("cbEVT_PROJECT_SAVE = " +cbEVT_PROJECT_SAVE);
+        made_passed("cbEVT_PROJECT_ACTIVATE = " +cbEVT_PROJECT_ACTIVATE);
+        made_passed("cbEVT_PROJECT_BEGIN_ADD_FILES = " +cbEVT_PROJECT_BEGIN_ADD_FILES);
+        made_passed("cbEVT_PROJECT_END_ADD_FILES = " +cbEVT_PROJECT_END_ADD_FILES);
+        made_passed("cbEVT_PROJECT_BEGIN_REMOVE_FILES = " +cbEVT_PROJECT_BEGIN_REMOVE_FILES);
+        made_passed("cbEVT_PROJECT_END_REMOVE_FILES = " +cbEVT_PROJECT_END_REMOVE_FILES);
+        made_passed("cbEVT_PROJECT_FILE_ADDED = " +cbEVT_PROJECT_FILE_ADDED);
+        made_passed("cbEVT_PROJECT_FILE_REMOVED = " +cbEVT_PROJECT_FILE_REMOVED);
+        made_passed("cbEVT_PROJECT_FILE_CHANGED = " +cbEVT_PROJECT_FILE_CHANGED);
+        made_passed("cbEVT_PROJECT_POPUP_MENU = " +cbEVT_PROJECT_POPUP_MENU);
+        made_passed("cbEVT_PROJECT_TARGETS_MODIFIED = " +cbEVT_PROJECT_TARGETS_MODIFIED);
+        made_passed("cbEVT_PROJECT_RENAMED = " +cbEVT_PROJECT_RENAMED);
+        made_passed("cbEVT_PROJECT_OPTIONS_CHANGED = " +cbEVT_PROJECT_OPTIONS_CHANGED);
+        made_passed("cbEVT_WORKSPACE_CHANGED = " +cbEVT_WORKSPACE_CHANGED);
+        made_passed("cbEVT_WORKSPACE_LOADING_COMPLETE = " +cbEVT_WORKSPACE_LOADING_COMPLETE);
+        // build targets events
+        made_passed("cbEVT_BUILDTARGET_ADDED = " +cbEVT_BUILDTARGET_ADDED);
+        made_passed("cbEVT_BUILDTARGET_REMOVED = " +cbEVT_BUILDTARGET_REMOVED);
+        made_passed("cbEVT_BUILDTARGET_RENAMED = " +cbEVT_BUILDTARGET_RENAMED);
+        made_passed("cbEVT_BUILDTARGET_SELECTED = " +cbEVT_BUILDTARGET_SELECTED);
+        // pipedprocess events
+        made_passed("cbEVT_PIPEDPROCESS_STDOUT = " +cbEVT_PIPEDPROCESS_STDOUT);
+        made_passed("cbEVT_PIPEDPROCESS_STDERR = " +cbEVT_PIPEDPROCESS_STDERR);
+        made_passed("cbEVT_PIPEDPROCESS_TERMINATED = " +cbEVT_PIPEDPROCESS_TERMINATED);
+        // thread-pool events
+        made_passed("cbEVT_THREADTASK_STARTED = " +cbEVT_THREADTASK_STARTED);
+        made_passed("cbEVT_THREADTASK_ENDED = " +cbEVT_THREADTASK_ENDED);
+        made_passed("cbEVT_THREADTASK_ALLDONE = " +cbEVT_THREADTASK_ALLDONE);
+        // request app to dock/undock a window
+        made_passed("cbEVT_ADD_DOCK_WINDOW = " +cbEVT_ADD_DOCK_WINDOW);
+        made_passed("cbEVT_REMOVE_DOCK_WINDOW = " +cbEVT_REMOVE_DOCK_WINDOW);
+        made_passed("cbEVT_SHOW_DOCK_WINDOW = " +cbEVT_SHOW_DOCK_WINDOW);
+        made_passed("cbEVT_HIDE_DOCK_WINDOW = " +cbEVT_HIDE_DOCK_WINDOW);
+        // force update current view layout
+        made_passed("cbEVT_UPDATE_VIEW_LAYOUT = " +cbEVT_UPDATE_VIEW_LAYOUT);
+        // ask which is the current view layout
+        made_passed("cbEVT_QUERY_VIEW_LAYOUT = " +cbEVT_QUERY_VIEW_LAYOUT);
+        // request app to switch view layout
+        made_passed("cbEVT_SWITCH_VIEW_LAYOUT = " +cbEVT_SWITCH_VIEW_LAYOUT);
+        // app notifies that a new layout has been applied
+        made_passed("cbEVT_SWITCHED_VIEW_LAYOUT = " +cbEVT_SWITCHED_VIEW_LAYOUT);
+        // app notifies that a docked window has been hidden/shown
+        made_passed("cbEVT_DOCK_WINDOW_VISIBILITY = " +cbEVT_DOCK_WINDOW_VISIBILITY);
+        // app notifies that the menubar is started being (re)created
+        made_passed("cbEVT_MENUBAR_CREATE_BEGIN = " +cbEVT_MENUBAR_CREATE_BEGIN);
+        // app notifies that the menubar (re)creation ended
+        made_passed("cbEVT_MENUBAR_CREATE_END = " +cbEVT_MENUBAR_CREATE_END);
+        // compiler-related events
+        made_passed("cbEVT_COMPILER_STARTED = " +cbEVT_COMPILER_STARTED);
+        made_passed("cbEVT_COMPILER_FINISHED = " +cbEVT_COMPILER_FINISHED);
+        made_passed("cbEVT_COMPILER_SET_BUILD_OPTIONS = " +cbEVT_COMPILER_SET_BUILD_OPTIONS);
+        made_passed("cbEVT_CLEAN_PROJECT_STARTED = " +cbEVT_CLEAN_PROJECT_STARTED);
+        made_passed("cbEVT_CLEAN_WORKSPACE_STARTED = " +cbEVT_CLEAN_WORKSPACE_STARTED);
+        made_passed("cbEVT_COMPILER_SETTINGS_CHANGED = " +cbEVT_COMPILER_SETTINGS_CHANGED);
+        // request app to compile a single file
+        made_passed("cbEVT_COMPILE_FILE_REQUEST = " +cbEVT_COMPILE_FILE_REQUEST);
+        // debugger-related events
+        made_passed("cbEVT_DEBUGGER_STARTED = " +cbEVT_DEBUGGER_STARTED);
+        made_passed("cbEVT_DEBUGGER_PAUSED = " +cbEVT_DEBUGGER_PAUSED);
+        made_passed("cbEVT_DEBUGGER_FINISHED = " +cbEVT_DEBUGGER_FINISHED);
+
+        // logger-related events
+        made_passed("cbEVT_ADD_LOG_WINDOW = " +cbEVT_ADD_LOG_WINDOW);
+        made_passed("cbEVT_REMOVE_LOG_WINDOW = " +cbEVT_REMOVE_LOG_WINDOW);
+        made_passed("cbEVT_HIDE_LOG_WINDOW = " +cbEVT_HIDE_LOG_WINDOW);
+        made_passed("cbEVT_SWITCH_TO_LOG_WINDOW = " +cbEVT_SWITCH_TO_LOG_WINDOW);
+        made_passed("cbEVT_GET_ACTIVE_LOG_WINDOW = " +cbEVT_GET_ACTIVE_LOG_WINDOW);
+        made_passed("cbEVT_SHOW_LOG_MANAGER = " +cbEVT_SHOW_LOG_MANAGER);
+        made_passed("cbEVT_HIDE_LOG_MANAGER = " +cbEVT_HIDE_LOG_MANAGER);
+        made_passed("cbEVT_LOCK_LOG_MANAGER = " +cbEVT_LOCK_LOG_MANAGER);
+        made_passed("cbEVT_UNLOCK_LOG_MANAGER = " +cbEVT_UNLOCK_LOG_MANAGER);
+
+        //cbAUiNotebook related events
+        made_passed("cbEVT_CBAUIBOOK_LEFT_DCLICK = " +cbEVT_CBAUIBOOK_LEFT_DCLICK);
+
+        // code-completion related events
+        made_passed("cbEVT_COMPLETE_CODE = " +cbEVT_COMPLETE_CODE);
+        made_passed("cbEVT_SHOW_CALL_TIP = " +cbEVT_SHOW_CALL_TIP);
+
+        made_passed("cbEVT_SETTINGS_CHANGED = " +cbEVT_SETTINGS_CHANGED);
+
+
+        }
+        catch(e)
+        {
+            made_failed("A const is probably not defined: ",e);
+        }
+
+        end_test();
+    }
+
+    function test_globals()
+    {
+        begin_test("globals");
+        Log("This is a test log\n");
+        made_passed("Log(): verify if \"This is a test log\" is in the log window");
+        LogDebug("This is a test debug log\n");
+        made_passed("LogDebug(): verify if \"This is a test debug log\" is in the debug log window");
+        LogWarning("This is a test warning log\n");
+        made_passed("LogDebug(): verify if \"This is a test warning log\" is in the log window");
+        LogError("This is a test Error log\n");
+        made_passed("LogDebug(): verify if \"This is a test Error log\" is in the log window");
+
+        //if(Message("test message box","caption",wxID_OK) == wxID_OK)
+            made_passed("Message box");
+        //else
+        //    made_failed("Message box failed");
+
+        //ShowMessage("test message box 2");
+        made_passed("Message box 2");
+        //ShowWarning("test warning box");
+        made_passed("warning  box");
+        //ShowError("test error box");
+        made_passed("error box");
+        //ShowInfo("test info box");
+        made_passed("info box");
+
+
+        //ReplaceMacros();
+        made_failed("ReplaceMacros","test currently not implemented");
+
+        // Get Array from string
+        local test_array = GetArrayFromString("string1;string2;string3",";",false);
+        if(test_array.GetCount() != 3)
+            made_failed("GetArrayFromString","array.size() != 3","got " + test_array.GetCount());
+        else if(test_array.Item(0).Cmp("string1"))
+            made_failed("GetArrayFromString","array.Item(0) != \"string1\" "," got " + test_array.Item(0));
+        else if(test_array.Item(1).Cmp("string2"))
+            made_failed("GetArrayFromString","array.Item(1) != \"string2\" "," got " + test_array.Item(1));
+        else
+            made_passed("GetArrayFromString");
+
+        test_array = wxArrayString();
+        test_array.Add("string3",1);
+        test_array.Add("string4",1);
+        test_array.Add("string5",1);
+        test_string("GetStringFromArray",GetStringFromArray(test_array,";",false),"string3;string4;string5");
+        test_string("EscapeSpaces",EscapeSpaces("test string\tlong"),"test\\ string\\\tlong");
+        test_string("UnixFilename", UnixFilename("\\home\\Test",wxPATH_UNIX),"/home/Test");
+        test_equal("FileTypeOf",FileTypeOf("tes.script"),ftScript);
+        test_string("URLEncode",URLEncode("Hello World+Squirrel"),"Hello+World%2BSquirrel");
+        
+		NotifyMissingFile("This_is_a_test");
+        made_passed("Check for NotifyMissingFile Message")
+        test_equal("GetPlatformsFromString",GetPlatformsFromString("Unix;Windows"),spUnix|spWindows);
+        test_string("GetStringFromPlatforms",GetStringFromPlatforms(spUnix|spWindows,true),"Windows;Unix;");
+
+        not_implemented("GetFolder");
+        not_implemented("LocateDataFile");
+
+        not_implemented("ExecuteToolPlugin");
+        not_implemented("InstallPlugin");
+        not_implemented("CallMenu");
+
+        made_passed("Include"); // This has to work, else we could not run this script, because it uses "include"
+        made_passed("Require"); // This has to work, else we could not run this script, because it uses "include"
+
+        InfoWindow("Squirrel test info window","This is used to test the squirrel binding",5000,2000);
+        test_true("InfoWindow",Message("Does a Info Window appeared?","Does the test worked?",wxYES_NO) == wxID_YES);
+
+        not_implemented("IsNull");  // Hmmm we need a nullptr ...
+
+
+
+        end_test();
+
+    }
+
+    function test_cfg_manager()
+    {
+
+    }
+}

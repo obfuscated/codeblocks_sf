@@ -286,7 +286,7 @@ function GenerateHeader()
     local buffer = IO.ReadFileContents(path);
 
     // create header guard word
-    local guard = PluginSettings.Name + DOT_EXT_H + _T("_INCLUDED");
+    local guard = wxString(PluginSettings.Name + DOT_EXT_H + _T("_INCLUDED"));
     guard.MakeUpper();
     guard.Replace(_T(" "), _T("_"));
     guard.Replace(_T("."), _T("_"));

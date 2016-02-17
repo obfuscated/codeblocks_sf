@@ -134,6 +134,21 @@ class wxSmith : public cbPlugin
         /** \brief Function Generating background panes for resource and property browsers */
         void BuildBrowserParents();
 
+
+        /** \defgroup sq_wxsmith Squirrel binding ot wxSmith plugin
+         *  \ingroup Squirrel
+         *  \brief Function from wxSmith available in squirrel
+         */
+        /** \ingroup sq_wxsmith
+         *### RecoverWxsFile(WxsResourceSettings)
+         *
+         *  - __WxsResourceSettings__     wxs filepath? [string]
+         *
+         *  Function allowing to recover invalid wxs file
+         *
+         *  - __return__ The Value entered by the user or _value_
+         */
+
         /** \brief Function allowing to recover invalid wxs file */
         static bool RecoverWxsFile( const wxString& WxsResourceSettings );
 
