@@ -7,16 +7,17 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel30\share\CodeBlocks\plugins\Profiler.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs30\plugins\contrib\profiler" />
+				<Option output="../../../devel30/share/CodeBlocks/plugins/Profiler.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs30/plugins/contrib/profiler" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
 			</Environment>
 		</Build>
@@ -36,10 +37,10 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-std=gnu++11" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX30.include)" />
@@ -49,8 +50,8 @@
 			<Add option="-mthreads" />
 			<Add library="codeblocks" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="..\..\..\devel30" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="../../../devel30" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel30\share\codeblocks\Profiler.zip resources\manifest.xml resources\*.xrc" />
@@ -62,9 +63,9 @@
 		<Unit filename="cbprofilerconfig.h" />
 		<Unit filename="cbprofilerexec.cpp" />
 		<Unit filename="cbprofilerexec.h" />
-		<Unit filename="resources\configuration.xrc" />
-		<Unit filename="resources\main_dialog.xrc" />
-		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources/configuration.xrc" />
+		<Unit filename="resources/main_dialog.xrc" />
+		<Unit filename="resources/manifest.xml" />
 		<Extensions>
 			<code_completion />
 			<envvars />

@@ -6,12 +6,12 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel30\share\CodeBlocks\plugins\copystrings.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs30\plugins\contrib\copystrings" />
+				<Option output="../../../devel30/share/CodeBlocks/plugins/copystrings.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs30/plugins/contrib/copystrings" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 			</Target>
 			<Environment>
@@ -39,9 +39,9 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX30.include)" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX30.include)" />
@@ -50,8 +50,8 @@
 			<Add option="-mthreads" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\..\devel30" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="../../../devel30" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\copystrings.zip manifest.xml" />

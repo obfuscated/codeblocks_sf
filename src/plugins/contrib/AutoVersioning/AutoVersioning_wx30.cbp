@@ -7,12 +7,13 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel30\share\codeblocks\plugins\AutoVersioning.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs30\plugins\contrib\AutoVersioning" />
+				<Option output="../../../devel30/share/codeblocks/plugins/AutoVersioning.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs30/plugins/contrib/AutoVersioning" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
@@ -26,18 +27,18 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DNOPCH" />
 					<Add option="-DwxUSE_UNICODE" />
-					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="$(#WX30.include)" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-mthreads" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="codeblocks" />
-					<Add directory="..\..\..\devel30" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="../../../devel30" />
+					<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel30\share\codeblocks\AutoVersioning.zip manifest.xml" />
@@ -45,8 +46,8 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
 			</Environment>
 		</Build>
@@ -76,8 +77,8 @@
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="avVersionEditorDlg.cpp" main="avVersionEditorDlg" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxScrollingDialog wxs="wxsmith/avVersionEditorDlg.wxs" src="avVersionEditorDlg.cpp" hdr="avVersionEditorDlg.h" name="avVersionEditorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/avChangesDlg.wxs" src="avChangesDlg.cpp" hdr="avChangesDlg.h" name="avChangesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/avVersionEditorDlg.wxs" src="avVersionEditorDlg.cpp" hdr="avVersionEditorDlg.h" fwddecl="0" i18n="1" name="avVersionEditorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/avChangesDlg.wxs" src="avChangesDlg.cpp" hdr="avChangesDlg.h" fwddecl="0" i18n="1" name="avChangesDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />

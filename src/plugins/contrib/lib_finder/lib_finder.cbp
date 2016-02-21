@@ -7,18 +7,19 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\lib_finder.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\lib_finder" />
-				<Option external_deps="..\..\..\devel\wxflatnotebook.dll;" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/lib_finder.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs/plugins/contrib/lib_finder" />
+				<Option external_deps="../../../devel/wxflatnotebook.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Option projectResourceIncludeDirsRelation="0" />
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -42,21 +43,21 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX.include)" />
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
-			<Add directory="..\..\..\include\tinyxml" />
-			<Add directory="..\..\..\include\scripting\include" />
-			<Add directory="..\..\..\include\scripting\sqplus" />
-			<Add directory="..\..\..\include\scripting\squirrel" />
-			<Add directory="..\..\..\include\scripting\bindings" />
-			<Add directory="..\wxContribItems\wxFlatNotebook\include" />
-			<Add directory="..\..\..\include\mozilla_chardet" />
-			<Add directory="..\..\..\include\mozilla_chardet\mfbt" />
-			<Add directory="..\..\..\include\mozilla_chardet\nsprpub\pr\include" />
-			<Add directory="..\..\..\include\mozilla_chardet\xpcom" />
-			<Add directory="..\..\..\include\mozilla_chardet\xpcom\base" />
-			<Add directory="..\..\..\include\mozilla_chardet\xpcom\glue" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../include/scripting/include" />
+			<Add directory="../../../include/scripting/sqplus" />
+			<Add directory="../../../include/scripting/squirrel" />
+			<Add directory="../../../include/scripting/bindings" />
+			<Add directory="../wxContribItems/wxFlatNotebook/include" />
+			<Add directory="../../../include/mozilla_chardet" />
+			<Add directory="../../../include/mozilla_chardet/mfbt" />
+			<Add directory="../../../include/mozilla_chardet/nsprpub/pr/include" />
+			<Add directory="../../../include/mozilla_chardet/xpcom" />
+			<Add directory="../../../include/mozilla_chardet/xpcom/base" />
+			<Add directory="../../../include/mozilla_chardet/xpcom/glue" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
@@ -67,9 +68,9 @@
 			<Add library="wxflatnotebook" />
 			<Add library="wxmsw28$(WX_SUFFIX)" />
 			<Add library="codeblocks" />
-			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-			<Add directory="..\..\..\devel" />
-			<Add directory="..\..\..\base\tinyxml" />
+			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
+			<Add directory="../../../devel" />
+			<Add directory="../../../base/tinyxml" />
 		</Linker>
 		<ExtraCommands>
 			<Add after="update.bat" />
@@ -83,10 +84,10 @@
 		<Unit filename="headersdetectordlg.h" />
 		<Unit filename="lib_finder.cpp" />
 		<Unit filename="lib_finder.h" />
-		<Unit filename="lib_finder\codeblocks_sdk.xml" />
-		<Unit filename="lib_finder\glfw.xml" />
-		<Unit filename="lib_finder\readme.txt" />
-		<Unit filename="lib_finder\wxwidgets.xml" />
+		<Unit filename="lib_finder/codeblocks_sdk.xml" />
+		<Unit filename="lib_finder/glfw.xml" />
+		<Unit filename="lib_finder/readme.txt" />
+		<Unit filename="lib_finder/wxwidgets.xml" />
 		<Unit filename="librariesdlg.cpp" />
 		<Unit filename="librariesdlg.h" />
 		<Unit filename="librarydetectionconfig.h" />
@@ -111,27 +112,27 @@
 		<Unit filename="resultmap.h" />
 		<Unit filename="webresourcesmanager.cpp" />
 		<Unit filename="webresourcesmanager.h" />
-		<Unit filename="wxsmith\DefsDownloadDlg.wxs" />
-		<Unit filename="wxsmith\DirListDlg.wxs" />
-		<Unit filename="wxsmith\HeadersDetectorDlg.wxs" />
-		<Unit filename="wxsmith\LibSelectDlg.wxs" />
-		<Unit filename="wxsmith\LibrariesDlg.wxs" />
-		<Unit filename="wxsmith\ProcessingDlg.wxs" />
-		<Unit filename="wxsmith\ProjectConfigurationPanel.wxs" />
-		<Unit filename="wxsmith\ProjectMissingLibs.wxs" />
+		<Unit filename="wxsmith/DefsDownloadDlg.wxs" />
+		<Unit filename="wxsmith/DirListDlg.wxs" />
+		<Unit filename="wxsmith/HeadersDetectorDlg.wxs" />
+		<Unit filename="wxsmith/LibSelectDlg.wxs" />
+		<Unit filename="wxsmith/LibrariesDlg.wxs" />
+		<Unit filename="wxsmith/ProcessingDlg.wxs" />
+		<Unit filename="wxsmith/ProjectConfigurationPanel.wxs" />
+		<Unit filename="wxsmith/ProjectMissingLibs.wxs" />
 		<Extensions>
 			<code_completion />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxScrollingDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" fwddecl="1" name="DirListDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" fwddecl="1" name="ProcessingDlg" language="CPP" />
-					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" name="ProjectConfigurationPanel" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" name="LibSelectDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" name="LibrariesDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" name="HeadersDetectorDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" fwddecl="1" name="DefsDownloadDlg" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" fwddecl="1" name="ProjectMissingLibs" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/DirListDlg.wxs" src="dirlistdlg.cpp" hdr="dirlistdlg.h" fwddecl="1" i18n="1" name="DirListDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ProcessingDlg.wxs" src="processingdlg.cpp" hdr="processingdlg.h" fwddecl="1" i18n="1" name="ProcessingDlg" language="CPP" />
+					<wxPanel wxs="wxsmith/ProjectConfigurationPanel.wxs" src="projectconfigurationpanel.cpp" hdr="projectconfigurationpanel.h" fwddecl="1" i18n="1" name="ProjectConfigurationPanel" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/LibSelectDlg.wxs" src="libselectdlg.cpp" hdr="libselectdlg.h" fwddecl="1" i18n="1" name="LibSelectDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/LibrariesDlg.wxs" src="librariesdlg.cpp" hdr="librariesdlg.h" fwddecl="1" i18n="1" name="LibrariesDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/HeadersDetectorDlg.wxs" src="headersdetectordlg.cpp" hdr="headersdetectordlg.h" fwddecl="1" i18n="1" name="HeadersDetectorDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/DefsDownloadDlg.wxs" src="defsdownloaddlg.cpp" hdr="defsdownloaddlg.h" fwddecl="1" i18n="1" name="DefsDownloadDlg" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/ProjectMissingLibs.wxs" src="projectmissinglibs.cpp" hdr="projectmissinglibs.h" fwddecl="1" i18n="1" name="ProjectMissingLibs" language="CPP" />
 				</resources>
 			</wxsmith>
 			<envvars />

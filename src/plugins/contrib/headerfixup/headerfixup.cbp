@@ -7,12 +7,13 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel\share\CodeBlocks\plugins\headerfixup" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs\plugins\contrib\headerfixup" />
+				<Option output="../../../devel/share/CodeBlocks/plugins/headerfixup" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/headerfixup" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel\codeblocks.exe" />
+				<Option host_application="../../../devel/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-pipe" />
@@ -29,13 +30,13 @@
 					<Add option="-DWX_PRECOMP" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="$(#WX.include)" />
-					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
-					<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)" />
-					<Add directory="..\..\..\devel" />
+					<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)" />
+					<Add directory="../../../devel" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\CodeBlocks\headerfixup.zip manifest.xml" />
@@ -43,8 +44,8 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -76,18 +77,18 @@
 		<Unit filename="protocol.cpp" />
 		<Unit filename="protocol.h" />
 		<Unit filename="todo.txt" />
-		<Unit filename="wxsmith\configuration.wxs" />
-		<Unit filename="wxsmith\execution.wxs" />
-		<Unit filename="wxsmith\protocol.wxs" />
+		<Unit filename="wxsmith/configuration.wxs" />
+		<Unit filename="wxsmith/execution.wxs" />
+		<Unit filename="wxsmith/protocol.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
 			<wxsmith version="1">
 				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
-					<wxPanel wxs="wxsmith/configuration.wxs" src="configuration.cpp" hdr="configuration.h" fwddecl="1" name="Configuration" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/execution.wxs" src="execution.cpp" hdr="execution.h" fwddecl="1" name="Execution" language="CPP" />
-					<wxScrollingDialog wxs="wxsmith/protocol.wxs" src="protocol.cpp" hdr="protocol.h" fwddecl="1" name="Protocol" language="CPP" />
+					<wxPanel wxs="wxsmith/configuration.wxs" src="configuration.cpp" hdr="configuration.h" fwddecl="1" i18n="1" name="Configuration" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/execution.wxs" src="execution.cpp" hdr="execution.h" fwddecl="1" i18n="1" name="Execution" language="CPP" />
+					<wxScrollingDialog wxs="wxsmith/protocol.wxs" src="protocol.cpp" hdr="protocol.h" fwddecl="1" i18n="1" name="Protocol" language="CPP" />
 				</resources>
 			</wxsmith>
 			<SVNInside Login="" Password="" ConnectStatus="1" NeedsPassword="0" />

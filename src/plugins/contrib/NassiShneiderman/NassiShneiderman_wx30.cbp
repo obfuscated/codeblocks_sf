@@ -8,12 +8,12 @@
 		<Build>
 			<Target title="default">
 				<Option platforms="Windows;" />
-				<Option output="..\..\..\devel30\share\CodeBlocks\plugins\NassiShneiderman" prefix_auto="1" extension_auto="1" />
-				<Option object_output="..\..\..\.objs30\plugins\contrib\NassiShneiderman" />
+				<Option output="../../../devel30/share/CodeBlocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs30/plugins/contrib/NassiShneiderman" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel30\codeblocks.exe" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
@@ -29,18 +29,18 @@
 					<Add option="-DNOPCH" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
-					<Add directory="..\..\..\include" />
-					<Add directory="..\..\..\sdk\wxscintilla\include" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="$(#WX30.include)" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+					<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 					<Add directory="$(#boost.include)" />
 				</Compiler>
 				<Linker>
 					<Add option="-Wl,-enable-auto-import" />
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="..\..\..\devel30" />
-					<Add directory="$(#WX30.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="../../../devel30" />
+					<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\NassiShneiderman.zip manifest.xml" />
