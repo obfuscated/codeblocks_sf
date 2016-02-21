@@ -55,6 +55,7 @@
 			<Add option="-Wall" />
 			<Add option="-ansi" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Unit filename="EditorConfig.cpp" />
 		<Unit filename="EditorConfig.h" />

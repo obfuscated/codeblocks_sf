@@ -53,6 +53,7 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-ansi" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Unit filename="ReopenEditor.cpp" />
 		<Unit filename="ReopenEditor.h" />

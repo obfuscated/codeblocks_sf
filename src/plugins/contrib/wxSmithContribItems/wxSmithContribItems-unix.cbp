@@ -78,6 +78,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Linker>
 			<Add option="`wx-config --version=2.8 --libs`" />

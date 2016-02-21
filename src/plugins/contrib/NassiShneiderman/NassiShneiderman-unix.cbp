@@ -57,6 +57,7 @@
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
 			<Add option="-ansi" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Unit filename="CParser.cpp" />
 		<Unit filename="DataObject.cpp" />

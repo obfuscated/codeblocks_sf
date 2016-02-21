@@ -38,6 +38,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-fPIC" />
 			<Add option="-DPIC" />
+			<Add option="-std=c++11" />
 			<Add directory="lib" />
 			<Add directory="lib/tinyxml" />
 			<Add directory="src" />

@@ -43,6 +43,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=c++11" />
+		</Compiler>
 		<Unit filename="ProjectOptionsManipulator.cpp" />
 		<Unit filename="ProjectOptionsManipulator.h" />
 		<Unit filename="ProjectOptionsManipulatorDlg.cpp" />
