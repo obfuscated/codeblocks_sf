@@ -55,6 +55,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=gnu++11" />
+		</Compiler>
 		<Unit filename="CParser.cpp" />
 		<Unit filename="DataObject.cpp" />
 		<Unit filename="DataObject.h" />

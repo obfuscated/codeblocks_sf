@@ -173,6 +173,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=gnu++11" />
 			<Add option="-DNOPCH" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />

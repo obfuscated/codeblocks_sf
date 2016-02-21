@@ -46,6 +46,7 @@
 			<Add option="-DNOPCH" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/mozilla_chardet" />

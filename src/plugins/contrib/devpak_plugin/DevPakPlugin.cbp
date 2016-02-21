@@ -63,6 +63,7 @@
 			<Add alias="All" targets="libbz2;default;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-std=gnu++11" />
 			<Add directory="bzip2" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

@@ -47,6 +47,7 @@
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DSUPPORT_UTF8" />
+			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
 			<Add directory="..\..\..\include" />

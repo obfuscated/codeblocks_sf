@@ -66,6 +66,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
+			<Add option="-std=gnu++11" />
 		</Compiler>
 		<Unit filename="AutoDoc.cpp" />
 		<Unit filename="ChangeLog.txt" />

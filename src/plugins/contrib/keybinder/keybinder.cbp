@@ -45,6 +45,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WX.include)" />

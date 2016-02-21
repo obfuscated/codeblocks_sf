@@ -125,6 +125,7 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=gnu++11" />
 		</Compiler>
 		<Unit filename="DictionariesNeededDialog.cpp">
 			<Option target="plugin" />

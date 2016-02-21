@@ -57,6 +57,7 @@
 		<Compiler>
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-std=gnu++11" />
 		</Compiler>
 		<Unit filename="AutoVersioning.cpp" />
 		<Unit filename="AutoVersioning.h" />

@@ -57,6 +57,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=gnu++11" />
+		</Compiler>
 		<Unit filename="CharacterView.cpp" />
 		<Unit filename="CharacterView.h" />
 		<Unit filename="DigitView.cpp" />

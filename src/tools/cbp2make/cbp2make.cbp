@@ -38,6 +38,7 @@
 			<Add option="-fexceptions" />
 			<Add option="-fno-strict-aliasing" />
 			<Add option="-Wno-write-strings" />
+			<Add option="-std=gnu++11" />
 			<Add directory="lib" />
 			<Add directory="lib\tinyxml" />
 			<Add directory="src" />

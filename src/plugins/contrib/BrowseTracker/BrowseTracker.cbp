@@ -104,6 +104,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=gnu++11" />
+		</Compiler>
 		<Unit filename="BrowseMarks.cpp" />
 		<Unit filename="BrowseMarks.h" />
 		<Unit filename="BrowseSelector.cpp" />

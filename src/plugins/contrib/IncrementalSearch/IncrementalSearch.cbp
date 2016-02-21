@@ -56,6 +56,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=gnu++11" />
+		</Compiler>
 		<Unit filename="IncrementalSearch.cpp" />
 		<Unit filename="IncrementalSearch.h" />
 		<Unit filename="IncrementalSearchConfDlg.cpp" />

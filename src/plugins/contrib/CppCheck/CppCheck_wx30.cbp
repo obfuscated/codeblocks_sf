@@ -37,6 +37,7 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=gnu++11" />
 			<Add directory="..\..\..\include" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="$(#WX30.INCLUDE)" />
