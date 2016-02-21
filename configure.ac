@@ -92,7 +92,7 @@ CODEBLOCKS_ENABLE_SETTINGS
 
 AM_OPTIONS_WXCONFIG
 AM_PATH_WXCONFIG(2.8.12, wxWin=1)
-        if test "$wxWin" != 1; then
+    if test "$wxWin" != 1; then
         AC_MSG_ERROR([
                 wxWidgets must be installed on your system.
 
