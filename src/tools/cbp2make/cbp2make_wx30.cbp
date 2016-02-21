@@ -15,12 +15,6 @@
 				<Option parameters="-in cbp2make.cbp" />
 				<Option host_application="codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
 			</Target>
 			<Target title="Doxygen">
 				<Option type="4" />
@@ -35,6 +29,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fexceptions" />
 			<Add option="-fno-strict-aliasing" />
 			<Add option="-Wno-write-strings" />

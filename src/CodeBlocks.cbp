@@ -719,6 +719,7 @@
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
+			<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.8.0&quot;)) print(_T(&quot;-Wno-unused-local-typedefs&quot;));]]' />
 			<Add option="-std=gnu++11" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
