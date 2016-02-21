@@ -84,6 +84,7 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DNOPCH" />
+			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../wxSmith" />

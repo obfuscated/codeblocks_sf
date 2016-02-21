@@ -46,6 +46,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=c++11" />
+		</Compiler>
 		<Unit filename="ReopenEditor.cpp" />
 		<Unit filename="ReopenEditor.h" />
 		<Unit filename="ReopenEditorConfDLg.cpp" />

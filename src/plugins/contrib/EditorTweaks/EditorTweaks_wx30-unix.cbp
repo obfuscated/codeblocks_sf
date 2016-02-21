@@ -45,6 +45,9 @@
 		<VirtualTargets>
 			<Add alias="All" targets="default;" />
 		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=c++11" />
+		</Compiler>
 		<Unit filename="EditorTweaks.cpp" />
 		<Unit filename="EditorTweaks.h" />
 		<Unit filename="EditorTweaksConfDlg.cpp" />

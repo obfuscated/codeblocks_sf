@@ -35,6 +35,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
+			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />
