@@ -898,7 +898,7 @@ int CodeBlocksApp::BatchJob()
 
     // find compiler plugin
     PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-    if (arr.GetCount() == 0)
+    if (arr.IsEmpty())
         return -2;
 
     cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(arr[0]);
@@ -918,7 +918,7 @@ int CodeBlocksApp::BatchJob()
             for (int i = 0; i < prj->GetBuildTargetsCount(); ++i)
             {
                 ProjectBuildTarget* target = prj->GetBuildTarget(i);
-                if (target->GetTitle().Matches(defTarget))
+                if ( target->GetTitle().Matches(defTarget) )
                 {
                     idx = i;
                     break;
@@ -933,6 +933,8 @@ int CodeBlocksApp::BatchJob()
 
     m_pBatchBuildDialog = m_Frame->GetBatchBuildDialog();
     PlaceWindow(m_pBatchBuildDialog);
+
+    wxString title = _("Building '") + wxFileNameFromPath(wxString(argv[argc-1])) + _("' (target '")  + m_BatchTarget + _T("')");
     wxTaskBarIcon* tbIcon = new wxTaskBarIcon();
     tbIcon->SetIcon(
             #ifdef __WXMSW__
@@ -940,8 +942,10 @@ int CodeBlocksApp::BatchJob()
             #else
                 wxIcon(app),
             #endif // __WXMSW__
-                _("Building ") + wxFileNameFromPath(wxString(argv[argc-1])));
+                title);
 
+    wxString bb_title = m_pBatchBuildDialog->GetTitle();
+    m_pBatchBuildDialog->SetTitle(bb_title + _T(" - ") + title);
     m_pBatchBuildDialog->Show();
 
     if (m_ReBuild)
