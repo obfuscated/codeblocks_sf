@@ -426,13 +426,12 @@ private:
     /** this makes a difference in unnamed class/struct/enum handling */
     bool                 m_ParsingTypedef;
 
-    /**  local file or buffer in memory*/
-    bool                 m_IsBuffer;
-
-    /**  a wxString holding the parsing buffer*/
+    /**  a wxString holding the parsing buffer, if it is a file in the hard disk, then this stands
+     *  for the file name. Otherwise, this is the in memory buffer content.
+     */
     wxString             m_Buffer;
 
-    /** a pointer indicator or a references*/
+    /** a pointer indicator or a references */
     wxString             m_PointerOrRef;
 
     /** holds current template argument(s) when a template occurs */

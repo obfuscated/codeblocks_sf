@@ -209,7 +209,6 @@ ParserThread::ParserThread(ParserBase*          parent,
     m_IsLocal(isLocal),
     m_Options(parserThreadOptions),
     m_ParsingTypedef(false),
-    m_IsBuffer(parserThreadOptions.useBuffer),
     m_Buffer(bufferOrFilename),
     m_StructUnionUnnamedCount(0),
     m_EnumUnnamedCount(0)
@@ -470,7 +469,7 @@ bool ParserThread::InitTokenizer()
 {
     if (!m_Buffer.IsEmpty())
     {
-        if (!m_IsBuffer)
+        if (!m_Options.useBuffer)
         {
             if (wxFileExists(m_Buffer))
             {
