@@ -64,30 +64,65 @@ struct ParserThreadOptions
         loader(nullptr)
         {}
 
-    /* useBuffer specifies that we're not parsing a file,  but a temporary
-     * buffer. The resulting tokens will be temporary, too,
-     * and will be deleted before the next file is parsed.
+    /** useBuffer specifies that we're not parsing a file,  but a temporary
+     *  buffer. The resulting tokens will be temporary, too,
+     *  and will be deleted before the next file is parsed.
      */
     bool        useBuffer;
+
+    /** which file the buffer belongs to, this usually happens when we parse a piece of the cbEditor
+     *  and the cbEditor is associated by a file in hard disk
+     */
     wxString    fileOfBuffer;
+
+    /** when parsing a function body, all the tokens are the children of the function token */
     int         parentIdxOfBuffer;
+
+    /** since we are not parsing start from the first line of the file, this is the first line
+     *  number of the buffer in the whole file
+     */
     int         initLineOfBuffer;
+
+    /** do we parse inside the {...} body */
     bool        bufferSkipBlocks;
+
+    /** not used */
     bool        bufferSkipOuterBlocks; // classes, namespaces and functions
+
+    /** this value is passed to the generated Token's m_IsTemp property */
     bool        isTemp;
 
+    /** parse the file in #include "file" directive */
     bool        followLocalIncludes;
+
+    /** parse the file in #include <file> directive */
     bool        followGlobalIncludes;
+
+    /** handle the #if like preprocessor directives, this value is passed to Tokenizer */
     bool        wantPreprocessor;
+
+    /** not used */
     bool        parseComplexMacros;
+
+    /** not used */
     bool        platformCheck;
 
+    /** whether to parse the functions */
     bool        handleFunctions;
+
+    /** whether to parse the variable definition */
     bool        handleVars;
+
+    /** whether to parse "class ...." like statement */
     bool        handleClasses;
+
+    /** whether to parse "enum ..." like statement */
     bool        handleEnums;
+
+    /** whether to parse "typedef ..." like statement */
     bool        handleTypedefs;
 
+    /** should tokenizer detect and store doxygen documentation? */
     bool        storeDocumentation;
 
     LoaderBase* loader; // if not NULL, load through filemanager (using threads)
