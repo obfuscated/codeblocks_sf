@@ -8,8 +8,8 @@
 // Copyright:   (c) Julian Smart
 // Licence:
 /////////////////////////////////////////////////////////////////////////////
+#include "sdk_precomp.h"
 
-#include "wx/wx.h"
 #include "wx/module.h"
 #include "wx/display.h"
 #include "wx/bookctrl.h"
