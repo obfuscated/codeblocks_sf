@@ -1340,6 +1340,18 @@ void Wiz::AddWizard(TemplateOutputType otype,
     info.cat = cat;
     info.script = script;
     info.templatePNG = cbLoadBitmap(tpng, wxBITMAP_TYPE_PNG);
+
+    // wx3.0 asserts when the image is smaller than 32x32, so we need to resize it.
+    if (info.templatePNG.Ok() && (info.templatePNG.GetWidth() != 32 || info.templatePNG.GetHeight() != 32))
+    {
+        Manager::Get()->GetLogManager()->LogWarning(F(_("Resizing image '%s' to fit 32x32 (original size is %dx%d)"),
+                                                      tpng.wx_str(), info.templatePNG.GetWidth(),
+                                                      info.templatePNG.GetHeight()));
+        wxImage temp = info.templatePNG.ConvertToImage();
+        temp.Resize(wxSize(32, 32), wxPoint(0, 0), -1, -1, -1);
+        info.templatePNG = wxBitmap(temp);
+    }
+
     info.wizardPNG = cbLoadBitmap(wpng, wxBITMAP_TYPE_PNG);
     info.xrc = _xrc;
     m_Wizards.Add(info);
