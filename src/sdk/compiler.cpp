@@ -28,7 +28,6 @@
 #include <wx/filefn.h>
 #include <wx/xml/xml.h>
 
-WX_DEFINE_OBJARRAY(RegExArray);
 
 // static
 wxArrayString Compiler::m_CompilerIDs; // map to guarantee unique IDs
@@ -105,7 +104,7 @@ Compiler::Compiler(const wxString& name, const wxString& ID, const wxString& par
     m_Switches.forceFwdSlashes = false;
     m_VersionString = wxEmptyString;
     m_Weight = weight;
-
+    m_RegExes.reserve(100);
     Manager::Get()->GetLogManager()->DebugLog(F(_T("Added compiler \"%s\""), m_Name.wx_str()));
 }
 
@@ -183,7 +182,7 @@ void Compiler::ReloadOptions()
 
 void Compiler::LoadDefaultRegExArray(bool globalPrecedence)
 {
-    m_RegExes.Clear();
+    m_RegExes.clear();
     LoadRegExArray(GetID(), globalPrecedence);
 }
 
@@ -361,13 +360,6 @@ void Compiler::MirrorCurrentSettings()
     m_Mirrored                = true;
 }
 
-void Compiler::CompileRegExArray()
-{
-    size_t count = m_RegExes.Count();
-    for (size_t ii = 0; ii < count; ++ii)
-        m_RegExes[ii].CompileRegEx();
-}
-
 void Compiler::SaveSettings(const wxString& baseKey)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("compiler"));
@@ -515,9 +507,9 @@ void Compiler::SaveSettings(const wxString& baseKey)
     // regexes
     cfg->DeleteSubPath(tmp + _T("/regex"));
     wxString group;
-    for (size_t i = 0; i < m_RegExes.Count(); ++i)
+    for (size_t i = 0; i < m_RegExes.size(); ++i)
     {
-        if (i < m_Mirror.RegExes.GetCount() && m_Mirror.RegExes[i] == m_RegExes[i])
+        if (i < m_Mirror.RegExes.size() && m_Mirror.RegExes[i] == m_RegExes[i])
             continue;
 
         group.Printf(_T("%s/regex/re%3.3lu"), tmp.c_str(), static_cast<unsigned long>(i + 1));
@@ -525,7 +517,7 @@ void Compiler::SaveSettings(const wxString& baseKey)
         cfg->Write(group + _T("/description"),  rs.desc,  true);
         if (rs.lt != 0)
             cfg->Write(group + _T("/type"),     rs.lt);
-        cfg->Write(group + _T("/regex"),        rs.regex, true);
+        cfg->Write(group + _T("/regex"),        rs.GetRegExString(), true);
         if (rs.msg[0] != 0)
             cfg->Write(group + _T("/msg1"),     rs.msg[0]);
         if (rs.msg[1] != 0)
@@ -694,21 +686,19 @@ void Compiler::LoadSettings(const wxString& baseKey)
         if (!cfg->Exists(group+_T("/description")))
             continue;
 
-        RegExStruct rs;
-        rs.desc     = cfg->Read(group + _T("/description"));
-        rs.lt       = (CompilerLineType)cfg->ReadInt(group + _T("/type"), 0);
-        rs.regex    = cfg->Read(group + _T("/regex"));
-        rs.msg[0]   = cfg->ReadInt(group + _T("/msg1"), 0);
-        rs.msg[1]   = cfg->ReadInt(group + _T("/msg2"), 0);
-        rs.msg[2]   = cfg->ReadInt(group + _T("/msg3"), 0);
-        rs.filename = cfg->ReadInt(group + _T("/filename"), 0);
-        rs.line     = cfg->ReadInt(group + _T("/line"), 0);
-        rs.CompileRegEx();
+        RegExStruct rs(cfg->Read(group + _T("/description")),
+                       (CompilerLineType)cfg->ReadInt(group + _T("/type"), 0),
+                       cfg->Read(group + _T("/regex")),
+                       cfg->ReadInt(group + _T("/msg1"), 0),
+                       cfg->ReadInt(group + _T("/filename"), 0),
+                       cfg->ReadInt(group + _T("/line"), 0),
+                       cfg->ReadInt(group + _T("/msg2"), 0),
+                       cfg->ReadInt(group + _T("/msg3"), 0));
 
-        if (index <= (long)m_RegExes.GetCount())
+        if (index <= (long)m_RegExes.size())
             m_RegExes[index - 1] = rs;
         else
-            m_RegExes.Add(rs);
+            m_RegExes.push_back(rs);
     }
 
     // sorted flags
@@ -751,10 +741,10 @@ CompilerLineType Compiler::CheckForWarningsAndErrors(const wxString& line)
         m_Error.Clear();
     }
 
-    for (size_t i = 0; i < m_RegExes.Count(); ++i)
+    for (size_t i = 0; i < m_RegExes.size(); ++i)
     {
         RegExStruct& rs = m_RegExes[i];
-        if (rs.regex.IsEmpty())
+        if (!rs.HasRegEx())
             continue;
         const wxRegEx &regex = rs.GetRegEx();
         if (regex.Matches(line))
@@ -1128,7 +1118,7 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
             else if (tp == wxT("info"))
                 clt = cltInfo;
             wxArrayString msg = GetArrayFromString(node->GetAttribute(wxT("msg"), wxEmptyString) + wxT(";0;0"));
-            m_RegExes.Add(RegExStruct(wxGetTranslation(node->GetAttribute(wxT("name"), wxEmptyString)), clt,
+            m_RegExes.push_back(RegExStruct(wxGetTranslation(node->GetAttribute(wxT("name"), wxEmptyString)), clt,
                                       node->GetNodeContent().Trim().Trim(false), wxAtoi(msg[0]),
                                       wxAtoi(node->GetAttribute(wxT("file"), wxT("0"))),
                                       wxAtoi(node->GetAttribute(wxT("line"), wxT("0"))),
@@ -1146,8 +1136,6 @@ void Compiler::LoadRegExArray(const wxString& name, bool globalPrecedence, int r
         }
         node = node->GetNext();
     }
-
-    CompileRegExArray();
 }
 
 bool Compiler::EvalXMLCondition(const wxXmlNode* node)
