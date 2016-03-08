@@ -61,14 +61,8 @@
 #if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
 #include "Tlhelp32.h"
 typedef BOOL WINAPI   (*DebugBreakProcessApiCall)       (HANDLE);
-typedef HANDLE WINAPI (*CreateToolhelp32SnapshotApiCall)(DWORD  dwFlags,   DWORD             th32ProcessID);
-typedef BOOL WINAPI   (*Process32FirstApiCall)          (HANDLE hSnapshot, LPPROCESSENTRY32W lppe);
-typedef BOOL WINAPI   (*Process32NextApiCall)           (HANDLE hSnapshot, LPPROCESSENTRY32W lppe);
 
 DebugBreakProcessApiCall        DebugBreakProcessFunc = 0;
-CreateToolhelp32SnapshotApiCall CreateToolhelp32SnapshotFunc = 0;
-Process32FirstApiCall           Process32FirstFunc = 0;
-Process32NextApiCall            Process32NextFunc = 0;
 
 HINSTANCE kernelLib = 0;
 
@@ -188,10 +182,6 @@ DebuggerGDB::DebuggerGDB() :
     if (kernelLib)
     {
         DebugBreakProcessFunc = (DebugBreakProcessApiCall)GetProcAddress(kernelLib, "DebugBreakProcess");
-        //Windows XP
-        CreateToolhelp32SnapshotFunc = (CreateToolhelp32SnapshotApiCall)GetProcAddress(kernelLib, "CreateToolhelp32Snapshot");
-        Process32FirstFunc = (Process32FirstApiCall)GetProcAddress(kernelLib, "Process32First");
-        Process32NextFunc = (Process32NextApiCall)GetProcAddress(kernelLib, "Process32Next");
     }
     #endif
 }
@@ -1579,7 +1569,7 @@ void DebuggerGDB::DoBreak(bool temporary)
     {
         long childPid = m_State.GetDriver()->GetChildPID();
         long pid = childPid;
-    #ifndef __WXMSW__
+
         if (pid > 0 && !wxProcess::Exists(pid))
         {
             DebugLog(wxString::Format(_("Child process (pid:%ld) doesn't exists"), pid), Logger::warning);
@@ -1589,7 +1579,7 @@ void DebuggerGDB::DoBreak(bool temporary)
         {
             DebugLog(_("Child PID have not been detected!"), Logger::warning);
             std::vector<int> childrenPIDs;
-            cbGetChildrenPIDs(childrenPIDs, m_Pid);
+            m_childPids.GetChildrenPIDs(childrenPIDs, m_Pid);
             if (!childrenPIDs.empty())
             {
                 if (childrenPIDs.size()>1)
@@ -1598,8 +1588,12 @@ void DebuggerGDB::DoBreak(bool temporary)
                 m_State.GetDriver()->SetChildPID(pid);
             }
             else
+            {
+                // FIXME (#obfuscated): not sure about windows here
                 pid = m_Pid; // try poking gdb directly
+            }
         }
+    #ifndef __WXMSW__
         // non-windows gdb can interrupt the running process. yay!
         if (pid <= 0) // look out for the "fake" PIDs (killall)
             cbMessageBox(_("Unable to stop the debug process!"), _("Error"), wxOK | wxICON_WARNING);
@@ -1612,41 +1606,19 @@ void DebuggerGDB::DoBreak(bool temporary)
                   pid, childPid, static_cast<long>(m_Pid)));
             wxKillError error;
             if (wxKill(pid, wxSIGINT, &error) != 0)
+            {
                 DebugLog(wxString::Format(_("Can't kill process (%ld) %d"), pid, (int)(error)));
+                return;
+            }
         }
     #else
-        // windows gdb can interrupt the running process too. yay!
-        if (   (pid <=0)
-            && (CreateToolhelp32SnapshotFunc!=NULL)
-            && (Process32FirstFunc!=NULL)
-            && (Process32NextFunc!=NULL) )
-        {
-            HANDLE snap = CreateToolhelp32SnapshotFunc(TH32CS_SNAPALL,0);
-            if (snap!=INVALID_HANDLE_VALUE)
-            {
-                PROCESSENTRY32 lppe;
-                lppe.dwSize = sizeof(PROCESSENTRY32);
-                BOOL ok = Process32FirstFunc(snap, &lppe);
-                while ( ok == TRUE)
-                {
-                    if (static_cast<int>(lppe.th32ParentProcessID) == m_Pid) // Have my Child...
-                    {
-                        pid = lppe.th32ProcessID;
-                        DebugLog(F(_("Found child: %ld"),  pid));
-                    }
-                    lppe.dwSize = sizeof(PROCESSENTRY32);
-                    ok = Process32NextFunc(snap, &lppe);
-                }
-                CloseHandle(snap);
-            }
-            else
-                Log(_("No handle created. Trying to pause directly with cbd.exe..."), Logger::warning);
-        }
-
         if (m_State.GetDriver()->UseDebugBreakProcess())
         {
             if (!DebugBreakProcessFunc)
+            {
                 Log(_("DebugBreakProcess is not supported, you need Windows XP or newer..."), Logger::error);
+                return;
+            }
             else if (pid > 0)
             {
                 Log(F(_("Trying to interrupt process with pid: %ld; child pid: %ld gdb pid: %ld"),
@@ -1658,7 +1630,10 @@ void DebuggerGDB::DoBreak(bool temporary)
                     CloseHandle(proc);
                 }
                 else
+                {
                     Log(wxT("Interrupting debugger failed :("), Logger::error);
+                    return;
+                }
             }
         }
         else

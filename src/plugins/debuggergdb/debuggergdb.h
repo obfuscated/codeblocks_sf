@@ -15,6 +15,7 @@
 #include <pipedprocess.h>
 #include <wx/regex.h>
 
+#include "child_pids.h"
 #include "remotedebugging.h"
 #include "debuggerstate.h"
 #include "debugger_defs.h"
@@ -176,6 +177,7 @@ class DebuggerGDB : public cbDebuggerPlugin
         void OnCatchThrow(wxCommandEvent &event);
     private:
         PipedProcess* m_pProcess;
+        cbChildPIDs m_childPids;
         bool m_LastExitCode;
         int m_Pid;
         int m_PidToAttach; // for "attach to process"
