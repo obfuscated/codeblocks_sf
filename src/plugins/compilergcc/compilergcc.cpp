@@ -688,8 +688,13 @@ void CompilerGCC::TextURL(wxTextUrlEvent& event)
 
 void CompilerGCC::SetupEnvironment()
 {
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    // Special case so "No Compiler" is valid, but I'm not sure there is
+    // any valid reason to continue with this function.
+    // If we do continue there are wx3 asserts, because of empty paths.
+    if (m_CompilerId == wxT("null"))
+        return;
 
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
     if (!compiler)
         return;
 
@@ -719,12 +724,7 @@ void CompilerGCC::SetupEnvironment()
 
     // Get configured masterpath, expand macros and remove trailing separators
     wxString masterPath = compiler->GetMasterPath();
-    bool isNoComp = false;
-    if (m_CompilerId == wxT("null")) // Special case so "No Compiler" is valid
-    {
-        isNoComp = true;
-        masterPath.Clear();
-    }
+
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
     while (   !masterPath.IsEmpty()
            && ((masterPath.Last() == '\\') || (masterPath.Last() == '/')) )
@@ -781,7 +781,7 @@ void CompilerGCC::SetupEnvironment()
     /* TODO (jens#1#): Is the above correct ?
        Or should we search in the whole systempath (pathList in this case) for the executable? */
     // Try again...
-    if ((binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND)) && !isNoComp)
+    if ((binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND)))
     {
         InfoWindow::Display(_("Environment error"),
                             _("Can't find compiler executable in your configured search path's for ") + compiler->GetName() + _T('\n'));
