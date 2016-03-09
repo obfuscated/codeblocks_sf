@@ -1277,8 +1277,11 @@ void DebuggerManager::FindTargetsDebugger()
 
     if (name.empty() || config.empty())
     {
-        log->LogError(wxString::Format(_("Current compiler '%s' doesn't have correctly defined debugger!"),
-                                       compiler->GetName().c_str()));
+        if (compiler->GetID() != wxT("null"))
+        {
+            log->LogError(wxString::Format(_("Current compiler '%s' doesn't have correctly defined debugger!"),
+                                           compiler->GetName().c_str()));
+        }
         m_menuHandler->MarkActiveTargetAsValid(false);
         return;
     }
