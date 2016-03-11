@@ -152,6 +152,8 @@ void CompilerMessages::AutoFitColumns(int cb_unused column)
 
 void CompilerMessages::FitColumns()
 {
+    if (!control)
+        return;
     int count = control->GetColumnCount();
     for (int ii = 0; ii < count; ++ii)
         control->SetColumnWidth(ii, wxLIST_AUTOSIZE);
