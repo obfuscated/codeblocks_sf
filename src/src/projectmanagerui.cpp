@@ -292,7 +292,7 @@ void ProjectManagerUI::BuildTree()
 
 void ProjectManagerUI::RebuildTree()
 {
-    if (Manager::IsAppShuttingDown() || Manager::IsBatchBuild()) // saves a lot of time at startup for large projects
+    if (Manager::IsAppShuttingDown()) // saves a lot of time at startup for large projects
         return;
 
     FreezeTree();
@@ -2436,8 +2436,6 @@ void ProjectManagerUI::ConfigureProjectDependencies(cbProject* base)
 
 void ProjectManagerUI::CheckForExternallyModifiedProjects()
 {
-    if (Manager::IsBatchBuild())
-        return;
     if (m_isCheckingForExternallyModifiedProjects) // for some reason, a mutex locker does not work???
         return;
     m_isCheckingForExternallyModifiedProjects = true;

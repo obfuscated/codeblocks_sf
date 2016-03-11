@@ -740,12 +740,17 @@ void MainFrame::CreateIDE()
 
     // management panel
     m_pPrjMan = Manager::Get()->GetProjectManager();
-    m_pPrjManUI = new ProjectManagerUI;
+    if (!Manager::IsBatchBuild())
+    {
+        m_pPrjManUI = new ProjectManagerUI;
+        m_LayoutManager.AddPane( m_pPrjManUI->GetNotebook(),
+                                 wxAuiPaneInfo().Name(wxT("ManagementPane")).Caption(_("Management")).
+                                     BestSize(wxSize(leftW, clientsize.GetHeight())).
+                                     MinSize(wxSize(100,100)).Left().Layer(1) );
+    }
+    else
+        m_pPrjManUI = new BatchProjectManagerUI;
     m_pPrjMan->SetUI(m_pPrjManUI);
-    m_LayoutManager.AddPane( m_pPrjManUI->GetNotebook(),
-                             wxAuiPaneInfo().Name(wxT("ManagementPane")).Caption(_("Management")).
-                                 BestSize(wxSize(leftW, clientsize.GetHeight())).
-                                 MinSize(wxSize(100,100)).Left().Layer(1) );
 
     // logs manager
     SetupGUILogging();
@@ -770,7 +775,8 @@ void MainFrame::CreateIDE()
     DoUpdateEditorStyle();
 
     m_pEdMan->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
-    m_pPrjManUI->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
+    if (m_pPrjManUI->GetNotebook())
+        m_pPrjManUI->GetNotebook()->SetDropTarget(new cbFileDropTarget(this));
 
     Manager::Get()->GetColourManager()->Load();
 }
@@ -836,8 +842,11 @@ void MainFrame::SetupDebuggerUI()
     m_debuggerMenuHandler->SetEvtHandlerEnabled(true);
     m_debuggerToolbarHandler->SetEvtHandlerEnabled(true);
 
-    Manager::Get()->GetDebuggerManager()->SetInterfaceFactory(new DebugInterfaceFactory);
-    m_debuggerMenuHandler->RegisterDefaultWindowItems();
+    if (!Manager::IsBatchBuild())
+    {
+        Manager::Get()->GetDebuggerManager()->SetInterfaceFactory(new DebugInterfaceFactory);
+        m_debuggerMenuHandler->RegisterDefaultWindowItems();
+    }
 }
 
 DECLARE_INSTANCE_TYPE(MainFrame);
@@ -1026,7 +1035,8 @@ void MainFrame::CreateMenubar()
     m_HelpPluginsMenu = pluginsM ? pluginsM : new wxMenu();
 
     // core modules: create menus
-    m_pPrjManUI->CreateMenu(mbar);
+    if (!Manager::IsBatchBuild())
+        static_cast<ProjectManagerUI*>(m_pPrjManUI)->CreateMenu(mbar);
     Manager::Get()->GetDebuggerManager()->SetMenuHandler(m_debuggerMenuHandler);
 
     // ask all plugins to rebuild their menus
@@ -1278,7 +1288,8 @@ void MainFrame::LoadWindowState()
     LoadViewLayout(deflayout);
 
     // load manager and messages selected page
-    m_pPrjManUI->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
+    if (m_pPrjManUI->GetNotebook())
+        m_pPrjManUI->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
     m_pInfoPane->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/bottom_block_selection"), 0));
 
     // Cryogen 23/3/10 wxAuiNotebook can't set it's own tab position once instantiated, for some reason. This code fails in InfoPane::InfoPane().
@@ -1367,8 +1378,11 @@ void MainFrame::SaveWindowState()
     }
 
     // save manager and messages selected page
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"),
-                                                       m_pPrjManUI->GetNotebook()->GetSelection());
+    if (m_pPrjManUI->GetNotebook())
+    {
+        int selection = m_pPrjManUI->GetNotebook()->GetSelection();
+        Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/left_block_selection"), selection);
+    }
     Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/main_frame/layout/bottom_block_selection"), m_pInfoPane->GetSelection());
 
     // save display, window size and position
@@ -2757,7 +2771,8 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     if (!Manager::IsBatchBuild())
         SaveWindowState();
 
-    m_LayoutManager.DetachPane(m_pPrjManUI->GetNotebook());
+    if (m_pPrjManUI->GetNotebook())
+        m_LayoutManager.DetachPane(m_pPrjManUI->GetNotebook());
     m_LayoutManager.DetachPane(m_pInfoPane);
     m_LayoutManager.DetachPane(Manager::Get()->GetEditorManager()->GetNotebook());
 

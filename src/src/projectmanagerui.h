@@ -149,3 +149,33 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
     private:
         DECLARE_EVENT_TABLE()
 };
+
+/// Almost empty implementation used in batch mode.
+class BatchProjectManagerUI : public cbProjectManagerUI
+{
+    public:
+        cbAuiNotebook* GetNotebook() override { return nullptr; }
+        cbTreeCtrl* GetTree() override { return nullptr; }
+        void RebuildTree() override {}
+        void FreezeTree() override {}
+        void UnfreezeTree(bool force = false) override {}
+        wxTreeItemId GetTreeSelection() override { return wxTreeItemId(); }
+
+        void ShowFileInTree(ProjectFile &projectFile) override {}
+
+        void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) override {}
+        void RemoveProject(cbProject *project) override {}
+        void BeginLoadingWorkspace() override {}
+        void CloseWorkspace() override {}
+        void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) override {}
+        void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) override {}
+
+        bool QueryCloseAllProjects() override { return true; }
+        bool QueryCloseProject(cbProject *proj, bool dontsavefiles = false) override { return true; }
+        bool QueryCloseWorkspace() override { return true; }
+
+        int AskForBuildTargetIndex(cbProject* project = nullptr) override { return -1; }
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) override { return wxArrayInt(); }
+        void ConfigureProjectDependencies(cbProject* base = nullptr) override {}
+        void SwitchToProjectsPage() override {}
+};
