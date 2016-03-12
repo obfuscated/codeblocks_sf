@@ -15,6 +15,7 @@
     #include <wx/menu.h>
     #include <wx/settings.h>
     #include <wx/toolbar.h>
+    #include <wx/textctrl.h>
     #include <wx/xrc/xmlres.h>
 
     #include <configmanager.h>
@@ -135,11 +136,10 @@ BEGIN_EVENT_TABLE(IncrementalSearch, cbPlugin)
     EVT_TOOL(XRCID("idIncSearchSelectOnly"), IncrementalSearch::OnToggleSelectedOnly)
     EVT_TOOL(XRCID("idIncSearchMatchCase"), IncrementalSearch::OnToggleMatchCase)
     EVT_TOOL(XRCID("idIncSearchUseRegex"), IncrementalSearch::OnToggleUseRegex)
-    EVT_TEXT(idIncSearchCombo, IncrementalSearch::OnTextChanged)
-    EVT_TEXT_ENTER(idIncSearchCombo, IncrementalSearch::OnSearchNext)
 #ifndef __WXMSW__
     EVT_MENU(XRCID("idEditPaste"), IncrementalSearch::OnMenuEditPaste)
 #endif
+
 END_EVENT_TABLE()
 
 // constructor
@@ -357,8 +357,16 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
                                  (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
                                  &IncrementalSearch::OnKeyDown , 0, this);
             m_pTextCtrl->Connect(wxEVT_KILL_FOCUS ,
-                                   (wxObjectEventFunction)(wxEventFunction)(wxFocusEventFunction)
-                                   &IncrementalSearch::OnKillFocus, 0, this);
+                                 (wxObjectEventFunction)(wxEventFunction)(wxFocusEventFunction)
+                                 &IncrementalSearch::OnKillFocus, 0, this);
+            //using the old wx2.8 versions of the constants, to avoid #ifdef'S
+            m_pTextCtrl->Connect(wxEVT_COMMAND_TEXT_UPDATED,
+                                 (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                                 &IncrementalSearch::OnTextChanged, 0, this);
+            m_pTextCtrl->Connect(wxEVT_COMMAND_TEXT_ENTER,
+                                 (wxObjectEventFunction)(wxEventFunction)(wxCommandEventFunction)
+                                 &IncrementalSearch::OnSearchNext, 0, this);
+
             m_textCtrlBG_Default = m_pTextCtrl->GetBackgroundColour();
             m_pComboCtrl->Enable(m_pEditor && m_pEditor->GetControl());
             m_pToolbar->ToggleTool(XRCID("idIncSearchHighlight"),m_Highlight);
