@@ -17,10 +17,9 @@
 				<Option host_application="../../../devel30/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-ansi" />
+					<Add option="-fPIC" />
 					<Add option="`$(WX_CONFIG) --cflags`" />
 					<Add option="-fexceptions" />
-					<Add option="-fPIC" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
@@ -78,14 +77,13 @@
 			<Add alias="All" targets="Unix;Windows;" />
 		</VirtualTargets>
 		<Compiler>
+			<Add option="-std=c++11" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DNOPCH" />
-			<Add option="-std=c++11" />
-			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../wxSmith" />

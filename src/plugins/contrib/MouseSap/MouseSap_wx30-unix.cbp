@@ -17,12 +17,10 @@
 				<Compiler>
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
-					<Add option="-ansi" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`$(WX_CONFIG) --cflags`" />
 					<Add option="-fexceptions" />
 					<Add option="-Winvalid-pch" />
-					<Add option="-fPIC" />
 					<Add option="`pkg-config --cflags gtk+-2.0`" />
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
@@ -50,6 +48,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-std=c++11" />
+			<Add option="-fPIC" />
 		</Compiler>
 		<Unit filename="MouseSap.cpp" />
 		<Unit filename="MouseSap.h" />

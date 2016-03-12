@@ -17,12 +17,10 @@
 				<Compiler>
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
-					<Add option="-ansi" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="`$(WX_CONFIG) --cflags`" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-fexceptions" />
-					<Add option="-fPIC" />
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
 					<Add directory="../../../include" />
@@ -50,6 +48,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-std=c++11" />
+			<Add option="-fPIC" />
 		</Compiler>
 		<Unit filename="IncrementalSearch.cpp" />
 		<Unit filename="IncrementalSearch.h" />
