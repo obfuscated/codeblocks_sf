@@ -14,6 +14,7 @@
     #include <wx/checklst.h>
     #include <wx/combobox.h>
     #include <wx/dir.h>
+    #include <wx/image.h>
     #include <wx/intl.h>
     #include <wx/listbox.h>
     #include <wx/panel.h>
