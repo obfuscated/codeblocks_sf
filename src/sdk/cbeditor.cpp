@@ -2800,8 +2800,8 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         }
 
         wxMenu* splitMenu = new wxMenu;
-        splitMenu->Append(idSplitHorz, _("Horizontally"));
-        splitMenu->Append(idSplitVert, _("Vertically"));
+        splitMenu->Append(idSplitHorz, _("Horizontally (top-bottom)"));
+        splitMenu->Append(idSplitVert, _("Vertically (left-right)"));
         splitMenu->AppendSeparator();
         splitMenu->Append(idUnsplit, _("Unsplit"));
         // enable/disable entries accordingly

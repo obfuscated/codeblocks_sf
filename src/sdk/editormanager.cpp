@@ -1566,9 +1566,9 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     {
         wxMenu* splitMenu = new wxMenu;
         if (ed->GetSplitType() != cbEditor::stHorizontal)
-            splitMenu->Append(idNBTabSplitHorz, _("Horizontally"));
+            splitMenu->Append(idNBTabSplitHorz, _("Horizontally (top-bottom)"));
         if (ed->GetSplitType() != cbEditor::stVertical)
-            splitMenu->Append(idNBTabSplitVert, _("Vertically"));
+            splitMenu->Append(idNBTabSplitVert, _("Vertically (left-right)"));
         if (ed->GetSplitType() != cbEditor::stNoSplit)
         {
             splitMenu->AppendSeparator();
