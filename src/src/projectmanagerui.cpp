@@ -2497,12 +2497,14 @@ namespace
 
 static void ProjectTreeSortChildrenRecursive(cbTreeCtrl* tree, const wxTreeItemId& parent)
 {
-    wxTreeItemIdValue cookie = nullptr;
+    if (!tree->ItemHasChildren(parent))
+        return;
 
     tree->SortChildren(parent);
 
+    wxTreeItemIdValue cookie = nullptr;
     wxTreeItemId current = tree->GetFirstChild(parent, cookie);
-    while (current && tree->ItemHasChildren(current))
+    while (current)
     {
         ProjectTreeSortChildrenRecursive(tree, current);
         current = tree->GetNextChild(parent, cookie);
