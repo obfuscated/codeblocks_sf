@@ -38,7 +38,7 @@
 				</ExtraCommands>
 			</Target>
 			<Environment>
-				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+				<Variable name="WX_CONFIG" value="/home/obfuscated/software/wx/bin/wx-config" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
