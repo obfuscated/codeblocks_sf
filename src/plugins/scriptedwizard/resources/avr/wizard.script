@@ -355,9 +355,10 @@ function GetGeneratedFile(file_index)
             else if (fuses.Matches(_T("[FUSE0:FUSE1:FUSE2:FUSE3:FUSE4]")) )
                 path = Wizard.FindTemplateFile(_T("avr/files/FuseFuse0to4.c"));
             else if (fuses.Matches(_T("[BYTE0]")))
-                Message(_("This processor has no fuses."), _("Warning"), wxID_OK );
+                Message(_("This processor has no fuses."), _("Warning"), wxICON_WARNING);
             else if (fuses.Matches(_T("[]")) )
-                Message(_("Don't know how to generate fuses section for this processor."), _("Warning"), wxID_OK );
+                Message(_("Don't know how to generate fuses section for this processor."), _("Warning"),
+                        wxICON_WARNING);
 
             if (!path.IsEmpty())
                 return _T("fuse.c") + _T(";") + IO.ReadFileContents(path);
