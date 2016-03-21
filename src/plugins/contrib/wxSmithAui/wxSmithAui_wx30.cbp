@@ -70,7 +70,7 @@
 				</Environment>
 			</Target>
 			<Environment>
-				<Variable name="WX_CONFIG" value="/home/obfuscated/software/wx/bin/wx-config" />
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
 			</Environment>
 		</Build>
 		<VirtualTargets>

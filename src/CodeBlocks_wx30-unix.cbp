@@ -507,7 +507,7 @@
 			</Target>
 			<Environment>
 				<Variable name="WX_CFG" value="" />
-				<Variable name="WX_CONFIG" value="/home/obfuscated/software/wx/bin/wx-config" />
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="30" />
 			</Environment>
