@@ -588,6 +588,14 @@ void CCManager::OnDeactivateEd(CodeBlocksEvent& event)
     event.Skip();
 }
 
+static void setupColours(cbEditor *editor, ColourManager *manager)
+{
+    cbStyledTextCtrl* stc = editor->GetControl();
+    stc->CallTipSetBackground(manager->GetColour(wxT("cc_tips_back")));
+    stc->CallTipSetForeground(manager->GetColour(wxT("cc_tips_fore")));
+    stc->CallTipSetForegroundHighlight(manager->GetColour(wxT("cc_tips_highlight")));
+}
+
 // cbEVT_EDITOR_OPEN
 void CCManager::OnEditorOpen(CodeBlocksEvent& event)
 {
@@ -598,10 +606,21 @@ void CCManager::OnEditorOpen(CodeBlocksEvent& event)
         stc->Connect(wxEVT_COMMAND_LIST_ITEM_SELECTED,
                      wxListEventHandler(CCManager::OnAutocompleteSelect), nullptr, this);
 
-        ColourManager* cmgr = Manager::Get()->GetColourManager();
-        stc->CallTipSetBackground(cmgr->GetColour(wxT("cc_tips_back")));
-        stc->CallTipSetForeground(cmgr->GetColour(wxT("cc_tips_fore")));
-        stc->CallTipSetForegroundHighlight(cmgr->GetColour(wxT("cc_tips_highlight")));
+        setupColours(ed, Manager::Get()->GetColourManager());
+    }
+}
+
+void CCManager::UpdateEnvSettings()
+{
+    EditorManager *editors = Manager::Get()->GetEditorManager();
+    ColourManager* cmgr = Manager::Get()->GetColourManager();
+
+    int count = editors->GetEditorsCount();
+    for (int ii = 0; ii < count; ++ii)
+    {
+        cbEditor *editor = editors->GetBuiltinEditor(editors->GetEditor(ii));
+        if (editor)
+            setupColours(editor, cmgr);
     }
 }
 
