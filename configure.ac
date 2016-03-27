@@ -114,7 +114,7 @@ AM_PATH_WXCONFIG(2.8.12, wxWin=1)
 		earlier) wxWidgets version...
 			])
 		fi
-        fi
+    fi
 
 dnl		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 dnl		CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
