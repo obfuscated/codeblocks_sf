@@ -101,7 +101,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT5">
-							<label>You can use the following macros:&#x0A;&#x0A;${PROJECT&amp;FILENAME}&#x0A;${PROJECT&amp;NAME}&#x0A;${PROJECT&amp;DIR}&#x0A;${ACTIVE&amp;EDITOR&amp;FILENAME}&#x0A;${ACTIVE&amp;EDITOR&amp;LINE} (${ACTIVE&amp;EDITOR&amp;LINE&amp;0})&#x0A;${ACTIVE&amp;EDITOR&amp;COLUMN} (${ACTIVE&amp;EDITOR&amp;COLUMN&amp;0})&#x0A;${ACTIVE&amp;EDITOR&amp;SELECTION}&#x0A;${ALL&amp;PROJECT&amp;FILES}&#x0A;${TARGET&amp;OUTPUT&amp;DIR}&#x0A;${TARGET&amp;NAME}&#x0A;${TARGET&amp;OUTPUT&amp;BASENAME}&#x0A;${TARGET&amp;OUTPUT&amp;FILE}&#x0A;${MAKEFILE}</label>
+							<label>You can use the following macros:&#x0A;&#x0A;${PROJECT__FILENAME}&#x0A;${PROJECT__NAME}&#x0A;${PROJECT__DIR}&#x0A;${ACTIVE__EDITOR__FILENAME}&#x0A;${ACTIVE__EDITOR__LINE} (${ACTIVE__EDITOR__LINE__0})&#x0A;${ACTIVE__EDITOR__COLUMN} (${ACTIVE__EDITOR__COLUMN__0})&#x0A;${ACTIVE__EDITOR__SELECTION}&#x0A;${ALL__PROJECT__FILES}&#x0A;${TARGET__OUTPUT__DIR}&#x0A;${TARGET__NAME}&#x0A;${TARGET__OUTPUT__BASENAME}&#x0A;${TARGET__OUTPUT__FILE}&#x0A;${MAKEFILE}&#x0A;</label>
 						</object>
 						<flag>wxEXPAND</flag>
 						<option>1</option>
