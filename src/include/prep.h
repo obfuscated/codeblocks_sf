@@ -13,40 +13,6 @@
     #include <wx/version.h>
 #endif
 
-#ifndef __has_feature
-    #define __has_feature(x) 0
-#endif
-
-#if    !(((__GNUC__ == 4 && __GNUC_MINOR__ >= 6) || __GNUC__ > 4) && defined __GXX_EXPERIMENTAL_CXX0X__) \
-    && !(defined(__clang__) && __has_feature(cxx_nullptr))
-    // it is a const object...
-    const class nullptr_t
-    {
-    public:
-        // constructor
-        nullptr_t() {}
-        // convertible to any type of null non-member pointer...
-        template<typename T> operator T* () const{ return (T*)0; }
-        // or any type of null member pointer...
-        template<typename C, typename T> operator T C::* () const { return (T C::*)0; }
-        // support operator overloading (== and !=)
-        template<typename T> bool equals(T const& rhs) const { return rhs == 0; }
-    private:
-        // can't take address of nullptr
-        void operator&() const;
-        // can't copyable
-        nullptr_t(const nullptr_t&);
-        const nullptr_t& operator=(const nullptr_t&);
-    } nullptr_;
-    #define nullptr nullptr_
-    #define MOZ_HAVE_CXX11_NULLPTR // prevents mozilla/NullPtr.h from defining nullptr.
-
-    template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return  lhs.equals(rhs); }
-    template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return  rhs.equals(lhs); }
-    template<typename T> inline bool operator!=(const nullptr_t& lhs, T const& rhs) { return !lhs.equals(rhs); }
-    template<typename T> inline bool operator!=(T const& lhs, const nullptr_t& rhs) { return !rhs.equals(lhs); }
-#endif
-
 /*  ---------------------------------------------------------------------------------------------------------
     Version<major, minor, revision>::eval
         Integer compile-time constant that represents  a major.minor.revision style version number.
@@ -410,24 +376,14 @@ inline ID ConstructID(wxIntPtr i) { return ID(i); }
 // Just included to possibly set _LIBCPP_VERSION
 #include <ciso646>
 
-#if __cplusplus >= 201103L || defined(_LIBCPP_VERSION)
 #include <memory>
-#else
-#include <tr1/memory>
-#endif
 
 // Add std::shared_ptr in a namespace, so different implementations can be used with different compilers
 namespace cb
 {
-#if __cplusplus >= 201103L || defined(_LIBCPP_VERSION)
     using std::shared_ptr;
     using std::static_pointer_cast;
     using std::weak_ptr;
-#else
-    using std::tr1::shared_ptr;
-    using std::tr1::static_pointer_cast;
-    using std::tr1::weak_ptr;
-#endif
 }
 
 #if defined(__APPLE__) && defined(__MACH__)
