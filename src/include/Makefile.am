@@ -51,6 +51,7 @@ ALLHEADERS = annoyingdialog.h \
 				cbtreectrl.h \
 				cbworkspace.h \
 				ccmanager.h \
+				child_pids.h \
 				compileoptionsbase.h \
 				compiler.h \
 				compilercommandgenerator.h \
