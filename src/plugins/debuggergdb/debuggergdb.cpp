@@ -1585,6 +1585,7 @@ void DebuggerGDB::DoBreak(bool temporary)
                 if (childrenPIDs.size()>1)
                     DebugLog(_("Found more than one child processes. Use the PID of the first "), Logger::warning);
                 pid = childrenPIDs.front();
+                DebugLog(wxString::Format(_("New child pid is %ld"), pid), Logger::warning);
                 m_State.GetDriver()->SetChildPID(pid);
             }
             else
