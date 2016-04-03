@@ -728,6 +728,8 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DWINVER=0x0501" />
+			<Add option="-D_WIN32_WINNT=0x0501" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="sdk/wxscintilla/include" />
@@ -825,6 +827,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/ccmanager.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/child_pids.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/compileoptionsbase.h">
@@ -2558,6 +2563,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/ccmanager.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/child_pids.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/compileoptionsbase.cpp">

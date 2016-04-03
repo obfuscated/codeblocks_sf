@@ -1,7 +1,15 @@
 #include "child_pids.h"
 #include <string.h>
 
-#ifndef __WXMSW__
+#ifdef __WXMSW__
+#   define LEAN_AND_MEAN
+#   include <windows.h>
+#   if defined(_WIN32_WINNT) && (_WIN32_WINNT >= 0x0501)
+#       include "Tlhelp32.h"
+#   else
+#       error "unsupported windows"
+#   endif
+#else
 #   include <dirent.h>
 #endif // __WXMSW__
 
@@ -42,6 +50,8 @@ struct cbChildPIDs::Data
 {
 #ifdef __WXMSW__
     typedef HANDLE WINAPI (*CreateToolhelp32SnapshotApiCall)(DWORD dwFlags, DWORD th32ProcessID);
+    typedef BOOL WINAPI (*Process32FirstApiCall)(HANDLE hSnapshot, LPPROCESSENTRY32 lppe);
+    typedef BOOL WINAPI (*Process32NextApiCall)(HANDLE hSnapshot, LPPROCESSENTRY32 lppe);
 
     Data()
     {
@@ -112,18 +122,18 @@ void cbChildPIDs::GetChildrenPIDs(std::vector<int> &children, int parent)
     children.clear();
     if (m_data->CreateToolhelp32SnapshotFunc && m_data->Process32FirstFunc && m_data->Process32NextFunc)
     {
-        HANDLE snap = CreateToolhelp32SnapshotFunc(TH32CS_SNAPALL,0);
+        HANDLE snap = m_data->CreateToolhelp32SnapshotFunc(TH32CS_SNAPALL,0);
         if (snap != INVALID_HANDLE_VALUE)
         {
             PROCESSENTRY32 lppe;
             lppe.dwSize = sizeof(PROCESSENTRY32);
-            BOOL ok = Process32FirstFunc(snap, &lppe);
+            BOOL ok = m_data->Process32FirstFunc(snap, &lppe);
             while (ok == TRUE)
             {
-                if (lppe.th32ParentProcessID == parent) // Have my Child...
+                if (static_cast<int>(lppe.th32ParentProcessID) == parent) // Have my Child...
                     children.push_back(lppe.th32ProcessID);
                 lppe.dwSize = sizeof(PROCESSENTRY32);
-                ok = Process32NextFunc(snap, &lppe);
+                ok = m_data->Process32NextFunc(snap, &lppe);
             }
             CloseHandle(snap);
         }
