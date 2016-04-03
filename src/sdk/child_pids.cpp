@@ -75,6 +75,7 @@ cbChildPIDs::~cbChildPIDs() = default;
 #ifndef __WXMSW__
 void cbChildPIDs::GetChildrenPIDs(std::vector<int> &children, int parent)
 {
+    children.clear();
     const char *c_proc_base = "/proc";
     DIR *dir = opendir(c_proc_base);
     if (!dir)
@@ -108,6 +109,7 @@ void cbChildPIDs::GetChildrenPIDs(std::vector<int> &children, int parent)
 #else
 void cbChildPIDs::GetChildrenPIDs(std::vector<int> &children, int parent)
 {
+    children.clear();
     if (m_data->CreateToolhelp32SnapshotFunc && m_data->Process32FirstFunc && m_data->Process32NextFunc)
     {
         HANDLE snap = CreateToolhelp32SnapshotFunc(TH32CS_SNAPALL,0);
