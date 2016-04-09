@@ -1036,7 +1036,12 @@ void CompilerGCC::StartCompileFile(wxFileName file)
 
     wxString fname = file.GetFullPath();
     if (!fname.IsEmpty())
+    {
+        CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+        Manager::Get()->ProcessEvent(evtSwitch);
+
         CompileFile( UnixFilename(fname) );
+    }
 }
 
 wxString CompilerGCC::ProjectMakefile()
