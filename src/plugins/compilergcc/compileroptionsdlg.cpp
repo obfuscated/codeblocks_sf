@@ -566,9 +566,7 @@ void CompilerOptionsDlg::DoFillOthers()
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
-        const int count = wxThread::GetCPUCount();
-        spn->SetRange(1, std::max(16, (count != -1) ? count : 1));
-        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1));
+        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 0));
     }
 
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
@@ -2784,7 +2782,7 @@ void CompilerOptionsDlg::OnApply()
             m_Compiler->m_LogBuildProgressPercentage = chk->IsChecked();
         }
         wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
-        if (spn && (((int)spn->GetValue()) != cfg->ReadInt(_T("/parallel_processes"), 1)))
+        if (spn && (((int)spn->GetValue()) != cfg->ReadInt(_T("/parallel_processes"), 0)))
         {
             if (m_Compiler->IsRunning())
                 cbMessageBox(_("You can't change the number of parallel processes while building!\nSetting ignored..."), _("Warning"), wxICON_WARNING);

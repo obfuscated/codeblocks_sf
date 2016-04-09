@@ -283,7 +283,6 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 END_EVENT_TABLE()
 
 CompilerGCC::CompilerGCC() :
-    m_CompilerProcessList(),
     m_RealTargetsStartIndex(0),
     m_RealTargetIndex(0),
     m_PageIndex(-1),
@@ -1134,7 +1133,9 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 void CompilerGCC::AllocProcesses()
 {
     // create the parallel processes array
-    size_t parallel_processes = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
+    size_t parallel_processes = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 0);
+    if (parallel_processes == 0)
+        parallel_processes = std::max(1, wxThread::GetCPUCount());
     m_CompilerProcessList.resize(parallel_processes);
     for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
