@@ -2,7 +2,7 @@
 <CodeBlocks_project_file>
 	<FileVersion major="1" minor="6" />
 	<Project>
-		<Option title="Debugger UnitTest++ (unix)" />
+		<Option title="Debugger UnitTest++ Unix" />
 		<Option pch_mode="2" />
 		<Option compiler="gcc" />
 		<Build>
@@ -18,13 +18,13 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-ansi" />
+			<Add option="-std=c++11" />
+			<Add option="-fPIC" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="`wx-config --cflags`" />
 			<Add option="-pipe" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
-			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_TEST_PROJECT" />
 			<Add directory="$(#unittest_pp.include)" />
