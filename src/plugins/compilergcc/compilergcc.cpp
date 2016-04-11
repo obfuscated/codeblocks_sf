@@ -1315,12 +1315,7 @@ int CompilerGCC::DoRunQueue()
     // special shell used only for build commands
     if (!cmd->isRun)
     {
-        // run the command in a shell, so backtick'd expressions can be evaluated
-        if (!platform::windows)
-        {
-            wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
-            cmd->command = shell + _T(" '") + cmd->command + _T("'");
-        }
+        ExpandBackticks(cmd->command);
     }
 
     // create a new process
@@ -2032,7 +2027,7 @@ static inline wxString getBuildTargetName(const ProjectBuildTarget *bt)
 
 bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
 {
-    const wxString &cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
+    wxString cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
     if (cmd.empty())
     {
         LogMessage(COMPILER_ERROR_LOG +
@@ -2054,6 +2049,7 @@ bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
     wxArrayString output, errors;
     wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
 
+    ExpandBackticks(cmd);
     if (showOutput)
         LogMessage(F(_("Executing clean command: %s"), cmd.wx_str()), cltNormal);
 
