@@ -21,12 +21,12 @@
 				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="+wx +int +t .. include/autorevision.h" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="txml" />
 					<Add directory="base/tinyxml" />
