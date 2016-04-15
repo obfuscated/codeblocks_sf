@@ -254,7 +254,9 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
         {
             string old;
             getline(in, old);
-            if (old == comment)
+            size_t l_old = old.length();
+            size_t l_comment = comment.length();
+            if(l_old > l_comment || ((l_old == l_comment) && old >= comment))
             {
                 if(be_verbose)
                     printf("Revision unchanged or older (%s). Skipping.", old.c_str());
