@@ -31,9 +31,6 @@ AC_PROG_LN_S
 AC_PROG_MAKE_SET
 AC_PROG_AWK
 
-m4_include([ax_cxx_compile_stdcxx.m4])
-AX_CXX_COMPILE_STDCXX(11, noext)
-
 CODEBLOCKS_CHECK_LINK_FLAG([-Wl,--no-undefined],[LDFLAGS="-Wl,--no-undefined $LDFLAGS"])
 
 CODEBLOCKS_CHECK_DEBUG
@@ -335,6 +332,9 @@ AC_MSG_RESULT($PIC_FLAGS)
 CPPFLAGS="$CPPFLAGS -ansi -DTIXML_USE_STL"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
+
+m4_include([ax_cxx_compile_stdcxx.m4])
+AX_CXX_COMPILE_STDCXX(11, noext)
 
 dnl AM_PATH_GTK(1.2.7, ,
 dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),
