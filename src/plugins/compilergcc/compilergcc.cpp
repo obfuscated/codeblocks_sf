@@ -871,7 +871,7 @@ void CompilerGCC::DoRegisterCompilers()
     CompilerFactory::RegisterCompiler(new CompilerGDC);
     CompilerFactory::RegisterCompiler(new CompilerGNUFortran);
     CompilerFactory::RegisterCompiler(new CompilerG95);
-    if (platform::windows || platform::linux || nonPlatComp)
+    if (platform::windows || platform::Linux || nonPlatComp)
         CompilerFactory::RegisterCompiler(new CompilerGNUARM);
 
     // register pure XML compilers
@@ -925,7 +925,7 @@ void CompilerGCC::DoRegisterCompilers()
                 else if (test == wxT("macosx"))
                     val = platform::macosx;
                 else if (test == wxT("linux"))
-                    val = platform::linux;
+                    val = platform::Linux;
                 else if (test == wxT("freebsd"))
                     val = platform::freebsd;
                 else if (test == wxT("netbsd"))
@@ -937,7 +937,7 @@ void CompilerGCC::DoRegisterCompilers()
                 else if (test == wxT("solaris"))
                     val = platform::solaris;
                 else if (test == wxT("unix"))
-                    val = platform::unix;
+                    val = platform::Unix;
             }
             if (val)
                 CompilerFactory::RegisterCompiler(

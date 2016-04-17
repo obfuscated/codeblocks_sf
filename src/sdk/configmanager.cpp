@@ -261,11 +261,11 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
 
     if (platform::windows)
         info.append(_T("\n\t Windows "));
-    if (platform::linux)
+    if (platform::Linux)
         info.append(_T("\n\t Linux "));
     if (platform::macosx)
         info.append(_T("\n\t Mac OS X "));
-    if (platform::unix)
+    if (platform::Unix)
         info.append(_T("\n\t Unix "));
 
     info.append(platform::unicode ? _T("Unicode ") : _T("ANSI "));

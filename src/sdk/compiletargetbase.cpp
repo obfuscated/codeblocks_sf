@@ -264,7 +264,7 @@ void CompileTargetBase::GenerateTargetFilename(wxString& filename) const
             {
                 wxString prefix = wxEmptyString;
                 // On linux, "lib" is the common prefix for this platform
-                if (platform::linux)
+                if (platform::Linux)
                     prefix = wxT("lib");
                 // FIXME (Morten#5#): What about Mac (Windows is OK)?!
 

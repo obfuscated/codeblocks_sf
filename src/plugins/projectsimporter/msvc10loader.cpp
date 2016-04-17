@@ -49,7 +49,7 @@ MSVC10Loader::MSVC10Loader(cbProject* project) :
 {
     if (platform::windows)
         m_PlatformName = _T("Win32");
-    else if (platform::linux)
+    else if (platform::Linux)
         m_PlatformName = _T("Linux");
     else if (platform::macosx)
         m_PlatformName = _T("MacOSX");
