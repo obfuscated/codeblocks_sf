@@ -519,7 +519,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-ansi" />
+			<Add option="-std=c90" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />

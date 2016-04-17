@@ -82,7 +82,6 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-ansi" />
 			<Add option="-std=c++11" />
 		</Compiler>
 		<Linker>

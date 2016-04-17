@@ -486,16 +486,16 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-ansi" />
+			<Add option="-std=c++11" />
+			<Add option="-fPIC" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-Winvalid-pch" />
-			<Add option="-fPIC" />
 			<Add option="`wx-config --version=2.8 --cflags`" />
+			<Add option="-std=c90" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
-			<Add option="-std=c++11" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="sdk/wxpropgrid/include" />
 			<Add directory="include/tinyxml" />

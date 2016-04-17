@@ -423,7 +423,7 @@ void ProcessingDlg::CheckFilter(
                     }
                 }
 
-                if ( platform::linux )
+                if ( platform::Linux )
                 {
                     if ( Platform==_T("lin") || Platform==_T("linux") )
                     {
@@ -477,7 +477,7 @@ void ProcessingDlg::CheckFilter(
                     }
                 }
 
-                if ( platform::unix )
+                if ( platform::Unix )
                 {
                     if ( Platform==_T("unix") || Platform==_T("un*x") )
                     {
