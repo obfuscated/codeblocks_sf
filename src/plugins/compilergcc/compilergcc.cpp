@@ -1316,6 +1316,14 @@ int CompilerGCC::DoRunQueue()
     if (!cmd->isRun)
     {
         ExpandBackticks(cmd->command);
+
+        // Run the command in a shell, so stream redirections (<, >, << and >>),
+        // piping and other shell features can be evaluated.
+        if (!platform::windows)
+        {
+            wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
+            cmd->command = shell + _T(" '") + cmd->command + _T("'");
+        }
     }
 
     // create a new process
