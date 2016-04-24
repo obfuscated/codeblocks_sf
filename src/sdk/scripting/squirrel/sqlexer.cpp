@@ -44,7 +44,7 @@ void SQLexer::Init(SQSharedState *ss, SQLEXREADFUNC rg, SQUserPointer up,Compile
 	ADD_KEYWORD(foreach, TK_FOREACH);
 	ADD_KEYWORD(in, TK_IN);
 	ADD_KEYWORD(typeof, TK_TYPEOF);
-	ADD_KEYWORD(delegate, TK_DELEGATE);
+	ADD_KEYWORD(base, TK_BASE);
 	ADD_KEYWORD(delete, TK_DELETE);
 	ADD_KEYWORD(try, TK_TRY);
 	ADD_KEYWORD(catch, TK_CATCH);
@@ -56,13 +56,10 @@ void SQLexer::Init(SQSharedState *ss, SQLEXREADFUNC rg, SQUserPointer up,Compile
 	ADD_KEYWORD(case, TK_CASE);
 	ADD_KEYWORD(default, TK_DEFAULT);
 	ADD_KEYWORD(this, TK_THIS);
-	ADD_KEYWORD(parent,TK_PARENT);
 	ADD_KEYWORD(class,TK_CLASS);
 	ADD_KEYWORD(extends,TK_EXTENDS);
 	ADD_KEYWORD(constructor,TK_CONSTRUCTOR);
 	ADD_KEYWORD(instanceof,TK_INSTANCEOF);
-	ADD_KEYWORD(vargc,TK_VARGC);
-	ADD_KEYWORD(vargv,TK_VARGV);
 	ADD_KEYWORD(true,TK_TRUE);
 	ADD_KEYWORD(false,TK_FALSE);
 	ADD_KEYWORD(static,TK_STATIC);
@@ -74,6 +71,7 @@ void SQLexer::Init(SQSharedState *ss, SQLEXREADFUNC rg, SQUserPointer up,Compile
 	_lasttokenline = _currentline = 1;
 	_currentcolumn = 0;
 	_prevtoken = -1;
+	_reached_eof = SQFalse;
 	Next();
 }
 
@@ -91,6 +89,7 @@ void SQLexer::Next()
 		return;
 	}
 	_currdata = SQUIRREL_EOB;
+	_reached_eof = SQTrue;
 }
 
 const SQChar *SQLexer::Tok2Str(SQInteger tok)
@@ -117,6 +116,10 @@ void SQLexer::LexBlockComment()
 		}
 	}
 }
+void SQLexer::LexLineComment()
+{
+	do { NEXT(); } while (CUR_CHAR != _SC('\n') && (!IS_EOB()));
+}
 
 SQInteger SQLexer::Lex()
 {
@@ -131,15 +134,16 @@ SQInteger SQLexer::Lex()
 			NEXT();
 			_currentcolumn=1;
 			continue;
+		case _SC('#'): LexLineComment(); continue;
 		case _SC('/'):
 			NEXT();
 			switch(CUR_CHAR){
 			case _SC('*'):
 				NEXT();
 				LexBlockComment();
-				continue;
+				continue;	
 			case _SC('/'):
-				do { NEXT(); } while (CUR_CHAR != _SC('\n') && (!IS_EOB()));
+				LexLineComment();
 				continue;
 			case _SC('='):
 				NEXT();
@@ -158,17 +162,25 @@ SQInteger SQLexer::Lex()
 			else { NEXT(); RETURN_TOKEN(TK_EQ); }
 		case _SC('<'):
 			NEXT();
-			if ( CUR_CHAR == _SC('=') ) { NEXT(); RETURN_TOKEN(TK_LE) }
-			else if ( CUR_CHAR == _SC('-') ) { NEXT(); RETURN_TOKEN(TK_NEWSLOT); }
-			else if ( CUR_CHAR == _SC('<') ) { NEXT(); RETURN_TOKEN(TK_SHIFTL); }
-			else if ( CUR_CHAR == _SC('/') ) { NEXT(); RETURN_TOKEN(TK_ATTR_OPEN); }
-			//else if ( CUR_CHAR == _SC('[') ) { NEXT(); ReadMultilineString(); RETURN_TOKEN(TK_STRING_LITERAL); }
-			else { RETURN_TOKEN('<') }
+			switch(CUR_CHAR) {
+			case _SC('='):
+				NEXT(); 
+				if(CUR_CHAR == _SC('>')) {
+					NEXT();
+					RETURN_TOKEN(TK_3WAYSCMP); 
+				}
+				RETURN_TOKEN(TK_LE) 
+				break;
+			case _SC('-'): NEXT(); RETURN_TOKEN(TK_NEWSLOT); break;
+			case _SC('<'): NEXT(); RETURN_TOKEN(TK_SHIFTL); break;
+			case _SC('/'): NEXT(); RETURN_TOKEN(TK_ATTR_OPEN); break;
+			}
+			RETURN_TOKEN('<');
 		case _SC('>'):
 			NEXT();
 			if (CUR_CHAR == _SC('=')){ NEXT(); RETURN_TOKEN(TK_GE);}
-			else if(CUR_CHAR == _SC('>')){
-				NEXT();
+			else if(CUR_CHAR == _SC('>')){ 
+				NEXT(); 
 				if(CUR_CHAR == _SC('>')){
 					NEXT();
 					RETURN_TOKEN(TK_USHIFTR);
@@ -183,8 +195,9 @@ SQInteger SQLexer::Lex()
 		case _SC('@'): {
 			SQInteger stype;
 			NEXT();
-			if(CUR_CHAR != _SC('"'))
-				Error(_SC("string expected"));
+			if(CUR_CHAR != _SC('"')) {
+				RETURN_TOKEN('@');
+			}
 			if((stype=ReadString('"',true))!=-1) {
 				RETURN_TOKEN(stype);
 			}
@@ -254,15 +267,15 @@ SQInteger SQLexer::Lex()
 					SQInteger c = CUR_CHAR;
 					if (sciscntrl((int)c)) Error(_SC("unexpected character(control)"));
 					NEXT();
-					RETURN_TOKEN(c);
+					RETURN_TOKEN(c);  
 				}
 				RETURN_TOKEN(0);
 			}
 		}
 	}
-	return 0;
+	return 0;    
 }
-
+	
 SQInteger SQLexer::GetIDType(SQChar *s)
 {
 	SQObjectPtr t;
@@ -284,20 +297,20 @@ SQInteger SQLexer::ReadString(SQInteger ndelim,bool verbatim)
 			case SQUIRREL_EOB:
 				Error(_SC("unfinished string"));
 				return -1;
-			case _SC('\n'):
-				if(!verbatim) Error(_SC("newline in a constant"));
-				APPEND_CHAR(CUR_CHAR); NEXT();
+			case _SC('\n'): 
+				if(!verbatim) Error(_SC("newline in a constant")); 
+				APPEND_CHAR(CUR_CHAR); NEXT(); 
 				_currentline++;
 				break;
 			case _SC('\\'):
 				if(verbatim) {
-					APPEND_CHAR('\\'); NEXT();
+					APPEND_CHAR('\\'); NEXT(); 
 				}
 				else {
 					NEXT();
 					switch(CUR_CHAR) {
 					case _SC('x'): NEXT(); {
-						if(!isxdigit(CUR_CHAR)) Error(_SC("hexadecimal number expected"));
+						if(!isxdigit(CUR_CHAR)) Error(_SC("hexadecimal number expected")); 
 						const SQInteger maxdigits = 4;
 						SQChar temp[maxdigits+1];
 						SQInteger n = 0;
@@ -421,8 +434,7 @@ SQInteger SQLexer::ReadNumber()
 		}
 	}
 	else {
-		// C::B patch: Eliminate compiler warnings
-		APPEND_CHAR((char)firstchar);
+		APPEND_CHAR((int)firstchar);
 		while (CUR_CHAR == _SC('.') || scisdigit(CUR_CHAR) || isexponent(CUR_CHAR)) {
             if(CUR_CHAR == _SC('.') || isexponent(CUR_CHAR)) type = TFLOAT;
 			if(isexponent(CUR_CHAR)) {
@@ -436,7 +448,7 @@ SQInteger SQLexer::ReadNumber()
 				}
 				if(!scisdigit(CUR_CHAR)) Error(_SC("exponent expected"));
 			}
-
+			
 			APPEND_CHAR(CUR_CHAR);
 			NEXT();
 		}
