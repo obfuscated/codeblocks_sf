@@ -45,6 +45,7 @@
 #include "HexEditViewBase.h"
 
 class DigitView;
+class wxClientDC;
 
 class HexEditPanel: public EditorBase
 {

@@ -19,6 +19,25 @@
 * $Id$
 * $HeadURL$
 */
+#include <sdk.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/dcclient.h>
+    #include <wx/filedlg.h>
+    #include <wx/filename.h>
+    #include <wx/sizer.h>
+    #include <wx/choicdlg.h>
+
+    #include <manager.h>
+    #include <editormanager.h>
+    #include <configmanager.h>
+    #include <logmanager.h>
+    #include <globals.h>
+    #include "prep.h"
+#endif // CB_PRECOMP
+
+#include <wx/dcbuffer.h>
+#include <wx/numdlg.h>
 
 #include "HexEditPanel.h"
 #include "ExpressionTester.h"
@@ -39,20 +58,6 @@
 #include <wx/intl.h>
 //*)
 
-#include <wx/dcbuffer.h>
-#include <wx/dcclient.h>
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/numdlg.h>
-#include <wx/sizer.h>
-#include <wx/choicdlg.h>
-
-#include <manager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-#include <logmanager.h>
-#include <globals.h>
-#include "prep.h"
 
 namespace
 {
