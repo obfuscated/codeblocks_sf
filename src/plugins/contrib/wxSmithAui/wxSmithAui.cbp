@@ -17,10 +17,11 @@
 				<Option host_application="../../../devel/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-fPIC" />
 					<Add option="`wx-config --version=2.8 --cflags`" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-fexceptions" />
-					<Add option="-fPIC" />
 				</Compiler>
 				<Linker>
 					<Add option="`wx-config --version=2.8 --libs`" />
@@ -47,6 +48,7 @@
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
+					<Add option="-std=gnu++11" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
@@ -83,7 +85,6 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DWX_PRECOMP" />
-			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../sdk/wxpropgrid/include" />
