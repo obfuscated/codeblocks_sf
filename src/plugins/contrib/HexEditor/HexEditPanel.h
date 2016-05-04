@@ -342,7 +342,7 @@ class HexEditPanel: public EditorBase
         void SetFontSize( int size );
 
         /** \brief Recalculate all coefficients (width, height, block sizes etc) */
-        void RecalculateCoefs(wxClientDC &dc);
+        void RecalculateCoefs(wxDC &dc);
 
         /** \brief Returns offset of first byte displayed on the screen from the scroll bar */
         FileContentBase::OffsetT DetectStartOffset();

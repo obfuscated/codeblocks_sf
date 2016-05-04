@@ -499,7 +499,7 @@ void HexEditPanel::ReadContent()
     }
 }
 
-void HexEditPanel::RecalculateCoefs(wxClientDC &dc)
+void HexEditPanel::RecalculateCoefs(wxDC &dc)
 {
     if (!m_NeedRecalc)
         return;
