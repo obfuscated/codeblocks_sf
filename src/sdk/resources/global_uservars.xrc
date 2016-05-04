@@ -7,9 +7,7 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxFlexGridSizer">
-					<cols>5</cols>
-					<growablecols>1</growablecols>
+				<object class="wxBoxSizer">
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT1">
 							<label>Current Set:</label>
@@ -24,28 +22,29 @@
 							</content>
 							<size>120,-1</size>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxEXPAND</flag>
+						<flag>wxLEFT|wxEXPAND</flag>
 						<border>5</border>
+						<option>1</option>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="cloneSet">
 							<label>Clone</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="newSet">
 							<label>New</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="deleteSet">
 							<label>Delete</label>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
