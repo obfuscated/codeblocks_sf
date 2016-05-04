@@ -59,66 +59,52 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxFlexGridSizer">
-					<cols>2</cols>
-					<rows>1</rows>
-					<growablecols>1,2,3</growablecols>
+				<object class="wxBoxSizer">
 					<object class="sizeritem">
 						<object class="wxStaticBoxSizer">
 							<label>Current variable</label>
+							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
-								<object class="wxFlexGridSizer">
-									<cols>1</cols>
-									<rows>2</rows>
-									<growablerows>1</growablerows>
+								<object class="wxBoxSizer">
 									<object class="sizeritem">
-										<object class="wxBoxSizer">
-											<object class="sizeritem">
-												<object class="wxButton" name="newVar">
-													<label>New</label>
-													<size>40,23</size>
-												</object>
-												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="cloneVar">
-													<label>Clone</label>
-													<size>40,23</size>
-												</object>
-												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="deleteVar">
-													<label>Delete</label>
-													<size>40,23</size>
-												</object>
-												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
+										<object class="wxButton" name="newVar">
+											<label>New</label>
+											<size>40,23</size>
 										</object>
-										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
-										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxListBox" name="selVar">
-											<default>-1</default>
+										<object class="wxButton" name="cloneVar">
+											<label>Clone</label>
+											<size>40,23</size>
 										</object>
-										<flag>wxALL|wxEXPAND</flag>
+										<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
-										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="deleteVar">
+											<label>Delete</label>
+											<size>40,23</size>
+										</object>
+										<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
 									</object>
 								</object>
-								<flag>wxEXPAND</flag>
+								<flag>wxALL|wxALIGN_LEFT</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxListBox" name="selVar">
+									<default>-1</default>
+								</object>
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
 						<flag>wxEXPAND</flag>
 						<border>5</border>
-						<option>1</option>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBoxSizer">
@@ -452,15 +438,14 @@
 									</object>
 								</object>
 								<flag>wxEXPAND</flag>
-								<border>5</border>
 								<option>1</option>
 							</object>
 						</object>
-						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-						<border>5</border>
+						<flag>wxALL|wxALIGN_TOP</flag>
+						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND</flag>
+				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
 				<option>1</option>
 			</object>
