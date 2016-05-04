@@ -48,41 +48,6 @@
 						<flag>wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
-					<object class="sizeritem">
-						<object class="wxStaticText" name="ID_STATICTEXT2">
-							<label>Current Variable:</label>
-						</object>
-						<flag>wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-					</object>
-					<object class="sizeritem">
-						<object class="wxChoice" name="selVar">
-							<size>80,-1</size>
-						</object>
-						<flag>wxLEFT|wxEXPAND</flag>
-						<border>5</border>
-					</object>
-					<object class="sizeritem">
-						<object class="wxButton" name="cloneVar">
-							<label>Clone</label>
-						</object>
-						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-					</object>
-					<object class="sizeritem">
-						<object class="wxButton" name="newVar">
-							<label>New</label>
-						</object>
-						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-					</object>
-					<object class="sizeritem">
-						<object class="wxButton" name="deleteVar">
-							<label>Delete</label>
-						</object>
-						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-						<border>5</border>
-					</object>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>5</border>
@@ -95,36 +60,81 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
+				<object class="wxFlexGridSizer">
+					<cols>2</cols>
+					<rows>1</rows>
+					<growablecols>1,2,3</growablecols>
 					<object class="sizeritem">
-						<object class="wxSplitterWindow" name="splitter">
-							<minsize>250</minsize>
-							<orientation>vertical</orientation>
-							<style>wxSP_3D|wxSP_3DSASH|wxSP_LIVE_UPDATE</style>
-							<object class="wxPanel" name="ID_PANEL1">
-								<style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
-								<object class="wxBoxSizer">
-									<orient>wxVERTICAL</orient>
+						<object class="wxStaticBoxSizer">
+							<label>Current variable</label>
+							<object class="sizeritem">
+								<object class="wxFlexGridSizer">
+									<cols>1</cols>
+									<rows>2</rows>
+									<growablerows>1</growablerows>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT3">
-											<label>Built-in fields:</label>
-											<font>
-												<size>11</size>
-												<weight>bold</weight>
-												<family>swiss</family>
-												<face>Arial</face>
-											</font>
+										<object class="wxBoxSizer">
+											<object class="sizeritem">
+												<object class="wxButton" name="newVar">
+													<label>New</label>
+													<size>40,23</size>
+												</object>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="cloneVar">
+													<label>Clone</label>
+													<size>40,23</size>
+												</object>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxButton" name="deleteVar">
+													<label>Delete</label>
+													<size>40,23</size>
+												</object>
+												<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
+												<border>5</border>
+											</object>
 										</object>
-										<flag>wxTOP|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+										<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
+										<option>1</option>
 									</object>
 									<object class="sizeritem">
-										<object class="wxFlexGridSizer">
-											<cols>3</cols>
-											<growablecols>1</growablecols>
+										<object class="wxListBox" name="selVar">
+											<default>-1</default>
+										</object>
+										<flag>wxALL|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxSplitterWindow" name="splitter">
+									<minsize>250</minsize>
+									<orientation>vertical</orientation>
+									<style>wxSP_3D|wxSP_3DSASH|wxSP_LIVE_UPDATE</style>
+									<object class="wxPanel" name="ID_PANEL1">
+										<style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
 											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT5">
-													<label>base</label>
+												<object class="wxStaticText" name="ID_STATICTEXT3">
+													<label>Built-in fields:</label>
 													<font>
 														<size>11</size>
 														<weight>bold</weight>
@@ -132,306 +142,328 @@
 														<face>Arial</face>
 													</font>
 												</object>
-												<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+												<flag>wxTOP|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
 												<border>5</border>
 											</object>
 											<object class="sizeritem">
-												<object class="wxTextCtrl" name="base" />
-												<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="fs1">
-													<label>...</label>
-													<size>20,-1</size>
+												<object class="wxFlexGridSizer">
+													<cols>3</cols>
+													<growablecols>1</growablecols>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT5">
+															<label>base</label>
+															<font>
+																<size>11</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="base" />
+														<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="fs1">
+															<label>...</label>
+															<size>20,-1</size>
+														</object>
+														<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT6">
+															<label>The base member is mandatory!</label>
+														</object>
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT7">
+															<label>include</label>
+															<font>
+																<size>10</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="include" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="fs2">
+															<label>...</label>
+															<size>20,-1</size>
+														</object>
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT8">
+															<label>lib</label>
+															<font>
+																<size>10</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="lib" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="fs3">
+															<label>...</label>
+															<size>20,-1</size>
+														</object>
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT9">
+															<label>obj</label>
+															<font>
+																<size>10</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="obj" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="fs4">
+															<label>...</label>
+															<size>20,-1</size>
+														</object>
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT_BIN">
+															<label>bin</label>
+															<font>
+																<size>10</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="bin" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxButton" name="fs5">
+															<label>...</label>
+															<size>20,-1</size>
+														</object>
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT10">
+															<label>cflags</label>
+															<font>
+																<size>10</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="cflags" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxStaticText" name="ID_STATICTEXT11">
+															<label>lflags</label>
+															<font>
+																<size>10</size>
+																<weight>bold</weight>
+																<family>swiss</family>
+																<face>Arial</face>
+															</font>
+														</object>
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="lflags" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="spacer">
+														<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+														<border>5</border>
+													</object>
 												</object>
-												<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT6">
-													<label>The base member is mandatory!</label>
-												</object>
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT7">
-													<label>include</label>
-													<font>
-														<size>10</size>
-														<weight>bold</weight>
-														<family>swiss</family>
-														<face>Arial</face>
-													</font>
-												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="include" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="fs2">
-													<label>...</label>
-													<size>20,-1</size>
-												</object>
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT8">
-													<label>lib</label>
-													<font>
-														<size>10</size>
-														<weight>bold</weight>
-														<family>swiss</family>
-														<face>Arial</face>
-													</font>
-												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="lib" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="fs3">
-													<label>...</label>
-													<size>20,-1</size>
-												</object>
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT9">
-													<label>obj</label>
-													<font>
-														<size>10</size>
-														<weight>bold</weight>
-														<family>swiss</family>
-														<face>Arial</face>
-													</font>
-												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="obj" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="fs4">
-													<label>...</label>
-													<size>20,-1</size>
-												</object>
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT_BIN">
-													<label>bin</label>
-													<font>
-														<size>10</size>
-														<weight>bold</weight>
-														<family>swiss</family>
-														<face>Arial</face>
-													</font>
-												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="bin" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxButton" name="fs5">
-													<label>...</label>
-													<size>20,-1</size>
-												</object>
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT10">
-													<label>cflags</label>
-													<font>
-														<size>10</size>
-														<weight>bold</weight>
-														<family>swiss</family>
-														<face>Arial</face>
-													</font>
-												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="cflags" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxStaticText" name="ID_STATICTEXT11">
-													<label>lflags</label>
-													<font>
-														<size>10</size>
-														<weight>bold</weight>
-														<family>swiss</family>
-														<face>Arial</face>
-													</font>
-												</object>
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="lflags" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="spacer">
-												<flag>wxBOTTOM|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
-												<border>5</border>
+												<flag>wxEXPAND</flag>
 											</object>
 										</object>
-										<flag>wxEXPAND</flag>
+									</object>
+									<object class="wxPanel" name="ID_PANEL2">
+										<style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
+										<object class="wxBoxSizer">
+											<orient>wxVERTICAL</orient>
+											<object class="sizeritem">
+												<object class="wxStaticText" name="ID_STATICTEXT4">
+													<label>User-defined fields:</label>
+													<font>
+														<size>11</size>
+														<weight>bold</weight>
+														<family>swiss</family>
+														<face>Arial</face>
+													</font>
+												</object>
+												<flag>wxTOP|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
+												<border>5</border>
+											</object>
+											<object class="sizeritem">
+												<object class="wxFlexGridSizer">
+													<cols>2</cols>
+													<growablecols>0,1</growablecols>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n0" />
+														<flag>wxALL|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v0" />
+														<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n1" />
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v1" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n2" />
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v2" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n3" />
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v3" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n4" />
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v4" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n5" />
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v5" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="n6" />
+														<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+													<object class="sizeritem">
+														<object class="wxTextCtrl" name="v6" />
+														<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
+														<border>5</border>
+													</object>
+												</object>
+												<flag>wxEXPAND</flag>
+											</object>
+										</object>
 									</object>
 								</object>
-							</object>
-							<object class="wxPanel" name="ID_PANEL2">
-								<style>wxSUNKEN_BORDER|wxTAB_TRAVERSAL</style>
-								<object class="wxBoxSizer">
-									<orient>wxVERTICAL</orient>
-									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT4">
-											<label>User-defined fields:</label>
-											<font>
-												<size>11</size>
-												<weight>bold</weight>
-												<family>swiss</family>
-												<face>Arial</face>
-											</font>
-										</object>
-										<flag>wxTOP|wxRIGHT|wxALIGN_CENTER_HORIZONTAL</flag>
-										<border>5</border>
-									</object>
-									<object class="sizeritem">
-										<object class="wxFlexGridSizer">
-											<cols>2</cols>
-											<growablecols>0,1</growablecols>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n0" />
-												<flag>wxALL|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v0" />
-												<flag>wxTOP|wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n1" />
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v1" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n2" />
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v2" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n3" />
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v3" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n4" />
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v4" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n5" />
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v5" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="n6" />
-												<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-											<object class="sizeritem">
-												<object class="wxTextCtrl" name="v6" />
-												<flag>wxBOTTOM|wxRIGHT|wxEXPAND</flag>
-												<border>5</border>
-											</object>
-										</object>
-										<flag>wxEXPAND</flag>
-									</object>
-								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
 							</object>
 						</object>
-						<flag>wxEXPAND</flag>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 						<border>5</border>
-						<option>1</option>
 					</object>
 				</object>
-				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<flag>wxEXPAND</flag>
 				<border>5</border>
+				<option>1</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxBoxSizer">

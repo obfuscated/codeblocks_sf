@@ -26,10 +26,11 @@
     #include <wx/textctrl.h>
     #include <wx/textdlg.h>
     #include <wx/splitter.h>
+    #include <wx/choice.h>
+    #include <wx/listbox.h>
 #endif
 
 #include "annoyingdialog.h"
-#include <wx/choice.h>
 
 #if wxCHECK_VERSION(3, 0, 0)
 #include <wx/unichar.h>
@@ -70,7 +71,8 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
     wxString m_CurrentVar;
 
     wxChoice *m_SelSet;
-    wxChoice *m_SelVar;
+    wxListBox *m_SelVar;
+
     wxButton *m_DeleteSet;
 
     wxTextCtrl *m_Base;
@@ -297,7 +299,7 @@ BEGIN_EVENT_TABLE(UsrGlblMgrEditDialog, wxScrollingDialog)
     EVT_BUTTON(XRCID("fs5"), UsrGlblMgrEditDialog::OnFS)
 
     EVT_CHOICE(XRCID("selSet"), UsrGlblMgrEditDialog::SelectSet)
-    EVT_CHOICE(XRCID("selVar"), UsrGlblMgrEditDialog::SelectVar)
+    EVT_LISTBOX(XRCID("selVar"), UsrGlblMgrEditDialog::SelectVar)
 END_EVENT_TABLE()
 
 UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
@@ -305,9 +307,9 @@ UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
     m_CurrentVar(var)
 {
     wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), _T("dlgGlobalUservars"),_T("wxScrollingDialog"));
-    m_SelSet    = XRCCTRL(*this, "selSet",    wxChoice);
-    m_SelVar    = XRCCTRL(*this, "selVar",    wxChoice);
-    m_DeleteSet = XRCCTRL(*this, "deleteSet", wxButton);
+    m_SelSet    = XRCCTRL(*this, "selSet",   wxChoice);
+    m_SelVar    = XRCCTRL(*this, "selVar",   wxListBox);
+    m_DeleteSet = XRCCTRL(*this, "deleteSet",wxButton);
 
     m_Base    = XRCCTRL(*this, "base",    wxTextCtrl);
     m_Include = XRCCTRL(*this, "include", wxTextCtrl);
