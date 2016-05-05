@@ -3313,7 +3313,7 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
     bool isDel = event.GetModificationType() & wxSCI_MOD_DELETETEXT;
     if ((isAdd || isDel) && linesAdded != 0)
     {
-        // wheter to show line-numbers or not is handled in SetLineNumberColWidth() now
+        // whether to show line-numbers or not is handled in SetLineNumberColWidth() now
         m_pData->SetLineNumberColWidth();
 
         // NB: I don't think polling for each debugger every time will slow things down enough
@@ -3323,20 +3323,23 @@ void cbEditor::OnEditorModified(wxScintillaEvent& event)
         // although we only reach this part of the code only if a line has been added/removed
         // so, yes, it might not be that bad after all
         int startline = m_pControl->LineFromPosition(event.GetPosition());
-        const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
-        cbDebuggerPlugin *active = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-        for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+        if (m_pControl == event.GetEventObject())
         {
-            if (it->first != active)
-                it->first->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
-        }
-        if (active)
-            active->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
+            const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+            cbDebuggerPlugin *active = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+            for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+            {
+                if (it->first != active)
+                    it->first->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
+            }
+            if (active)
+                active->EditorLinesAddedOrRemoved(this, startline + 1, linesAdded);
 
-        cbBreakpointsDlg *dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
-        if (dlg)
-            dlg->Reload();
-        RefreshBreakpointMarkers();
+            cbBreakpointsDlg *dlg = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
+            if (dlg)
+                dlg->Reload();
+            RefreshBreakpointMarkers();
+        }
     }
     // If we remove the folding-point (the brace or whatever) from a folded block,
     // we have to make the hidden lines visible, otherwise, they
