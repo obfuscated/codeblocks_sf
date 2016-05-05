@@ -976,6 +976,64 @@ bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
     return true;
 }
 
+bool cbResolveSymLinkedDirPath(wxString& dirpath)
+{
+#ifdef _WIN32
+    return false;
+#else
+    if (dirpath.Last() == wxFILE_SEP_PATH)
+        dirpath.RemoveLast();
+
+    struct stat fileStats;
+    if (lstat(dirpath.mb_str(wxConvUTF8), &fileStats) != 0)
+        return wxDIR_IGNORE;
+
+    // If the path is a symbolic link, then try to resolve it.
+    // This is needed to prevent infinite loops, when a folder is pointing to itself or its parent folder.
+    if (S_ISLNK(fileStats.st_mode))
+    {
+        char buffer[4096];
+        int result = readlink(dirpath.mb_str(wxConvUTF8), buffer, WXSIZEOF(buffer) - 1);
+        if (result != -1)
+        {
+            buffer[result] = '\0'; // readlink() doesn't NUL-terminate the buffer
+            wxString pathStr(buffer, wxConvUTF8);
+            wxFileName fileName = wxFileName::DirName(pathStr);
+
+            // If this is a relative symbolic link, we need to make it absolute.
+            if (!fileName.IsAbsolute())
+            {
+                wxFileName dirNamePath;
+                if (dirpath.Last() == wxFILE_SEP_PATH)
+                    dirNamePath = wxFileName::DirName(dirpath);
+                else
+                    dirNamePath = wxFileName::DirName(dirpath + wxFILE_SEP_PATH);
+                dirNamePath.RemoveLastDir();
+                // Make the new filename absolute relative to the parent folder.
+                fileName.MakeAbsolute(dirNamePath.GetFullPath());
+            }
+
+            wxString fullPath = fileName.GetFullPath();
+            if (fullPath.Last() == wxT('.')) // this case should be handled because of a bug in wxWidgets
+                fullPath.RemoveLast();
+            if (fullPath.Last() == wxFILE_SEP_PATH)
+                fullPath.RemoveLast();
+            dirpath = fullPath;
+            return true;
+        }
+    }
+
+    return false;
+#endif // _WIN32
+}
+
+wxString cbResolveSymLinkedDirPathRecursive(wxString dirpath)
+{
+    while (cbResolveSymLinkedDirPath(dirpath))
+        ;
+    return dirpath;
+}
+
 // function to check the common controls version
 #ifdef __WXMSW__
 #include <windows.h>
