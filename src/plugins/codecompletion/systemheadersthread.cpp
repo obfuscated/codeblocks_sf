@@ -93,10 +93,8 @@ private:
      */
     const SystemHeadersMap& m_SystemHeadersMap;
 
-#ifndef _WIN32
-    // Set of already visited directories (stored as absolute paths).
+    /// Set of already visited directories (stored as absolute paths).
     std::set<wxString>      m_VisitedDirs;
-#endif // _WIN32
 
     /* top level dir we are traversing header files */
     const wxString&         m_SearchDir;
@@ -280,10 +278,8 @@ wxDirTraverseResult HeaderDirTraverser::GetStatus(const wxString &path)
 {
     if (m_SystemHeadersMap.find(path) != m_SystemHeadersMap.end())
         return wxDIR_IGNORE;
-#ifndef _WIN32
     if (m_VisitedDirs.find(path) != m_VisitedDirs.end())
         return wxDIR_IGNORE;
     m_VisitedDirs.insert(path);
-#endif // _WIN32
     return wxDIR_CONTINUE;
 }
