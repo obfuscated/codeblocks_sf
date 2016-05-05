@@ -237,20 +237,14 @@ wxDirTraverseResult HeaderDirTraverser::OnFile(const wxString& filename)
     return wxDIR_CONTINUE;
 }
 
-wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
+bool ResolveSymLinkedPath(wxString& dirname)
 {
-    // HeaderDirTraverser is used in a worker thread, so call TestDestroy() as often as it can to
-    // quickly terminate the thread
-    if (m_Thread->TestDestroy())
-        return wxDIR_STOP;
+#ifdef _WIN32
+    return false;
+#else
+    if (dirname.Last() == wxFILE_SEP_PATH)
+        dirname.RemoveLast();
 
-    AddLock(false); // false means we are adding a dir
-
-    wxString path(dirname);
-    if (path.Last() != wxFILE_SEP_PATH)
-        path.Append(wxFILE_SEP_PATH);
-
-#ifndef _WIN32
     struct stat fileStats;
     if (lstat(dirname.mb_str(wxConvUTF8), &fileStats) != 0)
         return wxDIR_IGNORE;
@@ -265,12 +259,16 @@ wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
         {
             buffer[result] = '\0'; // readlink() doesn't NUL-terminate the buffer
             wxString pathStr(buffer, wxConvUTF8);
-            wxFileName fileName(pathStr);
+            wxFileName fileName = wxFileName::DirName(pathStr);
 
             // If this is a relative symbolic link, we need to make it absolute.
             if (!fileName.IsAbsolute())
             {
-                wxFileName dirNamePath(path);
+                wxFileName dirNamePath;
+                if (dirname.Last() == wxFILE_SEP_PATH)
+                    dirNamePath = wxFileName::DirName(dirname);
+                else
+                    dirNamePath = wxFileName::DirName(dirname + wxFILE_SEP_PATH);
                 dirNamePath.RemoveLastDir();
                 // Make the new filename absolute relative to the parent folder.
                 fileName.MakeAbsolute(dirNamePath.GetFullPath());
@@ -279,12 +277,32 @@ wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
             wxString fullPath = fileName.GetFullPath();
             if (fullPath.Last() == wxT('.')) // this case should be handled because of a bug in wxWidgets
                 fullPath.RemoveLast();
-            if (fullPath.Last() != wxFILE_SEP_PATH)
-                fullPath.Append(wxFILE_SEP_PATH);
-            return GetStatus(fullPath);
+            if (fullPath.Last() == wxFILE_SEP_PATH)
+                fullPath.RemoveLast();
+            dirname = fullPath;
+            return true;
         }
     }
+
+    return false;
 #endif // _WIN32
+}
+
+wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
+{
+    // HeaderDirTraverser is used in a worker thread, so call TestDestroy() as often as it can to
+    // quickly terminate the thread
+    if (m_Thread->TestDestroy())
+        return wxDIR_STOP;
+
+    AddLock(false); // false means we are adding a dir
+
+    wxString path = dirname;
+    while (ResolveSymLinkedPath(path))
+        ;
+
+    if (path.Last() != wxFILE_SEP_PATH)
+        path.Append(wxFILE_SEP_PATH);
 
     return GetStatus(path);
 }
