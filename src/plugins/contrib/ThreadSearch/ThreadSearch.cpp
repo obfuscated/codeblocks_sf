@@ -134,6 +134,7 @@ ThreadSearch::ThreadSearch()
               m_LoggerType(ThreadSearchLoggerBase::TypeList),
               m_DisplayLogHeaders(true),
               m_DrawLogLines(false),
+              m_AutosizeLogColumns(false),
               m_pCboSearchExpr(0),
               m_SplitterMode(wxSPLIT_VERTICAL),
               m_FileSorting(InsertIndexManager::SortByFilePath)
@@ -528,6 +529,7 @@ void ThreadSearch::LoadConfig(bool& showPanel, int& sashPosition,
     m_DeletePreviousResults      = pCfg->ReadBool(wxT("/DeletePreviousResults"), false);
     m_DisplayLogHeaders          = pCfg->ReadBool(wxT("/DisplayLogHeaders"),     true);
     m_DrawLogLines               = pCfg->ReadBool(wxT("/DrawLogLines"),          false);
+    m_AutosizeLogColumns         = pCfg->ReadBool(wxT("/AutosizeLogColumns"),    true);
 
     showPanel                    = pCfg->ReadBool(wxT("/ShowPanel"),             true);
 
@@ -590,6 +592,7 @@ void ThreadSearch::SaveConfig(bool showPanel, int sashPosition,
     pCfg->Write(wxT("/DeletePreviousResults"), m_DeletePreviousResults);
     pCfg->Write(wxT("/DisplayLogHeaders"),     m_DisplayLogHeaders);
     pCfg->Write(wxT("/DrawLogLines"),          m_DrawLogLines);
+    pCfg->Write(wxT("/AutosizeLogColumns"),    m_AutosizeLogColumns);
 
     pCfg->Write(wxT("/ShowPanel"),             showPanel);
 

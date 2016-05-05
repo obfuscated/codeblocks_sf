@@ -449,6 +449,15 @@
                                             <id>idChkDrawLogLines</id>
                                         </object>
                                     </object>
+                                    <object class="sizeritem">
+                                        <flag>wxALL</flag>
+                                        <border>4</border>
+                                        <option>0</option>
+                                        <object class="wxCheckBox" name="m_pChkAutosizeLogColumns" base="EditCheckBox">
+                                            <label>Automatically resize log columns.</label>
+                                            <id>idChkAutosizeLogColumns</id>
+                                        </object>
+                                    </object>
                                 </object>
                             </object>
                             <object class="sizeritem">
