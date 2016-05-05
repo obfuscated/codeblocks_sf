@@ -986,7 +986,7 @@ bool cbResolveSymLinkedDirPath(wxString& dirpath)
 
     struct stat fileStats;
     if (lstat(dirpath.mb_str(wxConvUTF8), &fileStats) != 0)
-        return wxDIR_IGNORE;
+        return false;
 
     // If the path is a symbolic link, then try to resolve it.
     // This is needed to prevent infinite loops, when a folder is pointing to itself or its parent folder.
