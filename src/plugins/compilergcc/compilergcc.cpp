@@ -409,11 +409,11 @@ void CompilerGCC::OnAttach()
 
     // register compiler's script functions
     // make sure the VM is initialized
-    Manager::Get()->GetScriptingManager();
-    if (SquirrelVM::GetVMPtr())
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM()->GetSqVM();
+    if (vm)
     {
         ScriptBindings::gBuildLogId = m_PageIndex;
-        SqPlus::RegisterGlobal(ScriptBindings::gBuildLog, "LogBuild");
+        Sqrat::RootTable(vm).Func("LogBuild",&ScriptBindings::gBuildLog);
     }
     else
         ScriptBindings::gBuildLogId = -1;
@@ -431,6 +431,15 @@ void CompilerGCC::OnRelease(bool appShutDown)
 {
     // disable script functions
     ScriptBindings::gBuildLogId = -1;
+
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM()->GetSqVM();
+    if (vm)
+    {
+            sq_pushroottable(vm);
+            sq_pushstring(vm, "LogBuild", -1);
+            sq_deleteslot(vm, -2, false);
+            sq_poptop(vm);
+    }
 
     SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
