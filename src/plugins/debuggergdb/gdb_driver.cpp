@@ -82,9 +82,6 @@ static wxRegEx reAttachedChildPid(wxT("Attaching to process ([0-9]+)"));
 static wxRegEx reInferiorExited(wxT("^\\[Inferior[ \\t].+[ \\t]exited normally\\]$"), wxRE_EXTENDED);
 static wxRegEx reInferiorExitedWithCode(wxT("^\\[[Ii]nferior[ \\t].+[ \\t]exited[ \\t]with[ \\t]code[ \\t]([0-9]+)\\]$"), wxRE_EXTENDED);
 
-// scripting support
-DECLARE_INSTANCE_TYPE(GDB_driver);
-using SqPlus::Push;
 
 GDB_driver::GDB_driver(DebuggerGDB* plugin) :
     DebuggerDriver(plugin),
@@ -116,32 +113,40 @@ void GDB_driver::InitializeScripting()
     }
 
     // get a pointer to scripting engine
-    if (!SquirrelVM::GetVMPtr())
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    if (!vm->GetSqVM())
     {
         m_pDBG->Log(_("Scripting engine not running. Debugger scripts disabled..."));
         return; // no scripting support...
     }
 
     // create a new object type for scripts, named DebuggerDriver
-    SqPlus::SQClassDef<GDB_driver>("GDB_driver").
-            func(&GDB_driver::RegisterType, "RegisterType");
+    Sqrat::Class<GDB_driver> gdb_driver(vm->GetSqVM(),"GDB_driver");
+    gdb_driver.Func("RegisterType",&GDB_driver::RegisterType);
+    Sqrat::RootTable(vm->GetSqVM()).Bind("GDB_driver",gdb_driver);
+
 
     // run extensions script
     wxString script = ConfigManager::LocateDataFile(_T("gdb_types.script"), sdScriptsUser | sdScriptsGlobal);
     if (!script.IsEmpty())
     {
         Manager::Get()->GetScriptingManager()->LoadScript(script);
-        try
+
+
+        Sqrat::Function func = Sqrat::RootTable(vm->GetSqVM()).GetFunction("RegisterTypes");
+        if(func.IsNull())
         {
-            SqPlus::SquirrelFunction<void> f("RegisterTypes");
-            f(this);
+        // A error occur
+        } else {
+            func(this);
         }
-        catch (SquirrelError e)
+        wxString error = Manager::Get()->GetScriptingManager()->GetErrorString();
+        if(!error.IsEmpty())
         {
             m_pDBG->Log(wxString::Format(_T("Invalid debugger script: '%s'"), script.c_str()));
-            m_pDBG->Log(cbC2U(e.desc));
+            m_pDBG->Log(error);
 
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+            Manager::Get()->GetScriptingManager()->DisplayErrors(error);
         }
     }
 
