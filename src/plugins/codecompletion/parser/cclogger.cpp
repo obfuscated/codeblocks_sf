@@ -16,7 +16,7 @@
 #include <logmanager.h> // F()
 #include <globals.h>    // cbC2U for cbAssert macro
 
-std::auto_ptr<CCLogger> CCLogger::s_Inst;
+std::unique_ptr<CCLogger> CCLogger::s_Inst;
 
 bool           g_EnableDebugTrace     = false;
 bool           g_EnableDebugTraceFile = false; // true

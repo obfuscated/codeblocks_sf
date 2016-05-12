@@ -713,7 +713,7 @@ bool FileContentDisk::WriteFileEasiest( )
 {
     static const int maxProgress = 10000;
 
-    std::auto_ptr< wxProgressDialog > dlg(
+    std::unique_ptr< wxProgressDialog > dlg(
         m_TestMode ? 0 : new wxProgressDialog( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
                     Manager::Get()->GetAppWindow(),
                     wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );
@@ -867,7 +867,7 @@ bool FileContentDisk::WriteToFile(wxFile& file)
 {
     static const int maxProgress = 10000;
 
-    std::auto_ptr< wxProgressDialog > dlg(
+    std::unique_ptr< wxProgressDialog > dlg(
         m_TestMode ? 0 : new wxProgressDialog( _("Saving the file"), _("Please wait, saving file..."), maxProgress,
                     Manager::Get()->GetAppWindow(),
                     wxPD_APP_MODAL | wxPD_AUTO_HIDE | wxPD_ELAPSED_TIME | wxPD_ESTIMATED_TIME | wxPD_REMAINING_TIME ) );

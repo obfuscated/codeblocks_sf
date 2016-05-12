@@ -21,6 +21,8 @@
 #include <wx/url.h>
 #include <wx/encconv.h>
 
+#include <memory>
+
 template<> FileManager* Mgr<FileManager>::instance = nullptr;
 template<> bool  Mgr<FileManager>::isShutdown = false;
 
@@ -89,7 +91,7 @@ void URLLoader::operator()()
         return;
     }
 
-    std::auto_ptr<wxInputStream> stream(url.GetInputStream());
+    std::unique_ptr<wxInputStream> stream(url.GetInputStream());
 
     if (stream.get() == nullptr || stream->IsOk() == false)
     {
