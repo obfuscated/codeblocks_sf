@@ -381,7 +381,7 @@
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT8">
-												<label>File extensions to parse as header files (separated by colons):</label>
+												<label>File extensions to parse as header files (separated by comma):</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
@@ -403,7 +403,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxStaticText" name="ID_STATICTEXT9">
-												<label>File extensions to parse as source files (separated by colons):</label>
+												<label>File extensions to parse as source files (separated by comma):</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
