@@ -591,7 +591,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     else if (data && data->GetKind() == FileTreeData::ftdkFile)
     {
         FileType ft = FileTypeOf(data->GetProjectFile()->relativeFilename);
-        if (ft == ftSource || ft == ftHeader)
+        if (ft == ftSource || ft == ftHeader || ft == ftTemplateSource)
         {
             // popup menu on a compilable file
             menu->AppendSeparator();

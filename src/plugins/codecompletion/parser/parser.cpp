@@ -778,7 +778,7 @@ void Parser::ReparseModifiedFiles()
     for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokenTree->GetFilename(*it);
-        if ( FileTypeOf(filename) == ftSource ) // ignore source files (*.cpp etc)
+        if ( FileTypeOf(filename) == ftSource || FileTypeOf(filename) == ftTemplateSource ) // ignore source files (*.cpp etc)
             continue;
         files_list.push(filename);
         files_idx.push(*it);
@@ -786,7 +786,7 @@ void Parser::ReparseModifiedFiles()
     for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokenTree->GetFilename(*it);
-        if ( FileTypeOf(filename) != ftSource ) // ignore non-source files (*.h etc)
+        if ( FileTypeOf(filename) != ftSource && FileTypeOf(filename) != ftTemplateSource  ) // ignore non-source files (*.h etc)
             continue;
         files_list.push(filename);
         files_idx.push(*it);

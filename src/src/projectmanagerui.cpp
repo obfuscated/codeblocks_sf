@@ -763,7 +763,7 @@ void ProjectManagerUI::DoOpenFile(ProjectFile* pf, const wxString& filename)
     }
 
     FileType ft = FileTypeOf(filename);
-    if (ft == ftHeader || ft == ftSource)
+    if (ft == ftHeader || ft == ftSource || ft == ftTemplateSource)
     {
         // C/C++ header/source files, always get opened inside Code::Blocks
         if ( cbEditor* ed = Manager::Get()->GetEditorManager()->Open(filename) )

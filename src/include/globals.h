@@ -60,6 +60,7 @@ enum FileType
     ftXcode2Project,
     ftSource,
     ftHeader,
+    ftTemplateSource,
     ftObject,
     ftXRCResource,
     ftResource,

@@ -1811,6 +1811,8 @@ bool MainFrame::OpenGeneric(const wxString& filename, bool addToHistory)
             // fallthrough
         case ftSource:
             // fallthrough
+        case ftTemplateSource:
+            // fallthrough
         case ftResource:
             return DoOpenFile(filename, addToHistory);
         //

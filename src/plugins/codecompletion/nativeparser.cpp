@@ -2751,7 +2751,7 @@ bool NativeParser::AddProjectToParser(cbProject* project)
         for (FilesList::const_iterator fl_it = project->GetFilesList().begin(); fl_it != project->GetFilesList().end(); ++fl_it)
         {
             ProjectFile* pf = *fl_it;
-            if (pf && FileTypeOf(pf->relativeFilename) == ftSource)
+            if (pf && (FileTypeOf(pf->relativeFilename) == ftSource || FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
             {
                 if ( AddFileToParser(project, pf->file.GetFullPath(), parser) )
                     fileCount++;

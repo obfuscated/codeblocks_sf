@@ -149,7 +149,7 @@ void AStylePlugin::OnFormatProject( wxCommandEvent& /*event*/ )
                     wxString filename = pf->file.GetFullPath();
 
                     FileType fileType = FileTypeOf( filename );
-                    if ( fileType == ftSource || fileType == ftHeader )
+                    if ( fileType == ftSource || fileType == ftHeader || fileType == ftTemplateSource )
                     {
                         FormatFile( filename );
                         if ( false == progressDlg.Update( i++, wxString(_("Formatting ")) + pf->relativeFilename ) )

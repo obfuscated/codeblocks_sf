@@ -300,6 +300,11 @@ FileType FileTypeOf(const wxString& filename)
        )
         return ftSource;
 
+    else if (ext.IsSameAs(FileFilters::TPP_EXT) ||
+             ext.IsSameAs(FileFilters::TCC_EXT)
+            )
+        return ftTemplateSource;
+
     else if (ext.IsSameAs(FileFilters::H_EXT) ||
              ext.IsSameAs(FileFilters::HH_EXT) ||
              ext.IsSameAs(FileFilters::HPP_EXT) ||

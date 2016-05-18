@@ -217,7 +217,8 @@ int CppCheck::ExecuteCppCheck(cbProject* Project)
             || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
             || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
             || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
-            || (FileTypeOf(pf->relativeFilename) == ftHeader) )
+            || (FileTypeOf(pf->relativeFilename) == ftHeader)
+            || (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
         {
             InputFile.Write(pf->relativeFilename + _T("\n"));
         }
@@ -396,7 +397,8 @@ int CppCheck::ExecuteVera(cbProject* Project)
             || pf->relativeFilename.EndsWith(FileFilters::CC_DOT_EXT)
             || pf->relativeFilename.EndsWith(FileFilters::CXX_DOT_EXT)
             || pf->relativeFilename.EndsWith(FileFilters::CPLPL_DOT_EXT)
-            || (FileTypeOf(pf->relativeFilename) == ftHeader) )
+            || (FileTypeOf(pf->relativeFilename) == ftHeader)
+            || (FileTypeOf(pf->relativeFilename) == ftTemplateSource) )
         {
             InputFile.Write(pf->relativeFilename + _T("\n"));
         }

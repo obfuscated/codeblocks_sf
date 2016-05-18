@@ -945,7 +945,6 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
 
 void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly)
 {
-    FileType fTp = FileTypeOf(ed->GetShortName());
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
     cbStyledTextCtrl* stc = ed->GetControl();
 
@@ -1026,7 +1025,8 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                 {
                     wxString lastSearch = m_NativeParser.LastAIGlobalSearch().Lower();
                     int iidx = ilist->GetImageCount();
-                    bool isC = (fTp == ftHeader || fTp == ftSource);
+                    FileType fTp = FileTypeOf(ed->GetShortName());
+                    bool isC = (fTp == ftHeader || fTp == ftSource|| fTp == ftTemplateSource);
                     // theme keywords
                     HighlightLanguage lang = ed->GetLanguage();
                     if (lang == HL_NONE)
@@ -1092,6 +1092,7 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
         const FileType fTp = FileTypeOf(ed->GetShortName());
         if (   fTp != ftSource
             && fTp != ftHeader
+            && fTp != ftTemplateSource
             && fTp != ftResource )
         {
             return; // not C/C++
@@ -1134,7 +1135,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     const wxString curPath(wxFileName(curFile).GetPath());
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+    if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
         return;
 
     cbStyledTextCtrl* stc = ed->GetControl();
@@ -2593,7 +2594,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+    if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
         return -4;
 
     if (!m_NativeParser.GetParser().Done())
@@ -2653,7 +2654,7 @@ int CodeCompletion::DoAllMethodsImpl()
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+    if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
         return -4;
 
     wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());

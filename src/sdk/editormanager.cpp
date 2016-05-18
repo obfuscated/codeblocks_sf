@@ -1021,8 +1021,10 @@ bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFile
         // If looking for a header we have a source OR
         // If looking for a source we have a header
         FileType ftTested = FileTypeOf(candidateFile.GetFullName());
-        if (    ((ftActive == ftHeader) && (ftTested == ftSource))
-             || ((ftActive == ftSource) && (ftTested == ftHeader)) )
+        if (    ((ftActive == ftHeader)         && (ftTested == ftSource))
+             || ((ftActive == ftSource)         && (ftTested == ftHeader))
+             || ((ftActive == ftHeader)         && (ftTested == ftTemplateSource))
+             || ((ftActive == ftTemplateSource) && (ftTested == ftHeader)) )
         {
             // Handle the case where two files (in different directories) have the same name:
             // Example: A project file with three files dir1/file.h dir1/file.cpp dir2/file.h
@@ -1140,7 +1142,7 @@ bool EditorManager::SwapActiveHeaderSource()
         return false;
 
     FileType ft = FileTypeOf(ed->GetFilename());
-    if (ft != ftHeader && ft != ftSource)
+    if (ft != ftHeader && ft != ftSource && ft != ftTemplateSource)
         return false;
 
     cbProject* project = nullptr;
@@ -1324,7 +1326,7 @@ bool EditorManager::SwapActiveHeaderSource()
         // Create a suggestion for the new file name:
         if      (ft == ftHeader)
             theFile.SetExt(FileFilters::CPP_EXT);
-        else if (ft == ftSource)
+        else if (ft == ftSource || ft == ftTemplateSource)
             theFile.SetExt(FileFilters::H_EXT);
         // else? Well, if the filename is not changed we could possibly
         // overwrite an existing file with our suggestion.
