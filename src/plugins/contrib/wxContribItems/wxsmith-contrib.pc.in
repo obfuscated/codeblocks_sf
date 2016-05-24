@@ -13,7 +13,7 @@ Name: wxSmithContribItems
 Description: wxWidgets contrib items also used for the wxSmith
 Version: @VERSION@
 Libs: -L${libdir} -lwxchartctrl -lwxcustombutton -lwxdatetimepicker -lwxflatnotebook -lwximagepanel -lwxkwic -lwxled -lwxspeedbutton ${TREELIST_LIB}
-Cflags: -fPIC -I${includedir}/KWIC/include \
+Cflags: -I${includedir}/KWIC/include \
 		-I${includedir}/wxchart/include \
 		-I${includedir}/wxDateTimePicker/include \
 		-I${includedir}/wxFlatNotebook/include \

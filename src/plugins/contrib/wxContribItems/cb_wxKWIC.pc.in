@@ -9,5 +9,5 @@ Name: wxKWIX
 Description: KWIC for wxWidgets  also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwxkwic
-Cflags: -fPIC -I${includedir}/KWIC/include
+Cflags: -I${includedir}/KWIC/include
 
