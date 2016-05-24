@@ -38,7 +38,7 @@
 #include <projectmanager.h>
 #include <scriptingmanager.h>
 #include <sdk_events.h>
-#include <sqplus.h>
+
 
 #include "appglobals.h"
 #include "associations.h"
@@ -47,6 +47,8 @@
 #include "crashhandler.h"
 #include "projectmanagerui.h"
 #include "splashscreen.h"
+#include <scripting/sqrat.h>
+
 
 #ifndef __WXMSW__
     #include "prefix.h"  // binreloc
@@ -730,7 +732,9 @@ bool CodeBlocksApp::OnInit()
             LoaderBase* loader = Manager::Get()->GetFileManager()->Load(m_Script);
 
             if (loader->GetData())
-                Manager::Get()->GetScriptingManager()->LoadBuffer(cbC2U(loader->GetData()));
+                Manager::Get()->GetScriptingManager()->LoadBuffer(cbC2U(loader->GetData()),_("Command_line_script"));
+
+            Manager::Get()->GetScriptingManager()->DisplayErrors();
 
             delete loader;
             frame->Close();
@@ -740,15 +744,14 @@ bool CodeBlocksApp::OnInit()
         CheckVersion();
 
         // run startup script
-        try
+        // FIXME (bluehazzard#1#): Right squirrel error handling
+
+        wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
+
+        if (!startup.IsEmpty())
         {
-            wxString startup = ConfigManager::LocateDataFile(_T("startup.script"), sdScriptsUser | sdScriptsGlobal);
-            if (!startup.IsEmpty())
-                Manager::Get()->GetScriptingManager()->LoadScript(startup);
-        }
-        catch (SquirrelError& exception)
-        {
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
+            Manager::Get()->GetScriptingManager()->LoadScript(startup);
+            Manager::Get()->GetScriptingManager()->DisplayErrors();
         }
         Manager::ProcessPendingEvents();
 
@@ -781,10 +784,11 @@ bool CodeBlocksApp::OnInit()
     {
         exception.ShowErrorMessage();
     }
-    catch (SquirrelError& exception)
+    /*catch (SquirrelError& exception)
+// FIXME (bluehazzard#1#): squirrel error
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-    }
+    }*/
     catch (const char* message)
     {
         wxSafeShowMessage(_T("Exception"), cbC2U(message));
@@ -855,10 +859,11 @@ int CodeBlocksApp::OnRun()
     {
         exception.ShowErrorMessage();
     }
-    catch (SquirrelError& exception)
+   /* catch (SquirrelError& exception)
+// FIXME (bluehazzard#1#): squirrel error
     {
         Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-    }
+    }*/
     catch (const char* message)
     {
         wxSafeShowMessage(_("Exception"), cbC2U(message));
@@ -1182,6 +1187,10 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
             m_Clean                = parser.Found(_T("clean"));
             parser.Found(_T("target"), &m_BatchTarget);
             parser.Found(_T("script"), &m_Script);
+
+
+
+
             // initial setting for batch flag (will be reset when ParseCmdLine() is called again).
             m_Batch = m_Build || m_ReBuild || m_Clean;
 
