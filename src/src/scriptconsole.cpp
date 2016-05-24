@@ -8,7 +8,7 @@
  */
 
 #include <sdk.h>
-#include <sqplus.h>
+#include <scripting/sqrat.h>
 
 #include "scriptconsole.h"
 
@@ -43,19 +43,32 @@ const long ScriptConsole::ID_PANEL1 = wxNewId();
 
 static ScriptConsole* s_Console = nullptr;
 static SQPRINTFUNCTION s_OldPrintFunc = nullptr;
+static SQPRINTFUNCTION s_OldErrorFunc = nullptr;
 
 static void ScriptConsolePrintFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
+// FIXME (bluehazzard#1#): buffer overflow
 {
-    static SQChar temp[2048];
     va_list vl;
     va_start(vl,s);
-    scvsprintf( temp,s,vl);
-    wxString msg = cbC2U(temp);
+    wxString msg;
+    PrintSquirrelToWxString(msg,s,vl);
     va_end(vl);
 
     if (s_Console)
         s_Console->Log(msg);
-    Manager::Get()->GetScriptingManager()->InjectScriptOutput(msg);
+    Manager::Get()->GetScriptingManager()->InjectScriptOutput(msg); // FIXME (bluehazzard#1#): This function call (and the function itself) makes no sense sorry...
+}
+
+static void ScriptConsoleErrorFunc(HSQUIRRELVM /*v*/, const SQChar * s, ...)
+{
+    va_list vl;
+    va_start(vl,s);
+    wxString msg;
+    PrintSquirrelToWxString(msg,s,vl);
+    va_end(vl);
+
+    if (s_Console)
+        s_Console->Error(msg);
 }
 
 BEGIN_EVENT_TABLE(ScriptConsole,wxPanel)
@@ -71,7 +84,7 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
 
     Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-    txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    txtConsole = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_MULTILINE|wxTE_READONLY|wxTE_RICH|wxHSCROLL, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     wxFont txtConsoleFont(10,wxFONTFAMILY_MODERN,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_NORMAL,false,wxEmptyString,wxFONTENCODING_DEFAULT);
     txtConsole->SetFont(txtConsoleFont);
     BoxSizer1->Add(txtConsole, 1, wxALL|wxEXPAND, 0);
@@ -112,12 +125,19 @@ ScriptConsole::ScriptConsole(wxWindow* parent,wxWindowID id)
     txtCommand->Append(wxEmptyString);
     if (!s_Console)
     {
-        s_Console = this;
-        s_OldPrintFunc = sq_getprintfunc(SquirrelVM::GetVMPtr());
-        sq_setprintfunc(SquirrelVM::GetVMPtr(), ScriptConsolePrintFunc);
-    }
 
-    Log(_("Welcome to the script console!"));
+        s_Console = this;
+        ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+        if(vm == nullptr)
+        {
+            // We have no vm registered...
+            Error(_("No default vm registered for the scripting console, please contact the developer"));
+        } else {
+            vm->GetPrintFunc(s_OldPrintFunc,s_OldErrorFunc);
+            vm->SetPrintFunc(ScriptConsolePrintFunc,ScriptConsoleErrorFunc);
+        }
+    }
+    Log(_("Welcome to the script console!\n"));
 }
 
 ScriptConsole::~ScriptConsole()
@@ -125,8 +145,11 @@ ScriptConsole::~ScriptConsole()
     if (s_Console == this)
     {
         s_Console = nullptr;
-        if (SquirrelVM::GetVMPtr())
-            sq_setprintfunc(SquirrelVM::GetVMPtr(), s_OldPrintFunc);
+
+        ScriptBindings::CBsquirrelVM *vm = ScriptBindings::CBsquirrelVMManager::Get()->GetVM(Sqrat::DefaultVM::Get());
+        if(vm != NULL)
+            vm->SetPrintFunc(s_OldPrintFunc,s_OldErrorFunc);
+
     }
 
     //(*Destroy(ScriptConsole)
@@ -136,9 +159,22 @@ ScriptConsole::~ScriptConsole()
 void ScriptConsole::Log(const wxString& msg)
 {
     txtConsole->AppendText(msg);
+//    if (msg.Last() != _T('\n'))
+//        txtConsole->AppendText(_T('\n'));
+//    txtConsole->ScrollLines(-1);
+    Manager::ProcessPendingEvents();
+}
+
+
+void ScriptConsole::Error(const wxString& msg)
+{
+    wxTextAttr old = txtConsole->GetDefaultStyle();
+    txtConsole->SetDefaultStyle(wxTextAttr(wxColor(235,0,0)));
+    txtConsole->AppendText(msg);
     if (msg.Last() != _T('\n'))
         txtConsole->AppendText(_T('\n'));
-//    txtConsole->ScrollLines(-1);
+
+    txtConsole->SetDefaultStyle(old);
     Manager::ProcessPendingEvents();
 }
 
@@ -154,14 +190,14 @@ void ScriptConsole::OnbtnExecuteClick(cb_unused wxCommandEvent& event)
     }
 
     Log(_T("> ") + cmd);
-    if (Manager::Get()->GetScriptingManager()->LoadBuffer(cmd, _T("ScriptConsole")))
+    if (Manager::Get()->GetScriptingManager()->LoadBuffer(cmd, _("ScriptConsole")))
     {
         if (txtCommand->FindString(cmd) == wxNOT_FOUND)
             txtCommand->Insert(cmd, 1); // right after the blank entry
         txtCommand->SetValue(wxEmptyString);
     }
     else
-        txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+        Error(Manager::Get()->GetScriptingManager()->GetErrorString());
     txtCommand->SetFocus();
 }
 
@@ -179,11 +215,11 @@ void ScriptConsole::OnbtnLoadClick(cb_unused wxCommandEvent& event)
     {
         mgr->Write(_T("/file_dialogs/file_run_script/directory"), dlg.GetDirectory());
         if (Manager::Get()->GetScriptingManager()->LoadScript(dlg.GetPath()))
-            Log(_("Script loaded successfully"));
+            Log(_("\n*** Script loaded successfully ***\n"));
         else
         {
-            Log(_("Loading script failed."));
-            txtConsole->AppendText(Manager::Get()->GetScriptingManager()->GetErrorString());
+            Error(_("\n*** Loading script failed. ***\n"));
+            Error(Manager::Get()->GetScriptingManager()->GetErrorString());
         }
     }
     txtCommand->SetFocus();
