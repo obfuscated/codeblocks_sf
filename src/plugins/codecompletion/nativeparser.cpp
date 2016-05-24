@@ -35,6 +35,7 @@
 #endif
 
 #include <wx/tokenzr.h>
+#include <wx/vector.h>
 
 #include <cbstyledtextctrl.h>
 #include <compilercommandgenerator.h>
@@ -2228,10 +2229,12 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
 
     wxString defs;
     wxArrayString opts;
+    wxArrayString names;
     if (   !parser->Options().platformCheck
         || (parser->Options().platformCheck && project->SupportsCurrentPlatform()) )
     {
         opts = project->GetCompilerOptions();
+        names.Add(project->GetTitle() + _T(" compiler options"),opts.Count());
     }
 
     ProjectBuildTarget* target = project->GetBuildTarget(project->GetActiveBuildTarget());
@@ -2242,7 +2245,11 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
         {
             wxArrayString targetOpts = target->GetCompilerOptions();
             for (size_t i = 0; i < targetOpts.GetCount(); ++i)
+            {
                 opts.Add(targetOpts[i]);
+                names.Add(target->GetTitle());
+            }
+
         }
     }
     // In case of virtual targets, collect the defines from all child targets.
@@ -2257,7 +2264,11 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
             {
                 wxArrayString targetOpts = target->GetCompilerOptions();
                 for (size_t j = 0; j < targetOpts.GetCount(); ++j)
+                {
                     opts.Add(targetOpts[j]);
+                    names.Add(target->GetTitle());
+                }
+
             }
         }
     }
@@ -2265,7 +2276,7 @@ bool NativeParser::AddProjectDefinedMacros(cbProject* project, ParserBase* parse
     for (size_t i = 0; i < opts.GetCount(); ++i)
     {
         wxString def = opts[i];
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(def);
+        Manager::Get()->GetMacrosManager()->ReplaceMacros(def,nullptr,false,names[i]);
         if ( !def.StartsWith(defineCompilerSwitch) )
             continue;
 

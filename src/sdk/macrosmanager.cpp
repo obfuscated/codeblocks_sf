@@ -31,8 +31,6 @@
 #include <wx/stdpaths.h> // wxStandardPaths
 #include <cstdlib>
 
-#include "scripting/sqplus/sqplus.h"
-#include "scripting/bindings/scriptbindings.h"
 
 #include "cbstyledtextctrl.h"
 
@@ -429,7 +427,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
     m_Macros[_T("DAYCOUNT")] = wxString::Format(_T("%d"), ts.GetDays());
 }
 
-void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, bool subrequest)
+void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, bool subrequest,wxString name)
 {
     if (buffer.IsEmpty())
         return;
@@ -474,7 +472,12 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     while (m_RE_Script.Matches(buffer))
     {
         search = m_RE_Script.GetMatch(buffer, 1);
-        replace = Manager::Get()->GetScriptingManager()->LoadBufferRedirectOutput(m_RE_Script.GetMatch(buffer, 2));
+        wxString sc_name(_T("Replace Macro Target: "));
+        if(target != nullptr)
+            sc_name.Append(target->GetTitle());
+        else
+            sc_name.Append(name);
+        replace = Manager::Get()->GetScriptingManager()->LoadBufferRedirectOutput(m_RE_Script.GetMatch(buffer, 2),sc_name);
         buffer.Replace(search, replace, false);
     }
 
