@@ -16,6 +16,8 @@ namespace ScriptBindings
 {
     namespace ScriptPluginWrapper
     {
+        void ClearPlugins();
+
         wxArrayInt CreateMenu(wxMenuBar* mbar);
         wxArrayInt CreateModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data);
 

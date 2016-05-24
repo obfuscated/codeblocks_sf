@@ -17,7 +17,7 @@
 
 #include <wx/progdlg.h>
 
-#include "sc_base_types.h"
+#include "scripting/bindings/sc_base_types.h"
 
 class ProgressDialog : public wxProgressDialog
 {
@@ -26,6 +26,14 @@ class ProgressDialog : public wxProgressDialog
             : wxProgressDialog(_("Progress"),
                                 _("Please wait while operation is in progress..."),
                                 100, nullptr,
+                                wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT)
+        {
+        }
+
+        ProgressDialog(wxString title, wxString Message,int max)
+            : wxProgressDialog(title,
+                                Message,
+                                max, nullptr,
                                 wxPD_AUTO_HIDE | wxPD_APP_MODAL | wxPD_CAN_ABORT)
         {
         }
@@ -45,14 +53,42 @@ class ProgressDialog : public wxProgressDialog
         }
 };
 
-DECLARE_INSTANCE_TYPE(ProgressDialog);
 
 namespace ScriptBindings
 {
-    void Register_ProgressDialog()
+    void Register_ProgressDialog(HSQUIRRELVM vm)
     {
-        SqPlus::SQClassDef<ProgressDialog>("ProgressDialog").
-                emptyCtor().
-                func(&ProgressDialog::DoUpdate, "DoUpdate");
+
+
+    /** \ingroup sq_dialogs
+     *### ProgressDialog()
+     * Create an Progress Dialog with the Title _"Progress"_ and the message _"Please wait while operation is in progress..."_.
+     * The Dialog can be updated with the member function _DoUpdate_
+     *
+     *### ProgressDialog(title,Message,max)
+     * Create an Progress Dialog with the Title _title_ and the message _Message_.
+     * The Dialog can be updated with the member function _DoUpdate_
+     *
+     *  - __title__     The title for the window [wxString]
+     *  - __Message__   The Message which gets displayed to inform the user [wxString]
+     *  - __max__       The value on which the progressbar reaches 100% [int]
+     *
+     *
+     */
+
+    /** \ingroup sq_dialogs
+     *### DoUpdate(value,newmsg)
+     * This member function updates the progressbar with the _value_ and the message _newmsg_. If _value_ is >= _max_. The dialogue will be closed.
+     *
+     *  - __value__     The title for the window [int]
+     *  - __newmsg__   The Message which gets displayed to inform the user [wxString]
+     *
+     */
+        Sqrat::Class<ProgressDialog,Sqrat::NoCopy<ProgressDialog> > progress_dialog(vm,"ProgressDialog");
+                progress_dialog.
+                //Ctor().
+                Ctor<wxString,wxString,int>().
+                Func("DoUpdate",    &ProgressDialog::DoUpdate);
+        Sqrat::RootTable(vm).Bind("ProgressDialog",progress_dialog);
     }
 } // namespace ScriptBindings
