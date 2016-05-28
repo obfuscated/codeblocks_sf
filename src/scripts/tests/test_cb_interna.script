@@ -1,0 +1,291 @@
+        
+class cbTest extends script_test_base
+{
+    function Run()
+    {
+		test_constants();
+		test_logging();
+		test_globals();
+		print("\n\n **** CB interna TEST results ****\n");
+		print_global_test_result();
+		print("\n\n\n");
+	}
+	
+	function test_constants()
+	{
+		::print("======= Test cb constants BEGINN ======= \n");
+        clear_test_result();
+		// platform constants
+        test_if_in_const_table("PLATFORM_MSW");
+        test_if_in_const_table("PLATFORM_GTK");
+        test_if_in_const_table("PLATFORM_MAC");
+        test_if_in_const_table("PLATFORM_OS2");
+        test_if_in_const_table("PLATFORM_X11");
+        test_if_in_const_table("PLATFORM_UNKNOWN");
+        test_if_in_const_table("PLATFORM");
+		
+        test_if_in_const_table("PLUGIN_SDK_VERSION_MAJOR");
+        test_if_in_const_table("PLUGIN_SDK_VERSION_MINOR");
+        test_if_in_const_table("PLUGIN_SDK_VERSION_RELEASE");
+
+        test_if_in_const_table("SCRIPT_BINDING_VERSION_MAJOR");
+        test_if_in_const_table("SCRIPT_BINDING_VERSION_MINOR");
+        test_if_in_const_table("SCRIPT_BINDING_VERSION_RELEASE");
+
+
+        // OptionsRelationType
+        test_if_in_const_table("ortCompilerOptions");
+        test_if_in_const_table("ortLinkerOptions");
+        test_if_in_const_table("ortIncludeDirs");
+        test_if_in_const_table("ortLibDirs");
+        test_if_in_const_table("ortResDirs");
+
+        // OptionsRelation
+        test_if_in_const_table("orUseParentOptionsOnly");
+        test_if_in_const_table("orUseTargetOptionsOnly");
+        test_if_in_const_table("orPrependToParentOptions");
+        test_if_in_const_table("orAppendToParentOptions");
+
+        // TargetType
+        test_if_in_const_table("ttExecutable");
+        test_if_in_const_table("ttConsoleOnly");
+        test_if_in_const_table("ttStaticLib");
+        test_if_in_const_table("ttDynamicLib");
+        test_if_in_const_table("ttCommandsOnly");
+        test_if_in_const_table("ttNative");
+
+        // MakeCommand
+        test_if_in_const_table("mcClean");
+        test_if_in_const_table("mcDistClean");
+        test_if_in_const_table("mcBuild");
+        test_if_in_const_table("mcCompileFile");
+        test_if_in_const_table("mcAskRebuildNeeded");
+        test_if_in_const_table("mcSilentBuild");
+
+        // PCHMode
+        test_if_in_const_table("pchSourceDir");
+        test_if_in_const_table("pchObjectDir");
+        test_if_in_const_table("pchSourceFile");
+
+        // printing scope for print dialog
+        test_if_in_const_table("psSelection");
+        test_if_in_const_table("psActiveEditor");
+        test_if_in_const_table("psAllOpenEditors");
+
+        // printing colour mode
+        test_if_in_const_table("pcmBlackAndWhite");
+        test_if_in_const_table("pcmColourOnWhite");
+        test_if_in_const_table("pcmInvertColours");
+        test_if_in_const_table("pcmAsIs");
+
+        // TemplateOutputType
+        test_if_in_const_table("wizProject");
+        test_if_in_const_table("wizTarget");
+        test_if_in_const_table("wizFiles");
+        test_if_in_const_table("wizCustom");
+
+        // SearchDirs
+        test_if_in_const_table("sdHome");
+        test_if_in_const_table("sdBase");
+        test_if_in_const_table("sdTemp");
+        test_if_in_const_table("sdPath");
+        test_if_in_const_table("sdConfig");
+        test_if_in_const_table("sdCurrent");
+        test_if_in_const_table("sdPluginsUser");
+        test_if_in_const_table("sdScriptsUser");
+        test_if_in_const_table("sdDataUser");
+        test_if_in_const_table("sdAllUser");
+        test_if_in_const_table("sdPluginsGlobal");
+        test_if_in_const_table("sdScriptsGlobal");
+        test_if_in_const_table("sdDataGlobal");
+        test_if_in_const_table("sdAllGlobal");
+        test_if_in_const_table("sdAllKnown");
+
+        // SupportedPlatforms
+        test_if_in_const_table("spWindows");
+        test_if_in_const_table("spUnix");
+        test_if_in_const_table("spMac");
+        test_if_in_const_table("spAll");
+
+        // TargetFilenameGenerationPolicy
+        test_if_in_const_table("tgfpPlatformDefault");
+        test_if_in_const_table("tgfpNone");
+
+        // ModuleType
+        test_if_in_const_table("mtProjectManager");
+        test_if_in_const_table("mtEditorManager");
+        test_if_in_const_table("mtLogManager");
+        test_if_in_const_table("mtOpenFilesList");
+        test_if_in_const_table("mtEditorTab");
+        test_if_in_const_table("mtUnknown");
+
+        // File Type
+        test_if_in_const_table("ftCodeBlocksProject");
+        test_if_in_const_table("ftCodeBlocksWorkspace");
+        test_if_in_const_table("ftDevCppProject");
+        test_if_in_const_table("ftMSVC6Project");
+        test_if_in_const_table("ftMSVC7Project");
+        test_if_in_const_table("ftMSVC10Project");
+        test_if_in_const_table("ftMSVC6Workspace");
+        test_if_in_const_table("ftMSVC7Workspace");
+        test_if_in_const_table("ftXcode1Project");
+        test_if_in_const_table("ftXcode2Project");
+        test_if_in_const_table("ftSource");
+        test_if_in_const_table("ftHeader");
+        test_if_in_const_table("ftObject");
+        test_if_in_const_table("ftXRCResource");
+        test_if_in_const_table("ftResource");
+        test_if_in_const_table("ftResourceBin");
+        test_if_in_const_table("ftStaticLib");
+        test_if_in_const_table("ftDynamicLib");
+        test_if_in_const_table("ftExecutable");
+        test_if_in_const_table("ftNative");
+        test_if_in_const_table("ftXMLDocument");
+        test_if_in_const_table("ftScript");
+        test_if_in_const_table("ftOther");
+
+        // FileTreeDataKind
+        test_if_in_const_table("ftdkUndefined");
+        test_if_in_const_table("ftdkProject");
+        test_if_in_const_table("ftdkFolder");
+        test_if_in_const_table("ftdkFile");
+        test_if_in_const_table("ftdkVirtualGroup");
+        test_if_in_const_table("ftdkVirtualFolder");
+
+        // file extensions
+        test_if_in_const_table("EXT_WORKSPACE");
+        test_if_in_const_table("EXT_CODEBLOCKS");
+        test_if_in_const_table("EXT_DEVCPP");
+        test_if_in_const_table("EXT_MSVC6");
+        test_if_in_const_table("EXT_MSVC6_WORKSPACE");
+        test_if_in_const_table("EXT_MSVC7");
+        test_if_in_const_table("EXT_MSVC7_WORKSPACE");
+        test_if_in_const_table("EXT_MSVC10");
+        test_if_in_const_table("EXT_ASM");
+        test_if_in_const_table("EXT_D");
+        test_if_in_const_table("EXT_F");
+        test_if_in_const_table("EXT_F77");
+        test_if_in_const_table("EXT_F90");
+        test_if_in_const_table("EXT_F95");
+        test_if_in_const_table("EXT_FOR");
+        test_if_in_const_table("EXT_FPP");
+        test_if_in_const_table("EXT_F03");
+        test_if_in_const_table("EXT_F08");
+        test_if_in_const_table("EXT_JAVA");
+        test_if_in_const_table("EXT_C");
+        test_if_in_const_table("EXT_CC");
+        test_if_in_const_table("EXT_CPP");
+        test_if_in_const_table("EXT_TPP");
+        test_if_in_const_table("EXT_TCC");
+        test_if_in_const_table("EXT_CXX");
+        test_if_in_const_table("EXT_CPLPL");
+        test_if_in_const_table("EXT_INL");
+        test_if_in_const_table("EXT_H");
+        test_if_in_const_table("EXT_HH");
+        test_if_in_const_table("EXT_HPP");
+        test_if_in_const_table("EXT_HXX");
+        test_if_in_const_table("EXT_HPLPL");
+        test_if_in_const_table("EXT_S");
+        test_if_in_const_table("EXT_SS");
+        test_if_in_const_table("EXT_S62");
+        test_if_in_const_table("EXT_OBJECT");
+        test_if_in_const_table("EXT_XRCRESOURCE");
+        test_if_in_const_table("EXT_STATICLIB");
+        test_if_in_const_table("EXT_DYNAMICLIB");
+        test_if_in_const_table("EXT_EXECUTABLE");
+        test_if_in_const_table("EXT_NATIVE");
+        test_if_in_const_table("EXT_RESOURCE");
+        test_if_in_const_table("EXT_RESOURCEBIN");
+        test_if_in_const_table("EXT_XML");
+        test_if_in_const_table("EXT_SCRIPT");
+        test_if_in_const_table("DOT_EXT_WORKSPACE");
+        test_if_in_const_table("DOT_EXT_CODEBLOCKS");
+        test_if_in_const_table("DOT_EXT_DEVCPP");
+        test_if_in_const_table("DOT_EXT_MSVC6");
+        test_if_in_const_table("DOT_EXT_MSVC6_WORKSPACE");
+        test_if_in_const_table("DOT_EXT_MSVC7");
+        test_if_in_const_table("DOT_EXT_MSVC7_WORKSPACE");
+        test_if_in_const_table("DOT_EXT_MSVC10");
+        test_if_in_const_table("DOT_EXT_ASM");
+        test_if_in_const_table("DOT_EXT_D");
+        test_if_in_const_table("DOT_EXT_F");
+        test_if_in_const_table("DOT_EXT_F77");
+        test_if_in_const_table("DOT_EXT_F90");
+        test_if_in_const_table("DOT_EXT_F95");
+        test_if_in_const_table("DOT_EXT_FOR");
+        test_if_in_const_table("DOT_EXT_FPP");
+        test_if_in_const_table("DOT_EXT_F03");
+        test_if_in_const_table("DOT_EXT_F08");
+        test_if_in_const_table("DOT_EXT_JAVA");
+        test_if_in_const_table("DOT_EXT_C");
+        test_if_in_const_table("DOT_EXT_CC");
+        test_if_in_const_table("DOT_EXT_CPP");
+        test_if_in_const_table("DOT_EXT_TPP");
+        test_if_in_const_table("DOT_EXT_TCC");
+        test_if_in_const_table("DOT_EXT_CXX");
+        test_if_in_const_table("DOT_EXT_CPLPL");
+        test_if_in_const_table("DOT_EXT_H");
+        test_if_in_const_table("DOT_EXT_HH");
+        test_if_in_const_table("DOT_EXT_HPP");
+        test_if_in_const_table("DOT_EXT_HXX");
+        test_if_in_const_table("DOT_EXT_HPLPL");
+        test_if_in_const_table("DOT_EXT_S");
+        test_if_in_const_table("DOT_EXT_SS");
+        test_if_in_const_table("DOT_EXT_S62");
+        test_if_in_const_table("DOT_EXT_OBJECT");
+        test_if_in_const_table("DOT_EXT_XRCRESOURCE");
+        test_if_in_const_table("DOT_EXT_STATICLIB");
+        test_if_in_const_table("DOT_EXT_DYNAMICLIB");
+        test_if_in_const_table("DOT_EXT_EXECUTABLE");
+        test_if_in_const_table("DOT_EXT_NATIVE");
+        test_if_in_const_table("DOT_EXT_RESOURCE");
+        test_if_in_const_table("DOT_EXT_RESOURCEBIN");
+        test_if_in_const_table("DOT_EXT_XML");
+        test_if_in_const_table("DOT_EXT_SCRIPT");
+        
+		print_test_result();
+        ::print("======= Test cb constants END ======= \n");
+	}
+
+	function test_logging()
+	{
+		::print("======= Test cb logging BEGINN ======= \n");
+        clear_test_result();
+		test_if_in_root_table("Log");
+		test_if_in_root_table("LogDebug");
+		test_if_in_root_table("LogWarning");
+		test_if_in_root_table("LogError");
+		::print("Look in the log output if the logging worked\n");
+		Log("[TEST] Normal log message");
+		LogDebug("[TEST] Debug log message");
+		LogWarning("[TEST] Warning log message");
+		LogError("[TEST]  Error log message");
+		print_test_result();
+        ::print("======= Test cb logging END ======= \n");
+	}
+	
+	function test_globals()
+	{
+		::print("======= Test cb global functions BEGINN ======= \n");
+        clear_test_result();
+		
+		test_string("GetArrayFromString", GetArrayFromString("test1,test2,test3",",",false),"[test1 , test2 , test3]");
+		local test_array = wxArrayString();
+		test_array.Add("test1",1);
+		test_array.Add("test2",1);
+		test_array.Add("test3",1);
+        test_string("GetStringFromArray", GetStringFromArray(test_array,",",false),"test1,test2,test3");
+        test_string("EscapeSpaces",EscapeSpaces("test1 test2	test3"),"test1\\ test2\\\ttest3");
+		test_equal("FileTypeOf",FileTypeOf("test.c"),ftSource);
+		test_string("UnixFilename",UnixFilename("test/unix/filename",wxPATH_WIN),"test\\unix\\filename");
+		test_string("URLEncode",URLEncode("test%string1 test&2"),"test%25string1+test%262");
+		test_equal("GetPlatformsFromString",GetPlatformsFromString("Unix Windows"),spWindows | spUnix);
+		test_string("GetStringFromPlatforms",GetStringFromPlatforms(spWindows | spUnix,true),"Windows;Unix;");
+		
+		not_impl("CallMenu");
+		
+		print_test_result();
+        ::print("======= Test cb  global functions  END ======= \n");
+	}
+	
+}

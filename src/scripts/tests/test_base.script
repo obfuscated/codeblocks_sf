@@ -1,19 +1,13 @@
 
 
-//local made_tests = 0;
-//local passed_tests = 0;
-//local failed_tests = 0;
-////local sa = wxStopWatch();
-//local global_made_tests = 0;
-//local global_passed_tests = 0;
-//local global_failed_tests = 0;
-
 made_tests <- 0;
 passed_tests <- 0;
 failed_tests <- 0;
+not_impl_tests <- 0;
 global_made_tests <- 0;
 global_passed_tests <- 0;
 global_failed_tests <- 0;
+global_not_implemented_test <- 0;
 
 class script_test_base
 {
@@ -62,9 +56,11 @@ class script_test_base
     function made_passed(name)
     {
         ::global_made_tests++;
+		::made_tests++;
         passed(name);
     }
-
+	
+	
     function failed(name,message)
     {
         //sa.Pause();
@@ -77,7 +73,24 @@ class script_test_base
     function made_failed(name,message)
     {
         ::global_made_tests++;
+		::made_tests++;
         failed(name,message);
+    }
+	
+	function not_impl(name)
+    {
+        //sa.Pause();
+        ::not_impl_tests++;
+        ::global_not_implemented_test++;
+        ::print("[NOT IMPL] " + format_output(name," NOT IMPLEMENTED")+ "\n");
+        //sa.Resume();
+    }
+
+    function made_not_impl(name)
+    {
+        ::global_made_tests++;
+		::made_tests++;
+        not_impl(name);
     }
 
     function clear_test_result()
@@ -85,6 +98,7 @@ class script_test_base
         ::made_tests = 0;
         ::passed_tests = 0;
         ::failed_tests = 0;
+        ::not_impl_tests = 0;
         //sa.Start(0);
     }
 
@@ -93,6 +107,7 @@ class script_test_base
         ::global_made_tests = 0;
         ::global_passed_tests = 0;
         ::global_failed_tests = 0;
+        ::global_not_implemented_test = 0;
     }
 
     function print_global_test_result()
@@ -102,6 +117,7 @@ class script_test_base
         ::print("Global executed tests: " + ::global_made_tests + "\n");
         ::print("Global passed tests:   " + ::global_passed_tests + "\n");
         ::print("Global failed tests:   " + ::global_failed_tests + "\n");
+        ::print("Global not impl tests: " + ::global_not_implemented_test + "\n");
         //::print("Time elapsed:   " + sa.Time() + "ms ("+ sa.TimeInMicro()+"us)\n");
 
     }
@@ -113,6 +129,7 @@ class script_test_base
         ::print("Executed tests: " + ::made_tests + "\n");
         ::print("passed tests:   " + ::passed_tests + "\n");
         ::print("failed tests:   " + ::failed_tests + "\n");
+        ::print("not impl tests: " + ::not_impl_tests + "\n");
         //::print("Time elapsed:   " + sa.Time() + "ms ("+ sa.TimeInMicro()+"us)\n");
 
     }
@@ -122,6 +139,22 @@ class script_test_base
         ::made_tests++;
         ::global_made_tests++;
         if(to_test == result)
+        {
+            passed(name);
+            return true;
+        }
+        else
+        {
+            failed(name,"(got " + to_test + " needed "+result+")");
+        }
+        return false;
+    }
+	
+	function test_func(name,to_test,func)
+    {
+        ::made_tests++;
+        ::global_made_tests++;
+        if(func(to_test))
         {
             passed(name);
             return true;
@@ -217,5 +250,23 @@ class script_test_base
         passed(name);
         return true;
     }
+	
+	function test_if_in_table(table,entry,tablename)
+	{
+		if(table.rawin(entry) == true)
+			made_passed(entry + " is in "+ tablename);
+		else
+			made_failed(entry, entry + " is NOT in " + tablename);
+	}
+	
+	function test_if_in_const_table(name)
+	{
+		test_if_in_table(getconsttable(),name,"consttable");
+	}
+	
+	function test_if_in_root_table(name)
+	{
+		test_if_in_table(getroottable(),name,"roottable");
+	}
 
 };
