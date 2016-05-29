@@ -284,13 +284,18 @@ int CppCheck::ExecuteCppCheck(cbProject* Project)
 int CppCheck::DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
-    wxString cpp_exe = GetAppExecutable(_T("cppcheck"), _T("cppcheck_app"));
-    wxString CommandLine = cpp_exe + _T(" ")
-                         + cfg->Read(_T("cppcheck_args"), _T("--verbose --enable=all --enable=style --xml"))
+
+    wxString CppExe  = GetAppExecutable(_T("cppcheck"), _T("cppcheck_app"));
+    wxString CppArgs = cfg->Read(_T("cppcheck_args"), _T("--verbose --enable=all --enable=style --xml"));
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(CppArgs);
+    wxString CommandLine = CppExe + _T(" ") + CppArgs
                          + _T(" --file-list=") + CppCheckAttribs.InputFileName;
+
     if ( !CppCheckAttribs.IncludeList.IsEmpty() )
+    {
         CommandLine += _T(" ") + CppCheckAttribs.IncludeList.Trim() + _T(" ")
                      + CppCheckAttribs.DefineList.Trim();
+    }
 
     wxArrayString Output, Errors;
     bool isOK = AppExecute(_T("cppcheck"), CommandLine, Output, Errors);
@@ -411,8 +416,11 @@ int CppCheck::ExecuteVera(cbProject* Project)
 int CppCheck::DoVeraExecute(const wxString& InputsFile)
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("cppcheck"));
-    wxString CommandLine = GetAppExecutable(_T("vera++"), _T("vera_app")) + _T(" ")
-                         + cfg->Read(_T("vera_args"), wxEmptyString)
+
+    wxString VeraExe  = GetAppExecutable(_T("vera++"), _T("vera_app"));
+    wxString VeraArgs = cfg->Read(_T("vera_args"), wxEmptyString);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(VeraArgs);
+    wxString CommandLine = VeraExe + _T(" ") + VeraArgs
                          + _T("--inputs ") + InputsFile;
 
     wxArrayString Output, Errors;
