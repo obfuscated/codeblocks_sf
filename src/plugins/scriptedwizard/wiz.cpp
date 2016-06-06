@@ -678,8 +678,12 @@ CompileTargetBase* Wiz::RunFilesWizard(wxString* pFilename)
             cbMessageBox(_("Wizard failed..."), _("Error"), wxICON_ERROR);
         else
         {
+            const wxString &filename = files.BeforeFirst(_T(';'));
             if (pFilename)
-                *pFilename = files.BeforeFirst(_T(';'));
+                *pFilename = filename;
+            EditorBase *editor = Manager::Get()->GetEditorManager()->GetEditor(filename);
+            if (editor && editor->IsBuiltinEditor())
+                static_cast<cbEditor*>(editor)->SetEditorStyle();
         }
     }
     catch (SquirrelError& e)
