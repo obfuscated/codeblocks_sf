@@ -11,7 +11,7 @@ struct SQTable;
 
 struct SQStringTable
 {
-	SQStringTable();
+	SQStringTable(SQSharedState*ss);
 	~SQStringTable();
 	SQString *Add(const SQChar *,SQInteger len);
 	void Remove(SQString *);
@@ -21,6 +21,7 @@ private:
 	SQString **_strings;
 	SQUnsignedInteger _numofslots;
 	SQUnsignedInteger _slotused;
+	SQSharedState *_sharedstate;
 };
 
 struct RefTable {
@@ -33,6 +34,7 @@ struct RefTable {
 	~RefTable();
 	void AddRef(SQObject &obj);
 	SQBool Release(SQObject &obj);
+	SQUnsignedInteger GetRefCount(SQObject &obj);
 #ifndef NO_GARBAGE_COLLECTOR
 	void Mark(SQCollectable **chain);
 #endif
@@ -64,6 +66,8 @@ public:
 	SQInteger GetMetaMethodIdxByName(const SQObjectPtr &name);
 #ifndef NO_GARBAGE_COLLECTOR
 	SQInteger CollectGarbage(SQVM *vm);
+	void RunMark(SQVM *vm,SQCollectable **tchain);
+	SQInteger ResurrectUnreachable(SQVM *vm);
 	static void MarkObject(SQObjectPtr &o,SQCollectable **chain);
 #endif
 	SQObjectPtrVec *_metamethods;
@@ -99,9 +103,10 @@ public:
 	static SQRegFunction _instance_default_delegate_funcz[];
 	SQObjectPtr _weakref_default_delegate;
 	static SQRegFunction _weakref_default_delegate_funcz[];
-
+	
 	SQCOMPILERERROR _compilererrorhandler;
 	SQPRINTFUNCTION _printfunc;
+	SQPRINTFUNCTION _errorfunc;
 	bool _debuginfo;
 	bool _notifyallexceptions;
 private:
@@ -112,16 +117,16 @@ private:
 #define _sp(s) (_sharedstate->GetScratchPad(s))
 #define _spval (_sharedstate->GetScratchPad(-1))
 
-#define _table_ddel		_table(_sharedstate->_table_default_delegate)
-#define _array_ddel		_table(_sharedstate->_array_default_delegate)
-#define _string_ddel	_table(_sharedstate->_string_default_delegate)
-#define _number_ddel	_table(_sharedstate->_number_default_delegate)
-#define _generator_ddel	_table(_sharedstate->_generator_default_delegate)
-#define _closure_ddel	_table(_sharedstate->_closure_default_delegate)
-#define _thread_ddel	_table(_sharedstate->_thread_default_delegate)
-#define _class_ddel		_table(_sharedstate->_class_default_delegate)
-#define _instance_ddel	_table(_sharedstate->_instance_default_delegate)
-#define _weakref_ddel	_table(_sharedstate->_weakref_default_delegate)
+#define _table_ddel		_table(_sharedstate->_table_default_delegate) 
+#define _array_ddel		_table(_sharedstate->_array_default_delegate) 
+#define _string_ddel	_table(_sharedstate->_string_default_delegate) 
+#define _number_ddel	_table(_sharedstate->_number_default_delegate) 
+#define _generator_ddel	_table(_sharedstate->_generator_default_delegate) 
+#define _closure_ddel	_table(_sharedstate->_closure_default_delegate) 
+#define _thread_ddel	_table(_sharedstate->_thread_default_delegate) 
+#define _class_ddel		_table(_sharedstate->_class_default_delegate) 
+#define _instance_ddel	_table(_sharedstate->_instance_default_delegate) 
+#define _weakref_ddel	_table(_sharedstate->_weakref_default_delegate) 
 
 #ifdef SQUNICODE //rsl REAL STRING LEN
 #define rsl(l) ((l)<<1)
@@ -129,13 +134,9 @@ private:
 #define rsl(l) (l)
 #endif
 
-extern SQObjectPtr _null_;
-extern SQObjectPtr _true_;
-extern SQObjectPtr _false_;
-extern SQObjectPtr _one_;
-extern SQObjectPtr _minusone_;
+//extern SQObjectPtr _null_;
 
 bool CompileTypemask(SQIntVec &res,const SQChar *typemask);
 
-// C::B patch: Moved declarations of sq_vm_malloc (...) into sqmem.h
+
 #endif //_SQSTATE_H_

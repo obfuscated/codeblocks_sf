@@ -39,7 +39,8 @@
 
 #include <wx/radiobox.h>
 
-#include "scripting/sqplus/sqplus.h"
+
+#include <scripting/sqrat.h>
 
 #include "annoyingdialog.h"
 #include "configurationpanel.h"
@@ -940,25 +941,23 @@ void ProjectOptionsDlg::OnScriptsOverviewSelChanged(cb_unused wxTreeEvent& event
 bool ProjectOptionsDlg::IsScriptValid(ProjectBuildTarget* target, const wxString& script)
 {
     static const wxString clearout_buildscripts = _T("SetBuildOptions <- null;");
-    try
-    {
-        wxString script_nomacro = script;
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(script_nomacro, target);
-        script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : m_Project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
-        Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts); // clear previous script's context
-        Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro);
-        SqPlus::SquirrelFunction<void> setopts("SetBuildOptions");
 
-        if (setopts.func.IsNull())
-            return false;
+    wxString script_nomacro = script;
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(script_nomacro, target);
+    script_nomacro = wxFileName(script_nomacro).IsAbsolute() ? script_nomacro : m_Project->GetBasePath() + wxFILE_SEP_PATH + script_nomacro;
+    Manager::Get()->GetScriptingManager()->LoadBuffer(clearout_buildscripts,_T("ClearBuildScripts")); // clear previous script's context
+    Manager::Get()->GetScriptingManager()->LoadScript(script_nomacro);
+    Sqrat::Function setopts(Sqrat::RootTable(Sqrat::DefaultVM::Get()), "SetBuildOptions");
+    if (setopts.IsNull())
+        return false;
 
-        return true;
-    }
-    catch (SquirrelError& e)
+    wxString Errors = Manager::Get()->GetScriptingManager()->GetErrorString(true);
+    if(Errors!= wxEmptyString)
     {
-        Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
+        Manager::Get()->GetScriptingManager()->DisplayErrors(Errors);
         return false;
     }
+    return true;
 }
 
 bool ProjectOptionsDlg::ValidateTargetName(const wxString& name)

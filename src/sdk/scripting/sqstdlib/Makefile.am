@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/include \
+AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/squirrel \
 					-I$(top_srcdir)/src/include/scripting/sqstdlib
 
 noinst_LTLIBRARIES = libsqstdlib.la

@@ -13,6 +13,10 @@
     #include <configurationpanel.h>
     #include <cbstyledtextctrl.h>
     #include <editorcolourset.h>
+
+    #include <scripting/squirrel/squirrel.h>
+    #include <scriptingmanager.h>
+    #include <scripting/sqrat.h>
 #endif
 
 #include "abbreviations.h"
@@ -20,8 +24,6 @@
 
 #include <ccmanager.h>
 #include <editor_hooks.h>
-#include <sqplus.h>
-#include <sc_base_types.h>
 
 
 // Register the plugin with Code::Blocks.
@@ -130,21 +132,32 @@ void Abbreviations::OnRelease(cb_unused bool appShutDown)
 
 void Abbreviations::RegisterScripting()
 {
-    Manager::Get()->GetScriptingManager();
-    if (SquirrelVM::GetVMPtr())
-        SqPlus::RegisterGlobal(&Abbreviations::AutoComplete, "AutoComplete");
+    HSQUIRRELVM vm = Manager::Get()->GetScriptingManager()->GetVM()->GetSqVM();
+    Sqrat::Table abrev_namespace(vm);
+    abrev_namespace.Func("AutoComplete",&Abbreviations::AutoComplete);
+    Sqrat::RootTable(vm).Bind("Abbreviations",abrev_namespace);
 }
 
 void Abbreviations::UnregisterScripting()
 {
-    Manager::Get()->GetScriptingManager();
-    HSQUIRRELVM v = SquirrelVM::GetVMPtr();
+    HSQUIRRELVM v = Manager::Get()->GetScriptingManager()->GetVM()->GetSqVM();
     if (v)
     {
-        sq_pushstring(v, "AutoComplete", -1);
-        sq_pushroottable(v);
-        sq_deleteslot(v, -2, false);
-        sq_poptop(v);
+        Sqrat::Object table = Sqrat::RootTable(v).GetSlot("Abbreviations");
+        if(!table.IsNull())
+        {
+            sq_pushobject(v,table);
+            sq_pushstring(v,"AutoComplete",-1);
+            sq_deleteslot(v,-2,false);
+            sq_poptop(v);
+
+            table.Release();    // Release the table so the squirrel ref counter goes to 1
+
+            sq_pushroottable(v);
+            sq_pushstring(v, "Abbreviations", -1);
+            sq_deleteslot(v, -2, false);
+            sq_poptop(v);
+        }
     }
 }
 

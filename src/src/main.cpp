@@ -849,14 +849,17 @@ void MainFrame::SetupDebuggerUI()
     }
 }
 
-DECLARE_INSTANCE_TYPE(MainFrame);
 
 void MainFrame::RegisterScriptFunctions()
 {
-    SqPlus::SQClassDef<MainFrame>("MainFrame").
-                    func(&MainFrame::Open, "Open");
+    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+    Sqrat::Class<MainFrame,Sqrat::NoConstructor<MainFrame> > main_frame(vm->GetSqVM(), "MainFrame");
+    main_frame.Func("Open",&MainFrame::Open);
 
-    SqPlus::BindVariable(this, "App", SqPlus::VAR_ACCESS_READ_ONLY);
+    Sqrat::RootTable(vm->GetSqVM()).Bind("MainFrame",main_frame);
+    Sqrat::RootTable(vm->GetSqVM()).SetInstance("App",this);
+
+    //SqPlus::BindVariable(this,, SqPlus::VAR_ACCESS_READ_ONLY);
 }
 
 void MainFrame::RunStartupScripts()
@@ -874,27 +877,22 @@ void MainFrame::RunStartupScripts()
             if (!se.enabled)
                 continue;
 
-            try
+            wxString startup = se.script;
+            if (wxFileName(se.script).IsRelative())
+                startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
+            if (!startup.IsEmpty())
             {
-                wxString startup = se.script;
-                if (wxFileName(se.script).IsRelative())
-                    startup = ConfigManager::LocateDataFile(se.script, sdScriptsUser | sdScriptsGlobal);
-                if (!startup.IsEmpty())
-                {
-                    if (!se.registered)
-                        Manager::Get()->GetScriptingManager()->LoadScript(startup);
-                    else if (!se.menu.IsEmpty())
-                        Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
-                    else
-                        Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.wx_str()));
-                }
+                if (!se.registered)
+                    Manager::Get()->GetScriptingManager()->LoadScript(startup);
+                else if (!se.menu.IsEmpty())
+                    Manager::Get()->GetScriptingManager()->RegisterScriptMenu(se.menu, startup, false);
                 else
-                    Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.wx_str()));
+                    Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script/function '%s' not loaded: invalid configuration"), se.script.wx_str()));
             }
-            catch (SquirrelError& exception)
-            {
-                Manager::Get()->GetScriptingManager()->DisplayErrors(&exception);
-            }
+            else
+                Manager::Get()->GetLogManager()->LogWarning(F(_("Startup script '%s' not found"), se.script.wx_str()));
+
+            Manager::Get()->GetScriptingManager()->DisplayErrors();
         }
     }
 }

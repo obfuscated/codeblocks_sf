@@ -29,6 +29,7 @@ class ScriptConsole: public wxPanel
 		virtual ~ScriptConsole();
 
         void Log(const wxString& msg);
+        void Error(const wxString& msg);
 
 		//(*Identifiers(ScriptConsole)
 		static const long ID_TEXTCTRL1;

@@ -28,8 +28,9 @@
 #include <logmanager.h>
 #include <macrosmanager.h>
 #include <scriptingmanager.h>
-#include <sqplus.h>
+#include <scripting/sqrat.h>
 #include <scripting/bindings/sc_base_types.h>
+#include <scripting/bindings/sq_wx/sq_wx_type_handler.h>
 
 #include "debugger_defs.h"
 #include "debuggergdb.h"
@@ -64,7 +65,7 @@ namespace
 
     while (count < sizeof(T) * 2) // be sure we don't keep adding more to ret
     {
-      #if wxCHECK_VERSION(3, 0, 0)
+      #if wxCHECK_VERSION(2, 9, 0)
       switch (str[pos].GetValue())
       #else
       switch (str[pos])
@@ -822,15 +823,20 @@ class GdbCmd_Watch : public DebuggerCmd
             }
             else
             {
-                try
+
+                ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+                Sqrat::Function func = Sqrat::RootTable(vm->GetSqVM()).GetFunction(m_Cmd.ToUTF8());
+                if(func.IsNull())
                 {
-                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_Cmd));
-                    m_Cmd = f(type, symbol, m_watch->GetArrayStart(), m_watch->GetArrayCount());
+                    // A error occured
+
+                } else {
+                    m_Cmd = *func.Evaluate<wxString>(type, symbol, m_watch->GetArrayStart(), m_watch->GetArrayCount()).Get();
                 }
-                catch (SquirrelError e)
-                {
-                    m_Cmd = cbC2U(e.desc);
-                }
+                wxString error = Manager::Get()->GetScriptingManager()->GetErrorString();
+                if(!error.IsEmpty())
+                    m_Cmd = _("Script error: ") + error;
+
             }
         }
         void ParseOutput(const wxString& output)
@@ -838,15 +844,19 @@ class GdbCmd_Watch : public DebuggerCmd
             wxString w;
             if (!m_ParseFunc.IsEmpty())
             {
-                try
+                ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+                Sqrat::Function func = Sqrat::RootTable(vm->GetSqVM()).GetFunction(m_ParseFunc.ToUTF8());
+                if(func.IsNull())
                 {
-                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
-                    w << f(output, m_watch->GetArrayStart());
+                    // A error occured
+
+                } else {
+                    // TODO (bluehazzard#1#): Here should be a error checking and not suddenly a crash -.-
+                    w << *func.Evaluate<wxString>(output, m_watch->GetArrayStart()).Get();
                 }
-                catch (SquirrelError e)
-                {
-                    w << cbC2U(e.desc);
-                }
+                wxString error = Manager::Get()->GetScriptingManager()->GetErrorString();
+                if(!error.IsEmpty())
+                    w <<  _("Script error: ") + error;
             }
             else
                 w = output;
@@ -974,15 +984,21 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             }
             else
             {
-                try
+                ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+                Sqrat::Function func = Sqrat::RootTable(vm->GetSqVM()).GetFunction(m_Cmd.ToUTF8());
+                if(func.IsNull())
                 {
-                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_Cmd));
-                    m_Cmd = f(w_type, what, 0, 0);
+                    // A error occured
+
+                } else {
+                    // TODO (bluehazzard#1#): Here should be a error checking and not suddenly a crash -.-
+                    m_Cmd = *func.Evaluate<wxString>(w_type, what, 0, 0).Get();
                 }
-                catch (SquirrelError e)
+                wxString error = Manager::Get()->GetScriptingManager()->GetErrorString();
+                if(!error.IsEmpty())
                 {
-                    m_Cmd = cbC2U(e.desc);
-                    m_pDriver->DebugLog(_T("Script exception: ") + m_Cmd);
+                    m_Cmd = error;
+                    m_pDriver->DebugLog(_T("Script exception: ") + error);
                 }
             }
         }
@@ -995,16 +1011,23 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             {
                 if (!m_ParseFunc.IsEmpty())
                 {
-                    try
+                    ScriptBindings::CBsquirrelVM *vm = Manager::Get()->GetScriptingManager()->GetVM();
+                    Sqrat::Function func = Sqrat::RootTable(vm->GetSqVM()).GetFunction(m_ParseFunc.ToUTF8());
+                    if(func.IsNull())
                     {
-                        SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
-                        contents << f(output, 0);
+                        // A error occured
+
+                    } else {
+                        // TODO (bluehazzard#1#): Here should be a error checking and not suddenly a crash -.-
+                        contents << *func.Evaluate<wxString>(output, 0).Get();
                     }
-                    catch (SquirrelError e)
+                    wxString error = Manager::Get()->GetScriptingManager()->GetErrorString();
+                    if(!error.IsEmpty())
                     {
-                        contents << cbC2U(e.desc);
-                        m_pDriver->DebugLog(_T("Script exception: ") + contents);
+                        contents << error;
+                        m_pDriver->DebugLog(_T("Script exception: ") + error);
                     }
+
                 }
                 else
                 {

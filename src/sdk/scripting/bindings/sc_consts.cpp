@@ -9,24 +9,34 @@
 
 #include <sdk_precomp.h>
 #ifndef CB_PRECOMP
+
     #include <wx/string.h>
+    #include <wx/filedlg.h>
+
+    #include <compileoptionsbase.h>
+    #include <cbproject.h>
+    #include <cbplugin.h>
+    #include <compileoptionsbase.h>
+    #include <configmanager.h>
     #include <globals.h>
+    #include <printing_types.h>
     #include <settings.h>
+    #include <scriptingmanager.h>
 #endif
 
 #include <filefilters.h>
-#include "sc_base_types.h"
+#include <scripting/sqrat.h>
+#include "scripting/bindings/sc_binding_util.h"
+#include "scripting/bindings/sc_plugin.h"
 
-// helper macros to bind constants
-#define BIND_INT_CONSTANT(a) SqPlus::BindConstant<SQInteger>(a, #a);
-#define BIND_INT_CONSTANT_NAMED(a,n) SqPlus::BindConstant<SQInteger>(a, n);
-#define BIND_WXSTR_CONSTANT_NAMED(a,n) BindVariable(const_cast<wxString*>(&a), n, SqPlus::VAR_ACCESS_CONSTANT);
+
 
 namespace ScriptBindings
 {
-    wxString s_PathSep = wxFILE_SEP_PATH;
+    //wxString s_PathSep = wxFILE_SEP_PATH;
 
-    void Register_Constants()
+
+    void Register_Constants(HSQUIRRELVM vm)
     {
         // platform constants
         BIND_INT_CONSTANT_NAMED(0,  "PLATFORM_MSW");
@@ -54,45 +64,10 @@ namespace ScriptBindings
         BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_MINOR, "PLUGIN_SDK_VERSION_MINOR");
         BIND_INT_CONSTANT_NAMED(PLUGIN_SDK_VERSION_RELEASE, "PLUGIN_SDK_VERSION_RELEASE");
 
-        // path separator for filenames
-        BIND_WXSTR_CONSTANT_NAMED(s_PathSep, "wxFILE_SEP_PATH");
+        BIND_INT_CONSTANT_NAMED(SCRIPT_BINDING_VERSION_MAJOR,"SCRIPT_BINDING_VERSION_MAJOR");
+        BIND_INT_CONSTANT_NAMED(SCRIPT_BINDING_VERSION_MINOR,"SCRIPT_BINDING_VERSION_MINOR");
+        BIND_INT_CONSTANT_NAMED(SCRIPT_BINDING_VERSION_RELEASE,"SCRIPT_BINDING_VERSION_RELEASE");
 
-        // dialog buttons
-        BIND_INT_CONSTANT(wxOK);
-        BIND_INT_CONSTANT(wxYES_NO);
-        BIND_INT_CONSTANT(wxCANCEL);
-        BIND_INT_CONSTANT(wxID_OK);
-        BIND_INT_CONSTANT(wxID_YES);
-        BIND_INT_CONSTANT(wxID_NO);
-        BIND_INT_CONSTANT(wxID_CANCEL);
-        BIND_INT_CONSTANT(wxICON_QUESTION);
-        BIND_INT_CONSTANT(wxICON_INFORMATION);
-        BIND_INT_CONSTANT(wxICON_WARNING);
-        BIND_INT_CONSTANT(wxICON_ERROR);
-
-        // wxPathFormat
-        BIND_INT_CONSTANT(wxPATH_NATIVE);
-        BIND_INT_CONSTANT(wxPATH_UNIX);
-        BIND_INT_CONSTANT(wxPATH_BEOS);
-        BIND_INT_CONSTANT(wxPATH_MAC);
-        BIND_INT_CONSTANT(wxPATH_DOS);
-        BIND_INT_CONSTANT(wxPATH_WIN);
-        BIND_INT_CONSTANT(wxPATH_OS2);
-        BIND_INT_CONSTANT(wxPATH_VMS);
-
-        // for wxFileName::GetPath()
-        BIND_INT_CONSTANT(wxPATH_GET_VOLUME);
-        BIND_INT_CONSTANT(wxPATH_GET_SEPARATOR);
-
-        // wxPathNormalize
-        BIND_INT_CONSTANT(wxPATH_NORM_ENV_VARS);
-        BIND_INT_CONSTANT(wxPATH_NORM_DOTS);
-        BIND_INT_CONSTANT(wxPATH_NORM_TILDE);
-        BIND_INT_CONSTANT(wxPATH_NORM_CASE);
-        BIND_INT_CONSTANT(wxPATH_NORM_ABSOLUTE);
-        BIND_INT_CONSTANT(wxPATH_NORM_LONG);
-        BIND_INT_CONSTANT(wxPATH_NORM_SHORTCUT);
-        BIND_INT_CONSTANT(wxPATH_NORM_ALL);
 
         // OptionsRelationType
         BIND_INT_CONSTANT(ortCompilerOptions);
@@ -177,7 +152,33 @@ namespace ScriptBindings
         BIND_INT_CONSTANT(mtEditorManager);
         BIND_INT_CONSTANT(mtLogManager);
         BIND_INT_CONSTANT(mtOpenFilesList);
+        BIND_INT_CONSTANT(mtEditorTab);
         BIND_INT_CONSTANT(mtUnknown);
+
+        // File Type
+        BIND_INT_CONSTANT(ftCodeBlocksProject);
+        BIND_INT_CONSTANT(ftCodeBlocksWorkspace);
+        BIND_INT_CONSTANT(ftDevCppProject);
+        BIND_INT_CONSTANT(ftMSVC6Project);
+        BIND_INT_CONSTANT(ftMSVC7Project);
+        BIND_INT_CONSTANT(ftMSVC10Project);
+        BIND_INT_CONSTANT(ftMSVC6Workspace);
+        BIND_INT_CONSTANT(ftMSVC7Workspace);
+        BIND_INT_CONSTANT(ftXcode1Project);
+        BIND_INT_CONSTANT(ftXcode2Project);
+        BIND_INT_CONSTANT(ftSource);
+        BIND_INT_CONSTANT(ftHeader);
+        BIND_INT_CONSTANT(ftObject);
+        BIND_INT_CONSTANT(ftXRCResource);
+        BIND_INT_CONSTANT(ftResource);
+        BIND_INT_CONSTANT(ftResourceBin);
+        BIND_INT_CONSTANT(ftStaticLib);
+        BIND_INT_CONSTANT(ftDynamicLib);
+        BIND_INT_CONSTANT(ftExecutable);
+        BIND_INT_CONSTANT(ftNative);
+        BIND_INT_CONSTANT(ftXMLDocument);
+        BIND_INT_CONSTANT(ftScript);
+        BIND_INT_CONSTANT(ftOther);
 
         // FileTreeDataKind
         BIND_INT_CONSTANT_NAMED(FileTreeData::ftdkUndefined, "ftdkUndefined");
