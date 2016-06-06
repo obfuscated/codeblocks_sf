@@ -9,5 +9,5 @@ dist_pkgdata_DATA = logo.png \
 filesdir	= $(pkgdatadir)/files
 
 dist_files_DATA	= files/main.cpp \
-		files/lena.jpg
+		files/arnold_schwarzenegger.jpg
 
