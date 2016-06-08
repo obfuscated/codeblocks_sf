@@ -10,6 +10,8 @@
 
 #include <cbplugin.h> // the base class we 're inheriting
 
+class wxArrayString;
+class cbProject;
 class ProjectOptionsManipulatorDlg;
 
 class ProjectOptionsManipulator : public cbToolPlugin
