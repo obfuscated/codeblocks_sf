@@ -116,6 +116,17 @@ int ProjectOptionsManipulator::Execute()
       ProjectOptionsManipulatorResultDlg dlg( Manager::Get()->GetAppWindow(), ID_PROJECT_OPTIONS_RESULT_DLG );
       dlg.ApplyResult(result);
       dlg.ShowModal(); // Don't care about return value
+
+      if ( wxID_YES == cbMessageBox(_("Do you want to save all (modified) projects now?"),
+                                    _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT,
+                                    Manager::Get()->GetAppWindow()) )
+      {
+        if ( !Manager::Get()->GetProjectManager()->SaveAllProjects() )
+        {
+          cbMessageBox(_("Saving all projects failed!"), _("Error"),
+                       wxICON_ERROR, Manager::Get()->GetAppWindow());
+        }
+      }
     }
 
   }
