@@ -15,6 +15,7 @@ class wxRadioBox;
 class wxStaticText;
 class wxFlexGridSizer;
 class wxBoxSizer;
+class wxButton;
 class wxStaticBoxSizer;
 class wxChoice;
 //*)
@@ -23,7 +24,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 {
 	public:
 	  enum EProjectScanOption       { eSearch, eSearchNot, eRemove,
-	                                  eAdd,    eReplace,   eFiles };
+	                                  eAdd,    eReplace,   eFiles, eChangeCompiler };
 	  enum EProjectLevelOption      { eProject, eTarget };
 	  enum EProjectSearchOption     { eEquals, eContains };
 	  enum EProjectOption           { eReplacePattern,
@@ -53,6 +54,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		wxCheckBox* m_ChkOptionReplacePattern;
 		wxCheckBox* m_ChkOptionsCustomVar;
 		wxCheckBox* m_ChkOptionsLinkerPath;
+		wxButton* m_BtnSearchCompilerDest;
 		wxCheckBox* m_ChkOptionsResCompiler;
 		wxTextCtrl* m_TxtOptionReplace;
 		wxChoice* m_ChoOptionLevel;
@@ -60,6 +62,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		wxCheckBox* m_ChkOptionsLinkerLibs;
 		wxCheckBox* m_ChkOptionsCompiler;
 		wxChoice* m_ChoScanProjects;
+		wxButton* m_BtnSearchCompilerSrc;
 		wxChoice* m_ChoTargetType;
 		wxRadioBox* m_RboOptionSearch;
 		wxChoice* m_ChoScan;
@@ -76,7 +79,9 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		static const long ID_RBO_OPERATION;
 		static const long ID_CHO_OPTION_LEVEL;
 		static const long ID_TXT_OPTION_SEARCH;
+		static const long ID_BTN_SEARCH_COMPILER_SRC;
 		static const long TD_TXT_OPTION_REPLACE;
+		static const long ID_BTN_SEARCH_COMPILER_DEST;
 		static const long ID_CHK_OPTION_REPLACE_PATTERN;
 		static const long ID_RBO_OPTION_SEARCH;
 		static const long ID_CHK_OPTIONS_COMPILER;
@@ -97,6 +102,7 @@ class ProjectOptionsManipulatorDlg: public wxDialog
 		void OnScanSelect(wxCommandEvent& event);
 		void OnOperationSelect(wxCommandEvent& event);
 		void OnTargetTypeSelect(wxCommandEvent& event);
+		void OnSearchCompilerClick(wxCommandEvent& event);
 		//*)
 
 		void OnOk(wxCommandEvent& event);
