@@ -226,6 +226,11 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{?suse_update_config:%{suse_update_config -f}}
 
   ./bootstrap
+
+  %if 0%{?fedora} > 23
+    export CXXFLAGS="-O0"
+  %endif
+
   %if 0%{?suse_version}
   %if 0%{?suse_version} > 1020
   %configure \
