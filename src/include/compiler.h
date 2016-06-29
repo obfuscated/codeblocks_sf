@@ -435,6 +435,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
 
             // these are the CompileOptionsBase settings that each compiler keeps on a global level
             wxArrayString CompilerOptions_;
+            wxArrayString ResourceCompilerOptions;
             wxArrayString LinkerOptions;
             wxArrayString IncludeDirs;
             wxArrayString ResIncludeDirs;

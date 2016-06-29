@@ -383,6 +383,11 @@ void Compiler::SaveSettings(const wxString& baseKey)
         wxString key = GetStringFromArray(m_CompilerOptions);
         cfg->Write(tmp + _T("/compiler_options"), key, false);
     }
+    if (m_Mirror.ResourceCompilerOptions != m_ResourceCompilerOptions)
+    {
+        wxString key = GetStringFromArray(m_ResourceCompilerOptions);
+        cfg->Write(tmp + _T("/resource_compiler_options"), key, false);
+    }
     if (m_Mirror.LinkerOptions != m_LinkerOptions)
     {
         wxString key = GetStringFromArray(m_LinkerOptions);
@@ -604,6 +609,7 @@ void Compiler::LoadSettings(const wxString& baseKey)
     SetVersionString();
 
     SetCompilerOptions    (GetArrayFromString(cfg->Read(tmp + _T("/compiler_options"), wxEmptyString)));
+    SetResourceCompilerOptions(GetArrayFromString(cfg->Read(tmp + _T("/resource_compiler_options"), wxEmptyString)));
     SetLinkerOptions      (GetArrayFromString(cfg->Read(tmp + _T("/linker_options"),   wxEmptyString)));
     SetIncludeDirs        (GetArrayFromString(cfg->Read(tmp + _T("/include_dirs"),     wxEmptyString)));
     SetResourceIncludeDirs(GetArrayFromString(cfg->Read(tmp + _T("/res_include_dirs"), wxEmptyString)));
