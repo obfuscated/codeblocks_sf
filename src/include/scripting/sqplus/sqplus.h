@@ -47,6 +47,9 @@
 #define SQ_CALL_RAISE_ERROR SQFalse
 #endif
 
+// this does the same as commenting out the "#ifdef _UNICODE"-stuff in our
+// bundled squirrel.h, but works also for system-squirrel
+#undef _UNICODE
 #include "squirrel.h"
 
 // C::B patch: so it builds on 64bit, ecapsulate bool/int/float using Squirrel types (this patch applies everywhere, where threse types are used)

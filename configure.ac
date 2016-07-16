@@ -73,6 +73,18 @@ LIBS=$save_LIBS
 
 AM_CONDITIONAL([HAVE_ZLIB], [test "$HAVE_ZLIB" = yes])
 AM_CONDITIONAL([HAVE_BZIP2], [test "$HAVE_BZIP2" = yes])
+AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
+
+ifdef([PKG_CHECK_MODULES],[],[
+	define([PKG_CHECK_MODULES],
+	[ echo "You don't have pkg.m4 properly installed" >&2
+		exit 1
+	])
+])
+
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([SQUIRREL], [squirrel], [HAVE_SQUIRREL=yes], [HAVE_SQUIRREL=no])
+AM_CONDITIONAL([HAVE_SQUIRREL], [test "$HAVE_SQUIRREL" = yes])
 
 dnl versioning info for libtool
 dnl Note this is the ABI version which is not the same as our actual library version
@@ -150,22 +162,6 @@ case $WX_BASENAME in
 				"x$BUILD_EXPORTER_TRUE" = "x" -o \
 				"x$GTK_NOTEBOOK_TRUE" = "x" -o \
 				"x$LINUX_TRUE" = "x" ; then
-
-			AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
-
-			ifdef([PKG_CHECK_MODULES],[],[
-				define([PKG_CHECK_MODULES],
-				[ echo "You don't have pkg.m4 properly installed" >&2
-					exit 1
-				])
-			])
-
-            dnl acoording to pkg-config's manpage this call is absolutely needed:
-            dnl
-            dnl "Note that if there is a possibility the first call to
-            dnl PKG_CHECK_MODULES might not happen, you should be sure
-            dnl to include an explicit call to PKG_PROG_PKG_CONFIG"
-			PKG_PROG_PKG_CONFIG
 
 			if test "x$LINUX_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
@@ -291,7 +287,16 @@ else
     fi
 fi
 
+if test "x$HAVE_SQUIRREL_TRUE" = "x" ; then
+	CB_SQUIRREL_CFLAGS="$SQUIRREL_CFLAGS"
+	CB_SQUIRREL_LIBS="$SQUIRREL_LIBS"
+else
+	CB_SQUIRREL_CFLAGS=" -I\$\(top_srcdir\)/src/include/scripting/include"
+	CB_SQUIRREL_LIBS=" \$\(top_builddir\)/scripting/squirrel/libsquirrel.la \$\(top_builddir\)scripting/sqstdlib/libsqstdlib.la"
+fi
 
+AC_SUBST(CB_SQUIRREL_CFLAGS)
+AC_SUBST(CB_SQUIRREL_LIBS)
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
 AC_SUBST(CB_GLIB2_CFLAGS)

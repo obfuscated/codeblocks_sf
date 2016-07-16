@@ -1,5 +1,5 @@
-AM_CPPFLAGS = -I$(top_srcdir)/src/include/scripting/include \
-					-I$(top_srcdir)/src/include/scripting/sqplus
+AM_CPPFLAGS = $(CB_SQUIRREL_CFLAGS) \
+			-I$(top_srcdir)/src/include/scripting/sqplus
 
 noinst_LTLIBRARIES = libsqplus.la
 

@@ -1,12 +1,11 @@
 SUBDIRS = lib_finder
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		$(CB_SQUIRREL_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(srcdir)/../wxContribItems/wxFlatNotebook/include \
-		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
-		-I$(top_srcdir)/src/include/scripting/squirrel \
 		-I$(top_srcdir)/src/include/scripting/bindings \
 		-I$(top_srcdir)/src/include/mozilla_chardet \
 		-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
