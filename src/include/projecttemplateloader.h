@@ -6,7 +6,7 @@
 #ifndef PROJECTTEMPLATELOADER_H
 #define PROJECTTEMPLATELOADER_H
 
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 #include "settings.h"
 
 struct FileSetFile

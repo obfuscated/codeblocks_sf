@@ -8,7 +8,7 @@
 #endif
 
 #include "tinywxuni.h"
-#include "tinyxml.h"
+#include <tinyxml.h>
 
 bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
 {

@@ -1,8 +1,9 @@
 SUBDIRS = resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			$(CB_TINYXML_CFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/include/mozilla_chardet \
 			-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
 			-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \

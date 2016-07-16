@@ -1,6 +1,7 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include
+			$(CB_TINYXML_CFLAGS) \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
 pluginlibdir = $(pkglibdir)/plugins
 

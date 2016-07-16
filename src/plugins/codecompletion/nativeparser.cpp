@@ -39,6 +39,7 @@
 #include <cbstyledtextctrl.h>
 #include <compilercommandgenerator.h>
 #include <projectloader_hooks.h>
+#include <tinyxml.h>
 
 #include "nativeparser.h"
 #include "classbrowser.h"

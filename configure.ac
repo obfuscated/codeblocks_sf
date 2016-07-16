@@ -96,6 +96,9 @@ PKG_PROG_PKG_CONFIG
 PKG_CHECK_MODULES([SQUIRREL], [squirrel], [HAVE_SQUIRREL=yes], [HAVE_SQUIRREL=no])
 AM_CONDITIONAL([HAVE_SQUIRREL], [test "$HAVE_SQUIRREL" = yes])
 
+PKG_CHECK_MODULES([TINYXML], [tinyxml], [HAVE_TINYXML=yes], [HAVE_TINYXML=no])
+AM_CONDITIONAL([HAVE_TINYXML], [test "$HAVE_TINYXML" = yes])
+
 dnl versioning info for libtool
 dnl Note this is the ABI version which is not the same as our actual library version
 CODEBLOCKS_CURRENT=0
@@ -218,22 +221,22 @@ case $WX_BASENAME in
         fi
 
 
-	CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
-	CB_GLIB2_LIBS="$GLIB2_LIBS"
-	CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
-	CB_GAMIN_LIBS="$GAMIN_LIBS"
-	CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
-	CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
-	CB_FONTCONFIG_CFLAGS="$FONTCONFIG_CFLAGS"
-	CB_FONTCONFIG_LIBS="$FONTCONFIG_LIBS"
-        WX_GTK2_CFLAGS="$GTK2_CFLAGS"
-        WX_GTK2_LIBS="$GTK2_LIBS"
-        AC_PATH_XTRA
-        WX_X11_CFLAGS="`echo $X_CFLAGS | sed 's/ -INONE//'`"
-        WX_X11_LIBS="`echo $X_LIBS | sed 's/ -LNONE//' | sed 's/ -RNONE//'`"
-        if test "$no_x" != yes; then
-            WX_X11_LIBS="$WX_X11_LIBS -lX11 $X_EXTRA_LIBS"
-        fi
+		CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
+		CB_GLIB2_LIBS="$GLIB2_LIBS"
+		CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
+		CB_GAMIN_LIBS="$GAMIN_LIBS"
+		CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
+		CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
+		CB_FONTCONFIG_CFLAGS="$FONTCONFIG_CFLAGS"
+		CB_FONTCONFIG_LIBS="$FONTCONFIG_LIBS"
+		WX_GTK2_CFLAGS="$GTK2_CFLAGS"
+		WX_GTK2_LIBS="$GTK2_LIBS"
+		AC_PATH_XTRA
+		WX_X11_CFLAGS="`echo $X_CFLAGS | sed 's/ -INONE//'`"
+		WX_X11_LIBS="`echo $X_LIBS | sed 's/ -LNONE//' | sed 's/ -RNONE//'`"
+		if test "$no_x" != yes; then
+			WX_X11_LIBS="$WX_X11_LIBS -lX11 $X_EXTRA_LIBS"
+		fi
     ;;
     *wx_msw*)
         AC_MSG_RESULT(wxMSW)
@@ -305,8 +308,18 @@ else
 	CB_SQUIRREL_LIBS=" \$\(top_builddir\)/scripting/squirrel/libsquirrel.la \$\(top_builddir\)scripting/sqstdlib/libsqstdlib.la"
 fi
 
+if test "x$HAVE_TINYXML_TRUE" = "x" ; then
+	CB_TINYXML_CFLAGS="$TINYXML_CFLAGS"
+	CB_TINYXML_LIBS="$TINYXML_LIBS"
+else
+	CB_TINYXML_CFLAGS=" -I\$\(top_srcdir\)/src/include/tinyxml"
+	CB_TINYXML_LIBS=" \$\(top_builddir\)/src/base/tinyxml/libtinyxml.la"
+fi
+
 AC_SUBST(CB_SQUIRREL_CFLAGS)
 AC_SUBST(CB_SQUIRREL_LIBS)
+AC_SUBST(CB_TINYXML_CFLAGS)
+AC_SUBST(CB_TINYXML_LIBS)
 AC_SUBST(WX_GTK2_CFLAGS)
 AC_SUBST(WX_GTK2_LIBS)
 AC_SUBST(CB_GLIB2_CFLAGS)
@@ -345,7 +358,7 @@ esac
 AC_MSG_RESULT($PIC_FLAGS)
 
 CFLAGS="$CFLAGS -std=c90"
-CPPFLAGS="$CPPFLAGS -DTIXML_USE_STL"
+CPPFLAGS="$CPPFLAGS -DTIXML_USE_STL=YES"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 

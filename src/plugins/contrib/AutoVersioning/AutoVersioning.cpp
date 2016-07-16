@@ -17,9 +17,9 @@
 #include <manager.h>
 #include <projectbuildtarget.h>
 #include <projectmanager.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #endif
-#include <tinyxml/tinywxuni.h>
+#include <tinywxuni.h>
 #include <wx/textfile.h>
 
 #include "projectloader_hooks.h"

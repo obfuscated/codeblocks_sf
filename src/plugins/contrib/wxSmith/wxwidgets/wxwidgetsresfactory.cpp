@@ -31,7 +31,7 @@
 #include "../wxsmith.h"
 
 #include <wx/choicdlg.h>
-#include <tinyxml/tinywxuni.h>
+#include <tinywxuni.h>
 #include <sqplus.h>
 #include <sc_base_types.h>
 

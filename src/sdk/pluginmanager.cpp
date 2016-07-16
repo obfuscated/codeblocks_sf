@@ -42,7 +42,7 @@
 #include <wx/txtstrm.h>
 
 #include "filefilters.h"
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 #include "annoyingdialog.h"
 #include "pluginsconfigurationdlg.h"

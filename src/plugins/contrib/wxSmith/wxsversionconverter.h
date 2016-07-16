@@ -23,7 +23,7 @@
 #ifndef WXSVERSIONCONVERTER_H
 #define WXSVERSIONCONVERTER_H
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <wx/string.h>
 
 class wxsProject;

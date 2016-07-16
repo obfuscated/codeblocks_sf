@@ -30,7 +30,7 @@ class TiXmlElement;
 #include "wx/mimetype.h"
 
 #include "snippetitemdata.h"
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "snippetproperty.h"
 #include "snippetsconfig.h"
 #include "cbeditor.h"

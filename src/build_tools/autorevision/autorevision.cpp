@@ -11,8 +11,7 @@
 #include <string>
 #include <fstream>
 
-#include "tinyxml/tinystr.h"
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 using namespace std;
 

@@ -1,3 +1,3 @@
 sdkdir=$(includedir)/codeblocks/tinyxml
 
-sdk_HEADERS = tinyxml.h tinywxuni.h tinystr.h
+sdk_HEADERS = tinystr.h tinyxml.h

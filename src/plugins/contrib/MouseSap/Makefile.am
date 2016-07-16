@@ -1,5 +1,6 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(WX_GTK2_CFLAGS) \
+		$(CB_TINYXML_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include
 

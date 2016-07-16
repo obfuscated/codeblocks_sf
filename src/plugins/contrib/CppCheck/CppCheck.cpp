@@ -34,7 +34,7 @@
 #include <wx/filefn.h>
 #include <wx/utils.h>
 
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 #include "filefilters.h"
 #include "loggers.h"
 

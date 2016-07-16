@@ -1,6 +1,7 @@
 SUBDIRS = resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		$(CB_TINYXML_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		-I$(top_srcdir)/src/include/mozilla_chardet \
@@ -9,7 +10,6 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom \
 		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/base \
 		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue
-
 
 pluginlibdir = $(pkglibdir)/plugins
 

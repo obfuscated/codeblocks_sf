@@ -30,7 +30,7 @@
 #endif // __linux__
 
 
-#include "tinyxml/tinywxuni.h"
+#include "tinywxuni.h"
 
 //***********************************************************************
 

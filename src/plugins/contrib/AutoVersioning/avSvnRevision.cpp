@@ -3,7 +3,7 @@
 #include <wx/utils.h>
 #include <wx/string.h>
 #include <wx/arrstr.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <globals.h>
 
 bool QuerySvn(const wxString& workingDir, wxString& revision, wxString& date)

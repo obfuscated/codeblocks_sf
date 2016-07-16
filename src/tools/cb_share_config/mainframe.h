@@ -20,8 +20,7 @@
 #include <wx/arrstr.h>
 #include <vector>
 
-#include "tinyxml/tinystr.h"
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 class MainFrame: public wxFrame
 {

@@ -31,7 +31,7 @@
     #include "projectmanager.h"
 #endif
 
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 #include <wx/dirdlg.h>
 #include <wx/display.h>
@@ -44,7 +44,7 @@
 #include <string>
 
 #include "filefilters.h"
-#include "tinyxml/tinywxuni.h"
+#include "tinywxuni.h"
 #include "filegroupsandmasks.h"
 
 #ifndef __WXMSW__

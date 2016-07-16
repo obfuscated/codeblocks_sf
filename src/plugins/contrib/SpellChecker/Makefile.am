@@ -2,6 +2,7 @@ SUBDIRS = wxspellchecker
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		$(CB_HUNSPELL_CFLAGS) \
+		$(CB_TINYXML_CFLAGS) \
 		-I$(srcdir)/wxspellchecker/include \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include

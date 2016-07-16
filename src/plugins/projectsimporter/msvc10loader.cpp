@@ -23,7 +23,7 @@
 
 #include <wx/choicdlg.h>
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 #include "prep.h"
 #include "msvc7workspaceloader.h"

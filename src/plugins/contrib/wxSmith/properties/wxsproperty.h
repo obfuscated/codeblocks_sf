@@ -34,7 +34,7 @@
 #include <wx/propgrid/propgrid.h>
 #include <wx/propgrid/manager.h>
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <prep.h>
 
 #include "wxspropertystream.h"

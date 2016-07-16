@@ -46,8 +46,8 @@
 #endif
 
 #include <wx/tokenzr.h>
-#include "tinyxml/tinyxml.h"
-#include "tinyxml/tinywxuni.h"
+#include <tinyxml.h>
+#include "tinywxuni.h"
 
 #include "BrowseTrackerLayout.h"
 #include "BrowseMarks.h"

@@ -48,7 +48,7 @@
 #include <CoreFoundation/CFURL.h>
 #endif
 
-#include "tinyxml/tinywxuni.h"
+#include "tinywxuni.h"
 #include <stdlib.h>
 
 #ifdef __linux__

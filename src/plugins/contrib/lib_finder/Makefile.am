@@ -1,6 +1,7 @@
 SUBDIRS = lib_finder
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		$(CB_TINYXML_CFLAGS) \
 		$(CB_SQUIRREL_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \

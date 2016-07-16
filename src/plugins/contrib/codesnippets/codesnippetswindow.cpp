@@ -62,7 +62,7 @@
 #include "version.h"
 #include "codesnippetswindow.h"
 #include "snippetitemdata.h"
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
 #include "codesnippetstreectrl.h"

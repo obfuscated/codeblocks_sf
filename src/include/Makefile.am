@@ -1,4 +1,8 @@
-SUBDIRS = scripting tinyxml
+SUBDIRS = scripting
+if ! HAVE_TINYXML
+SUBDIRS += tinyxml
+endif
+DIST_SUBDIRS = scripting tinyxml
 
 if PRECOMPILE_HEADERS
 BUILT_SOURCES = sdk.h.gch \
@@ -8,11 +12,10 @@ BUILT_SOURCES =
 endif
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+			$(CB_TINYXML_CFLAGS) \
 			-I$(top_builddir)/src/include \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
-			-I$(top_srcdir)/src/include/tinyxml \
-			-I$(top_srcdir)/src/include/scripting/include \
  			-I$(top_srcdir)/src/include/scripting/sqplus \
 			-I$(top_srcdir)/src/include/mozilla_chardet \
 			-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
@@ -126,6 +129,7 @@ ALLHEADERS = annoyingdialog.h \
 				selecttargetdlg.h \
 				settings.h \
 				templatemanager.h \
+				tinywxuni.h \
 				toolsmanager.h \
 				uservarmanager.h \
 				workspaceloader.h \
@@ -188,3 +192,4 @@ clean-local:
 	-rm -f sdk_precomp.h.gch
 
 EXTRA_DIST = autorevision.h
+

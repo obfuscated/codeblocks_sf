@@ -25,7 +25,7 @@
 #include "macrosmanager.h"
 #endif
 #include <wx/filefn.h>
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 #include "loggers.h"
 #include "Valgrind.h"
 #include "ValgrindListLog.h"
