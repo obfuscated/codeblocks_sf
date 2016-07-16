@@ -276,6 +276,7 @@ esac
 
 CB_GCC_VERSION
 AM_CONDITIONAL([HAVE_GCC48], [test $GCC_MAJOR_VERSION -gt 4 -o $GCC_MAJOR_VERSION -eq 4 -a $GCC_MINOR_VERSION -ge 8])
+AM_CONDITIONAL([HAVE_GCC6], [test $GCC_MAJOR_VERSION -ge 6])
 
 AC_MSG_CHECKING([for wxWidgets >= 2.9.0])
 AM_CONDITIONAL([HAVE_WX29], [test $wx_config_major_version -gt 2 -o $wx_config_major_version -eq 2 -a $wx_config_minor_version -ge 9])
