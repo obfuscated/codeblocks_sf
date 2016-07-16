@@ -8,7 +8,6 @@ TREELIST_DIST=$(srcdir)/wxtreelist/wxsTreeListCtrl.cpp $(srcdir)/wxtreelist/wxsT
 endif
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		$(CB_TINYXML_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
 		$(WXPROPGRID_INCLUDE) \

@@ -2,7 +2,6 @@ bin_PROGRAMS = cb_share_config
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			$(CB_GLIB2_CFLAGS) \
-			$(CB_TINYXML_CFLAGS) \
 			-I$(top_srcdir)/src/include
 
 cb_share_config_LDFLAGS =

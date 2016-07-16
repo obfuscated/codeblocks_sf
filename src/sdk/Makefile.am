@@ -3,7 +3,6 @@ DIST_SUBDIRS = scripting wxscintilla  wxpropgrid resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			$(CB_GLIB2_CFLAGS) \
-			$(CB_TINYXML_CFLAGS) \
 			$(CB_SQUIRREL_CFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \

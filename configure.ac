@@ -313,7 +313,7 @@ if test "x$HAVE_TINYXML_TRUE" = "x" ; then
 	CB_TINYXML_CFLAGS="$TINYXML_CFLAGS"
 	CB_TINYXML_LIBS="$TINYXML_LIBS"
 else
-	CB_TINYXML_CFLAGS="-I\$(top_srcdir)/src/include/tinyxml"
+	CB_TINYXML_CFLAGS="-I\$(top_srcdir)/src/include/tinyxml -DTIXML_USE_STL=YES"
 	CB_TINYXML_LIBS="\$(top_builddir)/src/base/tinyxml/libtinyxml.la"
 fi
 
@@ -359,7 +359,7 @@ esac
 AC_MSG_RESULT($PIC_FLAGS)
 
 CFLAGS="$CFLAGS -std=c90"
-CPPFLAGS="$CPPFLAGS -DTIXML_USE_STL=YES"
+CPPFLAGS="$CPPFLAGS $CB_TINYXML_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 

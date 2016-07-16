@@ -1,8 +1,7 @@
 noinst_PROGRAMS = auto_revision
 auto_revision_SOURCES = autorevision.cpp
 
-AM_CPPFLAGS = $(CB_TINYXML_CFLAGS) \
-			-I$(top_srcdir)/src/include
+AM_CPPFLAGS = -I$(top_srcdir)/src/include
 
 
 auto_revision_LDADD = $(CB_TINYXML_LIBS)

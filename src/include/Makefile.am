@@ -12,7 +12,6 @@ BUILT_SOURCES =
 endif
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-			$(CB_TINYXML_CFLAGS) \
 			-I$(top_builddir)/src/include \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include \
