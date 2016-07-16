@@ -305,16 +305,16 @@ if test "x$HAVE_SQUIRREL_TRUE" = "x" ; then
 	CB_SQUIRREL_CFLAGS="$SQUIRREL_CFLAGS"
 	CB_SQUIRREL_LIBS="$SQUIRREL_LIBS"
 else
-	CB_SQUIRREL_CFLAGS=" -I\$\(top_srcdir\)/src/include/scripting/include"
-	CB_SQUIRREL_LIBS=" \$\(top_builddir\)/scripting/squirrel/libsquirrel.la \$\(top_builddir\)scripting/sqstdlib/libsqstdlib.la"
+	CB_SQUIRREL_CFLAGS="-I\$(top_srcdir)/src/include/scripting/include"
+	CB_SQUIRREL_LIBS="\$(top_builddir)/src/sdk/scripting/squirrel/libsquirrel.la \$(top_builddir)/src/sdk/scripting/sqstdlib/libsqstdlib.la"
 fi
 
 if test "x$HAVE_TINYXML_TRUE" = "x" ; then
 	CB_TINYXML_CFLAGS="$TINYXML_CFLAGS"
 	CB_TINYXML_LIBS="$TINYXML_LIBS"
 else
-	CB_TINYXML_CFLAGS=" -I\$\(top_srcdir\)/src/include/tinyxml"
-	CB_TINYXML_LIBS=" \$\(top_builddir\)/src/base/tinyxml/libtinyxml.la"
+	CB_TINYXML_CFLAGS="-I\$(top_srcdir)/src/include/tinyxml"
+	CB_TINYXML_LIBS="\$(top_builddir)/src/base/tinyxml/libtinyxml.la"
 fi
 
 AC_SUBST(CB_SQUIRREL_CFLAGS)
