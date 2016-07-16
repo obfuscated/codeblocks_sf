@@ -71,8 +71,18 @@ LIBS=$save_LIBS
 AC_SEARCH_LIBS(BZ2_bzopen, bz2, [HAVE_BZIP2=yes], [HAVE_BZIP2=no])
 LIBS=$save_LIBS
 
+save_CC=$CC
+save_CPP=$CPP
+CC=$CXX
+CPP=$CXXCPP
+AC_CHECK_HEADER(astyle.h, [HAVE_ASTYLE=yes], [HAVE_ASTYLE=no])
+CC=$save_CC
+CPP=$save_CPP
+
 AM_CONDITIONAL([HAVE_ZLIB], [test "$HAVE_ZLIB" = yes])
 AM_CONDITIONAL([HAVE_BZIP2], [test "$HAVE_BZIP2" = yes])
+AM_CONDITIONAL([HAVE_ASTYLE], [test "$HAVE_ASTYLE" = yes])
+
 AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
 
 ifdef([PKG_CHECK_MODULES],[],[

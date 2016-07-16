@@ -10,7 +10,7 @@
 #ifndef DLGFORMATTERSETTINGS_H
 #define DLGFORMATTERSETTINGS_H
 
-#include "astyle/astyle.h"
+#include <astyle.h>
 
 class wxWindow;
 

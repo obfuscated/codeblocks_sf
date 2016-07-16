@@ -1,7 +1,6 @@
 SUBDIRS = resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-           -I$(top_srcdir)/src/plugins/astyle/astyle \
            -I$(top_srcdir)/src/include \
            -I$(top_srcdir)/src/sdk/wxscintilla/include
 
@@ -17,19 +16,14 @@ libastyle_la_SOURCES = asstreamiterator.cpp \
                        astyleconfigdlg.cpp \
                        astyleplugin.cpp \
                        dlgformattersettings.cpp \
-                       formattersettings.cpp \
-                       astyle/ASBeautifier.cpp \
-                       astyle/ASEnhancer.cpp \
-                       astyle/ASFormatter.cpp \
-                       astyle/ASResource.cpp
+                       formattersettings.cpp
 
 noinst_HEADERS = asstreamiterator.h \
                  astyleconfigdlg.h \
                  astyleplugin.h \
                  astylepredefinedstyles.h \
                  dlgformattersettings.h \
-                 formattersettings.h \
-                 astyle/astyle.h
+                 formattersettings.h
 
 EXTRA_DIST = astyle/ASLocalizer.cpp \
              astyle/ASLocalizer.h \
@@ -46,3 +40,19 @@ EXTRA_DIST = astyle/ASLocalizer.cpp \
              astyle/styles.css \
              astyle/subversion.html \
              astyle/vsinstall.html
+
+if HAVE_ASTYLE
+libastyle_la_LIBADD += -lastyle
+EXTRA_DIST += astyle/ASBeautifier.cpp \
+		astyle/ASEnhancer.cpp \
+		astyle/ASFormatter.cpp \
+		astyle/ASResource.cpp \
+                astyle/astyle.h
+else
+AM_CPPFLAGS += -I$(top_srcdir)/src/plugins/astyle/astyle
+libastyle_la_SOURCES += astyle/ASBeautifier.cpp \
+                       astyle/ASEnhancer.cpp \
+                       astyle/ASFormatter.cpp \
+                       astyle/ASResource.cpp
+noinst_HEADERS += astyle/astyle.h
+endif
