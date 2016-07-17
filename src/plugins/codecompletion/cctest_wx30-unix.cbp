@@ -36,6 +36,7 @@
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../include" />
+			<Add directory="../../include/tinyxml" />
 			<Add directory="../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>

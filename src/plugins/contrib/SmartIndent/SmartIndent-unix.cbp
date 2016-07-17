@@ -164,6 +164,7 @@
 			<Add option="-DWX_PRECOMP" />
 			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>

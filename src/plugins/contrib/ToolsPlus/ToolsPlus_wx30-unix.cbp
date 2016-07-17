@@ -37,6 +37,7 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/mozilla_chardet" />

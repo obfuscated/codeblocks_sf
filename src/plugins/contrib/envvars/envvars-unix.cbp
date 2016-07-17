@@ -42,6 +42,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />
 			<Add directory="../../../include/scripting/bindings" />

@@ -59,6 +59,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add directory="wxspellchecker/include" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>

@@ -47,6 +47,7 @@
 			<Add option="-DNO_LOGGING" />
 			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../src" />
 			<Add directory="$(#WX30.include)" />

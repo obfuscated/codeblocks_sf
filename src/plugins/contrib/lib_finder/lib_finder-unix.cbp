@@ -41,6 +41,7 @@
 			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/scripting/include" />
 			<Add directory="../../../include/scripting/sqplus" />

@@ -42,6 +42,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DwxUSE_UNICODE" />
 					<Add directory="..\..\..\include" />
+					<Add directory="..\..\..\include\tinyxml" />
 				</Compiler>
 				<Linker>
 					<Add option="-mthreads" />

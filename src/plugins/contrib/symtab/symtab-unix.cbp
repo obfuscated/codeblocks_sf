@@ -31,6 +31,7 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-std=c++11" />
 			<Add directory="$(CBDIR)/include" />
+			<Add directory="$(CBDIR)/include/tinyxml" />
 			<Add directory="$(CBDIR)/sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>

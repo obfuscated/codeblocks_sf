@@ -44,6 +44,7 @@
 			<Add option="-Wall" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\tinyxml" />
 			<Add directory="..\..\..\sdk\wxscintilla\include" />
 			<Add directory="$(#WX30_64.include)" />
 			<Add directory="$(#WX30_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />

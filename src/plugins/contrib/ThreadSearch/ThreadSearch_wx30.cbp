@@ -50,6 +50,7 @@
 			<Add option="-DNO_LOGGING" />
 			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/mozilla_chardet" />
 			<Add directory="../../../include/mozilla_chardet/mfbt" />

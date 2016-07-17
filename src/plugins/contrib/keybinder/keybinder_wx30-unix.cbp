@@ -16,6 +16,7 @@
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>

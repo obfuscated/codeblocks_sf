@@ -21,6 +21,7 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="../wxSmith" />
 					<Add directory="../wxSmith/wxwidgets" />

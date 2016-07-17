@@ -30,6 +30,7 @@
 					<Add option="-DBUILDING_PLUGIN" />
 					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>

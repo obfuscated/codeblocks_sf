@@ -53,6 +53,7 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\include\tinyxml" />
 			<Add directory="..\..\..\include\scripting\include" />
 			<Add directory="..\..\..\include\scripting\sqplus" />
 			<Add directory="..\..\..\include\scripting\bindings" />

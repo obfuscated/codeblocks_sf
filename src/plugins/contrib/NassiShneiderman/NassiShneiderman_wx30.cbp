@@ -30,6 +30,7 @@
 					<Add option="-DwxUSE_UNICODE" />
 					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="$(#WX30.include)" />
 					<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />

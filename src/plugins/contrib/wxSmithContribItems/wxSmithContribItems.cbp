@@ -24,6 +24,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="../../../sdk/wxpropgrid/include" />
 					<Add directory="../wxSmith" />

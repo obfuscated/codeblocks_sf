@@ -22,6 +22,7 @@
 					<Add option="-DNO_LOGGING" />
 					<Add option="-DCB_PRECOMP" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>

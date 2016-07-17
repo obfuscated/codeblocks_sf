@@ -45,6 +45,7 @@
 			<Add option="-D__FAM__" />
 			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/mozilla_chardet" />
 			<Add directory="../../../include/mozilla_chardet/mfbt" />

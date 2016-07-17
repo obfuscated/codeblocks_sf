@@ -20,6 +20,7 @@
 					<Add option="-fPIC" />
 					<Add option="-DPIC" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs`" />

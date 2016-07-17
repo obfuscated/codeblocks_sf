@@ -67,6 +67,7 @@
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-DcbDEBUG" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/scripting/bindings" />
 			<Add directory="../../../include/scripting/include" />
