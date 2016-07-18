@@ -194,7 +194,8 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_WXSMITHCONTRIB) \
 		$(MAYBE_WXSMITHAUI)
 
-DIST_SUBDIRS = AutoVersioning \
+DIST_SUBDIRS = appdata \
+		AutoVersioning \
 		BrowseTracker \
 		byogames \
 		cb_koders \
