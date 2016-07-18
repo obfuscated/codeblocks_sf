@@ -121,18 +121,13 @@ make %{?_smp_mflags}
 
 %install
 %make_install
-%if 0%{?fedora}
-DESTDIR=%{buildroot} appstream-util install codeblocks.appdata.xml codeblocks-contrib.metainfo.xml
-%endif
 
-  rm -f %{buildroot}/%{_libdir}/*.la
-  rm -f %{buildroot}/%{_libdir}/%{name}/wxContribItems/*.la
-  rm -f %{buildroot}/%{plugindir}/*.la
+appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.{appdata,metainfo}.xml
+desktop-file-validate	%{buildroot}/%{_datadir}/applications/codeblocks.desktop
 
-desktop-file-install \
-	--dir %{buildroot}/%{_datadir}/applications \
-	--delete-original \
-	%{buildroot}/%{_datadir}/applications/codeblocks.desktop
+rm -f %{buildroot}/%{_libdir}/*.la
+rm -f %{buildroot}/%{_libdir}/%{name}/wxContribItems/*.la
+rm -f %{buildroot}/%{plugindir}/*.la
 
 # set a fixed timestamp (source archive creation) to generated resource archives
 /bin/touch -r %{SOURCE0} %{buildroot}/%{pkgdatadir}/*.zip
