@@ -187,6 +187,7 @@ void SpellCheckerConfig::DetectDictionaryPath()
     {
         dictPaths.Add(wxT("/usr/share/hunspell"));
         dictPaths.Add(wxT("/usr/share/myspell/dicts"));
+        dictPaths.Add(wxT("/usr/share/myspell"));
     }
     dictPaths.Add(m_pPlugin->GetOnlineCheckerConfigPath());
     for (size_t i = 0; i < dictPaths.GetCount(); ++i)
