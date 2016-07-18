@@ -1,0 +1,616 @@
+%global svnrev             @REVISION@
+
+Name:       codeblocks
+Version:	16.01.svn.%{svnrev}
+Release:	1%{?dist}
+Summary:	An open source, cross platform, free C++ IDE
+License:    GPLv3+
+URL:        http://www.codeblocks.org/
+Source0:	%{name}-@VERSION@.tar.bz2
+
+BuildRequires:	libtool
+BuildRequires:	wxGTK-devel
+BuildRequires:	zlib-devel
+BuildRequires:	bzip2-devel
+BuildRequires:	tinyxml-devel
+BuildRequires:	libICE-devel
+BuildRequires:	boost-devel
+BuildRequires:	hunspell-devel
+BuildRequires:	squirrel-devel
+%if 0%{?fedora}
+BuildRequires:	astyle-devel
+BuildRequires:	libappstream-glib
+%endif
+BuildRequires:	gamin-devel
+BuildRequires:	zip
+BuildRequires:	dos2unix
+BuildRequires:	desktop-file-utils
+
+Requires:	%{name}-libs = %{version}-%{release}
+Requires:	shared-mime-info
+Requires:	xterm
+Provides:	bundled(wxScintilla) = 1.7.1
+
+%global		pkgdatadir	%{_datadir}/%{name}
+%global		pkglibdir	%{_libdir}/%{name}
+%global		plugindir	%{pkglibdir}/plugins
+
+%global __provides_exclude_from ^%{plugindir}/.*\\.so$
+
+%description
+Code::Blocks is a free C++ IDE built specifically to meet the most demanding
+needs of its users. It was designed, right from the start, to be extensible
+and configurable. Built around a plug-in framework, Code::Blocks can be
+extended with plug-in DLLs. It includes a plugin wizard, so you can compile
+your own plug-ins.
+
+%package libs
+Summary:	Libraries needed to run Code::Blocks and its plug-ins
+
+%description libs
+Libraries needed to run Code::Blocks and its plug-ins.
+
+%package devel
+Summary:	Files needed to build Code::Blocks plug-ins
+Requires:	%{name}-libs = %{version}-%{release}
+Requires:	pkgconfig
+
+%description devel
+Development files needed to build Code::Blocks plug-ins.
+
+%package contrib-libs
+Summary:	Libraries needed to run Code::Blocks contrib plug-ins
+
+%description contrib-libs
+Libraries needed to run Code::Blocks contrib plug-ins.
+
+%package contrib-devel
+Summary:	Files needed to build Code::Blocks contrib plug-ins
+Requires:	%{name}-contrib-libs = %{version}-%{release}
+
+%description contrib-devel
+Development files needed to build Code::Blocks contrib plug-ins.
+
+%package contrib
+Summary:	Additional Code::Blocks plug-ins
+Requires:	%{name} = %{version}-%{release}
+Requires:	%{name}-contrib-libs = %{version}-%{release}
+%if 0
+# not in Fedora yet
+Requires:	cccc
+%endif
+Requires:	cppcheck
+Requires:	cscope
+%ifnarch s390
+Requires:	valgrind
+%endif
+
+%description contrib
+Additional Code::Blocks plug-ins.
+
+
+%prep
+%setup -q -n %{name}-@VERSION@
+
+./bootstrap
+
+# convert EOLs
+find . -type f -and -not -name "*.cpp" -and -not -name "*.h" -and -not -name "*.png" -and -not -name "*.bmp" -and -not -name "*.c" -and -not -name "*.cxx" -and -not -name "*.ico" -exec dos2unix -q --keepdate {} \;
+
+%build
+
+%configure \
+    --with-contrib-plugins=all
+
+# remove unbundled stuff
+rm -rf src/include/tinyxml src/base/tinyxml
+rm -rf src/include/scripting/{include,squirrel,sqstdlib}
+rm -rf src/sdk/scripting/{squirrel,sqstdlib}
+%if 0%{?fedora}
+rm -rf src/plugins/astyle/astyle
+%endif
+rm -rf src/plugins/contrib/SpellChecker/hunspell
+rm -rf src/plugins/contrib/devpak_plugin/bzip2
+rm -rf src/plugins/contrib/help_plugin/{bzip2,zlib}
+
+# Don't use rpath!
+sed -i 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+
+make %{?_smp_mflags}
+
+%install
+%make_install
+%if 0%{?fedora}
+DESTDIR=%{buildroot} appstream-util install codeblocks.appdata.xml codeblocks-contrib.metainfo.xml
+%endif
+
+  rm -f %{buildroot}/%{_libdir}/*.la
+  rm -f %{buildroot}/%{_libdir}/%{name}/wxContribItems/*.la
+  rm -f %{buildroot}/%{plugindir}/*.la
+
+desktop-file-install \
+	--dir %{buildroot}/%{_datadir}/applications \
+	--delete-original \
+	%{buildroot}/%{_datadir}/applications/codeblocks.desktop
+
+# set a fixed timestamp (source archive creation) to generated resource archives
+/bin/touch -r %{SOURCE0} %{buildroot}/%{pkgdatadir}/*.zip
+
+# generate linker config file for wxContribItems libraries
+mkdir -p %{buildroot}/%{_sysconfdir}/ld.so.conf.d
+echo "%{_libdir}/%{name}/wxContribItems" > %{buildroot}/%{_sysconfdir}/ld.so.conf.d/%{name}-contrib-%{_arch}.conf
+
+%post
+/bin/touch --no-create %{_datadir}/mime/packages &> /dev/null || :
+/bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+/usr/bin/update-desktop-database &> /dev/null || :
+
+%postun
+if [ $1 -eq 0 ]; then
+    /usr/bin/update-mime-database %{_datadir}/mime &> /dev/null || :
+    /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    /usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+fi
+/usr/bin/update-desktop-database &> /dev/null || :
+
+%posttrans
+/usr/bin/update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
+/usr/bin/gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+
+%post libs -p /sbin/ldconfig
+
+%postun libs -p /sbin/ldconfig
+
+%post contrib-libs -p /sbin/ldconfig
+
+%postun contrib-libs -p /sbin/ldconfig
+
+
+%files
+%license COPYING
+%doc README AUTHORS BUGS COMPILERS NEWS ChangeLog
+
+%{_bindir}/*
+%{_mandir}/man1/codeblocks.*.gz
+%{_mandir}/man1/cb_console_runner.*.gz
+%{_mandir}/man1/cb_share_config.*.gz
+
+%dir %{pkglibdir}
+%dir %{plugindir}
+%{plugindir}/libastyle.so
+%{plugindir}/libabbreviations.so
+%{plugindir}/libautosave.so
+%{plugindir}/libclasswizard.so
+%{plugindir}/libcodecompletion.so
+%{plugindir}/libcompiler.so
+%{plugindir}/libdebugger.so
+%{plugindir}/libdefaultmimehandler.so
+%{plugindir}/liboccurrenceshighlighting.so
+%{plugindir}/libopenfileslist.so
+%{plugindir}/libprojectsimporter.so
+%{plugindir}/libscriptedwizard.so
+%{plugindir}/libtodo.so
+
+%if 0%{?fedora}
+%{_datadir}/appdata/%{name}.appdata.xml
+%endif
+%{_datadir}/applications/%{name}.desktop
+%{_datadir}/icons/hicolor/48x48/mimetypes/*.png
+%{_datadir}/mime/packages/%{name}.xml
+%{_datadir}/pixmaps/%{name}.png
+
+%dir %{pkgdatadir}
+%{pkgdatadir}/icons
+%dir %{pkgdatadir}/images
+%{pkgdatadir}/images/*.png
+%{pkgdatadir}/images/16x16
+%{pkgdatadir}/images/codecompletion
+%{pkgdatadir}/images/settings
+%{pkgdatadir}/lexers
+%{pkgdatadir}/scripts
+%{pkgdatadir}/templates
+%{pkgdatadir}/astyle.zip
+%{pkgdatadir}/abbreviations.zip
+%{pkgdatadir}/autosave.zip
+%{pkgdatadir}/classwizard.zip
+%{pkgdatadir}/codecompletion.zip
+%{pkgdatadir}/compiler.zip
+%{pkgdatadir}/debugger.zip
+%{pkgdatadir}/defaultmimehandler.zip
+%{pkgdatadir}/manager_resources.zip
+%{pkgdatadir}/occurrenceshighlighting.zip
+%{pkgdatadir}/openfileslist.zip
+%{pkgdatadir}/projectsimporter.zip
+%{pkgdatadir}/resources.zip
+%{pkgdatadir}/scriptedwizard.zip
+%{pkgdatadir}/start_here.zip
+%{pkgdatadir}/todo.zip
+%{pkgdatadir}/tips.txt
+%dir %{pkgdatadir}/compilers
+%{pkgdatadir}/compilers/*.xml
+
+%files libs
+%doc COPYING
+%{_libdir}/lib%{name}.so.*
+
+%files devel
+%{_includedir}/%{name}/
+%exclude %{_includedir}/%{name}/wxContribItems/
+%{_libdir}/lib%{name}.so
+%{_libdir}/pkgconfig/%{name}.pc
+
+%files contrib-libs
+%{_sysconfdir}/ld.so.conf.d/%{name}-contrib-%{_arch}.conf
+%{_libdir}/libwxsmithlib.so.*
+%{_libdir}/%{name}/wxContribItems/*.so.*
+%exclude %{_libdir}/libwxsmithlib.so
+
+%files contrib-devel
+%{_includedir}/wxsmith
+%{_includedir}/%{name}/wxContribItems/
+%{_libdir}/%{name}/wxContribItems/*.so
+%{_libdir}/pkgconfig/cb_wx*.pc
+%{_libdir}/pkgconfig/wxsmith.pc
+%{_libdir}/pkgconfig/wxsmithaui.pc
+%{_libdir}/pkgconfig/wxsmith-contrib.pc
+
+%files contrib
+%{_mandir}/man1/codesnippets.*.gz
+
+%{pkgdatadir}/images/DoxyBlocks
+
+%{pkgdatadir}/AutoVersioning.zip
+%{pkgdatadir}/BrowseTracker.zip
+%{pkgdatadir}/Cccc.zip
+%{pkgdatadir}/CppCheck.zip
+%{pkgdatadir}/Cscope.zip
+%{pkgdatadir}/DoxyBlocks.zip
+%{pkgdatadir}/EditorConfig.zip
+%{pkgdatadir}/EditorTweaks.zip
+%{pkgdatadir}/FileManager.zip
+%{pkgdatadir}/HexEditor.zip
+%{pkgdatadir}/IncrementalSearch.zip
+%{pkgdatadir}/MouseSap.zip
+%{pkgdatadir}/ThreadSearch.zip
+%{pkgdatadir}/ToolsPlus.zip
+%{pkgdatadir}/Valgrind.zip
+%{pkgdatadir}/byogames.zip
+%{pkgdatadir}/cb_koders.zip
+%{pkgdatadir}/codesnippets.zip
+%{pkgdatadir}/codestat.zip
+%{pkgdatadir}/copystrings.zip
+%{pkgdatadir}/dragscroll.zip
+%{pkgdatadir}/envvars.zip
+%{pkgdatadir}/exporter.zip
+%{pkgdatadir}/headerfixup.zip
+%{pkgdatadir}/help_plugin.zip
+%{pkgdatadir}/keybinder.zip
+%{pkgdatadir}/lib_finder.zip
+%{pkgdatadir}/Profiler.zip
+%{pkgdatadir}/ProjectOptionsManipulator.zip
+%{pkgdatadir}/RegExTestbed.zip
+%{pkgdatadir}/ReopenEditor.zip
+%{pkgdatadir}/SymTab.zip
+%{pkgdatadir}/wxsmith.zip
+%{pkgdatadir}/wxSmithAui.zip
+%{pkgdatadir}/wxsmithcontribitems.zip
+%{pkgdatadir}/images/ThreadSearch
+%{pkgdatadir}/images/codesnippets
+%{pkgdatadir}/images/wxsmith
+%{pkgdatadir}/lib_finder
+%{pkgdatadir}/NassiShneiderman.zip
+%{pkgdatadir}/SpellChecker.zip
+%{pkgdatadir}/SpellChecker
+%{pkgdatadir}/SmartIndent*.zip
+
+%{plugindir}/libAutoVersioning.so
+%{plugindir}/libBrowseTracker.so
+%{plugindir}/libCccc.so
+%{plugindir}/libCppCheck.so
+%{plugindir}/libCscope.so
+%{plugindir}/libDoxyBlocks.so
+%{plugindir}/libEditorConfig.so
+%{plugindir}/libEditorTweaks.so
+%{plugindir}/libFileManager.so
+%{plugindir}/libHexEditor.so
+%{plugindir}/libIncrementalSearch.so
+%{plugindir}/libMouseSap.so
+%{plugindir}/libThreadSearch.so
+%{plugindir}/libToolsPlus.so
+%{plugindir}/libValgrind.so
+%{plugindir}/libbyogames.so
+%{plugindir}/libcb_koders.so
+%{plugindir}/libcodesnippets.so
+%{plugindir}/libcodestat.so
+%{plugindir}/libcopystrings.so
+%{plugindir}/libdragscroll.so
+%{plugindir}/libenvvars.so
+%{plugindir}/libexporter.so
+%{plugindir}/libheaderfixup.so
+%{plugindir}/libhelp_plugin.so
+%{plugindir}/libkeybinder.so
+%{plugindir}/liblib_finder.so
+%{plugindir}/libProfiler.so
+%{plugindir}/libProjectOptionsManipulator.so
+%{plugindir}/libRegExTestbed.so
+%{plugindir}/libReopenEditor.so
+%{plugindir}/libSymTab.so
+%{plugindir}/libwxsmith.so
+%{plugindir}/libwxSmithAui.so
+%{plugindir}/libwxsmithcontribitems.so
+%{plugindir}/libNassiShneiderman.so
+%{plugindir}/libSpellChecker.so
+%{plugindir}/libSmartIndent*.so
+%if 0%{?fedora}
+%{_datadir}/appdata/%{name}-contrib.metainfo.xml
+%endif
+
+
+%changelog
+* Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 13.12-23
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
+
+* Fri Jan 15 2016 Jonathan Wakely <jwakely@redhat.com> - 13.12-22
+- Rebuilt for Boost 1.60
+
+* Thu Sep 03 2015 Dan Horák <dan[at]danny.cz> - 13.12-21
+- rebuild for Boost 1.59
+
+* Fri Aug 21 2015 Marcin Juszkiewicz <mjuszkiewicz@redhat.com> - 13.12-20
+- Valgrind is not available only on s/390
+
+* Wed Jul 29 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.12-19
+- Rebuilt for https://fedoraproject.org/wiki/Changes/F23Boost159
+
+* Wed Jul 22 2015 David Tardon <dtardon@redhat.com> - 13.12-18
+- rebuild for Boost 1.58
+
+* Wed Jun 17 2015 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.12-17
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_23_Mass_Rebuild
+
+* Mon May 04 2015 Jason L Tibbitts III <tibbs@math.uh.edu> - 13.12-16
+- Indicate that this package bundles wxScintilla 1.7.1
+
+* Sat May 02 2015 Kalev Lember <kalevlember@gmail.com> - 13.12-15
+- Rebuilt for GCC 5 C++11 ABI change
+
+* Tue Jan 27 2015 Petr Machata <pmachata@redhat.com> - 13.12-14
+- Rebuild for boost 1.57.0
+
+* Fri Dec 12 2014 Dan Horák <dan[at]danny.cz> - 13.12-13
+- fix resource archive loading for astyle plugin (#1172984, #1173243)
+
+* Wed Dec 03 2014 Dan Horák <dan[at]danny.cz> - 13.12-12
+- drop support for RHEL < 6
+- include appdata only for Fedora
+
+* Fri Nov 21 2014 Dan Horák <dan[at]danny.cz> - 13.12-11
+- set Fedora specific paths for spellchecker and thesaurus in the SpellChecker plugin
+- update for astyle 2.05 (#1166377)
+
+* Thu Oct 02 2014 Rex Dieter <rdieter@fedoraproject.org> 13.12-10
+- udate mime scriptlet
+
+* Sat Aug 16 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.12-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Thu Aug 14 2014 Richard Hughes <richard@hughsie.com> - 13.12-8
+- Make the MetaInfo file validate
+
+* Mon Jul 07 2014 Richard Hughes <richard@hughsie.com> - 13.12-7
+- Use the AppData and MetaInfo files written by Ryan
+
+* Mon Jul 07 2014 Richard Hughes <richard@hughsie.com> - 13.12-6
+- Remove the incorrect conditional (which doesn't work) to never use --vendor
+  when installing desktop files. Using --vendor means the AppStream builder
+  cannot match an AppData file which means Code::Blocks doesn't appear in the
+  software center.
+
+* Sat Jun 07 2014 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 13.12-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_Mass_Rebuild
+
+* Fri May 23 2014 Petr Machata <pmachata@redhat.com> - 13.12-4
+- Rebuild for boost 1.55.0
+
+* Thu Mar 20 2014 Dan Horák <dan[at]danny.cz> - 13.12-3
+- unbundle astyle library (#1050825)
+
+* Wed Feb 26 2014 Dan Horák <dan[at]danny.cz> - 13.12-2
+- move the Occurrences Highlighting plugin to the main package (#1068971)
+
+* Sun Dec 29 2013 Dan Horák <dan[at]danny.cz> - 13.12-1
+- update to final 13.12 release (svn revision 9501)
+
+* Mon Nov 04 2013 Dan Horák <dan[at]danny.cz> - 12.11-2
+- fix Requires
+
+* Sun Sep 01 2013 Dan Horák <dan[at]danny.cz> - 12.11-1
+- update to final 12.11 release (svn revision 8629)
+
+* Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.05-13
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
+
+* Tue Feb 19 2013 Rahul Sundaram <sundaram@fedoraproject.org> - 10.05-12
+- remove vendor tag from desktop file. https://fedorahosted.org/fpc/ticket/247
+- clean up spec to follow current guidelines
+
+* Wed Feb 13 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.05-11
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
+* Wed Jul 18 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.05-10
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
+* Tue May 22 2012 Dan Horák <dan@danny.cz> - 10.05-9
+- build with system squirrel
+- fix FTBFS with g++ 4.7 (#823697)
+
+* Tue Feb 28 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.05-8
+- Rebuilt for c++ ABI breakage
+
+* Thu Jan 12 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.05-7
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
+
+* Tue Dec 06 2011 Adam Jackson <ajax@redhat.com> - 10.05-6
+- Rebuild for new libpng
+
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 10.05-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
+* Sat Aug 28 2010 Dan Horák <dan@danny.cz> - 10.05-4
+- xterm is the default terminal application, added as Requires (#622753)
+- backport D language support from trunk (http://fedoraproject.org/wiki/Features/D_Programming)
+
+* Mon Jul 12 2010 Dan Horák <dan@danny.cz> - 10.05-3
+- rebuilt against wxGTK-2.8.11-2
+
+* Thu Jul  8 2010 Dan Horák <dan[at]danny.cz> - 10.05-2
+- moved license text into -libs subpackage
+
+* Sun Jun 27 2010 Dan Horák <dan[at]danny.cz> - 10.05-1
+- updated to 10.05 release
+
+* Sat Feb 13 2010 Dan Horák <dan[at]danny.cz> - 8.02-10
+- fixed linking with the new --no-add-needed default (#564644)
+
+* Fri Jul 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 8.02-9
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
+
+* Mon Jun 15 2009 Dan Horák <dan[at]danny.cz> 8.02-8
+- fix gsocket between glib >= 2.21 and wxGTK in rawhide
+
+* Sat Feb 28 2009 Dan Horák <dan[at]danny.cz> 8.02-7
+- update desktop file (#487796)
+
+* Tue Feb 24 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 8.02-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
+
+* Wed Feb 18 2009 Dan Horak <dan[at]danny.cz> 8.02-5
+- fix compile error with gcc 4.4/glibc 2.9.90
+
+* Fri Oct 31 2008 Dan Horak <dan[at]danny.cz> 8.02-4
+- fix gcc detection (#469096)
+
+* Sat Sep 20 2008 Dan Horak <dan[at]danny.cz> 8.02-3
+- update desktop file
+- fix running console applications (#461120)
+
+* Fri Aug 29 2008 Dan Horak <dan[at]danny.cz> 8.02-2
+- refresh patches
+
+* Sun Mar  2 2008 Dan Horak <dan[at]danny.cz> 8.02-1
+- update to stable release 8.02
+- update BR to use system libraries
+
+* Mon Feb 18 2008 Dan Horak <dan[at]danny.cz> 1.0-0.30.20080211svn4872
+- update to revision 4872
+- really fix the multilib problem with the contrib subpackage (#433124)
+
+* Sun Feb 10 2008 Dan Horak <dan[at]danny.cz> 1.0-0.29.20080209svn4868
+- update to revision 4868
+
+* Tue Dec 11 2007 Dan Horak <dan[at]danny.cz> 1.0-0.28.20071210svn4719
+- update to revision 4719
+- fix multiarch problem with contrib subpackage (#340911)
+- set a fixed timestamp on all installed data files
+- preserve timestamps on updated files
+
+* Wed Aug 29 2007 Dan Horak <dan[at]danny.cz> 1.0-0.27.20070828svn4413
+- update to revision 4413
+- update the License tag
+
+* Wed Aug 29 2007 Fedora Release Engineering <rel-eng at fedoraproject dot org> - 1.0-0.26.20070718svn4280
+- Rebuild for selinux ppc32 issue (F8).
+
+* Thu Jul 19 2007 Dan Horak <dan[at]danny.cz> 1.0-0.25.20070718svn4280
+- update to revision 4280
+- added missing ldconfig call for the contrib subpackage
+- fix permissions for source files
+
+* Sat Apr  7 2007 Dan Horak <dan[at]danny.cz> 1.0-0.24.20070406svn3816
+- update to revision 3816
+
+* Tue Feb 13 2007 Dan Horak <dan[at]danny.cz> 1.0-0.23.20070211svn3592
+- update the autorev.patch
+
+* Tue Feb 13 2007 Dan Horak <dan[at]danny.cz> 1.0-0.22.20070211svn3592
+- update to revision 3592
+- added patch for New Project wizard with wxGTK 2.8 (#225058)
+- created -libs subpackage to make package multilib-aware (#228356)
+
+* Fri Jan 26 2007 Dan Horak <dan[at]danny.cz> 1.0-0.21.20070125svn3540
+- update the listbook.patch
+
+* Fri Jan 26 2007 Dan Horak <dan[at]danny.cz> 1.0-0.20.20070125svn3540
+- update to revision 3540
+
+* Thu Jan 18 2007 Dan Horak <dan[at]danny.cz> 1.0-0.19.20070117svn3500
+- update to revision 3500
+- added patch for compiling with wxGTK 2.8
+
+* Fri Dec  8 2006 Dan Horak <dan[at]danny.cz> 1.0-0.18.20061207svn3357
+- update to revision 3357
+
+* Thu Nov 30 2006 Dan Horak <dan[at]danny.cz> 1.0-0.17.20061130svn3315
+- update to revision 3315
+
+* Tue Nov 28 2006 Dan Horak <dan[at]danny.cz> 1.0-0.16.20061128svn3295
+- update to revision 3295
+
+* Sat Nov 25 2006 Dan Horak <dan[at]danny.cz> 1.0-0.15.20061125svn3268
+- update to revision 3268
+- fixes #217081
+
+* Tue Nov 21 2006 Dan Horak <dan[at]danny.cz> 1.0-0.14.20061121svn3253
+- update to revision 3253
+
+* Fri Nov 10 2006 Dan Horak <dan[at]danny.cz> 1.0-0.13.20061110svn3202
+- update to revision 3202
+- fixed plugin loading on 64-bit platforms
+
+* Fri Nov  3 2006 Dan Horak <dan[at]danny.cz> 1.0-0.12.20061102svn3170
+- update to revision 3170
+
+* Mon Oct 30 2006 Dan Horak <dan[at]danny.cz> 1.0-0.11.20061029svn3157
+- update to revision 3157
+- kill rpath in the spec file using sed
+- fix directory ownership
+
+* Sun Oct  8 2006 Dan Horak <dan[at]danny.cz> 1.0-0.10.20061007svn3030
+- update to revision 3030
+- change the install paths for plugins in the spec file
+
+* Wed Sep 13 2006 Dan Horak <dan[at]danny.cz> 1.0-0.9.20060909svn2965
+- do not require .svn directories for building
+
+* Sun Sep 10 2006 Dan Horak <dan[at]danny.cz> 1.0-0.8.20060909svn2965
+- update to revision 2965
+- use %%configure macro
+- properly install the desktop file
+- update the mime database after install and uninstall
+- do not own only %%{_libdir}/codeblock/plugins, but also %%{_libdir}/codeblock
+- added a script for retrieving and packing a revision from the SVN repo
+
+* Sun Sep  3 2006 Dan Horak <dan[at]danny.cz> 1.0-0.7.20060902svn2944
+- update to revision 2944
+
+* Sun Aug 20 2006 Dan Horak <dan[at]danny.cz> 1.0-0.6.20060820svn2882
+- update to revision 2882
+- added missing Requires for devel subpackage
+
+* Wed Aug 16 2006 Dan Horak <dan[at]danny.cz> 1.0-0.5.20060815svn2854
+- update to revision 2854
+
+* Wed Aug 16 2006 Dan Horak <dan[at]danny.cz> 1.0-0.4.20060812svn2840
+- make setup section quiet
+- use only tabs for indentation
+
+* Tue Aug 15 2006 Dan Horak <dan[at]danny.cz> 1.0-0.3.20060812svn2840
+- define libdir in configure
+
+* Sun Aug 13 2006 Dan Horak <dan[at]danny.cz> 1.0-0.2.20060812svn2840
+- update to revision 2840
+- added BR for autotools
+
+* Tue Aug 08 2006 Dan Horak <dan[at]danny.cz> 1.0-0.1.2824svn
+- initial spec file based on upstream
