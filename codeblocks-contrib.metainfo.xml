@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="addon">
+  <id>codeblocks-contrib</id>
+  <extends>codeblocks.desktop</extends>
+  <name>Code::Blocks Plugins</name>
+  <summary>Additional plugins for the Code::Blocks IDE</summary>
+  <description>
+    <p>
+      Contains over 40 additional plugins for the Code::Blocks IDE, including:
+    </p>
+    <ul>
+      <li>
+        AutoVersioning -- Auto increments the version and build number of your application every time a change has been made
+      </li>
+      <li>
+        BrowseTracker -- Browse to previous source positions
+      </li>
+      <li>
+        BYO Games -- A collection of Games
+      </li>
+      <li>
+        Koders query -- Searches the Koders website for keywords, and returns results
+      </li>
+      <li>
+        Cccc -- runs the C and C++ Code Counter (CCCC) on the current project
+      </li>
+      <li>
+        Code snippets -- create and save code snippets for later use
+      </li>
+      <li>
+        Copy Strings -- copies all strings in the editor to the clipboard, and removes duplicates
+      </li>
+      <li>
+        CppCheck -- runs CppCheck over the current project
+      </li>
+    </ul>
+  </description>
+  <url type="homepage">http://www.codeblocks.org/cbplugins</url>
+  <metadata_license>CC0-1.0</metadata_license>
+  <updatecontact>jens_at_codeblocks.org</updatecontact>
+</component>

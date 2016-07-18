@@ -21,6 +21,8 @@ EXTRA_DIST = bootstrap \
 		COMPILERS \
 		$(srcdir)/update* \
 		ChangeLog.xsl \
+		codeblocks.appdata.xml \
+		codeblocks-contrib.metainfo.xml \
 		debian
 
 clean-zipfiles:
@@ -39,3 +41,6 @@ endif
 
 clean-local:
 	rm -f $(top_srcdir)/debian/codeblocks-headers.install
+
+appdatadir = $(datarootdir)/appdata
+dist_appdata_DATA = $(top_srcdir)/codeblocks.appdata.xml
