@@ -189,9 +189,7 @@ fi
 %{plugindir}/libscriptedwizard.so
 %{plugindir}/libtodo.so
 
-%if 0%{?fedora}
 %{_datadir}/appdata/%{name}.appdata.xml
-%endif
 %{_datadir}/applications/%{name}.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*.png
 %{_datadir}/mime/packages/%{name}.xml
@@ -339,12 +337,14 @@ fi
 %{plugindir}/libNassiShneiderman.so
 %{plugindir}/libSpellChecker.so
 %{plugindir}/libSmartIndent*.so
-%if 0%{?fedora}
 %{_datadir}/appdata/%{name}-contrib.metainfo.xml
-%endif
 
 
 %changelog
+* Tue Jul 19 2016 Jens Lody <fedora@jenslody.de> - 16.01.svn.10885-1
+- New upstream.
+- Spec-file clean up.
+
 * Wed Feb 03 2016 Fedora Release Engineering <releng@fedoraproject.org> - 13.12-23
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_24_Mass_Rebuild
 
