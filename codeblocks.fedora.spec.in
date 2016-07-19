@@ -122,7 +122,9 @@ make %{?_smp_mflags}
 %install
 %make_install
 
+%if 0%{?fedora}
 appstream-util validate-relax --nonet %{buildroot}/%{_datadir}/appdata/*.{appdata,metainfo}.xml
+%endif
 desktop-file-validate	%{buildroot}/%{_datadir}/applications/codeblocks.desktop
 
 rm -f %{buildroot}/%{_libdir}/*.la
