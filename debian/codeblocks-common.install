@@ -1,6 +1,7 @@
 usr/share/icons
 usr/share/pixmaps
 usr/share/mime
+usr/share/appdata/codeblocks.appdata.xml
 usr/share/applications
 
 usr/share/man/man1/codeblocks.1
