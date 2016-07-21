@@ -175,7 +175,7 @@ fi
 
 %dir %{pkglibdir}
 %dir %{plugindir}
-%{plugindir}/libastyle.so
+%{plugindir}/libAstyle.so
 %{plugindir}/libabbreviations.so
 %{plugindir}/libautosave.so
 %{plugindir}/libclasswizard.so
@@ -205,7 +205,7 @@ fi
 %{pkgdatadir}/lexers
 %{pkgdatadir}/scripts
 %{pkgdatadir}/templates
-%{pkgdatadir}/astyle.zip
+%{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/abbreviations.zip
 %{pkgdatadir}/autosave.zip
 %{pkgdatadir}/classwizard.zip

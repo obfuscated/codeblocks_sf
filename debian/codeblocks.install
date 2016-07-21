@@ -3,7 +3,7 @@ usr/bin/cb_console_runner
 usr/bin/cb_share_config
 
 usr/lib/codeblocks/plugins/libabbreviations.so
-usr/lib/codeblocks/plugins/libastyle.so
+usr/lib/codeblocks/plugins/libAstyle.so
 usr/lib/codeblocks/plugins/libautosave.so
 usr/lib/codeblocks/plugins/libclasswizard.so
 usr/lib/codeblocks/plugins/libcodecompletion.so

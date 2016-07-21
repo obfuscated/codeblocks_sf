@@ -63,8 +63,8 @@ AStylePlugin::AStylePlugin()
 {
     //ctor
 
-    if (!Manager::LoadResource(_T("astyle.zip")))
-        NotifyMissingFile(_T("astyle.zip"));
+    if (!Manager::LoadResource(_T("Astyle.zip")))
+        NotifyMissingFile(_T("Astyle.zip"));
 }
 
 AStylePlugin::~AStylePlugin()

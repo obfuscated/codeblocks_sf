@@ -6,13 +6,13 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 
 pluginlibdir = $(pkglibdir)/plugins
 
-pluginlib_LTLIBRARIES = libastyle.la
+pluginlib_LTLIBRARIES = libAstyle.la
 
-libastyle_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libAstyle_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libastyle_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
+libAstyle_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 
-libastyle_la_SOURCES = asstreamiterator.cpp \
+libAstyle_la_SOURCES = asstreamiterator.cpp \
                        astyleconfigdlg.cpp \
                        astyleplugin.cpp \
                        dlgformattersettings.cpp \
@@ -42,7 +42,7 @@ EXTRA_DIST = astyle/ASLocalizer.cpp \
              astyle/vsinstall.html
 
 if HAVE_ASTYLE
-libastyle_la_LIBADD += -lastyle
+libAstyle_la_LIBADD += -lastyle
 EXTRA_DIST += astyle/ASBeautifier.cpp \
 		astyle/ASEnhancer.cpp \
 		astyle/ASFormatter.cpp \
@@ -50,7 +50,7 @@ EXTRA_DIST += astyle/ASBeautifier.cpp \
                 astyle/astyle.h
 else
 AM_CPPFLAGS += -I$(top_srcdir)/src/plugins/astyle/astyle
-libastyle_la_SOURCES += astyle/ASBeautifier.cpp \
+libAstyle_la_SOURCES += astyle/ASBeautifier.cpp \
                        astyle/ASEnhancer.cpp \
                        astyle/ASFormatter.cpp \
                        astyle/ASResource.cpp

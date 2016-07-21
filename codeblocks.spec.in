@@ -278,7 +278,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{_bindir}/cb_console_runner
 %{_bindir}/cb_share_config
 %{plugindir}/libabbreviations.so
-%{plugindir}/libastyle.so
+%{plugindir}/libAstyle.so
 %{plugindir}/libautosave.so
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcodecompletion.so
@@ -307,7 +307,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/scripts/*
 %{pkgdatadir}/templates/*
 %{pkgdatadir}/abbreviations.zip
-%{pkgdatadir}/astyle.zip
+%{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/autosave.zip
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/codecompletion.zip

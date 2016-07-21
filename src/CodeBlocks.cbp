@@ -265,7 +265,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel/share/CodeBlocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
+				<Option output="devel/share/CodeBlocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel" />
 				<Option external_deps="devel/libcodeblocks.a;" />
 				<Option type="3" />
@@ -292,7 +292,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel\share\CodeBlocks mkdir devel\share\CodeBlocks" />
-					<Add after="zip -jq9 devel\share\CodeBlocks\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
+					<Add after="zip -jq9 devel\share\CodeBlocks\Astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
