@@ -1,5 +1,5 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		$(WX_GTK2_CFLAGS) \
+		$(WX_GTK_CFLAGS) \
 		$(WX_X11_CFLAGS)
 
 pluginlibdir = $(pkglibdir)/plugins
@@ -11,7 +11,7 @@ pluginlibdir = $(pkglibdir)/plugins
 ##codesnippets_LDADD = $(WX_LIBS) ../../../../sdk/libcodeblocks.la
 ##codesnippets_LDADD =  -L../../../../sdk ../../../../sdk/libcodeblocks.la \
 ##            ../../../../base/tinyxml/libtinyxml.la \
-##			$(WX_LIBS) $(WX_GTK2_LIBS) $(WX_X11_LIBS)
+##			$(WX_LIBS) $(WX_GTK_LIBS) $(WX_X11_LIBS)
 
 pkgdata_DATA = codesnippets.zip
 CLEANFILES = $(pkgdata_DATA)

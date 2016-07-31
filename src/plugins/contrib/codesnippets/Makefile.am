@@ -1,7 +1,7 @@
 SUBDIRS = resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		$(WX_GTK2_CFLAGS) \
+		$(WX_GTK_CFLAGS) \
 		$(WX_X11_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
@@ -19,7 +19,7 @@ pluginlib_LTLIBRARIES = libcodesnippets.la
 
 libcodesnippets_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libcodesnippets_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS) $(WX_GTK2_LIBS) $(WX_X11_LIBS)
+libcodesnippets_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS) $(WX_GTK_LIBS) $(WX_X11_LIBS)
 
 libcodesnippets_la_SOURCES = codesnippets.cpp \
 		codesnippetstreectrl.cpp \

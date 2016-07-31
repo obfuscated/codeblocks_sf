@@ -12,7 +12,7 @@ pluginlib_LTLIBRARIES = libdebugger.la
 
 libdebugger_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
 
-libdebugger_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS) $(WX_GTK2_LIBS)
+libdebugger_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS) $(WX_GTK_LIBS)
 
 libdebugger_la_SOURCES = cdb_driver.cpp \
 			databreakpointdlg.cpp \

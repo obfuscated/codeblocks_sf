@@ -18,7 +18,7 @@ GTK_NOTEBOOK_FLAGS = -DUSE_GTK_NOTEBOOK
 endif
 
 if CODEBLOCKS_LINUX
-AM_CPPFLAGS += -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\"" $(WX_GTK2_CFLAGS) $(GTK_NOTEBOOK_FLAGS)
+AM_CPPFLAGS += -DENABLE_BINRELOC -DAPP_PREFIX="\"@prefix@\"" $(WX_GTK_CFLAGS) $(GTK_NOTEBOOK_FLAGS)
 endif
 
 bin_PROGRAMS = codeblocks
@@ -30,11 +30,11 @@ install-exec-hook:
 	$(MACSETFILE) -a C $(DESTDIR)$(bindir)/codeblocks$(EXEEXT)
 
 # wxAUI uses GTK+ libraries on wxGTK
-# codeblocks_LDFLAGS = $(WX_GTK2_LIBS)
+# codeblocks_LDFLAGS = $(WX_GTK_LIBS)
 
 codeblocks_LDADD =  ../sdk/libcodeblocks.la \
 			$(WX_LIBS) \
-			$(WX_GTK2_LIBS)
+			$(WX_GTK_LIBS)
 
 codeblocks_SOURCES = app.cpp \
 			appglobals.cpp \
