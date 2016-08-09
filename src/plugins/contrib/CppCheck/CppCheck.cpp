@@ -326,40 +326,27 @@ void CppCheck::DoCppCheckAnalysis(const wxString& Xml)
     }
     else
     {
-        bool ErrorsPresent = false;
         TiXmlHandle Handle(&Doc);
         Handle = Handle.FirstChildElement("results");
-        for (const TiXmlElement* Error = Handle.FirstChildElement("error").ToElement(); Error;
-                Error = Error->NextSiblingElement("error"))
+
+        bool ErrorsPresent = false;
+        TiXmlElement* resultNode = Handle.ToElement();
+        if (nullptr!=resultNode->Attribute("version"))
         {
-            wxString File;
-            if (const char* FileValue = Error->Attribute("file"))
-                File = wxString::FromAscii(FileValue);
-            wxString Line;
-            if (const char* LineValue = Error->Attribute("line"))
-                Line = wxString::FromAscii(LineValue);
-            wxString Id;
-            if (const char* IdValue = Error->Attribute("id"))
-                Id = wxString::FromAscii(IdValue);
-            wxString Severity;
-            if (const char* SeverityValue = Error->Attribute("severity"))
-                Severity = wxString::FromAscii(SeverityValue);
-            wxString Message;
-            if (const char* MessageValue = Error->Attribute("msg"))
-                Message = wxString::FromAscii(MessageValue);
-            const wxString FullMessage = Id + _T(" : ") + Severity + _T(" : ") + Message;
-            if (!File.IsEmpty() && !Line.IsEmpty() && !FullMessage.IsEmpty())
+            wxString Version = wxString::FromAscii(resultNode->Attribute("version"));
+            if ( Version.IsSameAs(wxT("2")) )
+                ErrorsPresent = DoCppCheckParseXMLv2(Handle);
+            else
             {
-                wxArrayString Arr;
-                Arr.Add(File);
-                Arr.Add(Line);
-                Arr.Add(FullMessage);
-                m_ListLog->Append(Arr);
-                ErrorsPresent = true;
+                cbMessageBox(_("Unsupported XML file version of CppCheck."),
+                             _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
             }
-            else if (!Message.IsEmpty())
-                AppendToLog(Message); // might be something important like config not found...
         }
+        else
+        {
+            ErrorsPresent = DoCppCheckParseXMLv1(Handle);
+        }
+
         if (ErrorsPresent)
         {
             if ( Manager::Get()->GetLogManager() )
@@ -375,6 +362,100 @@ void CppCheck::DoCppCheckAnalysis(const wxString& Xml)
                          _("Error"), wxICON_ERROR | wxOK, Manager::Get()->GetAppWindow());
         }
     }
+}
+
+bool CppCheck::DoCppCheckParseXMLv1(TiXmlHandle& Handle)
+{
+    bool ErrorsPresent = false;
+
+    for (const TiXmlElement* Error = Handle.FirstChildElement("error").ToElement(); Error;
+            Error = Error->NextSiblingElement("error"))
+    {
+        wxString File;
+        if (const char* FileValue = Error->Attribute("file"))
+            File = wxString::FromAscii(FileValue);
+        wxString Line;
+        if (const char* LineValue = Error->Attribute("line"))
+            Line = wxString::FromAscii(LineValue);
+        wxString Id;
+        if (const char* IdValue = Error->Attribute("id"))
+            Id = wxString::FromAscii(IdValue);
+        wxString Severity;
+        if (const char* SeverityValue = Error->Attribute("severity"))
+            Severity = wxString::FromAscii(SeverityValue);
+        wxString Message;
+        if (const char* MessageValue = Error->Attribute("msg"))
+            Message = wxString::FromAscii(MessageValue);
+        const wxString FullMessage = Id + _T(" : ") + Severity + _T(" : ") + Message;
+
+        if (!File.IsEmpty() && !Line.IsEmpty() && !FullMessage.IsEmpty())
+        {
+            wxArrayString Arr;
+            Arr.Add(File);
+            Arr.Add(Line);
+            Arr.Add(FullMessage);
+            m_ListLog->Append(Arr);
+            ErrorsPresent = true;
+        }
+        else if (!Message.IsEmpty())
+            AppendToLog(Message); // might be something important like config not found...
+    }
+
+    return ErrorsPresent;
+}
+
+bool CppCheck::DoCppCheckParseXMLv2(TiXmlHandle& Handle)
+{
+    bool ErrorsPresent = false;
+
+    const TiXmlHandle& Errors = Handle.FirstChildElement("errors");
+
+    for (const TiXmlElement* Error = Errors.FirstChildElement("error").ToElement();
+                             Error;
+                             Error = Error->NextSiblingElement("error"))
+    {
+        wxString Id;
+        if (const char* IdValue = Error->Attribute("id"))
+            Id = wxString::FromAscii(IdValue);
+        wxString Severity;
+        if (const char* SeverityValue = Error->Attribute("severity"))
+            Severity = wxString::FromAscii(SeverityValue);
+        wxString Message;
+        if (const char* MessageValue = Error->Attribute("msg"))
+            Message = wxString::FromAscii(MessageValue);
+        wxString CWE;
+        if (const char* CWEValue = Error->Attribute("cwe"))
+            CWE = wxString::FromAscii(CWEValue);
+        wxString Verbose;
+        if (const char* VerboseValue = Error->Attribute("verbose"))
+            Verbose = wxString::FromAscii(VerboseValue);
+        const wxString FullMessage = Id + _T(" : ") + Severity + _T(" : ") + Verbose;
+
+        wxString File;
+        wxString Line;
+        const TiXmlElement* Location = Error->FirstChildElement("location");
+        if (nullptr!=Location)
+        {
+            if (const char* FileValue = Location->Attribute("file"))
+                File = wxString::FromAscii(FileValue);
+            if (const char* LineValue = Location->Attribute("line"))
+                Line = wxString::FromAscii(LineValue);
+        }
+
+        if (!FullMessage.IsEmpty() && !File.IsEmpty() && !Line.IsEmpty())
+        {
+            wxArrayString Arr;
+            Arr.Add(File);
+            Arr.Add(Line);
+            Arr.Add(FullMessage);
+            m_ListLog->Append(Arr);
+            ErrorsPresent = true;
+        }
+        else if (!Message.IsEmpty())
+            AppendToLog(Message); // might be something important like config not found...
+    }
+
+    return ErrorsPresent;
 }
 //} CppCheck
 

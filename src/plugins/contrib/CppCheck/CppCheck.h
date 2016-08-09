@@ -47,6 +47,8 @@ private:
     int ExecuteCppCheck(cbProject* Project);
     int  DoCppCheckExecute(TCppCheckAttribs& CppCheckAttribs);
     void DoCppCheckAnalysis(const wxString& Xml);
+    bool DoCppCheckParseXMLv1(TiXmlHandle& Handle);
+    bool DoCppCheckParseXMLv2(TiXmlHandle& Handle);
     //} CppCheck
 
     //{ Vera
