@@ -15,7 +15,7 @@ pkgconfig_DATA = codeblocks.pc
 
 EXTRA_DIST = bootstrap \
 		codeblocks.spec \
-		codeblocks.fedora.spec \
+		codeblocks.spec.fedora \
 		codeblocks.plist \
 		BUGS \
 		BUILD \
