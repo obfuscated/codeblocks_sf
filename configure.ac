@@ -594,7 +594,7 @@ AC_CONFIG_FILES([Makefile
 	src/templates/win32/Makefile
 	src/wxsmith/Makefile
 	codeblocks.pc
-	codeblocks.fedora.spec
+	codeblocks.spec.fedora
 	codeblocks.spec
 	codeblocks.plist
 ])
