@@ -290,6 +290,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libprojectsimporter.so
 %{plugindir}/libscriptedwizard.so
 %{plugindir}/libtodo.so
+%{_datadir}/appdata/codeblocks.appdata.xml
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
 %{_datadir}/mime/packages/codeblocks.xml
@@ -426,6 +427,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %endif
 %{_mandir}/man1/*snippets*
 %doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+%{_datadir}/appdata/codeblocks-contrib.metainfo.xml
 
 %files contrib-libs
 %defattr(-,root,root)
