@@ -387,9 +387,11 @@ wxString Tokenizer::ReadToEOL(bool stripUnneeded)
               PreviousChar(), NextChar());
 
         static const size_t maxBufferLen = 4094;
+        // the intermediate cache string, once it is full, the contents will piped to str
         wxChar buffer[maxBufferLen + 2];
+        // we use a pointer to access the intermediate cache string
         wxChar* p = buffer;
-        wxString str;
+        wxString str; // the returned string
 
         // loop all the physical lines when reading macro definition
         for (;;)
@@ -421,6 +423,18 @@ wxString Tokenizer::ReadToEOL(bool stripUnneeded)
                 if (ch <= _T(' ') && p > buffer && *(p - 1) == ch)
                 {
                     MoveToNextChar();
+                    continue;
+                }
+                // handle string literals, directly put the content to the output str.
+                if (ch == _T('"') || ch == _T('\''))
+                {
+                    if (p > buffer) {
+                        str.Append(buffer, p - buffer);
+                        p = buffer;
+                    }
+                    int literal_start = m_TokenIndex;//remember the beginning of the m_TokenIndex
+                    SkipString();// m_TokenIndex points at the next char following the string literal
+                    str.Append(m_Buffer.wx_str() + literal_start, (m_TokenIndex - literal_start));
                     continue;
                 }
 
