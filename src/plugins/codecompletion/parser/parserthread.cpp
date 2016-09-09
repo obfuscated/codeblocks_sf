@@ -2197,6 +2197,21 @@ void ParserThread::HandleClass(EClassType ct)
             break;
         }
         // -------------------------------------------------------------------
+        else if(next == ParserConsts::equals)
+        // -------------------------------------------------------------------
+        {
+            // some patterns like: struct AAA a = {.x = 1, .y=2};
+            // In (ANSI) C99, you can use a designated initializer to initialize a structure
+            if (!lastCurrent.IsEmpty() )
+            {
+                m_Str << lastCurrent << ParserConsts::space_chr;
+                DoAddToken(tkVariable, current, m_Tokenizer.GetLineNumber());
+            }
+            // so we have to eat the brace pair
+            SkipToOneOfChars(ParserConsts::semicolon, /* supportNesting*/ true, /*singleCharToken*/ true);
+            break;
+        }
+        // -------------------------------------------------------------------
         else
         // -------------------------------------------------------------------
         {
