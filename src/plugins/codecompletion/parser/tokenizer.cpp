@@ -2029,4 +2029,7 @@ void Tokenizer::AddMacroDefinition(wxString name, int line, wxString para, wxStr
     // update the definition
     token->m_Args = para;           // macro call's formal args
     token->m_FullType = substitues; // replace list
+
+    // this will append the doxygen style comments to the Token
+    SetLastTokenIdx(token->m_Index);
 }
