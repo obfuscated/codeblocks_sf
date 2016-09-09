@@ -930,6 +930,9 @@
 		<Unit filename="include/importers_globals.h">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="include/incrementalselectlistbase.h">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="include/incrementalselectlistdlg.h">
 			<Option target="sdk" />
 		</Unit>
@@ -1465,6 +1468,12 @@
 		<Unit filename="plugins/codecompletion/insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/gotofunctiondlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/gotofunctiondlg.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/insertclassmethoddlg.h">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1556,6 +1565,9 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/codecompletion_toolbar.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/resources/goto_function_dlg.xrc">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
@@ -2651,6 +2663,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/importers_globals.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/incrementalselectlistbase.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/incrementalselectlistdlg.cpp">

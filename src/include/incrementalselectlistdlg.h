@@ -8,13 +8,11 @@
 
 #include "settings.h"
 #include "scrollingdialog.h"
+#include "incrementalselectlistbase.h"
 #include <wx/textctrl.h>
 #include <wx/listbox.h>
 
-class IncrementalSelectIterator; // forward decl
-
-
-class DLLIMPORT IncrementalSelectListDlg : public wxScrollingDialog
+class DLLIMPORT IncrementalSelectListDlg : public IncrementalSelectListBase
 {
     public:
         IncrementalSelectListDlg(wxWindow* parent,
@@ -25,38 +23,12 @@ class DLLIMPORT IncrementalSelectListDlg : public wxScrollingDialog
         wxString GetStringSelection();
         wxIntPtr GetSelection();
     protected:
-        void FillList();
-        void OnSearch(wxCommandEvent& event);
-        void OnSelect(wxCommandEvent& event);
-        void OnKeyDown(wxKeyEvent& event);
-        wxListBox* m_List;
-        wxTextCtrl* m_Text;
-        const IncrementalSelectIterator &m_Iterator;
+        // overwrite the virtual functions from base class
+        virtual void GetCurrentSelection(int &sel, size_t &selMax);
+        virtual void UpdateCurrentSelection(int sel, size_t selPrevious);
+        virtual void FillData();
     private:
         DECLARE_EVENT_TABLE();
-};
-
-class DLLIMPORT IncrementalSelectIterator
-{
-    public:
-        virtual ~IncrementalSelectIterator() {}
-
-        virtual long GetCount() const = 0;
-        virtual wxString GetItem(long index) const = 0;
-        virtual wxString GetDisplayItem(long index) const { return GetItem(index); }
-};
-
-class DLLIMPORT IncrementalSelectIteratorStringArray : public IncrementalSelectIterator
-{
-    public:
-        IncrementalSelectIteratorStringArray(const wxArrayString& array) : m_Array(array)
-        {
-        }
-
-        virtual long GetCount() const { return m_Array.GetCount(); }
-        virtual wxString GetItem(long index) const { return m_Array[index]; }
-    private:
-        const wxArrayString& m_Array;
 };
 
 #endif // INCREMENTALSELECTLISTDLG_H

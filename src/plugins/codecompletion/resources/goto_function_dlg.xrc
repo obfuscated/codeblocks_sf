@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxScrollingDialog" name="dlgGotoFunction">
+		<title>Select...</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="lblMessage">
+							<label>Please select:</label>
+						</object>
+						<flag>wxTOP|wxRIGHT</flag>
+						<border>8</border>
+						<option>1</option>
+					</object>
+					<object class="spacer">
+						<flag>wxALL|wxEXPAND</flag>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="modeSelect">
+							<label>Column Mode</label>
+						</object>
+						<flag>wxALL|wxALIGN_TOP</flag>
+						<border>8</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="txtSearch">
+					<focused>1</focused>
+					<style>wxTE_PROCESS_ENTER|wxWANTS_CHARS</style>
+				</object>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxListBox" name="lstItems">
+					<style>wxLB_SINGLE|wxLB_HSCROLL|wxLB_NEEDED_SB|wxWANTS_CHARS</style>
+				</object>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxListCtrl" name="lstCtrlItems">
+					<focused>1</focused>
+					<style>wxLC_REPORT</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

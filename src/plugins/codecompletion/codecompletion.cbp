@@ -153,6 +153,8 @@
 		<Unit filename="doxygen_parser.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="gotofunctiondlg.cpp" />
+		<Unit filename="gotofunctiondlg.h" />
 		<Unit filename="insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>

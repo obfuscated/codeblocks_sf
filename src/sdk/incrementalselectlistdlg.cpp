@@ -22,52 +22,20 @@
 
 #include "incrementalselectlistdlg.h"
 
-
-
 BEGIN_EVENT_TABLE(IncrementalSelectListDlg, wxScrollingDialog)
-    EVT_TEXT(XRCID("txtSearch"), IncrementalSelectListDlg::OnSearch)
-    EVT_LISTBOX_DCLICK(XRCID("lstItems"), IncrementalSelectListDlg::OnSelect)
+    EVT_TEXT(XRCID("txtSearch"), IncrementalSelectListBase::OnSearch)
+    EVT_LISTBOX_DCLICK(XRCID("lstItems"), IncrementalSelectListBase::OnSelect)
 END_EVENT_TABLE()
 
 IncrementalSelectListDlg::IncrementalSelectListDlg(wxWindow* parent, const IncrementalSelectIterator& iterator,
-                                                   const wxString& caption, const wxString& message)
-    : m_List(nullptr),
-    m_Text(nullptr),
-    m_Iterator(iterator)
+                                                   const wxString& caption, const wxString& message):
+    IncrementalSelectListBase(parent, iterator, _T("dlgIncrementalSelectList"), caption, message)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgIncrementalSelectList"),_T("wxScrollingDialog"));
-    if (!caption.IsEmpty())
-        SetTitle(caption);
-    if (!message.IsEmpty())
-        XRCCTRL(*this, "lblMessage", wxStaticText)->SetLabel(message);
-
-    m_Text = XRCCTRL(*this, "txtSearch", wxTextCtrl);
-    m_List = XRCCTRL(*this, "lstItems", wxListBox);
-
-    SetSize(GetPosition().x - 90, GetPosition().y - 70, 500, 300);
-
-    m_Text->Connect( wxEVT_KEY_DOWN,
-                    (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                    &IncrementalSelectListDlg::OnKeyDown,
-                    nullptr, this );
-    m_List->Connect( wxEVT_KEY_DOWN,
-                    (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                    &IncrementalSelectListDlg::OnKeyDown,
-                    nullptr, this );
-
-    FillList();
+    FillData();
 }
 
 IncrementalSelectListDlg::~IncrementalSelectListDlg()
 {
-    m_Text->Disconnect( wxEVT_KEY_DOWN,
-                       (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                       &IncrementalSelectListDlg::OnKeyDown,
-                       nullptr, this );
-    m_List->Disconnect( wxEVT_KEY_DOWN,
-                       (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                       &IncrementalSelectListDlg::OnKeyDown,
-                       nullptr, this );
 }
 
 wxString IncrementalSelectListDlg::GetStringSelection()
@@ -84,158 +52,28 @@ wxIntPtr IncrementalSelectListDlg::GetSelection()
     return reinterpret_cast<wxIntPtr>(m_List->GetClientData(selection));
 }
 
-void IncrementalSelectListDlg::FillList()
+void IncrementalSelectListDlg::FillData()
 {
+    // Stop refresh
     Freeze();
 
-    // We put a star before and after pattern to find search expression everywhere in path
-    wxString search(wxT("*") + m_Text->GetValue().Lower() + wxT("*"));
+    // Get items list taking in account typed text (promote result system)
+    FilterItems();
 
-    wxArrayString result;
-    wxArrayLong indexes;
-
-    m_List->Clear();
-    for (int i = 0; i < m_Iterator.GetCount(); ++i)
-    {
-        wxString const &item = m_Iterator.GetItem(i);
-        // 2 for before and after stars =~ empty string
-        if ((search.Length()==2) || item.Lower().Matches(search.c_str()))
-        {
-            result.Add(m_Iterator.GetDisplayItem(i));
-            indexes.Add(i);
-        }
-    }
-
-    // if only alphabetical, pull word boundaries to the top
-    if (search.Length() > 2)
-    {
-        wxString prefix;
-        for (size_t i = 0; i < search.Length(); ++i)
-        {
-            if (wxIsalpha(search[i]))
-                prefix += search[i];
-        }
-        if (prefix.Length() == search.Length() - 2)
-        {
-            std::vector<size_t> promoteIdxs;
-            wxArrayString newRes;
-            wxArrayLong newIndx;
-            for (size_t i = 0; i < result.Count(); ++i)
-            {
-                wxString cur = result[i].Lower();
-                bool promote = false;
-                if (cur.StartsWith(prefix))
-                    promote = true;
-                else
-                {
-                    int maxLn = cur.Length() - prefix.Length();
-                    for (int j = 0; j < maxLn; ++j)
-                    {
-                        if (!wxIsalpha(cur[j]) && cur.Mid(j + 1).StartsWith(prefix))
-                        {
-                            promote = true;
-                            break;
-                        }
-                    }
-                }
-                if (promote)
-                {
-                    promoteIdxs.push_back(i);
-                    newRes.Add(result[i]);
-                    newIndx.Add(indexes[i]);
-                }
-            }
-            if (!promoteIdxs.empty())
-            {
-                for (size_t i = 0; i < result.Count(); ++i)
-                {
-                    if (!std::binary_search(promoteIdxs.begin(), promoteIdxs.end(), i))
-                    {
-                        newRes.Add(result[i]);
-                        newIndx.Add(indexes[i]);
-                    }
-                }
-                result = newRes;
-                indexes = newIndx;
-            }
-        }
-    }
-
-    if (!result.empty())
-    {
-        m_List->Set(result, reinterpret_cast<void**>(&indexes[0]));
-        m_List->SetSelection(0);
-    }
+    // Show results
+    FillList();
 
     Thaw();
 }
 
-// events
-
-void IncrementalSelectListDlg::OnSearch(cb_unused wxCommandEvent& event)
+void IncrementalSelectListDlg::GetCurrentSelection(int &sel, size_t &selMax)
 {
-    FillList();
+    sel = m_List->GetSelection();
+    selMax = m_List->GetCount() - 1;
+
 }
 
-void IncrementalSelectListDlg::OnSelect(cb_unused wxCommandEvent& event)
+void IncrementalSelectListDlg::UpdateCurrentSelection(int sel, size_t selPrevious)
 {
-    EndModal(wxID_OK);
-}
-
-void IncrementalSelectListDlg::OnKeyDown(wxKeyEvent& event)
-{
-    //Manager::Get()->GetLogManager()->Log(mltDevDebug, "OnKeyDown");
-    size_t sel = 0;
-    switch (event.GetKeyCode())
-    {
-        case WXK_RETURN:
-        case WXK_NUMPAD_ENTER:
-            EndModal(wxID_OK);
-            break;
-
-        case WXK_ESCAPE:
-            EndModal(wxID_CANCEL);
-            break;
-
-        case WXK_UP:
-        case WXK_NUMPAD_UP:
-            sel = m_List->GetSelection() - 1;
-            m_List->SetSelection(sel == (size_t) -1 ? 0 : sel);
-            break;
-
-        case WXK_DOWN:
-        case WXK_NUMPAD_DOWN:
-            m_List->SetSelection(m_List->GetSelection() + 1);
-            break;
-
-        case WXK_PAGEUP:
-        case WXK_NUMPAD_PAGEUP:
-            sel = m_List->GetSelection() - 10;
-            m_List->SetSelection(sel > m_List->GetCount() ? 0 : sel);
-            break;
-
-        case WXK_PAGEDOWN:
-        case WXK_NUMPAD_PAGEDOWN:
-            sel = m_List->GetSelection() + 10;
-            m_List->SetSelection(sel >= m_List->GetCount() ? m_List->GetCount() - 1 : sel);
-            break;
-
-        case WXK_HOME:
-            if (wxGetKeyState(WXK_CONTROL))
-                m_List->SetSelection(0);
-            else
-                event.Skip();
-            break;
-
-        case WXK_END:
-            if (wxGetKeyState(WXK_CONTROL))
-                m_List->SetSelection(m_List->GetCount() - 1);
-            else
-                event.Skip();
-            break;
-
-        default:
-            event.Skip();
-            break;
-    }
+    m_List->SetSelection(sel);
 }
