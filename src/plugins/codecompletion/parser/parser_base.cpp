@@ -229,7 +229,14 @@ bool ParserBase::Reparse(const wxString& file, cb_unused bool isLocal)
     opts.handleEnums           = true;  // default
     opts.handleTypedefs        = true;  // default
 
+    opts.storeDocumentation    = true;  // enable this option to enable cctest for doxygen doc reading
+
     opts.loader                = loader;
+
+    // the file should first put in the TokenTree, so the index is correct when initlize the
+    // Tokenizer object inside the ParserThread::ParserThread()
+
+    m_TokenTree->ReserveFileForParsing(file, true);
 
     ParserThread* pt = new ParserThread(this, file, true, opts, m_TokenTree);
     bool success = pt->Parse();
@@ -264,7 +271,7 @@ bool ParserBase::ParseBuffer(const wxString& buffer,
 
     opts.handleFunctions      = true;   // enabled to support function ptr in local block
 
-    opts.storeDocumentation   = false;
+    opts.storeDocumentation   = m_Options.storeDocumentation;
 
     ParserThread thread(this, buffer, isLocal, opts, m_TokenTree);
 
