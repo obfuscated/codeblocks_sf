@@ -4202,6 +4202,42 @@
 		<Unit filename="tools/ConsoleRunner/main.cpp">
 			<Option target="ConsoleRunner" />
 		</Unit>
+		<Unit filename="wxsmith/BuildTargetPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/CCDebugInfo.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/CompilerPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/EmbeddedHtmlPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/FilePathPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/GenericSelectPath.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/GenericSingleChoiceList.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/InfoPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/ProjectPathPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/ScriptConsole.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/VirtualBuildTargetsDlg.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/databreakpointdlg.wxs">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="wxsmith/debuggersettingscommonpanel.wxs">
 			<Option target="src" />
 		</Unit>
