@@ -1099,7 +1099,8 @@
 														<object class="sizeritem">
 															<object class="wxSpinCtrl" name="spnParallelProcesses">
 																<value>0</value>
-																<min>0</min>>
+																<max>65535</max>
+																<min>0</min>
 															</object>
 															<flag>wxALIGN_TOP</flag>
 														</object>
