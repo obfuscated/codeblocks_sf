@@ -35,24 +35,6 @@ template <int major, int minor, int rel = 0> struct wxMinimumVersion { enum { ev
 template <int major, int minor, int rel = 0> struct wxExactVersion { enum { eval = ((unsigned int) Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval == (unsigned int) Version<major, minor, rel>::eval) }; };
 
 
-
-/*  ---------------------------------------------------------------------------------------------------------
-    Assert a condition at compile time (as assert() does at runtime)
-    Break compilation if the assertion fails.
-
-    Example:
-        CompileTimeAssertion<wxMinimumVersion<2,6>::eval>::Assert();
-
-        This example code will break the build if you try to compile the code with wxWindows 2.4 (or any
-        other version below 2.6).
-        However, it will break the build in such a way that the problem is apparent in the error message,
-        rather than throwing up 317 obscure errors about whatever undefined symbols and wrong types.
-*/
-template <bool b> struct CompileTimeAssertion{};
-template<> struct CompileTimeAssertion<true> { static inline void Assert(){}; };
-
-
-
 /*  ---------------------------------------------------------------------------------------------------------
     Conditional typedef, works the same way as the C++ ternary operator for lvalues does
 

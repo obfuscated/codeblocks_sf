@@ -24,7 +24,7 @@ namespace ScriptBindings
     ///////////////////
     SQInteger wxArrayString_Index(HSQUIRRELVM v)
     {
-        CompileTimeAssertion<wxMinimumVersion<2,8,12>::eval>::Assert();
+        static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
         StackHandler sa(v);
         wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
         wxString inpstr = *SqPlus::GetInstance<wxString,false>(v, 2);
