@@ -72,6 +72,17 @@ namespace
         _T("wxID_HELP"),
         _T("wxID_CONTEXT_HELP")
     };
+    const wxChar* IdLabels[] =
+    {
+        _T("OK Label:"),
+        _T("YES Label:"),
+        _T("NO Label:"),
+        _T("CANCEL Label:"),
+        _T("APPLY Label:"),
+        _T("SAVE Label:"),
+        _T("HELP Label:"),
+        _T("CONTEXT_HELP Label:")
+    };
 
     const wxWindowID IdValues[] =
     {
@@ -253,7 +264,7 @@ void wxsStdDialogButtonSizer::OnAddExtraProperties(wxsPropertyGridManager* Grid 
     {
         m_UseId[i] = Grid->Append(NEW_IN_WXPG14X wxBoolProperty(IdNames[i],wxPG_LABEL,m_Use[i]));
         Grid->SetPropertyAttribute(m_UseId[i],wxPG_BOOL_USE_CHECKBOX,1L,wxPG_RECURSE);
-        m_LabelId[i] = Grid->Append(NEW_IN_WXPG14X wxStringProperty(_("  Label:"),wxPG_LABEL,m_Label[i]));
+        m_LabelId[i] = Grid->Append(NEW_IN_WXPG14X wxStringProperty(IdLabels[i],wxPG_LABEL,m_Label[i]));
     }
     wxsItem::OnAddExtraProperties(Grid);
 }
