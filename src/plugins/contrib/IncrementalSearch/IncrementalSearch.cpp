@@ -339,7 +339,7 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     m_pToolbar->EnableTool(XRCID("idIncSearchNext"), false);
     m_pToolbar->SetInitialSize();
 
-    m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition, wxSize(160,-1));
+    m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition, wxSize(160,-1),wxTE_PROCESS_ENTER);
     if (m_pComboCtrl)
     {
 #if !wxCHECK_VERSION(3, 0, 0) || WXWIN_COMPATIBILITY_2_8
