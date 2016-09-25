@@ -44,7 +44,6 @@
 #include "annoyingdialog.h"
 #include "configurationpanel.h"
 #include "editarrayorderdlg.h"
-#include "editarrayfiledlg.h"
 #include "editpathdlg.h"
 #include "externaldepsdlg.h"
 #include "filefilters.h"
