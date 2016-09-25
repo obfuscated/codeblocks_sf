@@ -148,6 +148,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf) 
     m_LastBuildStageCompilerSel(-1)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectFileOptions"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     if (pf)
     {
@@ -200,6 +201,7 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& f
     m_LastBuildStageCompilerSel(-1)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectFileOptions"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     FillGeneralProperties();
 

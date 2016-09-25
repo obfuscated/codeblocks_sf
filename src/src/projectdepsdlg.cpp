@@ -13,6 +13,7 @@
     #include "cbproject.h"
     #include "manager.h"
     #include "projectmanager.h"
+    #include <wx/button.h>
     #include <wx/intl.h>
     #include <wx/xrc/xmlres.h>
     #include <wx/choice.h>
@@ -32,6 +33,7 @@ ProjectDepsDlg::ProjectDepsDlg(wxWindow* parent, cbProject* sel)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureProjectDeps"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
 
     wxChoice* cmb = XRCCTRL(*this, "cmbProject", wxChoice);
 

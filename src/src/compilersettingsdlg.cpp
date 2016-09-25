@@ -8,19 +8,24 @@
  */
 
 #include <sdk.h>
-#include <wx/xrc/xmlres.h>
-#include <manager.h>
-#include <configmanager.h>
-#include <pluginmanager.h>
-#include <cbplugin.h>
-#include <wx/intl.h>
+
+#ifndef CB_PRECOMP
+    #include <manager.h>
+    #include <configmanager.h>
+    #include <pluginmanager.h>
+    #include <cbplugin.h>
+    #include <wx/button.h>
+    #include <wx/checklst.h>
+    #include <wx/filename.h>
+    #include <wx/imaglist.h>
+    #include <wx/intl.h>
+    #include <wx/listctrl.h>
+    #include <wx/sizer.h>	// SetSizeHints
+    #include <wx/stattext.h>	// wxStaticText
+    #include <wx/xrc/xmlres.h>
+#endif // CB_PRECOMP
+
 #include <wx/listbook.h>
-#include <wx/listctrl.h>
-#include <wx/checklst.h>
-#include <wx/filename.h>
-#include <wx/imaglist.h>
-#include <wx/sizer.h>	// SetSizeHints
-#include <wx/stattext.h>	// wxStaticText
 
 #include "configurationpanel.h"
 #include "compilersettingsdlg.h"
@@ -46,6 +51,7 @@ END_EVENT_TABLE()
 CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgCompilerSettings"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     m_pImageList = new wxImageList(80, 80);
 

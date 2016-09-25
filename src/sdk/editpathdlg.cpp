@@ -44,6 +44,7 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditPath"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(path);
     XRCCTRL(*this, "dlgEditPath", wxScrollingDialog)->SetTitle(title);

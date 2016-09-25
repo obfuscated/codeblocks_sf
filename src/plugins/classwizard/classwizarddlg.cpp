@@ -85,6 +85,7 @@ ClassWizardDlg::ClassWizardDlg(wxWindow* parent)
         XRCCTRL(*this, "chkCommonDir",     wxCheckBox)->SetValue(cfg->ReadBool(_T("common_dir")));
         XRCCTRL(*this, "chkLowerCase",     wxCheckBox)->SetValue(cfg->ReadBool(_T("lower_case")));
     }
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 }
 
 ClassWizardDlg::~ClassWizardDlg()

@@ -105,6 +105,7 @@ EditorConfigurationDlg::EditorConfigurationDlg(wxWindow* parent)
     m_pImageList(nullptr)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureEditor"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     XRCCTRL(*this, "lblEditorFont", wxStaticText)->SetLabel(_("This is sample text"));
     m_FontString = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);

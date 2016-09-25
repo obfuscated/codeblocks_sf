@@ -9,6 +9,7 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/choice.h>
     #include <wx/combobox.h>
@@ -72,6 +73,7 @@ AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const w
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAdvancedCompilerOptions"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     ReadCompilerOptions();
     m_bDirty = false;
 

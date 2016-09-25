@@ -10,6 +10,7 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/checklst.h>
     #include <wx/intl.h>
@@ -96,6 +97,7 @@ InsertClassMethodDlg::InsertClassMethodDlg(wxWindow* parent, ParserBase* parser,
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgInsertClassMethod"),_T("wxScrollingDialog"));
     XRCCTRL(*this, "rbCode", wxRadioBox)->SetSelection(0);
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     FillClasses();
 }
 

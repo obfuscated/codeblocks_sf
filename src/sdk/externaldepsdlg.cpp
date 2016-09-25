@@ -40,6 +40,7 @@ ExternalDepsDlg::ExternalDepsDlg(wxWindow* parent, cbProject* project, ProjectBu
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgExternalDeps"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
     FillAdditional();
     FillExternal();
 }

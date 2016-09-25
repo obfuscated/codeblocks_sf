@@ -13,6 +13,7 @@
     #ifdef __WXMAC__
         #include <wx/font.h>
     #endif //__WXMAC__
+    #include <wx/button.h>    // wxImage
     #include <wx/image.h>    // wxImage
     #include <wx/intl.h>
     #include <wx/stattext.h>
@@ -43,6 +44,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
                      _("Information"), wxICON_EXCLAMATION);
         return;
     }
+
+    XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
 
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
