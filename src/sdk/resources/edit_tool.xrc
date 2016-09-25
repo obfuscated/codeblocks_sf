@@ -40,7 +40,6 @@
 									<label>...</label>
 									<size>24,-1</size>
 								</object>
-								<flag>wxALIGN_LEFT</flag>
 							</object>
 						</object>
 						<flag>wxEXPAND</flag>
@@ -73,7 +72,6 @@
 									<label>...</label>
 									<size>24,-1</size>
 								</object>
-								<flag>wxALIGN_LEFT</flag>
 							</object>
 						</object>
 						<flag>wxEXPAND</flag>

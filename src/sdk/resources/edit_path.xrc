@@ -27,7 +27,6 @@
 							<label>...</label>
 							<tooltip>Browse</tooltip>
 						</object>
-						<flag>wxALIGN_LEFT</flag>
 						<minsize>24,24</minsize>
 					</object>
 				</object>
