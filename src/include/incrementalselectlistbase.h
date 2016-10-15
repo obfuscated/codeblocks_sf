@@ -33,16 +33,16 @@ class DLLIMPORT IncrementalSelectListBase : public wxScrollingDialog
         /** handle user pressed some special key in the editor ctrl
          *  For example, if user press the UP key, we have to select some text before the cursor
          */
-        void KeyDownAction(wxKeyEvent& event, int &sel, size_t selMax);
+        void KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax);
 
         /** fill the m_List with filtered items */
         void FillList();
 
         /** refresh the list */
-        virtual void FillData(){};
-        virtual void GetCurrentSelection(int &sel, size_t &selMax){};
-        virtual void UpdateCurrentSelection(int sel, size_t selPrevious){};
-        virtual wxIntPtr GetSelection(){return 0;};
+        virtual void FillData() {}
+        virtual void GetCurrentSelection(int &selected, int &selectedMax) {}
+        virtual void UpdateCurrentSelection(int selected, int selectedPrevious) {}
+    protected:
         // Controls
         wxListBox* m_List;   /// for showing the filtered items
         wxTextCtrl* m_Text;  /// for entering search keys

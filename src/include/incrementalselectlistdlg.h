@@ -23,10 +23,10 @@ class DLLIMPORT IncrementalSelectListDlg : public IncrementalSelectListBase
         wxString GetStringSelection();
         wxIntPtr GetSelection();
     protected:
-        // overwrite the virtual functions from base class
-        virtual void GetCurrentSelection(int &sel, size_t &selMax);
-        virtual void UpdateCurrentSelection(int sel, size_t selPrevious);
-        virtual void FillData();
+        // override the virtual functions from base class
+        void GetCurrentSelection(int &selected, int &selectedMax) override;
+        void UpdateCurrentSelection(int selected, int selectedPrevious) override;
+        void FillData() override;
     private:
         DECLARE_EVENT_TABLE();
 };

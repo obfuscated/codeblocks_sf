@@ -38,13 +38,14 @@ class GotoFunctionDlg : public IncrementalSelectListBase
         wxListCtrl* GetListCtrl();
     protected:
         void SetupMode();
-        void FillData();
+        void FillData() override;
         /** for functions like int f(), we need three columns to display
          * the "int", "f", and "()".
          */
         void FillColumn();
-        void GetCurrentSelection(int &sel, size_t &selMax);
-        void UpdateCurrentSelection(int sel, size_t selPrevious);
+        void GetCurrentSelection(int &selected, int &selectedMax) override;
+        void UpdateCurrentSelection(int selected, int selectedPrevious) override;
+
         void OnColumnSelect(cb_unused wxListEvent& event);
         void OnModeChange(cb_unused wxCommandEvent& event);
 

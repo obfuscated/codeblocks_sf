@@ -165,7 +165,7 @@ void IncrementalSelectListBase::OnSelect(cb_unused wxCommandEvent& event)
     EndModal(wxID_OK);
 }
 
-void IncrementalSelectListBase::KeyDownAction(wxKeyEvent& event, int &sel, size_t selMax)
+void IncrementalSelectListBase::KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
 {
     // now, adjust position from key input
     switch (event.GetKeyCode())
@@ -183,35 +183,35 @@ void IncrementalSelectListBase::KeyDownAction(wxKeyEvent& event, int &sel, size_
 
         case WXK_UP:
         case WXK_NUMPAD_UP:
-            if (sel)
-                sel--;
+            if (selected)
+                selected--;
             break;
 
         case WXK_DOWN:
         case WXK_NUMPAD_DOWN:
-            sel++;
+            selected++;
             break;
 
         case WXK_PAGEUP:
         case WXK_NUMPAD_PAGEUP:
-            sel -= 10;
+            selected -= 10;
             break;
 
         case WXK_PAGEDOWN:
         case WXK_NUMPAD_PAGEDOWN:
-            sel += 10;
+            selected += 10;
             break;
 
         case WXK_HOME:
             if (wxGetKeyState(WXK_CONTROL))
-                sel = 0;
+                selected = 0;
             else
                 event.Skip();
             break;
 
         case WXK_END:
             if (wxGetKeyState(WXK_CONTROL))
-                sel = selMax;
+                selected = selectedMax;
             else
                 event.Skip();
             break;
@@ -222,30 +222,27 @@ void IncrementalSelectListBase::KeyDownAction(wxKeyEvent& event, int &sel, size_
     }
 
     // Clamp value below 0 and above Max
-    if (sel < 0)
-        sel = 0;
+    if (selected < 0)
+        selected = 0;
     else
     {
-        if (sel > (int) selMax)
-            sel = selMax;
+        if (selected > selectedMax)
+            selected = selectedMax;
     }
 }
 
 void IncrementalSelectListBase::OnKeyDown(wxKeyEvent& event)
 {
-    int sel = 0;
-    size_t selMax = 0;
-    size_t selPrevious = 0;
+    int selected = 0, selectedMax = 0;
 
-    GetCurrentSelection(sel, selMax);
-
-    if (sel == (int) wxNOT_FOUND)
-        sel = 0;
+    GetCurrentSelection(selected, selectedMax);
+    if (selected == wxNOT_FOUND)
+        selected = 0;
 
     // remember previous selection
-    selPrevious = sel;
-
-    KeyDownAction(event, sel, selMax);
-
-    UpdateCurrentSelection(sel, selPrevious);
+    int selectedPrevious = selected;
+    KeyDownAction(event, selected, selectedMax);
+    if (selectedMax < 0)
+        return;
+    UpdateCurrentSelection(selected, selectedPrevious);
 }

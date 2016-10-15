@@ -66,14 +66,13 @@ void IncrementalSelectListDlg::FillData()
     Thaw();
 }
 
-void IncrementalSelectListDlg::GetCurrentSelection(int &sel, size_t &selMax)
+void IncrementalSelectListDlg::GetCurrentSelection(int &selected, int &selectedMax)
 {
-    sel = m_List->GetSelection();
-    selMax = m_List->GetCount() - 1;
-
+    selected = m_List->GetSelection();
+    selectedMax = m_List->GetCount() - 1;
 }
 
-void IncrementalSelectListDlg::UpdateCurrentSelection(int sel, size_t selPrevious)
+void IncrementalSelectListDlg::UpdateCurrentSelection(int selected, cb_unused int selectedPrevious)
 {
-    m_List->SetSelection(sel);
+    m_List->SetSelection(selected);
 }

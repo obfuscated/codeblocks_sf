@@ -236,36 +236,36 @@ void GotoFunctionDlg::FillData()
     Thaw();
 }
 
-void GotoFunctionDlg::GetCurrentSelection(int &sel, size_t &selMax)
+void GotoFunctionDlg::GetCurrentSelection(int &selected, int &selectedMax)
 {
     // Get current selection and last possible one
     if (m_Mode->GetValue())
     {
         // We are on column mode
-        sel = m_ListColumn->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
-        selMax = m_ListColumn->GetItemCount() - 1;
+        selected = m_ListColumn->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+        selectedMax = m_ListColumn->GetItemCount() - 1;
     }
     else
     {
         // We are on list mode
-        sel = m_List->GetSelection();
-        selMax = m_List->GetCount() - 1;
+        selected = m_List->GetSelection();
+        selectedMax = static_cast<int>(m_List->GetCount()) - 1;
     }
 }
 
-void GotoFunctionDlg::UpdateCurrentSelection(int sel, size_t selPrevious)
+void GotoFunctionDlg::UpdateCurrentSelection(int selected, int selectedPrevious)
 {
     // Apply new value
     if (m_Mode->GetValue())
     {
         // We are on column mode
-        m_ListColumn->SetItemState(selPrevious, 0, wxLIST_STATE_SELECTED);
-        m_ListColumn->SetItemState(sel, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-        m_ListColumn->EnsureVisible(sel);
+        m_ListColumn->SetItemState(selectedPrevious, 0, wxLIST_STATE_SELECTED);
+        m_ListColumn->SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        m_ListColumn->EnsureVisible(selected);
     }
     else
     {
-        m_List->SetSelection(sel);
+        m_List->SetSelection(selected);
     }
 }
 
