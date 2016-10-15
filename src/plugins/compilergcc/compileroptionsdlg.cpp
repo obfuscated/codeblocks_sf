@@ -2682,7 +2682,7 @@ void CompilerOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnEditDir",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelDir",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearDir", wxButton)->Enable(control->GetCount() != 0);
-        XRCCTRL(*this, "btnCopyDirs", wxButton)->Enable(control->GetCount() != 0);
+        XRCCTRL(*this, "btnCopyDirs", wxButton)->Enable(en);
 
         // moveup/movedown dir
         XRCCTRL(*this, "spnDirs", wxSpinButton)->Enable(en);
@@ -2699,7 +2699,7 @@ void CompilerOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelLib",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearLib", wxButton)->Enable(lstLibs->GetCount() != 0);
-        XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(lstLibs->GetCount() != 0);
+        XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(en);
         XRCCTRL(*this, "spnLibs",     wxSpinButton)->Enable(en);
     }
 
