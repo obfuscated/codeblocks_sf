@@ -1929,36 +1929,44 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
         choices.Add(bt->GetTitle());
     }
 
-    int sel = cbGetSingleChoiceIndex(_("Please select which target to copy these directories to:"),
-                                     _("Copy directories"), choices, this);
-    // -1 means no selection (Cancel)
-    if (sel == -1)
-        return;
-
-    --sel;
-    // now, -1 means "copy to project"
-    CompileOptionsBase* base = sel == -1
-                                ? reinterpret_cast<CompileOptionsBase*>(m_pProject)
-                                : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
-    if (!base)
+    const wxArrayInt &sel = cbGetMultiChoiceDialog(_("Please select which target to copy these directories to:"),
+                                                   _("Copy directories"), choices, this);
+    if (sel.empty())
         return;
 
     wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
-    for (size_t i = 0; i < selections.GetCount(); ++i)
+    int notebookPage = nb->GetSelection();
+
+    for (wxArrayInt::const_iterator itr = sel.begin(); itr != sel.end(); ++itr)
     {
-        switch (nb->GetSelection())
+        CompileOptionsBase* base;
+        if((*itr) == 0)
+            base = m_pProject; // "copy to project"
+        else
+            base = m_pProject->GetBuildTarget((*itr) - 1);
+
+        if (!base)
         {
-            case 0: // compiler dirs
-                base->AddIncludeDir(control->GetString(selections[i]));
-                break;
-            case 1: // linker dirs
-                base->AddLibDir(control->GetString(selections[i]));
-                break;
-            case 2: // resource compiler dirs
-                base->AddResourceIncludeDir(control->GetString(selections[i]));
-                break;
-            default:
-                break;
+            Manager::Get()->GetLogManager()->LogWarning(_T("Could not get build target in CompilerOptionsDlg::OnCopyLibsClick"));
+            continue;
+        }
+
+        for (size_t i = 0; i < selections.GetCount(); ++i)
+        {
+            switch (notebookPage)
+            {
+                case 0: // compiler dirs
+                    base->AddIncludeDir(control->GetString(selections[i]));
+                    break;
+                case 1: // linker dirs
+                    base->AddLibDir(control->GetString(selections[i]));
+                    break;
+                case 2: // resource compiler dirs
+                    base->AddResourceIncludeDir(control->GetString(selections[i]));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 } // OnCopyDirsClick
