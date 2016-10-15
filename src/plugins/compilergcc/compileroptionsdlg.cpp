@@ -2336,25 +2336,30 @@ void CompilerOptionsDlg::OnCopyLibsClick(cb_unused wxCommandEvent& event)
         choices.Add(bt->GetTitle());
     }
 
-    int sel = cbGetSingleChoiceIndex(_("Please select which target to copy these libraries to:"),
-                                    _("Copy libraries"),
-                                    choices,
-                                    this);
-    // -1 means no selection
-    if (sel == -1)
+    const wxArrayInt &sel = cbGetMultiChoiceDialog(_("Please select which target to copy these libraries to:"),
+                                                   _("Copy libraries"), choices, this);
+    if (sel.empty())
         return;
 
-    --sel;
-    // now, -1 means "copy to project"
-    CompileOptionsBase* base = sel == -1
-                                ? reinterpret_cast<CompileOptionsBase*>(m_pProject)
-                                : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
-    if (!base)
-        return;
-    for (size_t i = 0; i < lstLibs->GetCount(); ++i)
+    for (wxArrayInt::const_iterator itr = sel.begin(); itr != sel.end(); ++itr)
     {
-        if (lstLibs->IsSelected(i))
-            base->AddLinkLib(lstLibs->GetString(i));
+        CompileOptionsBase* base;
+        if((*itr) == 0)
+            base = m_pProject; // "copy to project"
+        else
+            base = m_pProject->GetBuildTarget((*itr) - 1);
+
+        if (!base)
+        {
+            Manager::Get()->GetLogManager()->LogWarning(_T("Could not get build target in CompilerOptionsDlg::OnCopyLibsClick"));
+            continue;
+        }
+
+        for (size_t i = 0; i < lstLibs->GetCount(); ++i)
+        {
+            if (lstLibs->IsSelected(i))
+                base->AddLinkLib(lstLibs->GetString(i));
+        }
     }
 } // OnCopyLibsClick
 

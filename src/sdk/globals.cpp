@@ -1416,6 +1416,24 @@ DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& ca
     return (dialog.ShowModal() == wxID_OK ? dialog.GetSelection() : -1);
 }
 
+DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxString& caption,
+                                     const wxArrayString& choices, wxWindow *parent,
+                                     const wxSize& size, const wxArrayInt& initialSelection)
+{
+    if (!parent)
+        parent = Manager::Get()->GetAppWindow();
+
+    wxMultiChoiceDialog dialog(parent, message, caption, choices);
+    dialog.SetSelections(initialSelection);
+    dialog.SetSize(size);
+    PlaceWindow(&dialog);
+
+    if (dialog.ShowModal() == wxID_OK)
+        return dialog.GetSelections();
+    else
+        return wxArrayInt();
+}
+
 #if wxCHECK_VERSION(3, 0, 0)
 const char* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
 #else

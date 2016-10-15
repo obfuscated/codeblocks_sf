@@ -343,6 +343,15 @@ extern DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxStr
                                             const wxSize &size = wxSize(300, 300),
                                             int initialSelection = 0);
 
+/** wxMultiChoiceDialog wrapper.
+  *
+  * Use this instead of wxMessageBox(), as this uses PlaceWindow() to show it in the correct monitor.
+  */
+extern DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxString& caption,
+                                     const wxArrayString& choices, wxWindow *parent = nullptr,
+                                     const wxSize& size = wxSize(300, 300),
+                                     const wxArrayInt& initialSelection = wxArrayInt());
+
 #if wxCHECK_VERSION(3, 0, 0)
 extern DLLIMPORT const char *cbGetTextFromUserPromptStr;
 #else
