@@ -530,14 +530,14 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkPadParensOut">
-												<label>Insert space padding around parenthesies on the outside</label>
+												<label>Insert space padding around parentheses on the outside</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkPadParensIn">
-												<label>Insert space padding around parenthesies on the inside</label>
+												<label>Insert space padding around parentheses on the inside</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
@@ -551,7 +551,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkUnpadParens">
-												<label>Remove extra space padding around parenthesis</label>
+												<label>Remove extra space padding around parentheses</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
