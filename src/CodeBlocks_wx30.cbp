@@ -2872,6 +2872,9 @@
 		<Unit filename="sdk/resources/generic_multiline_notes.xrc">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/resources/get_global_uservar.xrc">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/resources/global_uservars.xrc">
 			<Option target="sdk" />
 		</Unit>

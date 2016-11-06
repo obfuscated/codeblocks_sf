@@ -7,36 +7,40 @@
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
-				<object class="wxBoxSizer">
+				<object class="wxFlexGridSizer">
+					<cols>4</cols>
+					<growablecols>1</growablecols>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="lblText">
 							<label>Directory:</label>
 						</object>
-						<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
-						<border>4</border>
+						<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="txtPath" />
-						<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-						<border>8</border>
-						<minsize>240,-1</minsize>
+						<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
 						<option>1</option>
 					</object>
 					<object class="sizeritem">
 						<object class="wxButton" name="btnBrowse">
-							<label>...</label>
+							<label>Path...</label>
 							<tooltip>Browse</tooltip>
 						</object>
-						<minsize>24,24</minsize>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="btnOther">
+							<label>Global variable...</label>
+						</object>
+						<flag>wxLEFT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
 					</object>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
-			</object>
-			<object class="sizeritem">
-				<object class="wxStaticLine" name="ID_STATICLINE1" />
-				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
-				<border>8</border>
+				<border>5</border>
 				<option>1</option>
 			</object>
 			<object class="sizeritem">
@@ -52,8 +56,8 @@
 						</object>
 					</object>
 				</object>
-				<flag>wxALL|wxEXPAND</flag>
-				<border>8</border>
+				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
 			</object>
 		</object>
 	</object>
