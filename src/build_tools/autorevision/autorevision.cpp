@@ -15,7 +15,7 @@
 
 using namespace std;
 
-#ifdef __WIN32__
+#if defined(__WIN32__) || defined(_WIN32) || defined(__WIN32) || defined(__WIN64) || defined(__WIN64__)
     #define WIN32_LEAN_AND_MEAN 1
     #define NOGDI
     #include <windows.h>
