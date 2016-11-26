@@ -498,20 +498,20 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
     wxArrayString startStrings;
     if (langName == _T("C/C++") )
     {
-        startStrings.Add(_T("#warning"));
-        startStrings.Add(_T("#error"));
+        startStrings.push_back(_T("#warning"));
+        startStrings.push_back(_T("#error"));
     }
-    if (!cmttoken.doxygenLineComment.IsEmpty())
-        startStrings.Add(cmttoken.doxygenLineComment);
-    if (!cmttoken.doxygenStreamCommentStart.IsEmpty())
-        startStrings.Add(cmttoken.doxygenStreamCommentStart);
+    if (!cmttoken.doxygenLineComment.empty())
+        startStrings.push_back(cmttoken.doxygenLineComment);
+    if (!cmttoken.doxygenStreamCommentStart.empty())
+        startStrings.push_back(cmttoken.doxygenStreamCommentStart);
 
-    if ( !cmttoken.lineComment.IsEmpty() )
-        startStrings.Add(cmttoken.lineComment);
-    if ( !cmttoken.streamCommentStart.IsEmpty() )
-        startStrings.Add(cmttoken.streamCommentStart);
+    if ( !cmttoken.lineComment.empty() )
+        startStrings.push_back(cmttoken.lineComment);
+    if ( !cmttoken.streamCommentStart.empty() )
+        startStrings.push_back(cmttoken.streamCommentStart);
 
-    if ( startStrings.IsEmpty() || allowedTypes.IsEmpty() )
+    if ( startStrings.empty() || allowedTypes.empty() )
     {
         Manager::Get()->GetLogManager()->Log(_T("ToDoList: Warning: No to-do types or comment symbols selected to search for, nothing to do."));
         return;
@@ -532,9 +532,9 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
             pos += startStrings[k].length();
             SkipSpaces(buffer, pos);
 
-            for (size_t i = 0; i < allowedTypes.GetCount(); ++i)
+            for (size_t i = 0; i < allowedTypes.size(); ++i)
             {
-                const wxString type = buffer.Mid(pos, allowedTypes[i].length());
+                const wxString type = buffer.substr(pos, allowedTypes[i].length());
 
                 if (type != allowedTypes[i])
                     continue;
@@ -620,7 +620,7 @@ void ToDoListView::ParseBuffer(const wxString& buffer, const wxString& filename)
                 size_t idx = pos;
                 while (buffer.GetChar(idx) != _T('\r') && buffer.GetChar(idx) != _T('\n'))
                     ++idx;
-                item.text = buffer.Mid(pos, idx-pos);
+                item.text = buffer.substr(pos, idx-pos);
 
                 // do some clean-up
                 item.text.Trim(true).Trim(false);
@@ -792,7 +792,7 @@ wxArrayString CheckListDialog::GetChecked() const
     for (size_t item = 0; item < m_checkList->GetCount(); ++item)
     {
         if (m_checkList->IsChecked(item))
-            items.Add(m_checkList->GetString(item));
+            items.push_back(m_checkList->GetString(item));
     }
     return items;
 }
