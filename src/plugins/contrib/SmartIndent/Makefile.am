@@ -12,7 +12,7 @@ pluginlib_LTLIBRARIES = libSmartIndentHDL.la \
 			libSmartIndentFortran.la \
 			libSmartIndentXML.la
 
-libSmartIndentHDL_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentHDL_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentHDL_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)
@@ -21,7 +21,7 @@ libSmartIndentHDL_la_SOURCES = SmartIndentHDL.cpp
 
 
 
-libSmartIndentPascal_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentPascal_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentPascal_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)
@@ -30,7 +30,7 @@ libSmartIndentPascal_la_SOURCES = SmartIndentPascal.cpp
 
 
 
-libSmartIndentCpp_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentCpp_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentCpp_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)
@@ -39,7 +39,7 @@ libSmartIndentCpp_la_SOURCES = SmartIndentCpp.cpp
 
 
 
-libSmartIndentPython_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentPython_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentPython_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)
@@ -48,7 +48,7 @@ libSmartIndentPython_la_SOURCES = SmartIndentPython.cpp
 
 
 
-libSmartIndentLua_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentLua_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentLua_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)
@@ -57,7 +57,7 @@ libSmartIndentLua_la_SOURCES = SmartIndentLua.cpp
 
 
 
-libSmartIndentFortran_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentFortran_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentFortran_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)
@@ -65,7 +65,7 @@ libSmartIndentFortran_la_LIBADD = ../../../sdk/libcodeblocks.la \
 libSmartIndentFortran_la_SOURCES = SmartIndentFortran.cpp
 
 
-libSmartIndentXML_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libSmartIndentXML_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libSmartIndentXML_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			$(WX_LIBS)

@@ -96,6 +96,14 @@ AM_CONDITIONAL([HAVE_SQUIRREL], [test "$HAVE_SQUIRREL" = yes])
 PKG_CHECK_MODULES([TINYXML], [tinyxml], [HAVE_TINYXML=yes], [HAVE_TINYXML=no])
 AM_CONDITIONAL([HAVE_TINYXML], [test "$HAVE_TINYXML" = yes])
 
+dnl Darwin -> .dylib  Linux -> .so
+if test "x$DARWIN_TRUE" = "x" ; then
+    MODULE_SHARED_LDFLAGS="-dynamiclib"
+else
+    MODULE_SHARED_LDFLAGS="-module -shared"
+fi
+AC_SUBST(MODULE_SHARED_LDFLAGS)
+
 dnl versioning info for libtool
 dnl Note this is the ABI version which is not the same as our actual library version
 CODEBLOCKS_CURRENT=0

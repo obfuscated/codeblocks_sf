@@ -14,7 +14,7 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libcodecompletion.la
 
-libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libcodecompletion_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 

@@ -10,7 +10,7 @@ pkgdata_DATA = envvars.zip
 
 pluginlib_LTLIBRARIES = libenvvars.la
 
-libenvvars_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libenvvars_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libenvvars_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 
