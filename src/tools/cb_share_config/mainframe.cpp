@@ -9,8 +9,10 @@
 
 #include "mainframe.h"
 
+#include <wx/dirdlg.h>
 #include <wx/file.h> // wxFile, wxTempFile
 #include <wx/filedlg.h>
+#include <wx/filename.h> // wxFileSeparator
 #include <wx/msgdlg.h>
 #include <wx/statusbr.h>
 #include <wx/stdpaths.h> // wxStandardPathsBase
@@ -52,6 +54,7 @@ const long MainFrame::ID_CFG_SRC = wxNewId();
 const long MainFrame::ID_LST_CFG = wxNewId();
 const long MainFrame::ID_BTN_TRANSFER = wxNewId();
 const long MainFrame::ID_BTN_UNCHECK = wxNewId();
+const long MainFrame::ID_BTN_EXPORT_ALL = wxNewId();
 const long MainFrame::ID_BTN_EXPORT = wxNewId();
 const long MainFrame::ID_BTN_SAVE = wxNewId();
 const long MainFrame::ID_BTN_CLOSE = wxNewId();
@@ -69,6 +72,13 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
   mFileDst(wxT("")), mCfgDst(0), mCfgDstValid(false), mNodesDst()
 {
 	//(*Initialize(MainFrame)
+	wxButton* btnSave;
+	wxButton* btnClose;
+	wxButton* btnExport;
+	wxButton* btnExportAll;
+	wxButton* btnUncheck;
+	wxButton* btnTransfer;
+
 	Create(parent, id, _("Welcome to Code::Blocks Share Config"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxSYSTEM_MENU|wxRESIZE_BORDER|wxCLOSE_BOX|wxMINIMIZE_BOX, _T("id"));
 	SetMinSize(wxSize(640,480));
 	SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -77,69 +87,72 @@ MainFrame::MainFrame(wxWindow* parent,wxWindowID id) :
 	sbsSteps = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Steps to do:"));
 	lblSteps = new wxStaticText(this, ID_LBL_STEPS, _("- make sure C::B is *not* running\n- select the C::B source configuration file on the left\n- select the C::B destination configuration file on the right\n- select the sections you would like to transfer\n- verify again and do the transfer\n- save the modified (right) configuration"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_STEPS"));
 	sbsSteps->Add(lblSteps, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	bszSteps->Add(sbsSteps, 1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-	bszMain->Add(bszSteps, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	bszSteps->Add(sbsSteps, 1, wxALL|wxEXPAND, 5);
+	bszMain->Add(bszSteps, 0, wxEXPAND, 5);
 	grsFileLabel = new wxGridSizer(1, 2, 0, 0);
 	lblFileSrc = new wxStaticText(this, ID_LBL_FILE_SRC, _("Source configuration file:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_FILE_SRC"));
-	grsFileLabel->Add(lblFileSrc, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	grsFileLabel->Add(lblFileSrc, 0, wxALL|wxEXPAND, 0);
 	lblFileDst = new wxStaticText(this, ID_LBL_FILE_DST, _("Destination configuration file:"), wxDefaultPosition, wxDefaultSize, 0, _T("ID_LBL_FILE_DST"));
-	grsFileLabel->Add(lblFileDst, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-	bszMain->Add(grsFileLabel, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	grsFileLabel->Add(lblFileDst, 0, wxLEFT|wxEXPAND, 5);
+	bszMain->Add(grsFileLabel, 0, wxLEFT|wxRIGHT|wxEXPAND, 5);
 	grsFile = new wxGridSizer(1, 2, 0, 0);
 	flsFileSrc = new wxFlexGridSizer(1, 2, 0, 0);
 	flsFileSrc->AddGrowableCol(0);
 	txtFileSrc = new wxTextCtrl(this, ID_TXT_FILE_SRC, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY, wxDefaultValidator, _T("ID_TXT_FILE_SRC"));
-	flsFileSrc->Add(txtFileSrc, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	flsFileSrc->Add(txtFileSrc, 0, wxEXPAND, 0);
 	btnFileSrc = new wxButton(this, ID_BTN_FILE_SRC, _("..."), wxDefaultPosition, wxSize(32,-1), 0, wxDefaultValidator, _T("ID_BTN_FILE_SRC"));
 	btnFileSrc->SetToolTip(_("Select the source C::B configuration file."));
 	flsFileSrc->Add(btnFileSrc, 0, wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP, 5);
-	grsFile->Add(flsFileSrc, 0, wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL, 5);
+	grsFile->Add(flsFileSrc, 0, wxRIGHT|wxEXPAND, 5);
 	flsFileDst = new wxFlexGridSizer(1, 2, 0, 0);
 	flsFileDst->AddGrowableCol(0);
 	txtFileDst = new wxTextCtrl(this, ID_TXT_FILE_DST, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_READONLY, wxDefaultValidator, _T("ID_TXT_FILE_DST"));
-	flsFileDst->Add(txtFileDst, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	flsFileDst->Add(txtFileDst, 0, wxEXPAND, 0);
 	btnFileDst = new wxButton(this, ID_BTN_FILE_DST, _("..."), wxDefaultPosition, wxSize(32,-1), 0, wxDefaultValidator, _T("ID_BTN_FILE_DST"));
 	btnFileDst->SetToolTip(_("Select the destination C::B configuration file."));
 	flsFileDst->Add(btnFileDst, 0, wxLEFT|wxALIGN_RIGHT|wxALIGN_TOP, 5);
-	grsFile->Add(flsFileDst, 0, wxLEFT|wxEXPAND|wxALIGN_RIGHT|wxALIGN_CENTER_VERTICAL, 5);
-	bszMain->Add(grsFile, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	grsFile->Add(flsFileDst, 0, wxLEFT|wxEXPAND, 5);
+	bszMain->Add(grsFile, 0, wxLEFT|wxRIGHT|wxEXPAND, 5);
 	grsCfg = new wxGridSizer(1, 2, 0, 0);
 	clbCfgSrc = new wxCheckListBox(this, ID_CFG_SRC, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_CFG_SRC"));
-	grsCfg->Add(clbCfgSrc, 0, wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	clbCfgSrc->SetMinSize(wxSize(-1,200));
+	grsCfg->Add(clbCfgSrc, 0, wxRIGHT|wxEXPAND, 5);
 	lstCfgDst = new wxListBox(this, ID_LST_CFG, wxDefaultPosition, wxDefaultSize, 0, 0, 0, wxDefaultValidator, _T("ID_LST_CFG"));
-	grsCfg->Add(lstCfgDst, 0, wxLEFT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
-	bszMain->Add(grsCfg, 1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	grsCfg->Add(lstCfgDst, 0, wxLEFT|wxEXPAND, 5);
+	bszMain->Add(grsCfg, 1, wxALL|wxEXPAND, 5);
 	grsAction = new wxGridSizer(1, 8, 0, 0);
 	btnTransfer = new wxButton(this, ID_BTN_TRANSFER, _("Transfer >>"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_TRANSFER"));
 	btnTransfer->SetToolTip(_("Transfer the selection on the left to right."));
 	grsAction->Add(btnTransfer, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
 	btnUncheck = new wxButton(this, ID_BTN_UNCHECK, _("Uncheck all"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_UNCHECK"));
 	grsAction->Add(btnUncheck, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
-	grsAction->Add(-1,-1,0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	btnExportAll = new wxButton(this, ID_BTN_EXPORT_ALL, _("Export All"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_EXPORT_ALL"));
+	grsAction->Add(btnExportAll, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
 	btnExport = new wxButton(this, ID_BTN_EXPORT, _("Export"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_EXPORT"));
 	btnExport->SetToolTip(_("Export the selection on the left to a C::B config backup file."));
 	grsAction->Add(btnExport, 0, wxALIGN_LEFT|wxALIGN_TOP, 0);
 	btnSave = new wxButton(this, ID_BTN_SAVE, _("Save"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_SAVE"));
 	btnSave->SetToolTip(_("Save the selection on the right into the C::B destination config file."));
 	grsAction->Add(btnSave, 0, wxLEFT|wxALIGN_LEFT|wxALIGN_TOP, 5);
-	grsAction->Add(-1,-1,1, wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
-	grsAction->Add(-1,-1,1, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 0);
+	grsAction->Add(-1,-1,1, wxEXPAND, 0);
+	grsAction->Add(0,0,0, wxEXPAND, 0);
 	btnClose = new wxButton(this, ID_BTN_CLOSE, _("Close"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BTN_CLOSE"));
 	btnClose->SetToolTip(_("Close the application."));
 	grsAction->Add(btnClose, 0, wxALIGN_RIGHT|wxALIGN_TOP, 0);
-	bszMain->Add(grsAction, 0, wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP, 5);
+	bszMain->Add(grsAction, 0, wxLEFT|wxRIGHT|wxEXPAND, 5);
 	SetSizer(bszMain);
 	bszMain->Fit(this);
 	bszMain->SetSizeHints(this);
 	Center();
 
-	Connect(ID_BTN_FILE_SRC,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileSrcClick);
-	Connect(ID_BTN_FILE_DST,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnFileDstClick);
-	Connect(ID_BTN_TRANSFER,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnTransferClick);
-	Connect(ID_BTN_UNCHECK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnUncheckClick);
-	Connect(ID_BTN_EXPORT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnExportClick);
-	Connect(ID_BTN_SAVE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnSaveClick);
-	Connect(ID_BTN_CLOSE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&MainFrame::OnBtnCloseClick);
+	Connect(ID_BTN_FILE_SRC,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnFileSrcClick));
+	Connect(ID_BTN_FILE_DST,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnFileDstClick));
+	Connect(ID_BTN_TRANSFER,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnTransferClick));
+	Connect(ID_BTN_UNCHECK,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnUncheckClick));
+	Connect(ID_BTN_EXPORT_ALL,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnExportAllClick));
+	Connect(ID_BTN_EXPORT,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnExportClick));
+	Connect(ID_BTN_SAVE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnSaveClick));
+	Connect(ID_BTN_CLOSE,wxEVT_COMMAND_BUTTON_CLICKED,wxCommandEventHandler(MainFrame::OnBtnCloseClick));
 	//*)
 }// MainFrame
 
@@ -210,9 +223,9 @@ void MainFrame::OnBtnTransferClick(wxCommandEvent& /*event*/)
     {
       // Set all (checked) variables of lstEnvVars
       int items_selected = 0;
-      for (int i = 0; i < static_cast<int>(clbCfgSrc->GetCount()); ++i)
+      for (unsigned int i = 0; i < clbCfgSrc->GetCount(); ++i)
       {
-        if (clbCfgSrc->IsChecked(i) && (static_cast<int>(mNodesSrc.size()) > i))
+        if (clbCfgSrc->IsChecked(i) && (mNodesSrc.size() > i))
         {
           items_selected++;
 
@@ -257,140 +270,155 @@ void MainFrame::OnBtnTransferClick(wxCommandEvent& /*event*/)
 
 void MainFrame::OnBtnUncheckClick(wxCommandEvent& /*event*/)
 {
-  for (int i=0; i < static_cast<int>(clbCfgSrc->GetCount()); ++i)
+  for (unsigned int i=0; i < clbCfgSrc->GetCount(); ++i)
     clbCfgSrc->Check(i, false);
 }// OnBtnUncheckClick
 
 //***********************************************************************
 
-void MainFrame::OnBtnExportClick(wxCommandEvent& /*event*/)
+void MainFrame::OnBtnExportAllClick(wxCommandEvent& /*event*/)
 {
-  TiXmlDocument* doc = new TiXmlDocument();
+  if (!mCfgSrcValid)
+    return;
 
-  if (doc)
+  wxMessageBox(wxT("You are about to export the all node(s) to C::B configuration backup files.\n"
+                   "Please note that the nodes show here do not cover the whole C::B configuration.\n"
+                   "The backup files only contain some nodes for transferring them using cb_share_config.\n"
+                   "WARNING: Existing files in the target directory will be OVERWRITTEN."),
+               wxT("Information"), wxICON_INFORMATION);
+
+  wxDirDialog dlg(this, wxT("Choose target directory"), wxEmptyString,
+                  wxDD_DEFAULT_STYLE | wxDD_DIR_MUST_EXIST);
+  if (wxID_OK != dlg.ShowModal())
+    return; // Cancel
+
+  wxString dirname = dlg.GetPath();
+  size_t   errors  = 0;
+
+  for (unsigned int i=0; i < clbCfgSrc->GetCount(); ++i)
   {
-    if (mCfgSrcValid)
+    TiXmlDocument* doc = new TiXmlDocument();
+    if (!doc)
     {
-      wxMessageBox(wxT("You are about to export the selected node(s) to a backup C::B configuration file.\n"
-                       "Please note that this is *not* complete because it includes the selected node(s) only.\n"
-                       "It's purpose is to backup misc. nodes for transferring them using cb_share_config."),
-                   wxT("Information"), wxICON_INFORMATION);
-
-      TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "UTF-8", "yes");
-      TiXmlElement*     root = new TiXmlElement("CodeBlocksConfig");
-      // NOTE (Morten#1#): This has to be in sync with C::B SDK (confimanager)!
-      root->SetAttribute("version", 1);
-
-      doc->LinkEndChild(decl);
-      doc->LinkEndChild(root);
-
-      // Save all (checked) variables of lstEnvVars
-      int items_selected = 0;
-      for (int i=0; i < static_cast<int>(clbCfgSrc->GetCount()); ++i)
-      {
-        if (clbCfgSrc->IsChecked(i) && (static_cast<int>(mNodesSrc.size()) > i))
-        {
-          items_selected++;
-
-          TiXmlNode*    node     = mNodesSrc.at(i);
-          wxString      path     = clbCfgSrc->GetString(i);
-          wxArrayString path_arr = PathToArray(path);
-
-          TiXmlElement* element  = root;
-          for (size_t p=0; p<path_arr.Count(); ++p)
-          {
-            wxString section_path = path_arr.Item(p);
-            if (element->NoChildren())
-            {
-              // element has no children -> create new child named after section
-              element = (TiXmlElement*) element->InsertEndChild(
-                TiXmlElement(
-#if wxUSE_UNICODE
-                  section_path.mb_str(wxConvUTF8)
-#else
-                  (wxChar*)section_path.mb_str()
-#endif
-                ));
-            }// if
-            else
-            {
-              // element has children -> find child named after section
-              TiXmlElement* new_element = element->FirstChildElement(
-#if wxUSE_UNICODE
-                section_path.mb_str(wxConvUTF8)
-#else
-                (wxChar*)section_path.mb_str()
-#endif
-              );
-
-              if (!new_element)
-              {
-                // child could not be found -> create child named after section
-                element = (TiXmlElement*) element->InsertEndChild(TiXmlElement(
-#if wxUSE_UNICODE
-                  section_path.mb_str(wxConvUTF8)
-#else
-                  (wxChar*)section_path.mb_str()
-#endif
-                  ));
-              }
-              else
-              {
-                // child has been found -> switch to this child
-                element = new_element;
-              }
-            }
-
-            if (!element)
-              return;
-            // ...continue with next section.
-          }
-
-          TiXmlNode* parent_node = element->Parent();
-          parent_node->ReplaceChild(element, *node);
-        }
-      }
-
-      if (items_selected)
-      {
-        wxString filename = wxFileSelector
-        (
-          wxT("Choose a Code::Blocks backup configuration file"), // title
-          wxT(""),                                                // default path
-          wxT("backup.conf"),                                     // default file
-          wxT("*.conf"),                                          // default extension
-          wxT("Code::Blocks configuration files (*.conf)|*.conf|"
-              "All files (*.*)|*.*"),                             // wildcards
-          wxFD_SAVE                                               // flags
-        );
-        if (!filename.IsEmpty())
-        {
-          if (TiXmlSaveDocument(filename, doc))
-          {
-            wxMessageBox(wxT("Backup configuration file has been saved."),
-                         wxT("Information"), wxICON_INFORMATION | wxOK);
-          }
-          else
-          {
-            wxMessageBox(wxT("Could not save backup configuration file."),
-                         wxT("Warning"), wxICON_EXCLAMATION | wxOK);
-          }
-        }
-      }
-      else
-      {
-        wxMessageBox(wxT("There were no items selected to backup."),
-                     wxT("Warning"), wxICON_EXCLAMATION | wxOK);
-      }
+      wxMessageBox(wxT("Cannot create empty XML document...?!"),
+                   wxT("Error"), wxICON_EXCLAMATION | wxOK);
+      return;
     }
 
+    TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "UTF-8", "yes");
+    TiXmlElement*     root = new TiXmlElement("CodeBlocksConfig");
+    // NOTE (Morten#1#): This has to be in sync with C::B SDK (configmanager)!
+    root->SetAttribute("version", 1);
+
+    doc->LinkEndChild(decl);
+    doc->LinkEndChild(root);
+
+    if (mNodesSrc.size() <= i)
+      continue;
+
+    AttachNode(i, root);
+
+    wxString      path     = clbCfgSrc->GetString(i);
+    wxArrayString path_arr = PathToArray(path);
+    wxString filename = dirname
+                      + wxFileName::GetPathSeparator()
+                      + path_arr.Item(0);
+    for (size_t p=1; p<path_arr.GetCount(); p++)
+      filename += wxT("_") + path_arr.Item(p);
+    filename += wxT(".conf");
+    if (filename.IsEmpty())
+      continue;
+
+    if ( !TiXmlSaveDocument(filename, doc) )
+      errors++;
+
     delete doc;
+  }// for
+
+  if (errors)
+  {
+    wxMessageBox(wxT("Could not save all backup configuration files."),
+                 wxT("Warning"), wxICON_EXCLAMATION | wxOK);
   }
   else
   {
+    wxMessageBox(wxT("Backup configuration files have been saved."),
+                 wxT("Information"), wxICON_INFORMATION | wxOK);
+  }
+}// OnBtnExportAllClick
+
+//***********************************************************************
+
+void MainFrame::OnBtnExportClick(wxCommandEvent& /*event*/)
+{
+  if (!mCfgSrcValid)
+    return;
+
+  TiXmlDocument* doc = new TiXmlDocument();
+  if (!doc)
+  {
     wxMessageBox(wxT("Cannot create empty XML document...?!"),
                  wxT("Error"), wxICON_EXCLAMATION | wxOK);
+    return;
   }
+
+  wxMessageBox(wxT("You are about to export the selected node(s) to a backup C::B configuration file.\n"
+                   "Please note that this is *not* complete because it includes the selected node(s) only.\n"
+                   "It's purpose is to backup misc. nodes for transferring them using cb_share_config."),
+               wxT("Information"), wxICON_INFORMATION);
+
+  TiXmlDeclaration* decl = new TiXmlDeclaration("1.0", "UTF-8", "yes");
+  TiXmlElement*     root = new TiXmlElement("CodeBlocksConfig");
+  // NOTE (Morten#1#): This has to be in sync with C::B SDK (configmanager)!
+  root->SetAttribute("version", 1);
+
+  doc->LinkEndChild(decl);
+  doc->LinkEndChild(root);
+
+  // Save all (checked) variables of lstEnvVars
+  int items_selected = 0;
+  for (unsigned int i=0; i < clbCfgSrc->GetCount(); ++i)
+  {
+    if (clbCfgSrc->IsChecked(i) && (mNodesSrc.size() > i))
+    {
+      items_selected++;
+      AttachNode(i, root);
+    }
+  }// for
+
+  if (items_selected)
+  {
+    wxString filename = wxFileSelector
+    (
+      wxT("Choose a Code::Blocks backup configuration file"), // title
+      wxT(""),                                                // default path
+      wxT("backup.conf"),                                     // default file
+      wxT("*.conf"),                                          // default extension
+      wxT("Code::Blocks configuration files (*.conf)|*.conf|"
+          "All files (*.*)|*.*"),                             // wildcards
+      wxFD_SAVE                                               // flags
+    );
+    if (!filename.IsEmpty())
+    {
+      if (TiXmlSaveDocument(filename, doc))
+      {
+        wxMessageBox(wxT("Backup configuration file has been saved."),
+                     wxT("Information"), wxICON_INFORMATION | wxOK);
+      }
+      else
+      {
+        wxMessageBox(wxT("Could not save backup configuration file."),
+                     wxT("Warning"), wxICON_EXCLAMATION | wxOK);
+      }
+    }
+  }
+  else
+  {
+    wxMessageBox(wxT("There were no items selected to backup."),
+                 wxT("Warning"), wxICON_EXCLAMATION | wxOK);
+  }
+
+  delete doc;
 }// OnBtnExportClick
 
 //***********************************************************************
@@ -750,73 +778,130 @@ void MainFrame::OfferNode(TiXmlNode** node,               wxListBox* listbox,
 
 bool MainFrame::TransferNode(TiXmlNode** node, const wxArrayString& path)
 {
-  if (!path.IsEmpty())
+  if (path.IsEmpty())
+    return false;
+
+  TiXmlElement* element   = mCfgDst->FirstChildElement("CodeBlocksConfig");
+  TiXmlNode*    node_copy = (*node)->Clone();
+
+  if (!TiXmlSuccess(mCfgDst))
+    return false;
+
+  for (size_t i=0; i<path.Count(); ++i)
   {
-    TiXmlElement* element   = mCfgDst->FirstChildElement("CodeBlocksConfig");
-    TiXmlNode*    node_copy = (*node)->Clone();
+    wxString section_path = path.Item(i);
 
-    if (!TiXmlSuccess(mCfgDst))
-      return false;
-
-    for (size_t i=0; i<path.Count(); ++i)
+    if (element->NoChildren())
     {
-      wxString section_path = path.Item(i);
-
-      if (element->NoChildren())
-      {
-        // element has no children -> create new child named after section
-        element = (TiXmlElement*) element->InsertEndChild(
-          TiXmlElement(
-#if wxUSE_UNICODE
-            section_path.mb_str(wxConvUTF8)
-#else
-            (wxChar*)section_path.mb_str()
-#endif
-          ));
-      }// if
-      else
-      {
-        // element has children -> find child named after section
-        TiXmlElement* new_element = element->FirstChildElement(
+      // element has no children -> create new child named after section
+      element = (TiXmlElement*) element->InsertEndChild(
+        TiXmlElement(
 #if wxUSE_UNICODE
           section_path.mb_str(wxConvUTF8)
 #else
           (wxChar*)section_path.mb_str()
 #endif
-        );
-
-        if (!new_element)
-        {
-          // child could not be found -> create child named after section
-          element = (TiXmlElement*) element->InsertEndChild(TiXmlElement(
+        ));
+    }// if
+    else
+    {
+      // element has children -> find child named after section
+      TiXmlElement* new_element = element->FirstChildElement(
 #if wxUSE_UNICODE
-            section_path.mb_str(wxConvUTF8)
+        section_path.mb_str(wxConvUTF8)
 #else
-            (wxChar*)section_path.mb_str()
+        (wxChar*)section_path.mb_str()
 #endif
-            ));
-        }
-        else
-        {
-          // child has been found -> switch to this child
-          element = new_element;
-        }
-      }// else
+      );
 
-      if (!element)
-        return false;
+      if (!new_element)
+      {
+        // child could not be found -> create child named after section
+        element = (TiXmlElement*) element->InsertEndChild(TiXmlElement(
+#if wxUSE_UNICODE
+          section_path.mb_str(wxConvUTF8)
+#else
+          (wxChar*)section_path.mb_str()
+#endif
+          ));
+      }
+      else
+      {
+        // child has been found -> switch to this child
+        element = new_element;
+      }
+    }// else
 
-      // ...continue with next section.
-    }
+    if (!element)
+      return false;
 
-    TiXmlNode* parent_node = element->Parent();
-    parent_node->ReplaceChild(element, *node_copy);
-
-    return true;
+    // ...continue with next section.
   }
 
-  return false;
+  TiXmlNode* parent_node = element->Parent();
+  parent_node->ReplaceChild(element, *node_copy);
+
+  return true;
 }// TransferNode
+
+//***********************************************************************
+
+void MainFrame::AttachNode(size_t idx, TiXmlElement* root)
+{
+  TiXmlNode*    node     = mNodesSrc.at(idx);
+  wxString      path     = clbCfgSrc->GetString(idx);
+  wxArrayString path_arr = PathToArray(path);
+
+  TiXmlElement* element  = root;
+  for (size_t p=0; p<path_arr.Count(); ++p)
+  {
+    wxString section_path = path_arr.Item(p);
+    if (element->NoChildren())
+    {
+      // element has no children -> create new child named after section
+      element = (TiXmlElement*) element->InsertEndChild(
+        TiXmlElement(
+#if wxUSE_UNICODE
+          section_path.mb_str(wxConvUTF8)
+#else
+          (wxChar*)section_path.mb_str()
+#endif
+        ));
+    }// if
+    else
+    {
+      // element has children -> find child named after section
+      TiXmlElement* new_element = element->FirstChildElement(
+#if wxUSE_UNICODE
+        section_path.mb_str(wxConvUTF8)
+#else
+        (wxChar*)section_path.mb_str()
+#endif
+      );
+
+      if (!new_element)
+      {
+        // child could not be found -> create child named after section
+        element = (TiXmlElement*) element->InsertEndChild(TiXmlElement(
+#if wxUSE_UNICODE
+          section_path.mb_str(wxConvUTF8)
+#else
+          (wxChar*)section_path.mb_str()
+#endif
+          ));
+      }
+      else // child has been found -> switch to this child
+        element = new_element;
+    }
+
+    if (!element)
+      return;
+    // ...continue with next section.
+  }// for
+
+  TiXmlNode* parent_node = element->Parent();
+  parent_node->ReplaceChild(element, *node);
+}// AttachNode
 
 //***********************************************************************
 
@@ -846,7 +931,7 @@ wxArrayString MainFrame::PathToArray(const wxString& path)
 
 //***********************************************************************
 
-bool MainFrame::TiXmlLoadDocument(const wxString& filename, TiXmlDocument*doc)
+bool MainFrame::TiXmlLoadDocument(const wxString& filename, TiXmlDocument* doc)
 {
   if (!doc || !wxFile::Access(filename, wxFile::read))
     return false;
@@ -876,8 +961,10 @@ bool MainFrame::TiXmlSaveDocument(const wxString& filename, TiXmlDocument* doc)
 
   wxTempFile file(filename);
   if (file.IsOpened())
+  {
     if (file.Write(printer.CStr(), printer.Size()) && file.Commit())
       return true;
+  }
 
   return false;
 }// TiXmlSaveDocument
