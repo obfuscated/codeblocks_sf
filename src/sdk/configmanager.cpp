@@ -1549,7 +1549,7 @@ void ConfigManager::MigrateFolders()
         return;
 
     // ConfigManager::config_folder might be the portable-path but we want to migrate the standard-conform folder,
-    // but only if it not aöready exists
+    // but only if it not already exists
     wxString newConfigFolder = wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
     // if the new config folder already exist, we step out immediately
     if (wxDirExists(newConfigFolder))
