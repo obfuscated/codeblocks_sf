@@ -348,6 +348,14 @@ private:
     wxString m_basepath;
 };
 
+/// Read the list of batch build plugins and return them. The list won't be empty; at least the compiler plugin will be
+/// added to the to it. The list contain the library names of the plugins and differs on every OS.
+DLLIMPORT wxArrayString cbReadBatchBuildPlugins();
+/// Write the list of batch build plugins in the config.
+/// @param bbpluigns List of library plugin names.
+/// @param messageBoxParent Set as a parent to the message box that will be shown in case of errors.
+DLLIMPORT void cbWriteBatchBuildPlugins(wxArrayString bbplugins, wxWindow *messageBoxParent);
+
 /* ------------------------------------------------------------------------------------------------------------------
 *  "Builder pattern" class for ConfigManager
 *

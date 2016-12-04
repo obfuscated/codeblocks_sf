@@ -942,20 +942,7 @@ int PluginManager::ScanForPlugins(const wxString& path)
     bool batch = Manager::IsBatchBuild();
     wxArrayString bbplugins;
     if (batch)
-    {
-        ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
-        bbplugins = bbcfg->ReadArrayString(_T("/batch_build_plugins"));
-        if (!bbplugins.GetCount())
-        {
-            // defaults
-            if      (platform::windows)
-                bbplugins.Add(_T("compiler.dll"));
-            else if (platform::darwin || platform::macosx)
-                bbplugins.Add(_T("libcompiler.dylib"));
-            else
-                bbplugins.Add(_T("libcompiler.so"));
-        }
-    }
+        bbplugins = cbReadBatchBuildPlugins();
 
     wxString filename;
     wxString failed;

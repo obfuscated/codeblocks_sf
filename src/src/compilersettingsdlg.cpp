@@ -65,16 +65,7 @@ CompilerSettingsDlg::CompilerSettingsDlg(wxWindow* parent)
         XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->Enable(false);
 
     // fill plugins list
-    ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
-    wxArrayString bbplugins = bbcfg->ReadArrayString(_T("/batch_build_plugins"));
-    if (!bbplugins.GetCount())
-    {
-        // defaults
-        if (platform::windows)
-            bbplugins.Add(_T("compiler.dll"));
-        else
-            bbplugins.Add(_T("libcompiler.so"));
-    }
+    const wxArrayString &bbplugins = cbReadBatchBuildPlugins();
     wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
     clb->Clear();
     clb->SetMinSize(wxSize(-1, 150));
@@ -227,7 +218,6 @@ void CompilerSettingsDlg::EndModal(int retCode)
 #endif //#ifdef __WXMSW__
 
         // batch build plugins
-        ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
         wxArrayString bbplugins;
         wxCheckListBox* clb = XRCCTRL(*this, "chkBBPlugins", wxCheckListBox);
         for (size_t i = 0; i < clb->GetCount(); ++i)
@@ -249,16 +239,7 @@ void CompilerSettingsDlg::EndModal(int retCode)
             }
         }
 
-        const wxString compiler(platform::windows ? _T("compiler.dll") : _T("libcompiler.so"));
-
-        if (bbplugins.Index(compiler) == wxNOT_FOUND)
-        {
-            bbplugins.Add(compiler);
-            cbMessageBox(_("The compiler plugin must always be loaded for batch builds!\n"
-                        "Automatically re-enabled."),
-                        _("Warning"), wxICON_WARNING, this);
-        }
-        bbcfg->Write(_T("/batch_build_plugins"), bbplugins);
+        cbWriteBatchBuildPlugins(bbplugins, this);
 
         // finally, apply settings in all plugins' panels
         for (size_t i = 0; i < m_PluginPanels.GetCount(); ++i)
