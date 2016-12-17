@@ -413,7 +413,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkRemoveBrackets">
-												<label>Remove brackets from conditional statements (ingle statement on a single line)</label>
+												<label>Remove brackets from conditional statements (single statement on a single line)</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
