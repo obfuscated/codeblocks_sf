@@ -62,9 +62,8 @@ AC_CHECK_LIB(pthread, pthread_create)
 AC_CHECK_FUNC(snprintf, AC_DEFINE(HAVE_SNPRINTF,,snprintf))
 AC_CHECK_FUNC(vsnprintf, AC_DEFINE(HAVE_VSNPRINTF,,vsnprintf))
 
+PKG_CHECK_MODULES([zlib], [zlib], [HAVE_ZLIB=yes], [HAVE_ZLIB=no])
 save_LIBS=$LIBS
-AC_SEARCH_LIBS(gzopen, z, [HAVE_ZLIB=yes], [HAVE_ZLIB=no])
-LIBS=$save_LIBS
 AC_SEARCH_LIBS(BZ2_bzopen, bz2, [HAVE_BZIP2=yes], [HAVE_BZIP2=no])
 LIBS=$save_LIBS
 
