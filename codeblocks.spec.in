@@ -226,6 +226,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{?suse_update_config:%{suse_update_config -f}}
 
   ./bootstrap
+
   %if 0%{?suse_version}
   %if 0%{?suse_version} > 1020
   %configure \
@@ -277,7 +278,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{_bindir}/cb_console_runner
 %{_bindir}/cb_share_config
 %{plugindir}/libabbreviations.so
-%{plugindir}/libastyle.so
+%{plugindir}/libAstyle.so
 %{plugindir}/libautosave.so
 %{plugindir}/libclasswizard.so
 %{plugindir}/libcodecompletion.so
@@ -289,6 +290,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{plugindir}/libprojectsimporter.so
 %{plugindir}/libscriptedwizard.so
 %{plugindir}/libtodo.so
+%{_datadir}/appdata/codeblocks.appdata.xml
 %{_datadir}/applications/codeblocks.desktop
 %{_datadir}/icons/hicolor/48x48/mimetypes/*
 %{_datadir}/mime/packages/codeblocks.xml
@@ -306,7 +308,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %{pkgdatadir}/scripts/*
 %{pkgdatadir}/templates/*
 %{pkgdatadir}/abbreviations.zip
-%{pkgdatadir}/astyle.zip
+%{pkgdatadir}/Astyle.zip
 %{pkgdatadir}/autosave.zip
 %{pkgdatadir}/classwizard.zip
 %{pkgdatadir}/codecompletion.zip
@@ -425,6 +427,7 @@ wxSmith-plugins and to use the wxContribItems in own programs.
 %endif
 %{_mandir}/man1/*snippets*
 %doc README COPYING AUTHORS BUGS COMPILERS TODO NEWS ChangeLog
+%{_datadir}/appdata/codeblocks-contrib.metainfo.xml
 
 %files contrib-libs
 %defattr(-,root,root)

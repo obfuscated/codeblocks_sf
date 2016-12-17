@@ -24,7 +24,7 @@
 #define WXSGUI_H
 
 #include <configurationpanel.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "wxsguifactory.h"
 #include "wxsproject.h"
 

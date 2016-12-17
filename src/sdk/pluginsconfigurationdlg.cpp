@@ -64,6 +64,7 @@ END_EVENT_TABLE()
 PluginsConfigurationDlg::PluginsConfigurationDlg(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigurePlugins"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
     FillList();
 
     // install options

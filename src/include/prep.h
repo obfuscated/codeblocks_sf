@@ -13,40 +13,6 @@
     #include <wx/version.h>
 #endif
 
-#ifndef __has_feature
-    #define __has_feature(x) 0
-#endif
-
-#if    !(((__GNUC__ == 4 && __GNUC_MINOR__ >= 6) || __GNUC__ > 4) && defined __GXX_EXPERIMENTAL_CXX0X__) \
-    && !(defined(__clang__) && __has_feature(cxx_nullptr))
-    // it is a const object...
-    const class nullptr_t
-    {
-    public:
-        // constructor
-        nullptr_t() {}
-        // convertible to any type of null non-member pointer...
-        template<typename T> operator T* () const{ return (T*)0; }
-        // or any type of null member pointer...
-        template<typename C, typename T> operator T C::* () const { return (T C::*)0; }
-        // support operator overloading (== and !=)
-        template<typename T> bool equals(T const& rhs) const { return rhs == 0; }
-    private:
-        // can't take address of nullptr
-        void operator&() const;
-        // can't copyable
-        nullptr_t(const nullptr_t&);
-        const nullptr_t& operator=(const nullptr_t&);
-    } nullptr_;
-    #define nullptr nullptr_
-    #define MOZ_HAVE_CXX11_NULLPTR // prevents mozilla/NullPtr.h from defining nullptr.
-
-    template<typename T> inline bool operator==(const nullptr_t& lhs, T const& rhs) { return  lhs.equals(rhs); }
-    template<typename T> inline bool operator==(T const& lhs, const nullptr_t& rhs) { return  rhs.equals(lhs); }
-    template<typename T> inline bool operator!=(const nullptr_t& lhs, T const& rhs) { return !lhs.equals(rhs); }
-    template<typename T> inline bool operator!=(T const& lhs, const nullptr_t& rhs) { return !rhs.equals(lhs); }
-#endif
-
 /*  ---------------------------------------------------------------------------------------------------------
     Version<major, minor, revision>::eval
         Integer compile-time constant that represents  a major.minor.revision style version number.
@@ -67,24 +33,6 @@ inline void Version2MMR(int v, int& major, int& minor, int& revision) { major = 
 
 template <int major, int minor, int rel = 0> struct wxMinimumVersion { enum { eval = ((unsigned int)  Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval >= (unsigned int) Version<major, minor, rel>::eval) }; };
 template <int major, int minor, int rel = 0> struct wxExactVersion { enum { eval = ((unsigned int) Version<wxMAJOR_VERSION, wxMINOR_VERSION, wxRELEASE_NUMBER>::eval == (unsigned int) Version<major, minor, rel>::eval) }; };
-
-
-
-/*  ---------------------------------------------------------------------------------------------------------
-    Assert a condition at compile time (as assert() does at runtime)
-    Break compilation if the assertion fails.
-
-    Example:
-        CompileTimeAssertion<wxMinimumVersion<2,6>::eval>::Assert();
-
-        This example code will break the build if you try to compile the code with wxWindows 2.4 (or any
-        other version below 2.6).
-        However, it will break the build in such a way that the problem is apparent in the error message,
-        rather than throwing up 317 obscure errors about whatever undefined symbols and wrong types.
-*/
-template <bool b> struct CompileTimeAssertion{};
-template<> struct CompileTimeAssertion<true> { static inline void Assert(){}; };
-
 
 
 /*  ---------------------------------------------------------------------------------------------------------
@@ -136,9 +84,9 @@ template<typename T>inline void DeleteArray(T*& p){delete[] p; p = nullptr;}
     platform::id
         Value of type platform::identifier describing the target platform
 
-    platform::windows, platform::macosx, platform::linux
+    platform::windows, platform::macosx, platform::Linux
     platform::freebsd, platform::netbsd, platform::openbsd
-    platform::darwin,  platform::solaris, platform::unix
+    platform::darwin,  platform::solaris, platform::Unix
         Boolean value that evaluates to true if the target platform is the same as the variable's name, false otherwise.
         Using the platform booleans is equivalent to using platform::id, but results in nicer code.
 
@@ -219,13 +167,13 @@ namespace platform
 
     const bool windows = (id == platform_windows);
     const bool macosx  = (id == platform_macosx);
-    const bool linux   = (id == platform_linux);
+    const bool Linux   = (id == platform_linux);
     const bool freebsd = (id == platform_freebsd);
     const bool netbsd  = (id == platform_netbsd);
     const bool openbsd = (id == platform_openbsd);
     const bool darwin  = (id == platform_darwin);
     const bool solaris = (id == platform_solaris);
-    const bool unix    = (linux | freebsd | netbsd | openbsd | darwin | solaris);
+    const bool Unix    = (Linux | freebsd | netbsd | openbsd | darwin | solaris);
 
     const int bits = 8*sizeof(void*);
 
@@ -410,24 +358,14 @@ inline ID ConstructID(wxIntPtr i) { return ID(i); }
 // Just included to possibly set _LIBCPP_VERSION
 #include <ciso646>
 
-#if __cplusplus >= 201103L || defined(_LIBCPP_VERSION)
 #include <memory>
-#else
-#include <tr1/memory>
-#endif
 
 // Add std::shared_ptr in a namespace, so different implementations can be used with different compilers
 namespace cb
 {
-#if __cplusplus >= 201103L || defined(_LIBCPP_VERSION)
     using std::shared_ptr;
     using std::static_pointer_cast;
     using std::weak_ptr;
-#else
-    using std::tr1::shared_ptr;
-    using std::tr1::static_pointer_cast;
-    using std::tr1::weak_ptr;
-#endif
 }
 
 #if defined(__APPLE__) && defined(__MACH__)

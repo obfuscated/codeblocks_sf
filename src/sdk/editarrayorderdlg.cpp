@@ -29,6 +29,7 @@ EditArrayOrderDlg::EditArrayOrderDlg(wxWindow* parent, const wxArrayString& arra
     : m_Array(array)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayOrder"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     DoFillList();
 }
 

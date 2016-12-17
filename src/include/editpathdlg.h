@@ -25,17 +25,24 @@ class DLLIMPORT EditPathDlg : public wxScrollingDialog
 		EditPathDlg& operator=(const EditPathDlg&){ return *this; } // just to satisfy script bindings (never used)
 
 		const wxString& GetPath(){ return m_Path; }
-        void EndModal(int retCode);
+    void EndModal(int retCode);
 
 	protected:
-        void OnBrowse(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
+        void OnBrowse(wxCommandEvent& event);
+        void OnOther(wxCommandEvent& event);
 
         wxString m_Path;
-        wxString m_Message, m_Basepath, m_Filter;
-        bool     m_WantDir, m_AllowMultiSel, m_AskMakeRelative, m_ShowCreateDirButton;
+        wxString m_Message;
+        wxString m_Basepath;
+        wxString m_Filter;
+        bool     m_WantDir;
+        bool     m_AllowMultiSel;
+        bool     m_AskMakeRelative;
+        bool     m_ShowCreateDirButton;
 
 	private:
+
         DECLARE_EVENT_TABLE();
 };
 

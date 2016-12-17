@@ -25,7 +25,7 @@
 
 #include <cbplugin.h>
 #include <cbstyledtextctrl.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 #include "Config.h"
 

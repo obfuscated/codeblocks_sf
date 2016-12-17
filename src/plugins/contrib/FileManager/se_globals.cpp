@@ -1,3 +1,4 @@
+#include "sdk.h"
 #include "se_globals.h"
 
 wxString GetParentDir(const wxString &path)

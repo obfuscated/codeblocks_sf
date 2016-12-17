@@ -29,6 +29,8 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 
         wxString Replace(const wxString& variable);
 
+        wxString GetVariable(wxString old = wxEmptyString);
+
         void Preempt(const wxString& variable);
         void Arrogate();
         bool Exists(const wxString& variable) const;

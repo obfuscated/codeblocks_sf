@@ -659,8 +659,6 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     wxFileName fname(filename);
     wxString ext;
 
-    FileType ft = FileTypeOf(filename);
-
     ext = filename.AfterLast(_T('.')).Lower();
     if (ext.IsSameAs(FileFilters::C_EXT))
         pf->compilerVar = _T("CC");
@@ -734,6 +732,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
         pf->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
+    FileType ft = FileTypeOf(filename);
     localCompile =    compile
                    && (   ft == ftSource
                        || ft == ftResource

@@ -70,6 +70,9 @@ ThreadSearchConfPanel::ThreadSearchConfPanel(ThreadSearch& threadSearchPlugin, w
                                              _("Display header in log window"));
     m_pChkDrawLogLines = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkDrawLogLines),
                                         _("Draw lines between log columns"));
+    m_pChkAutosizeLogColumns = new wxCheckBox(this, controlIDs.Get(ControlIDs::idChkAutosizeLogColumns),
+                                        _("Automatically resize log columns"));
+
     const wxString m_pRadPanelManagement_choices[] = {
         _("Messages notebook"),
         _("Layout")
@@ -211,6 +214,7 @@ void ThreadSearchConfPanel::set_properties()
     m_pChkUseDefaultOptionsForThreadSearch->Enable(m_ThreadSearchPlugin.GetCtxMenuIntegration());
     m_pChkDisplayLogHeaders->SetValue(m_ThreadSearchPlugin.GetDisplayLogHeaders());
     m_pChkDrawLogLines->SetValue(m_ThreadSearchPlugin.GetDrawLogLines());
+    m_pChkAutosizeLogColumns->SetValue(m_ThreadSearchPlugin.GetAutosizeLogColumns());
     m_pChkShowThreadSearchToolBar->SetValue(m_ThreadSearchPlugin.IsToolbarVisible());
     m_pChkShowThreadSearchWidgets->SetValue(m_ThreadSearchPlugin.GetShowSearchControls());
     m_pChkShowCodePreview->SetValue(m_ThreadSearchPlugin.GetShowCodePreview());
@@ -331,6 +335,7 @@ void ThreadSearchConfPanel::do_layout()
     SizerThreadSearchGridLayout->Add(SizerThreadSearchLayoutGlobal, 1, wxALL|wxEXPAND, 4);
     SizerListControlOptions->Add(m_pChkDisplayLogHeaders, 0, wxALL, 4);
     SizerListControlOptions->Add(m_pChkDrawLogLines, 0, wxALL, 4);
+    SizerListControlOptions->Add(m_pChkAutosizeLogColumns, 0, wxALL, 4);
     SizerThreadSearchGridLayout->Add(SizerListControlOptions, 1, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->Add(m_pRadPanelManagement, 0, wxALL|wxEXPAND, 4);
     SizerThreadSearchGridLayout->Add(m_pRadLoggerType, 0, wxALL|wxEXPAND, 4);
@@ -376,6 +381,7 @@ void ThreadSearchConfPanel::OnApply()
     m_ThreadSearchPlugin.SetDeletePreviousResults(m_pChkDeletePreviousResults->IsChecked());
     m_ThreadSearchPlugin.SetDisplayLogHeaders(m_pChkDisplayLogHeaders->IsChecked());
     m_ThreadSearchPlugin.SetDrawLogLines(m_pChkDrawLogLines->IsChecked());
+    m_ThreadSearchPlugin.SetAutosizeLogColumns(m_pChkAutosizeLogColumns->IsChecked());
 
     int radIndex = m_pRadPanelManagement->GetSelection();
     ThreadSearchViewManagerBase::eManagerTypes mgrType;

@@ -250,7 +250,7 @@
 				</ExtraCommands>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel30/share/CodeBlocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/share/CodeBlocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option external_deps="devel30/libcodeblocks.a;" />
@@ -278,7 +278,7 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="cmd /c if not exist devel30\share\CodeBlocks mkdir devel30\share\CodeBlocks" />
-					<Add after="zip -jq9 devel30\share\CodeBlocks\astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
+					<Add after="zip -jq9 devel30\share\CodeBlocks\Astyle.zip plugins\astyle\resources\manifest.xml plugins\astyle\resources\*.xrc" />
 					<Mode after="always" />
 				</ExtraCommands>
 			</Target>
@@ -717,6 +717,7 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
+			<Add option="-std=gnu++11" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
@@ -740,7 +741,7 @@
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="base/tinyxml/tinywxuni.cpp">
+		<Unit filename="sdk/tinywxuni.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="base/tinyxml/tinyxml.cpp">
@@ -927,6 +928,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/importers_globals.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/incrementalselectlistbase.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/incrementalselectlistdlg.h">
@@ -1288,7 +1292,7 @@
 		<Unit filename="include/tinyxml/tinystr.h">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="include/tinyxml/tinywxuni.h">
+		<Unit filename="include/tinywxuni.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/tinyxml/tinyxml.h">
@@ -1464,6 +1468,12 @@
 		<Unit filename="plugins/codecompletion/insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/gotofunctiondlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/gotofunctiondlg.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/insertclassmethoddlg.h">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1555,6 +1565,9 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/codecompletion_toolbar.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/resources/goto_function_dlg.xrc">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
@@ -2652,6 +2665,9 @@
 		<Unit filename="sdk/importers_globals.cpp">
 			<Option target="sdk" />
 		</Unit>
+		<Unit filename="sdk/incrementalselectlistbase.cpp">
+			<Option target="sdk" />
+		</Unit>
 		<Unit filename="sdk/incrementalselectlistdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
@@ -2854,6 +2870,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/generic_multiline_notes.xrc">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/resources/get_global_uservar.xrc">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/resources/global_uservars.xrc">
@@ -4184,6 +4203,42 @@
 		</Unit>
 		<Unit filename="tools/ConsoleRunner/main.cpp">
 			<Option target="ConsoleRunner" />
+		</Unit>
+		<Unit filename="wxsmith/BuildTargetPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/CCDebugInfo.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/CompilerPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/EmbeddedHtmlPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/FilePathPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/GenericSelectPath.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/GenericSingleChoiceList.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/InfoPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/ProjectPathPanel.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/ScriptConsole.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/VirtualBuildTargetsDlg.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/databreakpointdlg.wxs">
+			<Option target="src" />
 		</Unit>
 		<Unit filename="wxsmith/debuggersettingscommonpanel.wxs">
 			<Option target="src" />

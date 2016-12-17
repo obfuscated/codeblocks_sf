@@ -9,5 +9,5 @@ Name: wxFlatNotebook
 Description: wxFlatNotebook also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwxflatnotebook
-Cflags: -fPIC -I${includedir}/wxFlatNotebook/include
+Cflags: -I${includedir}/wxFlatNotebook/include
 

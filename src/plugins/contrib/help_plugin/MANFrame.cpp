@@ -91,29 +91,6 @@ namespace
     }
 
     int font_sizes[7] = { 0 };
-
-    class MatchTraverser : public wxDirTraverser
-    {
-        private:
-            std::vector<wxString> *m_files;
-
-        public:
-            MatchTraverser(std::vector<wxString> *files)
-            : m_files(files)
-            {
-            }
-
-            wxDirTraverseResult OnFile(const wxString &filename)
-            {
-                m_files->push_back(filename);
-                return wxDIR_CONTINUE;
-            }
-
-            wxDirTraverseResult OnDir(const wxString & /*dirname*/)
-            {
-                return wxDIR_CONTINUE;
-            }
-    };
 }
 
 BEGIN_EVENT_TABLE(MANFrame, wxPanel)

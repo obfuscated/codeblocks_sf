@@ -124,7 +124,7 @@ void DefsDownloadDlg::FetchList()
         }
         UrlData.SetProxy( ConfigManager::GetProxy() );
 
-        std::auto_ptr< wxInputStream > is ( UrlData.GetInputStream() );
+        std::unique_ptr< wxInputStream > is ( UrlData.GetInputStream() );
         if ( !is.get() || !is->IsOk() )
         {
             LogManager::Get()->LogWarning(F(_T("lib_finder: Couldn't open stream for '%s'"),Url.wx_str()));

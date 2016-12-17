@@ -26,10 +26,11 @@
     #include <wx/textctrl.h>
     #include <wx/textdlg.h>
     #include <wx/splitter.h>
+    #include <wx/choice.h>
+    #include <wx/listbox.h>
 #endif
 
 #include "annoyingdialog.h"
-#include <wx/choice.h>
 
 #if wxCHECK_VERSION(3, 0, 0)
 #include <wx/unichar.h>
@@ -64,13 +65,37 @@ const wxChar *bim[] =
 };
 const wxArrayString builtinMembers((size_t) 7, bim);
 
+class GetUserVariableDialog : public wxScrollingDialog
+{
+    wxTreeCtrl *m_treectrl;
+    wxString m_SelectedVar;
+    wxString m_old;
+
+    void OnOK(cb_unused wxCommandEvent& event);
+    void OnCancel(cb_unused wxCommandEvent& event);
+    void OnConfig(cb_unused wxCommandEvent& event);
+    void OnActivated(wxTreeEvent& event);
+
+    void Load();
+
+    wxString GetSelectedVariable();
+
+public:
+    GetUserVariableDialog(wxString old);
+    wxString GetVariable()   { return m_SelectedVar; }
+
+    DECLARE_EVENT_TABLE()
+
+};
+
 class UsrGlblMgrEditDialog : public wxScrollingDialog
 {
     wxString m_CurrentSet;
     wxString m_CurrentVar;
 
     wxChoice *m_SelSet;
-    wxChoice *m_SelVar;
+    wxListBox *m_SelVar;
+
     wxButton *m_DeleteSet;
 
     wxTextCtrl *m_Base;
@@ -280,6 +305,135 @@ void UserVariableManager::Migrate()
     cfgman_old->Delete();
 }
 
+wxString UserVariableManager::GetVariable(wxString old)
+{
+    GetUserVariableDialog dlg(old);
+    dlg.ShowModal();
+    return dlg.GetVariable();
+}
+
+BEGIN_EVENT_TABLE(GetUserVariableDialog, wxScrollingDialog)
+    EVT_BUTTON(XRCID("ID_CONFIG"), GetUserVariableDialog::OnConfig)
+    EVT_BUTTON(XRCID("wxID_OK"), GetUserVariableDialog::OnOK)
+    EVT_BUTTON(XRCID("wxID_CANCEL"), GetUserVariableDialog::OnCancel)
+    EVT_TREE_ITEM_ACTIVATED(XRCID("ID_GET_USER_VAR_TREE"), GetUserVariableDialog::OnActivated)
+END_EVENT_TABLE()
+
+GetUserVariableDialog::GetUserVariableDialog(wxString old) : m_old(old)
+{
+    wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), wxT("dlgGetGlobalUsrVar"), wxT("wxScrollingDialog"));
+    m_treectrl = XRCCTRL(*this, "ID_GET_USER_VAR_TREE", wxTreeCtrl);
+
+    if (m_treectrl == nullptr)
+        Manager::Get()->GetLogManager()->LogError(_("Failed to load dlgGetGlobalUsrVar"));
+
+
+    Load();
+
+    // Try to open the old variable
+    if (m_old != wxEmptyString && m_old.StartsWith(wxT("$(#")))
+    {
+        // Remove "$(#"
+        wxString tmp = m_old.AfterFirst('#');
+        // Remove the last ")"
+        tmp = tmp.BeforeFirst(')');
+        // In tmp is now "var.subVar". subVar is optional
+        wxString var[2];
+        var[0] = tmp.Before('.');
+        var[1] = tmp.After('.');
+        wxTreeItemId root = m_treectrl->GetRootItem();
+        wxTreeItemIdValue cookie;
+        wxTreeItemId child = m_treectrl->GetFirstChild(root, cookie);
+        unsigned int i = 0;
+        while (child.IsOk())
+        {
+            if (m_treectrl->GetItemText(child) == var[i])
+            {
+                m_treectrl->EnsureVisible(child);
+                m_treectrl->SelectItem(child);
+                i++;
+                if (var[i] == wxEmptyString || i > 1)
+                    break;
+
+                root = child;
+                child = m_treectrl->GetFirstChild(root, cookie);
+            }
+            else
+                child = m_treectrl->GetNextChild(root, cookie);
+        }
+    }
+
+    Fit();
+    SetMinSize(GetSize());
+
+}
+
+void GetUserVariableDialog::Load()
+{
+    if (m_treectrl == nullptr)
+        return;
+
+    m_treectrl->DeleteAllItems();
+
+    ConfigManager* CfgMan = Manager::Get()->GetConfigManager(wxT("gcv"));
+    const wxString &ActiveSet = Manager::Get()->GetConfigManager(wxT("gcv"))->Read(wxT("/active"));
+    wxArrayString vars = CfgMan->EnumerateSubPaths(cSets + ActiveSet + wxT("/"));
+
+    wxTreeItemId root = m_treectrl->AddRoot(ActiveSet);
+
+    for (wxArrayString::iterator var_itr = vars.begin(); var_itr != vars.end() ; ++var_itr)
+    {
+        wxTreeItemId varId = m_treectrl->AppendItem(root, (*var_itr));
+        wxArrayString subItems = CfgMan->EnumerateKeys(cSets + ActiveSet + wxT("/") + (*var_itr) + wxT("/"));
+
+        for (wxArrayString::iterator subItr = subItems.begin(); subItr != subItems.end() ; ++subItr)
+            m_treectrl->AppendItem(varId, (*subItr));
+    }
+    m_treectrl->Expand(root);
+}
+
+void GetUserVariableDialog::OnOK(wxCommandEvent& evt)
+{
+    m_SelectedVar = GetSelectedVariable();
+    EndModal(wxID_OK);
+}
+
+void GetUserVariableDialog::OnActivated(wxTreeEvent& event)
+{
+    m_SelectedVar = GetSelectedVariable();
+    EndModal(wxID_OK);
+}
+
+void GetUserVariableDialog::OnCancel(wxCommandEvent& evt)
+{
+    m_SelectedVar = wxEmptyString;
+    EndModal(wxID_CANCEL);
+}
+
+void GetUserVariableDialog::OnConfig(wxCommandEvent& evt)
+{
+    Manager::Get()->GetUserVariableManager()->Configure();
+    Load();
+}
+
+wxString GetUserVariableDialog::GetSelectedVariable()
+{
+    wxTreeItemId subVar = m_treectrl->GetSelection();
+    wxTreeItemId var = m_treectrl->GetItemParent(subVar);
+
+    if (subVar == m_treectrl->GetRootItem() || !subVar.IsOk())
+        return wxEmptyString;
+
+    wxString ret;
+    ret << wxT("$(#");
+    if (var == m_treectrl->GetRootItem()) // It is only a variable
+        ret << m_treectrl->GetItemText(subVar) << wxT(")");
+    else // var with subitem
+        ret << m_treectrl->GetItemText(var) << wxT(".") <<  m_treectrl->GetItemText(subVar) << wxT(")");
+
+    return ret;
+}
+
 BEGIN_EVENT_TABLE(UsrGlblMgrEditDialog, wxScrollingDialog)
     EVT_BUTTON(XRCID("cloneVar"), UsrGlblMgrEditDialog::CloneVar)
     EVT_BUTTON(XRCID("newVar"), UsrGlblMgrEditDialog::NewVar)
@@ -297,7 +451,7 @@ BEGIN_EVENT_TABLE(UsrGlblMgrEditDialog, wxScrollingDialog)
     EVT_BUTTON(XRCID("fs5"), UsrGlblMgrEditDialog::OnFS)
 
     EVT_CHOICE(XRCID("selSet"), UsrGlblMgrEditDialog::SelectSet)
-    EVT_CHOICE(XRCID("selVar"), UsrGlblMgrEditDialog::SelectVar)
+    EVT_LISTBOX(XRCID("selVar"), UsrGlblMgrEditDialog::SelectVar)
 END_EVENT_TABLE()
 
 UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
@@ -305,9 +459,9 @@ UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
     m_CurrentVar(var)
 {
     wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), _T("dlgGlobalUservars"),_T("wxScrollingDialog"));
-    m_SelSet    = XRCCTRL(*this, "selSet",    wxChoice);
-    m_SelVar    = XRCCTRL(*this, "selVar",    wxChoice);
-    m_DeleteSet = XRCCTRL(*this, "deleteSet", wxButton);
+    m_SelSet    = XRCCTRL(*this, "selSet",   wxChoice);
+    m_SelVar    = XRCCTRL(*this, "selVar",   wxListBox);
+    m_DeleteSet = XRCCTRL(*this, "deleteSet",wxButton);
 
     m_Base    = XRCCTRL(*this, "base",    wxTextCtrl);
     m_Include = XRCCTRL(*this, "include", wxTextCtrl);

@@ -31,7 +31,7 @@
 #include <globals.h>
 #include <logmanager.h>
 #include <wx/clipbrd.h>
-#include <tinyxml/tinywxuni.h>
+#include <tinywxuni.h>
 
 #if defined(__WXMSW__) && defined(LoadImage)
     // Fix Windows winuser.h Header define of LoadImage.

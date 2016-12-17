@@ -23,7 +23,7 @@
 
 #include <wx/choicdlg.h>
 
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 #include "prep.h"
 #include "msvc7loader.h"
@@ -39,7 +39,7 @@ MSVC7Loader::MSVC7Loader(cbProject* project)
     //ctor
     if (platform::windows)
         m_PlatformName = _T("Win32");
-    else if (platform::linux)
+    else if (platform::Linux)
         m_PlatformName = _T("Linux");
     else if (platform::macosx)
         m_PlatformName = _T("MacOSX");

@@ -66,6 +66,8 @@ namespace CCTestAppGlobal
 
 NativeParserTest::NativeParserTest()
 {
+    m_Parser.Options().wantPreprocessor = true; // Default
+    m_Parser.Options().storeDocumentation = true; // Default
 }
 
 NativeParserTest::~NativeParserTest()
@@ -235,29 +237,46 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             // do tests here, example of line is below
             // tc.St    //StaticVoid
             // remove the beginning "//"
-            str.Remove(0,2);
+            str.Remove(0, 2);
+
+            int pos;
+            wxString expression;
+            wxString match;
+            wxString match_doc;
+
+            // find the optional "///<" for Doxygen comment tests
+            pos = str.Find(_T("///<"));
+            if (pos != wxNOT_FOUND)
+            {
+                match_doc = str.Mid(pos + 4);
+                str = str.Mid(0, pos);
+            }
 
             // find the second "//", the string after the second double slash are the
             // the result should be listed
-            wxString expression;
-            wxString match;
-            int pos = str.Find(_T("//"));
-            if (pos == wxNOT_FOUND)
-                break;
-            expression = str.Mid(0,pos);
-            match = str.Mid(pos+2);// the remaining string
+            pos = str.Find(_T("//"));
+            if (pos != wxNOT_FOUND)
+            {
+                expression = str.Mid(0, pos);
+                match = str.Mid(pos + 2);// the remaining string
+            }
+            else
+            {
+                expression = str;
+                if (!match_doc.IsEmpty())
+                    match = _T("* @doxygen");
+            }
 
-            expression.Trim();
-            expression.Trim(true);
-            match.Trim();
-            match.Trim(true);
+            expression.Trim(true).Trim(false);
+            match.Trim(true).Trim(false);
+            match_doc.Trim(true).Trim(false);
 
             wxArrayString suggestList;
             // the match can have many items, like: AAA,BBBB
             wxStringTokenizer tkz(match, wxT(","));
             while ( tkz.HasMoreTokens() )
             {
-                wxString token = tkz.GetNextToken();
+                wxString token = tkz.GetNextToken().Trim(true).Trim(false);
                 suggestList.Add(token);
             }
 
@@ -279,13 +298,44 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
                     if (!token || token->m_Name.IsEmpty())
                         continue;
 
-                    if (element.IsSameAs(token->m_Name))
+                    if (element.IsSameAs(token->m_Name) || element[0] == '*')
                     {
-                        message = wxString::Format(_T("+ PASS: %s  %s"), expression.wx_str(), element.wx_str());
-                        testResult << message << wxT("\n");
-                        wxLogMessage(message);
-                        pass = true;
-                        passCount++;
+                        // no doxygen documents, only matches the suggestion list
+                        if (match_doc.IsEmpty())
+                        {
+                            message = wxString::Format(_T("+ PASS: %s  %s"), expression.wx_str(), element.wx_str());
+                            testResult << message << wxT("\n");
+                            wxLogMessage(message);
+                            pass = true;
+                            ++passCount;
+                        }
+                        else
+                        {
+                            // check whether doxygen documents are matched
+                            if (token->m_Doc.Contains(match_doc)
+                            || (match_doc[0] == '*' && match_doc.Len() == 1 && !token->m_Doc.IsEmpty())
+                            || (match_doc[0] == '-' && match_doc.Len() == 1 && token->m_Doc.IsEmpty()))
+                            {
+                                message = wxString::Format(_T("+ PASS: %s  %s  \"%s\""), expression.wx_str(), token->m_Name.wx_str(), match_doc.wx_str());
+                                testResult << message << wxT("\n");
+                                wxLogMessage(message);
+                                if (!pass)
+                                {
+                                    pass = true;
+                                    ++passCount;
+                                }
+                            }
+                            else
+                            {
+                                if (pass)
+                                    --passCount;
+                                pass = false;
+                                element = wxString::Format(_T("%s  \"%s\""), token->m_Name.wx_str(), match_doc.wx_str());
+                                break;
+                            }
+                        }
+                        if (element[0] != '*')
+                            break;
                     }
 
                 }

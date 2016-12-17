@@ -39,6 +39,7 @@ EditToolDlg::EditToolDlg(wxWindow* parent, cbTool* tool)
         cbThrow(_T("Tool* parameter is mandatory in EditToolDlg()"));
 
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditTool"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     XRCCTRL(*this, "txtName", wxTextCtrl)->SetValue(m_Tool->GetName());
     XRCCTRL(*this, "txtCommand", wxTextCtrl)->SetValue(m_Tool->GetCommand());
     XRCCTRL(*this, "txtParams", wxTextCtrl)->SetValue(m_Tool->GetParams());

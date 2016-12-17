@@ -12,7 +12,7 @@
 
 #include <cbeditor.h>
 
-#include "astyle/astyle.h"
+#include <astyle.h>
 
 class ASStreamIterator : public astyle::ASSourceIterator
 {

@@ -44,7 +44,6 @@
 //-#else
 //-#endif
 
-#include <tinyxml/tinyxml.h>
 #include "cbstyledtextctrl.h"
 #include "snippetitemdata.h"
 #include "codesnippetstreectrl.h"

@@ -269,7 +269,10 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_Macros[_T("MAKEFILE")]             = wxEmptyString;
         m_Macros[_T("ALL_PROJECT_FILES")]    = wxEmptyString;
     }
-    else if (project != m_LastProject)
+    else if ( (project != m_LastProject) || (project->GetTitle() != m_ProjectName)
+                || (UnixFilename(project->GetBasePath()) != m_ProjectDir)
+                || (UnixFilename(m_ProjectWxFileName.GetFullName()) != m_ProjectFilename)
+             )
     {
         m_LastTarget      = nullptr; // reset last target when project changes
         m_ProjectWxFileName.Assign(project->GetFilename());
@@ -340,7 +343,7 @@ void MacrosManager::RecalcVars(cbProject* project, EditorBase* editor, ProjectBu
         m_TargetFilename       = wxEmptyString;
         m_LastTarget           = nullptr;
     }
-    else if (target != m_LastTarget)
+    else if ( (target != m_LastTarget) or (target->GetTitle() != m_TargetName) )
     {
         wxFileName tod(target->GetOutputFilename());
         m_TargetOutputDir      = UnixFilename(tod.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR));
@@ -455,7 +458,10 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
                 target = project->GetBuildTarget(project->GetActiveBuildTarget());
         }
     }
-    if (project != m_LastProject || target != m_LastTarget || (editor && (editor->GetFilename() != m_ActiveEditorFilename)) )
+    if (project != m_LastProject || target != m_LastTarget || (editor && (editor->GetFilename() != m_ActiveEditorFilename))
+                    || (project && (UnixFilename(project->GetBasePath()) != m_ProjectDir))
+                    || (UnixFilename(m_ProjectWxFileName.GetFullName()) != m_ProjectFilename)
+                    || (target && (target->GetTitle() != m_TargetName)) )
         RecalcVars(project, editor, target);
 
     wxString search;

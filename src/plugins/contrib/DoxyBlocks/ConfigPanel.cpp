@@ -33,7 +33,7 @@
 #include <configmanager.h>
 #include <editorcolourset.h>
 #include <editormanager.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 #include "version.h"
 

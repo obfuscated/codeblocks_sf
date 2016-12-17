@@ -35,7 +35,7 @@
 #include "projectloader_hooks.h"
 #include "annoyingdialog.h"
 #include "configmanager.h"
-#include "tinyxml/tinywxuni.h"
+#include "tinywxuni.h"
 #include "filegroupsandmasks.h"
 
 ProjectLoader::ProjectLoader(cbProject* project)

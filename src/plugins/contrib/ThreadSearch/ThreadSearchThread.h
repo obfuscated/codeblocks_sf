@@ -110,6 +110,9 @@ private:
     TextFileSearcher*    m_pTextFileSearcher; // Searcher object
     bool m_ShowFileMissingError;
     bool m_ShowCantOpenFileError;
+
+    /// Set of already visited directories (stored as absolute paths).
+    std::set<wxString>      m_VisitedDirs;
 };
 
 

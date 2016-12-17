@@ -115,7 +115,9 @@ PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, 
     m_Pid(0),
     m_pvThis(pvThis)
 {
-    wxSetWorkingDirectory(UnixFilename(dir));
+    const wxString &unixDir = UnixFilename(dir);
+    if (!unixDir.empty())
+        wxSetWorkingDirectory(unixDir);
     if (pipe)
         Redirect();
 }

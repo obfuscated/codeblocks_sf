@@ -38,6 +38,7 @@ END_EVENT_TABLE()
 ConfigureToolsDlg::ConfigureToolsDlg(wxWindow* parent)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgConfigureTools"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     DoFillList();
 } // end of constructor
 

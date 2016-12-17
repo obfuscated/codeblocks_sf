@@ -38,6 +38,7 @@ AutoDetectCompilers::AutoDetectCompilers(wxWindow* parent)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAutoDetectCompilers"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     wxListCtrl* list = XRCCTRL(*this, "lcCompilers", wxListCtrl);
     if (list)

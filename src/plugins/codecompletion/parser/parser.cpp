@@ -319,6 +319,9 @@ bool Parser::Parse(const wxString& filename, bool isLocal, bool locked)
         // once the Load function is called, it will return a loader pointer, and start loading
         // the file content in a background thread(see: BackgroundThread class)
         // the loader will be deleted in the ParserThread::InitTokenizer() function.
+        // the second argument is the option whether we should reuse the Editor buffer
+        // if m_NeedsReparse is true, thus means we need to load the file content from the editor
+        // buffer instead of the hard disk.
         opts.loader = Manager::Get()->GetFileManager()->Load(filename, m_NeedsReparse);
 
         // we are going to parse this file, so create a ParserThread
@@ -775,7 +778,7 @@ void Parser::ReparseModifiedFiles()
     for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokenTree->GetFilename(*it);
-        if ( FileTypeOf(filename) == ftSource ) // ignore source files (*.cpp etc)
+        if ( FileTypeOf(filename) == ftSource || FileTypeOf(filename) == ftTemplateSource ) // ignore source files (*.cpp etc)
             continue;
         files_list.push(filename);
         files_idx.push(*it);
@@ -783,7 +786,7 @@ void Parser::ReparseModifiedFiles()
     for (it = m_TokenTree->GetFilesToBeReparsed()->begin(); it != m_TokenTree->GetFilesToBeReparsed()->end(); ++it)
     {
         wxString filename = m_TokenTree->GetFilename(*it);
-        if ( FileTypeOf(filename) != ftSource ) // ignore non-source files (*.h etc)
+        if ( FileTypeOf(filename) != ftSource && FileTypeOf(filename) != ftTemplateSource  ) // ignore non-source files (*.h etc)
             continue;
         files_list.push(filename);
         files_idx.push(*it);

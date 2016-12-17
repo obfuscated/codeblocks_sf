@@ -31,8 +31,8 @@
 
 
 #include "annoyingdialog.h"
-#include "tinyxml/tinyxml.h"
-#include "tinyxml/tinywxuni.h"
+#include <tinyxml.h>
+#include "tinywxuni.h"
 
 WorkspaceLoader::WorkspaceLoader()
 {

@@ -24,7 +24,7 @@
 #define WXSITEMRESDATAOBJECT_H
 
 #include <wx/dataobj.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 
 #define wxsDF_WIDGET   _T("wxSmith XML")
 

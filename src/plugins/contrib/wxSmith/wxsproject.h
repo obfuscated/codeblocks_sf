@@ -24,7 +24,7 @@
 #define WXSPROJECT_H
 
 #include <cbproject.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include "wxsresourcetree.h"
 
 class wxSmith;

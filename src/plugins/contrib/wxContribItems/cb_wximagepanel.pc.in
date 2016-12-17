@@ -9,5 +9,5 @@ Name: wxImagePanel
 Description: wxImagePanel also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwximagepanel
-Cflags: -fPIC -I${includedir}/wxImagePanel/include
+Cflags: -I${includedir}/wxImagePanel/include
 

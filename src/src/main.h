@@ -92,7 +92,7 @@ class MainFrame : public wxFrame
 
         void StartupDone();
 
-        ProjectManagerUI* GetProjectManagerUI() { return m_pPrjManUI; }
+        cbProjectManagerUI* GetProjectManagerUI() { return m_pPrjManUI; }
     private:
         // event handlers
 
@@ -366,7 +366,7 @@ class MainFrame : public wxFrame
 
         EditorManager*    m_pEdMan;
         ProjectManager*   m_pPrjMan;
-        ProjectManagerUI* m_pPrjManUI;
+        cbProjectManagerUI* m_pPrjManUI;
         LogManager*       m_pLogMan;
         InfoPane*         m_pInfoPane;
 

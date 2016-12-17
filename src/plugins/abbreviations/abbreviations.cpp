@@ -177,8 +177,8 @@ void Abbreviations::OnEditAutoComplete(cb_unused wxCommandEvent& event)
     const AutoCompleteMap& acm = *GetCurrentACMap(editor);
 
     int curPos = control->GetCurrentPos();
-    int startPos = control->WordStartPosition(curPos, false);
-    const int endPos = control->WordEndPosition(curPos, false);
+    int startPos = control->WordStartPosition(curPos, true);
+    const int endPos = control->WordEndPosition(curPos, true);
 
     const wxString keyword = control->GetTextRange(startPos, endPos);
     AutoCompleteMap::const_iterator acm_it = acm.find(keyword);
@@ -242,8 +242,8 @@ void Abbreviations::DoAutoComplete(cbEditor* ed)
 
     LogManager* logMan = Manager::Get()->GetLogManager();
     int curPos = control->GetCurrentPos();
-    int wordStartPos = control->WordStartPosition(curPos, false);
-    const int endPos = control->WordEndPosition(curPos, false);
+    int wordStartPos = control->WordStartPosition(curPos, true);
+    const int endPos = control->WordEndPosition(curPos, true);
     wxString keyword = control->GetTextRange(wordStartPos, endPos);
     wxString lineIndent = ed->GetLineIndentString(control->GetCurrentLine());
     logMan->DebugLog(_T("Auto-complete keyword: ") + keyword);

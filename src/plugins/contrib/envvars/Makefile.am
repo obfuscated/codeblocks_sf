@@ -1,6 +1,6 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		$(CB_SQUIRREL_CFLAGS) \
 		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
 		-I$(top_srcdir)/src/include/scripting/bindings \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include
@@ -10,7 +10,7 @@ pkgdata_DATA = envvars.zip
 
 pluginlib_LTLIBRARIES = libenvvars.la
 
-libenvvars_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libenvvars_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libenvvars_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
 

@@ -126,6 +126,7 @@ public:
     void SetDeletePreviousResults(bool deletePreviousResults) {m_DeletePreviousResults = deletePreviousResults;}
     void SetDisplayLogHeaders(bool displayLogHeaders)         {m_DisplayLogHeaders = displayLogHeaders;}
     void SetDrawLogLines(bool drawLogLines)                   {m_DrawLogLines = drawLogLines;}
+    void SetAutosizeLogColumns(bool autosizeLogColumns)       {m_AutosizeLogColumns = autosizeLogColumns;}
     void SetFindData(const ThreadSearchFindData& findData)    {m_FindData = findData;}
 
     void SetManagerType (ThreadSearchViewManagerBase::eManagerTypes mgrType);
@@ -142,6 +143,7 @@ public:
     bool GetDeletePreviousResults()                  const {return m_DeletePreviousResults;}
     bool GetDisplayLogHeaders()                      const {return m_DisplayLogHeaders;}
     bool GetDrawLogLines()                           const {return m_DrawLogLines;}
+    bool GetAutosizeLogColumns()                     const {return m_AutosizeLogColumns;}
     void GetFindData(ThreadSearchFindData& findData) const {findData = m_FindData;}
     ThreadSearchFindData& GetFindData()                    {return m_FindData;}
     ThreadSearchViewManagerBase::eManagerTypes GetManagerType() const {return m_pViewManager->GetManagerType();}
@@ -302,6 +304,8 @@ private:
     ThreadSearchLoggerBase::eLoggerTypes m_LoggerType;                // Logger type, can be a list or a tree
     bool                                 m_DisplayLogHeaders;         // Show/Hide column headers in wxListCtrl logger
     bool                                 m_DrawLogLines;              // Draw lines between columns in wxListCtrl logger
+    /// Automatically resize columns in wxListCtrl logger after search is finished.
+    bool                                 m_AutosizeLogColumns;
     bool                                 m_OnReleased;                // For multiple simultaneous calls of OnRelease
     wxComboBox*                          m_pCboSearchExpr;
     wxSplitMode                          m_SplitterMode;              // Sets vertical or horizontal display for code

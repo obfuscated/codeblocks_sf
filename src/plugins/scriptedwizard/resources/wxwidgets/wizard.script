@@ -36,7 +36,7 @@ LibWxNet <- false; // Net Lib
 LibWxOpengl <- false; // OpenGL Lib
 LibWxQa <- false; // QA Lib
 LibWxRichText <- false; // Richtext Lib
-WxVersion <- 1; // 0 - wx 2.6, 1 - wx 2.8, 2 - wx 3.0
+WxVersion <- 1; // 0 - wx 2.6, 1 - wx 2.8, 2 - wx 3.0, 3 -wx 3.1
 DebugTarget <- 1; // Target Type; 0 - Console, 1 - GUI
 ReleaseTarget <- 1; // Target Type; 0 - Console, 1 - GUI
 FileName <- _T(""); // Filename for wizard
@@ -58,7 +58,7 @@ function BeginWizard()
 
     if (WizType == wizProject)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x\nproject wizard!\n\n" +
+        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x / 3.1.x\nproject wizard!\n\n" +
                             "This wizard will guide you to create a new project using\n" +
                             "the wxWidgets cross-platform GUI library.\n\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
@@ -69,7 +69,10 @@ function BeginWizard()
                                 "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x"), WxVersion); // select wxwidgets version
+        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
+                                              _T("Please select the wxWidgets version you want to use."),
+                                              _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x;wxWidgets 3.1.x"),
+                                              WxVersion); // select wxwidgets version
         Wizard.AddProjectPathPage();
         Wizard.AddPage(_T("WxProjDetails"));
         Wizard.AddPage(_T("WxGuiSelect"));
@@ -90,7 +93,7 @@ function BeginWizard()
     }
     else if (WizType == wizTarget)
     {
-        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x\nTarget wizard!\n\n" +
+        local intro_msg = _T("Welcome to the new wxWidgets 2.6.x / 2.8.x / 3.0.x / 3.1.x\nTarget wizard!\n\n" +
                             "This wizard will guide you to create a new target\n" +
                             "When you 're ready to proceed, please click \"Next\"...");
 
@@ -100,7 +103,10 @@ function BeginWizard()
                                 "\"include\" and \"lib\".");
 
         Wizard.AddInfoPage(_T("WxIntro"), intro_msg);
-        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), _T("Please select the wxWidgets version you want to use."), _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x"), WxVersion); // select wxwidgets version
+        Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
+                                              _T("Please select the wxWidgets version you want to use."),
+                                              _T("wxWidgets 2.6.x;wxWidgets 2.8.x;wxWidgets 3.0.x;wxWidgets 3.1.x"),
+                                              WxVersion); // select wxwidgets version
         if (PLATFORM == PLATFORM_MSW)
             Wizard.AddGenericSelectPathPage(_T("WxPath"), wxpath_msg, _T("wxWidgets' location:"), _T("$(#wx)"));
         // we need the compiler selection before wx settings, because we 'll have
@@ -348,6 +354,8 @@ function OnLeave_WxConf(fwd)
             lib_wxver = _T("28");
         else if (WxVersion == 2)
             lib_wxver = _T("30");
+        else if (WxVersion == 3)
+            lib_wxver = _T("31");
 
         // Now set the global variables
         LibPrefix = lib_prefix; // Prefix of lib name
@@ -499,6 +507,8 @@ function OnLeave_WxConfUnix(fwd)
             LibWxVer = _T("2.8");
         else if (WxVersion == 2)
             LibWxVer = _T("3.0");
+        else if (WxVersion == 3)
+            LibWxVer = _T("3.1");
 
         // Ask the user whether wizard shall add PCH support when empty Project is selected
         if (IsEmpty && WantPCH)
@@ -741,6 +751,14 @@ function SetupProject(project)
             project.AddLinkLib(LibPrefix + _T("comctl32") + LibSuffix);
             project.AddLinkLib(LibPrefix + _T("wsock32") + LibSuffix);
             project.AddLinkLib(LibPrefix + _T("odbc32") + LibSuffix);
+
+            if (WxVersion == 3 && GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc*")))
+            {
+                project.AddLinkLib(LibPrefix + _T("shlwapi") + LibSuffix);
+                project.AddLinkLib(LibPrefix + _T("version") + LibSuffix);
+            }
+
+
         }
     }
 

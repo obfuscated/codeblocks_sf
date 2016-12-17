@@ -61,6 +61,7 @@
 #include "parser/parser.h"
 #include "parser/tokenizer.h"
 #include "doxygen_parser.h" // for DocumentationPopup and DoxygenParser
+#include "gotofunctiondlg.h"
 
 #define CC_CODECOMPLETION_DEBUG_OUTPUT 0
 
@@ -945,7 +946,6 @@ std::vector<CodeCompletion::CCToken> CodeCompletion::GetAutocompList(bool isAuto
 
 void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCToken>& tokens, bool preprocessorOnly)
 {
-    FileType fTp = FileTypeOf(ed->GetShortName());
     const bool caseSens = m_NativeParser.GetParser().Options().caseSensitive;
     cbStyledTextCtrl* stc = ed->GetControl();
 
@@ -1026,7 +1026,8 @@ void CodeCompletion::DoCodeComplete(int caretPos, cbEditor* ed, std::vector<CCTo
                 {
                     wxString lastSearch = m_NativeParser.LastAIGlobalSearch().Lower();
                     int iidx = ilist->GetImageCount();
-                    bool isC = (fTp == ftHeader || fTp == ftSource);
+                    FileType fTp = FileTypeOf(ed->GetShortName());
+                    bool isC = (fTp == ftHeader || fTp == ftSource|| fTp == ftTemplateSource);
                     // theme keywords
                     HighlightLanguage lang = ed->GetLanguage();
                     if (lang == HL_NONE)
@@ -1092,6 +1093,7 @@ void CodeCompletion::DoCodeCompletePreprocessor(int tknStart, int tknEnd, cbEdit
         const FileType fTp = FileTypeOf(ed->GetShortName());
         if (   fTp != ftSource
             && fTp != ftHeader
+            && fTp != ftTemplateSource
             && fTp != ftResource )
         {
             return; // not C/C++
@@ -1134,7 +1136,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     const wxString curPath(wxFileName(curFile).GetPath());
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+    if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
         return;
 
     cbStyledTextCtrl* stc = ed->GetControl();
@@ -1832,17 +1834,20 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
         }
 
         IncrementalSelectIteratorStringArray iterator(tokens);
-        IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
-                                     _("Select function..."), _("Please select function to go to:"));
+        GotoFunctionDlg dlg(Manager::Get()->GetAppWindow(), iterator);
+
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)
         {
-            wxString sel = dlg.GetStringSelection();
-            const Token* token = tmpsearch.GetItem(sel);
-            if (ed && token)
-            {
-                TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %u."), token->m_Name.wx_str(), token->m_Line));
-                ed->GotoTokenPosition(token->m_Line - 1, token->m_Name);
+            wxIntPtr ptr = dlg.GetSelection();
+            if (ptr != wxNOT_FOUND) {
+                wxString sel = tokens[ptr];
+                const Token* token = tmpsearch.GetItem(sel);
+                if (ed && token)
+                {
+                    TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %u."), token->m_Name.wx_str(), token->m_Line));
+                    ed->GotoTokenPosition(token->m_ImplLine - 1, token->m_Name);
+                }
             }
         }
 
@@ -2593,7 +2598,7 @@ int CodeCompletion::DoClassMethodDeclImpl()
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+    if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
         return -4;
 
     if (!m_NativeParser.GetParser().Done())
@@ -2653,7 +2658,7 @@ int CodeCompletion::DoAllMethodsImpl()
         return -3;
 
     FileType ft = FileTypeOf(ed->GetShortName());
-    if ( ft != ftHeader && ft != ftSource) // only parse source/header files
+    if ( ft != ftHeader && ft != ftSource && ft != ftTemplateSource) // only parse source/header files
         return -4;
 
     wxArrayString paths = m_NativeParser.GetAllPathsByFilename(ed->GetFilename());

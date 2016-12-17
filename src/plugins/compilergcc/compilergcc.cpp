@@ -283,7 +283,6 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
 END_EVENT_TABLE()
 
 CompilerGCC::CompilerGCC() :
-    m_CompilerProcessList(),
     m_RealTargetsStartIndex(0),
     m_RealTargetIndex(0),
     m_PageIndex(-1),
@@ -592,7 +591,7 @@ void CompilerGCC::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     else if (data && data->GetKind() == FileTreeData::ftdkFile)
     {
         FileType ft = FileTypeOf(data->GetProjectFile()->relativeFilename);
-        if (ft == ftSource || ft == ftHeader)
+        if (ft == ftSource || ft == ftHeader || ft == ftTemplateSource)
         {
             // popup menu on a compilable file
             menu->AppendSeparator();
@@ -688,8 +687,13 @@ void CompilerGCC::TextURL(wxTextUrlEvent& event)
 
 void CompilerGCC::SetupEnvironment()
 {
-    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
+    // Special case so "No Compiler" is valid, but I'm not sure there is
+    // any valid reason to continue with this function.
+    // If we do continue there are wx3 asserts, because of empty paths.
+    if (m_CompilerId == wxT("null"))
+        return;
 
+    Compiler* compiler = CompilerFactory::GetCompiler(m_CompilerId);
     if (!compiler)
         return;
 
@@ -719,12 +723,7 @@ void CompilerGCC::SetupEnvironment()
 
     // Get configured masterpath, expand macros and remove trailing separators
     wxString masterPath = compiler->GetMasterPath();
-    bool isNoComp = false;
-    if (m_CompilerId == wxT("null")) // Special case so "No Compiler" is valid
-    {
-        isNoComp = true;
-        masterPath.Clear();
-    }
+
     Manager::Get()->GetMacrosManager()->ReplaceMacros(masterPath);
     while (   !masterPath.IsEmpty()
            && ((masterPath.Last() == '\\') || (masterPath.Last() == '/')) )
@@ -781,7 +780,7 @@ void CompilerGCC::SetupEnvironment()
     /* TODO (jens#1#): Is the above correct ?
        Or should we search in the whole systempath (pathList in this case) for the executable? */
     // Try again...
-    if ((binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND)) && !isNoComp)
+    if ((binPath.IsEmpty() || (pathList.Index(binPath, caseSens)==wxNOT_FOUND)))
     {
         InfoWindow::Display(_("Environment error"),
                             _("Can't find compiler executable in your configured search path's for ") + compiler->GetName() + _T('\n'));
@@ -872,7 +871,7 @@ void CompilerGCC::DoRegisterCompilers()
     CompilerFactory::RegisterCompiler(new CompilerGDC);
     CompilerFactory::RegisterCompiler(new CompilerGNUFortran);
     CompilerFactory::RegisterCompiler(new CompilerG95);
-    if (platform::windows || platform::linux || nonPlatComp)
+    if (platform::windows || platform::Linux || nonPlatComp)
         CompilerFactory::RegisterCompiler(new CompilerGNUARM);
 
     // register pure XML compilers
@@ -926,7 +925,7 @@ void CompilerGCC::DoRegisterCompilers()
                 else if (test == wxT("macosx"))
                     val = platform::macosx;
                 else if (test == wxT("linux"))
-                    val = platform::linux;
+                    val = platform::Linux;
                 else if (test == wxT("freebsd"))
                     val = platform::freebsd;
                 else if (test == wxT("netbsd"))
@@ -938,7 +937,7 @@ void CompilerGCC::DoRegisterCompilers()
                 else if (test == wxT("solaris"))
                     val = platform::solaris;
                 else if (test == wxT("unix"))
-                    val = platform::unix;
+                    val = platform::Unix;
             }
             if (val)
                 CompilerFactory::RegisterCompiler(
@@ -1037,7 +1036,12 @@ void CompilerGCC::StartCompileFile(wxFileName file)
 
     wxString fname = file.GetFullPath();
     if (!fname.IsEmpty())
+    {
+        CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+        Manager::Get()->ProcessEvent(evtSwitch);
+
         CompileFile( UnixFilename(fname) );
+    }
 }
 
 wxString CompilerGCC::ProjectMakefile()
@@ -1134,7 +1138,9 @@ void CompilerGCC::AddToCommandQueue(const wxArrayString& commands)
 void CompilerGCC::AllocProcesses()
 {
     // create the parallel processes array
-    size_t parallel_processes = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1);
+    size_t parallel_processes = Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 0);
+    if (parallel_processes == 0)
+        parallel_processes = std::max(1, wxThread::GetCPUCount());
     m_CompilerProcessList.resize(parallel_processes);
     for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
@@ -1309,7 +1315,10 @@ int CompilerGCC::DoRunQueue()
     // special shell used only for build commands
     if (!cmd->isRun)
     {
-        // run the command in a shell, so backtick'd expressions can be evaluated
+        ExpandBackticks(cmd->command);
+
+        // Run the command in a shell, so stream redirections (<, >, << and >>),
+        // piping and other shell features can be evaluated.
         if (!platform::windows)
         {
             wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
@@ -2026,7 +2035,7 @@ static inline wxString getBuildTargetName(const ProjectBuildTarget *bt)
 
 bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
 {
-    const wxString &cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
+    wxString cmd = GetMakeCommandFor(mcClean, m_pBuildingProject, bt);
     if (cmd.empty())
     {
         LogMessage(COMPILER_ERROR_LOG +
@@ -2048,6 +2057,7 @@ bool CompilerGCC::DoCleanWithMake(ProjectBuildTarget* bt)
     wxArrayString output, errors;
     wxSetWorkingDirectory(m_pBuildingProject->GetExecutionDir());
 
+    ExpandBackticks(cmd);
     if (showOutput)
         LogMessage(F(_("Executing clean command: %s"), cmd.wx_str()), cltNormal);
 

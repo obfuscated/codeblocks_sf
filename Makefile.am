@@ -15,12 +15,15 @@ pkgconfig_DATA = codeblocks.pc
 
 EXTRA_DIST = bootstrap \
 		codeblocks.spec \
+		codeblocks.spec.fedora \
 		codeblocks.plist \
 		BUGS \
 		BUILD \
 		COMPILERS \
 		$(srcdir)/update* \
 		ChangeLog.xsl \
+		codeblocks.appdata.xml \
+		codeblocks-contrib.metainfo.xml \
 		debian
 
 clean-zipfiles:
@@ -39,3 +42,6 @@ endif
 
 clean-local:
 	rm -f $(top_srcdir)/debian/codeblocks-headers.install
+
+appdatadir = $(datarootdir)/appdata
+dist_appdata_DATA = $(top_srcdir)/codeblocks.appdata.xml

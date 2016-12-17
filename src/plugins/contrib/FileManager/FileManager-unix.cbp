@@ -34,7 +34,6 @@
 			<Add option="-Wswitch-default" />
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-ansi" />
 			<Add option="`wx-config --version=2.8 --cflags`" />
 			<Add option="`pkg-config --cflags gamin`" />
 			<Add option="-Winvalid-pch" />
@@ -44,7 +43,9 @@
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
 			<Add option="-D__FAM__" />
+			<Add option="-std=c++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../../../include/mozilla_chardet" />
 			<Add directory="../../../include/mozilla_chardet/mfbt" />

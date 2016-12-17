@@ -64,6 +64,9 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 
         /** used by cbStyledTextCtrl to process ArrowUp and ArrowDown key press. It is not intended to be called by ccPlugins. */
         bool ProcessArrow(int key);
+
+        /** Called after env settings have changed, so the changes can be applied. */
+        void UpdateEnvSettings();
     private:
         CCManager();
         ~CCManager();

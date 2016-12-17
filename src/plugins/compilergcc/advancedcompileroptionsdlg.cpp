@@ -9,6 +9,7 @@
 
 #include "sdk.h"
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
     #include <wx/checkbox.h>
     #include <wx/choice.h>
     #include <wx/combobox.h>
@@ -72,6 +73,7 @@ AdvancedCompilerOptionsDlg::AdvancedCompilerOptionsDlg(wxWindow* parent, const w
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAdvancedCompilerOptions"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     ReadCompilerOptions();
     m_bDirty = false;
 
@@ -128,7 +130,7 @@ void AdvancedCompilerOptionsDlg::ReadCompilerOptions()
     XRCCTRL(*this, "chkUse83Paths",           wxCheckBox)->SetValue(switches.Use83Paths);
 
     m_Regexes = compiler->GetRegExArray();
-    m_SelectedRegex = m_Regexes.Count() > 0 ? 0 : -1;
+    m_SelectedRegex = m_Regexes.size() > 0 ? 0 : -1;
     FillRegexes();
 }
 
@@ -253,7 +255,7 @@ void AdvancedCompilerOptionsDlg::FillRegexes()
     wxListBox* list = XRCCTRL(*this, "lstRegex", wxListBox);
     list->Clear();
 
-    for (size_t i = 0; i < m_Regexes.Count(); ++i)
+    for (size_t i = 0; i < m_Regexes.size(); ++i)
     {
         RegExStruct& rs = m_Regexes[i];
         list->Append(rs.desc);
@@ -280,7 +282,7 @@ void AdvancedCompilerOptionsDlg::FillRegexDetails(int index)
     RegExStruct& rs = m_Regexes[index];
     XRCCTRL(*this, "txtRegexDesc",     wxTextCtrl)->SetValue(rs.desc);
     XRCCTRL(*this, "cmbRegexType",     wxComboBox)->SetSelection((int)rs.lt);
-    XRCCTRL(*this, "txtRegex",         wxTextCtrl)->SetValue(ControlCharsToString(rs.regex));
+    XRCCTRL(*this, "txtRegex",         wxTextCtrl)->SetValue(ControlCharsToString(rs.GetRegExString()));
     XRCCTRL(*this, "spnRegexMsg1",     wxSpinCtrl)->SetValue(rs.msg[0]);
     XRCCTRL(*this, "spnRegexMsg2",     wxSpinCtrl)->SetValue(rs.msg[1]);
     XRCCTRL(*this, "spnRegexMsg3",     wxSpinCtrl)->SetValue(rs.msg[2]);
@@ -296,7 +298,7 @@ void AdvancedCompilerOptionsDlg::SaveRegexDetails(int index)
     RegExStruct& rs = m_Regexes[index];
     rs.desc     = XRCCTRL(*this, "txtRegexDesc",     wxTextCtrl)->GetValue();
     rs.lt       = (CompilerLineType)XRCCTRL(*this, "cmbRegexType", wxComboBox)->GetSelection();
-    rs.regex    = StringToControlChars(XRCCTRL(*this, "txtRegex",  wxTextCtrl)->GetValue());
+    rs.SetRegExString(StringToControlChars(XRCCTRL(*this, "txtRegex",  wxTextCtrl)->GetValue()));
     rs.msg[0]   = XRCCTRL(*this, "spnRegexMsg1",     wxSpinCtrl)->GetValue();
     rs.msg[1]   = XRCCTRL(*this, "spnRegexMsg2",     wxSpinCtrl)->GetValue();
     rs.msg[2]   = XRCCTRL(*this, "spnRegexMsg3",     wxSpinCtrl)->GetValue();
@@ -381,8 +383,8 @@ void AdvancedCompilerOptionsDlg::OnRegexChange(wxCommandEvent& WXUNUSED(event))
 void AdvancedCompilerOptionsDlg::OnRegexAdd(wxCommandEvent& WXUNUSED(event))
 {
     SaveRegexDetails(m_SelectedRegex);
-    m_Regexes.Add(RegExStruct(_("New regular expression"), cltError, _T(""), 0));
-    m_SelectedRegex = m_Regexes.Count() - 1;
+    m_Regexes.push_back(RegExStruct(_("New regular expression"), cltError, _T(""), 0));
+    m_SelectedRegex = m_Regexes.size() - 1;
     FillRegexes();
 }
 
@@ -390,8 +392,8 @@ void AdvancedCompilerOptionsDlg::OnRegexDelete(wxCommandEvent& WXUNUSED(event))
 {
     if (cbMessageBox(_("Are you sure you want to delete this regular expression?"), _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT, this) == wxID_YES)
     {
-        m_Regexes.RemoveAt(m_SelectedRegex);
-        if (m_SelectedRegex >= (int)m_Regexes.Count())
+        m_Regexes.erase((m_Regexes.begin() + m_SelectedRegex));
+        if (m_SelectedRegex >= (int)m_Regexes.size())
             --m_SelectedRegex;
         FillRegexes();
     }
@@ -410,7 +412,7 @@ void AdvancedCompilerOptionsDlg::OnRegexDefaults(wxCommandEvent& WXUNUSED(event)
             return;
         compiler->LoadDefaultRegExArray(true);
         m_Regexes = compiler->GetRegExArray();
-        while (m_SelectedRegex >= (int)m_Regexes.Count())
+        while (m_SelectedRegex >= (int)m_Regexes.size())
             --m_SelectedRegex;
         FillRegexes();
     }
@@ -423,21 +425,21 @@ void AdvancedCompilerOptionsDlg::OnRegexUp(wxSpinEvent& WXUNUSED(event))
 
     SaveRegexDetails(m_SelectedRegex);
     RegExStruct rs = m_Regexes[m_SelectedRegex];
-    m_Regexes.RemoveAt(m_SelectedRegex);
-    m_Regexes.Insert(rs, m_SelectedRegex - 1);
+    m_Regexes.erase(m_Regexes.begin() + m_SelectedRegex);
+    m_Regexes.insert((m_Regexes.begin() + (m_SelectedRegex - 1)), rs);
     --m_SelectedRegex;
     FillRegexes();
 }
 
 void AdvancedCompilerOptionsDlg::OnRegexDown(wxSpinEvent& WXUNUSED(event))
 {
-    if (m_SelectedRegex >= (int)m_Regexes.Count() - 1)
+    if (m_SelectedRegex >= (int)m_Regexes.size() - 1)
         return;
 
     SaveRegexDetails(m_SelectedRegex);
     RegExStruct rs = m_Regexes[m_SelectedRegex];
-    m_Regexes.RemoveAt(m_SelectedRegex);
-    m_Regexes.Insert(rs, m_SelectedRegex + 1);
+    m_Regexes.erase(m_Regexes.begin() + m_SelectedRegex);
+    m_Regexes.insert((m_Regexes.begin() + (m_SelectedRegex + 1)), rs);
     ++m_SelectedRegex;
     FillRegexes();
 }

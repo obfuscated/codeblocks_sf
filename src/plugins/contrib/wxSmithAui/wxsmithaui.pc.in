@@ -9,7 +9,7 @@ Name: wxSmithAui
 Description: wxAUI support for wxSmith
 Version: @VERSION@
 Libs: -L${libdir}
-Cflags: -fPIC -I${includedir} \
+Cflags: -I${includedir} \
 			-I${includedir}/wxAuiManager \
 			-I${includedir}/wxAuiNotebook \
 			-I${includedir}/wxAuiToolBar

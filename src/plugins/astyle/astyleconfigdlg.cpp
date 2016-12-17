@@ -465,7 +465,7 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/indent_switches"),          XRCCTRL(*this, "chkIndentSwitches",      wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preproc_block"),     XRCCTRL(*this, "chkIndentPreprocBlock",  wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preproc_define"),    XRCCTRL(*this, "chkIndentPreprocDefine", wxCheckBox)->GetValue());
-  cfg->Write(_T("/indent_preprocessor_cond"), XRCCTRL(*this, "chkIndentPreprocCond",   wxCheckBox)->GetValue());
+  cfg->Write(_T("/indent_preproc_cond"),      XRCCTRL(*this, "chkIndentPreprocCond",   wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_col1_comments"),     XRCCTRL(*this, "chkIndentCol1Comments",  wxCheckBox)->GetValue());
   cfg->Write(_T("/min_conditional_indent"),   XRCCTRL(*this, "spnMinConditionalEvent", wxSpinCtrl)->GetValue());
   cfg->Write(_T("/max_instatement_indent"),   XRCCTRL(*this, "txtMaxInStatementIndent",wxTextCtrl)->GetValue());

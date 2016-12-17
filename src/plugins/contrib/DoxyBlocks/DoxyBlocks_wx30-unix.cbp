@@ -25,6 +25,7 @@
 					<Add option="-DCB_PRECOMP" />
 					<Add option="-DcbDEBUG" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 				</Compiler>
 				<Linker>
@@ -50,7 +51,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-ansi" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Unit filename="AutoDoc.cpp" />
 		<Unit filename="ChangeLog.txt" />

@@ -8,9 +8,9 @@ SUBDIRS += zlib
 endif
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		$(CB_SQUIRREL_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/bindings \
 		-I$(top_srcdir)/src/include/scripting/sqplus
 
@@ -18,10 +18,11 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libhelp_plugin.la
 
-libhelp_plugin_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libhelp_plugin_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libhelp_plugin_la_LIBADD = ../../../sdk/libcodeblocks.la \
-					$(WX_LIBS)
+					$(WX_LIBS) \
+					$(CB_SQUIRREL_LIBS)
 
 
 if ! HAVE_BZIP2

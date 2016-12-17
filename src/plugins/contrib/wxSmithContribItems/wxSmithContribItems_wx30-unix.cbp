@@ -21,6 +21,7 @@
 				<Option projectLinkerOptionsRelation="2" />
 				<Compiler>
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="../wxSmith" />
 					<Add directory="../wxSmith/wxwidgets" />
@@ -67,7 +68,6 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-ansi" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-Winvalid-pch" />
@@ -75,6 +75,7 @@
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Linker>
 			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />

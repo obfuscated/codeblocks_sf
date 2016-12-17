@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxScrollingDialog" name="dlgGetGlobalUsrVar">
+		<title>Get global variable</title>
+		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxFlexGridSizer">
+					<cols>1</cols>
+					<rows>2</rows>
+					<growablecols>0</growablecols>
+					<growablerows>0</growablerows>
+					<object class="sizeritem">
+						<object class="wxTreeCtrl" name="ID_GET_USER_VAR_TREE">
+							<image_list>&lt;none&gt;</image_list>
+							<tree_items>
+								<item>TreeCtrl1</item>
+								<item>&lt;none&gt;</item>
+							</tree_items>
+							<items_text>
+								<item2>TreeCtrl1</item2>
+								<item2>&lt;none&gt;</item2>
+							</items_text>
+							<style>wxTR_SINGLE|wxTR_DEFAULT_STYLE</style>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxButton" name="ID_CONFIG">
+									<label>Config</label>
+								</object>
+								<flag>wxALL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="wxID_OK">
+									<label>Ok</label>
+								</object>
+								<flag>wxALL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxButton" name="wxID_CANCEL">
+									<label>Cancel</label>
+								</object>
+								<flag>wxALL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

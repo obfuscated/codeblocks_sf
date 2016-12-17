@@ -62,6 +62,7 @@
 										<item>Add option</item>
 										<item>Change option</item>
 										<item>Remove files w/o target</item>
+										<item>Replace compiler</item>
 									</content>
 									<handler function="OnOperationSelect" entry="EVT_RADIOBOX" />
 								</object>
@@ -99,28 +100,68 @@
 								<object class="wxStaticText" name="wxID_ANY" variable="lblOptionSearch" member="no">
 									<label>Option/Var (i.e. -Wl,--no-undefined):</label>
 								</object>
-								<flag>wxEXPAND</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="ID_TXT_OPTION_SEARCH" variable="m_TxtOptionSearch" member="yes">
-									<tooltip>This is the compiler/linker option or path, linker lib or custom var to search for...</tooltip>
+								<object class="wxFlexGridSizer" variable="flsSearch" member="no">
+									<cols>2</cols>
+									<growablecols>0</growablecols>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="ID_TXT_OPTION_SEARCH" variable="m_TxtOptionSearch" member="yes">
+											<tooltip>This is the compiler/linker option or path, linker lib or custom var to search for...</tooltip>
+										</object>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_SEARCH_COMPILER_SRC" variable="m_BtnSearchCompilerSrc" member="yes">
+											<label>...</label>
+											<size>23,23</size>
+											<enabled>0</enabled>
+											<tooltip>Select compiler to search for</tooltip>
+											<handler function="OnSearchCompilerClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
 								</object>
-								<flag>wxEXPAND</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
 								<object class="wxStaticText" name="wxID_ANY" variable="lblOptionReplace" member="no">
 									<label>Replace with:</label>
 								</object>
-								<flag>wxEXPAND</flag>
+								<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
-								<object class="wxTextCtrl" name="TD_TXT_OPTION_REPLACE" variable="m_TxtOptionReplace" member="yes">
-									<enabled>0</enabled>
+								<object class="wxFlexGridSizer" variable="flsReplace" member="no">
+									<cols>2</cols>
+									<growablecols>0</growablecols>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="TD_TXT_OPTION_REPLACE" variable="m_TxtOptionReplace" member="yes">
+											<enabled>0</enabled>
+										</object>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BTN_SEARCH_COMPILER_DEST" variable="m_BtnSearchCompilerDest" member="yes">
+											<label>...</label>
+											<size>23,23</size>
+											<enabled>0</enabled>
+											<tooltip>Select compiler to replace with</tooltip>
+											<handler function="OnSearchCompilerClick" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
 								</object>
-								<flag>wxEXPAND</flag>
+								<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">
@@ -129,7 +170,7 @@
 									<enabled>0</enabled>
 									<tooltip>Either only the search pattern (strin) is replaced within the option&#x0A;or the whole options is replaced with the string to replace with.</tooltip>
 								</object>
-								<flag>wxTOP|wxEXPAND</flag>
+								<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 								<border>5</border>
 							</object>
 							<object class="sizeritem">

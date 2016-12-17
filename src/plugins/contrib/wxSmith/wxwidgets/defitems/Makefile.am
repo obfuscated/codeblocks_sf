@@ -5,7 +5,7 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 
 noinst_LTLIBRARIES = libwxsmith_wxwidgets_defitems.la
 
-libwxsmith_wxwidgets_defitems_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libwxsmith_wxwidgets_defitems_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libwxsmith_wxwidgets_defitems_la_LIBADD = ../../../../../sdk/libcodeblocks.la
 

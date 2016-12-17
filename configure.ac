@@ -37,9 +37,6 @@ CODEBLOCKS_CHECK_DEBUG
 
 CODEBLOCKS_SETUP_FOR_TARGET
 
-AC_DISABLE_STATIC
-AC_PROG_LIBTOOL
-
 dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
@@ -71,8 +68,41 @@ LIBS=$save_LIBS
 AC_SEARCH_LIBS(BZ2_bzopen, bz2, [HAVE_BZIP2=yes], [HAVE_BZIP2=no])
 LIBS=$save_LIBS
 
+save_CC=$CC
+save_CPP=$CPP
+CC=$CXX
+CPP=$CXXCPP
+AC_CHECK_HEADER(astyle.h, [HAVE_ASTYLE=yes], [HAVE_ASTYLE=no])
+CC=$save_CC
+CPP=$save_CPP
+
 AM_CONDITIONAL([HAVE_ZLIB], [test "$HAVE_ZLIB" = yes])
 AM_CONDITIONAL([HAVE_BZIP2], [test "$HAVE_BZIP2" = yes])
+AM_CONDITIONAL([HAVE_ASTYLE], [test "$HAVE_ASTYLE" = yes])
+
+AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
+
+ifdef([PKG_CHECK_MODULES],[],[
+	define([PKG_CHECK_MODULES],
+	[ echo "You don't have pkg.m4 properly installed" >&2
+		exit 1
+	])
+])
+
+PKG_PROG_PKG_CONFIG
+PKG_CHECK_MODULES([SQUIRREL], [squirrel], [HAVE_SQUIRREL=yes], [HAVE_SQUIRREL=no])
+AM_CONDITIONAL([HAVE_SQUIRREL], [test "$HAVE_SQUIRREL" = yes])
+
+PKG_CHECK_MODULES([TINYXML], [tinyxml], [HAVE_TINYXML=yes], [HAVE_TINYXML=no])
+AM_CONDITIONAL([HAVE_TINYXML], [test "$HAVE_TINYXML" = yes])
+
+dnl Darwin -> .dylib  Linux -> .so
+if test "x$DARWIN_TRUE" = "x" ; then
+    MODULE_SHARED_LDFLAGS="-dynamiclib"
+else
+    MODULE_SHARED_LDFLAGS="-module -shared"
+fi
+AC_SUBST(MODULE_SHARED_LDFLAGS)
 
 dnl versioning info for libtool
 dnl Note this is the ABI version which is not the same as our actual library version
@@ -92,7 +122,7 @@ CODEBLOCKS_ENABLE_SETTINGS
 
 AM_OPTIONS_WXCONFIG
 AM_PATH_WXCONFIG(2.8.12, wxWin=1)
-        if test "$wxWin" != 1; then
+    if test "$wxWin" != 1; then
         AC_MSG_ERROR([
                 wxWidgets must be installed on your system.
 
@@ -111,7 +141,7 @@ AM_PATH_WXCONFIG(2.8.12, wxWin=1)
 		earlier) wxWidgets version...
 			])
 		fi
-        fi
+    fi
 
 dnl		CPPFLAGS="$CPPFLAGS $WX_CPPFLAGS"
 dnl		CXXFLAGS="$CXXFLAGS $WX_CXXFLAGS_ONLY"
@@ -123,8 +153,8 @@ AC_SUBST(CXXFLAGS)
 AC_SUBST(CFLAGS)
 AC_SUBST(LIBS)
 
-WX_GTK2_CFLAGS=
-WX_GTK2_LIBS=
+WX_GTK_CFLAGS=
+WX_GTK_LIBS=
 WX_X11_CFLAGS=
 WX_X11_LIBS=
 
@@ -151,22 +181,6 @@ case $WX_BASENAME in
 				"x$GTK_NOTEBOOK_TRUE" = "x" -o \
 				"x$LINUX_TRUE" = "x" ; then
 
-			AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
-
-			ifdef([PKG_CHECK_MODULES],[],[
-				define([PKG_CHECK_MODULES],
-				[ echo "You don't have pkg.m4 properly installed" >&2
-					exit 1
-				])
-			])
-
-            dnl acoording to pkg-config's manpage this call is absolutely needed:
-            dnl
-            dnl "Note that if there is a possibility the first call to
-            dnl PKG_CHECK_MODULES might not happen, you should be sure
-            dnl to include an explicit call to PKG_PROG_PKG_CONFIG"
-			PKG_PROG_PKG_CONFIG
-
 			if test "x$LINUX_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
 					PKG_CHECK_MODULES([GLIB2], [glib-2.0])
@@ -182,7 +196,16 @@ case $WX_BASENAME in
 			if test "x$BUILD_MOUSESAP_TRUE" = "x"  -o \
 					"x$GTK_NOTEBOOK_TRUE" = "x" ; then
 				if test "x$HAVE_PKG_CONFIG" = "xyes"; then
-					PKG_CHECK_MODULES([GTK2], [gtk+-2.0 >= 2.0.0])
+					case $WX_BASENAME in
+						*wx_gtk3*)
+							AC_MSG_NOTICE([gtk3 used])
+							PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.0.0])
+						;;
+						*wx_gtk2*)
+							AC_MSG_NOTICE([gtk2 used])
+							PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.0.0])
+						;;
+					esac
 				fi
 			fi
 
@@ -212,22 +235,22 @@ case $WX_BASENAME in
         fi
 
 
-	CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
-	CB_GLIB2_LIBS="$GLIB2_LIBS"
-	CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
-	CB_GAMIN_LIBS="$GAMIN_LIBS"
-	CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
-	CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
-	CB_FONTCONFIG_CFLAGS="$FONTCONFIG_CFLAGS"
-	CB_FONTCONFIG_LIBS="$FONTCONFIG_LIBS"
-        WX_GTK2_CFLAGS="$GTK2_CFLAGS"
-        WX_GTK2_LIBS="$GTK2_LIBS"
-        AC_PATH_XTRA
-        WX_X11_CFLAGS="`echo $X_CFLAGS | sed 's/ -INONE//'`"
-        WX_X11_LIBS="`echo $X_LIBS | sed 's/ -LNONE//' | sed 's/ -RNONE//'`"
-        if test "$no_x" != yes; then
-            WX_X11_LIBS="$WX_X11_LIBS -lX11 $X_EXTRA_LIBS"
-        fi
+		CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
+		CB_GLIB2_LIBS="$GLIB2_LIBS"
+		CB_GAMIN_CFLAGS="$GAMIN_CFLAGS"
+		CB_GAMIN_LIBS="$GAMIN_LIBS"
+		CB_HUNSPELL_CFLAGS="$HUNSPELL_CFLAGS"
+		CB_HUNSPELL_LIBS="$HUNSPELL_LIBS"
+		CB_FONTCONFIG_CFLAGS="$FONTCONFIG_CFLAGS"
+		CB_FONTCONFIG_LIBS="$FONTCONFIG_LIBS"
+		WX_GTK_CFLAGS="$GTK_CFLAGS"
+		WX_GTK_LIBS="$GTK_LIBS"
+		AC_PATH_XTRA
+		WX_X11_CFLAGS="`echo $X_CFLAGS | sed 's/ -INONE//'`"
+		WX_X11_LIBS="`echo $X_LIBS | sed 's/ -LNONE//' | sed 's/ -RNONE//'`"
+		if test "$no_x" != yes; then
+			WX_X11_LIBS="$WX_X11_LIBS -lX11 $X_EXTRA_LIBS"
+		fi
     ;;
     *wx_msw*)
         AC_MSG_RESULT(wxMSW)
@@ -267,6 +290,7 @@ esac
 
 CB_GCC_VERSION
 AM_CONDITIONAL([HAVE_GCC48], [test $GCC_MAJOR_VERSION -gt 4 -o $GCC_MAJOR_VERSION -eq 4 -a $GCC_MINOR_VERSION -ge 8])
+AM_CONDITIONAL([HAVE_GCC6], [test $GCC_MAJOR_VERSION -ge 6])
 
 AC_MSG_CHECKING([for wxWidgets >= 2.9.0])
 AM_CONDITIONAL([HAVE_WX29], [test $wx_config_major_version -gt 2 -o $wx_config_major_version -eq 2 -a $wx_config_minor_version -ge 9])
@@ -291,9 +315,28 @@ else
     fi
 fi
 
+if test "x$HAVE_SQUIRREL_TRUE" = "x" ; then
+	CB_SQUIRREL_CFLAGS="$SQUIRREL_CFLAGS"
+	CB_SQUIRREL_LIBS="$SQUIRREL_LIBS"
+else
+	CB_SQUIRREL_CFLAGS="-I\$(top_srcdir)/src/include/scripting/include"
+	CB_SQUIRREL_LIBS="\$(top_builddir)/src/sdk/scripting/squirrel/libsquirrel.la \$(top_builddir)/src/sdk/scripting/sqstdlib/libsqstdlib.la"
+fi
 
-AC_SUBST(WX_GTK2_CFLAGS)
-AC_SUBST(WX_GTK2_LIBS)
+if test "x$HAVE_TINYXML_TRUE" = "x" ; then
+	CB_TINYXML_CFLAGS="$TINYXML_CFLAGS"
+	CB_TINYXML_LIBS="$TINYXML_LIBS"
+else
+	CB_TINYXML_CFLAGS="-I\$(top_srcdir)/src/include/tinyxml -DTIXML_USE_STL=YES"
+	CB_TINYXML_LIBS="\$(top_builddir)/src/base/tinyxml/libtinyxml.la"
+fi
+
+AC_SUBST(CB_SQUIRREL_CFLAGS)
+AC_SUBST(CB_SQUIRREL_LIBS)
+AC_SUBST(CB_TINYXML_CFLAGS)
+AC_SUBST(CB_TINYXML_LIBS)
+AC_SUBST(WX_GTK_CFLAGS)
+AC_SUBST(WX_GTK_LIBS)
 AC_SUBST(CB_GLIB2_CFLAGS)
 AC_SUBST(CB_GLIB2_LIBS)
 AC_SUBST(CB_GAMIN_CFLAGS)
@@ -329,9 +372,13 @@ case `uname` in
 esac
 AC_MSG_RESULT($PIC_FLAGS)
 
-CPPFLAGS="$CPPFLAGS -ansi -DTIXML_USE_STL"
+CFLAGS="$CFLAGS -std=c90"
+CPPFLAGS="$CPPFLAGS $CB_TINYXML_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
+
+m4_include([ax_cxx_compile_stdcxx.m4])
+AX_CXX_COMPILE_STDCXX(11, noext)
 
 dnl AM_PATH_GTK(1.2.7, ,
 dnl             AC_MSG_ERROR(Cannot find GTK: Is gtk-config in path?),
@@ -444,6 +491,7 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/abbreviations/resources/Makefile
 	src/plugins/xpmanifest/Makefile
 	src/plugins/contrib/Makefile
+	src/plugins/contrib/appdata/Makefile
 	src/plugins/contrib/AutoVersioning/Makefile
 	src/plugins/contrib/BrowseTracker/Makefile
 	src/plugins/contrib/byogames/Makefile
@@ -554,6 +602,7 @@ AC_CONFIG_FILES([Makefile
 	src/templates/win32/Makefile
 	src/wxsmith/Makefile
 	codeblocks.pc
+	codeblocks.spec.fedora
 	codeblocks.spec
 	codeblocks.plist
 ])

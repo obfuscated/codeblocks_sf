@@ -27,7 +27,7 @@
 #include <wx/arrstr.h>
 #include <wx/string.h>
 #include <wx/hashmap.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <cbproject.h>
 
 /** \brief Configuration of one project */

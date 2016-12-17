@@ -9,4 +9,4 @@ Name: wxChartCtrl
 Description: wxChartCtrl also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwxchartctrl
-Cflags: -fPIC -I${includedir}/wxchart/include
+Cflags: -I${includedir}/wxchart/include

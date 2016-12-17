@@ -25,12 +25,13 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-ansi" />
 			<Add option="`wx-config --version=2.8 --cflags`" />
 			<Add option="-fPIC" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-std=c++11" />
 			<Add directory="$(CBDIR)/include" />
+			<Add directory="$(CBDIR)/include/tinyxml" />
 			<Add directory="$(CBDIR)/sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>

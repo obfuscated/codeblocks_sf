@@ -26,7 +26,7 @@
 
 #include <globals.h>
 #include <wx/string.h>
-#include <tinyxml/tinywxuni.h>
+#include <tinywxuni.h>
 
 // TODO: This is same as in wxsproject.h, make one set instead of two
 namespace

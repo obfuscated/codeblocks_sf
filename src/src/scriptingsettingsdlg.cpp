@@ -48,6 +48,7 @@ ScriptingSettingsDlg::ScriptingSettingsDlg(wxWindow* parent)
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgScriptingSettings"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     wxListCtrl* list = XRCCTRL(*this, "chkStartupScripts", wxListCtrl);
     list->InsertColumn(0, _("Script"), wxLIST_FORMAT_LEFT, 160);

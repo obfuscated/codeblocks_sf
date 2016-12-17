@@ -76,7 +76,26 @@ void b_function(int i_integer, float f_float)
 
 AClass obj;
 
+// macro definition contains handle string literals
+// the string literal also contains a c++ comments //
+// see SF ticket report: Code::Blocks / Tickets / #278 parser error: string literal inside macro definition - https://sourceforge.net/p/codeblocks/tickets/278/
+// and Code::Blocks / Tickets / #393 CC: sizeof("") define with later use is killing parser - https://sourceforge.net/p/codeblocks/tickets/393/
+#define TEST "http://www.test.com"
 
+const char szStr[] = TEST;
+
+void Test( void )
+{
+    printf( "%s\n", szStr );
+}
+
+int main()
+{
+    Test();
+    return 0;
+}
+
+//Test      //Test
 //MyCon     //MyConst
 //MyCom     //MyComm,MyComplex
 //MyComp    //MyComplex

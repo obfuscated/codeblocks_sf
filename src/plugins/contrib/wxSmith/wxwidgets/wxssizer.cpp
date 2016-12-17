@@ -56,12 +56,15 @@ namespace
     };
 }
 
-void wxsSizerExtra::OnEnumProperties(cb_unused long _Flags)
+void wxsSizerExtra::OnEnumProperties(long _Flags)
 {
     static const int Priority = 20;
     WXS_SIZERFLAGS_P(wxsSizerExtra,Flags,Priority);
     WXS_DIMENSION_P(wxsSizerExtra,Border,_("Border width"),_("  Dialog Units"),_T("border"),0,false,Priority);
-    WXS_SIZE_P(wxsSizerExtra,MinSize,_("Default Min size"),_("Min Width"),_("Min Height"),_("Min size in dialog units"), _T("minsize"),Priority);
+    // We only need to add "Default Min Size", if flMinMaxSize is not set.
+    // If it is set, it should already be there.
+    if ( !( _Flags & flMinMaxSize ) )
+        WXS_SIZE_P(wxsSizerExtra,MinSize,_("Default Min size"),_("Min Width"),_("Min Height"),_("Min size in dialog units"), _T("minsize"),Priority);
     WXS_LONG_P(wxsSizerExtra,Proportion,_("Proportion"),_T("option"),0,Priority);
 }
 

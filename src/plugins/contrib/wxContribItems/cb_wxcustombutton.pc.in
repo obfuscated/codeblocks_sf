@@ -9,5 +9,5 @@ Name: wxCustomButton
 Description: wxCustomButton also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwxcustombutton
-Cflags: -fPIC -I${includedir}/wxthings/include
+Cflags: -I${includedir}/wxthings/include
 

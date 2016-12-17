@@ -566,9 +566,7 @@ void CompilerOptionsDlg::DoFillOthers()
     wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
     if (spn)
     {
-        const int count = wxThread::GetCPUCount();
-        spn->SetRange(1, std::max(16, (count != -1) ? count : 1));
-        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 1));
+        spn->SetValue(Manager::Get()->GetConfigManager(_T("compiler"))->ReadInt(_T("/parallel_processes"), 0));
     }
 
     spn = XRCCTRL(*this, "spnMaxErrors", wxSpinCtrl);
@@ -1368,7 +1366,7 @@ void CompilerOptionsDlg::DoSaveCompilerDefinition()
     }
 
     const RegExArray& regexes = compiler->GetRegExArray();
-    for (size_t i = 0; i < regexes.GetCount(); ++i)
+    for (size_t i = 0; i < regexes.size(); ++i)
     {
         node->SetNext(new wxXmlNode(wxXML_ELEMENT_NODE, wxT("RegEx")));
         node = node->GetNext();
@@ -1390,7 +1388,7 @@ void CompilerOptionsDlg::DoSaveCompilerDefinition()
             node->AddAttribute(wxT("file"), wxString::Format(wxT("%d"), regexes[i].filename));
         if (regexes[i].line != 0)
             node->AddAttribute(wxT("line"), wxString::Format(wxT("%d"), regexes[i].line));
-        tp = regexes[i].regex;
+        tp = regexes[i].GetRegExString();
         tp.Replace(wxT("\t"), wxT("\\t"));
         node->AddChild(new wxXmlNode(wxXML_CDATA_SECTION_NODE, wxEmptyString, tp));
     }
@@ -1931,36 +1929,44 @@ void CompilerOptionsDlg::OnCopyDirsClick(cb_unused wxCommandEvent& event)
         choices.Add(bt->GetTitle());
     }
 
-    int sel = cbGetSingleChoiceIndex(_("Please select which target to copy these directories to:"),
-                                     _("Copy directories"), choices, this);
-    // -1 means no selection (Cancel)
-    if (sel == -1)
-        return;
-
-    --sel;
-    // now, -1 means "copy to project"
-    CompileOptionsBase* base = sel == -1
-                                ? reinterpret_cast<CompileOptionsBase*>(m_pProject)
-                                : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
-    if (!base)
+    const wxArrayInt &sel = cbGetMultiChoiceDialog(_("Please select which target to copy these directories to:"),
+                                                   _("Copy directories"), choices, this);
+    if (sel.empty())
         return;
 
     wxNotebook* nb = XRCCTRL(*this, "nbDirs", wxNotebook);
-    for (size_t i = 0; i < selections.GetCount(); ++i)
+    int notebookPage = nb->GetSelection();
+
+    for (wxArrayInt::const_iterator itr = sel.begin(); itr != sel.end(); ++itr)
     {
-        switch (nb->GetSelection())
+        CompileOptionsBase* base;
+        if((*itr) == 0)
+            base = m_pProject; // "copy to project"
+        else
+            base = m_pProject->GetBuildTarget((*itr) - 1);
+
+        if (!base)
         {
-            case 0: // compiler dirs
-                base->AddIncludeDir(control->GetString(selections[i]));
-                break;
-            case 1: // linker dirs
-                base->AddLibDir(control->GetString(selections[i]));
-                break;
-            case 2: // resource compiler dirs
-                base->AddResourceIncludeDir(control->GetString(selections[i]));
-                break;
-            default:
-                break;
+            Manager::Get()->GetLogManager()->LogWarning(_T("Could not get build target in CompilerOptionsDlg::OnCopyLibsClick"));
+            continue;
+        }
+
+        for (size_t i = 0; i < selections.GetCount(); ++i)
+        {
+            switch (notebookPage)
+            {
+                case 0: // compiler dirs
+                    base->AddIncludeDir(control->GetString(selections[i]));
+                    break;
+                case 1: // linker dirs
+                    base->AddLibDir(control->GetString(selections[i]));
+                    break;
+                case 2: // resource compiler dirs
+                    base->AddResourceIncludeDir(control->GetString(selections[i]));
+                    break;
+                default:
+                    break;
+            }
         }
     }
 } // OnCopyDirsClick
@@ -2174,7 +2180,7 @@ void CompilerOptionsDlg::OnRemoveCompilerClick(cb_unused wxCommandEvent& event)
 {
     if (cbMessageBox(_("Are you sure you want to remove this compiler?"),
                     _("Confirmation"),
-                    wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
+                    wxYES | wxNO| wxICON_QUESTION | wxNO_DEFAULT) == wxID_YES)
     {
         wxChoice* cmb = XRCCTRL(*this, "cmbCompiler", wxChoice);
         int compilerIdx = m_CurrentCompilerIdx;
@@ -2338,25 +2344,30 @@ void CompilerOptionsDlg::OnCopyLibsClick(cb_unused wxCommandEvent& event)
         choices.Add(bt->GetTitle());
     }
 
-    int sel = cbGetSingleChoiceIndex(_("Please select which target to copy these libraries to:"),
-                                    _("Copy libraries"),
-                                    choices,
-                                    this);
-    // -1 means no selection
-    if (sel == -1)
+    const wxArrayInt &sel = cbGetMultiChoiceDialog(_("Please select which target to copy these libraries to:"),
+                                                   _("Copy libraries"), choices, this);
+    if (sel.empty())
         return;
 
-    --sel;
-    // now, -1 means "copy to project"
-    CompileOptionsBase* base = sel == -1
-                                ? reinterpret_cast<CompileOptionsBase*>(m_pProject)
-                                : reinterpret_cast<CompileOptionsBase*>(m_pProject->GetBuildTarget(sel));
-    if (!base)
-        return;
-    for (size_t i = 0; i < lstLibs->GetCount(); ++i)
+    for (wxArrayInt::const_iterator itr = sel.begin(); itr != sel.end(); ++itr)
     {
-        if (lstLibs->IsSelected(i))
-            base->AddLinkLib(lstLibs->GetString(i));
+        CompileOptionsBase* base;
+        if((*itr) == 0)
+            base = m_pProject; // "copy to project"
+        else
+            base = m_pProject->GetBuildTarget((*itr) - 1);
+
+        if (!base)
+        {
+            Manager::Get()->GetLogManager()->LogWarning(_T("Could not get build target in CompilerOptionsDlg::OnCopyLibsClick"));
+            continue;
+        }
+
+        for (size_t i = 0; i < lstLibs->GetCount(); ++i)
+        {
+            if (lstLibs->IsSelected(i))
+                base->AddLinkLib(lstLibs->GetString(i));
+        }
     }
 } // OnCopyLibsClick
 
@@ -2679,7 +2690,7 @@ void CompilerOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnEditDir",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelDir",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearDir", wxButton)->Enable(control->GetCount() != 0);
-        XRCCTRL(*this, "btnCopyDirs", wxButton)->Enable(control->GetCount() != 0);
+        XRCCTRL(*this, "btnCopyDirs", wxButton)->Enable(en);
 
         // moveup/movedown dir
         XRCCTRL(*this, "spnDirs", wxSpinButton)->Enable(en);
@@ -2696,7 +2707,7 @@ void CompilerOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
         XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelLib",   wxButton)->Enable(en);
         XRCCTRL(*this, "btnClearLib", wxButton)->Enable(lstLibs->GetCount() != 0);
-        XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(lstLibs->GetCount() != 0);
+        XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(en);
         XRCCTRL(*this, "spnLibs",     wxSpinButton)->Enable(en);
     }
 
@@ -2784,7 +2795,7 @@ void CompilerOptionsDlg::OnApply()
             m_Compiler->m_LogBuildProgressPercentage = chk->IsChecked();
         }
         wxSpinCtrl* spn = XRCCTRL(*this, "spnParallelProcesses", wxSpinCtrl);
-        if (spn && (((int)spn->GetValue()) != cfg->ReadInt(_T("/parallel_processes"), 1)))
+        if (spn && (((int)spn->GetValue()) != cfg->ReadInt(_T("/parallel_processes"), 0)))
         {
             if (m_Compiler->IsRunning())
                 cbMessageBox(_("You can't change the number of parallel processes while building!\nSetting ignored..."), _("Warning"), wxICON_WARNING);

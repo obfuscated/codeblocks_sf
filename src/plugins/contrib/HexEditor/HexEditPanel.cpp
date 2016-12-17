@@ -19,6 +19,25 @@
 * $Id$
 * $HeadURL$
 */
+#include <sdk.h>
+
+#ifndef CB_PRECOMP
+    #include <wx/dcclient.h>
+    #include <wx/filedlg.h>
+    #include <wx/filename.h>
+    #include <wx/sizer.h>
+    #include <wx/choicdlg.h>
+
+    #include <manager.h>
+    #include <editormanager.h>
+    #include <configmanager.h>
+    #include <logmanager.h>
+    #include <globals.h>
+    #include "prep.h"
+#endif // CB_PRECOMP
+
+#include <wx/dcbuffer.h>
+#include <wx/numdlg.h>
 
 #include "HexEditPanel.h"
 #include "ExpressionTester.h"
@@ -39,20 +58,6 @@
 #include <wx/intl.h>
 //*)
 
-#include <wx/dcbuffer.h>
-#include <wx/dcclient.h>
-#include <wx/filedlg.h>
-#include <wx/filename.h>
-#include <wx/numdlg.h>
-#include <wx/sizer.h>
-#include <wx/choicdlg.h>
-
-#include <manager.h>
-#include <editormanager.h>
-#include <configmanager.h>
-#include <logmanager.h>
-#include <globals.h>
-#include "prep.h"
 
 namespace
 {
@@ -393,7 +398,7 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     m_LastScrollUnits = 0;
     m_LinesPerScrollUnit = 1;
     CreateViews();
-    RecalculateCoefs();
+    m_NeedRecalc = true;
 
     ReparseExpression();
     SetFontSize( 8 );
@@ -494,10 +499,11 @@ void HexEditPanel::ReadContent()
     }
 }
 
-void HexEditPanel::RecalculateCoefs()
+void HexEditPanel::RecalculateCoefs(wxDC &dc)
 {
-    // Calculate size of the font
-    wxClientDC dc( this );
+    if (!m_NeedRecalc)
+        return;
+    m_NeedRecalc = false;
     dc.GetTextExtent( _T("0123456789ABCDEF"), &m_FontX, &m_FontY, NULL, NULL, m_DrawFont );
     m_FontX /= 16;
 
@@ -532,7 +538,7 @@ void HexEditPanel::RecalculateCoefs()
     // Now we need to find such number of bytes to be multiple of cumulativeBlockSize
     // and try not to cross maxByteInLine
 
-    // Additionally we try to mach required columns count,
+    // Additionally we try to match required columns count,
     // this is a little bit naive approach but will work in generic way
     int maxColumns = std::max( (int)(maxByteInLine / cumulativeBlockSize), 1 );
     for ( int i=maxColumns;; i-- )
@@ -587,6 +593,7 @@ void HexEditPanel::RecalculateCoefs()
 void HexEditPanel::OnContentPaint( wxPaintEvent& /*event*/ )
 {
     wxAutoBufferedPaintDC dc( m_DrawArea );
+    RecalculateCoefs( dc );
     dc.SetBrush( GetBackgroundColour() );
     dc.SetPen  ( GetBackgroundColour() );
     dc.DrawRectangle( GetClientRect() );
@@ -708,7 +715,7 @@ void HexEditPanel::OnContentScrollBottom(wxScrollEvent& event)
 
 void HexEditPanel::OnContentSize( wxSizeEvent& event )
 {
-    RecalculateCoefs();
+    m_NeedRecalc = true;
     EnsureCarretVisible();
     RefreshStatus();
     event.Skip();
@@ -1597,7 +1604,7 @@ void HexEditPanel::OnSetBaseBin(wxCommandEvent& /*event*/)
 
 void HexEditPanel::DisplayChanged()
 {
-    RecalculateCoefs();
+    m_NeedRecalc = true;
     RefreshStatus();
     EnsureCarretVisible();
     m_DrawArea->Refresh();

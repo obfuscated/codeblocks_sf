@@ -30,44 +30,37 @@ BEGIN_EVENT_TABLE(AddTodoDlg, wxScrollingDialog)
     EVT_BUTTON(XRCID("btDelType"), AddTodoDlg::OnDelType)
 END_EVENT_TABLE()
 
-AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString types, std::bitset<(int)tdctError+1> supportedTdcts) :
-    m_Users(users),
-    m_Types(types),
+AddTodoDlg::AddTodoDlg(wxWindow* parent, const wxArrayString& users, const wxArrayString& types, std::bitset<(int)tdctError+1> supportedTdcts) :
     m_supportedTdcts(supportedTdcts)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgAddToDo"),_T("wxScrollingDialog"));
 
-    wxString lastUser  = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_user"));
-    wxString lastType  = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_type"));
-    wxString lastStyle = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_style"));
-    wxString lastPos   = Manager::Get()->GetConfigManager(_T("todo_list"))->Read(_T("last_used_position"));
-    bool lastDateReq   = Manager::Get()->GetConfigManager(_T("todo_list"))->ReadBool(_T("last_date_req"), false);
+    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("todo_list"));
+    const wxString lastUser  = mgr->Read(_T("last_used_user"));
+    const wxString lastType  = mgr->Read(_T("last_used_type"));
+    const wxString lastStyle = mgr->Read(_T("last_used_style"));
+    const wxString lastPos   = mgr->Read(_T("last_used_position"));
+    const bool lastDateReq   = mgr->ReadBool(_T("last_date_req"), false);
 
     // load users
     wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
     cmb->Clear();
-    for (unsigned int i = 0; i < m_Users.GetCount(); ++i)
-        cmb->Append(m_Users[i]);
 
-    if (m_Users.GetCount() == 0)
+    if (users.empty())
         cmb->Append(wxGetUserId());
-
-    if (!lastUser.IsEmpty())
-    {
-        int sel = cmb->FindString(lastUser, true);
-        if (sel != -1)
-            cmb->SetSelection(sel);
-    }
     else
+        cmb->Append(users);
+
+    if (users.Index(lastUser) == wxNOT_FOUND)
         cmb->SetSelection(0);
+    else
+        cmb->SetStringSelection(lastUser);
 
     // load types
     cmb = XRCCTRL(*this, "chcType", wxChoice);
     cmb->Clear();
-    for (unsigned int i = 0; i < m_Types.GetCount(); ++i)
-        cmb->Append(m_Types[i]);
 
-    if (m_Types.GetCount() == 0)
+    if (types.empty())
     {
         cmb->Append(_T("TODO"));
         cmb->Append(_T("@todo"));
@@ -81,15 +74,13 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString type
         cmb->Append(_T("@note"));
         cmb->Append(_T("\\note"));
     }
-
-    if (!lastType.IsEmpty())
-    {
-        int sel = cmb->FindString(lastType, true);
-        if (sel != -1)
-            cmb->SetSelection(sel);
-    }
     else
+        cmb->Append(types);
+
+    if (types.Index(lastType) == wxNOT_FOUND)
         cmb->SetSelection(0);
+    else
+        cmb->SetStringSelection(lastType);
 
     cmb = XRCCTRL(*this, "chcStyle", wxChoice);
     cmb->Clear();
@@ -106,29 +97,16 @@ AddTodoDlg::AddTodoDlg(wxWindow* parent, wxArrayString users, wxArrayString type
     if (m_supportedTdcts[(int)tdctError])
             cmb->Append(_T("Compiler error"));
 
-    if (!lastStyle.IsEmpty())
-    {
-        int sel = cmb->FindString(lastStyle, true);
-        if (sel != -1)
-            cmb->SetSelection(sel);
-    }
-    else
+    if (lastStyle.empty())
         cmb->SetSelection(0);
+    else
+        cmb->SetStringSelection(lastStyle);
 
     cmb = XRCCTRL(*this, "chcPosition", wxChoice);
-    if (!lastPos.IsEmpty())
-    {
-        int sel = cmb->FindString(lastPos, true);
-        if (sel != -1)
-            cmb->SetSelection(sel);
-    }
+    if (!lastPos.empty())
+        cmb->SetStringSelection(lastPos);
 
     XRCCTRL(*this, "ID_CHECKBOX1", wxCheckBox)->SetValue(lastDateReq);
-}
-
-AddTodoDlg::~AddTodoDlg()
-{
-    //dtor
 }
 
 wxString AddTodoDlg::GetText() const
@@ -143,11 +121,14 @@ wxString AddTodoDlg::GetUser() const
 
 int AddTodoDlg::GetPriority() const
 {
-    int prio = XRCCTRL(*this, "spnPriority", wxSpinCtrl)->GetValue();
+    const int prio = XRCCTRL(*this, "spnPriority", wxSpinCtrl)->GetValue();
+
     if (prio < 1)
-        prio = 1;
-    else if (prio > 9)
-        prio = 9;
+        return 1;
+
+    if(prio > 9)
+        return 9;
+
     return prio;
 }
 
@@ -166,10 +147,10 @@ ToDoCommentType AddTodoDlg::GetCommentType() const
     wxChoice* cmb = XRCCTRL(*this, "chcStyle", wxChoice);
 
     int sel = cmb->GetSelection();
-    for ( int i = 0; i < (int)tdctError ; i++)
+    for ( int i = 0; i < (int)tdctError ; ++i)
     {
         if (!m_supportedTdcts[i] && sel >= i)
-            sel++;
+            ++sel;
     }
 
     return (ToDoCommentType)(sel);
@@ -179,24 +160,12 @@ void AddTodoDlg::EndModal(int retVal)
 {
     if (retVal == wxID_OK)
     {
-        // "save" users
         wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
-        m_Users.Clear();
-        if (cmb->FindString(cmb->GetStringSelection(), true) == wxNOT_FOUND)
-            m_Users.Add(cmb->GetStringSelection());
-        for (unsigned int i = 0; i < cmb->GetCount(); ++i)
-            m_Users.Add(cmb->GetString(i));
-        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), m_Users);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("users"), cmb->GetStrings());
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_user"), cmb->GetStringSelection());
 
-        // "save" types
         cmb = XRCCTRL(*this, "chcType", wxChoice);
-        m_Types.Clear();
-        if (cmb->FindString(cmb->GetStringSelection(), true) == wxNOT_FOUND)
-            m_Types.Add(cmb->GetStringSelection());
-        for (unsigned int i = 0; i < cmb->GetCount(); ++i)
-            m_Types.Add(cmb->GetString(i));
-        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types"), m_Types);
+        Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("types"), cmb->GetStrings());
         Manager::Get()->GetConfigManager(_T("todo_list"))->Write(_T("last_used_type"), cmb->GetStringSelection());
 
         cmb = XRCCTRL(*this, "chcStyle", wxChoice);
@@ -223,7 +192,7 @@ void AddTodoDlg::OnAddUser(wxCommandEvent&)
 void AddTodoDlg::OnDelUser(wxCommandEvent&)
 {
     wxChoice* cmb = XRCCTRL(*this, "chcUser", wxChoice);
-    int sel = cmb->GetCurrentSelection();
+    const int sel = cmb->GetCurrentSelection();
     if (sel == wxNOT_FOUND)
         return;
 
@@ -232,7 +201,6 @@ void AddTodoDlg::OnDelUser(wxCommandEvent&)
        return;
 
     cmb->Delete(sel);
-    if (cmb->GetCount()>0)
       cmb->SetSelection(0);
 }
 
@@ -248,7 +216,7 @@ void AddTodoDlg::OnAddType(wxCommandEvent&)
 void AddTodoDlg::OnDelType(wxCommandEvent&)
 {
     wxChoice* cmb = XRCCTRL(*this, "chcType", wxChoice);
-    int sel = cmb->GetCurrentSelection();
+    const int sel = cmb->GetSelection();
     if (sel == wxNOT_FOUND)
         return;
 
@@ -257,9 +225,9 @@ void AddTodoDlg::OnDelType(wxCommandEvent&)
        return;
 
     cmb->Delete(sel);
-    if (cmb->GetCount()>0)
       cmb->SetSelection(0);
 }
+
 bool AddTodoDlg::DateRequested() const
 {
     return XRCCTRL(*this, "ID_CHECKBOX1", wxCheckBox)->IsChecked();

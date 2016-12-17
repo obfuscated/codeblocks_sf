@@ -40,7 +40,7 @@
 #include <cbstyledtextctrl.h>
 #include <configurationpanel.h>
 #include <projectloader_hooks.h>
-#include <tinyxml/tinywxuni.h>
+#include <tinywxuni.h>
 
 #include <wx/tokenzr.h>
 #include <wx/textfile.h>

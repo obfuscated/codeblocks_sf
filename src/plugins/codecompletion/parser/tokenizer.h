@@ -103,15 +103,15 @@ public:
         m_TokenizerOptions.storeDocumentation = storeDocumentation;
     };
 
-    /** Set the Tokenizer skipping options. E.g. sometimes, we need to skip the statement after "=",
-     * but sometimes, we should disable this options, see more details on TokenizerState.
+    /** Set the Tokenizer skipping options. E.g. normally, we read the parentheses as a whole token,
+     * but sometimes, we should disable this options, @see TokenizerState for more details.
      */
     void SetState(TokenizerState state)
     {
         m_State = state;
     };
 
-    /** Return the skipping options value, see TokenizerState for more details. */
+    /** Return the token reading options value, @see TokenizerState for more details. */
     TokenizerState GetState()
     {
         return m_State;
@@ -157,18 +157,18 @@ public:
 
     /** return the string from the current position to the end of current line, in most case, this
      * function is used in handling #define, use with care outside this class!
-     * @param stripUnneeded true if you are going to remove comments and compression spaces(two or
+     * @param stripUnneeded true if you want to remove comments and compression spaces(two or
      * more spaces should become one space)
      */
     wxString ReadToEOL(bool stripUnneeded = true);
 
-    /** read a string from '(' to ')', note that inner parentheses considered
+    /** read a string from '(' to ')', note that inner parentheses are considered
      * @param str the returned string
      */
     void ReadParentheses(wxString& str);
 
-    /** Skip from the current position to the end of line */
-    bool SkipToEOL(); // use with care outside this class!
+    /** Skip from the current position to the end of line, use with care outside this class!*/
+    bool SkipToEOL();
 
     /** Skip to then end of the C++ style comment */
     bool SkipToInlineCommentEnd();
@@ -213,7 +213,7 @@ public:
      * @endcode
      * Note that "NNNNNNNNNNNNNNN" is the expanded new text. The m_TokenIndex was moved backward to
      * the beginning of the new added text.
-     * If the new text is small enough, then m_Buffer's length do not need to increase.
+     * If the new text is small enough, then m_Buffer's length does not need to increase.
      * The situation when our m_Buffer's length need to be increased is that the new text
      * is too long, so the buffer before "anchor point" can not hold the new text, this way,
      * m_Buffer's length will adjusted. like below:
@@ -225,9 +225,9 @@ public:
 
     /** Get expanded text for the current macro usage, then replace buffer for re-parsing
      * @param tk the macro definition token
-     * @return true if macro expansion successes, thus buffer is really changed and m_TokenIndex
+     * @return true if macro expansion succeeded, buffer is actually changed and m_TokenIndex
      * moved backward a bit, and peek status get cleared
-     * Both the function like macro or variable like macro usage can be handled in this function.
+     * Both the "function like macro" or "variable like macro" usage can be handled in this function.
      */
     bool ReplaceMacroUsage(const Token* tk);
 
@@ -278,7 +278,7 @@ protected:
     /** this function only move the m_TokenIndex and get a lexeme and store it in m_Lex, the m_Lex
      * will be further checked if it is a macro usage or not.
      * @return true if it is an identifier like token. note we need to check an identifier like
-     * token is a macro usage.
+     * token to see whether it is a macro usage.
      */
     bool Lex();
 
@@ -288,7 +288,7 @@ protected:
     /** Check the current character is a C-Escape character in a string. */
     bool IsEscapedChar();
 
-    /** Skip character until we meet a ch */
+    /** Skip characters until we meet a ch */
     bool SkipToChar(const wxChar& ch);
 
     /** skips comments, spaces, preprocessor branch. */
@@ -299,22 +299,25 @@ protected:
 
     /** Skip the C/C++ comment
      * @return true if we do move m_TokenIndex
-     * When C comment is handled, m_TokenIndex point to the char AFTER the '/'
+     * When C comment is handled, m_TokenIndex point to the char AFTER the tailing '/'
      * When C++ comment is handled, m_TokenIndex point to '\n'
      */
     bool SkipComment();
 
     /** Skip the C preprocessor directive, such as #ifdef xxxx
      *  only the conditional preprocessor directives are handled here, the others such as
-     *  #include or #warning and all kinds of ptOthers will passed to Parserthread class
+     *  #include or #warning and all kinds of ptOthers(@see PreprocessorType) will passed to
+     *  Parserthread class
      *  @return true if we do move m_TokenIndex
      */
     bool SkipPreprocessorBranch();
 
-    /** Skip the string literal(enclosed in double quotes) or character literal(enclosed in single quotes).*/
+    /** Skip the string literal(enclosed in double quotes) or character literal(enclosed in single
+     *  quotes).
+     */
     bool SkipString();
 
-    /** Move to the end of string literal or character literal, the m_TokenIndex will at the
+    /** Move to the end of string literal or character literal, the m_TokenIndex will point at the
      * closing quote character.
      * @param ch is a character either double quote or single quote
      * @return true if we reach the closing quote character
@@ -324,7 +327,7 @@ protected:
     /** Move to the next character in the buffer */
     bool MoveToNextChar();
 
-    /** Return the current character indexed by m_TokenIndex in the m_Buffer */
+    /** Return the current character indexed(pointed) by m_TokenIndex in the m_Buffer */
     wxChar CurrentChar() const
     {
         if(m_TokenIndex < m_BufferLen)
@@ -392,19 +395,28 @@ private:
     /** #if xxxx, calculate the value of "xxxx" */
     bool CalcConditionExpression();
 
-    /** If the next token string is macro usage, return true */
+    /** If the next token string is macro definition, return true
+     *  this is used in the situation when we are reading the conditional preprocessors
+     *  such as checking macro defined like below
+     * @code
+     * #ifdef  xxx
+     *       ^-----m_TokenIndex is here
+     * @endcode
+     * Then we try to see whether we check to see "xxx" is a macro definition, we don't need to
+     * expand the "xxx" here
+     */
     bool IsMacroDefined();
 
-    /** handle the statement: #define XXXXX */
+    /** handle the macro definition statement: #define XXXXX */
     void HandleDefines();
 
     /** handle the statement: #undef XXXXX */
     void HandleUndefs();
 
-    /** add a macro definition
+    /** add a macro definition to the Token database
      *  for example: #define AAA(x,y) x+y
      *  @param name macro name which is "AAA"
-     *  @param line the line of the macro definition locates
+     *  @param line the line number of the macro definition
      *  @param para the formal parameters, which is "(x,y)"
      *  @param substitues the definition which is "x+y"
      */
@@ -440,7 +452,7 @@ private:
      */
     void SkipToEndConditionPreprocessor();
 
-    /** Get current conditional preprocessor type */
+    /** Get current conditional preprocessor type, @see PreprocessorType */
     PreprocessorType GetPreprocessorType();
 
     /** handle the preprocessor directive:
@@ -450,7 +462,7 @@ private:
     void HandleConditionPreprocessor(const PreprocessorType type);
 
     /** Split the macro arguments, and store them in results, when calling this function, we expect
-     * that m_TokenIndex point to the opening '(', or some spaces before the opening '('.
+     * that m_TokenIndex point to the opening '(', or one space char before the opening '('.
      * such as below
      * @code
      *    ..... ABC  ( xxx, yyy ) zzz .....
@@ -461,31 +473,37 @@ private:
      */
     bool SplitArguments(wxArrayString& results);
 
-    /** Get the text after macro expansion
+    /** Get the full expanded text
      * @param tk the macro definition token, usually a function like macro definition
      * @param expandedText is an output string
+     * call this function in the condition that we have just detect the current token is a macro
+     * usage, such as in the condition below, that "ABC" is a macro usage:
+     * @code
+     *  ......ABC(abc, (def)).....
+     *           ^--------m_TokenIndex
+     * @endcode
      */
     bool GetMacroExpandedText(const Token* tk, wxString& expandedText);
 
-    /** Just for KMP find */
+    /** used in the KMP find function */
     void KMP_GetNextVal(const wxChar* pattern, int next[]);
 
-    /** Tokenizer options specify the skipping option */
+    /** Tokenizer options specify the token reading option */
     TokenizerOptions     m_TokenizerOptions;
 
-    /** the Token tree to store the macro definition */
+    /** the Token tree to store the macro definition, the token tree is shared with Parserthread */
     TokenTree*           m_TokenTree;
 
     /** Filename of the buffer */
     wxString             m_Filename;
     /** File index, useful when parsing documentation; \sa SkipComment */
     unsigned int         m_FileIdx;
-    /** Buffer content, all the lexical analysis is done on this */
+    /** Buffer content, all the lexical analysis is operating on this member variable */
     wxString             m_Buffer;
     /** Buffer length */
     unsigned int         m_BufferLen;
 
-    /** a lexeme string return by the Lex() function, this is a candidate token string, but may be
+    /** a lexeme string return by the Lex() function, this is a candidate token string, which may be
      * replaced if it is a macro usage
      */
     wxString             m_Lex;
@@ -500,7 +518,7 @@ private:
      *                      ^ --- m_TokenIndex, m_Token = "std"
      * @endcode
      * m_TokenIndex always points to the next character of a valid token, in the above example,
-     * it points to the space after "std".
+     * it points to the space character after "std".
      */
     unsigned int         m_TokenIndex;
     /** line offset in buffer, please note that it is 1 based, not 0 based */
@@ -530,9 +548,9 @@ private:
 
     /** bool variable specifies whether the buffer is ready for parsing */
     bool                 m_IsOK;
-    /** Tokeniser state specifies the skipping option */
+    /** Tokeniser state specifies the token reading option */
     TokenizerState       m_State;
-    /** File loader */
+    /** File loader, it load the content to the m_Buffer, either from the harddisk or memory */
     LoaderBase*          m_Loader;
     /** preprocessor branch stack, if we meet a #if 1, then the value true will be pushed to
      * to the stack, if we skip the #endif, the true value should be popped.
@@ -614,7 +632,7 @@ private:
      *      int aaa;
      *  @endcode
      *  Then, the "description of aaa" is stored in this variable
-     *  when the token "aaa" is added to the TokenTree, it will associate the documen and token
+     *  when the token "aaa" is added to the TokenTree, it will associate the document and token
      */
     wxString             m_NextTokenDoc;
 

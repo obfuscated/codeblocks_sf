@@ -305,6 +305,10 @@ class DLLIMPORT cbEditor : public EditorBase
         static void ApplyStyles(cbStyledTextCtrl* control);
 
         void AutoIndentDone();
+
+        /// Applies the styles that match the filename of the editor.
+        /// Should be called after new file is created. Calling SaveAs does the same thing.
+        void SetEditorStyle();
     private:
         cbEditor(cb_unused const cbEditor& rhs); // prevent copy construction
 
@@ -322,7 +326,6 @@ class DLLIMPORT cbEditor : public EditorBase
         void UnderlineFoldedLines(bool underline);
         cbStyledTextCtrl* CreateEditor();
         void ConnectEvents(cbStyledTextCtrl* stc);
-        void SetEditorStyle();
         void SetEditorStyleBeforeFileOpen();
         void SetEditorStyleAfterFileOpen();
         static void InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control);

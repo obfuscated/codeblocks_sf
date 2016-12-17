@@ -1,8 +1,8 @@
 SUBDIRS = resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
-		-I$(top_srcdir)/src/include \
-		-I$(top_srcdir)/src/sdk/wxscintilla/include \
+			-I$(top_srcdir)/src/include \
+			-I$(top_srcdir)/src/sdk/wxscintilla/include \
 			-I$(top_srcdir)/src/include/mozilla_chardet \
 			-I$(top_srcdir)/src/include/mozilla_chardet/mfbt \
 			-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \
@@ -14,7 +14,7 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libcodecompletion.la
 
-libcodecompletion_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libcodecompletion_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libcodecompletion_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
 
@@ -26,6 +26,7 @@ libcodecompletion_la_SOURCES = ccoptionsdlg.cpp \
 			codecompletion.cpp \
 			coderefactoring.cpp \
 			doxygen_parser.cpp \
+			gotofunctiondlg.cpp \
 			insertclassmethoddlg.cpp \
 			nativeparser.cpp \
 			nativeparser_base.cpp \
@@ -52,6 +53,7 @@ noinst_HEADERS = ccoptionsdlg.h \
 			codecompletion.h \
 			coderefactoring.h \
 			doxygen_parser.h \
+			gotofunctiondlg.h \
 			insertclassmethoddlg.h \
 			nativeparser.h \
 			nativeparser_base.h \

@@ -10,6 +10,7 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
     #include <wx/checklst.h>
     #include <wx/msgdlg.h>
     #include <wx/stattext.h>
@@ -35,6 +36,7 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     SetTitle(title);
     XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
@@ -49,6 +51,7 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     SetTitle(title);
     XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);

@@ -13,6 +13,7 @@
     #ifdef __WXMAC__
         #include <wx/font.h>
     #endif //__WXMAC__
+    #include <wx/button.h>    // wxImage
     #include <wx/image.h>    // wxImage
     #include <wx/intl.h>
     #include <wx/stattext.h>
@@ -43,6 +44,8 @@ dlgAbout::dlgAbout(wxWindow* parent)
                      _("Information"), wxICON_EXCLAMATION);
         return;
     }
+
+    XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
 
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
@@ -95,6 +98,7 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Mario Cupelli       : Compiler support for embedded systems\n"
         "                      User's manual\n"
         "Jonas Zinn          : Misc. wxSmith AddOns and plugins\n"
+        "Mirai Computing     : cbp2make tool\n"
         "Anders F Bjoerklund : wxMac compatibility\n"
         "\n"
         "Contributors (in no special order):\n"
@@ -111,7 +115,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
         "Chris Raschko       : Design of the 3D logo for Code::Blocks\n"
         "J.A. Ortega         : 3D Icon based on the above\n"
         "Alexandr Efremo     : Providing OpenSuSe packages\n"
-        "Huki                : Misc. Codecompletion improvements\n"
+        "Huki                : Misc. Code-Completion improvements\n"
+        "stahta01            : Misc. patches for several enhancements\n"
+        "BlueHazzard         : Misc. patches for several enhancements\n"
         "\n"
         "All contributors that provided patches.\n"
         "The wxWidgets project (http://www.wxwidgets.org).\n"

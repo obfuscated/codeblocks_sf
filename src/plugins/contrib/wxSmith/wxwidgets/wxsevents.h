@@ -24,7 +24,7 @@
 #define WXSEVENTS_H
 
 #include <wx/arrstr.h>
-#include <tinyxml/tinyxml.h>
+#include <tinyxml.h>
 #include <wx/arrstr.h>
 
 #include "wxscodercontext.h"

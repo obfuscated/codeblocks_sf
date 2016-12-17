@@ -9,4 +9,4 @@ Name: wxMathPlot
 Description: MathPlot for wxWidgets, also used for the wxSmith Contrib Items
 Version: @VERSION@
 Libs: -L${libdir} -lwxmathplot
-Cflags: -fPIC -I${includedir}
+Cflags: -I${includedir}

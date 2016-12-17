@@ -86,7 +86,7 @@ bool WebResourcesManager::DoDownload( const wxString& urlName, ProgressHandler* 
 
     if ( handler ) handler->SetProgress( 0.f, id );
 
-    std::auto_ptr< wxURL > url ( new wxURL( urlName ) );
+    std::unique_ptr< wxURL > url ( new wxURL( urlName ) );
     url->SetProxy( ConfigManager::GetProxy() );
 
     if ( url->GetError() != wxURL_NOERR )
@@ -95,7 +95,7 @@ bool WebResourcesManager::DoDownload( const wxString& urlName, ProgressHandler* 
         return false;
     }
 
-    std::auto_ptr< wxInputStream > stream ( url->GetInputStream() );
+    std::unique_ptr< wxInputStream > stream ( url->GetInputStream() );
     if ( !stream.get() || !stream->IsOk() )
     {
         if ( handler ) handler->Error( _("Couldn't open url: ") + urlName, id );

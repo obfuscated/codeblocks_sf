@@ -44,7 +44,6 @@
 #include "annoyingdialog.h"
 #include "configurationpanel.h"
 #include "editarrayorderdlg.h"
-#include "editarrayfiledlg.h"
 #include "editpathdlg.h"
 #include "externaldepsdlg.h"
 #include "filefilters.h"
@@ -103,6 +102,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     m_pCompiler(nullptr)
 {
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgProjectOptions"),_T("wxScrollingDialog"));
+    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     wxCheckListBox* list = XRCCTRL(*this, "lstFiles", wxCheckListBox);
 

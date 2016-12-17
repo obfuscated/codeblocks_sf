@@ -20,8 +20,7 @@
 #include <wx/arrstr.h>
 #include <vector>
 
-#include "tinyxml/tinystr.h"
-#include "tinyxml/tinyxml.h"
+#include <tinyxml.h>
 
 class MainFrame: public wxFrame
 {
@@ -45,6 +44,7 @@ class MainFrame: public wxFrame
 		static const long ID_LST_CFG;
 		static const long ID_BTN_TRANSFER;
 		static const long ID_BTN_UNCHECK;
+		static const long ID_BTN_EXPORT_ALL;
 		static const long ID_BTN_EXPORT;
 		static const long ID_BTN_SAVE;
 		static const long ID_BTN_CLOSE;
@@ -59,6 +59,7 @@ class MainFrame: public wxFrame
 		void OnBtnFileDstClick(wxCommandEvent& event);
 		void OnBtnTransferClick(wxCommandEvent& event);
 		void OnBtnUncheckClick(wxCommandEvent& event);
+		void OnBtnExportAllClick(wxCommandEvent& event);
 		void OnBtnExportClick(wxCommandEvent& event);
 		void OnBtnSaveClick(wxCommandEvent& event);
 		void OnBtnCloseClick(wxCommandEvent& event);
@@ -74,9 +75,6 @@ class MainFrame: public wxFrame
 		wxStaticText* lblFileSrc;
 		wxCheckListBox* clbCfgSrc;
 		wxButton* btnFileSrc;
-		wxButton* btnSave;
-		wxButton* btnClose;
-		wxButton* btnExport;
 		wxFlexGridSizer* flsFileDst;
 		wxFlexGridSizer* flsFileSrc;
 		wxTextCtrl* txtFileSrc;
@@ -85,9 +83,7 @@ class MainFrame: public wxFrame
 		wxButton* btnFileDst;
 		wxListBox* lstCfgDst;
 		wxStaticText* lblFileDst;
-		wxButton* btnUncheck;
 		wxGridSizer* grsFileLabel;
-		wxButton* btnTransfer;
 		wxStaticText* lblSteps;
 		//*)
 
@@ -104,6 +100,7 @@ class MainFrame: public wxFrame
                                std::vector<TiXmlNode*> *nodes,
                                const wxString& prefix = wxT(""));
     bool          TransferNode(TiXmlNode** node, const wxArrayString& path);
+    void          AttachNode(size_t idx, TiXmlElement* root);
     wxArrayString PathToArray (const wxString& path);
 
     // The following methods to load/save a TinyXML document are taken and

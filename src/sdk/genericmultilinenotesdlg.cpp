@@ -10,11 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
+    #include <wx/button.h>
+    #include <wx/textctrl.h>
     #include <wx/xrc/xmlres.h>
 #endif
 
 #include "genericmultilinenotesdlg.h"
-#include <wx/textctrl.h>
 
 BEGIN_EVENT_TABLE(GenericMultiLineNotesDlg, wxScrollingDialog)
     //
@@ -38,7 +39,12 @@ GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow* parent, const wxStr
         {
             win->Enable(false);
         }
+        // If the control is editable the user cannot activate the default button with
+        // the enter key, so we set the default button only for read only notes.
+        XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
     }
+    else
+        notesCtrl->SetFocus();
 }
 
 GenericMultiLineNotesDlg::~GenericMultiLineNotesDlg()

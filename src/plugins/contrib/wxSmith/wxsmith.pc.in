@@ -9,4 +9,4 @@ Name: wxSmith
 Description: RAD-tool for the Code::Blocks IDE
 Version: @VERSION@
 Libs: -L${libdir} -lwxsmithlib
-Cflags: -fPIC -I${includedir}
+Cflags: -I${includedir}

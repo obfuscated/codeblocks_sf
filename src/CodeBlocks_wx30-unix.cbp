@@ -21,12 +21,12 @@
 				<Option object_output=".objs30" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="+wx +int +t .. include/autorevision.h" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
-					<Add option="-s" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="txml" />
 					<Add directory="base/tinyxml" />
@@ -197,7 +197,7 @@
 				</Linker>
 			</Target>
 			<Target title="AStyle">
-				<Option output="devel30/share/codeblocks/plugins/astyle" prefix_auto="1" extension_auto="1" />
+				<Option output="devel30/share/codeblocks/plugins/Astyle" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel30" />
 				<Option object_output=".objs30" />
 				<Option type="3" />
@@ -519,7 +519,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
-			<Add option="-ansi" />
+			<Add option="-std=c90" />
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
@@ -528,6 +528,7 @@
 			<Add option="`$(WX_CONFIG) --cflags`" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DCB_PRECOMP" />
+			<Add option="-std=c++11" />
 			<Add directory="sdk/wxscintilla/include" />
 			<Add directory="include/tinyxml" />
 		</Compiler>
@@ -539,7 +540,7 @@
 		<Unit filename="base/tinyxml/tinystr.cpp">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="base/tinyxml/tinywxuni.cpp">
+		<Unit filename="sdk/tinywxuni.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="base/tinyxml/tinyxml.cpp">
@@ -726,6 +727,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/importers_globals.h">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="include/incrementalselectlistbase.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/incrementalselectlistdlg.h">
@@ -1089,7 +1093,7 @@
 		<Unit filename="include/tinyxml/tinystr.h">
 			<Option target="tinyXML" />
 		</Unit>
-		<Unit filename="include/tinyxml/tinywxuni.h">
+		<Unit filename="include/tinywxuni.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/tinyxml/tinyxml.h">
@@ -1262,6 +1266,12 @@
 		<Unit filename="plugins/codecompletion/doxygen_parser.h">
 			<Option target="Code-completion" />
 		</Unit>
+		<Unit filename="plugins/codecompletion/gotofunctiondlg.cpp">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/gotofunctiondlg.h">
+			<Option target="Code-completion" />
+		</Unit>
 		<Unit filename="plugins/codecompletion/insertclassmethoddlg.cpp">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1356,6 +1366,9 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/codecompletion_toolbar.xrc">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/resources/goto_function_dlg.xrc">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
@@ -2451,6 +2464,9 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/importers_globals.cpp">
+			<Option target="sdk" />
+		</Unit>
+		<Unit filename="sdk/incrementalselectlistbase.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/incrementalselectlistdlg.cpp">

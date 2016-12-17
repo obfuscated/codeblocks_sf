@@ -24,6 +24,7 @@
 					<Add option="-DcbDEBUG" />
 					<Add option="-DCB_PRECOMP" />
 					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
 					<Add directory="../../../sdk/wxscintilla/include" />
 					<Add directory="../../../include/mozilla_chardet" />
 					<Add directory="../../../include/mozilla_chardet/mfbt" />
@@ -55,7 +56,7 @@
 		<Compiler>
 			<Add option="-Wextra" />
 			<Add option="-Wall" />
-			<Add option="-ansi" />
+			<Add option="-std=c++11" />
 		</Compiler>
 		<Unit filename="bindings.cpp" />
 		<Unit filename="bindings.h" />

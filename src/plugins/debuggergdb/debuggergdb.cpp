@@ -113,6 +113,7 @@ long idMenuInfoPrintElementsUnlimited = wxNewId();
 long idMenuInfoPrintElements20 = wxNewId();
 long idMenuInfoPrintElements50 = wxNewId();
 long idMenuInfoPrintElements100 = wxNewId();
+long idMenuInfoPrintElements200 = wxNewId();
 
 long idMenuInfoCatchThrow = wxNewId();
 
@@ -148,11 +149,13 @@ BEGIN_EVENT_TABLE(DebuggerGDB, cbDebuggerPlugin)
     EVT_UPDATE_UI(idMenuInfoPrintElements20, DebuggerGDB::OnUpdateTools)
     EVT_UPDATE_UI(idMenuInfoPrintElements50, DebuggerGDB::OnUpdateTools)
     EVT_UPDATE_UI(idMenuInfoPrintElements100, DebuggerGDB::OnUpdateTools)
+    EVT_UPDATE_UI(idMenuInfoPrintElements200, DebuggerGDB::OnUpdateTools)
 
     EVT_MENU(idMenuInfoPrintElementsUnlimited, DebuggerGDB::OnPrintElements)
     EVT_MENU(idMenuInfoPrintElements20, DebuggerGDB::OnPrintElements)
     EVT_MENU(idMenuInfoPrintElements50, DebuggerGDB::OnPrintElements)
     EVT_MENU(idMenuInfoPrintElements100, DebuggerGDB::OnPrintElements)
+    EVT_MENU(idMenuInfoPrintElements200, DebuggerGDB::OnPrintElements)
 
     EVT_UPDATE_UI(idMenuInfoCatchThrow, DebuggerGDB::OnUpdateCatchThrow)
     EVT_MENU(idMenuInfoCatchThrow, DebuggerGDB::OnCatchThrow)
@@ -172,7 +175,7 @@ DebuggerGDB::DebuggerGDB() :
     m_stopDebuggerConsoleClosed(false),
     m_nConsolePid(0),
     m_TemporaryBreak(false),
-    m_printElements(0)
+    m_printElements(200)
 {
     if (!Manager::LoadResource(_T("debugger.zip")))
     {
@@ -1740,10 +1743,11 @@ void DebuggerGDB::SetupToolsMenu(wxMenu &menu)
 
     wxMenu *menuPrint = new wxMenu;
     menuPrint->AppendRadioItem(idMenuInfoPrintElementsUnlimited, _("Unlimited"),
-                               _("The full arrays are printed, using this should be most reliable"));
+                               _("The full arrays are printed (could lead to lock-ups if uninitialised data is printed)"));
     menuPrint->AppendRadioItem(idMenuInfoPrintElements20, _("20"));
     menuPrint->AppendRadioItem(idMenuInfoPrintElements50, _("50"));
     menuPrint->AppendRadioItem(idMenuInfoPrintElements100, _("100"));
+    menuPrint->AppendRadioItem(idMenuInfoPrintElements200, _("200 (default)"));
     menu.AppendSubMenu(menuPrint, _("Print Elements"), _("Set limit on string chars or array elements to print"));
     menu.AppendCheckItem(idMenuInfoCatchThrow, _("Catch throw"),
                          _("If enabled the debugger will break when an exception is thronw"));
@@ -1754,7 +1758,8 @@ void DebuggerGDB::OnUpdateTools(wxUpdateUIEvent &event)
     bool checked = (event.GetId() == idMenuInfoPrintElementsUnlimited && m_printElements==0) ||
                    (event.GetId() == idMenuInfoPrintElements20 && m_printElements==20) ||
                    (event.GetId() == idMenuInfoPrintElements50 && m_printElements==50) ||
-                   (event.GetId() == idMenuInfoPrintElements100 && m_printElements==100);
+                   (event.GetId() == idMenuInfoPrintElements100 && m_printElements==100) ||
+                   (event.GetId() == idMenuInfoPrintElements200 && m_printElements==200);
     event.Check(checked);
     event.Enable(IsRunning() && IsStopped());
 }
@@ -1769,6 +1774,8 @@ void DebuggerGDB::OnPrintElements(wxCommandEvent &event)
         m_printElements = 50;
     else if (event.GetId() == idMenuInfoPrintElements100)
         m_printElements = 100;
+    else if (event.GetId() == idMenuInfoPrintElements200)
+        m_printElements = 200;
     else
         return;
 

@@ -48,7 +48,7 @@
 #include <CoreFoundation/CFURL.h>
 #endif
 
-#include "tinyxml/tinywxuni.h"
+#include "tinywxuni.h"
 #include <stdlib.h>
 
 #ifdef __linux__
@@ -261,11 +261,11 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
 
     if (platform::windows)
         info.append(_T("\n\t Windows "));
-    if (platform::linux)
+    if (platform::Linux)
         info.append(_T("\n\t Linux "));
     if (platform::macosx)
         info.append(_T("\n\t Mac OS X "));
-    if (platform::unix)
+    if (platform::Unix)
         info.append(_T("\n\t Unix "));
 
     info.append(platform::unicode ? _T("Unicode ") : _T("ANSI "));
@@ -1503,8 +1503,10 @@ void ConfigManager::InitPaths()
 #ifdef CB_AUTOCONF
     if (plugin_path_global.IsEmpty())
     {
-        if (platform::windows || platform::macosx)
+        if (platform::windows)
             ConfigManager::plugin_path_global = data_path_global;
+        else if (platform::macosx)
+            ConfigManager::plugin_path_global = data_path_global + _T("/plugins");
         else
         {
             // It seems we can not longer rely on wxStandardPathsBase::Get().GetPluginsDir(),
@@ -1549,7 +1551,7 @@ void ConfigManager::MigrateFolders()
         return;
 
     // ConfigManager::config_folder might be the portable-path but we want to migrate the standard-conform folder,
-    // but only if it not aöready exists
+    // but only if it not already exists
     wxString newConfigFolder = wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
     // if the new config folder already exist, we step out immediately
     if (wxDirExists(newConfigFolder))
@@ -1699,4 +1701,40 @@ double ConfigManagerWrapper::ReadDouble(const wxString& name, double defaultVal)
         return defaultVal;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     return c->ReadDouble(m_basepath + name, defaultVal);
+}
+
+static wxString getCompilerPluginFilename()
+{
+    if (platform::windows)
+        return wxT("compiler.dll");
+    else if (platform::darwin || platform::macosx)
+        return wxT("libcompiler.dylib");
+    else
+        return wxT("libcompiler.so");
+}
+
+wxArrayString cbReadBatchBuildPlugins()
+{
+    ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
+    wxArrayString bbplugins = bbcfg->ReadArrayString(_T("/batch_build_plugins"));
+
+    if (!bbplugins.GetCount())
+        bbplugins.Add(getCompilerPluginFilename());
+
+    return bbplugins;
+}
+
+void cbWriteBatchBuildPlugins(wxArrayString bbplugins, wxWindow *messageBoxParent)
+{
+    const wxString &compiler = getCompilerPluginFilename();
+
+    if (bbplugins.Index(compiler) == wxNOT_FOUND)
+    {
+        bbplugins.Add(compiler);
+        cbMessageBox(_("The compiler plugin must always be loaded for batch builds!\n"
+                    "Automatically re-enabled."),
+                    _("Warning"), wxICON_WARNING, messageBoxParent);
+    }
+    ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
+    bbcfg->Write(_T("/batch_build_plugins"), bbplugins);
 }

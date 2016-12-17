@@ -1,10 +1,10 @@
 SUBDIRS = depslib resources
 
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+		$(CB_SQUIRREL_CFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxpropgrid/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
-		-I$(top_srcdir)/src/include/scripting/include \
 		-I$(top_srcdir)/src/include/scripting/sqplus \
 		-I$(top_srcdir)/src/plugins/compilergcc/depslib/src
 
@@ -14,7 +14,7 @@ pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libcompiler.la
 
-libcompiler_la_LDFLAGS = -module -version-info 0:1:0 -shared -no-undefined -avoid-version
+libcompiler_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
 libcompiler_la_LIBADD = ../../sdk/libcodeblocks.la \
 				depslib/src/libdepslib.la \

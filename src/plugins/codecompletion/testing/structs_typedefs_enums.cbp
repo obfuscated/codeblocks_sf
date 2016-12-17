@@ -17,7 +17,7 @@
 			<Add alias="All" targets="structs_typedefs;" />
 		</VirtualTargets>
 		<Compiler>
-			<Add option="-std=c++11" />
+			<Add option="-std=gnu++11" />
 			<Add option="-Wall" />
 		</Compiler>
 		<Unit filename="structs_typedefs_enums.cpp" />

@@ -60,6 +60,7 @@ enum FileType
     ftXcode2Project,
     ftSource,
     ftHeader,
+    ftTemplateSource,
     ftObject,
     ftXRCResource,
     ftResource,
@@ -233,6 +234,18 @@ extern DLLIMPORT wxString ChooseDirectory(wxWindow* parent,
 extern DLLIMPORT bool NormalizePath(wxFileName& f,const wxString& base);
 extern DLLIMPORT bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path);
 
+/// If path is pointing to a symlink then the function will set dirpath parameter to the path
+/// the symlink points to.
+/// @note Does nothing on Windows.
+/// @note Should be used only for paths pointing to directories.
+/// @return true when the symlink is resolved correctly, else false.
+extern DLLIMPORT bool cbResolveSymLinkedDirPath(wxString& dirpath);
+/// Call cbResolveSymLinkedPath until the path is not a symlink.
+/// @note Does nothing on Windows.
+/// @note Should be used only for paths pointing to directories.
+/// @return The resolved path or the same path if not a symlink.
+extern DLLIMPORT wxString cbResolveSymLinkedDirPathRecursive(wxString dirpath);
+
 /** Reads settings if eolMode is -1
   * Expected input (defined in sdk/wxscintilla/include/wx/wxscintilla.h) is:
   * wxSCI_EOL_CRLF=0, wxSCI_EOL_CR=1, or wxSCI_EOL_LF=2
@@ -329,6 +342,15 @@ extern DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxStr
                                             const wxArrayString& choices, wxWindow *parent = NULL,
                                             const wxSize &size = wxSize(300, 300),
                                             int initialSelection = 0);
+
+/** wxMultiChoiceDialog wrapper.
+  *
+  * Use this instead of wxMessageBox(), as this uses PlaceWindow() to show it in the correct monitor.
+  */
+extern DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxString& caption,
+                                     const wxArrayString& choices, wxWindow *parent = nullptr,
+                                     const wxSize& size = wxSize(300, 300),
+                                     const wxArrayInt& initialSelection = wxArrayInt());
 
 #if wxCHECK_VERSION(3, 0, 0)
 extern DLLIMPORT const char *cbGetTextFromUserPromptStr;
