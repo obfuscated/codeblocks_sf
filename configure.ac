@@ -618,4 +618,6 @@ echo "   CFLAGS:     ${CFLAGS}"
 echo "   CXXFLAGS:   ${CXXFLAGS}"
 echo "   CPPFLAGS:   ${CPPFLAGS}"
 echo "   LDFLAGS:    ${LDFLAGS}"
+echo "   CXX:        ${CXX}"
+echo "   CC:         ${CC}"
 echo
