@@ -25,6 +25,8 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 AM_CONDITIONAL([LINUX], [test `uname` = "Linux"])
 AM_CONDITIONAL([DARWIN], [test `uname` = "Darwin"])
 
+CODEBLOCKS_CHECK_DEBUG
+
 dnl Checks for programs.
 AC_PROG_CXX
 AC_PROG_CPP
@@ -36,8 +38,6 @@ AC_PROG_MAKE_SET
 AC_PROG_AWK
 
 CODEBLOCKS_CHECK_LINK_FLAG([-Wl,--no-undefined],[LDFLAGS="-Wl,--no-undefined $LDFLAGS"])
-
-CODEBLOCKS_CHECK_DEBUG
 
 CODEBLOCKS_SETUP_FOR_TARGET
 
