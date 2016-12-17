@@ -391,10 +391,17 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this,   "txtMaxLineLength",       wxTextCtrl)->SetValue(cfg->Read(_T("/max_line_length"),           _T("200")));
   XRCCTRL(*this,   "chkBreakAfterLogical",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_after_mode"),      false));
 
-  if               (XRCCTRL(*this,           "chkBreakLines",                                                  wxCheckBox)->GetValue())
+  if(XRCCTRL(*this,"chkBreakLines",          wxCheckBox)->GetValue())
+  {
     XRCCTRL(*this, "txtMaxLineLength",       wxTextCtrl)->Enable();
+    XRCCTRL(*this, "chkBreakAfterLogical",   wxCheckBox)->Enable();
+  }
   else
-    XRCCTRL(*this, "txtMaxLineLength",       wxTextCtrl)->Disable();
+  {
+    XRCCTRL(*this, "txtMaxLineLength",     wxTextCtrl)->Disable();
+    XRCCTRL(*this, "chkBreakAfterLogical", wxCheckBox)->Disable();
+  }
+
 
   XRCCTRL(*this,   "chkBreakBlocks",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks"),          false));
   XRCCTRL(*this,   "chkBreakBlocksAll",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_blocks_all"),      false));
