@@ -367,7 +367,6 @@ CPPFLAGS="$CPPFLAGS $CB_TINYXML_CFLAGS"
 CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 
-m4_include([ax_cxx_compile_stdcxx.m4])
 AX_CXX_COMPILE_STDCXX(11, noext)
 
 dnl AM_PATH_GTK(1.2.7, ,
