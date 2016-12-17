@@ -7,9 +7,8 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include/mozilla_chardet/nsprpub/pr/include \
 		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom \
 		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/base \
-		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue
-
-CXXFLAGS = @CXXFLAGS@ -D__FAM__
+		-I$(top_srcdir)/src/include/mozilla_chardet/xpcom/glue \
+		-D__FAM__
 
 pluginlibdir = $(pkglibdir)/plugins
 

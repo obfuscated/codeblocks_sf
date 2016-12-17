@@ -2,8 +2,6 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 			-I$(top_srcdir)/src/include \
 			-I$(top_srcdir)/src/sdk/wxscintilla/include
 
-CXXFLAGS = @CXXFLAGS@  -O0
-
 pluginlibdir = $(pkglibdir)/plugins
 
 pluginlib_LTLIBRARIES = libheaderfixup.la
