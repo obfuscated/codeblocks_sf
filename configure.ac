@@ -357,20 +357,20 @@ AC_MSG_CHECKING(for PIC flags)
 case `uname` in
     Solaris)
         if test "$GCC" = yes; then
-            PIC_FLAGS="-fPIC -DPIC"
+            PIC_CFLAGS="-fPIC"
         else
-            PIC_FLAGS="-KPIC -DPIC"
+            PIC_CFLAGS="-KPIC"
         fi
     ;;
     *)
-        PIC_FLAGS="-fPIC -DPIC"
+        PIC_CFLAGS="-fPIC"
     ;;
 esac
-AC_MSG_RESULT($PIC_FLAGS)
+AC_MSG_RESULT("$PIC_CFLAGS -DPIC")
 
-CFLAGS="$CFLAGS -std=c90"
-CPPFLAGS="$CPPFLAGS $CB_TINYXML_CFLAGS"
-CXXFLAGS="$CXXFLAGS $PCH_FLAGS $PIC_FLAGS -fexceptions"
+CFLAGS="$CFLAGS $PIC_CFLAGS -std=c90"
+CPPFLAGS="$CPPFLAGS -DPIC $CB_TINYXML_CFLAGS"
+CXXFLAGS="$CXXFLAGS $PIC_CFLAGS -fexceptions"
 AC_SUBST(codeblocks_PCH_FLAGS, "$PCH_FLAGS")
 
 AX_CXX_COMPILE_STDCXX(11, noext)
@@ -613,4 +613,9 @@ echo
 echo "You can now build Code::Blocks by issuing 'make'".
 echo "When the build is complete, become root and install"
 echo "it by issuing 'make install'".
+echo
+echo "   CFLAGS:     ${CFLAGS}"
+echo "   CXXFLAGS:   ${CXXFLAGS}"
+echo "   CPPFLAGS:   ${CPPFLAGS}"
+echo "   LDFLAGS:    ${LDFLAGS}"
 echo

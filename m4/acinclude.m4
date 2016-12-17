@@ -99,6 +99,9 @@ AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (defau
         AS_IF([test "x$enable_flags_setting" = "xyes"],[
             CFLAGS="-O2 -ffast-math $CFLAGS"
             CXXFLAGS="-O2 -ffast-math $CXXFLAGS"
+        ], [
+            : ${CFLAGS=""}
+            : ${CXXFLAGS=""}
         ])
         AC_MSG_RESULT(no)
     fi
@@ -747,7 +750,9 @@ if test "x$enable_pch" = "x" -o "x$enable_pch" = "xyes" ; then
             [
                 AC_MSG_RESULT([yes])
                 GCC_PCH=1
-                PCH_FLAGS="-DCB_PRECOMP -Winvalid-pch"
+                PCH_FLAGS="-DCB_PRECOMP"
+                CPPFLAGS="${CPPFLAGS} ${PCH_FLAGS}"
+                CXXFLAGS="${CXXFLAGS} -Winvalid-pch"
             ],
             [
                 AC_MSG_RESULT([no])
