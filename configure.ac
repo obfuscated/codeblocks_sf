@@ -223,17 +223,8 @@ case $WX_BASENAME in
 
     	fi
 
-		dnl
-		dnl Check whether the necessary boost-headers are installed
-		dnl a little hacky, but it seems there is no common macro-library
-		dnl to check for boost
-		dnl If anybody knows a better way, feel free to change it
-		if test "x$BUILD_NASSISHNEIDERMAN_TRUE" = "x" ; then
-			AC_LANG_PUSH([C++])
-            AC_CHECK_HEADER([boost/spirit/include/classic.hpp],[],[AC_MSG_ERROR([needed boost headers not found or not usable])])
-			AC_LANG_POP([C++])
-        fi
-
+        dnl Check whether boost is installed
+        AX_BOOST_BASE
 
 		CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
 		CB_GLIB2_LIBS="$GLIB2_LIBS"

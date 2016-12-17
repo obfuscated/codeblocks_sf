@@ -1,6 +1,7 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include \
+		$(BOOST_CPPFLAGS) \
 		-DBOOST_SYSTEM_NO_DEPRECATED
 
 pluginlibdir = $(pkglibdir)/plugins
