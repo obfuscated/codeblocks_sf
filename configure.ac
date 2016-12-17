@@ -14,6 +14,8 @@ AC_MSG_RESULT([${enable_flags_setting}])
 
 m4_include([m4/acinclude.m4])
 
+CODEBLOCKS_CHECK_DEBUG
+
 AM_INIT_AUTOMAKE([foreign dist-bzip2 no-dist-gzip subdir-objects])
 
 AC_DISABLE_STATIC
@@ -26,8 +28,6 @@ m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES])
 
 AM_CONDITIONAL([LINUX], [test `uname` = "Linux"])
 AM_CONDITIONAL([DARWIN], [test `uname` = "Darwin"])
-
-CODEBLOCKS_CHECK_DEBUG
 
 dnl Checks for programs.
 AC_PROG_CXX
