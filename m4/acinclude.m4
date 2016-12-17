@@ -91,14 +91,19 @@ debug_default="no"
 AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (default is OFF)])],,
                        enable_debug=$debug_default)
     if test "x$enable_debug" = "xyes"; then
-        CFLAGS="-g -DDEBUG -DCB_AUTOCONF $CFLAGS"
-        CXXFLAGS="-g -DDEBUG -DCB_AUTOCONF $CXXFLAGS"
+        CFLAGS="-g $CFLAGS"
+        CXXFLAGS="-g $CXXFLAGS"
+        CPPFLAGS="-DDEBUG $CPPFLAGS"
         AC_MSG_RESULT(yes)
     else
-        CFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CFLAGS"
-        CXXFLAGS="-O2 -ffast-math -DCB_AUTOCONF $CXXFLAGS"
+        AS_IF([test "x$enable_flags_setting" = "xyes"],[
+            CFLAGS="-O2 -ffast-math $CFLAGS"
+            CXXFLAGS="-O2 -ffast-math $CXXFLAGS"
+        ])
         AC_MSG_RESULT(no)
     fi
+
+    CPPFLAGS="-DCB_AUTOCONF $CPPFLAGS"
 ])
 
 AC_DEFUN([CB_GCC_VERSION], [

@@ -8,6 +8,10 @@ AC_CANONICAL_TARGET
 
 AC_CONFIG_MACRO_DIR([m4])
 
+AC_MSG_CHECKING([whether configure should try to set CFLAGS/CXXFLAGS/CPPFLAGS/LDFLAGS])
+AS_IF([test "x${CFLAGS+set}" = "xset" || test "x${CXXFLAGS+set}" = "xset" || test "x${CPPFLAGS+set}" = "xset" || test "x${LDFLAGS+set}" = "xset"],[enable_flags_setting=no],[enable_flags_setting=yes])
+AC_MSG_RESULT([${enable_flags_setting}])
+
 AM_INIT_AUTOMAKE([foreign dist-bzip2 no-dist-gzip subdir-objects])
 
 AC_DISABLE_STATIC
