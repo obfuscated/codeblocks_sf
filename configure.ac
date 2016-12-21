@@ -13,6 +13,7 @@ AS_IF([test "x${CFLAGS+set}" = "xset" || test "x${CXXFLAGS+set}" = "xset" || tes
 AC_MSG_RESULT([${enable_flags_setting}])
 
 m4_include([m4/acinclude.m4])
+m4_include([m4/ax_cxx_compile_stdcxx.m4])
 
 CODEBLOCKS_CHECK_DEBUG
 
