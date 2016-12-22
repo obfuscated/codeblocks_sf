@@ -214,12 +214,16 @@ bool CscopePlugin::CreateListFile(wxString &list_file)
     if (! prj) return false;
 
     std::vector< wxFileName > files;
-	m_view->GetWindow()->SetMessage(_("Creating file list..."), 5);
+    m_view->GetWindow()->SetMessage(_("Creating file list..."), 5);
 
     for (FilesList::iterator it = prj->GetFilesList().begin(); it != prj->GetFilesList().end(); ++it)
     {
         wxFileName fn( (*it)->file.GetFullPath() );
-        files.push_back(fn);
+
+        // To prevent cscope from going into an infinite loop while parsing the file list,
+        // only keep track of existing files (in case it was removed with an external tool like git).
+        if (fn.IsFileReadable())
+            files.push_back(fn);
     }
 
 	//create temporary file and save the file-list there
