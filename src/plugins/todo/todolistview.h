@@ -21,6 +21,7 @@ class wxListEvent;
 class wxComboBox;
 class wxButton;
 class wxPanel;
+class wxStaticText;
 
 // an item is one record in the file, such as a fixme, it can have several properties, such as
 // the type (todo, note, fixme..), the user (who wrote the item) and the date, all its properties
@@ -135,6 +136,7 @@ class ToDoListView : public wxEvtHandler, public ListCtrlLogger
         wxComboBox*          m_pSource;
         // user filter, we can show only the specified todo items belongs to a single user
         wxComboBox*          m_pUser;
+        wxStaticText*        m_pTotal;
 
         // type string array: such as  todo, readme, note, fixme, and so on
         const wxArrayString& m_Types;

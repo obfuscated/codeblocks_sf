@@ -61,6 +61,7 @@ ToDoListView::ToDoListView(const wxArrayString& titles_in, const wxArrayInt& wid
     m_pPanel(0),
     m_pSource(0L),
     m_pUser(0L),
+    m_pTotal(nullptr),
     m_Types(Types),
     m_LastFile(wxEmptyString),
     m_Ignore(false),
@@ -122,11 +123,13 @@ wxWindow* ToDoListView::CreateControl(wxWindow* parent)
     hbs->Add(pRefresh, 0, wxLEFT, 4);
 
     wxButton* pAllowedTypes = new wxButton(m_pPanel, idButtonTypes, _("Types"));
-    hbs->Add(pAllowedTypes, 0, wxLEFT, 4);
+    hbs->Add(pAllowedTypes, 0, wxLEFT | wxRIGHT, 4);
+
+    m_pTotal = new wxStaticText(m_pPanel, wxID_ANY, _("0 item(s)"));
+    m_pTotal->SetWindowStyle(wxALIGN_RIGHT | wxST_NO_AUTORESIZE);
+    hbs->Add(m_pTotal, 1, wxALL | wxEXPAND, 4);
 
     bs->Add(hbs, 0, wxGROW | wxALL, 4);
-    m_pPanel->SetSizer(bs);
-
     m_pPanel->SetSizer(bs);
 
     m_pAllowedTypesDlg = new CheckListDialog(m_pPanel);
@@ -325,6 +328,10 @@ void ToDoListView::FillList()
     FillListControl();
 
     control->Thaw();
+
+    wxString total = wxString::Format(_("%d item(s)"), control->GetItemCount());
+    m_pTotal->SetLabel(total);
+
     // reset the user selection list
     LoadUsers();
 }
