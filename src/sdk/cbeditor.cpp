@@ -2939,6 +2939,9 @@ void cbEditor::OnAfterBuildContextMenu(cb_unused ModuleType type)
 
 void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
 {
+    int oldMarginWidth = m_pControl->GetMarginWidth(C_LINE_MARGIN);
+    int oldMarginType = m_pControl->GetMarginType(C_LINE_MARGIN);
+
     // print line numbers?
     m_pControl->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);
     if (!line_numbers)
@@ -2990,12 +2993,12 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
     }
     delete printout;
 
-    // revert line numbers and gutter settings
+    // revert line number settings
+    m_pControl->SetMarginType(C_LINE_MARGIN, oldMarginType);
+    m_pControl->SetMarginWidth(C_LINE_MARGIN, oldMarginWidth);
+
+    // revert gutter settings
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-    if (mgr->ReadBool(_T("/show_line_numbers"), true))
-        m_pControl->SetMarginWidth(C_LINE_MARGIN, 48);
-    else
-        m_pControl->SetMarginWidth(C_LINE_MARGIN, 0);
     m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
 }
 
