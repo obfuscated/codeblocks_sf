@@ -44,6 +44,7 @@
 #include "annoyingdialog.h"
 #include "configurationpanel.h"
 #include "editarrayorderdlg.h"
+#include "editarrayfiledlg.h"
 #include "editpathdlg.h"
 #include "externaldepsdlg.h"
 #include "filefilters.h"
@@ -139,6 +140,8 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     if (plugins.GetCount())
         m_pCompiler = (cbCompilerPlugin*)plugins[0];
 
+    XRCCTRL(*this, "txtNotes", wxTextCtrl)->Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(ProjectOptionsDlg::OnKeyDown),nullptr,this);
+
     // scripts
     BuildScriptsTree();
 
@@ -159,6 +162,21 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
 ProjectOptionsDlg::~ProjectOptionsDlg()
 {
     // insert your code here
+    XRCCTRL(*this, "txtNotes", wxTextCtrl)->Disconnect(wxEVT_KEY_DOWN,wxKeyEventHandler(ProjectOptionsDlg::OnKeyDown),nullptr,this);
+}
+
+void ProjectOptionsDlg::OnKeyDown(wxKeyEvent& event)
+{
+    if (event.ControlDown())
+    {
+        if (event.GetKeyCode() == 'J')
+        {
+            wxString buffer = XRCCTRL(*this, "txtNotes", wxTextCtrl)->GetValue();
+            Manager::Get()->GetMacrosManager()->ReplaceMacros(buffer,nullptr);
+            XRCCTRL(*this, "txtNotes", wxTextCtrl)->SetValue(buffer);
+        }
+    }
+    event.Skip();
 }
 
 void ProjectOptionsDlg::BuildScriptsTree()
