@@ -72,6 +72,7 @@ static const int cgContribPlugin    = 0x08; ///< One of the contrib plugins (or 
 static const int cgUnknown          = 0x10; ///< Unknown. This will be probably grouped with cgContribPlugin.
 
 /** @brief Base class for plugins
+  *
   * This is the most basic class a plugin must descend
   * from.
   * cbPlugin descends from wxEvtHandler, so it provides its methods as well...
