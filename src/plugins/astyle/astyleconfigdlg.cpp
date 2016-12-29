@@ -319,6 +319,8 @@ void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
     SetStyle(asps1TBS);
   else if (event.GetId() == XRCID("rbGoogle"))
     SetStyle(aspsGoogle);
+  else if (event.GetId() == XRCID("rbMozilla"))
+    SetStyle(aspsMozilla);
   else if (event.GetId() == XRCID("rbPico"))
     SetStyle(aspsPico);
   else if (event.GetId() == XRCID("rbLisp"))
