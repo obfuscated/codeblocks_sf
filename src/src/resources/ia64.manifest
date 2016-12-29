@@ -52,12 +52,11 @@
        125% or 150% but is off by default. With Windows 7 this was enabled by default depending
        on the EDID native DPI information so the recommendation is for all Direct3D full-screen
        applications to declare themselves "High-DPI Aware". This is done via another manifest
-       element. With Visual Studio 2005 and VS 2008, you add an "Additional Manifest Files" file
-       reference to a text file containing:
+       element. Options are: {False , True , Per-monitor , True/PM} (PM=per monitor).
   -->
   <asmv3:application xmlns="urn:schemas-microsoft-com:asm.v1">
     <asmv3:windowsSettings xmlns="http://schemas.microsoft.com/SMI/2005/WindowsSettings">
-      <dpiAware>True/PM</dpiAware>
+      <dpiAware>False</dpiAware>
     </asmv3:windowsSettings>
   </asmv3:application>
 
