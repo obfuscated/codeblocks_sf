@@ -24,7 +24,7 @@
 
 
 class TiXmlDocument;
-namespace TinyXML{ 	bool SaveDocument(const wxString&, TiXmlDocument*); }
+namespace TinyXML{ bool SaveDocument(const wxString&, TiXmlDocument*); }
 
 
 // ***** class: LoaderBase *****
@@ -78,7 +78,7 @@ public:
     URLLoader(const wxString& name) { fileName = name; };
     void operator()();
 private:
-	std::vector<char> mBuffer;
+    std::vector<char> mBuffer;
 };
 
 // ***** class: NullLoader *****
@@ -131,7 +131,7 @@ public:
     bool Save(const wxString& file, const wxString& data, wxFontEncoding encoding, bool bom);
 
 private:
-	friend bool TinyXML::SaveDocument(const wxString&, TiXmlDocument*);
+    friend bool TinyXML::SaveDocument(const wxString&, TiXmlDocument*);
     bool SaveUTF8(const wxString& file, const char* data, size_t len);
 
     bool WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom);
