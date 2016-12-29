@@ -78,6 +78,10 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setFormattingStyle(astyle::STYLE_GOOGLE);
       break;
 
+    case aspsMozilla: // Mozilla
+      formatter.setFormattingStyle(astyle::STYLE_MOZILLA);
+      break;
+
     case aspsPico: // Pico
       formatter.setFormattingStyle(astyle::STYLE_PICO);
       break;
@@ -102,6 +106,10 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   else
     formatter.setSpaceIndentation(spaceNum);
 
+  int contNum = cfg->ReadInt(_T("/continuation"), 0);
+  if (contNum>0 && contNum<=4)
+    formatter.setContinuationIndentation(contNum);
+
   formatter.setCaseIndent(cfg->ReadBool(_T("/indent_case")));
   formatter.setClassIndent(cfg->ReadBool(_T("/indent_classes")));
   formatter.setLabelIndent(cfg->ReadBool(_T("/indent_labels")));
@@ -121,7 +129,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setAddOneLineBracketsMode(cfg->ReadBool(_T("/add_one_line_brackets")));
   formatter.setRemoveBracketsMode(cfg->ReadBool(_T("/remove_brackets")));
   formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
-  formatter.setSingleStatementsMode(!cfg->ReadBool(_T("/keep_complex")));
+  formatter.setBreakOneLineHeadersMode(!cfg->ReadBool(_T("/keep_headers")));
+  formatter.setBreakOneLineStatementsMode(!cfg->ReadBool(_T("/keep_statements")));
   formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
   formatter.setCloseTemplatesMode(cfg->ReadBool(_T("/close_templates")));
   formatter.setStripCommentPrefix(cfg->ReadBool(_T("/remove_comment_prefix")));
@@ -139,8 +148,10 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setOperatorPaddingMode(cfg->ReadBool(_T("/pad_operators")));
   formatter.setParensOutsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_out")));
   formatter.setParensInsidePaddingMode(cfg->ReadBool(_T("/pad_parentheses_in")));
+  formatter.setParensFirstPaddingMode(cfg->ReadBool(_T("/pad_first_paren_out")));
   formatter.setParensHeaderPaddingMode(cfg->ReadBool(_T("/pad_header")));
   formatter.setParensUnPaddingMode(cfg->ReadBool(_T("/unpad_parentheses")));
+  formatter.setCommaPaddingMode(cfg->ReadBool(_T("/pad_comma")));
   formatter.setDeleteEmptyLinesMode(cfg->ReadBool(_T("/delete_empty_lines")));
   formatter.setEmptyLineFill(cfg->ReadBool(_T("/fill_empty_lines")));
 

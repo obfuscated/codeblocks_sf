@@ -1,5 +1,4 @@
 # Make file for GCC compiler on Linux or compatible OS
-# The license.html file describes the conditions under which this software may be distributed.
 
 # list of source files for astyle
 SRC = astyle_main.cpp \
@@ -37,7 +36,7 @@ bindir = bin
 objdir = obj
 ipath=$(prefix)/bin
 CBASEFLAGS = -Wall -Wextra -fno-rtti -fno-exceptions
-JAVAINCS   = -I$(JAVA_HOME)/include
+JAVAINCS   = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 CXX = g++
 INSTALL=install -o $(USER) -g $(USER)
 

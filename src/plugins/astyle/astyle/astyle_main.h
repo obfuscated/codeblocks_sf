@@ -1,6 +1,6 @@
 // astyle_main.h
 // Copyright (c) 2016 by Jim Pattee <jimp03@email.com>.
-// Licensed under the MIT license.
+// This code is licensed under the MIT License.
 // License.txt describes the conditions under which this software may be distributed.
 
 #ifndef ASTYLE_MAIN_H
@@ -52,14 +52,25 @@
 	#error - Use GNU C compiler release 3 or higher
 #endif
 
+// for getenv and localtime
+#if defined(_MSC_VER)
+	#pragma warning(disable: 4996)  // secure version deprecation warnings
+#endif
+
 // for namespace problem in version 5.0
 #if defined(_MSC_VER) && _MSC_VER < 1200        // check for V6.0
 	#error - Use Microsoft compiler version 6 or higher
 #endif
 
+#ifdef __clang__
+	#pragma clang diagnostic ignored "-Wdeprecated-declarations"  // getenv, localtime
+	#pragma clang diagnostic ignored "-Wmissing-braces"
+#endif
+
 // for mingw BOM, UTF-16, and Unicode functions
 #if defined(__MINGW32__) && !defined(__MINGW64_VERSION_MAJOR)
-	#if (__MINGW32_MAJOR_VERSION > 3) || ((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 16))
+	#if (__MINGW32_MAJOR_VERSION > 3) || \
+		((__MINGW32_MAJOR_VERSION == 3) && (__MINGW32_MINOR_VERSION < 16))
 		#error - Use MinGW compiler version 4 or higher
 	#endif
 #endif
@@ -133,10 +144,10 @@ private:
 	T* inStream;            // pointer to the input stream
 	string buffer;          // current input line
 	string prevBuffer;      // previous input line
+	string outputEOL;       // next output end of line char
 	int eolWindows;         // number of Windows line endings, CRLF
 	int eolLinux;           // number of Linux line endings, LF
 	int eolMacOld;          // number of old Mac line endings. CR
-	char outputEOL[4];      // next output end of line char
 	streamoff streamLength; // length of the input file stream
 	streamoff peekStart;    // starting position for peekNextLine
 	bool prevLineDeleted;   // the previous input line was deleted
@@ -144,7 +155,7 @@ private:
 public:	// inline functions
 	bool compareToInputBuffer(const string& nextLine_) const
 	{ return (nextLine_ == prevBuffer); }
-	const char* getOutputEOL() const { return outputEOL; }
+	const string& getOutputEOL() const { return outputEOL; }
 	bool hasMoreLines() const { return !inStream->eof(); }
 };
 
@@ -169,10 +180,10 @@ public:
 	bool   getBigEndian() const;
 	int    swap16bit(int value) const;
 	size_t utf16len(const utf16* utf16In) const;
-	size_t Utf8LengthFromUtf16(const char* utf16In, size_t inLen, bool isBigEndian) const;
-	size_t Utf8ToUtf16(char* utf8In, size_t inLen, bool isBigEndian, char* utf16Out) const;
-	size_t Utf16LengthFromUtf8(const char* utf8In, size_t inLen) const;
-	size_t Utf16ToUtf8(char* utf16In, size_t inLen, bool isBigEndian,
+	size_t utf8LengthFromUtf16(const char* utf16In, size_t inLen, bool isBigEndian) const;
+	size_t utf8ToUtf16(char* utf8In, size_t inLen, bool isBigEndian, char* utf16Out) const;
+	size_t utf16LengthFromUtf8(const char* utf8In, size_t len) const;
+	size_t utf16ToUtf8(char* utf16In, size_t inLen, bool isBigEndian,
 	                   bool firstBlock, char* utf8Out) const;
 };
 
@@ -184,7 +195,7 @@ public:
 class ASOptions
 {
 public:
-	ASOptions(ASFormatter& formatterArg) : formatter(formatterArg) {}
+	explicit ASOptions(ASFormatter& formatterArg) : formatter(formatterArg) {}
 	string getOptionErrors() const;
 	void importOptions(istream& in, vector<string>& optionsVector);
 	bool parseOptions(vector<string>& optionsVector, const string& errorInfo);
@@ -239,11 +250,11 @@ private:    // variables
 	int  filesUnchanged;                // number of files unchanged
 	bool lineEndsMixed;                 // output has mixed line ends
 	int  linesOut;                      // number of output lines
-	char outputEOL[4];                  // current line end
-	char prevEOL[4];                    // previous line end
 
 	Utf8_16 utf8_16;                    // utf8/16 conversion methods
 
+	string outputEOL;                   // current line end
+	string prevEOL;                     // previous line end
 	string optionsFileName;             // file path and name of the options file to use
 	string origSuffix;                  // suffix= option
 	string targetDirectory;             // path to the directory being processed
@@ -257,7 +268,7 @@ private:    // variables
 	vector<string> fileName;            // files to be processed including path
 
 public:     // variables
-	ASConsole(ASFormatter& formatterArg) : formatter(formatterArg)
+	explicit ASConsole(ASFormatter& formatterArg) : formatter(formatterArg)
 	{
 		// command line options
 		isRecursive = false;
@@ -276,8 +287,6 @@ public:     // variables
 		hasWildcard = false;
 		filesAreIdentical = true;
 		lineEndsMixed = false;
-		outputEOL[0] = '\0';
-		prevEOL[0] = '\0';
 		origSuffix = ".orig";
 		mainDirectoryLength = 0;
 		filesFormatted = 0;
@@ -321,12 +330,12 @@ public:     // functions
 	void setIsRecursive(bool state);
 	void setIsVerbose(bool state);
 	void setNoBackup(bool state);
-	void setOptionsFileName(string name);
-	void setOrigSuffix(string suffix);
+	void setOptionsFileName(const string& name);
+	void setOrigSuffix(const string& suffix);
 	void setPreserveDate(bool state);
 	void standardizePath(string& path, bool removeBeginningSeparator = false) const;
 	bool stringEndsWith(const string& str, const string& suffix) const;
-	void updateExcludeVector(string suffixParam);
+	void updateExcludeVector(const string& suffixParam);
 	vector<string> getExcludeVector() const;
 	vector<bool>   getExcludeHitsVector() const;
 	vector<string> getFileNameVector() const;
@@ -344,7 +353,7 @@ private:	// functions
 	string getParam(const string& arg, const char* op);
 	void initializeOutputEOL(LineEndFormat lineEndFormat);
 	bool isOption(const string& arg, const char* op);
-	bool isOption(const string& arg, const char* op1, const char* op2);
+	bool isOption(const string& arg, const char* a, const char* b);
 	bool isParamOption(const string& arg, const char* option);
 	bool isPathExclued(const string& subPath);
 	void launchDefaultBrowser(const char* filePathIn = NULL) const;
@@ -356,9 +365,9 @@ private:	// functions
 	FileEncoding readFile(const string& fileName_, stringstream& in) const;
 	void removeFile(const char* fileName_, const char* errMsg) const;
 	void renameFile(const char* oldFileName, const char* newFileName, const char* errMsg) const;
-	void setOutputEOL(LineEndFormat lineEndFormat, const char* currentEOL);
+	void setOutputEOL(LineEndFormat lineEndFormat, const string& currentEOL);
 	void sleep(int seconds) const;
-	int  waitForRemove(const char* oldFileName) const;
+	int  waitForRemove(const char* newFileName) const;
 	int  wildcmp(const char* wild, const char* data) const;
 	void writeFile(const string& fileName_, FileEncoding encoding, ostringstream& out) const;
 #ifdef _WIN32

@@ -15,31 +15,61 @@
     <h1>Artistic Style Release Notes</h1>
 
     <p>
-        &nbsp;
-    </p>
+        &nbsp;</p>
 
-    <h3>Artistic Style 2.06&nbsp; (Pending)</h3>
+    <h3>Artistic Style 2.06&nbsp; (December 2016)</h3>
 
     <ul>
-        <li>Add new Objective&#8209;C options "pad-return-type" (-xq) and "unpad-return-type" (-xr).</li>
-        <li>Add new option pad-comma (#100).</li>
+        <li>Add new bracket style option "style=mozilla".</li>
+        <li>Add new option "break-one-line-headers" (#33, 64, 367).</li>
+        <li>Add new option &quot;indent-continuation&quot;.</li>
+        <li>Add new option &quot;pad-comma&quot; (#100).</li>
         <li>Add removing spaces before a comma (#100).</li>
+        <li>Add new Objective&#8209;C options "pad-return-type" (-xq) and "unpad-return-type" (-xr).</li>
+        <li>Add new Objective&#8209;C options "pad-param-type" (-xS) and "unpad-param-type" (-xs).</li>
         <li>Add formatting of C++14 single-quote digit separators (#337).</li>
-        <li>Improve align-method-colon to applied to Objective&#8209;C method calls.</li>
-        <li>Improve recognition of C++11 uniform initializer brackets (#381).</li>
+        <li>Add indentation for CORBA IDL module statement (#414).</li>
+        <li>Add translations for Bulgarian, Estonian, Greek, Hungarian, Norwegian, and Romanian.</li>
+        <li>Remove lineend option from formatCinToCout function.</li>
+        <li>Improve align-method-colon and apply to Objective&#8209;C method calls.</li>
+        <li>Improve recognition of header guards in preprocessor statements.</li>
+        <li>Improve recognition of C++11 uniform initializer brackets (#381, 411, 415).</li>
+        <li>Improve the processing of quoted strings and verbatim strings.</li>
         <li>Change align-method-colon short first line to align on the longest line instead of the first line.</li>
+        <li>Change to not break empty one line brackets to support new &quot;break-one-line-headers&quot;.</li>
+        <li>Change add-brackets to not add to one line blocks to support new &quot;break-one-line-headers&quot;.</li>
+        <li>Change add-brackets to not add to one line statements in support new &quot;break-one-line-headers&quot;.</li>
+        <li>Fix not recognizing an escaped space character within a quote (#403).</li>
+        <li>Fix not recognizing &quot;else&quot; brackets as COMMAND_TYPE (#400).</li>
         <li>Fix attaching &quot;if&quot; statements to a #else preprocessor directive (#356).</li>
         <li>Fix not clearing global variables for a new file (#364).</li>
+        <li>Fix not recognizing an rvalue reference in a template (#404).</li>
+        <li>Fix breaking a line when processing the first line of a file (#400).</li>
+        <li>Fix breaking a line in an exponential (#392).</li>
+        <li>Fix indentation of an &quot;enum&quot; without following brackets (#401, 384).</li>
+        <li>Fix indentation of arguments using preceding commas (#355).</li>
+        <li>Fix indentation of Pico style one line blocks.</li>
+        <li>Fix not padding header for &quot;new&quot; or &quot;delete&quot; followed by parens.</li>
+        <li>Fix template variable not being cleared at end of a statement (#380).</li>
+        <li>Fix &quot;close-templates&quot; to only close ending angle brackets (#375).</li>
+        <li>Fix pad-oper to not pad a + or - following an open bracket (#378).</li>
         <li>Fix C# to recognize &quot;using&quot; as a header.</li>
         <li>Fix C# to always recognize &quot;forever&quot; as a header.</li>
+        <li>Fix Pico style not always computing the indentation for one line blocks.</li>
+        <li>Fix indentation of Objective-C @interface statement (#333).</li>
+        <li>Fix assert error when Objective-C &quot;@&quot; is followed by whitespace.</li>
         <li>Fix end of line comments for &quot;pad-method-prefix&quot; and &quot;unpad-method-prefix&quot;.</li>
         <li>Fix end of line comments for &quot;pad-method-colon&quot;.</li>
         <li>Refactoring:
             <ul>
                 <li>Consolidate scattered ASFormatter conditional statements into a padParenObjC method.</li>
+                <li>Remove BracketMode STROUSTRUP_MODE and change it to LINUX_MODE.</li>
                 <li>Remove ASBase methods from being inlined as class definitions.</li>
+                <li>Replace C char arrays in astyle_main.cpp with C++ strings.</li>
+                <li>Return language translation as a mutable variable.</li>
                 <li>Portability changes for additional compiler support (#352).</li>
-           </ul>
+                <li>Minor changes based on results of the Clang-Tidy. </li>
+            </ul>
         </li>
     </ul>
 
@@ -259,24 +289,19 @@
     </ul>
 
     <p>
-        &nbsp;
-    </p>
+        &nbsp;</p>
     <p>
         <strong>Previous releases are available in the <a href="http://astyle.sourceforge.net/notesArchives.html">Release
-            Notes Archives</a>.</strong>
-    </p>
+            Notes Archives</a>.</strong></p>
     <p>
-        &nbsp;
-    </p>
+        &nbsp;</p>
 
     <p style="margin-left: -0.4in; text-align: center;">
         <a href="http://sourceforge.net/projects/astyle">
-            <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=16" alt="" /></a>
-    </p>
+            <img src="http://sflogo.sourceforge.net/sflogo.php?group_id=2319&type=16" alt="" /></a></p>
 
     <p>
-        &nbsp;
-    </p>
+        &nbsp;</p>
 
 </body>
 

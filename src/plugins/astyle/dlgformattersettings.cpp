@@ -51,6 +51,8 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
     formatter.setFormattingStyle(astyle::STYLE_1TBS);
   else if (XRCCTRL(*m_dlg, "rbGoogle", wxRadioButton)->GetValue())
     formatter.setFormattingStyle(astyle::STYLE_GOOGLE);
+  else if (XRCCTRL(*m_dlg, "rbMozilla", wxRadioButton)->GetValue())
+    formatter.setFormattingStyle(astyle::STYLE_MOZILLA);
   else if (XRCCTRL(*m_dlg, "rbPico", wxRadioButton)->GetValue())
     formatter.setFormattingStyle(astyle::STYLE_PICO);
   else if (XRCCTRL(*m_dlg, "rbLisp", wxRadioButton)->GetValue())
@@ -63,11 +65,14 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
 
   bool value = XRCCTRL(*m_dlg, "chkForceUseTabs", wxCheckBox)->GetValue();
   int spaceNum = XRCCTRL(*m_dlg, "spnIndentation", wxSpinCtrl)->GetValue();
-
   if (XRCCTRL(*m_dlg, "chkUseTab", wxCheckBox)->GetValue())
     formatter.setTabIndentation(spaceNum, value);
   else
     formatter.setSpaceIndentation(spaceNum);
+
+  int contNum = XRCCTRL(*m_dlg, "spnContinuation", wxSpinCtrl)->GetValue();
+  if (contNum>0 && contNum<=4)
+    formatter.setContinuationIndentation(contNum);
 
   formatter.setCaseIndent(XRCCTRL(*m_dlg,               "chkIndentCase",          wxCheckBox)->GetValue());
   formatter.setClassIndent(XRCCTRL(*m_dlg,              "chkIndentClasses",       wxCheckBox)->GetValue());
@@ -89,7 +94,8 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setAddOneLineBracketsMode(XRCCTRL(*m_dlg, "chkAddOneLineBrackets",   wxCheckBox)->GetValue());
   formatter.setRemoveBracketsMode(XRCCTRL(*m_dlg, "chkRemoveBrackets",           wxCheckBox)->GetValue());
   formatter.setBreakOneLineBlocksMode(!XRCCTRL(*m_dlg, "chkKeepBlocks",          wxCheckBox)->GetValue());
-  formatter.setSingleStatementsMode(!XRCCTRL(*m_dlg, "chkKeepComplex",           wxCheckBox)->GetValue());
+  formatter.setBreakOneLineHeadersMode(!XRCCTRL(*m_dlg, "chkKeepHeaders",        wxCheckBox)->GetValue());
+  formatter.setBreakOneLineStatementsMode(!XRCCTRL(*m_dlg, "chkKeepStatements",  wxCheckBox)->GetValue());
   formatter.setTabSpaceConversionMode(XRCCTRL(*m_dlg, "chkConvertTabs",          wxCheckBox)->GetValue());
   formatter.setCloseTemplatesMode(XRCCTRL(*m_dlg, "chkCloseTemplates",           wxCheckBox)->GetValue());
   formatter.setStripCommentPrefix(XRCCTRL(*m_dlg, "chkRemoveCommentPrefix",      wxCheckBox)->GetValue());
@@ -105,10 +111,12 @@ void DlgFormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setBreakBlocksMode(XRCCTRL(*m_dlg, "chkBreakBlocks",                 wxCheckBox)->GetValue());
   formatter.setBreakClosingHeaderBlocksMode(XRCCTRL(*m_dlg, "chkBreakBlocksAll", wxCheckBox)->GetValue());
   formatter.setOperatorPaddingMode(XRCCTRL(*m_dlg, "chkPadOperators",            wxCheckBox)->GetValue());
-  formatter.setParensOutsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParensOut",       wxCheckBox)->GetValue());
-  formatter.setParensInsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParensIn",         wxCheckBox)->GetValue());
+  formatter.setParensOutsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParenOut",        wxCheckBox)->GetValue());
+  formatter.setParensInsidePaddingMode(XRCCTRL(*m_dlg, "chkPadParenIn",          wxCheckBox)->GetValue());
+  formatter.setParensFirstPaddingMode(XRCCTRL(*m_dlg, "chkPadFirstParenOut",     wxCheckBox)->GetValue());
   formatter.setParensHeaderPaddingMode(XRCCTRL(*m_dlg, "chkPadHeader",           wxCheckBox)->GetValue());
   formatter.setParensUnPaddingMode(XRCCTRL(*m_dlg, "chkUnpadParens",             wxCheckBox)->GetValue());
+  formatter.setCommaPaddingMode(XRCCTRL(*m_dlg, "chkPadComma",                   wxCheckBox)->GetValue());
   formatter.setDeleteEmptyLinesMode(XRCCTRL(*m_dlg, "chkDelEmptyLine",           wxCheckBox)->GetValue());
   formatter.setEmptyLineFill(XRCCTRL(*m_dlg, "chkFillEmptyLines",                wxCheckBox)->GetValue());
 
