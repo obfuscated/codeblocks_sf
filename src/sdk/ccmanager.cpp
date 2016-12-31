@@ -515,6 +515,28 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     if (m_AutocompTokens.empty())
         return;
 
+    if (m_AutocompTokens.size() == 1 && cfg->ReadBool(wxT("/auto_select_single"), false))
+    {
+        // Using stc->AutoCompSetChooseSingle() does not send wxEVT_SCI_AUTOCOMP_SELECTION,
+        // so manually emulate the behaviour.
+
+        if (!stc->CallTipActive() && !stc->AutoCompActive())
+            m_CallTipActive = wxSCI_INVALID_POSITION;
+
+        m_OwnsAutocomp = true;
+        m_LastACLaunchState[lsTknStart] = tknStart;
+        m_LastACLaunchState[lsCaretStart] = tknEnd;
+
+        m_LastAutocompIndex = 0;
+
+        wxScintillaEvent autoCompFinishEvt(wxEVT_SCI_AUTOCOMP_SELECTION);
+        autoCompFinishEvt.SetText(m_AutocompTokens.front().displayName);
+
+        OnEditorHook(ed, autoCompFinishEvt);
+
+        return;
+    }
+
     bool isPureAlphabetical = true;
     TokenSorter sortFunctor(isPureAlphabetical);
     std::sort(m_AutocompTokens.begin(), m_AutocompTokens.end(), sortFunctor);
@@ -539,7 +561,6 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
         m_CallTipActive = wxSCI_INVALID_POSITION;
 
     stc->AutoCompSetIgnoreCase(!cfg->ReadBool(wxT("/case_sensitive"), false));
-    stc->AutoCompSetChooseSingle(cfg->ReadBool(wxT("/auto_select_single"), false));
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompSetSeparator(wxT('\r'));
