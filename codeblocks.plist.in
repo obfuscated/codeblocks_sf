@@ -21,11 +21,11 @@
 	<key>LSRequiresCarbon</key>
 	<true/>
 	<key>CFBundleGetInfoString</key>
-	<string>CodeBlocks version 16.01, (c) 2004-2016 Code::Blocks</string>
+	<string>CodeBlocks version 16.01, (c) 2004-2017 Code::Blocks</string>
 	<key>CFBundleLongVersionString</key>
-	<string>CodeBlocks version 16.01 SVN revision 10701, (c) 2004-2016 Code::Blocks</string>
+	<string>CodeBlocks version 16.01 SVN revision 10701, (c) 2004-2017 Code::Blocks</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright 2004-2016, The Code::Blocks Team</string>
+	<string>Copyright 2004-2017, The Code::Blocks Team</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.codeblocks.app</string>
 	<key>CFBundleDocumentTypes</key>
