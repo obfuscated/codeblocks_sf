@@ -37,28 +37,30 @@
 								</object>
 								<flag>wxALL</flag>
 								<border>5</border>
-								<option>1</option>
 							</object>
-							<object class="sizeritem">
-								<object class="wxButton" name="wxID_OK">
-									<label>Ok</label>
-								</object>
-								<flag>wxALL</flag>
+							<object class="spacer">
+								<flag>wxALL|wxEXPAND</flag>
 								<border>5</border>
 								<option>1</option>
 							</object>
 							<object class="sizeritem">
-								<object class="wxButton" name="wxID_CANCEL">
-									<label>Cancel</label>
+								<object class="wxStdDialogButtonSizer">
+									<object class="button">
+										<object class="wxButton" name="wxID_OK">
+											<label>Choose</label>
+										</object>
+									</object>
+									<object class="button">
+										<object class="wxButton" name="wxID_CANCEL">
+											<label></label>
+										</object>
+									</object>
 								</object>
-								<flag>wxALL</flag>
-								<border>5</border>
-								<option>1</option>
+								<flag>wxALIGN_CENTER_VERTICAL</flag>
 							</object>
 						</object>
-						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+						<flag>wxEXPAND</flag>
 						<border>5</border>
-						<option>1</option>
 					</object>
 				</object>
 				<flag>wxALL|wxEXPAND|wxFIXED_MINSIZE</flag>
