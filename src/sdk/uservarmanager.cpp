@@ -377,6 +377,7 @@ void GetUserVariableDialog::Load()
     ConfigManager* CfgMan = Manager::Get()->GetConfigManager(wxT("gcv"));
     const wxString &ActiveSet = Manager::Get()->GetConfigManager(wxT("gcv"))->Read(wxT("/active"));
     wxArrayString vars = CfgMan->EnumerateSubPaths(cSets + ActiveSet + wxT("/"));
+    vars.Sort();
 
     wxTreeItemId root = m_treectrl->AddRoot(ActiveSet);
 
