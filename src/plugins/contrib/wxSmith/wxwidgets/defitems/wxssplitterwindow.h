@@ -39,7 +39,7 @@ class wxsSplitterWindow: public wxsContainer
         virtual bool OnCanAddChild(wxsItem* Item,bool ShowMessage);
 
         long SashPos;
-        long MinSize;
+        long MinPaneSize;
         long Orientation;
         double SashGravity;
 };
