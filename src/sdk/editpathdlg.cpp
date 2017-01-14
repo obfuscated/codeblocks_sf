@@ -187,10 +187,13 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
 
 void EditPathDlg::OnOther(wxCommandEvent& event)
 {
-    const wxString &user_var = Manager::Get()->GetUserVariableManager()->GetVariable(XRCCTRL(*this, "txtPath", wxTextCtrl)->GetValue());
+    UserVariableManager *userMgr = Manager::Get()->GetUserVariableManager();
+    wxTextCtrl *txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
+
+    const wxString &user_var = userMgr->GetVariable(this, txtPath->GetValue());
     if ( !user_var.IsEmpty() )
     {
-        XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(user_var);
+        txtPath->SetValue(user_var);
         m_WantDir = true;
     }
 }

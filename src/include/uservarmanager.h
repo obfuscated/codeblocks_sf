@@ -29,7 +29,7 @@ class DLLIMPORT UserVariableManager : public Mgr<UserVariableManager>
 
         wxString Replace(const wxString& variable);
 
-        wxString GetVariable(wxString old = wxEmptyString);
+        wxString GetVariable(wxWindow *parent, const wxString &old);
 
         void Preempt(const wxString& variable);
         void Arrogate();

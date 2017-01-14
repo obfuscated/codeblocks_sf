@@ -67,10 +67,11 @@ const wxArrayString builtinMembers((size_t) 7, bim);
 
 class GetUserVariableDialog : public wxScrollingDialog
 {
-    wxTreeCtrl *m_treectrl;
-    wxString m_SelectedVar;
-    wxString m_old;
+public:
+    GetUserVariableDialog(wxWindow *parent, const wxString &old);
 
+    wxString GetVariable() { return m_SelectedVar; }
+private:
     void OnOK(cb_unused wxCommandEvent& event);
     void OnCancel(cb_unused wxCommandEvent& event);
     void OnConfig(cb_unused wxCommandEvent& event);
@@ -79,13 +80,12 @@ class GetUserVariableDialog : public wxScrollingDialog
     void Load();
 
     wxString GetSelectedVariable();
-
-public:
-    GetUserVariableDialog(wxString old);
-    wxString GetVariable()   { return m_SelectedVar; }
+private:
+    wxTreeCtrl *m_treectrl;
+    wxString m_SelectedVar;
+    wxString m_old;
 
     DECLARE_EVENT_TABLE()
-
 };
 
 class UsrGlblMgrEditDialog : public wxScrollingDialog
@@ -305,9 +305,9 @@ void UserVariableManager::Migrate()
     cfgman_old->Delete();
 }
 
-wxString UserVariableManager::GetVariable(wxString old)
+wxString UserVariableManager::GetVariable(wxWindow *parent, const wxString &old)
 {
-    GetUserVariableDialog dlg(old);
+    GetUserVariableDialog dlg(parent, old);
     dlg.ShowModal();
     return dlg.GetVariable();
 }
@@ -319,14 +319,14 @@ BEGIN_EVENT_TABLE(GetUserVariableDialog, wxScrollingDialog)
     EVT_TREE_ITEM_ACTIVATED(XRCID("ID_GET_USER_VAR_TREE"), GetUserVariableDialog::OnActivated)
 END_EVENT_TABLE()
 
-GetUserVariableDialog::GetUserVariableDialog(wxString old) : m_old(old)
+GetUserVariableDialog::GetUserVariableDialog(wxWindow *parent, const wxString &old) :
+    m_old(old)
 {
-    wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), wxT("dlgGetGlobalUsrVar"), wxT("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, wxT("dlgGetGlobalUsrVar"), wxT("wxScrollingDialog"));
     m_treectrl = XRCCTRL(*this, "ID_GET_USER_VAR_TREE", wxTreeCtrl);
 
     if (m_treectrl == nullptr)
         Manager::Get()->GetLogManager()->LogError(_("Failed to load dlgGetGlobalUsrVar"));
-
 
     Load();
 
@@ -365,7 +365,6 @@ GetUserVariableDialog::GetUserVariableDialog(wxString old) : m_old(old)
 
     Fit();
     SetMinSize(GetSize());
-
 }
 
 void GetUserVariableDialog::Load()
