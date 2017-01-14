@@ -352,7 +352,7 @@ GetUserVariableDialog::GetUserVariableDialog(wxWindow *parent, const wxString &o
                 m_treectrl->EnsureVisible(child);
                 m_treectrl->SelectItem(child);
                 i++;
-                if (var[i] == wxEmptyString || i > 1)
+                if (i >= 2 || var[i] == wxEmptyString)
                     break;
 
                 root = child;
