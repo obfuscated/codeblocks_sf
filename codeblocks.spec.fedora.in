@@ -107,7 +107,8 @@ rm -rf src/include/tinyxml src/base/tinyxml
 rm -rf src/include/scripting/{include,squirrel,sqstdlib}
 rm -rf src/sdk/scripting/{squirrel,sqstdlib}
 %if 0%{?fedora}
-rm -rf src/plugins/astyle/astyle
+#currently no Fedora has a recent enough astyle (at least 2.06 is needed), so keep the bundled one
+#rm -rf src/plugins/astyle/astyle
 %endif
 rm -rf src/plugins/contrib/SpellChecker/hunspell
 rm -rf src/plugins/contrib/devpak_plugin/bzip2
