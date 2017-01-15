@@ -79,11 +79,21 @@ save_CPP=$CPP
 CC=$CXX
 CPP=$CXXCPP
 AC_CHECK_HEADER(astyle.h, [HAVE_ASTYLE=yes], [HAVE_ASTYLE=no])
+
+dnl check if system astyle is at least 2.06, otherwise use bundled astyle-library
+dnl STYLE_MOZILLA is declared since 2.06
+if test "$HAVE_ASTYLE" = "yes" ; then
+	AC_CHECK_DECL([astyle::STYLE_MOZILLA], , [HAVE_ASTYLE=no], [#include "astyle.h"])
+else
+	HAVE_ASTYLE=no
+fi
+
 CC=$save_CC
 CPP=$save_CPP
 
 AM_CONDITIONAL([HAVE_ZLIB], [test "$HAVE_ZLIB" = yes])
 AM_CONDITIONAL([HAVE_BZIP2], [test "$HAVE_BZIP2" = yes])
+
 AM_CONDITIONAL([HAVE_ASTYLE], [test "$HAVE_ASTYLE" = yes])
 
 AC_CHECK_PROG(HAVE_PKG_CONFIG, pkg-config, yes, no)
