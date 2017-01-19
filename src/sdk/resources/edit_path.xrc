@@ -17,23 +17,22 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxTextCtrl" name="txtPath" />
-						<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+						<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
-						<minsize>400,-1</minsize>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBitmapButton" name="btnBrowse">
 							<bitmap stock_id="wxART_FILE_OPEN" stock_client="wxART_BUTTON" />
 						</object>
-						<flag>wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
 						<object class="wxBitmapButton" name="btnOther">
 							<bitmap stock_id="wxART_EXECUTABLE_FILE" stock_client="wxART_BUTTON" />
 						</object>
-						<flag>wxALIGN_BOTTOM</flag>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 				</object>
