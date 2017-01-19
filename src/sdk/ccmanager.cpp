@@ -289,8 +289,8 @@ CCManager::CCManager() :
     // register colours
     ColourManager* cmgr = Manager::Get()->GetColourManager();
     cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip background"), wxT("cc_tips_back"),      *wxWHITE);
-    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip foreground"), wxT("cc_tips_fore"),      wxColour(wxT("DimGrey")));
-    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip highlight"),  wxT("cc_tips_highlight"), wxColour(wxT("DarkBlue")));
+    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip foreground"), wxT("cc_tips_fore"),      wxColour(wxT("DIM GREY")));
+    cmgr->RegisterColour(_("Code completion"), _("Tooltip/Calltip highlight"),  wxT("cc_tips_highlight"), wxColour(wxT("BLUE")));
 
     // connect menus
     wxFrame* mainFrame = Manager::Get()->GetAppFrame();
