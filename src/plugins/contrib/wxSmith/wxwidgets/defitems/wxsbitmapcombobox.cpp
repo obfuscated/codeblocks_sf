@@ -211,10 +211,10 @@ wxArrayString           aa;
 // find all tools that are image lists and return their names
 
 void wxsBitmapComboBox::FindAllImageLists(wxArrayString &aNames) {
-int             i,n;
-wxsItemResData  *res;
-wxsTool         *tool;
-wxString        ss, tt;
+    int             i,n;
+    wxsItemResData  *res;
+    wxsTool         *tool;
+    wxString        ss, tt;
 
 // start the list with a chance to de-select any old list
 
