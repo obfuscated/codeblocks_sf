@@ -162,6 +162,9 @@ void SearchDialog::BuildContent(wxWindow* parent)
 	m_SearchTypeExpression->SetValue( type==2 );
 
 	Connect( wxID_OK, wxEVT_COMMAND_BUTTON_CLICKED, wxCommandEventHandler(SearchDialog::OnOk) );
+
+    // Limit vertical resizing.
+    SetMaxSize(wxSize(-1, GetMinHeight()));
 }
 
 SearchDialog::~SearchDialog()
