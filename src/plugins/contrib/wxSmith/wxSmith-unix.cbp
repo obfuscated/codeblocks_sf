@@ -244,6 +244,28 @@
 		<Unit filename="wxsmith.h">
 			<Option target="wxSmithLib" />
 		</Unit>
+		<Unit filename="wxsmith/wxWidgetsGUIAppAdoptingDlg.wxs" />
+		<Unit filename="wxsmith/wxWidgetsGUIConfigPanel.wxs" />
+		<Unit filename="wxsmith/wxsArrayStringCheckEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsArrayStringEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsBitmapIconEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsChoicebookParentQP.wxs" />
+		<Unit filename="wxsmith/wxsDeleteItemRes.wxs" />
+		<Unit filename="wxsmith/wxsFontEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsFontFaceEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsImageComboEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsImageListEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsImageTreeEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsListbookParentQP.wxs" />
+		<Unit filename="wxsmith/wxsNewWindowDlg.wxs" />
+		<Unit filename="wxsmith/wxsNotebookParentQP.wxs" />
+		<Unit filename="wxsmith/wxsProjectConfigurationDlg.wxs" />
+		<Unit filename="wxsmith/wxsSettings.wxs" />
+		<Unit filename="wxsmith/wxsSimpleFontEditorDlg.wxs" />
+		<Unit filename="wxsmith/wxsSizerParentQP.wxs" />
+		<Unit filename="wxsmith/wxsStandardQP.wxs" />
+		<Unit filename="wxsmith/wxsmenueditor.wxs" />
+		<Unit filename="wxsmith/wxstoolbareditor.wxs" />
 		<Unit filename="wxsmithmime.cpp">
 			<Option target="wxSmithLib" />
 		</Unit>
