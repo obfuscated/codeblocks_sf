@@ -28,6 +28,7 @@
 #include "wxsflags.h"
 #include "../wxscoder.h"
 
+#include <algorithm>
 #include <globals.h>
 #include <logmanager.h>
 #include <wx/clipbrd.h>
@@ -712,15 +713,32 @@ void wxsItemResData::RebuildSourceCode()
 
 }
 
+/// Turn a string set into a sorted list and then generate a string from it in the form of prefix+item+suffix.
+/// The sorting is needed to prevent reshuffling of items when the hash function of the set changes, thus the generated
+/// code is always the same.
+wxString GenerateCodeFromSet(const wxsCoderContext::wxStringSet &set, const wxString &prefix, const wxString &suffix)
+{
+    std::vector<wxString> array;
+    array.reserve(set.size());
+    for (const wxString &item : set)
+        array.push_back(item);
+
+    std::sort(array.begin(), array.end());
+    wxString Code;
+    for (const wxString &item : array)
+    {
+        Code += prefix;
+        Code += item;
+        Code += suffix;
+    }
+    return Code;
+}
+
 wxString wxsItemResData::DeclarationsCode(wxsCoderContext* Ctx)
 {
     // Enumerate all class members
     wxString Code = _T("\n");
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalDeclarations.begin(); i!=Ctx->m_GlobalDeclarations.end(); ++i )
-    {
-        Code += *i;
-        Code += _T("\n");
-    }
+    Code += GenerateCodeFromSet(Ctx->m_GlobalDeclarations, wxEmptyString, wxT("\n"));
     return Code;
 }
 
@@ -741,11 +759,7 @@ wxString wxsItemResData::InitializeCode(wxsCoderContext* Ctx)
     wxString Code = _T("\n");
 
     // First there are local variables
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalDeclarations.begin(); i!=Ctx->m_LocalDeclarations.end(); ++i )
-    {
-        Code += *i;
-        Code += _T("\n");
-    }
+    Code += GenerateCodeFromSet(Ctx->m_LocalDeclarations, wxEmptyString, wxT("\n"));
 
     if ( Code.Length()>1 )
     {
@@ -790,35 +804,16 @@ wxString wxsItemResData::HeadersCode(wxsCoderContext* Ctx)
 {
     wxString Code;
     // Enumerate global includes (those in header file)
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeaders.begin(); i!=Ctx->m_GlobalHeaders.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarations.begin(); i!=Ctx->m_ForwardDeclarations.end(); ++i )
-    {
-        Code += _T("\nclass ");
-        Code += *i;
-        Code += _T(";");
-    }
+    Code += GenerateCodeFromSet(Ctx->m_GlobalHeaders, wxT("\n#include "), wxEmptyString);
+    Code += GenerateCodeFromSet(Ctx->m_ForwardDeclarations, wxT("\nclass "), wxT(";"));
     return Code + _T("\n");
 }
 
 wxString wxsItemResData::HeadersNoPCHCode(wxsCoderContext* Ctx)
 {
     wxString Code;
-    // Enumerate global includes (those in header file)
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeadersNonPCH.begin(); i!=Ctx->m_GlobalHeadersNonPCH.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarationsNonPCH.begin(); i!=Ctx->m_ForwardDeclarationsNonPCH.end(); ++i )
-    {
-        Code += _T("\nclass ");
-        Code += *i;
-        Code += _T(";");
-    }
+    Code += GenerateCodeFromSet(Ctx->m_GlobalHeadersNonPCH, wxT("\n#include "), wxEmptyString);
+    Code += GenerateCodeFromSet(Ctx->m_ForwardDeclarationsNonPCH, wxT("\nclass "), wxT(";"));
     return Code + _T("\n");
 }
 
@@ -826,30 +821,12 @@ wxString wxsItemResData::HeadersAllCode(wxsCoderContext* Ctx)
 {
     wxString Code;
     // Enumerate global includes (those in header file)
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeaders.begin(); i!=Ctx->m_GlobalHeaders.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_GlobalHeadersNonPCH.begin(); i!=Ctx->m_GlobalHeadersNonPCH.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
-
+    Code += GenerateCodeFromSet(Ctx->m_GlobalHeaders, wxT("\n#include "), wxEmptyString);
+    Code += GenerateCodeFromSet(Ctx->m_GlobalHeadersNonPCH, wxT("\n#include "), wxEmptyString);
     // Enumerate all forward declarations
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarations.begin(); i!=Ctx->m_ForwardDeclarations.end(); ++i )
-    {
-        Code += _T("\nclass ");
-        Code += *i;
-        Code += _T(";");
-    }
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_ForwardDeclarationsNonPCH.begin(); i!=Ctx->m_ForwardDeclarationsNonPCH.end(); ++i )
-    {
-        Code += _T("\nclass ");
-        Code += *i;
-        Code += _T(";");
-    }
+    Code += GenerateCodeFromSet(Ctx->m_ForwardDeclarations, wxT("\nclass "), wxT(";"));
+    Code += GenerateCodeFromSet(Ctx->m_ForwardDeclarationsNonPCH, wxT("\nclass "), wxT(";"));
+
     return Code + _T("\n");
 }
 
@@ -867,27 +844,15 @@ wxString wxsItemResData::InternalHeadersCode(wxsCoderContext* Ctx)
 wxString wxsItemResData::InternalHeadersNoPCHCode(wxsCoderContext* Ctx)
 {
     wxString Code;
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeadersNonPCH.begin(); i!=Ctx->m_LocalHeadersNonPCH.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
+    Code += GenerateCodeFromSet(Ctx->m_LocalHeadersNonPCH, wxT("\n#include "), wxEmptyString);
     return Code + _T("\n");
 }
 
 wxString wxsItemResData::InternalHeadersAllCode(wxsCoderContext* Ctx)
 {
     wxString Code;
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeaders.begin(); i!=Ctx->m_LocalHeaders.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
-    for ( wxsCoderContext::wxStringSet::iterator i = Ctx->m_LocalHeadersNonPCH.begin(); i!=Ctx->m_LocalHeadersNonPCH.end(); ++i )
-    {
-        Code += _T("\n#include ");
-        Code += *i;
-    }
+    Code += GenerateCodeFromSet(Ctx->m_LocalHeaders, wxT("\n#include "), wxEmptyString);
+    Code += GenerateCodeFromSet(Ctx->m_LocalHeadersNonPCH, wxT("\n#include "), wxEmptyString);
     return Code + _T("\n");
 }
 
