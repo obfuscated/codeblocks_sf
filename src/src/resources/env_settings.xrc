@@ -177,7 +177,6 @@
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="chkEditorLayout">
 														<label>Save/restore editor layout</label>
-														<checked>0</checked>
 													</object>
 													<flag>wxTOP|wxEXPAND</flag>
 													<border>4</border>
@@ -857,6 +856,7 @@
 				</object>
 				<flag>wxALL|wxEXPAND</flag>
 				<border>8</border>
+				<option>1</option>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticLine" name="ID_STATICLINE2" />
