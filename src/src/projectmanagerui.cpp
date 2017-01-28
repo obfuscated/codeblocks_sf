@@ -1780,7 +1780,14 @@ struct ProjectFileRelativePathCmp
         else if (pf1->GetParentProject() != m_pActiveProject && pf2->GetParentProject() == m_pActiveProject)
             return false;
         else
-            return pf1->relativeFilename.Cmp(pf2->relativeFilename) < 0;
+        {
+            int relCmp = pf1->relativeFilename.Cmp(pf2->relativeFilename);
+
+            if (relCmp == 0)
+                return pf1 < pf2;
+            else
+                return relCmp < 0;
+        }
     }
 private:
     cbProject* m_pActiveProject;
