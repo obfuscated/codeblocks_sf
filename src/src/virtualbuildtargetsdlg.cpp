@@ -120,7 +120,7 @@ void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
     if (targetName.IsEmpty())
         return;
 
-    if (lstAliases->FindString(targetName) != wxNOT_FOUND)
+    if (lstAliases->FindString(targetName, true) != wxNOT_FOUND)
     {
         cbMessageBox(_("A virtual build target with this name already exists in this project!"),
                         _("Error"),
@@ -152,7 +152,7 @@ void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
     if (targetName.IsEmpty() || targetName == lstAliases->GetStringSelection())
         return;
 
-    if (lstAliases->FindString(targetName) != wxNOT_FOUND)
+    if (lstAliases->FindString(targetName, true) != wxNOT_FOUND)
     {
         cbMessageBox(_("A virtual build target with this name already exists in this project!"),
                         _("Error"),
