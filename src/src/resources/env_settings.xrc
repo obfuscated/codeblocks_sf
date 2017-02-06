@@ -3,6 +3,7 @@
 	<object class="wxScrollingDialog" name="dlgEnvironmentSettings">
 		<title>Environment settings</title>
 		<centered>1</centered>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
 		<object class="wxBoxSizer">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
