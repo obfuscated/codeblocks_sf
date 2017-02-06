@@ -43,6 +43,8 @@ namespace
 
     WXS_EV_BEGIN(wxsComboBoxEvents)
         WXS_EVI(EVT_COMBOBOX,wxEVT_COMMAND_COMBOBOX_SELECTED,wxCommandEvent,Selected)
+        WXS_EVI(EVT_COMBOBOX_DROPDOWN,wxEVT_COMMAND_COMBOBOX_DROPDOWN,wxCommandEvent,Dropdown)  // added in 3.0
+        WXS_EVI(EVT_COMBOBOX_CLOSEUP,wxEVT_COMMAND_COMBOBOX_CLOSEUP,wxCommandEvent,CloseUp)     // added in 3.0
         WXS_EVI(EVT_TEXT,wxEVT_COMMAND_TEXT_UPDATED,wxCommandEvent,TextUpdated)
         WXS_EVI(EVT_TEXT_ENTER,wxEVT_COMMAND_TEXT_ENTER,wxCommandEvent,TextEnter)
     WXS_EV_END()

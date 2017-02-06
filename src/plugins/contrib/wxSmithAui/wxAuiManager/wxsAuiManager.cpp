@@ -93,6 +93,7 @@ namespace
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsAuiManagerEvents)
+        WXS_EV(EVT_AUI_PANE_ACTIVATED,wxEVT_AUI_PANE_ACTIVATED,wxAuiManagerEvent,Activated)  // added in 3.0
         WXS_EV(EVT_AUI_PANE_BUTTON,wxEVT_AUI_PANE_BUTTON,wxAuiManagerEvent,PaneButton)
         WXS_EV(EVT_AUI_PANE_CLOSE,wxEVT_AUI_PANE_CLOSE,wxAuiManagerEvent,PaneClose)
         WXS_EV(EVT_AUI_PANE_MAXIMIZE,wxEVT_AUI_PANE_MAXIMIZE,wxAuiManagerEvent,PaneMaximize)

@@ -42,6 +42,8 @@ namespace
     WXS_ST_END()
 
     WXS_EV_BEGIN(wxsGenericDirCtrlEvents)
+        WXS_EVI(EVT_CMD_DIRCTRL_SELECTIONCHANGED,wxEVT_DIRCTRL_SELECTIONCHANGED,wxTreeEvent,SelectionChanged)  // added in 3.0
+        WXS_EVI(EVT_CMD_DIRCTRL_FILEACTIVATED,wxEVT_DIRCTRL_FILEACTIVATED,wxTreeEvent,FileActivated)           // added in 3.0
     WXS_EV_END()
 }
 
