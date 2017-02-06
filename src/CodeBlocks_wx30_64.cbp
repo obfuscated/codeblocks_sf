@@ -1565,9 +1565,6 @@
 		<Unit filename="plugins/codecompletion/resources/codecompletion_toolbar.xrc">
 			<Option target="Code-completion" />
 		</Unit>
-		<Unit filename="plugins/codecompletion/resources/goto_function_dlg.xrc">
-			<Option target="Code-completion" />
-		</Unit>
 		<Unit filename="plugins/codecompletion/resources/insert_class_method.xrc">
 			<Option target="Code-completion" />
 		</Unit>
@@ -1593,6 +1590,12 @@
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/codecompletion/systemheadersthread.h">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/wxsmith/goto_function.wxs">
+			<Option target="Code-completion" />
+		</Unit>
+		<Unit filename="plugins/codecompletion/wxsmith/goto_function.wxs">
 			<Option target="Code-completion" />
 		</Unit>
 		<Unit filename="plugins/compilergcc/advancedcompileroptionsdlg.cpp">
@@ -4261,6 +4264,7 @@
 					<wxScrollingDialog wxs="wxsmith/debuggersettingsdlg.wxs" src="src/debuggersettingsdlg.cpp" hdr="src/debuggersettingsdlg.h" fwddecl="0" i18n="1" name="DebuggerSettingsDlg" language="CPP" />
 					<wxPanel wxs="wxsmith/debuggersettingspanel.wxs" src="src/debuggersettingspanel.cpp" hdr="src/debuggersettingspanel.h" fwddecl="0" i18n="1" name="DebuggerSettingsPanel" language="CPP" />
 					<wxPanel wxs="wxsmith/debuggersettingscommonpanel.wxs" src="src/debuggersettingscommonpanel.cpp" hdr="src/debuggersettingscommonpanel.h" fwddecl="0" i18n="1" name="DebuggerSettingsCommonPanel" language="CPP" />
+					<wxDialog wxs="plugins/codecompletion/wxsmith/goto_function.wxs" src="plugins/codecompletion/gotofunctiondlg.cpp" hdr="plugins/codecompletion/gotofunctiondlg.h" fwddecl="1" i18n="1" name="GotoFunctionDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />

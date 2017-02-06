@@ -2,10 +2,6 @@
 /*
  * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
  * http://www.gnu.org/licenses/lgpl-3.0.html
- *
- * $Revision: 9929 $
- * $Id: incrementalselectlistdlg.cpp 9929 2014-09-28 20:28:44Z alpha0010 $
- * $HeadURL: svn://svn.code.sf.net/p/codeblocks/code/trunk/src/sdk/incrementalselectlistdlg.cpp $
  */
 
 #include "sdk_precomp.h"
@@ -17,6 +13,15 @@
     #include <wx/textctrl.h>
     #include <wx/listctrl.h>
 #endif
+
+IncrementalSelectIterator::~IncrementalSelectIterator()
+{
+}
+
+int IncrementalSelectIterator::GetColumnWidth(int column) const
+{
+    return wxLIST_AUTOSIZE;
+}
 
 int IncrementalSelectIteratorIndexed::GetFilteredCount() const
 {
@@ -81,6 +86,21 @@ void IncrementalSelectHandler::OnTextChanged(wxCommandEvent& event)
     event.Skip();
 }
 
+void FilterItemsFinalize(wxListCtrl &list, IncrementalSelectIterator &iterator)
+{
+    list.SetItemCount(iterator.GetFilteredCount());
+
+    for (int ii = 0; ii < list.GetColumnCount(); ++ii)
+    {
+        int width = iterator.GetColumnWidth(ii);
+        if (width != -1)
+            list.SetColumnWidth(ii, width);
+    }
+
+    if (iterator.GetFilteredCount() > 0)
+        list.SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+}
+
 void IncrementalSelectHandler::FilterItems()
 {
     m_iterator->Reset();
@@ -92,9 +112,7 @@ void IncrementalSelectHandler::FilterItems()
         for (int ii = 0; ii < count; ++ii)
             m_iterator->AddIndex(ii);
 
-        m_list->SetItemCount(m_iterator->GetFilteredCount());
-        if (m_iterator->GetFilteredCount() > 0)
-            m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        FilterItemsFinalize(*m_list, *m_iterator);
         return;
     }
 
@@ -159,9 +177,7 @@ void IncrementalSelectHandler::FilterItems()
     for (auto i : indices)
         m_iterator->AddIndex(i);
 
-    m_list->SetItemCount(m_iterator->GetFilteredCount());
-    if (m_iterator->GetFilteredCount() > 0)
-        m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    FilterItemsFinalize(*m_list, *m_iterator);
 }
 
 #if !wxCHECK_VERSION(3, 0, 0)

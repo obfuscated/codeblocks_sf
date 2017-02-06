@@ -47,7 +47,6 @@
 #include <cbstyledtextctrl.h>
 #include <editor_hooks.h>
 #include <filegroupsandmasks.h>
-#include <incrementalselectlistdlg.h>
 #include <multiselectdlg.h>
 
 #include "codecompletion.h"
@@ -1812,49 +1811,57 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
 
     m_NativeParser.GetParser().ParseBufferForFunctions(ed->GetControl()->GetText());
 
-    wxArrayString tokens;
-    SearchTree<Token*> tmpsearch;
 
     TokenTree* tree = m_NativeParser.GetParser().GetTempTokenTree();
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
     if (tree->empty())
+    {
         cbMessageBox(_("No functions parsed in this file..."));
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+    }
     else
     {
+        GotoFunctionDlg::Iterator iterator;
+
         for (size_t i = 0; i < tree->size(); i++)
         {
             Token* token = tree->at(i);
             if (token && token->m_TokenKind & tkAnyFunction)
             {
-                tokens.Add(token->DisplayName());
-                tmpsearch.AddItem(token->DisplayName(), token);
-            }
-        }
+                GotoFunctionDlg::FunctionToken ft;
+                // We need to clone the internal data of the strings to make them thread safe.
+                ft.displayName = wxString(token->DisplayName().c_str());
+                ft.name = wxString(token->m_Name.c_str());
+                ft.line = token->m_Line;
+                ft.implLine = token->m_ImplLine;
+                ft.paramsAndreturnType = wxString((token->m_Args + wxT(" -> ") + token->m_FullType).c_str());
+                ft.funcName = wxString((token->GetNamespace() + token->m_Name).c_str());
 
-        IncrementalSelectIteratorStringArray iterator(tokens);
-        GotoFunctionDlg dlg(Manager::Get()->GetAppWindow(), iterator);
-
-        PlaceWindow(&dlg);
-        if (dlg.ShowModal() == wxID_OK)
-        {
-            wxIntPtr ptr = dlg.GetSelection();
-            if (ptr != wxNOT_FOUND) {
-                wxString sel = tokens[ptr];
-                const Token* token = tmpsearch.GetItem(sel);
-                if (ed && token)
-                {
-                    TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %u."), token->m_Name.wx_str(), token->m_Line));
-                    ed->GotoTokenPosition(token->m_ImplLine - 1, token->m_Name);
-                }
+                iterator.AddToken(ft);
             }
         }
 
         tree->clear();
-    }
 
-    CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+        CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
+
+        GotoFunctionDlg dlg(Manager::Get()->GetAppWindow(), &iterator);
+        PlaceWindow(&dlg);
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            int selection = dlg.GetSelection();
+            if (selection != wxNOT_FOUND) {
+                const GotoFunctionDlg::FunctionToken *ft = iterator.GetToken(selection);
+                if (ed && ft)
+                {
+                    TRACE(F(_T("OnGotoFunction() : Token '%s' found at line %u."), ft->name.wx_str(), ft->line));
+                    ed->GotoTokenPosition(ft->implLine - 1, ft->name);
+                }
+            }
+        }
+    }
 }
 
 void CodeCompletion::OnGotoPrevFunction(cb_unused wxCommandEvent& event)

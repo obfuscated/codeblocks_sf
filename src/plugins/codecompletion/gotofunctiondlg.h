@@ -6,16 +6,24 @@
 #ifndef GOTOFUNCTIONDLG_H
 #define GOTOFUNCTIONDLG_H
 
-#include "settings.h"
-#include "scrollingdialog.h"
-#include <wx/textctrl.h>
-#include <wx/checkbox.h>
-#include <wx/listbox.h>
-#include <wx/listctrl.h>
+#ifndef CB_PRECOMP
+    //(*HeadersPCH(GotoFunctionDlg)
+    #include <wx/dialog.h>
+    class wxBoxSizer;
+    class wxCheckBox;
+    class wxListCtrl;
+    class wxStaticText;
+    class wxTextCtrl;
+    //*)
+#endif
+//(*Headers(GotoFunctionDlg)
+//*)
 
-#include "incrementalselectlistbase.h"
+#include "incremental_select_helper.h"
 
-/** the goto function dialog allow user to type a function name, and filter out the functions
+class GotoFunctionListCtrl;
+
+/** The goto function dialog allow user to type a function name, and filter out the functions
  *
  * For example, you have three functions in a cpp file
  * @code
@@ -28,34 +36,70 @@
  * return type, function name and function parameters in different columns, then
  * the check box should be selected
  */
-class GotoFunctionDlg : public IncrementalSelectListBase
+class GotoFunctionDlg : public wxDialog
 {
     public:
-        GotoFunctionDlg(wxWindow* parent,
-                                 const IncrementalSelectIterator& iterator);
+        struct FunctionToken
+        {
+            wxString displayName, name;
+            wxString paramsAndreturnType, funcName;
+            unsigned line, implLine;
+        };
+
+        struct Iterator : IncrementalSelectIteratorIndexed
+        {
+            Iterator();
+
+            void AddToken(const FunctionToken &token);
+            const FunctionToken* GetToken(int index) const;
+
+            int GetTotalCount() const override;
+            const wxString& GetItemFilterString(int index) const override;
+            wxString GetDisplayText(int index, int column) const override;
+
+            void SetColumnMode(bool flag);
+            void CalcLengths(wxListCtrl &list);
+
+            int GetColumnWidth(int column) const override;
+
+        private:
+            std::vector<FunctionToken> m_tokens;
+            int m_columnLength[3]; /// 0 is for non-column mode, 1 and 2 are for column mode.
+            bool m_columnMode;
+        };
+    public:
+
+        GotoFunctionDlg(wxWindow* parent, Iterator* iterator);
         virtual ~GotoFunctionDlg();
-        wxIntPtr GetSelection();
-        wxListCtrl* GetListCtrl();
-    protected:
-        void SetupMode();
-        void FillData() override;
-        /** for functions like int f(), we need three columns to display
-         * the "int", "f", and "()".
-         */
-        void FillColumn();
-        void GetCurrentSelection(int &selected, int &selectedMax) override;
-        void UpdateCurrentSelection(int selected, int selectedPrevious) override;
 
-        void OnColumnSelect(cb_unused wxListEvent& event);
-        void OnModeChange(cb_unused wxCommandEvent& event);
+        int GetSelection();
 
-        /** the control show filtered functions */
-        wxListCtrl* m_ListColumn;
-        /** a check box to switch different mode of list ctrl */
-        wxCheckBox* m_Mode;
     private:
-        DECLARE_EVENT_TABLE();
+
+        //(*Declarations(GotoFunctionDlg)
+        GotoFunctionListCtrl* m_list;
+        wxCheckBox* m_mode;
+        wxTextCtrl* m_text;
+        //*)
+
+        //(*Identifiers(GotoFunctionDlg)
+        static const long ID_CHECKBOX1;
+        static const long ID_TEXTCTRL1;
+        static const long ID_LISTCTRL1;
+        //*)
+
+        //(*Handlers(GotoFunctionDlg)
+        void OnModeClick(wxCommandEvent& event);
+        //*)
+
+    private:
+        void BuildContent(wxWindow* parent, Iterator* iterator);
+        void SwitchMode();
+    private:
+        IncrementalSelectHandler m_handler;
+        Iterator *m_iterator;
+    private:
+        DECLARE_EVENT_TABLE()
 };
 
-#endif // GOTOFUNCTIONDLG_H
-
+#endif

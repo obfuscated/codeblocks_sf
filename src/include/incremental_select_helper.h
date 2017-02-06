@@ -23,7 +23,7 @@ class wxTextCtrl;
 class DLLIMPORT IncrementalSelectIterator
 {
     public:
-        virtual ~IncrementalSelectIterator() {}
+        virtual ~IncrementalSelectIterator();
 
         virtual int GetFilteredCount() const = 0;
         virtual void Reset() = 0;
@@ -32,6 +32,8 @@ class DLLIMPORT IncrementalSelectIterator
         virtual int GetTotalCount() const = 0;
         virtual const wxString& GetItemFilterString(int index) const = 0;
         virtual wxString GetDisplayText(int index, int column) const = 0;
+
+        virtual int GetColumnWidth(int column) const;
 
 };
 
@@ -55,12 +57,13 @@ class DLLIMPORT IncrementalSelectHandler : public wxEvtHandler
 
         void Init(wxListCtrl *list, wxTextCtrl *text);
         void DeInit(wxWindow *window);
-    private:
         void FilterItems();
+
     private:
         void OnKeyDown(wxKeyEvent &event);
         void OnTextChanged(wxCommandEvent &event);
         void OnItemActivated(wxListEvent &event);
+
     private:
         wxDialog *m_parent;
         wxListCtrl *m_list;

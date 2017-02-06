@@ -3,7 +3,6 @@ CLEANFILES = $(pkgdata_DATA)
 
 EXTRA_DIST = classbrowser.xrc \
              codecompletion_toolbar.xrc \
-             goto_function_dlg.xrc \
              insert_class_method.xrc \
              manifest.xml \
              project_settings.xrc \
