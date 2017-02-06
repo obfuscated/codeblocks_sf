@@ -3815,7 +3815,8 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
             Manager::Get()->ProcessEvent(evtSwitch);
 
-            m_pListLog->FocusError(m_Errors.GetFirstError());
+            if (Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/auto_focus_build_errors"), true))
+                m_pListLog->FocusError(m_Errors.GetFirstError());
         }
         else
         {

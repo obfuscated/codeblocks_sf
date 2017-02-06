@@ -380,6 +380,13 @@
 									<border>16</border>
 								</object>
 								<object class="sizeritem">
+									<object class="wxCheckBox" name="chkAutoFocusMessagesOnErr">
+										<label>Focus first error in the editor after build finishes</label>
+									</object>
+									<flag>wxTOP|wxLEFT|wxALIGN_LEFT</flag>
+									<border>4</border>
+								</object>
+								<object class="sizeritem">
 									<object class="wxCheckBox" name="chkSaveSelectionChangeInMP">
 										<label>Save selected tab in message pane on perspective change</label>
 									</object>
