@@ -10,176 +10,175 @@
 
 #include "sdk_precomp.h"
 
-#ifndef CB_PRECOMP
-    #include <wx/xrc/xmlres.h>
-    #include <wx/intl.h>
-    #include <wx/textctrl.h>
-    #include <wx/stattext.h>
-    #include "manager.h"
-    #include <wx/listbox.h>
-
-    #include <algorithm>
-#endif
-
 #include "incrementalselectlistbase.h"
 
-BEGIN_EVENT_TABLE(IncrementalSelectListBase, wxScrollingDialog)
-END_EVENT_TABLE()
+#ifndef CB_PRECOMP
+    #include <wx/dialog.h>
+    #include <wx/textctrl.h>
+    #include <wx/listctrl.h>
+#endif
 
-IncrementalSelectListBase::IncrementalSelectListBase(wxWindow* parent, const IncrementalSelectIterator& iterator,
-                                                   const wxString& dialog, const wxString& caption, const wxString& message)
-    : m_List(nullptr),
-    m_Iterator(iterator)
+int IncrementalSelectIteratorIndexed::GetFilteredCount() const
 {
-    wxXmlResource::Get()->LoadObject(this, parent, dialog,_T("wxScrollingDialog"));
-    if (!caption.IsEmpty())
-        SetTitle(caption);
-    if (!message.IsEmpty())
-        XRCCTRL(*this, "lblMessage", wxStaticText)->SetLabel(message);
-
-    m_Text = XRCCTRL(*this, "txtSearch", wxTextCtrl);
-    m_List = XRCCTRL(*this, "lstItems", wxListBox);
-
-    SetSize(GetPosition().x - 90, GetPosition().y - 70, 500, 300);
-
-    m_Text->Connect( wxEVT_KEY_DOWN,
-                    (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                    &IncrementalSelectListBase::OnKeyDown,
-                    nullptr, this );
-    m_List->Connect( wxEVT_KEY_DOWN,
-                    (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                    &IncrementalSelectListBase::OnKeyDown,
-                    nullptr, this );
+    return m_indices.size();
 }
 
-IncrementalSelectListBase::~IncrementalSelectListBase()
+void IncrementalSelectIteratorIndexed::Reset()
 {
-    m_Text->Disconnect( wxEVT_KEY_DOWN,
-                       (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                       &IncrementalSelectListBase::OnKeyDown,
-                       nullptr, this );
-    m_List->Disconnect( wxEVT_KEY_DOWN,
-                       (wxObjectEventFunction) (wxEventFunction) (wxCharEventFunction)
-                       &IncrementalSelectListBase::OnKeyDown,
-                       nullptr, this );
+    m_indices.clear();
 }
 
-void IncrementalSelectListBase::FilterItems()
+void IncrementalSelectIteratorIndexed::AddIndex(int index)
 {
-    m_Result.Empty();
-    m_Indexes.Empty();
+    m_indices.push_back(index);
+}
+
+IncrementalSelectHandler::IncrementalSelectHandler(wxDialog* parent, IncrementalSelectIterator *iterator) :
+    m_parent(parent),
+    m_list(nullptr),
+    m_text(nullptr),
+    m_iterator(iterator)
+{
+    m_parent->PushEventHandler(this);
+    SetEvtHandlerEnabled(true);
+}
+
+IncrementalSelectHandler::~IncrementalSelectHandler()
+{
+}
+
+void IncrementalSelectHandler::Init(wxListCtrl *list, wxTextCtrl *text)
+{
+    m_list = list;
+    m_text = text;
+
+    m_text->Connect(wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&IncrementalSelectHandler::OnTextChanged,
+                    nullptr, this);
+    m_text->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
+    m_list->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
+    m_list->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(IncrementalSelectHandler::OnItemActivated),
+                    nullptr, this);
+
+    FilterItems();
+}
+
+void IncrementalSelectHandler::DeInit(wxWindow *window)
+{
+    m_list->Disconnect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(IncrementalSelectHandler::OnItemActivated),
+                       nullptr, this);
+    m_text->Disconnect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
+    m_list->Disconnect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&IncrementalSelectHandler::OnKeyDown, nullptr, this);
+    m_text->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&IncrementalSelectHandler::OnTextChanged,
+                       nullptr, this);
+
+    SetEvtHandlerEnabled(false);
+    window->RemoveEventHandler(this);
+}
+
+void IncrementalSelectHandler::OnTextChanged(wxCommandEvent& event)
+{
+    FilterItems();
+    event.Skip();
+}
+
+void IncrementalSelectHandler::FilterItems()
+{
+    m_iterator->Reset();
+
+    const wxString &inputPattern = m_text->GetValue().Lower();
+    if (inputPattern.empty())
+    {
+        int count = m_iterator->GetTotalCount();
+        for (int ii = 0; ii < count; ++ii)
+            m_iterator->AddIndex(ii);
+
+        m_list->SetItemCount(m_iterator->GetFilteredCount());
+        if (m_iterator->GetFilteredCount() > 0)
+            m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        return;
+    }
 
     // We put a star before and after pattern to find search expression everywhere in path
     // that is: if user enter "a", it will match "123a", "12a" or "a12".
-    wxString search(wxT("*") + m_Text->GetValue().Lower() + wxT("*"));
-
-    for (int i = 0; i < m_Iterator.GetCount(); ++i)
+    wxString search(wxT("*") + inputPattern + wxT("*"));
+    bool isWord = !inputPattern.empty();
+    for (auto ch : inputPattern)
     {
-        wxString const &item = m_Iterator.GetItem(i);
-        // 2 for before and after stars =~ empty string
-        if ((search.Length()==2) || item.Lower().Matches(search.c_str()))
+        if (!wxIsalpha(ch))
         {
-            m_Result.Add(m_Iterator.GetDisplayItem(i));
-            m_Indexes.Add(i);
+            isWord = false;
+            break;
         }
     }
 
-    // if only alphabetical, pull word boundaries to the top
-    if (search.Length() > 2)
+    std::vector<int> indices, promoted;
+    indices.reserve(100);
+    promoted.reserve(100);
+
+    for (int i = 0; i < m_iterator->GetTotalCount(); ++i)
     {
-        wxString prefix;
-        for (size_t i = 0; i < search.Length(); ++i)
+        wxString const &item = m_iterator->GetItemFilterString(i).Lower();
+        if (item.Matches(search.c_str()))
         {
-            if (wxIsalpha(search[i]))
-                prefix += search[i];
-        }
-        if (prefix.Length() == search.Length() - 2)
-        {
-            std::vector<size_t> promoteIdxs;
-            wxArrayString newRes;
-            wxArrayLong newIndx;
-            for (size_t i = 0; i < m_Result.Count(); ++i)
+            // If the search pattern doesn't contain non alpha characters and it matches at the start of the word in
+            // the item string then promote these items to the top of the list. The order is preserved.
+            if (isWord)
             {
-                wxString cur = m_Result[i].Lower();
-                bool promote = false;
-                if (cur.StartsWith(prefix))
-                    promote = true;
+                size_t pos = 0, newPos;
+                bool isPromoted = false;
+
+                while ((newPos = item.find(inputPattern, pos)) != wxString::npos)
+                {
+                    if (newPos == 0)
+                    {
+                        isPromoted = true;
+                        break;
+                    }
+
+                    if (!wxIsalpha(item[newPos - 1]))
+                    {
+                        isPromoted = true;
+                        break;
+                    }
+
+                    // Move one character forward to prevent the same string to be found again.
+                    pos = newPos + 1;
+                }
+                if (isPromoted)
+                    promoted.push_back(i);
                 else
-                {
-                    int maxLn = cur.Length() - prefix.Length();
-                    for (int j = 0; j < maxLn; ++j)
-                    {
-                        if (!wxIsalpha(cur[j]) && cur.Mid(j + 1).StartsWith(prefix))
-                        {
-                            promote = true;
-                            break;
-                        }
-                    }
-                }
-                if (promote)
-                {
-                    promoteIdxs.push_back(i);
-                    newRes.Add(m_Result[i]);
-                    newIndx.Add(m_Indexes[i]);
-                }
+                    indices.push_back(i);
             }
-            if (!promoteIdxs.empty())
-            {
-                for (size_t i = 0; i < m_Result.Count(); ++i)
-                {
-                    if (!std::binary_search(promoteIdxs.begin(), promoteIdxs.end(), i))
-                    {
-                        newRes.Add(m_Result[i]);
-                        newIndx.Add(m_Indexes[i]);
-                    }
-                }
-                m_Result = newRes;
-                m_Indexes = newIndx;
-            }
+            else
+                indices.push_back(i);
         }
     }
-    m_Promoted = search.Length()>2;
 
+    for (auto i : promoted)
+        m_iterator->AddIndex(i);
+    for (auto i : indices)
+        m_iterator->AddIndex(i);
+
+    m_list->SetItemCount(m_iterator->GetFilteredCount());
+    if (m_iterator->GetFilteredCount() > 0)
+        m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
-void IncrementalSelectListBase::FillList(void)
-{
-    m_List->Clear();
+#if !wxCHECK_VERSION(3, 0, 0)
+    typedef int wxStandardID;
+#endif
 
-    if(m_Indexes.GetCount() > 0)
-        m_List->Set(m_Result, reinterpret_cast<void**>(&m_Indexes[0]));
-
-    if (m_List->GetCount() > 0)
-        m_List->SetSelection(0);
-}
-
-// events
-
-void IncrementalSelectListBase::OnSearch(cb_unused wxCommandEvent& event)
-{
-    FillData();
-}
-
-void IncrementalSelectListBase::OnSelect(cb_unused wxCommandEvent& event)
-{
-    EndModal(wxID_OK);
-}
-
-void IncrementalSelectListBase::KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
+static wxStandardID KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
 {
     // now, adjust position from key input
     switch (event.GetKeyCode())
     {
         case WXK_RETURN:
         case WXK_NUMPAD_ENTER:
-            EndModal(wxID_OK);
-            return;
-            break;
+            return wxID_OK;
 
         case WXK_ESCAPE:
-            EndModal(wxID_CANCEL);
-            return;
-            break;
+            return wxID_CANCEL;
 
         case WXK_UP:
         case WXK_NUMPAD_UP:
@@ -224,25 +223,28 @@ void IncrementalSelectListBase::KeyDownAction(wxKeyEvent& event, int &selected, 
     // Clamp value below 0 and above Max
     if (selected < 0)
         selected = 0;
-    else
+    else if (selected > selectedMax)
+        selected = selectedMax;
+
+    return wxID_LOWEST;
+}
+
+void IncrementalSelectHandler::OnKeyDown(wxKeyEvent& event)
+{
+    int selected = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    int selectedMax = m_list->GetItemCount() - 1;
+
+    wxStandardID result = KeyDownAction(event, selected, selectedMax);
+    if (result != wxID_LOWEST)
+        m_parent->EndModal(result);
+    else if (selectedMax >= 0)
     {
-        if (selected > selectedMax)
-            selected = selectedMax;
+        m_list->SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        m_list->EnsureVisible(selected);
     }
 }
 
-void IncrementalSelectListBase::OnKeyDown(wxKeyEvent& event)
+void IncrementalSelectHandler::OnItemActivated(wxListEvent &event)
 {
-    int selected = 0, selectedMax = 0;
-
-    GetCurrentSelection(selected, selectedMax);
-    if (selected == wxNOT_FOUND)
-        selected = 0;
-
-    // remember previous selection
-    int selectedPrevious = selected;
-    KeyDownAction(event, selected, selectedMax);
-    if (selectedMax < 0)
-        return;
-    UpdateCurrentSelection(selected, selectedPrevious);
+    m_parent->EndModal(wxID_OK);
 }

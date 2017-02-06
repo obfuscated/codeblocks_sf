@@ -1843,7 +1843,7 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
         std::sort(pfiles.begin(), pfiles.end(), ProjectFileRelativePathCmp(activePrj));
     }
 
-    struct Iterator : GotoFileIterator
+    struct Iterator : IncrementalSelectIteratorIndexed
     {
         Iterator(VProjectFiles &pfiles, bool showProject) : m_pfiles(pfiles), m_ShowProject(showProject)
         {
@@ -1852,14 +1852,6 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
         int GetTotalCount() const override
         {
             return m_pfiles.size();
-        }
-        int GetFilteredCount() const override
-        {
-            return m_indices.size();
-        }
-        void Reset() override
-        {
-            m_indices.clear();
         }
         const wxString& GetItemFilterString(int index) const override
         {
@@ -1873,14 +1865,9 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
             else
                 return pf->relativeFilename;
         }
-        void AddIndex(int index) override
-        {
-            m_indices.push_back(index);
-        }
 
     private:
-        VProjectFiles &m_pfiles;
-        std::vector<int> m_indices;
+        const VProjectFiles &m_pfiles;
         wxString temp;
         bool m_ShowProject;
     };
@@ -2014,19 +2001,40 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
             fileNameMap[file.GetFullName()] = prj->GetTitle();
         }
     }
-    IncrementalSelectIteratorStringArray iter(files);
-    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iter, _("Find file..."),
-                                 _("Please enter the name of the file you are searching:"));
-    wxSize         sz      = dlg.GetSize();
-    wxListBox*     listBx  = XRCCTRL(dlg, "lstItems", wxListBox);
-    wxCheckBox*    chkOpen = new wxCheckBox(&dlg, wxID_ANY, _("Open file"));
-    ConfigManager* cfg     = Manager::Get()->GetConfigManager(wxT("project_manager"));
+
+    struct Iterator : IncrementalSelectIteratorIndexed
+    {
+        Iterator(const wxArrayString &files) : m_files(files)
+        {
+        }
+
+        int GetTotalCount() const override
+        {
+            return m_files.size();
+        }
+        const wxString& GetItemFilterString(int index) const override
+        {
+            return m_files[index];
+        }
+        wxString GetDisplayText(int index, int column) const override
+        {
+            return m_files[m_indices[index]];
+        }
+
+    private:
+        const wxArrayString &m_files;
+    };
+    Iterator iter(files);
+    GotoFile dlg(Manager::Get()->GetAppWindow(), &iter, _("Find file..."),
+                 _("Please enter the name of the file you are searching:"));
+
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("project_manager"));
+
+    // Add a checkbox at the bottom that control if the selected file will be opened in an editor.
+    wxCheckBox *chkOpen = new wxCheckBox(&dlg, wxID_ANY, _("Open file"));
     chkOpen->SetValue(cfg->ReadBool(wxT("/find_file_open"), false));
-    // insert the check box into the dialogue
-    listBx->GetParent()->GetSizer()->Add(chkOpen, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_RIGHT, 8);
-    dlg.Fit();
-    dlg.SetMinSize(dlg.GetSize());
-    dlg.SetSize(sz);
+    dlg.AddControlBelowList(chkOpen);
+
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;

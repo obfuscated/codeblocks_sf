@@ -3,7 +3,7 @@
 	<object class="wxDialog" name="GotoFile">
 		<id_arg>0</id_arg>
 		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX</style>
-		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+		<object class="wxBoxSizer" variable="m_sizer" member="yes">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticText" name="wxID_ANY" variable="labelCtrl" member="no">

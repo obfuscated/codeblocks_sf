@@ -8,75 +8,66 @@
 #define INCREMENTALSELECTLISTBASE_H
 
 #include "settings.h"
-#include "scrollingdialog.h"
-#include <wx/textctrl.h>
-#include <wx/listbox.h>
+#include <wx/string.h>
+#include <wx/event.h>
+#include <vector>
 
-class IncrementalSelectIterator; // forward decl
+class wxCommandEvent;
+class wxDialog;
+class wxKeyEvent;
+class wxListCtrl;
+class wxListEvent;
+class wxTextCtrl;
 
-class DLLIMPORT IncrementalSelectListBase : public wxScrollingDialog
-{
-    public:
-        IncrementalSelectListBase(wxWindow* parent,
-                                 const IncrementalSelectIterator& iterator,
-                                 const wxString& dialog,
-                                 const wxString& caption = wxEmptyString,
-                                 const wxString& message = wxEmptyString);
-        virtual ~IncrementalSelectListBase();
-        void OnSearch(wxCommandEvent& event);
-        void OnSelect(wxCommandEvent& event);
-        void OnKeyDown(wxKeyEvent& event);
-    protected:
-        /** fetch the search key word from the text control, and filter the items */
-        void FilterItems();
-
-        /** handle user pressed some special key in the editor ctrl
-         *  For example, if user press the UP key, we have to select some text before the cursor
-         */
-        void KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax);
-
-        /** fill the m_List with filtered items */
-        void FillList();
-
-        /** refresh the list */
-        virtual void FillData() {}
-        virtual void GetCurrentSelection(int &selected, int &selectedMax) {}
-        virtual void UpdateCurrentSelection(int selected, int selectedPrevious) {}
-    protected:
-        // Controls
-        wxListBox* m_List;   /// for showing the filtered items
-        wxTextCtrl* m_Text;  /// for entering search keys
-        // Data
-        wxArrayString m_Result;  /// the filtered items
-        wxArrayLong m_Indexes;   /// the filtered item index in the list
-        bool m_Promoted;
-        const IncrementalSelectIterator &m_Iterator;
-    private:
-        DECLARE_EVENT_TABLE();
-};
 
 class DLLIMPORT IncrementalSelectIterator
 {
     public:
         virtual ~IncrementalSelectIterator() {}
 
-        virtual long GetCount() const = 0;
-        virtual wxString GetItem(long index) const = 0;
-        virtual wxString GetDisplayItem(long index) const { return GetItem(index); }
+        virtual int GetFilteredCount() const = 0;
+        virtual void Reset() = 0;
+        virtual void AddIndex(int index) = 0;
+
+        virtual int GetTotalCount() const = 0;
+        virtual const wxString& GetItemFilterString(int index) const = 0;
+        virtual wxString GetDisplayText(int index, int column) const = 0;
+
 };
 
-class DLLIMPORT IncrementalSelectIteratorStringArray : public IncrementalSelectIterator
+class DLLIMPORT IncrementalSelectIteratorIndexed : public IncrementalSelectIterator
 {
     public:
-        IncrementalSelectIteratorStringArray(const wxArrayString& array) : m_Array(array)
-        {
-        }
+        virtual ~IncrementalSelectIteratorIndexed() {}
 
-        virtual long GetCount() const { return m_Array.GetCount(); }
-        virtual wxString GetItem(long index) const { return m_Array[index]; }
-    private:
-        const wxArrayString& m_Array;
+        int GetFilteredCount() const override;
+        void Reset() override;
+        void AddIndex(int index) override;
+    protected:
+        std::vector<int> m_indices;
 };
+
+class DLLIMPORT IncrementalSelectHandler : public wxEvtHandler
+{
+    public:
+        IncrementalSelectHandler(wxDialog* parent, IncrementalSelectIterator *iterator);
+        ~IncrementalSelectHandler() override;
+
+        void Init(wxListCtrl *list, wxTextCtrl *text);
+        void DeInit(wxWindow *window);
+    private:
+        void FilterItems();
+    private:
+        void OnKeyDown(wxKeyEvent &event);
+        void OnTextChanged(wxCommandEvent &event);
+        void OnItemActivated(wxListEvent &event);
+    private:
+        wxDialog *m_parent;
+        wxListCtrl *m_list;
+        wxTextCtrl *m_text;
+        IncrementalSelectIterator *m_iterator;
+};
+
 
 #endif // INCREMENTALSELECTLISTBASE_H
 

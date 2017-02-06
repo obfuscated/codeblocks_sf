@@ -13,59 +13,29 @@
 //(*Headers(GotoFile)
 //*)
 
-
-class GotoFileIterator
-{
-    public:
-        virtual ~GotoFileIterator() {}
-
-        virtual int GetTotalCount() const = 0;
-        virtual int GetFilteredCount() const = 0;
-        virtual void Reset() = 0;
-        virtual const wxString& GetItemFilterString(int index) const = 0;
-        virtual wxString GetDisplayText(int index, int column) const = 0;
-        virtual void AddIndex(int index) = 0;
-
-};
-
-class GotoHandler : public wxEvtHandler
-{
-    public:
-        GotoHandler(wxDialog* parent, GotoFileIterator *iterator);
-        ~GotoHandler();
-        void Init(wxListCtrl *list, wxTextCtrl *text);
-        void DeInit(wxWindow *window);
-    private:
-        void FilterItems();
-    private:
-        void OnKeyDown(wxKeyEvent& event);
-        void OnTextChanged(wxCommandEvent& event);
-    private:
-        wxDialog *m_parent;
-        wxListCtrl *m_list;
-        wxTextCtrl *m_text;
-        GotoFileIterator *m_iterator;
-};
-
+#include "incrementalselectlistbase.h"
 
 class GotoFileListCtrl;
 
 class GotoFile: public wxDialog
 {
     public:
-        GotoFile(wxWindow* parent, GotoFileIterator *iterator, const wxString &title, const wxString &message);
+        GotoFile(wxWindow* parent, IncrementalSelectIterator *iterator, const wxString &title, const wxString &message);
         ~GotoFile() override;
 
         int GetSelection();
 
+        void AddControlBelowList(wxControl *control);
+
     private:
         void FilterItems();
     private:
-        GotoHandler m_handler;
+        IncrementalSelectHandler m_handler;
     private:
 
         //(*Declarations(GotoFile)
         GotoFileListCtrl* m_ResultList;
+        wxBoxSizer* m_sizer;
         wxTextCtrl* m_Text;
         //*)
 
@@ -79,7 +49,8 @@ class GotoFile: public wxDialog
 
     protected:
 
-        void BuildContent(wxWindow* parent, GotoFileIterator *iterator, const wxString &title, const wxString &message);
+        void BuildContent(wxWindow* parent, IncrementalSelectIterator *iterator, const wxString &title,
+                          const wxString &message);
 
         DECLARE_EVENT_TABLE()
 };
