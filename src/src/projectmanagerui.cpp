@@ -1886,7 +1886,7 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
     };
 
     Iterator iterator(pfiles, (pa->GetCount() > 1));
-    GotoFile dlg(Manager::Get()->GetAppWindow(), &iterator);
+    GotoFile dlg(Manager::Get()->GetAppWindow(), &iterator, _("Select file..."), _("Please select file to open:"));
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {

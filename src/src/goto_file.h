@@ -53,7 +53,7 @@ class GotoFileListCtrl;
 class GotoFile: public wxDialog
 {
     public:
-        GotoFile(wxWindow* parent, GotoFileIterator *iterator);
+        GotoFile(wxWindow* parent, GotoFileIterator *iterator, const wxString &title, const wxString &message);
         ~GotoFile() override;
 
         int GetSelection();
@@ -79,7 +79,7 @@ class GotoFile: public wxDialog
 
     protected:
 
-        void BuildContent(wxWindow* parent, GotoFileIterator *iterator);
+        void BuildContent(wxWindow* parent, GotoFileIterator *iterator, const wxString &title, const wxString &message);
 
         DECLARE_EVENT_TABLE()
 };

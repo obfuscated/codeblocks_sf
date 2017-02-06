@@ -252,24 +252,25 @@ BEGIN_EVENT_TABLE(GotoFile,wxDialog)
     //*)
 END_EVENT_TABLE()
 
-GotoFile::GotoFile(wxWindow* parent, GotoFileIterator *iterator) :
+GotoFile::GotoFile(wxWindow* parent, GotoFileIterator *iterator, const wxString &title, const wxString &message) :
     m_handler(this, iterator)
 {
-    BuildContent(parent, iterator);
+    BuildContent(parent, iterator, title, message);
 
     m_handler.Init(m_ResultList, m_Text);
 }
 
-void GotoFile::BuildContent(wxWindow* parent, GotoFileIterator *iterator)
+void GotoFile::BuildContent(wxWindow* parent, GotoFileIterator *iterator, const wxString &title,
+                            const wxString &message)
 {
     //(*Initialize(GotoFile)
     wxBoxSizer* BoxSizer1;
-    wxStaticText* StaticText1;
+    wxStaticText* labelCtrl;
 
     Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
-    StaticText1 = new wxStaticText(this, wxID_ANY, _("Label"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-    BoxSizer1->Add(StaticText1, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    labelCtrl = new wxStaticText(this, wxID_ANY, _("Some text"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    BoxSizer1->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_Text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     BoxSizer1->Add(m_Text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_ResultList = new GotoFileListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_RESULT_LIST"));
@@ -286,6 +287,9 @@ void GotoFile::BuildContent(wxWindow* parent, GotoFileIterator *iterator)
     column.SetWidth(300);
     m_ResultList->InsertColumn(0, column);
     m_ResultList->SetIterator(iterator);
+
+    SetTitle(title);
+    labelCtrl->SetLabel(message);
 }
 
 GotoFile::~GotoFile()
