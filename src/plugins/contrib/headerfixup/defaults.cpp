@@ -178,7 +178,6 @@ void Bindings::SetDefaultsCodeBlocks()
     "IEventFunctorBase;cbfunctor.h|"
     "IFunctorBase;cbfunctor.h|"
     "ImportersGlobals;importer_globals.h|"
-    "IncrementalSelectListDlg;incrementalselectlistdlg.h|"
     "InfoWindow;infowindow.h|"
     "IsBuiltinOpen;cbeditor.h|"
     "ISerializable;configmanager.h|"

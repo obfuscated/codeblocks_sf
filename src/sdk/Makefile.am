@@ -81,7 +81,6 @@ libcodeblocks_la_SOURCES = annoyingdialog.cpp \
 						globals.cpp \
 						importers_globals.cpp \
 						incrementalselectlistbase.cpp \
-						incrementalselectlistdlg.cpp \
 						infowindow.cpp \
 						loggers.cpp \
 						logmanager.cpp \

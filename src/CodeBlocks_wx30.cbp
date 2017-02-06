@@ -933,9 +933,6 @@
 		<Unit filename="include/incrementalselectlistbase.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/incrementalselectlistdlg.h">
-			<Option target="sdk" />
-		</Unit>
 		<Unit filename="include/infowindow.h">
 			<Option target="sdk" />
 		</Unit>
@@ -2666,9 +2663,6 @@
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/incrementalselectlistbase.cpp">
-			<Option target="sdk" />
-		</Unit>
-		<Unit filename="sdk/incrementalselectlistdlg.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/infowindow.cpp">

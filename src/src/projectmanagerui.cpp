@@ -38,7 +38,6 @@
 #include "confirmreplacedlg.h"
 #include "filefilters.h"
 #include "filegroupsandmasks.h"
-#include "incrementalselectlistdlg.h"
 #include "multiselectdlg.h"
 #include "projectdepsdlg.h"
 #include "projectfileoptionsdlg.h"
