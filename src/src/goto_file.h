@@ -56,6 +56,8 @@ class GotoFile: public wxDialog
         GotoFile(wxWindow* parent, GotoFileIterator *iterator);
         ~GotoFile() override;
 
+        int GetSelection();
+
     private:
         void FilterItems();
     private:

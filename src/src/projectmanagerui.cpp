@@ -1888,7 +1888,12 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
     Iterator iterator(pfiles, (pa->GetCount() > 1));
     GotoFile dlg(Manager::Get()->GetAppWindow(), &iterator);
     PlaceWindow(&dlg);
-    dlg.ShowModal();
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        int selection = dlg.GetSelection();
+        if (selection >= 0 && selection < int(pfiles.size()))
+            DoOpenFile(pfiles[selection], pfiles[selection]->file.GetFullPath());
+    }
 }
 
 void ProjectManagerUI::OnViewCategorize(wxCommandEvent& event)
