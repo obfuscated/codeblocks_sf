@@ -16,6 +16,8 @@
     #include <wx/stattext.h>
     #include <wx/textctrl.h>
     //*)
+
+    #include "configmanager.h"
 #endif
 //(*InternalHeaders(GotoFunctionDlg)
 //*)
@@ -90,7 +92,11 @@ void GotoFunctionDlg::Iterator::CalcLengths(wxListCtrl &list)
     }
 
     for (int ii = 0; ii < 3; ++ii)
-        m_columnLength[ii] = list.GetTextExtent(wxString(wxT('A'), m_columnLength[ii])).x;
+    {
+        int x, y;
+        list.GetTextExtent(wxString(wxT('A'), m_columnLength[ii]), &x, &y);
+        m_columnLength[ii] = x;
+    }
 }
 
 int GotoFunctionDlg::Iterator::GetColumnWidth(int column) const
@@ -197,16 +203,16 @@ void GotoFunctionDlg::SwitchMode()
 
     if (columnMode)
     {
+        m_list->SetWindowStyleFlag(m_list->GetWindowStyleFlag() & ~wxLC_NO_HEADER);
+
         m_list->InsertColumn(0, _("Function name"), wxLIST_FORMAT_LEFT, m_iterator->GetColumnWidth(0));
         m_list->InsertColumn(1, _("Parameters and return type"), wxLIST_FORMAT_LEFT, m_iterator->GetColumnWidth(1));
-
-        m_list->SetWindowStyleFlag(m_list->GetWindowStyleFlag() & ~wxLC_NO_HEADER);
     }
     else
     {
-        m_list->InsertColumn(0, _("Column"), wxLIST_FORMAT_LEFT, m_iterator->GetColumnWidth(0));
-
         m_list->SetWindowStyleFlag(m_list->GetWindowStyleFlag() | wxLC_NO_HEADER);
+
+        m_list->InsertColumn(0, _("Column"), wxLIST_FORMAT_LEFT, m_iterator->GetColumnWidth(0));
     }
 }
 
