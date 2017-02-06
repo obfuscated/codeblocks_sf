@@ -10,7 +10,7 @@
 
 #include "sdk_precomp.h"
 
-#include "incrementalselectlistbase.h"
+#include "incremental_select_helper.h"
 
 #ifndef CB_PRECOMP
     #include <wx/dialog.h>

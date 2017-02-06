@@ -13,7 +13,7 @@
 //(*Headers(GotoFile)
 //*)
 
-#include "incrementalselectlistbase.h"
+#include "incremental_select_helper.h"
 
 class GotoFileListCtrl;
 

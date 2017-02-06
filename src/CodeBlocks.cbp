@@ -936,7 +936,7 @@
 		<Unit filename="include/importers_globals.h">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="include/incrementalselectlistbase.h">
+		<Unit filename="include/incremental_select_helper.h">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="include/infowindow.h">
@@ -2670,7 +2670,7 @@
 		<Unit filename="sdk/importers_globals.cpp">
 			<Option target="sdk" />
 		</Unit>
-		<Unit filename="sdk/incrementalselectlistbase.cpp">
+		<Unit filename="sdk/incremental_select_helper.cpp">
 			<Option target="sdk" />
 		</Unit>
 		<Unit filename="sdk/infowindow.cpp">
