@@ -18,6 +18,7 @@
     //*)
 
     #include "configmanager.h"
+    #include <algorithm>
 #endif
 //(*InternalHeaders(GotoFunctionDlg)
 //*)
@@ -107,6 +108,12 @@ int GotoFunctionDlg::Iterator::GetColumnWidth(int column) const
         return m_columnLength[0];
 }
 
+void GotoFunctionDlg::Iterator::Sort()
+{
+    std::sort(m_tokens.begin(), m_tokens.end(), [] (const FunctionToken &a, const FunctionToken &b) {
+        return a.funcName.CmpNoCase(b.funcName)<0;
+    });
+}
 
 class GotoFunctionListCtrl : public wxListCtrl
 {

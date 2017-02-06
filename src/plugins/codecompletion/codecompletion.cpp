@@ -1847,6 +1847,7 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
 
         CC_LOCKER_TRACK_TT_MTX_UNLOCK(s_TokenTreeMutex)
 
+        iterator.Sort();
         GotoFunctionDlg dlg(Manager::Get()->GetAppWindow(), &iterator);
         PlaceWindow(&dlg);
         if (dlg.ShowModal() == wxID_OK)

@@ -62,6 +62,8 @@ class GotoFunctionDlg : public wxDialog
 
             int GetColumnWidth(int column) const override;
 
+            void Sort();
+
         private:
             std::vector<FunctionToken> m_tokens;
             int m_columnLength[3]; /// 0 is for non-column mode, 1 and 2 are for column mode.
