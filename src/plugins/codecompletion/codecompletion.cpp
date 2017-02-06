@@ -1836,7 +1836,10 @@ void CodeCompletion::OnGotoFunction(cb_unused wxCommandEvent& event)
                 ft.name = wxString(token->m_Name.c_str());
                 ft.line = token->m_Line;
                 ft.implLine = token->m_ImplLine;
-                ft.paramsAndreturnType = wxString((token->m_Args + wxT(" -> ") + token->m_FullType).c_str());
+                if (!token->m_FullType.empty())
+                    ft.paramsAndreturnType = wxString((token->m_Args + wxT(" -> ") + token->m_FullType).c_str());
+                else
+                    ft.paramsAndreturnType = wxString(token->m_Args.c_str());
                 ft.funcName = wxString((token->GetNamespace() + token->m_Name).c_str());
 
                 iterator.AddToken(ft);
