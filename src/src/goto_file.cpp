@@ -109,7 +109,7 @@ GotoFile::~GotoFile()
 
 int GotoFile::GetSelection()
 {
-    return m_ResultList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    return m_handler.GetSelection();
 }
 
 void GotoFile::AddControlBelowList(wxControl *control)

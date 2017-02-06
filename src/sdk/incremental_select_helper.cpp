@@ -38,6 +38,14 @@ void IncrementalSelectIteratorIndexed::AddIndex(int index)
     m_indices.push_back(index);
 }
 
+int IncrementalSelectIteratorIndexed::GetUnfilteredIndex(int index) const
+{
+    if (index >= 0 && index < int(m_indices.size()))
+        return m_indices[index];
+    else
+        return wxNOT_FOUND;
+}
+
 IncrementalSelectHandler::IncrementalSelectHandler(wxDialog* parent, IncrementalSelectIterator *iterator) :
     m_parent(parent),
     m_list(nullptr),
@@ -263,4 +271,13 @@ void IncrementalSelectHandler::OnKeyDown(wxKeyEvent& event)
 void IncrementalSelectHandler::OnItemActivated(wxListEvent &event)
 {
     m_parent->EndModal(wxID_OK);
+}
+
+int IncrementalSelectHandler::GetSelection()
+{
+    int index = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    if (index == -1)
+        return wxNOT_FOUND;
+    else
+        return m_iterator->GetUnfilteredIndex(index);
 }

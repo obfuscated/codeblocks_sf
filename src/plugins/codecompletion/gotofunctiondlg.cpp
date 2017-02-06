@@ -229,5 +229,5 @@ void GotoFunctionDlg::OnModeClick(wxCommandEvent& event)
 
 int GotoFunctionDlg::GetSelection()
 {
-    return m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    return m_handler.GetSelection();
 }

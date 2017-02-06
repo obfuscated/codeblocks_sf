@@ -28,6 +28,7 @@ class DLLIMPORT IncrementalSelectIterator
         virtual int GetFilteredCount() const = 0;
         virtual void Reset() = 0;
         virtual void AddIndex(int index) = 0;
+        virtual int GetUnfilteredIndex(int index) const = 0;
 
         virtual int GetTotalCount() const = 0;
         virtual const wxString& GetItemFilterString(int index) const = 0;
@@ -45,6 +46,7 @@ class DLLIMPORT IncrementalSelectIteratorIndexed : public IncrementalSelectItera
         int GetFilteredCount() const override;
         void Reset() override;
         void AddIndex(int index) override;
+        int GetUnfilteredIndex(int index) const override;
     protected:
         std::vector<int> m_indices;
 };
@@ -58,6 +60,7 @@ class DLLIMPORT IncrementalSelectHandler : public wxEvtHandler
         void Init(wxListCtrl *list, wxTextCtrl *text);
         void DeInit(wxWindow *window);
         void FilterItems();
+        int GetSelection();
 
     private:
         void OnKeyDown(wxKeyEvent &event);
