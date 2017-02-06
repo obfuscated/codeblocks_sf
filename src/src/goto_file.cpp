@@ -61,6 +61,89 @@ void GotoHandler::OnTextChanged(wxCommandEvent& event)
     event.Skip();
 }
 
+void GotoHandler::FilterItems()
+{
+    m_iterator->Reset();
+
+    const wxString &inputPattern = m_text->GetValue().Lower();
+    if (inputPattern.empty())
+    {
+        int count = m_iterator->GetTotalCount();
+        for (int ii = 0; ii < count; ++ii)
+            m_iterator->AddIndex(ii);
+
+        m_list->SetItemCount(m_iterator->GetFilteredCount());
+        if (m_iterator->GetFilteredCount() > 0)
+            m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        return;
+    }
+
+    // We put a star before and after pattern to find search expression everywhere in path
+    // that is: if user enter "a", it will match "123a", "12a" or "a12".
+    wxString search(wxT("*") + inputPattern + wxT("*"));
+    bool isWord = !inputPattern.empty();
+    for (auto ch : inputPattern)
+    {
+        if (!wxIsalpha(ch))
+        {
+            isWord = false;
+            break;
+        }
+    }
+
+    std::vector<int> indices, promoted;
+    indices.reserve(100);
+    promoted.reserve(100);
+
+    for (int i = 0; i < m_iterator->GetTotalCount(); ++i)
+    {
+        wxString const &item = m_iterator->GetItemFilterString(i).Lower();
+        if (item.Matches(search.c_str()))
+        {
+            // If the search pattern doesn't contain non alpha characters and it matches at the start of the word in
+            // the item string then promote these items to the top of the list. The order is preserved.
+            if (isWord)
+            {
+                size_t pos = 0, newPos;
+                bool isPromoted = false;
+
+                while ((newPos = item.find(inputPattern, pos)) != wxString::npos)
+                {
+                    if (newPos == 0)
+                    {
+                        isPromoted = true;
+                        break;
+                    }
+
+                    if (!wxIsalpha(item[newPos - 1]))
+                    {
+                        isPromoted = true;
+                        break;
+                    }
+
+                    // Move one character forward to prevent the same string to be found again.
+                    pos = newPos + 1;
+                }
+                if (isPromoted)
+                    promoted.push_back(i);
+                else
+                    indices.push_back(i);
+            }
+            else
+                indices.push_back(i);
+        }
+    }
+
+    for (auto i : promoted)
+        m_iterator->AddIndex(i);
+    for (auto i : indices)
+        m_iterator->AddIndex(i);
+
+    m_list->SetItemCount(m_iterator->GetFilteredCount());
+    if (m_iterator->GetFilteredCount() > 0)
+        m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+}
+
 static wxStandardID KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
 {
     // now, adjust position from key input
@@ -211,87 +294,4 @@ GotoFile::~GotoFile()
 
     //(*Destroy(GotoFile)
     //*)
-}
-
-void GotoHandler::FilterItems()
-{
-    m_iterator->Reset();
-
-    const wxString &inputPattern = m_text->GetValue().Lower();
-    if (inputPattern.empty())
-    {
-        int count = m_iterator->GetTotalCount();
-        for (int ii = 0; ii < count; ++ii)
-            m_iterator->AddIndex(ii);
-
-        m_list->SetItemCount(m_iterator->GetFilteredCount());
-        if (m_iterator->GetFilteredCount() > 0)
-            m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
-        return;
-    }
-
-    // We put a star before and after pattern to find search expression everywhere in path
-    // that is: if user enter "a", it will match "123a", "12a" or "a12".
-    wxString search(wxT("*") + inputPattern + wxT("*"));
-    bool isWord = !inputPattern.empty();
-    for (auto ch : inputPattern)
-    {
-        if (!wxIsalpha(ch))
-        {
-            isWord = false;
-            break;
-        }
-    }
-
-    std::vector<int> indices, promoted;
-    indices.reserve(100);
-    promoted.reserve(100);
-
-    for (int i = 0; i < m_iterator->GetTotalCount(); ++i)
-    {
-        wxString const &item = m_iterator->GetItemFilterString(i).Lower();
-        if (item.Matches(search.c_str()))
-        {
-            // If the search pattern doesn't contain non alpha characters and it matches at the start of the word in
-            // the item string then promote these items to the top of the list. The order is preserved.
-            if (isWord)
-            {
-                size_t pos = 0, newPos;
-                bool isPromoted = false;
-
-                while ((newPos = item.find(inputPattern, pos)) != wxString::npos)
-                {
-                    if (newPos == 0)
-                    {
-                        isPromoted = true;
-                        break;
-                    }
-
-                    if (!wxIsalpha(item[newPos - 1]))
-                    {
-                        isPromoted = true;
-                        break;
-                    }
-
-                    // Move one character forward to prevent the same string to be found again.
-                    pos = newPos + 1;
-                }
-                if (isPromoted)
-                    promoted.push_back(i);
-                else
-                    indices.push_back(i);
-            }
-            else
-                indices.push_back(i);
-        }
-    }
-
-    for (auto i : promoted)
-        m_iterator->AddIndex(i);
-    for (auto i : indices)
-        m_iterator->AddIndex(i);
-
-    m_list->SetItemCount(m_iterator->GetFilteredCount());
-    if (m_iterator->GetFilteredCount() > 0)
-        m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
