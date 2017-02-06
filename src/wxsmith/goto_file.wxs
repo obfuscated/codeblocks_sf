@@ -2,6 +2,7 @@
 <wxsmith>
 	<object class="wxDialog" name="GotoFile">
 		<id_arg>0</id_arg>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX</style>
 		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
 			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
@@ -12,12 +13,15 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Text" member="yes" />
+				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_Text" member="yes">
+					<focused>1</focused>
+				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxListCtrl" name="ID_RESULT_LIST" subclass="GotoFileListCtrl" variable="m_ResultList" member="yes">
+					<minsize>500,300</minsize>
 					<style>wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL</style>
 				</object>
 				<flag>wxALL|wxEXPAND</flag>

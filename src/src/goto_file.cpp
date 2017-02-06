@@ -144,6 +144,10 @@ void GotoHandler::FilterItems()
         m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
 
+#if !wxCHECK_VERSION(3, 0, 0)
+    typedef int wxStandardID;
+#endif
+
 static wxStandardID KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
 {
     // now, adjust position from key input
@@ -267,13 +271,15 @@ void GotoFile::BuildContent(wxWindow* parent, GotoFileIterator *iterator, const 
     wxBoxSizer* BoxSizer1;
     wxStaticText* labelCtrl;
 
-    Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
+    Create(parent, wxID_ANY, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     labelCtrl = new wxStaticText(this, wxID_ANY, _("Some text"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     BoxSizer1->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_Text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    m_Text->SetFocus();
     BoxSizer1->Add(m_Text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_ResultList = new GotoFileListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_RESULT_LIST"));
+    m_ResultList->SetMinSize(wxSize(500,300));
     BoxSizer1->Add(m_ResultList, 1, wxALL|wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
