@@ -56,6 +56,7 @@ codeblocks_SOURCES = app.cpp \
 			environmentsettingsdlg.cpp \
 			examinememorydlg.cpp \
 			find_replace.cpp \
+			goto_file.cpp \
 			infopane.cpp \
 			main.cpp \
 			notebookstyles.cpp \
@@ -95,6 +96,7 @@ noinst_HEADERS = app.h \
 			environmentsettingsdlg.h \
 			examinememorydlg.h \
 			find_replace.h \
+			goto_file.h \
 			infopane.h \
 			main.h \
 			notebookstyles.h \

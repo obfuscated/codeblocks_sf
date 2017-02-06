@@ -45,6 +45,8 @@
 #include "projectoptionsdlg.h"
 #include "projectsfilemasksdlg.h"
 
+#include "goto_file.h"
+
 namespace
 {
 
@@ -1841,38 +1843,52 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
         std::sort(pfiles.begin(), pfiles.end(), ProjectFileRelativePathCmp(activePrj));
     }
 
-    class Iterator : public IncrementalSelectIterator
+    struct Iterator : GotoFileIterator
     {
-        public:
-            Iterator(VProjectFiles& pfiles, bool showProject) : m_PFiles(pfiles), m_ShowProject(showProject) {}
-            virtual long GetCount() const              { return m_PFiles.size();                    }
-            virtual wxString GetItem(long index) const { return m_PFiles[index]->relativeFilename; }
-            virtual wxString GetDisplayItem(long index) const
-            {
-                if (m_ShowProject)
-                {
-                    if ( ProjectFile* pf = m_PFiles[index] )
-                        return pf->relativeFilename + wxT(" (") + pf->GetParentProject()->GetTitle() + wxT(")");
-                    return wxEmptyString;
-                }
-                else
-                    return m_PFiles[index]->relativeFilename;
-            }
-        private:
-            VProjectFiles& m_PFiles;
-            bool           m_ShowProject;
+        Iterator(VProjectFiles &pfiles, bool showProject) : m_pfiles(pfiles), m_ShowProject(showProject)
+        {
+        }
+
+        int GetTotalCount() const override
+        {
+            return m_pfiles.size();
+        }
+        int GetFilteredCount() const override
+        {
+            return m_indices.size();
+        }
+        void Reset() override
+        {
+            m_indices.clear();
+        }
+        const wxString& GetItemFilterString(int index) const override
+        {
+            return m_pfiles[index]->relativeFilename;
+        }
+        wxString GetDisplayText(int index, int column) const override
+        {
+            ProjectFile* pf = m_pfiles[m_indices[index]];
+            if (m_ShowProject)
+                return pf->relativeFilename + wxT(" (") + pf->GetParentProject()->GetTitle() + wxT(")");
+            else
+                return pf->relativeFilename;
+        }
+        void AddIndex(int index) override
+        {
+            m_indices.push_back(index);
+        }
+
+    private:
+        VProjectFiles &m_pfiles;
+        std::vector<int> m_indices;
+        wxString temp;
+        bool m_ShowProject;
     };
 
-    Iterator iterator(pfiles, pa->GetCount() > 1);
-    IncrementalSelectListDlg dlg(Manager::Get()->GetAppWindow(), iterator,
-                                 _("Select file..."), _("Please select file to open:"));
+    Iterator iterator(pfiles, (pa->GetCount() > 1));
+    GotoFile dlg(Manager::Get()->GetAppWindow(), &iterator);
     PlaceWindow(&dlg);
-    if (dlg.ShowModal() == wxID_OK)
-    {
-        long selection = dlg.GetSelection();
-        if (selection != -1)
-            DoOpenFile(pfiles[selection], pfiles[selection]->file.GetFullPath());
-    }
+    dlg.ShowModal();
 }
 
 void ProjectManagerUI::OnViewCategorize(wxCommandEvent& event)
