@@ -156,8 +156,18 @@ private:
     #define CC_LOCKER_TRACK_CS_ENTER(CS)     CS.Enter();
     #define CC_LOCKER_TRACK_CS_LEAVE(CS)     CS.Leave();
 
-    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)   cbAssert(M.Lock()==wxMUTEX_NO_ERROR);
-    #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M) cbAssert(M.Unlock()==wxMUTEX_NO_ERROR);
+    #define CC_LOCKER_TRACK_TT_MTX_LOCK(M)      \
+        do {                                    \
+            auto result = M.Lock();             \
+            cbAssert(result==wxMUTEX_NO_ERROR); \
+        } while (false);
+
+    #define CC_LOCKER_TRACK_TT_MTX_UNLOCK(M)    \
+        do {                                    \
+            auto result = M.Unlock();           \
+            cbAssert(result==wxMUTEX_NO_ERROR); \
+        } while (false);
+
     #define CC_LOCKER_TRACK_CBBT_MTX_LOCK    CC_LOCKER_TRACK_TT_MTX_LOCK
     #define CC_LOCKER_TRACK_CBBT_MTX_UNLOCK  CC_LOCKER_TRACK_TT_MTX_UNLOCK
     #define CC_LOCKER_TRACK_P_MTX_LOCK       CC_LOCKER_TRACK_TT_MTX_LOCK

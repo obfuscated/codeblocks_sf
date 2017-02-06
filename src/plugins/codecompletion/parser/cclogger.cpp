@@ -31,7 +31,8 @@ long           g_idCCDebugLogger      = wxNewId();
         if ((f.Exists() && f.Open()) || (!f.Exists() && f.Create())) \
         {                                                            \
             f.AddLine(msg);                                          \
-            cbAssert(f.Write() && f.Close());                        \
+            bool exp = f.Write() && f.Close();                       \
+            cbAssert(exp);                                           \
         }                                                            \
     }                                                                \
 
@@ -42,7 +43,8 @@ long           g_idCCDebugLogger      = wxNewId();
         if ((f.Exists() && f.Open()) || (!f.Exists() && f.Create())) \
         {                                                            \
             f.AddLine(msg);                                          \
-            cbAssert(f.Write() && f.Close());                        \
+            bool exp = f.Write() && f.Close()                        \
+            cbAssert(exp);                                           \
         }                                                            \
     }                                                                \
 
