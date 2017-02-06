@@ -13,7 +13,6 @@
 //(*Headers(GotoFile)
 //*)
 
-class GotoFileListCtrl;
 
 class GotoFileIterator
 {
@@ -29,6 +28,28 @@ class GotoFileIterator
 
 };
 
+class GotoHandler : public wxEvtHandler
+{
+    public:
+        GotoHandler(wxDialog* parent, GotoFileIterator *iterator);
+        ~GotoHandler();
+        void Init(wxListCtrl *list, wxTextCtrl *text);
+        void DeInit(wxWindow *window);
+    private:
+        void FilterItems();
+    private:
+        void OnKeyDown(wxKeyEvent& event);
+        void OnTextChanged(wxCommandEvent& event);
+    private:
+        wxDialog *m_parent;
+        wxListCtrl *m_list;
+        wxTextCtrl *m_text;
+        GotoFileIterator *m_iterator;
+};
+
+
+class GotoFileListCtrl;
+
 class GotoFile: public wxDialog
 {
     public:
@@ -40,6 +61,7 @@ class GotoFile: public wxDialog
     private:
         GotoHandler m_handler;
     private:
+
         //(*Declarations(GotoFile)
         GotoFileListCtrl* m_ResultList;
         wxTextCtrl* m_Text;
@@ -51,11 +73,11 @@ class GotoFile: public wxDialog
         //*)
 
         //(*Handlers(GotoFile)
-        void OnTextChanged(wxCommandEvent& event);
         //*)
 
     protected:
-        void BuildContent(wxWindow* parent);
+
+        void BuildContent(wxWindow* parent, GotoFileIterator *iterator);
 
         DECLARE_EVENT_TABLE()
 };

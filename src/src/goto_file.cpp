@@ -19,6 +19,126 @@ const long GotoFile::ID_TEXTCTRL1 = wxNewId();
 const long GotoFile::ID_RESULT_LIST = wxNewId();
 //*)
 
+GotoHandler::GotoHandler(wxDialog* parent, GotoFileIterator *iterator) :
+    m_parent(parent),
+    m_list(nullptr),
+    m_text(nullptr),
+    m_iterator(iterator)
+{
+    m_parent->PushEventHandler(this);
+    SetEvtHandlerEnabled(true);
+}
+
+GotoHandler::~GotoHandler()
+{
+}
+
+void GotoHandler::Init(wxListCtrl *list, wxTextCtrl *text)
+{
+    m_list = list;
+    m_text = text;
+
+    m_text->Connect(wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&GotoHandler::OnTextChanged, nullptr, this);
+    m_text->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&GotoHandler::OnKeyDown, nullptr, this);
+    m_list->Connect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&GotoHandler::OnKeyDown, nullptr, this);
+
+    FilterItems();
+}
+
+void GotoHandler::DeInit(wxWindow *window)
+{
+    m_text->Disconnect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&GotoHandler::OnKeyDown, nullptr, this);
+    m_list->Disconnect(wxEVT_KEY_DOWN, (wxObjectEventFunction)&GotoHandler::OnKeyDown, nullptr, this);
+    m_text->Disconnect(wxEVT_COMMAND_TEXT_UPDATED, (wxObjectEventFunction)&GotoHandler::OnTextChanged, nullptr, this);
+
+    SetEvtHandlerEnabled(false);
+    window->RemoveEventHandler(this);
+}
+
+void GotoHandler::OnTextChanged(wxCommandEvent& event)
+{
+    FilterItems();
+    event.Skip();
+}
+
+static wxStandardID KeyDownAction(wxKeyEvent& event, int &selected, int selectedMax)
+{
+    // now, adjust position from key input
+    switch (event.GetKeyCode())
+    {
+        case WXK_RETURN:
+        case WXK_NUMPAD_ENTER:
+            return wxID_OK;
+
+        case WXK_ESCAPE:
+            return wxID_CANCEL;
+
+        case WXK_UP:
+        case WXK_NUMPAD_UP:
+            if (selected)
+                selected--;
+            break;
+
+        case WXK_DOWN:
+        case WXK_NUMPAD_DOWN:
+            selected++;
+            break;
+
+        case WXK_PAGEUP:
+        case WXK_NUMPAD_PAGEUP:
+            selected -= 10;
+            break;
+
+        case WXK_PAGEDOWN:
+        case WXK_NUMPAD_PAGEDOWN:
+            selected += 10;
+            break;
+
+        case WXK_HOME:
+            if (wxGetKeyState(WXK_CONTROL))
+                selected = 0;
+            else
+                event.Skip();
+            break;
+
+        case WXK_END:
+            if (wxGetKeyState(WXK_CONTROL))
+                selected = selectedMax;
+            else
+                event.Skip();
+            break;
+
+        default:
+            event.Skip();
+            break;
+    }
+
+    // Clamp value below 0 and above Max
+    if (selected < 0)
+        selected = 0;
+    else
+    {
+        if (selected > selectedMax)
+            selected = selectedMax;
+    }
+    return wxID_LOWEST;
+}
+
+void GotoHandler::OnKeyDown(wxKeyEvent& event)
+{
+    int selected = m_list->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    int selectedMax = m_list->GetItemCount() - 1;
+
+    wxStandardID result = KeyDownAction(event, selected, selectedMax);
+    if (result != wxID_LOWEST)
+        m_parent->EndModal(result);
+    else if (selectedMax >= 0)
+    {
+        m_list->SetItemState(selected, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+        m_list->EnsureVisible(selected);
+    }
+}
+
 
 class GotoFileListCtrl : public wxListCtrl
 {
@@ -50,15 +170,14 @@ BEGIN_EVENT_TABLE(GotoFile,wxDialog)
 END_EVENT_TABLE()
 
 GotoFile::GotoFile(wxWindow* parent, GotoFileIterator *iterator) :
-    m_iterator(iterator)
+    m_handler(this, iterator)
 {
-    BuildContent(parent);
+    BuildContent(parent, iterator);
 
-	//m_ResultList->SetItemCount(30000);
-	FilterItems();
+    m_handler.Init(m_ResultList, m_Text);
 }
 
-void GotoFile::BuildContent(wxWindow* parent)
+void GotoFile::BuildContent(wxWindow* parent, GotoFileIterator *iterator)
 {
     //(*Initialize(GotoFile)
     wxBoxSizer* BoxSizer1;
@@ -70,13 +189,11 @@ void GotoFile::BuildContent(wxWindow* parent)
     BoxSizer1->Add(StaticText1, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_Text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     BoxSizer1->Add(m_Text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-    m_ResultList = new GotoFileListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_NO_HEADER|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_RESULT_LIST"));
+    m_ResultList = new GotoFileListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_RESULT_LIST"));
     BoxSizer1->Add(m_ResultList, 1, wxALL|wxEXPAND, 5);
     SetSizer(BoxSizer1);
     BoxSizer1->Fit(this);
     BoxSizer1->SetSizeHints(this);
-
-    Connect(ID_TEXTCTRL1,wxEVT_COMMAND_TEXT_UPDATED,(wxObjectEventFunction)&GotoFile::OnTextChanged);
     //*)
 
     // Add first column
@@ -85,27 +202,31 @@ void GotoFile::BuildContent(wxWindow* parent)
     column.SetText( _("Column") );
     column.SetWidth(300);
     m_ResultList->InsertColumn(0, column);
-    m_ResultList->SetIterator(m_iterator);
+    m_ResultList->SetIterator(iterator);
 }
 
 GotoFile::~GotoFile()
 {
+    m_handler.DeInit(this);
+
     //(*Destroy(GotoFile)
     //*)
 }
 
-void GotoFile::FilterItems()
+void GotoHandler::FilterItems()
 {
     m_iterator->Reset();
 
-    const wxString &inputPattern = m_Text->GetValue().Lower();
+    const wxString &inputPattern = m_text->GetValue().Lower();
     if (inputPattern.empty())
     {
         int count = m_iterator->GetTotalCount();
         for (int ii = 0; ii < count; ++ii)
             m_iterator->AddIndex(ii);
 
-        m_ResultList->SetItemCount(m_iterator->GetFilteredCount());
+        m_list->SetItemCount(m_iterator->GetFilteredCount());
+        if (m_iterator->GetFilteredCount() > 0)
+            m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
         return;
     }
 
@@ -170,10 +291,7 @@ void GotoFile::FilterItems()
     for (auto i : indices)
         m_iterator->AddIndex(i);
 
-    m_ResultList->SetItemCount(m_iterator->GetFilteredCount());
-}
-
-void GotoFile::OnTextChanged(wxCommandEvent& event)
-{
-    FilterItems();
+    m_list->SetItemCount(m_iterator->GetFilteredCount());
+    if (m_iterator->GetFilteredCount() > 0)
+        m_list->SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
 }
