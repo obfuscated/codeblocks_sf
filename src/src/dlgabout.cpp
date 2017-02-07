@@ -45,7 +45,9 @@ dlgAbout::dlgAbout(wxWindow* parent)
         return;
     }
 
-    XRCCTRL(*this, "wxID_CANCEL", wxButton)->SetDefault();
+    wxButton *cancelButton = XRCCTRL(*this, "wxID_CANCEL", wxButton);
+    cancelButton->SetDefault();
+    cancelButton->SetFocus();
 
     const wxString description = _("Welcome to ") + appglobals::AppName + _T(" ") +
                                  appglobals::AppVersion + _T("!\n") + appglobals::AppName +
