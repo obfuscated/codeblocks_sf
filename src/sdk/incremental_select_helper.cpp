@@ -107,6 +107,7 @@ void FilterItemsFinalize(wxListCtrl &list, IncrementalSelectIterator &iterator)
 
     if (iterator.GetFilteredCount() > 0)
         list.SetItemState(0, wxLIST_STATE_SELECTED, wxLIST_STATE_SELECTED);
+    list.Refresh();
 }
 
 void IncrementalSelectHandler::FilterItems()
