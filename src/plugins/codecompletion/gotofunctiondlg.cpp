@@ -160,7 +160,7 @@ void GotoFunctionDlg::BuildContent(wxWindow* parent, Iterator* iterator)
     wxBoxSizer* BoxSizer2;
     wxStaticText* StaticText1;
 
-    Create(parent, wxID_ANY, _("Select function..."), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE, _T("wxID_ANY"));
+    Create(parent, wxID_ANY, _("Select function..."), wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX, _T("wxID_ANY"));
     BoxSizer1 = new wxBoxSizer(wxVERTICAL);
     BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
     StaticText1 = new wxStaticText(this, wxID_ANY, _("Please select function to go to:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
