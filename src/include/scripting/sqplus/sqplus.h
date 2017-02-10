@@ -154,10 +154,10 @@ struct ScriptStringVar : ScriptStringVarBase {
     return safeStringCopy(s,_s.s,MaxLength);
   }
   bool operator == (const ScriptStringVar & _s) {
-    return _strcmp(s,_s.s) == 0;
+    return strcmp(s,_s.s) == 0;
   }
   bool compareCaseInsensitive(const ScriptStringVar & _s) {
-    return _stricmp(s,_s.s) == 0;
+    return strcasecmp(s,_s.s) == 0;
   }
 };
 
