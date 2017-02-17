@@ -220,6 +220,13 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
     {
         return wxFile(name, wxFile::write_excl).Write(data, len) == len;
     }
+#if wxCHECK_VERSION(3, 0, 0)
+    else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
+    {
+        // Enable editing symlinks.
+        return wxFile(name, wxFile::write).Write(data, len) == len;
+    }
+#endif // wxCHECK_VERSION(3, 0, 0)
     else
     {
         if (!wxFile::Access(name, wxFile::write))
@@ -259,6 +266,14 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
         wxFile f(name, wxFile::write_excl);
         return WriteWxStringToFile(f, data, encoding, bom);
     }
+#if wxCHECK_VERSION(3, 0, 0)
+    else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
+    {
+        // Enable editing symlinks.
+        wxFile f(name, wxFile::write);
+        return WriteWxStringToFile(f, data, encoding, bom);
+    }
+#endif // wxCHECK_VERSION(3, 0, 0)
     else
     {
         if (!wxFile::Access(name, wxFile::write))
