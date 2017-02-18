@@ -18,6 +18,7 @@
     #include <wx/dir.h>
     #include <wx/filedlg.h>
     #include <wx/imaglist.h>
+    #include <wx/listctrl.h>
     #include <wx/menu.h>
     #include <wx/settings.h>
     #include <wx/textdlg.h>
