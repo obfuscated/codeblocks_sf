@@ -80,7 +80,6 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_UPDATE_UI(            XRCID("btnDelLib"),                       CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnClearLib"),                     CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnCopyLibs"),                     CompilerOptionsDlg::OnUpdateUI)
-    EVT_UPDATE_UI(            XRCID("spnLibs"),                         CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("txtMasterPath"),                   CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnMasterPath"),                   CompilerOptionsDlg::OnUpdateUI)
     EVT_UPDATE_UI(            XRCID("btnExtraAdd"),                     CompilerOptionsDlg::OnUpdateUI)
@@ -133,8 +132,8 @@ BEGIN_EVENT_TABLE(CompilerOptionsDlg, wxPanel)
     EVT_BUTTON(                XRCID("btnExtraEdit"),                   CompilerOptionsDlg::OnEditExtraPathClick)
     EVT_BUTTON(                XRCID("btnExtraDelete"),                 CompilerOptionsDlg::OnRemoveExtraPathClick)
     EVT_BUTTON(                XRCID("btnExtraClear"),                  CompilerOptionsDlg::OnClearExtraPathClick)
-    EVT_SPIN_UP(               XRCID("spnLibs"),                        CompilerOptionsDlg::OnMoveLibUpClick)
-    EVT_SPIN_DOWN(             XRCID("spnLibs"),                        CompilerOptionsDlg::OnMoveLibDownClick)
+    EVT_BUTTON(                XRCID("btnMoveLibUp"),                   CompilerOptionsDlg::OnMoveLibUpClick)
+    EVT_BUTTON(                XRCID("btnMoveLibDown"),                 CompilerOptionsDlg::OnMoveLibDownClick)
     EVT_SPIN_UP(               XRCID("spnDirs"),                        CompilerOptionsDlg::OnMoveDirUpClick)
     EVT_SPIN_DOWN(             XRCID("spnDirs"),                        CompilerOptionsDlg::OnMoveDirDownClick)
     EVT_BUTTON(                XRCID("btnAddVar"),                      CompilerOptionsDlg::OnAddVarClick)
@@ -2482,7 +2481,7 @@ void CompilerOptionsDlg::OnIgnoreRemoveClick(cb_unused wxCommandEvent& event)
     }
 } // OnIgnoreRemoveClick
 
-void CompilerOptionsDlg::OnMoveLibUpClick(cb_unused wxSpinEvent& event)
+void CompilerOptionsDlg::OnMoveLibUpClick(cb_unused wxCommandEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs)
@@ -2511,7 +2510,7 @@ void CompilerOptionsDlg::OnMoveLibUpClick(cb_unused wxSpinEvent& event)
     }
 } // OnMoveLibUpClick
 
-void CompilerOptionsDlg::OnMoveLibDownClick(cb_unused wxSpinEvent& event)
+void CompilerOptionsDlg::OnMoveLibDownClick(cb_unused wxCommandEvent& event)
 {
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (!lstLibs)
@@ -2700,15 +2699,33 @@ void CompilerOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     wxListBox* lstLibs = XRCCTRL(*this, "lstLibs", wxListBox);
     if (lstLibs)
     {
-        wxArrayInt sels_dummy;
-        int num = lstLibs->GetSelections(sels_dummy);
+        wxArrayInt selections;
+        int num = lstLibs->GetSelections(selections);
+        int itemCount = lstLibs->GetCount();
         en = (num > 0);
 
         XRCCTRL(*this, "btnEditLib",  wxButton)->Enable(num == 1);
         XRCCTRL(*this, "btnDelLib",   wxButton)->Enable(en);
-        XRCCTRL(*this, "btnClearLib", wxButton)->Enable(lstLibs->GetCount() != 0);
+        XRCCTRL(*this, "btnClearLib", wxButton)->Enable(itemCount != 0);
         XRCCTRL(*this, "btnCopyLibs", wxButton)->Enable(en);
-        XRCCTRL(*this, "spnLibs",     wxSpinButton)->Enable(en);
+
+        if (en)
+        {
+            int minIndex = selections.size();
+            int maxIndex = 0;
+            for (int index : selections)
+            {
+                minIndex = std::min(index, minIndex);
+                maxIndex = std::max(index, maxIndex);
+            }
+            XRCCTRL(*this, "btnMoveLibUp", wxButton)->Enable(minIndex > 0);
+            XRCCTRL(*this, "btnMoveLibDown", wxButton)->Enable(maxIndex < itemCount - 1);
+        }
+        else
+        {
+            XRCCTRL(*this, "btnMoveLibUp", wxButton)->Enable(false);
+            XRCCTRL(*this, "btnMoveLibDown", wxButton)->Enable(false);
+        }
     }
 
     // edit/delete/clear/copy/moveup/movedown extra path

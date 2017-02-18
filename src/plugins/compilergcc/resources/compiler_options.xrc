@@ -263,13 +263,30 @@
 																			<object class="wxListBox" name="lstLibs">
 																				<style>wxLB_EXTENDED</style>
 																			</object>
-																			<flag>wxEXPAND</flag>
+																			<flag>wxRIGHT|wxEXPAND</flag>
+																			<border>5</border>
 																			<option>1</option>
 																		</object>
 																		<object class="sizeritem">
-																			<object class="wxSpinButton" name="spnLibs" />
-																			<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
-																			<border>8</border>
+																			<object class="wxBoxSizer">
+																				<orient>wxVERTICAL</orient>
+																				<object class="sizeritem">
+																					<object class="wxBitmapButton" name="btnMoveLibUp">
+																						<bitmap stock_id="wxART_GO_UP" stock_client="wxART_MENU" />
+																					</object>
+																					<flag>wxALIGN_LEFT</flag>
+																					<border>5</border>
+																				</object>
+																				<object class="sizeritem">
+																					<object class="wxBitmapButton" name="btnMoveLibDown">
+																						<bitmap stock_id="wxART_GO_DOWN" stock_client="wxART_MENU" />
+																					</object>
+																					<flag>wxALIGN_LEFT</flag>
+																					<border>5</border>
+																				</object>
+																			</object>
+																			<flag>wxALIGN_CENTER_VERTICAL</flag>
+																			<border>5</border>
 																		</object>
 																	</object>
 																	<flag>wxALL|wxEXPAND</flag>
