@@ -1844,7 +1844,10 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
 
     struct Iterator : IncrementalSelectIteratorIndexed
     {
-        Iterator(VProjectFiles &pfiles, bool showProject) : m_pfiles(pfiles), m_ShowProject(showProject)
+        Iterator(VProjectFiles &pfiles, bool showProject) :
+            m_pfiles(pfiles),
+            m_ShowProject(showProject),
+            m_ColumnWidth(300)
         {
         }
 
@@ -1859,16 +1862,53 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
         wxString GetDisplayText(int index, int column) const override
         {
             ProjectFile* pf = m_pfiles[m_indices[index]];
-            if (m_ShowProject)
-                return pf->relativeFilename + wxT(" (") + pf->GetParentProject()->GetTitle() + wxT(")");
-            else
-                return pf->relativeFilename;
+            return MakeDisplayName(*pf);
+        }
+        int GetColumnWidth(int column) const override
+        {
+            return m_ColumnWidth;
         }
 
+        void CalcColumnWidth(wxListCtrl &list) override
+        {
+            int length = 0;
+            ProjectFile *pfLongest = nullptr;
+            for (const auto &pf : m_pfiles)
+            {
+                int pfLength = pf->relativeFilename.length();
+                if (m_ShowProject)
+                    pfLength += pf->GetParentProject()->GetTitle().length() + 3;
+                if (pfLength > length)
+                {
+                    length = pfLength;
+                    pfLongest = pf;
+                }
+            }
+            if (pfLongest)
+            {
+                const wxString &longestString = MakeDisplayName(*pfLongest);
+                int yTemp;
+                list.GetTextExtent(longestString, &m_ColumnWidth, &yTemp);
+                // just to be safe if the longest string is made of thin letters.
+                m_ColumnWidth += 50;
+            }
+            else
+                m_ColumnWidth = 300;
+        }
+
+    private:
+        wxString MakeDisplayName(ProjectFile &pf) const
+        {
+            if (m_ShowProject)
+                return pf.relativeFilename + wxT(" (") + pf.GetParentProject()->GetTitle() + wxT(")");
+            else
+                return pf.relativeFilename;
+        }
     private:
         const VProjectFiles &m_pfiles;
         wxString temp;
         bool m_ShowProject;
+        int m_ColumnWidth;
     };
 
     Iterator iterator(pfiles, (pa->GetCount() > 1));
@@ -2003,7 +2043,7 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
 
     struct Iterator : IncrementalSelectIteratorIndexed
     {
-        Iterator(const wxArrayString &files) : m_files(files)
+        Iterator(const wxArrayString &files) : m_files(files), m_ColumnWidth(300)
         {
         }
 
@@ -2020,8 +2060,38 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
             return m_files[m_indices[index]];
         }
 
+        int GetColumnWidth(int column) const override
+        {
+            return m_ColumnWidth;
+        }
+
+        void CalcColumnWidth(wxListCtrl &list) override
+        {
+            int index = -1;
+            size_t length = 0;
+            for (size_t ii = 0; ii < m_files.size(); ++ii)
+            {
+                size_t itemLength = m_files[ii].length();
+                if (itemLength > length)
+                {
+                    index = ii;
+                    length = itemLength;
+                }
+            }
+            if (index >= 0 && index < int(m_files.size()))
+            {
+                int yTemp;
+                list.GetTextExtent(m_files[index], &m_ColumnWidth, &yTemp);
+                // just to be safe if the longest string is made of thin letters.
+                m_ColumnWidth += 50;
+            }
+            else
+                m_ColumnWidth = 300;
+        }
+
     private:
         const wxArrayString &m_files;
+        int m_ColumnWidth;
     };
     Iterator iter(files);
     GotoFile dlg(Manager::Get()->GetAppWindow(), &iter, _("Find file..."),

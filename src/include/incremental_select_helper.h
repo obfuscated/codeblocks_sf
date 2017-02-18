@@ -35,6 +35,7 @@ class DLLIMPORT IncrementalSelectIterator
         virtual wxString GetDisplayText(int index, int column) const = 0;
 
         virtual int GetColumnWidth(int column) const;
+        virtual void CalcColumnWidth(wxListCtrl &list);
 
 };
 

@@ -29,7 +29,7 @@ const long GotoFunctionDlg::ID_TEXTCTRL1 = wxNewId();
 const long GotoFunctionDlg::ID_LISTCTRL1 = wxNewId();
 //*)
 
-GotoFunctionDlg::Iterator::Iterator() : m_columnMode(false)
+GotoFunctionDlg::Iterator::Iterator() : m_columnLength{ 300, 100, 300 }, m_columnMode(false)
 {
 }
 
@@ -81,7 +81,7 @@ void GotoFunctionDlg::Iterator::SetColumnMode(bool flag)
     m_columnMode = flag;
 }
 
-void GotoFunctionDlg::Iterator::CalcLengths(wxListCtrl &list)
+void GotoFunctionDlg::Iterator::CalcColumnWidth(wxListCtrl &list)
 {
     m_columnLength[0] = m_columnLength[1] = m_columnLength[2] = 0;
 
@@ -187,7 +187,6 @@ void GotoFunctionDlg::BuildContent(wxWindow* parent, Iterator* iterator)
         m_mode->SetValue(true);
 
     m_list->SetIterator(iterator);
-    m_iterator->CalcLengths(*m_list);
     SwitchMode();
     m_handler.Init(m_list, m_text);
 }

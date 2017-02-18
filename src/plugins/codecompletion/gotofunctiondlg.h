@@ -58,9 +58,9 @@ class GotoFunctionDlg : public wxDialog
             wxString GetDisplayText(int index, int column) const override;
 
             void SetColumnMode(bool flag);
-            void CalcLengths(wxListCtrl &list);
 
             int GetColumnWidth(int column) const override;
+            void CalcColumnWidth(wxListCtrl &list) override;
 
             void Sort();
 

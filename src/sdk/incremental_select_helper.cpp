@@ -23,6 +23,10 @@ int IncrementalSelectIterator::GetColumnWidth(int column) const
     return wxLIST_AUTOSIZE;
 }
 
+void IncrementalSelectIterator::CalcColumnWidth(cb_unused wxListCtrl &list)
+{
+}
+
 int IncrementalSelectIteratorIndexed::GetFilteredCount() const
 {
     return m_indices.size();
@@ -72,6 +76,7 @@ void IncrementalSelectHandler::Init(wxListCtrl *list, wxTextCtrl *text)
     m_list->Connect(wxEVT_COMMAND_LIST_ITEM_ACTIVATED, wxListEventHandler(IncrementalSelectHandler::OnItemActivated),
                     nullptr, this);
 
+    m_iterator->CalcColumnWidth(*m_list);
     FilterItems();
 }
 
