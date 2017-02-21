@@ -303,3 +303,86 @@ void IncrementalListCtrl::SetIterator(IncrementalSelectIterator *iterator)
 {
     m_Iterator = iterator;
 }
+
+
+IncrementalSelectArrayIterator::IncrementalSelectArrayIterator(const wxArrayString &items) :
+    m_items(items), m_columnWidth(300)
+{
+}
+
+int IncrementalSelectArrayIterator::GetTotalCount() const
+{
+    return m_items.size();
+}
+const wxString& IncrementalSelectArrayIterator::GetItemFilterString(int index) const
+{
+    return m_items[index];
+}
+wxString IncrementalSelectArrayIterator::GetDisplayText(int index, int column) const
+{
+    return m_items[m_indices[index]];
+}
+int IncrementalSelectArrayIterator::GetColumnWidth(int column) const
+{
+    return m_columnWidth;
+}
+void IncrementalSelectArrayIterator::CalcColumnWidth(wxListCtrl &list)
+{
+    m_columnWidth = 300;
+}
+
+const long ID_TEXTCTRL1 = wxNewId();
+const long ID_RESULT_LIST = wxNewId();
+
+BEGIN_EVENT_TABLE(IncrementalSelectDialog, wxDialog)
+END_EVENT_TABLE()
+
+IncrementalSelectDialog::IncrementalSelectDialog(wxWindow* parent, IncrementalSelectIterator *iterator,
+                                                 const wxString &title, const wxString &message) :
+    m_handler(this, iterator)
+{
+    BuildContent(parent, iterator, title, message);
+
+    m_handler.Init(m_resultList, m_text);
+}
+
+IncrementalSelectDialog::~IncrementalSelectDialog()
+{
+    m_handler.DeInit(this);
+}
+
+void IncrementalSelectDialog::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterator, const wxString &title,
+                                           const wxString &message)
+{
+    Create(parent, wxID_ANY, title, wxDefaultPosition, wxDefaultSize,
+           wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX, _T("wxID_ANY"));
+    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    wxStaticText *labelCtrl = new wxStaticText(this, wxID_ANY, message, wxDefaultPosition, wxDefaultSize, 0,
+                                               _T("wxID_ANY"));
+    sizer->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator,
+                            _T("ID_TEXTCTRL1"));
+    m_text->SetFocus();
+    sizer->Add(m_text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    m_resultList = new IncrementalListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize,
+                                           wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL,
+                                           wxDefaultValidator, _T("ID_RESULT_LIST"));
+    m_resultList->SetMinSize(wxSize(500,300));
+    sizer->Add(m_resultList, 1, wxALL|wxEXPAND, 5);
+    SetSizer(sizer);
+    sizer->Fit(this);
+    sizer->SetSizeHints(this);
+
+    // Add first column
+    wxListItem column;
+    column.SetId(0);
+    column.SetText( _("Column") );
+    column.SetWidth(300);
+    m_resultList->InsertColumn(0, column);
+    m_resultList->SetIterator(iterator);
+}
+
+int IncrementalSelectDialog::GetSelection()
+{
+    return m_handler.GetSelection();
+}

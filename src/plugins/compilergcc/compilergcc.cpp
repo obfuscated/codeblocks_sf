@@ -34,6 +34,7 @@
 #include <configmanager.h>
 #include <compilercommandgenerator.h>
 #include <debuggermanager.h>
+#include <incremental_select_helper.h>
 #include <logmanager.h>
 #include <macrosmanager.h>
 #include <projectmanager.h>
@@ -194,6 +195,7 @@ int idMenuRun                                      = XRCID("idCompilerMenuRun");
 int idMenuKillProcess                              = XRCID("idCompilerMenuKillProcess");
 int idMenuSelectTarget                             = XRCID("idCompilerMenuSelectTarget");
 int idMenuSelectTargetOther[MAX_TARGETS]; // initialized in ctor
+int idMenuSelectTargetDialog                       = wxNewId();
 int idMenuNextError                                = XRCID("idCompilerMenuNextError");
 int idMenuPreviousError                            = XRCID("idCompilerMenuPreviousError");
 int idMenuClearErrors                              = XRCID("idCompilerMenuClearErrors");
@@ -276,6 +278,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_TEXT_URL(idBuildLog,                        CompilerGCC::TextURL)
 
     EVT_CHOICE(idToolTarget,                        CompilerGCC::OnSelectTarget)
+    EVT_MENU(idMenuSelectTargetDialog,              CompilerGCC::OnSelectTarget)
 
     EVT_PIPEDPROCESS_STDOUT_RANGE(idGCCProcess1,     idGCCProcess16, CompilerGCC::OnGCCOutput)
     EVT_PIPEDPROCESS_STDERR_RANGE(idGCCProcess1,     idGCCProcess16, CompilerGCC::OnGCCError)
@@ -1440,6 +1443,12 @@ void CompilerGCC::DoRecreateTargetMenu()
               tgtStr = m_pProject->GetFirstValidBuildTargetName(); // last-chance default
           if ( preferredTarget.IsEmpty() )
               wsp->SetPreferredTarget(tgtStr);
+        }
+
+        if (m_TargetMenu)
+        {
+            m_TargetMenu->Append(idMenuSelectTargetDialog, _("Select target..."), _("Shows a dialog with all targets"));
+            m_TargetMenu->AppendSeparator();
         }
 
         // fill the menu and combo
@@ -3235,18 +3244,37 @@ void CompilerGCC::OnKillProcess(cb_unused wxCommandEvent& event)
 
 void CompilerGCC::OnSelectTarget(wxCommandEvent& event)
 {
+    int selection = -1;
+    bool updateTools = false;
+
     if (event.GetId() == idToolTarget)
     {   // through the toolbar
-        const int sel = event.GetSelection();
-        Manager::Get()->GetProjectManager()->GetWorkspace()->SetPreferredTarget( GetTargetString(sel) );
-        DoUpdateTargetMenu(sel);
+        selection = event.GetSelection();
+    }
+    else if (event.GetId() == idMenuSelectTargetDialog)
+    {
+        // The select target menu is clicked, so we want to show a dialog with all targets
+        IncrementalSelectArrayIterator iterator(m_Targets);
+        IncrementalSelectDialog dlg(Manager::Get()->GetAppWindow(), &iterator, _("Select target..."),
+                                    _("Choose target:"));
+        if (dlg.ShowModal() == wxID_OK)
+        {
+            selection = dlg.GetSelection();
+            updateTools = true;
+        }
     }
     else
     {   // through Build->SelectTarget
-        const int i = event.GetId() - idMenuSelectTargetOther[0];
-        Manager::Get()->GetProjectManager()->GetWorkspace()->SetPreferredTarget( GetTargetString(i) );
-        DoUpdateTargetMenu(i);
-        m_pToolTarget->SetSelection(i);
+        selection = event.GetId() - idMenuSelectTargetOther[0];
+        updateTools = true;
+    }
+
+    if (selection >= 0)
+    {
+        Manager::Get()->GetProjectManager()->GetWorkspace()->SetPreferredTarget( GetTargetString(selection) );
+        DoUpdateTargetMenu(selection);
+        if (updateTools)
+            m_pToolTarget->SetSelection(selection);
     }
 }
 
