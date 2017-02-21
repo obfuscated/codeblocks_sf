@@ -75,6 +75,21 @@ class DLLIMPORT IncrementalSelectHandler : public wxEvtHandler
         IncrementalSelectIterator *m_iterator;
 };
 
+/// Class that implements a virtual list control that uses an IncrementalSelectIterator to populate the list items.
+class DLLIMPORT IncrementalListCtrl : public wxListCtrl
+{
+    public:
+        IncrementalListCtrl(wxWindow *parent, wxWindowID winid = wxID_ANY, const wxPoint& pos = wxDefaultPosition,
+                            const wxSize& size = wxDefaultSize, long style = wxLC_ICON,
+                            const wxValidator &validator = wxDefaultValidator,
+                            const wxString &name = wxListCtrlNameStr);
+
+        wxString OnGetItemText(long item, long column) const override;
+        void SetIterator(IncrementalSelectIterator *iterator);
+    private:
+        IncrementalSelectIterator *m_Iterator;
+};
+
 
 #endif // INCREMENTALSELECTLISTBASE_H
 

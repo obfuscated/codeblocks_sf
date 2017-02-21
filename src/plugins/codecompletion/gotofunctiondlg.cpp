@@ -115,32 +115,6 @@ void GotoFunctionDlg::Iterator::Sort()
     });
 }
 
-class GotoFunctionListCtrl : public wxListCtrl
-{
-    public:
-        GotoFunctionListCtrl(wxWindow *parent, wxWindowID winid = wxID_ANY, const wxPoint& pos = wxDefaultPosition,
-                             const wxSize& size = wxDefaultSize, long style = wxLC_ICON,
-                             const wxValidator &validator = wxDefaultValidator,
-                             const wxString &name = wxListCtrlNameStr) :
-            wxListCtrl(parent, winid, pos, size, style, validator, name)
-        {
-        }
-
-        wxString OnGetItemText(long item, long column) const override
-        {
-            //return F(wxT("Item: %ld-%ld"), item, column);
-            return m_Iterator->GetDisplayText(item, column);
-        }
-
-        void SetIterator(IncrementalSelectIterator *iterator)
-        {
-            m_Iterator = iterator;
-        }
-    private:
-        IncrementalSelectIterator *m_Iterator;
-};
-
-
 BEGIN_EVENT_TABLE(GotoFunctionDlg, wxDialog)
     //(*EventTable(GotoFunctionDlg)
     //*)
@@ -173,7 +147,7 @@ void GotoFunctionDlg::BuildContent(wxWindow* parent, Iterator* iterator)
     m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     m_text->SetFocus();
     BoxSizer1->Add(m_text, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-    m_list = new GotoFunctionListCtrl(this, ID_LISTCTRL1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_LISTCTRL1"));
+    m_list = new IncrementalListCtrl(this, ID_LISTCTRL1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_LISTCTRL1"));
     m_list->SetMinSize(wxSize(500,300));
     BoxSizer1->Add(m_list, 1, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
     SetSizer(BoxSizer1);

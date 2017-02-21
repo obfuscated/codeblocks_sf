@@ -20,7 +20,7 @@
 				<border>5</border>
 			</object>
 			<object class="sizeritem">
-				<object class="wxListCtrl" name="ID_RESULT_LIST" subclass="GotoFileListCtrl" variable="m_ResultList" member="yes">
+				<object class="wxListCtrl" name="ID_RESULT_LIST" subclass="IncrementalListCtrl" variable="m_ResultList" member="yes">
 					<minsize>500,300</minsize>
 					<style>wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL</style>
 				</object>

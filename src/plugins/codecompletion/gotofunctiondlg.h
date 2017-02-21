@@ -21,8 +21,6 @@
 
 #include "incremental_select_helper.h"
 
-class GotoFunctionListCtrl;
-
 /** The goto function dialog allow user to type a function name, and filter out the functions
  *
  * For example, you have three functions in a cpp file
@@ -79,7 +77,7 @@ class GotoFunctionDlg : public wxDialog
     private:
 
         //(*Declarations(GotoFunctionDlg)
-        GotoFunctionListCtrl* m_list;
+        IncrementalListCtrl* m_list;
         wxCheckBox* m_mode;
         wxTextCtrl* m_text;
         //*)

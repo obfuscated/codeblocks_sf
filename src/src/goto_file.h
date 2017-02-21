@@ -15,7 +15,6 @@
 
 #include "incremental_select_helper.h"
 
-class GotoFileListCtrl;
 
 class GotoFile: public wxDialog
 {
@@ -34,7 +33,7 @@ class GotoFile: public wxDialog
     private:
 
         //(*Declarations(GotoFile)
-        GotoFileListCtrl* m_ResultList;
+        IncrementalListCtrl* m_ResultList;
         wxBoxSizer* m_sizer;
         wxTextCtrl* m_Text;
         //*)

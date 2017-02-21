@@ -287,3 +287,19 @@ int IncrementalSelectHandler::GetSelection()
     else
         return m_iterator->GetUnfilteredIndex(index);
 }
+
+IncrementalListCtrl::IncrementalListCtrl(wxWindow *parent, wxWindowID winid, const wxPoint& pos, const wxSize& size,
+                                         long style, const wxValidator &validator, const wxString &name) :
+    wxListCtrl(parent, winid, pos, size, style, validator, name)
+{
+}
+
+wxString IncrementalListCtrl::OnGetItemText(long item, long column) const
+{
+    return m_Iterator->GetDisplayText(item, column);
+}
+
+void IncrementalListCtrl::SetIterator(IncrementalSelectIterator *iterator)
+{
+    m_Iterator = iterator;
+}
