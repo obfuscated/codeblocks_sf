@@ -67,7 +67,6 @@ namespace
         WXS_ST(wxTB_DOCKABLE)
         WXS_ST(wxTB_VERTICAL)
         WXS_ST(wxTB_HORIZONTAL)
-        WXS_ST(wxTB_3DBUTTONS)
         WXS_ST(wxTB_TEXT)
         WXS_ST(wxTB_NOICONS)
         WXS_ST(wxTB_NODIVIDER)
