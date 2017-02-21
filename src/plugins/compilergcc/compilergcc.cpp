@@ -1445,7 +1445,7 @@ void CompilerGCC::DoRecreateTargetMenu()
         // fill the menu and combo
         for (size_t x = 0; x < m_Targets.GetCount(); ++x)
         {
-            if (m_TargetMenu)
+            if (m_TargetMenu && x < MAX_TARGETS)
             {
                 wxString help;
                 help.Printf(_("Build target '%s' in current project"), GetTargetString(x).wx_str());
