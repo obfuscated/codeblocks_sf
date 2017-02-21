@@ -13,9 +13,12 @@
 #include <wx/event.h>
 #include <vector>
 
+#ifndef CB_PRECOMP
+    #include <wx/listctrl.h>
+#endif // CB_PRECOMP
+
 class wxCommandEvent;
 class wxKeyEvent;
-class wxListCtrl;
 class wxListEvent;
 class wxTextCtrl;
 

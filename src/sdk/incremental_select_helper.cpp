@@ -10,8 +10,9 @@
 
 #ifndef CB_PRECOMP
     #include <wx/dialog.h>
+    #include <wx/sizer.h>
+    #include <wx/stattext.h>
     #include <wx/textctrl.h>
-    #include <wx/listctrl.h>
 #endif
 
 IncrementalSelectIterator::~IncrementalSelectIterator()
