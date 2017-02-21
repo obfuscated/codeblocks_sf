@@ -207,10 +207,11 @@ namespace platform
 // FileManager::Save uses FileManager::WriteWxStringToFile to write data, its operation is otherwise exactly identical.
 //
 // 1. If file does not exist, create in exclusive mode, save, return success or failure. Exclusive mode is presumably "safer".
-// 2. Otherwise (file exists), save to temporary.
-// 3. Attempt to atomically replace original with temporary.
-// 4. If this fails, rename temporary to document failure.
-// 5. No more delayed deletes -- This requires special paths for when the application shuts down
+// 2. If the file is a symlink, write directly so that the symlink structure is kept.
+// 3. Otherwise (file exists), save to temporary.
+// 4. Attempt to atomically replace original with temporary.
+// 5. If this fails, rename temporary to document failure.
+// 6. No more delayed deletes -- This requires special paths for when the application shuts down
 //    and only lends to race conditions and a possible crash-on-exit.
 //    If you can't trust your computer to sync data to disk properly, you already lost.
 
@@ -223,7 +224,9 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
 #if wxCHECK_VERSION(3, 0, 0)
     else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
     {
-        // Enable editing symlinks.
+        // Enable editing symlinks. Do not use temp file->replace procedure
+        // since that would get rid of the symlink. Writing directly causes
+        // edits to reflect to the target file.
         return wxFile(name, wxFile::write).Write(data, len) == len;
     }
 #endif // wxCHECK_VERSION(3, 0, 0)
@@ -269,7 +272,9 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
 #if wxCHECK_VERSION(3, 0, 0)
     else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
     {
-        // Enable editing symlinks.
+        // Enable editing symlinks. Do not use temp file->replace procedure
+        // since that would get rid of the symlink. Writing directly causes
+        // edits to reflect to the target file.
         wxFile f(name, wxFile::write);
         return WriteWxStringToFile(f, data, encoding, bom);
     }
