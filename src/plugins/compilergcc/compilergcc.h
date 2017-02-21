@@ -25,8 +25,6 @@
 #include "compilererrors.h"
 #include "compiler_defs.h"
 
-#define MAX_TARGETS 128
-
 enum CompilerOptionsType
 {
     cotGlobal = 0,

@@ -194,8 +194,14 @@ int idMenuCompileAndRun                            = XRCID("idCompilerMenuCompil
 int idMenuRun                                      = XRCID("idCompilerMenuRun");
 int idMenuKillProcess                              = XRCID("idCompilerMenuKillProcess");
 int idMenuSelectTarget                             = XRCID("idCompilerMenuSelectTarget");
-int idMenuSelectTargetOther[MAX_TARGETS]; // initialized in ctor
+
+// Limit the number of menu items to try to make them all visible on the screen.
+// Scrolling menus is not the best user experience.
+const int maxTargetInMenus = 40;
+int idMenuSelectTargetOther[maxTargetInMenus]; // initialized in ctor
 int idMenuSelectTargetDialog                       = wxNewId();
+int idMenuSelectTargetHasMore                      = wxNewId();
+
 int idMenuNextError                                = XRCID("idCompilerMenuNextError");
 int idMenuPreviousError                            = XRCID("idCompilerMenuPreviousError");
 int idMenuClearErrors                              = XRCID("idCompilerMenuClearErrors");
@@ -356,7 +362,7 @@ void CompilerGCC::OnAttach()
 
     m_timerIdleWakeUp.SetOwner(this, idTimerPollCompiler);
 
-    for (int i = 0; i < MAX_TARGETS; ++i)
+    for (int i = 0; i < maxTargetInMenus; ++i)
         idMenuSelectTargetOther[i] = wxNewId();
 
     DoRegisterCompilers();
@@ -1454,7 +1460,7 @@ void CompilerGCC::DoRecreateTargetMenu()
         // fill the menu and combo
         for (size_t x = 0; x < m_Targets.GetCount(); ++x)
         {
-            if (m_TargetMenu && x < MAX_TARGETS)
+            if (m_TargetMenu && x < maxTargetInMenus)
             {
                 wxString help;
                 help.Printf(_("Build target '%s' in current project"), GetTargetString(x).wx_str());
@@ -1464,8 +1470,15 @@ void CompilerGCC::DoRecreateTargetMenu()
                 m_pToolTarget->Append(GetTargetString(x));
         }
 
+        if (m_TargetMenu && m_Targets.size() > maxTargetInMenus)
+        {
+            m_TargetMenu->Append(idMenuSelectTargetHasMore, _("More targets available..."),
+                                 _("Use the select target menu item to see them!"));
+            m_TargetMenu->Enable(idMenuSelectTargetHasMore, false);
+        }
+
         // connect menu events
-        Connect( idMenuSelectTargetOther[0],  idMenuSelectTargetOther[MAX_TARGETS - 1],
+        Connect( idMenuSelectTargetOther[0],  idMenuSelectTargetOther[maxTargetInMenus - 1],
                 wxEVT_COMMAND_MENU_SELECTED,
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
                 &CompilerGCC::OnSelectTarget );
@@ -1510,7 +1523,7 @@ void CompilerGCC::DoUpdateTargetMenu(int targetIndex)
     // update menu
     if (m_TargetMenu)
     {
-        for (int i = 0; i < MAX_TARGETS; ++i)
+        for (int i = 0; i < maxTargetInMenus; ++i)
         {
             wxMenuItem* item = m_TargetMenu->FindItem(idMenuSelectTargetOther[i]);
             if (!item || !item->IsCheckable())
