@@ -2939,43 +2939,49 @@ void cbEditor::OnAfterBuildContextMenu(cb_unused ModuleType type)
 
 void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
 {
-    int oldMarginWidth = m_pControl->GetMarginWidth(C_LINE_MARGIN);
-    int oldMarginType = m_pControl->GetMarginType(C_LINE_MARGIN);
+    cbStyledTextCtrl * control = GetControl();
+    if (!control)
+        return;
+
+    // Remember same settings, so we can restore them.
+    int oldMarginWidth = control->GetMarginWidth(C_LINE_MARGIN);
+    int oldMarginType = control->GetMarginType(C_LINE_MARGIN);
+    int oldEdgeMode = control->GetEdgeMode();
 
     // print line numbers?
-    m_pControl->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);
+    control->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);
     if (!line_numbers)
     {
-        m_pControl->SetPrintMagnification(-1);
-        m_pControl->SetMarginWidth(C_LINE_MARGIN, 0);
+        control->SetPrintMagnification(-1);
+        control->SetMarginWidth(C_LINE_MARGIN, 0);
     }
     else
     {
-        m_pControl->SetPrintMagnification(-2);
-        m_pControl->SetMarginWidth(C_LINE_MARGIN, 1);
+        control->SetPrintMagnification(-2);
+        control->SetMarginWidth(C_LINE_MARGIN, 1);
     }
     // never print the gutter line
-    m_pControl->SetEdgeMode(wxSCI_EDGE_NONE);
+    control->SetEdgeMode(wxSCI_EDGE_NONE);
 
     switch (pcm)
     {
         case pcmAsIs:
-            m_pControl->SetPrintColourMode(wxSCI_PRINT_NORMAL);
+            control->SetPrintColourMode(wxSCI_PRINT_NORMAL);
             break;
         case pcmBlackAndWhite:
-            m_pControl->SetPrintColourMode(wxSCI_PRINT_BLACKONWHITE);
+            control->SetPrintColourMode(wxSCI_PRINT_BLACKONWHITE);
             break;
         case pcmColourOnWhite:
-            m_pControl->SetPrintColourMode(wxSCI_PRINT_COLOURONWHITE);
+            control->SetPrintColourMode(wxSCI_PRINT_COLOURONWHITE);
             break;
         case pcmInvertColours:
-            m_pControl->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
+            control->SetPrintColourMode(wxSCI_PRINT_INVERTLIGHT);
             break;
         default:
             break;
     }
     InitPrinting();
-    wxPrintout* printout = new cbEditorPrintout(m_Filename, m_pControl, selectionOnly);
+    wxPrintout* printout = new cbEditorPrintout(m_Filename, control, selectionOnly);
     if (!g_printer->Print(this, printout, true))
     {
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
@@ -2994,12 +3000,14 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
     delete printout;
 
     // revert line number settings
-    m_pControl->SetMarginType(C_LINE_MARGIN, oldMarginType);
-    m_pControl->SetMarginWidth(C_LINE_MARGIN, oldMarginWidth);
+    control->SetMarginType(C_LINE_MARGIN, oldMarginType);
+    control->SetMarginWidth(C_LINE_MARGIN, oldMarginWidth);
 
     // revert gutter settings
-    ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
-    m_pControl->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
+    control->SetEdgeMode(oldEdgeMode);
+
+    // restore line numbers if needed
+    m_pData->SetLineNumberColWidth(m_pControl && m_pControl2);
 }
 
 // events
