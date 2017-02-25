@@ -329,7 +329,28 @@ int IncrementalSelectArrayIterator::GetColumnWidth(int column) const
 }
 void IncrementalSelectArrayIterator::CalcColumnWidth(wxListCtrl &list)
 {
-    m_columnWidth = 300;
+    int length = 0;
+    wxString longest;
+
+    for (const auto &item : m_items)
+    {
+        int itemLength = item.length();
+        if (length < itemLength)
+        {
+            longest = item;
+            length = itemLength;
+        }
+    }
+
+    if (length > 0)
+    {
+        int yTemp;
+        list.GetTextExtent(longest, &m_columnWidth, &yTemp);
+        // just to be safe if the longest string is made of thin letters.
+        m_columnWidth += 50;
+    }
+    else
+        m_columnWidth = 300;
 }
 
 const long ID_TEXTCTRL1 = wxNewId();
