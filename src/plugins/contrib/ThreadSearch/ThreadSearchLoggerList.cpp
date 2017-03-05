@@ -532,7 +532,7 @@ struct Item
         int c = directory.compare(item.directory);
         if (c)
             return c;
-            c = filename.compare(item.filename);
+        c = filename.compare(item.filename);
 
         if (c)
             return c;
