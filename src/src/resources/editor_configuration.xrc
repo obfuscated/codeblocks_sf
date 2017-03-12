@@ -143,7 +143,6 @@
 																							<value>4</value>
 																							<min>1</min>
 																							<max>16</max>
-																							<size>71,21</size>
 																						</object>
 																						<flag>wxLEFT|wxALIGN_TOP</flag>
 																						<border>16</border>
@@ -338,7 +337,6 @@
 																							<value>3</value>
 																							<min>1</min>
 																							<max>8</max>
-																							<size>71,21</size>
 																						</object>
 																						<flag>wxLEFT|wxEXPAND</flag>
 																						<border>4</border>
@@ -523,7 +521,6 @@
 																						<item>Always</item>
 																						<item>Only after indent</item>
 																					</content>
-																					<size>95,24</size>
 																				</object>
 																				<flag>wxLEFT|wxEXPAND</flag>
 																				<border>5</border>

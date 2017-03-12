@@ -11,15 +11,12 @@
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT9">
 							<label>Project:</label>
-							<size>42,13</size>
 						</object>
 						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 					</object>
 					<object class="sizeritem">
-						<object class="wxChoice" name="ID_CHOICE1">
-							<size>126,21</size>
-						</object>
+						<object class="wxChoice" name="ID_CHOICE1" />
 						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 						<border>5</border>
 						<option>1</option>
@@ -187,7 +184,6 @@
 							<object class="sizeritem">
 								<object class="wxStaticText" name="ID_STATICTEXT7">
 									<label>Code and comments:</label>
-									<size>104,13</size>
 								</object>
 								<flag>wxALIGN_TOP</flag>
 							</object>
