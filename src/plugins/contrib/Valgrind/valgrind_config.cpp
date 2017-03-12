@@ -24,74 +24,74 @@ const long ValgrindConfigurationPanel::IdCachegrindArgs = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(ValgrindConfigurationPanel,cbConfigurationPanel)
-	//(*EventTable(ValgrindConfigurationPanel)
-	//*)
+    //(*EventTable(ValgrindConfigurationPanel)
+    //*)
 END_EVENT_TABLE()
 
 ValgrindConfigurationPanel::ValgrindConfigurationPanel(wxWindow *parent)
 {
-	BuildContent(parent);
-	LoadSettings();
+    BuildContent(parent);
+    LoadSettings();
 }
 
 void ValgrindConfigurationPanel::BuildContent(wxWindow *parent)
 {
-	//(*Initialize(ValgrindConfigurationPanel)
-	wxStaticText* CacheGrindArgs;
-	wxButton* BrowseButton;
-	wxStaticText* MemCheckArgs;
-	wxStaticText* StaticText1;
-	wxBoxSizer* MemCheckArgSizer;
-	wxStaticBoxSizer* MemCheckOptSizer;
-	wxBoxSizer* MainSizer;
-	wxStaticBoxSizer* CachegrindOptSizer;
-	wxBoxSizer* ExecSizer;
+    //(*Initialize(ValgrindConfigurationPanel)
+    wxStaticText* CacheGrindArgs;
+    wxButton* BrowseButton;
+    wxStaticText* MemCheckArgs;
+    wxStaticText* StaticText1;
+    wxBoxSizer* MemCheckArgSizer;
+    wxStaticBoxSizer* MemCheckOptSizer;
+    wxBoxSizer* MainSizer;
+    wxStaticBoxSizer* CachegrindOptSizer;
+    wxBoxSizer* ExecSizer;
 
-	Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
-	MainSizer = new wxBoxSizer(wxVERTICAL);
-	ExecSizer = new wxBoxSizer(wxHORIZONTAL);
-	StaticText1 = new wxStaticText(this, wxID_ANY, _("Executable:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-	ExecSizer->Add(StaticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	m_ExecutablePath = new wxTextCtrl(this, IdExecutablePath, _("valgrind"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdExecutablePath"));
-	ExecSizer->Add(m_ExecutablePath, 1, wxALL|wxEXPAND, 5);
-	BrowseButton = new wxButton(this, IdBrowseButton, _("..."), wxDefaultPosition, wxSize(29,28), 0, wxDefaultValidator, _T("IdBrowseButton"));
-	ExecSizer->Add(BrowseButton, 0, wxALL|wxALIGN_BOTTOM, 5);
-	MainSizer->Add(ExecSizer, 0, wxALL|wxEXPAND, 0);
-	MemCheckOptSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("MemCheck options"));
-	MemCheckArgSizer = new wxBoxSizer(wxHORIZONTAL);
-	MemCheckArgs = new wxStaticText(this, wxID_ANY, _("Args:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-	MemCheckArgSizer->Add(MemCheckArgs, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	m_MemCheckArgs = new wxTextCtrl(this, IdMemCheckArgs, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdMemCheckArgs"));
-	MemCheckArgSizer->Add(m_MemCheckArgs, 1, wxALL|wxEXPAND, 5);
-	MemCheckOptSizer->Add(MemCheckArgSizer, 0, wxALL|wxEXPAND, 0);
-	m_FullMemCheck = new wxCheckBox(this, IdFullMemCheck, _("Full MemCheck"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdFullMemCheck"));
-	m_FullMemCheck->SetValue(true);
-	MemCheckOptSizer->Add(m_FullMemCheck, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	m_TrackOrigins = new wxCheckBox(this, IdTrackOrigins, _("Track Origins"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdTrackOrigins"));
-	m_TrackOrigins->SetValue(true);
-	MemCheckOptSizer->Add(m_TrackOrigins, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	m_ShowReachable = new wxCheckBox(this, IdShowReachable, _("Show reachable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdShowReachable"));
-	m_ShowReachable->SetValue(false);
-	MemCheckOptSizer->Add(m_ShowReachable, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	MainSizer->Add(MemCheckOptSizer, 0, wxALL|wxEXPAND, 5);
-	CachegrindOptSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Cachegrind options"));
-	CacheGrindArgs = new wxStaticText(this, wxID_ANY, _("Args:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
-	CachegrindOptSizer->Add(CacheGrindArgs, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	m_CachegrindArgs = new wxTextCtrl(this, IdCachegrindArgs, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdCachegrindArgs"));
-	CachegrindOptSizer->Add(m_CachegrindArgs, 1, wxALL|wxEXPAND, 5);
-	MainSizer->Add(CachegrindOptSizer, 0, wxALL|wxEXPAND, 5);
-	SetSizer(MainSizer);
-	MainSizer->Fit(this);
-	MainSizer->SetSizeHints(this);
+    Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
+    MainSizer = new wxBoxSizer(wxVERTICAL);
+    ExecSizer = new wxBoxSizer(wxHORIZONTAL);
+    StaticText1 = new wxStaticText(this, wxID_ANY, _("Executable:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    ExecSizer->Add(StaticText1, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    m_ExecutablePath = new wxTextCtrl(this, IdExecutablePath, _("valgrind"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdExecutablePath"));
+    ExecSizer->Add(m_ExecutablePath, 1, wxALL|wxEXPAND, 5);
+    BrowseButton = new wxButton(this, IdBrowseButton, _("..."), wxDefaultPosition, wxSize(29,28), 0, wxDefaultValidator, _T("IdBrowseButton"));
+    ExecSizer->Add(BrowseButton, 0, wxALL|wxALIGN_BOTTOM, 5);
+    MainSizer->Add(ExecSizer, 0, wxALL|wxEXPAND, 0);
+    MemCheckOptSizer = new wxStaticBoxSizer(wxVERTICAL, this, _("MemCheck options"));
+    MemCheckArgSizer = new wxBoxSizer(wxHORIZONTAL);
+    MemCheckArgs = new wxStaticText(this, wxID_ANY, _("Args:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    MemCheckArgSizer->Add(MemCheckArgs, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    m_MemCheckArgs = new wxTextCtrl(this, IdMemCheckArgs, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdMemCheckArgs"));
+    MemCheckArgSizer->Add(m_MemCheckArgs, 1, wxALL|wxEXPAND, 5);
+    MemCheckOptSizer->Add(MemCheckArgSizer, 0, wxALL|wxEXPAND, 0);
+    m_FullMemCheck = new wxCheckBox(this, IdFullMemCheck, _("Full MemCheck"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdFullMemCheck"));
+    m_FullMemCheck->SetValue(true);
+    MemCheckOptSizer->Add(m_FullMemCheck, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    m_TrackOrigins = new wxCheckBox(this, IdTrackOrigins, _("Track Origins"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdTrackOrigins"));
+    m_TrackOrigins->SetValue(true);
+    MemCheckOptSizer->Add(m_TrackOrigins, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    m_ShowReachable = new wxCheckBox(this, IdShowReachable, _("Show reachable"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdShowReachable"));
+    m_ShowReachable->SetValue(false);
+    MemCheckOptSizer->Add(m_ShowReachable, 1, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
+    MainSizer->Add(MemCheckOptSizer, 0, wxALL|wxEXPAND, 5);
+    CachegrindOptSizer = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Cachegrind options"));
+    CacheGrindArgs = new wxStaticText(this, wxID_ANY, _("Args:"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
+    CachegrindOptSizer->Add(CacheGrindArgs, 0, wxALL|wxALIGN_CENTER_VERTICAL, 5);
+    m_CachegrindArgs = new wxTextCtrl(this, IdCachegrindArgs, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("IdCachegrindArgs"));
+    CachegrindOptSizer->Add(m_CachegrindArgs, 1, wxALL|wxEXPAND, 5);
+    MainSizer->Add(CachegrindOptSizer, 0, wxALL|wxEXPAND, 5);
+    SetSizer(MainSizer);
+    MainSizer->Fit(this);
+    MainSizer->SetSizeHints(this);
 
-	Connect(IdBrowseButton,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ValgrindConfigurationPanel::OnBrowseButtonClick);
-	//*)
+    Connect(IdBrowseButton,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ValgrindConfigurationPanel::OnBrowseButtonClick);
+    //*)
 }
 
 ValgrindConfigurationPanel::~ValgrindConfigurationPanel()
 {
-	//(*Destroy(ValgrindConfigurationPanel)
-	//*)
+    //(*Destroy(ValgrindConfigurationPanel)
+    //*)
 }
 
 void ValgrindConfigurationPanel::LoadSettings()

@@ -17,17 +17,17 @@ class wxWindow;
 class ValgrindListLog : public ListCtrlLogger, public wxEvtHandler
 {
 public:
-	ValgrindListLog(const wxArrayString& Titles, wxArrayInt& Widths);
-	~ValgrindListLog();
-	wxWindow* CreateControl(wxWindow* Parent);
-	void DestroyControls();
+    ValgrindListLog(const wxArrayString& Titles, wxArrayInt& Widths);
+    ~ValgrindListLog();
+    wxWindow* CreateControl(wxWindow* Parent);
+    void DestroyControls();
 
     void Fit();
 private:
-	void OnDoubleClick(wxCommandEvent& Event);
-	void SyncEditor(int selIndex);
+    void OnDoubleClick(wxCommandEvent& Event);
+    void SyncEditor(int selIndex);
 
-	DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // VALGRINDLISTLOG_H
