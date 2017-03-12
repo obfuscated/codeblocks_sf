@@ -30,6 +30,8 @@
 #include <wx/progdlg.h>
 #include <wx/textfile.h>
 
+#include <algorithm>
+
 void CountLines(ProjectCodeStats& stat, const wxFileName &filename, const LanguageDef &language);
 
 CodeStatExecDlg::CodeStatExecDlg(wxWindow* parent) :
@@ -255,9 +257,13 @@ void CodeStatExecDlg::DoParseWorkspace()
     m_progress = nullptr;
 }
 
-void CodeStatExecDlg::UpdateProgress() {
-    if (m_progress)
-        m_progress->Update((100 * m_currentFile)/(m_numFiles - 1));
+void CodeStatExecDlg::UpdateProgress()
+{
+    if (m_progress && m_numFiles >= 2 && m_currentFile >= 0)
+    {
+        const int percentage = std::min(100, (100 * m_currentFile) / m_numFiles);
+        m_progress->Update(percentage);
+    }
 }
 
 void CodeStatExecDlg::ShowResults(int index) {
