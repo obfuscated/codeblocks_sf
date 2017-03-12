@@ -475,7 +475,9 @@ void Valgrind::OnMemCheckRun(wxCommandEvent& /*event*/)
     wxString XmlOutputCommand;
     if(Version >= 350)
     {
-        XmlOutputCommand = _T(" --xml-file=") + XmlOutputFile;
+        XmlOutputCommand = XmlOutputFile;
+        QuoteStringIfNeeded(XmlOutputCommand);
+        XmlOutputCommand = _T(" --xml-file=") + XmlOutputCommand;
     }
     const bool UseXml = true;
     wxString CommandLine = BuildMemCheckCmd() + wxT(" --xml=yes") + XmlOutputCommand + _T(" \"");
