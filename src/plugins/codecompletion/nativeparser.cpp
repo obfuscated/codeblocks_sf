@@ -695,7 +695,13 @@ bool NativeParser::RemoveFileFromParser(cbProject* project, const wxString& file
 void NativeParser::RereadParserOptions()
 {
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
-    if (cfg->ReadBool(_T("/use_symbols_browser"), true))
+#if wxCHECK_VERSION(3, 0, 0)
+    bool useSymbolBrowser = false;
+#else
+    bool useSymbolBrowser = cfg->ReadBool(_T("/use_symbols_browser"), true);
+#endif // wxCHECK_VERSION
+
+    if (useSymbolBrowser)
     {
         if (!m_ClassBrowser)
         {
@@ -711,7 +717,7 @@ void NativeParser::RereadParserOptions()
             UpdateClassBrowser();
         }
     }
-    else if (!cfg->ReadBool(_T("/use_symbols_browser"), true) && m_ClassBrowser)
+    else if (!useSymbolBrowser && m_ClassBrowser)
         RemoveClassBrowser();
 
     const bool parserPerWorkspace = cfg->ReadBool(_T("/parser_per_workspace"), false);
@@ -961,6 +967,10 @@ wxArrayString& NativeParser::GetProjectSearchDirs(cbProject* project)
 
 void NativeParser::CreateClassBrowser()
 {
+#if wxCHECK_VERSION(3, 0, 0)
+    return;
+#endif // wxCHECK_VERSION
+
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
     if (m_ClassBrowser || !cfg->ReadBool(_T("/use_symbols_browser"), true))
         return;
