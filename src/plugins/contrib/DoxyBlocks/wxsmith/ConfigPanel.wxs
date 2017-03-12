@@ -113,12 +113,11 @@
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer5" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="no">
+													<object class="wxStaticText" name="wxID_ANY" variable="StaticText1" member="no">
 														<label>PROJECT__NUMBER</label>
 													</object>
 													<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="ID_TEXTCTRL_PROJECTNUMBER" variable="TextCtrlProjectNumber" member="yes">
@@ -137,26 +136,22 @@
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer18" member="no">
 												<object class="sizeritem">
-													<object class="wxStaticText" name="ID_STATICTEXT8" variable="StaticText8" member="no">
+													<object class="wxStaticText" name="wxID_ANY" variable="StaticText8" member="no">
 														<label>OUTPUT__DIRECTORY</label>
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxTextCtrl" name="ID_TEXTCTRLOUTPUT_DIRECTORY" variable="TextCtrlOutputDirectory" member="yes">
-														<size>252,21</size>
 														<tooltip>The OUTPUT__DIRECTORY tag is used to specify the (relative or&#x0A;absolute) base path where the generated documentation will be put.&#x0A;If a relative path is entered, it will be relative to the location&#x0A;where doxygen was started. If left blank the current directory will be used.&#x0A;&#x0A;DoxyBlocks will use the path name entered here to create a directory&#x0A;relative to &lt;project dir&gt;. This allows you to create separate doxygen&#x0A;directories for projects that reside in the same directory, or just use a&#x0A;different directory name. If this field is blank, documents will be created&#x0A;in &lt;project dir&gt;/doxygen. Enter directory names without dots, &#x0A;leading separators, volume names, etc. DoxyBlocks does validation on&#x0A;the path name and will strip extraneous characters.&#x0A;&#x0A;Examples:&#x0A;[blank]                     -&gt; &lt;project dir&gt;/doxygen.&#x0A;&quot;docs&quot;                      -&gt; &lt;project dir&gt;/docs.&#x0A;&quot;docs/sub1/sub2&quot;  -&gt; &lt;project dir&gt;/docs/sub1/sub2.&#x0A;&quot;doxygen/docs&quot;     -&gt; &lt;project dir&gt;/doxygen/docs.&#x0A;</tooltip>
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
@@ -164,9 +159,8 @@
 													<option>2</option>
 												</object>
 											</object>
-											<flag>wxTOP|wxBOTTOM|wxLEFT|wxALIGN_LEFT</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer20" member="no">
@@ -225,27 +219,26 @@
 													</object>
 													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
-													<option>1</option>
+													<option>2</option>
 												</object>
 											</object>
-											<flag>wxALL|wxALIGN_LEFT</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>2</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer5" member="no">
 										<label>Build</label>
+										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="ID_CHECKBOX_EXTRACT_ALL" variable="CheckBoxExtractAll" member="yes">
 												<label>EXTRACT__ALL</label>
 												<tooltip>If the EXTRACT__ALL tag is set to YES doxygen will assume all entities in&#x0A;documentation are documented, even if no documentation was available.&#x0A;Private class members and static file members will be hidden unless&#x0A;the EXTRACT__PRIVATE and EXTRACT__STATIC tags are set to YES</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -254,7 +247,7 @@
 												<label>EXTRACT__PRIVATE</label>
 												<tooltip>If the EXTRACT__PRIVATE tag is set to YES all private members of a&#x0A;class will be included in the documentation.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -263,14 +256,13 @@
 												<label>EXTRACT__STATIC</label>
 												<tooltip>If the EXTRACT__STATIC tag is set to YES all static members of a file&#x0A;will be included in the documentation.&#x0A;</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer10" member="no">
@@ -284,16 +276,16 @@
 											</object>
 											<flag>wxALL|wxALIGN_LEFT</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer11" member="no">
+												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="ID_CHECKBOX_WARN_IF_DOC_ERROR" variable="CheckBoxWarnIfDocError" member="yes">
 														<label>WARN__IF__DOC__ERROR</label>
 														<tooltip>If WARN__IF__DOC__ERROR is set to YES, doxygen will generate warnings for&#x0A;potential errors in the documentation, such as not documenting some&#x0A;parameters in a documented function, or documenting parameters that&#x0A;don&apos;t exist or using markup commands wrongly.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -302,7 +294,7 @@
 														<label>WARN__IF__UNDOCUMENTED</label>
 														<tooltip>If WARN__IF__UNDOCUMENTED is set to YES, then doxygen will generate warnings&#x0A;for undocumented members. If EXTRACT__ALL is set to YES then this flag will&#x0A;automatically be disabled.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -311,19 +303,17 @@
 														<label>WARN__NO__PARAMDOC</label>
 														<tooltip>This WARN__NO__PARAMDOC option can be abled to get warnings for&#x0A;functions that are documented, but have no documentation for their parameters&#x0A;or return value. If set to NO (the default) doxygen will only warn about&#x0A;wrong or incomplete parameter documentation, but not about the absence of&#x0A;documentation.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer6" member="no">
@@ -341,7 +331,6 @@
 									</object>
 									<flag>wxALL|wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 							</object>
 						</object>
@@ -367,16 +356,16 @@
 													</object>
 													<flag>wxALL|wxALIGN_LEFT</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 												<object class="sizeritem">
 													<object class="wxBoxSizer" variable="BoxSizer17" member="no">
+														<orient>wxVERTICAL</orient>
 														<object class="sizeritem">
 															<object class="wxCheckBox" name="ID_CHECKBOX_GENERATE_HTMLHELP" variable="CheckBoxGenerateHTMLHelp" member="yes">
 																<label>GENERATE__HTMLHELP</label>
 																<tooltip>If the GENERATE__HTMLHELP tag is set to YES, additional index files&#x0A;will be generated that can be used as input for tools like the&#x0A;Microsoft HTML help workshop to generate a compiled HTML help file (.chm)&#x0A;of the generated HTML documentation.</tooltip>
 															</object>
-															<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 															<border>5</border>
 															<option>1</option>
 														</object>
@@ -385,7 +374,7 @@
 																<label>GENERATE__CHI</label>
 																<tooltip>If the GENERATE__HTMLHELP tag is set to YES, the GENERATE__CHI flag&#x0A;controls if a separate .chi index file is generated (YES) or that&#x0A;it should be included in the master .chm file (NO).</tooltip>
 															</object>
-															<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 															<border>5</border>
 															<option>1</option>
 														</object>
@@ -394,28 +383,27 @@
 																<label>BINARY__TOC</label>
 																<tooltip>If the GENERATE__HTMLHELP tag is set to YES, the BINARY__TOC flag&#x0A;controls whether a binary table of contents is generated (YES) or a&#x0A;normal table of contents (NO) in the .chm file.</tooltip>
 															</object>
-															<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+															<flag>wxALL</flag>
 															<border>5</border>
 															<option>1</option>
 														</object>
 													</object>
-													<flag>wxALL|wxEXPAND</flag>
+													<flag>wxALIGN_LEFT</flag>
 													<border>5</border>
-													<option>1</option>
 												</object>
 											</object>
-											<flag>wxEXPAND</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer14" member="no">
+												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="ID_CHECKBOX_GENERATE_LATEX" variable="CheckBoxGenerateLatex" member="yes">
 														<label>GENERATE__LATEX</label>
 														<tooltip>If the GENERATE__LATEX tag is set to YES (the default) Doxygen will&#x0A;generate Latex output.&#x0A;</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -424,7 +412,7 @@
 														<label>GENERATE__RTF</label>
 														<tooltip>If the GENERATE__RTF tag is set to YES Doxygen will generate RTF output&#x0A;The RTF output is optimized for Word 97 and may not look very pretty with&#x0A;other RTF readers or editors.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -434,23 +422,23 @@
 														<checked>1</checked>
 														<tooltip>If the GENERATE__MAN tag is set to YES (the default) Doxygen will&#x0A;generate man pages</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxEXPAND</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer15" member="no">
+												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="ID_CHECKBOX_GENERATE_XML" variable="CheckBoxGenerateXML" member="yes">
 														<label>GENERATE__XML</label>
 														<tooltip>If the GENERATE__XML tag is set to YES Doxygen will&#x0A;generate an XML file that captures the structure of&#x0A;the code including all documentation.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -459,7 +447,7 @@
 														<label>GENERATE__AUTOGEN__DEF</label>
 														<tooltip>If the GENERATE__AUTOGEN__DEF tag is set to YES Doxygen will&#x0A;generate an AutoGen Definitions (see autogen.sf.net) file&#x0A;that captures the structure of the code including all&#x0A;documentation. Note that this feature is still experimental&#x0A;and incomplete at the moment.&#x0A;</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxTOP|wxLEFT|wxRIGHT</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -468,19 +456,17 @@
 														<label>GENERATE__PERLMOD</label>
 														<tooltip>If the GENERATE__PERLMOD tag is set to YES Doxygen will&#x0A;generate a Perl module file that captures the structure of&#x0A;the code including all documentation. Note that this&#x0A;feature is still experimental and incomplete at the&#x0A;moment.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxEXPAND</flag>
+											<flag>wxALIGN_LEFT</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>3</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer8" member="no">
@@ -495,19 +481,19 @@
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer9" member="no">
 										<label>Dot</label>
+										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="ID_CHECKBOX_CLASS_DIAGRAMS" variable="CheckBoxClassDiagrams" member="yes">
 												<label>CLASS__DIAGRAMS</label>
 												<tooltip>If the CLASS__DIAGRAMS tag is set to YES (the default) Doxygen will&#x0A;generate a inheritance diagram (in HTML, RTF and LaTeX) for classes with base&#x0A;or super classes. Setting the tag to NO turns the diagrams off. Note that&#x0A;this option is superseded by the HAVE__DOT option below. This is only a&#x0A;fallback. It is recommended to install and use dot, since it yields more&#x0A;powerful graphs.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -516,14 +502,13 @@
 												<label>HAVE__DOT</label>
 												<tooltip>If you set the HAVE__DOT tag to YES then doxygen will assume the dot tool is&#x0A;available from the path. This tool is part of Graphviz, a graph visualization&#x0A;toolkit from AT&amp;T and Lucent Bell Labs. The other options in this section&#x0A;have no effect if this option is set to NO (the default)</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 							</object>
 						</object>
@@ -566,9 +551,8 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer9" member="no">
@@ -599,9 +583,8 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer3" member="no">
@@ -632,9 +615,8 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer13" member="no">
@@ -665,9 +647,8 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer19" member="no">
@@ -698,14 +679,12 @@
 													<option>1</option>
 												</object>
 											</object>
-											<flag>wxALL|wxEXPAND</flag>
+											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>3</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer11" member="no">
@@ -713,13 +692,14 @@
 										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxBoxSizer" variable="BoxSizer21" member="no">
+												<orient>wxVERTICAL</orient>
 												<object class="sizeritem">
 													<object class="wxCheckBox" name="ID_CHECKBOX_OVERWRITEDOXYFILE" variable="CheckBoxOverwriteDoxyfile" member="yes">
 														<label>Overwrite Doxyfile</label>
 														<tooltip>Allow DoxyBlocks to overwrite the doxyfile.&#x0A;By default, if a doxyfile already exists it is not overwritten to protect&#x0A;any changes that have been made outside DoxyBlocks however this&#x0A;behaviour prevents changes made within DoxyBlocks being written to&#x0A;an existing doxyfile.</tooltip>
 														<handler function="OnCheckBoxOverwriteDoxyfileClick" entry="EVT_CHECKBOX" />
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -728,7 +708,7 @@
 														<label>Prompt Before Overwriting</label>
 														<tooltip>Prompt before overwriting an existing doxyfile.&#x0A;When used in conjunction with &quot;Overwrite doxyfile&quot; this setting forces&#x0A;DoxyBlocks to prompt you before overwriting an existing doxyfile.</tooltip>
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -738,7 +718,7 @@
 														<tooltip>Use &quot;@&quot; in document tags instead of &quot;\\&quot;.&#x0A;This option causes DoxyBlocks to create document tags like&#x0A;&quot;@brief&quot; and &quot;@param&quot; rather than &quot;\\brief&quot; and &quot;\\param&quot;.</tooltip>
 														<handler function="OnCheckBoxUseAtInTagsClick" entry="EVT_CHECKBOX" />
 													</object>
-													<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+													<flag>wxALL</flag>
 													<border>5</border>
 													<option>1</option>
 												</object>
@@ -761,22 +741,21 @@
 											</object>
 											<flag>wxEXPAND</flag>
 											<border>5</border>
-											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 								<object class="sizeritem">
 									<object class="wxStaticBoxSizer" variable="StaticBoxSizer12" member="no">
 										<label>HTML</label>
+										<orient>wxVERTICAL</orient>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="ID_CHECKBOX_USEINTERNALVIEWER" variable="CheckBoxUseInternalViewer" member="yes">
 												<label>Use Internal Viewer</label>
 												<tooltip>Use the internal viewer to view HTML docs.&#x0A;If this option is not set DoxyBlocks will use the system&apos;s default&#x0A;browser.&#x0A;This setting has no effect if GENERATE__HTML is not set.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -785,7 +764,7 @@
 												<label>Run HTML After Compilation</label>
 												<tooltip>Run the HTML docs after compilation.&#x0A;If &quot;Use Internal Viewer&quot; is set DoxyBlocks will use Code::Blocks&apos; internal&#x0A;viewer. If not, it will use the system&apos;s default browser.&#x0A;This setting has no effect if GENERATE__HTML is not set.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
@@ -794,14 +773,13 @@
 												<label>Run CHM After Compilation</label>
 												<tooltip>Run the compiled help after it&apos;s compiled.&#x0A;This setting currently only has effect on Windows.&#x0A;If no CHM file exists this setting is ignored.&#x0A;This setting has no effect if GENERATE__HTML is not set.</tooltip>
 											</object>
-											<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+											<flag>wxALL</flag>
 											<border>5</border>
 											<option>1</option>
 										</object>
 									</object>
-									<flag>wxALL|wxEXPAND</flag>
+									<flag>wxEXPAND</flag>
 									<border>5</border>
-									<option>1</option>
 								</object>
 							</object>
 						</object>

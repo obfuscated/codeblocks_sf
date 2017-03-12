@@ -69,6 +69,7 @@
 		<Unit filename="update30" />
 		<Unit filename="update30.bat" />
 		<Unit filename="version.h" />
+		<Unit filename="wxsmith/ConfigPanel.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />
@@ -89,6 +90,7 @@
 				<general />
 			</DoxyBlocks>
 			<wxsmith version="1">
+				<gui name="wxWidgets" src="" main="" init_handlers="necessary" language="CPP" />
 				<resources>
 					<wxPanel wxs="wxsmith/ConfigPanel.wxs" src="ConfigPanel.cpp" hdr="ConfigPanel.h" fwddecl="0" i18n="1" name="ConfigPanel" language="CPP" />
 				</resources>
