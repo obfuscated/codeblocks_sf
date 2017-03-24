@@ -215,10 +215,7 @@ WX_PG_IMPLEMENT_PROPERTY_CLASS(CLASSNAME,wxSystemColourProperty,wxColour,const w
 CLASSNAME::CLASSNAME( const wxString& label, const wxString& name, const wxColour& value ) \
     : wxPG_PROPCLASS(wxSystemColourProperty)(label,name,LABELS,VALUES,&gs_##CLASSNAME##_choicesCache,value ) \
 { \
-    if ( &value ) \
-        Init( value ); \
-    else \
-        Init( *wxWHITE ); \
+    Init( value ); \
     m_flags |= wxPG_PROP_TRANSLATE_CUSTOM; \
 } \
 CLASSNAME::~CLASSNAME() { } \

@@ -941,10 +941,7 @@ wxSystemColourProperty::wxSystemColourProperty( const wxString& label, const wxS
                       gs_cp_es_syscolour_values,
                       &gs_wxSystemColourProperty_choicesCache )
 {
-    if ( &value )
-        Init( value.m_type, value.m_colour );
-    else
-        Init( wxPG_COLOUR_CUSTOM, *wxWHITE );
+    Init( value.m_type, value.m_colour );
 }
 
 
@@ -953,10 +950,7 @@ wxSystemColourProperty::wxSystemColourProperty( const wxString& label, const wxS
     const wxColourPropertyValue& value )
     : wxEnumProperty( label, name, labels, values, choicesCache )
 {
-    if ( &value )
-        Init( value.m_type, value.m_colour );
-    else
-        Init( wxPG_COLOUR_CUSTOM, *wxWHITE );
+    Init( value.m_type, value.m_colour );
 }
 
 
@@ -965,10 +959,7 @@ wxSystemColourProperty::wxSystemColourProperty( const wxString& label, const wxS
     const wxColour& value )
     : wxEnumProperty( label, name, labels, values, choicesCache )
 {
-    if ( &value )
-        Init( wxPG_COLOUR_CUSTOM, value );
-    else
-        Init( wxPG_COLOUR_CUSTOM, *wxWHITE );
+    Init( wxPG_COLOUR_CUSTOM, value );
 }
 
 
@@ -1874,7 +1865,7 @@ wxArrayInt wxMultiChoiceProperty::GetValueAsIndices() const
     // Translate values to string indices.
     wxArrayInt selections;
 
-    if ( !m_choices.IsOk() || !m_choices.GetCount() || !(&valueArr) )
+    if ( !m_choices.IsOk() || !m_choices.GetCount() )
     {
         for ( i=0; i<valueArr.GetCount(); i++ )
             selections.Add(-1);

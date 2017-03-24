@@ -236,10 +236,7 @@ namespace
                           wxsColourValues,
                           &gs_wxsColourProperty_choicesCache )
     {
-        if ( &value )
-            Init( value.m_type, value.m_colour );
-        else
-            Init( wxPG_COLOUR_CUSTOM, *wxWHITE );
+        Init( value.m_type, value.m_colour );
     }
 
     wxsMyColourPropertyClass::~wxsMyColourPropertyClass() { }

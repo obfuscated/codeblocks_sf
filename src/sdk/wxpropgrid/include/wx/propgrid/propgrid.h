@@ -676,7 +676,8 @@ protected:
 #define wxPG_EMPTY_ARRAYSTRING  wxArrayString()
 
 #if !defined(SWIG)
-    #define wxPG_LABEL              (*((wxString*)NULL))  // Used to tell wxPGProperty to use label as name as well.
+    extern wxString wxString_wxPG_LABEL;
+    #define wxPG_LABEL              wxString_wxPG_LABEL
     #define wxPG_NULL_BITMAP        wxNullBitmap
     #define wxPG_COLOUR_BLACK       (*wxBLACK)
 #else
@@ -3806,10 +3807,7 @@ public:
     void Set( const wxArrayString& labels, const wxArrayInt& values = wxPG_EMPTY_ARRAYINT )
     {
         Free();
-        if ( &values )
-            Add(labels,values);
-        else
-            Add(labels);
+        Add(labels,values);
     }
 
     // Creates exclusive copy of current choices
@@ -7675,7 +7673,7 @@ public:
     void IncFrozen() { m_frozen++; }
     void DecFrozen() { m_frozen--; }
 
-    void OnComboItemPaint( wxPGCustomComboControl* pCb,int item,wxDC& dc,
+    void OnComboItemPaint( wxPGCustomComboControl* pCb,int item,wxDC* pDc,
                            wxRect& rect,int flags );
 
     // Used by simple check box for keyboard navigation

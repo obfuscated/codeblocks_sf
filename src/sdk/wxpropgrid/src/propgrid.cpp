@@ -566,6 +566,7 @@ wxPGGlobalVarsClass::~wxPGGlobalVarsClass()
 
 IMPLEMENT_ABSTRACT_CLASS(wxPGProperty, wxObject)
 
+wxString wxString_wxPG_LABEL = wxT("_LABEL_AS_NAME");
 
 void wxPGProperty::Init()
 {
@@ -602,11 +603,10 @@ void wxPGProperty::Init()
 
 void wxPGProperty::Init( const wxString& label, const wxString& name )
 {
-    if ( &label != ((wxString*)NULL) )
-        m_label = label;
+    m_label = label;
 
 #ifndef __WXPYTHON__
-    if ( &name != ((wxString*)NULL) )
+    if ( name != wxString_wxPG_LABEL)
 #else
     if ( (&name != ((wxString*)NULL)) && name != wxT("_LABEL_AS_NAME") )
 #endif
@@ -1876,7 +1876,7 @@ void wxPGProperty::SetValueImage( wxBitmap& bmp )
 {
     delete m_valueBitmap;
 
-    if ( &bmp && bmp.Ok() )
+    if ( bmp.Ok() )
     {
         // Resize the image
         wxSize maxSz = GetGrid()->GetImageSize();
@@ -2823,7 +2823,7 @@ wxPGCell::wxPGCell( const wxString& text,
     : m_bitmap(bitmap), m_fgCol(fgCol), m_bgCol(bgCol)
 {
 #ifndef __WXPYTHON__
-    if ( &text != ((wxString*)NULL) )
+    if ( text != wxString_wxPG_LABEL )
 #else
     if ( (&text != ((wxString*)NULL)) && text != wxT("_LABEL_AS_NAME") )
 #endif
@@ -10234,7 +10234,7 @@ void wxPGChoices::Add( const wxArrayString& arr, const wxArrayInt& arrint )
     for ( i = 0; i < itemcount; i++ )
     {
         int value = wxPG_INVALID_VALUE;
-        if ( &arrint && arrint.size() )
+        if ( arrint.size() )
             value = arrint[i];
         m_data->Insert( -1, new wxPGChoiceEntry(arr[i], value) );
     }
@@ -10290,7 +10290,7 @@ wxArrayString wxPGChoices::GetLabels() const
     wxArrayString arr;
     unsigned int i;
 
-    if ( this && IsOk() )
+    if ( IsOk() )
         for ( i=0; i<GetCount(); i++ )
             arr.push_back(GetLabel(i));
 

@@ -830,7 +830,7 @@ public:
 #endif
     {
         wxPropertyGrid* pg = GetGrid();
-        pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,dc,(wxRect&)rect,flags);
+        pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,&dc,(wxRect&)rect,flags);
 #if !wxPG_USING_WXOWNERDRAWNCOMBOBOX
         return true;
 #endif
@@ -841,7 +841,7 @@ public:
         wxRect rect;
         rect.x = -1;
         rect.width = 0;
-        pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,*((wxDC*)NULL),rect,0);
+        pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,NULL,rect,0);
         return rect.height;
     }
 
@@ -858,7 +858,7 @@ public:
         wxRect rect;
         rect.x = -1;
         rect.width = -1;
-        pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,*((wxDC*)NULL),rect,0);
+        pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,NULL,rect,0);
         return rect.width;
     }
 
@@ -879,7 +879,7 @@ private:
 
 void wxPropertyGrid::OnComboItemPaint( wxPGCustomComboControl* pCc,
                                        int item,
-                                       wxDC& dc,
+                                       wxDC* pDc,
                                        wxRect& rect,
                                        int flags )
 {
@@ -967,8 +967,8 @@ void wxPropertyGrid::OnComboItemPaint( wxPGCustomComboControl* pCc,
     if ( (flags & wxPGCC_PAINTING_CONTROL) )
         paintdata.m_choiceItem = -1;
 
-    if ( &dc )
-        dc.SetBrush(*wxWHITE_BRUSH);
+    wxASSERT( pDc );
+    pDc->SetBrush(*wxWHITE_BRUSH);
 
     wxPGCellRenderer* renderer = NULL;
     const wxPGCell* cell = NULL;
@@ -991,7 +991,7 @@ void wxPropertyGrid::OnComboItemPaint( wxPGCustomComboControl* pCc,
         {
             // For consistency, always use normal font when drawing drop down
             // items
-            dc.SetFont(GetFont());
+            pDc->SetFont(GetFont());
         }
 
         if ( flags & wxPGCC_PAINTING_SELECTED )
@@ -1014,22 +1014,22 @@ void wxPropertyGrid::OnComboItemPaint( wxPGCustomComboControl* pCc,
 
             paintdata.m_drawnWidth = r.width;
 
-            dc.SetPen(m_colPropFore);
+            pDc->SetPen(m_colPropFore);
             if ( comValIndex >= 0 )
             {
                 const wxPGCommonValue* cv = GetCommonValue(comValIndex);
                 wxPGCellRenderer* renderer = cv->GetRenderer();
                 r.width = rect.width;
-                renderer->Render( dc, r, this, p, m_selColumn, comValIndex, renderFlags );
+                renderer->Render( *pDc, r, this, p, m_selColumn, comValIndex, renderFlags );
                 return;
             }
             else if ( item >= 0 )
             {
-                p->OnCustomPaint( dc, r, paintdata );
+                p->OnCustomPaint( *pDc, r, paintdata );
             }
             else
             {
-                dc.DrawRectangle( r );
+                pDc->DrawRectangle( r );
             }
 
             pt.x += paintdata.m_drawnWidth + wxCC_CUSTOM_IMAGE_MARGIN2 - 1;
@@ -1058,7 +1058,7 @@ void wxPropertyGrid::OnComboItemPaint( wxPGCustomComboControl* pCc,
             {
                 cell = &pChoices->Item(item);
                 renderer = wxPGGlobalVars->m_defaultRenderer;
-                int imageOffset = renderer->PreDrawCell(dc, rect, *cell,
+                int imageOffset = renderer->PreDrawCell(*pDc, rect, *cell,
                                                         renderFlags );
                 if ( imageOffset )
                     imageOffset += wxCC_CUSTOM_IMAGE_MARGIN1 +
@@ -1075,17 +1075,17 @@ void wxPropertyGrid::OnComboItemPaint( wxPGCustomComboControl* pCc,
 
         pt.x += 1;
 
-        dc.DrawText( text, pt.x + wxPG_XBEFORETEXT, pt.y );
+        pDc->DrawText( text, pt.x + wxPG_XBEFORETEXT, pt.y );
 
         if ( renderer )
-            renderer->PostDrawCell(dc, this, *cell, renderFlags);
+            renderer->PostDrawCell(*pDc, this, *cell, renderFlags);
     }
     else
     {
         //
         // MeasureItem call
 
-        p->OnCustomPaint( dc, rect, paintdata );
+        p->OnCustomPaint( *pDc, rect, paintdata );
         rect.height = paintdata.m_drawnHeight + 2;
         rect.width = cis.x + wxCC_CUSTOM_IMAGE_MARGIN1 + wxCC_CUSTOM_IMAGE_MARGIN2 + 9;
     }
