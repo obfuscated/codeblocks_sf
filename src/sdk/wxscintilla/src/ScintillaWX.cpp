@@ -290,7 +290,7 @@ static int wxCountLines(const char* text, int scintillaMode)
 
 /* C::B begin */
 // Constant ids for the timers used by every editor.
-const int timerIDs[ScintillaWX::timersCount] = { wxNewId(), wxNewId(), wxNewId(), wxNewId() };
+const long int timerIDs[ScintillaWX::timersCount] = { wxNewId(), wxNewId(), wxNewId(), wxNewId() };
 /* C::B end */
 
 //----------------------------------------------------------------------
