@@ -3,10 +3,6 @@ AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-DEXPORT_LIB \
 		-DwxPG_SUPPORT_TOOLTIPS
 
-if HAVE_GCC6
-AM_CPPFLAGS += -fno-delete-null-pointer-checks
-endif
-
 noinst_LTLIBRARIES = libwxpropgrid.la
 
 libwxpropgrid_la_SOURCES = ./src/advprops.cpp \
