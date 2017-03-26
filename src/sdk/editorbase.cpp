@@ -64,6 +64,7 @@ const long idGoogle        = wxNewId();
 const long idMsdn          = wxNewId();
 const long idStackOverflow = wxNewId();
 const long idCodeProject   = wxNewId();
+const long idCPlusPlusCom  = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorBase, wxPanel)
     EVT_MENU_RANGE(idSwitchFile1, idSwitchFileMax, EditorBase::OnContextMenuEntry)
@@ -77,6 +78,7 @@ BEGIN_EVENT_TABLE(EditorBase, wxPanel)
     EVT_MENU(idMsdn,              EditorBase::OnContextMenuEntry)
     EVT_MENU(idStackOverflow,     EditorBase::OnContextMenuEntry)
     EVT_MENU(idCodeProject,       EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCPlusPlusCom,      EditorBase::OnContextMenuEntry)
 END_EVENT_TABLE()
 
 void EditorBase::InitFilename(const wxString& filename)
@@ -297,6 +299,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
             popup->Append(idMsdn,          _("Search MSDN for \"")          + text + _T("\""));
             popup->Append(idStackOverflow, _("Search StackOverflow for \"") + text + _T("\""));
             popup->Append(idCodeProject,   _("Search CodeProject for \"")   + text + _T("\""));
+            popup->Append(idCPlusPlusCom,  _("Search CplusPlus.com for \"") + text + _T("\""));
         }
         lastWord = text;
 
@@ -414,6 +417,8 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
             wxLaunchDefaultBrowser(wxString(_T("http://stackoverflow.com/search?q="))                    << URLEncode(lastWord));
         else if (id == idCodeProject)
             wxLaunchDefaultBrowser(wxString(_T("http://www.codeproject.com/search.aspx?q="))             << URLEncode(lastWord));
+        else if (id == idCPlusPlusCom)
+            wxLaunchDefaultBrowser(wxString(_T("http://www.cplusplus.com/search.do?q="))                 << URLEncode(lastWord));
     }
 }
 
