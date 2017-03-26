@@ -104,6 +104,7 @@
 				<Option compiler="gcc" />
 				<Option createStaticLib="1" />
 				<Compiler>
+					<Add option="-fvisibility=hidden" />
 					<Add option="-DEXPORT_LIB" />
 					<Add option="-DwxPG_SUPPORT_TOOLTIPS" />
 					<Add directory="sdk/wxpropgrid/include" />

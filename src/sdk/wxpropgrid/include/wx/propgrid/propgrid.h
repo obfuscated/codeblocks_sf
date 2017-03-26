@@ -418,18 +418,20 @@ public:
 // -----------------------------------------------------------------------
 // C::B patch: define DLLIMPORT to be used to define WXDLLIMPEXP_PG later.
 #if defined(__WXMSW__)
-    #ifndef DLLIMPORT
+    #ifndef DLLIMPORT_PG
         #if EXPORT_LIB
-            #define DLLIMPORT __declspec (dllexport)
+            #define DLLIMPORT_PG __declspec (dllexport)
         #else
-            #define DLLIMPORT __declspec (dllimport)
+            #define DLLIMPORT_PG __declspec (dllimport)
         #endif // EXPORT_LIB
-    #endif // DLLIMPORT
+    #endif // DLLIMPORT_PG
 #else
-    #define DLLIMPORT
+    #ifndef DLLIMPORT_PG
+        #define DLLIMPORT_PG __attribute__ ((visibility ("default")))
+    #endif // DLLIMPORT_PG
 #endif
 
-#define WXDLLIMPEXP_PG DLLIMPORT
+#define WXDLLIMPEXP_PG DLLIMPORT_PG
 // C::B patch: Add define of WXDLLIMPEXP_PG_FWD to reduce warnings
 #define WXDLLIMPEXP_PG_FWD
 
