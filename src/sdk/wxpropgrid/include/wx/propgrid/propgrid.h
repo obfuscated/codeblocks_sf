@@ -678,7 +678,7 @@ protected:
 #define wxPG_EMPTY_ARRAYSTRING  wxArrayString()
 
 #if !defined(SWIG)
-    extern wxString wxString_wxPG_LABEL;
+    extern wxString WXDLLIMPEXP_PG wxString_wxPG_LABEL;
     #define wxPG_LABEL              wxString_wxPG_LABEL
     #define wxPG_NULL_BITMAP        wxNullBitmap
     #define wxPG_COLOUR_BLACK       (*wxBLACK)
