@@ -24,26 +24,32 @@
     <p class="contents1">
         <a class="contents" href="#_Linux_Version">Linux Version</a></p>
     <p class="contents2">
-        <a class="contents" href="#_GCC_Compiler">GCC Compiler</a></p>
+        <a class="contents" href="#_CodeBlocks_Linux">CodeBlocks Linux</a></p>
     <p class="contents2">
-        <a class="contents" href="#_Clang_Compiler">Clang Compiler</a></p>
+        <a class="contents" href="#_GCC_Makefile">GCC Makefile</a></p>
     <p class="contents2">
-        <a class="contents" href="#_Intel_Compiler">Intel Compiler</a></p>
+        <a class="contents" href="#_Clang_Makefile">Clang Makefile</a></p>
+    <p class="contents2">
+        <a class="contents" href="#_Intel_Makefile">Intel Makefile</a></p>
     <p class="contents2">
         <a class="contents" href="#_Other_Makefile_Targets">Other Makefile Targets</a></p>
     <p class="contents1">
-        <a class="contents" href="#_Mac_OS_Version">Mac OS Version</a></p>
+        <a class="contents" href="#_MacOS_Version">MacOS Version</a></p>
+    <p class="contents2">
+        <a class="contents" href="#_CodeBlocks_MacOS">CodeBlocks MacOS</a></p>
     <p class="contents2">
         <a class="contents" href="#_Xcode">Xcode</a></p>
     <p class="contents2">
-        <a class="contents" href="#_Makefile">Makefile</a></p>
+        <a class="contents" href="#_MacOS_Makefile">MacOS Makefile</a></p>
     <p class="contents1">
         <a class="contents" href="#_Windows_Version">Windows Version</a></p>
     <p class="contents2">
         <a class="contents" href="#_Precompiled_Executable">Precompiled Executable</a></p>
     <p class="contents2">
-        <a class="contents" href="#_Visual_C++_Compiler">Visual C++ Compiler</a></p>
+        <a class="contents" href="#_CodeBlocks_Windows">CodeBlocks Windows</a></p>
     <p class="contents2">
+        <a class="contents" href="#_Visual_Studio">Visual Studio</a></p>
+    <p class="contents1">
         <a class="contents" href="#_Other_Compilers">Other Compilers</a></p>
     <p class="contents1">
         <a class="contents" href="#_Compiler_Options">Compiler Options</a></p>
@@ -70,7 +76,39 @@
 
     <h3 id="_Linux_Version">Linux Version</h3>
 
-    <h4 id="_GCC_Compiler">GCC Compiler</h4>
+    <h4 id="_CodeBlocks_Linux">CodeBlocks Linux</h4>
+
+    <p>
+        There are workspace and project files for several Linux compilers. Open a workspace file for the appropriate 
+        compiler. All projects have at least Debug and Release configurations. All output will be in the 
+        &quot;bin&quot; directory. The workspace contains the following projects.</p>
+    <ul>
+        <li><strong>AStyle </strong>builds the Artistic Style command line program (AStyle.exe).&nbsp; </li>
+        <li><strong>AStyle Dll </strong>builds the Artistic Style program as a Dynamic Link Library (AStyle.dll). This will
+            also build an export library for linking the dll. </li>
+        <li><strong>AStyle Java </strong>builds the Artistic Style program as a Dynamic Link Library (AStylej.dll) that can
+            be called from a Java program. The Java Development (JDK) is required for the project to compile. The Project
+            Properties must have an include path to the JDK include and include/win32 directories. This is set in &quot;Project
+            &gt; Properties &gt; C/C++ &gt; General &gt; Additional Include Directories&quot;. The default setting
+            is for the JDK to be installed in the default directory, but it may not be the most current release. The output
+            DLL can also be called from a C++ or C# program.</li>
+        <li><strong>AStyle Lib </strong>builds the Artistic Style program as a Static Library (libAStyle.lib). This can be
+            statically linked to a calling program.</li>
+    </ul>
+
+    <p>
+        There are build 
+        folders for the following compilers. All compiler folders are in the &quot;build&quot; directory.
+    </p>
+    <ul>
+        <li><strong>cb-clang</strong> contains the workspace and project files for the Linux Clang Compiler.</li>
+        <li><strong>cb-gcc</strong> contains the workspace and project files for the GCC Compiler.</li>
+        <li><strong>cb-intel</strong> contains the workspace and project files for the Linux Intel Compiler.</li>
+    </ul>
+    <p>
+        For other compilers, follow the instructions in <a href="#_Other_Compilers">Other Compilers</a>.</p>
+
+    <h4 id="_GCC_Makefile">GCC Makefile</h4>
 
     <p>
         To compile using the GCC compiler you must have GCC (3.1 or better) installed.</p>
@@ -120,7 +158,7 @@
         The <a href="#_Other_Makefile_Targets">Other Makefile Targets</a> section contains additional target 
         options.</p>
 
-    <h4 id="_Clang_Compiler">Clang Compiler</h4>
+    <h4 id="_Clang_Makefile">Clang Makefile</h4>
 
     <p>
         Clang has a static analyzer that finds potential bugs in C/C++ and Objective-C programs. It can be run as a standalone
@@ -134,7 +172,7 @@
 </pre>
     <p>
         To build the other astyle configurations, you can enter the file name or a symbolic name. The configurations for
-        Clang are the same as for the <a href="#_GCC_Compiler">GCC compiler</a>. More than one configuration can be
+        Clang are the same as for the <a href="#_GCC_Makefile">GCC compiler</a>. More than one configuration can be
         built at the same time. For example, to build all the release configurations enter:</p>
     <pre>cd astyle/build/clang<br />make release shared static
 </pre>
@@ -142,7 +180,7 @@
         The <a href="#_Other_Makefile_Targets">Other Makefile Targets</a> section contains additional target 
         options.</p>
 
-    <h4 id="_Intel_Compiler">Intel Compiler</h4>
+    <h4 id="_Intel_Makefile">Intel Makefile</h4>
 
     <p>
         These procedures and the makefile are for recent versions of the compiler. They may not work for earlier versions.
@@ -163,7 +201,7 @@
     <pre>cd astyle/build/intel<br />make</pre>
     <p>
         To build the other astyle configurations, you can enter the file name or a symbolic name. The configuration names
-        for Intel are the same as for the <a href="#_GCC_Compiler">GCC compiler</a>. More than one configuration can be
+        for Intel are the same as for the <a href="#_GCC_Makefile">GCC compiler</a>. More than one configuration can be
         built at the same time. For example, to build the entire debug configurations enter:</p>
     <pre>cd astyle/build/intel<br />make debug shareddebug staticdebug</pre>
     <p>
@@ -226,7 +264,25 @@
         NOTE: The uninstall option will NOT remove the .astylerc files from the users' home directories. The files must
         be removed individually for each user.</p>
 
-    <h3 id="_Mac_OS_Version">Mac OS Version</h3>
+    <h3 id="_MacOS_Version">MacOS Version</h3>
+
+    <h4 id="_CodeBlocks_MacOS">CodeBlocks MacOS</h4>
+
+    <p>
+        There are workspace and project files for the MacOS compiler. Open the workspace file for the MacOS compiler.
+        All projects have at least Debug and Release configurations. All output will be in the &quot;bin&quot;
+        directory. </p>
+    <p>
+        The available projects are the same as in <a href="#_CodeBlocks_Linux">CodeBlocks Linux</a>.</p>
+
+    <p>
+        There is one build folder for the MacOS compiler. The compiler folder is in the &quot;build&quot; 
+        directory. </p>
+    <ul>
+        <li><strong>cb-mac</strong> contains the workspace and project files for the MacOS Compiler.</li>
+    </ul>
+    <p>
+        For other compilers, follow the instructions in <a href="#_Other_Compilers">Other Compilers</a>.</p>
 
     <h4 id="_Xcode">Xcode</h4>
 
@@ -277,7 +333,7 @@ sudo xcodebuild install -project AStyle.xcodeproj
         NOTE: The uninstall option will NOT remove the .astylerc files from the users' home directories. The files must
         be removed individually for each user.</p>
 
-    <h4 id="_Makefile">Makefile</h4>
+    <h4 id="_MacOS_Makefile">MacOS Makefile</h4>
 
     <p>
         The Artistic Style makefile compile uses the Mac OS &quot;Command Line Tools&quot;. If you have Xcode 4.3 or newer
@@ -292,7 +348,7 @@ sudo xcodebuild install -project AStyle.xcodeproj
 </pre>
     <p>
         To build the other astyle configurations, you can enter the file name or a symbolic name. The configurations for
-        Mac are the same as for the <a href="#_GCC_Compiler">Linux GCC compiler</a>. More than one configuration can be
+        Mac are the same as for the <a href="#_GCC_Makefile">Linux GCC compiler</a>. More than one configuration can be
         built at the same time. For example, to build all the release configurations enter:</p>
     <pre>cd astyle/build/mac<br />make release shared static
 </pre>
@@ -308,36 +364,53 @@ sudo xcodebuild install -project AStyle.xcodeproj
         In addition to the source files, the Windows distribution package contains an Artistic Style Win32 executable
         (AStyle.exe). If you prefer to compile the executable yourself, pursue the following instructions.</p>
 
-    <h4 id="_Visual_C++_Compiler">Visual C++ Compiler</h4>
+    <h4 id="_CodeBlocks_Windows">CodeBlocks Windows</h4>
 
     <p>
-        There are
-        solution and project files for
-        several versions of the Visual C compiler. Open an Artistic Style solution
+        There are workspace and project files for several Windows compilers. Open a workspace file for the appropriate
+        compiler. All projects have at least Debug and Release configurations. All output will be in the &quot;bin&quot;
+        directory. </p>
+    <p>
+        The available projects are the same as in <a href="#_CodeBlocks_Linux">CodeBlocks Linux</a>.</p>
+
+    <p>
+        There are build folders for the following compilers. All compiler folders are in the &quot;build&quot; directory.
+    </p>
+    <ul>
+        <li><strong>cb-bcc32c</strong>contains the workspace and project files for the Embarcadero BCC32C Compiler.</li>
+        <li><strong>cb-mingw</strong>contains the workspace and project files for the MinGw or TDM_GCC Compilers.</li>
+    </ul>
+    <p>
+        For other compilers, follow the instructions in <a href="#_Other_Compilers">Other Compilers</a>.</p>
+
+    <h4 id="_Visual_Studio">Visual Studio</h4>
+
+    <p>
+        There are solution and project files for several versions of Microsoft Visual Studio. Open an Artistic Style solution
         file in the appropriate &quot;build&quot; directory. All projects have Debug, Release and Static configurations.
         Debug file output will be in the &quot;debug&quot; directory. Release file output will be in the &quot;bin&quot;
         directory. Static file output will be in the "binstatic" directory. The following solution files are 
         available.</p>
     <ul>
-        <li><strong>All AStyle ll AStyle </strong>builds the release and the debug configurations for all the following.
+        <li><strong>All AStyle </strong>builds the release and the debug configurations for all the following.
         </li>
         <li><strong>AStyle </strong>builds the Artistic Style command line program (AStyle.exe). This project has an extra
             "Static" option. It is the same as the "Release" build except that it is linked with a static runtime library.
             This is needed if the executable is to be run on a system without Visual Studio installed. The builds for this
             configuration are placed in a separate &quot;binstatic&quot; directory. </li>
-        <li><strong>AStyleDll </strong>builds the Artistic Style program as a Dynamic Link Library (AStyle.dll). This will
+        <li><strong>AStyle Dll </strong>builds the Artistic Style program as a Dynamic Link Library (AStyle.dll). This will
             also build an export library and a static library for linking the dll. </li>
-        <li><strong>AStyleJava </strong>builds the Artistic Style program as a Dynamic Link Library (AStylej.dll) that can
+        <li><strong>AStyle Java </strong>builds the Artistic Style program as a Dynamic Link Library (AStylej.dll) that can
             be called from a Java program. The Java Development (JDK) is required for the project to compile. The Project
             Properties must have an include path to the JDK include and include/win32 directories. This is set in &quot;Project
             &gt; Properties &gt; C/C++ &gt; General &gt; Additional&nbsp;Include&nbsp;Directories&quot;. The default setting
             is for the JDK to be installed in the default directory, but it may not be the most current release. The output
             DLL can also be called from a C++ or C# program.</li>
-        <li><strong>AStyleLib </strong>builds the Artistic Style program as a Static Library (libAStyle.lib). This can be
+        <li><strong>AStyle Lib </strong>builds the Artistic Style program as a Static Library (libAStyle.lib). This can be
             statically linked to a calling program.</li>
     </ul>
 
-    <h4 id="_Other_Compilers">Other Compilers</h4>
+    <h3 id="_Other_Compilers">Other Compilers</h3>
 
     <p>
         To use other compilers a project file must be built using a development environment.</p>
@@ -359,11 +432,10 @@ sudo xcodebuild install -project AStyle.xcodeproj
     <p>
         Artistic Style is a small program and it is best to optimize for speed. The debug configurations are not usually
         optimized. To optimize for speed in the release configurations, use the macro NDEBUG to remove asserts. If
-        necessary, use an option to activate the C++11 standards (--std=c++0x on GCC and MinGW). Use an
-        option that allows inline function expansion. Runtime Type Information (RTTI) is NOT needed. Exceptions are
-        NOT
-        used. Use whole program optimization if your compiler supports it. There may be other options you can use depending
-        on the compiler.</p>
+        necessary, use an option to activate the C++11 standards (--std=c++0x on most compilers). Use an option that allows
+        inline function expansion. Runtime Type Information (RTTI) is NOT needed and exceptions are NOT used. Use whole
+        program optimization if your compiler supports it. There may be other options you can use depending on the 
+        compiler. </p>
     <p>
         &nbsp;</p>
 

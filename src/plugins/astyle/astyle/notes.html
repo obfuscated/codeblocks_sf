@@ -17,6 +17,33 @@
     <p>
         &nbsp;</p>
 
+    <h3>Artistic Style 3.0&nbsp; (Pending)</h3>
+
+    <ul>
+        <li>Add new option "indent-after-parens" (#396, 152, 108, 79).</li>
+        <li>Add new option "attach-closing-while" (#177).</li>
+        <li>Add &quot;style=run-in&quot; as an alternative for &quot;style=horstmann&quot;.</li>
+        <li>Add formatting for C++11 trailing return type methods.</li>
+        <li>Add new class ASPeekStream using RAII to allow early method returns.</li>
+        <li>Change affected variable names to new AStyle terminology.</li>
+        <li>Change some vector push_back() statements to emplace_back().</li>
+        <li>Fix memory leak when using &quot;indent-preproc-define&quot;.</li>
+        <li>Fix in-statement-indent brace check not always checking a brace (#421).</li>
+        <li>Fix boundary conditions discovered by <a href="http://lcamtuf.coredump.cx/afl/" target="_blank"
+            title="open new window">american fuzzy lop</a> fuzzer (#370).</li>
+        <li>Refactoring:
+            <ul>
+                <li>Replace NULL with C++11 nullptr.</li>
+                <li>Rename Utf8_16 class to ASEncoding.</li>
+                <li>Move ASConsole constructor and destructor from inline to non-inline.</li>
+                <li>Move console error stream (cerr) from global to ASConsole class.</li>
+                <li>Move ASConsole pointer in ASOptions from global to a class member.</li>
+                <li>Move findHeader and findOperator methods from ASBeautifier to ASBase.</li>
+                <li>Minor changes from clang-tidy.</li>
+            </ul>
+        </li>
+    </ul>
+
     <h3>Artistic Style 2.06&nbsp; (December 2016)</h3>
 
     <ul>

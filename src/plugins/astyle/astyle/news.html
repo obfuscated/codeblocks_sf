@@ -17,6 +17,80 @@
     <p>
         &nbsp;</p>
 
+    <h3>Artistic Style 3.0&nbsp; (Pending)</h3>
+
+    <p>
+        In the Artistic Style documentation, in General Information, Other Considerations, there is a list of
+        terminology used for special characters used in programming. The terms used by Artistic Style has been
+        different than is used by Visual Studio, Clang, and others. In this release the terms used by Artistic Style
+        have been changed to the ones most commonly used in programming documentation. The following chart indicates
+        the changes.</p>
+
+    <center>
+        <table>
+            <thead>
+                <tr>
+                    <td><strong>NEW</strong></td>
+                    <td></td>
+                    <td><strong>OLD</strong></td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>braces or curly braces</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;{ }&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>brackets</td>
+                </tr>
+                <tr>
+                    <td>parens or round brackets</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;( )&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>parens</td>
+                </tr>
+                <tr>
+                    <td>square brackets</td>
+                    <td>&nbsp;&nbsp;&nbsp;&nbsp;[ ]&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>block parens</td>
+                </tr>
+                <tr>
+                    <td>angle brackets</td>
+                    <td>&nbsp;&nbsp;&nbsp;< >&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                    <td>angle brackets</td>
+                </tr>
+            </tbody>
+        </table>
+    </center>
+
+    <p>
+        Parens and angle brackets do not change. Brackets has been changed to braces. Block parens has been changed to
+        square brackets. Brackets can now collectively refer to the group containing round brackets (parens), square brackets,
+        and angle brackets. The documentation has been updated and the variable names in the source code have been
+        changed. </p>
+    <p>
+        There are four options affected by the change, &quot;break-closing-brackets&quot;, &quot;add-brackets&quot;, &quot;add-one-line-brackets&quot;,
+        and &quot;remove-brackets&quot;. These have been changed to the corresponding &quot;break-closing-braces&quot;,
+        &quot;add-braces&quot;, &quot;add-one-line-braces&quot;, and &quot;remove-braces&quot;. Also, the option &quot;max-instatement-indent&quot;
+        has been changed to &quot;max-continuation-indent&quot;. The old options and method names have been depreciated,
+        but will continue to be accepted for the next several releases. </p>
+    <p>
+        The source code now uses the C++11 standard. Compilers that need a standard declared should use C++11. Visual
+        Studio 2010 is currently still currently supported. The classes were made independent of the containing
+        source code files (the source files contain multiple classes). The dependency on global variables in the console
+        build was removed. </p>
+    <p>
+        A new option, &quot;indent-after-parens&quot;, will indent continuation lines following lines that contain an
+        opening paren &#39;(&#39; or an assignment &#39;=&#39;. This includes function definitions and declarations 
+        and return statements. This option ay be preferred for editors displaying proportional fonts.</p>
+    <p>
+        A new option, &quot;attach-closing-while&quot;, will attach the closing &quot;while&quot; of a
+        &quot;do-while&quot; statement to the closing brace. It has precedence over both the brace style and the break
+        closing braces option. </p>
+    <p>
+        Thanks to Matthew Woehlke for his contribution.</p>
+    <p>
+        The following are additional topics.</p>
+
+
+
     <h3>Artistic Style 2.06&nbsp; (December 2016)</h3>
 
     <p>
@@ -33,7 +107,7 @@
         has not been changed and will also add a space following a comma.</p>
     <p>
         A new option, &quot;indent-continuation&quot;, will add extra indents to continuation lines following a line that
-        ends with an opening paren '(' or an assignment '='. This includes function definitions and declarations. 
+        ends with an opening paren '(' or an assignment '='. This includes function definitions and declarations.
         There is more information in the &quot;Indentation Options&quot; section of the documentation.</p>
     <p>
         All spaces before a comma are now removed. Use the &quot;disable formatting&quot; comment tags if there are arrays
@@ -44,7 +118,7 @@
         lot of changes made to the code.</p>
     <p>
         New Objective-C options "pad-return-type" and &quot;unpad-return-type&quot; will add or remove space padding after
-        the Objective-C return type in a method definition. They are described in the "Objective-C" section of the 
+        the Objective-C return type in a method definition. They are described in the "Objective-C" section of the
         documentation.</p>
     <p>
         New Objective-C options "pad-param-type" and &quot;unpad-param-type&quot; will add or remove space padding after
@@ -92,15 +166,15 @@
         The Artistic Style software license has changed. It is now under the MIT license. This is a permissive license
         which can be used in proprietary software and does NOT require modified Artistic Style source code be made available.
         It is compatible with the GNU General Public License (GPL) and most other software licenses. The change was made
-        to remove restrictions on using the software and to make it available for any project that wants to 
+        to remove restrictions on using the software and to make it available for any project that wants to
         use it.</p>
 
     <h4>Visual Studio 2015 and 2017 UTF-8 Files</h4>
 
     <p>
-        In order to be used on both Linux and Windows, the ASLocalizer.cpp UTF-8 file in Artistic Style does not 
-        contain a Byte Order Mark (BOM).&nbsp; With Visual Studio 2015 there has been a change in how UTF-8 files 
-        without a BOM are processed. The new procedure is described 
+        In order to be used on both Linux and Windows, the ASLocalizer.cpp UTF-8 file in Artistic Style does not
+        contain a Byte Order Mark (BOM).&nbsp; With Visual Studio 2015 there has been a change in how UTF-8 files
+        without a BOM are processed. The new procedure is described
         <a href="https://blogs.msdn.microsoft.com/vcblog/2016/02/22/new-options-for-managing-character-sets-in-the-microsoft-cc-compiler/"
             target="_blank" title="open new window">here</a>. It affects only the language translations in the &quot;.exe&quot;
         file. The shared libraries and static libraries are not affected. It is necessary only if you are using a translation
@@ -136,12 +210,14 @@
 
     <h4>Coding Styles</h4>
 
-    <p>Coding style, or programming style, is a set of rules or guidelines used when writing the source code. It is 
-        often claimed that following a particular programming style will help in reading and understanding source code 
+    <p>
+        Coding style, or programming style, is a set of rules or guidelines used when writing the source code. It is
+        often claimed that following a particular programming style will help in reading and understanding source code
         conforming to the style, and help to avoid introducing errors.</p>
-    <p>This Artistic Style distribution has a new &quot;file&quot; folder containing AStyle options files for various coding 
-        styles. Using the option files will give approximately the indicated coding style. The files can be used as 
-        they are, or modified as desired.</p>
+    <p>
+        This Artistic Style distribution has a new &quot;file&quot; folder containing AStyle options files for various
+        coding styles. Using the option files will give approximately the indicated coding style. The files can be used
+        as they are, or modified as desired.</p>
 
     <h4>Artistic Style Wx</h4>
 
@@ -149,7 +225,7 @@
         There is a new GUI test program AStyleWx that uses wxWidgets. This replaces the old AStyleWin program. AStyleWx
         is multi-platform and has more features simply because they are easier to implement with wxWidgets.</p>
     <p>
-        It has download files and a website in a new sub-project directory of Artistic Style. The downloads contain 
+        It has download files and a website in a new sub-project directory of Artistic Style. The downloads contain
         source code, documentation, and scripts. The Windows download contains an executable. The needed Artistic Style
         source files are included. </p>
     <p>
@@ -160,14 +236,14 @@
     <h4>Windows XP</h4>
 
     <p>
-        The executable in the Windows distribution package is now compiled with a Visual Studio version that will no 
+        The executable in the Windows distribution package is now compiled with a Visual Studio version that will no
         longer work on Windows XP. Beginning with Visual Studio 2012, auto-vectorization tries to make loops run
         faster by automatically vectorizing the code. Auto-vectorization is on by default, and there are no compiler
         switches, #pragmas, or hints to disable it. It uses SSE instructions not available in Windows XP. Microsoft ended
         support and updates for XP on April 8, 2014, and the usage share percentage continues to decrease.</p>
     <p>
         To compile on a non-XP machine for use on XP, using a compiler other than Visual Studio should always
-        produce an XP executable. Using Visual Studio 2010 or earlier should always produce an XP executable. If 
+        produce an XP executable. Using Visual Studio 2010 or earlier should always produce an XP executable. If
         you are using Visual Studio 2012, 2013, or 2015 on a non-XP machine, do the following for the Artistic Style
         configuration you want to use:</p>
     <ul>
@@ -175,14 +251,14 @@
             and can be installed as a modification to the current install.</li>
         <li>In the Artistic Style Properties, change General &gt; Platform Toolset, to &quot;Windows XP&quot; for your Visual
             Studio version.</li>
-        <li>In the Artistic Style Properties, change C/C++ &gt; Preprocessor &gt; Preprocessor Definitions to include 
+        <li>In the Artistic Style Properties, change C/C++ &gt; Preprocessor &gt; Preprocessor Definitions to include
             _USING_V110_SDK71_.</li>
         <li>Change other Properties if you want, such as Output Directory or Target Name.</li>
         <li>Compile. The output should be executable on Windows XP. It will also execute on the later versions of Windows.
         </li>
     </ul>
     <p>
-        In newer releases of Visual Studio 2015, the &quot;Universal CRT&quot; files have been moved. There is a 
+        In newer releases of Visual Studio 2015, the &quot;Universal CRT&quot; files have been moved. There is a
         notification <a href="https://blogs.msdn.microsoft.com/vcblog/2015/03/03/introducing-the-universal-crt/">here</a>.
         To compile using XP there may need to be additional include and library directories added. If the compile gets
         errors add the appropriate directories to the project properties.</p>
@@ -203,7 +279,7 @@
         indented.
         The option is described in the "Indentation Options" section of the documentation.</p>
     <p>
-        A new option, "dry-run", will run Artistic Style without updating the files. The report will be output as 
+        A new option, "dry-run", will run Artistic Style without updating the files. The report will be output as
         usual.</p>
     <p>
         Formatting of source code may now be disabled for portions of a program by embedding special comment tags in the
@@ -256,7 +332,7 @@
     <p>
         The "Indent Style" topic on Wikipedia states that the "ANSI" style refers to K&amp;R style brackets
         and not Allman style as used by Artistic Style. The option "style=ansi" is therefore being deprecated and will
-        be removed in a future release. Use one of the other long options instead (style=allman, style=bsd, or 
+        be removed in a future release. Use one of the other long options instead (style=allman, style=bsd, or
         style=break).</p>
     <p>
         Some of the documentation has been removed from the distribution package. It still contains all files needed to
@@ -294,7 +370,7 @@
         A new programming language, Objective&#8209;C, has been added to Artistic Style. Four new options, "align&#8209;method&#8209;colon",
         "pad&#8209;method&#8209;colon=", "pad&#8209;method&#8209;prefix", and "unpad&#8209;method&#8209;prefix" have been
         added to format the methods. The options are described in a new "Objective&#8209;C" section in the documentation.
-        These new options affect only Objective&#8209;C source code. They have no effect on the other programming 
+        These new options affect only Objective&#8209;C source code. They have no effect on the other programming
         languages.</p>
     <p>
         Because of the longer continuation indents sometimes needed for Objective&#8209;C, the option "max-instatement-indent"
@@ -307,7 +383,7 @@
         along with a python program to verify the style and an emacs script for using the style.</p>
     <p>
         A new indent option "indent-modifiers" will indent class access modifiers (public, protected, or 'private) one-half
-        indent. The rest of the class is not indented. It is described in the "Indentation Options" section of the 
+        indent. The rest of the class is not indented. It is described in the "Indentation Options" section of the
         documentation.</p>
     <p>
         Four new bracket modify options, "attach-namespaces", "attach-classes", "attach-inlines", and "attach-extern-c",
@@ -422,7 +498,7 @@
         There is a new Linux makefile for the Clang Compiler. Clang is a free compiler can be installed as a package on
         many Linux distributions. Some of its features are fast compiles, low memory use, expressive diagnostic messages,
         and GCC compatibility. It includes a static analyzer tool that finds potential bugs in your source code. An experimental
-        version can be installed on a Windows platform. There is more information in the Install Information 
+        version can be installed on a Windows platform. There is more information in the Install Information
         documentation.</p>
     <p>
         Visual Studio automatically creates an import library and an export file when you link a program that contains
@@ -446,7 +522,7 @@
     <p>
         If you use a compiler other than Visual Studio, you can probably get better execution by compiling using the C++11
         standards. Artistic Style uses a lot of string vectors and the new move semantics will probably result in faster
-        execution. (To use C++11 on GCC and MinGW use the option --std=c++0x). This may change on future compiler 
+        execution. (To use C++11 on GCC and MinGW use the option --std=c++0x). This may change on future compiler
         releases.</p>
     <p>
         The "Developer Information" page has a new example and download for calling Artistic Style from a Python script.
@@ -467,7 +543,7 @@
     <p>
         &nbsp;</p>
     <p>
-        <strong>Previous releases are available in the 
+        <strong>Previous releases are available in the
             <a href="http://astyle.sourceforge.net/newsArchives.html">News Archives</a>.</strong></p>
     <p>
         &nbsp;</p>
