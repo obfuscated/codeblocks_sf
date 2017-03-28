@@ -251,6 +251,7 @@ static wxULongLong_t wxStrtoullBase(const wxChar* nptr, wxChar** endptr, int bas
     return sum;
 }
 
+wxULongLong_t wxStrtoull(const wxChar* nptr, wxChar** endptr, int base);
 wxULongLong_t wxStrtoull(const wxChar* nptr, wxChar** endptr, int base)
 {
     wxChar sign;
@@ -265,6 +266,7 @@ wxULongLong_t wxStrtoull(const wxChar* nptr, wxChar** endptr, int base)
     return uval;
 }
 
+wxLongLong_t wxStrtoll(const wxChar* nptr, wxChar** endptr, int base);
 wxLongLong_t wxStrtoll(const wxChar* nptr, wxChar** endptr, int base)
 {
     wxChar sign;

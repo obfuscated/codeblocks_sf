@@ -7387,9 +7387,9 @@ bool wxPropertyGrid::DoSelectProperty( wxPGProperty* p, unsigned int flags )
 /* C::B begin */
     struct UnsetValue
     {
-        UnsetValue(bool &value) : value(value) {}
-        ~UnsetValue() { value = false; }
-        bool &value;
+        UnsetValue(bool &value) : m_value(value) {}
+        ~UnsetValue() { m_value = false; }
+        bool &m_value;
     };
     UnsetValue unsetValue(m_inDoSelectProperty);
 /* C::B end */
@@ -8367,7 +8367,6 @@ bool wxPropertyGrid::HandleMouseMove( int x, unsigned int y, wxMouseEvent &event
         {
 
             int newSplitterX = x - m_dragOffset;
-            int splitterX = x - splitterHitOffset;
 
             // Splitter redraw required?
             if ( newSplitterX != splitterX )
@@ -11054,13 +11053,13 @@ wxString wxPropertyGridInterface::SaveEditableState( int includedStates ) const
     //
     // Save state on page basis
     size_t pageIndex = 0;
-    wxPropertyGridState* pageState = GetPageState(pageIndex);
+    wxPropertyGridState* pageStateIdx = GetPageState(pageIndex);
     wxArrayPtrVoid pageStates;
-    while ( pageState )
+    while ( pageStateIdx )
     {
-        pageStates.Add(pageState);
+        pageStates.Add(pageStateIdx);
         pageIndex += 1;
-        pageState = GetPageState(pageIndex);
+        pageStateIdx = GetPageState(pageIndex);
     }
 
     for ( pageIndex=0; pageIndex < pageStates.size(); pageIndex++ )
