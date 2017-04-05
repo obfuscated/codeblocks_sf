@@ -12,11 +12,11 @@ class wxKeyEvent;
 
 class byoCBTris: public byoGameBase
 {
-	public:
+    public:
 
-		byoCBTris(wxWindow* parent,const wxString& GameName);
+        byoCBTris(wxWindow* parent,const wxString& GameName);
 
-	private:
+    private:
 
         static const int bricksHoriz  = 15;
         static const int bricksMargin = 5;
@@ -82,7 +82,7 @@ class byoCBTris: public byoGameBase
         int m_ChunkPosY;
         ChunkConfig m_NextChunk;
 
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

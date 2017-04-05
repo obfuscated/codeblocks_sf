@@ -225,12 +225,11 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
         }
     }
 
-    // the test cases are list as the last line of the file, so we loop backword, and stop if an
+    // the test cases are list as the last line of the file, so we loop backwards, and stop if an
     // empty line is found
-    for (size_t i = allLines.size() - 1; i >= 0; i--)
+    for (size_t l = allLines.size() - 1; l >= 0; l--)
     {
-
-        wxString str = allLines[i];
+        wxString str = allLines[l];
         // a test case should be put in a line, and start with the double slash
         if (str.StartsWith(_T("//")))
         {
@@ -286,9 +285,9 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
             TestExpression(expression,searchScope,result);
 
             // loop the suggestList to see it is in the result Tokens
-            for (size_t i=0; i<suggestList.GetCount(); i++)
+            for (size_t s=0; s<suggestList.GetCount(); s++)
             {
-                wxString element = suggestList[i];
+                wxString element = suggestList[s];
                 bool pass = false; // pass the test?
                 for (TokenIdxSet::const_iterator it = result.begin();
                      it != result.end();

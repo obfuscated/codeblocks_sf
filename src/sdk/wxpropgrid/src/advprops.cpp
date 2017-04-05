@@ -493,7 +493,7 @@ wxPGWindowList wxPGDatePickerCtrlEditor::CreateControls( wxPropertyGrid* propgri
                  dateValue,
                  pos,
                  useSz,
-                 prop->GetDatePickerStyle() | 
+                 prop->GetDatePickerStyle() |
                  wxNO_BORDER);
 
     // Connect all required events to grid's OnCustomEditorEvent

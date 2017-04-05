@@ -188,7 +188,7 @@ private:
     int sysCaretWidth;
     int sysCaretHeight;
 #endif
-
+   
     friend class wxSTCCallTip;
 };
 

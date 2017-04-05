@@ -131,6 +131,7 @@ namespace
     int idMenuClearAllBrowse_Marks  = wxNewId();
     int idMenuSortBrowse_Marks      = wxNewId();
     int idMenuConfigBrowse_Marks    = wxNewId();
+    int idMenuToggleBrowseMark      = wxNewId();
     #ifdef LOGGING
     int idMenuTrackerDump           = wxNewId();
     #endif
@@ -168,6 +169,7 @@ BEGIN_EVENT_TABLE(BrowseTracker, cbPlugin)
 	EVT_MENU(     idMenuClearAllBrowse_Marks,BrowseTracker::OnMenuClearAllBrowse_Marks)
 	EVT_MENU(     idMenuSortBrowse_Marks,    BrowseTracker::OnMenuSortBrowse_Marks)
 	EVT_MENU(     idMenuConfigBrowse_Marks,  BrowseTracker::OnMenuSettings)
+	EVT_MENU(     idMenuToggleBrowseMark,  BrowseTracker::OnMenuToggleBrowseMark)
    #ifdef LOGGING
 	EVT_MENU(     idMenuTrackerDump,        BrowseTracker::OnMenuTrackerDump)
    #endif
@@ -422,6 +424,7 @@ void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
         pforwardBackwardSubMenu->Append(idMenuBrowseMarkNext, _("Next Mark"), _("Browse Down"));
 
         pforwardBackwardSubMenu->AppendSeparator();
+        pforwardBackwardSubMenu->Append(idMenuToggleBrowseMark, _("Toggle BrowseMark"), _("Toggle Browse Mark"));
         pforwardBackwardSubMenu->Append(idMenuRecordBrowseMark, _("Set BrowseMark"), _("Record Browse Mark"));
         pforwardBackwardSubMenu->Append(idMenuClearBrowseMark,  _("Clear BrowseMark"), _("Unset Browse Mark"));
         pforwardBackwardSubMenu->Append(idMenuSortBrowse_Marks,  _("Sort BrowseMarks"), _("Sort Browse Marks"));

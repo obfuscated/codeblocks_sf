@@ -1,11 +1,12 @@
 #include "sdk.h"
 #ifndef CB_PRECOMP
-#include <wx/event.h>
-#include <wx/image.h>
+    #include <wx/event.h>
+    #include <wx/image.h>
 #endif
 #include <wx/bitmap.h>
 #include <wx/dc.h>
 #include <wx/dcbuffer.h>
+
 #include "byosnake.h"
 #include "byogame.h"
 
@@ -155,9 +156,7 @@ void byoSnake::RebuildField()
 {
     memset(m_Field,0,sizeof(m_Field));
     for ( int i=0; i<m_SnakeLen; i++ )
-    {
         m_Field[m_SnakeX[i]][m_SnakeY[i]] = true;
-    }
 }
 
 void byoSnake::Move()
@@ -195,20 +194,14 @@ void byoSnake::Move()
     if ( newY<0 || newY>=m_FieldVert  ) valid = false;
 
     for ( int i=0; valid && i<m_SnakeLen-1; i++ )
-    {
         if ( m_SnakeX[i] == newX && m_SnakeY[i] == newY ) valid = false;
-    }
 
     if ( !valid )
     {
         if ( ++m_KillCnt >= m_MaxKillCnt )
-        {
             Died();
-        }
         else
-        {
             m_Timer.Start(-1,true);
-        }
         Refresh();
         return;
     }
@@ -216,9 +209,7 @@ void byoSnake::Move()
     m_KillCnt = 0;
 
     if ( newX == m_AppleX && newY == m_AppleY )
-    {
         GetsBigger();
-    }
 
     // Shifting snake
     for ( int i=m_SnakeLen; i-->0;  )
@@ -232,9 +223,7 @@ void byoSnake::Move()
 
     RebuildField();
     if ( newX == m_AppleX && newY == m_AppleY )
-    {
         RandomizeApple();
-    }
     else
     {
         m_Score -= m_Delay / 10;
@@ -262,7 +251,7 @@ void byoSnake::Died()
 
 void byoSnake::GameOver()
 {
-    ::wxMessageBox(_("Game over"));
+    wxMessageBox(_("Game over."));
 }
 
 void byoSnake::DrawBorder(wxDC* DC)
@@ -282,17 +271,13 @@ void byoSnake::DrawBorder(wxDC* DC)
 void byoSnake::DrawSnake(wxDC* DC)
 {
     for ( int i=0; i<m_SnakeLen; i++ )
-    {
         DrawBrick(DC,m_SnakeX[i]+1,m_SnakeY[i]+3,GetColour(m_SnakeColour));
-    }
 }
 
 void byoSnake::DrawApple(wxDC* DC)
 {
     if ( m_AppleX >= 0 && m_AppleY >= 0 )
-    {
         DrawBrick(DC,m_AppleX+1,m_AppleY+3,GetColour(m_AppleColour));
-    }
 }
 
 void byoSnake::DrawStats(wxDC* DC)

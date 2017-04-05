@@ -95,9 +95,8 @@ void byoGameBase::BackToWorkTimer()
                 // Played to much
 
                 for ( size_t i=0; i<AllGames.Count(); ++i )
-                {
                     AllGames[i]->SetPause(true);
-                }
+
                 AnnoyingDialog dlg(_("Work reminder (stop playing games!)"),
                                    _("Don't you think you had enough already?\nGet back to work, NOW!"),
                                    wxART_WARNING,
@@ -110,9 +109,7 @@ void byoGameBase::BackToWorkTimer()
                     WorkingTicks = 0;
                 }
                 else
-                {
                     PlayingTicks = 0;
-                }
             }
         }
     }
@@ -156,9 +153,7 @@ void byoGameBase::BackToWorkTimer()
     }
 
     for ( size_t i=0; i<AllGames.Count(); i++ )
-    {
         AllGames[i]->Refresh();
-    }
 }
 
 void byoGameBase::RecalculateSizeHints(int minStepsHoriz,int minStepsVert)

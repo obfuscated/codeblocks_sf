@@ -233,7 +233,7 @@ bool ParserBase::Reparse(const wxString& file, cb_unused bool isLocal)
 
     opts.loader                = loader;
 
-    // the file should first put in the TokenTree, so the index is correct when initlize the
+    // the file should first put in the TokenTree, so the index is correct when initializing the
     // Tokenizer object inside the ParserThread::ParserThread()
 
     m_TokenTree->ReserveFileForParsing(file, true);

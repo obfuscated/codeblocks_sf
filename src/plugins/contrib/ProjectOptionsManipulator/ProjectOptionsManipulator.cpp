@@ -125,7 +125,7 @@ int ProjectOptionsManipulator::Execute()
     {
       if ( wxID_YES == cbMessageBox(_("Do you want to save all (modified) projects now?"),
                                     _("Confirmation"), wxICON_QUESTION | wxYES_NO | wxNO_DEFAULT,
-                                    Manager::Get()->GetAppWindow()) )
+                                      Manager::Get()->GetAppWindow()) )
       {
         if ( !Manager::Get()->GetProjectManager()->SaveAllProjects() )
         {
