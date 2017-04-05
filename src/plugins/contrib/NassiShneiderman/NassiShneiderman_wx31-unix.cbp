@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="NassiShneiderman wx3.1.x (Unix)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel31/share/codeblocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../../devel31" />
+				<Option object_output="../../../.objs31/plugins/contrib/NassiShneiderman" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -ns -ni -p debug" />
+				<Option host_application="../../../devel31/codeblocks" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectCompilerOptionsRelation="2" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="`$(WX_CONFIG) --cflags`" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-Winvalid-pch" />
+					<Add option="-fPIC" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add option="-DWX_PRECOMP" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+				</Compiler>
+				<Linker>
+					<Add option="`$(WX_CONFIG) --libs`" />
+					<Add option="-Wl,--no-undefined" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel31" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ../../../devel31/share/codeblocks/NassiShneiderman.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-ansi" />
+			<Add option="-std=c++11" />
+		</Compiler>
+		<Unit filename="CParser.cpp" />
+		<Unit filename="DataObject.cpp" />
+		<Unit filename="DataObject.h" />
+		<Unit filename="FileContent.cpp" />
+		<Unit filename="FileContent.h" />
+		<Unit filename="GraphBricks.cpp" />
+		<Unit filename="GraphBricks.h" />
+		<Unit filename="GraphFabric.cpp" />
+		<Unit filename="GraphFabric.h" />
+		<Unit filename="HooverDrawlet.cpp" />
+		<Unit filename="HooverDrawlet.h" />
+		<Unit filename="InsertBrickTask.cpp" />
+		<Unit filename="InsertBrickTask.h" />
+		<Unit filename="NassiBrickVisitor.h" />
+		<Unit filename="NassiDiagramWindow.cpp" />
+		<Unit filename="NassiDiagramWindow.h" />
+		<Unit filename="NassiDropTarget.cpp" />
+		<Unit filename="NassiDropTarget.h" />
+		<Unit filename="NassiEditorPanel.cpp" />
+		<Unit filename="NassiEditorPanel.h" />
+		<Unit filename="NassiFileContent.cpp" />
+		<Unit filename="NassiFileContent.h" />
+		<Unit filename="NassiPlugin.cpp" />
+		<Unit filename="NassiPlugin.h" />
+		<Unit filename="NassiView.cpp" />
+		<Unit filename="NassiView.h" />
+		<Unit filename="PasteTask.cpp" />
+		<Unit filename="PasteTask.h" />
+		<Unit filename="RedHatchDrawlet.cpp" />
+		<Unit filename="RedHatchDrawlet.h" />
+		<Unit filename="RedLineDrawlet.cpp" />
+		<Unit filename="RedLineDrawlet.h" />
+		<Unit filename="Task.cpp" />
+		<Unit filename="Task.h" />
+		<Unit filename="TextCtrl.cpp" />
+		<Unit filename="TextCtrl.h" />
+		<Unit filename="TextCtrlTask.cpp" />
+		<Unit filename="TextCtrlTask.h" />
+		<Unit filename="TextGraph.cpp" />
+		<Unit filename="TextGraph.h" />
+		<Unit filename="bricks.cpp" />
+		<Unit filename="bricks.h" />
+		<Unit filename="cbEditorPanel.cpp" />
+		<Unit filename="cbEditorPanel.h" />
+		<Unit filename="commands.cpp" />
+		<Unit filename="commands.h" />
+		<Unit filename="logger.cpp" />
+		<Unit filename="logger.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="parseactions.cpp" />
+		<Unit filename="parseactions.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

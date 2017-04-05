@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="BrowseTracker wx3.1.x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel31/share/codeblocks/plugins/BrowseTracker.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs31/plugins/contrib/BrowseTracker" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="../../../devel31/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="-Wall" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DNOPCH" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DNO_LOGGING" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+					<Add directory="$(#WX31.include)" />
+					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+					<Add option="-Wl,--enable-auto-import" />
+					<Add option="-mthreads" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel31" />
+					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel31\share\codeblocks\BrowseTracker.zip manifest.xml" />
+					<Add after="zip -j9 ..\..\..\devel31\share\codeblocks\BrowseTracker.zip BrowseTrackerToolbar.xrc" />
+					<Add after="zip -9r  ..\..\..\devel31\share\codeblocks\BrowseTracker.zip .\images" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="31" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=gnu++11" />
+		</Compiler>
+		<Unit filename="BrowseMarks.cpp" />
+		<Unit filename="BrowseMarks.h" />
+		<Unit filename="BrowseSelector.cpp" />
+		<Unit filename="BrowseSelector.h" />
+		<Unit filename="BrowseTracker.cpp" />
+		<Unit filename="BrowseTracker.h" />
+		<Unit filename="BrowseTrackerConfPanel.cpp" />
+		<Unit filename="BrowseTrackerConfPanel.h" />
+		<Unit filename="BrowseTrackerDefs.h" />
+		<Unit filename="BrowseTrackerLayout.cpp" />
+		<Unit filename="BrowseTrackerLayout.h" />
+		<Unit filename="BrowseTrackerToolbar.xrc" />
+		<Unit filename="BrowseXpms.h" />
+		<Unit filename="ConfigPanel.cpp" />
+		<Unit filename="ConfigPanel.h" />
+		<Unit filename="JumpData.cpp" />
+		<Unit filename="JumpData.h" />
+		<Unit filename="JumpTracker.cpp" />
+		<Unit filename="JumpTracker.h" />
+		<Unit filename="Makefile.am" />
+		<Unit filename="ProjectData.cpp" />
+		<Unit filename="ProjectData.h" />
+		<Unit filename="Version.cpp" />
+		<Unit filename="Version.h" />
+		<Unit filename="manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

@@ -1,0 +1,18 @@
+#! /bin/sh
+#
+
+mkdir -p ../../../devel31/share/codeblocks/images/DoxyBlocks > /dev/null 2> /dev/null
+mkdir -p ../../../devel31/share/codeblocks/images/DoxyBlocks/16x16 > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/DoxyBlocks > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/DoxyBlocks/16x16 > /dev/null 2> /dev/null
+mkdir -p ../../../devel31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+cp ./images/*.png ../../../devel31/share/codeblocks/images/DoxyBlocks/ > /dev/null 2> /dev/null
+cp ./images/16x16/*.png ../../../devel31/share/codeblocks/images/DoxyBlocks/16x16/ > /dev/null 2> /dev/null
+cp ./images/*.png ../../../output31/share/codeblocks/images/DoxyBlocks/ > /dev/null 2> /dev/null
+cp ./images/16x16/*.png ../../../output31/share/codeblocks/images/DoxyBlocks/16x16/ > /dev/null 2> /dev/null
+cp ./*.png ../../../devel31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+cp ./*.png ../../../output31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+exit 0
+
+

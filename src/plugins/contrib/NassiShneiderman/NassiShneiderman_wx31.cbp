@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="NassiShneiderman wx3.1.x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option platforms="Windows;" />
+				<Option output="../../../devel31/share/CodeBlocks/plugins/NassiShneiderman" prefix_auto="1" extension_auto="1" />
+				<Option object_output="../../../.objs31/plugins/contrib/NassiShneiderman" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance --no-check-associations -ns -nd -p debug" />
+				<Option host_application="../../../devel31/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-pipe" />
+					<Add option="-mthreads" />
+					<Add option="-fmessage-length=0" />
+					<Add option="-fexceptions" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DHAVE_W32API_H" />
+					<Add option="-D__WXMSW__" />
+					<Add option="-DWXUSINGDLL" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DNOPCH" />
+					<Add option="-DwxUSE_UNICODE" />
+					<Add option="-DBOOST_SYSTEM_NO_DEPRECATED" />
+					<Add directory="../../../include" />
+					<Add directory="../../../sdk/wxscintilla/include" />
+					<Add directory="$(#WX31.include)" />
+					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+					<Add directory="$(#boost.include)" />
+				</Compiler>
+				<Linker>
+					<Add option="-Wl,-enable-auto-import" />
+					<Add library="codeblocks" />
+					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+					<Add directory="../../../devel31" />
+					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel31\share\CodeBlocks\NassiShneiderman.zip manifest.xml" />
+				</ExtraCommands>
+				<Environment>
+					<Variable name="WX_CFG" value="" />
+					<Variable name="WX_SUFFIX" value="u" />
+					<Variable name="WX_VERSION" value="31" />
+				</Environment>
+			</Target>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-std=gnu++11" />
+		</Compiler>
+		<Unit filename="CParser.cpp" />
+		<Unit filename="DataObject.cpp" />
+		<Unit filename="DataObject.h" />
+		<Unit filename="FileContent.cpp" />
+		<Unit filename="FileContent.h" />
+		<Unit filename="GraphBricks.cpp" />
+		<Unit filename="GraphBricks.h" />
+		<Unit filename="GraphFabric.cpp" />
+		<Unit filename="GraphFabric.h" />
+		<Unit filename="HooverDrawlet.cpp" />
+		<Unit filename="HooverDrawlet.h" />
+		<Unit filename="InsertBrickTask.cpp" />
+		<Unit filename="InsertBrickTask.h" />
+		<Unit filename="NassiBrickVisitor.h" />
+		<Unit filename="NassiDiagramWindow.cpp" />
+		<Unit filename="NassiDiagramWindow.h" />
+		<Unit filename="NassiDropTarget.cpp" />
+		<Unit filename="NassiDropTarget.h" />
+		<Unit filename="NassiEditorPanel.cpp" />
+		<Unit filename="NassiEditorPanel.h" />
+		<Unit filename="NassiFileContent.cpp" />
+		<Unit filename="NassiFileContent.h" />
+		<Unit filename="NassiPlugin.cpp" />
+		<Unit filename="NassiPlugin.h" />
+		<Unit filename="NassiView.cpp" />
+		<Unit filename="NassiView.h" />
+		<Unit filename="PasteTask.cpp" />
+		<Unit filename="PasteTask.h" />
+		<Unit filename="RedHatchDrawlet.cpp" />
+		<Unit filename="RedHatchDrawlet.h" />
+		<Unit filename="RedLineDrawlet.cpp" />
+		<Unit filename="RedLineDrawlet.h" />
+		<Unit filename="Task.cpp" />
+		<Unit filename="Task.h" />
+		<Unit filename="TextCtrl.cpp" />
+		<Unit filename="TextCtrl.h" />
+		<Unit filename="TextCtrlTask.cpp" />
+		<Unit filename="TextCtrlTask.h" />
+		<Unit filename="TextGraph.cpp" />
+		<Unit filename="TextGraph.h" />
+		<Unit filename="bricks.cpp" />
+		<Unit filename="bricks.h" />
+		<Unit filename="cbEditorPanel.cpp" />
+		<Unit filename="cbEditorPanel.h" />
+		<Unit filename="commands.cpp" />
+		<Unit filename="commands.h" />
+		<Unit filename="logger.cpp" />
+		<Unit filename="logger.h" />
+		<Unit filename="manifest.xml" />
+		<Unit filename="parseactions.cpp" />
+		<Unit filename="parseactions.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

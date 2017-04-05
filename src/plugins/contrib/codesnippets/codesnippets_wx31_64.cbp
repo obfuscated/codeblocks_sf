@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Code Snippets wx3.1.x (64 bit)" />
+		<Option default_target="Plugin - Win32" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Plugin - Win32">
+				<Option output="..\..\..\devel31_64\share\CodeBlocks\plugins\codesnippets.dll" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="..\..\..\devel31_64" />
+				<Option object_output="..\..\..\.objs31_64\plugins\contrib\codesnippets\plugin\" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="..\..\..\devel31_64\codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Compiler>
+					<Add option="$(#CB_RELEASE_TYPE)" />
+					<Add option="-DNOPCH" />
+				</Compiler>
+				<Linker>
+					<Add library="codeblocks" />
+				</Linker>
+			</Target>
+			<Environment>
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_VERSION" value="31" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="Plugin - Win32;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-D_WIN64" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DNO_LOGGING" />
+			<Add directory="..\..\..\include" />
+			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add directory="..\..\..\src" />
+			<Add directory="$(#WX31_64.include)" />
+			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="Search" />
+			<Add directory="editor" />
+			<Add directory="." />
+			<Add directory="..\..\..\include\tinyxml" />
+			<Add directory="..\..\..\include\mozilla_chardet" />
+			<Add directory="..\..\..\include\mozilla_chardet\mfbt" />
+			<Add directory="..\..\..\include\mozilla_chardet\nsprpub\pr\include" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom\base" />
+			<Add directory="..\..\..\include\mozilla_chardet\xpcom\glue" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add library="codeblocks" />
+			<Add directory="..\..\..\devel31_64" />
+			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="update31_64.bat" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="GenericMessageBox.cpp" />
+		<Unit filename="GenericMessageBox.h" />
+		<Unit filename="Makefile.am" />
+		<Unit filename="codesnippets.cpp" />
+		<Unit filename="codesnippets.h" />
+		<Unit filename="codesnippetstreectrl.cpp" />
+		<Unit filename="codesnippetstreectrl.h" />
+		<Unit filename="codesnippetswindow.cpp" />
+		<Unit filename="codesnippetswindow.h" />
+		<Unit filename="generic.Manifest" />
+		<Unit filename="generic.rc">
+			<Option compilerVar="WINDRES" />
+		</Unit>
+		<Unit filename="manifest.xml" />
+		<Unit filename="menuidentifiers.h" />
+		<Unit filename="resources\Makefile.am" />
+		<Unit filename="resources\allsnippets.png" />
+		<Unit filename="resources\category.png" />
+		<Unit filename="resources\findf.png" />
+		<Unit filename="resources\findfdisabled.png" />
+		<Unit filename="resources\manifest.xml" />
+		<Unit filename="resources\options.png" />
+		<Unit filename="resources\optionsdisabled.png" />
+		<Unit filename="resources\snippet.png" />
+		<Unit filename="resources\stop.png" />
+		<Unit filename="resources\stopdisabled.png" />
+		<Unit filename="settingsdlg.cpp" />
+		<Unit filename="settingsdlg.h" />
+		<Unit filename="settingsdlgform.cpp" />
+		<Unit filename="settingsdlgform.h" />
+		<Unit filename="snippetitemdata.cpp" />
+		<Unit filename="snippetitemdata.h" />
+		<Unit filename="snippetproperty.cpp" />
+		<Unit filename="snippetproperty.h" />
+		<Unit filename="snippetpropertyform.cpp" />
+		<Unit filename="snippetpropertyform.h" />
+		<Unit filename="snippetsconfig.cpp">
+			<Option weight="40" />
+		</Unit>
+		<Unit filename="snippetsconfig.h">
+			<Option weight="40" />
+		</Unit>
+		<Unit filename="snippetsimages.cpp" />
+		<Unit filename="snippetsimages.h" />
+		<Unit filename="update31_64" />
+		<Unit filename="update31_64.bat" />
+		<Unit filename="version.cpp" />
+		<Unit filename="version.h" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

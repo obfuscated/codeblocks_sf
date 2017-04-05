@@ -1,0 +1,13 @@
+#! /bin/sh
+#
+# This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+# http://www.gnu.org/licenses/gpl-3.0.html
+#
+
+
+mkdir -p ../../../devel31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+cp ./resources/images/*.png ../../../devel31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+cp ./resources/images/*.png ../../../output31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+exit 0
+

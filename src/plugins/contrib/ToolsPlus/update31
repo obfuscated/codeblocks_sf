@@ -1,0 +1,7 @@
+#! /bin/sh
+mkdir -p ../../../devel31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+cp ./Resources/*.png ../../../devel31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+cp ./Resources/*.png ../../../output31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+exit 0
+

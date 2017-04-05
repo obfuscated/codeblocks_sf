@@ -1,0 +1,8 @@
+#!/bin/sh
+mkdir -p ../../../devel31/share/codeblocks/images/wxsmith > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/wxsmith > /dev/null 2> /dev/null
+zip ../../../devel31/share/codeblocks/wxsmith.zip manifest.xml
+zip ../../../output31/share/codeblocks/wxsmith.zip manifest.xml
+cp ./wxwidgets/icons/*.png ../../../devel31/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null
+cp ./wxwidgets/icons/*.png ../../../output31/share/codeblocks/images/wxsmith/ > /dev/null 2> /dev/null
+exit 0

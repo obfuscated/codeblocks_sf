@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="Profiler wx3.1.x" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../../devel31/share/CodeBlocks/plugins/Profiler.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs31/plugins/contrib/profiler" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="../../../devel31/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="31" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-mthreads" />
+			<Add option="-fexceptions" />
+			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-DNOPCH" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=gnu++11" />
+			<Add directory="../../../include" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="$(#WX31.include)" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX31.include)" />
+		</ResourceCompiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-mthreads" />
+			<Add library="codeblocks" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="../../../devel31" />
+			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="zip -j9 ..\..\..\devel31\share\codeblocks\Profiler.zip resources\manifest.xml resources\*.xrc" />
+			<Mode after="always" />
+		</ExtraCommands>
+		<Unit filename="cbprofiler.cpp" />
+		<Unit filename="cbprofiler.h" />
+		<Unit filename="cbprofilerconfig.cpp" />
+		<Unit filename="cbprofilerconfig.h" />
+		<Unit filename="cbprofilerexec.cpp" />
+		<Unit filename="cbprofilerexec.h" />
+		<Unit filename="resources/configuration.xrc" />
+		<Unit filename="resources/main_dialog.xrc" />
+		<Unit filename="resources/manifest.xml" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
