@@ -100,6 +100,7 @@
 			<Add option="-Winvalid-pch" />
 			<Add option="-mthreads" />
 			<Add option="-fexceptions" />
+			<Add option="-std=gnu++11" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWX_PRECOMP" />
@@ -107,7 +108,6 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXMAKINGDLL_PDFDOC" />
 			<Add option="-DwxPDF_USE_WXMODULE=0" />
-			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX.include)" />
 			<Add directory="$(#WX.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="wxPdfDocument/include" />

@@ -38,11 +38,12 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\include\tinyxml" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
+			<Add option="-std=gnu++11" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WX31_64.INCLUDE)" />
-			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX31_64.include)" />

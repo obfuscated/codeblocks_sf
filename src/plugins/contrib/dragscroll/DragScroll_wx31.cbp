@@ -43,6 +43,7 @@
 			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="../../../include" />
 			<Add directory="../../../src" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<Linker>

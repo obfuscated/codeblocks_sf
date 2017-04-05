@@ -79,13 +79,14 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-std=gnu++11" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DNOPCH" />
-			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="../wxSmith" />
 		</Compiler>

@@ -45,6 +45,7 @@
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 			<Add directory="$(#WX31.include)" />
 			<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
