@@ -63,7 +63,7 @@
 				<Option object_output="../../../.objs31/plugins/contrib/SpellChecker" />
 				<Option type="3" />
 				<Option compiler="gcc" />
-				<Option parameters="--debug-log --no-check-associations -ns -nd -p debug" />
+				<Option parameters="--debug-log --no-check-associations -ns -nd --multiple-instance -p debug" />
 				<Option host_application="../../../devel31/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>

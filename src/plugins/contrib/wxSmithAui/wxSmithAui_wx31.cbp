@@ -17,10 +17,10 @@
 				<Option host_application="../../../devel31/codeblocks" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
-					<Add option="-ansi" />
+					<Add option="-std=c++11" />
+					<Add option="-fPIC" />
 					<Add option="`$(WX_CONFIG) --cflags`" />
 					<Add option="-fexceptions" />
-					<Add option="-fPIC" />
 				</Compiler>
 				<Linker>
 					<Add option="`$(WX_CONFIG) --libs std,aui,propgrid`" />
@@ -46,6 +46,7 @@
 					<Add option="-mthreads" />
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
+					<Add option="-std=gnu++11" />
 					<Add option="-DHAVE_W32API_H" />
 					<Add option="-D__WXMSW__" />
 					<Add directory="$(#WX31.include)" />
@@ -71,7 +72,7 @@
 				</Environment>
 			</Target>
 			<Environment>
-				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+				<Variable name="WX_CONFIG" value="wx-config --version=3.1" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -79,7 +80,6 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="$(#CB_RELEASE_TYPE)" />
-			<Add option="-std=gnu++11" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DWXUSINGDLL" />
@@ -91,7 +91,6 @@
 			<Add directory="../wxSmith" />
 		</Compiler>
 		<Linker>
-			<Add option="-Wl,--no-undefined" />
 			<Add library="codeblocks" />
 			<Add library="wxsmithlib" />
 			<Add directory="../../../devel31" />

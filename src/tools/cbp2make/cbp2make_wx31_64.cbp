@@ -7,20 +7,14 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\devel31_64\cbp2make" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\devel31_64" />
-				<Option object_output="..\..\.objs31_64\tools\cbp2make" />
+				<Option output="../../devel31_64/cbp2make" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../devel31_64" />
+				<Option object_output="../../.objs31_64/tools/cbp2make" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option parameters="-in cbp2make.cbp" />
 				<Option host_application="codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
-				<Compiler>
-					<Add option="-O2" />
-				</Compiler>
-				<Linker>
-					<Add option="-s" />
-				</Linker>
 			</Target>
 			<Target title="Doxygen">
 				<Option type="4" />
@@ -35,139 +29,141 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-fexceptions" />
 			<Add option="-fno-strict-aliasing" />
 			<Add option="-Wno-write-strings" />
+			<Add option="-std=gnu++11" />
 			<Add option="-m64" />
 			<Add option="-D_WIN64" />
 			<Add directory="lib" />
-			<Add directory="lib\tinyxml" />
+			<Add directory="lib/tinyxml" />
 			<Add directory="src" />
 		</Compiler>
-		<Unit filename="lib\doc\macros.dox">
+		<Unit filename="lib/doc/macros.dox">
 			<Option target="Doxygen" />
 		</Unit>
-		<Unit filename="lib\doc\stringhash.dox">
+		<Unit filename="lib/doc/stringhash.dox">
 			<Option target="Doxygen" />
 		</Unit>
-		<Unit filename="lib\macros.h">
+		<Unit filename="lib/macros.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlconfig.cpp">
+		<Unit filename="lib/stlconfig.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlconfig.h">
+		<Unit filename="lib/stlconfig.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlconvert.cpp">
+		<Unit filename="lib/stlconvert.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlconvert.h">
+		<Unit filename="lib/stlconvert.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlfutils.cpp">
+		<Unit filename="lib/stlfutils.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlfutils.h">
+		<Unit filename="lib/stlfutils.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlgpm.cpp">
+		<Unit filename="lib/stlgpm.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlgpm.h">
+		<Unit filename="lib/stlgpm.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlstrings.cpp">
+		<Unit filename="lib/stlstrings.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlstrings.h">
+		<Unit filename="lib/stlstrings.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlvariables.cpp">
+		<Unit filename="lib/stlvariables.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stlvariables.h">
+		<Unit filename="lib/stlvariables.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stringhash.cpp">
+		<Unit filename="lib/stringhash.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\stringhash.h">
+		<Unit filename="lib/stringhash.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\tinyxml\tinystr.cpp">
+		<Unit filename="lib/tinyxml/tinystr.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\tinyxml\tinystr.h">
+		<Unit filename="lib/tinyxml/tinystr.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\tinyxml\tinyxml.cpp">
+		<Unit filename="lib/tinyxml/tinyxml.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\tinyxml\tinyxml.h">
+		<Unit filename="lib/tinyxml/tinyxml.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\tinyxml\tinyxmlerror.cpp">
+		<Unit filename="lib/tinyxml/tinyxmlerror.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="lib\tinyxml\tinyxmlparser.cpp">
+		<Unit filename="lib/tinyxml/tinyxmlparser.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\buildtools.cpp">
+		<Unit filename="src/buildtools.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\buildtools.h">
+		<Unit filename="src/buildtools.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbbuildcfg.cpp">
+		<Unit filename="src/cbbuildcfg.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbbuildcfg.h">
+		<Unit filename="src/cbbuildcfg.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbbuildmgr.cpp">
+		<Unit filename="src/cbbuildmgr.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbbuildmgr.h">
+		<Unit filename="src/cbbuildmgr.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbglobalvar.cpp">
+		<Unit filename="src/cbglobalvar.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbglobalvar.h">
+		<Unit filename="src/cbglobalvar.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbhelper.cpp">
+		<Unit filename="src/cbhelper.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbhelper.h">
+		<Unit filename="src/cbhelper.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbp2make.cpp">
+		<Unit filename="src/cbp2make.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbproject.cpp">
+		<Unit filename="src/cbproject.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbproject.h">
+		<Unit filename="src/cbproject.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbptarget.cpp">
+		<Unit filename="src/cbptarget.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbptarget.h">
+		<Unit filename="src/cbptarget.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbpunit.cpp">
+		<Unit filename="src/cbpunit.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbpunit.h">
+		<Unit filename="src/cbpunit.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbworkspace.cpp">
+		<Unit filename="src/cbworkspace.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\cbworkspace.h">
+		<Unit filename="src/cbworkspace.h">
 			<Option target="default" />
 		</Unit>
 		<Unit filename="src/depsearch.cpp">
@@ -215,19 +211,19 @@
 		<Unit filename="src/makefile.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\platforms.cpp">
+		<Unit filename="src/platforms.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\platforms.h">
+		<Unit filename="src/platforms.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\revision.h">
+		<Unit filename="src/revision.h">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\toolchains.cpp">
+		<Unit filename="src/toolchains.cpp">
 			<Option target="default" />
 		</Unit>
-		<Unit filename="src\toolchains.h">
+		<Unit filename="src/toolchains.h">
 			<Option target="default" />
 		</Unit>
 		<Extensions>

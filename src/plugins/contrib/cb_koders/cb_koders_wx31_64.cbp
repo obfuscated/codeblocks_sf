@@ -43,9 +43,11 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-D_WIN64" />
 			<Add option="-DBUILDING_PLUGIN" />
+			<Add option="-std=gnu++11" />
 			<Add directory="$(#WX31_64.include)" />
 			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />
 		</Compiler>
 		<ResourceCompiler>

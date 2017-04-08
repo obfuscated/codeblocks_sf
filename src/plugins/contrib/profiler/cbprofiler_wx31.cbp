@@ -29,7 +29,7 @@
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-mthreads" />
 			<Add option="-fexceptions" />
-			<Add option="-std=gnu++11" />
+			<Add option="-fpermissive" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNOPCH" />
 			<Add option="-DHAVE_W32API_H" />
@@ -37,6 +37,7 @@
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DcbDEBUG" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=gnu++11" />
 			<Add directory="../../../include" />
 			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../sdk/wxscintilla/include" />

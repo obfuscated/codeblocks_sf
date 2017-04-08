@@ -6,13 +6,13 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="default">
-				<Option output="..\..\..\devel31_64\share\CodeBlocks\plugins\ThreadSearch.dll" prefix_auto="0" extension_auto="0" />
-				<Option object_output="..\..\..\.objs31_64\plugins\contrib\ThreadSearch" />
-				<Option external_deps="..\..\..\devel31_64\wxcustombutton.dll;" />
+				<Option output="../../../devel31_64/share/CodeBlocks/plugins/ThreadSearch.dll" prefix_auto="0" extension_auto="0" />
+				<Option object_output="../../../.objs31_64/plugins/contrib/ThreadSearch" />
+				<Option external_deps="../../../devel31_64/wxcustombutton.dll;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
-				<Option host_application="..\..\..\devel31_64\codeblocks.exe" />
+				<Option host_application="../../../devel31_64/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
 					<Add option="$(#CB_RELEASE_TYPE)" />
@@ -21,8 +21,8 @@
 					<Add library="codeblocks" />
 					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
 					<Add library="wxcustombutton" />
-					<Add directory="..\..\..\devel31_64" />
-					<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)" />
+					<Add directory="../../../devel31_64" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
 			</Target>
 			<Environment>
@@ -40,6 +40,7 @@
 			<Add option="-mthreads" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
+			<Add option="-fpermissive" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DHAVE_W32API_H" />
 			<Add option="-D__WXMSW__" />
@@ -49,17 +50,19 @@
 			<Add option="-DwxUSE_UNICODE" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNO_LOGGING" />
-			<Add directory="..\..\..\include" />
-			<Add directory="..\..\..\sdk\wxscintilla\include" />
-			<Add directory="..\..\..\include\mozilla_chardet" />
-			<Add directory="..\..\..\include\mozilla_chardet\mfbt" />
-			<Add directory="..\..\..\include\mozilla_chardet\nsprpub\pr\include" />
-			<Add directory="..\..\..\include\mozilla_chardet\xpcom" />
-			<Add directory="..\..\..\include\mozilla_chardet\xpcom\base" />
-			<Add directory="..\..\..\include\mozilla_chardet\xpcom\glue" />
+			<Add option="-std=gnu++11" />
+			<Add directory="../../../include" />
+			<Add directory="../../../include/tinyxml" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+			<Add directory="../../../include/mozilla_chardet" />
+			<Add directory="../../../include/mozilla_chardet/mfbt" />
+			<Add directory="../../../include/mozilla_chardet/nsprpub/pr/include" />
+			<Add directory="../../../include/mozilla_chardet/xpcom" />
+			<Add directory="../../../include/mozilla_chardet/xpcom/base" />
+			<Add directory="../../../include/mozilla_chardet/xpcom/glue" />
 			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
-			<Add directory="..\wxContribItems\wxthings\include" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../wxContribItems/wxthings/include" />
 		</Compiler>
 		<Linker>
 			<Add option="-mthreads" />

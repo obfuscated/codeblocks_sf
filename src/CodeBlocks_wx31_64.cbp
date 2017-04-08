@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="tinyXML">
-				<Option output="base/tinyxml/txml30_64" prefix_auto="1" extension_auto="1" />
+				<Option output="base/tinyxml/txml31_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
 				<Option type="2" />
@@ -17,22 +17,23 @@
 				</Compiler>
 			</Target>
 			<Target title="AutoRevision">
-				<Option output="build_tools/autorevision/autorevision30_64" prefix_auto="1" extension_auto="1" />
+				<Option output="build_tools/autorevision/autorevision31_64" prefix_auto="1" extension_auto="1" />
 				<Option object_output=".objs31_64" />
 				<Option type="1" />
 				<Option compiler="gcc" />
+				<Option parameters="-v +wx +int +t .. include/autorevision.h" />
 				<Option projectLinkerOptionsRelation="1" />
 				<Compiler>
 					<Add directory="include" />
 				</Compiler>
 				<Linker>
 					<Add option="-s" />
-					<Add library="txml30_64" />
+					<Add library="txml31_64" />
 					<Add directory="base/tinyxml" />
 				</Linker>
 			</Target>
 			<Target title="ConsoleRunner">
-				<Option output="tools/ConsoleRunner/cb_console_runner30_64" prefix_auto="1" extension_auto="1" />
+				<Option output="tools/ConsoleRunner/cb_console_runner31_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="tools/ConsoleRunner" />
 				<Option object_output=".objs31_64" />
 				<Option type="1" />
@@ -43,7 +44,7 @@
 				</Compiler>
 			</Target>
 			<Target title="Squirrel">
-				<Option output="sdk/scripting/lib/squirrel30_64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/squirrel31_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
 				<Option type="2" />
@@ -58,7 +59,7 @@
 				<Option output="sdk/scripting/lib/sqstdlib31_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel30_64.a;" />
+				<Option external_deps="sdk/scripting/lib/libsquirrel31_64.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -68,10 +69,10 @@
 				</Compiler>
 			</Target>
 			<Target title="SqPlus">
-				<Option output="sdk/scripting/lib/sqplus30_64" prefix_auto="1" extension_auto="1" />
+				<Option output="sdk/scripting/lib/sqplus31_64" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="sdk/scripting/lib/libsquirrel30_64.a;sdk/scripting/lib/libsqstdlib31_64.a;" />
+				<Option external_deps="sdk/scripting/lib/libsquirrel31_64.a;sdk/scripting/lib/libsqstdlib31_64.a;" />
 				<Option type="2" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -111,7 +112,7 @@
 				<Option output="devel31_64/codeblocks" prefix_auto="1" extension_auto="1" />
 				<Option working_dir="devel31_64" />
 				<Option object_output=".objs31_64" />
-				<Option external_deps="base/tinyxml/libtxml30_64.a;sdk/scripting/lib/libsquirrel30_64.a;sdk/scripting/lib/libsqstdlib31_64.a;sdk/scripting/lib/libsqplus30_64.a;devel31_64/libwxscintilla_cb.a;" />
+				<Option external_deps="base/tinyxml/libtxml31_64.a;sdk/scripting/lib/libsquirrel31_64.a;sdk/scripting/lib/libsqstdlib31_64.a;sdk/scripting/lib/libsqplus31_64.a;devel31_64/libwxscintilla_cb.a;" />
 				<Option type="3" />
 				<Option compiler="gcc" />
 				<Option parameters="--debug-log --no-dde --no-check-associations --multiple-instance --verbose -p debug" />
@@ -141,17 +142,17 @@
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />
 					<Add library="shfolder" />
-					<Add library="txml30_64" />
+					<Add library="txml31_64" />
 					<Add library="wxscintilla_cb" />
-					<Add library="sqplus30_64" />
+					<Add library="sqplus31_64" />
 					<Add library="sqstdlib31_64" />
-					<Add library="squirrel30_64" />
+					<Add library="squirrel31_64" />
 					<Add library="gdi32" />
 					<Add directory="devel31_64" />
 					<Add directory="sdk/scripting/lib" />
 				</Linker>
 				<ExtraCommands>
-					<Add before="build_tools\autorevision\autorevision30_64 +wx +int +t M:\Private\CB\CodeBlocks\CodeBlocks include/autorevision.h" />
+					<Add before="build_tools\autorevision\autorevision31_64 +wx +int +t M:\Private\CB\CodeBlocks\CodeBlocks include/autorevision.h" />
 					<Add after="cmd /c if not exist devel31_64\share\CodeBlocks mkdir devel31_64\share\CodeBlocks" />
 					<Add after="zip -jq9 devel31_64\share\CodeBlocks\manager_resources.zip sdk\resources\*.xrc" />
 					<Add after='cmd /c &quot;cd sdk\resources &amp; zip -0 -q ..\..\devel31_64\share\CodeBlocks\manager_resources.zip images\*.png images\12x12\*.png images\16x16\*.png&quot;' />
@@ -715,7 +716,6 @@
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
 			<Add option="-m64" />
-			<Add option="-fno-keep-inline-dllexport" />
 			<Add option="-fmessage-length=0" />
 			<Add option="-fexceptions" />
 			<Add option="-std=gnu++11" />

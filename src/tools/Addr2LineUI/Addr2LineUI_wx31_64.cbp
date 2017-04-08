@@ -7,9 +7,9 @@
 		<Build>
 			<Target title="default">
 				<Option platforms="Windows;" />
-				<Option output="..\..\devel31_64\Addr2LineUI" prefix_auto="1" extension_auto="1" />
-				<Option working_dir="..\..\devel31_64" />
-				<Option object_output="..\..\.objs31_64\tools\Addr2LineUI" />
+				<Option output="../../devel31_64/Addr2LineUI" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../devel31_64" />
+				<Option object_output="../../.objs31_64/tools/Addr2LineUI" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Option projectLinkerOptionsRelation="2" />
@@ -21,9 +21,9 @@
 				</Linker>
 			</Target>
 			<Environment>
+				<Variable name="WX_CFG" value="" />
 				<Variable name="WX_SUFFIX" value="u" />
 				<Variable name="WX_VERSION" value="31" />
-				<Variable name="WX_CFG" value="" />
 			</Environment>
 		</Build>
 		<VirtualTargets>
@@ -34,23 +34,23 @@
 			<Add option="-pipe" />
 			<Add option="-mthreads" />
 			<Add option="-m64" />
-			<Add option="-fno-keep-inline-dllexport" />
 			<Add option="-D__GNUWIN32__" />
 			<Add option="-D__WXMSW__" />
 			<Add option="-DWXUSINGDLL" />
 			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-std=gnu++11" />
 			<Add option="-D_WIN64" />
 			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX31_64.include)" />
-			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)\msw$(WX_SUFFIX)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 		</ResourceCompiler>
 		<Linker>
 			<Add option="-mthreads" />
 			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-			<Add directory="$(#WX31_64.lib)\gcc_dll$(WX_CFG)" />
+			<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)" />
 		</Linker>
 		<Unit filename="Addr2LineUIApp.cpp" />
 		<Unit filename="Addr2LineUIApp.h" />
@@ -59,7 +59,7 @@
 		<Unit filename="resource.rc">
 			<Option compilerVar="WINDRES" />
 		</Unit>
-		<Unit filename="wxsmith\Addr2LineUIDialog.wxs" />
+		<Unit filename="wxsmith/Addr2LineUIDialog.wxs" />
 		<Extensions>
 			<code_completion />
 			<envvars />

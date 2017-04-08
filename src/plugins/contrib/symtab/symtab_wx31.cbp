@@ -33,6 +33,7 @@
 			<Add option="$(#CB_RELEASE_TYPE)" />
 			<Add option="-mthreads" />
 			<Add option="-fexceptions" />
+			<Add option="-fpermissive" />
 			<Add option="-DBUILDING_PLUGIN" />
 			<Add option="-DNOPCH" />
 			<Add option="-DHAVE_W32API_H" />
