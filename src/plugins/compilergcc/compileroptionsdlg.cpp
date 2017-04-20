@@ -2198,11 +2198,11 @@ void CompilerOptionsDlg::OnResetCompilerClick(cb_unused wxCommandEvent& event)
 {
     if (cbMessageBox(_("Reset this compiler's settings to the defaults?"),
                     _("Confirmation"),
-                    wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
+                    wxYES | wxNO| wxICON_QUESTION | wxNO_DEFAULT) == wxID_YES)
     if (cbMessageBox(_("Reset this compiler's settings to the defaults?\n"
                        "\nAre you REALLY sure?"),
                     _("Confirmation"),
-                    wxOK | wxCANCEL | wxICON_QUESTION | wxNO_DEFAULT) == wxID_OK)
+                    wxYES | wxNO| wxICON_QUESTION | wxNO_DEFAULT) == wxID_YES)
     {
         Compiler* compiler = CompilerFactory::GetCompiler(m_CurrentCompilerIdx);
         if (compiler)
