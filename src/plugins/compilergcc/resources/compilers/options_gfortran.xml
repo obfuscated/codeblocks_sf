@@ -23,7 +23,7 @@
     <Switch name="includeDirs"             value="-I"/>
     <Switch name="libDirs"                 value="-L"/>
     <Switch name="linkLibs"                value="-l"/>
-    <Switch name="defines"                 value="-fversion="/>
+    <Switch name="defines"                 value="-D"/>
     <Switch name="genericSwitch"           value="-"/>
     <Switch name="objectExtension"         value="o"/>
     <Switch name="needDependencies"        value="true"/>
