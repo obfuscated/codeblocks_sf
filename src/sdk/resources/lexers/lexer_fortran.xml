@@ -127,10 +127,10 @@ spread sqrt sum system_clock tan tand tanh tiny transfer transpose trim ubound u
 command_argument_count get_command get_command_argument get_environment_variable
 is_iostat_end is_iostat_eor move_alloc extends_type_of same_type_as selected_char_kind
 
-acosh c_sizeof bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf hypot log_gamma trailz
+acosh asinh atanh c_sizeof bessel_j0 bessel_j1 bessel_jn bessel_y0 bessel_y1 bessel_yn erf hypot log_gamma trailz
 gamma bge bgt ble blt dshiftl dshiftr maskl maskr shifta shiftl shiftr merge_bits iall iany iparity
 storage_size parity norm2 erfc erfc_scaled execute_command_line findloc ucobound lcobound 
-num_images this_image image_index atomic_define atomic_ref rank
+num_images this_image image_index atomic_define atomic_ref rank is_contiguous
 
 "/>
                         <!-- Non Standard, Extended and User-Defined -->
