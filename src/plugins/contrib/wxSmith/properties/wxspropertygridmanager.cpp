@@ -171,6 +171,10 @@ void wxsPropertyGridManager::UnbindPropertyContainer(wxsPropertyContainer* PC, b
     {
         if ( PGContainers[i] == PC )
         {
+            // before deleting the property, make sure all children are hidden or we can get a crash
+            // we do this by recursively hiding the property and it's children
+            // should fix http://forums.codeblocks.org/index.php/topic,21893.0.html
+            PGIDs[i]->Hide(true);
             #if wxCHECK_VERSION(3, 0, 0) || wxCHECK_PROPGRID_VERSION(1, 4, 0)
             DeleteProperty(PGIDs[i]);
             #else
