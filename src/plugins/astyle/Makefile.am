@@ -32,10 +32,11 @@ EXTRA_DIST = astyle/ASLocalizer.cpp \
              astyle/astyle_main.h \
              astyle/index.html \
              astyle/install.html \
-             astyle/license.html \
              astyle/links.html \
              astyle/news.html \
+             astyle/newsArchives.html \
              astyle/notes.html \
+             astyle/notesArchives.html \
              astyle/scripts.html \
              astyle/styles.css \
              astyle/subversion.html \
