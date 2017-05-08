@@ -237,6 +237,7 @@ void Manager::Shutdown()
     TemplateManager::Free();
     CCManager::Free();
     PluginManager::Free();
+    DebuggerManager::Free();
     ScriptingManager::Free();
     ProjectManager::Free();
     EditorManager::Free();
