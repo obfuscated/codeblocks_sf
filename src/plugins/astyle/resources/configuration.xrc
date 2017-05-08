@@ -380,7 +380,7 @@
 											<object class="wxBoxSizer">
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT6">
-														<label>Maximum of # spaces to indent a continuation line (max. 120):</label>
+														<label>Maximum # of spaces to indent a continuation line (max. 120):</label>
 													</object>
 													<flag>wxALIGN_CENTER_VERTICAL</flag>
 													<border>5</border>
