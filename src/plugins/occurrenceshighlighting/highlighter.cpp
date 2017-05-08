@@ -21,13 +21,6 @@
 #include <cbstyledtextctrl.h>
 #include <cbcolourmanager.h>
 
-HighlightedEditorPositions::HighlightedEditorPositions():
-    linea(-1),
-    lineb(-1),
-    ed(NULL)
-{
-}
-
 Highlighter::Highlighter(std::set<wxString> &texts):
     m_Texts(texts),
     m_AlreadyChecked(false),

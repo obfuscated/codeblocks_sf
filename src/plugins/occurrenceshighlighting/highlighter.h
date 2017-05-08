@@ -18,16 +18,6 @@
 #include <editor_hooks.h>
 
 class cbStyledTextCtrl;
-namespace
-{
-    class HighlightedEditorPositions
-    {
-        public:
-            int linea, lineb;
-            cbEditor *ed;
-            HighlightedEditorPositions();
-    };
-}
 
 class Highlighter
 {
