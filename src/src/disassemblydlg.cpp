@@ -146,7 +146,7 @@ void DisassemblyDlg::AddSourceLine(int lineno, const wxString& line)
         m_pCode->ClearAll();
     }
     wxString fmt;
-    fmt.Printf(_T("%-3d\t%s\n"), lineno, line.c_str());
+    fmt.Printf(_T(";%-3d:\t%s\n"), lineno, line.c_str());
 
     m_pCode->AppendText(fmt);
 
