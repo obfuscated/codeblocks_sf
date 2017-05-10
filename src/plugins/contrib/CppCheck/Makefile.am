@@ -10,7 +10,9 @@ pluginlib_LTLIBRARIES = libCppCheck.la
 
 libCppCheck_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
-libCppCheck_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libCppCheck_la_LIBADD = ../../../sdk/libcodeblocks.la \
+		$(WX_LIBS) \
+		$(CB_TINYXML_LIBS)
 
 libCppCheck_la_SOURCES = CppCheck.cpp \
             CppCheckListLog.cpp \

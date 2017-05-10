@@ -8,7 +8,9 @@ pluginlib_LTLIBRARIES = libBrowseTracker.la
 
 libBrowseTracker_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
-libBrowseTracker_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libBrowseTracker_la_LIBADD = ../../../sdk/libcodeblocks.la \
+			$(WX_LIBS) \
+			$(CB_TINYXML_LIBS)
 
 libBrowseTracker_la_SOURCES = BrowseTracker.cpp \
 			BrowseSelector.cpp \

@@ -8,7 +8,9 @@ pluginlib_LTLIBRARIES = libAutoVersioning.la
 
 libAutoVersioning_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
-libAutoVersioning_la_LIBADD = ../../../sdk/libcodeblocks.la $(WX_LIBS)
+libAutoVersioning_la_LIBADD = ../../../sdk/libcodeblocks.la \
+			$(WX_LIBS) \
+			$(CB_TINYXML_LIBS)
 
 libAutoVersioning_la_SOURCES = AutoVersioning.cpp \
             avChangesDlg.cpp \

@@ -22,7 +22,8 @@ liblib_finder_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undef
 
 liblib_finder_la_LIBADD = ../../../sdk/libcodeblocks.la \
 		../wxContribItems/wxFlatNotebook/libwxflatnotebook.la \
-		$(WX_LIBS)
+		$(WX_LIBS) \
+		$(CB_TINYXML_LIBS)
 
 liblib_finder_la_SOURCES = \
 		librariesdlg.cpp \

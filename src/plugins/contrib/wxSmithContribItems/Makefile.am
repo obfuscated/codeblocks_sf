@@ -46,7 +46,8 @@ libwxsmithcontribitems_la_LIBADD = ../../../sdk/libcodeblocks.la \
 			../wxContribItems/wxthings/libwxcustombutton.la \
 			../wxContribItems/wxled/libwxled.la \
 			../wxContribItems/wxmathplot/libwxmathplot.la \
-			$(WX_LIBS)
+			$(WX_LIBS) \
+			$(CB_TINYXML_LIBS)
 
 EXTRA_DIST = $(srcdir)/wxchart/*.xpm \
 		$(srcdir)/wxchart/*.png \

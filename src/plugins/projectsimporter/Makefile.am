@@ -16,7 +16,9 @@ pluginlib_LTLIBRARIES = libprojectsimporter.la
 
 libprojectsimporter_la_LDFLAGS = @MODULE_SHARED_LDFLAGS@ -version-info 0:1:0 -no-undefined -avoid-version
 
-libprojectsimporter_la_LIBADD = ../../sdk/libcodeblocks.la $(WX_LIBS)
+libprojectsimporter_la_LIBADD = ../../sdk/libcodeblocks.la \
+				$(WX_LIBS) \
+				$(CB_TINYXML_LIBS)
 
 libprojectsimporter_la_SOURCES = projectsimporter.cpp \
 				devcpploader.cpp \
