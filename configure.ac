@@ -80,10 +80,10 @@ CC=$CXX
 CPP=$CXXCPP
 AC_CHECK_HEADER(astyle.h, [HAVE_ASTYLE=yes], [HAVE_ASTYLE=no])
 
-dnl check if system astyle is at least 2.06, otherwise use bundled astyle-library
-dnl STYLE_MOZILLA is declared since 2.06
+dnl check if system astyle is at least 3.0, otherwise use bundled astyle-library
+dnl ASPeekStream is declared since 3.0
 if test "$HAVE_ASTYLE" = "yes" ; then
-	AC_CHECK_DECL([astyle::STYLE_MOZILLA], , [HAVE_ASTYLE=no], [#include "astyle.h"])
+	AC_CHECK_TYPE([astyle::ASPeekStream], , [HAVE_ASTYLE=no], [#include "astyle.h"])
 else
 	HAVE_ASTYLE=no
 fi
