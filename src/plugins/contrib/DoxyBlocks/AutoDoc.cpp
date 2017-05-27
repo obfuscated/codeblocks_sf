@@ -171,7 +171,7 @@ void DoxyBlocks::DoLineComment()
     if (!cbEd)
         return;
 
-        cbStyledTextCtrl *control = cbEd->GetControl();
+    cbStyledTextCtrl *control = cbEd->GetControl();
     int iPos = control->GetCurrentPos();
 
     wxString sComment;
