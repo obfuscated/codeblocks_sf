@@ -994,8 +994,10 @@ void FileExplorer::OnVCSControl(wxCommandEvent &/*event*/)
         for (; i<m_VCS_Control->GetCount(); ++i)
         {
             if (m_VCS_Control->GetString(i) == m_commit)
+            {
                 m_VCS_Control->SetSelection(i);
                 break;
+            }
         }
     }
 }
