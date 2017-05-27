@@ -26,7 +26,7 @@ namespace
 
 DevPakUpdater::DevPakUpdater()
 {
-	//ctor
+    //ctor
     if(!Manager::LoadResource(_T("devpakupdater.zip")))
     {
         NotifyMissingFile(_T("devpakupdater.zip"));
@@ -36,7 +36,7 @@ DevPakUpdater::DevPakUpdater()
 
 DevPakUpdater::~DevPakUpdater()
 {
-	//dtor
+    //dtor
 }
 
 void DevPakUpdater::OnAttach()
@@ -78,7 +78,7 @@ int DevPakUpdater::Configure()
 {
     if (g_MasterPath.IsEmpty())
         g_MasterPath = ConfigManager::GetConfigFolder() + wxFILE_SEP_PATH + _T("DevPaks");
-	wxString dir = wxDirSelector(_("Please select the path where DevPaks will be downloaded and installed:"),
+    wxString dir = wxDirSelector(_("Please select the path where DevPaks will be downloaded and installed:"),
                                 g_MasterPath);
     if (!dir.IsEmpty())
     {
@@ -100,5 +100,5 @@ int DevPakUpdater::Execute()
         return -1;
     UpdateDlg dlg(Manager::Get()->GetAppWindow());
     dlg.ShowModal();
-	return 0;
+    return 0;
 }
