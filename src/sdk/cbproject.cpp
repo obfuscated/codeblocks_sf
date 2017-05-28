@@ -657,9 +657,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     pf = new ProjectFile(this);
     bool localCompile, localLink;
     wxFileName fname(filename);
-    wxString ext;
 
-    ext = filename.AfterLast(_T('.')).Lower();
+    const wxString &ext = fname.GetExt().Lower();
     if (ext.IsSameAs(FileFilters::C_EXT))
         pf->compilerVar = _T("CC");
     else if (platform::windows && ext.IsSameAs(FileFilters::RESOURCE_EXT))
@@ -678,7 +677,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         }
     }
 
-    bool isResource = FileTypeOf(filename) == ftResource;
+    const FileType ft = FileTypeOf(filename);
+    const bool isResource = (ft == ftResource);
 
 // NOTE (mandrav#1#): targetIndex == -1 means "don't add file to any targets"
 // This case gives us problems though because then we don't know the compiler
@@ -732,7 +732,6 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     if (targetIndex >= 0 && targetIndex < (int)m_Targets.GetCount())
         pf->AddBuildTarget(m_Targets[targetIndex]->GetTitle());
 
-    FileType ft = FileTypeOf(filename);
     localCompile =    compile
                    && (   ft == ftSource
                        || ft == ftResource
@@ -810,7 +809,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         }
     }
     SetModified(true);
-    m_ProjectFilesMap[UnixFilename(pf->relativeFilename)] = pf; // add to hashmap
+    m_ProjectFilesMap[pf->relativeFilename] = pf; // add to hashmap
 
     if (!wxFileExists(fullFilename))
         pf->SetFileState(fvsMissing);
