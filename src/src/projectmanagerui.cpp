@@ -3276,10 +3276,12 @@ void ProjectManagerUI::BuildProjectTree(cbProject* project, cbTreeCtrl* tree, co
             }
             else // else try to match a group
             {
+                const wxFileName fname(pf->relativeToCommonTopLevelPath);
+                const wxString &fnameFullname = fname.GetFullName();
+
                 for (unsigned int i = 0; i < fgam->GetGroupsCount(); ++i)
                 {
-                    wxFileName fname(pf->relativeToCommonTopLevelPath);
-                    if (fgam->MatchesMask(fname.GetFullName(), i))
+                    if (fgam->MatchesMask(fnameFullname, i))
                     {
                         parentNode = pGroupNodes[i];
                         found = true;
