@@ -1885,22 +1885,22 @@ void MainFrame::DoCreateStatusBar()
     int h;
     size_t num = 0;
 
-    wxCoord width[16]; // 16 max
-    width[num++] = -1; // main field
+    wxCoord widths[16]; // 16 max
+    widths[num++] = -1; // main field
 
-    dc.GetTextExtent(_(" Highlight Button "),       &width[num++], &h);
-    dc.GetTextExtent(_(" Windows (CR+LF) "),        &width[num++], &h);
-    dc.GetTextExtent(_(" WINDOWS-1252 "),           &width[num++], &h);
-    dc.GetTextExtent(_(" Line 12345, Column 123 "), &width[num++], &h);
-    dc.GetTextExtent(_(" Overwrite "),              &width[num++], &h);
-    dc.GetTextExtent(_(" Modified "),               &width[num++], &h);
-    dc.GetTextExtent(_(" Read/Write "),             &width[num++], &h);
-    dc.GetTextExtent(_(" name_of_profile "),        &width[num++], &h);
+    dc.GetTextExtent(_(" Highlight Button "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Windows (CR+LF) "), &widths[num++], &h);
+    dc.GetTextExtent(_(" WINDOWS-1252 "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Line 12345, Col 123, Pos 123456 "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Overwrite "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Modified "), &widths[num++], &h);
+    dc.GetTextExtent(_(" Read/Write "), &widths[num++], &h);
+    dc.GetTextExtent(_(" name_of_profile "), &widths[num++], &h);
 
     wxStatusBar* sb = CreateStatusBar(num);
     if (!sb) return;
 
-    SetStatusWidths(num, width);
+    SetStatusWidths(num, widths);
 
     // Highlightbutton
     wxRect rect;
@@ -1946,7 +1946,7 @@ void MainFrame::DoUpdateStatusBar()
         }
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetEncodingName(), panel++);
-        msg.Printf(_("Line %d, Column %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1);
+        msg.Printf(_("Line %d, Column %d, Pos %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1, pos);
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
 #if wxCHECK_VERSION(3, 0, 0)
