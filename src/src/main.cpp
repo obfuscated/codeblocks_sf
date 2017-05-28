@@ -1921,8 +1921,10 @@ void MainFrame::DoUpdateStatusBar()
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
     if (ed)
     {
+        cbStyledTextCtrl * const control = ed->GetControl();
+
         int panel = 0;
-        int pos = ed->GetControl()->GetCurrentPos();
+        int pos = control->GetCurrentPos();
         wxString msg;
         SetStatusText(ed->GetFilename(), panel++);
 
@@ -1937,7 +1939,7 @@ void MainFrame::DoUpdateStatusBar()
         }
         // EOL mode
         panel++;
-        switch (ed->GetControl()->GetEOLMode())
+        switch (control->GetEOLMode())
         {
             case wxSCI_EOL_CRLF: msg = _T("Windows (CR+LF)"); break;
             case wxSCI_EOL_CR:   msg = _T("Mac (CR)");        break;
@@ -1946,15 +1948,15 @@ void MainFrame::DoUpdateStatusBar()
         }
         SetStatusText(msg, panel++);
         SetStatusText(ed->GetEncodingName(), panel++);
-        msg.Printf(_("Line %d, Column %d, Pos %d"), ed->GetControl()->GetCurrentLine() + 1, ed->GetControl()->GetColumn(pos) + 1, pos);
+        msg.Printf(_("Line %d, Col %d, Pos %d"), control->GetCurrentLine() + 1, control->GetColumn(pos) + 1, pos);
         SetStatusText(msg, panel++);
-        SetStatusText(ed->GetControl()->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
+        SetStatusText(control->GetOvertype() ? _("Overwrite") : _("Insert"), panel++);
 #if wxCHECK_VERSION(3, 0, 0)
         SetStatusText(ed->GetModified() ? _("Modified") : _T(""), panel++);
 #else
         SetStatusText(ed->GetModified() ? _("Modified") : wxEmptyString, panel++);
 #endif
-        SetStatusText(ed->GetControl()->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
+        SetStatusText(control->GetReadOnly() ? _("Read only") : _("Read/Write"), panel++);
         SetStatusText(personality, panel++);
     }
     else
