@@ -1898,17 +1898,17 @@ void MainFrame::DoCreateStatusBar()
     dc.GetTextExtent(_(" name_of_profile "), &widths[num++], &h);
 
     wxStatusBar* sb = CreateStatusBar(num);
-    if (!sb) return;
+    if (!sb)
+        return;
 
     SetStatusWidths(num, widths);
 
     // Highlightbutton
     wxRect rect;
-    if ( sb->GetFieldRect(1, rect) )
+    if (sb->GetFieldRect(1, rect))
     {
-      m_pHighlightButton = new wxButton(sb, idHighlightButton, wxEmptyString,
-                                        rect.GetPosition(), rect.GetSize(),
-                                        wxNO_BORDER|wxBU_LEFT);
+        m_pHighlightButton = new wxButton(sb, idHighlightButton, wxEmptyString, rect.GetPosition(), rect.GetSize(),
+                                          wxNO_BORDER|wxBU_LEFT);
     }
 }
 
