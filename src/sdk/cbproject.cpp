@@ -377,6 +377,8 @@ void cbProject::CalculateCommonTopLevelPath()
     m_CommonTopLevelPath = base.GetFullPath();
     Manager::Get()->GetLogManager()->DebugLog(_T("Project's common toplevel path: ") + m_CommonTopLevelPath);
 
+    const wxString &projectBasePath = GetBasePath();
+
     for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
     {
         ProjectFile* f = (*it);
@@ -394,7 +396,7 @@ void cbProject::CalculateCommonTopLevelPath()
             wxFileName relFileCTLP(f->file);
             relFileCTLP.MakeRelativeTo( m_CommonTopLevelPath );
             wxFileName relFileBase(f->file);
-            relFileBase.MakeRelativeTo( GetBasePath() );
+            relFileBase.MakeRelativeTo(projectBasePath);
 
             // The commented (old) method to obtain the relativeToCommonTopLevelPath is fast, but does *not* work, if you save
             // the project on a different drive in a sub-folder of an existing source file on that (different) drive:
