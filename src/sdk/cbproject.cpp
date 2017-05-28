@@ -318,11 +318,10 @@ void cbProject::CalculateCommonTopLevelPath()
     // for simple projects, this might be the path to the project file
     // for projects where the project file is in a subdir, files will
     // have ".." in their paths
-    wxString   sep            = wxFileName::GetPathSeparator();
+    const wxString sep       = wxFileName::GetPathSeparator();
     wxFileName base           = GetBasePath() + sep;
     wxString   vol            = base.GetVolume();
     bool       prjHasUNCName  = base.GetFullPath().StartsWith(_T("\\\\"));
-    bool       fileHasUNCName = false;
 
     Manager::Get()->GetLogManager()->DebugLog(_T("Project's base path: ") + base.GetFullPath());
 
@@ -341,7 +340,7 @@ void cbProject::CalculateCommonTopLevelPath()
         if ( !vol.IsSameAs(f->file.GetVolume()) )
             continue;
 
-        fileHasUNCName = f->file.GetFullPath().StartsWith(_T("\\\\"));
+        bool fileHasUNCName = f->file.GetFullPath().StartsWith(_T("\\\\"));
 
         if (   (!prjHasUNCName &&  fileHasUNCName)
             || ( prjHasUNCName && !fileHasUNCName) )
@@ -386,7 +385,7 @@ void cbProject::CalculateCommonTopLevelPath()
             continue;
 
         wxString fileName = f->file.GetFullPath();
-        fileHasUNCName = fileName.StartsWith(_T("\\\\"));
+        bool fileHasUNCName = fileName.StartsWith(_T("\\\\"));
 
         if (   (prjHasUNCName && fileHasUNCName)
             || (   !prjHasUNCName
