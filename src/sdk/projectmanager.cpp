@@ -268,7 +268,11 @@ cbProject* ProjectManager::LoadProject(const wxString& filename, bool activateIt
             // (we must call RebuildTree() before SetProject() is called)
             m_pProjectToActivate = result;
         else
-            SetProject(result, true);
+        {
+            // I don't think we need to refresh the tree one more time.
+            // This is already done in the EndLoadingProject call.
+            SetProject(result, false);
+        }
     }
 
     return result;
