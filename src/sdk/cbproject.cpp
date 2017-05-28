@@ -747,6 +747,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     pf->link    = localLink;
 
     wxString local_filename = filename;
+    const wxString &projectBasePath = GetBasePath();
 
 #ifdef __WXMSW__
     // for Windows, make sure the filename is not on another drive...
@@ -767,13 +768,13 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
         // make sure the filename is relative to the project's base path
         if (fname.IsAbsolute())
         {
-            fname.MakeRelativeTo( GetBasePath() );
+            fname.MakeRelativeTo(projectBasePath);
             local_filename = fname.GetFullPath();
         }
         // this call is costly (wxFileName ctor):
-        fname.Assign(GetBasePath() + wxFILE_SEP_PATH + local_filename);
+        fname.Assign(projectBasePath + wxFILE_SEP_PATH + local_filename);
     }
-    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, GetBasePath());
+    fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, projectBasePath);
 
     wxString fullFilename = realpath(fname.GetFullPath());
     pf->file              = fullFilename;
