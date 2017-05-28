@@ -658,8 +658,8 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     bool localCompile, localLink;
     wxFileName fname(filename);
 
-    const wxString &ext = fname.GetExt().Lower();
-    if (ext.IsSameAs(FileFilters::C_EXT))
+    const wxString &ext = fname.GetExt();
+    if (ext.IsSameAs(FileFilters::C_EXT, false))
         pf->compilerVar = _T("CC");
     else if (platform::windows && ext.IsSameAs(FileFilters::RESOURCE_EXT))
         pf->compilerVar = _T("WINDRES");
@@ -776,7 +776,7 @@ ProjectFile* cbProject::AddFile(int targetIndex, const wxString& filename, bool 
     }
     fname.Normalize(wxPATH_NORM_DOTS | wxPATH_NORM_TILDE, projectBasePath);
 
-    wxString fullFilename = realpath(fname.GetFullPath());
+    const wxString &fullFilename = realpath(fname.GetFullPath());
     pf->file              = fullFilename;
     pf->relativeFilename  = UnixFilename(local_filename);
 
