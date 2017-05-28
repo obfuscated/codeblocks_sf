@@ -1904,8 +1904,6 @@ bool NativeParser::AddCompilerDirs(cbProject* project, ParserBase* parser)
     // ...so we can access post-processed project's search dirs
     Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
     cb::shared_ptr<CompilerCommandGenerator> generator(compiler ? compiler->GetCommandGenerator(project) : nullptr);
-    if (compiler && generator)
-        generator->Init(project);
 
     // get project include dirs
     if (   !parser->Options().platformCheck
