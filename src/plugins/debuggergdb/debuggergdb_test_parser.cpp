@@ -415,7 +415,6 @@ TEST(RepeatingChars13)
                 *w);
 }
 
-
 TEST(StringWide)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
@@ -428,6 +427,14 @@ TEST(StringWideChar)
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
     CHECK(ParseGDBWatchValue(w, wxT("{m_impl = L's', m_test = {a = 5}")));
     CHECK_EQUAL(wxT("s= {m_impl=L's',m_test= {a=5}}"), *w);
+}
+
+TEST(ShortenedString)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{m_impl = L\"Created:  \"...}")));
+    CHECK_EQUAL(1, w->GetChildCount());
+    CHECK_EQUAL(wxT("s= {m_impl=L\"Created:  \"...}"), *w);
 }
 
 TEST(ChangeType0)

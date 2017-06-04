@@ -209,7 +209,12 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
                         }
                         else
                         {
-                            token.end = pos + 1;
+                            ++pos;
+                            // GDB can shorten the string. Such strings are printed as '"value"...'.
+                            // This loop appends the dot characters at the end of the token.
+                            while (pos < static_cast<int>(str.length()) && str[pos]==wxT('.'))
+                                ++pos;
+                            token.end = pos;
                             return true;
                         }
                     }
