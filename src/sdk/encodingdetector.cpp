@@ -415,6 +415,19 @@ bool EncodingDetector::DetectEncodingEx(const wxByte* buffer, size_t size)
     return false;
 }
 
+/// Convert the char buffer to wxString and if there are any null-terminating characters at the end - remove them.
+inline wxString makeStringNoNull(const wxWCharBuffer &wideBuff)
+{
+    wxString result(wideBuff);
+    if (!result.empty())
+    {
+        wxString::size_type ii = result.find_last_not_of(wxT('\0'));
+        if (ii != wxString::npos)
+            result.resize(ii + 1);
+    }
+    return result;
+}
+
 bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
 {
     LogManager* logmgr = Manager::Get()->GetLogManager();
@@ -513,7 +526,7 @@ bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
 
     if (outlen>0)
     {
-        m_ConvStr = wxString(wideBuff);
+        m_ConvStr = makeStringNoNull(wideBuff);
         return true; // Done.
     }
 
@@ -549,7 +562,7 @@ bool EncodingDetector::ConvertToWxString(const wxByte* buffer, size_t size)
 
         wxCSConv conv_system(m_Encoding);
         wideBuff = conv_system.cMB2WC((const char*)buffer, size + 4 - m_BOMSizeInBytes, &outlen);
-        m_ConvStr = wxString(wideBuff);
+        m_ConvStr = makeStringNoNull(wideBuff);
 
         if (outlen == 0)
         {
