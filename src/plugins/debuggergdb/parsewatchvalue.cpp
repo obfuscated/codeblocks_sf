@@ -74,6 +74,16 @@ wxRegEx regexRepeatedChars(wxT("^((\\\\'.{1,6}\\\\')|('.{1,6}'))[ \\t](<repeats[
                            wxRE_EXTENDED);
 #endif
 
+/// GDB can shorten the string. Such strings are printed as '"value"...'.
+/// This function moves position, so that the dot characters become part of the token.
+/// @return The new position if there are dots or the old position.
+inline int SkipShortenedString(wxString const &str, int pos)
+{
+    while (pos < static_cast<int>(str.length()) && str[pos]==wxT('.'))
+        ++pos;
+    return pos;
+}
+
 inline int DetectRepeatingSymbols(wxString const &str, int pos)
 {
     int newPos = -1, currPos = pos;
@@ -204,17 +214,12 @@ inline bool GetNextToken(wxString const &str, int pos, Token &token)
                         if (newPos != -1)
                         {
                             token.hasRepeatedChar = true;
-                            token.end =  newPos;
+                            token.end = SkipShortenedString(str, newPos);
                             return true;
                         }
                         else
                         {
-                            ++pos;
-                            // GDB can shorten the string. Such strings are printed as '"value"...'.
-                            // This loop appends the dot characters at the end of the token.
-                            while (pos < static_cast<int>(str.length()) && str[pos]==wxT('.'))
-                                ++pos;
-                            token.end = pos;
+                            token.end = SkipShortenedString(str, pos + 1);
                             return true;
                         }
                     }

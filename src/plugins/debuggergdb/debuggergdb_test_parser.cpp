@@ -437,6 +437,14 @@ TEST(ShortenedString)
     CHECK_EQUAL(wxT("s= {m_impl=L\"Created:  \"...}"), *w);
 }
 
+TEST(ShortenedStringRepeatedChars)
+{
+    cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("s")));
+    CHECK(ParseGDBWatchValue(w, wxT("{m_impl = L\"/\", '*' <repeats 63 times>, \"Created: \"...}")));
+    CHECK_EQUAL(1, w->GetChildCount());
+    CHECK_EQUAL(wxT("s= {m_impl=L\"/\", '*' <repeats 63 times>, \"Created: \"...}"), *w);
+}
+
 TEST(ChangeType0)
 {
     cb::shared_ptr<GDBWatch> w(new GDBWatch(wxT("*s")));
