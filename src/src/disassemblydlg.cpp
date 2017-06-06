@@ -180,7 +180,7 @@ bool DisassemblyDlg::SetActiveAddress(uint64_t addr)
     m_HasActiveAddr = false;
     m_LastActiveAddr = addr;
     bool MixedAsmMode = Manager::Get()->GetDebuggerManager()->IsDisassemblyMixedMode();
-    for (int i = 0; i < m_pCode->GetLineCount(); ++i)
+    for (int i = 0; i < m_pCode->GetLineCount() && i < int(m_LineTypes.size()); ++i)
     {
         if(MixedAsmMode && m_LineTypes[i] == 'S')
             continue;
