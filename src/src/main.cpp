@@ -1907,8 +1907,12 @@ void MainFrame::DoCreateStatusBar()
     wxRect rect;
     if (sb->GetFieldRect(1, rect))
     {
-        m_pHighlightButton = new wxButton(sb, idHighlightButton, wxEmptyString, rect.GetPosition(), rect.GetSize(),
-                                          wxNO_BORDER|wxBU_LEFT);
+        m_pHighlightButton = new wxButton(sb, idHighlightButton, wxT("bla"), wxDefaultPosition, wxDefaultSize,
+                                          wxBORDER_NONE|wxBU_LEFT|wxBU_EXACTFIT);
+        // Adjust status bar height to fit the button.
+        // This affects wx3.x build more than wx2.8 builds. At least on wxGTK.
+        const int height = std::max(sb->GetMinHeight(), m_pHighlightButton->GetClientSize().GetHeight());
+        sb->SetMinHeight(height);
     }
 }
 

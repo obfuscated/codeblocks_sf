@@ -356,7 +356,7 @@ class MainFrame : public wxFrame
         void InitializeRecentFilesHistory();
         void TerminateRecentFilesHistory();
         #if wxUSE_STATUSBAR
-        virtual wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name);
+        wxStatusBar *OnCreateStatusBar(int number, long style, wxWindowID id, const wxString& name) override;
         #endif
     protected:
         RecentItemsList m_filesHistory, m_projectsHistory;
