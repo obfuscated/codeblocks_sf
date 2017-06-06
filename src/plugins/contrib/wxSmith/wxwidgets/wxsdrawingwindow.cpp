@@ -123,7 +123,7 @@ void wxsDrawingWindow::OnPaint(wxPaintEvent& event)
             if ( m_Bitmap )
             {
                 wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0,0,m_Bitmap->GetWidth(),m_Bitmap->GetHeight()));
-                wxBufferedDC DC(&PaintDC,BmpCopy);
+                wxBufferedDC DC(&PaintDC, BmpCopy, wxBUFFER_VIRTUAL_AREA);
                 PaintExtra(&DC);
             }
         }
@@ -245,7 +245,7 @@ void wxsDrawingWindow::FastRepaint()
     wxClientDC ClientDC(this);
     PrepareDC(ClientDC);
     wxBitmap BmpCopy = m_Bitmap->GetSubBitmap(wxRect(0,0,m_Bitmap->GetWidth(),m_Bitmap->GetHeight()));
-    wxBufferedDC DC(&ClientDC,BmpCopy);
+    wxBufferedDC DC(&ClientDC,BmpCopy, wxBUFFER_VIRTUAL_AREA);
     PaintExtra(&DC);
 }
 
