@@ -39,7 +39,9 @@ class wxsDrawingWindow: public wxScrolledWindow
     public:
 
         /** \brief Ctor */
-        wxsDrawingWindow(wxWindow* Parent,wxWindowID id,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize,long style=wxHSCROLL|wxVSCROLL,const wxString& name=_T("wxsDrawingWindow"));
+        wxsDrawingWindow(wxWindow* Parent, wxWindowID id, const wxPoint& pos = wxDefaultPosition,
+                         const wxSize& size = wxDefaultSize, long style = wxHSCROLL|wxVSCROLL,
+                         const wxString& name = _T("wxsDrawingWindow"));
 
         /** \brief Dctor */
         virtual ~wxsDrawingWindow();
