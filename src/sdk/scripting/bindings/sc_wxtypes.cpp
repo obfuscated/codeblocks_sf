@@ -133,7 +133,12 @@ namespace ScriptBindings
         else if (sa.GetType(2) == OT_STRING)
             result.Printf(_T("%s%s"), str1.c_str(), cbC2U(sa.GetString(2)).c_str());
         else
-            result = str1 + *SqPlus::GetInstance<wxString,false>(v, 2);
+        {
+            wxString *str2 = SqPlus::GetInstance<wxString,false>(v, 2);
+            if (!str2)
+                return sa.ThrowError("Second paramter is not a wxString instance!");
+            result = str1 + *str2;
+        }
         return SqPlus::ReturnCopy(v, result);
     }
 

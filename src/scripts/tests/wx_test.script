@@ -91,6 +91,21 @@ class wxTest extends script_test_base
         //    made_failed("ToDouble","it was no success");
         //test_equal("ToDouble",ret_val.value,42.42);
 
+        local hasException = false;
+        try
+        {
+            // This is expected to throw an exception.
+            local nullstr;
+            local res = _T("SomeString") + nullstr;
+        }
+        catch(e)
+        {
+            passed("ConcatNull");
+            hasException = true;
+        }
+        if (!hasException)
+            failed("ConcatNull");
+
         print_test_result();
         ::print("======= Test wx String END ======= \n");
     }
