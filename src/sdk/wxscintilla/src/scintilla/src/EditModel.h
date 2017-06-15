@@ -8,10 +8,6 @@
 #ifndef EDITMODEL_H
 #define EDITMODEL_H
 
-/* C::B begin */
-#include "PositionCache.h"
-/* C::B end */
-
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif
@@ -28,10 +24,6 @@ public:
 };
 
 class EditModel {
-	// Private so EditModel objects can not be copied
-	EditModel(const EditModel &);
-	EditModel &operator=(const EditModel &);
-
 public:
 	bool inOverstrike;
 	int xOffset;		///< Horizontal scrolled amount in pixels
@@ -40,7 +32,7 @@ public:
 	SpecialRepresentations reprs;
 	Caret caret;
 	SelectionPosition posDrag;
-	Position braces[2];
+	Sci::Position braces[2];
 	int bracesMatchStyle;
 	int highlightGuideColumn;
 	Selection sel;
@@ -49,9 +41,11 @@ public:
 	enum IMEInteraction { imeWindowed, imeInline } imeInteraction;
 
 	int foldFlags;
+	int foldDisplayTextStyle;
 	ContractionState cs;
 	// Hotspot support
 	Range hotspot;
+	Sci::Position hoverIndicatorPos;
 
 	// Wrapping support
 	int wrapWidth;
@@ -59,10 +53,13 @@ public:
 	Document *pdoc;
 
 	EditModel();
+	// Deleted so EditModel objects can not be copied.
+	explicit EditModel(const EditModel &) = delete;
+	EditModel &operator=(const EditModel &) = delete;
 	virtual ~EditModel();
-	virtual int TopLineOfMain() const = 0;
+	virtual Sci::Line TopLineOfMain() const = 0;
 	virtual Point GetVisibleOriginInMain() const = 0;
-	virtual int LinesOnScreen() const = 0;
+	virtual Sci::Line LinesOnScreen() const = 0;
 	virtual Range GetHotSpotRange() const = 0;
 };
 

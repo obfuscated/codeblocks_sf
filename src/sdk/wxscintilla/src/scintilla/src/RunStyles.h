@@ -10,27 +10,24 @@
 #ifndef RUNSTYLES_H
 #define RUNSTYLES_H
 
-/* C::B begin */
-#include "Partitioning.h"
-/* C::B end */
-
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif
 
 class RunStyles {
 private:
-	Partitioning *starts;
-	SplitVector<int> *styles;
+	std::unique_ptr<Partitioning> starts;
+	std::unique_ptr<SplitVector<int>> styles;
 	int RunFromPosition(int position) const;
 	int SplitRun(int position);
 	void RemoveRun(int run);
 	void RemoveRunIfEmpty(int run);
 	void RemoveRunIfSameAsPrevious(int run);
-	// Private so RunStyles objects can not be copied
-	RunStyles(const RunStyles &);
 public:
 	RunStyles();
+	// Deleted so RunStyles objects can not be copied.
+	RunStyles(const RunStyles &) = delete;
+	void operator=(const RunStyles &) = delete;
 	~RunStyles();
 	int Length() const;
 	int ValueAt(int position) const;
@@ -49,12 +46,6 @@ public:
 	int Find(int value, int start) const;
 
 	void Check() const;
-
-/* CHANGEBAR begin */
-    char *PersistantForm() const;
-    void FromPersistant(const char *form);
-    static bool PersistantSame(const char *form1, const char *form2);
-/* CHANGEBAR end */
 };
 
 #ifdef SCI_NAMESPACE
