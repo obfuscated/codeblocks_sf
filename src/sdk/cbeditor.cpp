@@ -1047,7 +1047,6 @@ void cbEditor::ConnectEvents(cbStyledTextCtrl* stc)
         wxEVT_SCI_SAVEPOINTREACHED,
         wxEVT_SCI_SAVEPOINTLEFT,
         wxEVT_SCI_ROMODIFYATTEMPT,
-        wxEVT_SCI_KEY,
         wxEVT_SCI_DOUBLECLICK,
 //        wxEVT_SCI_UPDATEUI,
 //        wxEVT_SCI_MODIFIED,
@@ -1056,11 +1055,10 @@ void cbEditor::ConnectEvents(cbStyledTextCtrl* stc)
         wxEVT_SCI_NEEDSHOWN,
         wxEVT_SCI_PAINTED,
 //        wxEVT_SCI_USERLISTSELECTION,
-        wxEVT_SCI_URIDROPPED,
 //        wxEVT_SCI_DWELLSTART,
 //        wxEVT_SCI_DWELLEND,
         wxEVT_SCI_START_DRAG,
-        wxEVT_SCI_FINISHED_DRAG,
+//        wxEVT_SCI_FINISHED_DRAG,
         wxEVT_SCI_DRAG_OVER,
         wxEVT_SCI_DO_DROP,
         wxEVT_SCI_ZOOM,
@@ -1071,8 +1069,6 @@ void cbEditor::ConnectEvents(cbStyledTextCtrl* stc)
 //        wxEVT_SCI_INDICATOR_CLICK,
 //        wxEVT_SCI_INDICATOR_RELEASE,
         wxEVT_SCI_AUTOCOMP_CANCELLED,
-        wxEVT_SCI_TAB,
-        wxEVT_SCI_ESC,
 
         -1 // to help enumeration of this array
     };

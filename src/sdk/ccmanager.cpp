@@ -866,26 +866,26 @@ void CCManager::OnEditorHook(cbEditor* ed, wxScintillaEvent& event)
             }
         }
     }
-    else if (evtType == wxEVT_SCI_KEY)
-    {
-        cbStyledTextCtrl* stc = ed->GetControl();
-        switch (event.GetKey())
-        {
-            case wxSCI_KEY_LEFT:
-            case wxSCI_KEY_RIGHT:
-                if (!stc->CallTipActive() && !stc->AutoCompActive())
-                    m_CallTipActive = wxSCI_INVALID_POSITION;
-                // fall through
-            case wxSCI_KEY_UP:
-            case wxSCI_KEY_DOWN:
-                if (m_CallTipActive != wxSCI_INVALID_POSITION && !stc->AutoCompActive())
-                    m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
-                break;
-
-            default:
-                break;
-        }
-    }
+//    else if (evtType == wxEVT_SCI_KEY)
+//    {
+//        cbStyledTextCtrl* stc = ed->GetControl();
+//        switch (event.GetKey())
+//        {
+//            case wxSCI_KEY_LEFT:
+//            case wxSCI_KEY_RIGHT:
+//                if (!stc->CallTipActive() && !stc->AutoCompActive())
+//                    m_CallTipActive = wxSCI_INVALID_POSITION;
+//                // fall through
+//            case wxSCI_KEY_UP:
+//            case wxSCI_KEY_DOWN:
+//                if (m_CallTipActive != wxSCI_INVALID_POSITION && !stc->AutoCompActive())
+//                    m_CallTipTimer.Start(CALLTIP_REFRESH_DELAY, wxTIMER_ONE_SHOT);
+//                break;
+//
+//            default:
+//                break;
+//        }
+//    }
     else if (evtType == wxEVT_SCI_MODIFIED)
     {
         if (event.GetModificationType() & wxSCI_PERFORMED_UNDO)
