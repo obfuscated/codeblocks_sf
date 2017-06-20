@@ -231,12 +231,12 @@ void Highlighter::DoSetIndications(cbEditor* ctrl)const
                 int startpos = start;
                 int endpos = end;
 
-                int lengthFound = 0; // we need this to work properly with multibyte characters
-                for ( int pos = stc->FindText(startpos, endpos, text, flag, &lengthFound);
+                int endPos = 0; // we need this to work properly with multibyte characters
+                for ( int pos = stc->FindText(startpos, endpos, text, flag, &endPos);
                     pos != wxSCI_INVALID_POSITION ;
-                    pos = stc->FindText(pos+=text.Len(), endpos, text, flag, &lengthFound) )
+                    pos = stc->FindText(pos+=text.Len(), endpos, text, flag, &endPos) )
                 {
-                    stc->IndicatorFillRange(pos, lengthFound);
+                    stc->IndicatorFillRange(pos, endPos - pos);
                 }
             }
         }
@@ -337,10 +337,10 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
         Selections::const_iterator currSelection = selections.begin();
 
         // search for every occurence
-        int lengthFound = 0; // we need this to work properly with multibyte characters
-        for ( int pos = control->FindText(0, eof, selectedText, flag, &lengthFound);
+        int endPos = 0; // we need this to work properly with multibyte characters
+        for ( int pos = control->FindText(0, eof, selectedText, flag, &endPos);
             pos != wxSCI_INVALID_POSITION ;
-            pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &lengthFound) )
+            pos = control->FindText(pos+=selectedText.Len(), eof, selectedText, flag, &endPos) )
         {
             // check if the found text is selected
             // if it is don't add indicator for it, because it looks ugly
@@ -352,7 +352,7 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
                     continue;
                 // if the end of the found text is not before the current selection start
                 // then it must match and it should be skipped
-                if (pos + lengthFound >= currSelection->first)
+                if (endPos >= currSelection->first)
                     skip = true;
                 break;
             }
@@ -361,7 +361,7 @@ void Highlighter::HighlightOccurrencesOfSelection(cbEditor* ctrl)const
 
             // does not make sense anymore: check that the found occurrence is not the same as the selected,
             // since it is not selected in the second view -> so highlight it
-            control->IndicatorFillRange(pos, lengthFound);
+            control->IndicatorFillRange(pos, endPos - pos);
         }
     }
 }

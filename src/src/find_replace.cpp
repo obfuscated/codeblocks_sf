@@ -484,7 +484,10 @@ int FindReplace::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     {
         int lengthFound = 0;
         if (!advRegex)
+        {
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+            lengthFound -= pos;
+        }
         else
         {
             wxString text=control->GetTextRange(data->start, data->end);
@@ -932,7 +935,10 @@ int FindReplace::ReplaceInFiles(cbFindReplaceData* data)
         {
             int lengthFound = 0;
             if (!advRegex)
+            {
                 pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+                lengthFound -= pos;
+            }
             else
             {
                 wxString text=control->GetTextRange(data->start, data->end);
@@ -1161,7 +1167,10 @@ int FindReplace::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     {
         int lengthFound = 0;
         if (!advRegex)
+        {
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+            lengthFound -= pos;
+        }
         else
         {
             wxString text = control->GetTextRange(data->start, data->end);

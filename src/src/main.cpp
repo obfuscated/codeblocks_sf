@@ -3202,17 +3202,17 @@ bool SelectNext(cbStyledTextCtrl *control, const wxString &selectedText, long se
     if (selectedText.find_first_of(wxT(";:\"'`~@#$%^,-+*/\\=|!?&*(){}[]")) == wxString::npos)
         flag |= wxSCI_FIND_WHOLEWORD;
 
-    int lengthFound = 0; // we need this to work properly with multibyte characters
+    int endPos = 0; // we need this to work properly with multibyte characters
     int eof = control->GetLength();
-    int pos = control->FindText(selectionEnd, eof, selectedText, flag, &lengthFound);
+    int pos = control->FindText(selectionEnd, eof, selectedText, flag, &endPos);
     if (pos != wxSCI_INVALID_POSITION)
     {
         control->SetAdditionalSelectionTyping(true);
-        control->IndicatorClearRange(pos, lengthFound);
+        control->IndicatorClearRange(pos, endPos - pos);
         if (reversed)
-            control->AddSelection(pos, pos + lengthFound);
+            control->AddSelection(pos, endPos);
         else
-            control->AddSelection(pos + lengthFound, pos);
+            control->AddSelection(endPos, pos);
         control->MakeNearbyLinesVisible(control->LineFromPosition(pos));
         return true;
     }

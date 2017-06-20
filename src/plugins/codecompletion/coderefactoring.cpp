@@ -437,11 +437,11 @@ void CodeRefactoring::Find(cbStyledTextCtrl* control, const wxString& file, cons
 
     for (;;)
     {
-        int lengthFound;
-        int pos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, &lengthFound);
+        int endPos;
+        int pos = control->FindText(start, end, target, wxSCI_FIND_WHOLEWORD | wxSCI_FIND_MATCHCASE, &endPos);
         if (pos != wxSCI_INVALID_POSITION)
         {
-            start = pos + lengthFound;
+            start = endPos;
             const int line = control->LineFromPosition(pos);
             wxString text = control->GetLine(line).Trim(true).Trim(false);
             m_SearchDataMap[file].push_back(crSearchData(pos, line + 1, text));
