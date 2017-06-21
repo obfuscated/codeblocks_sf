@@ -290,8 +290,6 @@ function SetupProjectBuildOptions(project)
         project.AddIncludeDir(_T("$(#cb)\\sdk\\wxscintilla\\include"));
         project.AddIncludeDir(_T("$(#cb)\\include\\tinyxml"));
 
-        project.AddLibDir(GetBaseDevelPath(WxVersion));
-        project.AddLinkLib(_T("codeblocks"));
     }
     else
     {
@@ -341,6 +339,9 @@ function SetupTarget(target, isSystemWide, targetWxVersion)
             target.AddLinkLib(_T("wxmsw31u"));
             target.AddLibDir(_T("$(#wx31.lib)\\gcc_dll"));
         }
+
+        target.AddLibDir(GetBaseDevelPath(targetWxVersion));
+        target.AddLinkLib(_T("codeblocks"));
     }
     else
     {
