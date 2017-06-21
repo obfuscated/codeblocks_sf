@@ -310,7 +310,6 @@ function SetupProjectBuildOptions(project)
     else
     {
         local WxVersionFlag;
-
         if (WxVersion == 0)
             WxVersionFlag = _T(" --version=2.8");
         else if (WxVersion == 1)
@@ -320,6 +319,7 @@ function SetupProjectBuildOptions(project)
         else if (WxVersion == 3)
             WxVersionFlag = _T("");
 
+        project.AddCompilerOption(_T("-std=c++11"));
         project.AddCompilerOption(_T("-fPIC"));
         project.AddCompilerOption(_T("`wx-config --cflags ") + WxVersionFlag + _T("`"));
         project.AddCompilerOption(_T("`pkg-config --cflags codeblocks`"));
