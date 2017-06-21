@@ -189,16 +189,18 @@ function GetGeneratedFile(file_index)
 }
 
 // -----------------------------------------------------------------------------
-// setup the project options
+// Setup the project options.
+// We create two targets:
+// * default:
+//   This target creates a .cbplugin archive that can be distributed and installed in codeblocks via the plugin
+//   manager.
+// * to_codeblocks:
+//   This target copies the binary output and the resources directly to the "devel" sub folder of your codeblocks
+//   development folder provided by the $(#cb) global variable. This allows to debug the plugin easily. If the
+//   debugging process is fired, codeblocks starts gdb with "$(#cb)/devel/codeblocks" as host application with the
+//   "debug" personality to create some kind of isolation from the working environment.
 function SetupProject(project)
 {
-    // We create two targets:
-    //  * default         : This target creates a .cbplugin archive that can be distributed and installed in codeblocks via the plugin manager
-    //  * to_codeblocks   : This target copies the binary output and the resources directly to the "devel" sub folder of your codeblocks development folder
-    //                     provided by the $(#cb) global variable. This allows to debug the plugin easily. If the debugging process is fired, codeblocks starts
-    //                     gdb with "$(#cb)/devel/codeblocks" as host application with the "debug" personality to create some kind of isolation from the working
-    //                     environment.
-
     SetupProjectBuildOptions(project);
 
     // Create the "default" target
@@ -208,7 +210,7 @@ function SetupProject(project)
 
     SetupTarget(target, true);
 
-    // create plugin distribution file
+    // Create plugin distribution file.
     target.AddCommandsAfterBuild(_T("zip -j9 ") + PluginSettings.Name + _T(".cbplugin ") +
                                 target.GetOutputFilename() + _T(" ") +
                                 PluginSettings.Name + _T(".zip"));
@@ -376,9 +378,8 @@ function SetupTarget(target,is_debug)
         }
     }
 
-    // create plugin resources
-    target.AddCommandsAfterBuild(_T("zip -j9 ") +
-                                PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
+    // Create plugin resources.
+    target.AddCommandsAfterBuild(_T("zip -j9 ") + PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
 
     target.SetAlwaysRunPostBuildSteps (true)
 
