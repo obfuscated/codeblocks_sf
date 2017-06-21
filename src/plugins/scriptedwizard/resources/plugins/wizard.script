@@ -255,6 +255,13 @@ function SetupProject(project)
     for (local i = 0; i < project.GetFilesCount(); i++)
         project.GetFile(i).AddBuildTarget(target30.GetTitle());
 
+    // Merge all targets in a single virtual target, so the user can rebuild everything at once.
+    local virtualTargets = wxArrayString();
+    virtualTargets.Add(target.GetTitle(), 1);
+    virtualTargets.Add(target28.GetTitle(), 1);
+    virtualTargets.Add(target30.GetTitle(), 1);
+    project.DefineVirtualBuildTarget(_T("All"), virtualTargets);
+
     return true;
 }
 
