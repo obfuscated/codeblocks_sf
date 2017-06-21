@@ -48,9 +48,8 @@ function BeginWizard()
         options += _T(";system default");
 
     // Select wxwidgets version.
-    Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"),
-                                          _T("Please select the wxWidgets version you want to use."),
-                                          options, WxVersion);
+    local wxVersionMsg = _T("Please select the wxWidgets version you want to use for the default configuration.");
+    Wizard.AddGenericSingleChoiceListPage(_T("wxVersionPage"), wxVersionMsg, options, WxVersion);
     Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, false);
 }
 
@@ -192,17 +191,36 @@ function GetGeneratedFile(file_index)
     return _T(""); // no more generated files
 }
 
+// Return the path to the devel folder based on the wx version we are targeting
+function GetBaseDevelPath(version)
+{
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        if (version == 0)
+            return _T("$(#cb)\\devel");
+        else if (version == 1 || version == 2)
+            return _T("$(#cb)\\devel30");
+    }
+    else
+    {
+        if (version == 0)
+            return _T("$(#cb)/devel");
+        else if (version == 1 || version == 2 || version == 3)
+            return _T("$(#cb)/devel30");
+    };
+}
+
 // -----------------------------------------------------------------------------
 // Setup the project options.
-// We create two targets:
-// * default:
+// We create three targets:
+// * make_cbplugin:
 //   This target creates a .cbplugin archive that can be distributed and installed in codeblocks via the plugin
-//   manager.
-// * to_codeblocks:
-//   This target copies the binary output and the resources directly to the "devel" sub folder of your codeblocks
-//   development folder provided by the $(#cb) global variable. This allows to debug the plugin easily. If the
-//   debugging process is fired, codeblocks starts gdb with "$(#cb)/devel/codeblocks" as host application with the
-//   "debug" personality to create some kind of isolation from the working environment.
+//   manager. Uses the selected wx version.
+// * to_codeblocks_wx28 and to_codeblocks_wx30:
+//   These targets copy the binary output and the resources directly to the "devel" and "devel30" sub folder of your
+//   codeblocks development folder provided by the $(#cb) global variable. This allows to debug the plugin easily.
+//   If the debugging process is started, codeblocks starts gdb with "$(#cb)/devel/codeblocks" as host application
+//   with the "debug" personality to create some kind of isolation from the working environment.
 function SetupProject(project)
 {
     SetupProjectBuildOptions(project);
@@ -212,40 +230,30 @@ function SetupProject(project)
     if (IsNull(target))
         target = project.AddBuildTarget(_T("default"));
 
-    SetupTarget(target, true);
+    SetupTarget(target, true, WxVersion);
 
     // Create plugin distribution file.
     target.AddCommandsAfterBuild(_T("zip -j9 ") + PluginSettings.Name + _T(".cbplugin ") +
                                 target.GetOutputFilename() + _T(" ") +
                                 PluginSettings.Name + _T(".zip"));
 
-    // Create the "to_codeblocks" target
-    local target2 = project.GetBuildTarget(_T("to_codeblocks"));
-    if (IsNull(target2))
-        target2 = project.AddBuildTarget(_T("to_codeblocks"));
+    // Create the "to_codeblocks_wx28" target
+    local target28 = project.GetBuildTarget(_T("to_codeblocks_wx28"));
+    if (IsNull(target28))
+        target28 = project.AddBuildTarget(_T("to_codeblocks_wx28"));
+    SetupTarget(target28, false, 0);
 
-    SetupTarget(target2, true);
+    // Create the "to_codeblocks_wx30" target
+    local target30 = project.GetBuildTarget(_T("to_codeblocks_wx30"));
+    if (IsNull(target30))
+        target30 = project.AddBuildTarget(_T("to_codeblocks_wx30"));
+    SetupTarget(target30, false, 1);
 
-    local basePath;
-
-    // "to_codeblocks" has to copy multiple files to the $(#cb)\devel folder. This is a platform specific process
-    if (WxVersion == 0)
-        basePath = _T("$(#cb)/devel/share/codeblocks/");
-    else
-        basePath = _T("$(#cb)/devel30/share/codeblocks/");
-
-    target2.SetOutputFilename(basePath + _T("plugins/") + PluginSettings.Name);
-    target2.AddCommandsAfterBuild(_T("[[IO.CopyFile(_T(\"") + PluginSettings.Name + _T(".zip\"),_T(\"") + basePath
-                                  + PluginSettings.Name + _T(".zip\"), true)]]"));
-
-    local executionParameters = _T("--debug-log --multiple-instance --no-splash-screen --verbose -p debug");
-    if (PLATFORM == PLATFORM_MSW)
-        executionParameters = _T("--no-dde --no-check-associations ") + executionParameters;
-
-    target2.SetExecutionParameters(executionParameters);
-
+    // Add files to the wx28 and wx30 targets, they are not added for some reason.
     for (local i = 0; i < project.GetFilesCount(); i++)
-        project.GetFile(i).AddBuildTarget(target2.GetTitle());
+        project.GetFile(i).AddBuildTarget(target28.GetTitle());
+    for (local i = 0; i < project.GetFilesCount(); i++)
+        project.GetFile(i).AddBuildTarget(target30.GetTitle());
 
     return true;
 }
@@ -281,8 +289,6 @@ function SetupProjectBuildOptions(project)
 
             project.AddLinkLib(_T("wxmsw28u"));
             project.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
-
-            project.AddLibDir(_T("$(#cb)\\devel"));
         }
         else if (WxVersion == 1)
         {
@@ -291,8 +297,6 @@ function SetupProjectBuildOptions(project)
 
             project.AddLinkLib(_T("wxmsw30u"));
             project.AddLibDir(_T("$(#wx30.lib)\\gcc_dll"));
-
-            project.AddLibDir(_T("$(#cb)\\devel30"));
         }
         else if (WxVersion == 2)
         {
@@ -301,36 +305,21 @@ function SetupProjectBuildOptions(project)
 
             project.AddLinkLib(_T("wxmsw31u"));
             project.AddLibDir(_T("$(#wx31.lib)\\gcc_dll"));
-
-            project.AddLibDir(_T("$(#cb)\\devel30"));
         }
 
+        project.AddLibDir(GetBaseDevelPath(WxVersion));
         project.AddLinkLib(_T("codeblocks"));
     }
     else
     {
-        local WxVersionFlag;
-        if (WxVersion == 0)
-            WxVersionFlag = _T(" --version=2.8");
-        else if (WxVersion == 1)
-            WxVersionFlag = _T(" --version=2.8");
-        else if (WxVersion == 2)
-            WxVersionFlag = _T(" --version=2.8");
-        else if (WxVersion == 3)
-            WxVersionFlag = _T("");
-
         project.AddCompilerOption(_T("-std=c++11"));
         project.AddCompilerOption(_T("-fPIC"));
-        project.AddCompilerOption(_T("`wx-config --cflags ") + WxVersionFlag + _T("`"));
-        project.AddCompilerOption(_T("`pkg-config --cflags codeblocks`"));
-
-        project.AddLinkerOption(_T("`wx-config --libs ") + WxVersionFlag + _T("`"));
-        project.AddLinkerOption(_T("`pkg-config --libs codeblocks`"));
+        project.AddLinkerOption(_T("-Wl,--no-undefined"));
     }
 }
 
 // Setup all target common parameters for the targets
-function SetupTarget(target,is_debug)
+function SetupTarget(target, isSystemWide, targetWxVersion)
 {
     if (IsNull(target))
         return false;
@@ -339,29 +328,68 @@ function SetupTarget(target,is_debug)
     target.SetOutputFilename(PluginSettings.Name);
     target.SetCreateDefFile(false);
     target.SetCreateStaticLib(false);
+    target.SetObjectOutput(_T(".objs/") + target.GetTitle());
 
     if (PLATFORM == PLATFORM_MSW)
     {
-        if (WxVersion == 0)
-            target.SetHostApplication(_T("$(#cb)\\devel\\codeblocks") + DOT_EXT_EXECUTABLE);
-        else if (WxVersion == 1 || WxVersion == 2)
-            target.SetHostApplication(_T("$(#cb)\\devel30\\codeblocks") + DOT_EXT_EXECUTABLE);
+        target.SetHostApplication(GetBaseDevelPath(targetWxVersion) + _T("\\codeblocks") + DOT_EXT_EXECUTABLE);
     }
     else
     {
-        if (WxVersion == 0)
-            target.SetHostApplication(_T("$(#cb)/devel/codeblocks") + DOT_EXT_EXECUTABLE);
-        else if (WxVersion == 1 || WxVersion == 2)
-            target.SetHostApplication(_T("$(#cb)/devel30/codeblocks") + DOT_EXT_EXECUTABLE);
+        if (isSystemWide)
+        {
+            target.AddCompilerOption(_T("`pkg-config --cflags codeblocks`"));
+            target.AddLinkerOption(_T("`pkg-config --libs codeblocks`"));
+        }
+        else
+        {
+            local develPath = GetBaseDevelPath(targetWxVersion);
+            target.SetHostApplication(develPath + _T("/codeblocks") + DOT_EXT_EXECUTABLE);
+            target.AddLibDir(develPath);
+            target.SetWorkingDir(develPath);
+
+            target.AddLinkLib(_T("codeblocks"));
+            target.AddIncludeDir(_T("$(#cb)/include"));
+            target.AddIncludeDir(_T("$(#cb)/sdk/wxscintilla/include"));
+            target.AddIncludeDir(_T("$(#cb)/include/tinyxml"));
+        }
+
+        local WxVersionFlag;
+        if (targetWxVersion == 0)
+            WxVersionFlag = _T(" --version=2.8");
+        else if (targetWxVersion == 1)
+            WxVersionFlag = _T(" --version=3.0");
+        else if (targetWxVersion == 2)
+            WxVersionFlag = _T(" --version=3.1");
+        else if (targetWxVersion == 3)
+            WxVersionFlag = _T("");
+        target.AddCompilerOption(_T("`wx-config --cflags ") + WxVersionFlag + _T("`"));
+        target.AddLinkerOption(_T("`wx-config --libs ") + WxVersionFlag + _T("`"));
     }
 
-    // Create plugin resources.
-    target.AddCommandsAfterBuild(_T("zip -j9 ") + PluginSettings.Name + _T(".zip manifest") + DOT_EXT_XML);
+    local zipFilePath;
+    if (isSystemWide)
+        zipFilePath = PluginSettings.Name + _T(".zip");
+    else
+    {
+        // "to_codeblocks" has to copy multiple files to the $(#cb)\devel folder. This is a platform specific process
+        local basePath = GetBaseDevelPath(targetWxVersion) + _T("/share/codeblocks/");
+        zipFilePath = basePath + PluginSettings.Name + _T(".zip");
 
+        target.SetOutputFilename(basePath + _T("plugins/") + PluginSettings.Name);
+
+        local executionParameters = _T("--debug-log --multiple-instance --no-splash-screen --verbose -p debug");
+        if (PLATFORM == PLATFORM_MSW)
+            executionParameters += _T(" --no-dde --no-check-associations ");
+        else
+            executionParameters += _T(" --no-ipc ");
+
+        target.SetExecutionParameters(executionParameters);
+    }
+
+    target.AddCommandsAfterBuild(_T("zip -j9 ") + zipFilePath + _T(" manifest") + DOT_EXT_XML);
     target.SetAlwaysRunPostBuildSteps (true)
-
-    if (is_debug)
-        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    DebugSymbolsOn(target, Wizard.GetCompilerID());
 
     return true;
 }
