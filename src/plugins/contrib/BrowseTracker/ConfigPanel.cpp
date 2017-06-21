@@ -1,114 +1,86 @@
-///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Sep  8 2010)
-// http://www.wxformbuilder.org/
-//
-// PLEASE DO "NOT" EDIT THIS FILE!
-///////////////////////////////////////////////////////////////////////////
-
-#include "wx/wxprec.h"
-
-#ifdef __BORLANDC__
-#pragma hdrstop
-#endif //__BORLANDC__
-
-#ifndef WX_PRECOMP
-#include <wx/wx.h>
-#endif //WX_PRECOMP
-
 #include "ConfigPanel.h"
 
-///////////////////////////////////////////////////////////////////////////
+//(*InternalHeaders(ConfigPanel)
+#include <wx/font.h>
+#include <wx/intl.h>
+#include <wx/string.h>
+//*)
 
-ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, const wxSize& size, long style ) : wxPanel( parent, id, pos, size, style )
+//(*IdInit(ConfigPanel)
+const long ConfigPanel::ID_STATICTEXT1 = wxNewId();
+const long ConfigPanel::ID_CHECKBOX1 = wxNewId();
+const long ConfigPanel::ID_CHECKBOX2 = wxNewId();
+const long ConfigPanel::ID_RADIOBOX1 = wxNewId();
+const long ConfigPanel::ID_RADIOBOX3 = wxNewId();
+const long ConfigPanel::ID_SLIDER1 = wxNewId();
+const long ConfigPanel::ID_RADIOBOX2 = wxNewId();
+const long ConfigPanel::ID_STATICTEXT2 = wxNewId();
+//*)
+
+BEGIN_EVENT_TABLE(ConfigPanel,wxPanel)
+	//(*EventTable(ConfigPanel)
+	//*)
+END_EVENT_TABLE()
+
+ConfigPanel::ConfigPanel(wxWindow* parent, wxWindowID &id)
 {
-	wxBoxSizer* bSizer3;
-	bSizer3 = new wxBoxSizer( wxVERTICAL );
+	//(*Initialize(ConfigPanel)
+	wxBoxSizer* BoxSizer2;
+	wxFlexGridSizer* FlexGridSizer1;
+	wxStaticBoxSizer* StaticBoxSizer1;
 
-	m_staticText2 = new wxStaticText( this, wxID_ANY, _("BrowseTracker Options"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
-	m_staticText2->Wrap( -1 );
-	m_staticText2->SetFont( wxFont( 9, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL, false, wxT("Tahoma") ) );
-
-	bSizer3->Add( m_staticText2, 0, wxALL|wxEXPAND, 5 );
-
-
-	bSizer3->Add( 0, 10, 0, 0, 5 );
-
-	wxBoxSizer* bSizer7;
-	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
-
-	Cfg_BrowseMarksEnabled = new wxCheckBox( this, wxID_ANY, _("Enable BrowseMarks"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer7->Add( Cfg_BrowseMarksEnabled, 1, wxALL, 5 );
-
-	Cfg_WrapJumpEntries = new wxCheckBox( this, wxID_ANY, _("Wrap Jump Entries"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer7->Add( Cfg_WrapJumpEntries, 1, wxALL, 5 );
-
-	bSizer3->Add( bSizer7, 0, wxEXPAND|wxSHAPED, 5 );
-
-	wxBoxSizer* bSizer6;
-	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
-
-	wxString Cfg_MarkStyleChoices[] = { _("Browse_Marks  "), _("Book_Marks"), _("Hide") };
-	int Cfg_MarkStyleNChoices = sizeof( Cfg_MarkStyleChoices ) / sizeof( wxString );
-	Cfg_MarkStyle = new wxRadioBox( this, wxID_ANY, _("Mark style"), wxDefaultPosition, wxDefaultSize, Cfg_MarkStyleNChoices, Cfg_MarkStyleChoices, 3, wxRA_SPECIFY_COLS );
-	Cfg_MarkStyle->SetSelection( 1 );
-	bSizer6->Add( Cfg_MarkStyle, 1, wxALL, 5 );
-
-	bSizer3->Add( bSizer6, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer8;
-	bSizer8 = new wxBoxSizer( wxVERTICAL );
-
-	wxString Cfg_ToggleKeyChoices[] = { _("Left_Mouse"), _("Ctrl-Left_Mouse") };
-	int Cfg_ToggleKeyNChoices = sizeof( Cfg_ToggleKeyChoices ) / sizeof( wxString );
-	Cfg_ToggleKey = new wxRadioBox( this, wxID_ANY, _("Toggle BrowseMark Key"), wxDefaultPosition, wxDefaultSize, Cfg_ToggleKeyNChoices, Cfg_ToggleKeyChoices, 3, wxRA_SPECIFY_COLS );
-	Cfg_ToggleKey->SetSelection( 0 );
-	bSizer8->Add( Cfg_ToggleKey, 0, wxALL|wxEXPAND, 5 );
-
-	bSizer3->Add( bSizer8, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer9;
-	bSizer9 = new wxBoxSizer( wxVERTICAL );
-
-	m_staticText4 = new wxStaticText( this, wxID_ANY, _(" Left_Mouse Toggle Delay (Milliseconds)"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText4->Wrap( -1 );
-	bSizer9->Add( m_staticText4, 0, wxALL|wxEXPAND, 5 );
-
-	Cfg_LeftMouseDelay = new wxSlider( this, wxID_ANY, 200, 0, 1000, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS );
-	bSizer9->Add( Cfg_LeftMouseDelay, 1, wxALL|wxEXPAND, 5 );
-
-	bSizer3->Add( bSizer9, 1, wxEXPAND, 5 );
-
-	wxBoxSizer* bSizer10;
-	bSizer10 = new wxBoxSizer( wxVERTICAL );
-
-	wxString Cfg_ClearAllKeyChoices[] = { _("Ctrl-Left_Mouse"), _("Ctrl-Left_DblClick") };
-	int Cfg_ClearAllKeyNChoices = sizeof( Cfg_ClearAllKeyChoices ) / sizeof( wxString );
-	Cfg_ClearAllKey = new wxRadioBox( this, wxID_ANY, _("Clear All BrowseMarks"), wxDefaultPosition, wxDefaultSize, Cfg_ClearAllKeyNChoices, Cfg_ClearAllKeyChoices, 2, wxRA_SPECIFY_COLS );
-	Cfg_ClearAllKey->SetSelection( 0 );
-	bSizer10->Add( Cfg_ClearAllKey, 0, wxALL|wxEXPAND, 5 );
-
-	bSizer3->Add( bSizer10, 1, wxEXPAND, 5 );
-
-	m_staticText3 = new wxStaticText( this, wxID_ANY, _("Note: The Ctrl-Left_Mouse key options are disabled when\nthe editors multi-selection option is enabled at:\nSettings/Editor/Margins/Allow Multiple Selections\n\nMenu items can be used to clear BrowseMarks.\n\n"), wxDefaultPosition, wxDefaultSize, 0 );
-	m_staticText3->Wrap( -1 );
-	bSizer3->Add( m_staticText3, 0, wxALL, 5 );
-
-	this->SetSizer( bSizer3 );
-	this->Layout();
-
-	// Connect Events
-	Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnEnableBrowseMarks ), NULL, this );
-	Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnWrapJumpEntries ), NULL, this );
-	Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnToggleBrowseMarkKey ), NULL, this );
-	Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnClearAllBrowseMarksKey ), NULL, this );
+	Create(parent, id, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("id"));
+	FlexGridSizer1 = new wxFlexGridSizer(7, 1, 0, 0);
+	FlexGridSizer1->AddGrowableCol(0);
+	StaticText1 = new wxStaticText(this, ID_STATICTEXT1, _("BrowseTracker options"), wxDefaultPosition, wxSize(191,30), wxALIGN_CENTRE, _T("ID_STATICTEXT1"));
+	wxFont StaticText1Font(wxDEFAULT,wxFONTFAMILY_SWISS,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,wxEmptyString,wxFONTENCODING_DEFAULT);
+	StaticText1->SetFont(StaticText1Font);
+	FlexGridSizer1->Add(StaticText1, 1, wxALL|wxEXPAND, 5);
+	BoxSizer2 = new wxBoxSizer(wxHORIZONTAL);
+	Cfg_BrowseMarksEnabled = new wxCheckBox(this, ID_CHECKBOX1, _("Enable BrowseMarks"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX1"));
+	Cfg_BrowseMarksEnabled->SetValue(false);
+	BoxSizer2->Add(Cfg_BrowseMarksEnabled, 1, wxALL|wxEXPAND, 5);
+	Cfg_WrapJumpEntries = new wxCheckBox(this, ID_CHECKBOX2, _("Wrap jump entries"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_CHECKBOX2"));
+	Cfg_WrapJumpEntries->SetValue(false);
+	BoxSizer2->Add(Cfg_WrapJumpEntries, 1, wxALL|wxEXPAND, 5);
+	FlexGridSizer1->Add(BoxSizer2, 1, wxALL|wxEXPAND, 5);
+	wxString __wxRadioBoxChoices_1[3] =
+	{
+		_("Browse marks"),
+		_("Book marks"),
+		_("Hide")
+	};
+	Cfg_MarkStyle = new wxRadioBox(this, ID_RADIOBOX1, _("Mark style"), wxDefaultPosition, wxDefaultSize, 3, __wxRadioBoxChoices_1, 1, wxRA_VERTICAL, wxDefaultValidator, _T("ID_RADIOBOX1"));
+	FlexGridSizer1->Add(Cfg_MarkStyle, 1, wxALL|wxEXPAND, 5);
+	wxString __wxRadioBoxChoices_2[2] =
+	{
+		_("Left mouse "),
+		_("Ctrl-Left mouse")
+	};
+	Cfg_ToggleKey = new wxRadioBox(this, ID_RADIOBOX3, _("Toggle BrowseMark key"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_2, 1, wxRA_VERTICAL, wxDefaultValidator, _T("ID_RADIOBOX3"));
+	FlexGridSizer1->Add(Cfg_ToggleKey, 1, wxALL|wxEXPAND, 5);
+	StaticBoxSizer1 = new wxStaticBoxSizer(wxHORIZONTAL, this, _("Left mouse toggle delay"));
+	Cfg_LeftMouseDelay = new wxSlider(this, ID_SLIDER1, 200, 0, 1000, wxDefaultPosition, wxDefaultSize, wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_LABELS, wxDefaultValidator, _T("ID_SLIDER1"));
+	StaticBoxSizer1->Add(Cfg_LeftMouseDelay, 1, wxALL|wxEXPAND, 5);
+	FlexGridSizer1->Add(StaticBoxSizer1, 1, wxALL|wxEXPAND, 5);
+	wxString __wxRadioBoxChoices_3[2] =
+	{
+		_("Ctrl-Left mouse"),
+		_("Ctrl-Left double click")
+	};
+	Cfg_ClearAllKey = new wxRadioBox(this, ID_RADIOBOX2, _("Clear all browse marks"), wxDefaultPosition, wxDefaultSize, 2, __wxRadioBoxChoices_3, 1, wxRA_VERTICAL, wxDefaultValidator, _T("ID_RADIOBOX2"));
+	FlexGridSizer1->Add(Cfg_ClearAllKey, 1, wxALL|wxEXPAND, 5);
+	StaticText2 = new wxStaticText(this, ID_STATICTEXT2, _("Note: The Ctrl-Left_Mouse key options are disabled \nwhen the editors multi-selection option is enabled at:\nSettings/Editor/Margins/Allow Multiple Selections\n\nMenu items can be used to clear BrowseMarks.\n\n"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE, _T("ID_STATICTEXT2"));
+	FlexGridSizer1->Add(StaticText2, 1, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+	SetSizer(FlexGridSizer1);
+	FlexGridSizer1->Fit(this);
+	FlexGridSizer1->SetSizeHints(this);
+	//*)
 }
 
 ConfigPanel::~ConfigPanel()
 {
-	// Disconnect Events
-	Cfg_BrowseMarksEnabled->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnEnableBrowseMarks ), NULL, this );
-	Cfg_WrapJumpEntries->Disconnect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( ConfigPanel::OnWrapJumpEntries ), NULL, this );
-	Cfg_ToggleKey->Disconnect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnToggleBrowseMarkKey ), NULL, this );
-	Cfg_ClearAllKey->Disconnect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( ConfigPanel::OnClearAllBrowseMarksKey ), NULL, this );
-
+	//(*Destroy(ConfigPanel)
+	//*)
 }
+

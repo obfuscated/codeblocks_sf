@@ -1,59 +1,52 @@
-///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Sep  8 2010)
-// http://www.wxformbuilder.org/
-//
-// PLEASE DO "NOT" EDIT THIS FILE!
-///////////////////////////////////////////////////////////////////////////
+#ifndef CONFIGPANEL_H
+#define CONFIGPANEL_H
 
-#ifndef __ConfigPanel__
-#define __ConfigPanel__
-
-#include <wx/string.h>
-#include <wx/stattext.h>
-#include <wx/gdicmn.h>
-#include <wx/font.h>
-#include <wx/colour.h>
-#include <wx/settings.h>
+//(*Headers(ConfigPanel)
 #include <wx/checkbox.h>
-#include <wx/sizer.h>
-#include <wx/radiobox.h>
-#include <wx/slider.h>
 #include <wx/panel.h>
+#include <wx/radiobox.h>
+#include <wx/sizer.h>
+#include <wx/slider.h>
+#include <wx/stattext.h>
+//*)
 
-///////////////////////////////////////////////////////////////////////////
-
-
-///////////////////////////////////////////////////////////////////////////////
-/// Class ConfigPanel
-///////////////////////////////////////////////////////////////////////////////
-class ConfigPanel : public wxPanel 
+class ConfigPanel: public wxPanel
 {
-	private:
-	
-	protected:
-		wxStaticText* m_staticText2;
-		
-		wxStaticText* m_staticText3;
-		
-		// Virtual event handlers, overide them in your derived class
-		virtual void OnEnableBrowseMarks( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnWrapJumpEntries( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnToggleBrowseMarkKey( wxCommandEvent& event ) { event.Skip(); }
-		virtual void OnClearAllBrowseMarksKey( wxCommandEvent& event ) { event.Skip(); }
-		
-	
 	public:
+
+		ConfigPanel(wxWindow* parent, wxWindowID &id);
+		virtual ~ConfigPanel();
+
+		//(*Declarations(ConfigPanel)
 		wxCheckBox* Cfg_BrowseMarksEnabled;
 		wxCheckBox* Cfg_WrapJumpEntries;
+		wxRadioBox* Cfg_ClearAllKey;
 		wxRadioBox* Cfg_MarkStyle;
 		wxRadioBox* Cfg_ToggleKey;
-		wxStaticText* m_staticText4;
 		wxSlider* Cfg_LeftMouseDelay;
-		wxRadioBox* Cfg_ClearAllKey;
-		
-		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 444,569 ), long style = wxTAB_TRAVERSAL );
-		~ConfigPanel();
-	
+		wxStaticText* StaticText1;
+		wxStaticText* StaticText2;
+		//*)
+
+	protected:
+
+		//(*Identifiers(ConfigPanel)
+		static const long ID_STATICTEXT1;
+		static const long ID_CHECKBOX1;
+		static const long ID_CHECKBOX2;
+		static const long ID_RADIOBOX1;
+		static const long ID_RADIOBOX3;
+		static const long ID_SLIDER1;
+		static const long ID_RADIOBOX2;
+		static const long ID_STATICTEXT2;
+		//*)
+
+	private:
+
+		//(*Handlers(ConfigPanel)
+		//*)
+
+		DECLARE_EVENT_TABLE()
 };
 
-#endif //__ConfigPanel__
+#endif

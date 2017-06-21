@@ -93,10 +93,6 @@ void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
 
     m_BrowseTrackerPlugin.ReadUserOptions( configFullPath );
 
-    #if defined(__WXMSW__)
-    m_pConfigPanel->m_staticText4->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVECAPTION ) );
-    #endif
-
     // set the current values
     m_pConfigPanel->Cfg_BrowseMarksEnabled->SetValue( m_BrowseTrackerPlugin.m_BrowseMarksEnabled);
     m_pConfigPanel->Cfg_WrapJumpEntries->SetValue( m_BrowseTrackerPlugin.m_WrapJumpEntries);
