@@ -289,33 +289,7 @@ function SetupProjectBuildOptions(project)
         project.AddIncludeDir(_T("$(#cb)\\include"));
         project.AddIncludeDir(_T("$(#cb)\\sdk\\wxscintilla\\include"));
         project.AddIncludeDir(_T("$(#cb)\\include\\tinyxml"));
-        if (WxVersion == 0)
-        {
-            project.AddIncludeDir(_T("$(#wx.include)"));
-            project.AddIncludeDir(_T("$(#wx.lib)\\gcc_dll\\mswu"));
 
-            project.AddLinkLib(_T("wxmsw28u"));
-            project.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
-        }
-        else if (WxVersion == 1)
-        {
-            project.AddIncludeDir(_T("$(#wx30.include)"));
-            project.AddIncludeDir(_T("$(#wx30.lib)\\gcc_dll\\mswu"));
-
-            project.AddLinkLib(_T("wxmsw30u"));
-            project.AddLibDir(_T("$(#wx30.lib)\\gcc_dll"));
-        }
-        else if (WxVersion == 2)
-        {
-            project.AddIncludeDir(_T("$(#wx31.include)"));
-            project.AddIncludeDir(_T("$(#wx31.lib)\\gcc_dll\\mswu"));
-
-            project.AddLinkLib(_T("wxmsw31u"));
-            project.AddLibDir(_T("$(#wx31.lib)\\gcc_dll"));
-        }
-
-        project.AddLibDir(GetBaseDevelPath(WxVersion));
-        project.AddLinkLib(_T("codeblocks"));
     }
     else
     {
@@ -340,6 +314,34 @@ function SetupTarget(target, isSystemWide, targetWxVersion)
     if (PLATFORM == PLATFORM_MSW)
     {
         target.SetHostApplication(GetBaseDevelPath(targetWxVersion) + _T("\\codeblocks") + DOT_EXT_EXECUTABLE);
+
+        if (targetWxVersion == 0)
+        {
+            target.AddIncludeDir(_T("$(#wx.include)"));
+            target.AddIncludeDir(_T("$(#wx.lib)\\gcc_dll\\mswu"));
+
+            target.AddLinkLib(_T("wxmsw28u"));
+            target.AddLibDir(_T("$(#wx.lib)\\gcc_dll"));
+        }
+        else if (targetWxVersion == 1)
+        {
+            target.AddIncludeDir(_T("$(#wx30.include)"));
+            target.AddIncludeDir(_T("$(#wx30.lib)\\gcc_dll\\mswu"));
+
+            target.AddLinkLib(_T("wxmsw30u"));
+            target.AddLibDir(_T("$(#wx30.lib)\\gcc_dll"));
+        }
+        else if (targetWxVersion == 2)
+        {
+            target.AddIncludeDir(_T("$(#wx31.include)"));
+            target.AddIncludeDir(_T("$(#wx31.lib)\\gcc_dll\\mswu"));
+
+            target.AddLinkLib(_T("wxmsw31u"));
+            target.AddLibDir(_T("$(#wx31.lib)\\gcc_dll"));
+        }
+
+        target.AddLibDir(GetBaseDevelPath(targetWxVersion));
+        target.AddLinkLib(_T("codeblocks"));
     }
     else
     {
