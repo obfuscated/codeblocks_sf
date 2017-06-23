@@ -323,6 +323,9 @@ struct OptionsCPP {
 	bool foldPreprocessorAtElse;
 	bool foldCompact;
 	bool foldAtElse;
+/* C::B begin */
+	bool highlightWxSmith;
+/* C::B end */
 	OptionsCPP() {
 		stylingWithinPreprocessor = false;
 		identifiersAllowDollars = true;
@@ -345,6 +348,9 @@ struct OptionsCPP {
 		foldPreprocessorAtElse = false;
 		foldCompact = false;
 		foldAtElse = false;
+/* C::B begin */
+		highlightWxSmith = true;
+/* C::B end */
 	}
 };
 
@@ -355,6 +361,9 @@ const char *const cppWordLists[] = {
             "Global classes and typedefs",
             "Preprocessor definitions",
             "Task marker and error marker keywords",
+/* C::B begin */
+            "wxSmith block identifiers",
+/* C::B end */
             0,
 };
 
@@ -422,7 +431,9 @@ struct OptionSetCPP : public OptionSet<OptionsCPP> {
 			"Includes C#'s explicit #region and #endregion folding directives.");
 
 		DefineProperty("fold.compact", &OptionsCPP::foldCompact);
-
+/* C::B begin */
+		DefineProperty("highlight.wxsmith", &OptionsCPP::highlightWxSmith);
+/* C::B end */
 		DefineProperty("fold.at.else", &OptionsCPP::foldAtElse,
 			"This option enables C++ folding on a \"} else {\" line of an if statement.");
 
@@ -450,6 +461,9 @@ class LexerCPP : public ILexerWithSubStyles {
 	WordList keywords4;
 	WordList ppDefinitions;
 	WordList markerList;
+/* C::B begin */
+	WordList wxSmithIds;
+/* C::B end */
 	struct SymbolValue {
 		std::string value;
 		std::string arguments;
@@ -594,6 +608,11 @@ Sci_Position SCI_METHOD LexerCPP::WordListSet(int n, const char *wl) {
 	case 5:
 		wordListN = &markerList;
 		break;
+/* C::B begin */
+	case 6:
+		wordListN = &wxSmithIds;
+		break;
+/* C::B end */
 	}
 	Sci_Position firstModification = -1;
 	if (wordListN) {
@@ -1077,6 +1096,15 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 					sc.SetState(styleBeforeTaskMarker|activitySet);
 					styleBeforeTaskMarker = SCE_C_DEFAULT;
 				}
+/* C::B begin */
+				break;
+			case SCE_C_WXSMITH:
+				if (sc.Match("//*)")) {
+					sc.Forward(4);
+					sc.SetState(SCE_C_COMMENTLINE|activitySet);
+					continue;
+				}
+/* C::B end */
 		}
 
 		if (sc.atLineEnd && !atLineEndBeforeSwitch) {
@@ -1125,6 +1153,17 @@ void SCI_METHOD LexerCPP::Lex(Sci_PositionU startPos, Sci_Position length, int i
 				if ((sc.Match("///") && !sc.Match("////")) || sc.Match("//!"))
 					// Support of Qt/Doxygen doc. style
 					sc.SetState(SCE_C_COMMENTLINEDOC|activitySet);
+/* C::B begin */
+				else if (sc.Match("//(*") && options.highlightWxSmith && wxSmithIds.InList(GetRestOfLine(styler, sc.currentPos + 4, true).c_str())) {
+					// Support for wxSmith auto-generated code
+					sc.SetState(SCE_C_WXSMITH|activitySet);
+					sc.Forward(4);
+					sc.SetState(SCE_C_COMMENTLINE|activitySet);
+					while (!sc.atLineEnd)
+						sc.Forward();
+					sc.SetState(SCE_C_WXSMITH|activitySet);
+				}
+/* C::B end */
 				else
 					sc.SetState(SCE_C_COMMENTLINE|activitySet);
 			} else if (sc.ch == '/'
@@ -1325,7 +1364,9 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length, int 
 				levelNext--;
 			}
 		}
-		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_C_COMMENTLINE) || options.foldExplicitAnywhere)) {
+/* C::B begin */
+		if (options.foldComment && options.foldCommentExplicit && ((style == SCE_C_COMMENTLINE) || (style == SCE_C_WXSMITH) || options.foldExplicitAnywhere)) {
+/* C::B end */
 			if (userDefinedFoldMarkers) {
 				if (styler.Match(i, options.foldExplicitStart.c_str())) {
 					levelNext++;
@@ -1335,10 +1376,19 @@ void SCI_METHOD LexerCPP::Fold(Sci_PositionU startPos, Sci_Position length, int 
 			} else {
 				if ((ch == '/') && (chNext == '/')) {
 					const char chNext2 = styler.SafeGetCharAt(i + 2);
+/* C::B begin */
+					const char chNext3 = styler.SafeGetCharAt(i + 3);
+/* C::B end */
 					if (chNext2 == '{') {
 						levelNext++;
 					} else if (chNext2 == '}') {
 						levelNext--;
+/* C::B begin */
+					} else if (chNext2 == '(' && chNext3 == '*') {
+					    levelNext++;
+					} else if (chNext2 == '*' && chNext3 == ')') {
+					    levelNext--;
+/* C::B end */
 					}
 				}
 			}
