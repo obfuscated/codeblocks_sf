@@ -105,10 +105,24 @@ void SpellCheckerPlugin::OnAttach()
     // load configuration
     m_sccfg = new SpellCheckerConfig(this);
 
-    DictionariesNeededDialog dlg;
-    if (m_sccfg->GetPossibleDictionaries().empty())
-        dlg.ShowModal();
+    if(Manager::Get()->IsAppStartedUp())
+        Init();
+    else
+        Manager::Get()->RegisterEventSink(cbEVT_APP_STARTUP_DONE, new cbEventFunctor<SpellCheckerPlugin, CodeBlocksEvent>(this, &SpellCheckerPlugin::AppStartupDone));
+}
 
+void SpellCheckerPlugin::AppStartupDone(CodeBlocksEvent& event)
+{
+    Init();
+}
+
+void SpellCheckerPlugin::Init()
+{
+    if (m_sccfg->GetPossibleDictionaries().empty())
+    {
+        DictionariesNeededDialog dlg;
+        dlg.ShowModal();
+    }
 
     //initialize spell checker
     if ( !m_pSpellingDialog )
@@ -129,8 +143,6 @@ void SpellCheckerPlugin::OnAttach()
     // initialize thesaurus
     m_pThesaurus = new Thesaurus(Manager::Get()->GetAppFrame());
     ConfigureThesaurus();
-
-
 
     // connect events
     Connect(idSpellCheck,      wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnSpelling));

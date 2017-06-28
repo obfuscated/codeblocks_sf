@@ -177,6 +177,8 @@ class SpellCheckerPlugin : public cbPlugin
 
         wxArrayString m_suggestions;
         int m_wordstart, m_wordend;
+        void AppStartupDone(CodeBlocksEvent& event);
+        void Init();
 #ifdef wxUSE_STATUSBAR
     private:
         SpellCheckerStatusField *m_fld;

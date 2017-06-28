@@ -138,7 +138,7 @@ void MySpellingDialog::CreateDialog()
     pTopSizer->Add(pBottomRowSizer, 0, wxEXPAND | wxLEFT | wxRIGHT | wxBOTTOM, 10);
 
     // Add a context section
-    pTopSizer->Add(new wxTextCtrl(this, IDC_TEXT_CONTEXT, _T(""), wxDefaultPosition, wxSize(320,100), wxTE_MULTILINE | wxTE_READONLY /*| wxTE_NOHIDESEL | wxTE_RICH2*/ ), 0, wxEXPAND);
+    pTopSizer->Add(new wxTextCtrl(this, IDC_TEXT_CONTEXT, _T(""), wxDefaultPosition, wxSize(320,100), wxTE_MULTILINE | wxTE_READONLY | wxTE_NOHIDESEL | wxTE_RICH2 ), 0, wxEXPAND);
 
     // Now attach the main sizer to the window
     SetSizer(pTopSizer);
