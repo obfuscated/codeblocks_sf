@@ -27,57 +27,57 @@ class SpellCheckerPlugin;
 
 class SpellCheckerConfig
 {
-    public:
-        SpellCheckerConfig(SpellCheckerPlugin *plugin);
-        virtual ~SpellCheckerConfig();
+public:
+    SpellCheckerConfig(SpellCheckerPlugin *plugin);
+    virtual ~SpellCheckerConfig();
 
-        bool GetEnableOnlineChecker();
-        void SetEnableOnlineChecker(bool val);
-        bool GetEnableSpellTooltips();
-        void SetEnableSpellTooltips(bool val);
-        bool GetEnableThesaurusTooltips();
-        void SetEnableThesaurusTooltips(bool val);
-        const wxString GetDictionaryName()const;
-        void SetDictionaryName(wxString val);
-        void Load();
-        void Save();
-        wxString GetLanguageName(const wxString& language_id);
+    bool GetEnableOnlineChecker();
+    void SetEnableOnlineChecker(bool val);
+    bool GetEnableSpellTooltips();
+    void SetEnableSpellTooltips(bool val);
+    bool GetEnableThesaurusTooltips();
+    void SetEnableThesaurusTooltips(bool val);
+    const wxString GetDictionaryName()const;
+    void SetDictionaryName(wxString val);
+    void Load();
+    void Save();
+    wxString GetLanguageName(const wxString& language_id);
 
-        void ScanForDictionaries();
+    void ScanForDictionaries();
 
-        const std::vector<wxString> &GetPossibleDictionaries()const;
-        int GetSelectedDictionaryNumber()const;
+    const std::vector<wxString> &GetPossibleDictionaries()const;
+    int GetSelectedDictionaryNumber()const;
 
-        const wxString GetDictionaryPath()const;
-        const wxString GetThesaurusPath()const;
-        const wxString GetBitmapPath()const;
-        void SetDictionaryPath(const wxString &path);
-        void SetThesaurusPath(const wxString &path);
-        void SetBitmapPath(const wxString &path);
-        const wxString GetPersonalDictionaryFilename()const;
-    private:
-        friend class SpellCheckSettingsPanel;
-        const wxString GetRawDictionaryPath()const;
-        const wxString GetRawThesaurusPath()const;
-        const wxString GetRawBitmapPath()const;
-        void ScanForDictionaries(const wxString &path);
-        void PopulateLanguageNamesMap();
-        void DetectDictionaryPath();
-        void DetectThesaurusPath();
-    protected:
-    private:
-        wxString m_DictPath;
-        wxString m_ThesPath;
-        wxString m_BitmPath;
-        bool m_EnableOnlineChecker;
-        bool m_EnableSpellTooltips;
-        bool m_EnableThesaurusTooltips;
-        wxString m_strDictionaryName;
-        std::vector<wxString> m_dictionaries;
-        int selectedDictionary;
-        std::map<wxString, wxString> m_LanguageNamesMap;
+    const wxString GetDictionaryPath()const;
+    const wxString GetThesaurusPath()const;
+    const wxString GetBitmapPath()const;
+    void SetDictionaryPath(const wxString &path);
+    void SetThesaurusPath(const wxString &path);
+    void SetBitmapPath(const wxString &path);
+    const wxString GetPersonalDictionaryFilename()const;
+private:
+    friend class SpellCheckSettingsPanel;
+    const wxString GetRawDictionaryPath()const;
+    const wxString GetRawThesaurusPath()const;
+    const wxString GetRawBitmapPath()const;
+    void ScanForDictionaries(const wxString &path);
+    void PopulateLanguageNamesMap();
+    void DetectDictionaryPath();
+    void DetectThesaurusPath();
+protected:
+private:
+    wxString m_DictPath;
+    wxString m_ThesPath;
+    wxString m_BitmPath;
+    bool m_EnableOnlineChecker;
+    bool m_EnableSpellTooltips;
+    bool m_EnableThesaurusTooltips;
+    wxString m_strDictionaryName;
+    std::vector<wxString> m_dictionaries;
+    int selectedDictionary;
+    std::map<wxString, wxString> m_LanguageNamesMap;
 
-        SpellCheckerPlugin *m_pPlugin;
+    SpellCheckerPlugin *m_pPlugin;
 };
 
 #endif // SPELLCHECKERCONFIG_H

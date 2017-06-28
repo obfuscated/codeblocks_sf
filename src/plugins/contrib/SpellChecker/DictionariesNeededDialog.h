@@ -5,9 +5,9 @@
 
 class DictionariesNeededDialog: public AnnoyingDialog
 {
-	public:
-		DictionariesNeededDialog();
-		virtual ~DictionariesNeededDialog();
+public:
+    DictionariesNeededDialog();
+    virtual ~DictionariesNeededDialog();
 };
 
 #endif

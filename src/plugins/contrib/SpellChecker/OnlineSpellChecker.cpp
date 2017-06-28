@@ -2,10 +2,10 @@
 
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <editormanager.h>
-    #include <manager.h>
-    #include <logmanager.h>
+#include <cbeditor.h>
+#include <editormanager.h>
+#include <manager.h>
+#include <logmanager.h>
 #endif
 #include <editorcolourset.h>
 #include <cbstyledtextctrl.h>
@@ -21,16 +21,17 @@ OnlineSpellChecker::OnlineSpellChecker(wxSpellCheckEngineInterface* pSpellChecke
     m_doChecks(false)
 {
 }
+
 OnlineSpellChecker::~OnlineSpellChecker()
 {
     ClearAllIndications();
 }
 
-
 void OnlineSpellChecker::Call(cbEditor* ctrl, wxScintillaEvent& event) const
 {
     // return if this event is not fired from the active editor (is it possible that an editor which is not active fires an event?)
-    if ( Manager::Get()->GetEditorManager()->GetActiveEditor() != ctrl  ) return;
+    if ( Manager::Get()->GetEditorManager()->GetActiveEditor() != ctrl  )
+        return;
 
     // check the event type if it is an update event
     if ( event.GetEventType() == wxEVT_SCI_UPDATEUI )
@@ -57,20 +58,24 @@ int OnlineSpellChecker::GetIndicator() const
     const int theIndicator = 11;
     return theIndicator;
 }
+
 const wxColor OnlineSpellChecker::GetIndicatorColor() const
 {
     // TODO: wxColour indicatorColour(cfg->ReadColour(_T("/???/colour"), wxColour(255, 0, 0)));
     return wxColour(255,0,0);
 }
+
 void OnlineSpellChecker::OnEditorUpdateUI(cbEditor* ctrl) const
 {
-    if (!m_doChecks) return;
+    if (!m_doChecks)
+        return;
     DoSetIndications(ctrl);
 }
 
 void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int end) const
 {
-    if (!m_doChecks) return;
+    if (!m_doChecks)
+        return;
     if (m_alreadyChecked && (m_oldCtrl == ctrl))
     {
         // only recheck the last word to speed things up
@@ -83,16 +88,22 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
         }
 
         cbStyledTextCtrl* stc = ctrl->GetLeftSplitViewControl();
-        if (!stc) return;
+        if (!stc)
+            return;
 
         // bound:
-        if (start < 0) start = 0;
-        if (end   < 0) end   = 0;
-        if (start >= stc->GetLength()) start = stc->GetLength() - 1;
-        if (end   >  stc->GetLength()) end   = stc->GetLength();
+        if (start < 0)
+            start = 0;
+        if (end   < 0)
+            end   = 0;
+        if (start >= stc->GetLength())
+            start = stc->GetLength() - 1;
+        if (end   >  stc->GetLength())
+            end   = stc->GetLength();
 
         // find recheck range start:
-        if (start > 0) start--;
+        if (start > 0)
+            start--;
         while (start > 0)
         {
             EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
@@ -120,8 +131,8 @@ void OnlineSpellChecker::OnEditorChangeTextRange(cbEditor* ctrl, int start, int 
         }
 
         if (   m_invalidatedRangesStart.GetCount() == 0
-            || m_invalidatedRangesStart.Last()     != start
-            || m_invalidatedRangesEnd.Last()       != end )
+                || m_invalidatedRangesStart.Last()     != start
+                || m_invalidatedRangesEnd.Last()       != end )
         {
             m_invalidatedRangesStart.Add(start);
             m_invalidatedRangesEnd.Add(end);
@@ -137,7 +148,8 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
     // Returns a pointer to the left (or top) split-view cbStyledTextCtrl.
     cbStyledTextCtrl* stc  = ctrl->GetLeftSplitViewControl();
     cbStyledTextCtrl* stcr = ctrl->GetRightSplitViewControl();
-    if (!stc) return;
+    if (!stc)
+        return;
 
     // whatever the current state is, we've already done it once
     if (m_alreadyChecked && (m_oldCtrl == ctrl))
@@ -191,10 +203,14 @@ void OnlineSpellChecker::DoSetIndications(cbEditor* ctrl) const
         int end   = m_invalidatedRangesEnd[i];
 
         // bound:
-        if (start < 0) start = 0;
-        if (end   < 0) end   = 0;
-        if (start >= stc->GetLength()) start = stc->GetLength() - 1;
-        if (end   >  stc->GetLength()) end   = stc->GetLength();
+        if (start < 0)
+            start = 0;
+        if (end   < 0)
+            end   = 0;
+        if (start >= stc->GetLength())
+            start = stc->GetLength() - 1;
+        if (end   >  stc->GetLength())
+            end   = stc->GetLength();
 
         if (start != end)
         {
@@ -256,7 +272,8 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstar
     // and now decide whether the word is an abbreviation and split words when case changes to uppercase
     bool upper = wxIsupper(word[0]) != 0;
     int a, b;
-    a = 0; b = 0;
+    a = 0;
+    b = 0;
 
     for (unsigned int c = 0; c < word.length();)
     {
@@ -336,7 +353,6 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstar
     }
 }
 
-
 void OnlineSpellChecker::EnableOnlineChecks(bool check)
 {
     m_doChecks       = check;
@@ -346,7 +362,8 @@ void OnlineSpellChecker::EnableOnlineChecks(bool check)
     for (int i = 0 ; i < edMan->GetEditorsCount() ; ++i)
     {
         cbEditor* ed = edMan->GetBuiltinEditor(i);
-        if (!ed) continue;
+        if (!ed)
+            continue;
 
         if (!check)
             ClearAllIndications(ed->GetControl()); // clear all indications set in a previous run
@@ -370,7 +387,8 @@ void OnlineSpellChecker::ClearAllIndications() const
     for (int i = 0 ; i < edMan->GetEditorsCount() ; ++i)
     {
         cbEditor* ed = edMan->GetBuiltinEditor(i);
-        if (!ed) continue;
+        if (!ed)
+            continue;
 
         ClearAllIndications(ed->GetControl()); // clear all indications set in a previous run
     }

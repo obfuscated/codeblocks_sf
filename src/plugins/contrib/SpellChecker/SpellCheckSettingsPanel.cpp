@@ -42,7 +42,7 @@ BEGIN_EVENT_TABLE(SpellCheckSettingsPanel,wxPanel)
 END_EVENT_TABLE()
 
 SpellCheckSettingsPanel::SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerConfig *cfg)
-:m_sccfg(cfg)
+    :m_sccfg(cfg)
 {
     //(*Initialize(SpellCheckSettingsPanel)
     wxXmlResource::Get()->LoadObject(this,parent,_T("SpellCheckSettingsPanel"),_T("wxPanel"));
@@ -84,12 +84,12 @@ SpellCheckSettingsPanel::SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerC
     Button3->SetToolTip(_T("Select path to dictionary-switcher bitmaps (.png)"));
 
 
-    #ifndef wxUSE_STATUSBAR
+#ifndef wxUSE_STATUSBAR
     // hide since they are not used atm
     StaticText4->Hide();
     m_TextBitmapPath->Hide();
     Button3->Hide();
-    #endif
+#endif
 }
 
 SpellCheckSettingsPanel::~SpellCheckSettingsPanel()
@@ -97,7 +97,6 @@ SpellCheckSettingsPanel::~SpellCheckSettingsPanel()
     //(*Destroy(SpellCheckSettingsPanel)
     //*)
 }
-
 
 void SpellCheckSettingsPanel::InitDictionaryChoice(const wxString &path)
 {
@@ -120,9 +119,16 @@ void SpellCheckSettingsPanel::InitDictionaryChoice(const wxString &path)
     m_checkSpellTooltips->SetValue( m_sccfg->GetEnableSpellTooltips() && (!dics.empty()) );
     m_checkThesaurusTooltips->SetValue( m_sccfg->GetEnableThesaurusTooltips() && (!dics.empty()) );
 }
-wxString SpellCheckSettingsPanel::GetTitle() const {return _T("SpellChecker");}
 
-wxString SpellCheckSettingsPanel::GetBitmapBaseName() const {return _T("SpellChecker");}
+wxString SpellCheckSettingsPanel::GetTitle() const
+{
+    return _T("SpellChecker");
+}
+
+wxString SpellCheckSettingsPanel::GetBitmapBaseName() const
+{
+    return _T("SpellChecker");
+}
 
 void SpellCheckSettingsPanel::PostConfig()
 {
@@ -165,7 +171,6 @@ void SpellCheckSettingsPanel::OnCancel()
 {
     m_sccfg->Load(); // to restore the previous settings
 }
-
 
 void SpellCheckSettingsPanel::OnChooseDirectory(wxCommandEvent& event)
 {
@@ -217,3 +222,4 @@ void SpellCheckSettingsPanel::OnChangeDictPathText(cb_unused wxCommandEvent& eve
         m_checkEnableOnlineSpellChecker->SetValue(false);
     }
 }
+

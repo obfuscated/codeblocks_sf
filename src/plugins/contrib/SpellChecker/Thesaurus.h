@@ -33,20 +33,20 @@ typedef std::map<wxString, std::vector< wxString > > synonyms;
 class wxThes;
 class Thesaurus
 {
-    public:
-        Thesaurus(wxWindow *dialogsparent,const wxString idxpath, const wxString datpath);
-        Thesaurus(wxWindow *dialogsparent);
-        virtual ~Thesaurus();
+public:
+    Thesaurus(wxWindow *dialogsparent,const wxString idxpath, const wxString datpath);
+    Thesaurus(wxWindow *dialogsparent);
+    virtual ~Thesaurus();
 
-        bool GetSynonym(const wxString Word, wxString &Syn);
-        synonyms GetSynonyms(const wxString& Word);
-        void SetFiles(wxString idxpath, const wxString datpath);
-        bool IsOk();
+    bool GetSynonym(const wxString Word, wxString &Syn);
+    synonyms GetSynonyms(const wxString& Word);
+    void SetFiles(wxString idxpath, const wxString datpath);
+    bool IsOk();
 
-    protected:
-    private:
-        wxThes *m_pT;
-        wxWindow *m_pDialogsParent;
+protected:
+private:
+    wxThes *m_pT;
+    wxWindow *m_pDialogsParent;
 };
 
 #endif // THESAURUS_H

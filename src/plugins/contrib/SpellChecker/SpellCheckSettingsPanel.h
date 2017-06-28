@@ -39,65 +39,65 @@ class SpellCheckerConfig;
 
 class SpellCheckSettingsPanel: public cbConfigurationPanel
 {
-	public:
+public:
 
-		//SpellCheckSettingsPanel(wxWindow* parent);
-		SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerConfig *cfg);
-		virtual ~SpellCheckSettingsPanel();
+    //SpellCheckSettingsPanel(wxWindow* parent);
+    SpellCheckSettingsPanel(wxWindow* parent, SpellCheckerConfig *cfg);
+    virtual ~SpellCheckSettingsPanel();
 
-		/// @return the panel's title.
-        virtual wxString GetTitle() const;
-        /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
-        virtual wxString GetBitmapBaseName() const;
-        /// Called when the user chooses to apply the configuration.
-        virtual void OnApply();
-        /// Called when the user chooses to cancel the configuration.
-        virtual void OnCancel();
+    /// @return the panel's title.
+    virtual wxString GetTitle() const;
+    /// @return the panel's bitmap base name. You must supply two bitmaps: \<basename\>.png and \<basename\>-off.png...
+    virtual wxString GetBitmapBaseName() const;
+    /// Called when the user chooses to apply the configuration.
+    virtual void OnApply();
+    /// Called when the user chooses to cancel the configuration.
+    virtual void OnCancel();
 
-    private:
+private:
 
-		//(*Declarations(SpellCheckSettingsPanel)
-		wxButton* Button1;
-		wxButton* Button2;
-		wxButton* Button3;
-		wxChoice* m_choiceDictionary;
-		wxStaticText* StaticText1;
-		wxHyperlinkCtrl* HyperlinkCtrl1;
-		wxTextCtrl* m_TextThPath;
-		wxStaticText* StaticText3;
-		wxCheckBox* m_checkSpellTooltips;
-		wxStaticText* StaticText4;
-		wxStaticText* StaticText2;
-		wxTextCtrl* m_TextBitmapPath;
-		wxCheckBox* m_checkEnableOnlineSpellChecker;
-		wxTextCtrl* m_TextDictPath;
-		wxCheckBox* m_checkThesaurusTooltips;
-		//*)
+    //(*Declarations(SpellCheckSettingsPanel)
+    wxButton* Button1;
+    wxButton* Button2;
+    wxButton* Button3;
+    wxChoice* m_choiceDictionary;
+    wxStaticText* StaticText1;
+    wxHyperlinkCtrl* HyperlinkCtrl1;
+    wxTextCtrl* m_TextThPath;
+    wxStaticText* StaticText3;
+    wxCheckBox* m_checkSpellTooltips;
+    wxStaticText* StaticText4;
+    wxStaticText* StaticText2;
+    wxTextCtrl* m_TextBitmapPath;
+    wxCheckBox* m_checkEnableOnlineSpellChecker;
+    wxTextCtrl* m_TextDictPath;
+    wxCheckBox* m_checkThesaurusTooltips;
+    //*)
 
-        SpellCheckerConfig *m_sccfg;
-
-
-
-    private:
-        void InitDictionaryChoice(const wxString &path = wxEmptyString);
-        void PostConfig();
-
-	protected:
-
-		//(*Identifiers(SpellCheckSettingsPanel)
-		//*)
-
-	private:
-
-		//(*Handlers(SpellCheckSettingsPanel)
-		void OnChooseDirectory(wxCommandEvent& event);
-		//*)
-
-		void OnChangeDictPathText( wxCommandEvent &event);
+    SpellCheckerConfig *m_sccfg;
 
 
-    private:
-		DECLARE_EVENT_TABLE()
+
+private:
+    void InitDictionaryChoice(const wxString &path = wxEmptyString);
+    void PostConfig();
+
+protected:
+
+    //(*Identifiers(SpellCheckSettingsPanel)
+    //*)
+
+private:
+
+    //(*Handlers(SpellCheckSettingsPanel)
+    void OnChooseDirectory(wxCommandEvent& event);
+    //*)
+
+    void OnChangeDictPathText( wxCommandEvent &event);
+
+
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

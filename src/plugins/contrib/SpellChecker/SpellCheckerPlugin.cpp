@@ -18,10 +18,10 @@
 */
 #include <sdk.h> // Code::Blocks SDK
 #ifndef CB_PRECOMP
-    #include <cbeditor.h>
-    #include <configmanager.h>
-    #include <editorcolourset.h>
-    #include <editormanager.h>
+#include <cbeditor.h>
+#include <configmanager.h>
+#include <editorcolourset.h>
+#include <editormanager.h>
 #endif
 #include <configurationpanel.h>
 #include <editor_hooks.h>
@@ -48,18 +48,18 @@
 // We are using an anonymous namespace so we don't litter the global one.
 namespace
 {
-    PluginRegistrant<SpellCheckerPlugin> reg(_T("SpellChecker"));
+PluginRegistrant<SpellCheckerPlugin> reg(_T("SpellChecker"));
 
-    const int idSpellCheck                 = wxNewId();
-    const int idThesaurus                  = wxNewId();
-    const int idCamelCase                  = wxNewId();
+const int idSpellCheck                 = wxNewId();
+const int idThesaurus                  = wxNewId();
+const int idCamelCase                  = wxNewId();
 
-    const unsigned int MaxSuggestEntries = 5;
-    const int GetWordStartsLimit = 30;
-    const int idSuggest[MaxSuggestEntries] =
-        {static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())};
-    const int idAddToDictionary            = wxNewId();
-    const int idMoreSuggestions            = wxNewId();
+const unsigned int MaxSuggestEntries = 5;
+const int GetWordStartsLimit = 30;
+const int idSuggest[MaxSuggestEntries] =
+{static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId()), static_cast<int>(wxNewId())};
+const int idAddToDictionary            = wxNewId();
+const int idMoreSuggestions            = wxNewId();
 }
 
 
@@ -165,6 +165,7 @@ void SpellCheckerPlugin::CreateStatusField(cbStatusBar *bar)
     bar->AddField(this, m_fld, 60);
 }
 #endif
+
 void SpellCheckerPlugin::ConfigureThesaurus()
 {
     m_pThesaurus->SetFiles(
@@ -172,10 +173,12 @@ void SpellCheckerPlugin::ConfigureThesaurus()
         m_sccfg->GetThesaurusPath() + wxFILE_SEP_PATH + _T("th_") + m_sccfg->GetDictionaryName() + _T(".dat")
     );
 }
+
 wxString SpellCheckerPlugin::GetOnlineCheckerConfigPath()
 {
     return ConfigManager::GetDataFolder() + wxFileName::GetPathSeparator() + _T("SpellChecker") ;
 }
+
 void SpellCheckerPlugin::ConfigureHunspellSpellCheckEngine()
 {
     SpellCheckEngineOption DictionaryFileOption(
@@ -192,6 +195,7 @@ void SpellCheckerPlugin::ConfigureHunspellSpellCheckEngine()
 
     ConfigurePersonalDictionary();
 }
+
 void SpellCheckerPlugin::ConfigurePersonalDictionary()
 {
     // Set the personal dictionary file
@@ -238,16 +242,20 @@ void SpellCheckerPlugin::OnRelease(cb_unused bool appShutDown)
     Disconnect(idThesaurus,  wxEVT_UPDATE_UI,             wxUpdateUIEventHandler(SpellCheckerPlugin::OnUpdateThesaurus));
     Disconnect(idCamelCase,  wxEVT_COMMAND_MENU_SELECTED, wxCommandEventHandler(SpellCheckerPlugin::OnCamelCase));
 }
+
 void SpellCheckerPlugin::SavePersonalDictionary()
 {
     HunspellInterface *hsi = dynamic_cast<HunspellInterface *>(m_pSpellChecker);
-    if (hsi) hsi->GetPersonalDictionary()->SavePersonalDictionary();
+    if (hsi)
+        hsi->GetPersonalDictionary()->SavePersonalDictionary();
 }
+
 void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
 {
     //NOTE: Be careful in here... The application's menubar is at your disposal.
     // if not attached, exit
-    if (!IsAttached()) return;
+    if (!IsAttached())
+        return;
 
     // insert entry in the Edit menu
     int EditPos = menuBar->FindMenu(_("&Edit"));
@@ -261,33 +269,44 @@ void SpellCheckerPlugin::BuildMenu(wxMenuBar* menuBar)
 
         // find menu - Edit/Special commands/Case
         int id = EditMenu->FindItem(_("Special commands"));
-        if (id == wxNOT_FOUND) return;
+        if (id == wxNOT_FOUND)
+            return;
         wxMenuItem* subMenuItem = EditMenu->FindItem(id, 0);
-        if (!subMenuItem)      return;
+        if (!subMenuItem)
+            return;
         wxMenu* subMenu = subMenuItem->GetSubMenu();
-        if (!subMenu)          return;
+        if (!subMenu)
+            return;
         id = EditMenu->FindItem(_("Case"));
-        if (id == wxNOT_FOUND) return;
+        if (id == wxNOT_FOUND)
+            return;
         subMenuItem = EditMenu->FindItem(id, 0);
-        if (!subMenuItem)      return;
+        if (!subMenuItem)
+            return;
         subMenu = subMenuItem->GetSubMenu();
-        if (!subMenu)          return;
+        if (!subMenu)
+            return;
         // and append
         subMenu->Append(idCamelCase, _("CamelCase"), _("Make selection CamelCase"));
     }
 }
+
 void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused const FileTreeData* data)
 {
     //Some library module is ready to display a pop-up menu.
     //Check the parameter \"type\" and see which module it is
     //and append any items you need in the menu...
     //TIP: for consistency, add a separator as the first item...
-    if ( !IsAttached() ) return;
-    if(type != mtEditorManager || !menu ) return;
+    if ( !IsAttached() )
+        return;
+    if(type != mtEditorManager || !menu )
+        return;
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if ( !ed ) return;
+    if ( !ed )
+        return;
     cbStyledTextCtrl *stc = ed->GetControl();
-    if ( !stc ) return;
+    if ( !stc )
+        return;
 
     const int id = menu->FindItem(_("Edit"));
     if (id != wxNOT_FOUND)
@@ -302,11 +321,11 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
             const wxMenuItemList itemsList = subMenu->GetMenuItems();
             for (size_t i = 0; i < itemsList.GetCount(); ++i)
             {
-                #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
                 if (itemsList[i]->GetItemLabelText() == _("lowercase"))
-                #else
+#else
                 if (itemsList[i]->GetLabel() == _("lowercase"))
-                #endif
+#endif
                 {
                     insertPos = i + 1;
                     break;
@@ -414,26 +433,32 @@ bool SpellCheckerPlugin::BuildToolBar(cb_unused wxToolBar* toolBar)
 void SpellCheckerPlugin::OnSpelling(cb_unused wxCommandEvent &event)
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if ( !ed ) return;
+    if ( !ed )
+        return;
     cbStyledTextCtrl *stc = ed->GetControl();
-    if ( !stc ) return;
+    if ( !stc )
+        return;
     if ( m_pSpellingDialog )
         PlaceWindow(m_pSpellingDialog, pdlBest, true);
     stc->ReplaceSelection(m_pSpellChecker->CheckSpelling(stc->GetSelectedText()));
 }
 void SpellCheckerPlugin::OnUpdateSpelling(wxUpdateUIEvent &event)
+
 {
     if ( ActiveEditorHasTextSelected() )
         event.Enable(true);
     else
         event.Enable(false);
 }
+
 void SpellCheckerPlugin::OnThesaurus(cb_unused wxCommandEvent &event)
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if ( !ed ) return;
+    if ( !ed )
+        return;
     cbStyledTextCtrl *stc = ed->GetControl();
-    if ( !stc ) return;
+    if ( !stc )
+        return;
 
 
     // take only the first word from the selection
@@ -452,7 +477,8 @@ void SpellCheckerPlugin::OnThesaurus(cb_unused wxCommandEvent &event)
     }
 
     wxString word = stc->GetTextRange(selstart, selend);
-    if ( word.IsEmpty() ) return;
+    if ( word.IsEmpty() )
+        return;
 
     wxString Synonym;
     bool hasEntry = m_pThesaurus->GetSynonym(word, Synonym);
@@ -470,6 +496,7 @@ void SpellCheckerPlugin::OnThesaurus(cb_unused wxCommandEvent &event)
         dlg.ShowModal();
     }
 }
+
 void SpellCheckerPlugin::OnUpdateThesaurus(wxUpdateUIEvent &event)
 {
     if ( ActiveEditorHasTextSelected() && m_pThesaurus->IsOk() )
@@ -477,12 +504,15 @@ void SpellCheckerPlugin::OnUpdateThesaurus(wxUpdateUIEvent &event)
     else
         event.Enable(false);
 }
+
 void SpellCheckerPlugin::OnCamelCase(cb_unused wxCommandEvent &event)
 {
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
-    if (!ed || !m_pSpellChecker->IsInitialized()) return;
+    if (!ed || !m_pSpellChecker->IsInitialized())
+        return;
     cbStyledTextCtrl *stc = ed->GetControl();
-    if (!stc) return;
+    if (!stc)
+        return;
 
     // take only the first word from the selection
     int selstart = stc->GetSelectionStart();
@@ -557,6 +587,7 @@ void SpellCheckerPlugin::OnCamelCase(cb_unused wxCommandEvent &event)
         }
     }
 }
+
 bool SpellCheckerPlugin::DoGetWordStarts(const wxString& word, wxArrayInt& wordStarts, int numWords)
 {
     if (numWords <= 0) // finish split
@@ -587,7 +618,7 @@ bool SpellCheckerPlugin::DoGetWordStarts(const wxString& word, wxArrayInt& wordS
 
     // iterate through possibilities of the current word start
     for (int i = (wordStarts.IsEmpty() ? word.Length() : wordStarts[wordStarts.GetCount() - 1]) - 2;
-         i >= numWords * 2; --i)
+            i >= numWords * 2; --i)
     {
         wordStarts.Add(i);
         if (DoGetWordStarts(word, wordStarts, numWords - 1))
@@ -617,7 +648,8 @@ bool SpellCheckerPlugin::ActiveEditorHasTextSelected(void)
 
 void SpellCheckerPlugin::OnReplaceBySuggestion(wxCommandEvent &event)
 {
-    if ( m_wordstart == -1 || m_wordend == -1 ) return;
+    if ( m_wordstart == -1 || m_wordend == -1 )
+        return;
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if ( ed )
     {
@@ -641,9 +673,11 @@ void SpellCheckerPlugin::OnReplaceBySuggestion(wxCommandEvent &event)
     m_wordstart = -1;
     m_suggestions.Empty();
 }
+
 void SpellCheckerPlugin::OnMoreSuggestions(cb_unused wxCommandEvent &event)
 {
-    if ( m_wordstart == -1 || m_wordend == -1 ) return;
+    if ( m_wordstart == -1 || m_wordend == -1 )
+        return;
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if ( ed )
     {
@@ -675,7 +709,6 @@ void SpellCheckerPlugin::ReloadSettings()
 #endif
 }
 
-
 cbConfigurationPanel *SpellCheckerPlugin::GetConfigurationPanel(wxWindow* parent)
 {
     return new SpellCheckSettingsPanel(parent, m_sccfg);
@@ -683,7 +716,8 @@ cbConfigurationPanel *SpellCheckerPlugin::GetConfigurationPanel(wxWindow* parent
 
 void SpellCheckerPlugin::OnAddToPersonalDictionary(cb_unused wxCommandEvent &event)
 {
-    if ( m_wordstart == -1 || m_wordend == -1 ) return;
+    if ( m_wordstart == -1 || m_wordend == -1 )
+        return;
     cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if ( ed )
     {
@@ -705,11 +739,13 @@ void SpellCheckerPlugin::OnAddToPersonalDictionary(cb_unused wxCommandEvent &eve
         m_pOnlineChecker->DoSetIndications(ed);
     }
 }
+
 void SpellCheckerPlugin::EditPersonalDictionary()
 {
     SavePersonalDictionary();
     Manager::Get()->GetEditorManager()->Open(m_sccfg->GetPersonalDictionaryFilename());
 }
+
 void SpellCheckerPlugin::OnEditorSaved(CodeBlocksEvent& event)
 {
     EditorBase *eb = event.GetEditor();
@@ -732,7 +768,7 @@ void SpellCheckerPlugin::OnEditorSaved(CodeBlocksEvent& event)
 void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
 {
     if (   !IsAttached() || wxGetKeyState(WXK_CONTROL)
-        || !(m_sccfg->GetEnableSpellTooltips() || m_sccfg->GetEnableThesaurusTooltips()))
+            || !(m_sccfg->GetEnableSpellTooltips() || m_sccfg->GetEnableThesaurusTooltips()))
     {
         event.Skip();
         return;
@@ -740,7 +776,7 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     EditorBase* base = event.GetEditor();
     cbEditor* ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : 0;
     if (   !ed || ed->IsContextMenuOpened()
-        || wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()) )
+            || wxWindow::FindFocus() != static_cast<wxWindow*>(ed->GetControl()) )
     {
         event.Skip();
         return;
@@ -770,8 +806,8 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
     }
     int tipWidth = 0;
     if (   m_sccfg->GetEnableSpellTooltips()
-        && m_pSpellChecker->IsInitialized()
-        && stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
+            && m_pSpellChecker->IsInitialized()
+            && stc->IndicatorValueAt(m_pOnlineChecker->GetIndicator(), pos))
     {
         // indicator is on -> check if we can find a suggestion
         wxString misspelledWord = stc->GetTextRange(wordstart, wordend);
@@ -804,9 +840,9 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
         }
     }
     else if (   m_sccfg->GetEnableThesaurusTooltips()
-             && m_pThesaurus->IsOk()
-             && ed->GetColourSet()
-             && m_pSpellHelper->HasStyleToBeChecked(ed->GetColourSet()->GetLanguageName(ed->GetLanguage()), event.GetInt()))
+                && m_pThesaurus->IsOk()
+                && ed->GetColourSet()
+                && m_pSpellHelper->HasStyleToBeChecked(ed->GetColourSet()->GetLanguageName(ed->GetLanguage()), event.GetInt()))
     {
         wxString word = stc->GetTextRange(wordstart, wordend);
         synonyms syn = m_pThesaurus->GetSynonyms(word);
@@ -851,10 +887,10 @@ void SpellCheckerPlugin::OnEditorTooltip(CodeBlocksEvent& event)
         stc->CallTipCancel();
     // calculation from CC
     const int lnStart = stc->PositionFromLine(stc->LineFromPosition(pos));
-                  // pos - lnStart   == distance from start of line
-                  //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
-                  //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
-                  //       horizontal scrolling is accounted for by PointFromPosition().x
+    // pos - lnStart   == distance from start of line
+    //  + tipWidth + 1 == projected virtual position of tip end (with a 1 character buffer) from start of line
+    //  - (width_of_editor_in_pixels / width_of_character) == distance tip extends past window edge
+    //       horizontal scrolling is accounted for by PointFromPosition().x
     const int offset = tipWidth + pos + 1 - lnStart -
                        (stc->GetSize().x - stc->PointFromPosition(lnStart).x) /
                        stc->TextWidth(wxSCI_STYLE_LINENUMBER, _T("W"));

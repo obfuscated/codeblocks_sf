@@ -25,7 +25,7 @@
 #include "cbeditor.h"
 
 #ifndef WX_PRECOMP
-    #include <wx/wx.h>
+#include <wx/wx.h>
 #endif
 
 class wxSpellCheckEngineInterface;
@@ -35,35 +35,35 @@ class cbStyledTextCtrl;
 
 class OnlineSpellChecker
 {
-    public:
-        OnlineSpellChecker(wxSpellCheckEngineInterface* pSpellChecker, SpellCheckHelper* pSpellHelp);
-        virtual ~OnlineSpellChecker();
-        virtual void Call(cbEditor* ctrl, wxScintillaEvent& event) const;
+public:
+    OnlineSpellChecker(wxSpellCheckEngineInterface* pSpellChecker, SpellCheckHelper* pSpellHelp);
+    virtual ~OnlineSpellChecker();
+    virtual void Call(cbEditor* ctrl, wxScintillaEvent& event) const;
 
-        int GetIndicator() const;
-        const wxColor GetIndicatorColor() const;
-        void EnableOnlineChecks(bool check = true);
+    int GetIndicator() const;
+    const wxColor GetIndicatorColor() const;
+    void EnableOnlineChecks(bool check = true);
 
-    private:
-        friend class SpellCheckerPlugin;
+private:
+    friend class SpellCheckerPlugin;
 
-        void OnEditorChange(cbEditor* ctrl) const;
-        void OnEditorChangeTextRange(cbEditor* ctrl, int start, int end) const;
-        void OnEditorUpdateUI(cbEditor* ctrl) const;
+    void OnEditorChange(cbEditor* ctrl) const;
+    void OnEditorChangeTextRange(cbEditor* ctrl, int start, int end) const;
+    void OnEditorUpdateUI(cbEditor* ctrl) const;
 
-        void ClearAllIndications(cbStyledTextCtrl* stc) const;
-        void ClearAllIndications() const;
-        void DoSetIndications(cbEditor* ctrl) const;
-        void DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstart, int wordend) const;
+    void ClearAllIndications(cbStyledTextCtrl* stc) const;
+    void ClearAllIndications() const;
+    void DoSetIndications(cbEditor* ctrl) const;
+    void DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstart, int wordend) const;
 
-    private:
-        mutable bool                 m_alreadyChecked;
-        mutable cbEditor*            m_oldCtrl;
-        mutable wxArrayInt           m_invalidatedRangesStart;
-        mutable wxArrayInt           m_invalidatedRangesEnd;
-        wxSpellCheckEngineInterface* m_pSpellChecker;
-        SpellCheckHelper*            m_pSpellHelper;
-        bool                         m_doChecks;
+private:
+    mutable bool                 m_alreadyChecked;
+    mutable cbEditor*            m_oldCtrl;
+    mutable wxArrayInt           m_invalidatedRangesStart;
+    mutable wxArrayInt           m_invalidatedRangesEnd;
+    wxSpellCheckEngineInterface* m_pSpellChecker;
+    SpellCheckHelper*            m_pSpellHelper;
+    bool                         m_doChecks;
 };
 
 #endif // header guard

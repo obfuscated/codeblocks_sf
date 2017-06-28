@@ -33,37 +33,37 @@
 typedef std::map<wxString, std::vector< wxString > > synonyms;
 class ThesaurusDialog: public wxDialog
 {
-	public:
+public:
 
-		ThesaurusDialog(wxWindow* parent, wxString Word, synonyms &syn);
-		virtual ~ThesaurusDialog();
+    ThesaurusDialog(wxWindow* parent, wxString Word, synonyms &syn);
+    virtual ~ThesaurusDialog();
 
-		wxString GetSelection();
-    private:
-		wxStaticText* m_StaticText;
-		wxListBox* m_ListBoxMeanings;
-		wxListBox* m_ListBoxSynonyme;
-		wxChoice* m_ChoiceLookedUp;
-		wxTextCtrl* m_TextCtrlReplaceSynonym;
+    wxString GetSelection();
+private:
+    wxStaticText* m_StaticText;
+    wxListBox* m_ListBoxMeanings;
+    wxListBox* m_ListBoxSynonyme;
+    wxChoice* m_ChoiceLookedUp;
+    wxTextCtrl* m_TextCtrlReplaceSynonym;
 
-		wxStdDialogButtonSizer* m_sdbSizer1;
-		wxButton* m_sdbSizer1OK;
-		wxButton* m_sdbSizer1Cancel;
-
-
-
-	protected:
+    wxStdDialogButtonSizer* m_sdbSizer1;
+    wxButton* m_sdbSizer1OK;
+    wxButton* m_sdbSizer1Cancel;
 
 
-	private:
-        synonyms &m_syn;
-        void UpdateSynonyme();
-        void UpdateSelectedSynonym();
 
-		void OnMeaningsSelected(wxCommandEvent& event);
-		void OnSynonymeSelected(wxCommandEvent& event);
+protected:
 
-		DECLARE_EVENT_TABLE()
+
+private:
+    synonyms &m_syn;
+    void UpdateSynonyme();
+    void UpdateSelectedSynonym();
+
+    void OnMeaningsSelected(wxCommandEvent& event);
+    void OnSynonymeSelected(wxCommandEvent& event);
+
+    DECLARE_EVENT_TABLE()
 };
 
 #endif

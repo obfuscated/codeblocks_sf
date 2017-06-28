@@ -5,7 +5,7 @@
 #include <wx/hyperlink.h>
 
 DictionariesNeededDialog::DictionariesNeededDialog():
-AnnoyingDialog(_("Dictionaries needed!"),_("SpellChecker needs a dictionary to work correctly.\nThe following page explains where to get\nand how to install a dictionary:"), wxART_INFORMATION, OK)
+    AnnoyingDialog(_("Dictionaries needed!"),_("SpellChecker needs a dictionary to work correctly.\nThe following page explains where to get\nand how to install a dictionary:"), wxART_INFORMATION, OK)
 {
     wxSizer *outerSizer = GetSizer();
 

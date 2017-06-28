@@ -39,38 +39,31 @@ class MyThes;
 typedef std::map< wxString, std::vector< wxString > > synonyms;
 class wxThes
 {
-    public:
-        wxThes(const wxString idxpath, const wxString datpath);
-        virtual ~wxThes();
+public:
+    wxThes(const wxString idxpath, const wxString datpath);
+    virtual ~wxThes();
 
-        synonyms Lookup(const wxString &Text);
+    synonyms Lookup(const wxString &Text);
 
 
-        //void CleanUpAfterLookup(mentry** pme, int nmean);
-        //char* get_th_encoding();
-        wxString GetEncoding();
-    private:
-        // Open index and dat files and load list array
-        //bool Initialize(const wxString indxpath, const wxString datpath);
+    //void CleanUpAfterLookup(mentry** pme, int nmean);
+    //char* get_th_encoding();
+    wxString GetEncoding();
+private:
+    // Open index and dat files and load list array
+    //bool Initialize(const wxString indxpath, const wxString datpath);
 
-        // internal close and cleanup dat and idx files
-        //bool Cleanup();
+    // internal close and cleanup dat and idx files
+    //bool Cleanup();
 
-        // read a text line (\n terminated) stripping off line terminator
-        //int readLine(FILE * pf, wxString &buf, int nc);
+    // read a text line (\n terminated) stripping off line terminator
+    //int readLine(FILE * pf, wxString &buf, int nc);
 
-        MyThes *m_pMT;
-    private:
-        wxThes();
-        wxThes(const wxThes &);
-        wxThes & operator = (const wxThes &);
-    protected:
-    private:
+    MyThes *m_pMT;
+private:
+    wxThes();
+    wxThes(const wxThes &);
+    wxThes & operator = (const wxThes &);
 };
 
 #endif // WXTHES_H
-
-
-
-
-

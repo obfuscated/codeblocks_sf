@@ -38,18 +38,18 @@
 
 class SpellCheckHelper
 {
-    public:
-        SpellCheckHelper();
-        virtual ~SpellCheckHelper();
+public:
+    SpellCheckHelper();
+    virtual ~SpellCheckHelper();
 
-        static bool IsWhiteSpace(const wxChar &ch);
-        bool HasStyleToBeChecked(wxString langname, int style)const;
-        static bool IsEscapeSequenceStart(wxChar ch, wxString langname, int style);
-        void LoadConfiguration();
+    static bool IsWhiteSpace(const wxChar &ch);
+    bool HasStyleToBeChecked(wxString langname, int style)const;
+    static bool IsEscapeSequenceStart(wxChar ch, wxString langname, int style);
+    void LoadConfiguration();
 
-    protected:
-    private:
-        std::map<wxString, std::set<long> > m_LanguageIndices;
+protected:
+private:
+    std::map<wxString, std::set<long> > m_LanguageIndices;
 };
 
 #endif // SPELLCHECKHELPER_H

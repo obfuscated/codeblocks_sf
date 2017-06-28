@@ -41,66 +41,61 @@
 
 
 // a meaning with definition, count of synonyms and synonym list
-struct mentry {
-  char*  defn;
-  int  count;
-  char** psyns;
+struct mentry
+{
+    char*  defn;
+    int  count;
+    char** psyns;
 };
-
 
 class MyThes
 {
 
-       int  nw;                  /* number of entries in thesaurus */
-       char**  list;               /* stores word list */
-       unsigned int* offst;              /* stores offset list */
-       char *  encoding;           /* stores text encoding; */
+    int  nw;                  /* number of entries in thesaurus */
+    char**  list;               /* stores word list */
+    unsigned int* offst;              /* stores offset list */
+    char *  encoding;           /* stores text encoding; */
 
-        FILE  *pdfile;
+    FILE  *pdfile;
 
-	// disallow copy-constructor and assignment-operator for now
-	MyThes();
-	MyThes(const MyThes &);
-	MyThes & operator = (const MyThes &);
+    // disallow copy-constructor and assignment-operator for now
+    MyThes();
+    MyThes(const MyThes &);
+    MyThes & operator = (const MyThes &);
 
-	char *mystrdup(const char * p);
+    char *mystrdup(const char * p);
     int mystr_indexOfChar(const char * d, int c);
     void mychomp(char * s);
 
 
 public:
-	MyThes(const char* idxpath, const char* datpath);
-	~MyThes();
+    MyThes(const char* idxpath, const char* datpath);
+    ~MyThes();
 
-        // lookup text in index and return number of meanings
-	// each meaning entry has a defintion, synonym count and pointer
-        // when complete return the *original* meaning entry and count via
-        // CleanUpAfterLookup to properly handle memory deallocation
+    // lookup text in index and return number of meanings
+    // each meaning entry has a defintion, synonym count and pointer
+    // when complete return the *original* meaning entry and count via
+    // CleanUpAfterLookup to properly handle memory deallocation
 
-        int Lookup(const char * pText, int len, mentry** pme);
+    int Lookup(const char * pText, int len, mentry** pme);
 
-        void CleanUpAfterLookup(mentry** pme, int nmean);
+    void CleanUpAfterLookup(mentry** pme, int nmean);
 
-        char* get_th_encoding();
+    char* get_th_encoding();
 
 private:
-        // Open index and dat files and load list array
-        int thInitialize (const char* indxpath, const char* datpath);
+    // Open index and dat files and load list array
+    int thInitialize (const char* indxpath, const char* datpath);
 
-        // internal close and cleanup dat and idx files
-        int thCleanup ();
+    // internal close and cleanup dat and idx files
+    int thCleanup ();
 
-        // read a text line (\n terminated) stripping off line terminator
-        int readLine(FILE * pf, char * buf, int nc);
+    // read a text line (\n terminated) stripping off line terminator
+    int readLine(FILE * pf, char * buf, int nc);
 
-        // binary search on null terminated character strings
-        int binsearch(char * wrd, char* list[], int nlst);
+    // binary search on null terminated character strings
+    int binsearch(char * wrd, char* list[], int nlst);
 
 };
 
 #endif
-
-
-
-
-

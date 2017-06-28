@@ -73,10 +73,3 @@ wxString wxThes::GetEncoding()
 {
     return wxString( m_pMT->get_th_encoding(), wxConvUTF8);
 }
-
-
-
-
-
-
-
