@@ -466,7 +466,7 @@ void cbStyledTextCtrl::HighlightRightBrace()
                 SetCaretWidth(caretWidth + 1);
 
                 IndicatorSetForeground(s_indicHighlight, wxColour(80, 236, 120));
-                IndicatorSetStyle(s_indicHighlight, wxSCI_INDIC_HIGHLIGHT);
+                IndicatorSetStyle(s_indicHighlight, wxSCI_INDIC_ROUNDBOX);
 #ifndef wxHAVE_RAW_BITMAP
                 IndicatorSetUnder(s_indicHighlight, true);
 #endif
