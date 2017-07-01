@@ -145,7 +145,9 @@ void Highlighter::TextsChanged()const
 static void SetupIndicator(cbStyledTextCtrl *control, int indicator, const wxColor &colour)
 {
     control->IndicatorSetForeground(indicator, colour);
-    control->IndicatorSetStyle(indicator, wxSCI_INDIC_HIGHLIGHT);
+    control->IndicatorSetStyle(indicator, wxSCI_INDIC_ROUNDBOX);
+    control->IndicatorSetAlpha(indicator, 100);
+    control->IndicatorSetOutlineAlpha(indicator, 255);
 #ifndef wxHAVE_RAW_BITMAP
     // If wxWidgets is build without rawbitmap-support, the indicators become opaque
     // and hide the text, so we show them under the text.
