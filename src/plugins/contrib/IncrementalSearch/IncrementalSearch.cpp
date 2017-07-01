@@ -666,6 +666,19 @@ void IncrementalSearch::DoSearchNext()
     HighlightText();
 }
 
+static void SetupIndicator(cbStyledTextCtrl *control, int indicator, const wxColor &colour)
+{
+    control->IndicatorSetForeground(indicator, colour);
+    control->IndicatorSetStyle(indicator, wxSCI_INDIC_HIGHLIGHT);
+#ifndef wxHAVE_RAW_BITMAP
+    // If wxWidgets is build without rawbitmap-support, the indicators become opaque
+    // and hide the text, so we show them under the text.
+    // Not enabled as default, because the readability is a little bit worse.
+    control->IndicatorSetUnder(indicator, true);
+#endif
+    control->SetIndicatorCurrent(indicator);
+}
+
 void IncrementalSearch::HighlightText()
 {
     if (!m_pEditor || !m_pEditor->GetControl())
@@ -704,41 +717,19 @@ void IncrementalSearch::HighlightText()
         control->SearchAnchor();
         // and highlight it
         cbStyledTextCtrl* ctrlLeft = m_pEditor->GetLeftSplitViewControl();
-        ctrlLeft->IndicatorSetForeground(m_IndicFound, colourTextFound);
-        ctrlLeft->IndicatorSetStyle(m_IndicFound, wxSCI_INDIC_HIGHLIGHT);
-#ifndef wxHAVE_RAW_BITMAP
-        // If wxWidgets is build without rawbitmap-support, the indicators become opaque
-        // and hide the text, so we show them under the text.
-        // Not enabled as default, because the readability is a little bit worse.
-        ctrlLeft->IndicatorSetUnder(m_IndicFound,true);
-#endif
-        ctrlLeft->SetIndicatorCurrent(m_IndicFound);
-
-         cbStyledTextCtrl* ctrlRight = m_pEditor->GetRightSplitViewControl();
+        SetupIndicator(ctrlLeft, m_IndicFound, colourTextFound);
+        cbStyledTextCtrl* ctrlRight = m_pEditor->GetRightSplitViewControl();
         if(ctrlRight)
-        {
-            ctrlRight->IndicatorSetForeground(m_IndicFound, colourTextFound);
-            ctrlRight->IndicatorSetStyle(m_IndicFound, wxSCI_INDIC_HIGHLIGHT);
-#ifndef wxHAVE_RAW_BITMAP
-            ctrlRight->IndicatorSetUnder(m_IndicFound,true);
-#endif
-            ctrlRight->SetIndicatorCurrent(m_IndicFound);
-        }
+            SetupIndicator(ctrlRight, m_IndicFound, colourTextFound);
         control->IndicatorFillRange(m_NewPos, m_LengthFound);
 
         if (m_Highlight)
         {
             // highlight all occurrences of the found phrase if wanted
             wxColour colourTextHighlight(cfg->ReadColour(_T("/incremental_search/highlight_colour"), wxColour(255, 165, 0)));
-            ctrlLeft->IndicatorSetForeground(m_IndicHighlight, colourTextHighlight);
-            ctrlLeft->IndicatorSetStyle(m_IndicHighlight, wxSCI_INDIC_HIGHLIGHT);
-            ctrlLeft->SetIndicatorCurrent(m_IndicHighlight);
+            SetupIndicator(ctrlLeft, m_IndicHighlight, colourTextHighlight);
             if(ctrlRight)
-            {
-                ctrlRight->IndicatorSetForeground(m_IndicHighlight, colourTextHighlight);
-                ctrlRight->IndicatorSetStyle(m_IndicHighlight, wxSCI_INDIC_HIGHLIGHT);
-                ctrlRight->SetIndicatorCurrent(m_IndicHighlight);
-            }
+                SetupIndicator(ctrlRight, m_IndicHighlight, colourTextHighlight);
             int actualLength=0; // needed for regex-search, because the length of found text can vary
             for ( int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags, &actualLength);
                     pos != wxSCI_INVALID_POSITION && actualLength > 0;
