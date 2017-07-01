@@ -604,7 +604,6 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 
         void BringCBToFront();
 
-        bool DragInProgress() const;
 
         void ShowLog(bool clear);
         void Log(const wxString& msg, Logger::level level = Logger::info);
@@ -634,15 +633,12 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         void OnProjectActivated(CodeBlocksEvent& event);
         void OnProjectClosed(CodeBlocksEvent& event);
         void OnCompilerFinished(CodeBlocksEvent& event);
-        void OnEditorHook(cbEditor* editor, wxScintillaEvent& event);
     private:
         wxString m_PreviousLayout;
         cbCompilerPlugin* m_pCompiler;
         bool m_WaitingCompilerToFinish;
 
-        int m_EditorHookId;
         StartType m_StartType;
-        bool m_DragInProgress;
 
         int m_ActiveConfig;
 

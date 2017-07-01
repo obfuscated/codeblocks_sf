@@ -127,9 +127,7 @@ cbCompilerPlugin::cbCompilerPlugin()
 cbDebuggerPlugin::cbDebuggerPlugin(const wxString &guiName, const wxString &settingsName) :
     m_pCompiler(nullptr),
     m_WaitingCompilerToFinish(false),
-    m_EditorHookId(-1),
     m_StartType(StartTypeUnknown),
-    m_DragInProgress(false),
     m_ActiveConfig(0),
     m_LogPageIndex(-1),
     m_lastLineWasNormal(true),
@@ -154,9 +152,6 @@ void cbDebuggerPlugin::OnAttach()
 
     Manager::Get()->RegisterEventSink(cbEVT_COMPILER_FINISHED, new Event(this, &cbDebuggerPlugin::OnCompilerFinished));
 
-    EditorHooks::HookFunctorBase *editor_hook;
-    editor_hook = new EditorHooks::HookFunctor<cbDebuggerPlugin>(this, &cbDebuggerPlugin::OnEditorHook);
-    m_EditorHookId = EditorHooks::RegisterHook(editor_hook);
     m_StartType = StartTypeUnknown;
 
     if (SupportsFeature(cbDebuggerFeature::ValueTooltips))
@@ -165,7 +160,6 @@ void cbDebuggerPlugin::OnAttach()
 
 void cbDebuggerPlugin::OnRelease(bool appShutDown)
 {
-    EditorHooks::UnregisterHook(m_EditorHookId, true);
     Manager::Get()->RemoveAllEventSinksFor(this);
 
     OnReleaseReal(appShutDown);
@@ -515,18 +509,7 @@ void cbDebuggerPlugin::OnProjectClosed(CodeBlocksEvent& event)
     }
 }
 
-void cbDebuggerPlugin::OnEditorHook(cb_unused cbEditor* editor, wxScintillaEvent& event)
-{
-    if (event.GetEventType() == wxEVT_SCI_START_DRAG)
-        m_DragInProgress = true;
-    else if (event.GetEventType() == wxEVT_SCI_FINISHED_DRAG)
-        m_DragInProgress = false;
-}
 
-bool cbDebuggerPlugin::DragInProgress() const
-{
-    return m_DragInProgress;
-}
 
 void cbDebuggerPlugin::ShowLog(bool clear)
 {
