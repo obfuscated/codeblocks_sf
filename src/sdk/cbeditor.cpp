@@ -2981,8 +2981,8 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
             break;
     }
     InitPrinting();
-    wxPrintout* printout = new cbEditorPrintout(m_Filename, control, selectionOnly);
-    if (!g_printer->Print(this, printout, true))
+    cbEditorPrintout printout(m_Filename, control, selectionOnly);
+    if (!g_printer->Print(this, &printout, true))
     {
         if (wxPrinter::GetLastError() == wxPRINTER_ERROR)
         {
@@ -2997,7 +2997,6 @@ void cbEditor::Print(bool selectionOnly, PrintColourMode pcm, bool line_numbers)
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/printerdialog/paperid"), (int)ppd->GetPaperId());
         Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/printerdialog/paperorientation"), (int)ppd->GetOrientation());
     }
-    delete printout;
 
     // revert line number settings
     control->SetMarginType(C_LINE_MARGIN, oldMarginType);
