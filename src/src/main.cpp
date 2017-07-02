@@ -3222,10 +3222,20 @@ void MainFrame::OnEditSelectNext(cb_unused wxCommandEvent& event)
     cbStyledTextCtrl *control = static_cast<cbEditor*>(eb)->GetControl();
 
     EditorSelection selection;
-    if (GetSelectionInEditor(selection, control) && !selection.Empty())
+    if (!GetSelectionInEditor(selection, control))
+        return;
+
+    if (!selection.Empty())
     {
         const wxString &selectedText(control->GetTextRange(selection.GetStart(), selection.GetEnd()));
         SelectNext(control, selectedText, selection.GetEnd(), selection.IsReversed());
+    }
+    else
+    {
+        // Select word at the cursor position if there is nothing selected.
+        const int start = control->WordStartPosition(selection.caret, true);
+        const int end = control->WordEndPosition(selection.caret, true);
+        control->SetSelection(start, end);
     }
 }
 
