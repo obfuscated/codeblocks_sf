@@ -4111,7 +4111,8 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idEditGotoMatchingBrace,     ed);
     mbar->Enable(idEditHighlightMode,         ed);
     mbar->Enable(idEditSelectAll,             canSelAll);
-    mbar->Enable(idEditSelectNext,            hasSel);
+    mbar->Enable(idEditSelectNext,            ed);
+    mbar->Enable(idEditSelectNextSkip,        hasSel);
     mbar->Enable(idEditBookmarks,             ed);
     mbar->Enable(idEditFolding,               ed &&
                                               Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false));
