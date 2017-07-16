@@ -10,6 +10,7 @@
 
 class cbProject;
 class ProjectBuildTarget;
+class wxListBox;
 
 class SelectTargetDlg : public wxScrollingDialog
 {
@@ -23,15 +24,15 @@ class SelectTargetDlg : public wxScrollingDialog
     private:
         void OnListboxSelection(wxCommandEvent& event);
         void OnListboxDClick(wxCommandEvent& event);
-        void OnCheckboxSelection(wxCommandEvent& event);
         void OnHostApplicationButtonClick(wxCommandEvent& event);
         void UpdateSelected();
 
         cbProject* m_pProject;
+        wxListBox* m_List;
         int m_Selected;
+        int m_LastSelected;
 
         DECLARE_EVENT_TABLE()
 };
 
 #endif // SELECTTARGETDLG_H
-
