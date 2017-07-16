@@ -1732,7 +1732,7 @@ void cbProject::ProjectFileRenamed(ProjectFile* pf)
         {
             // got it
             m_ProjectFilesMap.erase(it);
-            m_ProjectFilesMap[UnixFilename(pf->file.GetFullPath())] = pf;
+            m_ProjectFilesMap[UnixFilename(pf->relativeFilename)] = pf;
             break;
         }
     }
