@@ -104,6 +104,8 @@ void CompilerMessages::AppendAdditionalMenuItems(wxMenu &menu)
 
 void CompilerMessages::FocusError(int nr)
 {
+    if (nr < 0 or nr >= control->GetItemCount())
+        return;
     control->SetItemState(nr, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED, wxLIST_STATE_SELECTED | wxLIST_STATE_FOCUSED);
     control->EnsureVisible(nr);
 }
