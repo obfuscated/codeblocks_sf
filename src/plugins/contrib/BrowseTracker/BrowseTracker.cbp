@@ -108,6 +108,7 @@
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-std=gnu++11" />
+			<Add option='[[if (GetCompilerFactory().GetCompilerVersionString(_T(&quot;gcc&quot;)) &gt;= _T(&quot;4.8.0&quot;)) print(_T(&quot;-Wno-unused-local-typedefs&quot;));]]' />
 		</Compiler>
 		<Unit filename="BrowseMarks.cpp" />
 		<Unit filename="BrowseMarks.h" />
