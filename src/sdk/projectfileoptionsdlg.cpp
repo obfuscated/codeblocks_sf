@@ -206,6 +206,8 @@ ProjectFileOptionsDlg::ProjectFileOptionsDlg(wxWindow* parent, const wxString& f
     FillGeneralProperties();
 
     XRCCTRL(*this, "txtAbsName", wxTextCtrl)->SetValue(m_FileNameStr);
+    // This must be always hidden for non-project files.
+    XRCCTRL(*this, "lblAutoGen", wxStaticText)->Show(false);
 
     SetTitle(_("Properties of ") + wxString(_("\"")) + m_FileNameStr + wxString(_("\"")));
 }
