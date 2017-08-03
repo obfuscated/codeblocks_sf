@@ -1402,6 +1402,7 @@ void ProjectManagerUI::OnRemoveFileFromProject(wxCommandEvent& event)
                          _("Error"), wxICON_WARNING);
             return;
         }
+        files.Sort();
         wxString msg;
         msg.Printf(_("Select files to remove from %s:"), prj->GetTitle().c_str());
         MultiSelectDlg dlg(nullptr, files, true, msg);
