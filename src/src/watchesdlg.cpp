@@ -475,7 +475,14 @@ inline void UpdateWatch(wxPropertyGrid *grid, wxPGProperty *property, cb::shared
     if (value.empty())
         grid->SetPropertyHelpString(property, wxEmptyString);
     else
-        grid->SetPropertyHelpString(property, symbol + wxT("=") + value);
+    {
+        wxString valueTruncated;
+        if (value.length() > 128)
+            valueTruncated = value.Left(128) + wxT("...");
+        else
+            valueTruncated=value;
+        grid->SetPropertyHelpString(property, symbol + wxT("=") + valueTruncated);
+    }
 
     property->DeleteChildren();
 
