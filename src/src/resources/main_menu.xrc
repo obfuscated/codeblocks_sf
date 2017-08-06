@@ -455,6 +455,14 @@
             <accel>Ctrl+Return</accel>
             <help>Goto current line end</help>
           </object>
+          <object class="wxMenuItem" name="idEditInsertNewLineBelow">
+            <label>Insert unindented line below current line</label>
+            <help>Insert line below current line without indentation</help>
+          </object>
+          <object class="wxMenuItem" name="idEditInsertNewLineAbove">
+            <label>Insert unindented line above current line</label>
+            <help>Insert line above current line without indentation</help>
+          </object>
         </object>
       </object>
       <object class="separator"/>

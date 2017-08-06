@@ -187,6 +187,8 @@ class MainFrame : public wxFrame
         void OnEditLowerCase(wxCommandEvent& event);
         void OnEditInsertNewLine(wxCommandEvent& event);
         void OnEditGotoLineEnd(wxCommandEvent& event);
+        void OnEditInsertNewLineBelow(wxCommandEvent& event);
+        void OnEditInsertNewLineAbove(wxCommandEvent& event);
         void OnEditSelectAll(wxCommandEvent& event);
         void OnEditSelectNext(wxCommandEvent& event);
         void OnEditSelectNextSkip(wxCommandEvent& event);

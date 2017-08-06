@@ -239,6 +239,8 @@ int idEditLowerCase               = XRCID("idEditLowerCase");
 int idEditSpecialCommandsOther    = XRCID("idEditSpecialCommandsOther");
 int idEditInsertNewLine           = XRCID("idEditInsertNewLine");
 int idEditGotoLineEnd             = XRCID("idEditGotoLineEnd");
+int idEditInsertNewLineBelow      = XRCID("idEditInsertNewLineBelow");
+int idEditInsertNewLineAbove      = XRCID("idEditInsertNewLineAbove");
 int idEditSelectAll               = XRCID("idEditSelectAll");
 int idEditSelectNext              = XRCID("idEditSelectNext");
 int idEditSelectNextSkip          = XRCID("idEditSelectNextSkip");
@@ -479,6 +481,8 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idEditLowerCase,             MainFrame::OnEditLowerCase)
     EVT_MENU(idEditInsertNewLine,         MainFrame::OnEditInsertNewLine)
     EVT_MENU(idEditGotoLineEnd,           MainFrame::OnEditGotoLineEnd)
+    EVT_MENU(idEditInsertNewLineBelow,    MainFrame::OnEditInsertNewLineBelow)
+    EVT_MENU(idEditInsertNewLineAbove,    MainFrame::OnEditInsertNewLineAbove)
     EVT_MENU(idEditSelectAll,             MainFrame::OnEditSelectAll)
     EVT_MENU(idEditSelectNext,            MainFrame::OnEditSelectNext)
     EVT_MENU(idEditSelectNextSkip,        MainFrame::OnEditSelectNextSkip)
@@ -3142,6 +3146,44 @@ void MainFrame::OnEditGotoLineEnd(cb_unused wxCommandEvent& event)
             stc->AutoCompCancel();
         stc->LineEnd();
     }
+}
+
+static void InsertNewLine(bool below)
+{
+    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    if (ed)
+    {
+        cbStyledTextCtrl* stc = ed->GetControl();
+        stc->BeginUndoAction();
+        if (stc->AutoCompActive())
+            stc->AutoCompCancel();
+
+        if (below)
+        {
+            stc->LineEndDisplay();
+            int pos = stc->GetCurrentPos();
+            stc->InsertText(pos, GetEOLStr(stc->GetEOLMode()));
+            stc->LineDown();
+        }
+        else
+        {
+            stc->HomeDisplay();
+            int pos = stc->GetCurrentPos();
+            stc->InsertText(pos, GetEOLStr(stc->GetEOLMode()));
+            stc->EndUndoAction();
+        }
+        stc->EndUndoAction();
+    }
+}
+
+void MainFrame::OnEditInsertNewLineBelow(wxCommandEvent& event)
+{
+    InsertNewLine(true);
+}
+
+void MainFrame::OnEditInsertNewLineAbove(wxCommandEvent& event)
+{
+    InsertNewLine(false);
 }
 
 void MainFrame::OnEditSelectAll(cb_unused wxCommandEvent& event)
