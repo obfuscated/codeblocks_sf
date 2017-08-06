@@ -782,7 +782,8 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
                 disabled = cbDebuggerPlugin::WatchesDisabledMenuItems::Rename |
                            cbDebuggerPlugin::WatchesDisabledMenuItems::Properties |
                            cbDebuggerPlugin::WatchesDisabledMenuItems::Delete |
-                           cbDebuggerPlugin::WatchesDisabledMenuItems::AddDataBreak;
+                           cbDebuggerPlugin::WatchesDisabledMenuItems::AddDataBreak |
+                           cbDebuggerPlugin::WatchesDisabledMenuItems::ExamineMemory;
             }
             else
             {
@@ -833,6 +834,8 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
                     position = 0;
                 m.Insert(position, idMenuExamineMemory, _("Examine memory"),
                          _("Opens the Examine memory window and shows the raw data for this variable"));
+                if (disabled & cbDebuggerPlugin::WatchesDisabledMenuItems::ExamineMemory)
+                    m.Enable(idMenuExamineMemory, false);
             }
         }
         PopupMenu(&m);

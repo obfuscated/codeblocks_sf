@@ -2189,6 +2189,7 @@ void DebuggerGDB::OnWatchesContextMenu(wxMenu &menu, const cbWatch &watch, wxObj
         disabledMenus |= WatchesDisabledMenuItems::Properties;
         disabledMenus |= WatchesDisabledMenuItems::Delete;
         disabledMenus |= WatchesDisabledMenuItems::AddDataBreak;
+        disabledMenus |= WatchesDisabledMenuItems::ExamineMemory;
     }
 }
 

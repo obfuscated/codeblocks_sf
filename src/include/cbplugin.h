@@ -530,7 +530,8 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
                 Properties   = 1 << 1,
                 Delete       = 1 << 2,
                 DeleteAll    = 1 << 3,
-                AddDataBreak = 1 << 4
+                AddDataBreak = 1 << 4,
+                ExamineMemory = 1 << 5
             };
         };
 
