@@ -1074,7 +1074,16 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
 
     if (m_ProgramIsStopped)
+    {
+        if(m_DCmds.GetCount() == 0)
+        {
+            PluginManager *plm = Manager::Get()->GetPluginManager();
+            CodeBlocksEvent evt(cbEVT_DEBUGGER_PAUSED);
+            plm->NotifyPlugins(evt);
+        }
         RunQueue();
+    }
+
 }
 
 

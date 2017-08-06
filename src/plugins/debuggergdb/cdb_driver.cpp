@@ -409,6 +409,14 @@ void CDB_driver::ParseOutput(const wxString& output)
     if (notifyChange)
         NotifyCursorChanged();
 
+    if(m_ProgramIsStopped)
+    {
+        // Notify debugger plugins for pause of debug session
+        PluginManager *plm = Manager::Get()->GetPluginManager();
+        CodeBlocksEvent evt(cbEVT_DEBUGGER_PAUSED);
+        plm->NotifyPlugins(evt);
+    }
+
     buffer.Clear();
 }
 
