@@ -581,14 +581,24 @@ void ProjectOptionsDlg::OnBuildOrderClick(cb_unused wxCommandEvent& event)
     for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
         array.Add(m_Project->GetBuildTarget(i)->GetTitle());
 
+    wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
+    wxString ActiveTarget;
+    if (lstTargets->GetSelection() != wxNOT_FOUND)
+        ActiveTarget = lstTargets->GetString(lstTargets->GetSelection());
+
     EditArrayOrderDlg dlg(this, array);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        DoBeforeTargetChange(); // save changes in current target
+        // Save changes in current target.
+        DoBeforeTargetChange(true);
         m_Project->ReOrderTargets(dlg.GetArray());
-        m_Current_Sel = -1; // force no "save changes" for next call
         FillBuildTargets();
+
+        // Retrieve active target.
+        if (!ActiveTarget.IsEmpty())
+            lstTargets->SetSelection(lstTargets->FindString(ActiveTarget, true));
+        DoTargetChange(false);
 
         CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
         e.SetProject(m_Project);
