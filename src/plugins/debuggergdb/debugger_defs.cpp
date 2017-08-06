@@ -232,6 +232,17 @@ wxString const & GDBWatch::GetDebugString() const
 {
     return m_debug_value;
 }
+
+wxString GDBWatch::MakeSymbolToAddress() const
+{
+    return wxT("&") + m_symbol;
+}
+
+bool GDBWatch::IsPointerType() const
+{
+    return ::IsPointerType(m_type);
+}
+
 void GDBWatch::SetDebugValue(wxString const &value)
 {
     m_debug_value = value;

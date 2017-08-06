@@ -926,7 +926,11 @@ void WatchesDlg::OnMenuExamineMemory(cb_unused wxCommandEvent &event)
     WatchesProperty *prop = static_cast<WatchesProperty*>(selected);
 
     wxString expression;
-    prop->GetWatch()->GetSymbol(expression);
+    cb::shared_ptr<cbWatch> watch = prop->GetWatch();
+    if (watch->IsPointerType())
+        watch->GetSymbol(expression);
+    else
+        expression = watch->MakeSymbolToAddress();
 
     cbExamineMemoryDlg* dlg = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
     dlg->SetBaseAddress(expression);

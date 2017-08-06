@@ -62,6 +62,11 @@ class DLLIMPORT cbWatch
         virtual void SetType(const wxString &type) = 0;
 
         virtual wxString const & GetDebugString() const = 0;
+        /// This should return a string that when passed to the debugger will return the address of the variable.
+        /// For example for C/C++ languages for myVar this function will return &myVar.
+        virtual wxString MakeSymbolToAddress() const = 0;
+        /// Tells us if the watch for pointer variable.
+        virtual bool IsPointerType() const = 0;
     protected:
         virtual ~cbWatch();
     public:
