@@ -44,7 +44,7 @@ namespace
     const long idMenuDelete = wxNewId();
     const long idMenuDeleteAll = wxNewId();
     const long idMenuAddDataBreak = wxNewId();
-    const long idMenuExamineInMemory = wxNewId();
+    const long idMenuExamineMemory = wxNewId();
     const long idMenuAutoUpdate = wxNewId();
     const long idMenuUpdate = wxNewId();
 }
@@ -65,7 +65,7 @@ BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
     EVT_MENU(idMenuDelete, WatchesDlg::OnMenuDelete)
     EVT_MENU(idMenuDeleteAll, WatchesDlg::OnMenuDeleteAll)
     EVT_MENU(idMenuAddDataBreak, WatchesDlg::OnMenuAddDataBreak)
-    EVT_MENU(idMenuExamineInMemory, WatchesDlg::OnMenuExamineInMemory)
+    EVT_MENU(idMenuExamineMemory, WatchesDlg::OnMenuExamineMemory)
     EVT_MENU(idMenuAutoUpdate, WatchesDlg::OnMenuAutoUpdate)
     EVT_MENU(idMenuUpdate, WatchesDlg::OnMenuUpdate)
 END_EVENT_TABLE()
@@ -831,7 +831,7 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
                     position++;
                 else
                     position = 0;
-                m.Insert(position, idMenuExamineInMemory, _("Examine memory"),
+                m.Insert(position, idMenuExamineMemory, _("Examine memory"),
                          _("Opens the Examine memory window and shows the raw data for this variable"));
             }
         }
@@ -918,7 +918,7 @@ void WatchesDlg::OnMenuAddDataBreak(cb_unused wxCommandEvent &event)
     }
 }
 
-void WatchesDlg::OnMenuExamineInMemory(cb_unused wxCommandEvent &event)
+void WatchesDlg::OnMenuExamineMemory(cb_unused wxCommandEvent &event)
 {
     wxPGProperty *selected = m_grid->GetSelection();
     if (!selected)
