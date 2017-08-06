@@ -24,6 +24,7 @@ class ExamineMemoryDlg : public wxPanel, public cbExamineMemoryDlg
 
         void Clear();
         wxString GetBaseAddress();
+        void SetBaseAddress(const wxString &addr);
         int GetBytes();
         void AddError(const wxString& err);
         void AddHexByte(const wxString& addr, const wxString& hexbyte);

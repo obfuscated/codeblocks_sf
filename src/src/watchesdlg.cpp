@@ -44,6 +44,7 @@ namespace
     const long idMenuDelete = wxNewId();
     const long idMenuDeleteAll = wxNewId();
     const long idMenuAddDataBreak = wxNewId();
+    const long idMenuExamineInMemory = wxNewId();
     const long idMenuAutoUpdate = wxNewId();
     const long idMenuUpdate = wxNewId();
 }
@@ -64,6 +65,7 @@ BEGIN_EVENT_TABLE(WatchesDlg, wxPanel)
     EVT_MENU(idMenuDelete, WatchesDlg::OnMenuDelete)
     EVT_MENU(idMenuDeleteAll, WatchesDlg::OnMenuDeleteAll)
     EVT_MENU(idMenuAddDataBreak, WatchesDlg::OnMenuAddDataBreak)
+    EVT_MENU(idMenuExamineInMemory, WatchesDlg::OnMenuExamineInMemory)
     EVT_MENU(idMenuAutoUpdate, WatchesDlg::OnMenuAutoUpdate)
     EVT_MENU(idMenuUpdate, WatchesDlg::OnMenuUpdate)
 END_EVENT_TABLE()
@@ -754,6 +756,7 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
         wxMenu m;
         m.Append(idMenuRename, _("Rename"), _("Rename the watch"));
         m.Append(idMenuAddDataBreak, _("Add Data breakpoint"), _("Add Data breakpoing"));
+        m.Append(idMenuExamineInMemory, _("Examine in memory"), _("Examine in memory"));
         m.AppendSeparator();
         m.AppendCheckItem(idMenuAutoUpdate, _("Auto update"),
                           _("Flag which controls if this watch should be auto updated."));
@@ -820,6 +823,10 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
                 if (plugin != dbgManager->GetActiveDebugger())
                     m.Enable(idMenuUpdate, false);
             }
+
+            // If the plugin does not support the ExamineMemory dialog we delete the menu entry
+            if( plugin && plugin->SupportsFeature(cbDebuggerFeature::ExamineMemory) == false )
+                m.Delete(idMenuExamineInMemory);
         }
         PopupMenu(&m);
     }
@@ -902,6 +909,32 @@ void WatchesDlg::OnMenuAddDataBreak(cb_unused wxCommandEvent &event)
         if (plugin->AddDataBreakpoint(expression))
             Manager::Get()->GetDebuggerManager()->GetBreakpointDialog()->Reload();
     }
+}
+
+void WatchesDlg::OnMenuExamineInMemory(cb_unused wxCommandEvent &event)
+{
+    wxPGProperty *selected = m_grid->GetSelection();
+    if (!selected)
+        return;
+    WatchesProperty *prop = static_cast<WatchesProperty*>(selected);
+
+    wxString expression;
+    prop->GetWatch()->GetSymbol(expression);
+
+    cbExamineMemoryDlg* dlg = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
+    dlg->SetBaseAddress(expression);
+
+    if (!IsWindowReallyShown(dlg->GetWindow()) )
+    {
+        CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
+        evt.pWindow = dlg->GetWindow();
+        Manager::Get()->ProcessEvent(evt);
+    }
+
+    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
+    if (plugin)
+        plugin->RequestUpdate(cbDebuggerPlugin::ExamineMemory);
+
 }
 
 void WatchesDlg::OnMenuAutoUpdate(cb_unused wxCommandEvent &event)

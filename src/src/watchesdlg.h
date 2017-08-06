@@ -49,6 +49,7 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
         void OnMenuDelete(wxCommandEvent &event);
         void OnMenuDeleteAll(wxCommandEvent &event);
         void OnMenuAddDataBreak(wxCommandEvent &event);
+        void OnMenuExamineInMemory(cb_unused wxCommandEvent &event);
         void OnMenuAutoUpdate(wxCommandEvent &event);
         void OnMenuUpdate(wxCommandEvent &event);
 

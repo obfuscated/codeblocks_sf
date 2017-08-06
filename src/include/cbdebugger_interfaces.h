@@ -88,6 +88,7 @@ class DLLIMPORT cbExamineMemoryDlg
         virtual void AddError(const wxString& err) = 0;
         virtual void AddHexByte(const wxString& addr, const wxString& hexbyte) = 0;
         virtual void EnableWindow(bool enable) = 0;
+        virtual void SetBaseAddress(const wxString &addr) = 0;
 };
 
 class DLLIMPORT cbThreadsDlg
