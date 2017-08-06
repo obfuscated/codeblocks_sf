@@ -86,7 +86,6 @@ private:
     cb::shared_ptr<cbWatch> m_watch;
 };
 
-#if wxCHECK_VERSION(3, 0, 0)
 class cbDummyEditor : public wxPGEditor
 {
     DECLARE_DYNAMIC_CLASS(cbDummyEditor)
@@ -108,11 +107,17 @@ public:
     virtual bool OnEvent( wxPropertyGrid* propgrid, wxPGProperty* property,
         wxWindow* wnd_primary, wxEvent& event ) const {return false;};
 
+    bool GetValueFromControl( wxVariant& variant, wxPGProperty* property, wxWindow* ctrl ) const override
+    {
+        return false;
+    }
+    void SetValueToUnspecified( wxPGProperty* property, wxWindow* ctrl ) const override {}
 };
 
 IMPLEMENT_DYNAMIC_CLASS(cbDummyEditor, wxPGEditor);
-#endif // wxCHECK_VERSION
+
 static wxPGEditor *watchesDummyEditor = nullptr;
+
 class cbTextCtrlAndButtonTooltipEditor : public wxPGTextCtrlAndButtonEditor
 {
     DECLARE_DYNAMIC_CLASS(cbTextCtrlAndButtonTooltipEditor)
@@ -389,12 +394,14 @@ WatchesDlg::WatchesDlg() :
 #endif
     }
 
-#if wxCHECK_VERSION(3, 0, 0)
     if (!watchesDummyEditor)
     {
+#if wxCHECK_VERSION(3, 0, 0)
         watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, true);
-    }
+#else
+        watchesDummyEditor = wxPropertyGrid::RegisterEditorClass(new cbDummyEditor, wxT("cbDummyEditor"), true);
 #endif
+    }
 
     m_grid->SetColumnProportion(0, 40);
     m_grid->SetColumnProportion(1, 40);
