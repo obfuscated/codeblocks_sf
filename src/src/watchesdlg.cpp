@@ -756,7 +756,6 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
         wxMenu m;
         m.Append(idMenuRename, _("Rename"), _("Rename the watch"));
         m.Append(idMenuAddDataBreak, _("Add Data breakpoint"), _("Add Data breakpoing"));
-        m.Append(idMenuExamineInMemory, _("Examine in memory"), _("Examine in memory"));
         m.AppendSeparator();
         m.AppendCheckItem(idMenuAutoUpdate, _("Auto update"),
                           _("Flag which controls if this watch should be auto updated."));
@@ -824,9 +823,17 @@ void WatchesDlg::OnPropertyRightClick(wxPropertyGridEvent &event)
                     m.Enable(idMenuUpdate, false);
             }
 
-            // If the plugin does not support the ExamineMemory dialog we delete the menu entry
-            if( plugin && plugin->SupportsFeature(cbDebuggerFeature::ExamineMemory) == false )
-                m.Delete(idMenuExamineInMemory);
+            // Add the Examine memory only if the plugin supports the ExamineMemory dialog.
+            if (plugin && plugin->SupportsFeature(cbDebuggerFeature::ExamineMemory) == true)
+            {
+                size_t position;
+                if (m.FindChildItem(idMenuAddDataBreak, &position))
+                    position++;
+                else
+                    position = 0;
+                m.Insert(position, idMenuExamineInMemory, _("Examine memory"),
+                         _("Opens the Examine memory window and shows the raw data for this variable"));
+            }
         }
         PopupMenu(&m);
     }
