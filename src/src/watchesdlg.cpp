@@ -933,19 +933,16 @@ void WatchesDlg::OnMenuExamineMemory(cb_unused wxCommandEvent &event)
         expression = watch->MakeSymbolToAddress();
 
     cbExamineMemoryDlg* dlg = Manager::Get()->GetDebuggerManager()->GetExamineMemoryDialog();
-    dlg->SetBaseAddress(expression);
-
-    if (!IsWindowReallyShown(dlg->GetWindow()) )
+    if (!dlg)
+        return;
+    if (!IsWindowReallyShown(dlg->GetWindow()))
     {
         CodeBlocksDockEvent evt(cbEVT_SHOW_DOCK_WINDOW);
         evt.pWindow = dlg->GetWindow();
         Manager::Get()->ProcessEvent(evt);
     }
 
-    cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-    if (plugin)
-        plugin->RequestUpdate(cbDebuggerPlugin::ExamineMemory);
-
+    dlg->SetBaseAddress(expression);
 }
 
 void WatchesDlg::OnMenuAutoUpdate(cb_unused wxCommandEvent &event)
