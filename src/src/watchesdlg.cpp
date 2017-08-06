@@ -91,21 +91,22 @@ class cbDummyEditor : public wxPGEditor
     DECLARE_DYNAMIC_CLASS(cbDummyEditor)
 public:
     cbDummyEditor() {}
-    virtual wxPG_CONST_WXCHAR_PTR GetName() const
+    wxPG_CONST_WXCHAR_PTR GetName() const override
     {
         return wxT("cbDummyEditor");
     }
 
-    virtual wxPGWindowList CreateControls(wxPropertyGrid* propgrid, wxPGProperty* property,
-                                          const wxPoint& pos, const wxSize& sz) const
+    wxPGWindowList CreateControls(wxPropertyGrid* propgrid, wxPGProperty* property,
+                                  const wxPoint& pos, const wxSize& sz) const override
     {
         wxPGWindowList const list;
         return list;
     }
-    virtual void UpdateControl( wxPGProperty* property,
-                                wxWindow* ctrl ) const {}
-    virtual bool OnEvent( wxPropertyGrid* propgrid, wxPGProperty* property,
-        wxWindow* wnd_primary, wxEvent& event ) const {return false;};
+    void UpdateControl(wxPGProperty* property, wxWindow* ctrl) const override {}
+    bool OnEvent(wxPropertyGrid* propgrid, wxPGProperty* property, wxWindow* wnd_primary, wxEvent& event) const override
+    {
+        return false;
+    }
 
     bool GetValueFromControl( wxVariant& variant, wxPGProperty* property, wxWindow* ctrl ) const override
     {
