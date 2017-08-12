@@ -132,10 +132,16 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkCCFileExtEmpty",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/empty_ext"), true));
     XRCCTRL(*this, "txtCCFileExtSource",       wxTextCtrl)->SetValue(cfg->Read(_T("/source_ext"),    _T("c,cpp,cxx,cc,c++")));
 
+#if wxCHECK_VERSION(3, 0, 0)
+    wxPanel *symbolBrowser = XRCCTRL(*this, "tabBrowser", wxPanel);
+    if (symbolBrowser)
+        symbolBrowser->Enable(false);
+#else
     // Page "Symbol browser"
     XRCCTRL(*this, "chkNoSB",        wxCheckBox)->SetValue(!cfg->ReadBool(_T("/use_symbols_browser"), true));
     XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"),   false));
     XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->SetValue(cfg->ReadBool(_T("/scope_filter"),         true));
+#endif // wxCHECK_VERSION
 
     // -----------------------------------------------------------------------
     // Handle all options that are being handled by m_Parser
@@ -221,6 +227,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/empty_ext"),  (bool) XRCCTRL(*this, "chkCCFileExtEmpty",  wxCheckBox)->GetValue());
     cfg->Write(_T("/source_ext"),        XRCCTRL(*this, "txtCCFileExtSource", wxTextCtrl)->GetValue());
 
+#if !wxCHECK_VERSION(3, 0, 0)
     // Page "Symbol browser"
     cfg->Write(_T("/use_symbols_browser"),      (bool)!XRCCTRL(*this, "chkNoSB",        wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_show_inheritance"), (bool) XRCCTRL(*this, "chkInheritance", wxCheckBox)->GetValue());
@@ -228,6 +235,7 @@ void CCOptionsDlg::OnApply()
     cfg->Write(_T("/as_floating_window"),       (bool) XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->GetValue());
     cfg->Write(_T("/browser_tree_members"),     (bool) XRCCTRL(*this, "chkTreeMembers", wxCheckBox)->GetValue());
     cfg->Write(_T("/scope_filter"),             (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
+#endif // wxCHECK_VERSION
 
     // Page "Documentation"
     cfg->Write(_T("/use_documentation_helper"), (bool) XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue());
