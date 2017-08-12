@@ -25,12 +25,4 @@
             <Add><master/>\utils\bin</Add>
         </Path>
     </if>
-    <else>
-        <Path type="include">
-            <Add><master/>/include</Add>
-        </Path>
-        <Path type="lib">
-            <Add><master/>/lib</Add>
-        </Path>
-    </else>
 </CodeBlocks_compiler>
