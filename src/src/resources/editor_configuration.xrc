@@ -555,29 +555,6 @@
 														<border>4</border>
 													</object>
 													<object class="sizeritem">
-														<object class="wxStaticBoxSizer">
-															<label>Browser option</label>
-															<object class="sizeritem">
-																<object class="wxStaticText" name="wxID_ANY">
-																	<label>Open containing folder:</label>
-																</object>
-																<flag>wxALIGN_CENTER_VERTICAL</flag>
-																<border>5</border>
-															</object>
-															<object class="sizeritem">
-																<object class="wxTextCtrl" name="txtOpenFolder">
-																	<fg>#8000FF</fg>
-																	<tooltip>Enter system command to open the folder where the file resides in</tooltip>
-																</object>
-																<flag>wxLEFT|wxEXPAND</flag>
-																<border>5</border>
-																<option>1</option>
-															</object>
-														</object>
-														<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
-														<border>4</border>
-													</object>
-													<object class="sizeritem">
 														<object class="wxRadioBox" name="rbTabText">
 															<label>Label in editor tab is the file&apos;s...</label>
 															<content>

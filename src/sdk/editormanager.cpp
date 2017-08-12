@@ -1091,15 +1091,14 @@ struct OpenContainingFolderData
 /// Try to detect if the file browser used by the user is nautilus (either selected by xdg-open or manually specified).
 /// Newer versions of nautilus (3.0.2) support selecting files, so we modify the returned command to pass the --select
 /// flag.
-static OpenContainingFolderData detectNautilus(const wxString &command, const wxString &defCommand)
+static OpenContainingFolderData detectNautilus(const wxString &command, ConfigManager* appConfig)
 {
     wxString fileManager;
 
     // If the user hasn't changed the command, try to detect nautilus using xdg-mime.
-    if (command == defCommand)
+    if (command == cbDEFAULT_OPEN_FOLDER_CMD)
     {
-        const wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"),
-                                                                                 DEFAULT_CONSOLE_SHELL);
+        const wxString shell = appConfig->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL);
         const wxString cmdGetManager = shell + wxT(" 'xdg-mime query default inode/directory'");
         wxArrayString output, errors;
         wxExecute(cmdGetManager, output, errors, wxEXEC_SYNC);
@@ -1153,20 +1152,12 @@ bool EditorManager::OpenContainingFolder()
     if (!ed)
         return false;
 
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
-#if defined __WXMSW__
-    const wxString defaultCommand = _T("explorer.exe /select,");
-#elif defined __WXMAC__
-    const wxString defaultCommand = _T("open -R");
-#else
-    const wxString defaultCommand = _T("xdg-open");
-#endif
-
-    const wxString &command = cfg->Read(_T("open_containing_folder"), defaultCommand);
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    const wxString &command = cfg->Read(_T("open_containing_folder"), cbDEFAULT_OPEN_FOLDER_CMD);
 #if defined __WXMSW__ || defined __WXMAC__
     OpenContainingFolderData cmdData(command, true);
 #else
-    OpenContainingFolderData cmdData=detectNautilus(command, defaultCommand);
+    OpenContainingFolderData cmdData=detectNautilus(command, cfg);
 #endif
 
     const wxString& fullPath = ed->GetFilename();

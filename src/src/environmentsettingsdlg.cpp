@@ -160,6 +160,9 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
         }
     }
 
+    const wxString &openFolderCommand = cfg->Read(_T("/open_containing_folder"), cbDEFAULT_OPEN_FOLDER_CMD);
+    XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->SetValue(openFolderCommand);
+
     // tab "View"
     bool do_place = cfg->ReadBool(_T("/dialog_placement/do_place"), false);
     XRCCTRL(*this, "chkDoPlace", wxCheckBox)->SetValue(do_place);
@@ -542,6 +545,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/ignore_invalid_targets"),      (bool) XRCCTRL(*this, "chkInvalidTargets",     wxCheckBox)->GetValue());
         cfg->Write(_T("/console_shell"),                                  XRCCTRL(*this, "txtConsoleShell",       wxTextCtrl)->GetValue());
         cfg->Write(_T("/console_terminal"),                               XRCCTRL(*this, "cbConsoleTerm",         wxComboBox)->GetValue());
+        cfg->Write(_T("/open_containing_folder"), XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->GetValue());
 
         // tab "View"
         cfg->Write(_T("/environment/blank_workspace"),       (bool) XRCCTRL(*this, "rbAppStart", wxRadioBox)->GetSelection() ? true : false);

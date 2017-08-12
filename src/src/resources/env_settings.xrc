@@ -211,7 +211,7 @@
 								<object class="sizeritem">
 									<object class="wxFlexGridSizer">
 										<cols>2</cols>
-										<rows>2</rows>
+										<rows>3</rows>
 										<vgap>4</vgap>
 										<hgap>4</hgap>
 										<growablecols>1</growablecols>
@@ -235,6 +235,20 @@
 										<object class="sizeritem">
 											<object class="wxComboBox" name="cbConsoleTerm" />
 											<flag>wxALL|wxEXPAND</flag>
+											<option>1</option>
+										</object>
+										<object class="sizeritem">
+											<object class="wxStaticText" name="wxID_ANY">
+												<label>Open containing folder:</label>
+											</object>
+											<flag>wxALIGN_CENTER_VERTICAL</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxTextCtrl" name="txtOpenFolder">
+												<tooltip>Enter system command to open the folder where the file resides in</tooltip>
+											</object>
+											<flag>wxLEFT|wxEXPAND</flag>
 											<option>1</option>
 										</object>
 									</object>

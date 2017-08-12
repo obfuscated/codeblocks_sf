@@ -62,6 +62,14 @@ const wxString DEFAULT_CONSOLE_TERM  = _T("osascript -e 'tell app \"Terminal\"' 
 #endif
 const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
 
+#if defined __WXMSW__
+const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("explorer.exe /select,");
+#elif defined __WXMAC__
+const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("open -R");
+#else
+const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("xdg-open");
+#endif
+
 int GetPlatformsFromString(const wxString& platforms)
 {
     bool pW = platforms.Contains(_("Windows"));
