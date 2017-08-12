@@ -1,3 +1,5 @@
+#include "sdk.h"
+
 #include "directorymonitor.h"
 #include <vector>
 #include "se_globals.h"

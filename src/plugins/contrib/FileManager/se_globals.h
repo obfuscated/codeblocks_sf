@@ -7,7 +7,6 @@
 	#include <wx/wx.h>
 #endif
 
-#include <sdk.h>
 #ifndef CB_PRECOMP
     #include <wx/dir.h>
     #include <wx/filename.h>
