@@ -39,6 +39,7 @@
 
 #include <wx/bmpbuttn.h>
 #include <wx/progdlg.h>
+#include <wx/tokenzr.h>
 
 #include "cbauibook.h"
 #include "editorcolourset.h"
@@ -1077,6 +1078,75 @@ wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesAr
     return candidateFile;
 }
 
+struct OpenContainingFolderData
+{
+    wxString command;
+    bool supportSelect;
+
+    OpenContainingFolderData() : supportSelect(false) {}
+    OpenContainingFolderData(const wxString &command, bool select) : command(command), supportSelect(select) {}
+};
+
+#if !defined(__WXMSW__) && !defined(__WXMAC__)
+/// Try to detect if the file browser used by the user is nautilus (either selected by xdg-open or manually specified).
+/// Newer versions of nautilus (3.0.2) support selecting files, so we modify the returned command to pass the --select
+/// flag.
+static OpenContainingFolderData detectNautilus(const wxString &command, const wxString &defCommand)
+{
+    wxString fileManager;
+
+    // If the user hasn't changed the command, try to detect nautilus using xdg-mime.
+    if (command == defCommand)
+    {
+        const wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"),
+                                                                                 DEFAULT_CONSOLE_SHELL);
+        const wxString cmdGetManager = shell + wxT(" 'xdg-mime query default inode/directory'");
+        wxArrayString output, errors;
+        wxExecute(cmdGetManager, output, errors, wxEXEC_SYNC);
+        if (output.empty())
+            return OpenContainingFolderData(command, false);
+        fileManager = output[0];
+    }
+    else
+        fileManager = command;
+
+    Manager::Get()->GetLogManager()->DebugLog(F(wxT("File manager is: '%s'"), fileManager.wx_str()));
+    if (fileManager.find(wxT("nautilus")) == wxString::npos)
+        return OpenContainingFolderData(command, false);
+    // If the file manager ends with desktop then this is produced by xdg-mime.
+    // This means that we could use the system nautilus (not entirely correct).
+    if (fileManager.EndsWith(wxT(".desktop")))
+        fileManager = wxT("nautilus");
+
+    wxArrayString output, errors;
+    wxExecute(fileManager + wxT(" --version"), output, errors, wxEXEC_SYNC);
+    if (output.empty())
+        return OpenContainingFolderData(command, false);
+    // It is assumed that the output looks like GNOME nautilus 3.20.4
+    const wxString prefix(wxT("GNOME nautilus "));
+
+    const wxString firstLine = output[0].Trim(true).Trim(false);
+    Manager::Get()->GetLogManager()->DebugLog(F(wxT("Nautilus version is: '%s'"), firstLine.wx_str()));
+
+    if (firstLine.StartsWith(prefix))
+    {
+        wxArrayString versionTokens = wxStringTokenize(firstLine.substr(prefix.length()), wxT("."));
+        int fullVersion = 0;
+        int multiplier = 1;
+        for (int ii = versionTokens.GetCount() - 1; ii >= 0; --ii)
+        {
+            long number;
+            versionTokens[ii].ToLong(&number);
+            fullVersion += number * multiplier;
+            multiplier *= 100;
+        }
+        if (fullVersion >= 30002)
+            return OpenContainingFolderData(fileManager + wxT(" --select"), true);
+    }
+    return OpenContainingFolderData(command, false);
+}
+#endif // !__WXMSW__ && !__WXMAC__
+
 bool EditorManager::OpenContainingFolder()
 {
     cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
@@ -1085,45 +1155,35 @@ bool EditorManager::OpenContainingFolder()
 
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
 #if defined __WXMSW__
-    const wxString defCmds = _T("explorer.exe /select,");
+    const wxString defaultCommand = _T("explorer.exe /select,");
 #elif defined __WXMAC__
-    const wxString defCmds = _T("open -R");
+    const wxString defaultCommand = _T("open -R");
 #else
-    const wxString defCmds = _T("xdg-open");
-
-    if (!cfg->ReadBool(_T("scanned_open_folder_mime"), false))
-    {
-        cfg->Write(_T("scanned_open_folder_mime"), true);
-        wxString cmd =   Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"), DEFAULT_CONSOLE_SHELL)
-                       + _T(" 'cat /usr/share/applications/`xdg-mime query default inode/directory` | grep Exec'");
-        wxArrayString output, errors;
-        wxExecute(cmd, output, errors, wxEXEC_SYNC);
-        if (!output.IsEmpty())
-        {
-            cmd = output[0].AfterFirst('=').BeforeFirst('%').Trim(true).Trim(false);
-            if (!cmd.IsEmpty() && cmd != defCmds)
-                cfg->Write(_T("open_containing_folder"), cmd);
-        }
-    }
+    const wxString defaultCommand = _T("xdg-open");
 #endif
 
-    wxString cmds = cfg->Read(_T("open_containing_folder"), defCmds) + _T(" ");
-    const wxString& fullPath = ed->GetFilename();
+    const wxString &command = cfg->Read(_T("open_containing_folder"), defaultCommand);
 #if defined __WXMSW__ || defined __WXMAC__
-    cmds << fullPath;   // Open folder with the file selected
+    OpenContainingFolderData cmdData(command, true);
 #else
-    if (cmds.StartsWith(defCmds))
+    OpenContainingFolderData cmdData=detectNautilus(command, defaultCommand);
+#endif
+
+    const wxString& fullPath = ed->GetFilename();
+    cmdData.command << wxT(" ");
+    if (!cmdData.supportSelect)
     {
-        // Cannot select the file with "xdg-open", so just extract the folder name
+        // Cannot select the file with with most editors, so just extract the folder name
         wxString splitPath;
         wxFileName::SplitPath(fullPath, &splitPath, nullptr, nullptr);
-        cmds << splitPath;
+        cmdData.command << splitPath;
     }
     else
-        cmds << fullPath; // Open folder with the file selected
-#endif
+        cmdData.command << fullPath;
 
-    wxExecute(cmds);
+    wxExecute(cmdData.command);
+    Manager::Get()->GetLogManager()->DebugLog(F(wxT("Executing command to open folder: '%s'"),
+                                                cmdData.command.wx_str()));
     return true;
 }
 
