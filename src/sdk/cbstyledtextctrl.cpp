@@ -18,7 +18,6 @@
     #include "editormanager.h"
     #include "pluginmanager.h"
 #endif
-#include <wx/textfile.h> // for wxTextBuffer::Translate()
 
 #include "cbdebugger_interfaces.h"
 #include "ccmanager.h"
@@ -37,7 +36,6 @@ BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
     EVT_KILL_FOCUS  (cbStyledTextCtrl::OnKillFocus)
     EVT_MIDDLE_DOWN (cbStyledTextCtrl::OnMouseMiddleDown)
-    EVT_MIDDLE_UP   (cbStyledTextCtrl::OnMouseMiddleClick)
     EVT_SET_FOCUS   (cbStyledTextCtrl::OnSetFocus)
     EVT_KEY_DOWN    (cbStyledTextCtrl::OnKeyDown)
     EVT_KEY_UP      (cbStyledTextCtrl::OnKeyUp)
@@ -50,7 +48,6 @@ cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos
     m_lastFocusTime(0L),
     m_bracePosition(wxSCI_INVALID_POSITION),
     m_lastPosition(wxSCI_INVALID_POSITION),
-    m_middleClickPos(wxSCI_INVALID_POSITION),
     m_tabSmartJump(false)
 {
     //ctor
@@ -114,40 +111,27 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
 
 void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
 {
-    m_middleClickPos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
-    event.Skip();
-}
-
-void cbStyledTextCtrl::OnMouseMiddleClick(wxMouseEvent& event)
-{
-    event.Skip();
-    // emulate middle mouse paste under all systems due to buggy wxClipboard
-    const int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
-    if (pos == wxSCI_INVALID_POSITION || pos != m_middleClickPos)
-        return;
-    GotoPos(pos);
-    if (GetReadOnly())
-        return;
-    wxTextFileType type;
-    switch (GetEOLMode())
+    if (platform::gtk == false) // only if OnMouseMiddleDown is not already implemented by the OS
     {
-        case wxSCI_EOL_CRLF:
-            type = wxTextFileType_Dos;
-            break;
+        int pos = PositionFromPoint(wxPoint(event.GetX(), event.GetY()));
 
-        case wxSCI_EOL_CR:
-            type = wxTextFileType_Mac;
-            break;
+        if (pos == wxSCI_INVALID_POSITION)
+            return;
 
-        case wxSCI_EOL_LF:
-            type = wxTextFileType_Unix;
-            break;
+        int start = GetSelectionStart();
+        int end   = GetSelectionEnd();
 
-        default:
-            type = wxTextBuffer::typeDefault;
-            break;
+        const wxString s = GetSelectedText();
+
+        if (pos < GetCurrentPos())
+        {
+            start += s.length();
+            end += s.length();
+        }
+
+        InsertText(pos, s);
+        SetSelectionVoid(start, end);
     }
-    AddText(wxTextBuffer::Translate(Manager::Get()->GetEditorManager()->GetSelectionClipboard(), type));
 }
 
 void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
