@@ -50,6 +50,11 @@
 #include "wx/panel.h"
 #include <wx/dcbuffer.h>
 
+// Access gtk directly to manage the primary selection clipboard.
+#if defined(__WXGTK__) && !wxCHECK_VERSION(3, 0, 0)
+    #include "gtk/gtk.h"
+#endif
+
 #ifdef SCI_NAMESPACE
 using namespace Scintilla;
 #endif
@@ -771,9 +776,9 @@ void ScintillaWX::ClaimSelection() {
     // Put the selected text in the PRIMARY selection
 /* C::B begin */
     if (!SelectionEmpty()) {
-/* C::B end */
         SelectionText st;
         CopySelectionRange(&st);
+#if wxCHECK_VERSION(3, 0, 0)
         wxTheClipboard->UsePrimarySelection(true);
         if (wxTheClipboard->Open()) {
             wxString text = sci2wx(st.Data(), st.Length());
@@ -781,7 +786,16 @@ void ScintillaWX::ClaimSelection() {
             wxTheClipboard->Close();
         }
         wxTheClipboard->UsePrimarySelection(false);
+#else
+        GtkClipboard *clipboard = gtk_clipboard_get(GDK_SELECTION_PRIMARY);
+        if (clipboard)
+        {
+            const wxString &text = sci2wx(st.Data(), st.Length());
+            gtk_clipboard_set_text(clipboard, text.mb_str(wxConvUTF8), text.length());
+        }
+#endif // wxCHECK_VERSION
     }
+/* C::B end */
 #endif
 }
 
