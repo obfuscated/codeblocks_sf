@@ -3170,18 +3170,10 @@ void cbEditor::OnMarginClick(wxScintillaEvent& event)
 
 void cbEditor::OnEditorUpdateUI(wxScintillaEvent& event)
 {
-    EditorManager* edMgr = Manager::Get()->GetEditorManager();
-    if (edMgr->GetActiveEditor() == this)
+    if (Manager::Get()->GetEditorManager()->GetActiveEditor() == this)
     {
         NotifyPlugins(cbEVT_EDITOR_UPDATE_UI);
         HighlightBraces(); // brace highlighting
-        if (event.GetUpdated() & wxSCI_UPDATE_SELECTION)
-        {
-            // emulate ScintillaWX::ClaimSelection()
-            cbStyledTextCtrl* stc = GetControl();
-            if (stc->GetSelectionStart() != stc->GetSelectionEnd())
-                edMgr->SetSelectionClipboard(stc->GetSelectedText());
-        }
     }
     OnScintillaEvent(event);
 }

@@ -174,8 +174,6 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         void OnTreeItemRightClick(wxTreeEvent &event);
         void CollectDefines(CodeBlocksEvent& event);
 
-        void OnAppActivated(CodeBlocksEvent& event);
-
     protected:
         // m_EditorsList access
         void AddEditorBase(EditorBase* eb);
