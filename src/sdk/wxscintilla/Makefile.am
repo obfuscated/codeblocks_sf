@@ -1,4 +1,5 @@
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
+			$(SCINTILLA_GTK_CFLAGS) \
 			-I$(srcdir)/include \
 			-I$(srcdir)/src/scintilla/include \
 			-I$(srcdir)/src/scintilla/lexlib \

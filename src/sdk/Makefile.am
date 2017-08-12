@@ -28,6 +28,7 @@ libcodeblocks_la_LIBADD = scripting/bindings/libsqbindings.la \
 			../base/tinyxml/libtinyxml.la \
 			wxscintilla/libwxscintilla.la \
 			$(WX_LIBS) \
+			$(SCINTILLA_GTK_LIBS) \
 			$(CB_GLIB2_LIBS) \
 			$(WXPROPGRID_LIB)
 
