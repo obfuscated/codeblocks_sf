@@ -770,7 +770,6 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 //    Manager::Get()->GetLogManager()->DebugLog(_T("ctor: Filename=%s\nShort=%s"), m_Filename.c_str(), m_Shortname.c_str());
 
     // initialize left control (unsplit state)
-    Freeze();
     m_pSizer = new wxBoxSizer(wxVERTICAL);
     m_pControl = CreateEditor();
     m_pSizer->Add(m_pControl, 1, wxEXPAND);
@@ -784,7 +783,6 @@ void cbEditor::DoInitializations(const wxString& filename, LoaderBase* fileLdr)
 //    m_pSizer->Fit(this);
 //    m_pSizer->SetSizeHints(this);
 
-    Thaw();
     m_pSizer->SetItemMinSize(m_pControl, 32, 32);
 
     // by default we show no markers, marginMasks are set explicitly in "InternalSetEditorStyleBeforeFileOpen()"
