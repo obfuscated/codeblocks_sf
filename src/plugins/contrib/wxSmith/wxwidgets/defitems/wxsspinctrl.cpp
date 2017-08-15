@@ -34,6 +34,9 @@ namespace
         WXS_ST(wxSP_VERTICAL)
         WXS_ST(wxSP_ARROW_KEYS)
         WXS_ST(wxSP_WRAP)
+        WXS_ST(wxALIGN_LEFT)
+        WXS_ST(wxALIGN_CENTER_HORIZONTAL)
+        WXS_ST(wxALIGN_RIGHT)
         WXS_ST_DEFAULTS()
     WXS_ST_END()
 
