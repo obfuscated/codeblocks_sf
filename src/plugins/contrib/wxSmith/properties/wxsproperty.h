@@ -63,7 +63,7 @@ class wxsPropertyContainer;
 /** \brief Class representing one property
  *
  * Property is object around real variable(s) which is responsible
- * for streaming it. Currently there are thre streamings supported:
+ * for streaming it. Currently there are three streamings supported:
  * - Streaming to/from PropertyGrid - this will be used in
  *   property editor
  * - Streaming to/from Xml structure - this kind of streaming will be
