@@ -54,7 +54,7 @@ void DbgCmd_UpdateWatchesTree::Action()
 class DebuggerInfoWindow : public wxScrollingDialog
 {
     public:
-        DebuggerInfoWindow(wxWindow *parent, const wxChar *title, const wxString& content)
+        DebuggerInfoWindow(wxWindow *parent, const wxString& title, const wxString& content)
             : wxScrollingDialog(parent, -1, title, wxDefaultPosition, wxDefaultSize, wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxMAXIMIZE_BOX | wxMINIMIZE_BOX)
         {
             wxSizer* sizer = new wxBoxSizer(wxVERTICAL);
