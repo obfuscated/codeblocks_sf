@@ -210,10 +210,11 @@ void AbbreviationsConfigPanel::FillLangugages()
 {
     m_LanguageCmb->Clear();
 
-    wxSortedArrayString langs;
+    wxArrayString langs;
     AutoCompLanguageMap::iterator it;
     for (it = m_Plugin->m_AutoCompLanguageMap.begin(); it != m_Plugin->m_AutoCompLanguageMap.end(); ++it)
         langs.Add(it->first);
+    langs.Sort();
 
     m_LanguageCmb->Append(langs);
 }
@@ -266,7 +267,7 @@ int AbbreviationsConfigPanel::LanguageAdd()
     else
         colSet = new EditorColourSet();
 
-    wxSortedArrayString newLangs;
+    wxArrayString newLangs;
     wxArrayString langs = colSet->GetAllHighlightLanguages();
     for (unsigned int i = 0; i < langs.GetCount(); ++i)
     {
@@ -274,6 +275,7 @@ int AbbreviationsConfigPanel::LanguageAdd()
             !langs[i].IsSameAs(_T("Fortran77")))
             newLangs.Add(langs[i]);
     }
+    newLangs.Sort();
 
     int sel = cbGetSingleChoiceIndex(_("Select language:"), _("Languages"), newLangs, this);
     if (sel == -1)
