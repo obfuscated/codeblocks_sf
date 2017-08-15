@@ -111,6 +111,9 @@ class wxsPropertyGridManager: public wxPropertyGridManager
          */
         void Update(wxsPropertyContainer* PC);
 
+        // prevent warning for overloaded virtual that is hiding the method in the base class.
+        using wxPropertyGridManager::Update;
+
         /** \brief Function used when adding new property to grid
          *
          * It should be called from wxsProperty::PGRegister() only !!!
