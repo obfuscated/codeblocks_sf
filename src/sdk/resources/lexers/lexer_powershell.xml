@@ -1,0 +1,172 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Powershell"
+                index="88"
+                filemasks="*.ps1,*.psc1,*.psd1,*.psm1">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment"
+                        index="1"
+                        fg="160,160,160"/>
+                <Style name="String"
+                        index="2"
+                        fg="224,160,0"/>
+                <Style name="Character"
+                        index="3"
+                        fg="240,0,240"/>
+                <Style name="Number"
+                        index="4"
+                        fg="240,0,240"/>
+                <Style name="Variable"
+                        index="5"/>
+                <Style name="Operator"
+                        index="6"
+                        fg="255,0,0"/>
+                <Style name="Identifier"
+                        index="7"/>
+                <Style name="Keyword"
+                        index="8"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Cmdlet"
+                        index="9"
+                        fg="0,0,0"/>
+                <Style name="Alias"
+                        index="10"
+                        fg="0,0,0"/>
+                <Style name="Function"
+                        index="11"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="User1"
+                        index="12"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="CommentStream"
+                        index="13"
+                        fg="160,160,160"/>
+                <Style name="HereString"
+                        index="14"
+                        fg="160,160,160"/>
+                <Style name="HereCharacter"
+                        index="15"
+                        fg="160,160,160"/>
+                <Style name="CommentDockKeyword"
+                        index="16"
+                        fg="160,160,160"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                        index="34"
+                        bg="0,255,0"
+                        bold="1"
+                        underlined="1"/>
+                <Style name="No matching brace highlight"
+                        index="35"
+                        bg="255,0,0"/>
+                <Keywords>
+                        <!-- Keywords -->
+                        <Set index="0"
+                            value="begin break catch continue data do dynamicparam else elseif end exit filter
+                                   finally for foreach from function if in local param private process return
+                                   switch throw trap try until where while"/>
+                        <!-- Cmdlets -->
+                        <Set index="1"
+                            value="add-computer add-content add-history add-member add-pssnapin add-type
+                                    checkpoint-computer clear-content clear-eventlog clear-history clear-item
+                                    clear-itemproperty clear-variable compare-object complete-transaction
+                                    connect-wsman convert-path convertfrom-csv convertfrom-securestring
+                                    convertfrom-stringdata convertto-csv convertto-html convertto-securestring
+                                    convertto-xml copy-item copy-itemproperty debug-process disable-computerrestore
+                                    disable-psbreakpoint disable-pssessionconfiguration disable-wsmancredssp
+                                    disconnect-wsman enable-computerrestore enable-psbreakpoint enable-psremoting
+                                    enable-pssessionconfiguration enable-wsmancredssp enter-pssession exit-pssession
+                                    export-alias export-clixml export-console export-counter export-csv
+                                    export-formatdata export-modulemember export-pssession foreach-object
+                                    format-custom format-list format-table format-wide get-acl get-alias
+                                    get-authenticodesignature get-childitem get-command get-computerrestorepoint
+                                    get-content get-counter get-credential get-culture get-date get-event
+                                    get-eventlog get-eventsubscriber get-executionpolicy get-formatdata get-help
+                                    get-history get-host get-hotfix get-item get-itemproperty get-job get-location
+                                    get-member get-module get-psbreakpoint get-pscallstack get-psdrive
+                                    get-psprovider get-pssession get-pssessionconfiguration get-pssnapin
+                                    get-pfxcertificate get-process get-random get-service get-tracesource
+                                    get-transaction get-uiculture get-unique get-variable get-wsmancredssp
+                                    get-wsmaninstance get-winevent get-wmiobject group-object import-alias
+                                    import-clixml import-counter import-csv import-localizeddata import-module
+                                    import-pssession invoke-command invoke-expression invoke-history invoke-item
+                                    invoke-wsmanaction invoke-wmimethod join-path limit-eventlog measure-command
+                                    measure-object move-item move-itemproperty new-alias new-event new-eventlog
+                                    new-item new-itemproperty new-module new-modulemanifest new-object new-psdrive
+                                    new-pssession new-pssessionoption new-service new-timespan new-variable
+                                    new-wsmaninstance new-wsmansessionoption new-webserviceproxy out-default
+                                    out-file out-gridview out-host out-null out-printer out-string pop-location
+                                    push-location read-host receive-job register-engineevent register-objectevent
+                                    register-pssessionconfiguration register-wmievent remove-computer remove-event
+                                    remove-eventlog remove-item remove-itemproperty remove-job remove-module
+                                    remove-psbreakpoint remove-psdrive remove-pssession remove-pssnapin
+                                    remove-variable remove-wsmaninstance remove-wmiobject rename-item
+                                    rename-itemproperty reset-computermachinepassword resolve-path restart-computer
+                                    restart-service restore-computer resume-service select-object select-string
+                                    select-xml send-mailmessage set-acl set-alias set-authenticodesignature
+                                    set-content set-date set-executionpolicy set-item set-itemproperty set-location
+                                    set-psbreakpoint set-psdebug set-pssessionconfiguration set-service
+                                    set-strictmode set-tracesource set-variable set-wsmaninstance
+                                    set-wsmanquickconfig set-wmiinstance show-eventlog sort-object split-path
+                                    start-job start-process start-service start-sleep start-transaction
+                                    start-transcript stop-computer stop-job stop-process stop-service
+                                    stop-transcript suspend-service tee-object test-computersecurechannel
+                                    test-connection test-modulemanifest test-path test-wsman trace-command
+                                    undo-transaction unregister-event unregister-pssessionconfiguration
+                                    update-formatdata update-list update-typedata use-transaction wait-event
+                                    wait-job wait-process where-object write-debug write-error write-eventlog
+                                    write-host write-output write-progress write-verbose write-warning"/>
+                            <!-- Default Aliases -->
+                            <Set index="2"
+                                value="ac asnp clc cli clp clv cpi cpp cvpa diff epal epcsv fc fl foreach ft fw gal
+                                    gc gci gcm gdr ghy gi gl gm gp gps group gsv gsnp gu gv gwmi iex ihy ii ipal
+                                    ipcsv mi mp nal ndr ni nv oh rdr ri rni rnp rp rsnp rv rvpa sal sasv sc select
+                                    si sl sleep sort sp spps spsv sv tee where write cat cd clear cp h history kill
+                                    lp ls mount mv popd ps pushd pwd r rm rmdir echo cls chdir copy del dir erase
+                                    move rd ren set type"/>
+                            <!-- Default Functions -->
+                            <Set index="3"
+                                value="clear-host disable-psremoting enable-psremoting get-verb help importsystemmodules \
+                                    mkdir more prompt psedit tabexpansion"/>
+                </Keywords>
+                <SampleCode value="lexer_powershell.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    DoxygenLineComment="##"
+                    StreamCommentStart="<#"
+                    StreamCommentEnd="#>"
+                    DoxygenStreamCommentStart="<#"
+                    DoxygenStreamCommentEnd="#>"
+                    BoxCommentStart="<#"
+                    BoxCommentMid=""
+                    BoxCommentEnd="#>"
+                    CaseSensitive="0"
+                    LexerCommentStyles="1,12"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="3,4,6,7,13"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

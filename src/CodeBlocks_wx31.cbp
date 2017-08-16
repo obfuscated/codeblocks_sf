@@ -3079,6 +3079,12 @@
 		<Unit filename="sdk/resources/lexers/lexer_postscript.xml">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_powershell.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_powershell.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_prg.sample">
 			<Option target="scintilla" />
 		</Unit>
