@@ -463,9 +463,10 @@ bool CCManager::ProcessArrow(int key)
 // priority, then alphabetical
 struct TokenSorter
 {
-    bool& m_PureAlphabetical;
+    bool& m_PureAlphabetical;  // modify the passed argument(set to false) if weight are different
+    bool m_CaseSensitive;
 
-    TokenSorter(bool& alphabetical) : m_PureAlphabetical(alphabetical)
+    TokenSorter(bool& alphabetical, bool caseSensitive): m_PureAlphabetical(alphabetical), m_CaseSensitive(caseSensitive)
     {
         m_PureAlphabetical = true;
     }
@@ -475,13 +476,18 @@ struct TokenSorter
         int diff = a.weight - b.weight;
         if (diff == 0)
         {
-            // cannot use CmpNoCase() because it compares lower case but Scintilla compares upper
-            diff = a.displayName.Upper().Cmp(b.displayName.Upper());
-            if (diff == 0)
+            if (m_CaseSensitive)
                 diff = a.displayName.Cmp(b.displayName);
+            else
+            {   // cannot use CmpNoCase() because it compares lower case but Scintilla compares upper
+                diff = a.displayName.Upper().Cmp(b.displayName.Upper());
+                if (diff == 0)
+                    diff = a.displayName.Cmp(b.displayName);
+            }
         }
         else
             m_PureAlphabetical = false;
+
         return diff < 0;
     }
 };
@@ -538,7 +544,8 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     }
 
     bool isPureAlphabetical = true;
-    TokenSorter sortFunctor(isPureAlphabetical);
+    bool isCaseSensitive = cfg->ReadBool(wxT("/case_sensitive"), false);
+    TokenSorter sortFunctor(isPureAlphabetical, isCaseSensitive);
     std::sort(m_AutocompTokens.begin(), m_AutocompTokens.end(), sortFunctor);
     if (isPureAlphabetical)
         stc->AutoCompSetOrder(wxSCI_ORDER_PRESORTED);
@@ -560,7 +567,7 @@ void CCManager::OnCompleteCode(CodeBlocksEvent& event)
     if (!stc->CallTipActive() && !stc->AutoCompActive())
         m_CallTipActive = wxSCI_INVALID_POSITION;
 
-    stc->AutoCompSetIgnoreCase(!cfg->ReadBool(wxT("/case_sensitive"), false));
+    stc->AutoCompSetIgnoreCase(!isCaseSensitive);
     stc->AutoCompSetMaxHeight(14);
     stc->AutoCompSetTypeSeparator(wxT('\n'));
     stc->AutoCompSetSeparator(wxT('\r'));
