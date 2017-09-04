@@ -42,7 +42,7 @@
 								<item>4096</item>
 							</content>
 							<selection>1</selection>
-							<style>wxCB_SIMPLE|wxCB_READONLY</style>
+							<style>wxCB_READONLY</style>
 						</object>
 						<flag>wxLEFT|wxALIGN_CENTER_VERTICAL</flag>
 						<border>4</border>
