@@ -135,6 +135,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     XRCCTRL(*this, "chkCheckFiles", wxCheckBox)->SetValue(m_Project->GetCheckForExternallyModifiedFiles());
 
     FillBuildTargets();
+    DoTargetChange(false);
 
     PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
     if (plugins.GetCount())
@@ -225,13 +226,12 @@ void ProjectOptionsDlg::FillScripts()
 
 void ProjectOptionsDlg::FillBuildTargets()
 {
-    // add build targets
+    // add build targets to list
     wxListBox* lstTargets = XRCCTRL(*this, "lstBuildTarget", wxListBox);
     lstTargets->Clear();
     for (int i = 0; i < m_Project->GetBuildTargetsCount(); ++i)
         lstTargets->Append(m_Project->GetBuildTarget(i)->GetTitle());
     lstTargets->SetSelection(0);
-    DoTargetChange(false);
 }
 
 void ProjectOptionsDlg::DoTargetChange(bool saveOld)
@@ -244,7 +244,7 @@ void ProjectOptionsDlg::DoTargetChange(bool saveOld)
     if (lstTargets->GetSelection() == -1)
         lstTargets->SetSelection(0);
     ProjectBuildTarget* target = m_Project->GetBuildTarget(lstTargets->GetSelection());
-    if (!target)
+    if (!target || m_Current_Sel == lstTargets->GetSelection())
         return;
 
     // global project options
@@ -590,15 +590,14 @@ void ProjectOptionsDlg::OnBuildOrderClick(cb_unused wxCommandEvent& event)
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
     {
-        // Save changes in current target.
-        DoBeforeTargetChange(true);
         m_Project->ReOrderTargets(dlg.GetArray());
         FillBuildTargets();
-
         // Retrieve active target.
         if (!ActiveTarget.IsEmpty())
-            lstTargets->SetSelection(lstTargets->FindString(ActiveTarget, true));
-        DoTargetChange(false);
+        {
+            m_Current_Sel = lstTargets->FindString(ActiveTarget, true);
+            lstTargets->SetSelection(m_Current_Sel);
+        }
 
         CodeBlocksEvent e(cbEVT_PROJECT_TARGETS_MODIFIED);
         e.SetProject(m_Project);
