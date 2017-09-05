@@ -36,6 +36,13 @@ class wxScintillaEvent;
  * Another kind of tip is the tooltip, this is the tip window shown when mouse hover on a specified
  * token(such as variable token), ccmanager queries this information by asking CCToken information
  * from ccplugin.
+ *
+ * Note: Under Windows, scroll events are always directed to the window in focus, making it
+ * difficult to scroll the autocomplete list and the doxygen popup with the mouse.  So, under
+ * Windows we catch scroll requests to the cbStyledTextCtrl, and run them through
+ * CCManager::OnPopupScroll(). This filters the event, and if the mouse is over the autocomplete
+ * list or the doxygen popup, the scroll event is instead sent there (and skipped for the editor
+ * window).
  */
 class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 {
@@ -110,6 +117,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
 
         /** Event handler to show documentation, when user changes autocomplete selection. */
         void OnAutocompleteSelect(wxListEvent& event);
+
         /** Event handler to tear down documentation, when autocomplete closes. */
         void OnAutocompleteHide(wxShowEvent& event);
 
@@ -119,8 +127,10 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
          * and crash in OnShowCallTip() so we attempt to serialize it.
          */
         void OnDeferredCallTipShow(wxCommandEvent& event);
+
         /** Defer canceling the calltip to avoid a crash issue. @see CCManager::OnDeferredCallTipShow */
         void OnDeferredCallTipCancel(wxCommandEvent& event);
+
 #ifdef __WXMSW__
         /** Intercept cbStyledTextCtrl scroll events and forward to autocomplete/documentation popups. */
         void OnPopupScroll(wxMouseEvent& event);
@@ -179,15 +189,34 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         wxTimer m_AutocompSelectTimer;
         wxSize m_DocSize; //!< Size of the documentation popup.
         wxPoint m_DocPos; //!< Location of the documentation popup.
+
 #ifdef __WXMSW__
+        /** a handle to the autocomplete list window created by (wx)scintilla, needed under Windows
+         * to determine its dimensions (so the scroll event can be sent to it, if relevant)
+         */
         wxListView* m_pAutocompPopup;
 #endif // __WXMSW__
+
         cbEditor* m_pLastEditor; //!< Last editor operated on.
         cbCodeCompletionPlugin* m_pLastCCPlugin; //!< The plugin handling m_pLastEditor.
-        UnfocusablePopupWindow* m_pPopup; //!< Container for documentation popup.
-        wxHtmlWindow* m_pHtml;            //!< Documentation popup.
+
+        /** Container for documentation popup.
+         * the window for the doxygen popup, with properties so it is always on top,
+         * but cannot be focused.
+         */
+        UnfocusablePopupWindow* m_pPopup;
+
+        /** Documentation popup.
+         * it is the rendered doxygen documentation to display in the popup
+         */
+        wxHtmlWindow* m_pHtml;
+
         int m_LastACLaunchState[2];
-        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens; //!< Cached autocomplete list.
+
+        /** Cached autocomplete list.
+         * It is the data CCManager uses to populate the (wx)scintilla autocomplete list window
+         */
+        std::vector<cbCodeCompletionPlugin::CCToken> m_AutocompTokens;
 };
 
 #endif // CCMANAGER_H
