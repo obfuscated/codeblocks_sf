@@ -2019,12 +2019,13 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
     }
 
     if (   target->GetTargetType() == ttDynamicLib
-        || target->GetTargetType() == ttStaticLib )
+        || target->GetTargetType() == ttStaticLib
+        || target->GetTargetType() == ttCommandsOnly )
     {
         // check for hostapp
         if (target->GetHostApplication().IsEmpty())
         {
-            cbMessageBox(_("You must select a host application to \"run\" a library..."));
+            cbMessageBox(_("You must select a host application to \"run\" this target..."));
             m_pProject->SetCurrentlyCompilingTarget(0);
             return -1;
         }
@@ -2032,29 +2033,26 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         command << hostapStr << strSPACE;
         command << target->GetExecutionParameters();
     }
-    else if (target->GetTargetType() != ttCommandsOnly)
+
+    if (!target->GetHostApplication().IsEmpty())
     {
-        command << execStr << strSPACE;
-        command << target->GetExecutionParameters();
-        // each shell execution must be enclosed to "":
-        // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
-        // here is last \"
-        if (commandIsQuoted)
-            command << strQUOTE;
+        command << hostapStr << strSPACE;
     }
     else
     {
-        // commands-only target?
-        if (target->GetHostApplication().IsEmpty())
-        {
-            cbMessageBox(_("You must select a host application to \"run\" a commands-only target..."));
-            m_pProject->SetCurrentlyCompilingTarget(0);
-            return -1;
-        }
-        command << hostapStr << strSPACE;
-        command << target->GetExecutionParameters();
+        command << execStr << strSPACE;
     }
+
+    command << target->GetExecutionParameters();
+
+    // each shell execution must be enclosed to "":
+    // xterm -T X -e /bin/sh -c "/usr/bin/cb_console_runner X"
+    // here is last \"
+    if (commandIsQuoted) command << strQUOTE;
+
     Manager::Get()->GetMacrosManager()->ReplaceMacros(command, target);
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(command);
+
     wxString script = command;
 
     if (platform::macosx)
