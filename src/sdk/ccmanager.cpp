@@ -126,6 +126,15 @@ DEFINE_EVENT_TYPE(cbEVT_DEFERRED_CALLTIP_CANCEL)
 #define AUTOCOMP_SELECT_DELAY 35
 #define SCROLL_REFRESH_DELAY 500
 
+/** the CC tooltip options in Editor setting dialog */
+enum TooltipMode
+{
+    tmDisable = 0,
+    tmEnable,
+    tmForceSinglePage,
+    tmKeyboundOnly
+};
+
 /** FROM_TIMER means the event is automatically fired from the ccmanager, not explicitly called
  *  by the user. For example, if the code suggestion is fired by the client code, such as:
  * @code
@@ -679,7 +688,7 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     event.Skip();
 
     int tooltipMode = Manager::Get()->GetConfigManager(wxT("ccmanager"))->ReadInt(wxT("/tooltip_mode"), 1);
-    if (tooltipMode == 0) // disabled
+    if (tooltipMode == tmDisable) // disabled
         return;
 
     // if the event comes from user menu click, then its String field isn't empty
@@ -687,7 +696,7 @@ void CCManager::OnEditorTooltip(CodeBlocksEvent& event)
     bool fromMouseDwell = event.GetString().IsEmpty();
     if (wxGetKeyState(WXK_CONTROL) && fromMouseDwell)
         return;
-    if (tooltipMode == 3 && fromMouseDwell) // keybound only
+    if (tooltipMode == tmKeyboundOnly && fromMouseDwell) // keybound only
         return;
 
     EditorBase* base = event.GetEditor();
@@ -950,7 +959,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
     // 1 - enable
     // 2 - force single page
     // 3 - keybound only
-    if (tooltipMode == 0)
+    if (tooltipMode == tmDisable)
         return;
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -982,7 +991,7 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         while (wxIsspace(stc->GetCharAt(lnStart)))
             ++lnStart; // do not show too far left on multi-line call tips
         if (   m_CallTips.size() > 1
-            && tooltipMode == 2 ) // force single page
+            && tooltipMode == tmForceSinglePage ) // force single page
         {
             wxString tip;
             int hlStart, hlEnd;
