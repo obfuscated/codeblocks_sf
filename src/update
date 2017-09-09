@@ -140,8 +140,6 @@ cp -f scripts/*.script ${RESDIR}/scripts > /dev/null
 cp -f scripts/*.script output/share/codeblocks/scripts > /dev/null
 cp -f scripts/tests/*.script ${RESDIR}/scripts/tests > /dev/null
 cp -f scripts/tests/*.script output/share/codeblocks/scripts/tests > /dev/null
-cp -f scripts/*.gdb ${RESDIR}/scripts > /dev/null
-cp -f scripts/*.gdb output/share/codeblocks/scripts > /dev/null
 cp -f tips.txt devel/share/codeblocks > /dev/null
 cp -f tips.txt output/share/codeblocks > /dev/null
 cp -f tools/ConsoleRunner/cb_console_runner${EXEEXT} output > /dev/null

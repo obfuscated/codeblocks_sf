@@ -87,14 +87,12 @@ xcopy /D /y plugins\compilergcc\resources\compilers\*.xml %CB_OUTPUT_RESDIR%\com
 echo Makefile.am >  excludes31.txt
 echo Makefile.in >> excludes31.txt
 echo \.svn\      >> excludes31.txt
-echo *.gdb       >> excludes31.txt
 xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_DEVEL_RESDIR%\templates\wizard /EXCLUDE:excludes31.txt >nul
 xcopy /D /y /s plugins\scriptedwizard\resources\* %CB_OUTPUT_RESDIR%\templates\wizard /EXCLUDE:excludes31.txt >nul
 xcopy /D /y templates\common\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes31.txt > nul
 xcopy /D /y templates\win32\* %CB_OUTPUT_RESDIR%\templates /EXCLUDE:excludes31.txt > nul
 xcopy /D /y templates\common\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes31.txt > nul
 xcopy /D /y templates\win32\* %CB_DEVEL_RESDIR%\templates /EXCLUDE:excludes31.txt > nul
-xcopy /D /y scripts\*.gdb %CB_OUTPUT_RESDIR% > nul
 xcopy /D /y scripts\* %CB_DEVEL_RESDIR%\scripts /EXCLUDE:excludes31.txt > nul
 xcopy /D /y scripts\* %CB_OUTPUT_RESDIR%\scripts /EXCLUDE:excludes31.txt > nul
 xcopy /D /y scripts\tests\* %CB_DEVEL_RESDIR%\scripts\tests /EXCLUDE:excludes31.txt > nul

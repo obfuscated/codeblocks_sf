@@ -39,8 +39,6 @@
 			<Add directory="." />
 			<Add directory="..\..\include" />
 			<Add directory="..\..\devel" />
-			<Add directory="..\..\include\scripting\include" />
-			<Add directory="..\..\include\scripting\sqplus" />
 		</Compiler>
 		<ResourceCompiler>
 			<Add directory="$(#WX.include)" />
