@@ -854,7 +854,7 @@ class GdbCmd_Watch : public DebuggerCmd
             w.Trim(true);
             w.Trim(false);
 
-            if(!ParseGDBWatchValue(m_watch, w))
+            if (!ParseGDBWatchValue(m_watch, w))
             {
                 wxString symbol;
                 m_watch->GetSymbol(symbol);
@@ -954,15 +954,6 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
             m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
             if (m_Cmd.IsEmpty())
             {
-                /*
-                // if it's a pointer, automatically dereference it
-                if (w_type.Length() > 2 && // at least 2 chars
-                    w_type.Last() == _T('*') && // last is *
-                    w_type.GetChar(w_type.Length() - 2) != _T('*') && // second last is not * (i.e. doesn't end with **)
-                    !w_type.Contains(_T("char "))) // not char* (special case)
-                {
-                    m_What = wxT("*") + m_What;
-                }*/
                 if (IsPointerType(w_type))
                 {
                     m_What = wxT("*") + m_What;
@@ -1009,12 +1000,6 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
                 else
                 {
                     contents << output;
-                    // the following breaks the text when it *is* a hex number
-//                    if (reGenericHexAddress.Matches(output))
-//                    {
-//                        contents.Replace(reGenericHexAddress.GetMatch(output, 1), _T(""));
-//                        contents.Trim(false);
-//                    }
                 }
             }
             contents.Trim(true);
