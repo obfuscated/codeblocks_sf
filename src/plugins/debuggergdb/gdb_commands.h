@@ -27,9 +27,6 @@
 #include <infowindow.h>
 #include <logmanager.h>
 #include <macrosmanager.h>
-#include <scriptingmanager.h>
-#include <sqplus.h>
-#include <scripting/bindings/sc_base_types.h>
 
 #include "debugger_defs.h"
 #include "debuggergdb.h"
@@ -777,7 +774,6 @@ class GdbCmd_Threads : public DebuggerCmd
 class GdbCmd_Watch : public DebuggerCmd
 {
         cb::shared_ptr<GDBWatch> m_watch;
-        wxString m_ParseFunc;
     public:
         GdbCmd_Watch(DebuggerDriver* driver, cb::shared_ptr<GDBWatch> watch) :
             DebuggerCmd(driver),
@@ -790,67 +786,36 @@ class GdbCmd_Watch : public DebuggerCmd
             m_watch->GetType(type);
             type.Trim(true);
             type.Trim(false);
-            m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(type, m_ParseFunc);
-            if (m_Cmd.IsEmpty())
+            m_Cmd << _T("output ");
+            switch (m_watch->GetFormat())
             {
-                m_Cmd << _T("output ");
-                switch (m_watch->GetFormat())
-                {
-                    case Decimal:       m_Cmd << _T("/d "); break;
-                    case Unsigned:      m_Cmd << _T("/u "); break;
-                    case Hex:           m_Cmd << _T("/x "); break;
-                    case Binary:        m_Cmd << _T("/t "); break;
-                    case Char:          m_Cmd << _T("/c "); break;
-                    case Float:         m_Cmd << _T("/f "); break;
-                    case Last:
-                    case Any:
-                    case Undefined:
-                    default:            break;
-                }
+                case Decimal:       m_Cmd << _T("/d "); break;
+                case Unsigned:      m_Cmd << _T("/u "); break;
+                case Hex:           m_Cmd << _T("/x "); break;
+                case Binary:        m_Cmd << _T("/t "); break;
+                case Char:          m_Cmd << _T("/c "); break;
+                case Float:         m_Cmd << _T("/f "); break;
+                case Last:
+                case Any:
+                case Undefined:
+                default:            break;
+            }
 
-                // auto-set array types
-                if (!m_watch->IsArray() &&  m_watch->GetFormat() == Undefined && type.Contains(_T('[')))
-                    m_watch->SetArray(true);
+            // auto-set array types
+            if (!m_watch->IsArray() &&  m_watch->GetFormat() == Undefined && type.Contains(_T('[')))
+                m_watch->SetArray(true);
 
-                if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
-                {
-                    m_Cmd << wxT("(") << symbol << wxT(")");
-                    m_Cmd << wxString::Format(_T("[%d]@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
-                }
-                else
-                    m_Cmd << symbol;
+            if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
+            {
+                m_Cmd << wxT("(") << symbol << wxT(")");
+                m_Cmd << wxString::Format(_T("[%d]@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
             }
             else
-            {
-                try
-                {
-                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_Cmd));
-                    m_Cmd = f(type, symbol, m_watch->GetArrayStart(), m_watch->GetArrayCount());
-                }
-                catch (SquirrelError e)
-                {
-                    m_Cmd = cbC2U(e.desc);
-                }
-            }
+                m_Cmd << symbol;
         }
         void ParseOutput(const wxString& output)
         {
-            wxString w;
-            if (!m_ParseFunc.IsEmpty())
-            {
-                try
-                {
-                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
-                    w << f(output, m_watch->GetArrayStart());
-                }
-                catch (SquirrelError e)
-                {
-                    w << cbC2U(e.desc);
-                }
-            }
-            else
-                w = output;
-
+            wxString w = output;
             w.Trim(true);
             w.Trim(false);
 
@@ -933,7 +898,6 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         wxString m_What;
         wxString m_Type;
         wxString m_Address;
-        wxString m_ParseFunc;
         bool m_autoDereferenced;
     public:
         /** @param what The variable to evaluate.
@@ -951,57 +915,18 @@ class GdbCmd_TooltipEvaluation : public DebuggerCmd
         {
             m_Type.Trim(true);
             m_Type.Trim(false);
-            m_Cmd = static_cast<GDB_driver*>(m_pDriver)->GetScriptedTypeCommand(w_type, m_ParseFunc);
-            if (m_Cmd.IsEmpty())
+            if (IsPointerType(w_type))
             {
-                if (IsPointerType(w_type))
-                {
-                    m_What = wxT("*") + m_What;
-                    m_autoDereferenced = true;
-                }
+                m_What = wxT("*") + m_What;
+                m_autoDereferenced = true;
+            }
 
-                m_Cmd << wxT("output ");
-                m_Cmd << m_What;
-            }
-            else
-            {
-                try
-                {
-                    SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_Cmd));
-                    m_Cmd = f(w_type, what, 0, 0);
-                }
-                catch (SquirrelError e)
-                {
-                    m_Cmd = cbC2U(e.desc);
-                    m_pDriver->DebugLog(_T("Script exception: ") + m_Cmd);
-                }
-            }
+            m_Cmd << wxT("output ");
+            m_Cmd << m_What;
         }
         void ParseOutput(const wxString& output)
         {
-            wxString contents;
-            if (output.StartsWith(_T("No symbol ")) || output.StartsWith(_T("Attempt to ")))
-                contents = output;
-            else
-            {
-                if (!m_ParseFunc.IsEmpty())
-                {
-                    try
-                    {
-                        SqPlus::SquirrelFunction<wxString&> f(cbU2C(m_ParseFunc));
-                        contents << f(output, 0);
-                    }
-                    catch (SquirrelError e)
-                    {
-                        contents << cbC2U(e.desc);
-                        m_pDriver->DebugLog(_T("Script exception: ") + contents);
-                    }
-                }
-                else
-                {
-                    contents << output;
-                }
-            }
+            wxString contents = output;
             contents.Trim(true);
             contents.Trim(false);
 

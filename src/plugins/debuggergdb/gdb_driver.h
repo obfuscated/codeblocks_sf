@@ -8,30 +8,7 @@
 
 #include "debuggerdriver.h"
 #include "remotedebugging.h"
-#include <wx/dynarray.h>
 #include <wx/regex.h>
-
-struct ScriptedType
-{
-    wxString name;          // STL String
-    wxString regex_str;     // [^[:alnum:]_]*string[^[:alnum:]_]*
-    wxRegEx regex;
-    wxString eval_func;     // Evaluate_StlString
-    wxString parse_func;    // Parse_StlString
-
-    ScriptedType(){}
-    ScriptedType(const ScriptedType& rhs)
-    {
-        name = rhs.name;
-        regex_str = rhs.regex_str;
-        eval_func = rhs.eval_func;
-        parse_func = rhs.parse_func;
-
-        regex.Compile(regex_str);
-    }
-};
-
-WX_DECLARE_OBJARRAY(ScriptedType, TypesArray);
 
 class GDB_driver : public DebuggerDriver
 {
@@ -89,12 +66,9 @@ class GDB_driver : public DebuggerDriver
 #endif
         virtual wxString GetDisassemblyFlavour(void);
 
-        wxString GetScriptedTypeCommand(const wxString& gdb_type, wxString& parse_func);
         wxString AsmFlavour() {return flavour;}
     protected:
     private:
-        void InitializeScripting();
-        void RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func);
         void HandleMainBreakPoint(const wxRegEx& reBreak, wxString line);
 
         // win/Cygwin platform checking
@@ -106,8 +80,6 @@ class GDB_driver : public DebuggerDriver
 
         bool m_CygwinPresent;
         wxString m_CygdrivePrefix;
-
-        TypesArray m_Types;
 
         // Seems to be intended to allow step before program has started.
         // Was always false.  HC changed to take value from DebuggerGDB::m_BreakOnEntry.

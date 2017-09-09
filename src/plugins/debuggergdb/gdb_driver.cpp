@@ -16,7 +16,6 @@
 #include <manager.h>
 #include <macrosmanager.h>
 #include <configmanager.h>
-#include <scriptingmanager.h>
 #include <globals.h>
 #include <infowindow.h>
 
@@ -24,9 +23,6 @@
 // for Registry detection of Cygwin
 #include "wx/msw/wrapwin.h"     // Wraps windows.h
 #endif
-
-#include <wx/arrimpl.cpp> // this is a magic incantation which must be done!
-WX_DEFINE_OBJARRAY(TypesArray);
 
 // the ">>>>>>" is a hack: sometimes, especially when watching uninitialized char*
 // some random control codes in the stream (like 'delete') will mess-up our prompt and the debugger
@@ -82,10 +78,6 @@ static wxRegEx reAttachedChildPid(wxT("Attaching to process ([0-9]+)"));
 static wxRegEx reInferiorExited(wxT("^\\[Inferior[ \\t].+[ \\t]exited normally\\]$"), wxRE_EXTENDED);
 static wxRegEx reInferiorExitedWithCode(wxT("^\\[[Ii]nferior[ \\t].+[ \\t]exited[ \\t]with[ \\t]code[ \\t]([0-9]+)\\]$"), wxRE_EXTENDED);
 
-// scripting support
-DECLARE_INSTANCE_TYPE(GDB_driver);
-using SqPlus::Push;
-
 GDB_driver::GDB_driver(DebuggerGDB* plugin) :
     DebuggerDriver(plugin),
     m_CygwinPresent(false),
@@ -105,85 +97,6 @@ GDB_driver::GDB_driver(DebuggerGDB* plugin) :
 GDB_driver::~GDB_driver()
 {
     //dtor
-}
-
-void GDB_driver::InitializeScripting()
-{
-    if (!m_pDBG->GetActiveConfigEx().GetFlag(DebuggerConfiguration::WatchScriptPrinters))
-    {
-        m_pDBG->DebugLog(_("Skip initializing the scripting!"));
-        return;
-    }
-
-    // get a pointer to scripting engine
-    if (!SquirrelVM::GetVMPtr())
-    {
-        m_pDBG->Log(_("Scripting engine not running. Debugger scripts disabled..."));
-        return; // no scripting support...
-    }
-
-    // create a new object type for scripts, named DebuggerDriver
-    SqPlus::SQClassDef<GDB_driver>("GDB_driver").
-            func(&GDB_driver::RegisterType, "RegisterType");
-
-    // run extensions script
-    wxString script = ConfigManager::LocateDataFile(_T("gdb_types.script"), sdScriptsUser | sdScriptsGlobal);
-    if (!script.IsEmpty())
-    {
-        Manager::Get()->GetScriptingManager()->LoadScript(script);
-        try
-        {
-            SqPlus::SquirrelFunction<void> f("RegisterTypes");
-            f(this);
-        }
-        catch (SquirrelError e)
-        {
-            m_pDBG->Log(wxString::Format(_T("Invalid debugger script: '%s'"), script.c_str()));
-            m_pDBG->Log(cbC2U(e.desc));
-
-            Manager::Get()->GetScriptingManager()->DisplayErrors(&e);
-        }
-    }
-
-    wxString StlDebugCommand(_T("source $DATAPATH/scripts/stl-views-1.0.3.gdb"));
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(StlDebugCommand);
-    QueueCommand(new DebuggerCmd(this, StlDebugCommand));
-}
-
-void GDB_driver::RegisterType(const wxString& name, const wxString& regex, const wxString& eval_func, const wxString& parse_func)
-{
-    // check if this type already exists
-    for (size_t i = 0; i < m_Types.GetCount(); ++i)
-    {
-        ScriptedType& st = m_Types[i];
-        if (st.name == name)
-            return; // exists already...
-    }
-
-    ScriptedType st;
-    st.name = name;
-    st.regex_str = regex;
-    st.regex.Compile(regex);
-    st.eval_func = eval_func;
-    st.parse_func = parse_func;
-
-    m_Types.Add(st);
-    m_pDBG->Log(_("Registered new type: ") + st.name);
-}
-
-wxString GDB_driver::GetScriptedTypeCommand(const wxString& gdb_type, wxString& parse_func)
-{
-    for (size_t i = 0; i < m_Types.GetCount(); ++i)
-    {
-        ScriptedType& st = m_Types[i];
-        if (st.regex.Matches(gdb_type))
-        {
-//            Log(_T("Function to print '") + gdb_type + _T("' is ") + st.parse_func);
-            parse_func = st.parse_func;
-            return st.eval_func;
-        }
-    }
-    return _T("");
 }
 
 wxString GDB_driver::GetCommandLine(const wxString& debugger, const wxString& debuggee, const wxString &userArguments)
@@ -257,10 +170,6 @@ void GDB_driver::Prepare(bool isConsole, int printElements)
         // catch exceptions
         QueueCommand(new GdbCmd_SetCatch(this, wxT("throw"), &m_catchThrowIndex));
     }
-
-    // define all scripted types
-    m_Types.Clear();
-    InitializeScripting();
 
     // pass user init-commands
     wxString init = m_pDBG->GetActiveConfigEx().GetInitCommands();
