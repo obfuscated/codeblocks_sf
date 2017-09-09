@@ -1,7 +1,6 @@
 pkgdatadir = $(datadir)/@PACKAGE@/scripts
 
-dist_pkgdata_DATA = $(srcdir)/*.script \
-			stl-views-1.0.3.gdb
+dist_pkgdata_DATA = $(srcdir)/*.script
 
 # install tests files in a subfolder
 tests_dir = $(pkgdatadir)/tests
