@@ -100,7 +100,6 @@ wxPanel* DebuggerConfiguration::MakePanel(wxWindow *parent)
     XRCCTRL(*panel, "txtInit",           wxTextCtrl)->SetMinSize(wxSize(-1, 75));;
     XRCCTRL(*panel, "chkWatchArgs",      wxCheckBox)->SetValue(GetFlag(WatchFuncArgs));
     XRCCTRL(*panel, "chkWatchLocals",    wxCheckBox)->SetValue(GetFlag(WatchLocals));
-    XRCCTRL(*panel, "chkWatchScriptPrinters", wxCheckBox)->SetValue(GetFlag(WatchScriptPrinters));
     XRCCTRL(*panel, "chkCatchExceptions",wxCheckBox)->SetValue(GetFlag(CatchExceptions));
     XRCCTRL(*panel, "chkTooltipEval",    wxCheckBox)->SetValue(GetFlag(EvalExpression));
     XRCCTRL(*panel, "chkAddForeignDirs", wxCheckBox)->SetValue(GetFlag(AddOtherProjectDirs));
@@ -119,7 +118,6 @@ bool DebuggerConfiguration::SaveChanges(wxPanel *panel)
     m_config.Write(wxT("init_commands"),         XRCCTRL(*panel, "txtInit",           wxTextCtrl)->GetValue());
     m_config.Write(wxT("watch_args"),            XRCCTRL(*panel, "chkWatchArgs",      wxCheckBox)->GetValue());
     m_config.Write(wxT("watch_locals"),          XRCCTRL(*panel, "chkWatchLocals",    wxCheckBox)->GetValue());
-    m_config.Write(wxT("watch_script_printers"), XRCCTRL(*panel, "chkWatchScriptPrinters", wxCheckBox)->GetValue());
     m_config.Write(wxT("catch_exceptions"),      XRCCTRL(*panel, "chkCatchExceptions",wxCheckBox)->GetValue());
     m_config.Write(wxT("eval_tooltip"),          XRCCTRL(*panel, "chkTooltipEval",    wxCheckBox)->GetValue());
     m_config.Write(wxT("add_other_search_dirs"), XRCCTRL(*panel, "chkAddForeignDirs", wxCheckBox)->GetValue());
@@ -140,8 +138,6 @@ bool DebuggerConfiguration::GetFlag(Flags flag)
             return m_config.ReadBool(wxT("watch_args"), true);
         case WatchLocals:
             return m_config.ReadBool(wxT("watch_locals"), true);
-        case WatchScriptPrinters:
-            return m_config.ReadBool(wxT("watch_script_printers"), true);
         case CatchExceptions:
             return m_config.ReadBool(wxT("catch_exceptions"), true);
         case EvalExpression:
@@ -166,9 +162,6 @@ void DebuggerConfiguration::SetFlag(Flags flag, bool value)
             break;
         case WatchLocals:
             m_config.Write(wxT("watch_locals"), value);
-            break;
-        case WatchScriptPrinters:
-            m_config.Write(wxT("watch_script_printers"), value);
             break;
         case CatchExceptions:
             m_config.Write(wxT("catch_exceptions"), value);

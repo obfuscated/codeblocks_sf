@@ -120,15 +120,6 @@
 						<flag>wxEXPAND</flag>
 					</object>
 					<object class="sizeritem">
-						<object class="wxCheckBox" name="chkWatchScriptPrinters">
-							<label>Enable watch scripts</label>
-							<tooltip>Enable the execution of scripts to pretty print the watch values (do not use it if you have python enabled GDB)</tooltip>
-						</object>
-						<flag>wxEXPAND</flag>
-						<border>5</border>
-						<option>1</option>
-					</object>
-					<object class="sizeritem">
 						<object class="wxCheckBox" name="chkCatchExceptions">
 							<label>Catch C++ exceptions</label>
 						</object>
