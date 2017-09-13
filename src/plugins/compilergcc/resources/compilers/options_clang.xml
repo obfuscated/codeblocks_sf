@@ -220,5 +220,13 @@
              value="$lib_linker r $static_output $link_objects"/>
     <Common name="cmds"/>
 
+    <RegEx name="'note: In instantiation' info"
+           type="info"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[0-9]+: note:[ \t]+([Ii]n [Ii]nstantiation.*)]]>
+    </RegEx>
+
     <Common name="re"/>
 </CodeBlocks_compiler_options>
