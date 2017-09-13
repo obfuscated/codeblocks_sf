@@ -12,12 +12,14 @@ EXTRA_DIST = advanced_compiler_options.xrc \
 	images/compilerun.png \
 	images/rebuild.png \
 	images/run.png \
+	images/select_target.png \
 	images/stop.png \
 	images/16x16/compile.png \
 	images/16x16/compilerun.png \
 	images/16x16/rebuild.png \
 	images/16x16/run.png \
-	images/16x16/stop.png
+	images/16x16/stop.png \
+	images/16x16/select_target.png
 
 compiler.zip: $(EXTRA_DIST)
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/compiler.zip manifest.xml *.xrc images/*.png images/16x16/*.png > /dev/null

@@ -199,7 +199,7 @@ int idMenuSelectTarget                             = XRCID("idCompilerMenuSelect
 // Scrolling menus is not the best user experience.
 const int maxTargetInMenus = 40;
 int idMenuSelectTargetOther[maxTargetInMenus]; // initialized in ctor
-int idMenuSelectTargetDialog                       = wxNewId();
+int idMenuSelectTargetDialog                       = XRCID("idMenuSelectTargetDialog");
 int idMenuSelectTargetHasMore                      = wxNewId();
 
 int idMenuNextError                                = XRCID("idCompilerMenuNextError");
@@ -254,6 +254,7 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI(idMenuClearErrors,                   CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idMenuSettings,                      CompilerGCC::OnUpdateUI)
     EVT_UPDATE_UI(idToolTarget,                        CompilerGCC::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuSelectTargetDialog,            CompilerGCC::OnUpdateUI)
 
     EVT_IDLE(                                       CompilerGCC::OnIdle)
     EVT_TIMER(idTimerPollCompiler,                  CompilerGCC::OnTimer)
@@ -3352,6 +3353,7 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
         tbar->EnableTool(idMenuCompileAndRun, !running && (prj || ed) && !otherRunning);
         tbar->EnableTool(idMenuRebuild,       !running && prj         && !otherRunning);
         tbar->EnableTool(idMenuKillProcess,    running && prj);
+        tbar->EnableTool(idMenuSelectTargetDialog, !running && prj && !otherRunning);
 
         m_pToolTarget = XRCCTRL(*tbar, "idToolTarget", wxChoice);
         if (m_pToolTarget)
