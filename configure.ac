@@ -400,6 +400,11 @@ AC_MSG_NOTICE(SVN revision SVN_REVISION (SVN_DATE))
 AC_SUBST(REVISION, SVN_REV)
 AC_SUBST(DATE, "SVN_DATE")
 
+if test "x${target_vendor}" = "xapple"; then
+    AC_CONFIG_FILES([bundle.sh], [chmod +x bundle.sh])
+    AC_CONFIG_FILES(codeblocks.plist)
+fi
+
 AC_CONFIG_FILES([Makefile
 	src/Makefile
 	src/base/Makefile
@@ -615,7 +620,6 @@ AC_CONFIG_FILES([Makefile
 	codeblocks.pc
 	codeblocks.spec.fedora
 	codeblocks.spec
-	codeblocks.plist
 ])
 
 AC_OUTPUT

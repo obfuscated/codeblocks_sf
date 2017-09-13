@@ -1,0 +1,151 @@
+#!/bin/bash
+
+APPNAME="CodeBlocks"
+APPDIR="${APPNAME}.app"
+SRCDIR="@srcdir@"
+OUTPUT=`pwd`
+SHAREDATADIR="${OUTPUT}/${APPDIR}/Contents/Resources/share/codeblocks"
+
+if [ ! -d "$APPDIR" ]
+then
+echo "Building ${APPDIR} directory..."
+mkdir "${APPDIR}"
+mkdir "${APPDIR}/Contents"
+mkdir "${APPDIR}/Contents/MacOS"
+mkdir "${APPDIR}/Contents/Resources"
+mkdir -p "${SHAREDATADIR}/plugins/"
+fi
+
+cp codeblocks.plist "$APPDIR/Contents/Info.plist"
+cp ${SRCDIR}/src/src/resources/icons/*.icns "${APPDIR}/Contents/Resources"
+
+PLUGINS="./src/plugins/abbreviations/.libs/libabbreviations.dylib \
+	./src/plugins/astyle/.libs/libAstyle.dylib \
+	./src/plugins/autosave/.libs/libautosave.dylib \
+	./src/plugins/classwizard/.libs/libclasswizard.dylib \
+	./src/plugins/codecompletion/.libs/libcodecompletion.dylib \
+	./src/plugins/compilergcc/.libs/libcompiler.dylib \
+	./src/plugins/debuggergdb/.libs/libdebugger.dylib \
+	./src/plugins/defaultmimehandler/.libs/libdefaultmimehandler.dylib \
+	./src/plugins/occurrenceshighlighting/.libs/liboccurrenceshighlighting.dylib \
+	./src/plugins/openfileslist/.libs/libopenfileslist.dylib \
+	./src/plugins/projectsimporter/.libs/libprojectsimporter.dylib \
+	./src/plugins/scriptedwizard/.libs/libscriptedwizard.dylib \
+	./src/plugins/todo/.libs/libtodo.dylib"
+
+EXECUTABLES="./src/src/.libs/codeblocks \
+	./src/tools/ConsoleRunner/cb_console_runner \
+	./src/tools/cb_share_config/cb_share_config"
+
+ALL_DEPS=""
+
+copy_deps() {
+	for dep in `otool -L "$1" | sed -n 's/\(.*[^\\ ]\) (.*/\1/gp'`
+	do
+		current_dep=$(basename $dep)
+		if [[ $dep =~ libcodeblocks ]]
+		then
+			install_name_tool -change $dep @executable_path/$(basename $dep) $1
+		fi
+		if [[ $dep =~ libwx ]]
+		then
+			oldfile=$dep
+			oldlink=$dep
+			newfile=$dep
+			while [ -L $newfile ]
+			do
+				newfile=`readlink $newfile`
+				if ! echo $newfile | grep '^/'
+				then
+					newfile=$(dirname $oldfile)/$newfile
+				fi
+				oldfile=$newfile
+			done
+			dep=$newfile
+			current_dep=$(basename $dep)
+			install_name_tool -change $oldlink "@executable_path/$current_dep" $1
+			if [[ ! $ALL_DEPS =~ $current_dep ]]
+			then
+				ALL_DEPS="$ALL_DEPS $current_dep"
+				echo "Copying $dep"
+				cp "$dep" "$APPDIR/Contents/MacOS/"
+				install_name_tool -id "@executable_path/$current_dep" "$APPDIR/Contents/MacOS/$current_dep"
+				copy_deps "$APPDIR/Contents/MacOS/$current_dep"
+			fi
+		fi
+	done
+}
+
+echo "Copying libcodeblocks ..."
+cp src/sdk/.libs/libcodeblocks.0.dylib "$APPDIR/Contents/MacOS/"
+copy_deps "${APPDIR}/Contents/MacOS/libcodeblocks.0.dylib"
+install_name_tool -id "@executable_path/libcodeblocks.0.dylib" "$APPDIR/Contents/MacOS/libcodeblocks.0.dylib"
+
+echo "Copying binaries"
+for file in ${EXECUTABLES}
+do
+	echo $file
+	cp $file "${APPDIR}/Contents/MacOS"
+	copy_deps "${APPDIR}/Contents/MacOS/$(basename $file)"
+done
+
+echo "Copying plugins"
+for file in ${PLUGINS}
+do
+	echo $file
+	cp $file "${APPDIR}/Contents/Resources/share/codeblocks/plugins/"
+	install_name_tool -id @loader_path/$(basename $file) "${SHAREDATADIR}/plugins/$(basename $file)"
+	copy_deps "${SHAREDATADIR}/plugins/$(basename $file)"
+done
+
+pushd ${SRCDIR}/src
+
+echo Compressing core UI resources
+zip -jqu9 ${SHAREDATADIR}/resources.zip src/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/manager_resources.zip sdk/resources/*.xrc sdk/resources/images/*.png
+zip -jqu9 ${SHAREDATADIR}/start_here.zip src/resources/start_here/*
+
+echo Compressing plugins UI resources
+zip -jqu9 ${SHAREDATADIR}/Astyle.zip plugins/astyle/resources/manifest.xml plugins/astyle/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/autosave.zip plugins/autosave/manifest.xml plugins/autosave/*.xrc
+zip -jqu9 ${SHAREDATADIR}/classwizard.zip plugins/classwizard/resources/manifest.xml plugins/classwizard/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/codecompletion.zip plugins/codecompletion/resources/manifest.xml plugins/codecompletion/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/compiler.zip plugins/compilergcc/resources/manifest.xml plugins/compilergcc/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/debugger.zip plugins/debuggergdb/resources/manifest.xml plugins/debuggergdb/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/defaultmimehandler.zip plugins/defaultmimehandler/resources/manifest.xml plugins/defaultmimehandler/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/occurrenceshighlighting.zip plugins/occurrenceshighlighting/resources/*.xrc plugins/occurrenceshighlighting/resources/manifest.xml
+zip -jqu9 ${SHAREDATADIR}/openfileslist.zip plugins/openfileslist/manifest.xml
+zip -jqu9 ${SHAREDATADIR}/projectsimporter.zip plugins/projectsimporter/resources/*.xrc plugins/projectsimporter/resources/manifest.xml
+zip -jqu9 ${SHAREDATADIR}/scriptedwizard.zip plugins/scriptedwizard/resources/manifest.xml
+zip -jqu9 ${SHAREDATADIR}/todo.zip plugins/todo/resources/manifest.xml plugins/todo/resources/*.xrc
+zip -jqu9 ${SHAREDATADIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc
+echo Packing core UI bitmaps
+cd src/resources
+zip -0 -qu ${SHAREDATADIR}/resources.zip images/*.png images/16x16/*.png images/12x12/*.png
+cd ../../sdk/resources
+zip -0 -qu ${SHAREDATADIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png
+echo Packing plugins UI bitmaps
+cd ../../plugins/compilergcc/resources
+zip -0 -qu ${SHAREDATADIR}/compiler.zip images/*.png images/16x16/*.png
+cd ../../debuggergdb/resources
+zip -0 -qu ${SHAREDATADIR}/debugger.zip images/*.png images/16x16/*.png
+popd
+
+echo Makefile.am >  excludes.txt
+echo Makefile.in >> excludes.txt
+echo \.svn\      >> excludes.txt
+echo *.gdb       >> excludes.txt
+
+rsync -au ${SRCDIR}/src/src/resources/images/ --exclude-from=excludes.txt ${SHAREDATADIR}/images
+rsync -lpdtgou --include='*.png' --exclude='*' ${SRCDIR}/src/plugins/codecompletion/resources/images/ ${SHAREDATADIR}/images/codecompletion
+
+rsync -lpdtgou --include='*.xml' --exclude='*' ${SRCDIR}/src/plugins/compilergcc/resources/compilers/ ${SHAREDATADIR}/compilers
+
+cp ${SRCDIR}/src/src/resources/icons/*.icns ${APPDIR}/Contents/Resources
+
+rsync -lpdtgou --exclude-from=excludes.txt ${SRCDIR}/src/templates/common/ ${SHAREDATADIR}/templates
+rsync -au --exclude-from=excludes.txt ${SRCDIR}/src/plugins/scriptedwizard/resources/ ${SHAREDATADIR}/templates
+
+rsync -lpdtgou --include='*.xml' --include="*.sample" --exclude='*' ${SRCDIR}/src/sdk/resources/lexers/ ${SHAREDATADIR}/lexers
+
+rsync -au ${SRCDIR}/src/scripts/ --include='*.script' --exclude='*' ${SHAREDATADIR}/scripts
