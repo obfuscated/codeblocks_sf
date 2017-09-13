@@ -1509,6 +1509,7 @@ void ConfigManager::InitPaths()
             ConfigManager::plugin_path_global = data_path_global + _T("/plugins");
         else
         {
+#ifdef __WXGTK__
             // It seems we can not longer rely on wxStandardPathsBase::Get().GetPluginsDir(),
             // because its behaviour has changed on some systems (at least Fedora 14 64-bit).
             // So we create the pathname manually
@@ -1519,6 +1520,7 @@ void ConfigManager::InitPaths()
                 // if standard-path does not exist and we are on 64-bit system, use lib64 instead
                 ConfigManager::plugin_path_global = ((const wxStandardPaths&)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib64/codeblocks/plugins");
             }
+#endif // __WXGTK__
         }
     }
 #endif
