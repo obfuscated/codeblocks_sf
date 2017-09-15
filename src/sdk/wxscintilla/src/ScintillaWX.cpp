@@ -734,7 +734,7 @@ bool ScintillaWX::CreateSystemCaret() {
     delete [] bits;
     BOOL retval = ::CreateCaret(GetHwndOf(stc), sysCaretBitmap,
                                 sysCaretWidth, sysCaretHeight);
-    ::ShowCaret(GetHwndOf(sci));
+    ::ShowCaret(GetHwndOf(stc));
     return retval != 0;
 #else
     return false;
@@ -745,7 +745,7 @@ bool ScintillaWX::DestroySystemCaret() {
 #ifdef __WXMSW__
     if (sysCaretBitmap)
     {
-        ::HideCaret(GetHwndOf(sci));
+        ::HideCaret(GetHwndOf(stc));
         BOOL retval = ::DestroyCaret();
         if (sysCaretBitmap) {
             ::DeleteObject(sysCaretBitmap);
