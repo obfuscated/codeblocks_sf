@@ -706,7 +706,7 @@ void CompilerOptionsDlg::TextToOptions()
     while (i < m_CompilerOptions.GetCount())
     {
         wxString opt = m_CompilerOptions.Item(i);
-        opt.Trim(wxString::both);
+        opt = opt.Strip(wxString::both);
         CompOption* copt = m_Options.GetOptionByOption(opt);
         if (copt)
         {
@@ -728,7 +728,7 @@ void CompilerOptionsDlg::TextToOptions()
     while (i < m_LinkerOptions.GetCount())
     {
         wxString opt = m_LinkerOptions.Item(i);
-        opt.Trim(wxString::both);
+        opt = opt.Strip(wxString::both);
         CompOption* copt = m_Options.GetOptionByAdditionalLibs(opt);
         if (copt)
         {
