@@ -9879,7 +9879,7 @@ bool wxPGVariantToWxObjectPtr( const wxVariant& value, wxObject** result )
     if ( !vdata->GetValueClassInfo() )
         return false;
 
-	wxPGVariantData* pgvdata = wxDynamicCastVariantData(vdata, wxPGVariantData);
+    wxPGVariantData* pgvdata = wxDynamicCastVariantData(vdata, wxPGVariantData);
     if ( pgvdata )
     {
         *result = (wxObject*) pgvdata->GetValuePtr();
@@ -11092,9 +11092,10 @@ wxString wxPropertyGridInterface::SaveEditableState( int includedStates ) const
                 const wxPGProperty* p = it.GetProperty();
 
                 if ( !p->HasFlag(wxPG_PROP_COLLAPSED) )
+                {
                     result += EscapeDelimiters(p->GetName());
                     result += wxT(",");
-
+                }
             }
 
             if ( result.Last() == wxT(',') )

@@ -429,11 +429,11 @@ wxString wxIntProperty::GetValueAsString( int ) const
     if ( wxPGIsVariantType(m_value, long) )
         return wxString::Format(wxT("%li"),m_value.GetLong());
 
-	wxLongLong* ll = &wxLongLongFromVariant(m_value);
-	if ( ll )
-		return ll->ToString();
+    wxLongLong* ll = &wxLongLongFromVariant(m_value);
+    if ( ll )
+        return ll->ToString();
 
-	return wxEmptyString;
+    return wxEmptyString;
 }
 
 bool wxIntProperty::StringToValue( wxVariant& variant, const wxString& text, int argFlags ) const
