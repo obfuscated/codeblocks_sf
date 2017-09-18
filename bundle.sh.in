@@ -144,7 +144,7 @@ rsync -lpdtgou --include='*.xml' --exclude='*' ${SRCDIR}/src/plugins/compilergcc
 cp ${SRCDIR}/src/src/resources/icons/*.icns ${APPDIR}/Contents/Resources
 
 rsync -lpdtgou --exclude-from=excludes.txt ${SRCDIR}/src/templates/common/ ${SHAREDATADIR}/templates
-rsync -au --exclude-from=excludes.txt ${SRCDIR}/src/plugins/scriptedwizard/resources/ ${SHAREDATADIR}/templates
+rsync -au --exclude-from=excludes.txt ${SRCDIR}/src/plugins/scriptedwizard/resources/ ${SHAREDATADIR}/templates/wizard
 
 rsync -lpdtgou --include='*.xml' --include="*.sample" --exclude='*' ${SRCDIR}/src/sdk/resources/lexers/ ${SHAREDATADIR}/lexers
 
