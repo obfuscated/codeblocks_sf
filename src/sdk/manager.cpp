@@ -112,6 +112,7 @@ static wxString GetCodeblocksEventName(wxEventType type)
     else if (type==cbEVT_DEBUGGER_STARTED) name = _T("cbEVT_DEBUGGER_STARTED");
     else if (type==cbEVT_DEBUGGER_STARTED) name = _T("cbEVT_DEBUGGER_STARTED");
     else if (type==cbEVT_DEBUGGER_PAUSED) name = _T("cbEVT_DEBUGGER_PAUSED");
+    else if (type==cbEVT_DEBUGGER_CONTINUED) name = _T("cbEVT_DEBUGGER_CONTINUED");
     else if (type==cbEVT_DEBUGGER_FINISHED) name = _T("cbEVT_DEBUGGER_FINISHED");
     else name = _("unknown CodeBlocksEvent");
 

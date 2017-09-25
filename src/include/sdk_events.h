@@ -432,6 +432,8 @@ extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_STARTED;
 #define EVT_DEBUGGER_STARTED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_STARTED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_PAUSED;
 #define EVT_DEBUGGER_PAUSED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_PAUSED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
+extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_CONTINUED;
+#define cbEVT_DEBUGGER_CONTINUED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_CONTINUED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 extern EVTIMPORT const wxEventType cbEVT_DEBUGGER_FINISHED;
 #define EVT_DEBUGGER_FINISHED(fn) DECLARE_EVENT_TABLE_ENTRY( cbEVT_DEBUGGER_FINISHED, -1, -1, (wxObjectEventFunction)(wxEventFunction)(CodeBlocksEventFunction)&fn, (wxObject *) NULL ),
 

@@ -156,6 +156,7 @@ const wxEventType cbEVT_COMPILE_FILE_REQUEST = wxNewEventType();
 // debugger-related events
 const wxEventType cbEVT_DEBUGGER_STARTED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_PAUSED = wxNewEventType();
+const wxEventType cbEVT_DEBUGGER_CONTINUED = wxNewEventType();
 const wxEventType cbEVT_DEBUGGER_FINISHED = wxNewEventType();
 
 // logger-related events
