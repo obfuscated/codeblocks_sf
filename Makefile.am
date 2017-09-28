@@ -13,6 +13,14 @@ am__tar = @am__tar@ $(ADDITIONAL_MAKE_DIST_OPTIONS)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = codeblocks.pc
 
+osxbundledir = $(pkgdatadir)/osx_bundle
+dist_osxbundle_DATA = bundle.sh \
+	codeblocks.plist
+
+osxbundle_iconsdir = $(osxbundledir)/icons
+dist_osxbundle_icons_DATA = $(top_srcdir)/src/src/resources/icons/*.icns
+
+
 EXTRA_DIST = bootstrap \
 		codeblocks.spec \
 		codeblocks.spec.fedora \
