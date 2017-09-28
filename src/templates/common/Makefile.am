@@ -27,6 +27,10 @@ dist_pkgdata_DATA = console.cbp \
 		sdl-cb.bmp \
 		sdl-main.cpp \
 		sdl.png \
+		sdl2-main.cpp \
+		sdl2.png \
+		sdl2app.cbp \
+		sdl2app.template \
 		sfml.cbp \
 		sfml.png \
 		sfml.template \
