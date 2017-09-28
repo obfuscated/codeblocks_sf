@@ -13,13 +13,15 @@ am__tar = @am__tar@ $(ADDITIONAL_MAKE_DIST_OPTIONS)
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = codeblocks.pc
 
+# Add some files needed only when making a bundle
+if DARWIN
 osxbundledir = $(pkgdatadir)/osx_bundle
 dist_osxbundle_DATA = bundle.sh \
-	codeblocks.plist
+					codeblocks.plist
 
 osxbundle_iconsdir = $(osxbundledir)/icons
 dist_osxbundle_icons_DATA = $(top_srcdir)/src/src/resources/icons/*.icns
-
+endif
 
 EXTRA_DIST = bootstrap \
 		codeblocks.spec \
