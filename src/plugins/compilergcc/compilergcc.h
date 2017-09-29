@@ -206,7 +206,14 @@ class CompilerGCC : public cbCompilerPlugin
         void InitBuildLog(bool workspaceBuild);
         void PrintBanner(BuildAction action, cbProject* prj = 0, ProjectBuildTarget* target = 0);
         bool UseMake(cbProject* project = 0);
-        bool CompilerValid(ProjectBuildTarget* target = 0);
+
+        struct CompilerValidResult
+        {
+            Compiler *compiler = nullptr;
+            bool isValid = false;
+        };
+        CompilerValidResult CompilerValid(ProjectBuildTarget* target = 0);
+        void PrintInvalidCompiler(ProjectBuildTarget *target, Compiler *compiler, const wxString &finalMessage);
         ProjectBuildTarget* GetBuildTargetForFile(ProjectFile* pf);
         wxString GetMakeCommandFor(MakeCommand cmd, cbProject* project, ProjectBuildTarget* target);
         int DoBuild(bool clean, bool build);

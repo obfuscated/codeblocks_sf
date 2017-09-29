@@ -186,6 +186,7 @@ void Compiler::LoadDefaultRegExArray(bool globalPrecedence)
     LoadRegExArray(GetID(), globalPrecedence);
 }
 
+// Keep in sync with the MakeInvalidCompilerMessages method.
 bool Compiler::IsValid()
 {
     if (!m_NeedValidityCheck)
@@ -203,12 +204,14 @@ bool Compiler::IsValid()
     }
 
     wxString tmp = m_MasterPath + _T("/bin/") + m_Programs.C;
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+    MacrosManager *macros = Manager::Get()->GetMacrosManager();
+    macros->ReplaceMacros(tmp);
     m_Valid = wxFileExists(tmp);
     if (!m_Valid)
-    {   // and try without appending the 'bin'
+    {
+        // and try without appending the 'bin'
         tmp = m_MasterPath + _T("/") + m_Programs.C;
-        Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+        macros->ReplaceMacros(tmp);
         m_Valid = wxFileExists(tmp);
     }
     if (!m_Valid)
@@ -217,13 +220,42 @@ bool Compiler::IsValid()
         for (size_t i = 0; i < m_ExtraPaths.GetCount(); ++i)
         {
             tmp = m_ExtraPaths[i] + _T("/") + m_Programs.C;
-            Manager::Get()->GetMacrosManager()->ReplaceMacros(tmp);
+            macros->ReplaceMacros(tmp);
             m_Valid = wxFileExists(tmp);
             if (m_Valid)
                 break;
         }
     }
     return m_Valid;
+}
+
+// Keep in sync with the IsValid method.
+wxString Compiler::MakeInvalidCompilerMessages() const
+{
+    if (!SupportsCurrentPlatform())
+        return _("Compiler doesn't support this platform!\n");
+
+    MacrosManager *macros = Manager::Get()->GetMacrosManager();
+
+    wxString triedPathsMsgs;
+    wxString tmp = m_MasterPath + _T("/bin/") + m_Programs.C;
+    macros->ReplaceMacros(tmp);
+    triedPathsMsgs += F(_T("Tried to run compiler executable '%s', but failed!\n"), tmp.wx_str());
+
+    // and try without appending the 'bin'
+    tmp = m_MasterPath + _T("/") + m_Programs.C;
+    macros->ReplaceMacros(tmp);
+
+    // look in extra paths too
+    for (size_t i = 0; i < m_ExtraPaths.GetCount(); ++i)
+    {
+        triedPathsMsgs += F(_T("Tried to run compiler executable '%s', but failed!\n"), tmp.wx_str());
+
+        tmp = m_ExtraPaths[i] + _T("/") + m_Programs.C;
+        macros->ReplaceMacros(tmp);
+    }
+
+    return triedPathsMsgs;
 }
 
 void Compiler::MakeValidID()

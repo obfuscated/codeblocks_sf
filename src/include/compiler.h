@@ -378,6 +378,9 @@ class DLLIMPORT Compiler : public CompileOptionsBase
         /** @brief Do compiler writes multi-line messages? */
         bool WithMultiLineMsg() { return m_MultiLineMessages; };
 
+        /// @brief Returns messages which might be useful to the use for debugging why the
+        /// compiler is invalid. Call only after IsValid returns false.
+        wxString MakeInvalidCompilerMessages() const;
     protected:
         friend class CompilerFactory;
         Compiler(const Compiler& other); // copy ctor to copy everything but update m_ID

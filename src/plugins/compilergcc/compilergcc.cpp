@@ -1652,22 +1652,55 @@ wxString CompilerGCC::GetCurrentCompilerID(ProjectBuildTarget* target)
     return wxEmptyString;
 }
 
-bool CompilerGCC::CompilerValid(ProjectBuildTarget* target)
+auto CompilerGCC::CompilerValid(ProjectBuildTarget* target) -> CompilerValidResult
 {
-    Compiler* compiler = 0;
+    CompilerValidResult result;
     if (!target)
-        compiler = CompilerFactory::GetDefaultCompiler();
+        result.compiler = CompilerFactory::GetDefaultCompiler();
     else
     {
         wxString idx = GetCurrentCompilerID(target);
-        compiler = CompilerFactory::GetCompiler(idx);
+        result.compiler = CompilerFactory::GetCompiler(idx);
     }
-    return compiler && compiler->IsValid();
+    if (result.compiler)
+        result.isValid = result.compiler->IsValid();
+    return result;
+}
+
+void CompilerGCC::PrintInvalidCompiler(ProjectBuildTarget *target, Compiler *compiler, const wxString &finalMessage)
+{
+    wxString compilerName, compilerName2(wxT("unknown"));
+    if (compiler)
+    {
+        compilerName = wxT("(") + compiler->GetName() + wxT(") ");
+        compilerName2 = compiler->GetName();
+    }
+
+    wxString title;
+    if (target)
+        title = target->GetFullTitle();
+    else
+        title = wxT("unknown");
+
+    wxString msg;
+    msg.Printf(_T("Project/Target: \"%s\":\n")
+               _T("  The compiler's setup %sis invalid, so Code::Blocks cannot find/run the compiler.\n")
+               _T("  Probably the toolchain path within the compiler options is not setup correctly?!\n")
+               _T("  Do you have a compiler installed?\n")
+               _T("Goto \"Settings->Compiler...->Global compiler settings->%s->Toolchain executables\"")
+               _T(" and fix the compiler's setup.\n"),
+               title.wx_str(), compilerName.wx_str(), compilerName2.wx_str());
+
+    LogManager *logger = Manager::Get()->GetLogManager();
+    logger->LogError(msg, m_PageIndex);
+    if (compiler)
+        logger->LogError(compiler->MakeInvalidCompilerMessages(), m_PageIndex);
+    logger->LogError(finalMessage, m_PageIndex);
 }
 
 void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTarget* target)
 {
-    if (!CompilerValid(target))
+    if (!CompilerValid(target).isValid)
         return;
 
     CodeBlocksLogEvent evtShow(cbEVT_SHOW_LOG_MANAGER);
@@ -1812,11 +1845,14 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
 
     DoPrepareQueue(false);
     if (   !(target && (   target->GetTargetType() == ttCommandsOnly // do not require compiler for commands-only target
-                        || target->GetCompilerID() == wxT("null") )) // do not require compiler for "No Compiler" (why would you?)
-        && !CompilerValid(target) )
+                        || target->GetCompilerID() == wxT("null") ))) // do not require compiler for "No Compiler" (why would you?)
     {
-        Manager::Get()->GetLogManager()->LogWarning(_("Target uses an invalid compiler; run aborted"), m_PageIndex);
-        return -1;
+        CompilerValidResult result = CompilerValid(target);
+        if (!result.isValid)
+        {
+            PrintInvalidCompiler(target, result.compiler, _("Run aborted..."));
+            return -1;
+        }
     }
 //    DBGLOG(_T("1) target=%s, m_RealTargetIndex=%d, m_TargetIndex=%d"), target ? target->GetTitle().c_str() : _T("null"), m_RealTargetIndex, m_TargetIndex);
 
@@ -2111,7 +2147,7 @@ int CompilerGCC::DistClean(ProjectBuildTarget* target)
 
     if (!m_IsWorkspaceOperation)
         DoPrepareQueue(true);
-    if (!CompilerValid(target))
+    if (!CompilerValid(target).isValid)
         return -1;
 
 //    Manager::Get()->GetMacrosManager()->Reset();
@@ -2564,23 +2600,10 @@ void CompilerGCC::PreprocessJob(cbProject* project, const wxString& targetName)
         for (size_t x = 0; x < tlist.GetCount(); ++x)
         {
             ProjectBuildTarget* tgt = prj->GetBuildTarget(tlist[x]);
-            if (!CompilerValid(tgt))
+            CompilerValidResult result = CompilerValid(tgt);
+            if (!result.isValid)
             {
-                Compiler *compiler = CompilerFactory::GetCompiler(GetCurrentCompilerID(tgt));
-                wxString compilerName, compilerName2(wxT("unknown"));
-                if (compiler)
-                {
-                    compilerName = wxT("(") + compiler->GetName() + wxT(") ");
-                    compilerName2 = compiler->GetName();
-                }
-                wxString msg;
-                msg.Printf(_T("\"%s - %s\": The compiler's setup %sis invalid, so Code::Blocks cannot find/run the compiler.\n")
-                           _T("Probably the toolchain path within the compiler options is not setup correctly?! (Do you have a compiler installed?)\n")
-                           _T("Goto \"Settings->Compiler...->Global compiler settings->%s->Toolchain executables\"")
-                           _T(" and fix the compiler's setup.\n")
-                           _T("Skipping..."),
-                           prj->GetTitle().wx_str(), tlist[x].wx_str(), compilerName.wx_str(), compilerName2.wx_str());
-                Manager::Get()->GetLogManager()->LogWarning(msg, m_PageIndex);
+                PrintInvalidCompiler(tgt, result.compiler, _T("Skipping..."));
                 continue;
             }
             else if (!tgt->SupportsCurrentPlatform())
@@ -2650,7 +2673,7 @@ int CompilerGCC::DoBuild(bool clean, bool build)
     m_Clean = clean;
     m_Build = build;
 
-    if (!bt || !CompilerValid(bt))
+    if (!bt || !CompilerValid(bt).isValid)
         return -2;
 
     BuildStateManagement();
@@ -2948,7 +2971,7 @@ int CompilerGCC::CompileFile(const wxString& file)
 
     PrintBanner(baBuildFile, m_pProject, bt);
 
-    if ( !CompilerValid(bt) )
+    if ( !CompilerValid(bt).isValid )
         return -1;
     if (!pf) // compile single file not belonging to a project
         return CompileFileWithoutProject(file);
