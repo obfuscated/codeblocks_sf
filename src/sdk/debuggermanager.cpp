@@ -202,6 +202,18 @@ void cbWatch::AutoUpdate(bool enabled)
     m_autoUpdate = enabled;
 }
 
+wxString cbWatch::MakeSymbolToAddress() const
+{
+    wxString symbol;
+    GetSymbol(symbol);
+    return symbol;
+}
+
+bool cbWatch::IsPointerType() const
+{
+    return false;
+}
+
 cb::shared_ptr<cbWatch> DLLIMPORT cbGetRootWatch(cb::shared_ptr<cbWatch> watch)
 {
     cb::shared_ptr<cbWatch> root = watch;
