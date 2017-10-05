@@ -31,6 +31,8 @@
 #include <shlobj.h>
 #endif
 
+#include "annoyingdialog.h"
+
 #if defined(__APPLE__) && defined(__MACH__)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
@@ -352,11 +354,29 @@ void CfgMgrBldr::Flush()
     {
         if (!cfg.StartsWith(_T("http://")))
         {
-            if (!TinyXML::SaveDocument(cfg, doc))
+            bool done = false;
+            do
             {
-                // TODO (thomas#1#): add "retry" option
-                cbMessageBox(F(_T("Could not save config file '%s'!"), cfg.wx_str()), _("Warning"));
-            }
+                if (TinyXML::SaveDocument(cfg, doc))
+                    done = true;
+                else
+                {
+                    AnnoyingDialog dlg(_("Error"),
+                                       F(_T("Could not save config file '%s'!"), cfg.wx_str()),
+                                       wxART_ERROR, AnnoyingDialog::TWO_BUTTONS,
+                                       AnnoyingDialog::rtTWO, _("&Retry"), _("&Close"));
+                    PlaceWindow(&dlg);
+                    switch (dlg.ShowModal())
+                    {
+                        case AnnoyingDialog::rtONE:
+                            done = false;
+                            break;
+                        case AnnoyingDialog::rtTWO:
+                        default:
+                            done = true;
+                    }
+                }
+            } while (!done);
         }
         else
         {
