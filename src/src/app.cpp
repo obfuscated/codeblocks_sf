@@ -1292,7 +1292,8 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
     if (s_Loading)
         return; // still loading; we can't possibly be interested for this event ;)
 
-    if (!Manager::Get())
+    Manager *manager = Manager::Get();
+    if (!manager || manager->IsAppShuttingDown())
         return;
 
     // Activation & De-Activation event

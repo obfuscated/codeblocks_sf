@@ -353,8 +353,10 @@ void CfgMgrBldr::Flush()
         if (!cfg.StartsWith(_T("http://")))
         {
             if (!TinyXML::SaveDocument(cfg, doc))
+            {
                 // TODO (thomas#1#): add "retry" option
-                wxSafeShowMessage(_("Warning"), _T("Could not save config file..."));
+                cbMessageBox(F(_T("Could not save config file '%s'!"), cfg.wx_str()), _("Warning"));
+            }
         }
         else
         {

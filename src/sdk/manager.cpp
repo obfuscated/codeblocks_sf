@@ -161,10 +161,6 @@ Manager::~Manager()
             mit->second.erase(mit->second.begin());
         }
     }
-
-//    Shutdown();
-    CfgMgrBldr::Free(); // only terminate config at the very last moment
-//    FileManager::Free();
 }
 
 
@@ -245,6 +241,7 @@ void Manager::Shutdown()
     MacrosManager::Free();
     UserVariableManager::Free();
     LogManager::Free();
+    CfgMgrBldr::Free();
 }
 
 bool Manager::ProcessEvent(CodeBlocksEvent& event)

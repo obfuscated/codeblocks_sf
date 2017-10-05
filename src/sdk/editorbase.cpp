@@ -128,18 +128,16 @@ EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
 
 EditorBase::~EditorBase()
 {
-    if (Manager::Get()->GetEditorManager()) // sanity check
+    if (!Manager::Get()->IsAppShuttingDown())
+    {
         Manager::Get()->GetEditorManager()->RemoveCustomEditor(this);
 
-    if (Manager::Get()->GetPluginManager())
-    {
         CodeBlocksEvent event(cbEVT_EDITOR_CLOSE);
         event.SetEditor(this);
         event.SetString(m_Filename);
 
         Manager::Get()->GetPluginManager()->NotifyPlugins(event);
     }
-
     delete m_pData;
 }
 

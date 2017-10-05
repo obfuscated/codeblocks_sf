@@ -20,6 +20,7 @@
 #include "settings.h"
 #include "sdk_events.h"
 #include "cbfunctor.h"
+#include "cbexception.h"
 
 // forward decls
 class wxFrame;
@@ -193,13 +194,17 @@ protected:
 
 public:
 
-    static inline bool Valid() { return instance; }
+    static bool Valid() { return instance; }
 
-    static inline MgrT* Get()
+    static MgrT* Get()
     {
-        if (instance == nullptr && isShutdown == false)
-            instance = new MgrT();
-
+        if (instance == nullptr)
+        {
+            if (isShutdown == false)
+                instance = new MgrT();
+            else
+                cbAssert(false && "Calling Get after the subsystem has been shutdown is an error!");
+        }
         return instance;
     }
 
