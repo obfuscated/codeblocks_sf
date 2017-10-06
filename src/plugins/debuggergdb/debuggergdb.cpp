@@ -2070,6 +2070,8 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
             // update running threads
             if (dbg_manager->UpdateThreads())
                 RunCommand(CMD_RUNNINGTHREADS);
+
+            m_State.GetDriver()->UpdateMemoryRangeWatches(m_memoryRange);
         }
     }
 }
@@ -2085,6 +2087,18 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
     return watch;
 }
 
+cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(uint64_t address, uint64_t size, const wxString &id )
+{
+
+    cb::shared_ptr<GDBMemoryRangeWatch> watch( new GDBMemoryRangeWatch(address, size, id));
+    m_memoryRange.push_back(watch);
+
+    if (m_pProcess)
+        m_State.GetDriver()->UpdateMemoryRangeWatch(m_memoryRange.back());
+
+    return watch;
+}
+
 void DebuggerGDB::AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch)
 {
     m_watches.push_back(watch);
@@ -2094,7 +2108,18 @@ void DebuggerGDB::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 {
     WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     if (it != m_watches.end())
+    {
         m_watches.erase(it);
+        return;
+    }
+
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRange.begin(), m_memoryRange.end(), watch);
+    if (mItr != m_memoryRange.end())
+    {
+        m_memoryRange.erase(mItr);
+        return;
+    }
+
 }
 
 bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
@@ -2102,14 +2127,28 @@ bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
     WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     if (it != m_watches.end())
         return true;
-    else
-        return watch == m_localsWatch || watch == m_funcArgsWatch;
+    else if(watch == m_localsWatch || watch == m_funcArgsWatch)
+        return true;
+
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRange.begin(), m_memoryRange.end(), watch);
+    if (mItr != m_memoryRange.end())
+        return true;
+
+    return false;
+}
+
+bool DebuggerGDB::IsMemoryRangeWatch(cb::shared_ptr<cbWatch> watch)
+{
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRange.begin(), m_memoryRange.end(), watch);
+    if (mItr != m_memoryRange.end())
+        return true;
+    return false;
 }
 
 void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 {
-    // not supported for child nodes!
-    if (watch->GetParent())
+    // not supported for child nodes or memory ranges!
+    if (watch->GetParent() || IsMemoryRangeWatch(watch))
         return;
 
     cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);

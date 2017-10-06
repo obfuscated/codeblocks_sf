@@ -89,8 +89,10 @@ class DebuggerGDB : public cbDebuggerPlugin
         int GetExitCode() const { return m_LastExitCode; }
 
         cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol);
+        cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString &id );
         void DeleteWatch(cb::shared_ptr<cbWatch> watch);
         bool HasWatch(cb::shared_ptr<cbWatch> watch);
+        bool IsMemoryRangeWatch(cb::shared_ptr<cbWatch> watch);
         void ShowWatchProperties(cb::shared_ptr<cbWatch> watch);
         bool SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value);
         void ExpandWatch(cb::shared_ptr<cbWatch> watch);
@@ -208,6 +210,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         bool m_TemporaryBreak;
 
         WatchesContainer m_watches;
+        MemoryRangeWatchesContainer m_memoryRange;
+
         cb::shared_ptr<GDBWatch> m_localsWatch, m_funcArgsWatch;
         wxString m_watchToDereferenceSymbol;
         wxObject *m_watchToDereferenceProperty;
