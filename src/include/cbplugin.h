@@ -513,6 +513,7 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
 
         // watches
         virtual cb::shared_ptr<cbWatch> AddWatch(const wxString& symbol) = 0;
+        virtual cb::shared_ptr<cbWatch> AddMemoryRange(uint64_t address, uint64_t size, const wxString &id ) = 0;
         virtual void DeleteWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual bool HasWatch(cb::shared_ptr<cbWatch> watch) = 0;
         virtual void ShowWatchProperties(cb::shared_ptr<cbWatch> watch) = 0;
