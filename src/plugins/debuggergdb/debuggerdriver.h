@@ -105,6 +105,7 @@ class DebuggerDriver
         virtual void CPURegisters() = 0;
         virtual void SwitchToFrame(size_t number) = 0;
         virtual void SetVarValue(const wxString& var, const wxString& value) = 0;
+        virtual void SetMemoryRangeValue(uint64_t addr, const wxString& value) = 0;
         virtual void MemoryDump() = 0;
         virtual void RunningThreads() = 0;
 
@@ -142,6 +143,9 @@ class DebuggerDriver
                                    WatchesContainer &watches) = 0;
         virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch) = 0;
         virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals) = 0;
+
+        virtual void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches) = 0;
+        virtual void UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch) = 0;
 
         /** Attach to process */
         virtual void Attach(int pid) = 0;
