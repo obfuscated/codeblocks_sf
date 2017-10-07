@@ -28,7 +28,7 @@ bool TinyXML::LoadDocument(const wxString& filename, TiXmlDocument *doc)
 
     doc->Parse(input);
     delete[] input;
-    return true;
+    return !doc->Error();
 }
 
 TiXmlDocument* TinyXML::LoadDocument(const wxString& filename)
