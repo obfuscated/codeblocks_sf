@@ -222,22 +222,33 @@ wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
     return wxEmptyString;
 }
 
+static void setupMinimalDocument(TiXmlDocument &doc)
+{
+    doc.ClearError();
+    doc.InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
+    doc.InsertEndChild(TiXmlElement("CodeBlocksConfig"));
+    doc.FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
+}
 
 void CfgMgrBldr::SwitchTo(const wxString& fileName)
 {
     doc = new TiXmlDocument();
 
     if (!TinyXML::LoadDocument(fileName, doc))
-    {
-        doc->InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
-        doc->InsertEndChild(TiXmlElement("CodeBlocksConfig"));
-        doc->FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
-    }
+        setupMinimalDocument(*doc);
 
     if (doc->ErrorId())
         cbThrow(wxString::Format(_T("TinyXML error: %s\nIn file: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), fileName.c_str(), doc->ErrorRow(), doc->ErrorCol()));
 
     TiXmlElement* docroot = doc->FirstChildElement("CodeBlocksConfig");
+    if (!docroot)
+    {
+        setupMinimalDocument(*doc);
+        docroot = doc->FirstChildElement("CodeBlocksConfig");
+
+        if (!docroot)
+            cbThrow(wxString::Format(wxT("Cannot find docroot in config file '%s'"), fileName.wx_str()));
+    }
 
     if (doc->ErrorId())
         cbThrow(wxString::Format(_T("TinyXML error: %s\nIn file: %s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), fileName.c_str(), doc->ErrorRow(), doc->ErrorCol()));
