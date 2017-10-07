@@ -241,6 +241,7 @@ case $WX_BASENAME in
 
         dnl Check whether boost is installed
         AX_BOOST_BASE
+        AX_BOOST_SYSTEM
 
 		CB_GLIB2_CFLAGS="$GLIB2_CFLAGS"
 		CB_GLIB2_LIBS="$GLIB2_LIBS"
