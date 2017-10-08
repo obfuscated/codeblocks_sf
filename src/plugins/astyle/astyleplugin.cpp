@@ -42,7 +42,6 @@ using std::string;
 
 namespace
 {
-    const int idCodeFormatterFile = wxNewId();
     const int idCodeFormatterActiveFile = wxNewId();
     const int idCodeFormatterProject = wxNewId();
 }
