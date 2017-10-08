@@ -69,7 +69,7 @@ AutoVersioning::AutoVersioning()
       new ProjectLoaderHooks::HookFunctor<AutoVersioning>(this, &AutoVersioning::OnProjectLoadingHook);
     m_AutoVerHookId = ProjectLoaderHooks::RegisterHook(AutoVerHook);
     m_Modified = false;
-    m_Project = 0;
+    m_Project = nullptr;
 } // end of constructor
 
 AutoVersioning::~AutoVersioning()
@@ -105,7 +105,7 @@ void AutoVersioning::OnRelease(bool /*appShutDown*/)
         m_timerStatus->Stop();
     }
     delete m_timerStatus;
-    m_timerStatus = 0;
+    m_timerStatus = nullptr;
 }
 
 void AutoVersioning::BuildMenu(wxMenuBar* menuBar)
@@ -311,7 +311,7 @@ void AutoVersioning::OnProjectClosed(CodeBlocksEvent& event)
         m_IsVersioned.erase(event.GetProject());
         if(m_Project == event.GetProject())
         {   // should always be the case (??? we hope ??)
-            m_Project = 0;
+            m_Project = nullptr;
         }
     }
 }// OnProjectClosed
