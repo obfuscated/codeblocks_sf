@@ -48,7 +48,7 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAddDoxgenComment">
-												<label>Add doxgen comment, when implementing the function method</label>
+												<label>Add doxygen comment, when implementing the function method</label>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 											<border>5</border>
