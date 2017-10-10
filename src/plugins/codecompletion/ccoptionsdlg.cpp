@@ -147,7 +147,12 @@ CCOptionsDlg::CCOptionsDlg(wxWindow* parent, NativeParser* np, CodeCompletion* c
     XRCCTRL(*this, "chkFloatCB",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/as_floating_window"), false));
 
     // The toolbar section
-    XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->SetValue(cfg->ReadBool(_T("/scope_filter"), true));
+    wxCheckBox *scopeFilter = XRCCTRL(*this, "chkScopeFilter", wxCheckBox);
+    scopeFilter->SetValue(cfg->ReadBool(_T("/scope_filter"), true));
+    wxSpinCtrl *spinScopeLength = XRCCTRL(*this, "spnChoiceScopeLength", wxSpinCtrl);
+    spinScopeLength->Enable(scopeFilter->GetValue());
+    spinScopeLength->SetValue(cfg->ReadInt(_T("/toolbar_scope_length"), 280));
+    XRCCTRL(*this, "spnChoiceFunctionLength", wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/toolbar_function_length"), 660));
 
     // -----------------------------------------------------------------------
     // Handle all options that are being handled by m_Parser
@@ -244,6 +249,8 @@ void CCOptionsDlg::OnApply()
 
     // The toolbar section
     cfg->Write(_T("/scope_filter"), (bool) XRCCTRL(*this, "chkScopeFilter", wxCheckBox)->GetValue());
+    cfg->Write(_T("/toolbar_scope_length"), (int)XRCCTRL(*this, "spnChoiceScopeLength", wxSpinCtrl)->GetValue());
+    cfg->Write(_T("/toolbar_function_length"), (int)XRCCTRL(*this, "spnChoiceFunctionLength", wxSpinCtrl)->GetValue());
 
     // Page "Documentation"
     cfg->Write(_T("/use_documentation_helper"), (bool) XRCCTRL(*this, "chkDocumentation", wxCheckBox)->GetValue());
@@ -373,6 +380,10 @@ void CCOptionsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     XRCCTRL(*this, "chkFloatCB",              wxCheckBox)->Enable(en);
     XRCCTRL(*this, "chkTreeMembers",          wxCheckBox)->Enable(en);
 #endif // !wxCHECK_VERSION
+
+    // Toolbar section
+    wxCheckBox *scopeFilter = XRCCTRL(*this, "chkScopeFilter", wxCheckBox);
+    XRCCTRL(*this, "spnChoiceScopeLength", wxSpinCtrl)->Enable(scopeFilter->GetValue());
 
     // Page "Documentation"
     en = XRCCTRL(*this, "chkDocumentation",   wxCheckBox)->GetValue();

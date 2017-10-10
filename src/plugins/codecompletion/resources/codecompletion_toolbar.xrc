@@ -3,11 +3,9 @@
   <object class="wxToolBarAddOn" name="codecompletion_toolbar">
     <object class="wxChoice" name="chcCodeCompletionScope">
       <content/>
-	  <size>286,-1</size>
     </object>
     <object class="wxChoice" name="chcCodeCompletionFunction">
       <content/>
-	  <size>660,-1</size>
     </object>
   </object>
 </resource>

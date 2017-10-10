@@ -89,6 +89,7 @@
     #define TRACE2(format, args...)
 #endif
 
+/// Scopes choice name for global functions in CC's toolbar.
 static wxString g_GlobalScope(_T("<global>"));
 
 // this auto-registers the plugin
@@ -1724,20 +1725,30 @@ void CodeCompletion::RereadOptions()
 
 void CodeCompletion::UpdateToolBar()
 {
-    bool showScope = Manager::Get()->GetConfigManager(_T("code_completion"))->ReadBool(_T("/scope_filter"), true);
+    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("code_completion"));
+    const bool showScope = cfg->ReadBool(_T("/scope_filter"), true);
+    const int scopeLength = cfg->ReadInt(_T("/toolbar_scope_length"), 280);
+    const int functionLength = cfg->ReadInt(_T("/toolbar_function_length"), 660);
 
     if (showScope && !m_Scope)
     {
-        m_Scope = new wxChoice(m_ToolBar, wxNewId(), wxPoint(0, 0), wxSize(280, -1), 0, 0);
+        // Show the scope choice
+        m_Scope = new wxChoice(m_ToolBar, XRCID("chcCodeCompletionScope"), wxPoint(0, 0), wxSize(scopeLength, -1), 0, 0);
         m_ToolBar->InsertControl(0, m_Scope);
     }
     else if (!showScope && m_Scope)
     {
+        // Hide the scope choice
         m_ToolBar->DeleteTool(m_Scope->GetId());
-        m_Scope = NULL;
+        m_Scope = nullptr;
     }
-    else
-        return;
+    else if (m_Scope)
+    {
+        // Just apply new size to scope choice
+        m_Scope->SetSize(wxSize(scopeLength, -1));
+    }
+
+    m_Function->SetSize(wxSize(functionLength, -1));
 
     m_ToolBar->Realize();
     m_ToolBar->SetInitialSize();
