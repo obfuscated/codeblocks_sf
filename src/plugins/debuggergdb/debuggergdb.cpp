@@ -1135,6 +1135,8 @@ void DebuggerGDB::RunCommand(int cmd)
     if (!m_pProcess)
         return;
 
+    bool debuggerContinued = false;
+
     switch (cmd)
     {
         case CMD_CONTINUE:
@@ -1145,6 +1147,7 @@ void DebuggerGDB::RunCommand(int cmd)
                 Log(_("Continuing..."));
                 m_State.GetDriver()->Continue();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1156,6 +1159,7 @@ void DebuggerGDB::RunCommand(int cmd)
             {
                 m_State.GetDriver()->Step();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1173,6 +1177,7 @@ void DebuggerGDB::RunCommand(int cmd)
                 m_State.GetDriver()->StepInstruction();
                 m_State.GetDriver()->ResetCurrentFrame();
                 m_State.GetDriver()->NotifyCursorChanged();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1190,6 +1195,7 @@ void DebuggerGDB::RunCommand(int cmd)
                 m_State.GetDriver()->StepIntoInstruction();
                 m_State.GetDriver()->ResetCurrentFrame();
                 m_State.GetDriver()->NotifyCursorChanged();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1201,6 +1207,7 @@ void DebuggerGDB::RunCommand(int cmd)
             {
                 m_State.GetDriver()->StepIn();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1212,6 +1219,7 @@ void DebuggerGDB::RunCommand(int cmd)
             {
                 m_State.GetDriver()->StepOut();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1264,6 +1272,13 @@ void DebuggerGDB::RunCommand(int cmd)
         }
 
         default: break;
+    }
+
+    if(debuggerContinued)
+    {
+        PluginManager *plm = Manager::Get()->GetPluginManager();
+        CodeBlocksEvent evt(cbEVT_DEBUGGER_CONTINUED);
+        plm->NotifyPlugins(evt);
     }
 }
 
