@@ -35,6 +35,7 @@ class CDB_driver : public DebuggerDriver
         virtual void CPURegisters();
         virtual void SwitchToFrame(size_t number);
         virtual void SetVarValue(const wxString& var, const wxString& value);
+        virtual void SetMemoryRangeValue(uint64_t addr, const wxString& value);
         virtual void MemoryDump();
         virtual void Attach(int pid);
         virtual void Detach();
@@ -56,6 +57,8 @@ class CDB_driver : public DebuggerDriver
         virtual void UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
                                    WatchesContainer &watches);
         virtual void UpdateWatch(cb::shared_ptr<GDBWatch> const &watch);
+        virtual void UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches);
+        virtual void UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch);
         virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals);
         virtual void ParseOutput(const wxString& output);
         virtual bool IsDebuggingStarted() const;
