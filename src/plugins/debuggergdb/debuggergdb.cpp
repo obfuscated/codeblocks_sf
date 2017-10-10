@@ -2159,31 +2159,45 @@ void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 
 bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value)
 {
+    if (!m_State.HasDriver())
+        return false;
     if (!HasWatch(cbGetRootWatch(watch)))
         return false;
 
-    if (!m_State.HasDriver())
-        return false;
-
-    wxString full_symbol;
-    cb::shared_ptr<cbWatch> temp_watch = watch;
-    while (temp_watch)
+    if (IsMemoryRangeWatch(watch))
     {
-        wxString symbol;
-        temp_watch->GetSymbol(symbol);
-        temp_watch = temp_watch->GetParent();
+        cb::shared_ptr<GDBMemoryRangeWatch> temp_watch = std::dynamic_pointer_cast<GDBMemoryRangeWatch>(watch);
+        uint64_t addr = temp_watch->GetAddress();
 
-        if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
-            symbol = wxT('(') + symbol + wxT(')');
+        DebuggerDriver* driver = m_State.GetDriver();
+        driver->SetMemoryRangeValue(addr, value);
+        // TODO (bluehazzard#1#): I am not quite sure if this is the right place to update all memory ranges
+        driver->UpdateMemoryRangeWatches(m_memoryRange);
+    }
+    else
+    {
 
-        if (full_symbol.empty())
-            full_symbol = symbol;
-        else
-            full_symbol = symbol + wxT('.') + full_symbol;
+        wxString full_symbol;
+        cb::shared_ptr<cbWatch> temp_watch = watch;
+        while (temp_watch)
+        {
+            wxString symbol;
+            temp_watch->GetSymbol(symbol);
+            temp_watch = temp_watch->GetParent();
+
+            if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
+                symbol = wxT('(') + symbol + wxT(')');
+
+            if (full_symbol.empty())
+                full_symbol = symbol;
+            else
+                full_symbol = symbol + wxT('.') + full_symbol;
+        }
+
+        DebuggerDriver* driver = m_State.GetDriver();
+        driver->SetVarValue(full_symbol, value);
     }
 
-    DebuggerDriver* driver = m_State.GetDriver();
-    driver->SetVarValue(full_symbol, value);
     DoWatches();
     return true;
 }
