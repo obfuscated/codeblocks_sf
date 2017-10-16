@@ -1297,8 +1297,13 @@ void ScintillaWX::DoCommand(int ID) {
 
 
 void ScintillaWX::DoContextMenu(Point pt) {
-    if (displayPopupMenu)
+    if (displayPopupMenu) {
+        // To prevent generating EVT_MOUSE_CAPTURE_LOST.
+        if ( HaveMouseCapture() ) {
+            SetMouseCapture(false);
+        }
         ContextMenu(pt);
+    }
 }
 
 void ScintillaWX::DoOnListBox() {
