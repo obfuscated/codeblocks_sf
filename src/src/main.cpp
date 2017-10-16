@@ -2713,19 +2713,46 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
     m_InitiatedShutdown = true;
     Manager::BlockYields(true);
 
-    ProjectManager* prjman = Manager::Get()->GetProjectManager();
-    if (prjman)
     {
-        cbProject* prj = prjman->GetActiveProject();
-        if (prj && prj->GetCurrentlyCompilingTarget())
+        // Check if any compiler plugin is building and ask the user if he/she wants to stop it.
+        const PluginsArray &compilers = Manager::Get()->GetPluginManager()->GetCompilerOffers();
+
+        bool hasRunning = false;
+        for (auto const *plugin : compilers)
         {
-            event.Veto();
-            wxBell();
-            m_InitiatedShutdown = false;
-            Manager::BlockYields(false);
-            return;
+            auto compiler = static_cast<const cbCompilerPlugin*>(plugin);
+            if (compiler->IsRunning())
+            {
+                hasRunning = true;
+                break;
+            }
+        }
+
+        if (hasRunning)
+        {
+            int result = cbMessageBox(_("Currently compiling. Stop compilation and exit?"),
+                                      _("Question"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION,
+                                      this);
+            if (result == wxID_YES)
+            {
+                for (auto *plugin : compilers)
+                {
+                    auto compiler = static_cast<cbCompilerPlugin*>(plugin);
+                    if (compiler->IsRunning())
+                        compiler->KillProcess();
+                }
+            }
+            else
+            {
+                event.Veto();
+                wxBell();
+                m_InitiatedShutdown = false;
+                Manager::BlockYields(false);
+                return;
+            }
         }
     }
+
     if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
     {
         event.Veto();
