@@ -46,6 +46,7 @@
 #include "projectsfilemasksdlg.h"
 
 #include "goto_file.h"
+#include "startherepage.h"
 
 namespace
 {
@@ -191,6 +192,8 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_MENU(idMenuViewFileMasks,            ProjectManagerUI::OnViewFileMasks)
     EVT_MENU(idMenuFindFile,                 ProjectManagerUI::OnFindFile)
     EVT_IDLE(                                ProjectManagerUI::OnIdle)
+
+    EVT_UPDATE_UI(idMenuFileProperties,      ProjectManagerUI::OnUpdateUI)
 END_EVENT_TABLE()
 
 ProjectManagerUI::ProjectManagerUI() :
@@ -2297,7 +2300,25 @@ void ProjectManagerUI::OnEndEditNode(wxTreeEvent& event)
 
 void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    event.Skip();
+    EditorManager *editorManager = Manager::Get()->GetEditorManager();
+    bool enableProperties;
+    if (editorManager)
+    {
+        EditorBase *editor = editorManager->GetActiveEditor();
+        EditorBase *startHerePage = editorManager->GetEditor(g_StartHereTitle);
+
+        enableProperties = (editor && editor != startHerePage);
+        if (enableProperties && Manager::Get()->GetProjectManager())
+        {
+            cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+            if (prj && prj->GetCurrentlyCompilingTarget())
+                enableProperties = false;
+        }
+    }
+    else
+        enableProperties = false;
+
+    event.Enable(enableProperties);
 }
 
 void ProjectManagerUI::OnIdle(wxIdleEvent& event)
