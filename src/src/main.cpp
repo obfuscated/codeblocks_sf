@@ -153,10 +153,8 @@ int idFileImportProjectMSVS             = XRCID("idFileImportProjectMSVS");
 int idFileImportProjectMSVSWksp         = XRCID("idFileImportProjectMSVSWksp");
 int idFileSave                          = XRCID("idFileSave");
 int idFileSaveAs                        = XRCID("idFileSaveAs");
-int idFileSaveAllFiles                  = XRCID("idFileSaveAllFiles");
 int idFileSaveProject                   = XRCID("idFileSaveProject");
 int idFileSaveProjectAs                 = XRCID("idFileSaveProjectAs");
-int idFileSaveProjectAllProjects        = XRCID("idFileSaveProjectAllProjects");
 int idFileSaveProjectTemplate           = XRCID("idFileSaveProjectTemplate");
 int idFileOpenDefWorkspace              = XRCID("idFileOpenDefWorkspace");
 int idFileSaveWorkspace                 = XRCID("idFileSaveWorkspace");
@@ -166,7 +164,6 @@ int idFileCloseWorkspace                = XRCID("idFileCloseWorkspace");
 int idFileClose                         = XRCID("idFileClose");
 int idFileCloseAll                      = XRCID("idFileCloseAll");
 int idFileCloseProject                  = XRCID("idFileCloseProject");
-int idFileCloseAllProjects              = XRCID("idFileCloseAllProjects");
 int idFilePrintSetup                    = XRCID("idFilePrintSetup");
 int idFilePrint                         = XRCID("idFilePrint");
 int idFileExit                          = XRCID("idFileExit");
@@ -314,7 +311,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFileOpenRecentProjectClearHistory, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSave,                          MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAs,                        MainFrame::OnFileMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveAllFiles,                  MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileOpenDefWorkspace,              MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspace,                 MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveWorkspaceAs,               MainFrame::OnFileMenuUpdateUI)
@@ -326,11 +322,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
 
     EVT_UPDATE_UI(idFileSaveProject,            MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveProjectAs,          MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProjectAllProjects, MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveProjectTemplate,    MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileSaveAll,                MainFrame::OnProjectMenuUpdateUI)
     EVT_UPDATE_UI(idFileCloseProject,           MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileCloseAllProjects,       MainFrame::OnProjectMenuUpdateUI)
 
     EVT_UPDATE_UI(idEditUndo,                  MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo,                  MainFrame::OnEditMenuUpdateUI)
@@ -409,11 +403,9 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileImportProjectMSVSWksp,         MainFrame::OnFileImportProjectMSVSWksp)
     EVT_MENU(idFileSave,                          MainFrame::OnFileSave)
     EVT_MENU(idFileSaveAs,                        MainFrame::OnFileSaveAs)
-    EVT_MENU(idFileSaveAllFiles,                  MainFrame::OnFileSaveAllFiles)
     EVT_MENU(idFileSaveProject,                   MainFrame::OnFileSaveProject)
     EVT_MENU(idFileSaveProjectAs,                 MainFrame::OnFileSaveProjectAs)
     EVT_MENU(idFileSaveProjectTemplate,           MainFrame::OnFileSaveProjectTemplate)
-    EVT_MENU(idFileSaveProjectAllProjects,        MainFrame::OnFileSaveProjectAllProjects)
     EVT_MENU(idFileOpenDefWorkspace,              MainFrame::OnFileOpenDefWorkspace)
     EVT_MENU(idFileSaveWorkspace,                 MainFrame::OnFileSaveWorkspace)
     EVT_MENU(idFileSaveWorkspaceAs,               MainFrame::OnFileSaveWorkspaceAs)
@@ -422,7 +414,6 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_MENU(idFileClose,                         MainFrame::OnFileClose)
     EVT_MENU(idFileCloseAll,                      MainFrame::OnFileCloseAll)
     EVT_MENU(idFileCloseProject,                  MainFrame::OnFileCloseProject)
-    EVT_MENU(idFileCloseAllProjects,              MainFrame::OnFileCloseAllProjects)
     EVT_MENU(idFilePrint,                         MainFrame::OnFilePrint)
     EVT_MENU(idFileExit,                          MainFrame::OnFileQuit)
     EVT_MENU(idFileNext,                          MainFrame::OnFileNext)
@@ -2537,12 +2528,6 @@ void MainFrame::OnFileSaveAs(cb_unused wxCommandEvent& event)
     DoUpdateStatusBar();
 }
 
-void MainFrame::OnFileSaveAllFiles(cb_unused wxCommandEvent& event)
-{
-    Manager::Get()->GetEditorManager()->SaveAll();
-    DoUpdateStatusBar();
-}
-
 void MainFrame::OnFileSaveProject(cb_unused wxCommandEvent& event)
 {
     // no need to call SaveActiveProjectAs(), because this is handled in cbProject::Save()
@@ -2558,13 +2543,6 @@ void MainFrame::OnFileSaveProjectAs(cb_unused wxCommandEvent& event)
     ProjectManager *prjManager = Manager::Get()->GetProjectManager();
     if (prjManager->SaveActiveProjectAs())
         m_projectsHistory.AddToHistory(prjManager->GetActiveProject()->GetFilename());
-    DoUpdateStatusBar();
-    DoUpdateAppTitle();
-}
-
-void MainFrame::OnFileSaveProjectAllProjects(cb_unused wxCommandEvent& event)
-{
-    Manager::Get()->GetProjectManager()->SaveAllProjects();
     DoUpdateStatusBar();
     DoUpdateAppTitle();
 }
@@ -2601,17 +2579,6 @@ void MainFrame::OnFileCloseProject(cb_unused wxCommandEvent& event)
         return;
     }
     Manager::Get()->GetProjectManager()->CloseActiveProject();
-    DoUpdateStatusBar();
-}
-
-void MainFrame::OnFileCloseAllProjects(cb_unused wxCommandEvent& event)
-{
-    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
-    {
-        wxBell();
-        return;
-    }
-    DoCloseCurrentWorkspace();
     DoUpdateStatusBar();
 }
 
@@ -4097,7 +4064,6 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
     mbar->Enable(idFileCloseAll,                      canClose);
     mbar->Enable(idFileSave,                          ed && ed->GetModified());
     mbar->Enable(idFileSaveAs,                        canSaveFiles);
-    mbar->Enable(idFileSaveAllFiles,                  canSaveFiles);
     mbar->Enable(idFileSaveProject,                   prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs,                 prj && canCloseProject);
     mbar->Enable(idFileOpenDefWorkspace,              canCloseProject);
@@ -4325,10 +4291,8 @@ void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
     bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
 
     mbar->Enable(idFileCloseProject,           prj && canCloseProject);
-    mbar->Enable(idFileCloseAllProjects,       prj && canCloseProject);
     mbar->Enable(idFileSaveProject,            prj && prj->GetModified() && canCloseProject);
     mbar->Enable(idFileSaveProjectAs,          prj && canCloseProject);
-    mbar->Enable(idFileSaveProjectAllProjects, prj && canCloseProject);
     mbar->Enable(idFileSaveProjectTemplate,    prj && canCloseProject);
 
     event.Skip();

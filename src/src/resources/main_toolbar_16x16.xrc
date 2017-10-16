@@ -18,9 +18,9 @@
   <longhelp>Save current file</longhelp>
   <bitmap>images/16x16/filesave.png</bitmap>
  </object>
- <object class="tool" name="idFileSaveAllFiles">
-  <tooltip>Save all files</tooltip>
-  <longhelp>Save all modified files</longhelp>
+ <object class="tool" name="idFileSaveAll">
+  <tooltip>Save everything</tooltip>
+  <longhelp>Save all source files, projects and the workspace, if there are changes to them. Save the configuration</longhelp>
   <bitmap>images/16x16/filesaveall.png</bitmap>
  </object>
  <object class="separator"/>

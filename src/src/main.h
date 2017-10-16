@@ -128,11 +128,9 @@ class MainFrame : public wxFrame
         void OnFileImportProjectMSVSWksp(wxCommandEvent& event);
         void OnFileSave(wxCommandEvent& event);
         void OnFileSaveAs(wxCommandEvent& event);
-        void OnFileSaveAllFiles(wxCommandEvent& event);
         void OnFileSaveProject(wxCommandEvent& event);
         void OnFileSaveProjectAs(wxCommandEvent& event);
         void OnFileSaveProjectTemplate(wxCommandEvent& event);
-        void OnFileSaveProjectAllProjects(wxCommandEvent& event);
         void OnFileOpenDefWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspace(wxCommandEvent& event);
         void OnFileSaveWorkspaceAs(wxCommandEvent& event);
@@ -141,7 +139,6 @@ class MainFrame : public wxFrame
         void OnFileClose(wxCommandEvent& event);
         void OnFileCloseAll(wxCommandEvent& event);
         void OnFileCloseProject(wxCommandEvent& event);
-        void OnFileCloseAllProjects(wxCommandEvent& event);
         void OnFilePrintSetup(wxCommandEvent& event);
         void OnFilePrint(wxCommandEvent& event);
         void OnFileQuit(wxCommandEvent& event);

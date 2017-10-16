@@ -74,12 +74,6 @@
         <bitmap>images\16x16\filesaveas.png</bitmap>
         <help>Save the active file under a different name</help>
       </object>
-      <object class="wxMenuItem" name="idFileSaveAllFiles">
-        <label>Save a&amp;ll files</label>
-        <bitmap>images\16x16\filesaveall.png</bitmap>
-        <accel>Ctrl-Shift-S</accel>
-        <help>Save all modified files</help>
-      </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveProject">
         <label>Save project</label>
@@ -92,10 +86,6 @@
       <object class="wxMenuItem" name="idFileSaveProjectTemplate">
         <label>Save project as template...</label>
         <help>Keep this project as a template to base new projects on</help>
-      </object>
-      <object class="wxMenuItem" name="idFileSaveProjectAllProjects">
-        <label>Save all projects</label>
-        <help>Save all modified projects</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileSaveWorkspace">
@@ -110,8 +100,8 @@
       <object class="wxMenuItem" name="idFileSaveAll">
         <label>Save everything</label>
         <bitmap>images\16x16\filesaveall.png</bitmap>
-        <accel>Alt-Shift-S</accel>
-        <help>Save all files, projects and the workspace</help>
+        <accel>Ctrl-Shift-S</accel>
+        <help>Save all source files, projects and the workspace, if there are changes to them. Save the configuration</help>
       </object>
       <object class="separator"/>
       <object class="wxMenuItem" name="idFileClose">
@@ -128,10 +118,6 @@
       <object class="wxMenuItem" name="idFileCloseProject">
         <label>Close project</label>
         <help>Close active project</help>
-      </object>
-      <object class="wxMenuItem" name="idFileCloseAllProjects">
-        <label>Close all projects</label>
-        <help>Close all opened projects</help>
       </object>
       <object class="wxMenuItem" name="idFileCloseWorkspace">
         <label>Close workspace</label>
