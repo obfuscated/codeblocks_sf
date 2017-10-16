@@ -5135,6 +5135,11 @@ public:
     virtual bool IsEditable() const { return !GetReadOnly(); }
     virtual void SetEditable(bool editable) { SetReadOnly(!editable); }
 
+/* C::B begin capture mouse assert fix */
+    void SetMouseCapture(bool on);
+    bool HaveMouseCapture() const;
+/* C::B end */
+
 /* C::B begin */
 #if wxCHECK_VERSION(3, 0, 0)
     static wxVersionInfo GetLibraryVersionInfo();

@@ -5258,6 +5258,17 @@ void wxScintilla::AppendTextRaw(const char* text, int length)
     SendMsg(SCI_APPENDTEXT, length, (uptr_t)text);
 }
 
+/* C::B begin capture mouse assert fix */
+void wxScintilla::SetMouseCapture(bool on)
+{
+    m_swx->SetMouseCapture(on);
+}
+
+bool wxScintilla::HaveMouseCapture() const
+{
+    return m_swx->HaveMouseCapture();
+}
+/* C::B end */
 
 
 
