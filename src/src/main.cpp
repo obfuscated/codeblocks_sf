@@ -2705,7 +2705,7 @@ void MainFrame::OnFilePrint(cb_unused wxCommandEvent& event)
 
 void MainFrame::OnFileQuit(cb_unused wxCommandEvent& event)
 {
-    Close(true);
+    Close(false);
 }
 
 void MainFrame::OnEraseBackground(wxEraseEvent& event)
