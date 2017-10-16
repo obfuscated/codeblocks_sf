@@ -600,7 +600,10 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         if (ftd->GetKind() == FileTreeData::ftdkProject)
         {
             if (ftd->GetProject() != pm->GetActiveProject())
-                menu.Append(idMenuSetActiveProject,     _("Activate project"));
+            {
+                menu.Append(idMenuSetActiveProject, _("Activate project"));
+                menu.Enable(idMenuSetActiveProject, PopUpMenuOption);
+            }
             menu.Append(idMenuSaveProject,              _("Save project"));
             menu.Enable(idMenuSaveProject, PopUpMenuOption);
             menu.Append(idMenuCloseProject,             _("Close project"));
@@ -614,7 +617,6 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuFindFile,                 _("Find file..."));
-            menu.Enable(idMenuFindFile, PopUpMenuOption);
             menu.AppendSeparator();
             CreateMenuTreeProps(&menu, true);
             menu.Append(idMenuAddVirtualFolder,         _("Add new virtual folder..."));
@@ -690,14 +692,12 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuFindFile,                 _("Find file..."));
-            menu.Enable(idMenuFindFile, PopUpMenuOption);
             menu.AppendSeparator();
             wxFileName f(ftd->GetFolder());
             f.MakeRelativeTo(ftd->GetProject()->GetCommonTopLevelPath());
             menu.Append(idMenuRemoveFolderFilesPopup, wxString::Format(_("Remove %s*"), f.GetFullPath().c_str()));
             menu.Enable(idMenuRemoveFolderFilesPopup, PopUpMenuOption);
             menu.Append(idMenuOpenFolderFilesPopup, wxString::Format(_("Open %s*"), f.GetFullPath().c_str()));
-            menu.Enable(idMenuOpenFolderFilesPopup, PopUpMenuOption);
         }
 
         // if it is a virtual folder
@@ -712,7 +712,6 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuOpenFolderFilesPopup, wxString::Format(_("Open %s*"), ftd->GetFolder().c_str()));
             menu.AppendSeparator();
             menu.Append(idMenuFindFile, _("Find file..."));
-            menu.Enable(idMenuFindFile, PopUpMenuOption);
         }
 
         // if it is a virtual group (wild-card matching)
@@ -736,7 +735,9 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
         {
             menu.AppendSeparator();
             wxMenu *options = new wxMenu;
-            menu.AppendSubMenu(options, _("Options"));
+            wxMenuItem *optionsItem = menu.AppendSubMenu(options, _("Options"));
+            optionsItem->Enable(PopUpMenuOption);
+
             options->AppendCheckItem(idMenuTreeOptionsCompile, _("Compile file"));
             options->AppendCheckItem(idMenuTreeOptionsLink, _("Link file"));
             options->AppendSeparator();
@@ -749,6 +750,7 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
                 menu.Check(idMenuTreeOptionsLink, pf->link);
             }
             menu.Append(idMenuTreeFileProperties, _("Properties..."));
+            menu.Enable(idMenuTreeFileProperties, PopUpMenuOption);
         }
     }
     else if (!ftd && pm->GetWorkspace())
@@ -1044,16 +1046,26 @@ void ProjectManagerUI::OnExecParameters(cb_unused wxCommandEvent& event)
 void ProjectManagerUI::OnRightClick(cb_unused wxCommandEvent& event)
 {
     ProjectManager* pm = Manager::Get()->GetProjectManager();
+    if (!pm)
+        return;
+
+    bool notCompilingProject = true;
+    cbProject *project = pm->GetActiveProject();
+    if (project && project->GetCurrentlyCompilingTarget())
+        notCompilingProject = false;
 
     wxMenu menu;
     if (pm->GetWorkspace())
     {
         menu.Append(idMenuTreeRenameWorkspace, _("Rename workspace..."));
+        menu.Enable(idMenuTreeRenameWorkspace, notCompilingProject);
         menu.AppendSeparator();
-        menu.Append(idMenuTreeSaveWorkspace,   _("Save workspace"));
+        menu.Append(idMenuTreeSaveWorkspace, _("Save workspace"));
+        menu.Enable(idMenuTreeSaveWorkspace, notCompilingProject);
         menu.Append(idMenuTreeSaveAsWorkspace, _("Save workspace as..."));
+        menu.Enable(idMenuTreeSaveAsWorkspace, notCompilingProject);
         menu.AppendSeparator();
-        menu.Append(idMenuFindFile,            _("Find file..."));
+        menu.Append(idMenuFindFile, _("Find file..."));
     }
 
     // ask any plugins to add items in this menu
@@ -1080,12 +1092,14 @@ void ProjectManagerUI::OnRightClick(cb_unused wxCommandEvent& event)
 
     menu.AppendSeparator();
     menu.Append(idMenuViewFileMasks, _("Edit file types && categories..."));
+    menu.Enable(idMenuViewFileMasks, notCompilingProject);
 
     if (pm->GetWorkspace())
     {
         // this menu items should be always the last one
         menu.AppendSeparator();
         menu.Append(idMenuTreeCloseWorkspace,  _("Close workspace"));
+        menu.Enable(idMenuTreeCloseWorkspace, notCompilingProject);
     }
 
     wxPoint pt = wxGetMousePosition();
