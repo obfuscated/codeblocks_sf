@@ -86,6 +86,8 @@ const int idMenuTreeProjectProperties    = wxNewId();
 const int idMenuTreeFileProperties       = wxNewId();
 const int idMenuTreeOptionsCompile       = wxNewId();
 const int idMenuTreeOptionsLink          = wxNewId();
+const int idMenuTreeOptionsDisableBoth   = wxNewId();
+const int idMenuTreeOptionsEnableBoth    = wxNewId();
 const int idMenuGotoFile                 = wxNewId();
 const int idMenuExecParams               = wxNewId();
 const int idMenuViewCategorize           = wxNewId();
@@ -174,6 +176,8 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_MENU(idMenuFileProperties,           ProjectManagerUI::OnProperties)
     EVT_MENU(idMenuTreeOptionsCompile,       ProjectManagerUI::OnFileOptions)
     EVT_MENU(idMenuTreeOptionsLink,          ProjectManagerUI::OnFileOptions)
+    EVT_MENU(idMenuTreeOptionsEnableBoth,    ProjectManagerUI::OnFileOptions)
+    EVT_MENU(idMenuTreeOptionsDisableBoth,   ProjectManagerUI::OnFileOptions)
     EVT_MENU(idMenuTreeProjectProperties,    ProjectManagerUI::OnProperties)
     EVT_MENU(idMenuTreeFileProperties,       ProjectManagerUI::OnProperties)
     EVT_MENU(idMenuGotoFile,                 ProjectManagerUI::OnGotoFile)
@@ -732,6 +736,9 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.AppendSubMenu(options, _("Options"));
             options->AppendCheckItem(idMenuTreeOptionsCompile, _("Compile file"));
             options->AppendCheckItem(idMenuTreeOptionsLink, _("Link file"));
+            options->AppendSeparator();
+            options->Append(idMenuTreeOptionsEnableBoth, _("Enable both"));
+            options->Append(idMenuTreeOptionsDisableBoth, _("Disable both"));
 
             if ( ProjectFile* pf = ftd->GetProjectFile() )
             {
@@ -1716,54 +1723,70 @@ void ProjectManagerUI::OnProperties(wxCommandEvent& event)
     }
 }
 
+/// Find all selected tree items which are files and call the func on them.
+/// The function is expected to return true when it made modifications to the ProjectFile parameter,
+/// and false when it didn't.
+/// The modified parameter will be filled with the set of modified projects.
+template<typename Func>
+static void applyFileOptionChange(std::set<cbProject*> &modified, wxTreeCtrl &tree, Func func)
+{
+    wxArrayTreeItemIds selected;
+    size_t count = tree.GetSelections(selected);
+    for (size_t ii = 0; ii < count; ++ii)
+    {
+        wxTreeItemId id = selected[ii];
+        if (!id.IsOk())
+            continue;
+
+        FileTreeData* ftd = (FileTreeData*)tree.GetItemData(id);
+        if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
+            continue;
+
+        ProjectFile* pf = ftd->GetProjectFile();
+        if (pf && func(*pf))
+        {
+            if (pf->GetParentProject())
+                modified.insert(pf->GetParentProject());
+        }
+    }
+}
+
 void ProjectManagerUI::OnFileOptions(wxCommandEvent &event)
 {
     std::set<cbProject*> modified;
     if (event.GetId() == idMenuTreeOptionsCompile)
     {
-        wxArrayTreeItemIds selected;
-        size_t count = m_pTree->GetSelections(selected);
-        for (size_t ii = 0; ii < count; ++ii)
-        {
-            wxTreeItemId id = selected[ii];
-            if (!id.IsOk())
-                continue;
-
-            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
-            if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
-                continue;
-
-            ProjectFile* pf = ftd->GetProjectFile();
-            if (pf && pf->compile != event.IsChecked())
+        const bool checked = event.IsChecked();
+        applyFileOptionChange(modified, *m_pTree, [checked](ProjectFile &pf) -> bool {
+            if (pf.compile != checked)
             {
-                pf->compile = event.IsChecked();
-                if (pf->GetParentProject())
-                    modified.insert(pf->GetParentProject());
+                pf.compile = checked;
+                return true;
             }
-        }
+            else
+                return false;
+        });
     }
     else if (event.GetId() == idMenuTreeOptionsLink)
     {
-        wxArrayTreeItemIds selected;
-        size_t count = m_pTree->GetSelections(selected);
-        for (size_t ii = 0; ii < count; ++ii)
-        {
-            wxTreeItemId id = selected[ii];
-            if (!id.IsOk())
-                continue;
-
-            FileTreeData* ftd = (FileTreeData*)m_pTree->GetItemData(id);
-            if (!ftd || ftd->GetKind() != FileTreeData::ftdkFile)
-                continue;
-
-            ProjectFile* pf = ftd->GetProjectFile();
-            if (pf && pf->link != event.IsChecked())
+        const bool checked = event.IsChecked();
+        applyFileOptionChange(modified, *m_pTree, [checked](ProjectFile &pf) -> bool {
+            if (pf.link != checked)
             {
-                pf->link = event.IsChecked();
-                if (pf->GetParentProject())
-                    modified.insert(pf->GetParentProject());
+                pf.link = checked;
+                return true;
             }
-        }
+            else
+                return false;
+        });
+    }
+    else if (event.GetId() == idMenuTreeOptionsEnableBoth || event.GetId() == idMenuTreeOptionsDisableBoth)
+    {
+        const bool newValue = (event.GetId() == idMenuTreeOptionsEnableBoth);
+        applyFileOptionChange(modified, *m_pTree, [newValue](ProjectFile &pf) -> bool {
+            pf.compile = pf.link = newValue;
+            return true;
+        });
     }
 
     for (std::set<cbProject*>::iterator it = modified.begin(); it != modified.end(); ++it)
