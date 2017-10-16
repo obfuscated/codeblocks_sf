@@ -153,6 +153,7 @@ int idFileImportProjectMSVS             = XRCID("idFileImportProjectMSVS");
 int idFileImportProjectMSVSWksp         = XRCID("idFileImportProjectMSVSWksp");
 int idFileSave                          = XRCID("idFileSave");
 int idFileSaveAs                        = XRCID("idFileSaveAs");
+int idFileReopenProject                 = XRCID("idFileReopenProject");
 int idFileSaveProject                   = XRCID("idFileSaveProject");
 int idFileSaveProjectAs                 = XRCID("idFileSaveProjectAs");
 int idFileSaveProjectTemplate           = XRCID("idFileSaveProjectTemplate");
@@ -307,6 +308,7 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_SIZE(MainFrame::OnSize)
     EVT_CLOSE(MainFrame::OnApplicationClose)
 
+    EVT_UPDATE_UI(idFileOpen,                          MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileOpenRecentFileClearHistory,    MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileOpenRecentProjectClearHistory, MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFileSave,                          MainFrame::OnFileMenuUpdateUI)
@@ -320,11 +322,12 @@ BEGIN_EVENT_TABLE(MainFrame, wxFrame)
     EVT_UPDATE_UI(idFilePrintSetup,                    MainFrame::OnFileMenuUpdateUI)
     EVT_UPDATE_UI(idFilePrint,                         MainFrame::OnFileMenuUpdateUI)
 
-    EVT_UPDATE_UI(idFileSaveProject,            MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProjectAs,          MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveProjectTemplate,    MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileSaveAll,                MainFrame::OnProjectMenuUpdateUI)
-    EVT_UPDATE_UI(idFileCloseProject,           MainFrame::OnProjectMenuUpdateUI)
+    EVT_UPDATE_UI(idFileReopenProject,          MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProject,            MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectAs,          MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveProjectTemplate,    MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileSaveAll,                MainFrame::OnFileMenuUpdateUI)
+    EVT_UPDATE_UI(idFileCloseProject,           MainFrame::OnFileMenuUpdateUI)
 
     EVT_UPDATE_UI(idEditUndo,                  MainFrame::OnEditMenuUpdateUI)
     EVT_UPDATE_UI(idEditRedo,                  MainFrame::OnEditMenuUpdateUI)
@@ -4043,45 +4046,59 @@ void MainFrame::OnFileMenuUpdateUI(wxUpdateUIEvent& event)
         return;
     }
 
-    EditorBase*  ed   = Manager::Get()->GetEditorManager() ? Manager::Get()->GetEditorManager()->GetActiveEditor() : nullptr;
-    cbProject*   prj  = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : nullptr;
-    EditorBase*  sh   = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
-    cbWorkspace* wksp = Manager::Get()->GetProjectManager()->GetWorkspace();
-    wxMenuBar*   mbar = GetMenuBar();
-
-    bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown())
-                            && prj && !prj->GetCurrentlyCompilingTarget();
-    bool canClose        = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
-    bool canSaveFiles    = ed && !(sh && Manager::Get()->GetEditorManager()->GetEditorsCount() == 1);
-    bool canSaveAll      =     (prj && prj->GetModified())
-                            || (wksp && !wksp->IsDefault() && wksp->GetModified())
-                            || canSaveFiles;
-
-    mbar->Enable(idFileCloseProject,                  canCloseProject);
-    mbar->Enable(idFileOpenRecentFileClearHistory,    !m_filesHistory.Empty());
-    mbar->Enable(idFileOpenRecentProjectClearHistory, !m_projectsHistory.Empty());
-    mbar->Enable(idFileClose,                         canClose);
-    mbar->Enable(idFileCloseAll,                      canClose);
-    mbar->Enable(idFileSave,                          ed && ed->GetModified());
-    mbar->Enable(idFileSaveAs,                        canSaveFiles);
-    mbar->Enable(idFileSaveProject,                   prj && prj->GetModified() && canCloseProject);
-    mbar->Enable(idFileSaveProjectAs,                 prj && canCloseProject);
-    mbar->Enable(idFileOpenDefWorkspace,              canCloseProject);
-    mbar->Enable(idFileSaveWorkspace,                 Manager::Get()->GetProjectManager() && canCloseProject);
-    mbar->Enable(idFileSaveWorkspaceAs,               Manager::Get()->GetProjectManager() && canCloseProject);
-    mbar->Enable(idFileCloseWorkspace,                Manager::Get()->GetProjectManager() && canCloseProject);
-    mbar->Enable(idFileSaveAll,                       canSaveAll);
-    mbar->Enable(idFilePrint,                         Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
-
-    if (m_pToolbar)
+    if (!ProjectManager::CanShutdown() || !EditorManager::CanShutdown())
     {
-        m_pToolbar->EnableTool(idFileSave,         ed && ed->GetModified());
-        m_pToolbar->EnableTool(idFileSaveAllFiles, canSaveFiles);
-        m_pToolbar->EnableTool(idFileSaveAll,      canSaveAll);
-        m_pToolbar->EnableTool(idFilePrint,        Manager::Get()->GetEditorManager() && Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor());
+        event.Enable(false);
+        return;
     }
 
-    event.Skip();
+    EditorManager *editorManager = Manager::Get()->GetEditorManager();
+    EditorBase *ed = (editorManager ? editorManager->GetActiveEditor() : nullptr);
+    EditorBase *sh = (editorManager ? editorManager->GetEditor(g_StartHereTitle) : nullptr);
+
+    const int id = event.GetId();
+
+    // Single file related menu items
+    if (id == idFileClose || id == idFileCloseAll || id == idFileSaveAs)
+        event.Enable(ed && ed != sh);
+    else if (id == idFileSave)
+        event.Enable(ed && ed->GetModified());
+    else if (id == idFilePrint)
+        event.Enable(editorManager && editorManager->GetBuiltinActiveEditor());
+    else if (id == idFileOpen)
+        event.Enable(true);
+    else
+    {
+        ProjectManager *projectManager = Manager::Get()->GetProjectManager();
+        cbProject *project = (projectManager ? projectManager->GetActiveProject() : nullptr);
+        if (project && project->GetCurrentlyCompilingTarget())
+        {
+            event.Enable(false);
+            return;
+        }
+
+        // Project related menu items
+        if (id == idFileReopenProject)
+            event.Enable(true);
+        else if (id == idFileCloseProject || id == idFileSaveProjectAs || id == idFileSaveProjectTemplate)
+            event.Enable(project != nullptr);
+        else if (id == idFileSaveProject)
+            event.Enable(project && project->GetModified());
+        else if (id == idFileOpenDefWorkspace || id == idFileSaveWorkspaceAs || id == idFileSaveAll)
+            event.Enable(true);
+        else
+        {
+            // Workspace related menu items
+            const cbWorkspace *workspace = Manager::Get()->GetProjectManager()->GetWorkspace();
+
+            if (id == idFileSaveWorkspace)
+                event.Enable(workspace && workspace->GetModified());
+            else if (id == idFileCloseWorkspace)
+                event.Enable(workspace != nullptr);
+            else
+                event.Skip();
+        }
+    }
 }
 
 void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
@@ -4277,26 +4294,6 @@ void MainFrame::OnSearchMenuUpdateUI(wxUpdateUIEvent& event)
     event.Skip();
 }
 
-void MainFrame::OnProjectMenuUpdateUI(wxUpdateUIEvent& event)
-{
-    if (Manager::IsAppShuttingDown())
-    {
-        event.Skip();
-        return;
-    }
-
-    cbProject* prj = Manager::Get()->GetProjectManager() ? Manager::Get()->GetProjectManager()->GetActiveProject() : nullptr;
-    wxMenuBar* mbar = GetMenuBar();
-
-    bool canCloseProject = (ProjectManager::CanShutdown() && EditorManager::CanShutdown());
-
-    mbar->Enable(idFileCloseProject,           prj && canCloseProject);
-    mbar->Enable(idFileSaveProject,            prj && prj->GetModified() && canCloseProject);
-    mbar->Enable(idFileSaveProjectAs,          prj && canCloseProject);
-    mbar->Enable(idFileSaveProjectTemplate,    prj && canCloseProject);
-
-    event.Skip();
-}
 
 void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 {
