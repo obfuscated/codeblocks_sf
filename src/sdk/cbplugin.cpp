@@ -684,11 +684,11 @@ bool cbDebuggerPlugin::EnsureBuildUpToDate(StartType startType)
         }
 
         // make sure the target is compiled
-        PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-        if (plugins.GetCount())
-            m_pCompiler = (cbCompilerPlugin*)plugins[0];
-        else
+        const std::vector<cbCompilerPlugin*> &compilers = Manager::Get()->GetPluginManager()->GetCompilerPlugins();
+        if (compilers.empty())
             m_pCompiler = nullptr;
+        else
+            m_pCompiler = compilers.front();
         if (m_pCompiler)
         {
             // is the compiler already running?

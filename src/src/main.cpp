@@ -2715,33 +2715,14 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     {
         // Check if any compiler plugin is building and ask the user if he/she wants to stop it.
-        const PluginsArray &compilers = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-
-        bool hasRunning = false;
-        for (auto const *plugin : compilers)
-        {
-            auto compiler = static_cast<const cbCompilerPlugin*>(plugin);
-            if (compiler->IsRunning())
-            {
-                hasRunning = true;
-                break;
-            }
-        }
-
+        bool hasRunning = cbHasRunningCompilers(Manager::Get()->GetPluginManager());
         if (hasRunning)
         {
             int result = cbMessageBox(_("Currently compiling. Stop compilation and exit?"),
                                       _("Question"), wxYES_NO | wxNO_DEFAULT | wxICON_QUESTION,
                                       this);
             if (result == wxID_YES)
-            {
-                for (auto *plugin : compilers)
-                {
-                    auto compiler = static_cast<cbCompilerPlugin*>(plugin);
-                    if (compiler->IsRunning())
-                        compiler->KillProcess();
-                }
-            }
+                cbStopRunningCompilers(Manager::Get()->GetPluginManager());
             else
             {
                 event.Veto();

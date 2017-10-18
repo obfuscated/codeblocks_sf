@@ -27,23 +27,14 @@ class BatchLogWindow : public wxScrollingDialog
         {
             // allowed to close?
             // find compiler plugin
-            PluginsArray arr = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-            if (arr.GetCount() != 0)
+            bool hasRunning = cbHasRunningCompilers(Manager::Get()->GetPluginManager());
+            if (hasRunning)
             {
-                cbCompilerPlugin* compiler = static_cast<cbCompilerPlugin*>(arr[0]);
-                if (compiler && compiler->IsRunning())
+                if (cbMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
+                                _("Abort build?"),
+                                wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
                 {
-                    if (cbMessageBox(_("The build is in progress. Are you sure you want to abort it?"),
-                                    _("Abort build?"),
-                                    wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
-                    {
-                        compiler->KillProcess();
-                        while (compiler->IsRunning())
-                        {
-                            wxMilliSleep(100);
-                            Manager::Yield();
-                        }
-                    }
+                    cbStopRunningCompilers(Manager::Get()->GetPluginManager());
                     return;
                 }
             }

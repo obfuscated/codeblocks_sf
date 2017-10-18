@@ -137,9 +137,7 @@ ProjectOptionsDlg::ProjectOptionsDlg(wxWindow* parent, cbProject* project)
     FillBuildTargets();
     DoTargetChange(false);
 
-    PluginsArray plugins = Manager::Get()->GetPluginManager()->GetCompilerOffers();
-    if (plugins.GetCount())
-        m_pCompiler = (cbCompilerPlugin*)plugins[0];
+    m_pCompiler = Manager::Get()->GetPluginManager()->GetFirstCompiler();
 
     XRCCTRL(*this, "txtNotes", wxTextCtrl)->Connect(wxEVT_KEY_DOWN,wxKeyEventHandler(ProjectOptionsDlg::OnKeyDown),nullptr,this);
 
