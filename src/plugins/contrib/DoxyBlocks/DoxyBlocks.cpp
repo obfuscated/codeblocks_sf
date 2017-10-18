@@ -55,6 +55,27 @@ namespace
     PluginRegistrant<DoxyBlocks> reg(wxT("DoxyBlocks"));
 }
 
+/*! \brief Toolbar control IDs
+ */
+const long ID_TB_WIZARD           = wxNewId();
+const long ID_TB_EXTRACTPROJECT   = wxNewId();
+const long ID_TB_BLOCKCOMMENT     = wxNewId();
+const long ID_TB_LINECOMMENT      = wxNewId();
+const long ID_TB_RUNHTML          = wxNewId();
+const long ID_TB_RUNCHM           = wxNewId();
+const long ID_TB_CONFIG           = wxNewId();
+
+const long ID_MENU_DOXYBLOCKS     = wxNewId();
+const long ID_MENU_DOXYWIZARD     = wxNewId();
+const long ID_MENU_EXTRACTPROJECT = wxNewId();
+const long ID_MENU_BLOCKCOMMENT   = wxNewId();
+const long ID_MENU_LINECOMMENT    = wxNewId();
+const long ID_MENU_RUNHTML        = wxNewId();
+const long ID_MENU_RUNCHM         = wxNewId();
+const long ID_MENU_CONFIG         = wxNewId();
+const long ID_MENU_SAVE_TEMPLATE  = wxNewId();
+const long ID_MENU_LOAD_TEMPLATE  = wxNewId();
+
 // events handling
 BEGIN_EVENT_TABLE(DoxyBlocks, cbPlugin)
     // add any events you want to handle here
