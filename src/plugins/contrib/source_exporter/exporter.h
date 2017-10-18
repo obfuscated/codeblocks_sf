@@ -23,7 +23,6 @@ class Exporter : public cbPlugin
 		Exporter();
 		~Exporter();
     void BuildMenu(wxMenuBar *menuBar);
-    void RemoveMenu(wxMenuBar *menuBar);
 //		int Configure() { return 0; }
 		void OnAttach(); // fires when the plugin is attached to the application
 		void OnRelease(bool appShutDown); // fires when the plugin is released from the application

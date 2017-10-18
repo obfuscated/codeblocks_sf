@@ -21,7 +21,6 @@
 #include "PDFExporter.h"
 #include "cbstyledtextctrl.h"
 
-static int idFileExport = wxNewId();
 static int idFileExportHTML = wxNewId();
 static int idFileExportRTF = wxNewId();
 static int idFileExportODT = wxNewId();
@@ -72,58 +71,56 @@ void Exporter::OnRelease(bool /*appShutDown*/)
   // IsAttached() will be FALSE...
 }
 
-void Exporter::BuildMenu(wxMenuBar *menuBar)
+static wxMenu* FindOrInsertExportMenu(wxMenuBar *menuBar)
 {
-  // find "File" menu position
-  int fileMenuPos = menuBar->FindMenu(_("&File"));
+    // find "File" menu position
+    const int fileMenuPos = menuBar->FindMenu(_("&File"));
+    if (fileMenuPos == -1)
+        return nullptr;
+    // find actual "File" menu
+    wxMenu *fileMenu = menuBar->GetMenu(fileMenuPos);
+    if (!fileMenu)
+        return nullptr;
 
-  if (fileMenuPos == -1)
-  {
-    //cbThrow(_T("Can't find \"File\" menu position?!?"));
-    return;
-  }
-
-  // find actual "File" menu
-  wxMenu *file = menuBar->GetMenu(fileMenuPos);
-
-  if (!file)
-  {
-    //cbThrow(_T("Can't find \"File\" menu?!?"));
-    return;
-  }
-
-  // decide where to insert in "File" menu
-  size_t printPos = file->GetMenuItemCount() - 4; // the default location
-  int printID = file->FindItem(_("Print..."));
-
-  if (printID != wxNOT_FOUND)
-  {
-    file->FindChildItem(printID, &printPos);
-    ++printPos; // after "Print"
-  }
-
-  // insert menu items
-  wxMenu *export_submenu = new wxMenu;
-  export_submenu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
-  export_submenu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
-  export_submenu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
-  export_submenu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
-
-  wxMenuItem *export_menu = new wxMenuItem(file, idFileExport, _("&Export"), _T(""), wxITEM_NORMAL);
-  export_menu->SetSubMenu(export_submenu);
-
-  file->Insert(printPos, export_menu);
+    // decide where to insert in "File" menu
+    size_t printPos = fileMenu->GetMenuItemCount() - 4; // the default location
+    const int printID = fileMenu->FindItem(_("Print..."));
+    if (printID != wxNOT_FOUND)
+    {
+        fileMenu->FindChildItem(printID, &printPos);
+        ++printPos; // after "Print"
+    }
+    wxMenu *exportMenu = nullptr;
+    const int pos = fileMenu->FindItem(_("&Export"));
+    if (pos != wxNOT_FOUND)
+    {
+        wxMenuItem *menuItem = fileMenu->FindItem(pos);
+        exportMenu = menuItem->GetSubMenu();
+        if (exportMenu)
+            exportMenu->AppendSeparator();
+    }
+    else
+    {
+        exportMenu = new wxMenu();
+        fileMenu->Insert(printPos, wxID_ANY, _("&Export"), exportMenu);
+    }
+    return exportMenu;
 }
 
-void Exporter::RemoveMenu(wxMenuBar *menuBar)
+void Exporter::BuildMenu(wxMenuBar *menuBar)
 {
-  wxMenu *menu = 0;
-  wxMenuItem *item = menuBar->FindItem(idFileExport, &menu);
+    wxMenu *exportMenu = FindOrInsertExportMenu(menuBar);
+    if (!exportMenu)
+        return;
 
-  if (menu && item)
-  {
-    menu->Remove(item);
-  }
+    if (!exportMenu->FindItem(idFileExportHTML))
+        exportMenu->Append(idFileExportHTML, _("As &HTML..."), _("Exports the current file to HTML"));
+    if (!exportMenu->FindItem(idFileExportRTF))
+        exportMenu->Append(idFileExportRTF, _("As &RTF..."), _("Exports the current file to RTF"));
+    if (!exportMenu->FindItem(idFileExportODT))
+        exportMenu->Append(idFileExportODT, _("As &ODT..."), _("Exports the current file to ODT"));
+    if (!exportMenu->FindItem(idFileExportPDF))
+        exportMenu->Append(idFileExportPDF, _("As &PDF..."), _("Exports the current file to PDF"));
 }
 
 void Exporter::OnUpdateUI(wxUpdateUIEvent &event)

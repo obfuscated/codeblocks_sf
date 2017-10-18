@@ -178,6 +178,43 @@ void NassiPlugin::OnRelease(bool appShutDown)
     }
 }
 
+static wxMenu* FindOrInsertExportMenu(wxMenu *&fileMenu, wxMenuBar *menuBar)
+{
+    fileMenu = nullptr;
+    // find "File" menu position
+    const int fileMenuPos = menuBar->FindMenu(_("&File"));
+    if (fileMenuPos == -1)
+        return nullptr;
+    // find actual "File" menu
+    fileMenu = menuBar->GetMenu(fileMenuPos);
+    if (!fileMenu)
+        return nullptr;
+
+    // decide where to insert in "File" menu
+    size_t printPos = fileMenu->GetMenuItemCount() - 4; // the default location
+    const int printID = fileMenu->FindItem(_("Print..."));
+    if (printID != wxNOT_FOUND)
+    {
+        fileMenu->FindChildItem(printID, &printPos);
+        ++printPos; // after "Print"
+    }
+    wxMenu *exportMenu = nullptr;
+    const int pos = fileMenu->FindItem(_("&Export"));
+    if (pos != wxNOT_FOUND)
+    {
+        wxMenuItem *menuItem = fileMenu->FindItem(pos);
+        exportMenu = menuItem->GetSubMenu();
+        if (exportMenu)
+            exportMenu->AppendSeparator();
+    }
+    else
+    {
+        exportMenu = new wxMenu();
+        fileMenu->Insert(printPos, wxID_ANY, _("&Export"), exportMenu);
+    }
+    return exportMenu;
+}
+
 void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
 {
     //The application is offering its menubar for your plugin,
@@ -185,24 +222,11 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
     //Append any items you need in the menu...
     //Be careful in here... The application's menubar is at your disposal.
 
-    int pos = menuBar->FindMenu( _("&File") );
-    if ( pos == wxNOT_FOUND ) return;
+    wxMenu *filemenu;
+    wxMenu *exportmenu = FindOrInsertExportMenu(filemenu, menuBar);
+    if (!exportmenu)
+        return;
 
-    wxMenu *filemenu = menuBar->GetMenu(pos);
-
-    wxMenu *exportmenu = 0;
-    pos = filemenu->FindItem( _("&Export") );
-    if ( pos != wxNOT_FOUND )
-    {
-        wxMenuItem *menuitm = filemenu->FindItem(pos);
-        exportmenu = menuitm->GetSubMenu();
-        if (exportmenu) exportmenu->AppendSeparator();
-    }
-    else
-    {
-        exportmenu = new wxMenu();
-        filemenu->AppendSubMenu(exportmenu, _("&Export"));
-    }
     if ( !exportmenu->FindItem(NASSI_ID_EXPORT_SOURCE) )
         exportmenu->Append(NASSI_ID_EXPORT_SOURCE,  _("&Export Source..."), _("Export to C source format"));
     //if ( !exportmenu->FindItem(NASSI_ID_EXPORT_VHDL) )
@@ -226,7 +250,7 @@ void NassiPlugin::BuildMenu(wxMenuBar* menuBar)
 
 
     wxMenu* filenewmenu = 0;
-    pos = filemenu->FindItem( _("New") );
+    int pos = filemenu->FindItem( _("New") );
     if ( pos != wxNOT_FOUND )
     {
         wxMenuItem *menuitm = filemenu->FindItem(pos);
