@@ -106,7 +106,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         const PluginInfo* GetPluginInfo(const wxString& pluginName);
         const PluginInfo* GetPluginInfo(cbPlugin* plugin);
 
-        PluginElementsArray& GetPlugins(){ return m_Plugins; }
+        const PluginElementsArray& GetPlugins() const { return m_Plugins; }
 
         PluginElement* FindElementByName(const wxString& pluginName);
         cbPlugin* FindPluginByName(const wxString& pluginName);
