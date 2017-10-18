@@ -194,6 +194,14 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_IDLE(                                ProjectManagerUI::OnIdle)
 
     EVT_UPDATE_UI(idMenuFileProperties,      ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuProjectProperties,   ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuAddFile,             ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuAddFilesRecursively, ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuRemoveFile,          ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuProjectTreeProps,    ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuAddVirtualFolder,    ProjectManagerUI::OnUpdateUI)
+    EVT_UPDATE_UI(idMenuDeleteVirtualFolder, ProjectManagerUI::OnUpdateUI)
+
 END_EVENT_TABLE()
 
 ProjectManagerUI::ProjectManagerUI() :
@@ -576,20 +584,7 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             || ftd->GetKind() == FileTreeData::ftdkFile
             || ftd->GetKind() == FileTreeData::ftdkFolder ) )
     {
-        int Count = pa->GetCount();
-        cbProject* prjInTree = ftd->GetProject();
-        for (int i = 0; i < Count; ++i)
-        {
-            cbProject* currPrj = pa->Item(i);
-            if (prjInTree->GetTitle().IsSameAs(currPrj->GetTitle()))
-            {
-                if (currPrj->GetCurrentlyCompilingTarget())
-                {
-                    PopUpMenuOption = false;
-                    break;
-                }
-            }
-        }
+        PopUpMenuOption = !cbHasRunningCompilers(Manager::Get()->GetPluginManager());
     }
 
     // if it is not the workspace, add some more options
@@ -614,7 +609,6 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Append(idMenuAddFilesRecursivelyPopup, _("Add files recursively..."));
             menu.Enable(idMenuAddFilesRecursivelyPopup, PopUpMenuOption);
             menu.Append(idMenuRemoveFile,               _("Remove files..."));
-            menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuFindFile,                 _("Find file..."));
             menu.AppendSeparator();
@@ -689,7 +683,6 @@ void ProjectManagerUI::ShowMenu(wxTreeItemId id, const wxPoint& pt)
             menu.Enable(idMenuAddFilesRecursivelyPopup, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuRemoveFile,               _("Remove files..."));
-            menu.Enable(idMenuRemoveFile, PopUpMenuOption);
             menu.AppendSeparator();
             menu.Append(idMenuFindFile,                 _("Find file..."));
             menu.AppendSeparator();
@@ -2314,25 +2307,46 @@ void ProjectManagerUI::OnEndEditNode(wxTreeEvent& event)
 
 void ProjectManagerUI::OnUpdateUI(wxUpdateUIEvent& event)
 {
-    EditorManager *editorManager = Manager::Get()->GetEditorManager();
-    bool enableProperties;
-    if (editorManager)
+    if (event.GetId() == idMenuFileProperties)
     {
-        EditorBase *editor = editorManager->GetActiveEditor();
-        EditorBase *startHerePage = editorManager->GetEditor(g_StartHereTitle);
-
-        enableProperties = (editor && editor != startHerePage);
-        if (enableProperties && Manager::Get()->GetProjectManager())
+        EditorManager *editorManager = Manager::Get()->GetEditorManager();
+        bool enableProperties;
+        if (editorManager)
         {
-            cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-            if (prj && prj->GetCurrentlyCompilingTarget())
-                enableProperties = false;
+            EditorBase *editor = editorManager->GetActiveEditor();
+            EditorBase *startHerePage = editorManager->GetEditor(g_StartHereTitle);
+
+            enableProperties = (editor && editor != startHerePage);
+            if (enableProperties)
+                enableProperties = !cbHasRunningCompilers(Manager::Get()->GetPluginManager());
+        }
+        else
+            enableProperties = false;
+
+        event.Enable(enableProperties);
+    }
+    else if (event.GetId() == idMenuProjectProperties || event.GetId() == idMenuAddFile
+             || event.GetId() == idMenuAddFilesRecursively || event.GetId() == idMenuRemoveFile
+             || event.GetId() == idMenuProjectTreeProps || event.GetId() == idMenuAddVirtualFolder
+             || event.GetId() == idMenuDeleteVirtualFolder)
+    {
+        ProjectManager *projectManager = Manager::Get()->GetProjectManager();
+        if (!projectManager || (projectManager->GetIsRunning() != nullptr))
+            event.Enable(false);
+        else
+        {
+            cbProject *project = projectManager->GetActiveProject();
+            if (!project)
+                event.Enable(false);
+            else
+            {
+                bool enable = !cbHasRunningCompilers(Manager::Get()->GetPluginManager());
+                event.Enable(enable);
+            }
         }
     }
     else
-        enableProperties = false;
-
-    event.Enable(enableProperties);
+        event.Skip();
 }
 
 void ProjectManagerUI::OnIdle(wxIdleEvent& event)

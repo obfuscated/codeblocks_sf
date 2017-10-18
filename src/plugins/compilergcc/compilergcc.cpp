@@ -175,7 +175,6 @@ int idMenuCompileTarget                            = wxNewId();
 int idMenuCompileFromProjectManager                = wxNewId();
 int idMenuProjectCompilerOptions                   = wxNewId();
 int idMenuProjectCompilerOptionsFromProjectManager = wxNewId();
-int idMenuProjectProperties                        = wxNewId();
 int idMenuTargetCompilerOptions                    = wxNewId();
 int idMenuTargetCompilerOptionsSub                 = wxNewId();
 int idMenuCompileFile                              = XRCID("idCompilerMenuCompileFile");
@@ -542,7 +541,7 @@ void CompilerGCC::BuildMenu(wxMenuBar* menuBar)
         // look if we have a "Properties" item. If yes, we 'll insert
         // before it, else we 'll just append...
         size_t propsPos = prj->GetMenuItemCount(); // append
-        idMenuProjectProperties = prj->FindItem(_("Properties..."));
+        const int idMenuProjectProperties = prj->FindItem(_("Properties..."));
         if (idMenuProjectProperties != wxNOT_FOUND)
             prj->FindChildItem(idMenuProjectProperties, &propsPos);
         prj->Insert(propsPos, idMenuProjectCompilerOptions, _("Build options..."), _("Set the project's build options"));
@@ -3364,7 +3363,6 @@ void CompilerGCC::OnUpdateUI(wxUpdateUIEvent& event)
 
         // Project menu
         mbar->Enable(idMenuProjectCompilerOptions, !running && prj && !otherRunning);
-        mbar->Enable(idMenuProjectProperties,      !running && prj && !otherRunning);
     }
 
     // enable/disable compiler toolbar buttons
