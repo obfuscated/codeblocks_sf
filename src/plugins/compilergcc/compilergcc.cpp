@@ -1321,16 +1321,12 @@ int CompilerGCC::DoRunQueue()
     }
 
     // create a new process
+    CompilerProcess &process = m_CompilerProcessList.at(procIndex);
+    process.OutputFile = (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename() : wxString(wxEmptyString);
+    process.pProcess = new PipedProcess(&(process.pProcess), this, idGCCProcess, pipe, dir, procIndex);
 
-    m_CompilerProcessList.at(procIndex).OutputFile =
-        (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename()
-                                     : wxString(wxEmptyString);
-    m_CompilerProcessList.at(procIndex).pProcess =
-        new PipedProcess(&(m_CompilerProcessList.at(procIndex).pProcess), this, idGCCProcess, pipe, dir, procIndex);
-    m_CompilerProcessList.at(procIndex).PID     =
-        wxExecute(cmd->command, flags, m_CompilerProcessList.at(procIndex).pProcess);
-
-    if ( !m_CompilerProcessList.at(procIndex).PID )
+    process.PID = wxExecute(cmd->command, flags, process.pProcess);
+    if (!process.PID)
     {
         wxString err = wxString::Format(_("Execution of '%s' in '%s' failed."),
                                         cmd->command.wx_str(), wxGetCwd().wx_str());
@@ -1350,7 +1346,7 @@ int CompilerGCC::DoRunQueue()
             if (!Manager::IsBatchBuild() && m_pLog->progress)
                 m_pLog->progress->SetValue(0);
         }
-        Delete(m_CompilerProcessList.at(procIndex).pProcess);
+        Delete(process.pProcess);
         m_CommandQueue.Clear();
         ResetBuildState();
     }
