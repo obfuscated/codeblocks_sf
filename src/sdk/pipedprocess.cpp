@@ -108,11 +108,13 @@ BEGIN_EVENT_TABLE(PipedProcess, wxProcess)
 END_EVENT_TABLE()
 
 // class constructor
-PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, bool pipe, const wxString& dir)
+PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, bool pipe,
+                           const wxString& dir, int index)
     : wxProcess(parent, id),
     m_Parent(parent),
     m_Id(id),
     m_Pid(0),
+    m_Index(index),
     m_pvThis(pvThis)
 {
     const wxString &unixDir = UnixFilename(dir);
@@ -179,8 +181,8 @@ bool PipedProcess::HasInput()
 
         CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
         event.SetString(msg);
+        event.SetX(m_Index);
         wxPostEvent(m_Parent, event);
-//         m_Parent->ProcessEvent(event);
 
         return true;
     }
@@ -194,8 +196,8 @@ bool PipedProcess::HasInput()
 
         CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
         event.SetString(msg);
+        event.SetX(m_Index);
         wxPostEvent(m_Parent, event);
-//         m_Parent->ProcessEvent(event);
 
         return true;
     }
@@ -211,7 +213,7 @@ void PipedProcess::OnTerminate(int /*pid*/, int status)
 
     CodeBlocksEvent event(cbEVT_PIPEDPROCESS_TERMINATED, m_Id);
     event.SetInt(status);
-//       m_Parent->ProcessEvent(event);
+    event.SetX(m_Index);
     wxPostEvent(m_Parent, event);
 
     if (m_pvThis)

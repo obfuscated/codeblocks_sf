@@ -208,22 +208,7 @@ int idMenuSettings                                 = XRCID("idCompilerMenuSettin
 
 int idToolTarget                                   = XRCID("idToolTarget");
 
-int idGCCProcess1                                  = wxNewId();
-int idGCCProcess2                                  = wxNewId();
-int idGCCProcess3                                  = wxNewId();
-int idGCCProcess4                                  = wxNewId();
-int idGCCProcess5                                  = wxNewId();
-int idGCCProcess6                                  = wxNewId();
-int idGCCProcess7                                  = wxNewId();
-int idGCCProcess8                                  = wxNewId();
-int idGCCProcess9                                  = wxNewId();
-int idGCCProcess10                                 = wxNewId();
-int idGCCProcess11                                 = wxNewId();
-int idGCCProcess12                                 = wxNewId();
-int idGCCProcess13                                 = wxNewId();
-int idGCCProcess14                                 = wxNewId();
-int idGCCProcess15                                 = wxNewId();
-int idGCCProcess16                                 = wxNewId();
+int idGCCProcess = wxNewId();
 
 BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_UPDATE_UI(idMenuCompile,                       CompilerGCC::OnUpdateUI)
@@ -286,9 +271,9 @@ BEGIN_EVENT_TABLE(CompilerGCC, cbCompilerPlugin)
     EVT_CHOICE(idToolTarget,                        CompilerGCC::OnSelectTarget)
     EVT_MENU(idMenuSelectTargetDialog,              CompilerGCC::OnSelectTarget)
 
-    EVT_PIPEDPROCESS_STDOUT_RANGE(idGCCProcess1,     idGCCProcess16, CompilerGCC::OnGCCOutput)
-    EVT_PIPEDPROCESS_STDERR_RANGE(idGCCProcess1,     idGCCProcess16, CompilerGCC::OnGCCError)
-    EVT_PIPEDPROCESS_TERMINATED_RANGE(idGCCProcess1, idGCCProcess16, CompilerGCC::OnGCCTerminated)
+    EVT_PIPEDPROCESS_STDOUT(idGCCProcess, CompilerGCC::OnGCCOutput)
+    EVT_PIPEDPROCESS_STDERR(idGCCProcess, CompilerGCC::OnGCCError)
+    EVT_PIPEDPROCESS_TERMINATED(idGCCProcess, CompilerGCC::OnGCCTerminated)
 END_EVENT_TABLE()
 
 CompilerGCC::CompilerGCC() :
@@ -1341,7 +1326,7 @@ int CompilerGCC::DoRunQueue()
         (cmd->isLink && cmd->target) ? cmd->target->GetOutputFilename()
                                      : wxString(wxEmptyString);
     m_CompilerProcessList.at(procIndex).pProcess =
-        new PipedProcess(&(m_CompilerProcessList.at(procIndex).pProcess), this, idGCCProcess1 + procIndex, pipe, dir);
+        new PipedProcess(&(m_CompilerProcessList.at(procIndex).pProcess), this, idGCCProcess, pipe, dir, procIndex);
     m_CompilerProcessList.at(procIndex).PID     =
         wxExecute(cmd->command, flags, m_CompilerProcessList.at(procIndex).pProcess);
 
@@ -3477,7 +3462,8 @@ void CompilerGCC::OnGCCError(CodeBlocksEvent& event)
 
 void CompilerGCC::OnGCCTerminated(CodeBlocksEvent& event)
 {
-    OnJobEnd(event.GetId() - idGCCProcess1, event.GetInt());
+    const int index = event.GetX();
+    OnJobEnd(index, event.GetInt());
 }
 
 void CompilerGCC::AddOutputLine(const wxString& output, bool forceErrorColour)
