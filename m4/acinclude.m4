@@ -93,7 +93,7 @@ AC_ARG_ENABLE(debug, [AC_HELP_STRING([--enable-debug], [turn on debugging (defau
     if test "x$enable_debug" = "xyes"; then
         CFLAGS="-g $CFLAGS"
         CXXFLAGS="-g $CXXFLAGS"
-        CPPFLAGS="-DDEBUG $CPPFLAGS"
+        CPPFLAGS="-DDEBUG -DcbDEBUG $CPPFLAGS"
         AC_MSG_RESULT(yes)
     else
         AS_IF([test "x$enable_flags_setting" = "xyes"],[
