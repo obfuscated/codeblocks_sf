@@ -1048,11 +1048,14 @@ void CCManager::OnShowCallTip(CodeBlocksEvent& event)
         m_CallTipActive = argsPos;
         DoUpdateCallTip(ed);
     }
-    else if (m_CallTipActive != wxSCI_INVALID_POSITION)
+    else
     {
-        static_cast<wxScintilla*>(stc)->CallTipCancel();
-        m_CallTipActive = wxSCI_INVALID_POSITION;
-        // make m_CurCallTip invalid
+        if (m_CallTipActive != wxSCI_INVALID_POSITION)
+        {
+            static_cast<wxScintilla*>(stc)->CallTipCancel();
+            m_CallTipActive = wxSCI_INVALID_POSITION;
+        }
+        // Make m_CurCallTip to be valid iterator, pointing to the end.
         m_CurCallTip = m_CallTips.end();
     }
 }
