@@ -1914,6 +1914,15 @@ void MainFrame::DoCreateStatusBar()
     }
 }
 
+/// Change the label of a button only if it has really changed. This is used for status bar button,
+/// because if we always set the label there is flickering while scrolling in the editor.
+/// I've observed the flickering on wxGTK and I don't know if it is present on the other ports.
+static void changeButtonLabel(wxButton &button, const wxString &text)
+{
+    if (text != button.GetLabel())
+        button.SetLabel(text);
+}
+
 void MainFrame::DoUpdateStatusBar()
 {
     if (!GetStatusBar())
@@ -1935,9 +1944,9 @@ void MainFrame::DoUpdateStatusBar()
         {
             EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
             if (colour_set)
-                m_pHighlightButton->SetLabel(colour_set->GetLanguageName(ed->GetLanguage()));
+                changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(ed->GetLanguage()));
             else
-                m_pHighlightButton->SetLabel(wxEmptyString);
+                changeButtonLabel(*m_pHighlightButton, wxEmptyString);
         }
         // EOL mode
         panel++;
@@ -1972,7 +1981,7 @@ void MainFrame::DoUpdateStatusBar()
 
         // Highlightbutton
         if (m_pHighlightButton)
-            m_pHighlightButton->SetLabel(wxEmptyString);
+            changeButtonLabel(*m_pHighlightButton, wxEmptyString);
         panel++;
 
         SetStatusText(wxEmptyString, panel++);
@@ -3732,7 +3741,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
     }
     // Highlightbutton
     if (m_pHighlightButton)
-        m_pHighlightButton->SetLabel(colour_set->GetLanguageName(lang));
+        changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(lang));
     ed->SetLanguage(lang);
     Manager::Get()->GetCCManager()->NotifyPluginStatus();
 }
