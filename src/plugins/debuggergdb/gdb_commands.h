@@ -347,6 +347,8 @@ class GdbCmd_AttachToProcess : public DebuggerCmd
 //                m_pDriver->DebugLog(lines[i]);
             }
         }
+
+        bool IsContinueCommand() const override { return true; }
 };
 
 /**
