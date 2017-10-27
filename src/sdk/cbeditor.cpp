@@ -1007,8 +1007,11 @@ cbStyledTextCtrl* cbEditor::CreateEditor()
     cbStyledTextCtrl* control = new cbStyledTextCtrl(this, wxNewId(), wxDefaultPosition, size);
     control->UsePopUp(false);
 
-    m_pData->m_encoding = wxFontMapper::GetEncodingFromName(
-        Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/default_encoding"), wxEmptyString) );
+    ConfigManager *config = Manager::Get()->GetConfigManager(_T("editor"));
+    wxString encodingName = config->Read(_T("/default_encoding"), wxEmptyString);
+    m_pData->m_encoding = wxFontMapper::GetEncodingFromName(encodingName);
+    if (m_pData->m_encoding == wxFONTENCODING_MAX && encodingName == wxT("default"))
+        m_pData->m_encoding = wxFont::GetDefaultEncoding();
 
     for (int marker = 0 ; marker <= wxSCI_MARKNUM_LASTUNUSED ; ++marker)
         control->MarkerDefine(marker, wxSCI_MARK_EMPTY);
