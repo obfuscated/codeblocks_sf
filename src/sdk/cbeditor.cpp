@@ -1843,12 +1843,13 @@ bool cbEditor::SaveAs()
     if (mgr && Path.IsEmpty())
         Path = mgr->Read(_T("/file_dialogs/save_file_as/directory"), Path);
 
-    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
-                                         _("Save file"),
-                                         Path,
-                                         fname.GetFullName(),
-                                         Filters,
-                                         wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(), _("Save file"), Path, fname.GetFullName(),
+                     wxEmptyString, wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    // Initialize the wildcards here. If we do it in the wxFileDialog constructor it will detect
+    // that our file name doesn't have extension and it will try to add one. It doens't have a
+    // correct value for the filter index we want, so it uses the first one which is ads for Ada
+    // files. This is happening only on wxGTK.
+    dlg.SetWildcard(Filters);
     dlg.SetFilterIndex(StoredIndex);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
