@@ -15,7 +15,6 @@
     #include "macrosmanager.h"
     #include "pluginmanager.h"
     #include "projectmanager.h"
-    #include "pluginmanager.h"
     #include "scriptingmanager.h"
     #include "compilerfactory.h"
     #include "globals.h"
