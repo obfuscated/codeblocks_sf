@@ -1,0 +1,81 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// OpenGL project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new OpenGL project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using OpenGL.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    Wizard.AddInfoPage(_T("OpenGLIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    local result = _T("opengl/files_win");
+    if (PLATFORM != PLATFORM_MSW)
+        result = _T("opengl/files_unix");
+    return result;
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    if (PLATFORM != PLATFORM_MSW)
+    {
+        // add link libraries
+        project.AddLinkLib(_T("GL"));
+        project.AddLinkLib(_T("X11"));
+    }
+    else
+    {
+        // add link libraries
+        project.AddLinkLib(_T("opengl32"));
+        project.AddLinkLib(_T("glu32"));
+        project.AddLinkLib(_T("gdi32"));
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+        {
+            project.AddLinkLib(_T("user32"));
+        }
+        else if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("bcc")))
+        {
+            project.AddLinkLib(_T("cw32mt.lib"));
+            project.AddLinkLib(_T("import32.lib"));
+        }
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("gcc")))
+            target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        else
+            target.SetTargetType(ttExecutable); // For others, keep it GUI
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

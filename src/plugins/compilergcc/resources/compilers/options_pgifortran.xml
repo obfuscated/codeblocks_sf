@@ -1,0 +1,298 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"       value="pgfortran.exe"/>
+        <Program name="CPP"     value="pgfortran.exe"/>
+        <Program name="LD"      value="pgfortran.exe"/>
+        <Program name="LIB"     value="ar.exe"/>
+        <Program name="WINDRES" value=""/>
+        <Program name="MAKE"    value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"       value="pgfortran"/>
+        <Program name="CPP"     value="pgfortran"/>
+        <Program name="LD"      value="pgfortran"/>
+        <Program name="LIB"     value="ar"/>
+        <Program name="WINDRES" value=""/>
+        <Program name="MAKE"    value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="forceFwdSlashes"         value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <Category name="Debug and diagnostics related">
+        <Option name="Include debugging information in the object module"
+                option="-g"
+                supersedes="-gopt"/>
+        <Option name="Same as -g, but forces assembly code generation identical to that obtained when -gopt is not present"
+                option="-gopt"
+                supersedes="-g"/>
+        <Option name="Instruct the compiler to display all error messages"
+                option="-Minform=inform"
+                supersedes="-Minform=fatal -Minform=severe -Minform=warn"/>
+        <Option name="Instruct the compiler to display fatal error messages"
+                option="-Minform=fatal"
+                supersedes="-Minform=inform -Minform=severe -Minform=warn"/>
+        <Option name="Instruct the compiler to display severe and fatal error messages"
+                option="-Minform=severe"
+                supersedes="-Minform=inform -Minform=fatal -Minform=warn"/>
+        <Option name="Instruct the compiler to display warning, severe and fatal error messages"
+                option="-Minform=warn"
+                supersedes="-Minform=inform -Minform=fatal -Minform=severe"/>
+        <Option name="Check array bounds at runtime"
+                option="-C"/>
+        <Option name="Instruct the compiler to check for pointers that are dereferenced while initialized to NULL"
+                option="-Mchkptr"/>
+        <Option name="Instruct the compiler to check the stack for available space"
+                option="-Mchkstk"/>
+        <Option name="Add debug information for runtime traceback for use with the environment variable PGI_TERM"
+                option="-traceback"/>
+        <Option name="Generate a profile using time-based instruction-level statistical sampling to the file pgprof.out"
+                option="-Mprof=time"/>
+        <Option name="Display compile-time optimization listings"
+                option="-Minfo"/>
+    </Category>
+
+    <Category name="Optimization">
+        <Option name="Generally optimal set of flags for targets that support SSE capability"
+                option="-fast"/>
+        <Option name="Generally optimal set of flags for targets that include SSE/SSE2 capability"
+                option="-fastsse"/>
+        <Option name="Invoke code optimization at the -O1 level"
+                option="-O1"
+                supersedes="-O2 -O3 -O4"/>
+        <Option name="Invoke code optimization at the -O2 level"
+                option="-O2"
+                supersedes="-O1 -O3 -O4"/>
+        <Option name="Invoke code optimization at the -O3 level"
+                option="-O3"
+                supersedes="-O1 -O2 -O4"/>
+        <Option name="Invoke code optimization at the -O4 level"
+                option="-O4"
+                supersedes="-O1 -O2 -O3"/>
+        <Option name="Perform certain fp operations using low-precision approximation"
+                option="-Mfpapprox"
+                supersedes="-Mfprelaxed"/>
+        <Option name="Perform certain fp operations using relaxed precision"
+                option="-Mfprelaxed"
+                supersedes="-Mfpapprox"/>
+        <Option name="Choose IPA options generally optimal for the target"
+                option="-Mipa=fast"/>
+        <Option name="Perform automatic interprocedural function inlining"
+                option="-Mipa=inline"/>
+        <Option name="Invoke the function inliner"
+                option="-Minline"/>
+    </Category>
+
+    <Category name="CPU architecture tuning"
+              exclusive="true">
+        <Option name="Generate 32-bit code for AMD Athlon XP/MP and compatible processors"
+                option="-tp athlon"/>
+        <Option name="Generate 32-bit code for AMD Opteron/Quadcore and compatible processors"
+                option="-tp barcelona-32"/>
+        <Option name="Generate 64-bit code for AMD Opteron/Quadcore and compatible processors"
+                option="-tp barcelona-64"/>
+        <Option name="Generate 32-bit code for Intel Core 2 Duo and compatible processors"
+                option="-tp core2-32"/>
+        <Option name="Generate 64-bit code for Intel Core 2 Duo EM64T and compatible processors"
+                option="-tp core2-64"/>
+        <Option name="Generate 32-bit code that is usable on any Istanbul processor-based system"
+                option="-tp istanbul-32"/>
+        <Option name="Generate 64-bit code that is usable on any Istanbul processor-based system"
+                option="-tp istanbul-64"/>
+        <Option name="Generate 32-bit code for AMD Athlon64, AMD Opteron and compatible processors"
+                option="-tp k8-32"/>
+        <Option name="Generate 64-bit code for AMD Athlon64, AMD Opteron and compatible processors"
+                option="-tp k8-64"/>
+        <Option name="Generate 64-bit code for AMD Opteron Revision E, AMD Turion, and compatible processors"
+                option="-tp k8-64e"/>
+        <Option name="Generate 32-bit code that is usable on any Nehalem processor-based system"
+                option="-tp nehalem-32"/>
+        <Option name="Generate 64-bit code that is usable on any Nehalem processor-based system"
+                option="-tp nehalem-64"/>
+        <Option name="Generate 32-bit code for Pentium Pro/II/III and AthlonXP compatible processors"
+                option="-tp p6"/>
+        <Option name="Generate 32-bit code for Pentium 4 and compatible processors"
+                option="-tp p7-32"/>
+        <Option name="Generate 64-bit code for Intel P4/Xeon EM64T and compatible processors"
+                option="-tp p7-64"/>
+        <Option name="Generate 32-bit code for Intel Penryn Architecture and compatible processors"
+                option="-tp penryn-32"/>
+        <Option name="Generate 64-bit code for Intel Penryn Architecture and compatible processors"
+                option="-tp penryn-64"/>
+        <Option name="Generate 32-bit code for Pentium III and compatible processors"
+                option="-tp piii"/>
+        <Option name="Generate 32-bit code that is usable on any x86 processor-based system"
+                option="-tp px-32"/>
+        <Option name="Generate 32-bit code that is usable on any AMD Shanghai processor-based system"
+                option="-tp shanghai-32"/>
+        <Option name="Generate 64-bit code that is usable on any AMD Shanghai processor-based system"
+                option="-tp shanghai-64"/>
+        <Option name="Generate 64-bit unified binary code including full optimizations and support for both AMD and Intel x64 processors"
+                option="-tp x64"/>
+    </Category>
+
+    <Category name="Data">
+        <Option name="Set default KIND of integer and logical variables to 2"
+                option="-i2"
+                supersedes="-i4 -i8"/>
+        <Option name="Set default KIND of integer and logical variables to 4"
+                option="-i4"
+                supersedes="-i2 -i8"/>
+        <Option name="Set default KIND of integer and logical variables to 8"
+                option="-i8"
+                supersedes="-i2 -i4"/>
+        <Option name="Interpret DOUBLE PRECISION variables as REAL"
+                option="-r4"
+                supersedes="-r8"/>
+        <Option name="Interpret REAL variables as DOUBLE PRECISION"
+                option="-r8"
+                supersedes="-r4"/>
+        <Option name="Treat the intrinsics CMPLX and REAL as DCMPLX and DBLE, respectively"
+                option="-Mr8intrinsics"/>
+    </Category>
+
+    <Category name="Language">
+        <Option name="Instruct the compiler to allow Fortran subprograms to be called recursively"
+                option="-Mrecursive"/>
+        <Option name="Force references to names appearing in EXTERNAL statements"
+                option="-Mref_externals"/>
+        <Option name="Use Fortran 2003 semantics in allocatable array assignments"
+                option="-Mallocatable=03"/>
+        <Option name="Treat the backslash as a normal character, and not as an escape character in quoted strings"
+                option="-Mbackslash"/>
+        <Option name="Require that all program variables be declared"
+                option="-Mdclchk"/>
+        <Option name="Treat lines containing &quot;D&quot; in column 1 as executable statements (ignoring the &quot;D&quot;)"
+                option="-Mdlines"/>
+        <Option name="Accept 132-column source code; otherwise compiler accepts 72-column code"
+                option="-Mextend"/>
+        <Option name="Assume input source files are in FORTRAN 77-style fixed form format"
+                option="-Mfixed"
+                supersedes="-Mfree"/>
+        <Option name="Assume the input source files are in Fortran 90/95 freeform format"
+                option="-Mfree"
+                supersedes="-Mfixed"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -module $objects_output_dir -c $file -o $object "/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+    <Command name="LinkExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <Command name="LinkDynamic"
+             value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    <Command name="LinkStatic"
+             value="$lib_linker -r $static_output $link_objects&#xA;&#x9;ranlib $exe_output"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+
+    <RegEx name="Severe error"
+           type="error"
+           msg="1"
+           file="2"
+           line="3">
+        <![CDATA[(.*-S-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t]*([0-9]+)).*]]>
+    </RegEx>
+    <RegEx name="Severe error(2)"
+           type="error"
+           msg="1"
+           file="2">
+        <![CDATA[(.*-S-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+)).*]]>
+    </RegEx>
+    <RegEx name="Fatal error"
+           type="error"
+           msg="1"
+           file="2"
+           line="3">
+        <![CDATA[(.*-F-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t]*([0-9]+)).*]]>
+    </RegEx>
+    <RegEx name="Fatal error(2)"
+           type="error"
+           msg="1"
+           file="2">
+        <![CDATA[(.*-F-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+)).*]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="1"
+           file="2"
+           line="3">
+        <![CDATA[(.*-V-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t]*([0-9]+)).*]]>
+    </RegEx>
+    <RegEx name="Compiler error(2)"
+           type="error"
+           msg="1"
+           file="2">
+        <![CDATA[(.*-V-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+)).*]]>
+    </RegEx>
+    <RegEx name="Warning"
+           type="warning"
+           msg="1"
+           file="2"
+           line="3">
+        <![CDATA[(.*-W-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t]*([0-9]+)).*]]>
+    </RegEx>
+    <RegEx name="Warning(2)"
+           type="warning"
+           msg="1"
+           file="2">
+        <![CDATA[(.*-W-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+)).*]]>
+    </RegEx>
+    <RegEx name="Info line"
+           type="warning"
+           msg="1"
+           file="2"
+           line="3">
+        <![CDATA[(.*-I-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+):[ \t]*([0-9]+)).*]]>
+    </RegEx>
+    <RegEx name="Info line(2)"
+           type="warning"
+           msg="1"
+           file="2">
+        <![CDATA[(.*-I-[0-9]+-.*)\(([][{}() \t#%$~[:alnum:]&_:+/\.-]+)).*]]>
+    </RegEx>
+    <RegEx name="Error"
+           type="error"
+           msg="1">
+        <![CDATA[.*-Error-(.*)]]>
+    </RegEx>
+    <RegEx name="Undefined reference"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t](undefined reference.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (lib not found)"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[.*(ld.*):[ \t](cannot find.*)]]>
+    </RegEx>
+    <RegEx name="Linker error (cannot open output file)"
+           type="error"
+           msg="2;3"
+           file="1">
+        <![CDATA[.*(ld.*):[ \t](cannot open output file.*):[ \t](.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

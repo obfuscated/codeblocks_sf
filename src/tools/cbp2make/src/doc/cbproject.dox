@@ -1,0 +1,377 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file cbproject.h
+  \brief Project description.
+*/
+
+/*!
+  \file cbproject.cpp
+  \brief Project description.
+*/
+
+/*!
+  \class CCodeBlocksProject
+  \brief Project description.
+
+  Contains properties of a project and generates makefiles.
+*/
+
+/* !
+  \var CCodeBlocksProject::m_ValidProject
+  \brief .
+*/
+
+/*!
+  \var CCodeBlocksProject::m_VersionMajor
+  \brief Major version number.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_VersionMinor
+  \brief Minor version number.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Title
+  \brief Title of the project.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_DefaultTarget
+  \brief Name of the default build target of the project.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Compiler
+  \brief Name (alias) of the default toolchain for the project.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_ExtendedObjectNames
+  \brief Controls how object files are named.
+
+  When set to \a true, an object file extension (e.g. ".o" or ".obj")
+  is appended to a build unit file name (e.g. "unit.cpp" becomes "unit.cpp.o"),
+  otherwise, when set to \a false, a build unit file extension is
+  replaced by an object file extension (e.g. "unit.cpp" becomes "unit.o").
+*/
+
+/*!
+  \var CCodeBlocksProject::m_CompilerOptions
+  \brief Project-wide list of compiler options.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_CompilerDirectories
+  \brief Project-wide list of search directories for compiler(s).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_LinkerOptions
+  \brief Project-wide list of linker options.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_LinkerLibraries
+  \brief Project-wide list of libraries to link with the project.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_LinkerDirectories
+  \brief Project-wide list of search directories for linker.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_ResourceCompilerDirectories
+  \brief Project-wide list of search directories for resource compiler.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_BeforeBuildCommands
+  \brief Project-wide list of commands that should be executed prior to starting the build process.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_AfterBuildCommands
+  \brief Project-wide  list of commands that should be executed after the build process is finished.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_ForceBeforeBuildCommands
+  \brief Makes the execution of the project-wide before-build commands unconditional.
+
+  \sa CCodeBlocksProject::m_BeforeBuildCommands
+*/
+
+/*!
+  \var CCodeBlocksProject::m_ForceAfterBuildCommands
+  \brief Makes the execution of the project-wide after-build commands unconditional.
+
+  \sa CCodeBlocksProject::m_AfterBuildCommands
+*/
+
+/*!
+  \var CCodeBlocksProject::m_BuildTargets
+  \brief List of build targets of the project.
+
+  Contains pointers to CBuildTarget objects and owns them
+  (i.e. objects sould be destroyed before the list is cleared).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_VirtualTargets
+  \brief List of virtual build targets of the project.
+
+  Contains pointers to CVirtualTarget objects and owns them
+  (i.e. objects sould be destroyed before the list is cleared).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Units
+  \brief List of build units of the project.
+
+  Contains pointers to CBuildUnit objects and owns them
+  (i.e. objects sould be destroyed before the list is cleared).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Environment
+  \brief Symbol table for environment variables.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Platforms
+  \brief List of platforms used in the project.
+
+  Contains pointers to CPlatform objects and owns them
+  (i.e. objects sould be destroyed before the list is cleared).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_SinglePlatform
+  \brief Indicates that makefile should be generated only for one platform.
+
+  This property is automatically refreshed by
+  CCodeBlocksProject::GenerateMakefileText(const CString& FileName, CCodeBlocksBuildConfig& Config)
+  or
+  CCodeBlocksProject::GenerateMakefile(const CString& FileName, CCodeBlocksBuildConfig& Config).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_BuildTargetIndex
+  \brief List of build targets valid for a platform.
+
+  Contains pointers to CBuildTarget objects but does not own them
+  (i.e. objects sould not be destroyed before the list is cleared).
+  This property is automatically refreshed by
+  CCodeBlocksProject::UpdatePlatformIndex(const size_t Platform, CCodeBlocksBuildConfig& Config).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_VirtualTargetIndex
+  \brief List of virtual build targets valid for a platform.
+
+  Contains pointers to CVirtualTarget objects but does not own them
+  (i.e. objects sould not be destroyed before the list is cleared).
+  This property is automatically refreshed by
+  CCodeBlocksProject::UpdatePlatformIndex(const size_t Platform, CCodeBlocksBuildConfig& Config).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_UnitIndex
+  \brief List of build units valid for a build target.
+
+  Contains pointers to CBuildUnit objects but does not own them
+  (i.e. objects sould not be destroyed before the list is cleared).
+  This property is automatically refreshed by
+  CCodeBlocksProject::UpdateTargetIndex(const int Target, CCodeBlocksBuildConfig& Config).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_ToolChainIndex
+  \brief List of toolchains valid for a platform.
+
+  Contains pointers to CPlatform objects but does not own them
+  (i.e. objects sould not be destroyed before the list is cleared).
+  This property is automatically refreshed by
+  CCodeBlocksProject::UpdatePlatformIndex(const size_t Platform, CCodeBlocksBuildConfig& Config).
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Dependencies
+  \brief Stores dependencies of build units.
+
+  CDependencyInfo is used to store information about relationship between build
+  units in order to generate makefule rules for unit dependencies.
+
+  See depsearch.h for additional information on gathering unit dependencies.
+*/
+
+/* !
+  \var CCodeBlocksProject::m_MakefileText
+  \brief Contains plain text of makefile for the project.
+
+  Contents of makefile are generated by
+  CCodeBlocksProject::GenerateMakefileText(const CString& FileName, CCodeBlocksBuildConfig& Config)
+  before saving to a file.
+*/
+
+/*!
+  \var CCodeBlocksProject::m_Makefile
+  \brief Contains object-based description of makefile for the project.
+
+  Contents of makefile are generated by
+  CCodeBlocksProject::GenerateMakefile(const CString& FileName, CCodeBlocksBuildConfig& Config)
+  before saving to a file.
+*/
+
+/* !
+  \var CCodeBlocksProject::
+  \brief .
+*/
+
+/*!
+  \fn CCodeBlocksProject::DecorateTargetNames(void)
+  \brief Makes makefile-compatible build target names for all build targets.
+
+  \sa CCodeBlocksProject::DecorateTargetName(const CString& TargetName).
+*/
+
+/*!
+  \fn CCodeBlocksProject::SortUnitsByWeight(void)
+  \brief Sorts project units by weight in ascending order.
+
+  \sa CBuildUnit::m_Weight.
+*/
+
+/*!
+  \fn CCodeBlocksProject::Clear(void)
+  \brief Resets the project to the initial state.
+*/
+
+/*!
+  \fn CCodeBlocksProject::Read(const TiXmlElement *ProjectRoot)
+  \brief Reads the project settings from an XML document.
+  \param ProjectRoot an element of XML document.
+*/
+
+/*!
+  \fn CCodeBlocksProject::LoadProject(const CString& FileName)
+  \brief Loads a project from a file specified by \a FileName.
+  \param FileName name of Code::Blocks project file.
+
+  \return \a true if specified project is successfully loaded, \a false otherwise.
+*/
+
+/*!
+  \fn CCodeBlocksProject::Show(void)
+  \brief Prints the project contents to standard output.
+*/
+
+/*!
+  \fn CCodeBlocksProject::UpdatePlatformIndex(const size_t Platform, CCodeBlocksBuildConfig& Config)
+  \brief Updates lists of build targets, virtual build targets and toolchains.
+  \param Platform index of a platform in the build configuration.
+
+  \param Config build configuration.
+
+  Refreshes CCodeBlocksProject::m_BuildTargetIndex, CCodeBlocksProject::m_VirtualTargetIndex
+  and CCodeBlocksProject::m_ToolChainIndex by selecting only items valid for the specified platform.
+*/
+
+/*!
+  \fn CCodeBlocksProject::UpdateTargetIndex(const int Target, CCodeBlocksBuildConfig& Config)
+  \brief Updates list of build units.
+  \param Target index of a target in the build configuration.
+
+  \param Config build configuration.
+
+  Refreshes CCodeBlocksProject::m_UnitIndex by selecting only units valid for the specified build target.
+*/
+
+/*!
+  \fn CCodeBlocksProject::DecorateVariableName(const CString& VariableName, const int Case = 0)
+  \brief Makes a makefile-compatible macro variable name from the given name.
+  \param VariableName an unprepared macro variable name.
+  \param Case casing of the variable name:
+  \li 0 - don't change existing case (default)
+  \li 1 - make all characters lower case
+  \li 2 - make all characters upper case
+
+  \return makefile-compatible macro variable name.
+
+  This function uses MakefileFriendly(const CString& AString) for the job.
+*/
+
+/*!
+  \fn CCodeBlocksProject::DecorateTargetName(const CString& TargetName, const int Case = 2)
+  \brief Makes a makefile-compatible build target name from the given name.
+  \param TargetName an unprepared build target name.
+  \param Case casing of the variable name:
+  \li 0 - don't change existing case
+  \li 1 - make all characters lower case
+  \li 2 - make all characters upper case (default)
+
+  \return makefile-compatible build target name.
+
+  This function uses MakefileFriendly(const CString& AString) for the job.
+*/
+
+/*!
+  \fn CCodeBlocksProject::GenerateMakefileText(const CString& FileName, CCodeBlocksBuildConfig& Config)
+  \brief Generates makefile text and writes it to the file specified by \a FileName.
+  \param FileName a file name for makefile of the project.
+
+  \param Config build configuration.
+
+  \return \a true if makefile was successfully generated, \a false otherwise.
+*/
+
+/*!
+  \fn CCodeBlocksProject::GenerateMakefile(const CString& FileName, CCodeBlocksBuildConfig& Config)
+  \brief Generates makefile text and writes it to the file specified by \a FileName.
+  \param FileName a file name for makefile of the project.
+
+  \param Config build configuration.
+
+  \return \a true if makefile was successfully generated, \a false otherwise.
+
+  This function uses intermediate object-based makefile description
+  CCodeBlocksProject::m_Makefile to generate plain text makefile.
+*/
+
+/*!
+  \fn CCodeBlocksProject::CCodeBlocksProject(void)
+  \brief Creates project.
+*/
+
+/*!
+  \fn CCodeBlocksProject::~CCodeBlocksProject(void)
+  \brief Destroys project.
+*/
+
+/* !
+  \fn CCodeBlocksProject::
+  \brief .
+  \param .
+  \return .
+*/
+
+//------------------------------------------------------------------------------

@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Sort CFlags="-std=c90 -std=c89 -std=iso9899:1990 -std=iso9899:199409 -std=c99 -std=c9x -std=iso9899:1999
+                  -std=iso9899:199x -std=c11 -std=c1x -std=iso9899:2011 -std=gnu90 -std=gnu89 -std=gnu99 -std=gnu9x
+                  -std=gnu11 -std=gnu1x"/>
+    <Sort CPPFlags="-std=c++98 -std=c++03 -std=gnu++98 -std=gnu++03 -std=c++11 -std=c++0x -std=gnu++11 -std=gnu++0x
+                    -std=c++1y -std=gnu++1y -std=c++14 -std=gnu++14
+                    -static-libstdc++ -shared-libstdc++ -fpermissive -fdeduce-init-list -fcheck-new -fstrict-enums
+                    -Weffc++ -Wctor-dtor-privacy -Wdelete-non-virtual-dtor -Wliteral-suffix -Wc++11-compat -Wnoexcept
+                    -Wnon-virtual-dtor -Wreorder -Wstrict-null-sentinel -Wno-non-template-friend -Wnon-template-friend
+                    -Wold-style-cast -Woverloaded-virtual -Wno-pmf-conversions -Wsign-promo -fno-rtti
+                    -fno-threadsafe-statics"/>
+</CodeBlocks_compiler_options>

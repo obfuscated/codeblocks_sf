@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="XML"
+               index="5"
+               filemasks="*.xml,*.xsd,*.xsl,*.xrc,*.xcu,*.bkl,*.bkgen,*.font,*.imageset,*.layout,*.looknfeel,*.scheme,*.wnd">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Tag"
+                        index="1,2"
+                        fg="128,0,128"
+                        bold="1"/>
+                <Style name="Attribute name"
+                        index="3,4"
+                        fg="0,0,0"
+                        bold="1"/>
+                <Style name="Attribute value"
+                        index="5,6,7,8"
+                        fg="0,0,255"/>
+                <Style name="Comment"
+                        index="9"
+                        fg="0,128,0"/>
+                <Style name="Entity"
+                        index="10"
+                        fg="255,69,0"
+                        bold="1"/>
+                <Style name="XML Start"
+                        index="12"
+                        fg="128,0,128"/>
+                <Style name="XML End"
+                        index="13"
+                        fg="128,0,128"/>
+                <Style name="CDATA Section"
+                        index="17"
+                        fg="0,0,0"
+                        italics="1"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+				<SampleCode value="lexer_xml.sample"/>
+				<LanguageAttributes
+                    LineComment=""
+                    StreamCommentStart="&lt;!--"
+                    StreamCommentEnd="--&gt;"
+                    BoxCommentStart="&lt;!-- "
+                    BoxCommentMid="  -- "
+                    BoxCommentEnd="  --&gt;"
+                    CaseSensitive="1"
+                    LexerCommentStyles="9"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="5,6,7,17"
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

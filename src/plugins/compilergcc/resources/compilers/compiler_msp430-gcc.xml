@@ -1,0 +1,21 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for MSP430 (HighTec)"
+                     id="msp430-gcc"
+                     weight="64">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search registry="HKEY_LOCAL_MACHINE\Software\HighTec EDV-Systeme\Msp430"
+                    value="InstallPath"/>
+            <Fallback path="C:\HighTec\Msp430"/>
+        </if>
+        <else>
+            <Fallback path="/usr/local/msp430"/>
+        </else>
+    </Path>
+    <Path type="include">
+        <Add><master/><separator/>msp430<separator/>include</Add>
+    </Path>
+</CodeBlocks_compiler>

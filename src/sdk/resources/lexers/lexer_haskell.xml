@@ -1,0 +1,106 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Haskell"
+               index="68"
+               filemasks="*.hs,*.lhs,*.las">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Identifier"
+                        index="1"
+                        fg="255,255,255"/>
+                <Style name="Keyword"
+                        index="2"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="Number"
+                        index="3"
+                        fg="160,882,45"/>
+                <Style name="String"
+                        index="4"
+                        fg="0,0,255"/>
+                <Style name="Character"
+                        index="5"
+                        fg="224,160,0"/>
+                <Style name="Class"
+                        index="6"
+                        fg="0,0,0"/>
+                <Style name="Module"
+                        index="7"
+                        fg="0,160,0"/>
+                <Style name="Capital"
+                        index="8"
+                        fg="255,0,0"/>
+                <Style name="Data"
+                        index="9"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="Import"
+                        index="10"
+                        fg="95,159,159"/>
+                <Style name="Operator"
+                        index="11"
+                        fg="0,0,128"
+                        bold="1"/>
+                <Style name="Instance"
+                        index="12"
+                        fg="255,0,255"/>
+                <Style name="Comment"
+                        index="13"
+                        fg="160,160,160"/>
+                <Style name="Comment Block 1"
+                        index="14"
+                        fg="128,128,255"/>
+                <Style name="Comment Block 2"
+                        index="15"
+                        fg="128,128,255"/>
+                <Style name="Comment Block 3"
+                        index="16"
+                        fg="128,128,255"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                        index="34"
+                        bg="128,255,255"
+                        bold="1"/>
+                <Style name="No matching brace highlight"
+                        index="35"
+                        fg="255,255,255"
+                        bg="255,0,0"
+                        bold="1"/>
+                <Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="as case class data default deriving do else hiding if
+                            import in infix infixl infixr instance let module newtype of
+                            proc qualified rec then type where _"/>
+                </Keywords>
+                <SampleCode value="lexer_haskell.sample"
+                        breakpoint_line="32"
+                        debug_line="35"
+                        error_line="37"/>
+                <LanguageAttributes
+                    LineComment="--"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

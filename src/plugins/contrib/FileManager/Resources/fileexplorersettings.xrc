@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxDialog" name="FileBrowserShortcuts">
+		<size>500,150</size>
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="m_staticText11">
+							<label>Name</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="m_Name" />
+						<flag>wxALL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="m_statictext12">
+							<label>Path</label>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="m_Path" />
+						<flag>wxALL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="m_button15">
+							<label>...</label>
+							<style>wxBU_EXACTFIT</style>
+						</object>
+						<flag>wxALIGN_CENTER_VERTICAL</flag>
+					</object>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer">
+					<object class="sizeritem">
+						<object class="wxButton" name="m_button16">
+							<label>OK</label>
+						</object>
+						<flag>wxALL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="m_button17">
+							<label>Cancel</label>
+						</object>
+						<flag>wxALL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+	<object class="wxDialog" name="FileBrowserSettings">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Bookmarked Folders</label>
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<object class="sizeritem">
+								<object class="wxListBox" name="idfavlist" />
+								<flag>wxALL|wxEXPAND</flag>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxButton" name="idnew">
+											<label>New...</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="idedit">
+											<label>Edit...</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="iddelete">
+											<label>Delete</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT</flag>
+									</object>
+									<object class="spacer">
+										<flag>wxEXPAND</flag>
+										<option>1</option>
+										<size>0,0</size>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="idup">
+											<label>Up</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT</flag>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="iddown">
+											<label>Down</label>
+										</object>
+										<flag>wxALL|wxALIGN_LEFT</flag>
+									</object>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxStaticText" name="m_staticText11">
+											<label>Alias</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="idalias" />
+										<flag>wxALL|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer">
+									<object class="sizeritem">
+										<object class="wxStaticText" name="m_statictext12">
+											<label>Path</label>
+										</object>
+										<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxTextCtrl" name="idpath" />
+										<flag>wxALL|wxALIGN_TOP</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="idbrowsepath">
+											<label>...</label>
+											<style>wxBU_EXACTFIT</style>
+										</object>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+									</object>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+			</object>
+		</object>
+	</object>
+</resource>

@@ -1,0 +1,114 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Lua"
+               index="15"
+               filemasks="*.lua">
+                <Style name="Default"
+                       index="0"
+                       fg="0,0,0"
+                       bg="255,255,255"
+                       bold="0"
+                       italics="0"
+                       underlined="0"/>
+                <Style name="Comment"
+                       index="1,2,3"
+                       fg="160,160,160"/>
+                <Style name="Number"
+                       index="4"
+                       fg="240,0,240"/>
+                <Style name="Keyword"
+                       index="5,13,14,15,16,17,18,19"
+                       fg="0,0,160"
+                       bold="1"/>
+                <Style name="String"
+                       index="6,8,12"
+                       fg="0,0,255"/>
+                <Style name="Operator"
+                       index="10"
+                       fg="255,0,0"/>
+                <Style name="Selection"
+                       index="-99"
+                       bg="192,192,192"/>
+                <Style name="Active line"
+                       index="-98"
+                       bg="255,255,160"/>
+                <Style name="Compiler error line"
+                       index="-4"
+                       bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                       index="34"
+                       fg="255,0,0"
+                       bold="1"
+                       underlined="1"/>
+                <Style name="No matching brace highlight"
+                       index="35"
+                       bg="255,0,0"/>
+                <Keywords>
+                        <!-- Keywords -->
+                        <Set index="0"
+                            value="if elseif else then end do while nil true false
+                                   in for and or function local not repeat return until"/>
+                        <!-- Basic functions -->
+                        <Set index="1"
+                            value="assert collectgarbage dofile error _G getmetatable
+                                   ipairs load loadfile next pairs pcall print rawequal
+                                   rawget rawlen rawset select setmetatable tonumber
+                                   tostring type _VERSION xpcall
+
+                                   bit32 coroutine debug io math os package string
+                                   table"/>
+                        <!-- Bitwise, mathematical, string, and table functions -->
+                        <Set index="2"
+                            value="bit32.arshift bit32.band bit32.bnot bit32.bor
+                                   bit32.btest bit32.bxor bit32.extract bit32.replace
+                                   bit32.lrotate bit32.lshift bit32.rrotate bit32.rshift
+                                   math.abs math.acos math.asin math.atan math.atan2
+                                   math.ceil math.cos math.cosh math.deg math.exp
+                                   math.floor math.fmod math.frexp math.huge math.ldexp
+                                   math.log math.max math.min math.modf math.pimath.pow
+                                   math.rad math.random math.randomseed math.sin
+                                   math.sinh math.sqrt math.tan math.tanh
+                                   string.byte string.char string.dump string.find
+                                   string.format string.gmatch string.gsub string.len
+                                   string.lower string.match string.rep string.reverse
+                                   string.sub string.upper
+                                   table.concat table.insert table.pack table.remove
+                                   table.sort table.unpack"/>
+                        <!-- Coroutine, input/output, system, and package facilities -->
+                        <Set index="3"
+                            value="coroutine.create coroutine.resume coroutine.running
+                                   coroutine.status coroutine.wrap coroutine.yield
+                                   io.close io.flush io.input io.lines io.open
+                                   io.output io.popen io.read io.tmpfile io.type
+                                   io.write
+                                   os.clock os.date os.difftime os.execute os.exit
+                                   os.getenv os.remove os.rename os.setlocale os.time
+                                   os.tmpname
+                                   require package.config package.cpath package.loaded
+                                   package.loadlib package.path package.preload
+                                   package.searchers package.searchpath"/>
+                        <!-- Debug functions -->
+                        <Set index="4"
+                            value="debug.debug debug.gethook debug.getinfo debug.getlocal
+                                   debug.getmetatable debug.getregistry debug.getupvalue
+                                   debug.getuservalue debug.sethook debug.setlocal
+                                   debug.setmetatable debug.setupvalue debug.setuservalue
+                                   debug.traceback debug.upvalueid debug.upvaluejoin"/>
+                </Keywords>
+                <SampleCode value="lexer_lua.sample"
+                        error_line="9"/>
+                <LanguageAttributes
+                    LineComment="--"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3"
+                    LexerCharacterStyles="7"
+                    LexerStringStyles="6,12"
+                    LexerPreprocessorStyles="9"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

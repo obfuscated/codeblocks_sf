@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="wxWidgetsGUIConfigPanel">
+		<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+					<object class="sizeritem">
+						<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+							<label>Automatically loaded resources:</label>
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="StaticText1" member="no">
+									<label>Each line will be passed as file name to&#x0A;wxXmlResource::Get()-&gt;Load.</label>
+									<style>wxALIGN_CENTRE</style>
+								</object>
+								<flag>wxEXPAND</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="AutoLoad" member="yes">
+									<size>218,102</size>
+									<style>wxTE_MULTILINE</style>
+								</object>
+								<flag>wxTOP|wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxBoxSizer" variable="BoxSizer3" member="no">
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON1" variable="Button1" member="no">
+											<label>Add file</label>
+											<handler function="OnButton1Click" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+									</object>
+									<object class="spacer">
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="ID_BUTTON2" variable="Button2" member="no">
+											<label>Clear all</label>
+											<handler function="OnButton2Click" entry="EVT_BUTTON" />
+										</object>
+										<flag>wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxTOP|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="BoxSizer4" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticBoxSizer" variable="StaticBoxSizer2" member="no">
+									<label>Main resource</label>
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxComboBox" name="ID_COMBOBOX1" variable="MainRes" member="yes">
+											<size>201,21</size>
+											<style>wxCB_READONLY</style>
+										</object>
+										<flag>wxALIGN_CENTER_HORIZONTAL</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="wxID_ANY" variable="StaticText2" member="no">
+											<label>Window selected here will be created and&#x0A;shown while initializing application.&#x0A;You should use one of frames here.&#x0A;Using dialog as main resource is also&#x0A;acceptable but may lead to problems&#x0A;with terminating application&#x0A;after closing main dialog.</label>
+											<style>wxALIGN_CENTRE</style>
+										</object>
+										<flag>wxTOP|wxALIGN_CENTER_HORIZONTAL</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxLEFT|wxEXPAND</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticBoxSizer" variable="StaticBoxSizer3" member="no">
+									<label>XRC system initialization</label>
+									<orient>wxVERTICAL</orient>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX2" variable="InitAll" member="yes">
+											<label>Call wxXmlResource::InitAllHandlers()</label>
+											<handler function="OnInitAllChange" entry="EVT_CHECKBOX" />
+										</object>
+										<flag>wxEXPAND</flag>
+										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxCheckBox" name="ID_CHECKBOX1" variable="InitAllNecessary" member="yes">
+											<label>Only when necessary</label>
+											<enabled>0</enabled>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+									</object>
+								</object>
+								<flag>wxTOP|wxLEFT|wxEXPAND</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

@@ -1,0 +1,178 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="ppc-gcc.exe"/>
+        <Program name="CPP"       value="ppc-g++.exe"/>
+        <Program name="LD"        value="ppc-g++.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="ppc-ar.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="ppc-gcc"/>
+        <Program name="CPP"       value="ppc-g++"/>
+        <Program name="LD"        value="ppc-g++"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="ppc-ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    <Common name="warnings"/>
+
+    <Category name="General Options">
+        <Option name="Output an error if same variable is declared without extern in different modules"
+                option="-fno-common"/>
+        <Option name="Save intermediate files in the build directory"
+                option="-save-temps"/>
+    </Category>
+
+    <Category name="Linker and startup code">
+        <Option name="do not link against the default crt0.o, so you can add your own startup code (MSP430 specific)"
+                option="-nocrt0"/>
+        <Option name="do not link against standard system startup files"
+                option="-nostartfiles"/>
+        <Option name="only search library directories explicitly specified on the command line"
+                option="-nostdlib"/>
+    </Category>
+
+    <Common name="optimization"/>
+    <Category name="Optimization">
+        <Option name="No instruction scheduling before reload"
+                option="-fno-schedule-insns"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+        <Option name="No instruction scheduling after reload"
+                option="-fno-schedule-insns2"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    </Category>
+
+    <Category name="PowerPC architecture specific">
+        <Option name="Generate 32-bit code"
+                option="-m32"/>
+        <Option name="Use EABI"
+                option="-meabi"/>
+        <Option name="Produce big endian code"
+                option="-mbig-endian"/>
+        <Option name="Produce little endian code"
+                option="-mlittle-endian"/>
+        <Option name="Do not allow bit-fields to cross word boundaries"
+                option="-mno-bit-word"/>
+        <Option name="Align to the base type of the bit-field"
+                option="-mbit-align"/>
+        <Option name="Do not generate single field mfcr instruction"
+                option="-mno-mfcrf"/>
+        <Option name="Generate single field mfcr instruction"
+                option="-mmfcrf"/>
+        <Option name="Generate load/store with update instructions"
+                option="-mupdate"/>
+        <Option name="Generate load/store multiple instructions"
+                option="-mmultiple"/>
+        <Option name="Do not use hardware floating point"
+                option="-msoft-float"/>
+        <Option name="Use hardware floating point"
+                option="-mhard-float"/>
+        <Option name="Select method for sdata handling"
+                option="-msdata="/>
+        <Option name="Specify alignment of structure fields default/natural"
+                option="-malign="/>
+        <Option name="Avoid all range limits on call instructions"
+                option="-mlongcall"/>
+        <Option name="Using floating point in the GPRs"
+                option="-mfloat-gprs=yes"/>
+        <Option name="Not using floating point in the GPRs"
+                option="-mfloat-gprs=no"/>
+        <Option name="Enable debug output"
+                option="-mdebug"/>
+        <Option name="Schedule code for given CPU"
+                option="-mtune="/>
+        <Option name="Allow symbolic names for registers"
+                option="-mregnames"/>
+        <Option name="Do not allow symbolic names for registers"
+                option="-mno-regnames"/>
+        <Option name="Support for GCC's -mrelocatble option"
+                option="-mrelocatable"/>
+        <Option name="Support for GCC's -mrelocatble-lib option"
+                option="-mrelocatable-lib"/>
+    </Category>
+
+    <Category name="PowerPC MCU derivatives"
+              exclusive="true">
+        <Option name="Select CPU PowerPC 5xx"
+                option="-mcpu=505"/>
+        <Option name="Select CPU PowerPC 823"
+                option="-mcpu=823"/>
+        <Option name="Select PowerPC 5200"
+                option="-mcpu=603e -msoft-float"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <Command name="LinkStatic"
+             value="$lib_linker -rs $static_output $link_objects"/>
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

@@ -1,0 +1,141 @@
+//
+// Script that searches inside a project for invalid (broken) files
+// Created by MortenMacFly for Code::Blocks IDE (www.codeblocks.org)
+//
+
+class FindBrokenFilesPlugin extends cbScriptPlugin
+{
+    // mandatory to setup the plugin's info
+    constructor()
+    {
+        info.name = _T("Find Broken Files plugin");
+        info.title = _T("Find Broken Files");
+        info.version = _T("0.9");
+        info.license = _T("GPL");
+    }
+
+    // create menubar items
+    function GetMenu()
+    {
+        local entries = ::wxArrayString();
+        entries.Add(_("Plugins") + _T("/0:-") + _("Find broken files in project"), 1);
+        return entries;
+    }
+
+    // create context menu entries
+    function GetModuleMenu(who, data)
+    {
+        local entries = ::wxArrayString();
+        return entries;
+    }
+
+    // support ExecutePlugin(pluginNameString)
+    function Execute()
+    {
+        // try to open the project manager
+        local pm = GetProjectManager();
+
+        // display a message if project manager could not be located
+        if (IsNull(pm))
+        {
+            ShowError(_T("Could not query the project manager. Cannot continue."));
+            return 0;
+        }
+
+        // try to query the currently active project (which we will analyse)
+        local p = pm.GetActiveProject();
+
+        // display a message if there is no active project
+        if (IsNull(p))
+        {
+            ShowError(_T("Currently no project is loaded/activated. Cannot continue."));
+            return 0;
+        }
+
+        // verify that there are files in the project to analyse
+        local files_count = p.GetFilesCount();
+
+        // display a message if the project contains no files
+        if (files_count<1)
+        {
+            ShowError(_T("The active project contains no files. Cannot continue."));
+            return 0;
+        }
+
+        // search for broken files
+        local broken_files = 0;
+        local broken_files_str = _T("");
+        for (local i=0; i<files_count; i++)
+        {
+            local pf = p.GetFile(i);
+            if (IsNull(pf))
+            {
+                ShowError(_T("Could not access project file(s). Cannot continue."));
+                return 0;
+            }
+
+            local full_path = pf.file.GetFullPath(::wxPATH_NATIVE);
+            if (!IO.FileExists(full_path))
+            {
+                broken_files++;
+                broken_files_str = broken_files_str + full_path + _T("\n");
+            }
+        }
+
+        // operate broken files (if any)
+        if (broken_files>0)
+        {
+            ShowInfo(_T("The project has ") + broken_files + _T(" broken files:\n") + broken_files_str);
+
+            local msg          = _T("Do you want to remove them from the project now?");
+            local remove_files = Message(msg, _T("Broken Files Plugin"), ::wxICON_QUESTION | ::wxYES_NO);
+            if (remove_files==::wxID_YES)
+            {
+                // search for broken files again and remove them from the project
+                local removed_files = 0;
+                for (local i=files_count-1; i>=0; i--)
+                {
+                    local pf = p.GetFile(i);
+                    if (IsNull(pf))
+                    {
+                        ShowError(_T("Could not access project file(s). Cannot continue."));
+                        return 0;
+                    }
+
+                    local full_path = pf.file.GetFullPath(::wxPATH_NATIVE);
+                    if (!IO.FileExists(full_path))
+                    {
+                        if (p.RemoveFile(pf))
+                        {
+                            removed_files++;
+                            files_count--;
+                        }
+                    }
+                }
+                pm.RebuildTree();
+                ShowInfo(_T("Operation successfully completed.\n") + removed_files + _T(" files have been removed."));
+            }
+        else
+            ShowInfo(_T("Operation cancelled."));
+        }
+        else
+            ShowInfo(_T("In this project no broken files were found."));
+
+        return 0;
+    }
+
+    // callback for menubar items clicking
+    function OnMenuClicked(index)
+    {
+        local result = Execute();
+    }
+
+    // callback for context menu items clicking
+    function OnModuleMenuClicked(index)
+    {
+        local result = Execute();
+    }
+}
+
+// this call actually registers the script plugin with Code::Blocks
+RegisterPlugin(FindBrokenFilesPlugin());

@@ -1,0 +1,17 @@
+Maintainer: Joe Blough (jblough)
+Component:  wxSpellChecker
+Subdir:     wxspellchecker
+Parts:      ???
+More infos: -
+wxWidgets:  2.4.2, 2.5.1
+
+Description:
+wxSpellChecker is an library that provides an API to use various spell checker
+engines through wxWidgets classes or a C interface.  The developer should have
+flexibility in the dialog design (using XML resources) and the spell checking
+interface (only Aspell and Myspell are supported at this time).  For maximum
+control, developers can derive dialog classes from wxSpellCheckDialogInterface
+and create more customized dialogs.  Non-dialog based interfaces can be created
+by deriving from the wxSpellCheckUserInterface directly.  Also support can be
+added for more spell check engines as needed using the
+wxSpellCheckEngineInterface base class.

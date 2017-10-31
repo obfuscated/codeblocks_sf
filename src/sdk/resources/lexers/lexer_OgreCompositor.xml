@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Ogre Compositor script"
+				index="3"
+				filemasks="*.compositor">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1,2,3"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="keyword attributes"
+						index="16"
+						fg="0,155,0"
+						bold="1"/>
+				<Style name="identifiers"
+						index="11"
+						fg="0,150,200"
+						bold="0"/>
+				<Style name="Selection"
+						index="5"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,128,0"/>
+				<Keywords>
+						<Language index="0"
+								value="compositor technique texture target input target_output only_initial visibility_mask lod_bias material_scheme pass material first_render_queue last_render_queue buffers colour_value depth_value stencil_value check comp_func ref_value mask fail_op depth_fail_op pass_op two_sided"/>
+						<User index="1" value="target_width target_height PF_A8R8G8B8 PF_R8G8B8A8 PF_R8G8B8 PF_FLOAT16_R PF_FLOAT16_RGB PF_FLOAT16_RGBA PF_FLOAT32_R PF_FLOAT32_RGB PF_FLOAT32_RGBA none previous render_quad clear stencil render_scene colour depth always_fail always_pass less less_equal equal not_equal greater_equal greater keep zero replace increment decrement increment_wrap decrement_wrap invert on off"/>
+						<Documentation index="2" value=""/>
+				</Keywords>
+				<SampleCode value="lexer_OgreCompositor.sample"/>
+				<LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

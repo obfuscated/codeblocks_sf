@@ -1,0 +1,279 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="HTML/PHP/ASP/JS"
+                index="4"
+                filemasks="*.htm,*.html,*.xhtml,*.php,*.php3,*.phtml,*.hta">
+                <Style name="HTML Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="HTML Tag"
+                        index="1"
+                        fg="128,0,128"
+                        bold="1"/>
+                <Style name="HTML Unknown tag"
+                        index="2"
+                        fg="255,0,0"
+                        bold="1"/>
+                <Style name="HTML Attribute name"
+                        index="3"
+                        fg="0,0,0"
+                        bold="1"/>
+                <Style name="HTML Unknown attribute"
+                        index="4"
+                        fg="255,0,0"
+                        bold="1"/>
+                <Style name="HTML Attribute value"
+                        index="5,6,7,8"
+                        fg="0,0,255"/>
+                <Style name="HTML Comment"
+                        index="9"
+                        fg="0,128,0"/>
+                <Style name="HTML Entity"
+                        index="10"
+                        fg="255,69,0"
+                        bold="1"/>
+                <Style name="HTML Tag end"
+                        index="11"
+                        fg="0,0,0"/>
+                <Style name="XML Start"
+                        index="12"
+                        fg="128,0,128"/>
+                <Style name="XML End"
+                        index="13"
+                        fg="128,0,128"/>
+                <Style name="CDATA Section"
+                        index="17"
+                        fg="0,0,0"
+                        italics="1"/>
+                <Style name="PHP/Unknown Section Block"
+                        index="18"
+                        fg="200,0,200"
+                        italics="1"/>
+
+                <Style name="Unquoted values" index="19" fg="255,0,255" bg="255,232,255" />
+                <Style name="JSP Comment" index="20" fg="0,0,0" bg="255,255,200" />
+                <Style name="SGML tags" index="21" fg="0,0,127" bg="240,240,255"  />
+                <Style name="SGML command" index="22" fg="0,0,127" bg="240,240,255" bold="1" />
+                <Style name="SGML 1st param" index="23" fg="0,90,0" bg="240,240,255"  />
+                <Style name="SGML double string" index="24" fg="127,0,0" bg="240,240,255"  />
+                <Style name="SGML single string" index="25" fg="160,55,0" bg="240,240,255"  />
+                <Style name="SGML error" index="26" fg="128,0,0" bg="255,100,100"  />
+                <Style name="SGML special (#xxxx type)" index="27" fg="50,100,255" bg="240,240,255"  />
+                <Style name="SGML entity" index="28" fg="60,60,60" bg="240,240,255"  />
+                <Style name="SGML comment" index="29" fg="128,128,0" bg="240,240,255"  />
+                <Style name="SGML block" index="31" fg="0,0,100" bg="192,192,235"  />
+                <Style name="Matched Operators" index="34" fg="0,0,255" bold="0" />
+                <Style name="Matched Operators 2" index="35" fg="255,0,0" bold="0" />
+
+                <Style name="JS Start" index="40" fg="127,127,0" />
+                <Style name="JS Default" index="41" fg="0,0,0" bold="1"   />
+                <Style name="JS Comment" index="42"   />
+                <Style name="JS Line Comment" index="43" fg="127,0,0"   />
+                <Style name="JS Doc comment" index="44" fg="0,127,0" bold="1"  />
+                <Style name="JS Number" index="45" fg="0,0,127"   />
+                <Style name="JS Word" index="46" fg="0,0,0" />
+                <Style name="JS Keyword" index="47" fg="0,0,127" bold="1"   />
+                <Style name="JS Double quoted string" index="48"   />
+                <Style name="JS Single quoted string" index="49"   />
+                <Style name="JS Symbols" index="50" fg="127,0,0" bold="1"   />
+                <Style name="JavaScript EOL" index="51" bg="180,180,0"  />
+                <Style name="JavaScript RegEx" index="52" bg="255,180,0"  />
+
+                <Style name="ASP JS Start" index="55" fg="127,127,0" />
+                <Style name="ASP JS Default" index="56" fg="0,0,0" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JS Comment" index="57" fg="0,127,0" bg="220,220,127"  />
+                <Style name="ASP JS Line Comment" index="58" fg="0,127,0"  bg="220,220,127"  />
+                <Style name="ASP JS Doc comment" index="59" fg="127,127,127" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JS Number" index="60" fg="0,127,127"  bg="220,220,127"  />
+                <Style name="ASP JS Word" index="61" fg="0,0,0"  bg="220,220,127"  />
+                <Style name="ASP JS Keyword" index="62" fg="0,0,127" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JS Double quoted string" index="63" fg="127,0,127"  bg="220,220,127"  />
+                <Style name="ASP JS Single quoted string" index="64" fg="127,0,127"  bg="220,220,127"  />
+                <Style name="ASP JS Symbols" index="65" fg="0,0,0" bold="1"  bg="220,220,127"  />
+                <Style name="ASP JavaScript EOL" index="66" bg="200,200,0"  />
+                <Style name="ASP JavaScript RegEx" index="67" bg="255,200,200"  />
+
+                <Style name="VBS Start" index="70"  />
+                <Style name="VBS Default" index="71"  bg="240,240,255" fg="0,0,0"  />
+                <Style name="VBS Comment" index="72" bg="240,240,255" fg="0,128,0"  />
+                <Style name="VBS Number" index="73"  bg="240,240,255" fg="0,128,128"  />
+                <Style name="VBS KeyWord" index="74"  bg="240,240,255" fg="0,0,128" bold="1"  />
+                <Style name="VBS String" index="75"  bg="240,240,255" fg="128,0,128"  />
+                <Style name="VBS Identifier" index="76"  bg="240,240,255" fg="0,0,128"  />
+                <Style name="VBS Unterminated string" index="77"  bg="127,127,255" fg="0,0,128"  />
+
+                <Style name="ASP VBS Start" index="80"  />
+                <Style name="ASP VBS Default" index="81"  bg="200,200,240" fg="0,0,0"  />
+                <Style name="ASP VBS Comment" index="82" bg="200,200,240" fg="0,128,0"  />
+                <Style name="ASP VBS Number" index="83"  bg="200,200,240" fg="0,128,128"  />
+                <Style name="ASP VBS KeyWord" index="84"  bg="200,200,240" fg="0,0,128" bold="1"  />
+                <Style name="ASP VBS String" index="85"  bg="200,200,240" fg="128,0,128"  />
+                <Style name="ASP VBS Identifier" index="86"  bg="200,200,240" fg="0,0,128"  />
+                <Style name="ASP VBS Unterminated string" index="87"  bg="127,127,200" fg="0,0,128"  />
+
+                <Style name="Embedded Python" index="90" fg="0,127,0" />
+                <Style name="Embedded Python 2" index="91" fg="0,127,0" />
+                <Style name="Embedded Python Comment" index="92" fg="0,127,0" bg="240,255,240"  />
+                <Style name="Embedded Python Number" index="93" fg="0,127,127" bg="240,255,240"  />
+                <Style name="Embedded Python String" index="94" fg="127,0,127" bg="240,255,240"  />
+                <Style name="Embedded Python Single quoted string" index="95" fg="127,0,127" bg="240,255,240"  />
+                <Style name="Embedded Python Keyword" index="96" fg="0,0,127" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Triple quotes" index="97" fg="127,0,0" bg="240,255,240"  />
+                <Style name="Embedded Python Triple double quotes" index="98" fg="127,0,0" bg="240,255,240"  />
+                <Style name="Embedded Python Class name definition" index="99" fg="0,0,255" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Function or method name definition" index="100" fg="0,127,127" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Operators" index="101" bold="1" bg="240,255,240"  />
+                <Style name="Embedded Python Identifiers" index="102" bg="240,255,240"  />
+
+                <Style name="ASP Python" index="105" fg="128,128,128" />
+                <Style name="ASP Python 2" index="106" fg="128,128,128" bg="200,200,200"  />
+                <Style name="ASP Python Comment" index="107" fg="0,127,0" bg="192,222,192"  />
+                <Style name="ASP Python Number" index="108" fg="0,127,127" bg="192,234,192"  />
+                <Style name="ASP Python String" index="109" fg="127,0,127" bg="192,234,192"  />
+                <Style name="ASP Python Single quoted string" index="110" fg="127,0,127" bg="192,240,192"  />
+                <Style name="ASP Python Keyword" index="111" fg="0,0,127" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Triple quotes" index="112" fg="127,0,0" bg="192,240,192"  />
+                <Style name="ASP Python Triple double quotes" index="113" fg="127,0,0" bg="192,240,192"  />
+                <Style name="ASP Python Class name definition" index="114" fg="0,0,255" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Function or method name definition" index="115" fg="0,127,127" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Operators" index="116" bold="1" bg="192,240,192"  />
+                <Style name="ASP Python Identifiers" index="117" bg="192,240,192"  />
+
+                <Style name="PHP Complex Variable"
+                        index="104"
+                        fg="0,127,0"
+                        bg="255,248,248"
+                        italics="1"/>
+                <Style name="PHP Default"
+                        index="118"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="PHP HString"
+                        index="119"
+                        fg="0,0,255"/>
+                <Style name="PHP Simple String"
+                        index="120"
+                        fg="0,0,255"/>
+                <Style name="PHP Word"
+                        index="121"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="PHP Number"
+                        index="122"
+                        fg="240,0,240"/>
+                <Style name="PHP Variable"
+                        index="123"
+                        fg="0,0,128"/>
+                <Style name="PHP Multiline comment"
+                        index="124"
+                        fg="160,160,160"/>
+                <Style name="PHP single line Comment"
+                        index="125"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="PHP HString Variable"
+                        index="126"
+                        fg="0,0,255"
+                        bold="1"/>
+                <Style name="PHP Operator"
+                        index="127"
+                        fg="255,0,0"/>
+                <Keywords>
+                        <!-- HTML elements and attributes -->
+                        <Set index="0"
+                            value="a abbr acronym address applet area b base basefont
+                                   bdo big blockquote body br button caption center
+                                   cite code col colgroup dd del dfn dir div dl dt em
+                                   fieldset font form frame frameset h1 h2 h3 h4 h5 h6
+                                   head hr html i iframe img input ins isindex kbd label
+                                   legend li link map menu meta noframes noscript
+                                   object ol optgroup option p param pre q s samp
+                                   script select small span strike strong style sub sup
+                                   table tbody td textarea tfoot th thead title tr tt u ul
+                                   var xml xmlns xml:lang
+                                   abbr accept-charset accept accesskey action align alink
+                                   alt archive axis background bgcolor border
+                                   cellpadding cellspacing char charoff charset checked cite
+                                   class classid clear codebase codetype color cols colspan
+                                   compact content coords
+                                   data datafld dataformatas datapagesize datasrc datetime
+                                   declare defer dir disabled enctype event
+                                   face for frame frameborder
+                                   headers height href hreflang hspace http-equiv
+                                   id ismap label lang language leftmargin link longdesc
+                                   marginwidth marginheight maxlength media method multiple
+                                   name nohref noresize noshade nowrap
+                                   object onblur onchange onclick ondblclick onfocus
+                                   onkeydown onkeypress onkeyup onload onmousedown
+                                   onmousemove onmouseover onmouseout onmouseup
+                                   onreset onselect onsubmit onunload
+                                   profile prompt readonly rel rev rows rowspan rules
+                                   scheme scope selected shape size span src standby start style
+                                   summary tabindex target text title topmargin type usemap
+                                   valign value valuetype version vlink vspace width
+                                   text password checkbox radio submit reset
+                                   file hidden image
+                                   article aside calendar canvas card command commandset datagrid datatree
+                                   footer gauge header m menubar menulabel nav progress section switch tabbo
+                                   active command contenteditable ping
+                                   public !doctype"/>
+                        <!-- JScript Keywords -->
+                        <Set index="1"
+                            value="abstract boolean break byte case catch char class const
+                            continue debugger default delete do double	else enum export
+                            extends false final finally float for function goto if implements
+                            import in	instanceof int interface long native new null package
+                            private protected public return short static super	switch
+                            synchronized this throw throws transient true try typeof var
+                            void volatile while with"
+                        />
+                        <!-- VB script keywords -->
+                        <Set index="2"
+                            value="addressof alias and as attribute base begin binary boolean byref byte byval call case compare
+                            const currency date decimal declare defbool defbyte defint deflng defcur defsng defdbl defdec
+                            defdate defstr defobj defvar dim do double each else elseif empty end enum eqv erase error
+                            event exit explicit false for friend function get gosub goto if imp implements in input integer
+                            is len let lib like load lock long loop lset me mid midb mod new next not nothing null object
+                            on option optional or paramarray preserve print private property public raiseevent randomize
+                            redim rem resume return rset seek select set single static step stop string sub then time to
+                            true type typeof unload until variant wend while with withevents xor"
+                        />
+                        <!-- Python script keywords -->
+                        <Set index="3"
+                            value="and assert break class continue def del elif
+                            else except exec finally for from global if import in is lambda None
+                            not or pass print raise return try while yield"
+                        />
+                        <!-- PHP Keywords -->
+                        <Set index="4"
+                            value="and array as bool boolean break case cfunction class const continue declare
+                             default die directory do double echo else elseif empty enddeclare endfor
+                             endforeach endif endswitch endwhile eval exit extends false float for
+                             foreach function global if include include_once int integer isset list new
+                             null object old_function or parent print real require require_once resource
+                             return static stdclass string switch true unset use var while xor __class__
+                             __file__ __function__ __line__ __sleep __wakeup"/>
+                </Keywords>
+                <SampleCode value="lexer_html.sample"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="0"
+                    LexerCommentStyles="9,20,29,42,43,44,57,58,59,72,82,92,107,124,125"
+                    LexerCharacterStyles=""
+                    LexerStringStyles="5,6,7,17,24,25,48,49,63,64,75,77,85,87,94,95,109,110,119,120"
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

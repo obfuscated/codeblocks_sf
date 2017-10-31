@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="MatlabHint">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Please note: This wizard is compatible with Matlab version 6.xx.&#x0A;&#x0A;If you want to use it with Matlab version 7.xx please notice:&#x0A;The S-Functions are linked against the following libraries&#x0A;in Matlab 6.xx: libmx, libmex, libmatlb and libmat.&#x0A;&#x0A;In Matlab 7.xx you&apos;ll need to modify this to link against:&#x0A;libmx, libmex and libmat. Otherwise you&apos;ll get linker erros.</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT2">
+					<label>In addition: Please note that this wizard will only be&#x0A;compatible with the GCC and Matlab LCC compiler.</label>
+				</object>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>8</border>
+			</object>
+		</object>
+	</object>
+</resource>

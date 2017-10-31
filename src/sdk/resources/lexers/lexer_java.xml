@@ -1,0 +1,131 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Java"
+                index="3"
+                filemasks="*.java">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment (normal)"
+                        index="1"
+                        fg="160,160,160"/>
+                <Style name="Comment line (normal)"
+                        index="2"
+                        fg="190,190,230"/>
+                <Style name="Comment (documentation)"
+                        index="3"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment line (documentation)"
+                        index="15"
+                        fg="128,128,255"
+                        bold="1"/>
+                <Style name="Comment keyword (documentation)"
+                        index="17"
+                        fg="0,128,128"/>
+                <Style name="Comment keyword error (documentation)"
+                        index="18"
+                        fg="128,0,0"/>
+                <Style name="Number"
+                        index="4"
+                        fg="240,0,240"/>
+                <Style name="Keyword"
+                        index="5"
+                        fg="0,0,160"
+                        bold="1"/>
+                <Style name="User keyword"
+                        index="16"
+                        fg="0,160,0"
+                        bold="1"/>
+                <Style name="String"
+                        index="6,12"
+                        fg="0,0,255"/>
+                <Style name="Character"
+                        index="7"
+                        fg="224,160,0"/>
+                <Style name="UUID"
+                        index="8"
+                        fg="0,0,0"/>
+                <Style name="Preprocessor"
+                        index="9"
+                        fg="0,160,0"/>
+                <Style name="Operator"
+                        index="10"
+                        fg="255,0,0"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <Style name="Breakpoint line"
+                        index="-2"
+                        bg="255,160,160"/>
+                <Style name="Debugger active line"
+                        index="-3"
+                        bg="160,160,255"/>
+                <Style name="Compiler error line"
+                        index="-4"
+                        bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                        index="34"
+                        bg="128,255,255"
+                        bold="1"/>
+                <Style name="No matching brace highlight"
+                        index="35"
+                        fg="255,255,255"
+                        bg="255,0,0"
+                        bold="1"/>
+                <Keywords>
+                        <!-- Primary keywords and identifiers -->
+                        <Set index="0"
+                            value="abstract continue  for        new       switch
+                                   assert   default   goto       package   synchronized
+                                   boolean  do        if         private   this
+                                   break    double    implements protected throw
+                                   byte     else      import     public    throws
+                                   case     enum      instanceof return    transient
+                                   catch    extends   int        short     try
+                                   char     final     interface  static    void
+                                   class    finally   long       strictfp  volatile
+                                   const    float     native     super     while
+                                   true     false     null"/>
+                        <!-- Secondary keywords and identifiers -->
+                        <Set index="1"
+                            value="Boolean          Byte          Character         Class      ClassLoader
+                                   Compiler         Double        Enum              Float      InheritableThreadLocal
+                                   Integer          Long          Math              Number     Object
+                                   Package          Process       ProcessBuilder    Runtime    RuntimePermission
+                                   SecurityManager  Short         StackTraceElement StrictMath String
+                                   StringBuffer     StringBuilder System            Thread     ThreadGroup
+                                   ThreadLocal      Throwable"/>
+                        <!-- Documentation comment keywords -->
+                        <Set index="2"
+                            value="author docRoot   deprecated  exception   inheritDoc
+                                   link   linkplain literal     param       return
+                                   see    serial    serialData  serialField since
+                                   throws value     version     $ @ \ &amp; &lt; &gt; # { }"/>
+                </Keywords>
+                <SampleCode value="lexer_java.sample"
+                                   breakpoint_line="21"
+                                   debug_line="23"
+                                   error_line="24"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    CaseSensitive="1"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

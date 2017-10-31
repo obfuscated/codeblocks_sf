@@ -1,0 +1,157 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// SDL2 project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals (used under windows only)
+SDL2PathDefault    <- _T("$(#sdl2)");
+SDL2PathDefaultInc <- _T("$(#sdl2.include)");
+SDL2PathDefaultLib <- _T("$(#sdl2.lib)");
+SDL2Path           <- _T("");
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new SDL2 project wizard!\n\n" +
+                         "This wizard will guide you to create a new project\n" +
+                         "using the SDL2 library.\n\n" +
+                         "When you 're ready to proceed, please click \"Next\"...");
+
+    local sdl2path_descr = _T("Please select the folder where SDL2 is installed on your computer.\n" +
+                              "This is either the i686-w64-mingw32 (32-bit) or the x86_64-w64-mingw32 (64-bit)\n" +
+                              "folder under the top-level folder where SDL2 was unpacked.\n\n" +
+                              "To help you, this folder must contain the subfolders \"include\" and \"lib\".");
+
+    Wizard.AddInfoPage(_T("SDL2Intro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    if (PLATFORM == PLATFORM_MSW)
+        Wizard.AddGenericSelectPathPage(_T("SDL2Path"), sdl2path_descr, _T("Please select SDL2's location:"), SDL2PathDefault);
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// SDL2's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_SDL2Path(fwd)
+{
+    if (fwd)
+    {
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, SDL2PathDefault, SDL2PathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+            
+        if (!IO.FileExists(dir_nomacro_inc + wxFILE_SEP_PATH + _T("SDL.h")))
+        {
+            if (VerifyFile(dir_nomacro_inc, _T("SDL2/SDL.h"), _T("SDL2's include")))
+                SDL2PathDefaultInc = SDL2PathDefaultInc + _T("/SDL2");
+            else
+                return false;
+        }
+        
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, SDL2PathDefault, SDL2PathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+
+        if (!VerifyLibFile(dir_nomacro_lib, _T("SDL2main"), _T("SDL2's")))
+            return false;
+
+        if (!VerifyLibFile(dir_nomacro_lib, _T("SDL2.dll"), _T("SDL2's")))
+            return false;
+
+        SDL2Path = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, SDL2PathDefault, SDL2PathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            SDL2PathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, SDL2PathDefault, SDL2PathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            SDL2PathDefaultLib = dir_nomacro_lib;
+        }
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("sdl2/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddIncludeDir(SDL2PathDefaultInc);
+        project.AddLibDir(SDL2PathDefaultLib);
+
+        // add link libraries
+        project.AddLinkLib(_T("mingw32"));
+        project.AddLinkLib(_T("SDL2main"));
+        project.AddLinkLib(_T("SDL2.dll"));
+        project.AddLinkLib(_T("user32"));
+        project.AddLinkLib(_T("gdi32"));
+        project.AddLinkLib(_T("winmm"));
+        project.AddLinkLib(_T("dxguid"));
+        project.AddCommandsAfterBuild(_T("XCOPY $(#sdl2)\\bin\\*.dll $(TARGET_OUTPUT_DIR) /D /Y"));
+    }
+    else if (PLATFORM == PLATFORM_MAC)
+    {
+        //project.AddCompilerOption(_T("-D_GNU_SOURCE=1 -D_THREAD_SAFE"));
+        project.AddLinkerOption(_T("-framework SDL2"));
+        // libSDL2main.a does not exist by default, needs to be built from SDL2Main.m:
+        project.AddLinkLib(_T("SDL2main"));
+
+        project.AddLinkerOption(_T("-framework Cocoa")); // SDL2 dependency
+    }
+    else
+    {
+        // unix way
+        project.AddCompilerOption(_T("`sdl2-config --cflags`"));
+        project.AddLinkerOption(_T("`sdl2-config --libs`"));
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttExecutable); // ttExecutable: no console
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

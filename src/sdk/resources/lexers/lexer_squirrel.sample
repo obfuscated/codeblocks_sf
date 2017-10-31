@@ -1,0 +1,18 @@
+/* The main startup script */
+
+function main()
+{
+	Log(_T("Running startup script"));
+
+	// you could set the shortcuts used for the menus
+	// e.g.:
+	// SetAcceleratorFor(_T("File|Open"), _T("Ctrl-Alt-O"));
+	
+	local i = 5;
+	local s = "Hello world";
+	
+	ShowMessage(s);
+	ShowWarning(_T("Bye world"));
+
+	return 0;
+}

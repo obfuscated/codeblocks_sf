@@ -1,0 +1,73 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Category name="CPU architecture tuning"
+              exclusive="true">
+        <Option name="Intel i386"
+                option="-march=i386"/>
+        <Option name="Intel i486"
+                option="-march=i486"/>
+        <Option name="Intel Pentium"
+                option="-march=i586"/>
+        <Option name="Intel Pentium (MMX)"
+                option="-march=pentium-mmx"/>
+        <Option name="Intel Pentium PRO"
+                option="-march=i686"/>
+        <Option name="Intel Pentium 2 (MMX)"
+                option="-march=pentium2"/>
+        <Option name="Intel Pentium 3 (MMX, SSE)"
+                option="-march=pentium3"/>
+        <Option name="Intel Pentium 4 (MMX, SSE, SSE2)"
+                option="-march=pentium4"/>
+        <Option name="Intel Pentium 4 Prescott (MMX, SSE, SSE2, SSE3)"
+                option="-march=prescott"/>
+        <Option name="Intel Pentium 4 Nocona (MMX, SSE, SSE2, SSE3, 64bit extensions)"
+                option="-march=nocona"/>
+        <Option name="Intel Pentium M (MMX, SSE, SSE2)"
+                option="-march=pentium-m"/>
+        <if exec="C -dumpversion"
+            regex="^4\.[3-9]|^[5-9]"
+            default="true">
+            <Option name="Intel Core2 (MMX, SSE, SSE2, SSE3, SSSE3, 64bit extensions)"
+                    option="-march=core2"/>
+        </if>
+        <if exec="C -dumpversion"
+            regex="^4\.[6-9]|^[5-9]"
+            default="true">
+            <Option name="Intel Core i7 CPU (MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, 64-bit extensions)"
+                    option="-march=corei7"/>
+            <Option name="Intel Core i7 CPU (MMX, SSE, SSE2, SSE3, SSSE3, SSE4.1, SSE4.2, AVX, AES, PCLMUL, 64-bit extensions)"
+                    option="-march=corei7-avx"/>
+        </if>
+        <if exec="C -dumpversion"
+            regex="^4\.[5-9]|^[5-9]"
+            default="true">
+            <Option name="Intel Atom (MMX, SSE, SSE2, SSE3 SSSE3, 64-bit extensions)"
+                    option="-march=atom"/>
+        </if>
+        <Option name="AMD K6 (MMX)"
+                option="-march=k6"/>
+        <Option name="AMD K6-2 (MMX, 3DNow!)"
+                option="-march=k6-2"/>
+        <Option name="AMD K6-3 (MMX, 3DNow!)"
+                option="-march=k6-3"/>
+        <Option name="AMD Athlon (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"
+                option="-march=athlon"/>
+        <Option name="AMD Athlon Thunderbird (MMX, 3DNow!, enhanced 3DNow!, SSE prefetch)"
+                option="-march=athlon-tbird"/>
+        <Option name="AMD Athlon 4 (MMX, 3DNow!, enhanced 3DNow!, full SSE)"
+                option="-march=athlon-4"/>
+        <Option name="AMD Athlon XP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"
+                option="-march=athlon-xp"/>
+        <Option name="AMD Athlon MP (MMX, 3DNow!, enhanced 3DNow!, full SSE)"
+                option="-march=athlon-mp"/>
+        <Option name="AMD K8 core (x86-64 instruction set)"
+                option="-march=k8"/>
+        <Option name="AMD Opteron (x86-64 instruction set)"
+                option="-march=opteron"/>
+        <Option name="AMD Athlon64 (x86-64 instruction set)"
+                option="-march=athlon64"/>
+        <Option name="AMD Athlon-FX (x86-64 instruction set)"
+                option="-march=athlon-fx"/>
+    </Category>
+</CodeBlocks_compiler_options>

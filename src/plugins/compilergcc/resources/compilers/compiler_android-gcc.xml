@@ -1,0 +1,36 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for Android"
+                     id="android-gcc"
+                     weight="60">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search path="C:\ndk*"/>
+            <Fallback path="C:\ndk"/>
+        </if>
+        <else>
+            <Fallback path="$NDK"/>
+        </else>
+    </Path>
+    <if platform="windows">
+        <Path type="include">
+            <Add><master/>/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/include</Add>
+        </Path>
+        <Path type="lib">
+            <Add><master/>/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib</Add>
+        </Path>
+        <Path type="extra">
+            <Add><master/>/tools</Add>
+        </Path>
+    </if>
+    <else>
+        <Path type="include">
+            <Add><master/>/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/include</Add>
+        </Path>
+        <Path type="lib">
+            <Add><master/>/toolchains/arm-linux-androideabi-4.8/prebuilt/linux-x86_64/lib</Add>
+        </Path>
+    </else>
+</CodeBlocks_compiler>

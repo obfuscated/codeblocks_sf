@@ -1,0 +1,271 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"       value="g95.exe"/>
+        <Program name="CPP"     value="g95.exe"/>
+        <Program name="LD"      value="g95.exe"/>
+        <Program name="LIB"     value="ar.exe"/>
+        <Program name="WINDRES" value="windres.exe"/>
+        <Program name="MAKE"    value="mingw32-make.exe"/>
+    </if>
+    <else>
+        <Program name="C"       value="g95"/>
+        <Program name="CPP"     value="g95"/>
+        <Program name="LD"      value="g95"/>
+        <Program name="LIB"     value="ar"/>
+        <Program name="WINDRES" value=""/>
+        <Program name="MAKE"    value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-fversion="/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+    <Switch name="UseFullSourcePaths"      value="true"/>
+
+    <!-- Options according to http://www.g95.org/docs.shtml -->
+
+    <Category name="Debugging">
+        <Option name="Produce debugging symbols"
+                option="-g"
+                checkAgainst="-O -O1 -O2 -O3 -Os"
+                checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+                supersedes="-s"/>
+        <Option name="Output a backtrace of the error, when a runtime error is encountered"
+                option="-ftrace=full"/>
+    </Category>
+
+    <Category name="Warnings">
+        <Option name="Enable most warning messages"
+                option="-Wall"/>
+        <Option name="Enable some extra warning flags"
+                option="-Wextra"/>
+        <Option name="Change warnings into an errors"
+                option="-Werror"/>
+        <Option name="Force compilation to stop after the first error"
+                option="-fone-error"/>
+        <Option name="Cross-check procedure use and definition within the same source file"
+                option="-Wglobals"/>
+        <Option name="Warn about implicit conversions between different types"
+                option="-Wconversion"/>
+        <Option name="Warn about using an implicit interface"
+                option="-Wimplicit-interface"/>
+        <Option name="Warn about truncated source lines"
+                option="-Wline-truncation"/>
+        <Option name="Warn about missing intents on formal arguments"
+                option="-Wmissing-intent"/>
+        <Option name="Warn about obsolescent constructs"
+                option="-Wobsolescent"/>
+        <Option name="Warn about variables used before initialized. Requires -O2"
+                option="-Wuninitialized"/>
+        <Option name="Warn about precision loss in implicit type conversions"
+                option="-Wprecision-loss"/>
+    </Category>
+
+    <Category name="Fortran dialect">
+        <Option name="Interpret backslashes in character constants as escape codes"
+                option="-fbackslash"/>
+        <Option name="Make D lines executable statements in fixed form"
+                option="-fd-comment"/>
+        <Option name="Allow dollar signs in entity names"
+                option="-fdollar-ok"/>
+        <Option name="Assume that the source file is fixed form"
+                option="-ffixed-form"
+                supersedes="-ffree-form"/>
+        <Option name="132 character line width in fixed mode"
+                option="-ffixed-line-length-132"
+                supersedes="-ffixed-line-length-80"/>
+        <Option name="80 character line width in fixed mode"
+                option="-ffixed-line-length-80"
+                supersedes="-ffixed-line-length-132"/>
+        <Option name="Assume that the source file is free form"
+                option="-ffree-form"
+                supersedes="-ffixed-form"/>
+        <Option name="Allow very large source lines (10k)"
+                option="-ffree-line-length-huge"/>
+        <Option name="No implicit typing is allowed"
+                option="-fimplicit-none"/>
+        <Option name="Enable g95-specific intrinsic functions even in a -std= mode"
+                option="-fintrinsic-extensions"/>
+        <Option name="Set default accessibility of module-entities to PRIVATE"
+                option="-fmodule-private"/>
+        <Option name="Warn about non-F features"
+                option="-std=F"/>
+        <Option name="Strict fortran 2003 checking"
+                option="-std=f2003"
+                supersedes="-std=f95"/>
+        <Option name="Strict fortran 95 checking"
+                option="-std=f95"
+                supersedes="-std=f2003"/>
+        <Option name="Set kinds of integers without specification to kind=4 (32 bits)"
+                option="-i4"
+                supersedes="-i8"/>
+        <Option name="Set kinds of integers without specification to kind=8 (64 bits)"
+                option="-i8"
+                supersedes="-i4"/>
+        <Option name="Set kinds of reals without kind specifications to double precision"
+                option="-r8"/>
+    </Category>
+
+    <Category name="Preprocessor">
+        <Option name="Force the input files to be run through the C preprocessor"
+                option="-cpp"
+                supersedes="-no-cpp"/>
+        <Option name="Prevent the input files from being preprocessed"
+                option="-no-cpp"
+                supersedes="-cpp"/>
+        <Option name="Performs modern C preprocessing"
+                option="-nontraditional"/>
+    </Category>
+
+    <Category name="Code generation">
+        <Option name="Make all public symbols uppercase"
+                option="-fcase-upper"/>
+        <Option name="Add a leading underscore to public names"
+                option="-fleading-underscore"/>
+        <Option name="Put local variables in static memory where possible"
+                option="-fstatic"/>
+        <Option name="Initialize numeric types to zero, false or to null"
+                option="-fzero"/>
+    </Category>
+
+    <Category name="Optimization">
+        <Option name="No optimizations"
+                option="-O0"
+                supersedes="-O1 -O2 -O3"/>
+        <Option name="Optimize for speed"
+                option="-O1"
+                checkAgainst="-g"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O0 -O2 -O3"/>
+        <Option name="Optimize even more (for speed)"
+                option="-O2"
+                checkAgainst="-g"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O0 -O1 -O3"/>
+        <Option name="Optimize fully (for speed)"
+                option="-O3"
+                checkAgainst="-g"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O0 -O1 -O2"/>
+        <Option name="Strip debug info"
+                option="-s"
+                supersedes="-g"/>
+        <Option name="Unroll loops whose number of iterations can be determined"
+                option="-funroll-loops"
+                checkAgainst="-g"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+    </Category>
+
+    <Common name="architecture"/>
+
+    <Command name="CompileObject"
+             value="$compiler -fmod=$objects_output_dir $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </if>
+    <else>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+    </else>
+    <Command name="LinkStatic"
+             value="$lib_linker -r $static_output $link_objects\nranlib $static_output"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+
+    <RegEx name="Fatal error"
+           type="error"
+           msg="4;5"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)\.([0-9]+):.*(Fatal Error:.*)at \([0-9]+\)(.*)]]>
+    </RegEx>
+    <RegEx name="Fatal error"
+           type="error"
+           msg="1">
+        <![CDATA[[ \t]*(Fatal Error:.*)]]>
+    </RegEx>
+    <RegEx name="Info line"
+           type="info"
+           msg="1;2;4"
+           file="2"
+           line="3">
+        <![CDATA[(In file) ([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+)(\.[0-9]+.*:)*]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="1">
+        <![CDATA[.*(Error: Inconsistent.*)]]>
+    </RegEx>
+    <RegEx name="Compiler error(4)"
+           type="error"
+           msg="1;4">
+        <![CDATA[.*(Error:.*)(at )+\([0-9]+\)( *)(.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="1;4">
+        <![CDATA[.*(Warning.*:.*)(at )+\([0-9]+\)( *)(.*)]]>
+    </RegEx>
+    <RegEx name="Undefined reference"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+): (undefined reference.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning (2)"
+           type="warning"
+           msg="1;5"
+           file="3"
+           line="2">
+        <![CDATA[(.*Warning.*:[ \t]Line)[ \t]+([0-9]+)[ \t]+of[ \t]+([.period.]*[][{}() \t#%$~A-Za-z0-9_:+/\-]+([.period.]f[a-zA-Z0-9]*[^[:space:]]){1}){1}(.*)]]>
+    </RegEx>
+    <RegEx name="Note"
+           type="info"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):[ \t]([Nn]ote:.*)]]>
+    </RegEx>
+    <RegEx name="Info line (2)"
+           type="info"
+           msg="1"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+):([0-9]+):]]>
+    </RegEx>
+    <RegEx name="Internal compiler error"
+           type="error"
+           msg="1;4">
+        <![CDATA[.*(Internal Error.*)(at )+\([0-9]+\)( *)(.*)]]>
+    </RegEx>
+    <RegEx name="Unrecognized option"
+           type="warning"
+           msg="1">
+        <![CDATA[[ \t]*(g95: unrecognized option.*)]]>
+    </RegEx>
+    <Common name="re-gf"/>
+</CodeBlocks_compiler_options>

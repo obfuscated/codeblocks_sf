@@ -1,0 +1,65 @@
+/**
+ * This is a Ddoc block comment
+ * Authors: Melvin D. Nerd, melvin@mailinator.com
+ * Bugs:    Doesn't work for negative values.
+ * Date:    March 14, 2003
+ */
+
+module hello;
+import std.stdio;
+
+/**
+  * This is a documentation comment block
+  * @param xxx does this (this is the documentation keyword)
+  * @authr some user (this is the documentation keyword error)
+  */
+
+void main(string[] args)
+{
+    /*
+     * Sample preview code
+     * This is a block comment
+     */
+
+    /// Deprecated: superseded by function bar().
+    void foo() {  }
+
+    int numbers[20];
+	int average = 0;
+	char ch = '\n';
+    int a =     /+ Nested Comment +/ 1;
+    int b = 2;  // Line Comment
+
+    writefln("Hello World, Reloaded");
+
+    // auto type inference and built-in foreach
+    foreach (argc, argv; args)
+    {
+        // Improved typesafe printf
+        writeln("argc: ", argc, " arg: ", argv);
+    }
+
+    // Nested structs and classes
+    struct specs
+    {
+        // all members automatically initialized
+        int count, allocated;
+    }
+
+    // Nested functions can refer to outer
+    // variables like args
+    specs argspecs()
+    {
+        specs* s = new specs;
+        // no need for '->'
+        s.count = args.length;		       // get length of array with .length
+        s.allocated = typeof(args).sizeof; // built-in native type properties
+        foreach (argv; args)
+            s.allocated += argv.length * typeof(argv[0]).sizeof;
+        return *s;
+    }
+
+    // built-in string and common string operations
+    writefln("argc = %d, " ~ "allocated = %d",
+	argspecs().count, argspecs().allocated);
+}

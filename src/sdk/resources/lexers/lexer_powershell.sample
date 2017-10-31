@@ -1,0 +1,125 @@
+## --------------------------------------------------------------------------
+function Write-cHost($message = "")     #Write to host with #colors#
+## --------------------------------------------------------------------------
+{
+    # Any text preceeded by '#color#' will be output with that color
+    # until the occurence of the next '#' or '#color#'
+
+    [string]$pipedMessage = @($Input)
+    if (!$message)
+    {
+        if ( $pipedMessage ) {
+            $message = $pipedMessage
+        }
+    }
+	if ( $message ){
+		# predefined Color Array
+		$colors = @("black","blue","cyan","darkblue","darkcyan","darkgray","darkgreen","darkmagenta","darkred","darkyellow","gray","green","magenta","red","white","yellow");
+
+		# Get the default Foreground Color
+		$defaultFGColor = $host.UI.RawUI.ForegroundColor
+
+		# Set CurrentColor to default Foreground Color
+		$CurrentColor = $defaultFGColor
+
+		# Split Messages
+		$message = $message.split("#")
+
+		# Iterate through splitted array
+		foreach( $string in $message ){
+			# If a string between #-Tags is equal to any predefined color, and is equal to the defaultcolor: set current color
+			if ( $colors -contains $string.tolower() -and $CurrentColor -eq $defaultFGColor )
+			{   $CurrentColor = $string	}
+			else
+			{
+				# If string is a output message, than write string with current color (with no line break)
+				write-host -nonewline -foreground $CurrentColor $string
+				# Reset current color
+				$CurrentColor = $defaultFGColor
+			}
+			# Write Empty String at the End
+		}
+		# Single write-host for the final line break
+		write-host
+	}
+}
+## ----------------------------------------------------------------------------
+function GetFilePath($fullPath)
+## ----------------------------------------------------------------------------
+{
+    return [IO.Path]::GetDirectoryName($fullPath);
+}
+## ----------------------------------------------------------------------------
+function GetFileNamePath($fullPath)
+## ----------------------------------------------------------------------------
+{
+    # same as GetFilePath()
+    return [IO.Path]::GetDirectoryName($fullPath);
+}
+## ----------------------------------------------------------------------------
+function GetFileName($fullPath)
+## ----------------------------------------------------------------------------
+{
+    return [IO.Path]::GetFileName($fullPath);
+}
+## ----------------------------------------------------------------------------
+function GetFileNameBase($fullPath)
+## ----------------------------------------------------------------------------
+{
+    return [IO.Path]::GetFileNameWithoutExtension($fullPath);
+}
+## ----------------------------------------------------------------------------
+function GetFileNameExtension($fullPath)
+## ----------------------------------------------------------------------------
+{
+   $extension = [IO.Path]::GetExtension($fullPath);
+    write-host $extension
+    if ($extension.startsWith("."))
+        { return $extension.substring(1); }
+    return $extension
+}
+## ----------------------------------------------------------------------------
+function Normalize($fileName, $path)
+## ----------------------------------------------------------------------------
+{
+    return [System.IO.Path]::GetFullPath((Join-Path ($path)  $fileName));
+}
+## ----------------------------------------------------------------------------
+function Get-Tree($Path,$Include='*')
+## ----------------------------------------------------------------------------
+{
+        @(Get-Item $Path -Include $Include) +
+        (Get-ChildItem $Path -Recurse -Include $Include) |
+        sort pspath -Descending -unique
+}
+## ----------------------------------------------------------------------------
+function Remove-Tree($Path,$Include='*')
+## ----------------------------------------------------------------------------
+{
+    Get-Tree $Path $Include | Remove-Item -force -recurse
+}
+<######################## TESTING ####################################
+
+#   A -recure bug in Remove-Item <directory> causes files to be skipped
+#   or deadlocks when files being remove at same time as parent directory.
+#   Remove-Tree (above) removes the decendent files before the parent directory by
+#   sorting the dir|files in decendent order to be removed
+
+Write-Host ("Get-Tree `"c:\temp\test`" `"*.o`"") -foreground yellow;
+Get-Tree "c:\temp\test" "*.o"
+
+Write-Host ("Remove-Tree `"c:\temp\test`" `"*.o`"") -foreground yellow
+Remove-Tree "c:\temp\test" "*.o"
+
+Write-Host ("Remove-Tree `"c:\temp\test`"") -foreground yellow
+Remove-Tree "c:\temp\test"
+########################### TESTING ####################################>
+## --------------------------------------------------------------------------
+##function Pause ($Message=”Press any key to continue…”)
+## --------------------------------------------------------------------------
+##{
+##    # The PowerShell version 3+ Pause is ok, but not included on Win7
+##    Write-Host -NoNewLine $Message
+##    $null = $Host.UI.RawUI.ReadKey(“NoEcho,IncludeKeyDown”)
+##    Write-Host “”
+##}

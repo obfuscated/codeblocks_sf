@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxToolBarAddOn" name="compiler_toolbar_16x16">
+    <object class="tool" name="idCompilerMenuCompile">
+      <tooltip>Build</tooltip>
+      <longhelp>Build the active project</longhelp>
+      <bitmap>images/16x16/compile.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuRun">
+      <tooltip>Run</tooltip>
+      <longhelp>Run the active project</longhelp>
+      <bitmap>images/16x16/run.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuCompileAndRun">
+      <tooltip>Build and run</tooltip>
+      <longhelp>Build and run the active project</longhelp>
+      <bitmap>images/16x16/compilerun.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuRebuild">
+      <tooltip>Rebuild</tooltip>
+      <longhelp>Rebuild all modules in the active project</longhelp>
+      <bitmap>images/16x16/rebuild.png</bitmap>
+    </object>
+    <object class="tool" name="idCompilerMenuKillProcess">
+      <tooltip>Abort</tooltip>
+      <longhelp>Abort the running build process</longhelp>
+      <bitmap>images/16x16/stop.png</bitmap>
+      <disabled>1</disabled>
+    </object>
+    <object class="wxChoice" name="idToolTarget">
+      <content/>
+      <size>136,-1</size>
+      <tooltip>Build target</tooltip>
+      <longhelp>Select the current build target</longhelp>
+    </object>
+    <object class="tool" name="idMenuSelectTargetDialog">
+      <tooltip>Show the Select target dialog</tooltip>
+      <longhelp>Show the Select target dialog</longhelp>
+      <bitmap>images/16x16/select_target.png</bitmap>
+      <disabled>1</disabled>
+    </object>
+  </object>
+</resource>

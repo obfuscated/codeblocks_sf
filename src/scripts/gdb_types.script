@@ -1,0 +1,205 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+// Registers new types with driver
+function RegisterTypes(driver)
+{
+//    signature:
+//    driver.RegisterType(type_name, regex, eval_func, parse_func);
+
+    // wxString
+    driver.RegisterType(
+        _T("wxString"),
+        _T("[^[:alnum:]_]*wxString[^[:alnum:]_]*"),
+        _T("Evaluate_wxString"),
+        _T("Parse_wxString")
+    );
+
+    // STL String
+    driver.RegisterType(
+        _T("STL String"),
+        _T("[^[:alnum:]_]*string[^[:alnum:]_]*"),
+        _T("Evaluate_StlString"),
+        _T("Parse_StlString")
+    );
+
+    // STL Vector
+    driver.RegisterType(
+        _T("STL Vector"),
+        _T("[^[:alnum:]_]*vector<.*"),
+        _T("Evaluate_StlVector"),
+        _T("Parse_StlVector")
+    );
+
+    Log(_T("Registering types for the debugger."));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// wxString
+////////////////////////////////////////////////////////////////////////////////
+
+// This function tells the driver how to evaluate this type.
+// a_str contains the variable.
+// start contains the starting position. Useful for arrays.
+// count contains the count of evaluation. Useful for arrays. If 0, evaluate from start (variable) to end of array.
+// result must contain the debugger's command when it returns.
+function Evaluate_wxString(type, a_str, start, count)
+{
+    local oper = _T(".");
+
+    if (type.Find(_T("*"), false) > 0)
+        oper = _T("->");
+
+    local result = _T("output /c ") + a_str + oper + _T("m_pchData[") + start + _T("]@");
+    if (count != 0)
+        result = result + count;
+    else
+        result = result + _T("((wxStringData*)") + a_str + oper + _T("m_pchData - 1)->nDataLength");
+    return result;
+}
+
+// This function parses driver's output.
+// When it returns, the _T("result") argument contains the parsing result.
+function Parse_wxString(a_str, start)
+{
+    local result = _T("\"");
+    local len = a_str.length();
+    local c = 0;
+    while (c < len)
+    {
+        switch (a_str.GetChar(c))
+        {
+            case '\'':
+                ++c;
+                while (c < len)
+                {
+                    switch (a_str.GetChar(c))
+                    {
+                        case '\\':
+                            result.AddChar(a_str.GetChar(c++));
+                            result.AddChar(a_str.GetChar(c++));
+                            break;
+                        default:
+                            result.AddChar(a_str.GetChar(c++));
+                            break;
+                    }
+                    if (a_str.GetChar(c) == '\'')
+                        break;
+                }
+                break;
+
+            default:
+                break;
+        }
+        ++c;
+    }
+    result = result + _T("\"");
+    return result;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// STL String
+////////////////////////////////////////////////////////////////////////////////
+
+function Evaluate_StlString(type, a_str, start, count)
+{
+    local oper = _T(".");
+
+    if (type.Find(_T("*"), false) > 0)
+        oper = _T("->");
+
+    local result = _T("output ") + a_str + oper + _T("c_str()[") + start + _T("]@");
+    if (count != 0)
+        result = result + count;
+    else
+        result = result + a_str + oper + _T("size()");
+    return result;
+}
+
+function Parse_StlString(a_str, start)
+{
+    // nothing needs to be done
+    return a_str;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// STL Vector
+////////////////////////////////////////////////////////////////////////////////
+
+function Evaluate_StlVector(type, a_str, start, count)
+{
+    local result = _T("pvector ") + a_str;
+    return result;
+}
+
+function Parse_StlVector(a_str, start)
+{
+    local size_pos = a_str.Find(_T("Vector size = "));
+
+    if (size_pos < 0)
+        return _T("");
+
+    // copy the end of the a_str, so we don't search the whole string when we look for capacity
+    local vector_info_str = a_str.Mid(size_pos, a_str.length() - size_pos);
+    size_pos = 0;
+
+    local capacity_pos = vector_info_str.Find(_T("Vector capacity = "));
+    if (capacity_pos < 0)
+        return _T("");
+
+    local size_value = vector_info_str.Mid(14, capacity_pos - 15);
+    local size = wxString_ToLong(size_value);
+
+    local capacity_end_pos = vector_info_str.Find(_T("Element"));
+    if(capacity_end_pos < 0)
+        return _T("");
+    capacity_pos += 18;
+    local capacity_value = vector_info_str.Mid(capacity_pos, capacity_end_pos - capacity_pos - 1);
+    local element_type_value = vector_info_str.Mid(capacity_end_pos + 15,
+                                                   vector_info_str.length() - capacity_end_pos - 15);
+
+    local result = _T("[size] = ") + size_value + _T(",\n");
+    result += _T("[capacity] = ") + capacity_value + _T(",\n");
+    result += _T("[element type] = ") + element_type_value;
+
+    if(size > 0)
+        result += _T(",\n");
+
+    local value_str = a_str;
+    for(local item = 0; item < size; item += 1)
+    {
+        local elem_str = _T("elem[") + item + _T("]: ");
+        local elem_start = value_str.Find(elem_str);
+        local elem_end = 0;
+        if(item == size - 1)
+            elem_end = value_str.Find(_T("Vector size"));
+        else
+            elem_end = value_str.Find(_T("elem[") + (item + 1) + _T("]: "));
+
+        if(elem_start >= 0 && elem_end >= 0)
+        {
+            local elem_value = value_str.Mid(elem_start, elem_end - elem_start);
+            local equal_pos = elem_value.Find(_T(" = "));
+            if(equal_pos >= 0)
+                elem_value.Remove(0, equal_pos + 3);
+            if(item > 0)
+                result += _T(",");
+            result += _T("[") + item + _T("] = ") + elem_value + _T("\n");
+        }
+        else
+            break;
+
+        value_str.Remove(0, elem_end);
+    }
+    if(result.length() > 0)
+    {
+        return _T("{ " ) + result + _T(" } ");
+    }
+    return "";
+}

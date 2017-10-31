@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11"  release="12" />
+    <Plugin name="wxSmithAui">
+        <Value title="wxSmith - Aui" />
+        <Value version="0.8.1" />
+        <Value description="wxAUI extension for wxSmith" />
+        <Value author="César Fernández Domínguez" />
+        <Value authorEmail="ganbitobl@hotmail.com" />
+        <Value authorWebsite="" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

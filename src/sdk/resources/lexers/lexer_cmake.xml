@@ -1,0 +1,548 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="CMake"
+               index="80"
+               filemasks="*CMakeLists.txt,*.cmake,*.cmake.in,*.ctest,*.ctest.in">
+                <Style name="Default"
+                       index="0"
+                       fg="0,0,0"
+                       bg="255,255,255"
+                       bold="0"
+                       italics="0"
+                       underlined="0"/>
+                <Style name="Comment"
+                       index="1"
+                       fg="160,160,160"/>
+                <Style name="String"
+                       index="2,3,4"
+                       fg="0,0,255"/>
+                <Style name="Commands"
+                       index="5"
+                       fg="0,0,160"
+                       bold="1"/>
+                <Style name="Parameters"
+                       index="6"
+                       fg="190,0,0"/>
+                <Style name="Variable"
+                       index="7"
+                       fg="230,100,5"/>
+                <Style name="User defined"
+                       index="8"
+                       fg="50,115,50"
+                       bold="1"/>
+                <Style name="Definitions"
+                       index="9,10,11,12"
+                       fg="100,0,100"
+                       bold="1"/>
+                <Style name="Variable within a string"
+                       index="13"
+                       fg="100,55,200"/>
+                <Style name="Number"
+                      index="14"
+                      fg="240,0,240"/>
+                <Style name="Selection"
+                       index="-99"
+                       bg="192,192,192"/>
+                <Style name="Active line"
+                       index="-98"
+                       bg="255,255,160"/>
+                <Style name="Breakpoint line"
+                       index="-2"
+                       bg="255,160,160"/>
+                <Style name="Debugger active line"
+                       index="-3"
+                       bg="160,160,255"/>
+                <Style name="Compiler error line"
+                       index="-4"
+                       bg="255,128,0"/>
+                <Style name="Matching brace highlight"
+                       index="34"
+                       bg="128,255,255"
+                       bold="1"/>
+                <Style name="No matching brace highlight"
+                       index="35"
+                       fg="255,255,255"
+                       bg="255,0,0"
+                       bold="1"/>
+                <Keywords>
+                        <Set index="0"
+                            value="add_custom_command add_custom_target add_definitions add_dependencies
+                                   add_executable add_library add_subdirectory add_test aux_source_directory
+                                   break build_command build_name cmake_minimum_required cmake_policy
+                                   configure_file create_test_sourcelist define_property else elseif
+                                   enable_language enable_testing endforeach endfunction endif endmacro
+                                   endwhile exec_program execute_process export export_library_dependencies
+                                   file find_file find_library find_package find_path find_program
+                                   fltk_wrap_ui foreach function get_cmake_property get_directory_property
+                                   get_filename_component get_property get_source_file_property
+                                   get_target_property get_test_property if include include_directories
+                                   include_external_msproject include_regular_expression install install_files
+                                   install_programs install_targets link_directories link_libraries list
+                                   load_cache load_command macro make_directory mark_as_advanced math message
+                                   option output_required_files project qt_wrap_cpp qt_wrap_ui remove
+                                   remove_definitions return separate_arguments set set_directory_properties
+                                   set_property set_source_files_properties set_target_properties
+                                   set_tests_properties site_name source_group string subdir_depends subdirs
+                                   target_link_libraries try_compile try_run unset use_mangled_mesa
+                                   utility_source variable_requires variable_watch vtk_make_instantiator
+                                   vtk_wrap_java vtk_wrap_python vtk_wrap_tcl while write_file
+
+                                   add_compiler_export_flags add_feature_info add_file_dependencies add_jar
+                                   check_c_compiler_flag check_c_source_compiles check_c_source_runs
+                                   check_cxx_accepts_flag check_cxx_compiler_flag check_cxx_source_compiles
+                                   check_cxx_source_runs check_cxx_symbol_exists check_fortran_function_exists
+                                   check_function_exists check_include_file check_include_file_cxx check_include_files
+                                   check_library_exists check_prototype_definition check_struct_has_member
+                                   check_symbol_exists check_type_size check_variable_exists clear_bundle_keys
+                                   cmake_dependent_option cmake_force_c_compiler cmake_force_cxx_compiler
+                                   cmake_force_fortran_compiler cmake_parse_arguments cmake_pop_check_state
+                                   cmake_push_check_state copy_and_fixup_bundle copy_resolved_framework_into_bundle
+                                   copy_resolved_item_into_bundle cpack_add_component cpack_add_component_group
+                                   cpack_add_install_type cpack_configure_downloads create_javadoc ecos_add_executable
+                                   ecos_add_include_directories ecos_adjust_directory ecos_use_arm_elf_tools
+                                   ecos_use_i386_elf_tools ecos_use_ppc_eabi_tools externalproject_add
+                                   externalproject_add_step externalproject_add_steptargets externalproject_get_property
+                                   feature_summary find_jar fixup_bundle fixup_bundle_item fixup_qt4_executable
+                                   fortrancinterface_header fortrancinterface_verify generate_export_header
+                                   get_bundle_all_executables get_bundle_and_executable get_bundle_keys
+                                   get_bundle_main_executable get_dotapp_dir get_item_key get_prerequisites
+                                   gp_append_unique gp_file_type gp_item_default_embedded_path gp_resolve_item
+                                   gp_resolved_file_type include install_jar install_jni_symlink install_qt4_executable
+                                   install_qt4_plugin install_qt4_plugin_path is_file_executable list_prerequisites
+                                   list_prerequisites_by_glob pkgconfig processorcount resolve_qt4_paths
+                                   select_library_configurations set_bundle_key_values set_package_properties
+                                   set_source_files_properties swig_add_module swig_link_libraries test_big_endian
+                                   verify_app verify_bundle_prerequisites verify_bundle_symlinks
+                                   write_basic_config_version_file write_qt4_conf"/>
+                        <Set index="1"
+                            value="ABSOLUTE ABSTRACT ADDITIONAL_MAKE_CLEAN_FILES ADVANCED
+                                   ALLALLOW_DUPLICATE_CUSTOM_TARGETS AND APPEND APPLE ARCHIVE_OUTPUT_DIRECTORY
+                                   ARCHIVE_OUTPUT_NAME ARGS ASCII ATTACHED_FILES ATTACHED_FILES_ON_FAIL AUTOMOC
+                                   AUTOMOC_MOC_OPTIONS BEFORE BORLAND BUILD_SHARED_LIBS BUILD_WITH_INSTALL_RPATH BUNDLE
+                                   BUNDLE_EXTENSION CACHE CACHE_VARIABLES CLEAN_NO_CUSTOM CLEAR CMAKE_AR
+                                   CMAKE_ARCHIVE_OUTPUT_DIRECTORY CMAKE_ARGC CMAKE_ARGV0 CMAKE_AUTOMOC
+                                   CMAKE_AUTOMOC_MOC_OPTIONS CMAKE_AUTOMOC_RELAXED_MODE CMAKE_BACKWARDS_COMPATIBILITY
+                                   CMAKE_BINARY_DIR CMAKE_BUILD_TOOL CMAKE_BUILD_TYPE CMAKE_BUILD_WITH_INSTALL_RPATH
+                                   CMAKE_CACHEFILE_DIR CMAKE_CACHE_MAJOR_VERSION CMAKE_CACHE_MINOR_VERSION
+                                   CMAKE_CACHE_PATCH_VERSION CMAKE_CFG_INTDIR CMAKE_CL_64 CMAKE_COLOR_MAKEFILE
+                                   CMAKE_COMMAND CMAKE_COMPILER_2005 CMAKE_CONFIGURATION_TYPES CMAKE_CROSSCOMPILING
+                                   CMAKE_CTEST_COMMAND CMAKE_CURRENT_BINARY_DIR CMAKE_CURRENT_LIST_DIR
+                                   CMAKE_CURRENT_LIST_FILE CMAKE_CURRENT_LIST_LINE CMAKE_CURRENT_SOURCE_DIR
+                                   CMAKE_DEBUG_POSTFIX CMAKE_DL_LIBS CMAKE_EDIT_COMMAND CMAKE_EXECUTABLE_SUFFIX
+                                   CMAKE_EXE_LINKER_FLAGS CMAKE_EXTRA_GENERATOR CMAKE_EXTRA_SHARED_LIBRARY_SUFFIXES
+                                   CMAKE_FIND_LIBRARY_PREFIXES CMAKE_FIND_LIBRARY_SUFFIXES CMAKE_Fortran_FORMAT
+                                   CMAKE_Fortran_MODDIR_DEFAULT CMAKE_Fortran_MODDIR_FLAG CMAKE_Fortran_MODOUT_FLAG
+                                   CMAKE_Fortran_MODULE_DIRECTORY CMAKE_GENERATOR CMAKE_GNUtoMS CMAKE_HOME_DIRECTORY
+                                   CMAKE_HOST_APPLE CMAKE_HOST_SYSTEM CMAKE_HOST_SYSTEM_NAME CMAKE_HOST_SYSTEM_PROCESSOR
+                                   CMAKE_HOST_SYSTEM_VERSION CMAKE_HOST_UNIX CMAKE_HOST_WIN32 CMAKE_IGNORE_PATH
+                                   CMAKE_IMPORT_LIBRARY_PREFIX CMAKE_IMPORT_LIBRARY_SUFFIX CMAKE_INCLUDE_CURRENT_DIR
+                                   CMAKE_INCLUDE_PATH CMAKE_INSTALL_NAME_DIR CMAKE_INSTALL_PREFIX CMAKE_INSTALL_RPATH
+                                   CMAKE_INSTALL_RPATH_USE_LINK_PATH CMAKE_INTERNAL_PLATFORM_ABI
+                                   CMAKE_LIBRARY_ARCHITECTURE CMAKE_LIBRARY_ARCHITECTURE_REGEX
+                                   CMAKE_LIBRARY_OUTPUT_DIRECTORY CMAKE_LIBRARY_PATH CMAKE_LIBRARY_PATH_FLAG
+                                   CMAKE_LINK_DEF_FILE_FLAG CMAKE_LINK_INTERFACE_LIBRARIES CMAKE_LINK_LIBRARY_FILE_FLAG
+                                   CMAKE_LINK_LIBRARY_FLAG CMAKE_LINK_LIBRARY_SUFFIX CMAKE_MAJOR_VERSION
+                                   CMAKE_MAKE_PROGRAM CMAKE_MFC_FLAG CMAKE_MINOR_VERSION CMAKE_MODULE_PATH
+                                   CMAKE_NOT_USING_CONFIG_FLAGS CMAKE_NO_BUILTIN_CHRPATH CMAKE_OBJECT_PATH_MAX
+                                   CMAKE_PARENT_LIST_FILE CMAKE_PATCH_VERSION CMAKE_PREFIX_PATH CMAKE_PROGRAM_PATH
+                                   CMAKE_PROJECT_NAME CMAKE_RANLIB CMAKE_ROOT CMAKE_RUNTIME_OUTPUT_DIRECTORY
+                                   CMAKE_SCRIPT_MODE_FILE CMAKE_SHARED_LIBRARY_PREFIX CMAKE_SHARED_LIBRARY_SUFFIX
+                                   CMAKE_SHARED_MODULE_PREFIX CMAKE_SHARED_MODULE_SUFFIX CMAKE_SIZEOF_VOID_P
+                                   CMAKE_SKIP_BUILD_RPATH CMAKE_SKIP_INSTALL_ALL_DEPENDENCY CMAKE_SKIP_RPATH
+                                   CMAKE_SOURCE_DIR CMAKE_STANDARD_LIBRARIES CMAKE_STATIC_LIBRARY_PREFIX
+                                   CMAKE_STATIC_LIBRARY_SUFFIX CMAKE_SYSTEM CMAKE_SYSTEM_IGNORE_PATH
+                                   CMAKE_SYSTEM_INCLUDE_PATH CMAKE_SYSTEM_LIBRARY_PATH CMAKE_SYSTEM_NAME
+                                   CMAKE_SYSTEM_PREFIX_PATH CMAKE_SYSTEM_PROCESSOR CMAKE_SYSTEM_PROGRAM_PATH
+                                   CMAKE_SYSTEM_VERSION CMAKE_TRY_COMPILE_CONFIGURATION CMAKE_TWEAK_VERSION
+                                   CMAKE_USER_MAKE_RULES_OVERRIDE CMAKE_USE_RELATIVE_PATHS CMAKE_USING_VC_FREE_TOOLS
+                                   CMAKE_VERBOSE_MAKEFILE CMAKE_VERSION COMMAND COMMANDS COMMAND_NAME COMMENT COMPARE
+                                   COMPILE_DEFINITIONS COMPILE_FLAGS COPYONLY COST CYGWIN DEBUG_CONFIGURATIONS
+                                   DEBUG_POSTFIX DEFINED DEFINE_SYMBOL DEFINITIONS DEPENDS DISABLED_FEATURES DOC
+                                   ENABLED_FEATURES ENABLED_LANGUAGES ENABLE_EXPORTS ENVIRONMENT EQUAL ESCAPE_QUOTES
+                                   EXCLUDE EXCLUDE_FROM_ALL EXECUTABLE_OUTPUT_PATH EXISTS EXPORT_MACRO EXT
+                                   EXTERNAL_OBJECT EXTRA_INCLUDE EchoString FAIL_REGULAR_EXPRESSION FATAL_ERROR FILE
+                                   FILES FIND_LIBRARY_USE_LIB64_PATHS FIND_LIBRARY_USE_OPENBSD_VERSIONING FOLDER FORCE
+                                   FRAMEWORK FUNCTION Fortran_FORMAT Fortran_MODULE_DIRECTORY GENERATED
+                                   GENERATOR_FILE_NAME GLOB GLOBAL_DEPENDS_DEBUG_MODE GLOBAL_DEPENDS_NO_CYCLES
+                                   GLOB_RECURSE GNUtoMS GREATER GROUP_SIZE HAS_CXX HEADER_FILE_ONLY HEADER_LOCATION
+                                   HELPSTRING IMMEDIATE IMPLICIT_DEPENDS_INCLUDE_TRANSFORM IMPORTED
+                                   IMPORTED_CONFIGURATIONS IMPORTED_IMPLIB IMPORTED_LINK_DEPENDENT_LIBRARIES
+                                   IMPORTED_LINK_INTERFACE_LANGUAGES IMPORTED_LINK_INTERFACE_LIBRARIES
+                                   IMPORTED_LINK_INTERFACE_MULTIPLICITY IMPORTED_LOCATION IMPORTED_NO_SONAME
+                                   IMPORTED_SONAME IMPORT_PREFIX IMPORT_SUFFIX INCLUDES INCLUDE_DIRECTORIES
+                                   INCLUDE_INTERNALS INCLUDE_REGULAR_EXPRESSION INSTALL_NAME_DIR INSTALL_RPATH
+                                   INSTALL_RPATH_USE_LINK_PATH INTERPROCEDURAL_OPTIMIZATION IN_TRY_COMPILE
+                                   KEEP_EXTENSION LABELS LANGUAGE LESS LIBRARY_OUTPUT_DIRECTORY LIBRARY_OUTPUT_NAME
+                                   LIBRARY_OUTPUT_PATH LINKER_LANGUAGE LINK_DEPENDS LINK_DIRECTORIES LINK_FLAGS
+                                   LINK_INTERFACE_LIBRARIES LINK_INTERFACE_MULTIPLICITY LINK_SEARCH_END_STATIC
+                                   LINK_SEARCH_START_STATIC LISTFILE_STACK LOCATION MACOSX_BUNDLE
+                                   MACOSX_BUNDLE_INFO_PLIST MACOSX_FRAMEWORK_INFO_PLIST MACOSX_PACKAGE_LOCATION MACROS
+                                   MAIN_DEPENDENCY MAKE_DIRECTORY MATCH MATCHALL MATCHES MEASUREMENT MINGW MODIFIED
+                                   MODULE MSVC MSVC60 MSVC70 MSVC71 MSVC80 MSVC_IDE MSVC_VERSION MSYS NAME NAME_WE NOT
+                                   NOTEQUAL NO_SYSTEM_PATH OBJECT_DEPENDS OBJECT_OUTPUTS OFF ON OPTIONAL OR
+                                   OSX_ARCHITECTURES OUTPUT OUTPUT_NAME OUTPUT_VARIABLE PACKAGES_FOUND PACKAGES_NOT_FOUND
+                                   PARENT_DIRECTORY PASS_REGULAR_EXPRESSION PATH PATHS POST_BUILD POST_INSTALL_SCRIPT
+                                   PREDEFINED_TARGETS_FOLDER PREFIX PREORDER PRE_BUILD PRE_INSTALL_SCRIPT PRE_LINK
+                                   PRIVATE_HEADER PROCESSORS PROGRAM PROGRAM_ARGS PROJECT_BINARY_DIR PROJECT_LABEL
+                                   PROJECT_NAME PROJECT_SOURCE_DIR PROPERTIES PUBLIC_HEADER QUIET RANGE READ REGEX
+                                   REGULAR_EXPRESSION REPLACE REPORT_UNDEFINED_PROPERTIES REQUIRED REQUIRED_FILES
+                                   RESOURCE RESOURCE_LOCK RETURN_VALUE RULE_LAUNCH_COMPILE RULE_LAUNCH_CUSTOM
+                                   RULE_LAUNCH_LINK RULE_MESSAGES RUNTIME_DIRECTORY RUNTIME_OUTPUT_DIRECTORY
+                                   RUNTIME_OUTPUT_NAME RUN_SERIAL SEND_ERROR SHARED SKIP_BUILD_RPATH SOURCES SOVERSION
+                                   STATIC STATIC_LIBRARY_FLAGS STATUS STREQUAL STRGREATER STRINGS STRLESS SUFFIX SYMBOLIC
+                                   TARGET TARGET_ARCHIVES_MAY_BE_SHARED_LIBS TARGET_SUPPORTS_SHARED_LIBS
+                                   TEST_INCLUDE_FILE TIMEOUT TOLOWER TOUPPER TYPE UNIX USE_FOLDERS VALUE VAR VARIABLES
+                                   VERSION VS_DOTNET_REFERENCES VS_GLOBAL_KEYWORD VS_GLOBAL_PROJECT_TYPES VS_KEYWORD
+                                   VS_SCC_AUXPATH VS_SCC_LOCALPATH VS_SCC_PROJECTNAME VS_SCC_PROVIDER WATCOM WILL_FAIL
+                                   WIN32 WIN32_EXECUTABLE WORKING_DIRECTORY WRAP_EXCLUDE WRITE XCODE_VERSION
+                                   __CMAKE_DELETE_CACHE_CHANGE_VARS_
+
+                                   AFTER ALPHABET APPEND_STRING ARCHIVE ASCII AUTHOR_WARNING BOOL BRIEF_DOCS
+                                   CACHED_VARIABLE CMAKE_APPBUNDLE_PATH CMAKE_FIND_ROOT_PATH_BOTH CMAKE_FLAGS
+                                   CMAKE_FRAMEWORK_PATH CMAKE_SYSTEM_APPBUNDLE_PATH CMAKE_SYSTEM_FRAMEWORK_PATH
+                                   CODE COMPONENT COMPONENTS CONFIGURATION CONFIGURATIONS CONFIGURE COPY_FILE CRLF
+                                   DEFINITION DESTINATION DIRECTORY DIRECTORY_PERMISSIONS DOS DOWNLOAD ENV ERROR_FILE
+                                   ERROR_QUIET ERROR_STRIP_TRAILING_WHITESPACE ERROR_VARIABLE EXACT EXCLUDE EXPECTED_MD5
+                                   EXPORT EXPR FALSE FILEPATH FILES_MATCHING FILE_PERMISSIONS FIND FOLLOW_SYMLINKS
+                                   FULL_DOCS GET GLOBAL GROUP_EXECUTE GROUP_READ HEX HINTS IGNORE IMPLICIT_DEPENDS IN
+                                   INACTIVITY_TIMEOUT INHERITED INPUT_FILE INSERT INTERNAL IS_ABSOLUTE IS_DIRECTORY
+                                   IS_NEWER_THAN IS_SYMLINK ITEMS LENGTH LENGTH_MAXIMUM LENGTH_MINIMUM LF LIBRARY LIMIT
+                                   LIMIT_COUNT LIMIT_INPUT LIMIT_OUTPUT LINK_PRIVATE LINK_PUBLIC LISTS LOG MD5
+                                   NAMELINK_ONLY NAMELINK_SKIP NAMES NAMESPACE NEWLINE_CONSUME NEWLINE_STYLE NO
+                                   NO_CMAKE_BUILDS_PATH NO_CMAKE_ENVIRONMENT_PATH NO_CMAKE_FIND_ROOT_PATH
+                                   NO_CMAKE_PACKAGE_REGISTRY NO_CMAKE_PATH NO_CMAKE_SYSTEM_PACKAGE_REGISTRY
+                                   NO_CMAKE_SYSTEM_PATH NO_DEFAULT_PATH NO_HEX_CONVERSION NO_MODULE NO_POLICY_SCOPE
+                                   NO_SYSTEM_ENVIRONMENT_PATH OFFSET ONLY_CMAKE_FIND_ROOT_PATH OUTPUT_FILE OUTPUT_QUIET
+                                   OUTPUT_STRIP_TRAILING_WHITESPACE OWNER_EXECUTE OWNER_READ OWNER_WRITE PACKAGE
+                                   PACKAGE_FIND_NAME PACKAGE_FIND_VERSION PACKAGE_FIND_VERSION_COUNT
+                                   PACKAGE_FIND_VERSION_MAJOR PACKAGE_FIND_VERSION_MINOR PACKAGE_FIND_VERSION_PATCH
+                                   PACKAGE_FIND_VERSION_TWEAK PACKAGE_VERSION PACKAGE_VERSION_COMPATIBLE
+                                   PACKAGE_VERSION_EXACT PACKAGE_VERSION_UNSUITABLE PARENT_SCOPE PATH_SUFFIXES
+                                   PERMISSIONS PROPERTY RANDOM RANDOM_SEED READ_WITH_PREFIX REALPATH RELATIVE
+                                   RELATIVE_PATH REMOVE REMOVE_AT REMOVE_DUPLICATES REMOVE_ITEM REMOVE_RECURSE RENAME
+                                   RESULT_VAR RESULT_VARIABLE REVERSE RUNTIME SCRIPT SHA1 SHA224 SHA256 SHA384 SHA512
+                                   SHOW_PROGRESS SORT STRING STRIP SUBSTRING SYSTEM TARGETS TEST TO_CMAKE_PATH
+                                   TO_NATIVE_PATH TRUE UPLOAD USE_SOURCE_PERMISSIONS VARIABLE VERBATIM VERSION_EQUAL
+                                   VERSION_GREATER VERSION_LESS WARNING YES
+
+                                   ADD_FLEX_BISON_DEPENDENCY ALSA ALSA_FOUND ALSA_INCLUDE_DIR ALSA_INCLUDE_DIRS
+                                   ALSA_LIBRARIES ALSA_LIBRARY ARMADILLO_FOUND ARMADILLO_INCLUDE_DIRS ARMADILLO_LIBRARIES
+                                   ARMADILLO_VERSION_MAJOR ARMADILLO_VERSION_MINOR ARMADILLO_VERSION_NAME
+                                   ARMADILLO_VERSION_PATCH ARMADILLO_VERSION_STRING ASPELL ASPELL_DEFINITIONS
+                                   ASPELL_EXECUTABLE ASPELL_FOUND ASPELL_INCLUDE_DIR ASPELL_LIBRARIES AVIFILE_DEFINITIONS
+                                   AVIFILE_FOUND AVIFILE_INCLUDE_DIR AVIFILE_LIBRARIES AVIFile Armadillo BIBTEX_COMPILER
+                                   BISON BISON_EXECUTABLE BISON_TARGET BISON_VERSION BLAS BLAS95_FOUND BLAS95_LIBRARIES
+                                   BLAS_FOUND BLAS_LIBRARIES BLAS_LINKER_FLAGS BLA_F95 BLA_STATIC BLA_VENDOR BULLET_FOUND
+                                   BULLET_INCLUDE_DIRS BULLET_LIBRARIES BULLET_ROOT BZIP2_FOUND BZIP2_INCLUDE_DIR
+                                   BZIP2_LIBRARIES BZIP2_NEED_PREFIX BZip2 Boost Boost_ADDITIONAL_VERSIONS Boost_COMPILER
+                                   Boost_DEBUG Boost_DETAILED_FAILURE_MSG Boost_FOUND Boost_INCLUDE_DIRS Boost_LIBRARIES
+                                   Boost_NO_BOOST_CMAKE Boost_NO_SYSTEM_PATHS Boost_REALPATH Boost_THREADAPI
+                                   Boost_USE_DEBUG_PYTHON Boost_USE_MULTITHREADED Boost_USE_STATIC_LIBS
+                                   Boost_USE_STATIC_RUNTIME Boost_USE_STLPORT
+                                   Boost_USE_STLPORT_DEPRECATED_NATIVE_IOSTREAMS Bullet CABLE CABLE_INCLUDE_DIR
+                                   CABLE_TCL_LIBRARY CMAKE_HP_PTHREADS_INIT CMAKE_THREAD_LIBS_INIT
+                                   CMAKE_THREAD_PREFER_PTHREAD CMAKE_USE_PTHREADS_INIT CMAKE_USE_SPROC_INIT
+                                   CMAKE_USE_WIN32_THREADS_INIT CMAKE_WXWINDOWS_CXX_FLAGS CMAKE_WX_CAN_COMPILE
+                                   CMAKE_WX_CXX_FLAGS COIN3D_FOUND COIN3D_INCLUDE_DIRS COIN3D_LIBRARIES CUDA
+                                   CUDA_64_BIT_DEVICE_CODE CUDA_ADD_CUBLAS_TO_TARGET CUDA_ADD_CUFFT_TO_TARGET
+                                   CUDA_ADD_EXECUTABLE CUDA_ADD_LIBRARY CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE
+                                   CUDA_BUILD_CLEAN_TARGET CUDA_BUILD_CUBIN CUDA_BUILD_EMULATION CUDA_COMPILE
+                                   CUDA_COMPILE_PTX CUDA_CUBLAS_LIBRARIES CUDA_CUFFT_LIBRARIES CUDA_GENERATED_OUTPUT_DIR
+                                   CUDA_HOST_COMPILATION_CPP CUDA_INCLUDE_DIRECTORIES CUDA_INCLUDE_DIRS CUDA_LIBRARIES
+                                   CUDA_NVCC_FLAGS CUDA_PROPAGATE_HOST_FLAGS CUDA_SDK_ROOT_DIR CUDA_TOOLKIT_ROOT_DIR
+                                   CUDA_VERBOSE_BUILD CUDA_VERSION CUDA_VERSION_MAJOR CUDA_VERSION_MINOR
+                                   CUDA_VERSION_STRING CUDA_WRAP_SRCS CUPS_FOUND CUPS_INCLUDE_DIR CUPS_LIBRARIES
+                                   CUPS_REQUIRE_IPP_DELETE_ATTRIBUTE CURL CURL_FOUND CURL_INCLUDE_DIRS CURL_LIBRARIES
+                                   CURSES_FOUND CURSES_HAVE_CURSES_H CURSES_HAVE_NCURSES_CURSES_H CURSES_HAVE_NCURSES_H
+                                   CURSES_HAVE_NCURSES_NCURSES_H CURSES_INCLUDE_DIR CURSES_LIBRARIES CURSES_LIBRARY CVS
+                                   CVS_EXECUTABLE CVS_FOUND CXXTEST_ADD_TEST CXXTEST_FOUND CXXTEST_INCLUDE_DIRS
+                                   CXXTEST_PERL_TESTGEN_EXECUTABLE CXXTEST_PYTHON_TESTGEN_EXECUTABLE CXXTEST_TESTGEN_ARGS
+                                   CXXTEST_TESTGEN_EXECUTABLE CXXTEST_TESTGEN_INTERPRETER CXXTEST_USE_PYTHON Coin3D Cups
+                                   Curses CxxTest Cygwin DCMTK DESIRED_QT_VERSION DOXYGEN_DOT_EXECUTABLE
+                                   DOXYGEN_DOT_FOUND DOXYGEN_DOT_PATH DOXYGEN_EXECUTABLE DOXYGEN_FOUND DOXYGEN_SKIP_DOT
+                                   DVIPS_CONVERTER Dart Dart_ROOT DevIL Doxygen EXPAT EXPAT_FOUND EXPAT_INCLUDE_DIRS
+                                   EXPAT_LIBRARIES FLEX FLEX_EXECUTABLE FLEX_FOUND FLEX_INCLUDE_DIRS FLEX_LIBRARIES
+                                   FLEX_TARGET FLEX_VERSION FLTK FLTK2 FLTK2_FLUID_EXECUTABLE FLTK2_FOUND
+                                   FLTK2_INCLUDE_DIR FLTK2_LIBRARIES FLTK2_WRAP_UI FLTK_FLUID_EXECUTABLE FLTK_FOUND
+                                   FLTK_INCLUDE_DIR FLTK_LIBRARIES FLTK_SKIP_FLUID FLTK_SKIP_FORMS FLTK_SKIP_IMAGES
+                                   FLTK_SKIP_OPENGL FLTK_WRAP_UI FREETYPE_FOUND FREETYPE_INCLUDE_DIRS
+                                   FREETYPE_INCLUDE_DIR_freetype2 FREETYPE_INCLUDE_DIR_ft2build FREETYPE_LIBRARIES
+                                   Freetype GCCXML GDAL GDAL_DIR GDAL_FOUND GDAL_INCLUDE_DIR GDAL_LIBRARY GDAL_ROOT
+                                   GETTEXT_CREATE_TRANSLATIONS GETTEXT_FOUND GETTEXT_MSGFMT_EXECUTABLE
+                                   GETTEXT_MSGMERGE_EXECUTABLE GETTEXT_PROCESS_POT GETTEXT_PROCESS_PO_FILES GIF GIF_FOUND
+                                   GIF_INCLUDE_DIR GIF_LIBRARIES GIF_VERSION GLUT GLUT_FOUND GLUT_INCLUDE_DIR
+                                   GLUT_LIBRARIES GNUPLOT_EXECUTABLE GNUPLOT_FOUND GNUTLS_DEFINITIONS GNUTLS_FOUND
+                                   GNUTLS_INCLUDE_DIR GNUTLS_LIBRARIES GTEST_ADD_TESTS GTEST_BOTH_LIBRARIES GTEST_FOUND
+                                   GTEST_INCLUDE_DIRS GTEST_LIBRARIES GTEST_MAIN_LIBRARIES GTEST_MSVC_SEARCH GTEST_ROOT
+                                   GTK GTK2 GTK2_ADDITIONAL_SUFFIXES GTK2_DEBUG GTK2_FOUND GTK2_INCLUDE_DIRS
+                                   GTK2_LIBRARIES GTK2_MAJOR_VERSION GTK2_MINOR_VERSION GTK2_PATCH_VERSION
+                                   GTK2_SKIP_MARK_AS_ADVANCED GTK2_VERSION GTK_FOUND GTK_GL_FOUND GTK_INCLUDE_DIR
+                                   GTK_LIBRARIES GTest Gettext Git Git_EXECUTABLE Git_FOUND GnuTLS Gnuplot HDF5
+                                   HDF5_CXX_COMPILER_EXECUTABLE HDF5_CXX_LIBRARIES HDF5_C_COMPILER_EXECUTABLE
+                                   HDF5_C_LIBRARIES HDF5_DEFINITIONS HDF5_DIFF_EXECUTABLE HDF5_FOUND
+                                   HDF5_Fortran_COMPILER_EXECUTABLE HDF5_Fortran_HL_LIBRARIES HDF5_Fortran_LIBRARIES
+                                   HDF5_HL_LIBRARIES HDF5_INCLUDE_DIRS HDF5_IS_PARALLEL HDF5_LIBRARIES HDF5_LIBRARY_DIRS
+                                   HSPELL HSPELL_DEFINITIONS HSPELL_FOUND HSPELL_INCLUDE_DIR HSPELL_LIBRARIES
+                                   HSPELL_MAJOR_VERSION HSPELL_MINOR_VERSION HSPELL_VERSION_STRING HTMLHelp
+                                   HTML_HELP_COMPILER HTML_HELP_INCLUDE_PATH HTML_HELP_LIBRARY ILUT_LIBRARIES
+                                   ILU_LIBRARIES IL_FOUND IL_INCLUDE_DIR IL_LIBRARIES ITK ImageMagick
+                                   ImageMagick_EXECUTABLE_DIR ImageMagick_FOUND ImageMagick_INCLUDE_DIRS
+                                   ImageMagick_LIBRARIES JASPER_FOUND JASPER_INCLUDE_DIR JASPER_LIBRARIES
+                                   JAVA_AWT_INCLUDE_PATH JAVA_AWT_LIBRARY JAVA_INCLUDE_PATH JAVA_INCLUDE_PATH2
+                                   JAVA_JVM_LIBRARY JNI JNI_FOUND JNI_INCLUDE_DIRS JNI_LIBRARIES JPEG JPEG_FOUND
+                                   JPEG_INCLUDE_DIR JPEG_LIBRARIES JPEG_LIBRARY Jasper Java Java_FOUND Java_INCLUDE_DIRS
+                                   Java_JAR_EXECUTABLE Java_JAVAC_EXECUTABLE Java_JAVADOC_EXECUTABLE
+                                   Java_JAVAH_EXECUTABLE Java_JAVA_EXECUTABLE Java_LIBRARIES Java_VERSION
+                                   Java_VERSION_MAJOR Java_VERSION_MINOR Java_VERSION_PATCH Java_VERSION_STRING
+                                   Java_VERSION_TWEAK KDE3 KDE3_ADD_DCOP_SKELS KDE3_ADD_DCOP_STUBS KDE3_ADD_EXECUTABLE
+                                   KDE3_ADD_KCFG_FILES KDE3_ADD_KDEINIT_EXECUTABLE KDE3_ADD_KPART KDE3_ADD_MOC_FILES
+                                   KDE3_ADD_UI_FILES KDE3_AUTOMOC KDE3_BUILD_TESTS KDE3_DCOPIDL2CPP_EXECUTABLE
+                                   KDE3_DCOPIDL_EXECUTABLE KDE3_DEFINITIONS KDE3_FOUND KDE3_INCLUDE_DIR KDE3_INCLUDE_DIRS
+                                   KDE3_INSTALL_LIBTOOL_FILE KDE3_KCFGC_EXECUTABLE KDE3_LIB_DIR KDE4 LAPACK
+                                   LAPACK95_FOUND LAPACK95_LIBRARIES LAPACK_FOUND LAPACK_LIBRARIES LAPACK_LINKER_FLAGS
+                                   LATEX LATEX2HTML_CONVERTER LATEX_COMPILER LIBXML2_DEFINITIONS LIBXML2_FOUND
+                                   LIBXML2_INCLUDE_DIR LIBXML2_LIBRARIES LIBXML2_XMLLINT_EXECUTABLE LIBXSLT_DEFINITIONS
+                                   LIBXSLT_EXSLT_LIBRARIES LIBXSLT_FOUND LIBXSLT_INCLUDE_DIR LIBXSLT_LIBRARIES
+                                   LIBXSLT_XSLTPROC_EXECUTABLE LUA50_FOUND LUA51_FOUND LUA_INCLUDE_DIR LUA_LIBRARIES
+                                   LibArchive LibArchive_FOUND LibArchive_INCLUDE_DIRS LibArchive_LIBRARIES
+                                   LibArchive_VERSION LibXml2 LibXslt Lua50 Lua51 MAKEINDEX_COMPILER MATLAB_ENG_LIBRARY
+                                   MATLAB_INCLUDE_DIR MATLAB_LIBRARIES MATLAB_MEX_LIBRARY MATLAB_MX_LIBRARY MFC MFC_FOUND
+                                   MOTIF_FOUND MOTIF_INCLUDE_DIR MOTIF_LIBRARIES MPEG MPEG2 MPEG2_FOUND MPEG2_INCLUDE_DIR
+                                   MPEG2_LIBRARIES MPEG_FOUND MPEG_INCLUDE_DIR MPEG_LIBRARIES MPI MPIEXEC
+                                   MPIEXEC_NUMPROC_FLAG MPIEXEC_POSTFLAGS MPIEXEC_PREFLAGS MPI_COMPILER MPI_COMPILE_FLAGS
+                                   MPI_CXX_COMPILER MPI_CXX_COMPILE_FLAGS MPI_CXX_FOUND MPI_CXX_INCLUDE_PATH
+                                   MPI_CXX_LIBRARIES MPI_CXX_LINK_FLAGS MPI_C_COMPILER MPI_C_COMPILE_FLAGS MPI_C_FOUND
+                                   MPI_C_INCLUDE_PATH MPI_C_LIBRARIES MPI_C_LINK_FLAGS MPI_EXTRA_LIBRARY MPI_FOUND
+                                   MPI_Fortran_COMPILER MPI_Fortran_COMPILE_FLAGS MPI_Fortran_FOUND
+                                   MPI_Fortran_INCLUDE_PATH MPI_Fortran_LIBRARIES MPI_Fortran_LINK_FLAGS MPI_INCLUDE_PATH
+                                   MPI_LIBRARIES MPI_LIBRARY MPI_LINK_FLAGS Magick++ MagickCore MagickWand Matlab Motif
+                                   OPENAL_FOUND OPENAL_INCLUDE_DIR OPENAL_LIBRARY OPENGL_FOUND OPENGL_GLU_FOUND
+                                   OPENGL_INCLUDE_DIR OPENGL_LIBRARIES OPENGL_XMESA_FOUND OPENGL_gl_LIBRARY
+                                   OPENGL_glu_LIBRARY OPENMP_FOUND OPENSCENEGRAPH_FOUND OPENSCENEGRAPH_INCLUDE_DIRS
+                                   OPENSCENEGRAPH_LIBRARIES OPENSCENEGRAPH_VERSION OPENSSL_FOUND OPENSSL_INCLUDE_DIR
+                                   OPENSSL_LIBRARIES OPENSSL_ROOT_DIR OPENSSL_VERSION OPENTHREADS_FOUND
+                                   OPENTHREADS_INCLUDE_DIR OPENTHREADS_LIBRARY OpenAL OpenGL OpenMP OpenMP_CXX_FLAGS
+                                   OpenMP_C_FLAGS OpenSSL OpenSceneGraph OpenSceneGraph_DEBUG
+                                   OpenSceneGraph_MARK_AS_ADVANCED OpenThreads PDFLATEX_COMPILER PERLLIBS_FOUND
+                                   PERL_ARCHLIB PERL_EXECUTABLE PERL_EXTRA_C_FLAGS PERL_FOUND PERL_INCLUDE_PATH
+                                   PERL_LIBRARY PERL_PRIVLIB PERL_SITELIB PERL_SITESEARCH PERL_VENDORARCH PERL_VENDORLIB
+                                   PHP4 PHP4_EXECUTABLE PHP4_INCLUDE_PATH PHYSFS_FOUND PHYSFS_INCLUDE_DIR PHYSFS_LIBRARY
+                                   PIKE_EXECUTABLE PIKE_INCLUDE_PATH PNG PNG_DEFINITIONS PNG_FOUND PNG_INCLUDE_DIRS
+                                   PNG_LIBRARIES PRODUCER_FOUND PRODUCER_INCLUDE_DIR PRODUCER_LIBRARY PROTOBUF_FOUND
+                                   PROTOBUF_GENERATE_CPP PROTOBUF_INCLUDE_DIR PROTOBUF_INCLUDE_DIRS PROTOBUF_LIBRARIES
+                                   PROTOBUF_LIBRARY PROTOBUF_LIBRARY_DEBUG PROTOBUF_LITE_LIBRARIES PROTOBUF_LITE_LIBRARY
+                                   PROTOBUF_LITE_LIBRARY_DEBUG PROTOBUF_PROTOC_EXECUTABLE PROTOBUF_PROTOC_LIBRARIES
+                                   PROTOBUF_PROTOC_LIBRARY PROTOBUF_PROTOC_LIBRARY_DEBUG PROTOBUF_SRC_ROOT_FOLDER
+                                   PS2PDF_CONVERTER PYTHONINTERP_FOUND PYTHONLIBS_FOUND PYTHON_DEBUG_LIBRARIES
+                                   PYTHON_EXECUTABLE PYTHON_INCLUDE_DIRS PYTHON_LIBRARIES PYTHON_VERSION_MAJOR
+                                   PYTHON_VERSION_MINOR PYTHON_VERSION_PATCH PYTHON_VERSION_STRING Perl PerlLibs PhysFS
+                                   Pike PostgreSQL PostgreSQL_FOUND PostgreSQL_INCLUDE_DIRS PostgreSQL_LIBRARIES Producer
+                                   Protobuf PythonInterp PythonLibs Python_ADDITIONAL_VERSIONS QT3_INSTALLED
+                                   QT4_ADD_DBUS_ADAPTOR QT4_ADD_DBUS_INTERFACE QT4_ADD_DBUS_INTERFACES QT4_ADD_RESOURCES
+                                   QT4_ADD_TRANSLATION QT4_AUTOMOC QT4_CREATE_TRANSLATION QT4_FOUND
+                                   QT4_GENERATE_DBUS_INTERFACE QT4_GENERATE_MOC QT4_INSTALLED QT4_WRAP_CPP QT4_WRAP_UI
+                                   QT_AND_KDECORE_LIBS QT_BINARY_DIR QT_DEFINITIONS QT_DOC_DIR QT_DONT_USE_QTCORE
+                                   QT_DONT_USE_QTGUI QT_EDITION QT_EDITION_DESKTOPLIGHT QT_FOUND QT_IMPORTS_DIR
+                                   QT_INCLUDES QT_INCLUDE_DIR QT_LIBRARIES QT_LIBRARY_DIR QT_MAC_USE_COCOA QT_MIN_VERSION
+                                   QT_MKSPECS_DIR QT_MT_REQUIRED QT_PHONON_FOUND QT_PHONON_INCLUDE_DIR QT_PHONON_LIBRARY
+                                   QT_PLUGINS_DIR QT_QAXCONTAINER_FOUND QT_QAXCONTAINER_INCLUDE_DIR
+                                   QT_QAXCONTAINER_LIBRARY QT_QAXSERVER_FOUND QT_QAXSERVER_INCLUDE_DIR
+                                   QT_QAXSERVER_LIBRARY QT_QT3SUPPORT_FOUND QT_QT3SUPPORT_INCLUDE_DIR
+                                   QT_QT3SUPPORT_LIBRARY QT_QTASSISTANTCLIENT_FOUND QT_QTASSISTANTCLIENT_INCLUDE_DIR
+                                   QT_QTASSISTANTCLIENT_LIBRARY QT_QTASSISTANT_FOUND QT_QTASSISTANT_INCLUDE_DIR
+                                   QT_QTASSISTANT_LIBRARY QT_QTCORE_FOUND QT_QTCORE_INCLUDE_DIR QT_QTCORE_LIBRARY
+                                   QT_QTDBUS_FOUND QT_QTDBUS_INCLUDE_DIR QT_QTDBUS_LIBRARY QT_QTDECLARATIVE_FOUND
+                                   QT_QTDECLARATIVE_INCLUDE_DIR QT_QTDECLARATIVE_LIBRARY QT_QTDESIGNERCOMPONENTS
+                                   QT_QTDESIGNERCOMPONENTS_INCLUDE_DIR QT_QTDESIGNERCOMPONENTS_LIBRARY
+                                   QT_QTDESIGNER_FOUND QT_QTDESIGNER_INCLUDE_DIR QT_QTDESIGNER_LIBRARY QT_QTGUI_FOUND
+                                   QT_QTGUI_INCLUDE_DIR QT_QTGUI_LIBRARY QT_QTHELP_FOUND QT_QTHELP_INCLUDE_DIR
+                                   QT_QTHELP_LIBRARY QT_QTMAIN_LIBRARY QT_QTMOTIF_FOUND QT_QTMOTIF_INCLUDE_DIR
+                                   QT_QTMOTIF_LIBRARY QT_QTMULTIMEDIA_FOUND QT_QTMULTIMEDIA_INCLUDE_DIR
+                                   QT_QTMULTIMEDIA_LIBRARY QT_QTNETWORK_FOUND QT_QTNETWORK_INCLUDE_DIR
+                                   QT_QTNETWORK_LIBRARY QT_QTNSPLUGIN_FOUND QT_QTNSPLUGIN_INCLUDE_DIR
+                                   QT_QTNSPLUGIN_LIBRARY QT_QTOPENGL_FOUND QT_QTOPENGL_INCLUDE_DIR QT_QTOPENGL_LIBRARY
+                                   QT_QTSCRIPTTOOLS_FOUND QT_QTSCRIPTTOOLS_INCLUDE_DIR QT_QTSCRIPTTOOLS_LIBRARY
+                                   QT_QTSCRIPT_FOUND QT_QTSCRIPT_INCLUDE_DIR QT_QTSCRIPT_LIBRARY QT_QTSQL_FOUND
+                                   QT_QTSQL_INCLUDE_DIR QT_QTSQL_LIBRARY QT_QTSVG_FOUND QT_QTSVG_INCLUDE_DIR
+                                   QT_QTSVG_LIBRARY QT_QTTEST_FOUND QT_QTTEST_INCLUDE_DIR QT_QTTEST_LIBRARY
+                                   QT_QTUITOOLS_FOUND QT_QTUITOOLS_LIBRARY QT_QTWEBKIT_FOUND QT_QTWEBKIT_INCLUDE_DIR
+                                   QT_QTWEBKIT_LIBRARY QT_QTXMLPATTERNS_FOUND QT_QTXMLPATTERNS_INCLUDE_DIR
+                                   QT_QTXMLPATTERNS_LIBRARY QT_QTXML_FOUND QT_QTXML_INCLUDE_DIR QT_QTXML_LIBRARY
+                                   QT_REQUIRED QT_TRANSLATIONS_DIR QT_USE_FILE QT_USE_IMPORTED_TARGETS QT_USE_PHONON
+                                   QT_USE_QAXCONTAINER QT_USE_QAXSERVER QT_USE_QT3SUPPORT QT_USE_QTASSISTANT
+                                   QT_USE_QTASSISTANTCLIENT QT_USE_QTDBUS QT_USE_QTDECLARATIVE QT_USE_QTDESIGNER
+                                   QT_USE_QTHELP QT_USE_QTMAIN QT_USE_QTMOTIF QT_USE_QTMULTIMEDIA QT_USE_QTNETWORK
+                                   QT_USE_QTNSPLUGIN QT_USE_QTOPENGL QT_USE_QTSCRIPT QT_USE_QTSCRIPTTOOLS QT_USE_QTSQL
+                                   QT_USE_QTSVG QT_USE_QTTEST QT_USE_QTUITOOLS QT_USE_QTWEBKIT QT_USE_QTXML
+                                   QT_USE_QTXMLPATTERNS QT_VERSION_MAJOR QT_VERSION_MINOR QT_VERSION_PATCH
+                                   QUICKTIME_FOUND QUICKTIME_INCLUDE_DIR QUICKTIME_LIBRARY Qt Qt3 Qt4 QuickTime RTI
+                                   RTI_DEFINITIONS RTI_FOUND RTI_INCLUDE_DIR RTI_LIBRARIES RUBY_EXECUTABLE RUBY_FOUND
+                                   RUBY_INCLUDE_DIRS RUBY_LIBRARY RUBY_VERSION Ruby SDL SDLIMAGE_FOUND
+                                   SDLIMAGE_INCLUDE_DIR SDLIMAGE_LIBRARY SDLMIXER_FOUND SDLMIXER_INCLUDE_DIR
+                                   SDLMIXER_LIBRARY SDLNET_FOUND SDLNET_INCLUDE_DIR SDLNET_LIBRARY SDLTTF_FOUND
+                                   SDLTTF_INCLUDE_DIR SDLTTF_LIBRARY SDL_FOUND SDL_INCLUDE_DIR SDL_LIBRARY SDL_image
+                                   SDL_mixer SDL_net SDL_sound SDL_ttf SQUISH_ADD_TEST SQUISH_CLIENT_EXECUTABLE
+                                   SQUISH_FOUND SQUISH_INSTALL_DIR SQUISH_INSTALL_DIR_FOUND SQUISH_SERVER_EXECUTABLE
+                                   SQUISH_SERVER_EXECUTABLE_FOUND SUBVERSION_FOUND SWIG SWIG_DIR SWIG_EXECUTABLE
+                                   SWIG_FOUND SWIG_VERSION SelfPackers Squish Subversion Subversion_FOUND
+                                   Subversion_SVN_EXECUTABLE Subversion_VERSION_SVN Subversion_WC_INFO Subversion_WC_LOG
+                                   TCL TCLSH_FOUND TCLTK_FOUND TCL_FOUND TCL_INCLUDE_PATH TCL_LIBRARY TCL_STUB_LIBRARY
+                                   TCL_TCLSH TIFF TIFF_FOUND TIFF_INCLUDE_DIR TIFF_LIBRARIES TK_FOUND TK_INCLUDE_PATH
+                                   TK_LIBRARY TK_STUB_LIBRARY TK_WISH TTK_STUB_LIBRARY TclStub Tclsh Threads USE_VTK_FILE
+                                   UnixCommands VTK VTK_BUILD_VERSION VTK_DIR VTK_FOUND VTK_INCLUDE_DIRS VTK_KITS
+                                   VTK_LANGUAGES VTK_LIBRARY_DIRS VTK_MAJOR_VERSION VTK_MINOR_VERSION VTK_USE_FILE
+                                   WGET_EXECUTABLE WGET_FOUND WXWINDOWS_DEFINITIONS WXWINDOWS_FOUND WXWINDOWS_INCLUDE_DIR
+                                   WXWINDOWS_INCLUDE_PATH WXWINDOWS_LIBRARIES WXWINDOWS_LIBRARY
+                                   WXWINDOWS_LINK_DIRECTORIES WXWINDOWS_USE_GL Wget Wish X11 X11_FOUND X11_ICE_FOUND
+                                   X11_ICE_INCLUDE_PATH X11_ICE_LIB X11_INCLUDE_DIR X11_LIBRARIES X11_SM_FOUND
+                                   X11_SM_INCLUDE_PATH X11_SM_LIB X11_X11_INCLUDE_PATH X11_X11_LIB X11_XShm_FOUND
+                                   X11_XShm_INCLUDE_PATH X11_XSync_FOUND X11_XSync_INCLUDE_PATH X11_XTest_FOUND
+                                   X11_XTest_INCLUDE_PATH X11_XTest_LIB X11_Xaccess_FOUND X11_Xaccessrules_INCLUDE_PATH
+                                   X11_Xaccessstr_INCLUDE_PATH X11_Xau_FOUND X11_Xau_INCLUDE_PATH X11_Xau_LIB
+                                   X11_Xcomposite_FOUND X11_Xcomposite_INCLUDE_PATH X11_Xcomposite_LIB X11_Xcursor_FOUND
+                                   X11_Xcursor_INCLUDE_PATH X11_Xcursor_LIB X11_Xdamage_FOUND X11_Xdamage_INCLUDE_PATH
+                                   X11_Xdamage_LIB X11_Xdmcp_FOUND X11_Xdmcp_INCLUDE_PATH X11_Xdmcp_LIB X11_Xext_FOUND
+                                   X11_Xext_LIB X11_Xfixes_FOUND X11_Xfixes_INCLUDE_PATH X11_Xfixes_LIB X11_Xft_FOUND
+                                   X11_Xft_INCLUDE_PATH X11_Xft_LIB X11_Xi_FOUND X11_Xi_INCLUDE_PATH X11_Xi_LIB
+                                   X11_Xinerama_FOUND X11_Xinerama_INCLUDE_PATH X11_Xinerama_LIB X11_Xinput_FOUND
+                                   X11_Xinput_INCLUDE_PATH X11_Xinput_LIB X11_Xkb_FOUND X11_Xkb_INCLUDE_PATH
+                                   X11_Xkbfile_FOUND X11_Xkbfile_INCLUDE_PATH X11_Xkbfile_LIB X11_Xkblib_INCLUDE_PATH
+                                   X11_Xpm_FOUND X11_Xpm_INCLUDE_PATH X11_Xpm_LIB X11_Xrandr_FOUND
+                                   X11_Xrandr_INCLUDE_PATH X11_Xrandr_LIB X11_Xrender_FOUND X11_Xrender_INCLUDE_PATH
+                                   X11_Xrender_LIB X11_Xscreensaver_FOUND X11_Xscreensaver_INCLUDE_PATH
+                                   X11_Xscreensaver_LIB X11_Xshape_FOUND X11_Xshape_INCLUDE_PATH X11_Xt_FOUND
+                                   X11_Xt_INCLUDE_PATH X11_Xt_LIB X11_Xutil_FOUND X11_Xutil_INCLUDE_PATH X11_Xv_FOUND
+                                   X11_Xv_INCLUDE_PATH X11_Xv_LIB X11_Xxf86misc_LIB X11_dpms_FOUND X11_dpms_INCLUDE_PATH
+                                   X11_xf86misc_FOUND X11_xf86misc_INCLUDE_PATH X11_xf86vmode_FOUND
+                                   X11_xf86vmode_INCLUDE_PATH XMLRPC XMLRPC_FOUND XMLRPC_INCLUDE_DIRS XMLRPC_LIBRARIES
+                                   ZLIB ZLIB_FOUND ZLIB_INCLUDE_DIRS ZLIB_LIBRARIES ZLIB_MAJOR_VERSION ZLIB_MINOR_VERSION
+                                   ZLIB_PATCH_VERSION ZLIB_ROOT ZLIB_VERSION_MAJOR ZLIB_VERSION_MINOR ZLIB_VERSION_PATCH
+                                   ZLIB_VERSION_STRING ZLIB_VERSION_TWEAK abyss-server adv animate aui base c++
+                                   cgi-server compare composite conjure convert core display gl glade glademm gtk gtkmm
+                                   html identify import libwww-client media mogrify montage net propgrid qa ribbon
+                                   richtext stc stream webview wxWidgets wxWidgets_CONFIGURATION wxWidgets_CXX_FLAGS
+                                   wxWidgets_DEFINITIONS wxWidgets_DEFINITIONS_DEBUG wxWidgets_EXCLUDE_COMMON_LIBRARIES
+                                   wxWidgets_FOUND wxWidgets_INCLUDE_DIRS wxWidgets_LIBRARIES wxWidgets_LIBRARY_DIRS
+                                   wxWidgets_LIB_DIR wxWidgets_ROOT_DIR wxWidgets_USE_DEBUG wxWidgets_USE_FILE
+                                   wxWidgets_USE_STATIC wxWidgets_USE_UNICODE wxWidgets_USE_UNIVERSAL wxWindows xml xrc
+
+                                   ADD_REMOVE ALL ALWAYS ARCHIVE_FILE AUTHOR BASE_NAME BINARY_DIR BOLD_TITLE
+                                   BUILD_COMMAND BUILD_IN_SOURCE BUILD_TESTING CLASSPATH CLASS_DIR CMAKE_ANSI_CXXFLAGS
+                                   CMAKE_ARGS CMAKE_CACHE_ARGS CMAKE_CXX_COMPILER CMAKE_C_COMPILER CMAKE_Fortran_COMPILER
+                                   CMAKE_HAS_ANSI_STRING_STREAM CMAKE_INSTALL_BINDIR CMAKE_INSTALL_DATADIR
+                                   CMAKE_INSTALL_DATAROOTDIR CMAKE_INSTALL_DEBUG_LIBRARIES
+                                   CMAKE_INSTALL_DEBUG_LIBRARIES_ONLY CMAKE_INSTALL_DOCDIR CMAKE_INSTALL_FULL_BINDIR
+                                   CMAKE_INSTALL_FULL_DATADIR CMAKE_INSTALL_FULL_DATAROOTDIR CMAKE_INSTALL_FULL_DOCDIR
+                                   CMAKE_INSTALL_FULL_INCLUDEDIR CMAKE_INSTALL_FULL_INFODIR CMAKE_INSTALL_FULL_LIBDIR
+                                   CMAKE_INSTALL_FULL_LIBEXECDIR CMAKE_INSTALL_FULL_LOCALEDIR
+                                   CMAKE_INSTALL_FULL_LOCALSTATEDIR CMAKE_INSTALL_FULL_MANDIR
+                                   CMAKE_INSTALL_FULL_OLDINCLUDEDIR CMAKE_INSTALL_FULL_SBINDIR
+                                   CMAKE_INSTALL_FULL_SHAREDSTATEDIR CMAKE_INSTALL_FULL_SYSCONFDIR
+                                   CMAKE_INSTALL_INCLUDEDIR CMAKE_INSTALL_INFODIR CMAKE_INSTALL_LIBDIR
+                                   CMAKE_INSTALL_LIBEXECDIR CMAKE_INSTALL_LOCALEDIR CMAKE_INSTALL_LOCALSTATEDIR
+                                   CMAKE_INSTALL_MANDIR CMAKE_INSTALL_MFC_LIBRARIES CMAKE_INSTALL_OLDINCLUDEDIR
+                                   CMAKE_INSTALL_SBINDIR CMAKE_INSTALL_SHAREDSTATEDIR CMAKE_INSTALL_SYSCONFDIR
+                                   CMAKE_INSTALL_SYSTEM_RUNTIME_DESTINATION CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS
+                                   CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_SKIP
+                                   CMAKE_JAR_CLASSES_PREFIX CMAKE_JAVA_COMPILE_FLAGS CMAKE_JAVA_INCLUDE_PATH
+                                   CMAKE_JAVA_TARGET_OUTPUT_NAME CMAKE_JAVA_TARGET_VERSION CMAKE_JNI_TARGET
+                                   CMAKE_NO_ANSI_FOR_SCOPE CMAKE_NO_ANSI_STREAM_HEADERS CMAKE_NO_ANSI_STRING_STREAM
+                                   CMAKE_NO_STD_NAMESPACE CMAKE_REQUIRED_DEFINITIONS CMAKE_REQUIRED_FLAGS
+                                   CMAKE_REQUIRED_INCLUDES CMAKE_REQUIRED_LIBRARIES CMAKE_SWIG_FLAGS CMAKE_SWIG_OUTDIR
+                                   CMakeDetermineVSServicePack COMPATIBILITY CONFIGURE_COMMAND
+                                   CPACK_BUNDLE_ICON CPACK_BUNDLE_NAME CPACK_BUNDLE_PLIST CPACK_BUNDLE_STARTUP_SCRIPT
+                                   CPACK_CMAKE_GENERATOR CPACK_COMMAND_HDIUTIL CPACK_COMMAND_REZ CPACK_COMMAND_SETFILE
+                                   CPACK_DEBIAN_PACKAGE_ARCHITECTURE CPACK_DEBIAN_PACKAGE_BREAKS
+                                   CPACK_DEBIAN_PACKAGE_CONFLICTS CPACK_DEBIAN_PACKAGE_DEBUG CPACK_DEBIAN_PACKAGE_DEPENDS
+                                   CPACK_DEBIAN_PACKAGE_DESCRIPTION CPACK_DEBIAN_PACKAGE_ENHANCES
+                                   CPACK_DEBIAN_PACKAGE_HOMEPAGE CPACK_DEBIAN_PACKAGE_MAINTAINER
+                                   CPACK_DEBIAN_PACKAGE_NAME CPACK_DEBIAN_PACKAGE_PREDEPENDS
+                                   CPACK_DEBIAN_PACKAGE_PRIORITY CPACK_DEBIAN_PACKAGE_PROVIDES
+                                   CPACK_DEBIAN_PACKAGE_REPLACES CPACK_DEBIAN_PACKAGE_SECTION
+                                   CPACK_DEBIAN_PACKAGE_SHLIBDEPS CPACK_DEBIAN_PACKAGE_VERSION CPACK_DMG_BACKGROUND_IMAGE
+                                   CPACK_DMG_DS_STORE CPACK_DMG_FORMAT CPACK_DMG_VOLUME_NAME CPACK_GENERATOR
+                                   CPACK_INSTALLED_DIRECTORIES CPACK_INSTALL_CMAKE_PROJECTS CPACK_INSTALL_COMMANDS
+                                   CPACK_MONOLITHIC_INSTALL CPACK_NSIS_COMPRESSOR CPACK_NSIS_CONTACT
+                                   CPACK_NSIS_CREATE_ICONS_EXTRA CPACK_NSIS_DELETE_ICONS_EXTRA CPACK_NSIS_DISPLAY_NAME
+                                   CPACK_NSIS_EXECUTABLES_DIRECTORY CPACK_NSIS_EXTRA_INSTALL_COMMANDS
+                                   CPACK_NSIS_EXTRA_UNINSTALL_COMMANDS CPACK_NSIS_HELP_LINK
+                                   CPACK_NSIS_INSTALLED_ICON_NAME CPACK_NSIS_INSTALL_ROOT CPACK_NSIS_MODIFY_PATH
+                                   CPACK_NSIS_MUI_FINISHPAGE_RUN CPACK_NSIS_MUI_ICON CPACK_NSIS_MUI_UNIICON
+                                   CPACK_NSIS_PACKAGE_NAME CPACK_NSIS_URL_INFO_ABOUT CPACK_OSX_PACKAGE_VERSION
+                                   CPACK_OUTPUT_CONFIG_FILE CPACK_PACKAGE_DESCRIPTION_FILE
+                                   CPACK_PACKAGE_DESCRIPTION_SUMMARY CPACK_PACKAGE_EXECUTABLES CPACK_PACKAGE_FILE_NAME
+                                   CPACK_PACKAGE_ICON CPACK_PACKAGE_INSTALL_DIRECTORY CPACK_PACKAGE_INSTALL_REGISTRY_KEY
+                                   CPACK_PACKAGE_NAME CPACK_PACKAGE_VENDOR CPACK_PACKAGE_VERSION_MAJOR
+                                   CPACK_PACKAGE_VERSION_MINOR CPACK_PACKAGE_VERSION_PATCH CPACK_PROJECT_CONFIG_FILE
+                                   CPACK_RESOURCE_FILE_LICENSE CPACK_RESOURCE_FILE_README CPACK_RESOURCE_FILE_WELCOME
+                                   CPACK_RPM_CHANGELOG_FILE CPACK_RPM_COMPRESSION_TYPE
+                                   CPACK_RPM_GENERATE_USER_BINARY_SPECFILE_TEMPLATE CPACK_RPM_PACKAGE_ARCHITECTURE
+                                   CPACK_RPM_PACKAGE_DEBUG CPACK_RPM_PACKAGE_DESCRIPTION CPACK_RPM_PACKAGE_GROUP
+                                   CPACK_RPM_PACKAGE_LICENSE CPACK_RPM_PACKAGE_NAME CPACK_RPM_PACKAGE_OBSOLETES
+                                   CPACK_RPM_PACKAGE_PROVIDES CPACK_RPM_PACKAGE_RELEASE CPACK_RPM_PACKAGE_RELOCATABLE
+                                   CPACK_RPM_PACKAGE_REQUIRES CPACK_RPM_PACKAGE_SUGGESTS CPACK_RPM_PACKAGE_SUMMARY
+                                   CPACK_RPM_PACKAGE_URL CPACK_RPM_PACKAGE_VENDOR CPACK_RPM_PACKAGE_VERSION
+                                   CPACK_RPM_POST_INSTALL_SCRIPT_FILE CPACK_RPM_POST_UNINSTALL_SCRIPT_FILE
+                                   CPACK_RPM_PRE_INSTALL_SCRIPT_FILE CPACK_RPM_PRE_UNINSTALL_SCRIPT_FILE
+                                   CPACK_RPM_SPEC_INSTALL_POST CPACK_RPM_SPEC_MORE_DEFINE CPACK_RPM_USER_BINARY_SPECFILE
+                                   CPACK_RPM_USER_FILELIST CPACK_SOURCE_GENERATOR CPACK_SOURCE_IGNORE_FILES
+                                   CPACK_SOURCE_OUTPUT_CONFIG_FILE CPACK_SOURCE_PACKAGE_FILE_NAME
+                                   CPACK_SOURCE_STRIP_FILES CPACK_STRIP_FILES CPACK_SYSTEM_NAME CPACK_TOPLEVEL_TAG
+                                   CTEST_DROP_LOCATION CTEST_DROP_METHOD CTEST_DROP_SITE CTEST_DROP_SITE_CDASH
+                                   CTEST_NIGHTLY_START_TIME CTEST_PROJECT_NAME CTEST_USE_LAUNCHERS CTest CVS_MODULE
+                                   CVS_REPOSITORY CVS_TAG CheckIncludeFileCXX DEFINE_NO_DEPRECATED DEPENDEES DEPENDERS
+                                   DEPRECATED_MACRO_NAME DESCRIPTION DISABLED DISPLAY_NAME DOCTITLE DOWNLOADED
+                                   DOWNLOAD_COMMAND DOWNLOAD_DIR ECOSCONFIG_EXECUTABLE ECOS_CONFIG_FILE ECOS_DEFINITIONS
+                                   ENABLED_FEATURES EXPANDED EXPORT_FILE_NAME EXPORT_MACRO_NAME FAIL_REGEX
+                                   FATAL_ON_MISSING_REQUIRED_PACKAGES FATAL_WARNINGS FortranCInterface
+                                   FortranCInterface_GLOBAL_FOUND FortranCInterface_GLOBAL_SYMBOLS
+                                   FortranCInterface_MODULE_FOUND FortranCInterface_MODULE_SYMBOLS GIT_REPOSITORY GIT_TAG
+                                   GNUInstallDirs GROUP HIDDEN INCLUDE_QUIET_PACKAGES INSTALLPATH INSTALL_COMMAND
+                                   INSTALL_DIR INSTALL_FILES INSTALL_TYPES JAR_FILE JNI_SYMLINK LIST_SEPARATOR LOG_BUILD
+                                   LOG_CONFIGURE LOG_DOWNLOAD LOG_INSTALL LOG_TEST LOG_UPDATE MACRO_NAMESPACE
+                                   NO_ADD_REMOVE NO_DEPRECATED_MACRO_NAME NO_EXPORT_MACRO_NAME OPTIONAL_PACKAGES_FOUND
+                                   OPTIONAL_PACKAGES_NOT_FOUND PARENT_GROUP PATCH_COMMAND PREFIX_NAME PURPOSE RECOMMENDED
+                                   RECOMMENDED_PACKAGES_FOUND RECOMMENDED_PACKAGES_NOT_FOUND REQUIRED_PACKAGES_FOUND
+                                   REQUIRED_PACKAGES_NOT_FOUND RUNTIME RUNTIME_PACKAGES_FOUND RUNTIME_PACKAGES_NOT_FOUND
+                                   SOURCEPATH SOURCE_DIR STAMP_DIR STATIC_DEFINE STEP_TARGETS SVN_PASSWORD SVN_REPOSITORY
+                                   SVN_REVISION SVN_TRUST_CERT SVN_USERNAME SWIG_FLAGS SYMBOLS SYMBOL_NAMESPACE
+                                   TEST_AFTER_INSTALL TEST_BEFORE_INSTALL TEST_COMMAND TMP_DIR TestForANSIForScope
+                                   TestForANSIStreamHeaders TestForSTDNamespace UPDATE_COMMAND UPLOAD_DIRECTORY URL
+                                   URL_MD5 VAR WHAT WINDOWTITLE WORKING_DIRECTORY deprecated bzip2 gzip lzma vc100
+                                   vc100sp1 vc80 vc80sp1 vc90 vc90sp1 xz
+
+                                   APPLE CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS CMAKE_COMPILER_IS_GNUCC
+                                   CMAKE_COMPILER_IS_GNUCXX CMAKE_CXX_COMPILE_OBJECT CMAKE_CXX_CREATE_SHARED_LIBRARY
+                                   CMAKE_CXX_CREATE_SHARED_MODULE CMAKE_CXX_CREATE_STATIC_LIBRARY CMAKE_CXX_FLAGS
+                                   CMAKE_CXX_FLAGS_DEBUG CMAKE_CXX_FLAGS_MINSIZEREL CMAKE_CXX_FLAGS_RELEASE
+                                   CMAKE_CXX_FLAGS_RELWITHDEBINFO CMAKE_CXX_IGNORE_EXTENSIONS CMAKE_CXX_LINK_EXECUTABLE
+                                   CMAKE_CXX_OUTPUT_EXTENSION CMAKE_CXX_SOURCE_FILE_EXTENSIONS
+                                   CMAKE_CXX_STANDARD_LIBRARIES CMAKE_C_COMPILE_OBJECT CMAKE_C_CREATE_SHARED_LIBRARY
+                                   CMAKE_C_CREATE_SHARED_MODULE CMAKE_C_CREATE_STATIC_LIBRARY CMAKE_C_FLAGS
+                                   CMAKE_C_FLAGS_DEBUG CMAKE_C_FLAGS_MINSIZEREL CMAKE_C_FLAGS_RELEASE
+                                   CMAKE_C_FLAGS_RELWITHDEBINFO CMAKE_C_IGNORE_EXTENSIONS CMAKE_C_LINK_EXECUTABLE
+                                   CMAKE_C_OUTPUT_EXTENSION CMAKE_C_SOURCE_FILE_EXTENSIONS CMAKE_C_STANDARD_LIBRARIES
+                                   CMAKE_EXE_LINKER_FLAGS_DEBUG CMAKE_EXE_LINKER_FLAGS_MINSIZEREL
+                                   CMAKE_EXE_LINKER_FLAGS_RELEASE CMAKE_EXE_LINKER_FLAGS_RELWITHDEBINFO
+                                   CMAKE_FILES_DIRECTORY CMAKE_INCLUDE_DIRECTORIES_PROJECT_BEFORE CMAKE_INSTALL_ALWAYS
+                                   CMAKE_LINKER CMAKE_MODULE_LINKER_FLAGS CMAKE_MODULE_LINKER_FLAGS_DEBUG
+                                   CMAKE_MODULE_LINKER_FLAGS_MINSIZEREL CMAKE_MODULE_LINKER_FLAGS_RELEASE
+                                   CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO CMAKE_NM CMAKE_OBJCOPY CMAKE_OBJDUMP
+                                   CMAKE_RC_COMPILER CMAKE_RC_FLAGS CMAKE_RELEASE_POSTFIX CMAKE_SH
+                                   CMAKE_SHARED_LINKER_FLAGS CMAKE_SHARED_LINKER_FLAGS_DEBUG
+                                   CMAKE_SHARED_LINKER_FLAGS_MINSIZEREL CMAKE_SHARED_LINKER_FLAGS_RELEASE
+                                   CMAKE_SHARED_LINKER_FLAGS_RELWITHDEBINFO CMAKE_SKIP_ASSEMBLY_SOURCE_RULES
+                                   CMAKE_SKIP_PREPROCESSED_SOURCE_RULES CMAKE_SKIP_RULE_DEPENDENCY CMAKE_STRIP
+                                   CMAKE_SUPPRESS_REGENERATION DESTDIR MSVC10 MSVC90"/>
+                </Keywords>
+                <SampleCode value="lexer_cmake.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    CaseSensitive="0"
+                    LexerCommentStyles="1"
+                    LexerStringStyles="2,3,4"
+                    LexerCharacterStyles=""
+                    LexerPreprocessorStyles="" />
+        </Lexer>
+</CodeBlocks_lexer_properties>

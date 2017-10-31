@@ -1,0 +1,3493 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../sdk/annoyingdialog.cpp:72 ../sdk/annoyingdialog.cpp:80
+#: ../sdk/configurationpanel.cpp:38
+msgid "&OK"
+msgstr ""
+
+#: ../sdk/annoyingdialog.cpp:80 ../sdk/annoyingdialog.cpp:90
+msgid "&Yes"
+msgstr ""
+
+#: ../sdk/annoyingdialog.cpp:81 ../sdk/annoyingdialog.cpp:91
+msgid "&No"
+msgstr ""
+
+#: ../sdk/annoyingdialog.cpp:81 ../sdk/annoyingdialog.cpp:92
+#: ../sdk/configurationpanel.cpp:40
+msgid "&Cancel"
+msgstr ""
+
+#: ../sdk/annoyingdialog.cpp:126
+msgid "Don't annoy me again!"
+msgstr ""
+
+#: ../sdk/autodetectcompilers.cpp:40
+msgid "Compiler"
+msgstr ""
+
+#: ../sdk/autodetectcompilers.cpp:41
+msgid "Status"
+msgstr ""
+
+#: ../sdk/autodetectcompilers.cpp:50 ../sdk/autodetectcompilers.cpp:59
+msgid "User-defined"
+msgstr ""
+
+#: ../sdk/autodetectcompilers.cpp:56
+msgid "Detected"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:430
+#, possible-c-format
+msgid "%sUntitled%d"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:432
+#, possible-c-format
+msgid "Untitled%d"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1005
+msgid ""
+"Do you want to reload the file with the new encoding (you will lose any "
+"unsaved work)?"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1006 ../sdk/editormanager.cpp:961
+msgid "Reload file?"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1196 ../sdk/cbproject.cpp:410
+#: ../sdk/editormanager.cpp:733 ../sdk/wxscintilla/samples/test/test.cpp:360
+msgid "Save file"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1232
+msgid "Not implemented..."
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1275
+msgid "Please enter the text for \""
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1275
+msgid "Macro substitution"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1722
+msgid "Empty"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1728
+msgid "Undo"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1729
+msgid "Redo"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1731
+msgid "Cut"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1732
+msgid "Copy"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1733
+msgid "Paste"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1734
+msgid "Delete"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1736
+msgid "Select All"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1755
+msgid "Toggle bookmark"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1756
+msgid "Previous bookmark"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1757
+msgid "Next bookmark"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1762
+msgid "Fold all"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1763
+msgid "Unfold all"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1764
+msgid "Toggle all folds"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1766
+msgid "Fold current block"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1767
+msgid "Unfold current block"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1768
+msgid "Toggle current block"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1792
+msgid "Insert..."
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1795 ../sdk/editormanager.cpp:2182
+msgid "Swap header/source"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1800
+msgid "Edit"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1802
+msgid "Bookmarks"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1804
+msgid "Folding"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1809 ../sdk/editormanager.cpp:2191
+msgid "Horizontally"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1810 ../sdk/editormanager.cpp:2192
+msgid "Vertically"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1812 ../sdk/editormanager.cpp:2194
+msgid "Unsplit"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1819 ../sdk/editormanager.cpp:2200
+msgid "Split view..."
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1822
+msgid "Configure editor"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1823 ../sdk/projectmanager.cpp:342
+#: ../sdk/projectmanager.cpp:377 ../sdk/projectmanager.cpp:553
+#: ../sdk/projectmanager.cpp:560 ../sdk/wxscintilla/samples/test/edit.cpp:602
+msgid "Properties"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1868
+msgid "Edit breakpoint"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1869
+msgid "Remove breakpoint"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1873
+msgid "Add breakpoint"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1880
+msgid "Remove bookmark"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1884
+msgid "Add bookmark"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1953
+msgid ""
+"There was a problem printing.\n"
+"Perhaps your current printer is not set correctly?"
+msgstr ""
+
+#: ../sdk/cbeditor.cpp:1954
+msgid "Printing"
+msgstr ""
+
+#: ../sdk/cbexception.cpp:40 ../src/app.cpp:500 ../src/app.cpp:504
+msgid "Exception"
+msgstr ""
+
+#: ../sdk/cbexception.cpp:42
+#, possible-c-format
+msgid ""
+"An exception has been raised!\n"
+"\n"
+"The application encountered an error at %s, on line %d.\n"
+"The error message is:\n"
+"\n"
+"%s\n"
+"\n"
+"Code::Blocks Version revision %d (%s, build: %s %s)"
+msgstr ""
+
+#: ../sdk/cbproject.cpp:211 ../sdk/editorbase.cpp:77 ../sdk/sdk_events.h:70
+msgid "Untitled"
+msgstr ""
+
+#: ../sdk/cbproject.cpp:269
+#, possible-c-format
+msgid "Project '%s' does not exist..."
+msgstr ""
+
+#: ../sdk/cbproject.cpp:270 ../sdk/cbworkspace.cpp:87
+#: ../sdk/editorconfigurationdlg.cpp:755 ../sdk/editormanager.cpp:987
+#: ../sdk/editormanager.cpp:1095 ../sdk/editormanager.cpp:1182
+#: ../sdk/editormanager.cpp:1541 ../sdk/editormanager.cpp:1980
+#: ../sdk/newfromtemplatedlg.cpp:378 ../sdk/projectdepsdlg.cpp:100
+#: ../sdk/projectmanager.cpp:626 ../sdk/projectmanager.cpp:1293
+#: ../sdk/projectoptionsdlg.cpp:498 ../sdk/projectoptionsdlg.cpp:522
+#: ../sdk/projectoptionsdlg.cpp:551 ../sdk/projectoptionsdlg.cpp:563
+#: ../sdk/projectoptionsdlg.cpp:749 ../sdk/projectoptionsdlg.cpp:757
+#: ../sdk/projectoptionsdlg.cpp:766 ../sdk/projectoptionsdlg.cpp:784
+#: ../sdk/templatemanager.cpp:195 ../sdk/templatemanager.cpp:237
+#: ../sdk/templatemanager.cpp:245 ../sdk/templatemanager.cpp:298
+#: ../sdk/templatemanager.cpp:306 ../sdk/templatemanager.cpp:314
+#: ../sdk/toolsmanager.cpp:100 ../sdk/toolsmanager.cpp:170
+#: ../sdk/toolsmanager.cpp:185 ../sdk/virtualbuildtargetsdlg.cpp:70
+#: ../sdk/virtualbuildtargetsdlg.cpp:103 ../sdk/virtualbuildtargetsdlg.cpp:111
+#: ../sdk/virtualbuildtargetsdlg.cpp:133 ../sdk/virtualbuildtargetsdlg.cpp:141
+#: ../src/main.cpp:1188
+msgid "Error"
+msgstr ""
+
+#: ../sdk/cbproject.cpp:280
+#, possible-c-format
+msgid "Opening %s: "
+msgstr ""
+
+#: ../sdk/cbproject.cpp:290
+#, possible-c-format
+msgid "Importing %s: "
+msgstr ""
+
+#: ../sdk/cbproject.cpp:298
+msgid "failed."
+msgstr ""
+
+#: ../sdk/cbproject.cpp:310
+msgid "Select compiler for "
+msgstr ""
+
+#: ../sdk/cbproject.cpp:335
+msgid "done"
+msgstr ""
+
+#: ../sdk/cbproject.cpp:349
+msgid ""
+"The loaded project file was generated\n"
+"with an older version of Code::Blocks.\n"
+"\n"
+"Code::Blocks can import older project files,\n"
+"but will always save in the current format."
+msgstr ""
+
+#: ../sdk/cbproject.cpp:356
+msgid "failed"
+msgstr ""
+
+#: ../sdk/cbproject.cpp:764
+msgid "Others"
+msgstr ""
+
+#: ../sdk/cbproject.cpp:1148 ../sdk/compiler.cpp:67
+#: ../sdk/projectoptionsdlg.cpp:558
+msgid "Copy of "
+msgstr ""
+
+#: ../sdk/cbproject.cpp:1183
+msgid "Please enter the new project's name (no path, no extension)."
+msgstr ""
+
+#: ../sdk/cbproject.cpp:1184
+msgid "Export target as new project"
+msgstr ""
+
+#: ../sdk/cbworkspace.cpp:45
+msgid "Default workspace"
+msgstr ""
+
+#: ../sdk/cbworkspace.cpp:86
+#, possible-c-format
+msgid "Workspace '%s' does not exist..."
+msgstr ""
+
+#: ../sdk/cbworkspace.cpp:134 ../sdk/projectmanager.cpp:567
+#: ../sdk/projectmanager.cpp:1030
+msgid "Save workspace"
+msgstr ""
+
+#: ../sdk/compiler.cpp:39
+msgid "Compile single file to object file"
+msgstr ""
+
+#: ../sdk/compiler.cpp:40
+msgid "Generate dependencies for file"
+msgstr ""
+
+#: ../sdk/compiler.cpp:41
+msgid "Compile Win32 resource file"
+msgstr ""
+
+#: ../sdk/compiler.cpp:42
+msgid "Link object files to executable"
+msgstr ""
+
+#: ../sdk/compiler.cpp:43
+msgid "Link object files to console executable"
+msgstr ""
+
+#: ../sdk/compiler.cpp:44
+msgid "Link object files to dynamic library"
+msgstr ""
+
+#: ../sdk/compiler.cpp:45
+msgid "Link object files to static library"
+msgstr ""
+
+#: ../sdk/compiler.cpp:281
+msgid ""
+"Compilers now use unique names instead of integer IDs.\n"
+"Projects will be updated accordingly on load, mostly automatic."
+msgstr ""
+
+#: ../sdk/compiler.cpp:283 ../sdk/editorcolourset.cpp:627
+#: ../sdk/newfromtemplatedlg.cpp:436 ../sdk/projectoptionsdlg.cpp:637
+#: ../sdk/projectoptionsdlg.cpp:802 ../sdk/templatemanager.cpp:312
+#: ../src/main.cpp:2623 ../src/main.cpp:3074
+msgid "Information"
+msgstr ""
+
+#: ../sdk/compiler.h:58 ../sdk/editorcolourset.cpp:400
+#: ../sdk/editorcolourset.cpp:404
+msgid "Unknown"
+msgstr ""
+
+#: ../sdk/compilerfactory.cpp:286
+msgid "Compiler selection"
+msgstr ""
+
+#: ../sdk/compilerfactory.h:62
+msgid "Select compiler"
+msgstr ""
+
+#: ../sdk/compileroptions.h:35
+msgid "General"
+msgstr ""
+
+#: ../sdk/configmanager.cpp:139
+msgid ""
+"ConfigManager encountered an unknown config file version. Continuing happily."
+msgstr ""
+
+#: ../sdk/configmanager.cpp:139 ../sdk/configmanager.cpp:250
+#: ../sdk/pluginmanager.cpp:111 ../sdk/pluginmanager.cpp:271
+#: ../sdk/pluginmanager.cpp:313 ../sdk/projectloader.cpp:1200
+#: ../src/main.cpp:2083
+msgid "Warning"
+msgstr ""
+
+#: ../sdk/configmanager.cpp:297
+msgid ""
+"Fatal error parsing supplied configuration file.\n"
+"Parser error message:\n"
+msgstr ""
+
+#: ../sdk/configuretoolsdlg.cpp:125
+msgid "Are you sure you want to remove this tool?"
+msgstr ""
+
+#: ../sdk/configuretoolsdlg.cpp:126
+msgid "Remove tool?"
+msgstr ""
+
+#: ../sdk/confirmreplacedlg.h:24
+msgid "Replace this occurrence?"
+msgstr ""
+
+#: ../sdk/editarrayfiledlg.cpp:83 ../sdk/editarrayfiledlg.cpp:103
+#: ../sdk/editpairdlg.cpp:61
+msgid "Select file"
+msgstr ""
+
+#: ../sdk/editarrayfiledlg.cpp:121 ../sdk/editarraystringdlg.cpp:89
+msgid "Delete this item?"
+msgstr ""
+
+#: ../sdk/editarrayfiledlg.cpp:121 ../sdk/editarraystringdlg.cpp:89
+msgid "Confirm"
+msgstr ""
+
+#: ../sdk/editarraystringdlg.cpp:72
+msgid "Add item"
+msgstr ""
+
+#: ../sdk/editarraystringdlg.cpp:72
+msgid "Enter the new item:"
+msgstr ""
+
+#: ../sdk/editarraystringdlg.cpp:82
+msgid "Edit item"
+msgstr ""
+
+#: ../sdk/editarraystringdlg.cpp:82
+msgid "Edit the item:"
+msgstr ""
+
+#: ../sdk/editorbase.cpp:187 ../sdk/editormanager.cpp:2172
+#: ../sdk/wxscintilla/samples/test/test.cpp:379
+msgid "Close"
+msgstr ""
+
+#: ../sdk/editorbase.cpp:188 ../sdk/editormanager.cpp:2175
+msgid "Close all"
+msgstr ""
+
+#: ../sdk/editorbase.cpp:189 ../sdk/editormanager.cpp:2176
+msgid "Close all others"
+msgstr ""
+
+#: ../sdk/editorbase.cpp:191 ../sdk/editorconfigurationdlg.cpp:515
+#: ../sdk/editormanager.cpp:2179
+msgid "Save"
+msgstr ""
+
+#: ../sdk/editorbase.cpp:192 ../sdk/editormanager.cpp:2180
+msgid "Save all"
+msgstr ""
+
+#: ../sdk/editorbase.cpp:205 ../sdk/editorbase.cpp:240
+msgid "Switch to..."
+msgstr ""
+
+#: ../sdk/editorbase.cpp:232
+msgid "Search Google for \""
+msgstr ""
+
+#: ../sdk/editorbase.cpp:232 ../sdk/editorbase.cpp:233
+#: ../sdk/projectfileoptionsdlg.cpp:232
+msgid "\""
+msgstr ""
+
+#: ../sdk/editorbase.cpp:233
+msgid "Search MSDN for \""
+msgstr ""
+
+#: ../sdk/editorcolourset.cpp:118 ../sdk/editorcolourset.cpp:134
+#, possible-c-format
+msgid "Scanning for lexers in %s..."
+msgstr ""
+
+#: ../sdk/editorcolourset.cpp:126 ../sdk/editorcolourset.cpp:142
+#, possible-c-format
+msgid "Found %d lexers"
+msgstr ""
+
+#: ../sdk/editorcolourset.cpp:445
+msgid "Default"
+msgstr ""
+
+#: ../sdk/editorcolourset.cpp:624
+msgid ""
+"The way editor syntax highlighting configuration is saved, has changed.\n"
+"Syntax highlighting for all supported languages will revert to defaults "
+"now.\n"
+"We 're sorry for the inconvenience..."
+msgstr ""
+
+#: ../sdk/editorcolourset.cpp:758
+#, possible-c-format
+msgid "%s files"
+msgstr ""
+
+#: ../sdk/editorcolourset.h:94
+msgid ","
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:112
+msgid "This is sample text"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:401 ../sdk/editorconfigurationdlg.cpp:413
+msgid "\"Default\""
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:514
+#, possible-c-format
+msgid ""
+"The colour theme \"%s\" is modified.\n"
+"Do you want to save the changes?"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:595
+msgid "Please enter the name of the new colour theme:"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:595 ../sdk/editorconfigurationdlg.cpp:623
+msgid "New theme name"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:609
+msgid "Are you sure you want to delete this theme?"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:609 ../sdk/editorconfigurationdlg.cpp:671
+#: ../sdk/editorconfigurationdlg.cpp:774 ../sdk/editormanager.cpp:1583
+#: ../sdk/projectmanager.cpp:726 ../sdk/projectmanager.cpp:1797
+#: ../sdk/projectmanager.cpp:1843 ../sdk/projectoptionsdlg.cpp:585
+#: ../sdk/projectsfilemasksdlg.cpp:125 ../sdk/virtualbuildtargetsdlg.cpp:153
+#: ../src/main.cpp:2590 ../src/main.cpp:2600
+msgid "Confirmation"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:623
+msgid "Please enter the new name of the new colour theme:"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:656
+msgid "Edit filemasks (use commas to separate them - case insensitive):"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:669
+#, possible-c-format
+msgid "Are you sure you want to reset all settings to defaults for \"%s\"?"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:749
+msgid "Please enter the new keyword"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:749
+msgid "Add keyword"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:755
+msgid "This keyword already exists!"
+msgstr ""
+
+#: ../sdk/editorconfigurationdlg.cpp:774
+msgid "Are you sure you want to delete this keyword?"
+msgstr ""
+
+#: ../sdk/editorlexerloader.cpp:40
+msgid "Loading "
+msgstr ""
+
+#: ../sdk/editorlexerloader.cpp:47
+msgid ""
+"--> failed.\n"
+"\n"
+msgstr ""
+
+#: ../sdk/editorlexerloader.cpp:48
+msgid "TinyXML error: "
+msgstr ""
+
+#: ../sdk/editorlexerloader.cpp:62
+msgid "Not a valid Code::Blocks lexer file...\n"
+msgstr ""
+
+#: ../sdk/editorlexerloader.cpp:69
+msgid "No 'Lexer' element in file...\n"
+msgstr ""
+
+#: ../sdk/editorlexerloader.cpp:80
+msgid "No name or index...\n"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:288
+msgid "File"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:289
+msgid "Line"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:290
+msgid "Text"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:293
+msgid "Search results"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:681 ../src/startherepage.cpp:30
+msgid "Start here"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:732
+#, possible-c-format
+msgid ""
+"File %s is modified...\n"
+"Do you want to save the changes?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:852 ../src/main.cpp:1975 ../src/main.cpp:1986
+#, possible-c-format
+msgid "File %s could not be saved..."
+msgstr ""
+
+#: ../sdk/editormanager.cpp:853 ../src/main.cpp:1976 ../src/main.cpp:1987
+msgid "Error saving file"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:910
+#, possible-c-format
+msgid ""
+"%s has been deleted, or is no longer available.\n"
+"Do you wish to keep the file open?\n"
+"Yes to keep the file, No to close it."
+msgstr ""
+
+#: ../sdk/editormanager.cpp:913
+msgid "File changed!"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:958
+#, possible-c-format
+msgid ""
+"File %s is modified outside the IDE...\n"
+"Do you want to reload it (you will lose any unsaved work)?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:986
+#, possible-c-format
+msgid ""
+"Could not reload all files:\n"
+"\n"
+"%s"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1094
+msgid "The file does not exist. Do you want to create it?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1110 ../src/main.cpp:1816
+msgid "Do you want to add this new file in the active project?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1111 ../src/main.cpp:1817
+msgid "Add file to project"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1182
+msgid "Can't look for an empty search criterion!"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1364 ../sdk/editormanager.cpp:1813
+msgid ""
+"Text not found.\n"
+"Search from the start of the document?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1366 ../sdk/editormanager.cpp:1815
+msgid ""
+"Text not found.\n"
+"Search from the end of the document?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1371 ../sdk/editormanager.cpp:1828
+#: ../sdk/editormanager.cpp:1865 ../sdk/editormanager.cpp:1873
+#: ../sdk/editormanager.cpp:2075
+msgid "Result"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1541 ../sdk/editormanager.cpp:1980
+msgid "No files to search in!"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1583
+msgid "Are you sure you want to stop replacing in files?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1694
+msgid "Replace in files"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1695
+msgid "Please wait while replacing in files..."
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1820
+msgid ""
+"Text not found.\n"
+"Search from the start of the selection?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1822
+msgid ""
+"Text not found.\n"
+"Search from the end of the selection?"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1864 ../sdk/editormanager.cpp:1872
+#: ../sdk/editormanager.cpp:2074
+#, possible-c-format
+msgid "Not found: %s"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1990
+msgid "Find in files"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:1991
+msgid "Please wait while searching inside the files..."
+msgstr ""
+
+#: ../sdk/editormanager.cpp:2079
+#, possible-c-format
+msgid "not found in %d files"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:2184 ../sdk/messagemanager.cpp:636
+#: ../sdk/projectmanager.cpp:211
+msgid "Tabs at top"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:2185 ../sdk/messagemanager.cpp:637
+#: ../sdk/projectmanager.cpp:212
+msgid "Tabs at bottom"
+msgstr ""
+
+#: ../sdk/editormanager.cpp:2508
+msgid "Open files list"
+msgstr ""
+
+#: ../sdk/editpairdlg.cpp:74 ../sdk/globals.h:131
+#: ../sdk/projectoptionsdlg.cpp:655
+msgid "Select directory"
+msgstr ""
+
+#: ../sdk/editpairdlg.h:17
+msgid "Edit pair"
+msgstr ""
+
+#: ../sdk/editpathdlg.cpp:55
+msgid "File:"
+msgstr ""
+
+#: ../sdk/editpathdlg.cpp:137 ../sdk/globals.cpp:360
+msgid "Keep this as a relative path?"
+msgstr ""
+
+#: ../sdk/editpathdlg.cpp:138 ../sdk/globals.cpp:361
+#: ../sdk/msvc7workspaceloader.cpp:54 ../sdk/msvc7workspaceloader.cpp:63
+#: ../sdk/msvcworkspaceloader.cpp:53 ../sdk/msvcworkspaceloader.cpp:62
+#: ../sdk/multiselectdlg.cpp:157 ../sdk/projectloader.cpp:226
+#: ../src/main.cpp:1462
+msgid "Question"
+msgstr ""
+
+#: ../sdk/editpathdlg.h:13
+msgid "Edit Path"
+msgstr ""
+
+#: ../sdk/editpathdlg.h:17
+msgid "All files(*)|*"
+msgstr ""
+
+#: ../sdk/edittooldlg.cpp:84
+msgid "Select executable"
+msgstr ""
+
+#: ../sdk/edittooldlg.cpp:91
+msgid "Select working directory"
+msgstr ""
+
+#: ../sdk/externaldepsdlg.cpp:138
+msgid "Are you sure you want to remove this file?"
+msgstr ""
+
+#: ../sdk/externaldepsdlg.cpp:138
+msgid "Remove file"
+msgstr ""
+
+#: ../sdk/externaldepsdlg.cpp:145
+msgid "Add additional output file"
+msgstr ""
+
+#: ../sdk/externaldepsdlg.cpp:150
+msgid "Edit additional output file"
+msgstr ""
+
+#: ../sdk/externaldepsdlg.cpp:160
+msgid "Add external dependency file"
+msgstr ""
+
+#: ../sdk/externaldepsdlg.cpp:165
+msgid "Edit external dependency file"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:18
+msgid "Code::Blocks workspace files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:19
+msgid "Code::Blocks project files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:20
+msgid "Bloodshed Dev-C++ project files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:21
+msgid "MS Visual C++ 6.0 project files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:22
+msgid "MS Visual Studio 7.0+ project files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:23
+msgid "MS Visual C++ 6.0 workspace files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:24
+msgid "MS Visual Studio 7.0+ solution files"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:86 ../sdk/propgrid/src/propgrid/propgrid.cpp:1900
+msgid "All files (*.*)|*.*"
+msgstr ""
+
+#: ../sdk/filefilters.cpp:88 ../sdk/selecttargetdlg.cpp:120
+msgid "All files (*)|*"
+msgstr ""
+
+#: ../sdk/filegroupsandmasks.cpp:35
+msgid "Sources"
+msgstr ""
+
+#: ../sdk/filegroupsandmasks.cpp:37
+msgid "Headers"
+msgstr ""
+
+#: ../sdk/filegroupsandmasks.cpp:39
+msgid "Resources"
+msgstr ""
+
+#: ../sdk/finddlg.cpp:316
+msgid "Select search path"
+msgstr ""
+
+#: ../sdk/infowindow.cpp:239
+msgid ""
+"Multiple information windows with the same\n"
+"message have been suppressed."
+msgstr ""
+
+#: ../sdk/infowindow.cpp:241
+msgid "Info"
+msgstr ""
+
+#: ../sdk/licenses.h:5
+msgid ""
+"This program is distributed under the GNU General Public License.\n"
+"Be sure to read it before using it.\n"
+"\n"
+"\t\t   GNU GENERAL PUBLIC LICENSE\n"
+"\n"
+"                       Version 2, June 1991\n"
+"\n"
+" Copyright (C) 1989, 1991 Free Software Foundation, Inc.\n"
+"                          675 Mass Ave, Cambridge, MA 02139, USA\n"
+" Everyone is permitted to copy and distribute verbatim copies\n"
+" of this license document, but changing it is not allowed.\n"
+"\n"
+"                            Preamble\n"
+"\n"
+"  The licenses for most software are designed to take away your\n"
+"freedom to share and change it.  By contrast, the GNU General Public\n"
+"License is intended to guarantee your freedom to share and change free\n"
+"\n"
+"software--to make sure the software is free for all its users.  This\n"
+"General Public License applies to most of the Free Software\n"
+"Foundation's software and to any other program whose authors commit to\n"
+"using it.  (Some other Free Software Foundation software is covered by\n"
+"the GNU Library General Public License instead.)  You can apply it to\n"
+"your programs, too.\n"
+"\n"
+"  When we speak of free software, we are referring to freedom, not\n"
+"price.  Our General Public Licenses are designed to make sure that you\n"
+"\n"
+"have the freedom to distribute copies of free software (and charge for\n"
+"this service if you wish), that you receive source code or can get it\n"
+"if you want it, that you can change the software or use pieces of it\n"
+"in new free programs; and that you know you can do these things.\n"
+"\n"
+"  To protect your rights, we need to make restrictions that forbid\n"
+"anyone to deny you these rights or to ask you to surrender the rights.\n"
+"These restrictions translate to certain responsibilities for you if you\n"
+"\n"
+"distribute copies of the software, or if you modify it.\n"
+"\n"
+"  For example, if you distribute copies of such a program, whether\n"
+"gratis or for a fee, you must give the recipients all the rights that\n"
+"you have.  You must make sure that they, too, receive or can get the\n"
+"source code.  And you must show them these terms so they know their\n"
+"rights.\n"
+"\n"
+"  We protect your rights with two steps: (1) copyright the software, and\n"
+"(2) offer you this license which gives you legal permission to copy,\n"
+"\n"
+"distribute and/or modify the software.\n"
+"\n"
+"  Also, for each author's protection and ours, we want to make certain\n"
+"that everyone understands that there is no warranty for this free\n"
+"software.  If the software is modified by someone else and passed on, we\n"
+"want its recipients to know that what they have is not the original, so\n"
+"that any problems introduced by others will not reflect on the original\n"
+"authors' reputations.\n"
+"\n"
+"  Finally, any free program is threatened constantly by software\n"
+"\n"
+"patents.  We wish to avoid the danger that redistributors of a free\n"
+"program will individually obtain patent licenses, in effect making the\n"
+"program proprietary.  To prevent this, we have made it clear that any\n"
+"patent must be licensed for everyone's free use or not licensed at all.\n"
+"\n"
+"  The precise terms and conditions for copying, distribution and\n"
+"modification follow.\n"
+"\n"
+"                    GNU GENERAL PUBLIC LICENSE\n"
+"   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION\n"
+"\n"
+"  0. This License applies to any program or other work which contains\n"
+"a notice placed by the copyright holder saying it may be distributed\n"
+"under the terms of this General Public License.  The \"Program\", below,\n"
+"refers to any such program or work, and a \"work based on the Program\"\n"
+"means either the Program or any derivative work under copyright law:\n"
+"that is to say, a work containing the Program or a portion of it,\n"
+"either verbatim or with modifications and/or translated into another\n"
+"\n"
+"language.  (Hereinafter, translation is included without limitation in\n"
+"the term \"modification\".)  Each licensee is addressed as \"you\".\n"
+"\n"
+"Activities other than copying, distribution and modification are not\n"
+"covered by this License; they are outside its scope.  The act of\n"
+"running the Program is not restricted, and the output from the Program\n"
+"is covered only if its contents constitute a work based on the\n"
+"Program (independent of having been made by running the Program).\n"
+"\n"
+"Whether that is true depends on what the Program does.\n"
+"\n"
+"  1. You may copy and distribute verbatim copies of the Program's\n"
+"source code as you receive it, in any medium, provided that you\n"
+"conspicuously and appropriately publish on each copy an appropriate\n"
+"copyright notice and disclaimer of warranty; keep intact all the\n"
+"notices that refer to this License and to the absence of any warranty;\n"
+"and give any other recipients of the Program a copy of this License\n"
+"along with the Program.\n"
+"\n"
+"You may charge a fee for the physical act of transferring a copy, and\n"
+"you may at your option offer warranty protection in exchange for a fee.\n"
+"\n"
+"  2. You may modify your copy or copies of the Program or any portion\n"
+"of it, thus forming a work based on the Program, and copy and\n"
+"distribute such modifications or work under the terms of Section 1\n"
+"above, provided that you also meet all of these conditions:\n"
+"\n"
+"    a) You must cause the modified files to carry prominent notices\n"
+"\n"
+"    stating that you changed the files and the date of any change.\n"
+"\n"
+"    b) You must cause any work that you distribute or publish, that in\n"
+"    whole or in part contains or is derived from the Program or any\n"
+"    part thereof, to be licensed as a whole at no charge to all third\n"
+"    parties under the terms of this License.\n"
+"\n"
+"    c) If the modified program normally reads commands interactively\n"
+"    when run, you must cause it, when started running for such\n"
+"    interactive use in the most ordinary way, to print or display an\n"
+"\n"
+"    announcement including an appropriate copyright notice and a\n"
+"    notice that there is no warranty (or else, saying that you provide\n"
+"    a warranty) and that users may redistribute the program under\n"
+"    these conditions, and telling the user how to view a copy of this\n"
+"    License.  (Exception: if the Program itself is interactive but\n"
+"    does not normally print such an announcement, your work based on\n"
+"    the Program is not required to print an announcement.)\n"
+"\n"
+"These requirements apply to the modified work as a whole.  If\n"
+"\n"
+"identifiable sections of that work are not derived from the Program,\n"
+"and can be reasonably considered independent and separate works in\n"
+"themselves, then this License, and its terms, do not apply to those\n"
+"sections when you distribute them as separate works.  But when you\n"
+"distribute the same sections as part of a whole which is a work based\n"
+"on the Program, the distribution of the whole must be on the terms of\n"
+"this License, whose permissions for other licensees extend to the\n"
+"\n"
+"entire whole, and thus to each and every part regardless of who wrote it.\n"
+"\n"
+"Thus, it is not the intent of this section to claim rights or contest\n"
+"your rights to work written entirely by you; rather, the intent is to\n"
+"exercise the right to control the distribution of derivative or\n"
+"collective works based on the Program.\n"
+"\n"
+"In addition, mere aggregation of another work not based on the Program\n"
+"with the Program (or with a work based on the Program) on a volume of\n"
+"a storage or distribution medium does not bring the other work under\n"
+"\n"
+"the scope of this License.\n"
+"\n"
+"  3. You may copy and distribute the Program (or a work based on it,\n"
+"under Section 2) in object code or executable form under the terms of\n"
+"Sections 1 and 2 above provided that you also do one of the following:\n"
+"\n"
+"    a) Accompany it with the complete corresponding machine-readable\n"
+"    source code, which must be distributed under the terms of Sections\n"
+"    1 and 2 above on a medium customarily used for software interchange; "
+"or,\n"
+"\n"
+"    b) Accompany it with a written offer, valid for at least three\n"
+"\n"
+"    years, to give any third party, for a charge no more than your\n"
+"    cost of physically performing source distribution, a complete\n"
+"    machine-readable copy of the corresponding source code, to be\n"
+"    distributed under the terms of Sections 1 and 2 above on a medium\n"
+"    customarily used for software interchange; or,\n"
+"\n"
+"    c) Accompany it with the information you received as to the offer\n"
+"    to distribute corresponding source code.  (This alternative is\n"
+"    allowed only for noncommercial distribution and only if you\n"
+"\n"
+"    received the program in object code or executable form with such\n"
+"    an offer, in accord with Subsection b above.)\n"
+"\n"
+"The source code for a work means the preferred form of the work for\n"
+"making modifications to it.  For an executable work, complete source\n"
+"code means all the source code for all modules it contains, plus any\n"
+"associated interface definition files, plus the scripts used to\n"
+"control compilation and installation of the executable.  However, as a\n"
+"special exception, the source code distributed need not include\n"
+"\n"
+"anything that is normally distributed (in either source or binary\n"
+"form) with the major components (compiler, kernel, and so on) of the\n"
+"operating system on which the executable runs, unless that component\n"
+"itself accompanies the executable.\n"
+"\n"
+"If distribution of executable or object code is made by offering\n"
+"access to copy from a designated place, then offering equivalent\n"
+"access to copy the source code from the same place counts as\n"
+"distribution of the source code, even though third parties are not\n"
+"\n"
+"compelled to copy the source along with the object code.\n"
+"\n"
+"  4. You may not copy, modify, sublicense, or distribute the Program\n"
+"except as expressly provided under this License.  Any attempt\n"
+"otherwise to copy, modify, sublicense or distribute the Program is\n"
+"void, and will automatically terminate your rights under this License.\n"
+"However, parties who have received copies, or rights, from you under\n"
+"this License will not have their licenses terminated so long as such\n"
+"parties remain in full compliance.\n"
+"\n"
+"  5. You are not required to accept this License, since you have not\n"
+"signed it.  However, nothing else grants you permission to modify or\n"
+"distribute the Program or its derivative works.  These actions are\n"
+"prohibited by law if you do not accept this License.  Therefore, by\n"
+"modifying or distributing the Program (or any work based on the\n"
+"Program), you indicate your acceptance of this License to do so, and\n"
+"all its terms and conditions for copying, distributing or modifying\n"
+"\n"
+"the Program or works based on it.\n"
+"\n"
+"  6. Each time you redistribute the Program (or any work based on the\n"
+"Program), the recipient automatically receives a license from the\n"
+"original licensor to copy, distribute or modify the Program subject to\n"
+"these terms and conditions.  You may not impose any further\n"
+"restrictions on the recipients' exercise of the rights granted herein.\n"
+"You are not responsible for enforcing compliance by third parties to\n"
+"this License.\n"
+"\n"
+"  7. If, as a consequence of a court judgment or allegation of patent\n"
+"\n"
+"infringement or for any other reason (not limited to patent issues),\n"
+"conditions are imposed on you (whether by court order, agreement or\n"
+"otherwise) that contradict the conditions of this License, they do not\n"
+"excuse you from the conditions of this License.  If you cannot\n"
+"distribute so as to satisfy simultaneously your obligations under this\n"
+"License and any other pertinent obligations, then as a consequence you\n"
+"may not distribute the Program at all.  For example, if a patent\n"
+"\n"
+"license would not permit royalty-free redistribution of the Program by\n"
+"all those who receive copies directly or indirectly through you, then\n"
+"the only way you could satisfy both it and this License would be to\n"
+"refrain entirely from distribution of the Program.\n"
+"\n"
+"If any portion of this section is held invalid or unenforceable under\n"
+"any particular circumstance, the balance of the section is intended to\n"
+"apply and the section as a whole is intended to apply in other\n"
+"circumstances.\n"
+"\n"
+"It is not the purpose of this section to induce you to infringe any\n"
+"patents or other property right claims or to contest validity of any\n"
+"such claims; this section has the sole purpose of protecting the\n"
+"integrity of the free software distribution system, which is\n"
+"implemented by public license practices.  Many people have made\n"
+"generous contributions to the wide range of software distributed\n"
+"through that system in reliance on consistent application of that\n"
+"system; it is up to the author/donor to decide if he or she is willing\n"
+"\n"
+"to distribute software through any other system and a licensee cannot\n"
+"impose that choice.\n"
+"\n"
+"This section is intended to make thoroughly clear what is believed to\n"
+"be a consequence of the rest of this License.\n"
+"\n"
+"  8. If the distribution and/or use of the Program is restricted in\n"
+"certain countries either by patents or by copyrighted interfaces, the\n"
+"original copyright holder who places the Program under this License\n"
+"may add an explicit geographical distribution limitation excluding\n"
+"\n"
+"those countries, so that distribution is permitted only in or among\n"
+"countries not thus excluded.  In such case, this License incorporates\n"
+"the limitation as if written in the body of this License.\n"
+"\n"
+"  9. The Free Software Foundation may publish revised and/or new versions\n"
+"of the General Public License from time to time.  Such new versions will\n"
+"be similar in spirit to the present version, but may differ in detail to\n"
+"address new problems or concerns.\n"
+"\n"
+"Each version is given a distinguishing version number.  If the Program\n"
+"\n"
+"specifies a version number of this License which applies to it and \"any\n"
+"later version\", you have the option of following the terms and conditions\n"
+"either of that version or of any later version published by the Free\n"
+"Software Foundation.  If the Program does not specify a version number of\n"
+"this License, you may choose any version ever published by the Free "
+"Software\n"
+"Foundation.\n"
+"\n"
+"  10. If you wish to incorporate parts of the Program into other free\n"
+"programs whose distribution conditions are different, write to the author\n"
+"\n"
+"to ask for permission.  For software which is copyrighted by the Free\n"
+"Software Foundation, write to the Free Software Foundation; we sometimes\n"
+"make exceptions for this.  Our decision will be guided by the two goals\n"
+"of preserving the free status of all derivatives of our free software and\n"
+"of promoting the sharing and reuse of software generally.\n"
+"\n"
+"                            NO WARRANTY\n"
+"\n"
+"  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY\n"
+"FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN\n"
+"\n"
+"OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES\n"
+"PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER "
+"EXPRESSED\n"
+"OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF\n"
+"MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS\n"
+"TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE\n"
+"PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,\n"
+"REPAIR OR CORRECTION.\n"
+"\n"
+"  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\n"
+"\n"
+"WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR\n"
+"REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,\n"
+"INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING\n"
+"OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED\n"
+"TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY\n"
+"YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER\n"
+"PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\n"
+"\n"
+"POSSIBILITY OF SUCH DAMAGES.\n"
+"\n"
+"                     END OF TERMS AND CONDITIONS\n"
+"\n"
+"        Appendix: How to Apply These Terms to Your New Programs\n"
+"\n"
+"  If you develop a new program, and you want it to be of the greatest\n"
+"possible use to the public, the best way to achieve this is to make it\n"
+"free software which everyone can redistribute and change under these terms.\n"
+"\n"
+"  To do so, attach the following notices to the program.  It is safest\n"
+"to attach them to the start of each source file to most effectively\n"
+"\n"
+"convey the exclusion of warranty; and each file should have at least\n"
+"the \"copyright\" line and a pointer to where the full notice is found.\n"
+"\n"
+"    <one line to give the program's name and a brief idea of what it does.>\n"
+"    Copyright (C) 19yy  <name of author>\n"
+"\n"
+"    This program is free software; you can redistribute it and/or modify\n"
+"    it under the terms of the GNU General Public License as published by\n"
+"    the Free Software Foundation; either version 2 of the License, or\n"
+"\n"
+"    (at your option) any later version.\n"
+"\n"
+"    This program is distributed in the hope that it will be useful,\n"
+"    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"    GNU General Public License for more details.\n"
+"\n"
+"    You should have received a copy of the GNU General Public License\n"
+"    along with this program; if not, write to the Free Software\n"
+"    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n"
+"\n"
+"Also add information on how to contact you by electronic and paper mail.\n"
+"\n"
+"If the program is interactive, make it output a short notice like this\n"
+"when it starts in an interactive mode:\n"
+"\n"
+"    Gnomovision version 69, Copyright (C) 19yy name of author\n"
+"    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show "
+"w'.\n"
+"    This is free software, and you are welcome to redistribute it\n"
+"    under certain conditions; type `show c' for details.\n"
+"\n"
+"The hypothetical commands `show w' and `show c' should show the appropriate\n"
+"\n"
+"parts of the General Public License.  Of course, the commands you use may\n"
+"be called something other than `show w' and `show c'; they could even be\n"
+"mouse-clicks or menu items--whatever suits your program.\n"
+"\n"
+"You should also get your employer (if you work as a programmer) or your\n"
+"school, if any, to sign a \"copyright disclaimer\" for the program, if\n"
+"necessary.  Here is a sample; alter the names:\n"
+"\n"
+"  Yoyodyne, Inc., hereby disclaims all copyright interest in the program\n"
+"  `Gnomovision' (which makes passes at compilers) written by James Hacker.\n"
+"\n"
+"  <signature of Ty Coon>, 1 April 1989\n"
+"  Ty Coon, President of Vice\n"
+"\n"
+"This General Public License does not permit incorporating your program into\n"
+"proprietary programs.  If your program is a subroutine library, you may\n"
+"consider it more useful to permit linking proprietary applications with the\n"
+"library.  If this is what you want to do, use the GNU Library General\n"
+"Public License instead of this License."
+msgstr ""
+
+#: ../sdk/licenses.h:378
+msgid ""
+"This program is distributed under the wxWindows Library License.\n"
+"                wxWindows Library Licence, Version 3\n"
+"                ====================================\n"
+"\n"
+"  Copyright (c) 1998 Julian Smart, Robert Roebling et al\n"
+"\n"
+"  Everyone is permitted to copy and distribute verbatim copies\n"
+"  of this licence document, but changing it is not allowed.\n"
+"\n"
+"                       WXWINDOWS LIBRARY LICENCE\n"
+"     TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION\n"
+"\n"
+"  This library is free software; you can redistribute it and/or modify it\n"
+"  under the terms of the GNU Library General Public Licence as published by\n"
+"  the Free Software Foundation; either version 2 of the Licence, or (at\n"
+"  your option) any later version.\n"
+"  \n"
+"  This library is distributed in the hope that it will be useful, but\n"
+"  WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Library\n"
+"  General Public Licence for more details.\n"
+"\n"
+"  You should have received a copy of the GNU Library General Public Licence\n"
+"  along with this software, usually in a file named COPYING.LIB.  If not,\n"
+"  write to the Free Software Foundation, Inc., 59 Temple Place, Suite 330,\n"
+"  Boston, MA 02111-1307 USA.\n"
+"\n"
+"  EXCEPTION NOTICE\n"
+"\n"
+"  1. As a special exception, the copyright holders of this library give\n"
+"  permission for additional uses of the text contained in this release of\n"
+"  the library as licenced under the wxWindows Library Licence, applying\n"
+"  either version 3 of the Licence, or (at your option) any later version of\n"
+"  the Licence as published by the copyright holders of version 3 of the\n"
+"  Licence document.\n"
+"\n"
+"  2. The exception is that you may use, copy, link, modify and distribute\n"
+"  under the user's own terms, binary object code versions of works based\n"
+"  on the Library.\n"
+"\n"
+"  3. If you copy code from files distributed under the terms of the GNU\n"
+"  General Public Licence or the GNU Library General Public Licence into a\n"
+"  copy of this library, as this licence permits, the exception does not\n"
+"  apply to the code that you add in this way.  To avoid misleading anyone "
+"as\n"
+"  to the status of such modified files, you must delete this exception\n"
+"  notice from such code and/or adjust the licensing conditions notice\n"
+"  accordingly.\n"
+"\n"
+"  4. If you write modifications of your own for this library, it is your\n"
+"  choice whether to permit this exception to apply to your modifications. \n"
+"  If you do not wish that, you must delete the exception notice from such\n"
+"  code and/or adjust the licensing conditions notice accordingly.\n"
+"\n"
+"\t\t   GNU GENERAL PUBLIC LICENSE\n"
+"\n"
+"                       Version 2, June 1991\n"
+"\n"
+" Copyright (C) 1989, 1991 Free Software Foundation, Inc.\n"
+"                          675 Mass Ave, Cambridge, MA 02139, USA\n"
+" Everyone is permitted to copy and distribute verbatim copies\n"
+" of this license document, but changing it is not allowed.\n"
+"\n"
+"                            Preamble\n"
+"\n"
+"  The licenses for most software are designed to take away your\n"
+"freedom to share and change it.  By contrast, the GNU General Public\n"
+"License is intended to guarantee your freedom to share and change free\n"
+"\n"
+"software--to make sure the software is free for all its users.  This\n"
+"General Public License applies to most of the Free Software\n"
+"Foundation's software and to any other program whose authors commit to\n"
+"using it.  (Some other Free Software Foundation software is covered by\n"
+"the GNU Library General Public License instead.)  You can apply it to\n"
+"your programs, too.\n"
+"\n"
+"  When we speak of free software, we are referring to freedom, not\n"
+"price.  Our General Public Licenses are designed to make sure that you\n"
+"\n"
+"have the freedom to distribute copies of free software (and charge for\n"
+"this service if you wish), that you receive source code or can get it\n"
+"if you want it, that you can change the software or use pieces of it\n"
+"in new free programs; and that you know you can do these things.\n"
+"\n"
+"  To protect your rights, we need to make restrictions that forbid\n"
+"anyone to deny you these rights or to ask you to surrender the rights.\n"
+"These restrictions translate to certain responsibilities for you if you\n"
+"\n"
+"distribute copies of the software, or if you modify it.\n"
+"\n"
+"  For example, if you distribute copies of such a program, whether\n"
+"gratis or for a fee, you must give the recipients all the rights that\n"
+"you have.  You must make sure that they, too, receive or can get the\n"
+"source code.  And you must show them these terms so they know their\n"
+"rights.\n"
+"\n"
+"  We protect your rights with two steps: (1) copyright the software, and\n"
+"(2) offer you this license which gives you legal permission to copy,\n"
+"\n"
+"distribute and/or modify the software.\n"
+"\n"
+"  Also, for each author's protection and ours, we want to make certain\n"
+"that everyone understands that there is no warranty for this free\n"
+"software.  If the software is modified by someone else and passed on, we\n"
+"want its recipients to know that what they have is not the original, so\n"
+"that any problems introduced by others will not reflect on the original\n"
+"authors' reputations.\n"
+"\n"
+"  Finally, any free program is threatened constantly by software\n"
+"\n"
+"patents.  We wish to avoid the danger that redistributors of a free\n"
+"program will individually obtain patent licenses, in effect making the\n"
+"program proprietary.  To prevent this, we have made it clear that any\n"
+"patent must be licensed for everyone's free use or not licensed at all.\n"
+"\n"
+"  The precise terms and conditions for copying, distribution and\n"
+"modification follow.\n"
+"\n"
+"                    GNU GENERAL PUBLIC LICENSE\n"
+"   TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION\n"
+"\n"
+"  0. This License applies to any program or other work which contains\n"
+"a notice placed by the copyright holder saying it may be distributed\n"
+"under the terms of this General Public License.  The \"Program\", below,\n"
+"refers to any such program or work, and a \"work based on the Program\"\n"
+"means either the Program or any derivative work under copyright law:\n"
+"that is to say, a work containing the Program or a portion of it,\n"
+"either verbatim or with modifications and/or translated into another\n"
+"\n"
+"language.  (Hereinafter, translation is included without limitation in\n"
+"the term \"modification\".)  Each licensee is addressed as \"you\".\n"
+"\n"
+"Activities other than copying, distribution and modification are not\n"
+"covered by this License; they are outside its scope.  The act of\n"
+"running the Program is not restricted, and the output from the Program\n"
+"is covered only if its contents constitute a work based on the\n"
+"Program (independent of having been made by running the Program).\n"
+"\n"
+"Whether that is true depends on what the Program does.\n"
+"\n"
+"  1. You may copy and distribute verbatim copies of the Program's\n"
+"source code as you receive it, in any medium, provided that you\n"
+"conspicuously and appropriately publish on each copy an appropriate\n"
+"copyright notice and disclaimer of warranty; keep intact all the\n"
+"notices that refer to this License and to the absence of any warranty;\n"
+"and give any other recipients of the Program a copy of this License\n"
+"along with the Program.\n"
+"\n"
+"You may charge a fee for the physical act of transferring a copy, and\n"
+"you may at your option offer warranty protection in exchange for a fee.\n"
+"\n"
+"  2. You may modify your copy or copies of the Program or any portion\n"
+"of it, thus forming a work based on the Program, and copy and\n"
+"distribute such modifications or work under the terms of Section 1\n"
+"above, provided that you also meet all of these conditions:\n"
+"\n"
+"    a) You must cause the modified files to carry prominent notices\n"
+"\n"
+"    stating that you changed the files and the date of any change.\n"
+"\n"
+"    b) You must cause any work that you distribute or publish, that in\n"
+"    whole or in part contains or is derived from the Program or any\n"
+"    part thereof, to be licensed as a whole at no charge to all third\n"
+"    parties under the terms of this License.\n"
+"\n"
+"    c) If the modified program normally reads commands interactively\n"
+"    when run, you must cause it, when started running for such\n"
+"    interactive use in the most ordinary way, to print or display an\n"
+"\n"
+"    announcement including an appropriate copyright notice and a\n"
+"    notice that there is no warranty (or else, saying that you provide\n"
+"    a warranty) and that users may redistribute the program under\n"
+"    these conditions, and telling the user how to view a copy of this\n"
+"    License.  (Exception: if the Program itself is interactive but\n"
+"    does not normally print such an announcement, your work based on\n"
+"    the Program is not required to print an announcement.)\n"
+"\n"
+"These requirements apply to the modified work as a whole.  If\n"
+"\n"
+"identifiable sections of that work are not derived from the Program,\n"
+"and can be reasonably considered independent and separate works in\n"
+"themselves, then this License, and its terms, do not apply to those\n"
+"sections when you distribute them as separate works.  But when you\n"
+"distribute the same sections as part of a whole which is a work based\n"
+"on the Program, the distribution of the whole must be on the terms of\n"
+"this License, whose permissions for other licensees extend to the\n"
+"\n"
+"entire whole, and thus to each and every part regardless of who wrote it.\n"
+"\n"
+"Thus, it is not the intent of this section to claim rights or contest\n"
+"your rights to work written entirely by you; rather, the intent is to\n"
+"exercise the right to control the distribution of derivative or\n"
+"collective works based on the Program.\n"
+"\n"
+"In addition, mere aggregation of another work not based on the Program\n"
+"with the Program (or with a work based on the Program) on a volume of\n"
+"a storage or distribution medium does not bring the other work under\n"
+"\n"
+"the scope of this License.\n"
+"\n"
+"  3. You may copy and distribute the Program (or a work based on it,\n"
+"under Section 2) in object code or executable form under the terms of\n"
+"Sections 1 and 2 above provided that you also do one of the following:\n"
+"\n"
+"    a) Accompany it with the complete corresponding machine-readable\n"
+"    source code, which must be distributed under the terms of Sections\n"
+"    1 and 2 above on a medium customarily used for software interchange; "
+"or,\n"
+"\n"
+"    b) Accompany it with a written offer, valid for at least three\n"
+"\n"
+"    years, to give any third party, for a charge no more than your\n"
+"    cost of physically performing source distribution, a complete\n"
+"    machine-readable copy of the corresponding source code, to be\n"
+"    distributed under the terms of Sections 1 and 2 above on a medium\n"
+"    customarily used for software interchange; or,\n"
+"\n"
+"    c) Accompany it with the information you received as to the offer\n"
+"    to distribute corresponding source code.  (This alternative is\n"
+"    allowed only for noncommercial distribution and only if you\n"
+"\n"
+"    received the program in object code or executable form with such\n"
+"    an offer, in accord with Subsection b above.)\n"
+"\n"
+"The source code for a work means the preferred form of the work for\n"
+"making modifications to it.  For an executable work, complete source\n"
+"code means all the source code for all modules it contains, plus any\n"
+"associated interface definition files, plus the scripts used to\n"
+"control compilation and installation of the executable.  However, as a\n"
+"special exception, the source code distributed need not include\n"
+"\n"
+"anything that is normally distributed (in either source or binary\n"
+"form) with the major components (compiler, kernel, and so on) of the\n"
+"operating system on which the executable runs, unless that component\n"
+"itself accompanies the executable.\n"
+"\n"
+"If distribution of executable or object code is made by offering\n"
+"access to copy from a designated place, then offering equivalent\n"
+"access to copy the source code from the same place counts as\n"
+"distribution of the source code, even though third parties are not\n"
+"\n"
+"compelled to copy the source along with the object code.\n"
+"\n"
+"  4. You may not copy, modify, sublicense, or distribute the Program\n"
+"except as expressly provided under this License.  Any attempt\n"
+"otherwise to copy, modify, sublicense or distribute the Program is\n"
+"void, and will automatically terminate your rights under this License.\n"
+"However, parties who have received copies, or rights, from you under\n"
+"this License will not have their licenses terminated so long as such\n"
+"parties remain in full compliance.\n"
+"\n"
+"  5. You are not required to accept this License, since you have not\n"
+"signed it.  However, nothing else grants you permission to modify or\n"
+"distribute the Program or its derivative works.  These actions are\n"
+"prohibited by law if you do not accept this License.  Therefore, by\n"
+"modifying or distributing the Program (or any work based on the\n"
+"Program), you indicate your acceptance of this License to do so, and\n"
+"all its terms and conditions for copying, distributing or modifying\n"
+"\n"
+"the Program or works based on it.\n"
+"\n"
+"  6. Each time you redistribute the Program (or any work based on the\n"
+"Program), the recipient automatically receives a license from the\n"
+"original licensor to copy, distribute or modify the Program subject to\n"
+"these terms and conditions.  You may not impose any further\n"
+"restrictions on the recipients' exercise of the rights granted herein.\n"
+"You are not responsible for enforcing compliance by third parties to\n"
+"this License.\n"
+"\n"
+"  7. If, as a consequence of a court judgment or allegation of patent\n"
+"\n"
+"infringement or for any other reason (not limited to patent issues),\n"
+"conditions are imposed on you (whether by court order, agreement or\n"
+"otherwise) that contradict the conditions of this License, they do not\n"
+"excuse you from the conditions of this License.  If you cannot\n"
+"distribute so as to satisfy simultaneously your obligations under this\n"
+"License and any other pertinent obligations, then as a consequence you\n"
+"may not distribute the Program at all.  For example, if a patent\n"
+"\n"
+"license would not permit royalty-free redistribution of the Program by\n"
+"all those who receive copies directly or indirectly through you, then\n"
+"the only way you could satisfy both it and this License would be to\n"
+"refrain entirely from distribution of the Program.\n"
+"\n"
+"If any portion of this section is held invalid or unenforceable under\n"
+"any particular circumstance, the balance of the section is intended to\n"
+"apply and the section as a whole is intended to apply in other\n"
+"circumstances.\n"
+"\n"
+"It is not the purpose of this section to induce you to infringe any\n"
+"patents or other property right claims or to contest validity of any\n"
+"such claims; this section has the sole purpose of protecting the\n"
+"integrity of the free software distribution system, which is\n"
+"implemented by public license practices.  Many people have made\n"
+"generous contributions to the wide range of software distributed\n"
+"through that system in reliance on consistent application of that\n"
+"system; it is up to the author/donor to decide if he or she is willing\n"
+"\n"
+"to distribute software through any other system and a licensee cannot\n"
+"impose that choice.\n"
+"\n"
+"This section is intended to make thoroughly clear what is believed to\n"
+"be a consequence of the rest of this License.\n"
+"\n"
+"  8. If the distribution and/or use of the Program is restricted in\n"
+"certain countries either by patents or by copyrighted interfaces, the\n"
+"original copyright holder who places the Program under this License\n"
+"may add an explicit geographical distribution limitation excluding\n"
+"\n"
+"those countries, so that distribution is permitted only in or among\n"
+"countries not thus excluded.  In such case, this License incorporates\n"
+"the limitation as if written in the body of this License.\n"
+"\n"
+"  9. The Free Software Foundation may publish revised and/or new versions\n"
+"of the General Public License from time to time.  Such new versions will\n"
+"be similar in spirit to the present version, but may differ in detail to\n"
+"address new problems or concerns.\n"
+"\n"
+"Each version is given a distinguishing version number.  If the Program\n"
+"\n"
+"specifies a version number of this License which applies to it and \"any\n"
+"later version\", you have the option of following the terms and conditions\n"
+"either of that version or of any later version published by the Free\n"
+"Software Foundation.  If the Program does not specify a version number of\n"
+"this License, you may choose any version ever published by the Free "
+"Software\n"
+"Foundation.\n"
+"\n"
+"  10. If you wish to incorporate parts of the Program into other free\n"
+"programs whose distribution conditions are different, write to the author\n"
+"\n"
+"to ask for permission.  For software which is copyrighted by the Free\n"
+"Software Foundation, write to the Free Software Foundation; we sometimes\n"
+"make exceptions for this.  Our decision will be guided by the two goals\n"
+"of preserving the free status of all derivatives of our free software and\n"
+"of promoting the sharing and reuse of software generally.\n"
+"\n"
+"                            NO WARRANTY\n"
+"\n"
+"  11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY\n"
+"FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN\n"
+"\n"
+"OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES\n"
+"PROVIDE THE PROGRAM \"AS IS\" WITHOUT WARRANTY OF ANY KIND, EITHER "
+"EXPRESSED\n"
+"OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF\n"
+"MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS\n"
+"TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE\n"
+"PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,\n"
+"REPAIR OR CORRECTION.\n"
+"\n"
+"  12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING\n"
+"\n"
+"WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR\n"
+"REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,\n"
+"INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING\n"
+"OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED\n"
+"TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY\n"
+"YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER\n"
+"PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\n"
+"\n"
+"POSSIBILITY OF SUCH DAMAGES.\n"
+"\n"
+"                     END OF TERMS AND CONDITIONS\n"
+"\n"
+"        Appendix: How to Apply These Terms to Your New Programs\n"
+"\n"
+"  If you develop a new program, and you want it to be of the greatest\n"
+"possible use to the public, the best way to achieve this is to make it\n"
+"free software which everyone can redistribute and change under these terms.\n"
+"\n"
+"  To do so, attach the following notices to the program.  It is safest\n"
+"to attach them to the start of each source file to most effectively\n"
+"\n"
+"convey the exclusion of warranty; and each file should have at least\n"
+"the \"copyright\" line and a pointer to where the full notice is found.\n"
+"\n"
+"    <one line to give the program's name and a brief idea of what it does.>\n"
+"    Copyright (C) 19yy  <name of author>\n"
+"\n"
+"    This program is free software; you can redistribute it and/or modify\n"
+"    it under the terms of the GNU General Public License as published by\n"
+"    the Free Software Foundation; either version 2 of the License, or\n"
+"\n"
+"    (at your option) any later version.\n"
+"\n"
+"    This program is distributed in the hope that it will be useful,\n"
+"    but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+"    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n"
+"    GNU General Public License for more details.\n"
+"\n"
+"    You should have received a copy of the GNU General Public License\n"
+"    along with this program; if not, write to the Free Software\n"
+"    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.\n"
+"\n"
+"Also add information on how to contact you by electronic and paper mail.\n"
+"\n"
+"If the program is interactive, make it output a short notice like this\n"
+"when it starts in an interactive mode:\n"
+"\n"
+"    Gnomovision version 69, Copyright (C) 19yy name of author\n"
+"    Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show "
+"w'.\n"
+"    This is free software, and you are welcome to redistribute it\n"
+"    under certain conditions; type `show c' for details.\n"
+"\n"
+"The hypothetical commands `show w' and `show c' should show the appropriate\n"
+"\n"
+"parts of the General Public License.  Of course, the commands you use may\n"
+"be called something other than `show w' and `show c'; they could even be\n"
+"mouse-clicks or menu items--whatever suits your program.\n"
+"\n"
+"You should also get your employer (if you work as a programmer) or your\n"
+"school, if any, to sign a \"copyright disclaimer\" for the program, if\n"
+"necessary.  Here is a sample; alter the names:\n"
+"\n"
+"  Yoyodyne, Inc., hereby disclaims all copyright interest in the program\n"
+"  `Gnomovision' (which makes passes at compilers) written by James Hacker.\n"
+"\n"
+"  <signature of Ty Coon>, 1 April 1989\n"
+"  Ty Coon, President of Vice\n"
+"\n"
+"This General Public License does not permit incorporating your program into\n"
+"proprietary programs.  If your program is a subroutine library, you may\n"
+"consider it more useful to permit linking proprietary applications with the\n"
+"library.  If this is what you want to do, use the GNU Library General\n"
+"Public License instead of this License."
+msgstr ""
+
+#: ../sdk/manager.cpp:83
+msgid "Manager initialized"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:87
+msgid "The build is in progress. Are you sure you want to abort it?"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:88
+msgid "Abort build?"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:163
+msgid "Code::Blocks"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:165
+msgid "Code::Blocks Debug"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:267
+msgid "WARNING"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:285
+msgid "ERROR"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:383
+msgid "Batch build"
+msgstr ""
+
+#: ../sdk/messagemanager.cpp:650
+msgid "Show/hide"
+msgstr ""
+
+#: ../sdk/msvc7loader.cpp:157 ../sdk/msvcloader.cpp:80
+msgid "Select configurations to import:"
+msgstr ""
+
+#: ../sdk/msvc7loader.cpp:581
+#, possible-c-format
+msgid "removed %s from %s"
+msgstr ""
+
+#: ../sdk/msvc7workspaceloader.cpp:52 ../sdk/msvcworkspaceloader.cpp:51
+msgid ""
+"Do you want the imported projects to use the default compiler?\n"
+"(If you answer No, you will be asked for each and every project which "
+"compiler to use...)"
+msgstr ""
+
+#: ../sdk/msvc7workspaceloader.cpp:60 ../sdk/msvcworkspaceloader.cpp:59
+msgid ""
+"Do you want to import all configurations (e.g. Debug/Release) from the "
+"imported projects?\n"
+"(If you answer No, you will be asked for each and every project which "
+"configurations to import...)"
+msgstr ""
+
+#: ../sdk/msvc7workspaceloader.cpp:238 ../sdk/msvcworkspaceloader.cpp:180
+msgid " workspace"
+msgstr ""
+
+#: ../sdk/multiselectdlg.cpp:88
+msgid "Selected: "
+msgstr ""
+
+#: ../sdk/multiselectdlg.cpp:149
+msgid ""
+"Enter a selection wildcard\n"
+"(e.g. \"dlg*.cpp\" would select all files starting with \"dlg\" and ending "
+"in \".cpp\")\n"
+"Separate multiple masks with \";\":"
+msgstr ""
+
+#: ../sdk/multiselectdlg.cpp:152
+msgid "Wildcard selection"
+msgstr ""
+
+#: ../sdk/multiselectdlg.cpp:156
+msgid "Do you want to clear the previous selections?"
+msgstr ""
+
+#: ../sdk/multiselectdlg.h:15 ../sdk/multiselectdlg.h:20
+msgid "Select items:"
+msgstr ""
+
+#: ../sdk/multiselectdlg.h:16 ../sdk/multiselectdlg.h:21
+msgid "Multiple selection"
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:186
+msgid "<All categories>"
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:378
+msgid "Couldn't open script:\n"
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:402
+msgid "Edit this wizard's script"
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:404
+msgid "Edit global registration script"
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:434
+msgid ""
+"Any changes you make to the global wizard registration script will take "
+"effect after you restart Code::Blocks."
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:447
+msgid ""
+"When you edit a wizard's script, you actually edit a copy of it which is "
+"automatically placed inside your user configuration directory.\n"
+"This means that if a new version of the script is released, Code::Blocks "
+"will still use your customized script, not the globally installed version.\n"
+"\n"
+"These customized wizard scripts are coloured red just to remind you that "
+"they are exactly that: customized scripts.\n"
+"So, if you update your Code::Blocks copy and find that an updated wizard's "
+"behaviour doesn't change, check if you have customized it. If you have, the "
+"only way to re-enable the globally installed script is to remove the "
+"customized one.\n"
+"\n"
+"On this computer, the customized scripts are located under:\n"
+msgstr ""
+
+#: ../sdk/newfromtemplatedlg.cpp:459
+msgid "Help"
+msgstr ""
+
+#: ../sdk/pluginmanager.cpp:108
+#, possible-c-format
+msgid "Found %d plugins"
+msgstr ""
+
+#: ../sdk/pluginmanager.cpp:112
+msgid ""
+"One or more plugins were not loaded.\n"
+"This usually happens when a plugin is built for\n"
+"a different version of the Code::Blocks SDK.\n"
+"Check the application log for more info.\n"
+"\n"
+"List of failed plugins:\n"
+msgstr ""
+
+#: ../sdk/pluginmanager.cpp:168
+#, possible-c-format
+msgid "SDK version mismatch for %s (%d.%d.%d). Expecting %d.%d.%d"
+msgstr ""
+
+#: ../sdk/pluginmanager.cpp:269
+#, possible-c-format
+msgid ""
+"Plugin \"%s\" failed to load last time Code::Blocks was executed.\n"
+"Do you want to disable this plugin from loading?"
+msgstr ""
+
+#: ../sdk/pluginmanager.cpp:298
+#, possible-c-format
+msgid "%s "
+msgstr ""
+
+#: ../sdk/pluginmanager.cpp:311
+#, possible-c-format
+msgid ""
+"Plugin \"%s\" failed to load...\n"
+"Do you want to disable this plugin from loading next time?"
+msgstr ""
+
+#: ../sdk/pluginsconfigurationdlg.cpp:62
+msgid ", v"
+msgstr ""
+
+#: ../sdk/projectdepsdlg.cpp:97
+#, possible-c-format
+msgid ""
+"Cannot add project '%s' as a dependency to '%s' because this would cause a "
+"circular dependency error..."
+msgstr ""
+
+#: ../sdk/projectfileoptionsdlg.cpp:201 ../sdk/projectfileoptionsdlg.cpp:202
+#: ../sdk/projectfileoptionsdlg.cpp:203 ../sdk/projectfileoptionsdlg.cpp:204
+#: ../sdk/projectfileoptionsdlg.cpp:210
+#, possible-c-format
+msgid "%ld"
+msgstr ""
+
+#: ../sdk/projectfileoptionsdlg.cpp:215
+#, possible-c-format
+msgid "%ld/%ld/%ld %ld:%ld:%ld"
+msgstr ""
+
+#: ../sdk/projectfileoptionsdlg.cpp:232
+msgid "Options for "
+msgstr ""
+
+#: ../sdk/projectfileoptionsdlg.cpp:270
+msgid "Default: "
+msgstr ""
+
+#: ../sdk/projectloader.cpp:103
+msgid "Project file format is newer/unknown"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:104
+msgid ""
+"This project file was saved with a newer version of Code::Blocks.\n"
+"Will try to load, but you should make sure all the settings were loaded "
+"correctly..."
+msgstr ""
+
+#: ../sdk/projectloader.cpp:119
+msgid "1.4 to 1.5: added virtual build targets.\n"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:125
+msgid ""
+"1.3 to 1.4: changed the way custom file build commands are stored (no auto-"
+"conversion).\n"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:131
+#, possible-c-format
+msgid ""
+"Project file format is older (%d.%d) than the current format (%d.%d).\n"
+"The file will automatically be upgraded on save.\n"
+"But please read the following list of changes, as some of them might not "
+"automatically convert existing (old) settings.\n"
+"If you don't understand what a change means, you probably don't use that "
+"feature so you don't have to worry about it.\n"
+"\n"
+"List of changes:\n"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:142
+msgid "Project file format changed"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:221
+#, possible-c-format
+msgid ""
+"Project \"%s\" was saved with an earlier version of Code::Blocks.\n"
+"In the current version, link libraries are treated separately from linker "
+"options.\n"
+"Do you want to auto-detect the libraries \"%s\" is using and configure it "
+"accordingly?"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:1193
+#, possible-c-format
+msgid ""
+"The defined compiler for %s cannot be located. Please choose the compiler "
+"you want to use:"
+msgstr ""
+
+#: ../sdk/projectloader.cpp:1200
+msgid "Setting to default compiler..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:270
+msgid "Projects"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:333
+msgid "Sea&rch"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:336
+msgid "Goto file...\tAlt-G"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:338 ../sdk/wxscintilla/samples/test/test.cpp:557
+#: ../src/main.cpp:1527 ../src/main.cpp:1601 ../src/main.cpp:1661
+#: ../src/main.cpp:1706
+msgid "&File"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:346 ../sdk/projectmanager.cpp:613
+msgid "&Project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:352 ../sdk/projectmanager.cpp:458
+#: ../sdk/projectmanager.cpp:515
+msgid "Add files..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:352
+msgid "Add files to the project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:353 ../sdk/projectmanager.cpp:459
+#: ../sdk/projectmanager.cpp:516 ../sdk/projectmanager.cpp:1678
+msgid "Add files recursively..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:353
+msgid "Add files recursively to the project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:354 ../sdk/projectmanager.cpp:460
+#: ../sdk/projectmanager.cpp:518
+msgid "Remove files..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:354
+msgid "Remove files from the project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:362 ../sdk/projectmanager.cpp:538
+msgid "Move project up\tCtrl-Shift-Up"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:362 ../sdk/projectmanager.cpp:538
+msgid "Move project up in project tree"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:363 ../sdk/projectmanager.cpp:539
+msgid "Move project down\tCtrl-Shift-Down"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:363 ../sdk/projectmanager.cpp:539
+msgid "Move project down in project tree"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:365 ../sdk/projectmanager.cpp:541
+msgid "Activate prior project\tAlt-F5"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:365 ../sdk/projectmanager.cpp:541
+msgid "Activate prior project in open projects list"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:366 ../sdk/projectmanager.cpp:542
+msgid "Activate next project\tAlt-F6"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:366 ../sdk/projectmanager.cpp:542
+msgid "Activate next project in open projects list"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:368 ../sdk/projectmanager.cpp:546
+#: ../sdk/projectmanager.cpp:1548
+msgid "Categorize by file types"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:369 ../sdk/projectmanager.cpp:547
+#: ../sdk/projectmanager.cpp:1549
+msgid "Display folders as on disk"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:372 ../sdk/projectmanager.cpp:550
+#: ../sdk/projectmanager.cpp:1551
+msgid "Edit file types && categories..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:374 ../sdk/projectmanager.cpp:552
+msgid "Project tree"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:376
+msgid "Set &programs' arguments..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:376
+msgid "Set execution parameters for the targets of this project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:455
+msgid "Activate project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:456
+msgid "Close project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:478
+#, possible-c-format
+msgid "Switch to %s"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:481
+#, possible-c-format
+msgid "Close %s"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:486
+#, possible-c-format
+msgid "Open %s"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:500
+msgid "Internal editor"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:501
+msgid "Open with..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:506
+msgid "Rename file..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:509
+msgid "Remove file from project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:521
+#, possible-c-format
+msgid "Remove %s*"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:565 ../sdk/projectmanager.cpp:1582
+msgid "Rename workspace"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:568
+msgid "Save workspace as..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:570
+msgid "Close workspace"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:626
+msgid ""
+"Deactivating the compiler plugin is most unwise.\n"
+"\n"
+"If you intend to open a project, you have to re-activate the compiler plugin "
+"first."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:726
+msgid ""
+"Project file already exists.\n"
+"Are you really sure you want to OVERWRITE it?"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:764
+#, possible-c-format
+msgid ""
+"Project '%s' is modified...\n"
+"Do you want to save the changes?"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:765
+msgid "Save project"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:964 ../sdk/projectmanager.cpp:1055
+#: ../sdk/projectmanager.cpp:1113
+msgid "Workspace"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:977
+msgid "Loading workspace..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1028
+#, possible-c-format
+msgid "Workspace '%s' is modified. Do you want to save it?"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1218
+msgid "Project Manager"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1218
+msgid "Please wait while adding files to project..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1257
+msgid "Select the target:"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1257
+msgid "Project targets"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1277
+msgid "Select the targets this file should belong to:"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1292
+#, possible-c-format
+msgid ""
+"Could not open the file '%s'.\n"
+"The file does not exist."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1311 ../sdk/projectmanager.cpp:1944
+#, possible-c-format
+msgid "Failed to open '%s'."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1332
+#, possible-c-format
+msgid ""
+"Could not open file '%s'.\n"
+"No handler registered for this type of file."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1338
+#, possible-c-format
+msgid ""
+"Could not open file '%s'.\n"
+"The registered handler (%s) could not open it."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1582
+msgid "Please enter the new name for the workspace:"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1719
+msgid "Select the files to add to the project:"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1746
+msgid "Add files to project..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1788
+#, possible-c-format
+msgid "Select files to remove from %s:"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1796
+msgid "Are you sure you want to remove these files from the project?"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:1842
+msgid ""
+"Are you sure you want to recursively remove from the project all the files "
+"under this folder?"
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:2018
+msgid "Select file..."
+msgstr ""
+
+#: ../sdk/projectmanager.cpp:2018
+msgid "Please select file to open:"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:489
+msgid "Enter the new build target name:"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:490
+msgid "New build target"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:497
+msgid "The new target could not be added..."
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:521 ../sdk/projectoptionsdlg.cpp:550
+msgid "Could not locate target..."
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:528
+msgid "Change the build target name:"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:529
+msgid "Rename build target"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:556
+msgid "Enter the duplicated build target's name:"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:557
+msgid "Duplicate build target"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:563
+msgid "Failed to duplicate this build target..."
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:582
+#, possible-c-format
+msgid "Are you sure you want to delete build target \"%s\"?"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:627
+msgid "Create project from target confirmation"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:628
+msgid ""
+"This project will be saved before exporting the build target.\n"
+"Are you sure you want to export the selected build target to a new project?"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:637
+msgid "New project created succesfully!"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:673
+msgid "Select output filename"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:748
+msgid "A target with this name already exists in this project!"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:756
+msgid "A virtual target with this name already exists in this project!"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:765
+msgid ""
+"The name contains at least one invalid character:\n"
+"\n"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:782
+msgid "Invalid build script: "
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:783
+msgid "First seen in: "
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:802
+msgid "All scripts seem to be valid!"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:815
+msgid "Select script file"
+msgstr ""
+
+#: ../sdk/projectoptionsdlg.cpp:818
+msgid "Script files (*.script)|*.script"
+msgstr ""
+
+#: ../sdk/projectsfilemasksdlg.cpp:92
+msgid "Enter the new group name:"
+msgstr ""
+
+#: ../sdk/projectsfilemasksdlg.cpp:93
+msgid "New group"
+msgstr ""
+
+#: ../sdk/projectsfilemasksdlg.cpp:108
+msgid "Rename the group:"
+msgstr ""
+
+#: ../sdk/projectsfilemasksdlg.cpp:109
+msgid "Edit group"
+msgstr ""
+
+#: ../sdk/projectsfilemasksdlg.cpp:122
+#, possible-c-format
+msgid "Are you sure you want to delete the group \"%s\"?"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:168
+msgid "Point Size"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:170
+msgid "Family"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:173
+msgid "Face Name"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:175
+msgid "Style"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:178
+msgid "Weight"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:181
+msgid "Underlined"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/advprops.cpp:1057
+msgid "Make a selection:"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/manager.cpp:941
+msgid "Categorized Mode"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/manager.cpp:942
+msgid "Alphabetic Mode"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/manager.cpp:987
+#: ../sdk/propgrid/src/propgrid/manager.cpp:1363
+msgid "<< Compact"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/manager.cpp:987
+#: ../sdk/propgrid/src/propgrid/manager.cpp:1358
+msgid "Expand >>"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:822
+#, possible-c-format
+msgid "\"%s\" is not a floating-point number."
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:1873
+msgid "Choose a directory:"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:1988
+msgid "Choose a file"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2125
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2340
+msgid "Ok"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2127
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2342
+msgid "Cancel"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2285
+msgid "Add"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2314
+msgid "Update"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2317
+msgid "Remove"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2320
+msgid "Up"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2323
+msgid "Down"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2809
+msgid "False"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:2810
+msgid "True"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:6157
+#, possible-c-format
+msgid ""
+"Type operation \"%s\" failed: Property labeled \"%s\" is of type \"%s\", NOT "
+"\"%s\"."
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:12243
+#, possible-c-format
+msgid "String cannot contain any of these: %s"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:12292
+#, possible-c-format
+msgid "Value must be between %i and %i"
+msgstr ""
+
+#: ../sdk/propgrid/src/propgrid/propgrid.cpp:12339
+#, possible-c-format
+msgid "Value must be between %.3f and %.3f"
+msgstr ""
+
+#: ../sdk/scripting/bindings/sc_globals.cpp:23
+msgid "Script message"
+msgstr ""
+
+#: ../sdk/scripting/bindings/sc_globals.cpp:24
+msgid "Script warning"
+msgstr ""
+
+#: ../sdk/scripting/bindings/sc_globals.cpp:25
+msgid "Script error"
+msgstr ""
+
+#: ../sdk/scripting/bindings/sc_globals.cpp:26
+msgid "Script information"
+msgstr ""
+
+#: ../sdk/scriptingmanager.cpp:94
+msgid "Script compile error"
+msgstr ""
+
+#: ../sdk/scriptingmanager.cpp:105
+msgid "Script run error"
+msgstr ""
+
+#: ../sdk/scriptingmanager.cpp:128
+msgid "Script errors"
+msgstr ""
+
+#: ../sdk/selecttargetdlg.cpp:114
+msgid "Select host application"
+msgstr ""
+
+#: ../sdk/selecttargetdlg.cpp:118
+msgid "Executable files (*.exe)|*.exe"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:149
+msgid "Choose a directory to create the new project"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:195
+msgid "Some files could not be loaded with the template..."
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:200
+msgid "User-template saved succesfuly but no project file exists in it!"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:205
+msgid ""
+"If you want, you can change the project's filename here (without extension):"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:205
+msgid "Change project's filename"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:237
+msgid "Could not save project and/or all its files. Aborting..."
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:245
+msgid "Couldn't create directory for user templates:\n"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:254
+msgid "Enter a title for this template"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:254
+msgid "Enter title"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:267
+msgid ""
+"You have another template with the same title.\n"
+"Please choose another title..."
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:298
+msgid "Failed to create the directory for the project file!"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:306
+msgid "Failed to copy the project file!"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:312
+msgid "User-template saved succesfuly"
+msgstr ""
+
+#: ../sdk/templatemanager.cpp:314
+msgid "Some files could not be saved with the template..."
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:98
+msgid ""
+"Another tool is currently executing.\n"
+"Please allow for it to finish before launching another tool..."
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:143
+#, possible-c-format
+msgid "Launching tool '%s': %s (in %s)"
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:170 ../sdk/toolsmanager.cpp:185
+msgid "Couldn't execute tool. Check the log for details."
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:265 ../sdk/toolsmanager.cpp:287
+msgid "/"
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:281
+#, possible-c-format
+msgid "Configured %d tools"
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:341
+msgid "&Configure tools..."
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:341
+msgid "Add/remove user-defined tools"
+msgstr ""
+
+#: ../sdk/toolsmanager.cpp:365
+msgid "Could not execute "
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:153 ../sdk/uservarmanager.cpp:220
+#, possible-c-format
+msgid ""
+"In the currently active Set, Code::Blocks does not know\n"
+"the global compiler variable \"%s\".\n"
+"\n"
+"Please define it."
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:154 ../sdk/uservarmanager.cpp:226
+msgid "Global Compiler Variables"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:222
+#, possible-c-format
+msgid ""
+"In the currently active Set, Code::Blocks does not know\n"
+"the following global compiler variables:\n"
+"%s\n"
+"\n"
+"Please define them."
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:252
+msgid ""
+"Global compiler variables have been extended.\n"
+"\n"
+"You can now have several independent sets of GCVs,\n"
+"and variables can have user-defined members.\n"
+"\n"
+"Your existing configuration is being migrated\n"
+"and will be available as the \"default\" set."
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:361 ../sdk/uservarmanager.cpp:398
+msgid "Please specify a name for the new clone:"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:361
+msgid "Clone Variable"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:380
+#, possible-c-format
+msgid "Cowardly refusing to overwrite existing variable \"%s\"."
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:381 ../sdk/uservarmanager.cpp:398
+#: ../sdk/uservarmanager.cpp:413
+msgid "Clone Set"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:412
+#, possible-c-format
+msgid "Cowardly refusing overwrite existing set \"%s\"."
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:442
+#, possible-c-format
+msgid "Delete the global compiler variable \"%s\" from this set?"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:443
+msgid "Delete Global Variable"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:457
+#, possible-c-format
+msgid ""
+"Do you really want to delete\n"
+"the entire global compiler variable set \"%s\"?\n"
+"\n"
+"This cannot be undone."
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:458
+msgid "Delete Global Variable Set"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:484
+msgid "Please specify a name for the new variable:"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:484
+msgid "New Variable"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:496
+msgid "Please specify a name for the new set:"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:496
+msgid "New Set"
+msgstr ""
+
+#: ../sdk/uservarmanager.cpp:634
+msgid "Choose a location"
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:69
+msgid ""
+"Failed to setup this virtual build target.\n"
+"Check the debug log for more info..."
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:95 ../sdk/virtualbuildtargetsdlg.cpp:124
+msgid "Enter the new virtual build target name:"
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:96
+msgid "New virtual build target"
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:102 ../sdk/virtualbuildtargetsdlg.cpp:132
+msgid "A virtual build target with this name already exists in this project!"
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:110 ../sdk/virtualbuildtargetsdlg.cpp:140
+msgid "A real build target with this name already exists in this project!"
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:125
+msgid "Edit virtual build target"
+msgstr ""
+
+#: ../sdk/virtualbuildtargetsdlg.cpp:153
+msgid "Are you sure you want to remove this virtual build target?"
+msgstr ""
+
+#: ../sdk/workspaceloader.cpp:119 ../sdk/workspaceloader.cpp:132
+msgid "Unable to open "
+msgstr ""
+
+#: ../sdk/workspaceloader.cpp:120 ../sdk/workspaceloader.cpp:133
+msgid "Opening WorkSpace"
+msgstr ""
+
+#: ../sdk/wxFlatNotebook/wxFlatNotebook.cpp:609
+#, possible-c-format
+msgid "New page inserted. Index = %i"
+msgstr ""
+
+#: ../sdk/wxFlatNotebook/wxFlatNotebook.cpp:614
+#, possible-c-format
+msgid "New page appended. Index = %i"
+msgstr ""
+
+#: ../sdk/wxFlatNotebook/wxFlatNotebook.cpp:2393
+#, possible-c-format
+msgid "Old Page Index = %i"
+msgstr ""
+
+#: ../sdk/wxFlatNotebook/wxFlatNotebook.cpp:2398
+#, possible-c-format
+msgid "OnDropTarget: index by HitTest = %i"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/defsext.h:27
+msgid "<default>"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/defsext.h:29
+msgid "Common"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/defsext.h:30
+msgid "Languages"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/defsext.h:31
+msgid "Style types"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:608
+msgid "Full filename"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:616
+msgid "Language"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:621
+msgid "Lexer-ID: "
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:633
+msgid "Line endings"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:641
+msgid "Informations"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:648
+msgid "Total lines"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:654
+msgid "Total chars"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:660
+msgid "Current line"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:666
+msgid "Current pos"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:675
+msgid "Statistics"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/edit.cpp:688
+#: ../sdk/wxscintilla/samples/test/test.cpp:646
+msgid "OK"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:63
+msgid ""
+"wxScintilla implements the Scintilla editing control (see \n"
+"http://scintilla.sourceforge.net/) with the wxWidgets API. It's \n"
+"derived from wxStyledTextCtrl and has the same functionality \n"
+"and a rather similar API."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:72
+msgid "This application is derived from the demo sample of wyoGuide."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:77
+msgid "<untitled>"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:360
+msgid "There is nothing to save!"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:379
+msgid "Text is not saved, save before closing?"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:383
+msgid "Text could not be saved!"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:383
+msgid "Close abort"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:417
+msgid ""
+"There was a problem with previewing.\n"
+"                         Perhaps your current printer is not correctly?"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:419
+#: ../sdk/wxscintilla/samples/test/test.cpp:438
+msgid "Previewing"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:423
+msgid "Print Preview"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:436
+msgid ""
+"There was a problem with printing.\n"
+"                         Perhaps your current printer is not correctly?"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:455
+msgid "&Open ..\tCtrl+O"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:456
+msgid "&Save\tCtrl+S"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:457
+msgid "Save &as ..\tCtrl+Shift+S"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:458
+msgid "&Close\tCtrl+W"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:460
+msgid "Proper&ties ..\tCtrl+I"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:462
+msgid "Print Set&up .."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:463
+msgid "Print Pre&view\tCtrl+Shift+P"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:464
+msgid "&Print ..\tCtrl+P"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:466
+msgid "&Quit\tCtrl+Q"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:470
+msgid "&Undo\tCtrl+Z"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:471
+msgid "&Redo\tCtrl+Shift+Z"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:473
+msgid "Cu&t\tCtrl+X"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:474
+msgid "&Copy\tCtrl+C"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:475
+msgid "&Paste\tCtrl+V"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:476
+msgid "&Delete\tDel"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:478
+msgid "&Find\tCtrl+F"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:480
+msgid "Find &next\tF3"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:482
+msgid "&Replace\tCtrl+H"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:484
+msgid "Replace &again\tShift+F4"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:487
+msgid "&Match brace\tCtrl+M"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:488
+msgid "&Goto\tCtrl+G"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:491
+msgid "&Indent increase\tTab"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:492
+msgid "I&ndent reduce\tBksp"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:494
+msgid "&Select all\tCtrl+A"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:495
+msgid "Select &line\tCtrl+L"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:507
+msgid "&ANSI (Windows)"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:508
+msgid "&MAC (Macintosh)"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:512
+msgid "&Hilight language .."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:514
+msgid "&Overwrite mode\tIns"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:516
+msgid "&Wrap mode\tCtrl+U"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:519
+msgid "Show line &endings"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:521
+msgid "Show &indent guides"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:523
+msgid "Show line &numbers"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:525
+msgid "Show &long line marker"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:527
+msgid "Show white&space"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:530
+msgid "Use &code page of .."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:534
+msgid "&Upper case"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:535
+msgid "&Lower case"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:539
+msgid "CR (&Linux)"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:540
+msgid "CR+LF (&Windows)"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:541
+msgid "LF (&Macintosh)"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:545
+msgid "&Readonly mode"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:548
+msgid "Change &case to .."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:550
+msgid "Convert line &endings to .."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:554
+msgid "&About ..\tShift+F1"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:558 ../src/main.cpp:614
+msgid "&Edit"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:559
+msgid "&View"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:560
+msgid "E&xtra"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:561
+msgid "&Help"
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:596
+msgid "About..."
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:609
+msgid "Vendor: "
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:611
+msgid "Version: "
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:613
+msgid "Written by: "
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:615
+msgid "Licence type: "
+msgstr ""
+
+#: ../sdk/wxscintilla/samples/test/test.cpp:617
+msgid "Copyright: "
+msgstr ""
+
+#: ../sdk/xtra_res.cpp:42
+msgid "Incorrect syntax of XRC resource: tool not within a toolbar!"
+msgstr ""
+
+#: ../sdk/xtra_res.cpp:69
+msgid "can't have both toggleable and radion button at once"
+msgstr ""
+
+#: ../sdk/xtra_res.cpp:90
+msgid "Incorrect syntax of XRC resource: separator not within a toolbar!"
+msgstr ""
+
+#: ../src/app.cpp:390
+msgid ""
+"Another program instance is already running.\n"
+"Code::Blocks is currently configured to only allow one running instance.\n"
+"\n"
+"You can access this Setting under the menu item 'Environment'."
+msgstr ""
+
+#: ../src/app.cpp:504
+msgid ""
+"Unknown exception was raised. The application will terminate immediately..."
+msgstr ""
+
+#: ../src/app.cpp:525
+#, possible-c-format
+msgid ""
+"Something has gone wrong inside %s and it will terminate immediately.\n"
+"We are sorry for the inconvenience..."
+msgstr ""
+
+#: ../src/app.cpp:552
+msgid "Building "
+msgstr ""
+
+#: ../src/app.cpp:594
+msgid "Batch build ended.\n"
+msgstr ""
+
+#: ../src/app.cpp:596
+msgid "Batch build stopped with errors.\n"
+msgstr ""
+
+#: ../src/app.cpp:597
+#, possible-c-format
+msgid "Process exited with status code %d."
+msgstr ""
+
+#: ../src/app.cpp:749
+msgid "Please choose which personality (profile) to load:"
+msgstr ""
+
+#: ../src/app.cpp:750
+msgid "Personalities (profiles)"
+msgstr ""
+
+#: ../src/appglobals.cpp:94
+msgid "Chinese (Simplified)"
+msgstr ""
+
+#: ../src/dlgabout.cpp:50 ../src/main.cpp:478 ../src/main.cpp:1268
+msgid "Welcome to "
+msgstr ""
+
+#: ../src/dlgabout.cpp:52
+msgid ""
+" is a full-featured IDE (Integrated Development Environment) aiming to make "
+"the individual developer (and the development team) work in a nice "
+"programming environment offering everything he/they would ever need from a "
+"program of that kind.\n"
+"Its pluggable architecture allows you, the developer, to add any kind of "
+"functionality to the core program, through the use of plugins...\n"
+msgstr ""
+
+#: ../src/dlgabout.cpp:64
+msgid "Build: "
+msgstr ""
+
+#: ../src/dlgabout.cpp:67
+msgid ""
+"Developers:\n"
+"--------------\n"
+"Yiannis Mandravellos: Project leader - Core developer\n"
+"Thomas Denk         : Core developer\n"
+"Ricardo Garcia      : All-hands person\n"
+"\"tiwag\"             : Developer\n"
+"\n"
+"Contributors (in no special order):\n"
+"-----------------------------------\n"
+"byo,elvstone, me22  : Conversion to Unicode\n"
+"byo, cyberkoa       : wxSmith RAD plugin\n"
+"P. A. Jimenez       : Help and AStyle plugins\n"
+"Hakki Dogusan       : DigitalMars compiler support\n"
+"ybx                 : OpenWatcom compiler support\n"
+"Tim Baker           : Patches for the direct-compile-mode\n"
+"                      dependencies generation system\n"
+"Eric Burnett        : GDB debugger plugin patches\n"
+"Chris Raschko       : Design of the 3D logo for Code::Blocks\n"
+"J.A. Ortega         : 3D Icon based on the above\n"
+"\n"
+"The wxWidgets project (http://www.wxwidgets.org).\n"
+"TinyXML parser (http://www.grinninglizard.com/tinyxml).\n"
+"The GNU Software Foundation (http://www.gnu.org).\n"
+"Last, but not least, the open-source community."
+msgstr ""
+
+#: ../src/dlgabout.cpp:95
+msgid "The Code::Blocks Team"
+msgstr ""
+
+#: ../src/main.cpp:534
+msgid "Close Fullscreen"
+msgstr ""
+
+#: ../src/main.cpp:540
+msgid "Management"
+msgstr ""
+
+#: ../src/main.cpp:546
+msgid "Messages"
+msgstr ""
+
+#: ../src/main.cpp:630
+#, possible-c-format
+msgid "Switch highlighting mode for current document to \"%s\""
+msgstr ""
+
+#: ../src/main.cpp:639
+msgid "&Tools"
+msgstr ""
+
+#: ../src/main.cpp:643
+msgid "P&lugins"
+msgstr ""
+
+#: ../src/main.cpp:719
+msgid "Main Toolbar"
+msgstr ""
+
+#: ../src/main.cpp:752 ../src/main.cpp:757
+#, possible-c-format
+msgid "Scanning for plugins in %s..."
+msgstr ""
+
+#: ../src/main.cpp:763
+msgid "Loading: "
+msgstr ""
+
+#: ../src/main.cpp:960
+#, possible-c-format
+msgid "Switch to %s layout"
+msgstr ""
+
+#: ../src/main.cpp:975
+msgid "Layout changed"
+msgstr ""
+
+#: ../src/main.cpp:976
+#, possible-c-format
+msgid "The layout '%s' has changed. Do you want to save it?"
+msgstr ""
+
+#: ../src/main.cpp:1052
+msgid " Toolbar"
+msgstr ""
+
+#: ../src/main.cpp:1188
+msgid "The project file does not exist..."
+msgstr ""
+
+#: ../src/main.cpp:1230
+msgid " WINDOWS-1252 "
+msgstr ""
+
+#: ../src/main.cpp:1231
+msgid " Line 12345, Column 123 "
+msgstr ""
+
+#: ../src/main.cpp:1234
+msgid " Overwrite "
+msgstr ""
+
+#: ../src/main.cpp:1235
+msgid " Modified "
+msgstr ""
+
+#: ../src/main.cpp:1237
+msgid " Overwrite"
+msgstr ""
+
+#: ../src/main.cpp:1238
+msgid " Modified"
+msgstr ""
+
+#: ../src/main.cpp:1240
+msgid " Read/Write....."
+msgstr ""
+
+#: ../src/main.cpp:1257
+#, possible-c-format
+msgid "Line %d, Column %d"
+msgstr ""
+
+#: ../src/main.cpp:1261
+msgid "Overwrite"
+msgstr ""
+
+#: ../src/main.cpp:1261
+msgid "Insert"
+msgstr ""
+
+#: ../src/main.cpp:1262
+msgid "Modified"
+msgstr ""
+
+#: ../src/main.cpp:1263
+msgid "Read only"
+msgstr ""
+
+#: ../src/main.cpp:1263
+msgid "Read/Write"
+msgstr ""
+
+#: ../src/main.cpp:1417
+msgid "Script console"
+msgstr ""
+
+#: ../src/main.cpp:1461
+msgid ""
+"Can't open file.\n"
+"Do you want to remove it from the recent files list?"
+msgstr ""
+
+#: ../src/main.cpp:1892
+msgid "Open file"
+msgstr ""
+
+#: ../src/main.cpp:2053
+msgid "Import Dev-C++ project"
+msgstr ""
+
+#: ../src/main.cpp:2058
+msgid "Import MS Visual C++ 6.0 project"
+msgstr ""
+
+#: ../src/main.cpp:2063
+msgid "Import MS Visual C++ 6.0 workspace"
+msgstr ""
+
+#: ../src/main.cpp:2068
+msgid "Import MS Visual Studio 7.0+ project"
+msgstr ""
+
+#: ../src/main.cpp:2073
+msgid "Import MS Visual Studio 7.0+ solution"
+msgstr ""
+
+#: ../src/main.cpp:2083
+msgid "Can't open default workspace (file exists?)"
+msgstr ""
+
+#: ../src/main.cpp:2576
+msgid "Enter the name for this layout"
+msgstr ""
+
+#: ../src/main.cpp:2576
+msgid "Save current layout"
+msgstr ""
+
+#: ../src/main.cpp:2588
+msgid ""
+"The default layout cannot be deleted. It can always be reverted to a "
+"predefined state though.\n"
+"Do you want to revert it now?"
+msgstr ""
+
+#: ../src/main.cpp:2599
+#, possible-c-format
+msgid "Are you really sure you want to delete the layout '%s'?"
+msgstr ""
+
+#: ../src/main.cpp:2622
+#, possible-c-format
+msgid ""
+"Layout '%s' deleted.\n"
+"Will now revert to layout '%s'..."
+msgstr ""
+
+#: ../src/main.cpp:2679
+msgid "Line: "
+msgstr ""
+
+#: ../src/main.cpp:2680
+msgid "Goto line"
+msgstr ""
+
+#: ../src/main.cpp:3074
+msgid "Code::Blocks needs to be restarted for the changes to take effect."
+msgstr ""
+
+#: ../src/scriptconsole.cpp:46
+msgid "ID_TEXTCTRL1"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:48
+msgid "ID_PANEL1"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:51
+msgid "Command:"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:51
+msgid "ID_STATICTEXT1"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:52
+msgid "ID_TEXTCTRL2"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:54
+msgid "Execute"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:54
+msgid "ID_BUTTON1"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:56
+msgid "Load from file"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:56
+msgid "ID_BUTTON2"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:58
+msgid "Clear"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:58
+msgid "ID_BUTTON3"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:82
+msgid "Welcome to the script console!"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:127
+msgid "Load script"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:137
+msgid "Loaded succesfully"
+msgstr ""
+
+#: ../src/scriptconsole.cpp:141
+msgid "Failed..."
+msgstr ""
+
+#: ../src/startherepage.cpp:106
+msgid ""
+"<html><body><h1>Welcome to Code::Blocks!</h1><br>The default start page "
+"seems to be missing...</body></html>"
+msgstr ""

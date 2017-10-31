@@ -1,0 +1,582 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+	<Program name="C"         value="mwcceppc.exe"/> <!-- used to compile c and c++ -->
+	<Program name="CPP"       value="mwcceppc.exe"/> <!-- used to compile c and c++ -->
+	<Program name="LD"        value="mwldeppc.exe"/>
+	<Program name="LIB"       value="mwldeppc.exe"/>
+	<Program name="DBGconfig" value=""/>
+	<Program name="WINDRES"   value="mwasmeppc.exe"/> <!-- used to compile asm -->
+	<Program name="MAKE"      value="make.exe"/>
+
+    <Switch name="includeDirs"             value="-ir "/>
+    <Switch name="libDirs"                 value="-lr "/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+
+    <!-- Summary of CodeWarrior options: freescale AN4094.pdf -->
+
+    <!-- Access Paths Settings -->
+    <Category name="EPPC Target Settings">
+        <Option name="Begins searching in current working directory (default)"
+                option="-cwd proj"
+				supersedes="-cwd source -cwd explicit -cwd include"/>
+        <Option name="Begins searching in directory that contains the source file"
+                option="-cwd source"
+				supersedes="-cwd proj -cwd explicit -cwd include"/>
+        <Option name="No implicit directory. Search -I or -ir paths"
+                option="-cwd explicit"
+				supersedes="-cwd proj -cwd source -cwd include"/>
+        <Option name="Begins searching in directory of referencing file"
+                option="-cwd include"
+				supersedes="-cwd proj -cwd source -cwd explicit"/>
+        <Option name="System Paths"
+                option="-stdinc"/>
+        <Option name="Always Search User Paths"
+                option="-nosyspath"/>
+        <Option name="Source relative includes"
+                option="-convertpaths"/>
+    </Category>
+
+	<!-- EPPC Target Settings -->
+    <Category name="EPPC Target Settings">
+        <Option name="Little-endian data formats"
+                option="-little"
+				additionalLibs="-little"
+                supersedes="-big"/>
+        <Option name="Big-endian data formats"
+                option="-big"
+				additionalLibs="-big"
+                supersedes="-little"/>
+        <Option name="Code Model (Absolute Addressing)"
+                option="-model absolute"
+				additionalLibs="-model absolute"
+				supersedes="-model sda_pic_pid"/>
+        <Option name="Code Model (SDA Based PIC/PID Addressing)"
+                option="-model sda_pic_pid"
+				additionalLibs="-model sda_pic_pid"
+				supersedes="-model absolute"/>
+        <Option name="Small Data"
+                option="-sdata 8"
+				additionalLibs="-sdata 8"/>
+        <Option name="Small Data2"
+                option="-sdata2 8"
+				additionalLibs="-sdata2 8"/>
+        <Option name="Heap Size (k)"
+				option="-heapsize 32"
+				additionalLibs="-heapsize 32"/>
+        <Option name="Stack Size (k)"
+				option="-stacksize 32"
+				additionalLibs="-stacksize 32"/>
+        <Option name="Disable CW Extensions"
+                option="-disable_extensions on"/>
+        <Option name="DWARF"
+                option="-gdwarf"
+				additionalLibs="-gdwarf"
+				supersedes="-gdwarf-2"/>
+        <Option name="DWARF 2"
+                option="-gdwarf-2"
+				additionalLibs="-gdwarf-2"
+				supersedes="-gdwarf"/>
+        <Option name="Tune Relocations"
+				additionalLibs="-tune_relocations"/>
+        <Option name="ABI"
+                option="-abi eabi"
+				additionalLibs="-abi eabi"/>
+    </Category>
+
+	<!-- C/C++ Language Settings -->
+    <Category name="C/C++ Language Settings">
+        <Option name="Force C++ Compilation"
+                option="-lang c++"/>
+        <Option name="ISO C++ Template Parser"
+                option="-iso_templates on"/>
+        <Option name="Use Instance Manager"
+                option="-instance_manager on"/>
+        <Option name="Enable C++ Exceptions"
+                option="-Cpp_exceptions on"
+				supersedes="-Cpp_exceptions off"/>
+        <Option name="Disable C++ Exceptions"
+                option="-Cpp_exceptions off"
+				supersedes="-Cpp_exceptions on"/>
+        <Option name="Enable RTTI"
+                option="-RTTI on"/>
+        <Option name="Enable bool Support"
+                option="-bool on"/>
+        <Option name="Enable wchar_t Support"
+                option="-wchar_t on"
+				supersedes="-wchar_t off"/>
+        <Option name="Disable wchar_t Support"
+                option="-wchar_t off"
+				supersedes="-wchar_t on"/>
+        <Option name="EC++ Compatibility Mode"
+                option="-lang ec++"/>
+        <Option name="ANSI Strict"
+                option="-strict on"/>
+        <Option name="ANSI Keywords Only"
+                option="-stdkeywords on"/>
+        <Option name="Expand Trigraphs"
+                option="-trigraphs on"/>
+        <Option name="Legacy for-scoping"
+                option="-for_scoping on"/>
+        <Option name="Require Function Prototypes"
+                option="-requireprotos"/>
+        <Option name="Enable C99 Extensions"
+                option="-lang c99"/>
+        <Option name="Enable GCC Extensions"
+                option="-gcc_extensions on"/>
+        <Option name="Enums Always Int"
+                option="-enum min"/>
+        <Option name="Use Unsigned Chars"
+                option="-char unsigned"
+				additionalLibs="-char unsigned"/>
+        <Option name="Pool Strings"
+                option="-strings pool"/>
+        <Option name="Reuse Strings"
+                option="-strings noreuse"/>
+        <Option name="Interprocedural Analysis (IPA) off"
+                option="-ipa off"
+				supersedes="-ipa file -ipa program"/>
+        <Option name="Interprocedural Analysis (IPA) file"
+                option="-ipa file"
+				supersedes="-ipa off -ipa program"/>
+        <Option name="Interprocedural Analysis (IPA) program"
+                option="-ipa program"
+				supersedes="-ipa off -ipa file"/>
+		<!-- TODO: -->
+        <!-- <Option name="Inline depth: Do not Inline" -->
+        <!--         option="-inline off" -->
+		<!-- 		supersedes="-inline smart"/> -->
+        <Option name="Inline depth: Smart"
+                option="-inline smart"
+				supersedes="-inline off"/>
+        <!-- <Option name="Inline depth: Inline level" -->
+        <!--         option="-inline level=1 | 2 | … | 8"/> -->
+        <Option name="Auto-Inline"
+                option="-inline auto"/>
+        <Option name="Bottom-up Inlining"
+                option="-inline bottomup"/>
+    </Category>
+
+	<!-- C/C++ Preprocessor Settings -->
+    <Category name="C/C++ Preprocessor Settings">
+        <Option name="Right click on a file and select preprocess"
+                option="-preprocess"/>
+        <Option name="Source encoding"
+                option="-encoding autodetect"/>
+				<!-- TODO: -->
+				<!-- option="-enc[oding] ascii | (autodetect | multibyte | mb) | system | (UTF[8|-8]) | (SJIS | Shift-JIS | ShiftJIS) | (EUC[JP | -JP]) | (ISO[2022JP | -2022-JP])"/> -->
+        <Option name="Use prefix text in precompiled header"
+                option="-prefix file"/>
+        <Option name="Emit file changes"
+                option="-ppopt break"/>
+        <Option name="Emit #pragmas"
+                option="-ppopt pragma"/>
+        <Option name="Show full paths"
+                option="-ppopt fullpath"/>
+        <Option name="Keep comments"
+                option="-ppopt comment"/>
+        <Option name="Use #line"
+                option="-ppopt line"/>
+        <Option name="Keep white space"
+                option="-ppopt space"/>
+    </Category>
+
+
+	<!-- C/C++ Warnings Settings -->
+    <Category name="C/C++ Warnings Settings">
+        <Option name="Illegal Pragmas"
+                option="-warnings illpragmas"/>
+        <Option name="Possible Errors"
+                option="-warnings unwanted"/>
+        <Option name="Extended Error Checking"
+                option="-warnings extended"/>
+        <Option name="Hidden Virtual Functions"
+                option="-warnings hidevirtual"/>
+        <Option name="Implicit Arithmetic Conversions"
+                option="-warnings implicitconv"/>
+        <Option name="Float to Integer (you need implicitconv)"
+                option="-warnings impl_float2int"/>
+        <Option name="Signed / Unsigned (you need implicitconv)"
+                option="-warnings impl_signedunsigned"/>
+        <Option name="Integer to Float (you need implicitconv)"
+                option="-warnings impl_int2float"/>
+        <Option name="Pointer / Integral Conversions"
+                option="-warnings ptrintconv"/>
+        <Option name="Unused Variables"
+                option="-warnings unusedvar"/>
+        <Option name="Unused Arguments"
+                option="-warnings unusedarg"/>
+        <Option name="Missing 'return' Statements"
+                option="-warnings missingreturn"/>
+        <Option name="Expression Has No Side Effect"
+                option="-warnings unusedexpr"/>
+        <Option name="Extra Commas"
+                option="-warnings extracomma"/>
+        <Option name="Inconsistent 'class' / 'struct' Usage"
+                option="-warnings structclass"/>
+        <Option name="Empty Declarations"
+                option="-warnings emptydecl"/>
+        <Option name="Include File Capitalization"
+                option="-warnings filecaps"/>
+        <Option name="Check System Includes (you need filecaps)"
+                option="-warnings sysfilecaps"/>
+        <Option name="Pad Bytes Added *"
+                option="-warnings padding"/>
+        <Option name="Undefined Macro In #if *"
+                option="-warnings undefmacro"/>
+        <Option name="None-Inlined Functions *"
+                option="-warnings notinlined"/>
+        <Option name="Treat All Warnings As Errors"
+                option="-warnings iserror"/>
+    </Category>
+
+	<!-- C/C++ Assembler Settings -->
+   <Category name="C/C++ Assembler Settings">
+        <Option name="Labels Must End With ':'"
+                option="-colons"/>
+        <Option name="Directives Begin With '.'"
+                option="-period"/>
+        <Option name="Case Sensitive Identifiers"
+                option="-case"/>
+        <Option name="Allow Space In Operand Field"
+                option="-space"/>
+        <Option name="GNU Compatible Syntax"
+                option="-gccdep"/>
+        <Option name="Generate Listing File"
+                option="-list"/>
+        <Option name="Prefix File 'macro.txt'"
+                option="-prefix macro.txt"/>
+    </Category>
+
+	<!-- Global Optimization Settings -->
+    <Category name="Optimization">
+        <Option name="Faster Execution Speed"
+                option="-Op"
+                supersedes="-Os"/>
+        <Option name="Smaller Code Size"
+                option="-Os"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-Op"/>
+        <Option name="Optimization off"
+                option="-O0"
+                supersedes="-O1 -O2 -O3 -O4"/>
+        <Option name="Optimization Level 1 (for speed)"
+                option="-O1"
+                supersedes="-O0 -O2 -O3 -O4"/>
+        <Option name="Optimization Level 2"
+                option="-O2"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O0 -O1 -O3 -O4"/>
+        <Option name="Optimization Level 3"
+                option="-O3"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O0 -O1 -O2 -O4"/>
+        <Option name="Optimization Level 4 (for space)"
+                option="-O4"
+                checkAgainst="-g -ggdb"
+                checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."
+                supersedes="-O0 -O1 -O2 -O3"/>
+    </Category>
+
+	<!-- EPPC Processor Settings -->
+	<Category name="EPPC Processor Settings">
+        <Option name="Use conventional Power Architecture alignment"
+                option="-align powerpc"
+                supersedes="-align mac68K -align mac68k4byte"/>
+        <Option name="Use conventional Mac OS 68K alignment"
+                option="-align mac68K"
+                supersedes="-align powerpc -align mac68k4byte"/>
+        <Option name="Use Mac OS 68K 4-byte alignment"
+                option="-align mac68k4byte"
+                supersedes="-align powerpc -align mac68K"/>
+        <Option name="Function Alignment (4 Byte)"
+                option="-func_align 4"
+                supersedes="-func_align 8 -func_align 16 -func_align 32 -func_align 64 -func_align 128"/>
+        <Option name="Function Alignment (8 Byte)"
+                option="-func_align 8"
+                supersedes="-func_align 4 -func_align 16 -func_align 32 -func_align 64 -func_align 128"/>
+        <Option name="Function Alignment (16 Byte)"
+                option="-func_align 16"
+                supersedes="-func_align 4 -func_align 8 -func_align 32 -func_align 64 -func_align 128"/>
+        <Option name="Function Alignment (32 Byte)"
+                option="-func_align 32"
+                supersedes="-func_align 4 -func_align 8 -func_align 16 -func_align 64 -func_align 128"/>
+        <Option name="Function Alignment (64 Byte)"
+                option="-func_align 64"
+                supersedes="-func_align 4 -func_align 8 -func_align 16 -func_align 32 -func_align 128"/>
+        <Option name="Function Alignment (128 Byte)"
+                option="-func_align 128"
+                supersedes="-func_align 4 -func_align 8 -func_align 16 -func_align 32 -func_align 64"/>
+        <Option name="Make Strings ReadOnly"
+                option="-readonlystrings"
+				supersedes="-str nopool"/>
+        <Option name="Linker Merges String Constants"
+                option="-str nopool"/>
+        <Option name="Pool Data"
+                option="-pooldata on"/>
+        <Option name="Linker Merges FP Constants"
+                option="-flag merge_float_consts -str nopool"/>
+        <Option name="Use Common Section"
+                option="-common on"/>
+        <Option name="Use LMW and STMW"
+                option="-use_lmw_stmw on"/>
+        <Option name="Inlined Assembler Is Volatile"
+                option="-volatileasm"/>
+        <Option name="Instruction Scheduling"
+                option="-schedule on"/>
+        <Option name="Peephole Optimization"
+                option="-opt peephole"/>
+        <Option name="Profiler Information"
+                option="-profile on"/>
+        <Option name="Generate ISEL Instruction (e500/Zen)"
+                option="-use_isel on"/>
+        <Option name="Generate VLE Instructions"
+                option="-vle"/>
+        <Option name="Translate PPC Asm to VLE Asm"
+                option="-ppc_asm_to_vle"/>
+    </Category>
+
+	<Category name="CPU architecture tuning"
+              exclusive="true">
+        <Option name="PowerPC e300v1"
+                option="-processor e300v1"
+				additionalLibs="-processor e300v1"/>
+        <Option name="PowerPC e300c1"
+                option="-processor e300c1"
+				additionalLibs="-processor e300c1"/>
+        <Option name="PowerPC e300c2"
+                option="-processor e300c2"
+				additionalLibs="-processor e300c2"/>
+        <Option name="PowerPC e300c3"
+                option="-processor e300c3"
+				additionalLibs="-processor e300c3"/>
+        <Option name="PowerPC e300c4"
+                option="-processor e300c4"
+				additionalLibs="-processor e300c4"/>
+        <Option name="PowerPC e500v1"
+                option="-processor e500v1"
+				additionalLibs="-processor e500v1"/>
+        <Option name="PowerPC e500v2"
+                option="-processor e500v2"
+				additionalLibs="-processor e500v2"/>
+        <Option name="PowerPC e600"
+                option="-processor e600"
+				additionalLibs="-processor e600"/>
+        <Option name="PowerPC Zen"
+                option="-processor Zen"
+				additionalLibs="-processor Zen"/>
+        <Option name="PowerPC 5565"
+                option="-processor 5565"
+				additionalLibs="-processor 5565"/>
+        <Option name="PowerPC gekko"
+                option="-processor gekko"
+				additionalLibs="-processor gekko"/>
+    </Category>
+
+    <Category name="Floating-point code generation">
+        <Option name="No floating point code generation"
+                option="-fp off"
+				additionalLibs="-fp off"
+				supersedes="-fp soft -fp hard -fp dpfp -fp spfp -fp spfp_only"/>
+        <Option name="Use software libraries to perform floating-point operations"
+                option="-fp soft"
+				additionalLibs="-fp soft"
+				supersedes="-fp off -fp hard -fp dpfp -fp spfp -fp spfp_only"/>
+        <Option name="Use the processor's built-in floating-point capabilities"
+                option="-fp hard"
+				additionalLibs="-fp hard"
+				supersedes="-fp off -fp soft -fp dpfp -fp spfp -fp spfp_only"/>
+        <Option name="Use the processor's double-precision floating-point capabilities on the e500v2 processor"
+                option="-fp dpfp"
+				additionalLibs="-fp dpfp"
+				supersedes="-fp off -fp soft -fp hard -fp spfp -fp spfp_only"/>
+        <Option name="Use software libraries for floating-point for e500 SPE-EFPU floating-point capabilities for other floating-point operations"
+                option="-fp spfp"
+				additionalLibs="-fp spfp"
+				supersedes="-fp off -fp soft -fp hard -fp dpfp -fp spfp_only"/>
+        <Option name="Use software libraries only supported for e200 (Zen/VLE) and e500v1 processors that support SPFP APU"
+                option="-fp spfp_only"
+				additionalLibs="-fp spfp_only"
+				supersedes="-fp off -fp soft -fp hard -fp dpfp -fp spfp"/>
+        <Option name="IEEE floating point operations"
+                option="-strict_ieee"
+				supersedes="-relax_ieee"/>
+        <Option name="Relaxed IEEE floating point operations"
+                option="-relax_ieee"
+				supersedes="-strict_ieee"/>
+        <Option name="Use Fused Multi-Add/Sub"
+                option="-fp_contract"/>
+        <Option name="Generate FSEL Instruction"
+                option="-use_fsel on"/>
+        <Option name="Assume Ordered Compares"
+                option="-ordered-fp-compares"/>
+    </Category>
+
+    <Category name="Vector Support">
+        <Option name="Vector instructions"
+                option="-vector on"
+				supersedes="-spe_vector -spe_addl_vector -spe2_vector"/>
+        <Option name="SPE vector support"
+                option="-spe_vector"
+				supersedes="-vector on -spe_addl_vector -spe2_vector"/>
+        <Option name="SPE fused multiply-add and multiply-subtract instuctions support"
+                option="-spe_addl_vector"
+				supersedes="-vector on -spe_vector -spe2_vector"/>
+        <Option name="SPE additional fused multiply-add instructions codegen"
+                option="-spe2_vector"
+				supersedes="-vector on -spe_vector -spe_addl_vector"/>
+        <Option name="Generate VRSAVE Instructions"
+                option="-vector vrsave"/>
+        <Option name="Altivec Structure Moves"
+                option="-altivec_move_block"/>
+    </Category>
+
+	<!-- EPPC Disassembler Settings -->
+    <Category name="EPPC Disassembler Settings">
+        <Option name="Show Headers"
+				additionalLibs="-show headers"/>
+        <Option name="Show Symbol Table"
+				additionalLibs="-show code"/>
+        <Option name="Use Extended Mnemonics"
+				additionalLibs="-show extended"/>
+        <Option name="Show Source Code"
+				additionalLibs="-show source"/>
+        <Option name="Only Show Operands and Mnemonics"
+				additionalLibs="-show only"/>
+        <Option name="Show Data Modules"
+				additionalLibs="-show data"/>
+        <Option name="Disassemble Exception Tables"
+				additionalLibs="-show xtables"/>
+        <Option name="Show DWARF Info"
+				additionalLibs="-show dwarf"/>
+        <Option name="Relocate DWARF Info"
+				additionalLibs="-relocate"/>
+        <Option name="Verbose Info"
+				additionalLibs="-verbose"/>
+    </Category>
+
+    <!-- EPPC Linker Settings -->
+    <Category name="EPPC Linker Settings">
+        <Option name="Link Mode (lessram)"
+				additionalLibs="-linkmode lessram"
+				supersedes="-linkmode normal -linkmode moreram"/>
+        <Option name="Link Mode (normal)"
+				additionalLibs="-linkmode normal"
+				supersedes="-linkmode lessram -linkmode moreram"/>
+        <Option name="Link Mode (moreram)"
+				additionalLibs="-linkmode moreram"
+				supersedes="-linkmode lessram -linkmode normal"/>
+        <Option name="Generate DWARF Info"
+				additionalLibs="-sym on"
+				supersedes="-sym fullpath"/>
+        <Option name="Generate DWARF Info: Use Full Path Names"
+				additionalLibs="-sym fullpath"/>
+        <Option name="Generate Link Map"
+				additionalLibs="-map"
+				supersedes="-listclosure -mapunused -listdwarf"/>
+        <Option name="Generate Link Map: List Closure"
+				additionalLibs="-listclosure"/>
+        <Option name="Generate Link Map: List Unused Objects"
+				additionalLibs="-mapunused"/>
+        <Option name="Generate Link Map: List DWARF Objects"
+				additionalLibs="-listdwarf"/>
+        <Option name="Suppress Warning Messages"
+				additionalLibs="-warnings on"/>
+        <!--Option name="Heap Address"
+				additionalLibs="-heapaddr addr_value"/-->
+        <!--Option name="Stack Address"
+				additionalLibs="-stackaddr addr_value"/-->
+        <Option name="Use Linker Command File"
+				additionalLibs="-lcf filename"/>
+        <!--Option name="Code Address"
+				additionalLibs="-codeaddr addr_value"/-->
+        <!--Option name="Data Address"
+				additionalLibs="-dataaddr addr_value"/-->
+        <!--Option name="Small Data"
+				additionalLibs="-sdataaddr addr_value"/-->
+        <!--Option name="Small Data2"
+				additionalLibs="-sdata2addr addr_value"/-->
+        <!--Option name="Generate ROM Image: RAM Buffer Address"
+				additionalLibs="-rambuffer addr_value"/-->
+        <!--Option name="Generate ROM Image: ROM Image Address"
+				additionalLibs="-romaddr addr_value"/-->
+        <Option name="Generate S-Record File"
+				additionalLibs="-srec"/>
+        <Option name="Sort S-Record"
+				additionalLibs="-sortsrec"/>
+        <Option name="Max Length"
+				additionalLibs="-sreclength 26"/>
+        <Option name="EOL Character Mac"
+				additionalLibs="-sreceol mac"
+				supersedes="-sreceol dos -sreceol unix"/>
+        <Option name="EOL Character Dos"
+				additionalLibs="-sreceol dos"
+				supersedes="-sreceol mac -sreceol unix"/>
+        <Option name="EOL Character Unix"
+				additionalLibs="--sreceol unix"
+				supersedes="-sreceol mac -sreceol dos"/>
+        <!--Option name="Entry Point"
+				additionalLibs="-main symbol"/-->
+    </Category>
+
+    <!-- EPPC Linker Options Settings -->
+    <Category name="EPPC Linker Options Settings">
+        <Option name="Code Merging (disable)"
+				additionalLibs="-code_merging off"
+				supersedes="-code_merging all -code_merging safe -code_mering aggressive"/>
+        <Option name="Code Merging (all)"
+				additionalLibs="-code_merging all"
+				supersedes="-code_merging off -code_merging safe -code_mering aggressive"/>
+        <Option name="Code Merging (safe)"
+				additionalLibs="-code_merging safe"
+				supersedes="-code_merging off -code_merging all -code_mering aggressive"/>
+        <Option name="Code Merging (aggressive)"
+				additionalLibs="-code_merging all,aggressive"
+				supersedes="-code_merging off -code_merging all -code_mering aggressive"/>
+        <Option name="VLE Enhance Merging"
+				additionalLibs="-vle_enhance_merging"/>
+        <Option name="No Far to Near Addressing"
+				additionalLibs="-nofar_near_addressing"/>
+        <Option name="Far to Near Addressing"
+				additionalLibs="-far_near_addressing"/>
+        <Option name="VLE Shorten Branches"
+				additionalLibs="-vle_bl_opt"/>
+    </Category>
+
+    <Command name="CompileObject"
+			ext="c;c++;cc;cp;cpp;cxx"
+            value="$compiler $options -I- $includes -c $file -msgstyle GCC -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+			ext="asm;inc;s;src"
+            value="$rescomp $options -I- $includes -c $file -msgstyle GCC -o $object"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs $link_objects $link_resobjects $link_options $libs -msgstyle GCC -o $exe_output"/>
+	<Command name="LinkExe"
+			 value="$linker $libdirs $link_objects $link_resobjects $link_options $libs -msgstyle GCC -o $exe_output"/>
+	<Command name="LinkDynamic"
+			 value="$linker $libdirs $link_options $libs $link_resobjects $link_objects -msgstyle GCC -o $exe_output"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs $link_options $libs $link_resobjects $link_objects -msgstyle GCC -o $exe_output"/>
+    <Command name="LinkStatic"
+             value="$linker $libdirs $link_options $libs $link_resobjects $link_objects -msgstyle GCC -o $exe_output"/>
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+</CodeBlocks_compiler_options>

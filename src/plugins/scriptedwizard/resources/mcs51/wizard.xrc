@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="memoryModelChoice">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="textChoice">
+					<label>Please choose a memory model for this project...</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxMem">
+					<content>
+						<item>small</item>
+						<item>medium</item>
+						<item>large</item>
+						<item>huge</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer">
+					<label>Memory Sizes</label>
+					<object class="sizeritem">
+						<object class="wxFlexGridSizer">
+							<cols>2</cols>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT1">
+									<label>CODE Size</label>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxSpinCtrl" name="spnSizeCODE">
+									<value>65536</value>
+									<min>1024</min>
+									<max>65536</max>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT2">
+									<label>IDATA Size</label>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxSpinCtrl" name="spnSizeIDATA">
+									<value>256</value>
+									<min>128</min>
+									<max>256</max>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_STATICTEXT3">
+									<label>XDATA Size</label>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxSpinCtrl" name="spnSizeXDATA">
+									<value>4096</value>
+									<max>65536</max>
+								</object>
+								<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+						</object>
+						<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="radioboxOutput">
+					<label>Output Format</label>
+					<content>
+						<item>Create Intel hex files</item>
+						<item>Create Motorola S19 files</item>
+					</content>
+					<default>-1</default>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</resource>

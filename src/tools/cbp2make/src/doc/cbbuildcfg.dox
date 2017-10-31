@@ -1,0 +1,178 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file cbbuildcfg.h
+  \brief Build configuration.
+*/
+
+/*!
+  \file cbbuildcfg.cpp
+  \brief Build configuration.
+*/
+
+/*!
+  \class CCodeBlocksBuildConfig
+  \brief Build configuration.
+
+  Contains configurations for platforms (operating systems),
+  build utilities, i.e., toolchains, global compiler variables
+  (installation-specefic options), makefile generation options.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_Platforms
+  \brief Configuration of a set of platforms.
+
+  \sa CPlatformSet.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_ToolChains
+  \brief Configuration of a set of build utilities.
+
+  \sa CToolChainSet.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_GlobalVariables
+  \brief Configuration of a set of global variables.
+
+  \sa CGlobalVariableConfig.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_FlatObjectNames
+  \brief Controls the way of object file names generation.
+
+  When \a m_FlatObjectNames is set to \a true, file names of build units
+  are processed depending on CCodeBlocksBuildConfig::m_FlatObjectNames value.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_FlatObjectPaths
+  \brief Controls the way of object file names generation.
+
+  When \a m_FlatObjectPaths is set to \a true, file names of build units
+  including file path are processed using FlatFileName(const CString& FileName)
+  function, otherwise, path to build unit is not used for composing path
+  to corresponding object file and all object files will be created in one directory.
+  This option works only if CCodeBlocksBuildConfig::m_FlatObjectNames is set to \a true.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_MultilineObjects
+  \brief Allows generation of multi-line object file lists.
+*/
+
+/*!
+  \var CCodeBlocksBuildConfig::m_MultilineOptions
+  \brief Allows generation of multi-line option lists.
+*/
+
+/* !
+  \var CCodeBlocksBuildConfig::
+  \brief .
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::Platforms(void)
+  \brief Returns reference to the set of platforms in build configuration.
+  \return reference to CCodeBlocksBuildConfig::m_Platforms.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::ToolChains(void)
+  \brief Returns reference to the set of toolchains in build configuration.
+  \return reference to CCodeBlocksBuildConfig::m_ToolChains.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::GlobalVariables(void)
+  \brief Returns reference to the set of global variables in build configuration.
+  \return reference to CCodeBlocksBuildConfig::m_GlobalVariables.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::FlatObjectNames(void)
+  \brief Controls the way of object file names generation.
+  \return reference to CCodeBlocksBuildConfig::m_FlatObjectNames.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::FlatObjectPaths(void)
+  \brief Controls the way of object file names generation.
+  \return reference to CCodeBlocksBuildConfig::m_FlatObjectPaths.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::MultilineObjects(void)
+  \brief Allows generation of multi-line object file lists.
+  \return reference to CCodeBlocksBuildConfig::m_MultilineObjects.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::MultilineOptions(void)
+  \brief Allows generation of multi-line option lists.
+  \return reference to CCodeBlocksBuildConfig::m_MultilineOptions.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::Clear(void)
+  \brief Resets the build configuration to the initial state.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::Load(const CString& FileName)
+  \brief Loads a build configuration from a file specified by \a FileName.
+  \param FileName name of build configuration file.
+
+  \return \a true if configuration was successfully loaded, \a false otherwise.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::Save(const CString& FileName)
+  \brief Saves the build configuration to a file specified by \a FileName.
+  \param FileName name of build configuration file.
+
+  \return \a true if configuration was successfully saved, \a false otherwise.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::Show(void)
+  \brief Prints build configuration contents to standard output.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::CCodeBlocksBuildConfig(void)
+  \brief Creates build configuration.
+*/
+
+/*!
+  \fn CCodeBlocksBuildConfig::~CCodeBlocksBuildConfig(void)
+  \brief Destroys build configuration.
+*/
+
+/* !
+  \fn CCodeBlocksBuildConfig::
+  \brief .
+  \param .
+  \return .
+*/
+
+//------------------------------------------------------------------------------

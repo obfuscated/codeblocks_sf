@@ -1,0 +1,19 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+Log(_T("Running startup script"));
+
+// #include any script plugins; this will register them too
+// un-comment the line below to register a pointless sample plugin
+// Include(_T("sample_plugin.script"));
+
+Include(_T("plugin_find_broken_files.script"));
+
+// add a menu entry to edit this script
+GetScriptingManager().RegisterScriptMenu(_("&Settings") + _T("/-") + _("Edit startup script"), _T("edit_startup_script.script"), false);

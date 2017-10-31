@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+		<Template name="OGRE sample" title="OGRE Application" category="2D/3D Graphics" bitmap="ogrelogo.png">
+		<FileSet name="s" title="Default">
+			<File source="ogre-main.cpp" destination="main.cpp" targets="Debug;Release"/>
+		</FileSet>
+		<Option name="OGRE Application (Free VisualC++ Toolkit 2003)">
+			<Project file="ogre_vctk.cbp" useDefaultCompiler="0"/>
+		</Option>
+		<Option name="OGRE Application (GCC)">
+			<Project file="ogre_gcc.cbp" useDefaultCompiler="0"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

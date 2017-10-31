@@ -1,0 +1,40 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="Digital Mars D Compiler"
+                     id="dmd"
+                     weight="84">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Fallback path="C:\dmd"/>
+        </if>
+        <else>
+            <Search path="/usr/local/bin"
+                    for="C"/>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+    <Path type="include">
+        <if platform="windows">
+            <Add><master/>\src\phobos</Add>
+        </if>
+        <else>
+            <Add><master/>/lib/phobos</Add>
+        </else>
+    </Path>
+    <Path type="lib">
+        <Add><master/><separator/>lib</Add>
+    </Path>
+    <if platform="windows">
+        <Add lib="phobos2.lib"/>
+        <Path type="extra">
+            <Add>C:\dm\bin</Add>
+        </Path>
+    </if>
+    <else>
+        <Add lib="pthread"/>
+        <Add lib="m"/>
+        <Add lib="phobos2"/>
+    </else>
+</CodeBlocks_compiler>

@@ -1,0 +1,23 @@
+
+function SetBuildOptions(base)
+{
+	if(PLATFORM == PLATFORM_MSW)
+	{
+		local CompilerId = base.GetCompilerID();
+		if(CompilerId.Matches(_T("gcc")))
+		{
+			local CF = GetCompilerFactory();
+			if(!IsNull(CF))
+			{
+				local Version = CF.GetCompilerVersionString(CompilerId);
+//				LogDebug(Version);
+				// check how this string looks like and compare with 4.2.0
+				local bDoIt = (Version >= _T("4.2.0"));
+				if(bDoIt)
+				{
+					base.AddCompilerOption(_T("-Wno-attributes"));
+				}
+			}
+		}
+	}
+} // end of SetBuildOptions

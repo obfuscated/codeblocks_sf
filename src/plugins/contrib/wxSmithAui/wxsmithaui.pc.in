@@ -1,0 +1,15 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/wxSmithAui
+includedir=@includedir@/wxSmithAui
+datarootdir = @datarootdir@
+sharedir=@datadir@
+
+Name: wxSmithAui
+Description: wxAUI support for wxSmith
+Version: @VERSION@
+Libs: -L${libdir}
+Cflags: -I${includedir} \
+			-I${includedir}/wxAuiManager \
+			-I${includedir}/wxAuiNotebook \
+			-I${includedir}/wxAuiToolBar

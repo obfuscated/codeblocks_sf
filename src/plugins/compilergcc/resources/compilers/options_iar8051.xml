@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="icc8051.exe"/>
+        <Program name="CPP"       value="icc8051.exe"/>
+        <Program name="LD"        value="xlink.exe"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="xar.exe"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="icc8051"/>
+        <Program name="CPP"       value="icc8051"/>
+        <Program name="LD"        value="xlink"/>
+        <Program name="DBGconfig" value=""/>
+        <Program name="LIB"       value="xar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-I"/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="r51"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="r51"/>
+    <Switch name="linkerNeedsLibPrefix"    value="true"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Option name="Produce debugging symbols"
+            option="--debug"
+            checkAgainst="-Om -Oh -Ohs -Ohz"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+    <Option name="Enable Remarks"
+            option="--remarks"/>
+    <Option name="Disable Warnings"
+            option="--no-warnings"/>
+    <Option name="Require proper function prototypes"
+            option="--require_prototypes"/>
+    <Option name="Enforce strict language rules compliance"
+            option="--strict"
+            checkAgainst="-e"
+            checkMessage="--strict and -e are mutually exclusive"/>
+    <Option name="Treat Warnings as Errors"
+            option="--warnings_are_errors"/>
+
+    <Category name="Optimization"
+              exclusive="true">
+        <Option name="Optimization Level None (best debug support)"
+                option="-On"/>
+        <Option name="Optimization Level Low"
+                option="-Ol"/>
+        <Option name="Optimization Level Medium"
+                option="-Om"/>
+        <Option name="Optimization Level High, Balanced"
+                option="-Oh"/>
+        <Option name="Optimization Level High, favoring Speed"
+                option="-Ohs"/>
+        <Option name="Optimization Level High, favoring Size"
+                option="-Ohz"/>
+    </Category>
+
+    <Category name="Optimization">
+        <Option name="Disable Code Motion"
+                option="--no_code_motion"/>
+        <Option name="Disable Common Subexpression Elimination"
+                option="--no_cse"/>
+        <Option name="Disable Function Inlining"
+                option="--no_inline"/>
+        <Option name="Do not include file path in __FILE__ and __BASE_FILE__ macros"
+                option="--no_path_in_file_macros"/>
+        <Option name="Do not emit destructors for C++ static variables"
+                option="--no_static_destruction"/>
+        <Option name="Disable automatic search for system include files"
+                option="--no_system_include"/>
+        <Option name="Disable Type-Based Alias Analysis"
+                option="--no_tbaa"/>
+        <Option name="Do not use typedefs in diagnostic messages"
+                option="--no_typedefs_in_diagnostics"/>
+        <Option name="Disable Loop Unrolling"
+                option="--no_unroll"/>
+        <Option name="Omit Type Information from Object files"
+                option="--omit_types"/>
+        <Option name="Relax floating point language rules for improved performance"
+                option="--relaxed_fp"/>
+        <Option name="Enable C-SPY ROM Monitor Breakpoints on all C Instructions"
+                option="--rom_mon_bp_padding"/>
+    </Category>
+
+    <Category name="Calling Conventions"
+              exclusive="true">
+        <Option name="Data Overlay Calling Convention"
+                option="--calling_convention=data_overlay"/>
+        <Option name="IData Overlay Calling Convention"
+                option="--calling_convention=idata_overlay"/>
+        <Option name="IData Reentrant Calling Convention"
+                option="--calling_convention=idata_reentrant"/>
+        <Option name="PData Reentrant Calling Convention"
+                option="--calling_convention=pdata_reentrant"/>
+        <Option name="XData Reentrant Calling Convention"
+                option="--calling_convention=xdata_reentrant"/>
+        <Option name="Extended Stack Reentrant Calling Convention"
+                option="--calling_convention=ext_stack_reentrant"/>
+    </Category>
+
+    <Option name="Use Extended Stack"
+            option="--extended_stack"
+            category="Calling Conventions"
+            checkAgainst="--calling_convention=idata_reentrant --calling_convention=xdata_reentrant"
+            checkMessage="Extended Stack is incompatible with IData Reentrant and XData Reentrant calling conventions"/>
+
+    <Category name="C Dialect"
+              exclusive="true">
+        <Option name="C89 Dialect (default is C99)"
+                option="--c89"
+                checkAgainst="--vla"
+                checkMessage="C89 and Variable Length Arrays are incompatible"/>
+        <Option name="Embedded C++"
+                option="--ec++"/>
+        <Option name="Extended Embedded C++"
+                option="--eec++"/>
+    </Category>
+
+    <Category name="C Dialect: Char signedness"
+              exclusive="true">
+        <Option name="Char is Signed"
+                option="--char_is_signed"/>
+        <Option name="Char is Unsigned"
+                option="--char_is_unsigned"/>
+    </Category>
+
+    <Category name="C Dialect">
+        <Option name="Enable Multibyte characters in C or C++ source code"
+                option="--enable_multibytes"/>
+        <Option name="Use Guards for function static variable initialization"
+                option="--guard_calls"/>
+        <Option name="Enable C++ inline semantics even in C mode"
+                option="--use_c++_inline"/>
+        <Option name="Enable C99 Variable Length Arrays"
+                option="--vla"
+                checkAgainst="--c89"
+                checkMessage="C89 and Variable Length Arrays are incompatible"/>
+        <Option name="Enable Language Extensions"
+                option="-e"
+                checkAgainst="--strict"
+                checkMessage="--strict and -e are mutually exclusive"/>
+    </Category>
+
+    <Category name="System Library"
+              exclusive="true">
+        <Option name="Use CLIB"
+                option="--clib"/>
+        <Option name="Use DLIB without configuration"
+                option="--dlib --dlib_config none"/>
+        <Option name="Use DLIB tiny configuration"
+                option="--dlib --dlib_config tiny"/>
+        <Option name="Use DLIB normal configuration"
+                option="--dlib --dlib_config normal"/>
+        <Option name="Use DLIB full configuration"
+                option="--dlib --dlib_config full"/>
+    </Category>
+
+    <Category name="Code Model"
+              exclusive="true">
+        <Option name="Near Code Model"
+                option="--code_model=near"/>
+        <Option name="Banked Code Model"
+                option="--code_model=banked"/>
+        <Option name="Banked Extended2 Code Model"
+                option="--code_model=banked_ext2"/>
+        <Option name="Far Code Model"
+                option="--code_model=far"/>
+    </Category>
+
+    <Category name="Data Model"
+              exclusive="true">
+        <Option name="Tiny Data Model"
+                option="--data_model=tiny"/>
+        <Option name="Small Data Model"
+                option="--data_model=small"/>
+        <Option name="Large Data Model"
+                option="--data_model=large"/>
+        <Option name="Far Data Model"
+                option="--data_model=far"/>
+        <Option name="Far Generic Data Model"
+                option="--data_model=far_generic"/>
+        <Option name="Generic Data Model"
+                option="--data_model=generic"/>
+    </Category>
+
+    <Category name="Constant Allocation"
+              exclusive="true">
+        <Option name="Allocate Constants in Data Memory, and initialize from Code Memory"
+                option="--place_constants=data"/>
+        <Option name="Allocate Constants in xdata or far Memory"
+                option="--place_constants=data_rom"
+                checkAgainst="--data_model=tiny --data_model=small --data_model=far_generic --data_model=generic"
+                checkMessage="data_rom mode is only available in large and far data models"/>
+        <Option name="Allocate Constants in Code Memory"
+                option="--place_constants=code"/>
+    </Category>
+
+    <Category name="CPU Core"
+              exclusive="true">
+        <Option name="Plain Core"
+                option="--core=plain"/>
+        <Option name="Extended1 Core"
+                option="--core=extended1"/>
+        <Option name="Extended2 Core"
+                option="--core=extended2"/>
+    </Category>
+
+    <Category name="DPTR Width"
+              exclusive="true">
+        <Option name="16 Bit DPTR"
+                option="--dptr=16"/>
+        <Option name="24 Bit DPTR"
+                option="--dptr=24"/>
+    </Category>
+    <Category name="DPTR Number"
+              exclusive="true">
+        <Option name="One DPTR Register"
+                option="--dptr=1"/>
+        <Option name="Two DPTR Registers"
+                option="--dptr=2"/>
+    </Category>
+    <Category name="DPTR separate/shadowed"
+              exclusive="true">
+        <Option name="DPTR Registers are separate"
+                option="--dptr=separate"
+                checkAgainst="--dptr=1"
+                checkMessage="DPTR Register visibility only available if more than one DPTR is available"/>
+        <Option name="DPTR Registers are shadowed"
+                option="--dptr=shadowed"
+                checkAgainst="--dptr=1"
+                checkMessage="DPTR Register visibility only available if more than one DPTR is available"/>
+    </Category>
+    <Category name="DPTR selection"
+              exclusive="true">
+        <Option name="DPTR Registers are selected using INC"
+                option="--dptr=inc"
+                checkAgainst="--dptr=1"
+                checkMessage="DPTR Register selection only available if more than one DPTR is available"/>
+        <Option name="DPTR Registers are selected using XOR (value 0x01)"
+                option="--dptr=xor"
+                checkAgainst="--dptr=1"
+                checkMessage="DPTR Register selection only available if more than one DPTR is available"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler $options $includes $file -o $object --dependencies=m $dep_object"/>
+    <Command name="LinkExe"
+             value="$linker $libdirs $link_options $libs $link_objects -o $exe_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs $link_options $libs $link_objects -o $exe_output"/>
+    <Command name="LinkStatic"
+             value="$lib_linker $static_output $link_objects"/>
+    <Command name="LinkNative"
+             value="$linker $libdirs $link_options $libs $link_objects -o $exe_output"/>
+
+    <Common name="cmds"/>
+
+    <Common name="re-iar"/>
+</CodeBlocks_compiler_options>

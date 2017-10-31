@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="11"  release="12" />
+    <Plugin name="ProjectOptionsManipulator">
+        <Value title="Project options manipulator" />
+        <Value version="1.0" />
+        <Value description="Mass manipulate project / target options in a workspace." />
+        <Value author="Morten MacFly" />
+        <Value authorEmail="mortenmacfly@codeblocks.org" />
+        <Value authorWebsite="http://www.codeblocks.org" />
+        <Value thanksTo="Code::Blocks Developers." />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

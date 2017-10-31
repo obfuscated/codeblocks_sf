@@ -1,0 +1,10 @@
+<CodeBlocks_template_file>
+	<Template name="sharedlib" title="Shared Library" category="Libraries" bitmap="dll.png">
+		<FileSet name="dflt" title="Default">
+			<File source="sharedlib-sample.c" destination="sample.c"/>
+		</FileSet>
+		<Option name="Shared Library">
+			<Project file="sharedlib.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

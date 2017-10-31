@@ -1,0 +1,10 @@
+;;; This function, given a specific degree in Farhrenheit,
+;;;      presents the user with equivalent Celsius degree.
+
+(defun convert ()
+(format t "Enter Fahrenheit ")
+  (LET (fahr)
+    (SETQ fahr (read fahr))
+    (APPEND '(celsisus is) (*(- fahr 32)(/ 5 9)) )
+  )
+)

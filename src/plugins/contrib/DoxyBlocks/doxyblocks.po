@@ -1,0 +1,1118 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: DoxyBlocks\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-07-12 19:25-0600\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Gary Harris <garyjharris@sourceforge.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: English\n"
+"X-Poedit-Country: UNITED STATES\n"
+"X-Poedit-Basepath: C:\\utilities\\Programming\\CodeBlocks_src\\src\\plugins\\contrib\\DoxyBlocks\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: AutoDoc.cpp:44
+msgid "Writing block comment..."
+msgstr ""
+
+#: AutoDoc.cpp:138
+msgid "Writing line comment..."
+msgstr ""
+
+#: ConfigPanel.cpp:172
+#: ConfigPanel.cpp:194
+msgid "C/JavaDoc"
+msgstr ""
+
+#: ConfigPanel.cpp:173
+#: ConfigPanel.cpp:195
+msgid "C++ Exclamation"
+msgstr ""
+
+#: ConfigPanel.cpp:174
+#: ConfigPanel.cpp:196
+msgid "C++ Slash"
+msgstr ""
+
+#: ConfigPanel.cpp:175
+#: ConfigPanel.cpp:197
+msgid "Qt"
+msgstr ""
+
+#: ConfigPanel.cpp:176
+msgid "Visible C Style"
+msgstr ""
+
+#: ConfigPanel.cpp:177
+msgid "Visible C++ Style"
+msgstr ""
+
+#: ConfigPanel.cpp:179
+msgid "Block Comment Style"
+msgstr ""
+
+#: ConfigPanel.cpp:180
+msgid "Select your preferred block comment style."
+msgstr ""
+
+#: ConfigPanel.cpp:182
+msgid "Block Comment Sample"
+msgstr ""
+
+#: ConfigPanel.cpp:184
+msgid "Sample code using the selected block comment style."
+msgstr ""
+
+#: ConfigPanel.cpp:199
+msgid "Line Comment Style"
+msgstr ""
+
+#: ConfigPanel.cpp:200
+msgid "Select your preferred line comment style."
+msgstr ""
+
+#: ConfigPanel.cpp:202
+msgid "Line Comment Sample"
+msgstr ""
+
+#: ConfigPanel.cpp:204
+msgid "Sample code using the selected line comment style."
+msgstr ""
+
+#: ConfigPanel.cpp:216
+msgid "Project"
+msgstr ""
+
+#: ConfigPanel.cpp:218
+msgid "PROJECT_NUMBER"
+msgstr ""
+
+#: ConfigPanel.cpp:221
+msgid ""
+"The PROJECT_NUMBER tag can be used to enter a project or revision number.\n"
+"This could be handy for archiving the generated documentation or\n"
+"if some version control system is used."
+msgstr ""
+
+#: ConfigPanel.cpp:223
+msgid "Use AutoVersion"
+msgstr ""
+
+#: ConfigPanel.cpp:226
+msgid ""
+"Use the version number provided by the Autoversion plug-in.\n"
+"If this option is selected, DoxyBlocks will extract the version number\n"
+"from the Autoversion header file.\n"
+"The format used is MAJOR.MINOR.BUILD.\n"
+"This option is disabled if Autoversioning is not enabled for the project."
+msgstr ""
+
+#: ConfigPanel.cpp:230
+msgid "OUTPUT_DIRECTORY"
+msgstr ""
+
+#: ConfigPanel.cpp:233
+msgid ""
+"The OUTPUT_DIRECTORY tag is used to specify the (relative or\n"
+"absolute) base path where the generated documentation will be put.\n"
+"If a relative path is entered, it will be relative to the location\n"
+"where doxygen was started. If left blank the current directory will be used.\n"
+"\n"
+"DoxyBlocks will use the path name entered here to create a directory\n"
+"relative to <project dir>. This allows you to create separate doxygen\n"
+"directories for projects that reside in the same directory, or just use a\n"
+"different directory name. If this field is blank, documents will be created\n"
+"in <project dir>/doxygen. Enter directory names without dots, \n"
+"leading separators, volume names, etc. DoxyBlocks does validation on\n"
+"the path name and will strip extraneous characters.\n"
+"\n"
+"Examples:\n"
+"[blank]                     -> <project dir>/doxygen.\n"
+"\"docs\"                      -> <project dir>/docs.\n"
+"\"docs/sub1/sub2\"  -> <project dir>/docs/sub1/sub2.\n"
+"\"doxygen/docs\"     -> <project dir>/doxygen/docs.\n"
+msgstr ""
+
+#: ConfigPanel.cpp:237
+msgid "OUTPUT_LANGUAGE"
+msgstr ""
+
+#: ConfigPanel.cpp:240
+msgid "Afrikaans"
+msgstr ""
+
+#: ConfigPanel.cpp:241
+msgid "Arabic"
+msgstr ""
+
+#: ConfigPanel.cpp:242
+msgid "Brazilian"
+msgstr ""
+
+#: ConfigPanel.cpp:243
+msgid "Catalan"
+msgstr ""
+
+#: ConfigPanel.cpp:244
+msgid "Chinese"
+msgstr ""
+
+#: ConfigPanel.cpp:245
+msgid "Chinese-Traditional"
+msgstr ""
+
+#: ConfigPanel.cpp:246
+msgid "Croatian"
+msgstr ""
+
+#: ConfigPanel.cpp:247
+msgid "Czech"
+msgstr ""
+
+#: ConfigPanel.cpp:248
+msgid "Danish"
+msgstr ""
+
+#: ConfigPanel.cpp:249
+msgid "Dutch"
+msgstr ""
+
+#: ConfigPanel.cpp:250
+msgid "English"
+msgstr ""
+
+#: ConfigPanel.cpp:251
+msgid "Esperanto"
+msgstr ""
+
+#: ConfigPanel.cpp:252
+msgid "Farsi"
+msgstr ""
+
+#: ConfigPanel.cpp:253
+msgid "Finnish"
+msgstr ""
+
+#: ConfigPanel.cpp:254
+msgid "French"
+msgstr ""
+
+#: ConfigPanel.cpp:255
+msgid "German"
+msgstr ""
+
+#: ConfigPanel.cpp:256
+msgid "Greek"
+msgstr ""
+
+#: ConfigPanel.cpp:257
+msgid "Hungarian"
+msgstr ""
+
+#: ConfigPanel.cpp:258
+msgid "Italian"
+msgstr ""
+
+#: ConfigPanel.cpp:259
+msgid "Japanese"
+msgstr ""
+
+#: ConfigPanel.cpp:260
+msgid "Japanese-en"
+msgstr ""
+
+#: ConfigPanel.cpp:261
+msgid "Korean"
+msgstr ""
+
+#: ConfigPanel.cpp:262
+msgid "Korean-en"
+msgstr ""
+
+#: ConfigPanel.cpp:263
+msgid "Lithuanian"
+msgstr ""
+
+#: ConfigPanel.cpp:264
+msgid "Norwegian"
+msgstr ""
+
+#: ConfigPanel.cpp:265
+msgid "Macedonian"
+msgstr ""
+
+#: ConfigPanel.cpp:266
+msgid "Persian"
+msgstr ""
+
+#: ConfigPanel.cpp:267
+msgid "Polish"
+msgstr ""
+
+#: ConfigPanel.cpp:268
+msgid "Portuguese"
+msgstr ""
+
+#: ConfigPanel.cpp:269
+msgid "Romanian"
+msgstr ""
+
+#: ConfigPanel.cpp:270
+msgid "Russian"
+msgstr ""
+
+#: ConfigPanel.cpp:271
+msgid "Serbian"
+msgstr ""
+
+#: ConfigPanel.cpp:272
+msgid "Serbian-Cyrilic"
+msgstr ""
+
+#: ConfigPanel.cpp:273
+msgid "Slovak,"
+msgstr ""
+
+#: ConfigPanel.cpp:274
+msgid "Slovene"
+msgstr ""
+
+#: ConfigPanel.cpp:275
+msgid "Spanish"
+msgstr ""
+
+#: ConfigPanel.cpp:276
+msgid "Swedish"
+msgstr ""
+
+#: ConfigPanel.cpp:277
+msgid "Ukrainian"
+msgstr ""
+
+#: ConfigPanel.cpp:278
+msgid "Vietnamese"
+msgstr ""
+
+#: ConfigPanel.cpp:279
+msgid ""
+"The OUTPUT_LANGUAGE tag is used to specify the language in which all\n"
+"documentation generated by doxygen is written. Doxygen will use this\n"
+"information to generate all constant output in the proper language.\n"
+"The default language is English, other supported languages are:\n"
+"Afrikaans, Arabic, Brazilian, Catalan, Chinese, Chinese-Traditional,\n"
+"Croatian, Czech, Danish, Dutch, Esperanto, Farsi, Finnish, French, German,\n"
+"Greek, Hungarian, Italian, Japanese, Japanese-en (Japanese with English\n"
+"messages), Korean, Korean-en, Lithuanian, Norwegian, Macedonian, Persian,\n"
+"Polish, Portuguese, Romanian, Russian, Serbian, Serbian-Cyrilic, Slovak,\n"
+"Slovene, Spanish, Swedish, Ukrainian, and Vietnamese."
+msgstr ""
+
+#: ConfigPanel.cpp:283
+msgid "Build"
+msgstr ""
+
+#: ConfigPanel.cpp:284
+msgid "EXTRACT_ALL"
+msgstr ""
+
+#: ConfigPanel.cpp:286
+msgid ""
+"If the EXTRACT_ALL tag is set to YES doxygen will assume all entities in\n"
+"documentation are documented, even if no documentation was available.\n"
+"Private class members and static file members will be hidden unless\n"
+"the EXTRACT_PRIVATE and EXTRACT_STATIC tags are set to YES"
+msgstr ""
+
+#: ConfigPanel.cpp:288
+msgid "EXTRACT_PRIVATE"
+msgstr ""
+
+#: ConfigPanel.cpp:290
+msgid ""
+"If the EXTRACT_PRIVATE tag is set to YES all private members of a\n"
+"class will be included in the documentation."
+msgstr ""
+
+#: ConfigPanel.cpp:292
+msgid "EXTRACT_STATIC"
+msgstr ""
+
+#: ConfigPanel.cpp:294
+msgid ""
+"If the EXTRACT_STATIC tag is set to YES all static members of a file\n"
+"will be included in the documentation.\n"
+msgstr ""
+
+#: ConfigPanel.cpp:297
+msgid "Warnings"
+msgstr ""
+
+#: ConfigPanel.cpp:298
+msgid "WARNINGS"
+msgstr ""
+
+#: ConfigPanel.cpp:300
+msgid ""
+"The WARNINGS tag can be used to turn on/off the warning messages that are\n"
+"generated by doxygen. "
+msgstr ""
+
+#: ConfigPanel.cpp:303
+msgid "WARN_IF_DOC_ERROR"
+msgstr ""
+
+#: ConfigPanel.cpp:305
+msgid ""
+"If WARN_IF_DOC_ERROR is set to YES, doxygen will generate warnings for\n"
+"potential errors in the documentation, such as not documenting some\n"
+"parameters in a documented function, or documenting parameters that\n"
+"don't exist or using markup commands wrongly."
+msgstr ""
+
+#: ConfigPanel.cpp:307
+msgid "WARN_IF_UNDOCUMENTED"
+msgstr ""
+
+#: ConfigPanel.cpp:309
+msgid ""
+"If WARN_IF_UNDOCUMENTED is set to YES, then doxygen will generate warnings\n"
+"for undocumented members. If EXTRACT_ALL is set to YES then this flag will\n"
+"automatically be disabled."
+msgstr ""
+
+#: ConfigPanel.cpp:311
+msgid "WARN_NO_PARAMDOC"
+msgstr ""
+
+#: ConfigPanel.cpp:313
+msgid ""
+"This WARN_NO_PARAMDOC option can be abled to get warnings for\n"
+"functions that are documented, but have no documentation for their parameters\n"
+"or return value. If set to NO (the default) doxygen will only warn about\n"
+"wrong or incomplete parameter documentation, but not about the absence of\n"
+"documentation."
+msgstr ""
+
+#: ConfigPanel.cpp:317
+msgid " Alphabetical Class Index"
+msgstr ""
+
+#: ConfigPanel.cpp:318
+msgid "ALPHABETICAL_INDEX"
+msgstr ""
+
+#: ConfigPanel.cpp:320
+msgid ""
+"If the ALPHABETICAL_INDEX tag is set to YES, an alphabetical index\n"
+"of all compounds will be generated. Enable this if the project\n"
+"contains a lot of classes, structs, unions or interfaces.\n"
+msgstr ""
+
+#: ConfigPanel.cpp:328
+msgid "Output"
+msgstr ""
+
+#: ConfigPanel.cpp:330
+msgid "GENERATE_HTML"
+msgstr ""
+
+#: ConfigPanel.cpp:332
+msgid ""
+"If the GENERATE_HTML tag is set to YES (the default) Doxygen will\n"
+"generate HTML output.\n"
+msgstr ""
+
+#: ConfigPanel.cpp:335
+msgid "GENERATE_HTMLHELP"
+msgstr ""
+
+#: ConfigPanel.cpp:337
+msgid ""
+"If the GENERATE_HTMLHELP tag is set to YES, additional index files\n"
+"will be generated that can be used as input for tools like the\n"
+"Microsoft HTML help workshop to generate a compiled HTML help file (.chm)\n"
+"of the generated HTML documentation."
+msgstr ""
+
+#: ConfigPanel.cpp:339
+msgid "GENERATE_CHI"
+msgstr ""
+
+#: ConfigPanel.cpp:341
+msgid ""
+"If the GENERATE_HTMLHELP tag is set to YES, the GENERATE_CHI flag\n"
+"controls if a separate .chi index file is generated (YES) or that\n"
+"it should be included in the master .chm file (NO)."
+msgstr ""
+
+#: ConfigPanel.cpp:343
+msgid "BINARY_TOC"
+msgstr ""
+
+#: ConfigPanel.cpp:345
+msgid ""
+"If the GENERATE_HTMLHELP tag is set to YES, the BINARY_TOC flag\n"
+"controls whether a binary table of contents is generated (YES) or a\n"
+"normal table of contents (NO) in the .chm file."
+msgstr ""
+
+#: ConfigPanel.cpp:350
+msgid "GENERATE_LATEX"
+msgstr ""
+
+#: ConfigPanel.cpp:352
+msgid ""
+"If the GENERATE_LATEX tag is set to YES (the default) Doxygen will\n"
+"generate Latex output.\n"
+msgstr ""
+
+#: ConfigPanel.cpp:354
+msgid "GENERATE_RTF"
+msgstr ""
+
+#: ConfigPanel.cpp:356
+msgid ""
+"If the GENERATE_RTF tag is set to YES Doxygen will generate RTF output\n"
+"The RTF output is optimized for Word 97 and may not look very pretty with\n"
+"other RTF readers or editors."
+msgstr ""
+
+#: ConfigPanel.cpp:358
+msgid "GENERATE_MAN"
+msgstr ""
+
+#: ConfigPanel.cpp:360
+msgid ""
+"If the GENERATE_MAN tag is set to YES (the default) Doxygen will\n"
+"generate man pages"
+msgstr ""
+
+#: ConfigPanel.cpp:364
+msgid "GENERATE_XML"
+msgstr ""
+
+#: ConfigPanel.cpp:366
+msgid ""
+"If the GENERATE_XML tag is set to YES Doxygen will\n"
+"generate an XML file that captures the structure of\n"
+"the code including all documentation."
+msgstr ""
+
+#: ConfigPanel.cpp:368
+msgid "GENERATE_AUTOGEN_DEF"
+msgstr ""
+
+#: ConfigPanel.cpp:370
+msgid ""
+"If the GENERATE_AUTOGEN_DEF tag is set to YES Doxygen will\n"
+"generate an AutoGen Definitions (see autogen.sf.net) file\n"
+"that captures the structure of the code including all\n"
+"documentation. Note that this feature is still experimental\n"
+"and incomplete at the moment.\n"
+msgstr ""
+
+#: ConfigPanel.cpp:372
+msgid "GENERATE_PERLMOD"
+msgstr ""
+
+#: ConfigPanel.cpp:374
+msgid ""
+"If the GENERATE_PERLMOD tag is set to YES Doxygen will\n"
+"generate a Perl module file that captures the structure of\n"
+"the code including all documentation. Note that this\n"
+"feature is still experimental and incomplete at the\n"
+"moment."
+msgstr ""
+
+#: ConfigPanel.cpp:378
+msgid "Pre-processor"
+msgstr ""
+
+#: ConfigPanel.cpp:379
+msgid "ENABLE_PREPROCESSING"
+msgstr ""
+
+#: ConfigPanel.cpp:381
+msgid ""
+"If the ENABLE_PREPROCESSING tag is set to YES (the default) Doxygen will\n"
+"evaluate all C-preprocessor directives found in the sources and include\n"
+"files."
+msgstr ""
+
+#: ConfigPanel.cpp:384
+msgid "Dot"
+msgstr ""
+
+#: ConfigPanel.cpp:385
+msgid "CLASS_DIAGRAMS"
+msgstr ""
+
+#: ConfigPanel.cpp:387
+msgid ""
+"If the CLASS_DIAGRAMS tag is set to YES (the default) Doxygen will\n"
+"generate a inheritance diagram (in HTML, RTF and LaTeX) for classes with base\n"
+"or super classes. Setting the tag to NO turns the diagrams off. Note that\n"
+"this option is superseded by the HAVE_DOT option below. This is only a\n"
+"fallback. It is recommended to install and use dot, since it yields more\n"
+"powerful graphs."
+msgstr ""
+
+#: ConfigPanel.cpp:389
+msgid "HAVE_DOT"
+msgstr ""
+
+#: ConfigPanel.cpp:391
+msgid ""
+"If you set the HAVE_DOT tag to YES then doxygen will assume the dot tool is\n"
+"available from the path. This tool is part of Graphviz, a graph visualization\n"
+"toolkit from AT&T and Lucent Bell Labs. The other options in this section\n"
+"have no effect if this option is set to NO (the default)"
+msgstr ""
+
+#: ConfigPanel.cpp:399
+msgid "Paths"
+msgstr ""
+
+#: ConfigPanel.cpp:401
+msgid "Path To doxygen"
+msgstr ""
+
+#: ConfigPanel.cpp:404
+msgid ""
+"The path to the doxygen executable file.\n"
+"If this field is blank, DoxyBlocks will assume that doxygen\n"
+"is available somewhere in your environment's path.\n"
+"You can use macros such as $(CODEBLOCKS) in your path\n"
+"and they will be expanded automatically."
+msgstr ""
+
+#: ConfigPanel.cpp:406
+#: ConfigPanel.cpp:416
+#: ConfigPanel.cpp:426
+#: ConfigPanel.cpp:436
+#: ConfigPanel.cpp:446
+msgid "Browse"
+msgstr ""
+
+#: ConfigPanel.cpp:407
+msgid "Browse for doxygen."
+msgstr ""
+
+#: ConfigPanel.cpp:411
+msgid "Path To doxywizard"
+msgstr ""
+
+#: ConfigPanel.cpp:414
+msgid ""
+"The path to the doxywizard executable file.\n"
+"If this field is blank, DoxyBlocks will assume that doxywizard\n"
+"is available somewhere in your environment's path.\n"
+"You can use macros such as $(CODEBLOCKS) in your path\n"
+"and they will be expanded automatically."
+msgstr ""
+
+#: ConfigPanel.cpp:417
+msgid "Browse for doxywizard."
+msgstr ""
+
+#: ConfigPanel.cpp:421
+msgid "Path To HHC"
+msgstr ""
+
+#: ConfigPanel.cpp:424
+msgid ""
+"The path to the HTML Help Compiler executable file.\n"
+"If this field is blank, DoxyBlocks will assume that HHC\n"
+"is available somewhere in your environment's path.\n"
+"You can use macros such as $(CODEBLOCKS) in your path\n"
+"and they will be expanded automatically."
+msgstr ""
+
+#: ConfigPanel.cpp:427
+msgid "Browse for HHC."
+msgstr ""
+
+#: ConfigPanel.cpp:431
+msgid "Path To Dot"
+msgstr ""
+
+#: ConfigPanel.cpp:434
+msgid ""
+"The path to the dot executable file.\n"
+"If this field is blank, DoxyBlocks will assume that dot\n"
+"is available somewhere in your environment's path.\n"
+"You can use macros such as $(CODEBLOCKS) in your path\n"
+"and they will be expanded automatically."
+msgstr ""
+
+#: ConfigPanel.cpp:437
+msgid "Browse for Dot."
+msgstr ""
+
+#: ConfigPanel.cpp:441
+msgid "Path To CHM Viewer"
+msgstr ""
+
+#: ConfigPanel.cpp:444
+msgid ""
+"The path to the CHM viewer executable file.\n"
+"On Windows, if this field is blank, DoxyBlocks will use\n"
+"the operating system's standard viewer.\n"
+"On other operating systems, if this field is blank,\n"
+"DoxyBlocks will assume that a viewer is available\n"
+"somewhere in your environment's path.\n"
+"You can use macros such as $(CODEBLOCKS) in your path\n"
+"and they will be expanded automatically."
+msgstr ""
+
+#: ConfigPanel.cpp:447
+msgid "Browse for a CHM viewer."
+msgstr ""
+
+#: ConfigPanel.cpp:451
+msgid "General Options"
+msgstr ""
+
+#: ConfigPanel.cpp:453
+msgid "Overwrite Doxyfile"
+msgstr ""
+
+#: ConfigPanel.cpp:455
+msgid ""
+"Allow DoxyBlocks to overwrite the doxyfile.\n"
+"By default, if a doxyfile already exists it is not overwritten to protect\n"
+"any changes that have been made outside DoxyBlocks however this\n"
+"behaviour prevents changes made within DoxyBlocks being written to\n"
+"an existing doxyfile."
+msgstr ""
+
+#: ConfigPanel.cpp:457
+msgid "Prompt Before Overwriting"
+msgstr ""
+
+#: ConfigPanel.cpp:459
+msgid ""
+"Prompt before overwriting an existing doxyfile.\n"
+"When used in conjunction with \"Overwrite doxyfile\" this setting forces\n"
+"DoxyBlocks to prompt you before overwriting an existing doxyfile."
+msgstr ""
+
+#: ConfigPanel.cpp:461
+msgid "Use \"@\" In Tags"
+msgstr ""
+
+#: ConfigPanel.cpp:463
+msgid ""
+"Use \"@\" in document tags instead of \"\\\".\n"
+"This option causes DoxyBlocks to create document tags like\n"
+"\"@brief\" and \"@param\" rather than \"\\brief\" and \"\\param\"."
+msgstr ""
+
+#: ConfigPanel.cpp:467
+msgid "Load Settings Template If No Saved Settings Exist"
+msgstr ""
+
+#: ConfigPanel.cpp:469
+msgid "This option allows you to use your preferred settings as the default settings by loading a previously saved settings template, if one exists, rather than using the system default settings when loading a project that doesn't contain saved DoxyBlocks settings. DoxyBlocks falls back to the default settings if a template is not found."
+msgstr ""
+
+#: ConfigPanel.cpp:473
+msgid "HTML"
+msgstr ""
+
+#: ConfigPanel.cpp:474
+msgid "Use Internal Viewer"
+msgstr ""
+
+#: ConfigPanel.cpp:476
+msgid ""
+"Use the internal viewer to view HTML docs.\n"
+"If this option is not set DoxyBlocks will use the system's default\n"
+"browser.\n"
+"This setting has no effect if GENERATE_HTML is not set."
+msgstr ""
+
+#: ConfigPanel.cpp:478
+msgid "Run HTML After Compilation"
+msgstr ""
+
+#: ConfigPanel.cpp:480
+msgid ""
+"Run the HTML docs after compilation.\n"
+"If \"Use Internal Viewer\" is set DoxyBlocks will use Code::Blocks' internal\n"
+"viewer. If not, it will use the system's default browser.\n"
+"This setting has no effect if GENERATE_HTML is not set."
+msgstr ""
+
+#: ConfigPanel.cpp:482
+msgid "Run CHM After Compilation"
+msgstr ""
+
+#: ConfigPanel.cpp:484
+msgid ""
+"Run the compiled help after it's compiled.\n"
+"This setting currently only has effect on Windows.\n"
+"If no CHM file exists this setting is ignored.\n"
+"This setting has no effect if GENERATE_HTML is not set."
+msgstr ""
+
+#: ConfigPanel.cpp:490
+msgid "Comment Style"
+msgstr ""
+
+#: ConfigPanel.cpp:491
+msgid "Doxyfile Defaults"
+msgstr ""
+
+#: ConfigPanel.cpp:492
+msgid "Doxyfile Defaults 2"
+msgstr ""
+
+#: ConfigPanel.cpp:493
+msgid "General"
+msgstr ""
+
+#: ConfigPanel.cpp:624
+msgid "This is a brief description."
+msgstr ""
+
+#: ConfigPanel.cpp:625
+msgid "The first parameter."
+msgstr ""
+
+#: ConfigPanel.cpp:626
+msgid "The second parameter."
+msgstr ""
+
+#: ConfigPanel.cpp:627
+#: ConfigPanel.cpp:640
+msgid "Return value."
+msgstr ""
+
+#: ConfigPanel.cpp:628
+msgid "This is a detailed description."
+msgstr ""
+
+#: ConfigPanel.cpp:715
+msgid "This is an inline comment."
+msgstr ""
+
+#: ConfigPanel.cpp:867
+msgid "Executable Files (*.exe)|*.exe"
+msgstr ""
+
+#: ConfigPanel.cpp:870
+msgid "All Files (*.*)|*.*"
+msgstr ""
+
+#: ConfigPanel.cpp:872
+msgid "Path to application file"
+msgstr ""
+
+#: DoxyBlocks.cpp:322
+#: ConfigPanel.h:518
+msgid "DoxyBlocks"
+msgstr ""
+
+#: DoxyBlocks.cpp:397
+msgid "No active project found. Settings not saved."
+msgstr ""
+
+#: DoxyBlocks.cpp:409
+msgid "P&lugins"
+msgstr ""
+
+#: DoxyBlocks.cpp:415
+msgid "&Doxywizard...\tCtrl-Alt-D"
+msgstr ""
+
+#: DoxyBlocks.cpp:415
+msgid "Run doxywizard."
+msgstr ""
+
+#: DoxyBlocks.cpp:418
+msgid "&Extract documentation\tCtrl-Alt-E"
+msgstr ""
+
+#: DoxyBlocks.cpp:418
+msgid "Extract documentation for the current project."
+msgstr ""
+
+#: DoxyBlocks.cpp:422
+msgid "&Block comment\tCtrl-Alt-B"
+msgstr ""
+
+#: DoxyBlocks.cpp:422
+#: DoxyBlocks.cpp:432
+#: DoxyBlocks.cpp:473
+msgid "Insert a comment block at the current line."
+msgstr ""
+
+#: DoxyBlocks.cpp:425
+msgid "&Line comment\tCtrl-Alt-L"
+msgstr ""
+
+#: DoxyBlocks.cpp:425
+#: DoxyBlocks.cpp:476
+msgid "Insert a line comment at the current cursor position."
+msgstr ""
+
+#: DoxyBlocks.cpp:429
+msgid "Run &HTML\tCtrl-Alt-H"
+msgstr ""
+
+#: DoxyBlocks.cpp:429
+msgid "Run HTML documentation."
+msgstr ""
+
+#: DoxyBlocks.cpp:432
+msgid "Run &CHM\tCtrl-Alt-C"
+msgstr ""
+
+#: DoxyBlocks.cpp:436
+msgid "Open &preferences...\tCtrl-Alt-P"
+msgstr ""
+
+#: DoxyBlocks.cpp:436
+msgid "Open DoxyBlocks' preferences."
+msgstr ""
+
+#: DoxyBlocks.cpp:440
+msgid "L&oad settings template"
+msgstr ""
+
+#: DoxyBlocks.cpp:440
+msgid "Load saved settings template."
+msgstr ""
+
+#: DoxyBlocks.cpp:443
+msgid "&Save settings template"
+msgstr ""
+
+#: DoxyBlocks.cpp:443
+msgid "Save current settings for future use."
+msgstr ""
+
+#: DoxyBlocks.cpp:473
+msgid "&Block Comment"
+msgstr ""
+
+#: DoxyBlocks.cpp:476
+msgid "&Line Comment"
+msgstr ""
+
+#: DoxyBlocks.cpp:501
+msgid "Doxywizard"
+msgstr ""
+
+#: DoxyBlocks.cpp:501
+msgid "Run doxywizard"
+msgstr ""
+
+#: DoxyBlocks.cpp:502
+msgid "Document project"
+msgstr ""
+
+#: DoxyBlocks.cpp:502
+msgid "Extract documentation for the current project"
+msgstr ""
+
+#: DoxyBlocks.cpp:504
+msgid "Block Comment"
+msgstr ""
+
+#: DoxyBlocks.cpp:504
+msgid "Insert a comment block at the current line"
+msgstr ""
+
+#: DoxyBlocks.cpp:505
+msgid "Line Comment"
+msgstr ""
+
+#: DoxyBlocks.cpp:505
+msgid "Insert a line comment at the current cursor position"
+msgstr ""
+
+#: DoxyBlocks.cpp:507
+msgid "Run HTML"
+msgstr ""
+
+#: DoxyBlocks.cpp:507
+msgid "Run HTML documentation"
+msgstr ""
+
+#: DoxyBlocks.cpp:508
+msgid "Run CHM"
+msgstr ""
+
+#: DoxyBlocks.cpp:508
+msgid "Run HTML Help documentation"
+msgstr ""
+
+#: DoxyBlocks.cpp:510
+msgid "Open Preferences"
+msgstr ""
+
+#: DoxyBlocks.cpp:510
+msgid "Open DoxyBlocks' preferences"
+msgstr ""
+
+#: DoxyBlocks.cpp:539
+msgid "Running doxywizard..."
+msgstr ""
+
+#: DoxyBlocks.cpp:564
+#: DoxyBlocks.cpp:729
+#: ExtractDocs.cpp:603
+#, c-format
+msgid "Execution of '%s' failed."
+msgstr ""
+
+#: DoxyBlocks.cpp:565
+#: ExtractDocs.cpp:604
+msgid "Please ensure that the doxygen 'bin' directory is in your path or provide the specific path in DoxyBlocks' preferences.\n"
+msgstr ""
+
+#: DoxyBlocks.cpp:570
+#: DoxyBlocks.cpp:732
+#, c-format
+msgid "Process %ld (%s) launched."
+msgstr ""
+
+#: DoxyBlocks.cpp:624
+msgid "You need to open a project before using DoxyBlocks."
+msgstr ""
+
+#: DoxyBlocks.cpp:625
+msgid "Error"
+msgstr ""
+
+#: DoxyBlocks.cpp:644
+#: DoxyBlocks.cpp:694
+msgid "Unable to get the doxygen document path."
+msgstr ""
+
+#: DoxyBlocks.cpp:656
+msgid "Internal viewer launched with path "
+msgstr ""
+
+#: DoxyBlocks.cpp:659
+msgid "Error getting MIME handler for "
+msgstr ""
+
+#: DoxyBlocks.cpp:664
+msgid "Unable to launch the default browser."
+msgstr ""
+
+#: DoxyBlocks.cpp:667
+msgid "Default browser launched with URL "
+msgstr ""
+
+#: DoxyBlocks.cpp:672
+msgid "Index.html not found at "
+msgstr ""
+
+#: DoxyBlocks.cpp:689
+msgid "Unable to get the project name."
+msgstr ""
+
+#: DoxyBlocks.cpp:736
+msgid "HTML Help not found at "
+msgstr ""
+
+#: DoxyBlocks.cpp:765
+#: ExtractDocs.cpp:59
+msgid "Failed to get the active project!"
+msgstr ""
+
+#: DoxyBlocks.cpp:808
+msgid "Unable to get the AutoVersion header path."
+msgstr ""
+
+#: DoxyBlocks.cpp:846
+msgid "Unable to open the version header."
+msgstr ""
+
+#: DoxyBlocks.cpp:850
+msgid "Version header "
+msgstr ""
+
+#: DoxyBlocks.cpp:850
+msgid " not found."
+msgstr ""
+
+#: DoxyBlocks.cpp:1209
+msgid "Settings template saved."
+msgstr ""
+
+#: DoxyBlocks.cpp:1212
+msgid "Error savings settings template."
+msgstr ""
+
+#: DoxyBlocks.cpp:1224
+msgid "Settings template loaded."
+msgstr ""
+
+#: DoxyBlocks.cpp:1227
+msgid "Settings template not found."
+msgstr ""
+
+#: ExtractDocs.cpp:77
+msgid "Extracting documentation for "
+msgstr ""
+
+#: ExtractDocs.cpp:78
+msgid "DoxyBlocks is working, please wait a few moments..."
+msgstr ""
+
+#: ExtractDocs.cpp:81
+msgid "Running doxygen. Please wait..."
+msgstr ""
+
+#: ExtractDocs.cpp:85
+msgid ""
+"\n"
+"Done.\n"
+msgstr ""
+
+#: ExtractDocs.cpp:123
+msgid "Found existing doxyfile..."
+msgstr ""
+
+#: ExtractDocs.cpp:128
+msgid "Overwrite existing doxyfile?"
+msgstr ""
+
+#: ExtractDocs.cpp:139
+msgid "Writing doxyfile..."
+msgstr ""
+
+#: ExtractDocs.cpp:183
+msgid "Base configuration for doxygen, generated by DoxyBlocks"
+msgstr ""
+
+#: ExtractDocs.cpp:184
+msgid "You may change these defaults to suit your purposes"
+msgstr ""
+
+#: ExtractDocs.cpp:542
+msgid "Failed. "
+msgstr ""
+
+#: ExtractDocs.cpp:542
+msgid " was not created."
+msgstr ""
+
+#: ExtractDocs.cpp:572
+msgid "Failed to open "
+msgstr ""
+
+#: ExtractDocs.cpp:575
+msgid ""
+"\n"
+"Contents of doxygen's log file:"
+msgstr ""
+

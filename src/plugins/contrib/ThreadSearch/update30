@@ -1,0 +1,19 @@
+#! /bin/sh
+mkdir -p ../../../devel30/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
+mkdir -p ../../../devel30/share/codeblocks/images/ThreadSearch/16x16 > /dev/null 2> /dev/null
+mkdir -p ../../../devel30/share/codeblocks/images/ThreadSearch/22x22 > /dev/null 2> /dev/null
+mkdir -p ../../../output30/share/codeblocks/images/ThreadSearch > /dev/null 2> /dev/null
+mkdir -p ../../../output30/share/codeblocks/images/ThreadSearch/16x16 > /dev/null 2> /dev/null
+mkdir -p ../../../output30/share/codeblocks/images/ThreadSearch/22x22 > /dev/null 2> /dev/null
+mkdir -p ../../../devel30/share/codeblocks/images/settings > /dev/null 2> /dev/null
+mkdir -p ../../../output30/share/codeblocks/images/settings > /dev/null 2> /dev/null
+cp ./resources/images/*.png ../../../devel30/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
+cp ./resources/images/16x16/*.png ../../../devel30/share/codeblocks/images/ThreadSearch/16x16/ > /dev/null 2> /dev/null
+cp ./resources/images/22x22/*.png ../../../devel30/share/codeblocks/images/ThreadSearch/22x22/ > /dev/null 2> /dev/null
+cp ./resources/images/*.png ../../../output30/share/codeblocks/images/ThreadSearch/ > /dev/null 2> /dev/null
+cp ./resources/images/16x16/*.png ../../../output30/share/codeblocks/images/ThreadSearch/16x16/ > /dev/null 2> /dev/null
+cp ./resources/images/22x22/*.png ../../../output30/share/codeblocks/images/ThreadSearch/22x22/ > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../devel30/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../output30/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+exit 0
+

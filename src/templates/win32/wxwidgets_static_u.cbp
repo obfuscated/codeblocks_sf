@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="3" />
+	<Project>
+		<Option title="wxWidgets application" />
+		<Option pch_mode="0" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="wxwidgets_static_u.exe" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+				<Option includeInTargetAll="1" />
+				<Option projectResourceIncludeDirsRelation="0" />
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-D__GNUWIN32__" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add option="-DUSE_PCH" />
+			<Add directory="$(#WX.include)" />
+			<Add directory="$(#WX.lib)\gcc_lib$(WX_CFG)\mswu" />
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(#WX)\include" />
+		</ResourceCompiler>
+		<Linker>
+			<Add library="wxmswu" />
+			<Add library="winspool" />
+			<Add library="winmm" />
+			<Add library="shell32" />
+			<Add library="comctl32" />
+			<Add library="ctl3d32" />
+			<Add library="odbc32" />
+			<Add library="advapi32" />
+			<Add library="wsock32" />
+			<Add library="opengl32" />
+			<Add library="glu32" />
+			<Add library="ole32" />
+			<Add library="oleaut32" />
+			<Add library="uuid" />
+			<Add directory="$(#WX.lib)" />
+			<Add directory="$(#WX.lib)\gcc_lib$(WX_CFG)" />
+		</Linker>
+		<Unit filename="wx_pch.h">
+			<Option compilerVar="CPP" />
+			<Option link="0" />
+			<Option weight="0" />
+			<Option target="default" />
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

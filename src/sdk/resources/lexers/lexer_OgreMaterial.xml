@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="Ogre Material script"
+				index="3"
+				filemasks="*.material,*.program">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment"
+						index="1,2,3"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="keyword attributes"
+						index="16"
+						fg="0,155,0"
+						bold="1"/>
+				<Style name="identifiers"
+						index="11"
+						fg="0,150,200"
+						bold="0"/>
+				<Style name="Selection"
+						index="5"
+						bg="192,192,192"/>
+				<Style name="Active line"
+						index="-98"
+						bg="255,255,160"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,128,0"/>
+				<Keywords>
+						<Language index="0"
+								value="material set_texture_alias technique pass texture_unit lod_distances receive_shadows transparency_casts_shadows lod_index ambient diffuse specular emissive scene_blend depth_check depth_write depth_func depth_bias alpha_rejection cull_hardware cull_software lighting shading fog_override colour_write max_lights iteration texture texture_alias anim_texture cubic_texture tex_coord_set tex_address_mode filtering max_anisotropy colour_op colour_op_ex colour_op_multipass_fallback alpha_op_ex env_map scroll scroll_anim rotate rotate_anim scale wave_xform vertex_program vertex_program_ref fragment_program fragment_program_ref default_params source entry_point target profiles attach includes_skeletal_animation param_indexed param_indexed_auto param_named param_named_auto "/>
+						<User index="1" value="add modulate colour_blend alpha_blend one zero dest_colour src_colour one_minus_dest_colour one_minus_src_colour dest_alpha src_alpha one_minus_dest_alpha one_minus_src_alpha always_fail always_pass less less_equal equal not_equal greater_equal greater flat gouraud clockwise anticlockwise back front phong true false on off none linear exp exp2 once_per_light point directional spot 1d 2d 3d cubic combinedUVW separateUV wrap clamp mirror bilinear trilinear anisotropic replace source1 source2 modulate_x2 modulate_x4 add_signed add_smooth subtract blend_diffuse_alpha blend_texture_alpha blend_current_alpha blend_manual src_current src_texture src_diffuse src_specular src_manual spherical planar cubic_reflection cubic_normal scroll_x scroll_y rotate scale_x scale_y since triangle square sawtooth inverse_sawtooth cg hlsl glsl asm vs_1_1 vs_2_0 vs_2_x vs_3_0 arbvp1 vp20 vp30 vp40 ps_1_1 ps_1_2 ps_1_3 ps_1_4 ps_2_0 ps_2_x ps_3_0 ps_3_x arbfp1 fp20 fp30 fp40 float float2 float3 float4 matrix4x4 int world_matrix inverse_world_matrix transpose_world_matrix inverse_transpose_world_matrix world_matrix_array_3x4 world_matrix_array view_matrix inverse_view_matrix transpose_view_matrix inverse_transpose_view_matrix  projection_matrix inverse_projection_matrix transpose_projection_matrix inverse_transpose_projection_matrix viewproj_matrix inverse_viewproj_matrix transpose_viewproj_matrix inverse_transpose_viewproj_matrix worldview_matrix inverse_worldview_matrix transpose_worldview_matrix inverse_transpose_worldview_matrix worldviewproj_matrix inverse_worldviewproj_matrix transpose_worldviewproj_matrix inverse_transpose_worldviewproj_matrix ambient_light_colour light_diffuse_colour light_specular_colour light_attenuation light_position light_position_object_space light_position_view_space light_direction light_direction_object_space light_direction_view_space light_distance_object_space shadow_extrusion_distance camera_position camera_position_object_space texture_viewproj_matrix custom time time_0_x costime_0_x sintime_0_x tantime_0_x time_0_x_packed time_0_1 costime_0_1 sintime_0_1 tantime_0_1 time_0_1_packed time_0_2pi costime_0_2pi sintime_0_2pi tantime_0_2pi time_0_2pi_packed fps viewport_width viewport_height inverse_viewport_width inverse_viewport_height view_direction view_side_vector view_up_vector fov near_clip_distance far_clip_distance pass_number pass_iteration_number animation_parametric "/>
+						<Documentation index="2" value=""/>
+				</Keywords>
+				<SampleCode value="lexer_OgreMaterial.sample"/>
+				<LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

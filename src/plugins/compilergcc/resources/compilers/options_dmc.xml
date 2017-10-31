@@ -1,0 +1,214 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Program name="C"         value="dmc.exe"/>
+    <Program name="CPP"       value="dmc.exe"/>
+    <Program name="LD"        value="link.exe"/>
+    <Program name="LIB"       value="lib.exe"/>
+    <Program name="WINDRES"   value="rcc.exe"/>
+    <Program name="MAKE"      value="mingw32-make.exe"/>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value=""/>
+    <Switch name="linkLibs"                value=""/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="obj"/>
+    <Switch name="needDependencies"        value="false"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="true"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value=""/>
+    <Switch name="libExtension"            value="lib"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="true"/>
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-o -o+space"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."/>
+
+    <Category name="Warnings">
+        <Option name="Suppress all warning messages"
+                option="-w"/>
+        <Option name="Warn on C style casts"
+                option="-wc"/>
+        <Option name="Treat warnings as errors"
+                option="-wx"/>
+        <Option name="Turn off error maximum"
+                option="-x"/>
+    </Category>
+
+    <Category name="C++ Features">
+        <Option name="Enforce strict compliance with ANSI C/C++"
+                option="-A"/>
+        <Option name="Enable new[] and delete[] overloading"
+                option="-Aa"/>
+        <Option name="Enable bool"
+                option="-Ab"/>
+        <Option name="Enable exception handling"
+                option="-Ae"/>
+        <Option name="Enable RTTI"
+                option="-Ar"/>
+        <Option name="Compile all source files as C++"
+                option="-cpp"/>
+        <Option name="Symbol info for globals"
+                option="-gh"/>
+        <Option name="Suppress non-ANSI predefined macros"
+                option="-u"/>
+        <Option name="Instantiate templates"
+                option="-XD"/>
+    </Category>
+
+    <Category name="Debugging">
+        <Option name="No inline function expansion"
+                option="-C"/>
+        <Option name="#define DEBUG 1"
+                option="-D"/>
+        <Option name="Debug line numbers only"
+                option="-gl"/>
+        <Option name="Debug symbol info only"
+                option="-gs"/>
+    </Category>
+
+    <Category name="Optimization">
+        <Option name="Fast inline 8087 code"
+                option="-ff"/>
+        <Option name="Disable debug info optimization"
+                option="-gf"/>
+        <Option name="Make static functions global"
+                option="-gg"/>
+        <Option name="No empty base class optimization"
+                option="-Jb"/>
+        <Option name="Perform function level linking"
+                option="-Nc"/>
+        <Option name="No default library"
+                option="-NL"/>
+        <Option name="Place expr strings in code seg"
+                option="-Ns"/>
+        <Option name="New code seg for each function"
+                option="-NS"/>
+        <Option name="Minimize space"
+                option="-o+space"
+                supersedes="-o"/>
+        <Option name="Maximize speed"
+                option="-o"
+                supersedes="-o+space"/>
+    </Category>
+
+    <Category name="Linkage">
+        <Option name="Make Pascal linkage the default"
+                option="-P"/>
+        <Option name="Make stdcall linkage the default"
+                option="-Pz"/>
+    </Category>
+
+    <Category name="Others">
+        <Option name="Generate .cod (assembly) file"
+                option="-cod"/>
+        <Option name="Generate .dep (make dependency) file"
+                option="-d"/>
+        <Option name="Show results of preprocessor"
+                option="-e"/>
+        <Option name="Do not elide comments"
+                option="-EC"/>
+        <Option name="#line directives not output"
+                option="-EL"/>
+        <Option name="IEEE 754 inline 8087 code"
+                option="-f"/>
+        <Option name="Work around FDIV problem"
+                option="-fd"/>
+        <Option name="Generate pointer validations"
+                option="-gp"/>
+        <Option name="Generate trace prolog/epilog"
+                option="-gt"/>
+        <Option name="Use precompiled headers (ph)"
+                option="-H"/>
+        <Option name="Include files only once"
+                option="-HO"/>
+        <Option name="Only search -I directories"
+                option="-HS"/>
+        <Option name="Relaxed type checking"
+                option="-Jm"/>
+        <Option name="char==unsigned"
+                option="-Ju"/>
+        <Option name="chars are unsigned"
+                option="-J"/>
+        <Option name="vtables in far data"
+                option="-NV"/>
+        <Option name="Turn off function auto-prototyping"
+                option="-p"/>
+        <Option name="Require strict function prototyping"
+                option="-r"/>
+        <Option name="Put switch tables in code seg"
+                option="-R"/>
+        <Option name="Stack overflow checking"
+                option="-s"/>
+        <Option name="Always generate stack frame"
+                option="-S"/>
+    </Category>
+
+    <Category name="Architecture">
+        <Option name="Windows prolog/epilog : Win32 Exe"
+                option="-WA"
+                supersedes="-WD"/>
+        <Option name="Windows prolog/epilog : Win32 Dll"
+                option="-WD"
+                supersedes="-WA"/>
+        <Option name="Optimize for 80386"
+                option="-3"
+                supersedes="-4 -5 -6"/>
+        <Option name="Optimize for 80486"
+                option="-4"
+                supersedes="-3 -5 -6"/>
+        <Option name="Optimize for Pentium"
+                option="-5"
+                supersedes="-3 -4 -6"/>
+        <Option name="Optimize for Pentium Pro, Pentium II, Pentium III"
+                option="-6"
+                supersedes="-3 -4 -5"/>
+    </Category>
+
+    <Command name="CompileObject"
+             value="$compiler -mn -c $options $includes -o$object $file"/>
+    <Command name="CompileResource"
+             value="$rescomp -32 $res_includes $res_options -o$resource_output $file"/>
+    <Command name="LinkConsoleExe"
+             value="$linker /NOLOGO $link_objects, $exe_output, , $libs $link_options"/>
+    <Command name="LinkNative"
+             value="$linker /NOLOGO $link_objects, $exe_output, , $libs $link_options"/>
+    <Command name="LinkExe"
+             value="$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects"/>
+    <Command name="LinkDynamic"
+             value="$linker /NOLOGO /subsystem:windows $link_objects, $exe_output, , $libs $link_options, , $link_resobjects"/>
+    <Command name="LinkStatic"
+             value="$lib_linker -c $link_options $static_output $link_objects"/>
+    <Common name="cmds"/>
+
+    <RegEx name="Linker error"
+           type="error"
+           msg="2"
+           file="1">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)[ \t]+:[ \t]+(.*error LNK[0-9]+.*)]]>
+    </RegEx>
+    <RegEx name="Compiler warning"
+           type="warning"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\)[ \t]*:[ \t]*[Ww][Aa][Rr][Nn][Ii][Nn][Gg][ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Compiler error"
+           type="error"
+           msg="3"
+           file="1"
+           line="2">
+        <![CDATA[([][{}() \t#%$~[:alnum:]&_:+/\.-]+)\(([0-9]+)\)[ \t]*:[ \t]*(.*)]]>
+    </RegEx>
+    <RegEx name="Fatal error"
+           type="error"
+           msg="1">
+        <![CDATA[Fatal error:[ \t](.*)]]>
+    </RegEx>
+</CodeBlocks_compiler_options>

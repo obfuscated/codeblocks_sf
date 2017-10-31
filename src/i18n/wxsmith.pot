@@ -1,0 +1,2443 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-08-18 18:38+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsboxsizer.cpp:29
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:157
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstaticboxsizer.cpp:34
+msgid "Horizontal"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsboxsizer.cpp:29
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:157
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstaticboxsizer.cpp:34
+msgid "Vertical"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsboxsizer.cpp:31
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:161
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstaticboxsizer.cpp:37
+msgid "Orientation:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschecklistbox.cpp:125
+msgid "Content:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebook.cpp:85
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbook.cpp:85
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebook.cpp:90
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:59
+msgid "Spacer can be added to sizers only"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebook.cpp:100
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbook.cpp:100
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebook.cpp:105
+msgid "No pages"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebook.cpp:198
+msgid "Choicebook page:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebook.cpp:199
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbook.cpp:199
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebook.cpp:204
+msgid " Page selected:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebook.h:17
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbook.h:17
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebook.h:17
+msgid "Page name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebookparentqp.cpp:23
+msgid "Choicebook options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebookparentqp.cpp:24
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbookparentqp.cpp:24
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebookparentqp.cpp:24
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbutton.cpp:67
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbutton.cpp:126
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscheckbox.cpp:48
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscheckbox.cpp:88
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobox.cpp:122
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobutton.cpp:48
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobutton.cpp:92
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbox.cpp:52
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbox.cpp:88
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticboxsizer.cpp:53
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticboxsizer.h:12
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstatictext.cpp:46
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstatictext.cpp:84
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstogglebutton.cpp:45
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstogglebutton.cpp:87
+msgid "Label"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebookparentqp.cpp:28
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbookparentqp.cpp:28
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebookparentqp.cpp:28
+#: ../plugins/contrib/wxSmith/properties/wxsstringlistproperty.cpp:26
+msgid "Selection"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxschoicebookparentqp.cpp:29
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbookparentqp.cpp:29
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebookparentqp.cpp:29
+msgid "Selected"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxscustomwidget.cpp:19
+msgid "CustomClass"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxscustomwidget.cpp:192
+#, possible-c-format
+msgid ""
+"Invalid Xml structure.\n"
+"Error at line %d, column %d:\n"
+"\t\"%s\""
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsdialog.cpp:62
+#: ../plugins/contrib/wxSmith/defwidgets/wxsframe.cpp:69
+msgid "Title:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsdialog.cpp:63
+#: ../plugins/contrib/wxSmith/defwidgets/wxsframe.cpp:70
+msgid "Centered:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsflexgridsizer.cpp:89
+#: ../plugins/contrib/wxSmith/defwidgets/wxsgridsizer.cpp:32
+msgid "Cols x rows:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsflexgridsizer.cpp:90
+#: ../plugins/contrib/wxSmith/defwidgets/wxsgridsizer.cpp:33
+msgid "VGap x HGap:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsflexgridsizer.cpp:91
+msgid "Growable cols:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsflexgridsizer.cpp:93
+msgid "Growable rows:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxshtmlwindow.cpp:39
+msgid "Following url will be used:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbook.cpp:198
+msgid "Listbook page:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxslistbookparentqp.cpp:23
+msgid "Listbook options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebook.cpp:203
+msgid "Notebook page:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsnotebookparentqp.cpp:23
+msgid "Notebook options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:47
+msgid "Splitter can have 2 children max"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:53
+msgid ""
+"Can not add sizer into Splitter.\n"
+"Add panels first"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:159
+msgid "Sash Position:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxssplitterwindow.cpp:160
+msgid "Min panel size:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstaticboxsizer.cpp:36
+msgid "Label:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:120
+msgid "OK:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:121
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:123
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:125
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:127
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:129
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:131
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:133
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:135
+msgid "  Label:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:122
+msgid "Yes:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:124
+msgid "No:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:126
+msgid "Cancel:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:128
+msgid "Apply:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:130
+msgid "Save:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:132
+msgid "Help:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstddialogbuttonsizer.cpp:134
+msgid "Context help:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstdmanager.cpp:55
+msgid "wxWidgets License"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstdmanager.cpp:56
+msgid "wxWidgets Team"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstdmanager.cpp:58
+msgid "www.wxwidgets.org"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstdmanager.cpp:59
+msgid "Standard"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstdmanager.cpp:60
+msgid "Layout"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxsstdmanager.cpp:172
+msgid "Not specified"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxswindow.cpp:101
+msgid "This item can be added into sizer only"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxswindow.cpp:115
+msgid "This item has sizer already. Can not add other one"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxswindow.cpp:119
+msgid "There are widgets on this item. Sizer can be added to empty item only"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/defwidgets/wxswindow.cpp:132
+msgid "This item contains sizer. Please add new items into this sizer."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:30
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsboxsizer.cpp:19
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbutton.cpp:40
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscalendarctrl.cpp:33
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscheckbox.cpp:26
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschecklistbox.cpp:29
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschoice.cpp:23
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscombobox.cpp:25
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdatepickerctrl.cpp:27
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdialog.cpp:42
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:7
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsframe.cpp:49
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgauge.cpp:26
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgenericdirctrl.cpp:26
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:7
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxslistbox.cpp:31
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxslistctrl.cpp:58
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxspanelr.cpp:21
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobox.cpp:28
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobutton.cpp:26
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsscrollbar.cpp:41
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:61
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspacer.cpp:39
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinbutton.cpp:32
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinctrl.cpp:29
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbitmap.cpp:21
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbox.cpp:29
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticboxsizer.cpp:19
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticline.cpp:23
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstatictext.cpp:24
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstextctrl.cpp:54
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstogglebutton.cpp:23
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstreectrl.cpp:57
+msgid "wxWidgets license"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:31
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsboxsizer.cpp:20
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbutton.cpp:41
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscalendarctrl.cpp:34
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscheckbox.cpp:27
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschecklistbox.cpp:30
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschoice.cpp:24
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscombobox.cpp:26
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdatepickerctrl.cpp:28
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdialog.cpp:43
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:8
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsframe.cpp:50
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgauge.cpp:27
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgenericdirctrl.cpp:27
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:8
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxslistbox.cpp:32
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxslistctrl.cpp:59
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxspanelr.cpp:22
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobox.cpp:29
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobutton.cpp:27
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsscrollbar.cpp:42
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:62
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspacer.cpp:40
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinbutton.cpp:33
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinctrl.cpp:30
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbitmap.cpp:22
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbox.cpp:30
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticboxsizer.cpp:20
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticline.cpp:24
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstatictext.cpp:25
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstextctrl.cpp:55
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstogglebutton.cpp:24
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstreectrl.cpp:58
+msgid "wxWidgets team"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:126
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:127
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:128
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:129
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticbitmap.cpp:84
+msgid "Bitmap"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:130
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbutton.cpp:127
+msgid "Is default"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbitmapbutton.cpp:130
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsbutton.cpp:127
+msgid "default"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsboxsizer.cpp:10
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsstaticboxsizer.cpp:10
+msgid "Orientation"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscheckbox.cpp:89
+msgid "Checked"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscheckbox.cpp:89
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstogglebutton.cpp:88
+msgid "checked"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschecklistbox.cpp:107
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschoice.cpp:104
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscombobox.cpp:103
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxslistbox.cpp:119
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobox.cpp:123
+msgid "Choices"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxschoice.cpp:105
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxscombobox.cpp:104
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxslistbox.cpp:120
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobox.cpp:125
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:37
+msgid "Default"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdialog.cpp:62
+msgid "Dialog"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdialog.cpp:129
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsframe.cpp:138
+msgid "Title"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsdialog.cpp:130
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsframe.cpp:139
+msgid "Centered"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:70
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:44
+msgid "Cols"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:71
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:45
+msgid "Rows"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:72
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:46
+msgid "V-Gap"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:72
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:46
+msgid "V-Gap in dialog units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:73
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:47
+msgid "H-Gap"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:73
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgridsizer.cpp:47
+msgid "H,y-Gap in dialog units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:74
+msgid "Growable cols"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsflexgridsizer.cpp:75
+msgid "Growable rows"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsframe.cpp:69
+msgid "Frame"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgauge.cpp:94
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsscrollbar.cpp:108
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:150
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinbutton.cpp:98
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinctrl.cpp:97
+msgid "Value"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgauge.cpp:95
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsscrollbar.cpp:110
+msgid "Range"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgauge.cpp:96
+msgid "3D Shadow Width"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgauge.cpp:97
+msgid "Bezel Face Width"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgenericdirctrl.cpp:88
+msgid "Default Folder"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgenericdirctrl.cpp:89
+msgid "Filter"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsgenericdirctrl.cpp:90
+msgid "Default Filter"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobox.cpp:126
+msgid "Dimension"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobutton.cpp:93
+msgid "Is Selected"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsradiobutton.cpp:93
+msgid "selected"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsscrollbar.cpp:109
+msgid "ThumbSize"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsscrollbar.cpp:111
+msgid "PageSize"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:151
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinctrl.cpp:98
+msgid "Min"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:152
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinctrl.cpp:99
+msgid "Max"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:153
+msgid "Page Size"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:154
+msgid "Line Size"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:155
+msgid "Thumb Length"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:156
+msgid "Selection Min"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:157
+msgid "Selection Max"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:158
+msgid "Tick"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsslider.cpp:159
+msgid "Tick Frequency"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinbutton.cpp:99
+msgid "Min Value"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinbutton.cpp:100
+msgid "Max Value"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxsspinctrl.cpp:76
+msgid ");\n"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstextctrl.cpp:77
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstextctrl.cpp:120
+msgid "Text"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstextctrl.cpp:121
+msgid "Max Length"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/defwidgets/wxstogglebutton.cpp:88
+msgid "Is checked"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxscorrector.cpp:26
+msgid ""
+"Some properties were updated during load.\n"
+"You may need to validate new values."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:63
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:89
+msgid "Insert new widgets into current selection"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:64
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:90
+msgid "Insert new widgets before current selection"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:65
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:91
+msgid "Insert new widgets after current selection"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:66
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:92
+msgid "Delete current selection"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:67
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:93
+msgid "Show preview"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:68
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:94
+msgid "Open / Close Quick Properties panel"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:600
+msgid "wxSmith: No item selected - couldn't create new item"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/editors/wxswindoweditor.cpp:609
+msgid "wxSmith: Culdn't generate item inside factory"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:23
+#: ../plugins/contrib/wxSmith/properties/wxscheckstringseditor.cpp:27
+msgid "Choices:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:28
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:167
+#: ../plugins/contrib/wxSmith/properties/wxscheckstringseditor.cpp:32
+msgid "Add"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:36
+#: ../plugins/contrib/wxSmith/properties/wxscheckstringseditor.cpp:40
+msgid "Update"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:38
+#: ../plugins/contrib/wxSmith/properties/wxscheckstringseditor.cpp:42
+msgid "Remove"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:40
+#: ../plugins/contrib/wxSmith/properties/wxscheckstringseditor.cpp:44
+msgid "Up"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:42
+#: ../plugins/contrib/wxSmith/properties/wxscheckstringseditor.cpp:46
+msgid "Down"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:52
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:123
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:196
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfontfaceeditordlg.cpp:25
+#: ../plugins/contrib/wxSmith/new/properties/wxsarraystringeditordlg.cpp:29
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:65
+msgid "OK"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckeditordlg.cpp:54
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:125
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:198
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfontfaceeditordlg.cpp:27
+#: ../plugins/contrib/wxSmith/new/properties/wxsarraystringeditordlg.cpp:31
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:73
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:67
+msgid "Cancel"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsarraystringcheckproperty.cpp:111
+#: ../plugins/contrib/wxSmith/new/properties/wxsarraystringproperty.cpp:91
+msgid "Click to add items"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:78
+msgid "Image editor"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:81
+msgid "Image options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:84
+msgid "No image"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:86
+msgid "Image From File:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:91
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:53
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:56
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:537
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:547
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:598
+msgid "..."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:96
+msgid "Image from wxArtProvider:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:100
+msgid "Art Id:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:102
+msgid "Art Client:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:117
+msgid "Preview"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsbitmapiconeditordlg.cpp:251
+msgid "Choose image file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:38
+msgid "Custom"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:39
+msgid "Scrollbar"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:40
+msgid "Desktop"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:41
+msgid "Active window caption"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:42
+msgid "Inactive window caption"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:43
+msgid "Menu background"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:44
+msgid "Window background"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:45
+msgid "Window frame"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:46
+msgid "Menu text"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:47
+msgid "Text in window"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:48
+msgid "Text in window caption"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:49
+msgid "Active window border"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:50
+msgid "Inactive window border"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:51
+msgid "Background for MDI apps"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:52
+msgid "Selected item"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:53
+msgid "Text of selected item"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:54
+msgid "Face of button"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:55
+msgid "Edge of button"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:56
+msgid "Grayed (disabled) text"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:57
+msgid "Text on buttons"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:58
+msgid "Text of inactive caption"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:59
+msgid "Highlight colour for buttons"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:60
+msgid "Dark shadow for 3D items"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:61
+msgid "Light for 3D items"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:62
+msgid "Tooltip text"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:63
+msgid "Tooltip background"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:64
+msgid "Listbox"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:65
+msgid "Hot light"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:66
+msgid "Gradient of active caption"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:67
+msgid "Gradnent of inactive caption"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:68
+msgid "Selected menu item"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxscolourproperty.cpp:69
+msgid "Menu bar"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:57
+msgid "Font settings"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:61
+msgid "Font type"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:63
+msgid "Default font"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:64
+msgid "Custom font"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:65
+msgid "System-based font"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:68
+msgid "Settings"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:75
+msgid "Base Font:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:79
+msgid "wxSYS_OEM_FIXED_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:80
+msgid "wxSYS_ANSI_FIXED_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:81
+msgid "wxSYS_ANSI_VAR_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:82
+msgid "wxSYS_SYSTEM_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:83
+msgid "wxSYS_DEVICE_DEFAULT_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:84
+msgid "wxSYS_DEFAULT_PALETTE"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:85
+msgid "wxSYS_SYSTEM_FIXED_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:86
+msgid "wxSYS_DEFAULT_GUI_FONT"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:88
+msgid "Family:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:91
+msgid "Decorative"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:92
+msgid "Roman"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:93
+msgid "Script"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:94
+msgid "Swiss"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:95
+msgid "Modern"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:96
+msgid "Teletype"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:98
+msgid "Font encoding:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:101
+#: ../plugins/contrib/wxSmith/widget.cpp:176
+msgid "Size:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:103
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:88
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:122
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:58
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:106
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:63
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:108
+msgid "0"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:104
+msgid "Relative size:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:106
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:62
+#: ../plugins/contrib/wxSmith/new/wxsmithmime.cpp:14
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.cpp:11
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:70
+#: ../plugins/contrib/wxSmith/wxsmithmime.cpp:14
+#: ../plugins/contrib/wxSmith/wxsmithwizard.cpp:11
+msgid "1.0"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:121
+#: ../plugins/contrib/wxSmith/new/wxscontainer.cpp:85
+#: ../plugins/contrib/wxSmith/new/wxswidget.cpp:36
+msgid "Style"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:123
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:138
+msgid "Normal"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:125
+msgid "Italic"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:127
+msgid "Slant"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:134
+msgid "Weight"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:136
+msgid "Light"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:140
+msgid "Bold"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:147
+msgid "Underlined"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:149
+msgid "Yes"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:151
+msgid "No"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:163
+msgid "Faces"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:169
+msgid "Delete"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:171
+msgid "Edit"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:173
+msgid "Move Up"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:175
+msgid "Move Down"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:187
+msgid "Test area"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:188
+msgid "This is sample text"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfonteditordlg.cpp:194
+msgid "Quick setup"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfontfaceeditordlg.cpp:15
+msgid "Selecting font face"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfontfaceeditordlg.cpp:17
+msgid "Face name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxsfontfaceeditordlg.cpp:20
+msgid "Pick"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:18
+msgid "Borders"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:38
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:52
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:91
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:112
+#: ../plugins/contrib/wxSmith/properties/wxsborderproperty.cpp:22
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:33
+msgid "Top"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:39
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:54
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:93
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:118
+#: ../plugins/contrib/wxSmith/properties/wxsborderproperty.cpp:23
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:37
+msgid "Bottom"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:40
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:46
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:95
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:114
+#: ../plugins/contrib/wxSmith/properties/wxsborderproperty.cpp:20
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:39
+msgid "Left"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:41
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:48
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:97
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:116
+#: ../plugins/contrib/wxSmith/properties/wxsborderproperty.cpp:21
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:35
+msgid "Right"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:42
+msgid "All"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:43
+#: ../plugins/contrib/wxSmith/new/wxssizer.cpp:38
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:38
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:43
+msgid "Border"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:47
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:53
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:115
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:40
+msgid "Center"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:49
+msgid "Horizontal align"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:55
+msgid "Vertical align"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:57
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:98
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.h:21
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:100
+msgid "Expand"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:58
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:96
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.h:22
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:98
+msgid "Shaped"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/extended/wxssizerflagsproperty.cpp:59
+msgid "Fixed min size"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/wxsarraystringeditordlg.cpp:22
+msgid "Edit items"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/wxsarraystringeditordlg.cpp:24
+msgid "Enter items (one item per line)"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/properties/wxscustomeditorproperty.h:28
+msgid "Click to edit"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxspanelres.cpp:23
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.h:350
+#, possible-c-format
+msgid "Frame preview: %s"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:167
+msgid "Error while loading resource"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:234
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:260
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:286
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:340
+#, possible-c-format
+msgid "wxSmith: Couldn't load '%s' file."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:235
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:261
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:287
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:341
+msgid ""
+"wxSmith:    (Either file can not be opened or it has not valid XML "
+"structure)."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:241
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:293
+#, possible-c-format
+msgid "wxSmith: Invalid XRC file structure - no \"object\" node in '%s'."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:246
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:298
+#, possible-c-format
+msgid ""
+"wxSmith: Invalid XRC file structure - root object is not of type '%s' in '%"
+"s'."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:272
+#, possible-c-format
+msgid ""
+"wxSmith warning: Resource '%s' is using obsolete wxs format, it will be "
+"updated."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:277
+#, possible-c-format
+msgid ""
+"wxSmith warning: Did not found extra data for '%s' resource, some data may "
+"be lost"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:347
+#, possible-c-format
+msgid "wxSmith: Invalid WXS file structure - no \"object\" node in '%s'."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/resources/wxswindowres.cpp:352
+#, possible-c-format
+msgid ""
+"wxSmith: Invalid WXS file structure - root object is not of type '%s' in '%"
+"s'."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:7
+msgid "Default pos"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:7
+#: ../plugins/contrib/wxSmith/properties/wxs2intproperty.h:18
+msgid "X"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:7
+#: ../plugins/contrib/wxSmith/properties/wxs2intproperty.h:19
+msgid "Y"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:7
+msgid "Pos in dialog units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:8
+msgid "Default size"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:8
+msgid "Width"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:8
+msgid "Height"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:8
+msgid "Size in dialog units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:9
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:40
+msgid "Enabled"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:10
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:42
+msgid "Focused"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:11
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:44
+msgid "Hidden"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:12
+msgid "Foreground"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:13
+msgid "Background"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:14
+#: ../plugins/contrib/wxSmith/properties/wxsfontproperty.h:19
+msgid "Font"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:14
+msgid "font"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:15
+msgid "Tooltip"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsbaseproperties.cpp:16
+msgid "Help text"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:43
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:120
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:136
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:201
+#, possible-c-format
+msgid ""
+"wxSmith: Couldn't find code with header:\n"
+"\t\"%s\"\n"
+"in file '%s'"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:55
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:137
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:148
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:212
+#, possible-c-format
+msgid ""
+"wxSmith: Unfinished block of auto-generated code with header:\n"
+"\t\"%s\"\n"
+"in file '%s'"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:103
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:185
+#, possible-c-format
+msgid "wxSmith: Couldn't open file '%s' for reading"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:111
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:192
+#, possible-c-format
+msgid "wxSmith: Couldn't read from file '%s'"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:172
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:241
+#, possible-c-format
+msgid "wxSmith: Couldn't open file '%s' for writing"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscoder.cpp:179
+#: ../plugins/contrib/wxSmith/wxscoder.cpp:247
+#, possible-c-format
+msgid "Couldn't write to file '%s'"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscontainer.cpp:34
+msgid "Spacer can be added into sizer only"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscontainer.cpp:47
+msgid "This item can contain only one sizer"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscontainer.cpp:55
+msgid "Item can not contain sizer if it has other items inside"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscontainer.cpp:69
+msgid "Item contains sizer, can not add other items into it."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxscontainer.cpp:86
+#: ../plugins/contrib/wxSmith/new/wxswidget.cpp:37
+#: ../plugins/contrib/wxSmith/properties/wxsstyleproperty.h:17
+msgid "Extra style"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsextresmanager.cpp:45
+#: ../plugins/contrib/wxSmith/wxsextresmanager.cpp:25
+msgid "Error occured while loading XRC file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsextresmanager.cpp:54
+#: ../plugins/contrib/wxSmith/wxsextresmanager.cpp:34
+msgid "Invalid XRC file structure"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsextresmanager.cpp:77
+#: ../plugins/contrib/wxSmith/wxsextresmanager.cpp:57
+msgid "Unsupported resource type"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsimportxrcdlg.cpp:13
+#: ../plugins/contrib/wxSmith/wxsimportxrcdlg.cpp:11
+#, possible-c-format
+msgid "Importing %s resource"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsitem.cpp:72
+msgid "Var name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsitem.cpp:73
+msgid " Is member"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsitem.cpp:74
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:35
+msgid "Identifier"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:60
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:61
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:178
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:182
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:68
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:69
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:194
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:198
+msgid "wxSmith"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:63
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:71
+msgid "RAD tool used to create wxWidgets forms"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:64
+#: ../plugins/contrib/wxSmith/new/wxsmithmime.cpp:16
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.cpp:13
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:72
+#: ../plugins/contrib/wxSmith/wxsmithmime.cpp:16
+#: ../plugins/contrib/wxSmith/wxsmithwizard.cpp:13
+msgid "BYO"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:65
+#: ../plugins/contrib/wxSmith/new/wxsmithmime.cpp:17
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.cpp:14
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:73
+#: ../plugins/contrib/wxSmith/wxsmithmime.cpp:17
+#: ../plugins/contrib/wxSmith/wxsmithwizard.cpp:14
+msgid "byo.spoon@gmail.com"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:68
+msgid ""
+"Ann for Being\n"
+"Anha for Smile\n"
+"Gigi for Faworki\n"
+"Jaakko Salli for wxPropertyGrid\n"
+"God for Love\n"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:102
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:110
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:101
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:110
+msgid "Resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:166
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:182
+msgid "Add &Dialog"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:167
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:183
+msgid "Add &Frame"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:168
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:184
+msgid "Add &Panel"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:170
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:186
+msgid "Import &XRC file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:172
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:188
+msgid "&Configure wxSmith for current project"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:174
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:190
+msgid "&Tools"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:263
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:309
+msgid "Select XRC file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:267
+msgid "XRC files (*.xrc)|*.xrc|All files (*)|*"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:278
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:324
+msgid "Couldn't load XRC file."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:303
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:347
+msgid "Didn't find any editable resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:317
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:362
+msgid "Select resource to import"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:318
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:363
+msgid "Importing XRC"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:346
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:390
+msgid ""
+"Resource was not loaded properly. Some widgets may be\n"
+"damaged or will be removed. Continue ?"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:348
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:392
+msgid "XRC Load error"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:368
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:412
+msgid "Please open project first"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:368
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:316
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:412
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:171
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:552
+msgid "Error"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:386
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:430
+msgid ""
+"Active project doesn't use wxSmith.\n"
+"Should I change it ?"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmith.cpp:387
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:431
+msgid "Not wxSmith project"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithmime.cpp:12
+#: ../plugins/contrib/wxSmith/wxsmithmime.cpp:12
+msgid "wxSmithMime"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithmime.cpp:13
+#: ../plugins/contrib/wxSmith/wxsmithmime.cpp:13
+msgid "wxSmith - MIME plugin"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithmime.cpp:15
+#: ../plugins/contrib/wxSmith/wxsmithmime.cpp:15
+msgid "Mime extension for wxSmith"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.cpp:9
+#: ../plugins/contrib/wxSmith/wxsmithwizard.cpp:9
+msgid "wxSmithWizard"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.cpp:10
+#: ../plugins/contrib/wxSmith/wxsmithwizard.cpp:10
+msgid "wxSmith - Project Wizard plugin"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.cpp:12
+#: ../plugins/contrib/wxSmith/wxsmithwizard.cpp:12
+msgid "Project Wizard for wxSmith"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.h:18
+#: ../plugins/contrib/wxSmith/wxsmithwizard.h:19
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:528
+msgid "wxSmith project"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.h:21
+#: ../plugins/contrib/wxSmith/wxsmithwizard.h:22
+msgid ""
+"Creates project using wxSmith RAD editor (library required - wxWidgets 2.6)"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsmithwizard.h:24
+#: ../plugins/contrib/wxSmith/wxsmithwizard.h:25
+msgid "GUI"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:45
+msgid "Options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:48
+msgid "Class Name:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:51
+msgid "Header file:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:54
+msgid "Source file:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:57
+msgid "Xrc File:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:69
+msgid ""
+"Warning:\n"
+"When adding resource in Xrc mode,\n"
+"this resource must be manually loaded.\n"
+"For details see wxXmlResource::Load()\n"
+"and wxXmlResource::Get()."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:75
+msgid "Create"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:93
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:45
+#, possible-c-format
+msgid "New%s"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:99
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:51
+#, possible-c-format
+msgid "New %s resource"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:121
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:74
+msgid "Invalid class name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:132
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:85
+#, possible-c-format
+msgid "Resource '%s' already exists"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:141
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:151
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:161
+#, possible-c-format
+msgid ""
+"File '%s' already exists. It will be overwritten.\n"
+"Continue ?"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:142
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:152
+#: ../plugins/contrib/wxSmith/new/wxsnewwindowdlg.cpp:162
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:96
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:108
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:120
+msgid "File exists"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:58
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:67
+#, possible-c-format
+msgid "Invalid wxSmith configuration file in project: %s"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:316
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:552
+msgid "Couldn't create wxsmith directory in main projet's path"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:341
+msgid ""
+"WARNING:\n"
+"\n"
+"In this project, wxSmith does not manage source code for\n"
+"wxApp-derived class, there are no project options.\n"
+"\n"
+"If you want wxSmith to manage Your application class,\n"
+"it must be declared in following form:\n"
+"\n"
+"\t//(*AppHeaders\n"
+"\t  /*... wxSmith will put necesarry header includes here ...*/\n"
+"\t//*)\n"
+"\n"
+"\tclass MyApp : public wxApp\n"
+"\t{\n"
+"\t\tpublic:\n"
+"\t\t\tvirtual bool OnInit();\n"
+"\t};\n"
+"\tIMPLEMENT_APP(MyApp);\n"
+"\n"
+"\tbool MyApp::OnInit()\n"
+"\t{\n"
+"\t\t//(*AppInitialize\n"
+"\t\t  /*... wxSmith will put application's initialization code here ...*/\n"
+"\t\t//*)\n"
+"\t\t  /*... wxsOK will be true if initialized correctly ... */\n"
+"\t\treturn wxsOK;\n"
+"\t}\n"
+"\n"
+"If you have already changed Your application to this form,\n"
+"click Yes and choose source file with application class.\n"
+"\n"
+"If you don't want wxSmith to manage Your application\n"
+"(f.ex. you have your own initialization system), click No.\n"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:374
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:80
+msgid "Application not manager in wxSmith"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:386
+msgid "Choose source file with your application"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:388
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:95
+msgid "C++ source files (*.cpp)|*.cpp|All files (*)|*"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:400
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:108
+msgid ""
+"Selected file is not included in this project.\n"
+"Continue ?"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsproject.cpp:402
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:110
+msgid "Selected external file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:23
+msgid "Configuration of wxSmith project"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:26
+msgid "Automatically loaded resources:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:27
+msgid ""
+"Each line will be passed as file name to\n"
+"wxXmlResource::Get()->Load."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:31
+msgid "Add file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:33
+msgid "Clear all"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:41
+msgid "Main resource"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:46
+msgid ""
+"Window selected here will be created and\n"
+"shown while initializing application.\n"
+"You should use one of frames here.\n"
+"Using dialog as main resource is also\n"
+"acceptable but may lead to problems\n"
+"with terminating application\n"
+"after closing main dialog."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:50
+msgid "XRC system initialization"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:52
+msgid "Call wxXmlResource::InitAllHandlers()"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:54
+msgid "Only when necessary"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:88
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:94
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:11
+#: ../plugins/contrib/wxSmith/properties/wxsstringlistproperty.cpp:64
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:10
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:126
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:131
+msgid "-- None --"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:143
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:174
+msgid "Select resource file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsprojectconfigurationdlg.cpp:145
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:176
+msgid "XRC files (*.xrc)|*.xrc|Zipped files (*.zip)|*.zip|All files (*)|*"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:12
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:11
+msgid "-- Add new handler --"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:18
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:121
+msgid "Properties"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:19
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:122
+msgid "Events"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:267
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:248
+msgid "Enter name for new handler:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:267
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:248
+msgid "New handler"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:272
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:253
+msgid "Invalid name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:278
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:262
+msgid "Handler with this name already exists"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxspropertybrowser.cpp:288
+#: ../plugins/contrib/wxSmith/wxseventseditor.cpp:273
+msgid "Couldn't add new handler"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsresourcefactory.cpp:45
+msgid "wxDialog resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsresourcefactory.cpp:46
+msgid "wxFrame resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsresourcefactory.cpp:47
+msgid "wxPanel resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsresourcetree.cpp:51
+#: ../plugins/contrib/wxSmith/wxsextresmanager.cpp:65
+msgid "External resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxsresourcetree.cpp:188
+#: ../plugins/contrib/wxSmith/wxsresourcetree.cpp:126
+msgid "Configure"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:44
+msgid "Editor"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:46
+msgid "Drag Assistance Type"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:48
+msgid "None"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:49
+msgid "Simple"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:50
+msgid "Colour Mix"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:52
+msgid "Drag target colour"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:55
+msgid "Drag Parent Colour"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:58
+msgid "Palette icon size"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:60
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:68
+msgid "16x16"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:62
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:70
+msgid "32x32"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:66
+msgid "Tool icon size"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:85
+msgid "Default sizer settings"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:87
+#: ../plugins/contrib/wxSmith/wxsdefsizer.cpp:219
+msgid "Proportion:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:89
+msgid "Border flags:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:103
+msgid "Expand:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:106
+msgid "Shaped:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:109
+#: ../plugins/contrib/wxSmith/wxsdefsizer.cpp:222
+msgid "Placement:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:111
+msgid "Left-Top"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:113
+msgid "Right-Top"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:117
+msgid "Left-Bottom"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:119
+msgid "Right-Bottom"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:121
+#: ../plugins/contrib/wxSmith/wxsdefsizer.cpp:220
+msgid "Border:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:123
+msgid "Use dialog units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.cpp:143
+msgid "Automatically select new widgets, when created"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssettingsdlg.h:63
+#: ../plugins/contrib/wxSmith/wxssettingsdlg.h:33
+msgid "wxSmith settings"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssizer.cpp:38
+msgid "  Dialog Units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssizer.cpp:39
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:105
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:107
+msgid "Proportion"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssizer.cpp:186
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:27
+msgid "Sizer"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:61
+msgid "Dialog Units"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/new/wxssizerparentqp.cpp:65
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:67
+msgid "Placement"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxsadvimageproperty.cpp:25
+msgid "Image:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxscolourproperty.h:18
+msgid "Use colour"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxscolourproperty.h:19
+msgid "Colour"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxsfontproperty.h:18
+msgid "Use font"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:32
+msgid "Left - Top"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:34
+msgid "Right - Top"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:36
+msgid "Right - Bottom"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/properties/wxsplacementproperty.cpp:38
+msgid "Left - Bottom"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:137
+msgid ""
+"Internal error in plugin: wxSmith.\n"
+"Code::Blocks may crash !!!\n"
+"Please, save all Your files, close Code::Blocks and reinstall/remove wxSmith "
+"plugin"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:146
+msgid "wxSmith ERROR !!! Can not load resource when editor is opened"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:158
+msgid "Couldn't load resource data"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:181
+msgid "Couldn't load xrc data, some resources may be damaged"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:627
+msgid "Item must have variable name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:655
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:678
+#, possible-c-format
+msgid "Invalid character: '%c' in variable name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:698
+#, possible-c-format
+msgid "Item with variable name '%s' already exists"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:738
+msgid "Item must have identifier"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:770
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:793
+#, possible-c-format
+msgid "Invalid character: '%c' in id name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:825
+#, possible-c-format
+msgid "Item with identifier '%s' already exists"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/resources/wxswindowres.cpp:854
+msgid "XRC allow only -1 value instead of identifier name."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:159
+msgid "Var Name:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:160
+msgid "Is Member:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:165
+msgid "Id:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:170
+msgid "Position:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:171
+#: ../plugins/contrib/wxSmith/widget.cpp:177
+msgid " Default:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:182
+msgid "Enabled:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:187
+msgid "Focused:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:192
+msgid "Hidden:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:197
+msgid "Foreground colour:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:199
+msgid "Background colour:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:205
+msgid "Font:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/widget.cpp:211
+msgid "Tool tip:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsdefsizer.cpp:221
+msgid "Border size:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:76
+msgid ""
+"Ann for Being\n"
+"Anha for Smile\n"
+"Gigi for Faworki\n"
+"\n"
+"God for Love\n"
+"\n"
+"Jaakko Salli for wxPropertyGrid"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:296
+msgid "Internal error - invalid resource type"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:313
+msgid "XRC files (*.xrc)|*.xrc"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:384
+msgid "Internal error"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsmith.cpp:420
+msgid "Something wrong - couldn't find associated wxsProject"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:95
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:107
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:119
+#, possible-c-format
+msgid "File '%s' already exists. Overwrite it ?"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsnewwindowdlg.cpp:171
+msgid "Couldn't generate sources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:99
+msgid "Old wxSmith configuration detected"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:100
+msgid ""
+"Previous version of wxSmith used external file to\n"
+"keep it's configuration. In new version, it is stored\n"
+"inside .cbp file. Should I automatically delete\n"
+"previous configuration file ?"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:109
+msgid "Unable to delete old wxSmith configuration file."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:109
+msgid "Couldn't delete file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:167
+msgid "Dialog resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:168
+msgid "Frame resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:169
+msgid "Panel resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:316
+#, possible-c-format
+msgid "Couldn't find source file '%s'"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:317
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:324
+msgid "Not all resources will be loaded"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:323
+#, possible-c-format
+msgid "Couldn't find header file '%s'"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:349
+msgid "Couldn't create new resource"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:360
+#, possible-c-format
+msgid "Corrected some invalid properties for resource '%s'.\n"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:563
+msgid "wxSmith extensions added"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsproject.cpp:564
+msgid ""
+"wxSmith extensions were added to this project.\n"
+"\n"
+"Because main application code is not managed by\n"
+"wxSmith, remember about proper wxWidgets initialization:\n"
+" * call wxXmlResource::Get()->InitAllHandlers() before using any XRC files\n"
+" * call wxInitAllImageHandlers() before using graphic files other than .bmp\n"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:47
+msgid ""
+"WARNING:\n"
+"\n"
+"In this project, wxSmith does not manage source code for\n"
+"wxApp-derived class, there are no project options.\n"
+"\n"
+"If You want wxSmith to manage Your application class,\n"
+"it must be declared in following form:\n"
+"\n"
+"\t//(*AppHeaders\n"
+"\t  /*... wxSmith will put necesarry header includes here ...*/\n"
+"\t//*)\n"
+"\n"
+"\tclass MyApp : public wxApp\n"
+"\t{\n"
+"\t\tpublic:\n"
+"\t\t\tvirtual bool OnInit();\n"
+"\t};\n"
+"\tIMPLEMENT_APP(MyApp);\n"
+"\n"
+"\tbool MyApp::OnInit()\n"
+"\t{\n"
+"\t\t//(*AppInitialize\n"
+"\t\t  /*... wxSmith will put application's initialization code here ...*/\n"
+"\t\t//*)\n"
+"\t\t  /*... wxsOK will be true if initialized correctly ... */\n"
+"\t\treturn wxsOK;\n"
+"\t}\n"
+"\n"
+"If You have already changed Your application to this form,\n"
+"click Yes and choose source file with application class.\n"
+"\n"
+"If You don't want wxSmith to manage Your application\n"
+"(f.ex. You have Your own initialization system), click No.\n"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsprojectconfigurationdlg.cpp:93
+msgid "Choose source file with Your application"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsresourcetree.cpp:77
+msgid "wxSmith: Error while cloning widget"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxssizerparentqp.cpp:42
+msgid "Sizer options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:27
+msgid "Standard options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:28
+msgid "Variable"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:31
+msgid "Is class member"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxsstandardqp.cpp:39
+msgid "Flags"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:316
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:329
+msgid "wxSmith ERROR: Something wrong with undo buffer !!!"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:754
+msgid "wxSmith: No widget selected - couldn't create new widget"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:766
+msgid "wxSmith: Culdn't generate widget inside factory"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:910
+msgid "wxSmith: No widget selecteed - couldn't delete"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswindoweditor.cpp:918
+msgid "Can not delete main widget (for now ;)"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:518
+msgid "wxSmith project wizard"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:524
+msgid "wxSmith project options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:527
+msgid "Project name:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:530
+msgid "Main frame title:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:531
+msgid "Welcome to wxSmith application"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:533
+msgid "Base directory:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:541
+msgid "Custom proj. dir:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:561
+msgid "Add a simple menu"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:563
+msgid "Add a status bar"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:565
+msgid "Create About dialog"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:568
+msgid "Create XRC resources"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:570
+msgid "Insert additional comments describing wxSmith's code"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:579
+msgid "wxWidgets library options"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:582
+msgid "Configuration mode:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:584
+msgid "Global variables"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:585
+msgid "Custom variables"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:586
+msgid "Library finder"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:588
+msgid "Library type:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:590
+msgid "DLL"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:591
+msgid "Static"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:593
+msgid "wxWidgets dir:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:603
+msgid "Configuration:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:607
+msgid "Use unicode:"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:669
+msgid "Please enter project name"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:675
+msgid "Please enter project directory"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:681
+msgid "Project path must be absolute"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:687
+msgid "Couldn't create main project directory"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:697
+msgid "Couldn't create new project file"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:823
+msgid "Error occured while creating files. Project may be corrupted."
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:866
+msgid "New wxSmith project created"
+msgstr ""
+
+#: ../plugins/contrib/wxSmith/wxswizard.cpp:867
+msgid ""
+"New project created. But you may need\n"
+"to adjust some custom vars in project options"
+msgstr ""

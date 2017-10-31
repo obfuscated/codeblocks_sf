@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+		<Lexer name="GameMonkey script"
+				index="3"
+				filemasks="*.gm">
+				<Style name="Default"
+						index="0"
+						fg="0,0,0"
+						bg="255,255,255"
+						bold="0"
+						italics="0"
+						underlined="0"/>
+				<Style name="Comment (normal)"
+						index="1,2,3,15,17,18"
+						fg="160,160,160"/>
+				<Style name="Number"
+						index="4"
+						fg="240,0,240"/>
+				<Style name="Keyword"
+						index="5"
+						fg="0,0,160"
+						bold="1"/>
+				<Style name="User keyword"
+						index="16"
+						fg="0,160,0"
+						bold="1"/>
+				<Style name="String"
+						index="6,12"
+						fg="0,0,255"/>
+				<Style name="Character"
+						index="7"
+						fg="224,160,0"/>
+				<Style name="Operator"
+						index="10"
+						fg="255,0,0"/>
+				<Style name="Selection"
+						index="-99"
+						bg="192,192,192"/>
+				<Style name="Compiler error line"
+						index="-4"
+						bg="255,128,0"/>
+				<Style name="Matching brace highlight"
+						index="34"
+						fg="255,0,0"
+						bold="1"
+						underlined="1"/>
+				<Style name="No matching brace highlight"
+						index="35"
+						bg="255,0,0"/>
+				<Keywords>
+						<Language index="0"
+								value="if else for foreach while dowhile
+								break continue return true false null
+								in and or function global local member
+								table this"/>
+						<User index="1"
+								value="debug typeId typeName typeRegisterOperator
+								typeRegisterVariable sysCollectGarbage sysGetMemoryUsage
+								sysSetDesiredMemoryUsageHard sysSetDesiredMemoryUsageSoft
+								sysSetDesiredMemoryUsageAuto sysGetDesiredMemoryUsageHard
+								sysGetDesiredMemoryUsageSoft sysTime doString globals
+								threadTime threadId threadAllIds threadKill threadKillAll
+								thread yield exit assert sleep signal block stateSet
+								stateSetOnThread stateGet stateGetLast stateSetExitFunction
+								tableCount tableDuplicate print format "/>
+				</Keywords>
+				<SampleCode value="lexer_gm.sample"
+						error_line="9"/>
+                <LanguageAttributes
+                    LineComment="//"
+                    StreamCommentStart="/*"
+                    StreamCommentEnd="*/"
+                    BoxCommentStart="/* "
+                    BoxCommentMid=" * "
+                    BoxCommentEnd=" */"
+                    LexerCommentStyles="1,2,3,15,17,18,23,65,66,67,79,81,82,87"
+                    LexerCharacterStyles="7,71"
+                    LexerStringStyles="6,12,70,76"
+                    LexerPreprocessorStyles="9,73"/>
+		</Lexer>
+</CodeBlocks_lexer_properties>

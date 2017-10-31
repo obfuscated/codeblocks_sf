@@ -1,0 +1,618 @@
+/*
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+ * http://www.gnu.org/licenses/gpl-3.0.html
+ *
+ * $Revision$
+ * $Id$
+ * $HeadURL$
+ */
+
+//
+// Common functions for all registered wizards
+//
+
+// Warnings On
+function WarningsOn(base, compilerID)
+{
+    if      (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")) )
+    {
+        base.AddCompilerOption(_T("/W3"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
+    {
+        base.AddCompilerOption(_T("-Wall"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc")) )
+    {
+        base.AddCompilerOption(_T("-w"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
+    {
+        base.AddCompilerOption(_T("-wx")); // max. warning level
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
+    {
+        base.AddCompilerOption(_T("-w-"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang")) )
+    {
+        base.AddCompilerOption(_T("-Weverything"));
+    }
+    else if(    GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
+    {
+        base.AddCompilerOption(_T("-A"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
+    {
+        // with SDCC all warnings are enabled by default. You can only ask for less by using --less-pedantic or --disable-warning.
+        // the (pseudo) compiler "No Compiler" takes no options
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
+    {
+        base.AddCompilerOption(_T("WARNINGLEVEL(2)"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    {
+        base.AddCompilerOption(_T("--remarks"));
+    }
+    else
+    {
+        ShowWarning(_T("This wizard doesn't know how to setup warning flags for this compiler.\n"));
+    }
+    // TODO: Other compilers, fallback?
+}// WarningsOn
+
+// Debug symbols On
+function DebugSymbolsOn(base, compilerID)
+{
+    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    {
+        base.AddCompilerOption(_T("/Zi"));
+        base.AddCompilerOption(_T("/D_DEBUG"));
+        base.AddLinkerOption(_T("/DEBUG"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
+    {
+        base.AddCompilerOption(_T("-g"));
+
+        if  (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd")))
+        {
+            base.AddCompilerOption(_T("-debug"));
+        }
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
+    {
+        base.AddCompilerOption(_T("-v"));
+        base.AddLinkerOption(_T("-v"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
+    {
+        base.AddCompilerOption(_T("/Zi"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")))
+    {
+        base.AddCompilerOption(_T("-g2"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
+    {
+        base.AddCompilerOption(_T("-d2")); // full symbolic debugging information
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keil*")))
+    {
+        base.AddCompilerOption(_T("DEBUG"));
+        base.AddCompilerOption(_T("OBJECTEXTEND"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    {
+        base.AddCompilerOption(_T("--debug"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
+    {
+        // the (pseudo) compiler "No Compiler" takes no options
+    }
+    else
+    {
+        ShowWarning(_T("This wizard doesn't know how to setup debug flags for this compiler.\n"));
+    }
+    // TODO: Other compilers, fallback?
+}// DebugSymbolsOn
+
+// Optimizations On
+function OptimizationsOn(base, compilerID)
+{
+    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    {
+        if (   !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc8"))
+            && !GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc10")) )
+        {
+
+            base.AddCompilerOption(_T("/Og"));  // Deprecated in MSVC 8 and later (MSVC 10)
+        }
+        base.AddCompilerOption(_T("/Ox"));
+        base.AddCompilerOption(_T("/DNDEBUG"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifclin"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ldc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ppc*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("tricore*")) )
+    {
+        base.AddCompilerOption(_T("-O2"));
+
+        if  (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("arm*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gdc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran")) )
+        {
+            base.AddLinkerOption(_T("-s"));
+        }
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("avr*"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msp430*")) )
+    {
+        base.AddCompilerOption(_T("-Os"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")) )
+    {
+        base.AddCompilerOption(_T("-o"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmd"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("lcc")) )
+    {
+        base.AddCompilerOption(_T("-O"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ifcwin")) )
+    {
+        base.AddCompilerOption(_T("/O2"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")) )
+    {
+        base.AddCompilerOption(_T("-ot")); // optimize for time
+        base.AddCompilerOption(_T("-ox")); // Maximum optimization
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilc51")))
+    {
+        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("keilcx51")))
+    {
+        base.AddCompilerOption(_T("OPTIMIZE(11,SIZE)"));
+        base.AddCompilerOption(_T("OBJECTADVANCED"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("iar*")))
+    {
+        base.AddCompilerOption(_T("-Oh"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("sdcc")) )
+    {
+        base.AddCompilerOption(_T("--opt-code-size"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")) )
+    {
+        // the (pseudo) compiler "No Compiler" takes no options
+    }
+    else
+    {
+        ShowWarning(_T("This wizard doesn't know how to setup optimization flags for this compiler.\n"));
+    }
+    // TODO: Other compilers, fallback?
+}// OptimizationsOn
+
+// C++ Exceptions On
+function CppExceptionsOn(base, compilerID)
+{
+    if      (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("msvc*")))
+    {
+        base.AddCompilerOption(_T("/EHsc"));
+    }
+    else if (   GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gcc"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("gfortran"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("clang"))
+             || GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("cygwin")) )
+    {
+        base.AddCompilerOption(_T("-fexceptions"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("bcc*")))
+    {
+        base.AddCompilerOption(_T("-x"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("ow")))
+    {
+        base.AddCompilerOption(_T("-xs"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("dmc")))
+    {
+        base.AddCompilerOption(_T("-Ae"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("icc")))
+    {
+        base.AddCompilerOption(_T("/EHs"));
+    }
+    else if (GetCompilerFactory().CompilerInheritsFrom(compilerID, _T("null")))
+    {
+        // the (pseudo) compiler "No Compiler" takes no options
+    }
+    else
+    {
+        ShowWarning(_T("This wizard doesn't know how to setup exception flags for this compiler.\n"));
+    }
+    // TODO: Other compilers, fallback?
+}// CppExceptionsOn
+
+// Verify a (provided) directory exists - otherwise throw an error.
+// Return the true directory having replaced all possible macros.
+function VerifyDirectory(dir_or_macro)
+{
+    // try to make it a real path and verify it's existence
+    local dir = ReplaceMacros(dir_or_macro, true);
+
+    if (!IO.DirectoryExists(dir))
+    {
+        ShowError(_T("The directory you entered seems not to be valid.\n" +
+                     "This wizard cannot continue."));
+        return (_T(""));
+    }
+
+    return dir;
+}
+
+function VerifyMacro(macro)
+{
+    // try to make it a real path and verify it's existence
+    local dir = ReplaceMacros(macro, true);
+
+    // verify if there are macros used at all...
+    if (macro.Matches(dir))
+    {
+        return (_T("")); // no macros used -> return empty
+    }
+
+    return dir;
+}
+
+// Get compiler include directory (taking GV's into account)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default include directory proposed by the wizard (using a macro)
+// Returns: The include directory (which maybe translated from a macro)
+function GetCompilerIncludeDir(selection, defaultSelection, defaultIncludeMacro)
+{
+
+    // make it a real path and verify it's existence
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (selection_nomacro.IsEmpty())
+    {
+        // no macros used, direct path
+        if (!IO.DirectoryExists(selection + wxFILE_SEP_PATH + _T("include")))
+        {
+            ShowError(_T("The path you entered seems valid, but the wizard " +
+                         "can't locate the include directory.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+        return (selection + wxFILE_SEP_PATH + _T("include"));
+    }
+
+    // macros used
+
+    if (selection.Matches(defaultSelection))
+    {
+        // default macro used
+
+        // default include macro is usually: $(#GV.include)
+        local defaultInclude_nomacro = ReplaceMacros(defaultIncludeMacro, true);
+        if (!IO.DirectoryExists(defaultInclude_nomacro))
+        {
+            ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                         "locate the include directory based on this macro.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+
+        // default include macro used
+        return (defaultInclude_nomacro);
+    }
+
+    // non-default macro used
+
+    if (!IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("include")))
+    {
+        ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                     "compute the include directory based on this macro.\n" +
+                     "This wizard cannot continue."));
+        return (_T(""));
+    }
+
+    return (selection_nomacro + wxFILE_SEP_PATH + _T("include"));
+}
+
+// Get compiler include macro (if possible and a GV has been provided)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default include directory proposed by the wizard (using a macro)
+// Returns: The include macro (if possible), empty if not able to use a macro.
+function GetCompilerIncludeMacro(selection, defaultSelection, defaultIncludeMacro)
+{
+
+    // make it a real path and verify it's existence
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (!selection_nomacro.IsEmpty())
+    {
+        if (selection.Matches(defaultSelection))
+        {
+            // default macro used
+
+            // default include macro is usually: $(#GV.include)
+            local defaultInclude_nomacro = ReplaceMacros(defaultIncludeMacro, true);
+            if (IO.DirectoryExists(defaultInclude_nomacro))
+            {
+                // default include macro used
+                return (defaultInclude_nomacro);
+            }
+        }
+
+        // non-default macro used
+
+        if (IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("include")))
+        {
+            return (selection_nomacro + wxFILE_SEP_PATH + _T("include"));
+        }
+    }
+
+    // in all other cases no macro or is used or
+    // the include macro cannot be computed
+    return (_T(""));
+}
+
+// Get compiler library directory (taking GV's into account)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default library directory proposed by the wizard (using a macro)
+// Returns: The library directory (which maybe translated from a macro)
+function GetCompilerLibDir(selection, defaultSelection, defaultLibMacro)
+{
+
+    // make it a real path and verify it's existence
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (selection_nomacro.IsEmpty())
+    {
+        // no macros used, direct path
+        if (!IO.DirectoryExists(selection + wxFILE_SEP_PATH + _T("lib")))
+        {
+            ShowError(_T("The path you entered seems valid, but the wizard " +
+                         "can't locate the library directory.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+        return (selection + wxFILE_SEP_PATH + _T("lib"));
+    }
+
+    // macros used
+
+    if (selection.Matches(defaultSelection))
+    {
+        // default macro used
+
+        // default lib macro is usually: $(#GV.lib)
+        local defaultInclude_nomacro = ReplaceMacros(defaultLibMacro, true);
+        if (!IO.DirectoryExists(defaultInclude_nomacro))
+        {
+            ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                         "locate the library directory based on this macro.\n" +
+                         "This wizard cannot continue."));
+            return (_T(""));
+        }
+
+        // default lib macro used
+        return (defaultInclude_nomacro);
+    }
+
+    // non-default macro used
+
+    if (!IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("lib")))
+    {
+        ShowError(_T("The macro you entered seems valid, but this wizard can't\n" +
+                     "compute the library directory based on this macro.\n" +
+                     "This wizard cannot continue."));
+        return (_T(""));
+    }
+
+    return (selection_nomacro + wxFILE_SEP_PATH + _T("lib"));
+}
+
+// Get compiler library macro (if possible and a GV has been provided)
+// selection        - the original directory selection the user has made
+// defaultSelection - the default directory proposed by the wizard (using a macro)
+// defaultSelection - the default library directory proposed by the wizard (using a macro)
+// Returns: The library macro (if possible), empty if not able to use a macro.
+function GetCompilerLibMacro(selection, defaultSelection, defaultLibMacro)
+{
+
+    // make it a real path and verify it's existence
+    local selection_nomacro = VerifyMacro(selection);
+
+    // verify if there are macros used at all...
+    if (!selection_nomacro.IsEmpty())
+    {
+        if (selection.Matches(defaultSelection))
+        {
+            // default macro used
+
+            // default library macro is usually: $(#GV.lib)
+            local defaultLib_nomacro = ReplaceMacros(defaultLibMacro, true);
+            if (IO.DirectoryExists(defaultLib_nomacro))
+            {
+                // default library macro used
+                return (defaultLib_nomacro);
+            }
+        }
+
+        // non-default macro used
+
+        if (IO.DirectoryExists(selection_nomacro + wxFILE_SEP_PATH + _T("lib")))
+        {
+            return (selection_nomacro + wxFILE_SEP_PATH + _T("lib"));
+        }
+    }
+
+    // in all other cases no macro or is used or
+    // the library macro cannot be computed
+    return (_T(""));
+}
+
+// Converting project's name to be valid c++ identifier
+// (needed for class names) and valid c++ file name
+// (i.e. can not contain unicode and forbidden chars)
+function GetFixedProjectName(ProjectName)
+{
+    local Fixed = _T("");
+    for ( local i = 0; i < ProjectName.Length(); i++ )
+    {
+        local Char = ProjectName.GetChar(i);
+        if  ( ( Char>='0' && Char<='9' && i > 0 ) ||
+              ( Char>='a' && Char<='z' )          ||
+              ( Char>='A' && Char<='Z' ) )
+        {
+            Fixed.AddChar(Char);
+        }
+        else
+        {
+            Fixed.AddChar('_');
+        }
+    }
+    return Fixed;
+}
+
+// verify the existence of a file of specific type
+// dir  = the directory the file is expected in
+// file = name of the file to look for
+// type = descriptive name of the file to show in the error message
+// Returns: true, if the file exists, false otherwise
+function VerifyFile(dir, file, type)
+{
+    if (!IO.FileExists(dir + wxFILE_SEP_PATH + file))
+    {
+        ShowError(_T("The path you entered seems valid, but this wizard\n" +
+                     "can't locate the following ") + type + _T(" file:\n") +
+                     file + _T(" in it."));
+        return false;
+    }
+    return true;
+}
+
+// verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
+// dir  = the directory the library is expected in
+// file = name of the library to look for (usually for e.g. "libGL.a" providing "GL" is enough).
+// Returns: true, if the library exists, false otherwise
+function SilentVerifyLibFile(dir, file)
+{
+    return (   IO.FileExists(dir + wxFILE_SEP_PATH + file)
+            || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".dll.a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + file + _T(".lib"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file)
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".dll.a"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".lib"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".la"))
+            || IO.FileExists(dir + wxFILE_SEP_PATH + _T("lib") + file + _T(".so")) );
+}
+
+// verify the existence of a file of library type (add prefix lib, postfix .a and .lib)
+// dir  = the directory the library is expected in
+// file = name of the library to look for (usually for e.g. "libGL.a" providing "GL" is enough).
+// type = descriptive name of the library to show in the error message
+// Returns: true, if the library exists, false otherwise
+function VerifyLibFile(dir, file, type)
+{
+    if (!SilentVerifyLibFile(dir, file))
+    {
+        ShowError(_T("The path you entered seems valid, but this wizard\n" +
+                     "can't locate the following ") + type + _T(" library file:\n") +
+                     file + _T(" in it.\n" +
+                     "(Also tried prepending lib and appending .a and .lib)."));
+        return false;
+    }
+    return true;
+}
+
+// Add a file to a selection of target(s).
+// Thus the wizard must have had a FilePathPanel for the selection of these.
+// the_wiz  = a reference to the wizard (to access the targets indexes)
+// the_file = name of the file (including full path) that shall be added
+function AddFileToTargets(the_wiz, the_file)
+{
+    // get the first selected target to add the file to
+    local tgtidx = the_wiz.GetFileTargetIndex();
+    if (tgtidx != -1)
+    {
+        // obtain the currently active project to add the file to
+        local prj = GetProjectManager().GetActiveProject();
+        if (!IsNull(prj))
+        {
+            // Check first if the file exists in Active Project
+            local pf_check = prj.GetFileByFilename(the_file, false, false);
+            if (!IsNull(pf_check)) // File exists, Remove it first
+                prj.RemoveFile(pf_check)
+            // Now add the file to the first selected target
+            local pf = prj.AddFile(tgtidx, the_file);
+            GetProjectManager().RebuildTree(); // make sure our view is current
+
+            // if the file was added successfully, (...)
+            if (!IsNull(pf))
+            {
+                // add to this file the rest of the selected targets...
+                tgtidx = the_wiz.GetFileTargetIndex();
+                while (tgtidx != -1)
+                {
+                    local tgt = prj.GetBuildTarget(tgtidx);
+                    if (!IsNull(tgt))
+                        pf.AddBuildTarget(tgt.GetTitle());
+
+                    tgtidx = the_wiz.GetFileTargetIndex();
+                }
+            }
+        }
+    }
+}

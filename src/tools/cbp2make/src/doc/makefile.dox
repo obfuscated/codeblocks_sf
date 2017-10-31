@@ -1,0 +1,541 @@
+/*
+    cbp2make : Makefile generation tool for the Code::Blocks IDE
+    Copyright (C) 2010-2013 Mirai Computing (mirai.computing@gmail.com)
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/*!
+  \file makefile.h
+  \brief Object-based makefile generation.
+*/
+
+/*!
+  \file makefile.cpp
+  \brief Object-based makefile generation.
+*/
+
+/*!
+  \class CMakefileVariable
+  \brief Makefile macro variable definition.
+
+  Manages variable properties and generates its text representation.
+*/
+
+/*!
+  \var CMakefileVariable::m_Name
+  \brief Name of the makefile macro variable.
+*/
+
+/*!
+  \var CMakefileVariable::m_Values
+  \brief A list of strings which concatenation gives the actual value of the
+  macro variable.
+*/
+
+/*!
+  \var CMakefileVariable::m_Multiline
+  \brief Allows line-wrapping of variable's value text.
+*/
+
+/* !
+  \var CMakefileVariable::
+  \brief .
+*/
+
+/*!
+  \fn CMakefileVariable::Name(void)
+  \brief Returns the name of the macro variable.
+  \return referece to CMakefileVariable::m_Name.
+*/
+
+/*!
+  \fn CMakefileVariable::Values(void)
+  \brief Returns the value of the macro variable as a list of strings.
+  \return reference to CMakefileVariable::m_Values.
+*/
+
+/*!
+  \fn CMakefileVariable::GetValue(const int Index = 0)
+  \brief Returns a string number \a Index from the value strings.
+  \param Index a number of the value string.
+  \return a value string or an empty string.
+*/
+
+/*!
+  \fn CMakefileVariable::SetValue(const CString& NewValue, const int Index = 0)
+  \brief Replaces a string number \a Index in the value strings with the
+  \a NewValue string.
+  \param NewValue a new value of the value string.
+  \param Index a number of the value string.
+*/
+
+/*!
+  \fn CMakefileVariable::AddValue(const CString& NewValue)
+  \brief Appends a list of value strings with the \a NewValue string.
+  \param NewValue a new value string.
+*/
+
+/*!
+  \fn CMakefileVariable::Multiline(void)
+  \brief Allows line-wrapping of variable's value text.
+  \return reference to CMakefileVariable::m_Multiline.
+*/
+
+/*!
+  \fn CMakefileVariable::JoinValues(void)
+  \brief Returns the variable value as a single string.
+  \return concatenation of value strings.
+
+  The value strings CMakefileVariable::m_Values are joined with space character
+  if multiline mode is disabled or with <tt>' \\\\\\n\\t'</tt> (space backslash
+  eol tab) sequence otherwise.
+*/
+
+/*!
+  \fn CMakefileVariable::Clear(void)
+  \brief Resets the macro variable to the initial state.
+*/
+
+/*!
+  \fn CMakefileVariable::Show(void)
+  \brief Prints properties of the macro variable to the standard output.
+*/
+
+/*!
+  \fn CMakefileVariable::CMakefileVariable(void)
+  \brief Creates macro variable.
+*/
+
+/*!
+  \fn CMakefileVariable::~CMakefileVariable(void)
+  \brief Destroys macro variable.
+*/
+
+/* !
+  \fn CMakefileVariable::
+  \brief .
+  \param .
+  \return .
+*/
+
+/*!
+  \class CMakefileRule
+  \brief Makefile rule definition.
+
+  Manages makefile rule properties and generates its text representation.
+*/
+
+/*!
+  \var CMakefileRule::m_Target
+  \brief Name of a makefile target.
+*/
+
+/*!
+  \var CMakefileRule::m_Dependencies
+  \brief A list of dependencies (prerequirements) for the target.
+
+  Dependencies should be names of other makefile targets or file names.
+*/
+
+/*!
+  \var CMakefileRule::m_Commands
+  \brief A list of commands to be executed to build the target.
+*/
+
+/*!
+  \var CMakefileRule::m_Multiline
+  \brief Allows line-wrapping of the list of dependencies.
+*/
+
+/* !
+  \var CMakefileRule::
+  \brief .
+*/
+
+/*!
+  \fn CMakefileRule::Target(void)
+  \brief Name of a makefile target.
+  \return reference to CMakefileRule::m_Target.
+*/
+
+/*!
+  \fn CMakefileRule::Dependencies(void)
+  \brief A list of dependencies (prerequirements) for the target.
+  \return reference to CMakefileRule::m_Dependencies.
+*/
+
+/*!
+  \fn CMakefileRule::Commands(void)
+  \brief A list of commands to be executed to build the target.
+  \return reference to CMakefileRule::m_Commands.
+*/
+
+/*!
+  \fn CMakefileRule::Multiline(void)
+  \brief Allows line-wrapping of the list of dependencies.
+  \return reference to CMakefileRule::m_Multiline.
+*/
+
+/*!
+  \fn CMakefileRule::JoinDependencies(void)
+  \brief Returns dependencies as a single string.
+  \return concatenation of CMakefileRule::m_Dependencies strings.
+
+  Strings of CMakefileRule::m_Dependencies are joined with space character if
+  multiline mode is disabled or with <tt>' \\\\\\n\\t'</tt> (space backslash eol
+  tab) sequence otherwise.
+*/
+
+/*!
+  \fn CMakefileRule::Clear(void)
+  \brief Resets the makefile rule to the initial state.
+*/
+
+/*!
+  \fn CMakefileRule::Show(void)
+  \brief Prints the makefile rule properties to the standard output.
+*/
+
+/*!
+  \fn CMakefileRule::CMakefileRule(void)
+  \brief Creates makefile rule.
+*/
+
+/*!
+  \fn CMakefileRule::~CMakefileRule(void)
+  \brief Destroys makefile rule.
+*/
+
+/* !
+  \fn CMakefileRule::
+  \brief .
+  \param .
+  \return .
+*/
+
+/*!
+  \class CMakefileSection
+  \brief Makefile section definition.
+
+  Manages makefile section data. A makefile section is a logical block of text
+  with common structure: header, macros, environment variables, rules.
+  A makefile may consist of one or more sections to maintain strict logical
+  structure of the makefile text.
+*/
+
+/*!
+  \var CMakefileSection::m_Header
+  \brief Section header, describes makefile section contents.
+
+  Contains lines of text that precide other parts of the section.
+*/
+
+/*!
+  \var CMakefileSection::m_Macros
+  \brief A list of macro variables in the section.
+
+  Macro variable definitions follow the section header and precide enviroment
+  variables.
+*/
+
+/*!
+  \var CMakefileSection::m_EnvVars
+  \brief A list of environment variables in the section.
+
+  Enviroment variable definitions follow macro variables and precide rules.
+*/
+
+/*!
+  \var CMakefileSection::m_Rules
+  \brief A list of makefile rules in the section.
+
+  Rule definitions follow environment variables and finish the section.
+*/
+
+/*!
+  \var CMakefileSection::m_NullVariable
+  \brief A substitute variable, it is returned when no variable satisfies search conditions.
+*/
+
+/*!
+  \var CMakefileSection::m_NullRule
+  \brief A substitute rule, it is returned when no rule satisfies search conditions.
+*/
+
+/* !
+  \var CMakefileSection::
+  \brief .
+*/
+
+/*!
+  \fn CMakefileSection::FindMacro(const CString& Name)
+  \brief Searches macro variables by name.
+  \param Name a macro variable name.
+  \return reference to a macro variable or CMakefileSection::m_NullVariable if
+  no variable has the \a Name name.
+*/
+
+/*!
+  \fn CMakefileSection::FindEnvVar(const CString& Name)
+  \brief Searches environment variables by name.
+  \param Name an environment variable name.
+  \return reference to an environment variable or CMakefileSection::m_NullVariable
+  if no variable has the \a Name name.
+*/
+
+/*!
+  \fn CMakefileSection::Clear(void)
+  \brief Resets the makefile section to the initial state.
+*/
+
+/*!
+  \fn CMakefileSection::Show(void)
+  \brief Prints contents of the makefile section to the standard output.
+*/
+
+/*!
+  \fn CMakefileSection::Header(void)
+  \brief Section header, describes makefile section contents.
+  \return reference to CMakefileSection::m_Header.
+*/
+
+/*!
+  \fn CMakefileSection::Macros(void)
+  \brief A list of macro variables in the section.
+  \return reference to CMakefileSection::m_Macros.
+*/
+
+/*!
+  \fn CMakefileSection::EnvVars(void)
+  \brief A list of environment variables in the section.
+  \return reference to CMakefileSection::m_Macros.
+*/
+
+/*!
+  \fn CMakefileSection::AddMacro(const CString& Name, const CString& Value)
+  \brief Creates a new macro variable and adds it to the section.
+  \param Name name of a macro variable.
+  \param Value default value of a macro variable.
+  \return reference to the new variable.
+
+  If a macro variable with name \a Name already exists, a new variable will
+  not be created.
+*/
+
+/*!
+  \fn CMakefileSection::AddEnvVar(const CString& Name, const CString& Value)
+  \brief Creates a new environment variable and adds it to the section.
+  \param Name name of an environment variable.
+  \param Value default value of an environment variable.
+  \return reference to the new variable.
+
+  If an environment variable with name \a Name already exists, a new variable
+  will not be created.
+*/
+
+/*!
+  \fn CMakefileSection::RulesCount(void) const
+  \brief Counts makefile rules in the section.
+  \return section rules count.
+*/
+
+/*!
+  \fn CMakefileSection::GetRule(const size_t Index)
+  \brief Returns makefile rule by the \a Index number.
+  \param Index number of a rule.
+  \return reference to a makefile rule.
+*/
+
+/*!
+  \fn CMakefileSection::AddRule(const CString& TargetName)
+  \brief Creates a new makefile rule and adds it to the section.
+  \param TargetName name of makefile target for the rule.
+  \return reference to the new rule.
+
+  If a makefile rule with target name \a TargetName already exists, a new rule
+  will not be created.
+*/
+
+/*!
+  \fn CMakefileSection::CMakefileSection(void)
+  \brief Creates makefile section.
+*/
+
+/*!
+  \fn CMakefileSection::~CMakefileSection(void)
+  \brief Destroys makefile section.
+*/
+
+/* !
+  \fn CMakefileSection::
+  \brief .
+  \param .
+  \return .
+*/
+
+/*!
+  \class CMakefile
+  \brief Makefile definition.
+
+  Manages structured makefile and generates its text representation.
+*/
+
+/*!
+  \var CMakefile::m_Sections
+  \brief A list of makefile sections.
+
+  A section is similar in structure to an elementary and complete makefile,  so
+  a minimal makefile consists of one regular makefile section. In order to
+  maintain a good style of makefile text, leading sections of makefile should
+  contain headers and variable definitions and trailing sections should contain
+  headers and rules while middle one may contain all of section parts. Any part
+  of any section is optional and may be omitted.
+
+  \sa CMakefileSection.
+*/
+
+/*!
+  \var CMakefile::m_Text
+  \brief Plain text representation of the makefile.
+*/
+
+/* !
+  \var CMakefile::
+  \brief .
+*/
+
+/*!
+  \fn CMakefile::Clear(void)
+  \brief Resets the makefile to the initial state.
+*/
+
+/*!
+  \fn CMakefile::Show(void)
+  \brief Prints contents of the makefile to the standard output.
+*/
+
+/*!
+  \fn CMakefile::SectionCount(void) const
+  \brief Counts makefile sections.
+  \return number of makefile sections.
+*/
+
+/*!
+  \fn CMakefile::GetSection(const size_t Section)
+  \brief Returns a makefile section by a number.
+  \param Section number of a makefile section.
+  \return reference to a makefile section.
+*/
+
+/*!
+  \fn CMakefile::Header(const size_t Section = 0)
+  \brief Header of a makefile section number \a Section.
+  \param Section number of a makefile section.
+  \return reference to a list of strings.
+*/
+
+/*!
+  \fn CMakefile::AddSection(size_t *Section = 0)
+  \brief Creates a new makefile section and adds it to the makefile.
+  \param Section desired number for a makefile section.
+  \return reference to the new makefile section.
+
+  This function creates all sections through from the last existing section to
+  a desired number \a Section.
+*/
+
+/*!
+  \fn CMakefile::AddMacro(const CString& Name, const CString& Value, const size_t Section = 0)
+  \brief Creates a new macro variable and adds it to a section number \a Section.
+  \param Name name of a macro variable.
+  \param Value default value of a macro variable.
+  \param Section number of a makefile section.
+  \return reference to the new variable.
+
+  If a macro variable with name \a Name already exists, a new variable will
+  not be created.
+*/
+
+/*!
+  \fn CMakefile::AddEnvVar(const CString& Name, const CString& Value, const size_t Section = 0)
+  \brief Creates a new environment variable and adds it to a section number \a Section.
+  \param Name name of an environment variable.
+  \param Value default value of an environment variable.
+  \param Section number of a makefile section.
+  \return reference to the new variable.
+
+  If an environment variable with name \a Name already exists, a new variable
+  will not be created.
+*/
+
+/*!
+  \fn CMakefile::RulesCount(const size_t Section = 0)
+  \brief Counts makefile rules in a section number \a Section.
+  \param Section number of a makefile section.
+  \return section rules count.
+*/
+
+/*!
+  \fn CMakefile::GetRule(const size_t Index, const size_t Section = 0)
+  \brief Returns makefile rule by the \a Index number in a section number \a Section.
+  \param Index number of a rule.
+  \param Section number of a makefile section.
+  \return reference to a makefile rule.
+*/
+
+/*!
+  \fn CMakefile::AddRule(const CString& TargetName, const size_t Section = 0)
+  \brief Creates a new makefile rule and adds it to a section number \a Section.
+  \param TargetName name of makefile target for the rule.
+  \param Section number of a makefile section.
+  \return reference to the new makefile rule.
+
+  If a makefile rule with target name \a TargetName already exists, a new rule
+  will not be created.
+*/
+
+/*!
+  \fn CMakefile::GetText(void)
+  \brief Returns a plain text representation of the makefile.
+  \return reference to CMakefile::m_Text.
+
+  Make a call to CMakefile::Update(void) before using this function to convert
+  object representation of the makefile to plain text.
+*/
+
+/*!
+  \fn CMakefile::Update(void)
+  \brief Creates plain text representation of the makefile from objects.
+  \return makefile text (reference to CMakefile::m_Text).
+*/
+
+/*!
+  \fn CMakefile::CMakefile(void)
+  \brief Creates makefile.
+*/
+
+/*!
+  \fn CMakefile::~CMakefile(void)
+  \brief Destroys makefile.
+*/
+
+/* !
+  \fn CMakefile::
+  \brief .
+  \param .
+  \return .
+*/
+
+//------------------------------------------------------------------------------

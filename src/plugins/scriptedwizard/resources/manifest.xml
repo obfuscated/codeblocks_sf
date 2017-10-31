@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_plugin_manifest_file>
+    <SdkVersion major="1" minor="10" release="0" />
+    <Plugin name="ScriptedWizard">
+        <Value title="Scripted wizard" />
+        <Value version="0.9" />
+        <Value description="A generic scripted wizard" />
+        <Value author="Yiannis An. Mandravellos" />
+        <Value authorEmail="info@codeblocks.org" />
+        <Value authorWebsite="http://www.codeblocks.org" />
+        <Value thanksTo="" />
+        <Value license="GPL" />
+    </Plugin>
+</CodeBlocks_plugin_manifest_file>

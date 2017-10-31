@@ -1,0 +1,121 @@
+#################################################################
+## This Makefile Exported by MinGW Developer Studio
+## Copyright (c) 2002-2004 by Parinya Thipchart
+#################################################################
+
+ifneq (,$(findstring Release, $(CFG)))
+  override CFG = Release
+else
+  override CFG = Debug
+endif
+
+PROJECT = bzipstream
+CC = g++
+
+AR = ar
+ifeq ($(CFG),Debug)
+  OBJ_DIR = Debug
+  OUTPUT_DIR = ..
+  TARGET = lib_bzipstreamd.a
+  C_INCLUDE_DIRS = 
+  C_PREPROC = 
+  CFLAGS = -pipe `wx-config --cxxflags` -Wall -g2 -O0 -frtti -fexceptions 
+  ARFLAGS =  rcs
+endif
+
+ifeq ($(CFG),Release)
+  OBJ_DIR = Release
+  OUTPUT_DIR = ..
+  TARGET = lib_bzipstream.a
+  C_INCLUDE_DIRS = 
+  C_PREPROC = 
+  CFLAGS = -pipe `wx-config --cxxflags` -Wall -g0 -O0 -frtti -fexceptions 
+  ARFLAGS =  rcs
+endif
+
+SRC_OBJS = \
+  $(OBJ_DIR)/bzipstream.o	\
+  $(OBJ_DIR)/blocksort.o	\
+  $(OBJ_DIR)/bzlib.o	\
+  $(OBJ_DIR)/compress.o	\
+  $(OBJ_DIR)/crctable.o	\
+  $(OBJ_DIR)/decompress.o	\
+  $(OBJ_DIR)/huffman.o	\
+  $(OBJ_DIR)/randtable.o
+
+define build_target
+@echo Creating library...
+@$(AR) $(ARFLAGS) "$(OUTPUT_DIR)/$(TARGET)" $(SRC_OBJS)
+endef
+
+define compile_source
+@echo Compiling $<
+@$(CC) $(CFLAGS) $(C_PREPROC) $(C_INCLUDE_DIRS) -c "$<" -o "$@"
+endef
+
+.PHONY: print_header directories
+
+$(TARGET): print_header directories $(SRC_OBJS)
+	$(build_target)
+
+.PHONY: clean cleanall
+
+cleanall:
+	@echo Deleting intermediate files for 'bzipstream - $(CFG)'
+	-@rm -rf "$(OBJ_DIR)"
+	-@rm -rf "$(OUTPUT_DIR)/$(TARGET)"
+	-@rmdir "$(OUTPUT_DIR)"
+
+clean:
+	@echo Deleting intermediate files for 'bzipstream - $(CFG)'
+	-@rm -rf $(OBJ_DIR)
+
+print_header:
+	@echo ----------Configuration: bzipstream - $(CFG)----------
+
+directories:
+	-@if [ ! -d "$(OUTPUT_DIR)" ]; then mkdir "$(OUTPUT_DIR)"; fi
+	-@if [ ! -d "$(OBJ_DIR)" ]; then mkdir "$(OBJ_DIR)"; fi
+
+$(OBJ_DIR)/bzipstream.o: bzipstream.cpp	\
+bzipstream.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/blocksort.o: bzip/blocksort.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/bzlib.o: bzip/bzlib.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/compress.o: bzip/compress.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/crctable.o: bzip/crctable.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/decompress.o: bzip/decompress.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/huffman.o: bzip/huffman.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+$(OBJ_DIR)/randtable.o: bzip/randtable.c	\
+bzip/bzlib_private.h	\
+bzip/bzlib.h
+	$(compile_source)
+
+
+

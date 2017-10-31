@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="QT Application"/>
+		<Option makefile="Makefile"/>
+		<Build>
+			<Target title="default">
+				<Option type="0"/>
+				<Option parameters=""/>
+				<Option includeInTargetAll="1"/>
+				<Option projectCompilerOptionsRelation="3"/>
+				<Option projectLinkerOptionsRelation="3"/>
+				<Option projectIncludeDirsRelation="3"/>
+				<Option projectLibDirsRelation="3"/>
+				<Compiler>
+					<Add directory="$QTDIR/include"/>
+					<Add directory="$QTDIR/include/Qt"/>
+					<Add directory="$QTDIR/include/Qt/ActiveQt"/>
+					<Add directory="$QTDIR/include/Qt/Qt3Support"/>
+					<Add directory="$QTDIR/include/Qt/QtAssistant"/>
+					<Add directory="$QTDIR/include/Qt/QtCore"/>
+					<Add directory="$QTDIR/include/Qt/QtDesigner"/>
+					<Add directory="$QTDIR/include/Qt/QtGui"/>
+					<Add directory="$QTDIR/include/Qt/QtMotif"/>
+					<Add directory="$QTDIR/include/Qt/QtNetwork"/>
+					<Add directory="$QTDIR/include/Qt/QtNsPlugin"/>
+					<Add directory="$QTDIR/include/Qt/QtOpenGL"/>
+					<Add directory="$QTDIR/include/Qt/QtSql"/>
+					<Add directory="$QTDIR/include/Qt/QtXml"/>
+					<Add option=""/>
+				</Compiler>
+				<Linker>
+					<Add library="libQt3Support4.a"/>
+					<Add library="libQtAssistantClient4.a"/>
+					<Add library="libQtCore4.a"/>
+					<Add library="libQtDesigner4.a"/>
+					<Add library="libQtDesignerComponents4.a"/>
+					<Add library="libQtGui4.a"/>
+					<Add library="libqtmain.a"/>
+					<Add library="libQtNetwork4.a"/>
+					<Add library="libQtOpenGl4.a"/>
+					<Add library="libQtSql4.a"/>
+					<Add library="libQtXml4.a"/>
+					<Add directory="$QTDIR/lib"/>
+					<Add option=""/>
+				</Linker>			
+			</Target>
+		</Build>
+	</Project>
+</CodeBlocks_project_file>
+

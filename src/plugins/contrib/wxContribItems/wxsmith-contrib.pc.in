@@ -1,0 +1,26 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@/codeblocks/wxContribItems
+includedir=@includedir@/codeblocks/wxContribItems
+datarootdir = @datarootdir@
+sharedir=@datadir@
+@HAVE_WX29_FALSE@TREELIST_INCLUDE=-I${includedir}/wxTreeList/include
+@HAVE_WX29_TRUE@TREELIST_INCLUDE=
+@HAVE_WX29_FALSE@TREELIST_LIB=-lwxtreelist
+@HAVE_WX29_TRUE@TREELIST_LIB=
+
+Name: wxSmithContribItems
+Description: wxWidgets contrib items also used for the wxSmith
+Version: @VERSION@
+Libs: -L${libdir} -lwxchartctrl -lwxcustombutton -lwxdatetimepicker -lwxflatnotebook -lwximagepanel -lwxkwic -lwxled -lwxspeedbutton ${TREELIST_LIB}
+Cflags: -I${includedir}/KWIC/include \
+		-I${includedir}/wxchart/include \
+		-I${includedir}/wxDateTimePicker/include \
+		-I${includedir}/wxFlatNotebook/include \
+		-I${includedir}/wxImagePanel/include \
+		-I${includedir}/wxled/lcdwindow/include \
+		-I${includedir}/wxled/led/include \
+		-I${includedir}/wxled/ledpanel/include \
+		-I${includedir}/wxSpeedButton \
+		-I${includedir}/wxthings/include \
+		${TREELIST_INCLUDE}

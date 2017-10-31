@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="Addr2LineUIDialog">
+		<title>Addr2LineUI</title>
+		<id_arg>0</id_arg>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxMAXIMIZE_BOX|wxMINIMIZE_BOX</style>
+		<object class="wxBoxSizer" variable="bszMainH" member="no">
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="bszMainV" member="no">
+					<orient>wxVERTICAL</orient>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="bszAddr2Line" member="no">
+							<orient>wxVERTICAL</orient>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblCrashLog" member="no">
+									<label>Select crash log file:</label>
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxFilePickerCtrl" name="ID_CRASH_LOG" variable="m_FPCrashLog" member="yes">
+									<message>Select crash log</message>
+									<wildcard>Report files (*.rpt)|*.rpt|Log files (*.log)|*.log|All files (*.*)|*.*</wildcard>
+									<handler function="OnCrashLogFile" entry="EVT_FILEPICKER_CHANGED" />
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblAddr2Line" member="no">
+									<label>Select Addr2Line tool:</label>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxFilePickerCtrl" name="ID_ADDR2LINE" variable="m_FPAddr2Line" member="yes">
+									<message>Select addr2line tool</message>
+									<wildcard>Executables (*.exe)|*.exe|All files (*.*)|*.*</wildcard>
+									<handler function="OnAddr2LineFile" entry="EVT_FILEPICKER_CHANGED" />
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="wxID_ANY" variable="lblDirPrepend" member="no">
+									<label>(Optionally) Select directory to prepend:</label>
+								</object>
+								<flag>wxTOP|wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxDirPickerCtrl" name="ID_DIR_PREPEND" variable="m_DPDirPrepend" member="yes">
+									<message>Select directory to prepend</message>
+									<handler function="OnDirPrependDir" entry="EVT_DIRPICKER_CHANGED" />
+								</object>
+								<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxALL|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBoxSizer" variable="bszReplace" member="no">
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_REPLACE" variable="chkReplace" member="yes">
+									<label>Replace:</label>
+									<handler function="OnReplaceClick" entry="EVT_CHECKBOX" />
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TXT_REPLACE_THIS" variable="txtReplaceThis" member="yes">
+									<value>this</value>
+									<enabled>0</enabled>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxStaticText" name="ID_LBL_REPLACE" variable="lblReplace" member="yes">
+									<label>...with:</label>
+									<enabled>0</enabled>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxTextCtrl" name="ID_TXT_REPLACE_THAT" variable="txtReplaceThat" member="yes">
+									<value>that</value>
+									<enabled>0</enabled>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>5</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="ID_CHK_SKIP_UNRESOLVABLE" variable="chkSkipUnresolvable" member="yes">
+									<label>Skip unresolvable</label>
+								</object>
+								<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+								<border>5</border>
+							</object>
+						</object>
+						<flag>wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TXT_CRASH_LOG_CONTENT" variable="txtCrashLogContent" member="yes">
+							<font>
+								<sysfont>wxSYS_ANSI_FIXED_FONT</sysfont>
+							</font>
+							<minsize>450,200</minsize>
+							<style>wxTE_MULTILINE</style>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TXT_RESULT" variable="txtResult" member="yes">
+							<font>
+								<sysfont>wxSYS_ANSI_FIXED_FONT</sysfont>
+							</font>
+							<minsize>450,200</minsize>
+							<style>wxTE_MULTILINE</style>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="wxID_ANY" variable="stlLine" member="no">
+							<size>10,-1</size>
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND|wxALIGN_LEFT|wxALIGN_TOP</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BTN_OPERATE" variable="btnOperate" member="yes">
+							<label>Operate</label>
+							<enabled>0</enabled>
+							<handler function="OnOperateClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BTN_QUIT" variable="btnQuit" member="no">
+							<label>Quit</label>
+							<handler function="OnQuit" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<flag>wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>4</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

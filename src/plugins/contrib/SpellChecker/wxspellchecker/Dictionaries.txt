@@ -1,0 +1,2 @@
+Aspell dictionaries can be found at: http://ftp.gnu.org/gnu/aspell/dict/
+MySpell dictionaries can be found at: http://lingucomponent.openoffice.org/spell_dic.html

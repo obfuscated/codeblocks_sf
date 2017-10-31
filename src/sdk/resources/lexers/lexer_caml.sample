@@ -1,0 +1,31 @@
+type 'a t = { mutable c : 'a list }
+exception Empty
+let create () = { c = [] }
+let clear s = s.c <- []
+let copy s = { c = s.c }
+let push x s = s.c <- x :: s.c
+let pop s =
+  match s.c with
+    hd::tl -> s.c <- tl; hd
+  | []     -> raise Empty
+let top s =
+  match s.c with
+    hd::_ -> hd
+  | []     -> raise Empty
+let is_empty s = (s.c = [])
+let length s = List.length s.c
+let iter f s = List.iter f s.c
+
+And, here is the interface file, stack.mli:
+
+type 'a t
+exception Empty
+val create : unit -> 'a t
+val push : 'a -> 'a t -> unit
+val pop : 'a t -> 'a
+val top : 'a t -> 'a
+val clear : 'a t -> unit
+val copy : 'a t -> 'a t
+val is_empty : 'a t -> bool
+val length : 'a t -> int
+val iter : ('a -> unit) -> 'a t -> unit

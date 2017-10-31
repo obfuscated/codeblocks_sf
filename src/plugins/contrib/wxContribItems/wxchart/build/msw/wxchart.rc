@@ -1,0 +1,5 @@
+#include <wx/msw/wx.rc>
+
+// For chart
+chart_zin_bmp            BITMAP  "wx/chartart/chart_zin.bmp"
+chart_zot_bmp            BITMAP  "wx/chartart/chart_zot.bmp"

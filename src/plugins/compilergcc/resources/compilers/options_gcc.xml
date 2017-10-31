@@ -1,0 +1,165 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <if platform="windows">
+        <Program name="C"         value="mingw32-gcc.exe"/>
+        <Program name="CPP"       value="mingw32-g++.exe"/>
+        <Program name="LD"        value="mingw32-g++.exe"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="ar.exe"/>
+        <Program name="WINDRES"   value="windres.exe"/>
+        <Program name="MAKE"      value="mingw32-make.exe"/>
+    </if>
+    <else>
+        <Program name="C"         value="gcc"/>
+        <Program name="CPP"       value="g++"/>
+        <Program name="LD"        value="g++"/>
+        <Program name="DBGconfig" value="gdb_debugger:Default"/>
+        <Program name="LIB"       value="ar"/>
+        <Program name="WINDRES"   value=""/>
+        <Program name="MAKE"      value="make"/>
+    </else>
+
+    <Switch name="includeDirs"             value="-I"/>
+    <Switch name="libDirs"                 value="-L"/>
+    <Switch name="linkLibs"                value="-l"/>
+    <Switch name="defines"                 value="-D"/>
+    <Switch name="genericSwitch"           value="-"/>
+    <Switch name="objectExtension"         value="o"/>
+    <Switch name="needDependencies"        value="true"/>
+    <Switch name="forceCompilerUseQuotes"  value="false"/>
+    <Switch name="forceLinkerUseQuotes"    value="false"/>
+    <Switch name="logging"                 value="default"/>
+    <Switch name="libPrefix"               value="lib"/>
+    <Switch name="libExtension"            value="a"/>
+    <Switch name="linkerNeedsLibPrefix"    value="false"/>
+    <Switch name="linkerNeedsLibExtension" value="false"/>
+    <Switch name="supportsPCH"             value="true"/>
+    <Switch name="PCHExtension"            value="gch"/>
+    <Switch name="UseFullSourcePaths"      value="true"/>
+
+    <!-- Summary of GCC options: http://gcc.gnu.org/onlinedocs/gcc/Option-Summary.html -->
+
+    <Option name="Produce debugging symbols"
+            option="-g"
+            category="Debugging"
+            checkAgainst="-O -O1 -O2 -O3 -Os"
+            checkMessage="You have optimizations enabled. This is Not A Good Thing(tm) when producing debugging symbols..."
+            supersedes="-s"/>
+    <Option name="Optimize debugging executable (compile speed, execution speed and better debugging)"
+            option="-Og"
+            category="Debugging"
+            supersedes="-O -O1 -O2 -O3"/>
+    <Option name="Target x86 (32bit)"
+            option="-m32"
+            additionalLibs="-m32"
+            supersedes="-m64"/>
+    <Option name="Target x86_64 (64bit)"
+            option="-m64"
+            additionalLibs="-m64"
+            supersedes="-m32"/>
+    <Option name="Position Independent Code"
+            option="-fPIC"/>
+    <Option name="Static linking"
+            additionalLibs="-static"/>
+    <Option name="Static libgcc"
+            additionalLibs="-static-libgcc"/>
+    <Option name="Static libstdc++"
+            additionalLibs="-static-libstdc++"/>
+    <if platform="windows">
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg -lgmon"
+                supersedes="-s"/>
+    </if>
+    <else>
+        <Option name="Profile code when executed"
+                option="-pg"
+                category="Profiling"
+                additionalLibs="-pg"
+                supersedes="-s"/>
+    </else>
+
+    <!-- warnings -->
+    <Common name="warnings"/>
+    <Category name="Warnings">
+        <Option name="Enable Effective-C++ warnings (thanks Scott Meyers)"
+                option="-Weffc++"/>
+        <Option name="Warn whenever a switch statement does not have a default case"
+                option="-Wswitch-default"/>
+        <Option name="Warn whenever a switch statement has an index of enumerated type and lacks a case for one or more of the named codes of that enumeration"
+                option="-Wswitch-enum"/>
+        <if exec="C -dumpversion"
+            regex="^[4-9]"
+            default="true">
+            <Option name="Warn if a user supplied include directory does not exist"
+                    option="-Wmissing-include-dirs"/>
+        </if>
+        <Option name="Warn if a global function is defined without a previous declaration"
+                option="-Wmissing-declarations"/>
+        <Option name="Warn if the compiler detects that code will never be executed"
+                option="-Wunreachable-code"/>
+        <Option name="Warn if a function can not be inlined and it was declared as inline"
+                option="-Winline"/>
+        <Option name="Warn if floating point values are used in equality comparisons"
+                option="-Wfloat-equal"/>
+        <Option name="Warn if an undefined identifier is evaluated in an '#if' directive"
+                option="-Wundef"/>
+        <Option name="Warn whenever a pointer is cast such that the required alignment of the target is increased"
+                option="-Wcast-align"/>
+        <Option name="Warn if anything is declared more than once in the same scope"
+                option="-Wredundant-decls"/>
+        <Option name="Warn about unitialized variables which are initialized with themselves"
+                option="-Winit-self"/>
+        <Option name="Warn whenever a local variable shadows another local variable, parameter or global variable or whenever a built-in function is shadowed"
+                option="-Wshadow"/>
+        <Option name="Warn if a class has virtual functions but no virtual destructor"
+                option="-Wnon-virtual-dtor"/>
+    </Category>
+
+    <!-- optimization -->
+    <Common name="optimization"/>
+    <Option name="Don't keep the frame pointer in a register for functions that don't need one"
+            option="-fomit-frame-pointer"
+            category="Optimization"
+            checkAgainst="-g -ggdb"
+            checkMessage="You have debugging symbols enabled. This is Not A Good Thing(tm) when optimizing..."/>
+
+    <!-- machine dependent options - cpu arch -->
+    <Common name="architecture"/>
+
+    <Command name="CompileObject"
+             value="$compiler $options $includes -c $file -o $object"/>
+    <Command name="GenDependencies"
+             value="$compiler -MM $options -MF $dep_object -MT $object $includes $file"/>
+    <Command name="CompileResource"
+             value="$rescomp $res_includes $res_options -J rc -O coff -i $file -o $resource_output"/>
+    <Command name="LinkConsoleExe"
+             value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+    <if platform="windows">
+        <Command name="LinkNative"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -Wl,--subsystem,native"/>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs -mwindows"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared -Wl,--output-def=$def_output -Wl,--out-implib=$static_output -Wl,--dll $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+        <Command name="LinkStatic"
+                 value="cmd /c if exist $static_output del $static_output\n$lib_linker -r -s $static_output $link_objects"/>
+    </if>
+    <else>
+        <Command name="LinkNative"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkExe"
+                 value="$linker $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs"/>
+        <Command name="LinkDynamic"
+                 value="$linker -shared $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs"/>
+        <Command name="LinkStatic"
+                 value="rm -f $static_output\n$lib_linker -r -s $static_output $link_objects"/>
+    </else>
+    <Common name="cmds"/>
+
+    <Common name="re"/>
+
+    <Common name="sort"/>
+</CodeBlocks_compiler_options>

@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="Irrlicht Project"/>
+		<Build>
+			<Target title="default">
+				<Option output="Irrlicht"/>
+				<Option working_dir="$(IRR_BASE)/bin/Linux"/>
+				<Option type="1"/>
+				<Compiler>
+					<Add option="-O3"/>
+				</Compiler>
+			</Target>
+			<Environment>
+				<Variable name="IRR_BASE" value="/opt/irrlicht"/>
+			</Environment>
+		</Build>
+		<Compiler>
+			<Add option="-W"/>
+			<Add directory="$(IRR_BASE)/include"/>
+		</Compiler>
+		<ResourceCompiler>
+			<Add directory="$(IRR_BASE)/include"/>
+		</ResourceCompiler>
+		<Linker>
+			<Add library="Irrlicht"/>
+			<Add library="GL"/>
+			<Add library="GLU"/>
+			<Add library="X11"/>
+			<Add library="Xext"/>
+			<Add library="Xxf86vm"/>
+			<Add directory="$(IRR_BASE)/lib/Linux"/>
+			<Add directory="/usr/X11R6/lib"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

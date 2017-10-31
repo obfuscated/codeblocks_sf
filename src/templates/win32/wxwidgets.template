@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_template_file>
+<CodeBlocks_template_file>
+	<Template name="wxWidgets" title="wxWidgets Application" category="GUI" bitmap="wxwidgets.png">
+		<FileSet name="s" title="No header file">
+			<File source="wx-main-s.cpp" destination="main.cpp"/>
+			<File source="wx_pch.h" destination="wx_pch.h"/>
+		</FileSet>
+		<FileSet name="sh" title="With header file">
+			<File source="wx-main-sh.cpp" destination="main.cpp"/>
+			<File source="wx-main-sh.h" destination="main.h"/>
+			<File source="wx_pch.h" destination="wx_pch.h"/>
+		</FileSet>
+		<FileSet name="ash" title="Use separate wxApp, wxFrame files">
+			<File source="wx-app-ash.cpp" destination="app.cpp"/>
+			<File source="wx-app-ash.h" destination="app.h"/>
+			<File source="wx-main-ash.cpp" destination="main.cpp"/>
+			<File source="wx-main-ash.h" destination="main.h"/>
+			<File source="wx_pch.h" destination="wx_pch.h"/>
+		</FileSet>
+		<Option name="Using wxWidgets DLL">
+			<Project file="wxwidgets.cbp"/>
+		</Option>
+		<Option name="Using UNICODE wxWidgets DLL">
+			<Project file="wxwidgets_u.cbp"/>
+		</Option>
+		<Option name="Using static wxWidgets library">
+			<Project file="wxwidgets_static.cbp"/>
+		</Option>
+		<Option name="Using UNICODE static wxWidgets library">
+			<Project file="wxwidgets_static_u.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

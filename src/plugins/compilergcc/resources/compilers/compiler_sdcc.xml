@@ -1,0 +1,24 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="Small Device C Compiler"
+                     id="sdcc"
+                     weight="44">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search registry="HKEY_LOCAL_MACHINE\Software\Microsoft\Windows\CurrentVersion\Uninstall\SDCC"
+                    value="InstallLocation"/>
+            <Fallback path="%ProgramFiles%\sdcc"/>
+        </if>
+        <else>
+            <Fallback path="/usr/local"/>
+        </else>
+    </Path>
+    <Path type="include">
+        <Add><master/><separator/>include</Add>
+    </Path>
+    <Path type="lib">
+        <Add><master/><separator/>lib</Add>
+    </Path>
+</CodeBlocks_compiler>

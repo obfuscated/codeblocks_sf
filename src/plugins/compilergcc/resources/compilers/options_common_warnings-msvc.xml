@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler_options>
+<CodeBlocks_compiler_options>
+    <Category name="Warnings">
+        <Option name="Enable all common compiler warnings"
+                option="/Wall"
+                supersedes="/W1 /W2 /W3 /W4"/>
+        <Option name="Enable warnings level 1"
+                option="/W1"
+                supersedes="/Wall /W2 /W3 /W4"/>
+        <Option name="Enable warnings level 2"
+                option="/W2"
+                supersedes="/Wall /W1 /W3 /W4"/>
+        <Option name="Enable warnings level 3"
+                option="/W3"
+                supersedes="/Wall /W1 /W2 /W4"/>
+        <Option name="Enable warnings level 4"
+                option="/W4"
+                supersedes="/Wall /W1 /W2 /W3"/>
+        <Option name="Enable 64bit porting warnings"
+                option="/Wp64"/>
+        <Option name="Treat warnings as errors"
+                option="/WX"/>
+    </Category>
+</CodeBlocks_compiler_options>

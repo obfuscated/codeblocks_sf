@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxPanel" name="ConfigPanel">
+		<object class="wxFlexGridSizer" variable="FlexGridSizer1" member="no">
+			<cols>1</cols>
+			<rows>7</rows>
+			<growablecols>0</growablecols>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1" variable="StaticText1" member="yes">
+					<label>BrowseTracker options</label>
+					<size>191,30</size>
+					<font>
+						<weight>bold</weight>
+						<family>swiss</family>
+					</font>
+					<style>wxALIGN_CENTRE</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="Cfg_BrowseMarksEnabled" member="yes">
+							<label>Enable BrowseMarks</label>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX2" variable="Cfg_WrapJumpEntries" member="yes">
+							<label>Wrap jump entries</label>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="ID_RADIOBOX1" variable="Cfg_MarkStyle" member="yes">
+					<label>Mark style</label>
+					<content>
+						<item>Browse marks</item>
+						<item>Book marks</item>
+						<item>Hide</item>
+					</content>
+					<default>-1</default>
+					<style>wxRA_VERTICAL</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="ID_RADIOBOX3" variable="Cfg_ToggleKey" member="yes">
+					<label>Toggle BrowseMark key</label>
+					<content>
+						<item>Left mouse </item>
+						<item>Ctrl-Left mouse</item>
+					</content>
+					<default>-1</default>
+					<style>wxRA_VERTICAL</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticBoxSizer" variable="StaticBoxSizer1" member="no">
+					<label>Left mouse toggle delay</label>
+					<object class="sizeritem">
+						<object class="wxSlider" name="ID_SLIDER1" variable="Cfg_LeftMouseDelay" member="yes">
+							<value>200</value>
+							<max>1000</max>
+							<style>wxSL_HORIZONTAL|wxSL_AUTOTICKS|wxSL_LABELS</style>
+						</object>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxRadioBox" name="ID_RADIOBOX2" variable="Cfg_ClearAllKey" member="yes">
+					<label>Clear all browse marks</label>
+					<content>
+						<item>Ctrl-Left mouse</item>
+						<item>Ctrl-Left double click</item>
+					</content>
+					<default>-1</default>
+					<style>wxRA_VERTICAL</style>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT2" variable="StaticText2" member="yes">
+					<label>Note: The Ctrl-Left__Mouse key options are disabled &#x0A;when the editors multi-selection option is enabled at:&#x0A;Settings/Editor/Margins/Allow Multiple Selections&#x0A;&#x0A;Menu items can be used to clear BrowseMarks.&#x0A;&#x0A;</label>
+					<style>wxALIGN_CENTRE</style>
+				</object>
+				<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

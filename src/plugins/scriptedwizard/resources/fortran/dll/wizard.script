@@ -1,0 +1,115 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Fortran Application
+// Author:  Wang Qiyu
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Fortran DLL project wizard!\n" +
+                        "This wizard will guide you to create a new Fortran DLL project.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
+
+    // intro
+    Wizard.AddInfoPage(_T("DllIntro"), intro_msg);
+    // select project name and path
+    Wizard.AddProjectPathPage();
+    // select compiler and configurations
+    // args:
+    //  1) string: which compiler ID will be pre-selected (empty means default)
+    //  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
+    //  3) boolean: if false, the compiler selection will be disabled
+    //  4) boolean: if false, the config targets will be disabled
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    local result = _T("fortran/dll/files");
+    return result;
+}
+
+function SetupProject(project)
+{
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+        SetupTarget(target, true);
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        SetupTarget(target, false);
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttDynamicLib);
+
+    local WizType = Wizard.GetWizardType();
+    local dll_file_name, dll_output_dir, dll_filename_with_path;
+    if (WizType == wizProject)
+    {
+        if (is_debug)
+            dll_output_dir = Wizard.GetDebugOutputDir();
+        else
+            dll_output_dir = Wizard.GetReleaseOutputDir();
+    }
+    else if (WizType == wizTarget)
+        dll_output_dir = Wizard.GetTargetOutputDir();
+    dll_file_name = target.SuggestOutputFilename();
+    dll_filename_with_path = dll_output_dir + dll_file_name;
+
+    target.SetOutputFilename(dll_filename_with_path);
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(target, Wizard.GetCompilerID());
+
+    // Now define BUILD_DLL to export the functions
+	target.AddCompilerOption(_T("-DBUILD_DLL")); 
+    // target.AddCompilerOption(_T("-share"));   // G95 can not recognise -share	
+
+    
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+    else
+    {
+        // enable optimizations for this target
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc*")))
+    {
+        if (is_debug)
+            target.AddCompilerOption(_T("/MDd"));
+        else
+            target.AddCompilerOption(_T("/MD"));
+        if (GetCompilerFactory().CompilerInheritsFrom(Wizard.GetCompilerID(), _T("msvc8")))
+        {
+            /* Incremental linking shall be set to NO to embed manifest in the following way.
+            * Visit http://msdn2.microsoft.com/en-us/library/ms235605(VS.80).aspx for more details.
+            */
+            target.AddLinkerOption(_T("/INCREMENTAL:NO"));
+            target.AddCommandsAfterBuild(_T("mt.exe /nologo /manifest \"") + dll_filename_with_path + _T(".manifest\" /outputresource:\"") + dll_filename_with_path + _T("\";2"));
+        }
+    }
+
+    return true;
+}
+
+

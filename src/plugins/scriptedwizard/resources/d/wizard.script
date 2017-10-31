@@ -1,0 +1,56 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: D application
+// Author:  Yiannis Mandravellos
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    // this is the text that will appear in the start (intro) page
+    local intro_msg = _T("Welcome to the new D application wizard!\n" +
+                        "This wizard will guide you to create a new D application.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
+
+    // add builtin pages
+    Wizard.AddInfoPage(_T("DIntro"), intro_msg); // intro
+    Wizard.AddProjectPathPage(); // select project name and path
+    Wizard.AddCompilerPage(_T(""), _T("dmd;gdc;ldc"), true, true); // select compiler and configurations
+    // nothing more needs to be done here
+}
+
+function GetFilesDir()
+{
+    return _T("d/console");
+}
+
+function SetupProject(project)
+{
+    // enable compiler warnings (project-wide)
+    if (Wizard.GetCompilerID().Matches(_T("gdc")))
+        WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

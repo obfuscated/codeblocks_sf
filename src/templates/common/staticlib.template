@@ -1,0 +1,10 @@
+<CodeBlocks_template_file>
+	<Template name="staticlib" title="Static Library" category="Libraries" bitmap="dll.png">
+		<FileSet name="dflt" title="Default">
+			<File source="staticlib-sample.c" destination="sample.c"/>
+		</FileSet>
+		<Option name="Static Library">
+			<Project file="staticlib.cbp"/>
+		</Option>
+	</Template>
+</CodeBlocks_template_file>

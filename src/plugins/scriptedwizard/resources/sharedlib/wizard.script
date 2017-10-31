@@ -1,0 +1,134 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Shared Library
+// Author:  Jens Lody
+// most code copied from Static Library (Author: Yiannis Mandravellos)
+//
+////////////////////////////////////////////////////////////////////////////////
+
+SharedLibLang <- 0; // default to C
+
+function BeginWizard()
+{
+    local wiz_type = Wizard.GetWizardType();
+
+    if (wiz_type == wizProject)
+    {
+        local intro_msg = _T("Welcome to the new shared library wizard!\n" +
+                             "This wizard will guide you to create a new shared library.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+
+        Wizard.AddInfoPage(_T("SharedLibIntro"), intro_msg);
+        // select language
+        Wizard.AddGenericSingleChoiceListPage(_T("SharedLibLanguagePage"), _T("Please select the language you want to use."), _T("C;C++"), SharedLibLang); // select language
+
+        Wizard.AddProjectPathPage();
+        Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+    }
+    else if (wiz_type == wizTarget)
+    {
+        local intro_msg = _T("Welcome to the new shared library build target wizard!\n" +
+                             "This wizard will guide you to create a new shared library build target.\n\n" +
+                             "When you 're ready to proceed, please click \"Next\"...");
+        Wizard.AddInfoPage(_T("SharedLibIntro"), intro_msg);
+        Wizard.AddBuildTargetPage(_T(""), false, false, _T(""), _T("*"), true);
+    }
+    else
+        print(wiz_type);
+}
+
+function GetFilesDir()
+{
+    local result;
+
+    // depending on the source type setting, return the appropriate value.
+    if (SharedLibLang == 0) // C source file
+        result = _T("sharedlib/c");
+    else // C++ source file
+        result = _T("sharedlib/cpp");
+
+    return result;
+}
+
+function SetupProject(project)
+{
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+        SetupTarget(target, true);
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+        SetupTarget(target, false);
+
+    // Add CPP Exception handling support
+    if (SharedLibLang == 1)
+        CppExceptionsOn(project, Wizard.GetCompilerID());
+
+    return true;
+}
+
+function SetupTarget(target, is_debug)
+{
+    if (IsNull(target))
+        return false;
+
+    target.SetTargetType(ttDynamicLib);
+
+    local WizType = Wizard.GetWizardType();
+    local lib_file_name, lib_output_dir, lib_filename_with_path;
+    if (WizType == wizProject)
+    {
+        if (is_debug)
+            lib_output_dir = Wizard.GetDebugOutputDir();
+        else
+            lib_output_dir = Wizard.GetReleaseOutputDir();
+    }
+    else if (WizType == wizTarget)
+        lib_output_dir = Wizard.GetTargetOutputDir();
+    lib_file_name = _T("lib") + target.SuggestOutputFilename();
+    lib_filename_with_path = lib_output_dir + lib_file_name;
+
+    target.SetOutputFilename(lib_filename_with_path);
+
+    if (is_debug)
+    {
+        // enable debugging symbols for this target
+        // DebugSymbolsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+    else
+    {
+        // enable optimizations for this target
+        // OptimizationsOn(target, Wizard.GetTargetCompilerID()); // TODO: doesn't seem to work?
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}
+
+//------------------------------------------------------------------------------
+// Function OnEnter_SharedLibLanguagePage
+//------------------------------------------------------------------------------
+function OnEnter_SharedLibLanguagePage(fwd)
+{
+    Wizard.SetListboxSelection(_T("GenericChoiceList"), SharedLibLang);
+    return true;
+}
+//------------------------------------------------------------------------------
+// Function OnLeave_SharedLibLanguagePage
+//------------------------------------------------------------------------------
+function OnLeave_SharedLibLanguagePage(fwd)
+{
+    if (fwd)
+    {
+        SharedLibLang = Wizard.GetListboxSelection(_T("GenericChoiceList"));
+    }
+    return true;
+}

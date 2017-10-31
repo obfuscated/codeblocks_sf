@@ -1,0 +1,142 @@
+KEY [ ]pending [+]new/added [-]removed [*]changed/in-progress [!]fixed
+--- revision #147 : 09jun2013 ---
+[!] Fixed setting of automatic file prefix for targets ('lib' for static libraries, etc).
+[+] Partially reworked support for multiple toolchains.
+[+] Declared MSVC and Borland toolchains.
+--- revision #138 : 02feb2013 ---
+[!] Fixed out-of-order execution of rules due to missing dependencies when -jN option is used.
+[!] Fixed possible 'could not find getcwd' build error due to missing #include.
+[*] Corrected default command templates for GCC dynamic library and executable linker.
+[+] Added support for multiple platform-specific library extensions.
+--- revision #137 : 02sep2012 ---
+[!] Fixed output path for Windows resource compiler.
+[!] Removed false messages about missing compiler for non-compilable units.
+[+] "-mwindows" option is now supplied to the GCC linker for Windows GUI builds;
+    for other manually added compilers, an "option_wingui" is available in configuration.
+--- revision #136 : 30jul2012 ---
+[!] Fixed option syntax for libraries.
+--- revision #135 : 10may2012 ---
+[!] Fixed possible crash when compiler variable is overridden for units.
+[!] Quick fix for handling relative paths outside project tree.
+--- revision #133 : 30mar2012 ---
+[!] Fixed reading of virtual targets from project file.
+[+] Implemented build target selection for virtual targets.
+--- revision #130 : 18mar2012 ---
+[+] Implemented handling of spaces and special characters in paths.
+--- revision #127 : 30nov2011 ---
+[!] Fixed possible crash due to undefined toolchain.
+[!] Rechecked global compiler variable evaluation.
+--- revision #125 : 27nov2011 ---
+[+] Implemented toolchain selection without explicit duplicates.
+[+] Added an option to control case of macro variables.
+[!] Fixed case mismatch issues.
+[!] Fixed platform selection.
+--- revision #120 : 17oct2011 ---
+[+] Implemented build target selection with option
+    "-targets <target1[,target2[, ...]]>".
+[+] Added options "--keep-objdir" and "--keep-outdir"
+    to keep directories for object files and output binary
+    which are forcefully removed withing "clean_*" target by default.
+--- revision #118 : 05sep2011 ---
+[!] Fixed wrong unit index building procedure that ignored project
+    constraints and attached all units to all of project targets.
+[*] Updated documentation.
+--- revision #112 : 26jul2011 ---
+[!] Fixed missing toolchain index for multi-toolchain projects.
+--- revision #110 : 18jul2011 ---
+[!] Fixed target names in virtual target dependencies.
+[!] Fixed verbosity setting leading to missing project info output.
+[*] Modified rules of stored configuration usage, added notification.
+--- revision #109 : 17jul2011 ---
+[!] Fixed workspace makefile generation (workspace path was ignored).
+[!] Fixed C/C++ dependency search (files in project directory were not included)
+[!] Fixed wrong path processing involving empty paths.
+[+] Rewrote workspace makefile generation to rule-based approach.
+[+] Implemented translation of project dependencies into makefile.
+[*] Changed platform configuration, added parameter for "make" tool filename.
+--- revision #107 : 20jun2011 ---
+[+] Rewrote makefile generation to multiple toolchain architecture.
+[*] Updated toolchain and build tools configuration interface.
+[!] Fixed problem with workspace makefile generation procedure that
+    used wrong function to generate makefiles of individual projects.
+--- revision #101 : 12may2011 ---
+[+] Added default options that can be stored in configuration file.
+[+] Implemented optional build target name casing.
+--- revision #100 : 07may2011 ---
+[+] Added global pre-build and post-build steps.
+[*] Changed makefile rules naming for build targets.
+--- revision #99 : 27apr2011 ---
+[+] Rewrote plaform-specific command generation logic to template-based.
+[+] Rewrote dependency search for C/C++ source/header files.
+[+] Switched makefile generation code to rule-based version.
+[*] Changed format of configuration file to more human-readable form.
+[*] Prepared infrastructure for multiple toolchains (to be completed soon).
+[+] Added nice project logo.
+--- revision #93 : 15apr2011 ---
+[!] Fixed missing headers for Windows platform.
+--- revision #91 : 07apr2011 ---
+[+] Implemented dependency search for C/C++ source/header files,
+    makefiles with dependencies can be generated using "--with-deps" option
+[+] Added options to set up assembler.
+[!] Fixed use of wrong working directory during generation of makefiles
+--- revision #80 : 23mar2011 ---
+[!] Commands-only type targets no longer generate rules for object files
+--- revision #72 : 15mar2011 ---
+[+] Implemented multi-line object file lists (use "--wrap-objects" oprion)
+[+] Added revision number to generated makefile header
+--- revision #62 : 01mar2011 ---
+[*] Few minor bugfixes
+--- revision #57 : 21jan2011 ---
+[!] Fixed windows-specific code broken after rev.39
+--- revision #55 : 13dec2010 ---
+[!] Fixed windres invocation
+--- revision #53 : 12dec2010 ---
+[+] Added support for global compiler variables
+[+] Implemented "flat" objects
+--- revision #42 : 05dec2010 ---
+[*] Changed configuration lookup order
+    previously: 1) "-cfg" parameter, 2) current directory
+    now: 1) "-cfg" parameter, 2) home directory 3) current directory
+    "--local" parameter overrides home directory lookup
+    "-cfg" parameter overrides "--local" parameter
+[+] Environment variables
+[+] External dependencies for targets
+--- revision #39 : 23nov2010 ---
+[!] Fixed misbehavior caused by missing configuration,
+    now configuration file is created automatically
+[!] Fixed missing command for creation of output directory for object
+    files of source files located in project root directory
+--- revision #38 : 21nov2010 ---
+[*] Slightly fixed Windows part, simple makefiles seem to work fine
+[*] Changed Windows platform defaults to MinGW32
+--- revision #37 : 20nov2010 ---
+[*] Moved Before-build and After-build commands to individual targets
+[!] Fixed dynamic library linking
+[!] Fixed makefile generation for project with multiple targets
+[!] Fixed makefile generation for workspaces
+[!] Fixed issues caused by wrong file paths or extensions
+--- revision #35 : 19nov2010 ---
+[+] Improved platform and toolchain management
+[+] Non-inclusive compiler/linker option relations
+[+] Working directories for targets (see macros.h TARGET_WDIR_ENABLED)
+[+] Commands-only targets
+[+] Support for fortran compilers
+[+] Extended object names
+[*] Limited support for Windows/Mac platforms
+[*] Resource compilers: windres invocation
+--- revision #30 : 17nov2010 ---
+[!] Fixed toolchain management
+[+] Support for Code::Blocks workspace files (.workspace)
+[+] Project and unit dependencies are taken into account
+[+] Implemented "compile" and "link" flags for build units
+[+] Implemented Before-build and After-build commands
+[*] Makefile names are made by appending ".mak" extension now,
+    not by replacing input file extension
+[+] Automatic "default" target for project without targets
+--- revision #20 : 14nov2010 ---
+[+] Basic Code::Blocks project files (.cbp) processing
+[+] Support for building executable binaries and static libraries
+[+] Support for multiple build targets (all real and virtual targets)
+[+] Two additional virtual targets: "all" and "clean"
+[+] Basic Makefile generation
+--- initial revision : 05nov2010 ---

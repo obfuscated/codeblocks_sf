@@ -1,0 +1,52 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Make"
+                index="11"
+                filemasks="*Makefile,*.mak,Makefile.*">
+                <Style name="Default"
+                        index="0"
+                        fg="0,0,0"
+                        bg="255,255,255"
+                        bold="0"
+                        italics="0"
+                        underlined="0"/>
+                <Style name="Comment"
+                        index="1"
+                        fg="160,160,160"/>
+                <Style name="Preprocessor"
+                        index="2"
+                        fg="0,160,0"/>
+                <Style name="Variable"
+                        index="3"
+                        fg="0,0,128"/>
+                <Style name="Operator"
+                        index="4"
+                        fg="255,0,0"/>
+                <Style name="Target"
+                        index="5"
+                        fg="160,0,0"/>
+                <Style name="Error"
+                        index="4"
+                        fg="255,0,0"/>
+                <Style name="Selection"
+                        index="-99"
+                        bg="192,192,192"/>
+                <Style name="Active line"
+                        index="-98"
+                        bg="255,255,160"/>
+                <SampleCode value="lexer_make.sample"/>
+                <LanguageAttributes
+                    LineComment="#"
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="1"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles=""
+                    LexerPreprocessorStyles="2"/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

@@ -1,0 +1,18 @@
+#! /bin/sh
+#
+# This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
+# http://www.gnu.org/licenses/gpl-3.0.html
+#
+# Copyright: 2008 Jens Lody
+#
+# $Revision: 5277 $
+# $Id: update 5277 2008-10-19 19:08:32Z jenslody $
+# $HeadURL: https://mortenmacfly@svn.berlios.de/svnroot/repos/codeblocks/trunk/src/plugins/contrib/IncrementalSearch/update $
+#
+
+mkdir -p ../../../devel31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/settings > /dev/null 2> /dev/null
+cp ./*.png ../../../devel31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+cp ./*.png ../../../output31/share/codeblocks/images/settings/ > /dev/null 2> /dev/null
+exit 0
+

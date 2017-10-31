@@ -1,0 +1,8 @@
+#!/bin/bash
+mkdir -p ../../../output31
+zip -j9 ../../../devel31/share/codeblocks/codesnippets.zip ./manifest.xml
+mkdir -p  ../../../devel31/share/codeblocks/images/codesnippets > /dev/null 2> /dev/null
+mkdir -p ../../../output31/share/codeblocks/images/codesnippets > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../devel31/share/codeblocks/images/codesnippets/ > /dev/null 2> /dev/null
+cp ./resources/*.png ../../../output31/share/codeblocks/images/codesnippets/ > /dev/null 2> /dev/null
+exit 0

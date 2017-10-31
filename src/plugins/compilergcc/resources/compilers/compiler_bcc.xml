@@ -1,0 +1,25 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="Borland C++ Compiler (5.5, 5.82)"
+                     id="bcc"
+                     weight="20"
+                     platform="windows">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <Search registry="HKEY_LOCAL_MACHINE\SOFTWARE\Borland\C++Builder\5.0"
+                value="RootDir"/>
+        <Search path="C:\Borland\BCC55"/>
+        <Search registry="HKEY_LOCAL_MACHINE\SOFTWARE\Borland\BDS\4.0"
+                value="RootDir"/>
+        <Search path="%ProgramFiles%\Borland\BDS\4.0"/>
+        <Fallback path="C:\Borland\BCC55"/>
+    </Path>
+    <Path type="include">
+        <Add><master/>\include</Add>
+    </Path>
+    <Path type="lib">
+        <Add><master/>\lib</Add>
+        <Add><master/>\lib\psdk</Add>
+    </Path>
+</CodeBlocks_compiler>

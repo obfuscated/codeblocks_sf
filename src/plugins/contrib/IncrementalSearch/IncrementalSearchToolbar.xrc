@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+  <object class="wxBitmap" name="MenuBitmap">images/16x16/incsearchfocus.png</object>
+  <object class="wxToolBarAddOn" name="incremental_search_toolbar_16x16">
+    <object class="tool" name="idIncSearchClear">
+      <tooltip>Clear</tooltip>
+      <longhelp>Clear contents of textcontrol</longhelp>
+      <bitmap>images/16x16/incsearchclear.png</bitmap>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idIncSearchPrev">
+      <tooltip>Prev</tooltip>
+      <longhelp>Jump to previous occurrence</longhelp>
+      <bitmap>images/16x16/incsearchprev.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchNext">
+      <tooltip>Next</tooltip>
+      <longhelp>Jump to next occurrence</longhelp>
+      <bitmap>images/16x16/incsearchnext.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchHighlight">
+      <tooltip>Highlight</tooltip>
+      <longhelp>Highlight all occurrences</longhelp>
+      <bitmap>images/16x16/incsearchhighlight.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchSelectOnly">
+      <tooltip>Selected text</tooltip>
+      <longhelp>Search only inside selected text</longhelp>
+      <bitmap>images/16x16/incsearchselectedonly.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchMatchCase">
+      <tooltip>Match case</tooltip>
+      <longhelp>Only show phrases that match the case</longhelp>
+      <bitmap>images/16x16/incsearchcase.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchUseRegex">
+      <tooltip>Use regex</tooltip>
+      <longhelp>Use regular expressions for search</longhelp>
+      <bitmap>images/16x16/incsearchregex.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+  </object>
+  <object class="wxToolBarAddOn" name="incremental_search_toolbar">
+    <object class="tool" name="idIncSearchClear">
+      <tooltip>Clear</tooltip>
+      <longhelp>Clear contents of textcontrol</longhelp>
+      <bitmap>images/incsearchclear.png</bitmap>
+    </object>
+    <object class="separator"/>
+    <object class="tool" name="idIncSearchPrev">
+      <tooltip>Prev</tooltip>
+      <longhelp>Jump to previous occurrence</longhelp>
+      <bitmap>images/incsearchprev.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchNext">
+      <tooltip>Next</tooltip>
+      <longhelp>Jump to next occurrence</longhelp>
+      <bitmap>images/incsearchnext.png</bitmap>
+    </object>
+    <object class="tool" name="idIncSearchHighlight">
+      <tooltip>Highlight</tooltip>
+      <longhelp>Highlight all occurrences</longhelp>
+      <bitmap>images/incsearchhighlight.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchSelectOnly">
+      <tooltip>Selected text</tooltip>
+      <longhelp>Search only inside selected text</longhelp>
+      <bitmap>images/incsearchselectedonly.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchMatchCase">
+      <tooltip>Match case</tooltip>
+      <longhelp>Only show phrases that match the case</longhelp>
+      <bitmap>images/incsearchcase.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+    <object class="tool" name="idIncSearchUseRegex">
+      <tooltip>Use regex</tooltip>
+      <longhelp>Use regular expressions for search</longhelp>
+      <bitmap>images/incsearchregex.png</bitmap>
+      <toggle>1</toggle>
+    </object>
+  </object>
+</resource>

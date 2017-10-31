@@ -1,0 +1,28 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_compiler>
+<CodeBlocks_compiler name="GNU GCC Compiler for AVR"
+                     id="avr-gcc"
+                     weight="60">
+    <Path type="master">
+        <Search envVar="PATH"
+                for="C"/>
+        <if platform="windows">
+            <Search path="C:\WinAVR*"/>
+            <Fallback path="C:\WinAVR"/>
+        </if>
+        <else>
+            <Fallback path="/usr"/>
+        </else>
+    </Path>
+    <if platform="windows">
+        <Path type="include">
+            <Add><master/>\avr\include</Add>
+        </Path>
+        <Path type="lib">
+            <Add><master/>\avr\lib</Add>
+        </Path>
+        <Path type="extra">
+            <Add><master/>\utils\bin</Add>
+        </Path>
+    </if>
+</CodeBlocks_compiler>

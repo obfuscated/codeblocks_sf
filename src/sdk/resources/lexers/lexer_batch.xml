@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_lexer_properties>
+<CodeBlocks_lexer_properties>
+        <Lexer name="Batch"
+               index="12"
+               filemasks="*.bat,*.cmd,*.nt">
+                <Style name="Default"
+                       index="0"
+                       fg="0,0,0"
+                       bg="255,255,255"
+                       bold="0"
+                       italics="0"
+                       underlined="0"/>
+                <Style name="Comment"
+                       index="1"
+                       fg="128,128,128"/>
+                <Style name="Keyword"
+                       index="2"
+                       fg="0,0,160"
+                       bold="1"/>
+                <Style name="Label"
+                       index="3"
+                       fg="224,160,0"
+                       bold="1"/>
+                <Style name="Hide command character"
+                       index="4"
+                       fg="128,128,0"/>
+                <Style name="External command"
+                       index="5"
+                       fg="0,128,128"
+                       bold="1"/>
+                <Style name="Variable: %%"
+                       index="6"
+                       fg="128,0,128"/>
+                <Style name="Operator"
+                       index="7"
+                       fg="255,0,0"/>
+                <Keywords>
+                        <Set index="0"
+                            value="defined if else equ geq gtr leq lss neq not exist
+
+                                   delims do eol for in skip tokens usebackq
+
+                                   assoc break call cd chdir cls color con copy date del dir echo
+                                   endlocal erase exit ftype goto mkdir md move nul path pause
+                                   popd prompt pushd rd rem ren rename rmdir set setlocal shift
+                                   start time title type ver verify vol
+
+                                   arp at atmadm attrib bootcfg cacls chcp chkdsk chkntfs cipher
+                                   cmd cmstp comp compact convert cprofile defrag diskcomp
+                                   diskcopy diskpart doskey driverquery eventcreate eventquery
+                                   eventtriggers expand fc find findstr format fsutil ftp getmac
+                                   gpresult gpupdate graftabl help ipconfig ipxroute label lodctr
+                                   logman lpq lpr mode more mountvol msiexec nbtstat netsh
+                                   netstat ntbackup openfiles pathping ping print rasdial rcp
+                                   recover reg regsvr32 relog replace rexec robocopy route runas
+                                   sc schtasks shutdown sort subst systeminfo sfc taskkill
+                                   tasklist telnet tftp tracerpt tracert tree typeperf unlodctr
+                                   vssadmin w32tm xcopy
+
+                                   AllUsersProfile AppData ClientName CmdCmdLine CmdExtVersion
+                                   ComSpec CommonProgramFiles ComputerName ErrorLevel HomeDrive
+                                   HomePath LocalAppData LogonServer Number_Of_Processors OS
+                                   PathExt Processor_Architecture Processor_Identifier
+                                   Processor_Level Processor_Revision ProgramFiles Random
+                                   SessionName SystemDrive SystemRoot Temp Tmp UserDnsDomain
+                                   UserDomain UserName UserProfile WinDir
+
+                                   append debug edit edlin exe2bin fastopen forcedos graphics lh
+                                   loadfix loadhigh mem nlsfunc setver share"/>
+                </Keywords>
+                <SampleCode value="lexer_batch.sample"/>
+                <LanguageAttributes
+                    LineComment="REM "
+                    StreamCommentStart=""
+                    StreamCommentEnd=""
+                    BoxCommentStart=""
+                    BoxCommentMid=""
+                    BoxCommentEnd=""
+                    CaseSensitive="0"
+                    LexerCommentStyles="1"
+                    LexerCharacterStyles=""
+                    LexerStringStyles=""
+                    LexerPreprocessorStyles=""/>
+        </Lexer>
+</CodeBlocks_lexer_properties>

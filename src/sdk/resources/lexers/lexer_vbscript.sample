@@ -1,0 +1,22 @@
+' Sample VBScript (VBS) preview code
+'
+' This is a comment.
+
+#If Win32 Then
+    Public Const IsWin32 = True
+#Else
+    Public Const IsWin32 = False
+#End If
+
+Dim myVal, btnPressed
+
+myVal = MsgBox("Hello World!", vbOkCancel, "Hello")
+
+Select Case myVal
+  Case 1    btnPressed = "OK"
+  Case 2    btnPressed = "Cancel"
+  Case Else btnPressed = "Error!"
+End Select
+
+MsgBox "You pressed the " &  btnPressed & " button.", vbInformation
+

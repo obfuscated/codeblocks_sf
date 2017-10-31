@@ -1,0 +1,456 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
+	<object class="wxPanel" name="processorChoice">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="textChoice">
+					<label>Please choose a processor for this project...</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxProc">
+					<content>
+						<item>at43usb320</item>
+						<item>at43usb355</item>
+						<item>at76c711</item>
+						<item>at86rf401</item>
+						<item>at90c8534</item>
+						<item>at90can128</item>
+						<item>at90can32</item>
+						<item>at90can64</item>
+						<item>at90pwm1</item>
+						<item>at90pwm161</item>
+						<item>at90pwm2</item>
+						<item>at90pwm216</item>
+						<item>at90pwm2b</item>
+						<item>at90pwm3</item>
+						<item>at90pwm316</item>
+						<item>at90pwm3b</item>
+						<item>at90pwm81</item>
+						<item>at90s1200</item>
+						<item>at90s2313</item>
+						<item>at90s2323</item>
+						<item>at90s2333</item>
+						<item>at90s2343</item>
+						<item>at90s4414</item>
+						<item>at90s4433</item>
+						<item>at90s4434</item>
+						<item>at90s8515</item>
+						<item>at90s8535</item>
+						<item>at90scr100</item>
+						<item>at90usb1286</item>
+						<item>at90usb1287</item>
+						<item>at90usb162</item>
+						<item>at90usb646</item>
+						<item>at90usb647</item>
+						<item>at90usb82</item>
+						<item>at94k</item>
+						<item>ata6289</item>
+						<item>atmega103</item>
+						<item>atmega128</item>
+						<item>atmega1280</item>
+						<item>atmega1281</item>
+						<item>atmega1284p</item>
+						<item>atmega128rfa1</item>
+						<item>atmega16</item>
+						<item>atmega161</item>
+						<item>atmega162</item>
+						<item>atmega163</item>
+						<item>atmega164a</item>
+						<item>atmega164p</item>
+						<item>atmega165</item>
+						<item>atmega165a</item>
+						<item>atmega165p</item>
+						<item>atmega168</item>
+						<item>atmega168a</item>
+						<item>atmega168p</item>
+						<item>atmega169</item>
+						<item>atmega169a</item>
+						<item>atmega169p</item>
+						<item>atmega169pa</item>
+						<item>atmega16a</item>
+						<item>atmega16hva</item>
+						<item>atmega16hva2</item>
+						<item>atmega16hvb</item>
+						<item>atmega16hvbrevb</item>
+						<item>atmega16m1</item>
+						<item>atmega16u2</item>
+						<item>atmega16u4</item>
+						<item>atmega2560</item>
+						<item>atmega2561</item>
+						<item>atmega32</item>
+						<item>atmega323</item>
+						<item>atmega324a</item>
+						<item>atmega324p</item>
+						<item>atmega324pa</item>
+						<item>atmega325</item>
+						<item>atmega3250</item>
+						<item>atmega3250a</item>
+						<item>atmega3250p</item>
+						<item>atmega3250pa</item>
+						<item>atmega325a</item>
+						<item>atmega325p</item>
+						<item>atmega325pa</item>
+						<item>atmega328</item>
+						<item>atmega328p</item>
+						<item>atmega329</item>
+						<item>atmega3290</item>
+						<item>atmega3290a</item>
+						<item>atmega3290p</item>
+						<item>atmega3290pa</item>
+						<item>atmega329a</item>
+						<item>atmega329p</item>
+						<item>atmega329pa</item>
+						<item>atmega32c1</item>
+						<item>atmega32hvb</item>
+						<item>atmega32hvbrevb</item>
+						<item>atmega32m1</item>
+						<item>atmega32u2</item>
+						<item>atmega32u4</item>
+						<item>atmega32u6</item>
+						<item>atmega406</item>
+						<item>atmega48</item>
+						<item>atmega48a</item>
+						<item>atmega48p</item>
+						<item>atmega4hvd</item>
+						<item>atmega48pa</item>
+						<item>atmega64</item>
+						<item>atmega640</item>
+						<item>atmega644</item>
+						<item>atmega644a</item>
+						<item>atmega644p</item>
+						<item>atmega644pa</item>
+						<item>atmega645</item>
+						<item>atmega6450</item>
+						<item>atmega6450a</item>
+						<item>atmega6450p</item>
+						<item>atmega645a</item>
+						<item>atmega645p</item>
+						<item>atmega649</item>
+						<item>atmega6490</item>
+						<item>atmega6490a</item>
+						<item>atmega6490p</item>
+						<item>atmega649a</item>
+						<item>atmega649p</item>
+						<item>atmega64c1</item>
+						<item>atmega64hve</item>
+						<item>atmega64m1</item>
+						<item>atmega8</item>
+						<item>atmega8515</item>
+						<item>atmega8535</item>
+						<item>atmega88</item>
+						<item>atmega88a</item>
+						<item>atmega88p</item>
+						<item>atmega88pa</item>
+						<item>atmega8hva</item>
+						<item>atmega8hvd</item>
+						<item>atmega8u2</item>
+						<item>attiny10</item>
+						<item>attiny11</item>
+						<item>attiny12</item>
+						<item>attiny13</item>
+						<item>attiny13a</item>
+						<item>attiny15</item>
+						<item>attiny1634</item>
+						<item>attiny167</item>
+						<item>attiny20</item>
+						<item>attiny22</item>
+						<item>attiny2313</item>
+						<item>attiny2313a</item>
+						<item>attiny24</item>
+						<item>attiny24a</item>
+						<item>attiny25</item>
+						<item>attiny26</item>
+						<item>attiny261</item>
+						<item>attiny261a</item>
+						<item>attiny28</item>
+						<item>attiny327</item>
+						<item>attiny4</item>
+						<item>attiny40</item>
+						<item>attiny4313</item>
+						<item>attiny43u</item>
+						<item>attiny44</item>
+						<item>attiny44a</item>
+						<item>attiny45</item>
+						<item>attiny461</item>
+						<item>attiny461a</item>
+						<item>attiny48</item>
+						<item>attiny5</item>
+						<item>attiny84</item>
+						<item>attiny84a</item>
+						<item>attiny85</item>
+						<item>attiny861</item>
+						<item>attiny861a</item>
+						<item>attiny87</item>
+						<item>attiny88</item>
+						<item>attiny9</item>
+						<item>atxmega128a1</item>
+						<item>atxmega128a1u</item>
+						<item>atxmega128a3</item>
+						<item>atxmega128b1</item>
+						<item>atxmega128d3</item>
+						<item>atxmega16a4</item>
+						<item>atxmega16d4</item>
+						<item>atxmega16x1</item>
+						<item>atxmega192a3</item>
+						<item>atxmega192d3</item>
+						<item>atxmega256a3</item>
+						<item>atxmega256a3b</item>
+						<item>atxmega256a3bu</item>
+						<item>atxmega256d3</item>
+						<item>atxmega32a4</item>
+						<item>atxmega32d4</item>
+						<item>atxmega32x1</item>
+						<item>atxmega64a1</item>
+						<item>atxmega64a1u</item>
+						<item>atxmega64a3</item>
+						<item>atxmega64d3</item>
+						<item>avr1</item>
+						<item>avr2</item>
+						<item>avr25</item>
+						<item>avr3</item>
+						<item>avr31</item>
+						<item>avr35</item>
+						<item>avr4</item>
+						<item>avr5</item>
+						<item>avr51</item>
+						<item>avr6</item>
+						<item>avrtiny10</item>
+						<item>avrxmega1</item>
+						<item>avrxmega2</item>
+						<item>avrxmega3</item>
+						<item>avrxmega4</item>
+						<item>avrxmega5</item>
+						<item>avrxmega6</item>
+						<item>avrxmega7</item>
+						<item>m3000</item>
+						<item>m3000f</item>
+						<item>m3000s</item>
+						<item>m3001b</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxExtMem">
+					<label>Use external memory</label>
+					<tooltip>Use external memory SRAM instead of internal SRAM. &#x0A;This option will pass information to the linker which will relocate the &#x0A;.data section of the application to a memory address that you specify.&#x0A;&#x0A;See the processor datasheet for the address that you should use.</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="textctrlExtMem">
+					<value>0x801100</value>
+				</object>
+				<flag>wxALL|wxALIGN_RIGHT</flag>
+				<border>3</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxF_CPU">
+					<label>Define F__CPU with the following value:</label>
+					<checked>1</checked>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxTextCtrl" name="textctrlF_CPU">
+					<value>16000000UL</value>
+				</object>
+				<flag>wxALL|wxALIGN_RIGHT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxMap">
+					<label>Create symbol map file (.map)</label>
+					<checked>1</checked>
+					<tooltip>Create an extended symbol file from the .elf output file</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxHex">
+					<label>Create hex files (.hex .eep.hex)</label>
+					<checked>1</checked>
+					<tooltip>Create Intel hex files from the .elf output file</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxSrec">
+					<label>Create Motorola S-Record files (.srec .eep.srec)</label>
+					<tooltip>Create Motorola S-Record output files from the .elf output of the project</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxBin">
+					<label>Create Binary files (.bin .eep.bin)</label>
+					<tooltip>Create binary image files from the .elf output file</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxExt">
+					<label>Create Fuse, Lock, Signature files (.fuse .lock .sig)</label>
+					<checked>1</checked>
+					<tooltip>Create Fuse, Lock and Signature files from the .elf output file. &#x0A;Requires &apos;srec&amp;cat&apos; to be installed to extract the fuse bytes &#x0A;into seperate files. For hex output only.</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxLss">
+					<label>Create extended listing file (.lss)</label>
+					<checked>1</checked>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxCheckBox" name="checkboxAvrSize">
+					<label>Run avr-size after build</label>
+					<tooltip>Run avr-size after a build to display how much resource is being used in the microcontroller.</tooltip>
+				</object>
+				<flag>wxALL|wxALIGN_LEFT</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+	<object class="wxPanel" name="programmerChoice">
+		<object class="wxBoxSizer">
+			<orient>wxVERTICAL</orient>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="textChoice">
+					<label>Please choose the programmer and connection type for AVRDude...</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxProg">
+					<content>
+						<item>abcmini</item>
+						<item>alf</item>
+						<item>arduino</item>
+						<item>atisp</item>
+						<item>avr109</item>
+						<item>avr910</item>
+						<item>avr911</item>
+						<item>avrisp</item>
+						<item>avrisp2</item>
+						<item>avrispmkII</item>
+						<item>avrispv2</item>
+						<item>bascom</item>
+						<item>blaster</item>
+						<item>bsd</item>
+						<item>buspirate</item>
+						<item>butterfly</item>
+						<item>c2n232i</item>
+						<item>dapa</item>
+						<item>dasa</item>
+						<item>dasa3</item>
+						<item>dragon_dw</item>
+						<item>dragon_hvsp</item>
+						<item>dragon_isp</item>
+						<item>dragon_jtag</item>
+						<item>dragon_pdi</item>
+						<item>dragon_pp</item>
+						<item>dt006</item>
+						<item>ere-isp-avr</item>
+						<item>frank-stk200</item>
+						<item>futurlec</item>
+						<item>jtag1</item>
+						<item>jtag1slow</item>
+						<item>jtag2</item>
+						<item>jtag2avr32</item>
+						<item>jtag2dw</item>
+						<item>jtag2fast</item>
+						<item>jtag2isp</item>
+						<item>jtag2pdi</item>
+						<item>jtag2slow</item>
+						<item>jtagmkI</item>
+						<item>jtagmkII</item>
+						<item>jtagmkII_avr32</item>
+						<item>mib510</item>
+						<item>pavr</item>
+						<item>picoweb</item>
+						<item>pony-stk200</item>
+						<item>ponyser</item>
+						<item>siprog</item>
+						<item>sp12</item>
+						<item>stk200</item>
+						<item>stk500</item>
+						<item>stk500hvsp</item>
+						<item>stk500pp</item>
+						<item>stk500v1</item>
+						<item>stk500v2</item>
+						<item>stk600</item>
+						<item>stk600hvsp</item>
+						<item>stk600pp</item>
+						<item>usbasp</item>
+						<item>usbtiny</item>
+						<item>xil</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT1">
+					<label>Please choose a debugger for Avarice...</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxDbgr">
+					<content>
+						<item>--mkI</item>
+						<item>--mkII</item>
+						<item>--dragon</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStaticText" name="ID_STATICTEXT2">
+					<label>Please choose the connection type for Avarice...</label>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+			<object class="sizeritem">
+				<object class="wxComboBox" name="comboboxDbgrCon">
+					<content>
+						<item>--jtag usb</item>
+						<item>--debugwire</item>
+					</content>
+				</object>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>3</border>
+			</object>
+		</object>
+	</object>
+</resource>

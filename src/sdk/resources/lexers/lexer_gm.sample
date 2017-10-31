@@ -1,0 +1,14 @@
+/* GameMonkey sample script */
+
+print("Hello world");
+
+SomeFunction = function(a, b)
+{
+	local x = a;
+	x = x + 1;
+	print("x=" + x);
+}
+
+// Test time ;)
+SomeFunction(1, 2);
+

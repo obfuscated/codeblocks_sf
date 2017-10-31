@@ -1,0 +1,167 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Qt4 shared project wizard
+//
+////////////////////////////////////////////////////////////////////////////////
+
+// globals
+QtPathDefault    <- _T("$(#qt4)");
+QtPathDefaultInc <- _T("$(#qt4.include)");
+QtPathDefaultLib <- _T("$(#qt4.lib)");
+QtPath <- _T("");
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new Trolltech Qt4 shared project wizard!\n" +
+                         "This wizard will guide you to create a new Qt4 project\n" +
+                         "using the Trolltech Qt4 cross-platform GUI toolkit\n\n" +
+                         "When you're ready to proceed, please click \"Next\"...");
+
+    local qtpath_msg = _T("Please select the location of Trolltech Qt4 shared on your computer.\n" +
+                          "This is the top-level folder where Qt4 was installed.\n" +
+                          "To help you, this folder must contain the subfolders\n" +
+                          "\"include\" and \"lib\".");
+
+    Wizard.AddInfoPage(_T("QtIntro"), intro_msg);
+    Wizard.AddProjectPathPage();
+    Wizard.AddGenericSelectPathPage(_T("QtPath"), qtpath_msg, _T("Qt's location:"), QtPathDefault);
+    Wizard.AddCompilerPage(_T(""), _T("gcc*"), true, true);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Qt's path page
+////////////////////////////////////////////////////////////////////////////////
+
+function OnLeave_QtPath(fwd)
+{
+    if (fwd)
+    {
+        local dir         = Wizard.GetTextControlValue(_T("txtFolder")); // txtFolder is the text control in GenericSelectPathPage
+        local dir_nomacro = VerifyDirectory(dir);
+
+        if (dir_nomacro.IsEmpty())
+            return false;
+
+        // verify include dependencies
+        local dir_nomacro_inc = GetCompilerIncludeDir(dir, QtPathDefault, QtPathDefaultInc);
+        if (dir_nomacro_inc.IsEmpty())
+            return false;
+        if (PLATFORM == PLATFORM_MSW
+            && !VerifyFile(dir_nomacro_inc + wxFILE_SEP_PATH + _T("QtGui"), _T("QApplication"), _T("Qt's include")))
+            return false;
+
+        // verify library dependencies
+        local dir_nomacro_lib = GetCompilerLibDir(dir, QtPathDefault, QtPathDefaultLib);
+        if (dir_nomacro_lib.IsEmpty())
+            return false;
+        if (PLATFORM == PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore4"), _T("Qt's")))
+            return false;
+        else if (PLATFORM != PLATFORM_MSW && !VerifyLibFile(dir_nomacro_lib, _T("QtCore4"), _T("Qt's")))
+            return false;
+
+
+        QtPath = dir; // Remember the original selection.
+
+        local is_macro = _T("");
+
+        // try to resolve the include directory as macro
+        is_macro = GetCompilerIncludeMacro(dir, QtPathDefault, QtPathDefaultInc);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real inc path we had computed instead
+            QtPathDefaultInc = dir_nomacro_inc;
+        }
+
+        // try to resolve the library directory as macro
+        is_macro = GetCompilerLibMacro(dir, QtPathDefault, QtPathDefaultLib);
+        if (is_macro.IsEmpty())
+        {
+            // not possible -> use the real lib path we had computed instead
+            QtPathDefaultLib = dir_nomacro_lib;
+        }
+    }
+    return true;
+}
+
+// return the files this project contains
+function GetFilesDir()
+{
+    return _T("qt4/files");
+}
+
+// setup the already created project
+function SetupProject(project)
+{
+    //enable using of custom makefile
+    project.SetMakefileCustom(true);
+    
+    //enable using QtHelper plugin
+    project.AddToExtensions(_T("qt_helper/enabled:value=true"));
+    
+    //setting make commands for project and targets
+    project.SetMakeCommandFor(mcBuild, _T("$make -f $makefile"));
+    project.SetMakeCommandFor(mcCompileFile, _T("$make -f $makefile $file"));
+    project.SetMakeCommandFor(mcClean, _T("$make -f $makefile clean"));
+    project.SetMakeCommandFor(mcDistClean, _T("$make -f $makefile distclean"));
+    
+    project.AddIncludeDir(QtPathDefaultInc);
+    project.AddIncludeDir(QtPathDefaultInc + wxFILE_SEP_PATH + _T("QtCore"));
+    project.AddIncludeDir(QtPathDefaultInc + wxFILE_SEP_PATH + _T("QtGui"));
+
+    project.AddLibDir(QtPathDefaultLib);
+
+    // add link libraries
+    if (PLATFORM == PLATFORM_MSW)
+    {
+        project.AddLinkLib(_T("QtCore4"));
+        project.AddLinkLib(_T("QtGui4"));
+    }
+    else
+    {
+        project.AddLinkLib(_T("QtCore4"));
+        project.AddLinkLib(_T("QtGui4"));
+    }
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug
+    local debug_target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(debug_target))
+    {
+        debug_target.SetTargetType(ttConsoleOnly); // ttConsoleOnly: console for debugging
+        debug_target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable generation of debugging symbols for target
+        DebugSymbolsOn(debug_target, Wizard.GetCompilerID());
+        
+	//setting make commands for target
+	debug_target.SetMakeCommandFor(mcBuild, _T("$make -f $makefile debug"));
+    	debug_target.SetMakeCommandFor(mcCompileFile, _T("$make -f $makefile $file debug"));
+	debug_target.SetMakeCommandFor(mcClean, _T("$make -f $makefile clean debug"));
+    	debug_target.SetMakeCommandFor(mcDistClean, _T("$make -f $makefile distclean debug"));
+
+	debug_target.AddIncludeDir(Wizard.GetDebugObjectOutputDir() + _T("uic"));
+	debug_target.SetOptionRelation(ortIncludeDirs, orUseParentOptionsOnly);    
+    }
+
+    // Release
+    local release_target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(release_target))
+    {
+        release_target.SetTargetType(ttExecutable); // ttExecutable: no console
+        release_target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for target
+        OptimizationsOn(release_target, Wizard.GetCompilerID());
+
+        //setting make commands for target
+        release_target.SetMakeCommandFor(mcBuild, _T("$make -f $makefile release"));
+    	release_target.SetMakeCommandFor(mcCompileFile, _T("$make -f $makefile $file release"));
+    	release_target.SetMakeCommandFor(mcClean, _T("$make -f $makefile clean release"));
+    	release_target.SetMakeCommandFor(mcDistClean, _T("$make -f $makefile distclean release"));
+
+    	release_target.AddIncludeDir(Wizard.GetReleaseObjectOutputDir() + _T("uic"));
+    	release_target.SetOptionRelation(ortIncludeDirs, orUseParentOptionsOnly);
+    }
+    
+    return true;
+}

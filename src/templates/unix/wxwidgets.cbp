@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_project_file>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="1"/>
+	<Project>
+		<Option title="wxWidgets application"/>
+		<Option makefile="Makefile"/>
+		<Build>
+			<Target title="default">
+				<Option type="0"/>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Winvalid-pch"/>
+			<Add option="-include &quot;wx_pch.h&quot;"/>
+			<Add option="-DUSE_PCH"/>
+			<Add option="`wx-config --cflags`"/>
+		</Compiler>
+		<Linker>
+			<Add option="`wx-config --libs`"/>
+		</Linker>
+	</Project>
+</CodeBlocks_project_file>

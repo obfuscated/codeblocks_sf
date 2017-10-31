@@ -1,0 +1,66 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Code::Blocks new project wizard script
+//
+// Project: Empty project
+// Author:  Yiannis Mandravellos
+//
+//
+////////////////////////////////////////////////////////////////////////////////
+
+function BeginWizard()
+{
+    local intro_msg = _T("Welcome to the new empty project wizard!\n" +
+                        "This wizard will guide you to create a new empty project.\n\n" +
+                        "When you 're ready to proceed, please click \"Next\"...");
+
+    // intro
+    Wizard.AddInfoPage(_T("EmptyProjectIntro"), intro_msg);
+    // select project name and path
+    Wizard.AddProjectPathPage();
+    // select compiler and configurations
+    // args:
+    //  1) string: which compiler ID will be pre-selected (empty means default)
+    //  2) string: semi-colon separated list of allowed compiler ids. Use _T("*") for all. * and ? wildcards allowed.
+    //  3) boolean: if false, the compiler selection will be disabled
+    //  4) boolean: if false, the config targets will be disabled
+    Wizard.AddCompilerPage(_T(""), _T("*"), true, true);
+}
+
+function GetFilesDir()
+{
+    return _T("");
+}
+
+function SetupProject(project)
+{
+    // NOTE: Major compiler system drawback here.
+    // Until it is redesigned to allow easier compiler settings,
+    // we have to check the compiler's ID and set options for different compilers...
+
+    // enable compiler warnings (project-wide)
+    WarningsOn(project, Wizard.GetCompilerID());
+
+    // Debug build target
+    local target = project.GetBuildTarget(Wizard.GetDebugName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+        //local s = Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE;
+        target.SetOutputFilename(Wizard.GetDebugOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable debugging symbols for this target
+        DebugSymbolsOn(target, Wizard.GetCompilerID());
+    }
+
+    // Release build target
+    target = project.GetBuildTarget(Wizard.GetReleaseName());
+    if (!IsNull(target))
+    {
+        target.SetTargetType(ttConsoleOnly);
+        target.SetOutputFilename(Wizard.GetReleaseOutputDir() + Wizard.GetProjectName() + DOT_EXT_EXECUTABLE);
+        // enable optimizations for this target
+        OptimizationsOn(target, Wizard.GetCompilerID());
+    }
+
+    return true;
+}

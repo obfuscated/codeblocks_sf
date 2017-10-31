@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="C::B Share Config wx3.1.x (Unix)" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="default">
+				<Option output="../../devel31/cb_share_config" prefix_auto="1" extension_auto="1" />
+				<Option working_dir="../../devel31" />
+				<Option object_output="../../.objs31/tools/cb_share_config" />
+				<Option type="0" />
+				<Option compiler="gcc" />
+			</Target>
+			<Environment>
+				<Variable name="WX_CONFIG" value="wx-config --version=3.0" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="default;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="`$(WX_CONFIG) --cflags`" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-fPIC" />
+			<Add option="`pkg-config glib-2.0 --cflags`" />
+			<Add option="-DPIC" />
+			<Add option="-DcbDEBUG" />
+			<Add option="-DCB_PRECOMP" />
+			<Add option="-std=c++11" />
+			<Add directory="../../include" />
+			<Add directory="../../include/tinyxml" />
+			<Add directory="../../sdk/wxscintilla/include" />
+		</Compiler>
+		<Linker>
+			<Add option="`$(WX_CONFIG) --libs std,propgrid`" />
+			<Add option="-Wl,--no-undefined" />
+			<Add option="`pkg-config glib-2.0 --libs`" />
+			<Add library="txml" />
+			<Add directory="../../base/tinyxml" />
+			<Add directory="../../devel31" />
+		</Linker>
+		<Unit filename="app.cpp" />
+		<Unit filename="app.h" />
+		<Unit filename="mainframe.cpp" />
+		<Unit filename="mainframe.h" />
+		<Unit filename="wxsmith/MainFrame.wxs" />
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
