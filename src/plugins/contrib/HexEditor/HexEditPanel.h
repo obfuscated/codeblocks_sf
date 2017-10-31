@@ -310,8 +310,6 @@ class HexEditPanel: public EditorBase
         bool                     m_NeedRecalc;
 
         OffsetT                  m_Current;                     ///< \brief Offset of current character
-        OffsetT                  m_CurrentBlockStart;           ///< \brief Offset of start of current character block
-        OffsetT                  m_CurrentBlockEnd;             ///< \brief Offset of end of current character block
 
         wxString                 m_ExpressionError;             ///< \brief Last error reported while compiling user-defined expression in preview bar
         Expression::Preprocessed m_ExpressionCode;              ///< \brief Bytecode of user-defined expression in preview bar

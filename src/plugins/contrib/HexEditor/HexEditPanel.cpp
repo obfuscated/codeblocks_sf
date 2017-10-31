@@ -154,8 +154,6 @@ HexEditPanel::HexEditPanel( const wxString& fileName, const wxString& title )
     , m_Content( 0 )
     , m_DrawFont( 0 )
     , m_Current( 0 )
-    , m_CurrentBlockStart( 0 )
-    , m_CurrentBlockEnd( 0 )
     , m_MouseDown( false )
     , m_ColsMode( CM_ANY )
 {
