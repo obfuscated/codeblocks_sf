@@ -28,6 +28,7 @@
 #include <wx/dc.h>
 #if wxCHECK_VERSION(3, 0, 0)
 #include <wx/wxcrtvararg.h>
+#include <wx/propgrid/props.h>
 #endif
 #include "../wxsflags.h"
 
@@ -39,7 +40,6 @@
 
 
 using namespace wxsFlags;
-
 
 // Creating custom colour property.
 // This is based on wxSystemColourProperty from propgrid
@@ -203,10 +203,12 @@ namespace
         int ColToInd( const wxColour& colour ) const;
     };
 
-
+#if wxCHECK_VERSION(3, 0, 0)
+    wxPG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourPropertyClass,wxEnumProperty,Choice)
+#else
     WX_PG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourPropertyClass,wxEnumProperty,
                                    wxColourPropertyValue,const wxColourPropertyValue&,Choice)
-
+#endif
 
     void wxsMyColourPropertyClass::Init( int type, const wxColour& colour )
     {
@@ -775,11 +777,14 @@ namespace
         if ( colourRGB.length() == 0 && m_choices.GetCount() &&
              colourName == m_choices.GetLabel(GetCustomColourIndex()) )
         {
-            if ( !(argFlags & wxPG_EDITABLE_VALUE ))
+            if ( !(argFlags & wxPG_EDITABLE_VALUE ) )
             {
-                // This really should not occurr...
+#if wxCHECK_VERSION(3, 0, 0)
+                // This really should not occur...
                 // wxASSERT(false);
+#else
                 ResetNextIndex();
+#endif
                 return false;
             }
 
@@ -827,7 +832,12 @@ namespace
 
             if ( !done )
             {
+#if wxCHECK_VERSION(3, 0, 0)
+                // This really should not occur...
+                // wxASSERT(false);
+#else
                 ResetNextIndex();
+#endif
                 return false;
             }
 
