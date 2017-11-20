@@ -29,7 +29,7 @@ BuildRequires:	desktop-file-utils
 Requires:	%{name}-libs = %{version}-%{release}
 Requires:	shared-mime-info
 Requires:	xterm
-Provides:	bundled(wxScintilla) = 1.7.1
+Provides:	bundled(wxScintilla) = 3.53.0
 
 %global		pkgdatadir	%{_datadir}/%{name}
 %global		pkglibdir	%{_libdir}/%{name}
