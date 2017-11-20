@@ -100,7 +100,8 @@ find . -type f -and -not -name "*.cpp" -and -not -name "*.h" -and -not -name "*.
 %build
 
 %configure \
-    --with-contrib-plugins=all
+    --with-contrib-plugins=all \
+    --with-boost-libdir=%{_libdir}
 
 # remove unbundled stuff
 rm -rf src/include/tinyxml src/base/tinyxml
