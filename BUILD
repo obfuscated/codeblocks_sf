@@ -45,6 +45,15 @@ Plugin names are: AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkod
 		     NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, exporter, symtab, ThreadSearch,
 		     ToolsPlus, Valgrind, wxsmith, wxsmithcontrib,wxsmithaui
 
+If the NassiShneiderman-plugin should be build, you might see this error, when you run configure:
+
+checking whether the Boost::System library is available... yes
+configure: error: Could not find a version of the library!
+
+If this happens, you have to explicitely set the boost-libdir.
+You should try to add "--with-boost-libdir=LIB_DIR" to the configure-line.
+Depending on your system, LIB_DIR might be "/usr/lib" or "/usr/lib64".
+
 Working on Code::Blocks sources from within Code::Blocks!
 ---------------------------------------------------------
 The following apply for all platforms where you have Code::Blocks installed and working.
