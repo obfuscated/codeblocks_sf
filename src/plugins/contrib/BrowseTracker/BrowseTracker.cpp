@@ -398,6 +398,8 @@ void BrowseTracker::OnRelease(bool appShutDown)
         m_pJumpTracker = 0;
     }
 
+    CodeBlocksEvent evt;    //2017/11/23
+    OnStartShutdown(evt);
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
@@ -1698,7 +1700,8 @@ void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
     //wxMessageBox(_T("BrowseTracker: CB initiated OnStartShutdown"));
     LOGIT( _T("BT BrowseTracker: CB initiated OnStartShutdown"));
     #endif
-    Manager::Get()->GetLogManager()->Log(_T("BrowseTracker OnStartShutdown() initiated."));
+    //Don't wrie to log when shutting down, causes crash 2017/11/23
+    //-Manager::Get()->GetLogManager()->Log(_T("BrowseTracker OnStartShutdown() initiated."));
     event.Skip();
 
     m_bAppShutdown = true;
@@ -1725,6 +1728,8 @@ void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
             evtpc.SetProject(pPrjs->Item(i));
             OnProjectClosing(evtpc);
         }
+
+        Manager::Get()->RemoveAllEventSinksFor(this); //2017/11/23
 
         // remove project load/save hook
         ProjectLoaderHooks::UnregisterHook(m_ProjectHookId, true);
