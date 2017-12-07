@@ -254,6 +254,10 @@ AppVersion::~AppVersion()
 //      100) Fix incorrect scintilla margin marker usage
 //           Better resolution of Jump line recording
 //           Add modifed user contrib tool bar (by sbezgodov)
+//  Commit 1.2.101 2017/12/7
+//          Unregister hooks/sinks to prevent crashes when uninstalled
+//          Fix JumpTracker "OnRelease() RemoveEventHandler(this);" which
+//          crashes linux.
 //
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs

@@ -139,7 +139,7 @@ void JumpTracker::OnAttach()
 
 }
 // ----------------------------------------------------------------------------
-void JumpTracker::OnRelease(bool /*appShutDown*/)
+void JumpTracker::OnRelease(bool appShutDown)
 // ----------------------------------------------------------------------------
 {
     // do de-initialization for your plugin
@@ -149,7 +149,10 @@ void JumpTracker::OnRelease(bool /*appShutDown*/)
     // m_IsAttached will be FALSE...
 
     wxWindow* appWin = Manager::Get()->GetAppWindow();
-    appWin->RemoveEventHandler(this); //2017/11/23 stop uninstall crash
+
+    //If appShutdown leave the event handler, else crashes on linux
+    if (not appShutDown)
+        appWin->RemoveEventHandler(this); //2017/11/23 stop uninstall crash 2017/12/6 crashes linux
 
     // Free JumpData memory
     wxCommandEvent evt;

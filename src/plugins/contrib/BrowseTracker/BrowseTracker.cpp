@@ -231,6 +231,10 @@ BrowseTracker::~BrowseTracker()
 void BrowseTracker::OnAttach()
 // ----------------------------------------------------------------------------
 {
+    // Do not re-enable if previously disabled, must restart CB first. //2017/12/7
+    if (m_bAppShutdown)
+        return;
+
     m_pJumpTracker = new JumpTracker();
     m_pJumpTracker->OnAttach();
     m_pJumpTracker->m_IsAttached = true;
@@ -399,7 +403,7 @@ void BrowseTracker::OnRelease(bool appShutDown)
     }
 
     CodeBlocksEvent evt;    //2017/11/23
-    OnStartShutdown(evt);
+    AppShuttingDown(evt);   //2017/12/7
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
@@ -1693,25 +1697,34 @@ void BrowseTracker::OnIdle(wxIdleEvent& event)
     }
 }//OnIdle
 // ----------------------------------------------------------------------------
-void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
+void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event) //2017/12/7
+// ----------------------------------------------------------------------------
+{
+        m_bAppShutdown = true;
+}
+// ----------------------------------------------------------------------------
+void BrowseTracker::AppShuttingDown(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     #if defined(LOGGING)
     //wxMessageBox(_T("BrowseTracker: CB initiated OnStartShutdown"));
-    LOGIT( _T("BT BrowseTracker: CB initiated OnStartShutdown"));
+    //- dont log during shutdown
+    //-LOGIT( _T("BT BrowseTracker: CB initiated OnStartShutdown")); 2017/12/7
     #endif
-    //Don't wrie to log when shutting down, causes crash 2017/11/23
+    //Don't write to log when shutting down, causes crash 2017/11/23
     //-Manager::Get()->GetLogManager()->Log(_T("BrowseTracker OnStartShutdown() initiated."));
     event.Skip();
 
     m_bAppShutdown = true;
-    #if defined(LOGGING)
-    InfoWindow::Display(_T("Browstracker"),_T("Browstracker OnStartShutdown"), 7000);
-    #endif
+    // Crashes occur when logging during shutdown
+    //-#if defined(LOGGING)
+    //-InfoWindow::Display(_T("Browstracker"),_T("Browstracker OnStartShutdown"), 7000);
+    //-#endif
 
     if ( m_InitDone )
     {
-        Manager::Get()->GetLogManager()->Log(_T("BrowseTracker Released"));
+        // Don't log during shutdown, causes crashes //2017/12/7
+        //-Manager::Get()->GetLogManager()->Log(_T("BrowseTracker Released"));
 
         //*SDK Gotcha* A cbEVT_PROJECT_CLOSE is issued, but only
         // after the plugin OnRelease() is called. So we
@@ -1728,8 +1741,6 @@ void BrowseTracker::OnStartShutdown(CodeBlocksEvent& event)
             evtpc.SetProject(pPrjs->Item(i));
             OnProjectClosing(evtpc);
         }
-
-        Manager::Get()->RemoveAllEventSinksFor(this); //2017/11/23
 
         // remove project load/save hook
         ProjectLoaderHooks::UnregisterHook(m_ProjectHookId, true);
