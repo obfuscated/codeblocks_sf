@@ -9,7 +9,7 @@
 #include <wx/string.h>
 #include <wx/intl.h>
 
-#define RELEASE "17.xx"
+#define RELEASE "17.12"
 
 #ifndef RELEASE
     #define RELEASE "svn"
