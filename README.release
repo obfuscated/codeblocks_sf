@@ -27,6 +27,8 @@ Preparations for a release:
     [C::B]\debian\get-orig-source-from-svn
     [C::B]\src\build_tools\Info.plist
     [C::B]\src\src\resources\resources.rc
+    [C::B]src\plugins\contrib\wxSmith\wxs.doxy
+    [C::B]src\sdk.doxy
 
 6.) Create nightlies based on that branch and fix bugs in that branch
     (No new features!)
