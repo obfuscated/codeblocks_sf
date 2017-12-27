@@ -7,16 +7,16 @@
 # subversion archive.
 
 # Some variables to make maintaining this script easier
-CODEBLOCKS_BASE_VERSION="17.xxsvn"
+CODEBLOCKS_BASE_VERSION="17.12svn"
 CODEBLOCKS_SVN_URL="http://svn.code.sf.net/p/codeblocks/code/trunk"
 CODEBLOCKS_LOCAL_DIR="../codeblocks-$CODEBLOCKS_BASE_VERSION-download/codeblocks-$CODEBLOCKS_BASE_VERSION"
 OLD_DIR=`pwd`
 
-USAGE='This script is used to generate the orig tarball used in building 
-Debian packages from codeblocks svn (HEAD). 
-Usage: get-orig-source-from-svn [OPTION] 
- 
- -h, --help                 Display this help message. 
+USAGE='This script is used to generate the orig tarball used in building
+Debian packages from codeblocks svn (HEAD).
+Usage: get-orig-source-from-svn [OPTION]
+
+ -h, --help                 Display this help message.
  --remove-upstream-dir      Remove downloaded files.
 '
 

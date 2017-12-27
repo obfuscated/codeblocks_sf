@@ -1,7 +1,7 @@
 %global svnrev             @REVISION@
 
 Name:       codeblocks
-Version:	16.01.svn.%{svnrev}
+Version:	17.12.svn.%{svnrev}
 Release:	1%{?dist}
 Summary:	An open source, cross platform, free C++ IDE
 License:    GPLv3+
