@@ -203,7 +203,9 @@ namespace
         int ColToInd( const wxColour& colour ) const;
     };
 
-#if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 1, 0)
+    wxPG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourPropertyClass,wxEnumProperty,Choice)
+#elif wxCHECK_VERSION(3, 0, 0)
     wxPG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourPropertyClass,wxEnumProperty,Choice)
 #else
     WX_PG_IMPLEMENT_PROPERTY_CLASS(wxsMyColourPropertyClass,wxEnumProperty,
