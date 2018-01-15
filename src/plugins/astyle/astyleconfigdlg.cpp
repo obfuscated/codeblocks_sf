@@ -40,6 +40,7 @@ BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
   EVT_RADIOBUTTON(XRCID("rbHorstmann"),  AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rb1TBS"),       AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbGoogle"),     AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbMozilla"),    AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbPico"),       AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbLisp"),       AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbCustom"),     AstyleConfigDlg::OnStyleChange)
@@ -473,6 +474,8 @@ void AstyleConfigDlg::SaveSettings()
     style = asps1TBS;
   else if (XRCCTRL(*this, "rbGoogle",     wxRadioButton)->GetValue())
     style = aspsGoogle;
+  else if (XRCCTRL(*this, "rbMozilla",     wxRadioButton)->GetValue())
+    style = aspsMozilla;
   else if (XRCCTRL(*this, "rbPico",       wxRadioButton)->GetValue())
     style = aspsPico;
   else if (XRCCTRL(*this, "rbLisp",       wxRadioButton)->GetValue())
