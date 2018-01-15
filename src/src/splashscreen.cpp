@@ -75,15 +75,7 @@ void cbSplashScreen::DrawReleaseInfo(wxDC  &dc)
 void cbSplashScreen::DoPaint(wxDC & /*dc*/)
 {
     wxPaintDC dc(this);
-#ifdef __WIN32__
-  #if wxCHECK_VERSION(3, 0, 0)
-//    dc.SetDeviceClippingRegion(m_region); // was used for 08/02 splash screen (transparent regions)
-  #else
-//    dc.SetClippingRegion(m_region); // was used for 08/02 splash screen (transparent regions)
-  #endif
-#endif
     dc.DrawBitmap(m_label, 0, 0, false);
-
     DrawReleaseInfo(dc);
 }
 
@@ -121,12 +113,8 @@ void cbSplashScreen::OnMouseEvent(wxMouseEvent &event)
 
 cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style)
 : wxFrame(parent, id, wxEmptyString, wxPoint(0, 0), wxSize(0, 0), style),
-  m_timer(this, cbSplashScreen_timer_id)//, m_region(0, 0, 440, 190) // was used for 08/02 splash screen (transparent regions)
+  m_timer(this, cbSplashScreen_timer_id)
 {
-//    m_region.Union(50,  35, 181, 181);
-//    m_region.Union(166, 13, 181, 181);
-//    m_region.Union(259, 29, 181, 181); // was used for 08/02 splash screen (transparent regions)
-
     int w = label.GetWidth();
     int h = label.GetHeight();
 
@@ -159,8 +147,6 @@ cbSplashScreen::cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, 
     }
     label_dc.DrawBitmap(label, 0, 0, true);
     label_dc.SelectObject(wxNullBitmap);
-
-//    SetShape(m_region); // was used for 08/02 splash screen (transparent regions)
 
     Show(true);
     SetThemeEnabled(false); // seems to be useful by description
