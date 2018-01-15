@@ -54,8 +54,8 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
       formatter.setFormattingStyle(astyle::STYLE_VTK);
       break;
 
-    case aspsBanner: // Banner
-      formatter.setFormattingStyle(astyle::STYLE_BANNER);
+    case aspsRatliff: // Ratliff
+      formatter.setFormattingStyle(astyle::STYLE_RATLIFF);
       break;
 
     case aspsGnu: // GNU
@@ -123,7 +123,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setMinConditionalIndentOption(cfg->ReadInt(_T("/min_conditional_indent"), 2));
   formatter.setMaxInStatementIndentLength(cfg->ReadInt(_T("/max_instatement_indent"), 40));
 
-  formatter.setBreakClosingHeaderBracketsMode(cfg->ReadBool(_T("/break_closing")));
+  formatter.setBreakClosingHeaderBracesMode(cfg->ReadBool(_T("/break_closing")));
   formatter.setBreakElseIfsMode(cfg->ReadBool(_T("/break_elseifs")));
   formatter.setAddBracketsMode(cfg->ReadBool(_T("/add_brackets")));
   formatter.setAddOneLineBracketsMode(cfg->ReadBool(_T("/add_one_line_brackets")));

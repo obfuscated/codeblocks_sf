@@ -14,7 +14,7 @@ enum AStylePredefinedStyle
   aspsStroustrup,
   aspsWhitesmith,
   aspsVTK,
-  aspsBanner,
+  aspsRatliff,
   aspsGnu,
   aspsLinux,
   aspsHorstmann,

@@ -17,20 +17,85 @@
     <p>
         &nbsp;</p>
 
-    <h3>Artistic Style 3.0&nbsp; (Pending)</h3>
+    <h3>Artistic Style 3.1&nbsp; (January 2018)</h3>
+
+    <ul>
+        <li>Add new options "project", "project=####", and "project=none" (#11).</li>
+        <li>Add new options, &quot;break-return-type&quot; and &quot;break-return-type-decl&quot; (358, 286, 205, 16).
+        </li>
+        <li>Add new options, &quot;attach-return-type&quot; and &quot;attach-return-type-decl&quot; (358, 286, 205, 16).
+        </li>
+        <li>Add new option "style=ratliff", as an alternate name for banner style.</li>
+        <li>Add new environment variable ARTISTIC_STYLE_PROJECT_OPTIONS (#11).</li>
+        <li>Add multiple extensions to the command line file paths option.</li>
+        <li>Improve recognition of unary + and - when using pad-oper.</li>
+        <li>Change the Windows default options file location from USERPROFILE to APPDATA.</li>
+        <li>Change options file input to accept UTF-16, or UTF-8 with a BOM (or signature).</li>
+        <li>Change &quot;unsigned short&quot; data type to c++11 &quot;char16_t&quot;.</li>
+        <li>Change translations for new project options file.</li>
+        <li>Fix utf8LengthFromUtf16() calculation being less than the actual length.</li>
+        <li>Fix multiply followed by a dereference for &quot;align-pointer=type&quot;.</li>
+        <li>Fix recognition of a uniform class initializer in a base class initialization (#441).</li>
+        <li>Fix indentation of "volatile" keyword not used in a method definition (#450).</li>
+        <li>Fix indentation of "final" keyword not used in a method definition (#450).</li>
+        <li>Fix indentation of compound literals in an argument list (#456).</li>
+        <li>Fix indentation of trailing return type method following a constructor (#463).</li>
+        <li>Fix space padding of closing brace before a dot (#468).</li>
+        <li>Fix Objective-C to allow for &quot;Extern C&quot; statements in the source files (#443, 444, 446).</li>
+        <li>Fix Objective-C to allow for method definitions without a specified return type (#447).</li>
+        <li>Fix Objective-C to allow for method definitions with multiple param types.</li>
+        <li>Fix Objective-C to replace tabbed padding with a space.</li>
+        <li>Fix Objective-C formatting of line-end comments with &quot;unpad-return-type&quot;.</li>
+        <li>Fix Objective-C &quot;align-method-colon&quot; to ignore ternary (?) operators.</li>
+        <li>Fix C# base class constructor indentation (#459).</li>
+        <li>Fix C# indentation of method declaration containing a colon (#465)</li>
+        <li>Fix C/C++ to allow &quot;interface&quot; as a non-keyword (#445).</li>
+        <li>Fix Java to allow &quot;default&quot; as a non-switch keyword.</li>
+        <li>Fix line ends initialization if no line end has been read.</li>
+        <li>Fix Java build from including ASLocalizer in the shared library.</li>
+        <li>Fix to check for AStyleWx line tags after C style comments.</li>
+        <li>Fix boundary conditions and other errors discovered by fuzzing.</li>
+        <li>Refactoring:
+            <ul>
+                <li>Extract method isNumericVariable() in ASFormatter class.</li>
+                <li>Extract method isTopLevel() in ASBeautifier class.</li>
+                <li>Extract method fileExists() in Console class.</li>
+                <li>Rename ASEncoding variable from &quot;utf8_16&quot; to &quot;encode&quot;.</li>
+                <li>Rename ASBeautifier vector from squareBracketDepthStack to parenDepthStack.</li>
+                <li>Combine style options in ASOptions class to avoid compiler limits.</li>
+            </ul>
+        </li>
+    </ul>
+
+    <h3>Artistic Style 3.0.1&nbsp; (May 2017)</h3>
+
+    <ul>
+        <li>Fix crash caused by certain class initializer formats (#435).</li>
+        <li>Fix &quot;final&quot; identifier not being recognized as a pre-command header (#433).</li>
+        <li>Fix recognition of certain rvalue reference variables.</li>
+    </ul>
+
+    <h3>Artistic Style 3.0&nbsp; (April 2017)</h3>
 
     <ul>
         <li>Add new option "indent-after-parens" (#396, 152, 108, 79).</li>
         <li>Add new option "attach-closing-while" (#177).</li>
         <li>Add &quot;style=run-in&quot; as an alternative for &quot;style=horstmann&quot;.</li>
+        <li>Add &quot;break-closing-braces&quot; to &quot;style=stroustrup&quot; (#267).</li>
         <li>Add formatting for C++11 trailing return type methods.</li>
         <li>Add new class ASPeekStream using RAII to allow early method returns.</li>
         <li>Change affected variable names to new AStyle terminology.</li>
         <li>Change some vector push_back() statements to emplace_back().</li>
         <li>Fix memory leak when using &quot;indent-preproc-define&quot;.</li>
+        <li>Fix sometimes splitting an r-value reference when &quot;pad-oper&quot; is used.</li>
         <li>Fix in-statement-indent brace check not always checking a brace (#421).</li>
-        <li>Fix boundary conditions discovered by <a href="http://lcamtuf.coredump.cx/afl/" target="_blank"
-            title="open new window">american fuzzy lop</a> fuzzer (#370).</li>
+        <li>Fix formatting of C# get/set and add/remove when braces are attached (#430).</li>
+        <li>Fix formatting of C# generic constraints (#430).</li>
+        <li>Fix padding of C# null conditional operator.</li>
+        <li>Fix attach-inlines to not attach a brace followed by a run-in comment.</li>
+        <li>Fix not always breaking lines after &quot;add-braces&quot; (#341).</li>
+        <li>Fix unpadding the &quot;in&quot; in a foreach statement (#386).</li>
+        <li>Fix boundary conditions discovered by american fuzzy lop fuzzer (#370).</li>
         <li>Refactoring:
             <ul>
                 <li>Replace NULL with C++11 nullptr.</li>
@@ -39,6 +104,7 @@
                 <li>Move console error stream (cerr) from global to ASConsole class.</li>
                 <li>Move ASConsole pointer in ASOptions from global to a class member.</li>
                 <li>Move findHeader and findOperator methods from ASBeautifier to ASBase.</li>
+                <li>Minor changes from PVS-Studio analyzer.</li>
                 <li>Minor changes from clang-tidy.</li>
             </ul>
         </li>

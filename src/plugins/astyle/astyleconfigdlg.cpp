@@ -34,7 +34,7 @@ BEGIN_EVENT_TABLE(AstyleConfigDlg, wxPanel)
   EVT_RADIOBUTTON(XRCID("rbStroustrup"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbWhitesmith"), AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbVTK"),        AstyleConfigDlg::OnStyleChange)
-  EVT_RADIOBUTTON(XRCID("rbBanner"),     AstyleConfigDlg::OnStyleChange)
+  EVT_RADIOBUTTON(XRCID("rbRatliff"),    AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbGNU"),        AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbLinux"),      AstyleConfigDlg::OnStyleChange)
   EVT_RADIOBUTTON(XRCID("rbHorstmann"),  AstyleConfigDlg::OnStyleChange)
@@ -158,7 +158,7 @@ int Foo(bool isBar)\n\
       XRCCTRL(*this, "rbVTK", wxRadioButton)->SetValue(true);
       break;
 #undef AS_VTK
-#define AS_BANNER "\
+#define AS_RATLIFF "\
 int Foo(bool isBar) {\n\
     if (isBar) {\n\
         bar();\n\
@@ -167,11 +167,11 @@ int Foo(bool isBar) {\n\
     else\n\
         return 0;\n\
     }"
-    case aspsBanner:
-      sample = _T(AS_BANNER);
-      XRCCTRL(*this, "rbBanner", wxRadioButton)->SetValue(true);
+    case aspsRatliff:
+      sample = _T(AS_RATLIFF);
+      XRCCTRL(*this, "rbRatliff", wxRadioButton)->SetValue(true);
       break;
-#undef AS_BANNER
+#undef AS_RATLIFF
 #define AS_GNU "\
 int Foo(bool isBar)\n\
 {\n\
@@ -307,8 +307,8 @@ void AstyleConfigDlg::OnStyleChange(wxCommandEvent& event)
     SetStyle(aspsWhitesmith);
   else if (event.GetId() == XRCID("rbVTK"))
     SetStyle(aspsVTK);
-  else if (event.GetId() == XRCID("rbBanner"))
-    SetStyle(aspsBanner);
+  else if (event.GetId() == XRCID("rbRatliff"))
+    SetStyle(aspsRatliff);
   else if (event.GetId() == XRCID("rbGNU"))
     SetStyle(aspsGnu);
   else if (event.GetId() == XRCID("rbLinux"))
@@ -376,6 +376,7 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this,   "chkAttachExternC",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/attach_extern_c"),       false));
   XRCCTRL(*this,   "chkAttachNamespaces",    wxCheckBox)->SetValue(cfg->ReadBool(_T("/attach_namespaces"),     false));
   XRCCTRL(*this,   "chkAttachInlines",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/attach_inlines"),        false));
+  XRCCTRL(*this,   "chkAttachClosingWhiles", wxCheckBox)->SetValue(cfg->ReadBool(_T("/attach_closing_whiles"), false));
 
   XRCCTRL(*this,   "spnIndentation",         wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/indentation"),            4));
   XRCCTRL(*this,   "spnContinuation",        wxSpinCtrl)->SetValue(cfg->ReadInt(_T("/continuation"),           0));
@@ -386,6 +387,7 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this,   "chkIndentLabels",        wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_labels"),         false));
   XRCCTRL(*this,   "chkIndentModifiers",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_modifiers"),      false));
   XRCCTRL(*this,   "chkIndentNamespaces",    wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_namespaces"),     false));
+  XRCCTRL(*this,   "chkIndentAfterParens",   wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_after_parens"),   false));
   XRCCTRL(*this,   "chkIndentSwitches",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_switches"),       false));
   XRCCTRL(*this,   "chkIndentPreprocBlock",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_preproc_block"),  false));
   XRCCTRL(*this,   "chkIndentPreprocDefine", wxCheckBox)->SetValue(cfg->ReadBool(_T("/indent_preproc_define"), false));
@@ -399,6 +401,10 @@ void AstyleConfigDlg::LoadSettings()
   XRCCTRL(*this,   "chkAddBrackets",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_brackets"),          false));
   XRCCTRL(*this,   "chkAddOneLineBrackets",  wxCheckBox)->SetValue(cfg->ReadBool(_T("/add_one_line_brackets"), false));
   XRCCTRL(*this,   "chkRemoveBrackets",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/remove_brackets"),       false));
+  XRCCTRL(*this,   "chkBreakReturnType",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_return_type"),     false));
+  XRCCTRL(*this,   "chkBreakReturnTypeDecl", wxCheckBox)->SetValue(cfg->ReadBool(_T("/break_return_type_decl"),false));
+  XRCCTRL(*this,   "chkAttachReturnType",    wxCheckBox)->SetValue(cfg->ReadBool(_T("/attach_return_type"),    false));
+  XRCCTRL(*this,   "chkAttachReturnTypeDecl",wxCheckBox)->SetValue(cfg->ReadBool(_T("/attach_return_type_decl"),false));
   XRCCTRL(*this,   "chkKeepBlocks",          wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_blocks"),           false));
   XRCCTRL(*this,   "chkKeepHeaders",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_headers"),          false));
   XRCCTRL(*this,   "chkKeepStatements",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/keep_statements"),       false));
@@ -455,8 +461,8 @@ void AstyleConfigDlg::SaveSettings()
     style = aspsWhitesmith;
   else if (XRCCTRL(*this, "rbVTK",        wxRadioButton)->GetValue())
     style = aspsVTK;
-  else if (XRCCTRL(*this, "rbBanner",     wxRadioButton)->GetValue())
-    style = aspsBanner;
+  else if (XRCCTRL(*this, "rbRatliff",     wxRadioButton)->GetValue())
+    style = aspsRatliff;
   else if (XRCCTRL(*this, "rbGNU",        wxRadioButton)->GetValue())
     style = aspsGnu;
   else if (XRCCTRL(*this, "rbLinux",      wxRadioButton)->GetValue())
@@ -480,6 +486,7 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/attach_extern_c"),          XRCCTRL(*this, "chkAttachExternC",       wxCheckBox)->GetValue());
   cfg->Write(_T("/attach_namespaces"),        XRCCTRL(*this, "chkAttachNamespaces",    wxCheckBox)->GetValue());
   cfg->Write(_T("/attach_inlines"),           XRCCTRL(*this, "chkAttachInlines",       wxCheckBox)->GetValue());
+  cfg->Write(_T("/attach_closing_whiles"),    XRCCTRL(*this, "chkAttachClosingWhiles", wxCheckBox)->GetValue());
 
   cfg->Write(_T("/indentation"),              XRCCTRL(*this, "spnIndentation",         wxSpinCtrl)->GetValue());
   cfg->Write(_T("/continuation"),             XRCCTRL(*this, "spnContinuation",        wxSpinCtrl)->GetValue());
@@ -490,6 +497,7 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/indent_labels"),            XRCCTRL(*this, "chkIndentLabels",        wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_modifiers"),         XRCCTRL(*this, "chkIndentModifiers",     wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_namespaces"),        XRCCTRL(*this, "chkIndentNamespaces",    wxCheckBox)->GetValue());
+  cfg->Write(_T("/indent_after_parens"),      XRCCTRL(*this, "chkIndentAfterParens",   wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_switches"),          XRCCTRL(*this, "chkIndentSwitches",      wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preproc_block"),     XRCCTRL(*this, "chkIndentPreprocBlock",  wxCheckBox)->GetValue());
   cfg->Write(_T("/indent_preproc_define"),    XRCCTRL(*this, "chkIndentPreprocDefine", wxCheckBox)->GetValue());
@@ -503,6 +511,10 @@ void AstyleConfigDlg::SaveSettings()
   cfg->Write(_T("/add_brackets"),             XRCCTRL(*this, "chkAddBrackets",         wxCheckBox)->GetValue());
   cfg->Write(_T("/add_one_line_brackets"),    XRCCTRL(*this, "chkAddOneLineBrackets",  wxCheckBox)->GetValue());
   cfg->Write(_T("/remove_brackets"),          XRCCTRL(*this, "chkRemoveBrackets",      wxCheckBox)->GetValue());
+  cfg->Write(_T("/break_return_type_decl"),   XRCCTRL(*this, "chkBreakReturnTypeDecl", wxCheckBox)->GetValue());
+  cfg->Write(_T("/break_return_type"),        XRCCTRL(*this, "chkBreakReturnType",     wxCheckBox)->GetValue());
+  cfg->Write(_T("/attach_return_type"),       XRCCTRL(*this, "chkAttachReturnType",    wxCheckBox)->GetValue());
+  cfg->Write(_T("/attach_return_type_decl"),  XRCCTRL(*this, "chkAttachReturnTypeDecl",wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_blocks"),              XRCCTRL(*this, "chkKeepBlocks",          wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_headers"),             XRCCTRL(*this, "chkKeepHeaders",         wxCheckBox)->GetValue());
   cfg->Write(_T("/keep_statements"),          XRCCTRL(*this, "chkKeepStatements",      wxCheckBox)->GetValue());

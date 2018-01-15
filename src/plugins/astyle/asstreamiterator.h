@@ -22,6 +22,7 @@ class ASStreamIterator : public astyle::ASSourceIterator
 
         bool hasMoreLines() const;
         int  getStreamLength() const;
+        std::streamoff getPeekStart() const { return 0; }
         std::string nextLine(bool emptyLineWasDeleted = false);
         std::string peekNextLine();
         void peekReset();
@@ -39,6 +40,7 @@ class ASStreamIterator : public astyle::ASSourceIterator
         const wxChar*       m_CharPtr;
         const wxChar*       m_SavedCharPtr;
         int                 m_CurChar;
+        int                 m_SavedCurChar;
         int                 m_CurLine;
         bool                m_FoundBookmark;
         bool                m_FoundBreakpoint;

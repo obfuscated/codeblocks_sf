@@ -61,9 +61,9 @@
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
-											<object class="wxRadioButton" name="rbBanner">
-												<label>Banner</label>
-												<tooltip>Banner style uses attached, indented brackets. Switch blocks and class blocks are indented to prevent a &apos;hanging indent&apos; with following case statements and C++ class modifiers (public, private, protected).</tooltip>
+											<object class="wxRadioButton" name="rbRatliff">
+												<label>Ratliff</label>
+												<tooltip>Ratliff style uses attached, indented brackets. Switch blocks and class blocks are indented to prevent a &apos;hanging indent&apos; with following case statements and C++ class modifiers (public, private, protected).</tooltip>
 											</object>
 											<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_LEFT</flag>
 											<border>5</border>
@@ -212,6 +212,13 @@
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkAttachClosingWhiles">
+												<label>Attach closing &quot;while&quot;</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
+											<border>5</border>
+										</object>
 									</object>
 									<flag>wxEXPAND</flag>
 									<border>5</border>
@@ -315,6 +322,13 @@
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkIndentNamespaces">
 												<label>Indent namespaces</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkIndentAfterParens">
+												<label>Indent after parens</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
@@ -427,21 +441,49 @@
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAddBrackets">
-												<label>Add brackets to unbracketed one line conditional statements</label>
+												<label>Add braces to unbraced one line conditional statements</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkAddOneLineBrackets">
-												<label>Add one line brackets to unbracketed one line conditional statements</label>
+												<label>Add one line braces to unbraced one line conditional statements</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
 										</object>
 										<object class="sizeritem">
 											<object class="wxCheckBox" name="chkRemoveBrackets">
-												<label>Remove brackets from conditional statements (single statement on a single line)</label>
+												<label>Remove braces from conditional statements (single statement on a single line)</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBreakReturnType">
+												<label>Break the return type from the function name in function definitions</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkBreakReturnTypeDecl">
+												<label>Break the return type from the function name in function declarations or signatures</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkAttachReturnType">
+												<label>Attach the return type to the function name in function definitions</label>
+											</object>
+											<flag>wxTOP|wxALIGN_LEFT</flag>
+											<border>5</border>
+										</object>
+										<object class="sizeritem">
+											<object class="wxCheckBox" name="chkAttachReturnTypeDecl">
+												<label>Attach the return type to the function name in function declarations or signatures</label>
 											</object>
 											<flag>wxTOP|wxALIGN_LEFT</flag>
 											<border>5</border>
