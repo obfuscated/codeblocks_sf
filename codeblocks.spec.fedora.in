@@ -1,5 +1,7 @@
+%global svnrev             @REVISION@
+
 Name:       codeblocks
-Version:	17.12
+Version:	17.12.svn.%{svnrev}
 Release:	1%{?dist}
 Summary:	An open source, cross platform, free C++ IDE
 License:    GPLv3+
@@ -341,6 +343,9 @@ fi
 
 
 %changelog
+* Wed Jan 17 2018 Jens Lody <fedora@jenslody.de> - 17.12.svn.11269-1
+- New upstream.
+
 * Thu Dec 28 2017 Jens Lody <jens@codeblocks.org> - 17.12-1
 - New release.
 
