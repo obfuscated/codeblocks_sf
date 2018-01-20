@@ -31,7 +31,7 @@ notifications:
             - "%{repository_name}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}"
 #        on_success: change # default: always
 #        on_failure: always # default: always
-        skip_join: true
+#        skip_join: true
 
 before_script: ./bootstrap
 script: dpkg-buildpackage -us -uc
