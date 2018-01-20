@@ -294,6 +294,11 @@ void ClassWizardDlg::OnOKClick(wxCommandEvent& WXUNUSED(event))
     m_Header         = XRCCTRL(*this, "txtHeader", wxTextCtrl)->GetValue();
     m_Implementation = XRCCTRL(*this, "txtImplementation", wxTextCtrl)->GetValue();
 
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("classwizard"));
+    cfg->Write(_T("header_type"), m_Header.AfterLast('.'));
+    cfg->Write(_T("source_type"), m_Implementation.AfterLast('.'));
+
+
     // obtain variable for easy reference
     m_Name      = XRCCTRL(*this, "txtName", wxTextCtrl)->GetValue();
     m_Arguments = XRCCTRL(*this, "txtArguments", wxTextCtrl)->GetValue();
@@ -740,9 +745,13 @@ void ClassWizardDlg::DoFileNames()
     while (name.Replace(_T("::"), _T("/")))
         ;
 
-    XRCCTRL(*this, "txtHeader", wxTextCtrl)->SetValue(name + _T(".h"));
-    XRCCTRL(*this, "txtImplementation", wxTextCtrl)->SetValue(name + _T(".cpp"));
-    XRCCTRL(*this, "txtHeaderInclude", wxTextCtrl)->SetValue(_T("\"") + name + _T(".h\""));
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("classwizard"));
+    wxString  headerType  = cfg->Read(_T("header_type"), _T("h"));
+    wxString  sourceType  = cfg->Read(_T("source_type"), _T("cpp"));
+
+    XRCCTRL(*this, "txtHeader", wxTextCtrl)->SetValue(name + _T(".") + headerType);
+    XRCCTRL(*this, "txtImplementation", wxTextCtrl)->SetValue(name + _T(".") + sourceType);
+    XRCCTRL(*this, "txtHeaderInclude", wxTextCtrl)->SetValue(_T("\"") + name + _T(".") + headerType +_T("\""));
 }
 
 void ClassWizardDlg::DoForceDirectory(const wxFileName & filename)
