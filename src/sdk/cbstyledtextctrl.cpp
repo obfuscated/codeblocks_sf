@@ -380,6 +380,8 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
 
 bool cbStyledTextCtrl::DoSelectionBraceCompletion(const wxChar& ch)
 {
+    if (GetSelections() > 1)
+        return false;
     if (GetLastSelectedText().IsEmpty())
         return false; // nothing changed
     const wxString braces(wxT("([{<'\")]}>'\""));
