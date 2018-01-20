@@ -3924,12 +3924,17 @@ void CompilerGCC::NotifyJobDone(bool showNothingToBeDone)
     if (!IsProcessRunning())
     {
         ProjectManager *manager = Manager::Get()->GetProjectManager();
+
+        // Check if this was a run operation and the application has been closed.
+        // If this is the case we don't need to send cbEVT_COMPILER_FINISHED event.
         if (manager->GetIsRunning() == this)
             manager->SetIsRunning(NULL);
-
-        CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_pProject, 0, this);
-        evt.SetInt(m_LastExitCode);
-        Manager::Get()->ProcessEvent(evt);
+        else
+        {
+            CodeBlocksEvent evt(cbEVT_COMPILER_FINISHED, 0, m_pProject, 0, this);
+            evt.SetInt(m_LastExitCode);
+            Manager::Get()->ProcessEvent(evt);
+        }
         m_LastExitCode = 0;
     }
 }
