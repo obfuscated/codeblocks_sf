@@ -28,10 +28,7 @@ notifications:
         channels:
             - chat.freenode.net#codeblocks
         template:
-            - "%{repository_name}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}"
-#        on_success: change # default: always
-#        on_failure: always # default: always
-#        skip_join: true
+            - "%{repository_name}/%{branch} (%{commit} - %{author}): %{build_url} : %{message}"
 
 before_script: ./bootstrap
 script: dpkg-buildpackage -us -uc
