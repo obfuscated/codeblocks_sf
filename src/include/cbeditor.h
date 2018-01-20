@@ -54,8 +54,8 @@ class DLLIMPORT cbEditor : public EditorBase
           * <em>Note: you cannot create a cbEditor object directly. Instead
           * use EditorManager's methods to do it...</em>
           */
-        cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme = nullptr);
-        cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme = nullptr);
+        cbEditor(wxWindow* parent, const wxString& filename, EditorColourSet* theme);
+        cbEditor(wxWindow* parent, LoaderBase* fileLdr, const wxString& filename, EditorColourSet* theme);
         /** cbEditor destructor. */
         ~cbEditor();
     public:

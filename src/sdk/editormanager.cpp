@@ -479,7 +479,7 @@ cbEditor* EditorManager::New(const wxString& newFileName)
         if (!f.IsOpened())
             return nullptr;
     }
-    cbEditor* ed = new cbEditor(m_pNotebook, newFileName);
+    cbEditor* ed = new cbEditor(m_pNotebook, newFileName, m_Theme);
 //    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
 //    {
 //        //DeletePage(ed->GetPageIndex());
