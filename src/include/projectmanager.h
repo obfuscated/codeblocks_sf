@@ -435,8 +435,12 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
             return *this;
         }
 
-        /** If a plugin runs the project executable, should not be able to run it too */
+        /// This method should be called when the applications is started by a plugin.
+        /// There is only one plugin which could be running the application.
+        /// Running means that plugin has started the executable and it is waiting for it to finish.
         void SetIsRunning(cbPlugin *plugin);
+
+        /// Return a pointer to the plugin which is running the application.
         cbPlugin* GetIsRunning() const;
 
         /** Return the project which has the file in it, also return the pointer to the ProjectFile object. */

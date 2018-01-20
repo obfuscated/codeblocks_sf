@@ -716,7 +716,7 @@ void cbDebuggerPlugin::OnCompilerFinished(cb_unused CodeBlocksEvent& event)
     {
         m_WaitingCompilerToFinish = false;
         bool compilerFailed = false;
-        // only proceed if build succeeeded
+        // only proceed if build succeeded
         if (m_pCompiler && m_pCompiler->GetExitCode() != 0)
         {
             AnnoyingDialog dlg(_("Debug anyway?"), _("Build failed, do you want to debug the program?"),
