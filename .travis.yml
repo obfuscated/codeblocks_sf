@@ -1,0 +1,37 @@
+# This is the control file for Travis continuous integration system.
+#
+# It is used automatically for the repositories on Github if it's found in the
+# root directory of the project.
+language: cpp
+sudo: required
+
+addons:
+  apt:
+    packages:
+        - libwxgtk3.0-dev
+        - libboost-system-dev
+        - fakeroot
+        - debhelper
+        - cdbs
+        - libgtk2.0-dev
+        - libgamin-dev
+        - libboost-dev
+        - libhunspell-dev
+
+branches:
+    only:
+        - master
+        - travis-ci
+
+notifications:
+    irc:
+        channels:
+            - chat.freenode.net#codeblocks
+        template:
+            - "%{repository_name}/%{branch} (%{commit} - %{author}): %{build_url}: %{message}"
+#        on_success: change # default: always
+#        on_failure: always # default: always
+        skip_join: true
+
+before_script: ./bootstrap
+script: dpkg-buildpackage -us -uc
