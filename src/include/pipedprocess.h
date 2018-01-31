@@ -44,6 +44,8 @@ class DLLIMPORT PipedProcess : public wxProcess
         /// becomes unfeasible.
         /// It is sent back in the X variable of the CodeBlocksEvent.
         int m_Index;
+
+        bool m_Stopped;
     private:
         PipedProcess** m_pvThis;
         DECLARE_EVENT_TABLE()

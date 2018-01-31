@@ -115,6 +115,7 @@ PipedProcess::PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id, 
     m_Id(id),
     m_Pid(0),
     m_Index(index),
+    m_Stopped(false),
     m_pvThis(pvThis)
 {
     const wxString &unixDir = UnixFilename(dir);
@@ -132,6 +133,7 @@ PipedProcess::~PipedProcess()
 
 int PipedProcess::Launch(const wxString& cmd, cb_unused unsigned int pollingInterval)
 {
+    m_Stopped = false;
     m_Pid = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, this);
     if (m_Pid)
     {
@@ -155,6 +157,7 @@ void PipedProcess::SendString(const wxString& text)
 
 void PipedProcess::ForfeitStreams()
 {
+    m_Stopped = true;
     char buf[4096];
     if ( IsErrorAvailable() )
     {
@@ -179,6 +182,9 @@ bool PipedProcess::HasInput()
         wxString msg;
         msg << serr.ReadLine();
 
+        if (m_Stopped)
+            return true;
+
         CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDERR, m_Id);
         event.SetString(msg);
         event.SetX(m_Index);
@@ -193,6 +199,9 @@ bool PipedProcess::HasInput()
 
         wxString msg;
         msg << sout.ReadLine();
+
+        if (m_Stopped)
+            return true;
 
         CodeBlocksEvent event(cbEVT_PIPEDPROCESS_STDOUT, m_Id);
         event.SetString(msg);
