@@ -35,6 +35,7 @@
 			<object class="sizeritem">
 				<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="m_text" member="yes">
 					<focused>1</focused>
+					<style>wxTE_PROCESS_ENTER</style>
 				</object>
 				<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>

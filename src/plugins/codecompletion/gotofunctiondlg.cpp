@@ -144,7 +144,7 @@ void GotoFunctionDlg::BuildContent(wxWindow* parent, Iterator* iterator)
     m_mode->SetValue(false);
     BoxSizer2->Add(m_mode, 0, wxEXPAND, 5);
     BoxSizer1->Add(BoxSizer2, 0, wxLEFT|wxRIGHT|wxEXPAND, 8);
-    m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     m_text->SetFocus();
     BoxSizer1->Add(m_text, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_list = new IncrementalListCtrl(this, ID_LISTCTRL1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_LISTCTRL1"));

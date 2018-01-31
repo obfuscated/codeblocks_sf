@@ -52,7 +52,7 @@ void GotoFile::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterato
     m_sizer = new wxBoxSizer(wxVERTICAL);
     labelCtrl = new wxStaticText(this, wxID_ANY, _("Some text"), wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
     m_sizer->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-    m_Text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_TEXTCTRL1"));
+    m_Text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator, _T("ID_TEXTCTRL1"));
     m_Text->SetFocus();
     m_sizer->Add(m_Text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     m_ResultList = new IncrementalListCtrl(this, ID_RESULT_LIST, wxDefaultPosition, wxDefaultSize, wxLC_REPORT|wxLC_NO_HEADER|wxLC_SINGLE_SEL|wxLC_VIRTUAL|wxVSCROLL|wxHSCROLL, wxDefaultValidator, _T("ID_RESULT_LIST"));

@@ -382,7 +382,7 @@ void IncrementalSelectDialog::BuildContent(wxWindow* parent, IncrementalSelectIt
     wxStaticText *labelCtrl = new wxStaticText(this, wxID_ANY, message, wxDefaultPosition, wxDefaultSize, 0,
                                                _T("wxID_ANY"));
     sizer->Add(labelCtrl, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
-    m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator,
+    m_text = new wxTextCtrl(this, ID_TEXTCTRL1, wxEmptyString, wxDefaultPosition, wxDefaultSize, wxTE_PROCESS_ENTER, wxDefaultValidator,
                             _T("ID_TEXTCTRL1"));
     m_text->SetFocus();
     sizer->Add(m_text, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
