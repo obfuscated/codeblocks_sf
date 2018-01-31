@@ -2875,6 +2875,7 @@ int CompilerGCC::KillProcess()
         m_CompilerProcessList.at(i).pProcess->CloseOutput();
         ((PipedProcess*) m_CompilerProcessList.at(i).pProcess)->ForfeitStreams();
 
+        wxLogNull nullLog;
         ret = wxProcess::Kill(m_CompilerProcessList.at(i).PID, wxSIGKILL, wxKILL_CHILDREN);
 
         if (!platform::windows)
