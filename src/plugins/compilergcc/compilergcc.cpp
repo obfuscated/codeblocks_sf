@@ -1136,18 +1136,18 @@ void CompilerGCC::AllocProcesses()
     if (parallel_processes == 0)
         parallel_processes = std::max(1, wxThread::GetCPUCount());
     m_CompilerProcessList.resize(parallel_processes);
-    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
+    for (CompilerProcess &p : m_CompilerProcessList)
     {
-        m_CompilerProcessList.at(i).pProcess = 0;
-        m_CompilerProcessList.at(i).PID      = 0;
+        p.pProcess = nullptr;
+        p.PID = 0;
     }
 }
 
 void CompilerGCC::FreeProcesses()
 {
     // free the parallel processes array
-    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
-        Delete(m_CompilerProcessList.at(i).pProcess);
+    for (CompilerProcess &p : m_CompilerProcessList)
+        Delete(p.pProcess);
     m_CompilerProcessList.clear();
 }
 
@@ -1169,12 +1169,11 @@ bool CompilerGCC::IsProcessRunning(int idx) const
         return (m_CompilerProcessList.at(static_cast<size_t>(idx)).pProcess != 0);
 
     // any process (idx = -1)
-    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
+    for (const CompilerProcess &p : m_CompilerProcessList)
     {
-        if (m_CompilerProcessList.at(i).pProcess != 0)
+        if (p.pProcess)
             return true;
     }
-
     return false;
 }
 
@@ -1182,8 +1181,8 @@ int CompilerGCC::GetNextAvailableProcessIndex() const
 {
     for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
     {
-        if (   (m_CompilerProcessList.at(i).pProcess == 0)
-            && (m_CompilerProcessList.at(i).PID      == 0) )
+        const CompilerProcess &p = m_CompilerProcessList[i];
+        if (!p.pProcess && p.PID == 0)
             return i;
     }
     return -1;
@@ -1191,10 +1190,10 @@ int CompilerGCC::GetNextAvailableProcessIndex() const
 
 int CompilerGCC::GetActiveProcessCount() const
 {
-    size_t count = 0;
-    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
+    int count = 0;
+    for (const CompilerProcess &p : m_CompilerProcessList)
     {
-        if (m_CompilerProcessList.at(i).pProcess != 0)
+        if (p.pProcess)
             ++count;
     }
     return count;
@@ -2862,28 +2861,28 @@ int CompilerGCC::KillProcess()
 
     m_CommandQueue.Clear();
 
-    for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
+    for (CompilerProcess &p : m_CompilerProcessList)
     {
-        if (!m_CompilerProcessList.at(i).pProcess)
+        if (!p.pProcess)
             continue;
 
         #if defined(WIN32) && defined(ENABLE_SIGTERM)
-            ::GenerateConsoleCtrlEvent(0, m_CompilerProcessList.at(i).PID);
+            ::GenerateConsoleCtrlEvent(0, p.PID);
         #endif
 
         // Close input pipe
-        m_CompilerProcessList.at(i).pProcess->CloseOutput();
-        ((PipedProcess*) m_CompilerProcessList.at(i).pProcess)->ForfeitStreams();
+        p.pProcess->CloseOutput();
+        ((PipedProcess*) p.pProcess)->ForfeitStreams();
 
         wxLogNull nullLog;
-        ret = wxProcess::Kill(m_CompilerProcessList.at(i).PID, wxSIGKILL, wxKILL_CHILDREN);
+        ret = wxProcess::Kill(p.PID, wxSIGKILL, wxKILL_CHILDREN);
 
         if (!platform::windows)
         {
             if (ret != wxKILL_OK)
             {
                 // No need to tell the user about the errors - just keep him waiting.
-                Manager::Get()->GetLogManager()->Log(F(_("Aborting process %d ..."), i), m_PageIndex);
+                Manager::Get()->GetLogManager()->Log(F(_("Aborting process %ld ..."), p.PID), m_PageIndex);
             }
             else switch (ret)
             {
@@ -3012,10 +3011,9 @@ void CompilerGCC::OnIdle(wxIdleEvent& event)
 {
     if (IsProcessRunning())
     {
-        for (size_t i = 0; i < m_CompilerProcessList.size(); ++i)
+        for (const CompilerProcess &p : m_CompilerProcessList)
         {
-            if (   (m_CompilerProcessList.at(i).pProcess != 0)
-                && (static_cast<PipedProcess*>(m_CompilerProcessList.at(i).pProcess))->HasInput() )
+            if (p.pProcess && (static_cast<PipedProcess*>(p.pProcess))->HasInput())
             {
                 event.RequestMore();
                 break;
@@ -3748,8 +3746,11 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
 {
 //    Manager::Get()->GetMessageManager()->Log(m_PageIndex, _T("JobDone: index=%u, exitCode=%d"), procIndex, exitCode));
     m_timerIdleWakeUp.Stop();
-    m_CompilerProcessList.at(procIndex).PID      = 0;
-    m_CompilerProcessList.at(procIndex).pProcess = 0;
+    CompilerProcess &process = m_CompilerProcessList.at(procIndex);
+    process.PID = 0;
+    process.pProcess = nullptr;
+    wxString oFile = UnixFilename(process.OutputFile);
+
     if (m_LastExitCode == 0 || exitCode != 0) // prevent exit errors from being overwritten during multi-threaded build
         m_LastExitCode = exitCode;
     bool success(exitCode == 0);
@@ -3757,7 +3758,6 @@ void CompilerGCC::OnJobEnd(size_t procIndex, int exitCode)
     if (compiler)
         success = (exitCode >= 0) && (exitCode <= compiler->GetSwitches().statusSuccess);
 
-    wxString oFile = UnixFilename(m_CompilerProcessList.at(procIndex).OutputFile);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(oFile); // might contain macros!
     if (success && !oFile.IsEmpty())
     {
