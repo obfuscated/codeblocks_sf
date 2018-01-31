@@ -132,7 +132,7 @@ PipedProcess::~PipedProcess()
 
 int PipedProcess::Launch(const wxString& cmd, cb_unused unsigned int pollingInterval)
 {
-    m_Pid = wxExecute(cmd, wxEXEC_ASYNC, this);
+    m_Pid = wxExecute(cmd, wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER, this);
     if (m_Pid)
     {
 //        m_timerPollProcess.SetOwner(this, idTimerPollProcess);

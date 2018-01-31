@@ -1293,7 +1293,7 @@ int CompilerGCC::DoRunQueue()
     wxGetEnv(CB_LIBRARY_ENVVAR, &oldLibPath);
 
     bool pipe = true;
-    int flags = wxEXEC_ASYNC;
+    int flags = wxEXEC_ASYNC | wxEXEC_MAKE_GROUP_LEADER;
     if (cmd->isRun)
     {
         pipe = false; // no need to pipe output channels...
@@ -2875,7 +2875,7 @@ int CompilerGCC::KillProcess()
         m_CompilerProcessList.at(i).pProcess->CloseOutput();
         ((PipedProcess*) m_CompilerProcessList.at(i).pProcess)->ForfeitStreams();
 
-        ret = wxProcess::Kill(m_CompilerProcessList.at(i).PID, wxSIGTERM);
+        ret = wxProcess::Kill(m_CompilerProcessList.at(i).PID, wxSIGKILL, wxKILL_CHILDREN);
 
         if (!platform::windows)
         {
