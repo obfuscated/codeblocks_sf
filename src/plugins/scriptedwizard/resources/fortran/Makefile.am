@@ -9,7 +9,7 @@ dist_fortranapp_DATA	= app/logo.png \
 # for app/files sub-dir
 fortranappfilesdir		= $(pkgdatadir)/app/files
 
-dist_fortranappfiles_DATA	= app/files/main.f95
+dist_fortranappfiles_DATA	= app/files/main.f90
 
 
 # for dll sub-dir
@@ -22,7 +22,7 @@ dist_fortrandll_DATA	= dll/logo.png \
 # for dll/files sub-dir
 fortrandllfilesdir		= $(pkgdatadir)/dll/files
 
-dist_fortrandllfiles_DATA	= dll/files/main.f95
+dist_fortrandllfiles_DATA	= dll/files/main.f90
 
 
 # for file sub-dir
@@ -43,4 +43,4 @@ dist_fortranlib_DATA	= lib/logo.png \
 # for lib/files sub-dir
 fortranlibfilesdir		= $(pkgdatadir)/lib/files
 
-dist_fortranlibfiles_DATA	= lib/files/main.f95
+dist_fortranlibfiles_DATA	= lib/files/main.f90
