@@ -1,19 +1,28 @@
-/* a fragment program */
+#version 330
 
-#pragma	optimize(on)
+/* A fragment shader: Grayscale Filter with Alpha Exclusion */
 
-uniform float T;  //threshold
-uniform sampler2D sampler; 
+precision highp float;		// High quality
 
-const vec4 fcolor=vec4(1, 1, 1, 0);
-const vec4 bcolor=vec4(0, 0, 0, 0);
+// Draw directly to the screen rather than to an off-screen framebuffer
+layout(location = 0) out vec4 colorOut;
 
-void main (void)
+uniform sampler2D sampler;	// Texture sampler
+uniform float alphaCutOff;	// Alpha values below this get discarded
+
+in vec3 texCoord;
+
+void main(void)
 {
-	float I = texture2D(sampler, gl_TexCoord[0].xy ).r; 
+	vec4 texColor = texture(sampler, texCoord.xy);
+	if(texColor.a < alphaCutOff)
+		discard;
+
+	// Grayscale intensity = Average of a pixel's RGB components
+	float intensity = (texColor.r + texColor.g + texColor.b) / 3.0;
 	
-	if (I>T)
-		gl_FragColor = fcolor;
-	else
-		gl_FragColor = bcolor;
+	// Output the fragment
+	colorOut = vec4(intensity, intensity, intensity, texColor.a);
+
+	const int numViewports = gl_MaxViewports;	// Error line
 }
