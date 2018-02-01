@@ -64,6 +64,7 @@
 										<item>Remove files w/o target</item>
 										<item>Replace compiler</item>
 									</content>
+									<style>wxRA_SPECIFY_COLS</style>
 									<handler function="OnOperationSelect" entry="EVT_RADIOBOX" />
 								</object>
 								<flag>wxEXPAND</flag>
