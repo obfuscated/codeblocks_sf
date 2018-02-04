@@ -111,6 +111,26 @@ void cbPlugin::NotImplemented(const wxString& log) const
     Manager::Get()->GetLogManager()->DebugLog(log + _T(" : not implemented"));
 }
 
+int cbPlugin::GetFindMenuInsertPosition(const wxMenu& menu, bool atTheEnd)
+{
+    int lastFindItem = 0;
+    const wxMenuItemList &items = menu.GetMenuItems();
+    for (int i = 0; i < (int)items.GetCount(); ++i)
+    {
+        const wxString &label = items[i]->GetItemLabelText();
+
+        if (label.StartsWith(_("Find")))
+        {
+            if (!atTheEnd)
+                break;
+            lastFindItem++;
+        }
+        else
+            break;
+    }
+    return lastFindItem;
+}
+
 /////
 ///// cbCompilerPlugin
 /////

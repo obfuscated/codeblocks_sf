@@ -340,6 +340,11 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
             popup->Remove(last);
     }
 
+    // Insert a separator at the end of the "Find XXX" menu group of items.
+    const int lastFind = cbPlugin::GetFindMenuInsertPosition(*popup, true);
+    if (lastFind > 0)
+        popup->Insert(lastFind, wxID_SEPARATOR, wxEmptyString);
+
     // inform the editors we 're done creating a context menu (just about to show it)
     OnAfterBuildContextMenu(type);
 

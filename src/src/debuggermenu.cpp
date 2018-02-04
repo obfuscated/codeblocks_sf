@@ -408,7 +408,7 @@ void DebuggerMenuHandler::BuildContextMenu(wxMenu &menu, const wxString& word_at
     if (!plugin)
         return;
 
-    int item = 0;
+    int item = cbPlugin::GetFindMenuInsertPosition(menu, true);
     // Insert Run to Cursor
     if (plugin->SupportsFeature(cbDebuggerFeature::RunToCursor))
         menu.Insert(item++, idMenuRunToCursor, _("Run to cursor"));

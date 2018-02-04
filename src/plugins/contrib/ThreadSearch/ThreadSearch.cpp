@@ -439,42 +439,14 @@ void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const F
         {
             wxString sText = _("Find occurrences of: '") + m_SearchedWord + wxT("'");
 
-            // Tries to find the 'Find implementation' item to adds the
-            // 'Find occurrences' item just after or appends it at the end
-            int dIndex = GetInsertionMenuIndex(pMenu);
-            if ( dIndex >= 0 )
-                pMenuItem = pMenu->Insert(dIndex, controlIDs.Get(ControlIDs::idMenuCtxThreadSearch), sText);
-            else
-                pMenuItem = pMenu->Append(controlIDs.Get(ControlIDs::idMenuCtxThreadSearch), sText);
+            int dIndex = GetFindMenuInsertPosition(*pMenu, true);
+            pMenuItem = pMenu->Insert(dIndex, controlIDs.Get(ControlIDs::idMenuCtxThreadSearch), sText);
 
             // Disables item if a threaded search is running
             pMenuItem->Enable(!m_pThreadSearchView->IsSearchRunning());
         }
     }
 }
-
-
-int ThreadSearch::GetInsertionMenuIndex(const wxMenu* const pCtxMenu)
-{
-    if ( !IsAttached() )
-        return -1;
-
-    // Looks after the "Find implementation of:" menu item
-    const wxMenuItemList ItemsList = pCtxMenu->GetMenuItems();
-    for (int i = 0; i < (int)ItemsList.GetCount(); ++i)
-    {
-        #if wxCHECK_VERSION(3, 0, 0)
-        if (ItemsList[i]->GetItemLabelText().StartsWith(_("Find implementation of:")) )
-        #else
-        if (ItemsList[i]->GetLabel().StartsWith(_("Find implementation of:")) )
-        #endif
-        {
-            return ++i;
-        }
-    }
-    return -1;
-}
-
 
 cbConfigurationPanel* ThreadSearch::GetConfigurationPanel(wxWindow* parent)
 {

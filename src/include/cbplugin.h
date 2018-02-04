@@ -196,6 +196,17 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
           * @return The default implementation returns true.
           */
         virtual bool CanDetach() const { return true; }
+
+        /// Helper function used to find that position of the find menu items in the editor's
+        /// context menu. It should by all plugins adding find related menu items from their
+        /// BuildModuleMenu implementations.
+        /// @param menu The popup menu to inspect.
+        /// @param atTheEnd Pass true if you want the items to be added at the end of the find
+        ///  group or false if you want them to be at the beginning.
+        /// @return The position where the new menu item must be inserted.
+        /// @note At the end of menu creation a separator will be inserted after the group, so
+        /// it is best if your code doesn't insert any separators.
+        static int GetFindMenuInsertPosition(const wxMenu& menu, bool atTheEnd);
     protected:
         /** Any descendent plugin should override this virtual method and
           * perform any necessary initialization. This method is called by

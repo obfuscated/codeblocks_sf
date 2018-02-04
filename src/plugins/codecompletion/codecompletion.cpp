@@ -768,23 +768,18 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
             else
             {
                 wxString msg;
-                size_t pos = 0;
+                int pos = cbPlugin::GetFindMenuInsertPosition(*menu, false);
                 msg.Printf(_("Find declaration of: '%s'"), NameUnderCursor.wx_str());
-                menu->Insert(pos, idGotoDeclaration, msg);
-                ++pos;
+                menu->Insert(pos++, idGotoDeclaration, msg);
 
                 msg.Printf(_("Find implementation of: '%s'"), NameUnderCursor.wx_str());
-                menu->Insert(pos, idGotoImplementation, msg);
-                ++pos;
+                menu->Insert(pos++, idGotoImplementation, msg);
 
                 if (m_NativeParser.GetParser().Done())
                 {
                     msg.Printf(_("Find references of: '%s'"), NameUnderCursor.wx_str());
-                    menu->Insert(pos, idMenuFindReferences, msg);
-                    ++pos;
+                    menu->Insert(pos++, idMenuFindReferences, msg);
                 }
-
-                menu->Insert(pos, wxID_SEPARATOR, wxEmptyString);
             }
         }
 
