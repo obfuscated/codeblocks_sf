@@ -2770,10 +2770,6 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             popup->Append(idInsert, _("Insert"), insert);
             popup->AppendSeparator();
         }
-        popup->Append(idSwapHeaderSource, _("Swap header/source"));
-        popup->Append(idOpenContainingFolder, _("Open containing folder"));
-        if (!noeditor)
-            popup->AppendSeparator();
 
         if (editsubmenu)
         {
@@ -2804,40 +2800,6 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         {
             popup->InsertSeparator(0);
             popup->Insert(0, idOpenUrl, _("Open link in browser"));
-        }
-
-        wxMenu* splitMenu = new wxMenu;
-        splitMenu->Append(idSplitHorz, _("Horizontally (top-bottom)"));
-        splitMenu->Append(idSplitVert, _("Vertically (left-right)"));
-        splitMenu->AppendSeparator();
-        splitMenu->Append(idUnsplit, _("Unsplit"));
-        // enable/disable entries accordingly
-        bool isSplitHorz = m_pSplitter && m_pSplitter->GetSplitMode() == wxSPLIT_HORIZONTAL;
-        bool isSplitVert = m_pSplitter && m_pSplitter->GetSplitMode() == wxSPLIT_VERTICAL;
-        splitMenu->Enable(idSplitHorz, !isSplitHorz);
-        splitMenu->Enable(idSplitVert, !isSplitVert);
-        splitMenu->Enable(idUnsplit, isSplitHorz || isSplitVert);
-        popup->Append(idSplit, _("Split view"), splitMenu);
-
-        popup->Append(idProperties, _("Properties..."));
-
-        if (Manager::Get()->GetProjectManager()->GetActiveProject()) // project must be open
-        {
-            bool isAddRemoveEnabled = true;
-            isAddRemoveEnabled = Manager::Get()->GetProjectManager()->GetActiveProject()->GetCurrentlyCompilingTarget() == nullptr;
-            popup->AppendSeparator();
-
-            if (m_pProjectFile)
-            {
-                popup->Append(idRemoveFileFromProject, _("Remove file from project"));
-                popup->Enable(idRemoveFileFromProject, isAddRemoveEnabled);
-                popup->Append(idShowFileInProject,     _("Show file in the project tree"));
-            }
-            else
-            {
-                popup->Append(idAddFileToProject, _("Add file to active project"));
-                popup->Enable(idAddFileToProject, isAddRemoveEnabled);
-            }
         }
         // remove "Insert/Empty" if more than one entry
         wxMenu* insert = nullptr;
