@@ -2694,7 +2694,6 @@ wxString cbEditor::GetLineIndentString(int line) const
 // Creates a submenu for a Context Menu based on the submenu's specific Id
 wxMenu* cbEditor::CreateContextSubMenu(long id)
 {
-    cbStyledTextCtrl* control = GetControl();
     wxMenu* menu = nullptr;
     if (id == idInsert)
     {
@@ -2709,32 +2708,22 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
         menu->Append(idRedo, _("Redo"));
         menu->Append(idClearHistory, _("Clear changes history"));
         menu->AppendSeparator();
-        menu->Append(idCut, _("Cut"));
-        menu->Append(idCopy, _("Copy"));
-        menu->Append(idPaste, _("Paste"));
         menu->Append(idDelete, _("Delete"));
+        menu->Append(idSelectAll, _("Select all"));
         menu->AppendSeparator();
         menu->Append(idUpperCase, _("UPPERCASE"));
         menu->Append(idLowerCase, _("lowercase"));
-        menu->AppendSeparator();
-        menu->Append(idSelectAll, _("Select all"));
 
-        bool hasSel = control->GetSelectionEnd() - control->GetSelectionStart() != 0;
+        cbStyledTextCtrl* control = GetControl();
 
         menu->Enable(idUndo, control->CanUndo());
         menu->Enable(idRedo, control->CanRedo());
         menu->Enable(idClearHistory, control->CanUndo() || control->CanRedo());
-        menu->Enable(idCut, !control->GetReadOnly() && hasSel);
-        menu->Enable(idCopy, hasSel);
 
-        if (platform::gtk) // a wxGTK bug causes the triggering of unexpected events
-            menu->Enable(idPaste, !control->GetReadOnly());
-        else
-            menu->Enable(idPaste, !control->GetReadOnly() && control->CanPaste());
-
-        menu->Enable(idDelete, !control->GetReadOnly() && hasSel);
-        menu->Enable(idUpperCase, !control->GetReadOnly() && hasSel);
-        menu->Enable(idLowerCase, !control->GetReadOnly() && hasSel);
+        const bool hasSelection = !control->GetSelectionEmpty();
+        menu->Enable(idDelete, !control->GetReadOnly() && hasSelection);
+        menu->Enable(idUpperCase, !control->GetReadOnly() && hasSelection);
+        menu->Enable(idLowerCase, !control->GetReadOnly() && hasSelection);
     }
     else if (id == idBookmarks)
     {
@@ -2787,7 +2776,23 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             popup->AppendSeparator();
 
         if (editsubmenu)
+        {
+            popup->Append(idCut, _("Cut"));
+            popup->Append(idCopy, _("Copy"));
+            popup->Append(idPaste, _("Paste"));
             popup->Append(idEdit, _("Edit"), editsubmenu);
+            popup->AppendSeparator();
+
+            cbStyledTextCtrl* control = GetControl();
+            const bool hasSelection = !control->GetSelectionEmpty();
+            popup->Enable(idCut, !control->GetReadOnly() && hasSelection);
+            popup->Enable(idCopy, hasSelection);
+
+            if (platform::gtk) // a wxGTK bug causes the triggering of unexpected events
+                popup->Enable(idPaste, !control->GetReadOnly());
+            else
+                popup->Enable(idPaste, !control->GetReadOnly() && control->CanPaste());
+        }
         if (bookmarks)
             popup->Append(idBookmarks, _("Bookmarks"), bookmarks);
         if (folding)
