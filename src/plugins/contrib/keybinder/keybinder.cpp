@@ -909,11 +909,7 @@ int wxKeyBinder::MergeSubMenu(wxMenu* pMenu, int& modified)           //+v0.4.25
         // Find matching menu item in keybinder array of commands
         wxCmd*  pCmd = 0;
         changed = 0;
-        #if wxCHECK_VERSION(3, 0, 0)
         wxString menuItemLabel = pMenuItem->GetItemLabelText().Trim();
-        #else
-        wxString menuItemLabel = pMenuItem->GetLabel().Trim();
-        #endif
         //-wxString menuItemKeyStr = pMenuItem->GetText().AfterFirst('\t');
         //^^ This will not work on wxGTK. GTK GetText() doesn't contain the shortcut
         wxString menuItemKeyStr;
