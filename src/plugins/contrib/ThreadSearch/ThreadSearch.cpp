@@ -443,14 +443,9 @@ void ThreadSearch::BuildModuleMenu(const ModuleType type, wxMenu* pMenu, const F
             // 'Find occurrences' item just after or appends it at the end
             int dIndex = GetInsertionMenuIndex(pMenu);
             if ( dIndex >= 0 )
-            {
                 pMenuItem = pMenu->Insert(dIndex, controlIDs.Get(ControlIDs::idMenuCtxThreadSearch), sText);
-            }
             else
-            {
-                pMenu->AppendSeparator();
                 pMenuItem = pMenu->Append(controlIDs.Get(ControlIDs::idMenuCtxThreadSearch), sText);
-            }
 
             // Disables item if a threaded search is running
             pMenuItem->Enable(!m_pThreadSearchView->IsSearchRunning());

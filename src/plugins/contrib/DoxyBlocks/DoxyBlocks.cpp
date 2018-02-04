@@ -604,7 +604,6 @@ void DoxyBlocks::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
         wxMenu *submenu = new wxMenu;
         wxString prefix = ConfigManager::GetDataFolder() + wxT("/images/DoxyBlocks/16x16/");
 
-        menu->AppendSeparator();
         wxMenuItem *MenuItemBlockComment = new wxMenuItem(submenu, ID_MENU_BLOCKCOMMENT, _("&Block Comment"), _("Insert a comment block at the current line."));
         MenuItemBlockComment->SetBitmap(wxBitmap(prefix + wxT("comment_block.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemBlockComment);

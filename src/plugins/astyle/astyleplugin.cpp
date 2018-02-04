@@ -88,7 +88,6 @@ void AStylePlugin::BuildModuleMenu( const ModuleType type, wxMenu* menu, const F
     switch ( type )
     {
         case mtEditorManager:
-            menu->AppendSeparator();
             menu->Append( idCodeFormatterActiveFile, _( "Format use AStyle" ), _( "Format the selected source code (selected line) in the current file" ) );
             break;
 

@@ -2765,11 +2765,6 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             if (Manager::Get()->GetConfigManager(_T("editor"))->ReadBool(_T("/folding/show_folds"), false))
                 folding = CreateContextSubMenu(idFolding);
         }
-        if (insert)
-        {
-            popup->Append(idInsert, _("Insert"), insert);
-            popup->AppendSeparator();
-        }
 
         if (editsubmenu)
         {
@@ -2789,10 +2784,15 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
             else
                 popup->Enable(idPaste, !control->GetReadOnly() && control->CanPaste());
         }
+        if (insert)
+            popup->Append(idInsert, _("Insert"), insert);
         if (bookmarks)
             popup->Append(idBookmarks, _("Bookmarks"), bookmarks);
         if (folding)
             popup->Append(idFolding, _("Folding"), folding);
+
+        if (insert || bookmarks || folding)
+            popup->AppendSeparator();
     }
     else
     {

@@ -178,9 +178,6 @@ void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
 
     if ( idxocc == -1 && idximp == -1 )
     {
-        //for consistency, add a separator as the first item:
-        menu->AppendSeparator();
-
         //menu->Append(idOnFindSymbol,                       _T("Find C symbol '") + word + _T("'"));
         //menu->Append(idOnFindGlobalDefinition,             _T("Find '") + word + _T("' global definition"));
         menu->Append(idOnFindFunctionsCalledByThisFuncion, _("Find functions called by '") + word + _T("'"));

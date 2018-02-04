@@ -329,13 +329,8 @@ void NassiPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
         }
     }
 
-
     if ( NassiMenu )
-    {
-        menu->AppendSeparator();
         menu->AppendSubMenu(NassiMenu, _("Nassi Shneiderman"));
-    }
-
 }
 
 bool NassiPlugin::BuildToolBar(wxToolBar* toolBar)

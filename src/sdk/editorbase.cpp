@@ -330,6 +330,16 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         // Extended functions, part 2 (virtual)
         AddToContextMenu(popup, type, true);
     }
+
+    // Check if the last item is a separator and remove it.
+    const wxMenuItemList &popupItems = popup->GetMenuItems();
+    if (popupItems.GetCount() > 0)
+    {
+        wxMenuItem *last = popupItems[popupItems.GetCount() - 1];
+        if (last && last->IsSeparator())
+            popup->Remove(last);
+    }
+
     // inform the editors we 're done creating a context menu (just about to show it)
     OnAfterBuildContextMenu(type);
 

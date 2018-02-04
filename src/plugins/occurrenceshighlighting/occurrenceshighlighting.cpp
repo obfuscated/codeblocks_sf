@@ -161,8 +161,6 @@ void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* men
     wxString word = GetWordAtCaret();
     if ( word.IsEmpty() ) return;
 
-    menu->AppendSeparator();
-
     if ( m_texts.find(word) == m_texts.end() )
         menu->Append(idMenuEntryPermanent, _("Permanently Highlight '") + word + _T("'"));
     else

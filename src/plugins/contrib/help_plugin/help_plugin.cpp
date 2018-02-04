@@ -315,9 +315,6 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
 
   if (type == mtEditorManager)
   {
-    if (m_Vector.size() != 0)
-      menu->AppendSeparator();
-
     // add entries in popup menu
     int counter = 0;
     HelpCommon::HelpFilesVector::iterator it;
