@@ -788,7 +788,7 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
             }
         }
 
-        const int insertId = menu->FindItem(_("Insert"));
+        const int insertId = menu->FindItem(_("Insert/Refactor"));
         if (insertId != wxNOT_FOUND)
         {
             if (wxMenuItem* insertMenu = menu->FindItem(insertId, 0))
@@ -797,6 +797,12 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
                 {
                     subMenu->Append(idClassMethod, _("Class method declaration/implementation..."));
                     subMenu->Append(idUnimplementedClassMethods, _("All class methods without implementation..."));
+
+                    subMenu->AppendSeparator();
+
+                    const bool enableRename = (m_NativeParser.GetParser().Done() && nameUnderCursor && !IsInclude);
+                    subMenu->Append(idMenuRenameSymbols, _("Rename symbols"), _("Rename symbols under cursor"));
+                    subMenu->Enable(idMenuRenameSymbols, enableRename);
                 }
                 else
                     CCLogger::Get()->DebugLog(_T("Could not find Insert menu 3!"));
@@ -806,14 +812,6 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
         }
         else
             CCLogger::Get()->DebugLog(_T("Could not find Insert menu!"));
-
-        if (m_NativeParser.GetParser().Done() && nameUnderCursor && !IsInclude)
-        {
-            wxMenu* refactorMenu = new wxMenu();
-            refactorMenu->Append(idMenuRenameSymbols, _("Rename symbols"), _("Rename symbols under cursor"));
-            menu->AppendSeparator();
-            menu->Append(wxID_ANY, _T("Code Refactoring"), refactorMenu);
-        }
     }
     else if (type == mtProjectManager)
     {

@@ -2785,7 +2785,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
                 popup->Enable(idPaste, !control->GetReadOnly() && control->CanPaste());
         }
         if (insert)
-            popup->Append(idInsert, _("Insert"), insert);
+            popup->Append(idInsert, _("Insert/Refactor"), insert);
         if (bookmarks)
             popup->Append(idBookmarks, _("Bookmarks"), bookmarks);
         if (folding)
