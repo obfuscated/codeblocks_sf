@@ -29,12 +29,12 @@
 #include    <wxspositionsizeproperty.h>
 #include    <wxscolourproperty.h>
 
-#include    <wx/wxscintilla.h>
+#include    <wx/stc/stc.h>
 
-class wxsScintilla : public wxsWidget
+class wxsStyledTextCtrl : public wxsWidget
 {
     public:
-        wxsScintilla(wxsItemResData* Data);
+        wxsStyledTextCtrl(wxsItemResData* Data);
 
     protected:
         virtual wxObject* OnBuildPreview(wxWindow* Parent,long Flags);
