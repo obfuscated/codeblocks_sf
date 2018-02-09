@@ -62,16 +62,18 @@
 
 class wxSCITimer : public wxTimer {
 public:
-    wxSCITimer(ScintillaWX* swx) {
+    wxSCITimer(ScintillaWX* swx, ScintillaWX::TickReason reason) {
         m_swx = swx;
+        m_reason = reason;
     }
 
     void Notify() wxOVERRIDE {
-        m_swx->DoTick();
+        m_swx->TickFor(m_reason);
     }
 
 private:
     ScintillaWX* m_swx;
+    ScintillaWX::TickReason m_reason;
 };
 
 
@@ -122,6 +124,7 @@ public:
           m_ct(ct), m_swx(swx), m_cx(wxDefaultCoord), m_cy(wxDefaultCoord)
         {
             SetBackgroundStyle(wxBG_STYLE_CUSTOM);
+            SetName(wxT("wxSTCCallTip"));
         }
 
     ~wxSCICallTip() {
@@ -138,7 +141,7 @@ public:
     void OnPaint(wxPaintEvent& WXUNUSED(evt))
     {
         wxAutoBufferedPaintDC dc(this);
-        Surface* surfaceWindow = Surface::Allocate(0);
+        Surface* surfaceWindow = Surface::Allocate(m_swx->technology);
         surfaceWindow->Init(&dc, m_ct->wDraw.GetID());
         m_ct->PaintCT(surfaceWindow);
         surfaceWindow->Release();
@@ -269,10 +272,26 @@ ScintillaWX::ScintillaWX(wxScintilla* win) {
 #endif
 #endif // wxHAVE_SCI_RECT_FORMAT
 
+    //A timer is needed for each member of TickReason enum except tickPlatform
+    timers[tickCaret] = new wxSCITimer(this,tickCaret);
+    timers[tickScroll] = new wxSCITimer(this,tickScroll);
+    timers[tickWiden] = new wxSCITimer(this,tickWiden);
+    timers[tickDwell] = new wxSCITimer(this,tickDwell);
+
+    m_surfaceData = NULL;
 }
 
 
 ScintillaWX::~ScintillaWX() {
+    for ( TimersHash::iterator i=timers.begin(); i!=timers.end(); ++i ) {
+        delete i->second;
+    }
+    timers.clear();
+
+    if ( m_surfaceData != NULL ) {
+        delete m_surfaceData;
+    }
+
     Finalise();
 }
 
@@ -312,7 +331,6 @@ void ScintillaWX::Initialise() {
 
 void ScintillaWX::Finalise() {
     ScintillaBase::Finalise();
-    SetTicking(false);
     SetIdle(false);
     DestroySystemCaret();
 }
@@ -360,25 +378,6 @@ bool ScintillaWX::SetIdle(bool on) {
         idler.state = on;
     }
     return idler.state;
-}
-
-
-void ScintillaWX::SetTicking(bool on) {
-    wxSCITimer* steTimer;
-    if (timer.ticking != on) {
-        timer.ticking = on;
-        if (timer.ticking) {
-            steTimer = new wxSCITimer(this);
-            steTimer->Start(timer.tickSize);
-            timer.tickerID = steTimer;
-        } else {
-            steTimer = (wxSCITimer*)timer.tickerID;
-            steTimer->Stop();
-            delete steTimer;
-            timer.tickerID = 0;
-        }
-    }
-    timer.ticksToWait = caret.period;
 }
 
 
@@ -505,9 +504,10 @@ void ScintillaWX::NotifyParent(SCNotification scn) {
 // a side effect that the AutoComp will also not be destroyed when switching
 // to another window, but I think that is okay.
 void ScintillaWX::CancelModes() {
-    if (! focusEvent)
+    if (! focusEvent) {
         AutoCompleteCancel();
-    ct.CallTipCancel();
+        ct.CallTipCancel();
+    }
     Editor::CancelModes();
 }
 
@@ -760,6 +760,36 @@ bool ScintillaWX::DestroySystemCaret() {
 #endif
 }
 
+bool ScintillaWX::FineTickerAvailable() {
+    return true;
+}
+
+bool ScintillaWX::FineTickerRunning(TickReason reason) {
+    bool running = false;
+    TimersHash::iterator i = timers.find(reason);
+    wxASSERT_MSG( i != timers.end(), "At least one TickReason is missing a timer.");
+    if ( i != timers.end() ) {
+        running = i->second->IsRunning();
+    }
+    return running;
+}
+
+void ScintillaWX::FineTickerStart(TickReason reason, int millis,
+                                  int WXUNUSED(tolerance)) {
+    TimersHash::iterator i = timers.find(reason);
+    wxASSERT_MSG( i != timers.end(), "At least one TickReason is missing a timer." );
+    if ( i != timers.end() ) {
+        i->second->Start(millis);
+    }
+}
+
+void ScintillaWX::FineTickerCancel(TickReason reason) {
+    TimersHash::iterator i = timers.find(reason);
+    wxASSERT_MSG( i != timers.end(), "At least one TickReason is missing a timer." );
+    if ( i != timers.end() ) {
+        i->second->Stop();
+    }
+}
 
 //----------------------------------------------------------------------
 
@@ -771,7 +801,7 @@ sptr_t ScintillaWX::DefWndProc(unsigned int /*iMessage*/, uptr_t /*wParam*/, spt
 sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
       switch (iMessage) {
 #if 0  // TODO: check this
-
+          
       case SCI_CALLTIPSHOW: {
           // NOTE: This is copied here from scintilla/src/ScintillaBase.cxx
           // because of the little tweak that needs done below for wxGTK.
@@ -812,6 +842,36 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
           ct.wCallTip.Show();
           break;
       }
+#endif
+
+#if wxUSE_GRAPHICS_DIRECT2D
+        case SCI_SETTECHNOLOGY:
+            if ((wParam == SC_TECHNOLOGY_DEFAULT) || (wParam == SC_TECHNOLOGY_DIRECTWRITE)) {
+                if (technology != static_cast<int>(wParam)) {
+                    SurfaceDataD2D* newSurfaceData(NULL);
+
+                    if (static_cast<int>(wParam) > SC_TECHNOLOGY_DEFAULT) {
+                        newSurfaceData =  new SurfaceDataD2D(this);
+
+                        if (!newSurfaceData->Initialised()) {
+                            // Failed to load Direct2D or DirectWrite so no effect
+                            delete newSurfaceData;
+                            return 0;
+                        }
+                    }
+
+                    technology = static_cast<int>(wParam);
+                    if ( m_surfaceData ) {
+                        delete m_surfaceData;
+                    }
+                    m_surfaceData = newSurfaceData;
+
+                    // Invalidate all cached information including layout.
+                    DropGraphics(true);
+                    InvalidateStyleRedraw();
+                }
+            }
+            break;
 #endif
 
 #ifdef SCI_LEXER
@@ -855,7 +915,7 @@ void ScintillaWX::DoPaint(wxDC* dc, wxRect rect) {
         // highlight positions.  So trigger a new paint event that will
         // repaint the whole window.
         stc->Refresh(false);
-
+        
 #if defined(__WXOSX__)
         // On Mac we also need to finish the current paint to make sure that
         // everything is on the screen that needs to be there between now and
@@ -990,7 +1050,6 @@ void ScintillaWX::DoLoseFocus(){
     SetFocusState(false);
     focusEvent = false;
     DestroySystemCaret();
-    SetTicking(false);
 }
 
 void ScintillaWX::DoGainFocus(){
@@ -999,7 +1058,6 @@ void ScintillaWX::DoGainFocus(){
     focusEvent = false;
     DestroySystemCaret();
     CreateSystemCaret();
-    SetTicking(true);
 }
 
 void ScintillaWX::DoSysColourChange() {
@@ -1187,6 +1245,12 @@ bool ScintillaWX::DoContextMenu(Point pt) {
 
 void ScintillaWX::DoOnListBox() {
     AutoCompleteCompleted(0, SC_AC_COMMAND);
+}
+
+
+void ScintillaWX::DoMouseCaptureLost()
+{
+    capturedMouse = false;
 }
 
 
