@@ -21,6 +21,29 @@ public:
 	virtual void RemoveLine(Sci::Line line)=0;
 };
 
+/* CHANGEBAR begin */
+#include "RunStyles.h"
+class LineChanges {
+	bool collecting;
+	RunStyles state;
+	int edition;
+public:
+	LineChanges();
+	~LineChanges();
+	void AdvanceEdition();
+	int GetEdition() const;
+	char *PersistantForm() const;
+	void SetChanges(const char *changesState);
+	void InsertText(int line, int edition, bool undoing);
+	void InsertLine(int line, int edition, bool undoing);
+	void RemoveLine(int line, bool undoing);
+	void EnableChangeCollection(bool collecting_, int lines);
+	void ClearChanged();
+	int GetChanged(int line) const;
+};
+/* CHANGEBAR end */
+
+
 /**
  * The line vector contains information about each of the lines in a cell buffer.
  */
@@ -28,6 +51,9 @@ class LineVector {
 
 	Partitioning starts;
 	PerLine *perLine;
+/* CHANGEBAR begin */
+	LineChanges changes;
+/* CHANGEBAR end */
 
 public:
 
@@ -39,10 +65,14 @@ public:
 	void Init();
 	void SetPerLine(PerLine *pl);
 
-	void InsertText(Sci::Line line, Sci::Position delta);
-	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart);
+/* CHANGEBAR begin */
+	void InsertText(Sci::Line line, Sci::Position delta, int edition, bool undoing, bool lineUnchanged);
+	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart, int edition, bool undoing);
+/* CHANGEBAR end */
 	void SetLineStart(Sci::Line line, Sci::Position position);
-	void RemoveLine(Sci::Line line);
+/* CHANGEBAR begin */
+	void RemoveLine(Sci::Line line, bool undoing);
+/* CHANGEBAR end */
 	Sci::Line Lines() const {
 		return starts.Partitions();
 	}
@@ -50,6 +80,17 @@ public:
 	Sci::Position LineStart(Sci::Line line) const {
 		return starts.PositionFromPartition(line);
 	}
+
+/* CHANGEBAR begin */
+	void EnableChangeCollection(bool changesCollecting_);
+	void DeleteChangeCollection();
+	int GetChanged(int line) const;
+	void SetSavePoint();
+	int GetChangesEdition() const;
+	void PerformingUndo(bool undo);
+	char *PersistantForm() const;
+	void SetChanges(const char *changesState);
+/* CHANGEBAR end */
 };
 
 enum actionType { insertAction, removeAction, startAction, containerAction };
@@ -88,6 +129,10 @@ class UndoHistory {
 	int undoSequenceDepth;
 	int savePoint;
 	int tentativePoint;
+/* CHANGEBAR begin */
+	int savePointEffective;
+	int **changeActions;
+/* CHANGEBAR end */
 
 	void EnsureUndoRoom();
 
@@ -98,17 +143,27 @@ public:
 	void operator=(const UndoHistory &) = delete;
 	~UndoHistory();
 
-	const char *AppendAction(actionType at, Sci::Position position, const char *data, Sci::Position lengthData, bool &startSequence, bool mayCoalesce=true);
+/* CHANGEBAR begin */
+	const char *AppendAction(actionType at, Sci::Position position, const char *data, Sci::Position lengthData, bool &startSequence, char *persistantChanges, bool mayCoalesce=true);
+/* CHANGEBAR end */
 
 	void BeginUndoAction();
 	void EndUndoAction();
 	void DropUndoSequence();
 	void DeleteUndoHistory();
 
+/* CHANGEBAR begin */
+	void DeleteChangeHistory();
+	void EnableChangeHistory(bool enable);
+/* CHANGEBAR end */
+
 	/// The save point is a marker in the undo stack where the container has stated that
 	/// the buffer was saved. Undo and redo can move over the save point.
 	void SetSavePoint();
 	bool IsSavePoint() const;
+/* CHANGEBAR begin */
+	bool BeforeSavePointEffective(int action) const;
+/* CHANGEBAR end */
 
 	// Tentative actions are used for input composition so that it can be undone cleanly
 	void TentativeStart();
@@ -122,10 +177,17 @@ public:
 	int StartUndo();
 	const Action &GetUndoStep() const;
 	void CompletedUndoStep();
+/* CHANGEBAR begin */
+	char *GetChangesStep() const;
+/* CHANGEBAR end */
 	bool CanRedo() const;
 	int StartRedo();
 	const Action &GetRedoStep() const;
 	void CompletedRedoStep();
+
+/* CHANGEBAR begin */
+	int Edition() const;
+/* CHANGEBAR end */
 };
 
 /**
@@ -146,10 +208,12 @@ private:
 	LineVector lv;
 
 	bool UTF8LineEndOverlaps(Sci::Position position) const;
-	void ResetLineEnds();
+/* CHANGEBAR begin */
+	void ResetLineEnds(bool undoing);
 	/// Actions without undo
-	void BasicInsertString(Sci::Position position, const char *s, Sci::Position insertLength);
-	void BasicDeleteChars(Sci::Position position, Sci::Position deleteLength);
+	void BasicInsertString(Sci::Position position, const char *s, Sci::Position insertLength, bool undoing);
+	void BasicDeleteChars(Sci::Position position, Sci::Position deleteLength, bool undoing);
+/* CHANGEBAR end */
 
 public:
 
@@ -177,8 +241,10 @@ public:
 	Sci::Line Lines() const;
 	Sci::Position LineStart(Sci::Line line) const;
 	Sci::Line LineFromPosition(Sci::Position pos) const { return lv.LineFromPosition(pos); }
-	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart);
-	void RemoveLine(Sci::Line line);
+/* CHANGEBAR begin */
+	void InsertLine(Sci::Line line, Sci::Position position, bool lineStart, int edition, bool undoing);
+	void RemoveLine(Sci::Line line, bool undoing);
+/* CHANGEBAR end */
 	const char *InsertString(Sci::Position position, const char *s, Sci::Position insertLength, bool &startSequence);
 
 	/// Setting styles for positions outside the range of the buffer is safe and has no effect.
@@ -201,12 +267,22 @@ public:
 	bool TentativeActive() const;
 	int TentativeSteps();
 
+/* CHANGEBAR begin */
+	void EnableChangeCollection(bool changesCollecting_);
+	bool SetChangeCollection(bool collectChange);
+	void DeleteChangeCollection();
+	int GetChanged(int line) const;
+	int GetChangesEdition() const;
+/* CHANGEBAR end */
+
 	bool SetUndoCollection(bool collectUndo);
 	bool IsCollectingUndo() const;
 	void BeginUndoAction();
 	void EndUndoAction();
 	void AddUndoAction(Sci::Position token, bool mayCoalesce);
-	void DeleteUndoHistory();
+/* CHANGEBAR begin */
+	void DeleteUndoHistory(bool collectChangeHistory);
+/* CHANGEBAR end */
 
 	/// To perform an undo, StartUndo is called to retrieve the number of steps, then UndoStep is
 	/// called that many times. Similarly for redo.
