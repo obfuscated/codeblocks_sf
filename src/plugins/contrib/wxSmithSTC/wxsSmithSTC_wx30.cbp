@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="wxSmith - Styled Text Control wx3.0.x" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="wxSTEdit">
+				<Option platforms="Windows;" />
+				<Option output="../../../devel30/wxSTEdit" prefix_auto="0" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/wxSmithSTC30/wxSTEdit30" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option createStaticLib="1" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-D__WX__" />
+					<Add option="-DSCI_LEXER" />
+					<Add option="-DLINK_LEXERS" />
+					<Add option="-DWXMAKINGDLL_STEDIT" />
+					<Add directory="stedit/include" />
+				</Compiler>
+				<Linker>
+					<Add library="gdi32" />
+					<Add directory="../../../devel30" />
+				</Linker>
+			</Target>
+			<Target title="wxSmithSTC">
+				<Option platforms="Windows;" />
+				<Option output="../../../devel30/share/codeblocks/plugins/wxSmithSTC" prefix_auto="0" extension_auto="1" />
+				<Option object_output="../../../.objs/plugins/contrib/wxSmithSTC30" />
+				<Option type="3" />
+				<Option compiler="gcc" />
+				<Option parameters="--debug-log --multiple-instance -na -ns -nd -p debug" />
+				<Option host_application="../../../devel30/codeblocks.exe" />
+				<Option run_host_application_in_terminal="0" />
+				<Option projectLinkerOptionsRelation="2" />
+				<Compiler>
+					<Add option="-std=c++11" />
+					<Add option="-DBUILDING_PLUGIN" />
+					<Add option="-DcbDEBUG" />
+					<Add option="-DCB_PRECOMP" />
+					<Add directory="../../../include" />
+					<Add directory="../../../include/tinyxml" />
+					<Add directory="../../../sdk/wxpropgrid/include" />
+					<Add directory="../wxSmith/properties" />
+					<Add directory="../wxSmith/wxwidgets" />
+					<Add directory="../wxSmith/wxwidgets/properties" />
+					<Add directory="stedit/include" />
+					<Add directory="images" />
+				</Compiler>
+				<Linker>
+					<Add library="wxsmithlib" />
+					<Add library="wxSTEdit" />
+					<Add library="codeblocks" />
+					<Add directory="../../../devel30" />
+				</Linker>
+				<ExtraCommands>
+					<Add after="zip -j9 ..\..\..\devel30\share\CodeBlocks\wxSmithSTC.zip manifest.xml" />
+					<Mode after="always" />
+				</ExtraCommands>
+			</Target>
+			<Environment>
+				<Variable name="WX_CFG" value="" />
+				<Variable name="WX_SUFFIX" value="u" />
+				<Variable name="WX_VERSION" value="30" />
+			</Environment>
+		</Build>
+		<VirtualTargets>
+			<Add alias="All" targets="wxSTEdit;wxSmithSTC;" />
+		</VirtualTargets>
+		<Compiler>
+			<Add option="-Wall" />
+			<Add option="$(#CB_RELEASE_TYPE)" />
+			<Add option="-pipe" />
+			<Add option="-mthreads" />
+			<Add option="-fmessage-length=0" />
+			<Add option="-fexceptions" />
+			<Add option="-Winvalid-pch" />
+			<Add option="-DHAVE_W32API_H" />
+			<Add option="-D__WXMSW__" />
+			<Add option="-DWXUSINGDLL" />
+			<Add option="-DWX_PRECOMP" />
+			<Add option="-DwxUSE_UNICODE" />
+			<Add directory="$(#WX30.include)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
+			<Add directory="../../../sdk/wxscintilla/include" />
+		</Compiler>
+		<Linker>
+			<Add option="-Wl,--enable-auto-image-base" />
+			<Add option="-Wl,--export-all-symbols" />
+			<Add option="-Wl,--enable-auto-import" />
+			<Add option="-Wl,--add-stdcall-alias" />
+			<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
+			<Add directory="$(#WX30.lib)/gcc_dll$(WX_CFG)" />
+		</Linker>
+		<Unit filename="images/RTF16.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images/RTF32.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images/STC16.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images/STC32.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images/STE16.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="images/STE32.xpm">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="manifest.xml">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="stedit/art/copy.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/cross.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/cut.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/find.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/finddown.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/findnext.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/findup.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/new.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/open.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/paste.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/pencil.ico">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/pencil16.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/pencil32.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/print.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/print_page_setup.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/print_preview.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/print_setup.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/redo.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/replace.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/save.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/saveall.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/saveas.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/undo.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/art/x_red.xpm">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/pairarr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/setup.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/setup0.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steart.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stedefs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stedit.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stedlgs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steevent.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steexprt.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stefindr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steframe.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stelangs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stemenum.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stenoteb.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steopts.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steprefs.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steprint.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/steshell.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stesplit.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stestyls.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/include/wx/stedit/stetree.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/precomp.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/precomp.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steart.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stedit.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stedit.xrc">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stedlgs.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stedlgs_wdr.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stedlgs_wdr.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steevent.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steexprt.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stefindr.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steframe.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stelangs.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stemenum.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stenoteb.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steopts.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steprefs.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steprint.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/steshell.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stesplit.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stestyls.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/stetree.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/wxext.cpp">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/wxext.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="stedit/src/wxtrunk.h">
+			<Option target="wxSTEdit" />
+		</Unit>
+		<Unit filename="wxsRichTextCtrl.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsRichTextCtrl.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSTEditor.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSTEditor.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSmithSTC.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsSmithSTC.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsStyledTextCtrl.cpp">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Unit filename="wxsStyledTextCtrl.h">
+			<Option target="wxSmithSTC" />
+		</Unit>
+		<Extensions>
+			<code_completion />
+			<envvars />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
