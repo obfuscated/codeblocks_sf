@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef BACKGROUNDTHREAD_H
@@ -19,18 +19,18 @@
 #include "blockallocated.h"
 
 /*
-* BackgroundThread is a lightweight single background worker thread implementation for situations in which
-* you simply want to do one or several things in another thread, and using a thread pool is overkill.
-* Also, several BackgroundThreads can be used in situations where a thread pool is unsuitable by design. For example,
-* you can use two BackgroundThreads to asynchronously read a list of files from disk one at at time and download another list
-* of files from the internet without hogging either the hard disk or the network layer with more than one concurrent access.
-*
-* BackgroundThread can be configured to own the job objects (will delete them after running) or not. It can also own
-* the semaphore and queue, or use a shared context.
-*
-* BackgroundThreadPool is a low overhead thread pool implementation around BackgroundThread.
-*/
-
+ * BackgroundThread is a lightweight single background worker thread implementation for situations
+ * in which you simply want to do one or several things in another thread, and using a thread pool
+ * is overkill. Also, several BackgroundThreads can be used in situations where a thread pool is
+ * unsuitable by design. For example, you can use two BackgroundThreads to asynchronously read a
+ * list of files from disk one at at time and download another list of files from the internet
+ * without hogging either the hard disk or the network layer with more than one concurrent access.
+ *
+ * BackgroundThread can be configured to own the job objects (will delete them after running) or
+ * not. It can also own the semaphore and queue, or use a shared context.
+ *
+ * BackgroundThreadPool is a low overhead thread pool implementation around BackgroundThread.
+ */
 
 class AbstractJob
 {
@@ -40,9 +40,7 @@ public:
     virtual void operator()() = 0;
 };
 
-
-
-class JobQueue : public std::deque<AbstractJob*>
+class JobQueue : public std::deque<AbstractJob *>
 {
     wxCriticalSection c;
 
@@ -52,16 +50,14 @@ public:
         wxCriticalSectionLocker l(c);
         push_back(j);
     };
-    AbstractJob* Pop()
+    AbstractJob *Pop()
     {
         wxCriticalSectionLocker l(c);
-        AbstractJob* j = front();
+        AbstractJob *j = front();
         pop_front();
         return j;
     };
 };
-
-
 
 class BackgroundThread : public wxThread
 {
@@ -74,28 +70,48 @@ class BackgroundThread : public wxThread
 
 public:
     BackgroundThread(JobQueue *q, wxSemaphore *s, const bool owns_jobs = true)
-    : queue(q), semaphore(s), die(false), ownsQueue(false), ownsSemaphore(false), ownsJobs(owns_jobs)
+      : queue(q),
+        semaphore(s),
+        die(false),
+        ownsQueue(false),
+        ownsSemaphore(false),
+        ownsJobs(owns_jobs)
     {
         Create();
         Run();
     };
 
     BackgroundThread(wxSemaphore *s, const bool owns_jobs = true)
-    : queue(new JobQueue), semaphore(s), die(false), ownsQueue(true), ownsSemaphore(false), ownsJobs(owns_jobs)
+      : queue(new JobQueue),
+        semaphore(s),
+        die(false),
+        ownsQueue(true),
+        ownsSemaphore(false),
+        ownsJobs(owns_jobs)
     {
         Create();
         Run();
     };
 
     BackgroundThread(JobQueue *q, const bool owns_jobs = true)
-    : queue(q), semaphore(new wxSemaphore), die(false), ownsQueue(false), ownsSemaphore(true), ownsJobs(owns_jobs)
+      : queue(q),
+        semaphore(new wxSemaphore),
+        die(false),
+        ownsQueue(false),
+        ownsSemaphore(true),
+        ownsJobs(owns_jobs)
     {
         Create();
         Run();
     };
 
     BackgroundThread(const bool owns_jobs = true)
-    : queue(new JobQueue), semaphore(new wxSemaphore), die(false), ownsQueue(true), ownsSemaphore(true), ownsJobs(owns_jobs)
+      : queue(new JobQueue),
+        semaphore(new wxSemaphore),
+        die(false),
+        ownsQueue(true),
+        ownsSemaphore(true),
+        ownsJobs(owns_jobs)
     {
         Create();
         Run();
@@ -109,8 +125,7 @@ public:
             ::Delete(queue);
     };
 
-
-    void Queue(AbstractJob* j)
+    void Queue(AbstractJob *j)
     {
         queue->Push(j);
         semaphore->Post();
@@ -123,16 +138,15 @@ public:
         wxMilliSleep(0);
     };
 
-
-    void MarkDying() // Need this for threadpool. Die() alone does not work in shared context (for obvious reason).
+    void MarkDying() // Need this for threadpool. Die() alone does not work in shared context (for
+                     // obvious reason).
     {
         die = true;
     };
 
-
     ExitCode Entry()
     {
-        AbstractJob* job;
+        AbstractJob *job;
         for (;;)
         {
             semaphore->Wait();
@@ -140,7 +154,7 @@ public:
                 break;
 
             job = queue->Pop();
-            if ( job )
+            if (job)
                 (*job)();
 
             if (ownsJobs)
@@ -150,16 +164,18 @@ public:
     };
 };
 
-
-
-
-
-struct Agony { inline void operator()(BackgroundThread* t){t->MarkDying();}; };
-struct Death { inline void operator()(BackgroundThread* t){t->Die();}; };
+struct Agony
+{
+    inline void operator()(BackgroundThread *t) { t->MarkDying(); };
+};
+struct Death
+{
+    inline void operator()(BackgroundThread *t) { t->Die(); };
+};
 
 class BackgroundThreadPool
 {
-    typedef std::list<BackgroundThread*> ThreadList;
+    typedef std::list<BackgroundThread *> ThreadList;
 
     JobQueue queue;
     wxSemaphore semaphore;
@@ -180,19 +196,13 @@ public:
         wxMilliSleep(0);
     };
 
-    void AddThread(BackgroundThread * t)
-    {
-        threadList.push_back(t);
-    };
+    void AddThread(BackgroundThread *t) { threadList.push_back(t); };
 
-    void Queue(AbstractJob* j)
+    void Queue(AbstractJob *j)
     {
         queue.Push(j);
         semaphore.Post();
     };
 };
 
-
-
 #endif
-

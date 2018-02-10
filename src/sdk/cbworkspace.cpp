@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,29 +10,29 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "cbworkspace.h"
-    #include "globals.h"
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "workspaceloader.h"
+#include "cbworkspace.h"
+#include "globals.h"
+#include "manager.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "workspaceloader.h"
 
-    #include <wx/intl.h>
+#include <wx/intl.h>
 #endif
 
 #include <wx/filedlg.h>
 #include "filefilters.h"
 
-cbWorkspace::cbWorkspace(const wxString& filename) :
-    m_IsOK(true),
+cbWorkspace::cbWorkspace(const wxString &filename)
+  : m_IsOK(true),
     m_IsDefault(true),
     m_Modified(false),
     m_Filename(DEFAULT_WORKSPACE),
     m_Title(_("Default workspace")),
     m_PreferredTargetName()
 {
-    //ctor
-    if ( filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty() )
+    // ctor
+    if (filename.Matches(DEFAULT_WORKSPACE) || filename.IsEmpty())
     {
         // if no filename given, use the default workspace
         wxString tmp = ConfigManager::GetConfigFolder();
@@ -49,15 +49,13 @@ cbWorkspace::cbWorkspace(const wxString& filename) :
         m_IsDefault = false;
     }
 
-    if ( !filename.IsEmpty() )
+    if (!filename.IsEmpty())
     {
         Load();
     }
 }
 
-cbWorkspace::~cbWorkspace()
-{
-}
+cbWorkspace::~cbWorkspace() {}
 
 void cbWorkspace::Load()
 {
@@ -80,11 +78,11 @@ void cbWorkspace::Load()
 
     if (FileTypeOf(fname) == ftCodeBlocksWorkspace)
     {
-        IBaseWorkspaceLoader* pWsp = new WorkspaceLoader;
+        IBaseWorkspaceLoader *pWsp = new WorkspaceLoader;
 
         wxString Title;
         m_IsOK = pWsp && (pWsp->Open(fname, Title) || m_IsDefault);
-        if(!Title.IsEmpty())
+        if (!Title.IsEmpty())
         {
             m_Title = Title;
         }
@@ -111,20 +109,21 @@ bool cbWorkspace::Save(bool force)
     if (!force && !m_Modified)
         return true;
 
-    Manager::Get()->GetLogManager()->DebugLog(F(_T("Saving workspace \"%s\""), m_Filename.GetFullPath().wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(
+        F(_T("Saving workspace \"%s\""), m_Filename.GetFullPath().wx_str()));
     WorkspaceLoader wsp;
     bool ret = wsp.Save(m_Title, m_Filename.GetFullPath());
     SetModified(!ret);
-    if(!ret)
-        cbMessageBox(_("Couldn't save workspace ") + m_Filename.GetFullPath() + _("\n(Maybe the file is write-protected?)"), _("Warning"), wxICON_WARNING);
+    if (!ret)
+        cbMessageBox(_("Couldn't save workspace ") + m_Filename.GetFullPath()
+                         + _("\n(Maybe the file is write-protected?)"),
+                     _("Warning"), wxICON_WARNING);
     return ret;
 }
 
-bool cbWorkspace::SaveAs(cb_unused const wxString& filename)
+bool cbWorkspace::SaveAs(cb_unused const wxString &filename)
 {
-    wxFileDialog dlg(Manager::Get()->GetAppWindow(),
-                     _("Save workspace"),
-                     m_Filename.GetPath(),
+    wxFileDialog dlg(Manager::Get()->GetAppWindow(), _("Save workspace"), m_Filename.GetPath(),
                      m_Filename.GetFullName(),
                      FileFilters::GetFilterString(_T('.') + FileFilters::WORKSPACE_EXT),
                      wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -144,7 +143,7 @@ bool cbWorkspace::SaveAs(cb_unused const wxString& filename)
     return Save(true);
 }
 
-void cbWorkspace::SetTitle(const wxString& title)
+void cbWorkspace::SetTitle(const wxString &title)
 {
     m_Title = title;
     SetModified(true);
@@ -153,12 +152,13 @@ void cbWorkspace::SetTitle(const wxString& title)
 void cbWorkspace::SetModified(bool modified)
 {
     m_Modified = modified;
-    // Manager::Get()->GetLogManager()->DebugLog(F(_T("Setting workspace to modified = \"%s\""), modified ? _T("true") : _T("false")));
+    // Manager::Get()->GetLogManager()->DebugLog(F(_T("Setting workspace to modified = \"%s\""),
+    // modified ? _T("true") : _T("false")));
 }
 
 void cbWorkspace::SetPreferredTarget(const wxString &target)
 {
-    if ( !target.IsEmpty() )
+    if (!target.IsEmpty())
         m_PreferredTargetName = target;
 }
 
@@ -177,9 +177,9 @@ bool cbWorkspace::SaveLayout()
     LogManager *log = Manager::Get()->GetLogManager();
     WorkspaceLoader wsl;
     wxFileName fn(m_Filename);
-    fn.SetExt( _T("workspace.layout") );
+    fn.SetExt(_T("workspace.layout"));
     log->DebugLog(F(_T("Saving workspace layout \"%s\""), fn.GetFullPath().wx_str()));
-    const bool rc = wsl.SaveLayout( fn.GetFullPath() );
+    const bool rc = wsl.SaveLayout(fn.GetFullPath());
     if (!rc)
     {
         log->DebugLog(F(_T("Couldn't save workspace layout \"%s\""), fn.GetFullPath().wx_str()));
@@ -192,20 +192,22 @@ bool cbWorkspace::LoadLayout()
     LogManager *log = Manager::Get()->GetLogManager();
     WorkspaceLoader wsl;
     wxFileName fn(m_Filename);
-    fn.SetExt( _T("workspace.layout") );
+    fn.SetExt(_T("workspace.layout"));
     bool rc = false;
-    if ( fn.FileExists() )
+    if (fn.FileExists())
     {
         log->DebugLog(F(_T("Loading workspace layout \"%s\""), fn.GetFullPath().wx_str()));
-        rc = wsl.LoadLayout( fn.GetFullPath() );
+        rc = wsl.LoadLayout(fn.GetFullPath());
         if (!rc)
         {
-            log->DebugLog(F(_T("Couldn't load workspace layout \"%s\""), fn.GetFullPath().wx_str()));
+            log->DebugLog(
+                F(_T("Couldn't load workspace layout \"%s\""), fn.GetFullPath().wx_str()));
         }
     }
     else
     {
-        log->DebugLog(F(_T("Workspace layout file doesn't exist \"%s\""), fn.GetFullPath().wx_str()));
+        log->DebugLog(
+            F(_T("Workspace layout file doesn't exist \"%s\""), fn.GetFullPath().wx_str()));
     }
     return rc;
 }

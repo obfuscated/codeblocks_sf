@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef CB_SEARCHRESULTSLOG_H
@@ -14,20 +14,22 @@ class wxCommandEvent;
 
 class DLLIMPORT cbSearchResultsLog : public ListCtrlLogger, public wxEvtHandler
 {
-	public:
-		cbSearchResultsLog(const wxArrayString& titles, wxArrayInt& widths);
-		virtual ~cbSearchResultsLog();
-		void FocusEntry(size_t index);
-		void SetBasePath(const wxString base){ m_Base = base; }
+public:
+    cbSearchResultsLog(const wxArrayString &titles, wxArrayInt &widths);
+    virtual ~cbSearchResultsLog();
+    void FocusEntry(size_t index);
+    void SetBasePath(const wxString base) { m_Base = base; }
 
-		virtual wxWindow* CreateControl(wxWindow* parent);
-	protected:
-        void OnDoubleClick(wxCommandEvent& event);
-        void SyncEditor(int selIndex);
+    virtual wxWindow *CreateControl(wxWindow *parent);
 
-        wxString m_Base;
-	private:
-        DECLARE_EVENT_TABLE()
+protected:
+    void OnDoubleClick(wxCommandEvent &event);
+    void SyncEditor(int selIndex);
+
+    wxString m_Base;
+
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // CB_SEARCHRESULTSLOG_H

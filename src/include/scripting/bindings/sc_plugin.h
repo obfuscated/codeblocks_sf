@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef SC_PLUGIN_H
@@ -14,14 +14,14 @@ class wxMenu;
 
 namespace ScriptBindings
 {
-    namespace ScriptPluginWrapper
-    {
-        wxArrayInt CreateMenu(wxMenuBar* mbar);
-        wxArrayInt CreateModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data);
+namespace ScriptPluginWrapper
+{
+wxArrayInt CreateMenu(wxMenuBar *mbar);
+wxArrayInt CreateModuleMenu(const ModuleType type, wxMenu *menu, const FileTreeData *data);
 
-        void OnScriptMenu(int id);
-        void OnScriptModuleMenu(int id);
-    } // namespace ScriptPluginWrapper
+void OnScriptMenu(int id);
+void OnScriptModuleMenu(int id);
+} // namespace ScriptPluginWrapper
 }
 
 #endif // SC_PLUGIN_H

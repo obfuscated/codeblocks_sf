@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,27 +10,27 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/dir.h>
-    #include <wx/menu.h>
-    #include <wx/notebook.h>
-    #include <wx/settings.h>
-    #include <wx/splitter.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/dir.h>
+#include <wx/menu.h>
+#include <wx/notebook.h>
+#include <wx/settings.h>
+#include <wx/splitter.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbeditor.h"
-    #include "cbproject.h"
-    #include "compiler.h"
-    #include "compilerfactory.h"
-    #include "configmanager.h"
-    #include "editormanager.h" // class's header file
-    #include "filemanager.h"
-    #include "logmanager.h"
-    #include "macrosmanager.h"
-    #include "manager.h"
-    #include "pluginmanager.h"
-    #include "projectbuildtarget.h"
-    #include "projectmanager.h"
-    #include "sdk_events.h"
+#include "cbeditor.h"
+#include "cbproject.h"
+#include "compiler.h"
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "editormanager.h" // class's header file
+#include "filemanager.h"
+#include "logmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "pluginmanager.h"
+#include "projectbuildtarget.h"
+#include "projectmanager.h"
+#include "sdk_events.h"
 #endif
 
 #include "annoyingdialog.h"
@@ -48,11 +48,13 @@
 #include "projectfileoptionsdlg.h"
 #include "filegroupsandmasks.h"
 
-template<> EditorManager* Mgr<EditorManager>::instance = nullptr;
-template<> bool  Mgr<EditorManager>::isShutdown = false;
+template<>
+EditorManager *Mgr<EditorManager>::instance = nullptr;
+template<>
+bool Mgr<EditorManager>::isShutdown = false;
 
-int ID_NBEditorManager        = wxNewId();
-int ID_EditorManager          = wxNewId();
+int ID_NBEditorManager = wxNewId();
+int ID_EditorManager = wxNewId();
 int idEditorManagerCheckFiles = wxNewId();
 
 // static
@@ -65,51 +67,47 @@ inline int cbRegisterId(int id)
     return id;
 }
 
-static const int idNBTabSplitHorz            = wxNewId();
-static const int idNBTabSplitVert            = wxNewId();
-static const int idNBTabUnsplit              = wxNewId();
-static const int idNBTabClose                = wxNewId();
-static const int idNBTabCloseAll             = wxNewId();
-static const int idNBTabCloseAllOthers       = wxNewId();
-static const int idNBTabSave                 = wxNewId();
-static const int idNBTabSaveAll              = wxNewId();
-static const int idNBSwapHeaderSource        = wxNewId();
+static const int idNBTabSplitHorz = wxNewId();
+static const int idNBTabSplitVert = wxNewId();
+static const int idNBTabUnsplit = wxNewId();
+static const int idNBTabClose = wxNewId();
+static const int idNBTabCloseAll = wxNewId();
+static const int idNBTabCloseAllOthers = wxNewId();
+static const int idNBTabSave = wxNewId();
+static const int idNBTabSaveAll = wxNewId();
+static const int idNBSwapHeaderSource = wxNewId();
 static const int idNBTabOpenContainingFolder = wxNewId();
-static const int idNBTabTop                  = wxNewId();
-static const int idNBTabBottom               = wxNewId();
-static const int idNBProperties              = wxNewId();
-static const int idNBAddFileToProject        = wxNewId();
-static const int idNBRemoveFileFromProject   = wxNewId();
-static const int idNBShowFileInTree          = wxNewId();
+static const int idNBTabTop = wxNewId();
+static const int idNBTabBottom = wxNewId();
+static const int idNBProperties = wxNewId();
+static const int idNBAddFileToProject = wxNewId();
+static const int idNBRemoveFileFromProject = wxNewId();
+static const int idNBShowFileInTree = wxNewId();
 
 // The following lines reserve 255 consecutive id's
-static const int EditorMaxSwitchTo           = 255;
-static const int idNBSwitchFile1             = wxNewId();
-static const int idNBSwitchFileMax           = cbRegisterId(idNBSwitchFile1 + EditorMaxSwitchTo - 1);
-
+static const int EditorMaxSwitchTo = 255;
+static const int idNBSwitchFile1 = wxNewId();
+static const int idNBSwitchFileMax = cbRegisterId(idNBSwitchFile1 + EditorMaxSwitchTo - 1);
 
 /** *******************************************************
-  * struct EditorManagerInternalData                      *
-  * This is the private data holder for the EditorManager *
-  * All data not relevant to other classes should go here *
-  ********************************************************* */
+ * struct EditorManagerInternalData                      *
+ * This is the private data holder for the EditorManager *
+ * All data not relevant to other classes should go here *
+ ********************************************************* */
 
 struct EditorManagerInternalData
 {
     /* Methods */
 
-    EditorManagerInternalData(EditorManager* owner)
-            : m_pOwner(owner)
-    {}
+    EditorManagerInternalData(EditorManager *owner) : m_pOwner(owner) {}
 
     /* Static data */
 
-    EditorManager* m_pOwner;
+    EditorManager *m_pOwner;
     bool m_SetFocusFlag;
 };
 
 // *********** End of EditorManagerInternalData **********
-
 
 BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_APP_STARTUP_DONE(EditorManager::OnAppDoneStartup)
@@ -139,45 +137,61 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
 END_EVENT_TABLE()
 
 EditorManager::EditorManager()
-        : m_pNotebook(nullptr),
-        m_pNotebookStackHead(new cbNotebookStack),
-        m_pNotebookStackTail(m_pNotebookStackHead),
-        m_nNotebookStackSize(0),
-        m_isCheckingForExternallyModifiedFiles(false)
+  : m_pNotebook(nullptr),
+    m_pNotebookStackHead(new cbNotebookStack),
+    m_pNotebookStackTail(m_pNotebookStackHead),
+    m_nNotebookStackSize(0),
+    m_isCheckingForExternallyModifiedFiles(false)
 {
     m_pData = new EditorManagerInternalData(this);
 
-    m_pNotebook = new cbAuiNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager, wxDefaultPosition, wxDefaultSize,
-                                    wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
+    m_pNotebook = new cbAuiNotebook(Manager::Get()->GetAppWindow(), ID_NBEditorManager,
+                                    wxDefaultPosition, wxDefaultSize,
+                                    wxAUI_NB_DEFAULT_STYLE | wxAUI_NB_WINDOWLIST_BUTTON
+                                        | wxNO_FULL_REPAINT_ON_RESIZE | wxCLIP_CHILDREN);
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"),
+                                                              false))
         m_pNotebook->SetWindowStyleFlag(m_pNotebook->GetWindowStyleFlag() | wxAUI_NB_BOTTOM);
 
     Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet ....."));
-    m_Theme = new EditorColourSet(Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/colour_sets/active_colour_set"), COLORSET_DEFAULT));
+    m_Theme =
+        new EditorColourSet(Manager::Get()
+                                ->GetConfigManager(_T("editor"))
+                                ->Read(_T("/colour_sets/active_colour_set"), COLORSET_DEFAULT));
     Manager::Get()->GetLogManager()->DebugLog(_T("Initialize EditColourSet: done."));
 
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
 
     m_Zoom = Manager::Get()->GetConfigManager(_T("editor"))->ReadInt(_T("/zoom"));
-    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
-    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
-    Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_LOADING_COMPLETE, new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(
+        cbEVT_BUILDTARGET_SELECTED,
+        new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(
+        cbEVT_PROJECT_ACTIVATE,
+        new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
+    Manager::Get()->RegisterEventSink(
+        cbEVT_WORKSPACE_LOADING_COMPLETE,
+        new cbEventFunctor<EditorManager, CodeBlocksEvent>(this, &EditorManager::CollectDefines));
 
     ColourManager *colours = Manager::Get()->GetColourManager();
     colours->RegisterColour(_("Editor"), _("Caret"), wxT("editor_caret"), *wxBLACK);
     colours->RegisterColour(_("Editor"), _("Right margin"), wxT("editor_gutter"), *wxLIGHT_GREY);
-    colours->RegisterColour(_("Editor"), _("Line numbers foreground colour"), wxT("editor_linenumbers_fg"),
+    colours->RegisterColour(_("Editor"), _("Line numbers foreground colour"),
+                            wxT("editor_linenumbers_fg"),
                             wxSystemSettings::GetColour(wxSYS_COLOUR_BTNTEXT));
-    colours->RegisterColour(_("Editor"), _("Line numbers background colour"), wxT("editor_linenumbers_bg"),
+    colours->RegisterColour(_("Editor"), _("Line numbers background colour"),
+                            wxT("editor_linenumbers_bg"),
                             wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
 
     // These two are taken from Platform::Chrome() and Platform::ChromeHightlight()
     colours->RegisterColour(_("Editor"), _("Margin chrome colour"), wxT("editor_margin_chrome"),
                             wxSystemSettings::GetColour(wxSYS_COLOUR_3DFACE));
-    colours->RegisterColour(_("Editor"), _("Margin chrome highlight colour"), wxT("editor_margin_chrome_highlight"),
+    colours->RegisterColour(_("Editor"), _("Margin chrome highlight colour"),
+                            wxT("editor_margin_chrome_highlight"),
                             wxSystemSettings::GetColour(wxSYS_COLOUR_3DHIGHLIGHT));
-    colours->RegisterColour(_("Editor"), _("Whitespace"), wxT("editor_whitespace"), wxColor(195, 195, 195));
+    colours->RegisterColour(_("Editor"), _("Whitespace"), wxT("editor_whitespace"),
+                            wxColor(195, 195, 195));
 }
 
 EditorManager::~EditorManager()
@@ -189,18 +203,18 @@ EditorManager::~EditorManager()
     Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/zoom"), m_Zoom);
 }
 
-cbNotebookStack* EditorManager::GetNotebookStack()
+cbNotebookStack *EditorManager::GetNotebookStack()
 {
     bool found = false;
-    wxWindow* wnd;
-    cbNotebookStack* body;
-    cbNotebookStack* prev_body;
+    wxWindow *wnd;
+    cbNotebookStack *body;
+    cbNotebookStack *prev_body;
 
     while (m_nNotebookStackSize != m_pNotebook->GetPageCount()) // Sync stack with Notebook
     {
         if (m_nNotebookStackSize < m_pNotebook->GetPageCount())
         {
-            for (size_t i = 0; i<m_pNotebook->GetPageCount(); ++i)
+            for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
             {
                 wnd = m_pNotebook->GetPage(i);
                 found = false;
@@ -222,7 +236,8 @@ cbNotebookStack* EditorManager::GetNotebookStack()
         }
         if (m_nNotebookStackSize > m_pNotebook->GetPageCount())
         {
-            for (prev_body = m_pNotebookStackHead, body = prev_body->next; body != NULL; prev_body = body, body = body->next)
+            for (prev_body = m_pNotebookStackHead, body = prev_body->next; body != NULL;
+                 prev_body = body, body = body->next)
             {
                 if (m_pNotebook->GetPageIndex(body->window) == wxNOT_FOUND)
                 {
@@ -240,8 +255,8 @@ cbNotebookStack* EditorManager::GetNotebookStack()
 
 void EditorManager::DeleteNotebookStack()
 {
-    cbNotebookStack* tmp;
-    while(m_pNotebookStackHead->next)
+    cbNotebookStack *tmp;
+    while (m_pNotebookStackHead->next)
     {
         tmp = m_pNotebookStackHead->next;
         m_pNotebookStackHead->next = tmp->next;
@@ -267,14 +282,14 @@ void EditorManager::RecreateOpenEditorStyles()
     // tell all open editors to re-create their styles
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
-        cbEditor* ed = InternalGetBuiltinEditor(i);
+        cbEditor *ed = InternalGetBuiltinEditor(i);
         if (ed)
         {
-            bool saveSuccess = ed->SaveFoldState(); //First Save the old fold levels
+            bool saveSuccess = ed->SaveFoldState(); // First Save the old fold levels
             ed->SetEditorStyle();
             if (saveSuccess)
             {
-                ed->FixFoldState(); //Compare old fold levels with new and change the bugs
+                ed->FixFoldState(); // Compare old fold levels with new and change the bugs
             }
         }
     }
@@ -285,52 +300,53 @@ int EditorManager::GetEditorsCount()
     return m_pNotebook->GetPageCount();
 }
 
-EditorBase* EditorManager::InternalGetEditorBase(int page)
+EditorBase *EditorManager::InternalGetEditorBase(int page)
 {
     if (page >= 0 && page < (int)m_pNotebook->GetPageCount())
     {
-        return static_cast<EditorBase*>(m_pNotebook->GetPage(page));
+        return static_cast<EditorBase *>(m_pNotebook->GetPage(page));
     }
     return nullptr;
 }
 
-cbEditor* EditorManager::InternalGetBuiltinEditor(int page)
+cbEditor *EditorManager::InternalGetBuiltinEditor(int page)
 {
-    EditorBase* eb = InternalGetEditorBase(page);
+    EditorBase *eb = InternalGetEditorBase(page);
     if (eb && eb->IsBuiltinEditor())
-        return (cbEditor*)eb;
+        return (cbEditor *)eb;
     return nullptr;
 }
 
-cbEditor* EditorManager::GetBuiltinEditor(EditorBase* eb)
+cbEditor *EditorManager::GetBuiltinEditor(EditorBase *eb)
 {
-    return eb && eb->IsBuiltinEditor() ? (cbEditor*)eb : nullptr;
+    return eb && eb->IsBuiltinEditor() ? (cbEditor *)eb : nullptr;
 }
 
-EditorBase* EditorManager::IsOpen(const wxString& filename)
+EditorBase *EditorManager::IsOpen(const wxString &filename)
 {
     wxString uFilename = UnixFilename(realpath(filename));
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
-        EditorBase* eb = InternalGetEditorBase(i);
+        EditorBase *eb = InternalGetEditorBase(i);
         if (!eb)
             continue;
         wxString fname = eb->GetFilename();
 
         // MSW must use case-insensitive comparison
-        if (fname.IsSameAs(uFilename, platform::windows == false) || fname.IsSameAs(g_EditorModified + uFilename, platform::windows == false))
+        if (fname.IsSameAs(uFilename, platform::windows == false)
+            || fname.IsSameAs(g_EditorModified + uFilename, platform::windows == false))
             return eb;
     }
 
     return NULL;
 }
 
-EditorBase* EditorManager::GetEditor(int index)
+EditorBase *EditorManager::GetEditor(int index)
 {
     return InternalGetEditorBase(index);
 }
 
-void EditorManager::SetColourSet(EditorColourSet* theme)
+void EditorManager::SetColourSet(EditorColourSet *theme)
 {
     if (m_Theme)
         delete m_Theme;
@@ -340,18 +356,19 @@ void EditorManager::SetColourSet(EditorColourSet* theme)
 
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
-        cbEditor* ed = InternalGetBuiltinEditor(i);
+        cbEditor *ed = InternalGetBuiltinEditor(i);
         if (ed)
             ed->SetColourSet(m_Theme);
     }
 }
 
-cbEditor* EditorManager::Open(const wxString& filename, int pos, ProjectFile* data)
+cbEditor *EditorManager::Open(const wxString &filename, int pos, ProjectFile *data)
 {
     return Open(nullptr, filename, pos, data);
 }
 
-cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int /*pos*/, ProjectFile* data)
+cbEditor *EditorManager::Open(LoaderBase *fileLdr, const wxString &filename, int /*pos*/,
+                              ProjectFile *data)
 {
     bool can_updateui = !GetActiveEditor() || !Manager::Get()->GetProjectManager()->IsLoading();
     wxFileName fn(realpath(filename));
@@ -366,13 +383,13 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     // WARNING: remember to set it to true, when exiting this function!!!
     s_CanShutdown = false;
 
-    EditorBase* eb = IsOpen(fname);
-    cbEditor* ed = nullptr;
+    EditorBase *eb = IsOpen(fname);
+    cbEditor *ed = nullptr;
     if (eb)
     {
         if (eb->IsBuiltinEditor())
         {
-            ed = (cbEditor*)eb;
+            ed = (cbEditor *)eb;
         }
         else
         {
@@ -403,11 +420,13 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     {
         // First checks if we're already being passed a ProjectFile as a parameter
         if (data)
-            Manager::Get()->GetLogManager()->DebugLog(_T("Project data set for ") + data->file.GetFullPath());
+            Manager::Get()->GetLogManager()->DebugLog(_T("Project data set for ")
+                                                      + data->file.GetFullPath());
         else
-            Manager::Get()->GetProjectManager()->FindProjectForFile(ed->GetFilename(), &data, false, false);
+            Manager::Get()->GetProjectManager()->FindProjectForFile(ed->GetFilename(), &data, false,
+                                                                    false);
         if (data)
-            ed->SetProjectFile(data,true);
+            ed->SetProjectFile(data, true);
     }
 
     if (can_updateui)
@@ -425,7 +444,7 @@ cbEditor* EditorManager::Open(LoaderBase* fileLdr, const wxString& filename, int
     return ed;
 }
 
-EditorBase* EditorManager::GetActiveEditor()
+EditorBase *EditorManager::GetActiveEditor()
 {
     if (m_pNotebook->GetPageCount() > 0)
     {
@@ -444,7 +463,7 @@ void EditorManager::ActivatePrevious()
     m_pNotebook->AdvanceSelection(false);
 }
 
-void EditorManager::SetActiveEditor(EditorBase* ed)
+void EditorManager::SetActiveEditor(EditorBase *ed)
 {
     if (!ed)
         return;
@@ -454,9 +473,9 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
         // Previously the Activated event was only sent for built-in editors, which makes no sense
         int sel = m_pNotebook->GetSelection();
         m_pNotebook->SetSelection(page);
-        EditorBase* eb_old = nullptr;
-        if (sel>=0)
-            eb_old = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
+        EditorBase *eb_old = nullptr;
+        if (sel >= 0)
+            eb_old = static_cast<EditorBase *>(m_pNotebook->GetPage(sel));
 
         CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, nullptr, ed, nullptr, eb_old);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
@@ -466,27 +485,28 @@ void EditorManager::SetActiveEditor(EditorBase* ed)
     }
 
     if (ed->IsBuiltinEditor())
-        static_cast<cbEditor*>(ed)->GetControl()->SetFocus();
+        static_cast<cbEditor *>(ed)->GetControl()->SetFocus();
 }
 
-cbEditor* EditorManager::New(const wxString& newFileName)
+cbEditor *EditorManager::New(const wxString &newFileName)
 {
-//    wxString old_title = Manager::Get()->GetAppWindow()->GetTitle(); // Fix for Bug #1389450
+    //    wxString old_title = Manager::Get()->GetAppWindow()->GetTitle(); // Fix for Bug #1389450
     // create a dummy file
-    if (!newFileName.IsEmpty() && !wxFileExists(newFileName) && wxDirExists(wxPathOnly(newFileName)))
+    if (!newFileName.IsEmpty() && !wxFileExists(newFileName)
+        && wxDirExists(wxPathOnly(newFileName)))
     {
         wxFile f(newFileName, wxFile::write);
         if (!f.IsOpened())
             return nullptr;
     }
-    cbEditor* ed = new cbEditor(m_pNotebook, newFileName, m_Theme);
-//    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
-//    {
-//        //DeletePage(ed->GetPageIndex());
-//        ed->Destroy();
-//        Manager::Get()->GetAppWindow()->SetTitle(old_title); // Though I can't reproduce the bug, this does no harm
-//        return 0;
-//    }
+    cbEditor *ed = new cbEditor(m_pNotebook, newFileName, m_Theme);
+    //    if ((newFileName.IsEmpty() && !ed->SaveAs()) || !ed->Save())
+    //    {
+    //        //DeletePage(ed->GetPageIndex());
+    //        ed->Destroy();
+    //        Manager::Get()->GetAppWindow()->SetTitle(old_title); // Though I can't reproduce the
+    //        bug, this does no harm return 0;
+    //    }
 
     // add default text
     wxString key;
@@ -509,17 +529,17 @@ cbEditor* EditorManager::New(const wxString& newFileName)
     return ed;
 }
 
-void EditorManager::AddCustomEditor(EditorBase* eb)
+void EditorManager::AddCustomEditor(EditorBase *eb)
 {
     AddEditorBase(eb);
 }
 
-void EditorManager::RemoveCustomEditor(EditorBase* eb)
+void EditorManager::RemoveCustomEditor(EditorBase *eb)
 {
     RemoveEditorBase(eb, false);
 }
 
-void EditorManager::AddEditorBase(EditorBase* eb)
+void EditorManager::AddEditorBase(EditorBase *eb)
 {
     int page = FindPageFromEditor(eb);
     if (page == -1)
@@ -530,7 +550,7 @@ void EditorManager::AddEditorBase(EditorBase* eb)
     }
 }
 
-void EditorManager::RemoveEditorBase(EditorBase* eb, cb_unused bool deleteObject)
+void EditorManager::RemoveEditorBase(EditorBase *eb, cb_unused bool deleteObject)
 {
     int page = FindPageFromEditor(eb);
     if (page != -1 && !Manager::IsAppShuttingDown())
@@ -540,14 +560,14 @@ void EditorManager::RemoveEditorBase(EditorBase* eb, cb_unused bool deleteObject
     //        eb->Destroy();
 }
 
-bool EditorManager::UpdateProjectFiles(cbProject* project)
+bool EditorManager::UpdateProjectFiles(cbProject *project)
 {
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
-        cbEditor* ed = InternalGetBuiltinEditor(i);
+        cbEditor *ed = InternalGetBuiltinEditor(i);
         if (!ed)
             continue;
-        ProjectFile* pf = ed->GetProjectFile();
+        ProjectFile *pf = ed->GetProjectFile();
         if (!pf)
             continue;
         if (pf->GetParentProject() != project)
@@ -563,11 +583,11 @@ bool EditorManager::UpdateProjectFiles(cbProject* project)
 bool EditorManager::CloseAll(bool dontsave)
 {
     EditorBase *startPage = GetEditor(_("Start here"));
-    std::vector<EditorBase*> editors;
+    std::vector<EditorBase *> editors;
     editors.reserve(m_pNotebook->GetPageCount());
     for (size_t ii = 0; ii < m_pNotebook->GetPageCount(); ++ii)
     {
-        EditorBase *eb = static_cast<EditorBase*>(m_pNotebook->GetPage(ii));
+        EditorBase *eb = static_cast<EditorBase *>(m_pNotebook->GetPage(ii));
         if (startPage != eb)
             editors.push_back(eb);
     }
@@ -578,16 +598,16 @@ bool EditorManager::QueryCloseAll()
 {
     for (int i = m_pNotebook->GetPageCount() - 1; i >= 0; --i)
     {
-        EditorBase* eb = InternalGetEditorBase(i);
+        EditorBase *eb = InternalGetEditorBase(i);
         if (eb && !QueryClose(eb))
             return false; // aborted
     }
     return true;
 }
 
-bool EditorManager::CloseAllExcept(EditorBase* editor, bool dontsave)
+bool EditorManager::CloseAllExcept(EditorBase *editor, bool dontsave)
 {
-    std::vector<EditorBase*> editors;
+    std::vector<EditorBase *> editors;
     editors.reserve(m_pNotebook->GetPageCount());
     for (size_t ii = 0; ii < m_pNotebook->GetPageCount(); ++ii)
         editors.push_back(InternalGetEditorBase(ii));
@@ -599,15 +619,15 @@ bool EditorManager::CloseAllExcept(EditorBase* editor, bool dontsave)
 
 bool EditorManager::CloseAllInTabCtrl(bool dontsave)
 {
-    std::vector<EditorBase*> editors;
+    std::vector<EditorBase *> editors;
     GetEditorsInTabCtrl(editors, GetActiveEditor());
 
     return CloseEditors(editors, dontsave);
 }
 
-bool EditorManager::CloseAllInTabCtrlExcept(EditorBase* editor, bool dontsave)
+bool EditorManager::CloseAllInTabCtrlExcept(EditorBase *editor, bool dontsave)
 {
-    std::vector<EditorBase*> editors;
+    std::vector<EditorBase *> editors;
     GetEditorsInTabCtrl(editors, GetActiveEditor());
 
     editors.erase(std::remove(editors.begin(), editors.end(), editor), editors.end());
@@ -615,25 +635,27 @@ bool EditorManager::CloseAllInTabCtrlExcept(EditorBase* editor, bool dontsave)
     return CloseEditors(editors, dontsave);
 }
 
-void EditorManager::GetEditorsInTabCtrl(std::vector<EditorBase*> &editors, EditorBase *editor)
+void EditorManager::GetEditorsInTabCtrl(std::vector<EditorBase *> &editors, EditorBase *editor)
 {
-    std::vector<wxWindow*> windows;
+    std::vector<wxWindow *> windows;
     m_pNotebook->GetPagesInTabCtrl(windows, editor);
     if (!windows.empty())
     {
         editors.reserve(windows.size());
-        for (std::vector<wxWindow*>::const_iterator it = windows.begin(); it != windows.end(); ++it)
-            editors.push_back(static_cast<EditorBase*>(*it));
+        for (std::vector<wxWindow *>::const_iterator it = windows.begin(); it != windows.end();
+             ++it)
+            editors.push_back(static_cast<EditorBase *>(*it));
     }
 }
 
-bool EditorManager::CloseEditors(const std::vector<EditorBase*> &editors, bool dontsave)
+bool EditorManager::CloseEditors(const std::vector<EditorBase *> &editors, bool dontsave)
 {
     if (!dontsave)
     {
-        for (std::vector<EditorBase*>::const_iterator it = editors.begin(); it != editors.end(); ++it)
+        for (std::vector<EditorBase *>::const_iterator it = editors.begin(); it != editors.end();
+             ++it)
         {
-            EditorBase* eb = *it;
+            EditorBase *eb = *it;
             if (eb && !QueryClose(eb))
                 return false; // aborted
         }
@@ -641,9 +663,10 @@ bool EditorManager::CloseEditors(const std::vector<EditorBase*> &editors, bool d
 
     m_pNotebook->Freeze();
     int count = editors.size();
-    for (std::vector<EditorBase*>::const_reverse_iterator it = editors.rbegin(); it != editors.rend(); ++it)
+    for (std::vector<EditorBase *>::const_reverse_iterator it = editors.rbegin();
+         it != editors.rend(); ++it)
     {
-        EditorBase* eb = *it;
+        EditorBase *eb = *it;
         if (eb && Close(eb, true))
             --count;
     }
@@ -664,7 +687,7 @@ bool EditorManager::QueryClose(EditorBase *ed)
     return ed->QueryClose();
 }
 
-int EditorManager::FindPageFromEditor(EditorBase* eb)
+int EditorManager::FindPageFromEditor(EditorBase *eb)
 {
     if (!m_pNotebook || !eb)
         return -1;
@@ -677,12 +700,12 @@ int EditorManager::FindPageFromEditor(EditorBase* eb)
     return -1;
 }
 
-bool EditorManager::Close(const wxString& filename, bool dontsave)
+bool EditorManager::Close(const wxString &filename, bool dontsave)
 {
     return Close(IsOpen(filename), dontsave);
 }
 
-bool EditorManager::Close(EditorBase* editor, bool dontsave)
+bool EditorManager::Close(EditorBase *editor, bool dontsave)
 {
     if (editor)
     {
@@ -700,15 +723,15 @@ bool EditorManager::Close(EditorBase* editor, bool dontsave)
 
 bool EditorManager::Close(int index, bool dontsave)
 {
-    EditorBase* ed = InternalGetEditorBase(index);
+    EditorBase *ed = InternalGetEditorBase(index);
     if (ed)
         return Close(ed, dontsave);
     return false;
 }
 
-bool EditorManager::Save(const wxString& filename)
+bool EditorManager::Save(const wxString &filename)
 {
-    EditorBase* ed = IsOpen(filename);
+    EditorBase *ed = IsOpen(filename);
     if (ed)
     {
         if (!ed->Save())
@@ -720,7 +743,7 @@ bool EditorManager::Save(const wxString& filename)
 
 bool EditorManager::Save(int index)
 {
-    EditorBase* ed = InternalGetEditorBase(index);
+    EditorBase *ed = InternalGetEditorBase(index);
     if (ed)
     {
         if (!ed->Save())
@@ -732,7 +755,7 @@ bool EditorManager::Save(int index)
 
 bool EditorManager::SaveActive()
 {
-    EditorBase* ed = GetActiveEditor();
+    EditorBase *ed = GetActiveEditor();
     if (ed)
     {
         if (!ed->Save())
@@ -744,7 +767,7 @@ bool EditorManager::SaveActive()
 
 bool EditorManager::SaveAs(int index)
 {
-    EditorBase* eb = InternalGetEditorBase(index);
+    EditorBase *eb = InternalGetEditorBase(index);
     if (!eb)
         return false;
     return eb->SaveAs();
@@ -752,7 +775,7 @@ bool EditorManager::SaveAs(int index)
 
 bool EditorManager::SaveActiveAs()
 {
-    EditorBase* eb = GetActiveEditor();
+    EditorBase *eb = GetActiveEditor();
     if (eb)
     {
         return eb->SaveAs();
@@ -764,7 +787,7 @@ bool EditorManager::SaveAll()
 {
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
-        EditorBase* ed = InternalGetEditorBase(i);
+        EditorBase *ed = InternalGetEditorBase(i);
         if (ed && ed->GetModified() && !ed->Save())
         {
             wxString msg;
@@ -780,21 +803,21 @@ void EditorManager::Print(PrintScope ps, PrintColourMode pcm, bool line_numbers)
 {
     switch (ps)
     {
-    case psAllOpenEditors:
+        case psAllOpenEditors:
         {
             for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
             {
-                cbEditor* ed = InternalGetBuiltinEditor(i);
+                cbEditor *ed = InternalGetBuiltinEditor(i);
                 if (ed)
                     ed->Print(false, pcm, line_numbers);
             }
             break;
         }
-    case psActiveEditor: // fall through
-    case psSelection:    // fall through
-    default:
+        case psActiveEditor: // fall through
+        case psSelection: // fall through
+        default:
         {
-            cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+            cbEditor *ed = GetBuiltinEditor(GetActiveEditor());
             if (ed)
                 ed->Print(ps == psSelection, pcm, line_numbers);
             break;
@@ -812,22 +835,25 @@ void EditorManager::CheckForExternallyModifiedFiles()
     wxArrayString failedFiles; // list of files failed to reload
     for (size_t i = 0; i < m_pNotebook->GetPageCount(); ++i)
     {
-        cbEditor* ed = InternalGetBuiltinEditor(i);
+        cbEditor *ed = InternalGetBuiltinEditor(i);
         bool b_modified = false;
 
         // no builtin editor or new file not yet saved
         if (!ed)
         {
-            EditorBase* eb = InternalGetEditorBase(i);
+            EditorBase *eb = InternalGetEditorBase(i);
             if (eb)
             {
-                ProjectFile* pf = nullptr;
+                ProjectFile *pf = nullptr;
 
                 wxFileName fn(eb->GetFilename());
                 fn.MakeAbsolute();
-                Manager::Get()->GetProjectManager()->FindProjectForFile(fn.GetFullPath(), &pf, false, false);
+                Manager::Get()->GetProjectManager()->FindProjectForFile(fn.GetFullPath(), &pf,
+                                                                        false, false);
 
-                bool readOnly = eb->IsReadOnly() || (fn.FileExists() && !wxFile::Access(fn.GetFullPath(), wxFile::write));
+                bool readOnly =
+                    eb->IsReadOnly()
+                    || (fn.FileExists() && !wxFile::Access(fn.GetFullPath(), wxFile::write));
                 MarkReadOnly(i, readOnly);
 
                 if (pf)
@@ -836,19 +862,23 @@ void EditorManager::CheckForExternallyModifiedFiles()
                     {
                         if (pf->GetFileState() != fvsMissing) // already asked
                         {
-                            // Find the window, that actually has the mouse-focus and force a release
-                            // prevents crash on windows or hang on wxGTK
-                            wxWindow* win = wxWindow::GetCapture();
+                            // Find the window, that actually has the mouse-focus and force a
+                            // release prevents crash on windows or hang on wxGTK
+                            wxWindow *win = wxWindow::GetCapture();
                             if (win)
                                 win->ReleaseMouse();
 
                             wxString msg;
-                            msg.Printf(_("%s has been deleted, or is no longer available.\n"
-                                         "Do you wish to try to save the file to disk?\n"
-                                         "If you close it, it will most likely be lost !\n"
-                                         "If you cancel this dialog, you have to take care yourself !\n"
-                                         "Yes: save the file, No: close it, Cancel: keep your fingers crossed."), eb->GetFilename().c_str());
-                            int ret = cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO | wxCANCEL );
+                            msg.Printf(
+                                _("%s has been deleted, or is no longer available.\n"
+                                  "Do you wish to try to save the file to disk?\n"
+                                  "If you close it, it will most likely be lost !\n"
+                                  "If you cancel this dialog, you have to take care yourself !\n"
+                                  "Yes: save the file, No: close it, Cancel: keep your fingers "
+                                  "crossed."),
+                                eb->GetFilename().c_str());
+                            int ret = cbMessageBox(msg, _("File changed!"),
+                                                   wxICON_QUESTION | wxYES_NO | wxCANCEL);
                             switch (ret)
                             {
                                 case wxID_YES:
@@ -871,7 +901,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
                         }
                     }
                     else
-                        pf->SetFileState(readOnly?fvsReadOnly:fvsNormal);
+                        pf->SetFileState(readOnly ? fvsReadOnly : fvsNormal);
                 }
                 continue;
             }
@@ -879,10 +909,10 @@ void EditorManager::CheckForExternallyModifiedFiles()
         if (!ed->IsOK())
             continue;
 
-        ProjectFile* pf = ed->GetProjectFile();
+        ProjectFile *pf = ed->GetProjectFile();
         if (pf)
         {
-            cbProject* prj = pf->GetParentProject();
+            cbProject *prj = pf->GetParentProject();
             if (prj && !prj->GetCheckForExternallyModifiedFiles())
                 continue;
         }
@@ -895,14 +925,15 @@ void EditorManager::CheckForExternallyModifiedFiles()
 
             // Find the window, that actually has the mouse-focus and force a release
             // prevents crash on windows or hang on wxGTK
-            wxWindow* win = wxWindow::GetCapture();
+            wxWindow *win = wxWindow::GetCapture();
             if (win)
                 win->ReleaseMouse();
 
             wxString msg;
             msg.Printf(_("%s has been deleted, or is no longer available.\n"
                          "Do you wish to keep the file open?\n"
-                         "Yes to keep the file, No to close it."), ed->GetFilename().c_str());
+                         "Yes to keep the file, No to close it."),
+                       ed->GetFilename().c_str());
             if (cbMessageBox(msg, _("File changed!"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
                 ed->SetModified(true);
             else
@@ -917,9 +948,9 @@ void EditorManager::CheckForExternallyModifiedFiles()
         wxFileName fname(ed->GetFilename());
         wxDateTime last = fname.GetModificationTime();
 
-        //File changed from RO -> RW?
-        if (ed->GetControl()->GetReadOnly() &&
-                wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
+        // File changed from RO -> RW?
+        if (ed->GetControl()->GetReadOnly()
+            && wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
         {
             b_modified = false;
             ed->SetReadOnly(false);
@@ -927,9 +958,9 @@ void EditorManager::CheckForExternallyModifiedFiles()
             if (pf)
                 pf->SetFileState(fvsNormal);
         }
-        //File changed from RW -> RO?
-        if (!ed->GetControl()->GetReadOnly() &&
-                !wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
+        // File changed from RW -> RO?
+        if (!ed->GetControl()->GetReadOnly()
+            && !wxFile::Access(ed->GetFilename().c_str(), wxFile::write))
         {
             b_modified = false;
             ed->SetReadOnly(true);
@@ -937,7 +968,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
             if (pf)
                 pf->SetFileState(fvsReadOnly);
         }
-        //File content changed?
+        // File content changed?
         if (last.IsLaterThan(ed->GetLastModificationTime()))
             b_modified = true;
 
@@ -948,7 +979,8 @@ void EditorManager::CheckForExternallyModifiedFiles()
             if (!reloadAll)
             {
                 wxString msg;
-                msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
+                msg.Printf(_("File %s is modified outside the IDE...\nDo you want to reload it "
+                             "(you will lose any unsaved work)?"),
                            ed->GetFilename().c_str());
                 ConfirmReplaceDlg dlg(Manager::Get()->GetAppWindow(), false, msg);
                 dlg.SetTitle(_("Reload file?"));
@@ -957,7 +989,7 @@ void EditorManager::CheckForExternallyModifiedFiles()
 
                 // Find the window, that actually has the mouse-focus and force a release
                 // prevents crash on windows or hang on wxGTK
-                wxWindow* win = wxWindow::GetCapture();
+                wxWindow *win = wxWindow::GetCapture();
                 if (win)
                     win->ReleaseMouse();
 
@@ -985,12 +1017,13 @@ void EditorManager::CheckForExternallyModifiedFiles()
     {
         // Find the window, that actually has the mouse-focus and force a release
         // prevents crash on windows or hang on wxGTK
-        wxWindow* win = wxWindow::GetCapture();
+        wxWindow *win = wxWindow::GetCapture();
         if (win)
             win->ReleaseMouse();
 
         wxString msg;
-        msg.Printf(_("Could not reload all files:\n\n%s"), GetStringFromArray(failedFiles, _T("\n")).c_str());
+        msg.Printf(_("Could not reload all files:\n\n%s"),
+                   GetStringFromArray(failedFiles, _T("\n")).c_str());
         cbMessageBox(msg, _("Error"), wxICON_ERROR);
     }
     m_isCheckingForExternallyModifiedFiles = false;
@@ -1000,13 +1033,17 @@ void EditorManager::MarkReadOnly(int page, bool readOnly)
 {
     if (page > -1)
     {
-        wxBitmap bmp = readOnly ? cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/") + _T("readonly.png")) : wxNullBitmap;
+        wxBitmap bmp =
+            readOnly
+                ? cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/") + _T("readonly.png"))
+                : wxNullBitmap;
         if (m_pNotebook)
             m_pNotebook->SetPageBitmap(page, bmp);
     }
 }
 
-bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate)
+bool EditorManager::IsHeaderSource(const wxFileName &candidateFile, const wxFileName &activeFile,
+                                   FileType ftActive, bool &isCandidate)
 {
     // Verify the base name matches
     if (candidateFile.GetName().CmpNoCase(activeFile.GetName()) == 0)
@@ -1018,23 +1055,28 @@ bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFile
         // If looking for a header we have a source OR
         // If looking for a source we have a header
         FileType ftTested = FileTypeOf(candidateFile.GetFullName());
-        if (    ((ftActive == ftHeader)         && (ftTested == ftSource))
-             || ((ftActive == ftSource)         && (ftTested == ftHeader))
-             || ((ftActive == ftHeader)         && (ftTested == ftTemplateSource))
-             || ((ftActive == ftTemplateSource) && (ftTested == ftHeader)) )
+        if (((ftActive == ftHeader) && (ftTested == ftSource))
+            || ((ftActive == ftSource) && (ftTested == ftHeader))
+            || ((ftActive == ftHeader) && (ftTested == ftTemplateSource))
+            || ((ftActive == ftTemplateSource) && (ftTested == ftHeader)))
         {
             // Handle the case where two files (in different directories) have the same name:
             // Example: A project file with three files dir1/file.h dir1/file.cpp dir2/file.h
             // If you are in dir2/file.h and you want to swap Code::Blocks will first look if there
             // isn't a file.h in that directory, which is in this case and would then ask the user
             // to create a new file.cpp in dir2
-            if (candidateFile.GetPath() != activeFile.GetPath()) // Check if we are not in the same Directory
+            if (candidateFile.GetPath()
+                != activeFile.GetPath()) // Check if we are not in the same Directory
             {
                 wxArrayString fileArray;
-                wxDir::GetAllFiles(candidateFile.GetPath(wxPATH_GET_VOLUME), &fileArray, candidateFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
-                for (unsigned i=0; i<fileArray.GetCount(); i++)                             // if in this directory there is already
-                    if (wxFileName(fileArray[i]).GetFullName() == activeFile.GetFullName()) // a header file (or source file) for our candidate
-                        return false;                                                       // file it can't be our candidate file
+                wxDir::GetAllFiles(candidateFile.GetPath(wxPATH_GET_VOLUME), &fileArray,
+                                   candidateFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+                for (unsigned i = 0; i < fileArray.GetCount();
+                     i++) // if in this directory there is already
+                    if (wxFileName(fileArray[i]).GetFullName()
+                        == activeFile
+                               .GetFullName()) // a header file (or source file) for our candidate
+                        return false; // file it can't be our candidate file
             }
             if (candidateFile.FileExists())
                 return true;
@@ -1043,7 +1085,8 @@ bool EditorManager::IsHeaderSource(const wxFileName& candidateFile, const wxFile
     return false;
 }
 
-wxFileName EditorManager::FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate)
+wxFileName EditorManager::FindHeaderSource(const wxArrayString &candidateFilesArray,
+                                           const wxFileName &activeFile, bool &isCandidate)
 {
     FileType ftActive = FileTypeOf(activeFile.GetFullName());
 
@@ -1084,14 +1127,17 @@ struct OpenContainingFolderData
     bool supportSelect;
 
     OpenContainingFolderData() : supportSelect(false) {}
-    OpenContainingFolderData(const wxString &command, bool select) : command(command), supportSelect(select) {}
+    OpenContainingFolderData(const wxString &command, bool select)
+      : command(command), supportSelect(select)
+    {
+    }
 };
 
 #if !defined(__WXMSW__) && !defined(__WXMAC__)
-/// Try to detect if the file browser used by the user is nautilus (either selected by xdg-open or manually specified).
-/// Newer versions of nautilus (3.0.2) support selecting files, so we modify the returned command to pass the --select
-/// flag.
-static OpenContainingFolderData detectNautilus(const wxString &command, ConfigManager* appConfig)
+/// Try to detect if the file browser used by the user is nautilus (either selected by xdg-open or
+/// manually specified). Newer versions of nautilus (3.0.2) support selecting files, so we modify
+/// the returned command to pass the --select flag.
+static OpenContainingFolderData detectNautilus(const wxString &command, ConfigManager *appConfig)
 {
     wxString fileManager;
 
@@ -1109,7 +1155,8 @@ static OpenContainingFolderData detectNautilus(const wxString &command, ConfigMa
     else
         fileManager = command;
 
-    Manager::Get()->GetLogManager()->DebugLog(F(wxT("File manager is: '%s'"), fileManager.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(
+        F(wxT("File manager is: '%s'"), fileManager.wx_str()));
     if (fileManager.find(wxT("nautilus")) == wxString::npos)
         return OpenContainingFolderData(command, false);
     // If the file manager ends with desktop then this is produced by xdg-mime.
@@ -1125,7 +1172,8 @@ static OpenContainingFolderData detectNautilus(const wxString &command, ConfigMa
     const wxString prefix(wxT("GNOME nautilus "));
 
     const wxString firstLine = output[0].Trim(true).Trim(false);
-    Manager::Get()->GetLogManager()->DebugLog(F(wxT("Nautilus version is: '%s'"), firstLine.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(
+        F(wxT("Nautilus version is: '%s'"), firstLine.wx_str()));
 
     if (firstLine.StartsWith(prefix))
     {
@@ -1148,19 +1196,19 @@ static OpenContainingFolderData detectNautilus(const wxString &command, ConfigMa
 
 bool EditorManager::OpenContainingFolder()
 {
-    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+    cbEditor *ed = GetBuiltinEditor(GetActiveEditor());
     if (!ed)
         return false;
 
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("app"));
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
     const wxString &command = cfg->Read(_T("open_containing_folder"), cbDEFAULT_OPEN_FOLDER_CMD);
 #if defined __WXMSW__ || defined __WXMAC__
     OpenContainingFolderData cmdData(command, true);
 #else
-    OpenContainingFolderData cmdData=detectNautilus(command, cfg);
+    OpenContainingFolderData cmdData = detectNautilus(command, cfg);
 #endif
 
-    const wxString& fullPath = ed->GetFilename();
+    const wxString &fullPath = ed->GetFilename();
     cmdData.command << wxT(" ");
     if (!cmdData.supportSelect)
     {
@@ -1173,14 +1221,14 @@ bool EditorManager::OpenContainingFolder()
         cmdData.command << fullPath;
 
     wxExecute(cmdData.command);
-    Manager::Get()->GetLogManager()->DebugLog(F(wxT("Executing command to open folder: '%s'"),
-                                                cmdData.command.wx_str()));
+    Manager::Get()->GetLogManager()->DebugLog(
+        F(wxT("Executing command to open folder: '%s'"), cmdData.command.wx_str()));
     return true;
 }
 
 bool EditorManager::SwapActiveHeaderSource()
 {
-    cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
+    cbEditor *ed = GetBuiltinEditor(GetActiveEditor());
     if (!ed)
         return false;
 
@@ -1192,13 +1240,13 @@ bool EditorManager::SwapActiveHeaderSource()
     if (ft != ftHeader && ft != ftSource && ft != ftTemplateSource)
         return false;
 
-    cbProject* project = nullptr;
+    cbProject *project = nullptr;
 
     // if the file in question belongs to a different open project,
     // then use that project instead.
     // this fixes locating the file's pair in a workspace when the active file
     // does not belong to the active project.
-    ProjectFile* opf = ed->GetProjectFile();
+    ProjectFile *opf = ed->GetProjectFile();
     if (opf)
         project = opf->GetParentProject();
 
@@ -1213,7 +1261,8 @@ bool EditorManager::SwapActiveHeaderSource()
 
     // find all files with the same name as the active file, but with possibly different extension
     // search in the directory of the active file:
-    wxDir::GetAllFiles(theFile.GetPath(wxPATH_GET_VOLUME), &fileArray, theFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+    wxDir::GetAllFiles(theFile.GetPath(wxPATH_GET_VOLUME), &fileArray, theFile.GetName() + _T(".*"),
+                       wxDIR_FILES | wxDIR_HIDDEN);
 
     // try to find the header/source in the list
     wxFileName currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
@@ -1224,8 +1273,8 @@ bool EditorManager::SwapActiveHeaderSource()
     }
     else if (currentCandidateFile.IsOk())
     {
-        cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-        if (newEd!=nullptr) // we found and were able to open it
+        cbEditor *newEd = Open(currentCandidateFile.GetFullPath());
+        if (newEd != nullptr) // we found and were able to open it
             return true; // --> RETURN;
     }
 
@@ -1235,11 +1284,11 @@ bool EditorManager::SwapActiveHeaderSource()
     fileArray.Clear();
     for (int i = 0; i < GetEditorsCount(); ++i)
     {
-        cbEditor* edit = GetBuiltinEditor(GetEditor(i));
+        cbEditor *edit = GetBuiltinEditor(GetEditor(i));
         if (!edit)
             continue;
 
-        ProjectFile* pf = edit->GetProjectFile();
+        ProjectFile *pf = edit->GetProjectFile();
         if (!pf)
             continue;
 
@@ -1251,8 +1300,8 @@ bool EditorManager::SwapActiveHeaderSource()
 
     if (!isCandidate && currentCandidateFile.IsOk())
     {
-        cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-        if (newEd!=nullptr) // we found and were able to open it
+        cbEditor *newEd = Open(currentCandidateFile.GetFullPath());
+        if (newEd != nullptr) // we found and were able to open it
             return true; // --> RETURN;
     }
 
@@ -1262,9 +1311,10 @@ bool EditorManager::SwapActiveHeaderSource()
 
         // build a list of project files
         fileArray.Clear();
-        for (FilesList::iterator it = project->GetFilesList().begin(); it != project->GetFilesList().end(); ++it)
+        for (FilesList::iterator it = project->GetFilesList().begin();
+             it != project->GetFilesList().end(); ++it)
         {
-            ProjectFile* pf = *it;
+            ProjectFile *pf = *it;
             if (!pf)
                 continue;
 
@@ -1280,8 +1330,8 @@ bool EditorManager::SwapActiveHeaderSource()
         }
         else if (currentCandidateFile.IsOk())
         {
-            cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-            if (newEd!=nullptr) // we found and were able to open it
+            cbEditor *newEd = Open(currentCandidateFile.GetFullPath());
+            if (newEd != nullptr) // we found and were able to open it
                 return true; // --> RETURN;
         }
 
@@ -1293,12 +1343,13 @@ bool EditorManager::SwapActiveHeaderSource()
         // get targets include dirs
         for (int i = 0; i < project->GetBuildTargetsCount(); ++i)
         {
-            ProjectBuildTarget* target = project->GetBuildTarget(i);
+            ProjectBuildTarget *target = project->GetBuildTarget(i);
             if (target)
             {
                 for (unsigned int ti = 0; ti < target->GetIncludeDirs().GetCount(); ++ti)
                 {
-                    // TODO (Morten#5#): target include dirs might override project include dirs, take append/prepend option into account
+                    // TODO (Morten#5#): target include dirs might override project include dirs,
+                    // take append/prepend option into account
                     wxString dir = target->GetIncludeDirs()[ti];
                     if (dirs.Index(dir) == wxNOT_FOUND)
                         dirs.Add(dir);
@@ -1316,12 +1367,15 @@ bool EditorManager::SwapActiveHeaderSource()
             if (!dname.IsAbsolute())
             {
                 dname.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, project->GetBasePath());
-    //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to '%s'."), dname.GetFullPath().c_str()));
+                //            Manager::Get()->GetLogManager()->DebugLog(F(_T("Normalizing dir to
+                //            '%s'."), dname.GetFullPath().c_str()));
             }
 
             fileArray.Clear();
-            // find all files inside the directory with the same name as the active file, but with possibly different extension
-            wxDir::GetAllFiles(dname.GetPath(), &fileArray, theFile.GetName() + _T(".*"), wxDIR_FILES | wxDIR_HIDDEN);
+            // find all files inside the directory with the same name as the active file, but with
+            // possibly different extension
+            wxDir::GetAllFiles(dname.GetPath(), &fileArray, theFile.GetName() + _T(".*"),
+                               wxDIR_FILES | wxDIR_HIDDEN);
             // try to find the header/source in the list
             currentCandidateFile = FindHeaderSource(fileArray, theFile, isCandidate);
 
@@ -1331,64 +1385,68 @@ bool EditorManager::SwapActiveHeaderSource()
             }
             else if (currentCandidateFile.IsOk())
             {
-                cbEditor* newEd = Open(currentCandidateFile.GetFullPath());
-                if (newEd!=nullptr) // we found and were able to open it
+                cbEditor *newEd = Open(currentCandidateFile.GetFullPath());
+                if (newEd != nullptr) // we found and were able to open it
                     return true; // --> RETURN;
             }
         }
     }
 
-    // candidateFile is header/source whose extension does not match the capitalization of the active file
+    // candidateFile is header/source whose extension does not match the capitalization of the
+    // active file
     // - open it if nothing better is found
     if (candidateFile.IsOk())
     {
-        cbEditor* newEd = Open(candidateFile.GetFullPath());
-        if (newEd!=nullptr) // we found and were able to open it
+        cbEditor *newEd = Open(candidateFile.GetFullPath());
+        if (newEd != nullptr) // we found and were able to open it
             return true; // --> RETURN;
     }
 
     // nothing else worked, try to find source-source pairs of auto-generated files
     if (opf)
     {
-        ProjectFile* candidatePF = opf->AutoGeneratedBy();
+        ProjectFile *candidatePF = opf->AutoGeneratedBy();
         if (!candidatePF && !opf->generatedFiles.empty())
             candidatePF = opf->generatedFiles.front();
         if (candidatePF)
         {
-            cbEditor* newEd = Open(candidatePF->file.GetFullPath());
-            if (newEd!=nullptr) // we found and were able to open it
+            cbEditor *newEd = Open(candidatePF->file.GetFullPath());
+            if (newEd != nullptr) // we found and were able to open it
                 return true; // --> RETURN;
         }
     }
 
     // We couldn't find the file, maybe it does not exist. Ask the user if we
     // should create it:
-    if (cbMessageBox(_("The file seems not to exist. Do you want to create it?"),
-                _("Error"), wxICON_QUESTION | wxYES_NO) == wxID_YES)
+    if (cbMessageBox(_("The file seems not to exist. Do you want to create it?"), _("Error"),
+                     wxICON_QUESTION | wxYES_NO)
+        == wxID_YES)
     {
         project = Manager::Get()->GetProjectManager()->GetActiveProject();
         if (project)
             wxSetWorkingDirectory(project->GetBasePath());
 
         // Create a suggestion for the new file name:
-        if      (ft == ftHeader)
+        if (ft == ftHeader)
             theFile.SetExt(FileFilters::CPP_EXT);
         else if (ft == ftSource || ft == ftTemplateSource)
             theFile.SetExt(FileFilters::H_EXT);
         // else? Well, if the filename is not changed we could possibly
         // overwrite an existing file with our suggestion.
 
-        cbEditor* newEd = New(theFile.GetFullPath());
+        cbEditor *newEd = New(theFile.GetFullPath());
         if (project)
         {
             if (cbMessageBox(_("Do you want to add this new file in the active project?"),
-                        _("Add file to project"),
-                        wxYES_NO | wxICON_QUESTION) == wxID_YES)
+                             _("Add file to project"), wxYES_NO | wxICON_QUESTION)
+                == wxID_YES)
             {
                 wxArrayInt targets;
-                if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(), project, targets) != 0)
+                if (Manager::Get()->GetProjectManager()->AddFileToProject(newEd->GetFilename(),
+                                                                          project, targets)
+                    != 0)
                 {
-                    ProjectFile* pf = project->GetFileByFilename(newEd->GetFilename(), false);
+                    ProjectFile *pf = project->GetFileByFilename(newEd->GetFilename(), false);
                     newEd->SetProjectFile(pf);
                     Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
                 }
@@ -1403,10 +1461,10 @@ bool EditorManager::SwapActiveHeaderSource()
     return false;
 }
 
-void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
+void EditorManager::OnGenericContextMenuHandler(wxCommandEvent &event)
 {
-    EditorBase* eb = GetActiveEditor();
-    cbEditor* ed = GetBuiltinEditor(eb);
+    EditorBase *eb = GetActiveEditor();
+    cbEditor *ed = GetBuiltinEditor(eb);
     int id = event.GetId();
 
     if (id == idNBTabSplitHorz && ed)
@@ -1423,12 +1481,12 @@ void EditorManager::OnGenericContextMenuHandler(wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
+void EditorManager::OnPageChanged(wxAuiNotebookEvent &event)
 {
-    EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetSelection()));
-    EditorBase* eb_old = nullptr;
-    if (event.GetOldSelection()!=-1)
-        eb_old = static_cast<EditorBase*>(m_pNotebook->GetPage(event.GetOldSelection()));
+    EditorBase *eb = static_cast<EditorBase *>(m_pNotebook->GetPage(event.GetSelection()));
+    EditorBase *eb_old = nullptr;
+    if (event.GetOldSelection() != -1)
+        eb_old = static_cast<EditorBase *>(m_pNotebook->GetPage(event.GetOldSelection()));
 
     CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, nullptr, eb, nullptr, eb_old);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
@@ -1436,11 +1494,12 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
     CodeBlocksEvent evt2(cbEVT_EDITOR_ACTIVATED, -1, nullptr, eb);
     Manager::Get()->GetPluginManager()->NotifyPlugins(evt2);
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(
+            _T("/environment/tabs_stacked_based_switching")))
     {
-        wxWindow*        wnd;
-        cbNotebookStack* body;
-        cbNotebookStack* tmp;
+        wxWindow *wnd;
+        cbNotebookStack *body;
+        cbNotebookStack *tmp;
         wnd = m_pNotebook->GetPage(event.GetSelection());
         for (body = m_pNotebookStackHead; body->next != nullptr; body = body->next)
         {
@@ -1455,8 +1514,7 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
                 break;
             }
         }
-        if (   (m_pNotebookStackHead->next == nullptr)
-            || (wnd != m_pNotebookStackHead->next->window) )
+        if ((m_pNotebookStackHead->next == nullptr) || (wnd != m_pNotebookStackHead->next->window))
         {
             body = new cbNotebookStack(wnd);
             body->next = m_pNotebookStackHead->next;
@@ -1471,32 +1529,32 @@ void EditorManager::OnPageChanged(wxAuiNotebookEvent& event)
     event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnPageChanging(wxAuiNotebookEvent& event)
+void EditorManager::OnPageChanging(wxAuiNotebookEvent &event)
 {
     int old_sel = event.GetOldSelection();
     if (old_sel != -1 && static_cast<size_t>(old_sel) < m_pNotebook->GetPageCount())
     {
-        EditorBase* eb = static_cast<EditorBase*>(m_pNotebook->GetPage(old_sel));
+        EditorBase *eb = static_cast<EditorBase *>(m_pNotebook->GetPage(old_sel));
         CodeBlocksEvent evt(cbEVT_EDITOR_DEACTIVATED, -1, nullptr, eb);
         Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
     }
     event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
+void EditorManager::OnPageClose(wxAuiNotebookEvent &event)
 {
     int sel = event.GetSelection();
     bool doClose = false;
-    EditorBase* eb = nullptr;
+    EditorBase *eb = nullptr;
     if (sel != -1)
     {
         // veto it in any case, so we can handle the page delete or remove ourselves
         event.Veto();
-        eb = static_cast<EditorBase*>(m_pNotebook->GetPage(sel));
+        eb = static_cast<EditorBase *>(m_pNotebook->GetPage(sel));
         if (QueryClose(eb))
         {
             doClose = true;
-            if (m_pNotebook->GetPageCount()<=1)
+            if (m_pNotebook->GetPageCount() <= 1)
             {
                 CodeBlocksEvent evt(cbEVT_EDITOR_SWITCHED, -1, nullptr, nullptr, nullptr, eb);
                 Manager::Get()->GetPluginManager()->NotifyPlugins(evt);
@@ -1504,11 +1562,12 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         }
     }
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/tabs_stacked_based_switching")))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(
+            _T("/environment/tabs_stacked_based_switching")))
     {
-        wxWindow* wnd;
-        cbNotebookStack* body;
-        cbNotebookStack* tmp;
+        wxWindow *wnd;
+        cbNotebookStack *body;
+        cbNotebookStack *tmp;
         wnd = m_pNotebook->GetPage(event.GetSelection());
         for (body = m_pNotebookStackHead; body->next != nullptr; body = body->next)
         {
@@ -1529,25 +1588,27 @@ void EditorManager::OnPageClose(wxAuiNotebookEvent& event)
         event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
+void EditorManager::OnPageContextMenu(wxAuiNotebookEvent &event)
 {
     if (event.GetSelection() == -1)
         return;
 
     if (wxGetKeyState(WXK_CONTROL) && GetEditorsCount() > 1)
     {
-        wxMenu* pop = new wxMenu;
-        EditorBase* current = GetActiveEditor();
+        wxMenu *pop = new wxMenu;
+        EditorBase *current = GetActiveEditor();
         for (int i = 0; i < EditorMaxSwitchTo && i < GetEditorsCount(); ++i)
         {
-            EditorBase* other = GetEditor(i);
+            EditorBase *other = GetEditor(i);
             if (!other)
                 continue;
-            const wxString name = (other->GetModified() ? wxT("*") : wxEmptyString) + other->GetShortName();
+            const wxString name =
+                (other->GetModified() ? wxT("*") : wxEmptyString) + other->GetShortName();
             if (other == current)
             {
                 pop->AppendCheckItem(wxID_ANY, name); // do nothing if the current tab is selected
-                pop->FindItemByPosition(pop->GetMenuItemCount() - 1)->Check(); // and mark it as active
+                pop->FindItemByPosition(pop->GetMenuItemCount() - 1)
+                    ->Check(); // and mark it as active
             }
             else
                 pop->Append(idNBSwitchFile1 + i, name);
@@ -1557,9 +1618,10 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
         return;
     }
 
-    // select the notebook that sends the event, because the context menu-entries act on the actual selected tab
+    // select the notebook that sends the event, because the context menu-entries act on the actual
+    // selected tab
     m_pNotebook->SetSelection(event.GetSelection());
-    wxMenu* pop = new wxMenu;
+    wxMenu *pop = new wxMenu;
     pop->Append(idNBTabClose, _("Close"));
     pop->Append(idNBTabCloseAll, _("Close all"));
     pop->Append(idNBTabCloseAllOthers, _("Close all others"));
@@ -1572,9 +1634,9 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     }
 
     int any_modified = 0;
-    for (int i = 0; i<GetEditorsCount(); ++i)
+    for (int i = 0; i < GetEditorsCount(); ++i)
     {
-        EditorBase* ed = GetEditor(i);
+        EditorBase *ed = GetEditor(i);
         if (ed && ed->GetModified())
         {
             if (++any_modified > 1)
@@ -1597,7 +1659,7 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     }
 
     pop->AppendSeparator();
-    cbEditor* ed = GetBuiltinEditor(event.GetSelection());
+    cbEditor *ed = GetBuiltinEditor(event.GetSelection());
     if (ed)
     {
         pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
@@ -1606,14 +1668,15 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
         pop->AppendSeparator();
     }
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"), false))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/editor_tabs_bottom"),
+                                                              false))
         pop->Append(idNBTabTop, _("Tabs at top"));
     else
         pop->Append(idNBTabBottom, _("Tabs at bottom"));
 
     if (ed)
     {
-        wxMenu* splitMenu = new wxMenu;
+        wxMenu *splitMenu = new wxMenu;
         if (ed->GetSplitType() != cbEditor::stHorizontal)
             splitMenu->Append(idNBTabSplitHorz, _("Horizontally (top-bottom)"));
         if (ed->GetSplitType() != cbEditor::stVertical)
@@ -1647,42 +1710,42 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     delete pop;
 }
 
-void EditorManager::OnClose(cb_unused wxCommandEvent& event)
+void EditorManager::OnClose(cb_unused wxCommandEvent &event)
 {
     Close(GetActiveEditor());
 }
 
-void EditorManager::OnCloseAll(cb_unused wxCommandEvent& event)
+void EditorManager::OnCloseAll(cb_unused wxCommandEvent &event)
 {
     CloseAllInTabCtrl();
 }
 
-void EditorManager::OnCloseAllOthers(cb_unused wxCommandEvent& event)
+void EditorManager::OnCloseAllOthers(cb_unused wxCommandEvent &event)
 {
     CloseAllInTabCtrlExcept(GetActiveEditor());
 }
 
-void EditorManager::OnSave(cb_unused wxCommandEvent& event)
+void EditorManager::OnSave(cb_unused wxCommandEvent &event)
 {
     Save(m_pNotebook->GetSelection());
 }
 
-void EditorManager::OnSaveAll(cb_unused wxCommandEvent& event)
+void EditorManager::OnSaveAll(cb_unused wxCommandEvent &event)
 {
     SaveAll();
 }
 
-void EditorManager::OnSwapHeaderSource(cb_unused wxCommandEvent& event)
+void EditorManager::OnSwapHeaderSource(cb_unused wxCommandEvent &event)
 {
     SwapActiveHeaderSource();
 }
 
-void EditorManager::OnOpenContainingFolder(cb_unused wxCommandEvent& event)
+void EditorManager::OnOpenContainingFolder(cb_unused wxCommandEvent &event)
 {
     OpenContainingFolder();
 }
 
-void EditorManager::OnTabPosition(wxCommandEvent& event)
+void EditorManager::OnTabPosition(wxCommandEvent &event)
 {
     long style = m_pNotebook->GetWindowStyleFlag();
     style &= ~wxAUI_NB_BOTTOM;
@@ -1693,13 +1756,14 @@ void EditorManager::OnTabPosition(wxCommandEvent& event)
     m_pNotebook->Refresh();
 
     // (style & wxAUI_NB_BOTTOM) saves info only about the the tabs position
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"),       (bool)(style & wxAUI_NB_BOTTOM));
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/editor_tabs_bottom"),
+                                                       (bool)(style & wxAUI_NB_BOTTOM));
 }
 
-void EditorManager::OnProperties(cb_unused wxCommandEvent& event)
+void EditorManager::OnProperties(cb_unused wxCommandEvent &event)
 {
-    cbEditor* ed = GetBuiltinActiveEditor();
-    ProjectFile* pf = nullptr;
+    cbEditor *ed = GetBuiltinActiveEditor();
+    ProjectFile *pf = nullptr;
     if (ed)
         pf = ed->GetProjectFile();
     if (pf)
@@ -1712,7 +1776,7 @@ void EditorManager::OnProperties(cb_unused wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnAddFileToProject(cb_unused wxCommandEvent& event)
+void EditorManager::OnAddFileToProject(cb_unused wxCommandEvent &event)
 {
     cbProject *project = Manager::Get()->GetProjectManager()->GetActiveProject();
     wxString fname = GetBuiltinActiveEditor()->GetFilename();
@@ -1720,16 +1784,17 @@ void EditorManager::OnAddFileToProject(cb_unused wxCommandEvent& event)
     wxArrayInt targets;
     if (Manager::Get()->GetProjectManager()->AddFileToProject(fname, project, targets) != 0)
     {
-        ProjectFile* pf = project->GetFileByFilename(fname, false);
+        ProjectFile *pf = project->GetFileByFilename(fname, false);
         GetBuiltinActiveEditor()->SetProjectFile(pf);
         Manager::Get()->GetProjectManager()->GetUI().RebuildTree();
     }
 }
 
-void EditorManager::OnRemoveFileFromProject(cb_unused wxCommandEvent& event)
+void EditorManager::OnRemoveFileFromProject(cb_unused wxCommandEvent &event)
 {
-    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
-    if (pf) // should be in any case, otherwise something went wrong between popup menu creation and here
+    ProjectFile *pf = GetBuiltinActiveEditor()->GetProjectFile();
+    if (pf) // should be in any case, otherwise something went wrong between popup menu creation and
+            // here
     {
         cbProject *project = pf->GetParentProject();
         Manager::Get()->GetProjectManager()->RemoveFileFromProject(pf, project);
@@ -1737,9 +1802,9 @@ void EditorManager::OnRemoveFileFromProject(cb_unused wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent& event)
+void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent &event)
 {
-    ProjectFile* pf = GetBuiltinActiveEditor()->GetProjectFile();
+    ProjectFile *pf = GetBuiltinActiveEditor()->GetProjectFile();
     if (pf)
     {
         cbProjectManagerUI &ui = Manager::Get()->GetProjectManager()->GetUI();
@@ -1748,17 +1813,17 @@ void EditorManager::OnShowFileInTree(cb_unused wxCommandEvent& event)
     }
 }
 
-void EditorManager::OnAppDoneStartup(wxCommandEvent& event)
+void EditorManager::OnAppDoneStartup(wxCommandEvent &event)
 {
     event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnAppStartShutdown(wxCommandEvent& event)
+void EditorManager::OnAppStartShutdown(wxCommandEvent &event)
 {
     event.Skip(); // allow others to process it too
 }
 
-void EditorManager::OnCheckForModifiedFiles(cb_unused wxCommandEvent& event)
+void EditorManager::OnCheckForModifiedFiles(cb_unused wxCommandEvent &event)
 {
     CheckForExternallyModifiedFiles();
 }
@@ -1775,13 +1840,13 @@ void EditorManager::ShowNotebook()
         m_pNotebook->Show();
 }
 
-void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
+void EditorManager::OnUpdateUI(wxUpdateUIEvent &event)
 {
     /* Don't process UpdateUI event when the app is closing.
      * It may crash C::B */
     if (!Manager::Get()->IsAppShuttingDown() && m_pData->m_SetFocusFlag)
     {
-        cbEditor* ed = GetBuiltinActiveEditor();
+        cbEditor *ed = GetBuiltinActiveEditor();
         if (ed)
             ed->GetControl()->SetFocus();
         m_pData->m_SetFocusFlag = false;
@@ -1792,42 +1857,45 @@ void EditorManager::OnUpdateUI(wxUpdateUIEvent& event)
     event.Skip();
 }
 
-void EditorManager::CollectDefines(CodeBlocksEvent& event)
+void EditorManager::CollectDefines(CodeBlocksEvent &event)
 {
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if (   !prj
-        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/track_preprocessor"),  true)
-        || !Manager::Get()->GetConfigManager(wxT("editor"))->ReadBool(wxT("/collect_prj_defines"), true) )
+    cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    if (!prj
+        || !Manager::Get()
+                ->GetConfigManager(wxT("editor"))
+                ->ReadBool(wxT("/track_preprocessor"), true)
+        || !Manager::Get()
+                ->GetConfigManager(wxT("editor"))
+                ->ReadBool(wxT("/collect_prj_defines"), true))
     {
         event.Skip();
         return;
     }
 
     wxArrayString compilerFlags = prj->GetCompilerOptions();
-    ProjectBuildTarget* tgt = prj->GetBuildTarget(prj->GetActiveBuildTarget());
-    FilesList* lst;
+    ProjectBuildTarget *tgt = prj->GetBuildTarget(prj->GetActiveBuildTarget());
+    FilesList *lst;
     wxString id;
     if (tgt)
     {
         AppendArray(tgt->GetCompilerOptions(), compilerFlags);
         lst = &tgt->GetFilesList();
-        id  = tgt->GetCompilerID();
+        id = tgt->GetCompilerID();
     }
     else
     {
         lst = &prj->GetFilesList();
-        id  = prj->GetCompilerID();
+        id = prj->GetCompilerID();
     }
 
-    Compiler* comp = CompilerFactory::GetCompiler(id); // get global flags
+    Compiler *comp = CompilerFactory::GetCompiler(id); // get global flags
     if (comp)
         AppendArray(comp->GetCompilerOptions(), compilerFlags);
 
     wxArrayString defines;
     for (size_t i = 0; i < compilerFlags.GetCount(); ++i)
     {
-        if (   compilerFlags[i].StartsWith(wxT("-D"))
-            || compilerFlags[i].StartsWith(wxT("/D")) )
+        if (compilerFlags[i].StartsWith(wxT("-D")) || compilerFlags[i].StartsWith(wxT("/D")))
         {
             defines.Add(compilerFlags[i].Mid(2));
         }
@@ -1835,11 +1903,11 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
         {
             wxString str = compilerFlags[i];
             ExpandBackticks(str);
-            str.Replace(wxT("`"), wxT(" ")); // remove any leftover backticks to prevent an infinite loop
+            str.Replace(wxT("`"),
+                        wxT(" ")); // remove any leftover backticks to prevent an infinite loop
             AppendArray(GetArrayFromString(str, wxT(" ")), compilerFlags);
         }
-        else if (   compilerFlags[i] == wxT("-ansi")
-                 || compilerFlags[i] == wxT("-std=c90")
+        else if (compilerFlags[i] == wxT("-ansi") || compilerFlags[i] == wxT("-std=c90")
                  || compilerFlags[i] == wxT("-std=c++98"))
         {
             defines.Add(wxT("__STRICT_ANSI__"));
@@ -1851,7 +1919,8 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
     {
         if ((*it)->relativeFilename.EndsWith(wxT(".c")))
         {
-            defines.RemoveAt(defines.GetCount() - 1); // do not define '__cplusplus' if even a single C file is found
+            defines.RemoveAt(defines.GetCount()
+                             - 1); // do not define '__cplusplus' if even a single C file is found
             break;
         }
     }
@@ -1964,16 +2033,18 @@ void EditorManager::CollectDefines(CodeBlocksEvent& event)
 
     m_Theme->SetKeywords(hlCpp, 4, keywords);
     const wxString key = wxT("/colour_sets/") + m_Theme->GetName() + wxT("/cc/");
-    Manager::Get()->GetConfigManager(wxT("editor"))->Write(key + wxT("editor/keywords/set4"), keywords);
+    Manager::Get()
+        ->GetConfigManager(wxT("editor"))
+        ->Write(key + wxT("editor/keywords/set4"), keywords);
     Manager::Get()->GetConfigManager(wxT("editor"))->Write(key + wxT("name"), wxT("C/C++"));
 
     // update open editors
     for (int index = 0; index < GetEditorsCount(); ++index)
     {
-        cbEditor* ed = GetBuiltinEditor(index);
-        if ( ed && (ed->GetLanguage() == hlCpp) )
+        cbEditor *ed = GetBuiltinEditor(index);
+        if (ed && (ed->GetLanguage() == hlCpp))
         {
-            cbStyledTextCtrl* stc = ed->GetControl();
+            cbStyledTextCtrl *stc = ed->GetControl();
             stc->SetKeyWords(4, keywords);
         }
     }
@@ -1989,4 +2060,3 @@ int EditorManager::GetZoom() const
 {
     return m_Zoom;
 }
-

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef PROJECTSFILEMASKSDLG_H
@@ -11,28 +11,29 @@
 
 class DLLIMPORT ProjectsFileMasksDlg : public wxScrollingDialog
 {
-    public:
-        ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam);
-        virtual ~ProjectsFileMasksDlg();
+public:
+    ProjectsFileMasksDlg(wxWindow *parent, FilesGroupsAndMasks *fgam);
+    virtual ~ProjectsFileMasksDlg();
 
-        void OnUpdateUI(wxUpdateUIEvent& event);
-        void OnAdd(wxCommandEvent& event);
-        void OnEdit(wxCommandEvent& event);
-        void OnDelete(wxCommandEvent& event);
-        void OnSetDefault(wxCommandEvent& event);
-        void OnListChanged(wxCommandEvent& event);
-    protected:
-    private:
-        void RebuildList();
-        void ListChange();
+    void OnUpdateUI(wxUpdateUIEvent &event);
+    void OnAdd(wxCommandEvent &event);
+    void OnEdit(wxCommandEvent &event);
+    void OnDelete(wxCommandEvent &event);
+    void OnSetDefault(wxCommandEvent &event);
+    void OnListChanged(wxCommandEvent &event);
 
-        virtual void EndModal(int retCode);
+protected:
+private:
+    void RebuildList();
+    void ListChange();
 
-        FilesGroupsAndMasks  m_FileGroupsAndMasksCopy;
-        FilesGroupsAndMasks* m_pFileGroupsAndMasks;
-        int                  m_LastListSelection;
+    virtual void EndModal(int retCode);
 
-        DECLARE_EVENT_TABLE();
+    FilesGroupsAndMasks m_FileGroupsAndMasksCopy;
+    FilesGroupsAndMasks *m_pFileGroupsAndMasks;
+    int m_LastListSelection;
+
+    DECLARE_EVENT_TABLE();
 };
 
 #endif // PROJECTSFILEMASKSDLG_H

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
 #ifndef CBSPLASH_SCREEN_H
@@ -13,16 +13,19 @@
 
 class cbSplashScreen : public wxFrame
 {
-  private:
+private:
     wxBitmap m_label;
-    wxTimer  m_timer;
-  public:
+    wxTimer m_timer;
+
+public:
     // A value of -1 for timeout makes it stay forever (you need to close it manually)
-    cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id, long style = wxSTAY_ON_TOP | wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED);
+    cbSplashScreen(wxBitmap &label, long timeout, wxWindow *parent, wxWindowID id,
+                   long style = wxSTAY_ON_TOP | wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED);
     ~cbSplashScreen();
 
     static void DrawReleaseInfo(wxDC &dc);
-  private:
+
+private:
     void DoPaint(wxDC &dc);
     void OnPaint(wxPaintEvent &);
     void OnTimer(wxTimerEvent &);
@@ -30,7 +33,7 @@ class cbSplashScreen : public wxFrame
     void OnChar(wxKeyEvent &);
     void OnMouseEvent(wxMouseEvent &event);
 
-  DECLARE_EVENT_TABLE()
+    DECLARE_EVENT_TABLE()
 };
 
 #endif // CBSPLASH_SCREEN_H

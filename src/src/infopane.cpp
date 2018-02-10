@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,11 +10,11 @@
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/menu.h>
-    #include "cbexception.h"
-    #include "globals.h"
-    #include "configmanager.h"
+#include <wx/event.h>
+#include <wx/menu.h>
+#include "cbexception.h"
+#include "globals.h"
+#include "configmanager.h"
 #endif
 
 #include <wx/wupdlock.h>
@@ -24,50 +24,49 @@
 
 namespace
 {
-    long idNB_TabTop               = wxNewId();
-    long idNB_TabBottom            = wxNewId();
+long idNB_TabTop = wxNewId();
+long idNB_TabBottom = wxNewId();
 
-    long idCopyAllToClipboard      = wxNewId();
-    long idCopySelectedToClipboard = wxNewId();
+long idCopyAllToClipboard = wxNewId();
+long idCopySelectedToClipboard = wxNewId();
 
-    long idWrapMode                = wxNewId();
-    long idClear                   = wxNewId();
+long idWrapMode = wxNewId();
+long idClear = wxNewId();
 
-    long idNB                      = wxNewId();
+long idNB = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(InfoPane, cbAuiNotebook)
-    EVT_MENU(idNB_TabTop,    InfoPane::OnTabPosition)
+    EVT_MENU(idNB_TabTop, InfoPane::OnTabPosition)
     EVT_MENU(idNB_TabBottom, InfoPane::OnTabPosition)
 
-    EVT_MENU_RANGE(idCopyAllToClipboard, idCopySelectedToClipboard,  InfoPane::OnCopy)
+    EVT_MENU_RANGE(idCopyAllToClipboard, idCopySelectedToClipboard, InfoPane::OnCopy)
 
     EVT_MENU(idWrapMode, InfoPane::OnWrapMode)
-    EVT_MENU(idClear,    InfoPane::OnClear)
-    EVT_MENU(wxID_ANY,   InfoPane::OnMenu)
+    EVT_MENU(idClear, InfoPane::OnClear)
+    EVT_MENU(wxID_ANY, InfoPane::OnMenu)
 
     EVT_CONTEXT_MENU(InfoPane::ContextMenu)
 
     EVT_AUINOTEBOOK_TAB_RIGHT_UP(idNB, InfoPane::OnTabContextMenu)
-    EVT_AUINOTEBOOK_PAGE_CLOSE(idNB,   InfoPane::OnCloseClicked)
+    EVT_AUINOTEBOOK_PAGE_CLOSE(idNB, InfoPane::OnCloseClicked)
 END_EVENT_TABLE()
 
-
-InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags)
+InfoPane::InfoPane(wxWindow *parent)
+  : cbAuiNotebook(parent, idNB, wxDefaultPosition, wxDefaultSize, infopane_flags)
 {
-    m_DefaultBitmap = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/edit_16x16.png"), wxBITMAP_TYPE_PNG);
+    m_DefaultBitmap = cbLoadBitmap(ConfigManager::GetDataFolder() + _T("/images/edit_16x16.png"),
+                                   wxBITMAP_TYPE_PNG);
 }
 
-InfoPane::~InfoPane()
-{
-}
+InfoPane::~InfoPane() {}
 
 wxString InfoPane::SaveTabOrder()
 {
     UpdateEffectiveTabOrder();
     m_Pages.Sort(&CompareIndexes);
     wxString layout;
-    for (size_t i = 0 ; i < m_Pages.GetCount(); ++i)
+    for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
         layout << m_Pages.Item(i)->title;
         layout << _T("=");
@@ -86,14 +85,14 @@ void InfoPane::LoadTabOrder(wxString layout)
 
     long selectedTab;
     theLayout.AfterLast('=').ToLong(&selectedTab);
-    theLayout.Remove(theLayout.Find('|',true));
+    theLayout.Remove(theLayout.Find('|', true));
     wxStringTokenizer strTok(theLayout, _T(";"));
     wxString title;
     while (strTok.HasMoreTokens())
     {
         wxString theToken = strTok.GetNextToken();
         title = theToken.BeforeFirst('=');
-        for (size_t j = 0; j < m_Pages.GetCount();++j)
+        for (size_t j = 0; j < m_Pages.GetCount(); ++j)
         {
             if (m_Pages.Item(j)->title == title)
             {
@@ -110,8 +109,8 @@ void InfoPane::LoadTabOrder(wxString layout)
 
 int InfoPane::CompareIndexes(Page **p1, Page **p2)
 {
-    int index1 = ((*p1)->indexInNB >= 0?(*p1)->indexInNB:~(*p1)->indexInNB);
-    int index2 = ((*p2)->indexInNB >= 0?(*p2)->indexInNB:~(*p2)->indexInNB);
+    int index1 = ((*p1)->indexInNB >= 0 ? (*p1)->indexInNB : ~(*p1)->indexInNB);
+    int index2 = ((*p2)->indexInNB >= 0 ? (*p2)->indexInNB : ~(*p2)->indexInNB);
     return index1 - index2;
 }
 
@@ -123,7 +122,7 @@ void InfoPane::ReorderTabs(CompareFunction cmp_f)
 
     cbAuiNotebook::Hide();
     int index = 0;
-    for (size_t i = 0 ; i < m_Pages.GetCount(); ++i)
+    for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
         int pageIndex = GetPageIndex(m_Pages.Item(i)->window);
         if (m_Pages.Item(i)->indexInNB < 0)
@@ -136,25 +135,26 @@ void InfoPane::ReorderTabs(CompareFunction cmp_f)
         else
         {
             if (pageIndex < 0)
-                AddPagePrivate(m_Pages.Item(i)->window, m_Pages.Item(i)->title, m_Pages.Item(i)->icon);
+                AddPagePrivate(m_Pages.Item(i)->window, m_Pages.Item(i)->title,
+                               m_Pages.Item(i)->icon);
             if (index++ != pageIndex)
-                MovePage(m_Pages.Item(i)->window, index );
+                MovePage(m_Pages.Item(i)->window, index);
         }
     }
     cbAuiNotebook::Show();
 }
 
-int InfoPane::AddPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon)
+int InfoPane::AddPagePrivate(wxWindow *p, const wxString &title, wxBitmap *icon)
 {
-    const wxBitmap& bmp = icon ? *icon : m_DefaultBitmap;
+    const wxBitmap &bmp = icon ? *icon : m_DefaultBitmap;
 
     AddPage(p, title, false, bmp);
     return GetPageCount() - 1;
 }
 
-bool InfoPane::InsertPagePrivate(wxWindow* p, const wxString& title, wxBitmap* icon, int index)
+bool InfoPane::InsertPagePrivate(wxWindow *p, const wxString &title, wxBitmap *icon, int index)
 {
-    const wxBitmap& bmp = icon ? *icon : m_DefaultBitmap;
+    const wxBitmap &bmp = icon ? *icon : m_DefaultBitmap;
 
     return InsertPage(index, p, title, false, bmp);
 }
@@ -165,8 +165,8 @@ void InfoPane::UpdateEffectiveTabOrder()
     {
         // only update for visible tabs
         if (m_Pages.Item(i)->indexInNB >= 0)
-            m_Pages.Item(i)->indexInNB = GetTabPositionFromIndex(GetPageIndex(m_Pages.Item(i)->window));
-
+            m_Pages.Item(i)->indexInNB =
+                GetTabPositionFromIndex(GetPageIndex(m_Pages.Item(i)->window));
     }
 }
 
@@ -175,10 +175,12 @@ void InfoPane::Toggle(size_t i)
     UpdateEffectiveTabOrder();
     if (m_Pages.Item(i)->indexInNB < 0)
     {
-        if (InsertPagePrivate(m_Pages.Item(i)->window, m_Pages.Item(i)->title, m_Pages.Item(i)->icon, ~m_Pages.Item(i)->indexInNB))
-            m_Pages.Item(i)->indexInNB = ~m_Pages.Item(i)->indexInNB ;
+        if (InsertPagePrivate(m_Pages.Item(i)->window, m_Pages.Item(i)->title,
+                              m_Pages.Item(i)->icon, ~m_Pages.Item(i)->indexInNB))
+            m_Pages.Item(i)->indexInNB = ~m_Pages.Item(i)->indexInNB;
         else
-            m_Pages.Item(i)->indexInNB = AddPagePrivate(m_Pages.Item(i)->window, m_Pages.Item(i)->title, m_Pages.Item(i)->icon);
+            m_Pages.Item(i)->indexInNB = AddPagePrivate(
+                m_Pages.Item(i)->window, m_Pages.Item(i)->title, m_Pages.Item(i)->icon);
     }
     else
     {
@@ -191,9 +193,9 @@ void InfoPane::Toggle(size_t i)
     }
 }
 
-int InfoPane::GetPageIndexByWindow(wxWindow* win)
+int InfoPane::GetPageIndexByWindow(wxWindow *win)
 {
-    for (size_t i=0; i < m_Pages.GetCount(); i++)
+    for (size_t i = 0; i < m_Pages.GetCount(); i++)
     {
         if (m_Pages.Item(i)->window == win)
             return i;
@@ -203,19 +205,19 @@ int InfoPane::GetPageIndexByWindow(wxWindow* win)
 
 int InfoPane::GetCurrentPage(bool &is_logger)
 {
-    int i = GetPageIndexByWindow( GetPage(GetSelection()) );
+    int i = GetPageIndexByWindow(GetPage(GetSelection()));
     is_logger = m_Pages.Item(i)->islogger;
     return (is_logger ? i : -1);
 }
 
-Logger* InfoPane::GetLogger(int index)
+Logger *InfoPane::GetLogger(int index)
 {
     if (index < 0 || (size_t)index > m_Pages.GetCount())
         return NULL;
     return m_Pages.Item(index)->islogger ? m_Pages.Item(index)->logger : NULL;
 }
 
-wxWindow* InfoPane::GetWindow(int index)
+wxWindow *InfoPane::GetWindow(int index)
 {
     if (index < 0 || (size_t)index > m_Pages.GetCount())
         return NULL;
@@ -233,7 +235,7 @@ void InfoPane::Show(size_t i)
         SetSelection(GetPageIndex(m_Pages.Item(i)->window));
 }
 
-void InfoPane::Hide(Logger* logger)
+void InfoPane::Hide(Logger *logger)
 {
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -246,7 +248,7 @@ void InfoPane::Hide(Logger* logger)
     }
 }
 
-void InfoPane::Show(Logger* logger)
+void InfoPane::Show(Logger *logger)
 {
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -261,7 +263,7 @@ void InfoPane::Show(Logger* logger)
     }
 }
 
-void InfoPane::HideNonLogger(wxWindow* p)
+void InfoPane::HideNonLogger(wxWindow *p)
 {
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -274,7 +276,7 @@ void InfoPane::HideNonLogger(wxWindow* p)
     }
 }
 
-void InfoPane::ShowNonLogger(wxWindow* p)
+void InfoPane::ShowNonLogger(wxWindow *p)
 {
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -289,37 +291,38 @@ void InfoPane::ShowNonLogger(wxWindow* p)
     }
 }
 
-
-void InfoPane::OnCopy(wxCommandEvent& event)
+void InfoPane::OnCopy(wxCommandEvent &event)
 {
-    int i = GetPageIndexByWindow( GetPage(GetSelection()) );
+    int i = GetPageIndexByWindow(GetPage(GetSelection()));
     if (m_Pages.Item(i)->islogger)
     {
-        if      (event.GetId() == idCopyAllToClipboard)
+        if (event.GetId() == idCopyAllToClipboard)
             m_Pages.Item(i)->logger->CopyContentsToClipboard(false);
         else if (event.GetId() == idCopySelectedToClipboard)
             m_Pages.Item(i)->logger->CopyContentsToClipboard(true);
     }
 }
 
-void InfoPane::OnWrapMode(cb_unused wxCommandEvent& event)
+void InfoPane::OnWrapMode(cb_unused wxCommandEvent &event)
 {
-    int i = GetPageIndexByWindow( GetPage(GetSelection()) );
-    if (m_Pages.Item(i)->islogger && m_Pages.Item(i)->logger->HasFeature(Logger::Feature::IsWrappable))
+    int i = GetPageIndexByWindow(GetPage(GetSelection()));
+    if (m_Pages.Item(i)->islogger
+        && m_Pages.Item(i)->logger->HasFeature(Logger::Feature::IsWrappable))
     {
-        TextCtrlLogger* tcl = static_cast<TextCtrlLogger*>(m_Pages.Item(i)->logger);
-        if (tcl) tcl->ToggleWrapMode();
+        TextCtrlLogger *tcl = static_cast<TextCtrlLogger *>(m_Pages.Item(i)->logger);
+        if (tcl)
+            tcl->ToggleWrapMode();
     }
 }
 
-void InfoPane::OnClear(cb_unused wxCommandEvent& event)
+void InfoPane::OnClear(cb_unused wxCommandEvent &event)
 {
-    int i = GetPageIndexByWindow( GetPage(GetSelection()) );
+    int i = GetPageIndexByWindow(GetPage(GetSelection()));
     if (m_Pages.Item(i)->islogger)
         m_Pages.Item(i)->logger->Clear();
 }
 
-void InfoPane::OnMenu(wxCommandEvent& event)
+void InfoPane::OnMenu(wxCommandEvent &event)
 {
     int eventID = event.GetId();
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
@@ -335,21 +338,22 @@ void InfoPane::OnMenu(wxCommandEvent& event)
     return;
 }
 
-void InfoPane::ContextMenu(cb_unused wxContextMenuEvent& event)
+void InfoPane::ContextMenu(cb_unused wxContextMenuEvent &event)
 {
     DoShowContextMenu();
 }
 
-void InfoPane::OnTabContextMenu(wxAuiNotebookEvent& event)
+void InfoPane::OnTabContextMenu(wxAuiNotebookEvent &event)
 {
     if (event.GetSelection() == -1)
         return;
-    // select the notebook that sends the event, because the context menu-entries act on the actual selected tab
+    // select the notebook that sends the event, because the context menu-entries act on the actual
+    // selected tab
     SetSelection(event.GetSelection());
     DoShowContextMenu();
 }
 
-void InfoPane::OnCloseClicked(wxAuiNotebookEvent& event)
+void InfoPane::OnCloseClicked(wxAuiNotebookEvent &event)
 {
     if (event.GetSelection() == -1)
         return;
@@ -357,7 +361,7 @@ void InfoPane::OnCloseClicked(wxAuiNotebookEvent& event)
     // this avoids an assert-message in debug-build (and wx2.9)
     event.Veto();
     // toggle the notebook, that sends the event
-    Toggle(GetPageIndexByWindow( GetPage(event.GetSelection())) );
+    Toggle(GetPageIndexByWindow(GetPage(event.GetSelection())));
 }
 
 void InfoPane::DoShowContextMenu()
@@ -368,15 +372,14 @@ void InfoPane::DoShowContextMenu()
     wxMenu menu;
 
     int selection = GetSelection();
-    if (   (selection >= 0)
-        && (selection < static_cast<int>(GetPageCount()))
-        && (m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->islogger) )
+    if ((selection >= 0) && (selection < static_cast<int>(GetPageCount()))
+        && (m_Pages.Item(GetPageIndexByWindow(GetPage(GetSelection())))->islogger))
     {
-        Logger* l = m_Pages.Item(GetPageIndexByWindow( GetPage(GetSelection()) ))->logger;
+        Logger *l = m_Pages.Item(GetPageIndexByWindow(GetPage(GetSelection())))->logger;
 
         if (l->HasFeature(Logger::Feature::CanCopy))
         {
-            menu.Append(idCopyAllToClipboard,      _("Copy contents to clipboard"));
+            menu.Append(idCopyAllToClipboard, _("Copy contents to clipboard"));
             menu.Append(idCopySelectedToClipboard, _("Copy selection to clipboard"));
         }
         bool needSeparator = true;
@@ -403,18 +406,20 @@ void InfoPane::DoShowContextMenu()
     if (menu.GetMenuItemCount() > 0)
         menu.AppendSeparator();
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/infopane_tabs_bottom"), false))
-    	menu.Append(idNB_TabTop, _("Tabs at top"));
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(
+            _T("/environment/infopane_tabs_bottom"), false))
+        menu.Append(idNB_TabTop, _("Tabs at top"));
     else
-    	menu.Append(idNB_TabBottom, _("Tabs at bottom"));
+        menu.Append(idNB_TabBottom, _("Tabs at bottom"));
 
     // add toggle sub-menu
-    wxMenu* view = new wxMenu;
+    wxMenu *view = new wxMenu;
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
         if (m_Pages.Item(i)->window)
         {
-            view->Append(m_Pages.Item(i)->eventID, m_Pages.Item(i)->title, wxEmptyString, wxITEM_CHECK);
+            view->Append(m_Pages.Item(i)->eventID, m_Pages.Item(i)->title, wxEmptyString,
+                         wxITEM_CHECK);
             view->Check(m_Pages.Item(i)->eventID, m_Pages.Item(i)->indexInNB >= 0);
         }
     }
@@ -427,7 +432,7 @@ void InfoPane::DoShowContextMenu()
     PopupMenu(&menu);
 }
 
-void InfoPane::OnTabPosition(wxCommandEvent& event)
+void InfoPane::OnTabPosition(wxCommandEvent &event)
 {
     long style = GetWindowStyleFlag();
     style &= ~wxAUI_NB_BOTTOM;
@@ -437,21 +442,22 @@ void InfoPane::OnTabPosition(wxCommandEvent& event)
     SetWindowStyleFlag(style);
     Refresh();
     // (style & wxAUI_NB_BOTTOM) saves info only about the the tabs position
-    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/infopane_tabs_bottom"), (bool)(style & wxAUI_NB_BOTTOM));
+    Manager::Get()->GetConfigManager(_T("app"))->Write(_T("/environment/infopane_tabs_bottom"),
+                                                       (bool)(style & wxAUI_NB_BOTTOM));
 }
 
-bool InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxBitmap* icon)
+bool InfoPane::AddLogger(Logger *logger, wxWindow *p, const wxString &title, wxBitmap *icon)
 {
     if (p)
     {
-        Page* pg      = new Page();
+        Page *pg = new Page();
         pg->indexInNB = AddPagePrivate(p, title, icon);
-        pg->window    = p;
-        pg->logger    = logger;
-        pg->icon      = icon;
-        pg->title     = title;
-        pg->eventID   = wxNewId();
-        pg->islogger  = true;
+        pg->window = p;
+        pg->logger = logger;
+        pg->icon = icon;
+        pg->title = title;
+        pg->eventID = wxNewId();
+        pg->islogger = true;
 
         m_Pages.Add(pg);
 
@@ -460,19 +466,19 @@ bool InfoPane::AddLogger(Logger* logger, wxWindow* p, const wxString& title, wxB
     return false;
 }
 
-bool InfoPane::AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon)
+bool InfoPane::AddNonLogger(wxWindow *p, const wxString &title, wxBitmap *icon)
 {
     if (p)
     {
         p->Reparent(this);
 
-        Page* pg      = new Page();
+        Page *pg = new Page();
         pg->indexInNB = AddPagePrivate(p, title, icon);
-        pg->window    = p;
-        pg->icon      = icon;
-        pg->title     = title;
-        pg->eventID   = wxNewId();
-        pg->islogger  = false;
+        pg->window = p;
+        pg->icon = icon;
+        pg->title = title;
+        pg->eventID = wxNewId();
+        pg->islogger = false;
 
         m_Pages.Add(pg);
 
@@ -481,8 +487,7 @@ bool InfoPane::AddNonLogger(wxWindow* p, const wxString& title, wxBitmap* icon)
     return false;
 }
 
-
-bool InfoPane::DeleteLogger(Logger* l)
+bool InfoPane::DeleteLogger(Logger *l)
 {
     if (!l)
         return false;
@@ -498,16 +503,16 @@ bool InfoPane::DeleteLogger(Logger* l)
             if (m_Pages.Item(i)->indexInNB >= 0)
                 DeletePage(GetPageIndex(m_Pages.Item(i)->window));
 
-            delete(m_Pages.Item(i));
+            delete (m_Pages.Item(i));
             m_Pages.RemoveAt(i);
             return true;
         }
     }
 
-   return false;
+    return false;
 }
 
-bool InfoPane::RemoveNonLogger(wxWindow* p)
+bool InfoPane::RemoveNonLogger(wxWindow *p)
 {
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -522,10 +527,10 @@ bool InfoPane::RemoveNonLogger(wxWindow* p)
         }
     }
 
-   return false;
+    return false;
 }
 
-bool InfoPane::DeleteNonLogger(wxWindow* p)
+bool InfoPane::DeleteNonLogger(wxWindow *p)
 {
     for (size_t i = 0; i < m_Pages.GetCount(); ++i)
     {
@@ -537,12 +542,11 @@ bool InfoPane::DeleteNonLogger(wxWindow* p)
             if (m_Pages.Item(i)->indexInNB >= 0)
                 DeletePage(GetPageIndex(m_Pages.Item(i)->window));
 
-            delete(m_Pages.Item(i));
+            delete (m_Pages.Item(i));
             m_Pages.RemoveAt(i);
             return true;
         }
     }
 
-   return false;
+    return false;
 }
-

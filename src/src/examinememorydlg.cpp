@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,13 +10,13 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/combobox.h>
-    #include <wx/intl.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/combobox.h>
+#include <wx/intl.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "cbplugin.h"
+#include "cbplugin.h"
 #endif
 
 #include "examinememorydlg.h"
@@ -28,10 +28,9 @@ BEGIN_EVENT_TABLE(ExamineMemoryDlg, wxPanel)
     EVT_TEXT_ENTER(XRCID("txtAddress"), ExamineMemoryDlg::OnGo)
 END_EVENT_TABLE()
 
-ExamineMemoryDlg::ExamineMemoryDlg(wxWindow* parent) :
-    m_LastRowStartingAddress(0)
+ExamineMemoryDlg::ExamineMemoryDlg(wxWindow *parent) : m_LastRowStartingAddress(0)
 {
-    //ctor
+    // ctor
     if (!wxXmlResource::Get()->LoadPanel(this, parent, _T("MemoryDumpPanel")))
         return;
     m_pText = XRCCTRL(*this, "txtDump", wxTextCtrl);
@@ -81,14 +80,14 @@ int ExamineMemoryDlg::GetBytes()
     return a;
 }
 
-void ExamineMemoryDlg::AddError(const wxString& err)
+void ExamineMemoryDlg::AddError(const wxString &err)
 {
     m_pText->AppendText(err + _T('\n'));
 }
 
-void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
+void ExamineMemoryDlg::AddHexByte(const wxString &addr, const wxString &hexbyte)
 {
-//    m_pDbg->Log(_T("AddHexByte(") + addr + _T(", ") + hexbyte + _T(')'));
+    //    m_pDbg->Log(_T("AddHexByte(") + addr + _T(", ") + hexbyte + _T(')'));
     int bcmod = m_ByteCounter % 16;
 
     if (m_LastRowStartingAddress == 0)
@@ -102,13 +101,14 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
         addr.ToULong(&m_LastRowStartingAddress, 16);
     }
 
-#define HEX_OFFSET(a) (a*3)
-#define CHAR_OFFSET(a) (16*3 + 3 + a)
+#define HEX_OFFSET(a) (a * 3)
+#define CHAR_OFFSET(a) (16 * 3 + 3 + a)
 
     unsigned long hb;
     hexbyte.ToULong(&hb, 16);
-//    m_pDbg->Log(wxString::Format(_T("hb=%d, [0]=%c, [1]=%c"), hb, hexbyte[0], hexbyte[1]));
-//    m_pDbg->Log(wxString::Format(_T("HEX_OFFSET(bcmod)=%d, CHAR_OFFSET(bcmod)=%d"), HEX_OFFSET(bcmod), CHAR_OFFSET(bcmod)));
+    //    m_pDbg->Log(wxString::Format(_T("hb=%d, [0]=%c, [1]=%c"), hb, hexbyte[0], hexbyte[1]));
+    //    m_pDbg->Log(wxString::Format(_T("HEX_OFFSET(bcmod)=%d, CHAR_OFFSET(bcmod)=%d"),
+    //    HEX_OFFSET(bcmod), CHAR_OFFSET(bcmod)));
     m_LineText[HEX_OFFSET(bcmod)] = hexbyte[0];
     m_LineText[HEX_OFFSET(bcmod) + 1] = hexbyte[1];
     m_LineText[CHAR_OFFSET(bcmod)] = hb >= 32 ? wxChar(hb) : wxChar(_T('.'));
@@ -124,16 +124,18 @@ void ExamineMemoryDlg::AddHexByte(const wxString& addr, const wxString& hexbyte)
 
         unsigned long a;
         addr.ToULong(&a, 16);
-        m_pText->AppendText(wxString::Format(_T("0x%lx: %.67s"), m_LastRowStartingAddress, m_LineText));
+        m_pText->AppendText(
+            wxString::Format(_T("0x%lx: %.67s"), m_LastRowStartingAddress, m_LineText));
         for (int i = 0; i < 67; ++i)
             m_LineText[i] = _T(' ');
         // update starting address for next row
-        // add 8 bytes: addr is the start address of the second 8-byte chunk of this line, so next line is +8
+        // add 8 bytes: addr is the start address of the second 8-byte chunk of this line, so next
+        // line is +8
         m_LastRowStartingAddress = a + 8;
     }
 }
 
-void ExamineMemoryDlg::OnGo(cb_unused wxCommandEvent& event)
+void ExamineMemoryDlg::OnGo(cb_unused wxCommandEvent &event)
 {
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
 
@@ -158,5 +160,4 @@ void ExamineMemoryDlg::SetBaseAddress(const wxString &addr)
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     if (plugin)
         plugin->RequestUpdate(cbDebuggerPlugin::ExamineMemory);
-
 }

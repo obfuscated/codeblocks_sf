@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,9 +10,9 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 #endif
 
 #include "genericmultilinenotesdlg.h"
@@ -21,12 +21,13 @@ BEGIN_EVENT_TABLE(GenericMultiLineNotesDlg, wxScrollingDialog)
     //
 END_EVENT_TABLE()
 
-GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow* parent, const wxString& caption, const wxString& notes, bool readOnly)
-    : m_Notes(notes),
-    m_ReadOnly(readOnly)
+GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow *parent, const wxString &caption,
+                                                   const wxString &notes, bool readOnly)
+  : m_Notes(notes), m_ReadOnly(readOnly)
 {
-    //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiLineNotes"),_T("wxScrollingDialog"));
+    // ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiLineNotes"),
+                                     _T("wxScrollingDialog"));
     SetTitle(caption);
 
     wxTextCtrl *notesCtrl = XRCCTRL(*this, "txtNotes", wxTextCtrl);
@@ -35,7 +36,7 @@ GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow* parent, const wxStr
     if (m_ReadOnly)
     {
         notesCtrl->SetEditable(false);
-        if (wxWindow* win = FindWindowById(wxID_CANCEL, this))
+        if (wxWindow *win = FindWindowById(wxID_CANCEL, this))
         {
             win->Enable(false);
         }
@@ -49,7 +50,7 @@ GenericMultiLineNotesDlg::GenericMultiLineNotesDlg(wxWindow* parent, const wxStr
 
 GenericMultiLineNotesDlg::~GenericMultiLineNotesDlg()
 {
-    //dtor
+    // dtor
 }
 
 void GenericMultiLineNotesDlg::EndModal(int retCode)

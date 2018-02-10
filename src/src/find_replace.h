@@ -8,29 +8,29 @@ class cbSearchResultsLog;
 
 class FindReplace
 {
-    public:
-        FindReplace();
-        ~FindReplace();
+public:
+    FindReplace();
+    ~FindReplace();
 
-        void CreateSearchLog();
+    void CreateSearchLog();
 
-        int ShowFindDialog(bool replace,  bool explicitly_find_in_files = false);
-        int FindNext(bool goingDown, cbStyledTextCtrl* control, cbFindReplaceData* data, bool selected);
-        int FindSelectedText(bool goingDown);
+    int ShowFindDialog(bool replace, bool explicitly_find_in_files = false);
+    int FindNext(bool goingDown, cbStyledTextCtrl *control, cbFindReplaceData *data, bool selected);
+    int FindSelectedText(bool goingDown);
 
-    private:
-        void LogSearch(const wxString& file, int line, const wxString& lineText);
+private:
+    void LogSearch(const wxString &file, int line, const wxString &lineText);
 
-        void CalculateFindReplaceStartEnd(cbStyledTextCtrl* control, cbFindReplaceData* data, bool replace = false);
-        int Find(cbStyledTextCtrl* control, cbFindReplaceData* data);
-        int FindInFiles(cbFindReplaceData* data);
-        int Replace(cbStyledTextCtrl* control, cbFindReplaceData* data);
-        int ReplaceInFiles(cbFindReplaceData* data);
+    void CalculateFindReplaceStartEnd(cbStyledTextCtrl *control, cbFindReplaceData *data,
+                                      bool replace = false);
+    int Find(cbStyledTextCtrl *control, cbFindReplaceData *data);
+    int FindInFiles(cbFindReplaceData *data);
+    int Replace(cbStyledTextCtrl *control, cbFindReplaceData *data);
+    int ReplaceInFiles(cbFindReplaceData *data);
 
-    private:
-        cbFindReplaceData   *m_LastFindReplaceData;
-        cbSearchResultsLog  *m_pSearchLog;
+private:
+    cbFindReplaceData *m_LastFindReplaceData;
+    cbSearchResultsLog *m_pSearchLog;
 };
 
 #endif // _CODEBLOCKS_SRC_FIND_REPLACE_H_
-

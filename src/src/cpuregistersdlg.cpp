@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -18,11 +18,12 @@ BEGIN_EVENT_TABLE(CPURegistersDlg, wxPanel)
 //    EVT_BUTTON(XRCID("btnRefresh"), CPURegistersDlg::OnRefresh)
 END_EVENT_TABLE()
 
-CPURegistersDlg::CPURegistersDlg(wxWindow* parent) :
-    wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
+CPURegistersDlg::CPURegistersDlg(wxWindow *parent)
+  : wxPanel(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize)
 {
-    wxBoxSizer* sizer = new wxBoxSizer(wxVERTICAL);
-    m_pList = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxLC_REPORT | wxLC_SINGLE_SEL);
+    wxBoxSizer *sizer = new wxBoxSizer(wxVERTICAL);
+    m_pList = new wxListCtrl(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                             wxLC_REPORT | wxLC_SINGLE_SEL);
     sizer->Add(m_pList, 1, wxGROW);
     SetSizer(sizer);
     Layout();
@@ -44,7 +45,7 @@ void CPURegistersDlg::Clear()
     m_pList->Thaw();
 }
 
-int CPURegistersDlg::RegisterIndex(const wxString& reg_name)
+int CPURegistersDlg::RegisterIndex(const wxString &reg_name)
 {
     for (int i = 0; i < m_pList->GetItemCount(); ++i)
     {
@@ -54,7 +55,8 @@ int CPURegistersDlg::RegisterIndex(const wxString& reg_name)
     return -1;
 }
 
-void CPURegistersDlg::SetRegisterValue(const wxString& reg_name, const wxString& hexValue, const wxString& interpreted)
+void CPURegistersDlg::SetRegisterValue(const wxString &reg_name, const wxString &hexValue,
+                                       const wxString &interpreted)
 {
     // find existing register
     int idx = RegisterIndex(reg_name);

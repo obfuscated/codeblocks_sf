@@ -1,14 +1,14 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
 // sdk.h must be the first include in the file to work as a PCH
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include "cbeditor.h"
-    #include "editormanager.h"
+#include "cbeditor.h"
+#include "editormanager.h"
 #endif
 
 #include "debugger_interface_creator.h"
@@ -45,7 +45,7 @@ DebugInterfaceFactory::~DebugInterfaceFactory()
     Manager::Get()->RemoveAllEventSinksFor(this);
 }
 
-cbBacktraceDlg* DebugInterfaceFactory::CreateBacktrace()
+cbBacktraceDlg *DebugInterfaceFactory::CreateBacktrace()
 {
     BacktraceDlg *dialog = new BacktraceDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
@@ -66,7 +66,7 @@ void DebugInterfaceFactory::DeleteBacktrace(cbBacktraceDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-cbBreakpointsDlg* DebugInterfaceFactory::CreateBreapoints()
+cbBreakpointsDlg *DebugInterfaceFactory::CreateBreapoints()
 {
     BreakpointsDlg *dialog = new BreakpointsDlg;
 
@@ -88,7 +88,7 @@ void DebugInterfaceFactory::DeleteBreakpoints(cbBreakpointsDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-cbCPURegistersDlg* DebugInterfaceFactory::CreateCPURegisters()
+cbCPURegistersDlg *DebugInterfaceFactory::CreateCPURegisters()
 {
     CPURegistersDlg *dialog = new CPURegistersDlg(Manager::Get()->GetAppWindow());
 
@@ -110,7 +110,7 @@ void DebugInterfaceFactory::DeleteCPURegisters(cbCPURegistersDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-cbDisassemblyDlg* DebugInterfaceFactory::CreateDisassembly()
+cbDisassemblyDlg *DebugInterfaceFactory::CreateDisassembly()
 {
     DisassemblyDlg *dialog = new DisassemblyDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
@@ -132,7 +132,7 @@ void DebugInterfaceFactory::DeleteDisassembly(cbDisassemblyDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-cbExamineMemoryDlg* DebugInterfaceFactory::CreateMemory()
+cbExamineMemoryDlg *DebugInterfaceFactory::CreateMemory()
 {
     ExamineMemoryDlg *dialog = new ExamineMemoryDlg(Manager::Get()->GetAppWindow());
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
@@ -153,7 +153,7 @@ void DebugInterfaceFactory::DeleteMemory(cbExamineMemoryDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-cbThreadsDlg* DebugInterfaceFactory::CreateThreads()
+cbThreadsDlg *DebugInterfaceFactory::CreateThreads()
 {
     ThreadsDlg *dialog = new ThreadsDlg(Manager::Get()->GetAppWindow());
 
@@ -175,7 +175,7 @@ void DebugInterfaceFactory::DeleteThreads(cbThreadsDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-cbWatchesDlg* DebugInterfaceFactory::CreateWatches()
+cbWatchesDlg *DebugInterfaceFactory::CreateWatches()
 {
     WatchesDlg *dialog = new WatchesDlg;
     CodeBlocksDockEvent evt(cbEVT_ADD_DOCK_WINDOW);
@@ -196,7 +196,8 @@ void DebugInterfaceFactory::DeleteWatches(cbWatchesDlg *dialog)
         RemoveDockWindow(dialog->GetWindow());
 }
 
-bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, const wxRect &rect)
+bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch,
+                                             const wxRect &rect)
 {
     delete m_tooltip;
     m_tooltip = nullptr;
@@ -212,7 +213,7 @@ bool DebugInterfaceFactory::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watc
 #endif
         // hide any other tooltips
         EditorBase *base = Manager::Get()->GetEditorManager()->GetActiveEditor();
-        cbEditor *ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor*>(base) : nullptr;
+        cbEditor *ed = base && base->IsBuiltinEditor() ? static_cast<cbEditor *>(base) : nullptr;
         if (ed && ed->GetControl()->CallTipActive())
             ed->GetControl()->CallTipCancel();
 

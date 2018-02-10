@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 /*
@@ -10,7 +10,8 @@
  * Implements behaviour identical to synchronous wxExecute, but uses *safe* yields
  * and is aware of application shutdowns (will stop polling and send SIGTERM to other process).
  *
- * Can be used in place of wxExecute to avoid possible wxYield() reentrancy problems (code completion and tool manager?)
+ * Can be used in place of wxExecute to avoid possible wxYield() reentrancy problems (code
+ * completion and tool manager?)
  */
 
 #ifndef CBEXECUTE
@@ -25,11 +26,12 @@ class cbExecuteProcess : public wxProcess
 
     wxArrayString *std_out;
     wxArrayString *std_err;
-    bool           running;
-    int            exitCode;
+    bool running;
+    int exitCode;
 
 public:
-    cbExecuteProcess(wxArrayString* out, wxArrayString* err) : std_out(out), std_err(err), running(true)
+    cbExecuteProcess(wxArrayString *out, wxArrayString *err)
+      : std_out(out), std_err(err), running(true)
     {
         Redirect();
     };
@@ -45,7 +47,7 @@ public:
             wxTextInputStream t_stream_stdout(*stream_stdout);
             wxTextInputStream t_stream_stderr(*stream_stderr);
 
-            while (! stream_stdout->Eof() )
+            while (!stream_stdout->Eof())
             {
                 line = t_stream_stdout.ReadLine();
                 std_out->Add(line);
@@ -53,7 +55,7 @@ public:
 
             if (std_err)
             {
-                while (! stream_stderr->Eof() )
+                while (!stream_stderr->Eof())
                 {
                     line = t_stream_stderr.ReadLine();
                     std_err->Add(line);
@@ -69,18 +71,11 @@ public:
         running = false;
     }
 
-    bool Running()
-    {
-        return running;
-    };
-    bool ExitCode()
-    {
-        return exitCode;
-    };
-
+    bool Running() { return running; };
+    bool ExitCode() { return exitCode; };
 };
 
-inline long cbSyncExecute(const wxString& command, wxArrayString& output, wxArrayString& error)
+inline long cbSyncExecute(const wxString &command, wxArrayString &output, wxArrayString &error)
 {
     cbExecuteProcess process(&output, &error);
 
@@ -99,7 +94,7 @@ inline long cbSyncExecute(const wxString& command, wxArrayString& output, wxArra
     return process.ExitCode();
 }
 
-inline long cbSyncExecute(const wxString& command, wxArrayString& output)
+inline long cbSyncExecute(const wxString &command, wxArrayString &output)
 {
     cbExecuteProcess process(&output, 0);
 

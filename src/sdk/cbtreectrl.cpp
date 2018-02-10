@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,14 +10,14 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/event.h>
-    #include <wx/filename.h>
-    #include <wx/gdicmn.h> // wxPoint
-    #include <wx/string.h>
-    #include <wx/treebase.h> // wxTreeItemId
+#include <wx/event.h>
+#include <wx/filename.h>
+#include <wx/gdicmn.h> // wxPoint
+#include <wx/string.h>
+#include <wx/treebase.h> // wxTreeItemId
 
-    #include "cbproject.h" // FileTreeData
-    #include "projectfile.h"
+#include "cbproject.h" // FileTreeData
+#include "projectfile.h"
 #endif
 
 IMPLEMENT_DYNAMIC_CLASS(cbTreeCtrl, wxTreeCtrl)
@@ -34,8 +34,8 @@ cbTreeCtrl::cbTreeCtrl() : wxTreeCtrl()
     Compare = &filesSort;
 }
 
-cbTreeCtrl::cbTreeCtrl(wxWindow* parent, int id) :
-    wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
+cbTreeCtrl::cbTreeCtrl(wxWindow *parent, int id)
+  : wxTreeCtrl(parent, id, wxDefaultPosition, wxDefaultSize,
                wxTR_EDIT_LABELS | wxTR_HAS_BUTTONS | wxTR_MULTIPLE | wxBORDER_NONE)
 {
     Compare = &filesSort;
@@ -44,13 +44,13 @@ cbTreeCtrl::cbTreeCtrl(wxWindow* parent, int id) :
 void cbTreeCtrl::SetCompareFunction(const int ptvs)
 {
     // sort list of files
-    if ( !(ptvs & ptvsUseFolders) && (ptvs & ptvsHideFolderName) )
+    if (!(ptvs & ptvsUseFolders) && (ptvs & ptvsHideFolderName))
         Compare = &filesSortNameOnly;
     else
         Compare = &filesSort;
 }
 
-wxTreeItemId cbTreeCtrl::GetPrevVisible(const wxTreeItemId& item) const
+wxTreeItemId cbTreeCtrl::GetPrevVisible(const wxTreeItemId &item) const
 {
     wxTreeItemId previous = GetPrevSibling(item);
     if (previous.IsOk())
@@ -74,7 +74,7 @@ wxTreeItemId cbTreeCtrl::GetPrevVisible(const wxTreeItemId& item) const
     Under wxGTK, wxTreeCtrl is not sending an EVT_COMMAND_RIGHT_CLICK
     event when right-clicking on the client area.
 */
-void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
+void cbTreeCtrl::OnRightClick(wxMouseEvent &event)
 {
     int flags;
     HitTest(wxPoint(event.GetX(), event.GetY()), flags);
@@ -92,10 +92,10 @@ void cbTreeCtrl::OnRightClick(wxMouseEvent& event)
     Under all platforms there is no reaction when pressing "ENTER".
     Expected would be e.g. to open the file in an editor.
 */
-void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
+void cbTreeCtrl::OnKeyDown(wxKeyEvent &event)
 {
     // Don't care about special key combinations
-    if (event.GetModifiers()!=wxMOD_NONE)
+    if (event.GetModifiers() != wxMOD_NONE)
     {
         event.Skip();
         return;
@@ -103,16 +103,16 @@ void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
 
     wxArrayTreeItemIds selections;
     // Don't care if no selection has been made
-    if ( GetSelections(selections)<1 )
+    if (GetSelections(selections) < 1)
     {
         event.Skip();
         return;
     }
 
-    long         keycode = event.GetKeyCode();
-    wxTreeItemId itemId  = selections[0];
+    long keycode = event.GetKeyCode();
+    wxTreeItemId itemId = selections[0];
     // Don't care if item is invalid
-    if ( !itemId.IsOk() )
+    if (!itemId.IsOk())
     {
         event.Skip();
         return;
@@ -132,21 +132,22 @@ void cbTreeCtrl::OnKeyDown(wxKeyEvent& event)
     }
 }
 
-/*static*/ int cbTreeCtrl::filesSort(const ProjectFile* arg1, const ProjectFile* arg2)
+/*static*/ int cbTreeCtrl::filesSort(const ProjectFile *arg1, const ProjectFile *arg2)
 {
     if (arg1 && arg2)
         return wxStricmp(arg1->file.GetFullPath(), arg2->file.GetFullPath());
     return 0;
 }
 
-/*static*/ int cbTreeCtrl::filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2)
+/*static*/ int cbTreeCtrl::filesSortNameOnly(const ProjectFile *arg1, const ProjectFile *arg2)
 {
     if (arg1 && arg2)
         return wxStricmp(arg1->file.GetFullName(), arg2->file.GetFullName());
     return 0;
 }
 
-int cbTreeCtrl::OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2)
+int cbTreeCtrl::OnCompareItems(const wxTreeItemId &item1, const wxTreeItemId &item2)
 {
-    return Compare(((FileTreeData*)GetItemData(item1))->GetProjectFile(), ((FileTreeData*)GetItemData(item2))->GetProjectFile());
+    return Compare(((FileTreeData *)GetItemData(item1))->GetProjectFile(),
+                   ((FileTreeData *)GetItemData(item2))->GetProjectFile());
 }

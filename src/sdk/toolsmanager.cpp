@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,28 +10,30 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/process.h>
-    #include <wx/menu.h>
-    #include <wx/msgdlg.h>
+#include <wx/intl.h>
+#include <wx/process.h>
+#include <wx/menu.h>
+#include <wx/msgdlg.h>
 
-    #include "toolsmanager.h"
-    #include "manager.h"
-    #include "macrosmanager.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "configmanager.h"
-    #include "pipedprocess.h"
-    #include "globals.h"
-    #include "sdk_events.h"
+#include "toolsmanager.h"
+#include "manager.h"
+#include "macrosmanager.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "configmanager.h"
+#include "pipedprocess.h"
+#include "globals.h"
+#include "sdk_events.h"
 #endif
 
 #include <wx/mdi.h>
 #include <wx/listimpl.cpp>
 #include "configuretoolsdlg.h"
 
-template<> ToolsManager* Mgr<ToolsManager>::instance = nullptr;
-template<> bool  Mgr<ToolsManager>::isShutdown = false;
+template<>
+ToolsManager *Mgr<ToolsManager>::instance = nullptr;
+template<>
+bool Mgr<ToolsManager>::isShutdown = false;
 
 WX_DEFINE_LIST(ToolsList);
 
@@ -48,10 +50,7 @@ BEGIN_EVENT_TABLE(ToolsManager, wxEvtHandler)
     EVT_PIPEDPROCESS_TERMINATED(idToolProcess, ToolsManager::OnToolTerminated)
 END_EVENT_TABLE()
 
-ToolsManager::ToolsManager()
-    : m_Menu(nullptr),
-    m_pProcess(nullptr),
-    m_Pid(0)
+ToolsManager::ToolsManager() : m_Menu(nullptr), m_pProcess(nullptr), m_Pid(0)
 {
     LoadTools();
     Manager::Get()->GetAppWindow()->PushEventHandler(this);
@@ -61,7 +60,7 @@ ToolsManager::~ToolsManager()
 {
     // this is a core manager, so it is removed when the app is shutting down.
     // in this case, the app has already un-hooked us, so no need to do it ourselves...
-//    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
+    //    Manager::Get()->GetAppWindow()->RemoveEventHandler(this);
 
     m_ItemsManager.Clear();
 
@@ -70,21 +69,17 @@ ToolsManager::~ToolsManager()
     m_Tools.Clear();
 }
 
-void ToolsManager::CreateMenu(cb_unused wxMenuBar* menuBar)
-{
-}
+void ToolsManager::CreateMenu(cb_unused wxMenuBar *menuBar) {}
 
-void ToolsManager::ReleaseMenu(cb_unused wxMenuBar* menuBar)
-{
-}
+void ToolsManager::ReleaseMenu(cb_unused wxMenuBar *menuBar) {}
 
-bool ToolsManager::Execute(const cbTool* tool)
+bool ToolsManager::Execute(const cbTool *tool)
 {
     if (m_pProcess)
     {
         cbMessageBox(_("Another tool is currently executing.\n"
-                        "Please allow for it to finish before launching another tool..."),
-                        _("Error"), wxICON_ERROR);
+                       "Please allow for it to finish before launching another tool..."),
+                     _("Error"), wxICON_ERROR);
         return false;
     }
 
@@ -107,12 +102,13 @@ bool ToolsManager::Execute(const cbTool* tool)
     {
 #ifndef __WXMSW__
         // for non-win platforms, use m_ConsoleTerm to run the console app
-        wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"), DEFAULT_CONSOLE_TERM);
+        wxString term = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_terminal"),
+                                                                          DEFAULT_CONSOLE_TERM);
         term.Replace(_T("$TITLE"), _T("'") + tool->GetName() + _T("'"));
         cmdline << term << _T(" ");
-        #define CONSOLE_RUNNER "cb_console_runner"
+#define CONSOLE_RUNNER "cb_console_runner"
 #else
-        #define CONSOLE_RUNNER "cb_console_runner.exe"
+#define CONSOLE_RUNNER "cb_console_runner.exe"
 #endif
         wxString baseDir = ConfigManager::GetExecutableFolder();
         if (wxFileExists(baseDir + wxT("/" CONSOLE_RUNNER)))
@@ -123,18 +119,21 @@ bool ToolsManager::Execute(const cbTool* tool)
         // if they didn't specify $SCRIPT, append:
         cmdline << cmd;
 
-    if(!(Manager::Get()->GetMacrosManager()))
+    if (!(Manager::Get()->GetMacrosManager()))
         return false; // We cannot afford the Macros Manager to fail here!
                       // What if it failed already?
     wxSetWorkingDirectory(dir);
 
     // log info so user can troubleshoot
     dir = wxGetCwd(); // read in the actual working dir
-    #if wxCHECK_VERSION(3, 0, 0)
-    Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"), tool->GetName().wx_str(), cmdline.wx_str(), dir.wx_str()));
-    #else
-    Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"), tool->GetName().c_str(), cmdline.c_str(), dir.c_str()));
-    #endif
+#if wxCHECK_VERSION(3, 0, 0)
+    Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"),
+                                           tool->GetName().wx_str(), cmdline.wx_str(),
+                                           dir.wx_str()));
+#else
+    Manager::Get()->GetLogManager()->Log(F(_("Launching tool '%s': %s (in %s)"),
+                                           tool->GetName().c_str(), cmdline.c_str(), dir.c_str()));
+#endif
 
     bool pipe = true;
     int flags = wxEXEC_ASYNC;
@@ -162,14 +161,15 @@ bool ToolsManager::Execute(const cbTool* tool)
 
         if (!pid)
         {
-            cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"),
+                         wxICON_ERROR);
             return false;
         }
         else
         {
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
-            Manager::Get()->ProcessEvent(evtSwitch);        // switch to default log
-         }
+            Manager::Get()->ProcessEvent(evtSwitch); // switch to default log
+        }
     }
     else
     {
@@ -178,7 +178,8 @@ bool ToolsManager::Execute(const cbTool* tool)
 
         if (!m_Pid)
         {
-            cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"), wxICON_ERROR);
+            cbMessageBox(_("Couldn't execute tool. Check the log for details."), _("Error"),
+                         wxICON_ERROR);
             delete m_pProcess;
             m_pProcess = nullptr;
             m_Pid = 0;
@@ -187,14 +188,14 @@ bool ToolsManager::Execute(const cbTool* tool)
         else
         {
             CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, LogManager::app_log);
-            Manager::Get()->ProcessEvent(evtSwitch);        // switch to default log
+            Manager::Get()->ProcessEvent(evtSwitch); // switch to default log
         }
     }
 
     return true;
 } // end of Execute
 
-void ToolsManager::AddTool(const cbTool* tool, bool save)
+void ToolsManager::AddTool(const cbTool *tool, bool save)
 {
     if (tool)
     {
@@ -202,7 +203,7 @@ void ToolsManager::AddTool(const cbTool* tool, bool save)
     }
 } // end of AddTool
 
-void ToolsManager::InsertTool(int position, const cbTool* tool, bool save)
+void ToolsManager::InsertTool(int position, const cbTool *tool, bool save)
 {
     m_Tools.Insert(position, new cbTool(*tool));
     if (save)
@@ -214,7 +215,7 @@ void ToolsManager::InsertTool(int position, const cbTool* tool, bool save)
 void ToolsManager::RemoveToolByIndex(int index)
 {
     int idx = 0;
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::Node *node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
         if (idx == index)
         {
@@ -225,7 +226,7 @@ void ToolsManager::RemoveToolByIndex(int index)
     }
 }
 
-void ToolsManager::DoRemoveTool(ToolsList::Node* node)
+void ToolsManager::DoRemoveTool(ToolsList::Node *node)
 {
     if (node)
     {
@@ -234,23 +235,23 @@ void ToolsManager::DoRemoveTool(ToolsList::Node* node)
     }
 }
 
-cbTool* ToolsManager::GetToolByMenuId(int id)
+cbTool *ToolsManager::GetToolByMenuId(int id)
 {
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::Node *node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        cbTool* tool = node->GetData();
+        cbTool *tool = node->GetData();
         if (tool->GetMenuId() == id)
             return tool;
     }
     return nullptr;
 }
 
-cbTool* ToolsManager::GetToolByIndex(int index)
+cbTool *ToolsManager::GetToolByIndex(int index)
 {
     int idx = 0;
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::Node *node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        cbTool* tool = node->GetData();
+        cbTool *tool = node->GetData();
         if (idx == index)
             return tool;
         ++idx;
@@ -260,12 +261,12 @@ cbTool* ToolsManager::GetToolByIndex(int index)
 
 void ToolsManager::LoadTools()
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("tools"));
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("tools"));
     wxArrayString list = cfg->EnumerateSubPaths(_("/"));
     for (unsigned int i = 0; i < list.GetCount(); ++i)
     {
         cbTool tool;
-        tool.SetName( cfg->Read(_T("/") + list[i] + _T("/name")));
+        tool.SetName(cfg->Read(_T("/") + list[i] + _T("/name")));
         if (tool.GetName().IsEmpty())
             continue;
         tool.SetCommand(cfg->Read(_T("/") + list[i] + _T("/command")));
@@ -273,7 +274,8 @@ void ToolsManager::LoadTools()
             continue;
         tool.SetParams(cfg->Read(_T("/") + list[i] + _T("/params")));
         tool.SetWorkingDir(cfg->Read(_T("/") + list[i] + _T("/workingDir")));
-        tool.SetLaunchOption(static_cast<cbTool::eLaunchOption>(cfg->ReadInt(_T("/") + list[i] + _T("/launchOption"))));
+        tool.SetLaunchOption(static_cast<cbTool::eLaunchOption>(
+            cfg->ReadInt(_T("/") + list[i] + _T("/launchOption"))));
 
         AddTool(&tool, false);
     }
@@ -282,7 +284,7 @@ void ToolsManager::LoadTools()
 
 void ToolsManager::SaveTools()
 {
-    ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("tools"));
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("tools"));
     wxArrayString list = cfg->EnumerateSubPaths(_("/"));
     for (unsigned int i = 0; i < list.GetCount(); ++i)
     {
@@ -290,16 +292,16 @@ void ToolsManager::SaveTools()
     }
 
     int count = 0;
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::Node *node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        cbTool* tool = node->GetData();
+        cbTool *tool = node->GetData();
         wxString elem;
 
         // prepend a 0-padded 2-digit number to keep ordering
         wxString tmp;
         tmp.Printf(_T("tool%2.2d"), count++);
 
-        elem << _T("/") << tmp  << _T("/");
+        elem << _T("/") << tmp << _T("/");
         cfg->Write(elem + _T("name"), tool->GetName());
         cfg->Write(elem + _T("command"), tool->GetCommand());
         cfg->Write(elem + _T("params"), tool->GetParams());
@@ -308,7 +310,7 @@ void ToolsManager::SaveTools()
     }
 }
 
-void ToolsManager::BuildToolsMenu(wxMenu* menu)
+void ToolsManager::BuildToolsMenu(wxMenu *menu)
 {
     // clear previously added menu items
     m_ItemsManager.Clear();
@@ -320,9 +322,9 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
         m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
     }
 
-    for (ToolsList::Node* node = m_Tools.GetFirst(); node; node = node->GetNext())
+    for (ToolsList::Node *node = m_Tools.GetFirst(); node; node = node->GetNext())
     {
-        cbTool* tool = node->GetData();
+        cbTool *tool = node->GetData();
         if (tool->GetName() == CB_TOOLS_SEPARATOR)
         {
             m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
@@ -334,15 +336,16 @@ void ToolsManager::BuildToolsMenu(wxMenu* menu)
         }
         m_ItemsManager.Add(menu, tool->GetMenuId(), tool->GetName(), tool->GetName());
         Connect(tool->GetMenuId(), -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &ToolsManager::OnToolClick);
+                (wxObjectEventFunction)(wxEventFunction)(
+                    wxCommandEventFunction)&ToolsManager::OnToolClick);
     }
 
     if (m_Tools.GetCount() > 0)
     {
         m_ItemsManager.Add(menu, wxID_SEPARATOR, _T(""), _T(""));
     }
-    m_ItemsManager.Add(menu, idToolsConfigure, _("&Configure tools..."), _("Add/remove user-defined tools"));
+    m_ItemsManager.Add(menu, idToolsConfigure, _("&Configure tools..."),
+                       _("Add/remove user-defined tools"));
 }
 
 int ToolsManager::Configure()
@@ -364,19 +367,19 @@ int ToolsManager::Configure()
 
 // events
 
-void ToolsManager::OnConfigure(cb_unused wxCommandEvent& event)
+void ToolsManager::OnConfigure(cb_unused wxCommandEvent &event)
 {
     Configure();
 }
 
-void ToolsManager::OnToolClick(wxCommandEvent& event)
+void ToolsManager::OnToolClick(wxCommandEvent &event)
 {
-    cbTool* tool = GetToolByMenuId(event.GetId());
+    cbTool *tool = GetToolByMenuId(event.GetId());
     if (!Execute(tool))
         cbMessageBox(_("Could not execute ") + tool->GetName());
 }
 
-void ToolsManager::OnIdle(wxIdleEvent& event)
+void ToolsManager::OnIdle(wxIdleEvent &event)
 {
     if (m_pProcess)
     {
@@ -389,20 +392,21 @@ void ToolsManager::OnIdle(wxIdleEvent& event)
         event.Skip();
 }
 
-void ToolsManager::OnToolStdOutput(CodeBlocksEvent& event)
+void ToolsManager::OnToolStdOutput(CodeBlocksEvent &event)
 {
     Manager::Get()->GetLogManager()->Log(_T("stdout> ") + event.GetString());
 }
 
-void ToolsManager::OnToolErrOutput(CodeBlocksEvent& event)
+void ToolsManager::OnToolErrOutput(CodeBlocksEvent &event)
 {
     Manager::Get()->GetLogManager()->Log(_T("stderr> ") + event.GetString());
 }
 
-void ToolsManager::OnToolTerminated(CodeBlocksEvent& event)
+void ToolsManager::OnToolTerminated(CodeBlocksEvent &event)
 {
     m_Pid = 0;
     m_pProcess = nullptr;
 
-    Manager::Get()->GetLogManager()->Log(F(_T("Tool execution terminated with status %d"), event.GetInt()));
+    Manager::Get()->GetLogManager()->Log(
+        F(_T("Tool execution terminated with status %d"), event.GetInt()));
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,13 +10,13 @@
 #include "sdk_precomp.h"
 #include "cbstyledtextctrl.h"
 #ifndef CB_PRECOMP
-    #include <wx/gdicmn.h> // for wxPoint
-    #include <wx/string.h>
-    #include <wx/timer.h>
+#include <wx/gdicmn.h> // for wxPoint
+#include <wx/string.h>
+#include <wx/timer.h>
 
-    #include "editorbase.h" // DisplayContextMenu
-    #include "editormanager.h"
-    #include "pluginmanager.h"
+#include "editorbase.h" // DisplayContextMenu
+#include "editormanager.h"
+#include "pluginmanager.h"
 #endif
 
 #include "cbdebugger_interfaces.h"
@@ -27,66 +27,67 @@ static const wxString s_leftBrace(_T("([{'\""));
 static const wxString s_rightBrace(_T(")]}'\""));
 static const int s_indicHighlight(20);
 
-std::map<int, std::set<int> > cbStyledTextCtrl::CharacterLexerStyles;
-std::map<int, std::set<int> > cbStyledTextCtrl::StringLexerStyles;
-std::map<int, std::set<int> > cbStyledTextCtrl::PreprocessorLexerStyles;
-std::map<int, std::set<int> > cbStyledTextCtrl::CommentLexerStyles;
+std::map<int, std::set<int>> cbStyledTextCtrl::CharacterLexerStyles;
+std::map<int, std::set<int>> cbStyledTextCtrl::StringLexerStyles;
+std::map<int, std::set<int>> cbStyledTextCtrl::PreprocessorLexerStyles;
+std::map<int, std::set<int>> cbStyledTextCtrl::CommentLexerStyles;
 
 BEGIN_EVENT_TABLE(cbStyledTextCtrl, wxScintilla)
     EVT_CONTEXT_MENU(cbStyledTextCtrl::OnContextMenu)
-    EVT_KILL_FOCUS  (cbStyledTextCtrl::OnKillFocus)
-    EVT_MIDDLE_DOWN (cbStyledTextCtrl::OnMouseMiddleDown)
-    EVT_SET_FOCUS   (cbStyledTextCtrl::OnSetFocus)
-    EVT_KEY_DOWN    (cbStyledTextCtrl::OnKeyDown)
-    EVT_KEY_UP      (cbStyledTextCtrl::OnKeyUp)
-    EVT_LEFT_UP     (cbStyledTextCtrl::OnMouseLeftUp)
+    EVT_KILL_FOCUS(cbStyledTextCtrl::OnKillFocus)
+    EVT_MIDDLE_DOWN(cbStyledTextCtrl::OnMouseMiddleDown)
+    EVT_SET_FOCUS(cbStyledTextCtrl::OnSetFocus)
+    EVT_KEY_DOWN(cbStyledTextCtrl::OnKeyDown)
+    EVT_KEY_UP(cbStyledTextCtrl::OnKeyUp)
+    EVT_LEFT_UP(cbStyledTextCtrl::OnMouseLeftUp)
 END_EVENT_TABLE()
 
-cbStyledTextCtrl::cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos, const wxSize& size, long style) :
-    wxScintilla(pParent, id, pos, size, style),
+cbStyledTextCtrl::cbStyledTextCtrl(wxWindow *pParent, int id, const wxPoint &pos,
+                                   const wxSize &size, long style)
+  : wxScintilla(pParent, id, pos, size, style),
     m_pParent(pParent),
     m_lastFocusTime(0L),
     m_bracePosition(wxSCI_INVALID_POSITION),
     m_lastPosition(wxSCI_INVALID_POSITION),
     m_tabSmartJump(false)
 {
-    //ctor
+    // ctor
     m_braceShortcutState = false;
 }
 
 cbStyledTextCtrl::~cbStyledTextCtrl()
 {
-    //dtor
+    // dtor
     // remove remaining event-handlers to avoid asserts in wx2.9
     // they might be added by plugins (at least keybinder does it), but can not
     // be removed by them, because the EditorClose-event is sent from EditorBase
     // after destroying the underlying editors (e.g. cbStyledTextCtrl).
     // Doing this here should not harm.
-    while(GetEventHandler() != this)
+    while (GetEventHandler() != this)
         RemoveEventHandler(GetEventHandler());
 }
 
 // Script binding support
-void cbStyledTextCtrl::operator=(const cbStyledTextCtrl& /*rhs*/)
+void cbStyledTextCtrl::operator=(const cbStyledTextCtrl & /*rhs*/)
 {
     cbThrow(_T("Can't assign an cbStyledTextCtrl* !!!"));
 }
 
 // events
 
-void cbStyledTextCtrl::OnKillFocus(wxFocusEvent& event)
+void cbStyledTextCtrl::OnKillFocus(wxFocusEvent &event)
 {
     // cancel auto-completion list when losing focus
-    if ( AutoCompActive() )
+    if (AutoCompActive())
         AutoCompCancel();
 
-    if ( CallTipActive() )
+    if (CallTipActive())
         CallTipCancel();
 
     event.Skip();
 }
 
-void cbStyledTextCtrl::OnSetFocus(wxFocusEvent& event)
+void cbStyledTextCtrl::OnSetFocus(wxFocusEvent &event)
 {
     // store timestamp for use in cbEditor::GetControl()
     // don't use event.GetTimeStamp(), because the focus event has no timestamp !
@@ -94,11 +95,11 @@ void cbStyledTextCtrl::OnSetFocus(wxFocusEvent& event)
     event.Skip();
 }
 
-void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
+void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent &event)
 {
     if (m_pParent)
     {
-        if ( EditorBase* pParent = dynamic_cast<EditorBase*>(m_pParent) )
+        if (EditorBase *pParent = dynamic_cast<EditorBase *>(m_pParent))
         {
             // To prevent generating EVT_MOUSE_CAPTURE_LOST.
             if (HaveMouseCapture())
@@ -113,7 +114,7 @@ void cbStyledTextCtrl::OnContextMenu(wxContextMenuEvent& event)
     }
 }
 
-void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
+void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent &event)
 {
     if (platform::gtk == false) // only if OnMouseMiddleDown is not already implemented by the OS
     {
@@ -123,7 +124,7 @@ void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
             return;
 
         int start = GetSelectionStart();
-        int end   = GetSelectionEnd();
+        int end = GetSelectionEnd();
 
         const wxString s = GetSelectedText();
 
@@ -138,12 +139,12 @@ void cbStyledTextCtrl::OnMouseMiddleDown(wxMouseEvent& event)
     }
 }
 
-void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
+void cbStyledTextCtrl::OnKeyDown(wxKeyEvent &event)
 {
     m_lastSelectedText = GetSelectedText();
     bool emulateDwellStart = false;
 
-    switch ( event.GetKeyCode() )
+    switch (event.GetKeyCode())
     {
         case _T('I'):
         {
@@ -180,7 +181,8 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
                 {
                     const int pos = GetCurrentPos();
                     const int index = s_leftBrace.Find((wxChar)GetCharAt(pos - 1));
-                    if (index != wxNOT_FOUND && (wxChar)GetCharAt(pos) == s_rightBrace.GetChar(index))
+                    if (index != wxNOT_FOUND
+                        && (wxChar)GetCharAt(pos) == s_rightBrace.GetChar(index))
                     {
                         CharRight();
                         DeleteBack();
@@ -222,7 +224,8 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
             }
         }
         break;
-        default: break;
+        default:
+            break;
     }
 
     if (event.ControlDown() && !emulateDwellStart)
@@ -231,20 +234,20 @@ void cbStyledTextCtrl::OnKeyDown(wxKeyEvent& event)
     event.Skip();
 }
 
-void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
+void cbStyledTextCtrl::OnKeyUp(wxKeyEvent &event)
 {
     const int keyCode = event.GetKeyCode();
     switch (keyCode)
     {
-        case _T('['):   // [ {
-        case _T('\''):  // ' "
+        case _T('['): // [ {
+        case _T('\''): // ' "
 #ifdef __WXMSW__
-        case _T('9'):   // ( for wxMSW
+        case _T('9'): // ( for wxMSW
 #else
-        case _T('('):   // ( for wxGTK
+        case _T('('): // ( for wxGTK
 #endif
         {
-            if ( !AllowTabSmartJump() )
+            if (!AllowTabSmartJump())
                 break;
 
             wxChar ch = keyCode;
@@ -259,7 +262,8 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
             }
 
             int index = s_leftBrace.Find(ch);
-            if (index != wxNOT_FOUND && (wxChar)GetCharAt(GetCurrentPos()) == s_rightBrace.GetChar(index))
+            if (index != wxNOT_FOUND
+                && (wxChar)GetCharAt(GetCurrentPos()) == s_rightBrace.GetChar(index))
             {
                 const int pos = GetCurrentPos();
                 if (pos != wxSCI_INVALID_POSITION)
@@ -273,11 +277,11 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
         }
         break;
 
-        case _T(']'):   // ] }
+        case _T(']'): // ] }
 #ifdef __WXMSW__
-        case _T('0'):   // ) for wxMSW
+        case _T('0'): // ) for wxMSW
 #else
-        case _T(')'):   // ) for wxGTK
+        case _T(')'): // ) for wxGTK
 #endif
         {
             if (!AllowTabSmartJump())
@@ -287,14 +291,15 @@ void cbStyledTextCtrl::OnKeyUp(wxKeyEvent& event)
             m_tabSmartJump = false;
         }
         break;
-        default: break;
+        default:
+            break;
     }
 
     HighlightRightBrace();
     event.Skip();
 }
 
-void cbStyledTextCtrl::OnMouseLeftUp(wxMouseEvent& event)
+void cbStyledTextCtrl::OnMouseLeftUp(wxMouseEvent &event)
 {
     HighlightRightBrace();
     event.Skip();
@@ -312,7 +317,8 @@ bool cbStyledTextCtrl::IsString(int style)
 
 bool cbStyledTextCtrl::IsPreprocessor(int style)
 {
-    return PreprocessorLexerStyles[GetLexer()].find(style) != PreprocessorLexerStyles[GetLexer()].end();
+    return PreprocessorLexerStyles[GetLexer()].find(style)
+           != PreprocessorLexerStyles[GetLexer()].end();
 }
 
 bool cbStyledTextCtrl::IsComment(int style)
@@ -333,9 +339,9 @@ bool cbStyledTextCtrl::IsBraceShortcutActive()
     return state;
 }
 
-void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
+void cbStyledTextCtrl::DoBraceCompletion(const wxChar &ch)
 {
-    const int pos   = GetCurrentPos();
+    const int pos = GetCurrentPos();
     const int style = GetStyleAt(pos);
     if (IsComment(style) || IsComment(GetStyleAt(pos - 2)))
         return; // do nothing
@@ -354,11 +360,13 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
     if (IsString(style) || IsCharacter(style))
         return; // do nothing
 
-    const wxString opBraces(wxT("([{")); const int opBraceIdx = opBraces.Find(ch);
-    const wxString clBraces(wxT(")]}")); const int clBraceIdx = clBraces.Find(ch);
-    if ( (opBraceIdx != wxNOT_FOUND) || (clBraceIdx != wxNOT_FOUND) )
+    const wxString opBraces(wxT("([{"));
+    const int opBraceIdx = opBraces.Find(ch);
+    const wxString clBraces(wxT(")]}"));
+    const int clBraceIdx = clBraces.Find(ch);
+    if ((opBraceIdx != wxNOT_FOUND) || (clBraceIdx != wxNOT_FOUND))
     {
-        if ( GetCharAt(pos) == ch )
+        if (GetCharAt(pos) == ch)
         {
             DeleteBack();
             CharRight();
@@ -366,11 +374,11 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
         else if (opBraceIdx != wxNOT_FOUND)
         {
             int nextPos = pos;
-            while ( wxIsspace(GetCharAt(nextPos)) && (nextPos < GetLength()) )
+            while (wxIsspace(GetCharAt(nextPos)) && (nextPos < GetLength()))
                 ++nextPos;
 
-            if (   ((wxChar)GetCharAt(nextPos) != clBraces[opBraceIdx])
-                || (BraceMatch(nextPos)        != wxNOT_FOUND) )
+            if (((wxChar)GetCharAt(nextPos) != clBraces[opBraceIdx])
+                || (BraceMatch(nextPos) != wxNOT_FOUND))
             {
                 InsertText(pos, clBraces[opBraceIdx]);
             }
@@ -378,7 +386,7 @@ void cbStyledTextCtrl::DoBraceCompletion(const wxChar& ch)
     }
 }
 
-bool cbStyledTextCtrl::DoSelectionBraceCompletion(const wxChar& ch)
+bool cbStyledTextCtrl::DoSelectionBraceCompletion(const wxChar &ch)
 {
     if (GetSelections() > 1)
         return false;
@@ -429,7 +437,7 @@ void cbStyledTextCtrl::HighlightRightBrace()
     {
         SetIndicatorCurrent(s_indicHighlight);
         const int indPos = GetLineIndentPosition(curLine);
-        IndicatorClearRange(indPos, GetLineEndPosition(curLine)-indPos);
+        IndicatorClearRange(indPos, GetLineEndPosition(curLine) - indPos);
         do
         {
             if (pos >= len)
@@ -465,8 +473,7 @@ void cbStyledTextCtrl::HighlightRightBrace()
                 m_bracePosition = pos + 1;
                 return;
             }
-        }
-        while (++pos);
+        } while (++pos);
     }
 
     m_bracePosition = wxSCI_INVALID_POSITION;
@@ -481,7 +488,7 @@ void cbStyledTextCtrl::HighlightRightBrace()
 
 void cbStyledTextCtrl::EmulateDwellStart()
 {
-    EditorBase *editor = static_cast<EditorBase*>(m_pParent);
+    EditorBase *editor = static_cast<EditorBase *>(m_pParent);
 
     CodeBlocksEvent event(cbEVT_EDITOR_TOOLTIP);
     wxPoint pt(ScreenToClient(wxGetMousePosition()));
@@ -502,22 +509,22 @@ void cbStyledTextCtrl::EnableTabSmartJump(bool enable)
     HighlightRightBrace();
 }
 
-std::map<int, std::set<int> > &cbStyledTextCtrl::GetCharacterLexerStyles()
+std::map<int, std::set<int>> &cbStyledTextCtrl::GetCharacterLexerStyles()
 {
     return CharacterLexerStyles;
 }
 
-std::map<int, std::set<int> > &cbStyledTextCtrl::GetStringLexerStyles()
+std::map<int, std::set<int>> &cbStyledTextCtrl::GetStringLexerStyles()
 {
     return StringLexerStyles;
 }
 
-std::map<int, std::set<int> > &cbStyledTextCtrl::GetPreprocessorLexerStyles()
+std::map<int, std::set<int>> &cbStyledTextCtrl::GetPreprocessorLexerStyles()
 {
     return PreprocessorLexerStyles;
 }
 
-std::map<int, std::set<int> > &cbStyledTextCtrl::GetCommentLexerStyles()
+std::map<int, std::set<int>> &cbStyledTextCtrl::GetCommentLexerStyles()
 {
     return CommentLexerStyles;
 }

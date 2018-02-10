@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -11,10 +11,10 @@
 #include "virtualbuildtargetsdlg.h"
 
 #ifndef CB_PRECOMP
-    #include "cbproject.h"
-    #include "globals.h"
-    #include "wx/textdlg.h"
-    #include "wx/utils.h"
+#include "cbproject.h"
+#include "globals.h"
+#include "wx/textdlg.h"
+#include "wx/utils.h"
 #endif
 
 //(*InternalHeaders(VirtualBuildTargetsDlg)
@@ -24,28 +24,35 @@
 //(*IdInit(VirtualBuildTargetsDlg)
 //*)
 
-BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg,wxScrollingDialog)
+BEGIN_EVENT_TABLE(VirtualBuildTargetsDlg, wxScrollingDialog)
     //(*EventTable(VirtualBuildTargetsDlg)
     //*)
     EVT_UPDATE_UI(-1, VirtualBuildTargetsDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID /*id*/, cbProject* project) :
-    m_pProject(project)
+VirtualBuildTargetsDlg::VirtualBuildTargetsDlg(wxWindow *parent, wxWindowID /*id*/,
+                                               cbProject *project)
+  : m_pProject(project)
 {
     //(*Initialize(VirtualBuildTargetsDlg)
-    wxXmlResource::Get()->LoadObject(this,parent,_T("VirtualBuildTargetsDlg"),_T("wxScrollingDialog"));
-    lstAliases = (wxListBox*)FindWindow(XRCID("ID_LST_ALIASES"));
-    btnAdd = (wxButton*)FindWindow(XRCID("ID_BTN_ADD"));
-    btnEdit = (wxButton*)FindWindow(XRCID("ID_BTN_EDIT"));
-    btnRemove = (wxButton*)FindWindow(XRCID("ID_BTN_REMOVE"));
-    lstTargets = (wxCheckListBox*)FindWindow(XRCID("ID_LST_TARGETS"));
+    wxXmlResource::Get()->LoadObject(this, parent, _T("VirtualBuildTargetsDlg"),
+                                     _T("wxScrollingDialog"));
+    lstAliases = (wxListBox *)FindWindow(XRCID("ID_LST_ALIASES"));
+    btnAdd = (wxButton *)FindWindow(XRCID("ID_BTN_ADD"));
+    btnEdit = (wxButton *)FindWindow(XRCID("ID_BTN_EDIT"));
+    btnRemove = (wxButton *)FindWindow(XRCID("ID_BTN_REMOVE"));
+    lstTargets = (wxCheckListBox *)FindWindow(XRCID("ID_LST_TARGETS"));
 
-    Connect(XRCID("ID_LST_ALIASES"),wxEVT_COMMAND_LISTBOX_SELECTED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
-    Connect(XRCID("ID_BTN_ADD"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
-    Connect(XRCID("ID_BTN_EDIT"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);
-    Connect(XRCID("ID_BTN_REMOVE"),wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnRemoveClick);
-    Connect(XRCID("ID_LST_TARGETS"),wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,(wxObjectEventFunction)&VirtualBuildTargetsDlg::OnTargetsToggled);
+    Connect(XRCID("ID_LST_ALIASES"), wxEVT_COMMAND_LISTBOX_SELECTED,
+            (wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAliasesSelect);
+    Connect(XRCID("ID_BTN_ADD"), wxEVT_COMMAND_BUTTON_CLICKED,
+            (wxObjectEventFunction)&VirtualBuildTargetsDlg::OnAddClick);
+    Connect(XRCID("ID_BTN_EDIT"), wxEVT_COMMAND_BUTTON_CLICKED,
+            (wxObjectEventFunction)&VirtualBuildTargetsDlg::OnEditClick);
+    Connect(XRCID("ID_BTN_REMOVE"), wxEVT_COMMAND_BUTTON_CLICKED,
+            (wxObjectEventFunction)&VirtualBuildTargetsDlg::OnRemoveClick);
+    Connect(XRCID("ID_LST_TARGETS"), wxEVT_COMMAND_CHECKLISTBOX_TOGGLED,
+            (wxObjectEventFunction)&VirtualBuildTargetsDlg::OnTargetsToggled);
     //*)
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
@@ -68,7 +75,7 @@ VirtualBuildTargetsDlg::~VirtualBuildTargetsDlg()
     //*)
 }
 
-void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
+void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString &targetName)
 {
     if (!lstTargets->IsEnabled() || lstTargets->IsEmpty())
         return;
@@ -84,19 +91,22 @@ void VirtualBuildTargetsDlg::SetVirtualTarget(const wxString& targetName)
     {
         cbMessageBox(_("This virtual build target is invalid.\n"
                        "A virtual target must have at least one active target.\n"
-                       "Did you want to remove the virtual build target?"), _("Error"), wxICON_ERROR, this);
+                       "Did you want to remove the virtual build target?"),
+                     _("Error"), wxICON_ERROR, this);
     }
     else if (checked.GetCount() > 0)
     {
-        if ( !m_pProject->DefineVirtualBuildTarget(targetName, checked) )
+        if (!m_pProject->DefineVirtualBuildTarget(targetName, checked))
             cbMessageBox(_("Failed to setup this virtual build target.\n"
-                           "Check the debug log for more info..."), _("Error"), wxICON_ERROR, this);
+                           "Check the debug log for more info..."),
+                         _("Error"), wxICON_ERROR, this);
     }
 }
 
 void VirtualBuildTargetsDlg::CheckTargets()
 {
-    const wxArrayString& group = m_pProject->GetVirtualBuildTargetGroup( lstAliases->GetStringSelection() );
+    const wxArrayString &group =
+        m_pProject->GetVirtualBuildTargetGroup(lstAliases->GetStringSelection());
     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
     {
         wxString tgtName = m_pProject->GetBuildTarget(i)->GetTitle();
@@ -105,7 +115,7 @@ void VirtualBuildTargetsDlg::CheckTargets()
     }
 }
 
-void VirtualBuildTargetsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
+void VirtualBuildTargetsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent &event)
 {
     bool hasSel = lstAliases->GetSelection() != -1;
     btnEdit->Enable(hasSel);
@@ -113,7 +123,7 @@ void VirtualBuildTargetsDlg::OnUpdateUI(cb_unused wxUpdateUIEvent& event)
     lstTargets->Enable(hasSel);
 }
 
-void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent &event)
 {
     wxString targetName = cbGetTextFromUser(_("Enter the new virtual build target name:"),
                                             _("New virtual build target"));
@@ -123,16 +133,14 @@ void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
     if (lstAliases->FindString(targetName, true) != wxNOT_FOUND)
     {
         cbMessageBox(_("A virtual build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
     if (m_pProject->GetBuildTarget(targetName))
     {
         cbMessageBox(_("A real build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
@@ -142,11 +150,11 @@ void VirtualBuildTargetsDlg::OnAddClick(cb_unused wxCommandEvent& event)
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent &event)
 {
-    wxString targetName = cbGetTextFromUser(_("Enter the new virtual build target name:"),
-                                            _("Edit virtual build target"),
-                                            lstAliases->GetStringSelection());
+    wxString targetName =
+        cbGetTextFromUser(_("Enter the new virtual build target name:"),
+                          _("Edit virtual build target"), lstAliases->GetStringSelection());
 
     // is name unchanged, or user cancelled?
     if (targetName.IsEmpty() || targetName == lstAliases->GetStringSelection())
@@ -155,16 +163,14 @@ void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
     if (lstAliases->FindString(targetName, true) != wxNOT_FOUND)
     {
         cbMessageBox(_("A virtual build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
     if (m_pProject->GetBuildTarget(targetName))
     {
         cbMessageBox(_("A real build target with this name already exists in this project!"),
-                        _("Error"),
-                        wxOK | wxCENTRE | wxICON_ERROR, this);
+                     _("Error"), wxOK | wxCENTRE | wxICON_ERROR, this);
         return;
     }
 
@@ -173,9 +179,11 @@ void VirtualBuildTargetsDlg::OnEditClick(cb_unused wxCommandEvent& event)
     SetVirtualTarget(targetName);
 }
 
-void VirtualBuildTargetsDlg::OnRemoveClick(cb_unused wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnRemoveClick(cb_unused wxCommandEvent &event)
 {
-    if (cbMessageBox(_("Are you sure you want to remove this virtual build target?"), _("Confirmation"), wxYES_NO | wxICON_QUESTION, this) == wxID_NO)
+    if (cbMessageBox(_("Are you sure you want to remove this virtual build target?"),
+                     _("Confirmation"), wxYES_NO | wxICON_QUESTION, this)
+        == wxID_NO)
         return;
     m_pProject->RemoveVirtualBuildTarget(lstAliases->GetStringSelection());
     lstAliases->Delete(lstAliases->GetSelection());
@@ -183,12 +191,12 @@ void VirtualBuildTargetsDlg::OnRemoveClick(cb_unused wxCommandEvent& event)
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnAliasesSelect(cb_unused wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnAliasesSelect(cb_unused wxCommandEvent &event)
 {
     CheckTargets();
 }
 
-void VirtualBuildTargetsDlg::OnTargetsToggled(cb_unused wxCommandEvent& event)
+void VirtualBuildTargetsDlg::OnTargetsToggled(cb_unused wxCommandEvent &event)
 {
     SetVirtualTarget(lstAliases->GetStringSelection());
 }

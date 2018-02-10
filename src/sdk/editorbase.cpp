@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,17 +10,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/filename.h>
-    #include <wx/notebook.h>
-    #include <wx/menu.h>
-    #include "manager.h"
-    #include "editorbase.h"
-    #include "cbeditor.h"
-    #include "editormanager.h"
-    #include "pluginmanager.h"
-    #include "cbproject.h" // FileTreeData
-    #include "projectmanager.h" // ProjectsArray
-    #include <wx/wfstream.h>
+#include <wx/filename.h>
+#include <wx/notebook.h>
+#include <wx/menu.h>
+#include "manager.h"
+#include "editorbase.h"
+#include "cbeditor.h"
+#include "editormanager.h"
+#include "pluginmanager.h"
+#include "cbproject.h" // FileTreeData
+#include "projectmanager.h" // ProjectsArray
+#include <wx/wfstream.h>
 #endif
 
 #include "cbauibook.h"
@@ -36,13 +36,12 @@ inline int editorbase_RegisterId(int id)
 
 struct EditorBaseInternalData
 {
-    EditorBaseInternalData(EditorBase* owner)
-        : m_pOwner(owner),
-        m_DisplayingPopupMenu(false),
-        m_CloseMe(false)
-    {}
+    EditorBaseInternalData(EditorBase *owner)
+      : m_pOwner(owner), m_DisplayingPopupMenu(false), m_CloseMe(false)
+    {
+    }
 
-    EditorBase* m_pOwner;
+    EditorBase *m_pOwner;
     bool m_DisplayingPopupMenu;
     bool m_CloseMe;
 };
@@ -50,7 +49,7 @@ struct EditorBaseInternalData
 // The following lines reserve 255 consecutive id's
 const int EditorMaxSwitchTo = 255;
 const int idSwitchFile1 = wxNewId();
-const int idSwitchFileMax = editorbase_RegisterId(idSwitchFile1 + EditorMaxSwitchTo -1);
+const int idSwitchFileMax = editorbase_RegisterId(idSwitchFile1 + EditorMaxSwitchTo - 1);
 
 const int idCloseMe = wxNewId();
 const int idCloseAll = wxNewId();
@@ -60,28 +59,28 @@ const int idSaveAll = wxNewId();
 const int idSwitchTo = wxNewId();
 
 // Search for... in the context menu, visible with CTRL + right click
-const long idGoogle        = wxNewId();
-const long idMsdn          = wxNewId();
+const long idGoogle = wxNewId();
+const long idMsdn = wxNewId();
 const long idStackOverflow = wxNewId();
-const long idCodeProject   = wxNewId();
-const long idCPlusPlusCom  = wxNewId();
+const long idCodeProject = wxNewId();
+const long idCPlusPlusCom = wxNewId();
 
 BEGIN_EVENT_TABLE(EditorBase, wxPanel)
     EVT_MENU_RANGE(idSwitchFile1, idSwitchFileMax, EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCloseMe,           EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCloseAll,          EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCloseAllOthers,    EditorBase::OnContextMenuEntry)
-    EVT_MENU(idSaveMe,            EditorBase::OnContextMenuEntry)
-    EVT_MENU(idSaveAll,           EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseMe, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseAll, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCloseAllOthers, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idSaveMe, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idSaveAll, EditorBase::OnContextMenuEntry)
 
-    EVT_MENU(idGoogle,            EditorBase::OnContextMenuEntry)
-    EVT_MENU(idMsdn,              EditorBase::OnContextMenuEntry)
-    EVT_MENU(idStackOverflow,     EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCodeProject,       EditorBase::OnContextMenuEntry)
-    EVT_MENU(idCPlusPlusCom,      EditorBase::OnContextMenuEntry)
+    EVT_MENU(idGoogle, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idMsdn, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idStackOverflow, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCodeProject, EditorBase::OnContextMenuEntry)
+    EVT_MENU(idCPlusPlusCom, EditorBase::OnContextMenuEntry)
 END_EVENT_TABLE()
 
-void EditorBase::InitFilename(const wxString& filename)
+void EditorBase::InitFilename(const wxString &filename)
 {
     if (filename.IsEmpty())
         m_Filename = realpath(CreateUniqueFilename());
@@ -103,8 +102,7 @@ wxString EditorBase::CreateUniqueFilename()
     {
         tmp.Clear();
         tmp << path << prefix << wxString::Format(_T("%d"), iter);
-        if (!Manager::Get()->GetEditorManager()->GetEditor(tmp) &&
-                !wxFileExists(path + tmp))
+        if (!Manager::Get()->GetEditorManager()->GetEditor(tmp) && !wxFileExists(path + tmp))
         {
             return tmp;
         }
@@ -112,12 +110,12 @@ wxString EditorBase::CreateUniqueFilename()
     }
 }
 
-EditorBase::EditorBase(wxWindow* parent, const wxString& filename)
-        : wxPanel(parent, -1),
-        m_IsBuiltinEditor(false),
-        m_Shortname(_T("")),
-        m_Filename(_T("")),
-        m_WinTitle(filename)
+EditorBase::EditorBase(wxWindow *parent, const wxString &filename)
+  : wxPanel(parent, -1),
+    m_IsBuiltinEditor(false),
+    m_Shortname(_T("")),
+    m_Filename(_T("")),
+    m_WinTitle(filename)
 {
     m_pData = new EditorBaseInternalData(this);
 
@@ -141,12 +139,12 @@ EditorBase::~EditorBase()
     delete m_pData;
 }
 
-const wxString& EditorBase::GetTitle()
+const wxString &EditorBase::GetTitle()
 {
     return m_WinTitle;
 }
 
-void EditorBase::SetTitle(const wxString& newTitle)
+void EditorBase::SetTitle(const wxString &newTitle)
 {
     m_WinTitle = newTitle;
     int mypage = Manager::Get()->GetEditorManager()->FindPageFromEditor(this);
@@ -160,15 +158,19 @@ void EditorBase::SetTitle(const wxString& newTitle)
     NormalizePath(fname, wxEmptyString);
     toolTip = UnixFilename(fname.GetFullPath());
 
-    cbProject* prj = Manager::Get()->GetProjectManager()->FindProjectForFile(toolTip, nullptr, false, true);
+    cbProject *prj =
+        Manager::Get()->GetProjectManager()->FindProjectForFile(toolTip, nullptr, false, true);
     if (prj)
         toolTip += _("\nProject: ") + prj->GetTitle();
-    cbAuiNotebook* nb = Manager::Get()->GetEditorManager()->GetNotebook();
+    cbAuiNotebook *nb = Manager::Get()->GetEditorManager()->GetNotebook();
     if (nb)
     {
         int idx = nb->GetPageIndex(this);
         nb->SetPageToolTip(idx, toolTip);
-        Manager::Get()->GetEditorManager()->MarkReadOnly(idx, IsReadOnly() || (fname.FileExists() && !wxFile::Access(fname.GetFullPath(), wxFile::write)) );
+        Manager::Get()->GetEditorManager()->MarkReadOnly(
+            idx,
+            IsReadOnly()
+                || (fname.FileExists() && !wxFile::Access(fname.GetFullPath(), wxFile::write)));
     }
 }
 
@@ -179,10 +181,11 @@ void EditorBase::Activate()
 
 bool EditorBase::QueryClose()
 {
-    if ( GetModified() )
+    if (GetModified())
     {
         wxString msg;
-        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"), GetFilename().c_str());
+        msg.Printf(_("File %s is modified...\nDo you want to save the changes?"),
+                   GetFilename().c_str());
         switch (cbMessageBox(msg, _("Save file"), wxICON_QUESTION | wxYES_NO | wxCANCEL))
         {
             case wxID_YES:
@@ -216,22 +219,25 @@ bool EditorBase::ThereAreOthers() const
     return (Manager::Get()->GetEditorManager()->GetEditorsCount() > 1);
 }
 
-wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
+wxMenu *EditorBase::CreateContextSubMenu(long id) // For context menus
 {
-    wxMenu* menu = nullptr;
+    wxMenu *menu = nullptr;
 
     if (id == idSwitchTo)
     {
         menu = new wxMenu;
         m_SwitchTo.clear();
-        for (int i = 0; i < EditorMaxSwitchTo && i < Manager::Get()->GetEditorManager()->GetEditorsCount(); ++i)
+        for (int i = 0;
+             i < EditorMaxSwitchTo && i < Manager::Get()->GetEditorManager()->GetEditorsCount();
+             ++i)
         {
-            EditorBase* other = Manager::Get()->GetEditorManager()->GetEditor(i);
+            EditorBase *other = Manager::Get()->GetEditorManager()->GetEditor(i);
             if (!other || other == this)
                 continue;
-            id = idSwitchFile1+i;
+            id = idSwitchFile1 + i;
             m_SwitchTo[id] = other;
-            menu->Append(id, (other->GetModified() ? wxT("*") : wxEmptyString) + other->GetShortName());
+            menu->Append(id,
+                         (other->GetModified() ? wxT("*") : wxEmptyString) + other->GetShortName());
         }
         if (!menu->GetMenuItemCount())
         {
@@ -242,33 +248,33 @@ wxMenu* EditorBase::CreateContextSubMenu(long id) // For context menus
     return menu;
 }
 
-void EditorBase::BasicAddToContextMenu(wxMenu* popup, ModuleType type)
+void EditorBase::BasicAddToContextMenu(wxMenu *popup, ModuleType type)
 {
     if (type == mtOpenFilesList)
     {
-      popup->Append(idCloseMe, _("Close"));
-      popup->Append(idCloseAll, _("Close all"));
-      popup->Append(idCloseAllOthers, _("Close all others"));
-      popup->AppendSeparator();
-      popup->Append(idSaveMe, _("Save"));
-      popup->Append(idSaveAll, _("Save all"));
-      popup->AppendSeparator();
-      // enable/disable some items, based on state
-      popup->Enable(idSaveMe, GetModified());
+        popup->Append(idCloseMe, _("Close"));
+        popup->Append(idCloseAll, _("Close all"));
+        popup->Append(idCloseAllOthers, _("Close all others"));
+        popup->AppendSeparator();
+        popup->Append(idSaveMe, _("Save"));
+        popup->Append(idSaveAll, _("Save all"));
+        popup->AppendSeparator();
+        // enable/disable some items, based on state
+        popup->Enable(idSaveMe, GetModified());
 
-      bool hasOthers = ThereAreOthers();
-      popup->Enable(idCloseAll, hasOthers);
-      popup->Enable(idCloseAllOthers, hasOthers);
+        bool hasOthers = ThereAreOthers();
+        popup->Enable(idCloseAll, hasOthers);
+        popup->Enable(idCloseAllOthers, hasOthers);
     }
     if (type != mtEditorManager) // no editor
     {
-        wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
+        wxMenu *switchto = CreateContextSubMenu(idSwitchTo);
         if (switchto)
             popup->Append(idSwitchTo, _("Switch to"), switchto);
     }
 }
 
-void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
+void EditorBase::DisplayContextMenu(const wxPoint &position, ModuleType type)
 {
     bool noeditor = (type != mtEditorManager);
     // noeditor:
@@ -279,29 +285,31 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
     if (!OnBeforeBuildContextMenu(position, type))
         return;
 
-    wxMenu* popup = new wxMenu;
+    wxMenu *popup = new wxMenu;
 
     if (!noeditor && wxGetKeyState(WXK_CONTROL))
     {
-        cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+        cbStyledTextCtrl *control =
+            Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
         wxString text = control->GetSelectedText();
         if (text.IsEmpty())
         {
             const int pos = control->GetCurrentPos();
-            text = control->GetTextRange(control->WordStartPosition(pos, true), control->WordEndPosition(pos, true));
+            text = control->GetTextRange(control->WordStartPosition(pos, true),
+                                         control->WordEndPosition(pos, true));
         }
 
         if (!text.IsEmpty())
         {
-            popup->Append(idGoogle,        _("Search the Internet for \"")  + text + _T("\""));
-            popup->Append(idMsdn,          _("Search MSDN for \"")          + text + _T("\""));
+            popup->Append(idGoogle, _("Search the Internet for \"") + text + _T("\""));
+            popup->Append(idMsdn, _("Search MSDN for \"") + text + _T("\""));
             popup->Append(idStackOverflow, _("Search StackOverflow for \"") + text + _T("\""));
-            popup->Append(idCodeProject,   _("Search CodeProject for \"")   + text + _T("\""));
-            popup->Append(idCPlusPlusCom,  _("Search CplusPlus.com for \"") + text + _T("\""));
+            popup->Append(idCodeProject, _("Search CodeProject for \"") + text + _T("\""));
+            popup->Append(idCPlusPlusCom, _("Search CplusPlus.com for \"") + text + _T("\""));
         }
         lastWord = text;
 
-        wxMenu* switchto = CreateContextSubMenu(idSwitchTo);
+        wxMenu *switchto = CreateContextSubMenu(idSwitchTo);
         if (switchto)
         {
             if (popup->GetMenuItemCount() > 0)
@@ -321,7 +329,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         AddToContextMenu(popup, type, false);
 
         // ask other editors / plugins if they need to add any entries in this menu...
-        FileTreeData* ftd = new FileTreeData(nullptr, FileTreeData::ftdkUndefined);
+        FileTreeData *ftd = new FileTreeData(nullptr, FileTreeData::ftdkUndefined);
         ftd->SetFolder(m_Filename);
         Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(type, popup, ftd);
         delete ftd;
@@ -335,11 +343,12 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
 
     // display menu
     wxPoint clientpos;
-    if (position==wxDefaultPosition) // "context menu" key
+    if (position == wxDefaultPosition) // "context menu" key
     {
         // obtain the caret point (on the screen) as we assume
         // that the user wants to work with the keyboard
-        cbStyledTextCtrl* const control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
+        cbStyledTextCtrl *const control =
+            Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
         clientpos = control->PointFromPosition(control->GetCurrentPos());
     }
     else
@@ -358,7 +367,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         Manager::Get()->GetEditorManager()->Close(this);
 }
 
-void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
+void EditorBase::OnContextMenuEntry(wxCommandEvent &event)
 {
     // we have a single event handler for all popup menu entries
     // This was ported from cbEditor and used for the basic operations:
@@ -399,7 +408,7 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     else if (id >= idSwitchFile1 && id <= idSwitchFileMax)
     {
         // "Switch to..." item
-        EditorBase* const ed = m_SwitchTo[id];
+        EditorBase *const ed = m_SwitchTo[id];
         if (ed)
             Manager::Get()->GetEditorManager()->SetActiveEditor(ed);
 
@@ -407,16 +416,22 @@ void EditorBase::OnContextMenuEntry(wxCommandEvent& event)
     }
     else
     {
-        if      (id == idGoogle)
-            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q="))                       << URLEncode(lastWord));
+        if (id == idGoogle)
+            wxLaunchDefaultBrowser(wxString(_T("http://www.google.com/search?q="))
+                                   << URLEncode(lastWord));
         else if (id == idMsdn)
-            wxLaunchDefaultBrowser(wxString(_T("http://social.msdn.microsoft.com/Search/en-US/?query=")) << URLEncode(lastWord) << _T("&ac=8"));
+            wxLaunchDefaultBrowser(
+                wxString(_T("http://social.msdn.microsoft.com/Search/en-US/?query="))
+                << URLEncode(lastWord) << _T("&ac=8"));
         else if (id == idStackOverflow)
-            wxLaunchDefaultBrowser(wxString(_T("http://stackoverflow.com/search?q="))                    << URLEncode(lastWord));
+            wxLaunchDefaultBrowser(wxString(_T("http://stackoverflow.com/search?q="))
+                                   << URLEncode(lastWord));
         else if (id == idCodeProject)
-            wxLaunchDefaultBrowser(wxString(_T("http://www.codeproject.com/search.aspx?q="))             << URLEncode(lastWord));
+            wxLaunchDefaultBrowser(wxString(_T("http://www.codeproject.com/search.aspx?q="))
+                                   << URLEncode(lastWord));
         else if (id == idCPlusPlusCom)
-            wxLaunchDefaultBrowser(wxString(_T("http://www.cplusplus.com/search.do?q="))                 << URLEncode(lastWord));
+            wxLaunchDefaultBrowser(wxString(_T("http://www.cplusplus.com/search.do?q="))
+                                   << URLEncode(lastWord));
     }
 }
 

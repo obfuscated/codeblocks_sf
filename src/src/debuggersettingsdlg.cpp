@@ -2,15 +2,15 @@
 #include "debuggersettingsdlg.h"
 
 #ifndef CB_PRECOMP
-	//(*InternalHeadersPCH(DebuggerSettingsDlg)
-	#include <wx/string.h>
-	#include <wx/intl.h>
-	//*)
+//(*InternalHeadersPCH(DebuggerSettingsDlg)
+#include <wx/string.h>
+#include <wx/intl.h>
+//*)
 
-    #include <wx/choicdlg.h>
+#include <wx/choicdlg.h>
 
-    #include "cbexception.h"
-    #include "cbplugin.h"
+#include "cbexception.h"
+#include "cbplugin.h"
 #endif
 //(*InternalHeaders(DebuggerSettingsDlg)
 #include <wx/button.h>
@@ -27,64 +27,77 @@ const long DebuggerSettingsDlg::ID_TREEBOOK = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(DebuggerSettingsDlg, wxScrollingDialog)
-	//(*EventTable(DebuggerSettingsDlg)
-	//*)
-	EVT_BUTTON(wxID_OK, DebuggerSettingsDlg::OnOK)
+    //(*EventTable(DebuggerSettingsDlg)
+    //*)
+    EVT_BUTTON(wxID_OK, DebuggerSettingsDlg::OnOK)
 END_EVENT_TABLE()
 
-DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
+DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow *parent)
 {
-	//(*Initialize(DebuggerSettingsDlg)
-	wxStaticLine* staticLine;
-	wxBoxSizer* headerSizer;
-	wxBoxSizer* mainSizer;
-	wxStdDialogButtonSizer* stdDialogButtons;
-	wxPanel* header;
+    //(*Initialize(DebuggerSettingsDlg)
+    wxStaticLine *staticLine;
+    wxBoxSizer *headerSizer;
+    wxBoxSizer *mainSizer;
+    wxStdDialogButtonSizer *stdDialogButtons;
+    wxPanel *header;
 
-	Create(parent, wxID_ANY, _("Debugger settings"), wxDefaultPosition, wxDefaultSize, wxCAPTION|wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER|wxCLOSE_BOX|wxMAXIMIZE_BOX|wxMINIMIZE_BOX, _T("wxID_ANY"));
-	mainSizer = new wxBoxSizer(wxVERTICAL);
-	header = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTRANSPARENT_WINDOW, _T("wxID_ANY"));
-	header->SetBackgroundColour(wxColour(0,64,128));
-	headerSizer = new wxBoxSizer(wxHORIZONTAL);
-	m_activeInfo = new wxStaticText(header, ID_LABEL_ACTIVE_INFO, _("Active debugger config"), wxDefaultPosition, wxDefaultSize, wxNO_BORDER|wxTRANSPARENT_WINDOW, _T("ID_LABEL_ACTIVE_INFO"));
-	m_activeInfo->SetForegroundColour(wxColour(255,255,255));
-	m_activeInfo->SetBackgroundColour(wxColour(0,64,128));
-	wxFont m_activeInfoFont(12,wxFONTFAMILY_DEFAULT,wxFONTSTYLE_NORMAL,wxFONTWEIGHT_BOLD,false,wxEmptyString,wxFONTENCODING_DEFAULT);
-	m_activeInfo->SetFont(m_activeInfoFont);
-	headerSizer->Add(m_activeInfo, 1, wxALL|wxALIGN_CENTER_VERTICAL, 5);
-	header->SetSizer(headerSizer);
-	headerSizer->Fit(header);
-	headerSizer->SetSizeHints(header);
-	mainSizer->Add(header, 0, wxEXPAND, 5);
-	m_treebook = new wxTreebook(this, ID_TREEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT, _T("ID_TREEBOOK"));
-	mainSizer->Add(m_treebook, 1, wxALL|wxEXPAND, 5);
-	staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("wxID_ANY"));
-	mainSizer->Add(staticLine, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	stdDialogButtons = new wxStdDialogButtonSizer();
-	stdDialogButtons->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
-	stdDialogButtons->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
-	stdDialogButtons->Realize();
-	mainSizer->Add(stdDialogButtons, 0, wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND, 5);
-	SetSizer(mainSizer);
-	mainSizer->Fit(this);
-	mainSizer->SetSizeHints(this);
-	Center();
+    Create(parent, wxID_ANY, _("Debugger settings"), wxDefaultPosition, wxDefaultSize,
+           wxCAPTION | wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER | wxCLOSE_BOX | wxMAXIMIZE_BOX
+               | wxMINIMIZE_BOX,
+           _T("wxID_ANY"));
+    mainSizer = new wxBoxSizer(wxVERTICAL);
+    header = new wxPanel(this, wxID_ANY, wxDefaultPosition, wxDefaultSize,
+                         wxNO_BORDER | wxTRANSPARENT_WINDOW, _T("wxID_ANY"));
+    header->SetBackgroundColour(wxColour(0, 64, 128));
+    headerSizer = new wxBoxSizer(wxHORIZONTAL);
+    m_activeInfo = new wxStaticText(header, ID_LABEL_ACTIVE_INFO, _("Active debugger config"),
+                                    wxDefaultPosition, wxDefaultSize,
+                                    wxNO_BORDER | wxTRANSPARENT_WINDOW, _T("ID_LABEL_ACTIVE_INFO"));
+    m_activeInfo->SetForegroundColour(wxColour(255, 255, 255));
+    m_activeInfo->SetBackgroundColour(wxColour(0, 64, 128));
+    wxFont m_activeInfoFont(12, wxFONTFAMILY_DEFAULT, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false,
+                            wxEmptyString, wxFONTENCODING_DEFAULT);
+    m_activeInfo->SetFont(m_activeInfoFont);
+    headerSizer->Add(m_activeInfo, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
+    header->SetSizer(headerSizer);
+    headerSizer->Fit(header);
+    headerSizer->SetSizeHints(header);
+    mainSizer->Add(header, 0, wxEXPAND, 5);
+    m_treebook = new wxTreebook(this, ID_TREEBOOK, wxDefaultPosition, wxDefaultSize, wxBK_DEFAULT,
+                                _T("ID_TREEBOOK"));
+    mainSizer->Add(m_treebook, 1, wxALL | wxEXPAND, 5);
+    staticLine = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(10, -1),
+                                  wxLI_HORIZONTAL, _T("wxID_ANY"));
+    mainSizer->Add(staticLine, 0, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 5);
+    stdDialogButtons = new wxStdDialogButtonSizer();
+    stdDialogButtons->AddButton(new wxButton(this, wxID_OK, wxEmptyString));
+    stdDialogButtons->AddButton(new wxButton(this, wxID_CANCEL, wxEmptyString));
+    stdDialogButtons->Realize();
+    mainSizer->Add(stdDialogButtons, 0, wxBOTTOM | wxLEFT | wxRIGHT | wxEXPAND, 5);
+    SetSizer(mainSizer);
+    mainSizer->Fit(this);
+    mainSizer->SetSizeHints(this);
+    Center();
 
-	Connect(ID_TREEBOOK,wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED,(wxObjectEventFunction)&DebuggerSettingsDlg::OnPageChanged);
-	//*)
+    Connect(ID_TREEBOOK, wxEVT_COMMAND_TREEBOOK_PAGE_CHANGED,
+            (wxObjectEventFunction)&DebuggerSettingsDlg::OnPageChanged);
+    //*)
 
     m_commonPanel = new DebuggerSettingsCommonPanel(m_treebook);
     m_treebook->AddPage(m_commonPanel, _("Common"));
 
-    const DebuggerManager::RegisteredPlugins &plugins = Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
-    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+    const DebuggerManager::RegisteredPlugins &plugins =
+        Manager::Get()->GetDebuggerManager()->GetAllDebuggers();
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin();
+         it != plugins.end(); ++it)
     {
         const DebuggerManager::PluginData &data = it->second;
-        m_treebook->AddPage(new DebuggerSettingsPanel(m_treebook, this, it->first), it->first->GetGUIName());
+        m_treebook->AddPage(new DebuggerSettingsPanel(m_treebook, this, it->first),
+                            it->first->GetGUIName());
 
-        for (DebuggerManager::ConfigurationVector::const_iterator itConfig = data.GetConfigurations().begin();
-             itConfig != data.GetConfigurations().end();
-             ++itConfig)
+        for (DebuggerManager::ConfigurationVector::const_iterator itConfig =
+                 data.GetConfigurations().begin();
+             itConfig != data.GetConfigurations().end(); ++itConfig)
         {
             wxPanel *panel = (*itConfig)->MakePanel(m_treebook);
             m_treebook->AddSubPage(panel, (*itConfig)->GetName());
@@ -106,12 +119,13 @@ DebuggerSettingsDlg::DebuggerSettingsDlg(wxWindow* parent)
 
 DebuggerSettingsDlg::~DebuggerSettingsDlg()
 {
-    for (MapPanelToConfiguration::iterator it = m_mapPanelToConfig.begin(); it != m_mapPanelToConfig.end(); ++it)
+    for (MapPanelToConfiguration::iterator it = m_mapPanelToConfig.begin();
+         it != m_mapPanelToConfig.end(); ++it)
         delete it->second.config;
     m_mapPanelToConfig.clear();
 
-	//(*Destroy(DebuggerSettingsDlg)
-	//*)
+    //(*Destroy(DebuggerSettingsDlg)
+    //*)
 }
 
 void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
@@ -125,7 +139,8 @@ void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
     const DebuggerManager::RegisteredPlugins &plugins = dbgManager->GetAllDebuggers();
     ConfigManager *mainConfig = Manager::Get()->GetConfigManager(wxT("debugger_common"));
 
-    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin();
+         it != plugins.end(); ++it)
     {
         wxString path(wxT("/sets/"));
         path << it->first->GetSettingsName();
@@ -151,7 +166,7 @@ void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
             mainConfig->Write(namePath + wxT("name"), c->GetName());
 
             t += it->second.pluginGUIName + wxT(" - ") + c->GetName() + wxT("\n");
-            if (!c->SaveChanges(static_cast<wxPanel*>(it->first)))
+            if (!c->SaveChanges(static_cast<wxPanel *>(it->first)))
                 break;
         }
     }
@@ -160,7 +175,8 @@ void DebuggerSettingsDlg::OnOK(cb_unused wxCommandEvent &event)
     dbgManager->GetLogger(normalIndex);
 
     cbDebuggerPlugin *activePlugin = dbgManager->GetActiveDebugger();
-    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin(); it != plugins.end(); ++it)
+    for (DebuggerManager::RegisteredPlugins::const_iterator it = plugins.begin();
+         it != plugins.end(); ++it)
     {
         it->first->SetupLog(normalIndex);
         it->first->OnConfigurationChange(activePlugin == it->first);
@@ -186,7 +202,8 @@ inline size_t FindPageIndex(wxTreebook *treebook, wxWindow *page)
 }
 
 // only return false when the name is not unique
-bool DebuggerSettingsDlg::CreateConfig(wxWindow *panel, cbDebuggerPlugin *plugin, const wxString &name)
+bool DebuggerSettingsDlg::CreateConfig(wxWindow *panel, cbDebuggerPlugin *plugin,
+                                       const wxString &name)
 {
     size_t pageIndex = FindPageIndex(m_treebook, panel);
     if (pageIndex == m_treebook->GetPageCount())
@@ -194,7 +211,8 @@ bool DebuggerSettingsDlg::CreateConfig(wxWindow *panel, cbDebuggerPlugin *plugin
 
     for (size_t p = 0; p < m_treebook->GetPageCount(); ++p)
     {
-        if (m_treebook->GetPageParent(p) == static_cast<int>(pageIndex) && m_treebook->GetPageText(p) == name)
+        if (m_treebook->GetPageParent(p) == static_cast<int>(pageIndex)
+            && m_treebook->GetPageText(p) == name)
             return false;
     }
 
@@ -221,7 +239,7 @@ void DebuggerSettingsDlg::DeleteConfig(wxWindow *panel, cbDebuggerPlugin *plugin
         return;
 
     wxArrayString choices;
-    std::vector<wxWindow*> panels;
+    std::vector<wxWindow *> panels;
     for (size_t p = 0; p < m_treebook->GetPageCount(); ++p)
     {
         if (m_treebook->GetPageParent(p) == static_cast<int>(pageIndex) && p != pageIndex)
@@ -231,7 +249,8 @@ void DebuggerSettingsDlg::DeleteConfig(wxWindow *panel, cbDebuggerPlugin *plugin
         }
     }
 
-    wxMultiChoiceDialog dialog(panel, _("Choose which configurations to be deleted"), _("Choose"), choices);
+    wxMultiChoiceDialog dialog(panel, _("Choose which configurations to be deleted"), _("Choose"),
+                               choices);
     PlaceWindow(&dialog);
     while (dialog.ShowModal() == wxID_OK)
     {
@@ -272,7 +291,8 @@ void DebuggerSettingsDlg::ResetConfig(wxWindow *panel, cbDebuggerPlugin *plugin)
         if (m_treebook->GetPageParent(index) == static_cast<int>(pageIndex))
         {
             wxString title = m_treebook->GetPageText(index);
-            MapPanelToConfiguration::iterator it = m_mapPanelToConfig.find(m_treebook->GetPage(index));
+            MapPanelToConfiguration::iterator it =
+                m_mapPanelToConfig.find(m_treebook->GetPage(index));
             cbAssert(plugin == it->second.plugin);
             delete it->second.config;
 
@@ -284,7 +304,7 @@ void DebuggerSettingsDlg::ResetConfig(wxWindow *panel, cbDebuggerPlugin *plugin)
     CreateConfig(panel, plugin, wxT("Default"));
 }
 
-void DebuggerSettingsDlg::OnPageChanged(wxNotebookEvent& event)
+void DebuggerSettingsDlg::OnPageChanged(wxNotebookEvent &event)
 {
     wxString caption = m_treebook->GetPageText(event.GetSelection());
     int parent = m_treebook->GetPageParent(event.GetSelection());

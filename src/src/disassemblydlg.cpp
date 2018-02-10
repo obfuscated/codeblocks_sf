@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -11,48 +11,46 @@
 
 #include "disassemblydlg.h"
 #ifndef CB_PRECOMP
-    #include <wx/wxscintilla.h>
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/textctrl.h>
-    #include <wx/button.h>
-    #include <wx/listctrl.h>
-    #include <wx/wfstream.h>
-    #include <wx/fontutil.h>
-    #include <wx/stattext.h>
-    #include <wx/filedlg.h>
+#include <wx/wxscintilla.h>
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/textctrl.h>
+#include <wx/button.h>
+#include <wx/listctrl.h>
+#include <wx/wfstream.h>
+#include <wx/fontutil.h>
+#include <wx/stattext.h>
+#include <wx/filedlg.h>
 
-    #include "cbproject.h"
-    #include "configmanager.h"
-    #include "editorcolourset.h"
-    #include "editormanager.h"
-    #include "globals.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include "cbproject.h"
+#include "configmanager.h"
+#include "editorcolourset.h"
+#include "editormanager.h"
+#include "globals.h"
+#include "manager.h"
+#include "projectmanager.h"
 #endif
 
 #include "debuggermanager.h"
 #include "filefilters.h"
 
 // Keep in sync with cbEditor.cpp:
-#define DEBUG_MARKER     6
-#define DEBUG_STYLE      wxSCI_MARK_ARROW
+#define DEBUG_MARKER 6
+#define DEBUG_STYLE wxSCI_MARK_ARROW
 
 BEGIN_EVENT_TABLE(DisassemblyDlg, wxPanel)
     EVT_BUTTON(XRCID("btnSave"), DisassemblyDlg::OnSave)
-//    EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
+    //    EVT_BUTTON(XRCID("btnRefresh"), DisassemblyDlg::OnRefresh)
     EVT_CHECKBOX(XRCID("chkMode"), DisassemblyDlg::OnMixedModeCB)
     EVT_BUTTON(XRCID("btnAdjustLine"), DisassemblyDlg::OnAdjustLine)
 END_EVENT_TABLE()
 
-DisassemblyDlg::DisassemblyDlg(wxWindow* parent) :
-    m_LastActiveAddr(0),
-    m_ClearFlag(false)
+DisassemblyDlg::DisassemblyDlg(wxWindow *parent) : m_LastActiveAddr(0), m_ClearFlag(false)
 {
     if (!wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgDisassembly")))
         return;
 
-    m_pCode = new wxScintilla(this, wxID_ANY, wxDefaultPosition, wxSize(1,1));
+    m_pCode = new wxScintilla(this, wxID_ANY, wxDefaultPosition, wxSize(1, 1));
     m_pCode->SetReadOnly(true);
     m_pCode->SetCaretWidth(0);
     m_pCode->SetMarginWidth(0, 0);
@@ -65,7 +63,8 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent) :
 
     // use the same font as editor's
     wxFont font(8, wxFONTFAMILY_MODERN, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_NORMAL);
-    wxString fontstring = Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
+    wxString fontstring =
+        Manager::Get()->GetConfigManager(_T("editor"))->Read(_T("/font"), wxEmptyString);
     if (!fontstring.IsEmpty())
     {
         wxNativeFontInfo nfi;
@@ -74,21 +73,21 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent) :
     }
     m_pCode->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
 
-    EditorColourSet* colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
+    EditorColourSet *colour_set = Manager::Get()->GetEditorManager()->GetColourSet();
     if (colour_set)
     {
         HighlightLanguage lang = colour_set->GetHighlightLanguage(wxSCI_LEX_ASM);
-        colour_set->Apply(lang, (cbStyledTextCtrl*)m_pCode);
+        colour_set->Apply(lang, (cbStyledTextCtrl *)m_pCode);
     }
 
-    m_MixedModeCB = (wxCheckBox*)FindWindow(XRCID("chkMode"));
+    m_MixedModeCB = (wxCheckBox *)FindWindow(XRCID("chkMode"));
     m_MixedModeCB->SetValue(Manager::Get()->GetDebuggerManager()->IsDisassemblyMixedMode());
 
     cbStackFrame sf;
     Clear(sf);
 }
 
-void DisassemblyDlg::Clear(const cbStackFrame& frame)
+void DisassemblyDlg::Clear(const cbStackFrame &frame)
 {
     m_FrameFunction = frame.IsValid() ? frame.GetSymbol() : _T("??");
     m_FrameAddress = _T("??");
@@ -122,7 +121,7 @@ void DisassemblyDlg::Clear(const cbStackFrame& frame)
     m_pCode->MarkerDeleteAll(DEBUG_MARKER);
 }
 
-void DisassemblyDlg::AddAssemblerLine(uint64_t addr, const wxString& line)
+void DisassemblyDlg::AddAssemblerLine(uint64_t addr, const wxString &line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -134,10 +133,10 @@ void DisassemblyDlg::AddAssemblerLine(uint64_t addr, const wxString& line)
     m_pCode->AppendText(cbDebuggerAddressToString(addr) + wxT("\t") + line + wxT("\n"));
     SetActiveAddress(m_LastActiveAddr);
     m_pCode->SetReadOnly(true);
-    m_LineTypes.push_back('D') ;
+    m_LineTypes.push_back('D');
 }
 
-void DisassemblyDlg::AddSourceLine(int lineno, const wxString& line)
+void DisassemblyDlg::AddSourceLine(int lineno, const wxString &line)
 {
     m_pCode->SetReadOnly(false);
     if (m_ClearFlag)
@@ -151,38 +150,38 @@ void DisassemblyDlg::AddSourceLine(int lineno, const wxString& line)
     m_pCode->AppendText(fmt);
 
     m_pCode->SetReadOnly(true);
-    m_LineTypes.push_back('S') ;
+    m_LineTypes.push_back('S');
 }
 
 void DisassemblyDlg::CenterLine(int lineno)
 {
-    //make line middle of display window if reasonable
-    int firstdispline ;
-    int los = m_pCode->LinesOnScreen() ;
+    // make line middle of display window if reasonable
+    int firstdispline;
+    int los = m_pCode->LinesOnScreen();
     if (lineno > los / 2)
-        firstdispline = lineno - (los/2) ;
+        firstdispline = lineno - (los / 2);
     else
-        firstdispline = 0 ; //or is it zero?
-    m_pCode->SetFirstVisibleLine(firstdispline) ;
+        firstdispline = 0; // or is it zero?
+    m_pCode->SetFirstVisibleLine(firstdispline);
 }
 
 void DisassemblyDlg::CenterCurrentLine()
 {
     int displine;
-    displine = m_pCode->GetCurrentLine() ;
+    displine = m_pCode->GetCurrentLine();
     CenterLine(displine);
 }
 
 bool DisassemblyDlg::SetActiveAddress(uint64_t addr)
 {
     if (m_HasActiveAddr && addr == m_LastActiveAddr)
-        return m_HasActiveAddr ;
+        return m_HasActiveAddr;
     m_HasActiveAddr = false;
     m_LastActiveAddr = addr;
     bool MixedAsmMode = Manager::Get()->GetDebuggerManager()->IsDisassemblyMixedMode();
     for (int i = 0; i < m_pCode->GetLineCount() && i < int(m_LineTypes.size()); ++i)
     {
-        if(MixedAsmMode && m_LineTypes[i] == 'S')
+        if (MixedAsmMode && m_LineTypes[i] == 'S')
             continue;
 
         const wxString &str = m_pCode->GetLine(i).AfterFirst(_T('x')).BeforeFirst(_T('\t'));
@@ -193,12 +192,12 @@ bool DisassemblyDlg::SetActiveAddress(uint64_t addr)
             m_pCode->MarkerAdd(i, DEBUG_MARKER);
             m_pCode->GotoLine(i);
 
-            //check and shift window lines if needed
+            // check and shift window lines if needed
             if (!m_pCode->GetLineVisible(i))
             {
                 this->CenterLine(i);
             }
-            //are we close to bottom line? if so shift display if possible
+            // are we close to bottom line? if so shift display if possible
             else if (i == (m_pCode->LinesOnScreen() + m_pCode->GetFirstVisibleLine() - 1))
             {
                 this->CenterLine(i);
@@ -208,40 +207,36 @@ bool DisassemblyDlg::SetActiveAddress(uint64_t addr)
             break;
         }
     }
-    return m_HasActiveAddr ;
+    return m_HasActiveAddr;
 }
 
-void DisassemblyDlg::OnAdjustLine(cb_unused wxCommandEvent& event)
+void DisassemblyDlg::OnAdjustLine(cb_unused wxCommandEvent &event)
 {
     int los = m_pCode->LinesOnScreen();
 
     int displine;
     if (m_pCode->GetCurrentLine() == m_pCode->GetFirstVisibleLine())
         displine = m_pCode->GetCurrentLine();
-    else if (m_pCode->GetCurrentLine() == m_pCode->GetFirstVisibleLine() + los/2)
-        displine = m_pCode->GetCurrentLine() - (los/2) + 1;
+    else if (m_pCode->GetCurrentLine() == m_pCode->GetFirstVisibleLine() + los / 2)
+        displine = m_pCode->GetCurrentLine() - (los / 2) + 1;
     else
-        displine = m_pCode->GetCurrentLine() + (los/2);
+        displine = m_pCode->GetCurrentLine() + (los / 2);
 
     if (displine < 0)
         displine = 0;
     CenterLine(displine);
 }
 
-void DisassemblyDlg::OnSave(cb_unused wxCommandEvent& event)
+void DisassemblyDlg::OnSave(cb_unused wxCommandEvent &event)
 {
-    wxFileDialog dlg(this,
-                     _("Save as text file"),
-                     _T("assembly_dump.txt"),
-                     wxEmptyString,
-                     FileFilters::GetFilterAll(),
-                     wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
+    wxFileDialog dlg(this, _("Save as text file"), _T("assembly_dump.txt"), wxEmptyString,
+                     FileFilters::GetFilterAll(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
 
     wxString output;
-    cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
+    cbProject *prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (prj)
     {
         output << _("Project title : ") << prj->GetTitle() << _T('\n');
@@ -257,7 +252,7 @@ void DisassemblyDlg::OnSave(cb_unused wxCommandEvent& event)
         cbMessageBox(_("Could not save file..."), _("Error"), wxICON_ERROR);
 }
 
-void DisassemblyDlg::OnRefresh(cb_unused wxCommandEvent& event)
+void DisassemblyDlg::OnRefresh(cb_unused wxCommandEvent &event)
 {
     cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
     cbAssert(plugin);

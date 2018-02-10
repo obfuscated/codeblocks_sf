@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef SC_BASE_TYPES_H
@@ -53,13 +53,21 @@ DECLARE_INSTANCE_TYPE(FileTreeData);
 using SqPlus::GetTypeName;
 
 // make SqPlus aware of enum-type arguments
-#define DECLARE_ENUM_TYPE(T) \
-namespace SqPlus \
-{ \
-    inline void Push(HSQUIRRELVM v,T value) { sq_pushinteger(v,value); } \
-    inline bool Match(TypeWrapper<T>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_INTEGER; } \
-    inline T Get(TypeWrapper<T>,HSQUIRRELVM v,int idx) { SQInteger i; SQPLUS_CHECK_GET(sq_getinteger(v,idx,&i)); return (T)i; } \
-}
+#define DECLARE_ENUM_TYPE(T)                                               \
+    namespace SqPlus                                                       \
+    {                                                                      \
+    inline void Push(HSQUIRRELVM v, T value) { sq_pushinteger(v, value); } \
+    inline bool Match(TypeWrapper<T>, HSQUIRRELVM v, int idx)              \
+    {                                                                      \
+        return sq_gettype(v, idx) == OT_INTEGER;                           \
+    }                                                                      \
+    inline T Get(TypeWrapper<T>, HSQUIRRELVM v, int idx)                   \
+    {                                                                      \
+        SQInteger i;                                                       \
+        SQPLUS_CHECK_GET(sq_getinteger(v, idx, &i));                       \
+        return (T)i;                                                       \
+    }                                                                      \
+    }
 
 DECLARE_ENUM_TYPE(wxPathFormat);
 DECLARE_ENUM_TYPE(wxPathNormalize);
@@ -78,29 +86,38 @@ using SqPlus::Push;
 
 namespace SqPlus
 {
-    // make SqPlus aware of wxString arguments
+// make SqPlus aware of wxString arguments
 //    inline void Push(HSQUIRRELVM v,const wxString& value) { sq_pushstring(v,cbU2C(value),-1); }
-//    inline bool Match(TypeWrapper<const wxString&>, HSQUIRRELVM v, int idx) { return sq_gettype(v,idx) == OT_STRING; }
-//    inline wxString Get(TypeWrapper<const wxString&>,HSQUIRRELVM v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return cbC2U(s); }
+//    inline bool Match(TypeWrapper<const wxString&>, HSQUIRRELVM v, int idx) { return
+//    sq_gettype(v,idx) == OT_STRING; } inline wxString Get(TypeWrapper<const wxString&>,HSQUIRRELVM
+//    v,int idx) { const SQChar * s; SQPLUS_CHECK_GET(sq_getstring(v,idx,&s)); return cbC2U(s); }
 
-    // type info for short unsigned int (missing from SqPlus)
-    template<>
-    struct TypeInfo<unsigned short>
+// type info for short unsigned int (missing from SqPlus)
+template<>
+struct TypeInfo<unsigned short>
+{
+    const SQChar *typeName;
+    TypeInfo() : typeName(sqT("int")) {}
+    enum
     {
-        const SQChar * typeName;
-        TypeInfo() : typeName(sqT("int")) {}
-        enum {TypeID=VAR_TYPE_INT,Size=sizeof(unsigned short)};
-        operator ScriptVarType() { return ScriptVarType(TypeID); }
+        TypeID = VAR_TYPE_INT,
+        Size = sizeof(unsigned short)
     };
+    operator ScriptVarType() { return ScriptVarType(TypeID); }
+};
 #ifdef _SQ64
-    template<>
-    struct TypeInfo<SQInt32>
+template<>
+struct TypeInfo<SQInt32>
+{
+    const SQChar *typeName;
+    TypeInfo() : typeName(sqT("int")) {}
+    enum
     {
-        const SQChar * typeName;
-        TypeInfo() : typeName(sqT("int")) {}
-        enum {TypeID=VAR_TYPE_INT,Size=sizeof(SQInt32)};
-        operator ScriptVarType() { return ScriptVarType(TypeID); }
+        TypeID = VAR_TYPE_INT,
+        Size = sizeof(SQInt32)
     };
+    operator ScriptVarType() { return ScriptVarType(TypeID); }
+};
 #endif
 }
 

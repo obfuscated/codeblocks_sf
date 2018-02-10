@@ -1,19 +1,18 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
  * $HeadURL$
  */
 
-
 #include <sdk.h>
 
 #ifndef CB_PRECOMP
-    #include <wx/menu.h>
-    #include "configmanager.h"
-    #include "editormanager.h"
+#include <wx/menu.h>
+#include "configmanager.h"
+#include "editormanager.h"
 #endif
 
 #include <wx/docview.h>
@@ -23,8 +22,9 @@
 #include "annoyingdialog.h"
 #include "startherepage.h"
 
-RecentItemsList::RecentItemsList(const wxString &menuName, const wxString &configPath, int menuID, int firstMenuItemID) :
-    m_list(nullptr),
+RecentItemsList::RecentItemsList(const wxString &menuName, const wxString &configPath, int menuID,
+                                 int firstMenuItemID)
+  : m_list(nullptr),
     m_menuName(menuName),
     m_configPath(configPath),
     m_menuID(menuID),
@@ -32,7 +32,7 @@ RecentItemsList::RecentItemsList(const wxString &menuName, const wxString &confi
 {
 }
 
-void RecentItemsList::AddToHistory(const wxString& FileName)
+void RecentItemsList::AddToHistory(const wxString &FileName)
 {
     wxString filename = FileName;
 #ifdef __WXMSW__
@@ -42,7 +42,7 @@ void RecentItemsList::AddToHistory(const wxString& FileName)
     for (size_t i = 0; i < m_list->GetCount(); ++i)
     {
         if (low == m_list->GetHistoryFile(i).Lower())
-        {    // it exists, set filename to the existing name, so it can become
+        { // it exists, set filename to the existing name, so it can become
             // the most recent one
             filename = m_list->GetHistoryFile(i);
             break;
@@ -58,7 +58,7 @@ void RecentItemsList::AddToHistory(const wxString& FileName)
     // b) clear the menu (Biplab#1: except the last item)
     // c) fill it with the history items (Biplab#1: by inserting them)
     // and d) append "Clear history"... (Biplab#1: Not needed, item has not been removed)
-    wxMenu* recentFiles = GetMenu();
+    wxMenu *recentFiles = GetMenu();
     if (recentFiles)
     {
         ClearMenu(recentFiles);
@@ -69,9 +69,9 @@ void RecentItemsList::AddToHistory(const wxString& FileName)
 
 wxString RecentItemsList::GetHistoryFile(size_t id) const
 {
-    return (m_list && id < m_list->GetCount()) ? m_list->GetHistoryFile(id) : wxString(wxEmptyString);
+    return (m_list && id < m_list->GetCount()) ? m_list->GetHistoryFile(id)
+                                               : wxString(wxEmptyString);
 }
-
 
 void RecentItemsList::AskToRemoveFileFromHistory(size_t id, bool cannot_open)
 {
@@ -82,8 +82,8 @@ void RecentItemsList::AskToRemoveFileFromHistory(size_t id, bool cannot_open)
     wxString query(wxEmptyString);
     if (cannot_open)
     {
-        query << _("The file cannot be opened (probably it's not available anymore).")
-              << _T("\n") << question;
+        query << _("The file cannot be opened (probably it's not available anymore).") << _T("\n")
+              << question;
     }
     else
         query << question;
@@ -93,7 +93,7 @@ void RecentItemsList::AskToRemoveFileFromHistory(size_t id, bool cannot_open)
     if (dialog.ShowModal() == AnnoyingDialog::rtYES)
     {
         m_list->RemoveFileFromHistory(id);
-        wxMenu* recentFiles = GetMenu();
+        wxMenu *recentFiles = GetMenu();
         if (recentFiles)
         {
             ClearMenu(recentFiles);
@@ -119,10 +119,11 @@ void RecentItemsList::Initialize()
 
     m_list = new wxFileHistory(16, m_firstMenuItemID);
 
-    wxMenu* recentFiles = GetMenu();
+    wxMenu *recentFiles = GetMenu();
     if (recentFiles)
     {
-        wxArrayString files = Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(m_configPath);
+        wxArrayString files =
+            Manager::Get()->GetConfigManager(_T("app"))->ReadArrayString(m_configPath);
         for (int i = (int)files.GetCount() - 1; i >= 0; --i)
         {
             if (wxFileExists(files[i]))
@@ -131,7 +132,6 @@ void RecentItemsList::Initialize()
         BuildMenu(recentFiles);
     }
 }
-
 
 void RecentItemsList::TerminateHistory()
 {
@@ -142,7 +142,7 @@ void RecentItemsList::TerminateHistory()
             files.Add(m_list->GetHistoryFile(i));
         Manager::Get()->GetConfigManager(_T("app"))->Write(m_configPath, files);
 
-        wxMenu* recentFiles = GetMenu();
+        wxMenu *recentFiles = GetMenu();
         if (recentFiles)
         {
             if (!Manager::IsAppShuttingDown())
@@ -175,7 +175,7 @@ void RecentItemsList::ClearMenu(wxMenu *menu)
         menu->Delete(menu->GetMenuItems()[0]);
 }
 
-wxMenu* RecentItemsList::GetMenu()
+wxMenu *RecentItemsList::GetMenu()
 {
     wxMenuBar *mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
     if (!mbar)
@@ -192,7 +192,7 @@ wxMenu* RecentItemsList::GetMenu()
 void RecentItemsList::RefreshStartHerePage()
 {
     // update start here page
-    EditorBase* sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
+    EditorBase *sh = Manager::Get()->GetEditorManager()->GetEditor(g_StartHereTitle);
     if (sh)
-        ((StartHerePage*)sh)->Reload();
+        ((StartHerePage *)sh)->Reload();
 }

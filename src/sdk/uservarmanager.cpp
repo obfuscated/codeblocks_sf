@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,24 +10,24 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "uservarmanager.h"
-    #include "configmanager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
-    #include "manager.h"
-    #include "cbexception.h"
-    #include "infowindow.h"
+#include "uservarmanager.h"
+#include "configmanager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
+#include "macrosmanager.h"
+#include "manager.h"
+#include "cbexception.h"
+#include "infowindow.h"
 
-    #include <wx/button.h>
-    #include "scrollingdialog.h"
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/textctrl.h>
-    #include <wx/textdlg.h>
-    #include <wx/splitter.h>
-    #include <wx/choice.h>
-    #include <wx/listbox.h>
+#include <wx/button.h>
+#include "scrollingdialog.h"
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/textctrl.h>
+#include <wx/textdlg.h>
+#include <wx/splitter.h>
+#include <wx/choice.h>
+#include <wx/listbox.h>
 #endif
 
 #include "annoyingdialog.h"
@@ -38,32 +38,26 @@
 
 #include <ctype.h>
 
-template<> UserVariableManager* Mgr<UserVariableManager>::instance   = nullptr;
-template<> bool                 Mgr<UserVariableManager>::isShutdown = false;
+template<>
+UserVariableManager *Mgr<UserVariableManager>::instance = nullptr;
+template<>
+bool Mgr<UserVariableManager>::isShutdown = false;
 
-const wxString cBase     (_T("base"));
-const wxString cDir      (_T("dir"));
-const wxChar   cSlash(_T ('/'));
+const wxString cBase(_T("base"));
+const wxString cDir(_T("dir"));
+const wxChar cSlash(_T('/'));
 const wxString cSlashBase(_T("/base"));
-const wxString cInclude  (_T("include"));
-const wxString cLib      (_T("lib"));
-const wxString cObj      (_T("obj"));
-const wxString cBin      (_T("bin"));
-const wxString cCflags   (_T("cflags"));
-const wxString cLflags   (_T("lflags"));
-const wxString cSets     (_T("/sets/"));
+const wxString cInclude(_T("include"));
+const wxString cLib(_T("lib"));
+const wxString cObj(_T("obj"));
+const wxString cBin(_T("bin"));
+const wxString cCflags(_T("cflags"));
+const wxString cLflags(_T("lflags"));
+const wxString cSets(_T("/sets/"));
 
-const wxChar *bim[] =
-{
-    _T("base"),
-    _T("include"),
-    _T("lib"),
-    _T("obj"),
-    _T("bin"),
-    _T("cflags"),
-    _T("lflags")
-};
-const wxArrayString builtinMembers((size_t) 7, bim);
+const wxChar *bim[] = {_T("base"), _T("include"), _T("lib"),   _T("obj"),
+                       _T("bin"),  _T("cflags"),  _T("lflags")};
+const wxArrayString builtinMembers((size_t)7, bim);
 
 class GetUserVariableDialog : public wxScrollingDialog
 {
@@ -71,15 +65,17 @@ public:
     GetUserVariableDialog(wxWindow *parent, const wxString &old);
 
     wxString GetVariable() { return m_SelectedVar; }
+
 private:
-    void OnOK(cb_unused wxCommandEvent& event);
-    void OnCancel(cb_unused wxCommandEvent& event);
-    void OnConfig(cb_unused wxCommandEvent& event);
-    void OnActivated(wxTreeEvent& event);
+    void OnOK(cb_unused wxCommandEvent &event);
+    void OnCancel(cb_unused wxCommandEvent &event);
+    void OnConfig(cb_unused wxCommandEvent &event);
+    void OnActivated(wxTreeEvent &event);
 
     void Load();
 
     wxString GetSelectedVariable();
+
 private:
     wxTreeCtrl *m_treectrl;
     wxString m_SelectedVar;
@@ -109,34 +105,34 @@ class UsrGlblMgrEditDialog : public wxScrollingDialog
 
     ConfigManager *m_CfgMan;
 
-    void Help(wxCommandEvent& event);
+    void Help(wxCommandEvent &event);
     void DoClose();
-    void OnOK(cb_unused wxCommandEvent& event)       { DoClose(); };
-    void OnCancel(cb_unused wxCommandEvent& event)   { DoClose(); };
-    void CloseHandler(cb_unused wxCloseEvent& event) { DoClose(); };
+    void OnOK(cb_unused wxCommandEvent &event) { DoClose(); };
+    void OnCancel(cb_unused wxCommandEvent &event) { DoClose(); };
+    void CloseHandler(cb_unused wxCloseEvent &event) { DoClose(); };
 
-    void CloneVar(wxCommandEvent&  event);
-    void CloneSet(wxCommandEvent&  event);
-    void NewVar(wxCommandEvent&    event);
-    void NewSet(wxCommandEvent&    event);
-    void DeleteVar(wxCommandEvent& event);
-    void DeleteSet(wxCommandEvent& event);
+    void CloneVar(wxCommandEvent &event);
+    void CloneSet(wxCommandEvent &event);
+    void NewVar(wxCommandEvent &event);
+    void NewSet(wxCommandEvent &event);
+    void DeleteVar(wxCommandEvent &event);
+    void DeleteSet(wxCommandEvent &event);
     // handler for the folder selection button
-    void OnFS(wxCommandEvent& event);
+    void OnFS(wxCommandEvent &event);
 
-    void SelectSet(wxCommandEvent& event);
-    void SelectVar(wxCommandEvent& event);
+    void SelectSet(wxCommandEvent &event);
+    void SelectVar(wxCommandEvent &event);
 
     void Load();
     void Save();
     void UpdateChoices();
-    void AddVar(const wxString& var);
-    void Sanitise(wxString& s);
+    void AddVar(const wxString &var);
+    void Sanitise(wxString &s);
 
     DECLARE_EVENT_TABLE()
 
 public:
-    UsrGlblMgrEditDialog(const wxString& var = wxEmptyString);
+    UsrGlblMgrEditDialog(const wxString &var = wxEmptyString);
     friend class UserVariableManager;
 };
 
@@ -148,11 +144,10 @@ void UserVariableManager::Configure()
     m_ActiveSet = Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"));
 }
 
-
-wxString UserVariableManager::Replace(const wxString& variable)
+wxString UserVariableManager::Replace(const wxString &variable)
 {
     wxString package = variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).MakeLower();
-    wxString member  = variable.AfterFirst(wxT('.')).MakeLower();
+    wxString member = variable.AfterFirst(wxT('.')).MakeLower();
 
     wxString path(cSets + m_ActiveSet + _T('/') + package + _T('/'));
 
@@ -173,8 +168,9 @@ wxString UserVariableManager::Replace(const wxString& variable)
             wxString msg;
             msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                          "the global compiler variable \"%s\".\n\n"
-                         "Please define it."), package.wx_str());
-            InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
+                         "Please define it."),
+                       package.wx_str());
+            InfoWindow::Display(_("Global Compiler Variables"), msg, 8000, 1000);
             UsrGlblMgrEditDialog d;
             d.AddVar(package);
             PlaceWindow(&d);
@@ -185,7 +181,8 @@ wxString UserVariableManager::Replace(const wxString& variable)
     if (member.IsEmpty() || member.IsSameAs(cBase))
         return base;
 
-    if (member.IsSameAs(cInclude) || member.IsSameAs(cLib) || member.IsSameAs(cObj) || member.IsSameAs(cBin))
+    if (member.IsSameAs(cInclude) || member.IsSameAs(cLib) || member.IsSameAs(cObj)
+        || member.IsSameAs(cBin))
     {
         wxString ret = m_CfgMan->Read(path + member);
         if (ret.IsEmpty())
@@ -195,39 +192,41 @@ wxString UserVariableManager::Replace(const wxString& variable)
 
     const wxString wtf(wxT("#$%&???WTF???&%$#"));
     wxString ret = m_CfgMan->Read(path + member, wtf);
-    if ( ret.IsSameAs(wtf) )
+    if (ret.IsSameAs(wtf))
     {
         wxString msg;
         msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                      "the member \"%s\" of the global compiler variable \"%s\".\n\n"
-                     "Please define it."), member.wx_str(), package.wx_str());
-        InfoWindow::Display(_("Global Compiler Variables"), msg , 8000, 1000);
+                     "Please define it."),
+                   member.wx_str(), package.wx_str());
+        InfoWindow::Display(_("Global Compiler Variables"), msg, 8000, 1000);
     }
 
     return ret;
 }
 
-
-void UserVariableManager::Preempt(const wxString& variable)
+void UserVariableManager::Preempt(const wxString &variable)
 {
     if (variable.find(_T('#')) == wxString::npos)
         return;
 
-    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
+    wxString member(
+        variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
 
-    if (!m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base")) &&
-            m_Preempted.Index(member) == wxNOT_FOUND)
+    if (!m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base"))
+        && m_Preempted.Index(member) == wxNOT_FOUND)
     {
         m_Preempted.Add(member);
     }
 }
 
-bool UserVariableManager::Exists(const wxString& variable) const
+bool UserVariableManager::Exists(const wxString &variable) const
 {
     if (variable.find(_T('#')) == wxString::npos)
         return false;
 
-    wxString member(variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
+    wxString member(
+        variable.AfterLast(wxT('#')).BeforeFirst(wxT('.')).BeforeFirst(wxT(')')).MakeLower());
     return !m_CfgMan->Exists(cSets + m_ActiveSet + _T('/') + member + _T("/base"));
 }
 
@@ -251,16 +250,19 @@ void UserVariableManager::Arrogate()
     if (m_Preempted.GetCount() == 1)
         msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                      "the global compiler variable \"%s\".\n\n"
-                     "Please define it."), peList.wx_str());
+                     "Please define it."),
+                   peList.wx_str());
     else
         msg.Printf(_("In the currently active set, Code::Blocks does not know\n"
                      "the following global compiler variables:\n"
                      "%s\n\n"
-                     "Please define them."), peList.wx_str());
+                     "Please define them."),
+                   peList.wx_str());
 
     PlaceWindow(&d);
     m_Preempted.Clear();
-    InfoWindow::Display(_("Global Compiler Variables"), msg , 8000 + 800*m_Preempted.GetCount(), 100);
+    InfoWindow::Display(_("Global Compiler Variables"), msg, 8000 + 800 * m_Preempted.GetCount(),
+                        100);
 
     d.ShowModal();
 }
@@ -319,10 +321,10 @@ BEGIN_EVENT_TABLE(GetUserVariableDialog, wxScrollingDialog)
     EVT_TREE_ITEM_ACTIVATED(XRCID("ID_GET_USER_VAR_TREE"), GetUserVariableDialog::OnActivated)
 END_EVENT_TABLE()
 
-GetUserVariableDialog::GetUserVariableDialog(wxWindow *parent, const wxString &old) :
-    m_old(old)
+GetUserVariableDialog::GetUserVariableDialog(wxWindow *parent, const wxString &old) : m_old(old)
 {
-    wxXmlResource::Get()->LoadObject(this, parent, wxT("dlgGetGlobalUsrVar"), wxT("wxScrollingDialog"));
+    wxXmlResource::Get()->LoadObject(this, parent, wxT("dlgGetGlobalUsrVar"),
+                                     wxT("wxScrollingDialog"));
     m_treectrl = XRCCTRL(*this, "ID_GET_USER_VAR_TREE", wxTreeCtrl);
 
     if (m_treectrl == nullptr)
@@ -374,43 +376,44 @@ void GetUserVariableDialog::Load()
 
     m_treectrl->DeleteAllItems();
 
-    ConfigManager* CfgMan = Manager::Get()->GetConfigManager(wxT("gcv"));
+    ConfigManager *CfgMan = Manager::Get()->GetConfigManager(wxT("gcv"));
     const wxString &ActiveSet = Manager::Get()->GetConfigManager(wxT("gcv"))->Read(wxT("/active"));
     wxArrayString vars = CfgMan->EnumerateSubPaths(cSets + ActiveSet + wxT("/"));
     vars.Sort();
 
     wxTreeItemId root = m_treectrl->AddRoot(ActiveSet);
 
-    for (wxArrayString::iterator var_itr = vars.begin(); var_itr != vars.end() ; ++var_itr)
+    for (wxArrayString::iterator var_itr = vars.begin(); var_itr != vars.end(); ++var_itr)
     {
         wxTreeItemId varId = m_treectrl->AppendItem(root, (*var_itr));
-        wxArrayString subItems = CfgMan->EnumerateKeys(cSets + ActiveSet + wxT("/") + (*var_itr) + wxT("/"));
+        wxArrayString subItems =
+            CfgMan->EnumerateKeys(cSets + ActiveSet + wxT("/") + (*var_itr) + wxT("/"));
 
-        for (wxArrayString::iterator subItr = subItems.begin(); subItr != subItems.end() ; ++subItr)
+        for (wxArrayString::iterator subItr = subItems.begin(); subItr != subItems.end(); ++subItr)
             m_treectrl->AppendItem(varId, (*subItr));
     }
     m_treectrl->Expand(root);
 }
 
-void GetUserVariableDialog::OnOK(wxCommandEvent& evt)
+void GetUserVariableDialog::OnOK(wxCommandEvent &evt)
 {
     m_SelectedVar = GetSelectedVariable();
     EndModal(wxID_OK);
 }
 
-void GetUserVariableDialog::OnActivated(wxTreeEvent& event)
+void GetUserVariableDialog::OnActivated(wxTreeEvent &event)
 {
     m_SelectedVar = GetSelectedVariable();
     EndModal(wxID_OK);
 }
 
-void GetUserVariableDialog::OnCancel(wxCommandEvent& evt)
+void GetUserVariableDialog::OnCancel(wxCommandEvent &evt)
 {
     m_SelectedVar = wxEmptyString;
     EndModal(wxID_CANCEL);
 }
 
-void GetUserVariableDialog::OnConfig(wxCommandEvent& evt)
+void GetUserVariableDialog::OnConfig(wxCommandEvent &evt)
 {
     Manager::Get()->GetUserVariableManager()->Configure();
     Load();
@@ -429,7 +432,8 @@ wxString GetUserVariableDialog::GetSelectedVariable()
     if (var == m_treectrl->GetRootItem()) // It is only a variable
         ret << m_treectrl->GetItemText(subVar) << wxT(")");
     else // var with subitem
-        ret << m_treectrl->GetItemText(var) << wxT(".") <<  m_treectrl->GetItemText(subVar) << wxT(")");
+        ret << m_treectrl->GetItemText(var) << wxT(".") << m_treectrl->GetItemText(subVar)
+            << wxT(")");
 
     return ret;
 }
@@ -454,20 +458,21 @@ BEGIN_EVENT_TABLE(UsrGlblMgrEditDialog, wxScrollingDialog)
     EVT_LISTBOX(XRCID("selVar"), UsrGlblMgrEditDialog::SelectVar)
 END_EVENT_TABLE()
 
-UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
-    m_CurrentSet(Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"))),
+UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString &var)
+  : m_CurrentSet(Manager::Get()->GetConfigManager(_T("gcv"))->Read(_T("/active"))),
     m_CurrentVar(var)
 {
-    wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), _T("dlgGlobalUservars"),_T("wxScrollingDialog"));
-    m_SelSet    = XRCCTRL(*this, "selSet",   wxChoice);
-    m_SelVar    = XRCCTRL(*this, "selVar",   wxListBox);
-    m_DeleteSet = XRCCTRL(*this, "deleteSet",wxButton);
+    wxXmlResource::Get()->LoadObject(this, Manager::Get()->GetAppWindow(), _T("dlgGlobalUservars"),
+                                     _T("wxScrollingDialog"));
+    m_SelSet = XRCCTRL(*this, "selSet", wxChoice);
+    m_SelVar = XRCCTRL(*this, "selVar", wxListBox);
+    m_DeleteSet = XRCCTRL(*this, "deleteSet", wxButton);
 
-    m_Base    = XRCCTRL(*this, "base",    wxTextCtrl);
+    m_Base = XRCCTRL(*this, "base", wxTextCtrl);
     m_Include = XRCCTRL(*this, "include", wxTextCtrl);
-    m_Lib     = XRCCTRL(*this, "lib",     wxTextCtrl);
-    m_Obj     = XRCCTRL(*this, "obj",     wxTextCtrl);
-    m_Bin     = XRCCTRL(*this, "bin",     wxTextCtrl);
+    m_Lib = XRCCTRL(*this, "lib", wxTextCtrl);
+    m_Obj = XRCCTRL(*this, "obj", wxTextCtrl);
+    m_Bin = XRCCTRL(*this, "bin", wxTextCtrl);
 
     wxSplitterWindow *splitter = XRCCTRL(*this, "splitter", wxSplitterWindow);
     if (splitter)
@@ -477,10 +482,10 @@ UsrGlblMgrEditDialog::UsrGlblMgrEditDialog(const wxString& var) :
     for (unsigned int i = 0; i < 7; ++i)
     {
         n.Printf(_T("n%d"), i);
-        m_Name[i]  = (wxTextCtrl*) FindWindow(n);
+        m_Name[i] = (wxTextCtrl *)FindWindow(n);
 
         n.Printf(_T("v%d"), i);
-        m_Value[i] = (wxTextCtrl*) FindWindow(n);
+        m_Value[i] = (wxTextCtrl *)FindWindow(n);
     }
 
     m_CfgMan = Manager::Get()->GetConfigManager(_T("gcv"));
@@ -497,8 +502,7 @@ void UsrGlblMgrEditDialog::DoClose()
     EndModal(wxID_OK);
 }
 
-
-void UsrGlblMgrEditDialog::CloneVar(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::CloneVar(cb_unused wxCommandEvent &event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new clone:"), _("Clone Variable"));
     PlaceWindow(&d);
@@ -519,7 +523,8 @@ void UsrGlblMgrEditDialog::CloneVar(cb_unused wxCommandEvent& event)
         if (existing.Index(clone) != wxNOT_FOUND)
         {
             wxString msg;
-            msg.Printf(_("Cowardly refusing to overwrite existing variable \"%s\"."), clone.wx_str());
+            msg.Printf(_("Cowardly refusing to overwrite existing variable \"%s\"."),
+                       clone.wx_str());
             InfoWindow::Display(_("Clone Set"), msg);
             return;
         }
@@ -535,7 +540,7 @@ void UsrGlblMgrEditDialog::CloneVar(cb_unused wxCommandEvent& event)
     }
 }
 
-void UsrGlblMgrEditDialog::CloneSet(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::CloneSet(cb_unused wxCommandEvent &event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new clone:"), _("Clone Set"));
     PlaceWindow(&d);
@@ -578,10 +583,11 @@ void UsrGlblMgrEditDialog::CloneSet(cb_unused wxCommandEvent& event)
     }
 }
 
-void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent &event)
 {
     wxString msg;
-    msg.Printf(_("Delete the global compiler variable \"%s\" from this set?"), m_CurrentVar.wx_str());
+    msg.Printf(_("Delete the global compiler variable \"%s\" from this set?"),
+               m_CurrentVar.wx_str());
     AnnoyingDialog d(_("Delete Global Variable"), msg, wxART_QUESTION);
     PlaceWindow(&d);
     if (d.ShowModal() == AnnoyingDialog::rtYES)
@@ -593,12 +599,13 @@ void UsrGlblMgrEditDialog::DeleteVar(cb_unused wxCommandEvent& event)
     }
 }
 
-void UsrGlblMgrEditDialog::DeleteSet(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::DeleteSet(cb_unused wxCommandEvent &event)
 {
     wxString msg;
     msg.Printf(_("Do you really want to delete the entire\n"
                  "global compiler variable set \"%s\"?\n\n"
-                 "This cannot be undone."), m_CurrentSet.wx_str());
+                 "This cannot be undone."),
+               m_CurrentSet.wx_str());
     AnnoyingDialog d(_("Delete Global Variable Set"), msg, wxART_QUESTION);
     PlaceWindow(&d);
     if (d.ShowModal() == AnnoyingDialog::rtYES)
@@ -611,7 +618,7 @@ void UsrGlblMgrEditDialog::DeleteSet(cb_unused wxCommandEvent& event)
     }
 }
 
-void UsrGlblMgrEditDialog::AddVar(const wxString& name)
+void UsrGlblMgrEditDialog::AddVar(const wxString &name)
 {
     if (name.IsEmpty())
         return;
@@ -623,7 +630,7 @@ void UsrGlblMgrEditDialog::AddVar(const wxString& name)
     Load();
 }
 
-void UsrGlblMgrEditDialog::Sanitise(wxString& s)
+void UsrGlblMgrEditDialog::Sanitise(wxString &s)
 {
     s.Trim().Trim(true);
 
@@ -647,7 +654,7 @@ void UsrGlblMgrEditDialog::Sanitise(wxString& s)
         s.Prepend(_T("set_"));
 }
 
-void UsrGlblMgrEditDialog::NewVar(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::NewVar(cb_unused wxCommandEvent &event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new variable:"), _("New Variable"));
     PlaceWindow(&d);
@@ -660,7 +667,7 @@ void UsrGlblMgrEditDialog::NewVar(cb_unused wxCommandEvent& event)
     }
 }
 
-void UsrGlblMgrEditDialog::NewSet(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::NewSet(cb_unused wxCommandEvent &event)
 {
     wxTextEntryDialog d(this, _("Please specify a name for the new set:"), _("New Set"));
     PlaceWindow(&d);
@@ -680,14 +687,14 @@ void UsrGlblMgrEditDialog::NewSet(cb_unused wxCommandEvent& event)
     }
 }
 
-void UsrGlblMgrEditDialog::SelectVar(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::SelectVar(cb_unused wxCommandEvent &event)
 {
     Save();
     m_CurrentVar = m_SelVar->GetStringSelection();
     Load();
 }
 
-void UsrGlblMgrEditDialog::SelectSet(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::SelectSet(cb_unused wxCommandEvent &event)
 {
     Save();
     m_CurrentSet = m_SelSet->GetStringSelection();
@@ -695,7 +702,6 @@ void UsrGlblMgrEditDialog::SelectSet(cb_unused wxCommandEvent& event)
     UpdateChoices();
     Load();
 }
-
 
 void UsrGlblMgrEditDialog::Load()
 {
@@ -707,7 +713,8 @@ void UsrGlblMgrEditDialog::Load()
 
     for (unsigned int i = 0; i < builtinMembers.GetCount(); ++i)
     {
-        ((wxTextCtrl*) FindWindow(builtinMembers[i]))->SetValue(m_CfgMan->Read(path + builtinMembers[i]));
+        ((wxTextCtrl *)FindWindow(builtinMembers[i]))
+            ->SetValue(m_CfgMan->Read(path + builtinMembers[i]));
 
         int index = knownMembers.Index(builtinMembers[i], false);
         if (index != wxNOT_FOUND)
@@ -737,15 +744,14 @@ void UsrGlblMgrEditDialog::Save()
     wxString s, t;
     for (unsigned int i = 0; i < builtinMembers.GetCount(); ++i)
     {
-        t = ((wxTextCtrl*) FindWindow(builtinMembers[i]))->GetValue();
+        t = ((wxTextCtrl *)FindWindow(builtinMembers[i]))->GetValue();
 
-        if (   i == 0
-            && (   (   !m_CurrentVar.IsEmpty()
-                    && t.IsEmpty() )
-                || t.Contains(_T('#') + m_CurrentVar) ) )
+        if (i == 0
+            && ((!m_CurrentVar.IsEmpty() && t.IsEmpty()) || t.Contains(_T('#') + m_CurrentVar)))
         {
-            if (cbMessageBox(_("Are you sure you want to save an invalid global variable?"), _("Global variables"),
-                             wxYES_NO | wxICON_QUESTION) == wxID_YES)
+            if (cbMessageBox(_("Are you sure you want to save an invalid global variable?"),
+                             _("Global variables"), wxYES_NO | wxICON_QUESTION)
+                == wxID_YES)
             {
                 t.assign(_T("(invalid)"));
             }
@@ -793,13 +799,12 @@ void UsrGlblMgrEditDialog::UpdateChoices()
     m_SelVar->SetStringSelection(m_CurrentVar);
 }
 
-
-void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
+void UsrGlblMgrEditDialog::OnFS(wxCommandEvent &event)
 {
-    wxTextCtrl* c = nullptr;
+    wxTextCtrl *c = nullptr;
     int id = event.GetId();
 
-    if      (id == XRCID("fs1"))
+    if (id == XRCID("fs1"))
         c = m_Base;
     else if (id == XRCID("fs2"))
         c = m_Include;
@@ -817,7 +822,8 @@ void UsrGlblMgrEditDialog::OnFS(wxCommandEvent& event)
         c->SetValue(path);
 }
 
-void UsrGlblMgrEditDialog::Help(cb_unused wxCommandEvent& event)
+void UsrGlblMgrEditDialog::Help(cb_unused wxCommandEvent &event)
 {
-    wxLaunchDefaultBrowser(_T("http://wiki.codeblocks.org/index.php?title=Global_compiler_variables"));
+    wxLaunchDefaultBrowser(
+        _T("http://wiki.codeblocks.org/index.php?title=Global_compiler_variables"));
 }

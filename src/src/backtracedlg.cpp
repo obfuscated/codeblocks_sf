@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -9,15 +9,15 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/filedlg.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/sizer.h>
-    #include <wx/txtstrm.h>
-    #include <wx/wfstream.h>
-    #include <wx/dataobj.h>
-    #include "cbplugin.h"
-    #include "configmanager.h"
+#include <wx/filedlg.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/sizer.h>
+#include <wx/txtstrm.h>
+#include <wx/wfstream.h>
+#include <wx/dataobj.h>
+#include "cbplugin.h"
+#include "configmanager.h"
 #endif
 
 #include <wx/clipbrd.h>
@@ -29,13 +29,13 @@
 
 namespace
 {
-    const int idList = wxNewId();
-    const int idSwitch = wxNewId();
-    const int idSave = wxNewId();
-    const int idJump = wxNewId();
-    const int idCopyToClipboard = wxNewId();
-    const int idSettingJumpDefault = wxNewId();
-    const int idSettingSwitchDefault = wxNewId();
+const int idList = wxNewId();
+const int idSwitch = wxNewId();
+const int idSave = wxNewId();
+const int idJump = wxNewId();
+const int idCopyToClipboard = wxNewId();
+const int idSettingJumpDefault = wxNewId();
+const int idSettingSwitchDefault = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
@@ -52,12 +52,11 @@ BEGIN_EVENT_TABLE(BacktraceDlg, wxPanel)
     EVT_UPDATE_UI(idSwitch, BacktraceDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-BacktraceDlg::BacktraceDlg(wxWindow* parent) :
-    wxPanel(parent)
+BacktraceDlg::BacktraceDlg(wxWindow *parent) : wxPanel(parent)
 {
     m_list = new wxListCtrl(this, idList, wxDefaultPosition, wxDefaultSize,
                             wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES | wxLC_VRULES);
-    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
     bs->Add(m_list, 1, wxEXPAND | wxALL);
     SetAutoLayout(true);
     SetSizer(bs);
@@ -68,10 +67,12 @@ BacktraceDlg::BacktraceDlg(wxWindow* parent) :
     m_list->InsertColumn(3, _("File"), wxLIST_FORMAT_LEFT, 128);
     m_list->InsertColumn(4, _("Line"), wxLIST_FORMAT_RIGHT, 64);
 
-    Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame background"),
-                                                       wxT("dbg_backtrace_active_background"), *wxRED);
-    Manager::Get()->GetColourManager()->RegisterColour(_("Debugger"), _("Backtrace active frame foreground"),
-                                                       wxT("dbg_backtrace_active_foreground"), *wxWHITE);
+    Manager::Get()->GetColourManager()->RegisterColour(
+        _("Debugger"), _("Backtrace active frame background"),
+        wxT("dbg_backtrace_active_background"), *wxRED);
+    Manager::Get()->GetColourManager()->RegisterColour(
+        _("Debugger"), _("Backtrace active frame foreground"),
+        wxT("dbg_backtrace_active_foreground"), *wxWHITE);
 }
 
 void BacktraceDlg::Reload()
@@ -124,8 +125,7 @@ void BacktraceDlg::EnableWindow(bool enable)
     m_list->Enable(enable);
 }
 
-
-void BacktraceDlg::OnListRightClick(cb_unused wxListEvent& event)
+void BacktraceDlg::OnListRightClick(cb_unused wxListEvent &event)
 {
     wxMenu m;
     m.Append(idJump, _("Jump to this file/line"));
@@ -137,7 +137,8 @@ void BacktraceDlg::OnListRightClick(cb_unused wxListEvent& event)
     m.AppendRadioItem(idSettingJumpDefault, _("Jump on double-click"));
     m.AppendRadioItem(idSettingSwitchDefault, _("Switch on double-click"));
 
-    bool jump_on_double_click = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
+    bool jump_on_double_click =
+        cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
 
     m.Check(idSettingJumpDefault, jump_on_double_click);
     m.Check(idSettingSwitchDefault, !jump_on_double_click);
@@ -145,7 +146,7 @@ void BacktraceDlg::OnListRightClick(cb_unused wxListEvent& event)
     m_list->PopupMenu(&m);
 }
 
-void BacktraceDlg::OnJump(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnJump(cb_unused wxCommandEvent &event)
 {
     if (m_list->GetSelectedItemCount() == 0)
         return;
@@ -165,14 +166,13 @@ void BacktraceDlg::OnJump(cb_unused wxCommandEvent& event)
         long line_number;
         line.ToLong(&line_number, 10);
 
-
         cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-        if(plugin)
+        if (plugin)
             plugin->SyncEditor(file, line_number, false);
     }
 }
 
-void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent &event)
 {
     if (!IsSwitchFrameEnabled())
         return;
@@ -195,7 +195,7 @@ void BacktraceDlg::OnSwitchFrame(cb_unused wxCommandEvent& event)
         cbMessageBox(_("Couldn't find out the frame number!"), _("Error"), wxICON_ERROR);
 }
 
-void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent& event)
+void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent &event)
 {
     bool jump = cbDebuggerCommonConfig::GetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick);
     wxCommandEvent evt;
@@ -205,7 +205,7 @@ void BacktraceDlg::OnDoubleClick(cb_unused wxListEvent& event)
         OnSwitchFrame(evt);
 }
 
-void BacktraceDlg::OnSave(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnSave(cb_unused wxCommandEvent &event)
 {
     wxFileDialog dlg(this, _("Save as text file"), wxEmptyString, wxEmptyString,
                      FileFilters::GetFilterAll(), wxFD_SAVE | wxFD_OVERWRITE_PROMPT);
@@ -230,16 +230,13 @@ void BacktraceDlg::OnSave(cb_unused wxCommandEvent& event)
         info.m_col = 4;
         wxString line = m_list->GetItem(info) && !info.m_text.IsEmpty() ? info.m_text : _T("??");
 
-        text << _T('#') << m_list->GetItemText(ii) << _T(' ')
-            << addr << _T('\t')
-            << func << _T(' ')
-            << _T('(') << file << _T(':') << line << _T(')')
-            << _T('\n');
+        text << _T('#') << m_list->GetItemText(ii) << _T(' ') << addr << _T('\t') << func << _T(' ')
+             << _T('(') << file << _T(':') << line << _T(')') << _T('\n');
     }
     cbMessageBox(_("File saved"), _("Result"), wxICON_INFORMATION);
 }
 
-void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent& event)
+void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent &event)
 {
     wxString text;
     for (int ii = 0; ii < m_list->GetItemCount(); ++ii)
@@ -256,27 +253,24 @@ void BacktraceDlg::OnCopyToClipboard(cb_unused wxCommandEvent& event)
         info.m_col = 4;
         wxString line = m_list->GetItem(info) && !info.m_text.IsEmpty() ? info.m_text : _T("??");
 
-        text << _T('#') << m_list->GetItemText(ii) << _T(' ')
-            << addr << _T('\t')
-            << func << _T(' ')
-            << _T('(') << file << _T(':') << line << _T(')')
-            << _T('\n');
+        text << _T('#') << m_list->GetItemText(ii) << _T(' ') << addr << _T('\t') << func << _T(' ')
+             << _T('(') << file << _T(':') << line << _T(')') << _T('\n');
     }
     wxTextDataObject *object = new wxTextDataObject(text);
-    if(wxTheClipboard->Open())
+    if (wxTheClipboard->Open())
     {
         wxTheClipboard->SetData(object);
         wxTheClipboard->Close();
     }
 }
 
-void BacktraceDlg::OnSettingJumpDefault(wxCommandEvent& event)
+void BacktraceDlg::OnSettingJumpDefault(wxCommandEvent &event)
 {
     bool checked = event.IsChecked();
     cbDebuggerCommonConfig::SetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick, checked);
 }
 
-void BacktraceDlg::OnSettingSwitchDefault(wxCommandEvent& event)
+void BacktraceDlg::OnSettingSwitchDefault(wxCommandEvent &event)
 {
     bool checked = event.IsChecked();
     cbDebuggerCommonConfig::SetFlag(cbDebuggerCommonConfig::JumpOnDoubleClick, !checked);

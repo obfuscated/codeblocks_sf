@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,13 +10,15 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "configmanager.h"
+#include "configmanager.h"
 #endif // CB_PRECOMP
 
 #include "cbcolourmanager.h"
 
-template<> ColourManager* Mgr<ColourManager>::instance = nullptr;
-template<> bool  Mgr<ColourManager>::isShutdown = false;
+template<>
+ColourManager *Mgr<ColourManager>::instance = nullptr;
+template<>
+bool Mgr<ColourManager>::isShutdown = false;
 
 void ColourManager::Load()
 {
@@ -54,7 +56,7 @@ void ColourManager::Save()
 void ColourManager::RegisterColour(const wxString &category, const wxString &name,
                                    const wxString &id, const wxColour &defaultColour)
 {
-    wxString lowerID =  id.Lower();
+    wxString lowerID = id.Lower();
     ColourDefMap::iterator it = m_colours.find(lowerID);
     if (it != m_colours.end())
     {
@@ -85,7 +87,7 @@ void ColourManager::SetColour(const wxString &id, const wxColour &colour)
         it->second.value = colour;
 }
 
-const ColourManager::ColourDefMap& ColourManager::GetColourDefinitions() const
+const ColourManager::ColourDefMap &ColourManager::GetColourDefinitions() const
 {
     return m_colours;
 }

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
 #ifndef DLGABOUT_H
@@ -12,11 +12,11 @@ class wxWindow;
 
 class dlgAbout : public wxScrollingDialog
 {
-    public:
-        // class constructor
-        dlgAbout(wxWindow* parent);
-        // class destructor
-        ~dlgAbout();
+public:
+    // class constructor
+    dlgAbout(wxWindow *parent);
+    // class destructor
+    ~dlgAbout();
 };
 
 #endif // DLGABOUT_H

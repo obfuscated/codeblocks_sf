@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef PRINTING_TYPES_H
@@ -10,10 +10,10 @@
 #include <wx/print.h>
 
 // Global printer
-extern wxPrinter* g_printer;
+extern wxPrinter *g_printer;
 
 // Global page setup data
-extern wxPageSetupData* g_pageSetupData;
+extern wxPageSetupData *g_pageSetupData;
 
 // printing scope for print dialog
 enum PrintScope

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,20 +10,17 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "projectbuildtarget.h" // class's header file
-    #include "cbproject.h"
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
-    #include "globals.h"
+#include "projectbuildtarget.h" // class's header file
+#include "cbproject.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "macrosmanager.h"
+#include "globals.h"
 #endif
 
-
-
 // class constructor
-ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
-    : m_Project(parentProject),
-    m_FileArray(ProjectFile::CompareProjectFiles)
+ProjectBuildTarget::ProjectBuildTarget(cbProject *parentProject)
+  : m_Project(parentProject), m_FileArray(ProjectFile::CompareProjectFiles)
 {
     m_BuildWithAll = false;
     m_CreateStaticLib = true;
@@ -33,11 +30,9 @@ ProjectBuildTarget::ProjectBuildTarget(cbProject* parentProject)
 }
 
 // class destructor
-ProjectBuildTarget::~ProjectBuildTarget()
-{
-}
+ProjectBuildTarget::~ProjectBuildTarget() {}
 
-cbProject* ProjectBuildTarget::GetParentProject()
+cbProject *ProjectBuildTarget::GetParentProject()
 {
     return m_Project;
 }
@@ -47,12 +42,12 @@ wxString ProjectBuildTarget::GetFullTitle() const
     return m_Project->GetTitle() + _T(" - ") + GetTitle();
 }
 
-const wxString & ProjectBuildTarget::GetExternalDeps() const
+const wxString &ProjectBuildTarget::GetExternalDeps() const
 {
     return m_ExternalDeps;
 }
 
-void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
+void ProjectBuildTarget::SetExternalDeps(const wxString &deps)
 {
     if (m_ExternalDeps != deps)
     {
@@ -61,12 +56,12 @@ void ProjectBuildTarget::SetExternalDeps(const wxString& deps)
     }
 }
 
-const wxString & ProjectBuildTarget::GetAdditionalOutputFiles() const
+const wxString &ProjectBuildTarget::GetAdditionalOutputFiles() const
 {
     return m_AdditionalOutputFiles;
 }
 
-void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString& files)
+void ProjectBuildTarget::SetAdditionalOutputFiles(const wxString &files)
 {
     if (m_AdditionalOutputFiles != files)
     {
@@ -143,18 +138,18 @@ void ProjectBuildTarget::SetTargetType(TargetType pt)
 }
 
 // target dependencies: targets to be compiled (if necessary) before this one
-void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget* target)
+void ProjectBuildTarget::AddTargetDep(ProjectBuildTarget *target)
 {
     m_TargetDeps.Add(target);
 }
 
 // get the list of dependency targets of this target
-BuildTargets& ProjectBuildTarget::GetTargetDeps()
+BuildTargets &ProjectBuildTarget::GetTargetDeps()
 {
     return m_TargetDeps;
 }
 
-ProjectFile* ProjectBuildTarget::GetFile(int index)
+ProjectFile *ProjectBuildTarget::GetFile(int index)
 {
     if (m_FileArray.GetCount() == 0)
     {
@@ -172,7 +167,7 @@ ProjectFile* ProjectBuildTarget::GetFile(int index)
     return m_FileArray.Item(index);
 }
 
-bool ProjectBuildTarget::RemoveFile(ProjectFile* pf)
+bool ProjectBuildTarget::RemoveFile(ProjectFile *pf)
 {
     if (!pf)
         return false;

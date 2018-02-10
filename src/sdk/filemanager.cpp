@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,11 +10,11 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "filemanager.h"
-    #include "safedelete.h"
-    #include "cbeditor.h"
-    #include "editormanager.h"
-    #include "infowindow.h"
+#include "filemanager.h"
+#include "safedelete.h"
+#include "cbeditor.h"
+#include "editormanager.h"
+#include "infowindow.h"
 #endif
 #include "cbstyledtextctrl.h"
 
@@ -23,8 +23,10 @@
 
 #include <memory>
 
-template<> FileManager* Mgr<FileManager>::instance = nullptr;
-template<> bool  Mgr<FileManager>::isShutdown = false;
+template<>
+FileManager *Mgr<FileManager>::instance = nullptr;
+template<>
+bool Mgr<FileManager>::isShutdown = false;
 
 // ***** class: LoaderBase *****
 LoaderBase::~LoaderBase()
@@ -39,7 +41,7 @@ bool LoaderBase::Sync()
     return data;
 }
 
-char* LoaderBase::GetData()
+char *LoaderBase::GetData()
 {
     WaitReady();
     return data;
@@ -63,7 +65,7 @@ void FileLoader::operator()()
     wxFile file(fileName);
     len = file.Length();
 
-    data = new char[len+4];
+    data = new char[len + 4];
     char *dp = data + len;
     *dp++ = '\0';
     *dp++ = '\0';
@@ -99,8 +101,8 @@ void URLLoader::operator()()
         return;
     }
 
-    char   tmp[8192] = {};
-    size_t chunk     = 0;
+    char tmp[8192] = {};
+    size_t chunk = 0;
 
     while ((chunk = stream->Read(tmp, sizeof(tmp)).LastRead()))
     {
@@ -112,40 +114,37 @@ void URLLoader::operator()()
 #else
     data = mBuffer.data();
 #endif
-    len  = mBuffer.size();
+    len = mBuffer.size();
     const char Zeros4[] = "\0\0\0\0";
     mBuffer.insert(mBuffer.end(), Zeros4, Zeros4 + 4);
     Ready();
 }
 
 // ***** class: FileManager *****
-FileManager::FileManager()
-    : fileLoaderThread(false),
-    uncLoaderThread(false),
-    urlLoaderThread(false)
+FileManager::FileManager() : fileLoaderThread(false), uncLoaderThread(false), urlLoaderThread(false)
 {
 }
 
 FileManager::~FileManager()
 {
-//  fileLoaderThread.Die();
-//  uncLoaderThread.Die();
-//  urlLoaderThread.Die();
+    //  fileLoaderThread.Die();
+    //  uncLoaderThread.Die();
+    //  urlLoaderThread.Die();
 }
 
-LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
+LoaderBase *FileManager::Load(const wxString &file, bool reuseEditors)
 {
     if (reuseEditors)
     {
         // if a file is opened in the editor, and the file get modified, we use the content of the
         // editor, otherwise, we still use the original file
-        EditorManager* em = Manager::Get()->GetEditorManager();
+        EditorManager *em = Manager::Get()->GetEditorManager();
         if (em)
         {
             wxFileName fileName(file);
             for (int i = 0; i < em->GetEditorsCount(); ++i)
             {
-                cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
+                cbEditor *ed = em->GetBuiltinEditor(em->GetEditor(i));
                 if (ed && fileName == ed->GetFilename())
                 {
                     if (!ed->GetModified())
@@ -178,35 +177,36 @@ LoaderBase* FileManager::Load(const wxString& file, bool reuseEditors)
     return fl;
 }
 
-
 namespace platform
 {
-#if defined ( __WIN32__ ) || defined ( _WIN64 )
-    // Yes this is ugly. Feel free to come up with a better idea if you have one.
-    // Using the obvious wxRenameFile (or the underlying wxRename) is no option under Windows, since
-    // wxRename is simply a fuckshit wrapper around a CRT function which does not work the way
-    // the wxRename author assumes (MSVCRT rename fails if the target exists, instead of overwriting).
-    inline bool move(wxString const& old_name, wxString const& new_name)
-    {
-        // hopefully I got the unintellegible conversion stuff correct... at least it seems to work...
-        return ::MoveFileEx(wxFNCONV(old_name), wxFNCONV(new_name), MOVEFILE_REPLACE_EXISTING);
-    }
+#if defined(__WIN32__) || defined(_WIN64)
+// Yes this is ugly. Feel free to come up with a better idea if you have one.
+// Using the obvious wxRenameFile (or the underlying wxRename) is no option under Windows, since
+// wxRename is simply a fuckshit wrapper around a CRT function which does not work the way
+// the wxRename author assumes (MSVCRT rename fails if the target exists, instead of overwriting).
+inline bool move(wxString const &old_name, wxString const &new_name)
+{
+    // hopefully I got the unintellegible conversion stuff correct... at least it seems to work...
+    return ::MoveFileEx(wxFNCONV(old_name), wxFNCONV(new_name), MOVEFILE_REPLACE_EXISTING);
+}
 #else
-    inline bool move(wxString const& old_name, wxString const& new_name)
-    {
-        return ::wxRenameFile(old_name, new_name, true);
-    };
+inline bool move(wxString const &old_name, wxString const &new_name)
+{
+    return ::wxRenameFile(old_name, new_name, true);
+};
 #endif
 }
 
-
-// FileManager::SaveUTF8 (formerly const char* overload of FileManager::Save) uses wxFile::Save without any conversions.
-// It is only suitable e.g. for saving a TiXmlDocument (UTF8 data), but not for editors or projects, which contain wide char data.
-// Therefore it is now a private member and has been renamed to prevent accidential use.
+// FileManager::SaveUTF8 (formerly const char* overload of FileManager::Save) uses wxFile::Save
+// without any conversions. It is only suitable e.g. for saving a TiXmlDocument (UTF8 data), but not
+// for editors or projects, which contain wide char data. Therefore it is now a private member and
+// has been renamed to prevent accidential use.
 //
-// FileManager::Save uses FileManager::WriteWxStringToFile to write data, its operation is otherwise exactly identical.
+// FileManager::Save uses FileManager::WriteWxStringToFile to write data, its operation is otherwise
+// exactly identical.
 //
-// 1. If file does not exist, create in exclusive mode, save, return success or failure. Exclusive mode is presumably "safer".
+// 1. If file does not exist, create in exclusive mode, save, return success or failure. Exclusive
+// mode is presumably "safer".
 // 2. If the file is a symlink, write directly so that the symlink structure is kept.
 // 3. Otherwise (file exists), save to temporary.
 // 4. Attempt to atomically replace original with temporary.
@@ -215,7 +215,7 @@ namespace platform
 //    and only lends to race conditions and a possible crash-on-exit.
 //    If you can't trust your computer to sync data to disk properly, you already lost.
 
-bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
+bool FileManager::SaveUTF8(const wxString &name, const char *data, size_t len)
 {
     if (wxFileExists(name) == false)
     {
@@ -239,7 +239,7 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
         temp.append(wxT(".temp"));
 
         wxStructStat buff;
-        wxLstat( name, &buff );
+        wxLstat(name, &buff);
 
         wxFile f;
         f.Create(temp, true, buff.st_mode);
@@ -262,7 +262,8 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
     }
 }
 
-bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
+bool FileManager::Save(const wxString &name, const wxString &data, wxFontEncoding encoding,
+                       bool bom)
 {
     if (wxFileExists(name) == false)
     {
@@ -288,7 +289,7 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
         temp.append(wxT(".temp"));
 
         wxStructStat buff;
-        wxLstat( name, &buff );
+        wxLstat(name, &buff);
 
         wxFile f;
         f.Create(temp, true, buff.st_mode);
@@ -311,38 +312,38 @@ bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncodin
     }
 }
 
-
-bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEncoding encoding, bool bom)
+bool FileManager::WriteWxStringToFile(wxFile &f, const wxString &data, wxFontEncoding encoding,
+                                      bool bom)
 {
-    const char* mark = nullptr;
+    const char *mark = nullptr;
     size_t mark_length = 0;
     if (bom)
     {
         switch (encoding)
         {
-        case wxFONTENCODING_UTF8:
-            mark = "\xEF\xBB\xBF";
-            mark_length = 3;
-            break;
-        case wxFONTENCODING_UTF16BE:
-            mark = "\xFE\xFF";
-            mark_length = 2;
-            break;
-        case wxFONTENCODING_UTF16LE:
-            mark = "\xFF\xFE";
-            mark_length = 2;
-            break;
-        case wxFONTENCODING_UTF32BE:
-            mark = "\x00\x00\xFE\xFF";
-            mark_length = 4;
-            break;
-        case wxFONTENCODING_UTF32LE:
-            mark = "\xFF\xFE\x00\x00";
-            mark_length = 4;
-            break;
-        case wxFONTENCODING_SYSTEM:
-        default:
-            break;
+            case wxFONTENCODING_UTF8:
+                mark = "\xEF\xBB\xBF";
+                mark_length = 3;
+                break;
+            case wxFONTENCODING_UTF16BE:
+                mark = "\xFE\xFF";
+                mark_length = 2;
+                break;
+            case wxFONTENCODING_UTF16LE:
+                mark = "\xFF\xFE";
+                mark_length = 2;
+                break;
+            case wxFONTENCODING_UTF32BE:
+                mark = "\x00\x00\xFE\xFF";
+                mark_length = 4;
+                break;
+            case wxFONTENCODING_UTF32LE:
+                mark = "\xFF\xFE\x00\x00";
+                mark_length = 4;
+                break;
+            case wxFONTENCODING_SYSTEM:
+            default:
+                break;
         }
 
         if (f.Write(mark, mark_length) != mark_length)
@@ -356,32 +357,32 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
 
     size_t inlen = data.Len(), outlen = 0;
     wxCharBuffer mbBuff;
-    if ( encoding == wxFONTENCODING_UTF7 )
+    if (encoding == wxFONTENCODING_UTF7)
     {
         wxMBConvUTF7 conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
     }
-    else if ( encoding == wxFONTENCODING_UTF8 )
+    else if (encoding == wxFONTENCODING_UTF8)
     {
         wxMBConvUTF8 conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
     }
-    else if ( encoding == wxFONTENCODING_UTF16BE )
+    else if (encoding == wxFONTENCODING_UTF16BE)
     {
         wxMBConvUTF16BE conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
     }
-    else if ( encoding == wxFONTENCODING_UTF16LE )
+    else if (encoding == wxFONTENCODING_UTF16LE)
     {
         wxMBConvUTF16LE conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
     }
-    else if ( encoding == wxFONTENCODING_UTF32BE )
+    else if (encoding == wxFONTENCODING_UTF32BE)
     {
         wxMBConvUTF32BE conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
     }
-    else if ( encoding == wxFONTENCODING_UTF32LE )
+    else if (encoding == wxFONTENCODING_UTF32LE)
     {
         wxMBConvUTF32LE conv;
         mbBuff = conv.cWC2MB(data.c_str(), inlen, &outlen);
@@ -393,7 +394,7 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
         // but it's much, much faster than wxCSConv (at least on linux)
         wxEncodingConverter conv;
         // should be long enough
-        char* tmp = new char[2*inlen];
+        char *tmp = new char[2 * inlen];
 
         if (conv.Init(wxFONTENCODING_UNICODE, encoding) && conv.Convert(data.wx_str(), tmp))
         {
@@ -408,7 +409,7 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
         }
         delete[] tmp;
     }
-     // if conversion to chosen encoding succeeded, we write the file to disk
+    // if conversion to chosen encoding succeeded, we write the file to disk
     if (outlen > 0)
         return f.Write(mbBuff, outlen) == outlen;
 
@@ -423,12 +424,12 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
 
         if (!buf || !(size = strlen(buf)))
         {
-            cbMessageBox(_T(    "The file could not be saved because it contains characters "
-                                "that can neither be represented in your current code page, "
-                                "nor be converted to UTF-8.\n"
-                                "The latter should actually not be possible.\n\n"
-                                "Please check your language/encoding settings and try saving again." ),
-                                _("Failure"), wxICON_WARNING | wxOK );
+            cbMessageBox(_T("The file could not be saved because it contains characters "
+                            "that can neither be represented in your current code page, "
+                            "nor be converted to UTF-8.\n"
+                            "The latter should actually not be possible.\n\n"
+                            "Please check your language/encoding settings and try saving again."),
+                         _("Failure"), wxICON_WARNING | wxOK);
             return false;
         }
         else
@@ -437,7 +438,8 @@ bool FileManager::WriteWxStringToFile(wxFile& f, const wxString& data, wxFontEnc
                                 _("The saved document contained characters\n"
                                   "which were illegal in the selected encoding.\n\n"
                                   "The file's encoding has been changed to UTF-8\n"
-                                  "to prevent you from losing data."), 8000);
+                                  "to prevent you from losing data."),
+                                8000);
         }
     }
 

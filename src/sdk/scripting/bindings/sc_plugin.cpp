@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -15,8 +15,10 @@
 
 #include <map>
 
-namespace ScriptBindings {
-namespace ScriptPluginWrapper {
+namespace ScriptBindings
+{
+namespace ScriptPluginWrapper
+{
 
 // struct and map for mapping script plugins to menu callbacks
 struct MenuCallback
@@ -39,23 +41,24 @@ ScriptPluginsMenus s_ScriptPluginsMenus;
 // ask the script plugin what menus to add in the menubar
 // and return an integer array of the menu IDs
 ////////////////////////////////////////////////////////////////////////////////
-wxArrayInt CreateMenu(const wxString& name)
+wxArrayInt CreateMenu(const wxString &name)
 {
     wxArrayInt ret;
 
     ScriptPlugins::iterator it = s_ScriptPlugins.find(name);
     if (it == s_ScriptPlugins.end())
         return ret;
-    SquirrelObject& o = it->second;
+    SquirrelObject &o = it->second;
 
     ScriptPluginsMenus::iterator itm = s_ScriptPluginsMenus.find(name);
     if (itm == s_ScriptPluginsMenus.end())
     {
-        itm = s_ScriptPluginsMenus.insert(s_ScriptPluginsMenus.end(), std::make_pair(name, MenuItemsManager(false)));
+        itm = s_ScriptPluginsMenus.insert(s_ScriptPluginsMenus.end(),
+                                          std::make_pair(name, MenuItemsManager(false)));
     }
-    MenuItemsManager& mi = itm->second;
+    MenuItemsManager &mi = itm->second;
 
-    SqPlus::SquirrelFunction<wxArrayString&> f(o, "GetMenu");
+    SqPlus::SquirrelFunction<wxArrayString &> f(o, "GetMenu");
     if (f.func.IsNull())
         return ret;
 
@@ -101,15 +104,15 @@ wxArrayInt CreateMenu(const wxString& name)
 // ask the script plugin what items to add in the context menu
 // and return an integer array of the menu IDs
 ////////////////////////////////////////////////////////////////////////////////
-wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeData* data)
+wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu *menu, const FileTreeData *data)
 {
     wxArrayInt ret;
 
     ScriptPlugins::iterator it;
     for (it = s_ScriptPlugins.begin(); it != s_ScriptPlugins.end(); ++it)
     {
-        SquirrelObject& o = it->second;
-        SqPlus::SquirrelFunction<wxArrayString&> f(o, "GetModuleMenu");
+        SquirrelObject &o = it->second;
+        SqPlus::SquirrelFunction<wxArrayString &> f(o, "GetModuleMenu");
         if (f.func.IsNull())
             continue;
 
@@ -124,7 +127,7 @@ wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeDa
             continue;
         }
 
-        if (arr.GetCount()==1) // exactly one menu entry
+        if (arr.GetCount() == 1) // exactly one menu entry
         {
             int id = wxNewId();
             menu->Append(id, arr[0]);
@@ -135,9 +138,9 @@ wxArrayInt CreateModuleMenu(const ModuleType typ, wxMenu* menu, const FileTreeDa
             callback.menuIndex = 0;
             s_MenuCallbacks.insert(s_MenuCallbacks.end(), std::make_pair(id, callback));
         }
-        else if (arr.GetCount()>1) // more menu entries -> create sub-menu
+        else if (arr.GetCount() > 1) // more menu entries -> create sub-menu
         {
-            wxMenu* sub = new wxMenu;
+            wxMenu *sub = new wxMenu;
             for (size_t i = 0; i < arr.GetCount(); ++i)
             {
                 int id = wxNewId();
@@ -165,7 +168,7 @@ void OnScriptMenu(int id)
     it = s_MenuCallbacks.find(id);
     if (it != s_MenuCallbacks.end())
     {
-        MenuCallback& callback = it->second;
+        MenuCallback &callback = it->second;
         SqPlus::SquirrelFunction<void> f(callback.object, "OnMenuClicked");
         if (!f.func.IsNull())
         {
@@ -190,7 +193,7 @@ void OnScriptModuleMenu(int id)
     it = s_MenuCallbacks.find(id);
     if (it != s_MenuCallbacks.end())
     {
-        MenuCallback& callback = it->second;
+        MenuCallback &callback = it->second;
         SqPlus::SquirrelFunction<void> f(callback.object, "OnModuleMenuClicked");
         if (!f.func.IsNull())
         {
@@ -220,8 +223,8 @@ SQInteger RegisterPlugin(HSQUIRRELVM v)
         return sq_throwerror(v, "Not a script plugin!");
 
     // ask for its registration name
-    SqPlus::SquirrelFunction<PluginInfo&> f(o, "GetPluginInfo");
-    PluginInfo& info = f();
+    SqPlus::SquirrelFunction<PluginInfo &> f(o, "GetPluginInfo");
+    PluginInfo &info = f();
     wxString s = info.name;
 
     // look if a script plugin with the same name already exists
@@ -251,7 +254,7 @@ SQInteger GetPlugin(HSQUIRRELVM v)
     StackHandler sa(v);
 
     // get the script plugin's name
-    const wxString& name = *SqPlus::GetInstance<wxString,false>(v, 2);
+    const wxString &name = *SqPlus::GetInstance<wxString, false>(v, 2);
 
     // search for it in the registered script plugins list
     ScriptPlugins::iterator it = s_ScriptPlugins.find(name);
@@ -268,14 +271,14 @@ SQInteger GetPlugin(HSQUIRRELVM v)
 ////////////////////////////////////////////////////////////////////////////////
 // execute a script plugin (script-bound function)
 ////////////////////////////////////////////////////////////////////////////////
-int ExecutePlugin(const wxString& name)
+int ExecutePlugin(const wxString &name)
 {
     // look for script plugin
     ScriptPlugins::iterator it = s_ScriptPlugins.find(name);
     if (it != s_ScriptPlugins.end())
     {
         // found; execute it
-        SquirrelObject& o = it->second;
+        SquirrelObject &o = it->second;
         SqPlus::SquirrelFunction<int> f(o, "Execute");
         if (!f.func.IsNull())
         {
@@ -295,7 +298,7 @@ int ExecutePlugin(const wxString& name)
 }; // namespace ScriptPluginWrapper
 
 // base script plugin class
-const char* s_cbScriptPlugin =
+const char *s_cbScriptPlugin =
     "class cbScriptPlugin\n"
     "{\n"
     "    info = PluginInfo();\n"
@@ -362,8 +365,8 @@ void Register_ScriptPlugin()
     catch (SquirrelError e)
     {
         cbMessageBox(wxString::Format(_("Failed to register script plugins framework.\n\n%s"),
-                                        cbC2U(e.desc).c_str()),
-                    _("Script compile error"), wxICON_ERROR);
+                                      cbC2U(e.desc).c_str()),
+                     _("Script compile error"), wxICON_ERROR);
     }
 
     // restore the printfunc
@@ -371,4 +374,3 @@ void Register_ScriptPlugin()
 }
 
 }; // namespace ScriptBindings
-

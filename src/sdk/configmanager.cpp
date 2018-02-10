@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,14 +10,14 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "configmanager.h"
-    #include "globals.h"
-    #include "personalitymanager.h"
-    #include "cbexception.h"
-    #include "logmanager.h"
-    #include <wx/file.h>
-    #include <wx/dir.h>
-    #include <wx/log.h> // for wxSafeShowMessage()
+#include "configmanager.h"
+#include "globals.h"
+#include "personalitymanager.h"
+#include "cbexception.h"
+#include "logmanager.h"
+#include <wx/file.h>
+#include <wx/dir.h>
+#include <wx/log.h> // for wxSafeShowMessage()
 #endif
 
 #include "crc32.h"
@@ -57,11 +57,13 @@
 #include <glib.h>
 #endif // __linux__
 
-template<> CfgMgrBldr* Mgr<CfgMgrBldr>::instance = nullptr;
-template<> bool  Mgr<CfgMgrBldr>::isShutdown = false;
+template<>
+CfgMgrBldr *Mgr<CfgMgrBldr>::instance = nullptr;
+template<>
+bool Mgr<CfgMgrBldr>::isShutdown = false;
 
 wxString ConfigManager::alternate_user_data_path;
-bool ConfigManager::has_alternate_user_data_path=false;
+bool ConfigManager::has_alternate_user_data_path = false;
 
 wxString ConfigManager::config_folder;
 wxString ConfigManager::home_folder;
@@ -73,76 +75,73 @@ wxString ConfigManager::plugin_path_global;
 wxString ConfigManager::app_path;
 wxString ConfigManager::temp_folder;
 
-
 namespace CfgMgrConsts
 {
-    const wxString app_path(_T("app_path"));
-    const wxString data_path(_T("data_path"));
-    const wxString dotDot(_T(".."));
-    const int version = 1;
+const wxString app_path(_T("app_path"));
+const wxString data_path(_T("data_path"));
+const wxString dotDot(_T(".."));
+const int version = 1;
 }
-
 
 namespace
 {
-    wxString DetermineExecutablePath()
-    {
-        #ifdef __WXMSW__
-            wxChar name[MAX_PATH];
-            GetModuleFileName(0L, name, MAX_PATH);
-            wxFileName fname(name);
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #else
-        #ifdef __linux__
-            char c[PATH_MAX+1];
-            char *p = realpath("/proc/self/exe", &c[0]);
-            if (p == nullptr)
-                return _T(".");
-            wxFileName fname(cbC2U(p));
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #elif defined(sun) || defined(__sun)
-            wxFileName fname(cbC2U(getexecname()));
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #elif defined(__APPLE__) && defined(__MACH__)
-            char path[MAXPATHLEN+1];
-            uint32_t path_len = MAXPATHLEN;
-            // SPI first appeared in Mac OS X 10.2
-            _NSGetExecutablePath(path, &path_len);
-            wxFileName fname(wxString(path, wxConvUTF8));
-            return fname.GetPath(wxPATH_GET_VOLUME);
-        #else
-            return _T(".");
-        #endif
-        #endif
-    }
-
-    wxString DetermineResourcesPath()
-    {
-        #if defined(__WXMAC__)
-            CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
-            CFURLRef absoluteURL  = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
-            CFRelease(resourcesURL);
-            CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL,kCFURLPOSIXPathStyle);
-            CFRelease(absoluteURL);
-            #if wxCHECK_VERSION(3, 0, 0)
-              wxString str = wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-            #else
-              wxString str = wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
-            #endif
-            if (!str.Contains(wxString(_T("/Resources"))))
-               return ::DetermineExecutablePath() + _T("/.."); // not a bundle, use relative path
-            return str;
-        #else
-            return _T(".");
-        #endif
-    }
+wxString DetermineExecutablePath()
+{
+#ifdef __WXMSW__
+    wxChar name[MAX_PATH];
+    GetModuleFileName(0L, name, MAX_PATH);
+    wxFileName fname(name);
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#else
+#ifdef __linux__
+    char c[PATH_MAX + 1];
+    char *p = realpath("/proc/self/exe", &c[0]);
+    if (p == nullptr)
+        return _T(".");
+    wxFileName fname(cbC2U(p));
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#elif defined(sun) || defined(__sun)
+    wxFileName fname(cbC2U(getexecname()));
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#elif defined(__APPLE__) && defined(__MACH__)
+    char path[MAXPATHLEN + 1];
+    uint32_t path_len = MAXPATHLEN;
+    // SPI first appeared in Mac OS X 10.2
+    _NSGetExecutablePath(path, &path_len);
+    wxFileName fname(wxString(path, wxConvUTF8));
+    return fname.GetPath(wxPATH_GET_VOLUME);
+#else
+    return _T(".");
+#endif
+#endif
 }
 
+wxString DetermineResourcesPath()
+{
+#if defined(__WXMAC__)
+    CFURLRef resourcesURL = CFBundleCopyResourcesDirectoryURL(CFBundleGetMainBundle());
+    CFURLRef absoluteURL = CFURLCopyAbsoluteURL(resourcesURL); // relative -> absolute
+    CFRelease(resourcesURL);
+    CFStringRef cfStrPath = CFURLCopyFileSystemPath(absoluteURL, kCFURLPOSIXPathStyle);
+    CFRelease(absoluteURL);
+#if wxCHECK_VERSION(3, 0, 0)
+    wxString str = wxCFStringRef(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+#else
+    wxString str = wxMacCFStringHolder(cfStrPath).AsString(wxLocale::GetSystemEncoding());
+#endif
+    if (!str.Contains(wxString(_T("/Resources"))))
+        return ::DetermineExecutablePath() + _T("/.."); // not a bundle, use relative path
+    return str;
+#else
+    return _T(".");
+#endif
+}
+}
 
-inline void ConfigManager::Collapse(wxString& str) const
+inline void ConfigManager::Collapse(wxString &str) const
 {
     const wxChar *src = str.c_str();
-    wxChar *dst = (wxChar*) src;
+    wxChar *dst = (wxChar *)src;
     wxChar c;
     size_t len = 0;
 
@@ -155,25 +154,20 @@ inline void ConfigManager::Collapse(wxString& str) const
         ++len;
 
         if (c == _T('/'))
-        while (*src == _T('/'))
-            ++src;
+            while (*src == _T('/'))
+                ++src;
     }
     str.Truncate(len);
 }
 
-ISerializable::ISerializable()
-{}
+ISerializable::ISerializable() {}
 
-ISerializable::~ISerializable()
-{}
-
-
-
+ISerializable::~ISerializable() {}
 
 /* ------------------------------------------------------------------------------------------------------------------
-*  "Builder pattern" class for ConfigManager
-*  Do not use this class  -  Manager::Get()->GetConfigManager() is a lot friendlier
-*/
+ *  "Builder pattern" class for ConfigManager
+ *  Do not use this class  -  Manager::Get()->GetConfigManager() is a lot friendlier
+ */
 
 CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
 {
@@ -202,8 +196,7 @@ CfgMgrBldr::CfgMgrBldr() : doc(nullptr), volatile_doc(nullptr), r(false)
     SwitchTo(cfg);
 }
 
-
-wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
+wxString CfgMgrBldr::FindConfigFile(const wxString &filename)
 {
 
     wxString u(ConfigManager::GetUserDataFolder() + wxFILE_SEP_PATH + filename);
@@ -224,7 +217,8 @@ wxString CfgMgrBldr::FindConfigFile(const wxString& filename)
 
 /// Print error message an allow the user to either discard the old config or close the application.
 /// Call this function when you've detected an error while reading the config.
-static void handleConfigError(TiXmlDocument &doc, const wxString &fileName, const wxString &additionalMessage)
+static void handleConfigError(TiXmlDocument &doc, const wxString &fileName,
+                              const wxString &additionalMessage)
 {
     wxString message;
     if (doc.ErrorId())
@@ -236,9 +230,9 @@ static void handleConfigError(TiXmlDocument &doc, const wxString &fileName, cons
     message += additionalMessage;
 
     // Show a message box and ask the user to either abort or discard the old config.
-    wxMessageDialog dlg(Manager::Get()->GetAppWindow(),
-                        message + _("\n\nDiscard old config file?"), _("Config file read error"),
-                        wxSTAY_ON_TOP|wxCENTRE|wxYES|wxNO|wxNO_DEFAULT|wxICON_ERROR);
+    wxMessageDialog dlg(Manager::Get()->GetAppWindow(), message + _("\n\nDiscard old config file?"),
+                        _("Config file read error"),
+                        wxSTAY_ON_TOP | wxCENTRE | wxYES | wxNO | wxNO_DEFAULT | wxICON_ERROR);
 #if wxCHECK_VERSION(3, 0, 0)
     dlg.SetYesNoLabels(_("&Discard"), _("&Close"));
 #endif
@@ -251,22 +245,22 @@ static void handleConfigError(TiXmlDocument &doc, const wxString &fileName, cons
     doc.FirstChildElement("CodeBlocksConfig")->SetAttribute("version", CfgMgrConsts::version);
 }
 
-void CfgMgrBldr::SwitchTo(const wxString& fileName)
+void CfgMgrBldr::SwitchTo(const wxString &fileName)
 {
     doc = new TiXmlDocument();
 
     if (!TinyXML::LoadDocument(fileName, doc))
     {
-        const wxString message = wxString::Format(_("Error reading config file: %s"),
-                                                  fileName.wx_str());
+        const wxString message =
+            wxString::Format(_("Error reading config file: %s"), fileName.wx_str());
         handleConfigError(*doc, fileName, message);
     }
 
-    TiXmlElement* docroot = doc->FirstChildElement("CodeBlocksConfig");
+    TiXmlElement *docroot = doc->FirstChildElement("CodeBlocksConfig");
     if (!docroot)
     {
-        const wxString message = wxString::Format(wxT("Cannot find docroot in config file '%s'"),
-                                                  fileName.wx_str());
+        const wxString message =
+            wxString::Format(wxT("Cannot find docroot in config file '%s'"), fileName.wx_str());
         handleConfigError(*doc, fileName, message);
         docroot = doc->FirstChildElement("CodeBlocksConfig");
 
@@ -276,21 +270,25 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
 
     const char *vers = docroot->Attribute("version");
     if (!vers || atoi(vers) != 1)
-        cbMessageBox(_("ConfigManager encountered an unknown config file version. Continuing happily."), _("Warning"), wxICON_WARNING);
+        cbMessageBox(
+            _("ConfigManager encountered an unknown config file version. Continuing happily."),
+            _("Warning"), wxICON_WARNING);
 
     doc->ClearError();
 
     wxString info;
 #ifndef __GNUC__
-    info.Printf(_T( " application info:\n"
-                    "\t svn_revision:\t%u\n"
-                    "\t build_date:\t%s, %s "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
+    info.Printf(_T(" application info:\n"
+                   "\t svn_revision:\t%u\n"
+                   "\t build_date:\t%s, %s "),
+                ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__));
 #else
-    info.Printf(_T( " application info:\n"
-                    "\t svn_revision:\t%u\n"
-                    "\t build_date:\t%s, %s\n"
-                    "\t gcc_version:\t%d.%d.%d "), ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__),
-                __GNUC__, __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
+    info.Printf(_T(" application info:\n"
+                   "\t svn_revision:\t%u\n"
+                   "\t build_date:\t%s, %s\n"
+                   "\t gcc_version:\t%d.%d.%d "),
+                ConfigManager::GetRevisionNumber(), wxT(__DATE__), wxT(__TIME__), __GNUC__,
+                __GNUC_MINOR__, __GNUC_PATCHLEVEL__);
 #endif
 
     if (platform::windows)
@@ -305,7 +303,7 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
     info.append(platform::unicode ? _T("Unicode ") : _T("ANSI "));
 
     TiXmlComment c;
-    c.SetValue((const char*) info.mb_str());
+    c.SetValue((const char *)info.mb_str());
 
     TiXmlNode *firstchild = docroot->FirstChild();
     if (firstchild && firstchild->ToComment())
@@ -320,7 +318,7 @@ void CfgMgrBldr::SwitchTo(const wxString& fileName)
         docroot->InsertEndChild(c);
 }
 
-void CfgMgrBldr::SwitchToR(const wxString& absFileName)
+void CfgMgrBldr::SwitchToR(const wxString &absFileName)
 {
     if (doc)
         delete doc;
@@ -338,15 +336,15 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
         {
             size_t size = is->GetSize();
             wxString str;
-            #if wxCHECK_VERSION(3, 0, 0)
-            wxChar* c = wxStringBuffer(str, size);
-            #else
-            wxChar* c = str.GetWriteBuf(size);
-            #endif
+#if wxCHECK_VERSION(3, 0, 0)
+            wxChar *c = wxStringBuffer(str, size);
+#else
+            wxChar *c = str.GetWriteBuf(size);
+#endif
             is->Read(c, size);
-            #if !wxCHECK_VERSION(3, 0, 0)
+#if !wxCHECK_VERSION(3, 0, 0)
             str.UngetWriteBuf(size);
-            #endif
+#endif
 
             doc = new TiXmlDocument();
 
@@ -358,7 +356,8 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
             }
             if (Manager::Get()->GetLogManager())
             {
-                Manager::Get()->GetLogManager()->DebugLog(_T("##### Error loading or parsing remote config file"));
+                Manager::Get()->GetLogManager()->DebugLog(
+                    _T("##### Error loading or parsing remote config file"));
                 Manager::Get()->GetLogManager()->DebugLog(cbC2U(doc->ErrorDesc()));
                 doc->ClearError();
             }
@@ -372,7 +371,7 @@ void CfgMgrBldr::SwitchToR(const wxString& absFileName)
 CfgMgrBldr::~CfgMgrBldr()
 {
     NamespaceMap::iterator it;
-    for ( it = namespaces.begin(); it != namespaces.end(); ++it )
+    for (it = namespaces.begin(); it != namespaces.end(); ++it)
         delete it->second;
 
     namespaces.clear();
@@ -427,14 +426,12 @@ void CfgMgrBldr::Close()
     doc = nullptr;
 }
 
-
-ConfigManager* CfgMgrBldr::GetConfigManager(const wxString& name_space)
+ConfigManager *CfgMgrBldr::GetConfigManager(const wxString &name_space)
 {
     return Get()->Build(name_space);
 }
 
-
-ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
+ConfigManager *CfgMgrBldr::Build(const wxString &name_space)
 {
     if (name_space.IsEmpty())
         cbThrow(_T("You attempted to get a ConfigManager instance without providing a namespace."));
@@ -444,7 +441,7 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
     if (it != namespaces.end())
         return it->second;
 
-    TiXmlElement* docroot;
+    TiXmlElement *docroot;
 
     if (name_space.StartsWith(_T("volatile:")))
     {
@@ -461,13 +458,16 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
         docroot = doc->FirstChildElement("CodeBlocksConfig");
         if (!docroot)
         {
-            wxString err(_("Fatal error parsing supplied configuration file.\nParser error message:\n"));
-            err << wxString::Format(_T("%s\nAt row %d, column: %d."), cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(), doc->ErrorCol());
+            wxString err(
+                _("Fatal error parsing supplied configuration file.\nParser error message:\n"));
+            err << wxString::Format(_T("%s\nAt row %d, column: %d."),
+                                    cbC2U(doc->ErrorDesc()).c_str(), doc->ErrorRow(),
+                                    doc->ErrorCol());
             cbThrow(err);
         }
     }
 
-    TiXmlElement* root = docroot->FirstChildElement(cbU2C(name_space));
+    TiXmlElement *root = docroot->FirstChildElement(cbU2C(name_space));
 
     if (!root) // namespace does not exist
     {
@@ -485,20 +485,20 @@ ConfigManager* CfgMgrBldr::Build(const wxString& name_space)
 }
 
 /*
-*  Hack to enable Turkish language. wxString::Upper will convert lowercase 'i' to \u0130 instead of \u0069 in Turkish locale,
-*  which will break the config file when used in a tag
-*/
-inline void to_upper(wxString& s)
+ *  Hack to enable Turkish language. wxString::Upper will convert lowercase 'i' to \u0130 instead of
+ * \u0069 in Turkish locale, which will break the config file when used in a tag
+ */
+inline void to_upper(wxString &s)
 {
-    #if wxCHECK_VERSION(3, 0, 0)
-    wxStringCharType *p = const_cast<wxStringCharType*>(s.wx_str());
+#if wxCHECK_VERSION(3, 0, 0)
+    wxStringCharType *p = const_cast<wxStringCharType *>(s.wx_str());
     wxStringCharType q;
-    #else
-    wxChar *p = (wxChar*) s.c_str();
+#else
+    wxChar *p = (wxChar *)s.c_str();
     wxChar q;
-    #endif
-    size_t len = s.length()+1;
-    for (;--len;++p)
+#endif
+    size_t len = s.length() + 1;
+    for (; --len; ++p)
     {
         q = *p;
         if (q >= 'a' && q <= 'z')
@@ -506,17 +506,17 @@ inline void to_upper(wxString& s)
     }
 }
 
-inline void to_lower(wxString& s)
+inline void to_lower(wxString &s)
 {
-    #if wxCHECK_VERSION(3, 0, 0)
-    wxStringCharType *p = const_cast<wxStringCharType*>(s.wx_str());
+#if wxCHECK_VERSION(3, 0, 0)
+    wxStringCharType *p = const_cast<wxStringCharType *>(s.wx_str());
     wxStringCharType q;
-    #else
-    wxChar *p = (wxChar*) s.c_str();
+#else
+    wxChar *p = (wxChar *)s.c_str();
     wxChar q;
-    #endif
-    size_t len = s.length()+1;
-    for (;--len;++p)
+#endif
+    size_t len = s.length() + 1;
+    for (; --len; ++p)
     {
         q = *p;
         if (q >= 'A' && q <= 'Z')
@@ -524,19 +524,17 @@ inline void to_lower(wxString& s)
     }
 }
 
-
 /* ------------------------------------------------------------------------------------------------------------------
-*  Functions to retrieve system paths and locate data files in a defined, consistent way.
-*  Please note that the application determines app_path and data_path at runtime and passes the results
-*  to ConfigManager. GetExecutableFolder() and GetDataFolder() are therefore under normal conditions
-*  simply more efficient shortcuts for Read("app_path") and Read("data_path").
-*/
+ *  Functions to retrieve system paths and locate data files in a defined, consistent way.
+ *  Please note that the application determines app_path and data_path at runtime and passes the
+ * results to ConfigManager. GetExecutableFolder() and GetDataFolder() are therefore under normal
+ * conditions simply more efficient shortcuts for Read("app_path") and Read("data_path").
+ */
 
 wxString ConfigManager::GetProxy()
 {
     return Manager::Get()->GetConfigManager(_T("app"))->Read(_T("network_proxy"));
 }
-
 
 wxString ConfigManager::GetFolder(SearchDirs dir)
 {
@@ -573,13 +571,13 @@ wxString ConfigManager::GetFolder(SearchDirs dir)
 #endif
 
         case sdPluginsUser:
-            return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("plugins");
+            return ConfigManager::data_path_user + wxFILE_SEP_PATH + _T("plugins");
 
         case sdScriptsGlobal:
             return ConfigManager::data_path_global + wxFILE_SEP_PATH + _T("scripts");
 
         case sdScriptsUser:
-            return ConfigManager::data_path_user   + wxFILE_SEP_PATH + _T("scripts");
+            return ConfigManager::data_path_user + wxFILE_SEP_PATH + _T("scripts");
 
         case sdDataGlobal:
             return ConfigManager::data_path_global;
@@ -602,27 +600,29 @@ inline wxString ConfigManager::GetUserDataFolder()
         return alternate_user_data_path;
 #ifdef __WINDOWS__
     TCHAR buffer[MAX_PATH];
-    if (!ConfigManager::has_alternate_user_data_path && ::GetEnvironmentVariable(_T("APPDATA"), buffer, MAX_PATH))
+    if (!ConfigManager::has_alternate_user_data_path
+        && ::GetEnvironmentVariable(_T("APPDATA"), buffer, MAX_PATH))
         return wxString::Format(_T("%s\\CodeBlocks"), buffer);
     else
         return wxStandardPathsBase::Get().GetUserDataDir();
 #else
 #ifdef __linux__
-    return wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
+    return wxString::FromUTF8(g_build_filename(g_get_user_config_dir(), "codeblocks", NULL));
 #else
     return wxStandardPathsBase::Get().GetUserDataDir();
 #endif // __linux__
 #endif // __WINDOWS__
 }
 
-
 bool ConfigManager::SetUserDataFolder(const wxString &user_data_path)
 {
     wxString udp = wxFileName::DirName(user_data_path).GetFullPath();
     if (!CreateDirRecursively(udp))
     {
-        cbMessageBox(wxString::Format(_("The --user-data-dir directory %s does not exist and could not be created. Please check the path and try again"),
-                                            user_data_path.c_str()), _("Command Line Error"));
+        cbMessageBox(wxString::Format(_("The --user-data-dir directory %s does not exist and could "
+                                        "not be created. Please check the path and try again"),
+                                      user_data_path.c_str()),
+                     _("Command Line Error"));
         return false;
     }
     has_alternate_user_data_path = true;
@@ -630,7 +630,7 @@ bool ConfigManager::SetUserDataFolder(const wxString &user_data_path)
     return true;
 }
 
-wxString ConfigManager::LocateDataFile(const wxString& filename, int search_dirs)
+wxString ConfigManager::LocateDataFile(const wxString &filename, int search_dirs)
 {
     wxPathList searchPaths;
 
@@ -669,26 +669,20 @@ wxString ConfigManager::LocateDataFile(const wxString& filename, int search_dirs
     return searchPaths.FindValidPath(filename);
 }
 
+/* ------------------------------------------------------------------------------------------------------------------
+ *  ConfigManager
+ */
 
+ConfigManager::ConfigManager(TiXmlElement *r) : doc(r->GetDocument()), root(r), pathNode(r) {}
 
 /* ------------------------------------------------------------------------------------------------------------------
-*  ConfigManager
-*/
-
-ConfigManager::ConfigManager(TiXmlElement* r) : doc(r->GetDocument()), root(r), pathNode(r)
-{
-}
-
-
-
-
-/* ------------------------------------------------------------------------------------------------------------------
-*  Configuration path handling
-*  Note that due to namespaces, you do no longer need to care about saving/restoring the current path in the normal case.
-*  Mostly, there will be only one module working with one namespace, and every namespace keeps track of its own path.
-*  Also, please note that GetPath() is more expensive than it seems (not a mere accessor to a member variable!), while
-*  SetPath() not only sets the current path, but also creates the respective nodes in the XML document if these don't exist.
-*/
+ *  Configuration path handling
+ *  Note that due to namespaces, you do no longer need to care about saving/restoring the current
+ * path in the normal case. Mostly, there will be only one module working with one namespace, and
+ * every namespace keeps track of its own path. Also, please note that GetPath() is more expensive
+ * than it seems (not a mere accessor to a member variable!), while SetPath() not only sets the
+ * current path, but also creates the respective nodes in the XML document if these don't exist.
+ */
 
 wxString ConfigManager::GetPath() const
 {
@@ -706,26 +700,25 @@ wxString ConfigManager::GetPath() const
     return ret;
 }
 
-void ConfigManager::SetPath(const wxString& path)
+void ConfigManager::SetPath(const wxString &path)
 {
     wxString p(path + _T('/'));
     pathNode = AssertPath(p);
 }
 
-wxString ConfigManager::InvalidNameMessage(const wxString& what, const wxString& sub, TiXmlElement *localPath) const
+wxString ConfigManager::InvalidNameMessage(const wxString &what, const wxString &sub,
+                                           TiXmlElement *localPath) const
 {
     wxString s;
-    s.Printf(_T("The %s %s (child of node \"%s\" in namespace \"%s\") does not meet the standard for path naming (must start with a letter)."),
-    what.c_str(),
-    sub.c_str(),
-    cbC2U(localPath->Value()).c_str(),
-    cbC2U(root->Value()).c_str());
+    s.Printf(_T("The %s %s (child of node \"%s\" in namespace \"%s\") does not meet the standard ")
+             _T("for path naming (must start with a letter)."),
+             what.c_str(), sub.c_str(), cbC2U(localPath->Value()).c_str(),
+             cbC2U(root->Value()).c_str());
 
     return s;
 }
 
-
-TiXmlElement* ConfigManager::AssertPath(wxString& path)
+TiXmlElement *ConfigManager::AssertPath(wxString &path)
 {
     Collapse(path);
 
@@ -736,7 +729,7 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
 
     TiXmlElement *localPath = pathNode ? pathNode : root;
 
-    if (path.GetChar(0) == '/')  // absolute path
+    if (path.GetChar(0) == '/') // absolute path
     {
         localPath = root;
         path = path.Mid(1);
@@ -760,11 +753,11 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
         }
         else
         {
-            TiXmlElement* n = localPath->FirstChildElement(cbU2C(sub));
+            TiXmlElement *n = localPath->FirstChildElement(cbU2C(sub));
             if (n)
                 localPath = n;
             else
-                localPath = (TiXmlElement*) localPath->InsertEndChild(TiXmlElement(cbU2C(sub)));
+                localPath = (TiXmlElement *)localPath->InsertEndChild(TiXmlElement(cbU2C(sub)));
         }
     }
 
@@ -776,11 +769,10 @@ TiXmlElement* ConfigManager::AssertPath(wxString& path)
     return localPath;
 }
 
-
 /* -----------------------------------------------------------------------------------------------------
-*  Clear all nodes from your namespace or delete the namespace alltogether (removing it from the config file).
-*  After Delete() returns, the pointer to your instance is invalid.
-*/
+ *  Clear all nodes from your namespace or delete the namespace alltogether (removing it from the
+ * config file). After Delete() returns, the pointer to your instance is invalid.
+ */
 
 void ConfigManager::Clear()
 {
@@ -789,7 +781,7 @@ void ConfigManager::Clear()
 
 void ConfigManager::Delete()
 {
-    CfgMgrBldr * bld = CfgMgrBldr::Get();
+    CfgMgrBldr *bld = CfgMgrBldr::Get();
     const wxString ns(cbC2U(root->Value()));
 
     root->Clear();
@@ -805,7 +797,7 @@ void ConfigManager::Delete()
 
 void ConfigManager::DeleteAll()
 {
-    CfgMgrBldr * bld = CfgMgrBldr::Get();
+    CfgMgrBldr *bld = CfgMgrBldr::Get();
     const wxString ns(cbC2U(root->Value()));
 
     if (!ns.IsSameAs(_T("app")))
@@ -821,25 +813,25 @@ void ConfigManager::DeleteAll()
 
 void ConfigManager::Flush()
 {
-    CfgMgrBldr * bld = CfgMgrBldr::Get();
+    CfgMgrBldr *bld = CfgMgrBldr::Get();
     wxCriticalSectionLocker(bld->cs);
     bld->Flush();
 }
 
 /* ------------------------------------------------------------------------------------------------------------------
-*  Utility functions for writing nodes
-*/
+ *  Utility functions for writing nodes
+ */
 
-TiXmlElement* ConfigManager::GetUniqElement(TiXmlElement* p, const wxString& q)
+TiXmlElement *ConfigManager::GetUniqElement(TiXmlElement *p, const wxString &q)
 {
-    TiXmlElement* r;
+    TiXmlElement *r;
     if ((r = p->FirstChildElement(cbU2C(q))))
         return r;
 
-    return (TiXmlElement*)(p->InsertEndChild(TiXmlElement(cbU2C(q))));
+    return (TiXmlElement *)(p->InsertEndChild(TiXmlElement(cbU2C(q))));
 }
 
-void ConfigManager::SetNodeText(TiXmlElement* n, const TiXmlText& t)
+void ConfigManager::SetNodeText(TiXmlElement *n, const TiXmlText &t)
 {
     TiXmlNode *c = n->FirstChild();
     if (c)
@@ -848,15 +840,14 @@ void ConfigManager::SetNodeText(TiXmlElement* n, const TiXmlText& t)
         n->InsertEndChild(t);
 }
 
-
-
 /* ------------------------------------------------------------------------------------------------------------------
-*  Write and read values
-*  Regardless of namespaces, the string keys app_path and data_path always refer to the location of the application's executable
-*  and the data path, respectively. These values are never saved to the configuration, but kept in static variables.
-*  The application makes use of this by "writing" to the configuration file after determining these values at runtime.
-*/
-void ConfigManager::Write(const wxString& name,  const wxString& value, bool ignoreEmpty)
+ *  Write and read values
+ *  Regardless of namespaces, the string keys app_path and data_path always refer to the location of
+ * the application's executable and the data path, respectively. These values are never saved to the
+ * configuration, but kept in static variables. The application makes use of this by "writing" to
+ * the configuration file after determining these values at runtime.
+ */
+void ConfigManager::Write(const wxString &name, const wxString &value, bool ignoreEmpty)
 {
     if (name.IsSameAs(CfgMgrConsts::app_path))
     {
@@ -874,7 +865,7 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
     }
 
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *str = GetUniqElement(e, key);
 
@@ -885,14 +876,14 @@ void ConfigManager::Write(const wxString& name,  const wxString& value, bool ign
     SetNodeText(s, t);
 }
 
-void ConfigManager::Write(const wxString& key, const char* str)
+void ConfigManager::Write(const wxString &key, const char *str)
 {
     /* NOTE (mandrav#1#): Do *not* remove 'false' from the call because in ANSI builds,
     it matches this very function and overflows the stack... */
     Write(key, cbC2U(str), false);
 }
 
-wxString ConfigManager::Read(const wxString& name, const wxString& defaultVal)
+wxString ConfigManager::Read(const wxString &name, const wxString &defaultVal)
 {
     if (name.IsSameAs(CfgMgrConsts::app_path))
         return app_path;
@@ -907,7 +898,7 @@ wxString ConfigManager::Read(const wxString& name, const wxString& defaultVal)
         return defaultVal;
 }
 
-bool ConfigManager::Read(const wxString& name, wxString* str)
+bool ConfigManager::Read(const wxString &name, wxString *str)
 {
     if (name.IsSameAs(CfgMgrConsts::app_path))
     {
@@ -921,10 +912,11 @@ bool ConfigManager::Read(const wxString& name, wxString* str)
     }
 
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlText *t = (TiXmlText *) parentHandle.FirstChild(cbU2C(key)).FirstChild("str").FirstChild().Node();
+    TiXmlText *t =
+        (TiXmlText *)parentHandle.FirstChild(cbU2C(key)).FirstChild("str").FirstChild().Node();
 
     if (t)
     {
@@ -934,10 +926,10 @@ bool ConfigManager::Read(const wxString& name, wxString* str)
     return false;
 }
 
-void ConfigManager::Write(const wxString& name,  const wxColour& c)
+void ConfigManager::Write(const wxString &name, const wxColour &c)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *leaf = GetUniqElement(e, key);
 
@@ -957,7 +949,7 @@ void ConfigManager::Write(const wxString& name,  const wxColour& c)
     }
 }
 
-wxColour ConfigManager::ReadColour(const wxString& name, const wxColour& defaultVal)
+wxColour ConfigManager::ReadColour(const wxString &name, const wxColour &defaultVal)
 {
     wxColour ret;
 
@@ -967,13 +959,14 @@ wxColour ConfigManager::ReadColour(const wxString& name, const wxColour& default
         return defaultVal;
 }
 
-bool ConfigManager::Read(const wxString& name, wxColour* ret)
+bool ConfigManager::Read(const wxString &name, wxColour *ret)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement *c = (TiXmlElement *) parentHandle.FirstChild(cbU2C(key)).FirstChild("colour").Element();
+    TiXmlElement *c =
+        (TiXmlElement *)parentHandle.FirstChild(cbU2C(key)).FirstChild("colour").Element();
 
     if (c)
     {
@@ -987,8 +980,8 @@ bool ConfigManager::Read(const wxString& name, wxColour* ret)
         {
             int r, g, b;
             if (c->QueryIntAttribute("r", &r) == TIXML_SUCCESS
-                    && c->QueryIntAttribute("g", &g) == TIXML_SUCCESS
-                    && c->QueryIntAttribute("b", &b) == TIXML_SUCCESS)
+                && c->QueryIntAttribute("g", &g) == TIXML_SUCCESS
+                && c->QueryIntAttribute("b", &b) == TIXML_SUCCESS)
             {
                 ret->Set(r, g, b);
                 return true;
@@ -999,16 +992,16 @@ bool ConfigManager::Read(const wxString& name, wxColour* ret)
     return false;
 }
 
-void ConfigManager::Write(const wxString& name,  int value)
+void ConfigManager::Write(const wxString &name, int value)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
     TiXmlElement *leaf = GetUniqElement(e, key);
 
     leaf->SetAttribute("int", value);
 }
 
-int  ConfigManager::ReadInt(const wxString& name,  int defaultVal)
+int ConfigManager::ReadInt(const wxString &name, int defaultVal)
 {
     int ret;
 
@@ -1018,10 +1011,10 @@ int  ConfigManager::ReadInt(const wxString& name,  int defaultVal)
         return defaultVal;
 }
 
-bool ConfigManager::Read(const wxString& name,  int* value)
+bool ConfigManager::Read(const wxString &name, int *value)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
@@ -1031,17 +1024,16 @@ bool ConfigManager::Read(const wxString& name,  int* value)
     return false;
 }
 
-
-void ConfigManager::Write(const wxString& name,  bool value)
+void ConfigManager::Write(const wxString &name, bool value)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
     TiXmlElement *leaf = GetUniqElement(e, key);
 
     leaf->SetAttribute("bool", value ? "1" : "0");
 }
 
-bool  ConfigManager::ReadBool(const wxString& name,  bool defaultVal)
+bool ConfigManager::ReadBool(const wxString &name, bool defaultVal)
 {
     bool ret;
 
@@ -1051,10 +1043,10 @@ bool  ConfigManager::ReadBool(const wxString& name,  bool defaultVal)
         return defaultVal;
 }
 
-bool ConfigManager::Read(const wxString& name,  bool* value)
+bool ConfigManager::Read(const wxString &name, bool *value)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
@@ -1067,17 +1059,16 @@ bool ConfigManager::Read(const wxString& name,  bool* value)
     return false;
 }
 
-
-void ConfigManager::Write(const wxString& name,  double value)
+void ConfigManager::Write(const wxString &name, double value)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
     TiXmlElement *leaf = GetUniqElement(e, key);
 
     leaf->SetDoubleAttribute("double", value);
 }
 
-double  ConfigManager::ReadDouble(const wxString& name,  double defaultVal)
+double ConfigManager::ReadDouble(const wxString &name, double defaultVal)
 {
     double ret;
 
@@ -1087,10 +1078,10 @@ double  ConfigManager::ReadDouble(const wxString& name,  double defaultVal)
         return defaultVal;
 }
 
-bool ConfigManager::Read(const wxString& name,  double* value)
+bool ConfigManager::Read(const wxString &name, double *value)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
@@ -1100,27 +1091,26 @@ bool ConfigManager::Read(const wxString& name,  double* value)
     return false;
 }
 
-
-void ConfigManager::Set(const wxString& name)
+void ConfigManager::Set(const wxString &name)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
     GetUniqElement(e, key);
 }
 
-void ConfigManager::UnSet(const wxString& name)
+void ConfigManager::UnSet(const wxString &name)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlNode *leaf = GetUniqElement(e, key);
     e->RemoveChild(leaf);
 }
 
-bool ConfigManager::Exists(const wxString& name)
+bool ConfigManager::Exists(const wxString &name)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlElement *leaf = parentHandle.FirstChild(cbU2C(key)).Element();
@@ -1128,12 +1118,10 @@ bool ConfigManager::Exists(const wxString& name)
     return leaf;
 }
 
-
-
-void ConfigManager::Write(const wxString& name,  const wxArrayString& arrayString)
+void ConfigManager::Write(const wxString &name, const wxArrayString &arrayString)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *leaf = GetUniqElement(e, key);
 
@@ -1154,10 +1142,10 @@ void ConfigManager::Write(const wxString& name,  const wxArrayString& arrayStrin
     }
 }
 
-void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
+void ConfigManager::Read(const wxString &name, wxArrayString *arrayString)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlNode *asNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("astr").Node();
@@ -1170,17 +1158,17 @@ void ConfigManager::Read(const wxString& name, wxArrayString *arrayString)
     }
 }
 
-wxArrayString ConfigManager::ReadArrayString(const wxString& name)
+wxArrayString ConfigManager::ReadArrayString(const wxString &name)
 {
     wxArrayString as;
     Read(name, &as);
     return as;
 }
 
-void ConfigManager::WriteBinary(const wxString& name,  const wxString& source)
+void ConfigManager::WriteBinary(const wxString &name, const wxString &source)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *str = GetUniqElement(e, key);
 
@@ -1189,43 +1177,44 @@ void ConfigManager::WriteBinary(const wxString& name,  const wxString& source)
     SetNodeText(s, TiXmlText(wxBase64::Encode(source).mb_str(wxConvUTF8)));
 }
 
-void ConfigManager::WriteBinary(const wxString& name,  void* ptr, size_t len)
+void ConfigManager::WriteBinary(const wxString &name, void *ptr, size_t len)
 {
-    wxString s((wxChar*)ptr, len);
-    WriteBinary(name,  s);
+    wxString s((wxChar *)ptr, len);
+    WriteBinary(name, s);
 }
 
-wxString ConfigManager::ReadBinary(const wxString& name)
+wxString ConfigManager::ReadBinary(const wxString &name)
 {
     wxString str;
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
     unsigned int crc = 0;
 
     TiXmlHandle parentHandle(e);
-    TiXmlElement* bin = parentHandle.FirstChild(cbU2C(key)).FirstChild("bin").Element();
+    TiXmlElement *bin = parentHandle.FirstChild(cbU2C(key)).FirstChild("bin").Element();
 
     if (!bin)
         return wxEmptyString;
 
-    if (bin->QueryIntAttribute("crc", (int*)&crc) != TIXML_SUCCESS)
+    if (bin->QueryIntAttribute("crc", (int *)&crc) != TIXML_SUCCESS)
         return wxEmptyString;
 
-    if (const TiXmlText* t = bin->FirstChild()->ToText())
+    if (const TiXmlText *t = bin->FirstChild()->ToText())
     {
         str.assign(cbC2U(t->Value()));
         str = wxBase64::Decode(str);
-        if (crc ==  wxCrc32::FromString(str))
+        if (crc == wxCrc32::FromString(str))
             return str;
     }
     return wxEmptyString;
 }
 
-
-wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
+wxArrayString ConfigManager::EnumerateSubPaths(const wxString &path)
 {
-    wxString key(path + _T('/')); // the trailing slash hack is required because AssertPath expects a key name
-    TiXmlNode* e = AssertPath(key);
+    wxString key(
+        path
+        + _T('/')); // the trailing slash hack is required because AssertPath expects a key name
+    TiXmlNode *e = AssertPath(key);
     wxArrayString ret;
 
     TiXmlElement *curr = nullptr;
@@ -1233,19 +1222,20 @@ wxArrayString ConfigManager::EnumerateSubPaths(const wxString& path)
     {
         while (e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
         {
-            #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
             wxUniChar c = cbC2U(curr->Value())[0];
-            #else
+#else
             wxChar c = *(cbC2U(curr->Value()));
-            #endif
-            if (c < _T('A') || c > _T('Z')) // first char must be a letter, uppercase letters are key names
+#endif
+            if (c < _T('A')
+                || c > _T('Z')) // first char must be a letter, uppercase letters are key names
                 ret.Add(cbC2U(curr->Value()));
         }
     }
     return ret;
 }
 
-void ConfigManager::DeleteSubPath(const wxString& thePath)
+void ConfigManager::DeleteSubPath(const wxString &thePath)
 {
     if (doc->ErrorId())
     {
@@ -1269,7 +1259,7 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
     if (path.IsSameAs(_T("/"))) // this function will refuse to remove root!
         return;
 
-    TiXmlElement* parent = pathNode ? pathNode : root;
+    TiXmlElement *parent = pathNode ? pathNode : root;
 
     if (path.find(_T('/')) != wxString::npos)
     {
@@ -1287,14 +1277,13 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
                 parent = parent->Parent()->ToElement();
             else
             {
-                TiXmlElement* n = parent->FirstChildElement(cbU2C(sub));
+                TiXmlElement *n = parent->FirstChildElement(cbU2C(sub));
                 if (n)
                     parent = n;
                 else
                     return;
             }
-        }
-        while (path.find(_T('/')) != wxString::npos);
+        } while (path.find(_T('/')) != wxString::npos);
     }
 
     if (!path.IsEmpty())
@@ -1307,11 +1296,12 @@ void ConfigManager::DeleteSubPath(const wxString& thePath)
     }
 }
 
-
-wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
+wxArrayString ConfigManager::EnumerateKeys(const wxString &path)
 {
-    wxString key(path + _T('/')); // the trailing slash hack is required because AssertPath expects a key name
-    TiXmlNode* e = AssertPath(key);
+    wxString key(
+        path
+        + _T('/')); // the trailing slash hack is required because AssertPath expects a key name
+    TiXmlNode *e = AssertPath(key);
     wxArrayString ret;
 
     TiXmlElement *curr = nullptr;
@@ -1319,11 +1309,11 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     {
         while (e->IterateChildren(curr) && (curr = e->IterateChildren(curr)->ToElement()))
         {
-            #if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
             wxUniChar c = cbC2U(curr->Value())[0];
-            #else
+#else
             wxChar c = *(cbC2U(curr->Value()));
-            #endif
+#endif
             if (c >= _T('A') && c <= _T('Z')) // opposite of the above
                 ret.Add(cbC2U(curr->Value()));
         }
@@ -1331,10 +1321,10 @@ wxArrayString ConfigManager::EnumerateKeys(const wxString& path)
     return ret;
 }
 
-void ConfigManager::Write(const wxString& name, const ISerializable& object)
+void ConfigManager::Write(const wxString &name, const ISerializable &object)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *obj = GetUniqElement(e, key);
 
@@ -1342,14 +1332,15 @@ void ConfigManager::Write(const wxString& name, const ISerializable& object)
     SetNodeText(s, TiXmlText(cbU2C(wxBase64::Encode(object.SerializeOut()))));
 }
 
-bool ConfigManager::Read(const wxString& name, ISerializable* object)
+bool ConfigManager::Read(const wxString &name, ISerializable *object)
 {
     wxString str;
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
-    TiXmlText *t = (TiXmlText *) parentHandle.FirstChild(cbU2C(key)).FirstChild("obj").FirstChild().Node();
+    TiXmlText *t =
+        (TiXmlText *)parentHandle.FirstChild(cbU2C(key)).FirstChild("obj").FirstChild().Node();
 
     if (t)
     {
@@ -1359,10 +1350,11 @@ bool ConfigManager::Read(const wxString& name, ISerializable* object)
     return wxEmptyString;
 }
 
-void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::StringToStringMap& map)
+void ConfigManager::Write(const wxString &name,
+                          const ConfigManagerContainer::StringToStringMap &map)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *leaf = GetUniqElement(e, key);
 
@@ -1371,7 +1363,8 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
     leaf->RemoveChild(mNode);
     mNode = GetUniqElement(leaf, _T("ssmap"));
 
-    for (ConfigManagerContainer::StringToStringMap::const_iterator it = map.begin(); it != map.end(); ++it)
+    for (ConfigManagerContainer::StringToStringMap::const_iterator it = map.begin();
+         it != map.end(); ++it)
     {
         TiXmlElement s(cbU2C(it->first));
 
@@ -1383,10 +1376,10 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
     }
 }
 
-void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringToStringMap* map)
+void ConfigManager::Read(const wxString &name, ConfigManagerContainer::StringToStringMap *map)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("ssmap").Node();
@@ -1399,17 +1392,17 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringToS
     }
 }
 
-ConfigManagerContainer::StringToStringMap ConfigManager::ReadSSMap(const wxString& name)
+ConfigManagerContainer::StringToStringMap ConfigManager::ReadSSMap(const wxString &name)
 {
     ConfigManagerContainer::StringToStringMap ret;
     Read(name, &ret);
     return ret;
 }
 
-void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::IntToStringMap& map)
+void ConfigManager::Write(const wxString &name, const ConfigManagerContainer::IntToStringMap &map)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *leaf = GetUniqElement(e, key);
 
@@ -1419,9 +1412,10 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::In
     mNode = GetUniqElement(leaf, _T("ismap"));
 
     wxString tmp;
-    for (ConfigManagerContainer::IntToStringMap::const_iterator it = map.begin(); it != map.end(); ++it)
+    for (ConfigManagerContainer::IntToStringMap::const_iterator it = map.begin(); it != map.end();
+         ++it)
     {
-        tmp.Printf(_T("x%d"), (int) it->first);
+        tmp.Printf(_T("x%d"), (int)it->first);
         TiXmlElement s(tmp.mb_str());
 
         TiXmlText t(cbU2C(it->second));
@@ -1432,10 +1426,10 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::In
     }
 }
 
-void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStringMap* map)
+void ConfigManager::Read(const wxString &name, ConfigManagerContainer::IntToStringMap *map)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("ismap").Node();
@@ -1452,22 +1446,17 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::IntToStri
     }
 }
 
-ConfigManagerContainer::IntToStringMap ConfigManager::ReadISMap(const wxString& name)
+ConfigManagerContainer::IntToStringMap ConfigManager::ReadISMap(const wxString &name)
 {
     ConfigManagerContainer::IntToStringMap ret;
     Read(name, &ret);
     return ret;
 }
 
-
-
-
-
-
-void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::StringSet& set)
+void ConfigManager::Write(const wxString &name, const ConfigManagerContainer::StringSet &set)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *leaf = GetUniqElement(e, key);
 
@@ -1488,11 +1477,10 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::St
     }
 }
 
-
-void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet* set)
+void ConfigManager::Read(const wxString &name, ConfigManagerContainer::StringSet *set)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlHandle parentHandle(e);
     TiXmlNode *mNode = parentHandle.FirstChild(cbU2C(key)).FirstChild("sset").Node();
@@ -1505,18 +1493,18 @@ void ConfigManager::Read(const wxString& name, ConfigManagerContainer::StringSet
     }
 }
 
-ConfigManagerContainer::StringSet ConfigManager::ReadSSet(const wxString& name)
+ConfigManagerContainer::StringSet ConfigManager::ReadSSet(const wxString &name)
 {
     ConfigManagerContainer::StringSet ret;
     Read(name, &ret);
     return ret;
 }
 
-
-void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::SerializableObjectMap* map)
+void ConfigManager::Write(const wxString &name,
+                          const ConfigManagerContainer::SerializableObjectMap *map)
 {
     wxString key(name);
-    TiXmlElement* e = AssertPath(key);
+    TiXmlElement *e = AssertPath(key);
 
     TiXmlElement *leaf = GetUniqElement(e, key);
 
@@ -1525,14 +1513,14 @@ void ConfigManager::Write(const wxString& name, const ConfigManagerContainer::Se
     leaf->RemoveChild(mNode);
     mNode = GetUniqElement(leaf, _T("objmap"));
 
-    for (ConfigManagerContainer::SerializableObjectMap::const_iterator it = map->begin(); it != map->end(); ++it)
+    for (ConfigManagerContainer::SerializableObjectMap::const_iterator it = map->begin();
+         it != map->end(); ++it)
     {
         TiXmlElement s(cbU2C(it->first));
         s.InsertEndChild(TiXmlText(cbU2C(wxBase64::Encode(it->second->SerializeOut()))));
         mNode->InsertEndChild(s);
     }
 }
-
 
 void ConfigManager::InitPaths()
 {
@@ -1567,12 +1555,16 @@ void ConfigManager::InitPaths()
             // It seems we can not longer rely on wxStandardPathsBase::Get().GetPluginsDir(),
             // because its behaviour has changed on some systems (at least Fedora 14 64-bit).
             // So we create the pathname manually
-            ConfigManager::plugin_path_global = ((const wxStandardPaths&)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib/codeblocks/plugins");
+            ConfigManager::plugin_path_global =
+                ((const wxStandardPaths &)wxStandardPaths::Get()).GetInstallPrefix()
+                + _T("/lib/codeblocks/plugins");
             // first assume, we use standard-paths
             if (!wxDirExists(ConfigManager::plugin_path_global) && wxIsPlatform64Bit())
             {
                 // if standard-path does not exist and we are on 64-bit system, use lib64 instead
-                ConfigManager::plugin_path_global = ((const wxStandardPaths&)wxStandardPaths::Get()).GetInstallPrefix() + _T("/lib64/codeblocks/plugins");
+                ConfigManager::plugin_path_global =
+                    ((const wxStandardPaths &)wxStandardPaths::Get()).GetInstallPrefix()
+                    + _T("/lib64/codeblocks/plugins");
             }
 #endif // __WXGTK__
         }
@@ -1582,7 +1574,7 @@ void ConfigManager::InitPaths()
     wxString dataPathUser = ConfigManager::config_folder + wxFILE_SEP_PATH + _T("share");
 #ifdef __linux__
     if (!has_alternate_user_data_path)
-      dataPathUser = wxString::FromUTF8(g_build_filename (g_get_user_data_dir(), NULL));
+        dataPathUser = wxString::FromUTF8(g_build_filename(g_get_user_data_dir(), NULL));
 #endif // __linux__
 
     ConfigManager::data_path_user = dataPathUser + wxFILE_SEP_PATH + _T("codeblocks");
@@ -1590,11 +1582,11 @@ void ConfigManager::InitPaths()
     // if user- and global-datapath are the same (can happen in portable mode) we run in conflicts
     // so we extend the user-datapath with the users name
     if (wxFileName(ConfigManager::data_path_user) == wxFileName(ConfigManager::data_path_global))
-        ConfigManager::data_path_user.append(_(".")+wxGetUserId());
+        ConfigManager::data_path_user.append(_(".") + wxGetUserId());
 
     CreateDirRecursively(ConfigManager::config_folder);
-    CreateDirRecursively(ConfigManager::data_path_user   + _T("/plugins/"));
-    CreateDir(ConfigManager::data_path_user   + _T("/scripts/"));
+    CreateDirRecursively(ConfigManager::data_path_user + _T("/plugins/"));
+    CreateDir(ConfigManager::data_path_user + _T("/scripts/"));
 
     ConfigManager::temp_folder = wxStandardPathsBase::Get().GetTempDir();
 }
@@ -1606,16 +1598,19 @@ void ConfigManager::MigrateFolders()
     if (!wxDirExists(wxStandardPaths::Get().GetUserDataDir()))
         return;
 
-    // ConfigManager::config_folder might be the portable-path but we want to migrate the standard-conform folder,
-    // but only if it not already exists
-    wxString newConfigFolder = wxString::FromUTF8(g_build_filename (g_get_user_config_dir(), "codeblocks", NULL));
+    // ConfigManager::config_folder might be the portable-path but we want to migrate the
+    // standard-conform folder, but only if it not already exists
+    wxString newConfigFolder =
+        wxString::FromUTF8(g_build_filename(g_get_user_config_dir(), "codeblocks", NULL));
     // if the new config folder already exist, we step out immediately
     if (wxDirExists(newConfigFolder))
         return;
 
     wxString oldConfigFolder = wxStandardPaths::Get().GetUserDataDir();
-    wxString oldDataFolder = oldConfigFolder + wxFILE_SEP_PATH + _T("share") + wxFILE_SEP_PATH + _T("codeblocks");
-    wxString newDataFolder = wxString::FromUTF8(g_build_filename (g_get_user_data_dir(), NULL)) + wxFILE_SEP_PATH + _T("codeblocks");
+    wxString oldDataFolder =
+        oldConfigFolder + wxFILE_SEP_PATH + _T("share") + wxFILE_SEP_PATH + _T("codeblocks");
+    wxString newDataFolder = wxString::FromUTF8(g_build_filename(g_get_user_data_dir(), NULL))
+                             + wxFILE_SEP_PATH + _T("codeblocks");
     wxString msg;
     msg = F(_("The places where the configuration files and user-data files are stored\n"
               "have been changed to be more standard-conform.\n"
@@ -1624,9 +1619,7 @@ void ConfigManager::MigrateFolders()
               "to \"%s\"\n"
               "and \"%s\"\n"
               "to \"%s\".\n"),
-            oldDataFolder.wx_str(),
-            newDataFolder.wx_str(),
-            oldConfigFolder.wx_str(),
+            oldDataFolder.wx_str(), newDataFolder.wx_str(), oldConfigFolder.wx_str(),
             newConfigFolder.wx_str());
     cbMessageBox(msg, _("Try to migrate config-folder ..."), wxICON_INFORMATION);
 
@@ -1652,16 +1645,14 @@ void ConfigManager::MigrateFolders()
                   "to \"%s\".\n\n"
                   "Please check the folders manually (access rights?) !\n"
                   "A new configuration will be created from scratch!"),
-                oldDataFolder.wx_str(),
-                newDataFolder.wx_str(),
-                oldConfigFolder.wx_str(),
+                oldDataFolder.wx_str(), newDataFolder.wx_str(), oldConfigFolder.wx_str(),
                 newConfigFolder.wx_str());
         cbMessageBox(msg, _("Error migrating config-folder ..."), wxICON_ERROR);
     }
 #endif // __linux__
 }
 
-void ConfigManagerWrapper::Write(const wxString& name, const wxString& value, bool ignoreEmpty)
+void ConfigManagerWrapper::Write(const wxString &name, const wxString &value, bool ignoreEmpty)
 {
     if (m_namespace.empty())
         return;
@@ -1669,7 +1660,7 @@ void ConfigManagerWrapper::Write(const wxString& name, const wxString& value, bo
     c->Write(m_basepath + name, value, ignoreEmpty);
 }
 
-wxString ConfigManagerWrapper::Read(const wxString& key, const wxString& defaultVal)
+wxString ConfigManagerWrapper::Read(const wxString &key, const wxString &defaultVal)
 {
     if (m_namespace.empty())
         return defaultVal;
@@ -1677,14 +1668,14 @@ wxString ConfigManagerWrapper::Read(const wxString& key, const wxString& default
     return c->Read(m_basepath + key, defaultVal);
 }
 
-bool ConfigManagerWrapper::Read(const wxString& key, wxString* str)
+bool ConfigManagerWrapper::Read(const wxString &key, wxString *str)
 {
     if (m_namespace.empty())
         return false;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     return c->Read(key, str);
 }
-void ConfigManagerWrapper::Write(const wxString& key, const char* str)
+void ConfigManagerWrapper::Write(const wxString &key, const char *str)
 {
     if (m_namespace.empty())
         return;
@@ -1692,14 +1683,14 @@ void ConfigManagerWrapper::Write(const wxString& key, const char* str)
     c->Write(key, str);
 }
 
-void ConfigManagerWrapper::Write(const wxString& name, int value)
+void ConfigManagerWrapper::Write(const wxString &name, int value)
 {
     if (m_namespace.empty())
         return;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     c->Write(m_basepath + name, value);
 }
-bool ConfigManagerWrapper::Read(const wxString& name, int* value)
+bool ConfigManagerWrapper::Read(const wxString &name, int *value)
 {
     if (m_namespace.empty())
         return false;
@@ -1707,7 +1698,7 @@ bool ConfigManagerWrapper::Read(const wxString& name, int* value)
     return c->Read(m_basepath + name, value);
 }
 
-int ConfigManagerWrapper::ReadInt(const wxString& name, int defaultVal)
+int ConfigManagerWrapper::ReadInt(const wxString &name, int defaultVal)
 {
     if (m_namespace.empty())
         return defaultVal;
@@ -1715,21 +1706,21 @@ int ConfigManagerWrapper::ReadInt(const wxString& name, int defaultVal)
     return c->ReadInt(m_basepath + name, defaultVal);
 }
 
-void ConfigManagerWrapper::Write(const wxString& name, bool value)
+void ConfigManagerWrapper::Write(const wxString &name, bool value)
 {
     if (m_namespace.empty())
         return;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     c->Write(m_basepath + name, value);
 }
-bool ConfigManagerWrapper::Read(const wxString& name, bool* value)
+bool ConfigManagerWrapper::Read(const wxString &name, bool *value)
 {
     if (m_namespace.empty())
         return false;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     return c->Read(m_basepath + name, value);
 }
-bool ConfigManagerWrapper::ReadBool(const wxString& name, bool defaultVal)
+bool ConfigManagerWrapper::ReadBool(const wxString &name, bool defaultVal)
 {
     if (m_namespace.empty())
         return defaultVal;
@@ -1737,21 +1728,21 @@ bool ConfigManagerWrapper::ReadBool(const wxString& name, bool defaultVal)
     return c->ReadBool(m_basepath + name, defaultVal);
 }
 
-void ConfigManagerWrapper::Write(const wxString& name, double value)
+void ConfigManagerWrapper::Write(const wxString &name, double value)
 {
     if (m_namespace.empty())
         return;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     c->Write(m_basepath + name, value);
 }
-bool ConfigManagerWrapper::Read(const wxString& name, double* value)
+bool ConfigManagerWrapper::Read(const wxString &name, double *value)
 {
     if (m_namespace.empty())
         return false;
     ConfigManager *c = Manager::Get()->GetConfigManager(m_namespace);
     return c->Read(m_basepath + name, value);
 }
-double ConfigManagerWrapper::ReadDouble(const wxString& name, double defaultVal)
+double ConfigManagerWrapper::ReadDouble(const wxString &name, double defaultVal)
 {
     if (m_namespace.empty())
         return defaultVal;
@@ -1788,8 +1779,8 @@ void cbWriteBatchBuildPlugins(wxArrayString bbplugins, wxWindow *messageBoxParen
     {
         bbplugins.Add(compiler);
         cbMessageBox(_("The compiler plugin must always be loaded for batch builds!\n"
-                    "Automatically re-enabled."),
-                    _("Warning"), wxICON_WARNING, messageBoxParent);
+                       "Automatically re-enabled."),
+                     _("Warning"), wxICON_WARNING, messageBoxParent);
     }
     ConfigManager *bbcfg = Manager::Get()->GetConfigManager(_T("plugins"));
     bbcfg->Write(_T("/batch_build_plugins"), bbplugins);

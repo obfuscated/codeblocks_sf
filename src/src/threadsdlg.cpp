@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,12 +10,12 @@
 #include "sdk.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/sizer.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/sizer.h>
 
-    #include "cbplugin.h"
-    #include "debuggermanager.h"
+#include "cbplugin.h"
+#include "debuggermanager.h"
 #endif
 
 #include "threadsdlg.h"
@@ -24,8 +24,8 @@
 
 namespace
 {
-    const int idList = wxNewId();
-    const int idSwitch = wxNewId();
+const int idList = wxNewId();
+const int idSwitch = wxNewId();
 }
 
 BEGIN_EVENT_TABLE(ThreadsDlg, wxPanel)
@@ -34,12 +34,11 @@ BEGIN_EVENT_TABLE(ThreadsDlg, wxPanel)
     EVT_MENU(idSwitch, ThreadsDlg::OnSwitchThread)
 END_EVENT_TABLE()
 
-
-ThreadsDlg::ThreadsDlg(wxWindow* parent) : wxPanel(parent)
+ThreadsDlg::ThreadsDlg(wxWindow *parent) : wxPanel(parent)
 {
     m_list = new wxListCtrl(this, idList, wxDefaultPosition, wxDefaultSize,
                             wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_HRULES | wxLC_VRULES);
-    wxBoxSizer* bs = new wxBoxSizer(wxVERTICAL);
+    wxBoxSizer *bs = new wxBoxSizer(wxVERTICAL);
     bs->Add(m_list, 1, wxEXPAND | wxALL);
     SetAutoLayout(true);
     SetSizer(bs);
@@ -71,14 +70,16 @@ void ThreadsDlg::Reload()
     {
         cb::shared_ptr<const cbThread> thread = plugin->GetThread(ii);
 
-        long index = m_list->InsertItem(m_list->GetItemCount(), thread->IsActive() ? wxT("-->") : wxT(""));
+        long index =
+            m_list->InsertItem(m_list->GetItemCount(), thread->IsActive() ? wxT("-->") : wxT(""));
 
         m_list->SetItem(index, 1, wxString::Format(wxT("%d"), thread->GetNumber()));
         m_list->SetItem(index, 2, thread->GetInfo());
         if (thread->IsActive())
         {
             m_list->SetItemTextColour(index, colours->GetColour(wxT("dbg_threads_active_text")));
-            m_list->SetItemBackgroundColour(index, colours->GetColour(wxT("dbg_threads_active_back")));
+            m_list->SetItemBackgroundColour(index,
+                                            colours->GetColour(wxT("dbg_threads_active_back")));
             active_index = index;
         }
     }
@@ -91,7 +92,8 @@ void ThreadsDlg::Reload()
     }
 }
 
-//void ThreadsDlg::AddThread(const wxString& active_mark, const wxString& thread_num, const wxString& thread_info)
+// void ThreadsDlg::AddThread(const wxString& active_mark, const wxString& thread_num, const
+// wxString& thread_info)
 //{
 //    m_list->Freeze();
 //    m_list->InsertItem(m_list->GetItemCount(), active_mark);
@@ -103,7 +105,7 @@ void ThreadsDlg::Reload()
 //    m_list->Thaw();
 //}
 
-void ThreadsDlg::OnListRightClick(cb_unused wxListEvent& event)
+void ThreadsDlg::OnListRightClick(cb_unused wxListEvent &event)
 {
     if (m_list->GetSelectedItemCount() == 0)
         return;
@@ -112,13 +114,14 @@ void ThreadsDlg::OnListRightClick(cb_unused wxListEvent& event)
     m_list->PopupMenu(&m);
 }
 
-void ThreadsDlg::OnListDoubleClick(cb_unused wxListEvent& /* event */) // TODO: verify this please
+void ThreadsDlg::OnListDoubleClick(cb_unused wxListEvent & /* event */) // TODO: verify this please
 {
-    wxCommandEvent event; // is ignoring the original event and using an empty event really what is intended?
+    wxCommandEvent
+        event; // is ignoring the original event and using an empty event really what is intended?
     OnSwitchThread(event);
 }
 
-void ThreadsDlg::OnSwitchThread(cb_unused wxCommandEvent& event)
+void ThreadsDlg::OnSwitchThread(cb_unused wxCommandEvent &event)
 {
     if (m_list->GetSelectedItemCount() == 0)
         return;
@@ -140,7 +143,7 @@ void ThreadsDlg::OnSwitchThread(cb_unused wxCommandEvent& event)
     if (thread.ToULong(&thread_num, 10))
     {
         cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
-        if(plugin)
+        if (plugin)
             plugin->SwitchToThread(thread_num);
     }
 }

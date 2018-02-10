@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -9,26 +9,26 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/artprov.h>
-    #include <wx/bmpbuttn.h>
-    #include <wx/combobox.h>
-    #include <wx/filedlg.h>
-    #include <wx/frame.h>
-    #include <wx/menu.h>
-    #include <wx/settings.h>
-    #include <wx/sizer.h>
-    #include <wx/stattext.h>
-    #include <wx/regex.h>
+#include <wx/artprov.h>
+#include <wx/bmpbuttn.h>
+#include <wx/combobox.h>
+#include <wx/filedlg.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
+#include <wx/settings.h>
+#include <wx/sizer.h>
+#include <wx/stattext.h>
+#include <wx/regex.h>
 
-    #include "cbeditor.h"
-    #include "cbexception.h"
-    #include "cbplugin.h"
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "configmanager.h"
-    #include "editormanager.h"
-    #include "logmanager.h"
-    #include "projectmanager.h"
+#include "cbeditor.h"
+#include "cbexception.h"
+#include "cbplugin.h"
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "configmanager.h"
+#include "editormanager.h"
+#include "logmanager.h"
+#include "projectmanager.h"
 #endif
 
 #include <algorithm>
@@ -42,13 +42,7 @@
 #include "loggers.h"
 #include "manager.h"
 
-cbWatch::cbWatch() :
-    m_changed(true),
-    m_removed(false),
-    m_expanded(false),
-    m_autoUpdate(true)
-{
-}
+cbWatch::cbWatch() : m_changed(true), m_removed(false), m_expanded(false), m_autoUpdate(true) {}
 
 cbWatch::~cbWatch()
 {
@@ -63,14 +57,14 @@ void cbWatch::AddChild(cb::shared_ptr<cbWatch> parent, cb::shared_ptr<cbWatch> w
 
 void cbWatch::RemoveChild(int index)
 {
-    std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin();
+    std::vector<cb::shared_ptr<cbWatch>>::iterator it = m_children.begin();
     std::advance(it, index);
     m_children.erase(it);
 }
 
 inline bool TestIfMarkedForRemoval(cb::shared_ptr<cbWatch> watch)
 {
-    if(watch->IsRemoved())
+    if (watch->IsRemoved())
         return true;
     else
     {
@@ -82,12 +76,11 @@ inline bool TestIfMarkedForRemoval(cb::shared_ptr<cbWatch> watch)
 bool cbWatch::RemoveMarkedChildren()
 {
     size_t start_size = m_children.size();
-    std::vector<cb::shared_ptr<cbWatch> >::iterator new_last;
+    std::vector<cb::shared_ptr<cbWatch>>::iterator new_last;
     new_last = std::remove_if(m_children.begin(), m_children.end(), &TestIfMarkedForRemoval);
     m_children.erase(new_last, m_children.end());
 
     return start_size != m_children.size();
-
 }
 void cbWatch::RemoveChildren()
 {
@@ -101,40 +94,40 @@ int cbWatch::GetChildCount() const
 
 cb::shared_ptr<cbWatch> cbWatch::GetChild(int index)
 {
-    std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin();
+    std::vector<cb::shared_ptr<cbWatch>>::iterator it = m_children.begin();
     std::advance(it, index);
     return *it;
 }
 
 cb::shared_ptr<const cbWatch> cbWatch::GetChild(int index) const
 {
-    std::vector<cb::shared_ptr<cbWatch> >::const_iterator it = m_children.begin();
+    std::vector<cb::shared_ptr<cbWatch>>::const_iterator it = m_children.begin();
     std::advance(it, index);
     return *it;
 }
 
-cb::shared_ptr<cbWatch> cbWatch::FindChild(const wxString& symbol)
+cb::shared_ptr<cbWatch> cbWatch::FindChild(const wxString &symbol)
 {
-    for (std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for (std::vector<cb::shared_ptr<cbWatch>>::iterator it = m_children.begin();
+         it != m_children.end(); ++it)
     {
         wxString s;
         (*it)->GetSymbol(s);
-        if(s == symbol)
+        if (s == symbol)
             return *it;
     }
     return cb::shared_ptr<cbWatch>();
 }
 
-int cbWatch::FindChildIndex(const wxString& symbol) const
+int cbWatch::FindChildIndex(const wxString &symbol) const
 {
     int index = 0;
-    for (std::vector<cb::shared_ptr<cbWatch> >::const_iterator it = m_children.begin();
-         it != m_children.end();
-         ++it, ++index)
+    for (std::vector<cb::shared_ptr<cbWatch>>::const_iterator it = m_children.begin();
+         it != m_children.end(); ++it, ++index)
     {
         wxString s;
         (*it)->GetSymbol(s);
-        if(s == symbol)
+        if (s == symbol)
             return index;
     }
     return -1;
@@ -167,7 +160,8 @@ void cbWatch::MarkAsRemoved(bool flag)
 
 void cbWatch::MarkChildsAsRemoved()
 {
-    for(std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for (std::vector<cb::shared_ptr<cbWatch>>::iterator it = m_children.begin();
+         it != m_children.end(); ++it)
         (*it)->MarkAsRemoved(true);
 }
 void cbWatch::MarkAsChanged(bool flag)
@@ -178,7 +172,8 @@ void cbWatch::MarkAsChanged(bool flag)
 void cbWatch::MarkAsChangedRecursive(bool flag)
 {
     m_changed = flag;
-    for(std::vector<cb::shared_ptr<cbWatch> >::iterator it = m_children.begin(); it != m_children.end(); ++it)
+    for (std::vector<cb::shared_ptr<cbWatch>>::iterator it = m_children.begin();
+         it != m_children.end(); ++it)
         (*it)->MarkAsChangedRecursive(flag);
 }
 
@@ -227,10 +222,7 @@ cb::shared_ptr<cbWatch> DLLIMPORT cbGetRootWatch(cb::shared_ptr<cbWatch> watch)
     return root;
 }
 
-cbStackFrame::cbStackFrame() :
-    m_valid(false)
-{
-}
+cbStackFrame::cbStackFrame() : m_valid(false) {}
 
 void cbStackFrame::SetNumber(int number)
 {
@@ -242,12 +234,12 @@ void cbStackFrame::SetAddress(uint64_t address)
     m_address = address;
 }
 
-void cbStackFrame::SetSymbol(const wxString& symbol)
+void cbStackFrame::SetSymbol(const wxString &symbol)
 {
     m_symbol = symbol;
 }
 
-void cbStackFrame::SetFile(const wxString& filename, const wxString &line)
+void cbStackFrame::SetFile(const wxString &filename, const wxString &line)
 {
     m_file = filename;
     m_line = line;
@@ -270,23 +262,23 @@ uint64_t cbStackFrame::GetAddress() const
 
 wxString cbStackFrame::GetAddressAsString() const
 {
-    if(m_address!=0)
+    if (m_address != 0)
         return cbDebuggerAddressToString(m_address);
     else
         return wxEmptyString;
 }
 
-const wxString& cbStackFrame::GetSymbol() const
+const wxString &cbStackFrame::GetSymbol() const
 {
     return m_symbol;
 }
 
-const wxString& cbStackFrame::GetFilename() const
+const wxString &cbStackFrame::GetFilename() const
 {
     return m_file;
 }
 
-const wxString& cbStackFrame::GetLine() const
+const wxString &cbStackFrame::GetLine() const
 {
     return m_line;
 }
@@ -296,11 +288,9 @@ bool cbStackFrame::IsValid() const
     return m_valid;
 }
 
-cbThread::cbThread()
-{
-}
+cbThread::cbThread() {}
 
-cbThread::cbThread(bool active, int number, const wxString& info)
+cbThread::cbThread(bool active, int number, const wxString &info)
 {
     m_active = active;
     m_number = number;
@@ -317,20 +307,18 @@ int cbThread::GetNumber() const
     return m_number;
 }
 
-const wxString& cbThread::GetInfo() const
+const wxString &cbThread::GetInfo() const
 {
     return m_info;
 }
 
-cbDebuggerConfiguration::cbDebuggerConfiguration(const ConfigManagerWrapper &config) :
-    m_config(config),
-    m_menuId(wxID_ANY)
+cbDebuggerConfiguration::cbDebuggerConfiguration(const ConfigManagerWrapper &config)
+  : m_config(config), m_menuId(wxID_ANY)
 {
 }
 
-cbDebuggerConfiguration::cbDebuggerConfiguration(const cbDebuggerConfiguration &o) :
-    m_config(o.m_config),
-    m_name(o.m_name)
+cbDebuggerConfiguration::cbDebuggerConfiguration(const cbDebuggerConfiguration &o)
+  : m_config(o.m_config), m_name(o.m_name)
 {
 }
 
@@ -338,12 +326,12 @@ void cbDebuggerConfiguration::SetName(const wxString &name)
 {
     m_name = name;
 }
-const wxString& cbDebuggerConfiguration::GetName() const
+const wxString &cbDebuggerConfiguration::GetName() const
 {
     return m_name;
 }
 
-const ConfigManagerWrapper& cbDebuggerConfiguration::GetConfig() const
+const ConfigManagerWrapper &cbDebuggerConfiguration::GetConfig() const
 {
     return m_config;
 }
@@ -407,8 +395,7 @@ void cbDebuggerCommonConfig::SetFlag(Flags flag, bool value)
             break;
         case ShowTemporaryBreakpoints:
             c->Write(wxT("/common/show_temporary_breakpoints"), value);
-        default:
-            ;
+        default:;
     }
 }
 
@@ -465,7 +452,8 @@ wxString cbDetectDebuggerExecutable(const wxString &exeName)
         else
         {
             const wxString &cbInstallFolder = ConfigManager::GetExecutableFolder();
-            if (wxFileExists(cbInstallFolder + sep + wxT("MINGW") + sep + wxT("bin") + sep + exeName + exeExt))
+            if (wxFileExists(cbInstallFolder + sep + wxT("MINGW") + sep + wxT("bin") + sep + exeName
+                             + exeExt))
                 exePath = cbInstallFolder + sep + wxT("MINGW") + sep + wxT("bin");
             else
             {
@@ -500,32 +488,25 @@ wxString cbDebuggerAddressToString(uint64_t address)
 class DebugTextCtrlLogger : public TextCtrlLogger
 {
 public:
-    DebugTextCtrlLogger(bool fixedPitchFont, bool debugLog) :
-        TextCtrlLogger(fixedPitchFont),
-        m_panel(nullptr),
-        m_debugLog(debugLog)
+    DebugTextCtrlLogger(bool fixedPitchFont, bool debugLog)
+      : TextCtrlLogger(fixedPitchFont), m_panel(nullptr), m_debugLog(debugLog)
     {
     }
 
-    wxWindow* CreateTextCtrl(wxWindow *parent)
-    {
-        return TextCtrlLogger::CreateControl(parent);
-    }
+    wxWindow *CreateTextCtrl(wxWindow *parent) { return TextCtrlLogger::CreateControl(parent); }
 
-    virtual wxWindow* CreateControl(wxWindow* parent);
+    virtual wxWindow *CreateControl(wxWindow *parent);
 
 private:
     wxPanel *m_panel;
-    bool    m_debugLog;
+    bool m_debugLog;
 };
 
 class DebugLogPanel : public wxPanel
 {
 public:
-    DebugLogPanel(wxWindow *parent, DebugTextCtrlLogger *text_control_logger, bool debug_log) :
-        wxPanel(parent),
-        m_text_control_logger(text_control_logger),
-        m_debug_log(debug_log)
+    DebugLogPanel(wxWindow *parent, DebugTextCtrlLogger *text_control_logger, bool debug_log)
+      : wxPanel(parent), m_text_control_logger(text_control_logger), m_debug_log(debug_log)
     {
         int idDebug_LogEntryControl = wxNewId();
         int idDebug_ExecuteButton = wxNewId();
@@ -536,74 +517,68 @@ public:
         wxBoxSizer *control_sizer = new wxBoxSizer(wxHORIZONTAL);
 
         wxWindow *text_control = text_control_logger->CreateTextCtrl(this);
-        sizer->Add(text_control, wxEXPAND, wxEXPAND | wxALL , 0);
+        sizer->Add(text_control, wxEXPAND, wxEXPAND | wxALL, 0);
         sizer->Add(control_sizer, 0, wxEXPAND | wxALL, 0);
 
-        wxStaticText *label = new wxStaticText(this, wxID_ANY, _T("Command:"),
-                                               wxDefaultPosition, wxDefaultSize, wxST_NO_AUTORESIZE);
+        wxStaticText *label = new wxStaticText(this, wxID_ANY, _T("Command:"), wxDefaultPosition,
+                                               wxDefaultSize, wxST_NO_AUTORESIZE);
 
-        m_command_entry = new wxComboBox(this, idDebug_LogEntryControl, wxEmptyString,
-                                         wxDefaultPosition, wxDefaultSize, 0, nullptr,
-                                         wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
+        m_command_entry =
+            new wxComboBox(this, idDebug_LogEntryControl, wxEmptyString, wxDefaultPosition,
+                           wxDefaultSize, 0, nullptr, wxCB_DROPDOWN | wxTE_PROCESS_ENTER);
 
-        wxBitmap execute_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")),
-                                                           wxART_BUTTON);
-        wxBitmap clear_bitmap = wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DELETE")),wxART_BUTTON);
-        wxBitmap file_open_bitmap =wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")),
-                                                            wxART_BUTTON);
+        wxBitmap execute_bitmap = wxArtProvider::GetBitmap(
+            wxART_MAKE_ART_ID_FROM_STR(_T("wxART_EXECUTABLE_FILE")), wxART_BUTTON);
+        wxBitmap clear_bitmap =
+            wxArtProvider::GetBitmap(wxART_MAKE_ART_ID_FROM_STR(_T("wxART_DELETE")), wxART_BUTTON);
+        wxBitmap file_open_bitmap = wxArtProvider::GetBitmap(
+            wxART_MAKE_ART_ID_FROM_STR(_T("wxART_FILE_OPEN")), wxART_BUTTON);
 
         wxBitmapButton *button_execute;
-        button_execute = new wxBitmapButton(this, idDebug_ExecuteButton, execute_bitmap, wxDefaultPosition,
-                                            wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
-                                            _T("idDebug_ExecuteButton"));
+        button_execute = new wxBitmapButton(this, idDebug_ExecuteButton, execute_bitmap,
+                                            wxDefaultPosition, wxDefaultSize, wxBU_AUTODRAW,
+                                            wxDefaultValidator, _T("idDebug_ExecuteButton"));
         button_execute->SetToolTip(_("Execute current command"));
 
-        wxBitmapButton *button_load = new wxBitmapButton(this, idDebug_LoadButton, file_open_bitmap, wxDefaultPosition,
-                                                         wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
-                                                         _T("idDebug_LoadButton"));
+        wxBitmapButton *button_load = new wxBitmapButton(
+            this, idDebug_LoadButton, file_open_bitmap, wxDefaultPosition, wxDefaultSize,
+            wxBU_AUTODRAW, wxDefaultValidator, _T("idDebug_LoadButton"));
         button_load->SetDefault();
         button_load->SetToolTip(_("Load from file"));
 
-        wxBitmapButton *button_clear = new wxBitmapButton(this, idDebug_ClearButton, clear_bitmap, wxDefaultPosition,
-                                                          wxDefaultSize, wxBU_AUTODRAW, wxDefaultValidator,
-                                                          _T("idDebug_ClearButton"));
+        wxBitmapButton *button_clear = new wxBitmapButton(
+            this, idDebug_ClearButton, clear_bitmap, wxDefaultPosition, wxDefaultSize,
+            wxBU_AUTODRAW, wxDefaultValidator, _T("idDebug_ClearButton"));
         button_clear->SetDefault();
         button_clear->SetToolTip(_("Clear output window"));
 
         control_sizer->Add(label, 0, wxALIGN_CENTER_VERTICAL | wxALL, 2);
         control_sizer->Add(m_command_entry, wxEXPAND, wxEXPAND | wxALL, 2);
         control_sizer->Add(button_execute, 0, wxEXPAND | wxALL, 0);
-        control_sizer->Add(button_load, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
-        control_sizer->Add(button_clear, 0, wxALL|wxALIGN_CENTER_VERTICAL, 0);
+        control_sizer->Add(button_load, 0, wxALL | wxALIGN_CENTER_VERTICAL, 0);
+        control_sizer->Add(button_clear, 0, wxALL | wxALIGN_CENTER_VERTICAL, 0);
 
         SetSizer(sizer);
 
-        Connect(idDebug_LogEntryControl,
-                wxEVT_COMMAND_TEXT_ENTER,
+        Connect(idDebug_LogEntryControl, wxEVT_COMMAND_TEXT_ENTER,
                 wxObjectEventFunction(&DebugLogPanel::OnEntryCommand));
-        Connect(idDebug_ExecuteButton,
-                wxEVT_COMMAND_BUTTON_CLICKED,
+        Connect(idDebug_ExecuteButton, wxEVT_COMMAND_BUTTON_CLICKED,
                 wxObjectEventFunction(&DebugLogPanel::OnEntryCommand));
-        Connect(idDebug_ClearButton,
-                wxEVT_COMMAND_BUTTON_CLICKED,
+        Connect(idDebug_ClearButton, wxEVT_COMMAND_BUTTON_CLICKED,
                 wxObjectEventFunction(&DebugLogPanel::OnClearLog));
-        Connect(idDebug_LoadButton,
-                wxEVT_COMMAND_BUTTON_CLICKED,
+        Connect(idDebug_LoadButton, wxEVT_COMMAND_BUTTON_CLICKED,
                 wxObjectEventFunction(&DebugLogPanel::OnLoadFile));
 
         // UpdateUI events
-        Connect(idDebug_ExecuteButton,
-                wxEVT_UPDATE_UI,
+        Connect(idDebug_ExecuteButton, wxEVT_UPDATE_UI,
                 wxObjectEventFunction(&DebugLogPanel::OnUpdateUI));
-        Connect(idDebug_LoadButton,
-                wxEVT_UPDATE_UI,
+        Connect(idDebug_LoadButton, wxEVT_UPDATE_UI,
                 wxObjectEventFunction(&DebugLogPanel::OnUpdateUI));
-        Connect(idDebug_LogEntryControl,
-                wxEVT_UPDATE_UI,
+        Connect(idDebug_LogEntryControl, wxEVT_UPDATE_UI,
                 wxObjectEventFunction(&DebugLogPanel::OnUpdateUI));
     }
 
-    void OnEntryCommand(cb_unused wxCommandEvent& event)
+    void OnEntryCommand(cb_unused wxCommandEvent &event)
     {
         assert(m_command_entry);
         wxString cmd = m_command_entry->GetValue();
@@ -617,7 +592,7 @@ public:
         {
             plugin->SendCommand(cmd, m_debug_log);
 
-            //If it already exists in the list, remove it and add it back at the end
+            // If it already exists in the list, remove it and add it back at the end
             int index = m_command_entry->FindString(cmd);
             if (index != wxNOT_FOUND)
                 m_command_entry->Delete(index);
@@ -627,7 +602,7 @@ public:
         }
     }
 
-    void OnClearLog(cb_unused wxCommandEvent& event)
+    void OnClearLog(cb_unused wxCommandEvent &event)
     {
         assert(m_command_entry);
         assert(m_text_control_logger);
@@ -635,21 +610,24 @@ public:
         m_command_entry->SetFocus();
     }
 
-    void OnLoadFile(cb_unused wxCommandEvent& event)
+    void OnLoadFile(cb_unused wxCommandEvent &event)
     {
         cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
         if (!plugin)
             return;
 
-        ConfigManager* manager = Manager::Get()->GetConfigManager(_T("app"));
-        wxString path = manager->Read(_T("/file_dialogs/file_run_dbg_script/directory"), wxEmptyString);
+        ConfigManager *manager = Manager::Get()->GetConfigManager(_T("app"));
+        wxString path =
+            manager->Read(_T("/file_dialogs/file_run_dbg_script/directory"), wxEmptyString);
 
         wxFileDialog dialog(this, _("Load script"), path, wxEmptyString,
-                            _T("Debugger script files (*.gdb)|*.gdb"), wxFD_OPEN | compatibility::wxHideReadonly);
+                            _T("Debugger script files (*.gdb)|*.gdb"),
+                            wxFD_OPEN | compatibility::wxHideReadonly);
 
         if (dialog.ShowModal() == wxID_OK)
         {
-            manager->Write(_T("/file_dialogs/file_run_dbg_script/directory"), dialog.GetDirectory());
+            manager->Write(_T("/file_dialogs/file_run_dbg_script/directory"),
+                           dialog.GetDirectory());
 
             plugin->SendCommand(_T("source ") + dialog.GetPath(), m_debug_log);
         }
@@ -660,22 +638,25 @@ public:
         cbDebuggerPlugin *plugin = Manager::Get()->GetDebuggerManager()->GetActiveDebugger();
         event.Enable(plugin && plugin->IsRunning() && plugin->IsStopped());
     }
+
 private:
     DebugTextCtrlLogger *m_text_control_logger;
-    wxComboBox  *m_command_entry;
+    wxComboBox *m_command_entry;
     bool m_debug_log;
 };
 
-wxWindow* DebugTextCtrlLogger::CreateControl(wxWindow* parent)
+wxWindow *DebugTextCtrlLogger::CreateControl(wxWindow *parent)
 {
-    if(!m_panel)
+    if (!m_panel)
         m_panel = new DebugLogPanel(parent, this, m_debugLog);
 
     return m_panel;
 }
 
-template<> DebuggerManager* Mgr<DebuggerManager>::instance = nullptr;
-template<> bool  Mgr<DebuggerManager>::isShutdown = false;
+template<>
+DebuggerManager *Mgr<DebuggerManager>::instance = nullptr;
+template<>
+bool Mgr<DebuggerManager>::isShutdown = false;
 
 inline void ReadActiveDebuggerConfig(wxString &name, int &configIndex)
 {
@@ -694,7 +675,7 @@ inline void WriteActiveDebuggerConfig(const wxString &name, int configIndex)
     configMgr.Write(wxT("active_debugger_config"), configIndex);
 }
 
-cbDebuggerConfiguration* DebuggerManager::PluginData::GetConfiguration(int index)
+cbDebuggerConfiguration *DebuggerManager::PluginData::GetConfiguration(int index)
 {
     if (m_configurations.empty())
         cbAssert(false);
@@ -704,8 +685,8 @@ cbDebuggerConfiguration* DebuggerManager::PluginData::GetConfiguration(int index
         return m_configurations[index];
 }
 
-DebuggerManager::DebuggerManager() :
-    m_interfaceFactory(nullptr),
+DebuggerManager::DebuggerManager()
+  : m_interfaceFactory(nullptr),
     m_activeDebugger(nullptr),
     m_menuHandler(nullptr),
     m_backtraceDialog(nullptr),
@@ -721,12 +702,18 @@ DebuggerManager::DebuggerManager() :
     m_useTargetsDefault(false)
 {
     typedef cbEventFunctor<DebuggerManager, CodeBlocksEvent> Event;
-    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,        new Event(this, &DebuggerManager::OnProjectActivated));
-    // connect with cbEVT_PROJECT_OPEN, too (see here: http://forums.codeblocks.org/index.php/topic,17260.msg118431.html#msg118431)
-    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,            new Event(this, &DebuggerManager::OnProjectActivated));
-    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED,    new Event(this, &DebuggerManager::OnTargetSelected));
-    Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED,        new Event(this, &DebuggerManager::OnSettingsChanged));
-    Manager::Get()->RegisterEventSink(cbEVT_PLUGIN_LOADING_COMPLETE, new Event(this, &DebuggerManager::OnPluginLoadingComplete));
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_ACTIVATE,
+                                      new Event(this, &DebuggerManager::OnProjectActivated));
+    // connect with cbEVT_PROJECT_OPEN, too (see here:
+    // http://forums.codeblocks.org/index.php/topic,17260.msg118431.html#msg118431)
+    Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,
+                                      new Event(this, &DebuggerManager::OnProjectActivated));
+    Manager::Get()->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED,
+                                      new Event(this, &DebuggerManager::OnTargetSelected));
+    Manager::Get()->RegisterEventSink(cbEVT_SETTINGS_CHANGED,
+                                      new Event(this, &DebuggerManager::OnSettingsChanged));
+    Manager::Get()->RegisterEventSink(cbEVT_PLUGIN_LOADING_COMPLETE,
+                                      new Event(this, &DebuggerManager::OnPluginLoadingComplete));
 
     wxString activeDebuggerName;
     int activeConfig;
@@ -736,7 +723,6 @@ DebuggerManager::DebuggerManager() :
 
     ConfigManager *c = Manager::Get()->GetConfigManager(wxT("debugger_common"));
     m_isDisassemblyMixedMode = c->ReadBool(wxT("/common/disassembly/mixed_mode"), false);
-
 }
 
 DebuggerManager::~DebuggerManager()
@@ -753,14 +739,15 @@ bool DebuggerManager::RegisterDebugger(cbDebuggerPlugin *plugin)
     RegisteredPlugins::iterator it = m_registered.find(plugin);
     if (it != m_registered.end())
         return false;
-    const wxString &guiName=plugin->GetGUIName();
-    const wxString &settingsName=plugin->GetSettingsName();
+    const wxString &guiName = plugin->GetGUIName();
+    const wxString &settingsName = plugin->GetSettingsName();
 
     wxRegEx regExSettingsName(wxT("^[a-z_][a-z0-9_]+$"));
     if (!regExSettingsName.Matches(settingsName))
     {
         wxString s;
-        s = wxString::Format(_("The settings name for the debugger plugin \"%s\" - \"%s\" contains invalid characters"),
+        s = wxString::Format(_("The settings name for the debugger plugin \"%s\" - \"%s\" contains "
+                               "invalid characters"),
                              guiName.c_str(), settingsName.c_str());
         Manager::Get()->GetLogManager()->LogError(s);
         return false;
@@ -804,7 +791,7 @@ bool DebuggerManager::RegisterDebugger(cbDebuggerPlugin *plugin)
 bool DebuggerManager::UnregisterDebugger(cbDebuggerPlugin *plugin)
 {
     RegisteredPlugins::iterator it = m_registered.find(plugin);
-    if(it == m_registered.end())
+    if (it == m_registered.end())
         return false;
 
     it->second.ClearConfigurations();
@@ -859,7 +846,8 @@ void DebuggerManager::ProcessSettings(RegisteredPlugins::iterator it)
         wxString name = config->Read(configPath + wxT("/name"));
 
         cbDebuggerConfiguration *pluginConfig;
-        pluginConfig = plugin->LoadConfig(ConfigManagerWrapper(wxT("debugger_common"), configPath + wxT("/values")));
+        pluginConfig = plugin->LoadConfig(
+            ConfigManagerWrapper(wxT("debugger_common"), configPath + wxT("/values")));
         if (pluginConfig)
         {
             pluginConfig->SetName(name);
@@ -868,7 +856,8 @@ void DebuggerManager::ProcessSettings(RegisteredPlugins::iterator it)
     }
 }
 
-ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin *plugin, cb_unused const wxString& name)
+ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin *plugin,
+                                                cb_unused const wxString &name)
 {
     RegisteredPlugins::iterator it = m_registered.find(plugin);
     if (it == m_registered.end())
@@ -890,7 +879,7 @@ ConfigManagerWrapper DebuggerManager::NewConfig(cbDebuggerPlugin *plugin, cb_unu
 
     path << wxT("/conf") << ++it->second.m_lastConfigID;
 
-    return ConfigManagerWrapper(wxT("debugger_common"), path +  wxT("/values"));
+    return ConfigManagerWrapper(wxT("debugger_common"), path + wxT("/values"));
 }
 
 void DebuggerManager::RebuildAllConfigs()
@@ -900,7 +889,7 @@ void DebuggerManager::RebuildAllConfigs()
     m_menuHandler->RebuildMenus();
 }
 
-wxMenu* DebuggerManager::GetMenu()
+wxMenu *DebuggerManager::GetMenu()
 {
     wxMenuBar *menuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
     cbAssert(menuBar);
@@ -908,12 +897,12 @@ wxMenu* DebuggerManager::GetMenu()
 
     int menu_pos = menuBar->FindMenu(_("&Debug"));
 
-    if(menu_pos != wxNOT_FOUND)
+    if (menu_pos != wxNOT_FOUND)
         menu = menuBar->GetMenu(menu_pos);
 
     if (!menu)
     {
-        menu = Manager::Get()->LoadMenu(_T("debugger_menu"),true);
+        menu = Manager::Get()->LoadMenu(_T("debugger_menu"), true);
 
         // ok, now, where do we insert?
         // three possibilities here:
@@ -948,14 +937,14 @@ bool DebuggerManager::HasMenu() const
     return menu_pos != wxNOT_FOUND;
 }
 
-void DebuggerManager::BuildContextMenu(wxMenu &menu, const wxString& word_at_caret, bool is_running)
+void DebuggerManager::BuildContextMenu(wxMenu &menu, const wxString &word_at_caret, bool is_running)
 {
     m_menuHandler->BuildContextMenu(menu, word_at_caret, is_running);
 }
 
-TextCtrlLogger* DebuggerManager::GetLogger(int &index)
+TextCtrlLogger *DebuggerManager::GetLogger(int &index)
 {
-    LogManager* msgMan = Manager::Get()->GetLogManager();
+    LogManager *msgMan = Manager::Get()->GetLogManager();
 
     if (!m_logger)
     {
@@ -965,7 +954,8 @@ TextCtrlLogger* DebuggerManager::GetLogger(int &index)
         slot.title = _("Debugger");
         // set log image
         wxString prefix = ConfigManager::GetDataFolder() + _T("/images/");
-        wxBitmap* bmp = new wxBitmap(cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG));
+        wxBitmap *bmp =
+            new wxBitmap(cbLoadBitmap(prefix + _T("misc_16x16.png"), wxBITMAP_TYPE_PNG));
         slot.icon = bmp;
 
         CodeBlocksLogEvent evtAdd(cbEVT_ADD_LOG_WINDOW, m_logger, slot.title, slot.icon);
@@ -976,7 +966,7 @@ TextCtrlLogger* DebuggerManager::GetLogger(int &index)
     return m_logger;
 }
 
-TextCtrlLogger* DebuggerManager::GetLogger()
+TextCtrlLogger *DebuggerManager::GetLogger()
 {
     int index;
     return GetLogger(index);
@@ -1047,7 +1037,7 @@ void DebuggerManager::DestoryWindows()
     m_watchesDialog = nullptr;
 }
 
-cbDebugInterfaceFactory* DebuggerManager::GetInterfaceFactory()
+cbDebugInterfaceFactory *DebuggerManager::GetInterfaceFactory()
 {
     return m_interfaceFactory;
 }
@@ -1057,42 +1047,42 @@ void DebuggerManager::SetMenuHandler(cbDebuggerMenuHandler *handler)
     m_menuHandler = handler;
 }
 
-cbDebuggerMenuHandler* DebuggerManager::GetMenuHandler()
+cbDebuggerMenuHandler *DebuggerManager::GetMenuHandler()
 {
     return m_menuHandler;
 }
 
-cbBacktraceDlg* DebuggerManager::GetBacktraceDialog()
+cbBacktraceDlg *DebuggerManager::GetBacktraceDialog()
 {
     return m_backtraceDialog;
 }
 
-cbBreakpointsDlg* DebuggerManager::GetBreakpointDialog()
+cbBreakpointsDlg *DebuggerManager::GetBreakpointDialog()
 {
     return m_breakPointsDialog;
 }
 
-cbCPURegistersDlg* DebuggerManager::GetCPURegistersDialog()
+cbCPURegistersDlg *DebuggerManager::GetCPURegistersDialog()
 {
     return m_cpuRegistersDialog;
 }
 
-cbDisassemblyDlg* DebuggerManager::GetDisassemblyDialog()
+cbDisassemblyDlg *DebuggerManager::GetDisassemblyDialog()
 {
     return m_disassemblyDialog;
 }
 
-cbExamineMemoryDlg* DebuggerManager::GetExamineMemoryDialog()
+cbExamineMemoryDlg *DebuggerManager::GetExamineMemoryDialog()
 {
     return m_examineMemoryDialog;
 }
 
-cbThreadsDlg* DebuggerManager::GetThreadsDialog()
+cbThreadsDlg *DebuggerManager::GetThreadsDialog()
 {
     return m_threadsDialog;
 }
 
-cbWatchesDlg* DebuggerManager::GetWatchesDialog()
+cbWatchesDlg *DebuggerManager::GetWatchesDialog()
 {
     return m_watchesDialog;
 }
@@ -1138,7 +1128,7 @@ bool DebuggerManager::UpdateThreads()
     return m_threadsDialog && IsWindowReallyShown(m_threadsDialog->GetWindow());
 }
 
-cbDebuggerPlugin* DebuggerManager::GetDebuggerHavingWatch(cb::shared_ptr<cbWatch> watch)
+cbDebuggerPlugin *DebuggerManager::GetDebuggerHavingWatch(cb::shared_ptr<cbWatch> watch)
 {
     watch = cbGetRootWatch(watch);
     for (RegisteredPlugins::iterator it = m_registered.begin(); it != m_registered.end(); ++it)
@@ -1154,20 +1144,20 @@ bool DebuggerManager::ShowValueTooltip(const cb::shared_ptr<cbWatch> &watch, con
     return m_interfaceFactory->ShowValueTooltip(watch, rect);
 }
 
-DebuggerManager::RegisteredPlugins const & DebuggerManager::GetAllDebuggers() const
+DebuggerManager::RegisteredPlugins const &DebuggerManager::GetAllDebuggers() const
 {
     return m_registered;
 }
-DebuggerManager::RegisteredPlugins & DebuggerManager::GetAllDebuggers()
+DebuggerManager::RegisteredPlugins &DebuggerManager::GetAllDebuggers()
 {
     return m_registered;
 }
-cbDebuggerPlugin* DebuggerManager::GetActiveDebugger()
+cbDebuggerPlugin *DebuggerManager::GetActiveDebugger()
 {
     return m_activeDebugger;
 }
 
-inline void RefreshBreakpoints(cb_unused const cbDebuggerPlugin* plugin)
+inline void RefreshBreakpoints(cb_unused const cbDebuggerPlugin *plugin)
 {
     EditorManager *editorManager = Manager::Get()->GetEditorManager();
     int count = editorManager->GetEditorsCount();
@@ -1175,11 +1165,12 @@ inline void RefreshBreakpoints(cb_unused const cbDebuggerPlugin* plugin)
     {
         EditorBase *editor = editorManager->GetEditor(ii);
         if (editor->IsBuiltinEditor())
-            static_cast<cbEditor*>(editor)->RefreshBreakpointMarkers();
+            static_cast<cbEditor *>(editor)->RefreshBreakpointMarkers();
     }
 }
 
-void DebuggerManager::SetActiveDebugger(cbDebuggerPlugin* activeDebugger, ConfigurationVector::const_iterator config)
+void DebuggerManager::SetActiveDebugger(cbDebuggerPlugin *activeDebugger,
+                                        ConfigurationVector::const_iterator config)
 {
     RegisteredPlugins::const_iterator it = m_registered.find(activeDebugger);
     cbAssert(it != m_registered.end());
@@ -1202,15 +1193,20 @@ void DebuggerManager::RefreshUI()
     if (m_activeDebugger)
     {
         if (m_backtraceDialog)
-            m_backtraceDialog->EnableWindow(m_activeDebugger->SupportsFeature(cbDebuggerFeature::Callstack));
+            m_backtraceDialog->EnableWindow(
+                m_activeDebugger->SupportsFeature(cbDebuggerFeature::Callstack));
         if (m_cpuRegistersDialog)
-            m_cpuRegistersDialog->EnableWindow(m_activeDebugger->SupportsFeature(cbDebuggerFeature::CPURegisters));
+            m_cpuRegistersDialog->EnableWindow(
+                m_activeDebugger->SupportsFeature(cbDebuggerFeature::CPURegisters));
         if (m_disassemblyDialog)
-            m_disassemblyDialog->EnableWindow(m_activeDebugger->SupportsFeature(cbDebuggerFeature::Disassembly));
+            m_disassemblyDialog->EnableWindow(
+                m_activeDebugger->SupportsFeature(cbDebuggerFeature::Disassembly));
         if (m_examineMemoryDialog)
-            m_examineMemoryDialog->EnableWindow(m_activeDebugger->SupportsFeature(cbDebuggerFeature::ExamineMemory));
+            m_examineMemoryDialog->EnableWindow(
+                m_activeDebugger->SupportsFeature(cbDebuggerFeature::ExamineMemory));
         if (m_threadsDialog)
-            m_threadsDialog->EnableWindow(m_activeDebugger->SupportsFeature(cbDebuggerFeature::Threads));
+            m_threadsDialog->EnableWindow(
+                m_activeDebugger->SupportsFeature(cbDebuggerFeature::Threads));
     }
     if (m_watchesDialog)
         m_watchesDialog->RefreshUI();
@@ -1244,9 +1240,9 @@ void DebuggerManager::FindTargetsDebugger()
         return;
     }
 
-    ProjectManager* projectMgr = Manager::Get()->GetProjectManager();
-    LogManager* log = Manager::Get()->GetLogManager();
-    cbProject* project = projectMgr->GetActiveProject();
+    ProjectManager *projectMgr = Manager::Get()->GetProjectManager();
+    LogManager *log = Manager::Get()->GetLogManager();
+    cbProject *project = projectMgr->GetActiveProject();
     ProjectBuildTarget *target = nullptr;
     if (project)
     {
@@ -1254,7 +1250,6 @@ void DebuggerManager::FindTargetsDebugger()
         if (project->BuildTargetValid(targetName))
             target = project->GetBuildTarget(targetName);
     }
-
 
     Compiler *compiler = nullptr;
     if (!target)
@@ -1265,7 +1260,8 @@ void DebuggerManager::FindTargetsDebugger()
             compiler = CompilerFactory::GetDefaultCompiler();
         if (!compiler)
         {
-            log->LogError(_("Can't get the compiler for the active target, nor the project, nor the default one!"));
+            log->LogError(_("Can't get the compiler for the active target, nor the project, nor "
+                            "the default one!"));
             m_menuHandler->MarkActiveTargetAsValid(false);
             return;
         }
@@ -1295,8 +1291,9 @@ void DebuggerManager::FindTargetsDebugger()
     {
         if (compiler->GetID() != wxT("null"))
         {
-            log->LogError(wxString::Format(_("Current compiler '%s' doesn't have correctly defined debugger!"),
-                                           compiler->GetName().c_str()));
+            log->LogError(wxString::Format(
+                _("Current compiler '%s' doesn't have correctly defined debugger!"),
+                compiler->GetName().c_str()));
         }
         m_menuHandler->MarkActiveTargetAsValid(false);
         return;
@@ -1309,7 +1306,8 @@ void DebuggerManager::FindTargetsDebugger()
         {
             ConfigurationVector &configs = data.GetConfigurations();
             int index = 0;
-            for (ConfigurationVector::iterator itConf = configs.begin(); itConf != configs.end(); ++itConf, ++index)
+            for (ConfigurationVector::iterator itConf = configs.begin(); itConf != configs.end();
+                 ++itConf, ++index)
             {
                 if ((*itConf)->GetName() == config)
                 {
@@ -1327,9 +1325,9 @@ void DebuggerManager::FindTargetsDebugger()
     }
 
     wxString targetTitle(target ? target->GetTitle() : wxT("<nullptr>"));
-    log->LogError(wxString::Format(_("Can't find the debugger config: '%s:%s' for the current target '%s'!"),
-                                   name.c_str(), config.c_str(),
-                                   targetTitle.c_str()));
+    log->LogError(
+        wxString::Format(_("Can't find the debugger config: '%s:%s' for the current target '%s'!"),
+                         name.c_str(), config.c_str(), targetTitle.c_str()));
     m_menuHandler->MarkActiveTargetAsValid(false);
 }
 
@@ -1345,19 +1343,19 @@ void DebuggerManager::SetDisassemblyMixedMode(bool mixed)
     c->Write(wxT("/common/disassembly/mixed_mode"), m_isDisassemblyMixedMode);
 }
 
-void DebuggerManager::OnProjectActivated(cb_unused CodeBlocksEvent& event)
+void DebuggerManager::OnProjectActivated(cb_unused CodeBlocksEvent &event)
 {
     if (m_useTargetsDefault)
         FindTargetsDebugger();
 }
 
-void DebuggerManager::OnTargetSelected(cb_unused CodeBlocksEvent& event)
+void DebuggerManager::OnTargetSelected(cb_unused CodeBlocksEvent &event)
 {
     if (m_useTargetsDefault)
         FindTargetsDebugger();
 }
 
-void DebuggerManager::OnSettingsChanged(CodeBlocksEvent& event)
+void DebuggerManager::OnSettingsChanged(CodeBlocksEvent &event)
 {
     if (event.GetInt() == cbSettingsType::Compiler || event.GetInt() == cbSettingsType::Debugger)
     {
@@ -1366,7 +1364,7 @@ void DebuggerManager::OnSettingsChanged(CodeBlocksEvent& event)
     }
 }
 
-void DebuggerManager::OnPluginLoadingComplete(cb_unused CodeBlocksEvent& event)
+void DebuggerManager::OnPluginLoadingComplete(cb_unused CodeBlocksEvent &event)
 {
     RefreshUI();
     if (!m_activeDebugger)

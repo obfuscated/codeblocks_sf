@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,12 +10,12 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/intl.h>
-    #include <wx/xrc/xmlres.h>
-    #include <wx/button.h>
-    #include <wx/msgdlg.h>
-    #include <wx/listbox.h>
-    #include "globals.h"
+#include <wx/intl.h>
+#include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/msgdlg.h>
+#include <wx/listbox.h>
+#include "globals.h"
 #endif
 
 #include <wx/filedlg.h>
@@ -30,16 +30,16 @@ BEGIN_EVENT_TABLE(EditArrayFileDlg, wxScrollingDialog)
     EVT_UPDATE_UI(-1, EditArrayFileDlg::OnUpdateUI)
 END_EVENT_TABLE()
 
-EditArrayFileDlg::EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool useRelativePaths, const wxString& basePath)
-    : m_Array(array),
-    m_UseRelativePaths(useRelativePaths),
-    m_BasePath(basePath)
+EditArrayFileDlg::EditArrayFileDlg(wxWindow *parent, wxArrayString &array, bool useRelativePaths,
+                                   const wxString &basePath)
+  : m_Array(array), m_UseRelativePaths(useRelativePaths), m_BasePath(basePath)
 {
-    //ctor
-    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),_T("wxScrollingDialog"));
+    // ctor
+    wxXmlResource::Get()->LoadObject(this, parent, _T("dlgEditArrayString"),
+                                     _T("wxScrollingDialog"));
     XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
-    wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+    wxListBox *list = XRCCTRL(*this, "lstItems", wxListBox);
     list->Clear();
     for (unsigned int i = 0; i < m_Array.GetCount(); ++i)
     {
@@ -56,14 +56,14 @@ EditArrayFileDlg::EditArrayFileDlg(wxWindow* parent, wxArrayString& array, bool 
 
 EditArrayFileDlg::~EditArrayFileDlg()
 {
-    //dtor
+    // dtor
 }
 
 void EditArrayFileDlg::EndModal(int retCode)
 {
     if (retCode == wxID_OK)
     {
-        wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+        wxListBox *list = XRCCTRL(*this, "lstItems", wxListBox);
         m_Array.Clear();
         for (int i = 0; i < (int)list->GetCount(); ++i)
         {
@@ -75,14 +75,10 @@ void EditArrayFileDlg::EndModal(int retCode)
 
 // events
 
-void EditArrayFileDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
+void EditArrayFileDlg::OnAdd(wxCommandEvent &WXUNUSED(event))
 {
-    wxFileDialog dlg(this,
-                    _("Select file"),
-                    m_BasePath,
-                    _T(""),
-                    FileFilters::GetFilterAll(),
-                    wxFD_OPEN | compatibility::wxHideReadonly);
+    wxFileDialog dlg(this, _("Select file"), m_BasePath, _T(""), FileFilters::GetFilterAll(),
+                     wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -93,15 +89,11 @@ void EditArrayFileDlg::OnAdd(wxCommandEvent& WXUNUSED(event))
     XRCCTRL(*this, "lstItems", wxListBox)->Append(fname.GetFullPath());
 }
 
-void EditArrayFileDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
+void EditArrayFileDlg::OnEdit(wxCommandEvent &WXUNUSED(event))
 {
-    wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
-    wxFileDialog dlg(this,
-                    _("Select file"),
-                    m_BasePath,
-                    list->GetStringSelection(),
-                    FileFilters::GetFilterAll(),
-                    wxFD_OPEN | compatibility::wxHideReadonly);
+    wxListBox *list = XRCCTRL(*this, "lstItems", wxListBox);
+    wxFileDialog dlg(this, _("Select file"), m_BasePath, list->GetStringSelection(),
+                     FileFilters::GetFilterAll(), wxFD_OPEN | compatibility::wxHideReadonly);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() != wxID_OK)
         return;
@@ -112,16 +104,16 @@ void EditArrayFileDlg::OnEdit(wxCommandEvent& WXUNUSED(event))
     list->SetString(list->GetSelection(), fname.GetFullPath());
 }
 
-void EditArrayFileDlg::OnDelete(wxCommandEvent& WXUNUSED(event))
+void EditArrayFileDlg::OnDelete(wxCommandEvent &WXUNUSED(event))
 {
     if (cbMessageBox(_("Delete this item?"), _("Confirm"), wxYES_NO, this) == wxID_YES)
     {
-        wxListBox* list = XRCCTRL(*this, "lstItems", wxListBox);
+        wxListBox *list = XRCCTRL(*this, "lstItems", wxListBox);
         list->Delete(list->GetSelection());
     }
 }
 
-void EditArrayFileDlg::OnUpdateUI(wxUpdateUIEvent& WXUNUSED(event))
+void EditArrayFileDlg::OnUpdateUI(wxUpdateUIEvent &WXUNUSED(event))
 {
     bool en = XRCCTRL(*this, "lstItems", wxListBox)->GetSelection() != -1;
     XRCCTRL(*this, "btnEdit", wxButton)->Enable(en);

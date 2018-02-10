@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License, version 3
- * http://www.gnu.org/licenses/gpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU General Public License,
+ * version 3 http://www.gnu.org/licenses/gpl-3.0.html
  */
 
 #ifndef SCRIPTINGSETTINGSDLG_H
@@ -11,14 +11,15 @@
 
 #include "scrollingdialog.h"
 
-class ScriptEntry// : public ISerializable (<-- can't make it work)
+class ScriptEntry // : public ISerializable (<-- can't make it work)
 {
 public:
     wxString SerializeOut() const
     {
-        return wxString::Format(_T("%s;%d;%d;%s"), script.c_str(), enabled ? 1 : 0, registered ? 1 : 0, menu.c_str());
+        return wxString::Format(_T("%s;%d;%d;%s"), script.c_str(), enabled ? 1 : 0,
+                                registered ? 1 : 0, menu.c_str());
     }
-    void SerializeIn(const wxString& s)
+    void SerializeIn(const wxString &s)
     {
         wxString tmp = s;
         script = tmp.BeforeFirst(_T(';'));
@@ -39,39 +40,39 @@ typedef std::vector<ScriptEntry> ScriptsVector;
 
 class ScriptingSettingsDlg : public wxScrollingDialog
 {
-    public:
-        ScriptingSettingsDlg(wxWindow* parent);
-        ~ScriptingSettingsDlg();
+public:
+    ScriptingSettingsDlg(wxWindow *parent);
+    ~ScriptingSettingsDlg();
 
-        void EndModal(int retCode);
-    protected:
-        void FillScripts();
-        void UpdateState();
-        void FillTrusts();
-        void UpdateTrustsState();
-        void LoadItem(long item);
-        void SaveItem(long item);
+    void EndModal(int retCode);
 
-        void OnListSelection(wxListEvent& event);
-        void OnListDeselection(wxListEvent& event);
-        void OnAddScript(wxCommandEvent& event);
-        void OnRemoveScript(wxCommandEvent& event);
-        void OnScriptChanged(wxCommandEvent& event);
-        void OnScriptMenuChanged(wxCommandEvent& event);
-        void OnEnable(wxCommandEvent& event);
-        void OnRegister(wxCommandEvent& event);
-        void OnBrowse(wxCommandEvent& event);
+protected:
+    void FillScripts();
+    void UpdateState();
+    void FillTrusts();
+    void UpdateTrustsState();
+    void LoadItem(long item);
+    void SaveItem(long item);
 
-        void OnTrustSelection(wxListEvent& event);
-        void OnDeleteTrust(wxCommandEvent& event);
-        void OnValidateTrusts(wxCommandEvent& event);
+    void OnListSelection(wxListEvent &event);
+    void OnListDeselection(wxListEvent &event);
+    void OnAddScript(wxCommandEvent &event);
+    void OnRemoveScript(wxCommandEvent &event);
+    void OnScriptChanged(wxCommandEvent &event);
+    void OnScriptMenuChanged(wxCommandEvent &event);
+    void OnEnable(wxCommandEvent &event);
+    void OnRegister(wxCommandEvent &event);
+    void OnBrowse(wxCommandEvent &event);
 
-        ScriptsVector m_ScriptsVector;
-        bool m_IgnoreTextEvents;
-    private:
-        DECLARE_EVENT_TABLE()
+    void OnTrustSelection(wxListEvent &event);
+    void OnDeleteTrust(wxCommandEvent &event);
+    void OnValidateTrusts(wxCommandEvent &event);
+
+    ScriptsVector m_ScriptsVector;
+    bool m_IgnoreTextEvents;
+
+private:
+    DECLARE_EVENT_TABLE()
 };
-
-
 
 #endif // SCRIPTINGSETTINGSDLG_H

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef WORKSPACELOADER_H
@@ -15,15 +15,15 @@
 
 class DLLIMPORT WorkspaceLoader : public IBaseWorkspaceLoader
 {
-    public:
-        WorkspaceLoader();
-        virtual ~WorkspaceLoader();
+public:
+    WorkspaceLoader();
+    virtual ~WorkspaceLoader();
 
-        bool Open(const wxString& filename, wxString& Title);
-        bool Save(const wxString& title, const wxString& filename);
+    bool Open(const wxString &filename, wxString &Title);
+    bool Save(const wxString &title, const wxString &filename);
 
-        bool SaveLayout(const wxString& filename);
-        bool LoadLayout(const wxString& filename);
+    bool SaveLayout(const wxString &filename);
+    bool LoadLayout(const wxString &filename);
 };
 
 #endif // WORKSPACELOADER_H

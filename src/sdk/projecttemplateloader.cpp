@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,9 +10,9 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "manager.h"
-    #include "logmanager.h"
-    #include "globals.h"
+#include "manager.h"
+#include "logmanager.h"
+#include "globals.h"
 #endif
 
 #include "projecttemplateloader.h"
@@ -24,27 +24,27 @@ WX_DEFINE_OBJARRAY(TemplateOptionArray);
 
 ProjectTemplateLoader::ProjectTemplateLoader()
 {
-    //ctor
+    // ctor
 }
 
 ProjectTemplateLoader::~ProjectTemplateLoader()
 {
-    //dtor
+    // dtor
 }
 
-bool ProjectTemplateLoader::Open(const wxString& filename)
+bool ProjectTemplateLoader::Open(const wxString &filename)
 {
-    LogManager* pMsg = Manager::Get()->GetLogManager();
+    LogManager *pMsg = Manager::Get()->GetLogManager();
     if (!pMsg)
         return false;
 
-//    pMsg->DebugLog(_T("Reading template file %s"), filename.c_str());
+    //    pMsg->DebugLog(_T("Reading template file %s"), filename.c_str());
 
     TiXmlDocument doc(filename.mb_str());
     if (!doc.LoadFile())
         return false;
 
-    TiXmlElement* root;
+    TiXmlElement *root;
 
     root = doc.FirstChildElement("CodeBlocks_template_file");
     if (!root)
@@ -63,9 +63,9 @@ bool ProjectTemplateLoader::Open(const wxString& filename)
     return true;
 }
 
-void ProjectTemplateLoader::DoTemplate(TiXmlElement* parentNode)
+void ProjectTemplateLoader::DoTemplate(TiXmlElement *parentNode)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("Template");
+    TiXmlElement *node = parentNode->FirstChildElement("Template");
     while (node)
     {
         if (node->Attribute("name"))
@@ -85,21 +85,22 @@ void ProjectTemplateLoader::DoTemplate(TiXmlElement* parentNode)
     }
 }
 
-void ProjectTemplateLoader::DoTemplateNotice(TiXmlElement* parentNode)
+void ProjectTemplateLoader::DoTemplateNotice(TiXmlElement *parentNode)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("Notice");
+    TiXmlElement *node = parentNode->FirstChildElement("Notice");
     if (!node)
         return;
     m_Notice = cbC2U(node->Attribute("value"));
     while (m_Notice.Replace(_T("  "), _T(" ")))
         ;
     m_Notice.Replace(_T("\t"), _T(""));
-    m_NoticeMsgType = cbC2U(node->Attribute("value")) == _T("0") ? wxICON_INFORMATION : wxICON_WARNING;
+    m_NoticeMsgType =
+        cbC2U(node->Attribute("value")) == _T("0") ? wxICON_INFORMATION : wxICON_WARNING;
 }
 
-void ProjectTemplateLoader::DoFileSet(TiXmlElement* parentNode)
+void ProjectTemplateLoader::DoFileSet(TiXmlElement *parentNode)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("FileSet");
+    TiXmlElement *node = parentNode->FirstChildElement("FileSet");
     while (node)
     {
         FileSet fs;
@@ -118,9 +119,9 @@ void ProjectTemplateLoader::DoFileSet(TiXmlElement* parentNode)
     }
 }
 
-void ProjectTemplateLoader::DoFileSetFile(TiXmlElement* parentNode, FileSet& fs)
+void ProjectTemplateLoader::DoFileSetFile(TiXmlElement *parentNode, FileSet &fs)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("File");
+    TiXmlElement *node = parentNode->FirstChildElement("File");
     while (node)
     {
         FileSetFile fsf;
@@ -138,9 +139,9 @@ void ProjectTemplateLoader::DoFileSetFile(TiXmlElement* parentNode, FileSet& fs)
     }
 }
 
-void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
+void ProjectTemplateLoader::DoOption(TiXmlElement *parentNode)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("Option");
+    TiXmlElement *node = parentNode->FirstChildElement("Option");
     while (node)
     {
         TemplateOption to;
@@ -151,14 +152,16 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
 
         if (!to.name.IsEmpty())
         {
-            TiXmlElement* tmpnode = node->FirstChildElement("Notice");
+            TiXmlElement *tmpnode = node->FirstChildElement("Notice");
             if (tmpnode)
             {
                 to.notice << _T("\n") << cbC2U(tmpnode->Attribute("value"));
                 while (to.notice.Replace(_T("  "), _T(" ")))
                     ;
                 to.notice.Replace(_T("\t"), _T(""));
-                to.noticeMsgType = strncmp(tmpnode->Attribute("value"), "0", 1) == 0 ? wxICON_INFORMATION : wxICON_WARNING;
+                to.noticeMsgType = strncmp(tmpnode->Attribute("value"), "0", 1) == 0
+                                       ? wxICON_INFORMATION
+                                       : wxICON_WARNING;
             }
 
             DoOptionProject(node, to);
@@ -171,9 +174,9 @@ void ProjectTemplateLoader::DoOption(TiXmlElement* parentNode)
     }
 }
 
-void ProjectTemplateLoader::DoOptionProject(TiXmlElement* parentNode, TemplateOption& to)
+void ProjectTemplateLoader::DoOptionProject(TiXmlElement *parentNode, TemplateOption &to)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("Project");
+    TiXmlElement *node = parentNode->FirstChildElement("Project");
     if (node)
     {
         if (node->Attribute("file"))
@@ -183,9 +186,9 @@ void ProjectTemplateLoader::DoOptionProject(TiXmlElement* parentNode, TemplateOp
     }
 }
 
-void ProjectTemplateLoader::DoOptionCompiler(TiXmlElement* parentNode, TemplateOption& to)
+void ProjectTemplateLoader::DoOptionCompiler(TiXmlElement *parentNode, TemplateOption &to)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("Compiler");
+    TiXmlElement *node = parentNode->FirstChildElement("Compiler");
     while (node)
     {
         if (node->Attribute("flag"))
@@ -195,9 +198,9 @@ void ProjectTemplateLoader::DoOptionCompiler(TiXmlElement* parentNode, TemplateO
     }
 }
 
-void ProjectTemplateLoader::DoOptionLinker(TiXmlElement* parentNode, TemplateOption& to)
+void ProjectTemplateLoader::DoOptionLinker(TiXmlElement *parentNode, TemplateOption &to)
 {
-    TiXmlElement* node = parentNode->FirstChildElement("Linker");
+    TiXmlElement *node = parentNode->FirstChildElement("Linker");
     while (node)
     {
         if (node->Attribute("flag"))

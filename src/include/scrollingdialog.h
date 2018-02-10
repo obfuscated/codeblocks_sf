@@ -31,17 +31,17 @@ class wxButton;
 class wxScrolledWindow;
 
 #if !wxCHECK_VERSION(3, 0, 0)
-class wxDialogLayoutAdapter: public wxObject
+class wxDialogLayoutAdapter : public wxObject
 {
     DECLARE_CLASS(wxDialogLayoutAdapter)
 public:
     wxDialogLayoutAdapter() {}
 
     /// Override this function to indicate that adaptation should be done
-    virtual bool CanDoLayoutAdaptation(wxDialogHelper* dialog) = 0;
+    virtual bool CanDoLayoutAdaptation(wxDialogHelper *dialog) = 0;
 
     /// Override this function to do the adaptation
-    virtual bool DoLayoutAdaptation(wxDialogHelper* dialog) = 0;
+    virtual bool DoLayoutAdaptation(wxDialogHelper *dialog) = 0;
 };
 
 /*!
@@ -49,44 +49,48 @@ public:
  *
  */
 
-class wxStandardDialogLayoutAdapter: public wxDialogLayoutAdapter
+class wxStandardDialogLayoutAdapter : public wxDialogLayoutAdapter
 {
     DECLARE_CLASS(wxStandardDialogLayoutAdapter)
 public:
     wxStandardDialogLayoutAdapter() {}
 
-// Overrides
+    // Overrides
 
     /// Indicate that adaptation should be done
-    virtual bool CanDoLayoutAdaptation(wxDialogHelper* dialog);
+    virtual bool CanDoLayoutAdaptation(wxDialogHelper *dialog);
 
     /// Do layout adaptation
-    virtual bool DoLayoutAdaptation(wxDialogHelper* dialog);
+    virtual bool DoLayoutAdaptation(wxDialogHelper *dialog);
 
-// Implementation
+    // Implementation
 
     /// Find a standard or horizontal box sizer
-    virtual wxSizer* FindButtonSizer(bool stdButtonSizer, wxDialogHelper* dialog, wxSizer* sizer, int& retBorder, int accumlatedBorder = 0);
+    virtual wxSizer *FindButtonSizer(bool stdButtonSizer, wxDialogHelper *dialog, wxSizer *sizer,
+                                     int &retBorder, int accumlatedBorder = 0);
 
     /// Check if this sizer contains standard buttons, and so can be repositioned in the dialog
-    virtual bool IsOrdinaryButtonSizer(wxDialogHelper* dialog, wxBoxSizer* sizer);
+    virtual bool IsOrdinaryButtonSizer(wxDialogHelper *dialog, wxBoxSizer *sizer);
 
     /// Check if this is a standard button
-    virtual bool IsStandardButton(wxDialogHelper* dialog, wxButton* button);
+    virtual bool IsStandardButton(wxDialogHelper *dialog, wxButton *button);
 
     /// Find 'loose' main buttons in the existing layout and add them to the standard dialog sizer
-    virtual bool FindLooseButtons(wxDialogHelper* dialog, wxStdDialogButtonSizer* buttonSizer, wxSizer* sizer, int& count);
+    virtual bool FindLooseButtons(wxDialogHelper *dialog, wxStdDialogButtonSizer *buttonSizer,
+                                  wxSizer *sizer, int &count);
 
     /// Reparent the controls to the scrolled window, except those in buttonSizer
-    virtual void ReparentControls(wxWindow* parent, wxWindow* reparentTo, wxSizer* buttonSizer = NULL);
+    virtual void ReparentControls(wxWindow *parent, wxWindow *reparentTo,
+                                  wxSizer *buttonSizer = NULL);
 
     /// A function to fit the dialog around its contents, and then adjust for screen size.
     /// If scrolled windows are passed, scrolling is enabled in the required orientation(s).
-    virtual bool FitWithScrolling(wxDialog* dialog, wxScrolledWindow* scrolledWindow);
-    virtual bool FitWithScrolling(wxDialog* dialog, wxWindowList& windows);
+    virtual bool FitWithScrolling(wxDialog *dialog, wxScrolledWindow *scrolledWindow);
+    virtual bool FitWithScrolling(wxDialog *dialog, wxWindowList &windows);
 
-    /// Find whether scrolling will be necessary for the dialog, returning wxVERTICAL, wxHORIZONTAL or both
-    virtual int MustScroll(wxDialog* dialog, wxSize& windowSize, wxSize& displaySize);
+    /// Find whether scrolling will be necessary for the dialog, returning wxVERTICAL, wxHORIZONTAL
+    /// or both
+    virtual int MustScroll(wxDialog *dialog, wxSize &windowSize, wxSize &displaySize);
 };
 
 /*!
@@ -97,14 +101,17 @@ public:
 class wxDialogHelper
 {
 public:
-
-    wxDialogHelper(wxDialog* dialog = NULL) { Init(); m_dialog = dialog; }
+    wxDialogHelper(wxDialog *dialog = NULL)
+    {
+        Init();
+        m_dialog = dialog;
+    }
     virtual ~wxDialogHelper() {}
 
     void Init();
 
-    void SetDialog(wxDialog* dialog) { m_dialog = dialog; }
-    wxDialog* GetDialog() const { return m_dialog; }
+    void SetDialog(wxDialog *dialog) { m_dialog = dialog; }
+    wxDialog *GetDialog() const { return m_dialog; }
 
     /// Do the adaptation
     virtual bool DoLayoutAdaptation();
@@ -113,16 +120,16 @@ public:
     virtual bool CanDoLayoutAdaptation();
 
     /// Returns a content window if there is one
-    virtual wxWindow* GetContentWindow() const { return NULL; }
+    virtual wxWindow *GetContentWindow() const { return NULL; }
 
     /// Add an id to the list of custom button identifiers that should be in the button sizer
-    void AddButtonId(wxWindowID id) { m_buttonIds.Add((int) id); }
-    wxArrayInt& GetButtonIds() { return m_buttonIds; }
+    void AddButtonId(wxWindowID id) { m_buttonIds.Add((int)id); }
+    wxArrayInt &GetButtonIds() { return m_buttonIds; }
 
     /// Is this id in the custom button id array?
-    bool IsUserButtonId(wxWindowID id) { return (m_buttonIds.Index((int) id) != wxNOT_FOUND); }
+    bool IsUserButtonId(wxWindowID id) { return (m_buttonIds.Index((int)id) != wxNOT_FOUND); }
 
-// ACCESSORS
+    // ACCESSORS
 
     /// Level of adaptation, from none (Level 0) to full (Level 3). To disable adaptation,
     /// set level 0, for example in your dialog constructor. You might
@@ -134,25 +141,27 @@ public:
     int GetLayoutAdaptationLevel() const { return m_layoutAdaptationLevel; }
 
     /// Returns true if the adaptation has been done
-    void SetLayoutAdaptationDone(bool adaptationDone) { m_layoutLayoutAdaptationDone = adaptationDone; }
+    void SetLayoutAdaptationDone(bool adaptationDone)
+    {
+        m_layoutLayoutAdaptationDone = adaptationDone;
+    }
     bool GetLayoutAdaptationDone() const { return m_layoutLayoutAdaptationDone; }
 
     /// Set layout adapter class, returning old adapter
-    static wxDialogLayoutAdapter* SetLayoutAdapter(wxDialogLayoutAdapter* adapter);
-    static wxDialogLayoutAdapter* GetLayoutAdapter() { return sm_layoutAdapter; }
+    static wxDialogLayoutAdapter *SetLayoutAdapter(wxDialogLayoutAdapter *adapter);
+    static wxDialogLayoutAdapter *GetLayoutAdapter() { return sm_layoutAdapter; }
 
     /// Global switch for layout adaptation
     static bool GetLayoutAdaptation() { return sm_layoutAdaptation; }
     static void SetLayoutAdaptation(bool enable) { sm_layoutAdaptation = enable; }
 
 protected:
-
-    wxDialog*                           m_dialog;
-    bool                                m_layoutLayoutAdaptationDone;
-    wxArrayInt                          m_buttonIds;
-    int                                 m_layoutAdaptationLevel;
-    static wxDialogLayoutAdapter*       sm_layoutAdapter;
-    static bool                         sm_layoutAdaptation;
+    wxDialog *m_dialog;
+    bool m_layoutLayoutAdaptationDone;
+    wxArrayInt m_buttonIds;
+    int m_layoutAdaptationLevel;
+    static wxDialogLayoutAdapter *sm_layoutAdapter;
+    static bool sm_layoutAdaptation;
 };
 #endif //#if !wxCHECK_VERSION(3, 0, 0)
 
@@ -160,14 +169,14 @@ protected:
  * A class that makes its content scroll if necessary
  */
 
-class DLLIMPORT wxScrollingDialog: public wxDialog
+class DLLIMPORT wxScrollingDialog : public wxDialog
 #if !wxCHECK_VERSION(3, 0, 0)
-    , public wxDialogHelper
+  ,
+                                    public wxDialogHelper
 #endif
 {
     DECLARE_CLASS(wxScrollingDialog)
 public:
-
     wxScrollingDialog()
     {
 #if !wxCHECK_VERSION(3, 0, 0)
@@ -176,13 +185,9 @@ public:
         SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
 #endif
     }
-    wxScrollingDialog(wxWindow *parent,
-             int id = wxID_ANY,
-             const wxString& title = wxEmptyString,
-             const wxPoint& pos = wxDefaultPosition,
-             const wxSize& size = wxDefaultSize,
-             long style = wxDEFAULT_DIALOG_STYLE,
-             const wxString& name = _("dialogBox"))
+    wxScrollingDialog(wxWindow *parent, int id = wxID_ANY, const wxString &title = wxEmptyString,
+                      const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                      long style = wxDEFAULT_DIALOG_STYLE, const wxString &name = _("dialogBox"))
     {
 #if !wxCHECK_VERSION(3, 0, 0)
         Init();
@@ -192,13 +197,9 @@ public:
         Create(parent, id, title, pos, size, style, name);
     }
 #if !wxCHECK_VERSION(3, 0, 0)
-    bool Create(wxWindow *parent,
-             int id = wxID_ANY,
-             const wxString& title = wxEmptyString,
-             const wxPoint& pos = wxDefaultPosition,
-             const wxSize& size = wxDefaultSize,
-             long style = wxDEFAULT_DIALOG_STYLE,
-             const wxString& name = _("dialogBox"));
+    bool Create(wxWindow *parent, int id = wxID_ANY, const wxString &title = wxEmptyString,
+                const wxPoint &pos = wxDefaultPosition, const wxSize &size = wxDefaultSize,
+                long style = wxDEFAULT_DIALOG_STYLE, const wxString &name = _("dialogBox"));
 
     void Init();
 
@@ -216,7 +217,8 @@ public:
 
 class wxScrollingPropertySheetDialog : public wxPropertySheetDialog
 #if !wxCHECK_VERSION(3, 0, 0)
-    , public wxDialogHelper
+  ,
+                                       public wxDialogHelper
 #endif
 
 {
@@ -230,12 +232,11 @@ public:
 #endif
     }
 
-    wxScrollingPropertySheetDialog(wxWindow* parent, wxWindowID id,
-                       const wxString& title,
-                       const wxPoint& pos = wxDefaultPosition,
-                       const wxSize& sz = wxDefaultSize,
-                       long style = wxDEFAULT_DIALOG_STYLE,
-                       const wxString& name = wxDialogNameStr)
+    wxScrollingPropertySheetDialog(wxWindow *parent, wxWindowID id, const wxString &title,
+                                   const wxPoint &pos = wxDefaultPosition,
+                                   const wxSize &sz = wxDefaultSize,
+                                   long style = wxDEFAULT_DIALOG_STYLE,
+                                   const wxString &name = wxDialogNameStr)
     {
 #if !wxCHECK_VERSION(3, 0, 0)
         Init();
@@ -246,12 +247,12 @@ public:
     }
 
 #if !wxCHECK_VERSION(3, 0, 0)
-//// Accessors
+    //// Accessors
 
     /// Returns the content window
-    virtual wxWindow* GetContentWindow() const;
+    virtual wxWindow *GetContentWindow() const;
 
-/// Operations
+    /// Operations
 
     /// Override Show to rejig the control and sizer hierarchy if necessary
     virtual bool Show(bool show = true);
@@ -264,10 +265,8 @@ private:
 #endif
 
 protected:
-
     DECLARE_DYNAMIC_CLASS(wxScrollingPropertySheetDialog)
 };
 
 #endif
- // _WX_SCROLLINGDIALOG_H_
-
+// _WX_SCROLLINGDIALOG_H_

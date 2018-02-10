@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,25 +10,25 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/choicdlg.h>
-    #include <wx/file.h>
-    #include <wx/filename.h>
-    #include <wx/filesys.h>
-    #include <wx/image.h>
-    #include <wx/imaglist.h>
-    #include <wx/listctrl.h>
-    #include <wx/menu.h>
-    #include <wx/textdlg.h>
+#include <wx/choicdlg.h>
+#include <wx/file.h>
+#include <wx/filename.h>
+#include <wx/filesys.h>
+#include <wx/image.h>
+#include <wx/imaglist.h>
+#include <wx/listctrl.h>
+#include <wx/menu.h>
+#include <wx/textdlg.h>
 
-    #include "wx/wxscintilla.h"
+#include "wx/wxscintilla.h"
 
-    #include "cbexception.h"
-    #include "configmanager.h" // ReadBool
-    #include "filemanager.h"
-    #include "globals.h"
-    #include "logmanager.h"
-    #include "manager.h"
-    #include "projectmanager.h"
+#include "cbexception.h"
+#include "configmanager.h" // ReadBool
+#include "filemanager.h"
+#include "globals.h"
+#include "logmanager.h"
+#include "manager.h"
+#include "projectmanager.h"
 #endif
 
 #include <tinyxml.h>
@@ -48,17 +48,18 @@
 #include "filegroupsandmasks.h"
 
 #ifndef __WXMSW__
-    #include <unistd.h> // readlink
-    #include <sys/stat.h> // lstat
+#include <unistd.h> // readlink
+#include <sys/stat.h> // lstat
 #endif
 
-const wxString DEFAULT_WORKSPACE     = _T("default.workspace");
-const wxString DEFAULT_ARRAY_SEP     = _T(";");
+const wxString DEFAULT_WORKSPACE = _T("default.workspace");
+const wxString DEFAULT_ARRAY_SEP = _T(";");
 
 #ifndef __WXMAC__
-const wxString DEFAULT_CONSOLE_TERM  = _T("xterm -T $TITLE -e");
+const wxString DEFAULT_CONSOLE_TERM = _T("xterm -T $TITLE -e");
 #else
-const wxString DEFAULT_CONSOLE_TERM  = _T("osascript -e 'tell app \"Terminal\"' -e 'activate' -e 'do script quoted form of \"$SCRIPT\"' -e 'end tell'");
+const wxString DEFAULT_CONSOLE_TERM = _T("osascript -e 'tell app \"Terminal\"' -e 'activate' -e ")
+                                      _T("'do script quoted form of \"$SCRIPT\"' -e 'end tell'");
 #endif
 const wxString DEFAULT_CONSOLE_SHELL = _T("/bin/sh -c");
 
@@ -70,7 +71,7 @@ const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("open -R");
 const wxString cbDEFAULT_OPEN_FOLDER_CMD = _T("xdg-open");
 #endif
 
-int GetPlatformsFromString(const wxString& platforms)
+int GetPlatformsFromString(const wxString &platforms)
 {
     bool pW = platforms.Contains(_("Windows"));
     bool pU = platforms.Contains(_("Unix"));
@@ -80,10 +81,13 @@ int GetPlatformsFromString(const wxString& platforms)
     if (pA || (pW && pU && pM))
         return spAll;
 
-    int     p  = 0;
-    if (pW) p |= spWindows;
-    if (pU) p |= spUnix;
-    if (pM) p |= spMac;
+    int p = 0;
+    if (pW)
+        p |= spWindows;
+    if (pU)
+        p |= spUnix;
+    if (pM)
+        p |= spMac;
     return p;
 }
 
@@ -109,17 +113,19 @@ wxString GetStringFromPlatforms(int platforms, bool forceSeparate)
 
 /*
     Killerbot : 6 Oktober 2007
-    The method has been extended with a bool to specify if the seperator should be appended at the end.
-    Ultimate goal : every client gives as a value : false.
-    Why : well a seperator should separate, there's nothing to separate at the end (like nothing to separate
-    at the beginning, we don't put one there ...), but some client code is having problems when the separator is
-    not present at the end. So for compatibility issues we have as default value for the new argument true, so the
-    old code has the same behaviour as before [TODO: make those clients no longer dependent on this stupid final separator behaviour]
-    New code will specify false as the bool value, so hoping rather soon a search on this method will have all hits showing
-    false as the last argument ....
+    The method has been extended with a bool to specify if the seperator should be appended at the
+   end. Ultimate goal : every client gives as a value : false. Why : well a seperator should
+   separate, there's nothing to separate at the end (like nothing to separate at the beginning, we
+   don't put one there ...), but some client code is having problems when the separator is not
+   present at the end. So for compatibility issues we have as default value for the new argument
+   true, so the old code has the same behaviour as before [TODO: make those clients no longer
+   dependent on this stupid final separator behaviour] New code will specify false as the bool
+   value, so hoping rather soon a search on this method will have all hits showing false as the last
+   argument ....
 */
 
-wxString GetStringFromArray(const wxArrayString& array, const wxString& separator, bool SeparatorAtEnd)
+wxString GetStringFromArray(const wxArrayString &array, const wxString &separator,
+                            bool SeparatorAtEnd)
 {
     wxString out;
     for (unsigned int i = 0; i < array.GetCount(); ++i)
@@ -131,7 +137,7 @@ wxString GetStringFromArray(const wxArrayString& array, const wxString& separato
     return out;
 }
 
-wxArrayString GetArrayFromString(const wxString& text, const wxString& separator, bool trimSpaces)
+wxArrayString GetArrayFromString(const wxString &text, const wxString &separator, bool trimSpaces)
 {
     wxArrayString out;
     wxString search = text;
@@ -163,7 +169,7 @@ wxArrayString GetArrayFromString(const wxString& text, const wxString& separator
     return out;
 }
 
-wxStringVec GetVectorFromString(const wxString& text, const wxString& separator, bool trimSpaces)
+wxStringVec GetVectorFromString(const wxString &text, const wxString &separator, bool trimSpaces)
 {
     wxStringVec out;
     wxString search = text;
@@ -195,37 +201,38 @@ wxStringVec GetVectorFromString(const wxString& text, const wxString& separator,
     return out;
 }
 
-wxArrayString MakeUniqueArray(const wxArrayString& array, bool caseSens)
+wxArrayString MakeUniqueArray(const wxArrayString &array, bool caseSens)
 {
     wxArrayString out;
     for (size_t i = 0; i < array.GetCount(); ++i)
     {
         if (caseSens)
         {
-          if (out.Index(array[i]) == wxNOT_FOUND)
-              out.Add(array[i]);
+            if (out.Index(array[i]) == wxNOT_FOUND)
+                out.Add(array[i]);
         }
         else
         {
-          if (out.Index(array[i].Lower()) == wxNOT_FOUND)
-              out.Add(array[i].Lower()); // append only lower-case for the moment
+            if (out.Index(array[i].Lower()) == wxNOT_FOUND)
+                out.Add(array[i].Lower()); // append only lower-case for the moment
         }
     }
     return out;
 }
 
-wxString MakeUniqueString(const wxString& text, const wxString& separator, bool caseSens)
+wxString MakeUniqueString(const wxString &text, const wxString &separator, bool caseSens)
 {
-    return GetStringFromArray( MakeUniqueArray( GetArrayFromString(text, separator), caseSens ), separator, false );
+    return GetStringFromArray(MakeUniqueArray(GetArrayFromString(text, separator), caseSens),
+                              separator, false);
 }
 
-void AppendArray(const wxArrayString& from, wxArrayString& to)
+void AppendArray(const wxArrayString &from, wxArrayString &to)
 {
     for (size_t i = 0; i < from.GetCount(); ++i)
         to.Add(from[i]);
 }
 
-wxString UnixFilename(const wxString& filename, wxPathFormat format)
+wxString UnixFilename(const wxString &filename, wxPathFormat format)
 {
     wxString result = filename;
 
@@ -257,9 +264,9 @@ wxString UnixFilename(const wxString& filename, wxPathFormat format)
     return result;
 }
 
-void QuoteStringIfNeeded(wxString& str)
+void QuoteStringIfNeeded(wxString &str)
 {
-    if ( NeedQuotes(str) )
+    if (NeedQuotes(str))
         str = wxString(_T("\"")) + str + _T("\"");
 }
 
@@ -270,7 +277,7 @@ bool NeedQuotes(const wxString &str)
     return !str.IsEmpty() && str.GetChar(0) != _T('"') && (hasSpace || hasParen);
 }
 
-wxString EscapeSpaces(const wxString& str)
+wxString EscapeSpaces(const wxString &str)
 {
     wxString ret = str;
     if (!ret.IsEmpty() && ret[0] != _T('"') && ret[0] != _T('\''))
@@ -282,44 +289,28 @@ wxString EscapeSpaces(const wxString& str)
     return ret;
 }
 
-FileType FileTypeOf(const wxString& filename)
+FileType FileTypeOf(const wxString &filename)
 {
     wxString ext = filename.AfterLast(_T('.')).Lower();
 
-    if (ext.IsSameAs(FileFilters::ASM_EXT) ||
-        ext.IsSameAs(FileFilters::C_EXT) ||
-        ext.IsSameAs(FileFilters::CC_EXT) ||
-        ext.IsSameAs(FileFilters::CPP_EXT) ||
-        ext.IsSameAs(FileFilters::CXX_EXT) ||
-        ext.IsSameAs(FileFilters::CPLPL_EXT) ||
-        ext.IsSameAs(FileFilters::S_EXT) ||
-        ext.IsSameAs(FileFilters::SS_EXT) ||
-        ext.IsSameAs(FileFilters::S62_EXT) ||
-        ext.IsSameAs(FileFilters::D_EXT) ||
-        ext.IsSameAs(FileFilters::F_EXT) ||
-        ext.IsSameAs(FileFilters::F77_EXT) ||
-        ext.IsSameAs(FileFilters::F90_EXT) ||
-        ext.IsSameAs(FileFilters::F95_EXT) ||
-        ext.IsSameAs(FileFilters::FOR_EXT) ||
-        ext.IsSameAs(FileFilters::FPP_EXT) ||
-        ext.IsSameAs(FileFilters::F03_EXT) ||
-        ext.IsSameAs(FileFilters::F08_EXT) ||
-        ext.IsSameAs(FileFilters::JAVA_EXT)
-       )
+    if (ext.IsSameAs(FileFilters::ASM_EXT) || ext.IsSameAs(FileFilters::C_EXT)
+        || ext.IsSameAs(FileFilters::CC_EXT) || ext.IsSameAs(FileFilters::CPP_EXT)
+        || ext.IsSameAs(FileFilters::CXX_EXT) || ext.IsSameAs(FileFilters::CPLPL_EXT)
+        || ext.IsSameAs(FileFilters::S_EXT) || ext.IsSameAs(FileFilters::SS_EXT)
+        || ext.IsSameAs(FileFilters::S62_EXT) || ext.IsSameAs(FileFilters::D_EXT)
+        || ext.IsSameAs(FileFilters::F_EXT) || ext.IsSameAs(FileFilters::F77_EXT)
+        || ext.IsSameAs(FileFilters::F90_EXT) || ext.IsSameAs(FileFilters::F95_EXT)
+        || ext.IsSameAs(FileFilters::FOR_EXT) || ext.IsSameAs(FileFilters::FPP_EXT)
+        || ext.IsSameAs(FileFilters::F03_EXT) || ext.IsSameAs(FileFilters::F08_EXT)
+        || ext.IsSameAs(FileFilters::JAVA_EXT))
         return ftSource;
 
-    else if (ext.IsSameAs(FileFilters::TPP_EXT) ||
-             ext.IsSameAs(FileFilters::TCC_EXT)
-            )
+    else if (ext.IsSameAs(FileFilters::TPP_EXT) || ext.IsSameAs(FileFilters::TCC_EXT))
         return ftTemplateSource;
 
-    else if (ext.IsSameAs(FileFilters::H_EXT) ||
-             ext.IsSameAs(FileFilters::HH_EXT) ||
-             ext.IsSameAs(FileFilters::HPP_EXT) ||
-             ext.IsSameAs(FileFilters::HXX_EXT) ||
-             ext.IsSameAs(FileFilters::HPLPL_EXT) ||
-             ext.IsSameAs(FileFilters::INL_EXT)
-            )
+    else if (ext.IsSameAs(FileFilters::H_EXT) || ext.IsSameAs(FileFilters::HH_EXT)
+             || ext.IsSameAs(FileFilters::HPP_EXT) || ext.IsSameAs(FileFilters::HXX_EXT)
+             || ext.IsSameAs(FileFilters::HPLPL_EXT) || ext.IsSameAs(FileFilters::INL_EXT))
         return ftHeader;
 
     else if (ext.IsSameAs(FileFilters::CODEBLOCKS_EXT))
@@ -385,22 +376,24 @@ FileType FileTypeOf(const wxString& filename)
     // DrewBoo: Before giving up, see if the ProjectManager
     // considers this extension a source or header
     // TODO (Morten#5#): Do what DrewBoo said: Try removing the above code
-    // TODO (Morten#3#): This code should actually be a method of filegroups and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
+    // TODO (Morten#3#): This code should actually be a method of filegroups and masks or alike. So
+    // we collect all extension specific things in one place. As of now this would break ABI
+    // compatibilty with 08.02 so this should happen later.
     else
     {
         ProjectManager *prjMgr = Manager::Get()->GetProjectManager();
-        if ( prjMgr )
+        if (prjMgr)
         {
-            const FilesGroupsAndMasks* fgm = prjMgr->GetFilesGroupsAndMasks();
+            const FilesGroupsAndMasks *fgm = prjMgr->GetFilesGroupsAndMasks();
             if (fgm)
             {
-               for (unsigned int i = 0; i != fgm->GetGroupsCount(); ++i)
-               {
+                for (unsigned int i = 0; i != fgm->GetGroupsCount(); ++i)
+                {
                     if (fgm->GetGroupName(i) == _T("Sources") && fgm->MatchesMask(ext, i))
                         return ftSource;
                     if (fgm->GetGroupName(i) == _T("Headers") && fgm->MatchesMask(ext, i))
                         return ftHeader;
-               }
+                }
             }
         }
     }
@@ -429,18 +422,18 @@ wxString cbFindFileInPATH(const wxString &filename)
     return wxEmptyString;
 }
 
-void DoRememberSelectedNodes(wxTreeCtrl* tree, wxArrayString& selectedItemPaths)
+void DoRememberSelectedNodes(wxTreeCtrl *tree, wxArrayString &selectedItemPaths)
 {
     wxArrayTreeItemIds items;
 
-    if (tree->GetSelections(items) < 1 )
+    if (tree->GetSelections(items) < 1)
         return;
 
-    for (size_t i=0; i < items.GetCount(); ++i)
+    for (size_t i = 0; i < items.GetCount(); ++i)
     {
         wxString path = wxEmptyString;
         wxTreeItemId item = items[i];
-        while(item.IsOk())
+        while (item.IsOk())
         {
             path = _T("/") + tree->GetItemText(item) + path;
             item = tree->GetItemParent(item);
@@ -450,7 +443,8 @@ void DoRememberSelectedNodes(wxTreeCtrl* tree, wxArrayString& selectedItemPaths)
     }
 }
 
-void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxString& selectedItemPath)
+void DoSelectRememberedNode(wxTreeCtrl *tree, const wxTreeItemId &parent,
+                            wxString &selectedItemPath)
 {
     if (tree && !selectedItemPath.IsEmpty())
     {
@@ -487,11 +481,11 @@ void DoSelectRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, wxStri
                 }
             }
         }
-
     }
 }
 
-bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxString& path)
+bool DoRememberExpandedNodes(wxTreeCtrl *tree, const wxTreeItemId &parent, wxArrayString &nodePaths,
+                             wxString &path)
 {
     // remember expanded tree nodes of this tree
     if (!tree || !parent.IsOk())
@@ -518,11 +512,11 @@ bool DoRememberExpandedNodes(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArr
     return found;
 }
 
-void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const wxString& path)
+void DoExpandRememberedNode(wxTreeCtrl *tree, const wxTreeItemId &parent, const wxString &path)
 {
     if (!path.IsEmpty())
     {
-        //Manager::Get()->GetLogManager()->Log(mltDevDebug, path);
+        // Manager::Get()->GetLogManager()->Log(mltDevDebug, path);
         wxString tmpPath;
         tmpPath = path;
         wxString folder;
@@ -544,7 +538,8 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
             tmpPath = tmpPath.Right(tmpPath.Length() - pos - 1);
         }
 
-        //Manager::Get()->GetLogManager()->Log(mltDevDebug, "%s, %s", folder.c_str(), tmpPath.c_str());
+        // Manager::Get()->GetLogManager()->Log(mltDevDebug, "%s, %s", folder.c_str(),
+        // tmpPath.c_str());
 
         wxTreeItemIdValue cookie = nullptr;
 
@@ -563,7 +558,8 @@ void DoExpandRememberedNode(wxTreeCtrl* tree, const wxTreeItemId& parent, const 
     }
 }
 
-void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxArrayString& selectedItemPaths)
+void SaveTreeState(wxTreeCtrl *tree, const wxTreeItemId &parent, wxArrayString &nodePaths,
+                   wxArrayString &selectedItemPaths)
 {
     nodePaths.Clear();
     if (!parent.IsOk() || !tree || !tree->ItemHasChildren(parent) || !tree->IsExpanded(parent))
@@ -577,7 +573,8 @@ void SaveTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& 
     DoRememberSelectedNodes(tree, selectedItemPaths);
 }
 
-void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayString& nodePaths, wxArrayString& selectedItemPaths)
+void RestoreTreeState(wxTreeCtrl *tree, const wxTreeItemId &parent, wxArrayString &nodePaths,
+                      wxArrayString &selectedItemPaths)
 {
     if (!parent.IsOk() || !tree)
         return;
@@ -598,10 +595,11 @@ void RestoreTreeState(wxTreeCtrl* tree, const wxTreeItemId& parent, wxArrayStrin
     selectedItemPaths.Clear();
 }
 
-bool CreateDirRecursively(const wxString& full_path, int perms)
+bool CreateDirRecursively(const wxString &full_path, int perms)
 {
     wxFileName tmp(full_path);
-    if (wxDirExists(tmp.GetPath())) // early out, even if full_path is a filename, but the path already exists
+    if (wxDirExists(tmp.GetPath())) // early out, even if full_path is a filename, but the path
+                                    // already exists
         return true;
 
     wxArrayString dirs;
@@ -619,7 +617,7 @@ bool CreateDirRecursively(const wxString& full_path, int perms)
     return true;
 }
 
-bool CreateDir(const wxString& full_path, int perms)
+bool CreateDir(const wxString &full_path, int perms)
 {
     if (!wxDirExists(full_path) && !wxMkdir(full_path, perms))
         return false;
@@ -627,10 +625,8 @@ bool CreateDir(const wxString& full_path, int perms)
     return true;
 }
 
-wxString ChooseDirectory(wxWindow* parent,
-                         const wxString& message,
-                         const wxString& initialPath,
-                         const wxString& basePath,
+wxString ChooseDirectory(wxWindow *parent, const wxString &message, const wxString &initialPath,
+                         const wxString &basePath,
                          bool askToMakeRelative, // relative to initialPath
                          bool showCreateDirButton) // where supported
 {
@@ -645,9 +641,9 @@ wxString ChooseDirectory(wxWindow* parent,
     if (askToMakeRelative && !basePath.IsEmpty())
     {
         // ask the user if he wants it to be kept as relative
-        if (cbMessageBox(_("Keep this as a relative path?"),
-                         _("Question"),
-                         wxICON_QUESTION | wxYES_NO) == wxID_YES)
+        if (cbMessageBox(_("Keep this as a relative path?"), _("Question"),
+                         wxICON_QUESTION | wxYES_NO)
+            == wxID_YES)
         {
             path.MakeRelativeTo(basePath);
         }
@@ -656,7 +652,7 @@ wxString ChooseDirectory(wxWindow* parent,
 }
 
 // Reads a wxString from a file. File must be open. File is closed automatically.
-bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
+bool cbRead(wxFile &file, wxString &st, wxFontEncoding encoding)
 {
     st.Empty();
     if (!file.IsOpened())
@@ -669,23 +665,24 @@ bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding)
         return true;
     }
 
-    char* buff = new char[len+1];
-    if (!buff) // remark by killerbot : this is useless, since when out of mem --> exception (this is not malloc you know)
+    char *buff = new char[len + 1];
+    if (!buff) // remark by killerbot : this is useless, since when out of mem --> exception (this
+               // is not malloc you know)
     {
         file.Close();
         return false;
     }
-    file.Read((void*)buff, len);
+    file.Read((void *)buff, len);
     file.Close();
-    buff[len]='\0';
+    buff[len] = '\0';
 
     DetectEncodingAndConvert(buff, st, encoding);
-    delete [] buff;
+    delete[] buff;
 
     return true;
 }
 
-wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding)
+wxString cbReadFileContents(wxFile &file, wxFontEncoding encoding)
 {
     wxString st;
     cbRead(file, st, encoding);
@@ -693,13 +690,13 @@ wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding)
 }
 
 // Writes a wxString to a file. File must be open. File is closed automatically.
-bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
+bool cbWrite(wxFile &file, const wxString &buff, wxFontEncoding encoding)
 {
     bool result = false;
     if (file.IsOpened())
     {
         wxCSConv conv(encoding);
-        result = file.Write(buff,conv);
+        result = file.Write(buff, conv);
         if (result)
             file.Flush();
         file.Close();
@@ -709,19 +706,20 @@ bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
 
 // Writes a wxString to a file. Takes care of unicode and uses a temporary file
 // to save first and then it copies it over the original.
-bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEncoding encoding, bool bom)
+bool cbSaveToFile(const wxString &filename, const wxString &contents, wxFontEncoding encoding,
+                  bool bom)
 {
     return Manager::Get()->GetFileManager()->Save(filename, contents, encoding, bom);
 }
 
 // Save a TinyXML document correctly, even if the path contains unicode characters.
-bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename)
+bool cbSaveTinyXMLDocument(TiXmlDocument *doc, const wxString &filename)
 {
     return TinyXML::SaveDocument(filename, doc);
 }
 
 // Return @c str as a proper unicode-compatible string
-wxString cbC2U(const char* str)
+wxString cbC2U(const char *str)
 {
 #if wxUSE_UNICODE
     return wxString(str, wxConvUTF8);
@@ -731,7 +729,7 @@ wxString cbC2U(const char* str)
 }
 
 // Return multibyte (C string) representation of the string
-const wxWX2MBbuf cbU2C(const wxString& str)
+const wxWX2MBbuf cbU2C(const wxString &str)
 {
     if (platform::unicode)
         return str.mb_str(wxConvUTF8);
@@ -742,19 +740,19 @@ const wxWX2MBbuf cbU2C(const wxString& str)
 // Try converting a C-string from different encodings until a possible match is found.
 // This tries the following encoding converters (in the same order):
 // utf8, system, default and iso8859-1 to iso8859-15
-wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxFontEncoding possibleEncoding)
+wxFontEncoding DetectEncodingAndConvert(const char *strIn, wxString &strOut,
+                                        wxFontEncoding possibleEncoding)
 {
     wxFontEncoding encoding = possibleEncoding;
     strOut.Clear();
 
     if (platform::unicode)
     {
-        if (possibleEncoding != wxFONTENCODING_UTF16 &&
-            possibleEncoding != wxFONTENCODING_UTF16LE &&
-            possibleEncoding != wxFONTENCODING_UTF16BE &&
-            possibleEncoding != wxFONTENCODING_UTF32 &&
-            possibleEncoding != wxFONTENCODING_UTF32LE &&
-            possibleEncoding != wxFONTENCODING_UTF32BE)
+        if (possibleEncoding != wxFONTENCODING_UTF16 && possibleEncoding != wxFONTENCODING_UTF16LE
+            && possibleEncoding != wxFONTENCODING_UTF16BE
+            && possibleEncoding != wxFONTENCODING_UTF32
+            && possibleEncoding != wxFONTENCODING_UTF32LE
+            && possibleEncoding != wxFONTENCODING_UTF32BE)
         {
             // crashes deep in the runtime (windows, at least)
             // if one of the above encodings, hence the guard
@@ -772,7 +770,8 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
                     strOut = wxString(strIn, wxConvUTF8);
                 }
 
-                // check again: if still not right, try system encoding, default encoding and then iso8859-1 to iso8859-15
+                // check again: if still not right, try system encoding, default encoding and then
+                // iso8859-1 to iso8859-15
                 if (strOut.Length() == 0)
                 {
                     for (int i = wxFONTENCODING_SYSTEM; i < wxFONTENCODING_ISO8859_MAX; ++i)
@@ -790,12 +789,12 @@ wxFontEncoding DetectEncodingAndConvert(const char* strIn, wxString& strOut, wxF
         }
         else
         {
-            strOut = (const wxChar*) strIn;
+            strOut = (const wxChar *)strIn;
         }
     }
     else
     {
-        strOut = (const wxChar*) strIn;
+        strOut = (const wxChar *)strIn;
     }
     return encoding;
 }
@@ -805,18 +804,19 @@ wxString GetEOLStr(int eolMode)
     if (eolMode == -1)
     {
         static const int defEOL = platform::windows ? wxSCI_EOL_CRLF : wxSCI_EOL_LF;
-        eolMode = Manager::Get()->GetConfigManager(wxT("editor"))->ReadInt(wxT("/eol/eolmode"), defEOL);
+        eolMode =
+            Manager::Get()->GetConfigManager(wxT("editor"))->ReadInt(wxT("/eol/eolmode"), defEOL);
         if (eolMode == 3) // auto-detect EOL
             eolMode = defEOL;
     }
     switch (eolMode)
     {
-      case wxSCI_EOL_CR:
-          return wxT("\r");
-      case wxSCI_EOL_LF:
-          return wxT("\n");
-      default: // wxSCI_EOL_CRLF
-          return wxT("\r\n");
+        case wxSCI_EOL_CR:
+            return wxT("\r");
+        case wxSCI_EOL_LF:
+            return wxT("\n");
+        default: // wxSCI_EOL_CRLF
+            return wxT("\r\n");
     }
 }
 
@@ -827,19 +827,15 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
     for (unsigned int i = 0; i < str.length(); ++i)
     {
         wxChar c = str[i];
-        if (  (c >= _T('A') && c <= _T('Z'))
-           || (c >= _T('a') && c <= _T('z'))
-           || (c >= _T('0') && c <= _T('9'))
-           || (c == _T('.'))
-           || (c == _T('-'))
-           || (c == _T('_')) )
+        if ((c >= _T('A') && c <= _T('Z')) || (c >= _T('a') && c <= _T('z'))
+            || (c >= _T('0') && c <= _T('9')) || (c == _T('.')) || (c == _T('-')) || (c == _T('_')))
 
             ret.Append(c);
         else if (c == _T(' '))
             ret.Append(_T('+'));
         else
         {
-            t.sprintf(_T("%%%02X"), (unsigned int) c);
+            t.sprintf(_T("%%%02X"), (unsigned int)c);
             ret.Append(t);
         }
     }
@@ -849,7 +845,7 @@ wxString URLEncode(const wxString &str) // not sure this is 100% standards compl
 /** Adds support for backtick'd expressions under Windows. */
 typedef std::map<wxString, wxString> BackticksMap;
 BackticksMap m_Backticks; // all calls share the same cache
-wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
+wxString ExpandBackticks(wxString &str) // backticks are written in-place to str
 {
     wxString ret;
 
@@ -877,12 +873,13 @@ wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
             bt = it->second;
         else
         {
-            Manager::Get()->GetLogManager()->DebugLog(F(_T("Caching result of `%s`"), cmd.wx_str()));
+            Manager::Get()->GetLogManager()->DebugLog(
+                F(_T("Caching result of `%s`"), cmd.wx_str()));
             wxArrayString output;
             if (platform::WindowsVersion() >= platform::winver_WindowsNT2000)
                 wxExecute(_T("cmd /c ") + cmd, output, wxEXEC_NODISABLE);
             else
-                wxExecute(cmd,                 output, wxEXEC_NODISABLE);
+                wxExecute(cmd, output, wxEXEC_NODISABLE);
             bt = GetStringFromArray(output, _T(" "), false);
             // add it in the cache
             m_Backticks[cmd] = bt;
@@ -899,27 +896,25 @@ wxString ExpandBackticks(wxString& str) // backticks are written in-place to str
     return ret; // return a list of the replaced expressions
 }
 
-wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators)
+wxMenu *CopyMenu(wxMenu *mnu, bool with_accelerators)
 {
     if (!mnu || mnu->GetMenuItemCount() < 1)
         return nullptr;
-    wxMenu* theMenu = new wxMenu();
+    wxMenu *theMenu = new wxMenu();
 
-    for (size_t i = 0; i < mnu->GetMenuItemCount();++i)
+    for (size_t i = 0; i < mnu->GetMenuItemCount(); ++i)
     {
-        wxMenuItem* tmpItem = mnu->FindItemByPosition(i);
-        wxMenuItem* theItem = new wxMenuItem(nullptr,
-                                             tmpItem->GetId(),
-                                             with_accelerators?tmpItem->GetItemLabel():tmpItem->GetItemLabelText(),
-                                             tmpItem->GetHelp(),
-                                             tmpItem->GetKind(),
-                                             CopyMenu(tmpItem->GetSubMenu()));
+        wxMenuItem *tmpItem = mnu->FindItemByPosition(i);
+        wxMenuItem *theItem = new wxMenuItem(
+            nullptr, tmpItem->GetId(),
+            with_accelerators ? tmpItem->GetItemLabel() : tmpItem->GetItemLabelText(),
+            tmpItem->GetHelp(), tmpItem->GetKind(), CopyMenu(tmpItem->GetSubMenu()));
         theMenu->Append(theItem);
     }
     return theMenu;
 }
 
-bool IsWindowReallyShown(wxWindow* win)
+bool IsWindowReallyShown(wxWindow *win)
 {
     while (win && win->IsShown())
     {
@@ -930,10 +925,10 @@ bool IsWindowReallyShown(wxWindow* win)
     return false;
 }
 
-bool NormalizePath(wxFileName& f,const wxString& base)
+bool NormalizePath(wxFileName &f, const wxString &base)
 {
     bool result = true;
-//    if (!f.IsAbsolute())
+    //    if (!f.IsAbsolute())
     {
         f.Normalize(wxPATH_NORM_ALL & ~wxPATH_NORM_CASE, base);
         result = f.IsOk();
@@ -950,7 +945,7 @@ bool NormalizePath(wxFileName& f,const wxString& base)
 // 'path' with 'suffix' starting from the end of the path. When it reaches .. in
 // 'suffix' it gives up (there is no way to check relative filename names
 // exactly) and if the path compared so far is identical, it returns true
-bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
+bool IsSuffixOfPath(wxFileName const &suffix, wxFileName const &path)
 {
     if (path.GetFullName() != suffix.GetFullName())
     {
@@ -989,7 +984,7 @@ bool IsSuffixOfPath(wxFileName const & suffix, wxFileName const & path)
     return true;
 }
 
-bool cbResolveSymLinkedDirPath(wxString& dirpath)
+bool cbResolveSymLinkedDirPath(wxString &dirpath)
 {
 #ifdef _WIN32
     return false;
@@ -1002,7 +997,8 @@ bool cbResolveSymLinkedDirPath(wxString& dirpath)
         return false;
 
     // If the path is a symbolic link, then try to resolve it.
-    // This is needed to prevent infinite loops, when a folder is pointing to itself or its parent folder.
+    // This is needed to prevent infinite loops, when a folder is pointing to itself or its parent
+    // folder.
     if (S_ISLNK(fileStats.st_mode))
     {
         char buffer[4096];
@@ -1027,7 +1023,8 @@ bool cbResolveSymLinkedDirPath(wxString& dirpath)
             }
 
             wxString fullPath = fileName.GetFullPath();
-            if (fullPath.Last() == wxT('.')) // this case should be handled because of a bug in wxWidgets
+            if (fullPath.Last()
+                == wxT('.')) // this case should be handled because of a bug in wxWidgets
                 fullPath.RemoveLast();
             if (fullPath.Last() == wxFILE_SEP_PATH)
                 fullPath.RemoveLast();
@@ -1072,7 +1069,7 @@ bool UsesCommonControls6()
             hr = (*pDllGetVersion)(&dvi);
 
             if (SUCCEEDED(hr))
-               result = dvi.dwMajorVersion == 6;
+                result = dvi.dwMajorVersion == 6;
         }
 
         FreeLibrary(hinstDll);
@@ -1088,17 +1085,17 @@ bool UsesCommonControls6()
 }
 #endif
 
-wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
+wxBitmap cbLoadBitmap(const wxString &filename, wxBitmapType bitmapType)
 {
     // cache this, can't change while we 're running :)
     static bool oldCommonControls = !UsesCommonControls6();
 
     wxImage im;
-    wxFileSystem* fs = new wxFileSystem;
-    wxFSFile* f = fs->OpenFile(filename);
+    wxFileSystem *fs = new wxFileSystem;
+    wxFSFile *f = fs->OpenFile(filename);
     if (f)
     {
-        wxInputStream* is = f->GetStream();
+        wxInputStream *is = f->GetStream();
         im.LoadFile(*is, bitmapType);
         delete f;
     }
@@ -1111,32 +1108,39 @@ wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
 
 // this doesn't work under wxGTK, and is only needed on wxMSW, we work around it on wxGTK
 #ifdef __WXMSW__
-void SetSettingsIconsStyle(wxListCtrl* lc, SettingsIconsStyle style)
+void SetSettingsIconsStyle(wxListCtrl *lc, SettingsIconsStyle style)
 {
     long flags = lc->GetWindowStyleFlag();
     switch (style)
     {
 #if wxCHECK_VERSION(3, 0, 0)
-        case sisNoIcons: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_LIST; break;
+        case sisNoIcons:
+            flags = (flags & ~wxLC_MASK_TYPE) | wxLC_LIST;
+            break;
 #else
-        case sisNoIcons: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_SMALL_ICON; break;
+        case sisNoIcons:
+            flags = (flags & ~wxLC_MASK_TYPE) | wxLC_SMALL_ICON;
+            break;
 #endif
-        default: flags = (flags & ~wxLC_MASK_TYPE) | wxLC_ICON; break;
+        default:
+            flags = (flags & ~wxLC_MASK_TYPE) | wxLC_ICON;
+            break;
     }
     lc->SetWindowStyleFlag(flags);
 }
 #else
-void SetSettingsIconsStyle(cb_unused wxListCtrl* lc, cb_unused SettingsIconsStyle style) {}
+void SetSettingsIconsStyle(cb_unused wxListCtrl *lc, cb_unused SettingsIconsStyle style) {}
 #endif
 
-SettingsIconsStyle GetSettingsIconsStyle(cb_unused wxListCtrl* lc)
+SettingsIconsStyle GetSettingsIconsStyle(cb_unused wxListCtrl *lc)
 {
     return GetSettingsIconsStyle();
 }
 
 SettingsIconsStyle GetSettingsIconsStyle()
 {
-    return SettingsIconsStyle(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0));
+    return SettingsIconsStyle(
+        Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/environment/settings_size"), 0));
 }
 
 void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
@@ -1149,15 +1153,15 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
     if (!enforce && cfg->ReadBool(_T("/dialog_placement/do_place")) == false)
         return;
 
-    wxWindow* referenceWindow = Manager::Get()->GetAppWindow();
-    if (!referenceWindow)    // no application window available, so this is as good as we can get
+    wxWindow *referenceWindow = Manager::Get()->GetAppWindow();
+    if (!referenceWindow) // no application window available, so this is as good as we can get
         referenceWindow = w;
 
     int the_mode;
     if (mode == pdlBest)
-        the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int) pdlCentre);
+        the_mode = cfg->ReadInt(_T("/dialog_placement/dialog_position"), (int)pdlCentre);
     else
-        the_mode = (int) mode;
+        the_mode = (int)mode;
 
     wxRect monitorRect;
 
@@ -1182,23 +1186,21 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 
     wxRect windowRect = w->GetRect();
 
-    switch(the_mode)
+    switch (the_mode)
     {
         case pdlCentre:
         {
-            windowRect.x = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
-            windowRect.y = monitorRect.y  + (monitorRect.height - windowRect.height)/2;
+            windowRect.x = monitorRect.x + (monitorRect.width - windowRect.width) / 2;
+            windowRect.y = monitorRect.y + (monitorRect.height - windowRect.height) / 2;
         }
         break;
-
 
         case pdlHead:
         {
-            windowRect.x = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
-            windowRect.y = monitorRect.y  + (monitorRect.height - windowRect.height)/3;
+            windowRect.x = monitorRect.x + (monitorRect.width - windowRect.width) / 2;
+            windowRect.y = monitorRect.y + (monitorRect.height - windowRect.height) / 3;
         }
         break;
-
 
         case pdlConstrain:
         {
@@ -1209,7 +1211,7 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
 
             if (windowRect.width > monitorRect.width) // cannot place without clipping, so centre it
             {
-                x1 = monitorRect.x + (monitorRect.width  - windowRect.width)/2;
+                x1 = monitorRect.x + (monitorRect.width - windowRect.width) / 2;
                 x2 = x1 + windowRect.width;
             }
             else
@@ -1218,9 +1220,10 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
                 x1 = std::max(x2 - windowRect.width, monitorRect.x);
                 x2 = x1 + windowRect.width;
             }
-            if (windowRect.height > monitorRect.height) // cannot place without clipping, so centre it
+            if (windowRect.height
+                > monitorRect.height) // cannot place without clipping, so centre it
             {
-                y1 = monitorRect.y + (monitorRect.height  - windowRect.height)/2;
+                y1 = monitorRect.y + (monitorRect.height - windowRect.height) / 2;
                 y2 = y1 + windowRect.height;
             }
             else
@@ -1229,10 +1232,9 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
                 y1 = std::max(y2 - windowRect.height, monitorRect.y);
                 y2 = y1 + windowRect.height;
             }
-            windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+            windowRect = wxRect(x1, y1, x2 - x1, y2 - y1);
         }
         break;
-
 
         case pdlClip:
         {
@@ -1246,15 +1248,16 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
             y1 = std::max(y1, monitorRect.y);
             y2 = std::min(y2, monitorRect.GetBottom());
 
-            windowRect = wxRect(x1, y1, x2-x1, y2-y1);
+            windowRect = wxRect(x1, y1, x2 - x1, y2 - y1);
         }
         break;
     }
 
-    w->SetSize(windowRect.x,  windowRect.y, windowRect.width, windowRect.height, wxSIZE_ALLOW_MINUS_ONE);
+    w->SetSize(windowRect.x, windowRect.y, windowRect.width, windowRect.height,
+               wxSIZE_ALLOW_MINUS_ONE);
 }
 
-DirAccessCheck cbDirAccessCheck(const wxString& dir)
+DirAccessCheck cbDirAccessCheck(const wxString &dir)
 {
     wxString actualDir = dir;
     // append ending path separator if needed
@@ -1277,61 +1280,60 @@ DirAccessCheck cbDirAccessCheck(const wxString& dir)
     return dacReadOnly;
 }
 
-
 namespace platform
 {
-    windows_version_t cb_get_os()
+windows_version_t cb_get_os()
+{
+    if (!platform::windows)
     {
-        if (!platform::windows)
-        {
-            return winver_NotWindows;
-        }
-        else
-        {
-
-            int famWin95 = wxOS_WINDOWS_9X;
-            int famWinNT = wxOS_WINDOWS_NT;
-
-            int Major = 0;
-            int Minor = 0;
-            int family = wxGetOsVersion(&Major, &Minor);
-
-            if (family == famWin95)
-                 return winver_Windows9598ME;
-
-            if (family == famWinNT)
-            {
-                if (Major == 5 && Minor == 0)
-                    return winver_WindowsNT2000;
-
-                if (Major == 5 && Minor == 1)
-                    return winver_WindowsXP;
-
-                if (Major == 5 && Minor == 2)
-                    return winver_WindowsServer2003;
-
-                if (Major == 6 && Minor == 0)
-                    return winver_WindowsVista;
-
-                if (Major == 6 && Minor == 1)
-                    return winver_Windows7;
-            }
-
-            return winver_UnknownWindows;
-        }
+        return winver_NotWindows;
     }
-
-    windows_version_t WindowsVersion()
+    else
     {
-        static const windows_version_t theOS = cb_get_os();
-        return theOS;
+
+        int famWin95 = wxOS_WINDOWS_9X;
+        int famWinNT = wxOS_WINDOWS_NT;
+
+        int Major = 0;
+        int Minor = 0;
+        int family = wxGetOsVersion(&Major, &Minor);
+
+        if (family == famWin95)
+            return winver_Windows9598ME;
+
+        if (family == famWinNT)
+        {
+            if (Major == 5 && Minor == 0)
+                return winver_WindowsNT2000;
+
+            if (Major == 5 && Minor == 1)
+                return winver_WindowsXP;
+
+            if (Major == 5 && Minor == 2)
+                return winver_WindowsServer2003;
+
+            if (Major == 6 && Minor == 0)
+                return winver_WindowsVista;
+
+            if (Major == 6 && Minor == 1)
+                return winver_Windows7;
+        }
+
+        return winver_UnknownWindows;
     }
+}
+
+windows_version_t WindowsVersion()
+{
+    static const windows_version_t theOS = cb_get_os();
+    return theOS;
+}
 }
 
 // returns the real path of a file by resolving symlinks
 // not yet optimal but should do for now
 // one thing that's not checked yet are circular symlinks - watch out!
-wxString realpath(const wxString& path)
+wxString realpath(const wxString &path)
 {
 #ifdef __WXMSW__
     // no symlinks support on windows
@@ -1339,7 +1341,7 @@ wxString realpath(const wxString& path)
 #else
     char buf[2048] = {};
     struct stat buffer;
-    std::string ret = (const char*)cbU2C(path);
+    std::string ret = (const char *)cbU2C(path);
     size_t lastPos = 0;
     size_t slashPos = ret.find('/', lastPos);
     while (slashPos != std::string::npos)
@@ -1353,7 +1355,8 @@ wxString realpath(const wxString& path)
                 if (s > 0 && buf[0] != '/' && buf[0] != '~')
                 {
                     // relative
-                    ret = ret.substr(0, lastPos) + buf + ret.substr(slashPos, ret.size() - slashPos);
+                    ret =
+                        ret.substr(0, lastPos) + buf + ret.substr(slashPos, ret.size() - slashPos);
                 }
                 else
                 {
@@ -1378,7 +1381,8 @@ wxString realpath(const wxString& path)
 #endif
 }
 
-int cbMessageBox(const wxString& message, const wxString& caption, int style, wxWindow *parent, int x, int y)
+int cbMessageBox(const wxString &message, const wxString &caption, int style, wxWindow *parent,
+                 int x, int y)
 {
     if (!parent)
         parent = Manager::Get()->GetAppWindow();
@@ -1386,32 +1390,32 @@ int cbMessageBox(const wxString& message, const wxString& caption, int style, wx
     // Cannot create a wxMessageDialog with a NULL as parent
     if (!parent)
     {
-      // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
-      int answer = wxMessageBox(message, caption, style, parent, x, y);
-      switch (answer)
-      {
-        // map answer to the one of wxMessage*Dialog* to ensure compatibility
-        case (wxOK):
-          return wxID_OK;
-        case (wxCANCEL):
-          return wxID_CANCEL;
-        case (wxYES):
-          return wxID_YES;
-        case (wxNO):
-          return wxID_NO;
-        default:
-          return -1; // NOTE: Cannot happen unless wxWidgets API changes
-      }
+        // wxMessage*Box* returns any of: wxYES, wxNO, wxCANCEL, wxOK.
+        int answer = wxMessageBox(message, caption, style, parent, x, y);
+        switch (answer)
+        {
+            // map answer to the one of wxMessage*Dialog* to ensure compatibility
+            case (wxOK):
+                return wxID_OK;
+            case (wxCANCEL):
+                return wxID_CANCEL;
+            case (wxYES):
+                return wxID_YES;
+            case (wxNO):
+                return wxID_NO;
+            default:
+                return -1; // NOTE: Cannot happen unless wxWidgets API changes
+        }
     }
 
-    wxMessageDialog dlg(parent, message, caption, style, wxPoint(x,y));
+    wxMessageDialog dlg(parent, message, caption, style, wxPoint(x, y));
     PlaceWindow(&dlg);
     // wxMessage*Dialog* returns any of wxID_OK, wxID_CANCEL, wxID_YES, wxID_NO
     return dlg.ShowModal();
 }
 
-DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& caption,
-                                     const wxArrayString& choices, wxWindow *parent,
+DLLIMPORT int cbGetSingleChoiceIndex(const wxString &message, const wxString &caption,
+                                     const wxArrayString &choices, wxWindow *parent,
                                      const wxSize &size, int initialSelection)
 {
     if (!parent)
@@ -1424,9 +1428,9 @@ DLLIMPORT int cbGetSingleChoiceIndex(const wxString& message, const wxString& ca
     return (dialog.ShowModal() == wxID_OK ? dialog.GetSelection() : -1);
 }
 
-DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxString& caption,
-                                     const wxArrayString& choices, wxWindow *parent,
-                                     const wxSize& size, const wxArrayInt& initialSelection)
+DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString &message, const wxString &caption,
+                                            const wxArrayString &choices, wxWindow *parent,
+                                            const wxSize &size, const wxArrayInt &initialSelection)
 {
     if (!parent)
         parent = Manager::Get()->GetAppWindow();
@@ -1443,13 +1447,14 @@ DLLIMPORT wxArrayInt cbGetMultiChoiceDialog(const wxString& message, const wxStr
 }
 
 #if wxCHECK_VERSION(3, 0, 0)
-const char* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
+const char *cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
 #else
-const wxChar* cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
+const wxChar *cbGetTextFromUserPromptStr = wxGetTextFromUserPromptStr;
 #endif // wxCHECK_VERSION
 
-wxString cbGetTextFromUser(const wxString& message, const wxString& caption, const wxString& defaultValue,
-                           wxWindow *parent, wxCoord x, wxCoord y, bool centre)
+wxString cbGetTextFromUser(const wxString &message, const wxString &caption,
+                           const wxString &defaultValue, wxWindow *parent, wxCoord x, wxCoord y,
+                           bool centre)
 {
     if (!parent)
         parent = Manager::Get()->GetAppWindow();
@@ -1468,43 +1473,40 @@ wxString cbGetTextFromUser(const wxString& message, const wxString& caption, con
     return str;
 }
 
-
-wxImageList* cbProjectTreeImages::MakeImageList()
+wxImageList *cbProjectTreeImages::MakeImageList()
 {
-    static const wxString imgs[] =
-    {
+    static const wxString imgs[] = {
         // NOTE: Keep in sync with FileVisualState in globals.h!
 
         // The following are related to (editable, source-) file states
-        _T("file.png"),                  // fvsNormal
-        _T("file-missing.png"),          // fvsMissing,
-        _T("file-modified.png"),         // fvsModified,
-        _T("file-readonly.png"),         // fvsReadOnly,
+        _T("file.png"), // fvsNormal
+        _T("file-missing.png"), // fvsMissing,
+        _T("file-modified.png"), // fvsModified,
+        _T("file-readonly.png"), // fvsReadOnly,
 
         // The following are related to version control systems (vc)
-        _T("rc-file-added.png"),         // fvsVcAdded,
-        _T("rc-file-conflict.png"),      // fvsVcConflict,
-        _T("rc-file-missing.png"),       // fvsVcMissing,
-        _T("rc-file-modified.png"),      // fvsVcModified,
-        _T("rc-file-outofdate.png"),     // fvsVcOutOfDate,
-        _T("rc-file-uptodate.png"),      // fvsVcUpToDate,
-        _T("rc-file-requireslock.png"),  // fvsVcRequiresLock,
-        _T("rc-file-external.png"),      // fvsVcExternal,
-        _T("rc-file-gotlock.png"),       // fvsVcGotLock,
-        _T("rc-file-lockstolen.png"),    // fvsVcLockStolen,
-        _T("rc-file-mismatch.png"),      // fvsVcMismatch,
+        _T("rc-file-added.png"), // fvsVcAdded,
+        _T("rc-file-conflict.png"), // fvsVcConflict,
+        _T("rc-file-missing.png"), // fvsVcMissing,
+        _T("rc-file-modified.png"), // fvsVcModified,
+        _T("rc-file-outofdate.png"), // fvsVcOutOfDate,
+        _T("rc-file-uptodate.png"), // fvsVcUpToDate,
+        _T("rc-file-requireslock.png"), // fvsVcRequiresLock,
+        _T("rc-file-external.png"), // fvsVcExternal,
+        _T("rc-file-gotlock.png"), // fvsVcGotLock,
+        _T("rc-file-lockstolen.png"), // fvsVcLockStolen,
+        _T("rc-file-mismatch.png"), // fvsVcMismatch,
         _T("rc-file-noncontrolled.png"), // fvsVcNonControlled,
 
         // The following are related to C::B workspace/project/folder/virtual
-        _T("workspace.png"),             // fvsWorkspace,         WorkspaceIconIndex()
-        _T("workspace-readonly.png"),    // fvsWorkspaceReadOnly, WorkspaceIconIndex(true)
-        _T("project.png"),               // fvsProject,           ProjectIconIndex()
-        _T("project-readonly.png"),      // fvsProjectReadOnly,   ProjectIconIndex(true)
-        _T("folder_open.png"),           // fvsFolder,            FolderIconIndex()
-        _T("vfolder_open.png"),          // fvsVirtualFolder,     VirtualFolderIconIndex()
+        _T("workspace.png"), // fvsWorkspace,         WorkspaceIconIndex()
+        _T("workspace-readonly.png"), // fvsWorkspaceReadOnly, WorkspaceIconIndex(true)
+        _T("project.png"), // fvsProject,           ProjectIconIndex()
+        _T("project-readonly.png"), // fvsProjectReadOnly,   ProjectIconIndex(true)
+        _T("folder_open.png"), // fvsFolder,            FolderIconIndex()
+        _T("vfolder_open.png"), // fvsVirtualFolder,     VirtualFolderIconIndex()
 
-        wxEmptyString
-    };
+        wxEmptyString};
     wxBitmap bmp;
     wxImageList *images = new wxImageList(16, 16);
     wxString prefix = ConfigManager::ReadDataPath() + _T("/images/");

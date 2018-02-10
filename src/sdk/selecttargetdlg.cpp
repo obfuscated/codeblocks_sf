@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -9,16 +9,16 @@
 
 #include "sdk_precomp.h"
 #ifndef CB_PRECOMP
-    #include <wx/button.h>
-    #include <wx/checkbox.h>
-    #include <wx/filename.h>
-    #include <wx/intl.h>
-    #include <wx/listbox.h>
-    #include <wx/textctrl.h>
-    #include <wx/xrc/xmlres.h>
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/filename.h>
+#include <wx/intl.h>
+#include <wx/listbox.h>
+#include <wx/textctrl.h>
+#include <wx/xrc/xmlres.h>
 
-    #include "projectbuildtarget.h"
-    #include "cbproject.h"
+#include "projectbuildtarget.h"
+#include "cbproject.h"
 #endif
 #include <wx/filedlg.h>
 #include "selecttargetdlg.h"
@@ -28,53 +28,54 @@
 /// Cancel button possible.
 class TargetListData : public wxClientData
 {
-    public:
-        TargetListData(const wxString& ExecParameters, const wxString& HostApp, bool RunHostAppInTerminal,
-                       bool DefaultExecTarget) :
-            m_HostApp(HostApp),
-            m_ExecParameters(ExecParameters),
-            m_RunHostAppInTerminal(RunHostAppInTerminal),
-            m_DefaultExecTarget(DefaultExecTarget)
-        {
-        }
+public:
+    TargetListData(const wxString &ExecParameters, const wxString &HostApp,
+                   bool RunHostAppInTerminal, bool DefaultExecTarget)
+      : m_HostApp(HostApp),
+        m_ExecParameters(ExecParameters),
+        m_RunHostAppInTerminal(RunHostAppInTerminal),
+        m_DefaultExecTarget(DefaultExecTarget)
+    {
+    }
 
-        void SetExecParameters(const wxString& ExecParameters)
-        {
-            m_ExecParameters = ExecParameters;
-            // Replace all '\n' by ' ' in the program-parameters .
-            // This is necessary because a multiline text control may add
-            // '\n' to the text but these characters must not be part of the
-            // parameters when executing the program.
-            m_ExecParameters.Replace(_T("\n"), _T(" "));
-        }
-        void SetHostApp(const wxString &hostApp) { m_HostApp = hostApp; }
-        void SetRunHostAppInTerminal(bool runAppInTerminal) { m_RunHostAppInTerminal = runAppInTerminal; }
-        void SetDefaultExecTarget(bool defaultTarget) { m_DefaultExecTarget = defaultTarget; }
+    void SetExecParameters(const wxString &ExecParameters)
+    {
+        m_ExecParameters = ExecParameters;
+        // Replace all '\n' by ' ' in the program-parameters .
+        // This is necessary because a multiline text control may add
+        // '\n' to the text but these characters must not be part of the
+        // parameters when executing the program.
+        m_ExecParameters.Replace(_T("\n"), _T(" "));
+    }
+    void SetHostApp(const wxString &hostApp) { m_HostApp = hostApp; }
+    void SetRunHostAppInTerminal(bool runAppInTerminal)
+    {
+        m_RunHostAppInTerminal = runAppInTerminal;
+    }
+    void SetDefaultExecTarget(bool defaultTarget) { m_DefaultExecTarget = defaultTarget; }
 
-        const wxString& GetHostApp() const { return m_HostApp; }
-        const wxString& GetExecParameters() const { return m_ExecParameters; }
-        bool GetRunHostAppInTerminal() const { return m_RunHostAppInTerminal; }
-        bool GetDefaultExecTarget() const { return m_DefaultExecTarget; }
+    const wxString &GetHostApp() const { return m_HostApp; }
+    const wxString &GetExecParameters() const { return m_ExecParameters; }
+    bool GetRunHostAppInTerminal() const { return m_RunHostAppInTerminal; }
+    bool GetDefaultExecTarget() const { return m_DefaultExecTarget; }
 
-    private:
-        wxString m_HostApp;
-        wxString m_ExecParameters;
-        bool m_RunHostAppInTerminal;
-        bool m_DefaultExecTarget;
+private:
+    wxString m_HostApp;
+    wxString m_ExecParameters;
+    bool m_RunHostAppInTerminal;
+    bool m_DefaultExecTarget;
 };
 
 BEGIN_EVENT_TABLE(SelectTargetDlg, wxScrollingDialog)
     EVT_LISTBOX(XRCID("lstItems"), SelectTargetDlg::OnListboxSelection)
     EVT_LISTBOX_DCLICK(XRCID("lstItems"), SelectTargetDlg::OnListboxDClick)
-    EVT_BUTTON(XRCID("btnHostApplication"),    SelectTargetDlg::OnHostApplicationButtonClick)
+    EVT_BUTTON(XRCID("btnHostApplication"), SelectTargetDlg::OnHostApplicationButtonClick)
 END_EVENT_TABLE()
 
-SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selected) :
-    m_pProject(project),
-    m_Selected(selected),
-    m_LastSelected(wxNOT_FOUND)
+SelectTargetDlg::SelectTargetDlg(wxWindow *parent, cbProject *project, int selected)
+  : m_pProject(project), m_Selected(selected), m_LastSelected(wxNOT_FOUND)
 {
-    //ctor
+    // ctor
     cbAssert(m_pProject);
 
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgSelectTarget"), _T("wxScrollingDialog"));
@@ -83,10 +84,11 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
     m_List->Clear();
     for (int i = 0; i < m_pProject->GetBuildTargetsCount(); ++i)
     {
-        ProjectBuildTarget* target = m_pProject->GetBuildTarget(i);
-        auto targetData = new TargetListData(target->GetExecutionParameters(), target->GetHostApplication(),
-                                             target->GetRunHostApplicationInTerminal(),
-                                             (m_pProject->GetDefaultExecuteTarget() == target->GetTitle()));
+        ProjectBuildTarget *target = m_pProject->GetBuildTarget(i);
+        auto targetData =
+            new TargetListData(target->GetExecutionParameters(), target->GetHostApplication(),
+                               target->GetRunHostApplicationInTerminal(),
+                               (m_pProject->GetDefaultExecuteTarget() == target->GetTitle()));
         m_List->Append(target->GetTitle(), targetData);
     }
     if (selected != -1)
@@ -101,25 +103,25 @@ SelectTargetDlg::SelectTargetDlg(wxWindow* parent, cbProject* project, int selec
 
     UpdateSelected();
     wxButton *okButton = XRCCTRL(*this, "wxID_OK", wxButton);
-    okButton->MoveBeforeInTabOrder (XRCCTRL(*this, "lstItems", wxListBox));
+    okButton->MoveBeforeInTabOrder(XRCCTRL(*this, "lstItems", wxListBox));
     okButton->SetDefault();
 }
 
 SelectTargetDlg::~SelectTargetDlg()
 {
-    //dtor
+    // dtor
 }
 
 void SelectTargetDlg::UpdateSelected()
 {
-    wxCheckBox* chkSetAsDefaultExec = XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox);
-    wxTextCtrl* txtParams = XRCCTRL(*this, "txtParams", wxTextCtrl);
-    wxTextCtrl* txtHostApp = XRCCTRL(*this, "txtHostApp", wxTextCtrl);
-    wxCheckBox* chkHostInTerminal = XRCCTRL(*this, "chkHostInTerminal", wxCheckBox);
+    wxCheckBox *chkSetAsDefaultExec = XRCCTRL(*this, "chkSetAsDefaultExec", wxCheckBox);
+    wxTextCtrl *txtParams = XRCCTRL(*this, "txtParams", wxTextCtrl);
+    wxTextCtrl *txtHostApp = XRCCTRL(*this, "txtHostApp", wxTextCtrl);
+    wxCheckBox *chkHostInTerminal = XRCCTRL(*this, "chkHostInTerminal", wxCheckBox);
 
     if (m_LastSelected != wxNOT_FOUND)
     {
-        auto lastData = static_cast<TargetListData*>(m_List->GetClientObject(m_LastSelected));
+        auto lastData = static_cast<TargetListData *>(m_List->GetClientObject(m_LastSelected));
         lastData->SetExecParameters(txtParams->GetValue());
         lastData->SetHostApp(txtHostApp->GetValue());
         lastData->SetRunHostAppInTerminal(chkHostInTerminal->GetValue());
@@ -128,7 +130,7 @@ void SelectTargetDlg::UpdateSelected()
         {
             for (size_t i = 0; i < m_List->GetCount(); i++)
             {
-                auto data = static_cast<TargetListData*>(m_List->GetClientObject(i));
+                auto data = static_cast<TargetListData *>(m_List->GetClientObject(i));
                 data->SetDefaultExecTarget(false);
             }
         }
@@ -137,7 +139,8 @@ void SelectTargetDlg::UpdateSelected()
 
     if (m_List->GetSelection() != wxNOT_FOUND)
     {
-        auto selectedData = static_cast<TargetListData*>(m_List->GetClientObject(m_List->GetSelection()));
+        auto selectedData =
+            static_cast<TargetListData *>(m_List->GetClientObject(m_List->GetSelection()));
         chkSetAsDefaultExec->SetValue(selectedData->GetDefaultExecTarget());
         txtParams->SetValue(selectedData->GetExecParameters());
         txtHostApp->SetValue(selectedData->GetHostApp());
@@ -146,31 +149,28 @@ void SelectTargetDlg::UpdateSelected()
     m_LastSelected = m_List->GetSelection();
 } // end of UpdateSelected
 
-ProjectBuildTarget* SelectTargetDlg::GetSelectionTarget()
+ProjectBuildTarget *SelectTargetDlg::GetSelectionTarget()
 {
     return m_pProject->GetBuildTarget(m_Selected);
 }
 
 // events
 
-void SelectTargetDlg::OnListboxSelection(cb_unused wxCommandEvent& event)
+void SelectTargetDlg::OnListboxSelection(cb_unused wxCommandEvent &event)
 {
     UpdateSelected();
 } // end of OnListboxSelection
 
-void SelectTargetDlg::OnListboxDClick(cb_unused wxCommandEvent& event)
+void SelectTargetDlg::OnListboxDClick(cb_unused wxCommandEvent &event)
 {
     EndModal(wxID_OK);
 } // end of OnListboxDClick
 
-void SelectTargetDlg::OnHostApplicationButtonClick(cb_unused wxCommandEvent& event)
+void SelectTargetDlg::OnHostApplicationButtonClick(cb_unused wxCommandEvent &event)
 {
-    if(wxTextCtrl* obj = XRCCTRL(*this, "txtHostApp", wxTextCtrl))
+    if (wxTextCtrl *obj = XRCCTRL(*this, "txtHostApp", wxTextCtrl))
     {
-        wxFileDialog dlg(this,
-                         _("Select host application"),
-                         _T(""),
-                         obj->GetValue(),
+        wxFileDialog dlg(this, _("Select host application"), _T(""), obj->GetValue(),
 #ifdef __WXMSW__
                          _("Executable files (*.exe)|*.exe"),
 #else
@@ -202,7 +202,7 @@ void SelectTargetDlg::EndModal(int retCode)
 
         for (size_t i = 0; i < m_List->GetCount(); i++)
         {
-            auto data = static_cast<TargetListData*>(m_List->GetClientObject(i));
+            auto data = static_cast<TargetListData *>(m_List->GetClientObject(i));
             ProjectBuildTarget *target = m_pProject->GetBuildTarget(i);
 
             target->SetExecutionParameters(data->GetExecParameters());

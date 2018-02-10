@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,16 +10,16 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include <wx/confbase.h>
-    #include <wx/fileconf.h>
-    #include <wx/intl.h>
-    #include "manager.h"
-    #include "configmanager.h"
-    #include "projectmanager.h"
-    #include "logmanager.h"
-    #include "editormanager.h"
-    #include "cbeditor.h"
-    #include "cbproject.h"
+#include <wx/confbase.h>
+#include <wx/fileconf.h>
+#include <wx/intl.h>
+#include "manager.h"
+#include "configmanager.h"
+#include "projectmanager.h"
+#include "logmanager.h"
+#include "editormanager.h"
+#include "cbeditor.h"
+#include "cbproject.h"
 #endif
 
 #include "projectlayoutloader.h"
@@ -27,36 +27,35 @@
 #include <tinyxml.h>
 #include "tinywxuni.h"
 
-ProjectLayoutLoader::ProjectLayoutLoader(cbProject* project)
-    : m_pProject(project),
-    m_TopProjectFile(nullptr)
+ProjectLayoutLoader::ProjectLayoutLoader(cbProject *project)
+  : m_pProject(project), m_TopProjectFile(nullptr)
 {
-    //ctor
+    // ctor
 }
 
 ProjectLayoutLoader::~ProjectLayoutLoader()
 {
-    //dtor
+    // dtor
 }
 
 // IMPORTANT! We have to be careful of what to unicode and what not to.
 // TinyXML must use NON-unicode strings!
 
-bool ProjectLayoutLoader::Open(const wxString& filename)
+bool ProjectLayoutLoader::Open(const wxString &filename)
 {
     TiXmlDocument doc;
     if (!TinyXML::LoadDocument(filename, &doc))
         return false;
 
-    ProjectManager* pMan = Manager::Get()->GetProjectManager();
-    LogManager* pMsg = Manager::Get()->GetLogManager();
+    ProjectManager *pMan = Manager::Get()->GetProjectManager();
+    LogManager *pMsg = Manager::Get()->GetLogManager();
     if (!pMan || !pMsg)
         return false;
 
-    TiXmlElement* root;
-    TiXmlElement* elem;
+    TiXmlElement *root;
+    TiXmlElement *elem;
     wxString fname;
-    ProjectFile* pf;
+    ProjectFile *pf;
 
     root = doc.FirstChildElement("CodeBlocks_layout_file");
     if (!root)
@@ -73,7 +72,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     int major = 0;
     int minor = 0;
 
-    TiXmlElement* version = root->FirstChildElement("FileVersion");
+    TiXmlElement *version = root->FirstChildElement("FileVersion");
     // don't show messages if we 're running a batch build (i.e. no gui)
     if (!Manager::IsBatchBuild() && version)
     {
@@ -82,13 +81,15 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
 
         if (major >= PROJECT_LAYOUT_FILE_VERSION_MAJOR && minor > PROJECT_LAYOUT_FILE_VERSION_MINOR)
         {
-            pMsg->DebugLog(F(_T("Project layout file version is > %d.%d. Trying to load..."), PROJECT_LAYOUT_FILE_VERSION_MAJOR, PROJECT_LAYOUT_FILE_VERSION_MINOR));
-            AnnoyingDialog dlg(_("Project layout file format is newer/unknown"),
-                                F(_("This project layout file was saved with a newer version of Code::Blocks.\n"
-                                "Will try to load, but you might see unexpected results.\n"
-                                "In this case close the project, delete %s and reopen the project."),filename.wx_str()),
-                                wxART_WARNING,
-                                AnnoyingDialog::OK);
+            pMsg->DebugLog(F(_T("Project layout file version is > %d.%d. Trying to load..."),
+                             PROJECT_LAYOUT_FILE_VERSION_MAJOR, PROJECT_LAYOUT_FILE_VERSION_MINOR));
+            AnnoyingDialog dlg(
+                _("Project layout file format is newer/unknown"),
+                F(_("This project layout file was saved with a newer version of Code::Blocks.\n"
+                    "Will try to load, but you might see unexpected results.\n"
+                    "In this case close the project, delete %s and reopen the project."),
+                  filename.wx_str()),
+                wxART_WARNING, AnnoyingDialog::OK);
             dlg.ShowModal();
         }
         else
@@ -106,31 +107,27 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
 
             if (!msg.IsEmpty())
             {
-                msg.Prepend(wxString::Format(_("Project layout file format is older (%d.%d) than the current format (%d.%d).\n"
-                                                "The file will automatically be upgraded on close.\n"
-                                                "But please read the following list of changes, as some of them\n"
-                                                "might not automatically convert existing (old) settings.\n"
-                                                "If you don't understand what a change means, you probably don't\n"
-                                                "use that feature so you don't have to worry about it.\n\n"
-                                                "List of changes:\n"),
-                                            major,
-                                            minor,
-                                            PROJECT_LAYOUT_FILE_VERSION_MAJOR,
-                                            PROJECT_LAYOUT_FILE_VERSION_MINOR));
-                AnnoyingDialog dlg(_("Project layout file format changed"),
-                                    msg,
-                                    wxART_INFORMATION,
-                                    AnnoyingDialog::OK);
+                msg.Prepend(wxString::Format(
+                    _("Project layout file format is older (%d.%d) than the current format "
+                      "(%d.%d).\n"
+                      "The file will automatically be upgraded on close.\n"
+                      "But please read the following list of changes, as some of them\n"
+                      "might not automatically convert existing (old) settings.\n"
+                      "If you don't understand what a change means, you probably don't\n"
+                      "use that feature so you don't have to worry about it.\n\n"
+                      "List of changes:\n"),
+                    major, minor, PROJECT_LAYOUT_FILE_VERSION_MAJOR,
+                    PROJECT_LAYOUT_FILE_VERSION_MINOR));
+                AnnoyingDialog dlg(_("Project layout file format changed"), msg, wxART_INFORMATION,
+                                   AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
 
             if (!warn_msg.IsEmpty())
             {
                 warn_msg.Prepend(_("!!! WARNING !!!\n\n"));
-                AnnoyingDialog dlg(_("Project layout file upgrade warning"),
-                                    warn_msg,
-                                    wxART_WARNING,
-                                    AnnoyingDialog::OK);
+                AnnoyingDialog dlg(_("Project layout file upgrade warning"), warn_msg,
+                                   wxART_WARNING, AnnoyingDialog::OK);
                 dlg.ShowModal();
             }
         }
@@ -146,17 +143,17 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     elem = root->FirstChildElement("File");
     if (!elem)
     {
-        //pMsg->DebugLog(_T("No 'File' element in file..."));
+        // pMsg->DebugLog(_T("No 'File' element in file..."));
         return false;
     }
 
     while (elem)
     {
-        //pMsg->DebugLog(elem->Value());
+        // pMsg->DebugLog(elem->Value());
         fname = cbC2U(elem->Attribute("name"));
         if (fname.IsEmpty())
         {
-            //pMsg->DebugLog(_T("'File' node exists, but no filename?!?"));
+            // pMsg->DebugLog(_T("'File' node exists, but no filename?!?"));
             pf = nullptr;
         }
         else
@@ -195,7 +192,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
             if (elem->QueryIntAttribute("zoom_2", &getInt) == TIXML_SUCCESS)
                 pf->editorZoom_2 = getInt;
 
-            TiXmlElement* cursor = elem->FirstChildElement("Cursor");
+            TiXmlElement *cursor = elem->FirstChildElement("Cursor");
             if (cursor)
             {
                 cursor = cursor->FirstChildElement();
@@ -219,7 +216,7 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
                 }
             }
 
-            TiXmlElement* folding = elem->FirstChildElement("Folding");
+            TiXmlElement *folding = elem->FirstChildElement("Folding");
             if (folding)
             {
                 folding = folding->FirstChildElement();
@@ -235,8 +232,9 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
         elem = elem->NextSiblingElement();
     }
 
-    if (   (major >= 1)
-        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false)) )
+    if ((major >= 1)
+        && (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(
+               _T("/environment/enable_editor_layout"), false)))
     {
         elem = root->FirstChildElement("EditorTabsLayout");
         if (elem)
@@ -246,36 +244,43 @@ bool ProjectLayoutLoader::Open(const wxString& filename)
     return true;
 }
 
-bool ProjectLayoutLoader::Save(const wxString& filename)
+bool ProjectLayoutLoader::Save(const wxString &filename)
 {
-    const char* ROOT_TAG = "CodeBlocks_layout_file";
+    const char *ROOT_TAG = "CodeBlocks_layout_file";
 
     TiXmlDocument doc;
     doc.SetCondenseWhiteSpace(false);
     doc.InsertEndChild(TiXmlDeclaration("1.0", "UTF-8", "yes"));
-    TiXmlElement* rootnode = static_cast<TiXmlElement*>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
+    TiXmlElement *rootnode =
+        static_cast<TiXmlElement *>(doc.InsertEndChild(TiXmlElement(ROOT_TAG)));
     if (!rootnode)
         return false;
 
     rootnode->InsertEndChild(TiXmlElement("FileVersion"));
-    rootnode->FirstChildElement("FileVersion")->SetAttribute("major", PROJECT_LAYOUT_FILE_VERSION_MAJOR);
-    rootnode->FirstChildElement("FileVersion")->SetAttribute("minor", PROJECT_LAYOUT_FILE_VERSION_MINOR);
+    rootnode->FirstChildElement("FileVersion")
+        ->SetAttribute("major", PROJECT_LAYOUT_FILE_VERSION_MAJOR);
+    rootnode->FirstChildElement("FileVersion")
+        ->SetAttribute("minor", PROJECT_LAYOUT_FILE_VERSION_MINOR);
 
-    TiXmlElement* tgtidx = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
+    TiXmlElement *tgtidx =
+        static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("ActiveTarget")));
     tgtidx->SetAttribute("name", cbU2C(m_pProject->GetActiveBuildTarget()));
 
-    ProjectFile* active = nullptr;
-    cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
+    ProjectFile *active = nullptr;
+    cbEditor *ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     if (ed)
         active = ed->GetProjectFile();
 
-    for (FilesList::iterator it = m_pProject->GetFilesList().begin(); it != m_pProject->GetFilesList().end(); ++it)
+    for (FilesList::iterator it = m_pProject->GetFilesList().begin();
+         it != m_pProject->GetFilesList().end(); ++it)
     {
-        ProjectFile* f = *it;
+        ProjectFile *f = *it;
 
-        if (f->editorOpen || f->editorPos || f->editorPos_2 || f->editorTopLine || f->editorTopLine_2 || f->editorTabPos)
+        if (f->editorOpen || f->editorPos || f->editorPos_2 || f->editorTopLine
+            || f->editorTopLine_2 || f->editorTabPos)
         {
-            TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("File")));
+            TiXmlElement *node =
+                static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("File")));
             node->SetAttribute("name", cbU2C(f->relativeFilename));
             node->SetAttribute("open", f->editorOpen);
             node->SetAttribute("top", (f == active));
@@ -286,46 +291,53 @@ bool ProjectLayoutLoader::Save(const wxString& filename)
             node->SetAttribute("zoom_1", f->editorZoom);
             node->SetAttribute("zoom_2", f->editorZoom_2);
 
-
-            TiXmlElement* cursor = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Cursor")));
-            TiXmlElement* cursor_1 = static_cast<TiXmlElement*>(cursor->InsertEndChild(TiXmlElement("Cursor1")));
+            TiXmlElement *cursor =
+                static_cast<TiXmlElement *>(node->InsertEndChild(TiXmlElement("Cursor")));
+            TiXmlElement *cursor_1 =
+                static_cast<TiXmlElement *>(cursor->InsertEndChild(TiXmlElement("Cursor1")));
             cursor_1->SetAttribute("position", f->editorPos);
             cursor_1->SetAttribute("topLine", f->editorTopLine);
 
-            if(f->editorSplit != cbEditor::stNoSplit)
+            if (f->editorSplit != cbEditor::stNoSplit)
             {
-                TiXmlElement* cursor_2 = static_cast<TiXmlElement*>(cursor->InsertEndChild(TiXmlElement("Cursor2")));
+                TiXmlElement *cursor_2 =
+                    static_cast<TiXmlElement *>(cursor->InsertEndChild(TiXmlElement("Cursor2")));
                 cursor_2->SetAttribute("position", f->editorPos_2);
                 cursor_2->SetAttribute("topLine", f->editorTopLine_2);
             }
 
             if (f->editorFoldLinesArray.GetCount() > 0)
             {
-                TiXmlElement* folding = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Folding")));
+                TiXmlElement *folding =
+                    static_cast<TiXmlElement *>(node->InsertEndChild(TiXmlElement("Folding")));
                 for (unsigned int i = 0; i < f->editorFoldLinesArray.GetCount(); i++)
                 {
-                    TiXmlElement* line = static_cast<TiXmlElement*>(folding->InsertEndChild(TiXmlElement("Collapse")));
+                    TiXmlElement *line = static_cast<TiXmlElement *>(
+                        folding->InsertEndChild(TiXmlElement("Collapse")));
                     line->SetAttribute("line", f->editorFoldLinesArray[i]);
                 }
             }
         }
     }
-    const wxArrayString& en = m_pProject->ExpandedNodes();
+    const wxArrayString &en = m_pProject->ExpandedNodes();
     for (unsigned int i = 0; i < en.GetCount(); ++i)
     {
         if (!en[i].IsEmpty())
         {
-            TiXmlElement* node = static_cast<TiXmlElement*>(rootnode->InsertEndChild(TiXmlElement("Expand")));
+            TiXmlElement *node =
+                static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("Expand")));
             node->SetAttribute("folder", cbU2C(en[i]));
         }
     }
 
-    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/enable_editor_layout"), false))
+    if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(
+            _T("/environment/enable_editor_layout"), false))
     {
         TiXmlElement *el =
-            static_cast<TiXmlElement*>(
-                rootnode->InsertEndChild( TiXmlElement("EditorTabsLayout") ) );
-        el->SetAttribute("layout", cbU2C( Manager::Get()->GetEditorManager()->GetNotebook()->SavePerspective(m_pProject->GetTitle()) ));
+            static_cast<TiXmlElement *>(rootnode->InsertEndChild(TiXmlElement("EditorTabsLayout")));
+        el->SetAttribute("layout",
+                         cbU2C(Manager::Get()->GetEditorManager()->GetNotebook()->SavePerspective(
+                             m_pProject->GetTitle())));
     }
     // else ?!
 

@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  *
  * $Revision$
  * $Id$
@@ -10,21 +10,21 @@
 #include "sdk_precomp.h"
 
 #ifndef CB_PRECOMP
-    #include "projectfile.h"
-    #include "projectbuildtarget.h"
-    #include "cbproject.h"
-    #include "compilerfactory.h"
-    #include "manager.h"
-    #include "projectmanager.h"
-    #include "macrosmanager.h"
-    #include "globals.h"
+#include "projectfile.h"
+#include "projectbuildtarget.h"
+#include "cbproject.h"
+#include "compilerfactory.h"
+#include "manager.h"
+#include "projectmanager.h"
+#include "macrosmanager.h"
+#include "globals.h"
 #endif
 
 #include "projectfileoptionsdlg.h"
 #include "filefilters.h"
 
-ProjectFile::ProjectFile(cbProject* prj) :
-    compile(false),
+ProjectFile::ProjectFile(cbProject *prj)
+  : compile(false),
     link(false),
     weight(50),
     editorOpen(false),
@@ -54,7 +54,7 @@ ProjectFile::~ProjectFile()
     m_PFDMap.clear();
 }
 
-void ProjectFile::Rename(const wxString& new_name)
+void ProjectFile::Rename(const wxString &new_name)
 {
     wxString path = file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
 
@@ -75,7 +75,7 @@ void ProjectFile::Rename(const wxString& new_name)
     UpdateFileDetails();
 }
 
-void ProjectFile::AddBuildTarget(const wxString& targetName)
+void ProjectFile::AddBuildTarget(const wxString &targetName)
 {
     if (buildTargets.Index(targetName) == wxNOT_FOUND)
         buildTargets.Add(targetName);
@@ -83,13 +83,14 @@ void ProjectFile::AddBuildTarget(const wxString& targetName)
     // add this file to the target's list of files
     if (project)
     {
-        ProjectBuildTarget* target = project->GetBuildTarget(targetName);
+        ProjectBuildTarget *target = project->GetBuildTarget(targetName);
         if (target && (target->m_Files.find(this) == target->m_Files.end()))
         {
             target->m_Files.insert(this);
-            // Only add the file, if we are not currently loading the project and m_FileArray is already initialised
-            // initialising is done in the getter-function (GetFile(index), to save time, if it is not needed
-            if ( target->m_FileArray.GetCount() > 0 )
+            // Only add the file, if we are not currently loading the project and m_FileArray is
+            // already initialised initialising is done in the getter-function (GetFile(index), to
+            // save time, if it is not needed
+            if (target->m_FileArray.GetCount() > 0)
                 target->m_FileArray.Add(this);
         }
     }
@@ -99,7 +100,7 @@ void ProjectFile::AddBuildTarget(const wxString& targetName)
         generatedFiles[i]->AddBuildTarget(targetName);
 }
 
-void ProjectFile::RenameBuildTarget(const wxString& oldTargetName, const wxString& newTargetName)
+void ProjectFile::RenameBuildTarget(const wxString &oldTargetName, const wxString &newTargetName)
 {
     int idx = buildTargets.Index(oldTargetName);
     if (idx != wxNOT_FOUND)
@@ -110,7 +111,7 @@ void ProjectFile::RenameBuildTarget(const wxString& oldTargetName, const wxStrin
         generatedFiles[i]->RenameBuildTarget(oldTargetName, newTargetName);
 }
 
-void ProjectFile::RemoveBuildTarget(const wxString& targetName)
+void ProjectFile::RemoveBuildTarget(const wxString &targetName)
 {
     int idx = buildTargets.Index(targetName);
     if (idx != wxNOT_FOUND)
@@ -119,7 +120,7 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
     // remove this file from the target's list of files
     if (project)
     {
-        ProjectBuildTarget* target = project->GetBuildTarget(targetName);
+        ProjectBuildTarget *target = project->GetBuildTarget(targetName);
         if (target)
         {
             FilesList::iterator it = target->m_Files.find(this);
@@ -138,12 +139,12 @@ void ProjectFile::RemoveBuildTarget(const wxString& targetName)
         generatedFiles[i]->RemoveBuildTarget(targetName);
 }
 
-const wxArrayString& ProjectFile::GetBuildTargets() const
+const wxArrayString &ProjectFile::GetBuildTargets() const
 {
     return buildTargets;
 }
 
-bool ProjectFile::ShowOptions(wxWindow* parent)
+bool ProjectFile::ShowOptions(wxWindow *parent)
 {
     ProjectFileOptionsDlg dlg(parent, this);
     PlaceWindow(&dlg);
@@ -157,7 +158,7 @@ wxString ProjectFile::GetBaseName() const
     return fname.GetFullPath();
 }
 
-const wxString& ProjectFile::GetObjName()
+const wxString &ProjectFile::GetObjName()
 {
     if (generatedFiles.size())
     {
@@ -171,7 +172,7 @@ const wxString& ProjectFile::GetObjName()
     return m_ObjName;
 }
 
-void ProjectFile::SetObjName(const wxString& name)
+void ProjectFile::SetObjName(const wxString &name)
 {
     bool extendedObjectNames = project->GetExtendedObjectNamesGeneration();
     wxFileName fname(name);
@@ -189,7 +190,7 @@ void ProjectFile::SetObjName(const wxString& name)
     }
     else if (ft == ftHeader) // support precompiled headers?
     {
-        Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
+        Compiler *compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
         if (compiler && compiler->GetSwitches().supportsPCH)
         {
             // PCHs are always using the extended name mode (at least for GCC)
@@ -207,7 +208,7 @@ void ProjectFile::SetObjName(const wxString& name)
     {
         if (project)
         {
-            Compiler* compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
+            Compiler *compiler = CompilerFactory::GetCompiler(project->GetCompilerID());
             if (compiler)
             {
                 if (extendedObjectNames)
@@ -230,17 +231,17 @@ void ProjectFile::SetObjName(const wxString& name)
             }
         }
     }
-//#ifdef __WXMSW__
-//    // special case for windows and files on a different drive
-//    if (name.Length() > 1 && name.GetChar(1) == _T(':'))
-//    {
-//        m_ObjName.Remove(1, 1); // NOTE (mandrav): why remove the colon???
-//    }
-//#endif
+    //#ifdef __WXMSW__
+    //    // special case for windows and files on a different drive
+    //    if (name.Length() > 1 && name.GetChar(1) == _T(':'))
+    //    {
+    //        m_ObjName.Remove(1, 1); // NOTE (mandrav): why remove the colon???
+    //    }
+    //#endif
 }
 
 // map target to pfDetails
-void ProjectFile::UpdateFileDetails(ProjectBuildTarget* target)
+void ProjectFile::UpdateFileDetails(ProjectBuildTarget *target)
 {
     if (!project)
         return;
@@ -257,7 +258,7 @@ void ProjectFile::UpdateFileDetails(ProjectBuildTarget* target)
         int tcount = project->GetBuildTargetsCount();
         for (int x = 0; x < tcount; ++x)
         {
-            ProjectBuildTarget* bt = project->GetBuildTarget(x);
+            ProjectBuildTarget *bt = project->GetBuildTarget(x);
             DoUpdateFileDetails(bt);
         }
     }
@@ -265,13 +266,13 @@ void ProjectFile::UpdateFileDetails(ProjectBuildTarget* target)
         DoUpdateFileDetails(target);
 }
 
-void ProjectFile::DoUpdateFileDetails(ProjectBuildTarget* target)
+void ProjectFile::DoUpdateFileDetails(ProjectBuildTarget *target)
 {
     // if we don't belong in this target, abort
     if (!target || buildTargets.Index(target->GetTitle()) == wxNOT_FOUND)
         return;
     // delete old PFD
-    pfDetails* pfd = m_PFDMap[target];
+    pfDetails *pfd = m_PFDMap[target];
     if (pfd)
         pfd->Update(target, this);
     else
@@ -281,9 +282,9 @@ void ProjectFile::DoUpdateFileDetails(ProjectBuildTarget* target)
     }
 }
 
-const pfDetails& ProjectFile::GetFileDetails(ProjectBuildTarget* target)
+const pfDetails &ProjectFile::GetFileDetails(ProjectBuildTarget *target)
 {
-    pfDetails* pfd = m_PFDMap[target];
+    pfDetails *pfd = m_PFDMap[target];
     if (!pfd)
     {
         DoUpdateFileDetails(target);
@@ -302,7 +303,7 @@ void ProjectFile::SetFileState(FileVisualState state)
     if (state != m_VisualState)
     {
         m_VisualState = state;
-        wxTreeCtrl* tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
+        wxTreeCtrl *tree = Manager::Get()->GetProjectManager()->GetUI().GetTree();
         if (tree && m_TreeItemId.IsOk())
         {
             tree->SetItemImage(m_TreeItemId, (int)state, wxTreeItemIcon_Normal);
@@ -311,27 +312,27 @@ void ProjectFile::SetFileState(FileVisualState state)
     }
 }
 
-void ProjectFile::SetUseCustomBuildCommand(const wxString& compilerId, bool useCustomBuildCommand)
+void ProjectFile::SetUseCustomBuildCommand(const wxString &compilerId, bool useCustomBuildCommand)
 {
     customBuild[compilerId].useCustomBuildCommand = useCustomBuildCommand;
 }
 
-void ProjectFile::SetCustomBuildCommand(const wxString& compilerId, const wxString& newBuildCommand)
+void ProjectFile::SetCustomBuildCommand(const wxString &compilerId, const wxString &newBuildCommand)
 {
     customBuild[compilerId].buildCommand = newBuildCommand;
 }
 
-bool ProjectFile::GetUseCustomBuildCommand(const wxString& compilerId)
+bool ProjectFile::GetUseCustomBuildCommand(const wxString &compilerId)
 {
     return customBuild[compilerId].useCustomBuildCommand;
 }
 
-wxString ProjectFile::GetCustomBuildCommand(const wxString& compilerId)
+wxString ProjectFile::GetCustomBuildCommand(const wxString &compilerId)
 {
     return customBuild[compilerId].buildCommand;
 }
 
-int ProjectFile::CompareProjectFiles(ProjectFile* item1, ProjectFile* item2)
+int ProjectFile::CompareProjectFiles(ProjectFile *item1, ProjectFile *item2)
 {
     return wxStrcmp(item1->relativeFilename, item2->relativeFilename);
 }
@@ -340,33 +341,33 @@ int ProjectFile::CompareProjectFiles(ProjectFile* item1, ProjectFile* item2)
 // pfDetails
 ////////////////////////////////////////////////////////////////////////////////
 
-pfDetails::pfDetails(ProjectBuildTarget* target, ProjectFile* pf)
+pfDetails::pfDetails(ProjectBuildTarget *target, ProjectFile *pf)
 {
     Update(target, pf);
 }
 
-void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
+void pfDetails::Update(ProjectBuildTarget *target, ProjectFile *pf)
 {
     wxString sep = wxFILE_SEP_PATH;
 
     wxFileName prjbase(target->GetParentProject()->GetBasePath());
 
-    wxString objOut  = target ? target->GetObjectOutput() : _T(".");
-    wxString depsOut = target ? target->GetDepsOutput()   : _T(".");
+    wxString objOut = target ? target->GetObjectOutput() : _T(".");
+    wxString depsOut = target ? target->GetDepsOutput() : _T(".");
 
     // we must replace any macros here early because if the macros expand
     // to absolute paths (like global vars usually do), we 're gonna create
     // invalid filenames below
-    Manager::Get()->GetMacrosManager()->ReplaceMacros(objOut,  target);
+    Manager::Get()->GetMacrosManager()->ReplaceMacros(objOut, target);
     Manager::Get()->GetMacrosManager()->ReplaceMacros(depsOut, target);
 
-    source_file_native          = pf->relativeFilename;
+    source_file_native = pf->relativeFilename;
     source_file_absolute_native = pf->file.GetFullPath();
 
-    wxFileName obj_name( pf->GetObjName() );
+    wxFileName obj_name(pf->GetObjName());
     FileType ft = FileTypeOf(pf->relativeFilename);
 
-    Compiler* compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID())
+    Compiler *compiler = target ? CompilerFactory::GetCompiler(target->GetCompilerID())
                                 : CompilerFactory::GetDefaultCompiler();
 
     // support for precompiled headers
@@ -390,24 +391,23 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                 }
 
                 wxFileName fn(source_file_native);
-                object_file_native = fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) +
-                                    fn.GetFullName() + _T('.') + compiler->GetSwitches().PCHExtension +
-                                    wxFILE_SEP_PATH +
-                                    new_gch;
+                object_file_native =
+                    fn.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR) + fn.GetFullName()
+                    + _T('.') + compiler->GetSwitches().PCHExtension + wxFILE_SEP_PATH + new_gch;
                 object_file_flat_native = object_file_native;
                 break;
             }
 
             case pchObjectDir:
             {
-                object_file_native      = objOut + sep + obj_name.GetFullPath();
+                object_file_native = objOut + sep + obj_name.GetFullPath();
                 object_file_flat_native = objOut + sep + obj_name.GetFullName();
                 break;
             }
 
             case pchSourceFile:
             {
-                object_file_native      = pf->GetObjName();
+                object_file_native = pf->GetObjName();
                 object_file_flat_native = object_file_native;
                 break;
             }
@@ -435,12 +435,11 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
              * Source: D:\Source\foo.cpp
              * Obj file: C:\Foo\obj\Debug\D\Source\foo.o
              */
-            wxString fileVol            = fname.GetVolume();
+            wxString fileVol = fname.GetVolume();
             wxString obj_file_full_path = fname.GetFullPath();
-            bool     diffVolume         = false;
+            bool diffVolume = false;
 
-            if (   platform::windows
-                && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume())) )
+            if (platform::windows && (!fileVol.IsEmpty() && !fileVol.IsSameAs(prjbase.GetVolume())))
             {
                 objOut += fileVol;
                 obj_file_full_path = obj_file_full_path.AfterFirst(_T('\\'));
@@ -451,10 +450,10 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
-                    object_file_native      = objOut + sep + obj_file_full_path;
+                    object_file_native = objOut + sep + obj_file_full_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
 
-                    object_file_native      += FileFilters::RESOURCEBIN_DOT_EXT;
+                    object_file_native += FileFilters::RESOURCEBIN_DOT_EXT;
                     object_file_flat_native += FileFilters::RESOURCEBIN_DOT_EXT;
                 }
                 else
@@ -464,36 +463,41 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                     if (diffVolume)
                         obj_file_path = obj_file_path.AfterFirst(_T('\\'));
 
-                    object_file_native      = objOut + sep + obj_file_path;
+                    object_file_native = objOut + sep + obj_file_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
             }
             else if (ft == ftObject)
             {
-                // TODO (Morten#1#): Does this work in all cases (flat objects, extended object generation, generated files...)?
-                object_file_native      = obj_file_full_path;
+                // TODO (Morten#1#): Does this work in all cases (flat objects, extended object
+                // generation, generated files...)?
+                object_file_native = obj_file_full_path;
                 object_file_flat_native = fname.GetFullName();
             }
             else if (ft == ftStaticLib || ft == ftDynamicLib)
             {
-                cbMessageBox(_("You have added a static/dynamic library to the project files and enabled to link against it. "
-                               "This is likely to fail as Code::Blocks cannot control the link order which is relevant.\n"
-                               "Instead, add the library to the project linker options."), _("Error"), wxICON_ERROR | wxOK);
+                cbMessageBox(_("You have added a static/dynamic library to the project files and "
+                               "enabled to link against it. "
+                               "This is likely to fail as Code::Blocks cannot control the link "
+                               "order which is relevant.\n"
+                               "Instead, add the library to the project linker options."),
+                             _("Error"), wxICON_ERROR | wxOK);
                 // This will be wrong and most likely not working but spoil the build process
-                object_file_native      = obj_file_full_path;
+                object_file_native = obj_file_full_path;
                 object_file_flat_native = fname.GetFullName();
             }
             else
             {
                 if (pf->GetParentProject()->GetExtendedObjectNamesGeneration())
                 {
-                    object_file_native      = objOut + sep + obj_file_full_path;
+                    object_file_native = objOut + sep + obj_file_full_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
 
                     if (compiler)
                     {
-                        object_file_native      += _T('.') + compiler->GetSwitches().objectExtension;
-                        object_file_flat_native += _T('.') + compiler->GetSwitches().objectExtension;
+                        object_file_native += _T('.') + compiler->GetSwitches().objectExtension;
+                        object_file_flat_native +=
+                            _T('.') + compiler->GetSwitches().objectExtension;
                     }
                 }
                 else
@@ -504,7 +508,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
                     if (diffVolume)
                         obj_file_path = obj_file_path.AfterFirst(_T('\\'));
 
-                    object_file_native      = objOut + sep + obj_file_path;
+                    object_file_native = objOut + sep + obj_file_path;
                     object_file_flat_native = objOut + sep + fname.GetFullName();
                 }
             }
@@ -516,9 +520,9 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
     o_file.MakeAbsolute(prjbase.GetFullPath());
     o_file_flat.MakeAbsolute(prjbase.GetFullPath());
 
-    object_dir_native                = o_file.GetPath(wxPATH_GET_VOLUME      | wxPATH_GET_SEPARATOR);
-    object_dir_flat_native           = o_file_flat.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
-    object_file_absolute_native      = o_file.GetFullPath();
+    object_dir_native = o_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    object_dir_flat_native = o_file_flat.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    object_file_absolute_native = o_file.GetFullPath();
     object_file_flat_absolute_native = o_file_flat.GetFullPath();
 
     obj_name.SetExt(_T("depend"));
@@ -526,7 +530,7 @@ void pfDetails::Update(ProjectBuildTarget* target, ProjectFile* pf)
 
     wxFileName d_file(dep_file_native);
     d_file.MakeAbsolute(prjbase.GetFullPath());
-    dep_dir_native           = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
+    dep_dir_native = d_file.GetPath(wxPATH_GET_VOLUME | wxPATH_GET_SEPARATOR);
     dep_file_absolute_native = o_file.GetFullPath();
 
     source_file = UnixFilename(source_file_native);

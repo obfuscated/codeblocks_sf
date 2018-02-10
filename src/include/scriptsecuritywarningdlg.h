@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef SCRIPTSECURITYWARNINGDLG_H
@@ -19,16 +19,15 @@ enum ScriptSecurityResponse
 
 class ScriptSecurityWarningDlg : public wxScrollingDialog
 {
-    public:
-        ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command);
-        ~ScriptSecurityWarningDlg();
+public:
+    ScriptSecurityWarningDlg(wxWindow *parent, const wxString &operation, const wxString &command);
+    ~ScriptSecurityWarningDlg();
 
-        ScriptSecurityResponse GetResponse();
-        void EndModal(int retCode);
-    protected:
-    private:
+    ScriptSecurityResponse GetResponse();
+    void EndModal(int retCode);
+
+protected:
+private:
 };
-
-
 
 #endif // SCRIPTSECURITYWARNINGDLG_H

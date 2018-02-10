@@ -1,6 +1,6 @@
 /*
- * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public License, version 3
- * http://www.gnu.org/licenses/lgpl-3.0.html
+ * This file is part of the Code::Blocks IDE and licensed under the GNU Lesser General Public
+ * License, version 3 http://www.gnu.org/licenses/lgpl-3.0.html
  */
 
 #ifndef VIRTUALBUILDTARGETSDLG_H
@@ -9,7 +9,7 @@
 #include <wx/wxprec.h>
 
 #ifdef __BORLANDC__
-    #pragma hdrstop
+#pragma hdrstop
 #endif
 
 //(*Headers(VirtualBuildTargetsDlg)
@@ -21,43 +21,40 @@
 
 class cbProject;
 
-class VirtualBuildTargetsDlg: public wxScrollingDialog
+class VirtualBuildTargetsDlg : public wxScrollingDialog
 {
-    public:
+public:
+    VirtualBuildTargetsDlg(wxWindow *parent, wxWindowID id, cbProject *project);
+    virtual ~VirtualBuildTargetsDlg();
 
-        VirtualBuildTargetsDlg(wxWindow* parent,wxWindowID id, cbProject* project);
-        virtual ~VirtualBuildTargetsDlg();
+    //(*Identifiers(VirtualBuildTargetsDlg)
+    //*)
 
-        //(*Identifiers(VirtualBuildTargetsDlg)
-        //*)
+protected:
+    //(*Handlers(VirtualBuildTargetsDlg)
+    void OnAddClick(wxCommandEvent &event);
+    void OnEditClick(wxCommandEvent &event);
+    void OnRemoveClick(wxCommandEvent &event);
+    void OnAliasesSelect(wxCommandEvent &event);
+    void OnTargetsToggled(wxCommandEvent &event);
+    //*)
 
-    protected:
+    void OnUpdateUI(wxUpdateUIEvent &event);
 
-        //(*Handlers(VirtualBuildTargetsDlg)
-        void OnAddClick(wxCommandEvent& event);
-        void OnEditClick(wxCommandEvent& event);
-        void OnRemoveClick(wxCommandEvent& event);
-        void OnAliasesSelect(wxCommandEvent& event);
-        void OnTargetsToggled(wxCommandEvent& event);
-        //*)
+    //(*Declarations(VirtualBuildTargetsDlg)
+    wxCheckListBox *lstTargets;
+    wxButton *btnEdit;
+    wxButton *btnRemove;
+    wxButton *btnAdd;
+    wxListBox *lstAliases;
+    //*)
 
-        void OnUpdateUI(wxUpdateUIEvent& event);
+    void SetVirtualTarget(const wxString &targetName);
+    void CheckTargets();
+    cbProject *m_pProject;
 
-        //(*Declarations(VirtualBuildTargetsDlg)
-        wxCheckListBox* lstTargets;
-        wxButton* btnEdit;
-        wxButton* btnRemove;
-        wxButton* btnAdd;
-        wxListBox* lstAliases;
-        //*)
-
-        void SetVirtualTarget(const wxString& targetName);
-        void CheckTargets();
-        cbProject* m_pProject;
-
-    private:
-
-        DECLARE_EVENT_TABLE()
+private:
+    DECLARE_EVENT_TABLE()
 };
 
 #endif
