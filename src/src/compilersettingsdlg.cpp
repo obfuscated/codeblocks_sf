@@ -215,8 +215,8 @@ void CompilerSettingsDlg::EndModal(int retCode)
     if (retCode == wxID_OK)
     {
     // tab "Batch builds"
-#ifdef __WXMSW__ /* TODO: remove preprocessor when Associations::SetXXX are supported on \
-                    non-Windows platforms */
+#ifdef __WXMSW__ // TODO: remove preprocessor when Associations::SetXXX are supported on non-Windows
+                 // platforms
         ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
         wxString bbargs = XRCCTRL(*this, "txtBatchBuildsCmdLine", wxTextCtrl)->GetValue();
         if (bbargs != cfg->Read(_T("/batch_build_args"), appglobals::DefaultBatchBuildArgs))

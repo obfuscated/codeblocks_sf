@@ -423,7 +423,8 @@ bool CodeBlocksApp::LoadConfig()
     cfg->Write(_T("data_path"), data);
 
     // m_HasDebugLog =
-    // Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"), false)
+    // Manager::Get()->GetConfigManager(_T("message_manager"))->ReadBool(_T("/has_debug_log"),
+    // false)
     // || m_HasDebugLog;
     // Manager::Get()->GetConfigManager(_T("message_manager"))->Write(_T("/has_debug_log"),
     // m_HasDebugLog);
