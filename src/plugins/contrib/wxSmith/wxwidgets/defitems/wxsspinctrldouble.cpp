@@ -54,7 +54,9 @@ wxsSpinCtrlDouble::wxsSpinCtrlDouble(wxsItemResData* Data):
         wxsSpinCtrlStyles),
     Value(_T("0")),
     Min(0),
-    Max(100)
+    Max(100),
+    Initial(0.0),
+    Increment(0.01)
 {}
 
 void wxsSpinCtrlDouble::OnBuildCreatingCode()
