@@ -1438,7 +1438,7 @@ void CompilerGCC::DoRecreateTargetMenu()
         }
 
         // fill the menu and combo
-        for (size_t x = 0; x < m_Targets.GetCount(); ++x)
+        for (int x = 0; x < int(m_Targets.size()); ++x)
         {
             if (m_TargetMenu && x < maxTargetInMenus)
             {
@@ -1450,7 +1450,7 @@ void CompilerGCC::DoRecreateTargetMenu()
                 m_pToolTarget->Append(GetTargetString(x));
         }
 
-        if (m_TargetMenu && m_Targets.size() > maxTargetInMenus)
+        if (m_TargetMenu && int(m_Targets.size()) > maxTargetInMenus)
         {
             m_TargetMenu->Append(idMenuSelectTargetHasMore, _("More targets available..."),
                                  _("Use the select target menu item to see them!"));
@@ -1458,10 +1458,10 @@ void CompilerGCC::DoRecreateTargetMenu()
         }
 
         // connect menu events
-        Connect( idMenuSelectTargetOther[0],  idMenuSelectTargetOther[maxTargetInMenus - 1],
+        Connect(idMenuSelectTargetOther[0], idMenuSelectTargetOther[maxTargetInMenus - 1],
                 wxEVT_COMMAND_MENU_SELECTED,
                 (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &CompilerGCC::OnSelectTarget );
+                &CompilerGCC::OnSelectTarget);
 
         // housekeeping
         m_TargetIndex = m_Targets.Index(tgtStr);
