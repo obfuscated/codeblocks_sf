@@ -199,5 +199,10 @@ noinst_HEADERS = \
 ./wxsrichtextstylelistbox.h \
 ./wxsrichtextstylelistctrl.h
 
+if HAVE_WX29
+libwxsmith_wxwidgets_defitems_la_SOURCES += ./wxsspinctrldouble.cpp
+noinst_HEADERS += ./wxsspinctrldouble.h
+endif
+
 
 EXTRA_DIST = $(srcdir)/wxsmediactrl.*
