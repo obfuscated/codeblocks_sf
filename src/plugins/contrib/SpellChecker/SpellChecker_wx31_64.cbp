@@ -35,7 +35,7 @@
 					<Add directory="hunspell/src" />
 					<Add directory="wxspellchecker/include" />
 					<Add directory="$(#WX31_64.include)" />
-					<Add directory="$(#WX31_64.lib)/gcc_dll/msw$(WX_SUFFIX)" />
+					<Add directory="$(#WX31_64.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 				</Compiler>
 				<Linker>
 					<Add library="hunspell" />
