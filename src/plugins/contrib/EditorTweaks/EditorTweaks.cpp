@@ -73,7 +73,6 @@ int id_et_align_last          = wxNewId();
 int id_et_LaptopFriendly      = wxNewId();
 int id_et_SuppressInsertKey   = wxNewId();
 int id_et_ConvertBraces       = wxNewId();
-int id_et_ScrollTimer         = wxNewId();
 
 // events handling
 BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
@@ -129,15 +128,13 @@ BEGIN_EVENT_TABLE(EditorTweaks, cbPlugin)
     EVT_MENU(id_et_align_auto,         EditorTweaks::OnAlignAuto)
     EVT_MENU(id_et_align_last,         EditorTweaks::OnAlignLast)
 
-    EVT_TIMER(id_et_ScrollTimer, EditorTweaks::OnScrollTimer)
 END_EVENT_TABLE()
 
 // constructor
 EditorTweaks::EditorTweaks() :
     AlignerLastUsedIdx(0),
     AlignerLastUsedAuto(false),
-    AlignerLastUsed(false),
-    m_scrollTimer(this, id_et_ScrollTimer)
+    AlignerLastUsed(false)
 {
     // Make sure our resources are available.
     // In the generated boilerplate code we have no resources but when
@@ -194,7 +191,6 @@ void EditorTweaks::OnAttach()
     m_suppress_insert = cfg->ReadBool(wxT("/suppress_insert_key"), false);
     m_laptop_friendly = cfg->ReadBool(wxT("/laptop_friendly"),     false);
     m_convert_braces  = cfg->ReadBool(wxT("/convert_braces"),      false);
-    m_buffer_caret    = -1;
 }
 
 void EditorTweaks::OnRelease(bool /*appShutDown*/)
@@ -239,7 +235,6 @@ cbConfigurationPanel* EditorTweaks::GetConfigurationPanel(wxWindow* parent)
     if ( !IsAttached() )
         return NULL;
 
-    m_buffer_caret = -1; // invalidate so value will be read from configuration on next use
     EditorTweaksConfDlg* cfg = new EditorTweaksConfDlg(parent);
     return cfg;
 }
@@ -415,40 +410,6 @@ void EditorTweaks::OnEditorOpen(CodeBlocksEvent& /*event*/)
 void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 {
     const int keyCode = event.GetKeyCode();
-    switch (keyCode)
-    {
-    case WXK_NUMPAD_UP:      case WXK_UP:
-        if (event.GetModifiers() != wxMOD_CONTROL)
-            DoBufferEditorPos(-1);
-        break;
-
-    case WXK_NUMPAD_DOWN:    case WXK_DOWN:
-        if (event.GetModifiers() == wxMOD_CONTROL)
-            break;
-        // fall through
-    case WXK_NUMPAD_ENTER:   case WXK_RETURN:
-        DoBufferEditorPos(1);
-        break;
-
-    case WXK_NUMPAD_TAB:     case WXK_TAB:
-        if (event.GetModifiers() != wxMOD_NONE)
-            break;
-        // fall through
-    case WXK_BACK:
-    case WXK_NUMPAD_DELETE:  case WXK_DELETE:
-    case WXK_NUMPAD_LEFT:    case WXK_LEFT:
-    case WXK_NUMPAD_RIGHT:   case WXK_RIGHT:
-        if (event.GetModifiers() == wxMOD_ALT)
-            break;
-        // fall through
-    case WXK_NUMPAD_HOME:    case WXK_HOME:
-    case WXK_NUMPAD_END:     case WXK_END:
-        DoBufferEditorPos();
-        break;
-
-    default:
-        break;
-    }
     // This set of laptop friendly helpers are a bit of a hack to make up for the lack of
     // page up, page down, home, end, and delete keys on some laptops (especially Chromebooks)
     if (m_laptop_friendly && keyCode == WXK_LEFT && event.AltDown())
@@ -558,7 +519,6 @@ void EditorTweaks::OnKeyPress(wxKeyEvent& event)
 void EditorTweaks::OnChar(wxKeyEvent& event)
 {
     event.Skip(true);
-    DoBufferEditorPos();
     wxChar ch = event.GetKeyCode();
     if (m_convert_braces &&
             (ch == _T('(') ||
@@ -1336,48 +1296,6 @@ bool EditorTweaks::GetSelectionLines(int& LineStart, int& LineEnd)
 
     // done
     return found_lines;
-}
-
-void EditorTweaks::DoBufferEditorPos(int delta, bool isScrollTimer)
-{
-    if (m_buffer_caret == -1)
-        m_buffer_caret = Manager::Get()->GetConfigManager(wxT("EditorTweaks"))->ReadInt(wxT("/buffer_caret"), 1);
-    if (m_buffer_caret < 1) // feature disabled (selected "None" in settings)
-        return;
-
-    cbStyledTextCtrl* stc = GetSafeControl();
-    if (!stc)
-        return;
-
-    if (!stc || stc->AutoCompActive() || stc->LinesOnScreen() < 10) // ignore small editors
-        return;
-    const int firstVisibleLine = stc->GetFirstVisibleLine();
-    const int dist = stc->VisibleFromDocLine(stc->GetCurrentLine()) + delta - firstVisibleLine;
-    if (dist < 0 || dist > stc->LinesOnScreen()) // caret is off screen (see bug #18795)
-    {
-        if (!isScrollTimer && !m_scrollTimer.IsRunning())
-            m_scrollTimer.Start(5, wxTIMER_ONE_SHOT); // check to see if we moved into place
-        return;
-    }
-    const int buffer = (m_buffer_caret > 4 ? (stc->LinesOnScreen() >> 1) - 2 : m_buffer_caret);
-    int remaining = 0;
-    if (dist < buffer)
-    {
-        remaining = buffer - dist - 1;
-        stc->LineScroll(0, (remaining > 3 ? -2 : -1)); // scroll up
-    }
-    else if (dist >= stc->LinesOnScreen() - buffer)
-    {
-        remaining = dist + buffer - stc->LinesOnScreen();
-        stc->LineScroll(0, (remaining > 3 ? 2 : 1)); // scroll down
-    }
-    if (!m_scrollTimer.IsRunning() && remaining > 0 && firstVisibleLine != stc->GetFirstVisibleLine())
-        m_scrollTimer.Start(4 + (30 / remaining), wxTIMER_ONE_SHOT); // smooth scroll required lines
-}
-
-void EditorTweaks::OnScrollTimer(wxTimerEvent& WXUNUSED(event))
-{
-    DoBufferEditorPos(0, true);
 }
 
 cbStyledTextCtrl* EditorTweaks::GetSafeControl()

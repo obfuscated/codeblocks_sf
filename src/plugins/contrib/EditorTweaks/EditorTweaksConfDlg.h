@@ -3,9 +3,8 @@
 
 #include <configurationpanel.h>
 //(*Headers(EditorTweaksConfDlg)
-#include <wx/spinctrl.h>
 #include <wx/panel.h>
-#include <wx/choice.h>
+#include <wx/spinctrl.h>
 //*)
 
 class EditorTweaksConfDlg: public cbConfigurationPanel
@@ -16,7 +15,6 @@ class EditorTweaksConfDlg: public cbConfigurationPanel
 		virtual ~EditorTweaksConfDlg();
 
 		//(*Declarations(EditorTweaksConfDlg)
-		wxChoice* Choice1;
 		wxSpinCtrl* SpinCtrl1;
 		//*)
 

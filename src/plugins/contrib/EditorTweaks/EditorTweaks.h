@@ -146,8 +146,6 @@ class EditorTweaks : public cbPlugin
 		void AlignToString(const wxString AlignmentString);
 		wxString GetPadding(const wxString& Padding, const int Count);
 		bool GetSelectionLines(int& LineStart, int& LineEnd);
-        void DoBufferEditorPos(int delta = 0, bool isScrollTimer = false);
-        void OnScrollTimer(wxTimerEvent& event);
 
         // return a valid control if it is ready to operate
         cbStyledTextCtrl* GetSafeControl();
@@ -162,10 +160,8 @@ class EditorTweaks : public cbPlugin
         bool m_suppress_insert;
         bool m_laptop_friendly;
         bool m_convert_braces;
-        int  m_buffer_caret;
         wxMenu *m_tweakmenu;
         wxMenuItem *m_tweakmenuitem;
-        wxTimer m_scrollTimer;
 
         DECLARE_EVENT_TABLE();
 };
