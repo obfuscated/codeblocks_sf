@@ -1425,6 +1425,21 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     }
     control->SetViewEOL(mgr->ReadBool(_T("/show_eol"), false));
     control->SetViewWhiteSpace(mgr->ReadInt(_T("/view_whitespace"), 0));
+
+    const int caretBuffer = mgr->ReadInt(wxT("/caret_buffer"), 2);
+    if (caretBuffer == 0)
+        control->SetYCaretPolicy(wxSCI_CARET_EVEN, 0); // default
+    else if (caretBuffer > 0 && caretBuffer <= 10)
+    {
+        // margin of N lines at top/bottom
+        control->SetYCaretPolicy(wxSCI_CARET_SLOP | wxSCI_CARET_STRICT | wxSCI_CARET_EVEN, caretBuffer);
+    }
+    else
+    {
+        // centred mode
+        control->SetYCaretPolicy(wxSCI_CARET_STRICT | wxSCI_CARET_EVEN, 4);
+    }
+
     // gutter
     control->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
     control->SetEdgeColour(Manager::Get()->GetColourManager()->GetColour(wxT("editor_gutter")));
