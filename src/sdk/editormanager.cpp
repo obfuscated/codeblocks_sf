@@ -629,7 +629,7 @@ bool EditorManager::CloseAllInTabCtrlToTheLeft(EditorBase* editor, bool dontsave
         if (*it == editor)
         {
             // We want to remove editors we want to preserve opened.
-            editors.erase(it, editors.end());
+            editors.erase(it, editors.cend());
             break;
         }
     }
@@ -647,7 +647,7 @@ bool EditorManager::CloseAllInTabCtrlToTheRight(EditorBase* editor, bool dontsav
         if (*it == editor)
         {
             // We want to remove editors we want to preserve opened.
-            editors.erase(editors.begin(), it + 1);
+            editors.erase(editors.cbegin(), it + 1);
             break;
         }
     }
