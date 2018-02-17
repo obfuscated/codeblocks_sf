@@ -125,6 +125,10 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         bool CloseAllInTabCtrl(bool dontsave = false);
         /** Closes all editors in the same tab control as the active editor, except the editor passed as parameter. */
         bool CloseAllInTabCtrlExcept(EditorBase* editor, bool dontsave = false);
+        /// Closes all editors in the same tab control which are on the left of the passed editor.
+        bool CloseAllInTabCtrlToTheLeft(EditorBase* editor, bool dontsave = false);
+        /// Closes all editors in the same tab control which are on the right of the passed editor.
+        bool CloseAllInTabCtrlToTheRight(EditorBase* editor, bool dontsave = false);
         bool Save(const wxString& filename);
         bool Save(int index);
         bool SaveActive();

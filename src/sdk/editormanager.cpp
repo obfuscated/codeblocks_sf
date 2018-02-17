@@ -71,6 +71,8 @@ static const int idNBTabUnsplit              = wxNewId();
 static const int idNBTabClose                = wxNewId();
 static const int idNBTabCloseAll             = wxNewId();
 static const int idNBTabCloseAllOthers       = wxNewId();
+static const int idNBTabCloseToTheLeft       = wxNewId();
+static const int idNBTabCloseToTheRight      = wxNewId();
 static const int idNBTabSave                 = wxNewId();
 static const int idNBTabSaveAll              = wxNewId();
 static const int idNBSwapHeaderSource        = wxNewId();
@@ -127,6 +129,8 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBTabClose, EditorManager::OnClose)
     EVT_MENU(idNBTabCloseAll, EditorManager::OnCloseAll)
     EVT_MENU(idNBTabCloseAllOthers, EditorManager::OnCloseAllOthers)
+    EVT_MENU(idNBTabCloseToTheLeft, EditorManager::OnCloseAllOthers)
+    EVT_MENU(idNBTabCloseToTheRight, EditorManager::OnCloseAllOthers)
     EVT_MENU(idNBTabOpenContainingFolder, EditorManager::OnOpenContainingFolder)
     EVT_MENU(idNBTabSave, EditorManager::OnSave)
     EVT_MENU(idNBTabSaveAll, EditorManager::OnSaveAll)
@@ -608,9 +612,45 @@ bool EditorManager::CloseAllInTabCtrl(bool dontsave)
 bool EditorManager::CloseAllInTabCtrlExcept(EditorBase* editor, bool dontsave)
 {
     std::vector<EditorBase*> editors;
-    GetEditorsInTabCtrl(editors, GetActiveEditor());
+    GetEditorsInTabCtrl(editors, editor);
 
     editors.erase(std::remove(editors.begin(), editors.end(), editor), editors.end());
+
+    return CloseEditors(editors, dontsave);
+}
+
+bool EditorManager::CloseAllInTabCtrlToTheLeft(EditorBase* editor, bool dontsave)
+{
+    std::vector<EditorBase*> editors;
+    GetEditorsInTabCtrl(editors, editor);
+
+    for (auto it = editors.cbegin(); it != editors.cend(); ++it)
+    {
+        if (*it == editor)
+        {
+            // We want to remove editors we want to preserve opened.
+            editors.erase(it, editors.end());
+            break;
+        }
+    }
+
+    return CloseEditors(editors, dontsave);
+}
+
+bool EditorManager::CloseAllInTabCtrlToTheRight(EditorBase* editor, bool dontsave)
+{
+    std::vector<EditorBase*> editors;
+    GetEditorsInTabCtrl(editors, editor);
+
+    for (auto it = editors.cbegin(); it != editors.cend(); ++it)
+    {
+        if (*it == editor)
+        {
+            // We want to remove editors we want to preserve opened.
+            editors.erase(editors.begin(), it + 1);
+            break;
+        }
+    }
 
     return CloseEditors(editors, dontsave);
 }
@@ -1563,12 +1603,26 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     pop->Append(idNBTabClose, _("Close"));
     pop->Append(idNBTabCloseAll, _("Close all"));
     pop->Append(idNBTabCloseAllOthers, _("Close all others"));
+    pop->Append(idNBTabCloseToTheLeft, _("Close to the left"));
+    pop->Append(idNBTabCloseToTheRight, _("Close to the right"));
 
-    wxAuiTabCtrl *activeTabCtrl = m_pNotebook->GetTabCtrl(GetActiveEditor());
+    EditorBase *activeEditor = GetActiveEditor();
+    wxAuiTabCtrl *activeTabCtrl = m_pNotebook->GetTabCtrl(activeEditor);
     if (!activeTabCtrl || activeTabCtrl->GetPageCount() <= 1)
     {
         pop->Enable(idNBTabCloseAll, false);
         pop->Enable(idNBTabCloseAllOthers, false);
+        pop->Enable(idNBTabCloseToTheLeft, false);
+        pop->Enable(idNBTabCloseToTheRight, false);
+    }
+    else
+    {
+        const int pageCount = activeTabCtrl->GetPageCount();
+        const int tabIndex = activeTabCtrl->GetIdxFromWindow(activeEditor);
+        if (tabIndex == 0)
+            pop->Enable(idNBTabCloseToTheLeft, false);
+        if (tabIndex == pageCount - 1)
+            pop->Enable(idNBTabCloseToTheRight, false);
     }
 
     int any_modified = 0;
@@ -1657,9 +1711,14 @@ void EditorManager::OnCloseAll(cb_unused wxCommandEvent& event)
     CloseAllInTabCtrl();
 }
 
-void EditorManager::OnCloseAllOthers(cb_unused wxCommandEvent& event)
+void EditorManager::OnCloseAllOthers(wxCommandEvent& event)
 {
-    CloseAllInTabCtrlExcept(GetActiveEditor());
+    if (event.GetId() == idNBTabCloseAllOthers)
+        CloseAllInTabCtrlExcept(GetActiveEditor());
+    else if (event.GetId() == idNBTabCloseToTheLeft)
+        CloseAllInTabCtrlToTheLeft(GetActiveEditor());
+    else if (event.GetId() == idNBTabCloseToTheRight)
+        CloseAllInTabCtrlToTheRight(GetActiveEditor());
 }
 
 void EditorManager::OnSave(cb_unused wxCommandEvent& event)
