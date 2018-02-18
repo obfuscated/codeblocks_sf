@@ -624,12 +624,12 @@ bool EditorManager::CloseAllInTabCtrlToTheLeft(EditorBase* editor, bool dontsave
     std::vector<EditorBase*> editors;
     GetEditorsInTabCtrl(editors, editor);
 
-    for (auto it = editors.cbegin(); it != editors.cend(); ++it)
+    for (auto it = editors.begin(); it != editors.end(); ++it)
     {
         if (*it == editor)
         {
             // We want to remove editors we want to preserve opened.
-            editors.erase(it, editors.cend());
+            editors.erase(it, editors.end());
             break;
         }
     }
@@ -642,12 +642,12 @@ bool EditorManager::CloseAllInTabCtrlToTheRight(EditorBase* editor, bool dontsav
     std::vector<EditorBase*> editors;
     GetEditorsInTabCtrl(editors, editor);
 
-    for (auto it = editors.cbegin(); it != editors.cend(); ++it)
+    for (auto it = editors.begin(); it != editors.end(); ++it)
     {
         if (*it == editor)
         {
             // We want to remove editors we want to preserve opened.
-            editors.erase(editors.cbegin(), it + 1);
+            editors.erase(editors.begin(), it + 1);
             break;
         }
     }
