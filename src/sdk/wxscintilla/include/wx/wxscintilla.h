@@ -2513,58 +2513,6 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
     #define wxSCI_DEPRECATED_MACRO_VALUE(value,msg) value
 #endif
 
-#if WXWIN_COMPATIBILITY_3_0
-
-// The wxSCI_INDIC{0,1,2,S}_MASK values are no longer used in Scintilla
-
-#if wxCHECK_VISUALC_VERSION(10)
-    #pragma deprecated(wxSCI_INDIC0_MASK, wxSCI_INDIC1_MASK, \
-                       wxSCI_INDIC2_MASK, wxSCI_INDICS_MASK)
-#endif
-
-#define wxSCI_INDIC0_MASK wxSCI_DEPRECATED_MACRO_VALUE(0x20,\
-    "wxSCI_INDIC0_MASK is deprecated. Style byte indicators are no longer used.")
-#define wxSCI_INDIC1_MASK wxSCI_DEPRECATED_MACRO_VALUE(0x40,\
-    "wxSCI_INDIC1_MASK is deprecated. Style byte indicators are no longer used.")
-#define wxSCI_INDIC2_MASK wxSCI_DEPRECATED_MACRO_VALUE(0x80,\
-    "wxSCI_INDIC2_MASK is deprecated. Style byte indicators are no longer used.")
-#define wxSCI_INDICS_MASK wxSCI_DEPRECATED_MACRO_VALUE(0xE0,\
-    "wxSCI_INDICS_MASK is deprecated. Style byte indicators are no longer used.")
-
-
-// The following entries have non-conformant prefixes.
-
-#if wxCHECK_VISUALC_VERSION(10)
-    #pragma deprecated(wxSCI_SCMOD_NORM, wxSCI_SCMOD_SHIFT, wxSCI_SCMOD_CTRL, \
-                       wxSCI_SCMOD_ALT, wxSCI_SCMOD_SUPER, wxSCI_SCMOD_META, \
-                       wxSCI_SCVS_NONE, wxSCI_SCVS_RECTANGULARSELECTION, \
-                       wxSCI_SCVS_USERACCESSIBLE, wxSCI_SCVS_NOWRAPLINESTART)
-#endif
-
-#define wxSCI_SCMOD_NORM wxSCI_DEPRECATED_MACRO_VALUE(0,\
-    "wxSCI_SCMOD_NORM is deprecated. Use wxSCI_KEYMOD_NORM instead.")
-#define wxSCI_SCMOD_SHIFT wxSCI_DEPRECATED_MACRO_VALUE(1,\
-    "wxSCI_SCMOD_SHIFT is deprecated. Use wxSCI_KEYMOD_SHIFT instead.")
-#define wxSCI_SCMOD_CTRL wxSCI_DEPRECATED_MACRO_VALUE(2,\
-    "wxSCI_SCMOD_CTRL is deprecated. Use wxSCI_KEYMOD_CTRL instead.")
-#define wxSCI_SCMOD_ALT wxSCI_DEPRECATED_MACRO_VALUE(4,\
-    "wxSCI_SCMOD_ALT is deprecated. Use wxSCI_KEYMOD_ALT instead.")
-#define wxSCI_SCMOD_SUPER wxSCI_DEPRECATED_MACRO_VALUE(8,\
-    "wxSCI_SCMOD_SUPER is deprecated. Use wxSCI_KEYMOD_SUPER instead.")
-#define wxSCI_SCMOD_META wxSCI_DEPRECATED_MACRO_VALUE(16,\
-    "wxSCI_SCMOD_META is deprecated. Use wxSCI_KEYMOD_META instead.")
-
-#define wxSCI_SCVS_NONE wxSCI_DEPRECATED_MACRO_VALUE(0, \
-    "wxSCI_SCVS_NONE is deprecated. Use wxSCI_VS_NONE instead.")
-#define wxSCI_SCVS_RECTANGULARSELECTION wxSCI_DEPRECATED_MACRO_VALUE(1, \
-    "wxSCI_SCVS_RECTANGULARSELECTION is deprecated. Use wxSCI_VS_RECTANGULARSELECTION instead.")
-#define wxSCI_SCVS_USERACCESSIBLE wxSCI_DEPRECATED_MACRO_VALUE(2, \
-    "wxSCI_SCVS_USERACCESSIBLE is deprecated. Use wxSCI_VS_USERACCESSIBLE instead.")
-#define wxSCI_SCVS_NOWRAPLINESTART wxSCI_DEPRECATED_MACRO_VALUE(4, \
-    "wxSCI_SCVS_NOWRAPLINESTART is deprecated. Use wxSCI_VS_NOWRAPLINESTART instead.")
-
-#endif // WXWIN_COMPATIBILITY_3_0
-
 //----------------------------------------------------------------------
 // Commands that can be bound to keystrokes section {{{
 
@@ -5584,10 +5532,6 @@ DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CHARADDED,            16
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SAVEPOINTREACHED,     1653)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SAVEPOINTLEFT,        1654)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ROMODIFYATTEMPT,      1655)
-#if WXWIN_COMPATIBILITY_3_0
-wxDEPRECATED_MSG( "Don't handle wxEVT_SCI_KEY. It's never generated." ) \
-    DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_KEY,              1656)
-#endif // WXWIN_COMPATIBILITY_3_0
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_DOUBLECLICK,          1657)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_UPDATEUI,             1658)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MODIFIED,             1659)
@@ -5624,9 +5568,6 @@ END_DECLARE_EVENT_TYPES()
         wxEVT_SCI_SAVEPOINTREACHED,
         wxEVT_SCI_SAVEPOINTLEFT,
         wxEVT_SCI_ROMODIFYATTEMPT,
-#if WXWIN_COMPATIBILITY_3_0
-        wxEVT_SCI_KEY, // deprecated
-#endif // WXWIN_COMPATIBILITY_3_0
         wxEVT_SCI_DOUBLECLICK,
         wxEVT_SCI_UPDATEUI,
         wxEVT_SCI_MODIFIED,
@@ -5635,9 +5576,6 @@ END_DECLARE_EVENT_TYPES()
         wxEVT_SCI_NEEDSHOWN,
         wxEVT_SCI_PAINTED,
         wxEVT_SCI_USERLISTSELECTION,
-#if WXWIN_COMPATIBILITY_3_0
-        wxEVT_SCI_URIDROPPED, // deprecated
-#endif // WXWIN_COMPATIBILITY_3_0
         wxEVT_SCI_DWELLSTART,
         wxEVT_SCI_DWELLEND,
         wxEVT_SCI_START_DRAG,
