@@ -1055,6 +1055,9 @@ void ScintillaWX::DoLoseFocus(){
     focusEvent = true;
     SetFocusState(false);
     focusEvent = false;
+/* C::B begin */
+    SetMouseCapture(false);
+/* C::B end */
     DestroySystemCaret();
 }
 
