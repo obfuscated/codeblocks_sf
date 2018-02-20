@@ -1638,8 +1638,6 @@ void CodeCompletion::EditorEventHook(cbEditor* editor, wxScintillaEvent& event)
     {   TRACE(_T("wxEVT_SCI_CHARADDED")); }
     else if (event.GetEventType() == wxEVT_SCI_CHANGE)
     {   TRACE(_T("wxEVT_SCI_CHANGE")); }
-//    else if (event.GetEventType() == wxEVT_SCI_KEY)
-//    {   TRACE(_T("wxEVT_SCI_KEY")); }
     else if (event.GetEventType() == wxEVT_SCI_MODIFIED)
     {   TRACE(_T("wxEVT_SCI_MODIFIED")); }
     else if (event.GetEventType() == wxEVT_SCI_AUTOCOMP_SELECTION)

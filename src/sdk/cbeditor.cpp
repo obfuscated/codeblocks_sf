@@ -1058,7 +1058,6 @@ void cbEditor::ConnectEvents(cbStyledTextCtrl* stc)
 //        wxEVT_SCI_DWELLSTART,
 //        wxEVT_SCI_DWELLEND,
         wxEVT_SCI_START_DRAG,
-//        wxEVT_SCI_FINISHED_DRAG,
         wxEVT_SCI_DRAG_OVER,
         wxEVT_SCI_DO_DROP,
         wxEVT_SCI_ZOOM,
