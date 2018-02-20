@@ -2789,8 +2789,10 @@ long Platform::SendScintilla(WindowID w,
                              unsigned long wParam,
                              long lParam) {
 
+/* C::B begin */
     wxScintilla* stc = (wxScintilla*)w;
-    return stc->SendMsg(msg, wParam, lParam);
+    return stc->SendMsg(msg, (wxUIntPtr)wParam, (wxIntPtr)lParam);
+/* C::B end */
 }
 
 long Platform::SendScintillaPointer(WindowID w,
@@ -2798,8 +2800,10 @@ long Platform::SendScintillaPointer(WindowID w,
                                     unsigned long wParam,
                                     void *lParam) {
 
+/* C::B begin */
     wxScintilla* stc = (wxScintilla*)w;
-    return stc->SendMsg(msg, wParam, (wxIntPtr)lParam);
+    return stc->SendMsg(msg, (wxUIntPtr)wParam, (wxIntPtr)lParam);
+/* C::B end */
 }
 
 

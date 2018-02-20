@@ -263,7 +263,7 @@ wxScintilla::~wxScintilla() {
 
 //----------------------------------------------------------------------
 
-wxIntPtr wxScintilla::SendMsg(int msg, wxUIntPtr wp, wxIntPtr lp) const
+wxIntPtr wxScintilla::SendMsg(unsigned int msg, wxUIntPtr wp, wxIntPtr lp) const
 {
     return m_swx->WndProc(msg, wp, lp);
 }
