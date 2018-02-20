@@ -2113,15 +2113,31 @@ private:
     void*               doubleClickActionData;
 public:
     wxSCIListBoxWin(wxWindow* parent, wxWindowID id, Point WXUNUSED(location)) :
-        wxPopupWindow(parent, wxBORDER_SIMPLE)
+/* C::B begin */
+        wxPopupWindow(parent, wxBORDER_NONE)
+/* C::B end */
     {
 
+/* C::B begin */
+        SetBackgroundColour(*wxBLACK); // for our simple border
+/* C::B end */
+
+/* C::B begin */
+#ifdef __WXGTK__
         lv = new wxSCIListBox(parent, id, wxPoint(-50,-50), wxDefaultSize,
-                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxBORDER_NONE);
+#else
+        lv = new wxSCIListBox(parent, id, wxDefaultPosition, wxDefaultSize,
+#endif
+                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxSIMPLE_BORDER);
+/* C::B end */
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
 
+/* C::B begin */
+        // this focus hack makes the selection unreadable for Ubuntu themes,
+        // so do not attempt under GTK
+#ifndef __WXGTK__
         // NOTE: We need to fool the wxListView into thinking that it has the
         // focus so it will use the normal selection colour and will look
         // "right" to the user.  But since the wxPopupWindow or its children
@@ -2130,6 +2146,8 @@ public:
         // then reparent it back to the popup.
         lv->SetFocus();
         lv->Reparent(this);
+#endif
+/* C::B end */
 #ifdef __WXMSW__
         lv->Show();
 #endif
@@ -2256,8 +2274,10 @@ public:
             )
     {
 
+/* C::B begin */
         lv = new wxSCIListBox(this, id, wxDefaultPosition, wxDefaultSize,
-                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxNO_BORDER);
+                              wxLC_REPORT | wxLC_SINGLE_SEL | wxLC_NO_HEADER | wxSIMPLE_BORDER);
+/* C::B end */
         lv->SetCursor(wxCursor(wxCURSOR_ARROW));
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
@@ -2458,7 +2478,20 @@ void ListBoxImpl::Create(Window &parent, int ctrlID, Point location_, int lineHe
     lineHeight =  lineHeight_;
     unicodeMode = unicodeMode_;
     maxStrWidth = 0;
-    wid = new wxSCIListBoxWin(GETWIN(parent.GetID()), ctrlID, location);
+
+/* C::B begin */
+    if (wid == 0)
+        wid = new wxSCIListBoxWin(GETWIN(parent.GetID()), ctrlID, location_);
+    else if (GETLBW(wid)->GetParent() != GETWIN(parent.GetID()))
+        GETLBW(wid)->Reparent(GETWIN(parent.GetID()));
+    // ScintillaBase::AutoCompleteStart() calls SetPositionRelative() after filling
+    // the autocomp box, so no need to move yet
+    if (!GETLBW(wid)->IsShown()) // prevent jiggling on rebuild when already visible
+        GETLBW(wid)->SetPosition(wxPoint(location_.x,location_.y));
+    GETLBW(wid)->SetId(ctrlID);
+    GETLB(wid)->SetId(ctrlID);
+/* C::B end */
+
     if (imgList != NULL)
         GETLB(wid)->SetImageList(imgList, wxIMAGE_LIST_SMALL);
 }
@@ -2582,6 +2615,9 @@ void ListBoxImpl::Select(int n) {
         select = false;
     }
     GETLB(wid)->EnsureVisible(n);
+/* C::B begin */
+    GETLB(wid)->Focus(n);
+/* C::B end */
     GETLB(wid)->Select(n, select);
 }
 
