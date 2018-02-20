@@ -2134,10 +2134,10 @@ public:
         lv->InsertColumn(0, wxEmptyString);
         lv->InsertColumn(1, wxEmptyString);
 
-/* C::B begin */
-        // this focus hack makes the selection unreadable for Ubuntu themes,
-        // so do not attempt under GTK
-#ifndef __WXGTK__
+///* C::B begin */
+//        // this focus hack makes the selection unreadable for Ubuntu themes,
+//        // so do not attempt under GTK
+//#ifndef __WXGTK__
         // NOTE: We need to fool the wxListView into thinking that it has the
         // focus so it will use the normal selection colour and will look
         // "right" to the user.  But since the wxPopupWindow or its children
@@ -2146,8 +2146,8 @@ public:
         // then reparent it back to the popup.
         lv->SetFocus();
         lv->Reparent(this);
-#endif
-/* C::B end */
+//#endif
+///* C::B end */
 #ifdef __WXMSW__
         lv->Show();
 #endif
