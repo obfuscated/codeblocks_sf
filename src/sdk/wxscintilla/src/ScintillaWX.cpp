@@ -369,6 +369,11 @@ void ScintillaWX::StartDrag() {
             ClearSelection();
         inDragDrop = ddNone;
         SetDragPosition(SelectionPosition(Sci::invalidPosition));
+/* C::B begin */
+        wxScintillaEvent evtFin(wxEVT_SCI_FINISHED_DRAG, stc->GetId());
+        evtFin.SetEventObject(stc);
+        stc->GetEventHandler()->ProcessEvent(evtFin);
+/* C::B end */
     }
 #endif // wxUSE_DRAG_AND_DROP
 }
@@ -494,6 +499,11 @@ bool ScintillaWX::ModifyScrollBars(int nMax, int nPage) {
     return modified;
 }
 
+/* C::B begin */
+void ScintillaWX::NotifyFocus(bool focus) {
+    stc->NotifyFocus(focus);
+}
+/* C::B end */
 
 void ScintillaWX::NotifyChange() {
     stc->NotifyChange();
@@ -816,7 +826,9 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
           Point pt = LocationFromPosition(wParam);
           char* defn = reinterpret_cast<char *>(lParam);
           AutoCompleteCancel();
-          pt.y += vs.lineHeight;
+/* C::B begin */
+          //pt.y += vs.lineHeight;
+/* C::B end */
           int ctStyle = ct.UseStyleCallTip() ? STYLE_CALLTIP : STYLE_DEFAULT;
           if (ct.UseStyleCallTip())
           {
@@ -842,6 +854,15 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
               rc.top -= offset;
               rc.bottom -= offset;
           }
+/* C::B begin */
+          // If the call-tip window would be out of the client space to
+          // the right, adjust it so right egde is at the right edge of
+          // the client.
+          if (rc.right > rcClient.right) {
+              rc.left -= rc.right - rcClient.right;
+              rc.right = rcClient.right;
+          }
+/* C::B end */
           // Now display the window.
           CreateCallTipWindow(rc);
           ct.wCallTip.SetPositionRelative(rc, wMain);
@@ -890,6 +911,12 @@ sptr_t ScintillaWX::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam)
 
       case SCI_GETDIRECTPOINTER:
             return reinterpret_cast<sptr_t>(this);
+
+/* C::B begin */
+      case SCI_GRABFOCUS:
+            stc->SetFocus();
+            break;
+/* C::B end */
 
       default:
           return ScintillaBase::WndProc(iMessage, wParam, lParam);

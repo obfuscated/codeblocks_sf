@@ -113,6 +113,9 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_USERLISTSELECTION );
 DEFINE_EVENT_TYPE( wxEVT_SCI_DWELLSTART );
 DEFINE_EVENT_TYPE( wxEVT_SCI_DWELLEND );
 DEFINE_EVENT_TYPE( wxEVT_SCI_START_DRAG );
+/* C::B begin */
+DEFINE_EVENT_TYPE( wxEVT_SCI_FINISHED_DRAG );
+/* C::B end */
 DEFINE_EVENT_TYPE( wxEVT_SCI_DRAG_OVER );
 DEFINE_EVENT_TYPE( wxEVT_SCI_DO_DROP );
 DEFINE_EVENT_TYPE( wxEVT_SCI_ZOOM );
@@ -129,6 +132,12 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_CLIPBOARD_COPY );
 DEFINE_EVENT_TYPE( wxEVT_SCI_CLIPBOARD_PASTE );
 DEFINE_EVENT_TYPE( wxEVT_SCI_AUTOCOMP_COMPLETED );
 DEFINE_EVENT_TYPE( wxEVT_SCI_MARGIN_RIGHT_CLICK );
+/* C::B begin */
+DEFINE_EVENT_TYPE( wxEVT_SCI_SETFOCUS );
+DEFINE_EVENT_TYPE( wxEVT_SCI_KILLFOCUS );
+DEFINE_EVENT_TYPE( wxEVT_SCI_TAB );
+DEFINE_EVENT_TYPE( wxEVT_SCI_ESC );
+/* C::B end */
 
 
 BEGIN_EVENT_TABLE(wxScintilla, wxControl)
@@ -5491,6 +5500,25 @@ wxSize wxScintilla::DoGetBestSize() const
 //----------------------------------------------------------------------
 // Turn notifications from Scintilla into events
 
+/* C::B begin */
+void wxScintilla::NotifyFocus(bool focus) {
+    wxScintillaEvent evt(focus ? wxEVT_SCI_SETFOCUS : wxEVT_SCI_KILLFOCUS, GetId());
+    evt.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(evt);
+}
+
+void wxScintilla::NotifyTab() {
+    wxScintillaEvent evt(wxEVT_SCI_TAB, GetId());
+    evt.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(evt);
+}
+
+void wxScintilla::NotifyEsc() {
+    wxScintillaEvent evt(wxEVT_SCI_ESC, GetId());
+    evt.SetEventObject(this);
+    GetEventHandler()->ProcessEvent(evt);
+}
+/* C::B end */
 
 void wxScintilla::NotifyChange() {
     wxScintillaEvent evt(wxEVT_SCI_CHANGE, GetId());

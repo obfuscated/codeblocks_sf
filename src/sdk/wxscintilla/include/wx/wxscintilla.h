@@ -225,6 +225,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_INDIC_TEXTFORE 17
 #define wxSCI_INDIC_POINT 18
 #define wxSCI_INDIC_POINTCHARACTER 19
+/* C::B begin */
+#define wxSCI_INDIC_HIGHLIGHT 31 // please change also in Scintilla.h !!
+/* C::B end */
 #define wxSCI_INDIC_IME 32
 #define wxSCI_INDIC_IME_MAX 35
 #define wxSCI_INDIC_MAX 35
@@ -434,6 +437,10 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_UPDATE_SELECTION 0x2
 #define wxSCI_UPDATE_V_SCROLL 0x4
 #define wxSCI_UPDATE_H_SCROLL 0x8
+
+/* C::B begin */
+#define wxSCI_LASTLINEUNDOREDO wxSCI_MULTILINEUNDOREDO
+/* C::B end */
 
 /// Symbolic key codes and modifier flags.
 /// ASCII and other printable characters below 256.
@@ -2859,6 +2866,14 @@ class  WXDLLIMPEXP_SCI wxScintillaEvent;
 
 //----------------------------------------------------------------------
 
+/* C::B begin */
+#if !wxCHECK_VERSION(3, 0, 0) && !defined(_WIN64)
+typedef long wxIntPtr;
+#endif
+typedef wxIntPtr (* wxSciFnDirect) (wxIntPtr ptr, unsigned int iMessage,
+                                    wxUIntPtr wParam, wxIntPtr lParam);
+/* C::B end */
+
 class WXDLLIMPEXP_SCI wxScintilla : public wxControl {
 public:
 
@@ -2894,6 +2909,9 @@ public:
 
     // Add text to the document at current position.
     void AddText(const wxString& text);
+/* C::B begin */
+    void AddText(const int length, const wxString& text);
+/* C::B end */
 
     // Add array of cells to document.
     void AddStyledText(const wxMemoryBuffer& data);
@@ -3955,6 +3973,10 @@ public:
     // Append a string to the end of the document without changing the selection.
     void AppendText(const wxString& text);
 
+/* C::B begin */
+    void AppendText(int length, const wxString& text);
+/* C::B end */
+
     // Is drawing done in two phases with backgrounds drawn before foregrounds?
     bool GetTwoPhaseDraw() const;
 
@@ -4987,6 +5009,17 @@ public:
     // Remove a character representation.
     void ClearRepresentation(const wxString& encodedCharacter);
 
+/* C::B begin */
+    // On OS X, show a find indicator.
+    void FindIndicatorShow(int start, int end);
+
+    // On OS X, flash a find indicator, then fade out.
+    void FindIndicatorFlash(int start, int end);
+
+    // On OS X, hide the find indicator.
+    void FindIndicatorHide();
+/* C::B end */
+
     // Start notifying the container of all key presses and commands.
     void StartRecord();
 
@@ -5378,8 +5411,15 @@ protected:
     virtual wxSize DoGetBestSize() const override;
 
     // Turn notifications from Scintilla into events
+/* C::B begin */
+    void NotifyFocus(bool focus);
+    void NotifyTab();
+    void NotifyEsc();
+/* C::B end */
     void NotifyChange();
-    void NotifyParent(SCNotification* scn);
+/* C::B begin */
+    void NotifyParent(SCI_NAMESPACE_PREFIX(SCNotification)* scn);
+/* C::B end */
 
 private:
     DECLARE_EVENT_TABLE();
@@ -5397,6 +5437,19 @@ protected:
     friend class ScintillaWX;
     friend class Platform;
 #endif // !SWIG
+
+
+/* C::B begin */
+public:
+//    // Direct Functions
+//    // this is working but is a bit useless in this platform
+//    // not even SCI_* are defined in wxscintilla.h
+//    wxSciFnDirect GetDirectFunction();
+//    wxIntPtr      GetDirectPointer() const;
+//    wxUIntPtr     GetCharacterPointer() const;
+
+    void GrabSCIFocus();
+/* C::B end */
 };
 
 //----------------------------------------------------------------------
@@ -5447,6 +5500,9 @@ public:
             m_dragFlags &= ~(wxDrag_AllowMove | wxDrag_DefaultMove);
     }
 #endif
+/* C::B begin */
+    void SetUpdateType(int update)   { m_update = update; }
+/* C::B end */
 
     int  GetPosition() const         { return m_position; }
     int  GetKey()  const             { return m_key; }
@@ -5479,6 +5535,9 @@ public:
 
     bool GetDragAllowMove() { return (GetDragFlags() & wxDrag_AllowMove) != 0; }
 #endif
+/* C::B begin */
+    int GetUpdateType()              { return m_update; }
+/* C::B end */
 
     bool GetShift() const;
     bool GetControl() const;
@@ -5520,6 +5579,9 @@ private:
     int      m_dragFlags;       // wxEVT_SCI_START_DRAG
     wxDragResult m_dragResult;  // wxEVT_SCI_DRAG_OVER,wxEVT_SCI_DO_DROP
 #endif
+/* C::B begin */
+    int m_update;
+/* C::B end */
 #endif
 };
 
@@ -5559,6 +5621,13 @@ DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CLIPBOARD_COPY,       16
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_CLIPBOARD_PASTE,      1682)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_AUTOCOMP_COMPLETED,   1683)
 DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_MARGIN_RIGHT_CLICK,   1684)
+/* C::B begin */
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_SETFOCUS,             1685)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_KILLFOCUS,            1686)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_FINISHED_DRAG,        1687)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_TAB,                  1688)
+DECLARE_EXPORTED_EVENT_TYPE (WXDLLIMPEXP_SCI, wxEVT_SCI_ESC,                  1689)
+/* C::B end */
 END_DECLARE_EVENT_TYPES()
 #else
     enum {
@@ -5595,6 +5664,13 @@ END_DECLARE_EVENT_TYPES()
         wxEVT_SCI_CLIPBOARD_PASTE,
         wxEVT_SCI_AUTOCOMP_COMPLETED,
         wxEVT_SCI_MARGIN_RIGHT_CLICK
+/* C::B begin */
+        wxEVT_SCI_SETFOCUS,
+        wxEVT_SCI_KILLFOCUS,
+        wxEVT_SCI_FINISHED_DRAG,
+        wxEVT_SCI_TAB,
+        wxEVT_SCI_ESC
+/* C::B end */
     };
 #endif
 
@@ -5648,6 +5724,13 @@ typedef void (wxEvtHandler::*wxScintillaEventFunction)(wxScintillaEvent&);
 #define EVT_SCI_CLIPBOARD_PASTE(id, fn)       DECLARE_EVENT_TABLE_ENTRY( wxEVT_SCI_CLIPBOARD_PASTE,       id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL ),
 #define EVT_SCI_AUTOCOMP_COMPLETED(id, fn)    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SCI_AUTOCOMP_COMPLETED,    id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL ),
 #define EVT_SCI_MARGIN_RIGHT_CLICK(id, fn)    DECLARE_EVENT_TABLE_ENTRY( wxEVT_SCI_MARGIN_RIGHT_CLICK,    id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL ),
+/* C::B begin */
+#define EVT_SCI_SETFOCUS(id, fn)                DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_SETFOCUS               id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_KILLFOCUS(id, fn)               DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_KILLFOCUS              id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_FINISHED_DRAG(id, fn)           DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_FINISHED_DRAG,         id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_TAB(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_TAB,                   id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+#define EVT_SCI_ESC(id, fn)                     DECLARE_EVENT_TABLE_ENTRY (wxEVT_SCI_ESC,                   id, wxID_ANY, wxScintillaEventHandler( fn ), (wxObject *) NULL),
+/* C::B end */
 
 #endif
 

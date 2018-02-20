@@ -2882,12 +2882,43 @@ int Platform::Clamp(int val, int minVal, int maxVal) {
 }
 
 
-bool Platform::IsDBCSLeadByte(int WXUNUSED(codePage), char WXUNUSED(ch)) {
+/* C::B begin */
+bool Platform::IsDBCSLeadByte(int codePage, char ch) {
+    // Byte ranges found in Wikipedia articles with relevant search strings in each case
+    unsigned char uch = static_cast<unsigned char>(ch);
+    switch (codePage) {
+    case 932:
+        // Shift_jis
+        return ((uch >= 0x81) && (uch <= 0x9F)) ||
+               ((uch >= 0xE0) && (uch <= 0xEF));
+    case 936:
+        // GBK
+        return (uch >= 0x81) && (uch <= 0xFE);
+    case 949:
+        // Korean Wansung KS C-5601-1987
+        return (uch >= 0x81) && (uch <= 0xFE);
+    case 950:
+        // Big5
+        return (uch >= 0x81) && (uch <= 0xFE);
+    case 1361:
+        // Korean Johab KS C-5601-1992
+        return
+            ((uch >= 0x84) && (uch <= 0xD3)) ||
+            ((uch >= 0xD8) && (uch <= 0xDE)) ||
+            ((uch >= 0xE0) && (uch <= 0xF9));
+    }
+/* C::B end */
     return false;
 }
 
-int Platform::DBCSCharLength(int WXUNUSED(codePage), const char *WXUNUSED(s)) {
+int Platform::DBCSCharLength(int codePage, const char *s) {
+/* C::B begin */
+    if (codePage == 932 || codePage == 936 || codePage == 949 ||
+        codePage == 950 || codePage == 1361) {
+        return IsDBCSLeadByte(codePage, s[0]) ? 2 : 1;
+    }
     return 1;
+/* C::B end */
 }
 
 int Platform::DBCSCharMaxLength() {

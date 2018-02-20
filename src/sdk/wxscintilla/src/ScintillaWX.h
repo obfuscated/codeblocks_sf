@@ -154,6 +154,9 @@ public:
 
     virtual void NotifyChange() wxOVERRIDE;
     virtual void NotifyParent(SCNotification scn) wxOVERRIDE;
+/* C::B begin */
+    virtual void NotifyFocus(bool focus);
+/* C::B end */
 
     virtual void CancelModes() wxOVERRIDE;
 
