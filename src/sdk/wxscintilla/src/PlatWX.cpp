@@ -33,7 +33,9 @@
 #include <wx/tokenzr.h>
 #include <wx/dynlib.h>
 
-#ifdef wxHAS_RAW_BITMAP
+/* C::B begin */
+#if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
 #include <wx/rawbmp.h>
 #endif
 #if wxUSE_GRAPHICS_CONTEXT
@@ -424,19 +426,30 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     return;
 #else
 
-#ifdef wxHAS_RAW_BITMAP
+/* C::B begin */
+#if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
 
     // TODO:  do something with cornerSize
     wxUnusedVar(cornerSize);
 
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp(r.width, r.height, 32);
+/* C::B begin */
+    if (!bmp.IsOk())
+        return;
+/* C::B end */
 
     // This block is needed to ensure that the changes done to the bitmap via
     // pixel data object are committed before the bitmap is drawn.
     {
         int px, py;
         wxAlphaPixelData pixData(bmp);
+/* C::B begin */
+        #if !wxCHECK_VERSION(3, 0, 0)
+        pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
+        #endif
+/* C::B end */
 
         // Set the fill pixels
         ColourDesired cdf(fill.AsLong());
@@ -463,6 +476,10 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
         blue  = cdo.GetBlue();
         for (px=0; px<r.width; px++) {
             p.MoveTo(pixData, px, 0);
+/* C::B begin */
+            if (!p.m_ptr)
+                continue;
+/* C::B end */
             p.Red()   = wxPy_premultiply(red,   alphaOutline);
             p.Green() = wxPy_premultiply(green, alphaOutline);
             p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
@@ -476,6 +493,10 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
 
         for (py=0; py<r.height; py++) {
             p.MoveTo(pixData, 0, py);
+/* C::B begin */
+            if (!p.m_ptr)
+                continue;
+/* C::B end */
             p.Red()   = wxPy_premultiply(red,   alphaOutline);
             p.Green() = wxPy_premultiply(green, alphaOutline);
             p.Blue()  = wxPy_premultiply(blue,  alphaOutline);
@@ -489,7 +510,10 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     }
 
     // Draw the bitmap
-    hdc->DrawBitmap(bmp, r.x, r.y, true);
+/* C::B begin */
+    if (bmp.IsOk())
+        hdc->DrawBitmap(bmp, r.x, r.y, true);
+/* C::B end */
 
 #else
     wxUnusedVar(cornerSize);
@@ -500,12 +524,23 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
 #endif
 }
 
-#ifdef wxHAS_RAW_BITMAP
+/* C::B begin */
+#if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
 wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsImage)
 {
     int x, y;
     wxBitmap bmp(width, height, 32);
+/* C::B begin */
+    if (!bmp.IsOk())
+        return wxNullBitmap;
+/* C::B end */
     wxAlphaPixelData pixData(bmp);
+/* C::B begin */
+    #if !wxCHECK_VERSION(3, 0, 0)
+    pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
+    #endif
+/* C::B end */
 
     wxAlphaPixelData::Iterator p(pixData);
     for (y=0; y<height; y++) {
@@ -531,10 +566,15 @@ wxBitmap BitmapFromRGBAImage(int width, int height, const unsigned char *pixelsI
 void SurfaceImpl::DrawRGBAImage(PRectangle rc, int width, int height,
                                 const unsigned char *pixelsImage)
 {
-#ifdef wxHAS_RAW_BITMAP
+/* C::B begin */
+#if defined(wxHAS_RAW_BITMAP) || defined(wxHAVE_RAW_BITMAP)
+/* C::B end */
     wxRect r = wxRectFromPRectangle(rc);
     wxBitmap bmp = BitmapFromRGBAImage(width, height, pixelsImage);
-    hdc->DrawBitmap(bmp, r.x, r.y, true);
+/* C::B begin */
+    if (bmp.IsOk())
+        hdc->DrawBitmap(bmp, r.x, r.y, true);
+/* C::B end */
 #endif
 }
 
