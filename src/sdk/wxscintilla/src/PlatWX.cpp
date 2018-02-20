@@ -144,6 +144,9 @@ Font::Font() {
 }
 
 Font::~Font() {
+/* C::B begin */
+    Release();
+/* C::B end */
 }
 
 void Font::Create(const FontParameters &fp) {
