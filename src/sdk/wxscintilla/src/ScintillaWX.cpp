@@ -244,6 +244,36 @@ static wxTextFileType wxConvertEOLMode(int scintillaMode)
 #endif // wxUSE_DATAOBJ
 
 
+/* C::B begin */
+static int wxCountLines(const char* text, int scintillaMode)
+{
+    char eolchar;
+
+    switch (scintillaMode) {
+        case wxSCI_EOL_CRLF:
+        case wxSCI_EOL_LF:
+            eolchar = '\n';
+            break;
+        case wxSCI_EOL_CR:
+            eolchar = '\r';
+            break;
+        default:
+            return 0;
+    }
+
+    int count = 0;
+    int i     = 0;
+    while (text[i] != 0) {
+        if (text[i] == eolchar) {
+            count++;
+        }
+        i++;
+    }
+
+    return count;
+}
+/* C::B end */
+
 //----------------------------------------------------------------------
 // Constructor/Destructor
 
@@ -548,54 +578,65 @@ void ScintillaWX::Paste() {
 
 #if wxUSE_DATAOBJ
     wxTextDataObject data;
-    bool gotData = false;
+/* C::B begin */
+    wxString textString;
+
     bool isRectangularClipboard = false;
 
     wxTheClipboard->UsePrimarySelection(false);
     if (wxTheClipboard->Open()) {
-#ifdef wxHAVE_SCI_RECT_FORMAT
-        isRectangularClipboard = wxTheClipboard->IsSupported(m_clipRectTextFormat);
-#endif
-        gotData = wxTheClipboard->GetData(data);
-        wxTheClipboard->Close();
+        // Leave the following lines that way to enable compilation with GCC 3.3.3
+        wxDataFormat dataFormat(wxString(wxT("application/x-cbrectdata")));
+        wxCustomDataObject selData(dataFormat);
+        bool gotRectData = wxTheClipboard->GetData(selData);
+
+        if (gotRectData && selData.GetSize()>1) {
+            wxTheClipboard->Close();
+            const char* rectBuf = (const char*)selData.GetData();
+            isRectangularClipboard = rectBuf[0] == (char)1;
+            int len = selData.GetDataSize()-1;
+            char* buffer = new char[len];
+            memcpy (buffer, rectBuf+1, len);
+            textString = sci2wx(buffer, len);
+            delete [] buffer;
+        } else {
+            bool gotData = wxTheClipboard->GetData(data);
+            wxTheClipboard->Close();
+            if (gotData) {
+                textString = wxTextBuffer::Translate(data.GetText(),
+                                                     wxConvertEOLMode(pdoc->eolMode));
+            }
+        }
     }
-    if (gotData) {
-        wxString   text = wxTextBuffer::Translate(data.GetText(),
-                                                  wxConvertEOLMode(pdoc->eolMode));
 
-        // Send an event to allow the pasted text to be changed
-        wxScintillaEvent evt(wxEVT_SCI_CLIPBOARD_PASTE, stc->GetId());
-        evt.SetEventObject(stc);
-        evt.SetPosition(sel.MainCaret());
-        evt.SetString(text);
-        stc->GetEventHandler()->ProcessEvent(evt);
+    // Send an event to allow the pasted text to be changed
+    wxScintillaEvent evt(wxEVT_SCI_CLIPBOARD_PASTE, stc->GetId());
+    evt.SetEventObject(stc);
+    evt.SetPosition(sel.MainCaret());
+    evt.SetString(textString);
+    stc->GetEventHandler()->ProcessEvent(evt);
 
-        const wxCharBuffer buf(wx2sci(evt.GetString()));
-
+    wxWX2MBbuf buf = (wxWX2MBbuf)wx2sci(textString);
 #if wxUSE_UNICODE
-        // free up the old character buffer in case the text is real big
-        data.SetText(wxEmptyString);
-        text = wxEmptyString;
+    // free up the old character buffer in case the text is real big
+    data.SetText(wxEmptyString);
+    textString = wxEmptyString;
 #endif
-/* C::B begin */
-        const size_t len = strlen(buf);
-/* C::B end */
-        SelectionPosition selStart = sel.IsRectangular() ?
-            sel.Rectangular().Start() :
-            sel.Range(sel.Main()).Start();
-
-        // call the appropriate scintilla paste method if the
-        // depending on whether the text was copied FROM a rectangular selection
-        // or not.
-        if (isRectangularClipboard)
-        {
-            PasteRectangular(selStart, buf, len);
-        }
-        else
-        {
-            InsertPaste(buf, len);
-        }
+    int len  = strlen(buf);
+    int newPos = 0;
+    int caretMain = CurrentPosition();
+    if (isRectangularClipboard) {
+        SelectionPosition selStart = sel.Range(sel.Main()).Start();
+        int newLine = pdoc->LineFromPosition (caretMain) + wxCountLines (buf, pdoc->eolMode);
+        int newCol = pdoc->GetColumn(caretMain);
+        PasteRectangular(selStart, buf, len);
+        newPos = pdoc->FindColumn (newLine, newCol);
+    } else {
+        pdoc->InsertString(caretMain, buf, len);
+        newPos = caretMain + len;
     }
+    SetEmptySelection (newPos);
+/* C::B end */
 #endif // wxUSE_DATAOBJ
 
     pdoc->EndUndoAction();
@@ -619,20 +660,23 @@ void ScintillaWX::CopyToClipboard(const SelectionText& st) {
     if (wxTheClipboard->Open()) {
         wxString text = evt.GetString();
 
-#ifdef wxHAVE_SCI_RECT_FORMAT
-        if (st.rectangular)
-        {
-            // when copying the text to the clipboard, add extra meta-data that
-            // tells the Paste() method that the user copied a rectangular
-            // block of text, as opposed to a stream of text.
-            wxDataObjectComposite* composite = new wxDataObjectComposite();
-            composite->Add(new wxTextDataObject(text), true);
-            composite->Add(new wxCustomDataObject(m_clipRectTextFormat));
-            wxTheClipboard->SetData(composite);
-        }
-        else
-#endif // wxHAVE_SCI_RECT_FORMAT
-            wxTheClipboard->SetData(new wxTextDataObject(text));
+/* C::B begin */
+        // composite object will hold "plain text" for pasting in other programs and a custom
+        // object for local use that remembers what kind of selection was made (stream or
+        // rectangular).
+        wxDataObjectComposite* obj = new wxDataObjectComposite();
+        wxCustomDataObject* rectData = new wxCustomDataObject(wxDataFormat(wxString(wxT("application/x-cbrectdata"))));
+
+        char* buffer = new char[st.LengthWithTerminator()];
+        buffer[0] = (st.rectangular)? (char)1 : (char)0;
+        memcpy(buffer+1, st.Data(), st.Length());
+        rectData->SetData(st.LengthWithTerminator(), buffer);
+        delete [] buffer;
+
+        obj->Add(rectData, true);
+        obj->Add(new wxTextDataObject(text));
+        wxTheClipboard->SetData(obj);
+/* C::B end */
         wxTheClipboard->Close();
     }
 #else
