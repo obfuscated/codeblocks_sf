@@ -351,8 +351,12 @@ void ScintillaWX::StartDrag() {
     evt.SetPosition(wxMin(stc->GetSelectionStart(),
                           stc->GetSelectionEnd()));
     stc->GetEventHandler()->ProcessEvent(evt);
-    dragText = evt.GetString();
 
+/* C::B begin */
+    UndoGroup ug(pdoc);
+/* C::B end */
+
+    dragText = evt.GetString();
 /* C::B begin */
     dragRectangle = drag.rectangular;
 /* C::B end */
