@@ -305,6 +305,9 @@ void ScintillaWX::Initialise() {
     dropTarget = new wxSCIDropTarget;
     dropTarget->SetScintilla(this);
     stc->SetDropTarget(dropTarget);
+/* C::B begin */
+    dragRectangle = false;
+/* C::B end */
 #endif // wxUSE_DRAG_AND_DROP
     vs.extraFontFlag = true;   // UseAntiAliasing
 
@@ -350,6 +353,9 @@ void ScintillaWX::StartDrag() {
     stc->GetEventHandler()->ProcessEvent(evt);
     dragText = evt.GetString();
 
+/* C::B begin */
+    dragRectangle = drag.rectangular;
+/* C::B end */
     if ( !dragText.empty() ) {
         wxDropSource        source(stc);
         wxTextDataObject    data(dragText);
@@ -1286,7 +1292,9 @@ bool ScintillaWX::DoDropText(long x, long y, const wxString& data) {
         DropAt(SelectionPosition(evt.GetPosition()),
                wx2sci(evt.GetString()),
                dragResult == wxDragMove,
-               false); // TODO: rectangular?
+/* C::B begin */
+               dragRectangle);
+/* C::B end */
         return true;
     }
     return false;
