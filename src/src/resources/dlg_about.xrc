@@ -54,7 +54,7 @@
 						<object class="wxPanel" name="tabInfo">
 							<object class="wxFlexGridSizer">
 								<cols>2</cols>
-								<rows>6</rows>
+								<rows>7</rows>
 								<vgap>4</vgap>
 								<hgap>8</hgap>
 								<growablecols>1</growablecols>
@@ -95,6 +95,22 @@
 										<label>sss</label>
 									</object>
 									<flag>wxALIGN_BOTTOM</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="ID_STATICTEXT7">
+										<label>Scintilla Version:</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
+									<border>5</border>
+									<option>1</option>
+								</object>
+								<object class="sizeritem">
+									<object class="wxStaticText" name="lblScintillaVer">
+										<label>sci__ver</label>
+									</object>
+									<flag>wxALIGN_TOP</flag>
 									<border>5</border>
 									<option>1</option>
 								</object>
@@ -170,7 +186,6 @@
 										<style>wxTE_MULTILINE|wxTE_READONLY|wxHSCROLL</style>
 									</object>
 									<flag>wxALL|wxEXPAND</flag>
-									<minsize>320,240</minsize>
 									<option>1</option>
 								</object>
 							</object>

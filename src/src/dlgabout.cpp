@@ -20,9 +20,13 @@
     #include <wx/string.h>
     #include <wx/textctrl.h>
     #include <wx/xrc/xmlres.h>
+    #if wxCHECK_VERSION(3, 0, 0)
+        #include <wx/versioninfo.h>
+    #endif // wxCHECK_VERSION
 
     #include "licenses.h"
     #include "configmanager.h"
+    #include "wx/wxscintilla.h"
 #endif
 
 #include <wx/bitmap.h>
@@ -133,6 +137,16 @@ dlgAbout::dlgAbout(wxWindow* parent)
     XRCCTRL(*this, "lblName",    wxStaticText)->SetLabel(appglobals::AppName);
     XRCCTRL(*this, "lblVersion", wxStaticText)->SetLabel(appglobals::AppActualVersionVerb);
     XRCCTRL(*this, "lblSDK",     wxStaticText)->SetLabel(appglobals::AppSDKVersion);
+#if wxCHECK_VERSION(3, 0, 0)
+    const wxVersionInfo scintillaVersion = wxScintilla::GetLibraryVersionInfo();
+    const wxString scintillaStr = wxString::Format(wxT("%d.%d.%d"),
+                                                   scintillaVersion.GetMajor(),
+                                                   scintillaVersion.GetMinor(),
+                                                   scintillaVersion.GetMicro());
+#else
+    const wxString scintillaStr = wxSCINTILLA_VERSION;
+#endif // wxCHECK_VERSION
+    XRCCTRL(*this, "lblScintillaVer", wxStaticText)->SetLabel(scintillaStr);
     XRCCTRL(*this, "lblAuthor",  wxStaticText)->SetLabel(_("The Code::Blocks Team"));
     XRCCTRL(*this, "lblEmail",   wxStaticText)->SetLabel(appglobals::AppContactEmail);
     XRCCTRL(*this, "lblWebsite", wxStaticText)->SetLabel(appglobals::AppUrl);
