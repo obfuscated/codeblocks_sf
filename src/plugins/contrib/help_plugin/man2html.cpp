@@ -3545,7 +3545,10 @@ static char *scan_request(char *c)
                             c++;
                         }
                         else if (*c=='+')
-                            j=1;c++;
+                        {
+                            j=1;
+                            c++;
+                        }
                         c=scan_expression(c, &i);
                         if (!j)
                         {
