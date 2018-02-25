@@ -332,11 +332,23 @@ bool SurfaceImpl::Initialised() {
 
 
 void SurfaceImpl::PenColour(ColourDesired fore) {
-    hdc->SetPen(wxPen(wxColourFromCD(fore)));
+/* C::B begin */
+    if( fore.AsLong() == -1 ) {
+        hdc->SetPen( *wxTRANSPARENT_PEN );
+    } else {
+        hdc->SetPen(wxPen(wxColourFromCD(fore)));
+    }
+/* C::B end */
 }
 
 void SurfaceImpl::BrushColour(ColourDesired back) {
-    hdc->SetBrush(wxBrush(wxColourFromCD(back)));
+/* C::B begin */
+    if( back.AsLong() == -1 ) {
+        hdc->SetBrush( *wxTRANSPARENT_BRUSH );
+    } else {
+        hdc->SetBrush(wxBrush(wxColourFromCD(back)));
+    }
+/* C::B end */
 }
 
 void SurfaceImpl::SetFont(Font &font_) {
@@ -420,9 +432,21 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     wxGCDC dc(*(wxMemoryDC*)hdc);
     wxColour penColour(wxColourFromCDandAlpha(outline, alphaOutline));
     wxColour brushColour(wxColourFromCDandAlpha(fill, alphaFill));
-    dc.SetPen(wxPen(penColour));
+/* C::B begin */
+    wxRect rect = wxRectFromPRectangle(rc);
+    wxPoint lt = rect.GetLeftTop()+ wxPoint(1,1);
+    wxSize size = rect.GetSize()-wxSize(2,2);
+    // twos steps needed because wx draws the outline over the fille
+    // draw fill
+    dc.SetPen(*wxTRANSPARENT_PEN);
     dc.SetBrush(wxBrush(brushColour));
-    dc.DrawRoundedRectangle(wxRectFromPRectangle(rc), cornerSize);
+    dc.DrawRoundedRectangle(lt, size, cornerSize?cornerSize-1:0);
+
+    // draw outline
+    dc.SetPen(wxPen(penColour));
+    dc.SetBrush(*wxTRANSPARENT_BRUSH);
+    dc.DrawRoundedRectangle(rect, cornerSize);
+/* C::B end */
     return;
 #else
 
