@@ -3,5 +3,4 @@ EXTRA_DIST = 	$(srcdir)/*.cpp \
 		$(srcdir)/*.cbp \
 		$(srcdir)/manifest.xml \
 		$(srcdir)/images \
-		$(srcdir)/stc \
 		$(srcdir)/stedit

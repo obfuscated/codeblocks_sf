@@ -15,6 +15,9 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp" />
 		</Project>
+        <Project filename="plugins/contrib/wxSmithSTC/wxsSmithSTC_wx30_unix.cbp">
+            <Depends filename="plugins/contrib/wxSmith/wxSmith_wx30-unix.cbp" />
+        </Project>
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>

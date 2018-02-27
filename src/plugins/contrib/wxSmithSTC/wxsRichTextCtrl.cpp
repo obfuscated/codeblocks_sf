@@ -118,7 +118,7 @@ wxColour            fg;
 
 // create the panel
 
-    Codef(_T("%C(%W, %I, wxEmptyString, %P, %s, %T, wxDefaultValidator, %N);\n"), ss.c_str());
+    Codef(_T("%C(%W, %I, wxEmptyString, %P, %s, %T, wxDefaultValidator, %N);\n"), ss.wx_str());
 
 
 // text color via an attribute record
@@ -127,10 +127,10 @@ wxColour            fg;
     fg = bp->m_Fg.GetColour();
 
     if (fg.Ok()) {
-        Codef(_T("wxRichTextAttr  %s;\n"), aname.c_str());
-        Codef(_T("%s.SetTextColour(wxColour(%d, %d, %d));\n"), aname.c_str(), fg.Red(), fg.Green(), fg.Blue());
-        Codef(_T("%s.SetFlags(wxTEXT_ATTR_TEXT_COLOUR);\n"), aname.c_str());
-        Codef(_T("%s->SetBasicStyle(%s);\n"), vname.c_str(), aname.c_str());
+        Codef(_T("wxRichTextAttr  %s;\n"), aname.wx_str());
+        Codef(_T("%s.SetTextColour(wxColour(%d, %d, %d));\n"), aname.wx_str(), fg.Red(), fg.Green(), fg.Blue());
+        Codef(_T("%s.SetFlags(wxTEXT_ATTR_TEXT_COLOUR);\n"), aname.wx_str());
+        Codef(_T("%s->SetBasicStyle(%s);\n"), vname.wx_str(), aname.wx_str());
     };
 
 // other declarations
@@ -141,7 +141,7 @@ wxColour            fg;
 
     if (! mVirtualSize.IsDefault) {
         ss = mVirtualSize.GetSizeCode(GetCoderContext());
-        Codef(_T("%ASetVirtualSize(%s);\n"), ss.c_str());
+        Codef(_T("%ASetVirtualSize(%s);\n"), ss.wx_str());
     };
 
 
@@ -150,7 +150,7 @@ wxColour            fg;
     for(size_t i=0; i<mText.GetCount(); i++) {
         ss  = mText.Item(i);
         ss += _T("\n");
-        Codef(_T("%AAppendText(%t);\n"), ss.c_str());
+        Codef(_T("%AAppendText(%t);\n"), ss.wx_str());
     };
 }
 

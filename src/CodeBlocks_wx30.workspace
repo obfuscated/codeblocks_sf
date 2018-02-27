@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <CodeBlocks_workspace_file>
 	<Workspace title="CodeBlocks Workspace wx3.0.x">
-		<Project filename="CodeBlocks_wx30.cbp" active="1" />
+		<Project filename="CodeBlocks_wx30.cbp" />
 		<Project filename="tools/Addr2LineUI/Addr2LineUI_wx30.cbp" />
 		<Project filename="tools/cb_share_config/cb_share_config_wx30.cbp" />
 		<Project filename="tools/CBLauncher/CbLauncher_wx30.cbp" />
@@ -16,6 +16,7 @@
 		<Project filename="plugins/contrib/wxSmithAui/wxSmithAui_wx30.cbp">
 			<Depends filename="plugins/contrib/wxSmith/wxSmith_wx30.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/wxSmithSTC/wxsSmithSTC_wx30.cbp" />
 		<Project filename="plugins/contrib/AutoVersioning/AutoVersioning_wx30.cbp" />
 		<Project filename="plugins/contrib/BrowseTracker/BrowseTracker_wx30.cbp" />
 		<Project filename="plugins/contrib/byogames/byogames_wx30.cbp" />
@@ -33,7 +34,6 @@
 		<Project filename="plugins/contrib/EditorTweaks/EditorTweaks_wx30.cbp" />
 		<Project filename="plugins/contrib/envvars/envvars_wx30.cbp" />
 		<Project filename="plugins/contrib/FileManager/FileManager_wx30.cbp" />
-		<Project filename="plugins/contrib/FortranProject/FortranProject_cbsvn_wx30.cbp" />
 		<Project filename="plugins/contrib/headerfixup/headerfixup_wx30.cbp" />
 		<Project filename="plugins/contrib/help_plugin/help-plugin_wx30.cbp" />
 		<Project filename="plugins/contrib/HexEditor/HexEditor_wx30.cbp" />
