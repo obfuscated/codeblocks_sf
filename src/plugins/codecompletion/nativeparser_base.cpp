@@ -682,16 +682,16 @@ size_t NativeParserBase::BreakUpComponents(const wxString&              actual,
                                            std::queue<ParserComponent>& components)
 {
     ParserTokenType tokenType;
-    wxString tmp = actual;
+    wxString statement = actual;
     OperatorType tokenOperatorType;
     // break up components of phrase
     if (s_DebugSmartSense)
-        CCLogger::Get()->DebugLog(F(_T("BreakUpComponents() Breaking up '%s'"), tmp.wx_str()));
+        CCLogger::Get()->DebugLog(F(_T("BreakUpComponents() Breaking up '%s'"), statement.wx_str()));
     TRACE(_T("NativeParserBase::BreakUpComponents()"));
 
     while (true)
     {
-        wxString tok = GetCCToken(tmp, tokenType, tokenOperatorType);
+        wxString tok = GetCCToken(statement, tokenType, tokenOperatorType);
 
         ParserComponent pc;
         pc.component         = tok;
