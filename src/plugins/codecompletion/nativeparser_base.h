@@ -17,13 +17,13 @@
 #include "parser/token.h"
 #include "parser/tokentree.h"
 
-/** debug only variable, used to print the AI match related log message*/
+/** debug only variable, used to print the AI match related log message */
 extern bool s_DebugSmartSense;
 
 class NativeParserBase
 {
 public:
-    /** divide a statement to several pieces(parser component), each component has a type member*/
+    /** divide a statement to several pieces(parser component), each component has a type member */
     enum ParserTokenType
     {
         pttUndefined = 0,
@@ -56,6 +56,18 @@ public:
      *  Root             [pttClass]
      *  getSingleton     [pttFunction]
      *  (empty space)    [pttSearchText]
+     * @endcode
+     *
+     * a ParserComponent is mainly an identifier, which we use this identifier name to query on the
+     * Symbol tree, and try to get the matched symbols.
+     * For this example, we first try to search the Symbol tree by the keyword "Ogre", this will
+     * match a symbol which has type "Namespace".
+     * The next step, we search the "Root" under the previous returned Symbols.
+     * In some special cases, such as "array[7]->b", we gives such result
+     * @code
+     *  array            [pttNamespace] (variable name?)
+     *  []               [pttFunction, which is operator[]]
+     *  b                [pttSearchText]
      * @endcode
      */
     struct ParserComponent
@@ -109,50 +121,84 @@ protected:
                          TokenIdxSet*                search_scope = 0);
 
     /** if the expression return the container tokens, which are the
-     *  parent of the expression.
-     *  @param procResult input function index collection
-     *  @param scopeResult filtered output function index collection
+     * parent of the expression.
+     * @param[in] procResult input function index collection
+     * @param[out] scopeResult filtered output function index collection
+     * For example, if we have such code
+     * @code
+     * class A
+     * {
+     *      void f()
+     *      {
+     *         statement|<-----CC here
+     *      };
+     * }
+     * @endcode
+     * We try to locate the Tokens their scopes "Cover" the "statement"
      */
     void FindCurrentFunctionScope(TokenTree*         tree,
                                   const TokenIdxSet& procResult,
                                   TokenIdxSet&       scopeResult);
 
-    /** remove all the container tokens in the token index set. */
+    /** remove all the container tokens in the token index set.
+     * @param searchScope The Tokens we need to remove from the tree
+     */
     void CleanupSearchScope(TokenTree*  tree,
                             TokenIdxSet* searchScope);
 
-    /** Returns the start and end of the call-tip highlight region. */
+    /** Returns the start and end of the call-tip highlight region.
+     * For a function prototype "void MyNamespace::SomeClass::func(int a, float b)"
+     * if we have a function call statement "obj->f(x,y)", when we hover on the "y", we should
+     * high light the "float b" in the calltip
+     * @param[in] calltip is the calltip string
+     * @param[out] start the start index of the high light string
+     * @param[out] end the end index of the high light string
+     * @param[in] typedCommas e.g. "func(x, y)", in this case, we say we have typed one comma before
+     * the hovered "y", so we know we need to high light the second parameter, which is "float b"
+     */
     void GetCallTipHighlight(const wxString& calltip,
                              int*            start,
                              int*            end,
                              int             typedCommas);
 
-    /** for GetCallTipHighlight()
-        Finds the position of the opening parenthesis marking the beginning of the params. */
+    /** Finds the position of the opening parenthesis marking the beginning of the params.
+     * See GetCallTipHighlight() for more details
+     */
     int FindFunctionOpenParenthesis(const wxString& calltip);
 
     /** helper function to split the statement
-     * line contains a string on the following form:
+     *
+     * @param line a statement string
+     * @param[out] tokenType the returned type of the string
+     * @param[out] tokenOperatorType if it is a function call token, specify which type of function call
+     * It contains a string on the following form:
      * @code
-     * "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
+     *     char* mychar = SomeNamespace::m_SomeVar.SomeMeth
+     *                                                     ^----start from here
      * @endcode
+     * Usually, the caret is located at the end of the line.
+     *
      * first we locate the first non-space char starting from the *end*:
      * @code
-     * "    char* mychar = SomeNamespace::m_SomeVar.SomeMeth"
-     * @endcode                   ^
-     * then we remove everything before it.
-     * after it, what we do here, is (by this example) return "SomeNamespace"
-     * *and* modify line to become:
+     *     char* mychar = SomeNamespace::m_SomeVar.SomeMeth
+     *                    ^----stop here
+     * @endcode
+     * then we remove everything before it, so we get "SomeNamespace::m_SomeVar.SomeMeth"
+     *
+     * Now we cut the first component "SomeNamespace" and return it.
+     * The statement line becomes:
      * @code
      * m_SomeVar.SomeMeth
      * @endcode
-     * so that if we 're called again with the (modified) line,
-     * we 'll return "m_SomeVar" and modify line (again) to become:
+     * so that if we call this function again with the (modified) line,
+     * we'll return "m_SomeVar" and modify line (again) to become:
      * @code
-     * SomeMeth
+     *     SomeMeth
      * @endcode
      * and so on and so forth until we return an empty string...
      * NOTE: if we find () args or [] arrays in our way, we skip them (done in GetNextCCToken)...
+     * todo: it looks like [] is not skipped, because we have to handle the operator[]
+     * also, if we see a aaa(), we always think it is a function call
      */
     wxString GetCCToken(wxString&        line,
                         ParserTokenType& tokenType,
@@ -187,8 +233,8 @@ protected:
     /** Remove the last function's children, when doing codecompletion in a function body, the
      *  function body up to the caret position was parsed, and the local variables defined in
      *  the function were recorded as the function's children.
-     *  Note that there tokens are marked as temporary tokens, so If the edit caret moves to another
-     *  function body, those temporary tokens should be removed.
+     *  Note that these tokens are marked as temporary tokens, so if the edit caret moves to another
+     *  function body, these temporary tokens should be removed.
      */
     void RemoveLastFunctionChildren(TokenTree* tree, int& lastFuncTokenIdx);
 
@@ -523,11 +569,12 @@ protected:
      * @code
      *  SomeNameSpace       ::  SomeClass
      *              ^end   ^begin
-     * note if there some spaces in the begging like
+     * note if there some spaces in the beginning like below
      *      "       f::"
      *     ^end    ^begin
      * @endcode
      * the returned index is -1.
+     * @return the cursor after the operation
      */
     static int BeforeWhitespace(int startAt, const wxString& line)
     {
@@ -539,11 +586,14 @@ protected:
         return startAt;
     }
 
-    /** search from left to right, move to the first character of the space
+    /** search from left to right, move the cursor to the first character after the space
      * @code
      *  "       ::   f"
-     *  ^begin  ^end
+     *   ^begin ^end
      * @endcode
+     * @param[in] startAt the begin of the cursor
+     * @param[in] line the string buffer
+     * @return the location of the cursor
      */
     static int AfterWhitespace(int startAt, const wxString& line)
     {
@@ -555,6 +605,11 @@ protected:
             ++startAt;
         return startAt;
     }
+
+    /** Test whether the current character is a '(' or '['
+     * @param startAt the current cursor on the buffer
+     * @return true if test is OK
+     */
     static bool IsOpeningBracket(int startAt, const wxString& line)
     {
         return (   ((size_t)startAt < line.Len())

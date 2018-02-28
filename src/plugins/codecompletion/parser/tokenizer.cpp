@@ -85,7 +85,7 @@ namespace TokenizerConsts
     const wxString kw_undef     (_T("undef"));
 }// namespace TokenizerConsts
 
-// maximun macro replacement stack size
+// maximum macro replacement stack size
 static const size_t s_MaxMacroReplaceDepth = 5;
 
 Tokenizer::Tokenizer(TokenTree* tokenTree, const wxString& filename) :
