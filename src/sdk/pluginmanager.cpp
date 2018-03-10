@@ -1371,19 +1371,24 @@ PluginsArray PluginManager::GetOffersFor(PluginType type)
 
 void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
 {
+    std::map<wxString, cbPlugin*> sortedPlugins;
     for (unsigned int i = 0; i < m_Plugins.GetCount(); ++i)
     {
         cbPlugin* plug = m_Plugins[i]->plugin;
         if (plug && plug->IsAttached())
+            sortedPlugins[m_Plugins[i]->info.name] = plug;
+    }
+
+    // We want the order of iteration to be more stable, so there are fewer surprises on different machines.
+    for (auto &pair : sortedPlugins)
+    {
+        try
         {
-            try
-            {
-                plug->BuildModuleMenu(type, menu, data);
-            }
-            catch (cbException& exception)
-            {
-                exception.ShowErrorMessage(false);
-            }
+            pair.second->BuildModuleMenu(type, menu, data);
+        }
+        catch (cbException& exception)
+        {
+            exception.ShowErrorMessage(false);
         }
     }
 
