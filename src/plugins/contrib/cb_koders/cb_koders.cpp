@@ -106,7 +106,6 @@ void CB_Koders::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
 
 	if (type == mtEditorManager)
 	{
-		menu->AppendSeparator();
 		menu->Append(idSearchKoders, _("Search at BlackDuck..."), _("Search keyword at BlackDuck webpage..."));
 	}
 }

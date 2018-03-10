@@ -393,8 +393,6 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
         m_wordstart = wordstart;
         m_wordend   = wordend;
 
-        menu->AppendSeparator();
-
         m_suggestions = m_pSpellChecker->GetSuggestions( misspelledWord );
         if ( m_suggestions.size() )
         {

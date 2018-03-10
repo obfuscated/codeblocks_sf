@@ -637,7 +637,6 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     alignerMenu->Append(id_et_align_others, _("More ..."));
 
     // attach aligner menu
-    menu->AppendSeparator();
     menu->Append(wxID_ANY, _T("Aligner"), alignerMenu);
 
     return;
