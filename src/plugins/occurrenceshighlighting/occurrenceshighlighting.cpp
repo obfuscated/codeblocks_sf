@@ -162,9 +162,17 @@ void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* men
     if ( word.IsEmpty() ) return;
 
     if ( m_texts.find(word) == m_texts.end() )
-        menu->Append(idMenuEntryPermanent, _("Permanently Highlight '") + word + _T("'"));
+    {
+        const wxString label = _("Permanently Highlight '") + word + _T("'");
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+        menu->Insert(position, idMenuEntryPermanent, label);
+    }
     else
-        menu->Append(idMenuEntryRemove,    _("Don't Highlight '")       + word + _T("'"));
+    {
+        const wxString label = _("Don't Highlight '") + word + _T("'");
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+        menu->Insert(position, idMenuEntryRemove, label);
+    }
 
 }
 void OccurrencesHighlighting::BuildMenu(wxMenuBar* menuBar)

@@ -88,8 +88,13 @@ void AStylePlugin::BuildModuleMenu( const ModuleType type, wxMenu* menu, const F
     switch ( type )
     {
         case mtEditorManager:
-            menu->Append( idCodeFormatterActiveFile, _( "Format use AStyle" ), _( "Format the selected source code (selected line) in the current file" ) );
+        {
+            const wxString label = _("Format use AStyle");
+            const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+
+            menu->Insert(position, idCodeFormatterActiveFile, label, _( "Format the selected source code (selected line) in the current file" ) );
             break;
+        }
 
         case mtProjectManager:
             if ( data ) switch ( data->GetKind() )

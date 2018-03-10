@@ -403,12 +403,16 @@ void SpellCheckerPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb
             if ( m_suggestions.size() > MaxSuggestEntries )
                 SuggestionsMenu->Append(idMoreSuggestions, _("more..."));
             SuggestionsMenu->Append(idAddToDictionary, _("Add '") + misspelledWord + _("' to dictionary"));
-            menu->AppendSubMenu(SuggestionsMenu, _("Spelling suggestions for '") + misspelledWord + _T("'") );
+
+            const wxString label = _("Spelling suggestions for '") + misspelledWord + _T("'");
+            const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+            menu->Insert(position, wxID_ANY, label, SuggestionsMenu); //AppendSubMenu(SuggestionsMenu, _("Spelling suggestions for '") + misspelledWord + _T("'") );
         }
         else
         {
-            //menu->Append(idMoreSuggestions, _("No spelling suggestions for '") + misspelledWord + _T("'"))->Enable(false);
-            menu->Append(idAddToDictionary, _("Add '") + misspelledWord + _("' to dictionary"));
+            const wxString label = _("Add '") + misspelledWord + _("' to dictionary");
+            const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+            menu->Insert(position, idAddToDictionary, _("Add '") + misspelledWord + _("' to dictionary"));
         }
     }
 }

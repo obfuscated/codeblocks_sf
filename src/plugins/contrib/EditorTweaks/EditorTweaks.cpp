@@ -637,7 +637,9 @@ void EditorTweaks::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     alignerMenu->Append(id_et_align_others, _("More ..."));
 
     // attach aligner menu
-    menu->Append(wxID_ANY, _T("Aligner"), alignerMenu);
+    const wxString label = wxT("Aligner");
+    const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+    menu->Insert(position, wxID_ANY, label, alignerMenu);
 
     return;
 

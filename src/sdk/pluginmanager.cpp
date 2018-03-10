@@ -1402,10 +1402,11 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
     }
 }
 
-void PluginManager::ResetFindMenuItemCount()
+void PluginManager::ResetModuleMenu()
 {
     m_FindMenuItemCount = 0;
     m_FindMenuItemFirst = 0;
+    m_LastNonPluginMenuId = 0;
 }
 
 void PluginManager::RegisterFindMenuItems(bool before, int count)
@@ -1424,6 +1425,41 @@ int PluginManager::GetFindMenuItemCount() const
 int PluginManager::GetFindMenuItemFirst() const
 {
     return m_FindMenuItemFirst;
+}
+
+void PluginManager::RegisterLastNonPluginMenuItem(int id)
+{
+    m_LastNonPluginMenuId = id;
+}
+
+int PluginManager::FindSortedMenuItemPosition(wxMenu &popup, const wxString& label) const
+{
+    int position = -1;
+    const wxMenuItemList &items = popup.GetMenuItems();
+    const int count = int(items.size());
+    for (int ii = 0; ii < count; ++ii)
+    {
+        if (items[ii]->GetId() == m_LastNonPluginMenuId)
+        {
+            position = ii + 1;
+            break;
+        }
+    }
+
+    if (position == -1 || (position >= count))
+        return count;
+    if (items[position]->GetKind() == wxITEM_SEPARATOR)
+        position++;
+
+    // Linear search for now. The number of items isn't large, so it shouldn't be a performance
+    // problem.
+    for (int ii = position; ii < count; ++ii)
+    {
+        const wxString &itemLabel = items[ii]->GetItemLabelText();
+        if (label.CmpNoCase(itemLabel) <= 0)
+            return ii;
+    }
+    return count;
 }
 
 void PluginManager::OnScriptMenu(wxCommandEvent& event)

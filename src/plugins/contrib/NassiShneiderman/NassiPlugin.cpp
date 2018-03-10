@@ -330,7 +330,11 @@ void NassiPlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fil
     }
 
     if ( NassiMenu )
-        menu->AppendSubMenu(NassiMenu, _("Nassi Shneiderman"));
+    {
+        const wxString label = _("Nassi Shneiderman");
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+        menu->Insert(position, wxID_ANY, label, NassiMenu);
+    }
 }
 
 bool NassiPlugin::BuildToolBar(wxToolBar* toolBar)

@@ -195,7 +195,9 @@ void ToDoList::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused co
         return;
     if (type == mtEditorManager)
     {
-        menu->Append(idAddTodo, _("Add Todo item..."), _("Add new Todo item..."));
+        const wxString label =  _("Add Todo item...");
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+        menu->Insert(position, idAddTodo, label, _("Add new Todo item..."));
     }
 }
 

@@ -122,7 +122,7 @@ class ToolsPlus : public cbPlugin
     public:
         void UpdateMenu(bool replace_old_tools);
         void CreateMenu();
-        void AddModuleMenuEntry(wxMenu *modmenu,int entrynum, int idref);
+        void AddModuleMenuEntry(wxMenu *modmenu,int entrynum, int idref, ModuleType type);
         void ShowConsole();
         void HideConsole();
         CommandCollection m_ic; //object holding interpreter properties

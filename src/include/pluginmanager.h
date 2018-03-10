@@ -125,7 +125,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr);
         /// Called by the code creating the context menu for the editor. Must not be called by
         /// plugins.
-        void ResetFindMenuItemCount();
+        void ResetModuleMenu();
         /// Can be called by plugins' BuildModuleMenu when building the EditorManager's context
         /// menu. This method has two purposes:
         /// 1. to control the number of find related items in the menu
@@ -138,6 +138,17 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         int GetFindMenuItemCount() const;
         /// Returns the position of the first menu item in the find group.
         int GetFindMenuItemFirst() const;
+        /// Called by the editor code which adds the non-plugin related menu items to store the id
+        /// of the last fixed menu item. Must not be called by plugins.
+        void RegisterLastNonPluginMenuItem(int id);
+        /// Called by plugins when they want to add menu items to the editor's context menu.
+        /// Using this method will produce a menu which is sorted alphabetically (case
+        /// insensitive). The menu items are added at the bottom of the menu.
+        /// @param popup The context menu passed to BuildModuleMenu.
+        /// @param label The label of the new menu item. It will be used to find the correct
+        /// position.
+        /// @return The position where to insert the item.
+        int FindSortedMenuItemPosition(wxMenu &popup, const wxString& label) const;
 
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
@@ -203,6 +214,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
 
         int m_FindMenuItemCount = 0;
         int m_FindMenuItemFirst = 0;
+        int m_LastNonPluginMenuId = 0;
 
         static bool s_SafeMode;
 

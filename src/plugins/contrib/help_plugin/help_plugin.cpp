@@ -323,10 +323,12 @@ void HelpPlugin::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
     for (it = m_Vector.begin(); it != m_Vector.end(); ++it)
       AddToPopupMenu(sub_menu, idHelpMenus[counter++], it->first, it->second.readFromIni);
 
-    wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, _("&Locate in"), _T(""), wxITEM_NORMAL);
+    const wxString label = _("&Locate in");
+    wxMenuItem *locate_in_menu = new wxMenuItem(0, wxID_ANY, label, _T(""), wxITEM_NORMAL);
     locate_in_menu->SetSubMenu(sub_menu);
 
-    menu->Append(locate_in_menu);
+    const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+    menu->Insert(position, locate_in_menu);
   }
 }
 

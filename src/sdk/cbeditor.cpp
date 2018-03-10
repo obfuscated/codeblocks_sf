@@ -2768,6 +2768,7 @@ wxMenu* cbEditor::CreateContextSubMenu(long id)
 // Adds menu items to context menu (both before and after loading plugins' items)
 void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
 {
+    PluginManager *pluginManager = Manager::Get()->GetPluginManager();
     bool noeditor = (type != mtEditorManager);
     if (!pluginsdone)
     {
@@ -2798,13 +2799,23 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
                 popup->Enable(idPaste, !control->GetReadOnly());
             else
                 popup->Enable(idPaste, !control->GetReadOnly() && control->CanPaste());
+            pluginManager->RegisterLastNonPluginMenuItem(idPaste);
         }
         if (insert)
+        {
             popup->Append(idInsert, _("Insert/Refactor"), insert);
+            pluginManager->RegisterLastNonPluginMenuItem(idInsert);
+        }
         if (bookmarks)
+        {
             popup->Append(idBookmarks, _("Bookmarks"), bookmarks);
+            pluginManager->RegisterLastNonPluginMenuItem(idBookmarks);
+        }
         if (folding)
+        {
             popup->Append(idFolding, _("Folding"), folding);
+            pluginManager->RegisterLastNonPluginMenuItem(idFolding);
+        }
 
         if (insert || bookmarks || folding)
             popup->AppendSeparator();
@@ -2815,7 +2826,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         {
             popup->InsertSeparator(0);
             popup->Insert(0, idOpenUrl, _("Open link in browser"));
-            Manager::Get()->GetPluginManager()->RegisterFindMenuItems(true, 2);
+            pluginManager->RegisterFindMenuItems(true, 2);
         }
         // remove "Insert/Empty" if more than one entry
         wxMenu* insert = nullptr;

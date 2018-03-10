@@ -610,7 +610,10 @@ void DoxyBlocks::BuildModuleMenu(const ModuleType type, wxMenu *menu, const File
         wxMenuItem *MenuItemLineComment = new wxMenuItem(submenu, ID_MENU_LINECOMMENT, _("&Line Comment"), _("Insert a line comment at the current cursor position."));
         MenuItemLineComment->SetBitmap(wxBitmap(prefix + wxT("comment_line.png"), wxBITMAP_TYPE_PNG));
         submenu->Append(MenuItemLineComment);
-        menu->AppendSubMenu(submenu, wxT("Do&xyBlocks"));
+
+        const wxString label = wxT("Do&xyBlocks");
+        const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*menu, label);
+        menu->Insert(position, wxID_ANY, label, submenu);
         // Events are already attached to these IDs in BuildMenu().
     }
 }

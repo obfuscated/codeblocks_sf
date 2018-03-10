@@ -500,9 +500,13 @@ void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const 
         wxMenuItem* pContextItem= new wxMenuItem(sub_menu, menuId, menuLabel); //patch 2886
         sub_menu->Append( pContextItem );
     }
-    pbtMenuItem = new wxMenuItem(sub_menu, wxID_ANY, _("Browse Tracker"), _T(""), wxITEM_NORMAL);   //patch 2886
+
+    const wxString label = _("Browse Tracker");
+    const int position = Manager::Get()->GetPluginManager()->FindSortedMenuItemPosition(*popup, label);
+
+    pbtMenuItem = new wxMenuItem(sub_menu, wxID_ANY, label, _T(""), wxITEM_NORMAL);   //patch 2886
     pbtMenuItem->SetSubMenu(sub_menu);
-    popup->Append(pbtMenuItem);
+    popup->Insert(position, pbtMenuItem);
 
 }//BuildModuleMenu
 // ----------------------------------------------------------------------------

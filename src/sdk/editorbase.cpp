@@ -282,7 +282,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
     wxMenu* popup = new wxMenu;
 
     PluginManager *pluginManager = Manager::Get()->GetPluginManager();
-    pluginManager->ResetFindMenuItemCount();
+    pluginManager->ResetModuleMenu();
 
     if (!noeditor && wxGetKeyState(WXK_CONTROL))
     {
