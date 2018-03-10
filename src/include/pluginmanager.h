@@ -121,7 +121,24 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         PluginsArray GetCodeCompletionOffers();
         PluginsArray GetSmartIndentOffers();
         PluginsArray GetOffersFor(PluginType type);
+
         void AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr);
+        /// Called by the code creating the context menu for the editor. Must not be called by
+        /// plugins.
+        void ResetFindMenuItemCount();
+        /// Can be called by plugins' BuildModuleMenu when building the EditorManager's context
+        /// menu. This method has two purposes:
+        /// 1. to control the number of find related items in the menu
+        /// 2. to control the number of items that are placed before the find related items.
+        /// @param before Pass true when you're adding items before the find group and false when
+        /// adding in the find group.
+        /// @param count The number of items you're adding to the menu.
+        void RegisterFindMenuItems(bool before, int count);
+        /// Returns the number of items in the find group already added to the menu.
+        int GetFindMenuItemCount() const;
+        /// Returns the position of the first menu item in the find group.
+        int GetFindMenuItemFirst() const;
+
         cbMimePlugin* GetMIMEHandlerForFile(const wxString& filename);
         void GetConfigurationPanels(int group, wxWindow* parent, ConfigurationPanelsArray& arrayToFill);
         void GetProjectConfigurationPanels(wxWindow* parent, cbProject* project, ConfigurationPanelsArray& arrayToFill);
@@ -183,6 +200,9 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         };
         std::vector<PluginRegistration> m_RegisteredPlugins;
         CompilerPlugins m_CompilerPlugins;
+
+        int m_FindMenuItemCount = 0;
+        int m_FindMenuItemFirst = 0;
 
         static bool s_SafeMode;
 

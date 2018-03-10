@@ -758,33 +758,33 @@ void CodeCompletion::BuildModuleMenu(const ModuleType type, wxMenu* menu, const 
         const bool nameUnderCursor = CodeCompletionHelper::EditorHasNameUnderCursor(NameUnderCursor, IsInclude);
         if (nameUnderCursor)
         {
+            PluginManager *pluginManager = Manager::Get()->GetPluginManager();
+
             if (IsInclude)
             {
                 wxString msg;
                 msg.Printf(_("Open #include file: '%s'"), NameUnderCursor.wx_str());
                 menu->Insert(0, idOpenIncludeFile, msg);
                 menu->Insert(1, wxID_SEPARATOR, wxEmptyString);
+                pluginManager->RegisterFindMenuItems(true, 2);
             }
             else
             {
+                int initialPos = pluginManager->GetFindMenuItemFirst();
+                int pos = initialPos;
                 wxString msg;
-                size_t pos = 0;
                 msg.Printf(_("Find declaration of: '%s'"), NameUnderCursor.wx_str());
-                menu->Insert(pos, idGotoDeclaration, msg);
-                ++pos;
+                menu->Insert(pos++, idGotoDeclaration, msg);
 
                 msg.Printf(_("Find implementation of: '%s'"), NameUnderCursor.wx_str());
-                menu->Insert(pos, idGotoImplementation, msg);
-                ++pos;
+                menu->Insert(pos++, idGotoImplementation, msg);
 
                 if (m_NativeParser.GetParser().Done())
                 {
                     msg.Printf(_("Find references of: '%s'"), NameUnderCursor.wx_str());
-                    menu->Insert(pos, idMenuFindReferences, msg);
-                    ++pos;
+                    menu->Insert(pos++, idMenuFindReferences, msg);
                 }
-
-                menu->Insert(pos, wxID_SEPARATOR, wxEmptyString);
+                pluginManager->RegisterFindMenuItems(false, pos - initialPos);
             }
         }
 

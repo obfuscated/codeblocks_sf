@@ -2815,6 +2815,7 @@ void cbEditor::AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone)
         {
             popup->InsertSeparator(0);
             popup->Insert(0, idOpenUrl, _("Open link in browser"));
+            Manager::Get()->GetPluginManager()->RegisterFindMenuItems(true, 2);
         }
         // remove "Insert/Empty" if more than one entry
         wxMenu* insert = nullptr;

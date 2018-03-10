@@ -408,7 +408,18 @@ void DebuggerMenuHandler::BuildContextMenu(wxMenu &menu, const wxString& word_at
     if (!plugin)
         return;
 
-    int item = 0;
+    PluginManager *pluginManager = Manager::Get()->GetPluginManager();
+
+    int initialItem;
+    if (is_running)
+    {
+        // we want debugger menu items to be at the top when debugging
+        initialItem = pluginManager->GetFindMenuItemFirst();
+    }
+    else
+        initialItem = pluginManager->GetFindMenuItemFirst() + pluginManager->GetFindMenuItemCount();
+    int item = initialItem;
+
     // Insert Run to Cursor
     if (plugin->SupportsFeature(cbDebuggerFeature::RunToCursor))
         menu.Insert(item++, idMenuRunToCursor, _("Run to cursor"));
@@ -435,8 +446,10 @@ void DebuggerMenuHandler::BuildContextMenu(wxMenu &menu, const wxString& word_at
         menu.Insert(item++, idMenuToggleBreakpoint, _("Toggle breakpoint"));
     if (item > 0)
         menu.InsertSeparator(item++);
-}
 
+    if (is_running)
+        pluginManager->RegisterFindMenuItems(true, item - initialItem);
+}
 
 void DebuggerMenuHandler::OnUpdateUI(wxUpdateUIEvent& event)
 {

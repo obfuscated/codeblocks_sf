@@ -281,6 +281,9 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
 
     wxMenu* popup = new wxMenu;
 
+    PluginManager *pluginManager = Manager::Get()->GetPluginManager();
+    pluginManager->ResetFindMenuItemCount();
+
     if (!noeditor && wxGetKeyState(WXK_CONTROL))
     {
         cbStyledTextCtrl* control = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor()->GetControl();
@@ -323,7 +326,7 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         // ask other editors / plugins if they need to add any entries in this menu...
         FileTreeData* ftd = new FileTreeData(nullptr, FileTreeData::ftdkUndefined);
         ftd->SetFolder(m_Filename);
-        Manager::Get()->GetPluginManager()->AskPluginsForModuleMenu(type, popup, ftd);
+        pluginManager->AskPluginsForModuleMenu(type, popup, ftd);
         delete ftd;
 
         popup->AppendSeparator();
@@ -339,6 +342,11 @@ void EditorBase::DisplayContextMenu(const wxPoint& position, ModuleType type)
         if (last && last->IsSeparator())
             popup->Remove(last);
     }
+
+    // Insert a separator at the end of the "Find XXX" menu group of items.
+    const int lastFind = pluginManager->GetFindMenuItemFirst() + pluginManager->GetFindMenuItemCount();
+    if (lastFind > 0)
+        popup->Insert(lastFind, wxID_SEPARATOR, wxEmptyString);
 
     // inform the editors we 're done creating a context menu (just about to show it)
     OnAfterBuildContextMenu(type);

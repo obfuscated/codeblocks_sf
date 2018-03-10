@@ -151,47 +151,11 @@ void CscopePlugin::BuildModuleMenu(const ModuleType type, wxMenu* menu, const Fi
     wxString word = GetWordAtCaret();
     if ( word.IsEmpty() ) return;
 
-
-    // Looks after the "Find implementation of:" menu item
-    const wxMenuItemList ItemsList = menu->GetMenuItems();
-    int idximp=-1;
-    int idxocc=-1;
-    for (int idx = 0; idx < (int)ItemsList.GetCount(); ++idx)
-    {
-        #if wxCHECK_VERSION(3, 0, 0)
-        if (ItemsList[idx]->GetItemLabelText().StartsWith(_("Find implementation of:")) )
-        #else
-        if (ItemsList[idx]->GetLabel().StartsWith(_("Find implementation of:")) )
-        #endif
-        {
-            idximp = idx;
-        }
-        #if wxCHECK_VERSION(3, 0, 0)
-        if (ItemsList[idx]->GetItemLabelText().StartsWith(_("Find occurrences of:")) )
-        #else
-        if (ItemsList[idx]->GetLabel().StartsWith(_("Find occurrences of:")) )
-        #endif
-        {
-            idxocc = idx;
-        }
-    }
-
-    if ( idxocc == -1 && idximp == -1 )
-    {
-        //menu->Append(idOnFindSymbol,                       _T("Find C symbol '") + word + _T("'"));
-        //menu->Append(idOnFindGlobalDefinition,             _T("Find '") + word + _T("' global definition"));
-        menu->Append(idOnFindFunctionsCalledByThisFuncion, _("Find functions called by '") + word + _T("'"));
-        menu->Append(idOnFindFunctionsCallingThisFunction, _("Find functions calling '") + word + _T("'"));
-    }
-    else
-    {
-        if ( idxocc >= 0 ) // if find occurences
-            idximp = idxocc;
-        //menu->Insert(++idximp,idOnFindSymbol,                       _T("Find C symbol '") + word + _T("'"));
-        //menu->Insert(++idximp,idOnFindGlobalDefinition,             _T("Find '") + word + _T("' global definition"));
-        menu->Insert(++idximp,idOnFindFunctionsCalledByThisFuncion, _("Find functions called by '") + word + _T("'"));
-        menu->Insert(++idximp,idOnFindFunctionsCallingThisFunction, _("Find functions calling '") + word + _T("'"));
-    }
+    PluginManager *pluginManager = Manager::Get()->GetPluginManager();
+    int idximp = pluginManager->GetFindMenuItemFirst() + pluginManager->GetFindMenuItemCount();
+    menu->Insert(idximp++, idOnFindFunctionsCalledByThisFuncion, _("Find functions called by '") + word + _T("'"));
+    menu->Insert(idximp++, idOnFindFunctionsCallingThisFunction, _("Find functions calling '") + word + _T("'"));
+    pluginManager->RegisterFindMenuItems(false, 2);
 }
 
 void CscopePlugin::MakeOutputPaneVisible()

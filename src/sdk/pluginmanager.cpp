@@ -1402,6 +1402,30 @@ void PluginManager::AskPluginsForModuleMenu(const ModuleType type, wxMenu* menu,
     }
 }
 
+void PluginManager::ResetFindMenuItemCount()
+{
+    m_FindMenuItemCount = 0;
+    m_FindMenuItemFirst = 0;
+}
+
+void PluginManager::RegisterFindMenuItems(bool before, int count)
+{
+    if (before)
+        m_FindMenuItemFirst += count;
+    else
+        m_FindMenuItemCount += count;
+}
+
+int PluginManager::GetFindMenuItemCount() const
+{
+    return m_FindMenuItemCount;
+}
+
+int PluginManager::GetFindMenuItemFirst() const
+{
+    return m_FindMenuItemFirst;
+}
+
 void PluginManager::OnScriptMenu(wxCommandEvent& event)
 {
     ScriptBindings::ScriptPluginWrapper::OnScriptMenu(event.GetId());
