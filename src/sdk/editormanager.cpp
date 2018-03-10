@@ -1656,7 +1656,6 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     {
         pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
         pop->Append(idNBTabOpenContainingFolder, _("Open containing folder"));
-        pop->Append(idNBProperties, _("Properties..."));
         pop->AppendSeparator();
     }
 
@@ -1692,6 +1691,9 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
             else
                 pop->Append(idNBAddFileToProject, _("Add file to active project"));
         }
+
+        pop->AppendSeparator();
+        pop->Append(idNBProperties, _("Properties..."));
     }
 
     // allow plugins to use this menu
