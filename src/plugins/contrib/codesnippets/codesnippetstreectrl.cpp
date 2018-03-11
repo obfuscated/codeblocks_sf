@@ -1836,7 +1836,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& wa
         if ( GetConfig()->IsPlugin() )
             GetConfig()->GetMenuBar()->Enable(idViewSnippets, false);
 
-        if ( pdlg->Show() )
+        if ( pdlg->ShowModal() )
         {
             // Just check to see if the semaphore has been posted.
             // Don't do a real wait, else the edit dialog will freeze
