@@ -86,7 +86,7 @@ public:
         m_ProjectFiles = new wxButton(this, ID_PROJECT_FILES, _("&Project files"), wxDefaultPosition,
                                       wxDefaultSize, 0, wxDefaultValidator, _T("ID_PROJECT_FILES"));
         btnSizer->Add(m_ProjectFiles, 1, wxALL | wxALIGN_CENTER_VERTICAL, 5);
-        sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_VERTICAL, 5);
+        sizer->Add(btnSizer, 1, wxBOTTOM | wxLEFT | wxRIGHT | wxALIGN_CENTER_HORIZONTAL, 5);
         SetSizer(sizer);
         sizer->Fit(this);
         sizer->SetSizeHints(this);
