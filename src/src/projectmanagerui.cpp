@@ -2452,6 +2452,7 @@ void ProjectManagerUI::MoveProjectUp(cbProject* project, bool warpAround)
     wxTreeItemId itemId = project->GetProjectNode();
     cbAssert(itemId.IsOk());
     m_pTree->SelectItem(itemId);
+    m_pTree->EnsureVisible(itemId);
 }
 
 void ProjectManagerUI::MoveProjectDown(cbProject* project, bool warpAround)
@@ -2482,6 +2483,7 @@ void ProjectManagerUI::MoveProjectDown(cbProject* project, bool warpAround)
     wxTreeItemId itemId = project->GetProjectNode();
     cbAssert(itemId.IsOk());
     m_pTree->SelectItem(itemId);
+    m_pTree->EnsureVisible(itemId);
 }
 
 
