@@ -278,7 +278,11 @@ class Splash
             if (show)
             {
                 wxBitmap bmp = cbLoadBitmap(ConfigManager::ReadDataPath() + _T("/images/splash_1312.png"));
-                m_pSplash = new cbSplashScreen(bmp, -1, nullptr, -1, wxNO_BORDER | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED);
+                wxMemoryDC dc;
+                dc.SelectObject(bmp);
+                cbSplashScreen::DrawReleaseInfo(dc);
+                dc.SelectObject(wxNullBitmap);
+                m_pSplash = new cbSplashScreen(bmp);
                 Manager::Yield();
             }
         }
@@ -294,6 +298,7 @@ class Splash
                 m_pSplash = nullptr;
             }
         }
+
     private:
         cbSplashScreen* m_pSplash;
 };
