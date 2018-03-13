@@ -626,11 +626,11 @@ void EnvVarsConfigDlg::OnSetEnvVarsClick(wxCommandEvent& WXUNUSED(event))
 #if CHECK_LIST_BOX_CLIENT_DATA==1
       nsEnvVars::EnvVariableListClientData *data;
       data = static_cast<nsEnvVars::EnvVariableListClientData*>(lstEnvVars->GetClientObject(i));
-      const wxString &key = data->key;
-      const wxString &value = data->value;
+      const wxString key   = data->key;
+      const wxString value = data->value;
 #else
-      const wxString &key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
-      const wxString &value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
+      const wxString key   = lstEnvVars->GetString(i).BeforeFirst(_T('=')).Trim(true).Trim(false);
+      const wxString value = lstEnvVars->GetString(i).AfterFirst(_T('=')).Trim(true).Trim(false);
 #endif
       if (!key.IsEmpty())
       {
