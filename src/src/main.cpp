@@ -4314,10 +4314,10 @@ void MainFrame::OnEditorUpdateUI(CodeBlocksEvent& event)
 
     if (Manager::Get()->GetEditorManager() && event.GetEditor() == Manager::Get()->GetEditorManager()->GetActiveEditor())
     {
-#if defined(__WXMSW__) && wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 0, 0)
         // Execute the code to update the status bar outside of the paint event for scintilla.
         // Executing this function directly in the event handler causes redraw problems on Windows.
-        CallAfter(DoUpdateStatusBar);
+        CallAfter(&MainFrame::DoUpdateStatusBar);
 #else
         DoUpdateStatusBar();
 #endif // defined(__wxMSW__) && wxCHECK_VERSION(3, 0, 0)
