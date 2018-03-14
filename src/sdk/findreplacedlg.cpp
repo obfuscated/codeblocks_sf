@@ -83,8 +83,8 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     bool flgWholeWord = cfg->ReadBool(CONF_GROUP _T("/match_word"), false);
     bool flgStartWord = cfg->ReadBool(CONF_GROUP _T("/start_word"), false);
     bool flgStartFile = cfg->ReadBool(CONF_GROUP _T("/start_file"), false);
-    XRCCTRL(*this, "chkLimitTo1", wxCheckBox)->SetValue(flgWholeWord | flgStartWord | flgStartFile);
-    XRCCTRL(*this, "rbLimitTo1",  wxRadioBox)->Enable((bool)(flgWholeWord | flgStartWord | flgStartFile));
+    XRCCTRL(*this, "chkLimitTo1", wxCheckBox)->SetValue(flgWholeWord || flgStartWord || flgStartFile);
+    XRCCTRL(*this, "rbLimitTo1",  wxRadioBox)->Enable(flgWholeWord || flgStartWord || flgStartFile);
     XRCCTRL(*this, "rbLimitTo1",  wxRadioBox)->SetSelection(flgStartFile ? 2 : (flgStartWord ? 1 : 0));
 
     XRCCTRL(*this, "chkMatchCase1", wxCheckBox)->SetValue(cfg->ReadBool(CONF_GROUP _T("/match_case"), false));
@@ -100,8 +100,8 @@ FindReplaceDlg::FindReplaceDlg(wxWindow* parent, const wxString& initial, bool h
     flgWholeWord = cfg->ReadBool(CONF_GROUP _T("/match_word2"), false);
     flgStartWord = cfg->ReadBool(CONF_GROUP _T("/start_word2"), false);
     flgStartFile = cfg->ReadBool(CONF_GROUP _T("/start_file2"), false);
-    XRCCTRL(*this, "chkLimitTo2", wxCheckBox)->SetValue(flgWholeWord | flgStartWord | flgStartFile);
-    XRCCTRL(*this, "rbLimitTo2",  wxRadioBox)->Enable((bool)(flgWholeWord | flgStartWord | flgStartFile));
+    XRCCTRL(*this, "chkLimitTo2", wxCheckBox)->SetValue(flgWholeWord || flgStartWord || flgStartFile);
+    XRCCTRL(*this, "rbLimitTo2",  wxRadioBox)->Enable(flgWholeWord || flgStartWord || flgStartFile);
     XRCCTRL(*this, "rbLimitTo2",  wxRadioBox)->SetSelection(flgStartFile ? 2 : (flgStartWord ? 1 : 0));
 
     XRCCTRL(*this, "cmbFind2",      wxComboBox)->SetValue(initial);
