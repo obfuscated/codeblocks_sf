@@ -1236,8 +1236,11 @@ void CCManager::DoBufferedCC(cbStyledTextCtrl* stc)
     // display
     stc->AutoCompShow(m_LastACLaunchState[lsCaretStart] - m_LastACLaunchState[lsTknStart], items);
     m_OwnsAutocomp = true;
-    if (   m_LastAutocompIndex != wxNOT_FOUND
-        && m_LastAutocompIndex < (int)m_AutocompTokens.size() )
+
+    // We need to check if the auto completion is active, because if there are no matches scintilla will close
+    // the popup and any call to AutoCompSelect will result in a crash.
+    if (stc->AutoCompActive() &&
+        (m_LastAutocompIndex != wxNOT_FOUND && m_LastAutocompIndex < (int)m_AutocompTokens.size()))
     {
         // re-select last selected entry
         const cbCodeCompletionPlugin::CCToken& token = m_AutocompTokens[m_LastAutocompIndex];
