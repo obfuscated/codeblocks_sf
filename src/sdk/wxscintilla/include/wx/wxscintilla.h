@@ -148,7 +148,8 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARGIN_RTEXT 5
 #define wxSCI_MARGIN_COLOUR 6
 
-/// Styles in range 32..39 are predefined for parts of the UI and are not used as normal styles.
+/// Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
+/// Style 39 is for future use.
 #define wxSCI_STYLE_DEFAULT 32
 #define wxSCI_STYLE_LINENUMBER 33
 #define wxSCI_STYLE_BRACELIGHT 34
@@ -300,8 +301,6 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_EFF_QUALITY_LCD_OPTIMIZED 3
 #define wxSCI_MULTIPASTE_ONCE 0
 #define wxSCI_MULTIPASTE_EACH 1
-#define wxSCI_ACCESSIBILITY_DISABLED 0
-#define wxSCI_ACCESSIBILITY_ENABLED 1
 #define wxSCI_EDGE_NONE 0
 #define wxSCI_EDGE_LINE 1
 #define wxSCI_EDGE_BACKGROUND 2
@@ -2978,7 +2977,6 @@ public:
     // history and discarding them.
     void SetUndoCollection(bool collectUndo);
 
-
     // Select all the text in the document.
     void SelectAll();
 
@@ -3406,14 +3404,6 @@ public:
 
     // Set the colour of the background of the line containing the caret.
     void SetCaretLineBackground(const wxColour& back);
-
-    // Retrieve the caret line frame width.
-    // Width = 0 means this option is disabled.
-    int GetCaretLineFrame() const;
-
-    // Display the caret line framed.
-    // Set width != 0 to enable this option and width = 0 to disable it.
-    void SetCaretLineFrame(int width);
 
     // Set a style to be changeable or not (read only).
     // Experimental feature, currently buggy.
@@ -4012,13 +4002,11 @@ public:
     // to overlap from one line to the next.
     void SetPhasesDraw(int phases);
 
-/* C::B begin */
-    // Choose the quality level for text from the FontQuality enumeration.
+    // Choose the quality level for text.
     void SetFontQuality(int fontQuality);
 
     // Retrieve the quality level for text.
     int GetFontQuality() const;
-/* C::B end */
 
     // Scroll so that a display line is at the top of the display.
     void SetFirstVisibleLine(int displayLine);
@@ -4044,12 +4032,6 @@ public:
 
     // Set the other colour used as a chequerboard pattern in the fold margin
     void SetFoldMarginHiColour(bool useSetting, const wxColour& fore);
-
-    // Enable or disable accessibility.
-    void SetAccessibility(int accessibility);
-
-    // Report accessibility status.
-    int GetAccessibility() const;
 
     // Move caret down one line.
     void LineDown();
@@ -4175,9 +4157,6 @@ public:
 
     // Switch the current line with the previous.
     void LineTranspose();
-
-    // Reverse order of selected lines.
-    void LineReverse();
 
     // Duplicate the current line.
     void LineDuplicate();
@@ -4833,7 +4812,7 @@ public:
 /* C::B end */
 
     // Add a selection
-    void AddSelection(int caret, int anchor);
+    int AddSelection(int caret, int anchor);
 
     // Drop one selection
     void DropSelectionN(int selection);
@@ -5033,22 +5012,11 @@ public:
     // Set the way a character is drawn.
     void SetRepresentation(const wxString& encodedCharacter, const wxString& representation);
 
-    // Get the way a character is drawn.
+    // Set the way a character is drawn.
     wxString GetRepresentation(const wxString& encodedCharacter) const;
 
     // Remove a character representation.
     void ClearRepresentation(const wxString& encodedCharacter);
-
-/* C::B begin */
-    // On OS X, show a find indicator.
-    void FindIndicatorShow(int start, int end);
-
-    // On OS X, flash a find indicator, then fade out.
-    void FindIndicatorFlash(int start, int end);
-
-    // On OS X, hide the find indicator.
-    void FindIndicatorHide();
-/* C::B end */
 
     // Start notifying the container of all key presses and commands.
     void StartRecord();
@@ -5436,6 +5404,7 @@ protected:
     void OnMenu(wxCommandEvent& evt);
     void OnListBox(wxCommandEvent& evt);
     void OnIdle(wxIdleEvent& evt);
+    void OnMouseCaptureLost(wxMouseCaptureLostEvent& evt);
 
     virtual wxSize DoGetBestSize() const override;
 
@@ -5509,6 +5478,7 @@ public:
             m_dragFlags &= ~(wxDrag_AllowMove | wxDrag_DefaultMove);
     }
 #endif
+
     int  GetPosition() const         { return m_position; }
     int  GetKey()  const             { return m_key; }
     int  GetModifiers() const        { return m_modifiers; }

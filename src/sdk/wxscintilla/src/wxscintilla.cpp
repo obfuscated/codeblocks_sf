@@ -158,6 +158,7 @@ BEGIN_EVENT_TABLE(wxScintilla, wxControl)
     EVT_ERASE_BACKGROUND        (wxScintilla::OnEraseBackground)
     EVT_MENU_RANGE              (10, 16, wxScintilla::OnMenu)
     EVT_LISTBOX_DCLICK          (wxID_ANY, wxScintilla::OnListBox)
+    EVT_MOUSE_CAPTURE_LOST      (wxScintilla::OnMouseCaptureLost)
 END_EVENT_TABLE()
 
 
@@ -172,7 +173,7 @@ int Scintilla_LinkLexers();
 //----------------------------------------------------------------------
 // Constructor and Destructor
 
-wxScintilla::wxScintilla (wxWindow *parent,
+wxScintilla::wxScintilla(wxWindow *parent,
                           wxWindowID id,
                           const wxPoint& pos,
                           const wxSize& size,
@@ -231,6 +232,17 @@ bool wxScintilla::Create(wxWindow *parent,
 
     // STC doesn't support RTL languages at all
     SetLayoutDirection(wxLayout_LeftToRight);
+
+    // Rely on native double buffering by default.
+#if wxALWAYS_NATIVE_DOUBLE_BUFFER
+    SetBufferedDraw(false);
+#else
+    SetBufferedDraw(true);
+#endif
+
+#if wxUSE_GRAPHICS_DIRECT2D
+    SetFontQuality(wxSCI_EFF_QUALITY_DEFAULT);
+#endif
 
     return true;
 }
@@ -354,7 +366,6 @@ void wxScintilla::SetUndoCollection(bool collectUndo)
 {
     SendMsg(SCI_SETUNDOCOLLECTION, collectUndo, 0);
 }
-
 
 // Select all the text in the document.
 void wxScintilla::SelectAll()
@@ -674,7 +685,7 @@ void wxScintilla::MarkerDefineBitmap(int markerNumber, const wxBitmap& bmp) {
         buff[len] = 0;
         SendMsg(SCI_MARKERDEFINEPIXMAP, markerNumber, (sptr_t)buff);
         delete [] buff;
-
+        
 }
 
 // Add a set of markers to a line.
@@ -1323,20 +1334,6 @@ void wxScintilla::SetCaretLineBackground(const wxColour& back)
     SendMsg(SCI_SETCARETLINEBACK, wxColourAsLong(back), 0);
 }
 
-// Retrieve the caret line frame width.
-// Width = 0 means this option is disabled.
-int wxScintilla::GetCaretLineFrame() const
-{
-    return SendMsg(SCI_GETCARETLINEFRAME, 0, 0);
-}
-
-// Display the caret line framed.
-// Set width != 0 to enable this option and width = 0 to disable it.
-void wxScintilla::SetCaretLineFrame(int width)
-{
-    SendMsg(SCI_SETCARETLINEFRAME, width, 0);
-}
-
 // Set a style to be changeable or not (read only).
 // Experimental feature, currently buggy.
 void wxScintilla::StyleSetChangeable(int style, bool changeable)
@@ -1491,7 +1488,7 @@ void wxScintilla::RegisterImage(int type, const wxBitmap& bmp) {
         buff[len] = 0;
         SendMsg(SCI_REGISTERIMAGE, type, (sptr_t)buff);
         delete [] buff;
-
+     
 }
 
 // Clear all the registered images.
@@ -2555,6 +2552,18 @@ void wxScintilla::SetPhasesDraw(int phases)
     SendMsg(SCI_SETPHASESDRAW, phases, 0);
 }
 
+// Choose the quality level for text.
+void wxScintilla::SetFontQuality(int fontQuality)
+{
+    SendMsg(SCI_SETFONTQUALITY, fontQuality, 0);
+}
+
+// Retrieve the quality level for text.
+int wxScintilla::GetFontQuality() const
+{
+    return SendMsg(SCI_GETFONTQUALITY, 0, 0);
+}
+
 // Scroll so that a display line is at the top of the display.
 void wxScintilla::SetFirstVisibleLine(int displayLine)
 {
@@ -2584,20 +2593,6 @@ wxString wxScintilla::GetTag(int tagNumber) const {
          return sci2wx(buf);
 }
 
-/* C::B begin */
-// Choose the quality level for text from the FontQuality enumeration.
-void wxScintilla::SetFontQuality(int fontQuality)
-{
-    SendMsg(SCI_SETFONTQUALITY, fontQuality, 0);
-}
-
-// Retrieve the quality level for text.
-int wxScintilla::GetFontQuality() const
-{
-    return SendMsg(SCI_GETFONTQUALITY, 0, 0);
-}
-/* C::B end */
-
 // Join the lines in the target.
 void wxScintilla::LinesJoin()
 {
@@ -2621,18 +2616,6 @@ void wxScintilla::SetFoldMarginColour(bool useSetting, const wxColour& back)
 void wxScintilla::SetFoldMarginHiColour(bool useSetting, const wxColour& fore)
 {
     SendMsg(SCI_SETFOLDMARGINHICOLOUR, useSetting, wxColourAsLong(fore));
-}
-
-// Enable or disable accessibility.
-void wxScintilla::SetAccessibility(int accessibility)
-{
-    SendMsg(SCI_SETACCESSIBILITY, accessibility, 0);
-}
-
-// Report accessibility status.
-int wxScintilla::GetAccessibility() const
-{
-    return SendMsg(SCI_GETACCESSIBILITY, 0, 0);
 }
 
 // Move caret down one line.
@@ -2881,12 +2864,6 @@ void wxScintilla::LineDelete()
 void wxScintilla::LineTranspose()
 {
     SendMsg(SCI_LINETRANSPOSE, 0, 0);
-}
-
-// Reverse order of selected lines.
-void wxScintilla::LineReverse()
-{
-    SendMsg(SCI_LINEREVERSE, 0, 0);
 }
 
 // Duplicate the current line.
@@ -4213,9 +4190,9 @@ int wxScintilla::SetSelectionInt(int caret, int anchor)
 /* C::B end */
 
 // Add a selection
-void wxScintilla::AddSelection(int caret, int anchor)
+int wxScintilla::AddSelection(int caret, int anchor)
 {
-    SendMsg(SCI_ADDSELECTION, caret, anchor);
+    return SendMsg(SCI_ADDSELECTION, caret, anchor);
 }
 
 // Drop one selection
@@ -4618,26 +4595,6 @@ void wxScintilla::ClearRepresentation(const wxString& encodedCharacter)
     SendMsg(SCI_CLEARREPRESENTATION, (sptr_t)(const char*)wx2sci(encodedCharacter), 0);
 }
 
-/* C::B begin */
-// On OS X, show a find indicator.
-void wxScintilla::FindIndicatorShow(int start, int end)
-{
-    SendMsg(SCI_FINDINDICATORSHOW, start, end);
-}
-
-// On OS X, flash a find indicator, then fade out.
-void wxScintilla::FindIndicatorFlash(int start, int end)
-{
-    SendMsg(SCI_FINDINDICATORFLASH, start, end);
-}
-
-// On OS X, hide the find indicator.
-void wxScintilla::FindIndicatorHide()
-{
-    SendMsg(SCI_FINDINDICATORHIDE, 0, 0);
-}
-/* C::B end */
-
 // Start notifying the container of all key presses and commands.
 void wxScintilla::StartRecord()
 {
@@ -4853,7 +4810,6 @@ wxString wxScintilla::GetSubStyleBases() const {
 }
 
 //}}}
-
 //----------------------------------------------------------------------
 
 
@@ -5330,8 +5286,7 @@ void wxScintilla::OnMouseRightDown(wxMouseEvent& evt) {
     wxPoint pt = evt.GetPosition();
     m_swx->DoRightButtonDown(Point(pt.x, pt.y), m_stopWatch.Time(),
                       evt.ShiftDown(), evt.ControlDown(), evt.AltDown());
-    // we need to call evt.Skip() to ensure the context menu event
-    // is generated with wxOSX
+    // We need to call evt.Skip() to allow generating EVT_CONTEXT_MENU
     evt.Skip();
 }
 
@@ -5517,6 +5472,11 @@ void wxScintilla::OnListBox(wxCommandEvent& WXUNUSED(evt)) {
 
 void wxScintilla::OnIdle(wxIdleEvent& evt) {
     m_swx->DoOnIdle(evt);
+}
+
+
+void wxScintilla::OnMouseCaptureLost(wxMouseCaptureLostEvent& WXUNUSED(evt)) {
+    m_swx->DoMouseCaptureLost();
 }
 
 
