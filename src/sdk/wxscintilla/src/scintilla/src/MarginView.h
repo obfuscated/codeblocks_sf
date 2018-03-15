@@ -8,10 +8,6 @@
 #ifndef MARGINVIEW_H
 #define MARGINVIEW_H
 
-/* C::B begin */
-#include "EditModel.h"
-/* C::B end */
-
 #ifdef SCI_NAMESPACE
 namespace Scintilla {
 #endif
@@ -25,9 +21,9 @@ typedef void (*DrawWrapMarkerFn)(Surface *surface, PRectangle rcPlace, bool isEn
 */
 class MarginView {
 public:
-	Surface *pixmapSelMargin;
-	Surface *pixmapSelPattern;
-	Surface *pixmapSelPatternOffset1;
+	std::unique_ptr<Surface> pixmapSelMargin;
+	std::unique_ptr<Surface> pixmapSelPattern;
+	std::unique_ptr<Surface> pixmapSelPatternOffset1;
 	// Highlight current folding block
 	HighlightDelimiter highlightDelimiter;
 
@@ -43,7 +39,7 @@ public:
 	void DropGraphics(bool freeObjects);
 	void AllocateGraphics(const ViewStyle &vsDraw);
 	void RefreshPixMaps(Surface *surfaceWindow, WindowID wid, const ViewStyle &vsDraw);
-	void PaintMargin(Surface *surface, int topLine, PRectangle rc, PRectangle rcMargin,
+	void PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc, PRectangle rcMargin,
 		const EditModel &model, const ViewStyle &vs);
 };
 
