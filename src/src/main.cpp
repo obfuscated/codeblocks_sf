@@ -3208,6 +3208,7 @@ bool SelectNext(cbStyledTextCtrl *control, const wxString &selectedText, long se
     if (pos != wxSCI_INVALID_POSITION)
     {
         control->SetAdditionalSelectionTyping(true);
+        control->SetMultiPaste(true);
         control->IndicatorClearRange(pos, endPos - pos);
         if (reversed)
             control->AddSelection(pos, endPos);

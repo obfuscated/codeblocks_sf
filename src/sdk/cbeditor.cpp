@@ -1524,7 +1524,9 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     // NOTE: duplicate line in editorconfigurationdlg.cpp (ctor)
     control->SetScrollWidthTracking(      mgr->ReadBool(_T("/margin/scroll_width_tracking"), false));
     control->SetMultipleSelection(        mgr->ReadBool(_T("/selection/multi_select"),       false));
-    control->SetAdditionalSelectionTyping(mgr->ReadBool(_T("/selection/multi_typing"),       false));
+    const bool multiTyping = mgr->ReadBool(_T("/selection/multi_typing"), false);
+    control->SetAdditionalSelectionTyping(multiTyping);
+    control->SetMultiPaste(multiTyping);
 
     unsigned virtualSpace = 0;
     if (mgr->ReadBool(_T("/selection/use_rect_vspace"), false))
