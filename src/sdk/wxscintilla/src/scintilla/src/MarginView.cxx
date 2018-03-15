@@ -362,7 +362,13 @@ void MarginView::PaintMargin(Surface *surface, Sci::Line topLine, PRectangle rc,
 						}
 					}
 				}
-
+/* CHANGEBAR begin */
+				int changed = model.pdoc->GetChanged(lineDoc);
+				if (changed == 1)
+					marks |= 1 << SC_MARKNUM_CHANGEUNSAVED;
+				if (changed == 2)
+					marks |= 1 << SC_MARKNUM_CHANGESAVED;
+/* CHANGEBAR end */
 				marks &= vs.ms[margin].mask;
 
 				PRectangle rcMarker = rcSelMargin;

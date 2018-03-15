@@ -5870,8 +5870,62 @@ sptr_t Editor::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
 		return (pdoc->CanUndo() && !pdoc->IsReadOnly()) ? 1 : 0;
 
 	case SCI_EMPTYUNDOBUFFER:
-		pdoc->DeleteUndoHistory();
+/* CHANGEBAR begin */
+		pdoc->DeleteUndoHistory(wParam != 0);
+		Redraw();
+/* CHANGEBAR end */
 		return 0;
+
+/* CHANGEBAR begin */
+	case SCI_SETCHANGECOLLECTION:
+		pdoc->SetChangeCollection(wParam != 0);
+		return 0;
+
+	case SCI_GETCHANGEDLINE: {
+		int fromLine = static_cast<int>(wParam);
+		if (fromLine < 0) {
+			fromLine = 0;
+		}
+		int toLine = static_cast<int>(lParam);
+		if (toLine > pdoc->LinesTotal()) {
+			toLine = pdoc->LinesTotal();
+		}
+
+		if (fromLine <= toLine) {
+			for (int i = fromLine; i <= toLine; i++) {
+				if (pdoc->GetChanged(i) != 0) {
+					return i;
+				}
+			}
+			// if nothing found we wrap and start from the beginning
+			if (fromLine > 0) {
+				for (int i = 0; i <= fromLine; i++) {
+					if (pdoc->GetChanged(i) != 0) {
+						return i;
+					}
+				}
+			}
+		}
+		else
+		{
+			for (int i = fromLine; i >= toLine; i--) {
+				if (pdoc->GetChanged(i) != 0){
+					return i;
+				}
+			}
+			// if nothing found we wrap and start from the end
+			if (fromLine < (pdoc->LinesTotal() - 1))
+			{
+				for (int i = (pdoc->LinesTotal() - 1); i >= fromLine; i--) {
+					if (pdoc->GetChanged(i) != 0) {
+						return i;
+					}
+				}
+			}
+		}
+		return -1;
+	}
+/* CHANGEBAR end */
 
 	case SCI_GETFIRSTVISIBLELINE:
 		return topLine;

@@ -322,11 +322,19 @@ public:
 	Sci::Position Redo();
 	bool CanUndo() const { return cb.CanUndo(); }
 	bool CanRedo() const { return cb.CanRedo(); }
-	void DeleteUndoHistory() { cb.DeleteUndoHistory(); }
+/* CHANGEBAR begin */
+	void DeleteUndoHistory(bool collectChangeHistory=false) { cb.DeleteUndoHistory(collectChangeHistory); }
+/* CHANGEBAR end */
 	bool SetUndoCollection(bool collectUndo) {
 		return cb.SetUndoCollection(collectUndo);
 	}
 	bool IsCollectingUndo() const { return cb.IsCollectingUndo(); }
+/* CHANGEBAR begin */
+	void DeleteChangeCollection() { cb.DeleteChangeCollection(); }
+	bool SetChangeCollection(bool collectChange) {
+		return cb.SetChangeCollection(collectChange);
+	}
+/* CHANGEBAR end */
 	void BeginUndoAction() { cb.BeginUndoAction(); }
 	void EndUndoAction() { cb.EndUndoAction(); }
 	void AddUndoAction(Sci::Position token, bool mayCoalesce) { cb.AddUndoAction(token, mayCoalesce); }
@@ -389,6 +397,9 @@ public:
 	Sci::Line GetLastChild(Sci::Line lineParent, int level=-1, Sci::Line lastLine=-1);
 	Sci::Line GetFoldParent(Sci::Line line) const;
 	void GetHighlightDelimiters(HighlightDelimiter &highlightDelimiter, Sci::Line line, Sci::Line lastLine);
+/* CHANGEBAR begin */
+	int GetChanged(Sci::Line line) { return cb.GetChanged(line); }
+/* CHANGEBAR end */
 
 	Sci::Position ExtendWordSelect(Sci::Position pos, int delta, bool onlyWordCharacters=false) const;
 	Sci::Position NextWordStart(Sci::Position pos, int delta) const;

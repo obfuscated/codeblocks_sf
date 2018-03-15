@@ -131,6 +131,11 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 /* C::B begin */
 #define wxSCI_MARKNUM_LASTUNUSED 22
 /* C::B end */
+/* CHANGEBAR begin */
+// Markers used for outlining and changed column.
+#define wxSCI_MARKNUM_CHANGEUNSAVED 23
+#define wxSCI_MARKNUM_CHANGESAVED 24
+/* CHANGEBAR end */
 #define wxSCI_MARKNUM_FOLDEREND 25
 #define wxSCI_MARKNUM_FOLDEROPENMID 26
 #define wxSCI_MARKNUM_FOLDERMIDTAIL 27
@@ -138,7 +143,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARKNUM_FOLDERSUB 29
 #define wxSCI_MARKNUM_FOLDER 30
 #define wxSCI_MARKNUM_FOLDEROPEN 31
-#define wxSCI_MASK_FOLDERS 0xFE000000
+/* CHANGEBAR begin */
+#define wxSCI_MASK_FOLDERS 0xFF800000
+/* CHANGEBAR end */
 #define wxSCI_MAX_MARGIN 4
 #define wxSCI_MARGIN_SYMBOL 0
 #define wxSCI_MARGIN_NUMBER 1
@@ -147,6 +154,9 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_MARGIN_TEXT 4
 #define wxSCI_MARGIN_RTEXT 5
 #define wxSCI_MARGIN_COLOUR 6
+/* CHANGEBAR begin */
+#define wxSCI_MARGIN_CHANGED 7
+/* CHANGEBAR end */
 
 /// Styles in range 32..38 are predefined for parts of the UI and are not used as normal styles.
 /// Style 39 is for future use.
@@ -2977,6 +2987,15 @@ public:
     // history and discarding them.
     void SetUndoCollection(bool collectUndo);
 
+/* CHANGEBAR begin */
+    // Choose between collecting actions into the changes
+    // history and discarding them.
+    void SetChangeCollection(bool collectChange);
+
+    // Find a changed line, if fromLine > toLine search is performed backwards.
+    int FindChangedLine (const int fromLine, const int toLine) const;
+/* CHANGEBAR end */
+
     // Select all the text in the document.
     void SelectAll();
 
@@ -3674,7 +3693,9 @@ public:
     bool CanUndo() const;
 
     // Delete the undo history.
-    void EmptyUndoBuffer();
+/* CHANGEBAR begin */
+    void EmptyUndoBuffer(bool collectChangeHistory=false);
+/* CHANGEBAR end */
 
     // Undo one action in the undo history.
     void Undo();

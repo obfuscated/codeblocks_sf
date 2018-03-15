@@ -46,6 +46,12 @@ public:
 	int Find(int value, int start) const;
 
 	void Check() const;
+
+/* CHANGEBAR begin */
+	char *PersistantForm() const;
+	void FromPersistant(const char *form);
+	static bool PersistantSame(const char *form1, const char *form2);
+/* CHANGEBAR end */
 };
 
 #ifdef SCI_NAMESPACE
