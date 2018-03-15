@@ -207,7 +207,7 @@ void PipedProcessCtrl::SyncOutput(int maxchars)
 //                m_textctrl->SetSelectionEnd(-1);
             }
 
-            m_textctrl->StartStyling(style_start,0x1F);
+            m_textctrl->StartStyling(style_start);
             m_textctrl->SetStyling(m_textctrl->PositionFromLine(m_textctrl->GetLineCount())-style_start,PP_ERROR_STYLE);
             if(oneshot)
                 break;
@@ -237,7 +237,7 @@ void PipedProcessCtrl::ParseLinks(int lineno, int lastline)
                 if(f.FileExists())
                 {
                     int pos=m_textctrl->PositionFromLine(lineno)+col+start;
-                    m_textctrl->StartStyling(pos,0x1F);
+                    m_textctrl->StartStyling(pos);
                     m_textctrl->SetStyling(len,PP_LINK_STYLE);
 
                 }
