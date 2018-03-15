@@ -110,7 +110,6 @@ DEFINE_EVENT_TYPE( wxEVT_SCI_MARGINCLICK );
 DEFINE_EVENT_TYPE( wxEVT_SCI_NEEDSHOWN );
 DEFINE_EVENT_TYPE( wxEVT_SCI_PAINTED );
 DEFINE_EVENT_TYPE( wxEVT_SCI_USERLISTSELECTION );
-DEFINE_EVENT_TYPE( wxEVT_SCI_URIDROPPED );
 DEFINE_EVENT_TYPE( wxEVT_SCI_DWELLSTART );
 DEFINE_EVENT_TYPE( wxEVT_SCI_DWELLEND );
 DEFINE_EVENT_TYPE( wxEVT_SCI_START_DRAG );
@@ -5238,22 +5237,6 @@ bool wxScintilla::HaveMouseCapture() const
     return m_swx->HaveMouseCapture();
 }
 /* C::B end */
-
-#if WXWIN_COMPATIBILITY_3_0
-// Deprecated since Scintilla 3.7.2
-void wxScintilla::UsePopUp(bool allowPopUp)
-{
-    SendMsg(SCI_USEPOPUP, allowPopUp ? SC_POPUP_ALL : SC_POPUP_NEVER, 0);
-}
-
-void wxScintilla::StartStyling(int start, int unused)
-{
-        wxASSERT_MSG(unused==0,
-                     "The second argument passed to StartStyling should be 0");
-
-        SendMsg(SCI_STARTSTYLING, start, unused);
-}
-#endif // WXWIN_COMPATIBILITY_3_0
 
 //----------------------------------------------------------------------
 // Event handlers
