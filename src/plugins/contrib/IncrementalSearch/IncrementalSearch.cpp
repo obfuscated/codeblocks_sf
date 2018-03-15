@@ -732,17 +732,17 @@ void IncrementalSearch::HighlightText()
             SetupIndicator(ctrlLeft, m_IndicHighlight, colourTextHighlight);
             if(ctrlRight)
                 SetupIndicator(ctrlRight, m_IndicHighlight, colourTextHighlight);
-            int actualLength=0; // needed for regex-search, because the length of found text can vary
-            for ( int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags, &actualLength);
-                    pos != wxSCI_INVALID_POSITION && actualLength > 0;
-                    pos = control->FindText(pos+=1, m_MaxPos, m_SearchText, m_flags, &actualLength) )
+            int endPos=0; // needed for regex-search, because the length of found text can vary
+            for ( int pos = control->FindText(m_MinPos, m_MaxPos, m_SearchText, m_flags, &endPos);
+                    pos != wxSCI_INVALID_POSITION && endPos > 0;
+                    pos = control->FindText(pos+=1, m_MaxPos, m_SearchText, m_flags, &endPos) )
             {
                 // check that this occurrence is not the same as the one we just found
                 if ( pos > (m_NewPos + m_LengthFound) || pos < m_NewPos )
                 {
                     // highlight it
                     control->EnsureVisible(control->LineFromPosition(pos)); // make sure line is Visible, if it was folded
-                    control->IndicatorFillRange(pos, actualLength);
+                    control->IndicatorFillRange(pos, endPos - pos);
                 }
             }
         }
@@ -769,7 +769,9 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
     // reset the backgroundcolor of the text-control
     m_pTextCtrl->SetBackgroundColour(m_textCtrlBG_Default);
 
-    m_NewPos=control->FindText(fromPos, endPos, m_SearchText, m_flags, &m_LengthFound);
+    int newEndPos;
+    m_NewPos=control->FindText(fromPos, endPos, m_SearchText, m_flags, &newEndPos);
+    m_LengthFound = newEndPos - m_NewPos;
 
     if (m_NewPos == wxSCI_INVALID_POSITION || m_LengthFound == 0)
     {
@@ -779,7 +781,8 @@ void IncrementalSearch::DoSearch(int fromPos, int startPos, int endPos)
         // show that search wrapped, by colouring the textCtrl
         m_pTextCtrl->SetBackgroundColour(colourTextCtrlBG_Wrapped);
         // search again
-        m_NewPos=control->FindText(startPos, endPos, m_SearchText, m_flags, &m_LengthFound);
+        m_NewPos=control->FindText(startPos, endPos, m_SearchText, m_flags, &newEndPos);
+        m_LengthFound = newEndPos - m_NewPos;
         if (m_NewPos == wxSCI_INVALID_POSITION  || m_LengthFound == 0)
         {
             wxColour colourTextCtrlBG_NotFound(cfg->ReadColour(_T("/incremental_search/text_not_found_colour"), wxColour(255, 127, 127)));

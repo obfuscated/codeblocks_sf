@@ -312,10 +312,11 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstar
                 {
                     if (isMultibyte) // not perfect, so only try if necessary
                     {
-                        int len = 0;
-                        const int startPos = stc->FindText(wordstart + a, wordend, word.Mid(a, b - a), wxSCI_FIND_MATCHCASE, &len);
+                        int endPos = 0;
+                        const int startPos = stc->FindText(wordstart + a, wordend, word.Mid(a, b - a),
+                                                           wxSCI_FIND_MATCHCASE, &endPos);
                         if (startPos != wxNOT_FOUND)
-                            stc->IndicatorFillRange(startPos, len);
+                            stc->IndicatorFillRange(startPos, endPos - startPos);
                     }
                     else
                         stc->IndicatorFillRange(wordstart + a, b - a);
@@ -342,10 +343,10 @@ void OnlineSpellChecker::DissectWordAndCheck(cbStyledTextCtrl* stc, int wordstar
         {
             if (isMultibyte) // not perfect, so only try if necessary
             {
-                int len = 0;
-                const int startPos = stc->FindText(wordstart + a, wordend, spellcheck, wxSCI_FIND_MATCHCASE, &len);
+                int endPos = 0;
+                const int startPos = stc->FindText(wordstart + a, wordend, spellcheck, wxSCI_FIND_MATCHCASE, &endPos);
                 if (startPos != wxNOT_FOUND)
-                    stc->IndicatorFillRange(startPos, len);
+                    stc->IndicatorFillRange(startPos, endPos - startPos);
             }
             else
                 stc->IndicatorFillRange(wordstart + a, b - a);

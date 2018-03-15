@@ -1732,7 +1732,11 @@ int SEditorManager::Replace(cbStyledTextCtrl* control, cbFindReplaceData* data)
     {
         int lengthFound = 0;
         if(!AdvRegex)
+        {
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+            // FindText returns the found position, but we need the length.
+            lengthFound -= pos;
+        }
         else
         {
             wxString text=control->GetTextRange(data->start, data->end);
@@ -2106,7 +2110,11 @@ int SEditorManager::ReplaceInFiles(cbFindReplaceData* data)
         {
             int lengthFound = 0;
             if(!AdvRegex)
+            {
                 pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+                // FindText returns the found position, but we need the length.
+                lengthFound -= pos;
+            }
             else
             {
                 wxString text=control->GetTextRange(data->start, data->end);
@@ -2324,7 +2332,11 @@ int SEditorManager::Find(cbStyledTextCtrl* control, cbFindReplaceData* data)
     {
         int lengthFound = 0;
         if(!AdvRegex)
+        {
             pos = control->FindText(data->start, data->end, data->findText, flags, &lengthFound);
+            // FindText returns the found position, but we need the length.
+            lengthFound -= pos;
+        }
         else
         {
             wxString text=control->GetTextRange(data->start, data->end);
