@@ -185,6 +185,14 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 			};
 			surface->Polygon(pts, 3, sacDraw.fore, sacDraw.fore);
 		}
+/* C::B begin */
+	} else if (sacDraw.style == INDIC_HIGHLIGHT) {
+		PRectangle rcBox = rcLine;
+		rcBox.top = rcLine.top + 1;
+		rcBox.left = rc.left;
+		rcBox.right = rc.right;
+		surface->AlphaRectangle(rcBox, 1, sacDraw.fore, 100, sacDraw.fore, 255, 0);
+/* C::B end */
 	} else {	// Either INDIC_PLAIN or unknown
 		surface->MoveTo(static_cast<int>(rc.left), ymid);
 		surface->LineTo(static_cast<int>(rc.right), ymid);
