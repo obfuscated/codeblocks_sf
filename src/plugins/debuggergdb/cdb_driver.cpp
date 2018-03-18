@@ -214,6 +214,11 @@ void CDB_driver::SetVarValue(cb_unused const wxString& var, cb_unused const wxSt
     NOT_IMPLEMENTED();
 }
 
+void CDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString& value)
+{
+    NOT_IMPLEMENTED();
+}
+
 void CDB_driver::MemoryDump()
 {
     NOT_IMPLEMENTED();
@@ -322,6 +327,18 @@ void CDB_driver::Attach(cb_unused int pid)
     // FIXME (obfuscated#): implement this
 }
 
+void CDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches)
+{
+    // FIXME (bluehazzard#): implement this
+    NOT_IMPLEMENTED();
+}
+
+void CDB_driver::UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch)
+{
+    // FIXME (bluehazzard#): implement this
+    NOT_IMPLEMENTED();
+}
+
 void CDB_driver::Detach()
 {
     QueueCommand(new CdbCmd_Detach(this));
@@ -408,6 +425,14 @@ void CDB_driver::ParseOutput(const wxString& output)
 
     if (notifyChange)
         NotifyCursorChanged();
+
+    if(m_ProgramIsStopped)
+    {
+        // Notify debugger plugins for pause of debug session
+        PluginManager *plm = Manager::Get()->GetPluginManager();
+        CodeBlocksEvent evt(cbEVT_DEBUGGER_PAUSED);
+        plm->NotifyPlugins(evt);
+    }
 
     buffer.Clear();
 }

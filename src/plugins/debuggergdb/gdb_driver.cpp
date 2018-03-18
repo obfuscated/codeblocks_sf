@@ -524,6 +524,30 @@ void GDB_driver::SetVarValue(const wxString& var, const wxString& value)
     QueueCommand(new DebuggerCmd(this, wxString::Format(_T("set variable %s=%s"), var.c_str(), cleanValue.c_str())));
 }
 
+void GDB_driver::SetMemoryRangeValue(uint64_t addr, const wxString& value)
+{
+    size_t size = value.size();
+    wxCharBuffer data = value.To8BitData();
+    if(size == 0)
+        return;
+
+    wxString dataStr = wxT("{");
+    for (size_t i = 0; i < size; i++)
+    {
+        dataStr << wxString::Format(wxT("0x%x,"), (uint8_t) data[i]);
+    }
+    dataStr.RemoveLast();
+    dataStr << wxT("}");
+    wxString commandStr;
+    #ifdef __WXMSW__
+    commandStr.Printf(wxT("set {char [%ul]} 0x%" PRIx64 "="), size, addr);
+    #else
+    commandStr.Printf(wxT("set {char [%zu]} 0x%" PRIx64 "="), size, addr);
+    #endif // __WXMSW__
+    commandStr << dataStr;
+    QueueCommand(new DebuggerCmd(this, commandStr));
+}
+
 void GDB_driver::MemoryDump()
 {
     QueueCommand(new GdbCmd_ExamineMemory(this));
@@ -658,10 +682,27 @@ void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_
     }
 }
 
+void GDB_driver::UpdateMemoryRangeWatches(MemoryRangeWatchesContainer &watches)
+{
+    for (MemoryRangeWatchesContainer::iterator it = watches.begin(); it != watches.end(); ++it)
+    {
+        MemoryRangeWatchesContainer::reference watch = *it;
+        if (watch->IsAutoUpdateEnabled())
+        {
+            QueueCommand(new GdbCmd_MemoryRangeWatch(this, watch));
+        }
+    }
+}
+
 void GDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
 {
     QueueCommand(new GdbCmd_FindWatchType(this, watch));
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
+}
+
+void GDB_driver::UpdateMemoryRangeWatch(const cb::shared_ptr<GDBMemoryRangeWatch> &watch)
+{
+    QueueCommand(new GdbCmd_MemoryRangeWatch(this, watch));
 }
 
 void GDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)
@@ -1074,7 +1115,16 @@ void GDB_driver::ParseOutput(const wxString& output)
     }
 
     if (m_ProgramIsStopped)
+    {
+        if(m_DCmds.GetCount() == 0)
+        {
+            PluginManager *plm = Manager::Get()->GetPluginManager();
+            CodeBlocksEvent evt(cbEVT_DEBUGGER_PAUSED);
+            plm->NotifyPlugins(evt);
+        }
         RunQueue();
+    }
+
 }
 
 

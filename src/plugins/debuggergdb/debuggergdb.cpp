@@ -1135,6 +1135,8 @@ void DebuggerGDB::RunCommand(int cmd)
     if (!m_pProcess)
         return;
 
+    bool debuggerContinued = false;
+
     switch (cmd)
     {
         case CMD_CONTINUE:
@@ -1145,6 +1147,7 @@ void DebuggerGDB::RunCommand(int cmd)
                 Log(_("Continuing..."));
                 m_State.GetDriver()->Continue();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1156,6 +1159,7 @@ void DebuggerGDB::RunCommand(int cmd)
             {
                 m_State.GetDriver()->Step();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1173,6 +1177,7 @@ void DebuggerGDB::RunCommand(int cmd)
                 m_State.GetDriver()->StepInstruction();
                 m_State.GetDriver()->ResetCurrentFrame();
                 m_State.GetDriver()->NotifyCursorChanged();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1190,6 +1195,7 @@ void DebuggerGDB::RunCommand(int cmd)
                 m_State.GetDriver()->StepIntoInstruction();
                 m_State.GetDriver()->ResetCurrentFrame();
                 m_State.GetDriver()->NotifyCursorChanged();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1201,6 +1207,7 @@ void DebuggerGDB::RunCommand(int cmd)
             {
                 m_State.GetDriver()->StepIn();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1212,6 +1219,7 @@ void DebuggerGDB::RunCommand(int cmd)
             {
                 m_State.GetDriver()->StepOut();
                 m_State.GetDriver()->ResetCurrentFrame();
+                debuggerContinued = true;
             }
             break;
         }
@@ -1264,6 +1272,13 @@ void DebuggerGDB::RunCommand(int cmd)
         }
 
         default: break;
+    }
+
+    if(debuggerContinued)
+    {
+        PluginManager *plm = Manager::Get()->GetPluginManager();
+        CodeBlocksEvent evt(cbEVT_DEBUGGER_CONTINUED);
+        plm->NotifyPlugins(evt);
     }
 }
 
@@ -2055,6 +2070,8 @@ void DebuggerGDB::OnCursorChanged(wxCommandEvent& WXUNUSED(event))
             // update running threads
             if (dbg_manager->UpdateThreads())
                 RunCommand(CMD_RUNNINGTHREADS);
+
+            m_State.GetDriver()->UpdateMemoryRangeWatches(m_memoryRange);
         }
     }
 }
@@ -2070,6 +2087,18 @@ cb::shared_ptr<cbWatch> DebuggerGDB::AddWatch(const wxString& symbol)
     return watch;
 }
 
+cb::shared_ptr<cbWatch> DebuggerGDB::AddMemoryRange(uint64_t address, uint64_t size, const wxString &id )
+{
+
+    cb::shared_ptr<GDBMemoryRangeWatch> watch( new GDBMemoryRangeWatch(address, size, id));
+    m_memoryRange.push_back(watch);
+
+    if (m_pProcess)
+        m_State.GetDriver()->UpdateMemoryRangeWatch(m_memoryRange.back());
+
+    return watch;
+}
+
 void DebuggerGDB::AddWatchNoUpdate(const cb::shared_ptr<GDBWatch> &watch)
 {
     m_watches.push_back(watch);
@@ -2079,7 +2108,18 @@ void DebuggerGDB::DeleteWatch(cb::shared_ptr<cbWatch> watch)
 {
     WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     if (it != m_watches.end())
+    {
         m_watches.erase(it);
+        return;
+    }
+
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRange.begin(), m_memoryRange.end(), watch);
+    if (mItr != m_memoryRange.end())
+    {
+        m_memoryRange.erase(mItr);
+        return;
+    }
+
 }
 
 bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
@@ -2087,14 +2127,28 @@ bool DebuggerGDB::HasWatch(cb::shared_ptr<cbWatch> watch)
     WatchesContainer::iterator it = std::find(m_watches.begin(), m_watches.end(), watch);
     if (it != m_watches.end())
         return true;
-    else
-        return watch == m_localsWatch || watch == m_funcArgsWatch;
+    else if(watch == m_localsWatch || watch == m_funcArgsWatch)
+        return true;
+
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRange.begin(), m_memoryRange.end(), watch);
+    if (mItr != m_memoryRange.end())
+        return true;
+
+    return false;
+}
+
+bool DebuggerGDB::IsMemoryRangeWatch(cb::shared_ptr<cbWatch> watch)
+{
+    MemoryRangeWatchesContainer::iterator mItr = std::find(m_memoryRange.begin(), m_memoryRange.end(), watch);
+    if (mItr != m_memoryRange.end())
+        return true;
+    return false;
 }
 
 void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 {
-    // not supported for child nodes!
-    if (watch->GetParent())
+    // not supported for child nodes or memory ranges!
+    if (watch->GetParent() || IsMemoryRangeWatch(watch))
         return;
 
     cb::shared_ptr<GDBWatch> real_watch = cb::static_pointer_cast<GDBWatch>(watch);
@@ -2105,31 +2159,45 @@ void DebuggerGDB::ShowWatchProperties(cb::shared_ptr<cbWatch> watch)
 
 bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &value)
 {
+    if (!m_State.HasDriver())
+        return false;
     if (!HasWatch(cbGetRootWatch(watch)))
         return false;
 
-    if (!m_State.HasDriver())
-        return false;
-
-    wxString full_symbol;
-    cb::shared_ptr<cbWatch> temp_watch = watch;
-    while (temp_watch)
+    if (IsMemoryRangeWatch(watch))
     {
-        wxString symbol;
-        temp_watch->GetSymbol(symbol);
-        temp_watch = temp_watch->GetParent();
+        cb::shared_ptr<GDBMemoryRangeWatch> temp_watch = std::dynamic_pointer_cast<GDBMemoryRangeWatch>(watch);
+        uint64_t addr = temp_watch->GetAddress();
 
-        if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
-            symbol = wxT('(') + symbol + wxT(')');
+        DebuggerDriver* driver = m_State.GetDriver();
+        driver->SetMemoryRangeValue(addr, value);
+        // TODO (bluehazzard#1#): I am not quite sure if this is the right place to update all memory ranges
+        driver->UpdateMemoryRangeWatches(m_memoryRange);
+    }
+    else
+    {
 
-        if (full_symbol.empty())
-            full_symbol = symbol;
-        else
-            full_symbol = symbol + wxT('.') + full_symbol;
+        wxString full_symbol;
+        cb::shared_ptr<cbWatch> temp_watch = watch;
+        while (temp_watch)
+        {
+            wxString symbol;
+            temp_watch->GetSymbol(symbol);
+            temp_watch = temp_watch->GetParent();
+
+            if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
+                symbol = wxT('(') + symbol + wxT(')');
+
+            if (full_symbol.empty())
+                full_symbol = symbol;
+            else
+                full_symbol = symbol + wxT('.') + full_symbol;
+        }
+
+        DebuggerDriver* driver = m_State.GetDriver();
+        driver->SetVarValue(full_symbol, value);
     }
 
-    DebuggerDriver* driver = m_State.GetDriver();
-    driver->SetVarValue(full_symbol, value);
     DoWatches();
     return true;
 }

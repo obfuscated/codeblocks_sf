@@ -28,6 +28,8 @@
 #include <logmanager.h>
 #include <macrosmanager.h>
 
+#include <cinttypes>
+
 #include "debugger_defs.h"
 #include "debuggergdb.h"
 #include "gdb_driver.h"
@@ -829,6 +831,79 @@ class GdbCmd_Watch : public DebuggerCmd
                 m_watch->SetValue(msg);
                 Manager::Get()->GetLogManager()->LogError(msg);
             }
+        }
+};
+
+
+/**
+  * Command to read a X bytes from a specific address.
+  */
+class GdbCmd_MemoryRangeWatch : public DebuggerCmd
+{
+        cb::shared_ptr<GDBMemoryRangeWatch> m_watch;
+        wxString m_ParseFunc;
+    public:
+        GdbCmd_MemoryRangeWatch(DebuggerDriver* driver, cb::shared_ptr<GDBMemoryRangeWatch> watch) :
+            DebuggerCmd(driver),
+            m_watch(watch)
+        {
+            // wx2.8 does not support uint64_z for wxstring::printf
+            const size_t tmpBuffSize = 20;
+            char tmpAddr[tmpBuffSize];
+            char tmpSize[tmpBuffSize];
+            memset(tmpAddr, 0, tmpBuffSize);
+            memset(tmpSize, 0, tmpBuffSize);
+            snprintf(tmpAddr, tmpBuffSize, "0x%" PRIx64, m_watch->GetAddress());
+            snprintf(tmpSize, tmpBuffSize, "%" PRIu64, m_watch->GetSize());
+
+            m_Cmd  = wxString(wxT("x /")) << wxString::FromUTF8(tmpSize) << wxT("xb ") << wxString::FromUTF8(tmpAddr);
+        }
+
+        void ParseOutput(const wxString& output)
+        {
+            // output is a series of:
+            //
+            // 0x22ffc0:       0xf0    0xff    0x22    0x00    0x4f    0x6d    0x81    0x7c
+            // or
+            // 0x85267a0 <RS485TxTask::taskProc()::rcptBuf>:   0x00   0x00   0x00   0x00   0x00   0x00   0x00   0x00
+
+
+            wxArrayString lines = GetArrayFromString(output, _T('\n'));
+            wxString addr, memory;
+            std::vector<char> data;
+            for (unsigned int i = 0; i < lines.GetCount(); ++i)
+            {
+                if (reExamineMemoryLine.Matches(lines[i]))
+                {
+                    addr = reExamineMemoryLine.GetMatch(lines[i], 1);
+                    memory = reExamineMemoryLine.GetMatch(lines[i], 2);
+                }
+                else
+                {
+                    if (lines[i].First(_T(':')) == -1)
+                    {
+                        continue;
+                    }
+                    addr = lines[i].BeforeFirst(_T(':'));
+                    memory = lines[i].AfterFirst(_T(':'));
+                }
+
+                size_t pos = memory.find(_T('x'));
+                wxString hexbyte;
+                while (pos != wxString::npos)
+                {
+                    hexbyte.clear();
+                    hexbyte << memory[pos + 1];
+                    hexbyte << memory[pos + 2];
+                    unsigned long value;
+                    hexbyte.ToULong(&value,16);
+                    data.push_back(static_cast<char>(value));
+                    pos = memory.find(_T('x'), pos + 1); // skip current 'x'
+                }
+            }
+            wxString watchString;
+            watchString = wxString::From8BitData(data.data(), data.size());
+            m_watch->SetValue(watchString);
         }
 };
 
