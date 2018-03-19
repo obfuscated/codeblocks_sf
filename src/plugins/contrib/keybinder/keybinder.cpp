@@ -1356,7 +1356,7 @@ void wxKeyBinder::DetachAll()
     //-        delete (wxBinderEvtHandler*)m_arrHandlers.Item(i);
 
     for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
-     {
+    {
         wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(i);
         pwin = pHdlr->GetTargetWnd();     //+v0.4
         if  ( NOT winExists( pwin ) )
@@ -1367,12 +1367,15 @@ void wxKeyBinder::DetachAll()
             LOGIT( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
             #endif
         }
-        #if LOGGING
-         if (pHdlr->GetTargetWnd())
-           LOGIT( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
-        #endif
-        delete pHdlr;
-     }
+        else //2018/03/19 a guess at stopping wxAwwert "where has the event handler gone?"
+        {
+            #if LOGGING
+             if (pHdlr->GetTargetWnd())
+               LOGIT( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
+            #endif
+            delete pHdlr;  //dtor calls RemoveEventHandler()
+        }
+    }
 
     // and clear the array
     m_arrHandlers.Clear();
