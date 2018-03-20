@@ -2840,7 +2840,7 @@ void MainFrame::OnEditBookmarksPrevious(cb_unused wxCommandEvent& event)
         static_cast<cbEditor*>(ed)->GotoPreviousBookmark();
 }
 
-void MainFrame::OnEditBookmarksClearAll(wxCommandEvent& event)
+void MainFrame::OnEditBookmarksClearAll(cb_unused wxCommandEvent& event)
 {
     EditorBase* ed = Manager::Get()->GetEditorManager()->GetActiveEditor();
     if (ed && ed->IsBuiltinEditor())
@@ -3159,12 +3159,12 @@ static void InsertNewLine(bool below)
     }
 }
 
-void MainFrame::OnEditInsertNewLineBelow(wxCommandEvent& event)
+void MainFrame::OnEditInsertNewLineBelow(cb_unused wxCommandEvent& event)
 {
     InsertNewLine(true);
 }
 
-void MainFrame::OnEditInsertNewLineAbove(wxCommandEvent& event)
+void MainFrame::OnEditInsertNewLineAbove(cb_unused wxCommandEvent& event)
 {
     InsertNewLine(false);
 }

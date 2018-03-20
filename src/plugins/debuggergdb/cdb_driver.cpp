@@ -312,7 +312,8 @@ void CDB_driver::UpdateWatch(const cb::shared_ptr<GDBWatch> &watch)
     QueueCommand(new DbgCmd_UpdateWatchesTree(this));
 }
 
-void CDB_driver::UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals)
+void CDB_driver::UpdateWatchLocalsArgs(cb_unused cb::shared_ptr<GDBWatch> const &watch,
+                                       cb_unused bool locals)
 {
     // FIXME (obfuscated#): implement this
 }

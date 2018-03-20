@@ -1894,12 +1894,12 @@ void ProjectManagerUI::OnGotoFile(cb_unused wxCommandEvent& event)
         {
             return m_pfiles[index]->relativeFilename;
         }
-        wxString GetDisplayText(int index, int column) const override
+        wxString GetDisplayText(int index, cb_unused int column) const override
         {
             ProjectFile* pf = m_pfiles[m_indices[index]];
             return MakeDisplayName(*pf);
         }
-        int GetColumnWidth(int column) const override
+        int GetColumnWidth(cb_unused int column) const override
         {
             return m_ColumnWidth;
         }
@@ -2090,12 +2090,12 @@ void ProjectManagerUI::OnFindFile(cb_unused wxCommandEvent& event)
         {
             return m_files[index];
         }
-        wxString GetDisplayText(int index, int column) const override
+        wxString GetDisplayText(int index, cb_unused int column) const override
         {
             return m_files[m_indices[index]];
         }
 
-        int GetColumnWidth(int column) const override
+        int GetColumnWidth(cb_unused int column) const override
         {
             return m_ColumnWidth;
         }
@@ -2231,7 +2231,7 @@ void ProjectManagerUI::OnDeleteVirtualFolder(cb_unused wxCommandEvent& event)
     RebuildTree();
 }
 
-void ProjectManagerUI::OnRenameVirtualFolder(wxCommandEvent& event)
+void ProjectManagerUI::OnRenameVirtualFolder(cb_unused wxCommandEvent& event)
 {
     wxTreeItemId sel = GetTreeSelection();
     if (!sel.IsOk())

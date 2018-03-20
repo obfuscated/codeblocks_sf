@@ -158,24 +158,40 @@ class BatchProjectManagerUI : public cbProjectManagerUI
         cbTreeCtrl* GetTree() override { return nullptr; }
         void RebuildTree() override {}
         void FreezeTree() override {}
-        void UnfreezeTree(bool force = false) override {}
+        void UnfreezeTree(cb_unused bool force = false) override {}
         wxTreeItemId GetTreeSelection() override { return wxTreeItemId(); }
 
-        void ShowFileInTree(ProjectFile &projectFile) override {}
+        void ShowFileInTree(cb_unused ProjectFile &projectFile) override {}
 
-        void UpdateActiveProject(cbProject *oldProject, cbProject *newProject, bool refresh) override {}
-        void RemoveProject(cbProject *project) override {}
+        void UpdateActiveProject(cb_unused cbProject *oldProject, cb_unused cbProject *newProject,
+                                 cb_unused bool refresh) override
+        {
+        }
+
+        void RemoveProject(cb_unused cbProject *project) override {}
         void BeginLoadingWorkspace() override {}
         void CloseWorkspace() override {}
-        void FinishLoadingProject(cbProject *project, bool newAddition, FilesGroupsAndMasks* fileGroups) override {}
-        void FinishLoadingWorkspace(cbProject *activeProject, const wxString &workspaceTitle) override {}
-
+        void FinishLoadingProject(cb_unused cbProject *project, cb_unused bool newAddition,
+                                  cb_unused FilesGroupsAndMasks* fileGroups) override
+        {
+        }
+        void FinishLoadingWorkspace(cb_unused cbProject *activeProject,
+                                    cb_unused const wxString &workspaceTitle) override
+        {
+        }
         bool QueryCloseAllProjects() override { return true; }
-        bool QueryCloseProject(cbProject *proj, bool dontsavefiles = false) override { return true; }
+        bool QueryCloseProject(cb_unused cbProject *proj,
+                               cb_unused bool dontsavefiles = false) override
+        {
+            return true;
+        }
         bool QueryCloseWorkspace() override { return true; }
 
-        int AskForBuildTargetIndex(cbProject* project = nullptr) override { return -1; }
-        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) override { return wxArrayInt(); }
-        void ConfigureProjectDependencies(cbProject* base = nullptr) override {}
+        int AskForBuildTargetIndex(cb_unused cbProject* project = nullptr) override { return -1; }
+        wxArrayInt AskForMultiBuildTargetIndex(cb_unused cbProject* project = nullptr) override
+        {
+            return wxArrayInt();
+        }
+        void ConfigureProjectDependencies(cb_unused cbProject* base = nullptr) override {}
         void SwitchToProjectsPage() override {}
 };
