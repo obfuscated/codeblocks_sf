@@ -523,6 +523,7 @@
 																						<item>No</item>
 																						<item>Always</item>
 																						<item>Only after indent</item>
+																						<item>Only indent</item>
 																					</content>
 																				</object>
 																				<flag>wxBOTTOM|wxEXPAND</flag>
