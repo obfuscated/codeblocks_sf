@@ -139,7 +139,7 @@ void OccurrencesHighlighting::OnRelease(bool appShutDown)
     }
 }
 
-void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data)
+void OccurrencesHighlighting::BuildModuleMenu(const ModuleType type, wxMenu* menu, cb_unused const FileTreeData* data)
 {
     // Some library module is ready to display a pop-up menu.
     // Check the parameter \"type\" and see which module it is

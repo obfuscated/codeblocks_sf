@@ -65,12 +65,6 @@ void Highlighter::Call(cbEditor* ctrl, wxScintillaEvent &event) const
 
 }
 
-void Highlighter::OnEditorChange(cbEditor* ctrl) const
-{
-    // clear internal states to force a refresh at next UpdateUI;
-    m_AlreadyChecked = false;
-}
-
 const int Highlighter::GetIndicator()const
 {
     const int theIndicator = 12;

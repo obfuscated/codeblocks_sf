@@ -31,7 +31,6 @@ class Highlighter
         void          TextsChanged()      const;
 
     private:
-        void OnEditorChange(cbEditor* ctrl)   const;
         void OnEditorUpdateUI(cbEditor *ctrl) const;
 
         void ClearAllIndications(cbStyledTextCtrl* stc)const;
