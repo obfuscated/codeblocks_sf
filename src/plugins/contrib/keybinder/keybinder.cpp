@@ -1415,22 +1415,21 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
         event.Skip();
         return;
     }
-    #if defined(__WXGTK__)
-    // Let linux handle it's own menu check items //2018/03/20
-    // On linux (View menu check items) are being ignored when unchecked
-    // Once unchecked, UpdateUI isn't called to maintain the check status.
-    // so re-checking them doesn't work.
+    // Let wxWidgets handle menu checkable items //(ICC 2018/03/21)
+    // View menu check items are being ignored once unchecked.
+    // UpdateUI isn't called to maintain the check status.
+    // Attempting to programmatically re-check no longer works.
+    // This means that secondary hotkeys for check menu items are ineffective.
     // Cf, https://sourceforge.net/p/codeblocks/tickets/273/
     wxMenuBar* pMenuBar = Manager::Get()->GetAppFrame()->GetMenuBar();
     wxMenuItem* pMenuItem = p ? pMenuBar->FindItem(p->m_nId) : nullptr;
-    if (pMenuItem and pMenuItem->GetMenu() and (pMenuItem->GetMenu()->GetTitle() == _T("&View")) )
+    if (pMenuItem and pMenuItem->IsCheckable() )
     {
         wxLogDebug(wxT("wxKeyBinder::OnChar - ignoring a menu View event [%d]"),
                     event.GetKeyCode());
         event.Skip();
         return;
     }
-    #endif
 
     ////#if 0
     ////    // for some reason we need to avoid processing also of the ENTER keypresses...

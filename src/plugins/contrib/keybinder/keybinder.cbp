@@ -15,6 +15,9 @@
 				<Option host_application="../../../devel/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-g" />
 					<Add option="-Winvalid-pch" />
 					<Add option="-pipe" />
 					<Add option="-mthreads" />

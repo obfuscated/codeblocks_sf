@@ -392,13 +392,16 @@ FileType FileTypeOf(const wxString& filename)
         if ( prjMgr )
         {
             const FilesGroupsAndMasks* fgm = prjMgr->GetFilesGroupsAndMasks();
-            if (fgm)
+            // Since "ext" var has no "." prefixed, but FilesGropupsAndMasks uses
+            // dot notation(".ext"), prefix a '.' here.
+            wxString dotExt = _T(".") + ext;
+           if (fgm)
             {
                for (unsigned int i = 0; i != fgm->GetGroupsCount(); ++i)
                {
-                    if (fgm->GetGroupName(i) == _T("Sources") && fgm->MatchesMask(ext, i))
+                    if (fgm->GetGroupName(i) == _T("Sources") && fgm->MatchesMask(dotExt, i))
                         return ftSource;
-                    if (fgm->GetGroupName(i) == _T("Headers") && fgm->MatchesMask(ext, i))
+                    if (fgm->GetGroupName(i) == _T("Headers") && fgm->MatchesMask(dotExt, i))
                         return ftHeader;
                }
             }

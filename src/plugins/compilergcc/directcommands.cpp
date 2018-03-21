@@ -748,6 +748,11 @@ wxArrayString DirectCommands::GetTargetLinkCommands(ProjectBuildTarget* target, 
         {
             time_t objtime;
             depsTimeStamp(pfd.object_file_native.mb_str(), &objtime);
+            // Honor compiler request to Use Flat Objects
+            // (Settings/compiler/otherSettings/advancedOptions/Others/UseFlatObjects)
+            if (compiler->GetSwitches().UseFlatObjects)
+                depsTimeStamp(pfd.object_file_flat.mb_str(), &objtime);
+
             if (!objtime)
                 force = true;
             if (objtime > outputtime)
