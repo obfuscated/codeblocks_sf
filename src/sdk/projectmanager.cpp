@@ -444,6 +444,7 @@ bool ProjectManager::CloseProject(cbProject* project, bool dontsave, bool refres
         m_pWorkspace->SetModified(true);
 
     RemoveProjectFromAllDependencies(project);
+    ClearProjectDependencies(project);
     m_pProjects->Remove(project);
 
     // moved here from cbProject's destructor, because by then
