@@ -6,9 +6,8 @@
 		<Option default_target="Plugin - Win32" />
 		<Option compiler="gcc" />
 		<Build>
-			<Target title="Plugin - Win32">
+			<Target title="Plugin">
 				<Option output="../../../devel30/share/CodeBlocks/plugins/codesnippets.dll" prefix_auto="0" extension_auto="0" />
-				<Option working_dir="../../../devel30" />
 				<Option object_output="../../../.objs30/plugins/contrib/codesnippets/plugin/" />
 				<Option type="3" />
 				<Option compiler="gcc" />
@@ -16,6 +15,9 @@
 				<Option host_application="../../../devel30/codeblocks.exe" />
 				<Option run_host_application_in_terminal="0" />
 				<Compiler>
+					<Add option="-Wextra" />
+					<Add option="-Wall" />
+					<Add option="-g" />
 					<Add option="$(#CB_RELEASE_TYPE)" />
 					<Add option="-DNOPCH" />
 				</Compiler>
@@ -30,7 +32,7 @@
 			</Environment>
 		</Build>
 		<VirtualTargets>
-			<Add alias="All" targets="Plugin - Win32;" />
+			<Add alias="All" targets="Plugin;" />
 		</VirtualTargets>
 		<Compiler>
 			<Add option="-Wall" />
@@ -55,7 +57,6 @@
 			<Add directory="Search" />
 			<Add directory="editor" />
 			<Add directory="." />
-			<Add directory="../../../include/tinyxml" />
 			<Add directory="../../../include/mozilla_chardet" />
 			<Add directory="../../../include/mozilla_chardet/mfbt" />
 			<Add directory="../../../include/mozilla_chardet/nsprpub/pr/include" />

@@ -43,7 +43,7 @@ public:
         // ::wxCopyFile (filename, (destDir + dirname - rootSrcDir))
         //wxPrintf(_T("OnFile[%s] to [%s]\n"), filename.c_str(), ConvertToDestinationPath(filename).c_str());
         int rc = ::wxCopyFile (filename, ConvertToDestinationPath (filename));
-        if (not rc) ; //wxPrintf(_T("Copy failed for[%s]"), filename.c_str());
+        wxUnusedVar(rc); //wxPrintf(_T("Copy failed for[%s]"), filename.c_str());
         return wxDIR_CONTINUE;
     }
 

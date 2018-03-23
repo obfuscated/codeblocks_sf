@@ -33,6 +33,8 @@
 #endif
 
 #include <unordered_map>
+#include <wx/dataobj.h>
+#include <wx/dnd.h>
 
 #include "cbauibook.h"
 #include "cbcolourmanager.h"
@@ -930,7 +932,10 @@ void ProjectManagerUI::OnTabPosition(wxCommandEvent& event)
 
 void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
 {
+    wxArrayString fileList;
+
     size_t count = m_pTree->GetSelections(m_DraggingSelection);
+
     for (size_t i = 0; i < count; i++)
     {
         //what item do we start dragging?
@@ -950,9 +955,30 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
             return;
 
         // allow only if the project approves
-        if (!ProjectCanDragNode(prj, m_pTree, id))
-            return;
+        if ( ! ProjectCanDragNode(prj, m_pTree, id))
+            continue;
 
+        // We allow drag and drop for normal files or projects, //(pecan 2018/03/22)+
+        // but not for mixed selection, or any other project items
+        if ( ftd->GetKind() == FileTreeData::ftdkFile )
+        {
+                fileList.Add(ftd->GetProjectFile()->file.GetLongPath());
+        }
+        else if ( ftd->GetKind() == FileTreeData::ftdkProject )
+        {
+            fileList.Add(ftd->GetProject()->GetFilename());
+        }
+    }
+
+    if( ! fileList.IsEmpty() )
+    {
+        // create a drop object of file paths
+        wxTextDataObject dropObject( GetStringFromArray(fileList , wxT("\n"), false));
+        wxDropSource dragSource(m_pTree);
+        dragSource.SetData(dropObject);
+        dragSource.DoDragDrop();
+        // we disallow the drag of files within the project tree
+        return;
     }
 
     // allowed
@@ -2858,9 +2884,10 @@ bool ProjectCanDragNode(cbProject* project, wxTreeCtrl* tree, wxTreeItemId node)
     if (ftd->GetProject() != project)
         return false;
 
-    // allow only if it is a file or a virtual folder
+    // allow only if it is a file or a virtual folder or project file(.cbp)
     return (   (ftd->GetKind() == FileTreeData::ftdkFile)
-            || (ftd->GetKind() == FileTreeData::ftdkVirtualFolder) );
+            || (ftd->GetKind() == FileTreeData::ftdkVirtualFolder)
+            || (ftd->GetKind() == FileTreeData::ftdkProject) );
 }
 
 void ProjectCopyTreeNodeRecursively(wxTreeCtrl* tree, const wxTreeItemId& item, const wxTreeItemId& new_parent)

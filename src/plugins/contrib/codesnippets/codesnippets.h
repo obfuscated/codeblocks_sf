@@ -62,7 +62,7 @@ class CodeSnippets : public cbPlugin
 		  * @param parent The parent window.
 		  * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		  */
-		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; }
+		cbConfigurationPanel* GetConfigurationPanel(wxWindow* parent){ return 0; wxUnusedVar(parent);}
 
 		/** Return plugin's configuration panel for projects.
 		 * The panel returned from this function will be added in the project's
@@ -71,7 +71,7 @@ class CodeSnippets : public cbPlugin
 		 * @param project The project that is being edited.
 		 * @return A pointer to the plugin's cbConfigurationPanel. It is deleted by the caller.
 		*/
-		cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; }
+		cbConfigurationPanel* GetProjectConfigurationPanel(wxWindow* parent, cbProject* project){ return 0; wxUnusedVar(parent);wxUnusedVar(project);}
 
 		/** This method is called by Code::Blocks and is used by the plugin
 		 * to add any menu items it needs on Code::Blocks's menu bar.\n
@@ -97,7 +97,7 @@ class CodeSnippets : public cbPlugin
 		 * @param menu pointer to the popup menu
 		 * @param data pointer to FileTreeData object (to access/modify the file tree)
 		*/
-		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){}
+		void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = 0){wxUnusedVar(type);wxUnusedVar(menu);wxUnusedVar(data);}
 
 		/** This method is called by Code::Blocks and is used by the plugin
 		 * to add any toolbar items it needs on Code::Blocks's toolbar.\n
@@ -107,7 +107,7 @@ class CodeSnippets : public cbPlugin
 		 * @param toolBar the wxToolBar to create items on
 		 * @return The plugin should return true if it needed the toolbar, false if not
 		*/
-		bool BuildToolBar(wxToolBar* toolBar){ return false; }
+		bool BuildToolBar(wxToolBar* toolBar){ return false;wxUnusedVar(toolBar); }
 	protected:
 		/** Any descendent plugin should override this virtual method and
 		 * perform any necessary initialization. This method is called by
@@ -233,6 +233,7 @@ class DropTargets: public wxDropTarget
     wxDragResult OnEnter (wxCoord x, wxCoord y, wxDragResult def);
     virtual bool OnDrop(wxCoord x, wxCoord y)
     {
+        wxUnusedVar(x);wxUnusedVar(y);
         //wxDropTarget::OnDrop
         //virtual bool OnDrop(wxCoord x, wxCoord y)
         //Called when the user drops a data object on the target.

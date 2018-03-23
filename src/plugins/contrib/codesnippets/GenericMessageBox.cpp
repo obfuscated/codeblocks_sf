@@ -49,21 +49,13 @@
 // icons
 // ----------------------------------------------------------------------------
 
-#if !wxCHECK_VERSION(3, 0, 0)
 BEGIN_EVENT_TABLE(GenericMessageDialog, wxScrollingDialog)
-#else
-BEGIN_EVENT_TABLE(GenericMessageDialog, wxMessageDialogBase)
-#endif
         EVT_BUTTON(wxID_YES, GenericMessageDialog::OnYes)
         EVT_BUTTON(wxID_NO, GenericMessageDialog::OnNo)
         EVT_BUTTON(wxID_CANCEL, GenericMessageDialog::OnCancel)
 END_EVENT_TABLE()
 
-#if !wxCHECK_VERSION(3, 0, 0)
 IMPLEMENT_CLASS(GenericMessageDialog, wxScrollingDialog )
-#else
-IMPLEMENT_CLASS(GenericMessageDialog, wxMessageDialogBase )
-#endif
 
 // ----------------------------------------------------------------------------
 GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
@@ -72,16 +64,9 @@ GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
                                                 long style,
                                                 const wxPoint& pos)
 // ----------------------------------------------------------------------------
-#if !wxCHECK_VERSION(3, 0, 0)
-    : wxScrollingDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE )
+    : wxScrollingDialog( parent, wxID_ANY, caption, pos, wxDefaultSize, wxDEFAULT_DIALOG_STYLE ), m_style( style )
 {
-#else
-{
-    SetLayoutAdaptationMode(wxDIALOG_ADAPTATION_MODE_ENABLED);
-#endif
-    SetMessageDialogStyle(style);
-
-    bool is_pda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
+    const bool is_pda = (wxSystemSettings::GetScreenType() <= wxSYS_SCREEN_PDA);
 
     wxBoxSizer *topsizer = new wxBoxSizer( wxVERTICAL );
 
@@ -89,10 +74,10 @@ GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
 
 //-#if wxUSE_STATBMP
     // 1) icon
-    if (style & wxICON_MASK)
+    if (m_style & wxICON_MASK)
     {
         wxBitmap bitmap;
-        switch ( style & wxICON_MASK )
+        switch ( m_style & wxICON_MASK )
         {
             default:
                 wxFAIL_MSG(_T("incorrect log style"));
@@ -130,26 +115,19 @@ GenericMessageDialog::GenericMessageDialog( wxWindow *parent,
 //-#endif // wxUSE_STATTEXT
 
     // 3) buttons
-    int center_flag = wxEXPAND;
-    if (style & wxYES_NO)
-        center_flag = wxALIGN_CENTRE;
-
-    // make OK button center also
-    center_flag = wxALIGN_CENTRE;       //(pecan 2009/6/05)
-
-    wxSizer *sizerBtn = CreateSeparatedButtonSizer(style & ButtonSizerFlags);
+    wxSizer *sizerBtn = CreateSeparatedButtonSizer(m_style & ButtonSizerFlags);
     if ( sizerBtn )
-        topsizer->Add(sizerBtn, 0, center_flag | wxALL, 10 );
+        topsizer->Add(sizerBtn, 0, wxALIGN_CENTRE | wxALL, 10 );
 
     SetAutoLayout( true );
     SetSizer( topsizer );
 
     topsizer->SetSizeHints( this );
     topsizer->Fit( this );
-    wxSize size( GetSize() );
 
     // This original code is causing multiline text dialogs to be way too WIDE !! //(pecan 2009/6/06)
     // Better to control text with \n's.
+    //wxSize size( GetSize() );
     //if (size.x < size.y*3/2)
     //{
     //    size.x = size.y*3/2;
@@ -173,8 +151,7 @@ void GenericMessageDialog::OnCancel(wxCommandEvent& WXUNUSED(event))
 {
     // Allow cancellation via ESC/Close button except if
     // only YES and NO are specified.
-    const long style = GetMessageDialogStyle();
-    if ( (style & wxYES_NO) != wxYES_NO || (style & wxCANCEL) )
+    if ( (m_style & wxYES_NO) != wxYES_NO || (m_style & wxCANCEL) )
     {
         EndModal( wxID_CANCEL );
     }

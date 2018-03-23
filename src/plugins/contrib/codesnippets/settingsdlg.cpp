@@ -92,17 +92,10 @@ SettingsDlg::~SettingsDlg()
 void SettingsDlg::OnOk(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-    wxString filename = m_ExtEditorTextCtrl->GetValue();
-    if ( not filename.IsEmpty() )
-        GetConfig()->SettingsExternalEditor = filename;
-    else
-        GetConfig()->SettingsExternalEditor = wxEmptyString;
+    wxUnusedVar(event);
 
-    filename = m_SnippetFileTextCtrl->GetValue();
-    if ( not filename.IsEmpty() )
-        GetConfig()->SettingsSnippetsFolder = filename;
-    else
-        GetConfig()->SettingsSnippetsFolder = wxEmptyString;
+    GetConfig()->SettingsExternalEditor = m_ExtEditorTextCtrl->GetValue();
+    GetConfig()->SettingsSnippetsFolder = m_SnippetFileTextCtrl->GetValue();
 
     // Get the ToolTips options
     GetConfig()->SetToolTipsOption( m_ToolTipsChkBox->GetValue() );
@@ -121,6 +114,8 @@ void SettingsDlg::OnExtEditorButton(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Ask user for filename of editor program
+
+     wxUnusedVar(event);
     wxString newFileName;
     GetFileName(newFileName);
 
@@ -132,6 +127,8 @@ void SettingsDlg::OnSnippetFolderButton(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Ask user for folder to store external snippets
+
+    wxUnusedVar(event);
     wxString newFolderName;
     newFolderName = AskForPathName();
 
@@ -154,7 +151,7 @@ void SettingsDlg::GetFileName(wxString& newFileName)
 
    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
-    (&dlg)->Move(mousePosn.x, mousePosn.y);
+    dlg.Move(mousePosn.x, mousePosn.y);
 
     if (dlg.ShowModal() != wxID_OK) return;
     newFileName = dlg.GetPath();
@@ -168,8 +165,6 @@ void SettingsDlg::GetFileName(wxString& newFileName)
 wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
 // ----------------------------------------------------------------------------
 {
-    wxString newPathName = wxEmptyString;
-
     // Ask user for filename
     wxDirDialog dlg(::wxGetTopLevelParent(0),   //parent  window
                  _T("Select path "),             //message
@@ -178,10 +173,10 @@ wxString SettingsDlg::AskForPathName()       //(pecan 2006/10/06)
 
    // move dialog into the parents frame space
     wxPoint mousePosn = ::wxGetMousePosition();
-    (&dlg)->Move(mousePosn.x, mousePosn.y);
+    dlg.Move(mousePosn.x, mousePosn.y);
 
     if (dlg.ShowModal() != wxID_OK) return wxEmptyString;
-    return newPathName = dlg.GetPath();
+    return dlg.GetPath();
 }
 // ----------------------------------------------------------------------------
 

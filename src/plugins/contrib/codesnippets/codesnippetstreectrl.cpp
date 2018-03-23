@@ -136,8 +136,7 @@ bool CodeSnippetsTreeCtrl::IsFileSnippet (wxTreeItemId treeItemId  )
         //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
     //-#endif
 
-    if ( not ::wxFileExists( fileName) ) return false;
-    return true;
+    return ::wxFileExists(fileName);
 }
 // ----------------------------------------------------------------------------
 bool CodeSnippetsTreeCtrl::IsFileLinkSnippet (wxTreeItemId treeItemId  )
@@ -160,9 +159,7 @@ bool CodeSnippetsTreeCtrl::IsFileLinkSnippet (wxTreeItemId treeItemId  )
     {   // if text is > 128 characters, not a filelink.
         return false;
     }
-    if ( not ::wxFileExists( fileName) ) return false;
-    return true;
-
+    return ::wxFileExists(fileName);
 }//IsFileLinkSnippet
 // ----------------------------------------------------------------------------
 wxString CodeSnippetsTreeCtrl::GetFileLinkExt (wxTreeItemId treeItemId  )
@@ -170,11 +167,11 @@ wxString CodeSnippetsTreeCtrl::GetFileLinkExt (wxTreeItemId treeItemId  )
 {
     //return filename extension
 
-    if ( not IsFileLinkSnippet(treeItemId) ) return wxT("");
+    if ( not IsFileLinkSnippet(treeItemId) ) return wxEmptyString;
     wxTreeItemId itemId = treeItemId;
     if ( itemId == (void*)0) itemId = GetSelection();
-    if (not itemId.IsOk()) return wxT("");
-    if (not IsSnippet(itemId) ) return wxT("");
+    if (not itemId.IsOk()) return wxEmptyString;
+    if (not IsSnippet(itemId) ) return wxEmptyString;
     wxString fileName = GetSnippetString(itemId).BeforeFirst('\r');
     fileName = fileName.BeforeFirst('\n');
     // substitute $macros with actual text
@@ -184,7 +181,7 @@ wxString CodeSnippetsTreeCtrl::GetFileLinkExt (wxTreeItemId treeItemId  )
             Manager::Get()->GetMacrosManager()->ReplaceMacros(fileName);
         //-LOGIT( _T("$macros name[%s]"),fileName.c_str() );
     //-#endif
-    if ( not ::wxFileExists( fileName) ) return wxT("");
+    if ( not ::wxFileExists( fileName) ) return wxEmptyString;
     wxFileName filename(fileName);
     return filename.GetExt();
 }
@@ -194,6 +191,7 @@ void CodeSnippetsTreeCtrl::OnItemSelectChanging(wxTreeEvent& event)
 {
     // UNUSED
     //-if (m_pTopDialog) event.Veto();
+    wxUnusedVar(event);
     return;
 }
 // ----------------------------------------------------------------------------
@@ -212,6 +210,7 @@ void CodeSnippetsTreeCtrl::OnItemSelected(wxTreeEvent& event)
 	if (const SnippetTreeItemData* eventItem =
         (SnippetTreeItemData*)GetItemData(event.GetItem()))
 	{
+/*
         wxString itemDescription;
 		// Check the type of the item and add the menu items
 		switch (eventItem->GetType())
@@ -226,7 +225,7 @@ void CodeSnippetsTreeCtrl::OnItemSelected(wxTreeEvent& event)
 			//-SetStatusText( GetSnippetDescription(itemId) );
 			break;
 		}
-
+*/
 		// Save the item ID for later use
 		m_MnuAssociatedItemID = eventItem->GetId();
 
@@ -837,7 +836,7 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
     if (trashItem || shiftKeyIsDown )
     {
         // if FileLink, memorize the filename
-        wxString filename = wxEmptyString;
+        wxString filename;
         if ( IsFileSnippet(itemId) )
            filename = GetSnippetFileLink(itemId);
 
@@ -869,7 +868,6 @@ void CodeSnippetsTreeCtrl::SetSnippetImage(wxTreeItemId itemId)
         SetItemImage( itemId, TREE_IMAGE_SNIPPET_URL);
     else
         SetItemImage( itemId, TREE_IMAGE_SNIPPET_TEXT);
-    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::FetchFileModificationTime(wxDateTime savedTime)
@@ -906,8 +904,6 @@ void CodeSnippetsTreeCtrl::OnBeginTreeItemDrag(wxTreeEvent& event)
         m_bBeginInternalDrag = 0;
 
     event.Allow();
-
-    return;
 }//OnBeginTreeItemDrag
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EndInternalTreeItemDrag()
@@ -975,9 +971,6 @@ void CodeSnippetsTreeCtrl::EndInternalTreeItemDrag()
     m_itemAtKeyDown = 0;
     m_itemAtKeyUp = 0;
     #endif
-
-    return;
-
 }//OnEndTreeItemDrag
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnEnterWindow(wxMouseEvent& event)
@@ -1026,7 +1019,7 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
     // User has dragged mouse out of source window.
     // if us is dragging mouse, save the source item for later use
     // in FinishDrag()
-
+    wxUnusedVar(event);
     #ifdef LOGGING
      //LOGIT( _T("CodeSnippetsTreeCtrl::OnLeaveWindow") );
     #endif //LOGGING
@@ -1059,8 +1052,6 @@ void CodeSnippetsTreeCtrl::OnLeaveWindow(wxMouseEvent& event)
         SendMouseLeftUp(this, m_TreeMousePosn.x, m_TreeMousePosn.y);
     }
     #endif //__WXMSW__
-
-    return;
 }//OnLeaveWindow
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::FinishExternalDrag()
@@ -1116,11 +1107,9 @@ void CodeSnippetsTreeCtrl::FinishExternalDrag()
                 textData->GetText().c_str(),
                 fileData->GetFilenames().Item(0).c_str() );
     #endif //LOGGING
-        // allow both copy and move
-    int flags = 0;
-    flags |= wxDrag_AllowMove;
+
     // do the dragNdrop
-    wxDragResult result = source.DoDragDrop(flags);
+    wxDragResult result = source.DoDragDrop(wxDrag_AllowMove); // allow both copy and move
 
     // report the results
     #if LOGGING
@@ -1211,7 +1200,6 @@ void CodeSnippetsTreeCtrl::OnMouseWheelEvent(wxMouseEvent& event)
         ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1);
 
     SetFont(ctrlFont);
-    return;
 }
 // ----------------------------------------------------------------------------
 wxTreeItemId CodeSnippetsTreeCtrl::ConvertSnippetToCategory(wxTreeItemId itemId)
@@ -1419,8 +1407,6 @@ void CodeSnippetsTreeCtrl::EditSnippetAsFileLink()
         #endif //LOGGING
         ::wxExecute( execString);
     }
-
-    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OpenSnippetAsFileLink()
@@ -1443,8 +1429,6 @@ void CodeSnippetsTreeCtrl::OpenSnippetAsFileLink()
 
     // user requested "MIME" type to open file
     EditSnippetWithMIME();
-
-    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EditSnippetAsText()
@@ -1499,8 +1483,6 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
     else
         EditSnippet(pSnippetTreeItemData);
 
-
-    return;
 }//EditSnippetAsText
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
@@ -1596,12 +1578,8 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     SetSnippetString( newFileName );
 
     // verify the item tree image
-    if ( IsFileSnippet() )
-        SetItemImage( itemId, TREE_IMAGE_SNIPPET_FILE);
-    else
-        SetItemImage( itemId, TREE_IMAGE_SNIPPET_TEXT);
+    SetItemImage( itemId, IsFileSnippet() ? TREE_IMAGE_SNIPPET_FILE : TREE_IMAGE_SNIPPET_TEXT);
 
-    return;
 }//OnMnuSaveAsFile
 // ----------------------------------------------------------------------------
 bool CodeSnippetsTreeCtrl::EditSnippetProperties(wxTreeItemId& itemId)
@@ -1615,17 +1593,15 @@ bool CodeSnippetsTreeCtrl::EditSnippetProperties(wxTreeItemId& itemId)
 
     result = ExecuteDialog(pdlg, waitSem);
     // Save any changed data
-	if ( result == wxID_OK )
-	{
+    if ( result == wxID_OK )
+    {
         // verify the item tree image
         SetSnippetImage(itemId);
-	}
-    if (result == wxID_OK) {
         SetFileChanged(true);
     }
 
     pdlg->Destroy();
-    return (result = (result==wxID_OK));
+    return (result == wxID_OK);
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::EditSnippet(SnippetTreeItemData* pSnippetTreeItemData, wxString fileName)
@@ -1633,6 +1609,9 @@ void CodeSnippetsTreeCtrl::EditSnippet(SnippetTreeItemData* pSnippetTreeItemData
 {
 
     // Create editor for snippet item
+
+    wxUnusedVar(fileName);
+    wxUnusedVar(pSnippetTreeItemData);
     if ((SnippetTreeItemData*)( GetItemData(GetAssociatedItemID() )))
     {
         // Get the snippet text associated with this tree id
@@ -1801,11 +1780,10 @@ void CodeSnippetsTreeCtrl::EditSnippetWithMIME()
     // Do not use these when using global wxTheMimeTypesManager pointer
     ////if ( m_mimeDatabase ) delete m_mimeDatabase;
     ////m_mimeDatabase = 0;
-
-    return;
 }
 // ----------------------------------------------------------------------------
-int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& waitSem)
+//int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& waitSem)
+int CodeSnippetsTreeCtrl::ExecuteDialog(SnippetProperty* pdlg, wxSemaphore& waitSem)
 // ----------------------------------------------------------------------------
 {
     if (m_pPropertiesDialog) return 0;
@@ -1836,7 +1814,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& wa
         if ( GetConfig()->IsPlugin() )
             GetConfig()->GetMenuBar()->Enable(idViewSnippets, false);
 
-        if ( pdlg->ShowModal() )
+        if ( pdlg->Show() )
         {
             // Just check to see if the semaphore has been posted.
             // Don't do a real wait, else the edit dialog will freeze
@@ -1845,6 +1823,7 @@ int CodeSnippetsTreeCtrl::ExecuteDialog(wxScrollingDialog* pdlg, wxSemaphore& wa
                 wxYield();
             }
             retcode = pdlg->GetReturnCode();
+
         }
         // Release main apps closeWindow function
         GetConfig()->GetMainFrame()->Disconnect( wxEVT_CLOSE_WINDOW,
@@ -1976,14 +1955,13 @@ void CodeSnippetsTreeCtrl::OnIdle()
 
     ////event.Skip(); this routine is called from another OnIdle which does the
     // event.Skip() itself.
-    return;
 }//OnIdle
 
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::OnShutdown(wxCloseEvent& event)
 // ----------------------------------------------------------------------------
 {
-    event.Skip(); return;
+    event.Skip();
 }
 // ----------------------------------------------------------------------------
 wxTreeItemId CodeSnippetsTreeCtrl::ResetSnippetsIDs(const wxTreeItemId& startNode)
@@ -2095,7 +2073,6 @@ void CodeSnippetsTreeCtrl::CreateDirLevels(const wxString& pathNameIn)
 {
     // FileImport Traverser will create any missing directories
     FileImportTraverser fit(_T("dummy"), pathNameIn);
-    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsTreeCtrl::SendMouseLeftUp(const wxWindow* pWin, const int mouseX, const int mouseY)
@@ -2122,7 +2099,7 @@ void CodeSnippetsTreeCtrl::SendMouseLeftUp(const wxWindow* pWin, const int mouse
         // move mouse into the window
         MSW_MouseMove( fullScreen.x, fullScreen.y );
         // send mouse LeftKeyUp
-        INPUT Input         = {0};
+        INPUT Input         = {0,0,0,0,0,0,0};
         Input.type          = INPUT_MOUSE;
         Input.mi.dwFlags    = MOUSEEVENTF_LEFTUP;
         ::SendInput(1,&Input,sizeof(INPUT));
@@ -2141,7 +2118,7 @@ void CodeSnippetsTreeCtrl::MSW_MouseMove(int x, int y )
       double fScreenHeight  = ::GetSystemMetrics( SM_CYSCREEN )-1;
       double fx = x*(65535.0f/fScreenWidth);
       double fy = y*(65535.0f/fScreenHeight);
-      INPUT  Input={0};
+      INPUT  Input={0,0,0,0,0,0,0};
       Input.type      = INPUT_MOUSE;
       Input.mi.dwFlags  = MOUSEEVENTF_MOVE|MOUSEEVENTF_ABSOLUTE;
       Input.mi.dx = (LONG)fx;

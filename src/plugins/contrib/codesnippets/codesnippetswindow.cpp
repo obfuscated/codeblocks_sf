@@ -508,8 +508,7 @@ void CodeSnippetsWindow::OnItemActivated(wxTreeEvent& event)
         return;
     }
 
-    OnMnuEditSnippet( ev )        ;
-    return;
+    OnMnuEditSnippet( ev );
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnItemMenu(wxTreeEvent& event)
@@ -699,6 +698,8 @@ void CodeSnippetsWindow::OnMnuRename(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Get the associated item id
+
+    wxUnusedVar(event);
     wxTreeItemId itemID = GetAssociatedItemID();
 
     CodeSnippetsTreeCtrl* pTree = GetSnippetsTreeCtrl();
@@ -908,6 +909,8 @@ void CodeSnippetsWindow::OnMnuLoadSnippetsFromFile(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // Allow user to specify new filename or old file to load
+
+    wxUnusedVar(event);
     //-wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString, _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxOPEN|wxFILE_MUST_EXIST);
     wxFileDialog dlg(this, _("Load snippets from file"), wxEmptyString, wxEmptyString,
         _("XML files (*.xml)|*.xml|All files (*.*)|*.*"), wxFD_OPEN);
@@ -950,16 +953,14 @@ void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
     if (GetFileChanged() )
         OnMnuSaveSnippets(event);
     const wxString IndexFile = GetConfig()->SettingsSnippetsXmlPath;
-    wxString bkupName = wxEmptyString;
-    unsigned i = 0;
-    while (true)
+    wxString bkupName;
+    for (unsigned i = 1; ; ++i)
     {
-        ++i;
         bkupName = IndexFile;
         bkupName << wxT(".")  << i;
-        if ( ::wxFileExists(bkupName) ) {continue;}
-        break;
-    }//while
+        if (!::wxFileExists(bkupName))
+            break;
+    }
     int done = ::wxCopyFile(IndexFile, bkupName);
     GenericMessageBox( wxString::Format( wxT("Backup %s for\n\n %s"),
                 done?wxT("succeeded"):wxT("failed"),
@@ -987,6 +988,7 @@ void CodeSnippetsWindow::OnMnuRemoveAll(wxCommandEvent& /*event*/)
 void CodeSnippetsWindow::OnMnuCaseSensitive(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    wxUnusedVar(event);
     GetConfig()->m_SearchConfig.caseSensitive = (not GetConfig()->m_SearchConfig.caseSensitive);
 }
 // ----------------------------------------------------------------------------
@@ -1011,6 +1013,8 @@ void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
     // search->clear context menu item
+
+    wxUnusedVar(event);
     m_SearchSnippetCtrl->Clear();
 
 }
@@ -1018,6 +1022,7 @@ void CodeSnippetsWindow::OnMnuClear(wxCommandEvent& event)
 void CodeSnippetsWindow::OnMnuSearchExtended(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    wxUnusedVar(event);
     wxWindow* m_pAppWindow = Manager::Get()->GetAppWindow();
     if ( not m_pAppWindow ) m_pAppWindow = wxTheApp->GetTopWindow();
 
@@ -1033,6 +1038,7 @@ void CodeSnippetsWindow::OnMnuSearchExtended(wxCommandEvent& event)
 void CodeSnippetsWindow::OnMnuCopyToClipboard(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    wxUnusedVar(event);
     if (wxTheClipboard->Open())
     {
         const SnippetTreeItemData* itemData = (SnippetTreeItemData*)(GetSnippetsTreeCtrl()->GetItemData(GetAssociatedItemID()));
@@ -1330,17 +1336,10 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     if (b_modified)
     {
         // modified; ask to reload
-        int ret = -1;
-        {
-            wxString msg;
-            msg.Printf(_("%s\n\nFile is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
-                       GetConfig()->SettingsSnippetsXmlPath.c_str());
-            if (GenericMessageBox(msg, whichApp + _("needs to Reload file?!"), wxICON_QUESTION | wxYES_NO) == wxYES)
-                ret = wxYES;
-            else
-                ret = wxNO;
-
-        }
+        wxString msg;
+        msg.Printf(_("%s\n\nFile is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
+                   GetConfig()->SettingsSnippetsXmlPath.c_str());
+        int ret = GenericMessageBox(msg, whichApp + _("needs to Reload file?!"), wxICON_QUESTION | wxYES_NO);
         if ( ret == wxYES )
         {
             if (not GetSnippetsTreeCtrl()->LoadItemsFromFile(GetConfig()->SettingsSnippetsXmlPath, m_AppendItemsFromFile))
@@ -1348,7 +1347,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
                 // File modification time is saved by LoadItemsFromFile
                 //GetSnippetsTreeCtrl()->FetchFileModificationTime(last);
         }
-        else if (ret == wxNO)
+        else
             GetSnippetsTreeCtrl()->FetchFileModificationTime();
     }
 
@@ -1383,12 +1382,12 @@ void CodeSnippetsWindow::OnIdle(wxIdleEvent& event)
 // ----------------------------------------------------------------------------
 {
     event.Skip();
-    return;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnMnuAbout(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    wxUnusedVar(event);
     wxString wxbuild(wxVERSION_STRING);
 
     #if defined(__WXMSW__)
@@ -1403,10 +1402,8 @@ void CodeSnippetsWindow::OnMnuAbout(wxCommandEvent& event)
         wxbuild << _T("-ANSI build");
     #endif // wxUSE_UNICODE
 
-    wxString buildInfo = wxbuild;
-    wxString
-        pgmVersionString = wxT("CodeSnippets v") + GetConfig()->GetVersion();
-    buildInfo = wxT("\t")+pgmVersionString + wxT("\n")+ wxT("\t")+buildInfo;
+    wxString pgmVersionString = wxT("CodeSnippets v") + GetConfig()->GetVersion();
+    wxString buildInfo = wxT("\t")+pgmVersionString + wxT("\n") + wxT("\t") + wxbuild;
     buildInfo = buildInfo + wxT("\n\n\t")+wxT("Original Code by Arto Jonsson");
     buildInfo = buildInfo + wxT("\n\t")+wxT("Modified/Enhanced by Pecan Heber");
 
@@ -1418,6 +1415,7 @@ void CodeSnippetsWindow::OnMnuTest(wxCommandEvent& event)
 {
     // Used to issue assorted tests during debugging
 
+    wxUnusedVar(event);
     #if defined(LOGGING)
     LOGIT( _T("Test::EVT_S_DRAGSCROLL_EVENT[%d]"),event.GetId() );
     #endif

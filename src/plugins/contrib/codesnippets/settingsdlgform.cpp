@@ -31,7 +31,7 @@ SettingsDlgForm::SettingsDlgForm( wxWindow* parent, wxWindowID id, const wxStrin
 
 	m_staticText = new wxStaticText( this, ID_DEFAULT, wxT("User Settings"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText->Wrap( -1 );
-	bSizer1->Add( m_staticText, 0, wxALIGN_CENTER_HORIZONTAL|wxALL|wxEXPAND, 5 );
+	bSizer1->Add( m_staticText, 0, wxALIGN_CENTER_HORIZONTAL|wxALL, 5 );
 
 	bSizer->Add( bSizer1, 0, wxEXPAND, 5 );
 

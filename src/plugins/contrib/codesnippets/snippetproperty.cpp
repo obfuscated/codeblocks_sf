@@ -74,6 +74,8 @@ bool SnippetDropTarget::OnDropText(wxCoord x, wxCoord y, const wxString& data)
 // ----------------------------------------------------------------------------
 {
     // Put dragged text into SnippetTextCtrl
+
+    wxUnusedVar(x); wxUnusedVar(y);
     #ifdef LOGGING
      LOGIT( _T("Dragged Data[%s]"), data.GetData() );
     #endif //LOGGING
@@ -178,21 +180,24 @@ SnippetProperty::~SnippetProperty()
 void SnippetProperty::OnOk(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
+    wxUnusedVar(event);
+
      LOGIT( _T("SnippetProperty::OnOK") );
     // set data to edited snippet
     m_pSnippetDataItem->SetSnippetString( m_SnippetEditCtrl->GetText() );
     // label may have been edited
     m_pTreeCtrl->SetItemText( m_TreeItemId, m_ItemLabelTextCtrl->GetValue() );
     if (m_pWaitingSemaphore) m_pWaitingSemaphore->Post();
-    this->EndModal(wxID_OK);
+    m_retCode = wxID_OK;
 }
 // ----------------------------------------------------------------------------
 void SnippetProperty::OnCancel(wxCommandEvent& event)
 // ----------------------------------------------------------------------------
 {
-     LOGIT( _T("SnippetProperty::OnCancel") );
+    wxUnusedVar(event);
+    LOGIT( _T("SnippetProperty::OnCancel") );
     if (m_pWaitingSemaphore) m_pWaitingSemaphore->Post();
-    this->EndModal(wxID_CANCEL);
+    m_retCode = wxID_CANCEL;
 }
 // ----------------------------------------------------------------------------
 void SnippetProperty::OnSnippetButton(wxCommandEvent& event)
@@ -200,6 +205,7 @@ void SnippetProperty::OnSnippetButton(wxCommandEvent& event)
 {
     // Snippet button clicked from OpenAsFile context menu
 
+    wxUnusedVar(event);
     if ( GetActiveMenuId() == idMnuConvertToFileLink )
     {       // let user choose a file to hold snippet
         wxString ChosenFileName = wxFileSelector(wxT("Choose a Link target"));
@@ -229,7 +235,6 @@ void SnippetProperty::OnSnippetButton(wxCommandEvent& event)
         else InvokeEditOnSnippetText();
 
     }//fi
-    return;
 }
 // ----------------------------------------------------------------------------
 void SnippetProperty::OnFileSelectButton(wxCommandEvent& event)
@@ -237,12 +242,11 @@ void SnippetProperty::OnFileSelectButton(wxCommandEvent& event)
 {
     // Properties File Select button clicked
 
+    wxUnusedVar(event);
     // let choose a file name to insert into snippet property
     wxString ChosenFileName = wxFileSelector(wxT("Choose a file"));
     if (not ChosenFileName.IsEmpty())
         m_SnippetEditCtrl-> SetText( ChosenFileName );
-    return;
-
 }//OnFileSelectButton
 // ----------------------------------------------------------------------------
 void SnippetProperty::InvokeEditOnSnippetText()
@@ -345,5 +349,4 @@ void SnippetProperty::InvokeEditOnSnippetFile()
      LOGIT( _T("InvokeEditOnSnippetFile[%s]"), execString.GetData() );
     #endif //LOGGING
     ::wxExecute( execString);
-    return;
 }//InvokeEditOnSnippetFile

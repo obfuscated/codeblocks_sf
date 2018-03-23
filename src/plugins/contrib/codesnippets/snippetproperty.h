@@ -42,6 +42,8 @@ class SnippetProperty : public SnippetPropertyForm
         SnippetProperty(wxTreeCtrl* pTree, wxTreeItemId itemId, wxSemaphore* pWaitSem);
         virtual ~SnippetProperty();
 
+        int     GetReturnCode(){return m_retCode;}
+
     protected:
         wxPoint pos;
         void OnOk(wxCommandEvent& event);
@@ -66,6 +68,7 @@ class SnippetProperty : public SnippetPropertyForm
         wxTreeCtrl*         m_pTreeCtrl;
         int                 m_nScrollWidthMax;
         wxSemaphore*        m_pWaitingSemaphore;
+        int                 m_retCode; //(pecan 2018/03/22)
 
     DECLARE_EVENT_TABLE()
 };

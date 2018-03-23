@@ -30,7 +30,6 @@
 #include "wx/defs.h"
 #include "scrollingdialog.h"
 #include "wx/msgdlg.h"
-#include "wx/generic/msgdlgg.h"
 
 // type is an 'or' (|) of wxOK, wxCANCEL, wxYES_NO
 // Returns wxYES/NO/OK/CANCEL
@@ -38,11 +37,7 @@
 //-extern WXDLLEXPORT_DATA(const wxChar) wxMessageBoxCaptionStr[];
 
 // ----------------------------------------------------------------------------
-class GenericMessageDialog:
-#if !wxCHECK_VERSION(3, 0, 0)
-    public wxScrollingDialog,
-#endif
-    public wxMessageDialogBase
+class GenericMessageDialog: public wxScrollingDialog
 // ----------------------------------------------------------------------------
 {
 DECLARE_DYNAMIC_CLASS(GenericMessageDialog)
@@ -62,6 +57,9 @@ public:
     void OnYes(wxCommandEvent& event);
     void OnNo(wxCommandEvent& event);
     void OnCancel(wxCommandEvent& event);
+
+protected:
+    long m_style;
 
 private:
     DECLARE_EVENT_TABLE()

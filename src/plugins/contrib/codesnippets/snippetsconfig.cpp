@@ -323,7 +323,6 @@ void CodeSnippetsConfig::SetSettingsWindowState(const wxString windowState)
     m_SettingsWindowState = windowState;
     SettingsSaveString( _T("WindowState"), m_SettingsWindowState );
     //LOGIT( _T("SetSettingsWindowState[%s]"),GetSettingsWindowState.c_str() );
-    return ;
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsConfig::SettingsSaveWinPosition()
@@ -395,10 +394,7 @@ void CodeSnippetsConfig::CenterChildOnParent(wxWindow* child, wxWindow* parentPa
             if ( parentPosn.y < 1) parentPosn.y = 1;
         }while(false);
         child->Move( parentPosn.x, parentPosn.y);
-        return;
     }
-
-    return;
 }
 // ----------------------------------------------------------------------------
 bool CodeSnippetsConfig::IsDockedWindow(wxWindow** pWindowRequest, wxPoint* pCoordRequest, wxSize* pSizeRequest)
@@ -504,9 +500,7 @@ bool CodeSnippetsConfig::IsFloatingWindow(wxWindow** pWindowRequest, wxPoint* pC
 bool CodeSnippetsConfig::IsExternalWindow()
 // ----------------------------------------------------------------------------
 {
-  	if ( GetConfig()->GetSettingsWindowState().Contains(wxT("External")) )
-        return true;
-    return false;
+  	return GetConfig()->GetSettingsWindowState().Contains(wxT("External"));
 }
 // ----------------------------------------------------------------------------
 wxString CodeSnippetsConfig::GetTempDir()
