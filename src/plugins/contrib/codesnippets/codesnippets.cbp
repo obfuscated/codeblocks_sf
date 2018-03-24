@@ -81,8 +81,6 @@
 			<Mode after="always" />
 		</ExtraCommands>
 		<Unit filename="FileImport.h" />
-		<Unit filename="GenericMessageBox.cpp" />
-		<Unit filename="GenericMessageBox.h" />
 		<Unit filename="Makefile.am" />
 		<Unit filename="codesnippets.cpp" />
 		<Unit filename="codesnippets.h" />

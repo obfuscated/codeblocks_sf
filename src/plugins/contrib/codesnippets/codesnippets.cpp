@@ -48,7 +48,6 @@
 #include "codesnippets.h"
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
-#include "GenericMessageBox.h"
 #include "cbauibook.h"
 
 // ----------------------------------------------------------------------------

@@ -532,6 +532,9 @@ AppVersion::~AppVersion()
 //          1.4.2 2018/03/22
 //          Remove Drag and Drop insertion into CB (mod to bluehazzaard patch)
 //          http://forums.codeblocks.org/index.php/topic,22454.msg152852.html#msg152852
+//          1.4.3 2018/03/24
+//          Replace GenericMessageBox with wxMessageBox
+//          Remove use of external editor (causes hang)
 // ----------------------------------------------------------------------------
 //  Bugs
 //      2008/04/8

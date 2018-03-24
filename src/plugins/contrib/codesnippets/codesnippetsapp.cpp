@@ -59,7 +59,6 @@
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
-#include "GenericMessageBox.h"
 #include "codesnippetsevent.h"
 #include "FileImport.h"
 #include "dragscroll.h"
@@ -438,7 +437,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
                 wxString msg = wxT("Another CodeSnippets is already running from this folder.\n");
                 msg << _T("Starting multiple CodeSnippets could scramble this configuration file.\n");
                 msg << _T("Run multiple CodeSnippets anyway?\n");
-                int answer = GenericMessageBox( msg, _T("Multiple CodeSnippets"),wxYES_NO );
+                int answer = wxMessageBox( msg, _T("Multiple CodeSnippets"),wxYES_NO );
                 if ( answer == wxYES)
                     break;
 
@@ -580,7 +579,7 @@ void CodeSnippetsAppFrame::InitCodeSnippetsAppFrame(wxFrame *frame, const wxStri
          #endif
         if ( not ::wxFileExists(m_KeepAliveFileName) )
         {
-            GenericMessageBox(wxString::Format(wxT("Error: Did not find KeepAlive File[%s]"), m_KeepAliveFileName.GetData() ));
+            wxMessageBox(wxString::Format(wxT("Error: Did not find KeepAlive File[%s]"), m_KeepAliveFileName.GetData() ));
             m_KeepAliveFileName = wxEmptyString;
             break;
         }
@@ -786,7 +785,7 @@ void CodeSnippetsAppFrame::OnFileLoad(wxCommandEvent& event)
     // Save any previously modified file
     if ( GetFileChanged() )
     {    // Ask users if they want to save the snippet xml file
-        int answer = GenericMessageBox( wxT("Save Snippets file?\n\n")+GetConfig()->SettingsSnippetsXmlPath,
+        int answer = wxMessageBox( wxT("Save Snippets file?\n\n")+GetConfig()->SettingsSnippetsXmlPath,
                                                 wxT("Open"),wxYES_NO );
         if ( answer == wxYES)
         {

@@ -80,8 +80,8 @@ SnippetPropertyForm::SnippetPropertyForm( wxWindow* parent, int id, wxString tit
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
 
-	m_SnippetButton = new wxButton( this, ID_SNIPPETBUTTON, wxT("ExtEdit"), wxDefaultPosition, wxDefaultSize, 0 );
-	bSizer5->Add( m_SnippetButton, 0, wxALL, 5 );
+	//-2018/03/24 m_SnippetButton = new wxButton( this, ID_SNIPPETBUTTON, wxT("ExtEdit"), wxDefaultPosition, wxDefaultSize, 0 );
+	//-2018/03/24 bSizer5->Add( m_SnippetButton, 0, wxALL, 5 );
 
 	m_FileSelectButton = new wxButton( this, ID_FILESELECTBUTTON, wxT("Link target"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer5->Add( m_FileSelectButton, 0, wxALL, 5 );

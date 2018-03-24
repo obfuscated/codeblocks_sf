@@ -38,7 +38,6 @@
 #include "codesnippetswindow.h"
 #include "snippetitemdata.h"
 #include "menuidentifiers.h"
-#include "GenericMessageBox.h"
 #include "snippetsconfig.h"
 #include "snippetproperty.h"
 ////-#include "defsext.h"
@@ -223,7 +222,7 @@ void SnippetProperty::OnSnippetButton(wxCommandEvent& event)
         )
     {
         if ( GetConfig()->SettingsExternalEditor.IsEmpty())
-        {   GenericMessageBox(wxT("Use Menu/Settings/Options to specify an external editor.") );
+        {   wxMessageBox(wxT("Use Menu/Settings/Options to specify an external editor.") );
             return;
         }
             // let user edit the snippet text
@@ -263,7 +262,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
         if (not tmpFile.IsOpened() )
         {
             //wxMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
-            GenericMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
+            wxMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
             return ;
         }
         wxString snippetData( GetSnippetString() );
@@ -273,9 +272,10 @@ void SnippetProperty::InvokeEditOnSnippetText()
             // file name must be surrounded with quotes when using wxExecute
         wxString externalEditor = GetConfig()->SettingsExternalEditor;
         if ( externalEditor == _T("Enter filename of external editor") )
-        {   GenericMessageBox(wxT("No external editor specified.\n Check settings.\n"));
+        {   wxMessageBox(wxT("No external editor specified.\n Check settings.\n"));
             return;
         }
+        //wxString execString = GetConfig()->SettingsExternalEditor + wxT(" \"") + tmpFileName.GetFullPath() + wxT("\"");
         wxString execString = GetConfig()->SettingsExternalEditor + wxT(" \"") + tmpFileName.GetFullPath() + wxT("\"");
 
         #ifdef LOGGING
@@ -287,7 +287,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
             // Read the edited data back into the snippet text
         tmpFile.Open(tmpFileName.GetFullPath(), wxFile::read);
         if (not tmpFile.IsOpened() )
-        {   GenericMessageBox(wxT("Abort.Error reading temp data file."));
+        {   wxMessageBox(wxT("Abort.Error reading temp data file."));
             return;
         }
         unsigned long fileSize = tmpFile.Length();
@@ -300,7 +300,7 @@ void SnippetProperty::InvokeEditOnSnippetText()
         char pBuf[fileSize+1];
         size_t nResult = tmpFile.Read( pBuf, fileSize );
         if ( wxInvalidOffset == (int)nResult )
-            GenericMessageBox(wxT("InvokeEditOnSnippetText()\nError reading temp file"));
+            wxMessageBox(wxT("InvokeEditOnSnippetText()\nError reading temp file"));
         pBuf[fileSize] = 0;
         tmpFile.Close();
 

@@ -49,7 +49,6 @@
 #include "codesnippetstreectrl.h"
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
-#include "GenericMessageBox.h"
 #include "menuidentifiers.h"
 #include "snippetsconfig.h"
 #include "FileImport.h"
@@ -610,12 +609,12 @@ void CodeSnippetsTreeCtrl::LoadItemsFromXmlNode(const TiXmlElement* node, const 
 			}
 			else
 			{
-                GenericMessageBox(_T("CodeSnippets: Error loading XML file; element \"snippet\" cannot be found."));
+                wxMessageBox(_T("CodeSnippets: Error loading XML file; element \"snippet\" cannot be found."));
 			}
 		}
 		else
 		{
-		    GenericMessageBox(_T("CodeSnippets: Error loading XML file; attribute \"type\" is \"") + itemType + _T("\" which is invalid item type."));
+		    wxMessageBox(_T("CodeSnippets: Error loading XML file; attribute \"type\" is \"") + itemType + _T("\" which is invalid item type."));
 			return;
 		}
 	} // end for
@@ -711,9 +710,9 @@ bool CodeSnippetsTreeCtrl::LoadItemsFromFile(const wxString& fileName, bool bApp
 		   else //IsApplication
 		   {
                 //-wxMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
-                GenericMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
+                wxMessageBox(_T("CodeSnippets: Cannot load file \"") + fileName + _T("\": ") + csC2U(doc.ErrorDesc()));
                 //-wxMessageBox(_T("CodeSnippets: Backup of the failed file has been created."));
-                GenericMessageBox(_T("CodeSnippets: Backup of the failed file has been created."));
+                wxMessageBox(_T("CodeSnippets: Backup of the failed file has been created."));
 		   }
 		   //-#endif
 		}
@@ -842,7 +841,7 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
 
         // if this was a FileLink, ask if user wants to delete file
         if ( not filename.IsEmpty() ) {
-            int answer = GenericMessageBox( wxT("Delete physical file?\n\n")+filename,
+            int answer = wxMessageBox( wxT("Delete physical file?\n\n")+filename,
                                                     wxT("Delete"),wxYES_NO );
             if ( answer == wxYES)
                 /*int done =*/ ::wxRemoveFile(filename);
@@ -1460,7 +1459,7 @@ void CodeSnippetsTreeCtrl::EditSnippetAsText()
         if (GetConfig()->IsApplication() ) msg = msg + wxT("Use Menu->");
         else msg = msg + wxT("Right click Root item. Use ");
         msg = msg + wxT("Settings to set a better editor.\n");
-        GenericMessageBox( msg );
+        wxMessageBox( msg );
     }
 
     // let user edit the snippet text
@@ -1505,7 +1504,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     // if file already exists preserve the old data
     if ( ::wxFileExists( fileName ) )
     {   // item snippet is already a filename
-        answer = GenericMessageBox(
+        answer = wxMessageBox(
             wxT("Item is already a file link named:\n")+fileName
                 + wxT(" \n\nAre you sure you want to rewrite the file?\n"),
             wxT("Warning"),wxYES|wxNO); //, GetMainFrame(), mousePosn.x, mousePosn.y);
@@ -1513,7 +1512,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
         {   // read data from old file
             wxFile oldFile( fileName, wxFile::read);
             if (not oldFile.IsOpened() )
-            {   GenericMessageBox(wxT("Abort.Error reading data file."));
+            {   wxMessageBox(wxT("Abort.Error reading data file."));
                 return;
             }
             unsigned long fileSize = oldFile.Length();
@@ -1569,7 +1568,7 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
     wxFile newFile( newFileName, wxFile::write);
     if (not newFile.IsOpened() )
     {
-        GenericMessageBox(wxT("Open failed for:")+newFileName);
+        wxMessageBox(wxT("Open failed for:")+newFileName);
         return ;
     }
     newFile.Write( csU2C(snippetData), snippetData.Length());

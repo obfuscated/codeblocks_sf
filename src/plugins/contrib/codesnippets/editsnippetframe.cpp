@@ -28,7 +28,6 @@
 
 #include "codesnippetswindow.h"
 #include "snippetsconfig.h"
-#include "GenericMessageBox.h"
 #include "version.h"
 
 #include "sdk.h"

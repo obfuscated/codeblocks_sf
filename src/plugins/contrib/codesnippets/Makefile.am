@@ -28,7 +28,6 @@ libcodesnippets_la_LIBADD = ../../../sdk/libcodeblocks.la \
 libcodesnippets_la_SOURCES = codesnippets.cpp \
 		codesnippetstreectrl.cpp \
 		codesnippetswindow.cpp \
-		GenericMessageBox.cpp \
 		settingsdlg.cpp \
 		settingsdlgform.cpp \
 		snippetitemdata.cpp \
@@ -43,8 +42,6 @@ noinst_HEADERS =  	codesnippets.h \
 		codesnippetstreectrl.h \
 		codesnippetswindow.h \
 		menuidentifiers.h \
-		GenericMessageBox.h \
-		settingsdlg.h \
 		settingsdlgform.h \
 		snippetitemdata.h \
 		snippetproperty.h \

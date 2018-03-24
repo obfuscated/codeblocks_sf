@@ -66,7 +66,6 @@
 #include "snippetsconfig.h"
 #include "snippetsimages.h"
 #include "codesnippetstreectrl.h"
-#include "GenericMessageBox.h"
 #include "settingsdlg.h"
 #include "menuidentifiers.h"
 
@@ -962,7 +961,7 @@ void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
             break;
     }
     int done = ::wxCopyFile(IndexFile, bkupName);
-    GenericMessageBox( wxString::Format( wxT("Backup %s for\n\n %s"),
+    wxMessageBox( wxString::Format( wxT("Backup %s for\n\n %s"),
                 done?wxT("succeeded"):wxT("failed"),
                 bkupName.c_str()) );
 
@@ -1339,7 +1338,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
         wxString msg;
         msg.Printf(_("%s\n\nFile is modified outside the IDE...\nDo you want to reload it (you will lose any unsaved work)?"),
                    GetConfig()->SettingsSnippetsXmlPath.c_str());
-        int ret = GenericMessageBox(msg, whichApp + _("needs to Reload file?!"), wxICON_QUESTION | wxYES_NO);
+        int ret = wxMessageBox(msg, whichApp + _("needs to Reload file?!"), wxICON_QUESTION | wxYES_NO);
         if ( ret == wxYES )
         {
             if (not GetSnippetsTreeCtrl()->LoadItemsFromFile(GetConfig()->SettingsSnippetsXmlPath, m_AppendItemsFromFile))
@@ -1355,7 +1354,7 @@ void CodeSnippetsWindow::CheckForExternallyModifiedFiles()
     {
         wxString msg;
         msg.Printf(_("Could not reload file:\n\n%s"), GetConfig()->SettingsSnippetsXmlPath.c_str() );
-        GenericMessageBox(msg, whichApp +  _("Error"), wxICON_ERROR);
+        wxMessageBox(msg, whichApp +  _("Error"), wxICON_ERROR);
     }
     m_isCheckingForExternallyModifiedFiles = false;
 
@@ -1466,7 +1465,7 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
              << wxT(" will open the file. Dragging it into the edit area will \n")
              << wxT(" insert the text.\n");
 
-    GenericMessageBox( wxT("\n\n")+ buildInfo + helpText, _("About"),wxOK);
+    wxMessageBox( wxT("\n\n")+ buildInfo + helpText, _("About"),wxOK);
 
     //wxMessageBox( wxT("\n\n") + buildInfo + wxT("\n\n") + helpText, _("About"), wxOK) ;
 
