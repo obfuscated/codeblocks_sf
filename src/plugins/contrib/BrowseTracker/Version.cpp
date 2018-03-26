@@ -254,17 +254,24 @@ AppVersion::~AppVersion()
 //      100) Fix incorrect scintilla margin marker usage
 //           Better resolution of Jump line recording
 //           Add modifed user contrib tool bar (by sbezgodov)
-//  Commit 1.2.101 2017/12/7
-//          Unregister hooks/sinks to prevent crashes when uninstalled
-//          Fix JumpTracker "OnRelease() RemoveEventHandler(this);" which
-//          crashes linux.
-//
+//  ICC    1.2.101 2018/01/3
+//           Fix shutdown crash //2017/12/7
+//           Begin elimination of BrowseMarks
+//           ICC restore BrowseTracker Toolbar, default unshown
+//           Set BookMarks as default. //2018/01/31-2018/01/2
+//  ICC    1.2.102 2018/01/6
+//           Elimination use of BrowseMarksStyle
+//           Set BookMarks as default. //2018/01/31-2018/01/2
+//  pecan  1.2.103 2018/02/6
+//           Port of above to CB 17.12 trunk
+//           changes to includes and .cbp for CB 17.12
+//  pecan  1.2.104 2018/02/17
+//           Re-patch wx30 and wx31 versions with shutdown fix 1.2.101
+//           Left out when creating CB 17.12
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
 //          When CB reloads a changed editor, the marks are missing
-//       2) In one fell swoop: uninstall BrowseTracker, reInstall it,
-//              click on a project. CB::OnProjectHook call crashes.
 //       3) On first project load, browse/book marks dont set bec there's no active editor in arrays
 // ----------------------------------------------------------------------------
 //  //TODO:   All

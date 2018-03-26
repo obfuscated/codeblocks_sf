@@ -36,7 +36,6 @@ class ProjectData
 
         void            AddEditor( wxString filePath );
         BrowseMarks*    GetBrowse_MarksFromHash( wxString filePath);
-        BrowseMarks*    GetBook_MarksFromHash( wxString filePath);
         BrowseMarks*    GetPointerToBrowse_MarksArray(FileBrowse_MarksHash& hash ,wxString filePath);
         bool            FindFilename( const wxString filePath);
         void            IncrementActivationCount();
@@ -45,8 +44,6 @@ class ProjectData
         BrowseMarks*    HashAddBrowse_Marks( const wxString filePath );
 
 
-        BrowseMarks*    HashAddBook_Marks( wxString filePath);
-        BrowseMarks*    HashAddBook_Marks( EditorBase* eb);
         void            SaveLayout();
         void            LoadLayout();
         bool            IsLayoutLoaded(){return m_bLayoutLoaded;}
@@ -62,7 +59,6 @@ class ProjectData
         cbProject*      m_pCBProject;
 
         // Hash: filePath, BrowseMarks* array
-        FileBrowse_MarksHash m_FileBook_MarksArchive;
         FileBrowse_MarksHash m_FileBrowse_MarksArchive;
 
         int     m_CurrIndexEntry;

@@ -55,10 +55,7 @@ class BrowseMarks
         void        RebuildBrowse_Marks(cbEditor* cbed, bool addedLines);
         wxString    GetStringOfBrowse_Marks() const;
         wxString    GetFilePath(){return m_filePath;}
-        void        ToggleBook_MarksFrom(BrowseMarks& otherBook_Marks);
-        void        GetBook_MarksFromEditor(wxString filename);
         void        ImportBrowse_Marks();
-        void        ImportBook_Marks();
         void        SetBrowseMarksStyle( int style);
         void        OnEditorEventHookIgnoreMarkerChanges( bool trueOrfalse);
         void        Dump();

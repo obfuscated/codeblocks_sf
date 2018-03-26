@@ -47,7 +47,7 @@
 
 #include <wx/tokenzr.h>
 #include <tinyxml.h>
-#include "tinywxuni.h"
+#include <tinywxuni.h>
 
 #include "BrowseTrackerLayout.h"
 #include "BrowseMarks.h"
@@ -71,7 +71,7 @@ BrowseTrackerLayout::~BrowseTrackerLayout()
 // IMPORTANT! We have to be careful of what to unicode and what not to.
 // TinyXML must use NON-unicode strings!
 // ----------------------------------------------------------------------------
-bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m_FileBrowse_MarksArchive , FileBrowse_MarksHash& m_EdBook_MarksArchive )
+bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m_FileBrowse_MarksArchive )
 // ----------------------------------------------------------------------------
 {
     TiXmlDocument doc;
@@ -171,27 +171,15 @@ bool BrowseTrackerLayout::Open(const wxString& filename, FileBrowse_MarksHash& m
             #endif
 
             TiXmlElement* browsemarks = cursor->NextSiblingElement("BrowseMarks");
-            ///if (not browsemarks)
-            ///    LOGIT( _T("OPEN LAYOUT failed for BrowseMarks") );
+            //if (not browsemarks)
+            //    LOGIT( _T("OPEN LAYOUT failed for BrowseMarks") );
             if (browsemarks)
             {
                 wxString marksString = cbC2U(browsemarks->Attribute("positions"));
                 #if defined(LOGGING)
-                ////LOGIT( _T("OPEN_LAYOUT BROWSEMarksStrng[%s][%s]"), fname.c_str(), marksString.c_str() );
+                //LOGIT( _T("OPEN_LAYOUT BROWSEMarksStrng[%s][%s]"), fname.c_str(), marksString.c_str() );
                 #endif
                 ParseBrowse_MarksString( fname, marksString, m_FileBrowse_MarksArchive );
-            }
-
-            TiXmlElement* bookmarks = cursor->NextSiblingElement("Book_Marks");
-            ///if (not bookmarks)
-            ///    LOGIT( _T("OPEN LAYOUT failed for Book_Marks") );
-            if (bookmarks)
-            {
-                wxString marksString = cbC2U(bookmarks->Attribute("positions"));
-                #if defined(LOGGING)
-                ////LOGIT( _T("OPEN_LAYOUT BOOKMarksStrng[%s][%s]"), fname.c_str(), marksString.c_str() );
-                #endif
-                ParseBrowse_MarksString( fname, marksString, m_EdBook_MarksArchive );
             }
         }
 
@@ -222,10 +210,10 @@ bool BrowseTrackerLayout::ParseBrowse_MarksString(const wxString& filename, wxSt
     return true;
 }//ParseBrowse_MarksString
 // ----------------------------------------------------------------------------
-bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m_FileBrowse_MarksArchive, FileBrowse_MarksHash& m_EdBook_MarksArchive)
+bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m_FileBrowse_MarksArchive)
 // ----------------------------------------------------------------------------
 {
-    ////DumpBrowse_Marks(wxT("BookMarks"), m_FileBrowse_MarksArchive, m_EdBook_MarksArchive);
+    //DumpBrowse_Marks(wxT("BookMarks"), m_FileBrowse_MarksArchive, m_EdBook_MarksArchive);
 
     const char* ROOT_TAG = "BrowseTracker_layout_file";
 
@@ -260,41 +248,6 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
             cursor->SetAttribute("position", f->editorPos);
             cursor->SetAttribute("topLine", f->editorTopLine);
 
-            ////EditorBase* eb = 0;
-            // write out a string of browse mark positions
-            #if defined(LOGGING)
-            ////LOGIT( _T("ProjectFilename[%s]"),f->file.GetFullPath().c_str() );
-            #endif
-
-            ////eb = Manager::Get()->GetEditorManager()->GetEditor(f->file.GetFullPath());
-            #if defined(LOGGING)
-            ////if (eb) LOGIT( _T("EditorBase Filename[%d][%s]"), i, eb->GetFilename().c_str() );
-            #endif
-            ////if(eb) if (f->file.GetFullPath() != eb->GetFilename())
-            ////{
-            ////    #if defined(LOGGING)
-            ////    LOGIT( _T("NAME MISSMATCH ProjectFile[%s]EditorBase[%s]"), f->file.GetFullPath().c_str(), eb->GetFilename().c_str() );
-            ////    #endif
-            ////}
-
-////            #if defined(LOGGING)
-////            if (m_FileBrowse_MarksArchive.find(eb) != m_FileBrowse_MarksArchive.end() )
-////                LOGIT( _T("Found eb[%p][%s]"), eb, eb->GetShortName().c_str() );
-////            else{
-////                int i = 0;
-////                for (EbBrowse_MarksHash::iterator it = m_FileBrowse_MarksArchive.begin();
-////                        it != m_FileBrowse_MarksArchive.end(); ++it)
-////                {
-////                    #if defined(LOGGING)
-////                    LOGIT( _T("m_FileBrowse_MarksArchive[i][%d][%p]"), i, it->first );
-////                    #endif
-////                    ++i;
-////                }
-////            }
-////            #endif
-            #if defined(LOGGING)
-            ////LOGIT( _T("Layout processing for[%s]"),/*f->relativeFilename.c_str(),*/ f->file.GetFullPath().c_str() );
-            #endif
             // Save the BrowseMarks
             FileBrowse_MarksHash::iterator it2 = m_FileBrowse_MarksArchive.find(f->file.GetFullPath());
             if (it2 != m_FileBrowse_MarksArchive.end() ) do
@@ -303,35 +256,11 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
                 if (not pBrowse_Marks) break;
                 wxString browseMarks = pBrowse_Marks->GetStringOfBrowse_Marks();
                 #if defined(LOGGING)
-                ////LOGIT( _T("Layout writing BROWSEMarkString [%p]is[%s]"), pBrowse_Marks, browseMarks.c_str());
+                //LOGIT( _T("Layout writing BROWSEMarkString [%p]is[%s]"), pBrowse_Marks, browseMarks.c_str());
                 #endif
                 TiXmlElement* btMarks = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("BrowseMarks")));
                 btMarks->SetAttribute("positions", cbU2C(browseMarks));
             }while(0);
-            ////else{
-            ////    #if defined(LOGGING)
-            ////    LOGIT( _T("Browse_Marks failed find for[%s]"), f->file.GetFullPath().c_str() );
-            ////    #endif
-            ////}
-            // Save the Book_Marks
-            it2 = m_EdBook_MarksArchive.find(f->file.GetFullPath());
-            if (it2 != m_EdBook_MarksArchive.end() ) do
-            {
-                const BrowseMarks* pBook_Marks = it2->second;
-                if (not pBook_Marks) break;
-                wxString bookMarks = pBook_Marks->GetStringOfBrowse_Marks();
-                #if defined(LOGGING)
-                ////LOGIT( _T("Layout writing BOOKMarkString [%p]is[%s]"), pBook_Marks, bookMarks.c_str());
-                #endif
-                TiXmlElement* btMarks = static_cast<TiXmlElement*>(node->InsertEndChild(TiXmlElement("Book_Marks")));
-                btMarks->SetAttribute("positions", cbU2C(bookMarks));
-            }while(0);
-            ////else{
-            ////    #if defined(LOGGING)
-            ////    LOGIT( _T("Book_Marks failed find for[%s]"), f->file.GetFullPath().c_str() );
-            ////    #endif
-            ////}
-
         }
     }//for
 
@@ -348,9 +277,9 @@ bool BrowseTrackerLayout::Save(const wxString& filename, FileBrowse_MarksHash& m
 }
 // ----------------------------------------------------------------------------
 #if defined(LOGGING)
-void BrowseTrackerLayout::DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive, FileBrowse_MarksHash& m_FileBook_MarksArchive )
+void BrowseTrackerLayout::DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive )
 #else
-void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBrowse_MarksHash& /*m_FileBrowse_MarksArchive*/, FileBrowse_MarksHash& /*m_FileBook_MarksArchive*/ )
+void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBrowse_MarksHash& /*m_FileBrowse_MarksArchive*/ )
 #endif
 // ----------------------------------------------------------------------------
 {
@@ -358,13 +287,10 @@ void BrowseTrackerLayout::DumpBrowse_Marks( const wxString /*hashType*/, FileBro
     LOGIT( _T("--- DumpBrowseData ---[%s]"), hashType.c_str()  );
 
     FileBrowse_MarksHash* phash = &m_FileBrowse_MarksArchive;
-    if ( hashType == wxT("BookMarks") )
-        phash = &m_FileBook_MarksArchive;
-    FileBrowse_MarksHash& hash = *phash;
     #if defined(LOGGING)
-    LOGIT( _T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(hash.size()) );
+    LOGIT( _T("Dump_%s Size[%lu]"), hashType.wx_str(), static_cast<unsigned long>(phash->size()) );
     #endif
-    for (FileBrowse_MarksHash::iterator it = hash.begin(); it != hash.end(); ++it)
+    for (FileBrowse_MarksHash::iterator it = phash->begin(); it != phash->end(); ++it)
     {
         wxString filename = it->first;
         BrowseMarks* p = it->second;

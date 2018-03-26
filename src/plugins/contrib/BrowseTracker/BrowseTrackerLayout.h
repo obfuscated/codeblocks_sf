@@ -17,12 +17,12 @@ class BrowseTrackerLayout
 		BrowseTrackerLayout(cbProject* project);
 		virtual ~BrowseTrackerLayout();
 
-        bool Open(const wxString& filename, FileBrowse_MarksHash& m_EdBrowse_MarksArchive, FileBrowse_MarksHash& m_EdBook_MarksArchive );
-        bool Save(const wxString& filename, FileBrowse_MarksHash& m_EdBrowse_MarksArchive, FileBrowse_MarksHash& m_EdBook_MarksArchive);
+        bool Open(const wxString& filename, FileBrowse_MarksHash& m_EdBrowse_MarksArchive );
+        bool Save(const wxString& filename, FileBrowse_MarksHash& m_EdBrowse_MarksArchive);
 
         ProjectFile* GetTopProjectFile(){ return m_TopProjectFile; }
         bool ParseBrowse_MarksString(const wxString& filename, wxString BrowseMarksString, FileBrowse_MarksHash& m_EdBrowse_MarksArchive);
-        void DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive, FileBrowse_MarksHash& m_FileBook_MarksArchive );
+        void DumpBrowse_Marks( const wxString hashType, FileBrowse_MarksHash& m_FileBrowse_MarksArchive );
 
 	protected:
 	private:

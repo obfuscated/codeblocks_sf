@@ -150,7 +150,7 @@ void JumpTracker::OnRelease(bool appShutDown)
 
     wxWindow* appWin = Manager::Get()->GetAppWindow();
 
-    //If appShutdown leave the event handler, else crashes on linux
+    //If appShutdown leave the event handler, else wxWidgets asserts on linux
     if (not appShutDown)
         appWin->RemoveEventHandler(this); //2017/11/23 stop uninstall crash 2017/12/6 crashes linux
 

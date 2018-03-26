@@ -36,7 +36,7 @@ WX_DECLARE_STRING_HASH_MAP(BrowseMarks*, FileBrowse_MarksHash);
             ClearAllOnSingleClick = 0,
             ClearAllOnDoubleClick = 1,
 
-            BrowseMarksStyle  = 0,
+            //-BrowseMarksStyle  = 0,
             BookMarksStyle   = 1,
             HiddenMarksStyle = 2
 

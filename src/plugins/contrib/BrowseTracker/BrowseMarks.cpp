@@ -90,12 +90,12 @@ void BrowseMarks::SetBrowseMarksStyle( int userStyle )
 
     switch( userStyle )
     {
-        case BrowseMarksStyle:
-        {
-            gBrowse_MarkerId = BROWSETRACKER_MARKER ;
-            gBrowse_MarkerStyle  = BROWSETRACKER_MARKER_STYLE;
-            break;
-        }
+//        case BrowseMarksStyle:
+//        {
+//            gBrowse_MarkerId = BROWSETRACKER_MARKER ;
+//            gBrowse_MarkerStyle  = BROWSETRACKER_MARKER_STYLE;
+//            break;
+//        }
         case BookMarksStyle:
         {
             gBrowse_MarkerId = BOOKMARK_MARKER;
@@ -221,12 +221,12 @@ void BrowseMarks::CopyMarksFrom(const BrowseMarks& otherBrowse_Marks)
         //LOGIT( _T("BT CopyMarksFrom lhs[%d]rhs[%d]"),m_EdPosnArray[i],otherBrowse_Marks.m_EdPosnArray[i]  );
         //#endif
     }
-    ////#if defined(LOGGING)
-    ////LOGIT( _T("BT CopyMarksFrom[%s]To[%s]"),
-    ////            ((BrowseMarks&)otherBrowse_Marks).GetFilePath().c_str(),
-    ////            GetFilePath().c_str() );
-    ////#endif
-    ////Dump();
+    //#if defined(LOGGING)
+    //LOGIT( _T("BT CopyMarksFrom[%s]To[%s]"),
+    //            ((BrowseMarks&)otherBrowse_Marks).GetFilePath().c_str(),
+    //            GetFilePath().c_str() );
+    //#endif
+    //Dump();
 }
 // ----------------------------------------------------------------------------
 void BrowseMarks::ImportBrowse_Marks()
@@ -260,35 +260,6 @@ void BrowseMarks::ImportBrowse_Marks()
     }
 }//ImportBrowse_Marks
 // ----------------------------------------------------------------------------
-void BrowseMarks::ImportBook_Marks()
-// ----------------------------------------------------------------------------
-{
-    // rebuild Book_Marks from scintilla browse marks
-
-    #if defined(LOGGING)
-    ///LOGIT( _T("ImportBook_Marks") );
-    #endif
-
-    //-EditorBase* eb = m_pEditorBase ;
-    EditorBase* eb = m_pEdMgr->GetEditor(m_filePath);
-    #if defined(LOGGING)
-    if (not eb) asm("int3"); /*trap*/
-    #endif
-    if (not eb) return;
-    cbEditor* pcbEditor = Manager::Get()->GetEditorManager()->GetBuiltinEditor( eb ) ;
-    if (not pcbEditor) return;
-    cbStyledTextCtrl* pControl = pcbEditor->GetControl();
-    if (not pControl) return;
-    ClearAllBrowse_Marks();
-    int line = pControl->MarkerNext( 0, 1<<BOOKMARK_MARKER);
-    while( line != -1)
-    {
-        int posn = pControl->PositionFromLine( line );
-        RecordMark(  posn );
-        line = pControl->MarkerNext( ++line,  1<<BOOKMARK_MARKER);
-    }
-}//ImportBook_Marks
-// ----------------------------------------------------------------------------
 void BrowseMarks::RecordMarksFrom(BrowseMarks& otherBrowse_Marks)
 // ----------------------------------------------------------------------------
 {
@@ -318,41 +289,6 @@ void BrowseMarks::RecordMarksFrom(BrowseMarks& otherBrowse_Marks)
     }
 }
 // ----------------------------------------------------------------------------
-void BrowseMarks::GetBook_MarksFromEditor(wxString /*filename*/)
-// ----------------------------------------------------------------------------
-{
-    ImportBook_Marks();
-}
-// ----------------------------------------------------------------------------
-void BrowseMarks::ToggleBook_MarksFrom(BrowseMarks& otherBook_Marks)
-// ----------------------------------------------------------------------------
-{
-    // **Book_Marks**
-    // get editor by filename in case the editor was close/opened again
-    //-EditorBase* eb = m_pEditorBase;
-    EditorBase* eb = m_pEdMgr->GetEditor(m_filePath);
-    #if defined(LOGGING)
-    if (not eb) asm("int3"); /*trap*/
-    #endif
-    if (not eb) return;
-    cbEditor* cbed = Manager::Get()->GetEditorManager()->GetBuiltinEditor(eb);
-    if (not cbed) return;
-    cbStyledTextCtrl* control = cbed->GetControl();
-    for (int i=0; i<MaxEntries; ++i)
-    {
-        int posn = otherBook_Marks.GetMark(i);
-        if ( posn != -1 )
-        {
-            #if defined(LOGGING)
-            ///LOGIT( _T("ToggleBook_MarksFrom for[%d][%d]"),i,posn );
-            #endif
-            RecordMark( posn );
-            int line = control->LineFromPosition( posn);
-            control->MarkerAdd(line, BOOKMARK_MARKER);
-        }
-    }
-}
-// ----------------------------------------------------------------------------
 void BrowseMarks::RecordMark(int pos)
 // ----------------------------------------------------------------------------
 {
@@ -370,51 +306,51 @@ void BrowseMarks::RecordMark(int pos)
       {     cbStyledTextCtrl* control = cbed->GetControl();
             int line = control->LineFromPosition(pos);
             wxUnusedVar(line);
-            ///LOGIT( _T("RecordMark index[%d]Line[%d]pos[%d]"), m_currIndex, line, pos );
+            //LOGIT( _T("RecordMark index[%d]Line[%d]pos[%d]"), m_currIndex, line, pos );
       }
       else{
-          ///LOGIT( _T("RecordMark index[%d]pos[%d]"), m_currIndex, pos );
+          //LOGIT( _T("RecordMark index[%d]pos[%d]"), m_currIndex, pos );
       }
     #endif
 
-    ////    // Trial three, confusing when recording after a browse backward
-    ////    // record the new position
-    ////    int index = m_currIndex;
-    ////    int oldPosn = m_EdPosnArray[index];
-    ////    ++index;
-    ////    if (index >= MaxEntries) index = 0;
-    ////    m_EdPosnArray[index] = pos;
-    ////    m_currIndex = index;
-    ////    // record the old position forward; allows user
-    ////    // to get back to previous position after a mouse "copy"
-    ////    // in order to "paste" at the old position(using down key).
-    ////    LOGIT( _T("RecordMark[%d]index[%d]"),pos, m_currIndex );
-    ////    LOGIT( _T("FindMark oldPosn[%d]found[%d]"), oldPosn, FindMark(oldPosn));
-    ////    if ( (oldPosn != -1) && (FindMark(oldPosn) == -1) )
-    ////    {
-    ////        LOGIT( _T("FindMark oldPosn[%d]found[%d]"), oldPosn, FindMark(oldPosn));
-    ////        ++index;
-    ////        if (index >= MaxEntries) index = 0;
-    ////        m_EdPosnArray[index] = oldPosn;
-    ////    }
+    //    // Trial three, confusing when recording after a browse backward
+    //    // record the new position
+    //    int index = m_currIndex;
+    //    int oldPosn = m_EdPosnArray[index];
+    //    ++index;
+    //    if (index >= MaxEntries) index = 0;
+    //    m_EdPosnArray[index] = pos;
+    //    m_currIndex = index;
+    //    // record the old position forward; allows user
+    //    // to get back to previous position after a mouse "copy"
+    //    // in order to "paste" at the old position(using down key).
+    //    LOGIT( _T("RecordMark[%d]index[%d]"),pos, m_currIndex );
+    //    LOGIT( _T("FindMark oldPosn[%d]found[%d]"), oldPosn, FindMark(oldPosn));
+    //    if ( (oldPosn != -1) && (FindMark(oldPosn) == -1) )
+    //    {
+    //        LOGIT( _T("FindMark oldPosn[%d]found[%d]"), oldPosn, FindMark(oldPosn));
+    //        ++index;
+    //        if (index >= MaxEntries) index = 0;
+    //        m_EdPosnArray[index] = oldPosn;
+    //    }
 
-    ////    // Trial two; looses forward position needed after copy/paste
-    ////    int index = m_currIndex;
-    ////    //int index = m_lastIndex;
-    ////    ++index;
-    ////    if (index >= MaxEntries) index = 0;
-    ////    m_EdPosnArray[index] = pos;
-    ////    //m_lastIndex = index;
-    ////    m_currIndex = index;
+    //    // Trial two; looses forward position needed after copy/paste
+    //    int index = m_currIndex;
+    //    //int index = m_lastIndex;
+    //    ++index;
+    //    if (index >= MaxEntries) index = 0;
+    //    m_EdPosnArray[index] = pos;
+    //    //m_lastIndex = index;
+    //    m_currIndex = index;
 
-        // Trial one; confusing to use
-    ////    //int index = m_currIndex;
-    ////    int index = m_lastIndex;
-    ////    ++index;
-    ////    if (index >= MaxEntries) index = 0;
-    ////    m_EdPosnArray[index] = pos;
-    ////    m_lastIndex = index;
-    ////    //m_currIndex = index;
+    //     Trial one; confusing to use
+    //    //int index = m_currIndex;
+    //    int index = m_lastIndex;
+    //    ++index;
+    //    if (index >= MaxEntries) index = 0;
+    //    m_EdPosnArray[index] = pos;
+    //    m_lastIndex = index;
+    //    //m_currIndex = index;
 
 }
 // ----------------------------------------------------------------------------

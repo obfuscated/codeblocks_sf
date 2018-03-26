@@ -48,6 +48,7 @@ BrowseTrackerConfPanel::BrowseTrackerConfPanel(BrowseTracker& browseTrackerPlugi
 	// Connect Events for choice validation
 	m_pConfigPanel->Cfg_BrowseMarksEnabled->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnEnableBrowseMarks ), NULL, this );
 	m_pConfigPanel->Cfg_WrapJumpEntries->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnWrapJumpEntries ), NULL, this );
+	m_pConfigPanel->Cfg_ShowToolbar->Connect( wxEVT_COMMAND_CHECKBOX_CLICKED, wxCommandEventHandler( BrowseTrackerConfPanel::OnShowToolbar ), NULL, this );
 	m_pConfigPanel->Cfg_ToggleKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnToggleBrowseMarkKey ), NULL, this );
 	m_pConfigPanel->Cfg_ClearAllKey->Connect( wxEVT_COMMAND_RADIOBOX_SELECTED, wxCommandEventHandler( BrowseTrackerConfPanel::OnClearAllBrowseMarksKey ), NULL, this );
 
@@ -74,10 +75,15 @@ void BrowseTrackerConfPanel::OnApply()
     // get any new user values
     m_BrowseTrackerPlugin.m_BrowseMarksEnabled  = m_pConfigPanel->Cfg_BrowseMarksEnabled->GetValue();
     m_BrowseTrackerPlugin.m_WrapJumpEntries     = m_pConfigPanel->Cfg_WrapJumpEntries->GetValue();
-    m_BrowseTrackerPlugin.m_UserMarksStyle      = m_pConfigPanel->Cfg_MarkStyle->GetSelection();
+    //-m_BrowseTrackerPlugin.m_UserMarksStyle   = m_pConfigPanel->Cfg_MarkStyle->GetSelection();
+    m_BrowseTrackerPlugin.m_UserMarksStyle      = BookMarksStyle;
+
     m_BrowseTrackerPlugin.m_ToggleKey           = m_pConfigPanel->Cfg_ToggleKey->GetSelection();
 	m_BrowseTrackerPlugin.m_LeftMouseDelay      = m_pConfigPanel->Cfg_LeftMouseDelay->GetValue();
 	m_BrowseTrackerPlugin.m_ClearAllKey         = m_pConfigPanel->Cfg_ClearAllKey->GetSelection();
+
+    m_BrowseTrackerPlugin.m_ShowToolbar         = m_pConfigPanel->Cfg_ShowToolbar->GetValue();
+    m_BrowseTrackerPlugin.ShowBrowseTrackerToolBar(m_BrowseTrackerPlugin.m_ShowToolbar);
 
     // write user options to config file
 	m_BrowseTrackerPlugin.SaveUserOptions( m_BrowseTrackerPlugin.GetBrowseTrackerCfgFilename() );
@@ -93,22 +99,28 @@ void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
 
     m_BrowseTrackerPlugin.ReadUserOptions( configFullPath );
 
+    #if defined(__WXMSW__)
+    // The following causes bad color combination in Windows 10
+    //-m_pConfigPanel->m_staticText4->SetForegroundColour( wxSystemSettings::GetColour( wxSYS_COLOUR_ACTIVECAPTION ) );
+    #endif
+
     // set the current values
     m_pConfigPanel->Cfg_BrowseMarksEnabled->SetValue( m_BrowseTrackerPlugin.m_BrowseMarksEnabled);
     m_pConfigPanel->Cfg_WrapJumpEntries->SetValue( m_BrowseTrackerPlugin.m_WrapJumpEntries);
-    m_pConfigPanel->Cfg_MarkStyle->SetSelection(m_BrowseTrackerPlugin.m_UserMarksStyle);
     m_pConfigPanel->Cfg_ToggleKey->SetSelection( m_BrowseTrackerPlugin.m_ToggleKey );
 	m_pConfigPanel->Cfg_LeftMouseDelay->SetValue( m_BrowseTrackerPlugin.m_LeftMouseDelay ) ;
 	m_pConfigPanel->Cfg_ClearAllKey->SetSelection( m_BrowseTrackerPlugin.m_ClearAllKey ) ;
 
+    m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.IsViewToolbarEnabled());
+
 }//Init
 
-////// ----------------------------------------------------------------------------
-////BrowseTrackerConfPanel::~BrowseTrackerConfPanel()
-////// ----------------------------------------------------------------------------
-////{
-////    //dtor
-////}
+//// ----------------------------------------------------------------------------
+//BrowseTrackerConfPanel::~BrowseTrackerConfPanel()
+//// ----------------------------------------------------------------------------
+//{
+//    //dtor
+//}
 // ----------------------------------------------------------------------------
 void BrowseTrackerConfPanel::OnEnableBrowseMarks( wxCommandEvent& event )
 // ----------------------------------------------------------------------------
@@ -116,7 +128,6 @@ void BrowseTrackerConfPanel::OnEnableBrowseMarks( wxCommandEvent& event )
     // Enable BrowseMarks options if "Enable BrowseMarks" is checked
     if ( not m_pConfigPanel->Cfg_BrowseMarksEnabled->IsChecked() )
     {
-        m_pConfigPanel->Cfg_MarkStyle->Enable(false);
         m_pConfigPanel->Cfg_ToggleKey->Enable(false);
         m_pConfigPanel->Cfg_LeftMouseDelay->Enable(false); ;
         m_pConfigPanel->Cfg_ClearAllKey->Enable(false); ;
@@ -124,7 +135,6 @@ void BrowseTrackerConfPanel::OnEnableBrowseMarks( wxCommandEvent& event )
     }
     if ( m_pConfigPanel->Cfg_BrowseMarksEnabled->IsChecked() )
     {
-        m_pConfigPanel->Cfg_MarkStyle->Enable(true);
         m_pConfigPanel->Cfg_ToggleKey->Enable(true);
         m_pConfigPanel->Cfg_LeftMouseDelay->Enable(true);
         m_pConfigPanel->Cfg_ClearAllKey->Enable(true); ;
@@ -151,6 +161,22 @@ void BrowseTrackerConfPanel::OnWrapJumpEntries( wxCommandEvent& event )
     if ( m_pConfigPanel->Cfg_WrapJumpEntries->IsChecked() )
     {
         m_pConfigPanel->Cfg_WrapJumpEntries->Enable(true);
+    }
+    event.Skip();
+}
+// ----------------------------------------------------------------------------
+void BrowseTrackerConfPanel::OnShowToolbar( wxCommandEvent& event )
+// ----------------------------------------------------------------------------
+{
+    // Enable/Disable BrowseTracker tool bar
+    if ( not m_pConfigPanel->Cfg_ShowToolbar->IsChecked() )
+    {
+        m_pConfigPanel->Cfg_ShowToolbar->Enable(false);
+    }
+
+    if ( m_pConfigPanel->Cfg_ShowToolbar->IsChecked() )
+    {
+        m_pConfigPanel->Cfg_ShowToolbar->Enable(true);
     }
     event.Skip();
 }

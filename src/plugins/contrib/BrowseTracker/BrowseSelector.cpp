@@ -153,7 +153,6 @@ void BrowseSelector::Create(wxWindow* parent, BrowseTracker* pBrowseTracker, boo
 	m_listBox->Connect(wxID_ANY, wxEVT_KEY_UP, wxKeyEventHandler(BrowseSelector::OnKeyUp), NULL, this);
 	m_listBox->Connect(wxID_ANY, wxEVT_CHAR, wxKeyEventHandler(BrowseSelector::OnNavigationKey), NULL, this);
 	m_listBox->Connect(wxID_ANY, wxEVT_COMMAND_LISTBOX_DOUBLECLICKED, wxCommandEventHandler(BrowseSelector::OnItemSelected), NULL, this);
-	////m_listBox->Connect(wxID_ANY, wxEVT_NAVIGATION_KEY, wxNavigationKeyEventHandler(BrowseSelector::OnNavigationKey), NULL, this);
 
 	// Connect paint event to the panel
 	m_panel->Connect(wxID_ANY, wxEVT_PAINT, wxPaintEventHandler(BrowseSelector::OnPanelPaint), NULL, this);
