@@ -57,6 +57,7 @@ class DLLIMPORT FindReplaceDlg : public FindReplaceBase
         void OnBrowsePath(wxCommandEvent& event);
         void OnSearchProject(wxCommandEvent& event);
         void OnDeferredFocus(wxCommandEvent& event);
+        void OnSelectTarget(wxCommandEvent& event);
 
     private:
         void FillComboWithLastValues(wxComboBox* combo, const wxString& configKey);

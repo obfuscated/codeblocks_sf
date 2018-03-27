@@ -480,6 +480,14 @@
 																<flag>wxALL|wxEXPAND</flag>
 																<option>1</option>
 															</object>
+															<object class="sizeritem">
+																<object class="wxBitmapButton" name="btnSelectTarget">
+																	<bitmap>images/16x16/select_target.png</bitmap>
+																</object>
+																<flag>wxSHAPED</flag>
+																<border>5</border>
+																<option>1</option>
+															</object>
 															<object class="spacer">
 																<flag>wxALL|wxALIGN_CENTER_VERTICAL</flag>
 															</object>
