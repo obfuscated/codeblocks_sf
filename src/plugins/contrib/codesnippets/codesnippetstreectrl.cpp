@@ -842,7 +842,7 @@ bool CodeSnippetsTreeCtrl::RemoveItem(const wxTreeItemId RemoveItemId)
         // if this was a FileLink, ask if user wants to delete file
         if ( not filename.IsEmpty() ) {
             int answer = wxMessageBox( wxT("Delete physical file?\n\n")+filename,
-                                                    wxT("Delete"),wxYES_NO );
+                                      wxT("Delete"),wxYES_NO );
             if ( answer == wxYES)
                 /*int done =*/ ::wxRemoveFile(filename);
         }
@@ -1512,7 +1512,8 @@ void CodeSnippetsTreeCtrl::SaveSnippetAsFileLink()
         {   // read data from old file
             wxFile oldFile( fileName, wxFile::read);
             if (not oldFile.IsOpened() )
-            {   wxMessageBox(wxT("Abort.Error reading data file."));
+            {
+                wxMessageBox(wxT("Abort. Error reading data file."));
                 return;
             }
             unsigned long fileSize = oldFile.Length();

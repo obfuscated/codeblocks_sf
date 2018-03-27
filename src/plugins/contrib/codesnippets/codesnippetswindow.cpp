@@ -962,9 +962,8 @@ void CodeSnippetsWindow::OnMnuFileBackup(wxCommandEvent& event)
     }
     int done = ::wxCopyFile(IndexFile, bkupName);
     wxMessageBox( wxString::Format( wxT("Backup %s for\n\n %s"),
-                done?wxT("succeeded"):wxT("failed"),
-                bkupName.c_str()) );
-
+                                   done?wxT("succeeded"):wxT("failed"),
+                                   bkupName.c_str()) );
 }
 // ----------------------------------------------------------------------------
 void CodeSnippetsWindow::OnEndLabelEdit(wxTreeEvent& event)
@@ -1466,7 +1465,4 @@ void CodeSnippetsWindow::ShowSnippetsAbout(wxString buildInfo)
              << wxT(" insert the text.\n");
 
     wxMessageBox( wxT("\n\n")+ buildInfo + helpText, _("About"),wxOK);
-
-    //wxMessageBox( wxT("\n\n") + buildInfo + wxT("\n\n") + helpText, _("About"), wxOK) ;
-
 }
