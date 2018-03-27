@@ -1282,13 +1282,13 @@ bool cbProject::RemoveBuildTarget(int index)
     ProjectBuildTarget* target = GetBuildTarget(index);
     if (target)
     {
-        wxString oldTargetName = target->GetTitle();
+        const wxString targetTitle = target->GetTitle();
 
         // remove target from any virtual targets it belongs to
         for (VirtualBuildTargetsMap::iterator it = m_VirtualTargets.begin(); it != m_VirtualTargets.end(); ++it)
         {
             wxArrayString& tgts = it->second;
-            int virt_idx = tgts.Index(target->GetTitle());
+            int virt_idx = tgts.Index(targetTitle);
             if (virt_idx != -1)
                 tgts.RemoveAt(virt_idx);
         }
@@ -1297,11 +1297,11 @@ bool cbProject::RemoveBuildTarget(int index)
         for (FilesList::iterator it = m_Files.begin(); it != m_Files.end(); ++it)
         {
             ProjectFile* pf = *it;
-            pf->RemoveBuildTarget(target->GetTitle());
+            pf->RemoveBuildTarget(targetTitle);
         }
 
         // notify plugins, before the target is deleted, to make a cleanup possible before the target is really deleted
-        NotifyPlugins(cbEVT_BUILDTARGET_REMOVED, oldTargetName);
+        NotifyPlugins(cbEVT_BUILDTARGET_REMOVED, targetTitle);
         // finally remove the target
         delete target;
         m_Targets.RemoveAt(index);
