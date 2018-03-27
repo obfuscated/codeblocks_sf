@@ -290,7 +290,12 @@ class DLLIMPORT cbEditor : public EditorBase
         virtual void AddToContextMenu(wxMenu* popup,ModuleType type,bool pluginsdone);  //pecan 2006/03/22
 
         HighlightLanguage GetLanguage( ) const { return m_lang; }
-        void SetLanguage( HighlightLanguage lang = HL_AUTO );
+        /// Sets the language for this editor.
+        /// @param lang The language for the editor. If you pass HL_AUTO the language would be
+        /// autodetected.
+        /// @param colourise Pass true if you want to apply the style. If you intend to do more
+        /// operations which would affect styling pass false.
+        void SetLanguage(HighlightLanguage lang, bool colourise);
 
         wxFontEncoding GetEncoding( ) const;
         wxString GetEncodingName( ) const;

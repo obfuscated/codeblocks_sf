@@ -1125,7 +1125,7 @@ void cbEditor::Split(cbEditor::SplitType split)
     UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
 
     if (m_pTheme)
-        m_pTheme->Apply(m_lang, m_pControl2);
+        m_pTheme->Apply(m_lang, m_pControl2, false, true);
 
     // and make it a live copy of left control
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
@@ -1278,7 +1278,7 @@ void cbEditor::SetEditorStyleBeforeFileOpen()
 
     SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
 
-    SetLanguage( HL_AUTO );
+    SetLanguage(HL_AUTO, false);
 
     OverrideUseTabsPerLanguage(m_pControl);
     OverrideUseTabsPerLanguage(m_pControl2);
@@ -1314,8 +1314,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 {
     if (!control)
         return;
-
-    control->Colourise(0, -1);
 
     ConfigManager* mgr = Manager::Get()->GetConfigManager(_T("editor"));
 
@@ -1600,12 +1598,18 @@ void cbEditor::InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control)
 
     // line numbering
     control->SetMarginType(C_LINE_MARGIN, wxSCI_MARGIN_NUMBER);
+
+    // As a final step colourise the document. This make sure that style and folding information is
+    // set on every line/character of the editor. If Colourise is called earlier restoring the
+    // folding of the editor might not work. Also this is probably slow for larger files, so it is
+    // best if we call it minimal number of times.
+    control->Colourise(0, -1);
 }
 
 void cbEditor::SetColourSet(EditorColourSet* theme)
 {
     m_pTheme = theme;
-    SetLanguage( m_lang );
+    SetLanguage(m_lang, true);
 }
 
 wxFontEncoding cbEditor::GetEncoding() const
@@ -1686,10 +1690,10 @@ void cbEditor::Touch()
     m_LastModified = wxDateTime::Now();
 }
 
-void cbEditor::SetLanguage(HighlightLanguage lang)
+void cbEditor::SetLanguage(HighlightLanguage lang, bool colourise)
 {
     if (m_pTheme)
-        m_lang = m_pTheme->Apply(this, lang);
+        m_lang = m_pTheme->Apply(this, lang, colourise);
     else
         m_lang = HL_AUTO;
 }
@@ -1878,7 +1882,7 @@ bool cbEditor::SaveAs()
     SetProjectFile(nullptr);
     //Manager::Get()->GetLogManager()->Log(mltDevDebug, "Filename=%s\nShort=%s", m_Filename.c_str(), m_Shortname.c_str());
     m_IsOK = true;
-    SetLanguage( HL_AUTO );
+    SetLanguage(HL_AUTO, true);
     SetModified(true);
     SetEditorStyleAfterFileOpen();
     OverrideUseTabsPerLanguage(m_pControl);

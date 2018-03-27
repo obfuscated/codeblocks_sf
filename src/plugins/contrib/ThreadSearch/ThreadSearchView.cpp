@@ -533,7 +533,8 @@ bool ThreadSearchView::UpdatePreview(const wxString& file, long line)
         // Colorize
         cbEditor::ApplyStyles(m_pSearchPreview);
         EditorColourSet EdColSet;
-        EdColSet.Apply(EdColSet.GetLanguageForFilename(m_PreviewFilePath), m_pSearchPreview);
+        EdColSet.Apply(EdColSet.GetLanguageForFilename(m_PreviewFilePath), m_pSearchPreview, false,
+                       true);
 
         SetFoldingIndicator(mgr->ReadInt(_T("/folding/indicator"), 2));
         UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));

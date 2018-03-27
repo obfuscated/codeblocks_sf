@@ -607,7 +607,7 @@ void ConfigPanel::InitSTC(cbStyledTextCtrl *stc)
         if (!colour_set)
             return;
         stc->StyleSetFont(wxSCI_STYLE_DEFAULT, fnt);
-        colour_set->Apply(colour_set->GetHighlightLanguage(wxT("C/C++")), stc);
+        colour_set->Apply(colour_set->GetHighlightLanguage(wxT("C/C++")), stc, false, true);
     }
 }
 

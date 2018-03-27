@@ -492,7 +492,7 @@ void EditorColourSet::DoApplyStyle(cbStyledTextCtrl* control, int value, OptionC
     control->StyleSetUnderline(value, option->underlined);
 }
 
-HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lang)
+HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lang, bool colourise)
 {
     if (!editor)
         return HL_NONE;
@@ -504,14 +504,15 @@ HighlightLanguage EditorColourSet::Apply(cbEditor* editor, HighlightLanguage lan
                       && lang == GetHighlightLanguage(wxT("C/C++"))
                       && editor->GetFilename().Lower().EndsWith(wxT(".c")) );
 
-    Apply(lang, editor->GetLeftSplitViewControl(),  isC);
-    Apply(lang, editor->GetRightSplitViewControl(), isC);
+    Apply(lang, editor->GetLeftSplitViewControl(),  isC, colourise);
+    Apply(lang, editor->GetRightSplitViewControl(), isC, colourise);
 
     return lang;
 }
 
 
-void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC)
+void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC,
+                            bool colourise)
 {
     if (!control)
         return;
@@ -588,7 +589,8 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, b
             control->SetKeyWords(i, mset.m_Keywords[i]);
     }
 
-    control->Colourise(0, -1); // the *most* important part!
+    if (colourise)
+        control->Colourise(0, -1); // the *most* important part!
 }
 
 void EditorColourSet::Save()

@@ -108,8 +108,8 @@ class DLLIMPORT EditorColourSet
         wxString GetName(){ return m_Name; }
         void SetName(const wxString& name){ m_Name = name; }
 
-        HighlightLanguage Apply(cbEditor* editor, HighlightLanguage lang=HL_AUTO);
-        void Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC = false);
+        HighlightLanguage Apply(cbEditor* editor, HighlightLanguage lang, bool colourise);
+        void Apply(HighlightLanguage lang, cbStyledTextCtrl* control, bool isC, bool colourise);
         void Save();
         void Reset(HighlightLanguage lang);
 

@@ -102,7 +102,8 @@ void AbbreviationsConfigPanel::ApplyColours()
         if (m_AutoCompTextControl)
         {
             m_AutoCompTextControl->StyleSetFont(wxSCI_STYLE_DEFAULT, tmpFont);
-            colour_set->Apply(colour_set->GetHighlightLanguage(_T("C/C++")), m_AutoCompTextControl);
+            colour_set->Apply(colour_set->GetHighlightLanguage(_T("C/C++")), m_AutoCompTextControl,
+                              false, true);
         }
     }
 }

@@ -428,7 +428,7 @@ void EditorConfigurationDlg::ApplyColours()
         if (m_TextColourControl)
         {
             m_TextColourControl->StyleSetFont(wxSCI_STYLE_DEFAULT,fnt);
-            m_Theme->Apply(m_Lang, m_TextColourControl);
+            m_Theme->Apply(m_Lang, m_TextColourControl, false, true);
         }
     }
 }

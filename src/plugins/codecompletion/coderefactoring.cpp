@@ -344,7 +344,7 @@ size_t CodeRefactoring::VerifyResult(const TokenIdxSet& targetResult, const wxSt
         }
 
         // apply the corlor setting
-        edColSet.Apply(editor->GetLanguage(), control);
+        edColSet.Apply(editor->GetLanguage(), control, false, true);
 
         ccSearchData searchData = { control, it->first };
         for (SearchDataList::iterator itList = it->second.begin(); itList != it->second.end();)

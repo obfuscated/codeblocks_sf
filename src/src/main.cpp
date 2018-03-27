@@ -3735,7 +3735,7 @@ void MainFrame::OnEditHighlightMode(wxCommandEvent& event)
     // Highlightbutton
     if (m_pHighlightButton)
         changeButtonLabel(*m_pHighlightButton, colour_set->GetLanguageName(lang));
-    ed->SetLanguage(lang);
+    ed->SetLanguage(lang, true);
     Manager::Get()->GetCCManager()->NotifyPluginStatus();
 }
 

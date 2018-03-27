@@ -78,7 +78,7 @@ DisassemblyDlg::DisassemblyDlg(wxWindow* parent) :
     if (colour_set)
     {
         HighlightLanguage lang = colour_set->GetHighlightLanguage(wxSCI_LEX_ASM);
-        colour_set->Apply(lang, (cbStyledTextCtrl*)m_pCode);
+        colour_set->Apply(lang, (cbStyledTextCtrl*)m_pCode, false, true);
     }
 
     m_MixedModeCB = (wxCheckBox*)FindWindow(XRCID("chkMode"));
