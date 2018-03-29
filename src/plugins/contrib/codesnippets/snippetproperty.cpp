@@ -262,6 +262,8 @@ void SnippetProperty::InvokeEditOnSnippetText()
         wxFile tmpFile( tmpFileName.GetFullPath(), wxFile::write);
         if (not tmpFile.IsOpened() )
         {
+            // Let user know that attempt to edit file failed
+            wxMessageBox(wxT("Open failed for:")+tmpFileName.GetFullPath());
             return ;
         }
         wxString snippetData( GetSnippetString() );
