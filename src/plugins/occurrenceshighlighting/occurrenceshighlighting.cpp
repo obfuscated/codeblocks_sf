@@ -87,6 +87,10 @@ void OccurrencesHighlighting::OnAttach()
     EditorHooks::HookFunctorBase *editor_hook = new EditorHooks::HookFunctor<OccurrencesHighlighting>(this, &OccurrencesHighlighting::OnEditorHook);
     m_FunctorId = EditorHooks::RegisterHook(editor_hook);
 
+    typedef cbEventFunctor<OccurrencesHighlighting, CodeBlocksEvent> EditorOpenFunctor;
+    auto *handler = new EditorOpenFunctor(this, &OccurrencesHighlighting::OnEditorOpened);
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, handler);
+
     m_pPanel = new OccurrencesPanel(Manager::Get()->GetAppWindow());
 
     // add the foldpanel to the docking system
@@ -116,6 +120,8 @@ void OccurrencesHighlighting::OnRelease(bool appShutDown)
     // which means you must not use any of the SDK Managers
     // NOTE: after this function, the inherited member variable
     // m_IsAttached will be FALSE...
+
+    Manager::Get()->RemoveAllEventSinksFor(this);
 
     EditorHooks::UnregisterHook(m_FunctorId);
 
@@ -342,6 +348,11 @@ void OccurrencesHighlighting::RemoveSelected()
 void OccurrencesHighlighting::OnEditorHook(cbEditor* editor, wxScintillaEvent& event)
 {
     m_pHighlighter->Call(editor, event);
+}
+
+void OccurrencesHighlighting::OnEditorOpened(CodeBlocksEvent& event)
+{
+    m_pHighlighter->TextsChanged();
 }
 
 cbConfigurationPanel* OccurrencesHighlighting::GetConfigurationPanel(wxWindow* parent)
