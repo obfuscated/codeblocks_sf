@@ -2,7 +2,6 @@
 <resource xmlns="http://www.wxwidgets.org/wxxrc" version="2.5.3.0">
 	<object class="wxPanel" name="OccurrencesHighlightingConfigurationPanel">
 		<object class="wxBoxSizer">
-			<orient>wxVERTICAL</orient>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
 					<label>Highlight occurrences of selection</label>
@@ -36,6 +35,14 @@
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
+								<object class="wxCheckBox" name="chkHighlightOccurrencesOverrideText">
+									<label>Override text colour</label>
+								</object>
+								<flag>wxLEFT|wxALIGN_LEFT|wxALIGN_TOP</flag>
+								<border>10</border>
+								<option>1</option>
+							</object>
+							<object class="sizeritem">
 								<object class="wxGridSizer">
 									<cols>2</cols>
 									<object class="sizeritem">
@@ -50,14 +57,65 @@
 											<label>...</label>
 											<bg>#FF0000</bg>
 										</object>
-										<flag>wxEXPAND</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="stHighlightAlpha">
+											<label>Highlight alpha</label>
+										</object>
+										<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="spnHighlightAlpha">
+											<value>100</value>
+											<max>255</max>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="stHighlightBorderAlpha">
+											<label>Border alpha</label>
+										</object>
+										<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="spnHighlightBorderAlpha">
+											<value>255</value>
+											<max>255</max>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="stHighlightColourText">
+											<label>Text colour</label>
+										</object>
+										<flag>wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnHighlightTextColour">
+											<label>...</label>
+											<bg>#FF0000</bg>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxStaticText" name="stHighlightLength">
 											<label>Mininum selected length</label>
 										</object>
-										<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
@@ -66,37 +124,35 @@
 											<value>3</value>
 											<min>1</min>
 										</object>
-										<flag>wxEXPAND</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
 								<flag>wxLEFT|wxEXPAND</flag>
-								<border>10</border>
-								<option>1</option>
+								<border>5</border>
 							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND</flag>
+						<flag>wxALL|wxEXPAND</flag>
 						<border>4</border>
 					</object>
 				</object>
-				<flag>wxEXPAND</flag>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
 			</object>
 			<object class="sizeritem">
 				<object class="wxStaticBoxSizer">
 					<label>Permanently highlighted occurrences</label>
 					<orient>wxVERTICAL</orient>
 					<object class="sizeritem">
-						<object class="wxFlexGridSizer">
-							<cols>1</cols>
-							<vgap>4</vgap>
-							<hgap>4</hgap>
+						<object class="wxBoxSizer">
+							<orient>wxVERTICAL</orient>
 							<object class="sizeritem">
 								<object class="wxCheckBox" name="chkHighlightOccurrencesPermanentlyCaseSensitive">
 									<label>Case sensitive</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxLEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT</flag>
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
@@ -104,7 +160,14 @@
 									<label>Whole words only</label>
 									<checked>1</checked>
 								</object>
-								<flag>wxLEFT|wxALIGN_TOP</flag>
+								<flag>wxLEFT</flag>
+								<border>10</border>
+							</object>
+							<object class="sizeritem">
+								<object class="wxCheckBox" name="chkHighlightPermanentlyOccurrencesOverrideText">
+									<label>Override text colour</label>
+								</object>
+								<flag>wxLEFT</flag>
 								<border>10</border>
 							</object>
 							<object class="sizeritem">
@@ -122,38 +185,88 @@
 											<label>...</label>
 											<bg>#00FF00</bg>
 										</object>
-										<flag>wxEXPAND</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 									</object>
 									<object class="sizeritem">
-										<object class="wxStaticText" name="ID_STATICTEXT1">
-											<label>Minimum selected length</label>
-											<hidden>1</hidden>
+										<object class="wxStaticText" name="ID_STATICTEXT3">
+											<label>Highlight alpha</label>
 										</object>
-										<flag>wxRIGHT|wxALIGN_CENTER_VERTICAL</flag>
+										<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="spnHighlightPermanentlyAlpha">
+											<value>100</value>
+											<max>255</max>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="ID_STATICTEXT4">
+											<label>Border alpha</label>
+										</object>
+										<flag>wxTOP|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxSpinCtrl" name="spnHighlightPermanentlyBorderAlpha">
+											<value>255</value>
+											<max>255</max>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="stHighlightPermanentlyColourText">
+											<label>Text colour</label>
+										</object>
+										<flag>wxTOP|wxBOTTOM|wxRIGHT|wxALIGN_LEFT|wxALIGN_CENTER_VERTICAL</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxButton" name="btnHighlightPermanentlyTextColour">
+											<label>...</label>
+											<bg>#00FF00</bg>
+										</object>
+										<flag>wxTOP|wxEXPAND</flag>
+										<border>5</border>
+										<option>1</option>
+									</object>
+									<object class="sizeritem">
+										<object class="wxStaticText" name="btnHighlightPermanentlyLength">
+											<label>Minimum selected length</label>
+										</object>
+										<flag>wxTOP|wxALIGN_CENTER_VERTICAL</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 									<object class="sizeritem">
 										<object class="wxSpinCtrl" name="ID_SPINCTRL1">
 											<value>0</value>
-											<hidden>1</hidden>
 										</object>
-										<flag>wxEXPAND</flag>
+										<flag>wxTOP|wxEXPAND</flag>
 										<border>5</border>
 										<option>1</option>
 									</object>
 								</object>
-								<flag>wxLEFT|wxEXPAND</flag>
-								<border>10</border>
-								<option>1</option>
+								<flag>wxTOP|wxLEFT|wxEXPAND</flag>
+								<border>5</border>
 							</object>
 						</object>
-						<flag>wxLEFT|wxEXPAND</flag>
-						<border>4</border>
+						<flag>wxALL|wxALIGN_LEFT</flag>
+						<border>5</border>
+						<option>1</option>
 					</object>
 				</object>
-				<flag>wxEXPAND</flag>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
 			</object>
 		</object>
 	</object>

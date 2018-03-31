@@ -30,8 +30,9 @@ public:
 
 private:
     void OnChooseColour(wxCommandEvent& event);
-    void OnCheckHighlightOccurrences(wxCommandEvent& event);
+    void OnCheck(wxCommandEvent& event);
 
+    void UpdateUI();
 private:
 
     DECLARE_EVENT_TABLE()

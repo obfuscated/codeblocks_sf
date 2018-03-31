@@ -55,8 +55,7 @@ void OnlineSpellChecker::OnEditorChange(cb_unused cbEditor* ctrl) const
 
 int OnlineSpellChecker::GetIndicator() const
 {
-    const int theIndicator = 11;
-    return theIndicator;
+    return 15;
 }
 
 const wxColor OnlineSpellChecker::GetIndicatorColor() const
