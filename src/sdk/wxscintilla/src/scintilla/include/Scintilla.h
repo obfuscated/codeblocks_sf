@@ -306,8 +306,8 @@ typedef sptr_t (*SciFnDirect)(sptr_t ptr, unsigned int iMessage, uptr_t wParam, 
 #define INDIC_IME_MAX 35
 #define INDIC_MAX 35
 #define INDIC_CONTAINER 8
-/* C::B begin */
-#define INDIC_HIGHLIGHT 31 // please change also in wxscintilla.h !! I use INDIC_MAX here, to avoid conflicts with future versions of Scintilla
+/* C::B begin INDIC_HIGHLIGHT */
+#define INDIC_HIGHLIGHT 31 // please change also in wxscintilla.h !!
 /* C::B end */
 #define INDIC0_MASK 0x20
 #define INDIC1_MASK 0x40

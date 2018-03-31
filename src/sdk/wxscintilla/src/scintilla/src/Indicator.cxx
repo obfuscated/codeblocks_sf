@@ -185,7 +185,7 @@ void Indicator::Draw(Surface *surface, const PRectangle &rc, const PRectangle &r
 			};
 			surface->Polygon(pts, 3, sacDraw.fore, sacDraw.fore);
 		}
-/* C::B begin */
+/* C::B begin INDIC_HIGHLIGHT */
 	} else if (sacDraw.style == INDIC_HIGHLIGHT) {
 		PRectangle rcBox = rcLine;
 		rcBox.top = rcLine.top + 1;
