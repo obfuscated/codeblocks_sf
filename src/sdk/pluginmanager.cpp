@@ -31,6 +31,8 @@
     #include "sdk_events.h"
 #endif
 
+#include <algorithm>
+
 #include <wx/dynlib.h>
 #include <wx/filesys.h>
 #include <wx/progdlg.h>
@@ -1434,6 +1436,12 @@ void PluginManager::RegisterLastNonPluginMenuItem(int id)
 
 int PluginManager::FindSortedMenuItemPosition(wxMenu &popup, const wxString& label) const
 {
+    wxString labelNoAmpersands = label;
+    // Remove ampersands, because they are not visible but affect the sorting if they are at the
+    // start of the label.
+    labelNoAmpersands.erase(std::remove(labelNoAmpersands.begin(), labelNoAmpersands.end(), '&'),
+                            labelNoAmpersands.end());
+
     int position = -1;
     const wxMenuItemList &items = popup.GetMenuItems();
     const int count = int(items.size());
@@ -1456,7 +1464,7 @@ int PluginManager::FindSortedMenuItemPosition(wxMenu &popup, const wxString& lab
     for (int ii = position; ii < count; ++ii)
     {
         const wxString &itemLabel = items[ii]->GetItemLabelText();
-        if (label.CmpNoCase(itemLabel) <= 0)
+        if (labelNoAmpersands.CmpNoCase(itemLabel) <= 0)
             return ii;
     }
     return count;
