@@ -520,7 +520,7 @@ void EnvironmentSettingsDlg::OnI18NCheck(wxCommandEvent& event)
     XRCCTRL(*this, "cbxLanguage", wxComboBox)->Enable(event.IsChecked());
 }
 
-void EnvironmentSettingsDlg::OnSettingsIconsSize(wxCommandEvent& event)
+void EnvironmentSettingsDlg::OnSettingsIconsSize(cb_unused wxCommandEvent& event)
 {
     UpdateListbookImages();
     Layout();

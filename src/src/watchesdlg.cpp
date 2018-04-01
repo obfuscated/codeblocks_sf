@@ -96,23 +96,28 @@ public:
         return wxT("cbDummyEditor");
     }
 
-    wxPGWindowList CreateControls(wxPropertyGrid* propgrid, wxPGProperty* property,
-                                  const wxPoint& pos, const wxSize& sz) const override
+    wxPGWindowList CreateControls(cb_unused wxPropertyGrid* propgrid,
+                                  cb_unused wxPGProperty* property,
+                                  cb_unused const wxPoint& pos,
+                                  cb_unused const wxSize& sz) const override
     {
         wxPGWindowList const list;
         return list;
     }
-    void UpdateControl(wxPGProperty* property, wxWindow* ctrl) const override {}
-    bool OnEvent(wxPropertyGrid* propgrid, wxPGProperty* property, wxWindow* wnd_primary, wxEvent& event) const override
+    void UpdateControl(cb_unused wxPGProperty* property, cb_unused wxWindow* ctrl) const override {}
+    bool OnEvent(cb_unused wxPropertyGrid* propgrid, cb_unused wxPGProperty* property,
+                 cb_unused wxWindow* wnd_primary, cb_unused wxEvent& event) const override
     {
         return false;
     }
 
-    bool GetValueFromControl( wxVariant& variant, wxPGProperty* property, wxWindow* ctrl ) const override
+    bool GetValueFromControl(cb_unused wxVariant& variant, cb_unused wxPGProperty* property,
+                             cb_unused wxWindow* ctrl ) const override
     {
         return false;
     }
-    void SetValueToUnspecified( wxPGProperty* property, wxWindow* ctrl ) const override {}
+    void SetValueToUnspecified(cb_unused wxPGProperty* property,
+                               cb_unused wxWindow* ctrl) const override {}
 };
 
 IMPLEMENT_DYNAMIC_CLASS(cbDummyEditor, wxPGEditor);

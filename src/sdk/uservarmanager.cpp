@@ -392,25 +392,25 @@ void GetUserVariableDialog::Load()
     m_treectrl->Expand(root);
 }
 
-void GetUserVariableDialog::OnOK(wxCommandEvent& evt)
+void GetUserVariableDialog::OnOK(cb_unused wxCommandEvent& evt)
 {
     m_SelectedVar = GetSelectedVariable();
     EndModal(wxID_OK);
 }
 
-void GetUserVariableDialog::OnActivated(wxTreeEvent& event)
+void GetUserVariableDialog::OnActivated(cb_unused wxTreeEvent& event)
 {
     m_SelectedVar = GetSelectedVariable();
     EndModal(wxID_OK);
 }
 
-void GetUserVariableDialog::OnCancel(wxCommandEvent& evt)
+void GetUserVariableDialog::OnCancel(cb_unused wxCommandEvent& evt)
 {
     m_SelectedVar = wxEmptyString;
     EndModal(wxID_CANCEL);
 }
 
-void GetUserVariableDialog::OnConfig(wxCommandEvent& evt)
+void GetUserVariableDialog::OnConfig(cb_unused wxCommandEvent& evt)
 {
     Manager::Get()->GetUserVariableManager()->Configure();
     Load();
