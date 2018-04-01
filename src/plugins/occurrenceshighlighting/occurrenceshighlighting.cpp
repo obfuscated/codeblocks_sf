@@ -87,9 +87,11 @@ void OccurrencesHighlighting::OnAttach()
     EditorHooks::HookFunctorBase *editor_hook = new EditorHooks::HookFunctor<OccurrencesHighlighting>(this, &OccurrencesHighlighting::OnEditorHook);
     m_FunctorId = EditorHooks::RegisterHook(editor_hook);
 
-    typedef cbEventFunctor<OccurrencesHighlighting, CodeBlocksEvent> EditorOpenFunctor;
-    auto *handler = new EditorOpenFunctor(this, &OccurrencesHighlighting::OnEditorOpened);
+    typedef cbEventFunctor<OccurrencesHighlighting, CodeBlocksEvent> EditFunctor;
+    auto *handler = new EditFunctor(this, &OccurrencesHighlighting::OnEditorEvent);
     Manager::Get()->RegisterEventSink(cbEVT_EDITOR_OPEN, handler);
+    handler = new EditFunctor(this, &OccurrencesHighlighting::OnEditorEvent);
+    Manager::Get()->RegisterEventSink(cbEVT_EDITOR_SPLIT, handler);
 
     m_pPanel = new OccurrencesPanel(Manager::Get()->GetAppWindow());
 
@@ -350,7 +352,7 @@ void OccurrencesHighlighting::OnEditorHook(cbEditor* editor, wxScintillaEvent& e
     m_pHighlighter->Call(editor, event);
 }
 
-void OccurrencesHighlighting::OnEditorOpened(CodeBlocksEvent& event)
+void OccurrencesHighlighting::OnEditorEvent(cb_unused CodeBlocksEvent& event)
 {
     m_pHighlighter->TextsChanged();
 }

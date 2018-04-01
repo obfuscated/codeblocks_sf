@@ -50,7 +50,7 @@ class OccurrencesHighlighting : public cbPlugin
         void OnPanelPopupMenu(wxContextMenuEvent &event);
 
         void OnEditorHook(cbEditor* editor, wxScintillaEvent& event);
-        void OnEditorOpened(CodeBlocksEvent& event);
+        void OnEditorEvent(CodeBlocksEvent& event);
     private:
         wxString GetWordAtCaret()const;
         void RemoveSelected();
