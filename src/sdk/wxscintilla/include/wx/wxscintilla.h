@@ -225,15 +225,12 @@ class WXDLLIMPEXP_FWD_CORE wxScrollBar;
 #define wxSCI_INDIC_TEXTFORE 17
 #define wxSCI_INDIC_POINT 18
 #define wxSCI_INDIC_POINTCHARACTER 19
-/* C::B begin */
-#define wxSCI_INDIC_HIGHLIGHT 31 // please change also in Scintilla.h !!
+/* C::B begin INDIC_HIGHLIGHT */
+#define wxSCI_INDIC_HIGHLIGHT 31 // please change also in wxscintilla.h !!
 /* C::B end */
 #define wxSCI_INDIC_IME 32
 #define wxSCI_INDIC_IME_MAX 35
 #define wxSCI_INDIC_MAX 35
-/* C::B begin INDIC_HIGHLIGHT */
-#define wxSCI_INDIC_HIGHLIGHT 31 // please change also in wxscintilla.h !!
-/* C::B end */
 #define wxSCI_INDIC_CONTAINER 8
 #define wxSCI_INDICVALUEBIT 0x1000000
 #define wxSCI_INDICVALUEMASK 0xFFFFFF
