@@ -42,6 +42,7 @@ noinst_HEADERS =  	codesnippets.h \
 		codesnippetstreectrl.h \
 		codesnippetswindow.h \
 		menuidentifiers.h \
+		settingsdlg.h \
 		settingsdlgform.h \
 		snippetitemdata.h \
 		snippetproperty.h \
