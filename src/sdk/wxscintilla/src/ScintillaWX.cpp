@@ -767,7 +767,7 @@ bool ScintillaWX::FineTickerAvailable() {
 bool ScintillaWX::FineTickerRunning(TickReason reason) {
     bool running = false;
     TimersHash::iterator i = timers.find(reason);
-    wxASSERT_MSG( i != timers.end(), "At least one TickReason is missing a timer.");
+    wxASSERT_MSG( i != timers.end(), wxT("At least one TickReason is missing a timer."));
     if ( i != timers.end() ) {
         running = i->second->IsRunning();
     }
@@ -777,7 +777,7 @@ bool ScintillaWX::FineTickerRunning(TickReason reason) {
 void ScintillaWX::FineTickerStart(TickReason reason, int millis,
                                   int WXUNUSED(tolerance)) {
     TimersHash::iterator i = timers.find(reason);
-    wxASSERT_MSG( i != timers.end(), "At least one TickReason is missing a timer." );
+    wxASSERT_MSG( i != timers.end(), wxT("At least one TickReason is missing a timer." ));
     if ( i != timers.end() ) {
         i->second->Start(millis);
     }
@@ -785,7 +785,7 @@ void ScintillaWX::FineTickerStart(TickReason reason, int millis,
 
 void ScintillaWX::FineTickerCancel(TickReason reason) {
     TimersHash::iterator i = timers.find(reason);
-    wxASSERT_MSG( i != timers.end(), "At least one TickReason is missing a timer." );
+    wxASSERT_MSG( i != timers.end(), wxT("At least one TickReason is missing a timer." ));
     if ( i != timers.end() ) {
         i->second->Stop();
     }

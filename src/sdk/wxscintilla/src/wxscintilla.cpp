@@ -3034,7 +3034,7 @@ void wxScintilla::BraceBadLightIndicator(bool useSetting, int indicator)
 // The maxReStyle must be 0 for now. It may be defined in a future release.
 int wxScintilla::BraceMatch(int pos, int maxReStyle){
         wxASSERT_MSG(maxReStyle==0,
-                     "The second argument passed to BraceMatch should be 0");
+                     wxT("The second argument passed to BraceMatch should be 0"));
 
         return SendMsg(SCI_BRACEMATCH, pos, maxReStyle);
 }
