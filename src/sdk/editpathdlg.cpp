@@ -66,6 +66,7 @@ EditPathDlg::EditPathDlg(wxWindow* parent,
     XRCCTRL(*this, "txtPath", wxTextCtrl)->SetFocus();
 
     // Limit vertical resizing.
+    SetMinSize(wxSize(400, GetMinHeight()));
     SetMaxSize(wxSize(-1, GetMinHeight()));
 }
 
@@ -185,7 +186,7 @@ void EditPathDlg::OnBrowse(cb_unused wxCommandEvent& event)
     XRCCTRL(*this, "txtPath", wxTextCtrl)->SetValue(result);
 }
 
-void EditPathDlg::OnOther(wxCommandEvent& event)
+void EditPathDlg::OnOther(cb_unused wxCommandEvent& event)
 {
     UserVariableManager *userMgr = Manager::Get()->GetUserVariableManager();
     wxTextCtrl *txtPath = XRCCTRL(*this, "txtPath", wxTextCtrl);
