@@ -36,11 +36,14 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
 {
     //ctor
     wxXmlResource::Get()->LoadObject(this, parent, _T("dlgGenericMultiSelect"),_T("wxScrollingDialog"));
-    XRCCTRL(*this, "wxID_OK", wxButton)->SetDefault();
 
     SetTitle(title);
     XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
     Init(items, wildcard);
+
+    wxButton *buttonOK = XRCCTRL(*this, "wxID_OK", wxButton);
+    buttonOK->SetDefault();
+    buttonOK->SetFocus();
 }
 
 MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
@@ -56,6 +59,10 @@ MultiSelectDlg::MultiSelectDlg(wxWindow* parent,
     SetTitle(title);
     XRCCTRL(*this, "lblLabel", wxStaticText)->SetLabel(label);
     Init(items, selectall ? _T("*") : _T(""));
+
+    wxButton *buttonOK = XRCCTRL(*this, "wxID_OK", wxButton);
+    buttonOK->SetDefault();
+    buttonOK->SetFocus();
 }
 
 MultiSelectDlg::~MultiSelectDlg()
