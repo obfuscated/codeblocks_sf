@@ -388,24 +388,30 @@ FileType FileTypeOf(const wxString& filename)
     // TODO (Morten#3#): This code should actually be a method of filegroups and masks or alike. So we collect all extension specific things in one place. As of now this would break ABI compatibilty with 08.02 so this should happen later.
     else
     {
-        ProjectManager *prjMgr = Manager::Get()->GetProjectManager();
-        if ( prjMgr )
-        {
-            const FilesGroupsAndMasks* fgm = prjMgr->GetFilesGroupsAndMasks();
-            // Since "ext" var has no "." prefixed, but FilesGropupsAndMasks uses
-            // dot notation(".ext"), prefix a '.' here.
-            wxString dotExt = _T(".") + ext;
-           if (fgm)
-            {
-               for (unsigned int i = 0; i != fgm->GetGroupsCount(); ++i)
-               {
-                    if (fgm->GetGroupName(i) == _T("Sources") && fgm->MatchesMask(dotExt, i))
-                        return ftSource;
-                    if (fgm->GetGroupName(i) == _T("Headers") && fgm->MatchesMask(dotExt, i))
-                        return ftHeader;
-               }
-            }
-        }
+        // This code breaks ABI compatibility as noted by (Morten#3#) above.
+        // Code commented out by (pecan 2018/04/15). See http://forums.codeblocks.org/index.php/topic,22576.0.html
+        // The user can perform an equivalent objective by:
+        // 1) Fetching FilesGroupsAndMasks and adding the file extention(s) to file masks in the appropriate group.
+        // 2) Using the cbEVT_FILE_ADDED event to set the added file(s) properties (eg., compile and link).
+
+        //ProjectManager *prjMgr = Manager::Get()->GetProjectManager();
+        //if ( prjMgr )
+        //{
+        //    const FilesGroupsAndMasks* fgm = prjMgr->GetFilesGroupsAndMasks();
+        //    // Since "ext" var has no "." prefixed, but FilesGropupsAndMasks uses
+        //    // dot notation(".ext"), prefix a '.' here.
+        //    wxString dotExt = _T(".") + ext;
+        //   if (fgm)
+        //    {
+        //       for (unsigned int i = 0; i != fgm->GetGroupsCount(); ++i)
+        //       {
+        //            if (fgm->GetGroupName(i) == _T("Sources") && fgm->MatchesMask(dotExt, i))
+        //                return ftSource;
+        //            if (fgm->GetGroupName(i) == _T("Headers") && fgm->MatchesMask(dotExt, i))
+        //                return ftHeader;
+        //       }
+        //    }
+        //}
     }
 
     return ftOther;
