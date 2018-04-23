@@ -74,7 +74,7 @@ NassiDataObject::NassiDataObject(NassiBrick *brick, NassiView *view, wxString st
     }
     else
     {
-        m_firstbrick = (NassiBrick *)0;
+        m_firstbrick = nullptr;
         m_hasBitmap = false;
     }
     m_format.SetId(NassiFormatId);
@@ -85,7 +85,7 @@ NassiDataObject::~NassiDataObject()
     delete m_firstbrick;
 }
 
-NassiBrick *NassiDataObject::GetBrick(void)
+NassiBrick *NassiDataObject::GetBrick()
 {
     NassiBrick* ptr = m_firstbrick;
     m_firstbrick = 0;

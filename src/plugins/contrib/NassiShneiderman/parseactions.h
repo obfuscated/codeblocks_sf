@@ -55,7 +55,7 @@ public:
     void operator() (const wxChar ch)const;
     void operator() (wxChar *first)const;
 private:
-    void remove_carrage_return(void) const;
+    void remove_carrage_return() const;
     wxString &m_str;
 };
 

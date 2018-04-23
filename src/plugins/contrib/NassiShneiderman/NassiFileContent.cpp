@@ -8,9 +8,10 @@ m_firstbrick(0)
 {
 }
 
-NassiFileContent::~NassiFileContent(void)
+NassiFileContent::~NassiFileContent()
 {
-    if ( m_firstbrick ) delete m_firstbrick;
+    if ( m_firstbrick )
+        delete m_firstbrick;
 }
 
 wxOutputStream& NassiFileContent::SaveObject(wxOutputStream& stream)
@@ -33,7 +34,7 @@ wxString NassiFileContent::GetWildcard()
     return _("Nassi Shneiderman diagram, (*.nsd)|*.nsd");
 }
 
-NassiBrick *NassiFileContent::GetFirstBrick(void)
+NassiBrick *NassiFileContent::GetFirstBrick()
 {
     return m_firstbrick;
 }
@@ -44,8 +45,8 @@ NassiBrick *NassiFileContent::SetFirstBrick(NassiBrick *brick)
     m_firstbrick = brick;
     if ( m_firstbrick )
     {
-        m_firstbrick->SetParent((NassiBrick *)0);
-        m_firstbrick->SetPrevious((NassiBrick *)0);
+        m_firstbrick->SetParent(nullptr);
+        m_firstbrick->SetPrevious(nullptr);
     }
     return tmp;
 }

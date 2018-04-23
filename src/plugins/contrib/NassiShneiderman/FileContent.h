@@ -24,7 +24,7 @@ class FileContent
 public:
 
     FileContent();
-    virtual ~FileContent(void);
+    virtual ~FileContent();
     virtual wxCommandProcessor* CreateCommandProcessor();
     wxCommandProcessor* GetCommandProcessor();
 

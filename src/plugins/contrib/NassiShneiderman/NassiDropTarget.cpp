@@ -14,8 +14,8 @@
 #include "NassiDiagramWindow.h"
 
 
-NassiDropTarget::NassiDropTarget(NassiDiagramWindow *window, NassiView *view)
-    : wxDropTarget(new NassiDataObject((NassiBrick *)0, (NassiView *)view) ),
+NassiDropTarget::NassiDropTarget(NassiDiagramWindow *window, NassiView *view):
+    wxDropTarget(new NassiDataObject(nullptr, view)),
     m_window(window)
 {}
 

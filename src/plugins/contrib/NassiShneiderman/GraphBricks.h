@@ -28,7 +28,7 @@ class GraphNassiBrick
 {
 public:
     GraphNassiBrick(NassiView *view, NassiBrick *brick, BricksMap *bmap);
-    virtual ~GraphNassiBrick(void);
+    virtual ~GraphNassiBrick();
 
 private:
     GraphNassiBrick(const GraphNassiBrick& p);
@@ -110,7 +110,7 @@ class GraphNassiMinimizableBrick : public GraphNassiBrick
 {
 public:
     GraphNassiMinimizableBrick(NassiView *view, NassiBrick *brick, BricksMap *bmap);
-    virtual ~GraphNassiMinimizableBrick(void){}
+    virtual ~GraphNassiMinimizableBrick(){}
 
 private:
     GraphNassiMinimizableBrick(const GraphNassiMinimizableBrick& p);

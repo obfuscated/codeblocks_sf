@@ -13,7 +13,7 @@ class NassiFileContent : public FileContent
 {
     public:
         NassiFileContent();
-        virtual ~NassiFileContent(void);
+        virtual ~NassiFileContent();
     public:
         virtual wxOutputStream& SaveObject(wxOutputStream& stream);
         virtual wxInputStream& LoadObject(wxInputStream& stream);
@@ -21,7 +21,7 @@ class NassiFileContent : public FileContent
         virtual wxString GetWildcard();
 
     public:
-        NassiBrick *GetFirstBrick(void);
+        NassiBrick *GetFirstBrick();
         NassiBrick *SetFirstBrick(NassiBrick *brick);
     private:
         NassiFileContent(const NassiFileContent &p);

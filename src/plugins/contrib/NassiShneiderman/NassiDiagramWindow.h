@@ -26,8 +26,6 @@ class NassiDiagramWindow: public wxScrolledWindow
 {
     friend class TextCtrl;
 public:
-
-    //NassiDiagramWindow(){}
     NassiDiagramWindow(wxWindow *parent, NassiView *view);
     ~NassiDiagramWindow();
 private:
@@ -57,19 +55,6 @@ private:
     void OnKillFocus(wxFocusEvent &event);
     void OnSetFocus(wxFocusEvent &event);
 
-
-//    wxPoint dndpt;
-//    bool dndsource;
-//    bool focus;
-//    bool pasting;
-//    bool drop;
-//    bool dropcopy;
-
-//    bool OnDrop(wxPoint pt, NassiBrick *brick, wxString strc = _T(""), wxString strs = _T("case :") );
-//    wxDragResult OnDragOver(wxPoint pt, wxDragResult def);
-//    void OnDragLeave(void);
-//    void OnDragEnter(void);
-
 private:
     NassiView *m_view;
     HooverDrawlet *m_hd;
@@ -77,11 +62,10 @@ private:
 public:
     wxDragResult OnDrop(const wxPoint &pt, NassiBrick *brick, wxString strc, wxString strs, wxDragResult def);
     wxDragResult OnDragOver(const wxPoint &pt, wxDragResult def, bool HasNoBricks);
-    void OnDragLeave(void);
-    void OnDragEnter(void);
+    void OnDragLeave();
+    void OnDragEnter();
 
 protected:
-    //DECLARE_DYNAMIC_CLASS(NassiDiagramWindow)
     DECLARE_EVENT_TABLE()
 };
 

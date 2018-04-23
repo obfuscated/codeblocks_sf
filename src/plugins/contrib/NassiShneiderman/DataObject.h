@@ -16,7 +16,7 @@ class NassiDataObject : public wxDataObject
 public:
     NassiDataObject(NassiBrick *brick, NassiView *view, wxString strc = _T("X"), wxString strs = _T("case :") );
     virtual ~NassiDataObject();
-    NassiBrick *GetBrick(void);
+    NassiBrick *GetBrick();
     wxString GetText(wxInt32 n = 0);
     virtual wxDataFormat GetPreferredFormat(Direction dir) const;
     virtual size_t GetFormatCount(Direction dir) const;

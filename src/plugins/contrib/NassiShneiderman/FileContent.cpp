@@ -18,7 +18,7 @@ FileContent::FileContent():
     if ( m_cmdProc ) delete m_cmdProc;
 }
 
-FileContent::~FileContent(void)
+FileContent::~FileContent()
 {
 }
 

@@ -66,7 +66,7 @@ NassiBrick *NassiBrick::SetPrevious(NassiBrick *prev)
     NassiBrick *tmp = previous;
     previous = prev;
     if ( previous )
-        parent = (NassiBrick *)0;
+        parent = nullptr;
     return( tmp );
 }
 
@@ -75,7 +75,7 @@ NassiBrick *NassiBrick::SetParent(NassiBrick *par)
     NassiBrick *tmp = parent;
     parent = par;
     if ( parent )
-        previous = (NassiBrick *)0;
+        previous = nullptr;
     return tmp;
 }
 
@@ -162,7 +162,7 @@ NassiBrick *NassiBrick::SetData(wxInputStream &stream)
             break;
         case NASSI_BRICK_ESC:
         default:
-            brick = (NassiBrick *)0;
+            brick = nullptr;
     }
     if ( brick )
         brick->Deserialize(stream);
@@ -265,7 +265,7 @@ wxOutputStream &NassiInstructionBrick::Serialize(wxOutputStream &stream)
     out << NASSI_BRICK_INSTRUCTION << _T('\n');
     for (wxUint32 n = 0 ; n < 2 ; n++ )
         SerializeString(stream,*GetTextByNumber(n));
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -336,7 +336,7 @@ wxOutputStream &NassiBreakBrick::Serialize(wxOutputStream &stream)
 
     SerializeString(stream, *(GetTextByNumber(0)));
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -405,7 +405,7 @@ wxOutputStream &NassiContinueBrick::Serialize(wxOutputStream &stream)
     wxTextOutputStream out(stream);
     out << NASSI_BRICK_CONTINUE << _T('\n');
     SerializeString(stream, *(GetTextByNumber(0)) );
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -474,7 +474,7 @@ wxOutputStream &NassiReturnBrick::Serialize(wxOutputStream &stream)
     for (wxUint32 n = 0 ; n < 2 ; n++ )
         SerializeString(stream, *(GetTextByNumber(n)) );
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -548,7 +548,7 @@ NassiBrick *NassiIfBrick::SetChild(NassiBrick *brick, wxUint32 n)
     if ( brick )
     {
         brick->SetParent(this);
-        brick->SetPrevious((NassiBrick *)0);
+        brick->SetPrevious(nullptr);
     }
     NassiBrick *tmp;
     if ( n == 0 )
@@ -626,13 +626,13 @@ wxOutputStream &NassiIfBrick::Serialize(wxOutputStream &stream)
         SerializeString(stream, *(GetTextByNumber(n)) );
     for ( wxUint32 n = 0; n < 2 ; n++ )
     {
-        if ( GetChild(n) != (NassiBrick *)0 )
+        if ( GetChild(n) != nullptr )
             GetChild(n)->Serialize(stream);
         else
             out << NASSI_BRICK_ESC << _T('\n');
     }
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -685,7 +685,7 @@ NassiForBrick::NassiForBrick(const NassiForBrick &rhs):
 NassiForBrick::~NassiForBrick()
 {
     delete Child;
-    Child = (NassiBrick *)0;
+    Child = nullptr;
 }
 
 NassiBrick *NassiForBrick::GetChild(wxUint32 /*n*/) const
@@ -698,7 +698,7 @@ NassiBrick *NassiForBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     if ( brick )
     {
         brick->SetParent(this);
-        brick->SetPrevious((NassiBrick *)0);
+        brick->SetPrevious(nullptr);
     }
     NassiBrick *tmp;
     tmp = Child;
@@ -766,12 +766,12 @@ wxOutputStream &NassiForBrick::Serialize(wxOutputStream &stream)
     for ( wxUint32 n = 0 ; n < 6 ; n++ )
         SerializeString(stream, *(GetTextByNumber(n)) );
 
-    if ( GetChild(0) != (NassiBrick *)0 )
+    if ( GetChild(0) != nullptr )
         GetChild(0)->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -830,7 +830,7 @@ NassiBrick *NassiBlockBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     if ( brick )
     {
         brick->SetParent(this);
-        brick->SetPrevious((NassiBrick *)0);
+        brick->SetPrevious(nullptr);
     }
     NassiBrick *tmp;
     tmp = Child;
@@ -866,12 +866,12 @@ wxOutputStream &NassiBlockBrick::Serialize(wxOutputStream &stream)
     for ( wxUint32 n = 0 ; n < 2 ; n++ )
         SerializeString(stream, *(GetTextByNumber(n)) );
 
-    if ( GetChild(0) != (NassiBrick *)0 )
+    if ( GetChild(0) != nullptr )
         GetChild(0)->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -918,7 +918,7 @@ NassiWhileBrick::NassiWhileBrick(const NassiWhileBrick &rhs):
 NassiWhileBrick::~NassiWhileBrick()
 {
     delete Child;
-    Child = (NassiBrick *)0;
+    Child = nullptr;
 }
 
 NassiBrick *NassiWhileBrick::GetChild(wxUint32 /*n*/) const
@@ -931,7 +931,7 @@ NassiBrick *NassiWhileBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     if ( brick )
     {
         brick->SetParent(this);
-        brick->SetPrevious((NassiBrick *)0);
+        brick->SetPrevious(nullptr);
     }
     NassiBrick *tmp;
     tmp = Child;
@@ -967,12 +967,12 @@ wxOutputStream &NassiWhileBrick::Serialize(wxOutputStream &stream)
     for ( wxUint32 n = 0 ; n < 2 ; n++ )
         SerializeString(stream, *(GetTextByNumber(n)) );
 
-    if ( GetChild(0) != (NassiBrick *)0 )
+    if ( GetChild(0) != nullptr )
         GetChild(0)->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -1031,7 +1031,7 @@ NassiBrick *NassiDoWhileBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     if ( brick )
     {
         brick->SetParent(this);
-        brick->SetPrevious((NassiBrick *)0);
+        brick->SetPrevious(nullptr);
     }
     NassiBrick *tmp;
     tmp = Child;
@@ -1068,12 +1068,12 @@ wxOutputStream &NassiDoWhileBrick::Serialize(wxOutputStream &stream)
     for ( wxUint32 n = 0 ; n < 2 ; n++ )
         SerializeString( stream, *(GetTextByNumber(n)) );
 
-    if ( GetChild(0) != (NassiBrick *)0 )
+    if ( GetChild(0) != nullptr )
         GetChild(0)->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -1134,7 +1134,7 @@ void NassiSwitchBrick::Destructor()
     {
         NassiBrick *brick;
         brick = childBlocks[0];
-        if ( brick != (NassiBrick *)0 )
+        if ( brick != nullptr )
             delete brick;
         childBlocks.erase(childBlocks.begin());
     }
@@ -1164,15 +1164,15 @@ NassiBrick *NassiSwitchBrick::GetChild( wxUint32 n ) const
     if ( n < nChilds )
         return childBlocks[n];
     else
-        return (NassiBrick *)0;
+        return nullptr;
 }
 
 NassiBrick *NassiSwitchBrick::SetChild(NassiBrick *brick, wxUint32 n)
 {
-    if ( brick != (NassiBrick *)0 )
+    if ( brick != nullptr )
     {
         brick->SetParent(this);
-        brick->SetPrevious((NassiBrick *)0);
+        brick->SetPrevious(nullptr);
     }
     NassiBrick *tmp;
     if ( n >= nChilds )
@@ -1302,13 +1302,13 @@ wxOutputStream &NassiSwitchBrick::Serialize(wxOutputStream &stream)
         SerializeString( stream, *(GetTextByNumber(n)) );
     for ( wxUint32 n = 0 ; n < k ; n++ )
     {
-        if ( GetChild(n) != (NassiBrick *)0 )
+        if ( GetChild(n) != nullptr )
             GetChild(n)->Serialize(stream);
         else
             out << NASSI_BRICK_ESC << _T('\n');
     }
 
-    if ( GetNext() != (NassiBrick *)0 )
+    if ( GetNext() != nullptr )
         GetNext()->Serialize(stream);
     else
         out << NASSI_BRICK_ESC << _T('\n');
@@ -1346,7 +1346,7 @@ wxInputStream &NassiSwitchBrick::Deserialize(wxInputStream &stream)
 NassiBricksCompositeIterator::NassiBricksCompositeIterator(NassiBrick *frst)
 {
     first = frst;
-    itr = (NassiBricksCompositeIterator *)0;
+    itr = nullptr;
     First();
 }
 
@@ -1359,12 +1359,12 @@ void NassiBricksCompositeIterator::First()
     else
         done = true;
     child = 0;
-    if ( itr != (NassiBricksCompositeIterator *)0 )
+    if ( itr != nullptr )
         delete itr;
-    itr = (NassiBricksCompositeIterator *)0;
+    itr = nullptr;
 }
 
-void NassiBricksCompositeIterator::SetNext(void)
+void NassiBricksCompositeIterator::SetNext()
 {
     current = currentParent->GetNext();
     currentParent = current;
@@ -1372,7 +1372,7 @@ void NassiBricksCompositeIterator::SetNext(void)
         done = true;
 }
 
-bool NassiBricksCompositeIterator::SetItrNextChild(void)
+bool NassiBricksCompositeIterator::SetItrNextChild()
 {
     if ( child < currentParent->GetChildCount() ) //currentParent->nChilds )//not yet iterated throug all childs
     {
@@ -1386,7 +1386,7 @@ bool NassiBricksCompositeIterator::SetItrNextChild(void)
         else//neuer itr nicht gültig
         {
             delete itr;
-            itr = (NassiBricksCompositeIterator *)0;
+            itr = nullptr;
             return( SetItrNextChild() );
         }
     }
@@ -1401,15 +1401,15 @@ void NassiBricksCompositeIterator::Next()
         if ( itr ) // iterator for childs is created
         {
             itr->Next();
-            if ( itr->IsDone() ) // letztes in kette erreicht
+            if ( itr->IsDone() ) // reached last in chain
             {
                 delete itr;
-                itr = (NassiBricksCompositeIterator *)0;
-                if ( SetItrNextChild() ) //nächste kette versuchen
+                itr = nullptr;
+                if ( SetItrNextChild() ) //try next in chain
                 {
                     current = itr->CurrentItem();
                 }
-                else // keine kette mehr gefunden
+                else // no more chains found
                 {
                     SetNext();
                     child = 0;
@@ -1424,11 +1424,11 @@ void NassiBricksCompositeIterator::Next()
             if ( current->GetChildCount() > 0 )  // current->nChilds > 0 )
             {
                 currentParent = current;
-                if ( SetItrNextChild() ) //nächste kette versuchen
+                if ( SetItrNextChild() ) //try next in chain
                 {
                     current = itr->CurrentItem();
                 }
-                else // keine kette mehr gefunden
+                else // no more chains found
                 {
                     SetNext();
                     child = 0;

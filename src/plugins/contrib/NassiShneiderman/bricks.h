@@ -393,8 +393,8 @@ private:
     bool done;
     NassiBricksCompositeIterator *itr;
 private:
-    void SetNext(void);
-    bool SetItrNextChild(void);
+    void SetNext();
+    bool SetItrNextChild();
 };
 
 #endif

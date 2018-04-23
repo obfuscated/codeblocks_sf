@@ -50,8 +50,8 @@ class NassiView : public FileContentObserver
     public:
         void DrawDiagram(wxDC *dc);
 
-        void DeleteSelection(void);//void DeleteDroppedBricks(void);
-        void SelectAll(void);
+        void DeleteSelection();//void DeleteDroppedBricks();
+        void SelectAll();
         void Copy();
         void Cut();
         void Paste();
@@ -94,8 +94,8 @@ class NassiView : public FileContentObserver
     public:
         void ChangeToolTo(NassiTools tool);
         NassiBrick *GenerateNewBrick(NassiTools tool);
-        void NextTool(void);
-        void PrevTool(void);
+        void NextTool();
+        void PrevTool();
         void ToolSelect();
     private:
         //NassiTools m_tool;
@@ -195,8 +195,8 @@ class NassiView : public FileContentObserver
     public:
         wxDragResult OnDrop(const wxPoint &pt, NassiBrick *brick, wxString strc, wxString strs, wxDragResult def);
         HooverDrawlet *OnDragOver(const wxPoint &pt, wxDragResult &def, bool HasNoBricks);
-        void OnDragLeave(void);
-        void OnDragEnter(void);
+        void OnDragLeave();
+        void OnDragEnter();
 
     public:
         #if wxCHECK_VERSION(3, 0, 0)

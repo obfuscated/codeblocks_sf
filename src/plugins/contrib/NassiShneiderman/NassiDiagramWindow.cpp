@@ -293,12 +293,12 @@ wxDragResult NassiDiagramWindow::OnDragOver(const wxPoint &pt, wxDragResult def,
     return def;
 }
 
-void NassiDiagramWindow::OnDragLeave(void)
+void NassiDiagramWindow::OnDragLeave()
 {
     m_view->OnDragLeave();
 }
 
-void NassiDiagramWindow::OnDragEnter(void)
+void NassiDiagramWindow::OnDragEnter()
 {
     wxClientDC dc(this);
     DoPrepareDC(dc);

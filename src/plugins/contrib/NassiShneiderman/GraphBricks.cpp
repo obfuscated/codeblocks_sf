@@ -28,7 +28,7 @@ GraphNassiBrick::GraphNassiBrick(NassiView *view, NassiBrick *brick, BricksMap *
     m_map(bmap)
 {
 }
-GraphNassiBrick::~GraphNassiBrick(void){}
+GraphNassiBrick::~GraphNassiBrick(){}
 
 bool GraphNassiBrick::IsVisible()
 {
@@ -146,7 +146,7 @@ bool GraphNassiBrick::IsOverChild(const wxPoint & /*pos*/, wxRect * /*childRect*
 GraphNassiBrick *GraphNassiBrick::GetGraphBrick(NassiBrick *brick)
 {
     if ( m_map->find(brick) == m_map->end() )
-        return (GraphNassiBrick *)0;
+        return nullptr;
     return (*m_map)[brick];
 }
 
