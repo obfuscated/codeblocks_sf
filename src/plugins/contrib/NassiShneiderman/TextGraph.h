@@ -49,10 +49,8 @@ private:
     wxUint32 m_nmbr;
     const wxString *m_str;
 
-
 private:
     TextCtrlTask *m_editTask;
-
 
 public:
     void SetEditTask(TextCtrlTask *editTast);

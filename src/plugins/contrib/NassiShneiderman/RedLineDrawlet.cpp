@@ -12,6 +12,7 @@ RedLineDrawlet::~RedLineDrawlet()
 {
     //dtor
 }
+
 bool RedLineDrawlet::Draw(wxDC &dc)
 {
 #if wxCHECK_VERSION(3, 0, 0)
@@ -36,10 +37,8 @@ bool RedLineDrawlet::Draw(wxDC &dc)
 
     return true;
 }
+
 void RedLineDrawlet::UnDraw(wxDC &dc)
 {
     this->Draw(dc);
 }
-
-
-

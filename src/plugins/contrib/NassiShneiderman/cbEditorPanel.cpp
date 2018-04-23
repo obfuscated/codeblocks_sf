@@ -44,20 +44,24 @@ cbEditorPanel::cbEditorPanel( const wxString& fileName, const wxString& /*title*
         m_IsOK = false;
     }
 }
+
 cbEditorPanel::~cbEditorPanel()
 {
     if ( m_filecontent ) delete m_filecontent;
 }
+
 bool cbEditorPanel::GetModified() const
 {
     if ( !m_filecontent ) return false;
     return m_filecontent->GetModified();
 }
+
 void cbEditorPanel::SetModified(bool modified)
 {
     if ( !m_filecontent ) return;
     m_filecontent->SetModified(modified);
 }
+
 bool cbEditorPanel::Save()
 {
     if ( !m_filecontent ) return false;
@@ -108,15 +112,18 @@ bool cbEditorPanel::CanUndo()const
 {
     return m_filecontent->GetCommandProcessor()->CanUndo();
 }
+
 bool cbEditorPanel::CanRedo()const
 {
     return m_filecontent->GetCommandProcessor()->CanRedo();
 }
+
 void cbEditorPanel::Undo()
 {
     m_filecontent->GetCommandProcessor()->Undo();
     //UpdateModified();
 }
+
 void cbEditorPanel::Redo()
 {
     m_filecontent->GetCommandProcessor()->Redo();

@@ -54,6 +54,7 @@ TextCtrlTask::~TextCtrlTask()
     if ( m_textctrl && m_textctrl->IsShown())
         m_textctrl->Show(false);
 }
+
 wxCursor TextCtrlTask::Start()
 {
     wxCursor newcursor(wxCURSOR_ARROW);
@@ -75,12 +76,14 @@ void TextCtrlTask::OnMouseLeftDown(wxMouseEvent & /*event*/, const wxPoint & /*p
     );
     CloseTask();
 }
+
 void TextCtrlTask::OnMouseRightDown(wxMouseEvent& /*event*/, const wxPoint& /*position*/)
 {
     CloseTask();
 }
 
 void TextCtrlTask::OnKeyDown(wxKeyEvent & /*event*/){}
+
 void TextCtrlTask::OnChar(wxKeyEvent & /*event*/){}
 
 bool TextCtrlTask::HasSelection()const
@@ -94,12 +97,14 @@ bool TextCtrlTask::HasSelection()const
     }
     return false;
 }
+
 bool TextCtrlTask::CanPaste()const
 {
     if ( !Done() && m_textctrl )
         return m_textctrl->CanPaste();
     return false;
 }
+
 void TextCtrlTask::DeleteSelection()
 {
     if ( !Done() && m_textctrl )
@@ -110,16 +115,19 @@ void TextCtrlTask::DeleteSelection()
             m_textctrl->Replace(from, to, _T(""));
     }
 }
+
 void TextCtrlTask::Copy()
 {
     if ( !Done() && m_textctrl )
         m_textctrl->Copy();
 }
+
 void TextCtrlTask::Paste()
 {
     if ( !Done() && m_textctrl )
         m_textctrl->Paste();
 }
+
 void TextCtrlTask::Cut()
 {
     if ( !Done() && m_textctrl )
@@ -157,19 +165,20 @@ void TextCtrlTask::UpdateSize()
 
 /// /////////////////////////////////
 
-
 void TextCtrlTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+
 void TextCtrlTask::OnMouseLeftUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+
 HooverDrawlet *TextCtrlTask::OnMouseMove(wxMouseEvent& /*event*/, const wxPoint& /*position*/)
 {
     return 0;
 }
 
 void TextCtrlTask::UnlinkTextGraph(){m_textgraph = 0;}
+
 void TextCtrlTask::CloseTask()
 {
     m_done = true;
     if ( m_textctrl )
         m_textctrl->Show(false);
 }
-

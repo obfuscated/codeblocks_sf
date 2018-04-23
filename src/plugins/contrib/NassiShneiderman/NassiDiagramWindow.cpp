@@ -75,6 +75,7 @@ NassiDiagramWindow::~NassiDiagramWindow()
 //    if ( caret )
 //        delete caret;
 }
+
 void NassiDiagramWindow::OnMouseWheel(wxMouseEvent& event)
 {
     wxClientDC dc(this);
@@ -113,8 +114,8 @@ void NassiDiagramWindow::OnMouseWheel(wxMouseEvent& event)
     }
 }
 
-
 void NassiDiagramWindow::OnErase(wxEraseEvent & /*event*/){}
+
 void NassiDiagramWindow::OnPaint(wxPaintEvent & /*event*/)
 {
     wxBufferedPaintDC dc(this);
@@ -122,6 +123,7 @@ void NassiDiagramWindow::OnPaint(wxPaintEvent & /*event*/)
     PaintBackground(dc);
     Draw(dc);
 }
+
 void NassiDiagramWindow::PaintBackground(wxDC &dc)
 {
     wxColour backgroundColour = GetBackgroundColour();
@@ -136,12 +138,14 @@ void NassiDiagramWindow::PaintBackground(wxDC &dc)
     dc.SetBrush(wxNullBrush);
     dc.SetPen(wxNullPen);
 }
+
 void NassiDiagramWindow::Draw(wxDC& dc)
 {
     m_view->DrawDiagram(&dc);
 
     if ( m_hd ) m_hd->Draw(dc);
 }
+
 void NassiDiagramWindow::OnEnter(wxMouseEvent & /*event*/)
 {
     wxClientDC dc(this);
@@ -150,6 +154,7 @@ void NassiDiagramWindow::OnEnter(wxMouseEvent & /*event*/)
     if ( m_hd )
         m_hd->Draw(dc);
 }
+
 void NassiDiagramWindow::OnLeave(wxMouseEvent & /*event*/)
 {
     wxClientDC dc(this);
@@ -158,10 +163,12 @@ void NassiDiagramWindow::OnLeave(wxMouseEvent & /*event*/)
     if ( m_hd )
         m_hd->UnDraw(dc);
 }
+
 void NassiDiagramWindow::OnChar(wxKeyEvent & event)
 {
     m_view->OnChar(event);
 }
+
 void NassiDiagramWindow::OnKeyDown(wxKeyEvent &event)
 {
     m_view->OnKeyDown(event);
@@ -178,6 +185,7 @@ void NassiDiagramWindow::OnMouseLeftDown(wxMouseEvent &event)
 
     this->SetFocus();
 }
+
 void NassiDiagramWindow::OnMouseLeftUp(wxMouseEvent &event)
 {
     wxClientDC dc(this);
@@ -189,6 +197,7 @@ void NassiDiagramWindow::OnMouseLeftUp(wxMouseEvent &event)
 
     this->SetFocus();
 }
+
 void NassiDiagramWindow::OnMouseRightDown(wxMouseEvent &event)
 {
     wxClientDC dc(this);
@@ -200,6 +209,7 @@ void NassiDiagramWindow::OnMouseRightDown(wxMouseEvent &event)
 
     this->SetFocus();
 }
+
 void NassiDiagramWindow::OnMouseRightUp(wxMouseEvent& event)
 {
     wxClientDC dc(this);
@@ -240,6 +250,7 @@ void NassiDiagramWindow::RemoveDrawlet(wxDC &dc)
 }
 
 void NassiDiagramWindow::OnSetFocus(wxFocusEvent & /*event*/){}
+
 void NassiDiagramWindow::OnKillFocus(wxFocusEvent & /*event*/)
 {
     wxClientDC dc(this);
@@ -261,6 +272,7 @@ wxDragResult NassiDiagramWindow::OnDrop(const wxPoint &pt, NassiBrick *brick, wx
 
     return m_view->OnDrop(pos, brick, strc, strs, def);
 }
+
 wxDragResult NassiDiagramWindow::OnDragOver(const wxPoint &pt, wxDragResult def, bool HasNoBricks)
 {
     wxClientDC dc(this);
@@ -280,10 +292,12 @@ wxDragResult NassiDiagramWindow::OnDragOver(const wxPoint &pt, wxDragResult def,
 
     return def;
 }
+
 void NassiDiagramWindow::OnDragLeave(void)
 {
     m_view->OnDragLeave();
 }
+
 void NassiDiagramWindow::OnDragEnter(void)
 {
     wxClientDC dc(this);

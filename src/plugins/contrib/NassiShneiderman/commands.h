@@ -1,12 +1,5 @@
-#ifndef HEADER_8420C535795AC84B
-#define HEADER_8420C535795AC84B
-
-#ifdef __GNUG__
-// #pragma interface
-#endif
-
-#ifndef __COMMAND_H__
-#define __COMMAND_H__
+#ifndef __COMMANDS_H__
+#define __COMMANDS_H__
 
 #include <wx/cmdproc.h>
 
@@ -33,6 +26,7 @@ private:
     NassiEditTextCommand(const NassiEditTextCommand &p);
     NassiEditTextCommand &operator=(const NassiEditTextCommand &rhs);
 };
+
 class NassiAddChildIndicatorCommand: public wxCommand
 {
 public:
@@ -53,6 +47,7 @@ private:
     NassiAddChildIndicatorCommand(const NassiAddChildIndicatorCommand &p);
     NassiAddChildIndicatorCommand &operator=(const NassiAddChildIndicatorCommand &rhs);
 };
+
 class NassiInsertFirstBrick:public wxCommand
 {
 protected:
@@ -69,6 +64,7 @@ private:
     NassiInsertFirstBrick(const NassiInsertFirstBrick &p);
     NassiInsertFirstBrick &operator=(const NassiInsertFirstBrick &rhs);
 };
+
 class NassiInsertChildBrickCommand: public wxCommand
 {
 protected:
@@ -105,6 +101,7 @@ private:
     NassiInsertBrickBefore(const NassiInsertBrickBefore &p);
     NassiInsertBrickBefore &operator=(const NassiInsertBrickBefore &rhs);
 };
+
 class NassiInsertBrickAfter : public wxCommand
 {
 protected:
@@ -122,6 +119,7 @@ private:
     NassiInsertBrickAfter(const NassiInsertBrickAfter &p);
     NassiInsertBrickAfter &operator=(const NassiInsertBrickAfter &rhs);
 };
+
 class NassiDeleteCommand : public wxCommand
 {
 protected:
@@ -144,6 +142,7 @@ private:
     NassiDeleteCommand(const NassiDeleteCommand &p);
     NassiDeleteCommand &operator=(const NassiDeleteCommand &rhs);
 };
+
 class NassiDeleteChildRootCommand : public wxCommand
 {
 protected:
@@ -162,6 +161,7 @@ private:
     NassiDeleteChildRootCommand(const NassiDeleteChildRootCommand &p);
     NassiDeleteChildRootCommand &operator=(const NassiDeleteChildRootCommand &rhs);
 };
+
 class NassiMoveBrick : public wxCommand
 {
 public:
@@ -179,5 +179,3 @@ private:
 
 
 #endif
-
-#endif // header guard 

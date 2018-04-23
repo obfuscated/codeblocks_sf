@@ -74,6 +74,7 @@ bool InsertBrickTask::Done()const
 
 // events from window:
 void InsertBrickTask::OnMouseLeftUp(wxMouseEvent & /*event*/, const wxPoint & /*position*/){}
+
 void InsertBrickTask::OnMouseLeftDown(wxMouseEvent & /*event*/, const wxPoint &position)
 {
     if ( !m_nfc->GetFirstBrick() )
@@ -105,11 +106,14 @@ void InsertBrickTask::OnMouseLeftDown(wxMouseEvent & /*event*/, const wxPoint &p
                 new NassiAddChildIndicatorCommand(m_nfc, gbrick->GetBrick(), m_view->GenerateNewBrick(m_tool), p.number));
     }
 }
+
 void InsertBrickTask::OnMouseRightDown(wxMouseEvent & /*event*/, const wxPoint & /*position*/)
 {
     m_done = true;
 }
+
 void InsertBrickTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint & /*position*/){}
+
 HooverDrawlet *InsertBrickTask::OnMouseMove(wxMouseEvent & /*event*/, const wxPoint &position)
 {
     if ( !m_nfc->GetFirstBrick() )
@@ -126,6 +130,7 @@ HooverDrawlet *InsertBrickTask::OnMouseMove(wxMouseEvent & /*event*/, const wxPo
         return gbrick->GetDrawlet(position, false);
     return 0;
 }
+
 void InsertBrickTask::OnKeyDown(wxKeyEvent &event)
 {
     if ( event.GetKeyCode() == WXK_ESCAPE )
@@ -135,16 +140,24 @@ void InsertBrickTask::OnKeyDown(wxKeyEvent &event)
     }
     //event.Skip();
 }
+
 void InsertBrickTask::OnChar(wxKeyEvent & /*event*/){}
 
 // events from frame(s)
 bool InsertBrickTask::CanEdit()const{ return false; }
-//bool InsertBrickTask::CanCopy()const{ return false; }
-//bool InsertBrickTask::CanCut()const{ return false; }
-bool InsertBrickTask::CanPaste()const{ return false; }
-bool InsertBrickTask::HasSelection()const{ return false; }
-void InsertBrickTask::DeleteSelection(){}
-void InsertBrickTask::Copy(){}
-void InsertBrickTask::Cut(){}
-void InsertBrickTask::Paste(){}
 
+//bool InsertBrickTask::CanCopy()const{ return false; }
+
+//bool InsertBrickTask::CanCut()const{ return false; }
+
+bool InsertBrickTask::CanPaste()const{ return false; }
+
+bool InsertBrickTask::HasSelection()const{ return false; }
+
+void InsertBrickTask::DeleteSelection(){}
+
+void InsertBrickTask::Copy(){}
+
+void InsertBrickTask::Cut(){}
+
+void InsertBrickTask::Paste(){}

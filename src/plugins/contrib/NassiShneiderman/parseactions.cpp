@@ -17,24 +17,29 @@
 #include "bricks.h"
 
 
-AddSpace_to_collector::AddSpace_to_collector(wxString &str)
-:   m_str(str){}
+AddSpace_to_collector::AddSpace_to_collector(wxString &str):
+    m_str(str)
+{}
+
 //void AddSpace_to_collector::operator() (iterator_t first, iterator_t const& last)const
 void AddSpace_to_collector::operator() ( wxChar const * /*first*/, wxChar const * /*last*/) const
 {
     m_str += _T(" ");
 }
 
-AddNewline_to_collector::AddNewline_to_collector(wxString &str)
-    : m_str(str){}
+AddNewline_to_collector::AddNewline_to_collector(wxString &str):
+    m_str(str)
+{}
 //void AddNewline_to_collector::operator() (iterator_t first, iterator_t const& last)const
 void AddNewline_to_collector::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
     m_str += _T("\n");
 }
 
-RemoveDoubleSpaces_from_collector::RemoveDoubleSpaces_from_collector(wxString &str)
-:   m_str(str){}
+RemoveDoubleSpaces_from_collector::RemoveDoubleSpaces_from_collector(wxString &str):
+    m_str(str)
+{}
+
 //void RemoveDoubleSpaces_from_collector::operator() (iterator_t first, iterator_t const& last)const
 void RemoveDoubleSpaces_from_collector::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -46,7 +51,9 @@ void RemoveDoubleSpaces_from_collector::operator() ( wxChar const * /*first*/, w
 }
 
 comment_collector::comment_collector(wxString &str):
-        m_str(str) {}
+    m_str(str)
+{}
+
 //void comment_collector::operator() (const iterator_t first, iterator_t const& last)const
 void comment_collector::operator() ( wxChar const *first, wxChar const *last ) const
 {
@@ -78,8 +85,11 @@ void comment_collector::operator() ( wxChar const *first, wxChar const *last ) c
     }
     //wxMessageBox( m_str, _T("Comment:"));
 }
+
 MoveComment::MoveComment(wxString &src, wxString &dst):
-	m_src(src), m_dst(dst) {}
+	m_src(src), m_dst(dst)
+{}
+
 void MoveComment::operator()( wxChar const *first, wxChar const *last ) const
 {
 	if (!m_src.IsEmpty())
@@ -88,30 +98,37 @@ void MoveComment::operator()( wxChar const *first, wxChar const *last ) const
         m_src.clear();
     }
 }
+
 instr_collector::instr_collector(wxString &str):m_str(str) {}
+
 //void instr_collector::operator() (iterator_t first, iterator_t const& last) const
+
 void instr_collector::operator() ( wxChar const *first, wxChar const *last ) const
 {
     while ( first != last )
         m_str += *first++; // (char*)
     remove_carrage_return();
 }
+
 void instr_collector::operator() (const wxChar *ch)const
 {
     m_str += *ch;
     remove_carrage_return();
 }
+
 void instr_collector::operator() (const wxChar ch)const
 {
     m_str += ch;
     remove_carrage_return();
 }
+
 //void instr_collector::operator() (iterator_t  first)const
 //void instr_collector::operator() ( char const *first ) const
 //{
 //    m_str += (char)*first;
 //    remove_carrage_return();
 //}
+
 void instr_collector::remove_carrage_return(void) const
 {
     wxInt32 n;
@@ -122,8 +139,10 @@ void instr_collector::remove_carrage_return(void) const
     }
 }
 
-CreateNassiBreakBrick::CreateNassiBreakBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
- :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiBreakBrick::CreateNassiBreakBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiBreakBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiBreakBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -135,8 +154,10 @@ void CreateNassiBreakBrick::operator() ( wxChar const * /*first*/, wxChar const 
     m_s_str.clear();
 }
 
-CreateNassiContinueBrick::CreateNassiContinueBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiContinueBrick::CreateNassiContinueBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiContinueBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiContinueBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -148,9 +169,10 @@ void CreateNassiContinueBrick::operator() ( wxChar const * /*first*/, wxChar con
     m_s_str.clear();
 }
 
+CreateNassiReturnBrick::CreateNassiReturnBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
 
-CreateNassiReturnBrick::CreateNassiReturnBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
 //void CreateNassiReturnBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiReturnBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -164,8 +186,10 @@ void CreateNassiReturnBrick::operator() ( wxChar const * /*first*/, wxChar const
     m_s_str.clear();
 }
 
-CreateNassiInstructionBrick::CreateNassiInstructionBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiInstructionBrick::CreateNassiInstructionBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiInstructionBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiInstructionBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -182,17 +206,21 @@ void CreateNassiInstructionBrick::operator() ( wxChar const * /*first*/, wxChar 
 }
 
 
-CreateNassiBlockBrick::CreateNassiBlockBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
-    //void operator()(iterator_t first, iterator_t const& last)const
+CreateNassiBlockBrick::CreateNassiBlockBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
+//void operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiBlockBrick::operator()(const wxChar /*ch*/)const
 {
     DoCreate();
 }
+
 void CreateNassiBlockBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
     DoCreate();
 }
+
 void CreateNassiBlockBrick::DoCreate() const
 {
     NassiBrick *brick = new NassiBlockBrick();
@@ -209,13 +237,21 @@ void CreateNassiBlockBrick::DoCreate() const
     m_brick = brick;
 }
 
-CreateNassiBlockEnd::CreateNassiBlockEnd(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-      :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiBlockEnd::CreateNassiBlockEnd(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiBlockEnd::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiBlockEnd::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
-{  DoEnd();  }
+{
+    DoEnd();
+}
+
 void CreateNassiBlockEnd::operator()(const wxChar /*ch*/)const
-{  DoEnd();  }
+{
+    DoEnd();
+}
+
 void CreateNassiBlockEnd::DoEnd() const
 {
     NassiBrick *parent, *child;
@@ -241,8 +277,10 @@ void CreateNassiBlockEnd::DoEnd() const
     m_s_str.clear();
 }
 
-CreateNassiIfBrick::CreateNassiIfBrick(wxString &c_str, wxString &tc_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_tc_str(tc_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiIfBrick::CreateNassiIfBrick(wxString &c_str, wxString &tc_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_tc_str(tc_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiIfBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiIfBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -264,8 +302,11 @@ void CreateNassiIfBrick::operator() ( wxChar const * /*first*/, wxChar const * /
     //wxMessageDialog dlg2(0, _T("open end"), _T("test"));
     //dlg2.ShowModal();
 }
-CreateNassiIfThenText::CreateNassiIfThenText(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-    :m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+
+CreateNassiIfThenText::CreateNassiIfThenText(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiIfThenText::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiIfThenText::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -278,8 +319,10 @@ void CreateNassiIfThenText::operator() ( wxChar const * /*first*/, wxChar const 
     m_s_str.clear();
 }
 
-CreateNassiIfEndIfClause::CreateNassiIfEndIfClause(NassiBrick *&brick)
-    :   m_brick(brick){}
+CreateNassiIfEndIfClause::CreateNassiIfEndIfClause(NassiBrick *&brick):
+    m_brick(brick)
+{}
+
 //void CreateNassiIfEndIfClause::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiIfEndIfClause::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -312,8 +355,10 @@ void CreateNassiIfEndIfClause::operator() ( wxChar const * /*first*/, wxChar con
     //dlg2.ShowModal();
 }
 
-CreateNassiIfBeginElseClause::CreateNassiIfBeginElseClause(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiIfBeginElseClause::CreateNassiIfBeginElseClause(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiIfBeginElseClause::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiIfBeginElseClause::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -327,8 +372,10 @@ void CreateNassiIfBeginElseClause::operator() ( wxChar const * /*first*/, wxChar
     m_brick = brick;
 }
 
-CreateNassiIfEndElseClause::CreateNassiIfEndElseClause(NassiBrick *&brick)
-        :   m_brick(brick){}
+CreateNassiIfEndElseClause::CreateNassiIfEndElseClause(NassiBrick *&brick):
+    m_brick(brick)
+{}
+
 //void CreateNassiIfEndElseClause::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiIfEndElseClause::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -355,8 +402,10 @@ void CreateNassiIfEndElseClause::operator() ( wxChar const * /*first*/, wxChar c
     m_brick = parent;
 }
 
-CreateNassiForBrick::CreateNassiForBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str), m_brick(brick){}
+CreateNassiForBrick::CreateNassiForBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str), m_brick(brick)
+{}
+
 //void CreateNassiForBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiForBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -373,8 +422,10 @@ void CreateNassiForBrick::operator() ( wxChar const * /*first*/, wxChar const * 
     m_brick = brick;
 }
 
-CreateNassiWhileBrick::CreateNassiWhileBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str), m_brick(brick){}
+CreateNassiWhileBrick::CreateNassiWhileBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str), m_brick(brick)
+{}
+
 //void CreateNassiWhileBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiWhileBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -391,8 +442,10 @@ void CreateNassiWhileBrick::operator() ( wxChar const * /*first*/, wxChar const 
     m_brick = brick;
 }
 
-CreateNassiForWhileEnd::CreateNassiForWhileEnd(NassiBrick *&brick)
-      :   m_brick(brick){}
+CreateNassiForWhileEnd::CreateNassiForWhileEnd(NassiBrick *&brick):
+    m_brick(brick)
+{}
+
 //void CreateNassiForWhileEnd::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiForWhileEnd::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -419,8 +472,10 @@ void CreateNassiForWhileEnd::operator() ( wxChar const * /*first*/, wxChar const
 }
 
 
-CreateNassiDoWhileBrick::CreateNassiDoWhileBrick(NassiBrick *&brick)
-      :   m_brick(brick){}
+CreateNassiDoWhileBrick::CreateNassiDoWhileBrick(NassiBrick *&brick):
+    m_brick(brick)
+{}
+
 //void CreateNassiDoWhileBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiDoWhileBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -435,8 +490,11 @@ void CreateNassiDoWhileBrick::operator() ( wxChar const * /*first*/, wxChar cons
     m_brick->SetChild(brick);
     m_brick = brick;
 }
-CreateNassiDoWhileEnd::CreateNassiDoWhileEnd(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+
+CreateNassiDoWhileEnd::CreateNassiDoWhileEnd(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiDoWhileEnd::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiDoWhileEnd::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -465,10 +523,10 @@ void CreateNassiDoWhileEnd::operator() ( wxChar const * /*first*/, wxChar const 
     m_s_str.clear();
 }
 
+CreateNassiSwitchBrick::CreateNassiSwitchBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
 
-
-CreateNassiSwitchBrick::CreateNassiSwitchBrick(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
 //void CreateNassiSwitchBrick::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiSwitchBrick::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -486,8 +544,10 @@ void CreateNassiSwitchBrick::operator() ( wxChar const * /*first*/, wxChar const
     //wxMessageBox(_T("Switch brick"), _T("Created:"));
 }
 
-CreateNassiSwitchEnd::CreateNassiSwitchEnd( NassiBrick *&brick)
-      :   m_brick(brick){}
+CreateNassiSwitchEnd::CreateNassiSwitchEnd( NassiBrick *&brick):
+    m_brick(brick)
+{}
+
 //void CreateNassiSwitchEnd::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiSwitchEnd::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -508,8 +568,10 @@ void CreateNassiSwitchEnd::operator() ( wxChar const * /*first*/, wxChar const *
     //wxMessageBox(_T("Switch End"), _T("Created:"));
 }
 
-CreateNassiSwitchChild::CreateNassiSwitchChild(wxString &c_str, wxString &s_str, NassiBrick *&brick)
-     :   m_c_str(c_str), m_s_str(s_str),m_brick(brick){}
+CreateNassiSwitchChild::CreateNassiSwitchChild(wxString &c_str, wxString &s_str, NassiBrick *&brick):
+    m_c_str(c_str), m_s_str(s_str),m_brick(brick)
+{}
+
 //void CreateNassiSwitchChild::operator()(iterator_t first, iterator_t const& last)const
 void CreateNassiSwitchChild::operator() ( wxChar const * /*first*/, wxChar const * /*last*/ ) const
 {
@@ -537,7 +599,3 @@ void CreateNassiSwitchChild::operator() ( wxChar const * /*first*/, wxChar const
     m_brick = brick;
     //wxMessageBox(_T("Switch Child"), _T("Created:"));
 }
-
-/// //////////////////////////////////////////////////////////////////////////
-
-

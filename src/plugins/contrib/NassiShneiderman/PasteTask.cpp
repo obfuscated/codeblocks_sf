@@ -39,6 +39,7 @@ bool PasteTask::Done()const
 
 // events from window:
 void PasteTask::OnMouseLeftUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+
 void PasteTask::OnMouseLeftDown(wxMouseEvent& /*event*/, const wxPoint &position)
 {
     if ( !m_nfc->GetFirstBrick() )
@@ -87,11 +88,14 @@ void PasteTask::OnMouseLeftDown(wxMouseEvent& /*event*/, const wxPoint &position
         m_done = true;
     }
 }
+
 void PasteTask::OnMouseRightDown(wxMouseEvent& /*event*/, const wxPoint& /*position*/)
 {
     m_done = true;
 }
+
 void PasteTask::OnMouseRightUp(wxMouseEvent& /*event*/, const wxPoint& /*position*/){}
+
 HooverDrawlet *PasteTask::OnMouseMove(wxMouseEvent& /*event*/, const wxPoint &position)
 {
     if ( !m_nfc->GetFirstBrick() )
@@ -108,6 +112,7 @@ HooverDrawlet *PasteTask::OnMouseMove(wxMouseEvent& /*event*/, const wxPoint &po
         return gbrick->GetDrawlet(position, false);
     return 0;
 }
+
 void PasteTask::OnKeyDown(wxKeyEvent &event)
 {
     if ( event.GetKeyCode() == WXK_ESCAPE )
@@ -117,16 +122,24 @@ void PasteTask::OnKeyDown(wxKeyEvent &event)
     }
     //event.Skip();
 }
+
 void PasteTask::OnChar(wxKeyEvent & /*event*/){}
 
 // events from frame( s )
 bool PasteTask::CanEdit()const{ return false; }
+
 bool PasteTask::HasSelection()const{ return false; }
+
 bool PasteTask::CanPaste()const{ return false; }
+
 void PasteTask::DeleteSelection(){}
+
 void PasteTask::Copy(){}
+
 void PasteTask::Paste(){}
+
 void PasteTask::Cut(){}
 
 //bool PasteTask::CanCopy()const{return false;}
+
 //bool PasteTask::CanCut()const{return false;}

@@ -7,6 +7,7 @@ NassiFileContent::NassiFileContent():
 m_firstbrick(0)
 {
 }
+
 NassiFileContent::~NassiFileContent(void)
 {
     if ( m_firstbrick ) delete m_firstbrick;
@@ -17,6 +18,7 @@ wxOutputStream& NassiFileContent::SaveObject(wxOutputStream& stream)
     if ( m_firstbrick ) m_firstbrick->Serialize(stream);
     return stream;
 }
+
 wxInputStream& NassiFileContent::LoadObject(wxInputStream& stream)
 {
     if ( m_firstbrick ) delete m_firstbrick;
@@ -35,6 +37,7 @@ NassiBrick *NassiFileContent::GetFirstBrick(void)
 {
     return m_firstbrick;
 }
+
 NassiBrick *NassiFileContent::SetFirstBrick(NassiBrick *brick)
 {
     NassiBrick *tmp = m_firstbrick;

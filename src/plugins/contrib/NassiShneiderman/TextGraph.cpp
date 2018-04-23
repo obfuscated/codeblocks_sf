@@ -32,6 +32,7 @@ const wxString *TextGraph::GetStringPtr()
 {
     return m_str;
 }
+
 wxUint32 TextGraph::GetNumberOfLines()
 {
     //wxString s( m_str );
@@ -47,6 +48,7 @@ wxUint32 TextGraph::GetNumberOfLines()
     while ( pos != -1);
     return k;
 }
+
 void TextGraph::CalcMinSize( wxDC *dc )
 {
     //wxString s( m_str );
@@ -80,10 +82,12 @@ void TextGraph::CalcMinSize( wxDC *dc )
     }
     while ( pos != -1);
 }
+
 void TextGraph::SetOffset(wxPoint off)
 {
     offset = off;
 }
+
 void TextGraph::Draw( wxDC *dc )
 {
     //wxString s( m_str );
@@ -103,6 +107,7 @@ void TextGraph::Draw( wxDC *dc )
     }
     while ( pos != -1);
 }
+
 wxUint32 TextGraph::GetTotalHeight()
 {
     wxUint32 sum = 0;
@@ -112,6 +117,7 @@ wxUint32 TextGraph::GetTotalHeight()
     }
     return sum;
 }
+
 wxUint32 TextGraph::GetWidth()
 {
     wxUint32 max = 0;
@@ -124,6 +130,7 @@ wxUint32 TextGraph::GetWidth()
     }
     return max;
 }
+
 bool TextGraph::HasPoint(const wxPoint &pos)
 {
     for (wxUint32 n = 0 ; n < linesizes.size() ; ++n )
@@ -136,6 +143,7 @@ bool TextGraph::HasPoint(const wxPoint &pos)
     }
     return false;
 }
+
 void TextGraph::SetNumber(wxUint32 nmbr)
 {
     m_nmbr = nmbr;
@@ -145,6 +153,7 @@ void TextGraph::SetEditTask(TextCtrlTask *editTast)
 {
     m_editTask = editTast;
 }
+
 void TextGraph::ClearEditTask()
 {
     m_editTask = 0;

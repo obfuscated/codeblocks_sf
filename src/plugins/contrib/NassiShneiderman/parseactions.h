@@ -23,6 +23,7 @@ public:
 private:
     wxString &m_str;
 };
+
 class AddSpace_to_collector
 {
 public:
@@ -32,6 +33,7 @@ public:
 private:
     wxString &m_str;
 };
+
 class MoveComment
 {
 public:
@@ -41,6 +43,7 @@ private:
 	wxString &m_src;
 	wxString &m_dst;
 };
+
 class instr_collector
 {
 public:
@@ -65,6 +68,7 @@ public:
 private:
     wxString &m_str;
 };
+
 class RemoveDoubleSpaces_from_collector
 {
 public:
@@ -74,6 +78,7 @@ public:
 private:
     wxString &m_str;
 };
+
 /// ///////////////////////////////////////////////////////////////////////////
 class CreateNassiBreakBrick
 {
@@ -86,6 +91,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiContinueBrick
 {
 public:
@@ -97,6 +103,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiReturnBrick
 {
 public:
@@ -108,6 +115,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiInstructionBrick
 {
 public:
@@ -119,6 +127,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiBlockBrick
 {
 public:
@@ -131,6 +140,7 @@ private:
     NassiBrick *&m_brick;
     void DoCreate() const;
 };
+
 class CreateNassiBlockEnd
 {
 public:
@@ -144,6 +154,7 @@ private:
     NassiBrick *&m_brick;
     void DoEnd() const;
 };
+
 class CreateNassiIfBrick
 {
 public:
@@ -156,6 +167,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiIfEndIfClause
 {
 public:
@@ -165,6 +177,7 @@ public:
 private:
     NassiBrick *&m_brick;
 };
+
 class CreateNassiIfBeginElseClause
 {
 public:
@@ -176,6 +189,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiIfThenText
 {
 public:
@@ -187,6 +201,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiIfEndElseClause
 {
 public:
@@ -196,6 +211,7 @@ public:
 private:
     NassiBrick *&m_brick;
 };
+
 class CreateNassiForBrick
 {
 public:
@@ -207,6 +223,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiWhileBrick
 {
 public:
@@ -218,6 +235,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiForWhileEnd
 {
 public:
@@ -227,6 +245,7 @@ public:
 private:
     NassiBrick *&m_brick;
 };
+
 class CreateNassiDoWhileBrick
 {
 public:
@@ -236,6 +255,7 @@ public:
 private:
     NassiBrick *&m_brick;
 };
+
 class CreateNassiDoWhileEnd
 {
 public:
@@ -247,6 +267,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiSwitchBrick
 {
 public:
@@ -258,6 +279,7 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
+
 class CreateNassiSwitchEnd
 {
 public:
@@ -267,6 +289,7 @@ public:
 private:
     NassiBrick *&m_brick;
 };
+
 class CreateNassiSwitchChild
 {
 public:
@@ -278,7 +301,5 @@ private:
     wxString &m_s_str;
     NassiBrick *&m_brick;
 };
-
-
 
 #endif

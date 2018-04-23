@@ -133,6 +133,7 @@ private:
     void DrawMinBox(wxDC *dc);
     void DrawMaxBox(wxDC *dc);
 };
+
 class GraphNassiInstructionBrick : public GraphNassiBrick
 {
     public:
@@ -148,6 +149,7 @@ class GraphNassiInstructionBrick : public GraphNassiBrick
         TextGraph comment;
         TextGraph source;
 };
+
 class GraphNassiIfBrick : public GraphNassiMinimizableBrick
 {
     public:
@@ -169,6 +171,7 @@ class GraphNassiIfBrick : public GraphNassiMinimizableBrick
     protected:
         wxCoord m_p, m_hh;
 };
+
 class GraphNassiWhileBrick : public GraphNassiMinimizableBrick
 {
     public:
@@ -188,6 +191,7 @@ class GraphNassiWhileBrick : public GraphNassiMinimizableBrick
     private:
         wxCoord m_hh, m_bb;
 };
+
 class GraphNassiDoWhileBrick : public GraphNassiMinimizableBrick
 {
     public:
@@ -207,6 +211,7 @@ class GraphNassiDoWhileBrick : public GraphNassiMinimizableBrick
     private:
         wxCoord m_bb, m_hh;
 };
+
 class GraphNassiSwitchBrick : public GraphNassiMinimizableBrick
 {
     public:
@@ -247,6 +252,7 @@ class GraphNassiSwitchBrick : public GraphNassiMinimizableBrick
         bool m_ChildIndicatorIsActive;
         wxUint32 m_ActiveChildIndicator;
 };
+
 class GraphNassiBlockBrick : public GraphNassiMinimizableBrick
 {
     public:
@@ -265,6 +271,7 @@ class GraphNassiBlockBrick : public GraphNassiMinimizableBrick
     private:
         wxCoord m_hh;
 };
+
 class GraphNassiForBrick : public GraphNassiMinimizableBrick
 {
     public:
@@ -300,6 +307,7 @@ class GraphNassiBreakBrick : public GraphNassiBrick
         TextGraph comment;
         wxCoord m_b;
 };
+
 class GraphNassiContinueBrick : public GraphNassiBrick
 {
     public:
@@ -315,6 +323,7 @@ class GraphNassiContinueBrick : public GraphNassiBrick
         TextGraph comment;
         wxCoord m_h;
 };
+
 class GraphNassiReturnBrick : public GraphNassiBrick
 {
     public:
@@ -331,6 +340,5 @@ class GraphNassiReturnBrick : public GraphNassiBrick
         TextGraph source;
         wxCoord m_h;
 };
-
 
 #endif

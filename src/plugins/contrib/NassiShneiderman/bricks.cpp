@@ -46,6 +46,7 @@ NassiBrick::NassiBrick():
     Source(_T("")),
     Comment(_T(""))
 {}
+
 NassiBrick::~NassiBrick()
 {
 	delete mNext;
@@ -59,6 +60,7 @@ NassiBrick *NassiBrick::SetNext(NassiBrick *nex)
         mNext->SetPrevious(this);
     return tmp;
 }
+
 NassiBrick *NassiBrick::SetPrevious(NassiBrick *prev)
 {
     NassiBrick *tmp = previous;
@@ -67,6 +69,7 @@ NassiBrick *NassiBrick::SetPrevious(NassiBrick *prev)
         parent = (NassiBrick *)0;
     return( tmp );
 }
+
 NassiBrick *NassiBrick::SetParent(NassiBrick *par)
 {
     NassiBrick *tmp = parent;
@@ -75,6 +78,7 @@ NassiBrick *NassiBrick::SetParent(NassiBrick *par)
         previous = (NassiBrick *)0;
     return tmp;
 }
+
 NassiBrick *NassiBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
 	delete brick;
@@ -87,6 +91,7 @@ bool NassiBrick::IsParent(NassiBrick *brick)
     if ( brick == parent ) return true;
     return parent->IsParent(brick);
 }
+
 wxUint32 NassiBrick::GetLevel()
 {
     if ( parent ) return parent->GetLevel() + 1;
@@ -100,6 +105,7 @@ bool NassiBrick::IsOlderSibling(NassiBrick *brick)
     if ( previous && previous->IsOlderSibling(brick) ) return true;
     return false;
 }
+
 bool NassiBrick::IsYoungerSibling(NassiBrick *brick)
 {
     if (mNext == brick ) return true;
@@ -162,6 +168,7 @@ NassiBrick *NassiBrick::SetData(wxInputStream &stream)
         brick->Deserialize(stream);
     return ( brick );
 }
+
 wxOutputStream &NassiBrick::SerializeString(wxOutputStream &stream, wxString str)
 {
     wxTextOutputStream out(stream);
@@ -187,6 +194,7 @@ wxOutputStream &NassiBrick::SerializeString(wxOutputStream &stream, wxString str
     }
     return stream;
 }
+
 wxInputStream &NassiBrick::DeserializeString(wxInputStream &stream, wxString &str)
 {
     wxTextInputStream inp(stream);
@@ -208,23 +216,27 @@ wxInputStream &NassiBrick::DeserializeString(wxInputStream &stream, wxString &st
 }
 
 NassiInstructionBrick::NassiInstructionBrick():
-        NassiBrick()
+    NassiBrick()
 {}
-NassiInstructionBrick::NassiInstructionBrick(const NassiInstructionBrick &rhs)
-        :NassiBrick()
+
+NassiInstructionBrick::NassiInstructionBrick(const NassiInstructionBrick &rhs):
+    NassiBrick()
 {
     Comment = wxString(*(rhs.GetTextByNumber(0)));
     Source = wxString(*(rhs.GetTextByNumber(1)));
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiInstructionBrick::~NassiInstructionBrick()
 {}
+
 NassiBrick *NassiInstructionBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     delete brick;
     return 0;
 }
+
 void NassiInstructionBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -232,6 +244,7 @@ void NassiInstructionBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiInstructionBrick::GetTextByNumber(wxUint32 n)const
 {
     if ( n == 0 )
@@ -239,6 +252,7 @@ const wxString *NassiInstructionBrick::GetTextByNumber(wxUint32 n)const
     else
         return &Source;
 }
+
 void NassiInstructionBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
@@ -257,6 +271,7 @@ wxOutputStream &NassiInstructionBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiInstructionBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -272,23 +287,26 @@ wxInputStream &NassiInstructionBrick::Deserialize(wxInputStream &stream)
 
 
 NassiBreakBrick::NassiBreakBrick():
-        NassiBrick()
+    NassiBrick()
 {}
-NassiBreakBrick::NassiBreakBrick(const NassiBreakBrick &rhs)
-        :NassiBrick()
+
+NassiBreakBrick::NassiBreakBrick(const NassiBreakBrick &rhs):
+    NassiBrick()
 {
     Comment = *(rhs.GetTextByNumber(0));
     Source = *(rhs.GetTextByNumber(1));
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
-NassiBreakBrick::~NassiBreakBrick()
-{}
+
+NassiBreakBrick::~NassiBreakBrick(){}
+
 NassiBrick *NassiBreakBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     delete brick;
     return 0;
 }
+
 void NassiBreakBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -296,6 +314,7 @@ void NassiBreakBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiBreakBrick::GetTextByNumber(wxUint32 n)const
 {
     if ( n == 0 )
@@ -303,6 +322,7 @@ const wxString *NassiBreakBrick::GetTextByNumber(wxUint32 n)const
     else
         return &Source;
 }
+
 void NassiBreakBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
@@ -322,6 +342,7 @@ wxOutputStream &NassiBreakBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiBreakBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -335,25 +356,28 @@ wxInputStream &NassiBreakBrick::Deserialize(wxInputStream &stream)
 }
 
 
-
 NassiContinueBrick::NassiContinueBrick():
-        NassiBrick()
+    NassiBrick()
 {}
-NassiContinueBrick::NassiContinueBrick(const NassiContinueBrick &rhs)
-        :NassiBrick()
+
+NassiContinueBrick::NassiContinueBrick(const NassiContinueBrick &rhs):
+    NassiBrick()
 {
     Comment = *(rhs.GetTextByNumber(0));
     Source = *(rhs.GetTextByNumber(1));
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiContinueBrick::~NassiContinueBrick()
 {}
+
 NassiBrick *NassiContinueBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     delete brick;
     return 0;
 }
+
 void NassiContinueBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -361,6 +385,7 @@ void NassiContinueBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiContinueBrick::GetTextByNumber(wxUint32 n)const
 {
     if ( n == 0 )
@@ -368,10 +393,12 @@ const wxString *NassiContinueBrick::GetTextByNumber(wxUint32 n)const
     else
         return &Source;
 }
+
 void NassiContinueBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 //public: virtual
 wxOutputStream &NassiContinueBrick::Serialize(wxOutputStream &stream)
 {
@@ -384,6 +411,7 @@ wxOutputStream &NassiContinueBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiContinueBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -395,26 +423,28 @@ wxInputStream &NassiContinueBrick::Deserialize(wxInputStream &stream)
 }
 
 
-
-
 NassiReturnBrick::NassiReturnBrick():
-        NassiBrick()
+    NassiBrick()
 {}
-NassiReturnBrick::NassiReturnBrick(const NassiReturnBrick &rhs)
-        :NassiBrick()
+
+NassiReturnBrick::NassiReturnBrick(const NassiReturnBrick &rhs):
+    NassiBrick()
 {
     Comment = *(rhs.GetTextByNumber(0));
     Source = *(rhs.GetTextByNumber(1));
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiReturnBrick::~NassiReturnBrick()
 {}
+
 NassiBrick *NassiReturnBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     delete brick;
     return 0;
 }
+
 void NassiReturnBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -422,6 +452,7 @@ void NassiReturnBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiReturnBrick::GetTextByNumber(wxUint32 n)const
 {
     if ( n == 0 )
@@ -429,6 +460,7 @@ const wxString *NassiReturnBrick::GetTextByNumber(wxUint32 n)const
     else
         return &Source;
 }
+
 void NassiReturnBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
@@ -448,6 +480,7 @@ wxOutputStream &NassiReturnBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiReturnBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -472,6 +505,7 @@ NassiIfBrick::NassiIfBrick():
     FalseSourceText(_T("")),
     FalseCommentText(_T(""))
 {}
+
 NassiIfBrick::NassiIfBrick(const NassiIfBrick &rhs):
     NassiBrick(),
     TrueChild(0),
@@ -492,6 +526,7 @@ NassiIfBrick::NassiIfBrick(const NassiIfBrick &rhs):
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiIfBrick::~NassiIfBrick()
 {
     delete TrueChild;
@@ -499,6 +534,7 @@ NassiIfBrick::~NassiIfBrick()
     delete FalseChild;
     FalseChild = 0;
 }
+
 NassiBrick *NassiIfBrick::GetChild(wxUint32 n) const
 {
     if ( n == 0 )
@@ -506,6 +542,7 @@ NassiBrick *NassiIfBrick::GetChild(wxUint32 n) const
     else
         return(FalseChild);
 }
+
 NassiBrick *NassiIfBrick::SetChild(NassiBrick *brick, wxUint32 n)
 {
     if ( brick )
@@ -526,6 +563,7 @@ NassiBrick *NassiIfBrick::SetChild(NassiBrick *brick, wxUint32 n)
     }
     return(tmp);
 }
+
 void NassiIfBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     switch ( n )
@@ -549,6 +587,7 @@ void NassiIfBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
         FalseSourceText = str;
     }
 }
+
 const wxString *NassiIfBrick::GetTextByNumber(wxUint32 n)const
 {
     switch ( n )
@@ -572,10 +611,12 @@ const wxString *NassiIfBrick::GetTextByNumber(wxUint32 n)const
             return &FalseSourceText;
     }
 }
+
 void NassiIfBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 //public: virtual
 wxOutputStream &NassiIfBrick::Serialize(wxOutputStream &stream)
 {
@@ -597,6 +638,7 @@ wxOutputStream &NassiIfBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiIfBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -613,19 +655,17 @@ wxInputStream &NassiIfBrick::Deserialize(wxInputStream &stream)
     return stream;
 }
 
-
-
-
-NassiForBrick::NassiForBrick()
-    :NassiBrick(),
+NassiForBrick::NassiForBrick():
+    NassiBrick(),
     Child(0),
     InitSourceText(_T("")),
     InitCommentText(_T("")),
     InstSourceText(_T("")),
     InstCommentText(_T(""))
 {}
-NassiForBrick::NassiForBrick(const NassiForBrick &rhs)
-    :NassiBrick(),
+
+NassiForBrick::NassiForBrick(const NassiForBrick &rhs):
+    NassiBrick(),
     Child(0),
     InitSourceText(_T("")),
     InitCommentText(_T("")),
@@ -647,10 +687,12 @@ NassiForBrick::~NassiForBrick()
     delete Child;
     Child = (NassiBrick *)0;
 }
+
 NassiBrick *NassiForBrick::GetChild(wxUint32 /*n*/) const
 {
     return Child;
 }
+
 NassiBrick *NassiForBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     if ( brick )
@@ -663,6 +705,7 @@ NassiBrick *NassiForBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     Child = brick;
     return(tmp);
 }
+
 void NassiForBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     switch ( n )
@@ -686,6 +729,7 @@ void NassiForBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
         InstSourceText = str;
     }
 }
+
 const wxString *NassiForBrick::GetTextByNumber(wxUint32 n)const
 {
     switch ( n )
@@ -714,6 +758,7 @@ void NassiForBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 wxOutputStream &NassiForBrick::Serialize(wxOutputStream &stream)
 {
     wxTextOutputStream out(stream);
@@ -732,6 +777,7 @@ wxOutputStream &NassiForBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiForBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -753,6 +799,7 @@ NassiBlockBrick::NassiBlockBrick():
     NassiBrick(),
     Child(0)
 {}
+
 NassiBlockBrick::NassiBlockBrick(const NassiBlockBrick &rhs):
         NassiBrick()
 {
@@ -766,15 +813,18 @@ NassiBlockBrick::NassiBlockBrick(const NassiBlockBrick &rhs):
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiBlockBrick::~NassiBlockBrick()
 {
     delete Child;
     Child = 0;
 }
+
 NassiBrick *NassiBlockBrick::GetChild(wxUint32 /*n*/) const
 {
     return Child;
 }
+
 NassiBrick *NassiBlockBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     if ( brick )
@@ -787,6 +837,7 @@ NassiBrick *NassiBlockBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     Child = brick;
     return tmp;
 }
+
 void NassiBlockBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -794,6 +845,7 @@ void NassiBlockBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiBlockBrick::GetTextByNumber(wxUint32 n)const
 {
     if ( n== 0 )
@@ -801,10 +853,12 @@ const wxString *NassiBlockBrick::GetTextByNumber(wxUint32 n)const
     else
         return &Source;
 }
+
 void NassiBlockBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 wxOutputStream &NassiBlockBrick::Serialize(wxOutputStream &stream)
 {
     wxTextOutputStream out(stream);
@@ -823,6 +877,7 @@ wxOutputStream &NassiBlockBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiBlockBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -845,6 +900,7 @@ NassiWhileBrick::NassiWhileBrick():
     NassiBrick(),
     Child(0)
 {}
+
 NassiWhileBrick::NassiWhileBrick(const NassiWhileBrick &rhs):
     NassiBrick(),
     Child(0)
@@ -858,15 +914,18 @@ NassiWhileBrick::NassiWhileBrick(const NassiWhileBrick &rhs):
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiWhileBrick::~NassiWhileBrick()
 {
     delete Child;
     Child = (NassiBrick *)0;
 }
+
 NassiBrick *NassiWhileBrick::GetChild(wxUint32 /*n*/) const
 {
     return Child;
 }
+
 NassiBrick *NassiWhileBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     if ( brick )
@@ -879,6 +938,7 @@ NassiBrick *NassiWhileBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     Child = brick;
     return(tmp);
 }
+
 void NassiWhileBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -886,6 +946,7 @@ void NassiWhileBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiWhileBrick::GetTextByNumber(wxUint32 n) const
 {
     if ( n== 0 )
@@ -893,10 +954,12 @@ const wxString *NassiWhileBrick::GetTextByNumber(wxUint32 n) const
     else
         return &Source;
 }
+
 void NassiWhileBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 wxOutputStream &NassiWhileBrick::Serialize(wxOutputStream &stream)
 {
     wxTextOutputStream out(stream);
@@ -915,6 +978,7 @@ wxOutputStream &NassiWhileBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiWhileBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -933,11 +997,11 @@ wxInputStream &NassiWhileBrick::Deserialize(wxInputStream &stream)
 }
 
 
-
 NassiDoWhileBrick::NassiDoWhileBrick():
     NassiBrick(),
     Child(0)
 {}
+
 NassiDoWhileBrick::NassiDoWhileBrick(const NassiDoWhileBrick &rhs):
     NassiBrick(),
     Child(0)
@@ -950,15 +1014,18 @@ NassiDoWhileBrick::NassiDoWhileBrick(const NassiDoWhileBrick &rhs):
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiDoWhileBrick::~NassiDoWhileBrick()
 {
     delete Child;
     Child = 0;
 }
+
 NassiBrick *NassiDoWhileBrick::GetChild(wxUint32 /*n*/) const
 {
     return Child;
 }
+
 NassiBrick *NassiDoWhileBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
 {
     if ( brick )
@@ -971,6 +1038,7 @@ NassiBrick *NassiDoWhileBrick::SetChild(NassiBrick *brick, wxUint32 /*n*/)
     Child = brick;
     return(tmp);
 }
+
 void NassiDoWhileBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n == 0 )
@@ -978,6 +1046,7 @@ void NassiDoWhileBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
     else
         Source = str;
 }
+
 const wxString *NassiDoWhileBrick::GetTextByNumber(wxUint32 n) const
 {
     if ( n== 0 )
@@ -985,10 +1054,12 @@ const wxString *NassiDoWhileBrick::GetTextByNumber(wxUint32 n) const
     else
         return &Source;
 }
+
 void NassiDoWhileBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 wxOutputStream &NassiDoWhileBrick::Serialize(wxOutputStream &stream)
 {
     wxTextOutputStream out(stream);
@@ -1008,6 +1079,7 @@ wxOutputStream &NassiDoWhileBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiDoWhileBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -1025,9 +1097,6 @@ wxInputStream &NassiDoWhileBrick::Deserialize(wxInputStream &stream)
 }
 
 
-
-
-
 //WX_DEFINE_OBJARRAY(ArrayOfNassiBrickPtrs);
 
 NassiSwitchBrick::NassiSwitchBrick():
@@ -1037,8 +1106,9 @@ NassiSwitchBrick::NassiSwitchBrick():
     Sources(),
     childBlocks()
 {}
-NassiSwitchBrick::NassiSwitchBrick(const NassiSwitchBrick &rhs)
-        :NassiBrick()
+
+NassiSwitchBrick::NassiSwitchBrick(const NassiSwitchBrick &rhs):
+    NassiBrick()
 {
     nChilds = 0;
     for ( wxUint32 k = 0 ; k < rhs.GetChildCount() ; k++ )
@@ -1052,10 +1122,12 @@ NassiSwitchBrick::NassiSwitchBrick(const NassiSwitchBrick &rhs)
     if ( rhs.GetNext() )
         SetNext( rhs.GetNext()->Clone()  );
 }
+
 NassiSwitchBrick::~NassiSwitchBrick()
 {
     Destructor();
 }
+
 void NassiSwitchBrick::Destructor()
 {
     while ( childBlocks.size() > 0 )
@@ -1086,6 +1158,7 @@ wxUint32 NassiSwitchBrick::GetChildCount() const
 {
     return nChilds;
 }
+
 NassiBrick *NassiSwitchBrick::GetChild( wxUint32 n ) const
 {
     if ( n < nChilds )
@@ -1093,6 +1166,7 @@ NassiBrick *NassiSwitchBrick::GetChild( wxUint32 n ) const
     else
         return (NassiBrick *)0;
 }
+
 NassiBrick *NassiSwitchBrick::SetChild(NassiBrick *brick, wxUint32 n)
 {
     if ( brick != (NassiBrick *)0 )
@@ -1107,6 +1181,7 @@ NassiBrick *NassiSwitchBrick::SetChild(NassiBrick *brick, wxUint32 n)
     childBlocks[n] = brick;
     return(tmp);
 }
+
 void NassiSwitchBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
 {
     if ( n <= 0 )
@@ -1136,7 +1211,9 @@ void NassiSwitchBrick::SetTextByNumber(const  wxString &str, wxUint32 n)
         Comments[n] = new wxString(str);
     }
 }
+
 wxString NassiSwitchBrick::EmptyString = wxEmptyString;
+
 const wxString *NassiSwitchBrick::GetTextByNumber(wxUint32 n) const
 {
     if ( n <= 0 )
@@ -1159,10 +1236,12 @@ const wxString *NassiSwitchBrick::GetTextByNumber(wxUint32 n) const
         return Comments[n];
     }
 }
+
 void NassiSwitchBrick::accept(NassiBrickVisitor *visitor)
 {
     visitor->Visit(this);
 }
+
 void NassiSwitchBrick::RemoveChild(wxUint32 pos)
 {
     if ( pos > nChilds ) return;
@@ -1187,6 +1266,7 @@ void NassiSwitchBrick::RemoveChild(wxUint32 pos)
     //}
     nChilds--;
 }
+
 void NassiSwitchBrick::AddChild(wxUint32 pos = 0)
 {
     if ( pos > nChilds )
@@ -1210,6 +1290,7 @@ void NassiSwitchBrick::AddChild(wxUint32 pos = 0)
 
     nChilds++;
 }
+
 //public: virtual
 wxOutputStream &NassiSwitchBrick::Serialize(wxOutputStream &stream)
 {
@@ -1233,6 +1314,7 @@ wxOutputStream &NassiSwitchBrick::Serialize(wxOutputStream &stream)
         out << NASSI_BRICK_ESC << _T('\n');
     return stream;
 }
+
 wxInputStream &NassiSwitchBrick::Deserialize(wxInputStream &stream)
 {
     wxTextInputStream inp(stream);
@@ -1260,15 +1342,14 @@ wxInputStream &NassiSwitchBrick::Deserialize(wxInputStream &stream)
     return stream;
 }
 
-
 ///////////////////////////////// iterator
-
 NassiBricksCompositeIterator::NassiBricksCompositeIterator(NassiBrick *frst)
 {
     first = frst;
     itr = (NassiBricksCompositeIterator *)0;
     First();
 }
+
 void NassiBricksCompositeIterator::First()
 {
     currentParent = first;
@@ -1290,6 +1371,7 @@ void NassiBricksCompositeIterator::SetNext(void)
     if ( !current )
         done = true;
 }
+
 bool NassiBricksCompositeIterator::SetItrNextChild(void)
 {
     if ( child < currentParent->GetChildCount() ) //currentParent->nChilds )//not yet iterated throug all childs
@@ -1311,6 +1393,7 @@ bool NassiBricksCompositeIterator::SetItrNextChild(void)
     else
         return false;
 }
+
 void NassiBricksCompositeIterator::Next()
 {
     if ( current )
@@ -1368,12 +1451,14 @@ void NassiBrick::GenerateStrukTeX(wxString &str)
     GetStrukTeX(str, 2);
     str += _T("\\end{struktogramm}\n");
 }
+
 void NassiBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     NassiBrick *next = GetNext();
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiInstructionBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1386,6 +1471,7 @@ void NassiInstructionBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiDoWhileBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1406,6 +1492,7 @@ void NassiDoWhileBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiForBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     ///instruction
@@ -1443,6 +1530,7 @@ void NassiForBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiWhileBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1463,6 +1551,7 @@ void NassiWhileBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiBlockBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     NassiBrick *child = GetChild(0);
@@ -1473,6 +1562,7 @@ void NassiBlockBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiReturnBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1485,6 +1575,7 @@ void NassiReturnBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiContinueBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     /// is not siported by struktex
@@ -1492,6 +1583,7 @@ void NassiContinueBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiBreakBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1504,6 +1596,7 @@ void NassiBreakBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiIfBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1533,6 +1626,7 @@ void NassiIfBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
     if ( next )
         next->GetStrukTeX(str, n);
 }
+
 void NassiSwitchBrick::GetStrukTeX(wxString &str, wxUint32 n = 0)
 {
     for ( wxUint32 i = 0 ; i < n ; i++ )
@@ -1571,6 +1665,7 @@ void NassiBrick::SaveCommentString(wxTextOutputStream &text_stream, const wxStri
     if ( !str.IsEmpty() )
         NassiBrick::SaveSourceString(text_stream, _T("/*") + str + _T("*/\n"), n);
 }
+
 void NassiBrick::SaveSourceString(wxTextOutputStream &text_stream,  const wxString &str, wxUint32 n)
 {
     wxString s = str + _T("\n");
@@ -1591,12 +1686,14 @@ void NassiBrick::SaveSourceString(wxTextOutputStream &text_stream,  const wxStri
         }
     }
 }
+
 void NassiBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     NassiBrick *next = GetNext();
     if ( next )
         next->SaveSource(text_stream, n);
 }
+
 void NassiInstructionBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1604,6 +1701,7 @@ void NassiInstructionBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiBlockBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1620,6 +1718,7 @@ void NassiBlockBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiWhileBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1640,6 +1739,7 @@ void NassiWhileBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiDoWhileBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1662,6 +1762,7 @@ void NassiDoWhileBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiForBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1682,6 +1783,7 @@ void NassiForBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiIfBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1715,6 +1817,7 @@ void NassiIfBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiSwitchBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1760,6 +1863,7 @@ void NassiReturnBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiContinueBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);
@@ -1767,6 +1871,7 @@ void NassiContinueBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 
     NassiBrick::SaveSource(text_stream, n);
 }
+
 void NassiBreakBrick::SaveSource(wxTextOutputStream &text_stream, wxUint32 n)
 {
     SaveCommentString(text_stream, Comment, n);

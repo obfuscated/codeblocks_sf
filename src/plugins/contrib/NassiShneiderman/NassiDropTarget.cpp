@@ -24,6 +24,7 @@ wxDragResult NassiDropTarget::OnEnter(wxCoord x, wxCoord y, wxDragResult def)
     m_window->OnDragEnter();
     return OnDragOver(x, y, def);
 }
+
 void NassiDropTarget::OnLeave()
 {
     m_window->OnDragLeave();
@@ -43,6 +44,7 @@ wxDragResult NassiDropTarget::OnData(wxCoord x, wxCoord y, wxDragResult def)
         ((NassiDataObject *)GetDataObject())->GetText(1),
          def );
 }
+
 wxDragResult NassiDropTarget::OnDragOver(wxCoord x, wxCoord y, wxDragResult def)
 {
     bool HasNoBricks = !(((NassiDataObject *)GetDataObject())->HasBrick());

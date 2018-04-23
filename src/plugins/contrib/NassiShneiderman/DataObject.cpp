@@ -79,26 +79,31 @@ NassiDataObject::NassiDataObject(NassiBrick *brick, NassiView *view, wxString st
     }
     m_format.SetId(NassiFormatId);
 }
+
 NassiDataObject::~NassiDataObject()
 {
     delete m_firstbrick;
 }
+
 NassiBrick *NassiDataObject::GetBrick(void)
 {
     NassiBrick* ptr = m_firstbrick;
     m_firstbrick = 0;
     return ptr;
 }
+
 wxString NassiDataObject::GetText(wxInt32 n)
 {
     if ( n == 0 )
         return m_caseComment;
     return m_caseSource;
 }
+
 wxDataFormat NassiDataObject::GetPreferredFormat(Direction /*dir*/) const
 {
     return m_format;
 }
+
 size_t NassiDataObject::GetFormatCount(Direction dir) const
 {
     size_t nFormats = 1;
@@ -106,12 +111,14 @@ size_t NassiDataObject::GetFormatCount(Direction dir) const
         nFormats += m_dobjBitmap.GetFormatCount(dir);
     return nFormats;
 }
+
 void NassiDataObject::GetAllFormats(wxDataFormat *formats, Direction dir) const
 {
     formats[0] = m_format;
     if ( dir == Get && m_hasBitmap )
         m_dobjBitmap.GetAllFormats(&formats[1], dir);
 }
+
 size_t NassiDataObject::GetDataSize(const wxDataFormat& format) const
 {
     if ( format == m_format )
@@ -134,6 +141,7 @@ size_t NassiDataObject::GetDataSize(const wxDataFormat& format) const
     }
     return 0;
 }
+
 bool NassiDataObject::SetData(const wxDataFormat& format, size_t len, const void *buf)
 {
     if ( format != m_format )
@@ -148,6 +156,7 @@ bool NassiDataObject::SetData(const wxDataFormat& format, size_t len, const void
     m_hasBitmap = false;
     return( true );
 }
+
 bool NassiDataObject::GetDataHere(const wxDataFormat& format, void *pBuf) const
 {
     if ( format == m_format )
@@ -176,6 +185,7 @@ bool NassiDataObject::GetDataHere(const wxDataFormat& format, void *pBuf) const
 
     return false;
 }
+
 bool NassiDataObject::HasBrick()
 {
     return m_firstbrick != 0;
