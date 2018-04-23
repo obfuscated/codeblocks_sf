@@ -520,7 +520,7 @@ HooverDrawlet *NassiView::OnMouseMove(wxMouseEvent &event, const wxPoint &pos)
     if ( itsTask )
         return itsTask->OnMouseMove(event, pos);
 
-    // if no Task is active, we check if hoovering over text
+    // if no Task is active, we check if hovering over text
     GraphNassiBrick *gbrick = GetBrickAtPosition(pos);
     if ( !HasSelection() && gbrick && gbrick->IsOverText(pos) != 0 )
     {
@@ -1053,7 +1053,6 @@ NassiBrick *NassiView::GenerateNewBrick(NassiTools tool)
 
 void NassiView::DragStart()
 {
-
     wxString strc, strs;
 
     if ( ChildIndicatorIsSelected )
@@ -1154,7 +1153,7 @@ wxDragResult NassiView::OnDrop(const wxPoint &pos, NassiBrick *brick, wxString s
         if ( brick && rect.Contains(pos) )
             addcmd = new NassiInsertFirstBrick(m_nfc, brick);
         else
-            res = wxDragError;
+            res = wxDragNone;
     }
     else
     {
@@ -1178,10 +1177,10 @@ wxDragResult NassiView::OnDrop(const wxPoint &pos, NassiBrick *brick, wxString s
                 addcmd = new NassiAddChildIndicatorCommand(m_nfc, gbrick->GetBrick(), brick, ChildAddNumber, strc, strs);
             }
             else
-                res = wxDragError;
+                res = wxDragNone;
         }
         else
-            res = wxDragError;
+            res = wxDragNone;
     }
 
     if ( addcmd  && def == wxDragMove )
@@ -1212,7 +1211,7 @@ HooverDrawlet *NassiView::OnDragOver(const wxPoint &pos, wxDragResult &def, bool
             return new RedHatchDrawlet(rect);
         else
         {
-            def = wxDragError;
+            def = wxDragNone;
             return 0;
         }
     }
@@ -1221,11 +1220,11 @@ HooverDrawlet *NassiView::OnDragOver(const wxPoint &pos, wxDragResult &def, bool
     if ( gbrick )
     {
         HooverDrawlet *drawlet = gbrick->GetDrawlet(pos, HasNoBricks);
-        if ( drawlet == 0 ) def = wxDragError;
+        if ( drawlet == 0 ) def = wxDragNone;
         return drawlet;
     }
 
-    def = wxDragError;
+    def = wxDragNone;
     return 0;
 }
 
