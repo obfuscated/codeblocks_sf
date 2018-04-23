@@ -106,8 +106,6 @@
 		<Unit filename="cbEditorPanel.h" />
 		<Unit filename="commands.cpp" />
 		<Unit filename="commands.h" />
-		<Unit filename="logger.cpp" />
-		<Unit filename="logger.h" />
 		<Unit filename="manifest.xml" />
 		<Unit filename="parseactions.cpp" />
 		<Unit filename="parseactions.h" />

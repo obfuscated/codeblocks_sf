@@ -560,7 +560,6 @@ void NassiView::OnMouseLeftDown(wxMouseEvent &event, const wxPoint &pos)
         wxUint32 childN;
         if (!clickedIsActive && gbrick && gbrick->IsOverChildIndicator(pos, &childN) )
         {
-            //LoggerSingleton::exemplar()->Log( wxString::Format(_T("ChildIndicator %d"), childN ));
             SelectChildIndicator(gbrick, childN);
         }
         else
@@ -595,7 +594,6 @@ void NassiView::OnMouseRightDown(wxMouseEvent &event, const wxPoint &pos)
 }
 void NassiView::OnMouseRightUp(wxMouseEvent& event, const wxPoint &pos)
 {
-    //LoggerSingleton::exemplar()->Log(_T("View::OnMouseRightUp"));
     if ( itsTask )
     {
         itsTask->OnMouseRightUp(event, pos);
@@ -819,7 +817,6 @@ void NassiView::Select(GraphNassiBrick *gfirst, GraphNassiBrick *glast)
         first = first->GetParent();
         if ( !first )
         {
-            //LoggerSingleton::exemplar()->Log(_T("failure while checking for parents"));
             return;
         }
         flevel--;
@@ -831,7 +828,6 @@ void NassiView::Select(GraphNassiBrick *gfirst, GraphNassiBrick *glast)
         last = last->GetParent();
         if ( !last )
         {
-            //LoggerSingleton::exemplar()->Log(_T("failure while checking for parents"));
             return;
         }
         llevel--;
@@ -850,7 +846,6 @@ void NassiView::Select(GraphNassiBrick *gfirst, GraphNassiBrick *glast)
 
             if ( !last || !first ) // we have a problem
             {
-                //LoggerSingleton::exemplar()->Log(_T("failure while checking for siblings"));
                 return;
             }
         }
