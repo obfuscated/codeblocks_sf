@@ -25,7 +25,7 @@ NassiEditorPanel::NassiEditorPanel( const wxString &fileName, const wxString &ti
     m_view->Update();
 
     wxBoxSizer *BoxSizer = new wxBoxSizer(wxVERTICAL);
-    BoxSizer->Add((wxWindow *)m_diagramwindow,1, wxALL|wxEXPAND|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
+    BoxSizer->Add((wxWindow *)m_diagramwindow,1, wxALL|wxEXPAND, 5);
     SetSizer(BoxSizer);
     BoxSizer->SetSizeHints(this);
     ((wxWindow*)Manager::Get()->GetEditorManager()->GetNotebook())->Layout();
