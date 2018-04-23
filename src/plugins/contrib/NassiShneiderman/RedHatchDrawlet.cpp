@@ -24,7 +24,9 @@ bool RedHatchDrawlet::Draw(wxDC &dc)
     wxBrush old_brush = dc.GetBrush();
 
     wxColor red = wxColor( ~wxRED->Red(), ~wxRED->Green(), ~wxRED->Blue());
-#if wxCHECK_VERSION(3, 0, 0)
+#if wxCHECK_VERSION(3, 1, 0)
+    wxBrush brush = wxBrush(red, wxBRUSHSTYLE_CROSSDIAG_HATCH );
+#elif wxCHECK_VERSION(3, 0, 0)
     wxBrush brush = wxBrush(red, wxHATCHSTYLE_CROSSDIAG );
 #else
     wxBrush brush = wxBrush(red, wxCROSSDIAG_HATCH );

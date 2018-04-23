@@ -82,7 +82,11 @@ void GraphNassiBrick::DrawActive(wxDC *dc)
 {
     if ( !IsActive() || !IsVisible() ) return;
     const NassiViewColors &colors = m_view->GetColors();
+#if wxCHECK_VERSION(3,1,0)
+    wxBrush *brush = new wxBrush(colors.selectionPen, wxBRUSHSTYLE_TRANSPARENT);
+#else
     wxBrush *brush = new wxBrush(colors.selectionPen, wxTRANSPARENT);
+#endif
     wxPen *pen = new wxPen(colors.selectionPen, 3);
     dc->SetBrush(*brush);
     dc->SetPen(*pen);
@@ -2727,7 +2731,11 @@ void GraphNassiSwitchBrick::DrawActive(wxDC *dc)
     if ( !m_ChildIndicatorIsActive || !IsVisible() ) return;
 
     const NassiViewColors &colors = m_view->GetColors();
+#if wxCHECK_VERSION(3,1,0)
+    wxBrush *brush = new wxBrush(colors.selectionPen, wxBRUSHSTYLE_TRANSPARENT);
+#else
     wxBrush *brush = new wxBrush(colors.selectionPen, wxTRANSPARENT);
+#endif
     wxPen *pen = new wxPen(colors.selectionPen, 3);
     dc->SetBrush(*brush);
     dc->SetPen(*pen);
