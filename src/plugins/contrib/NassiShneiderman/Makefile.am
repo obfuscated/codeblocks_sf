@@ -22,7 +22,6 @@ libNassiShneiderman_la_SOURCES = bricks.cpp \
 		GraphFabric.cpp \
 		HooverDrawlet.cpp \
 		InsertBrickTask.cpp \
-		logger.cpp \
 		NassiDiagramWindow.cpp \
 		NassiDropTarget.cpp \
 		NassiEditorPanel.cpp \
@@ -47,7 +46,6 @@ noinst_HEADERS = bricks.h \
 		GraphFabric.h \
 		HooverDrawlet.h \
 		InsertBrickTask.h \
-		logger.h \
 		NassiBrickVisitor.h \
 		NassiDiagramWindow.h \
 		NassiDropTarget.h \
