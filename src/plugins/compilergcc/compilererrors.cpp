@@ -32,7 +32,8 @@ CompilerErrors::~CompilerErrors()
     //dtor
 }
 
-void CompilerErrors::AddError(CompilerLineType lt, cbProject* project, const wxString& filename, long int line, const wxString& error)
+void CompilerErrors::AddError(CompilerLineType lt, cbProject* project, const wxString& filename,
+                              long int line, const wxString& error)
 {
     CompileError err;
     err.lineType = lt;
@@ -57,15 +58,17 @@ void CompilerErrors::Next()
         return;
 
     // locate next *error* (not warning), if there is any
-    int bkp = ++m_ErrorIndex;
+    bool found = false;
+    int bkp = m_ErrorIndex + 1;
     while (bkp < (int)m_Errors.GetCount())
     {
         if (m_Errors[bkp].lineType == cltError)
         {
-            bool isNote =
-                ((m_Errors[bkp].errors.GetCount()>0) && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
+            const bool isNote = ((m_Errors[bkp].errors.GetCount()>0)
+                                 && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
             if(!isNote)
             {
+                found = true;
                 m_ErrorIndex = bkp;
                 break;
             }
@@ -73,7 +76,8 @@ void CompilerErrors::Next()
         ++bkp;
     }
 
-    DoGotoError(m_Errors[m_ErrorIndex]);
+    if (found)
+        DoGotoError(m_Errors[m_ErrorIndex]);
 }
 
 void CompilerErrors::Previous()
@@ -82,15 +86,17 @@ void CompilerErrors::Previous()
         return;
 
     // locate previous *error* (not warning), if there is any
-    int bkp = --m_ErrorIndex;
+    bool found = false;
+    int bkp = m_ErrorIndex - 1;
     while (bkp >= 0)
     {
         if (m_Errors[bkp].lineType == cltError)
         {
-            bool isNote =
-                ((m_Errors[bkp].errors.GetCount()>0) && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
+            const bool isNote = ((m_Errors[bkp].errors.GetCount()>0)
+                                 && m_Errors[bkp].errors[0].StartsWith(_T("note:")));
             if(!isNote)
             {
+                found = true;
                 m_ErrorIndex = bkp;
                 break;
             }
@@ -98,7 +104,8 @@ void CompilerErrors::Previous()
         --bkp;
     }
 
-    DoGotoError(m_Errors[m_ErrorIndex]);
+    if (found)
+        DoGotoError(m_Errors[m_ErrorIndex]);
 }
 
 void CompilerErrors::Clear()
