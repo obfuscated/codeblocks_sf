@@ -1724,12 +1724,18 @@ void CompilerGCC::PrintBanner(BuildAction action, cbProject* prj, ProjectBuildTa
 
 void CompilerGCC::DoGotoNextError()
 {
+    CodeBlocksLogEvent eventSwitchLog(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+    Manager::Get()->ProcessEvent(eventSwitchLog);
+
     m_Errors.Next();
     m_pListLog->FocusError(m_Errors.GetFocusedError());
 }
 
 void CompilerGCC::DoGotoPreviousError()
 {
+    CodeBlocksLogEvent eventSwitchLog(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
+    Manager::Get()->ProcessEvent(eventSwitchLog);
+
     m_Errors.Previous();
     m_pListLog->FocusError(m_Errors.GetFocusedError());
 }
