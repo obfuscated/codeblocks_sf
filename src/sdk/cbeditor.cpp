@@ -1220,7 +1220,12 @@ void cbEditor::Unsplit()
 // static
 wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
 {
-    return Manager::Get()->GetConfigManager(_T("editor"))->ReadColour(option, _default);
+    ConfigManager *config = Manager::Get()->GetConfigManager(wxT("editor"));
+    wxColour result = config->ReadColour(option, wxNullColour);
+    if (!result.IsNull())
+        return result;
+    else
+        return _default;
 }
 
 void cbEditor::SetEditorStyle()
