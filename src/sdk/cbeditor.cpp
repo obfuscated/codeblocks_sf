@@ -1222,7 +1222,7 @@ wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _defau
 {
     ConfigManager *config = Manager::Get()->GetConfigManager(wxT("editor"));
     wxColour result = config->ReadColour(option, wxNullColour);
-    if (!result.IsNull())
+    if (result != wxNullColour)
         return result;
     else
         return _default;
