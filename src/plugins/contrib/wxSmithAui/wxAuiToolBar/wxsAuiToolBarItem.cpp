@@ -66,10 +66,12 @@ void wxsAuiToolBarItem::OnEnumItemProperties(long Flags)
     static const long    ItemKindValues[] =
         { wxITEM_NORMAL,
           wxITEM_CHECK,
+          wxITEM_RADIO,
           0 };
     static const wxChar* ItemKindNames[]  =
         { _("Normal"),
           _("Check"),
+          _("Radio"),
           0 };
     WXS_ENUM(wxsAuiToolBarItem, m_ItemKind, _("Item kind"), _T("itemkind"), ItemKindValues, ItemKindNames, wxITEM_NORMAL)
 
