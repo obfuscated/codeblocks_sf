@@ -160,17 +160,6 @@ wxGridBagSizer* wxsGridBagSizer::OnBuildSizerPreview(wxWindow* Parent)
 {
 	wxGridBagSizer* Sizer = new wxGridBagSizer(VGap.GetPixels(Parent),HGap.GetPixels(Parent));
 
-	wxArrayInt Cols = GetArray(GrowableCols);
-	for ( size_t i=0; i<Cols.Count(); i++ )
-	{
-		Sizer->AddGrowableCol(Cols[i]);
-	}
-
-	wxArrayInt Rows = GetArray(GrowableRows);
-	for ( size_t i=0; i<Rows.Count(); i++ )
-	{
-		Sizer->AddGrowableRow(Rows[i]);
-	}
 	return Sizer;
 }
 wxObject* wxsGridBagSizer::OnBuildPreview(wxWindow* Parent,long Flags)
@@ -249,6 +238,18 @@ wxObject* wxsGridBagSizer::OnBuildPreview(wxWindow* Parent,long Flags)
 		}
 	}
 
+    const wxArrayInt Cols = GetArray(GrowableCols);
+    for (size_t i = 0; i < Cols.Count(); i++)
+    {
+        Sizer->AddGrowableCol(Cols[i]);
+    }
+
+    const wxArrayInt Rows = GetArray(GrowableRows);
+    for (size_t i = 0; i < Rows.Count(); i++)
+    {
+        Sizer->AddGrowableRow(Rows[i]);
+    }
+
 	if ( !(Flags & pfExact) )
 	{
 		NewParent->SetSizer(Sizer);
@@ -284,18 +285,6 @@ void wxsGridBagSizer::OnBuildSizerCreatingCode()
 				VGap.GetPixelsCode(GetCoderContext()).c_str(),
 				HGap.GetPixelsCode(GetCoderContext()).c_str());
 				#endif
-
-			wxArrayInt Cols = GetArray(GrowableCols);
-			for ( size_t i=0; i<Cols.Count(); i++ )
-			{
-				Codef(_T("%AAddGrowableCol(%d);\n"),Cols[i]);
-			}
-
-			wxArrayInt Rows = GetArray(GrowableRows);
-			for ( size_t i=0; i<Rows.Count(); i++ )
-			{
-				Codef(_T("%AAddGrowableRow(%d);\n"),Rows[i]);
-			}
 
 			return;
 		}
@@ -351,6 +340,30 @@ void wxsGridBagSizer::OnBuildCreatingCode()
 				break;
 		}
 	}
+
+    switch (GetLanguage())
+    {
+        case wxsCPP:
+        {
+            const wxArrayInt Cols = GetArray(GrowableCols);
+            for (size_t i = 0; i < Cols.Count(); i++)
+            {
+                Codef(wxT("%AAddGrowableCol(%d);\n"), Cols[i]);
+            }
+
+            const wxArrayInt Rows = GetArray(GrowableRows);
+            for (size_t i = 0; i < Rows.Count(); i++)
+            {
+                Codef(wxT("%AAddGrowableRow(%d);\n"), Rows[i]);
+            }
+            break;
+        }
+        case wxsUnknownLanguage: // fall-through
+        default:
+        {
+            UnknownLang = true;
+        }
+    }
 
 	if ( UnknownLang )
 	{
