@@ -375,7 +375,6 @@ void EditorConfigurationDlg::CreateColoursSample()
         m_TextColourControl = new cbStyledTextCtrl(this, wxID_ANY);
 
         m_TextColourControl->SetTabWidth(4);
-        m_TextColourControl->SetCaretWidth(0);
         m_TextColourControl->SetMarginType(0, wxSCI_MARGIN_NUMBER);
         m_TextColourControl->SetMarginWidth(0, 32);
         m_TextColourControl->SetMinSize(wxSize(50,50));
@@ -390,9 +389,7 @@ void EditorConfigurationDlg::CreateColoursSample()
     wxString code = m_Theme->GetSampleCode(m_Lang, &breakLine, &debugLine, &errorLine);
     if (!code.IsEmpty())
     {
-        m_TextColourControl->SetReadOnly(false);
         m_TextColourControl->LoadFile(code);
-        m_TextColourControl->SetReadOnly(true);
     }
 
     m_TextColourControl->MarkerDeleteAll(2);
