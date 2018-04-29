@@ -334,7 +334,7 @@ void PluginsConfigurationDlg::OnExport(cb_unused wxCommandEvent& event)
             break;
 
         const PluginElement* elem = (const PluginElement*)list->GetItemData(sel);
-        if (!elem && !elem->plugin)
+        if (!elem || !elem->plugin)
         {
             failure << list->GetItemText(sel) << _T('\n');
             continue;
