@@ -28,7 +28,7 @@ namespace
 {
     wxsRegisterItem<wxsListCtrl> Reg(_T("ListCtrl"),wxsTWidget,_T("Standard"),230);
 
-    WXS_ST_BEGIN(wxsListCtrlStyles,_T(""))
+    WXS_ST_BEGIN(wxsListCtrlStyles,_T("wxLC_LIST"))
         WXS_ST_CATEGORY("wxListCtrl")
         WXS_ST(wxLC_LIST);
         WXS_ST(wxLC_REPORT)
@@ -102,9 +102,19 @@ void wxsListCtrl::OnBuildCreatingCode()
     }
 }
 
-wxObject* wxsListCtrl::OnBuildPreview(wxWindow* Parent,long Flags)
+wxObject* wxsListCtrl::OnBuildPreview(wxWindow* Parent, long Flags)
 {
-    wxListCtrl* Preview = new wxListCtrl(Parent,GetId(),Pos(Parent),Size(Parent),Style());
+    long Mode = Style() & wxLC_MASK_TYPE;
+    if (!Mode || (Mode & wxLC_LIST))
+        Mode = wxLC_LIST;
+    else if (Mode & wxLC_REPORT)
+        Mode = wxLC_REPORT;
+    else if (Mode & wxLC_ICON)
+        Mode = wxLC_ICON;
+    else
+        Mode = wxLC_SMALL_ICON;
+
+    wxListCtrl* Preview = new wxListCtrl(Parent, GetId(), Pos(Parent), Size(Parent), (Style() & ~wxLC_MASK_TYPE) | Mode);
     return SetupWindow(Preview,Flags);
 }
 
