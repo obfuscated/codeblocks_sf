@@ -927,6 +927,7 @@ void wxsItemResData::BeginChange()
     {
         StoreTreeExpandState();
         wxsResourceTree::Get()->BlockSelect();
+        m_ExtraIsInvalid = false;
     }
 }
 
@@ -946,6 +947,9 @@ void wxsItemResData::EndChange()
         }
         if ( ValidateRootSelection() )
         {
+            if (m_ExtraIsInvalid && m_Editor)
+                m_Editor->RebuildQuickProps(m_RootSelection);
+
             m_RootSelection->NotifyPropertyChange(false);
         }
         else
@@ -960,6 +964,11 @@ void wxsItemResData::EndChange()
         RebuildTree();
         wxsResourceTree::Get()->UnblockSelect();
     }
+}
+
+void wxsItemResData::MarkExtraDataChanged()
+{
+    m_ExtraIsInvalid = true;
 }
 
 bool wxsItemResData::ValidateRootSelection()

@@ -122,6 +122,10 @@ class wxsItemResData
          */
         void EndChange();
 
+        /// Causes the Quick properties to be rebuild when EndChange is called.
+        /// This is needed to prevent accessing freed memory.
+        void MarkExtraDataChanged();
+
         /** \brief Checking if item has modified state */
         inline bool GetModified() { return m_Undo.IsModified(); }
 
@@ -384,6 +388,7 @@ class wxsItemResData
         int m_LockCount;
 
         bool m_ReadOnly;
+        bool m_ExtraIsInvalid = false;
 };
 
 #endif

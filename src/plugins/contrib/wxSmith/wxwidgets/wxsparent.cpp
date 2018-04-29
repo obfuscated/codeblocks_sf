@@ -91,6 +91,7 @@ void wxsParent::UnbindChild(int Index)
         delete Extra[Index];
     }
     Extra.RemoveAt(Index);
+    GetResourceData()->MarkExtraDataChanged();
 }
 
 void wxsParent::UnbindChild(wxsItem* Child)
@@ -103,6 +104,7 @@ void wxsParent::UnbindChild(wxsItem* Child)
         delete Extra[Index];
     }
     Extra.RemoveAt(Index);
+    GetResourceData()->MarkExtraDataChanged();
 }
 
 int wxsParent::MoveChild(int OldIndex,int NewIndex )
