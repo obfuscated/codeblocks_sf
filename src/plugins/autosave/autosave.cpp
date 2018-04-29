@@ -123,7 +123,8 @@ void Autosave::SaveProject(cbProject *p, int method)
             break;
         }
         case 2:
-        case 3: // doesn't really make sense to keep so many versions of a project file
+        case 3:
+        case 4: // doesn't really make sense to keep so many versions of a project file
         {
             if (p->IsLoaded() == false)
                 return;
@@ -188,6 +189,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         break;
                     case 2:
                     case 3:
+                    case 4:
                     {
                         WorkspaceLoader loader;
                         loader.Save(workspace->GetTitle(), workspace->GetFilename() + wxT(".save"));
@@ -233,14 +235,25 @@ void Autosave::OnTimer(wxTimerEvent& e)
                             break;
                         }
                         case 3:
+                        case 4:
                         {
                             wxString tmp1;
                             wxString tmp2;
-
-                            for(unsigned int revisions = 8; revisions; --revisions)
+                            wxString backupDir = fn.GetPath();
+                            if (method==4)
                             {
-                                tmp1.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), revisions,   fn.GetExt().c_str());
-                                tmp2.Printf(_T("%s/%s.%u.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), revisions+1, fn.GetExt().c_str());
+                                backupDir += wxT("/.bak");
+                                if (!wxDirExists(backupDir) && !wxMkdir(backupDir))
+                                {
+                                    // Fallback if the backup directory cannot be created.
+                                    backupDir = fn.GetPath();
+                                }
+                            }
+
+                            for (unsigned int revisions = 8; revisions; --revisions)
+                            {
+                                tmp1.Printf(_T("%s/%s.%u.%s"), backupDir.c_str(), fn.GetName().c_str(), revisions,   fn.GetExt().c_str());
+                                tmp2.Printf(_T("%s/%s.%u.%s"), backupDir.c_str(), fn.GetName().c_str(), revisions+1, fn.GetExt().c_str());
 
                                 if(::wxFileExists(tmp2))
                                     ::wxRemoveFile(tmp2);
@@ -248,7 +261,7 @@ void Autosave::OnTimer(wxTimerEvent& e)
                                     ::wxRenameFile(tmp1, tmp2);
                             }
 
-                            tmp1.Printf(_T("%s/%s.1.%s"), fn.GetPath().c_str(), fn.GetName().c_str(), fn.GetExt().c_str());
+                            tmp1.Printf(_T("%s/%s.1.%s"), backupDir.c_str(), fn.GetName().c_str(), fn.GetExt().c_str());
 
                             cbSaveToFile(tmp1, ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
                             ed->SetModified(); // the "real" file has not been saved!

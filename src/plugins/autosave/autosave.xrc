@@ -94,6 +94,7 @@
 								<item>Save to original file</item>
 								<item>Save to .save file</item>
 								<item>Save project to .save file, backup sources logrotate style</item>
+								<item>Save project to .save file, backup sources logrotate style to subfolder</item>
 							</content>
 						</object>
 						<flag>wxALL|wxEXPAND</flag>
