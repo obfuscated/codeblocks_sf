@@ -1125,7 +1125,10 @@ void cbEditor::Split(cbEditor::SplitType split)
     UnderlineFoldedLines(mgr->ReadBool(_T("/folding/underline_folded_line"), true));
 
     if (m_pTheme)
+    {
         m_pTheme->Apply(m_lang, m_pControl2, false, true);
+        SetLanguageDependentColours(*m_pControl2);
+    }
 
     // and make it a live copy of left control
     m_pControl2->SetDocPointer(m_pControl->GetDocPointer());
@@ -1217,15 +1220,9 @@ void cbEditor::Unsplit()
     Thaw();
 }
 
-// static
-wxColour cbEditor::GetOptionColour(const wxString& option, const wxColour _default)
+void cbEditor::SetLanguageDependentColours(cbStyledTextCtrl &control)
 {
-    ConfigManager *config = Manager::Get()->GetConfigManager(wxT("editor"));
-    wxColour result = config->ReadColour(option, wxNullColour);
-    if (result != wxNullColour)
-        return result;
-    else
-        return _default;
+    control.MarkerSetBackground(DEBUG_MARKER_HIGHLIGHT, control.GetCaretLineBackground());
 }
 
 void cbEditor::SetEditorStyle()
@@ -1348,8 +1345,6 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->SetCaretForeground(colours->GetColour(wxT("editor_caret")));
     control->SetCaretPeriod(mgr->ReadInt(_T("/caret/period"), 500));
     control->SetCaretLineVisible(mgr->ReadBool(_T("/highlight_caret_line"), false));
-    control->SetCaretLineBackground(GetOptionColour(_T("/highlight_caret_line_colour"), wxColour(0xFF, 0xFF, 0x00)));
-
     control->SetFoldMarginColour(true, colours->GetColour(wxT("editor_margin_chrome")));
     control->SetFoldMarginHiColour(true, colours->GetColour(wxT("editor_margin_chrome_highlight")));
 
@@ -1440,7 +1435,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     // gutter
     control->SetEdgeMode(mgr->ReadInt(_T("/gutter/mode"), 0));
-    control->SetEdgeColour(Manager::Get()->GetColourManager()->GetColour(wxT("editor_gutter")));
+    control->SetEdgeColour(colours->GetColour(wxT("editor_gutter")));
     control->SetEdgeColumn(mgr->ReadInt(_T("/gutter/column"), 80));
 
     control->StyleSetFont(wxSCI_STYLE_DEFAULT, font);
@@ -1499,7 +1494,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
 
     control->MarkerDefine(DEBUG_MARKER_HIGHLIGHT, DEBUG_STYLE_HIGHLIGHT);
-    control->MarkerSetBackground(DEBUG_MARKER_HIGHLIGHT, control->GetCaretLineBackground());
+    control->MarkerSetBackground(DEBUG_MARKER_HIGHLIGHT, *wxYELLOW);
 
     // 4.) Marker for Errors...
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
@@ -1698,7 +1693,13 @@ void cbEditor::Touch()
 void cbEditor::SetLanguage(HighlightLanguage lang, bool colourise)
 {
     if (m_pTheme)
+    {
         m_lang = m_pTheme->Apply(this, lang, colourise);
+        if (m_pControl)
+            SetLanguageDependentColours(*m_pControl);
+        if (m_pControl2)
+            SetLanguageDependentColours(*m_pControl2);
+    }
     else
         m_lang = HL_AUTO;
 }

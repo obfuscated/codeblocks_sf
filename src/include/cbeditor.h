@@ -337,7 +337,7 @@ class DLLIMPORT cbEditor : public EditorBase
         static void InternalSetEditorStyleAfterFileOpen(cbStyledTextCtrl* control);
         bool Open(bool detectEncoding = true);
         void DoAskForCodeCompletion(); // relevant to code-completion plugins
-        static wxColour GetOptionColour(const wxString& option, const wxColour _default);
+        void SetLanguageDependentColours(cbStyledTextCtrl &control);
         void NotifyPlugins(wxEventType type, int intArg = 0, const wxString& strArg = wxEmptyString, int xArg = 0, int yArg = 0);
 
         // events

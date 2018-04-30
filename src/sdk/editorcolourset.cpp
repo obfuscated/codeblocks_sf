@@ -556,7 +556,6 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, b
             if (opt->value == cbHIGHLIGHT_LINE)
             {
                 control->SetCaretLineBackground(opt->back);
-                Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/highlight_caret_line_colour"), opt->back);
             }
             else if (opt->value == cbSELECTION)
             {
