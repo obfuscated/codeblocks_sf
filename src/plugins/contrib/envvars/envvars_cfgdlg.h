@@ -11,6 +11,7 @@
 #include <wx/window.h>
 
 #include "configurationpanel.h"
+#include "envvars.h"
 
 class EnvVars;
 class wxChoice;
@@ -21,10 +22,10 @@ class EnvVarsConfigDlg : public cbConfigurationPanel
 {
 public:
   /// Ctor
-           EnvVarsConfigDlg(wxWindow* parent);
+  EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin);
+
   /// Dtor
-  virtual ~EnvVarsConfigDlg()
-  { };
+  virtual ~EnvVarsConfigDlg();
 
   /// returns the title of the plugin configuration panel
   virtual wxString GetTitle() const
@@ -78,6 +79,8 @@ private:
 
   /// Verifies that an envvar set is unique
   bool VerifySetUnique(const wxChoice* choSet, wxString set);
+
+  EnvVars* m_plugin;
 
   DECLARE_EVENT_TABLE()
 };

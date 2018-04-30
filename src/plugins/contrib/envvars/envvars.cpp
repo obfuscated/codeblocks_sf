@@ -125,15 +125,9 @@ void EnvVars::OnProjectLoadingHook(cbProject* project, TiXmlElement* elem,
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
+void EnvVars::DoProjectActivate(cbProject* project)
 {
-#if defined(TRACE_ENVVARS)
-  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectActivated")));
-#endif
-
-  if ( IsAttached() )
-  {
-    wxString prj_envvar_set = m_ProjectSets[event.GetProject()];
+    wxString prj_envvar_set = m_ProjectSets[project];
     if (prj_envvar_set.IsEmpty())  // There is no envvar set to apply...
       // Apply default envvar set (but only, if not already active)
       nsEnvVars::EnvvarSetApply(wxEmptyString, false);
@@ -155,7 +149,18 @@ void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
       else
         EnvvarSetWarning(prj_envvar_set);
     }
-  }
+}
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+void EnvVars::OnProjectActivated(CodeBlocksEvent& event)
+{
+#if defined(TRACE_ENVVARS)
+  Manager::Get()->GetLogManager()->DebugLog(F(_T("OnProjectActivated")));
+#endif
+
+  if (IsAttached())
+     DoProjectActivate(event.GetProject());
 
   event.Skip(); // propagate the event to other listeners
 }// OnProjectActivated
@@ -283,7 +288,7 @@ void EnvVars::OnRelease(bool /*appShutDown*/)
 
 cbConfigurationPanel* EnvVars::GetConfigurationPanel(wxWindow* parent)
 {
-  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent);
+  EnvVarsConfigDlg* dlg = new EnvVarsConfigDlg(parent, this);
   // deleted by the caller
 
   return dlg;

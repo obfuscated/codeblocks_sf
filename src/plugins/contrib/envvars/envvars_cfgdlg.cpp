@@ -61,11 +61,23 @@ END_EVENT_TABLE()
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent)
+EnvVarsConfigDlg::EnvVarsConfigDlg(wxWindow* parent, EnvVars* plugin) : m_plugin(plugin)
 {
   wxXmlResource::Get()->LoadPanel(this, parent, _T("dlgEnvVars"));
   LoadSettings();
 }// EnvVarsConfigDlg
+
+// ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
+
+EnvVarsConfigDlg::~EnvVarsConfigDlg()
+{
+   if (m_plugin->IsAttached())
+   {
+     ProjectManager* ProjMan = Manager::Get()->GetProjectManager();
+     //set active project environnement variables set
+     m_plugin->DoProjectActivate(ProjMan->GetActiveProject());
+   }
+}
 
 // ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 

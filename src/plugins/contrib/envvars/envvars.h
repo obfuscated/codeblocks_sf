@@ -50,6 +50,10 @@ protected:
   void     OnProjectClosed(CodeBlocksEvent& event);
 
 private:
+  friend class EnvVarsConfigDlg;
+
+  void DoProjectActivate(cbProject* project);
+
   /// fires when the plugin is attached to the application:
   void     OnAttach();
 
