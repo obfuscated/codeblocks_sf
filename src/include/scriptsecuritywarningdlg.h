@@ -21,10 +21,10 @@ class ScriptSecurityWarningDlg : public wxScrollingDialog
 {
     public:
         ScriptSecurityWarningDlg(wxWindow* parent, const wxString& operation, const wxString& command);
-        ~ScriptSecurityWarningDlg();
+        ~ScriptSecurityWarningDlg() override;
 
         ScriptSecurityResponse GetResponse();
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
     protected:
     private:
 };

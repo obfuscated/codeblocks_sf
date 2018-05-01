@@ -99,7 +99,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
         /// Constructor
         cbProject(const wxString& filename = wxEmptyString);
         /// Destructor
-        ~cbProject();
+        ~cbProject() override;
 
         /** @return True if the project fully loaded, false if not. */
         bool IsLoaded() const { return m_Loaded; }
@@ -117,12 +117,12 @@ class DLLIMPORT cbProject : public CompileTargetBase
         wxString GetCommonTopLevelPath() const;
 
         /** @return True if the project is modified in any way. */
-        bool GetModified() const;
+        bool GetModified() const override;
 
         /** Mark the project as modified or not.
           * @param modified If true, the project is marked as modified. If false, as not-modified.
           */
-        void SetModified(bool modified = true);
+        void SetModified(bool modified = true) override;
 
         /** Access a file of the project.
           * @param index The index of the file. Must be greater or equal than zero and less than GetFilesCount().
@@ -305,7 +305,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           */
         void SetModeForPCH(PCHMode mode){ m_PCHMode = mode; SetModified(true); }
 
-        void SetCompilerID(const wxString& id); // overriden
+        void SetCompilerID(const wxString& id) override; // overriden
 
         /** @return The root item of this project in the project manager's tree. */
         wxTreeItemId GetProjectNode(){ return m_ProjectNode; }
@@ -642,7 +642,7 @@ class DLLIMPORT cbProject : public CompileTargetBase
           * It sends additional notification event to plugins
           * and than calls base function.
           */
-        virtual void SetTitle(const wxString& title);
+        void SetTitle(const wxString& title) override;
 
         /** Access the \<Extensions\> XML node of this project
           *

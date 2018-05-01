@@ -20,9 +20,9 @@ class DLLIMPORT EditPairDlg : public wxScrollingDialog
         };
 
         EditPairDlg(wxWindow* parent, wxString& key, wxString& value, const wxString& title = _("Edit pair"), BrowseMode allowBrowse = bmDisable);
-        virtual ~EditPairDlg();
+        ~EditPairDlg() override;
 		EditPairDlg& operator=(const EditPairDlg&){ return *this; } // just to satisfy script bindings (never used)
-		virtual void EndModal(int retCode);
+		void EndModal(int retCode) override;
     protected:
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnBrowse(wxCommandEvent& event);

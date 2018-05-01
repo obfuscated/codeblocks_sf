@@ -183,12 +183,12 @@ public:
         Hide();
     }
 
-    bool Destroy();
+    bool Destroy() override;
     void OnFocus(wxFocusEvent& event);
     void ActivateParent();
 
-    virtual void DoSetSize(int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO);
-    virtual bool Show(bool show = true);
+    void DoSetSize(int x, int y, int width, int height, int sizeFlags = wxSIZE_AUTO) override;
+    bool Show(bool show = true) override;
 
 private:
     DECLARE_EVENT_TABLE()

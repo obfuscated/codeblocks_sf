@@ -21,11 +21,11 @@ class DLLIMPORT EditPathDlg : public wxScrollingDialog
                 const bool allowMultiSel = false,  // whether to allow for multiple files selection
                 const wxString& filter = _("All files(*)|*"));  // wildcard for files
 
-		virtual ~EditPathDlg();
+		~EditPathDlg() override;
 		EditPathDlg& operator=(const EditPathDlg&){ return *this; } // just to satisfy script bindings (never used)
 
 		const wxString& GetPath(){ return m_Path; }
-    void EndModal(int retCode);
+    void EndModal(int retCode) override;
 
 	protected:
         void OnUpdateUI(wxUpdateUIEvent& event);

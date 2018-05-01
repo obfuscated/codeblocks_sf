@@ -26,7 +26,7 @@ class DLLIMPORT cbTreeCtrl : public wxTreeCtrl
 /*
         GetPrevVisible appears to be faulty, so override.
 */
-        virtual wxTreeItemId GetPrevVisible(const wxTreeItemId& item) const;
+        wxTreeItemId GetPrevVisible(const wxTreeItemId& item) const override;
     protected:
 #ifndef __WXMSW__
 /*
@@ -43,7 +43,7 @@ class DLLIMPORT cbTreeCtrl : public wxTreeCtrl
 
         static int filesSort(const ProjectFile* arg1, const ProjectFile* arg2);
         static int filesSortNameOnly(const ProjectFile* arg1, const ProjectFile* arg2);
-        int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2);
+        int OnCompareItems(const wxTreeItemId& item1, const wxTreeItemId& item2) override;
         int (*Compare)(const ProjectFile* arg1, const ProjectFile* arg2);
 
         DECLARE_DYNAMIC_CLASS(cbTreeCtrl)

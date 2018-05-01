@@ -45,7 +45,7 @@ class DLLIMPORT IncrementalSelectIterator
 class DLLIMPORT IncrementalSelectIteratorIndexed : public IncrementalSelectIterator
 {
     public:
-        virtual ~IncrementalSelectIteratorIndexed() {}
+        ~IncrementalSelectIteratorIndexed() override {}
 
         int GetFilteredCount() const override;
         void Reset() override;
@@ -99,11 +99,11 @@ class DLLIMPORT IncrementalSelectArrayIterator : public IncrementalSelectIterato
     public:
         IncrementalSelectArrayIterator(const wxArrayString &items);
 
-        int GetTotalCount() const;
-        const wxString& GetItemFilterString(int index) const;
-        wxString GetDisplayText(int index, int column) const;
-        int GetColumnWidth(int column) const;
-        void CalcColumnWidth(wxListCtrl &list);
+        int GetTotalCount() const override;
+        const wxString& GetItemFilterString(int index) const override;
+        wxString GetDisplayText(int index, int column) const override;
+        int GetColumnWidth(int column) const override;
+        void CalcColumnWidth(wxListCtrl &list) override;
     private:
         const wxArrayString &m_items;
         int m_columnWidth;

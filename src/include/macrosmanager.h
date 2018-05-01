@@ -74,7 +74,7 @@ protected:
 
 private:
     MacrosManager();
-    ~MacrosManager();
+    ~MacrosManager() override;
     wxString EvalCondition(const wxString& cond, const wxString& true_clause, const wxString& false_clause, ProjectBuildTarget* target);
     int MatchBrace(const wxString& buffer, int index);
 };

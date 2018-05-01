@@ -22,7 +22,7 @@ class DLLIMPORT cbStyledTextCtrl : public wxScintilla
 {
     public:
         cbStyledTextCtrl(wxWindow* pParent, int id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = 0);
-        virtual ~cbStyledTextCtrl();
+        ~cbStyledTextCtrl() override;
 
         /** Don't use this. It throws an exception if you do. */
         void operator=(const cbStyledTextCtrl& /*rhs*/);

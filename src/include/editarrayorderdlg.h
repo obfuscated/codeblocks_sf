@@ -19,11 +19,11 @@ class DLLIMPORT EditArrayOrderDlg : public wxScrollingDialog
 		// class constructor
 		EditArrayOrderDlg(wxWindow* parent, const wxArrayString& array);
 		// class destructor
-		~EditArrayOrderDlg();
+		~EditArrayOrderDlg() override;
 		EditArrayOrderDlg& operator=(const EditArrayOrderDlg&){ return *this; } // just to satisfy script bindings (never used)
 		void SetArray(const wxArrayString& array){ m_Array = array; }
 		const wxArrayString& GetArray(){ return m_Array; }
-		void EndModal(int retCode);
+		void EndModal(int retCode) override;
 		void OnMoveUp(wxCommandEvent& event);
 		void OnMoveDown(wxCommandEvent& event);
 		void OnUpdateUI(wxUpdateUIEvent& event);

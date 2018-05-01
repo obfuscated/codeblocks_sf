@@ -58,10 +58,10 @@ public:
 // Overrides
 
     /// Indicate that adaptation should be done
-    virtual bool CanDoLayoutAdaptation(wxDialogHelper* dialog);
+    bool CanDoLayoutAdaptation(wxDialogHelper* dialog) override;
 
     /// Do layout adaptation
-    virtual bool DoLayoutAdaptation(wxDialogHelper* dialog);
+    bool DoLayoutAdaptation(wxDialogHelper* dialog) override;
 
 // Implementation
 
@@ -203,10 +203,10 @@ public:
     void Init();
 
     /// Override Show to rejig the control and sizer hierarchy if necessary
-    virtual bool Show(bool show = true);
+    bool Show(bool show = true) override;
 
     /// Override ShowModal to rejig the control and sizer hierarchy if necessary
-    virtual int ShowModal();
+    int ShowModal() override;
 #endif
 };
 
@@ -249,15 +249,15 @@ public:
 //// Accessors
 
     /// Returns the content window
-    virtual wxWindow* GetContentWindow() const;
+    wxWindow* GetContentWindow() const override;
 
 /// Operations
 
     /// Override Show to rejig the control and sizer hierarchy if necessary
-    virtual bool Show(bool show = true);
+    bool Show(bool show = true) override;
 
     /// Override ShowModal to rejig the control and sizer hierarchy if necessary
-    virtual int ShowModal();
+    int ShowModal() override;
 
 private:
     void Init();

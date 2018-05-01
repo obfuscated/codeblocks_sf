@@ -24,7 +24,7 @@ private:
     cbStatusBar(wxWindow* parent,  wxWindowID id, long style, const wxString& name);
     cbStatusBar() { ; };
     cbStatusBar ( const cbStatusBar& );
-    virtual ~cbStatusBar();
+    ~cbStatusBar() override;
 
 public:
     /** Sets the text for one field.
@@ -47,7 +47,7 @@ public:
     virtual bool GetFieldRectByPlugin(cbPlugin *plugin, wxRect& rect) const;
 
     // functions used for the mainframe:
-    virtual void SetStatusWidths(int n, const int* widths);
+    void SetStatusWidths(int n, const int* widths) override;
 
     /** Add a new field, which contains a control, to the status bar.
         @param   plugin The plugin which wants to add a new statusfield

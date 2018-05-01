@@ -451,7 +451,7 @@ class DLLIMPORT ProjectManager : public Mgr<ProjectManager>, public wxEvtHandler
         ProjectManager(cb_unused const ProjectManager& rhs); // prevent copy construction
 
         ProjectManager();
-        ~ProjectManager();
+        ~ProjectManager() override;
         void OnAppDoneStartup(CodeBlocksEvent& event);
         int  DoAddFileToProject(const wxString& filename, cbProject* project, wxArrayInt& targets);
 

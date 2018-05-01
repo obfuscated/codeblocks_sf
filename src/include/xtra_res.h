@@ -18,8 +18,8 @@ class DLLIMPORT wxToolBarAddOnXmlHandler : public wxXmlResourceHandler
 {
     public:
         wxToolBarAddOnXmlHandler();
-        virtual wxObject *DoCreateResource();
-        virtual bool CanHandle(wxXmlNode *node);
+        wxObject *DoCreateResource() override;
+        bool CanHandle(wxXmlNode *node) override;
 
     protected:
         bool m_isInside;
@@ -37,8 +37,8 @@ class DLLIMPORT wxScrollingDialogXmlHandler : public wxDialogXmlHandler
 
 public:
     wxScrollingDialogXmlHandler();
-    virtual wxObject *DoCreateResource();
-    virtual bool CanHandle(wxXmlNode *node);
+    wxObject *DoCreateResource() override;
+    bool CanHandle(wxXmlNode *node) override;
 };
 
 #endif

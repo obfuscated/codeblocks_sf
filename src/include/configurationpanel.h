@@ -20,7 +20,7 @@ class DLLIMPORT cbConfigurationPanel : public wxPanel
 {
     public:
         cbConfigurationPanel() : m_parentDialog(0) { ; }
-        virtual ~cbConfigurationPanel(){}
+        ~cbConfigurationPanel() override{}
 
         /// @return the panel's title.
         virtual wxString GetTitle() const = 0;
@@ -60,9 +60,9 @@ class DLLIMPORT cbConfigurationDialog : public wxScrollingDialog
     public:
         cbConfigurationDialog(wxWindow* parent, int id, const wxString& title);
         void AttachConfigurationPanel(cbConfigurationPanel* panel);
-        ~cbConfigurationDialog();
+        ~cbConfigurationDialog() override;
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
     protected:
         cbConfigurationPanel* m_pPanel;
         wxButton* m_pOK;

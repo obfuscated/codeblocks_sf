@@ -32,12 +32,12 @@ class wxIccDirTraverser : public wxDirTraverser
             m_SepChar = (platform::windows == 1) ? _T('\\') : _T('/');
         }
 
-        virtual wxDirTraverseResult OnFile(const wxString& WXUNUSED(filename))
+        wxDirTraverseResult OnFile(const wxString& WXUNUSED(filename)) override
         {
             return wxDIR_CONTINUE;
         }
 
-        virtual wxDirTraverseResult OnDir(const wxString& dirname)
+        wxDirTraverseResult OnDir(const wxString& dirname) override
         {
             if (m_Dirs.Index(dirname) == wxNOT_FOUND &&
                 dirname.AfterLast(m_SepChar).Contains(_T(".")))

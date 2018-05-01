@@ -13,7 +13,7 @@ class DLLIMPORT ProjectsFileMasksDlg : public wxScrollingDialog
 {
     public:
         ProjectsFileMasksDlg(wxWindow* parent, FilesGroupsAndMasks* fgam);
-        virtual ~ProjectsFileMasksDlg();
+        ~ProjectsFileMasksDlg() override;
 
         void OnUpdateUI(wxUpdateUIEvent& event);
         void OnAdd(wxCommandEvent& event);
@@ -26,7 +26,7 @@ class DLLIMPORT ProjectsFileMasksDlg : public wxScrollingDialog
         void RebuildList();
         void ListChange();
 
-        virtual void EndModal(int retCode);
+        void EndModal(int retCode) override;
 
         FilesGroupsAndMasks  m_FileGroupsAndMasksCopy;
         FilesGroupsAndMasks* m_pFileGroupsAndMasks;

@@ -230,7 +230,7 @@ class DLLIMPORT ScriptingManager : public Mgr<ScriptingManager>, public wxEvtHan
         void RegisterScriptFunctions();
 
         ScriptingManager();
-        ~ScriptingManager();
+        ~ScriptingManager() override;
 
         TrustedScripts m_TrustedScripts;
 

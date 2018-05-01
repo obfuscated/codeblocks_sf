@@ -24,7 +24,7 @@ class DLLIMPORT MultiSelectDlg : public wxScrollingDialog
                        bool selectall = false,
                        const wxString& label = _("Select items:"),
                        const wxString& title = _("Multiple selection"));
-        virtual ~MultiSelectDlg();
+        ~MultiSelectDlg() override;
 
         wxArrayString GetSelectedStrings() const;
         wxArrayInt GetSelectedIndices() const;

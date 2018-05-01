@@ -88,7 +88,7 @@ class DLLIMPORT CCManager : public Mgr<CCManager>, wxEvtHandler
         void UpdateEnvSettings();
     private:
         CCManager();
-        ~CCManager();
+        ~CCManager() override;
 
         /** Event handler to list the suggestion, when a user press Ctrl-space (by default). */
         void OnCompleteCode(CodeBlocksEvent& event);

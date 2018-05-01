@@ -54,8 +54,8 @@ protected:
 
 public:
     LoaderBase() : wait(true), data(nullptr), len(0) {};
-    ~LoaderBase();
-    void operator()() {};
+    ~LoaderBase() override;
+    void operator()() override {};
     wxString FileName() const { return fileName; };
 
     bool Sync();
@@ -68,7 +68,7 @@ class DLLIMPORT FileLoader : public LoaderBase
 {
 public:
     FileLoader(const wxString& name) { fileName = name; };
-    void operator()();
+    void operator()() override;
 };
 
 // ***** class: URLLoader *****
@@ -76,7 +76,7 @@ class DLLIMPORT URLLoader : public LoaderBase
 {
 public:
     URLLoader(const wxString& name) { fileName = name; };
-    void operator()();
+    void operator()() override;
 private:
     std::vector<char> mBuffer;
 };
@@ -86,7 +86,7 @@ class DLLIMPORT NullLoader : public LoaderBase
 {
 public:
     NullLoader(const wxString& name, char* buffer, size_t size) { fileName = name; data = buffer; len = size; Ready(); };
-    void operator()(){};
+    void operator()() override{};
 };
 
 // ***** class: EditorReuser *****
@@ -105,7 +105,7 @@ public:
         strcpy(data, (const char*)s.mb_str(wxConvUTF8));
         Ready();
     }
-    void operator()(){};
+    void operator()() override{};
 };
 
 // ***** class: FileManager *****
@@ -116,7 +116,7 @@ class DLLIMPORT FileManager : public Mgr<FileManager>
     BackgroundThread urlLoaderThread;
 public:
     FileManager();
-    ~FileManager();
+    ~FileManager() override;
 
     /** Loads a file, once this function is called, the actually loading process is done in the
      *  worker thread(BackgroundThread).

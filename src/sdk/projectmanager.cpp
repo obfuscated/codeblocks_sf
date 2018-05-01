@@ -49,26 +49,26 @@ END_EVENT_TABLE()
 class NullProjectManagerUI : public cbProjectManagerUI
 {
     public:
-        cbAuiNotebook* GetNotebook() { return nullptr; }
-        cbTreeCtrl* GetTree() { return nullptr; }
-        void RebuildTree() {}
-        void FreezeTree() {}
-        void UnfreezeTree(bool force = false) { (void)force; }
-        wxTreeItemId GetTreeSelection() { return wxTreeItemId(); }
-        void UpdateActiveProject(cbProject* WXUNUSED(oldProject), cbProject* WXUNUSED(newProject), bool WXUNUSED(refresh)) {}
-        void RemoveProject(cbProject* WXUNUSED(project)) {}
-        void BeginLoadingWorkspace() {}
-        void CloseWorkspace() {}
-        void FinishLoadingProject(cbProject* WXUNUSED(project), bool WXUNUSED(newAddition), FilesGroupsAndMasks* WXUNUSED(fileGroups)) {}
-        void FinishLoadingWorkspace(cbProject* WXUNUSED(activeProject), const wxString& WXUNUSED(workspaceTitle)) {}
-        void ShowFileInTree(ProjectFile& WXUNUSED(projectFile)) {}
-        bool QueryCloseAllProjects() { return true; }
-        bool QueryCloseProject(cbProject* WXUNUSED(proj), bool dontsavefiles = false)  { (void)dontsavefiles; return true; }
-        bool QueryCloseWorkspace()  { return true; }
-        int AskForBuildTargetIndex(cbProject* project = nullptr) { (void)project; return -1; }
-        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) { (void)project; return wxArrayInt(); }
-        void ConfigureProjectDependencies(cbProject* base = nullptr) { (void)base; }
-        void SwitchToProjectsPage() {}
+        cbAuiNotebook* GetNotebook() override { return nullptr; }
+        cbTreeCtrl* GetTree() override { return nullptr; }
+        void RebuildTree() override {}
+        void FreezeTree() override {}
+        void UnfreezeTree(bool force = false) override { (void)force; }
+        wxTreeItemId GetTreeSelection() override { return wxTreeItemId(); }
+        void UpdateActiveProject(cbProject* WXUNUSED(oldProject), cbProject* WXUNUSED(newProject), bool WXUNUSED(refresh)) override {}
+        void RemoveProject(cbProject* WXUNUSED(project)) override {}
+        void BeginLoadingWorkspace() override {}
+        void CloseWorkspace() override {}
+        void FinishLoadingProject(cbProject* WXUNUSED(project), bool WXUNUSED(newAddition), FilesGroupsAndMasks* WXUNUSED(fileGroups)) override {}
+        void FinishLoadingWorkspace(cbProject* WXUNUSED(activeProject), const wxString& WXUNUSED(workspaceTitle)) override {}
+        void ShowFileInTree(ProjectFile& WXUNUSED(projectFile)) override {}
+        bool QueryCloseAllProjects() override { return true; }
+        bool QueryCloseProject(cbProject* WXUNUSED(proj), bool dontsavefiles = false) override  { (void)dontsavefiles; return true; }
+        bool QueryCloseWorkspace() override  { return true; }
+        int AskForBuildTargetIndex(cbProject* project = nullptr) override { (void)project; return -1; }
+        wxArrayInt AskForMultiBuildTargetIndex(cbProject* project = nullptr) override { (void)project; return wxArrayInt(); }
+        void ConfigureProjectDependencies(cbProject* base = nullptr) override { (void)base; }
+        void SwitchToProjectsPage() override {}
 };
 
 // class constructor

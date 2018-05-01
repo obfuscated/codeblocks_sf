@@ -46,7 +46,7 @@ namespace ProjectLoaderHooks
             typedef void (T::*Func)(cbProject*, TiXmlElement*, bool);
             HookFunctor(T* obj, Func func) : m_pObj(obj), m_pFunc(func)
             { ; }
-            virtual void Call(cbProject* project, TiXmlElement* elem, bool isLoading) const
+            void Call(cbProject* project, TiXmlElement* elem, bool isLoading) const override
             {
                 if (m_pObj && m_pFunc)
                     (m_pObj->*m_pFunc)(project, elem, isLoading);

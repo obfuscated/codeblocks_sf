@@ -20,7 +20,7 @@ class NewFromTemplateDlg : public wxScrollingDialog
 {
 	public:
 		NewFromTemplateDlg(TemplateOutputType initial, const wxArrayString& user_templates);
-		virtual ~NewFromTemplateDlg();
+		~NewFromTemplateDlg() override;
 
 		ProjectTemplateLoader* GetTemplate(){ return m_Template; }
 		cbWizardPlugin* GetWizard(){ return m_pWizard; }
@@ -29,7 +29,7 @@ class NewFromTemplateDlg : public wxScrollingDialog
 		bool SelectedUserTemplate() const;
 		wxString GetSelectedUserTemplate() const;
 
-		void EndModal(int retCode);
+		void EndModal(int retCode) override;
 	protected:
 		void FillTemplate(ProjectTemplateLoader* pt);
 		void BuildCategories();

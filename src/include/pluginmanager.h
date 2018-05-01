@@ -164,7 +164,7 @@ class DLLIMPORT PluginManager : public Mgr<PluginManager>, public wxEvtHandler
         static bool GetSafeMode(){ return s_SafeMode; }
     private:
         PluginManager();
-        ~PluginManager();
+        ~PluginManager() override;
 
         void OnScriptMenu(wxCommandEvent& event);
         void OnScriptModuleMenu(wxCommandEvent& event);

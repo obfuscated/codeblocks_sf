@@ -16,12 +16,12 @@ class DLLIMPORT ProjectFileOptionsDlg : public wxScrollingDialog
     public:
         ProjectFileOptionsDlg(wxWindow* parent, ProjectFile* pf);
         ProjectFileOptionsDlg(wxWindow* parent, const wxString& fileName);
-        ~ProjectFileOptionsDlg();
+        ~ProjectFileOptionsDlg() override;
 
         void OnReadOnlyCheck(wxCommandEvent& event);
         void OnCompilerCombo(wxCommandEvent& event);
         void OnUpdateUI(wxUpdateUIEvent& event);
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
 
     private:
         void FillGeneralProperties();

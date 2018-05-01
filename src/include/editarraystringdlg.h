@@ -14,9 +14,9 @@ class DLLIMPORT EditArrayStringDlg : public wxScrollingDialog
 {
 	public:
 		EditArrayStringDlg(wxWindow* parent, wxArrayString& array);
-		virtual ~EditArrayStringDlg();
+		~EditArrayStringDlg() override;
 		EditArrayStringDlg& operator=(const EditArrayStringDlg&){ return *this; } // just to satisfy script bindings (never used)
-		virtual void EndModal(int retCode);
+		void EndModal(int retCode) override;
 	protected:
 		void OnAdd(wxCommandEvent& event);
 		void OnEdit(wxCommandEvent& event);

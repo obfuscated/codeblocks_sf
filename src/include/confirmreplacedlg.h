@@ -27,7 +27,7 @@ class DLLIMPORT ConfirmReplaceDlg : public wxScrollingDialog
 	public:
 		ConfirmReplaceDlg(wxWindow* parent, bool replaceInFiles = false,
             const wxString& label = _("Replace this occurrence?"));
-		~ConfirmReplaceDlg();
+		~ConfirmReplaceDlg() override;
 		void OnYes(wxCommandEvent& event);
 		void OnNo(wxCommandEvent& event);
 		void OnAllInFile(wxCommandEvent& event);

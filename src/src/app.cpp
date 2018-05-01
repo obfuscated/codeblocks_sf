@@ -84,7 +84,7 @@ class DDEServer : public wxServer
 {
     public:
         DDEServer(MainFrame* frame) : m_Frame(frame) { ; }
-        wxConnectionBase *OnAcceptConnection(const wxString& topic);
+        wxConnectionBase *OnAcceptConnection(const wxString& topic) override;
         MainFrame* GetFrame()                 { return m_Frame;  }
         void       SetFrame(MainFrame* frame) { m_Frame = frame; }
     private:
@@ -98,9 +98,9 @@ class DDEConnection : public wxConnection
 #if wxCHECK_VERSION(3, 0, 0)
         bool OnExecute(const wxString& topic, const void *data, size_t size, wxIPCFormat format);
 #else
-        bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format);
+        bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format) override;
 #endif
-        bool OnDisconnect();
+        bool OnDisconnect() override;
     private:
         MainFrame* m_Frame;
 };
@@ -197,7 +197,7 @@ DDEServer* g_DDEServer = nullptr;
 class DDEClient: public wxClient {
     public:
         DDEClient(void) {}
-        wxConnectionBase *OnMakeConnection(void) { return new DDEConnection(nullptr); }
+        wxConnectionBase *OnMakeConnection(void) override { return new DDEConnection(nullptr); }
 };
 
 #if wxUSE_CMDLINE_PARSER
@@ -313,7 +313,7 @@ public:
     #ifdef WX_ATTRIBUTE_PRINTF
     virtual void Printf(const wxChar* format, ...)  WX_ATTRIBUTE_PRINTF_2;
     #else
-    virtual void Printf(const wxChar* format, ...)  ATTRIBUTE_PRINTF_2;
+    void Printf(const wxChar* format, ...) override  ATTRIBUTE_PRINTF_2;
     #endif
 #endif // wxCHECK_VERSION
 };

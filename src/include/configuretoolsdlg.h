@@ -17,7 +17,7 @@ class ConfigureToolsDlg : public wxScrollingDialog
 {
 	public:
 		ConfigureToolsDlg(wxWindow* parent);
-		~ConfigureToolsDlg();
+		~ConfigureToolsDlg() override;
 	private:
 		void DoFillList();
 		bool DoEditTool(cbTool* tool);

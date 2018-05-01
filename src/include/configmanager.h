@@ -391,7 +391,7 @@ class DLLIMPORT CfgMgrBldr : public Mgr<CfgMgrBldr>
     wxString DetermineExecutablePath();
 protected:
     CfgMgrBldr();
-    ~CfgMgrBldr();
+    ~CfgMgrBldr() override;
 
 public:
     static ConfigManager* GetConfigManager(const wxString& name_space);

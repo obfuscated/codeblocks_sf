@@ -39,7 +39,7 @@
 class DLLIMPORT InfoWindow : public wxInfoWindowBase
 {
         InfoWindow(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis);
-        virtual ~InfoWindow();
+        ~InfoWindow() override;
         void OnTimer(wxTimerEvent& e);
         void OnMove(wxMouseEvent& e);
         void OnClick(wxMouseEvent& e);

@@ -160,7 +160,7 @@ struct CommonItem : cbDebuggerWindowMenuItem
         m_getWindowFunc(func)
     {}
 
-    void OnClick(bool enable)
+    void OnClick(bool enable) override
     {
         CodeBlocksDockEvent evt(enable ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
         DebuggerManager *manager = Manager::Get()->GetDebuggerManager();
@@ -174,11 +174,11 @@ struct CommonItem : cbDebuggerWindowMenuItem
         if (enable && manager->GetActiveDebugger())
             manager->GetActiveDebugger()->RequestUpdate(m_requestUpdate);
     }
-    virtual bool IsEnabled()
+    bool IsEnabled() override
     {
         return Support(Manager::Get()->GetDebuggerManager()->GetActiveDebugger(), m_enableFeature);
     }
-    virtual bool IsChecked()
+    bool IsChecked() override
     {
         DlgType *dialog = (Manager::Get()->GetDebuggerManager()->*(m_getWindowFunc))();
         return dialog && IsWindowReallyShown(dialog->GetWindow());
@@ -203,7 +203,7 @@ void DebuggerMenuHandler::RegisterDefaultWindowItems()
 {
     struct Breakpoints : cbDebuggerWindowMenuItem
     {
-        virtual void OnClick(bool enable)
+        void OnClick(bool enable) override
         {
             CodeBlocksDockEvent evt(enable ? cbEVT_SHOW_DOCK_WINDOW : cbEVT_HIDE_DOCK_WINDOW);
             cbBreakpointsDlg *dialog = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
@@ -213,11 +213,11 @@ void DebuggerMenuHandler::RegisterDefaultWindowItems()
                 Manager::Get()->ProcessEvent(evt);
             }
         }
-        virtual bool IsEnabled()
+        bool IsEnabled() override
         {
             return Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
         }
-        virtual bool IsChecked()
+        bool IsChecked() override
         {
             cbBreakpointsDlg *dialog = Manager::Get()->GetDebuggerManager()->GetBreakpointDialog();
             return dialog && IsWindowReallyShown(dialog->GetWindow());
@@ -229,7 +229,7 @@ void DebuggerMenuHandler::RegisterDefaultWindowItems()
             CommonItem<cbWatchesDlg>(cbDebuggerFeature::Watches, cbDebuggerPlugin::Watches, &DebuggerManager::GetWatchesDialog)
         {
         }
-        virtual bool IsEnabled()
+        bool IsEnabled() override
         {
             return Manager::Get()->GetDebuggerManager()->GetWatchesDialog();
         }

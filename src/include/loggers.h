@@ -22,14 +22,14 @@ class wxListCtrl;
 class DLLIMPORT NullLogger : public Logger
 {
 public:
-    virtual void Append(cb_unused const wxString& msg, cb_unused Logger::level lv){};
+    void Append(cb_unused const wxString& msg, cb_unused Logger::level lv) override{};
 };
 
 /** a logger which prints messages to the standard console IO */
 class DLLIMPORT StdoutLogger : public Logger
 {
 public:
-    virtual void Append(const wxString& msg, Logger::level lv)
+    void Append(const wxString& msg, Logger::level lv) override
     {
         fputs(wxSafeConvertWX2MB(msg), lv < error ? stdout : stderr);
         fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
@@ -45,7 +45,7 @@ public:
     FileLogger(const wxString& filename) : f(filename, _T("wb")) {};
     FileLogger() {};
 
-    virtual void Append(const wxString& msg, cb_unused Logger::level lv)
+    void Append(const wxString& msg, cb_unused Logger::level lv) override
     {
         fputs(wxSafeConvertWX2MB(msg), f.fp());
         fputs(::newline_string.mb_str(), f.fp());
@@ -81,9 +81,9 @@ public:
     HTMLFileLogger(const wxString& filename);
     void SetCSS(const CSS& in_css) { css = in_css; };
 
-    virtual void Append(const wxString& msg, Logger::level lv);
-    virtual void Open(const wxString& filename);
-    virtual void Close();
+    void Append(const wxString& msg, Logger::level lv) override;
+    void Open(const wxString& filename) override;
+    void Close() override;
 };
 
 /** a logger which prints messages to a wxTextCtrl */
@@ -97,23 +97,23 @@ protected:
 
 public:
     TextCtrlLogger(bool fixedPitchFont = false);
-    ~TextCtrlLogger();
+    ~TextCtrlLogger() override;
 
-    virtual void      CopyContentsToClipboard(bool selectionOnly = false);
-    virtual void      UpdateSettings();
-    virtual void      Append(const wxString& msg, Logger::level lv = info);
-    virtual void      Clear();
-    virtual wxWindow* CreateControl(wxWindow* parent);
-    virtual bool      GetWrapMode() const;
+    void      CopyContentsToClipboard(bool selectionOnly = false) override;
+    void      UpdateSettings() override;
+    void      Append(const wxString& msg, Logger::level lv = info) override;
+    void      Clear() override;
+    wxWindow* CreateControl(wxWindow* parent) override;
+    bool      GetWrapMode() const override;
     virtual void      ToggleWrapMode();
-    virtual bool      HasFeature(Feature::Enum feature) const;
+    bool      HasFeature(Feature::Enum feature) const override;
 };
 
 /** an extended logger from TextCtrlLogger, since it add time stamps for each log message */
 class DLLIMPORT TimestampTextCtrlLogger : public TextCtrlLogger
 {
 public:
-    virtual void Append(const wxString& msg, Logger::level lv = info);
+    void Append(const wxString& msg, Logger::level lv = info) override;
 };
 
 /** a logger which prints messages to a wxListCtrl */
@@ -137,16 +137,16 @@ protected:
 public:
 
     ListCtrlLogger(const wxArrayString& titles, const wxArrayInt& widths, bool fixedPitchFont = false);
-    ~ListCtrlLogger();
+    ~ListCtrlLogger() override;
 
-    virtual void      CopyContentsToClipboard(bool selectionOnly = false);
-    virtual void      UpdateSettings();
-    virtual void      Append(const wxString& msg, Logger::level lv = info);
+    void      CopyContentsToClipboard(bool selectionOnly = false) override;
+    void      UpdateSettings() override;
+    void      Append(const wxString& msg, Logger::level lv = info) override;
     virtual void      Append(const wxArrayString& colValues, Logger::level lv = info, int autoSize = -1);
     virtual size_t    GetItemsCount() const;
-    virtual void      Clear();
-    virtual wxWindow* CreateControl(wxWindow* parent);
-    virtual bool      HasFeature(Feature::Enum feature) const;
+    void      Clear() override;
+    wxWindow* CreateControl(wxWindow* parent) override;
+    bool      HasFeature(Feature::Enum feature) const override;
     virtual void      AutoFitColumns(int column);
 };
 

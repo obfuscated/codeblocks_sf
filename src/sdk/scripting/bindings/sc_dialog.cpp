@@ -41,7 +41,7 @@ namespace ScriptBindings
                     cbThrow(wxEmptyString);
                 }
             }
-            ~XrcDialog(){ }
+            ~XrcDialog() override{ }
             void OnButton(wxCommandEvent& event);
     };
 

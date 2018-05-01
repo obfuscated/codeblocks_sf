@@ -43,10 +43,10 @@ template<class ClassType, typename EventType> class cbEventFunctor : public IEve
 	public:
 		cbEventFunctor(ClassType* this_, Member member) : m_pThis(this_), m_pMember(member) {}
 		cbEventFunctor(const cbEventFunctor<ClassType, EventType>& rhs) : m_pThis(rhs.m_pThis), m_pMember(rhs.m_pMember) {}
-		virtual void* GetThis() { return m_pThis; }
+		void* GetThis() override { return m_pThis; }
 		// usually the m_pThis is a pointer the instance of a specified class of ClassType
 		// the m_pMember is a member function of the ClassType, so just call this member function
-		virtual void Call(EventType& event) { if (m_pThis) (m_pThis->*m_pMember)(event); }
+		void Call(EventType& event) override { if (m_pThis) (m_pThis->*m_pMember)(event); }
 
 #ifdef PPRCESS_EVENT_PERFORMANCE_MEASURE
 		// show the name by typeid operator

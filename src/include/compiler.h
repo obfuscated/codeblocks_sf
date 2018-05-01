@@ -276,7 +276,7 @@ class DLLIMPORT Compiler : public CompileOptionsBase
     public:
         static const wxString FilePathWithSpaces;
         Compiler(const wxString& name, const wxString& ID, const wxString& parentID = wxEmptyString, int weight = 50);
-        virtual ~Compiler();
+        ~Compiler() override;
 
         /** @brief Check if the compiler is actually valid (installed). */
         virtual bool IsValid();

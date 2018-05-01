@@ -15,7 +15,7 @@ class AutoDetectCompilers : public wxScrollingDialog
 {
 	public:
 		AutoDetectCompilers(wxWindow* parent);
-		virtual ~AutoDetectCompilers();
+		~AutoDetectCompilers() override;
 
 		void OnDefaultClick(wxCommandEvent& event);
 		void OnMouseMotion(wxMouseEvent& event);
