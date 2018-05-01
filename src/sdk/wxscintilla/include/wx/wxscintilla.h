@@ -2881,7 +2881,7 @@ public:
                  const wxSize& size = wxDefaultSize, long style = 0,
                  const wxString& name = wxSCINameStr);
     wxScintilla() { m_swx = NULL; }
-    ~wxScintilla();
+    ~wxScintilla() override;
 
 #endif
 
@@ -5378,7 +5378,7 @@ protected:
     void OnIdle(wxIdleEvent& evt);
     void OnMouseCaptureLost(wxMouseCaptureLostEvent& evt);
 
-    virtual wxSize DoGetBestSize() const override;
+    wxSize DoGetBestSize() const override;
 
     // Turn notifications from Scintilla into events
     void NotifyChange();
@@ -5410,7 +5410,7 @@ public:
 #ifndef SWIG
     wxScintillaEvent(const wxScintillaEvent& event);
 #endif
-    ~wxScintillaEvent() {}
+    ~wxScintillaEvent() override {}
 
     void SetPosition(int pos)             { m_position = pos; }
     void SetKey(int k)                    { m_key = k; }
@@ -5487,7 +5487,7 @@ public:
     bool GetControl() const;
     bool GetAlt() const;
 
-    virtual wxEvent* Clone() const { return new wxScintillaEvent(*this); }
+    wxEvent* Clone() const override { return new wxScintillaEvent(*this); }
 
 #ifndef SWIG
 private:

@@ -127,7 +127,7 @@ public:
             SetName(wxT("wxSTCCallTip"));
         }
 
-    ~wxSCICallTip() {
+    ~wxSCICallTip() override {
 #if wxUSE_POPUPWIN && defined(__WXGTK__)
         wxRect rect = GetRect();
         rect.x = m_cx;
@@ -162,7 +162,7 @@ public:
         m_swx->CallTipClick();
     }
 
-    virtual void DoSetSize(int x, int y,
+    void DoSetSize(int x, int y,
                            int width, int height,
                            int sizeFlags = wxSIZE_AUTO) wxOVERRIDE
     {
