@@ -109,5 +109,75 @@ void SmartIndentFortran::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) con
     if ( SelectionBraceCompletionEnabled() || stc->IsBraceShortcutActive() )
         braceCompleted = stc->DoSelectionBraceCompletion(ch);
     if (!braceCompleted && BraceCompletionEnabled())
-        stc->DoBraceCompletion(ch);
+        DoBraceCompletion(stc, ch);
+}
+
+void SmartIndentFortran::DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch) const
+{
+    if (!control)
+        return;
+
+    // Variable "ch" is a character which was just typed. Current position is after ch.
+    int pos = control->GetCurrentPos();
+    int style = control->GetStyleAt(pos);
+
+    // Don't do anything if we are in a comment or in a preprocessor line.
+    if (control->IsComment(style) || control->IsPreprocessor(style))
+        return;
+    if (ch == _T('\'') || ch == _T('"'))
+    {
+        // Take care about ' and ".
+        if ((control->GetCharAt(pos) == ch) && (control->GetCharAt(pos - 2) != _T('\\')))
+        {
+            control->DeleteBack();
+            control->GotoPos(pos);
+        }
+        else
+        {
+            const wxChar left = control->GetCharAt(pos - 2);
+            const wxChar right = control->GetCharAt(pos);
+            if (control->IsCharacter(style) || control->IsString(style) || left == _T('\\'))
+                return;
+            else if ((left > _T(' '))  && (left != _T('(')) && (left != _T('=')))
+                return;
+            else if ((right > _T(' ')) && (right != _T(')')) )
+                return;
+            control->AddText(ch);
+            control->GotoPos(pos);
+        }
+        return;
+    }
+    if (control->IsCharacter(style) || control->IsString(style))
+        return;
+    const wxString leftBrace(_T("([{"));
+    const wxString rightBrace(_T(")]}"));
+    int index = leftBrace.Find(ch);
+    const wxString unWant(_T(");\n\r\t\b "));
+    const wxChar nextChar = control->GetCharAt(pos);
+#if wxCHECK_VERSION(3, 0, 0)
+    if ((index != wxNOT_FOUND)
+        && ((unWant.Find(wxUniChar(nextChar)) != wxNOT_FOUND) || (pos == control->GetLength())))
+#else
+    if ((index != wxNOT_FOUND)
+        && ((unWant.Find(nextChar) != wxNOT_FOUND) || (pos == control->GetLength())))
+#endif
+    {
+        // add closing brace
+        control->AddText(rightBrace.GetChar(index));
+        control->GotoPos(pos);
+    }
+    else
+    {
+        index = rightBrace.Find(ch);
+        if (index != wxNOT_FOUND)
+        {
+            // closing brace was just typed
+            if (control->GetCharAt(pos) == ch)
+            {
+                control->DeleteBack();
+                control->GotoPos(pos);
+                return;
+            }
+        }
+    }
 }

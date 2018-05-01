@@ -17,6 +17,9 @@ class SmartIndentFortran : public cbSmartIndentPlugin
 {
     public:
         virtual void OnEditorHook(cbEditor* ed, wxScintillaEvent& event) const;
+
+    private:
+        void DoBraceCompletion(cbStyledTextCtrl* control, const wxChar& ch) const;
 };
 
 #endif // SMARTINDENTFORTRAN_H_INCLUDED
