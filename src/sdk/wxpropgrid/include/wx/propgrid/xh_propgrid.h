@@ -35,8 +35,8 @@ class wxPropertyGridXmlHandler : public wxXmlResourceHandler
 
 public:
     wxPropertyGridXmlHandler();
-    virtual wxObject *DoCreateResource();
-    virtual bool CanHandle(wxXmlNode *node);
+    wxObject *DoCreateResource() override;
+    bool CanHandle(wxXmlNode *node) override;
 
     void InitPopulator();
     void PopulatePage( wxPropertyGridState* state );

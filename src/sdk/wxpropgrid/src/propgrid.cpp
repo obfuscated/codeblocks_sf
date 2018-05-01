@@ -2877,7 +2877,7 @@ class wxPGBrush : public wxBrush
 public:
     wxPGBrush( const wxColour& colour );
     wxPGBrush();
-    virtual ~wxPGBrush() { }
+    ~wxPGBrush() override { }
     void SetColour2( const wxColour& colour );
     inline long GetColourAsLong() const { return m_colAsLong; }
 private:
@@ -2917,7 +2917,7 @@ class wxPGColour : public wxColour
 public:
     wxPGColour( const wxColour& colour );
     wxPGColour();
-    virtual ~wxPGColour() { }
+    ~wxPGColour() override { }
     void SetColour2( const wxColour& colour );
     inline long GetColourAsLong() const { return m_colAsLong; }
 private:
@@ -2957,7 +2957,7 @@ public:
     wxPGCanvas() : wxPanel()
     {
     }
-    virtual ~wxPGCanvas() { }
+    ~wxPGCanvas() override { }
 
 protected:
     void OnMouseMove( wxMouseEvent &event )
@@ -11018,8 +11018,8 @@ public:
     {
         m_it.Init( state, flags );
     }
-    virtual ~wxPGVIteratorBase_State() { }
-    virtual void Next() { m_it.Next(); }
+    ~wxPGVIteratorBase_State() override { }
+    void Next() override { m_it.Next(); }
 };
 
 wxPGVIterator wxPropertyGridInterface::GetVIterator( int flags ) const

@@ -105,7 +105,7 @@ public:
         m_colour = v.m_colour;
     }
 
-    virtual ~wxColourPropertyValue()
+    ~wxColourPropertyValue() override
     {
     }
 
@@ -181,9 +181,9 @@ class WXDLLIMPEXP_PG wxFontProperty : public wxPGProperty
 public:
 
     wxFontProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL, const wxFont& value = wxFont() );
-    virtual ~wxFontProperty();
-    virtual void OnSetValue();
-    virtual wxString GetValueAsString( int argFlags = 0 ) const;
+    ~wxFontProperty() override;
+    void OnSetValue() override;
+    wxString GetValueAsString( int argFlags = 0 ) const override;
 
     WX_PG_DECLARE_EVENT_METHODS()
     WX_PG_DECLARE_PARENTAL_METHODS()
@@ -212,10 +212,10 @@ public:
     wxSystemColourProperty( const wxString& label = wxPG_LABEL,
                             const wxString& name = wxPG_LABEL,
                             const wxColourPropertyValue& value = wxColourPropertyValue() );
-    ~wxSystemColourProperty();
+    ~wxSystemColourProperty() override;
 
-    virtual void OnSetValue();
-    virtual bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const;
+    void OnSetValue() override;
+    bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const override;
 
     /** Override in derived class to customize how colours are printed as strings.
     */
@@ -289,7 +289,7 @@ class WXDLLIMPEXP_PG wxCursorProperty : public wxEnumProperty
     wxCursorProperty( const wxString& label= wxPG_LABEL,
                       const wxString& name= wxPG_LABEL,
                       int value = 0 );
-    virtual ~wxCursorProperty();
+    ~wxCursorProperty() override;
 
     WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
     //virtual wxSize GetImageSize( int item ) const;
@@ -314,9 +314,9 @@ public:
     wxImageFileProperty( const wxString& label= wxPG_LABEL,
                          const wxString& name = wxPG_LABEL,
                          const wxString& value = wxEmptyString);
-    virtual ~wxImageFileProperty();
+    ~wxImageFileProperty() override;
 
-    virtual void OnSetValue();
+    void OnSetValue() override;
 
     WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
 
@@ -361,14 +361,14 @@ public:
                            const wxString& name = wxPG_LABEL,
                            const wxArrayString& value = wxArrayString() );
 #endif
-    virtual ~wxMultiChoiceProperty();
+    ~wxMultiChoiceProperty() override;
 
-    virtual void OnSetValue();
-    virtual wxString GetValueAsString( int flags = 0 ) const;
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
+    void OnSetValue() override;
+    wxString GetValueAsString( int flags = 0 ) const override;
+    bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const override;
     WX_PG_DECLARE_EVENT_METHODS()
 
-    virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
+    int GetChoiceInfo( wxPGChoiceInfo* choiceinfo ) override;
 
     wxArrayInt GetValueAsArrayInt() const
     {
@@ -413,11 +413,11 @@ public:
     wxDateProperty( const wxString& label = wxPG_LABEL,
                     const wxString& name = wxPG_LABEL,
                     const wxDateTime& value = wxDateTime() );
-    virtual ~wxDateProperty();
+    ~wxDateProperty() override;
 
-    virtual void OnSetValue();
-    virtual wxString GetValueAsString( int flags = 0 ) const;
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
+    void OnSetValue() override;
+    wxString GetValueAsString( int flags = 0 ) const override;
+    bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const override;
 
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
 
@@ -486,13 +486,13 @@ class WXDLLIMPEXP_PG wxPGSpinCtrlEditor : public wxPGTextCtrlEditor
 {
     WX_PG_DECLARE_EDITOR_CLASS(wxPGSpinCtrlEditor)
 public:
-    virtual ~wxPGSpinCtrlEditor();
+    ~wxPGSpinCtrlEditor() override;
 
     // See below for short explanations of what these are suppposed to do.
     wxPG_DECLARE_CREATECONTROLS
 
-    virtual bool OnEvent( wxPropertyGrid* propgrid, wxPGProperty* property,
-        wxWindow* wnd, wxEvent& event ) const;
+    bool OnEvent( wxPropertyGrid* propgrid, wxPGProperty* property,
+        wxWindow* wnd, wxEvent& event ) const override;
 
 private:
     mutable wxString m_tempString;
