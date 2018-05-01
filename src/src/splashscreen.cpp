@@ -22,7 +22,7 @@ END_EVENT_TABLE()
 cbSplashScreen::cbSplashScreen(const wxBitmap& bitmap)
   : wxSplashScreen(bitmap, wxSPLASH_CENTRE_ON_SCREEN | wxSPLASH_NO_TIMEOUT,
                    0, nullptr, wxID_ANY, wxDefaultPosition, wxDefaultSize,
-                   wxBORDER_NONE | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED | wxSTAY_ON_TOP)
+                   wxBORDER_NONE | wxFRAME_NO_TASKBAR | wxFRAME_SHAPED)
 {
 }
 
