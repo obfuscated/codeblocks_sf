@@ -1494,7 +1494,7 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
     control->MarkerSetBackground(DEBUG_MARKER, wxColour(0xFF, 0xFF, 0x00));
 
     control->MarkerDefine(DEBUG_MARKER_HIGHLIGHT, DEBUG_STYLE_HIGHLIGHT);
-    control->MarkerSetBackground(DEBUG_MARKER_HIGHLIGHT, *wxYELLOW);
+    control->MarkerSetBackground(DEBUG_MARKER_HIGHLIGHT, wxColour(0xFF, 0xFF, 0x00));
 
     // 4.) Marker for Errors...
     control->MarkerDefine(ERROR_MARKER, ERROR_STYLE);
