@@ -5,7 +5,7 @@
 struct SQUserData : SQDelegable
 {
 	SQUserData(SQSharedState *ss){ _delegate = 0; _hook = NULL; INIT_CHAIN(); ADD_TO_CHAIN(&_ss(this)->_gc_chain, this); }
-	~SQUserData()
+	~SQUserData() override
 	{
 		REMOVE_FROM_CHAIN(&_ss(this)->_gc_chain, this);
 		SetDelegate(NULL);
@@ -19,10 +19,10 @@ struct SQUserData : SQDelegable
 		return ud;
 	}
 #ifndef NO_GARBAGE_COLLECTOR
-	void Mark(SQCollectable **chain);
-	void Finalize(){SetDelegate(NULL);}
+	void Mark(SQCollectable **chain) override;
+	void Finalize() override{SetDelegate(NULL);}
 #endif
-	void Release() {
+	void Release() override {
 		if (_hook) _hook(_val,_size);
 		SQInteger tsize = _size - 1;
 		this->~SQUserData();

@@ -12,10 +12,10 @@ struct SQBlob : public SQStream
 		_ptr = 0;
 		_owns = true;
 	}
-	virtual ~SQBlob() {
+	~SQBlob() override {
 		sq_free(_buf, _allocated);
 	}
-	SQInteger Write(void *buffer, SQInteger size) {
+	SQInteger Write(void *buffer, SQInteger size) override {
 		if(!CanAdvance(size)) {
 			GrowBufOf(_ptr + size - _size);
 		}
@@ -23,7 +23,7 @@ struct SQBlob : public SQStream
 		_ptr += size;
 		return size;
 	}
-	SQInteger Read(void *buffer,SQInteger size) {
+	SQInteger Read(void *buffer,SQInteger size) override {
 		SQInteger n = size;
 		if(!CanAdvance(size)) {
 			if((_size - _ptr) > 0)
@@ -69,7 +69,7 @@ struct SQBlob : public SQStream
 		if(_ptr+n>_size)return false;
 		return true;
 	}
-	SQInteger Seek(SQInteger offset, SQInteger origin) {
+	SQInteger Seek(SQInteger offset, SQInteger origin) override {
 		switch(origin) {
 			case SQ_SEEK_SET:
 				if(offset > _size || offset < 0) return -1;
@@ -87,15 +87,15 @@ struct SQBlob : public SQStream
 		}
 		return 0;
 	}
-	bool IsValid() {
+	bool IsValid() override {
 		return _buf?true:false;
 	}
-	bool EOS() {
+	bool EOS() override {
 		return _ptr == _size;
 	}
-	SQInteger Flush() { return 0; }
-	SQInteger Tell() { return _ptr; }
-	SQInteger Len() { return _size; }
+	SQInteger Flush() override { return 0; }
+	SQInteger Tell() override { return _ptr; }
+	SQInteger Len() override { return _size; }
 	SQUserPointer GetBuf(){ return _buf; }
 private:
 	SQInteger _size;

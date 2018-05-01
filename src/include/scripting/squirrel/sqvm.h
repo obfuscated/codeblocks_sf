@@ -60,7 +60,7 @@ typedef sqvector<CallInfo> CallInfoVec;
 public:
 	enum ExecutionType { ET_CALL, ET_RESUME_GENERATOR, ET_RESUME_VM, ET_RESUME_THROW_VM };
 	SQVM(SQSharedState *ss);
-	~SQVM();
+	~SQVM() override;
 	bool Init(SQVM *friendvm, SQInteger stacksize);
 	bool Execute(SQObjectPtr &func, SQInteger target, SQInteger nargs, SQInteger stackbase, SQObjectPtr &outres, SQBool raiseerror, ExecutionType et = ET_CALL);
 	//starts a native call return when the NATIVE closure returns
@@ -119,16 +119,16 @@ public:
 #endif
 
 #ifndef NO_GARBAGE_COLLECTOR
-	void Mark(SQCollectable **chain);
+	void Mark(SQCollectable **chain) override;
 #endif
-	void Finalize();
+	void Finalize() override;
 	void GrowCallStack() {
 		SQInteger newsize = _alloccallsstacksize*2;
 		_callstackdata.resize(newsize);
 		_callsstack = &_callstackdata[0];
 		_alloccallsstacksize = newsize;
 	}
-	void Release(){ sq_delete(this,SQVM); } //does nothing
+	void Release() override{ sq_delete(this,SQVM); } //does nothing
 ////////////////////////////////////////////////////////////////////////////
 	//stack functions for the api
 	void Remove(SQInteger n);
