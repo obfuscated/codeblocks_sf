@@ -4,7 +4,14 @@
     <Plugin name="rndgen">
         <Value title="rndgen" />
         <Value version="217.11.0.22" />
-        <Value description="What the name says." />
+        <Value description="Replaces parts of the code with random numbers or character sequences when saving the file.
+
+Usage examples:
+  int Serial = 1234; /* RANDGEN:INT(10000) */
+  wxString Name = &quot;Target&quot;; /* RANDGEN:ALNUM(12) */
+
+The first example replaces 1234 with a random number between 0 and 10000.
+The second example replaces Target with a random string containing 12 alfanumeric characters. The specifier can be ALNUM, DIGITS, CHARS, UPPERCHARS or LOWERCHARS." />
         <Value author="" />
         <Value authorEmail="" />
         <Value authorWebsite="" />
