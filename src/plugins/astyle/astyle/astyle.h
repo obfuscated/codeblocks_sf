@@ -656,8 +656,8 @@ class ASFormatter : public ASBeautifier
 {
 public:	// functions
 	ASFormatter();
-	virtual ~ASFormatter();
-	virtual void init(ASSourceIterator* si);
+	~ASFormatter() override;
+	void init(ASSourceIterator* si) override;
 	virtual bool hasMoreLines() const;
 	virtual string nextLine();
 	LineEndFormat getLineEndFormat() const;
