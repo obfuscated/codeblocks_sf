@@ -15,14 +15,14 @@ class nsHebrewProber: public nsCharSetProber
 public:
   nsHebrewProber(void) :mLogicalProb(0), mVisualProb(0) { Reset(); }
 
-  virtual ~nsHebrewProber(void) {}
-  virtual nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  virtual const char* GetCharSetName();
-  virtual void Reset(void);
+  ~nsHebrewProber(void) override {}
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override;
+  void Reset(void) override;
 
-  virtual nsProbingState GetState(void);
+  nsProbingState GetState(void) override;
 
-  virtual float     GetConfidence(void) { return (float)0.0; }
+  float     GetConfidence(void) override { return (float)0.0; }
 
   void SetModelProbers(nsCharSetProber *logicalPrb, nsCharSetProber *visualPrb) 
   { mLogicalProb = logicalPrb; mVisualProb = visualPrb; }

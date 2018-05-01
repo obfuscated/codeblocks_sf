@@ -13,12 +13,12 @@ class nsCharSetProber;
 class nsSBCSGroupProber: public nsCharSetProber {
 public:
   nsSBCSGroupProber();
-  virtual ~nsSBCSGroupProber();
-  nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  const char* GetCharSetName();
-  nsProbingState GetState(void) {return mState;}
-  void      Reset(void);
-  float     GetConfidence(void);
+  ~nsSBCSGroupProber() override;
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override;
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
 
 #ifdef DEBUG_chardet
   void  DumpStatus();

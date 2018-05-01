@@ -33,11 +33,11 @@ public:
   nsSingleByteCharSetProber(const SequenceModel *model, bool reversed, nsCharSetProber* nameProber)
     :mModel(model), mReversed(reversed), mNameProber(nameProber) { Reset(); }
 
-  virtual const char* GetCharSetName();
-  virtual nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  virtual nsProbingState GetState(void) {return mState;}
-  virtual void      Reset(void);
-  virtual float     GetConfidence(void);
+  const char* GetCharSetName() override;
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
   
   // This feature is not implemented yet. any current language model
   // contain this parameter as false. No one is looking at this

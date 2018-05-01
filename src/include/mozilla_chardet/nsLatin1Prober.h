@@ -13,12 +13,12 @@
 class nsLatin1Prober: public nsCharSetProber {
 public:
   nsLatin1Prober(void){Reset();}
-  virtual ~nsLatin1Prober(void){}
-  nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  const char* GetCharSetName() {return "windows-1252";}
-  nsProbingState GetState(void) {return mState;}
-  void      Reset(void);
-  float     GetConfidence(void);
+  ~nsLatin1Prober(void) override{}
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override {return "windows-1252";}
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
 
 #ifdef DEBUG_chardet
   virtual void  DumpStatus();

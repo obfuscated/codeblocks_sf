@@ -14,12 +14,12 @@ public:
   nsUTF8Prober(){mNumOfMBChar = 0; 
                 mCodingSM = new nsCodingStateMachine(&UTF8SMModel);
                 Reset(); }
-  virtual ~nsUTF8Prober(){delete mCodingSM;}
-  nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  const char* GetCharSetName() {return "UTF-8";}
-  nsProbingState GetState(void) {return mState;}
-  void      Reset(void);
-  float     GetConfidence(void);
+  ~nsUTF8Prober() override{delete mCodingSM;}
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override {return "UTF-8";}
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
 
 protected:
   nsCodingStateMachine* mCodingSM;

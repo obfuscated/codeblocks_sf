@@ -17,12 +17,12 @@ public:
   {mCodingSM = new nsCodingStateMachine(&EUCKRSMModel);
     Reset();
   }
-  virtual ~nsEUCKRProber(void){delete mCodingSM;}
-  nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  const char* GetCharSetName() {return "EUC-KR";}
-  nsProbingState GetState(void) {return mState;}
-  void      Reset(void);
-  float     GetConfidence(void);
+  ~nsEUCKRProber(void) override{delete mCodingSM;}
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override {return "EUC-KR";}
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
 
 protected:
   void      GetDistribution(uint32_t aCharLen, const char* aStr);

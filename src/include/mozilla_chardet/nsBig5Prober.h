@@ -16,12 +16,12 @@ public:
     :mIsPreferredLanguage(aIsPreferredLanguage) 
   {mCodingSM = new nsCodingStateMachine(&Big5SMModel); 
     Reset();}
-  virtual ~nsBig5Prober(void){delete mCodingSM;}
-  nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  const char* GetCharSetName() {return "Big5";}
-  nsProbingState GetState(void) {return mState;}
-  void      Reset(void);
-  float     GetConfidence(void);
+  ~nsBig5Prober(void) override{delete mCodingSM;}
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override {return "Big5";}
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
 
 protected:
   void      GetDistribution(uint32_t aCharLen, const char* aStr);

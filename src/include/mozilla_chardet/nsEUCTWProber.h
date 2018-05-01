@@ -16,12 +16,12 @@ public:
     :mIsPreferredLanguage(aIsPreferredLanguage)
   {mCodingSM = new nsCodingStateMachine(&EUCTWSMModel);
     Reset();}
-  virtual ~nsEUCTWProber(void){delete mCodingSM;}
-  nsProbingState HandleData(const char* aBuf, uint32_t aLen);
-  const char* GetCharSetName() {return "x-euc-tw";}
-  nsProbingState GetState(void) {return mState;}
-  void      Reset(void);
-  float     GetConfidence(void);
+  ~nsEUCTWProber(void) override{delete mCodingSM;}
+  nsProbingState HandleData(const char* aBuf, uint32_t aLen) override;
+  const char* GetCharSetName() override {return "x-euc-tw";}
+  nsProbingState GetState(void) override {return mState;}
+  void      Reset(void) override;
+  float     GetConfidence(void) override;
 
 protected:
   void      GetDistribution(uint32_t aCharLen, const char* aStr);
