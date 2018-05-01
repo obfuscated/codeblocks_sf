@@ -27,7 +27,9 @@
 		<Project filename="plugins/contrib/Cccc/Cccc-unix.cbp">
 			<Depends filename="CodeBlocks-unix.cbp" />
 		</Project>
-		<Project filename="plugins/contrib/codesnippets/codesnippets-unix.cbp" />
+		<Project filename="plugins/contrib/codesnippets/codesnippets-unix.cbp">
+			<Depends filename="CodeBlocks-unix.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/codestat/codestat-unix.cbp">
 			<Depends filename="CodeBlocks-unix.cbp" />
 		</Project>
