@@ -23,6 +23,7 @@
   #include "manager.h"
   #include "configmanager.h"
   #include "logmanager.h"
+  #include "projectmanager.h"
 #endif
 
 #include "editpairdlg.h"
