@@ -115,7 +115,7 @@ void wxSwitcherItems::Init()
     m_rowCount = 10;
     m_columnCount = 0;
 
-#if defined(__WXMSW__) && wxUSE_UXTHEME
+#if defined(__WXMSW__) && wxUSE_UXTHEME &&!wxCHECK_VERSION(3, 1, 1)
     // If on Windows XP/Vista, use more appropriate colours.
     // Alatar: What for??? Why should we use fixed colours?
     if (wxUxThemeEngine::GetIfActive())
@@ -926,7 +926,7 @@ void wxSwitcherDialog::Init()
     m_modifierKey = -1;
     m_extraNavigationKey = -1;
 
-#if defined(__WXMSW__) && wxUSE_UXTHEME
+#if defined(__WXMSW__) && wxUSE_UXTHEME &&!wxCHECK_VERSION(3, 1, 1)
     if (wxUxThemeEngine::GetIfActive())
         m_borderColour = wxColour(49, 106, 197);
     else
