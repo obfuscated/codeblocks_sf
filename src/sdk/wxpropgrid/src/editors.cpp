@@ -824,10 +824,10 @@ public:
     }
 
 #if wxPG_USING_WXOWNERDRAWNCOMBOBOX
-    void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const
+    void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const override
 #else
     virtual bool OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const
-#endif override
+#endif
     {
         wxPropertyGrid* pg = GetGrid();
         pg->OnComboItemPaint((wxPGCustomComboControl*)this,item,&dc,(wxRect&)rect,flags);
