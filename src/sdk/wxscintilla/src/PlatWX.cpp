@@ -33,6 +33,14 @@
 #include <wx/tokenzr.h>
 #include <wx/dynlib.h>
 
+/* C::B begin wx2.8 */
+// wxWidgets team has changed the names of this define. To minimize the needed changes later. I
+// just define the correct one if the old one is defined.
+#if defined(wxHAVE_RAW_BITMAP) && !defined(wxHAS_RAW_BITMAP)
+    #define wxHAS_RAW_BITMAP
+#endif // defined(wxHAVE_RAW_BITMAP) && !defined(wxHAS_RAW_BITMAP)
+/* C::B end wx2.8 */
+
 #ifdef wxHAS_RAW_BITMAP
 #include <wx/rawbmp.h>
 #endif
@@ -434,6 +442,11 @@ void SurfaceImpl::AlphaRectangle(PRectangle rc, int cornerSize,
     {
         int px, py;
         wxAlphaPixelData pixData(bmp);
+/* C::B begin */
+#if !wxCHECK_VERSION(3, 0, 0)
+        pixData.UseAlpha(); // wx/rawbmp.h:669 - Call can simply be removed.
+#endif
+/* C::B end */
 
         // Set the fill pixels
         ColourDesired cdf(fill.AsLong());
