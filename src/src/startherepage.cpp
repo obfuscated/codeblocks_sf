@@ -47,7 +47,7 @@ class MyHtmlWin : public wxHtmlWindow
         {
         }
 
-        void OnLinkClicked(const wxHtmlLinkInfo& link)
+        void OnLinkClicked(const wxHtmlLinkInfo& link) override
         {
             if (m_pOwner)
             {

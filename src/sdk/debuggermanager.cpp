@@ -512,7 +512,7 @@ public:
         return TextCtrlLogger::CreateControl(parent);
     }
 
-    virtual wxWindow* CreateControl(wxWindow* parent);
+    wxWindow* CreateControl(wxWindow* parent) override;
 
 private:
     wxPanel *m_panel;

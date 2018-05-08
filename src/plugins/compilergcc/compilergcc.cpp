@@ -96,7 +96,7 @@ public:
 
     BuildLogger() : TextCtrlLogger(true), panel(0), sizer(0), progress(0) {}
 
-    void UpdateSettings()
+    void UpdateSettings() override
     {
         TextCtrlLogger::UpdateSettings();
 
@@ -105,7 +105,7 @@ public:
         style[error].SetFont(style[info].GetFont());
     }
 
-    virtual wxWindow* CreateControl(wxWindow* parent)
+    wxWindow* CreateControl(wxWindow* parent) override
     {
         panel = new wxPanel(parent);
 

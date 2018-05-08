@@ -78,7 +78,7 @@ class DLLIMPORT CompileTargetBase : public CompileOptionsBase
 {
     public:
         CompileTargetBase();
-        virtual ~CompileTargetBase();
+        ~CompileTargetBase() override;
 
         /** A target's filename can either be auto-generated based on the running platform,
           * or completely specified by the user. Calling this function sets the

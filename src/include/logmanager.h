@@ -66,8 +66,8 @@ public:
         };
         template<typename type, bool requires_filename = false> struct Instantiator : public InstantiatorBase
         {
-            virtual Logger* New()                 { return new type; };
-            virtual bool RequiresFilename() const { return requires_filename; };
+            Logger* New() override                 { return new type; };
+            bool RequiresFilename() const override { return requires_filename; };
         };
 
         enum { max_logs = 32 };
@@ -78,7 +78,7 @@ private:
         LogSlot slot[max_logs+1];
 
         LogManager();
-        ~LogManager();
+        ~LogManager() override;
 
 
         friend class Mgr<LogManager>;

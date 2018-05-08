@@ -42,7 +42,7 @@ class DLLIMPORT ToolsManager : public Mgr<ToolsManager>, public wxEvtHandler
 		void OnConfigure(wxCommandEvent& event);
 	private:
 		ToolsManager();
-		~ToolsManager();
+		~ToolsManager() override;
 		void DoRemoveTool(ToolsList::Node* node);
 		int Configure();
 		bool Execute(const cbTool* tool);

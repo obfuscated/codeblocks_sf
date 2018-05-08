@@ -36,7 +36,7 @@ class EVTIMPORT CodeBlocksEvent : public wxCommandEvent
 			m_pPlugin(event.m_pPlugin),
 			m_X(event.m_X),
 			m_Y(event.m_Y) {}
-		virtual wxEvent *Clone() const { return new CodeBlocksEvent(*this); }
+		wxEvent *Clone() const override { return new CodeBlocksEvent(*this); }
 
 		cbProject* GetProject() const             { return m_pProject;    }
 		void       SetProject(cbProject* project) { m_pProject = project; }
@@ -130,7 +130,7 @@ class EVTIMPORT CodeBlocksDockEvent : public wxEvent
             bitmap(rhs.bitmap)
         {
         }
-		virtual wxEvent *Clone() const { return new CodeBlocksDockEvent(*this); }
+		wxEvent *Clone() const override { return new CodeBlocksDockEvent(*this); }
 
         wxString name;      ///< Dock's name. Must be unique. If empty, a unique name will be assigned.
         wxString title;     ///< Dock's title.
@@ -165,7 +165,7 @@ class EVTIMPORT CodeBlocksLayoutEvent : public wxEvent
         CodeBlocksLayoutEvent(const CodeBlocksLayoutEvent& rhs)
             : wxEvent(rhs), layout(rhs.layout)
         {}
-		virtual wxEvent *Clone() const { return new CodeBlocksLayoutEvent(*this); }
+		wxEvent *Clone() const override { return new CodeBlocksLayoutEvent(*this); }
 
         wxString layout;      ///< Layout's name.
 	private:
@@ -187,7 +187,7 @@ class EVTIMPORT CodeBlocksLogEvent : public wxEvent
         CodeBlocksLogEvent(wxEventType commandType, int logIndex, const wxString& title = wxEmptyString, wxBitmap *icon = nullptr);
         CodeBlocksLogEvent(const CodeBlocksLogEvent& rhs);
 
-		virtual wxEvent *Clone() const { return new CodeBlocksLogEvent(*this); }
+		wxEvent *Clone() const override { return new CodeBlocksLogEvent(*this); }
 
         Logger* logger; ///< The logger.
         int logIndex; ///< The logger's index.
@@ -221,7 +221,7 @@ public:
         SetString(GetString().c_str());
     }
 
-    virtual wxEvent *Clone() const
+    wxEvent *Clone() const override
     {
         return new CodeBlocksThreadEvent(*this);
     }

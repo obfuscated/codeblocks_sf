@@ -234,7 +234,7 @@ class DLLIMPORT DebuggerManager : public Mgr<DebuggerManager>
 {
     private:
         DebuggerManager();
-        ~DebuggerManager();
+        ~DebuggerManager() override;
 
         friend class Mgr<DebuggerManager>;
         friend class Manager;

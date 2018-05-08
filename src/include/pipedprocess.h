@@ -22,14 +22,14 @@ class DLLIMPORT PipedProcess : public wxProcess
         PipedProcess(PipedProcess** pvThis, wxEvtHandler* parent, int id = wxID_ANY,
                      bool pipe = true, const wxString& dir = wxEmptyString, int index = -1);
         // class destructor
-        ~PipedProcess();
+        ~PipedProcess() override;
         virtual int Launch(const wxString& cmd, unsigned int pollingInterval = 100);
         virtual void SendString(const wxString& text);
         virtual bool HasInput();
         virtual int GetPid(){ return m_Pid; }
         void ForfeitStreams();
     protected:
-        virtual void OnTerminate(int pid, int status);
+        void OnTerminate(int pid, int status) override;
         virtual void OnTimer(wxTimerEvent& event);
         virtual void OnIdle(wxIdleEvent& event);
     protected:

@@ -817,7 +817,7 @@ struct ConsoleProcessTerminationInfo
 struct ConsoleProcess : wxProcess
 {
     ConsoleProcess(cb::shared_ptr<ConsoleProcessTerminationInfo> cptInfo) : info(cptInfo) {}
-    virtual void OnTerminate(int pid, int status)
+    void OnTerminate(int pid, int status) override
     {
         info->terminated = true;
         info->status = status;

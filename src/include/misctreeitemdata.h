@@ -19,7 +19,7 @@ class DLLIMPORT MiscTreeItemData : public wxTreeItemData
         MiscTreeItemData():m_owner(0L) {}
         wxEvtHandler *GetOwner() { return m_owner; }
         static bool OwnerCheck(wxTreeEvent& event,wxTreeCtrl *tree,wxEvtHandler *handler,bool strict=false);
-        virtual ~MiscTreeItemData() { m_owner=0L; }
+        ~MiscTreeItemData() override { m_owner=0L; }
     protected:
         void SetOwner(wxEvtHandler *owner) { m_owner=owner; }
     private:

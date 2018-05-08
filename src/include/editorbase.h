@@ -32,7 +32,7 @@ class DLLIMPORT EditorBase : public wxPanel
     DECLARE_EVENT_TABLE()
     public:
         EditorBase(wxWindow* parent, const wxString& filename);
-        virtual ~EditorBase();
+        ~EditorBase() override;
 
         /** Don't use this. It throws an exception if you do. */
 

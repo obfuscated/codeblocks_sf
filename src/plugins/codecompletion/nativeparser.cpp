@@ -98,14 +98,14 @@ namespace NativeParserHelper
             m_Files(files)
         {}
 
-        virtual wxDirTraverseResult OnFile(const wxString& filename)
+        wxDirTraverseResult OnFile(const wxString& filename) override
         {
             if (ParserCommon::FileType(filename) != ParserCommon::ftOther)
                 m_Files.Add(filename);
             return wxDIR_CONTINUE;
         }
 
-        virtual wxDirTraverseResult OnDir(const wxString& dirname)
+        wxDirTraverseResult OnDir(const wxString& dirname) override
         {
             if (dirname == m_ExcludeDir)
                 return wxDIR_IGNORE;

@@ -15,7 +15,7 @@ class FindReplaceBase : public wxScrollingDialog
 {
     public:
         FindReplaceBase(cb_optional wxWindow* parent, cb_optional const wxString& initial, cb_optional bool hasSelection){}
-        virtual ~FindReplaceBase(){}
+        ~FindReplaceBase() override{}
         virtual wxString GetFindString() const = 0;
         virtual wxString GetReplaceString() const = 0;
         virtual bool IsFindInFiles() const = 0;

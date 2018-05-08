@@ -21,7 +21,7 @@ class DLLIMPORT EncodingDetector : public nsUniversalDetector
         EncodingDetector(LoaderBase* fileLdr, bool useLog=true);
         EncodingDetector(const wxByte* buffer, size_t size, bool useLog=true);
         EncodingDetector(const EncodingDetector& rhs, bool useLog=true);
-        ~EncodingDetector();
+        ~EncodingDetector() override;
 
         /** @return True if file was read, false if not. */
         bool IsOK() const;
@@ -37,7 +37,7 @@ class DLLIMPORT EncodingDetector : public nsUniversalDetector
         bool DetectEncoding(const wxString& filename, bool convert_to_wxstring = true);
         bool DetectEncoding(const wxByte* buffer, size_t size, bool convert_to_wxstring = true);
         bool DetectEncodingEx(const wxByte* buffer, size_t len);
-        void Report(const char* aCharset);
+        void Report(const char* aCharset) override;
 
         bool           m_IsOK;
         bool           m_UseBOM;

@@ -39,7 +39,7 @@ class DLLIMPORT TemplateManager : public Mgr<TemplateManager>, public wxEvtHandl
 		wxArrayString m_UserTemplates;
 	private:
 		TemplateManager();
-		virtual ~TemplateManager();
+		~TemplateManager() override;
 };
 
 #endif // TEMPLATEMANAGER_H

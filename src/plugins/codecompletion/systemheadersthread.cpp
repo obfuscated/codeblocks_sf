@@ -65,13 +65,13 @@ class HeaderDirTraverser : public wxDirTraverser
 public:
     HeaderDirTraverser(wxThread* thread, wxCriticalSection* critSect,
                        SystemHeadersMap& headersMap, const wxString& searchDir);
-    virtual ~HeaderDirTraverser();
+    ~HeaderDirTraverser() override;
 
     /** call back function when we meet a file */
-    virtual wxDirTraverseResult OnFile(const wxString& filename);
+    wxDirTraverseResult OnFile(const wxString& filename) override;
 
     /** call back function when we meet a dir */
-    virtual wxDirTraverseResult OnDir(const wxString& dirname);
+    wxDirTraverseResult OnDir(const wxString& dirname) override;
 
 private:
     /** this function will be called every time we meet a file or a dir, and we count the file and

@@ -16,9 +16,9 @@ class DLLIMPORT ExternalDepsDlg : public wxScrollingDialog
 {
 	public:
 		ExternalDepsDlg(wxWindow* parent, cbProject* project, ProjectBuildTarget* target);
-		virtual ~ExternalDepsDlg();
+		~ExternalDepsDlg() override;
 
-		void EndModal(int retCode);
+		void EndModal(int retCode) override;
 	protected:
         void FillAdditional();
         void FillExternal();

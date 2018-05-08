@@ -16,11 +16,11 @@ class DLLIMPORT cbSearchResultsLog : public ListCtrlLogger, public wxEvtHandler
 {
 	public:
 		cbSearchResultsLog(const wxArrayString& titles, wxArrayInt& widths);
-		virtual ~cbSearchResultsLog();
+		~cbSearchResultsLog() override;
 		void FocusEntry(size_t index);
 		void SetBasePath(const wxString base){ m_Base = base; }
 
-		virtual wxWindow* CreateControl(wxWindow* parent);
+		wxWindow* CreateControl(wxWindow* parent) override;
 	protected:
         void OnDoubleClick(wxCommandEvent& event);
         void SyncEditor(int selIndex);

@@ -40,7 +40,7 @@ class DLLIMPORT cbAuiNotebook : public wxAuiNotebook
          */
         cbAuiNotebook(wxWindow* pParent, wxWindowID id, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxDefaultSize, long style = wxAUI_NB_DEFAULT_STYLE);
         /** cbAuiNotebook destructor  */
-        virtual ~cbAuiNotebook();
+        ~cbAuiNotebook() override;
 
         /** \brief Advances the selection
          *

@@ -30,7 +30,7 @@ class ProgressDialog : public wxProgressDialog
         {
         }
 
-        ~ProgressDialog()
+        ~ProgressDialog() override
         {
         }
 

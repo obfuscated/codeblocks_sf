@@ -91,7 +91,7 @@ class PLUGIN_EXPORT cbPlugin : public wxEvtHandler
         cbPlugin();
 
         /** cbPlugin destructor. */
-        virtual ~cbPlugin();
+        ~cbPlugin() override;
 
         /** The plugin must return its type on request. */
         virtual PluginType GetType() const { return m_Type; }
@@ -400,12 +400,12 @@ class PLUGIN_EXPORT cbDebuggerPlugin: public cbPlugin
         cbDebuggerPlugin(const wxString& guiName, const wxString& settingsName);
 
     public:
-        virtual void OnAttach();
-        virtual void OnRelease(bool appShutDown);
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
 
-        virtual void BuildMenu(wxMenuBar* menuBar);
-        virtual void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr);
-        virtual bool BuildToolBar(wxToolBar* toolBar);
+        void BuildMenu(wxMenuBar* menuBar) override;
+        void BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileTreeData* data = nullptr) override;
+        bool BuildToolBar(wxToolBar* toolBar) override;
 
         /** @brief Notify the debugger that lines were added or removed in an editor.
           * This causes the debugger to keep the breakpoints list in-sync with the
@@ -669,10 +669,10 @@ class PLUGIN_EXPORT cbToolPlugin : public cbPlugin
         virtual int Execute() = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbToolPlugin
-        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar) override{}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
-        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr) override{}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar) override{ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
@@ -714,10 +714,10 @@ class PLUGIN_EXPORT cbMimePlugin : public cbPlugin
         virtual bool HandlesEverything() const = 0;
     private:
         // "Hide" some virtual members, that are not needed in cbMimePlugin
-        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar) override{}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
-        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr) override{}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar) override{ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
@@ -1008,10 +1008,10 @@ class PLUGIN_EXPORT cbWizardPlugin : public cbPlugin
         virtual CompileTargetBase* Launch(int index, wxString* createdFilename = nullptr) = 0; // do your work ;)
     private:
         // "Hide" some virtual members, that are not needed in cbCreateWizardPlugin
-        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar) override{}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
-        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr) override{}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar) override{ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
 };
 
@@ -1028,14 +1028,14 @@ class cbSmartIndentPlugin : public cbPlugin
         cbSmartIndentPlugin();
     private:
         // "Hide" some virtual members, that are not needed in cbSmartIndentPlugin
-        void BuildMenu(cb_unused wxMenuBar* menuBar){}
+        void BuildMenu(cb_unused wxMenuBar* menuBar) override{}
         void RemoveMenu(cb_unused wxMenuBar* menuBar){}
-        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr){}
-        bool BuildToolBar(cb_unused wxToolBar* toolBar){ return false; }
+        void BuildModuleMenu(cb_unused const ModuleType type, cb_unused wxMenu* menu, cb_unused const FileTreeData* data = nullptr) override{}
+        bool BuildToolBar(cb_unused wxToolBar* toolBar) override{ return false; }
         void RemoveToolBar(cb_unused wxToolBar* toolBar){}
     protected:
-        void OnAttach();
-        void OnRelease(bool appShutDown);
+        void OnAttach() override;
+        void OnRelease(bool appShutDown) override;
 
     public:
         /** When this is called, the smartIndent mechanism must get to work ;).

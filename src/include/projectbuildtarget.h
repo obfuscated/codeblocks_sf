@@ -27,7 +27,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
         /// Constructor
         ProjectBuildTarget(cbProject* parentProject);
         /// Destructor
-        ~ProjectBuildTarget();
+        ~ProjectBuildTarget() override;
 
         /** @return The target's parent project. */
         virtual cbProject* GetParentProject();
@@ -100,7 +100,7 @@ class DLLIMPORT ProjectBuildTarget : public CompileTargetBase
           * @param useIt If true, ConsoleRunner is used else it is not. */
         virtual void SetUseConsoleRunner(bool useIt);
 
-        virtual void SetTargetType(TargetType pt); // overriden
+        void SetTargetType(TargetType pt) override; // overriden
 
         /** Targets to be compiled (if necessary) before this one.
           * Add a target to the list of dependencies of this target. Be careful

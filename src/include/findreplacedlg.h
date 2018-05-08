@@ -18,32 +18,32 @@ class DLLIMPORT FindReplaceDlg : public FindReplaceBase
     public:
         FindReplaceDlg(wxWindow* parent, const wxString& initial = wxEmptyString, bool hasSelection = false,
                    bool findMode = true, bool findReplaceInFilesOnly = false, bool findReplaceInFilesActive = false);
-        ~FindReplaceDlg();
+        ~FindReplaceDlg() override;
 
-        wxString GetFindString() const;
-        wxString GetReplaceString() const;
-        bool IsFindInFiles() const;
-        bool GetDeleteOldSearches() const;
-        bool GetSortSearchResult() const;
-        bool GetMatchWord() const;
-        bool GetStartWord() const;
-        bool GetMatchCase() const;
-        bool GetRegEx() const;
-        bool GetAutoWrapSearch() const;
-        bool GetFindUsesSelectedText() const;
-        bool GetStartFile() const;
-        bool GetMultiLine() const;
-        bool GetFixEOLs() const;
+        wxString GetFindString() const override;
+        wxString GetReplaceString() const override;
+        bool IsFindInFiles() const override;
+        bool GetDeleteOldSearches() const override;
+        bool GetSortSearchResult() const override;
+        bool GetMatchWord() const override;
+        bool GetStartWord() const override;
+        bool GetMatchCase() const override;
+        bool GetRegEx() const override;
+        bool GetAutoWrapSearch() const override;
+        bool GetFindUsesSelectedText() const override;
+        bool GetStartFile() const override;
+        bool GetMultiLine() const override;
+        bool GetFixEOLs() const override;
 
-        int GetDirection() const;
-        int GetOrigin() const;
-        int GetScope() const;
-        bool GetRecursive() const;      // for find in search path
-        bool GetHidden() const;         // for find in search path
-        wxString GetSearchPath() const; // for find in search path
-        wxString GetSearchMask() const; // for find in search path
-        int GetProject() const; // for find in project
-        int GetTarget() const; // for find in project
+        int GetDirection() const override;
+        int GetOrigin() const override;
+        int GetScope() const override;
+        bool GetRecursive() const override;      // for find in search path
+        bool GetHidden() const override;         // for find in search path
+        wxString GetSearchPath() const override; // for find in search path
+        wxString GetSearchMask() const override; // for find in search path
+        int GetProject() const override; // for find in project
+        int GetTarget() const override; // for find in project
 
         bool IsMultiLine() const;
 

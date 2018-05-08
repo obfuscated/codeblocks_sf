@@ -55,7 +55,7 @@ namespace EditorHooks
             typedef void (T::*Func)(cbEditor*, wxScintillaEvent&);
             HookFunctor(T* obj, Func func) : m_pObj(obj), m_pFunc(func)
             { ; }
-            virtual void Call(cbEditor* editor, wxScintillaEvent& event) const
+            void Call(cbEditor* editor, wxScintillaEvent& event) const override
             {
                 if (m_pObj && m_pFunc)
                     (m_pObj->*m_pFunc)(editor, event);
@@ -106,12 +106,12 @@ namespace EditorHooks
             /** ctor. */
             cbSmartIndentEditorHookFunctor(cbSmartIndentPlugin* plugin);
             /** dtor. */
-            virtual ~cbSmartIndentEditorHookFunctor(){}
+            ~cbSmartIndentEditorHookFunctor() override{}
             /** Needs to be implemented by the plugin to act(smart indent) accordingly.
               * @param editor The editor that is active and whose content is changed
               * @param event  The wxScintilla event fired to react accordingly (see cbEditor::CreateEditor, namely scintilla_events)
               */
-            virtual void Call(cbEditor* editor, wxScintillaEvent& event) const;
+            void Call(cbEditor* editor, wxScintillaEvent& event) const override;
 
 #ifdef EDITOR_HOOK_PERFORMANCE_MEASURE
             virtual const char* GetTypeName() const

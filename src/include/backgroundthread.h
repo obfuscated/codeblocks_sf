@@ -101,7 +101,7 @@ public:
         Run();
     };
 
-    ~BackgroundThread()
+    ~BackgroundThread() override
     {
         if (ownsSemaphore)
             ::Delete(semaphore);
@@ -130,7 +130,7 @@ public:
     };
 
 
-    ExitCode Entry()
+    ExitCode Entry() override
     {
         AbstractJob* job;
         for (;;)

@@ -189,7 +189,7 @@ class DLLIMPORT EditorManager : public Mgr<EditorManager>, public wxEvtHandler
         EditorManager(cb_unused const EditorManager& rhs); // prevent copy construction
 
         EditorManager();
-        ~EditorManager();
+        ~EditorManager() override;
         void OnCheckForModifiedFiles(wxCommandEvent& event);
         bool IsHeaderSource(const wxFileName& candidateFile, const wxFileName& activeFile, FileType ftActive, bool& isCandidate);
         wxFileName FindHeaderSource(const wxArrayString& candidateFilesArray, const wxFileName& activeFile, bool& isCandidate);

@@ -26,17 +26,17 @@ class DLLIMPORT ProjectLoader : public IBaseLoader
           * @param project The project to handle (load/save). */
         ProjectLoader(cbProject* project);
         /// Destructor.
-        virtual ~ProjectLoader();
+        ~ProjectLoader() override;
 
         /** Open a file.
           * @param filename The file to open.
           * @return True on success, false on failure. */
-        bool Open(const wxString& filename);
+        bool Open(const wxString& filename) override;
 
         /** Save a file.
           * @param filename The file to save.
           * @return True on success, false on failure. */
-        bool Save(const wxString& filename);
+        bool Save(const wxString& filename) override;
 
         /** Open a file.
           * This version of Open, will return a copy of the \<Extensions\> element (if found).

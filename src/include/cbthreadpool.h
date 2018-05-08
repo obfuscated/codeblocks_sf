@@ -167,7 +167,7 @@ class DLLIMPORT cbThreadPool
         cbWorkerThread(cbThreadPool *pool, CountedPtr<wxSemaphore> &semaphore);
 
         /// Entry point of this thread. The magic happens here.
-        ExitCode Entry();
+        ExitCode Entry() override;
 
         /// Tell the thread to abort. It will also tell the task to abort (if any)
         void Abort();

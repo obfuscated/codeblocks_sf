@@ -16,9 +16,9 @@ class SelectTargetDlg : public wxScrollingDialog
 {
     public:
         SelectTargetDlg(wxWindow* parent, cbProject* project, int selected = 0);
-        ~SelectTargetDlg();
+        ~SelectTargetDlg() override;
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
         int GetSelection() const { return m_Selected; }
         ProjectBuildTarget* GetSelectionTarget();
     private:

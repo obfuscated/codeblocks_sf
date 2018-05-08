@@ -22,9 +22,9 @@ class PluginsConfigurationDlg : public wxScrollingDialog
         // class constructor
         PluginsConfigurationDlg(wxWindow* parent);
         // class destructor
-        ~PluginsConfigurationDlg();
+        ~PluginsConfigurationDlg() override;
 
-        void EndModal(int retCode);
+        void EndModal(int retCode) override;
     private:
         void FillList();
         void OnToggle(wxCommandEvent& event);

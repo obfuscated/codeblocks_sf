@@ -16,8 +16,8 @@ class EditToolDlg : public wxScrollingDialog
 {
 	public:
 		EditToolDlg(wxWindow* parent, cbTool* tool);
-		~EditToolDlg();
-		void EndModal(int retCode);
+		~EditToolDlg() override;
+		void EndModal(int retCode) override;
 	private:
 		void OnUpdateUI(wxUpdateUIEvent& event);
 		void OnBrowseCommand(wxCommandEvent& event);
