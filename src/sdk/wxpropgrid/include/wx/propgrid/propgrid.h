@@ -605,17 +605,17 @@ private:
 class WXDLLIMPEXP_PG wxPGDefaultRenderer : public wxPGCellRenderer
 {
 public:
-    virtual void Render( wxDC& dc,
+    void Render( wxDC& dc,
                          const wxRect& rect,
                          const wxPropertyGrid* propertyGrid,
                          wxPGProperty* property,
                          int column,
                          int item,
-                         int flags ) const;
+                         int flags ) const override;
 
-    virtual wxSize GetImageSize( const wxPGProperty* property,
+    wxSize GetImageSize( const wxPGProperty* property,
                                  int column,
-                                 int item ) const;
+                                 int item ) const override;
 
 protected:
 };
@@ -2045,7 +2045,7 @@ public:
     wxPGProperty( const wxString& label, const wxString& name );
 
     /** Virtual destructor. It is customary for derived properties to implement this. */
-    virtual ~wxPGProperty();
+    ~wxPGProperty() override;
 
     /** This virtual function is called after m_value has been set.
 
@@ -3382,14 +3382,14 @@ public:
 
     /** Constructor. */
     wxPGRootProperty();
-    virtual ~wxPGRootProperty();
+    ~wxPGRootProperty() override;
 
-    virtual bool StringToValue( wxVariant&, const wxString&, int ) const
+    bool StringToValue( wxVariant&, const wxString&, int ) const override
     {
         return false;
     }
 
-    virtual void ChildChanged( wxVariant&, int, wxVariant& ) const
+    void ChildChanged( wxVariant&, int, wxVariant& ) const override
     {
     }
 
@@ -3418,12 +3418,12 @@ public:
         added category.
     */
     wxPropertyCategory( const wxString& label, const wxString& name = wxPG_LABEL );
-    ~wxPropertyCategory();
+    ~wxPropertyCategory() override;
 
     /** Must be overridden with function that doesn't do anything. */
-    virtual wxString GetValueAsString( int argFlags ) const;
+    wxString GetValueAsString( int argFlags ) const override;
 
-    virtual void ChildChanged( wxVariant&, int, wxVariant& ) const
+    void ChildChanged( wxVariant&, int, wxVariant& ) const override
     {
     }
 
@@ -3505,7 +3505,7 @@ public:
     {
     }
 
-    virtual ~wxPGChoiceEntry()
+    ~wxPGChoiceEntry() override
     {
     }
 
@@ -6620,7 +6620,7 @@ public:
                	    const wxString& name = wxPropertyGridNameStr );
 
     /** Destructor */
-    virtual ~wxPropertyGrid();
+    ~wxPropertyGrid() override;
 #endif
 
     /** Adds given key combination to trigger given action.
@@ -6691,7 +6691,7 @@ public:
     /** Deletes all properties. Does not free memory allocated for arrays etc.
         This should *not* be called in wxPropertyGridManager.
     */
-    virtual void Clear();
+    void Clear() override;
 
     /** Resets modified status of a property and all sub-properties.
     */
@@ -7095,7 +7095,7 @@ public:
     bool IsAnyModified() const { return (m_pState->m_anyModified>0); }
 
     /** Returns true if updating is frozen (ie. Freeze() called but not yet Thaw() ). */
-    bool IsFrozen() const { return (m_frozen>0)?true:false; }
+    bool IsFrozen() const override { return (m_frozen>0)?true:false; }
 
     /**
         It is recommended that you call this function any time your code causes
@@ -7111,7 +7111,7 @@ public:
     */
     void OnTLPChanging( wxWindow* newTLP );
 
-    virtual void RefreshProperty( wxPGProperty* p );
+    void RefreshProperty( wxPGProperty* p ) override;
 
     /**
         If selected property's editor is active, then update it's value.
@@ -7491,7 +7491,7 @@ public:
     /** Overridden function.
         @sa @link wndflags Additional Window Styles@endlink
     */
-    virtual void SetWindowStyleFlag( long style );
+    void SetWindowStyleFlag( long style ) override;
 
     /** Call when editor widget's contents is modified. For example, this is called
         when changes text in wxTextCtrl (used in wxStringProperty and wxIntProperty).
@@ -7809,18 +7809,18 @@ public:
     bool DoSelectProperty( wxPGProperty* p, unsigned int flags = 0 );
 
     // Overridden functions.
-    virtual bool Destroy();
-    virtual wxSize DoGetBestSize() const;
-    virtual void Refresh( bool eraseBackground = true,
-                          const wxRect *rect = (const wxRect *) NULL );
-    virtual bool SetFont( const wxFont& font );
+    bool Destroy() override;
+    wxSize DoGetBestSize() const override;
+    void Refresh( bool eraseBackground = true,
+                          const wxRect *rect = (const wxRect *) NULL ) override;
+    bool SetFont( const wxFont& font ) override;
 #if wxPG_SUPPORT_TOOLTIPS
     void SetToolTip( const wxString& tipString );
 #endif
-    virtual void Freeze();
-    virtual void SetExtraStyle( long exStyle );
-    virtual void Thaw();
-    virtual bool Reparent( wxWindowBase *newParent );
+    void Freeze() override;
+    void SetExtraStyle( long exStyle ) override;
+    void Thaw() override;
+    bool Reparent( wxWindowBase *newParent ) override;
 
 protected:
 
@@ -8229,7 +8229,7 @@ protected:
 
     void CustomSetCursor( int type, bool override = false );
 
-    virtual bool ProcessEvent(wxEvent& event);
+    bool ProcessEvent(wxEvent& event) override;
 
     /** Repositions scrollbar and underlying panel according to changed virtual size.
     */
@@ -8398,10 +8398,10 @@ public:
     wxPropertyGridEvent(const wxPropertyGridEvent& event);
 #endif
     /** Destructor. */
-    ~wxPropertyGridEvent();
+    ~wxPropertyGridEvent() override;
 
     /** Copyer. */
-    virtual wxEvent* Clone() const;
+    wxEvent* Clone() const override;
 
     /** Enables property. */
     void EnableProperty( bool enable = true )

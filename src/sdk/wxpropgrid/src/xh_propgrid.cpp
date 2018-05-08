@@ -83,12 +83,12 @@ public:
         m_prevPopulator = m_xrcHandler->m_populator;
     }
 
-    virtual ~wxPropertyGridXrcPopulator()
+    ~wxPropertyGridXrcPopulator() override
     {
         m_xrcHandler->m_populator = m_prevPopulator;
     }
 
-    virtual void DoScanForChildren()
+    void DoScanForChildren() override
     {
         m_xrcHandler->CreateChildrenPrivately(m_pg, NULL);
     }

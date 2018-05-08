@@ -287,8 +287,8 @@ public:
     };
 
     wxNumericPropertyValidator( NumericType numericType, int base = 10 );
-    virtual ~wxNumericPropertyValidator() { }
-    virtual bool Validate(wxWindow* parent);
+    ~wxNumericPropertyValidator() override { }
+    bool Validate(wxWindow* parent) override;
 };
 
 #endif // wxUSE_VALIDATORS
@@ -348,14 +348,14 @@ class WXDLLIMPEXP_PG wxStringProperty : public wxPGProperty
 public:
     wxStringProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
                       const wxString& value = wxEmptyString );
-    virtual ~wxStringProperty();
+    ~wxStringProperty() override;
 
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
 
     /** This is updated so "<composed>" special value can be handled.
     */
-    virtual void OnSetValue();
+    void OnSetValue() override;
 
 protected:
 };
@@ -428,14 +428,14 @@ class WXDLLIMPEXP_PG wxIntProperty : public wxPGProperty
 public:
     wxIntProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
                    long value = 0 );
-    virtual ~wxIntProperty();
+    ~wxIntProperty() override;
 
     wxIntProperty( const wxString& label, const wxString& name, const wxLongLong& value );
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
-    virtual bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const;
-    virtual bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const;
+    bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const override;
+    bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const override;
     static wxValidator* GetClassValidator();
-    virtual wxValidator* DoGetValidator() const;
+    wxValidator* DoGetValidator() const override;
 
     /** Validation helper.
     */
@@ -467,13 +467,13 @@ class WXDLLIMPEXP_PG wxUIntProperty : public wxPGProperty
 public:
     wxUIntProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
                    unsigned long value = 0 );
-    virtual ~wxUIntProperty();
+    ~wxUIntProperty() override;
     wxUIntProperty( const wxString& label, const wxString& name, const wxULongLong& value );
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
-    virtual bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const;
-    virtual bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const;
-    virtual wxValidator* DoGetValidator() const;
+    bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const override;
+    bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const override;
+    wxValidator* DoGetValidator() const override;
 protected:
     wxByte      m_base;
     wxByte      m_realBase; // translated to 8,16,etc.
@@ -498,11 +498,11 @@ class WXDLLIMPEXP_PG wxFloatProperty : public wxPGProperty
 public:
     wxFloatProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
                      double value = 0.0 );
-    virtual ~wxFloatProperty();
+    ~wxFloatProperty() override;
 
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
-    virtual bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const;
+    bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const override;
 
     /** Validation helper.
     */
@@ -512,7 +512,7 @@ public:
 
 protected:
     int m_precision;
-    virtual wxValidator* DoGetValidator () const;
+    wxValidator* DoGetValidator () const override;
 };
 
 // -----------------------------------------------------------------------
@@ -531,7 +531,7 @@ class WXDLLIMPEXP_PG wxBoolProperty : public wxPGProperty
 public:
     wxBoolProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
                     bool value = false );
-    virtual ~wxBoolProperty();
+    ~wxBoolProperty() override;
 
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
     WX_PG_DECLARE_CHOICE_METHODS()
@@ -556,14 +556,14 @@ class WXDLLIMPEXP_PG wxBaseEnumProperty : public wxPGProperty
 public:
     wxBaseEnumProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL );
 
-    virtual void OnSetValue();
-    virtual wxString GetValueAsString( int argFlags ) const;
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
-    virtual bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const;
+    void OnSetValue() override;
+    wxString GetValueAsString( int argFlags ) const override;
+    bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const override;
+    bool ValidateValue( wxVariant& value, wxPGValidationInfo& validationInfo ) const override;
 
     // If wxPG_FULL_VALUE is not set in flags, then the value is interpreted
     // as index to choices list. Otherwise, it is actual value.
-    virtual bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const;
+    bool IntToValue( wxVariant& variant, int number, int argFlags = 0 ) const override;
 
     //
     // Additional virtuals
@@ -583,7 +583,7 @@ public:
         return v;
     }
 
-    virtual void OnValidationFailure( wxVariant& pendingValue );
+    void OnValidationFailure( wxVariant& pendingValue ) override;
 
 protected:
 
@@ -640,11 +640,11 @@ public:
         int value = 0 );
 #endif
 
-    virtual ~wxEnumProperty();
+    ~wxEnumProperty() override;
 
-    virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
-    virtual int GetIndexForValue( int value ) const;
-    virtual const wxString* GetEntry( size_t index, int* pvalue ) const;
+    int GetChoiceInfo( wxPGChoiceInfo* choiceinfo ) override;
+    int GetIndexForValue( int value ) const override;
+    const wxString* GetEntry( size_t index, int* pvalue ) const override;
 
     size_t GetItemCount() const { return m_choices.GetCount(); }
     const wxPGChoices& GetChoices() const { return m_choices; }
@@ -681,7 +681,7 @@ public:
     wxEditEnumProperty( const wxString& label, const wxString& name, const wxChar** labels,
         const long* values, wxPGChoices* choicesCache, const wxString& value );
 
-    virtual ~wxEditEnumProperty();
+    ~wxEditEnumProperty() override;
 
 protected:
 };
@@ -712,16 +712,16 @@ public:
     wxFlagsProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
         const wxArrayString& labels = wxArrayString(),
         const wxArrayInt& values = wxArrayInt(), int value = 0 );
-    virtual ~wxFlagsProperty ();
+    ~wxFlagsProperty () override;
 
-    virtual void OnSetValue();
-    virtual wxString GetValueAsString( int argFlags ) const;
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int flags ) const;
-    virtual void ChildChanged( wxVariant& thisValue, int childIndex, wxVariant& childValue ) const;
-    virtual void RefreshChildren();
+    void OnSetValue() override;
+    wxString GetValueAsString( int argFlags ) const override;
+    bool StringToValue( wxVariant& variant, const wxString& text, int flags ) const override;
+    void ChildChanged( wxVariant& thisValue, int childIndex, wxVariant& childValue ) const override;
+    void RefreshChildren() override;
 
     // this is necessary for conveying m_choices
-    virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
+    int GetChoiceInfo( wxPGChoiceInfo* choiceinfo ) override;
 
     // helpers
     size_t GetItemCount() const { return m_choices.GetCount(); }
@@ -751,7 +751,7 @@ protected:
 class WXDLLIMPEXP_PG wxPGFileDialogAdapter : public wxPGEditorDialogAdapter
 {
 public:
-    virtual bool DoShowDialog( wxPropertyGrid* propGrid, wxPGProperty* property );
+    bool DoShowDialog( wxPropertyGrid* propGrid, wxPGProperty* property ) override;
 };
 
 // -----------------------------------------------------------------------
@@ -784,18 +784,18 @@ public:
 
     wxFileProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL,
         const wxString& value = wxEmptyString );
-    virtual ~wxFileProperty ();
+    ~wxFileProperty () override;
 
-    virtual void OnSetValue();
-    virtual wxString GetValueAsString( int argFlags ) const;
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
+    void OnSetValue() override;
+    wxString GetValueAsString( int argFlags ) const override;
+    bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const override;
     //virtual bool OnEvent( wxPropertyGrid* propgrid, wxWindow* wnd_primary, wxEvent& event );
-    virtual wxPGEditorDialogAdapter* GetEditorDialog() const;
+    wxPGEditorDialogAdapter* GetEditorDialog() const override;
 
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
 
     static wxValidator* GetClassValidator();
-    virtual wxValidator* DoGetValidator() const;
+    wxValidator* DoGetValidator() const override;
 
 protected:
     wxString    m_wildcard;
@@ -817,7 +817,7 @@ protected:
 class WXDLLIMPEXP_PG wxPGLongStringDialogAdapter : public wxPGEditorDialogAdapter
 {
 public:
-    virtual bool DoShowDialog( wxPropertyGrid* propGrid, wxPGProperty* property );
+    bool DoShowDialog( wxPropertyGrid* propGrid, wxPGProperty* property ) override;
 };
 
 
@@ -835,10 +835,10 @@ public:
     wxLongStringProperty( const wxString& label = wxPG_LABEL,
                           const wxString& name = wxPG_LABEL,
                           const wxString& value = wxEmptyString );
-    virtual ~wxLongStringProperty();
+    ~wxLongStringProperty() override;
 
-    virtual wxString GetValueAsString( int argFlags = 0 ) const;
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
+    wxString GetValueAsString( int argFlags = 0 ) const override;
+    bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const override;
 
     WX_PG_DECLARE_EVENT_METHODS()
 
@@ -870,12 +870,12 @@ class WXDLLIMPEXP_PG wxDirProperty : public wxLongStringProperty
 public:
     wxDirProperty( const wxString& name = wxPG_LABEL, const wxString& label = wxPG_LABEL,
                    const wxString& value = wxEmptyString );
-    virtual ~wxDirProperty();
+    ~wxDirProperty() override;
 
     WX_PG_DECLARE_ATTRIBUTE_METHODS()
     WX_PG_DECLARE_VALIDATOR_METHODS()
 
-    virtual bool OnButtonClick ( wxPropertyGrid* propGrid, wxString& value );
+    bool OnButtonClick ( wxPropertyGrid* propGrid, wxString& value ) override;
 
 protected:
     wxString    m_dlgMessage;
@@ -905,9 +905,9 @@ public:
     wxArrayStringProperty( const wxString& label = wxPG_LABEL,
                            const wxString& name = wxPG_LABEL,
                            const wxArrayString& value = wxArrayString() );
-    virtual ~wxArrayStringProperty();
+    ~wxArrayStringProperty() override;
 
-    virtual void OnSetValue();
+    void OnSetValue() override;
     WX_PG_DECLARE_BASIC_TYPE_METHODS()
     WX_PG_DECLARE_EVENT_METHODS()
 
@@ -1011,7 +1011,7 @@ class WXDLLIMPEXP_PG wxArrayEditorDialog : public wxDialog
 {
 public:
     wxArrayEditorDialog();
-    virtual ~wxArrayEditorDialog() { }
+    ~wxArrayEditorDialog() override { }
 
     void Init();
 
@@ -1119,16 +1119,16 @@ class WXDLLIMPEXP_PG wxPGArrayStringEditorDialog : public wxArrayEditorDialog
 {
 public:
     wxPGArrayStringEditorDialog();
-    virtual ~wxPGArrayStringEditorDialog() { }
+    ~wxPGArrayStringEditorDialog() override { }
 
     void Init();
 
-    virtual void SetDialogValue( const wxVariant& value )
+    void SetDialogValue( const wxVariant& value ) override
     {
         m_array = value.GetArrayString();
     }
 
-    virtual wxVariant GetDialogValue() const
+    wxVariant GetDialogValue() const override
     {
         return m_array;
     }
@@ -1146,12 +1146,12 @@ protected:
 
     wxArrayStringProperty*     m_pCallingClass;
 
-    virtual wxString ArrayGet( size_t index );
-    virtual size_t ArrayGetCount();
-    virtual bool ArrayInsert( const wxString& str, int index );
-    virtual bool ArraySet( size_t index, const wxString& str );
-    virtual void ArrayRemoveAt( int index );
-    virtual void ArraySwap( size_t first, size_t second );
+    wxString ArrayGet( size_t index ) override;
+    size_t ArrayGetCount() override;
+    bool ArrayInsert( const wxString& str, int index ) override;
+    bool ArraySet( size_t index, const wxString& str ) override;
+    void ArrayRemoveAt( int index ) override;
+    void ArraySwap( size_t first, size_t second ) override;
 
 private:
 #ifndef SWIG
@@ -1186,20 +1186,20 @@ class WXDLLIMPEXP_PG wxCustomProperty : public wxPGProperty
 public:
 
     wxCustomProperty( const wxString& label = wxPG_LABEL, const wxString& name = wxPG_LABEL );
-    virtual ~wxCustomProperty();
+    ~wxCustomProperty() override;
 
-    virtual bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const;
-    virtual wxString GetValueAsString( int argFlags ) const;
+    bool StringToValue( wxVariant& variant, const wxString& text, int argFlags = 0 ) const override;
+    wxString GetValueAsString( int argFlags ) const override;
 
 #ifdef wxPG_COMPATIBILITY_1_0_0
     virtual bool OnEvent( wxPropertyGrid* propgrid, wxWindow* primary, wxEvent& event );
 #endif
     WX_PG_DECLARE_CUSTOM_PAINT_METHODS()
 
-    virtual bool IntToValue( wxVariant& variant, int number, int argFlags ) const;
-    virtual int GetChoiceInfo( wxPGChoiceInfo* choiceinfo );
+    bool IntToValue( wxVariant& variant, int number, int argFlags ) const override;
+    int GetChoiceInfo( wxPGChoiceInfo* choiceinfo ) override;
 
-    virtual void ChildChanged( wxVariant& a1, int a2, wxVariant& a3 ) const
+    void ChildChanged( wxVariant& a1, int a2, wxVariant& a3 ) const override
     {
         wxUnusedVar(a1);
         wxUnusedVar(a2);

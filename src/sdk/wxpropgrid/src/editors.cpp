@@ -299,9 +299,9 @@ public:
                 const wxPoint& pos = wxDefaultPosition,
                 const wxSize& size = wxDefaultSize);
 
-    virtual ~wxPGClipperWindow();
+    ~wxPGClipperWindow() override;
 
-    virtual bool ProcessEvent(wxEvent& event);
+    bool ProcessEvent(wxEvent& event) override;
 
     inline wxWindow* GetControl() const { return m_ctrl; }
 
@@ -311,13 +311,13 @@ public:
     // This is caleed after wxControl has been constructed.
     void SetControl( wxWindow* ctrl );
 
-    virtual void Refresh( bool eraseBackground = true,
-                          const wxRect *rect = (const wxRect *) NULL );
-    virtual void SetFocus();
+    void Refresh( bool eraseBackground = true,
+                          const wxRect *rect = (const wxRect *) NULL ) override;
+    void SetFocus() override;
 
-    virtual bool SetFont(const wxFont& font);
+    bool SetFont(const wxFont& font) override;
 
-    virtual bool SetForegroundColour(const wxColour& col)
+    bool SetForegroundColour(const wxColour& col) override
     {
         bool res = wxWindow::SetForegroundColour(col);
         if ( m_ctrl )
@@ -325,7 +325,7 @@ public:
         return res;
     }
 
-    virtual bool SetBackgroundColour(const wxColour& col)
+    bool SetBackgroundColour(const wxColour& col) override
     {
         bool res = wxWindow::SetBackgroundColour(col);
         if ( m_ctrl )
@@ -786,7 +786,7 @@ public:
         m_sizeEventCalled = false;
     }
 
-    ~wxPGComboBox()
+    ~wxPGComboBox() override
     {
         if ( m_dclickProcessor )
         {
@@ -824,7 +824,7 @@ public:
     }
 
 #if wxPG_USING_WXOWNERDRAWNCOMBOBOX
-    virtual void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const
+    void OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const override
 #else
     virtual bool OnDrawItem( wxDC& dc, const wxRect& rect, int item, int flags ) const
 #endif
@@ -835,7 +835,7 @@ public:
         return true;
 #endif
     }
-    virtual wxCoord OnMeasureItem( size_t item ) const
+    wxCoord OnMeasureItem( size_t item ) const override
     {
         wxPropertyGrid* pg = GetGrid();
         wxRect rect;
@@ -852,7 +852,7 @@ public:
         return pg;
     }
 
-    virtual wxCoord OnMeasureItemWidth( size_t item ) const
+    wxCoord OnMeasureItemWidth( size_t item ) const override
     {
         wxPropertyGrid* pg = GetGrid();
         wxRect rect;
@@ -1645,9 +1645,9 @@ public:
         SetBackgroundStyle( wxBG_STYLE_COLOUR );
     }
 
-    virtual ~wxSimpleCheckBox();
+    ~wxSimpleCheckBox() override;
 
-    virtual bool ProcessEvent(wxEvent& event);
+    bool ProcessEvent(wxEvent& event) override;
 
     int m_state;
     int m_boxHeight;
