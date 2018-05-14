@@ -528,6 +528,46 @@ void DebuggerGDB::DoWatches()
     m_State.GetDriver()->UpdateWatches(m_localsWatch, m_funcArgsWatch, m_watches);
 }
 
+static wxString GetShellString()
+{
+    if (platform::windows)
+        return wxEmptyString;
+    wxString shell = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/console_shell"),
+                                                                       DEFAULT_CONSOLE_SHELL);
+    // GDB expects the SHELL variable's value to be a path to the shell's executable, so we need to
+    // remove all parameters and do some trimming.
+    shell.Trim(false);
+    wxString::size_type pos = shell.find(wxT(' '));
+    if (pos != wxString::npos)
+        shell.erase(pos);
+    shell.Trim();
+    return shell;
+}
+
+int DebuggerGDB::LaunchProcessWithShell(const wxString &cmd, wxProcess *process,
+                                        const wxString &cwd)
+{
+    wxString shell = GetShellString();
+#if wxCHECK_VERSION(3, 0, 0)
+    wxExecuteEnv execEnv;
+    execEnv.cwd = cwd;
+    if (!shell.empty())
+    {
+        Log(wxString::Format(wxT("Setting SHELL to '%s'"), shell.wx_str()));
+        execEnv.env["SHELL"] = shell;
+    }
+    return wxExecute(cmd, wxEXEC_ASYNC, process, &execEnv);
+#else
+    if (!shell.empty())
+    {
+        Log(wxString::Format(wxT("Setting SHELL to '%s'"), shell.wx_str()));
+        wxSetEnv(wxT("SHELL"), shell);
+    }
+    (void)cwd;
+    return wxExecute(cmd, wxEXEC_ASYNC, process);
+#endif // !wxCHECK_VERSION(3, 0, 0)
+}
+
 int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
 {
     if (m_pProcess)
@@ -536,7 +576,7 @@ int DebuggerGDB::LaunchProcess(const wxString& cmd, const wxString& cwd)
     // start the gdb process
     m_pProcess = new PipedProcess(&m_pProcess, this, idGDBProcess, true, cwd);
     Log(_("Starting debugger: ") + cmd);
-    m_Pid = wxExecute(cmd, wxEXEC_ASYNC, m_pProcess);
+    m_Pid = LaunchProcessWithShell(cmd, m_pProcess, cwd);
 
 #ifdef __WXMAC__
     if (m_Pid == -1)

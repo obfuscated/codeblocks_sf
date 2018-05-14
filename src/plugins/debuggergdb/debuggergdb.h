@@ -143,6 +143,8 @@ class DebuggerGDB : public cbDebuggerPlugin
         void DoWatches();
         void MarkAllWatchesAsUnchanged();
         int LaunchProcess(const wxString& cmd, const wxString& cwd);
+        int LaunchProcessWithShell(const wxString &cmd, wxProcess *process, const wxString &cwd);
+
         int DoDebug(bool breakOnEntry);
         void DoBreak(bool temporary);
 
