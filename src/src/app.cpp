@@ -665,7 +665,7 @@ bool CodeBlocksApp::OnInit()
                     connection->Execute(_T("[CmdLine({") + cmdLine + _T("})]"));
                 }
 
-                // On Linux, C::B has to be raised explicitely if it's wanted
+                // On Linux, C::B has to be raised explicitly if it's wanted
                 if (Manager::Get()->GetConfigManager(_T("app"))->ReadBool(_T("/environment/raise_via_ipc"), true))
                     connection->Execute(_T("[Raise]"));
                 connection->Disconnect();
