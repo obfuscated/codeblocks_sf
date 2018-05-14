@@ -28,6 +28,7 @@
 
 #include <cbexception.h>
 #include <configmanager.h>
+#include <debuggermanager.h>
 #include <editormanager.h>
 #include <globals.h>
 #include <loggers.h>
@@ -193,6 +194,7 @@ bool DDEConnection::OnDisconnect()
     {
         CodeBlocksApp* cb = (CodeBlocksApp*)wxTheApp;
         cb->LoadDelayedFiles(m_Frame);
+        cb->AttachDebugger();
     }
     return true;
 }
@@ -269,6 +271,10 @@ const wxCmdLineEntryDesc cmdLineDesc[] =
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("file"),                  CMD_ENTRY("open file and optionally jump to specific line (file[:line])"),
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-config"),            CMD_ENTRY("selects the debugger config used for attaching (uses the current selected target if omitted) "),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR },
+    { wxCMD_LINE_OPTION, CMD_ENTRY(""),   CMD_ENTRY("dbg-attach"),            CMD_ENTRY("string passed to the debugger plugin which is used for attaching to a process"),
+      wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_NEEDS_SEPARATOR },
     { wxCMD_LINE_PARAM,  CMD_ENTRY(""),   CMD_ENTRY(""),                      CMD_ENTRY("filename(s)"),
       wxCMD_LINE_VAL_STRING, wxCMD_LINE_PARAM_OPTIONAL | wxCMD_LINE_PARAM_MULTIPLE },
     { wxCMD_LINE_NONE }
@@ -777,6 +783,7 @@ bool CodeBlocksApp::OnInit()
         s_Loading = false;
 
         LoadDelayedFiles(frame);
+        AttachDebugger();
         Manager::Get()->GetProjectManager()->WorkspaceChanged();
 
         // all done
@@ -1202,6 +1209,9 @@ int CodeBlocksApp::ParseCmdLine(MainFrame* handlerFrame, const wxString& CmdLine
                 Manager::Get()->GetLogManager()->SetLog(new FileLogger(_T("codeblocks-debug.log")), LogManager::debug_log);
         }
 
+        // Always parse the debugger attach parameters.
+        parser.Found(_T("dbg-attach"), &m_DebuggerAttach);
+        parser.Found(_T("dbg-config"), &m_DebuggerConfig);
     }
 #endif // wxUSE_CMDLINE_PARSER
     return filesInCmdLine ? 1 : 0;
@@ -1269,6 +1279,105 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
     }
 }
 
+void CodeBlocksApp::AttachDebugger()
+{
+    const wxString localAttach = m_DebuggerAttach;
+    const wxString localConfig = m_DebuggerConfig;
+    // Reset the values to prevent old values to be used when the user forgets to pass all required
+    // command line parameters.
+    m_DebuggerAttach = m_DebuggerConfig = wxString();
+
+    LogManager *logManager = Manager::Get()->GetLogManager();
+
+    if (localAttach.empty() || localConfig.empty())
+    {
+        if (localAttach.empty() != localConfig.empty())
+        {
+            logManager->LogError(
+                _("For attaching to work you need to provide both '--dbg-attach' and '--dbg-config'"));
+            logManager->Log(wxT("    --dbg-attach='") + localAttach + wxT("'"));
+            logManager->Log(wxT("    --dbg-config='") + localConfig + wxT("'"));
+        }
+        return;
+    }
+
+    logManager->Log(wxString::Format(_("Attach debugger '%s' to '%s'"), localConfig.wx_str(),
+                                     localAttach.wx_str()));
+
+    // Split the dbg-config to plugin name and config name
+    wxString::size_type pos = localConfig.find(wxT(':'));
+    if (pos == wxString::npos || pos == 0)
+    {
+        logManager->LogError(
+            _("No delimiter found. The --dbg-config format is 'plugin-name:config-name'"));
+        return;
+    }
+
+    const wxString pluginName = localConfig.substr(0, pos);
+    const wxString configName = localConfig.substr(pos + 1);
+
+    // Find the plugin and the config.
+    DebuggerManager *debuggerManager = Manager::Get()->GetDebuggerManager();
+    const DebuggerManager::RegisteredPlugins &debuggers = debuggerManager->GetAllDebuggers();
+    if (debuggers.empty())
+    {
+        logManager->LogError(_("No debugger plugins loaded!"));
+        return;
+    }
+
+    cbDebuggerPlugin *plugin = nullptr;
+    int configIndex = -1;
+    const DebuggerManager::PluginData *pluginData = nullptr;
+
+    for (const auto &info : debuggers)
+    {
+        if (info.first->GetSettingsName() == pluginName)
+        {
+            plugin = info.first;
+            pluginData = &info.second;
+            break;
+        }
+    }
+
+    if (!plugin)
+    {
+        logManager->LogError(wxString::Format(_("Debugger plugin '%s' not found!"),
+                                              pluginName.wx_str()));
+        logManager->Log(_("Available plugins:"));
+        for (const auto &info : debuggers)
+        {
+            cbDebuggerPlugin *p = info.first;
+            logManager->Log(wxString::Format(_("    '%s' (%s)"), p->GetSettingsName().wx_str(),
+                                             p->GetGUIName().wx_str()));
+        }
+        return;
+    }
+
+    const DebuggerManager::ConfigurationVector &configs = pluginData->GetConfigurations();
+    for (auto it = configs.begin(); it != configs.end(); ++it)
+    {
+        if ((*it)->GetName() == configName)
+        {
+            configIndex = std::distance(configs.begin(), it);
+            break;
+        }
+    }
+
+    if (configIndex == -1)
+    {
+        logManager->LogError(wxString::Format(_("Debugger configuration '%s' not found!"),
+                                              configName.wx_str()));
+        logManager->Log(_("Available configurations:"));
+        for (const cbDebuggerConfiguration *config : configs)
+            logManager->Log(wxString::Format(_("    '%s'"), config->GetName().wx_str()));
+        return;
+    }
+
+    // We have a debugger plugin and config, so lets try to attach...
+    logManager->Log(_("Debugger plugin and configuration found. Attaching!!!"));
+    plugin->SetActiveConfig(configIndex);
+    plugin->AttachToProcess(localAttach);
+}
 
 #ifdef __WXMAC__
 

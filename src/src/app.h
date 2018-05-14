@@ -117,6 +117,7 @@ class CodeBlocksApp : public wxApp
         void OnFatalException();
         void LoadDelayedFiles(MainFrame* frame); // command line or DDE (if available) files
         void SetAutoFile(wxString& file); // method to set m_AutoFile
+        void AttachDebugger();
 #ifdef __WXMAC__
         // in response of an open-document apple event
         virtual void         MacOpenFile(const wxString &fileName) ;
@@ -146,6 +147,8 @@ class CodeBlocksApp : public wxApp
         wxString m_BatchTarget;
         wxString m_Script;
         wxString m_AutoFile; // --file foo.cpp[:line]
+        wxString m_DebuggerAttach;
+        wxString m_DebuggerConfig;
 
         wxScrollingDialog* m_pBatchBuildDialog;
         MainFrame* m_Frame;
