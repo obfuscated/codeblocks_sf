@@ -96,7 +96,8 @@ class DDEConnection : public wxConnection
     public:
         DDEConnection(MainFrame* frame) : m_Frame(frame) { ; }
 #if wxCHECK_VERSION(3, 0, 0)
-        bool OnExecute(const wxString& topic, const void *data, size_t size, wxIPCFormat format);
+        bool OnExecute(const wxString& topic, const void *data, size_t size,
+                       wxIPCFormat format) override;
 #else
         bool OnExecute(const wxString& topic, wxChar *data, int size, wxIPCFormat format) override;
 #endif
@@ -111,12 +112,16 @@ wxConnectionBase* DDEServer::OnAcceptConnection(const wxString& topic)
 }
 
 #if wxCHECK_VERSION(3, 0, 0)
-bool DDEConnection::OnExecute(cb_unused const wxString& topic, const void *data, cb_unused size_t size, cb_unused wxIPCFormat format)
-#else
-bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, cb_unused int size, cb_unused wxIPCFormat format)
-#endif
+bool DDEConnection::OnExecute(cb_unused const wxString& topic, const void *data, size_t size,
+                              wxIPCFormat format)
 {
-    wxString strData((wxChar*)data);
+    const wxString strData = wxConnection::GetTextFromData(data, size, format);
+#else
+bool DDEConnection::OnExecute(cb_unused const wxString& topic, wxChar *data, int size,
+                              wxIPCFormat format)
+{
+    const wxString strData((wxChar*)data);
+#endif
 
     if (strData.StartsWith(_T("[IfExec_Open(\"")))
         return false; // let Shell Open handle the request as we *know* that we have registered the Shell Open command, too
