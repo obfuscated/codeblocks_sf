@@ -343,6 +343,7 @@ class GdbCmd_AttachToProcess : public DebuggerCmd
                     // log this and quit debugging
                     m_pDriver->Log(_("Attaching failed: ")+lines[i]);
                     m_pDriver->QueueCommand(new DebuggerCmd(m_pDriver, _T("quit")));
+                    m_pDriver->MarkProgramStopped(true);
                 }
 //                m_pDriver->DebugLog(lines[i]);
             }

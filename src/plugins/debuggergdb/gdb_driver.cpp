@@ -73,7 +73,6 @@ static wxRegEx reChildPid1(_T("Thread[ \t]+[xA-Fa-f0-9-]+[ \t]+\\(LWP ([0-9]+)\\
 // MinGW GDB 6.8 and later
 // [New Thread 2684.0xf40] or [New thread 2684.0xf40]
 static wxRegEx reChildPid2(_T("\\[New [tT]hread[ \t]+[0-9]+\\.[xA-Fa-f0-9-]+\\]"));
-static wxRegEx reAttachedChildPid(wxT("Attaching to process ([0-9]+)"));
 
 static wxRegEx reInferiorExited(wxT("^\\[Inferior[ \\t].+[ \\t]exited normally\\]$"), wxRE_EXTENDED);
 static wxRegEx reInferiorExitedWithCode(wxT("^\\[[Ii]nferior[ \\t].+[ \\t]exited[ \\t]with[ \\t]code[ \\t]([0-9]+)\\]$"), wxRE_EXTENDED);
