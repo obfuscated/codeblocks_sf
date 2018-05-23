@@ -746,7 +746,6 @@ void ToolsPlus::BuildModuleMenu(const ModuleType type, wxMenu* menu, const FileT
         wxFileName activefile(edMan->GetActiveEditor()->GetFilename());
         wxString filename=activefile.GetFullPath();
         wxString name=activefile.GetFullName();
-        size_t sep_pos=menu->GetMenuItemCount();
         size_t added=0;
         for (unsigned int i=0;i<m_ic.interps.size();i++)
         {
