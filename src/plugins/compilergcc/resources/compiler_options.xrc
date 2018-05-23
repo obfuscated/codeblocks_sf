@@ -958,7 +958,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT16">
-														<label>These variables can be used in compiler and/or linker options.&#x0A;Use them as compiler/linker options this way: $$(varname)</label>
+														<label>These variables can be used in compiler and/or linker options.&#x0A;Use them as compiler/linker options this way: $(varname)</label>
 														<fg>#800000</fg>
 														<style>wxST_NO_AUTORESIZE</style>
 													</object>
@@ -1099,7 +1099,7 @@
 												</object>
 												<object class="sizeritem">
 													<object class="wxStaticText" name="ID_STATICTEXT22">
-														<label>Known variables: $$make, $$makefile, $$target, $$file and all macro variables</label>
+														<label>Known variables: $make, $makefile, $target, $file and all macro variables</label>
 														<fg>#800000</fg>
 													</object>
 													<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>

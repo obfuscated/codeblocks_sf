@@ -94,7 +94,7 @@
 					</object>
 					<object class="sizeritem">
 						<object class="wxStaticText" name="ID_STATICTEXT1">
-							<label>TIP: $$(keyword) will be replaced by the word under the cursor</label>
+							<label>TIP: $(keyword) will be replaced by the word under the cursor</label>
 							<fg>#800000</fg>
 						</object>
 						<flag>wxBOTTOM|wxLEFT|wxRIGHT|wxEXPAND</flag>
