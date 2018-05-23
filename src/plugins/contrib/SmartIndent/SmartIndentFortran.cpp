@@ -71,7 +71,7 @@ void SmartIndentFortran::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) con
             int start = stc->GetLineIndentPosition(currLine - 1);
             int endt  = stc->WordEndPosition(start, true);
             wxString text = stc->GetTextRange(start, endt).Lower();
-            wxString lineText = stc->GetLine(currLine - 1).BeforeFirst('!').Lower();
+            wxString lineText = stc->GetLine(currLine - 1).BeforeFirst('!').Trim().Lower();
             wxString lastText = lineText.AfterLast(')').Trim().Trim(false);
             wxString secText = lineText.Trim(false).Mid(text.Length()).Trim(false);
             if (  (text == _T("if") && lastText == _T("then"))
@@ -96,7 +96,10 @@ void SmartIndentFortran::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) con
                 || text == _T("interface")
                 ||(    text == _T("module")
                    && !secText.StartsWith(_T("procedure "))
-                   && !secText.StartsWith(_T("procedure:")) ) )
+                   && !secText.StartsWith(_T("procedure:")) )
+                ||(    text == _T("change")
+                   && (secText.StartsWith("team ") || secText.StartsWith("team(")) )
+               )
             {
                 stc->Tab();
             }
