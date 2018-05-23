@@ -417,6 +417,7 @@ void CompilerGCC::OnAttach()
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_OPEN,             new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectLoaded));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_CLOSE,            new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectUnloaded));
     Manager::Get()->RegisterEventSink(cbEVT_PROJECT_TARGETS_MODIFIED, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnProjectActivated));
+    Manager::Get()->RegisterEventSink(cbEVT_WORKSPACE_CLOSING_COMPLETE, new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnWorkspaceClosed));
 
     Manager::Get()->RegisterEventSink(cbEVT_COMPILE_FILE_REQUEST,     new cbEventFunctor<CompilerGCC, CodeBlocksEvent>(this, &CompilerGCC::OnCompileFileRequest));
 }
@@ -3394,6 +3395,12 @@ void CompilerGCC::OnProjectUnloaded(CodeBlocksEvent& event)
     // just make sure we don't keep an invalid pointer around
     if (m_pProject == event.GetProject())
         m_pProject = 0;
+}
+
+void CompilerGCC::OnWorkspaceClosed(cb_unused CodeBlocksEvent& event)
+{
+    ClearLog();
+    DoClearErrors();
 }
 
 void CompilerGCC::OnCompileFileRequest(CodeBlocksEvent& event)
