@@ -970,16 +970,18 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
         }
     }
 
-    if( ! fileList.IsEmpty() )
-    {
-        // create a drop object of file paths
-        wxTextDataObject dropObject( GetStringFromArray(fileList , wxT("\n"), false));
-        wxDropSource dragSource(m_pTree);
-        dragSource.SetData(dropObject);
-        dragSource.DoDragDrop();
-        // we disallow the drag of files within the project tree
-        return;
-    }
+//    Temporarily disabled. External drag and drop is incompatible with wxTreeCtrl internal drag and drop
+// FIXME (pecan): Add external drag and drop to projects management window
+//    if( ! fileList.IsEmpty() )
+//    {
+//        // create a drop object of file paths
+//        wxTextDataObject dropObject( GetStringFromArray(fileList , wxT("\n"), false));
+//        wxDropSource dragSource(m_pTree);
+//        dragSource.SetData(dropObject);
+//        dragSource.DoDragDrop();
+//        // we disallow the drag of files within the project tree
+//        return;
+//    }
 
     // allowed
     event.Allow();
