@@ -970,18 +970,37 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
         }
     }
 
-//    Temporarily disabled. External drag and drop is incompatible with wxTreeCtrl internal drag and drop
-// FIXME (pecan): Add external drag and drop to projects management window
-//    if( ! fileList.IsEmpty() )
-//    {
-//        // create a drop object of file paths
-//        wxTextDataObject dropObject( GetStringFromArray(fileList , wxT("\n"), false));
-//        wxDropSource dragSource(m_pTree);
-//        dragSource.SetData(dropObject);
-//        dragSource.DoDragDrop();
-//        // we disallow the drag of files within the project tree
-//        return;
-//    }
+    // wxTreeCtrl Internal vs External DragAndDrop are incompatible.
+    // To do an external DnD here, we have to test the mouse position
+    // and verify that the cursor is outside the wxTreeCtrl
+    m_pTree->SetCursor(wxCursor(wxCURSOR_HAND)); //show feedback to user
+    bool isExternalDrag = false;
+    for (int ii=0; ii<8; ++ii)
+    {
+        // wait max 800 milliseconds for cursor move outside the tree
+        wxMilliSleep(100); //wait awhile for possible mouse move outside tree ctrl
+        wxWindow* pWin = ::wxFindWindowAtPoint(wxGetMousePosition());
+        wxString winName = pWin ? pWin->GetName().Lower(): _T("unkwn");
+        if ( (not pWin) or (_T("treectrl") != winName) )
+        {
+            isExternalDrag = true;
+            break;
+        }
+        if (not wxGetMouseState().LeftIsDown())
+            break; //internal tree drag
+    }
+    if ( (! fileList.IsEmpty()) and isExternalDrag )
+    {
+        // create a drop object of file paths
+        wxTextDataObject dropObject( GetStringFromArray(fileList , wxT("\n"), false));
+        wxDropSource dragSource(m_pTree);
+        dragSource.SetData(dropObject);
+        dragSource.DoDragDrop();
+        m_pTree->SetCursor(wxCursor(wxNullCursor));
+        return;
+    }
+
+    m_pTree->SetCursor(wxCursor(wxNullCursor));
 
     // allowed
     event.Allow();
@@ -989,6 +1008,8 @@ void ProjectManagerUI::OnTreeBeginDrag(wxTreeEvent& event)
 
 void ProjectManagerUI::OnTreeEndDrag(wxTreeEvent& event)
 {
+    m_pTree->SetCursor(wxCursor(wxNullCursor));
+
     wxTreeItemId to = event.GetItem();
 
     // is the drag target valid?
