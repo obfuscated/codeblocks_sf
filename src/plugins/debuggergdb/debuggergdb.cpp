@@ -551,6 +551,8 @@ int DebuggerGDB::LaunchProcessWithShell(const wxString &cmd, wxProcess *process,
 #if wxCHECK_VERSION(3, 0, 0)
     wxExecuteEnv execEnv;
     execEnv.cwd = cwd;
+    // Read the current environment variables and then make changes to them.
+    wxGetEnvMap(&execEnv.env);
     if (!shell.empty())
     {
         Log(wxString::Format(wxT("Setting SHELL to '%s'"), shell.wx_str()));
