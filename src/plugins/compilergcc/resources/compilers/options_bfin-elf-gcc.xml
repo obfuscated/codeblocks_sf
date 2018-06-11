@@ -150,7 +150,6 @@
 	
     <Category name="Blackfin CPU architecture derivatives"
               exclusive="true">
-        <Option name="Blackfin 532 processor" option="-mcpu=bf532"/>
         <Option name="Blackfin 512 processor" option="-mcpu=bf512"/>
         <Option name="Blackfin 514 processor" option="-mcpu=bf514"/>
         <Option name="Blackfin 516 processor" option="-mcpu=bf516"/>
