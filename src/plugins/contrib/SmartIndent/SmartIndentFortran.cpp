@@ -98,7 +98,7 @@ void SmartIndentFortran::OnEditorHook(cbEditor* ed, wxScintillaEvent& event) con
                    && !secText.StartsWith(_T("procedure "))
                    && !secText.StartsWith(_T("procedure:")) )
                 ||(    text == _T("change")
-                   && (secText.StartsWith("team ") || secText.StartsWith("team(")) )
+                   && (secText.StartsWith(_T("team ")) || secText.StartsWith(_T("team("))) )
                )
             {
                 stc->Tab();
