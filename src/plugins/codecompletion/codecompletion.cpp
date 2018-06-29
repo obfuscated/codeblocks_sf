@@ -1168,10 +1168,11 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
 
     // #include < or #include "
     cbProject* project = m_NativeParser.GetProjectByEditor(ed);
+
+    // since we are going to access the m_SystemHeadersMap, we add a locker here
+    // here we collect all the header files names which is under "system include search dirs"
+    if (m_SystemHeadersThreadCS.TryEnter())
     {
-        // since we are going to access the m_SystemHeadersMap, we add a locker here
-        // here we collect all the header files names which is under "system include search dirs"
-        wxCriticalSectionLocker locker(m_SystemHeadersThreadCS);
         wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
         {
@@ -1193,53 +1194,58 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
                     break; // exit outer loop
             }
         }
+        m_SystemHeadersThreadCS.Leave();
     }
 
     // #include "
     if (project)
     {
-        wxArrayString buildTargets;
-        ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
-        if (pf)
-            buildTargets = pf->buildTargets;
-
-        const wxArrayString localIncludeDirs = GetLocalIncludeDirs(project, buildTargets);
-        for (FilesList::const_iterator it = project->GetFilesList().begin();
-                                       it != project->GetFilesList().end(); ++it)
+        if (m_SystemHeadersThreadCS.TryEnter())
         {
-            pf = *it;
-            if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
+            wxArrayString buildTargets;
+            ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
+            if (pf)
+                buildTargets = pf->buildTargets;
+
+            const wxArrayString localIncludeDirs = GetLocalIncludeDirs(project, buildTargets);
+            for (FilesList::const_iterator it = project->GetFilesList().begin();
+                                           it != project->GetFilesList().end(); ++it)
             {
-                wxString file = pf->file.GetFullPath();
-                wxString header;
-                for (size_t j = 0; j < localIncludeDirs.GetCount(); ++j)
+                pf = *it;
+                if (pf && FileTypeOf(pf->relativeFilename) == ftHeader)
                 {
-                    const wxString& dir = localIncludeDirs[j];
-                    if (file.StartsWith(dir))
+                    wxString file = pf->file.GetFullPath();
+                    wxString header;
+                    for (size_t j = 0; j < localIncludeDirs.GetCount(); ++j)
                     {
-                        header = file.Mid(dir.Len());
-                        header.Replace(wxT("\\"), wxT("/"));
-                        break;
+                        const wxString& dir = localIncludeDirs[j];
+                        if (file.StartsWith(dir))
+                        {
+                            header = file.Mid(dir.Len());
+                            header.Replace(wxT("\\"), wxT("/"));
+                            break;
+                        }
+                    }
+
+                    if (header.IsEmpty())
+                    {
+                        if (pf->buildTargets != buildTargets)
+                            continue;
+
+                        wxFileName fn(file);
+                        fn.MakeRelativeTo(curPath);
+                        header = fn.GetFullPath(wxPATH_UNIX);
+                    }
+
+                    if (header.StartsWith(filename))
+                    {
+                        files.insert(header);
+                        if (files.size() > maxFiles)
+                            break;
                     }
                 }
-
-                if (header.IsEmpty())
-                {
-                    if (pf->buildTargets != buildTargets)
-                        continue;
-
-                    wxFileName fn(file);
-                    fn.MakeRelativeTo(curPath);
-                    header = fn.GetFullPath(wxPATH_UNIX);
-                }
-
-                if (header.StartsWith(filename))
-                {
-                    files.insert(header);
-                    if (files.size() > maxFiles)
-                        break;
-                }
             }
+            m_SystemHeadersThreadCS.Leave();
         }
     }
 
@@ -1539,7 +1545,6 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
             ++i;
         else
         {
-            wxCriticalSectionLocker locker(m_SystemHeadersThreadCS);
             if (m_SystemHeadersMap.find(dirs[i]) == m_SystemHeadersMap.end())
                 sysDirs.Add(dirs[i]);
             dirs.RemoveAt(i);
