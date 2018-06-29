@@ -52,11 +52,8 @@
 
 // when finished collecting all files, the thread are going to die, send this event
 long idSystemHeadersThreadFinish = wxNewId();
-// when collect all files under one path, send this event
-long idSystemHeadersThreadUpdate = wxNewId();
-// could not open the path, send an error event
-long idSystemHeadersThreadError  = wxNewId();
-
+// Message used logging.
+long idSystemHeadersThreadMessage = wxNewId();
 
 // internal class declaration of HeaderDirTraverser (implementation below)
 
@@ -159,9 +156,12 @@ void* SystemHeadersThread::Entry()
             }
         }
     }
+
     // collect header files in each dir, this is done by HeaderDirTraverser
     for (size_t i=0; i<dirs.GetCount(); ++i)
     {
+        wxStopWatch timer;
+        timer.Start();
         if ( TestDestroy() )
             break;
 
@@ -172,28 +172,36 @@ void* SystemHeadersThread::Entry()
             continue;
         // check the dir is ready for traversing
         wxDir dir(dirs[i]);
-        if ( !dir.IsOpened() )
+        if (!dir.IsOpened())
         {
-            CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadError);
+            CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadMessage);
             evt.SetClientData(this);
-            evt.SetString(wxString::Format(_T("SystemHeadersThread: Unable to open: %s"), dirs[i].wx_str()));
+            evt.SetString(wxString::Format(_T("SystemHeadersThread: Unable to open: %s"),
+                                           dirs[i].wx_str()));
             wxPostEvent(m_Parent, evt);
             continue;
         }
 
-        TRACE(_T("SystemHeadersThread: Launching dir traverser for: %s"), dirs[i].wx_str());
+        {
+            CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadMessage);
+            evt.SetClientData(this);
+            evt.SetString(wxString::Format(_T("SystemHeadersThread: Start traversing: %s"),
+                                           dirs[i].wx_str()));
+            wxPostEvent(m_Parent, evt);
+        }
 
         HeaderDirTraverser traverser(this, m_SystemHeadersThreadCS, m_SystemHeadersMap, dirs[i]);
         dir.Traverse(traverser, wxEmptyString, wxDIR_FILES | wxDIR_DIRS);
 
-        TRACE(_T("SystemHeadersThread: Dir traverser finished for: %s"), dirs[i].wx_str());
-
         if ( TestDestroy() )
             break;
 
-        CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadUpdate);
+        CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadMessage);
         evt.SetClientData(this);
-        evt.SetString(wxString::Format(_T("SystemHeadersThread: %s , %lu"), dirs[i].wx_str(), static_cast<unsigned long>(m_SystemHeadersMap[dirs[i]].size())));
+        evt.SetString(wxString::Format(_T("SystemHeadersThread: Traversing %s finished, found %lu headers; time: %.3lf sec"),
+                                       dirs[i].wx_str(),
+                                       static_cast<unsigned long>(m_SystemHeadersMap[dirs[i]].size()),
+                                       timer.TimeInMicro().ToDouble()*0.000001));
         wxPostEvent(m_Parent, evt);
     }
 
@@ -202,7 +210,10 @@ void* SystemHeadersThread::Entry()
         CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadFinish);
         evt.SetClientData(this);
         if (!dirs.IsEmpty())
-            evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %lu"), static_cast<unsigned long>(dirs.GetCount())));
+        {
+            evt.SetString(wxString::Format(_T("SystemHeadersThread: Total number of paths: %lu"),
+                                           static_cast<unsigned long>(dirs.GetCount())));
+        }
         wxPostEvent(m_Parent, evt);
     }
 

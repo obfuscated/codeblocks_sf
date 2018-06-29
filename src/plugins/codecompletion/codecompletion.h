@@ -226,9 +226,8 @@ private:
     void OnParserEnd(wxCommandEvent& event);
 
     /** receive event from SystemHeadersThread */
-    void OnSystemHeadersThreadUpdate(CodeBlocksThreadEvent& event);
+    void OnSystemHeadersThreadMessage(CodeBlocksThreadEvent& event);
     void OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event);
-    void OnSystemHeadersThreadError(CodeBlocksThreadEvent& event);
 
     /** fill the tokens with correct code complete words
      * @param caretPos the location of caret

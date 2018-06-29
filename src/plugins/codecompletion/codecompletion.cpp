@@ -514,9 +514,10 @@ CodeCompletion::CodeCompletion() :
     Connect(idReparsingTimer,       wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnReparsingTimer)      );
     Connect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
 
-    Connect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED,CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate));
-    Connect(idSystemHeadersThreadFinish,    wxEVT_COMMAND_MENU_SELECTED,CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
-    Connect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED,CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadError) );
+    Connect(idSystemHeadersThreadMessage, wxEVT_COMMAND_MENU_SELECTED,
+            CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadMessage));
+    Connect(idSystemHeadersThreadFinish, wxEVT_COMMAND_MENU_SELECTED,
+            CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
 }
 
 CodeCompletion::~CodeCompletion()
@@ -532,9 +533,10 @@ CodeCompletion::~CodeCompletion()
     Disconnect(idReparsingTimer,       wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnReparsingTimer)      );
     Disconnect(idEditorActivatedTimer, wxEVT_TIMER, wxTimerEventHandler(CodeCompletion::OnEditorActivatedTimer));
 
-    Disconnect(idSystemHeadersThreadUpdate,    wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadUpdate));
-    Disconnect(idSystemHeadersThreadFinish,    wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
-    Disconnect(idSystemHeadersThreadError,     wxEVT_COMMAND_MENU_SELECTED, CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadError) );
+    Disconnect(idSystemHeadersThreadMessage, wxEVT_COMMAND_MENU_SELECTED,
+               CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadMessage));
+    Disconnect(idSystemHeadersThreadFinish, wxEVT_COMMAND_MENU_SELECTED,
+               CodeBlocksThreadEventHandler(CodeCompletion::OnSystemHeadersThreadFinish));
 
     // clean up all the running thread
     while (!m_SystemHeadersThreads.empty())
@@ -2576,14 +2578,9 @@ void CodeCompletion::OnParserEnd(wxCommandEvent& event)
     event.Skip();
 }
 
-void CodeCompletion::OnSystemHeadersThreadUpdate(CodeBlocksThreadEvent& event)
+void CodeCompletion::OnSystemHeadersThreadMessage(CodeBlocksThreadEvent& event)
 {
-    if (!m_SystemHeadersThreads.empty())
-    {
-        SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
-        if (thread == m_SystemHeadersThreads.front())
-            CCLogger::Get()->DebugLog(event.GetString());
-    }
+    CCLogger::Get()->DebugLog(event.GetString());
 }
 
 void CodeCompletion::OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event)
@@ -2608,16 +2605,6 @@ void CodeCompletion::OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event)
         && m_NativeParser.Done() )
     {
         m_SystemHeadersThreads.front()->Run();
-    }
-}
-
-void CodeCompletion::OnSystemHeadersThreadError(CodeBlocksThreadEvent& event)
-{
-    if (!m_SystemHeadersThreads.empty())
-    {
-        SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
-        if (thread == m_SystemHeadersThreads.front())
-            CCLogger::Get()->DebugLog(event.GetString());
     }
 }
 
