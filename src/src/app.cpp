@@ -1245,13 +1245,12 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
     if (!m_AutoFile.IsEmpty())
     {
         wxString linePart;
-        wxString filePart;
-        // wxString::Last is deprecated
+        // We always want to open the file no matter if there is a line number or not.
+        wxString filePart = m_AutoFile;
         long linePos = m_AutoFile.Find(_T(':'), true);
         if (linePos != wxNOT_FOUND)
         {
             linePart = m_AutoFile.Mid(linePos + 1, wxString::npos);
-            filePart = m_AutoFile;
             filePart.Remove(linePos);
         }
 
@@ -1267,13 +1266,18 @@ void CodeBlocksApp::LoadDelayedFiles(MainFrame *const frame)
                 filePart = m_AutoFile;
             }
         }
-        wxFileName fn(filePart);
-        fn.Normalize(); // really important so that two same files with different names are not loaded twice
-        if (frame->Open(fn.GetFullPath(), false))
+        // Make sure filePart is not empty, because if it is empty Normalize turns the full path in
+        // to the path of the current working folder.
+        if (!filePart.empty())
         {
-            EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(fn.GetFullPath());
-            if (eb && (line != -1))
-                eb->GotoLine(line - 1, true);
+            wxFileName fn(filePart);
+            fn.Normalize(); // really important so that two same files with different names are not loaded twice
+            if (frame->Open(fn.GetFullPath(), false))
+            {
+                EditorBase* eb = Manager::Get()->GetEditorManager()->GetEditor(fn.GetFullPath());
+                if (eb && (line != -1))
+                    eb->GotoLine(line - 1, true);
+            }
         }
         m_AutoFile.Clear();
     }
