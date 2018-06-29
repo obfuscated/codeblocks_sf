@@ -392,6 +392,9 @@ void EditorConfigurationDlg::CreateColoursSample()
         m_TextColourControl->LoadFile(code);
     }
 
+    const bool hightlightCaretLine = XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue();
+    m_TextColourControl->SetCaretLineVisible(hightlightCaretLine);
+
     m_TextColourControl->MarkerDeleteAll(2);
     m_TextColourControl->MarkerDeleteAll(3);
     m_TextColourControl->MarkerDeleteAll(4);
