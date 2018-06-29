@@ -93,8 +93,23 @@ private:
      */
     const SystemHeadersMap& m_SystemHeadersMap;
 
-    /// Set of already visited directories (stored as absolute paths).
-    std::set<wxString>      m_VisitedDirs;
+#ifndef __WXMSW__
+    struct FileID
+    {
+        dev_t st_dev;
+        ino_t st_ino;
+
+        bool operator< (const FileID &f) const
+        {
+            if (st_dev == f.st_dev)
+                return st_ino < f.st_ino;
+            else
+                return st_dev<f.st_dev;
+        }
+    };
+    /// Set of already visited directories (stored as device id and inode).
+    std::set<FileID> m_VisitedDirsByID;
+#endif // __WXMSW__
 
     /* top level dir we are traversing header files */
     const wxString&         m_SearchDir;
@@ -244,8 +259,29 @@ wxDirTraverseResult HeaderDirTraverser::OnDir(const wxString& dirname)
 
     AddLock(false); // false means we are adding a dir
 
-    wxString path = cbResolveSymLinkedDirPathRecursive(dirname);
+#ifndef __WXMSW__
+    // Use stat to identify unique files. This is needed to prevent loops caused by sym-linking.
+    // The st_dev and st_ino are enough to uniquely identify a file on Unix like systems.
+    // On windows we don't detect loops because they are lest frequent and harder to make, if at all
+    // possible.
+    struct stat s;
+    if (stat(dirname.utf8_str().data(), &s)==0)
+    {
+        FileID f;
+        f.st_dev = s.st_dev;
+        f.st_ino = s.st_ino;
 
+        if (m_VisitedDirsByID.find(f) != m_VisitedDirsByID.end())
+            return wxDIR_IGNORE;
+        m_VisitedDirsByID.insert(f);
+    }
+    else
+        return wxDIR_STOP;
+#endif // __WXMSW__
+
+    wxString path = cbResolveSymLinkedDirPathRecursive(dirname);
+    if (path.empty())
+        return wxDIR_IGNORE;
     if (path.Last() != wxFILE_SEP_PATH)
         path.Append(wxFILE_SEP_PATH);
 
@@ -278,8 +314,5 @@ wxDirTraverseResult HeaderDirTraverser::GetStatus(const wxString &path)
 {
     if (m_SystemHeadersMap.find(path) != m_SystemHeadersMap.end())
         return wxDIR_IGNORE;
-    if (m_VisitedDirs.find(path) != m_VisitedDirs.end())
-        return wxDIR_IGNORE;
-    m_VisitedDirs.insert(path);
     return wxDIR_CONTINUE;
 }
