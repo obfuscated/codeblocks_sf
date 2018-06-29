@@ -1003,6 +1003,8 @@ bool cbResolveSymLinkedDirPath(wxString& dirpath)
 #ifdef _WIN32
     return false;
 #else
+    if (dirpath.empty())
+        return false;
     if (dirpath.Last() == wxFILE_SEP_PATH)
         dirpath.RemoveLast();
 
@@ -1036,9 +1038,9 @@ bool cbResolveSymLinkedDirPath(wxString& dirpath)
             }
 
             wxString fullPath = fileName.GetFullPath();
-            if (fullPath.Last() == wxT('.')) // this case should be handled because of a bug in wxWidgets
+            if (!fullPath.empty() && fullPath.Last() == wxT('.')) // this case should be handled because of a bug in wxWidgets
                 fullPath.RemoveLast();
-            if (fullPath.Last() == wxFILE_SEP_PATH)
+            if (fullPath.length() > 1 && fullPath.Last() == wxFILE_SEP_PATH)
                 fullPath.RemoveLast();
             dirpath = fullPath;
             return true;
