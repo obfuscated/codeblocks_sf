@@ -1927,6 +1927,8 @@ void MainFrame::DoUpdateStatusBar()
 {
     if (!GetStatusBar())
         return;
+    if (Manager::IsAppShuttingDown())
+        return;
 
     cbEditor* ed = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
     wxString personality(Manager::Get()->GetPersonalityManager()->GetPersonality());
