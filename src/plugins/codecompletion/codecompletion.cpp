@@ -1615,6 +1615,11 @@ void CodeCompletion::GetAbsolutePath(const wxString& basePath, const wxArrayStri
                 fn.AppendDir(oldDirs[j]);
         }
 
+        // Detect if this directory is for the file system root and skip it. Sometimes macro
+        // replacements create such paths and we don't want to scan whole disks because of this.
+        if (fn.IsAbsolute() && fn.GetDirCount() == 0)
+            continue;
+
         const wxString path = fn.GetFullPath();
         if (dirs.Index(path) == wxNOT_FOUND)
             dirs.Add(path);

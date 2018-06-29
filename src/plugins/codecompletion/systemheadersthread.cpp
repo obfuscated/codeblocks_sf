@@ -165,6 +165,11 @@ void* SystemHeadersThread::Entry()
         if ( TestDestroy() )
             break;
 
+        // Detect if this directory is for the file system root and skip it.
+        // The user probably doesn't want to wait for the whole disk to be scanned!
+        wxFileName dirName(dirs[i]);
+        if (dirName.IsAbsolute() && dirName.GetDirCount() == 0)
+            continue;
         // check the dir is ready for traversing
         wxDir dir(dirs[i]);
         if ( !dir.IsOpened() )
