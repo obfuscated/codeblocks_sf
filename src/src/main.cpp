@@ -1726,8 +1726,12 @@ bool MainFrame::Open(const wxString& filename, bool addToHistory)
     wxFileName fn(filename);
     fn.Normalize(); // really important so that two same files with different names are not loaded twice
     wxString name = fn.GetFullPath();
-    Manager::Get()->GetLogManager()->DebugLog(_T("Opening file ") + name);
+    LogManager *logger = Manager::Get()->GetLogManager();
+    logger->DebugLog(_T("Opening file ") + name);
     bool ret = OpenGeneric(name, addToHistory);
+    if (!ret)
+        logger->LogError(wxString::Format(wxT("Opening file '%s' failed!"), name.wx_str()));
+
     return ret;
 }
 
