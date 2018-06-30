@@ -201,7 +201,7 @@ void* SystemHeadersThread::Entry()
         evt.SetString(wxString::Format(_T("SystemHeadersThread: Traversing %s finished, found %lu headers; time: %.3lf sec"),
                                        dirs[i].wx_str(),
                                        static_cast<unsigned long>(m_SystemHeadersMap[dirs[i]].size()),
-                                       timer.TimeInMicro().ToDouble()*0.000001));
+                                       timer.Time()*0.001));
         wxPostEvent(m_Parent, evt);
     }
 

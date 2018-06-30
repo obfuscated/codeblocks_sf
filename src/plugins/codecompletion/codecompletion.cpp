@@ -1173,8 +1173,13 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
 
     // since we are going to access the m_SystemHeadersMap, we add a locker here
     // here we collect all the header files names which is under "system include search dirs"
+#if wxCHECK_VERSION(3, 0, 0)
     if (m_SystemHeadersThreadCS.TryEnter())
     {
+#else
+    {
+        m_SystemHeadersThreadCS.Enter();
+#endif // wxCHECK_VERSION(3, 0, 0)
         wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
         {
@@ -1202,8 +1207,13 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     // #include "
     if (project)
     {
+#if wxCHECK_VERSION(3, 0, 0)
         if (m_SystemHeadersThreadCS.TryEnter())
         {
+#else
+        {
+            m_SystemHeadersThreadCS.Enter();
+#endif // wxCHECK_VERSION(3, 0, 0)
             wxArrayString buildTargets;
             ProjectFile* pf = project ? project->GetFileByFilename(curFile, false) : 0;
             if (pf)
