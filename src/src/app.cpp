@@ -672,6 +672,9 @@ bool CodeBlocksApp::OnInit()
                 delete connection;
                 delete client;
 
+                LogManager *log = Manager::Get()->GetLogManager();
+                log->Log(wxT("Ending application because another instance has been detected!"));
+
                 // return false to end the application
                 return false;
             }

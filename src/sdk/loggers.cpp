@@ -131,7 +131,12 @@ void TextCtrlLogger::UpdateSettings()
 void TextCtrlLogger::Append(const wxString& msg, Logger::level lv)
 {
     if (!control)
+    {
+        // Do the same as the stdout logger, to prevent loss of messages during start up!
+        fputs(wxSafeConvertWX2MB(msg), lv < error ? stdout : stderr);
+        fputs(::newline_string.mb_str(), lv < error ? stdout : stderr);
         return;
+    }
 
     ::temp_string.assign(msg);
     ::temp_string.append(_T("\n"));
