@@ -1253,8 +1253,21 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     if (!m_pProject->GetDefaultExecuteTarget().IsEmpty() && m_pProject->GetDefaultExecuteTarget() != m_pProject->GetFirstValidBuildTargetName())
         AddElement(prjnode, "Option", "default_target", m_pProject->GetDefaultExecuteTarget());
     AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerID());
-    if (m_pProject->GetVirtualFolders().GetCount() > 0)
-        AddElement(prjnode, "Option", "virtualFolders", GetStringFromArray(m_pProject->GetVirtualFolders(), _T(";")));
+
+    wxArrayString virtualFolders = m_pProject->GetVirtualFolders();
+    if(virtualFolders.GetCount() > 0)
+    {
+        wxString result; // the concatenated string
+        for (size_t i = 0; i < virtualFolders.GetCount(); i++)
+        {
+            if (!result.IsEmpty())
+                result << ";"; // add the delimiter
+
+            result << UnixFilename(virtualFolders[i], wxPATH_UNIX); // append Unix format folder name
+        }
+        AddElement(prjnode, "Option", "virtualFolders", result);
+    }
+
     if (m_pProject->GetExtendedObjectNamesGeneration())
         AddElement(prjnode, "Option", "extended_obj_names", 1);
     if (m_pProject->GetShowNotesOnLoad() || !m_pProject->GetNotes().IsEmpty())
