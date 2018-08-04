@@ -20,7 +20,6 @@
     #include "macrosmanager.h"
     #include "configmanager.h"
     #include "logmanager.h"
-    #include "configmanager.h"
     #include "pipedprocess.h"
     #include "globals.h"
     #include "sdk_events.h"
