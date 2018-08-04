@@ -312,10 +312,7 @@ bool cbAuiNotebook::IsFocusStored(wxWindow* page)
     while (win)
     {
         if (win == page)
-        {
             return true;
-            break;
-        }
         win = win->GetParent();
     }
     return false;
