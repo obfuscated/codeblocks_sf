@@ -25,7 +25,6 @@
     #include "globals.h"
     #include "compilerfactory.h"
     #include "cbplugin.h"
-    #include "cbproject.h"
 #endif
 
 #include <wx/filedlg.h>
