@@ -505,7 +505,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
     }
 
     int index = wxNOT_FOUND;
-    while ((index = buffer.Index(toNativePath)) != wxNOT_FOUND)
+    while ((index = buffer.Index(toNativePath.wx_str())) != wxNOT_FOUND)
     {
         int end = MatchBrace(buffer, index + toNativePath.Length() - 1);
         wxString content = buffer.Mid(index + toNativePath.Length(), end - index - toNativePath.Length());
@@ -513,7 +513,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         buffer.Replace(buffer.Mid(index, end - index + 1), UnixFilename(content), false);
     }
 
-    while ((index = buffer.Index(toUnixPath)) != wxNOT_FOUND)
+    while ((index = buffer.Index(toUnixPath.wx_str())) != wxNOT_FOUND)
     {
         int end = MatchBrace(buffer, index + toUnixPath.Length() - 1);
         wxString content = buffer.Mid(index + toUnixPath.Length(), end - index - toUnixPath.Length());
@@ -521,7 +521,7 @@ void MacrosManager::ReplaceMacros(wxString& buffer, ProjectBuildTarget* target, 
         buffer.Replace(buffer.Mid(index, end - index + 1), UnixFilename(content, wxPATH_UNIX), false);
     }
 
-    while ((index = buffer.Index(toWindowsPath)) != wxNOT_FOUND)
+    while ((index = buffer.Index(toWindowsPath.wx_str())) != wxNOT_FOUND)
     {
         int end = MatchBrace(buffer, index + toWindowsPath.Length() - 1);
         wxString content = buffer.Mid(index + toWindowsPath.Length(), end - index - toWindowsPath.Length());

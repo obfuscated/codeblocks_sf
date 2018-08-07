@@ -355,7 +355,7 @@ void AstyleConfigDlg::OnPreview(wxCommandEvent& WXUNUSED(event))
   if (text.size() && text.Last() != _T('\r') && text.Last() != _T('\n'))
     text += _T('\n');
 
-  formatter.init(new ASStreamIterator(0, text));
+  formatter.init(new ASStreamIterator(0, text.wx_str()));
 
   while (formatter.hasMoreLines())
   {

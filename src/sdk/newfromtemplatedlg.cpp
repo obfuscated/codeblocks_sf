@@ -213,7 +213,7 @@ inline int wxCALLBACK SortTemplates(long item1, long item2, cb_unused long sortD
         wxString name1 = data1->pt ? data1->pt->m_Title : data1->plugin->GetTitle(data1->wizPluginIndex);
         wxString name2 = data2->pt ? data2->pt->m_Title : data2->plugin->GetTitle(data2->wizPluginIndex);
 
-        return name1.CompareTo(name2);
+        return name1.CompareTo(name2.wx_str());
     }
     return 0;
 }
