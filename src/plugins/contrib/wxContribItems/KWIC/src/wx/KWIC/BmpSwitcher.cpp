@@ -72,14 +72,9 @@ kwxBmpSwitcher::~kwxBmpSwitcher()
 {
 	delete membitmap;
 
-	CBmpList::Node *node= m_bmplist.GetFirst() ;
-
-	while(node)
-	{
-        wxBitmap *current = node->GetData();
-		delete current ;
-		node = node->GetNext() ;
-	}
+	m_bmplist.DeleteContents(true);
+	m_bmplist.Clear();
+	m_bmplist.DeleteContents(false);
 }
 
 void kwxBmpSwitcher::OnPaint(wxPaintEvent &WXUNUSED(event))
@@ -102,19 +97,16 @@ void kwxBmpSwitcher::OnPaint(wxPaintEvent &WXUNUSED(event))
 	// Cryogen 16/4/10 Fixed to prevent a crash when m_nCount = 0. This is necessary for
 	// wxSmithKWIC to be able to initialise the control before bitmaps are added.
 	// Also moved update of m_nCount and m_nState to the appropriate functions.
-	CBmpList::Node *node;
 	switch(m_nCount){
 		case 0:
 			break;
 		case 1:
-			node = m_bmplist.GetFirst();
-			pCurrent = node->GetData() ;
+			pCurrent = m_bmplist.front();
 			dc.DrawBitmap(*pCurrent, 0, 0, TRUE);
 			break;
 
 		default:
-			node = m_bmplist.Item(m_nState);
-			pCurrent = node->GetData() ;
+			pCurrent = m_bmplist.Item(m_nState)->GetData();
 
 			dc.DrawBitmap(*pCurrent, 0, 0, TRUE);
 			break;
