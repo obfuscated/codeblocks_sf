@@ -22,6 +22,21 @@ namespace ScriptBindings
     ///////////////////
     // wxArrayString //
     ///////////////////
+    void wxArrayString_Clear(HSQUIRRELVM v)
+    {
+        static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
+        StackHandler sa(v);
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
+        self.Clear();
+    }
+    SQInteger wxArrayString_GetCount(HSQUIRRELVM v)
+    {
+        static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
+        StackHandler sa(v);
+        wxArrayString& self = *SqPlus::GetInstance<wxArrayString,false>(v, 1);
+        return sa.Return((SQInteger)self.GetCount());
+    }
+
     SQInteger wxArrayString_Index(HSQUIRRELVM v)
     {
         static_assert(wxMinimumVersion<2,8,12>::eval, "wxWidgets 2.8.12 is required");
@@ -262,11 +277,12 @@ namespace ScriptBindings
 
     void Register_wxTypes()
     {
-#if wxCHECK_VERSION(3, 0, 0)
-        typedef const wxString& (wxArrayString::*WXARRAY_STRING_ITEM)(size_t nIndex) const;
+#if wxCHECK_VERSION(3, 0, 0) && !wxUSE_STD_CONTAINERS
+        typedef const wxString& (wxArrayString::*wxArrayStringItem)(size_t nIndex) const;
 #else
-        typedef wxString& (wxArrayString::*WXARRAY_STRING_ITEM)(size_t nIndex) const;
+        typedef wxString& (wxArrayString::*wxArrayStringItem)(size_t nIndex) const;
 #endif
+        typedef size_t (wxArrayString::*wxArrayStrinGetCount)() const;
 
         ///////////////////
         // wxArrayString //
@@ -274,11 +290,10 @@ namespace ScriptBindings
         SqPlus::SQClassDef<wxArrayString>("wxArrayString").
                 emptyCtor().
                 func(&wxArrayString::Add, "Add").
-                func(&wxArrayString::Clear, "Clear").
-//                func(&wxArrayString::Index, "Index").
+                staticFunc(&wxArrayString_Clear, "Clear").
                 staticFuncVarArgs(&wxArrayString_Index, "Index", "*").
-                func(&wxArrayString::GetCount, "GetCount").
-                func<WXARRAY_STRING_ITEM>(&wxArrayString::Item, "Item").
+                func<wxArrayStrinGetCount>(&wxArrayString::GetCount, "GetCount").
+                func<wxArrayStringItem>(&wxArrayString::Item, "Item").
                 staticFuncVarArgs(&wxArrayString_SetItem, "SetItem", "*");
 
         //////////////
