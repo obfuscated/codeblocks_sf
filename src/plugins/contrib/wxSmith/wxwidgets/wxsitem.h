@@ -324,6 +324,7 @@ class wxsItem: public wxsPropertyContainer, public wxsCodeGenerator
          * to currently generated source code.
          */
         void Codef(const wxChar* Fmt,...);
+        void Codef(const wxString &Fmt,...);
 
         /** \brief Default procedure generating declarations code */
         virtual void OnBuildDeclarationsCode();

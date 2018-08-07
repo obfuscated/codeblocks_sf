@@ -495,6 +495,21 @@ void wxsItem::Codef(const wxChar* Fmt,...)
 
     va_end(ap);
 }
+void wxsItem::Codef(const wxString &Fmt,...)
+{
+    if ( !GetCoderContext() )
+    {
+        // TODO: Debug log
+        return;
+    }
+
+    va_list ap;
+    va_start(ap,Fmt.wx_str());
+
+    Codef(GetCoderContext(),Fmt,GetCoderContext()->m_BuildingCode,ap);
+
+    va_end(ap);
+}
 
 void wxsItem::Codef(wxsCoderContext* Context,const wxChar* Fmt,wxString& Result,va_list ap)
 {
