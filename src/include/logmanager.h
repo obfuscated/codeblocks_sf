@@ -33,6 +33,24 @@
 
         return ::temp_string;
     }
+
+    inline wxString F(const wxString &msg, ...)
+    {
+        va_list arg_list;
+        va_start(arg_list, msg);
+#if wxCHECK_VERSION(2,9,0) && wxUSE_UNICODE
+// in wx >=  2.9 unicode-build (default) we need the %ls here, or the strings get
+// cut after the first character
+        ::temp_string = msg;
+        ::temp_string.Replace(_T("%s"), _T("%ls"));
+        ::temp_string = wxString::FormatV(::temp_string, arg_list);
+#else
+        ::temp_string = wxString::FormatV(msg, arg_list);
+#endif
+        va_end(arg_list);
+
+        return ::temp_string;
+    }
 //} // namespace cb
 
 
