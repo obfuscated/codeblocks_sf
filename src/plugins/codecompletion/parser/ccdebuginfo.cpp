@@ -493,7 +493,12 @@ void CCDebugInfo::DisplayTokenInfo()
     txtIsConst->SetLabel(m_Token->m_IsConst ? _("Yes") : _("No"));
     txtIsNoExcept->SetLabel(m_Token->m_IsNoExcept ? _("Yes") : _("No"));
     txtNamespace->SetLabel(m_Token->GetNamespace());
-    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), parent ? parent->m_Name.c_str() : (const wxChar*)_("<Global namespace>"), m_Token->m_ParentIndex));
+    wxString label;
+    if (parent)
+        label = parent->m_Name;
+    else
+        label = _("<Global namespace>");
+    txtParent->SetLabel(wxString::Format(_T("%s (%d)"), label.wx_str(), m_Token->m_ParentIndex));
 
     FillChildren();
     FillAncestors();

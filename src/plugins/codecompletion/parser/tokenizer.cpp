@@ -513,7 +513,6 @@ void Tokenizer::ReadParentheses(wxString& str)
             str << token;
             if (level == 0)
                 break;
-
         }
         else if (token == _T("*") || token == _T("&") )
         {
@@ -1609,12 +1608,12 @@ bool Tokenizer::ReplaceBufferText(const wxString& target, const Token* macro)
     }
 
     // Replacement backward
-    wxChar* p = const_cast<wxChar*>((const wxChar*)m_Buffer) + m_TokenIndex - len;
+    wxChar* p = const_cast<wxChar*>(m_Buffer.wx_str()) + m_TokenIndex - len;
     TRACE(_T("ReplaceBufferText() : <FROM>%s<TO>%s"), wxString(p, len).wx_str(), substitute.wx_str());
     // NOTE (ollydbg#1#): This function should be changed to a native wx function if wxString (wxWidgets
     // library) is built with UTF8 encoding for wxString. Luckily, both wx2.8.12 and wx 3.0 use the fixed length
     // (wchar_t) for the wxString encoding unit, so memcpy is safe here.
-    memcpy(p, (const wxChar*)target, len * sizeof(wxChar));
+    memcpy(p, target.wx_str(), len * sizeof(wxChar));
 
     // move the token index to the beginning of the substituted text
     m_TokenIndex -= len;

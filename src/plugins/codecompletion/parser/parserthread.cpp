@@ -3215,7 +3215,7 @@ bool ParserThread::ReadClsNames(wxString& ancestor)
 
 bool ParserThread::GetBaseArgs(const wxString& args, wxString& baseArgs)
 {
-    const wxChar* ptr = args;  // pointer to current char in args string
+    const wxChar* ptr = args.wx_str();  // pointer to current char in args string
     wxString word;             // compiled word of last arg
     bool skip = false;         // skip the next char (do not add to stripped args)
     bool sym  = false;         // current char symbol
