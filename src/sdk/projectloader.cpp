@@ -1255,13 +1255,13 @@ bool ProjectLoader::ExportTargetAsProject(const wxString& filename, const wxStri
     AddElement(prjnode, "Option", "compiler", m_pProject->GetCompilerID());
 
     wxArrayString virtualFolders = m_pProject->GetVirtualFolders();
-    if(virtualFolders.GetCount() > 0)
+    if (virtualFolders.GetCount() > 0)
     {
         wxString result; // the concatenated string
         for (size_t i = 0; i < virtualFolders.GetCount(); i++)
         {
             if (!result.IsEmpty())
-                result << ";"; // add the delimiter
+                result << wxT(";"); // add the delimiter
 
             result << UnixFilename(virtualFolders[i], wxPATH_UNIX); // append Unix format folder name
         }
