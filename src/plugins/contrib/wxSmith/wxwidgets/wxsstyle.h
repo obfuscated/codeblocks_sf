@@ -196,12 +196,12 @@ class wxsStyleSet
 /** adding all default window's style */
 #define WXS_ST_DEFAULTS()                       \
     WXS_ST_CATEGORY("wxWindow")                 \
-    WXS_ST(wxSIMPLE_BORDER)                     \
-    WXS_ST(wxDOUBLE_BORDER)                     \
-    WXS_ST(wxSUNKEN_BORDER)                     \
-    WXS_ST(wxRAISED_BORDER)                     \
-    WXS_ST(wxSTATIC_BORDER)                     \
-    WXS_ST(wxNO_BORDER)                         \
+    WXS_ST(wxBORDER_SIMPLE)                     \
+    WXS_ST(wxBORDER_DOUBLE)                     \
+    WXS_ST(wxBORDER_SUNKEN)                     \
+    WXS_ST(wxBORDER_RAISED)                     \
+    WXS_ST(wxBORDER_STATIC)                     \
+    WXS_ST(wxBORDER_NONE)                       \
     WXS_ST(wxTRANSPARENT_WINDOW)                \
     WXS_ST(wxTAB_TRAVERSAL)                     \
     WXS_ST(wxWANTS_CHARS)                       \

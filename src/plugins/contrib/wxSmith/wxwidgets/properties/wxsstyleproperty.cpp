@@ -106,6 +106,18 @@ bool wxsStyleProperty::XmlRead(wxsPropertyContainer* Object,TiXmlElement* Elemen
         STYLEBITS = STYLESETPTR?STYLESETPTR->GetDefaultBits(IsExtra):0;
         return false;
     }
+    else
+    {
+        // Do some string replacements to support loading files saved with old versions. It is not
+        // really fast, but lets hope it is not called much, so it shouldn't be a performance
+        // problem.
+        Str.Replace(wxT("wxSIMPLE_BORDER"), wxT("wxBORDER_SIMPLE"));
+        Str.Replace(wxT("wxDOUBLE_BORDER"), wxT("wxBORDER_DOUBLE"));
+        Str.Replace(wxT("wxSUNKEN_BORDER"), wxT("wxBORDER_SUNKEN"));
+        Str.Replace(wxT("wxRAISED_BORDER"), wxT("wxBORDER_RAISED"));
+        Str.Replace(wxT("wxSTATIC_BORDER"), wxT("wxBORDER_STATIC"));
+        Str.Replace(wxT("wxNO_BORDER"), wxT("wxBORDER_NONE"));
+    }
     STYLEBITS = STYLESETPTR->GetBits(Str,IsExtra);
     return true;
 }
