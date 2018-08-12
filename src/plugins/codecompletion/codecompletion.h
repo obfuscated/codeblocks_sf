@@ -131,9 +131,9 @@ public:
     /** search target file names (mostly relative names) under basePath, then return the absolute dirs
      * It just did the calculation below:
      * "c:/ccc/ddd.cpp"(basePath) + "aaa/bbb.h"(target) => "c:/ccc/aaa/bbb.h"(dirs)
-     * @param basePath already located file path, this is usually the currently parsing file's location
-     * @param targets the relative filename, e.g. When you have #include "aaa/bbb.h", "aaa/bbb.h" is the target location
-     * @param dirs result location of the targets in absolute file path format
+     * @param[in] basePath already located file path, this is usually the currently parsing file's location
+     * @param[in] targets the relative filename, e.g. When you have #include "aaa/bbb.h", "aaa/bbb.h" is the target location
+     * @param[out] dirs result location of the targets in absolute file path format
      */
     void GetAbsolutePath(const wxString& basePath, const wxArrayString& targets, wxArrayString& dirs);
 
