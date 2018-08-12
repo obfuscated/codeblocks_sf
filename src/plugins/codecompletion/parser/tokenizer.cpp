@@ -1956,6 +1956,20 @@ void Tokenizer::HandleDefines()
     if (token.IsEmpty())
         return;
 
+    // in case we have such macro definition, we need to skip the first backslash
+    // #define backslash
+    // MACROFUNCTION(x,y) backslash
+    // x y
+    if (token == _T("\\"))
+    {
+        while (SkipWhiteSpace() || SkipComment())
+            ;
+        Lex();
+        token = m_Lex; // read the token after "\\", this should be in the next line
+        if (token.IsEmpty())
+            return;
+    }
+
     // do *NOT* use m_Tokenizer.GetToken()
     // e.g.
     // #define AAA
