@@ -129,7 +129,7 @@ void FormatterSettings::ApplyTo(astyle::ASFormatter& formatter)
   formatter.setAddOneLineBracketsMode(cfg->ReadBool(_T("/add_one_line_brackets")));
   formatter.setRemoveBracketsMode(cfg->ReadBool(_T("/remove_brackets")));
   formatter.setBreakOneLineBlocksMode(!cfg->ReadBool(_T("/keep_blocks")));
-  formatter.setBreakOneLineHeadersMode(!cfg->ReadBool(_T("/keep_headers")));
+  formatter.setBreakOneLineHeadersMode(cfg->ReadBool(_T("/keep_headers")));
   formatter.setBreakOneLineStatementsMode(!cfg->ReadBool(_T("/keep_statements")));
   formatter.setTabSpaceConversionMode(cfg->ReadBool(_T("/convert_tabs")));
   formatter.setCloseTemplatesMode(cfg->ReadBool(_T("/close_templates")));
