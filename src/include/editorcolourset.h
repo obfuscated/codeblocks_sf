@@ -143,6 +143,10 @@ class DLLIMPORT EditorColourSet
 
         wxString m_Name;
         OptionSetsMap m_Sets;
+
+        /// Stores the id of the plain text file lexer (see lexer_plain.xml). This is used for files
+        /// which don't have another more appropriate lexer.
+        wxString m_PlainTextLexerID;
 };
 
 #endif // EDITORCOLORSET_H

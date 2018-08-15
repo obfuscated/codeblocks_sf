@@ -965,7 +965,7 @@ void MainFrame::CreateMenubar()
 
     int tmpidx;
     wxMenuBar* mbar=nullptr;
-    wxMenu *hl=nullptr, *tools=nullptr, *plugs=nullptr, *pluginsM=nullptr;
+    wxMenu *tools=nullptr, *plugs=nullptr, *pluginsM=nullptr;
     wxMenuItem *tmpitem=nullptr;
 
     wxXmlResource* xml_res = wxXmlResource::Get();
@@ -983,6 +983,7 @@ void MainFrame::CreateMenubar()
     tmpidx = mbar->FindMenu(_("&Edit"));
     if (tmpidx!=wxNOT_FOUND)
     {
+        wxMenu *hl=nullptr;
         mbar->FindItem(idEditHighlightModeText, &hl);
         if (hl)
         {
@@ -4225,7 +4226,11 @@ void MainFrame::OnEditMenuUpdateUI(wxUpdateUIEvent& event)
         {
             EditorColourSet* colour_set = ed->GetColourSet();
             if (colour_set)
-                mbar->Check(hl->FindItem(colour_set->GetLanguageName(ed->GetLanguage())), true);
+            {
+                int item = hl->FindItem(colour_set->GetLanguageName(ed->GetLanguage()));
+                if (item != wxNOT_FOUND)
+                    mbar->Check(item, true);
+            }
         }
     }
 
@@ -5094,28 +5099,23 @@ void MainFrame::OnHighlightMenu(cb_unused wxCommandEvent& event)
 
     wxMenu* hl = nullptr;
     GetMenuBar()->FindItem(idEditHighlightModeText, &hl);
-    wxArrayString langs = colour_set->GetAllHighlightLanguages();
+    if (!hl)
+        return;
 
     wxMenu mm;
-    mm.AppendRadioItem(idEditHighlightModeText, _("Plain text"),
-                       _("Switch highlighting mode for current document to \"Plain text\""));
-    Connect(hl->FindItem(_("Plain text")), -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &MainFrame::OnEditHighlightMode);
-    for (size_t i = 0; i < langs.GetCount(); ++i)
+    const wxMenuItemList &menuItems = hl->GetMenuItems();
+
+    for (size_t ii = 0; ii < menuItems.GetCount(); ++ii)
     {
-        if (i > 0 && !(i % 20))
+        if (ii > 0 && (ii % 20) == 0)
             mm.Break(); // break into columns every 20 items
-        mm.AppendRadioItem(hl->FindItem(langs[i]), langs[i],
-                    wxString::Format(_("Switch highlighting mode for current document to \"%s\""), langs[i].wx_str()));
-        Connect(hl->FindItem(langs[i]), -1, wxEVT_COMMAND_MENU_SELECTED,
-                (wxObjectEventFunction) (wxEventFunction) (wxCommandEventFunction)
-                &MainFrame::OnEditHighlightMode);
+
+        const wxMenuItem *item = menuItems[ii];
+        wxMenuItem *newItem = mm.Append(item->GetId(), item->GetItemLabel(), item->GetHelp(),
+                                        item->GetKind());
+        if (item->IsCheckable())
+            newItem->Check(item->IsChecked());
     }
-    int checkeditem = -1;
-    checkeditem = hl->FindItem(colour_set->GetLanguageName(ed->GetLanguage()));
-    if (checkeditem!=wxNOT_FOUND)
-        mm.Check(checkeditem,true);
 
     wxRect rect;
     GetStatusBar()->GetFieldRect(1, rect);

@@ -3076,6 +3076,9 @@
 		<Unit filename="sdk/resources/lexers/lexer_perl.xml">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_plain.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/lexers/lexer_postscript.sample">
 			<Option target="scintilla" />
 		</Unit>
