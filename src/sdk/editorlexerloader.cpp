@@ -98,6 +98,7 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
 {
     bool foundSelection = false, foundActiveLine = false;
     bool foundMatchBrace = false, foundBraceError = false;
+    bool foundIndentationGuide = false;
 
     TiXmlElement* style = node->FirstChildElement("Style");
     while (style)
@@ -157,6 +158,9 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
                 case wxSCI_STYLE_BRACEBAD:
                     foundBraceError = true;
                     break;
+                case wxSCI_STYLE_INDENTGUIDE:
+                    foundIndentationGuide = true;
+                    break;
                 }
 
 //                LOGSTREAM << _("Adding style: ") << name << _T("(") << value << _T(")\n");
@@ -191,6 +195,11 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
     {
         m_pTarget->AddOption(language, wxT("No matching brace highlight"), wxSCI_STYLE_BRACEBAD,
                              wxColour(255, 255, 255), wxColour(255, 0, 0), true, false, false, true);
+    }
+    if (!foundIndentationGuide)
+    {
+        m_pTarget->AddOption(language, wxT("Indentation guide"), wxSCI_STYLE_INDENTGUIDE,
+                             wxColour(55, 55, 55), wxNullColour, false, false, false, true);
     }
 }
 

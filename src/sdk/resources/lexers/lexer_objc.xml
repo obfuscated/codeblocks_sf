@@ -100,9 +100,6 @@
                 <Style name="Compiler error line"
                         index="-4"
                         bg="255,128,0"/>
-                <Style name="Indentation guide"
-                        index="37"
-                        fg="55,55,55"/>
                 <Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"

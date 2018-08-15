@@ -395,6 +395,9 @@ void EditorConfigurationDlg::CreateColoursSample()
     const bool hightlightCaretLine = XRCCTRL(*this, "chkHighlightCaretLine", wxCheckBox)->GetValue();
     m_TextColourControl->SetCaretLineVisible(hightlightCaretLine);
 
+    const bool showIndentGuides = XRCCTRL(*this, "chkShowIndentGuides", wxCheckBox)->GetValue();
+    m_TextColourControl->SetIndentationGuides(showIndentGuides ? wxSCI_IV_LOOKBOTH : wxSCI_IV_NONE);
+
     m_TextColourControl->MarkerDeleteAll(2);
     m_TextColourControl->MarkerDeleteAll(3);
     m_TextColourControl->MarkerDeleteAll(4);
