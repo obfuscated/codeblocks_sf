@@ -1235,11 +1235,13 @@ inline void OverrideUseTabsPerLanguage(cbStyledTextCtrl *control)
 {
     if (!control)
         return;
-    // override the use tab setting for Python files and Makefiles
+    // Override the use tab setting for languages which have explicit requirements about tab/space
+    // usage.
     int lexer = control->GetLexer();
     switch (lexer)
     {
         case wxSCI_LEX_PYTHON:
+        case wxSCI_LEX_YAML:
             control->SetUseTabs(false);
             break;
         case wxSCI_LEX_MAKEFILE:

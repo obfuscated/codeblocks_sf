@@ -3016,6 +3016,12 @@
 		<Unit filename="sdk/resources/lexers/lexer_xml.xml">
 			<Option target="scintilla" />
 		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_yaml.sample">
+			<Option target="scintilla" />
+		</Unit>
+		<Unit filename="sdk/resources/lexers/lexer_yaml.xml">
+			<Option target="scintilla" />
+		</Unit>
 		<Unit filename="sdk/resources/new_from_template.xrc">
 			<Option target="sdk" />
 		</Unit>
