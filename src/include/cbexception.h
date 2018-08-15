@@ -54,7 +54,7 @@ class DLLIMPORT cbException
         #define DIE() exit(1)
     #else
         #include <csignal>
-        #define DIE() kill(getpid(), SIGTERM)
+        #define DIE() kill(getpid(), SIGINT)
     #endif
 
     #if wxUSE_UNICODE
