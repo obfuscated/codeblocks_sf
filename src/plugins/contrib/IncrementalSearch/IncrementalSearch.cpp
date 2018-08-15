@@ -545,12 +545,13 @@ void IncrementalSearch::OnTextChanged(wxCommandEvent& /*event*/)
     SearchText();
 }
 
-void IncrementalSearch::OnKillFocus(wxCommandEvent& /*event*/)
+void IncrementalSearch::OnKillFocus(wxCommandEvent& event)
 {
     if(m_pTextCtrl)
     {
         m_LastInsertionPoint = m_pTextCtrl->GetInsertionPoint();
     }
+    event.Skip();
 }
 
 void IncrementalSearch::VerifyPosition()
