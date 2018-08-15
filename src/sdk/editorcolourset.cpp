@@ -32,9 +32,6 @@
 #include "editorlexerloader.h"
 #include "filefilters.h"
 
-const int cbHIGHLIGHT_LINE = -98; // highlight line under caret virtual style
-const int cbSELECTION      = -99; // selection virtual style
-
 EditorColourSet::EditorColourSet(const wxString& setName)
     : m_Name(setName)
 {

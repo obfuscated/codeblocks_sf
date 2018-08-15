@@ -40,12 +40,6 @@
 				<Style name="Operator"
 						index="6,12"
 						fg="255,0,0"/>
-				<Style name="Selection"
-						index="-99"
-						bg="192,192,192"/>
-				<Style name="Active line"
-						index="-98"
-						bg="255,255,160"/>
 				<Style name="Breakpoint line"
 						index="-2"
 						bg="255,160,160"/>
@@ -55,14 +49,6 @@
 				<Style name="Compiler error line"
 						index="-4"
 						bg="255,128,0"/>
-				<Style name="Matching brace highlight"
-						index="34"
-						fg="255,0,0"
-						bold="1"
-						underlined="1"/>
-				<Style name="No matching brace highlight"
-						index="35"
-						bg="255,0,0"/>
 				<Keywords>
                         <!-- Primary keywords and identifiers -->
                         <Set index="0"

@@ -30,20 +30,6 @@
                index="5"
                fg="0,0,255"
                bold="1"/>
-        <Style name="Matching brace highlight"
-                index="34"
-                bg="128,255,255"
-                bold="1"/>
-        <Style name="No matching brace highlight"
-                index="35"
-                fg="255,0,0"
-                bold="1"/>
-        <Style name="Selection"
-               index="-99"
-               bg="192,192,192"/>
-        <Style name="Active line"
-               index="-98"
-               bg="255,255,160"/>
         <SampleCode value="lexer_latex.sample"/>
         <LanguageAttributes
             LineComment="%"

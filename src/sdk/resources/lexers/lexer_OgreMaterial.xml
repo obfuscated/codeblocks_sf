@@ -29,20 +29,6 @@
 						index="11"
 						fg="0,150,200"
 						bold="0"/>
-				<Style name="Selection"
-						index="5"
-						bg="192,192,192"/>
-				<Style name="Active line"
-						index="-98"
-						bg="255,255,160"/>
-				<Style name="Matching brace highlight"
-						index="34"
-						fg="255,0,0"
-						bold="1"
-						underlined="1"/>
-				<Style name="No matching brace highlight"
-						index="35"
-						bg="255,128,0"/>
 				<Keywords>
 						<Language index="0"
 								value="material set_texture_alias technique pass texture_unit lod_distances receive_shadows transparency_casts_shadows lod_index ambient diffuse specular emissive scene_blend depth_check depth_write depth_func depth_bias alpha_rejection cull_hardware cull_software lighting shading fog_override colour_write max_lights iteration texture texture_alias anim_texture cubic_texture tex_coord_set tex_address_mode filtering max_anisotropy colour_op colour_op_ex colour_op_multipass_fallback alpha_op_ex env_map scroll scroll_anim rotate rotate_anim scale wave_xform vertex_program vertex_program_ref fragment_program fragment_program_ref default_params source entry_point target profiles attach includes_skeletal_animation param_indexed param_indexed_auto param_named param_named_auto "/>

@@ -96,6 +96,9 @@ void EditorLexerLoader::DoLexer(TiXmlElement* node)
 
 void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
 {
+    bool foundSelection = false, foundActiveLine = false;
+    bool foundMatchBrace = false, foundBraceError = false;
+
     TiXmlElement* style = node->FirstChildElement("Style");
     while (style)
     {
@@ -139,6 +142,23 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
                     continue;
                 long value = 0;
                 indices[i].ToLong(&value);
+
+                switch (value)
+                {
+                case cbSELECTION:
+                    foundSelection = true;
+                    break;
+                case cbHIGHLIGHT_LINE:
+                    foundActiveLine = true;
+                    break;
+                case wxSCI_STYLE_BRACELIGHT:
+                    foundMatchBrace = true;
+                    break;
+                case wxSCI_STYLE_BRACEBAD:
+                    foundBraceError = true;
+                    break;
+                }
+
 //                LOGSTREAM << _("Adding style: ") << name << _T("(") << value << _T(")\n");
                 m_pTarget->AddOption(language, name, value,
                                     fgcolour,
@@ -150,6 +170,27 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
             }
         }
         style = style->NextSiblingElement("Style");
+    }
+
+    if (!foundSelection)
+    {
+        m_pTarget->AddOption(language, wxT("Selection"), cbSELECTION, wxNullColour,
+                             wxColour(192, 192, 192), false, false, false, false);
+    }
+    if (!foundActiveLine)
+    {
+        m_pTarget->AddOption(language, wxT("Active line"), cbHIGHLIGHT_LINE, wxNullColour,
+                             wxColour(255, 255, 160), false, false, false, false);
+    }
+    if (!foundMatchBrace)
+    {
+        m_pTarget->AddOption(language, wxT("Matching brace highlight"), wxSCI_STYLE_BRACELIGHT,
+                             wxColour(0, 0, 0), wxColour(128, 255, 255), true, false, false, true);
+    }
+    if (!foundBraceError)
+    {
+        m_pTarget->AddOption(language, wxT("No matching brace highlight"), wxSCI_STYLE_BRACEBAD,
+                             wxColour(255, 255, 255), wxColour(255, 0, 0), true, false, false, true);
     }
 }
 

@@ -49,12 +49,6 @@
 						index="14,15"
 						fg="128,128,255"
 						bold="1"/>
-				<Style name="Selection"
-						index="-99"
-						bg="192,192,192"/>
-				<Style name="Active line"
-						index="-98"
-						bg="255,255,160"/>
 				<Style name="Breakpoint line"
 						index="-2"
 						bg="255,160,160"/>
@@ -64,15 +58,6 @@
 				<Style name="Compiler error line"
 						index="-4"
 						bg="255,128,0"/>
-				<Style name="Matching brace highlight"
-						index="34"
-						bg="128,255,255"
-						bold="1"/>
-				<Style name="No matching brace highlight"
-						index="35"
-						fg="255,255,255"
-						bg="255,0,0"
-						bold="1"/>
 				<Keywords>
                         <Set index="0"
                             value="and as assert asr begin class constraint do done downto else end exception external false for fun function functor if in include inherit initializer land lazy let lor lsl lsr lxor match method mod module mutable new object of open or private rec sig struct then to true try type val virtual when while with"/>
