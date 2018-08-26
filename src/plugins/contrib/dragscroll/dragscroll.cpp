@@ -1516,7 +1516,7 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
             #endif
             if ( (GetUserDragKey() ==  wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
                 return; //dont allow paste from middle-mouse used as scroll key
-            event.Skip(); //v0.21
+            //-event.Skip(); //dont skip. It'll move the edit caret when using right mouse key.
             return;
     }// if KeyDown
 
