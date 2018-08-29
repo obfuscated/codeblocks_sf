@@ -82,6 +82,7 @@ class ProjectManagerUI : public wxEvtHandler, public cbProjectManagerUI
         void OnSetActiveProject(wxCommandEvent& event);
         void OnAddFilesToProjectRecursively(wxCommandEvent& event);
         void OnAddFileToProject(wxCommandEvent& event);
+        void OnManageGlobs(wxCommandEvent& event);
         void OnRemoveFileFromProject(wxCommandEvent& event);
         void OnRenameFile(wxCommandEvent& event);
         void OnSaveProject(wxCommandEvent& event);

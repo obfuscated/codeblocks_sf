@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="ManageGlobsDlg">
+		<pos_arg>1</pos_arg>
+		<size_arg>1</size_arg>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxGridBagSizer" variable="GridBagSizer1" member="no">
+			<growablecols>0</growablecols>
+			<growablerows>0</growablerows>
+			<object class="sizeritem">
+				<object class="wxListCtrl" name="ID_LISTCTRL1" variable="lstGlobsList" member="yes">
+					<style>wxLC_REPORT</style>
+				</object>
+				<col>0</col>
+				<row>0</row>
+				<flag>wxALL|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxGridBagSizer" variable="GridBagSizer2" member="no">
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON1" variable="btnAdd" member="yes">
+							<label>Add</label>
+							<handler function="OnAddClick" entry="EVT_BUTTON" />
+						</object>
+						<col>0</col>
+						<row>0</row>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON2" variable="btnDelete" member="yes">
+							<label>Delete</label>
+							<handler function="OnDeleteClick" entry="EVT_BUTTON" />
+						</object>
+						<col>0</col>
+						<row>1</row>
+						<flag>wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="ID_BUTTON3" variable="btnEdit" member="yes">
+							<label>Edit</label>
+							<handler function="OnEditClick" entry="EVT_BUTTON" />
+						</object>
+						<col>0</col>
+						<row>2</row>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticLine" name="wxID_ANY" variable="StaticLine1" member="no">
+							<size>10,-1</size>
+						</object>
+						<col>0</col>
+						<row>3</row>
+						<flag>wxALL|wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_CANCEL" variable="btnCancel" member="yes">
+							<label>Cancel</label>
+						</object>
+						<col>0</col>
+						<row>4</row>
+						<flag>wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_OK" variable="btnOk" member="yes">
+							<label>Ok</label>
+							<handler function="OnOkClick" entry="EVT_BUTTON" />
+						</object>
+						<col>0</col>
+						<row>5</row>
+						<flag>wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<col>1</col>
+				<row>0</row>
+				<flag>wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

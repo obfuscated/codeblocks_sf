@@ -1743,6 +1743,14 @@ void cbProject::SetGlobs(const std::vector<Glob>& globs)
     m_Globs = globs;
 }
 
+void cbProject::AddGlob(const Glob& glob)
+{
+    if(glob.m_Path.empty())
+        return;
+
+    m_Globs.push_back(glob);
+}
+
 std::vector<cbProject::Glob> cbProject::GetGlobs() const
 {
     return m_Globs;

@@ -189,6 +189,24 @@ namespace ScriptBindings
         }
         return sa.ThrowError("Invalid arguments to \"cbProject::AddFile\"");
     }
+    SQInteger cbProject_AddGlob(HSQUIRRELVM v)
+    {
+        StackHandler sa(v);
+        int paramCount = sa.GetParamCount();
+        if (paramCount >= 1 && paramCount < 5)
+        {
+            cbProject* prj      = SqPlus::GetInstance<cbProject,false>(v, 1);
+            wxString path       = *SqPlus::GetInstance<wxString,false>(v, 2);
+            wxString WildCard   = paramCount >= 3 ? *SqPlus::GetInstance<wxString,false>(v, 3) : wxString();
+            bool recursive      = paramCount >= 4 ? sa.GetBool(4) : true;
+
+            cbProject::Glob gl(path, WildCard, recursive);
+            prj->AddGlob(gl);
+
+            return SQ_OK;
+        }
+        return sa.ThrowError("Invalid arguments to \"cbProject::AddGlob\"");
+    }
     SQInteger cbProject_GetBuildTarget(HSQUIRRELVM v)
     {
         StackHandler sa(v);
@@ -554,6 +572,7 @@ namespace ScriptBindings
                 func(&cbProject::GetFileByFilename, "GetFileByFilename").
                 staticFuncVarArgs(&cbProject_RemoveFile, "RemoveFile", "*").
                 staticFuncVarArgs(&cbProject_AddFile, "AddFile", "*").
+                staticFuncVarArgs(&cbProject_AddGlob, "AddGlob", "*").
                 func(&cbProject::GetBuildTargetsCount, "GetBuildTargetsCount").
                 staticFuncVarArgs(&cbProject_GetBuildTarget, "GetBuildTarget", "*").
                 func(&cbProject::AddBuildTarget, "AddBuildTarget").

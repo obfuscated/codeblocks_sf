@@ -46,6 +46,7 @@
 #include "projectfileoptionsdlg.h"
 #include "projectoptionsdlg.h"
 #include "projectsfilemasksdlg.h"
+#include "manageglobsdlg.h"
 
 #include "goto_file.h"
 #include "startherepage.h"
@@ -76,6 +77,7 @@ const int idMenuAddFilePopup             = wxNewId();
 const int idMenuAddFilesRecursivelyPopup = wxNewId();
 const int idMenuAddFile                  = wxNewId();
 const int idMenuAddFilesRecursively      = wxNewId();
+const int idMenuManageGlobs              = wxNewId();
 const int idMenuRemoveFolderFilesPopup   = wxNewId();
 const int idMenuOpenFolderFilesPopup     = wxNewId();
 const int idMenuRemoveFilePopup          = wxNewId();
@@ -164,6 +166,7 @@ BEGIN_EVENT_TABLE(ProjectManagerUI, wxEvtHandler)
     EVT_MENU(idMenuRemoveFile,               ProjectManagerUI::OnRemoveFileFromProject)
     EVT_MENU(idMenuAddFilePopup,             ProjectManagerUI::OnAddFileToProject)
     EVT_MENU(idMenuAddFilesRecursivelyPopup, ProjectManagerUI::OnAddFilesToProjectRecursively)
+    EVT_MENU(idMenuManageGlobs,              ProjectManagerUI::OnManageGlobs)
     EVT_MENU(idMenuRemoveFolderFilesPopup,   ProjectManagerUI::OnRemoveFileFromProject)
     EVT_MENU(idMenuOpenFolderFilesPopup,     ProjectManagerUI::OnOpenFolderFiles)
     EVT_MENU(idMenuRemoveFilePopup,          ProjectManagerUI::OnRemoveFileFromProject)
@@ -512,6 +515,7 @@ void ProjectManagerUI::CreateMenu(wxMenuBar* menuBar)
                 menu->AppendSeparator();
             menu->Append(idMenuAddFile,             _("Add files..."),             _("Add files to the project"));
             menu->Append(idMenuAddFilesRecursively, _("Add files recursively..."), _("Add files recursively to the project"));
+            menu->Append(idMenuManageGlobs,         _("Manage globs..."),          _("Manage automatic paths"));
             menu->Append(idMenuRemoveFile,          _("Remove files..."),          _("Remove files from the project"));
 
             menu->AppendSeparator();
@@ -1348,6 +1352,13 @@ void ProjectManagerUI::OnAddFilesToProjectRecursively(wxCommandEvent& event)
     // finally add the files
     pm->AddMultipleFilesToProject(array, prj, targets);
     RebuildTree();
+}
+
+void ProjectManagerUI::OnManageGlobs(wxCommandEvent& event)
+{
+    ManageGlobsDlg globManager(Manager::Get()->GetAppWindow());
+    PlaceWindow(&globManager);
+    globManager.ShowModal();
 }
 
 void ProjectManagerUI::OnAddFileToProject(wxCommandEvent& event)

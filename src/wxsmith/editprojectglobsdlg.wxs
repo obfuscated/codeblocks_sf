@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<wxsmith>
+	<object class="wxDialog" name="EditProjectGlobsDlg">
+		<pos_arg>1</pos_arg>
+		<size_arg>1</size_arg>
+		<style>wxDEFAULT_DIALOG_STYLE|wxRESIZE_BORDER</style>
+		<object class="wxGridBagSizer" variable="GridBagSizer1" member="no">
+			<growablecols>0</growablecols>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer1" member="no">
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="StaticText1" member="no">
+							<label>Path:</label>
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL1" variable="txtPath" member="yes" />
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBitmapButton" name="ID_BITMAPBUTTON1" variable="btnBrowse" member="yes">
+							<bitmap stock_id="wxART_FILE_OPEN" />
+							<handler function="OnBrowseClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxBitmapButton" name="ID_BITMAPBUTTON2" variable="btnOther" member="yes">
+							<bitmap stock_id="wxART_EXECUTABLE_FILE" />
+							<handler function="OnOtherClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+				</object>
+				<col>0</col>
+				<row>0</row>
+				<flag>wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxBoxSizer" variable="BoxSizer2" member="no">
+					<object class="sizeritem">
+						<object class="wxCheckBox" name="ID_CHECKBOX1" variable="chkRecursive" member="yes">
+							<label>Recursive</label>
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxStaticText" name="wxID_ANY" variable="StaticText2" member="no">
+							<label>Wildcart:</label>
+						</object>
+						<flag>wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL</flag>
+						<border>5</border>
+					</object>
+					<object class="sizeritem">
+						<object class="wxTextCtrl" name="ID_TEXTCTRL2" variable="txtWildcart" member="yes" />
+						<flag>wxEXPAND</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
+				</object>
+				<col>0</col>
+				<row>1</row>
+				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+			<object class="sizeritem">
+				<object class="wxStdDialogButtonSizer" variable="StdDialogButtonSizer1" member="no">
+					<object class="button">
+						<object class="wxButton" name="wxID_OK">
+							<label></label>
+						</object>
+					</object>
+					<object class="button">
+						<object class="wxButton" name="wxID_CANCEL">
+							<label></label>
+						</object>
+					</object>
+				</object>
+				<col>0</col>
+				<row>2</row>
+				<flag>wxTOP|wxEXPAND</flag>
+				<border>5</border>
+				<option>1</option>
+			</object>
+		</object>
+	</object>
+</wxsmith>

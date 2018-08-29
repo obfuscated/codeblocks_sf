@@ -3824,6 +3824,18 @@
 		<Unit filename="src/dlgaboutplugin.h">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="src/editprojectglobsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/editprojectglobsdlg.h">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/manageglobsdlg.cpp">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="src/manageglobsdlg.h">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="src/editkeywordsdlg.cpp">
 			<Option target="src" />
 		</Unit>
@@ -4085,6 +4097,12 @@
 		<Unit filename="wxsmith/debuggersettingspanel.wxs">
 			<Option target="src" />
 		</Unit>
+		<Unit filename="wxsmith/editprojectglobsdlg.wxs">
+			<Option target="src" />
+		</Unit>
+		<Unit filename="wxsmith/manageglobsdlg.wxs">
+			<Option target="src" />
+		</Unit>
 		<Unit filename="wxsmith/goto_file.wxs">
 			<Option target="src" />
 		</Unit>
@@ -4111,6 +4129,8 @@
 					<wxPanel wxs="wxsmith/debuggersettingscommonpanel.wxs" src="src/debuggersettingscommonpanel.cpp" hdr="src/debuggersettingscommonpanel.h" fwddecl="0" i18n="1" name="DebuggerSettingsCommonPanel" language="CPP" />
 					<wxDialog wxs="wxsmith/goto_file.wxs" src="src/goto_file.cpp" hdr="src/goto_file.h" fwddecl="1" i18n="1" name="GotoFile" language="CPP" />
 					<wxDialog wxs="plugins/codecompletion/wxsmith/goto_function.wxs" src="plugins/codecompletion/gotofunctiondlg.cpp" hdr="plugins/codecompletion/gotofunctiondlg.h" fwddecl="1" i18n="1" name="GotoFunctionDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/manageglobsdlg.wxs" src="src/manageglobsdlg.cpp" hdr="src/manageglobsdlg.h" fwddecl="0" i18n="1" name="ManageGlobsDlg" language="CPP" />
+					<wxDialog wxs="wxsmith/editprojectglobsdlg.wxs" src="src/editprojectglobsdlg.cpp" hdr="src/editprojectglobsdlg.h" fwddecl="0" i18n="1" name="EditProjectGlobsDlg" language="CPP" />
 				</resources>
 			</wxsmith>
 			<debugger />
