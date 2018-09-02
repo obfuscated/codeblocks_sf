@@ -12,6 +12,8 @@
 #include "manageglobsdlg.h"
 #include "editprojectglobsdlg.h"
 
+#include <algorithm>    // std::sort
+
 //(*InternalHeaders(ManageGlobsDlg)
 #include <wx/intl.h>
 #include <wx/string.h>
@@ -54,6 +56,7 @@ ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos
 	btnCancel = new wxButton(this, wxID_CANCEL, _("Cancel"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_CANCEL"));
 	GridBagSizer2->Add(btnCancel, wxGBPosition(4, 0), wxDefaultSpan, wxTOP|wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	btnOk = new wxButton(this, wxID_OK, _("Ok"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_OK"));
+	btnOk->SetDefault();
 	GridBagSizer2->Add(btnOk, wxGBPosition(5, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
 	GridBagSizer1->Add(GridBagSizer2, wxGBPosition(0, 1), wxDefaultSpan, wxALL|wxALIGN_TOP|wxALIGN_CENTER_HORIZONTAL, 5);
 	GridBagSizer1->AddGrowableCol(0);
@@ -129,9 +132,11 @@ void ManageGlobsDlg::OnDeleteClick(wxCommandEvent& event)
         items.push_back(item);
     }
 
-    for(int i = 0; i < items.size(); ++i)
+    // Make sure, that the list is in ascending order
+    std::sort(items.begin(), items.end());
+
+    for (int i = items.size()-1; i >= 0; --i)
     {
-        lstGlobsList->DeleteItem(items[i]);
         m_GlobList.erase(m_GlobList.begin() + items[i]);
     }
     PopulateList();

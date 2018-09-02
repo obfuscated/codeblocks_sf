@@ -75,6 +75,7 @@
 					<object class="sizeritem">
 						<object class="wxButton" name="wxID_OK" variable="btnOk" member="yes">
 							<label>Ok</label>
+							<default>1</default>
 							<handler function="OnOkClick" entry="EVT_BUTTON" />
 						</object>
 						<col>0</col>
