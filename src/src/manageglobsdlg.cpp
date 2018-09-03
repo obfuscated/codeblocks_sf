@@ -135,10 +135,14 @@ void ManageGlobsDlg::OnDeleteClick(wxCommandEvent& event)
     // Make sure, that the list is in ascending order
     std::sort(items.begin(), items.end());
 
-    for (int i = items.size()-1; i >= 0; --i)
+    // start at the end and delete all selected entries from top to bottom,
+    // so that the distance to m_GlobList.begin() is always correct
+    std::vector<int>::reverse_iterator ritr = items.rbegin();
+    for (; ritr != items.rend(); ++ritr)
     {
-        m_GlobList.erase(m_GlobList.begin() + items[i]);
+        m_GlobList.erase(m_GlobList.begin() + *ritr);
     }
+
     PopulateList();
 }
 
