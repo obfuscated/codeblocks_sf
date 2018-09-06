@@ -29,7 +29,7 @@ class ManageGlobsDlg: public wxDialog
 
     private:
         //(*Declarations(ManageGlobsDlg)
-        wxListCtrl* lstGlobsList;
+        wxListCtrl* m_ListGlobs;
         //*)
 
         //(*Identifiers(ManageGlobsDlg)

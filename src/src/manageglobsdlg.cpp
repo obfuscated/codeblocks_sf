@@ -47,8 +47,8 @@ ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent, wxWindowID id)
     SetClientSize(wxDefaultSize);
     Move(wxDefaultPosition);
     GridBagSizer1 = new wxGridBagSizer(0, 0);
-    lstGlobsList = new wxListCtrl(this, ID_LISTCTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT, wxDefaultValidator, _T("ID_LISTCTRL"));
-    GridBagSizer1->Add(lstGlobsList, wxGBPosition(0, 0), wxDefaultSpan, wxALL|wxEXPAND, 5);
+    m_ListGlobs = new wxListCtrl(this, ID_LISTCTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT, wxDefaultValidator, _T("ID_LISTCTRL"));
+    GridBagSizer1->Add(m_ListGlobs, wxGBPosition(0, 0), wxDefaultSpan, wxALL|wxEXPAND, 5);
     GridBagSizer2 = new wxGridBagSizer(0, 0);
     btnAdd = new wxButton(this, ID_BUTTON_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_ADD"));
     GridBagSizer2->Add(btnAdd, wxGBPosition(0, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
@@ -84,9 +84,9 @@ ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent, wxWindowID id)
         SetTitle(wxString::Format(_("Edit globs of %s"), title.wx_str()));
     }
 
-    lstGlobsList->InsertColumn(0, _("Path"));
-    lstGlobsList->InsertColumn(1, _("Recursive"), wxLIST_FORMAT_CENTRE);
-    lstGlobsList->InsertColumn(2, _("Wildcard"));
+    m_ListGlobs->InsertColumn(0, _("Path"));
+    m_ListGlobs->InsertColumn(1, _("Recursive"), wxLIST_FORMAT_CENTRE);
+    m_ListGlobs->InsertColumn(2, _("Wildcard"));
 
     PopulateList();
 
@@ -100,18 +100,18 @@ ManageGlobsDlg::~ManageGlobsDlg()
 
 void ManageGlobsDlg::PopulateList()
 {
-    lstGlobsList->DeleteAllItems();
+    m_ListGlobs->DeleteAllItems();
     for (const cbProject::Glob &glob : m_GlobList)
     {
-        const long item = lstGlobsList->InsertItem(lstGlobsList->GetItemCount(), glob.m_Path);
-        lstGlobsList->SetItem(item, 1, glob.m_Recursive ? _("Yes") : _("No"));
-        lstGlobsList->SetItem(item, 2, glob.m_WildCard);
+        const long item = m_ListGlobs->InsertItem(m_ListGlobs->GetItemCount(), glob.m_Path);
+        m_ListGlobs->SetItem(item, 1, glob.m_Recursive ? _("Yes") : _("No"));
+        m_ListGlobs->SetItem(item, 2, glob.m_WildCard);
     }
 
-    if (lstGlobsList->GetItemCount() > 0)
+    if (m_ListGlobs->GetItemCount() > 0)
     {
-        for (int column = 0; column < lstGlobsList->GetColumnCount(); ++column)
-            lstGlobsList->SetColumnWidth(column, wxLIST_AUTOSIZE_USEHEADER);
+        for (int column = 0; column < m_ListGlobs->GetColumnCount(); ++column)
+            m_ListGlobs->SetColumnWidth(column, wxLIST_AUTOSIZE_USEHEADER);
     }
 }
 
@@ -134,7 +134,7 @@ void ManageGlobsDlg::OnDeleteClick(cb_unused wxCommandEvent& event)
     std::vector<int> items;
     for (;;)
     {
-        item = lstGlobsList->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+        item = m_ListGlobs->GetNextItem(item, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
         if (item == -1 )
             break;
         items.push_back(item);
@@ -155,7 +155,7 @@ void ManageGlobsDlg::OnDeleteClick(cb_unused wxCommandEvent& event)
 
 void ManageGlobsDlg::OnEditClick(cb_unused wxCommandEvent& event)
 {
-    const int item = lstGlobsList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
+    const int item = m_ListGlobs->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item == -1)
         return;
 

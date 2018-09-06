@@ -8,7 +8,7 @@
 			<growablecols>0</growablecols>
 			<growablerows>0</growablerows>
 			<object class="sizeritem">
-				<object class="wxListCtrl" name="ID_LISTCTRL" variable="lstGlobsList" member="yes">
+				<object class="wxListCtrl" name="ID_LISTCTRL" variable="m_ListGlobs" member="yes">
 					<style>wxLC_REPORT</style>
 				</object>
 				<col>0</col>
