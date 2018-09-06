@@ -516,7 +516,8 @@ void ProjectManagerUI::CreateMenu(wxMenuBar* menuBar)
             menu->Append(idMenuAddFile,             _("Add files..."),             _("Add files to the project"));
             menu->Append(idMenuAddFilesRecursively, _("Add files recursively..."), _("Add files recursively to the project"));
             menu->Append(idMenuRemoveFile,          _("Remove files..."),          _("Remove files from the project"));
-            menu->Append(idMenuManageGlobs,         _("Manage globs..."),          _("Manage automatic paths"));
+            menu->AppendSeparator();
+            menu->Append(idMenuManageGlobs, _("Manage globs..."), _("Manage automatic paths"));
             menu->AppendSeparator();
             CreateMenuTreeProps(menu, false);
 
