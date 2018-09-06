@@ -1201,16 +1201,17 @@ bool EditorManager::OpenContainingFolder()
 #endif
 
     const wxString& fullPath = ed->GetFilename();
-    cmdData.command << wxT(" ");
+    wxString path;
     if (!cmdData.supportSelect)
     {
         // Cannot select the file with with most editors, so just extract the folder name
-        wxString splitPath;
-        wxFileName::SplitPath(fullPath, &splitPath, nullptr, nullptr);
-        cmdData.command << splitPath;
+        wxFileName::SplitPath(fullPath, &path, nullptr, nullptr);
     }
     else
-        cmdData.command << fullPath;
+        path = fullPath;
+
+    QuoteStringIfNeeded(path);
+    cmdData.command << wxT(" ") << path;
 
     wxExecute(cmdData.command);
     Manager::Get()->GetLogManager()->DebugLog(F(wxT("Executing command to open folder: '%s'"),
