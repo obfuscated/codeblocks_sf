@@ -101,12 +101,17 @@ ManageGlobsDlg::~ManageGlobsDlg()
 void ManageGlobsDlg::PopulateList()
 {
     lstGlobsList->DeleteAllItems();
-    for (size_t i = 0; i < m_GlobList.size(); ++i)
+    for (const cbProject::Glob &glob : m_GlobList)
     {
-        lstGlobsList->InsertItem(i, m_GlobList[i].m_Path);
-        wxString rec = wxString::Format(wxT("%i"), m_GlobList[i].m_Recursive);
-        lstGlobsList->SetItem(i, 1, rec);
-        lstGlobsList->SetItem(i, 2, m_GlobList[i].m_WildCard);
+        const long item = lstGlobsList->InsertItem(lstGlobsList->GetItemCount(), glob.m_Path);
+        lstGlobsList->SetItem(item, 1, glob.m_Recursive ? _("Yes") : _("No"));
+        lstGlobsList->SetItem(item, 2, glob.m_WildCard);
+    }
+
+    if (lstGlobsList->GetItemCount() > 0)
+    {
+        for (int column = 0; column < lstGlobsList->GetColumnCount(); ++column)
+            lstGlobsList->SetColumnWidth(column, wxLIST_AUTOSIZE_USEHEADER);
     }
 }
 
