@@ -91,9 +91,7 @@ EditProjectGlobsDlg::~EditProjectGlobsDlg()
 
 cbProject::Glob EditProjectGlobsDlg::GetGlob()
 {
-    cbProject::Glob ret(txtPath->GetValue(),
-                        txtWildcart->GetValue(),
-                        chkRecursive->GetValue());
+    cbProject::Glob ret(txtPath->GetValue(), txtWildcart->GetValue(), chkRecursive->GetValue());
     return ret;
 }
 
@@ -103,37 +101,35 @@ void EditProjectGlobsDlg::OnBrowseClick(wxCommandEvent& event)
     wxFileName path;
     wxString basePath = Manager::Get()->GetProjectManager()->GetActiveProject()->GetBasePath();
 
-    wxString val = txtPath->GetValue();
-    int idx = val.Find(DEFAULT_ARRAY_SEP);
+    wxString value = txtPath->GetValue();
+    const int idx = value.Find(DEFAULT_ARRAY_SEP);
     if (idx != -1)
-        val.Remove(idx);
+        value.Remove(idx);
 
 
-    // try to "decode" custom var
-    wxString initialVal = val;
-    // try to resolve the current path for macros
-    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(val);
-    // Make the resolved path absolute
-    wxFileName fname(val);
+    // Try to "decode" custom var.
+    const wxString initialValue = value;
+    // Try to resolve the current path for macros
+    Manager::Get()->GetMacrosManager()->ReplaceEnvVars(value);
+    // Make the resolved path absolute.
+    wxFileName fname(value);
     fname.MakeAbsolute(basePath);
-    wxString fullPath = fname.GetFullPath();
+    const wxString fullPath = fname.GetFullPath();
 
-    // Get the new path from user
-    path = ChooseDirectory(this, _("Get project glob path"),
-                           fullPath,
-                           basePath, false, true);
+    // Get the new path from user.
+    path = ChooseDirectory(this, _("Get project glob path"), fullPath, basePath, false, true);
 
     if (path.GetFullPath().empty())
         return;
 
-    // if it was a custom var, see if we can re-insert it
-    if (initialVal != val)
+    // If it was a custom var, see if we can re-insert it.
+    if (initialValue != value)
     {
         wxString tmp = path.GetFullPath();
-        if (tmp.Replace(val, initialVal) != 0)
+        if (tmp.Replace(value, initialValue) != 0)
         {
-            // replace the part we expressed with a custom variable again with
-            // the custom variable name
+            // Replace the part we expressed with a custom variable again with the custom variable
+            // name.
             txtPath->SetValue(tmp);
             return;
         }
@@ -142,13 +138,11 @@ void EditProjectGlobsDlg::OnBrowseClick(wxCommandEvent& event)
     wxString result;
     if (!basePath.empty())
     {
-        // ask the user if he wants it to be kept as relative
-        if (cbMessageBox(_("Keep this as a relative path?"),
-                        _("Question"),
-                        wxICON_QUESTION | wxYES_NO, this) == wxID_YES)
-        {
+        // Ask the user if he wants it to be kept as relative.
+        const int answer = cbMessageBox(_("Keep this as a relative path?"), _("Question"),
+                                        wxICON_QUESTION | wxYES_NO, this);
+        if (answer == wxID_YES)
             path.MakeRelativeTo(basePath);
-        }
         result = path.GetFullPath();
     }
 
@@ -160,8 +154,6 @@ void EditProjectGlobsDlg::OnOtherClick(wxCommandEvent& event)
     UserVariableManager *userMgr = Manager::Get()->GetUserVariableManager();
 
     const wxString &userVar = userMgr->GetVariable(this, txtPath->GetValue());
-    if ( !userVar.empty() )
-    {
+    if (!userVar.empty())
         txtPath->SetValue(userVar);
-    }
 }

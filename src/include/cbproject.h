@@ -429,14 +429,15 @@ class DLLIMPORT cbProject : public CompileTargetBase
             Glob(const wxString& path, const wxString& wildCard, bool recursive) : m_Path(path), m_WildCard(wildCard), m_Recursive(recursive) {}
         };
 
-        /** Set the globs to the project, this are directory paths to retrieve files from and the files are added to the project, the path can be searched recursively
-          * The glob paths are only scanned on project load. Non existent files are not removed from the project automatically.
+        /** Set the globs to the project. These are directory paths do retrieve files from to be
+          * added to the project. The path can be searched recursively. The glob paths are only
+          * scanned on project load. Non existent files are not removed from the project
+          * automatically.
           * @param globs the globs to add to the project.
           */
         void SetGlobs(const std::vector<Glob>& globs);
 
-        /** Add a glob to the project, this are directory paths to retrieve files from and the files are added to the project, the path can be searched recursively
-          * The glob paths are only scanned on project load. Non existent files are not removed from the project automatically.
+        /** Add a glob to the project.
           * @param glob the glob to add to the project.
           */
         void AddGlob(const Glob& glob);

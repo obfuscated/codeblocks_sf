@@ -515,9 +515,8 @@ void ProjectManagerUI::CreateMenu(wxMenuBar* menuBar)
                 menu->AppendSeparator();
             menu->Append(idMenuAddFile,             _("Add files..."),             _("Add files to the project"));
             menu->Append(idMenuAddFilesRecursively, _("Add files recursively..."), _("Add files recursively to the project"));
-            menu->Append(idMenuManageGlobs,         _("Manage globs..."),          _("Manage automatic paths"));
             menu->Append(idMenuRemoveFile,          _("Remove files..."),          _("Remove files from the project"));
-
+            menu->Append(idMenuManageGlobs,         _("Manage globs..."),          _("Manage automatic paths"));
             menu->AppendSeparator();
             CreateMenuTreeProps(menu, false);
 
@@ -1356,9 +1355,9 @@ void ProjectManagerUI::OnAddFilesToProjectRecursively(wxCommandEvent& event)
 
 void ProjectManagerUI::OnManageGlobs(wxCommandEvent& event)
 {
-    ManageGlobsDlg globManager(Manager::Get()->GetAppWindow());
-    PlaceWindow(&globManager);
-    globManager.ShowModal();
+    ManageGlobsDlg globManagerDlg(Manager::Get()->GetAppWindow());
+    PlaceWindow(&globManagerDlg);
+    globManagerDlg.ShowModal();
 }
 
 void ProjectManagerUI::OnAddFileToProject(wxCommandEvent& event)

@@ -11,44 +11,45 @@
 #include <wx/textctrl.h>
 //*)
 
-#include "cbProject.h"
-
+#include "cbproject.h"
 
 class EditProjectGlobsDlg: public wxDialog
 {
-	public:
+    public:
 
-		EditProjectGlobsDlg(cbProject::Glob &glob, wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
-		virtual ~EditProjectGlobsDlg();
+        EditProjectGlobsDlg(cbProject::Glob &glob, wxWindow* parent, wxWindowID id = wxID_ANY,
+                            const wxPoint& pos = wxDefaultPosition,
+                            const wxSize& size = wxDefaultSize);
+        ~EditProjectGlobsDlg() override;
 
-		//(*Declarations(EditProjectGlobsDlg)
-		wxBitmapButton* btnBrowse;
-		wxBitmapButton* btnOther;
-		wxCheckBox* chkRecursive;
-		wxTextCtrl* txtPath;
-		wxTextCtrl* txtWildcart;
-		//*)
+        cbProject::Glob GetGlob();
+    private:
+        //(*Declarations(EditProjectGlobsDlg)
+        wxBitmapButton* btnBrowse;
+        wxBitmapButton* btnOther;
+        wxCheckBox* chkRecursive;
+        wxTextCtrl* txtPath;
+        wxTextCtrl* txtWildcart;
+        //*)
 
-		cbProject::Glob GetGlob();
+    private:
 
-	protected:
+        //(*Identifiers(EditProjectGlobsDlg)
+        static const long ID_TEXTCTRL1;
+        static const long ID_BITMAPBUTTON1;
+        static const long ID_BITMAPBUTTON2;
+        static const long ID_CHECKBOX1;
+        static const long ID_TEXTCTRL2;
+        //*)
 
-		//(*Identifiers(EditProjectGlobsDlg)
-		static const long ID_TEXTCTRL1;
-		static const long ID_BITMAPBUTTON1;
-		static const long ID_BITMAPBUTTON2;
-		static const long ID_CHECKBOX1;
-		static const long ID_TEXTCTRL2;
-		//*)
+    private:
 
-	private:
+        //(*Handlers(EditProjectGlobsDlg)
+        void OnBrowseClick(wxCommandEvent& event);
+        void OnOtherClick(wxCommandEvent& event);
+        //*)
 
-		//(*Handlers(EditProjectGlobsDlg)
-		void OnBrowseClick(wxCommandEvent& event);
-		void OnOtherClick(wxCommandEvent& event);
-		//*)
-
-		DECLARE_EVENT_TABLE()
+        DECLARE_EVENT_TABLE()
 };
 
 #endif

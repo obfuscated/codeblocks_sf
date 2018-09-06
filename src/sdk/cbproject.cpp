@@ -1745,7 +1745,7 @@ void cbProject::SetGlobs(const std::vector<Glob>& globs)
 
 void cbProject::AddGlob(const Glob& glob)
 {
-    if(glob.m_Path.empty())
+    if (glob.m_Path.empty())
         return;
 
     m_Globs.push_back(glob);
