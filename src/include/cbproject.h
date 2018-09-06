@@ -423,10 +423,26 @@ class DLLIMPORT cbProject : public CompileTargetBase
 
         struct Glob
         {
+            Glob(const wxString& path, const wxString& wildCard, bool recursive) :
+                m_Path(path),
+                m_WildCard(wildCard),
+                m_Recursive(recursive)
+            {}
+
+            bool operator==(const Glob &o) const
+            {
+                return (m_Path == o.m_Path
+                        && m_WildCard == o.m_WildCard
+                        && m_Recursive == o.m_Recursive);
+            }
+            bool operator!=(const Glob &o) const
+            {
+                return !(*this == o);
+            }
+
             wxString m_Path;
             wxString m_WildCard;
             bool m_Recursive;
-            Glob(const wxString& path, const wxString& wildCard, bool recursive) : m_Path(path), m_WildCard(wildCard), m_Recursive(recursive) {}
         };
 
         /** Set the globs to the project. These are directory paths do retrieve files from to be

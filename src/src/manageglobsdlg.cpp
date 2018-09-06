@@ -184,21 +184,17 @@ void ManageGlobsDlg::OnOkClick(wxCommandEvent& event)
 bool ManageGlobsDlg::GlobsChanged()
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
-    if(prj != nullptr)
+    if (!prj)
+        return true;
+
+    const std::vector<cbProject::Glob> &projectGlobs = prj->GetGlobs();
+    if (projectGlobs.size() != m_GlobList.size())
+        return true;
+
+    for (size_t i = 0; i < m_GlobList.size(); ++i)
     {
-
-        if(prj->GetGlobs().size() != m_GlobList.size())
+        if (m_GlobList[i] != projectGlobs[i])
             return true;
-
-        std::vector<cbProject::Glob> prjGlobs = prj->GetGlobs();
-        for (size_t i = 0; i < m_GlobList.size(); ++i)
-        {
-           if(m_GlobList[i].m_Path      != prjGlobs[i].m_Path     ||
-              m_GlobList[i].m_WildCard  != prjGlobs[i].m_WildCard ||
-              m_GlobList[i].m_Recursive != prjGlobs[i].m_Recursive  )
-            return true;
-        }
-        return false;
     }
-    return true; // in doubt return true
+    return false;
 }
