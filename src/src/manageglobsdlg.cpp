@@ -31,7 +31,7 @@ BEGIN_EVENT_TABLE(ManageGlobsDlg,wxDialog)
     //*)
 END_EVENT_TABLE()
 
-ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
+ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent, wxWindowID id)
 {
     //(*Initialize(ManageGlobsDlg)
     wxButton* btnAdd;
@@ -115,7 +115,7 @@ void ManageGlobsDlg::PopulateList()
     }
 }
 
-void ManageGlobsDlg::OnAddClick(wxCommandEvent& event)
+void ManageGlobsDlg::OnAddClick(cb_unused wxCommandEvent& event)
 {
     cbProject::Glob tmpGlob(wxString(), wxT("*.*"), false);
     EditProjectGlobsDlg dlg(tmpGlob, nullptr);
@@ -128,7 +128,7 @@ void ManageGlobsDlg::OnAddClick(wxCommandEvent& event)
     }
 }
 
-void ManageGlobsDlg::OnDeleteClick(wxCommandEvent& event)
+void ManageGlobsDlg::OnDeleteClick(cb_unused wxCommandEvent& event)
 {
     int item = -1;
     std::vector<int> items;
@@ -153,7 +153,7 @@ void ManageGlobsDlg::OnDeleteClick(wxCommandEvent& event)
     PopulateList();
 }
 
-void ManageGlobsDlg::OnEditClick(wxCommandEvent& event)
+void ManageGlobsDlg::OnEditClick(cb_unused wxCommandEvent& event)
 {
     const int item = lstGlobsList->GetNextItem(-1, wxLIST_NEXT_ALL, wxLIST_STATE_SELECTED);
     if (item == -1)
@@ -167,7 +167,7 @@ void ManageGlobsDlg::OnEditClick(wxCommandEvent& event)
     }
 }
 
-void ManageGlobsDlg::OnOkClick(wxCommandEvent& event)
+void ManageGlobsDlg::OnOkClick(cb_unused wxCommandEvent& event)
 {
     cbProject* prj = Manager::Get()->GetProjectManager()->GetActiveProject();
     if (prj != nullptr && GlobsChanged())

@@ -13,12 +13,10 @@ class ManageGlobsDlg: public wxDialog
 {
     public:
 
-        ManageGlobsDlg(wxWindow* parent,wxWindowID id=wxID_ANY,const wxPoint& pos=wxDefaultPosition,const wxSize& size=wxDefaultSize);
+        ManageGlobsDlg(wxWindow* parent, wxWindowID id = wxID_ANY);
         ~ManageGlobsDlg() override;
 
-
     private:
-
         //(*Handlers(ManageGlobsDlg)
         void OnAddClick(wxCommandEvent& event);
         void OnDeleteClick(wxCommandEvent& event);

@@ -31,7 +31,7 @@ BEGIN_EVENT_TABLE(EditProjectGlobsDlg,wxDialog)
 	//*)
 END_EVENT_TABLE()
 
-EditProjectGlobsDlg::EditProjectGlobsDlg(cbProject::Glob &glob, wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
+EditProjectGlobsDlg::EditProjectGlobsDlg(const cbProject::Glob &glob, wxWindow* parent)
 {
 	//(*Initialize(EditProjectGlobsDlg)
 	wxBitmapButton* btnBrowse;
@@ -95,7 +95,7 @@ cbProject::Glob EditProjectGlobsDlg::GetGlob()
 }
 
 
-void EditProjectGlobsDlg::OnBrowseClick(wxCommandEvent& event)
+void EditProjectGlobsDlg::OnBrowseClick(cb_unused wxCommandEvent& event)
 {
     wxFileName path;
     wxString basePath = Manager::Get()->GetProjectManager()->GetActiveProject()->GetBasePath();
@@ -148,7 +148,7 @@ void EditProjectGlobsDlg::OnBrowseClick(wxCommandEvent& event)
     m_TextPath->SetValue(result);
 }
 
-void EditProjectGlobsDlg::OnOtherClick(wxCommandEvent& event)
+void EditProjectGlobsDlg::OnOtherClick(cb_unused wxCommandEvent& event)
 {
     UserVariableManager *userMgr = Manager::Get()->GetUserVariableManager();
 

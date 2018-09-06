@@ -16,10 +16,7 @@
 class EditProjectGlobsDlg: public wxDialog
 {
     public:
-
-        EditProjectGlobsDlg(cbProject::Glob &glob, wxWindow* parent, wxWindowID id = wxID_ANY,
-                            const wxPoint& pos = wxDefaultPosition,
-                            const wxSize& size = wxDefaultSize);
+        EditProjectGlobsDlg(const cbProject::Glob &glob, wxWindow* parent);
         ~EditProjectGlobsDlg() override;
 
         cbProject::Glob GetGlob();

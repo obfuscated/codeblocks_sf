@@ -1354,7 +1354,7 @@ void ProjectManagerUI::OnAddFilesToProjectRecursively(wxCommandEvent& event)
     RebuildTree();
 }
 
-void ProjectManagerUI::OnManageGlobs(wxCommandEvent& event)
+void ProjectManagerUI::OnManageGlobs(cb_unused wxCommandEvent& event)
 {
     ManageGlobsDlg globManagerDlg(Manager::Get()->GetAppWindow());
     PlaceWindow(&globManagerDlg);
