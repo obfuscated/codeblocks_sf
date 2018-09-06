@@ -25,21 +25,19 @@ class EditProjectGlobsDlg: public wxDialog
         cbProject::Glob GetGlob();
     private:
         //(*Declarations(EditProjectGlobsDlg)
-        wxBitmapButton* btnBrowse;
-        wxBitmapButton* btnOther;
-        wxCheckBox* chkRecursive;
-        wxTextCtrl* txtPath;
-        wxTextCtrl* txtWildcart;
+        wxCheckBox* m_CheckRecursive;
+        wxTextCtrl* m_TextPath;
+        wxTextCtrl* m_TextWildcart;
         //*)
 
     private:
 
         //(*Identifiers(EditProjectGlobsDlg)
-        static const long ID_TEXTCTRL1;
-        static const long ID_BITMAPBUTTON1;
-        static const long ID_BITMAPBUTTON2;
-        static const long ID_CHECKBOX1;
-        static const long ID_TEXTCTRL2;
+        static const long ID_TEXTCTRL_PATH;
+        static const long ID_BTN_BROWSE;
+        static const long ID_BTN_OTHER;
+        static const long ID_TEXTCTRL_WILDCART;
+        static const long ID_CHECK_RECURSIVE;
         //*)
 
     private:

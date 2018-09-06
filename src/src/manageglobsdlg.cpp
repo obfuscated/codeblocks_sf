@@ -20,10 +20,10 @@
 //*)
 
 //(*IdInit(ManageGlobsDlg)
-const long ManageGlobsDlg::ID_LISTCTRL1 = wxNewId();
-const long ManageGlobsDlg::ID_BUTTON1 = wxNewId();
-const long ManageGlobsDlg::ID_BUTTON2 = wxNewId();
-const long ManageGlobsDlg::ID_BUTTON3 = wxNewId();
+const long ManageGlobsDlg::ID_LISTCTRL = wxNewId();
+const long ManageGlobsDlg::ID_BUTTON_ADD = wxNewId();
+const long ManageGlobsDlg::ID_BUTTON_DELETE = wxNewId();
+const long ManageGlobsDlg::ID_BUTTON_EDIT = wxNewId();
 //*)
 
 BEGIN_EVENT_TABLE(ManageGlobsDlg,wxDialog)
@@ -34,6 +34,11 @@ END_EVENT_TABLE()
 ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos,const wxSize& size)
 {
     //(*Initialize(ManageGlobsDlg)
+    wxButton* btnAdd;
+    wxButton* btnCancel;
+    wxButton* btnDelete;
+    wxButton* btnEdit;
+    wxButton* btnOk;
     wxGridBagSizer* GridBagSizer1;
     wxGridBagSizer* GridBagSizer2;
     wxStaticLine* StaticLine1;
@@ -42,14 +47,14 @@ ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos
     SetClientSize(wxDefaultSize);
     Move(wxDefaultPosition);
     GridBagSizer1 = new wxGridBagSizer(0, 0);
-    lstGlobsList = new wxListCtrl(this, ID_LISTCTRL1, wxDefaultPosition, wxDefaultSize, wxLC_REPORT, wxDefaultValidator, _T("ID_LISTCTRL1"));
+    lstGlobsList = new wxListCtrl(this, ID_LISTCTRL, wxDefaultPosition, wxDefaultSize, wxLC_REPORT, wxDefaultValidator, _T("ID_LISTCTRL"));
     GridBagSizer1->Add(lstGlobsList, wxGBPosition(0, 0), wxDefaultSpan, wxALL|wxEXPAND, 5);
     GridBagSizer2 = new wxGridBagSizer(0, 0);
-    btnAdd = new wxButton(this, ID_BUTTON1, _("Add"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON1"));
+    btnAdd = new wxButton(this, ID_BUTTON_ADD, _("Add"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_ADD"));
     GridBagSizer2->Add(btnAdd, wxGBPosition(0, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    btnDelete = new wxButton(this, ID_BUTTON2, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON2"));
+    btnDelete = new wxButton(this, ID_BUTTON_DELETE, _("Delete"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_DELETE"));
     GridBagSizer2->Add(btnDelete, wxGBPosition(1, 0), wxDefaultSpan, wxLEFT|wxRIGHT|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
-    btnEdit = new wxButton(this, ID_BUTTON3, _("Edit"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON3"));
+    btnEdit = new wxButton(this, ID_BUTTON_EDIT, _("Edit"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("ID_BUTTON_EDIT"));
     GridBagSizer2->Add(btnEdit, wxGBPosition(2, 0), wxDefaultSpan, wxALL|wxALIGN_CENTER_HORIZONTAL|wxALIGN_CENTER_VERTICAL, 5);
     StaticLine1 = new wxStaticLine(this, wxID_ANY, wxDefaultPosition, wxSize(10,-1), wxLI_HORIZONTAL, _T("wxID_ANY"));
     GridBagSizer2->Add(StaticLine1, wxGBPosition(3, 0), wxDefaultSpan, wxALL|wxEXPAND, 5);
@@ -65,9 +70,9 @@ ManageGlobsDlg::ManageGlobsDlg(wxWindow* parent,wxWindowID id,const wxPoint& pos
     GridBagSizer1->Fit(this);
     GridBagSizer1->SetSizeHints(this);
 
-    Connect(ID_BUTTON1,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnAddClick);
-    Connect(ID_BUTTON2,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnDeleteClick);
-    Connect(ID_BUTTON3,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnEditClick);
+    Connect(ID_BUTTON_ADD,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnAddClick);
+    Connect(ID_BUTTON_DELETE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnDeleteClick);
+    Connect(ID_BUTTON_EDIT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnEditClick);
     Connect(wxID_OK,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&ManageGlobsDlg::OnOkClick);
     //*)
 

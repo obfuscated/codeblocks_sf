@@ -31,19 +31,14 @@ class ManageGlobsDlg: public wxDialog
 
     private:
         //(*Declarations(ManageGlobsDlg)
-        wxButton* btnAdd;
-        wxButton* btnCancel;
-        wxButton* btnDelete;
-        wxButton* btnEdit;
-        wxButton* btnOk;
         wxListCtrl* lstGlobsList;
         //*)
 
         //(*Identifiers(ManageGlobsDlg)
-        static const long ID_LISTCTRL1;
-        static const long ID_BUTTON1;
-        static const long ID_BUTTON2;
-        static const long ID_BUTTON3;
+        static const long ID_LISTCTRL;
+        static const long ID_BUTTON_ADD;
+        static const long ID_BUTTON_DELETE;
+        static const long ID_BUTTON_EDIT;
         //*)
 
     private:
