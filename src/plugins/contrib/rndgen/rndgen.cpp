@@ -7,27 +7,22 @@
     #include "cbeditor.h"
     #include "manager.h"
 #endif
-#include "RndGen.h"
+#include "rndgen.h"
 #include "cbstyledtextctrl.h"
 
 #define SCI_SETUNDOCOLLECTION 2012
 
-#if defined(__GNUC__) && defined(__GXX_EXPERIMENTAL_CXX0X__)
-	#include <random>
-    inline void ini_random() { };
-	inline unsigned int random()
-	{
-		static std::mersenne_twister_engine<unsigned int, 32, 624, 397, 31,
+#include <random>
+
+static unsigned int get_random()
+{
+	static std::mersenne_twister_engine <unsigned int, 32, 624, 397, 31,
                                         0x9908b0df, 11,
                                         0xffffffff,  7,
                                         0x9d2c5680, 15,
                                         0xefc60000, 18, 1812433253> randgen(time(0));
-		return randgen();
-	};
-#else
-	inline void ini_random() { srand(time(0)); };
-	inline int random() { return rand(); };
-#endif
+	return randgen();
+};
 
 
 namespace
@@ -42,7 +37,6 @@ void RndGen::OnAttach()
 
 void RndGen::OnSave(CodeBlocksEvent& event)
 {
-	ini_random();
 	cbEditor* ed = (cbEditor*) event.GetEditor();
 	cbStyledTextCtrl* ctrl = ed->GetControl();
 
@@ -79,7 +73,7 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			long arg;
 			int_re.GetMatch(s, 3).ToLong(&arg);
 			wxString replace;
-			int rnd = random() % (arg+1);
+			int rnd = get_random() % (arg+1);
 			replace.Printf(_T("%u"), rnd);
 			s.Replace(search, replace, false);
 
@@ -97,27 +91,27 @@ void RndGen::OnSave(CodeBlocksEvent& event)
 			if(what == _T("ALNUM"))
 			{
 				for(int j = 0; j<arg; ++j)
-					replace += c[random() % c.length()];
+					replace += c[get_random() % c.length()];
 			}
 			if(what == _T("DIGITS"))
 			{
 				for(int j = 0; j<arg; ++j)
-					replace += c[random() % 10];
+					replace += c[get_random() % 10];
 			}
 			if(what == _T("CHARS"))
 			{
 				for(int j = 0; j<arg; ++j)
-					replace += c[10+ random() % (c.length() - 10)];
+					replace += c[10+ get_random() % (c.length() - 10)];
 			}
 			if(what == _T("UPPERCHARS"))
 			{
 				for(int j = 0; j<arg; ++j)
-					replace += c[36 + random() % 26];
+					replace += c[36 + get_random() % 26];
 			}
 			if(what == _T("LOWERCHARS"))
 			{
 				for(int j = 0; j<arg; ++j)
-					replace += c[10 + random() % 26];
+					replace += c[10 + get_random() % 26];
 			}
 			s.Replace(search, replace, false);
 

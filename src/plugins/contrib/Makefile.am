@@ -86,6 +86,10 @@ if BUILD_REOPENEDITOR
 MAYBE_REOPENEDITOR=ReopenEditor appdata
 endif
 
+if BUILD_RNDGEN
+MAYBE_RNDGEN=rndgen appdata
+endif
+
 if BUILD_EXPORTER
 MAYBE_EXPORTER=source_exporter appdata
 endif
@@ -186,6 +190,7 @@ SUBDIRS = $(MAYBE_AUTOVERSIONING) \
 		$(MAYBE_SPELLCHECKER) \
 		$(MAYBE_REGEX) \
 		$(MAYBE_REOPENEDITOR) \
+		$(MAYBE_RNDGEN) \
 		$(MAYBE_THREADSEARCH) \
 		$(MAYBE_TOOLSPLUS) \
 		$(MAYBE_VALGRIND) \
@@ -228,6 +233,7 @@ DIST_SUBDIRS = appdata \
 		symtab \
 		regex_testbed \
 		ReopenEditor \
+		rndgen \
 		ThreadSearch \
 		ToolsPlus \
 		Valgrind \
@@ -239,7 +245,7 @@ DIST_SUBDIRS = appdata \
 		wxSmithIExplore \
 		wxSmithSTC
 
-EXTRA_DIST = rndgen
+EXTRA_DIST =
 if ENABLE_FORTRAN
 EXTRA_DIST += $(srcdir)/FortranProject/*.h \
 		$(srcdir)/FortranProject/*.cpp \

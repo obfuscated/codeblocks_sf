@@ -43,6 +43,7 @@
 		<Project filename="plugins/contrib/ProjectOptionsManipulator/ProjectOptionsManipulator_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/regex_testbed/RegExTestbed_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_wx30-unix.cbp" />
+		<Project filename="plugins/contrib/rndgen/rndgen_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/SmartIndent/SmartIndent_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/source_exporter/Exporter_wx30-unix.cbp" />
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx30-unix.cbp" />

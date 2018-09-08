@@ -97,6 +97,9 @@
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor-unix.cbp">
 			<Depends filename="CodeBlocks-unix.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/rndgen/rndgen-unix.cbp">
+			<Depends filename="CodeBlocks-unix.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/SmartIndent/SmartIndent-unix.cbp">
 			<Depends filename="CodeBlocks-unix.cbp" />
 		</Project>

@@ -98,6 +98,9 @@
 		<Project filename="plugins/contrib/ReopenEditor/ReopenEditor_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>
+		<Project filename="plugins/contrib/rndgen/rndgen_wx30-unix.cbp">
+			<Depends filename="CodeBlocks_wx30-unix.cbp" />
+		</Project>
 		<Project filename="plugins/contrib/SpellChecker/SpellChecker_wx30-unix.cbp">
 			<Depends filename="CodeBlocks_wx30-unix.cbp" />
 		</Project>

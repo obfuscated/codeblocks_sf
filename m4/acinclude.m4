@@ -354,6 +354,7 @@ AC_DEFUN([BUILD_CONTRIB_NONE], [
 	AM_CONDITIONAL([BUILD_PROJECTOPTIONSMANIPULATOR], [false])
 	AM_CONDITIONAL([BUILD_REGEX], [false])
 	AM_CONDITIONAL([BUILD_REOPENEDITOR], [false])
+	AM_CONDITIONAL([BUILD_RNDGEN], [false])
 	AM_CONDITIONAL([BUILD_EXPORTER], [false])
 	AM_CONDITIONAL([BUILD_SMARTINDENT], [false])
 	AM_CONDITIONAL([BUILD_SPELLCHECKER], [false])
@@ -396,6 +397,7 @@ AC_DEFUN([BUILD_CONTRIB_ALL], [
 	AM_CONDITIONAL([BUILD_PROFILER], [true])
 	AM_CONDITIONAL([BUILD_REGEX], [true])
 	AM_CONDITIONAL([BUILD_REOPENEDITOR], [true])
+	AM_CONDITIONAL([BUILD_RNDGEN], [true])
 	AM_CONDITIONAL([BUILD_EXPORTER], [true])
 	AM_CONDITIONAL([BUILD_SMARTINDENT], [true])
 	AM_CONDITIONAL([BUILD_SPELLCHECKER], [true])
@@ -426,9 +428,9 @@ AC_ARG_WITH(contrib-plugins,
   [                        "none", "no", "--without-contrib-plugins" or skipping the parameter at all, ]
   [                        compiles none of the contrib-plugins ]
   [                        Plugin names are: AutoVersioning, BrowseTracker, byogames, Cccc, CppCheck, cbkoders, codesnippets, ]
-  [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, ]
+  [                        		     codestat, copystrings, Cscope, DoxyBlocks, dragscroll, EditorConfig, EditorTweaks, envvars, exporter, ]
   [                        		     FileManager, headerfixup, help, hexeditor, incsearch, keybinder, libfinder, MouseSap, ]
-  [                        		     NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, exporter, smartindent, spellchecker, ]
+  [                        		     NassiShneiderman, ProjectOptionsManipulator, profiler, regex, ReopenEditor, rndgen, smartindent, spellchecker, ]
   [                        		     symtab, ThreadSearch, ToolsPlus, Valgrind, wxcontrib, wxsmith, wxsmithcontrib, wxsmithaui ],
   plugins="$withval", plugins="none")
 
@@ -507,6 +509,9 @@ do
 		;;
 	ReopenEditor)
 		AM_CONDITIONAL([BUILD_REOPENEDITOR], [true])
+		;;
+	rndgen)
+		AM_CONDITIONAL([BUILD_RNDGEN], [true])
 		;;
 	exporter)
 		AM_CONDITIONAL([BUILD_EXPORTER], [true])
@@ -622,6 +627,9 @@ do
 	-ReopenEditor)
 		AM_CONDITIONAL([BUILD_REOPENEDITOR], [false])
 		;;
+	-rndgen)
+		AM_CONDITIONAL([BUILD_RNDGEN], [false])
+		;;
 	-exporter)
 		AM_CONDITIONAL([BUILD_EXPORTER], [false])
 		;;
@@ -711,6 +719,7 @@ AC_SUBST(BUILD_NASSISHNEIDERMAN)
 AC_SUBST(BUILD_PROFILER)
 AC_SUBST(BUILD_REGEX)
 AC_SUBST(BUILD_REOPENEDITOR)
+AC_SUBST(BUILD_RNDGEN)
 AC_SUBST(BUILD_EXPORTER)
 AC_SUBST(BUILD_SYMTAB)
 AC_SUBST(BUILD_SMARTINDENT)
