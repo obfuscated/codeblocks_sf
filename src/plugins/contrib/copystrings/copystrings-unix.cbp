@@ -52,6 +52,7 @@
 		</ExtraCommands>
 		<Unit filename="copystrings.cpp" />
 		<Unit filename="copystrings.h" />
+		<Unit filename="manifest.xml" />
 		<Extensions>
 			<code_completion />
 			<envvars />
