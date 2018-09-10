@@ -2271,9 +2271,6 @@
 		<Unit filename="plugins/xpmanifest/windowsxplooknfeel.h">
 			<Option target="XP look &amp; feel" />
 		</Unit>
-		<Unit filename="scripts/gdb_types.script">
-			<Option target="Debugger" />
-		</Unit>
 		<Unit filename="scripts/make_dist.script">
 			<Option target="src" />
 		</Unit>
