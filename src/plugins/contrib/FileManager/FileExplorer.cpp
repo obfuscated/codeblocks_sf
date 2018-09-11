@@ -1643,8 +1643,11 @@ void FileExplorer::OnParseBZR(wxCommandEvent &/*event*/)
 void FileExplorer::OnUpButton(wxCommandEvent &/*event*/)
 {
     wxFileName loc(m_root);
-    loc.RemoveLastDir();
-    SetRootFolder(loc.GetFullPath()); //TODO: Check if this is always the root folder
+    if (loc.GetDirCount())
+    {
+        loc.RemoveLastDir();
+        SetRootFolder(loc.GetFullPath());
+    }
 }
 
 void FileExplorer::OnRefresh(wxCommandEvent &/*event*/)
