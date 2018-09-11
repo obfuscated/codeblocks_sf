@@ -360,7 +360,7 @@ public:
         for(unsigned int i=0;i<m_update_paths.GetCount();i++)
             update_paths.Add(m_update_paths[i].c_str());
 
-        for(MonMap::iterator it=m_monmap.begin();it!=m_monmap.end();++it)
+        for(MonMap::iterator it=m_monmap.begin();it!=m_monmap.end();)
         {
             int index=update_paths.Index(it->first);
             if(index==wxNOT_FOUND)
@@ -369,8 +369,10 @@ public:
                 if(it->second->m_fail)
                 {
                     delete it->second;
-                    m_monmap.erase(it);
+                    it = m_monmap.erase(it);
                 }
+                else
+                    ++it;
             }
         }
         for(size_t i=0;i<update_paths.GetCount();i++)
@@ -402,14 +404,16 @@ public:
             if(result==WAIT_OBJECT_0+1 && !kill_request)
             {
                 kill_request=true;
-                for(MonMap::iterator it=m_monmap.begin();it!=m_monmap.end();++it)
+                for(MonMap::iterator it=m_monmap.begin();it!=m_monmap.end();)
                 {
                     it->second->ReadCancel();
                     if(it->second->m_fail)
                     {
                         delete it->second;
-                        m_monmap.erase(it);
+                        it = m_monmap.erase(it);
                     }
+                    else
+                        ++it;
                 }
             }
             if(result==WAIT_OBJECT_0)
