@@ -331,6 +331,9 @@ enum cbPlaceDialogMode
 
 extern DLLIMPORT void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
 
+/// @return The client area of the display the window is currently positioned at.
+extern DLLIMPORT wxRect cbGetMonitorRectForWindow(wxWindow *window);
+
 /** wxMessageBox wrapper.
   *
   * Use this instead of wxMessageBox(), as this uses PlaceWindow() to show it in the correct monitor.
