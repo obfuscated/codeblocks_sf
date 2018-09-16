@@ -336,9 +336,8 @@ class DLLIMPORT cbEditor : public EditorBase
             ensureVisible = 0x2,
         };
 
-        void DoFoldAll(int fold); // 0=unfold, 1=fold, 2=toggle
+        void DoFoldAll(FoldMode fold);
         void DoFoldBlockFromLine(int line, FoldMode fold, unsigned foldFlags);
-        bool DoFoldLine(int line, int fold); // 0=unfold, 1=fold, 2=toggle
         void SetMarkerStyle(int marker, int markerType, wxColor fore, wxColor back);
         void UnderlineFoldedLines(bool underline);
         cbStyledTextCtrl* CreateEditor();
