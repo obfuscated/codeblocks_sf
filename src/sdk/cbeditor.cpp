@@ -2144,7 +2144,7 @@ void cbEditor::ToggleFoldBlockFromLine(int line)
     DoFoldBlockFromLine(line, 2);
 }
 
-void cbEditor::GotoLine(int line, bool centerOnScreen)
+void cbEditor::GotoLine(int line, cb_unused bool centerOnScreen)
 {
     cbStyledTextCtrl* control = GetControl();
 
@@ -2158,17 +2158,6 @@ void cbEditor::GotoLine(int line, bool centerOnScreen)
     DoFoldLine(line,0);
     DoFoldLine(line+1,0);
 
-    if (centerOnScreen)
-    {
-        int linesOnScreen    = control->LinesOnScreen() >> 1;
-        int firstVisibleLine = control->GetFirstVisibleLine();
-        if (   (line <  firstVisibleLine)
-            || (line > (firstVisibleLine + 2*linesOnScreen)) )
-        {
-            control->GotoLine(line - linesOnScreen);
-            control->GotoLine(line + linesOnScreen);
-        }
-    }
     control->GotoLine(line);
 }
 
