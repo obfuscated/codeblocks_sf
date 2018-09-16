@@ -19,6 +19,8 @@
     #include <wx/stattext.h>
     #include <wx/textctrl.h>
     //*)
+
+    #include "cbexception.h"
 #endif
 //(*InternalHeaders(GotoFile)
 //*)
@@ -37,9 +39,9 @@ GotoFile::GotoFile(wxWindow* parent, IncrementalSelectIterator *iterator, const 
                    const wxString &message) :
     m_handler(this, iterator)
 {
-    BuildContent(parent, iterator, title, message);
+    cbAssert(parent);
 
-    m_handler.Init(m_ResultList, m_Text);
+    BuildContent(parent, iterator, title, message);
 }
 
 void GotoFile::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterator, const wxString &title,
@@ -63,16 +65,54 @@ void GotoFile::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterato
     m_sizer->SetSizeHints(this);
     //*)
 
+    SetTitle(title);
+    labelCtrl->SetLabel(message);
+
+    // Call this here to make sure the column widths are correctly calculated.
+    m_handler.Init(m_ResultList, m_Text);
+
+    const int columnWidth = iterator->GetColumnWidth(0);
+
     // Add first column
     wxListItem column;
     column.SetId(0);
     column.SetText( _("Column") );
-    column.SetWidth(300);
+    column.SetWidth(columnWidth);
     m_ResultList->InsertColumn(0, column);
     m_ResultList->SetIterator(iterator);
 
-    SetTitle(title);
-    labelCtrl->SetLabel(message);
+    // Call Fit to make sure all GetSize methods return correct values.
+    m_sizer->Fit(this);
+
+    {
+        // Use GetItemRect to account for the spacing between rows. GetCharHeight is used just as
+        // precaution if GetItemRect fails.
+        wxRect itemRect;
+        if (!m_ResultList->GetItemRect(0, itemRect))
+            itemRect = wxRect();
+        const int charHeight = std::max(m_ResultList->GetCharHeight(), itemRect.GetHeight());
+        const int totalHeight = charHeight * m_ResultList->GetItemCount() + charHeight / 2;
+
+        const wxSize minSize = m_ResultList->GetMinSize();
+        int minYCorrected = minSize.y;
+
+        // Make the list taller if there are many items in it. This should make it a bit easier to find
+        // stuff. The height would be something like 70% of the display's client area height.
+        if (totalHeight > minSize.y)
+        {
+            const wxRect monitorRect = cbGetMonitorRectForWindow(parent);
+            const int monitorHeight = int(std::lround(monitorRect.GetHeight() * 0.7));
+            minYCorrected = std::max(minYCorrected, std::min(monitorHeight, totalHeight));
+        }
+
+        // Resize the window to maximise visible items. Do this using SetSize instead of using
+        // SetMinSize to allow the user to make the window smaller if he/she wishes to do so.
+        const wxSize windowSize = GetSize();
+        const wxSize listSize = m_ResultList->GetSize();
+        // This accounts for non-list UI elements present in the window.
+        const wxSize sizeDiff = windowSize - listSize;
+        SetSize(wxSize(std::max(columnWidth + sizeDiff.x, windowSize.x), minYCorrected + sizeDiff.y));
+    }
 }
 
 GotoFile::~GotoFile()
