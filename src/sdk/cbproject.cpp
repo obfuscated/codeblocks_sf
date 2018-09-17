@@ -235,6 +235,10 @@ wxString cbProject::CreateUniqueFilename()
 
 void cbProject::ClearAllProperties()
 {
+    // The macro manager stores pointers to projects and targets, so we need to clear it to prevent
+    // dangling pointer bugs.
+    Manager::Get()->GetMacrosManager()->Reset();
+
     Delete(m_pExtensionsElement);
 
     for (FilesList::iterator it = m_Files.begin(); it != m_Files.end();++it)
