@@ -20,6 +20,9 @@
     #include <wx/textctrl.h>
     //*)
 
+    #include <algorithm>
+    #include <cmath>
+
     #include "cbexception.h"
 #endif
 //(*InternalHeaders(GotoFile)
@@ -97,18 +100,23 @@ void GotoFile::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterato
         int minYCorrected = minSize.y;
 
         // Make the list taller if there are many items in it. This should make it a bit easier to find
-        // stuff. The height would be something like 70% of the display's client area height.
+        // stuff. The height would be something like 50% of the display's client area height.
         if (totalHeight > minSize.y)
         {
             const wxRect monitorRect = cbGetMonitorRectForWindow(parent);
-            const int monitorHeight = int(std::lround(monitorRect.GetHeight() * 0.7));
+            const int monitorHeight = int(std::lround(monitorRect.GetHeight() * 0.5));
             minYCorrected = std::max(minYCorrected, std::min(monitorHeight, totalHeight));
         }
 
         // Resize the window to maximise visible items. Do this using SetSize instead of using
         // SetMinSize to allow the user to make the window smaller if he/she wishes to do so.
         const wxSize windowSize = GetSize();
-        const wxSize listSize = m_ResultList->GetSize();
+        // GetSize for the list control could return a window smaller than the minSize, but the
+        // window size could be accounting for list control's min size. This means that sizeDiff
+        // could be calculated larger than needed. Account for this using std::max. This seems to
+        // happen in wx2.8 builds.
+        const wxSize listSize(std::max(listCtrl->GetSize().x, minSize.x),
+                              std::max(listCtrl->GetSize().y, minSize.y));
         // This accounts for non-list UI elements present in the window.
         const wxSize sizeDiff = windowSize - listSize;
         SetSize(wxSize(std::max(columnWidth + sizeDiff.x, windowSize.x), minYCorrected + sizeDiff.y));
