@@ -119,8 +119,11 @@ ProjectManager::~ProjectManager()
     }
     m_pProjects->Clear();
 
-    delete m_pProjects;m_pProjects = nullptr;
-    delete m_pFileGroups;m_pFileGroups = nullptr;
+    delete m_pProjects;
+    m_pProjects = nullptr;
+
+    delete m_pFileGroups;
+    m_pFileGroups = nullptr;
 
     delete m_ui;
     m_ui = nullptr;
