@@ -115,8 +115,8 @@ void GotoFile::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterato
         // window size could be accounting for list control's min size. This means that sizeDiff
         // could be calculated larger than needed. Account for this using std::max. This seems to
         // happen in wx2.8 builds.
-        const wxSize listSize(std::max(listCtrl->GetSize().x, minSize.x),
-                              std::max(listCtrl->GetSize().y, minSize.y));
+        const wxSize listSize(std::max(m_ResultList->GetSize().x, minSize.x),
+                              std::max(m_ResultList->GetSize().y, minSize.y));
         // This accounts for non-list UI elements present in the window.
         const wxSize sizeDiff = windowSize - listSize;
         SetSize(wxSize(std::max(columnWidth + sizeDiff.x, windowSize.x), minYCorrected + sizeDiff.y));
