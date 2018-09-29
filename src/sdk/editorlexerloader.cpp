@@ -179,7 +179,7 @@ void EditorLexerLoader::DoStyles(HighlightLanguage language, TiXmlElement* node)
     if (!foundSelection)
     {
         m_pTarget->AddOption(language, wxT("Selection"), cbSELECTION, wxNullColour,
-                             wxColour(192, 192, 192), false, false, false, false);
+                             wxColour(217, 217, 217), false, false, false, false);
     }
     if (!foundActiveLine)
     {

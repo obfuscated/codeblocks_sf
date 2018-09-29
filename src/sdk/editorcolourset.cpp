@@ -595,7 +595,7 @@ void EditorColourSet::Apply(HighlightLanguage lang, cbStyledTextCtrl* control, b
 //                    Manager::Get()->GetConfigManager(_T("editor"))->Write(_T("/selection_colour"), opt->back);
                 }
                 else
-                    control->SetSelBackground(false, wxColour(0xC0, 0xC0, 0xC0));
+                    control->SetSelBackground(false, wxColour(0xD9, 0xD9, 0xD9));
 
                 if (opt->fore != wxNullColour)
                 {
