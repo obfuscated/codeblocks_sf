@@ -40,6 +40,8 @@
 #include "cbstyledtextctrl.h"
 #include "cbcolourmanager.h"
 
+#include <stack>
+
 #include <wx/fontutil.h>
 #include <wx/splitter.h>
 
@@ -1983,16 +1985,112 @@ void cbEditor::AutoComplete()
     Manager::Get()->GetLogManager()->Log(_T("cbEditor::AutoComplete() is obsolete.\nUse AutoComplete(cbEditor &ed) from the Abbreviations plugin instead."));
 }
 
-void cbEditor::DoFoldAll(int fold)
+void cbEditor::DoFoldAll(FoldMode fold)
 {
     cbAssert(m_pControl);
     if (m_SplitType != stNoSplit)
         cbAssert(m_pControl2);
     cbStyledTextCtrl* ctrl = GetControl();
+
     ctrl->Colourise(0, -1); // the *most* important part!
-    int count = ctrl->GetLineCount();
-    for (int i = 0; i <= count; ++i)
-        DoFoldLine(i, fold);
+
+    if (fold != FoldMode::toggle)
+    {
+        const int count = ctrl->GetLineCount();
+        for (int line = 0; line < count; ++line)
+        {
+            const int level = ctrl->GetFoldLevel(line);
+            if ((level & wxSCI_FOLDLEVELHEADERFLAG) == 0)
+                continue;
+
+            if (m_pData->mFoldingLimit)
+            {
+                const bool isExpanded = ctrl->GetFoldExpanded(line);
+
+                // Apply the folding level limit only if the current block will be
+                // folded (that means it's currently expanded), folding level limiter
+                // must be enabled of course. Unfolding will not be affected.
+                if (isExpanded && (fold == FoldMode::contract || fold == FoldMode::toggle))
+                {
+                    int levelNumber = (level & wxSCI_FOLDLEVELNUMBERMASK) - wxSCI_FOLDLEVELBASE;
+                    if (levelNumber > m_pData->mFoldingLimitLevel - 1)
+                        continue;
+                }
+            }
+
+            ctrl->FoldLine(line, int(fold));
+        }
+    }
+    else
+    {
+        // Toggle implementation - we need this one because the implementation for fold/unfold
+        // doesn't work correctly - it expands parent folds when there is an expanded child fold.
+        // We want to toggle all fold points in the editor no matter what level are they at. If
+        // there is a folding limit we respect it for both contracting and expanding.
+
+        struct FoldRange
+        {
+            FoldRange(int start, int end, bool hasContracted) :
+                start(start),
+                end(end),
+                hasContracted(hasContracted)
+            {}
+
+            int start, end;
+            bool hasContracted;
+        };
+        // We need to know if a parent fold has been contracted. For this we use a stack with the
+        // active folds at the line we are processing.
+        std::stack<FoldRange> parentFolds;
+
+        const int count = ctrl->GetLineCount();
+        for (int line = 0; line < count; ++line)
+        {
+            while (!parentFolds.empty() && parentFolds.top().end < line)
+                parentFolds.pop();
+
+            const int level = ctrl->GetFoldLevel(line);
+            if ((level & wxSCI_FOLDLEVELHEADERFLAG) == 0)
+                continue;
+            const int levelNumber = (level & wxSCI_FOLDLEVELNUMBERMASK) - wxSCI_FOLDLEVELBASE;
+            if (m_pData->mFoldingLimit)
+            {
+                // Apply folding level limit.
+                if (levelNumber > m_pData->mFoldingLimitLevel - 1)
+                    continue;
+            }
+
+            const bool toContract = ctrl->GetFoldExpanded(line);
+            const int lastChild = ctrl->GetLastChild(line, -1);
+
+            bool hasContracted;
+            if (toContract)
+                hasContracted = true;
+            else
+            {
+                if (parentFolds.empty())
+                    hasContracted = false;
+                else
+                    hasContracted = parentFolds.top().hasContracted;
+            }
+            parentFolds.push(FoldRange(line, lastChild, hasContracted));
+
+            if (toContract)
+            {
+                ctrl->SetFoldExpanded(line, false);
+                ctrl->HideLines(line + 1, lastChild);
+            }
+            else
+            {
+                ctrl->SetFoldExpanded(line, true);
+                // If there are contracted parent folds we must not show lines for child folds even
+                // if they are expanded. When the user does an expand operation for the parent
+                // Scintilla will make sure to show these lines.
+                if (!hasContracted)
+                    ctrl->ShowLines(line + 1, lastChild);
+            }
+        }
+    }
 }
 
 void cbEditor::DoFoldBlockFromLine(int line, FoldMode fold, unsigned foldFlags)
@@ -2036,55 +2134,19 @@ void cbEditor::DoFoldBlockFromLine(int line, FoldMode fold, unsigned foldFlags)
     }
 }
 
-bool cbEditor::DoFoldLine(int line, int fold)
-{
-    cbAssert(m_pControl);
-    if (m_SplitType != stNoSplit)
-        cbAssert(m_pControl2);
-    cbStyledTextCtrl* ctrl = GetControl();
-    int level = ctrl->GetFoldLevel(line);
-
-    // The fold parameter is the type of folding action requested
-    // 0 = Unfold; 1 = Fold; 2 = Toggle folding.
-
-    // Check if the line is a header (fold point).
-    if (level & wxSCI_FOLDLEVELHEADERFLAG)
-    {
-        bool IsExpanded = ctrl->GetFoldExpanded(line);
-
-        // If a fold/unfold request is issued when the block is already
-        // folded/unfolded, ignore the request.
-        if (fold == 0 &&  IsExpanded) return true;
-        if (fold == 1 && !IsExpanded) return true;
-
-        // Apply the folding level limit only if the current block will be
-        // folded (that means it's currently expanded), folding level limiter
-        // must be enabled of course. Unfolding will not be affected.
-        if (m_pData->mFoldingLimit && IsExpanded)
-        {
-            if ((level & wxSCI_FOLDLEVELNUMBERMASK) > (wxSCI_FOLDLEVELBASE + m_pData->mFoldingLimitLevel-1))
-                return false;
-        }
-
-        ctrl->ToggleFold(line);
-        return true;
-    }
-    return false;
-}
-
 void cbEditor::FoldAll()
 {
-    DoFoldAll(1);
+    DoFoldAll(FoldMode::contract);
 }
 
 void cbEditor::UnfoldAll()
 {
-    DoFoldAll(0);
+    DoFoldAll(FoldMode::expand);
 }
 
 void cbEditor::ToggleAllFolds()
 {
-    DoFoldAll(2);
+    DoFoldAll(FoldMode::toggle);
 }
 
 void cbEditor::SetFoldingIndicator(int id)
