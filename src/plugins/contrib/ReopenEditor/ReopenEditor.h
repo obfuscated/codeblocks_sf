@@ -59,6 +59,9 @@ class ReopenEditor : public cbPlugin
         ReopenEditorListView* m_pListLog;
 
         bool m_IsManaged;
+        /// We need this to live longer than the logger, because the InfoPane stores a pointer to
+        /// this icon.
+        wxBitmap m_LogIcon;
 
     DECLARE_EVENT_TABLE()
 };

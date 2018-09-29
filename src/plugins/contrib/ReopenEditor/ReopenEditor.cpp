@@ -84,6 +84,9 @@ void ReopenEditor::OnAttach()
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("editor"));
     m_IsManaged = cfg->ReadBool(_T("/reopen_editor/managed"),true);
 
+    const wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
+    m_LogIcon = cbLoadBitmap(prefix + _T("undo.png"), wxBITMAP_TYPE_PNG);
+
     ShowList();
 }
 
@@ -325,10 +328,8 @@ void ReopenEditor::ShowList()
 
     if(m_IsManaged)
     {
-        wxString prefix = ConfigManager::GetDataFolder() + _T("/images/16x16/");
-        wxBitmap * bmp = new wxBitmap(cbLoadBitmap(prefix + _T("undo.png"), wxBITMAP_TYPE_PNG));
-
-        CodeBlocksLogEvent evt3(cbEVT_ADD_LOG_WINDOW, m_pListLog, _("Closed files list"), bmp);
+        CodeBlocksLogEvent evt3(cbEVT_ADD_LOG_WINDOW, m_pListLog, _("Closed files list"),
+                                &m_LogIcon);
         Manager::Get()->ProcessEvent(evt3);
         CodeBlocksLogEvent evt4(cbEVT_SWITCH_TO_LOG_WINDOW, m_pListLog);
         Manager::Get()->ProcessEvent(evt4);
