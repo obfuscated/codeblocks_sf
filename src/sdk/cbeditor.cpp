@@ -1423,16 +1423,23 @@ void cbEditor::InternalSetEditorStyleBeforeFileOpen(cbStyledTextCtrl* control)
 
     const int caretBuffer = mgr->ReadInt(wxT("/caret_buffer"), 2);
     if (caretBuffer == 0)
+    {
         control->SetYCaretPolicy(wxSCI_CARET_EVEN, 0); // default
+        control->SetVisiblePolicy(wxSCI_CARET_EVEN, 0); // default
+    }
     else if (caretBuffer > 0 && caretBuffer <= 10)
     {
         // margin of N lines at top/bottom
-        control->SetYCaretPolicy(wxSCI_CARET_SLOP | wxSCI_CARET_STRICT | wxSCI_CARET_EVEN, caretBuffer);
+        control->SetYCaretPolicy(wxSCI_CARET_SLOP | wxSCI_CARET_STRICT | wxSCI_CARET_EVEN,
+                                 caretBuffer);
+        control->SetVisiblePolicy(wxSCI_CARET_SLOP | wxSCI_CARET_STRICT | wxSCI_CARET_EVEN,
+                                  caretBuffer);
     }
     else
     {
         // centred mode
         control->SetYCaretPolicy(wxSCI_CARET_STRICT | wxSCI_CARET_EVEN, 4);
+        control->SetVisiblePolicy(wxSCI_CARET_STRICT | wxSCI_CARET_EVEN, 4);
     }
 
     // gutter
@@ -1988,38 +1995,45 @@ void cbEditor::DoFoldAll(int fold)
         DoFoldLine(i, fold);
 }
 
-void cbEditor::DoFoldBlockFromLine(int line, int fold)
+void cbEditor::DoFoldBlockFromLine(int line, FoldMode fold, unsigned foldFlags)
 {
+    // Use static asserts to verify the constants are the same, because we don't want to include
+    // wxscintilla.h in cbeditor.h. This code is here, because we want the Foldmode to be private.
+    static_assert(int(cbEditor::FoldMode::contract) == wxSCI_FOLDACTION_CONTRACT, "Must match");
+    static_assert(int(cbEditor::FoldMode::expand) == wxSCI_FOLDACTION_EXPAND, "Must match");
+    static_assert(int(cbEditor::FoldMode::toggle) == wxSCI_FOLDACTION_TOGGLE, "Must match");
+
     cbAssert(m_pControl);
     if (m_SplitType != stNoSplit)
         cbAssert(m_pControl2);
     cbStyledTextCtrl* ctrl = GetControl();
-    ctrl->Colourise(0, -1); // the *most* important part!
-    int i, parent, maxLine, level, UnfoldUpto = line;
+    if (!ctrl)
+        return;
 
-    parent = ctrl->GetFoldParent(line);
-    level = ctrl->GetFoldLevel(parent);
-    /* The following code will check if the child is hidden
-    *  under parent before unfolding it
-    */
-    if (fold == 0)
+    // This is needed to update the folding information for the current view.
+    ctrl->Colourise(0, -1);
+
+    int foldLine;
+    int level = ctrl->GetFoldLevel(line);
+    if (level & wxSCI_FOLDLEVELHEADERFLAG)
+        foldLine = line;
+    else
     {
-        do
-        {
-            if (!ctrl->GetFoldExpanded(parent))
-                UnfoldUpto = parent;
-            if (wxSCI_FOLDLEVELBASE == (level & wxSCI_FOLDLEVELNUMBERMASK))
-                break;
-            parent = ctrl->GetFoldParent(parent);
-            level = ctrl->GetFoldLevel(parent);
-        }
-        while (parent != -1);
+        // If the line is not a block start line, find the block start. This makes it possible to
+        // toggle the folding when the cursor is in the middle of some block of code.
+        foldLine = ctrl->GetFoldParent(line);
+        if (foldLine == -1)
+            return;
     }
+    const bool isExpanded = ctrl->GetFoldExpanded(foldLine);
 
-    maxLine = ctrl->GetLastChild(line, -1);
+    ctrl->FoldLine(foldLine, int(fold));
 
-    for (i = UnfoldUpto; i <= maxLine; ++i)
-        DoFoldLine(i, fold);
+    if (foldFlags & FoldFlags::ensureVisible)
+    {
+        if (fold == FoldMode::expand || (fold == FoldMode::toggle && !isExpanded))
+            ctrl->EnsureVisibleEnforcePolicy(line);
+    }
 }
 
 bool cbEditor::DoFoldLine(int line, int fold)
@@ -2127,21 +2141,21 @@ void cbEditor::FoldBlockFromLine(int line)
 {
     if (line == -1)
         line = GetControl()->GetCurrentLine();
-    DoFoldBlockFromLine(line, 1);
+    DoFoldBlockFromLine(line, FoldMode::contract, FoldFlags::ensureVisible);
 }
 
 void cbEditor::UnfoldBlockFromLine(int line)
 {
     if (line == -1)
         line = GetControl()->GetCurrentLine();
-    DoFoldBlockFromLine(line, 0);
+    DoFoldBlockFromLine(line, FoldMode::expand, FoldFlags::ensureVisible);
 }
 
 void cbEditor::ToggleFoldBlockFromLine(int line)
 {
     if (line == -1)
         line = GetControl()->GetCurrentLine();
-    DoFoldBlockFromLine(line, 2);
+    DoFoldBlockFromLine(line, FoldMode::toggle, FoldFlags::ensureVisible);
 }
 
 void cbEditor::GotoLine(int line, cb_unused bool centerOnScreen)
@@ -2155,8 +2169,8 @@ void cbEditor::GotoLine(int line, cb_unused bool centerOnScreen)
     // If the line or the following is a fold point it will be unfolded, in this way
     // when the line is a function declaration (or only contains the opening brace of it [yes, that happens sometimes] )
     // the body is shown.
-    DoFoldLine(line,0);
-    DoFoldLine(line+1,0);
+    DoFoldBlockFromLine(line, FoldMode::expand, FoldFlags::none);
+    DoFoldBlockFromLine(line+1, FoldMode::expand, FoldFlags::none);
 
     control->GotoLine(line);
 }
