@@ -60,6 +60,11 @@ InfoPane::InfoPane(wxWindow* parent) : cbAuiNotebook(parent, idNB, wxDefaultPosi
 
 InfoPane::~InfoPane()
 {
+    for (size_t i = 0; i < m_Pages.GetCount(); ++i)
+    {
+        Page *page = m_Pages[i];
+        delete page;
+    }
 }
 
 wxString InfoPane::SaveTabOrder()
