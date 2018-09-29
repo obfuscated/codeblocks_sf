@@ -544,6 +544,7 @@ CodeCompletion::~CodeCompletion()
         SystemHeadersThread* thread = m_SystemHeadersThreads.front();
         if (thread->IsAlive() && thread->IsRunning())
             thread->Wait();
+        delete thread;
         m_SystemHeadersThreads.pop_front();
     }
 }
@@ -2606,6 +2607,7 @@ void CodeCompletion::OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event)
             CCLogger::Get()->DebugLog(event.GetString());
         if (thread->IsAlive() && thread->IsRunning())
             thread->Wait();
+        delete thread;
         m_SystemHeadersThreads.pop_front();
     }
 
