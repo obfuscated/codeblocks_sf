@@ -5015,7 +5015,7 @@ void MainFrame::OnRemoveLogWindow(CodeBlocksLogEvent& event)
     if (Manager::IsAppShuttingDown())
         return;
     if (event.window)
-        m_pInfoPane->RemoveNonLogger(event.window);
+        m_pInfoPane->DeleteNonLogger(event.window);
     else
         m_pInfoPane->DeleteLogger(event.logger);
 }
