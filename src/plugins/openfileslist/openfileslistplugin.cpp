@@ -143,18 +143,22 @@ void OpenFilesListPlugin::OnRelease(bool appShutDown)
         cfg->Write(_T("preserve_open_editors"), m_PreserveOpenEditors);
 
     if (appShutDown)
-        return;
-    // remove registered event sinks
-    Manager::Get()->RemoveAllEventSinksFor(this);
+    {
+        // remove registered event sinks
+        Manager::Get()->RemoveAllEventSinksFor(this);
 
-    // remove tree from docking system
-    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-    evt.pWindow = m_pTree;
-    Manager::Get()->ProcessEvent(evt);
+        // remove tree from docking system
+        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+        evt.pWindow = m_pTree;
+        Manager::Get()->ProcessEvent(evt);
+    }
 
     // finally destroy the tree
     m_pTree->Destroy();
     m_pTree = nullptr;
+
+    delete m_pImages;
+    m_pImages = nullptr;
 }
 
 void OpenFilesListPlugin::BuildMenu(wxMenuBar* menuBar)
