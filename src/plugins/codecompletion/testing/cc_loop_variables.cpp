@@ -26,3 +26,15 @@ void Function2(void)
     //if (!value1) {}   // adds a new token "! value1"
     //if (value1 && value2){}   // adds a new token "value1&& value2"
 }
+
+void Function3(void)
+{
+    int for_int = 0;
+    for (; for_int < 5; ++for_int)
+    {
+        //for   //for_int
+    }
+
+    // Above loop adds a new token "; for_int"
+    // should be fixed in revision ___.
+}
