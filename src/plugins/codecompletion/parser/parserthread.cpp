@@ -2564,6 +2564,11 @@ void ParserThread::HandleForLoopArguments()
         if (token.empty())
             break;
 
+        // pattern  for (; ...)
+        // the first token is a ';'
+        if (token == ParserConsts::semicolon)
+            break;
+
         wxString peek = smallTokenizer.PeekToken();
 
         bool createNewToken = false;
