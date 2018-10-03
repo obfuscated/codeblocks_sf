@@ -225,12 +225,6 @@
 		<Unit filename="hunspell/src/hunspell/csutil.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell/src/hunspell/dictmgr.cxx">
-			<Option target="hunspell" />
-		</Unit>
-		<Unit filename="hunspell/src/hunspell/dictmgr.hxx">
-			<Option target="hunspell" />
-		</Unit>
 		<Unit filename="hunspell/src/hunspell/filemgr.cxx">
 			<Option target="hunspell" />
 		</Unit>
@@ -285,16 +279,49 @@
 		<Unit filename="hunspell/src/hunspell/suggestmgr.hxx">
 			<Option target="hunspell" />
 		</Unit>
-		<Unit filename="hunspell/src/hunspell/utf_info.cxx">
+		<Unit filename="hunspell/src/hunspell/utf_info.hxx">
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="hunspell/src/hunspell/w_char.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/firstparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/firstparser.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/htmlparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/htmlparser.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/latexparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/latexparser.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/manparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/manparser.hxx">
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="hunspell/src/parsers/odfparser.cxx">
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="hunspell/src/parsers/odfparser.hxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/testparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/textparser.cxx">
+			<Option target="hunspell" />
+		</Unit>
+		<Unit filename="hunspell/src/parsers/textparser.hxx">
 			<Option target="hunspell" />
 		</Unit>
 		<Unit filename="hunspell/src/parsers/xmlparser.cxx">

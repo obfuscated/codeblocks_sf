@@ -114,7 +114,7 @@ void SpellCheckerStatusField::Update()
     DoSize();
 }
 
-void SpellCheckerStatusField::OnSize(wxSizeEvent &event)
+void SpellCheckerStatusField::OnSize(cb_unused wxSizeEvent &event)
 {
     DoSize();
 }
@@ -132,7 +132,7 @@ void SpellCheckerStatusField::DoSize()
     }
 }
 
-void SpellCheckerStatusField::OnRightUp(wxMouseEvent &event)
+void SpellCheckerStatusField::OnRightUp(cb_unused wxMouseEvent &event)
 {
     m_sccfg->ScanForDictionaries();
     wxMenu *popup = new wxMenu();
@@ -177,7 +177,7 @@ void SpellCheckerStatusField::OnSelect(wxCommandEvent &event)
     }
 }
 
-void SpellCheckerStatusField::OnEditPersonalDictionary(wxCommandEvent &event)
+void SpellCheckerStatusField::OnEditPersonalDictionary(cb_unused wxCommandEvent &event)
 {
     m_plugin->EditPersonalDictionary();
 }

@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -71,10 +68,8 @@
  * SUCH DAMAGE.
  */
 
-#ifndef _AFFIX_HXX_
-#define _AFFIX_HXX_
-
-#include "hunvisapi.h"
+#ifndef AFFIX_HXX_
+#define AFFIX_HXX_
 
 #include "atypes.hxx"
 #include "baseaffix.hxx"
@@ -82,135 +77,147 @@
 
 /* A Prefix Entry  */
 
-class LIBHUNSPELL_DLL_EXPORTED PfxEntry : protected AffEntry
-{
-private:
-       PfxEntry(const PfxEntry&);
-       PfxEntry& operator = (const PfxEntry&);
-private:
-       AffixMgr*    pmyMgr;
+class PfxEntry : public AffEntry {
+ private:
+  PfxEntry(const PfxEntry&);
+  PfxEntry& operator=(const PfxEntry&);
 
-       PfxEntry * next;
-       PfxEntry * nexteq;
-       PfxEntry * nextne;
-       PfxEntry * flgnxt;
+ private:
+  AffixMgr* pmyMgr;
 
-public:
+  PfxEntry* next;
+  PfxEntry* nexteq;
+  PfxEntry* nextne;
+  PfxEntry* flgnxt;
 
-  PfxEntry(AffixMgr* pmgr, affentry* dp );
-  ~PfxEntry();
+ public:
+  explicit PfxEntry(AffixMgr* pmgr);
 
-  inline bool          allowCross() { return ((opts & aeXPRODUCT) != 0); }
-  struct hentry *      checkword(const char * word, int len, char in_compound, 
-                            const FLAG needflag = FLAG_NULL);
+  bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
+  struct hentry* checkword(const char* word,
+                           int len,
+                           char in_compound,
+                           const FLAG needflag = FLAG_NULL);
 
-  struct hentry *      check_twosfx(const char * word, int len, char in_compound, const FLAG needflag = FLAG_NULL);
+  struct hentry* check_twosfx(const char* word,
+                              int len,
+                              char in_compound,
+                              const FLAG needflag = FLAG_NULL);
 
-  char *      check_morph(const char * word, int len, char in_compound,
-                            const FLAG needflag = FLAG_NULL);
+  std::string check_morph(const char* word,
+                          int len,
+                          char in_compound,
+                          const FLAG needflag = FLAG_NULL);
 
-  char *      check_twosfx_morph(const char * word, int len,
-                  char in_compound, const FLAG needflag = FLAG_NULL);
+  std::string check_twosfx_morph(const char* word,
+                                 int len,
+                                 char in_compound,
+                                 const FLAG needflag = FLAG_NULL);
 
-  inline FLAG getFlag()   { return aflag;   }
-  inline const char *  getKey()    { return appnd.c_str();  } 
-  char *               add(const char * word, int len);
+  FLAG getFlag() { return aflag; }
+  const char* getKey() { return appnd.c_str(); }
+  std::string add(const char* word, size_t len);
 
-  inline short getKeyLen() { return appnd.size(); } 
+  inline short getKeyLen() { return appnd.size(); }
 
-  inline const char *  getMorph()    { return morphcode;  } 
+  inline const char* getMorph() { return morphcode; }
 
-  inline const unsigned short * getCont()    { return contclass;  } 
-  inline short           getContLen()    { return contclasslen;  } 
+  inline const unsigned short* getCont() { return contclass; }
+  inline short getContLen() { return contclasslen; }
 
-  inline PfxEntry *    getNext()   { return next;   }
-  inline PfxEntry *    getNextNE() { return nextne; }
-  inline PfxEntry *    getNextEQ() { return nexteq; }
-  inline PfxEntry *    getFlgNxt() { return flgnxt; }
+  inline PfxEntry* getNext() { return next; }
+  inline PfxEntry* getNextNE() { return nextne; }
+  inline PfxEntry* getNextEQ() { return nexteq; }
+  inline PfxEntry* getFlgNxt() { return flgnxt; }
 
-  inline void   setNext(PfxEntry * ptr)   { next = ptr;   }
-  inline void   setNextNE(PfxEntry * ptr) { nextne = ptr; }
-  inline void   setNextEQ(PfxEntry * ptr) { nexteq = ptr; }
-  inline void   setFlgNxt(PfxEntry * ptr) { flgnxt = ptr; }
-  
-  inline char * nextchar(char * p);
-  inline int    test_condition(const char * st);
+  inline void setNext(PfxEntry* ptr) { next = ptr; }
+  inline void setNextNE(PfxEntry* ptr) { nextne = ptr; }
+  inline void setNextEQ(PfxEntry* ptr) { nexteq = ptr; }
+  inline void setFlgNxt(PfxEntry* ptr) { flgnxt = ptr; }
+
+  inline char* nextchar(char* p);
+  inline int test_condition(const char* st);
 };
-
-
-
 
 /* A Suffix Entry */
 
-class LIBHUNSPELL_DLL_EXPORTED SfxEntry : protected AffEntry
-{
-private:
-       SfxEntry(const SfxEntry&);
-       SfxEntry& operator = (const SfxEntry&);
-private:
-       AffixMgr*    pmyMgr;
-       char *       rappnd;
+class SfxEntry : public AffEntry {
+ private:
+  SfxEntry(const SfxEntry&);
+  SfxEntry& operator=(const SfxEntry&);
 
-       SfxEntry *   next;
-       SfxEntry *   nexteq;
-       SfxEntry *   nextne;
-       SfxEntry *   flgnxt;
-           
-       SfxEntry *   l_morph;
-       SfxEntry *   r_morph;
-       SfxEntry *   eq_morph;
+ private:
+  AffixMgr* pmyMgr;
+  std::string rappnd;
 
-public:
+  SfxEntry* next;
+  SfxEntry* nexteq;
+  SfxEntry* nextne;
+  SfxEntry* flgnxt;
 
-  SfxEntry(AffixMgr* pmgr, affentry* dp );
-  ~SfxEntry();
+  SfxEntry* l_morph;
+  SfxEntry* r_morph;
+  SfxEntry* eq_morph;
 
-  inline bool          allowCross() { return ((opts & aeXPRODUCT) != 0); }
-  struct hentry *   checkword(const char * word, int len, int optflags, 
-                    PfxEntry* ppfx, char ** wlst, int maxSug, int * ns,
-                    const FLAG cclass = FLAG_NULL, const FLAG needflag = FLAG_NULL, const FLAG badflag = FLAG_NULL);
+ public:
+  explicit SfxEntry(AffixMgr* pmgr);
 
-  struct hentry *   check_twosfx(const char * word, int len, int optflags, PfxEntry* ppfx, const FLAG needflag = FLAG_NULL);
+  bool allowCross() const { return ((opts & aeXPRODUCT) != 0); }
+  struct hentry* checkword(const char* word,
+                           int len,
+                           int optflags,
+                           PfxEntry* ppfx,
+                           const FLAG cclass,
+                           const FLAG needflag,
+                           const FLAG badflag);
 
-  char *      check_twosfx_morph(const char * word, int len, int optflags,
-                 PfxEntry* ppfx, const FLAG needflag = FLAG_NULL);
-  struct hentry * get_next_homonym(struct hentry * he);
-  struct hentry * get_next_homonym(struct hentry * word, int optflags, PfxEntry* ppfx, 
-    const FLAG cclass, const FLAG needflag);
+  struct hentry* check_twosfx(const char* word,
+                              int len,
+                              int optflags,
+                              PfxEntry* ppfx,
+                              const FLAG needflag = FLAG_NULL);
 
+  std::string check_twosfx_morph(const char* word,
+                                 int len,
+                                 int optflags,
+                                 PfxEntry* ppfx,
+                                 const FLAG needflag = FLAG_NULL);
+  struct hentry* get_next_homonym(struct hentry* he);
+  struct hentry* get_next_homonym(struct hentry* word,
+                                  int optflags,
+                                  PfxEntry* ppfx,
+                                  const FLAG cclass,
+                                  const FLAG needflag);
 
-  inline FLAG getFlag()   { return aflag;   }
-  inline const char *  getKey()    { return rappnd; } 
-  char *               add(const char * word, int len);
+  FLAG getFlag() { return aflag; }
+  const char* getKey() { return rappnd.c_str(); }
+  std::string add(const char* word, size_t len);
 
+  inline const char* getMorph() { return morphcode; }
 
-  inline const char *  getMorph()    { return morphcode;  } 
+  inline const unsigned short* getCont() { return contclass; }
+  inline short getContLen() { return contclasslen; }
+  inline const char* getAffix() { return appnd.c_str(); }
 
-  inline const unsigned short * getCont()    { return contclass;  } 
-  inline short           getContLen()    { return contclasslen;  } 
-  inline const char *  getAffix()    { return appnd.c_str(); } 
+  inline short getKeyLen() { return appnd.size(); }
 
-  inline short getKeyLen() { return appnd.size(); } 
+  inline SfxEntry* getNext() { return next; }
+  inline SfxEntry* getNextNE() { return nextne; }
+  inline SfxEntry* getNextEQ() { return nexteq; }
 
-  inline SfxEntry *    getNext()   { return next;   }
-  inline SfxEntry *    getNextNE() { return nextne; }
-  inline SfxEntry *    getNextEQ() { return nexteq; }
+  inline SfxEntry* getLM() { return l_morph; }
+  inline SfxEntry* getRM() { return r_morph; }
+  inline SfxEntry* getEQM() { return eq_morph; }
+  inline SfxEntry* getFlgNxt() { return flgnxt; }
 
-  inline SfxEntry *    getLM() { return l_morph; }
-  inline SfxEntry *    getRM() { return r_morph; }
-  inline SfxEntry *    getEQM() { return eq_morph; }
-  inline SfxEntry *    getFlgNxt() { return flgnxt; }
+  inline void setNext(SfxEntry* ptr) { next = ptr; }
+  inline void setNextNE(SfxEntry* ptr) { nextne = ptr; }
+  inline void setNextEQ(SfxEntry* ptr) { nexteq = ptr; }
+  inline void setFlgNxt(SfxEntry* ptr) { flgnxt = ptr; }
+  void initReverseWord();
 
-  inline void   setNext(SfxEntry * ptr)   { next = ptr;   }
-  inline void   setNextNE(SfxEntry * ptr) { nextne = ptr; }
-  inline void   setNextEQ(SfxEntry * ptr) { nexteq = ptr; }
-  inline void   setFlgNxt(SfxEntry * ptr) { flgnxt = ptr; }
-
-  inline char * nextchar(char * p);
-  inline int    test_condition(const char * st, const char * begin);
-
+  inline char* nextchar(char* p);
+  inline int test_condition(const char* st, const char* begin);
 };
 
 #endif
-
-

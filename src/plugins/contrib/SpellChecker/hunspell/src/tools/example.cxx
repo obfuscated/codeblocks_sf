@@ -1,6 +1,8 @@
 /* ***** BEGIN LICENSE BLOCK *****
  * Version: MPL 1.1/GPL 2.0/LGPL 2.1
  *
+ * Copyright (C) 2002-2017 Németh László
+ *
  * The contents of this file are subject to the Mozilla Public License Version
  * 1.1 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
@@ -11,12 +13,7 @@
  * for the specific language governing rights and limitations under the
  * License.
  *
- * The Original Code is Hunspell, based on MySpell.
- *
- * The Initial Developers of the Original Code are
- * Kevin Hendricks (MySpell) and Németh László (Hunspell).
- * Portions created by the Initial Developers are Copyright (C) 2002-2005
- * the Initial Developers. All Rights Reserved.
+ * Hunspell is based on MySpell which is Copyright (C) 2002 Kevin Hendricks.
  *
  * Contributor(s): David Einstein, Davide Prina, Giuseppe Modugno,
  * Gianluca Turconi, Simon Brouwer, Noll János, Bíró Árpád,
@@ -40,66 +37,57 @@
 
 #include <cstring>
 #include <cstdlib>
-#include <cstdio>
+#include <fstream>
 
-#include "hunspell.hxx"
-
-extern char * mystrdup(const char * s);
+#include "../hunspell/hunspell.hxx"
 
 using namespace std;
 
-int 
-main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 
-    FILE* wtclst;
+  /* first parse the command line options */
 
-    /* first parse the command line options */
+  if (argc < 4) {
+    fprintf(stderr, "example (now it works with more dictionary files):\n");
+    fprintf(stderr,
+            "example affix_file dictionary_file(s) file_of_words_to_check\n");
+    exit(1);
+  }
 
-    if (argc < 4) {
-        fprintf(stderr,"example (now it works with more dictionary files):\n"); 
-        fprintf(stderr,"example affix_file dictionary_file(s) file_of_words_to_check\n");
-        exit(1);
+  /* open the words to check list */
+  std::ifstream wtclst(argv[argc - 1], std::ios_base::in);
+  if (!wtclst.is_open()) {
+    fprintf(stderr, "Error - could not open file of words to check\n");
+    exit(1);
+  }
+
+  Hunspell* pMS = new Hunspell(argv[1], argv[2]);
+
+  // load extra dictionaries
+  if (argc > 4)
+    for (int k = 3; k < argc - 1; ++k)
+      pMS->add_dic(argv[k]);
+
+  std::string buf;
+  while (std::getline(wtclst, buf)) {
+    int dp = pMS->spell(buf);
+    if (dp) {
+      fprintf(stdout, "\"%s\" is okay\n", buf.c_str());
+      fprintf(stdout, "\n");
+    } else {
+      fprintf(stdout, "\"%s\" is incorrect!\n", buf.c_str());
+      fprintf(stdout, "   suggestions:\n");
+      std::vector<std::string> wlst = pMS->suggest(buf.c_str());
+      for (size_t i = 0; i < wlst.size(); ++i) {
+        fprintf(stdout, "    ...\"%s\"\n", wlst[i].c_str());
+      }
+      fprintf(stdout, "\n");
     }
-  
-    /* open the words to check list */
-    wtclst = fopen(argv[argc - 1],"r");
-    if (!wtclst) {
-        fprintf(stderr,"Error - could not open file of words to check\n");
-        exit(1);
-    }
-   
-    int k;
-    int dp;
-    char buf[101];
+    // for the same of testing this code path
+    // do an analysis here and throw away the results
+    pMS->analyze(buf);
+  }
 
-    Hunspell * pMS= new Hunspell(argv[1], argv[2]);
-    
-    // load extra dictionaries
-    if (argc > 4) for (k = 3; k < argc - 1; k++) pMS->add_dic(argv[k]);
-    
-    while(fgets(buf, 100, wtclst)) {
-      k = strlen(buf);
-      *(buf + k - 1) = '\0';
-       dp = pMS->spell(buf);
-       if (dp) {
-          fprintf(stdout,"\"%s\" is okay\n",buf);
-          fprintf(stdout,"\n");
-       } else {
-          fprintf(stdout,"\"%s\" is incorrect!\n",buf);
-          fprintf(stdout,"   suggestions:\n");
-          char ** wlst;
-          int ns = pMS->suggest(&wlst,buf);
-          for (int i=0; i < ns; i++) {
-            fprintf(stdout,"    ...\"%s\"\n",wlst[i]);
-          }
-          pMS->free_list(&wlst, ns);
-          fprintf(stdout,"\n");
-       }
-    }
-
-    delete pMS;
-    fclose(wtclst);
-    return 0;
+  delete pMS;
+  return 0;
 }
-
