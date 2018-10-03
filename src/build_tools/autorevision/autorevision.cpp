@@ -311,11 +311,10 @@ bool WriteOutput(const string& outputFile, string& revision, string& date)
         fprintf(header, "\tconst wxString svnDate(%s);\n", date.c_str());
 
     if(do_int || do_std || do_wx)
-        fprintf(header, "}\n\n");
+        fprintf(header, "}");
 
     fprintf(header, "\n\n#endif\n");
     fclose(header);
 
     return true;
 }
-
