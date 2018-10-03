@@ -263,4 +263,13 @@ typedef std::vector<cb::shared_ptr<GDBWatch> > WatchesContainer;
 bool IsPointerType(wxString type);
 wxString CleanStringValue(wxString value);
 
+enum DebuggerLanguage
+{
+    dl_Cpp = 0, ///< C++ or C language.
+    dl_Fortran  ///< Fortran language.
+};
+
+extern DebuggerLanguage g_DebugLanguage;
+
+
 #endif // DEBUGGER_DEFS_H

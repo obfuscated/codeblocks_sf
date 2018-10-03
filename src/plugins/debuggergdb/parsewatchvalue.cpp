@@ -333,11 +333,20 @@ inline cb::shared_ptr<GDBWatch> AddChild(cb::shared_ptr<GDBWatch> parent, wxStri
 }
 
 wxRegEx regexRepeatedChar(wxT(".+[ \\t](<repeats[ \\t][0-9]+[ \\t]times>)$"));
+wxRegEx regexFortranArray(wxT("^\\([0-9,]+)$"));
 
 inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &value, int &start, int length)
 {
     watch->SetDebugValue(value);
     watch->MarkChildsAsRemoved();
+
+    wxString watchSymbol;
+    watch->GetSymbol(watchSymbol);
+    bool isFortranArray = false;
+    if (g_DebugLanguage == dl_Fortran)
+        isFortranArray = regexFortranArray.Matches(watchSymbol);
+    wxString watchSymbolNew;
+    bool hasNewWatchSymbol = false;
 
     int position = start;
     Token token, token_name, token_value;
@@ -377,7 +386,7 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
             }
         }
 
-        if (!token.hasRepeatedChar && regexRepeatedChar.Matches(str))
+        if (!token.hasRepeatedChar && regexRepeatedChar.Matches(str) && g_DebugLanguage != dl_Fortran)
         {
             Token expanded_token = token;
             while (1)
@@ -518,8 +527,27 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
                     }
                     else
                     {
-                        int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
-                        cb::shared_ptr<GDBWatch> child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+                        cb::shared_ptr<GDBWatch> child;
+                        if (g_DebugLanguage == dl_Cpp)
+                        {
+                            int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
+                            child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+                        }
+                        else // g_DebugLanguage == dl_Fortran
+                        {
+                            int start_arr = watch->IsArray() ? watch->GetArrayStart() : 1;
+                            wxString childSymbol;
+                            if (isFortranArray)
+                            {
+                                childSymbol = wxString::Format(wxT("(%d,"), start_arr + added_children);
+                                childSymbol << watchSymbol.Mid(1);
+                            }
+                            else
+                            {
+                                childSymbol = wxString::Format(wxT("(%d)"), start_arr + added_children);
+                            }
+                            child = AddChild(watch, childSymbol);
+                        }
                         child->SetValue(token_name.ExtractString(value));
                     }
                     token_name.type = token_value.type = Token::Undefined;
@@ -534,18 +562,65 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
                 cb::shared_ptr<GDBWatch> child;
                 if(token_name.type == Token::Undefined)
                 {
-                    int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
-                    child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+                    if (g_DebugLanguage == dl_Cpp)
+                    {
+                        int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
+                        child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+                    }
+                    else // g_DebugLanguage == dl_Fortran
+                    {
+                        int start_arr = watch->IsArray() ? watch->GetArrayStart() : 1;
+                        wxString childSymbol;
+                        if (isFortranArray)
+                        {
+                            childSymbol = wxString::Format(wxT("(%d,"), start_arr + added_children);
+                            childSymbol << watchSymbol.Mid(1);
+                        }
+                        else
+                        {
+                            childSymbol = wxString::Format(wxT("(%d)"), start_arr + added_children);
+                        }
+                        child = AddChild(watch, childSymbol);
+                    }
                 }
+                else if (g_DebugLanguage == dl_Fortran)
+                    child = AddChild(watch, token_name.ExtractString(value));
                 else
                     child = AddChild(watch, value, token_name);
-                if (!pythonToStringValue.empty())
+
+                if (g_DebugLanguage == dl_Fortran)
+                    child->SetValue(wxEmptyString);
+                else if (!pythonToStringValue.empty())
                     child->SetValue(pythonToStringValue);
                 position = token_real_end;
                 added_children++;
 
                 if(!ParseGDBWatchValue(child, value, position, 0))
                     return false;
+
+                if(g_DebugLanguage == dl_Fortran && isFortranArray && !hasNewWatchSymbol && token_name.type == Token::Undefined)
+                {
+                    // Change watch symbol on the way back for Fortran multidimensional arrays
+                    wxString childSymbol;
+                    child->GetSymbol(childSymbol);
+                    wxString::size_type pos = childSymbol.find_last_of(wxT(':'));
+                    if (pos != wxString::npos)
+                    {
+                        wxString::size_type pos_com = childSymbol.find(wxT(','), pos+2);
+                        if (pos_com != wxString::npos)
+                        {
+                            watchSymbolNew = childSymbol;
+                            watchSymbolNew.replace(pos+2, pos_com-(pos+2), wxT(':'));
+                            hasNewWatchSymbol = true;
+                        }
+                    }
+                    else
+                    {
+                        watchSymbolNew << wxT("(:,") << watchSymbol.Mid(1);
+                        hasNewWatchSymbol = true;
+                    }
+                }
+
                 token_real_end = position;
                 token_name.type = token_value.type = Token::Undefined;
                 skip_comma = true;
@@ -564,9 +639,32 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
                     }
                     else
                     {
-                        int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
-                        cb::shared_ptr<GDBWatch> child = AddChild(watch, wxString::Format(wxT("[%d]"),
-                                                                                          start_arr + added_children));
+                        cb::shared_ptr<GDBWatch> child;
+                        if (g_DebugLanguage == dl_Cpp)
+                        {
+                            int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
+                            child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+                        }
+                        else // g_DebugLanguage == dl_Fortran
+                        {
+                            int start_arr = watch->IsArray() ? watch->GetArrayStart() : 1;
+                            wxString childSymbol;
+                            if (isFortranArray)
+                            {
+                                childSymbol = wxString::Format(wxT("(%d,"), start_arr + added_children);
+                                childSymbol << watchSymbol.Mid(1);
+                                if (!hasNewWatchSymbol)
+                                {
+                                    watchSymbolNew << wxT("(:,") << watchSymbol.Mid(1);
+                                    hasNewWatchSymbol = true;
+                                }
+                            }
+                            else
+                            {
+                                childSymbol = wxString::Format(wxT("(%d)"), start_arr + added_children);
+                            }
+                            child = AddChild(watch, childSymbol);
+                        }
                         child->SetValue(token_name.ExtractString(value));
                     }
                     token_name.type = token_value.type = Token::Undefined;
@@ -575,6 +673,9 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
                 else
                     watch->SetValue(wxT(""));
             }
+
+            if (hasNewWatchSymbol)
+                watch->SetSymbol(watchSymbolNew);
 
             start = token_real_end;
             return true;
@@ -598,11 +699,22 @@ inline bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &v
         }
         else
         {
-            int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
-            cb::shared_ptr<GDBWatch> child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+            cb::shared_ptr<GDBWatch> child;
+            if (g_DebugLanguage == dl_Cpp)
+            {
+                int start_arr = watch->IsArray() ? watch->GetArrayStart() : 0;
+                child = AddChild(watch, wxString::Format(wxT("[%d]"), start_arr + added_children));
+            }
+            else // g_DebugLanguage == dl_Fortran
+            {
+                int start_arr = watch->IsArray() ? watch->GetArrayStart() : 1;
+                child = AddChild(watch, wxString::Format(wxT("(%d)"), start_arr + added_children));
+            }
             child->SetValue(token_name.ExtractString(value));
         }
     }
+
+
 
     return true;
 }
@@ -647,6 +759,14 @@ inline void RemoveBefore(wxString &str, const wxString &s)
     }
 }
 
+void PrepareFortranOutput(wxString& outStr)
+{
+    static wxRegEx nan_line(wxT("nan\\([a-zA-Z0-9]*\\)"));
+    nan_line.Replace(&outStr, wxT("nan"));
+    outStr.Replace(wxT('('),wxT('{'));
+    outStr.Replace(wxT(')'),wxT('}'));
+}
+
 bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &inputValue)
 {
     if(inputValue.empty())
@@ -656,6 +776,9 @@ bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &inputVal
     }
 
     wxString value = RemoveWarnings(inputValue);
+
+    if (g_DebugLanguage == dl_Fortran)
+        PrepareFortranOutput(value);
 
     // Try to find the first brace.
     // If the watch is for a reference the brace is not at position = 0

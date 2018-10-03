@@ -130,6 +130,8 @@ class DebuggerGDB : public cbDebuggerPlugin
 
         void DebuggeeContinued();
 
+        void DetermineLanguage();
+
     protected:
         cbProject* GetProject() { return m_pProject; }
         void ResetProject() { m_pProcess = NULL; }

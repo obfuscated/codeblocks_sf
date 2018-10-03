@@ -61,6 +61,8 @@ class GDB_driver : public DebuggerDriver
         virtual void UpdateWatchLocalsArgs(cb::shared_ptr<GDBWatch> const &watch, bool locals);
         virtual void ParseOutput(const wxString& output);
         virtual bool IsDebuggingStarted() const { return m_IsStarted; }
+
+        virtual void DetermineLanguage();
 #ifdef __WXMSW__
         virtual bool UseDebugBreakProcess();
 #endif

@@ -331,3 +331,5 @@ wxString CleanStringValue(wxString value)
     return value;
 }
 
+DebuggerLanguage g_DebugLanguage = dl_Cpp;
+

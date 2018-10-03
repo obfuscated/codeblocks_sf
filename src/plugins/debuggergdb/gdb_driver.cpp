@@ -628,6 +628,12 @@ void GDB_driver::EvaluateSymbol(const wxString& symbol, const wxRect& tipRect)
 void GDB_driver::UpdateWatches(cb::shared_ptr<GDBWatch> localsWatch, cb::shared_ptr<GDBWatch> funcArgsWatch,
                                WatchesContainer &watches)
 {
+    if (!m_FileName.IsSameAs(m_Cursor.file))
+    {
+        m_FileName = m_Cursor.file;
+        m_pDBG->DetermineLanguage();
+    }
+
     bool updateWatches = false;
     if (localsWatch && localsWatch->IsAutoUpdateEnabled())
     {
@@ -1118,3 +1124,9 @@ void GDB_driver::HandleMainBreakPoint(const wxRegEx& reBreak_in, wxString line)
         m_needsUpdate = true;
     }
 }
+
+void GDB_driver::DetermineLanguage()
+{
+    QueueCommand(new GdbCmd_DebugLanguage(this));
+}
+

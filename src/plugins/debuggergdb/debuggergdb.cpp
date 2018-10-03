@@ -1977,7 +1977,8 @@ bool DebuggerGDB::ShowValueTooltip(int style)
     if (!GetActiveConfigEx().GetFlag(DebuggerConfiguration::EvalExpression))
         return false;
     if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER &&
-        style != wxSCI_C_WORD2 && style != wxSCI_C_GLOBALCLASS)
+        style != wxSCI_C_WORD2 && style != wxSCI_C_GLOBALCLASS &&
+        style != wxSCI_F_IDENTIFIER)
     {
         return false;
     }
@@ -2155,19 +2156,50 @@ bool DebuggerGDB::SetWatchValue(cb::shared_ptr<cbWatch> watch, const wxString &v
 
     wxString full_symbol;
     cb::shared_ptr<cbWatch> temp_watch = watch;
-    while (temp_watch)
+    if (g_DebugLanguage == dl_Cpp)
     {
-        wxString symbol;
-        temp_watch->GetSymbol(symbol);
-        temp_watch = temp_watch->GetParent();
+        while (temp_watch)
+        {
+            wxString symbol;
+            temp_watch->GetSymbol(symbol);
+            temp_watch = temp_watch->GetParent();
 
-        if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
-            symbol = wxT('(') + symbol + wxT(')');
+            if (symbol.find(wxT('*')) != wxString::npos || symbol.find(wxT('&')) != wxString::npos)
+                symbol = wxT('(') + symbol + wxT(')');
 
-        if (full_symbol.empty())
-            full_symbol = symbol;
-        else
-            full_symbol = symbol + wxT('.') + full_symbol;
+            if (full_symbol.empty())
+                full_symbol = symbol;
+            else
+                full_symbol = symbol + wxT('.') + full_symbol;
+        }
+    }
+    else // Fortran language
+    {
+        while (temp_watch)
+        {
+            wxString symbol;
+            temp_watch->GetSymbol(symbol);
+            temp_watch = temp_watch->GetParent();
+
+            if (full_symbol.empty())
+                full_symbol = symbol;
+            else
+            {
+                if (full_symbol.at(0) == '(' && symbol.at(0) == '(')
+                {
+                    size_t sec = full_symbol.find(')');
+                    if (sec != wxString::npos && symbol.at(symbol.size()-1) == ')')
+                    {
+                        full_symbol = full_symbol.substr(0,sec) + wxT(',') + symbol.substr(1,symbol.size()-2) +
+                                      full_symbol.substr(sec);
+                    }
+                }
+                else if (full_symbol.at(0) == '(')
+                    full_symbol = symbol + full_symbol;
+                else
+                    full_symbol = symbol + wxT('%') + full_symbol;
+            }
+        }
     }
 
     DebuggerDriver* driver = m_State.GetDriver();
@@ -2282,4 +2314,10 @@ void DebuggerGDB::OnBuildTargetSelected(CodeBlocksEvent& event)
     // and that a project is loaded
     if (m_pProject && event.GetProject() == m_pProject)
         m_ActiveBuildTarget = event.GetBuildTargetName();
+}
+
+void DebuggerGDB::DetermineLanguage()
+{
+    if (m_State.HasDriver())
+        m_State.GetDriver()->DetermineLanguage();
 }

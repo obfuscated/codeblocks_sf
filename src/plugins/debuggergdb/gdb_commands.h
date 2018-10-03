@@ -804,17 +804,32 @@ class GdbCmd_Watch : public DebuggerCmd
                 default:            break;
             }
 
-            // auto-set array types
-            if (!m_watch->IsArray() &&  m_watch->GetFormat() == Undefined && type.Contains(_T('[')))
-                m_watch->SetArray(true);
-
-            if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
+            if (g_DebugLanguage == dl_Cpp)
             {
-                m_Cmd << wxT("(") << symbol << wxT(")");
-                m_Cmd << wxString::Format(_T("[%d]@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
+                // auto-set array types
+                if (!m_watch->IsArray() &&  m_watch->GetFormat() == Undefined && type.Contains(_T('[')))
+                    m_watch->SetArray(true);
+
+                if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
+                {
+                    m_Cmd << wxT("(") << symbol << wxT(")");
+                    m_Cmd << wxString::Format(_T("[%d]@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
+                }
+                else
+                    m_Cmd << symbol;
             }
-            else
-                m_Cmd << symbol;
+            else  // (g_DebugLanguage == dl_Fortran)
+            {
+                if (m_watch->IsArray() && m_watch->GetArrayCount() > 0)
+                {
+                    if (m_watch->GetArrayStart() < 1)
+                        m_watch->SetArrayParams(1, m_watch->GetArrayCount());
+                    m_Cmd << symbol;
+                    m_Cmd << wxString::Format(_T("(%d)@%d"), m_watch->GetArrayStart(), m_watch->GetArrayCount());
+                }
+                else
+                    m_Cmd << symbol;
+            }
         }
         void ParseOutput(const wxString& output)
         {
@@ -1854,6 +1869,27 @@ class GdbCmd_FindCursor : public DebuggerCmd
                 m_pDriver->SetCursor(cursor);
                 m_pDriver->NotifyCursorChanged();
             }
+        }
+};
+
+/**
+  * Command to determine the debugging (working) language.
+  */
+class GdbCmd_DebugLanguage : public DebuggerCmd
+{
+    public:
+        GdbCmd_DebugLanguage(DebuggerDriver* driver)
+            : DebuggerCmd(driver)
+        {
+            m_Cmd << _T("show language");
+        }
+
+        void ParseOutput(const wxString& output)
+        {
+            if (output.Lower().Find(wxT("fortran")) != wxNOT_FOUND)
+                g_DebugLanguage = dl_Fortran;
+            else
+                g_DebugLanguage = dl_Cpp;
         }
 };
 

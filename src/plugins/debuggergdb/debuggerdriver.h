@@ -198,6 +198,9 @@ class DebuggerDriver
         void NotifyDebuggeeContinued();
         /** Called by implementations to notify cursor changes. */
         void NotifyCursorChanged();
+
+        /** Determine language is debugged. */
+        virtual void DetermineLanguage() {};
     protected:
         /** Called by implementations to reset the cursor. */
         void ResetCursor();
@@ -225,6 +228,8 @@ class DebuggerDriver
         ThreadsContainer m_threads;
         int m_currentFrameNo;
         int m_userSelectedFrameNo;
+
+        wxString m_FileName;
 };
 
 #endif // DEBUGGERDRIVER_H
