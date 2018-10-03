@@ -763,8 +763,8 @@ void PrepareFortranOutput(wxString& outStr)
 {
     static wxRegEx nan_line(wxT("nan\\([a-zA-Z0-9]*\\)"));
     nan_line.Replace(&outStr, wxT("nan"));
-    outStr.Replace(wxT('('),wxT('{'));
-    outStr.Replace(wxT(')'),wxT('}'));
+    outStr.Replace(wxT("("),wxT("{"));
+    outStr.Replace(wxT(")"),wxT("}"));
 }
 
 bool ParseGDBWatchValue(cb::shared_ptr<GDBWatch> watch, wxString const &inputValue)
