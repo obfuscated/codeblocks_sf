@@ -2270,7 +2270,9 @@ void ParserThread::HandleFunction(wxString& name, bool isOperator, bool isPointe
 
         // pattern: m_Str AAA (*BBB) (...);
         // pattern: m_Str AAA (*BBB) (...) = some_function;
-        if (pos != wxNOT_FOUND && (peek == ParserConsts::semicolon || peek == ParserConsts::equals))
+        if (pos != wxNOT_FOUND && (   peek == ParserConsts::semicolon
+                                   || peek == ParserConsts::equals
+                                   || peek == ParserConsts::comma))
         {
             name.RemoveLast();  // remove ")"
             name.Remove(0, pos+1).Trim(false); // remove "(* "
@@ -2363,7 +2365,9 @@ void ParserThread::HandleFunction(wxString& name, bool isOperator, bool isPointe
                 lineEnd = m_Tokenizer.GetLineNumber();
                 break;
             }
-            else if (peek == ParserConsts::clbrace || peek == ParserConsts::semicolon)
+            else if (   peek == ParserConsts::clbrace
+                     || peek == ParserConsts::semicolon
+                     || peek == ParserConsts::comma)
                 break; // function decl
             else if (peek == ParserConsts::kw_const)
                 isConst = true;
