@@ -59,6 +59,11 @@
 					<Add directory="../../../devel" />
 					<Add directory="$(#wx.lib)/gcc_dll$(WX_CFG)" />
 				</Linker>
+				<Environment>
+					<Variable name="WX_CFG" value="" />
+					<Variable name="WX_SUFFIX" value="u" />
+					<Variable name="WX_VERSION" value="28" />
+				</Environment>
 			</Target>
 			<Target title="plugin">
 				<Option output="../../../devel/share/CodeBlocks/plugins/SpellChecker" prefix_auto="1" extension_auto="1" />
