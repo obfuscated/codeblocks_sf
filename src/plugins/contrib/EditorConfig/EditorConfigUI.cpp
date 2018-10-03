@@ -1,13 +1,13 @@
 #include "EditorConfigUI.h"
 
 //(*InternalHeaders(EditorConfigUI)
-#include <wx/spinctrl.h>
 #include <wx/checkbox.h>
-#include <wx/sizer.h>
-#include <wx/string.h>
-#include <wx/intl.h>
-#include <wx/stattext.h>
 #include <wx/choice.h>
+#include <wx/intl.h>
+#include <wx/sizer.h>
+#include <wx/spinctrl.h>
+#include <wx/stattext.h>
+#include <wx/string.h>
 //*)
 
 #include <cbproject.h>
@@ -35,12 +35,12 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* pr
     m_Project(prj)
 {
     //(*Initialize(EditorConfigUI)
+    wxBoxSizer* bszTab;
     wxFlexGridSizer* flsMain;
     wxStaticText* lblEOLMode;
-    wxStaticText* lblTab;
     wxStaticText* lblIndent;
+    wxStaticText* lblTab;
     wxStaticText* lblTabWidth;
-    wxBoxSizer* bszTab;
 
     Create(parent, wxID_ANY, wxDefaultPosition, wxDefaultSize, wxTAB_TRAVERSAL, _T("wxID_ANY"));
     flsMain = new wxFlexGridSizer(5, 2, 0, 0);
@@ -79,13 +79,14 @@ EditorConfigUI::EditorConfigUI(wxWindow* parent, wxEvtHandler* eh, cbProject* pr
     choEOLMode->SetSelection( choEOLMode->Append(_("CR/LF")) );
     choEOLMode->Append(_("CR"));
     choEOLMode->Append(_("LF"));
+    choEOLMode->Append(_("Use from settings > Editor"));
     choEOLMode->Disable();
     flsMain->Add(choEOLMode, 1, wxALL|wxEXPAND, 5);
     SetSizer(flsMain);
     flsMain->Fit(this);
     flsMain->SetSizeHints(this);
 
-    Connect(ID_CHK_ACTIVE,wxEVT_COMMAND_CHECKBOX_CLICKED,(wxObjectEventFunction)&EditorConfigUI::OnActiveClick);
+    Connect(ID_CHK_ACTIVE,wxEVT_COMMAND_CHECKBOX_CLICKED,wxCommandEventHandler(EditorConfigUI::OnActiveClick));
     //*)
 
     if (es.active)
@@ -120,7 +121,10 @@ void EditorConfigUI::OnApply()
     es.tab_indents = chkTabIndents->IsChecked();
     es.tab_width   = spnTabWidth->GetValue();
     es.indent      = spnIndent->GetValue();
-    es.eol_mode    = choEOLMode->GetCurrentSelection(); // must be in sync with wxSCI_EOL_CRLF etc...
+    es.eol_mode    = choEOLMode->GetCurrentSelection(); // must be in sync with wxscintilla.h, currently:
+    // #define wxSCI_EOL_CRLF 0
+    // #define wxSCI_EOL_CR 1
+    // #define wxSCI_EOL_LF 2
 
     EditorSettingsChangedEvent e(wxEVT_EDITOR_SETTINGS_CHANGED_EVENT, 0, es, m_Project);
     if (m_NotifiedWindow)

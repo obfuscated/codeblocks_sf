@@ -104,6 +104,7 @@
 						<item>CR/LF</item>
 						<item>CR</item>
 						<item>LF</item>
+						<item>Use from settings &gt; Editor</item>
 					</content>
 					<selection>0</selection>
 					<enabled>0</enabled>

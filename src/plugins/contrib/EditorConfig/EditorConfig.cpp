@@ -264,12 +264,14 @@ bool EditorConfig::ApplyEditorSettings(EditorBase* eb)
     if (m_ECSettings[prj].indent < 0) /* set indent to tab_width here */
         control->SetIndent(control->GetTabWidth());
 
+    // This works only if in sync with wxscintilla.h
     if      (m_ECSettings[prj].eol_mode == wxSCI_EOL_CRLF)
         control->SetEOLMode(wxSCI_EOL_CRLF);
     else if (m_ECSettings[prj].eol_mode == wxSCI_EOL_CR)
         control->SetEOLMode(wxSCI_EOL_CR);
     else if (m_ECSettings[prj].eol_mode == wxSCI_EOL_LF)
         control->SetEOLMode(wxSCI_EOL_LF);
+    // else do nothing because its set to "use settings > editor"
 
     return true;
 }

@@ -3,13 +3,13 @@
 
 //(*Headers(EditorConfigUI)
 #include <wx/panel.h>
+class wxBoxSizer;
+class wxCheckBox;
 class wxChoice;
 class wxFlexGridSizer;
-class wxSpinEvent;
 class wxSpinCtrl;
-class wxBoxSizer;
+class wxSpinEvent;
 class wxStaticText;
-class wxCheckBox;
 //*)
 
 class wxEvtHandler;
@@ -28,12 +28,12 @@ class EditorConfigUI : public cbConfigurationPanel
 		virtual ~EditorConfigUI();
 
 		//(*Declarations(EditorConfigUI)
-		wxCheckBox* chkUseTabs;
-		wxSpinCtrl* spnIndent;
 		wxCheckBox* chkActive;
-		wxSpinCtrl* spnTabWidth;
 		wxCheckBox* chkTabIndents;
+		wxCheckBox* chkUseTabs;
 		wxChoice* choEOLMode;
+		wxSpinCtrl* spnIndent;
+		wxSpinCtrl* spnTabWidth;
 		//*)
 
   virtual wxString GetTitle() const          { return _("EditorConfig options"); };
