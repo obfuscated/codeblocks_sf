@@ -765,15 +765,7 @@ bool ThreadSearch::GetCursorWord(wxString& sWord)
         if (!word.IsEmpty()) // Avoid empty strings
         {
             sWord.Clear();
-            while (--ws > 0)
-            {
-                const wxChar ch = control->GetCharAt(ws);
-                if (ch <= _T(' '))
-                    continue;
-                else if (ch == _T('~'))
-                    sWord << _T("~");
-                break;
-            }
+
             // m_SearchedWord will be used if 'Find occurrences' ctx menu is clicked
             sWord << word;
             wordFound = true;
