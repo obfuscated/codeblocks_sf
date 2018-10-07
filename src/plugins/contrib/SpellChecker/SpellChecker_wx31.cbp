@@ -21,16 +21,9 @@
 					<Add option="-fmessage-length=0" />
 					<Add option="-fexceptions" />
 					<Add option="-DHUNSPELL_STATIC" />
-					<Add directory="wxspellchecker/include" />
-					<Add directory="$(#WX31.include)" />
-					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)/msw$(WX_SUFFIX)" />
 					<Add directory="hunspell/src/hunspell" />
 					<Add directory="hunspell/" />
 				</Compiler>
-				<Linker>
-					<Add library="wxmsw$(WX_VERSION)$(WX_SUFFIX)" />
-					<Add directory="$(#WX31.lib)/gcc_dll$(WX_CFG)" />
-				</Linker>
 			</Target>
 			<Target title="wxSpellChecker">
 				<Option output="../../../devel31/wxSpellChecker" prefix_auto="1" extension_auto="1" />
