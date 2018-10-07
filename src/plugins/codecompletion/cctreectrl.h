@@ -19,6 +19,7 @@ class wxWindow;
 
 class Token;
 
+/** Specify which kind of node it is */
 enum SpecialFolder
 {
     sfToken   = 0x0001, // token node
@@ -32,19 +33,43 @@ enum SpecialFolder
     sfMacro   = 0x0100  // global macro node
 };
 
+/** Actual data stored with each node in the symbol tree */
 class CCTreeCtrlData : public wxTreeItemData
 {
 public:
     CCTreeCtrlData(SpecialFolder sf = sfToken, Token* token = 0,
                    short int kindMask = 0xffff, int parentIdx = -1);
 
+    /** a pointer to the associated Token instance in the TokenTree */
     Token*        m_Token;
+
+    /** a copy of Token::m_KindMask
+     * @todo this variable is not used?
+     */
     short int     m_KindMask;
+
+    /** the node's kind, it could be "root", "normal token", @sa SpecialFolder */
     SpecialFolder m_SpecialFolder;
+
+    /** a copy of Token::m_TokenIndex */
     int           m_TokenIndex;
+
+    /** a copy of Token::m_TokenKind */
     TokenKind     m_TokenKind;
+
+    /** short name of the Token,
+     * it is a copy of Token::m_Name
+     */
     wxString      m_TokenName;
+
+    /** the parent Token index
+     * it is a copy of Token::m_ParentIndex, @sa Token::m_ParentIndex
+     * @todo this variable is not used?
+     */
     int           m_ParentIndex;
+
+    /** the Token's ticket in a TokenTree
+     * This is actually a copy of Token::m_Ticket, @sa Token::m_Ticket  */
     unsigned long m_Ticket;
 };
 

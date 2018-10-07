@@ -73,8 +73,14 @@ protected:
     // Called from Entry():
     void BuildTree();
 
-    // Called from BuildTree():
-    void RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemId parent); // recursive
+    /** Remove any nodes no longer valid (due to update)
+     *
+     * Recursively enters all existing nodes and deletes the node if the token it references is invalid
+     * @param tree the symbol tree
+     * @param parent the node Id
+     * Called from BuildTree():
+     */
+    void RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemId parent);
 
     /** recursively construct the children of node's children, which matches tokenKind
      *  Called from BuildTree():
@@ -89,7 +95,12 @@ protected:
     wxTreeItemId AddNodeIfNotThere(CCTreeCtrl* tree, wxTreeItemId parent,
                                    const wxString& name, int imgIndex = -1, CCTreeCtrlData* data = 0);
 
-    // Called from ExpandItem():
+    /** Add the child nodes of the specified token
+     * @param tree the symbol tree control
+     * @param parent the specified node
+     * @param parentTokenIdx the Token index associated with the node
+     * Called from ExpandItem()
+     */
     bool AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx,
                        short int tokenKindMask = 0xffff, int tokenScopeMask = 0);
     bool AddAncestorsOf(CCTreeCtrl* tree, wxTreeItemId parent, int tokenIdx);
@@ -102,8 +113,11 @@ private:
     bool AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, const TokenIdxSet* tokens,
                   short int tokenKindMask = 0xffff, int tokenScopeMask = 0, bool allowGlobals = false);
 
-    // Called from RemoveInvalidNodes(), AddNodes(), CreateSpecialFolder():
-    // if the token should be shown, it will return true
+    /** if the token should be shown in the tree, it will return true
+     *
+     * The view option of the symbol browser determines which tokens should be shown in the tree
+     * Called from RemoveInvalidNodes(), AddNodes(), CreateSpecialFolder()
+     */
     bool TokenMatchesFilter(const Token* token, bool locked = false);
     // Called from AddNodes():
     bool TokenContainsChildrenOfKind(const Token* token, int kind);
@@ -138,13 +152,18 @@ protected:
     TokenTree*       m_TokenTree;
 
     // pair of current-file-filter
-    /** symbol tree contains the tokens from those files, e.g. if we specify only show tokens
-     * from a.cpp, then m_CurrentFileSet could maybe contains two files: a.cpp and a.h
+    /** A file set which contains a header file and the associated implementation file
+     *
+     * If the view option "Current file's symbols" is selected, the symbol tree will show tokens
+     * from those files, e.g. if the a.cpp shown in the current active editor, then m_CurrentFileSet
+     * maybe contains two files: a.cpp and a.h
      */
     TokenFileSet     m_CurrentFileSet;
-    /** tokens belong to the files in m_CurrentFileSet */
+
+    /** Tokens belong to the m_CurrentFileSet file set */
     TokenIdxSet      m_CurrentTokenSet;
-    /** special global scope tokens to the files in m_CurrentFileSet */
+
+    /** Special global scope tokens belong to the m_CurrentFileSet file set  */
     TokenIdxSet      m_CurrentGlobalTokensSet;
 
 private:

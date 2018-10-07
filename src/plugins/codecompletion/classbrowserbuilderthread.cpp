@@ -260,6 +260,8 @@ void ClassBrowserBuilderThread::ExpandItem(wxTreeItemId item)
 
     CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)
 
+    // we want to show the children of the current node, inheritance information such as
+    // base class or derived class need to be shown
     CCTreeCtrlData* data = static_cast<CCTreeCtrlData*>(m_CCTreeCtrlTop->GetItemData(item));
     if (data)
         m_TokenTree->RecalcInheritanceChain(data->m_Token);
@@ -499,7 +501,7 @@ void ClassBrowserBuilderThread::BuildTree()
     //
     // this technique makes it really fast to draw (we only draw what's expanded) and
     // has very minimum memory overhead since it contains as few items as possible.
-    // plus, it doesn't flicker because we 're not emptying it and re-creating it each time ;)
+    // plus, it doesn't flicker because we're not emptying it and re-creating it each time ;)
 
     // 8.) Collapse item
     CollapseItem(root);
@@ -597,7 +599,7 @@ void ClassBrowserBuilderThread::RemoveInvalidNodes(CCTreeCtrl* tree, wxTreeItemI
     // recursively enters all existing nodes and deletes the node if the token it references
     // is invalid (i.e. m_TokenTree->at() != token_in_data)
 
-    // we 'll loop backwards so we can delete nodes without problems
+    // we'll loop backwards so we can delete nodes without problems
     wxTreeItemId existing = tree->GetLastChild(parent);
     while (parent.IsOk() && existing.IsOk())
     {
@@ -688,11 +690,12 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
 {
     TRACE(_T("ClassBrowserBuilderThread::CreateSpecialFolders"));
 
-    bool hasGF = false;
-    bool hasGV = false;
-    bool hasGP = false;
-    bool hasTD = false;
-    bool hasGM = false;
+    bool hasGF = false;     // has global functions
+    bool hasGV = false;     // has global variables
+    bool hasGP = false;     // has global  macro definition
+    bool hasTD = false;     // has type defines
+    bool hasGM = false;     // has macro usage, note that this kind of tokens does not exits in the
+    // token tree, so we don't show such special folder
 
     // loop all tokens in global namespace and see if we have matches
     TokenTree* tt = m_NativeParser->GetParser().GetTokenTree();
@@ -734,6 +737,13 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
     wxTreeItemId gmacro  = AddNodeIfNotThere(m_CCTreeCtrlTop, parent, _("Macro usages"),
                            PARSER_IMG_MACRO_USE_FOLDER,   new CCTreeCtrlData(sfMacro,   0, tkMacroUse,        -1));
 
+    // the logic here is: if the treeMembers option is on, then all the child members will be shownn
+    // in the bottom, for example, if we have some global functions for the current file, then the
+    // function tokens will be shown in the bottom tree, so we don't have a '+' in the
+    // Symbols(root node)->Global functions(1 level node), when the user click on the "Global functions"
+    // node, all the global functions will be shown in the bottom tree.
+    // if the treeMembers is false, then all the global function tokens will be children of the
+    // Global functions node
     bool bottom = m_BrowserOptions.treeMembers;
     m_CCTreeCtrlTop->SetItemHasChildren(gfuncs,  !bottom && hasGF);
     m_CCTreeCtrlTop->SetItemHasChildren(tdef,    !bottom && hasTD);
@@ -744,6 +754,8 @@ bool ClassBrowserBuilderThread::CreateSpecialFolders(CCTreeCtrl* tree, wxTreeIte
     wxColour black = wxSystemSettings::GetColour(wxSYS_COLOUR_WINDOWTEXT);
     wxColour grey  = wxSystemSettings::GetColour(wxSYS_COLOUR_GRAYTEXT);
 
+    // if we don't have any global function tokens, then we set the label of "Global functions" node
+    // as grey color.
     tree->SetItemTextColour(gfuncs,  hasGF ? black : grey);
     tree->SetItemTextColour(gvars,   hasGV ? black : grey);
     tree->SetItemTextColour(preproc, hasGP ? black : grey);
@@ -780,7 +792,11 @@ wxTreeItemId ClassBrowserBuilderThread::AddNodeIfNotThere(CCTreeCtrl* tree, wxTr
     return tree->AppendItem(parent, name, imgIndex, imgIndex, data);
 }
 
-bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree, wxTreeItemId parent, int parentTokenIdx, short int tokenKindMask, int tokenScopeMask)
+bool ClassBrowserBuilderThread::AddChildrenOf(CCTreeCtrl* tree,
+                                              wxTreeItemId parent,
+                                              int parentTokenIdx,
+                                              short int tokenKindMask,
+                                              int tokenScopeMask)
 {
     TRACE(_T("ClassBrowserBuilderThread::AddChildrenOf"));
 
@@ -1011,7 +1027,7 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
     std::set<unsigned long, std::less<unsigned long> > tickets;
 
     // Build temporary list of Token tickets - if the token's ticket is present
-    // among the parent node's children, it's a dupe, and we'll skip it.
+    // among the parent node's children, it's a duplicate node, and we'll skip it.
     if (parent.IsOk() && tree == m_CCTreeCtrlTop)
     {
         wxTreeItemIdValue cookie;
@@ -1041,7 +1057,7 @@ bool ClassBrowserBuilderThread::AddNodes(CCTreeCtrl* tree, wxTreeItemId parent, 
         {
             if (   tree == m_CCTreeCtrlTop
                 && tickets.find(token->GetTicket()) != tickets.end() )
-                continue; // dupe
+                continue; // duplicate node
             ++count;
             int img = m_NativeParser->GetTokenKindImage(token);
 
@@ -1103,7 +1119,10 @@ bool ClassBrowserBuilderThread::TokenMatchesFilter(const Token* token, bool lock
 
         // we got to check all children of this token (recursively)
         // to see if any of them matches the filter...
-        for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin(); tis_it != token->m_Children.end(); ++tis_it)
+        // tis_it -> token index set iterator
+        for (TokenIdxSet::const_iterator tis_it = token->m_Children.begin();
+             tis_it != token->m_Children.end();
+             ++tis_it)
         {
             if (!locked)
                 CC_LOCKER_TRACK_TT_MTX_LOCK(s_TokenTreeMutex)

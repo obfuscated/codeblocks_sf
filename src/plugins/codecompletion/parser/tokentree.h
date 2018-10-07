@@ -92,7 +92,16 @@ public:
     /** only the token's name need to be changed, thus update the index map of the TokenTree */
     void   RenameToken(Token* token, const wxString& newName);
 
-    /** convert the Token's ancestor string to it's IDs */
+    /** convert the Token's ancestor string to it's IDs
+     * this contains recursive calls, for example in such code
+     * @code
+     * class A: public B {};
+     * class B: public C {};
+     * @endcode
+     * the Token A's ancestor string is "B", and the token B's ancestor string is "C"
+     * the ancestors of Token A are Token B and Token C, B is the direct ancestor
+     * the Token C's descendants are Token A and Token B, B is the direct descendant
+     */
     void   RecalcInheritanceChain(Token* token);
 
     /** @brief query tokens by names
@@ -167,12 +176,13 @@ public:
     /** remove tokens belong to the file */
     void   RemoveFile(int fileIndex);
 
-    // Protected access to internal lists / maps
+    /** Protected access to internal lists / maps */
     const TokenList*     GetTokens() const
     {
         return &m_Tokens;
     }
 
+    /** all kinds of tokens under global name spaces */
     const TokenIdxSet*   GetGlobalNameSpaces() const
     {
         return &m_GlobalNameSpaces;
@@ -349,8 +359,10 @@ protected:
 	 *  slots in the m_Tokens */
 	TokenIdxList      m_FreeTokens;
 
-    /** List of tokens belonging to the global namespace */
+    /** namespace tokens belongs to the global namespace */
     TokenIdxSet       m_TopNameSpaces;
+
+    /** any tokens belong to the global namespace */
     TokenIdxSet       m_GlobalNameSpaces;
 
     /** Map: file names -> file indices */

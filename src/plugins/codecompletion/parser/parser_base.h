@@ -55,6 +55,7 @@ enum BrowserSortType
     bstNone
 };
 
+/** Options for the symbol browser, this specify how the symbol browser will shown */
 struct BrowserOptions
 {
     BrowserOptions():
@@ -65,11 +66,31 @@ struct BrowserOptions
         sortType(bstKind)
     {}
 
-    bool                 showInheritance; //!< default: false
-    bool                 expandNS;        //!< default: false (auto-expand namespaces)
-    bool                 treeMembers;     //!< default: true
-    BrowserDisplayFilter displayFilter;   //!< default: bdfFile
-    BrowserSortType      sortType;        //!< default: bstKind
+    /** whether the base class or derive class information is shown as a child node
+     * default: false
+     */
+    bool                 showInheritance;
+
+    /** whether a namespaces node is auto-expand
+     * auto-expand means the child of the namespace is automatically added.
+     * default: false, so the user has to click on the '+' icon to expand the namespace, and
+     * at this time, the child will be added.
+     */
+    bool                 expandNS;
+
+    /** show members in the bottom tree. default: true */
+    bool                 treeMembers;
+
+    /** token filter option
+     *  @see  BrowserDisplayFilter for details
+     *  default: bdfFile
+     */
+    BrowserDisplayFilter displayFilter;
+
+    /** token sort option in the tree
+     *  default: bstKind
+     */
+    BrowserSortType      sortType;
 };
 
 /** Setting of the Parser, some of them will be passed down to ParserThreadOptions */
