@@ -190,7 +190,7 @@ class CompilerGCC : public cbCompilerPlugin
         FileTreeData* DoSwitchProjectTemporarily();
         ProjectBuildTarget* DoAskForTarget();
         int DoGUIAskForTarget();
-        void ClearLog();
+        void ClearLog(bool switchToLog);
         void PrepareCompileFile(wxFileName& file);
         void PrepareCompileFilePM(wxFileName& file);
         bool CheckProject();

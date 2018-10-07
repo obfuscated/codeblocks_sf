@@ -1049,7 +1049,7 @@ wxString CompilerGCC::ProjectMakefile()
     return m_pProject->GetMakefile();
 }
 
-void CompilerGCC::ClearLog()
+void CompilerGCC::ClearLog(bool switchToLog)
 {
     if (m_IsWorkspaceOperation)
         return;
@@ -1057,8 +1057,11 @@ void CompilerGCC::ClearLog()
     if (IsProcessRunning())
         return;
 
-    CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
-    Manager::Get()->ProcessEvent(evtSwitch);
+    if (switchToLog)
+    {
+        CodeBlocksLogEvent evtSwitch(cbEVT_SWITCH_TO_LOG_WINDOW, m_pLog);
+        Manager::Get()->ProcessEvent(evtSwitch);
+    }
 
     if (m_pLog)
         m_pLog->Clear();
@@ -1565,7 +1568,7 @@ void CompilerGCC::DoPrepareQueue(bool clearLog)
 
         if (clearLog)
         {
-            ClearLog();
+            ClearLog(true);
             DoClearErrors();
         }
         // wxStartTimer();
@@ -3402,7 +3405,7 @@ void CompilerGCC::OnProjectUnloaded(CodeBlocksEvent& event)
 
 void CompilerGCC::OnWorkspaceClosed(cb_unused CodeBlocksEvent& event)
 {
-    ClearLog();
+    ClearLog(false);
     DoClearErrors();
 }
 
