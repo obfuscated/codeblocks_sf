@@ -830,7 +830,8 @@ bool Parser::IsFileParsed(const wxString& filename)
         CC_LOCKER_TRACK_P_MTX_LOCK(ParserCommon::s_ParserMutex)
 
         StringList::iterator it = std::find(m_BatchParseFiles.begin(), m_BatchParseFiles.end(), filename);
-        isParsed = it != m_BatchParseFiles.end();
+        if (it != m_BatchParseFiles.end())
+            isParsed = true;
 
         CC_LOCKER_TRACK_P_MTX_UNLOCK(ParserCommon::s_ParserMutex)
     }
