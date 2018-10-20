@@ -113,6 +113,7 @@ public:
     /** Get the include paths setting (usually set by user for each C::B project).
      * If it finds some system level include search dirs which haven't been scanned, it will start a
      * a new thread(SystemHeadersThread).
+     * this function internally adds all the system level dirs to scanning thread
      * @param project project info
      * @param buildTargets target info
      * @return the local include paths
@@ -124,11 +125,13 @@ public:
     /** get the whole search dirs except the ones locally belong to the c::b project, note this
      * function is used for auto suggestion for #include directives.
      * @param force if the value is false, just return a static (cached) wxArrayString to optimize
-     * the performance, if it is true, we try to update the cache.
+     * the performance, if it is true, we try to update the cache by calculating the dirs and
+     * storing the value in the static wxArrayString variable.
      */
     wxArrayString& GetSystemIncludeDirs(cbProject* project, bool force);
 
     /** search target file names (mostly relative names) under basePath, then return the absolute dirs
+     * the result is "added" to parameter dirs (not replacement of any existing dirs)
      * It just did the calculation below:
      * "c:/ccc/ddd.cpp"(basePath) + "aaa/bbb.h"(target) => "c:/ccc/aaa/bbb.h"(dirs)
      * @param[in] basePath already located file path, this is usually the currently parsing file's location

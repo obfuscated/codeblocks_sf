@@ -73,10 +73,12 @@ int ParserThreadedTask::Execute()
 
     CC_LOCKER_TRACK_P_MTX_UNLOCK(m_ParserMutex);
 
+    // Here, it first parse the predefs, which is the predefined macros
     TRACE(_T("ParserThreadedTask::Execute(): Parse predefined macros(in buffer)"));
     if (!preDefs.IsEmpty())
         m_Parser->ParseBuffer(preDefs, false, false);
 
+    // clear the predefined macro string after it get parsed
     m_Parser->ClearPredefinedMacros();
 
     if (m_Parser->m_IgnoreThreadEvents)

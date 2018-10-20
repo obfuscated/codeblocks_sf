@@ -16,11 +16,20 @@
 
 class wxEvtHandler;
 
+/** dir to files map, for example, you have two dirs c:/a and c:/b
+ * so the map looks like:
+ * c:/a  ---> {c:/a/a1.h, c:/a/a2.h}
+ * c:/b  ---> {c:/b/b1.h, c:/b/b2.h}
+ */
 typedef std::map<wxString, StringSet> SystemHeadersMap;
 
+/** event ids used to notify parent objects*/
 extern long idSystemHeadersThreadFinish;
 extern long idSystemHeadersThreadMessage;
 
+/** collect all the header files, so they can be used in auto suggestion after #include<| directive.
+ * This is just a file crawler to collect files in the include search paths.
+ */
 class SystemHeadersThread : public wxThread
 {
 public:
@@ -31,10 +40,10 @@ public:
     virtual void* Entry();
 
 private:
-    wxEvtHandler*      m_Parent;
-    wxCriticalSection* m_SystemHeadersThreadCS;
-    SystemHeadersMap&  m_SystemHeadersMap;
-    wxArrayString      m_IncludeDirs;
+    wxEvtHandler*      m_Parent; /// this is the target the thread will sent any event to
+    wxCriticalSection* m_SystemHeadersThreadCS; /// protect multiply access to its data
+    SystemHeadersMap&  m_SystemHeadersMap; /// this takes the result data
+    wxArrayString      m_IncludeDirs;  ///added include dirs to system headers
 };
 
 #endif // SYSTEMHEADERSTHREAD_H

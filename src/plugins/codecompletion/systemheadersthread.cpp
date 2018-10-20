@@ -49,14 +49,13 @@
     #define TRACE2(format, args...)
 #endif
 
+// sent message when finish traversing all the folders, before the thread dies
+long idSystemHeadersThreadFinish    = wxNewId();
 
-// when finished collecting all files, the thread are going to die, send this event
-long idSystemHeadersThreadFinish = wxNewId();
 // Message used logging.
 long idSystemHeadersThreadMessage = wxNewId();
 
 // internal class declaration of HeaderDirTraverser (implementation below)
-
 class HeaderDirTraverser : public wxDirTraverser
 {
 public:
@@ -73,7 +72,8 @@ public:
 private:
     /** this function will be called every time we meet a file or a dir, and we count the file and
      * dir, we temporary leave the critical section to give other thread a change to access the file
-     * maps.
+     * maps. As the traversing may take a long time, in the same time, the UI may need to show the code
+     * completion prompt for header files, so a critical section is used here.
      */
     void AddLock(bool is_file);
 
@@ -81,9 +81,11 @@ private:
 private:
     /* the thread call Traverse() on this instance*/
     wxThread*               m_Thread;
+
     /* critical section to protect accessing m_SystemHeadersMap */
     wxCriticalSection*      m_SystemHeadersThreadCS;
-    /* dir to files map, for example, you are two dirs c:/a and c:/b
+
+    /* dir to files map, for example, you have two dirs c:/a and c:/b
      * so the map looks like: (usually the relative file path is stored
      * c:/a  ---> {c:/a/a1.h, c:/a/a2.h} ---> {a1.h, a2.h}
      * c:/b  ---> {c:/b/b1.h, c:/b/b2.h} ---> {b1.h, b2.h}
@@ -108,15 +110,22 @@ private:
     std::set<FileID> m_VisitedDirsByID;
 #endif // __WXMSW__
 
-    /* top level dir we are traversing header files */
+    /* which top level dir we are traversing header files in this Traverser object, the folder is in absolute
+     * format, like c:/a
+     */
     const wxString&         m_SearchDir;
-    /* string set for header files */
+
+    /* string set for header files, this is actually a file set reference in the m_SystemHeadersMap
+     * it store all the header files in relative format, such as: a1.h, a2.h
+     */
     StringSet&              m_Headers;
 
     /** indicates whether the critical section is entered or not, used in AddLock() function*/
     bool                    m_Locked;
+
     /* numbers of dirs in the traversing */
     size_t                  m_Dirs;
+
     /* numbers of files in the traversing */
     size_t                  m_Files;
 };
@@ -147,6 +156,8 @@ void* SystemHeadersThread::Entry()
     wxArrayString dirs;
     {
         wxCriticalSectionLocker locker(*m_SystemHeadersThreadCS);
+        // check to see m_SystemHeadersMap already contains the element of m_IncludeDirs, if not,
+        // just add one entry in the map.
         for (size_t i=0; i<m_IncludeDirs.GetCount(); ++i)
         {
             if (m_SystemHeadersMap.find(m_IncludeDirs[i]) == m_SystemHeadersMap.end())
@@ -205,6 +216,7 @@ void* SystemHeadersThread::Entry()
         wxPostEvent(m_Parent, evt);
     }
 
+    // send the idSystemHeadersThreadFinish event to notify its parent before the thread dies.
     if ( !TestDestroy() )
     {
         CodeBlocksThreadEvent evt(wxEVT_COMMAND_MENU_SELECTED, idSystemHeadersThreadFinish);

@@ -1169,7 +1169,6 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     // fill a list of matching files
     StringSet files;
 
-    // #include < or #include "
     cbProject* project = m_NativeParser.GetProjectByEditor(ed);
 
     // since we are going to access the m_SystemHeadersMap, we add a locker here
@@ -1181,9 +1180,11 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
     {
         m_SystemHeadersThreadCS.Enter();
 #endif // wxCHECK_VERSION(3, 0, 0)
+        // if the project get modified, fetch the dirs again, otherwise, use cached dirs
         wxArrayString& incDirs = GetSystemIncludeDirs(project, project ? project->GetModified() : true);
         for (size_t i = 0; i < incDirs.GetCount(); ++i)
         {
+            // shm_it means system_header_map_iterator
             SystemHeadersMap::const_iterator shm_it = m_SystemHeadersMap.find(incDirs[i]);
             if (shm_it != m_SystemHeadersMap.end())
             {
@@ -1191,6 +1192,7 @@ void CodeCompletion::DoCodeCompleteIncludes(cbEditor* ed, int& tknStart, int tkn
                 for (StringSet::const_iterator ss_it = headers.begin(); ss_it != headers.end(); ++ss_it)
                 {
                     const wxString& file = *ss_it;
+                    // if find a value matches already typed "filename", add to the result
                     if (file.StartsWith(filename))
                     {
                         files.insert(file);
@@ -1535,10 +1537,10 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
     // Do not try to operate include directories if the project is not for this platform
     if (m_CCEnablePlatformCheck && !project->SupportsCurrentPlatform())
         return dirs;
-
+    // add project level compiler include search paths
     const wxString prjPath = project->GetCommonTopLevelPath();
     GetAbsolutePath(prjPath, project->GetIncludeDirs(), dirs);
-
+    // add target level compiler include search paths
     for (size_t i = 0; i < buildTargets.GetCount(); ++i)
     {
         ProjectBuildTarget* tgt = project->GetBuildTarget(buildTargets[i]);
@@ -1554,26 +1556,32 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
     wxArrayString sysDirs;
     for (size_t i = 0; i < dirs.GetCount();)
     {
+        // if the dir with the prefix of project path, then it is a "local dir"
         if (dirs[i].StartsWith(prjPath))
             ++i;
-        else
+        else // otherwise, it is a "system dir", so add to "sysDirs"
         {
             if (m_SystemHeadersMap.find(dirs[i]) == m_SystemHeadersMap.end())
                 sysDirs.Add(dirs[i]);
+            // remove the system dir in dirs
             dirs.RemoveAt(i);
         }
     }
 
     if (!sysDirs.IsEmpty())
     {
-        SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS, m_SystemHeadersMap, sysDirs);
+        // create a worker thread associate with "sysDirs", then put it in a queue.
+        SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS,
+                                                              m_SystemHeadersMap, sysDirs);
         m_SystemHeadersThreads.push_back(thread);
+        // if the batch parsing is done, and no system header scanning thread is running
+        // just run it, other wise, this thread will run after the batch thread finishes.
         if (!m_SystemHeadersThreads.front()->IsRunning() && m_NativeParser.Done())
             thread->Run();
     }
 
     dirs.Sort(CodeCompletionHelper::CompareStringLen);
-    return dirs;
+    return dirs; //return all the local dirs
 }
 
 wxArrayString& CodeCompletion::GetSystemIncludeDirs(cbProject* project, bool force)
@@ -2601,16 +2609,22 @@ void CodeCompletion::OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event)
     // wait for the current thread died, and remove it from the thread list, then try to run another
     // thread
     SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
+
+    // remove the already finished SystemHeadersThread
     if (thread == m_SystemHeadersThreads.front())
     {
         if (!event.GetString().IsEmpty())
             CCLogger::Get()->DebugLog(event.GetString());
+        // In the case of receiving the finish event, the thread should already die, if not
+        // we just wait the thread to die. we expect this don't take much time, otherwise, it
+        // hangs (blocks) here.
         if (thread->IsAlive() && thread->IsRunning())
             thread->Wait();
         delete thread;
         m_SystemHeadersThreads.pop_front();
     }
 
+    // start to run the remaining threads
     if (   m_CCEnableHeaders
         && !m_SystemHeadersThreads.empty()
         && !m_SystemHeadersThreads.front()->IsRunning()
