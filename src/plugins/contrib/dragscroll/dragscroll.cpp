@@ -1516,7 +1516,14 @@ void MouseEventsHandler::OnMouseEvent(wxMouseEvent& event)    //MSW
             #endif
             if ( (GetUserDragKey() ==  wxMOUSE_BTN_MIDDLE ) && event.MiddleIsDown() )
                 return; //dont allow paste from middle-mouse used as scroll key
-            //-event.Skip(); //dont skip. It'll move the edit caret when using right mouse key.
+            if ( ((wxWindow*)pEvtObject)->GetName() == _T("SCIwindow") //(2018/10/20)
+                and ( (GetUserDragKey() ==  wxMOUSE_BTN_RIGHT ) && event.RightIsDown() ) )
+            {
+               //dont skip when dragging in editor window. wx3.+
+               //It'll move the edit caret when using right mouse key.
+                return;
+            }
+            event.Skip(); //skip, else causes selection problems in other windows
             return;
     }// if KeyDown
 
