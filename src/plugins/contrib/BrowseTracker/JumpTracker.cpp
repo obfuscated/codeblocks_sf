@@ -609,11 +609,16 @@ void JumpTracker::OnMenuJumpBack(wxCommandEvent &/*event*/)
         if (GetPreviousIndex(m_cursor) == m_insertNext)
             return;
 
-    m_bJumpInProgress = true;
 
     EditorManager* edmgr = Manager::Get()->GetEditorManager();
     EditorBase* eb = edmgr->GetActiveEditor();
-    cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+    cbEditor* cbed = (eb ? edmgr->GetBuiltinEditor(eb) : nullptr);
+
+    if (not cbed)
+        return;
+
+    m_bJumpInProgress = true;
+
     //-long activeEdLine = 0;
     long activeEdPosn = 0;
     wxString activeEdFilename = wxEmptyString;
@@ -709,11 +714,16 @@ void JumpTracker::OnMenuJumpNext(wxCommandEvent &/*event*/)
         if (m_cursor == m_insertNext)
             return;
 
-    m_bJumpInProgress = true;
 
     EditorManager* edmgr = Manager::Get()->GetEditorManager();
     EditorBase* eb = edmgr->GetActiveEditor();
-    cbEditor* cbed = edmgr->GetBuiltinEditor(eb);
+    cbEditor* cbed = (eb ? edmgr->GetBuiltinEditor(eb) : nullptr);
+
+    if (not cbed)
+        return;
+
+    m_bJumpInProgress = true;
+
     //-long activeEdLine = 0;
     long activeEdPosn = 0;
     wxString activeEdFilename = wxEmptyString;
