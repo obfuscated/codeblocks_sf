@@ -72,6 +72,7 @@ void GotoFile::BuildContent(wxWindow* parent, IncrementalSelectIterator *iterato
     labelCtrl->SetLabel(message);
 
     // Call this here to make sure the column widths are correctly calculated.
+    m_ResultList->SetIterator(iterator);
     m_handler.Init(m_ResultList, m_Text);
 
     const int columnWidth = iterator->GetColumnWidth(0);
