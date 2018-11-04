@@ -370,6 +370,10 @@ void NativeParserBase::GetCallTipHighlight(const wxString& calltip,
     int commas = 0;
     *start = FindFunctionOpenParenthesis(calltip) + 1;
     *end = 0;
+
+    // for a function call tip string like below
+    // void f(int a, map<int, float>b)
+    // we have to take care the <> pair
     while (true)
     {
         wxChar c = calltip.GetChar(pos++);
@@ -393,6 +397,10 @@ void NativeParserBase::GetCallTipHighlight(const wxString& calltip,
             }
             *start = pos;
         }
+        else if (c =='<')
+            ++nest;
+        else if (c == '>')
+            --nest;
     }
     if (*end == 0)
         *end = paramsCloseBracket;
