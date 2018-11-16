@@ -134,7 +134,17 @@ wxString    tt;
         tt.Printf(_T("%s->SetBitmap(*%s);\n"), vname.c_str(), iname.c_str());
 #endif
         AddEventCode(tt);
-    };
+    }
+    else
+    {
+        // if we can't find the image in wxsImage, we fallback to interpret it as a file path
+        // some code snippet likes below:
+        // wxBitmap bmp = wxBitmap(wxImage(_T("input.png")));
+        // ImagePanel1->SetBitmap(bmp);
+        wxString bmpFilename = vname + "_bmp";
+        Codef(_T("wxBitmap %s = wxBitmap(wxImage((\"%s\")));\n"), bmpFilename.wx_str(), mImage.wx_str());
+        Codef(_T("%ASetBitmap(%s);\n"), bmpFilename.wx_str());
+    }
 
 // do the rest of it
 
@@ -166,6 +176,16 @@ wxBitmap        bmp;
     if (image != NULL) {
         bmp = ((wxsImage *) image)->GetPreview();
         ap->SetBitmap(bmp);
+    }
+    else{
+        // in case we can't find the name in ImageList, we try to interpret it as a filepath
+        // see discussion http://forums.codeblocks.org/index.php/topic,22888.0.html
+        wxImage Img(mImage);
+        if (Img.Ok())
+        {
+            bmp = wxBitmap(Img);
+            ap->SetBitmap(bmp);
+        }
     };
 
 // and stretch it?
