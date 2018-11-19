@@ -274,6 +274,20 @@ bool Tokenizer::SkipWhiteSpace()
     return true;
 }
 
+bool Tokenizer::SkipBackslashBeforeEOL()
+{
+    if (CurrentChar() == _T('\\'))
+    {
+        wxChar next = NextChar();
+        if (next == _T('\r') || next == _T('\n'))
+        {
+            MoveToNextChar();
+            return true;
+        }
+    }
+    return false;
+}
+
 // only be called when we are in a C-string,
 // To check whether the current character is the real end of C-string
 // See SkipToStringEnd() for more details
@@ -1116,7 +1130,12 @@ bool Tokenizer::CalcConditionExpression()
         // we run the while loop explicitly before calling the DoGetToken() function.
         // if m_TokenIndex pass the EOL, we should stop the calculating of preprocessor
         // condition
-        while (SkipWhiteSpace() || SkipComment())
+        // The SkipBackslashBeforeEOL() function call is needed here, because we want to
+        // handle multiply lines of #if xxxx condition, such as:
+        // /* line 0 */ #if defined(xxx) && backslash
+        // /* line 1 */ defined (yyy)
+        // the backslash in the line 0 should be skipped
+        while (SkipWhiteSpace() || SkipBackslashBeforeEOL() || SkipComment())
             ;
 
         if (m_TokenIndex >= m_BufferLen - untouchedBufferLen)

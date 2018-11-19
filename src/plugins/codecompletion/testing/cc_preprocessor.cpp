@@ -33,6 +33,12 @@
   #endif
 #endif
 
+#if defined(CONDITION_B) && \
+    defined(CONDITION_B_2)
+// sourceforge bug #761 Fail to parse multiline #if defined() — https://sourceforge.net/p/codeblocks/tickets/761/
+int bug761;
+#endif
+
 class MyClass1
 {
   public:
@@ -84,6 +90,7 @@ AClass obj;
 
 const char szStr[] = TEST;
 
+
 void Test( void )
 {
     printf( "%s\n", szStr );
@@ -103,3 +110,4 @@ int main()
 //MyS       //MyStr1,MyStr2,MyStr3,MyStr4
 //CON       //CONDITION_B,CONDITION_B_2,COND
 //obj.      //i_integer,f_float
+//bug761    //bug761

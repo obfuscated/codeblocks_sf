@@ -297,6 +297,9 @@ protected:
     /** Skip any "tab" "white-space" */
     bool SkipWhiteSpace();
 
+    /** Skip backslash before newline */
+    bool SkipBackslashBeforeEOL();
+
     /** Skip the C/C++ comment
      * @return true if we do move m_TokenIndex
      * When C comment is handled, m_TokenIndex point to the char AFTER the tailing '/'
