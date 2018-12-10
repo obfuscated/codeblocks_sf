@@ -25,8 +25,8 @@
 #include "nativeparser_test.h"
 
 //(*InternalHeaders(CCTestFrame)
-#include <wx/settings.h>
 #include <wx/intl.h>
+#include <wx/settings.h>
 #include <wx/string.h>
 //*)
 
@@ -43,6 +43,7 @@ const long CCTestFrame::ID_CHK_HIDE = wxNewId();
 const long CCTestFrame::wxID_TEST_SINGLE = wxNewId();
 const long CCTestFrame::wxID_PARSE = wxNewId();
 const long CCTestFrame::wxID_PRINT_TREE = wxNewId();
+const long CCTestFrame::wxID_SAVE_TEST_RESULT = wxNewId();
 const long CCTestFrame::wxID_TOKEN = wxNewId();
 //*)
 
@@ -78,30 +79,30 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     m_FRDlg(NULL)
 {
     //(*Initialize(CCTestFrame)
-    wxMenuItem* mnu_itm_save_log;
-    wxMenuItem* mnu_item_find;
-    wxBoxSizer* bsz_parser;
+    wxBoxSizer* bszCompletionTest;
     wxBoxSizer* bszParserInput;
+    wxBoxSizer* bszParserOutput;
+    wxBoxSizer* bszParserSearchTree;
+    wxBoxSizer* bsz_include;
+    wxBoxSizer* bsz_main;
+    wxBoxSizer* bsz_misc;
+    wxBoxSizer* bsz_parser;
     wxBoxSizer* bsz_search_tree;
+    wxMenu* mnu_file;
+    wxMenu* mnu_help;
+    wxMenu* mnu_search;
+    wxMenuBar* mnu_main;
+    wxMenuItem* mnu_item_about;
+    wxMenuItem* mnu_item_find;
+    wxMenuItem* mnu_item_token;
+    wxMenuItem* mnu_itm_open;
+    wxMenuItem* mnu_itm_quit;
+    wxMenuItem* mnu_itm_reparse;
+    wxMenuItem* mnu_itm_save_log;
     wxPanel* panParserInput;
     wxPanel* panParserOutput;
-    wxBoxSizer* bszParserSearchTree;
-    wxBoxSizer* bszParserOutput;
-    wxMenu* mnu_help;
-    wxBoxSizer* bszCompletionTest;
-    wxStaticText* lbl_include;
-    wxMenuItem* mnu_itm_quit;
-    wxBoxSizer* bsz_include;
-    wxBoxSizer* bsz_misc;
-    wxMenuItem* mnu_item_about;
-    wxMenuBar* mnu_main;
-    wxMenuItem* mnu_item_token;
-    wxMenu* mnu_search;
     wxPanel* panParserSearchTree;
-    wxMenuItem* mnu_itm_open;
-    wxMenu* mnu_file;
-    wxMenuItem* mnu_itm_reparse;
-    wxBoxSizer* bsz_main;
+    wxStaticText* lbl_include;
 
     Create(0, wxID_ANY, _("CC Testing"), wxDefaultPosition, wxDefaultSize, wxDEFAULT_FRAME_STYLE, _T("wxID_ANY"));
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_MENUBAR));
@@ -129,6 +130,8 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     bsz_search_tree->Add(btnParse, 1, wxALIGN_CENTER_VERTICAL, 5);
     btnPrintTree = new wxButton(this, wxID_PRINT_TREE, _("Print Tree"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_PRINT_TREE"));
     bsz_search_tree->Add(btnPrintTree, 1, wxALL|wxALIGN_BOTTOM, 5);
+    btnSaveTestResult = new wxButton(this, wxID_SAVE_TEST_RESULT, _("Save Test Result"), wxDefaultPosition, wxDefaultSize, 0, wxDefaultValidator, _T("wxID_SAVE_TEST_RESULT"));
+    bsz_search_tree->Add(btnSaveTestResult, 1, wxALL|wxALIGN_BOTTOM, 5);
     bsz_main->Add(bsz_search_tree, 0, wxTOP|wxLEFT|wxRIGHT|wxEXPAND, 5);
     bsz_parser = new wxBoxSizer(wxVERTICAL);
     m_ParserCtrl = new wxNotebook(this, wxID_ANY, wxDefaultPosition, wxDefaultSize, 0, _T("wxID_ANY"));
@@ -208,6 +211,7 @@ CCTestFrame::CCTestFrame(const wxString& main_file) :
     Connect(wxID_TEST_SINGLE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnTestSingle);
     Connect(wxID_PARSE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnParse);
     Connect(wxID_PRINT_TREE,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnPrintTree);
+    Connect(wxID_SAVE_TEST_RESULT,wxEVT_COMMAND_BUTTON_CLICKED,(wxObjectEventFunction)&CCTestFrame::OnSaveTestResultClick);
     Connect(wxID_OPEN,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuOpenSelected);
     Connect(wxID_REFRESH,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuReparseSelected);
     Connect(wxID_SAVE,wxEVT_COMMAND_MENU_SELECTED,(wxObjectEventFunction)&CCTestFrame::OnMenuSaveSelected);
@@ -744,4 +748,24 @@ void CCTestFrame::OnTestSingle(wxCommandEvent& WXUNUSED(event))
     // no need to save the file to hard dist and after parsing, delete it.
     wxString content = m_Control->GetText();
     m_NativeParser.ParseAndCodeCompletion(content, /* isLocalFile */ false);
+}
+
+void CCTestFrame::OnSaveTestResultClick(wxCommandEvent& event)
+{
+    // save the content of the Completion test panel to the result file
+    wxString content = m_CompletionTestCtrl->GetValue();
+    wxFileDialog dlg(this, "Save .txt file...",
+                     "", "",
+                     "Save Files (*.txt) | *.txt | All files (*.*)|*.*", wxFD_SAVE);
+    if (dlg.ShowModal() == wxID_OK)
+    {
+        wxFile file(dlg.GetPath(), wxFile::write);
+        if( file.IsOpened() )
+        {
+            file.Write(content);
+            file.Close();
+        }
+    }
+    return;
+
 }

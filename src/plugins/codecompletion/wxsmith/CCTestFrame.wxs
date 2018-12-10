@@ -86,6 +86,15 @@
 						<border>5</border>
 						<option>1</option>
 					</object>
+					<object class="sizeritem">
+						<object class="wxButton" name="wxID_SAVE_TEST_RESULT" variable="btnSaveTestResult" member="yes">
+							<label>Save Test Result</label>
+							<handler function="OnSaveTestResultClick" entry="EVT_BUTTON" />
+						</object>
+						<flag>wxALL|wxALIGN_BOTTOM</flag>
+						<border>5</border>
+						<option>1</option>
+					</object>
 				</object>
 				<flag>wxTOP|wxLEFT|wxRIGHT|wxEXPAND</flag>
 				<border>5</border>

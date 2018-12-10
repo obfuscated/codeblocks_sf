@@ -1,0 +1,290 @@
+********************************************************
+  Testing in file: cc_complex_declaration.cpp
+********************************************************
+- FAIL: test15  test15
+- FAIL: test14  test14
++ PASS: test13  test13
+- FAIL: test12  test12
++ PASS: test11  test11
++ PASS: test10  test10
+- FAIL: test09  test09
++ PASS: test08  test08
+- FAIL: test07  test07
+- FAIL: test06  test06
++ PASS: test05  test05
++ PASS: test04  test04
+- FAIL: test03  test03
++ PASS: test02  test02
++ PASS: test01  test01
+--------------------------------------------------------
+Total 15 tests, 8 PASS, 7 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_enumerator.cpp
+********************************************************
++ PASS: ha  haFourth
++ PASS: ha  haThree
++ PASS: te  teFirst
++ PASS: te  teFourth
++ PASS: powF  powFirst
++ PASS: powF  powFourth
++ PASS: powF  powFifth
+--------------------------------------------------------
+Total 7 tests, 7 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_function_decls.cpp
+********************************************************
+- FAIL: vt[1].  GetInt
++ PASS: g_S.  i
++ PASS: g_  g_S
++ PASS: tc.Vo  Void
++ PASS: tc.St  StaticVoid
++ PASS: tc.GetC  GetClass
++ PASS: tc.GetI  GetInt
+- FAIL: str.  size
+- FAIL: str.  length
+--------------------------------------------------------
+Total 9 tests, 6 PASS, 3 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_function_decl_list.cpp
+********************************************************
++ PASS: obj3.  m_a
++ PASS: obj2.  m_a
++ PASS: obj1.  m_a
++ PASS: fp  fp1
++ PASS: fp  fp2
++ PASS: fp  fp3
++ PASS: Func  Func1
++ PASS: Func  Func2
++ PASS: f3  f3
++ PASS: f2  f2
++ PASS: f1  f1
+--------------------------------------------------------
+Total 11 tests, 11 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_function_ptr.cpp
+********************************************************
++ PASS: fun  func_array_assign
++ PASS: foo  foo_assign
+--------------------------------------------------------
+Total 2 tests, 2 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_function_ptr_com_interface.cpp
+********************************************************
++ PASS: factory->  QueryInterface
++ PASS: factory->  AddRef
++ PASS: factory->  Release
++ PASS: factory->  CreateInstance
++ PASS: factory->  LockServer
++ PASS: unknwown->  QueryInterface
++ PASS: unknwown->  AddRef
++ PASS: unknwown->  Release
+--------------------------------------------------------
+Total 8 tests, 8 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_function_return_enum.cpp
+********************************************************
+- FAIL: my_func  my_function
+--------------------------------------------------------
+Total 1 tests, 0 PASS, 1 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_loop_variables.cpp
+********************************************************
+--------------------------------------------------------
+Total 0 tests, 0 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_macro_expansion.cpp
+********************************************************
++ PASS: zero_  zero_defined
++ PASS: test_defined  test_defined_expand_2
++ PASS: f234  f2345
++ PASS: f123  f1234
++ PASS: std::  string
+--------------------------------------------------------
+Total 5 tests, 5 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_macro_expansion_infinite_loop.cpp
+********************************************************
++ PASS: aaa  aaa
+--------------------------------------------------------
+Total 1 tests, 1 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_macro_expansion_stringize.cpp
+********************************************************
++ PASS: a  aaa
+--------------------------------------------------------
+Total 1 tests, 1 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_mfc_expand_event_table.cpp
+********************************************************
++ PASS: mymiss  mymissingfunc1
++ PASS: mymiss  mymissingfunc2
++ PASS: mymiss  mymissingfunc3
+--------------------------------------------------------
+Total 3 tests, 3 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_namespaces.cpp
+********************************************************
++ PASS: std::vector.size  size
++ PASS: my_namespace.nested_namespace.  variable
++ PASS: my_namespace.NameSpaces.  MethodA
++ PASS: my_namespace.NameSpaces.  MethodB
++ PASS: my_namespace.  ConstInt
++ PASS: Logger.  caption
++ PASS: Logger.  info
++ PASS: Logger.  warning
++ PASS: Logger.  success
++ PASS: Logger.  error
++ PASS: newline_  newline_string
++ PASS: temp_  temp_string
+--------------------------------------------------------
+Total 12 tests, 12 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_parse_doxygen_document.cpp
+********************************************************
+- FAIL: DEF1  DEF1  "-"
++ PASS: MASK_B  MASK_B  "Mask B descr"
++ PASS: MASK_A  MASK_A  "Mask A descr"
++ PASS: DEF4  DEF4  "Def4"
++ PASS: DEF3  DEF3  "Def3"
++ PASS: DEF2  DEF2  "Def2"
++ PASS: DEF1  DEF1  "Def1"
++ PASS: VAR4  VAR4  "Var4"
++ PASS: VAR3  VAR3  "Var3"
++ PASS: VAR2  VAR2  "Var2"
++ PASS: VAR1  VAR1  "Var1"
++ PASS: VAR  VAR1  "\sa ENUM"
++ PASS: VAR  VAR2  "\sa ENUM"
++ PASS: VAR  VAR3  "\sa ENUM"
++ PASS: VAR  VAR4  "\sa ENUM"
+--------------------------------------------------------
+Total 12 tests, 11 PASS, 1 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_preprocessor.cpp
+********************************************************
++ PASS: bug761  bug761
++ PASS: obj.  i_integer
++ PASS: obj.  f_float
++ PASS: CON  CONDITION_B
++ PASS: CON  CONDITION_B_2
++ PASS: CON  COND
++ PASS: MyS  MyStr1
++ PASS: MyS  MyStr2
++ PASS: MyS  MyStr3
++ PASS: MyS  MyStr4
++ PASS: MyMu  MyMultiline
++ PASS: MyComp  MyComplex
++ PASS: MyCom  MyComm
++ PASS: MyCom  MyComplex
++ PASS: MyCon  MyConst
++ PASS: Test  Test
+--------------------------------------------------------
+Total 16 tests, 16 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_recursive_macro_expand.cpp
+********************************************************
++ PASS: Test.  test
++ PASS: Test.  min
+--------------------------------------------------------
+Total 2 tests, 2 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_stl_container_template_.cpp
+********************************************************
+- FAIL: mpp[].  m_aaa
+- FAIL: mpp.at().  m_aaa
+- FAIL: pri.top().  m_aaa
+- FAIL: que.front().  m_aaa
+- FAIL: sta.top().  m_aaa
+- FAIL: lis.front().  m_aaa
+- FAIL: frw.front().  m_aaa
+- FAIL: deq.front().  m_aaa
+- FAIL: vec_ptr[]->  m_aaa
+- FAIL: vec_ptr.at()->  m_aaa
+- FAIL: vec[].  m_aaa
+- FAIL: vec.at().  m_aaa
+--------------------------------------------------------
+Total 12 tests, 0 PASS, 12 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_structs.cpp
+********************************************************
++ PASS: a  a1
++ PASS: a  a2
+--------------------------------------------------------
+Total 2 tests, 2 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_typedef_declaration.cpp
+********************************************************
++ PASS: c2.s2.  m_aaa
++ PASS: c1.s1.  m_aaa
+--------------------------------------------------------
+Total 2 tests, 2 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_typedef_pointer.cpp
+********************************************************
++ PASS: foo2Ptr->  bar
++ PASS: foo1Ptr->  bar
++ PASS: foo1Ptr  foo1Ptr
+--------------------------------------------------------
+Total 3 tests, 3 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_type_alias.cpp
+********************************************************
++ PASS: FFF.at().  m_aaa
++ PASS: DDD.  m_bbb
++ PASS: CCC::cs.  m_bbb
++ PASS: BBB.  m_aaa
++ PASS: AAA.  m_aaa
+--------------------------------------------------------
+Total 5 tests, 5 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_unnamed_class.cpp
+********************************************************
++ PASS: ClassA::  a
++ PASS: ClassA::  s
++ PASS: ClassA::  u
++ PASS: ClassA::  v
++ PASS: ClassA::  STRUCT_A
++ PASS: ClassA::  STRUCT_B
++ PASS: ClassA::  UNNAMED_A
++ PASS: ClassA::  UNNAMED_B
++ PASS: ClassA::  ENUM_A
++ PASS: ClassA::  ENUM_B
+--------------------------------------------------------
+Total 10 tests, 10 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_wx_event_handler_macro.cpp
+********************************************************
++ PASS: aaa  aaa
+--------------------------------------------------------
+Total 1 tests, 1 PASS, 0 FAIL
+--------------------------------------------------------
+********************************************************
+  Testing in file: cc_x_macro.cpp
+********************************************************
++ PASS: val  value1
++ PASS: val  value2
++ PASS: val  value3
+--------------------------------------------------------
+Total 3 tests, 3 PASS, 0 FAIL
+--------------------------------------------------------

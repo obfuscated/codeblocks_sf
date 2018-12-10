@@ -11,17 +11,17 @@
 
 //(*Headers(CCTestFrame)
 #include "wx/wxscintilla.h"
+#include <wx/button.h>
+#include <wx/checkbox.h>
+#include <wx/filedlg.h>
+#include <wx/frame.h>
+#include <wx/menu.h>
 #include <wx/notebook.h>
+#include <wx/panel.h>
 #include <wx/sizer.h>
 #include <wx/stattext.h>
-#include <wx/menu.h>
-#include <wx/textctrl.h>
-#include <wx/checkbox.h>
-#include <wx/panel.h>
-#include <wx/filedlg.h>
-#include <wx/button.h>
-#include <wx/frame.h>
 #include <wx/statusbr.h>
+#include <wx/textctrl.h>
 //*)
 
 #include <wx/fdrepdlg.h>
@@ -46,6 +46,7 @@ protected:
     static const long wxID_TEST_SINGLE;
     static const long wxID_PARSE;
     static const long wxID_PRINT_TREE;
+    static const long wxID_SAVE_TEST_RESULT;
     static const long wxID_TOKEN;
     //*)
 
@@ -67,6 +68,7 @@ private:
     void OnParse(wxCommandEvent& event);
     void OnPrintTree(wxCommandEvent& event);
     void OnTestSingle(wxCommandEvent& event);
+    void OnSaveTestResultClick(wxCommandEvent& event);
     //*)
 
     void OnMarginClick(wxScintillaEvent& event);
@@ -76,21 +78,22 @@ private:
 
 
     //(*Declarations(CCTestFrame)
-    wxScintilla* m_Control;
-    wxTextCtrl* m_TreeCtrl;
-    wxCheckBox* m_DoTreeCtrl;
-    wxPanel* panCompletionTest;
-    wxFileDialog* m_SaveFile;
-    wxButton* btnTestSingle;
-    wxStatusBar* m_StatuBar;
-    wxTextCtrl* m_LogCtrl;
     wxButton* btnParse;
-    wxNotebook* m_ParserCtrl;
+    wxButton* btnPrintTree;
+    wxButton* btnSaveTestResult;
+    wxButton* btnTestSingle;
     wxCheckBox* m_DoHideCtrl;
+    wxCheckBox* m_DoTreeCtrl;
+    wxFileDialog* m_OpenFile;
+    wxFileDialog* m_SaveFile;
+    wxNotebook* m_ParserCtrl;
+    wxPanel* panCompletionTest;
+    wxScintilla* m_Control;
+    wxStatusBar* m_StatuBar;
     wxTextCtrl* m_CompletionTestCtrl;
     wxTextCtrl* m_IncludeCtrl;
-    wxFileDialog* m_OpenFile;
-    wxButton* btnPrintTree;
+    wxTextCtrl* m_LogCtrl;
+    wxTextCtrl* m_TreeCtrl;
     //*)
 
     wxProgressDialog*    m_ProgDlg;
