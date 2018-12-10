@@ -192,7 +192,14 @@ bool NativeParserTest::ParseAndCodeCompletion(wxString filename, bool isLocalFil
     wxString message;
 
     if (isLocalFile)
-        message = wxString::Format(_T("********************************************************\n  Testing in file: %s\n********************************************************"),filename.wx_str());
+    {
+        // only print the base name, so we can save the log in our source control system
+        wxString baseName;
+        wxString ext;
+        wxFileName::SplitPath(filename, nullptr, &baseName, &ext);
+        wxString printName = baseName + wxT(".") + ext;
+        message = wxString::Format(_T("********************************************************\n  Testing in file: %s\n********************************************************"), printName.wx_str());
+    }
     else
         message = wxString::Format(_T("********************************************************\n  Testing file in edit control\n********************************************************"));
 
