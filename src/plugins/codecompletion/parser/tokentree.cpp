@@ -46,6 +46,16 @@
     #define TRACE2(format, args...)
 #endif
 
+
+/** a global mutex to protect multiply access to the TokenTree
+ * This mutex is a tricky, if we have two tokentree instances, such as treeA and treeB
+ * When accessing treeA, we should use the mutex to forbid another thread to access
+ * either treeA and treeB. This is because the treeA and treeB may not thread safe, and
+ * when we are using the wx2.8, the wxString is not using the atomic reference counter
+ * to protect the multiply thread access, and treeA and treeB may share some wxStrings.
+ * The wxString in wx3.0+ don't have such issue, so we should remove it after the migration
+ * to wx3.0+
+ */
 wxMutex s_TokenTreeMutex;
 
 TokenTree::TokenTree() :

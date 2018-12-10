@@ -204,32 +204,32 @@ public:
         return &m_FilesToBeReparsed;
     }
 
-    size_t       GetFileMapSize() const
+    size_t GetFileMapSize() const
     {
         return m_FileMap.size();
     }
 
-    void         InsertTokenBelongToFile(size_t fileIdx, int tokenIdx)
+    void InsertTokenBelongToFile(size_t fileIdx, int tokenIdx)
     {
         m_FileMap[fileIdx].insert(tokenIdx);
     }
 
-    void         EraseFileMapInFileMap(size_t fileIdx)
+    void EraseFileMapInFileMap(size_t fileIdx)
     {
         m_FileMap.erase(fileIdx);
     }
 
-    size_t       GetFileStatusCountForIndex(size_t fileIdx) const
+    size_t GetFileStatusCountForIndex(size_t fileIdx) const
     {
         return m_FileStatusMap.count(fileIdx);
     }
 
-    void         EraseFileStatusByIndex(size_t fileIdx)
+    void EraseFileStatusByIndex(size_t fileIdx)
     {
         m_FileStatusMap.erase(fileIdx);
     }
 
-    void         EraseFilesToBeReparsedByIndex(size_t fileIdx)
+    void EraseFilesToBeReparsedByIndex(size_t fileIdx)
     {
         m_FilesToBeReparsed.erase(fileIdx);
     }
@@ -238,12 +238,12 @@ public:
     /** put the filename in the m_FilenameMap, and return the file index, if this file is already in
      * the m_FilenameMap, it just return the file index.
      */
-    size_t         InsertFileOrGetIndex(const wxString& filename);
+    size_t InsertFileOrGetIndex(const wxString& filename);
 
-    size_t         GetFileMatches(const wxString& filename, std::set<size_t>& result,
+    size_t GetFileMatches(const wxString& filename, std::set<size_t>& result,
                                   bool caseSensitive, bool is_prefix);
 
-    size_t         GetFileIndex(const wxString& filename);
+    size_t GetFileIndex(const wxString& filename);
 
     const wxString GetFilename(size_t fileIdx) const;
 
@@ -254,20 +254,20 @@ public:
      * false, then set the file status to being parsed, so parsing must be happened immediately after
      * this function call.
      */
-    size_t         ReserveFileForParsing(const wxString& filename, bool preliminary = false);
+    size_t ReserveFileForParsing(const wxString& filename, bool preliminary = false);
 
     /** mark the file as "need to be reparsed" status, usually happens that this file is saved(updated)
      * so a reparse need to be done.
      */
-    void           FlagFileForReparsing(const wxString& filename);
+    void FlagFileForReparsing(const wxString& filename);
 
     /** mark the file status as fpsDone, since parsing this file is done */
-    void           FlagFileAsParsed(const wxString& filename);
+    void FlagFileAsParsed(const wxString& filename);
 
     /** is the file name is in the tokentree, and it's status is either assigned or beingparsed or done
      * also, should make sure that this file is not marked as "need to be reparsed".
      */
-    bool           IsFileParsed(const wxString& filename);
+    bool IsFileParsed(const wxString& filename);
 
     /** @brief mark the tokens so that they are associated with a C::B project
      *
@@ -302,15 +302,15 @@ public:
      */
     wxString GetDocumentation(int tokenIdx);
 
-    size_t        m_TokenTicketCount;
+    size_t m_TokenTicketCount;
 
 protected:
-    Token*        GetTokenAt(int idx);
+    Token* GetTokenAt(int idx);
     Token const * GetTokenAt(int idx) const;
-    int           AddToken(Token* newToken, int forceidx = -1);
+    int AddToken(Token* newToken, int forceidx = -1);
 
-    void          RemoveToken(int idx);
-    void          RemoveToken(Token* oldToken);
+    void RemoveToken(int idx);
+    void RemoveToken(Token* oldToken);
 
     /** add the Token pointer to the vector<Token*>, mostly the default value forceidx = -1 is used
      *  which add a new slot in the vector or reused an empty slot. if forceidx >= 0, this means
@@ -318,11 +318,11 @@ protected:
      *  re-construct the Tokentree from the cache.
      *  @ret always return the used slot index in the vector.
      */
-    int           AddTokenToList(Token* newToken, int forceidx = -1);
+    int AddTokenToList(Token* newToken, int forceidx = -1);
     /** Remove the Token specified by the idx in the vector<Token*>, note the Token instance is
      *  destroyed, and the slot becomes empty. The empty slot was recored and will be re-used later.
      */
-    void          RemoveTokenFromList(int idx);
+    void RemoveTokenFromList(int idx);
 
     void RecalcFullInheritance(int parentIdx, TokenIdxSet& result); // called by RecalcData
 

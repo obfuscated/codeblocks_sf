@@ -562,7 +562,7 @@ private:
 
 
     /** replaced buffer information
-     * Here is an example of how macro are expanded
+     * Here is an example of how macros are expanded
      *
      * @code
      * #define AAA BBBB

@@ -478,9 +478,10 @@ wxArrayString NativeParser::GetAllPathsByFilename(const wxString& filename)
     const wxString filespec = fn.HasExt() ? fn.GetName() + _T(".*") : fn.GetName();
     CCLogger::Get()->DebugLog(_T("NativeParser::GetAllPathsByFilename(): Traversing '") + fn.GetPath() + _T("' for: ") + filespec);
 
+    // search in the same directory of the input file
     dir.Traverse(traverser, filespec, wxDIR_FILES);
 
-    // only find one file in the dir, go other place
+    // only find one file in the dir, which is the input file itself, try searching in other places
     if (files.GetCount() == 1)
     {
         cbProject* project = IsParserPerWorkspace() ? GetCurrentProject()
