@@ -3176,6 +3176,11 @@ bool ParserThread::ReadClsNames(wxString& ancestor)
 
         if (token==ParserConsts::comma)          // another class name
             continue;
+        else if (token==ParserConsts::kw_attribute)
+        {
+            m_Tokenizer.GetToken();  // eat (( whatever ))
+            continue;
+        }
         else if (token==ParserConsts::semicolon) // end of class name(s)
         {
             m_Tokenizer.UngetToken();

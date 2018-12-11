@@ -259,9 +259,9 @@ Total 5 tests, 5 PASS, 0 FAIL
 ********************************************************
   Testing in file: cc_type_with attributes.cpp
 ********************************************************
-- FAIL: myType.  nValue
++ PASS: myType.  nValue
 --------------------------------------------------------
-Total 1 tests, 0 PASS, 1 FAIL
+Total 1 tests, 1 PASS, 0 FAIL
 --------------------------------------------------------
 ********************************************************
   Testing in file: cc_unnamed_class.cpp
