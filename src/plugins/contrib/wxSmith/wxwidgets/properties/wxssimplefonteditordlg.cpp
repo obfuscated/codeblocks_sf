@@ -163,7 +163,7 @@ void wxsSimpleFontEditorDlg::UpdateFontDescription()
             {
                 case wxFONTSTYLE_ITALIC: Description << _("Italic\n"); break;
                 case wxFONTSTYLE_SLANT:  Description << _("Slant\n"); break;
-                case wxFONTWEIGHT_NORMAL: // fall-through
+                case wxFONTSTYLE_NORMAL: // fall-through
                 default:                 Description << _("Normal\n");
             }
         }
