@@ -141,7 +141,7 @@ wxString    tt;
         // some code snippet likes below:
         // wxBitmap bmp = wxBitmap(wxImage(_T("input.png")));
         // ImagePanel1->SetBitmap(bmp);
-        wxString bmpFilename = vname + "_bmp";
+        wxString bmpFilename = vname + _T("_bmp");
         Codef(_T("wxBitmap %s = wxBitmap(wxImage((\"%s\")));\n"), bmpFilename.wx_str(), mImage.wx_str());
         Codef(_T("%ASetBitmap(%s);\n"), bmpFilename.wx_str());
     }
