@@ -756,7 +756,7 @@ void CCTestFrame::OnSaveTestResultClick(wxCommandEvent& event)
     wxString content = m_CompletionTestCtrl->GetValue();
     wxFileDialog dlg(this, _T("Save .txt file..."),
                      _T(""), _T(""),
-                     _T("Save Files (*.txt) | *.txt | All files (*.*)|*.*"),
+                     _T("Save Files (*.txt)|*.txt|All files(*.*)|*.*"),
                      wxFD_SAVE);
     if (dlg.ShowModal() == wxID_OK)
     {
