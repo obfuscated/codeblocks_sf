@@ -1544,8 +1544,10 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
     for (size_t i = 0; i < buildTargets.GetCount(); ++i)
     {
         ProjectBuildTarget* tgt = project->GetBuildTarget(buildTargets[i]);
+        if (!tgt)
+            continue;
         // Do not try to operate include directories if the target is not for this platform
-        if (   !m_CCEnablePlatformCheck || tgt->SupportsCurrentPlatform() )
+        if (!m_CCEnablePlatformCheck || tgt->SupportsCurrentPlatform())
         {
             GetAbsolutePath(prjPath, tgt->GetIncludeDirs(), dirs);
         }
