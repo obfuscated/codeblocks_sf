@@ -2720,7 +2720,6 @@ void MainFrame::OnApplicationClose(wxCloseEvent& event)
 
     CodeBlocksEvent evt(cbEVT_APP_START_SHUTDOWN);
     Manager::Get()->ProcessEvent(evt);
-    Manager::Yield();
 
     m_InitiatedShutdown = true;
     Manager::BlockYields(true);
