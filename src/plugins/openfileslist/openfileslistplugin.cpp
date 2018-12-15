@@ -135,23 +135,20 @@ void OpenFilesListPlugin::OnAttach()
     pm->RegisterEventSink(cbEVT_BUILDTARGET_SELECTED, new cbEventFunctor<OpenFilesListPlugin, CodeBlocksEvent>(this, &OpenFilesListPlugin::OnBuildTargetSelected));
 }
 
-void OpenFilesListPlugin::OnRelease(bool appShutDown)
+void OpenFilesListPlugin::OnRelease(cb_unused bool appShutDown)
 {
     // Write config
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("open_files_list"));
     if (cfg)
         cfg->Write(_T("preserve_open_editors"), m_PreserveOpenEditors);
 
-    if (appShutDown)
-    {
-        // remove registered event sinks
-        Manager::Get()->RemoveAllEventSinksFor(this);
+    // remove registered event sinks
+    Manager::Get()->RemoveAllEventSinksFor(this);
 
-        // remove tree from docking system
-        CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
-        evt.pWindow = m_pTree;
-        Manager::Get()->ProcessEvent(evt);
-    }
+    // remove tree from docking system
+    CodeBlocksDockEvent evt(cbEVT_REMOVE_DOCK_WINDOW);
+    evt.pWindow = m_pTree;
+    Manager::Get()->ProcessEvent(evt);
 
     // finally destroy the tree
     m_pTree->Destroy();
