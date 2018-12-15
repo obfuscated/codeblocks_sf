@@ -242,7 +242,7 @@ void CompilerMINGW::SetVersionString()
         {
 //            Manager::Get()->GetLogManager()->DebugLog(_T("Extracting compiler version from: ") + output[0]);
             wxRegEx reg_exp;
-            if (reg_exp.Compile(_T("[0-9][.][0-9][.][0-9]")) && reg_exp.Matches(output[0]))
+            if (reg_exp.Compile(_T("[0-9]+[.][0-9]+[.][0-9]+")) && reg_exp.Matches(output[0]))
             {
                 m_VersionString = reg_exp.GetMatch(output[0]);
 //                Manager::Get()->GetLogManager()->DebugLog(_T("Compiler version via RegExp: ") + m_VersionString);
