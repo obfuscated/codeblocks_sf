@@ -2,9 +2,11 @@
 #ifndef _SQPCHEADER_H_
 #define _SQPCHEADER_H_
 
+#include <math.h>
+
 #if defined(_MSC_VER) && defined(_DEBUG)
 #include <crtdbg.h>
-#endif 
+#endif
 
 #include <stdio.h>
 #include <stdlib.h>
