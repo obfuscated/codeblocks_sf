@@ -984,6 +984,14 @@ TextCtrlLogger* DebuggerManager::GetLogger()
 
 void DebuggerManager::HideLogger()
 {
+    LogManager *logManager = Manager::Get()->GetLogManager();
+    if (logManager)
+    {
+        // TODO: This is wrong. We need some automatic way for this to happen!!!
+        LogSlot &slot = logManager->Slot(m_loggerIndex);
+        delete slot.icon;
+        slot.icon = nullptr;
+    }
 
     CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_logger);
     Manager::Get()->ProcessEvent(evt);

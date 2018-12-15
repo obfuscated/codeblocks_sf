@@ -429,7 +429,8 @@ void CompilerGCC::OnRelease(bool appShutDown)
 
     SaveOptions();
     Manager::Get()->GetConfigManager(_T("compiler"))->Write(_T("/default_compiler"), CompilerFactory::GetDefaultCompilerID());
-    if (Manager::Get()->GetLogManager())
+    LogManager *logManager = Manager::Get()->GetLogManager();
+    if (logManager)
     {
         // for batch builds, the log is deleted by the manager
         if (!Manager::IsBatchBuild())
@@ -437,6 +438,18 @@ void CompilerGCC::OnRelease(bool appShutDown)
             CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pLog);
             Manager::Get()->ProcessEvent(evt);
         }
+
+        {
+            // TODO: This is wrong. We need some automatic way for this to happen!!!
+            LogSlot &listSlot = logManager->Slot(m_ListPageIndex);
+            delete listSlot.icon;
+            listSlot.icon = nullptr;
+
+            LogSlot &slot = logManager->Slot(m_PageIndex);
+            delete slot.icon;
+            slot.icon = nullptr;
+        }
+
         m_pLog = 0;
 
         CodeBlocksLogEvent evt(cbEVT_REMOVE_LOG_WINDOW, m_pListLog);
