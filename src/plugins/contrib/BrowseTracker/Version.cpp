@@ -268,6 +268,9 @@ AppVersion::~AppVersion()
 //  pecan  1.2.104 2018/02/17
 //           Re-patch wx30 and wx31 versions with shutdown fix 1.2.101
 //           Left out when creating CB 17.12
+//  pecan  1.2.105 2018/12/18
+//           Honor Toolbar activation/deactivation from View/Toolbars
+//           Change config tool bar setting to "Show Toolbar Always"
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.

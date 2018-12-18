@@ -82,8 +82,8 @@ void BrowseTrackerConfPanel::OnApply()
 	m_BrowseTrackerPlugin.m_LeftMouseDelay      = m_pConfigPanel->Cfg_LeftMouseDelay->GetValue();
 	m_BrowseTrackerPlugin.m_ClearAllKey         = m_pConfigPanel->Cfg_ClearAllKey->GetSelection();
 
-    m_BrowseTrackerPlugin.m_ShowToolbar         = m_pConfigPanel->Cfg_ShowToolbar->GetValue();
-    m_BrowseTrackerPlugin.ShowBrowseTrackerToolBar(m_BrowseTrackerPlugin.m_ShowToolbar);
+    m_BrowseTrackerPlugin.m_ConfigShowToolbar   = m_pConfigPanel->Cfg_ShowToolbar->GetValue();
+    m_BrowseTrackerPlugin.ShowBrowseTrackerToolBar(m_BrowseTrackerPlugin.m_ConfigShowToolbar);
 
     // write user options to config file
 	m_BrowseTrackerPlugin.SaveUserOptions( m_BrowseTrackerPlugin.GetBrowseTrackerCfgFilename() );
@@ -111,7 +111,8 @@ void BrowseTrackerConfPanel::GetUserOptions(wxString configFullPath)
 	m_pConfigPanel->Cfg_LeftMouseDelay->SetValue( m_BrowseTrackerPlugin.m_LeftMouseDelay ) ;
 	m_pConfigPanel->Cfg_ClearAllKey->SetSelection( m_BrowseTrackerPlugin.m_ClearAllKey ) ;
 
-    m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.IsViewToolbarEnabled());
+    //-m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.IsViewToolbarEnabled());
+    m_pConfigPanel->Cfg_ShowToolbar->SetValue(m_BrowseTrackerPlugin.m_ConfigShowToolbar);
 
 }//Init
 

@@ -1,16 +1,13 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jan 23 2018)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
-// PLEASE DO *NOT* EDIT THIS FILE!
+// PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __CONFIGPANEL_H__
-#define __CONFIGPANEL_H__
+#ifndef __ConfigPanel__
+#define __ConfigPanel__
 
-#include <wx/artprov.h>
-#include <wx/xrc/xmlres.h>
-#include <wx/intl.h>
 #include <wx/string.h>
 #include <wx/stattext.h>
 #include <wx/gdicmn.h>
@@ -35,6 +32,7 @@ class ConfigPanel : public wxPanel
 	
 	protected:
 		wxStaticText* m_staticText2;
+		
 		wxStaticText* m_staticText3;
 		
 		// Virtual event handlers, overide them in your derived class
@@ -54,9 +52,9 @@ class ConfigPanel : public wxPanel
 		wxSlider* Cfg_LeftMouseDelay;
 		wxRadioBox* Cfg_ClearAllKey;
 		
-		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 554,569 ), long style = wxTAB_TRAVERSAL ); 
+		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 554,569 ), long style = wxTAB_TRAVERSAL );
 		~ConfigPanel();
 	
 };
 
-#endif //__CONFIGPANEL_H__
+#endif //__ConfigPanel__

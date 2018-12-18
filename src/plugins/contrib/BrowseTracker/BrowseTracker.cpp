@@ -387,7 +387,7 @@ void BrowseTracker::OnRelease(bool appShutDown)
         m_pJumpTracker->m_IsAttached = false;
         //-delete m_pJumpTracker; causes crash on CB exit (heap area already freed)
         m_pJumpTracker = 0;
-        m_ShowToolbar = IsViewToolbarEnabled();
+        m_ToolbarIsShown = IsViewToolbarEnabled();
     }
 
     CodeBlocksEvent evt;    //2017/11/23
@@ -565,7 +565,7 @@ void BrowseTracker::ReadUserOptions(wxString configFullPath)
 	cfgFile.Read( wxT("LeftMouseDelay"),            &m_LeftMouseDelay, 200 ) ;
 	cfgFile.Read( wxT("BrowseMarksClearAllMethod"), &m_ClearAllKey, ClearAllOnSingleClick ) ;
 	cfgFile.Read( wxT("WrapJumpEntries"),           &m_WrapJumpEntries, 0 ) ;
-	cfgFile.Read( wxT("ShowToolbar"),               &m_ShowToolbar, 0 ) ;
+	cfgFile.Read( wxT("ShowToolbar"),               &m_ConfigShowToolbar, 0 ) ;
 
 }
 // ----------------------------------------------------------------------------
@@ -587,11 +587,11 @@ void BrowseTracker::SaveUserOptions(wxString configFullPath)
     cfgFile.Write( wxT("LeftMouseDelay"),           m_LeftMouseDelay ) ;
     cfgFile.Write( wxT("BrowseMarksClearAllMethod"),m_ClearAllKey ) ;
 	cfgFile.Write( wxT("WrapJumpEntries"),          m_WrapJumpEntries ) ;
-	cfgFile.Write( wxT("ShowToolbar"),               m_ShowToolbar ) ;
+	cfgFile.Write( wxT("ShowToolbar"),              m_ConfigShowToolbar ) ;
 
     cfgFile.Flush();
 
-}
+}//SaveUserOptions
 // ----------------------------------------------------------------------------
 wxString BrowseTracker::GetPageFilename(int index)
 // ----------------------------------------------------------------------------
@@ -1646,7 +1646,9 @@ void BrowseTracker::OnAppStartupDone(CodeBlocksEvent& event)
 // ----------------------------------------------------------------------------
 {
     wxUnusedVar(event);
-    ShowBrowseTrackerToolBar(m_ShowToolbar);
+    m_ToolbarIsShown = IsViewToolbarEnabled();
+    if ( (not m_ToolbarIsShown) and m_ConfigShowToolbar )
+        ShowBrowseTrackerToolBar(true);
     return;
 }
 // ----------------------------------------------------------------------------
@@ -2775,7 +2777,7 @@ void BrowseTracker::ShowBrowseTrackerToolBar(const bool onOrOff)
                 //?Manager::Get()->GetAppFrame()->AddPendingEvent(evt);
                 //In wx30, AddPendingEvent is deprecated for wxWindows
                 Manager::Get()->GetAppFrame()->GetEventHandler()->ProcessEvent(evt);
-                m_ShowToolbar = onOrOff;
+                m_ToolbarIsShown = onOrOff;
             }
         }
     }
@@ -2785,25 +2787,38 @@ bool BrowseTracker::IsViewToolbarEnabled()
 // ----------------------------------------------------------------------------
 {
     // Return status of menu View/Toolbars/BrowseTracker
-    wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
-    int idViewToolMain = XRCID("idViewToolMain");
-    wxMenu* viewToolbars = 0;
-    mbar->FindItem(idViewToolMain, &viewToolbars);
-    if (viewToolbars)
-    {
-        wxMenuItemList menuList = viewToolbars->GetMenuItems();
-        for (size_t i = 0; i < viewToolbars->GetMenuItemCount(); ++i)
-        {
-            wxMenuItem* item = menuList[i];
-            wxString itemName = item->GetItemLabel(); //2018/02/6 wx30
-            if (itemName == _("BrowseTracker"))
-            {
-                m_ShowToolbar = item->IsChecked();
-                return m_ShowToolbar;
-            }
-        }
-    }
-    m_ShowToolbar = false;
-    return m_ShowToolbar;
+    // NB: item->IsChecked() is unreliable if the menu has never been iinvoked
+
+    // if the tool is shown, assume it's enabled
+    if (m_pToolBar->IsShown() )
+        return m_ToolbarIsShown = true;
+    else
+        return m_ToolbarIsShown = false;
+
+        // ------------------------------------------
+        // Examining a menu checkbox is unreliable - code deprecated
+        // ------------------------------------------
+        //wxMenuBar* mbar = Manager::Get()->GetAppFrame()->GetMenuBar();
+        //int idViewToolMain = XRCID("idViewToolMain");
+        //wxMenu* viewToolbars = 0;
+        //mbar->FindItem(idViewToolMain, &viewToolbars);
+        //if (viewToolbars)
+        //{
+        //    wxMenuItemList menuList = viewToolbars->GetMenuItems();
+        //    for (size_t i = 0; i < viewToolbars->GetMenuItemCount(); ++i)
+        //    {
+        //        wxMenuItem* item = menuList[i];
+        //        wxString itemName = item->GetItemLabel(); //2018/02/6 wx30
+        //        if (itemName == _("BrowseTracker"))
+        //        {
+        //            wxCommandEvent menuEvt(wxEVT_COMMAND_MENU_SELECTED, idViewToolMain);
+        //            Manager::Get()->GetAppWindow()->GetEventHandler()->ProcessEvent(menuEvt);
+        //            m_ToolbarIsShown = item->IsChecked();
+        //            return m_ToolbarIsShown;
+        //        }
+        //    }
+        //}
+        //m_ToolbarIsShown = false;
+        //return m_ToolbarIsShown;
 
 }//ShowBrowseTrackerToolBar

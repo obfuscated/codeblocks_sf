@@ -193,7 +193,8 @@ class BrowseTracker : public cbPlugin
         int             m_OldUserMarksStyle;
         bool            m_OldBrowseMarksEnabled;
         bool            m_WrapJumpEntries;    //wrap jump entries when top or botton reached
-        bool            m_ShowToolbar;        // Show BrowseTracker toolbar
+        bool            m_ToolbarIsShown;     // Show BrowseTracker toolbar
+        bool            m_ConfigShowToolbar;  // Show BrowseTracker toolbar
 
 	private:
 

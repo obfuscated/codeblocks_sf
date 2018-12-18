@@ -1,8 +1,8 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Jan 23 2018)
+// C++ code generated with wxFormBuilder (version Sep  8 2010)
 // http://www.wxformbuilder.org/
 //
-// PLEASE DO *NOT* EDIT THIS FILE!
+// PLEASE DO "NOT" EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
 #include "wx/wxprec.h"
@@ -24,9 +24,9 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxVERTICAL );
 	
-	m_staticText2 = new wxStaticText( this, wxID_ANY, _("BrowseTracker Options"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
+	m_staticText2 = new wxStaticText( this, wxID_ANY, wxT("BrowseTracker Options"), wxDefaultPosition, wxDefaultSize, wxALIGN_CENTRE );
 	m_staticText2->Wrap( -1 );
-	m_staticText2->SetFont( wxFont( 9, wxFONTFAMILY_SWISS, wxFONTSTYLE_NORMAL, wxFONTWEIGHT_BOLD, false, wxT("Tahoma") ) );
+	m_staticText2->SetFont( wxFont( 9, 74, 90, 92, false, wxT("Tahoma") ) );
 	
 	bSizer3->Add( m_staticText2, 0, wxALL|wxEXPAND, 5 );
 	
@@ -36,59 +36,55 @@ ConfigPanel::ConfigPanel( wxWindow* parent, wxWindowID id, const wxPoint& pos, c
 	wxBoxSizer* bSizer7;
 	bSizer7 = new wxBoxSizer( wxHORIZONTAL );
 	
-	Cfg_BrowseMarksEnabled = new wxCheckBox( this, wxID_ANY, _("Enable BookMark Tracking"), wxDefaultPosition, wxDefaultSize, 0 );
+	Cfg_BrowseMarksEnabled = new wxCheckBox( this, wxID_ANY, wxT("Enable BookMark Tracking"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( Cfg_BrowseMarksEnabled, 1, wxALL, 5 );
 	
-	Cfg_WrapJumpEntries = new wxCheckBox( this, wxID_ANY, _("Wrap Jump Entries"), wxDefaultPosition, wxDefaultSize, 0 );
+	Cfg_WrapJumpEntries = new wxCheckBox( this, wxID_ANY, wxT("Wrap Jump Entries"), wxDefaultPosition, wxDefaultSize, 0 );
 	bSizer7->Add( Cfg_WrapJumpEntries, 1, wxALL, 5 );
 	
-	Cfg_ShowToolbar = new wxCheckBox( this, wxID_ANY, _("Show Tool bar"), wxDefaultPosition, wxDefaultSize, 0 );
+	Cfg_ShowToolbar = new wxCheckBox( this, wxID_ANY, wxT("Show Toolbar always"), wxDefaultPosition, wxDefaultSize, 0 );
+	Cfg_ShowToolbar->SetValue(true); 
 	bSizer7->Add( Cfg_ShowToolbar, 0, wxALL, 5 );
-	
 	
 	bSizer3->Add( bSizer7, 0, wxEXPAND|wxSHAPED, 5 );
 	
 	wxBoxSizer* bSizer8;
 	bSizer8 = new wxBoxSizer( wxVERTICAL );
 	
-	wxString Cfg_ToggleKeyChoices[] = { _("Left_Mouse"), _("Ctrl-Left_Mouse") };
+	wxString Cfg_ToggleKeyChoices[] = { wxT("Left_Mouse"), wxT("Ctrl-Left_Mouse") };
 	int Cfg_ToggleKeyNChoices = sizeof( Cfg_ToggleKeyChoices ) / sizeof( wxString );
-	Cfg_ToggleKey = new wxRadioBox( this, wxID_ANY, _("Toggle BookMark Key"), wxDefaultPosition, wxDefaultSize, Cfg_ToggleKeyNChoices, Cfg_ToggleKeyChoices, 3, wxRA_SPECIFY_COLS );
+	Cfg_ToggleKey = new wxRadioBox( this, wxID_ANY, wxT("Toggle BookMark Key"), wxDefaultPosition, wxDefaultSize, Cfg_ToggleKeyNChoices, Cfg_ToggleKeyChoices, 3, wxRA_SPECIFY_COLS );
 	Cfg_ToggleKey->SetSelection( 1 );
 	bSizer8->Add( Cfg_ToggleKey, 0, wxALL|wxEXPAND, 5 );
-	
 	
 	bSizer3->Add( bSizer8, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer9;
 	bSizer9 = new wxBoxSizer( wxVERTICAL );
 	
-	m_staticText4 = new wxStaticText( this, wxID_ANY, _(" Left_Mouse delay before BookMark Toggle (Milliseconds)"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText4 = new wxStaticText( this, wxID_ANY, wxT(" Left_Mouse delay before BookMark Toggle (Milliseconds)"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText4->Wrap( -1 );
 	bSizer9->Add( m_staticText4, 0, wxALL|wxEXPAND, 5 );
 	
 	Cfg_LeftMouseDelay = new wxSlider( this, wxID_ANY, 200, 0, 1000, wxDefaultPosition, wxDefaultSize, wxSL_AUTOTICKS|wxSL_HORIZONTAL|wxSL_LABELS );
 	bSizer9->Add( Cfg_LeftMouseDelay, 1, wxALL|wxEXPAND, 5 );
 	
-	
 	bSizer3->Add( bSizer9, 1, wxEXPAND, 5 );
 	
 	wxBoxSizer* bSizer10;
 	bSizer10 = new wxBoxSizer( wxVERTICAL );
 	
-	wxString Cfg_ClearAllKeyChoices[] = { _("Ctrl-Left_Mouse"), _("Ctrl-Left_DblClick") };
+	wxString Cfg_ClearAllKeyChoices[] = { wxT("Ctrl-Left_Mouse"), wxT("Ctrl-Left_DblClick") };
 	int Cfg_ClearAllKeyNChoices = sizeof( Cfg_ClearAllKeyChoices ) / sizeof( wxString );
-	Cfg_ClearAllKey = new wxRadioBox( this, wxID_ANY, _("Clear All BookMarks"), wxDefaultPosition, wxDefaultSize, Cfg_ClearAllKeyNChoices, Cfg_ClearAllKeyChoices, 2, wxRA_SPECIFY_COLS );
+	Cfg_ClearAllKey = new wxRadioBox( this, wxID_ANY, wxT("Clear All BookMarks"), wxDefaultPosition, wxDefaultSize, Cfg_ClearAllKeyNChoices, Cfg_ClearAllKeyChoices, 2, wxRA_SPECIFY_COLS );
 	Cfg_ClearAllKey->SetSelection( 0 );
 	bSizer10->Add( Cfg_ClearAllKey, 0, wxALL|wxEXPAND, 5 );
 	
-	
 	bSizer3->Add( bSizer10, 1, wxEXPAND, 5 );
 	
-	m_staticText3 = new wxStaticText( this, wxID_ANY, _("Note: The Ctrl-Left_Mouse key options are disabled when\nthe editors multi-selection option is enabled at:\nSettings/Editor/Margins/Allow Multiple Selections\n\nMenu items can be used for additional BrowseTracker functions.\n(MainMenu/View/BrowseTracker)\n"), wxDefaultPosition, wxDefaultSize, 0 );
+	m_staticText3 = new wxStaticText( this, wxID_ANY, wxT("Note: The Ctrl-Left_Mouse key options are disabled when\nthe editors multi-selection option is enabled at:\nSettings/Editor/Margins/Allow Multiple Selections\n\nMenu items can be used for additional BrowseTracker functions.\n(MainMenu/View/BrowseTracker)\n"), wxDefaultPosition, wxDefaultSize, 0 );
 	m_staticText3->Wrap( -1 );
 	bSizer3->Add( m_staticText3, 0, wxALL, 5 );
-	
 	
 	this->SetSizer( bSizer3 );
 	this->Layout();
