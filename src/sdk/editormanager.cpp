@@ -38,6 +38,7 @@
 #include "cbcolourmanager.h"
 
 #include <wx/bmpbuttn.h>
+#include <wx/clipbrd.h>
 #include <wx/progdlg.h>
 #include <wx/tokenzr.h>
 
@@ -77,6 +78,7 @@ static const int idNBTabSave                 = wxNewId();
 static const int idNBTabSaveAll              = wxNewId();
 static const int idNBSwapHeaderSource        = wxNewId();
 static const int idNBTabOpenContainingFolder = wxNewId();
+static const int idNBTabCopyFullPath         = wxNewId();
 static const int idNBTabTop                  = wxNewId();
 static const int idNBTabBottom               = wxNewId();
 static const int idNBProperties              = wxNewId();
@@ -132,6 +134,7 @@ BEGIN_EVENT_TABLE(EditorManager, wxEvtHandler)
     EVT_MENU(idNBTabCloseToTheLeft, EditorManager::OnCloseAllOthers)
     EVT_MENU(idNBTabCloseToTheRight, EditorManager::OnCloseAllOthers)
     EVT_MENU(idNBTabOpenContainingFolder, EditorManager::OnOpenContainingFolder)
+    EVT_MENU(idNBTabCopyFullPath, EditorManager::OnCopyFullPath)
     EVT_MENU(idNBTabSave, EditorManager::OnSave)
     EVT_MENU(idNBTabSaveAll, EditorManager::OnSaveAll)
     EVT_MENU(idNBSwapHeaderSource, EditorManager::OnSwapHeaderSource)
@@ -1219,6 +1222,20 @@ bool EditorManager::OpenContainingFolder()
     return true;
 }
 
+void EditorManager::CopyFullPath()
+{
+    EditorBase *editor = GetActiveEditor();
+    if (!editor)
+        return;
+    wxString filename = editor->GetFilename();
+
+    if (wxTheClipboard->Open())
+    {
+        wxTheClipboard->SetData(new wxTextDataObject(filename));
+        wxTheClipboard->Close();
+    }
+}
+
 bool EditorManager::SwapActiveHeaderSource()
 {
     cbEditor* ed = GetBuiltinEditor(GetActiveEditor());
@@ -1657,6 +1674,7 @@ void EditorManager::OnPageContextMenu(wxAuiNotebookEvent& event)
     {
         pop->Append(idNBSwapHeaderSource, _("Swap header/source"));
         pop->Append(idNBTabOpenContainingFolder, _("Open containing folder"));
+        pop->Append(idNBTabCopyFullPath, _("Copy full path"));
         pop->AppendSeparator();
     }
 
@@ -1742,6 +1760,11 @@ void EditorManager::OnSwapHeaderSource(cb_unused wxCommandEvent& event)
 void EditorManager::OnOpenContainingFolder(cb_unused wxCommandEvent& event)
 {
     OpenContainingFolder();
+}
+
+void EditorManager::OnCopyFullPath(cb_unused wxCommandEvent& event)
+{
+    CopyFullPath();
 }
 
 void EditorManager::OnTabPosition(wxCommandEvent& event)
