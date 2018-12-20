@@ -42,7 +42,7 @@ pkgdata_DATA = DoxyBlocks.zip
 CLEANFILES = $(pkgdata_DATA)
 
 DoxyBlocks.zip: manifest.xml
-	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/DoxyBlocks.zip manifest.xml images/*.png images/16x16/*.png > /dev/null
+	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/DoxyBlocks.zip manifest.xml > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
 

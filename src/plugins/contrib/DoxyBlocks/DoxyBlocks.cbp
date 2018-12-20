@@ -51,7 +51,6 @@
 				</Linker>
 				<ExtraCommands>
 					<Add after="zip -j9 ..\..\..\devel\share\codeblocks\DoxyBlocks.zip manifest.xml" />
-					<Add after="zip -9 ..\..\..\devel\share\codeblocks\DoxyBlocks.zip images\*.png images\16x16\*.png" />
 					<Add after="update.bat" />
 					<Mode after="always" />
 				</ExtraCommands>

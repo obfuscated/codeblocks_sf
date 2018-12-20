@@ -34,11 +34,6 @@ END_EVENT_TABLE()
 
 EditorConfig::EditorConfig()
 {
-    // Make sure our resources are available.
-    // In the generated boilerplate code we have no resources but when
-    // we add some, it will be nice that this code is in place already ;)
-    if (!Manager::LoadResource(_T("EditorConfig.zip")))
-        NotifyMissingFile(_T("EditorConfig.zip"));
 
     // hook to project loading procedure
     ProjectLoaderHooks::HookFunctorBase* ec_hook =

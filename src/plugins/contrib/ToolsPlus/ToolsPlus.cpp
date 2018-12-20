@@ -432,11 +432,6 @@ void ToolsPlus::OnRunTarget(wxCommandEvent& event)
 // constructor
 ToolsPlus::ToolsPlus()
 {
-    // Make sure our resources are available.
-    // In the generated boilerplate code we have no resources but when
-    // we add some, it will be nice that this code is in place already ;)
-    if (!Manager::LoadResource(_T("ToolsPlus.zip")))
-        NotifyMissingFile(_T("ToolsPlus.zip"));
     ConfigManager* cfg = Manager::Get()->GetConfigManager(_T("ShellExtensions"));
     m_ReUseToolsPage = cfg->ReadBool(_T("ReuseToolsPage"), false);
 }

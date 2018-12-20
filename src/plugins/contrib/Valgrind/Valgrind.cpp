@@ -48,10 +48,6 @@ END_EVENT_TABLE()
 
 Valgrind::Valgrind()
 {
-    if(!Manager::LoadResource(_T("Valgrind.zip")))
-    {
-        NotifyMissingFile(_T("Valgrind.zip"));
-    }
     m_LogPageIndex = 0; // good init value ???
     m_ValgrindLog = 0;
     m_ListLog = 0;

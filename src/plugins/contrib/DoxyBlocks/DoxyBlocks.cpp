@@ -106,13 +106,6 @@ DoxyBlocks::DoxyBlocks() :
     m_LogPageIndex(0),
     m_bAutoVersioning(false)
 {
-    // Make sure our resources are available.
-    // In the generated boilerplate code we have no resources but when
-    // we add some, it will be nice that this code is in place already ;)
-    if(!Manager::LoadResource(wxT("DoxyBlocks.zip"))){
-        NotifyMissingFile(wxT("DoxyBlocks.zip"));
-    }
-
     m_pConfig = new DoxyBlocksConfig;
 }
 

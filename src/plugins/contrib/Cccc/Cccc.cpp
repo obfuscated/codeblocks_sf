@@ -35,10 +35,6 @@ namespace
 
 Cccc::Cccc()
 {
-    if(!Manager::LoadResource(_T("Cccc.zip")))
-    {
-        NotifyMissingFile(_T("Cccc.zip"));
-    }
     m_CcccLog = 0;
     m_LogPageIndex = 0; // good init value ???
     m_CcccApp = _T("cccc");

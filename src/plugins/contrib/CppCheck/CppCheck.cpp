@@ -73,8 +73,6 @@ CppCheck::CppCheck() :
     m_ListLogPageIndex(0),
     m_PATH(wxEmptyString)
 {
-    if (!Manager::LoadResource(_T("CppCheck.zip")))
-        NotifyMissingFile(_T("CppCheck.zip"));
 }
 
 CppCheck::~CppCheck()
