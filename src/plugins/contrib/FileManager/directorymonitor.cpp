@@ -370,10 +370,10 @@ public:
                 {
                     delete it->second;
                     it = m_monmap.erase(it);
+                    continue;
                 }
-                else
-                    ++it;
             }
+            ++it;
         }
         for(size_t i=0;i<update_paths.GetCount();i++)
         {
