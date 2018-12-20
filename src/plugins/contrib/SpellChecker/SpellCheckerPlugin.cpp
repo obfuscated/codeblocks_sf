@@ -222,7 +222,7 @@ void SpellCheckerPlugin::OnRelease(cb_unused bool appShutDown)
     m_pSpellingDialog = NULL;
     delete m_pSpellHelper;
     m_pSpellHelper = NULL;
-    //delete m_pOnlineChecker;
+    delete m_pOnlineChecker;
     m_pOnlineChecker = NULL;
 
     delete m_pThesaurus;

@@ -140,7 +140,6 @@ private:
     bool ValidateRoot();
     void Refresh(wxTreeItemId ti);
     void RefreshExpanded(wxTreeItemId ti);
-    void SetImages();
     wxString m_root;
     wxString m_commit;
     FileTreeCtrl *m_Tree; //the widget display the file tree from root defined by m_Loc

@@ -99,12 +99,12 @@ CodeSnippets::CodeSnippets()
     m_bMouseExitedWindow = false;
     m_bBeginInternalDrag = false;
     m_pDragCursor = new wxCursor(wxCURSOR_HAND);
-
 }
 // ----------------------------------------------------------------------------
 CodeSnippets::~CodeSnippets()
 // ----------------------------------------------------------------------------
 {
+    delete m_pDragCursor;
 }
 
 // ----------------------------------------------------------------------------

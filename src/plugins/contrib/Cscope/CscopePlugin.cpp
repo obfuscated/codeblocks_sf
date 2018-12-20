@@ -45,7 +45,10 @@ m_thrd(0)
 }
 
 // destructor
-CscopePlugin::~CscopePlugin(){}
+CscopePlugin::~CscopePlugin()
+{
+    delete m_cfg;
+}
 
 void CscopePlugin::OnAttach()
 {

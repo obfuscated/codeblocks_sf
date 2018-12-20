@@ -112,7 +112,7 @@ CodeSnippetsTreeCtrl::CodeSnippetsTreeCtrl(wxWindow *parent, const wxWindowID id
 CodeSnippetsTreeCtrl::~CodeSnippetsTreeCtrl()
 // ----------------------------------------------------------------------------
 {
-    //dtor
+    delete m_pDragCursor;
     // Tell all that TreeCtrl is gone;
     GetConfig()->SetSnippetsTreeCtrl(0);
 

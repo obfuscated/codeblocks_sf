@@ -381,11 +381,13 @@ void BrowseTracker::OnRelease(bool appShutDown)
     // watch out, CodeBlocks can enter this routine multiple times
     // ------------------------------------------------------------
 
+    Manager::Get()->RemoveAllEventSinksFor(this);
+
     if (m_pJumpTracker)
     {
         m_pJumpTracker->OnRelease(appShutDown);
         m_pJumpTracker->m_IsAttached = false;
-        //-delete m_pJumpTracker; causes crash on CB exit (heap area already freed)
+        delete m_pJumpTracker; //causes crash on CB exit (heap area already freed)
         m_pJumpTracker = 0;
         m_ToolbarIsShown = IsViewToolbarEnabled();
     }
@@ -446,11 +448,9 @@ void BrowseTracker::BuildMenu(wxMenuBar* menuBar)
 
 	m_InitDone = true;
 
-    EditorBase* eb = m_pEdMgr->GetActiveEditor();
-    if (eb) {
-        CodeBlocksEvent evtea(cbEVT_EDITOR_ACTIVATED, -1, 0, eb);
-        //OnEditorActivated(evtea);
-    }
+
+    delete m_pCfgFile;
+    m_pCfgFile = nullptr;
 }
 // ----------------------------------------------------------------------------
 void BrowseTracker::BuildModuleMenu(const ModuleType type, wxMenu* popup, const FileTreeData* /*data*/)
