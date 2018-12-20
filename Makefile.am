@@ -2,13 +2,6 @@ SUBDIRS = src
 
 ACLOCAL_AMFLAGS = -I m4
 
-if KEEP_DLLS
-ADDITIONAL_MAKE_DIST_OPTIONS = --exclude=".svn"
-else
-ADDITIONAL_MAKE_DIST_OPTIONS = --exclude=".svn" --exclude="*.dll"
-endif
-
-am__tar = @am__tar@ $(ADDITIONAL_MAKE_DIST_OPTIONS)
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = codeblocks.pc
