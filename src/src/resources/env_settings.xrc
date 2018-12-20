@@ -25,7 +25,7 @@
 									<weight>bold</weight>
 									<family>swiss</family>
 								</font>
-								<style>wxALIGN_CENTRE|wxNO_BORDER|wxTRANSPARENT_WINDOW</style>
+								<style>wxALIGN_CENTRE|wxBORDER_NONE|wxTRANSPARENT_WINDOW</style>
 							</object>
 							<flag>wxALIGN_TOP</flag>
 							<border>4</border>
@@ -141,8 +141,17 @@
 									<flag>wxTOP|wxLEFT|wxEXPAND</flag>
 									<border>4</border>
 								</object>
+								<object class="sizeritem">
+									<object class="wxCheckBox" name="chkRobustSave">
+										<label>Save using &quot;save to temp and rename&quot; operation</label>
+										<checked>1</checked>
+										<tooltip>Doing this makes it less probable that a save opeartion would lead to data corruption, but sometimes it interferes with softwares which monitor files</tooltip>
+									</object>
+									<flag>wxALL|wxEXPAND</flag>
+									<border>5</border>
+								</object>
 								<object class="spacer">
-									<flag>wxALIGN_LEFT</flag>
+									<flag>wxEXPAND</flag>
 									<size>0,16</size>
 								</object>
 								<object class="sizeritem">

@@ -262,23 +262,33 @@ bool FileManager::SaveUTF8(const wxString& name, const char* data, size_t len)
     }
 }
 
-bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding, bool bom)
+bool FileManager::Save(const wxString& name, const wxString& data, wxFontEncoding encoding,
+                       bool bom, bool robust)
 {
     if (wxFileExists(name) == false)
     {
         wxFile f(name, wxFile::write_excl);
         return WriteWxStringToFile(f, data, encoding, bom);
     }
+
+    // If the caller/user doesn't want a robust save operation do a direct write!
+    bool directWrite = !robust;
+
 #if wxCHECK_VERSION(3, 0, 0)
-    else if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
+    if (wxFileName::Exists(name, wxFILE_EXISTS_SYMLINK))
     {
         // Enable editing symlinks. Do not use temp file->replace procedure
         // since that would get rid of the symlink. Writing directly causes
         // edits to reflect to the target file.
+        directWrite = true;
+    }
+#endif // wxCHECK_VERSION(3, 0, 0)
+
+    if (directWrite)
+    {
         wxFile f(name, wxFile::write);
         return WriteWxStringToFile(f, data, encoding, bom);
     }
-#endif // wxCHECK_VERSION(3, 0, 0)
     else
     {
         if (!wxFile::Access(name, wxFile::write))

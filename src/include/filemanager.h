@@ -128,7 +128,8 @@ public:
      */
     cb_must_consume_result LoaderBase* Load(const wxString& file, bool reuseEditors = false);
 
-    bool Save(const wxString& file, const wxString& data, wxFontEncoding encoding, bool bom);
+    bool Save(const wxString& file, const wxString& data, wxFontEncoding encoding, bool bom,
+              bool robust);
 
 private:
     friend bool TinyXML::SaveDocument(const wxString&, TiXmlDocument*);

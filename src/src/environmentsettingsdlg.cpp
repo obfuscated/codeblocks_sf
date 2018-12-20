@@ -127,6 +127,7 @@ EnvironmentSettingsDlg::EnvironmentSettingsDlg(wxWindow* parent, wxAuiDockArt* a
     XRCCTRL(*this, "chkAssociations",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_associations"),     true));
     XRCCTRL(*this, "chkModifiedFiles",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/check_modified_files"),   true));
     XRCCTRL(*this, "chkInvalidTargets",     wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/ignore_invalid_targets"), true));
+    XRCCTRL(*this, "chkRobustSave",         wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/robust_save"), true));
     XRCCTRL(*this, "rbAppStart", wxRadioBox)->SetSelection(cfg->ReadBool(_T("/environment/blank_workspace"), true) ? 1 : 0);
     XRCCTRL(*this, "chkProjectLayout",      wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/enable_project_layout"),  true));
     XRCCTRL(*this, "chkEditorLayout",       wxCheckBox)->SetValue(cfg->ReadBool(_T("/environment/enable_editor_layout"),   false));
@@ -543,6 +544,7 @@ void EnvironmentSettingsDlg::EndModal(int retCode)
         cfg->Write(_T("/environment/check_associations"),          (bool) XRCCTRL(*this, "chkAssociations",       wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/check_modified_files"),        (bool) XRCCTRL(*this, "chkModifiedFiles",      wxCheckBox)->GetValue());
         cfg->Write(_T("/environment/ignore_invalid_targets"),      (bool) XRCCTRL(*this, "chkInvalidTargets",     wxCheckBox)->GetValue());
+        cfg->Write(_T("/environment/robust_save"),                 (bool) XRCCTRL(*this, "chkRobustSave",         wxCheckBox)->GetValue());
         cfg->Write(_T("/console_shell"),                                  XRCCTRL(*this, "txtConsoleShell",       wxTextCtrl)->GetValue());
         cfg->Write(_T("/console_terminal"),                               XRCCTRL(*this, "cbConsoleTerm",         wxComboBox)->GetValue());
         cfg->Write(_T("/open_containing_folder"), XRCCTRL(*this, "txtOpenFolder", wxTextCtrl)->GetValue());

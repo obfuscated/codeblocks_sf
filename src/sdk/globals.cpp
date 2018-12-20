@@ -718,9 +718,10 @@ bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding)
 
 // Writes a wxString to a file. Takes care of unicode and uses a temporary file
 // to save first and then it copies it over the original.
-bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEncoding encoding, bool bom)
+bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEncoding encoding,
+                  bool bom, bool robust)
 {
-    return Manager::Get()->GetFileManager()->Save(filename, contents, encoding, bom);
+    return Manager::Get()->GetFileManager()->Save(filename, contents, encoding, bom, robust);
 }
 
 // Save a TinyXML document correctly, even if the path contains unicode characters.

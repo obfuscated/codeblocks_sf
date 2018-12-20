@@ -209,6 +209,9 @@ void Autosave::OnTimer(wxTimerEvent& e)
 
         if(em)
         {
+            ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("app"));
+            const bool robustSave = cfg->ReadBool(wxT("/environment/robust_save"), true);
+
             for(int i = 0; i < em->GetEditorsCount(); ++i)
             {
                 cbEditor* ed = em->GetBuiltinEditor(em->GetEditor(i));
@@ -220,7 +223,8 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         case 0:
                         {
                             if(::wxRenameFile(fn.GetFullPath(), fn.GetFullPath() + _T(".bak")))
-                                cbSaveToFile(fn.GetFullPath(), ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
+                                cbSaveToFile(fn.GetFullPath(), ed->GetControl()->GetText(),
+                                             ed->GetEncoding(), ed->GetUseBom(), robustSave);
                             break;
                         }
                         case 1:
@@ -230,7 +234,9 @@ void Autosave::OnTimer(wxTimerEvent& e)
                         }
                         case 2:
                         {
-                            cbSaveToFile(fn.GetFullPath() + _T(".save"), ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
+                            cbSaveToFile(fn.GetFullPath() + _T(".save"),
+                                         ed->GetControl()->GetText(), ed->GetEncoding(),
+                                         ed->GetUseBom(), robustSave);
                             ed->SetModified(); // the "real" file has not been saved!
                             break;
                         }
@@ -263,7 +269,8 @@ void Autosave::OnTimer(wxTimerEvent& e)
 
                             tmp1.Printf(_T("%s/%s.1.%s"), backupDir.c_str(), fn.GetName().c_str(), fn.GetExt().c_str());
 
-                            cbSaveToFile(tmp1, ed->GetControl()->GetText(), ed->GetEncoding(), ed->GetUseBom());
+                            cbSaveToFile(tmp1, ed->GetControl()->GetText(), ed->GetEncoding(),
+                                         ed->GetUseBom(), robustSave);
                             ed->SetModified(); // the "real" file has not been saved!
                             break;
                         }

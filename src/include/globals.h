@@ -179,9 +179,12 @@ extern DLLIMPORT bool cbRead(wxFile& file, wxString& st, wxFontEncoding encoding
 extern DLLIMPORT wxString cbReadFileContents(wxFile& file, wxFontEncoding encoding = wxFONTENCODING_SYSTEM);
 /// Writes a wxString to a non-unicode file. File must be open. File is closed automatically.
 extern DLLIMPORT bool cbWrite(wxFile& file, const wxString& buff, wxFontEncoding encoding = wxFONTENCODING_SYSTEM);
-/// Writes a wxString to a file. Takes care of unicode and uses a temporary file
-/// to save first and then it copies it over the original.
-extern DLLIMPORT bool cbSaveToFile(const wxString& filename, const wxString& contents, wxFontEncoding encoding = wxFONTENCODING_SYSTEM, bool bom = false);
+/// Writes a wxString to a file. Takes care of unicode and could use a temporary file
+/// to save first and then it copies it over the original (this is controlled by the
+/// robust parameter).
+extern DLLIMPORT bool cbSaveToFile(const wxString& filename, const wxString& contents,
+                                   wxFontEncoding encoding = wxFONTENCODING_SYSTEM,
+                                   bool bom = false, bool robust = true);
 /// Saves a TinyXML document correctly, even if the path contains unicode characters.
 extern DLLIMPORT bool cbSaveTinyXMLDocument(TiXmlDocument* doc, const wxString& filename);
 /// Return @c str as a proper unicode-compatible string

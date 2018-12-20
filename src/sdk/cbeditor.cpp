@@ -1823,7 +1823,10 @@ bool cbEditor::Save()
     NotifyPlugins(cbEVT_EDITOR_BEFORE_SAVE);
     m_pControl->EndUndoAction();
 
-    if ( !cbSaveToFile(m_Filename, m_pControl->GetText(), GetEncoding(), GetUseBom()) )
+    ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("app"));
+    const bool robustSave = cfg->ReadBool(wxT("/environment/robust_save"), true);
+
+    if (!cbSaveToFile(m_Filename, m_pControl->GetText(), GetEncoding(), GetUseBom(), robustSave))
     {
         wxString msg;
         msg.Printf(_("File %s could not be saved..."), GetFilename().c_str());
