@@ -160,9 +160,11 @@ void Autosave::OnTimer(wxTimerEvent& e)
 {
     if(e.GetId() == 10000)
     {
-        int method = Manager::Get()->GetConfigManager(_T("autosave"))->ReadInt(_T("method"));
-        bool allProjects = Manager::Get()->GetConfigManager(_T("autosave"))->ReadBool(_T("all_projects"), true);
-        bool doWorkspace = Manager::Get()->GetConfigManager(_T("autosave"))->ReadBool(_T("do_workspace"), true);
+        ConfigManager *cfg = Manager::Get()->GetConfigManager(wxT("autosave"));
+
+        const int method = cfg->ReadInt(_T("method"));
+        const bool allProjects = cfg->ReadBool(_T("all_projects"), true);
+        const bool doWorkspace = cfg->ReadBool(_T("do_workspace"), true);
         ProjectManager *pm = Manager::Get()->GetProjectManager();
         if(pm)// && pm->GetActiveProject())
         {
