@@ -1699,6 +1699,7 @@ bool cbEditor::Reload(bool detect_encoding)
 void cbEditor::Touch()
 {
     m_LastModified = wxDateTime::Now();
+    SetModified(true);
 }
 
 void cbEditor::SetLanguage(HighlightLanguage lang, bool colourise)

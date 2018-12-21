@@ -428,6 +428,7 @@ wxString cbProject::GetCommonTopLevelPath() const
 void cbProject::Touch()
 {
     m_LastModified = wxDateTime::Now();
+    SetModified(true);
 }
 
 bool cbProject::SaveAs()
