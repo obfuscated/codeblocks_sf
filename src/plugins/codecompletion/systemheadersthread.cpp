@@ -142,6 +142,7 @@ SystemHeadersThread::SystemHeadersThread(wxEvtHandler*        parent,
     m_SystemHeadersMap(headersMap),
     m_IncludeDirs(incDirs)
 {
+    cbAssert(incDirs.size()>0);
     Create();
     SetPriority(60u);
 }

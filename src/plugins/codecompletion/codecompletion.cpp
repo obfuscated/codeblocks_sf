@@ -542,8 +542,7 @@ CodeCompletion::~CodeCompletion()
     while (!m_SystemHeadersThreads.empty())
     {
         SystemHeadersThread* thread = m_SystemHeadersThreads.front();
-        if (thread->IsAlive() && thread->IsRunning())
-            thread->Wait();
+        thread->Wait();
         delete thread;
         m_SystemHeadersThreads.pop_front();
     }
@@ -1572,14 +1571,12 @@ wxArrayString CodeCompletion::GetLocalIncludeDirs(cbProject* project, const wxAr
 
     if (!sysDirs.IsEmpty())
     {
-        // create a worker thread associate with "sysDirs", then put it in a queue.
+        cbAssert(m_CCEnableHeaders);
+        // Create a worker thread associated with "sysDirs". Put it in a queue and run it.
         SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS,
                                                               m_SystemHeadersMap, sysDirs);
         m_SystemHeadersThreads.push_back(thread);
-        // if the batch parsing is done, and no system header scanning thread is running
-        // just run it, other wise, this thread will run after the batch thread finishes.
-        if (!m_SystemHeadersThreads.front()->IsRunning() && m_NativeParser.Done())
-            thread->Run();
+        thread->Run();
     }
 
     dirs.Sort(CodeCompletionHelper::CompareStringLen);
@@ -2543,7 +2540,7 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
     ParserCommon::ParserState state   = static_cast<ParserCommon::ParserState>(event.GetInt());
     // Parser::OnBatchTimer will send this Parser Start event
     // If it starts a full parsing(ptCreateParser), we should prepare some data for the header
-    // file clawler
+    // file crawler
     if (state == ParserCommon::ptCreateParser)
     {
         if (m_CCEnableHeaders)
@@ -2551,6 +2548,7 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
             wxArrayString&       dirs   = GetSystemIncludeDirs(project, true); // true means update the cache
             SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS, m_SystemHeadersMap, dirs);
             m_SystemHeadersThreads.push_back(thread);
+            thread->Run();
         }
 
         cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
@@ -2562,19 +2560,6 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
     ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
-
-    // ParserCommon::ptCreateParser means a full parsing stage is done, so it is the time to
-    // start the header file clawler
-    if (state == ParserCommon::ptCreateParser)
-    {
-        if (   m_CCEnableHeaders
-            && !m_SystemHeadersThreads.empty()
-            && !m_SystemHeadersThreads.front()->IsRunning()
-            && m_NativeParser.Done() )
-        {
-            m_SystemHeadersThreads.front()->Run();
-        }
-    }
 
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     cbEditor* editor = edMan->GetBuiltinActiveEditor();
@@ -2608,31 +2593,22 @@ void CodeCompletion::OnSystemHeadersThreadFinish(CodeBlocksThreadEvent& event)
 {
     if (m_SystemHeadersThreads.empty())
         return;
-    // wait for the current thread died, and remove it from the thread list, then try to run another
-    // thread
+    // Wait for the current thread to finish and remove it from the thread list.
     SystemHeadersThread* thread = static_cast<SystemHeadersThread*>(event.GetClientData());
 
-    // remove the already finished SystemHeadersThread
-    if (thread == m_SystemHeadersThreads.front())
+    for (std::list<SystemHeadersThread*>::iterator it = m_SystemHeadersThreads.begin();
+         it != m_SystemHeadersThreads.end();
+         ++it)
     {
-        if (!event.GetString().IsEmpty())
-            CCLogger::Get()->DebugLog(event.GetString());
-        // In the case of receiving the finish event, the thread should already die, if not
-        // we just wait the thread to die. we expect this don't take much time, otherwise, it
-        // hangs (blocks) here.
-        if (thread->IsAlive() && thread->IsRunning())
+        if (*it == thread)
+        {
+            if (!event.GetString().IsEmpty())
+                CCLogger::Get()->DebugLog(event.GetString());
             thread->Wait();
-        delete thread;
-        m_SystemHeadersThreads.pop_front();
-    }
-
-    // start to run the remaining threads
-    if (   m_CCEnableHeaders
-        && !m_SystemHeadersThreads.empty()
-        && !m_SystemHeadersThreads.front()->IsRunning()
-        && m_NativeParser.Done() )
-    {
-        m_SystemHeadersThreads.front()->Run();
+            delete thread;
+            m_SystemHeadersThreads.erase(it);
+            break;
+        }
     }
 }
 
