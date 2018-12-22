@@ -1273,18 +1273,22 @@ int CompilerGCC::DoRunQueue()
             LogMessage(cmd->message, cltNormal, ltFile);
     }
 
-    // log message
-    if (!cmd->message.IsEmpty())
-        LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
-
     if (cmd->command.IsEmpty())
     {
+        // log message
+        if (!cmd->message.IsEmpty())
+            LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
+
         int ret = DoRunQueue();
         delete cmd;
         return ret;
     }
     else if (cmd->command.StartsWith(_T("#run_script")))
     {
+        // log message
+        if (!cmd->message.IsEmpty())
+            LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
+
         // special "run_script" command
         wxString script = cmd->command.AfterFirst(_T(' '));
         if (script.IsEmpty())
@@ -1320,7 +1324,13 @@ int CompilerGCC::DoRunQueue()
         wxString newLibPath = cbGetDynamicLinkerPathForTarget(m_pProject, cmd->target);
         newLibPath = cbMergeLibPaths(oldLibPath, newLibPath);
         wxSetEnv(CB_LIBRARY_ENVVAR, newLibPath);
+        LogMessage(wxString(_("Set variable: ")) + CB_LIBRARY_ENVVAR wxT("=") + newLibPath, cltInfo);
     }
+
+    // log message here, so the logging for run executable commands is done after the log message
+    // for set variable.
+    if (!cmd->message.IsEmpty())
+        LogMessage(cmd->message, cltNormal, ltMessages, false, false, true);
 
     // special shell used only for build commands
     if (!cmd->isRun)
@@ -2045,8 +2055,8 @@ int CompilerGCC::Run(ProjectBuildTarget* target)
         }
     }
 
-    Manager::Get()->GetLogManager()->Log(F(_("Executing: %s (in %s)"), cmd.wx_str(), m_CdRun.wx_str()), m_PageIndex);
-    m_CommandQueue.Add(new CompilerCommand(cmd, wxEmptyString, m_pProject, target, true));
+    const wxString &message = F(_("Executing: %s (in %s)"), cmd.wx_str(), m_CdRun.wx_str());
+    m_CommandQueue.Add(new CompilerCommand(cmd, message, m_pProject, target, true));
 
     m_pProject->SetCurrentlyCompilingTarget(0);
 
