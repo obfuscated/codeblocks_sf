@@ -2545,10 +2545,15 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
     {
         if (m_CCEnableHeaders)
         {
-            wxArrayString&       dirs   = GetSystemIncludeDirs(project, true); // true means update the cache
-            SystemHeadersThread* thread = new SystemHeadersThread(this, &m_SystemHeadersThreadCS, m_SystemHeadersMap, dirs);
-            m_SystemHeadersThreads.push_back(thread);
-            thread->Run();
+            wxArrayString &dirs = GetSystemIncludeDirs(project, true); // true means update the cache
+            if (!dirs.empty())
+            {
+                SystemHeadersThread* thread = new SystemHeadersThread(this,
+                                                                      &m_SystemHeadersThreadCS,
+                                                                      m_SystemHeadersMap, dirs);
+                m_SystemHeadersThreads.push_back(thread);
+                thread->Run();
+            }
         }
 
         cbEditor* editor = Manager::Get()->GetEditorManager()->GetBuiltinActiveEditor();
