@@ -1681,20 +1681,13 @@ void Tokenizer::KMP_GetNextVal(const wxChar* pattern, const int patternLen, int 
             if( i>=patternLen )
                 return;
 
-            //next[i]= j;
             if (pattern[i] == pattern[j])
-            {
                 next[i] = next[j];
-            }
             else
-            {
                 next[i] = j;
-            }
         }
         else
-        {
             j = next[j];
-        }
     }
 }
 
@@ -1726,13 +1719,11 @@ int Tokenizer::KMP_Find(const wxChar* text, const int textLen, const wxChar* pat
             ++j;
         }
         else
-        {
             j = next[j];
-        }
     }
 
     if (j == patternLen)
-        return i-patternLen;
+        return i - patternLen;
     else
         return -1;
 }
