@@ -254,7 +254,7 @@ public:
     /** KMP find, get the first position, if find nothing, return -1
      *  https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
      */
-    int KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen);
+    int KMP_Find(const wxChar* text, const int textLen, const wxChar* pattern, const int patternLen);
 
     /** a Token is added, associate doxygen style documents(comments before the variables) to the Token */
     void SetLastTokenIdx(int tokenIdx);
@@ -489,7 +489,7 @@ private:
     bool GetMacroExpandedText(const Token* tk, wxString& expandedText);
 
     /** used in the KMP find function */
-    void KMP_GetNextVal(const wxChar* pattern, int next[]);
+    void KMP_GetNextVal(const wxChar* pattern, const int patternLen, int next[]);
 
     /** Tokenizer options specify the token reading option */
     TokenizerOptions     m_TokenizerOptions;

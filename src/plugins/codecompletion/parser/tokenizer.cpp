@@ -1668,27 +1668,37 @@ bool Tokenizer::ReplaceMacroUsage(const Token* tk)
     return false;
 }
 
-void Tokenizer::KMP_GetNextVal(const wxChar* pattern, int next[])
+void Tokenizer::KMP_GetNextVal(const wxChar* pattern, const int patternLen, int next[])
 {
-    int j = 0, k = -1;
+    int i = 0, j = -1;
     next[0] = -1;
-    while (pattern[j] != _T('\0'))
+    while (i < patternLen)
     {
-        if (k == -1 || pattern[j] == pattern[k])
+        if (j == -1 || pattern[i] == pattern[j])
         {
+            ++i;
             ++j;
-            ++k;
-            if (pattern[j] != pattern[k])
-                next[j] = k;
+            if( i>=patternLen )
+                return;
+
+            //next[i]= j;
+            if (pattern[i] == pattern[j])
+            {
+                next[i] = next[j];
+            }
             else
-                next[j] = next[k];
+            {
+                next[i] = j;
+            }
         }
         else
-            k = next[k];
+        {
+            j = next[j];
+        }
     }
 }
 
-int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int patternLen)
+int Tokenizer::KMP_Find(const wxChar* text, const int textLen, const wxChar* pattern, const int patternLen)
 {
     if (!text || !pattern || pattern[0] == _T('\0') || text[0] == _T('\0'))
         return -1;
@@ -1705,31 +1715,24 @@ int Tokenizer::KMP_Find(const wxChar* text, const wxChar* pattern, const int pat
     }
 
     int next[patternLen];
-    KMP_GetNextVal(pattern, next);
+    KMP_GetNextVal(pattern, patternLen, next);
 
-    int index = 0, i = 0, j = 0;
-    while (text[i] != _T('\0') && pattern[j] != _T('\0'))
+    int i = 0, j = 0;
+    while ( i < textLen && j < patternLen)
     {
-        if (text[i] == pattern[j])
+        if (j == -1 || text[i] == pattern[j])
         {
             ++i;
             ++j;
         }
         else
         {
-            index += j - next[j];
-            if (next[j] != -1)
-                j = next[j];
-            else
-            {
-                j = 0;
-                ++i;
-            }
+            j = next[j];
         }
     }
 
-    if (pattern[j] == _T('\0'))
-        return index;
+    if (j == patternLen)
+        return i-patternLen;
     else
         return -1;
 }
@@ -1931,7 +1934,7 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
     const wxChar* endBuffer = buffer + bufferLen;
     for (;;)
     {
-        const int ret = KMP_Find(p, key, keyLen);
+        const int ret = KMP_Find(p, bufferLen, key, keyLen);
         if (ret == -1)
             break;
 
