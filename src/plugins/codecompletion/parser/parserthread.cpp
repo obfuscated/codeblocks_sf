@@ -2229,14 +2229,30 @@ void ParserThread::HandleClass(EClassType ct)
 
                     m_Tokenizer.GetToken(); // go ahead of identifier
                     farnext = m_Tokenizer.PeekToken();
-
-                    if (farnext == ParserConsts::semicolon)
+                    //  struct Point p1, p2;
+                    //  current="Point", next="p1"
+                    if (farnext == ParserConsts::semicolon || farnext == ParserConsts::comma)
                     {
-                        if (m_Options.handleVars)
+                        while (m_Options.handleVars
+                               &&  (   farnext == ParserConsts::semicolon
+                                    || farnext == ParserConsts::comma ))
                         {
-                            m_Str = current;
+                            if (m_Str.IsEmpty())
+                                m_Str = current;
                             DoAddToken(tkVariable, next, m_Tokenizer.GetLineNumber());
-                            m_Str.Clear();
+
+                            if (farnext == ParserConsts::comma)
+                            {
+                                m_Tokenizer.GetToken(); // eat the ","
+                                next = m_Tokenizer.GetToken(); // next = "p2"
+                                farnext = m_Tokenizer.PeekToken(); // farnext = "," or the final ";"
+                                continue;
+                            }
+                            else // we meet a ";", so break the loop
+                            {
+                                m_Str.Clear();
+                                break;
+                            }
                         }
 
                         m_Tokenizer.GetToken(); // eat semi-colon

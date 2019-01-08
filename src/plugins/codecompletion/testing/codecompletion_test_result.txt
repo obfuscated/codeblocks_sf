@@ -233,10 +233,10 @@ Total 2 tests, 2 PASS, 0 FAIL
 ********************************************************
 + PASS: point4.  x
 + PASS: point3.  x
-- FAIL: point2.  x
-- FAIL: point1.  x
++ PASS: point2.  x
++ PASS: point1.  x
 --------------------------------------------------------
-Total 4 tests, 2 PASS, 2 FAIL
+Total 4 tests, 4 PASS, 0 FAIL
 --------------------------------------------------------
 ********************************************************
   Testing in file: cc_typedef_declaration.cpp
