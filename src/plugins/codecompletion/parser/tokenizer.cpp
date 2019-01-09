@@ -1711,7 +1711,7 @@ int Tokenizer::KMP_Find(const wxChar* text, const int textLen, const wxChar* pat
     KMP_GetNextVal(pattern, patternLen, next);
 
     int i = 0, j = 0;
-    while ( i < textLen && j < patternLen)
+    while (i < textLen && j < patternLen)
     {
         if (j == -1 || text[i] == pattern[j])
         {
@@ -1923,14 +1923,22 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
     int pos = -1;
     wxChar* p = const_cast<wxChar*>(buffer);
     const wxChar* endBuffer = buffer + bufferLen;
+    int searchLength = bufferLen; // the remaining search buffer length, since we may move p forward
     for (;;)
     {
-        const int ret = KMP_Find(p, bufferLen, key, keyLen);
+        const int ret = KMP_Find(p, searchLength, key, keyLen);
         if (ret == -1)
             break;
 
+        // KMP search algorithm blindly matches text, for example:
+        // if we search "aa" in the macro definition "aab + aa + c", the first hit happens in the
+        // identifier "aab", but note that "aab" is a single identifier, we can't replace its
+        // sub-string, so we should check whether the char before and after the hit is an identifier
+        // like char, if true, we need to skip this hit, and continue search on the remaining buffer.
+
         // check previous char
         p += ret;
+        searchLength -= ret;
         if (p > buffer)
         {
             const wxChar ch = *(p - 1);
@@ -1943,6 +1951,7 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
 
         // check next char
         p += keyLen;
+        searchLength -= keyLen;
         if (p < endBuffer)
         {
             const wxChar ch = *p;
