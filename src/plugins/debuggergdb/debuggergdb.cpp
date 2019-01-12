@@ -1977,7 +1977,7 @@ bool DebuggerGDB::ShowValueTooltip(int style)
     if (!GetActiveConfigEx().GetFlag(DebuggerConfiguration::EvalExpression))
         return false;
     if (style != wxSCI_C_DEFAULT && style != wxSCI_C_OPERATOR && style != wxSCI_C_IDENTIFIER &&
-        style != wxSCI_C_WORD2 && style != wxSCI_C_GLOBALCLASS &&
+        style != wxSCI_C_WORD2 && style != wxSCI_C_GLOBALCLASS  && style != wxSCI_C_WXSMITH &&
         style != wxSCI_F_IDENTIFIER)
     {
         return false;
