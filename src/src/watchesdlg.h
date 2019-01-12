@@ -26,12 +26,12 @@ class WatchesDlg : public wxPanel, public cbWatchesDlg
 
         wxWindow* GetWindow() { return this; }
 
-        void UpdateWatches();
-        void AddWatch(cb::shared_ptr<cbWatch> watch);
-        void AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly);
-        void RemoveWatch(cb::shared_ptr<cbWatch> watch);
-        void RenameWatch(wxObject *prop, const wxString &newSymbol);
-        void RefreshUI();
+        void UpdateWatches() override;
+        void AddWatch(cb::shared_ptr<cbWatch> watch) override;
+        void AddSpecialWatch(cb::shared_ptr<cbWatch> watch, bool readonly) override;
+        void RemoveWatch(cb::shared_ptr<cbWatch> watch) override;
+        void RenameWatch(wxObject *prop, const wxString &newSymbol) override;
+        void RefreshUI() override;
     private:
         void OnExpand(wxPropertyGridEvent &event);
         void OnCollapse(wxPropertyGridEvent &event);
