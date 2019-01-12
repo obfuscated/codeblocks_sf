@@ -197,7 +197,7 @@ CommonItem<DlgType>* MakeItem(cbDebuggerFeature::Flags enableFeature,
     return new CommonItem<DlgType>(enableFeature, requestUpdate, func);
 }
 
-}
+} // anonymous namespace
 
 void DebuggerMenuHandler::RegisterDefaultWindowItems()
 {

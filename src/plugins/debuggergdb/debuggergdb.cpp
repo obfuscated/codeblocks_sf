@@ -500,7 +500,6 @@ void DebuggerGDB::DoWatches()
     bool locals = config.GetFlag(DebuggerConfiguration::WatchLocals);
     bool funcArgs = config.GetFlag(DebuggerConfiguration::WatchFuncArgs);
 
-
     if (locals)
     {
         if (m_localsWatch == nullptr)
