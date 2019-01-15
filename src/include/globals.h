@@ -332,6 +332,15 @@ enum cbPlaceDialogMode
     pdlClip
 };
 
+/** Fix the size and place of a window.
+  *
+  * If the window is on an invalid display move it to a valid display.
+  * If the size is larger then the current display the window is resized to a
+  * reasonable size and placed to the main screen. If possible the aspect ratio
+  * of the window is preserved.
+  */
+extern DLLIMPORT void cbFixWindowSizeAndPlace(wxTopLevelWindow* const w);
+
 extern DLLIMPORT void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode = pdlBest, bool enforce = false);
 
 /// @return The client area of the display the window is currently positioned at.

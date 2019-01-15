@@ -1414,7 +1414,21 @@ void MainFrame::LoadViewLayout(const wxString& name, bool isTemp)
 
     // first load taborder of MessagePane, so LoadPerspective can restore the last selected tab
     m_pInfoPane->LoadTabOrder(layoutMP);
-    m_LayoutManager.LoadPerspective(layout, false);
+
+    // We have to force an update here, because the m_LayoutManager.GetAllPanes()
+    // would not report correct values if not updated here.
+    m_LayoutManager.LoadPerspective(layout, true);
+
+    // If we load a layout we have to check if the window is on a valid display
+    // and has valid size. This can happen if a user moves a layout file from a
+    // multi display setup to a single display setup. The size has to be checked
+    // because it is possible that the target display has a lower resolution then
+    // the source display.
+    const wxAuiPaneInfoArray& windowArray = m_LayoutManager.GetAllPanes();
+    for (size_t i = 0; i < windowArray.GetCount(); ++i)
+    {
+        cbFixWindowSizeAndPlace(windowArray.Item(i).frame);
+    }
 
     DoUpdateLayout();
 

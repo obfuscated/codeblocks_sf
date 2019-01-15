@@ -1269,6 +1269,44 @@ void PlaceWindow(wxTopLevelWindow *w, cbPlaceDialogMode mode, bool enforce)
     w->SetSize(windowRect.x,  windowRect.y, windowRect.width, windowRect.height, wxSIZE_ALLOW_MINUS_ONE);
 }
 
+void cbFixWindowSizeAndPlace(wxTopLevelWindow* const w)
+{
+    if (w == nullptr)
+        return;
+
+    const int displayNumber = wxDisplay::GetFromWindow(w); // The display number this window is targeted from the layout file
+    if (displayNumber == wxNOT_FOUND)
+    {
+        // this window is not on a valid display.
+        // Place the window to the centre of the current display
+        const wxDisplay currentDisplay(0);
+
+        const int displayHeight = currentDisplay.GetClientArea().GetHeight();
+        const int displayWidth  = currentDisplay.GetClientArea().GetWidth();
+        const int panelHeight   = w->GetSize().GetHeight();
+        const int panelWidth    = w->GetSize().GetWidth();
+        if (panelHeight > displayHeight ||
+            panelWidth  > displayWidth)
+        {
+            // If the window is bigger then the current display
+            // Rescale the window to 1/3 of the current resolution
+            // try to keep the aspect ratio
+            const float windowRatio = (float) panelHeight / panelWidth;
+            const float scaledWidth = displayWidth / 3.0f;
+            float scaledHeight = scaledWidth * windowRatio;
+            if (scaledHeight > displayHeight)
+            {
+                // If the window is still to tall we break the aspect ratio
+                scaledHeight = displayHeight / 3.0f;
+            }
+            w->SetSize(scaledWidth, scaledHeight);
+        }
+        // Replace it to the centre of the screen...
+        Manager::Get()->GetLogManager()->Log(wxString::Format(_("Window \"%s\" was on an invalid display, relocate it to main display"), w->GetTitle().ToUTF8().data()));
+        PlaceWindow(w, pdlCentre, true);
+    }
+}
+
 DirAccessCheck cbDirAccessCheck(const wxString& dir)
 {
     wxString actualDir = dir;
