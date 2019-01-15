@@ -1279,7 +1279,7 @@ void cbFixWindowSizeAndPlace(wxTopLevelWindow* const w)
     {
         // this window is not on a valid display.
         // Place the window to the centre of the current display
-        const wxDisplay currentDisplay(0);
+        const wxDisplay currentDisplay;
 
         const int displayHeight = currentDisplay.GetClientArea().GetHeight();
         const int displayWidth  = currentDisplay.GetClientArea().GetWidth();
