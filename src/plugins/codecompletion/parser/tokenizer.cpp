@@ -1945,6 +1945,7 @@ int Tokenizer::GetFirstTokenPosition(const wxChar* buffer, const size_t bufferLe
             if (ch == _T('_') || wxIsalnum(ch))
             {
                 p += keyLen;
+                searchLength -= keyLen;
                 continue;
             }
         }
