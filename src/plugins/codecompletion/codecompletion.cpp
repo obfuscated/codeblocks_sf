@@ -2564,8 +2564,6 @@ void CodeCompletion::OnParserStart(wxCommandEvent& event)
 
 void CodeCompletion::OnParserEnd(wxCommandEvent& event)
 {
-    ParserCommon::ParserState state = static_cast<ParserCommon::ParserState>(event.GetInt());
-
     EditorManager* edMan = Manager::Get()->GetEditorManager();
     cbEditor* editor = edMan->GetBuiltinActiveEditor();
     if (editor)
