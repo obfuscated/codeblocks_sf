@@ -1510,7 +1510,7 @@ class GdbCmd_DisassemblyInit : public DebuggerCmd
             else
                 m_Cmd << _T("disassemble ") << m_hexAddrStr << _T("\n") ;
 
-            m_Cmd << _T("info frame\n") << _T("end");
+            m_Cmd << _T("info frame\n") << _T("end\n");
         };
 
         void ParseOutput(const wxString& p_output)
