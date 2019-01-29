@@ -267,7 +267,7 @@ Total 3 tests, 3 PASS, 0 FAIL
 Total 5 tests, 5 PASS, 0 FAIL
 --------------------------------------------------------
 ********************************************************
-  Testing in file: cc_type_with attributes.cpp
+  Testing in file: cc_type_with_attributes.cpp
 ********************************************************
 + PASS: myType.  nValue
 --------------------------------------------------------
