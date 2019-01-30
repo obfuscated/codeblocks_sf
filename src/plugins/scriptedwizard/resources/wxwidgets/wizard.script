@@ -756,6 +756,8 @@ function SetupProject(project)
             {
                 project.AddLinkLib(LibPrefix + _T("shlwapi") + LibSuffix);
                 project.AddLinkLib(LibPrefix + _T("version") + LibSuffix);
+                project.AddLinkLib(LibPrefix + _T("oleacc") + LibSuffix);
+                project.AddLinkLib(LibPrefix + _T("uxtheme") + LibSuffix);
             }
 
 
