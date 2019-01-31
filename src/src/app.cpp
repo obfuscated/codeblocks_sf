@@ -1443,6 +1443,9 @@ void CodeBlocksApp::OnAppActivate(wxActivateEvent& event)
         // so : idEditorManagerCheckFiles, EditorManager::OnCheckForModifiedFiles just exist for this workaround
         wxCommandEvent evt(wxEVT_COMMAND_MENU_SELECTED, idEditorManagerCheckFiles);
         wxPostEvent(Manager::Get()->GetEditorManager(), evt);
+        // If event is close app, wxPostEvent() may have allowed OnApplicationClose() to free the Managers.
+        if ( Manager::IsAppShuttingDown())
+            return;
         cbProjectManagerUI *prjManUI = m_Frame->GetProjectManagerUI();
         if (prjManUI)
             static_cast<ProjectManagerUI*>(prjManUI)->CheckForExternallyModifiedProjects();
