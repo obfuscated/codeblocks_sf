@@ -251,7 +251,7 @@ int             n;
 wxStaticText    *Preview;
 mpFXYVector     *vec;
 mpWindow        *mp;
-wxPen           pen;
+wxPen           pen(*wxBLACK_PEN);
 wxColour        cc;
 wxFont          ff;
 bool            hide;
