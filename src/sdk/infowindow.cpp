@@ -19,6 +19,7 @@
     #include <wx/frame.h>
     #include "infowindow.h"
     #include "manager.h"
+    #include "logmanager.h"
 #endif
 
 #include <limits>
@@ -293,12 +294,16 @@ void InfoWindow::OnClick(cb_unused wxMouseEvent& e)
 // static
 void InfoWindow::Display(const wxString& title, const wxString& message, unsigned int delay, unsigned int hysteresis)
 {
+    Manager::Get()->GetLogManager()->Log(wxString::Format(_("Info[%s]: %s"), title.wx_str(),
+                                                          message.wx_str()));
+
     if (std::find(active_messages.begin(), active_messages.end(), message) != active_messages.end())
     {
         const wxString dups = _T("Multiple information windows with the same\nmessage have been suppressed.");
         if (std::find(active_messages.begin(), active_messages.end(), dups) == active_messages.end())
-            Display(_T("Info"), dups, delay);
+            new InfoWindow(_T("Info"), dups, delay, 1);
         return; // currently displaying already
     }
+
     new InfoWindow(title, message, delay, hysteresis);
 }
