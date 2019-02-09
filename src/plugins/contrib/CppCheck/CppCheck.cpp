@@ -329,7 +329,7 @@ void CppCheck::DoCppCheckAnalysis(const wxString& Xml)
 
         bool ErrorsPresent = false;
         TiXmlElement* resultNode = Handle.ToElement();
-        if (nullptr!=resultNode->Attribute("version"))
+        if (resultNode && resultNode->Attribute("version"))
         {
             wxString Version = wxString::FromAscii(resultNode->Attribute("version"));
             if ( Version.IsSameAs(wxT("2")) )
