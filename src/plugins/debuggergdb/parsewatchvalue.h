@@ -5,7 +5,6 @@
 
 #ifndef _PARSE_WATCH_VALUE_H_
 #define _PARSE_WATCH_VALUE_H_
-#endif // _PARSE_WATCH_VALUE_H_
 
 #include "debugger_defs.h"
 
@@ -24,3 +23,5 @@ struct GDBLocalVariable
 
 
 void TokenizeGDBLocals(std::vector<GDBLocalVariable> &results, wxString const &value);
+
+#endif // _PARSE_WATCH_VALUE_H_
