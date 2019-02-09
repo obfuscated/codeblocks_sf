@@ -301,7 +301,8 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
     const wxString lid = preselectedID.Lower();
 
     // first build a list of available compilers
-    wxString* comps = new wxString[Compilers.GetCount()];
+    std::unique_ptr<wxString[]> comps(new wxString[Compilers.GetCount()]);
+
     for (size_t i = 0; i < Compilers.GetCount(); ++i)
     {
         comps[i] = Compilers[i]->GetName();
@@ -324,7 +325,7 @@ Compiler* CompilerFactory::SelectCompilerUI(const wxString& message, const wxStr
                              message,
                              _("Compiler selection"),
                              CompilerFactory::Compilers.GetCount(),
-                             comps);
+                             comps.get());
     dlg.SetSelection(selected);
     PlaceWindow(&dlg);
     if (dlg.ShowModal() == wxID_OK)
