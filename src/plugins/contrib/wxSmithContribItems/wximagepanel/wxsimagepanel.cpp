@@ -135,12 +135,13 @@ wxString    tt;
 #endif
         AddEventCode(tt);
     }
-    else
+    else if (!mImage.IsEmpty() && mImage != _T("<none>"))
     {
         // if we can't find the image in wxsImage, we fallback to interpret it as a file path
         // some code snippet likes below:
         // wxBitmap bmp = wxBitmap(wxImage(_T("input.png")));
         // ImagePanel1->SetBitmap(bmp);
+        // the mImage field could be empty or "<none>", we should skip those two special cases.
         wxString bmpFilename = vname + _T("_bmp");
         Codef(_T("wxBitmap %s = wxBitmap(wxImage((\"%s\")));\n"), bmpFilename.wx_str(), mImage.wx_str());
         Codef(_T("%ASetBitmap(%s);\n"), bmpFilename.wx_str());
