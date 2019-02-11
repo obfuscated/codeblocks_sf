@@ -1159,6 +1159,15 @@ void ParserThread::DoParse()
                                            /*isPointer*/     true);
                         }
                     }
+                    else if (   m_Options.useBuffer
+                             && m_Str.GetChar(0) == ParserConsts::opbracket_chr
+                             && m_Str.GetChar(m_Str.Len() - 2) == ParserConsts::clbracket_chr)
+                    {
+                        // pattern: (void) fun (...)
+                        // m_Str="(void) " token="fun" peek="(...)"
+                        // this is a return value cast, we should reset the m_Str with fun
+                        m_Str = token;
+                    }
                     else
                     {
                         // pattern unsigned int (*getClientLibVersion)(char** result);
