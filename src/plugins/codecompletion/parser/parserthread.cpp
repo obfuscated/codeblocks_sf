@@ -2675,10 +2675,21 @@ void ParserThread::HandleEnum()
     bool isEnumClass = false;
     int lineNr = m_Tokenizer.GetLineNumber();
     wxString token = m_Tokenizer.GetToken();
+
+    // C++11 has some enhanced enumeration declaration
+    // see: http://en.cppreference.com/w/cpp/language/enum
     if (token == ParserConsts::kw_class)
     {
         token = m_Tokenizer.GetToken();
         isEnumClass = true;
+    }
+    else if (token == ParserConsts::colon)
+    {
+        // enum : int {...}
+        SkipToOneOfChars(ParserConsts::semicolonopbrace); // jump to the "{" or ";"
+        // note in this case, the "{" or ";" is already eaten, so we need to go back one step
+        m_Tokenizer.UngetToken();
+        token = m_Tokenizer.PeekToken();
     }
 
     if (token.IsEmpty())
@@ -2697,12 +2708,26 @@ void ParserThread::HandleEnum()
         isUnnamed = true;
     }
 
+    // the token is now the expected enum name
     Token* newEnum = 0L;
     unsigned int level = 0;
     if (   wxIsalpha(token.GetChar(0))
         || (token.GetChar(0) == ParserConsts::underscore_chr) )
     {
-        if (m_Tokenizer.PeekToken().GetChar(0) != ParserConsts::opbrace_chr)
+        // we have such pattern: enum    name     {
+        //                               ^^^^
+        //                               token    peek
+        wxString peek = m_Tokenizer.PeekToken();
+        if (peek == ParserConsts::colon) // enum    name  : type    {
+        {
+            m_Tokenizer.GetToken(); // eat the ":"
+            SkipToOneOfChars(ParserConsts::semicolonopbrace); // jump to the "{" or ";"
+            // note in this case, the "{" or ";" is already eaten, so we need to go back one step
+            m_Tokenizer.UngetToken();
+            peek = m_Tokenizer.PeekToken();
+        }
+
+        if (peek.GetChar(0) != ParserConsts::opbrace_chr)
         {
             if (TokenExists(token, m_LastParent, tkEnum))
             {
