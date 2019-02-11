@@ -178,7 +178,7 @@ wxBitmap        bmp;
         bmp = ((wxsImage *) image)->GetPreview();
         ap->SetBitmap(bmp);
     }
-    else{
+    else if (!mImage.IsEmpty() && mImage != _T("<none>")){
         // in case we can't find the name in ImageList, we try to interpret it as a filepath
         // see discussion http://forums.codeblocks.org/index.php/topic,22888.0.html
         wxImage Img(mImage);
