@@ -98,9 +98,10 @@ Total 8 tests, 8 PASS, 0 FAIL
 ********************************************************
   Testing in file: cc_function_return_enum.cpp
 ********************************************************
-- FAIL: my_func  my_function
++ PASS: fun2  fun2
++ PASS: fun1  fun1
 --------------------------------------------------------
-Total 1 tests, 0 PASS, 1 FAIL
+Total 2 tests, 2 PASS, 0 FAIL
 --------------------------------------------------------
 ********************************************************
   Testing in file: cc_loop_variables.cpp

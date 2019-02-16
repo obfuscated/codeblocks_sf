@@ -2729,6 +2729,8 @@ void ParserThread::HandleEnum()
 
         if (peek.GetChar(0) != ParserConsts::opbrace_chr)
         {
+            // pattern:  enum E var;
+            // now peek=var, so we try to see it is a variable definition
             if (TokenExists(token, m_LastParent, tkEnum))
             {
                 if (!TokenExists(m_Tokenizer.PeekToken(), m_LastParent, tkVariable) )
@@ -2747,10 +2749,18 @@ void ParserThread::HandleEnum()
                         m_Tokenizer.GetToken(); // eat semi-colon
                     }
                     else
+                    {   // peek is not ";", mostly it is some pattern like:
+                        // enum E fun (..) ;
+                        // enum E fun (..) {...};
+                        // so we just push the "E" to the m_Str, and return
+                        // this make the just like:
+                        // E fun (..) ;
+                        // E fun (..) {...};
+                        m_Str = token;
                         m_Tokenizer.UngetToken(); // restore the identifier
+                    }
                 }
             }
-
             return;
         }
 

@@ -7,13 +7,16 @@ enum e_example
     E_EX_3
 };
 
-enum e_example my_function();
+enum e_example fun1();
 
-enum e_example my_function()
+
+enum e_example fun2()
 {
     return E_EX_3;
 }
 
 
 
-//my_func   //my_function
+
+//fun1   //fun1
+//fun2   //fun2
