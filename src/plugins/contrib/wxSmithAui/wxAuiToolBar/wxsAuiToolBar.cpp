@@ -126,7 +126,9 @@ wxsAuiToolBar::~wxsAuiToolBar()
 
 bool wxsAuiToolBar::OnCanAddChild(wxsItem* Item,bool ShowMessage)
 {
-    bool IsControl = wxDynamicCast(Item->BuildPreview(new wxFrame(0,-1,wxEmptyString),0),wxControl);
+    std::unique_ptr<wxFrame, std::function<void(wxFrame*)>> shortLiveFrame(new wxFrame(nullptr, wxID_ANY, wxEmptyString),
+                                                                           [](wxFrame* frame){ frame->Destroy(); });  // deleter
+    bool IsControl = wxDynamicCast(Item->BuildPreview(shortLiveFrame.get(),0),wxControl);
     bool IsAuiToolBarItem = Item->GetClassName().Contains(_T("wxAuiToolBar"));
     if ( !IsControl && !IsAuiToolBarItem )
     {
