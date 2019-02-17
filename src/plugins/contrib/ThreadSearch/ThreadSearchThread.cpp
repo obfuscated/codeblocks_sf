@@ -163,7 +163,7 @@ void *ThreadSearchThread::Entry()
             cbEditor* pEditor = pEdManager->GetBuiltinEditor(i);
             if ( pEditor != NULL )
             {
-                AddNewItem(m_FilePaths, pEditor->GetFilename());
+                AddNewItem(m_FilePaths, pEditor->GetFilename(), m_Masks);
             }
         }
     }
@@ -296,14 +296,31 @@ void ThreadSearchThread::FindInFile(const wxString& path)
 }
 
 
-bool ThreadSearchThread::AddNewItem(wxSortedArrayString& sortedArrayString, const wxString& newItem)
+bool ThreadSearchThread::AddNewItem(wxSortedArrayString& sortedArrayString, const wxString& newItem, const wxArrayString& mask)
 {
     // Adds item to array only if it does not exist
     bool added = false;
     if ( sortedArrayString.Index(newItem.c_str()) == wxNOT_FOUND )
     {
-        sortedArrayString.Add(newItem);
-        added = true;
+        // Looks if current file matches one of the file patterns
+        size_t maskCount = mask.GetCount();
+        if (maskCount == 0)
+        {
+            sortedArrayString.Add(newItem);
+            added = true;
+        }
+        else
+        {
+            for (size_t i = 0; i < maskCount; ++i)
+            {
+                if ( newItem.Matches(mask[i].c_str() ) )
+                {
+                    sortedArrayString.Add(newItem);
+                    added = true;
+                    break;
+                }
+            }
+        }
     }
     return added;
 }
@@ -316,7 +333,7 @@ void ThreadSearchThread::AddProjectFiles(wxSortedArrayString& sortedArrayString,
     // for examle.
     for (FilesList::iterator it = project.GetFilesList().begin(); it != project.GetFilesList().end(); ++it)
     {
-        AddNewItem(sortedArrayString, (*it)->file.GetFullPath());
+        AddNewItem(sortedArrayString, (*it)->file.GetFullPath(), m_Masks);
         if ( TestDestroy() == true ) return;
     }
 }
@@ -330,7 +347,7 @@ void ThreadSearchThread::AddTargetFiles(wxSortedArrayString& sortedArrayString, 
     for (FilesList::iterator it = target.GetFilesList().begin(); it != target.GetFilesList().end(); it++)
     {
         ProjectFile* pf = *it;
-        AddNewItem(sortedArrayString, pf->file.GetFullPath());
+        AddNewItem(sortedArrayString, pf->file.GetFullPath(), m_Masks);
         if ( TestDestroy() == true ) return;
     }
 }

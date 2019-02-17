@@ -79,12 +79,13 @@ private:
       */
     void FindInFile(const wxString& path);
 
-    /** Adds item to strings array only if it does not exist.
+    /** Adds item to strings array only if it does not exist and matches an entry in the mask
       * @param sortedArrayString : strings array to which item may be added.
-      * @param newItem           : item to add if not present in array
+      * @param newItem           : item to add if not present in array and if it matches an entry in the mask
+      * @param mask              : strings with file masks that are tested against the item
       * @return true if added to array.
       */
-    static bool AddNewItem(wxSortedArrayString& sortedArrayString, const wxString& newItem);
+    static bool AddNewItem(wxSortedArrayString& sortedArrayString, const wxString& newItem, const wxArrayString& mask);
 
     /** Adds project file paths to the strings array avoiding duplicated paths.
       * @param sortedArrayString : strings array containing file paths.
