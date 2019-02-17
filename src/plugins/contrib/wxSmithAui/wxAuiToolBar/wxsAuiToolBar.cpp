@@ -18,6 +18,8 @@
 
 #include "wxsAuiToolBar.h"
 
+#include <functional>
+
 #include <wxsadvqppchild.h>
 #include <wxwidgets/wxsitemresdata.h>
 #include <wx/menu.h>

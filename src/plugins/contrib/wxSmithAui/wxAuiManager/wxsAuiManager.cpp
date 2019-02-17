@@ -23,6 +23,8 @@
 #include <wxwidgets/wxsflags.h>
 #include <logmanager.h>
 
+#include <functional>
+
 #include <wx/dcclient.h>
 
 using namespace wxsFlags;
