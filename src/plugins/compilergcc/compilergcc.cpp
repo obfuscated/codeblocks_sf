@@ -1390,6 +1390,7 @@ void CompilerGCC::DoClearTargetMenu()
 {
     if (m_TargetMenu)
     {
+        bool foundFirstSeparator = false;
         wxMenuItemList& items = m_TargetMenu->GetMenuItems();
         for (wxMenuItemList::iterator it = items.begin(); it != items.end(); )
         {
@@ -1397,7 +1398,18 @@ void CompilerGCC::DoClearTargetMenu()
             // Make sure we increment valid iterator (Delete will invalidate it).
             ++it;
             if (item)
-                m_TargetMenu->Delete(item);
+            {
+                if (item->GetKind() == wxITEM_SEPARATOR)
+                {
+                    if (!foundFirstSeparator)
+                        foundFirstSeparator = true;
+                }
+                // Delete menu items only after the first separator.
+                // We do this because we don't want to delete the first item, because we want to
+                // make it possible for users to assign keyboard shortcuts for it.
+                else if (foundFirstSeparator)
+                    m_TargetMenu->Delete(item);
+            }
         }
 // mandrav: The following lines DO NOT clear the menu!
 //        wxMenuItemList& items = m_TargetMenu->GetMenuItems();
@@ -1461,11 +1473,6 @@ void CompilerGCC::DoRecreateTargetMenu()
               wsp->SetPreferredTarget(tgtStr);
         }
 
-        if (m_TargetMenu)
-        {
-            m_TargetMenu->Append(idMenuSelectTargetDialog, _("Select target..."), _("Shows a dialog with all targets"));
-            m_TargetMenu->AppendSeparator();
-        }
 
         // fill the menu and combo
         for (int x = 0; x < int(m_Targets.size()); ++x)

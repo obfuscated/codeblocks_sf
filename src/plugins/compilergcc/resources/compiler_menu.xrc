@@ -74,6 +74,11 @@
     </object>
     <object class="wxMenu" name="idCompilerMenuSelectTarget">
       <label>Select target</label>
+      <object class="wxMenuItem" name="idMenuSelectTargetDialog">
+        <label>Select target</label>
+        <help>Shows a dialog with all targets</help>
+      </object>
+      <object class="separator"/>
     </object>
     <object class="separator"/>
     <object class="wxMenuItem" name="idCompilerMenuExportMakefile">
