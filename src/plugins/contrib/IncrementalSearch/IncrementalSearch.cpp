@@ -333,13 +333,14 @@ bool IncrementalSearch::BuildToolBar(wxToolBar* toolBar)
     }
     wxString is16x16 = Manager::isToolBar16x16(toolBar) ? _T("_16x16") : _T("");
     Manager::Get()->AddonToolBar(toolBar,_T("incremental_search_toolbar") + is16x16);
-    m_pToolbar  = toolBar;
+    m_pToolbar = toolBar;
     m_pToolbar->EnableTool(XRCID("idIncSearchClear"), false);
     m_pToolbar->EnableTool(XRCID("idIncSearchPrev"), false);
     m_pToolbar->EnableTool(XRCID("idIncSearchNext"), false);
     m_pToolbar->SetInitialSize();
 
-    m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition, wxSize(160,-1),wxTE_PROCESS_ENTER);
+    m_pComboCtrl = new wxComboCtrl(toolBar, idIncSearchCombo, wxEmptyString, wxDefaultPosition,
+                                   wxSize(160,-1), wxTE_PROCESS_ENTER);
     if (m_pComboCtrl)
     {
 #if !wxCHECK_VERSION(3, 0, 0) || WXWIN_COMPATIBILITY_2_8
