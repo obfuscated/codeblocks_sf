@@ -70,8 +70,8 @@
 		<Unit filename="FileExplorerUpdater.h" />
 		<Unit filename="FileManager.cpp" />
 		<Unit filename="FileManager.h" />
-		<Unit filename="Resources/fileexplorersettings.xrc" />
 		<Unit filename="Resources/CommitBrowser.xrc" />
+		<Unit filename="Resources/fileexplorersettings.xrc" />
 		<Unit filename="directorymonitor.cpp" />
 		<Unit filename="directorymonitor.h" />
 		<Unit filename="manifest.xml" />
