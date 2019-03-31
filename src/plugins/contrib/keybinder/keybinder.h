@@ -548,10 +548,30 @@ public:
     //! Removes this event handler from the window you specified
     //! during construction (the target window).
     virtual ~wxBinderEvtHandler()
+    {
+        // dtor
+        if ( m_pTarget )
         {
-            if ( m_pTarget ) //+v0.4.9
-                m_pTarget->RemoveEventHandler(this);
+            // Avoid assert "where did the event handler go?". Verify the event handler exists
+            // NOTE: the wxWindow event handler list is always terminated with window handler
+            wxWindow* pWin = m_pTarget;
+            wxEvtHandler* handlerCur = pWin->GetEventHandler();
+            while ( (handlerCur != pWin) && handlerCur )
+            {
+                wxEvtHandler* handlerNext = handlerCur->GetNextHandler();
+                if ( handlerCur == this )
+                {
+                    #if LOGGING
+                    if (pWin)
+                    LOGIT( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pWin->GetLabel().GetData(), pWin);
+                    #endif
+                    m_pTarget->RemoveEventHandler(this);
+                    return;
+                }
+                handlerCur = handlerNext;
+            }
         }
+    }
 
 
     //! Returns TRUE if this event handler is attached to the given window.

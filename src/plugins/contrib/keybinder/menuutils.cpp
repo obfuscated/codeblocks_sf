@@ -129,7 +129,7 @@ int FindMenuDuplicateItems(wxMenu* pMenu, wxString& rStr, int& rCount)
 // ----------------------------------------------------------------------------
 wxString GetFullMenuPath(int id)
 // ----------------------------------------------------------------------------
-{//(pecan 2007/6/13)
+{
 
     // fetch the full menu path from via a menu id
     // It will look like "File\\Open\\Recent Files"
@@ -560,12 +560,12 @@ wxCmd *wxMenuCmd::CreateNew(wxString sCmdName, int id)
     // so the file loaded item may have a different/stale item id.
 
     wxMenuItem* pMenuItem = 0;
-    wxString fullMenuPath = sCmdName;       //(pecan 2007/6/15)
+    wxString fullMenuPath = sCmdName;
     wxString cmdName = fullMenuPath.AfterLast(wxT('\\'));
     cmdName.Trim();
     int actualMenuID = id;
 
-    // Try to match id and label to avoid duplicate named menu items //v0.4.8
+    // Try to match id and label to avoid duplicate named menu items
     wxMenuItem* pMenuItemByCfgId = m_pMenuBar->FindItem(id);
     if ( pMenuItemByCfgId && (pMenuItemByCfgId->GetItemLabelText().Trim() == cmdName) )
         pMenuItem = pMenuItemByCfgId;

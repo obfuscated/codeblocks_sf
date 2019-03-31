@@ -149,11 +149,11 @@ class cbKeyBinder : public cbPlugin
 class MyDialog : public cbConfigurationPanel
 {
 public:
-	wxKeyConfigPanel *m_p;
+	wxKeyConfigPanel* m_pConfigPanel;
 
 public:
     // ctor(s)
-    MyDialog(cbKeyBinder* binder, wxKeyProfileArray &arr, wxWindow *parent, const wxString& title, int);
+    MyDialog(cbKeyBinder* pKeyBinderPlgn, wxKeyProfileArray& arr, wxWindow* parent, const wxString& title, int);
 	~MyDialog();
 
 
@@ -163,7 +163,7 @@ public:
 	void OnCancel(){}
 
 private:
-    cbKeyBinder* m_pBinder;
+    cbKeyBinder* m_pKeyBinderPlgn;
     // any class wishing to process wxWindows events must use this macro
     DECLARE_EVENT_TABLE()
 };

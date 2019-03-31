@@ -523,7 +523,7 @@ cbConfigurationPanel* cbKeyBinder::OnKeyConfig(wxWindow* parent)
         wxT("Keybindings"), mode);
 
     // enable|disable keyprofiles combo box
-    dlg->m_p->EnableKeyProfiles(bprofiles);
+    dlg->m_pConfigPanel->EnableKeyProfiles(bprofiles);
 
     // when the configuration panel is closed with OK, OnKeyConfigDialogDone() will be called
     return dlg;
@@ -543,9 +543,8 @@ void cbKeyBinder::OnKeyConfigDialogDone(MyDialog* dlg)
     // stop dynamic menu merges
     EnableMerge(false);
 
-    dlg->m_p->ApplyChanges();
-
-        *m_pKeyProfArr = dlg->m_p->GetProfiles();
+    dlg->m_pConfigPanel->ApplyChanges();
+    *m_pKeyProfArr = dlg->m_pConfigPanel->GetProfiles();
     // don't delete "dlg" variable; CodeBlocks will destroy it
 
     //update Windows/EventHanders from changed wxKeyProfile
@@ -1001,12 +1000,12 @@ bool cbKeyBinder::VerifyKeyBind(const wxString& strKeyCode, const int numShortcu
 // ----------------------------------------------------------------------------
 //                          D I A L O G
 // ----------------------------------------------------------------------------
-//     keybindings dialog: a super-simple wrapper for wxKeyConfigPanel
+//     keybindings dialog: a wrapper for wxKeyConfigPanel
 // ----------------------------------------------------------------------------
-MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
+MyDialog::MyDialog(cbKeyBinder* keybinderPlgn, wxKeyProfileArray& pProfileArray,
                    wxWindow *parent, const wxString & /*title*/, int mode)
 // ----------------------------------------------------------------------------
-    :m_pBinder(binder)
+    :m_pKeyBinderPlgn(keybinderPlgn)
 {
     cbConfigurationPanel::Create(parent, -1, wxDefaultPosition, wxDefaultSize,
         wxDEFAULT_DIALOG_STYLE | wxRESIZE_BORDER);
@@ -1017,17 +1016,17 @@ MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
     // 2) we can use wxKeyConfigPanel::ImportKeyBinderCmd
 
     // STEP #1: create a simple wxKeyConfigPanel
-    m_p = new wxKeyConfigPanel(this, mode);
+    m_pConfigPanel = new wxKeyConfigPanel(this, mode);
 
     // STEP #2: add a profile array to the wxKeyConfigPanel
-    m_p->AddProfiles(prof);
+    m_pConfigPanel->AddProfiles(pProfileArray);
 
     // STEP #3: populate the wxTreeCtrl widget of the panel
-    m_p->ImportMenuBarCmd(((wxFrame*)Manager::Get()->GetAppWindow())->GetMenuBar());
+    m_pConfigPanel->ImportMenuBarCmd(((wxFrame*)Manager::Get()->GetAppWindow())->GetMenuBar());
 
     // and embed it in a little sizer
     wxBoxSizer *main = new wxBoxSizer(wxVERTICAL);
-    main->Add(m_p, 1, wxGROW);
+    main->Add(m_pConfigPanel, 1, wxGROW);
     SetSizer(main);
     main->SetSizeHints(this);
 
@@ -1041,8 +1040,8 @@ MyDialog::MyDialog(cbKeyBinder* binder, wxKeyProfileArray &prof,
 // ----------------------------------------------------------------------------
 MyDialog::~MyDialog()
 {
-    m_pBinder->EnableMerge(true);
-    m_pBinder->m_bConfigBusy = false;
+    m_pKeyBinderPlgn->EnableMerge(true);
+    m_pKeyBinderPlgn->m_bConfigBusy = false;
 }
 // ----------------------------------------------------------------------------
 
@@ -1050,7 +1049,7 @@ MyDialog::~MyDialog()
 void MyDialog::OnApply()
 // ----------------------------------------------------------------------------
 {
-    m_pBinder->OnKeyConfigDialogDone(this);
+    m_pKeyBinderPlgn->OnKeyConfigDialogDone(this);
 }
 // ----------------------------------------------------------------------------
 void cbKeyBinder::OnProjectOpened(CodeBlocksEvent& event)

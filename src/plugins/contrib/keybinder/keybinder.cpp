@@ -664,7 +664,7 @@ bool wxCmd::Save(wxConfigBase *p, const wxString &key, bool bCleanOld) const
     // write the entry in the format NAME|DESC|SHORTCUT1|SHORTCUT2...|SHORTCUTn
     wxString value = wxString::Format(wxT("%s|%s|%s"),
                                     //GetName().c_str(),
-                                    fullMenuPath.c_str(),       //(pecan 2007/6/15)
+                                    fullMenuPath.c_str(),
                                     GetDescription().c_str(),
                                     shortcuts.c_str());
 
@@ -690,7 +690,6 @@ bool wxCmd::Load(wxConfigBase *p, const wxString &key)
     if (m_strName.IsEmpty())
         return FALSE;    // this is an invalid entry...
 
-    //(pecan 2007/6/15)
     wxString fullMenuPath = m_strName;
     m_strName = fullMenuPath.AfterLast(wxT('\\'));
     //LOGIT( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
@@ -726,7 +725,6 @@ bool wxCmd::LoadFromString(const wxString& cfgCmdString)
     if (m_strName.IsEmpty())
         return FALSE;    // this is an invalid entry...
 
-    //(pecan 2007/6/15)
     wxString fullMenuPath = m_strName;
     m_strName = fullMenuPath.AfterLast(wxT('\\'));
     //LOGIT( _T("wxCmd::Load fullMenuPath[%s],m_strName[%s]"), fullMenuPath.c_str(), m_strName.c_str() );
@@ -1343,11 +1341,10 @@ void wxKeyBinder::Detach(wxWindow *p, bool deleteEvtHandler)
     if (deleteEvtHandler) delete toremove;
 }
 // ----------------------------------------------------------------------------
-//  wxKeyBinder DetachAll
-// ----------------------------------------------------------------------------
 void wxKeyBinder::DetachAll()
+// ----------------------------------------------------------------------------
 {
-    wxWindow* pwin;
+    wxWindow* pWin;
     wxLogDebug(wxT("wxKeyBinder::DetachAll - detaching from all my [%d] targets"), GetAttachedWndCount());
 
     //- delete all handlers (they will automatically remove themselves from
@@ -1358,23 +1355,17 @@ void wxKeyBinder::DetachAll()
     for (int i=0; i < (int)m_arrHandlers.GetCount(); i++)
     {
         wxBinderEvtHandler* pHdlr = (wxBinderEvtHandler*)m_arrHandlers.Item(i);
-        pwin = pHdlr->GetTargetWnd();     //+v0.4
-        if  ( NOT winExists( pwin ) )
-        {   //+v0.4.9
+        pWin = pHdlr->GetTargetWnd();     //+v0.4
+        if  ( NOT winExists( pWin ) )
+        {
             // tell dtor not to crash by using RemoveEventHander()
             pHdlr->SetWndInvalid(0);
             #if defined(LOGGING)
-            LOGIT( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pwin); //+v0.4.6
+            LOGIT( _T("WxKeyBinder:DetachAll:window NOT found %p <----------"), pWin);
             #endif
         }
-        else //2018/03/19 a guess at stopping wxAwwert "where has the event handler gone?"
-        {
-            #if LOGGING
-             if (pHdlr->GetTargetWnd())
-               LOGIT( _T("WxKeyBinder:DetachAll:Deleteing EvtHdlr for [%s] %p"), pwin->GetLabel().GetData(), pwin);     //+v0.4
-            #endif
+        else
             delete pHdlr;  //dtor calls RemoveEventHandler()
-        }
     }
 
     // and clear the array
@@ -1415,7 +1406,7 @@ void wxKeyBinder::OnChar(wxKeyEvent &event, wxEvtHandler *next)
         event.Skip();
         return;
     }
-    // Let wxWidgets handle menu checkable items //(ICC 2018/03/21)
+    // Let wxWidgets handle menu checkable items // FIXME (ph#):There's a fix for this in ICC version
     // View menu check items are being ignored once unchecked.
     // UpdateUI isn't called to maintain the check status.
     // Attempting to programmatically re-check no longer works.
@@ -2573,7 +2564,7 @@ void wxKeyConfigPanel::OnProfileEditing(wxCommandEvent &)
 {
     wxASSERT(m_nCurrentProf != -1);
     // This routine is screwing up unix, and its never called on MSW
-    // so.. forget it //(pecan 2006/9/23)
+    // so.. forget it //(pecan 2006/9/23) // FIXME (ph#): verify this
     return ;
 
     wxString oldname = m_kBinder.GetName();
