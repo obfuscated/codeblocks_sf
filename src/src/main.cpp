@@ -633,7 +633,6 @@ MainFrame::MainFrame(wxWindow* parent)
     wxString deflayout = cfg->Read(_T("/main_frame/layout/default"));
     if (deflayout.IsEmpty())
         cfg->Write(_T("/main_frame/layout/default"), gDefaultLayout);
-    DoFixToolbarsLayout();
     gDefaultLayoutData = m_LayoutManager.SavePerspective(); // keep the "hardcoded" layout handy
     gDefaultMessagePaneLayoutData = m_pInfoPane->SaveTabOrder();
     SaveViewLayout(gDefaultLayout, gDefaultLayoutData, gDefaultMessagePaneLayoutData);
@@ -1278,6 +1277,8 @@ void MainFrame::LoadWindowState()
     wxString deflayout = Manager::Get()->GetConfigManager(_T("app"))->Read(_T("/main_frame/layout/default"));
     LoadViewLayout(deflayout);
 
+    DoFixToolbarsLayout();
+
     // load manager and messages selected page
     if (m_pPrjManUI->GetNotebook())
         m_pPrjManUI->GetNotebook()->SetSelection(Manager::Get()->GetConfigManager(_T("app"))->ReadInt(_T("/main_frame/layout/left_block_selection"), 0));
@@ -1571,12 +1572,34 @@ bool MainFrame::DoCheckCurrentLayoutForChanges(bool canCancel)
 
 void MainFrame::DoFixToolbarsLayout()
 {
-    // because the user might change the toolbar icons size, we must cater for it...
-    wxAuiPaneInfoArray& panes = m_LayoutManager.GetAllPanes();
+    // The AUI layout system remembers toolbar sizes. In most circumstances we don't want this
+    // feature. So we want to disable it and this is what is done in this function.
+    // This function has effect after a toolbar size change.
+    //
+    // To do it we need to do two passes:
+    // 1. reset the best/min sizes loaded from the layout file.
+    // 2. set new best size
+    //
+    // The reset operation is needed because wxAUI do nothing when the values for min/best sizes
+    // aren't equal to wxDefaultSize.
+    // I'm not really sure why we need the second pass. :(
+
+    wxAuiPaneInfoArray &panes = m_LayoutManager.GetAllPanes();
+    for (size_t ii = 0; ii < panes.GetCount(); ++ii)
+    {
+        wxAuiPaneInfo &info = panes[ii];
+        if (info.IsToolbar() && info.IsShown())
+        {
+            info.best_size = wxDefaultSize;
+            info.min_size = wxDefaultSize;
+        }
+    }
+    m_LayoutManager.Update();
+
     for (size_t i = 0; i < panes.GetCount(); ++i)
     {
         wxAuiPaneInfo& info = panes[i];
-        if (info.state & wxAuiPaneInfo::optionToolbar)
+        if (info.IsToolbar())
         {
             info.best_size = info.window->GetBestSize();
             info.floating_size = wxDefaultSize;
