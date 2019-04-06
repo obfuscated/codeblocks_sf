@@ -9,9 +9,11 @@ dist_pkgdata_DATA = resources.zip start_here.zip
 CLEANFILES = $(dist_pkgdata_DATA)
 
 resources.zip: $(srcdir)/*.xrc $(srcdir)/images/*.png \
-		$(srcdir)/images/16x16/*.png $(srcdir)/images/22x22/*.png
+		$(srcdir)/images/16x16/*.png \
+		$(srcdir)/images/22x22/*.png \
+		$(srcdir)/images/32x32/*.png
 	PWD=`pwd` cd $(srcdir) && zip $(PWD)/resources.zip *.xrc images/*.png \
-		images/16x16/*.png images/22x22/*.png \
+		images/16x16/*.png images/22x22/*.png images/32x32/*.png \
 		/dev/null
 
 start_here.zip: $(srcdir)/start_here/*.htm* $(srcdir)/start_here/*.png

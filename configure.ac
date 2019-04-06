@@ -440,6 +440,7 @@ AC_CONFIG_FILES([Makefile
 	src/src/resources/images/Makefile
 	src/src/resources/images/16x16/Makefile
 	src/src/resources/images/22x22/Makefile
+	src/src/resources/images/32x32/Makefile
 	src/src/resources/images/settings/Makefile
 	src/src/Makefile
 	src/plugins/Makefile
