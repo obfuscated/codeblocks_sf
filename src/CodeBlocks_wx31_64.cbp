@@ -181,6 +181,9 @@
 					<Add directory="include/mozilla_chardet/xpcom/glue" />
 					<Add directory="exchndl/win64/include" />
 				</Compiler>
+				<ResourceCompiler>
+					<Add option="-DcbDPI_AWARE_ON" />
+				</ResourceCompiler>
 				<Linker>
 					<Add option="-Wl,--enable-auto-import" />
 					<Add option="-Wl,--no-undefined" />

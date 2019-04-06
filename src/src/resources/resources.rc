@@ -127,8 +127,13 @@ VS_VERSION_INFO    VERSIONINFO
   #endif
 
   #if defined(WX_CPU_AMD64)
-    wxMANIFEST_ID RT_MANIFEST "amd64.manifest"
-    #warning Manifest: amd64.manifest
+    #if defined(cbDPI_AWARE_ON)
+        wxMANIFEST_ID RT_MANIFEST "amd64_dpi_aware_on.manifest"
+        #warning Manifest: amd64_dpi_aware_on.manifest
+    #else
+        wxMANIFEST_ID RT_MANIFEST "amd64.manifest"
+        #warning Manifest: amd64.manifest
+    #endif
   #elif defined(WX_CPU_IA64)
     wxMANIFEST_ID RT_MANIFEST "ia64.manifest"
     #warning Manifest: ia64.manifest
