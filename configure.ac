@@ -532,10 +532,6 @@ AC_CONFIG_FILES([Makefile
 	src/plugins/contrib/devpak_plugin/Makefile
 	src/plugins/contrib/devpak_plugin/bzip2/Makefile
 	src/plugins/contrib/DoxyBlocks/Makefile
-	src/plugins/contrib/DoxyBlocks/images/Makefile
-	src/plugins/contrib/DoxyBlocks/images/16x16/Makefile
-	src/plugins/contrib/DoxyBlocks/images/22x22/Makefile
-	src/plugins/contrib/DoxyBlocks/images/32x32/Makefile
 	src/plugins/contrib/dragscroll/Makefile
 	src/plugins/contrib/EditorConfig/Makefile
 	src/plugins/contrib/EditorTweaks/Makefile

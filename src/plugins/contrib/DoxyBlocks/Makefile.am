@@ -1,5 +1,3 @@
-SUBDIRS = images
-
 AM_CPPFLAGS = $(WX_CXXFLAGS) \
 		-I$(top_srcdir)/src/include \
 		-I$(top_srcdir)/src/sdk/wxscintilla/include
@@ -45,5 +43,34 @@ DoxyBlocks.zip: manifest.xml
 	PWD=`pwd` cd $(srcdir) && zip -R $(PWD)/DoxyBlocks.zip manifest.xml > /dev/null
 
 confimagesdir = $(datadir)/@PACKAGE@/images/settings
-
 dist_confimages_DATA = $(srcdir)/*.png
+
+images16x16dir = $(datadir)/@PACKAGE@/images/ThreadSearch/16x16
+dist_images16x16_DATA = \
+	$(srcdir)/images/16x16/chm.png \
+	$(srcdir)/images/16x16/comment_block.png \
+	$(srcdir)/images/16x16/comment_line.png \
+	$(srcdir)/images/16x16/configure.png \
+	$(srcdir)/images/16x16/doxywizard.png \
+	$(srcdir)/images/16x16/extract.png \
+	$(srcdir)/images/16x16/html.png
+
+images22x22dir = $(datadir)/@PACKAGE@/images/ThreadSearch/22x22
+dist_images22x22_DATA = \
+	$(srcdir)/images/22x22/chm.png \
+	$(srcdir)/images/22x22/comment_block.png \
+	$(srcdir)/images/22x22/comment_line.png \
+	$(srcdir)/images/22x22/configure.png \
+	$(srcdir)/images/22x22/doxywizard.png \
+	$(srcdir)/images/22x22/extract.png \
+	$(srcdir)/images/22x22/html.png
+
+images32x32dir = $(datadir)/@PACKAGE@/images/ThreadSearch/32x32
+dist_images32x32_DATA = \
+	$(srcdir)/images/32x32/chm.png \
+	$(srcdir)/images/32x32/comment_block.png \
+	$(srcdir)/images/32x32/comment_line.png \
+	$(srcdir)/images/32x32/configure.png \
+	$(srcdir)/images/32x32/doxywizard.png \
+	$(srcdir)/images/32x32/extract.png \
+	$(srcdir)/images/32x32/html.png
