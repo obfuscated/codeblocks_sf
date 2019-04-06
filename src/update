@@ -27,6 +27,7 @@ mkdir -p devel/share/codeblocks/images/codecompletion
 mkdir -p devel/share/codeblocks/images/12x12
 mkdir -p devel/share/codeblocks/images/16x16
 mkdir -p devel/share/codeblocks/images/22x22
+mkdir -p devel/share/codeblocks/images/32x32
 mkdir -p devel/share/codeblocks/plugins
 mkdir -p devel/share/codeblocks/templates
 mkdir -p devel/share/codeblocks/templates/wizard
@@ -38,6 +39,7 @@ mkdir -p output/share/codeblocks/images/codecompletion
 mkdir -p output/share/codeblocks/images/12x12
 mkdir -p output/share/codeblocks/images/16x16
 mkdir -p output/share/codeblocks/images/22x22
+mkdir -p output/share/codeblocks/images/32x32
 mkdir -p output/share/codeblocks/plugins
 mkdir -p output/share/codeblocks/templates
 mkdir -p output/share/codeblocks/templates/wizard
@@ -65,7 +67,7 @@ ${ZIPCMD} -jqu9 ${RESDIR}/todo.zip plugins/todo/resources/manifest.xml plugins/t
 ${ZIPCMD} -jqu9 ${RESDIR}/abbreviations.zip plugins/abbreviations/resources/manifest.xml plugins/abbreviations/resources/*.xrc > /dev/null
 echo Packing core UI bitmaps
 cd src/resources
-${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/22x22/*.png images/16x16/*.png images/12x12/*.png > /dev/null
+${ZIPCMD} -0 -qu ../../${RESDIR}/resources.zip images/*.png images/32x32/*.png images/22x22/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 cd ../../sdk/resources
 ${ZIPCMD} -0 -qu ../../${RESDIR}/manager_resources.zip images/*.png images/16x16/*.png images/12x12/*.png > /dev/null
 echo Packing plugins UI bitmaps
@@ -86,6 +88,7 @@ cp -f src/resources/images/*.png ${RESDIR}/images > /dev/null
 cp -f src/resources/images/settings/*.png ${RESDIR}/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png ${RESDIR}/images/16x16 > /dev/null
 cp -f src/resources/images/22x22/*.png ${RESDIR}/images/22x22 > /dev/null
+cp -f src/resources/images/32x32/*.png ${RESDIR}/images/32x32 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png ${RESDIR}/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml ${RESDIR}/compilers > /dev/null
 
@@ -95,6 +98,7 @@ cp -f src/resources/images/*.png output/share/codeblocks/images > /dev/null
 cp -f src/resources/images/settings/*.png output/share/codeblocks/images/settings > /dev/null
 cp -f src/resources/images/16x16/*.png output/share/codeblocks/images/16x16 > /dev/null
 cp -f src/resources/images/22x22/*.png output/share/codeblocks/images/22x22 > /dev/null
+cp -f src/resources/images/32x32/*.png output/share/codeblocks/images/32x32 > /dev/null
 cp -f plugins/codecompletion/resources/images/*.png output/share/codeblocks/images/codecompletion > /dev/null
 cp -f plugins/compilergcc/resources/compilers/*.xml output/share/codeblocks/compilers > /dev/null
 
@@ -106,6 +110,8 @@ then
 fi
 if [ -d "devel/share/codeblocks/images/DoxyBlocks" ]
 then
+  mkdir -p output/share/codeblocks/images/DoxyBlocks/32x32/
+  cp -f devel/share/codeblocks/images/DoxyBlocks/32x32/*.png output/share/codeblocks/images/DoxyBlocks/32x32 > /dev/null
   mkdir -p output/share/codeblocks/images/DoxyBlocks/22x22/
   cp -f devel/share/codeblocks/images/DoxyBlocks/22x22/*.png output/share/codeblocks/images/DoxyBlocks/22x22 > /dev/null
   mkdir -p output/share/codeblocks/images/DoxyBlocks/16x16
@@ -119,6 +125,8 @@ then
   cp -f devel/share/codeblocks/images/ThreadSearch/16x16/*.png output/share/codeblocks/images/ThreadSearch/16x16 > /dev/null
   mkdir -p output/share/codeblocks/images/ThreadSearch/22x22
   cp -f devel/share/codeblocks/images/ThreadSearch/22x22/*.png output/share/codeblocks/images/ThreadSearch/22x22 > /dev/null
+  mkdir -p output/share/codeblocks/images/ThreadSearch/32x32
+  cp -f devel/share/codeblocks/images/ThreadSearch/32x32/*.png output/share/codeblocks/images/ThreadSearch/32x32 > /dev/null
 fi
 if [ -d "devel/share/codeblocks/images/wxsmith" ]
 then

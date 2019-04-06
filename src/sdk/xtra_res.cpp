@@ -55,7 +55,7 @@ void wxToolBarAddOnXmlHandler::SetToolbarImageSize(int size)
 /// We need to do this because we want to replace 22x22 in the path with a string matching our
 /// resolution.
 /// @note This version doesn't support loading stock art images only files!
-wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name)
+wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name, double scaleFactor)
 {
 #if wxUSE_FILESYSTEM
     wxFSFile *fsfile = GetCurFileSystem().OpenFile(name, wxFS_READ | wxFS_SEEKABLE);
@@ -78,11 +78,16 @@ wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name)
         return wxNullBitmap;
     }
 
+#ifdef __WXOSX__
+    return wxBitmap(img, -1, scaleFactor);
+#else
+    (void)scaleFactor;
     return wxBitmap(img);
+#endif // __WXOSX__
 }
 
 
-wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size)
+wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size, double scaleFactor)
 {
     wxString name = GetParamValue(param);
     if (name.empty())
@@ -91,19 +96,21 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
     wxString finalName = name;
     finalName.Replace(wxT("22x22"), m_PathReplaceString);
 
-    wxBitmap bitmap = LoadBitmap(finalName);
+    wxBitmap bitmap = LoadBitmap(finalName, scaleFactor);
     if (!bitmap.Ok()) // == wxNullBitmap
         return bitmap;
 
     int bw = bitmap.GetWidth();
     int bh = bitmap.GetHeight();
-    if (size == wxSize(bw, bh))
+    if (size * scaleFactor == wxSize(bw, bh))
         return bitmap;
 
     LogManager *logger = Manager::Get()->GetLogManager();
     logger->LogWarning(wxString::Format(wxT("Image \"%s\" with size [%dx%d] doesn't match ")
-                                        wxT("requested size [%dx%d] resizing!"),
-                                        finalName.wx_str(), bw, bh, size.x, size.y));
+                                        wxT("requested size [%dx%d] resizing (scale factor %.3f)!"),
+                                        finalName.wx_str(), bw, bh,
+                                        int(size.x * scaleFactor), int(size.y * scaleFactor),
+                                        scaleFactor));
 
     wxImage image = bitmap.ConvertToImage();
 
@@ -145,7 +152,12 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
     {
         wxCHECK_MSG(m_toolbar, NULL, _("Incorrect syntax of XRC resource: tool not within a toolbar!"));
 
-        wxSize bitmapSize = m_toolbar->GetToolBitmapSize();
+        const wxSize bitmapSize = m_toolbar->GetToolBitmapSize();
+#if wxCHECK_VERSION(3, 0, 0)
+        const double scaleFactor = m_toolbar->GetContentScaleFactor();
+#else
+        const double scaleFactor = 1.0;
+#endif // wxCHECK_VERSION(3, 0, 0)
 
         if (GetPosition() != wxDefaultPosition)
         {
@@ -153,8 +165,8 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
             #if wxCHECK_VERSION(3, 0, 0)
                                wxEmptyString,
             #endif
-                               GetCenteredBitmap(_T("bitmap"), bitmapSize),
-                               GetCenteredBitmap(_T("bitmap2"), bitmapSize),
+                               GetCenteredBitmap(_T("bitmap"), bitmapSize, scaleFactor),
+                               GetCenteredBitmap(_T("bitmap2"), bitmapSize, scaleFactor),
             #if !wxCHECK_VERSION(3, 0, 0)
                                GetBool(_T("toggle")),
                                GetPosition().x,
@@ -184,8 +196,8 @@ wxObject *wxToolBarAddOnXmlHandler::DoCreateResource()
             }
             m_toolbar->AddTool(GetID(),
                                GetText(_T("label")),
-                               GetCenteredBitmap(_T("bitmap"), bitmapSize),
-                               GetCenteredBitmap(_T("bitmap2"), bitmapSize),
+                               GetCenteredBitmap(_T("bitmap"), bitmapSize, scaleFactor),
+                               GetCenteredBitmap(_T("bitmap2"), bitmapSize, scaleFactor),
                                kind,
                                GetText(_T("tooltip")),
                                GetText(_T("longhelp")));

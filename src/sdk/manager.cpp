@@ -374,9 +374,17 @@ wxMenu *Manager::LoadMenu(wxString menu_id,bool createonfailure)
 
 wxToolBar* Manager::CreateEmptyToolbar()
 {
-    wxSize size(m_ToolbarImageSize, m_ToolbarImageSize);
-    wxToolBar* toolbar = new wxToolBar(GetAppFrame(), -1, wxDefaultPosition, size, wxTB_FLAT | wxTB_NODIVIDER);
-    toolbar->SetToolBitmapSize(size);
+    const wxSize size(m_ToolbarImageSize, m_ToolbarImageSize);
+    wxWindow *appFrame = GetAppFrame();
+#if wxCHECK_VERSION(3, 0, 0)
+    const double scaleFactor = appFrame->GetContentScaleFactor();
+    const wxSize scaledSize(size.x/scaleFactor, size.y/scaleFactor);
+#else
+    const wxSize scaledSize = size;
+#endif // wxCHECK_VERSION(3, 0, 0)
+
+    wxToolBar* toolbar = new wxToolBar(appFrame, -1, wxDefaultPosition, scaledSize, wxTB_FLAT | wxTB_NODIVIDER);
+    toolbar->SetToolBitmapSize(scaledSize);
 
     return toolbar;
 }
