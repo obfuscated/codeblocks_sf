@@ -97,7 +97,7 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
     finalName.Replace(wxT("22x22"), m_PathReplaceString);
 
     wxBitmap bitmap = LoadBitmap(finalName, scaleFactor);
-    if (!bitmap.Ok()) // == wxNullBitmap
+    if (!bitmap.Ok())
         return bitmap;
 
     int bw = bitmap.GetWidth();
