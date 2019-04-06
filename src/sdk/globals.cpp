@@ -1100,44 +1100,49 @@ bool UsesCommonControls6()
 }
 #endif
 
-wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType)
+static void cbLoadImageFromFS(wxImage &image, const wxString& filename, wxBitmapType bitmapType,
+                              wxFileSystem& fs)
 {
     // cache this, can't change while we 're running :)
     static bool oldCommonControls = !UsesCommonControls6();
 
-    wxImage im;
-    wxFileSystem* fs = new wxFileSystem;
-    wxFSFile* f = fs->OpenFile(filename);
+    wxFSFile* f = fs.OpenFile(filename);
     if (f)
     {
         wxInputStream* is = f->GetStream();
-        im.LoadFile(*is, bitmapType);
+        image.LoadFile(*is, bitmapType);
         delete f;
     }
-    delete fs;
-    if (oldCommonControls && im.HasAlpha())
-        im.ConvertAlphaToMask();
+    if (oldCommonControls && image.HasAlpha())
+        image.ConvertAlphaToMask();
+}
+
+wxBitmap cbLoadBitmap(const wxString& filename, wxBitmapType bitmapType, wxFileSystem *fs)
+{
+    wxImage im;
+    if (fs)
+        cbLoadImageFromFS(im, filename, bitmapType, *fs);
+    else
+    {
+        wxFileSystem defaultFS;
+        cbLoadImageFromFS(im, filename, bitmapType, defaultFS);
+    }
 
     return wxBitmap(im);
 }
 
-wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, double scaleFactor)
+wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType, double scaleFactor,
+                            wxFileSystem *fs)
 {
-    // cache this, can't change while we 're running :)
-    static bool oldCommonControls = !UsesCommonControls6();
 
     wxImage im;
-    wxFileSystem* fs = new wxFileSystem;
-    wxFSFile* f = fs->OpenFile(filename);
-    if (f)
+    if (fs)
+        cbLoadImageFromFS(im, filename, bitmapType, *fs);
+    else
     {
-        wxInputStream* is = f->GetStream();
-        im.LoadFile(*is, bitmapType);
-        delete f;
+        wxFileSystem defaultFS;
+        cbLoadImageFromFS(im, filename, bitmapType, defaultFS);
     }
-    delete fs;
-    if (oldCommonControls && im.HasAlpha())
-        im.ConvertAlphaToMask();
 
 #if defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
     return wxBitmap(im, -1, scaleFactor);

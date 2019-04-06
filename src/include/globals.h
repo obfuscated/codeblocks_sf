@@ -19,6 +19,7 @@
 #include "settings.h"
 
 class TiXmlDocument;
+class wxFileSystem;
 
 /// Known plugin types
 enum PluginType
@@ -274,20 +275,22 @@ extern DLLIMPORT wxMenu* CopyMenu(wxMenu* mnu, bool with_accelerators = false);
 /// Check if CommonControls version is at least 6 (XP and up)
 extern DLLIMPORT bool UsesCommonControls6();
 
-/** This function loads a bitmap from disk.
-  * Always use this to load bitmaps because it takes care of various
-  * issues with pre-XP windows (actually common controls < 6.00).
-  */
+/// This function loads a bitmap from disk.
+/// Always use this to load bitmaps because it takes care of various
+/// issues with pre-XP windows (actually common controls < 6.00).
+/// @param fs File system used to load the image from. If nullptr the default would be used.
 extern DLLIMPORT wxBitmap cbLoadBitmap(const wxString& filename,
-                                       wxBitmapType bitmapType = wxBITMAP_TYPE_PNG);
+                                       wxBitmapType bitmapType = wxBITMAP_TYPE_PNG,
+                                       wxFileSystem *fs = nullptr);
 
 /// Loads bitmap from this. Use it when you need a bitmap which takes into account the scaling
 /// factor of the wx toolkit used. Toolkits which need this are GTK+3 and Cocoa.
 /// @param scaleFactor You can take this by calling GetContentScaleFactor on the window where
 /// the image would be drawn.
+/// @param fs File system used to load the image from. If nullptr the default would be used.
 /// @sa cbLoadBitmap
 extern DLLIMPORT wxBitmap cbLoadBitmapScaled(const wxString& filename, wxBitmapType bitmapType,
-                                             double scaleFactor);
+                                             double scaleFactor, wxFileSystem *fs = nullptr);
 
 /// Wrapper function for wxWidnow::GetContentScaleFactor.
 /// It is defined only to hide its absence from wx2.8.

@@ -51,42 +51,6 @@ void wxToolBarAddOnXmlHandler::SetToolbarImageSize(int size)
     m_PathReplaceString = wxString::Format(wxT("%dx%d"), size, size);
 }
 
-/// Copied this from wx's GetBitmap implementation.
-/// We need to do this because we want to replace 22x22 in the path with a string matching our
-/// resolution.
-/// @note This version doesn't support loading stock art images only files!
-wxBitmap wxToolBarAddOnXmlHandler::LoadBitmap(const wxString& name, double scaleFactor)
-{
-#if wxUSE_FILESYSTEM
-    wxFSFile *fsfile = GetCurFileSystem().OpenFile(name, wxFS_READ | wxFS_SEEKABLE);
-    if (fsfile == NULL)
-    {
-        LogManager *logger = Manager::Get()->GetLogManager();
-        logger->LogError(wxString::Format(wxT("Cannot open bitmap resource \"%s\""), name));
-        return wxNullBitmap;
-    }
-    wxImage img(*(fsfile->GetStream()));
-    delete fsfile;
-#else
-    wxImage img(name);
-#endif
-
-    if (!img.IsOk())
-    {
-        LogManager *logger = Manager::Get()->GetLogManager();
-        logger->LogError(wxString::Format(wxT("Cannot create bitmap from \"%s\""), name));
-        return wxNullBitmap;
-    }
-
-#if defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
-    return wxBitmap(img, -1, scaleFactor);
-#else
-    (void)scaleFactor;
-    return wxBitmap(img);
-#endif // defined(__WXOSX__) || (defined(__WXGTK3__) && wxCHECK_VERSION(3, 1, 2))
-}
-
-
 wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSize size,
                                                      double scaleFactor)
 {
@@ -97,7 +61,8 @@ wxBitmap wxToolBarAddOnXmlHandler::GetCenteredBitmap(const wxString& param, wxSi
     wxString finalName = name;
     finalName.Replace(wxT("22x22"), m_PathReplaceString);
 
-    wxBitmap bitmap = LoadBitmap(finalName, scaleFactor);
+    wxBitmap bitmap = cbLoadBitmapScaled(finalName, wxBITMAP_TYPE_PNG, scaleFactor,
+                                         &GetCurFileSystem());
     if (!bitmap.Ok())
         return bitmap;
 
