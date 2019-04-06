@@ -31,24 +31,17 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 
 	wxBoxSizer* bSizer5;
 	bSizer5 = new wxBoxSizer( wxHORIZONTAL );
-
 	ScrollEnabled = new wxCheckBox( this, wxID_ANY, _("Scrolling Enabled"), wxDefaultPosition, wxDefaultSize, 0 );
-
 	bSizer5->Add( ScrollEnabled, 0, wxALL, 5 );
-
 	bSizer1->Add( bSizer5, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* bSizer6;
 	bSizer6 = new wxBoxSizer( wxHORIZONTAL );
-
 	EditorFocusEnabled = new wxCheckBox( this, wxID_ANY, _("Auto Focus Editors"), wxDefaultPosition, wxDefaultSize, 0 );
-
 	bSizer6->Add( EditorFocusEnabled, 0, wxALL, 5 );
 
 	MouseFocusEnabled = new wxCheckBox( this, wxID_ANY, _("Focus follows Mouse"), wxDefaultPosition, wxDefaultSize, 0 );
-
 	bSizer6->Add( MouseFocusEnabled, 0, wxALL, 5 );
-
 	bSizer1->Add( bSizer6, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* MouseWheelSizer1;
@@ -57,7 +50,14 @@ cbDragScrollCfg::cbDragScrollCfg(wxWindow* parent, cbDragScroll* pOwner, wxWindo
 	MouseWheelSizer1->Add( MouseWheelZoom, 0, wxALL, 5 );
 	PropagateLogZoomSize = new wxCheckBox( this, wxID_ANY, _("Propagate Log Zooms"), wxDefaultPosition, wxDefaultSize, 0 );
 	MouseWheelSizer1->Add( PropagateLogZoomSize, 0, wxALL, 5 );
-	bSizer1->Add( MouseWheelSizer1, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+    bSizer1->Add( MouseWheelSizer1, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
+
+	//2019/03/30
+	wxBoxSizer* MouseWheelZoomReverseSizer1;
+	MouseWheelZoomReverseSizer1 = new wxBoxSizer( wxHORIZONTAL );
+	MouseWheelZoomReverse = new wxCheckBox( this, wxID_ANY, _("Reverse mouse Zoom direction"), wxDefaultPosition, wxDefaultSize, 0 );
+	MouseWheelZoomReverseSizer1->Add( MouseWheelZoomReverse, 0, wxALL, 5 );
+	bSizer1->Add( MouseWheelZoomReverseSizer1, 0, wxALIGN_CENTER_HORIZONTAL, 5 );
 
 	wxBoxSizer* bSizer3;
 	bSizer3 = new wxBoxSizer( wxHORIZONTAL );

@@ -31,7 +31,7 @@
 // ---------------------------------------------------------------------------
 
 //----------------------------------------
-#define VERSION "1.3.28 2018/07/9"
+#define VERSION "1.3.29 2019/03/30"
 //----------------------------------------
 
 //-#undef LOGGING
@@ -83,6 +83,7 @@ class cbDragScroll : public cbPlugin
         int  GetMouseWheelZoom()         const { return MouseWheelZoom; }
         int  IsLogZoomSizePropagated()   const { return PropagateLogZoomSize; }
         int  GetMouseHtmlFontSize()      const { return m_MouseHtmlFontSize; }
+        bool GetMouseWheelZoomReverse()  const { return m_MouseWheelZoomReverse; } //2019/03/30
 
         wxWindow* m_pCB_AppWindow;
         //-wxWindow* m_pSearchResultsWindow;
@@ -156,6 +157,7 @@ class cbDragScroll : public cbPlugin
         int  MouseWheelZoom         ;   //MouseWheel zooms tree, text, list controls
         int  PropagateLogZoomSize   ;   //Propagate Zoom Font size for all logs
         int  m_MouseHtmlFontSize    ;   //Ctrl-MouseWheel zoomed htmlWindow font size
+        bool m_MouseWheelZoomReverse;   //ctrl-MouseWheel zoom reverse default direction //2019/03/30
 
     private:
 		DECLARE_EVENT_TABLE()
@@ -466,11 +468,12 @@ private:
 // ----------------------------------------------------------------------------
 //  Commit 1.3.27 2015/08/21
 //          27 Fixes for wxWidgets 3.0 SIGFPE during mouse wheel scroll
-//  Test   1.3.28 2018/07/9
+//  Commit  1.3.28 2018/07/9
 //          Dont event Skip at dragscroll.cpp 1519. With new wxScintilla, skipping here
-//          will annoyingly set the editor caret a the right-click position.
+//          will annoyingly set the editor caret at the right-click position.
+//  Version 1.3.29 2019/03/30
+//          Option to reverse mouse wheel zoom direction
 // ----------------------------------------------------------------------------
 //  ToDo
-// ----------------------------------------------------------------------------
 // ----------------------------------------------------------------------------
 #endif // DRAGSCROLL_H

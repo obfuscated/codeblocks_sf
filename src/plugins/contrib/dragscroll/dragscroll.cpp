@@ -157,6 +157,7 @@ void cbDragScroll::OnAttach()
     MouseWheelZoom          = false;
     PropagateLogZoomSize    = false;
     m_MouseHtmlFontSize     = 0;
+    m_MouseWheelZoomReverse = false; //2019/03/30
 
     // Create filename like cbDragScroll.ini
     //memorize the key file name as {%HOME%}\cbDragScroll.ini
@@ -211,6 +212,7 @@ void cbDragScroll::OnAttach()
 	cfgFile.Read(_T("MouseHtmlFontSize"),       &m_MouseHtmlFontSize, 0) ;
 	cfgFile.Read(_T("ZoomWindowIds"),           &m_ZoomWindowIds, wxEmptyString) ;
 	cfgFile.Read(_T("ZoomFontSizes"),           &m_ZoomFontSizes, wxEmptyString) ;
+	cfgFile.Read(_T("MouseWheelZoomReverse"),   &m_MouseWheelZoomReverse, false) ; //2019/03/30
 
 	// Don't allow less than 10 mils on context/scroll delay.
 	if ( MouseContextDelay < 10) { MouseContextDelay = 10;}
@@ -229,6 +231,7 @@ void cbDragScroll::OnAttach()
         LOGIT(_T("MouseHtmlFontSize:%d"),       m_MouseHtmlFontSize ) ;
         LOGIT(_T("ZoomWindowIds:[%s]"),         m_ZoomWindowIds.c_str() ) ;
         LOGIT(_T("ZoomFontSizes:[%s]"),         m_ZoomFontSizes.c_str() ) ;
+        LOGIT(_T("MouseWheelZoomReverse:[%d]"), m_MouseWheelZoomReverse.c_str() ) ; //2019/03/30
     #endif //LOGGING
 
     // Fill ZoomWindowIds and ZoomFontSizes arrays from config strings
@@ -297,6 +300,7 @@ cbConfigurationPanel* cbDragScroll::GetConfigurationPanel(wxWindow* parent)
     pDlg->SetMouseContextDelay ( MouseContextDelay );
     pDlg->SetMouseWheelZoom ( MouseWheelZoom );
     pDlg->SetPropagateLogZoomSize ( PropagateLogZoomSize );
+    pDlg->SetMouseWheelZoomReverse ( m_MouseWheelZoomReverse ); //2019/03/30
 
     // when the configuration panel is closed with OK, OnDialogDone() will be called
     return pDlg;
@@ -364,17 +368,20 @@ void cbDragScroll::OnDialogDone(cbDragScrollCfg* pDlg)
     MouseContextDelay       = pDlg->GetMouseContextDelay();
     MouseWheelZoom          = pDlg->GetMouseWheelZoom();
     PropagateLogZoomSize    = pDlg->IsLogZoomSizePropagated() and MouseWheelZoom;
+    m_MouseWheelZoomReverse = pDlg->GetMouseWheelZoomReverse(); //2019/03/30
+
     #ifdef LOGGING
-     LOGIT(_T("MouseDragScrollEnabled:%d"),  MouseDragScrollEnabled);
-     LOGIT(_T("MouseEditorFocusEnabled:%d"), MouseEditorFocusEnabled);
-     LOGIT(_T("MouseFocusEnabled:%d"),       MouseFocusEnabled);
-     LOGIT(_T("MouseDragDirection:%d"),      MouseDragDirection);
-     LOGIT(_T("MouseDragKey:%d"),            MouseDragKey);
-     LOGIT(_T("MouseDragSensitivity:%d"),    MouseDragSensitivity);
-     LOGIT(_T("MouseToLineRatio:%d"),        MouseToLineRatio);
-     LOGIT(_T("MouseContextDelay:%d"),       MouseContextDelay);
-     LOGIT(_T("MouseMouseWheelZoom:%d"),     MouseWheelZoom);
-     LOGIT(_T("PropagateLogZoomSize:%d"),    PropagateLogZoomSize);
+     LOGIT(_T("MouseDragScrollEnabled:%d"),     MouseDragScrollEnabled);
+     LOGIT(_T("MouseEditorFocusEnabled:%d"),    MouseEditorFocusEnabled);
+     LOGIT(_T("MouseFocusEnabled:%d"),          MouseFocusEnabled);
+     LOGIT(_T("MouseDragDirection:%d"),         MouseDragDirection);
+     LOGIT(_T("MouseDragKey:%d"),               MouseDragKey);
+     LOGIT(_T("MouseDragSensitivity:%d"),       MouseDragSensitivity);
+     LOGIT(_T("MouseToLineRatio:%d"),           MouseToLineRatio);
+     LOGIT(_T("MouseContextDelay:%d"),          MouseContextDelay);
+     LOGIT(_T("MouseMouseWheelZoom:%d"),        MouseWheelZoom);
+     LOGIT(_T("PropagateLogZoomSize:%d"),       PropagateLogZoomSize);
+     LOGIT(_T("MouseMouseWheelZoomReverse:%d"), MouseWheelZoomReverse); //2019/03/30
      LOGIT(_T("-----------------------------"));
     #endif //LOGGING
 
@@ -441,6 +448,7 @@ void cbDragScroll::UpdateConfigFile()
 	cfgFile.Write(_T("MouseWheelZoom"),          MouseWheelZoom ) ;
 	cfgFile.Write(_T("PropagateLogZoomSize"),    PropagateLogZoomSize ) ;
 	cfgFile.Write(_T("MouseHtmlFontSize"),       m_MouseHtmlFontSize ) ;
+	cfgFile.Write(_T("MouseWheelZoomReverse"),   m_MouseWheelZoomReverse ) ;
 
 	if ( not m_ZoomWindowIds.IsEmpty() )
 	{
@@ -597,6 +605,7 @@ void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& /*event*/ )
 	cfgFile.Read(_T("MouseWheelZoom"),          &MouseWheelZoom) ;
 	cfgFile.Read(_T("PropagateLogZoomSize"),    &PropagateLogZoomSize) ;
 	cfgFile.Read(_T("MouseHtmlFontSize"),       &m_MouseHtmlFontSize, 0 ) ;
+	cfgFile.Read(_T("MouseWheelZoom"),          &m_MouseWheelZoomReverse) ; //2019/03/30
 
 	// Don't allow less than 10 mils on context/scroll delay.
 	if ( MouseContextDelay < 10) { MouseContextDelay = 10;}
@@ -613,6 +622,8 @@ void cbDragScroll::OnDragScrollEvent_RereadConfig(wxCommandEvent& /*event*/ )
         LOGIT(_T("MouseWheelZoom:%d"),          MouseWheelZoom ) ;
         LOGIT(_T("PropagateLogZoomSize:%d"),    PropagateLogZoomSize ) ;
         LOGIT(_T("MouseHtmlFontSize:%d"),       m_MouseHtmlFontSize ) ;
+        LOGIT(_T("MouseWheelZoom:%d"),          MouseWheelZoom ) ;
+        LOGIT(_T("MouseWheelZoomReverse:%d"),   m_MouseWheelZoomReverse ) ; //2019/03/30
     #endif //LOGGING
 
 }
@@ -980,7 +991,7 @@ void cbDragScroll::OnAppStartupDoneInit()
         wheelEvt.SetEventObject(pWindow);
         wheelEvt.m_controlDown = true;
         wheelEvt.m_wheelRotation = 0;
-        wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
+        wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0
         #if wxCHECK_VERSION(3, 0, 0)
         pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
         #else
@@ -1025,7 +1036,7 @@ void cbDragScroll::OnAppStartupDoneInit()
                 wheelEvt.SetEventObject(pWindow);
                 wheelEvt.m_controlDown = true;
                 wheelEvt.m_wheelRotation = 0;
-                wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
+                wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0
                 #if wxCHECK_VERSION(3, 0, 0)
                 pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                 #else
@@ -1167,7 +1178,7 @@ void cbDragScroll::OnWindowOpen(wxEvent& event)
                     wheelEvt.SetEventObject(pWindow);
                     wheelEvt.m_controlDown = true;
                     wheelEvt.m_wheelRotation = 0; //set user font
-                    wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0 //(pecan 2015/08/19)
+                    wheelEvt.m_wheelDelta = 1; //Avoid FPE wx3.0
                     #if wxCHECK_VERSION(3, 0, 0)
                     pWindow->GetEventHandler()->AddPendingEvent(wheelEvt);
                     #else
@@ -1219,13 +1230,24 @@ void cbDragScroll::OnMouseWheelEvent(wxMouseEvent& event)
     wxObject* pEvtObject = event.GetEventObject();
     wxWindow* pEvtWindow = (wxWindow*)pEvtObject;
 
-    // Ctrl-MouseWheel Zoom for non-scintilla windows
+    // Ctrl-MouseWheel Zoom (ctrl-mousewheel)
     if ( event.GetEventType() ==  wxEVT_MOUSEWHEEL)
     {
         bool mouseCtrlKeyDown = event.ControlDown();
         if (not mouseCtrlKeyDown) {event.Skip(); return;}
         if ( pEvtWindow->GetName() == _T("SCIwindow"))
-        {event.Skip(); return; }
+        {
+            // check if user wants default zoom direction reversed //2019/03/30
+            if (not GetMouseWheelZoomReverse()) //2019/03/30
+                { event.Skip(); return; }
+            else
+            {
+                int direction = event.GetWheelRotation();
+                event.m_wheelRotation = (direction *= -1);
+                event.Skip();
+                return;
+            }
+        }
 
         if ( pEvtWindow->GetName() == _T("htmlWindow"))
         {
@@ -1239,12 +1261,14 @@ void cbDragScroll::OnMouseWheelEvent(wxMouseEvent& event)
         #endif
 
         int nRotation = event.GetWheelRotation();
+        if (GetMouseWheelZoomReverse() )        //2019/03/30
+            nRotation *= -1;
         wxFont ctrlFont = pEvtWindow->GetFont();
 
         if ( nRotation > 0)
-            ctrlFont.SetPointSize( ctrlFont.GetPointSize()-1);
+            ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1); //2019/03/30
         if ( nRotation < 0)
-            ctrlFont.SetPointSize( ctrlFont.GetPointSize()+1);
+            ctrlFont.SetPointSize( ctrlFont.GetPointSize()-1);  //2019/03/30
         // a rotation of 0 means to refresh (set) the current window font size
         pEvtWindow->SetFont(ctrlFont);
 
@@ -1322,17 +1346,19 @@ bool cbDragScroll::OnMouseWheelInHtmlWindowEvent(wxMouseEvent& event)
     //-#endif
 
     int nRotation = event.GetWheelRotation();
+    if (GetMouseWheelZoomReverse() )            //2019/03/30
+        nRotation *= -1;
     wxFont ctrlFont = pEvtWindow->GetFont();
     if (not m_MouseHtmlFontSize)
         m_MouseHtmlFontSize = ctrlFont.GetPointSize();
 
-    // a WHEEL Rotation of 0 means just set the last users font.
+    // A WHEEL Rotation of 0 means just set the last users font.
     // It's issued by cbDragScroll::OnWindowOpen() to reset users font
     // when the htmlWindow is re-created.
     if ( nRotation > 0)
-        ctrlFont.SetPointSize( --m_MouseHtmlFontSize);
+        ctrlFont.SetPointSize( ++m_MouseHtmlFontSize);  //2019/03/30
     if ( nRotation < 0)
-        ctrlFont.SetPointSize( ++m_MouseHtmlFontSize);
+        ctrlFont.SetPointSize( --m_MouseHtmlFontSize);  //2019/03/30
     #if defined(LOGGING)
     //LOGIT( _T("wheel rotation[%d]font[%d]"), nRotation, m_MouseHtmlFontSize);
     #endif

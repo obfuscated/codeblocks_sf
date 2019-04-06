@@ -35,13 +35,14 @@ class cbDragScrollCfg: public cbConfigurationPanel
         wxString GetBitmapBaseName() const;
         void OnApply();
         void OnCancel(){}
+        virtual void InitDialog(){ asm("int3");} /*trap*/
 
         // pointer to owner of the configuration diaglog needed to
         // complete the OnApply/OnCancel EndModal() logic
         cbDragScroll* pOwnerClass;
 
 
-		//(*Identifiers(cbDragScrollCfg)
+		//Identifiers(cbDragScrollCfg)
 		enum Identifiers
 		{
 		    ID_DONEBUTTON = 0x1000,
@@ -71,6 +72,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
         int  GetMouseContextDelay()      { return MouseContextDelay->GetValue(); }
         bool GetMouseWheelZoom()         { return MouseWheelZoom->GetValue(); }
         bool IsLogZoomSizePropagated()   { return PropagateLogZoomSize->GetValue(); }
+        bool GetMouseWheelZoomReverse()  { return MouseWheelZoomReverse->GetValue(); } //2019/03/30
 
         void SetMouseDragScrollEnabled(bool value)
                 { ScrollEnabled->SetValue(value); }
@@ -92,12 +94,14 @@ class cbDragScrollCfg: public cbConfigurationPanel
                 { MouseWheelZoom->SetValue(value); }
         void SetPropagateLogZoomSize(bool value)
                 { PropagateLogZoomSize->SetValue(value); }
+        void SetMouseWheelZoomReverse(bool value)
+                { MouseWheelZoomReverse->SetValue(value); } //2019/03/30
 
 	protected:
 
 		void OnDoneButtonClick(wxCommandEvent& event);
 
-		//(*Declarations(cbDragScrollCfg)
+		//Declarations(cbDragScrollCfg)
 		wxFlexGridSizer* FlexGridSizer1;
 		wxStaticText* StaticText1;
 		wxCheckBox* ScrollEnabled;
@@ -108,6 +112,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxRadioBox* ScrollDirection;
 		wxStaticText* StaticText2;
 		wxChoice* MouseKeyChoice;
+		wxCheckBox* MouseWheelZoomReverse;
 
         // Mouse adjustment sliders
 		wxStaticText* StaticText3;
@@ -118,7 +123,7 @@ class cbDragScrollCfg: public cbConfigurationPanel
 		wxStaticText* StaticTextMRKC;
 		wxStaticText* StaticText5;
 		wxSlider* MouseContextDelay;
-		//*)
+
 
 	private:
 
