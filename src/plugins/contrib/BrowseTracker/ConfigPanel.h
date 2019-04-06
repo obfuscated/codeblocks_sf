@@ -1,13 +1,14 @@
 ///////////////////////////////////////////////////////////////////////////
-// C++ code generated with wxFormBuilder (version Sep  8 2010)
+// C++ code generated with wxFormBuilder (version Oct 26 2018)
 // http://www.wxformbuilder.org/
 //
-// PLEASE DO "NOT" EDIT THIS FILE!
+// PLEASE DO *NOT* EDIT THIS FILE!
 ///////////////////////////////////////////////////////////////////////////
 
-#ifndef __ConfigPanel__
-#define __ConfigPanel__
+#pragma once
 
+#include <wx/artprov.h>
+#include <wx/xrc/xmlres.h>
 #include <wx/string.h>
 #include <wx/stattext.h>
 #include <wx/gdicmn.h>
@@ -26,23 +27,22 @@
 ///////////////////////////////////////////////////////////////////////////////
 /// Class ConfigPanel
 ///////////////////////////////////////////////////////////////////////////////
-class ConfigPanel : public wxPanel 
+class ConfigPanel : public wxPanel
 {
 	private:
-	
+
 	protected:
 		wxStaticText* m_staticText2;
-		
 		wxStaticText* m_staticText3;
-		
+
 		// Virtual event handlers, overide them in your derived class
 		virtual void OnEnableBrowseMarks( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnWrapJumpEntries( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnShowToolbar( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnToggleBrowseMarkKey( wxCommandEvent& event ) { event.Skip(); }
 		virtual void OnClearAllBrowseMarksKey( wxCommandEvent& event ) { event.Skip(); }
-		
-	
+
+
 	public:
 		wxCheckBox* Cfg_BrowseMarksEnabled;
 		wxCheckBox* Cfg_WrapJumpEntries;
@@ -51,10 +51,9 @@ class ConfigPanel : public wxPanel
 		wxStaticText* m_staticText4;
 		wxSlider* Cfg_LeftMouseDelay;
 		wxRadioBox* Cfg_ClearAllKey;
-		
-		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 554,569 ), long style = wxTAB_TRAVERSAL );
+
+		ConfigPanel( wxWindow* parent, wxWindowID id = wxID_ANY, const wxPoint& pos = wxDefaultPosition, const wxSize& size = wxSize( 554,569 ), long style = wxTAB_TRAVERSAL, const wxString& name = wxEmptyString );
 		~ConfigPanel();
-	
+
 };
 
-#endif //__ConfigPanel__

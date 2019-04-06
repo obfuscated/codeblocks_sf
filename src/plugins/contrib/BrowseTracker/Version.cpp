@@ -271,6 +271,8 @@ AppVersion::~AppVersion()
 //  pecan  1.2.105 2018/12/18
 //           Honor Toolbar activation/deactivation from View/Toolbars
 //           Change config tool bar setting to "Show Toolbar Always"
+//  pecan  1.2.106 2019/04/6
+//           Use wxFormBuilder 3.9.0 to fix wxFont deprecation in config.cpp
 // ----------------------------------------------------------------------------
 //  //FIXME: Bugs
 //      01) Requires CB to be restarted after Install before Alt-Left/Right work.
