@@ -28,16 +28,14 @@
 #include "wx/tglbtn.h"
 
 #include "SearchInPanel.h"
+#include "ThreadSearchCommon.h"
 #include "ThreadSearchControlIds.h"
 
 
 SearchInPanel::SearchInPanel(wxWindow* parent, int id, const wxPoint& pos, const wxSize& size, long WXUNUSED(style)):
     wxPanel(parent, id, pos, size, wxTAB_TRAVERSAL)
 {
-    //{ Getting the imagesize for the buttons (16x16 or 22x22) and the appropriate path
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    bool toolbar_size = cfg->ReadBool(_T("/environment/toolbar_size"),true);
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/") + (toolbar_size?_T("16x16/"):_T("22x22/"));
+    const wxString &prefix = GetToolbarImagePrefix();
 
     // create a dummy button to get the standard button-size,
     // wxCustomButton does not do that properly

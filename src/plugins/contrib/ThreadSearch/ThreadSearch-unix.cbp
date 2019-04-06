@@ -69,6 +69,7 @@
 		<Unit filename="TextFileSearcherText.h" />
 		<Unit filename="ThreadSearch.cpp" />
 		<Unit filename="ThreadSearch.h" />
+		<Unit filename="ThreadSearchCommon.h" />
 		<Unit filename="ThreadSearchConfPanel.cpp" />
 		<Unit filename="ThreadSearchConfPanel.h" />
 		<Unit filename="ThreadSearchControlIds.cpp" />

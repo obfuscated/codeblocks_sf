@@ -126,11 +126,6 @@ public:
       */
     void SetToolBar(wxToolBar* pToolBar) {m_pToolBar = pToolBar;}
 
-
-    /** @return A string with the path to the icon images, it takes into account the size of the images.
-      */
-    wxString GetImagePrefix() const;
-
     /** Set the proper image depending if there are any enabled options in the popup menu.
       */
     void UpdateOptionsButtonImage(const ThreadSearchFindData &findData);

@@ -38,6 +38,7 @@
 #include "ThreadSearchEvent.h"
 #include "ThreadSearchThread.h"
 #include "ThreadSearchFindData.h"
+#include "ThreadSearchCommon.h"
 #include "ThreadSearchConfPanel.h"
 #include "ThreadSearchControlIds.h"
 #include "wx/tglbtn.h"
@@ -58,7 +59,7 @@ ThreadSearchView::ThreadSearchView(ThreadSearch& threadSearchPlugin)
 {
     m_pFindThread = NULL;
     m_pToolBar    = NULL;
-    const wxString &prefix = GetImagePrefix();
+    const wxString &prefix = GetToolbarImagePrefix();
 
     // begin wxGlade: ThreadSearchView::ThreadSearchView
     m_pSplitter = new wxSplitterWindow(this, -1, wxDefaultPosition, wxSize(1,1), wxSP_3D|wxSP_BORDER|wxSP_PERMIT_UNSPLIT);
@@ -293,7 +294,7 @@ void ThreadSearchView::OnQuickOptions(wxCommandEvent &event)
 void ThreadSearchView::UpdateOptionsButtonImage(const ThreadSearchFindData &findData)
 {
     wxString name = (findData.IsOptionEnabled() ? wxT("optionsactive.png") : wxT("options.png"));
-    wxBitmap bitmap(GetImagePrefix() + name, wxBITMAP_TYPE_PNG);
+    wxBitmap bitmap(GetToolbarImagePrefix() + name, wxBITMAP_TYPE_PNG);
     m_pBtnOptions->SetBitmapLabel(bitmap);
     if (m_pToolBar)
         m_pToolBar->SetToolNormalBitmap(controlIDs.Get(ControlIDs::idBtnOptions), bitmap);
@@ -349,7 +350,7 @@ void ThreadSearchView::OnSplitterDoubleClick(wxSplitterEvent &/*event*/)
 
 void ThreadSearchView::set_properties()
 {
-    const wxString &prefix = GetImagePrefix();
+    const wxString &prefix = GetToolbarImagePrefix();
 
     // begin wxGlade: ThreadSearchView::set_properties
     SetBackgroundColour(wxSystemSettings::GetColour(wxSYS_COLOUR_BTNFACE));
@@ -915,11 +916,9 @@ bool ThreadSearchView::IsSearchRunning()
 void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label)
 {
     // Labels and pictures paths
-    wxString searchButtonLabels[]        = {_("Search"), _("Cancel search"), wxEmptyString};
+    wxString searchButtonLabels[] = {_("Search"), _("Cancel search"), wxEmptyString};
 
-    ConfigManager *cfg = Manager::Get()->GetConfigManager(_T("app"));
-    int toolbar_size = cfg->ReadBool(_T("/environment/toolbar_size"),true)?1:0;
-    wxString prefix = ConfigManager::GetDataFolder() + _T("/images/ThreadSearch/") + (toolbar_size==1?_T("16x16/"):_T("22x22/"));
+    const wxString &prefix = GetToolbarImagePrefix();
 
     wxString searchButtonPathsEnabled[]  = {prefix + wxT("findf.png"),
                                             prefix + wxT("stop.png") ,
@@ -949,7 +948,7 @@ void ThreadSearchView::UpdateSearchButtons(bool enable, eSearchButtonLabel label
     m_pToolBar->EnableTool(controlIDs.Get(ControlIDs::idBtnSearch), enable);
 }
 
-wxString ThreadSearchView::GetImagePrefix() const
+wxString GetToolbarImagePrefix()
 {
     const int size = Manager::Get()->GetToolbarImageSize();
     return ConfigManager::GetDataFolder()

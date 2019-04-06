@@ -22,6 +22,7 @@
 #include "cbstyledtextctrl.h"
 #include "ThreadSearch.h"
 #include "ThreadSearchView.h"
+#include "ThreadSearchCommon.h"
 #include "ThreadSearchConfPanel.h"
 #include "ThreadSearchControlIds.h"
 #include "logging.h" //(pecan 2007/7/26)
@@ -582,7 +583,7 @@ bool ThreadSearch::BuildToolBar(wxToolBar* toolBar)
     m_pToolbar = toolBar;
     m_pThreadSearchView->SetToolBar(toolBar);
 
-    const wxString &prefix = m_pThreadSearchView->GetImagePrefix();
+    const wxString &prefix = GetToolbarImagePrefix();
 
     m_pCboSearchExpr = new wxComboBox(toolBar, controlIDs.Get(ControlIDs::idCboSearchExpr),
                                       wxEmptyString, wxDefaultPosition, wxSize(130, -1), 0, NULL, wxCB_DROPDOWN);
