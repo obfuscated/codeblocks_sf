@@ -119,8 +119,6 @@ then
 fi
 if [ -d "devel/share/codeblocks/images/ThreadSearch" ]
 then
-  mkdir -p output/share/codeblocks/images/ThreadSearch
-  cp -f devel/share/codeblocks/images/ThreadSearch/*.png output/share/codeblocks/images/ThreadSearch > /dev/null
   mkdir -p output/share/codeblocks/images/ThreadSearch/16x16
   cp -f devel/share/codeblocks/images/ThreadSearch/16x16/*.png output/share/codeblocks/images/ThreadSearch/16x16 > /dev/null
   mkdir -p output/share/codeblocks/images/ThreadSearch/22x22
